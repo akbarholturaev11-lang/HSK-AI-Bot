@@ -1,0 +1,800 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 51,
+  "source_lesson": 11,
+  "part_no": 2,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "他比我大三岁",
+  "subtitle": {
+    "uz": "'Bǐ' qiyoslash konstruktsiyasini, fe'l sifatdoshini aniqlovchi sifatida ishlatishni va 'kěnéng' yordamchi fe'lini o'rganish.",
+    "ru": "Изучение конструкции сравнения 'bǐ', использования глагольных конструкций в роли определения и модального глагола 'kěnéng'.",
+    "tj": "Омӯзиши конструксияи муқоисавии 'bǐ', истифодаи сохтҳои феълӣ ҳамчун муайянкунанда ва феъли ёрирасони 'kěnéng'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "右边",
+      "pinyin": "yòubian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'ng tomon",
+        "ru": "правая сторона",
+        "tj": "тарафи рост"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "比",
+      "pinyin": "bǐ",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "… dan (qiyoslash uchun)",
+        "ru": "чем… (для сравнения)",
+        "tj": "аз… (барои муқоиса)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "便宜",
+      "pinyin": "piányi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "arzon",
+        "ru": "дешёвый",
+        "tj": "арзон"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "说话",
+      "pinyin": "shuōhuà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gapirmoq, so'zlamoq",
+        "ru": "говорить, разговаривать",
+        "tj": "гап задан, сухан гуфтан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "'Bǐ' qiyoslash gapi (1)",
+        "ru": "Предложения сравнения с 'bǐ' (1)",
+        "tj": "Ҷумлаи муқоисавӣ бо 'bǐ' (1)"
+      },
+      "title_zh": "“比”字句（1）",
+      "rule": {
+        "uz": "'Bǐ' qiyoslash gapi quyidagi tuzilishga ega: A + 比 + B + sifat (+ miqdor farqi). Bu 'A, B dan ko'proq/katta/yaxshi' ma'nosini beradi. Inkor shaklida '没有' ishlatiladi: A + 没有 + B + sifat.",
+        "ru": "Конструкция сравнения с 'bǐ' имеет структуру: A + 比 + B + прилагательное (+ разница в количестве). Означает 'A больше/старше/лучше, чем B'. В отрицательной форме используется '没有': A + 没有 + B + прилагательное.",
+        "tj": "Ҷумлаи муқоисавӣ бо 'bǐ' сохти зеринро дорад: A + 比 + B + сифат (+ фарқи миқдорӣ). Маъниаш 'A аз B бештар/калонтар/беҳтар аст'. Дар шакли инкорӣ '没有' истифода мешавад: A + 没有 + B + сифат."
+      },
+      "examples": [
+        {
+          "zh": "他比我大三岁。",
+          "pinyin": "Tā bǐ wǒ dà sān suì.",
+          "translation": {
+            "uz": "U mendan uch yosh katta.",
+            "ru": "Он старше меня на три года.",
+            "tj": "Ӯ аз ман се сол калонтар аст."
+          }
+        },
+        {
+          "zh": "苹果没有西瓜大。",
+          "pinyin": "Píngguǒ méiyǒu xīguā dà.",
+          "translation": {
+            "uz": "Olma tarvuz kadar katta emas.",
+            "ru": "Яблоко не такое большое, как арбуз.",
+            "tj": "Себ ба андозаи тарбуз калон нест."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Qo'shiq aytish zalida",
+        "ru": "В зале для пения",
+        "tj": "Дар толори сурудхонӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "王方，昨天和你一起唱歌的人是谁？",
+          "pinyin": "Wáng Fāng, zuótiān hé nǐ yìqǐ chànggē de rén shì shéi?",
+          "text": {
+            "uz": "Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?",
+            "ru": "Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?",
+            "tj": "Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "一个朋友。",
+          "pinyin": "Yí ge péngyou.",
+          "text": {
+            "uz": "Bir do'stim.",
+            "ru": "Один друг.",
+            "tj": "Як дӯстам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "什么朋友？是不是男朋友？",
+          "pinyin": "Shénme péngyou? Shì bú shì nán péngyou?",
+          "text": {
+            "uz": "Qanday do'st? Yigit do'stingizmi?",
+            "ru": "Что за друг? Это случайно не парень?",
+            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不是不是，我同学介绍的，昨天第一次见。",
+          "pinyin": "Bú shì bú shì, wǒ tóngxué jièshào de, zuótiān dì yī cì jiàn.",
+          "text": {
+            "uz": "Yo'q yo'q, sinfdoshim tanishtirgan, kecha birinchi marta uchrashdik.",
+            "ru": "Нет-нет, познакомил однокурсник, вчера виделись первый раз.",
+            "tj": "Не не, ҳамсинфам шинос кард, дирӯз бори аввал дидем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yotoqxonada",
+        "ru": "В общежитии",
+        "tj": "Дар хобгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "左边这个看报纸的女孩子是你姐姐吗？",
+          "pinyin": "Zuǒbian zhège kàn bàozhǐ de nǚ háizi shì nǐ jiějie ma?",
+          "text": {
+            "uz": "Chap tomondagi gazeta o'qiyotgan qiz sizning opangizmi?",
+            "ru": "Та девушка слева, которая читает газету, это твоя старшая сестра?",
+            "tj": "Он духтаре ки тарафи чап рӯзнома мехонад хоҳари калонии туст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是，右边写字的那个人是我哥哥。",
+          "pinyin": "Shì, yòubian xiě zì de nà ge rén shì wǒ gēge.",
+          "text": {
+            "uz": "Ha, o'ng tomonda yozayotgan odam mening akam.",
+            "ru": "Да, а тот, кто справа пишет, это мой старший брат.",
+            "tj": "Бале, он касе ки тарафи рост менависад бародари калонии ман аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你哥哥多大？",
+          "pinyin": "Nǐ gēge duō dà?",
+          "text": {
+            "uz": "Akangiz necha yoshda?",
+            "ru": "Сколько лет твоему брату?",
+            "tj": "Бародари калониат чанд сол дорад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "25岁，他比我大三岁。",
+          "pinyin": "Èrshíwǔ suì, tā bǐ wǒ dà sān suì.",
+          "text": {
+            "uz": "25 yoshda, u mendan uch yosh katta.",
+            "ru": "25 лет, он старше меня на три года.",
+            "tj": "25 сол, ӯ аз ман се сол калонтар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda",
+        "ru": "В магазине",
+        "tj": "Дар мағоза"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天的西瓜怎么卖？",
+          "pinyin": "Jīntiān de xīguā zěnme mài?",
+          "text": {
+            "uz": "Bugungi tarvuz qancha?",
+            "ru": "Сколько стоит сегодня арбуз?",
+            "tj": "Тарбузи имрӯза чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "三块五一斤。",
+          "pinyin": "Sān kuài wǔ yì jīn.",
+          "text": {
+            "uz": "Bir jin uchun uch yuan besh fen.",
+            "ru": "Три юаня пятьдесят за полкило.",
+            "tj": "Барои як ҷин се юан панҷ феник."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "比昨天便宜。",
+          "pinyin": "Bǐ zuótiān piányi.",
+          "text": {
+            "uz": "Kechaga qaraganda arzon.",
+            "ru": "Дешевле, чем вчера.",
+            "tj": "Аз дирӯз арзонтар аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是，苹果也比昨天便宜一些。您来点儿吧。",
+          "pinyin": "Shì, píngguǒ yě bǐ zuótiān piányi yìxiē. Nín lái diǎnr ba.",
+          "text": {
+            "uz": "Ha, olma ham kechaga qaraganda biroz arzon. Biroz oling.",
+            "ru": "Да, яблоки тоже немного дешевле, чем вчера. Берите немного.",
+            "tj": "Бале, себ ҳам аз дирӯз каме арзонтар аст. Каме гиред."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "前边说话的那个人是不是我的汉语老师？你可能不认识她。",
+          "pinyin": "Qiánbian shuōhuà de nà ge rén shì bú shì wǒ de Hànyǔ lǎoshī? Nǐ kěnéng bù rènshi tā.",
+          "text": {
+            "uz": "Oldinda gapirgan odam mening xitoy tili o'qituvchim emasmi? Siz uni tanimas ehtimol.",
+            "ru": "Тот человек впереди, который говорит, не мой ли преподаватель китайского? Ты, наверное, её не знаешь.",
+            "tj": "Оё он касе ки пеш гап мезанад муаллими забони чинии ман нест? Эҳтимол шумо ӯро намешиносед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是新来的汉语老师吗？",
+          "pinyin": "Shì xīn lái de Hànyǔ lǎoshī ma?",
+          "text": {
+            "uz": "Yangi kelgan xitoy tili o'qituvchisimi?",
+            "ru": "Это новый преподаватель китайского?",
+            "tj": "Оё ин муаллими нави забони чинӣ аст?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "是去年来的，她姓王，28岁。",
+          "pinyin": "Shì qùnián lái de, tā xìng Wáng, èrshíbā suì.",
+          "text": {
+            "uz": "O'tgan yil kelgan, familiyasi Van, 28 yoshda.",
+            "ru": "Пришла в прошлом году, её фамилия Ван, 28 лет.",
+            "tj": "Соли гузашта омад, насабаш Ван аст, 28 сол дорад."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她比我们老师小两岁。",
+          "pinyin": "Tā bǐ wǒmen lǎoshī xiǎo liǎng suì.",
+          "text": {
+            "uz": "U bizning o'qituvchimizdan ikki yosh kichik.",
+            "ru": "Она на два года моложе нашего учителя.",
+            "tj": "Ӯ аз муаллими мо ду сол хурдтар аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "右边",
+            "pinyin": "yòubian",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'ng tomon",
+              "ru": "правая сторона",
+              "tj": "тарафи рост"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "右边 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 右边:",
+            "tj": "Маънои калимаи 右边-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo'shiq aytmoq",
+              "ru": "петь песню",
+              "tj": "суруд хондан"
+            },
+            {
+              "uz": "o'ng tomon",
+              "ru": "правая сторона",
+              "tj": "тарафи рост"
+            },
+            {
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
+            },
+            {
+              "uz": "erkak, o'g'il",
+              "ru": "мужской, мальчик",
+              "tj": "мард, писар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "右边 = o'ng tomon (yòubian)",
+            "ru": "右边 = правая сторона (yòubian)",
+            "tj": "右边 = тарафи рост (yòubian)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "比",
+            "pinyin": "bǐ",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "… dan (qiyoslash uchun)",
+              "ru": "чем… (для сравнения)",
+              "tj": "аз… (барои муқоиса)"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bǐ?",
+            "tj": "bǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "女",
+            "比",
+            "唱歌",
+            "男"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "比 = … dan (qiyoslash uchun) (bǐ)",
+            "ru": "比 = чем… (для сравнения) (bǐ)",
+            "tj": "比 = аз… (барои муқоиса) (bǐ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "便宜",
+            "pinyin": "piányi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "arzon",
+              "ru": "дешёвый",
+              "tj": "арзон"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "便宜",
+          "pinyin": "piányi",
+          "translation": {
+            "uz": "arzon",
+            "ru": "дешёвый",
+            "tj": "арзон"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "便宜 talaffuzini tanlang:",
+            "ru": "Выберите произношение 便宜:",
+            "tj": "Талаффузи 便宜-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chànggē",
+            "piányi",
+            "nǚ",
+            "nán"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "便宜 — piányi",
+            "ru": "便宜 — piányi",
+            "tj": "便宜 — piányi"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "说话",
+            "pinyin": "shuōhuà",
+            "pos": "v.",
+            "meaning": {
+              "uz": "gapirmoq, so'zlamoq",
+              "ru": "говорить, разговаривать",
+              "tj": "гап задан, сухан гуфтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'gapirmoq, so'zlamoq' xitoycha qaysi?",
+            "ru": "'говорить, разговаривать' по-китайски?",
+            "tj": "'гап задан, сухан гуфтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "男",
+            "说话",
+            "女",
+            "唱歌"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "gapirmoq, so'zlamoq = 说话 (shuōhuà)",
+            "ru": "говорить, разговаривать = 说话 (shuōhuà)",
+            "tj": "гап задан, сухан гуфтан = 说话 (shuōhuà)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "右边",
+          "pinyin": "yòubian",
+          "options": [
+            "唱歌",
+            "右边",
+            "男",
+            "女"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "右边 — o'ng tomon (yòubian)",
+            "ru": "右边 — правая сторона (yòubian)",
+            "tj": "右边 — тарафи рост (yòubian)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "右边",
+              {
+                "uz": "o'ng tomon",
+                "ru": "правая сторона",
+                "tj": "тарафи рост"
+              }
+            ],
+            [
+              "比",
+              {
+                "uz": "… dan (qiyoslash uchun)",
+                "ru": "чем… (для сравнения)",
+                "tj": "аз… (барои муқоиса)"
+              }
+            ],
+            [
+              "便宜",
+              {
+                "uz": "arzon",
+                "ru": "дешёвый",
+                "tj": "арзон"
+              }
+            ],
+            [
+              "说话",
+              {
+                "uz": "gapirmoq, so'zlamoq",
+                "ru": "говорить, разговаривать",
+                "tj": "гап задан, сухан гуфтан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "'Bǐ' qiyoslash gapi (1)",
+              "ru": "Предложения сравнения с 'bǐ' (1)",
+              "tj": "Ҷумлаи муқоисавӣ бо 'bǐ' (1)"
+            },
+            "title_zh": "“比”字句（1）",
+            "rule": {
+              "uz": "'Bǐ' qiyoslash gapi quyidagi tuzilishga ega: A + 比 + B + sifat (+ miqdor farqi). Bu 'A, B dan ko'proq/katta/yaxshi' ma'nosini beradi. Inkor shaklida '没有' ishlatiladi: A + 没有 + B + sifat.",
+              "ru": "Конструкция сравнения с 'bǐ' имеет структуру: A + 比 + B + прилагательное (+ разница в количестве). Означает 'A больше/старше/лучше, чем B'. В отрицательной форме используется '没有': A + 没有 + B + прилагательное.",
+              "tj": "Ҷумлаи муқоисавӣ бо 'bǐ' сохти зеринро дорад: A + 比 + B + сифат (+ фарқи миқдорӣ). Маъниаш 'A аз B бештар/калонтар/беҳтар аст'. Дар шакли инкорӣ '没有' истифода мешавад: A + 没有 + B + сифат."
+            },
+            "examples": [
+              {
+                "zh": "他比我大三岁。",
+                "pinyin": "Tā bǐ wǒ dà sān suì.",
+                "translation": {
+                  "uz": "U mendan uch yosh katta.",
+                  "ru": "Он старше меня на три года.",
+                  "tj": "Ӯ аз ман се сол калонтар аст."
+                }
+              },
+              {
+                "zh": "苹果没有西瓜大。",
+                "pinyin": "Píngguǒ méiyǒu xīguā dà.",
+                "translation": {
+                  "uz": "Olma tarvuz kadar katta emas.",
+                  "ru": "Яблоко не такое большое, как арбуз.",
+                  "tj": "Себ ба андозаи тарбуз калон нест."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Olma tarvuz kadar katta emas.",
+            "ru": "Яблоко не такое большое, как арбуз.",
+            "tj": "Себ ба андозаи тарбуз калон нест."
+          },
+          "tokens": [
+            "唱歌",
+            "大",
+            "男",
+            "没有",
+            "西瓜",
+            "苹果"
+          ],
+          "answer_tokens": [
+            "苹果",
+            "没有",
+            "西瓜",
+            "大"
+          ],
+          "explanation": {
+            "uz": "苹果没有西瓜大。 — Píngguǒ méiyǒu xīguā dà.",
+            "ru": "苹果没有西瓜大。 — Píngguǒ méiyǒu xīguā dà.",
+            "tj": "苹果没有西瓜大。 — Píngguǒ méiyǒu xīguā dà."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Kechaga qaraganda arzon.",
+            "ru": "Дешевле, чем вчера.",
+            "tj": "Аз дирӯз арзонтар аст."
+          },
+          "tokens": [
+            "比",
+            "男",
+            "唱歌",
+            "昨天",
+            "便宜"
+          ],
+          "answer_tokens": [
+            "比",
+            "昨天",
+            "便宜"
+          ],
+          "explanation": {
+            "uz": "比昨天便宜。 — Bǐ zuótiān piányi.",
+            "ru": "比昨天便宜。 — Bǐ zuótiān piányi.",
+            "tj": "比昨天便宜。 — Bǐ zuótiān piányi."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "她比我们老师小两岁。",
+          "pinyin": "Tā bǐ wǒmen lǎoshī xiǎo liǎng suì.",
+          "translation": {
+            "uz": "U bizning o'qituvchimizdan ikki yosh kichik.",
+            "ru": "Она на два года моложе нашего учителя.",
+            "tj": "Ӯ аз муаллими мо ду сол хурдтар аст."
+          },
+          "tokens": {
+            "uz": [
+              "o'ng",
+              "o'qituvchimizdan",
+              "U",
+              "kichik",
+              "yosh",
+              "bizning",
+              "Ha",
+              "ikki"
+            ],
+            "ru": [
+              "два",
+              "года",
+              "а",
+              "на",
+              "учителя",
+              "Она",
+              "Да",
+              "нашего",
+              "моложе"
+            ],
+            "tj": [
+              "мо",
+              "муаллими",
+              "аз",
+              "Бале",
+              "Ӯ",
+              "хурдтар",
+              "ду",
+              "аст",
+              "сол",
+              "он"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "bizning",
+              "o'qituvchimizdan",
+              "ikki",
+              "yosh",
+              "kichik"
+            ],
+            "ru": [
+              "Она",
+              "на",
+              "два",
+              "года",
+              "моложе",
+              "нашего",
+              "учителя"
+            ],
+            "tj": [
+              "Ӯ",
+              "аз",
+              "муаллими",
+              "мо",
+              "ду",
+              "сол",
+              "хурдтар",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "她比我们老师小两岁。 — U bizning o'qituvchimizdan ikki yosh kichik.",
+            "ru": "她比我们老师小两岁。 — Она на два года моложе нашего учителя.",
+            "tj": "她比我们老师小两岁。 — Ӯ аз муаллими мо ду сол хурдтар аст."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "是，右边写字的那个人是我哥哥。",
+          "pinyin": "Shì, yòubian xiě zì de nà ge rén shì wǒ gēge.",
+          "options": [
+            "王方，昨天和你一起唱歌的人是谁？",
+            "是，右边写字的那个人是我哥哥。",
+            "什么朋友？是不是男朋友？",
+            "一个朋友。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "是，右边写字的那个人是我哥哥。 — Ha, o'ng tomonda yozayotgan odam mening akam.",
+            "ru": "是，右边写字的那个人是我哥哥。 — Да, а тот, кто справа пишет, это мой старший брат.",
+            "tj": "是，右边写字的那个人是我哥哥。 — Бале, он касе ки тарафи рост менависад бародари калонии ман аст."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "说话",
+          "pinyin": "shuōhuà",
+          "options": [
+            "说话",
+            "男",
+            "唱歌",
+            "女"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "说话 — gapirmoq, so'zlamoq (shuōhuà)",
+            "ru": "说话 — говорить, разговаривать (shuōhuà)",
+            "tj": "说话 — гап задан, сухан гуфтан (shuōhuà)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "便宜",
+          "pinyin": "piányi",
+          "translation": {
+            "uz": "arzon",
+            "ru": "дешёвый",
+            "tj": "арзон"
+          }
+        }
+      ]
+    }
+  ]
+}

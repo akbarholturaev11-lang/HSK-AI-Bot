@@ -1,0 +1,714 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 77,
+  "source_lesson": 15,
+  "part_no": 1,
+  "part_count": 7,
+  "checkpoint": false,
+  "title": "其他都没什么问题",
+  "subtitle": {
+    "uz": "'Bundan tashqari ham/yana' iboralari, so'roq olmoshlarining umumlashtiruvchi qo'llanishi va 'juda' ifodalovchi '极了' o'rganish",
+    "ru": "Выражения 'помимо/кроме', обобщающее использование вопросительных местоимений и '极了' (очень)",
+    "tj": "Ибораҳои 'ғайр аз/ба ҷуз', истифодаи умумикунандаи зомирҳои саволӣ ва '极了' (хеле)"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "留学",
+      "pinyin": "liú xué",
+      "pos": "v.",
+      "meaning": {
+        "uz": "chet elda o'qimoq",
+        "ru": "учиться за границей",
+        "tj": "дар хориҷ таҳсил кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "水平",
+      "pinyin": "shuǐpíng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "daraja, saviya",
+        "ru": "уровень, стандарт",
+        "tj": "сатҳ, дараҷа"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "提高",
+      "pinyin": "tí gāo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "oshirmoq, yaxshilamoq",
+        "ru": "повышать, улучшать",
+        "tj": "баланд кардан, беҳтар кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "练习",
+      "pinyin": "liànxí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mashq",
+        "ru": "упражнение",
+        "tj": "машқ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "……dan tashqari, hammasi/ham/yana……",
+        "ru": "Кроме……, всё/тоже/ещё……",
+        "tj": "Ба ғайр аз……, ҳама/ҳам/боз……"
+      },
+      "title_zh": "除了……以外，都/还/也……",
+      "rule": {
+        "uz": "'除了A以外，都/还/也+B' tuzilmasi ikki ma'noda ishlatiladi: (1) A dan tashqari hamma narsa B (都) — istisno; (2) A dan tashqari B ham (还/也) — qo'shimcha. Farqni '都' va '还/也' orqali tushunish kerak.",
+        "ru": "Конструкция '除了A以外，都/还/也+B' имеет два значения: (1) Кроме A всё является B (都) — исключение; (2) Кроме A, B тоже (还/也) — добавление. Разницу нужно понять через '都' и '还/也'.",
+        "tj": "Сохти '除了A以外，都/还/也+B' ду маъно дорад: (1) Ба ғайр аз A ҳама B аст (都) — истисно; (2) Ба ғайр аз A, B ҳам (还/也) — илова. Фарқро бо ёрии '都' ва '还/也' фаҳмидан лозим аст."
+      },
+      "examples": [
+        {
+          "zh": "除了血压以外，其他都没问题。",
+          "pinyin": "Chúle xuèyā yǐwài, qítā dōu méi wèntí.",
+          "translation": {
+            "uz": "Qon bosimdan tashqari, boshqa hamma narsa muammosiz.",
+            "ru": "Кроме давления, всё остальное без проблем.",
+            "tj": "Ба ғайр аз фишори хун, ҳама чизи дигар мушкиле нест."
+          }
+        },
+        {
+          "zh": "除了汉语，她还会说日语。",
+          "pinyin": "Chúle Hànyǔ, tā hái huì shuō Rìyǔ.",
+          "translation": {
+            "uz": "Xitoy tilidan tashqari, u yapon tilini ham biladi.",
+            "ru": "Кроме китайского, она ещё умеет говорить по-японски.",
+            "tj": "Ба ғайр аз чинӣ, вай ҳам ба ҷопонӣ ҳарф мезанад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ofisda",
+        "ru": "В офисе",
+        "tj": "Дар идора"
+      },
+      "dialogue": [
+        {
+          "speaker": "大山",
+          "zh": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+          "pinyin": "Lǎoshī, wǒ lái Zhōngguó liú xué liǎng nián le, dànshì wǒ de Hànyǔ shuǐpíng tí gāo de yìdiǎnr yě bù kuài a.",
+          "text": {
+            "uz": "Ustoz, Xitoyga o'qishga kelganimga ikki yil bo'ldi, lekin xitoy tili darajam deyarli tez oshmayapti.",
+            "ru": "Учитель, я приехал в Китай учиться уже два года назад, но мой уровень китайского совсем не быстро растёт.",
+            "tj": "Устод, ду сол шуд, ки ба Чин барои таҳсил омадам, аммо сатҳи забони чиниям тамоман зуд баланд намешавад."
+          }
+        },
+        {
+          "speaker": "老师",
+          "zh": "你每天认真学习，做练习、完成作业，一直不错啊。",
+          "pinyin": "Nǐ měi tiān rènzhēn xuéxí, zuò liànxí, wán chéng zuòyè, yìzhí búcuò a.",
+          "text": {
+            "uz": "Sen har kuni jiddiy o'qiysan, mashq qilasan, uy vazifasini tugatasan, doim yaxshi-ku.",
+            "ru": "Ты каждый день серьёзно учишься, делаешь упражнения, выполняешь домашнее задание, всё время неплохо.",
+            "tj": "Ту ҳар рӯз ҷиддӣ мехонӣ, машқ мекунӣ, вазифаи хонагиро анҷом медиҳӣ, ҳамеша хуб аст."
+          }
+        },
+        {
+          "speaker": "大山",
+          "zh": "这是我昨天的作业，您帮我看看对不对？",
+          "pinyin": "Zhè shì wǒ zuótiān de zuòyè, nín bāng wǒ kànkan duì bu duì?",
+          "text": {
+            "uz": "Bu kechagi uy vazifam, to'g'ri yoki yo'qligini ko'rib bera olasizmi?",
+            "ru": "Это моё вчерашнее домашнее задание, посмотрите, правильно ли?",
+            "tj": "Ин вазифаи хонагии дирӯзаам аст, мебинед дуруст аст ё не?"
+          }
+        },
+        {
+          "speaker": "老师",
+          "zh": "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
+          "pinyin": "Xiě de búcuò, chúle zhè ge jùzi yìsi yǒuxiē bù qīngchu wài, qítā dōu méi shénme wèntí.",
+          "text": {
+            "uz": "Yaxshi yozilgan, faqat bu gapning ma'nosi biroz noaniq, qolganlarida muammo yo'q.",
+            "ru": "Написано неплохо, кроме того, что смысл этого предложения немного неясен, с остальным проблем нет.",
+            "tj": "Хуб навишта шудааст, ба ғайр аз он ки маънои ин ҷумла каме норавшан аст, боқимонда мушкил надорад."
+          }
+        },
+        {
+          "speaker": "大山",
+          "zh": "谢谢老师！",
+          "pinyin": "Xièxie lǎoshī!",
+          "text": {
+            "uz": "Rahmat, ustoz!",
+            "ru": "Спасибо, учитель!",
+            "tj": "Ташаккур, устод!"
+          }
+        },
+        {
+          "speaker": "老师",
+          "zh": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
+          "pinyin": "Yǐhòu yǒu shénme bù míngbai de dìfang, kěyǐ gěi wǒ dǎ diànhuà huòzhě fā diànzǐ yóujiàn.",
+          "text": {
+            "uz": "Keyin tushunmagan joying bo'lsa, menga qo'ng'iroq qilishing yoki email yuborishing mumkin.",
+            "ru": "Если потом что-то будет непонятно, можешь позвонить мне или отправить электронное письмо.",
+            "tj": "Баъд агар чизе нофаҳмо бошад, метавонӣ ба ман занг занӣ ё почтаи электронӣ фиристӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda",
+        "ru": "В классе",
+        "tj": "Дар синф"
+      },
+      "dialogue": [
+        {
+          "speaker": "学生",
+          "zh": "老师，除了小云，其他人都来了。",
+          "pinyin": "Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
+          "text": {
+            "uz": "Ustoz, Xiaoyundan tashqari hamma keldi.",
+            "ru": "Учитель, кроме Сяоюнь, все пришли.",
+            "tj": "Устод, ба ғайр аз Сяоюн ҳама омаданд."
+          }
+        },
+        {
+          "speaker": "老师",
+          "zh": "比赛马上就要开始了，小云怎么还没来？",
+          "pinyin": "Bǐsài mǎshàng jiù yào kāishǐ le, Xiǎoyún zěnme hái méi lái?",
+          "text": {
+            "uz": "Musobaqa hozir boshlanadi, Xiaoyun nega hali kelmadi?",
+            "ru": "Соревнование вот-вот начнётся, почему Сяоюнь ещё не пришла?",
+            "tj": "Мусобиқа ҳозир сар мешавад, чаро Сяоюн ҳоло наомад?"
+          }
+        },
+        {
+          "speaker": "学生",
+          "zh": "刚才给她打电话了，她在路上呢。",
+          "pinyin": "Gāngcái gěi tā dǎ diànhuà le, tā zài lùshang ne.",
+          "text": {
+            "uz": "Hozirgina unga qo'ng'iroq qildim, u yo'lda.",
+            "ru": "Я только что звонил ей, она в пути.",
+            "tj": "Ҳозир ба ӯ занг задам, дар роҳ аст."
+          }
+        },
+        {
+          "speaker": "老师",
+          "zh": "不等她了，我先给大家讲讲这次比赛的要求和一些需要注意的地方。",
+          "pinyin": "Bù děng tā le, wǒ xiān gěi dàjiā jiǎngjiang zhè cì bǐsài de yāoqiú hé yìxiē xūyào zhù yì de dìfang.",
+          "text": {
+            "uz": "Uni kutmaymiz, avval hammaga bu musobaqaning talablarini va e'tibor berish kerak bo'lgan joylarini tushuntirib beraman.",
+            "ru": "Не будем ждать её, сначала я расскажу всем требования этого соревнования и моменты, на которые нужно обратить внимание.",
+            "tj": "Ӯро интизор намешавем, аввал ба ҳама талабҳои ин мусобиқа ва ҷойҳои лозими диққатро мефаҳмонам."
+          }
+        },
+        {
+          "speaker": "学生",
+          "zh": "老师，您放心，今天的比赛我们一定能拿第一。",
+          "pinyin": "Lǎoshī, nín fàngxīn, jīntiān de bǐsài wǒmen yídìng néng ná dì yī.",
+          "text": {
+            "uz": "Ustoz, xavotir olmang, bugungi musobaqada albatta birinchi o'rinni olamiz.",
+            "ru": "Учитель, не волнуйтесь, сегодня мы обязательно займём первое место.",
+            "tj": "Устод, хотирҷамъ бошед, дар мусобиқаи имрӯз мо ҳатман ҷойи аввалро мегирем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Dam olish xonasida",
+        "ru": "В комнате отдыха",
+        "tj": "Дар утоқи истироҳат"
+      },
+      "dialogue": [
+        {
+          "speaker": "同事",
+          "zh": "现在用电脑上网真方便啊！",
+          "pinyin": "Xiànzài yòng diànnǎo shàng wǎng zhēn fāngbiàn a!",
+          "text": {
+            "uz": "Hozir kompyuterda internetga kirish juda qulay!",
+            "ru": "Сейчас пользоваться интернетом на компьютере очень удобно!",
+            "tj": "Ҳоло бо компютер ба интернет даромадан хеле қулай аст!"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "是啊，除了看新闻，人们还可以在网上听歌、看电影、买东西。",
+          "pinyin": "Shì a, chúle kàn xīnwén, rénmen hái kěyǐ zài wǎngshang tīng gē, kàn diànyǐng, mǎi dōngxi.",
+          "text": {
+            "uz": "Ha, yangilik ko'rishdan tashqari, odamlar internetda qo'shiq tinglash, film ko'rish va narsa sotib olishlari ham mumkin.",
+            "ru": "Да, кроме просмотра новостей, люди могут в интернете слушать песни, смотреть фильмы и покупать вещи.",
+            "tj": "Ҳа, ба ғайр аз дидани хабарҳо, одамон дар интернет суруд мешунаванд, кино мебинанд ва чиз мехаранд."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "对了，你从网上买的那件衣服呢？怎么没见你穿？",
+          "pinyin": "Duì le, nǐ cóng wǎngshang mǎi de nà jiàn yīfu ne? Zěnme méi jiàn nǐ chuān?",
+          "text": {
+            "uz": "Aytgancha, internetdan olgan o'sha kiyiming-chi? Nega kiyganingni ko'rmadim?",
+            "ru": "Кстати, где та одежда, которую ты купил в интернете? Почему я не видел, чтобы ты её носил?",
+            "tj": "Дар омади гап, он либосе, ки аз интернет харидӣ, куҷост? Чаро туро дар он надидам?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "那件衣服我穿着有点儿小，给我弟弟了。",
+          "pinyin": "Nà jiàn yīfu wǒ chuānzhe yǒudiǎnr xiǎo, gěi wǒ dìdi le.",
+          "text": {
+            "uz": "U kiyim menga biroz kichik bo'ldi, ukamga berdim.",
+            "ru": "Эта одежда на мне была немного мала, я отдал её младшему брату.",
+            "tj": "Он либос ба ман каме хурд буд, ба додарам додам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "他满意吗？",
+          "pinyin": "Tā mǎnyì ma?",
+          "text": {
+            "uz": "U rozi bo'ldimi?",
+            "ru": "Он доволен?",
+            "tj": "Ӯ қаноатманд аст?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "不用花钱，还有新衣服穿，他满意极了。",
+          "pinyin": "Búyòng huā qián, hái yǒu xīn yīfu chuān, tā mǎnyì jí le.",
+          "text": {
+            "uz": "Pul sarflamaydi, yangi kiyim ham kiyadi, u nihoyatda mamnun.",
+            "ru": "Не нужно тратить деньги, и есть новая одежда, он очень доволен.",
+            "tj": "Пул сарф намекунад, либоси нав ҳам мепӯшад, хеле қаноатманд аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pivo bayrami haqida matn",
+        "ru": "Текст о пивном фестивале",
+        "tj": "Матн дар бораи ҷашни пиво"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "除了春节、中秋节以外，啤酒节也是这里很重要的一个节日。这个地方每年夏天都要举行一次啤酒节。在啤酒节上，你可以喝到世界上不同地方的啤酒。除了喝啤酒，你还可以在街道两边看到世界上不同地方的歌舞，你想不想了解世界各个地方的啤酒文化？来这里的啤酒节看看吧。",
+          "pinyin": "Chúle Chūnjié, Zhōngqiū Jié yǐwài, píjiǔ jié yě shì zhèlǐ hěn zhòngyào de yí ge jiérì. Zhège dìfang měi nián xiàtiān dōu yào jǔxíng yí cì píjiǔ jié. Zài píjiǔ jié shang, nǐ kěyǐ hēdào shìjiè shang bùtóng dìfang de píjiǔ. Chúle hē píjiǔ, nǐ hái kěyǐ zài jiēdào liǎng biān kàndào shìjiè shang bùtóng dìfang de gēwǔ, nǐ xiǎng bu xiǎng liǎojiě shìjiè gè ge dìfang de píjiǔ wénhuà? Lái zhèlǐ de píjiǔ jié kànkan ba.",
+          "text": {
+            "uz": "Bahor bayrami va O'rta kuz bayramidan tashqari, pivo festivali ham bu yerda juda muhim bayram. Bu joyda har yili yozda bir marta pivo festivali o'tkaziladi. Pivo festivalida dunyoning turli joylaridagi pivolarni ichib ko'rishingiz mumkin. Pivo ichishdan tashqari, ko'chaning ikki tomonida dunyoning turli joylaridagi qo'shiq va raqslarni ham ko'rishingiz mumkin. Dunyoning turli joylaridagi pivo madaniyatini bilishni xohlaysizmi? Bu yerdagi pivo festivaliga kelib ko'ring.",
+            "ru": "Кроме Праздника весны и Праздника середины осени, пивной фестиваль здесь тоже очень важный праздник. В этом месте каждое лето проводят пивной фестиваль. На фестивале можно попробовать пиво из разных мест мира. Кроме пива, по обе стороны улицы можно увидеть песни и танцы разных стран. Хотите узнать пивную культуру разных мест мира? Приезжайте посмотреть местный пивной фестиваль.",
+            "tj": "Ба ғайр аз Иди баҳор ва Иди миёнаи тирамоҳ, ҷашни пиво ҳам дар ин ҷо иди хеле муҳим аст. Ин ҷо ҳар тобистон як бор ҷашни пиво баргузор мешавад. Дар ҷашни пиво метавонед пивои ҷойҳои гуногуни ҷаҳонро бинӯшед. Ба ғайр аз пиво нӯшидан, дар ду тарафи кӯча метавонед суруду рақси ҷойҳои гуногуни ҷаҳонро бинед. Мехоҳед фарҳанги пивои ҷойҳои гуногуни ҷаҳонро фаҳмед? Ба ҷашни пивои ин ҷо омада бинед."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "留学",
+            "pinyin": "liú xué",
+            "pos": "v.",
+            "meaning": {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "留学",
+          "pinyin": "liú xué",
+          "translation": {
+            "uz": "chet elda o'qimoq",
+            "ru": "учиться за границей",
+            "tj": "дар хориҷ таҳсил кардан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liú xué qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liú xué?",
+            "tj": "liú xué кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "练习",
+            "留学",
+            "水平",
+            "提高"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "留学 = chet elda o'qimoq (liú xué)",
+            "ru": "留学 = учиться за границей (liú xué)",
+            "tj": "留学 = дар хориҷ таҳсил кардан (liú xué)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "水平",
+            "pinyin": "shuǐpíng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "水平 talaffuzini tanlang:",
+            "ru": "Выберите произношение 水平:",
+            "tj": "Талаффузи 水平-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "liànxí",
+            "liú xué",
+            "tí gāo",
+            "shuǐpíng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "水平 — shuǐpíng",
+            "ru": "水平 — shuǐpíng",
+            "tj": "水平 — shuǐpíng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "提高",
+            "pinyin": "tí gāo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'oshirmoq, yaxshilamoq' xitoycha qaysi?",
+            "ru": "'повышать, улучшать' по-китайски?",
+            "tj": "'баланд кардан, беҳтар кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "练习",
+            "留学",
+            "水平",
+            "提高"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "oshirmoq, yaxshilamoq = 提高 (tí gāo)",
+            "ru": "повышать, улучшать = 提高 (tí gāo)",
+            "tj": "баланд кардан, беҳтар кардан = 提高 (tí gāo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "练习",
+            "pinyin": "liànxí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mashq",
+              "ru": "упражнение",
+              "tj": "машқ"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "练习",
+          "pinyin": "liànxí",
+          "options": [
+            "练习",
+            "留学",
+            "提高",
+            "水平"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "练习 — mashq (liànxí)",
+            "ru": "练习 — упражнение (liànxí)",
+            "tj": "练习 — машқ (liànxí)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "留学 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 留学:",
+            "tj": "Маънои калимаи 留学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            },
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            },
+            {
+              "uz": "mashq",
+              "ru": "упражнение",
+              "tj": "машқ"
+            },
+            {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "留学 = chet elda o'qimoq (liú xué)",
+            "ru": "留学 = учиться за границей (liú xué)",
+            "tj": "留学 = дар хориҷ таҳсил кардан (liú xué)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "留学",
+              {
+                "uz": "chet elda o'qimoq",
+                "ru": "учиться за границей",
+                "tj": "дар хориҷ таҳсил кардан"
+              }
+            ],
+            [
+              "水平",
+              {
+                "uz": "daraja, saviya",
+                "ru": "уровень, стандарт",
+                "tj": "сатҳ, дараҷа"
+              }
+            ],
+            [
+              "提高",
+              {
+                "uz": "oshirmoq, yaxshilamoq",
+                "ru": "повышать, улучшать",
+                "tj": "баланд кардан, беҳтар кардан"
+              }
+            ],
+            [
+              "练习",
+              {
+                "uz": "mashq",
+                "ru": "упражнение",
+                "tj": "машқ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "……dan tashqari, hammasi/ham/yana……",
+              "ru": "Кроме……, всё/тоже/ещё……",
+              "tj": "Ба ғайр аз……, ҳама/ҳам/боз……"
+            },
+            "title_zh": "除了……以外，都/还/也……",
+            "rule": {
+              "uz": "'除了A以外，都/还/也+B' tuzilmasi ikki ma'noda ishlatiladi: (1) A dan tashqari hamma narsa B (都) — istisno; (2) A dan tashqari B ham (还/也) — qo'shimcha. Farqni '都' va '还/也' orqali tushunish kerak.",
+              "ru": "Конструкция '除了A以外，都/还/也+B' имеет два значения: (1) Кроме A всё является B (都) — исключение; (2) Кроме A, B тоже (还/也) — добавление. Разницу нужно понять через '都' и '还/也'.",
+              "tj": "Сохти '除了A以外，都/还/也+B' ду маъно дорад: (1) Ба ғайр аз A ҳама B аст (都) — истисно; (2) Ба ғайр аз A, B ҳам (还/也) — илова. Фарқро бо ёрии '都' ва '还/也' фаҳмидан лозим аст."
+            },
+            "examples": [
+              {
+                "zh": "除了血压以外，其他都没问题。",
+                "pinyin": "Chúle xuèyā yǐwài, qítā dōu méi wèntí.",
+                "translation": {
+                  "uz": "Qon bosimdan tashqari, boshqa hamma narsa muammosiz.",
+                  "ru": "Кроме давления, всё остальное без проблем.",
+                  "tj": "Ба ғайр аз фишори хун, ҳама чизи дигар мушкиле нест."
+                }
+              },
+              {
+                "zh": "除了汉语，她还会说日语。",
+                "pinyin": "Chúle Hànyǔ, tā hái huì shuō Rìyǔ.",
+                "translation": {
+                  "uz": "Xitoy tilidan tashqari, u yapon tilini ham biladi.",
+                  "ru": "Кроме китайского, она ещё умеет говорить по-японски.",
+                  "tj": "Ба ғайр аз чинӣ, вай ҳам ба ҷопонӣ ҳарф мезанад."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "水平",
+          "pinyin": "shuǐpíng",
+          "options": [
+            "留学",
+            "练习",
+            "水平",
+            "提高"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "水平 — daraja, saviya (shuǐpíng)",
+            "ru": "水平 — уровень, стандарт (shuǐpíng)",
+            "tj": "水平 — сатҳ, дараҷа (shuǐpíng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "中介 talaffuzini tanlang:",
+            "ru": "Выберите произношение 中介:",
+            "tj": "Талаффузи 中介-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhōngjiè",
+            "tí gāo",
+            "liú xué",
+            "shuǐpíng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "中介 — zhōngjiè",
+            "ru": "中介 — zhōngjiè",
+            "tj": "中介 — zhōngjiè"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+          "pinyin": "Lǎoshī, wǒ lái Zhōngguó liú xué liǎng nián le, dànshì wǒ de Hànyǔ shuǐpíng tí gāo de yìdiǎnr yě bù kuài a.",
+          "options": [
+            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+            "你每天认真学习，做练习、完成作业，一直不错啊。",
+            "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
+            "这是我昨天的作业，您帮我看看对不对？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 — Ustoz, Xitoyga o'qishga kelganimga ikki yil bo'ldi, lekin xitoy tili darajam deyarli tez oshmayapti.",
+            "ru": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 — Учитель, я приехал в Китай учиться уже два года назад, но мой уровень китайского совсем не быстро растёт.",
+            "tj": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 — Устод, ду сол шуд, ки ба Чин барои таҳсил омадам, аммо сатҳи забони чиниям тамоман зуд баланд намешавад."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "留学",
+          "pinyin": "liú xué",
+          "translation": {
+            "uz": "chet elda o'qimoq",
+            "ru": "учиться за границей",
+            "tj": "дар хориҷ таҳсил кардан"
+          }
+        }
+      ]
+    }
+  ]
+}

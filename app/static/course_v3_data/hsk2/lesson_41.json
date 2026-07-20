@@ -1,0 +1,783 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 41,
+  "source_lesson": 9,
+  "part_no": 1,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "题太多，我没做完",
+  "subtitle": {
+    "uz": "Natija fe'llari, 'cóng' old ko'makchisi va 'dì' tartib ko'rsatkichi yordamida gaplar tuzishni o'rganish.",
+    "ru": "Научиться строить предложения с результативными глаголами, предлогом 'cóng' и порядковым показателем 'dì'.",
+    "tj": "Омӯзиши тартиб додани ҷумлаҳо бо феълҳои натиҷавӣ, пешоянди 'cóng' ва нишондиҳандаи тартиби 'dì'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "错",
+      "pinyin": "cuò",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xato, noto'g'ri",
+        "ru": "неправильный, ошибочный",
+        "tj": "хато, нодуруст"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "从",
+      "pinyin": "cóng",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "dan, boshlab (joy yoki vaqt)",
+        "ru": "от, с, начиная с (место или время)",
+        "tj": "аз, аз ибтидои (ҷой ё вақт)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "跳舞",
+      "pinyin": "tiàowǔ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "raqs tushmoq",
+        "ru": "танцевать",
+        "tj": "рақс кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "第一",
+      "pinyin": "dìyī",
+      "pos": "num.",
+      "meaning": {
+        "uz": "birinchi",
+        "ru": "первый",
+        "tj": "аввалин, якум"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Tartib ko'rsatkichi 第 (birinchi, ikkinchi...)",
+        "ru": "Порядковый показатель 第 (первый, второй...)",
+        "tj": "Нишондиҳандаи тартиби 第 (аввалин, дуввум...)"
+      },
+      "title_zh": "\"第\"表示顺序",
+      "rule": {
+        "uz": "'第' prefiksi raqamlardan oldin qo'yilib tartib sonlarini hosil qiladi:\n第一 (birinchi), 第二 (ikkinchi) va h.k.\nBu inglizcha '-th' qo'shimchasiga o'xshaydi.\nOdiy sanoq sonlardan farqli ravishda narsa-predmetning tartibini bildiradi.",
+        "ru": "Префикс '第' перед числами образует порядковые числительные:\n第一 (первый), 第二 (второй) и т.д.\nАналог английского суффикса '-th'.\nВ отличие от количественных числительных, обозначает порядок предметов.",
+        "tj": "Пешванди '第' пеш аз ададҳо ададҳои тартибиро месозад:\n第一 (якум/аввалин), 第二 (дуввум) ва ғ.\nБа суффикси '-um' дар тоҷикӣ монанд аст.\nДар фарқ аз ададҳои шуморавӣ, тартиби ашёро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "这是他的第一个工作。",
+          "pinyin": "Zhè shì tā de dì yī ge gōngzuò.",
+          "translation": {
+            "uz": "Bu uning birinchi ishi.",
+            "ru": "Это его первая работа.",
+            "tj": "Ин кори аввалинаш аст."
+          }
+        },
+        {
+          "zh": "我第一次跳舞是在七岁的时候。",
+          "pinyin": "Wǒ dì yī cì tiàowǔ shì zài qī suì de shíhou.",
+          "translation": {
+            "uz": "Men birinchi marta etti yoshimda raqs tushganman.",
+            "ru": "Я впервые танцевал в семь лет.",
+            "tj": "Ман бори аввал дар ҳафт солагӣ рақс кардам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Telefon qo'ng'iroqi",
+        "ru": "Телефонный разговор",
+        "tj": "Занги телефон"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你好！请问张欢在吗？",
+          "pinyin": "Nǐ hǎo! Qǐngwèn Zhāng Huān zài ma?",
+          "text": {
+            "uz": "Salom! Iltimos, Chjan Xuan bormi?",
+            "ru": "Здравствуйте! Скажите, Чжан Хуань здесь?",
+            "tj": "Салом! Лутфан, Чжан Хуан ҳаст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你打错了，我们这儿没有叫张欢的。",
+          "pinyin": "Nǐ dǎ cuò le, wǒmen zhèr méiyǒu jiào Zhāng Huān de.",
+          "text": {
+            "uz": "Siz xato raqamga terdingiz, bizda Chjan Xuan ismli odam yo'q.",
+            "ru": "Вы набрали неправильный номер, у нас нет человека по имени Чжан Хуань.",
+            "tj": "Шумо рақами хато зададед, дар ин ҷо Чжан Хуан нест."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "对不起。",
+          "pinyin": "Duìbuqǐ.",
+          "text": {
+            "uz": "Kechirasiz.",
+            "ru": "Извините.",
+            "tj": "Бубахшед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "您从几岁开始学跳舞？",
+          "pinyin": "Nín cóng jǐ suì kāishǐ xué tiàowǔ?",
+          "text": {
+            "uz": "Siz necha yoshdan raqs o'rganishni boshladingiz?",
+            "ru": "С какого возраста вы начали учиться танцевать?",
+            "tj": "Шумо аз чанд солагӣ рақс омӯхтанро оғоз кардед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我第一次跳舞是在七岁的时候。",
+          "pinyin": "Wǒ dì yī cì tiàowǔ shì zài qī suì de shíhou.",
+          "text": {
+            "uz": "Men birinchi marta etti yoshimda raqs tushganman.",
+            "ru": "Я впервые станцевал в семь лет.",
+            "tj": "Ман бори аввал дар ҳафт солагӣ рақс кардам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我女儿今年七岁了。我希望她能跟您学跳舞，可以吗？",
+          "pinyin": "Wǒ nǚ'ér jīnnián qī suì le. Wǒ xīwàng tā néng gēn nín xué tiàowǔ, kěyǐ ma?",
+          "text": {
+            "uz": "Mening qizim bu yil etti yoshga kirdi. Umid qilamanki u sizdan raqs o'rgansa bo'ladimi?",
+            "ru": "Моей дочери в этом году исполнилось семь лет. Я надеюсь, она сможет учиться танцевать у вас, можно?",
+            "tj": "Духтарам имсол ҳафт сола шуд. Умедворам, ки вай метавонад назди шумо рақс ёд гирад, мумкин?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "没问题，非常欢迎。",
+          "pinyin": "Méi wèntí, fēicháng huānyíng.",
+          "text": {
+            "uz": "Muammo yo'q, juda xush kelibsiz.",
+            "ru": "Нет проблем, очень рады.",
+            "tj": "Мушкил нест, хуш омадед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你知道吗？大卫找到工作了。",
+          "pinyin": "Nǐ zhīdào ma? Dàwèi zhǎodào gōngzuò le.",
+          "text": {
+            "uz": "Bilasizmi? Devid ish topdi.",
+            "ru": "Знаешь? Дэвид нашёл работу.",
+            "tj": "Медонӣ? Дэвид кор ёфт."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "太好了！他从什么时候开始上班？",
+          "pinyin": "Tài hǎo le! Tā cóng shénme shíhou kāishǐ shàngbān?",
+          "text": {
+            "uz": "Juda yaxshi! U qachondan boshlab ishga chiqadi?",
+            "ru": "Отлично! С какого времени он начнёт работать?",
+            "tj": "Аъло! Вай аз кай кор мекунад?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "从下个星期一开始。",
+          "pinyin": "Cóng xià ge xīngqīyī kāishǐ.",
+          "text": {
+            "uz": "Kelasi dushanba kundan boshlab.",
+            "ru": "С ближайшего понедельника.",
+            "tj": "Аз душанбаи оянда."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这是他的第一个工作，希望他能喜欢。",
+          "pinyin": "Zhè shì tā de dì yī ge gōngzuò, xīwàng tā néng xǐhuan.",
+          "text": {
+            "uz": "Bu uning birinchi ishi, umid qilamanki yoqadi.",
+            "ru": "Это его первая работа, надеюсь, ему понравится.",
+            "tj": "Ин кори аввалинаш аст, умедворам, ки писандаш ояд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天的考试怎么样？你都听懂了吗？",
+          "pinyin": "Zuótiān de kǎoshì zěnmeyàng? Nǐ dōu tīngdǒng le ma?",
+          "text": {
+            "uz": "Kechagi imtihon qanday o'tdi? Hamma narsani eshitib tushundingizmi?",
+            "ru": "Как вчерашний экзамен? Ты всё понял на слух?",
+            "tj": "Имтиҳони дирӯз чӣ тавр гузашт? Оё ту ҳама чизро шунида фаҳмидӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "听懂了。",
+          "pinyin": "Tīngdǒng le.",
+          "text": {
+            "uz": "Eshitib tushundim.",
+            "ru": "Всё понял на слух.",
+            "tj": "Шунида фаҳмидам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你都做完了没有？",
+          "pinyin": "Nǐ dōu zuòwán le méiyǒu?",
+          "text": {
+            "uz": "Hammasini bajardingizmi?",
+            "ru": "Ты всё выполнил?",
+            "tj": "Оё ту ҳамаро иҷро кардӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "题太多，我没做完。",
+          "pinyin": "Tí tài duō, wǒ méi zuòwán.",
+          "text": {
+            "uz": "Savollar juda ko'p edi, men tamomlab ulgurmadim.",
+            "ru": "Заданий было слишком много, я не успел сделать всё.",
+            "tj": "Саволҳо бисёр буданд, ман нарасидам тамом кунам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "错",
+            "pinyin": "cuò",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "xato, noto'g'ri",
+              "ru": "неправильный, ошибочный",
+              "tj": "хато, нодуруст"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "错",
+          "pinyin": "cuò",
+          "translation": {
+            "uz": "xato, noto'g'ri",
+            "ru": "неправильный, ошибочный",
+            "tj": "хато, нодуруст"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "错 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 错:",
+            "tj": "Маънои калимаи 错-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dan, boshlab (joy yoki vaqt)",
+              "ru": "от, с, начиная с (место или время)",
+              "tj": "аз, аз ибтидои (ҷой ё вақт)"
+            },
+            {
+              "uz": "xato, noto'g'ri",
+              "ru": "неправильный, ошибочный",
+              "tj": "хато, нодуруст"
+            },
+            {
+              "uz": "raqs tushmoq",
+              "ru": "танцевать",
+              "tj": "рақс кардан"
+            },
+            {
+              "uz": "birinchi",
+              "ru": "первый",
+              "tj": "аввалин, якум"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "错 = xato, noto'g'ri (cuò)",
+            "ru": "错 = неправильный, ошибочный (cuò)",
+            "tj": "错 = хато, нодуруст (cuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "从",
+            "pinyin": "cóng",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "dan, boshlab (joy yoki vaqt)",
+              "ru": "от, с, начиная с (место или время)",
+              "tj": "аз, аз ибтидои (ҷой ё вақт)"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "cóng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается cóng?",
+            "tj": "cóng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "第一",
+            "从",
+            "跳舞",
+            "错"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "从 = dan, boshlab (joy yoki vaqt) (cóng)",
+            "ru": "从 = от, с, начиная с (место или время) (cóng)",
+            "tj": "从 = аз, аз ибтидои (ҷой ё вақт) (cóng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "跳舞",
+            "pinyin": "tiàowǔ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "raqs tushmoq",
+              "ru": "танцевать",
+              "tj": "рақс кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "跳舞 talaffuzini tanlang:",
+            "ru": "Выберите произношение 跳舞:",
+            "tj": "Талаффузи 跳舞-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tiàowǔ",
+            "cuò",
+            "dìyī",
+            "cóng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "跳舞 — tiàowǔ",
+            "ru": "跳舞 — tiàowǔ",
+            "tj": "跳舞 — tiàowǔ"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "第一",
+            "pinyin": "dìyī",
+            "pos": "num.",
+            "meaning": {
+              "uz": "birinchi",
+              "ru": "первый",
+              "tj": "аввалин, якум"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'birinchi' xitoycha qaysi?",
+            "ru": "'первый' по-китайски?",
+            "tj": "'аввалин, якум' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "错",
+            "第一",
+            "从",
+            "跳舞"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "birinchi = 第一 (dìyī)",
+            "ru": "первый = 第一 (dìyī)",
+            "tj": "аввалин, якум = 第一 (dìyī)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "错",
+          "pinyin": "cuò",
+          "options": [
+            "错",
+            "从",
+            "第一",
+            "跳舞"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "错 — xato, noto'g'ri (cuò)",
+            "ru": "错 — неправильный, ошибочный (cuò)",
+            "tj": "错 — хато, нодуруст (cuò)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "错",
+              {
+                "uz": "xato, noto'g'ri",
+                "ru": "неправильный, ошибочный",
+                "tj": "хато, нодуруст"
+              }
+            ],
+            [
+              "从",
+              {
+                "uz": "dan, boshlab (joy yoki vaqt)",
+                "ru": "от, с, начиная с (место или время)",
+                "tj": "аз, аз ибтидои (ҷой ё вақт)"
+              }
+            ],
+            [
+              "跳舞",
+              {
+                "uz": "raqs tushmoq",
+                "ru": "танцевать",
+                "tj": "рақс кардан"
+              }
+            ],
+            [
+              "第一",
+              {
+                "uz": "birinchi",
+                "ru": "первый",
+                "tj": "аввалин, якум"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Tartib ko'rsatkichi 第 (birinchi, ikkinchi...)",
+              "ru": "Порядковый показатель 第 (первый, второй...)",
+              "tj": "Нишондиҳандаи тартиби 第 (аввалин, дуввум...)"
+            },
+            "title_zh": "\"第\"表示顺序",
+            "rule": {
+              "uz": "'第' prefiksi raqamlardan oldin qo'yilib tartib sonlarini hosil qiladi:\n第一 (birinchi), 第二 (ikkinchi) va h.k.\nBu inglizcha '-th' qo'shimchasiga o'xshaydi.\nOdiy sanoq sonlardan farqli ravishda narsa-predmetning tartibini bildiradi.",
+              "ru": "Префикс '第' перед числами образует порядковые числительные:\n第一 (первый), 第二 (второй) и т.д.\nАналог английского суффикса '-th'.\nВ отличие от количественных числительных, обозначает порядок предметов.",
+              "tj": "Пешванди '第' пеш аз ададҳо ададҳои тартибиро месозад:\n第一 (якум/аввалин), 第二 (дуввум) ва ғ.\nБа суффикси '-um' дар тоҷикӣ монанд аст.\nДар фарқ аз ададҳои шуморавӣ, тартиби ашёро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "这是他的第一个工作。",
+                "pinyin": "Zhè shì tā de dì yī ge gōngzuò.",
+                "translation": {
+                  "uz": "Bu uning birinchi ishi.",
+                  "ru": "Это его первая работа.",
+                  "tj": "Ин кори аввалинаш аст."
+                }
+              },
+              {
+                "zh": "我第一次跳舞是在七岁的时候。",
+                "pinyin": "Wǒ dì yī cì tiàowǔ shì zài qī suì de shíhou.",
+                "translation": {
+                  "uz": "Men birinchi marta etti yoshimda raqs tushganman.",
+                  "ru": "Я впервые танцевал в семь лет.",
+                  "tj": "Ман бори аввал дар ҳафт солагӣ рақс кардам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu uning birinchi ishi.",
+            "ru": "Это его первая работа.",
+            "tj": "Ин кори аввалинаш аст."
+          },
+          "tokens": [
+            "错",
+            "从",
+            "工作",
+            "个",
+            "这",
+            "第一",
+            "的",
+            "是",
+            "他"
+          ],
+          "answer_tokens": [
+            "这",
+            "是",
+            "他",
+            "的",
+            "第一",
+            "个",
+            "工作"
+          ],
+          "explanation": {
+            "uz": "这是他的第一个工作。 — Zhè shì tā de dì yī ge gōngzuò.",
+            "ru": "这是他的第一个工作。 — Zhè shì tā de dì yī ge gōngzuò.",
+            "tj": "这是他的第一个工作。 — Zhè shì tā de dì yī ge gōngzuò."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "错",
+          "pinyin": "cuò",
+          "options": [
+            "从",
+            "第一",
+            "跳舞",
+            "错"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "错 — xato, noto'g'ri (cuò)",
+            "ru": "错 — неправильный, ошибочный (cuò)",
+            "tj": "错 — хато, нодуруст (cuò)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu uning birinchi ishi.",
+            "ru": "Это его первая работа.",
+            "tj": "Ин кори аввалинаш аст."
+          },
+          "tokens": [
+            "的",
+            "是",
+            "这",
+            "从",
+            "个",
+            "错",
+            "工作",
+            "第一",
+            "他"
+          ],
+          "answer_tokens": [
+            "这",
+            "是",
+            "他",
+            "的",
+            "第一",
+            "个",
+            "工作"
+          ],
+          "explanation": {
+            "uz": "这是他的第一个工作。 — Zhè shì tā de dì yī ge gōngzuò.",
+            "ru": "这是他的第一个工作。 — Zhè shì tā de dì yī ge gōngzuò.",
+            "tj": "这是他的第一个工作。 — Zhè shì tā de dì yī ge gōngzuò."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "这是他的第一个工作。",
+          "pinyin": "Zhè shì tā de dì yī ge gōngzuò.",
+          "translation": {
+            "uz": "Bu uning birinchi ishi.",
+            "ru": "Это его первая работа.",
+            "tj": "Ин кори аввалинаш аст."
+          },
+          "tokens": {
+            "uz": [
+              "ishi",
+              "Bu",
+              "uning",
+              "birinchi"
+            ],
+            "ru": [
+              "Это",
+              "работа",
+              "его",
+              "первая"
+            ],
+            "tj": [
+              "аст",
+              "аввалинаш",
+              "кори",
+              "Ин"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bu",
+              "uning",
+              "birinchi",
+              "ishi"
+            ],
+            "ru": [
+              "Это",
+              "его",
+              "первая",
+              "работа"
+            ],
+            "tj": [
+              "Ин",
+              "кори",
+              "аввалинаш",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "这是他的第一个工作。 — Bu uning birinchi ishi.",
+            "ru": "这是他的第一个工作。 — Это его первая работа.",
+            "tj": "这是他的第一个工作。 — Ин кори аввалинаш аст."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "准备 talaffuzini tanlang:",
+            "ru": "Выберите произношение 准备:",
+            "tj": "Талаффузи 准备-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "cuò",
+            "zhǔnbèi",
+            "tiàowǔ",
+            "cóng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "准备 — zhǔnbèi",
+            "ru": "准备 — zhǔnbèi",
+            "tj": "准备 — zhǔnbèi"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "错",
+          "pinyin": "cuò",
+          "translation": {
+            "uz": "xato, noto'g'ri",
+            "ru": "неправильный, ошибочный",
+            "tj": "хато, нодуруст"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,6 +2,10 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 1,
+  "source_lesson": 1,
+  "part_no": 1,
+  "part_count": 6,
+  "checkpoint": false,
   "title": "周末你有什么打算",
   "subtitle": {
     "uz": "Dam olish kunlari rejalari haqida gaplashish; 结果补语'好', '一……也/都+不/没……' va 那 bog'lovchisini o'zlashtirish.",
@@ -54,255 +58,9 @@
         "ru": "с, вместе с",
         "tj": "бо"
       }
-    },
-    {
-      "no": 5,
-      "zh": "一直",
-      "pinyin": "yìzhí",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "doimo, tinmay, davomli",
-        "ru": "всё время, постоянно",
-        "tj": "ҳамеша, пайваста"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "游戏",
-      "pinyin": "yóuxì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "o'yin",
-        "ru": "игра",
-        "tj": "бозӣ"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "作业",
-      "pinyin": "zuòyè",
-      "pos": "n.",
-      "meaning": {
-        "uz": "uy vazifasi",
-        "ru": "домашнее задание",
-        "tj": "вазифаи хонагӣ"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "着急",
-      "pinyin": "zháojí",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "xavotirli, shoshilgan, tashvishlangan",
-        "ru": "волноваться, беспокоиться",
-        "tj": "ташвиш кашидан, нигарон шудан"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "复习",
-      "pinyin": "fùxí",
-      "pos": "v.",
-      "meaning": {
-        "uz": "takrorlamoq, qayta o'qimoq",
-        "ru": "повторять, готовиться",
-        "tj": "такрор кардан, аз нав хондан"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "南方",
-      "pinyin": "nánfāng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "janub, janubiy tomon",
-        "ru": "юг, южная сторона",
-        "tj": "ҷануб, тарафи ҷанубӣ"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "北方",
-      "pinyin": "běifāng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "shimol, shimoliy tomon",
-        "ru": "север, северная сторона",
-        "tj": "шимол, тарафи шимолӣ"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "面包",
-      "pinyin": "miànbāo",
-      "pos": "n.",
-      "meaning": {
-        "uz": "non, bulka",
-        "ru": "хлеб, булка",
-        "tj": "нон, булка"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "带",
-      "pinyin": "dài",
-      "pos": "v.",
-      "meaning": {
-        "uz": "olib ketmoq, olib yurmoq",
-        "ru": "брать с собой, нести",
-        "tj": "бо худ гирифтан, бурдан"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "地图",
-      "pinyin": "dìtú",
-      "pos": "n.",
-      "meaning": {
-        "uz": "xarita",
-        "ru": "карта",
-        "tj": "харита"
-      }
-    },
-    {
-      "no": 15,
-      "zh": "搬",
-      "pinyin": "bān",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ko'chirmoq, tashimoq",
-        "ru": "переносить, перевозить",
-        "tj": "кӯчондан, кашондан"
-      }
-    },
-    {
-      "no": 16,
-      "zh": "小丽",
-      "pinyin": "Xiǎolì",
-      "pos": "proper noun",
-      "meaning": {
-        "uz": "Xiaoli (ism)",
-        "ru": "Сяоли (имя)",
-        "tj": "Сяоли (ном)"
-      }
-    },
-    {
-      "no": 17,
-      "zh": "小刚",
-      "pinyin": "Xiǎogāng",
-      "pos": "proper noun",
-      "meaning": {
-        "uz": "Xiaogang (ism)",
-        "ru": "Сяоган (имя)",
-        "tj": "Сяоган (ном)"
-      }
     }
   ],
-  "grammar": [
-    {
-      "no": 1,
-      "title": {
-        "uz": "Natija to'ldiruvchisi '好'",
-        "ru": "Результативное дополнение «好»",
-        "tj": "Иловаи натиҷавии «好»"
-      },
-      "title_zh": "结果补语\"好\"",
-      "rule": {
-        "uz": "Fe'ldan keyin '好' keltirib, harakat muvaffaqiyatli yoki to'liq bajarilganligini bildiradi.\nQolip: Fe'l + 好 + 了\nMasalan: 做好了 (bajardi/tamom qildi), 准备好了 (tayyorladi), 写好了 (yozib bo'ldi).\nInkor shakli: 没+做好 (bajarmadi/tugallamadi).",
-        "ru": "Частица '好' после глагола означает, что действие выполнено успешно или полностью.\nСтруктура: Глагол + 好 + 了\nНапример: 做好了 (сделал/закончил), 准备好了 (приготовил), 写好了 (написал).\nОтрицание: 没+做好 (не сделал/не завершил).",
-        "tj": "Зарраи '好' пас аз феъл нишон медиҳад, ки амал бомуваффақият ё пурра иҷро шудааст.\nСохт: Феъл + 好 + 了\nМасалан: 做好了 (иҷро кард), 准备好了 (тайёр кард), 写好了 (навишт).\nИнкор: 没+做好 (иҷро накард/тамом накард)."
-      },
-      "examples": [
-        {
-          "zh": "作业都做好了！",
-          "pinyin": "Zuòyè dōu zuò hǎo le!",
-          "translation": {
-            "uz": "Barcha uy vazifalari bajarildi!",
-            "ru": "Все домашние задания сделаны!",
-            "tj": "Ҳамаи вазифаҳои хонагӣ иҷро шуд!"
-          }
-        },
-        {
-          "zh": "我已经准备好了，可以出发了。",
-          "pinyin": "Wǒ yǐjīng zhǔnbèi hǎo le, kěyǐ chūfā le.",
-          "translation": {
-            "uz": "Men allaqachon tayyorlandim, jo'nashim mumkin.",
-            "ru": "Я уже готов, можно выезжать.",
-            "tj": "Ман аллакай омода шудам, метавонем ҳаракат кунем."
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "'一……也/都+不/没……' — kuchli inkor",
-        "ru": "Конструкция '一……也/都+不/没……' — усиленное отрицание",
-        "tj": "Сохти '一……也/都+不/没……' — инкори қавӣ"
-      },
-      "title_zh": "\"一……也/都+不/没……\"表示否定",
-      "rule": {
-        "uz": "Bu qolip 'hech bir...ham yo'q/emas' ma'nosini beradi — mutlaq inkorni ifodalaydi.\nQolip: 一 + miqdor+ot + 也/都 + 不/没 + fe'l\nMasalan: 一个人也没来 (bitta kishi ham kelmadi)\n         一点儿都不想去 (zarra ham bormoqchi emasman)\n         一个电话也没打 (bitta qo'ng'iroq ham qilmadi)",
-        "ru": "Конструкция выражает абсолютное отрицание: 'ни одного...даже нет'.\nСтруктура: 一 + числит.+сущ. + 也/都 + 不/没 + глагол\nНапример: 一个人也没来 (никто не пришёл)\n          一点儿都不想去 (совсем не хочу идти)\n          一个电话也没打 (не позвонил ни разу)",
-        "tj": "Ин сохт инкори мутлақро ифода мекунад: 'ҳатто як...ҳам нест'.\nСохт: 一 + шумор+исм + 也/都 + 不/没 + феъл\nМасалан: 一个人也没来 (ҳатто як нафар ҳам наомад)\n         一点儿都不想去 (каме ҳам рафтан намехоҳам)\n         一个电话也没打 (ҳатто як занг ҳам назад)"
-      },
-      "examples": [
-        {
-          "zh": "他一个电话也没打，我很着急。",
-          "pinyin": "Tā yī ge diànhuà yě méi dǎ, wǒ hěn zháojí.",
-          "translation": {
-            "uz": "U bitta ham qo'ng'iroq qilmadi, men juda tashvishlandim.",
-            "ru": "Он ни разу не позвонил, я очень переживал.",
-            "tj": "Вай ҳатто як занг ҳам назад, ман хеле нигарон шудам."
-          }
-        },
-        {
-          "zh": "那天我一点儿都不想出去。",
-          "pinyin": "Nà tiān wǒ yīdiǎnr dōu bù xiǎng chūqù.",
-          "translation": {
-            "uz": "O'sha kuni zarra ham tashqariga chiqmoqchi emas edim.",
-            "ru": "В тот день я совсем не хотел выходить.",
-            "tj": "Он рӯз ман каме ҳам берун рафтан намехостам."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "Bog'lovchi '那' (unday bo'lsa, unda)",
-        "ru": "Союз «那» (тогда, в таком случае)",
-        "tj": "Пайвандаки «那» (пас, дар он сурат)"
-      },
-      "title_zh": "连词\"那\"",
-      "rule": {
-        "uz": "'那' bog'lovchisi oldingi gapdan kelib chiquvchi xulosani yoki qarorni kiritadi.\nMa'nosi: 'unday bo'lsa, unda, bo'lmasa'\nKo'pincha 那 + gap shaklida keladi, gapning boshida turadi.\nMasalan: 那我们明天去吧。(Unday bo'lsa ertaga boraylik.)\n         那你去吧。(Unda sen bor.)",
-        "ru": "Союз '那' вводит вывод или решение, вытекающее из предыдущей реплики.\nЗначение: 'тогда, в таком случае'\nОбычно стоит в начале предложения: 那 + предложение.\nНапример: 那我们明天去吧。(Тогда пойдём завтра.)\n          那你去吧。(Тогда ты иди.)",
-        "tj": "Пайвандаки '那' хулоса ё қарореро, ки аз гапи қаблӣ бармеояд, ворид мекунад.\nМаъно: 'пас, дар он сурат'\nОдатан дар аввали ҷумла меояд: 那 + ҷумла.\nМасалан: 那我们明天去吧。(Пас фардо равем.)\n         那你去吧。(Пас ту рав.)"
-      },
-      "examples": [
-        {
-          "zh": "那你星期六有没有时间？我们一起去公园吧。",
-          "pinyin": "Nà nǐ xīngqīliù yǒu méiyǒu shíjiān? Wǒmen yīqǐ qù gōngyuán ba.",
-          "translation": {
-            "uz": "Unday bo'lsa shanba kuni vaqting bormi? Birgalikda parka boraylik.",
-            "ru": "Тогда есть ли у тебя время в субботу? Пойдём вместе в парк.",
-            "tj": "Пас шанбе вақт дорӣ? Биёед якҷоя ба боғ равем."
-          }
-        },
-        {
-          "zh": "好，那你去吧。记得早点儿回来。",
-          "pinyin": "Hǎo, nà nǐ qù ba. Jìde zǎo diǎnr huílai.",
-          "translation": {
-            "uz": "Xo'p, unda bor. Erta qaytishni yodda tut.",
-            "ru": "Хорошо, тогда иди. Помни — вернись пораньше.",
-            "tj": "Хуб, пас рав. Фаромӯш накун ки барвақт баргардӣ."
-          }
-        }
-      ]
-    }
-  ],
+  "grammar": [],
   "dialogues": [
     {
       "scene": {
@@ -566,6 +324,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "周末 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 周末:",
+            "tj": "Маънои калимаи 周末-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bilan",
+              "ru": "с, вместе с",
+              "tj": "бо"
+            },
+            {
+              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
+              "ru": "частица в конце предложения для подтверждения или пояснения",
+              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
+            },
+            {
+              "uz": "reja; rejalamoq, niyat qilmoq",
+              "ru": "план; планировать, намереваться",
+              "tj": "нақша; нақша кардан"
+            },
+            {
+              "uz": "hafta oxiri, dam olish kuni",
+              "ru": "выходные, конец недели",
+              "tj": "охири ҳафта, рӯзи истироҳат"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "周末 = hafta oxiri, dam olish kuni (zhōumò)",
+            "ru": "周末 = выходные, конец недели (zhōumò)",
+            "tj": "周末 = охири ҳафта, рӯзи истироҳат (zhōumò)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 2,
@@ -580,40 +379,24 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "打算 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 打算:",
-            "tj": "Маънои калимаи 打算-ро интихоб кунед:"
+            "uz": "dǎsuàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dǎsuàn?",
+            "tj": "dǎsuàn кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            {
-              "uz": "reja; rejalamoq, niyat qilmoq",
-              "ru": "план; планировать, намереваться",
-              "tj": "нақша; нақша кардан"
-            },
-            {
-              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
-              "ru": "частица в конце предложения для подтверждения или пояснения",
-              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
-            },
-            {
-              "uz": "bilan",
-              "ru": "с, вместе с",
-              "tj": "бо"
-            },
-            {
-              "uz": "hafta oxiri, dam olish kuni",
-              "ru": "выходные, конец недели",
-              "tj": "охири ҳафта, рӯзи истироҳат"
-            }
+            "周末",
+            "跟",
+            "啊",
+            "打算"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "打算 = reja; rejalamoq, niyat qilmoq (dǎsuàn)",
             "ru": "打算 = план; планировать, намереваться (dǎsuàn)",
@@ -635,6 +418,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "啊 talaffuzini tanlang:",
+            "ru": "Выберите произношение 啊:",
+            "tj": "Талаффузи 啊-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gēn",
+            "dǎsuàn",
+            "zhōumò",
+            "a"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "啊 — a",
+            "ru": "啊 — a",
+            "tj": "啊 — a"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 4,
@@ -649,117 +457,11 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "gēn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается gēn?",
-            "tj": "gēn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "啊",
-            "周末",
-            "跟",
-            "打算"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "跟 = bilan (gēn)",
-            "ru": "跟 = с, вместе с (gēn)",
-            "tj": "跟 = бо (gēn)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 5,
-            "zh": "一直",
-            "pinyin": "yìzhí",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "doimo, tinmay, davomli",
-              "ru": "всё время, постоянно",
-              "tj": "ҳамеша, пайваста"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "游戏",
-            "pinyin": "yóuxì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "o'yin",
-              "ru": "игра",
-              "tj": "бозӣ"
-            }
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "游戏 talaffuzini tanlang:",
-            "ru": "Выберите произношение 游戏:",
-            "tj": "Талаффузи 游戏-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "yóuxì",
-            "dǎsuàn",
-            "a",
-            "zhōumò"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "游戏 — yóuxì",
-            "ru": "游戏 — yóuxì",
-            "tj": "游戏 — yóuxì"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 7,
-            "zh": "作业",
-            "pinyin": "zuòyè",
-            "pos": "n.",
-            "meaning": {
-              "uz": "uy vazifasi",
-              "ru": "домашнее задание",
-              "tj": "вазифаи хонагӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "着急",
-            "pinyin": "zháojí",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "xavotirli, shoshilgan, tashvishlangan",
-              "ru": "волноваться, беспокоиться",
-              "tj": "ташвиш кашидан, нигарон шудан"
-            }
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'xavotirli, shoshilgan, tashvishlangan' xitoycha qaysi?",
-            "ru": "'волноваться, беспокоиться' по-китайски?",
-            "tj": "'ташвиш кашидан, нигарон шудан' ба хитоӣ кадом аст?"
+            "uz": "'bilan' xitoycha qaysi?",
+            "ru": "'с, вместе с' по-китайски?",
+            "tj": "'бо' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -767,44 +469,16 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "着急",
-            "周末",
             "打算",
-            "啊"
+            "啊",
+            "周末",
+            "跟"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "xavotirli, shoshilgan, tashvishlangan = 着急 (zháojí)",
-            "ru": "волноваться, беспокоиться = 着急 (zháojí)",
-            "tj": "ташвиш кашидан, нигарон шудан = 着急 (zháojí)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "复习",
-            "pinyin": "fùxí",
-            "pos": "v.",
-            "meaning": {
-              "uz": "takrorlamoq, qayta o'qimoq",
-              "ru": "повторять, готовиться",
-              "tj": "такрор кардан, аз нав хондан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "南方",
-            "pinyin": "nánfāng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "janub, janubiy tomon",
-              "ru": "юг, южная сторона",
-              "tj": "ҷануб, тарафи ҷанубӣ"
-            }
+            "uz": "bilan = 跟 (gēn)",
+            "ru": "с, вместе с = 跟 (gēn)",
+            "tj": "бо = 跟 (gēn)"
           }
         },
         {
@@ -814,19 +488,19 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "南方",
-          "pinyin": "nánfāng",
+          "audio_text": "周末",
+          "pinyin": "zhōumò",
           "options": [
-            "周末",
-            "啊",
             "打算",
-            "南方"
+            "啊",
+            "周末",
+            "跟"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "南方 — janub, janubiy tomon (nánfāng)",
-            "ru": "南方 — юг, южная сторона (nánfāng)",
-            "tj": "南方 — ҷануб, тарафи ҷанубӣ (nánfāng)"
+            "uz": "周末 — hafta oxiri, dam olish kuni (zhōumò)",
+            "ru": "周末 — выходные, конец недели (zhōumò)",
+            "tj": "周末 — охири ҳафта, рӯзи истироҳат (zhōumò)"
           }
         },
         {
@@ -876,209 +550,110 @@
     {
       "section_no": 2,
       "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 1,
-            "title": {
-              "uz": "Natija to'ldiruvchisi '好'",
-              "ru": "Результативное дополнение «好»",
-              "tj": "Иловаи натиҷавии «好»"
-            },
-            "title_zh": "结果补语\"好\"",
-            "rule": {
-              "uz": "Fe'ldan keyin '好' keltirib, harakat muvaffaqiyatli yoki to'liq bajarilganligini bildiradi.\nQolip: Fe'l + 好 + 了\nMasalan: 做好了 (bajardi/tamom qildi), 准备好了 (tayyorladi), 写好了 (yozib bo'ldi).\nInkor shakli: 没+做好 (bajarmadi/tugallamadi).",
-              "ru": "Частица '好' после глагола означает, что действие выполнено успешно или полностью.\nСтруктура: Глагол + 好 + 了\nНапример: 做好了 (сделал/закончил), 准备好了 (приготовил), 写好了 (написал).\nОтрицание: 没+做好 (не сделал/не завершил).",
-              "tj": "Зарраи '好' пас аз феъл нишон медиҳад, ки амал бомуваффақият ё пурра иҷро шудааст.\nСохт: Феъл + 好 + 了\nМасалан: 做好了 (иҷро кард), 准备好了 (тайёр кард), 写好了 (навишт).\nИнкор: 没+做好 (иҷро накард/тамом накард)."
-            },
-            "examples": [
-              {
-                "zh": "作业都做好了！",
-                "pinyin": "Zuòyè dōu zuò hǎo le!",
-                "translation": {
-                  "uz": "Barcha uy vazifalari bajarildi!",
-                  "ru": "Все домашние задания сделаны!",
-                  "tj": "Ҳамаи вазифаҳои хонагӣ иҷро шуд!"
-                }
-              },
-              {
-                "zh": "我已经准备好了，可以出发了。",
-                "pinyin": "Wǒ yǐjīng zhǔnbèi hǎo le, kěyǐ chūfā le.",
-                "translation": {
-                  "uz": "Men allaqachon tayyorlandim, jo'nashim mumkin.",
-                  "ru": "Я уже готов, можно выезжать.",
-                  "tj": "Ман аллакай омода шудам, метавонем ҳаракат кунем."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Barcha uy vazifalari bajarildi!",
-            "ru": "Все домашние задания сделаны!",
-            "tj": "Ҳамаи вазифаҳои хонагӣ иҷро шуд!"
-          },
-          "tokens": [
-            "都",
-            "好",
-            "周末",
-            "作业",
-            "做",
-            "打算",
-            "了"
-          ],
-          "answer_tokens": [
-            "作业",
-            "都",
-            "做",
-            "好",
-            "了"
-          ],
-          "explanation": {
-            "uz": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
-            "ru": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
-            "tj": "作业都做好了！ — Zuòyè dōu zuò hǎo le!"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "'一……也/都+不/没……' — kuchli inkor",
-              "ru": "Конструкция '一……也/都+不/没……' — усиленное отрицание",
-              "tj": "Сохти '一……也/都+不/没……' — инкори қавӣ"
-            },
-            "title_zh": "\"一……也/都+不/没……\"表示否定",
-            "rule": {
-              "uz": "Bu qolip 'hech bir...ham yo'q/emas' ma'nosini beradi — mutlaq inkorni ifodalaydi.\nQolip: 一 + miqdor+ot + 也/都 + 不/没 + fe'l\nMasalan: 一个人也没来 (bitta kishi ham kelmadi)\n         一点儿都不想去 (zarra ham bormoqchi emasman)\n         一个电话也没打 (bitta qo'ng'iroq ham qilmadi)",
-              "ru": "Конструкция выражает абсолютное отрицание: 'ни одного...даже нет'.\nСтруктура: 一 + числит.+сущ. + 也/都 + 不/没 + глагол\nНапример: 一个人也没来 (никто не пришёл)\n          一点儿都不想去 (совсем не хочу идти)\n          一个电话也没打 (не позвонил ни разу)",
-              "tj": "Ин сохт инкори мутлақро ифода мекунад: 'ҳатто як...ҳам нест'.\nСохт: 一 + шумор+исм + 也/都 + 不/没 + феъл\nМасалан: 一个人也没来 (ҳатто як нафар ҳам наомад)\n         一点儿都不想去 (каме ҳам рафтан намехоҳам)\n         一个电话也没打 (ҳатто як занг ҳам назад)"
-            },
-            "examples": [
-              {
-                "zh": "他一个电话也没打，我很着急。",
-                "pinyin": "Tā yī ge diànhuà yě méi dǎ, wǒ hěn zháojí.",
-                "translation": {
-                  "uz": "U bitta ham qo'ng'iroq qilmadi, men juda tashvishlandim.",
-                  "ru": "Он ни разу не позвонил, я очень переживал.",
-                  "tj": "Вай ҳатто як занг ҳам назад, ман хеле нигарон шудам."
-                }
-              },
-              {
-                "zh": "那天我一点儿都不想出去。",
-                "pinyin": "Nà tiān wǒ yīdiǎnr dōu bù xiǎng chūqù.",
-                "translation": {
-                  "uz": "O'sha kuni zarra ham tashqariga chiqmoqchi emas edim.",
-                  "ru": "В тот день я совсем не хотел выходить.",
-                  "tj": "Он рӯз ман каме ҳам берун рафтан намехостам."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "他一个电话也没打，我很____。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "啊",
-            "周末",
-            "打算",
-            "着急"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 着急 (zháojí) — xavotirli, shoshilgan, tashvishlangan",
-            "ru": "Верно: 着急 (zháojí) — волноваться, беспокоиться",
-            "tj": "Дуруст: 着急 (zháojí) — ташвиш кашидан, нигарон шудан"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "Bog'lovchi '那' (unday bo'lsa, unda)",
-              "ru": "Союз «那» (тогда, в таком случае)",
-              "tj": "Пайвандаки «那» (пас, дар он сурат)"
-            },
-            "title_zh": "连词\"那\"",
-            "rule": {
-              "uz": "'那' bog'lovchisi oldingi gapdan kelib chiquvchi xulosani yoki qarorni kiritadi.\nMa'nosi: 'unday bo'lsa, unda, bo'lmasa'\nKo'pincha 那 + gap shaklida keladi, gapning boshida turadi.\nMasalan: 那我们明天去吧。(Unday bo'lsa ertaga boraylik.)\n         那你去吧。(Unda sen bor.)",
-              "ru": "Союз '那' вводит вывод или решение, вытекающее из предыдущей реплики.\nЗначение: 'тогда, в таком случае'\nОбычно стоит в начале предложения: 那 + предложение.\nНапример: 那我们明天去吧。(Тогда пойдём завтра.)\n          那你去吧。(Тогда ты иди.)",
-              "tj": "Пайвандаки '那' хулоса ё қарореро, ки аз гапи қаблӣ бармеояд, ворид мекунад.\nМаъно: 'пас, дар он сурат'\nОдатан дар аввали ҷумла меояд: 那 + ҷумла.\nМасалан: 那我们明天去吧。(Пас фардо равем.)\n         那你去吧。(Пас ту рав.)"
-            },
-            "examples": [
-              {
-                "zh": "那你星期六有没有时间？我们一起去公园吧。",
-                "pinyin": "Nà nǐ xīngqīliù yǒu méiyǒu shíjiān? Wǒmen yīqǐ qù gōngyuán ba.",
-                "translation": {
-                  "uz": "Unday bo'lsa shanba kuni vaqting bormi? Birgalikda parka boraylik.",
-                  "ru": "Тогда есть ли у тебя время в субботу? Пойдём вместе в парк.",
-                  "tj": "Пас шанбе вақт дорӣ? Биёед якҷоя ба боғ равем."
-                }
-              },
-              {
-                "zh": "好，那你去吧。记得早点儿回来。",
-                "pinyin": "Hǎo, nà nǐ qù ba. Jìde zǎo diǎnr huílai.",
-                "translation": {
-                  "uz": "Xo'p, unda bor. Erta qaytishni yodda tut.",
-                  "ru": "Хорошо, тогда иди. Помни — вернись пораньше.",
-                  "tj": "Хуб, пас рав. Фаромӯш накун ки барвақт баргардӣ."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«Barcha uy vazifalari bajarildi!» — xitoychada qaysi biri?",
-            "ru": "«Все домашние задания сделаны!» — какое предложение по-китайски?",
-            "tj": "«Ҳамаи вазифаҳои хонагӣ иҷро шуд!» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "他一个电话也没打，我很着急。",
-            "作业都做好了！",
-            "那天我一点儿都不想出去。",
-            "那你星期六有没有时间？我们一起去公园吧。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
-            "ru": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
-            "tj": "作业都做好了！ — Zuòyè dōu zuò hǎo le!"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "那也不能一直玩儿啊。",
+          "pinyin": "Nà yě bù néng yìzhí wánr a.",
+          "options": [
+            "我早就想好了，请你吃饭、看电影、喝咖啡。",
+            "那也不能一直玩儿啊。",
+            "周末你有什么打算？",
+            "请我？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "那也不能一直玩儿啊。 — Unda ham tinmay o'ynayverish mumkin emas-ku.",
+            "ru": "那也不能一直玩儿啊。 — Но всё равно нельзя постоянно играть.",
+            "tj": "那也不能一直玩儿啊。 — Пас ҳам намешавад ҳамеша бозӣ кард."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "打算",
+          "pinyin": "dǎsuàn",
+          "options": [
+            "啊",
+            "周末",
+            "打算",
+            "跟"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "打算 — reja; rejalamoq, niyat qilmoq (dǎsuàn)",
+            "ru": "打算 — план; планировать, намереваться (dǎsuàn)",
+            "tj": "打算 — нақша; нақша кардан (dǎsuàn)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "日 talaffuzini tanlang:",
+            "ru": "Выберите произношение 日:",
+            "tj": "Талаффузи 日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dǎsuàn",
+            "zhōumò",
+            "rì",
+            "a"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "日 — rì",
+            "ru": "日 — rì",
+            "tj": "日 — rì"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hafta oxiri nima rejang bor?",
+            "ru": "Какие у тебя планы на выходные?",
+            "tj": "Охири ҳафта чӣ нақша дорӣ?"
+          },
+          "tokens": [
+            "啊",
+            "什么",
+            "跟",
+            "周末",
+            "你",
+            "有",
+            "打算"
+          ],
+          "answer_tokens": [
+            "周末",
+            "你",
+            "有",
+            "什么",
+            "打算"
+          ],
+          "explanation": {
+            "uz": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?",
+            "ru": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?",
+            "tj": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?"
+          }
+        },
         {
           "type": "reverse_builder",
           "zh": "周末你有什么打算？",
@@ -1091,30 +666,30 @@
           "tokens": {
             "uz": [
               "Hafta",
-              "bor",
               "oxiri",
-              "allaqachon",
+              "bor",
+              "Unda",
+              "ham",
               "rejang",
-              "nima",
-              "Men"
+              "nima"
             ],
             "ru": [
-              "у",
-              "уже",
               "тебя",
-              "выходные",
               "на",
+              "у",
+              "планы",
               "Какие",
-              "Я",
-              "планы"
+              "Но",
+              "всё",
+              "выходные"
             ],
             "tj": [
+              "Пас",
+              "ҳам",
+              "ҳафта",
               "Охири",
-              "Ман",
               "дорӣ",
               "чӣ",
-              "ҳафта",
-              "кайҳо",
               "нақша"
             ]
           },
@@ -1149,187 +724,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "面包 talaffuzini tanlang:",
-            "ru": "Выберите произношение 面包:",
-            "tj": "Талаффузи 面包-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "a",
-            "zhōumò",
-            "dǎsuàn",
-            "miànbāo"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "面包 — miànbāo",
-            "ru": "面包 — miànbāo",
-            "tj": "面包 — miànbāo"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "周末",
-              {
-                "uz": "hafta oxiri, dam olish kuni",
-                "ru": "выходные, конец недели",
-                "tj": "охири ҳафта, рӯзи истироҳат"
-              }
-            ],
-            [
-              "打算",
-              {
-                "uz": "reja; rejalamoq, niyat qilmoq",
-                "ru": "план; планировать, намереваться",
-                "tj": "нақша; нақша кардан"
-              }
-            ],
-            [
-              "啊",
-              {
-                "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
-                "ru": "частица в конце предложения для подтверждения или пояснения",
-                "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
-              }
-            ],
-            [
-              "跟",
-              {
-                "uz": "bilan",
-                "ru": "с, вместе с",
-                "tj": "бо"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "打算",
-          "pinyin": "dǎsuàn",
-          "options": [
-            "跟",
-            "打算",
-            "周末",
-            "啊"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "打算 — reja; rejalamoq, niyat qilmoq (dǎsuàn)",
-            "ru": "打算 — план; планировать, намереваться (dǎsuàn)",
-            "tj": "打算 — нақша; нақша кардан (dǎsuàn)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Hafta oxiri nima rejang bor?",
-            "ru": "Какие у тебя планы на выходные?",
-            "tj": "Охири ҳафта чӣ нақша дорӣ?"
-          },
-          "tokens": [
-            "周末",
-            "有",
-            "打算",
-            "你",
-            "跟",
-            "啊",
-            "什么"
-          ],
-          "answer_tokens": [
-            "周末",
-            "你",
-            "有",
-            "什么",
-            "打算"
-          ],
-          "explanation": {
-            "uz": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?",
-            "ru": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?",
-            "tj": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "北方 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 北方:",
-            "tj": "Маънои калимаи 北方-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "hafta oxiri, dam olish kuni",
-              "ru": "выходные, конец недели",
-              "tj": "охири ҳафта, рӯзи истироҳат"
-            },
-            {
-              "uz": "shimol, shimoliy tomon",
-              "ru": "север, северная сторона",
-              "tj": "шимол, тарафи шимолӣ"
-            },
-            {
-              "uz": "reja; rejalamoq, niyat qilmoq",
-              "ru": "план; планировать, намереваться",
-              "tj": "нақша; нақша кардан"
-            },
-            {
-              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
-              "ru": "частица в конце предложения для подтверждения или пояснения",
-              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "北方 = shimol, shimoliy tomon (běifāng)",
-            "ru": "北方 = север, северная сторона (běifāng)",
-            "tj": "北方 = шимол, тарафи шимолӣ (běifāng)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "周末你有什么打算？",
-          "pinyin": "Zhōumò nǐ yǒu shénme dǎsuàn?",
-          "options": [
-            "周末你有什么打算？",
-            "请我？",
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "是啊，我已经找好饭馆了，电影票也买好了。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "周末你有什么打算？ — Hafta oxiri nima rejang bor?",
-            "ru": "周末你有什么打算？ — Какие у тебя планы на выходные?",
-            "tj": "周末你有什么打算？ — Охири ҳафта чӣ нақша дорӣ?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "周末",
           "pinyin": "zhōumò",
@@ -1337,167 +731,6 @@
             "uz": "hafta oxiri, dam olish kuni",
             "ru": "выходные, конец недели",
             "tj": "охири ҳафта, рӯзи истироҳат"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "周末你有什么打算？",
-          "pinyin": "Zhōumò nǐ yǒu shénme dǎsuàn?",
-          "options": [
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "周末你有什么打算？",
-            "请我？",
-            "是啊，我已经找好饭馆了，电影票也买好了。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "周末你有什么打算？ — Hafta oxiri nima rejang bor?",
-            "ru": "周末你有什么打算？ — Какие у тебя планы на выходные?",
-            "tj": "周末你有什么打算？ — Охири ҳафта чӣ нақша дорӣ?"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____末你有什么打算？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "周",
-            "商",
-            "羊",
-            "司"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 周 — 周末你有什么打算？ (Hafta oxiri nima rejang bor?)",
-            "ru": "Верно: 周 — 周末你有什么打算？ (Какие у тебя планы на выходные?)",
-            "tj": "Дуруст: 周 — 周末你有什么打算？ (Охири ҳафта чӣ нақша дорӣ?)"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "小丽",
-              "zh": "周末你有什么打算？",
-              "blank": false
-            },
-            {
-              "speaker": "小刚",
-              "zh": "我早就想好了，请你吃饭、看电影、喝咖啡。",
-              "blank": false
-            },
-            {
-              "speaker": "小丽",
-              "zh": "请我？",
-              "blank": false
-            },
-            {
-              "speaker": "小刚",
-              "zh": "是啊，我已经找好饭馆了，电影票也买好了。",
-              "blank": false
-            },
-            {
-              "speaker": "小丽",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "我还没想好要不要跟你去呢。",
-            "周末你有什么打算？",
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "请我？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 我还没想好要不要跟你去呢。",
-            "ru": "Правильный ответ: 我还没想好要不要跟你去呢。",
-            "tj": "Ҷавоби дуруст: 我还没想好要不要跟你去呢。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小丽 nima deydi?",
-            "ru": "Что 小丽 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 小丽 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "我还没想好要不要跟你去呢。",
-            "请我？",
-            "周末你有什么打算？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 我还没想好要不要跟你去呢。",
-            "ru": "Правильный ответ: 我还没想好要不要跟你去呢。",
-            "tj": "Ҷавоби дуруст: 我还没想好要不要跟你去呢。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 小丽 avval nima deydi?",
-            "ru": "Что 小丽 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 小丽 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "请我？",
-            "周末你有什么打算？",
-            "是啊，我已经找好饭馆了，电影票也买好了。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 周末你有什么打算？",
-            "ru": "Правильный ответ: 周末你有什么打算？",
-            "tj": "Ҷавоби дуруст: 周末你有什么打算？"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "再多带几件衣服吧。",
-          "pinyin": "Zài duō dài jǐ jiàn yīfu ba.",
-          "translation": {
-            "uz": "Yana bir nechta kiyim ko'proq olaylik.",
-            "ru": "Давай возьмём ещё несколько вещей.",
-            "tj": "Биё боз чанд либоси бештар гирем."
           }
         }
       ]

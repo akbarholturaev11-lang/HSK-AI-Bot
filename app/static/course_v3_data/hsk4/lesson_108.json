@@ -1,0 +1,796 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 108,
+  "source_lesson": 12,
+  "part_no": 8,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "用心发现世界",
+  "subtitle": {
+    "uz": "hayotdan yechim topish, tajribani yangilash va to'g'ri usul tanlash haqida gapirish; 并且, 再……也……, 对于, o'lchov so'zi takrori va 相反 grammatikalarini ishlatish",
+    "ru": "говорить о поиске решений в жизни, пересмотре опыта и выборе метода; использовать 并且, 再……也……, 对于, повтор счётных слов и 相反",
+    "tj": "дар бораи ёфтани роҳ аз зиндагӣ, нав кардани таҷриба ва интихоби усули дуруст гуфтугӯ кардан; истифодаи 并且, 再……也……, 对于, такрори шуморкалима ва 相反"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "任务",
+      "pinyin": "rènwu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "vazifa",
+        "ru": "задача",
+        "tj": "вазифа"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "意见",
+      "pinyin": "yìjian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "fikr, taklif",
+        "ru": "мнение, предложение",
+        "tj": "фикр, пешниҳод"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "仔细",
+      "pinyin": "zǐxì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "diqqatli, sinchkov",
+        "ru": "внимательный, тщательно",
+        "tj": "бодиққат"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "达到",
+      "pinyin": "dádào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "erishmoq",
+        "ru": "достигать",
+        "tj": "расидан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Wang menejer tajribaga qattiq yopishib qolmaslikni maslahat beradi",
+        "ru": "Менеджер Ван советует не цепляться за старый опыт",
+        "tj": "Менеҷер Ван маслиҳат медиҳад, ки ба таҷрибаи кӯҳна сахт часпида нашаванд"
+      },
+      "dialogue": [
+        {
+          "speaker": "王经理",
+          "zh": "听说这次生意你到现在还没谈成。",
+          "pinyin": "Tīngshuō zhè cì shēngyì nǐ dào xiànzài hái méi tán chéng.",
+          "text": {
+            "uz": "Eshitishimcha, bu safargi biznes kelishuvini haligacha bitira olmabsan.",
+            "ru": "Слышал, ты до сих пор не договорился по этой сделке.",
+            "tj": "Шунидам, ин дафъа кори тиҷоратро то ҳол ба анҷом нарасонидаӣ."
+          }
+        },
+        {
+          "speaker": "马经理",
+          "zh": "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
+          "pinyin": "Àn wǒ yǐqián de jīngyàn, zǎo yīnggāi tán chéng le, zhè cì wǒ yě bù zhīdào nǎr chū le wèntí.",
+          "text": {
+            "uz": "Oldingi tajribam bo'yicha allaqachon kelishish kerak edi, bu safar qayerda muammo chiqqanini bilmayman.",
+            "ru": "По моему прежнему опыту, уже давно должны были договориться, и я не знаю, где возникла проблема.",
+            "tj": "Аз рӯи таҷрибаи пешинаам, бояд аллакай созиш мешуд, ин дафъа намедонам мушкил аз куҷо баромад."
+          }
+        },
+        {
+          "speaker": "王经理",
+          "zh": "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。",
+          "pinyin": "Yǒu jù huà jiào “guīdìng hé jīngyàn shì sǐ de, rén shì huó de”. Dāng “guīdìng” hé “jīngyàn” bù néng jiějué wèntí shí, jiànyì nǐ gǎibiàn yíxià zìjǐ de tàidu hé xiǎngfǎ.",
+          "text": {
+            "uz": "Bir gap bor: qoidalar va tajriba qattiq, odam esa moslasha oladi. Qoidalar va tajriba muammoni hal qilmasa, o'z munosabating va fikringni o'zgartir.",
+            "ru": "Есть выражение: правила и опыт мёртвые, а человек живой. Когда правила и опыт не решают проблему, советую изменить отношение и мышление.",
+            "tj": "Як сухан ҳаст: қоида ва таҷриба сахтанд, инсон бошад зинда аст. Вақте қоида ва таҷриба мушкилро ҳал намекунад, муносибат ва фикратро тағйир деҳ."
+          }
+        },
+        {
+          "speaker": "马经理",
+          "zh": "很多时候，我都习惯根据过去的经验做事，可惜，经验不是全部都是对的。",
+          "pinyin": "Hěn duō shíhou, wǒ dōu xíguàn gēnjù guòqù de jīngyàn zuòshì, kěxī, jīngyàn bú shì quánbù dōu shì duì de.",
+          "text": {
+            "uz": "Ko'p payt ishni o'tgan tajribaga qarab qilishga o'rganib qolganman, afsuski, tajribaning hammasi ham to'g'ri emas.",
+            "ru": "Часто я привык действовать по прошлому опыту, но жаль, что не весь опыт правильный.",
+            "tj": "Бисёр вақт ман ба таҷрибаи гузашта такя мекунам, афсӯс, ки ҳама таҷриба дуруст нест."
+          }
+        },
+        {
+          "speaker": "王经理",
+          "zh": "遇到不能解决的问题时，我们应该试着走走以前从来没走过的路，也许这样就能找到解决问题的方法了。",
+          "pinyin": "Yùdào bù néng jiějué de wèntí shí, wǒmen yīnggāi shìzhe zǒu zǒu yǐqián cónglái méi zǒuguo de lù, yěxǔ zhèyàng jiù néng zhǎodào jiějué wèntí de fāngfǎ le.",
+          "text": {
+            "uz": "Hal bo'lmaydigan muammoga duch kelsak, oldin hech yurmagan yo'ldan yurib ko'rish kerak, balki shunda yechim topilar.",
+            "ru": "Когда сталкиваемся с нерешаемой проблемой, стоит попробовать путь, по которому раньше не ходили, возможно, так найдём решение.",
+            "tj": "Вақте ба мушкили ҳалнашаванда рӯ ба рӯ мешавем, бояд роҳи пештар нарафтаро санҷем, шояд ҳамин тавр роҳ пайдо шавад."
+          }
+        },
+        {
+          "speaker": "马经理",
+          "zh": "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",
+          "pinyin": "Hǎo, wǒ zài gēn tóngshì shāngliang shāngliang, xīwàng néng jíshí fāxiàn wèntí, bìngqiě zhǔnquè de zhǎodào jiějué wèntí de fāngfǎ.",
+          "text": {
+            "uz": "Yaxshi, hamkasblarim bilan yana maslahatlashaman, muammoni vaqtida topib, uni aniq hal qilish yo'lini topamiz degan umiddaman.",
+            "ru": "Хорошо, ещё посоветуюсь с коллегами, надеюсь вовремя найти проблему и точно найти способ её решить.",
+            "tj": "Хуб, бо ҳамкорон боз маслиҳат мекунам, умедворам мушкилро сари вақт ёфта, роҳи дурусти ҳалро пайдо кунем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Gao o'qituvchi qiziga kiyim rangini saqlash usulini aytadi",
+        "ru": "Учитель Гао объясняет дочери, как сохранить цвет одежды",
+        "tj": "Муаллима Гао ба духтараш роҳи нигоҳ доштани ранги либосро мегӯяд"
+      },
+      "dialogue": [
+        {
+          "speaker": "女儿",
+          "zh": "妈，您看我刚买的裤子，洗完以后颜色怎么变得这么难看呢？",
+          "pinyin": "Mā, nín kàn wǒ gāng mǎi de kùzi, xǐ wán yǐhòu yánsè zěnme biàn de zhème nánkàn ne?",
+          "text": {
+            "uz": "Oyi, yangi olgan shimimga qarang, yuvilgandan keyin rangi nega bunchalik xunuk bo'lib qoldi?",
+            "ru": "Мама, посмотрите на брюки, которые я только купила: почему после стирки цвет стал таким некрасивым?",
+            "tj": "Оча, шими нав харидаамро бинед, баъди шустан ранги он чаро ин қадар бад шуд?"
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "看来是掉颜色了，你洗的时候在水里加点儿盐就不会这样了。",
+          "pinyin": "Kànlái shì diào yánsè le, nǐ xǐ de shíhou zài shuǐ li jiā diǎnr yán jiù bú huì zhèyàng le.",
+          "text": {
+            "uz": "Ko'rinishidan rangi chiqib ketibdi. Yuvganda suvga ozgina tuz solsang bunday bo'lmaydi.",
+            "ru": "Похоже, она полиняла. Если при стирке добавить в воду немного соли, такого не будет.",
+            "tj": "Аз афташ рангаш баромадааст. Ҳангоми шустан ба об каме намак андозӣ, чунин намешавад."
+          }
+        },
+        {
+          "speaker": "女儿",
+          "zh": "放盐？！盐不是用来做饭的吗？难道它还能让衣服不掉颜色？",
+          "pinyin": "Fàng yán?! Yán bú shì yòng lái zuò fàn de ma? Nándào tā hái néng ràng yīfu bù diào yánsè?",
+          "text": {
+            "uz": "Tuz solish? Tuz ovqat qilish uchun emasmi? Nahotki u kiyim rangini ketkazmaslikka yordam bersa?",
+            "ru": "Соль? Разве соль не для готовки? Неужели она может не дать одежде линять?",
+            "tj": "Намак? Магар намак барои пухтупаз нест? Наход он ранги либосро нигоҳ медорад?"
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "当然。有些衣服第一次洗的时候会掉颜色，其实，有很多方法可以解决这个问题。",
+          "pinyin": "Dāngrán. Yǒuxiē yīfu dì yī cì xǐ de shíhou huì diào yánsè, qíshí, yǒu hěn duō fāngfǎ kěyǐ jiějué zhège wèntí.",
+          "text": {
+            "uz": "Albatta. Ba'zi kiyimlar birinchi yuvishda rang chiqaradi, aslida bu muammoni hal qiladigan usullar ko'p.",
+            "ru": "Конечно. Некоторая одежда линяет при первой стирке, на самом деле есть много способов решить эту проблему.",
+            "tj": "Албатта. Баъзе либосҳо дар шустани аввал ранг медиҳанд, дар асл роҳҳои ҳалли ин мушкил зиёданд."
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "在水里加勺盐再洗是最简单的方法。用盐水来洗新衣服，这样穿得再久、洗的次数再多，衣服也不容易掉颜色。",
+          "pinyin": "Zài shuǐ li jiā sháo yán zài xǐ shì zuì jiǎndān de fāngfǎ. Yòng yán shuǐ lái xǐ xīn yīfu, zhèyàng chuān de zài jiǔ, xǐ de cìshù zài duō, yīfu yě bù róngyì diào yánsè.",
+          "text": {
+            "uz": "Suvga bir qoshiq tuz solib yuvish eng oson usul. Yangi kiyimni tuzli suvda yuvsang, qancha uzoq kiyilsa ham, qancha ko'p yuvilsa ham, rangi oson ketmaydi.",
+            "ru": "Самый простой способ - добавить ложку соли в воду. Если стирать новую одежду солёной водой, она не будет легко линять даже при долгой носке и частых стирках.",
+            "tj": "Роҳи осонтарин ба об як қошуқ намак андохта шустан аст. Либоси навро бо оби намакдор шӯӣ, ҳар қадар дер пӯшида ва зиёд шуста шавад ҳам, ранги он осон намеравад."
+          }
+        },
+        {
+          "speaker": "女儿",
+          "zh": "我第一次听说盐有保护衣服颜色的作用，生活中还真有不少课本上无法学到的知识。",
+          "pinyin": "Wǒ dì yī cì tīngshuō yán yǒu bǎohù yīfu yánsè de zuòyòng, shēnghuó zhōng hái zhēn yǒu bù shǎo kèběn shang wúfǎ xuédào de zhīshi.",
+          "text": {
+            "uz": "Tuz kiyim rangini himoya qilishini birinchi marta eshitdim. Hayotda darslikdan o'rganib bo'lmaydigan bilimlar haqiqatan ham ko'p ekan.",
+            "ru": "Я впервые слышу, что соль защищает цвет одежды. В жизни действительно много знаний, которых нет в учебнике.",
+            "tj": "Бори аввал мешунавам, ки намак ранги либосро муҳофизат мекунад. Дар зиндагӣ воқеан донишҳое зиёданд, ки аз китоб омӯхта намешаванд."
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "实际上，很多问题的答案都可以从生活中找到。但这需要你用眼睛去发现，用心去总结。",
+          "pinyin": "Shíjì shang, hěn duō wèntí de dá'àn dōu kěyǐ cóng shēnghuó zhōng zhǎodào. Dàn zhè xūyào nǐ yòng yǎnjing qù fāxiàn, yòng xīn qù zǒngjié.",
+          "text": {
+            "uz": "Aslida ko'p savolning javobini hayotdan topish mumkin. Faqat buni ko'z bilan ko'rish va yurak bilan xulosa qilish kerak.",
+            "ru": "На самом деле ответы на многие вопросы можно найти в жизни. Но для этого нужно замечать глазами и внимательно обобщать.",
+            "tj": "Дар асл ҷавоби бисёр масъалаҳоро аз зиндагӣ ёфтан мумкин. Барои ин бояд бо чашм бинӣ ва бо диққат хулоса кунӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Gao o'qituvchi Wang professorning dars berish usulini o'rganadi",
+        "ru": "Учитель Гао изучает метод преподавания профессора Вана",
+        "tj": "Муаллима Гао усули дарсдиҳии профессор Ванро меомӯзад"
+      },
+      "dialogue": [
+        {
+          "speaker": "高老师",
+          "zh": "王教授，今天听完您的这节课，我终于明白为什么您的课那么受学生欢迎了。",
+          "pinyin": "Wáng jiàoshòu, jīntiān tīng wán nín de zhè jié kè, wǒ zhōngyú míngbai wèishénme nín de kè nàme shòu xuésheng huānyíng le.",
+          "text": {
+            "uz": "Wang professor, bugun darsingizni tinglab, nega darslaringiz talabalar orasida bunchalik mashhur ekanini nihoyat tushundim.",
+            "ru": "Профессор Ван, послушав сегодня ваш урок, я наконец понял, почему ваши занятия так нравятся студентам.",
+            "tj": "Профессор Ван, имрӯз дарсатонро шунида, ниҳоят фаҳмидам, чаро дарсҳои шумо ба донишҷӯён ин қадар писанд аст."
+          }
+        },
+        {
+          "speaker": "王教授",
+          "zh": "谢谢！您能详细谈谈对我的课的看法吗？",
+          "pinyin": "Xièxie! Nín néng xiángxì tán tan duì wǒ de kè de kànfǎ ma?",
+          "text": {
+            "uz": "Rahmat! Darsim haqidagi fikringizni batafsil aytib bera olasizmi?",
+            "ru": "Спасибо! Можете подробно рассказать, что вы думаете о моём уроке?",
+            "tj": "Раҳмат! Метавонед фикратонро дар бораи дарси ман муфассал гӯед?"
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "我发现您对学生特别了解，而且总是能用最简单的方法把复杂的问题解释清楚，让每个学生都能听懂，这一点真是值得我们好好儿学习。",
+          "pinyin": "Wǒ fāxiàn nín duì xuésheng tèbié liǎojiě, érqiě zǒngshì néng yòng zuì jiǎndān de fāngfǎ bǎ fùzá de wèntí jiěshì qīngchu, ràng měi ge xuésheng dōu néng tīng dǒng, zhè yì diǎn zhēn shì zhíde wǒmen hǎohāor xuéxí.",
+          "text": {
+            "uz": "Siz talabalarni juda yaxshi tushunishingizni va murakkab masalalarni eng sodda usul bilan tushuntirib, har bir talabaga anglatishingizni ko'rdim. Bu biz uchun juda o'rganishga arziydi.",
+            "ru": "Я заметил, что вы отлично понимаете студентов и всегда простым способом объясняете сложные вопросы так, что каждый понимает. Этому нам действительно стоит учиться.",
+            "tj": "Ман дидам, ки шумо донишҷӯёнро хеле хуб мефаҳмед ва масъалаҳои мураккабро бо роҳи содда шарҳ медиҳед, то ҳар донишҷӯ фаҳмад. Ин барои мо арзандаи омӯзиш аст."
+          }
+        },
+        {
+          "speaker": "王教授",
+          "zh": "哪里哪里，这只是因为我对每个学生的能力水平比较了解。",
+          "pinyin": "Nǎli nǎli, zhè zhǐshì yīnwèi wǒ duì měi ge xuésheng de nénglì shuǐpíng bǐjiào liǎojiě.",
+          "text": {
+            "uz": "Yo'g'e, bu faqat har bir talabamning qobiliyat darajasini nisbatan yaxshi bilganim uchun.",
+            "ru": "Да что вы, просто я довольно хорошо понимаю уровень способностей каждого студента.",
+            "tj": "Не, ин танҳо барои он аст, ки ман сатҳи қобилияти ҳар донишҷӯро нисбатан хуб медонам."
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "那您认为对于老师来说，什么是最难做到的？",
+          "pinyin": "Nà nín rènwéi duìyú lǎoshī lái shuō, shénme shì zuì nán zuò dào de?",
+          "text": {
+            "uz": "Unda sizningcha, o'qituvchi uchun eng qiyin narsa nima?",
+            "ru": "Тогда, по-вашему, что труднее всего для учителя?",
+            "tj": "Пас, ба фикри шумо барои муаллим чӣ чиз аз ҳама душвортар аст?"
+          }
+        },
+        {
+          "speaker": "王教授",
+          "zh": "世界上没有完全相同的叶子，同样地，世界上也没有完全一样的人。所以，在教育学生时，要根据学生的特点选择不同的方法，我想这应该是最不容易做到的。",
+          "pinyin": "Shìjiè shang méiyǒu wánquán xiāngtóng de yèzi, tóngyàng de, shìjiè shang yě méiyǒu wánquán yíyàng de rén. Suǒyǐ, zài jiàoyù xuésheng shí, yào gēnjù xuésheng de tèdiǎn xuǎnzé bùtóng de fāngfǎ, wǒ xiǎng zhè yīnggāi shì zuì bù róngyì zuò dào de.",
+          "text": {
+            "uz": "Dunyoda butunlay bir xil barg bo'lmaganidek, butunlay bir xil odam ham yo'q. Shuning uchun o'quvchini tarbiyalashda uning xususiyatiga qarab turli usul tanlash kerak, menimcha eng qiyini shu.",
+            "ru": "В мире нет полностью одинаковых листьев, и так же нет полностью одинаковых людей. Поэтому в обучении студентов нужно выбирать методы по их особенностям, думаю, это самое трудное.",
+            "tj": "Дар ҷаҳон барги комилан якхела нест, ҳамчунин одамони комилан якхела ҳам нестанд. Бинобар ин ҳангоми таълим бояд мувофиқи хусусияти донишҷӯ усули гуногун интихоб кард, ба назарам душвортаринаш ҳамин аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Tildan to'g'ri foydalanish inson xarakterini ko'rsatishi haqida matn",
+        "ru": "Текст о том, как речь отражает характер человека",
+        "tj": "Матн дар бораи он ки гуфтор хислати инсонро нишон медиҳад"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "人人都会使用语言，但是怎么用语言把话说好却是一门艺术。",
+          "pinyin": "Rénrén dōu huì shǐyòng yǔyán, dànshì zěnme yòng yǔyán bǎ huà shuō hǎo què shì yì mén yìshù.",
+          "text": {
+            "uz": "Hamma tildan foydalana oladi, lekin tildan foydalanib gapni yaxshi aytish - bu san'at.",
+            "ru": "Каждый умеет пользоваться языком, но хорошо говорить с помощью языка - это искусство.",
+            "tj": "Ҳар кас забонро истифода бурда метавонад, аммо бо забон хуб сухан гуфтан санъат аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "看一个人怎么说话，往往可以比较准确地判断出他是一个什么样的人。",
+          "pinyin": "Kàn yí ge rén zěnme shuōhuà, wǎngwǎng kěyǐ bǐjiào zhǔnquè de pànduàn chū tā shì yí ge shénme yàng de rén.",
+          "text": {
+            "uz": "Odam qanday gapirishiga qarab, ko'pincha uning qanday insonligini ancha aniq baholash mumkin.",
+            "ru": "По тому, как человек говорит, часто можно довольно точно судить, что он за человек.",
+            "tj": "Аз тарзи сухани инсон аксаран метавон нисбатан дақиқ фаҳмид, ки ӯ чӣ гуна одам аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "有的人心里怎么想，嘴上就怎么说，即使是别人的缺点，他也会直接说出来，这样的人虽然很诚实，但是可能会引起别人的误会。",
+          "pinyin": "Yǒu de rén xīn li zěnme xiǎng, zuǐ shang jiù zěnme shuō, jíshǐ shì biérén de quēdiǎn, tā yě huì zhíjiē shuō chūlai, zhèyàng de rén suīrán hěn chéngshí, dànshì kěnéng huì yǐnqǐ biérén de wùhuì.",
+          "text": {
+            "uz": "Ba'zi odamlar ichida nima o'ylasa, shuni aytadi. Hatto boshqalarning kamchiligini ham to'g'ridan-to'g'ri aytadi. Bunday odam rostgo'y bo'lsa ham, boshqalarda tushunmovchilik keltirib chiqarishi mumkin.",
+            "ru": "Некоторые говорят всё, что думают, и даже чужие недостатки высказывают прямо. Такой человек честный, но может вызвать недоразумение.",
+            "tj": "Баъзе одамон ҳар чӣ дар дил доранд, ҳамонро мегӯянд. Ҳатто камбудии дигаронро рӯирост мегӯянд. Чунин одам ростқавл бошад ҳам, метавонад нофаҳмӣ ба вуҷуд орад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "有的人虽然也看到了别人的缺点，但却不会直接指出来，而是通过别的方法来提醒，让他认识到自己的缺点，这样的人会让人觉得更友好。",
+          "pinyin": "Yǒu de rén suīrán yě kàndào le biérén de quēdiǎn, dàn què bú huì zhíjiē zhǐ chūlai, ér shì tōngguò bié de fāngfǎ lái tíxǐng, ràng tā rènshi dào zìjǐ de quēdiǎn, zhèyàng de rén huì ràng rén juéde gèng yǒuhǎo.",
+          "text": {
+            "uz": "Ba'zilar boshqalarning kamchiligini ko'rsa ham, uni to'g'ridan-to'g'ri ko'rsatmaydi, boshqa usul bilan eslatib, o'z kamchiligini anglatadi. Bunday odamlar do'stonaroq tuyuladi.",
+            "ru": "Другие, хотя и видят недостатки, не указывают прямо, а напоминают другим способом, чтобы человек сам осознал недостаток. Такие люди кажутся дружелюбнее.",
+            "tj": "Баъзеҳо камбудии дигаронро бинанд ҳам, рӯирост нишон намедиҳанд, балки бо роҳи дигар ёдрас мекунанд, то шахс камбудии худро фаҳмад. Чунин одамон дӯстона менамоянд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O'qishda va ishda to'g'ri metod tanlash haqida matn",
+        "ru": "Текст о выборе правильного метода в учёбе и делах",
+        "tj": "Матн дар бораи интихоби усули дуруст дар омӯзиш ва кор"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "无论做什么事情，都要注意方法，学习尤其是这样。使用正确的方法，我们做起事来能“事半功倍”，也就是说，能节约时间，用较少的力气，取得更好的效果。",
+          "pinyin": "Wúlùn zuò shénme shìqing, dōu yào zhùyì fāngfǎ, xuéxí yóuqí shì zhèyàng. Shǐyòng zhèngquè de fāngfǎ, wǒmen zuò qǐ shì lai néng “shì bàn gōng bèi”, yě jiù shì shuō, néng jiéyuē shíjiān, yòng jiào shǎo de lìqi, qǔdé gèng hǎo de xiàoguǒ.",
+          "text": {
+            "uz": "Nima ish qilmaylik, usulga e'tibor berish kerak, o'qishda ayniqsa shunday. To'g'ri usul ishlatilsa, kam kuch bilan ko'p natija olinadi, ya'ni vaqt tejaladi, kamroq kuch bilan yaxshiroq natijaga erishiladi.",
+            "ru": "Что бы мы ни делали, нужно обращать внимание на метод, особенно в учёбе. Правильный метод даёт больший результат меньшими усилиями, экономит время и силы.",
+            "tj": "Ҳар коре кунем, бояд ба усул аҳамият диҳем, махсусан дар омӯзиш. Усули дуруст бо кӯшиши кам натиҷаи зиёд медиҳад, вақт ва қувватро сарфа мекунад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "相反，如果方法不对，可能花五倍甚至十倍的时间都不能完成任务，结果变成了“事倍功半”。",
+          "pinyin": "Xiāngfǎn, rúguǒ fāngfǎ bú duì, kěnéng huā wǔ bèi shènzhì shí bèi de shíjiān dōu bù néng wánchéng rènwu, jiéguǒ biàn chéng le “shì bèi gōng bàn”.",
+          "text": {
+            "uz": "Aksincha, usul noto'g'ri bo'lsa, besh yoki hatto o'n baravar vaqt sarflab ham vazifani tugatolmaslik mumkin, natija esa ko'p kuch bilan kam natija bo'ladi.",
+            "ru": "Наоборот, если метод неверный, можно потратить в пять или даже десять раз больше времени и не выполнить задачу, получив малый результат большими усилиями.",
+            "tj": "Баръакс, агар усул нодуруст бошад, мумкин аст панҷ ё ҳатто даҳ баробар вақт сарф карда ҳам вазифаро анҷом надиҳем, натиҷа бошад кӯшиши зиёд ва самари кам мешавад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "有一点需要提醒大家，别人的方法也许很有效，但是并不一定适合自己。",
+          "pinyin": "Yǒu yì diǎn xūyào tíxǐng dàjiā, biérén de fāngfǎ yěxǔ hěn yǒuxiào, dànshì bìng bù yídìng shìhé zìjǐ.",
+          "text": {
+            "uz": "Bir narsani eslatish kerak: boshqalarning usuli juda samarali bo'lishi mumkin, lekin u albatta sizga mos keladi degani emas.",
+            "ru": "Нужно напомнить одно: чужой метод может быть эффективным, но не обязательно подходит вам.",
+            "tj": "Як чизро бояд ёдрас кард: усули дигарон шояд хеле самаранок бошад, аммо ҳатман ба худи шумо мувофиқ нест."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "因此，我们应该在听取别人意见的同时，仔细考虑一下，再根据不同的情况选择不同的方法，这样才能达到最好的效果。",
+          "pinyin": "Yīncǐ, wǒmen yīnggāi zài tīngqǔ biérén yìjian de tóngshí, zǐxì kǎolǜ yíxià, zài gēnjù bùtóng de qíngkuàng xuǎnzé bùtóng de fāngfǎ, zhèyàng cái néng dádào zuì hǎo de xiàoguǒ.",
+          "text": {
+            "uz": "Shuning uchun boshqalarning fikrini tinglar ekanmiz, diqqat bilan o'ylab, turli vaziyatga qarab turli usul tanlashimiz kerak, shundagina eng yaxshi natijaga erishamiz.",
+            "ru": "Поэтому, слушая мнения других, нужно тщательно подумать и выбирать методы по разным ситуациям, только так можно добиться лучшего результата.",
+            "tj": "Бинобар ин, ҳангоми шунидани фикри дигарон бояд бодиққат фикр карда, мувофиқи вазъиятҳои гуногун усулҳои гуногун интихоб кунем, танҳо ҳамин тавр ба натиҷаи беҳтарин мерасем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "任务",
+            "pinyin": "rènwu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "vazifa",
+              "ru": "задача",
+              "tj": "вазифа"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "任务 talaffuzini tanlang:",
+            "ru": "Выберите произношение 任务:",
+            "tj": "Талаффузи 任务-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "sǐ",
+            "rènwu",
+            "guīdìng",
+            "kěxī"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "任务 — rènwu",
+            "ru": "任务 — rènwu",
+            "tj": "任务 — rènwu"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "意见",
+            "pinyin": "yìjian",
+            "pos": "n.",
+            "meaning": {
+              "uz": "fikr, taklif",
+              "ru": "мнение, предложение",
+              "tj": "фикр, пешниҳод"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'fikr, taklif' xitoycha qaysi?",
+            "ru": "'мнение, предложение' по-китайски?",
+            "tj": "'фикр, пешниҳод' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "可惜",
+            "规定",
+            "死",
+            "意见"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "fikr, taklif = 意见 (yìjian)",
+            "ru": "мнение, предложение = 意见 (yìjian)",
+            "tj": "фикр, пешниҳод = 意见 (yìjian)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "仔细",
+            "pinyin": "zǐxì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "diqqatli, sinchkov",
+              "ru": "внимательный, тщательно",
+              "tj": "бодиққат"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "仔细",
+          "pinyin": "zǐxì",
+          "options": [
+            "规定",
+            "死",
+            "可惜",
+            "仔细"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "仔细 — diqqatli, sinchkov (zǐxì)",
+            "ru": "仔细 — внимательный, тщательно (zǐxì)",
+            "tj": "仔细 — бодиққат (zǐxì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "达到",
+            "pinyin": "dádào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "erishmoq",
+              "ru": "достигать",
+              "tj": "расидан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "达到",
+          "pinyin": "dádào",
+          "translation": {
+            "uz": "erishmoq",
+            "ru": "достигать",
+            "tj": "расидан"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "达到 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 达到:",
+            "tj": "Маънои калимаи 达到-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erishmoq",
+              "ru": "достигать",
+              "tj": "расидан"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "达到 = erishmoq (dádào)",
+            "ru": "达到 = достигать (dádào)",
+            "tj": "达到 = расидан (dádào)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "rènwu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается rènwu?",
+            "tj": "rènwu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "死",
+            "规定",
+            "任务",
+            "可惜"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "任务 = vazifa (rènwu)",
+            "ru": "任务 = задача (rènwu)",
+            "tj": "任务 = вазифа (rènwu)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "任务",
+              {
+                "uz": "vazifa",
+                "ru": "задача",
+                "tj": "вазифа"
+              }
+            ],
+            [
+              "意见",
+              {
+                "uz": "fikr, taklif",
+                "ru": "мнение, предложение",
+                "tj": "фикр, пешниҳод"
+              }
+            ],
+            [
+              "仔细",
+              {
+                "uz": "diqqatli, sinchkov",
+                "ru": "внимательный, тщательно",
+                "tj": "бодиққат"
+              }
+            ],
+            [
+              "达到",
+              {
+                "uz": "erishmoq",
+                "ru": "достигать",
+                "tj": "расидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "任务",
+          "pinyin": "rènwu",
+          "options": [
+            "可惜",
+            "死",
+            "任务",
+            "规定"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "任务 — vazifa (rènwu)",
+            "ru": "任务 — задача (rènwu)",
+            "tj": "任务 — вазифа (rènwu)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "友好 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 友好:",
+            "tj": "Маънои калимаи 友好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            },
+            {
+              "uz": "do'stona",
+              "ru": "дружелюбный",
+              "tj": "дӯстона"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "友好 = do'stona (yǒuhǎo)",
+            "ru": "友好 = дружелюбный (yǒuhǎo)",
+            "tj": "友好 = дӯстона (yǒuhǎo)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "达到",
+          "pinyin": "dádào",
+          "options": [
+            "可惜",
+            "达到",
+            "规定",
+            "死"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "达到 — erishmoq (dádào)",
+            "ru": "达到 — достигать (dádào)",
+            "tj": "达到 — расидан (dádào)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'fikr, taklif' xitoycha qaysi?",
+            "ru": "'мнение, предложение' по-китайски?",
+            "tj": "'фикр, пешниҳод' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "可惜",
+            "死",
+            "意见",
+            "规定"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "fikr, taklif = 意见 (yìjian)",
+            "ru": "мнение, предложение = 意见 (yìjian)",
+            "tj": "фикр, пешниҳод = 意见 (yìjian)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zǐxì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zǐxì?",
+            "tj": "zǐxì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "可惜",
+            "仔细",
+            "死",
+            "规定"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "仔细 = diqqatli, sinchkov (zǐxì)",
+            "ru": "仔细 = внимательный, тщательно (zǐxì)",
+            "tj": "仔细 = бодиққат (zǐxì)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "达到",
+          "pinyin": "dádào",
+          "translation": {
+            "uz": "erishmoq",
+            "ru": "достигать",
+            "tj": "расидан"
+          }
+        }
+      ]
+    }
+  ]
+}

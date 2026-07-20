@@ -1,0 +1,750 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 100,
+  "source_lesson": 19,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你没看出来吗",
+  "subtitle": {
+    "uz": "Yo'nalish to'ldiruvchilarining ko'chma ma'nolari (出来/起来/下去), '使/叫/让' kauzativ fe'llari va '经过+joy' iborasi",
+    "ru": "Переносное значение направленных дополнений (出来/起来/下去), каузативные глаголы '使/叫/让' и выражение '经过+место'",
+    "tj": "Маъноҳои маҷозии пуркунандаҳои самтӣ (出来/起来/下去), феълҳои каузативии '使/叫/让' ва ибораи '经过+ҷой'"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "耳朵",
+      "pinyin": "ěrduo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "quloq",
+        "ru": "ухо",
+        "tj": "гӯш"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "脸",
+      "pinyin": "liǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yuz",
+        "ru": "лицо",
+        "tj": "рӯй"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "短",
+      "pinyin": "duǎn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kalta, qisqa",
+        "ru": "короткий",
+        "tj": "кӯтоҳ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "马",
+      "pinyin": "mǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ot",
+        "ru": "лошадь",
+        "tj": "асп"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Yo'nalish to'ldiruvchilarining ko'chma ma'nolari: 出来/起来/下去",
+        "ru": "Переносное значение направленных дополнений: 出来/起来/下去",
+        "tj": "Маъноҳои маҷозии пуркунандаҳои самтӣ: 出来/起来/下去"
+      },
+      "title_zh": "趋向补语引申义：出来/起来/下去",
+      "rule": {
+        "uz": "出来 = nimadir oshkor bo'lmoq/paydo bo'lmoq (看出来 = sezib olmoq); 起来 = harakat yoki holat boshlanmoq (笑起来 = kulib yubormoq); 下去 = harakat davom etmoq (坚持下去 = davom ettirmoq). Bular ko'chma/majoziy ma'nolar.",
+        "ru": "出来 = что-то обнаруживается/появляется (看出来 = заметить); 起来 = действие или состояние начинается (笑起来 = засмеяться); 下去 = действие продолжается (坚持下去 = продолжать держаться). Это переносные значения.",
+        "tj": "出来 = чизе ошкор мешавад/пайдо мешавад (看出来 = пай бурдан); 起来 = амал ё ҳолат оғоз меёбад (笑起来 = хандидан гирифтан); 下去 = амал идома меёбад (坚持下去 = идома додан). Инҳо маъноҳои маҷозӣ ҳастанд."
+      },
+      "examples": [
+        {
+          "zh": "你没看出来她变了吗？",
+          "pinyin": "Nǐ méi kàn chū lái tā biàn le ma?",
+          "translation": {
+            "uz": "Siz uning o'zgarganini sezmadingizmi?",
+            "ru": "Ты разве не заметил, что она изменилась?",
+            "tj": "Шумо пай набурдед, ки вай тағйир ёфт?"
+          }
+        },
+        {
+          "zh": "只要坚持下去，就能成功！",
+          "pinyin": "Zhǐyào jiānchí xià qù, jiù néng chénggōng!",
+          "translation": {
+            "uz": "Faqat davom etsangiz, muvaffaqiyat qozonasiz!",
+            "ru": "Только продолжай — и добьёшься успеха!",
+            "tj": "Танҳо идома диҳед, муваффақ мешавед!"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda qiz haqida",
+        "ru": "Дома о дочери",
+        "tj": "Дар хона дар бораи духтар"
+      },
+      "dialogue": [
+        {
+          "speaker": "爸爸",
+          "zh": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+          "pinyin": "Nǚ'ér zuìjìn xǐhuan bǎ tóufa fàng zài ěrduo hòumiàn, nǐ zhīdào wèi shénme ma?",
+          "text": {
+            "uz": "Qizimiz yaqinda sochini qulog'ining orqasiga qo'yishni yoqtirib qoldi, nima uchunligini bilasanmi?",
+            "ru": "Дочь в последнее время любит убирать волосы за уши, знаешь почему?",
+            "tj": "Духтарамон вақтҳои охир мӯяшро пушти гӯш мегузорад, медонӣ чаро?"
+          }
+        },
+        {
+          "speaker": "妈妈",
+          "zh": "这样可以使她的脸看上去漂亮一些。",
+          "pinyin": "Zhèyàng kěyǐ shǐ tā de liǎn kàn shangqu piàoliang yìxiē.",
+          "text": {
+            "uz": "Shunday qilsa, yuzi biroz chiroyliroq ko'rinadi.",
+            "ru": "Так ее лицо выглядит немного красивее.",
+            "tj": "Ин тавр рӯяш каме зеботар менамояд."
+          }
+        },
+        {
+          "speaker": "爸爸",
+          "zh": "我最近觉得她和以前不太一样了。",
+          "pinyin": "Wǒ zuìjìn juéde tā hé yǐqián bú tài yíyàng le.",
+          "text": {
+            "uz": "So'nggi paytlar u avvalgidek emasligini sezayapman.",
+            "ru": "В последнее время мне кажется, что она уже не такая, как раньше.",
+            "tj": "Вақтҳои охир ҳис мекунам, ки ӯ дигар мисли пеш нест."
+          }
+        },
+        {
+          "speaker": "妈妈",
+          "zh": "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
+          "pinyin": "Nǚ'ér biànhuà bù xiǎo, tā xiǎo shíhou xǐhuan duǎn tóufa, xiàng nán háizi yíyàng.",
+          "text": {
+            "uz": "Qizimiz ancha o'zgardi, kichkinaligida kalta sochni yoqtirardi, xuddi o'g'il boladek edi.",
+            "ru": "Дочь сильно изменилась. В детстве она любила короткие волосы, была как мальчик.",
+            "tj": "Духтарамон хеле тағйир ёфтааст, хурдсолӣ мӯи кӯтоҳро дӯст медошт, мисли писарбача буд."
+          }
+        },
+        {
+          "speaker": "爸爸",
+          "zh": "我也想起来了。她现在慢慢地开始像个女孩子了。",
+          "pinyin": "Wǒ yě xiǎng qǐlai le. Tā xiànzài mànmàn de kāishǐ xiàng ge nǚ háizi le.",
+          "text": {
+            "uz": "Men ham esladim. Hozir u asta-sekin qiz bolaga o'xshab boryapti.",
+            "ru": "Я тоже вспомнил. Сейчас она постепенно начинает становиться похожей на девочку.",
+            "tj": "Ман ҳам ба ёд овардам. Ҳоло ӯ оҳиста-оҳиста ба духтарбача монанд мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Fotosurat ko'rish",
+        "ru": "Просмотр фотографии",
+        "tj": "Дидани сурат"
+      },
+      "dialogue": [
+        {
+          "speaker": "小丽",
+          "zh": "上次我们参加骑马比赛的照片，我选了几张洗出来了。",
+          "pinyin": "Shàng cì wǒmen cānjiā qí mǎ bǐsài de zhàopiàn, wǒ xuǎn le jǐ zhāng xǐ chūlai le.",
+          "text": {
+            "uz": "O'tgan safar ot minish musobaqasida tushgan suratlarimizdan bir nechtasini tanlab chiqardim.",
+            "ru": "Я выбрала и распечатала несколько фотографий с прошлых соревнований по верховой езде.",
+            "tj": "Аз аксҳои мусобиқаи аспсавории дафъаи гузашта чандтоашро интихоб карда чоп кардам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "快给我看看。骑得最快的这位是谁？",
+          "pinyin": "Kuài gěi wǒ kànkan. Qí de zuì kuài de zhè wèi shì shéi?",
+          "text": {
+            "uz": "Tezroq ko'rsat. Eng tez mingan bu kishi kim?",
+            "ru": "Скорее покажи. Кто этот человек, который ехал быстрее всех?",
+            "tj": "Зуд ба ман нишон деҳ. Ин шахсе, ки аз ҳама тез савор шудааст, кист?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "你没看出来吗？他是小刚啊。",
+          "pinyin": "Nǐ méi kàn chūlai ma? Tā shì Xiǎogāng a.",
+          "text": {
+            "uz": "Tanimadingmi? Bu Xiaogang-ku.",
+            "ru": "Ты не узнал? Это Сяоган.",
+            "tj": "Нашинохтӣ? Ин Сяогang аст."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "怎么看上去跟现在不太一样？",
+          "pinyin": "Zěnme kàn shangqu gēn xiànzài bú tài yíyàng?",
+          "text": {
+            "uz": "Nega hozirgidan boshqacharoq ko'rinadi?",
+            "ru": "Почему он выглядит не совсем так, как сейчас?",
+            "tj": "Чаро аз ҳозирааш каме дигар менамояд?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "他上班穿西服、衬衫，比赛的时候穿的是运动服。",
+          "pinyin": "Tā shàng bān chuān xīfú, chènshān, bǐsài de shíhou chuān de shì yùndòngfú.",
+          "text": {
+            "uz": "Ishda u kostyum va ko'ylak kiyadi, musobaqada esa sport kiyimi kiygan.",
+            "ru": "На работе он носит костюм и рубашку, а на соревнованиях был в спортивной форме.",
+            "tj": "Дар кор костюм ва курта мепӯшад, дар мусобиқа бошад либоси варзишӣ пӯшидааст."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "他今天穿蓝西服，看上去像40多岁，还是穿运动服让他更年轻。",
+          "pinyin": "Tā jīntiān chuān lán xīfú, kàn shangqu xiàng sìshí duō suì, háishi chuān yùndòngfú ràng tā gèng niánqīng.",
+          "text": {
+            "uz": "U bugun ko'k kostyum kiygan, 40 yoshdan oshgandek ko'rinadi, sport kiyimi uni baribir yoshroq ko'rsatadi.",
+            "ru": "Сегодня он в синем костюме и выглядит за сорок, спортивная форма все-таки делает его моложе.",
+            "tj": "Ӯ имрӯз костюми кабуд пӯшидааст, мисли аз 40 гузашта менамояд, либоси варзишӣ ӯро ҷавонтар нишон медиҳад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiaolining uyida sovg'a haqida",
+        "ru": "У Сяоли дома о подарке",
+        "tj": "Дар хонаи Сяоли дар бораи туҳфа"
+      },
+      "dialogue": [
+        {
+          "speaker": "朋友",
+          "zh": "我们一年没见面了吧？",
+          "pinyin": "Wǒmen yì nián méi jiànmiàn le ba?",
+          "text": {
+            "uz": "Bir yildan beri ko'rishmadik-a?",
+            "ru": "Мы ведь не виделись уже год?",
+            "tj": "Як сол боз надидаем-а?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "听说你都有女儿了？她多大了？",
+          "pinyin": "Tīngshuō nǐ dōu yǒu nǚ'ér le? Tā duō dà le?",
+          "text": {
+            "uz": "Eshitishimcha, hatto qizing ham bor ekan? U nechida?",
+            "ru": "Слышала, у тебя уже дочь? Сколько ей лет?",
+            "tj": "Шунидам, ки аллакай духтардор шудаӣ? Чандсола аст?"
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "她去年秋天出生的，刚过完一岁生日。",
+          "pinyin": "Tā qùnián qiūtiān chūshēng de, gāng guò wán yì suì shēngrì.",
+          "text": {
+            "uz": "U o'tgan kuzda tug'ilgan, hozirgina bir yoshini o'tkazdi.",
+            "ru": "Она родилась прошлой осенью, только что отметила первый день рождения.",
+            "tj": "Ӯ тирамоҳи гузашта таваллуд шудааст, навакак яксолагиашро гузаронд."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "她喜欢什么？我送给她。",
+          "pinyin": "Tā xǐhuan shénme? Wǒ sòng gěi tā.",
+          "text": {
+            "uz": "U nimani yoqtiradi? Men unga sovg'a qilaman.",
+            "ru": "Что она любит? Я подарю ей.",
+            "tj": "Ӯ чиро дӯст медорад? Ман ба ӯ медиҳам."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "她就喜欢听她爸爸学鸟叫。哭的时候，只要她爸爸学小鸟叫，她马上就安静下来了。",
+          "pinyin": "Tā jiù xǐhuan tīng tā bàba xué niǎo jiào. Kū de shíhou, zhǐyào tā bàba xué xiǎo niǎo jiào, tā mǎshàng jiù ānjìng xiàlai le.",
+          "text": {
+            "uz": "U faqat dadasining qush ovozini taqlid qilishini eshitishni yoqtiradi. Yig'laganda dadasi qushcha ovozini qilsa, darhol tinchlanadi.",
+            "ru": "Она любит слушать, как папа изображает птичку. Когда плачет, стоит папе изобразить птичку, она сразу успокаивается.",
+            "tj": "Ӯ танҳо шунидани садои парандаи падарашро дӯст медорад. Вақте гиря мекунад, агар падараш садои паранда кунад, фавран ором мешавад."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "啊？这个礼物我没办法送。",
+          "pinyin": "A? Zhège lǐwù wǒ méi bànfǎ sòng.",
+          "text": {
+            "uz": "A? Bunday sovg'ani men bera olmayman.",
+            "ru": "А? Такой подарок я не смогу подарить.",
+            "tj": "А? Ин гуна туҳфаро ман дода наметавонам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sayohat haqida matn",
+        "ru": "Текст о путешествии",
+        "tj": "Матн дар бораи сафар"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "这次旅游，我去了不少地方，每个地方都让我非常难忘。我先去看了黄河，黄河是中国有名的大河，我坐在船上，一边看一边照相。一路上经过了很多地方，每个地方都不一样。我想快点儿把照片发给大家，叫朋友们也高兴高兴。",
+          "pinyin": "Zhè cì lǚyóu, wǒ qù le bù shǎo dìfang, měi ge dìfang dōu ràng wǒ fēicháng nánwàng. Wǒ xiān qù kàn le Huáng Hé, Huáng Hé shì Zhōngguó yǒumíng de dà hé, wǒ zuò zài chuán shang, yìbiān kàn yìbiān zhàoxiàng. Yí lù shang jīngguò le hěn duō dìfang, měi ge dìfang dōu bù yíyàng. Wǒ xiǎng kuài diǎnr bǎ zhàopiàn fā gěi dàjiā, jiào péngyoumen yě gāoxìng gāoxìng.",
+          "text": {
+            "uz": "Bu sayohatda ko'p joylarga bordim, har bir joy menda unutilmas taassurot qoldirdi. Avval Huanghe daryosini ko'rdim. Huanghe Xitoydagi mashhur katta daryo. Men kemada o'tirib, bir tomondan tomosha qildim, bir tomondan suratga oldim. Yo'l davomida ko'p joylardan o'tdik, har bir joy har xil edi. Suratlarni tezroq hammaga yuborib, do'stlarimni ham xursand qilmoqchiman.",
+            "ru": "В этой поездке я побывал во многих местах, каждое место оставило незабываемое впечатление. Сначала я посмотрел Хуанхэ. Хуанхэ - известная большая река Китая. Я сидел на лодке, смотрел и фотографировал. По дороге мы прошли через много мест, каждое было другим. Хочу поскорее отправить фотографии всем, чтобы друзья тоже порадовались.",
+            "tj": "Дар ин сафар ба ҷойҳои зиёд рафтам, ҳар ҷой барои ман фаромӯшнашаванда буд. Аввал Ҳуанхэро дидам. Ҳуанхэ дарёи бузурги машҳури Чин аст. Ман дар киштӣ нишаста, ҳам тамошо мекардам, ҳам акс мегирифтам. Дар роҳ аз ҷойҳои зиёд гузаштем, ҳар ҷой гуногун буд. Мехоҳам зудтар аксҳоро ба ҳама фиристам, то дӯстонам ҳам хурсанд шаванд."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "耳朵",
+            "pinyin": "ěrduo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "耳朵",
+          "pinyin": "ěrduo",
+          "options": [
+            "脸",
+            "耳朵",
+            "短",
+            "马"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "耳朵 — quloq (ěrduo)",
+            "ru": "耳朵 — ухо (ěrduo)",
+            "tj": "耳朵 — гӯш (ěrduo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "脸",
+            "pinyin": "liǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yuz",
+              "ru": "лицо",
+              "tj": "рӯй"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "脸 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 脸:",
+            "tj": "Маънои калимаи 脸-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
+              "uz": "yuz",
+              "ru": "лицо",
+              "tj": "рӯй"
+            },
+            {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            },
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "脸 = yuz (liǎn)",
+            "ru": "脸 = лицо (liǎn)",
+            "tj": "脸 = рӯй (liǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "短",
+            "pinyin": "duǎn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "duǎn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается duǎn?",
+            "tj": "duǎn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "脸",
+            "马",
+            "短",
+            "耳朵"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "短 = kalta, qisqa (duǎn)",
+            "ru": "短 = короткий (duǎn)",
+            "tj": "短 = кӯтоҳ (duǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "马",
+            "pinyin": "mǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "马",
+          "pinyin": "mǎ",
+          "translation": {
+            "uz": "ot",
+            "ru": "лошадь",
+            "tj": "асп"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "马 talaffuzini tanlang:",
+            "ru": "Выберите произношение 马:",
+            "tj": "Талаффузи 马-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "liǎn",
+            "ěrduo",
+            "duǎn",
+            "mǎ"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "马 — mǎ",
+            "ru": "马 — mǎ",
+            "tj": "马 — mǎ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'quloq' xitoycha qaysi?",
+            "ru": "'ухо' по-китайски?",
+            "tj": "'гӯш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "马",
+            "短",
+            "脸",
+            "耳朵"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "quloq = 耳朵 (ěrduo)",
+            "ru": "ухо = 耳朵 (ěrduo)",
+            "tj": "гӯш = 耳朵 (ěrduo)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "耳朵",
+              {
+                "uz": "quloq",
+                "ru": "ухо",
+                "tj": "гӯш"
+              }
+            ],
+            [
+              "脸",
+              {
+                "uz": "yuz",
+                "ru": "лицо",
+                "tj": "рӯй"
+              }
+            ],
+            [
+              "短",
+              {
+                "uz": "kalta, qisqa",
+                "ru": "короткий",
+                "tj": "кӯтоҳ"
+              }
+            ],
+            [
+              "马",
+              {
+                "uz": "ot",
+                "ru": "лошадь",
+                "tj": "асп"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Yo'nalish to'ldiruvchilarining ko'chma ma'nolari: 出来/起来/下去",
+              "ru": "Переносное значение направленных дополнений: 出来/起来/下去",
+              "tj": "Маъноҳои маҷозии пуркунандаҳои самтӣ: 出来/起来/下去"
+            },
+            "title_zh": "趋向补语引申义：出来/起来/下去",
+            "rule": {
+              "uz": "出来 = nimadir oshkor bo'lmoq/paydo bo'lmoq (看出来 = sezib olmoq); 起来 = harakat yoki holat boshlanmoq (笑起来 = kulib yubormoq); 下去 = harakat davom etmoq (坚持下去 = davom ettirmoq). Bular ko'chma/majoziy ma'nolar.",
+              "ru": "出来 = что-то обнаруживается/появляется (看出来 = заметить); 起来 = действие или состояние начинается (笑起来 = засмеяться); 下去 = действие продолжается (坚持下去 = продолжать держаться). Это переносные значения.",
+              "tj": "出来 = чизе ошкор мешавад/пайдо мешавад (看出来 = пай бурдан); 起来 = амал ё ҳолат оғоз меёбад (笑起来 = хандидан гирифтан); 下去 = амал идома меёбад (坚持下去 = идома додан). Инҳо маъноҳои маҷозӣ ҳастанд."
+            },
+            "examples": [
+              {
+                "zh": "你没看出来她变了吗？",
+                "pinyin": "Nǐ méi kàn chū lái tā biàn le ma?",
+                "translation": {
+                  "uz": "Siz uning o'zgarganini sezmadingizmi?",
+                  "ru": "Ты разве не заметил, что она изменилась?",
+                  "tj": "Шумо пай набурдед, ки вай тағйир ёфт?"
+                }
+              },
+              {
+                "zh": "只要坚持下去，就能成功！",
+                "pinyin": "Zhǐyào jiānchí xià qù, jiù néng chénggōng!",
+                "translation": {
+                  "uz": "Faqat davom etsangiz, muvaffaqiyat qozonasiz!",
+                  "ru": "Только продолжай — и добьёшься успеха!",
+                  "tj": "Танҳо идома диҳед, муваффақ мешавед!"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "耳朵",
+              {
+                "uz": "quloq",
+                "ru": "ухо",
+                "tj": "гӯш"
+              }
+            ],
+            [
+              "脸",
+              {
+                "uz": "yuz",
+                "ru": "лицо",
+                "tj": "рӯй"
+              }
+            ],
+            [
+              "短",
+              {
+                "uz": "kalta, qisqa",
+                "ru": "короткий",
+                "tj": "кӯтоҳ"
+              }
+            ],
+            [
+              "马",
+              {
+                "uz": "ot",
+                "ru": "лошадь",
+                "tj": "асп"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+          "pinyin": "Nǚ'ér zuìjìn xǐhuan bǎ tóufa fàng zài ěrduo hòumiàn, nǐ zhīdào wèi shénme ma?",
+          "options": [
+            "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "我最近觉得她和以前不太一样了。",
+            "这样可以使她的脸看上去漂亮一些。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Qizimiz yaqinda sochini qulog'ining orqasiga qo'yishni yoqtirib qoldi, nima uchunligini bilasanmi?",
+            "ru": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Дочь в последнее время любит убирать волосы за уши, знаешь почему?",
+            "tj": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Духтарамон вақтҳои охир мӯяшро пушти гӯш мегузорад, медонӣ чаро?"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "生活 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生活:",
+            "tj": "Маънои калимаи 生活-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hayot",
+              "ru": "жизнь",
+              "tj": "зиндагӣ"
+            },
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            },
+            {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
+              "uz": "yuz",
+              "ru": "лицо",
+              "tj": "рӯй"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "生活 = hayot (shēnghuó)",
+            "ru": "生活 = жизнь (shēnghuó)",
+            "tj": "生活 = зиндагӣ (shēnghuó)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "马",
+          "pinyin": "mǎ",
+          "translation": {
+            "uz": "ot",
+            "ru": "лошадь",
+            "tj": "асп"
+          }
+        }
+      ]
+    }
+  ]
+}

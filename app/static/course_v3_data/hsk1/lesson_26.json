@@ -1,0 +1,736 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 26,
+  "source_lesson": 8,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我想喝茶",
+  "subtitle": {
+    "uz": "Istak bildirish, narx so'rash va o'lchov so'zlarini o'rganish",
+    "ru": "Выражение желаний, спрашивание цены и изучение счётных слов",
+    "tj": "Ифодаи орзуҳо, пурсидани нарх ва омӯзиши калимаҳои шуморавӣ"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "想",
+      "pinyin": "xiǎng",
+      "pos": "mod.",
+      "meaning": {
+        "uz": "xohlamoq, istаmoq",
+        "ru": "хотеть, желать",
+        "tj": "хостан, орзу доштан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "喝",
+      "pinyin": "hē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ichmoq",
+        "ru": "пить",
+        "tj": "нӯшидан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "茶",
+      "pinyin": "chá",
+      "pos": "n.",
+      "meaning": {
+        "uz": "choy",
+        "ru": "чай",
+        "tj": "чой"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "吃",
+      "pinyin": "chī",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yemoq",
+        "ru": "есть, кушать",
+        "tj": "хӯрдан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Modal fe'l 想 (xohlamoq)",
+        "ru": "Модальный глагол 想 (хотеть)",
+        "tj": "Феъли модалии 想 (хостан)"
+      },
+      "title_zh": "能愿动词 想 — Modal fe'l 想",
+      "rule": {
+        "uz": "想 (xiǎng) — istak yoki niyatni bildiradi.\nTuzilishi: Ega + 想 + Fe'l + To'ldiruvchi\n\nTasdiq: 我想喝茶。— Men choy ichmoqchiman.\nSavol: 你想做什么？— Nima qilmoqchisiz?\n\n想 va 会:\n我想说汉语。— Men xitoycha gapirmoqchiman (istak).\n我会说汉语。— Men xitoycha gapira olaman (qobiliyat).",
+        "ru": "想 (xiǎng) — выражает желание или намерение.\nСтруктура: Подлежащее + 想 + Глагол + Дополнение\n\nУтверждение: 我想喝茶。— Я хочу выпить чай.\nВопрос: 你想做什么？— Что вы хотите делать?\n\n想 и 会:\n我想说汉语。— Я хочу говорить по-китайски (желание).\n我会说汉语。— Я умею говорить по-китайски (способность).",
+        "tj": "想 (xiǎng) — орзу ё ниятро ифода мекунад.\nСохт: Мубтадо + 想 + Феъл + Пуркунанда\n\nТасдиқ: 我想喝茶。— Ман чой нӯшидан мехоҳам.\nСавол: 你想做什么？— Шумо чӣ кардан мехоҳед?\n\n想 ва 会:\n我想说汉语。— Ман забони чинӣ гап задан мехоҳам (орзу).\n我会说汉语。— Ман забони чинӣ гап зада метавонам (тавоноӣ)."
+      },
+      "examples": [
+        {
+          "zh": "我想喝茶。",
+          "pinyin": "Wǒ xiǎng hē chá.",
+          "translation": {
+            "uz": "Men choy ichmoqchiman.",
+            "ru": "Я хочу выпить чай.",
+            "tj": "Ман чой нӯшидан мехоҳам."
+          }
+        },
+        {
+          "zh": "她想去学校看书。",
+          "pinyin": "Tā xiǎng qù xuéxiào kàn shū.",
+          "translation": {
+            "uz": "U maktabga kitob o'qigani bormoqchi.",
+            "ru": "Она хочет пойти в школу почитать.",
+            "tj": "Вай мехоҳад ба мактаб рафта китоб хонад."
+          }
+        },
+        {
+          "zh": "你想买什么？",
+          "pinyin": "Nǐ xiǎng mǎi shénme?",
+          "translation": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Шумо чӣ харидан мехоҳед?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda — nima ichish/yeyish",
+        "ru": "В ресторане — что пить/есть",
+        "tj": "Дар тарабхона — чӣ нӯшидан/хӯрдан"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你想喝什么？",
+          "pinyin": "Nǐ xiǎng hē shénme?",
+          "text": {
+            "uz": "Nima ichmoqchisiz?",
+            "ru": "Что вы хотите выпить?",
+            "tj": "Шумо чӣ нӯшидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想喝茶。",
+          "pinyin": "Wǒ xiǎng hē chá.",
+          "text": {
+            "uz": "Men choy ichmoqchiman.",
+            "ru": "Я хочу выпить чай.",
+            "tj": "Ман чой нӯшидан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想吃什么？",
+          "pinyin": "Nǐ xiǎng chī shénme?",
+          "text": {
+            "uz": "Nima yemoqchisiz?",
+            "ru": "Что вы хотите поесть?",
+            "tj": "Шумо чӣ хӯрдан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想吃米饭。",
+          "pinyin": "Wǒ xiǎng chī mǐfàn.",
+          "text": {
+            "uz": "Men guruch yemoqchiman.",
+            "ru": "Я хочу поесть риса.",
+            "tj": "Ман биринҷ хӯрдан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada — tushdan keyingi reja",
+        "ru": "В гостинице — планы на вторую половину дня",
+        "tj": "Дар меҳмонхона — нақшаи баъд аз нисфирӯзӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "下午你想做什么？",
+          "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+          "text": {
+            "uz": "Tushdan keyin nima qilmoqchisiz?",
+            "ru": "Что вы хотите делать во второй половине дня?",
+            "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "下午我想去商店。",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù shāngdiàn.",
+          "text": {
+            "uz": "Tushdan keyin do'konga bormoqchiman.",
+            "ru": "После полудня я хочу сходить в магазин.",
+            "tj": "Баъд аз нисфирӯзӣ ба мағоза рафтан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想买什么？",
+          "pinyin": "Nǐ xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Шумо чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想买一个杯子。",
+          "pinyin": "Wǒ xiǎng mǎi yī gè bēizi.",
+          "text": {
+            "uz": "Bir dona piyola sotib olmoqchiman.",
+            "ru": "Я хочу купить одну кружку.",
+            "tj": "Ман як дона пиёла харидан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda — narx so'rash",
+        "ru": "В магазине — спрашиваем цену",
+        "tj": "Дар мағоза — пурсидани нарх"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你好！这个杯子多少钱？",
+          "pinyin": "Nǐ hǎo! Zhège bēizi duōshao qián?",
+          "text": {
+            "uz": "Salom! Bu piyola qancha turadi?",
+            "ru": "Здравствуйте! Сколько стоит этот стакан?",
+            "tj": "Салом! Ин пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "28块。",
+          "pinyin": "Èrshíbā kuài.",
+          "text": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那个杯子多少钱？",
+          "pinyin": "Nàge bēizi duōshao qián?",
+          "text": {
+            "uz": "U piyola qancha turadi?",
+            "ru": "Сколько стоит тот стакан?",
+            "tj": "Он пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "那个杯子18块钱。",
+          "pinyin": "Nàge bēizi shíbā kuài qián.",
+          "text": {
+            "uz": "U piyola 18 yuan.",
+            "ru": "Тот стакан стоит 18 юаней.",
+            "tj": "Он пиёла 18 юан аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "想",
+            "pinyin": "xiǎng",
+            "pos": "mod.",
+            "meaning": {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "想 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 想:",
+            "tj": "Маънои калимаи 想-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "yemoq",
+              "ru": "есть, кушать",
+              "tj": "хӯрдан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "想 = xohlamoq, istаmoq (xiǎng)",
+            "ru": "想 = хотеть, желать (xiǎng)",
+            "tj": "想 = хостан, орзу доштан (xiǎng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "喝",
+            "pinyin": "hē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "喝",
+          "pinyin": "hē",
+          "translation": {
+            "uz": "ichmoq",
+            "ru": "пить",
+            "tj": "нӯшидан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hē?",
+            "tj": "hē кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "想",
+            "茶",
+            "喝",
+            "吃"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "喝 = ichmoq (hē)",
+            "ru": "喝 = пить (hē)",
+            "tj": "喝 = нӯшидан (hē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "茶",
+            "pinyin": "chá",
+            "pos": "n.",
+            "meaning": {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "茶 talaffuzini tanlang:",
+            "ru": "Выберите произношение 茶:",
+            "tj": "Талаффузи 茶-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hē",
+            "xiǎng",
+            "chī",
+            "chá"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "茶 — chá",
+            "ru": "茶 — chá",
+            "tj": "茶 — chá"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "吃",
+            "pinyin": "chī",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yemoq",
+              "ru": "есть, кушать",
+              "tj": "хӯрдан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yemoq' xitoycha qaysi?",
+            "ru": "'есть, кушать' по-китайски?",
+            "tj": "'хӯрдан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "吃",
+            "想",
+            "茶",
+            "喝"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yemoq = 吃 (chī)",
+            "ru": "есть, кушать = 吃 (chī)",
+            "tj": "хӯрдан = 吃 (chī)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "想",
+          "pinyin": "xiǎng",
+          "options": [
+            "想",
+            "茶",
+            "吃",
+            "喝"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "想 — xohlamoq, istаmoq (xiǎng)",
+            "ru": "想 — хотеть, желать (xiǎng)",
+            "tj": "想 — хостан, орзу доштан (xiǎng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "想",
+              {
+                "uz": "xohlamoq, istаmoq",
+                "ru": "хотеть, желать",
+                "tj": "хостан, орзу доштан"
+              }
+            ],
+            [
+              "喝",
+              {
+                "uz": "ichmoq",
+                "ru": "пить",
+                "tj": "нӯшидан"
+              }
+            ],
+            [
+              "茶",
+              {
+                "uz": "choy",
+                "ru": "чай",
+                "tj": "чой"
+              }
+            ],
+            [
+              "吃",
+              {
+                "uz": "yemoq",
+                "ru": "есть, кушать",
+                "tj": "хӯрдан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Modal fe'l 想 (xohlamoq)",
+              "ru": "Модальный глагол 想 (хотеть)",
+              "tj": "Феъли модалии 想 (хостан)"
+            },
+            "title_zh": "能愿动词 想 — Modal fe'l 想",
+            "rule": {
+              "uz": "想 (xiǎng) — istak yoki niyatni bildiradi.\nTuzilishi: Ega + 想 + Fe'l + To'ldiruvchi\n\nTasdiq: 我想喝茶。— Men choy ichmoqchiman.\nSavol: 你想做什么？— Nima qilmoqchisiz?\n\n想 va 会:\n我想说汉语。— Men xitoycha gapirmoqchiman (istak).\n我会说汉语。— Men xitoycha gapira olaman (qobiliyat).",
+              "ru": "想 (xiǎng) — выражает желание или намерение.\nСтруктура: Подлежащее + 想 + Глагол + Дополнение\n\nУтверждение: 我想喝茶。— Я хочу выпить чай.\nВопрос: 你想做什么？— Что вы хотите делать?\n\n想 и 会:\n我想说汉语。— Я хочу говорить по-китайски (желание).\n我会说汉语。— Я умею говорить по-китайски (способность).",
+              "tj": "想 (xiǎng) — орзу ё ниятро ифода мекунад.\nСохт: Мубтадо + 想 + Феъл + Пуркунанда\n\nТасдиқ: 我想喝茶。— Ман чой нӯшидан мехоҳам.\nСавол: 你想做什么？— Шумо чӣ кардан мехоҳед?\n\n想 ва 会:\n我想说汉语。— Ман забони чинӣ гап задан мехоҳам (орзу).\n我会说汉语。— Ман забони чинӣ гап зада метавонам (тавоноӣ)."
+            },
+            "examples": [
+              {
+                "zh": "我想喝茶。",
+                "pinyin": "Wǒ xiǎng hē chá.",
+                "translation": {
+                  "uz": "Men choy ichmoqchiman.",
+                  "ru": "Я хочу выпить чай.",
+                  "tj": "Ман чой нӯшидан мехоҳам."
+                }
+              },
+              {
+                "zh": "她想去学校看书。",
+                "pinyin": "Tā xiǎng qù xuéxiào kàn shū.",
+                "translation": {
+                  "uz": "U maktabga kitob o'qigani bormoqchi.",
+                  "ru": "Она хочет пойти в школу почитать.",
+                  "tj": "Вай мехоҳад ба мактаб рафта китоб хонад."
+                }
+              },
+              {
+                "zh": "你想买什么？",
+                "pinyin": "Nǐ xiǎng mǎi shénme?",
+                "translation": {
+                  "uz": "Nima sotib olmoqchisiz?",
+                  "ru": "Что вы хотите купить?",
+                  "tj": "Шумо чӣ харидан мехоҳед?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men choy ichmoqchiman.",
+            "ru": "Я хочу выпить чай.",
+            "tj": "Ман чой нӯшидан мехоҳам."
+          },
+          "tokens": [
+            "茶",
+            "吃",
+            "想",
+            "请",
+            "喝",
+            "我"
+          ],
+          "answer_tokens": [
+            "我",
+            "想",
+            "喝",
+            "茶"
+          ],
+          "explanation": {
+            "uz": "我想喝茶。 — Wǒ xiǎng hē chá.",
+            "ru": "我想喝茶。 — Wǒ xiǎng hē chá.",
+            "tj": "我想喝茶。 — Wǒ xiǎng hē chá."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U maktabga kitob o'qigani bormoqchi.» — xitoychada qaysi biri?",
+            "ru": "«Она хочет пойти в школу почитать.» — какое предложение по-китайски?",
+            "tj": "«Вай мехоҳад ба мактаб рафта китоб хонад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "她想去学校看书。",
+            "你想买什么？",
+            "我想喝茶。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "她想去学校看书。 — Tā xiǎng qù xuéxiào kàn shū.",
+            "ru": "她想去学校看书。 — Tā xiǎng qù xuéxiào kàn shū.",
+            "tj": "她想去学校看书。 — Tā xiǎng qù xuéxiào kàn shū."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你想吃什么？",
+          "pinyin": "Nǐ xiǎng chī shénme?",
+          "options": [
+            "我想吃米饭。",
+            "你想吃什么？",
+            "我想喝茶。",
+            "你想喝什么？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你想吃什么？ — Nima yemoqchisiz?",
+            "ru": "你想吃什么？ — Что вы хотите поесть?",
+            "tj": "你想吃什么？ — Шумо чӣ хӯрдан мехоҳед?"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "想",
+              {
+                "uz": "xohlamoq, istаmoq",
+                "ru": "хотеть, желать",
+                "tj": "хостан, орзу доштан"
+              }
+            ],
+            [
+              "喝",
+              {
+                "uz": "ichmoq",
+                "ru": "пить",
+                "tj": "нӯшидан"
+              }
+            ],
+            [
+              "茶",
+              {
+                "uz": "choy",
+                "ru": "чай",
+                "tj": "чой"
+              }
+            ],
+            [
+              "吃",
+              {
+                "uz": "yemoq",
+                "ru": "есть, кушать",
+                "tj": "хӯрдан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Nima ichmoqchisiz?",
+            "ru": "Что вы хотите выпить?",
+            "tj": "Шумо чӣ нӯшидан мехоҳед?"
+          },
+          "tokens": [
+            "喝",
+            "你",
+            "想",
+            "吃",
+            "什么",
+            "茶"
+          ],
+          "answer_tokens": [
+            "你",
+            "想",
+            "喝",
+            "什么"
+          ],
+          "explanation": {
+            "uz": "你想喝什么？ — Nǐ xiǎng hē shénme?",
+            "ru": "你想喝什么？ — Nǐ xiǎng hē shénme?",
+            "tj": "你想喝什么？ — Nǐ xiǎng hē shénme?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "喝",
+          "pinyin": "hē",
+          "translation": {
+            "uz": "ichmoq",
+            "ru": "пить",
+            "tj": "нӯшидан"
+          }
+        }
+      ]
+    }
+  ]
+}

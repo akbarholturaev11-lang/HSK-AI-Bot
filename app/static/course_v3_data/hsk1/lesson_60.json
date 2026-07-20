@@ -1,0 +1,794 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 60,
+  "source_lesson": 15,
+  "part_no": 1,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我是坐飞机来的",
+  "subtitle": {
+    "uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash",
+    "ru": "Конструкция 是……的 — выделение времени, места и способа действия",
+    "tj": "Сохти 是……的 — таъкиди вақт, ҷой ва усули амал"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "认识",
+      "pinyin": "rènshi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tanish bo'lmoq, uchrashmoq",
+        "ru": "знать, познакомиться",
+        "tj": "шинохтан, шинос шудан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "年",
+      "pinyin": "nián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yil",
+        "ru": "год",
+        "tj": "сол"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "大学",
+      "pinyin": "dàxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "universitet, oliy ta'lim muassasasi",
+        "ru": "университет, вуз",
+        "tj": "донишгоҳ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash",
+        "ru": "Конструкция 是……的 — выделение времени, места и способа",
+        "tj": "Сохти 是……的 — таъкиди вақт, ҷой ва усул"
+      },
+      "title_zh": "是……的 — Vaqt, joy va usulni ta'kidlash",
+      "rule": {
+        "uz": "是……的 konstruktsiyasi allaqachon sodir bo'lgan harakatning vaqti, joyi yoki usulini ta'kidlash uchun ishlatiladi.\n\nTuzilishi:\nEga + 是 + [Vaqt/Joy/Usul] + Fe'l + 的\n\nVaqtni ta'kidlash:\n我们是2011年认识的。— Biz 2011-yilda tanishdik.\n\nJoyni ta'kidlash:\n我们是在学校认识的。— Biz maktabda tanishdik.\n\nUsulni ta'kidlash:\n我是坐飞机来的。— Men samolyot bilan keldim.\n\nInkor: 不是……的\n我不是坐出租车来的。— Men taksi bilan kelmaganman.",
+        "ru": "Конструкция 是……的 используется для выделения времени, места или способа уже совершённого действия.\n\nСтруктура:\nПодлежащее + 是 + [Время/Место/Способ] + Глагол + 的\n\nВыделение времени:\n我们是2011年认识的。— Мы познакомились в 2011 году.\n\nВыделение места:\n我们是在学校认识的。— Мы познакомились в школе.\n\nВыделение способа:\n我是坐飞机来的。— Я прилетел на самолёте.\n\nОтрицание: 不是……的\n我不是坐出租车来的。— Я не приехал на такси.",
+        "tj": "Сохти 是……的 барои таъкид кардани вақт, ҷой ё усули амали аллакай анҷомёфта истифода мешавад.\n\nСохт:\nМубтадо + 是 + [Вақт/Ҷой/Усул] + Феъл + 的\n\nТаъкиди вақт:\n我们是2011年认识的。— Мо дар соли 2011 шинос шудем.\n\nТаъкиди ҷой:\n我们是在学校认识的。— Мо дар мактаб шинос шудем.\n\nТаъкиди усул:\n我是坐飞机来的。— Ман бо ҳавопаймо омадам.\n\nИнкор: 不是……的\n我不是坐出租车来的。— Ман бо таксӣ наомадам."
+      },
+      "examples": [
+        {
+          "zh": "我们是2011年认识的。",
+          "pinyin": "Wǒmen shì èr líng yī yī nián rènshi de.",
+          "translation": {
+            "uz": "Biz 2011-yilda tanishdik.",
+            "ru": "Мы познакомились в 2011 году.",
+            "tj": "Мо дар соли 2011 шинос шудем."
+          }
+        },
+        {
+          "zh": "我是坐飞机来的。",
+          "pinyin": "Wǒ shì zuò fēijī lái de.",
+          "translation": {
+            "uz": "Men samolyot bilan keldim.",
+            "ru": "Я прилетел на самолёте.",
+            "tj": "Ман бо ҳавопаймо омадам."
+          }
+        },
+        {
+          "zh": "她是在北京买的。",
+          "pinyin": "Tā shì zài Běijīng mǎi de.",
+          "translation": {
+            "uz": "U uni Pekinda sotib oldi.",
+            "ru": "Она купила это в Пекине.",
+            "tj": "Вай онро дар Пекин харид."
+          }
+        },
+        {
+          "zh": "我们不是坐出租车来的。",
+          "pinyin": "Wǒmen bú shì zuò chūzūchē lái de.",
+          "translation": {
+            "uz": "Biz taksi bilan kelmaganmiz.",
+            "ru": "Мы не приехали на такси.",
+            "tj": "Мо бо таксӣ наомадем."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Dasturxon yonida — qachon va qayerda tanishdingiz",
+        "ru": "За столом — когда и где познакомились",
+        "tj": "Дар сари дастурхон — кай ва дар куҷо шинос шудед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你和李小姐是什么时候认识的？",
+          "pinyin": "Nǐ hé Lǐ xiǎojiě shì shénme shíhou rènshi de?",
+          "text": {
+            "uz": "Siz Xonim Li bilan qachon tanishdingiz?",
+            "ru": "Когда вы познакомились с мисс Ли?",
+            "tj": "Шумо бо хонум Ли кай шинос шудед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是2011年9月认识的。",
+          "pinyin": "Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
+          "text": {
+            "uz": "Biz 2011-yilning sentabrida tanishdik.",
+            "ru": "Мы познакомились в сентябре 2011 года.",
+            "tj": "Мо дар моҳи сентябри соли 2011 шинос шудем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你们在哪儿认识的？",
+          "pinyin": "Nǐmen zài nǎr rènshi de?",
+          "text": {
+            "uz": "Siz ikkovingiz qayerda tanishdingiz?",
+            "ru": "Где вы двое познакомились?",
+            "tj": "Шумо дуто дар куҷо шинос шудед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是在学校认识的，她是我大学同学。",
+          "pinyin": "Wǒmen shì zài xuéxiào rènshi de, tā shì wǒ dàxué tóngxué.",
+          "text": {
+            "uz": "Biz maktabda tanishdik, u mening universitetdosh do'stim.",
+            "ru": "Мы познакомились в школе; она моя однокурсница.",
+            "tj": "Мо дар мактаб шинос шудем, вай ҳамдарси донишгоҳии ман аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxona oldida — qanday keldingiz",
+        "ru": "Перед гостиницей — как добрались",
+        "tj": "Дар назди меҳмонхона — чӣ гуна омадед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你们是怎么来饭店的？",
+          "pinyin": "Nǐmen shì zěnme lái fàndiàn de?",
+          "text": {
+            "uz": "Siz restoranga qanday keldingiz?",
+            "ru": "Как вы добрались до ресторана?",
+            "tj": "Шумо ба тарабхона чӣ гуна омадед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是坐出租车来的。",
+          "pinyin": "Wǒmen shì zuò chūzūchē lái de.",
+          "text": {
+            "uz": "Biz taksi bilan keldik.",
+            "ru": "Мы приехали на такси.",
+            "tj": "Мо бо таксӣ омадем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "李先生呢？",
+          "pinyin": "Lǐ xiānsheng ne?",
+          "text": {
+            "uz": "Janob Li-chi?",
+            "ru": "А господин Ли?",
+            "tj": "Ҷаноб Ли чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他是和朋友一起开车来的。",
+          "pinyin": "Tā shì hé péngyou yīqǐ kāi chē lái de.",
+          "text": {
+            "uz": "U do'sti bilan birga mashina haydab keldi.",
+            "ru": "Он приехал вместе с другом на машине.",
+            "tj": "Вай бо дӯсташ якҷоя бо мошин омад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada — samolyot bilan kelding",
+        "ru": "В компании — прилетел на самолёте",
+        "tj": "Дар ширкат — бо ҳавопаймо омадед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "很高兴认识您！李小姐。",
+          "pinyin": "Hěn gāoxìng rènshi nín! Lǐ xiǎojiě.",
+          "text": {
+            "uz": "Siz bilan tanishganimdan juda xursandman, Xonim Li!",
+            "ru": "Очень рад познакомиться с вами, мисс Ли!",
+            "tj": "Аз шиноси бо шумо бисёр хурсандам, хонум Ли!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "认识你我也很高兴！",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
+          "text": {
+            "uz": "Siz bilan tanishganimdan men ham juda xursandman!",
+            "ru": "Мне тоже очень приятно познакомиться с вами!",
+            "tj": "Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "听张先生说，您是坐飞机来北京的？",
+          "pinyin": "Tīng Zhāng xiānsheng shuō, nín shì zuò fēijī lái Běijīng de?",
+          "text": {
+            "uz": "Janob Jan aytishicha, siz Pekinga samolyot bilan kelgansiz?",
+            "ru": "Господин Чжан сказал, что вы прилетели в Пекин на самолёте?",
+            "tj": "Ҷаноб Чжан гуфт, ки шумо ба Пекин бо ҳавопаймо омадед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是的。",
+          "pinyin": "Shì de.",
+          "text": {
+            "uz": "Ha, to'g'ri.",
+            "ru": "Да, именно.",
+            "tj": "Бале, дуруст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "认识",
+            "pinyin": "rènshi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "认识",
+          "pinyin": "rènshi",
+          "options": [
+            "认识",
+            "东西",
+            "年",
+            "大学"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "认识 — tanish bo'lmoq, uchrashmoq (rènshi)",
+            "ru": "认识 — знать, познакомиться (rènshi)",
+            "tj": "认识 — шинохтан, шинос шудан (rènshi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "年",
+            "pinyin": "nián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yil",
+              "ru": "год",
+              "tj": "сол"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "年 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 年:",
+            "tj": "Маънои калимаи 年-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            },
+            {
+              "uz": "yil",
+              "ru": "год",
+              "tj": "сол"
+            },
+            {
+              "uz": "narsa, buyum",
+              "ru": "вещь, предмет",
+              "tj": "чиз, асбоб"
+            },
+            {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "年 = yil (nián)",
+            "ru": "年 = год (nián)",
+            "tj": "年 = сол (nián)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "大学",
+            "pinyin": "dàxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "大学",
+          "pinyin": "dàxué",
+          "translation": {
+            "uz": "universitet, oliy ta'lim muassasasi",
+            "ru": "университет, вуз",
+            "tj": "донишгоҳ"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dàxué qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dàxué?",
+            "tj": "dàxué кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "大学",
+            "认识",
+            "年",
+            "东西"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "大学 = universitet, oliy ta'lim muassasasi (dàxué)",
+            "ru": "大学 = университет, вуз (dàxué)",
+            "tj": "大学 = донишгоҳ (dàxué)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "认识 talaffuzini tanlang:",
+            "ru": "Выберите произношение 认识:",
+            "tj": "Талаффузи 认识-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dōngxi",
+            "rènshi",
+            "nián",
+            "dàxué"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "认识 — rènshi",
+            "ru": "认识 — rènshi",
+            "tj": "认识 — rènshi"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "认识",
+              {
+                "uz": "tanish bo'lmoq, uchrashmoq",
+                "ru": "знать, познакомиться",
+                "tj": "шинохтан, шинос шудан"
+              }
+            ],
+            [
+              "年",
+              {
+                "uz": "yil",
+                "ru": "год",
+                "tj": "сол"
+              }
+            ],
+            [
+              "大学",
+              {
+                "uz": "universitet, oliy ta'lim muassasasi",
+                "ru": "университет, вуз",
+                "tj": "донишгоҳ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash",
+              "ru": "Конструкция 是……的 — выделение времени, места и способа",
+              "tj": "Сохти 是……的 — таъкиди вақт, ҷой ва усул"
+            },
+            "title_zh": "是……的 — Vaqt, joy va usulni ta'kidlash",
+            "rule": {
+              "uz": "是……的 konstruktsiyasi allaqachon sodir bo'lgan harakatning vaqti, joyi yoki usulini ta'kidlash uchun ishlatiladi.\n\nTuzilishi:\nEga + 是 + [Vaqt/Joy/Usul] + Fe'l + 的\n\nVaqtni ta'kidlash:\n我们是2011年认识的。— Biz 2011-yilda tanishdik.\n\nJoyni ta'kidlash:\n我们是在学校认识的。— Biz maktabda tanishdik.\n\nUsulni ta'kidlash:\n我是坐飞机来的。— Men samolyot bilan keldim.\n\nInkor: 不是……的\n我不是坐出租车来的。— Men taksi bilan kelmaganman.",
+              "ru": "Конструкция 是……的 используется для выделения времени, места или способа уже совершённого действия.\n\nСтруктура:\nПодлежащее + 是 + [Время/Место/Способ] + Глагол + 的\n\nВыделение времени:\n我们是2011年认识的。— Мы познакомились в 2011 году.\n\nВыделение места:\n我们是在学校认识的。— Мы познакомились в школе.\n\nВыделение способа:\n我是坐飞机来的。— Я прилетел на самолёте.\n\nОтрицание: 不是……的\n我不是坐出租车来的。— Я не приехал на такси.",
+              "tj": "Сохти 是……的 барои таъкид кардани вақт, ҷой ё усули амали аллакай анҷомёфта истифода мешавад.\n\nСохт:\nМубтадо + 是 + [Вақт/Ҷой/Усул] + Феъл + 的\n\nТаъкиди вақт:\n我们是2011年认识的。— Мо дар соли 2011 шинос шудем.\n\nТаъкиди ҷой:\n我们是在学校认识的。— Мо дар мактаб шинос шудем.\n\nТаъкиди усул:\n我是坐飞机来的。— Ман бо ҳавопаймо омадам.\n\nИнкор: 不是……的\n我不是坐出租车来的。— Ман бо таксӣ наомадам."
+            },
+            "examples": [
+              {
+                "zh": "我们是2011年认识的。",
+                "pinyin": "Wǒmen shì èr líng yī yī nián rènshi de.",
+                "translation": {
+                  "uz": "Biz 2011-yilda tanishdik.",
+                  "ru": "Мы познакомились в 2011 году.",
+                  "tj": "Мо дар соли 2011 шинос шудем."
+                }
+              },
+              {
+                "zh": "我是坐飞机来的。",
+                "pinyin": "Wǒ shì zuò fēijī lái de.",
+                "translation": {
+                  "uz": "Men samolyot bilan keldim.",
+                  "ru": "Я прилетел на самолёте.",
+                  "tj": "Ман бо ҳавопаймо омадам."
+                }
+              },
+              {
+                "zh": "她是在北京买的。",
+                "pinyin": "Tā shì zài Běijīng mǎi de.",
+                "translation": {
+                  "uz": "U uni Pekinda sotib oldi.",
+                  "ru": "Она купила это в Пекине.",
+                  "tj": "Вай онро дар Пекин харид."
+                }
+              },
+              {
+                "zh": "我们不是坐出租车来的。",
+                "pinyin": "Wǒmen bú shì zuò chūzūchē lái de.",
+                "translation": {
+                  "uz": "Biz taksi bilan kelmaganmiz.",
+                  "ru": "Мы не приехали на такси.",
+                  "tj": "Мо бо таксӣ наомадем."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Biz 2011-yilda tanishdik.",
+            "ru": "Мы познакомились в 2011 году.",
+            "tj": "Мо дар соли 2011 шинос шудем."
+          },
+          "tokens": [
+            "认识",
+            "是",
+            "的",
+            "年",
+            "大学",
+            "我们",
+            "东西"
+          ],
+          "answer_tokens": [
+            "我们",
+            "是",
+            "年",
+            "认识",
+            "的"
+          ],
+          "explanation": {
+            "uz": "我们是2011年认识的。 — Wǒmen shì èr líng yī yī nián rènshi de.",
+            "ru": "我们是2011年认识的。 — Wǒmen shì èr líng yī yī nián rènshi de.",
+            "tj": "我们是2011年认识的。 — Wǒmen shì èr líng yī yī nián rènshi de."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Biz 2011-yilda tanishdik.» — xitoychada qaysi biri?",
+            "ru": "«Мы познакомились в 2011 году.» — какое предложение по-китайски?",
+            "tj": "«Мо дар соли 2011 шинос шудем.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我们是2011年认识的。",
+            "我们不是坐出租车来的。",
+            "我是坐飞机来的。",
+            "她是在北京买的。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我们是2011年认识的。 — Wǒmen shì èr líng yī yī nián rènshi de.",
+            "ru": "我们是2011年认识的。 — Wǒmen shì èr líng yī yī nián rènshi de.",
+            "tj": "我们是2011年认识的。 — Wǒmen shì èr líng yī yī nián rènshi de."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz ikkovingiz qayerda tanishdingiz?",
+            "ru": "Где вы двое познакомились?",
+            "tj": "Шумо дуто дар куҷо шинос шудед?"
+          },
+          "tokens": [
+            "大学",
+            "的",
+            "在",
+            "认识",
+            "你们",
+            "哪儿",
+            "年"
+          ],
+          "answer_tokens": [
+            "你们",
+            "在",
+            "哪儿",
+            "认识",
+            "的"
+          ],
+          "explanation": {
+            "uz": "你们在哪儿认识的？ — Nǐmen zài nǎr rènshi de?",
+            "ru": "你们在哪儿认识的？ — Nǐmen zài nǎr rènshi de?",
+            "tj": "你们在哪儿认识的？ — Nǐmen zài nǎr rènshi de?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bugun 2024-yilning 26-apreli.",
+            "ru": "Сегодня 26 апреля 2024 года.",
+            "tj": "Имрӯз 26-уми апрели соли 2024 аст."
+          },
+          "tokens": [
+            "号",
+            "认识",
+            "月",
+            "是",
+            "大学",
+            "今天",
+            "年"
+          ],
+          "answer_tokens": [
+            "今天",
+            "是",
+            "年",
+            "月",
+            "号"
+          ],
+          "explanation": {
+            "uz": "今天是2024年4月26号。 — Jīntiān shì èr líng èr sì nián sì yuè èrshíliù hào.",
+            "ru": "今天是2024年4月26号。 — Jīntiān shì èr líng èr sì nián sì yuè èrshíliù hào.",
+            "tj": "今天是2024年4月26号。 — Jīntiān shì èr líng èr sì nián sì yuè èrshíliù hào."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我们是2011年9月认识的。",
+          "pinyin": "Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
+          "options": [
+            "我们是2011年9月认识的。",
+            "你和李小姐是什么时候认识的？",
+            "我们是在学校认识的，她是我大学同学。",
+            "你们在哪儿认识的？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我们是2011年9月认识的。 — Biz 2011-yilning sentabrida tanishdik.",
+            "ru": "我们是2011年9月认识的。 — Мы познакомились в сентябре 2011 года.",
+            "tj": "我们是2011年9月认识的。 — Мо дар моҳи сентябри соли 2011 шинос шудем."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "今天是2024年4月26号。",
+          "pinyin": "Jīntiān shì èr líng èr sì nián sì yuè èrshíliù hào.",
+          "translation": {
+            "uz": "Bugun 2024-yilning 26-apreli.",
+            "ru": "Сегодня 26 апреля 2024 года.",
+            "tj": "Имрӯз 26-уми апрели соли 2024 аст."
+          },
+          "tokens": {
+            "uz": [
+              "Bugun",
+              "2024-yilning",
+              "2011-yilning",
+              "Biz",
+              "26-apreli"
+            ],
+            "ru": [
+              "апреля",
+              "2024",
+              "26",
+              "года",
+              "Сегодня",
+              "Мы",
+              "познакомились"
+            ],
+            "tj": [
+              "апрели",
+              "Мо",
+              "Имрӯз",
+              "дар",
+              "26-уми",
+              "соли",
+              "аст",
+              "2024"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bugun",
+              "2024-yilning",
+              "26-apreli"
+            ],
+            "ru": [
+              "Сегодня",
+              "26",
+              "апреля",
+              "2024",
+              "года"
+            ],
+            "tj": [
+              "Имрӯз",
+              "26-уми",
+              "апрели",
+              "соли",
+              "2024",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "今天是2024年4月26号。 — Bugun 2024-yilning 26-apreli.",
+            "ru": "今天是2024年4月26号。 — Сегодня 26 апреля 2024 года.",
+            "tj": "今天是2024年4月26号。 — Имрӯз 26-уми апрели соли 2024 аст."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "前面 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 前面:",
+            "tj": "Маънои калимаи 前面-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oldinida, oldida",
+              "ru": "спереди, перед",
+              "tj": "пеш, пешаш"
+            },
+            {
+              "uz": "yil",
+              "ru": "год",
+              "tj": "сол"
+            },
+            {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
+            },
+            {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "前面 = oldinida, oldida (qiánmiàn)",
+            "ru": "前面 = спереди, перед (qiánmiàn)",
+            "tj": "前面 = пеш, пешаш (qiánmiàn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "大学",
+          "pinyin": "dàxué",
+          "translation": {
+            "uz": "universitet, oliy ta'lim muassasasi",
+            "ru": "университет, вуз",
+            "tj": "донишгоҳ"
+          }
+        }
+      ]
+    }
+  ]
+}

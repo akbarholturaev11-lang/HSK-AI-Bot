@@ -1,0 +1,611 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 54,
+  "source_lesson": 12,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你穿得太少了",
+  "subtitle": {
+    "uz": "Holat to'ldiruvchisi ('de' yuklamasi bilan) va 'bǐ' qiyoslash gapining kengaytirilgan shaklini o'rganish.",
+    "ru": "Изучение дополнения состояния (с частицей 'de') и расширенной формы конструкции сравнения 'bǐ'.",
+    "tj": "Омӯзиши илова ба ҳолат (бо зарраи 'de') ва шакли васеъшудаи конструксияи муқоисавии 'bǐ'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "得",
+      "pinyin": "de",
+      "pos": "part.",
+      "meaning": {
+        "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+        "ru": "частица дополнения состояния (после глагола)",
+        "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "妻子",
+      "pinyin": "qīzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xotin, turmush o'rtoq (ayol)",
+        "ru": "жена, супруга",
+        "tj": "зан, ҳамсар (зан)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "雪",
+      "pinyin": "xuě",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qor",
+        "ru": "снег",
+        "tj": "барф"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "零",
+      "pinyin": "líng",
+      "pos": "num.",
+      "meaning": {
+        "uz": "nol",
+        "ru": "ноль",
+        "tj": "сифр"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你每天早上几点起床？",
+          "pinyin": "Nǐ měitiān zǎoshang jǐ diǎn qǐchuáng?",
+          "text": {
+            "uz": "Siz har kuni ertalab soat nechada turasiz?",
+            "ru": "В котором часу ты встаёшь каждое утро?",
+            "tj": "Ҳар рӯз субҳ шумо соати чанд бармехезед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "六点多。",
+          "pinyin": "Liù diǎn duō.",
+          "text": {
+            "uz": "Oltidan o'tganda.",
+            "ru": "Чуть больше шести.",
+            "tj": "Каме аз соати шаш гузашта."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你比我早起一个小时。",
+          "pinyin": "Nǐ bǐ wǒ zǎo qǐ yí ge xiǎoshí.",
+          "text": {
+            "uz": "Siz mendan bir soat oldin turasiz.",
+            "ru": "Ты встаёшь на час раньше меня.",
+            "tj": "Шумо аз ман як соат зудтар бармехезед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
+          "pinyin": "Wǒ shuì de yě zǎo, wǒ měitiān wǎnshang shí diǎn jiù shuìjiào. Zǎo shuì zǎo qǐ duì shēntǐ hǎo.",
+          "text": {
+            "uz": "Men ham erta yotaman, har kuni kechqurun o'n da yotaman. Erta yotib erta turish sog'liq uchun foydali.",
+            "ru": "Я тоже ложусь рано, каждый вечер в десять. Рано ложиться и рано вставать полезно для здоровья.",
+            "tj": "Ман ҳам барвақт мехобам, ҳар шаб соати даҳ мехобам. Барвақт хобидан ва барвақт бархестан барои саломатӣ муфид аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'st uyida",
+        "ru": "В доме друга",
+        "tj": "Дар хонаи дӯст"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "再来点儿米饭吧，你吃得太少了。",
+          "pinyin": "Zài lái diǎnr mǐfàn ba, nǐ chī de tài shǎo le.",
+          "text": {
+            "uz": "Yana biroz guruch oling, siz juda oz yedingiz.",
+            "ru": "Возьми ещё немного риса, ты съел(а) слишком мало.",
+            "tj": "Боз каме биринҷ гиред, шумо хеле кам хӯрдед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不心了，今天吃得很好，太谢谢你了。",
+          "pinyin": "Bù xīn le, jīntiān chī de hěn hǎo, tài xièxie nǐ le.",
+          "text": {
+            "uz": "Kerak emas, bugun juda yaxshi yedim, katta rahmat sizga.",
+            "ru": "Не надо, сегодня я поел(а) очень хорошо, большое тебе спасибо.",
+            "tj": "Даркор нест, имрӯз хеле хуб хӯрдам, ташаккури зиёд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你饭做得怎么样？",
+          "pinyin": "Nǐ fàn zuò de zěnmeyàng?",
+          "text": {
+            "uz": "Siz ovqat qanday pishirasiz?",
+            "ru": "Как ты готовишь еду?",
+            "tj": "Шумо хӯрок чӣ хел мепазед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不怎么样，我妻子比我饭做得好。",
+          "pinyin": "Bù zěnmeyàng, wǒ qīzi bǐ wǒ zuò fàn zuò de hǎo.",
+          "text": {
+            "uz": "Unchalik emas, xotinim mendan yaxshiroq ovqat pishiradi.",
+            "ru": "Не очень, моя жена готовит лучше меня.",
+            "tj": "Чандон не, занам аз ман беҳтар хӯрок мепазад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uy eshigi oldida",
+        "ru": "У двери дома",
+        "tj": "Дар пеши дари хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "下雪了，今天真冷。",
+          "pinyin": "Xià xuě le, jīntiān zhēn lěng.",
+          "text": {
+            "uz": "Qor yog'yapti, bugun juda sovuq.",
+            "ru": "Пошёл снег, сегодня очень холодно.",
+            "tj": "Барф борид, имрӯз хеле сард аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "有零下10度吧？",
+          "pinyin": "Yǒu líng xià shí dù ba?",
+          "text": {
+            "uz": "Minus o'n daraja bo'lsa kerak?",
+            "ru": "Наверное, минус десять градусов?",
+            "tj": "Эҳтимол даҳ дараҷа зер аз сифр бошад?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "是啊，你穿得太少了，我们进房间吧。",
+          "pinyin": "Shì a, nǐ chuān de tài shǎo le, wǒmen jìn fángjiān ba.",
+          "text": {
+            "uz": "Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好吧。",
+          "pinyin": "Hǎo ba.",
+          "text": {
+            "uz": "Xo'p bo'lmasa.",
+            "ru": "Ладно.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在忙什么呢？",
+          "pinyin": "Nǐ zài máng shénme ne?",
+          "text": {
+            "uz": "Siz nima bilan bandsiniz?",
+            "ru": "Чем ты сейчас занят(а)?",
+            "tj": "Шумо ба чӣ машғул ҳастед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我弟弟让我帮他找个房子，现在他离公司有点儿远。",
+          "pinyin": "Wǒ dìdi ràng wǒ bāng tā zhǎo ge fángzi, xiànzài tā lí gōngsī yǒudiǎnr yuǎn.",
+          "text": {
+            "uz": "Ukam menga unga uy topishda yordam berishimni so'radi, hozir u kompaniyadan biroz uzoqda turadi.",
+            "ru": "Мой младший брат попросил помочь найти ему жильё, сейчас он живёт немного далеко от компании.",
+            "tj": "Бародари хурдиам хоҳиш кард ба ӯ хона ёбам, ҳоло ӯ аз ширкат каме дур зиндагӣ мекунад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "住得远真的很累！",
+          "pinyin": "Zhù de yuǎn zhēn de hěn lèi!",
+          "text": {
+            "uz": "Uzoqda yashash chindan ham charchatadi!",
+            "ru": "Жить далеко действительно очень утомительно!",
+            "tj": "Дур зиндагӣ кардан воқеан хеле монандакор аст!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，他也希望能住得近一点儿。",
+          "pinyin": "Shì a, tā yě xīwàng néng zhù de jìn yìdiǎnr.",
+          "text": {
+            "uz": "Ha, u ham biroz yaqinroqda yashashni xohlaydi.",
+            "ru": "Да, он тоже хочет жить немного ближе.",
+            "tj": "Бале, ӯ ҳам мехоҳад каме наздиктар зиндагӣ кунад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "得",
+            "pinyin": "de",
+            "pos": "part.",
+            "meaning": {
+              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+              "ru": "частица дополнения состояния (после глагола)",
+              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'holat to'ldiruvchisi yuklamasi (fe'ldan keyin)' xitoycha qaysi?",
+            "ru": "'частица дополнения состояния (после глагола)' по-китайски?",
+            "tj": "'зарраи иловаи ҳолат (баъд аз феъл)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "雪",
+            "得",
+            "零",
+            "妻子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin) = 得 (de)",
+            "ru": "частица дополнения состояния (после глагола) = 得 (de)",
+            "tj": "зарраи иловаи ҳолат (баъд аз феъл) = 得 (de)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "妻子",
+            "pinyin": "qīzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xotin, turmush o'rtoq (ayol)",
+              "ru": "жена, супруга",
+              "tj": "зан, ҳамсар (зан)"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "妻子",
+          "pinyin": "qīzi",
+          "translation": {
+            "uz": "xotin, turmush o'rtoq (ayol)",
+            "ru": "жена, супруга",
+            "tj": "зан, ҳамсар (зан)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "妻子",
+          "pinyin": "qīzi",
+          "options": [
+            "妻子",
+            "雪",
+            "得",
+            "零"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "妻子 — xotin, turmush o'rtoq (ayol) (qīzi)",
+            "ru": "妻子 — жена, супруга (qīzi)",
+            "tj": "妻子 — зан, ҳамсар (зан) (qīzi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "雪",
+            "pinyin": "xuě",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "雪 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 雪:",
+            "tj": "Маънои калимаи 雪-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xotin, turmush o'rtoq (ayol)",
+              "ru": "жена, супруга",
+              "tj": "зан, ҳамсар (зан)"
+            },
+            {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            },
+            {
+              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+              "ru": "частица дополнения состояния (после глагола)",
+              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+            },
+            {
+              "uz": "nol",
+              "ru": "ноль",
+              "tj": "сифр"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "雪 = qor (xuě)",
+            "ru": "雪 = снег (xuě)",
+            "tj": "雪 = барф (xuě)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "零",
+            "pinyin": "líng",
+            "pos": "num.",
+            "meaning": {
+              "uz": "nol",
+              "ru": "ноль",
+              "tj": "сифр"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "líng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается líng?",
+            "tj": "líng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "得",
+            "妻子",
+            "雪",
+            "零"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "零 = nol (líng)",
+            "ru": "零 = ноль (líng)",
+            "tj": "零 = сифр (líng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "得 talaffuzini tanlang:",
+            "ru": "Выберите произношение 得:",
+            "tj": "Талаффузи 得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qīzi",
+            "xuě",
+            "de",
+            "líng"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "得 — de",
+            "ru": "得 — de",
+            "tj": "得 — de"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "得",
+              {
+                "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+                "ru": "частица дополнения состояния (после глагола)",
+                "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+              }
+            ],
+            [
+              "妻子",
+              {
+                "uz": "xotin, turmush o'rtoq (ayol)",
+                "ru": "жена, супруга",
+                "tj": "зан, ҳамсар (зан)"
+              }
+            ],
+            [
+              "雪",
+              {
+                "uz": "qor",
+                "ru": "снег",
+                "tj": "барф"
+              }
+            ],
+            [
+              "零",
+              {
+                "uz": "nol",
+                "ru": "ноль",
+                "tj": "сифр"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uzoq (masofa haqida)' xitoycha qaysi?",
+            "ru": "'далёкий, дальний' по-китайски?",
+            "tj": "'дур (дар бораи масофа)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "远",
+            "雪",
+            "得",
+            "妻子"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "uzoq (masofa haqida) = 远 (yuǎn)",
+            "ru": "далёкий, дальний = 远 (yuǎn)",
+            "tj": "дур (дар бораи масофа) = 远 (yuǎn)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "妻子",
+          "pinyin": "qīzi",
+          "options": [
+            "雪",
+            "得",
+            "零",
+            "妻子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "妻子 — xotin, turmush o'rtoq (ayol) (qīzi)",
+            "ru": "妻子 — жена, супруга (qīzi)",
+            "tj": "妻子 — зан, ҳамсар (зан) (qīzi)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "雪",
+          "pinyin": "xuě",
+          "options": [
+            "得",
+            "雪",
+            "零",
+            "妻子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "雪 — qor (xuě)",
+            "ru": "雪 — снег (xuě)",
+            "tj": "雪 — барф (xuě)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "妻子",
+          "pinyin": "qīzi",
+          "translation": {
+            "uz": "xotin, turmush o'rtoq (ayol)",
+            "ru": "жена, супруга",
+            "tj": "зан, ҳамсар (зан)"
+          }
+        }
+      ]
+    }
+  ]
+}

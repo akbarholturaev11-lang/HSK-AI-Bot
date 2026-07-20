@@ -1,0 +1,787 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 52,
+  "source_lesson": 6,
+  "part_no": 7,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "一分钱一分货",
+  "subtitle": {
+    "uz": "narx va sifat, chegirma, xizmat va savdo aksiyalari haqida gapirish; 竟然, 倍, 值得, 其中 va （在）……下 grammatikalarini ishlatish",
+    "ru": "говорить о цене и качестве, скидках, сервисе и торговых акциях; использовать 竟然, 倍, 值得, 其中 и （在）……下",
+    "tj": "дар бораи нарх ва сифат, тахфиф, хизмат ва чорабиниҳои савдо гуфтугӯ кардан; истифодаи 竟然, 倍, 值得, 其中 ва （在）……下"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "所有",
+      "pinyin": "suǒyǒu",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "barcha, hamma",
+        "ru": "все, весь",
+        "tj": "ҳама"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "获得",
+      "pinyin": "huòdé",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qo'lga kiritmoq, olmoq",
+        "ru": "получать, приобретать",
+        "tj": "ба даст овардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "情况",
+      "pinyin": "qíngkuàng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "holat, vaziyat",
+        "ru": "ситуация, положение",
+        "tj": "ҳолат, вазъият"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "例如",
+      "pinyin": "lìrú",
+      "pos": "v.",
+      "meaning": {
+        "uz": "masalan",
+        "ru": "например",
+        "tj": "масалан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 5,
+      "title": {
+        "uz": "... sharoitida",
+        "ru": "в условиях...",
+        "tj": "дар шароити..."
+      },
+      "title_zh": "（在）……下",
+      "rule": {
+        "uz": "O'rtadagi qism odatda ikki bo'g'inli ot yoki fe'l bo'lib, shart yoki vaziyatni bildiradi.",
+        "ru": "Средняя часть обычно двусложное существительное или глагол и обозначает условие или ситуацию.",
+        "tj": "Қисми миёна одатан исм ё феъли дуҳиҷоӣ буда, шарт ё вазъиятро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "一般情况下，你花的钱越多，买的东西也就越好。",
+          "pinyin": "Yìbān qíngkuàng xià, nǐ huā de qián yuè duō, mǎi de dōngxi yě jiù yuè hǎo.",
+          "translation": {
+            "uz": "Odatdagi holatda qancha ko'p pul sarflasang, olgan narsang shuncha yaxshi bo'ladi.",
+            "ru": "В обычных условиях чем больше денег ты тратишь, тем лучше вещь покупаешь.",
+            "tj": "Дар ҳолати одӣ ҳар қадар пули бештар сарф кунӣ, чизе ки мехарӣ ҳамон қадар беҳтар мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "张远 va 李进 kechagi xarid haqida gaplashadi",
+        "ru": "张远 и 李进 говорят о вчерашних покупках",
+        "tj": "张远 ва 李进 дар бораи хариди дирӯза гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "张远",
+          "zh": "昨天晚上我给你打电话一直没人接，你忙什么呢？",
+          "pinyin": "Zuótiān wǎnshang wǒ gěi nǐ dǎ diànhuà yìzhí méi rén jiē, nǐ máng shénme ne?",
+          "text": {
+            "uz": "Kecha kechqurun senga telefon qildim, hech kim olmadi, nima bilan band eding?",
+            "ru": "Вчера вечером я звонил тебе, но никто не отвечал. Чем ты был занят?",
+            "tj": "Дирӯз бегоҳ ба ту занг задам, касе нагирифт. Бо чӣ банд будӣ?"
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。",
+          "pinyin": "Zuótiān qīzi ràng wǒ péi tā qù chāoshì mǎi guǒzhī. Wǒ bǎ shǒujī wàng zài jiālǐ le.",
+          "text": {
+            "uz": "Kecha xotinim meni supermarketga sharbat olishga birga borishga majbur qildi. Telefonimni uyda unutibman.",
+            "ru": "Вчера жена попросила меня сходить с ней в супермаркет купить сок. Я забыл телефон дома.",
+            "tj": "Дирӯз занам гуфт бо ӯ ба супермаркет барои харидани шарбат равам. Телефонамро дар хона фаромӯш кардаам."
+          }
+        },
+        {
+          "speaker": "张远",
+          "zh": "买这么点儿东西也用不了那么长时间啊！",
+          "pinyin": "Mǎi zhème diǎnr dōngxi yě yòng bù liǎo nàme cháng shíjiān a!",
+          "text": {
+            "uz": "Shunchagina narsa olishga ham bunchalik ko'p vaqt ketmaydi-ku!",
+            "ru": "Чтобы купить так мало вещей, столько времени не нужно!",
+            "tj": "Барои харидани ин қадар кам чиз ин қадар вақт лозим нест-ку!"
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "我们先去逛了会儿商场。一进门，售货员就热情地为我们介绍这、介绍那，她买了一条裤子、一件衬衫、两双袜子，然后我们就高高兴兴地回家了。",
+          "pinyin": "Wǒmen xiān qù guàngle huìr shāngchǎng. Yí jìn mén, shòuhuòyuán jiù rèqíng de wèi wǒmen jièshào zhè, jièshào nà, tā mǎile yì tiáo kùzi, yí jiàn chènshān, liǎng shuāng wàzi, ránhòu wǒmen jiù gāogāoxìngxìng de huí jiā le.",
+          "text": {
+            "uz": "Biz avval savdo markazini biroz aylandik. Eshikdan kirishimiz bilan sotuvchi bizga buni ham, unisini ham qizg'in tanishtirdi. U bir shim, bir ko'ylak va ikki juft paypoq oldi, keyin xursand bo'lib uyga qaytdik.",
+            "ru": "Сначала мы немного походили по торговому центру. Как только вошли, продавец стал горячо представлять нам то одно, то другое. Она купила брюки, рубашку и две пары носков, потом мы радостно вернулись домой.",
+            "tj": "Мо аввал каме маркази савдоро гаштем. Ҳамин ки ворид шудем, фурӯшанда гармона ину онро нишон дод. Ӯ як шим, як курта ва ду ҷуфт ҷӯроб харид, баъд хурсандона ба хона баргаштем."
+          }
+        },
+        {
+          "speaker": "张远",
+          "zh": "买东西时我只看自己想买的，而且喜欢自己看、自己选，不希望被别人打扰。",
+          "pinyin": "Mǎi dōngxi shí wǒ zhǐ kàn zìjǐ xiǎng mǎi de, érqiě xǐhuan zìjǐ kàn, zìjǐ xuǎn, bù xīwàng bèi biérén dǎrǎo.",
+          "text": {
+            "uz": "Xarid qilayotganda men faqat o'zim olmoqchi bo'lgan narsani ko'raman, o'zim ko'rib, o'zim tanlashni yoqtiraman, boshqalar bezovta qilishini xohlamayman.",
+            "ru": "Когда покупаю вещи, я смотрю только то, что сам хочу купить, люблю сам смотреть и сам выбирать, не хочу, чтобы меня беспокоили.",
+            "tj": "Ҳангоми харид ман танҳо чизеро мебинам, ки худам мехоҳам харам; дӯст медорам худам бинам, худам интихоб кунам ва намехоҳам касе халал расонад."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
+          "pinyin": "Shì a! Huí jiā yǐhòu, wǒ cái fāxiàn, jìngrán wàngle qù shāngchǎng de chāoshì mǎi guǒzhī!",
+          "text": {
+            "uz": "Ha! Uyga qaytgandan keyin bildim, kutilmaganda savdo markazidagi supermarketga sharbat olishga borishni unutibman!",
+            "ru": "Да! Только вернувшись домой, я обнаружил, что неожиданно забыл сходить в супермаркет торгового центра купить сок!",
+            "tj": "Ҳа! Ба хона баргашта фаҳмидам, ки ногаҳон фаромӯш кардаам ба супермаркети маркази савдо барои шарбат равам!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "王静 do'konda pomidor sotib oladi",
+        "ru": "王静 покупает помидоры в магазине",
+        "tj": "王静 дар мағоза помидор мехарад"
+      },
+      "dialogue": [
+        {
+          "speaker": "王静",
+          "zh": "西红柿新鲜吗？怎么卖？",
+          "pinyin": "Xīhóngshì xīnxiān ma? Zěnme mài?",
+          "text": {
+            "uz": "Pomidorlar yangimi? Qancha turadi?",
+            "ru": "Помидоры свежие? Почём продаёте?",
+            "tj": "Помидорҳо тару тозаанд? Чанд мефурӯшед?"
+          }
+        },
+        {
+          "speaker": "售货员",
+          "zh": "七块钱一斤，您放心，保证百分之百新鲜。",
+          "pinyin": "Qī kuài qián yì jīn, nín fàng xīn, bǎozhèng bǎi fēn zhī bǎi xīnxiān.",
+          "text": {
+            "uz": "Bir jin yetti yuan, xotirjam bo'ling, yuz foiz yangiligiga kafolat.",
+            "ru": "Семь юаней за цзинь, не беспокойтесь, гарантирую стопроцентную свежесть.",
+            "tj": "Як ҷин ҳафт юан, хотирҷамъ бошед, сад фоиз тару тоза буданаш кафолат."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "怎么这么贵呀！我记得昨天才三块五一斤，今天的价格是昨天的两倍。",
+          "pinyin": "Zěnme zhème guì ya! Wǒ jìde zuótiān cái sān kuài wǔ yì jīn, jīntiān de jiàgé shì zuótiān de liǎng bèi.",
+          "text": {
+            "uz": "Nega bunchalik qimmat! Kecha bir jin atigi uch yarim yuan edi deb eslayman, bugungi narx kechagining ikki baravari.",
+            "ru": "Почему так дорого! Я помню, вчера было всего три с половиной юаня за цзинь, сегодняшняя цена в два раза выше вчерашней.",
+            "tj": "Чаро ин қадар қимат! Ёдам ҳаст дирӯз як ҷин ҳамагӣ сеюним юан буд, нархи имрӯз ду баробари дирӯза аст."
+          }
+        },
+        {
+          "speaker": "售货员",
+          "zh": "您问的这种是“绿色”的。一分钱一分货。每天吃一两个这种新鲜的西红柿，对皮肤有好处。",
+          "pinyin": "Nín wèn de zhè zhǒng shì “lǜsè” de. Yì fēn qián yì fēn huò. Měi tiān chī yì liǎng ge zhè zhǒng xīnxiān de xīhóngshì, duì pífū yǒu hǎochu.",
+          "text": {
+            "uz": "Siz so'ragan bu turi 'yashil' mahsulot. Bir tiyin - bir tiyinlik sifat. Har kuni bunday yangi pomidordan bir-ikkita yeyish teriga foydali.",
+            "ru": "Этот вид, о котором вы спрашиваете, 'зелёный'. За что платишь, то и получаешь. Если каждый день есть один-два таких свежих помидора, это полезно для кожи.",
+            "tj": "Ин навъе ки мепурсед, 'сабз' аст. Ҳар қадар пул, ҳамон қадар мол. Ҳар рӯз як-дуто чунин помидори тару тоза хӯрдан барои пӯст фоида дорад."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "好，那我先买几个尝尝。",
+          "pinyin": "Hǎo, nà wǒ xiān mǎi jǐ ge chángchang.",
+          "text": {
+            "uz": "Yaxshi, unda avval bir nechtasini olib tatib ko'raman.",
+            "ru": "Хорошо, тогда сначала куплю несколько попробовать.",
+            "tj": "Хуб, пас аввал чандто мехарам, бичашам."
+          }
+        },
+        {
+          "speaker": "售货员",
+          "zh": "好的，给您西红柿，一共两斤，十四块。",
+          "pinyin": "Hǎo de, gěi nín xīhóngshì, yígòng liǎng jīn, shísì kuài.",
+          "text": {
+            "uz": "Marhamat, pomidoringiz, jami ikki jin, o'n to'rt yuan.",
+            "ru": "Хорошо, вот ваши помидоры, всего два цзиня, четырнадцать юаней.",
+            "tj": "Хуб, ин помидорҳоятон, ҳамагӣ ду ҷин, чордаҳ юан."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "李进 savdo markazida chamadon tanlaydi",
+        "ru": "李进 выбирает чемодан в торговом центре",
+        "tj": "李进 дар маркази савдо ҷомадон интихоб мекунад"
+      },
+      "dialogue": [
+        {
+          "speaker": "售货员",
+          "zh": "先生，我们店的行李箱都在这里，请问您要什么样的？",
+          "pinyin": "Xiānsheng, wǒmen diàn de xínglixiāng dōu zài zhèli, qǐngwèn nín yào shénme yàng de?",
+          "text": {
+            "uz": "Janob, do'konimizdagi barcha chamadonlar shu yerda, siz qandayini xohlaysiz?",
+            "ru": "Господин, все чемоданы нашего магазина здесь. Какой вам нужен?",
+            "tj": "Ҷаноб, ҳама ҷомадонҳои мағозаи мо инҷоянд. Шумо чӣ гуна мехоҳед?"
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "我想买一个轻一点儿的。",
+          "pinyin": "Wǒ xiǎng mǎi yí ge qīng yìdiǎnr de.",
+          "text": {
+            "uz": "Biroz yengilrog'ini olmoqchiman.",
+            "ru": "Я хочу купить немного полегче.",
+            "tj": "Ман мехоҳам яктои сабуктар харам."
+          }
+        },
+        {
+          "speaker": "售货员",
+          "zh": "您看看这个，不管从价格方面看，还是从质量上看，都是值得考虑的。",
+          "pinyin": "Nín kànkan zhège, bùguǎn cóng jiàgé fāngmiàn kàn, háishi cóng zhìliàng shang kàn, dōu shì zhíde kǎolǜ de.",
+          "text": {
+            "uz": "Mana bunga qarang, narx jihatidan bo'ladimi yoki sifat jihatidanmi, ko'rib chiqishga arziydi.",
+            "ru": "Посмотрите этот: и с точки зрения цены, и с точки зрения качества, его стоит рассмотреть.",
+            "tj": "Инро бинед, хоҳ аз ҷиҳати нарх бошад, хоҳ аз ҷиҳати сифат, ба баррасӣ меарзад."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "质量是不错。请问这个多少钱？",
+          "pinyin": "Zhìliàng shì búcuò. Qǐngwèn zhège duōshǎo qián?",
+          "text": {
+            "uz": "Sifati yaxshi ekan. Bu qancha turadi?",
+            "ru": "Качество неплохое. Сколько он стоит?",
+            "tj": "Сифаташ хуб аст. Ин чанд пул?"
+          }
+        },
+        {
+          "speaker": "售货员",
+          "zh": "现在我们商场正好有打折活动，打完折是999。另外，一年内我们都负责免费修理。",
+          "pinyin": "Xiànzài wǒmen shāngchǎng zhènghǎo yǒu dǎ zhé huódòng, dǎ wán zhé shì jiǔjiǔjiǔ. Lìngwài, yì nián nèi wǒmen dōu fùzé miǎnfèi xiūlǐ.",
+          "text": {
+            "uz": "Hozir savdo markazimizda aynan chegirma aksiyasi bor, chegirmadan keyin 999. Bundan tashqari bir yil ichida bepul ta'mirlashga biz javobgarmiz.",
+            "ru": "Сейчас в нашем торговом центре как раз акция со скидкой, после скидки - 999. Кроме того, в течение года мы отвечаем за бесплатный ремонт.",
+            "tj": "Ҳоло дар маркази савдои мо айни вақт аксияи тахфиф аст, баъди тахфиф 999. Ғайр аз ин, дар давоми як сол мо таъмири ройгонро ба ӯҳда мегирем."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "你们的服务不错，价格也可以，就买这个吧。",
+          "pinyin": "Nǐmen de fúwù búcuò, jiàgé yě kěyǐ, jiù mǎi zhège ba.",
+          "text": {
+            "uz": "Xizmatingiz yaxshi, narxi ham bo'ladi, shuni olay.",
+            "ru": "У вас хороший сервис, цена тоже подходит, возьму этот.",
+            "tj": "Хизматрасониатон хуб аст, нархаш ҳам мешавад, ҳаминро мегирам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kitob do'konidagi aksiya haqida e'lon",
+        "ru": "Объявление об акции в книжном магазине",
+        "tj": "Эълон дар бораи аксияи мағозаи китоб"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "顾客朋友们，为了感谢大家的支持，我们书店今天举行“购书送好礼”活动，购书满100元送一个笔记本，满200元送一本词典。另外，一些图书还有打折活动，其中，小说7.5折，地图8折，留学考试用书6折。如果购书满500元可免费办会员卡，以后购书可打8折。今天过生日的朋友和所有的小朋友还可以获得一份小礼物。欢迎大家选购！",
+          "pinyin": "Gùkè péngyǒumen, wèile gǎnxiè dàjiā de zhīchí, wǒmen shūdiàn jīntiān jǔxíng “gòu shū sòng hǎo lǐ” huódòng, gòu shū mǎn yìbǎi yuán sòng yí ge bǐjìběn, mǎn èrbǎi yuán sòng yì běn cídiǎn. Lìngwài, yìxiē túshū hái yǒu dǎ zhé huódòng, qízhōng, xiǎoshuō qīwǔ zhé, dìtú bā zhé, liúxué kǎoshì yòngshū liù zhé. Rúguǒ gòu shū mǎn wǔbǎi yuán kě miǎnfèi bàn huìyuánkǎ, yǐhòu gòu shū kě dǎ bā zhé. Jīntiān guò shēngrì de péngyǒu hé suǒyǒu de xiǎopéngyǒu hái kěyǐ huòdé yí fèn xiǎo lǐwù. Huānyíng dàjiā xuǎngòu!",
+          "text": {
+            "uz": "Hurmatli xaridorlar, qo'llab-quvvatlaganingiz uchun rahmat sifatida kitob do'konimiz bugun 'kitob ol - yaxshi sovg'a ol' aksiyasini o'tkazmoqda: 100 yuanga kitob olsangiz bitta daftar, 200 yuanga olsangiz bitta lug'at beriladi. Bundan tashqari, ayrim kitoblarda chegirma ham bor: romanlar 25% chegirma, xaritalar 20% chegirma, chet elda o'qish imtihoni kitoblari 40% chegirma. Agar 500 yuanga kitob olsangiz, bepul a'zolik kartasi rasmiylashtirasiz, keyingi xaridlarda 20% chegirma bo'ladi. Bugun tug'ilgan kuni bo'lganlar va barcha bolalar kichik sovg'a ham oladi. Tanlab xarid qilishingizni kutamiz!",
+            "ru": "Дорогие покупатели, чтобы поблагодарить всех за поддержку, наш книжный магазин сегодня проводит акцию 'купи книгу - получи хороший подарок': при покупке книг на 100 юаней дарим блокнот, на 200 юаней - словарь. Кроме того, на некоторые книги есть скидки: романы 25%, карты 20%, книги для экзаменов на обучение за рубежом 40%. Если купить книг на 500 юаней, можно бесплатно оформить членскую карту, а затем покупать книги со скидкой 20%. Друзья, у кого сегодня день рождения, и все дети также могут получить маленький подарок. Добро пожаловать за покупками!",
+            "tj": "Мизоҷони азиз, барои ташаккур аз дастгирии шумо мағозаи китобамон имрӯз аксияи 'китоб харед, тӯҳфаи хуб гиред' баргузор мекунад: агар китоб ба маблағи 100 юан харед, як дафтар, ба 200 юан як луғат дода мешавад. Ғайр аз ин, баъзе китобҳо тахфиф доранд: романҳо 25%, харитаҳо 20%, китобҳои имтиҳони таҳсил дар хориҷ 40%. Агар китоб ба 500 юан харед, метавонед ройгон корти аъзогӣ гиред ва баъд китобҳоро бо 20% тахфиф харед. Дӯстоне, ки имрӯз зодрӯз доранд, ва ҳамаи кӯдакон низ як тӯҳфаи хурд мегиранд. Марҳамат, интихоб кунед!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Narx va sifat munosabati haqida matn",
+        "ru": "Текст о связи цены и качества",
+        "tj": "Матн дар бораи робитаи нарх ва сифат"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "人们常说“一分钱一分货”，意思是东西的质量和价格有很大的关系，也可以说“便宜没好货，好货不便宜”，一般情况下，你花的钱越多，买的东西也就越好。其实也不一定都是这样的。有的时候，质量很好的东西也会很便宜。例如，春天来了，冬天的衣服就会打折，质量很好，还很便宜，花很少的钱就可以买到。一到节日，商场也会举办各种各样的活动，降低价格，这个时候我们也可以买到又便宜又好的东西。",
+          "pinyin": "Rénmen cháng shuō “yì fēn qián yì fēn huò”, yìsi shì dōngxi de zhìliàng hé jiàgé yǒu hěn dà de guānxi, yě kěyǐ shuō “piányi méi hǎo huò, hǎo huò bù piányi”, yìbān qíngkuàng xià, nǐ huā de qián yuè duō, mǎi de dōngxi yě jiù yuè hǎo. Qíshí yě bù yídìng dōu shì zhèyàng de. Yǒu de shíhou, zhìliàng hěn hǎo de dōngxi yě huì hěn piányi. Lìrú, chūntiān lái le, dōngtiān de yīfu jiù huì dǎ zhé, zhìliàng hěn hǎo, hái hěn piányi, huā hěn shǎo de qián jiù kěyǐ mǎidào. Yí dào jiérì, shāngchǎng yě huì jǔbàn gè zhǒng gè yàng de huódòng, jiàngdī jiàgé, zhège shíhou wǒmen yě kěyǐ mǎidào yòu piányi yòu hǎo de dōngxi.",
+          "text": {
+            "uz": "Odamlar ko'p aytadi: 'qancha pul - shuncha mol', ya'ni narsaning sifati va narxi o'rtasida katta aloqa bor; 'arzon mol yaxshi bo'lmaydi, yaxshi mol arzon bo'lmaydi' desa ham bo'ladi. Odatda qancha ko'p pul sarflasangiz, olgan narsangiz shuncha yaxshi bo'ladi. Aslida har doim ham shunday emas. Ba'zan sifati juda yaxshi narsalar ham arzon bo'lishi mumkin. Masalan, bahor kelganda qishki kiyimlar chegirmaga tushadi: sifati yaxshi, narxi ham arzon, juda kam pulga olish mumkin. Bayram payti savdo markazlari ham turli tadbirlar o'tkazib, narxlarni pasaytiradi; shu paytda biz ham arzon va yaxshi narsalarni topa olamiz.",
+            "ru": "Люди часто говорят: 'сколько заплатил, такой и товар', то есть качество вещи сильно связано с ценой; можно также сказать: 'дешёвый товар не бывает хорошим, хороший товар не бывает дешёвым'. В обычных условиях чем больше денег тратишь, тем лучше вещь покупаешь. На самом деле это не всегда так. Иногда вещи очень хорошего качества тоже бывают дешёвыми. Например, когда приходит весна, зимняя одежда получает скидки: качество хорошее, цена низкая, можно купить за совсем небольшие деньги. Во время праздников торговые центры тоже проводят разные акции и снижают цены; в это время мы тоже можем купить дешёвые и хорошие вещи.",
+            "tj": "Одамон бисёр мегӯянд: 'ҳар қадар пул, ҳамон қадар мол', яъне сифати чиз бо нарх робитаи калон дорад; инчунин метавон гуфт: 'моли арзон хуб нест, моли хуб арзон нест'. Дар ҳолати одӣ ҳар қадар пули бештар сарф кунед, чизи харидаатон ҳамон қадар беҳтар мешавад. Дар асл ҳамеша чунин нест. Баъзан чизҳои сифати хуб ҳам арзон мешаванд. Масалан, баҳор ки омад, либоси зимистона тахфиф мешавад: сифати хуб дорад ва арзон аст, бо пули кам харидан мумкин. Дар рӯзҳои ид марказҳои савдо ҳам чорабиниҳои гуногун баргузор карда, нархро паст мекунанд; дар он вақт мо низ чизҳои ҳам арзон ва ҳам хубро харида метавонем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "所有",
+            "pinyin": "suǒyǒu",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "barcha, hamma",
+              "ru": "все, весь",
+              "tj": "ҳама"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "suǒyǒu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается suǒyǒu?",
+            "tj": "suǒyǒu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "售货员",
+            "所有",
+            "果汁",
+            "袜子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "所有 = barcha, hamma (suǒyǒu)",
+            "ru": "所有 = все, весь (suǒyǒu)",
+            "tj": "所有 = ҳама (suǒyǒu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "获得",
+            "pinyin": "huòdé",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qo'lga kiritmoq, olmoq",
+              "ru": "получать, приобретать",
+              "tj": "ба даст овардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "获得 talaffuzini tanlang:",
+            "ru": "Выберите произношение 获得:",
+            "tj": "Талаффузи 获得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "guǒzhī",
+            "shòuhuòyuán",
+            "wàzi",
+            "huòdé"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "获得 — huòdé",
+            "ru": "获得 — huòdé",
+            "tj": "获得 — huòdé"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "情况",
+            "pinyin": "qíngkuàng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "holat, vaziyat",
+              "ru": "ситуация, положение",
+              "tj": "ҳолат, вазъият"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'holat, vaziyat' xitoycha qaysi?",
+            "ru": "'ситуация, положение' по-китайски?",
+            "tj": "'ҳолат, вазъият' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "袜子",
+            "情况",
+            "售货员",
+            "果汁"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "holat, vaziyat = 情况 (qíngkuàng)",
+            "ru": "ситуация, положение = 情况 (qíngkuàng)",
+            "tj": "ҳолат, вазъият = 情况 (qíngkuàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "例如",
+            "pinyin": "lìrú",
+            "pos": "v.",
+            "meaning": {
+              "uz": "masalan",
+              "ru": "например",
+              "tj": "масалан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "例如",
+          "pinyin": "lìrú",
+          "translation": {
+            "uz": "masalan",
+            "ru": "например",
+            "tj": "масалан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "例如",
+          "pinyin": "lìrú",
+          "options": [
+            "售货员",
+            "袜子",
+            "例如",
+            "果汁"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "例如 — masalan (lìrú)",
+            "ru": "例如 — например (lìrú)",
+            "tj": "例如 — масалан (lìrú)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "所有 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 所有:",
+            "tj": "Маънои калимаи 所有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "barcha, hamma",
+              "ru": "все, весь",
+              "tj": "ҳама"
+            },
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "所有 = barcha, hamma (suǒyǒu)",
+            "ru": "所有 = все, весь (suǒyǒu)",
+            "tj": "所有 = ҳама (suǒyǒu)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "所有",
+              {
+                "uz": "barcha, hamma",
+                "ru": "все, весь",
+                "tj": "ҳама"
+              }
+            ],
+            [
+              "获得",
+              {
+                "uz": "qo'lga kiritmoq, olmoq",
+                "ru": "получать, приобретать",
+                "tj": "ба даст овардан"
+              }
+            ],
+            [
+              "情况",
+              {
+                "uz": "holat, vaziyat",
+                "ru": "ситуация, положение",
+                "tj": "ҳолат, вазъият"
+              }
+            ],
+            [
+              "例如",
+              {
+                "uz": "masalan",
+                "ru": "например",
+                "tj": "масалан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "... sharoitida",
+              "ru": "в условиях...",
+              "tj": "дар шароити..."
+            },
+            "title_zh": "（在）……下",
+            "rule": {
+              "uz": "O'rtadagi qism odatda ikki bo'g'inli ot yoki fe'l bo'lib, shart yoki vaziyatni bildiradi.",
+              "ru": "Средняя часть обычно двусложное существительное или глагол и обозначает условие или ситуацию.",
+              "tj": "Қисми миёна одатан исм ё феъли дуҳиҷоӣ буда, шарт ё вазъиятро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "一般情况下，你花的钱越多，买的东西也就越好。",
+                "pinyin": "Yìbān qíngkuàng xià, nǐ huā de qián yuè duō, mǎi de dōngxi yě jiù yuè hǎo.",
+                "translation": {
+                  "uz": "Odatdagi holatda qancha ko'p pul sarflasang, olgan narsang shuncha yaxshi bo'ladi.",
+                  "ru": "В обычных условиях чем больше денег ты тратишь, тем лучше вещь покупаешь.",
+                  "tj": "Дар ҳолати одӣ ҳар қадар пули бештар сарф кунӣ, чизе ки мехарӣ ҳамон қадар беҳтар мешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "一般____下，你花的钱越多，买的东西也就越好。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "售货员",
+            "袜子",
+            "情况",
+            "果汁"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 情况 (qíngkuàng) — holat, vaziyat",
+            "ru": "Верно: 情况 (qíngkuàng) — ситуация, положение",
+            "tj": "Дуруст: 情况 (qíngkuàng) — ҳолат, вазъият"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "所有",
+          "pinyin": "suǒyǒu",
+          "options": [
+            "所有",
+            "果汁",
+            "售货员",
+            "袜子"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "所有 — barcha, hamma (suǒyǒu)",
+            "ru": "所有 — все, весь (suǒyǒu)",
+            "tj": "所有 — ҳама (suǒyǒu)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "打扰 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 打扰:",
+            "tj": "Маънои калимаи 打扰-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "bezovta qilmoq",
+              "ru": "беспокоить, мешать",
+              "tj": "халал расондан, нороҳат кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "打扰 = bezovta qilmoq (dǎrǎo)",
+            "ru": "打扰 = беспокоить, мешать (dǎrǎo)",
+            "tj": "打扰 = халал расондан, нороҳат кардан (dǎrǎo)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "例如",
+          "pinyin": "lìrú",
+          "options": [
+            "售货员",
+            "果汁",
+            "袜子",
+            "例如"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "例如 — masalan (lìrú)",
+            "ru": "例如 — например (lìrú)",
+            "tj": "例如 — масалан (lìrú)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qo'lga kiritmoq, olmoq' xitoycha qaysi?",
+            "ru": "'получать, приобретать' по-китайски?",
+            "tj": "'ба даст овардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "袜子",
+            "获得",
+            "果汁",
+            "售货员"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "qo'lga kiritmoq, olmoq = 获得 (huòdé)",
+            "ru": "получать, приобретать = 获得 (huòdé)",
+            "tj": "ба даст овардан = 获得 (huòdé)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "例如",
+          "pinyin": "lìrú",
+          "translation": {
+            "uz": "masalan",
+            "ru": "например",
+            "tj": "масалан"
+          }
+        }
+      ]
+    }
+  ]
+}

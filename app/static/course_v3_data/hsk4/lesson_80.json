@@ -1,0 +1,791 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 80,
+  "source_lesson": 9,
+  "part_no": 7,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "阳光总在风雨后",
+  "subtitle": {
+    "uz": "urinish, muvaffaqiyat va qiyinchiliklarga munosabat haqida gapirish; 难道, 通过, 可是, 结果 va 上 grammatikalarini ishlatish",
+    "ru": "говорить об усилиях, успехе и отношении к трудностям; использовать 难道, 通过, 可是, 结果 и 上",
+    "tj": "дар бораи кӯшиш, муваффақият ва муносибат ба мушкилӣ гуфтугӯ кардан; истифодаи 难道, 通过, 可是, 结果 ва 上"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "总结",
+      "pinyin": "zǒngjié",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xulosa qilmoq",
+        "ru": "подводить итог",
+        "tj": "хулоса кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "取",
+      "pinyin": "qǔ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "olmoq, qo'lga kiritmoq",
+        "ru": "получать, брать",
+        "tj": "гирифтан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "经历",
+      "pinyin": "jīnglì",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "boshdan kechirmoq; tajriba",
+        "ru": "переживать; опыт",
+        "tj": "аз сар гузаронидан; таҷриба"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "许多",
+      "pinyin": "xǔduō",
+      "pos": "num.",
+      "meaning": {
+        "uz": "ko'p",
+        "ru": "много",
+        "tj": "бисёр"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 5,
+      "title": {
+        "uz": "sondan oldin: undan ortiq",
+        "ru": "перед числом: свыше",
+        "tj": "пеш аз шумора: беш аз"
+      },
+      "title_zh": "上",
+      "rule": {
+        "uz": "上 + son taxminan 'undan ortiq' ma'nosini beradi.",
+        "ru": "上 + число означает приблизительно 'свыше, больше чем'.",
+        "tj": "上 + шумора маънои тахминан 'беш аз'-ро медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "爱迪生就是在找了上千种材料后才找到了能点亮电灯的材料。",
+          "pinyin": "Àidíshēng jiùshì zài zhǎo le shàng qiān zhǒng cáiliào hòu cái zhǎodào le néng diǎnliàng diàndēng de cáiliào.",
+          "translation": {
+            "uz": "Edison mingdan ortiq materialni qidirgandan keyingina elektr chiroqni yoqa oladigan materialni topgan.",
+            "ru": "Эдисон нашёл материал для электрической лампы только после поиска более тысячи материалов.",
+            "tj": "Эдисон танҳо баъди ҷустуҷӯи беш аз ҳазор навъ мавод маводи чароғро ёфт."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "王静 va 孙月 vazn tashlashni davom ettirish haqida gaplashadi",
+        "ru": "王静 и 孙月 говорят о продолжении похудения",
+        "tj": "王静 ва 孙月 дар бораи идома додани кам кардани вазн гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "王静",
+          "zh": "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
+          "pinyin": "Zěnme yòu mǎi le zhème duō bǐnggān hé qiǎokèlì? Nándào nǐ bù jiǎnféi le?",
+          "text": {
+            "uz": "Yana nega shuncha pechenye va shokolad olding? Nahotki ozishni tashlading?",
+            "ru": "Почему опять купила столько печенья и шоколада? Неужели больше не худеешь?",
+            "tj": "Чаро боз ин қадар печенье ва шоколад харидӣ? Магар дигар вазн кам намекунӣ?"
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "减了一个月都没瘦下来，我实在没有信心了。",
+          "pinyin": "Jiǎn le yí ge yuè dōu méi shòu xiàlai, wǒ shízài méiyǒu xìnxīn le.",
+          "text": {
+            "uz": "Bir oy ozishga harakat qildim ham ozmadim, rostdan ishonchim qolmadi.",
+            "ru": "Целый месяц худела и не похудела, я правда потеряла уверенность.",
+            "tj": "Як моҳ вазн кам кардам ҳам лоғар нашудам, ростӣ бовариям намонд."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "如果你想减肥，就得少吃东西，而且要多运动。",
+          "pinyin": "Rúguǒ nǐ xiǎng jiǎnféi, jiù děi shǎo chī dōngxi, érqiě yào duō yùndòng.",
+          "text": {
+            "uz": "Ozmoqchi bo'lsang, kamroq yeyishing va ko'proq sport qilishing kerak.",
+            "ru": "Если хочешь похудеть, нужно меньше есть и больше заниматься спортом.",
+            "tj": "Агар вазн кам кардан хоҳӣ, бояд камтар бихӯрӣ ва бештар варзиш кунӣ."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "我就是这么做的，但这一个月下来，我只轻了一公斤。",
+          "pinyin": "Wǒ jiù shì zhème zuò de, dàn zhè yí ge yuè xiàlai, wǒ zhǐ qīng le yì gōngjīn.",
+          "text": {
+            "uz": "Men aynan shunday qildim, lekin bir oyda atigi bir kilo yengillashdim.",
+            "ru": "Я именно так и делала, но за месяц стала легче только на один килограмм.",
+            "tj": "Ман ҳамин тавр кардам, вале дар як моҳ танҳо як кило кам шудам."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "一个月太短了。要想减肥成功，只能坚持，才会慢慢有效果。",
+          "pinyin": "Yí ge yuè tài duǎn le. Yào xiǎng jiǎnféi chénggōng, zhǐ néng jiānchí, cái huì mànmàn yǒu xiàoguǒ.",
+          "text": {
+            "uz": "Bir oy juda qisqa. Ozishda muvaffaqiyatga erishmoqchi bo'lsang, faqat davom etsang asta-sekin natija bo'ladi.",
+            "ru": "Один месяц слишком короткий. Чтобы успешно похудеть, нужно только продолжать, тогда постепенно будет эффект.",
+            "tj": "Як моҳ хеле кӯтоҳ аст. Барои муваффақ шудан дар кам кардани вазн бояд давом диҳӣ, баъд оҳиста натиҷа мешавад."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。",
+          "pinyin": "Wǒ běnlái yǐjīng dǎsuàn fàngqì le, dànshì nǐ gāngcái de huà ràng wǒ gǎibiàn le zhǔyi. Zhèxiē bǐnggān hé qiǎokèlì sòng gěi nǐ le.",
+          "text": {
+            "uz": "Aslida voz kechmoqchi edim, lekin hozirgi gaplaring fikrimni o'zgartirdi. Bu pechenye va shokoladlarni senga berdim.",
+            "ru": "Я уже собиралась сдаться, но твои слова изменили моё решение. Это печенье и шоколад дарю тебе.",
+            "tj": "Ман аллакай мехостам даст кашам, вале суханҳои ту фикрамро дигар кард. Ин печенье ва шоколадҳоро ба ту медиҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "李进 va 张远 tennisdagi muvaffaqiyat haqida gaplashadi",
+        "ru": "李进 и 张远 говорят об успехе в теннисе",
+        "tj": "李进 ва 张远 дар бораи муваффақият дар теннис гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "李进",
+          "zh": "你网球打得真好，还得过那么多国际大奖！每次看你比赛，感觉你轻轻松松就赢了。",
+          "pinyin": "Nǐ wǎngqiú dǎ de zhēn hǎo, hái déguo nàme duō guójì dàjiǎng! Měi cì kàn nǐ bǐsài, gǎnjué nǐ qīngqīngsōngsōng jiù yíng le.",
+          "text": {
+            "uz": "Tennisni juda yaxshi o'ynaysan, shuncha xalqaro mukofot ham olgansan! Har safar o'yiningni ko'rsam, osonlik bilan yutgandek tuyuladi.",
+            "ru": "Ты отлично играешь в теннис и получил столько международных наград! Каждый раз кажется, что ты выигрываешь совсем легко.",
+            "tj": "Ту теннисро бисёр хуб бозӣ мекунӣ, ин қадар ҷоизаи байналмилалӣ гирифтаӣ! Ҳар бор бозиятро мебинам, гӯё хеле осон мебарӣ."
+          }
+        },
+        {
+          "speaker": "张远",
+          "zh": "哪里啊！那是你没有看到我辛苦练习的一面，没有人随随便便就能成功的。",
+          "pinyin": "Nǎli a! Nà shì nǐ méiyǒu kàndào wǒ xīnkǔ liànxí de yí miàn, méiyǒu rén suí suí biàn biàn jiù néng chénggōng de.",
+          "text": {
+            "uz": "Qayoqda! Sen mening mashaqqatli mashq qilgan tomonimni ko'rmagansan, hech kim shunchaki muvaffaqiyatga erishmaydi.",
+            "ru": "Да что ты! Ты просто не видел, как тяжело я тренировался; никто не добивается успеха просто так.",
+            "tj": "Не, ту тарафи сахт машқ кардани маро надидаӣ; ҳеҷ кас тасодуфан муваффақ намешавад."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "我从小也对网球感兴趣，但是到现在还是打得不怎么样。",
+          "pinyin": "Wǒ cóng xiǎo yě duì wǎngqiú gǎn xìngqù, dànshì dào xiànzài háishi dǎ de bù zěnmeyàng.",
+          "text": {
+            "uz": "Men ham bolaligimdan tennisga qiziqqanman, lekin hozirgacha uncha yaxshi o'ynolmayman.",
+            "ru": "Я тоже с детства интересуюсь теннисом, но до сих пор играю не очень.",
+            "tj": "Ман ҳам аз хурдӣ ба теннис шавқ доштам, вале то ҳол хуб бозӣ намекунам."
+          }
+        },
+        {
+          "speaker": "张远",
+          "zh": "你知道吗？不管春夏秋冬，我练球从来没有休息过一天。",
+          "pinyin": "Nǐ zhīdào ma? Bùguǎn chūn xià qiū dōng, wǒ liàn qiú cónglái méiyǒu xiūxi guo yì tiān.",
+          "text": {
+            "uz": "Bilasanmi? Bahor, yoz, kuz, qish bo'lishidan qat'i nazar, mashqdan bir kun ham dam olmaganman.",
+            "ru": "Знаешь? Весной, летом, осенью и зимой я ни дня не отдыхал от тренировок.",
+            "tj": "Медонӣ? Баҳор, тобистон, тирамоҳ ё зимистон бошад ҳам, ман аз машқ як рӯз ҳам истироҳат накардаам."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "真是不容易啊！看来我只看到了你成功时获得的鲜花，却没注意到你成功前流下的汗水。",
+          "pinyin": "Zhēn shì bù róngyì a! Kànlai wǒ zhǐ kàndào le nǐ chénggōng shí huòdé de xiānhuā, què méi zhùyì dào nǐ chénggōng qián liú xià de hànshuǐ.",
+          "text": {
+            "uz": "Rostdan oson emas ekan! Men faqat muvaffaqiyat paytidagi gullarni ko'ribman, undan oldingi teringga e'tibor bermabman.",
+            "ru": "Это действительно нелегко! Похоже, я видел только цветы твоего успеха, но не замечал пот, пролитый до него.",
+            "tj": "Ростӣ осон нест! Маълум шуд ман танҳо гулҳои вақти муваффақиятатро дидаам, арақи пеш аз онро надидаам."
+          }
+        },
+        {
+          "speaker": "张远",
+          "zh": "任何成功都要通过努力才能得到。只要你坚持练习，我相信你也会越打越好的。",
+          "pinyin": "Rènhé chénggōng dōu yào tōngguò nǔlì cái néng dédào. Zhǐyào nǐ jiānchí liànxí, wǒ xiāngxìn nǐ yě huì yuè dǎ yuè hǎo de.",
+          "text": {
+            "uz": "Har qanday muvaffaqiyatga mehnat orqali erishiladi. Mashqni davom ettirsang, sen ham tobora yaxshiroq o'ynaysan deb ishonaman.",
+            "ru": "Любой успех приходит через усилия. Если будешь продолжать тренироваться, уверен, ты тоже будешь играть всё лучше.",
+            "tj": "Ҳар гуна муваффақият бо ёрии кӯшиш ба даст меояд. Агар машқро давом диҳӣ, бовар дорам ту ҳам ҳарчи беҳтар бозӣ мекунӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "小林 va 小李 yozuvchi bo'lgan 王红 haqida gaplashadi",
+        "ru": "小林 и 小李 говорят о 王红, ставшей писателем",
+        "tj": "小林 ва 小李 дар бораи 王红, ки нависанда шуд, гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小林",
+          "zh": "你还记得王红吗？我在报纸上看到一篇关于她的新闻，她现在已经是一个有名的作家了。",
+          "pinyin": "Nǐ hái jìde Wáng Hóng ma? Wǒ zài bàozhǐ shang kàndào yì piān guānyú tā de xīnwén, tā xiànzài yǐjīng shì yí ge yǒumíng de zuòjiā le.",
+          "text": {
+            "uz": "王红 esingdami? Gazetada u haqda bir xabar ko'rdim, u hozir allaqachon mashhur yozuvchi bo'libdi.",
+            "ru": "Помнишь 王红? Я видел в газете статью о ней, она уже стала известной писательницей.",
+            "tj": "王红-ро дар ёд дорӣ? Дар рӯзнома дар бораи ӯ як хабар дидам, ӯ ҳоло аллакай нависандаи маъруф шудааст."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "听说她毕业后放弃了律师的工作，开始专门写小说，没想到她竟然成功了。",
+          "pinyin": "Tīngshuō tā bìyè hòu fàngqì le lǜshī de gōngzuò, kāishǐ zhuānmén xiě xiǎoshuō, méi xiǎngdào tā jìngrán chénggōng le.",
+          "text": {
+            "uz": "Eshitishimcha, bitirgandan keyin advokat ishidan voz kechib, maxsus roman yozishni boshlagan, kutilmaganda muvaffaqiyatga erishibdi.",
+            "ru": "Слышал, после выпуска она отказалась от работы юриста и начала писать романы, неожиданно добилась успеха.",
+            "tj": "Шунидам баъди хатм аз кори ҳуқуқшиносӣ даст кашида, махсус роман навиштанро сар кардааст, ғайричашмдошт муваффақ шудааст."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "当时她的父母和亲戚都不支持她，可是她坚持自己的选择，现在终于向所有人证明了她的选择是正确的。",
+          "pinyin": "Dāngshí tā de fùmǔ hé qīnqi dōu bù zhīchí tā, kěshì tā jiānchí zìjǐ de xuǎnzé, xiànzài zhōngyú xiàng suǒyǒu rén zhèngmíng le tā de xuǎnzé shì zhèngquè de.",
+          "text": {
+            "uz": "O'sha payt ota-onasi va qarindoshlari uni qo'llamagan, lekin u o'z tanlovida turib oldi, endi nihoyat tanlovi to'g'ri ekanini hammaga isbotladi.",
+            "ru": "Тогда родители и родственники её не поддерживали, но она настояла на своём выборе и теперь доказала всем, что её выбор был правильным.",
+            "tj": "Он вақт падару модар ва хешовандонаш ӯро дастгирӣ намекарданд, вале ӯ интихоби худро нигоҳ дошт ва ҳоло ба ҳама дуруст будани онро исбот кард."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "看来为了自己的理想，放弃一些东西也是值得的。",
+          "pinyin": "Kànlai wèile zìjǐ de lǐxiǎng, fàngqì yìxiē dōngxi yě shì zhíde de.",
+          "text": {
+            "uz": "Demak, orzu uchun ba'zi narsalardan voz kechish ham arziydi.",
+            "ru": "Похоже, ради своей мечты стоит отказаться от некоторых вещей.",
+            "tj": "Маълум мешавад, барои орзуи худ аз баъзе чизҳо даст кашидан ҳам арзанда аст."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "一个人只有两只手，不可能得到所有想要的东西，所以有时候放弃是一种聪明的选择。",
+          "pinyin": "Yí ge rén zhǐ yǒu liǎng zhī shǒu, bù kěnéng dédào suǒyǒu xiǎng yào de dōngxi, suǒyǐ yǒu shíhou fàngqì shì yì zhǒng cōngming de xuǎnzé.",
+          "text": {
+            "uz": "Odamning ikki qo'li bor, xohlagan hamma narsani ololmaydi, shuning uchun ba'zan voz kechish aqlli tanlovdir.",
+            "ru": "У человека только две руки, невозможно получить всё желаемое, поэтому иногда отказаться - умный выбор.",
+            "tj": "Одам танҳо ду даст дорад, ҳамаи чизҳои хостаашро гирифта наметавонад, бинобар ин баъзан даст кашидан интихоби оқилона аст."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "是啊，只有学会放弃，才能把自己的能力用到最该做的事情上，最后获得成功。",
+          "pinyin": "Shì a, zhǐyǒu xuéhuì fàngqì, cái néng bǎ zìjǐ de nénglì yòng dào zuì gāi zuò de shìqing shang, zuìhòu huòdé chénggōng.",
+          "text": {
+            "uz": "Ha, faqat voz kechishni o'rgansang, qobiliyatingni eng kerakli ishga sarflab, oxirida muvaffaqiyatga erishasan.",
+            "ru": "Да, только научившись отказываться, можно направить способности на самое нужное дело и в итоге добиться успеха.",
+            "tj": "Ҳа, танҳо даст кашиданро ёд гирифта, қобилиятро ба кори аз ҳама лозим равона мекунӣ ва дар охир муваффақ мешавӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Natijadan qo'rqmasdan jarayonga e'tibor berish haqida matn",
+        "ru": "Текст о внимании к процессу, а не страхе перед результатом",
+        "tj": "Матн дар бораи диққат ба раванд, на тарс аз натиҷа"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "如果你想做什么事情，那就勇敢地去做，不要担心结果，不要考虑会不会失败。要是太看重结果，失败就会给人们带来很多烦恼。我们应该把注意力放在做事情的过程上，这样你会在做的过程中发现解决问题的快乐，这是其他任何东西都给不了的。即使最后失败了也没有关系，因为至少你已经努力过，而且我们还可以从失败中总结出有用的经验，有了这些积累，成功自然离我们越来越近。",
+          "pinyin": "Rúguǒ nǐ xiǎng zuò shénme shìqing, nà jiù yǒnggǎn de qù zuò, búyào dānxīn jiéguǒ.",
+          "text": {
+            "uz": "Agar biror ish qilmoqchi bo'lsang, jasorat bilan qil, natijadan yoki muvaffaqiyatsizlikdan qo'rqma. Natijani juda muhim deb bilsang, muvaffaqiyatsizlik ko'p tashvish olib keladi. E'tiborni ish jarayoniga qaratish kerak, shunda muammo yechish quvonchini topasan. Oxirida muvaffaqiyatsiz bo'lsang ham muammo emas, chunki kamida harakat qilgansan va muvaffaqiyatsizlikdan foydali tajriba chiqarish mumkin. Shunday yig'ilgan tajriba bilan muvaffaqiyat tabiiy ravishda yaqinlashadi.",
+            "ru": "Если хочешь что-то сделать, смело делай и не переживай о результате или возможной неудаче. Если слишком ценить результат, неудача принесёт много тревог. Нужно переносить внимание на процесс, тогда в процессе найдёшь радость решения проблем. Даже если в конце будет неудача, это не страшно: по крайней мере ты старался, а из неудачи можно сделать полезные выводы. С таким накоплением опыта успех естественно становится ближе.",
+            "tj": "Агар мехоҳӣ коре кунӣ, ҷасурона кун ва аз натиҷа ё нокомӣ хавотир нашав. Агар натиҷаро зиёд муҳим донӣ, нокомӣ ташвиши зиёд меорад. Бояд диққатро ба раванди кор гузошт, он вақт дар раванди ҳалли масъала хурсандӣ меёбӣ. Ҳатто дар охир ноком шавӣ ҳам, муҳим нест: ҳадди ақал кӯшиш кардаӣ ва аз нокомӣ таҷрибаи фоиданок мегирӣ. Бо чунин ҷамъшавии таҷриба муваффақият наздиктар мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qiyinchilikdan keyin muvaffaqiyat kelishi haqida matn",
+        "ru": "Текст о том, что успех приходит после трудностей",
+        "tj": "Матн дар бораи он ки муваффақият баъди мушкилӣ меояд"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "每一个人都希望成功，可是很多时候，在成功之前会遇到很多困难。有些人遇到困难就放弃，而有些人遇到困难却想办法解决它。对困难的态度不同，结果也是不一样的。爱迪生就是在找了上千种材料后才找到了能点亮电灯的材料。取得成功的人往往都经历过许多失败，他们和普通人的区别就是他们都坚持了下来。所以就算只有1%的希望，我们也要做出100%的努力。困难只是暂时的，“阳光总在风雨后”，只有我们勇敢地面对困难，才能有希望取得成功。",
+          "pinyin": "Měi yí ge rén dōu xīwàng chénggōng, kěshì hěn duō shíhou, zài chénggōng zhīqián huì yùdào hěn duō kùnnan.",
+          "text": {
+            "uz": "Har bir odam muvaffaqiyatni xohlaydi, lekin ko'p payt muvaffaqiyatdan oldin ko'p qiyinchilik uchraydi. Ba'zilar qiyinchilik ko'rsa voz kechadi, boshqalar esa uni yechish yo'lini topadi. Qiyinchilikka munosabat turlicha bo'lsa, natija ham turlicha bo'ladi. Edison mingdan ortiq materialni sinagandan keyingina elektr chiroqni yoqadigan material topgan. Muvaffaqiyatga erishganlar ko'pincha ko'p muvaffaqiyatsizliklarni boshdan kechirgan; ularning oddiy odamlardan farqi - davom etganida. Shuning uchun 1% umid bo'lsa ham, 100% harakat qilish kerak. Qiyinchilik vaqtinchalik, 'quyosh doim yomg'irdan keyin chiqadi'; faqat jasorat bilan yuzlashsak, muvaffaqiyat umidi bo'ladi.",
+            "ru": "Каждый хочет успеха, но часто до успеха встречается много трудностей. Одни при трудностях сдаются, другие ищут способ решить их. Отношение к трудностям разное, и результат тоже разный. Эдисон нашёл материал для электрической лампы после поиска более тысячи материалов. Успешные люди часто пережили много неудач; их отличие от обычных людей в том, что они продолжили. Поэтому даже при 1% надежды нужно приложить 100% усилий. Трудности временны: солнце всегда после дождя. Только смело встречая трудности, можно надеяться на успех.",
+            "tj": "Ҳар кас муваффақият мехоҳад, вале бисёр вақт пеш аз муваффақият мушкилиҳои зиёд меоянд. Баъзеҳо мушкилро дида даст мекашанд, баъзеҳо роҳи ҳалли онро меҷӯянд. Муносибат ба мушкилӣ гуногун аст, натиҷа ҳам гуногун мешавад. Эдисон баъди ҷустуҷӯи беш аз ҳазор мавод маводи чароғро ёфт. Одамони муваффақ аксаран нокомиҳои зиёдро аз сар гузарондаанд; фарқашон аз одамони оддӣ он аст, ки онҳо давом доданд. Барои ҳамин ҳатто 1% умед бошад ҳам, бояд 100% кӯшиш кунем. Мушкилӣ муваққатист: офтоб баъди борон меояд. Танҳо бо ҷасорат рӯ ба рӯ шавем, умеди муваффақият дорем."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "总结",
+            "pinyin": "zǒngjié",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xulosa qilmoq",
+              "ru": "подводить итог",
+              "tj": "хулоса кардан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "总结",
+          "pinyin": "zǒngjié",
+          "options": [
+            "饼干",
+            "难道",
+            "总结",
+            "得"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "总结 — xulosa qilmoq (zǒngjié)",
+            "ru": "总结 — подводить итог (zǒngjié)",
+            "tj": "总结 — хулоса кардан (zǒngjié)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "取",
+            "pinyin": "qǔ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "olmoq, qo'lga kiritmoq",
+              "ru": "получать, брать",
+              "tj": "гирифтан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "取 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 取:",
+            "tj": "Маънои калимаи 取-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "olmoq, qo'lga kiritmoq",
+              "ru": "получать, брать",
+              "tj": "гирифтан"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "取 = olmoq, qo'lga kiritmoq (qǔ)",
+            "ru": "取 = получать, брать (qǔ)",
+            "tj": "取 = гирифтан (qǔ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "经历",
+            "pinyin": "jīnglì",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "boshdan kechirmoq; tajriba",
+              "ru": "переживать; опыт",
+              "tj": "аз сар гузаронидан; таҷриба"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīnglì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīnglì?",
+            "tj": "jīnglì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "经历",
+            "得",
+            "饼干",
+            "难道"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "经历 = boshdan kechirmoq; tajriba (jīnglì)",
+            "ru": "经历 = переживать; опыт (jīnglì)",
+            "tj": "经历 = аз сар гузаронидан; таҷриба (jīnglì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "许多",
+            "pinyin": "xǔduō",
+            "pos": "num.",
+            "meaning": {
+              "uz": "ko'p",
+              "ru": "много",
+              "tj": "бисёр"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "许多",
+          "pinyin": "xǔduō",
+          "translation": {
+            "uz": "ko'p",
+            "ru": "много",
+            "tj": "бисёр"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "许多 talaffuzini tanlang:",
+            "ru": "Выберите произношение 许多:",
+            "tj": "Талаффузи 许多-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bǐnggān",
+            "nándào",
+            "děi",
+            "xǔduō"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "许多 — xǔduō",
+            "ru": "许多 — xǔduō",
+            "tj": "许多 — xǔduō"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xulosa qilmoq' xitoycha qaysi?",
+            "ru": "'подводить итог' по-китайски?",
+            "tj": "'хулоса кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "难道",
+            "总结",
+            "得",
+            "饼干"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "xulosa qilmoq = 总结 (zǒngjié)",
+            "ru": "подводить итог = 总结 (zǒngjié)",
+            "tj": "хулоса кардан = 总结 (zǒngjié)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "总结",
+              {
+                "uz": "xulosa qilmoq",
+                "ru": "подводить итог",
+                "tj": "хулоса кардан"
+              }
+            ],
+            [
+              "取",
+              {
+                "uz": "olmoq, qo'lga kiritmoq",
+                "ru": "получать, брать",
+                "tj": "гирифтан"
+              }
+            ],
+            [
+              "经历",
+              {
+                "uz": "boshdan kechirmoq; tajriba",
+                "ru": "переживать; опыт",
+                "tj": "аз сар гузаронидан; таҷриба"
+              }
+            ],
+            [
+              "许多",
+              {
+                "uz": "ko'p",
+                "ru": "много",
+                "tj": "бисёр"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "sondan oldin: undan ortiq",
+              "ru": "перед числом: свыше",
+              "tj": "пеш аз шумора: беш аз"
+            },
+            "title_zh": "上",
+            "rule": {
+              "uz": "上 + son taxminan 'undan ortiq' ma'nosini beradi.",
+              "ru": "上 + число означает приблизительно 'свыше, больше чем'.",
+              "tj": "上 + шумора маънои тахминан 'беш аз'-ро медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "爱迪生就是在找了上千种材料后才找到了能点亮电灯的材料。",
+                "pinyin": "Àidíshēng jiùshì zài zhǎo le shàng qiān zhǒng cáiliào hòu cái zhǎodào le néng diǎnliàng diàndēng de cáiliào.",
+                "translation": {
+                  "uz": "Edison mingdan ortiq materialni qidirgandan keyingina elektr chiroqni yoqa oladigan materialni topgan.",
+                  "ru": "Эдисон нашёл материал для электрической лампы только после поиска более тысячи материалов.",
+                  "tj": "Эдисон танҳо баъди ҷустуҷӯи беш аз ҳазор навъ мавод маводи чароғро ёфт."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "许多",
+          "pinyin": "xǔduō",
+          "options": [
+            "得",
+            "难道",
+            "许多",
+            "饼干"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "许多 — ko'p (xǔduō)",
+            "ru": "许多 — много (xǔduō)",
+            "tj": "许多 — бисёр (xǔduō)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "国际 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 国际:",
+            "tj": "Маънои калимаи 国际-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "xalqaro",
+              "ru": "международный",
+              "tj": "байналмилалӣ"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "国际 = xalqaro (guójì)",
+            "ru": "国际 = международный (guójì)",
+            "tj": "国际 = байналмилалӣ (guójì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "总结",
+          "pinyin": "zǒngjié",
+          "options": [
+            "总结",
+            "饼干",
+            "难道",
+            "得"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "总结 — xulosa qilmoq (zǒngjié)",
+            "ru": "总结 — подводить итог (zǒngjié)",
+            "tj": "总结 — хулоса кардан (zǒngjié)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'olmoq, qo'lga kiritmoq' xitoycha qaysi?",
+            "ru": "'получать, брать' по-китайски?",
+            "tj": "'гирифтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饼干",
+            "难道",
+            "取",
+            "得"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "olmoq, qo'lga kiritmoq = 取 (qǔ)",
+            "ru": "получать, брать = 取 (qǔ)",
+            "tj": "гирифтан = 取 (qǔ)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīnglì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīnglì?",
+            "tj": "jīnglì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "饼干",
+            "经历",
+            "难道",
+            "得"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "经历 = boshdan kechirmoq; tajriba (jīnglì)",
+            "ru": "经历 = переживать; опыт (jīnglì)",
+            "tj": "经历 = аз сар гузаронидан; таҷриба (jīnglì)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "许多",
+          "pinyin": "xǔduō",
+          "translation": {
+            "uz": "ko'p",
+            "ru": "много",
+            "tj": "бисёр"
+          }
+        }
+      ]
+    }
+  ]
+}

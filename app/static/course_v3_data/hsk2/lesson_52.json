@@ -1,0 +1,766 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 52,
+  "source_lesson": 11,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "他比我大三岁",
+  "subtitle": {
+    "uz": "'Bǐ' qiyoslash konstruktsiyasini, fe'l sifatdoshini aniqlovchi sifatida ishlatishni va 'kěnéng' yordamchi fe'lini o'rganish.",
+    "ru": "Изучение конструкции сравнения 'bǐ', использования глагольных конструкций в роли определения и модального глагола 'kěnéng'.",
+    "tj": "Омӯзиши конструксияи муқоисавии 'bǐ', истифодаи сохтҳои феълӣ ҳамчун муайянкунанда ва феъли ёрирасони 'kěnéng'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "可能",
+      "pinyin": "kěnéng",
+      "pos": "aux.",
+      "meaning": {
+        "uz": "ehtimol, mumkin",
+        "ru": "возможно, может быть",
+        "tj": "эҳтимол, мумкин аст"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "去年",
+      "pinyin": "qùnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'tgan yil",
+        "ru": "в прошлом году",
+        "tj": "соли гузашта"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "姓",
+      "pinyin": "xìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "familiyasi … bo'lmoq",
+        "ru": "иметь фамилию…",
+        "tj": "насабаш … буданаш"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "'Kěnéng' yordamchi fe'li",
+        "ru": "Модальный глагол 'kěnéng'",
+        "tj": "Феъли ёрирасони 'kěnéng'"
+      },
+      "title_zh": "助动词“可能”",
+      "rule": {
+        "uz": "'Kěnéng' yordamchi fe'li 'ehtimol, mumkin' ma'nosini beradi va fe'l oldidan qo'yiladi. U ma'lum bo'lmagan holatlar haqida taxmin bildiradi. Inkor shakli: '不可能' (mumkin emas, aslo).",
+        "ru": "Модальный глагол 'kěnéng' означает 'возможно, может быть' и ставится перед глаголом. Выражает предположение о неизвестных ситуациях. Отрицательная форма: '不可能' (невозможно).",
+        "tj": "Феъли ёрирасони 'kěnéng' маъниаш 'эҳтимол, мумкин аст' буда пеш аз феъл меояд. Вай тахминро дар бораи вазъиятҳои номаълум ифода мекунад. Шакли инкорӣ: '不可能' (ғайриимкон аст)."
+      },
+      "examples": [
+        {
+          "zh": "你可能不认识她。",
+          "pinyin": "Nǐ kěnéng bù rènshi tā.",
+          "translation": {
+            "uz": "Siz uni tanimas ehtimol.",
+            "ru": "Возможно, ты её не знаешь.",
+            "tj": "Эҳтимол шумо ӯро намешиносед."
+          }
+        },
+        {
+          "zh": "他可能今天来。",
+          "pinyin": "Tā kěnéng jīntiān lái.",
+          "translation": {
+            "uz": "U ehtimol bugun keladi.",
+            "ru": "Возможно, он придёт сегодня.",
+            "tj": "Эҳтимол ӯ имрӯз меояд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Qo'shiq aytish zalida",
+        "ru": "В зале для пения",
+        "tj": "Дар толори сурудхонӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "王方，昨天和你一起唱歌的人是谁？",
+          "pinyin": "Wáng Fāng, zuótiān hé nǐ yìqǐ chànggē de rén shì shéi?",
+          "text": {
+            "uz": "Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?",
+            "ru": "Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?",
+            "tj": "Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "一个朋友。",
+          "pinyin": "Yí ge péngyou.",
+          "text": {
+            "uz": "Bir do'stim.",
+            "ru": "Один друг.",
+            "tj": "Як дӯстам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "什么朋友？是不是男朋友？",
+          "pinyin": "Shénme péngyou? Shì bú shì nán péngyou?",
+          "text": {
+            "uz": "Qanday do'st? Yigit do'stingizmi?",
+            "ru": "Что за друг? Это случайно не парень?",
+            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不是不是，我同学介绍的，昨天第一次见。",
+          "pinyin": "Bú shì bú shì, wǒ tóngxué jièshào de, zuótiān dì yī cì jiàn.",
+          "text": {
+            "uz": "Yo'q yo'q, sinfdoshim tanishtirgan, kecha birinchi marta uchrashdik.",
+            "ru": "Нет-нет, познакомил однокурсник, вчера виделись первый раз.",
+            "tj": "Не не, ҳамсинфам шинос кард, дирӯз бори аввал дидем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yotoqxonada",
+        "ru": "В общежитии",
+        "tj": "Дар хобгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "左边这个看报纸的女孩子是你姐姐吗？",
+          "pinyin": "Zuǒbian zhège kàn bàozhǐ de nǚ háizi shì nǐ jiějie ma?",
+          "text": {
+            "uz": "Chap tomondagi gazeta o'qiyotgan qiz sizning opangizmi?",
+            "ru": "Та девушка слева, которая читает газету, это твоя старшая сестра?",
+            "tj": "Он духтаре ки тарафи чап рӯзнома мехонад хоҳари калонии туст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是，右边写字的那个人是我哥哥。",
+          "pinyin": "Shì, yòubian xiě zì de nà ge rén shì wǒ gēge.",
+          "text": {
+            "uz": "Ha, o'ng tomonda yozayotgan odam mening akam.",
+            "ru": "Да, а тот, кто справа пишет, это мой старший брат.",
+            "tj": "Бале, он касе ки тарафи рост менависад бародари калонии ман аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你哥哥多大？",
+          "pinyin": "Nǐ gēge duō dà?",
+          "text": {
+            "uz": "Akangiz necha yoshda?",
+            "ru": "Сколько лет твоему брату?",
+            "tj": "Бародари калониат чанд сол дорад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "25岁，他比我大三岁。",
+          "pinyin": "Èrshíwǔ suì, tā bǐ wǒ dà sān suì.",
+          "text": {
+            "uz": "25 yoshda, u mendan uch yosh katta.",
+            "ru": "25 лет, он старше меня на три года.",
+            "tj": "25 сол, ӯ аз ман се сол калонтар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda",
+        "ru": "В магазине",
+        "tj": "Дар мағоза"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天的西瓜怎么卖？",
+          "pinyin": "Jīntiān de xīguā zěnme mài?",
+          "text": {
+            "uz": "Bugungi tarvuz qancha?",
+            "ru": "Сколько стоит сегодня арбуз?",
+            "tj": "Тарбузи имрӯза чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "三块五一斤。",
+          "pinyin": "Sān kuài wǔ yì jīn.",
+          "text": {
+            "uz": "Bir jin uchun uch yuan besh fen.",
+            "ru": "Три юаня пятьдесят за полкило.",
+            "tj": "Барои як ҷин се юан панҷ феник."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "比昨天便宜。",
+          "pinyin": "Bǐ zuótiān piányi.",
+          "text": {
+            "uz": "Kechaga qaraganda arzon.",
+            "ru": "Дешевле, чем вчера.",
+            "tj": "Аз дирӯз арзонтар аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是，苹果也比昨天便宜一些。您来点儿吧。",
+          "pinyin": "Shì, píngguǒ yě bǐ zuótiān piányi yìxiē. Nín lái diǎnr ba.",
+          "text": {
+            "uz": "Ha, olma ham kechaga qaraganda biroz arzon. Biroz oling.",
+            "ru": "Да, яблоки тоже немного дешевле, чем вчера. Берите немного.",
+            "tj": "Бале, себ ҳам аз дирӯз каме арзонтар аст. Каме гиред."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "前边说话的那个人是不是我的汉语老师？你可能不认识她。",
+          "pinyin": "Qiánbian shuōhuà de nà ge rén shì bú shì wǒ de Hànyǔ lǎoshī? Nǐ kěnéng bù rènshi tā.",
+          "text": {
+            "uz": "Oldinda gapirgan odam mening xitoy tili o'qituvchim emasmi? Siz uni tanimas ehtimol.",
+            "ru": "Тот человек впереди, который говорит, не мой ли преподаватель китайского? Ты, наверное, её не знаешь.",
+            "tj": "Оё он касе ки пеш гап мезанад муаллими забони чинии ман нест? Эҳтимол шумо ӯро намешиносед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是新来的汉语老师吗？",
+          "pinyin": "Shì xīn lái de Hànyǔ lǎoshī ma?",
+          "text": {
+            "uz": "Yangi kelgan xitoy tili o'qituvchisimi?",
+            "ru": "Это новый преподаватель китайского?",
+            "tj": "Оё ин муаллими нави забони чинӣ аст?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "是去年来的，她姓王，28岁。",
+          "pinyin": "Shì qùnián lái de, tā xìng Wáng, èrshíbā suì.",
+          "text": {
+            "uz": "O'tgan yil kelgan, familiyasi Van, 28 yoshda.",
+            "ru": "Пришла в прошлом году, её фамилия Ван, 28 лет.",
+            "tj": "Соли гузашта омад, насабаш Ван аст, 28 сол дорад."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她比我们老师小两岁。",
+          "pinyin": "Tā bǐ wǒmen lǎoshī xiǎo liǎng suì.",
+          "text": {
+            "uz": "U bizning o'qituvchimizdan ikki yosh kichik.",
+            "ru": "Она на два года моложе нашего учителя.",
+            "tj": "Ӯ аз муаллими мо ду сол хурдтар аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "可能",
+            "pinyin": "kěnéng",
+            "pos": "aux.",
+            "meaning": {
+              "uz": "ehtimol, mumkin",
+              "ru": "возможно, может быть",
+              "tj": "эҳтимол, мумкин аст"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "可能",
+          "pinyin": "kěnéng",
+          "translation": {
+            "uz": "ehtimol, mumkin",
+            "ru": "возможно, может быть",
+            "tj": "эҳтимол, мумкин аст"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kěnéng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kěnéng?",
+            "tj": "kěnéng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "可能",
+            "女",
+            "唱歌",
+            "男"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "可能 = ehtimol, mumkin (kěnéng)",
+            "ru": "可能 = возможно, может быть (kěnéng)",
+            "tj": "可能 = эҳтимол, мумкин аст (kěnéng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "去年",
+            "pinyin": "qùnián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'tgan yil",
+              "ru": "в прошлом году",
+              "tj": "соли гузашта"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "去年 talaffuzini tanlang:",
+            "ru": "Выберите произношение 去年:",
+            "tj": "Талаффузи 去年-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qùnián",
+            "nǚ",
+            "nán",
+            "chànggē"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "去年 — qùnián",
+            "ru": "去年 — qùnián",
+            "tj": "去年 — qùnián"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "姓",
+            "pinyin": "xìng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "familiyasi … bo'lmoq",
+              "ru": "иметь фамилию…",
+              "tj": "насабаш … буданаш"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'familiyasi … bo'lmoq' xitoycha qaysi?",
+            "ru": "'иметь фамилию…' по-китайски?",
+            "tj": "'насабаш … буданаш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "姓",
+            "唱歌",
+            "男",
+            "女"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "familiyasi … bo'lmoq = 姓 (xìng)",
+            "ru": "иметь фамилию… = 姓 (xìng)",
+            "tj": "насабаш … буданаш = 姓 (xìng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "可能",
+          "pinyin": "kěnéng",
+          "options": [
+            "唱歌",
+            "男",
+            "可能",
+            "女"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "可能 — ehtimol, mumkin (kěnéng)",
+            "ru": "可能 — возможно, может быть (kěnéng)",
+            "tj": "可能 — эҳтимол, мумкин аст (kěnéng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "可能",
+              {
+                "uz": "ehtimol, mumkin",
+                "ru": "возможно, может быть",
+                "tj": "эҳтимол, мумкин аст"
+              }
+            ],
+            [
+              "去年",
+              {
+                "uz": "o'tgan yil",
+                "ru": "в прошлом году",
+                "tj": "соли гузашта"
+              }
+            ],
+            [
+              "姓",
+              {
+                "uz": "familiyasi … bo'lmoq",
+                "ru": "иметь фамилию…",
+                "tj": "насабаш … буданаш"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "'Kěnéng' yordamchi fe'li",
+              "ru": "Модальный глагол 'kěnéng'",
+              "tj": "Феъли ёрирасони 'kěnéng'"
+            },
+            "title_zh": "助动词“可能”",
+            "rule": {
+              "uz": "'Kěnéng' yordamchi fe'li 'ehtimol, mumkin' ma'nosini beradi va fe'l oldidan qo'yiladi. U ma'lum bo'lmagan holatlar haqida taxmin bildiradi. Inkor shakli: '不可能' (mumkin emas, aslo).",
+              "ru": "Модальный глагол 'kěnéng' означает 'возможно, может быть' и ставится перед глаголом. Выражает предположение о неизвестных ситуациях. Отрицательная форма: '不可能' (невозможно).",
+              "tj": "Феъли ёрирасони 'kěnéng' маъниаш 'эҳтимол, мумкин аст' буда пеш аз феъл меояд. Вай тахминро дар бораи вазъиятҳои номаълум ифода мекунад. Шакли инкорӣ: '不可能' (ғайриимкон аст)."
+            },
+            "examples": [
+              {
+                "zh": "你可能不认识她。",
+                "pinyin": "Nǐ kěnéng bù rènshi tā.",
+                "translation": {
+                  "uz": "Siz uni tanimas ehtimol.",
+                  "ru": "Возможно, ты её не знаешь.",
+                  "tj": "Эҳтимол шумо ӯро намешиносед."
+                }
+              },
+              {
+                "zh": "他可能今天来。",
+                "pinyin": "Tā kěnéng jīntiān lái.",
+                "translation": {
+                  "uz": "U ehtimol bugun keladi.",
+                  "ru": "Возможно, он придёт сегодня.",
+                  "tj": "Эҳтимол ӯ имрӯз меояд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz uni tanimas ehtimol.",
+            "ru": "Возможно, ты её не знаешь.",
+            "tj": "Эҳтимол шумо ӯро намешиносед."
+          },
+          "tokens": [
+            "不",
+            "男",
+            "可能",
+            "你",
+            "认识",
+            "唱歌",
+            "她"
+          ],
+          "answer_tokens": [
+            "你",
+            "可能",
+            "不",
+            "认识",
+            "她"
+          ],
+          "explanation": {
+            "uz": "你可能不认识她。 — Nǐ kěnéng bù rènshi tā.",
+            "ru": "你可能不认识她。 — Nǐ kěnéng bù rènshi tā.",
+            "tj": "你可能不认识她。 — Nǐ kěnéng bù rènshi tā."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "他可能今天来。",
+          "pinyin": "Tā kěnéng jīntiān lái.",
+          "translation": {
+            "uz": "U ehtimol bugun keladi.",
+            "ru": "Возможно, он придёт сегодня.",
+            "tj": "Эҳтимол ӯ имрӯз меояд."
+          },
+          "tokens": {
+            "uz": [
+              "U",
+              "ehtimol",
+              "keladi",
+              "Siz",
+              "uni",
+              "bugun"
+            ],
+            "ru": [
+              "её",
+              "придёт",
+              "ты",
+              "он",
+              "Возможно",
+              "сегодня"
+            ],
+            "tj": [
+              "шумо",
+              "ӯро",
+              "ӯ",
+              "меояд",
+              "Эҳтимол",
+              "имрӯз"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "ehtimol",
+              "bugun",
+              "keladi"
+            ],
+            "ru": [
+              "Возможно",
+              "он",
+              "придёт",
+              "сегодня"
+            ],
+            "tj": [
+              "Эҳтимол",
+              "ӯ",
+              "имрӯз",
+              "меояд"
+            ]
+          },
+          "explanation": {
+            "uz": "他可能今天来。 — U ehtimol bugun keladi.",
+            "ru": "他可能今天来。 — Возможно, он придёт сегодня.",
+            "tj": "他可能今天来。 — Эҳтимол ӯ имрӯз меояд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U ehtimol bugun keladi.",
+            "ru": "Возможно, он придёт сегодня.",
+            "tj": "Эҳтимол ӯ имрӯз меояд."
+          },
+          "tokens": [
+            "唱歌",
+            "他",
+            "今天",
+            "可能",
+            "来",
+            "男"
+          ],
+          "answer_tokens": [
+            "他",
+            "可能",
+            "今天",
+            "来"
+          ],
+          "explanation": {
+            "uz": "他可能今天来。 — Tā kěnéng jīntiān lái.",
+            "ru": "他可能今天来。 — Tā kěnéng jīntiān lái.",
+            "tj": "他可能今天来。 — Tā kěnéng jīntiān lái."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "孩子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 孩子:",
+            "tj": "Маънои калимаи 孩子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo'shiq aytmoq",
+              "ru": "петь песню",
+              "tj": "суруд хондан"
+            },
+            {
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
+            },
+            {
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
+            },
+            {
+              "uz": "erkak, o'g'il",
+              "ru": "мужской, мальчик",
+              "tj": "мард, писар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "孩子 = bola (háizi)",
+            "ru": "孩子 = ребёнок (háizi)",
+            "tj": "孩子 = кӯдак (háizi)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "去年",
+          "pinyin": "qùnián",
+          "translation": {
+            "uz": "o'tgan yil",
+            "ru": "в прошлом году",
+            "tj": "соли гузашта"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "可能",
+          "pinyin": "kěnéng",
+          "options": [
+            "唱歌",
+            "女",
+            "男",
+            "可能"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "可能 — ehtimol, mumkin (kěnéng)",
+            "ru": "可能 — возможно, может быть (kěnéng)",
+            "tj": "可能 — эҳтимол, мумкин аст (kěnéng)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'familiyasi … bo'lmoq' xitoycha qaysi?",
+            "ru": "'иметь фамилию…' по-китайски?",
+            "tj": "'насабаш … буданаш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "唱歌",
+            "男",
+            "女",
+            "姓"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "familiyasi … bo'lmoq = 姓 (xìng)",
+            "ru": "иметь фамилию… = 姓 (xìng)",
+            "tj": "насабаш … буданаш = 姓 (xìng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "可能",
+          "pinyin": "kěnéng",
+          "translation": {
+            "uz": "ehtimol, mumkin",
+            "ru": "возможно, может быть",
+            "tj": "эҳтимол, мумкин аст"
+          }
+        }
+      ]
+    }
+  ]
+}

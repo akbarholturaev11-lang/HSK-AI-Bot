@@ -2,726 +2,327 @@
   "schema_version": 2,
   "level": "hsk4",
   "lesson_id": 6,
-  "title": "一分钱一分货",
+  "source_lesson": 1,
+  "part_no": 6,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "简单的爱情",
   "subtitle": {
-    "uz": "narx va sifat, chegirma, xizmat va savdo aksiyalari haqida gapirish; 竟然, 倍, 值得, 其中 va （在）……下 grammatikalarini ishlatish",
-    "ru": "говорить о цене и качестве, скидках, сервисе и торговых акциях; использовать 竟然, 倍, 值得, 其中 и （在）……下",
-    "tj": "дар бораи нарх ва сифат, тахфиф, хизмат ва чорабиниҳои савдо гуфтугӯ кардан; истифодаи 竟然, 倍, 值得, 其中 ва （在）……下"
+    "uz": "sevgi va munosabatlar haqida gapirish; 不仅, 从来, 刚, 即使 va (在)...上 grammatikalarini ishlatish",
+    "ru": "говорить о любви и отношениях; использовать 不仅, 从来, 刚, 即使 и (在)...上",
+    "tj": "дар бораи муҳаббат ва муносибатҳо гуфтугӯ кардан; истифодаи 不仅, 从来, 刚, 即使 ва (在)...上"
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "果汁",
-      "pinyin": "guǒzhī",
+      "zh": "爱情",
+      "pinyin": "àiqíng",
       "pos": "n.",
       "meaning": {
-        "uz": "meva sharbati",
-        "ru": "фруктовый сок",
-        "tj": "шарбати мева"
+        "uz": "sevgi, muhabbat",
+        "ru": "любовь",
+        "tj": "муҳаббат"
       }
     },
     {
       "no": 2,
-      "zh": "售货员",
-      "pinyin": "shòuhuòyuán",
+      "zh": "星星",
+      "pinyin": "xīngxing",
       "pos": "n.",
       "meaning": {
-        "uz": "sotuvchi",
-        "ru": "продавец",
-        "tj": "фурӯшанда"
+        "uz": "yulduz",
+        "ru": "звезда",
+        "tj": "ситора"
       }
     },
     {
       "no": 3,
-      "zh": "袜子",
-      "pinyin": "wàzi",
-      "pos": "n.",
+      "zh": "即使",
+      "pinyin": "jíshǐ",
+      "pos": "conj.",
       "meaning": {
-        "uz": "paypoq",
-        "ru": "носки",
-        "tj": "ҷӯроб"
+        "uz": "hatto ... bo'lsa ham",
+        "ru": "даже если",
+        "tj": "ҳатто агар"
       }
     },
     {
       "no": 4,
-      "zh": "打扰",
-      "pinyin": "dǎrǎo",
+      "zh": "加班",
+      "pinyin": "jiā bān",
       "pos": "v.",
       "meaning": {
-        "uz": "bezovta qilmoq",
-        "ru": "беспокоить, мешать",
-        "tj": "халал расондан, нороҳат кардан"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "竟然",
-      "pinyin": "jìngrán",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "kutilmaganda, hayratlanarlisi",
-        "ru": "неожиданно, удивительно",
-        "tj": "ногаҳон, тааҷҷубовар"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "西红柿",
-      "pinyin": "xīhóngshì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "pomidor",
-        "ru": "помидор",
-        "tj": "помидор"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "百分之",
-      "pinyin": "bǎi fēn zhī",
-      "pos": "",
-      "meaning": {
-        "uz": "foiz",
-        "ru": "процент",
-        "tj": "фоиз"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "倍",
-      "pinyin": "bèi",
-      "pos": "m.",
-      "meaning": {
-        "uz": "marta, baravar",
-        "ru": "раз, крат",
-        "tj": "маротиба, баробар"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "皮肤",
-      "pinyin": "pífū",
-      "pos": "n.",
-      "meaning": {
-        "uz": "teri",
-        "ru": "кожа",
-        "tj": "пӯст"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "好处",
-      "pinyin": "hǎochu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "foyda, afzallik",
-        "ru": "польза, преимущество",
-        "tj": "фоида, бартарӣ"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "尝",
-      "pinyin": "cháng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tatib ko'rmoq",
-        "ru": "пробовать на вкус",
-        "tj": "чашидан"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "轻",
-      "pinyin": "qīng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "yengil",
-        "ru": "лёгкий",
-        "tj": "сабук"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "方面",
-      "pinyin": "fāngmiàn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "jihat, tomon",
-        "ru": "сторона, аспект",
-        "tj": "ҷиҳат, тараф"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "值得",
-      "pinyin": "zhíde",
-      "pos": "v.",
-      "meaning": {
-        "uz": "arziydigan",
-        "ru": "стоить, быть достойным",
-        "tj": "арзидан"
-      }
-    },
-    {
-      "no": 15,
-      "zh": "活动",
-      "pinyin": "huódòng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "tadbir, aksiya",
-        "ru": "мероприятие, акция",
-        "tj": "чорабинӣ, аксия"
-      }
-    },
-    {
-      "no": 16,
-      "zh": "内",
-      "pinyin": "nèi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "ichida, davomida",
-        "ru": "внутри, в течение",
-        "tj": "дар дохил, дар давоми"
-      }
-    },
-    {
-      "no": 17,
-      "zh": "免费",
-      "pinyin": "miǎnfèi",
-      "pos": "v.",
-      "meaning": {
-        "uz": "bepul",
-        "ru": "бесплатный",
-        "tj": "ройгон"
-      }
-    },
-    {
-      "no": 18,
-      "zh": "修理",
-      "pinyin": "xiūlǐ",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ta'mirlamoq",
-        "ru": "ремонтировать",
-        "tj": "таъмир кардан"
-      }
-    },
-    {
-      "no": 19,
-      "zh": "支持",
-      "pinyin": "zhīchí",
-      "pos": "v.",
-      "meaning": {
-        "uz": "qo'llab-quvvatlamoq",
-        "ru": "поддерживать",
-        "tj": "дастгирӣ кардан"
-      }
-    },
-    {
-      "no": 20,
-      "zh": "举行",
-      "pinyin": "jǔxíng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "o'tkazmoq",
-        "ru": "проводить",
-        "tj": "баргузор кардан"
-      }
-    },
-    {
-      "no": 21,
-      "zh": "满",
-      "pinyin": "mǎn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "to'lmoq, ma'lum summaga yetmoq",
-        "ru": "достигать суммы, быть полным",
-        "tj": "пур шудан, ба маблағ расидан"
-      }
-    },
-    {
-      "no": 22,
-      "zh": "其中",
-      "pinyin": "qízhōng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "ular ichida, shular orasida",
-        "ru": "среди них, в том числе",
-        "tj": "дар байни онҳо"
-      }
-    },
-    {
-      "no": 23,
-      "zh": "小说",
-      "pinyin": "xiǎoshuō",
-      "pos": "n.",
-      "meaning": {
-        "uz": "roman, hikoya",
-        "ru": "роман, рассказ",
-        "tj": "роман, ҳикоя"
-      }
-    },
-    {
-      "no": 24,
-      "zh": "会员卡",
-      "pinyin": "huìyuánkǎ",
-      "pos": "n.",
-      "meaning": {
-        "uz": "a'zolik kartasi",
-        "ru": "членская карта",
-        "tj": "корти аъзогӣ"
-      }
-    },
-    {
-      "no": 25,
-      "zh": "所有",
-      "pinyin": "suǒyǒu",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "barcha, hamma",
-        "ru": "все, весь",
-        "tj": "ҳама"
-      }
-    },
-    {
-      "no": 26,
-      "zh": "获得",
-      "pinyin": "huòdé",
-      "pos": "v.",
-      "meaning": {
-        "uz": "qo'lga kiritmoq, olmoq",
-        "ru": "получать, приобретать",
-        "tj": "ба даст овардан"
-      }
-    },
-    {
-      "no": 27,
-      "zh": "情况",
-      "pinyin": "qíngkuàng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "holat, vaziyat",
-        "ru": "ситуация, положение",
-        "tj": "ҳолат, вазъият"
-      }
-    },
-    {
-      "no": 28,
-      "zh": "例如",
-      "pinyin": "lìrú",
-      "pos": "v.",
-      "meaning": {
-        "uz": "masalan",
-        "ru": "например",
-        "tj": "масалан"
-      }
-    },
-    {
-      "no": 29,
-      "zh": "举办",
-      "pinyin": "jǔbàn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tashkil qilmoq, o'tkazmoq",
-        "ru": "организовывать, проводить",
-        "tj": "ташкил кардан, баргузор кардан"
-      }
-    },
-    {
-      "no": 30,
-      "zh": "各",
-      "pinyin": "gè",
-      "pos": "pron.",
-      "meaning": {
-        "uz": "har xil, har bir",
-        "ru": "каждый, разные",
-        "tj": "ҳар, гуногун"
-      }
-    },
-    {
-      "no": 31,
-      "zh": "降低",
-      "pinyin": "jiàngdī",
-      "pos": "v.",
-      "meaning": {
-        "uz": "pasaytirmoq",
-        "ru": "снижать",
-        "tj": "паст кардан"
+        "uz": "qo'shimcha ishlamoq",
+        "ru": "работать сверхурочно",
+        "tj": "аз вақти кор зиёд кор кардан"
       }
     }
   ],
-  "grammar": [
-    {
-      "no": 1,
-      "title": {
-        "uz": "kutilmaganda",
-        "ru": "неожиданно",
-        "tj": "ногаҳон"
-      },
-      "title_zh": "竟然",
-      "rule": {
-        "uz": "Kutilmagan, hayratli natijani bildiradi.",
-        "ru": "Показывает неожиданный, удивительный результат.",
-        "tj": "Натиҷаи ногаҳонӣ ё тааҷҷубоварро нишон медиҳад."
-      },
-      "examples": [
-        {
-          "zh": "竟然忘了去商场的超市买果汁！",
-          "pinyin": "Jìngrán wàngle qù shāngchǎng de chāoshì mǎi guǒzhī!",
-          "translation": {
-            "uz": "Kutilmaganda savdo markazidagi supermarketga sharbat olishga borishni unutibman!",
-            "ru": "Неожиданно я забыл пойти в супермаркет торгового центра купить сок!",
-            "tj": "Ногаҳон фаромӯш кардаам, ки ба супермаркети маркази савдо барои шарбат равам!"
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "marta, baravar",
-        "ru": "раз, крат",
-        "tj": "маротиба, баробар"
-      },
-      "title_zh": "倍",
-      "rule": {
-        "uz": "A 是 B 的 N 倍 shakli A ning B dan necha baravar ekanini bildiradi.",
-        "ru": "Конструкция A 是 B 的 N 倍 показывает, во сколько раз A больше B.",
-        "tj": "Қолиби A 是 B 的 N 倍 нишон медиҳад, ки A аз B чанд баробар аст."
-      },
-      "examples": [
-        {
-          "zh": "今天的价格是昨天的两倍。",
-          "pinyin": "Jīntiān de jiàgé shì zuótiān de liǎng bèi.",
-          "translation": {
-            "uz": "Bugungi narx kechagining ikki baravari.",
-            "ru": "Сегодняшняя цена в два раза выше вчерашней.",
-            "tj": "Нархи имрӯз ду баробари дирӯза аст."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "arziydi",
-        "ru": "стоит",
-        "tj": "меарзад"
-      },
-      "title_zh": "值得",
-      "rule": {
-        "uz": "值得 + fe'l/narsa bir ishni qilishga arziydiganini bildiradi.",
-        "ru": "值得 + глагол/предмет означает, что что-то стоит сделать или рассмотреть.",
-        "tj": "值得 + феъл/чиз маънои арзанда будани иҷро ё баррасиро медиҳад."
-      },
-      "examples": [
-        {
-          "zh": "都是值得考虑的。",
-          "pinyin": "Dōu shì zhíde kǎolǜ de.",
-          "translation": {
-            "uz": "Hammasi ko'rib chiqishga arziydi.",
-            "ru": "Всё это стоит рассмотреть.",
-            "tj": "Ҳамааш ба баррасӣ меарзад."
-          }
-        }
-      ]
-    },
-    {
-      "no": 4,
-      "title": {
-        "uz": "ular ichida",
-        "ru": "среди них",
-        "tj": "дар байни онҳо"
-      },
-      "title_zh": "其中",
-      "rule": {
-        "uz": "Oldin aytilgan guruh ichidagi bir qismini ajratib ko'rsatadi.",
-        "ru": "Выделяет часть внутри уже названной группы.",
-        "tj": "Як қисмро аз гурӯҳи пеш гуфташуда ҷудо нишон медиҳад."
-      },
-      "examples": [
-        {
-          "zh": "其中，小说7.5折，地图8折，留学考试用书6折。",
-          "pinyin": "Qízhōng, xiǎoshuō qīwǔ zhé, dìtú bā zhé, liúxué kǎoshì yòngshū liù zhé.",
-          "translation": {
-            "uz": "Ular ichida romanlar 25% chegirma, xaritalar 20% chegirma, chet elda o'qish imtihoni kitoblari 40% chegirma.",
-            "ru": "Среди них романы со скидкой 25%, карты со скидкой 20%, книги для экзаменов на обучение за рубежом со скидкой 40%.",
-            "tj": "Дар байни онҳо романҳо 25% тахфиф, харитаҳо 20% тахфиф, китобҳои имтиҳони таҳсил дар хориҷ 40% тахфиф доранд."
-          }
-        }
-      ]
-    },
-    {
-      "no": 5,
-      "title": {
-        "uz": "... sharoitida",
-        "ru": "в условиях...",
-        "tj": "дар шароити..."
-      },
-      "title_zh": "（在）……下",
-      "rule": {
-        "uz": "O'rtadagi qism odatda ikki bo'g'inli ot yoki fe'l bo'lib, shart yoki vaziyatni bildiradi.",
-        "ru": "Средняя часть обычно двусложное существительное или глагол и обозначает условие или ситуацию.",
-        "tj": "Қисми миёна одатан исм ё феъли дуҳиҷоӣ буда, шарт ё вазъиятро нишон медиҳад."
-      },
-      "examples": [
-        {
-          "zh": "一般情况下，你花的钱越多，买的东西也就越好。",
-          "pinyin": "Yìbān qíngkuàng xià, nǐ huā de qián yuè duō, mǎi de dōngxi yě jiù yuè hǎo.",
-          "translation": {
-            "uz": "Odatdagi holatda qancha ko'p pul sarflasang, olgan narsang shuncha yaxshi bo'ladi.",
-            "ru": "В обычных условиях чем больше денег ты тратишь, тем лучше вещь покупаешь.",
-            "tj": "Дар ҳолати одӣ ҳар қадар пули бештар сарф кунӣ, чизе ки мехарӣ ҳамон қадар беҳтар мешавад."
-          }
-        }
-      ]
-    }
-  ],
+  "grammar": [],
   "dialogues": [
     {
       "scene": {
-        "uz": "张远 va 李进 kechagi xarid haqida gaplashadi",
-        "ru": "张远 и 李进 говорят о вчерашних покупках",
-        "tj": "张远 ва 李进 дар бораи хариди дирӯза гуфтугӯ мекунанд"
+        "uz": "孙月 va 王静 uning yigit do'sti haqida gaplashadi",
+        "ru": "孙月 и 王静 разговаривают о ее парне",
+        "tj": "孙月 ва 王静 дар бораи дӯстписари ӯ суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "张远",
-          "zh": "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-          "pinyin": "Zuótiān wǎnshang wǒ gěi nǐ dǎ diànhuà yìzhí méi rén jiē, nǐ máng shénme ne?",
+          "speaker": "孙月",
+          "zh": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+          "pinyin": "Tīngshuō nǐ nánpéngyou Lǐ Jìn gēn nǐ shì yí ge xuéxiào de, shì nǐ tóngxué ma?",
           "text": {
-            "uz": "Kecha kechqurun senga telefon qildim, hech kim olmadi, nima bilan band eding?",
-            "ru": "Вчера вечером я звонил тебе, но никто не отвечал. Чем ты был занят?",
-            "tj": "Дирӯз бегоҳ ба ту занг задам, касе нагирифт. Бо чӣ банд будӣ?"
+            "uz": "Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?",
+            "ru": "Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?",
+            "tj": "Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?"
           }
         },
         {
-          "speaker": "李进",
-          "zh": "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。",
-          "pinyin": "Zuótiān qīzi ràng wǒ péi tā qù chāoshì mǎi guǒzhī. Wǒ bǎ shǒujī wàng zài jiālǐ le.",
+          "speaker": "王静",
+          "zh": "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+          "pinyin": "Shì de, tā xué de shì xīnwén, wǒ xué de shì fǎlǜ, wǒ hé tā bú shì yí ge bān.",
           "text": {
-            "uz": "Kecha xotinim meni supermarketga sharbat olishga birga borishga majbur qildi. Telefonimni uyda unutibman.",
-            "ru": "Вчера жена попросила меня сходить с ней в супермаркет купить сок. Я забыл телефон дома.",
-            "tj": "Дирӯз занам гуфт бо ӯ ба супермаркет барои харидани шарбат равам. Телефонамро дар хона фаромӯш кардаам."
+            "uz": "Ha, u jurnalistika o'qiydi, men huquq o'qiyman, biz bir guruhda emasmiz.",
+            "ru": "Да, он изучает журналистику, а я право; мы не в одной группе.",
+            "tj": "Ҳа, ӯ журналистика мехонад, ман ҳуқуқ мехонам; мо дар як гурӯҳ нестем."
           }
         },
         {
-          "speaker": "张远",
-          "zh": "买这么点儿东西也用不了那么长时间啊！",
-          "pinyin": "Mǎi zhème diǎnr dōngxi yě yòng bù liǎo nàme cháng shíjiān a!",
+          "speaker": "孙月",
+          "zh": "那你们俩是怎么认识的？",
+          "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
           "text": {
-            "uz": "Shunchagina narsa olishga ham bunchalik ko'p vaqt ketmaydi-ku!",
-            "ru": "Чтобы купить так мало вещей, столько времени не нужно!",
-            "tj": "Барои харидани ин қадар кам чиз ин қадар вақт лозим нест-ку!"
+            "uz": "Unda siz ikkalangiz qanday tanishgansiz?",
+            "ru": "Тогда как вы двое познакомились?",
+            "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
           }
         },
         {
-          "speaker": "李进",
-          "zh": "我们先去逛了会儿商场。一进门，售货员就热情地为我们介绍这、介绍那，她买了一条裤子、一件衬衫、两双袜子，然后我们就高高兴兴地回家了。",
-          "pinyin": "Wǒmen xiān qù guàngle huìr shāngchǎng. Yí jìn mén, shòuhuòyuán jiù rèqíng de wèi wǒmen jièshào zhè, jièshào nà, tā mǎile yì tiáo kùzi, yí jiàn chènshān, liǎng shuāng wàzi, ránhòu wǒmen jiù gāogāoxìngxìng de huí jiā le.",
+          "speaker": "王静",
+          "zh": "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+          "pinyin": "Wǒmen shì zài yí cì zúqiú bǐsài zhōng rènshi de. Wǒmen bān gēn tāmen bān bǐsài, tā yí ge rén tī jìn liǎng ge qiú, wǒ duì tā yìnxiàng hěn shēn, hòulái jiù mànmàn shúxī le.",
           "text": {
-            "uz": "Biz avval savdo markazini biroz aylandik. Eshikdan kirishimiz bilan sotuvchi bizga buni ham, unisini ham qizg'in tanishtirdi. U bir shim, bir ko'ylak va ikki juft paypoq oldi, keyin xursand bo'lib uyga qaytdik.",
-            "ru": "Сначала мы немного походили по торговому центру. Как только вошли, продавец стал горячо представлять нам то одно, то другое. Она купила брюки, рубашку и две пары носков, потом мы радостно вернулись домой.",
-            "tj": "Мо аввал каме маркази савдоро гаштем. Ҳамин ки ворид шудем, фурӯшанда гармона ину онро нишон дод. Ӯ як шим, як курта ва ду ҷуфт ҷӯроб харид, баъд хурсандона ба хона баргаштем."
+            "uz": "Biz bir futbol musobaqasida tanishganmiz. Bizning guruh ular guruhi bilan o'ynagan, u bir o'zi ikkita gol urgan, menda chuqur taassurot qoldirgan, keyin asta-sekin tanishib ketdik.",
+            "ru": "Мы познакомились на футбольном матче. Наша группа играла с их группой, он один забил два гола, и у меня осталось сильное впечатление; потом мы постепенно познакомились ближе.",
+            "tj": "Мо дар як мусобиқаи футбол шинос шудем. Гурӯҳи мо бо гурӯҳи онҳо бозӣ кард, ӯ танҳо ду гол зад, ба ман таассуроти амиқ гузошт; баъд оҳиста-оҳиста наздик шинос шудем."
           }
         },
         {
-          "speaker": "张远",
-          "zh": "买东西时我只看自己想买的，而且喜欢自己看、自己选，不希望被别人打扰。",
-          "pinyin": "Mǎi dōngxi shí wǒ zhǐ kàn zìjǐ xiǎng mǎi de, érqiě xǐhuan zìjǐ kàn, zìjǐ xuǎn, bù xīwàng bèi biérén dǎrǎo.",
+          "speaker": "孙月",
+          "zh": "你为什么喜欢他？",
+          "pinyin": "Nǐ wèishénme xǐhuan tā?",
           "text": {
-            "uz": "Xarid qilayotganda men faqat o'zim olmoqchi bo'lgan narsani ko'raman, o'zim ko'rib, o'zim tanlashni yoqtiraman, boshqalar bezovta qilishini xohlamayman.",
-            "ru": "Когда покупаю вещи, я смотрю только то, что сам хочу купить, люблю сам смотреть и сам выбирать, не хочу, чтобы меня беспокоили.",
-            "tj": "Ҳангоми харид ман танҳо чизеро мебинам, ки худам мехоҳам харам; дӯст медорам худам бинам, худам интихоб кунам ва намехоҳам касе халал расонад."
+            "uz": "Nega uni yoqtirasan?",
+            "ru": "Почему он тебе нравится?",
+            "tj": "Чаро ӯро дӯст медорӣ?"
           }
         },
         {
-          "speaker": "李进",
-          "zh": "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
-          "pinyin": "Shì a! Huí jiā yǐhòu, wǒ cái fāxiàn, jìngrán wàngle qù shāngchǎng de chāoshì mǎi guǒzhī!",
+          "speaker": "王静",
+          "zh": "他不仅足球踢得好，性格也不错。",
+          "pinyin": "Tā bùjǐn zúqiú tī de hǎo, xìnggé yě búcuò.",
           "text": {
-            "uz": "Ha! Uyga qaytgandan keyin bildim, kutilmaganda savdo markazidagi supermarketga sharbat olishga borishni unutibman!",
-            "ru": "Да! Только вернувшись домой, я обнаружил, что неожиданно забыл сходить в супермаркет торгового центра купить сок!",
-            "tj": "Ҳа! Ба хона баргашта фаҳмидам, ки ногаҳон фаромӯш кардаам ба супермаркети маркази савдо барои шарбат равам!"
+            "uz": "U nafaqat futbolni yaxshi o'ynaydi, xarakteri ham yaxshi.",
+            "ru": "Он не только хорошо играет в футбол, но и характер у него хороший.",
+            "tj": "Ӯ на танҳо футболро хуб бозӣ мекунад, хислаташ ҳам хуб аст."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "王静 do'konda pomidor sotib oladi",
-        "ru": "王静 покупает помидоры в магазине",
-        "tj": "王静 дар мағоза помидор мехарад"
+        "uz": "王静 Li o'qituvchi bilan turmush qurishi haqida gaplashadi",
+        "ru": "王静 говорит с учителем Ли о свадьбе",
+        "tj": "王静 бо муаллими Ли дар бораи издивоҷ суҳбат мекунад"
       },
       "dialogue": [
         {
           "speaker": "王静",
-          "zh": "西红柿新鲜吗？怎么卖？",
-          "pinyin": "Xīhóngshì xīnxiān ma? Zěnme mài?",
+          "zh": "李老师，我下个月5号就要结婚了。",
+          "pinyin": "Lǐ lǎoshī, wǒ xià ge yuè wǔ hào jiù yào jiéhūn le.",
           "text": {
-            "uz": "Pomidorlar yangimi? Qancha turadi?",
-            "ru": "Помидоры свежие? Почём продаёте?",
-            "tj": "Помидорҳо тару тозаанд? Чанд мефурӯшед?"
+            "uz": "Li ustoz, men keyingi oyning 5-kuni turmushga chiqaman.",
+            "ru": "Учитель Ли, пятого числа следующего месяца я выхожу замуж.",
+            "tj": "Муаллими Ли, рӯзи 5-уми моҳи оянда ман издивоҷ мекунам."
           }
         },
         {
-          "speaker": "售货员",
-          "zh": "七块钱一斤，您放心，保证百分之百新鲜。",
-          "pinyin": "Qī kuài qián yì jīn, nín fàng xīn, bǎozhèng bǎi fēn zhī bǎi xīnxiān.",
+          "speaker": "李老师",
+          "zh": "你是在开玩笑吧？你们不是才认识一个月？",
+          "pinyin": "Nǐ shì zài kāi wánxiào ba? Nǐmen bú shì cái rènshi yí ge yuè?",
           "text": {
-            "uz": "Bir jin yetti yuan, xotirjam bo'ling, yuz foiz yangiligiga kafolat.",
-            "ru": "Семь юаней за цзинь, не беспокойтесь, гарантирую стопроцентную свежесть.",
-            "tj": "Як ҷин ҳафт юан, хотирҷамъ бошед, сад фоиз тару тоза буданаш кафолат."
-          }
-        },
-        {
-          "speaker": "王静",
-          "zh": "怎么这么贵呀！我记得昨天才三块五一斤，今天的价格是昨天的两倍。",
-          "pinyin": "Zěnme zhème guì ya! Wǒ jìde zuótiān cái sān kuài wǔ yì jīn, jīntiān de jiàgé shì zuótiān de liǎng bèi.",
-          "text": {
-            "uz": "Nega bunchalik qimmat! Kecha bir jin atigi uch yarim yuan edi deb eslayman, bugungi narx kechagining ikki baravari.",
-            "ru": "Почему так дорого! Я помню, вчера было всего три с половиной юаня за цзинь, сегодняшняя цена в два раза выше вчерашней.",
-            "tj": "Чаро ин қадар қимат! Ёдам ҳаст дирӯз як ҷин ҳамагӣ сеюним юан буд, нархи имрӯз ду баробари дирӯза аст."
-          }
-        },
-        {
-          "speaker": "售货员",
-          "zh": "您问的这种是“绿色”的。一分钱一分货。每天吃一两个这种新鲜的西红柿，对皮肤有好处。",
-          "pinyin": "Nín wèn de zhè zhǒng shì “lǜsè” de. Yì fēn qián yì fēn huò. Měi tiān chī yì liǎng ge zhè zhǒng xīnxiān de xīhóngshì, duì pífū yǒu hǎochu.",
-          "text": {
-            "uz": "Siz so'ragan bu turi 'yashil' mahsulot. Bir tiyin - bir tiyinlik sifat. Har kuni bunday yangi pomidordan bir-ikkita yeyish teriga foydali.",
-            "ru": "Этот вид, о котором вы спрашиваете, 'зелёный'. За что платишь, то и получаешь. Если каждый день есть один-два таких свежих помидора, это полезно для кожи.",
-            "tj": "Ин навъе ки мепурсед, 'сабз' аст. Ҳар қадар пул, ҳамон қадар мол. Ҳар рӯз як-дуто чунин помидори тару тоза хӯрдан барои пӯст фоида дорад."
+            "uz": "Hazil qilyapsanmi? Sizlar endigina bir oy oldin tanishgansiz-ku?",
+            "ru": "Ты шутишь? Разве вы не познакомились всего месяц назад?",
+            "tj": "Шӯхӣ мекунӣ? Магар шумо ҳамагӣ як моҳ пеш шинос нашудед?"
           }
         },
         {
           "speaker": "王静",
-          "zh": "好，那我先买几个尝尝。",
-          "pinyin": "Hǎo, nà wǒ xiān mǎi jǐ ge chángchang.",
+          "zh": "虽然我们认识的时间不长，但我从来没这么快乐过。",
+          "pinyin": "Suīrán wǒmen rènshi de shíjiān bù cháng, dàn wǒ cónglái méi zhème kuàilè guo.",
           "text": {
-            "uz": "Yaxshi, unda avval bir nechtasini olib tatib ko'raman.",
-            "ru": "Хорошо, тогда сначала куплю несколько попробовать.",
-            "tj": "Хуб, пас аввал чандто мехарам, бичашам."
+            "uz": "Tanishganimizga ko'p bo'lmagan bo'lsa ham, men hech qachon bunchalik xursand bo'lmaganman.",
+            "ru": "Хотя мы знакомы недолго, я никогда не была такой счастливой.",
+            "tj": "Гарчанде мо дер боз шинос нестем, ман ҳеч вақт ин қадар хушбахт набудам."
           }
         },
         {
-          "speaker": "售货员",
-          "zh": "好的，给您西红柿，一共两斤，十四块。",
-          "pinyin": "Hǎo de, gěi nín xīhóngshì, yígòng liǎng jīn, shísì kuài.",
+          "speaker": "李老师",
+          "zh": "两个人在一起，最好能有共同的兴趣和爱好。",
+          "pinyin": "Liǎng ge rén zài yìqǐ, zuìhǎo néng yǒu gòngtóng de xìngqù hé àihào.",
           "text": {
-            "uz": "Marhamat, pomidoringiz, jami ikki jin, o'n to'rt yuan.",
-            "ru": "Хорошо, вот ваши помидоры, всего два цзиня, четырнадцать юаней.",
-            "tj": "Хуб, ин помидорҳоятон, ҳамагӣ ду ҷин, чордаҳ юан."
+            "uz": "Ikki kishi birga bo'lsa, umumiy qiziqish va hobbilari bo'lgani yaxshi.",
+            "ru": "Когда два человека вместе, лучше всего иметь общие интересы и увлечения.",
+            "tj": "Вақте ду нафар якҷо ҳастанд, беҳтараш шавқ ва ҳавасҳои умумӣ дошта бошанд."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "我们有很多共同的爱好，经常一起打球、唱歌、做菜。",
+          "pinyin": "Wǒmen yǒu hěn duō gòngtóng de àihào, jīngcháng yìqǐ dǎqiú, chànggē, zuò cài.",
+          "text": {
+            "uz": "Bizning umumiy qiziqishlarimiz ko'p, ko'pincha birga to'p o'ynaymiz, qo'shiq aytamiz, ovqat qilamiz.",
+            "ru": "У нас много общих увлечений: мы часто вместе играем в мяч, поем и готовим.",
+            "tj": "Мо ҳавасҳои муштараки зиёд дорем: бисёр вақт якҷо тӯббозӣ, сурудхонӣ ва хӯрокпазӣ мекунем."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "看来你真的找到适合你的人了。祝你们幸福！",
+          "pinyin": "Kànlái nǐ zhēn de zhǎodào shìhé nǐ de rén le. Zhù nǐmen xìngfú!",
+          "text": {
+            "uz": "Demak sen haqiqatan ham o'zingga mos odamni topibsan. Sizlarga baxt tilayman!",
+            "ru": "Похоже, ты действительно нашла подходящего человека. Желаю вам счастья!",
+            "tj": "Ба назар мерасад, ки ту воқеан шахси мувофиқро ёфтаӣ. Ба шумо хушбахтӣ мехоҳам!"
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "李进 savdo markazida chamadon tanlaydi",
-        "ru": "李进 выбирает чемодан в торговом центре",
-        "tj": "李进 дар маркази савдо ҷомадон интихоб мекунад"
+        "uz": "高老师 va 李老师 turmush hayoti haqida gaplashadi",
+        "ru": "Учитель Гао и учитель Ли говорят о семейной жизни",
+        "tj": "Муаллими Гао ва муаллими Ли дар бораи зиндагии оилавӣ суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "售货员",
-          "zh": "先生，我们店的行李箱都在这里，请问您要什么样的？",
-          "pinyin": "Xiānsheng, wǒmen diàn de xínglixiāng dōu zài zhèli, qǐngwèn nín yào shénme yàng de?",
+          "speaker": "高老师",
+          "zh": "听说您跟妻子结婚快二十年了？",
+          "pinyin": "Tīngshuō nín gēn qīzi jiéhūn kuài èrshí nián le?",
           "text": {
-            "uz": "Janob, do'konimizdagi barcha chamadonlar shu yerda, siz qandayini xohlaysiz?",
-            "ru": "Господин, все чемоданы нашего магазина здесь. Какой вам нужен?",
-            "tj": "Ҷаноб, ҳама ҷомадонҳои мағозаи мо инҷоянд. Шумо чӣ гуна мехоҳед?"
+            "uz": "Eshitishimcha, siz rafiqangiz bilan turmush qurganingizga deyarli yigirma yil bo'libdi?",
+            "ru": "Слышал, вы с женой женаты почти двадцать лет?",
+            "tj": "Шунидам, ки шумо бо ҳамсаратон қариб бист сол боз издивоҷ кардаед?"
           }
         },
         {
-          "speaker": "李进",
-          "zh": "我想买一个轻一点儿的。",
-          "pinyin": "Wǒ xiǎng mǎi yí ge qīng yìdiǎnr de.",
+          "speaker": "李老师",
+          "zh": "到6月9号，我们就结婚二十年了。这么多年，我们的生活一直挺幸福的。",
+          "pinyin": "Dào liù yuè jiǔ hào, wǒmen jiù jiéhūn èrshí nián le. Zhème duō nián, wǒmen de shēnghuó yìzhí tǐng xìngfú de.",
           "text": {
-            "uz": "Biroz yengilrog'ini olmoqchiman.",
-            "ru": "Я хочу купить немного полегче.",
-            "tj": "Ман мехоҳам яктои сабуктар харам."
+            "uz": "6-iyunga kelib turmush qurganimizga yigirma yil bo'ladi. Shu yillar davomida hayotimiz doim ancha baxtli bo'lgan.",
+            "ru": "К 9 июня будет двадцать лет со дня нашей свадьбы. Все эти годы наша жизнь была довольно счастливой.",
+            "tj": "То 9-уми июн издивоҷи мо бистсола мешавад. Дар ин солҳо зиндагии мо ҳамеша хеле хушбахтона буд."
           }
         },
         {
-          "speaker": "售货员",
-          "zh": "您看看这个，不管从价格方面看，还是从质量上看，都是值得考虑的。",
-          "pinyin": "Nín kànkan zhège, bùguǎn cóng jiàgé fāngmiàn kàn, háishi cóng zhìliàng shang kàn, dōu shì zhíde kǎolǜ de.",
+          "speaker": "高老师",
+          "zh": "我和丈夫刚结婚的时候，每天都觉得很新鲜，在一起有说不完的话。但是现在……",
+          "pinyin": "Wǒ hé zhàngfu gāng jiéhūn de shíhou, měi tiān dōu juéde hěn xīnxiān, zài yìqǐ yǒu shuō bu wán de huà. Dànshì xiànzài...",
           "text": {
-            "uz": "Mana bunga qarang, narx jihatidan bo'ladimi yoki sifat jihatidanmi, ko'rib chiqishga arziydi.",
-            "ru": "Посмотрите этот: и с точки зрения цены, и с точки зрения качества, его стоит рассмотреть.",
-            "tj": "Инро бинед, хоҳ аз ҷиҳати нарх бошад, хоҳ аз ҷиҳати сифат, ба баррасӣ меарзад."
+            "uz": "Erim bilan endi turmush qurgan paytimda har kuni hamma narsa yangi tuyulardi, birga bo'lsak gapimiz tugamasdi. Lekin hozir...",
+            "ru": "Когда мы с мужем только поженились, каждый день казался новым, и нам было о чем говорить без конца. Но сейчас...",
+            "tj": "Вақте ману шавҳарам нав издивоҷ карда будем, ҳар рӯз ҳама чиз нав менамуд ва суханамон тамом намешуд. Аммо ҳоло..."
           }
         },
         {
-          "speaker": "李进",
-          "zh": "质量是不错。请问这个多少钱？",
-          "pinyin": "Zhìliàng shì búcuò. Qǐngwèn zhège duōshǎo qián?",
+          "speaker": "李老师",
+          "zh": "两个人共同生活，只有浪漫和新鲜感是不够的。",
+          "pinyin": "Liǎng ge rén gòngtóng shēnghuó, zhǐyǒu làngmàn hé xīnxiāngǎn shì bú gòu de.",
           "text": {
-            "uz": "Sifati yaxshi ekan. Bu qancha turadi?",
-            "ru": "Качество неплохое. Сколько он стоит?",
-            "tj": "Сифаташ хуб аст. Ин чанд пул?"
+            "uz": "Ikki kishi birga yashasa, faqat romantika va yangilik hissi yetarli emas.",
+            "ru": "Для совместной жизни двух людей одной романтики и новизны недостаточно.",
+            "tj": "Барои зиндагии муштараки ду нафар танҳо романтика ва ҳисси навӣ кофӣ нест."
           }
         },
         {
-          "speaker": "售货员",
-          "zh": "现在我们商场正好有打折活动，打完折是999。另外，一年内我们都负责免费修理。",
-          "pinyin": "Xiànzài wǒmen shāngchǎng zhènghǎo yǒu dǎ zhé huódòng, dǎ wán zhé shì jiǔjiǔjiǔ. Lìngwài, yì nián nèi wǒmen dōu fùzé miǎnfèi xiūlǐ.",
+          "speaker": "高老师",
+          "zh": "您说的对！我现在每天看到的都是他的缺点。",
+          "pinyin": "Nín shuō de duì! Wǒ xiànzài měi tiān kàndào de dōu shì tā de quēdiǎn.",
           "text": {
-            "uz": "Hozir savdo markazimizda aynan chegirma aksiyasi bor, chegirmadan keyin 999. Bundan tashqari bir yil ichida bepul ta'mirlashga biz javobgarmiz.",
-            "ru": "Сейчас в нашем торговом центре как раз акция со скидкой, после скидки - 999. Кроме того, в течение года мы отвечаем за бесплатный ремонт.",
-            "tj": "Ҳоло дар маркази савдои мо айни вақт аксияи тахфиф аст, баъди тахфиф 999. Ғайр аз ин, дар давоми як сол мо таъмири ройгонро ба ӯҳда мегирем."
+            "uz": "To'g'ri aytasiz! Men hozir har kuni faqat uning kamchiliklarini ko'raman.",
+            "ru": "Вы правы! Сейчас я каждый день вижу только его недостатки.",
+            "tj": "Шумо дуруст мегӯед! Ҳоло ман ҳар рӯз фақат камбудиҳои ӯро мебинам."
           }
         },
         {
-          "speaker": "李进",
-          "zh": "你们的服务不错，价格也可以，就买这个吧。",
-          "pinyin": "Nǐmen de fúwù búcuò, jiàgé yě kěyǐ, jiù mǎi zhège ba.",
+          "speaker": "李老师",
+          "zh": "两个人在一起时间长了，就会有很多问题。只有接受了他的缺点，你们才能更好地一起生活。",
+          "pinyin": "Liǎng ge rén zài yìqǐ shíjiān cháng le, jiù huì yǒu hěn duō wèntí. Zhǐyǒu jiēshòu le tā de quēdiǎn, nǐmen cái néng gèng hǎo de yìqǐ shēnghuó.",
           "text": {
-            "uz": "Xizmatingiz yaxshi, narxi ham bo'ladi, shuni olay.",
-            "ru": "У вас хороший сервис, цена тоже подходит, возьму этот.",
-            "tj": "Хизматрасониатон хуб аст, нархаш ҳам мешавад, ҳаминро мегирам."
+            "uz": "Ikki kishi uzoq vaqt birga bo'lsa, ko'p muammo bo'ladi. Faqat uning kamchiliklarini qabul qilgandagina yaxshiroq birga yashay olasizlar.",
+            "ru": "Когда два человека долго вместе, появляется много проблем. Только приняв его недостатки, вы сможете лучше жить вместе.",
+            "tj": "Вақте ду нафар муддати дароз якҷо бошанд, мушкилоти зиёд пайдо мешавад. Танҳо баъд аз қабул кардани камбудиҳои ӯ шумо метавонед беҳтар якҷо зиндагӣ кунед."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Kitob do'konidagi aksiya haqida e'lon",
-        "ru": "Объявление об акции в книжном магазине",
-        "tj": "Эълон дар бораи аксияи мағозаи китоб"
+        "uz": "Romantik sevgi haqida matn",
+        "ru": "Текст о романтической любви",
+        "tj": "Матн дар бораи муҳаббати романтикӣ"
       },
       "dialogue": [
         {
           "speaker": "旁白",
-          "zh": "顾客朋友们，为了感谢大家的支持，我们书店今天举行“购书送好礼”活动，购书满100元送一个笔记本，满200元送一本词典。另外，一些图书还有打折活动，其中，小说7.5折，地图8折，留学考试用书6折。如果购书满500元可免费办会员卡，以后购书可打8折。今天过生日的朋友和所有的小朋友还可以获得一份小礼物。欢迎大家选购！",
-          "pinyin": "Gùkè péngyǒumen, wèile gǎnxiè dàjiā de zhīchí, wǒmen shūdiàn jīntiān jǔxíng “gòu shū sòng hǎo lǐ” huódòng, gòu shū mǎn yìbǎi yuán sòng yí ge bǐjìběn, mǎn èrbǎi yuán sòng yì běn cídiǎn. Lìngwài, yìxiē túshū hái yǒu dǎ zhé huódòng, qízhōng, xiǎoshuō qīwǔ zhé, dìtú bā zhé, liúxué kǎoshì yòngshū liù zhé. Rúguǒ gòu shū mǎn wǔbǎi yuán kě miǎnfèi bàn huìyuánkǎ, yǐhòu gòu shū kě dǎ bā zhé. Jīntiān guò shēngrì de péngyǒu hé suǒyǒu de xiǎopéngyǒu hái kěyǐ huòdé yí fèn xiǎo lǐwù. Huānyíng dàjiā xuǎngòu!",
+          "zh": "很多女孩子羡慕浪漫的爱情。",
+          "pinyin": "Hěn duō nǚháizi xiànmù làngmàn de àiqíng.",
           "text": {
-            "uz": "Hurmatli xaridorlar, qo'llab-quvvatlaganingiz uchun rahmat sifatida kitob do'konimiz bugun 'kitob ol - yaxshi sovg'a ol' aksiyasini o'tkazmoqda: 100 yuanga kitob olsangiz bitta daftar, 200 yuanga olsangiz bitta lug'at beriladi. Bundan tashqari, ayrim kitoblarda chegirma ham bor: romanlar 25% chegirma, xaritalar 20% chegirma, chet elda o'qish imtihoni kitoblari 40% chegirma. Agar 500 yuanga kitob olsangiz, bepul a'zolik kartasi rasmiylashtirasiz, keyingi xaridlarda 20% chegirma bo'ladi. Bugun tug'ilgan kuni bo'lganlar va barcha bolalar kichik sovg'a ham oladi. Tanlab xarid qilishingizni kutamiz!",
-            "ru": "Дорогие покупатели, чтобы поблагодарить всех за поддержку, наш книжный магазин сегодня проводит акцию 'купи книгу - получи хороший подарок': при покупке книг на 100 юаней дарим блокнот, на 200 юаней - словарь. Кроме того, на некоторые книги есть скидки: романы 25%, карты 20%, книги для экзаменов на обучение за рубежом 40%. Если купить книг на 500 юаней, можно бесплатно оформить членскую карту, а затем покупать книги со скидкой 20%. Друзья, у кого сегодня день рождения, и все дети также могут получить маленький подарок. Добро пожаловать за покупками!",
-            "tj": "Мизоҷони азиз, барои ташаккур аз дастгирии шумо мағозаи китобамон имрӯз аксияи 'китоб харед, тӯҳфаи хуб гиред' баргузор мекунад: агар китоб ба маблағи 100 юан харед, як дафтар, ба 200 юан як луғат дода мешавад. Ғайр аз ин, баъзе китобҳо тахфиф доранд: романҳо 25%, харитаҳо 20%, китобҳои имтиҳони таҳсил дар хориҷ 40%. Агар китоб ба 500 юан харед, метавонед ройгон корти аъзогӣ гиред ва баъд китобҳоро бо 20% тахфиф харед. Дӯстоне, ки имрӯз зодрӯз доранд, ва ҳамаи кӯдакон низ як тӯҳфаи хурд мегиранд. Марҳамат, интихоб кунед!"
+            "uz": "Ko'p qizlar romantik sevgiga havas qiladi.",
+            "ru": "Многие девушки восхищаются романтической любовью.",
+            "tj": "Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "那什么是浪漫呢？年轻人说：浪漫是她想要月亮时，你不会给她星星；中年人说：浪漫是即使晚上加班到零点，到家时，自己家里也还亮着灯；老年人说：浪漫其实就像歌中唱的那样，“我能想到最浪漫的事，就是和你一起慢慢变老。”其实，让我们感动的，就是生活中简单的爱情。有时候，简单就是最大的幸福。",
+          "pinyin": "Nà shénme shì làngmàn ne? Niánqīngrén shuō: làngmàn shì tā xiǎng yào yuèliang shí, nǐ bú huì gěi tā xīngxing; zhōngnián rén shuō: làngmàn shì jíshǐ wǎnshang jiābān dào língdiǎn, dào jiā shí, zìjǐ jiā lǐ yě hái liàngzhe dēng; lǎonián rén shuō: làngmàn qíshí jiù xiàng gē zhōng chàng de nàyàng, 'wǒ néng xiǎngdào zuì làngmàn de shì, jiùshì hé nǐ yìqǐ mànmàn biàn lǎo.' Qíshí, ràng wǒmen gǎndòng de, jiùshì shēnghuó zhōng jiǎndān de àiqíng. Yǒu shíhou, jiǎndān jiùshì zuì dà de xìngfú.",
+          "text": {
+            "uz": "Romantika nima o'zi? Yoshlar aytadi: romantika - u oy so'rasa, unga yulduz bermaslik; o'rta yoshlilar aytadi: romantika - hatto kechasi yarimgacha ishlasa ham, uyga kelganda uy chirog'i yonib turishi; keksalar aytadi: romantika qo'shiqdagi kabi, 'men tasavvur qila oladigan eng romantik ish - sen bilan birga asta qarish'. Aslida bizni ta'sirlantiradigan narsa hayotdagi oddiy sevgi. Ba'zan oddiylik eng katta baxtdir.",
+            "ru": "Так что такое романтика? Молодые говорят: романтика - это когда она просит луну, а ты не даешь ей звезды; люди среднего возраста говорят: романтика - это когда даже после сверхурочной работы до полуночи дома все еще горит свет; пожилые говорят: романтика похожа на слова песни: 'самое романтичное, что я могу представить, - медленно стареть вместе с тобой'. На самом деле нас трогает простая любовь в повседневной жизни. Иногда простота и есть самое большое счастье.",
+            "tj": "Пас романтика чист? Ҷавонон мегӯянд: романтика он аст, ки вақте ӯ моҳро мехоҳад, ту ба ӯ ситора намедиҳӣ; миёнсолон мегӯянд: романтика он аст, ки ҳатто шаб то нисфи шаб изофакорӣ кунӣ, вақте ба хона мерасӣ, чароғи хонаат ҳанӯз фурӯзон аст; пиронсолон мегӯянд: романтика мисли суруд аст: 'романтиктарин чизе, ки тасаввур мекунам, ин бо ту оҳиста пир шудан аст'. Дар асл, чизе ки моро таъсир мекунад, муҳаббати одии зиндагист. Баъзан одӣ будан бузургтарин хушбахтист."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Narx va sifat munosabati haqida matn",
-        "ru": "Текст о связи цены и качества",
-        "tj": "Матн дар бораи робитаи нарх ва сифат"
+        "uz": "Turmush va xarakter haqida matn",
+        "ru": "Текст о браке и характере",
+        "tj": "Матн дар бораи издивоҷ ва хислат"
       },
       "dialogue": [
         {
           "speaker": "旁白",
-          "zh": "人们常说“一分钱一分货”，意思是东西的质量和价格有很大的关系，也可以说“便宜没好货，好货不便宜”，一般情况下，你花的钱越多，买的东西也就越好。其实也不一定都是这样的。有的时候，质量很好的东西也会很便宜。例如，春天来了，冬天的衣服就会打折，质量很好，还很便宜，花很少的钱就可以买到。一到节日，商场也会举办各种各样的活动，降低价格，这个时候我们也可以买到又便宜又好的东西。",
-          "pinyin": "Rénmen cháng shuō “yì fēn qián yì fēn huò”, yìsi shì dōngxi de zhìliàng hé jiàgé yǒu hěn dà de guānxi, yě kěyǐ shuō “piányi méi hǎo huò, hǎo huò bù piányi”, yìbān qíngkuàng xià, nǐ huā de qián yuè duō, mǎi de dōngxi yě jiù yuè hǎo. Qíshí yě bù yídìng dōu shì zhèyàng de. Yǒu de shíhou, zhìliàng hěn hǎo de dōngxi yě huì hěn piányi. Lìrú, chūntiān lái le, dōngtiān de yīfu jiù huì dǎ zhé, zhìliàng hěn hǎo, hái hěn piányi, huā hěn shǎo de qián jiù kěyǐ mǎidào. Yí dào jiérì, shāngchǎng yě huì jǔbàn gè zhǒng gè yàng de huódòng, jiàngdī jiàgé, zhège shíhou wǒmen yě kěyǐ mǎidào yòu piányi yòu hǎo de dōngxi.",
+          "zh": "说到结婚，人们就会很自然地想起爱情。爱情是结婚的重要原因，但两个人共同生活，不仅需要浪漫的爱情，更需要性格上互相吸引。",
+          "pinyin": "Shuō dào jiéhūn, rénmen jiù huì hěn zìrán de xiǎngqǐ àiqíng. Àiqíng shì jiéhūn de zhòngyào yuányīn, dàn liǎng ge rén gòngtóng shēnghuó, bùjǐn xūyào làngmàn de àiqíng, gèng xūyào xìnggé shang hùxiāng xīyǐn.",
           "text": {
-            "uz": "Odamlar ko'p aytadi: 'qancha pul - shuncha mol', ya'ni narsaning sifati va narxi o'rtasida katta aloqa bor; 'arzon mol yaxshi bo'lmaydi, yaxshi mol arzon bo'lmaydi' desa ham bo'ladi. Odatda qancha ko'p pul sarflasangiz, olgan narsangiz shuncha yaxshi bo'ladi. Aslida har doim ham shunday emas. Ba'zan sifati juda yaxshi narsalar ham arzon bo'lishi mumkin. Masalan, bahor kelganda qishki kiyimlar chegirmaga tushadi: sifati yaxshi, narxi ham arzon, juda kam pulga olish mumkin. Bayram payti savdo markazlari ham turli tadbirlar o'tkazib, narxlarni pasaytiradi; shu paytda biz ham arzon va yaxshi narsalarni topa olamiz.",
-            "ru": "Люди часто говорят: 'сколько заплатил, такой и товар', то есть качество вещи сильно связано с ценой; можно также сказать: 'дешёвый товар не бывает хорошим, хороший товар не бывает дешёвым'. В обычных условиях чем больше денег тратишь, тем лучше вещь покупаешь. На самом деле это не всегда так. Иногда вещи очень хорошего качества тоже бывают дешёвыми. Например, когда приходит весна, зимняя одежда получает скидки: качество хорошее, цена низкая, можно купить за совсем небольшие деньги. Во время праздников торговые центры тоже проводят разные акции и снижают цены; в это время мы тоже можем купить дешёвые и хорошие вещи.",
-            "tj": "Одамон бисёр мегӯянд: 'ҳар қадар пул, ҳамон қадар мол', яъне сифати чиз бо нарх робитаи калон дорад; инчунин метавон гуфт: 'моли арзон хуб нест, моли хуб арзон нест'. Дар ҳолати одӣ ҳар қадар пули бештар сарф кунед, чизи харидаатон ҳамон қадар беҳтар мешавад. Дар асл ҳамеша чунин нест. Баъзан чизҳои сифати хуб ҳам арзон мешаванд. Масалан, баҳор ки омад, либоси зимистона тахфиф мешавад: сифати хуб дорад ва арзон аст, бо пули кам харидан мумкин. Дар рӯзҳои ид марказҳои савдо ҳам чорабиниҳои гуногун баргузор карда, нархро паст мекунанд; дар он вақт мо низ чизҳои ҳам арзон ва ҳам хубро харида метавонем."
+            "uz": "Turmush qurish haqida gap ketganda, odamlar tabiiy ravishda sevgini eslaydi. Sevgi turmushning muhim sababi, lekin ikki kishi birga yashashi uchun nafaqat romantik sevgi, balki xarakter jihatidan o'zaro jalb qilishi ham ko'proq kerak.",
+            "ru": "Когда речь заходит о браке, люди естественно вспоминают любовь. Любовь - важная причина брака, но для совместной жизни двух людей нужна не только романтическая любовь, еще важнее взаимное притяжение характеров.",
+            "tj": "Вақте сухан дар бораи издивоҷ меравад, одамон табиатан муҳаббатро ба ёд меоранд. Муҳаббат сабаби муҳими издивоҷ аст, аммо барои зиндагии муштараки ду нафар на танҳо муҳаббати романтикӣ, балки ҷалби ҳамдигар аз ҷиҳати хислат бештар лозим аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "我丈夫是个很幽默的人。即使是很普通的事情，从他嘴里说出来也会变得很有意思。在我难过的时候，他总是有办法让我高兴起来。而且他的脾气也不错，结婚快十年了，我们俩几乎没因为什么事红过脸，很多人都特别羡慕我们。",
+          "pinyin": "Wǒ zhàngfu shì ge hěn yōumò de rén. Jíshǐ shì hěn pǔtōng de shìqing, cóng tā zuǐ lǐ shuō chūlai yě huì biàn de hěn yǒu yìsi. Zài wǒ nánguò de shíhou, tā zǒng shì yǒu bànfǎ ràng wǒ gāoxìng qǐlai. Érqiě tā de píqi yě búcuò, jiéhūn kuài shí nián le, wǒmen liǎ jīhū méi yīnwèi shénme shì hóng guo liǎn, hěn duō rén dōu tèbié xiànmù wǒmen.",
+          "text": {
+            "uz": "Erim juda hazilkash odam. Hatto juda oddiy narsalar ham uning og'zidan chiqqanda qiziqarli bo'lib ketadi. Men xafa bo'lganimda u meni xursand qilishning yo'lini topadi. Bundan tashqari fe'li ham yaxshi: turmush qurganimizga qariyb o'n yil bo'ldi, deyarli hech narsa uchun yuzimiz qizargancha urishmaganmiz, ko'p odamlar bizga juda havas qiladi.",
+            "ru": "Мой муж очень остроумный человек. Даже обычные вещи из его уст становятся интересными. Когда мне грустно, он всегда находит способ поднять мне настроение. Кроме того, у него хороший характер: мы женаты почти десять лет и почти ни разу не ссорились до красноты лица, многие нам особенно завидуют.",
+            "tj": "Шавҳарам шахси хеле шӯхтабъ аст. Ҳатто чизҳои одӣ аз даҳони ӯ ҷолиб мешаванд. Вақте ман ғамгин мешавам, ӯ ҳамеша роҳи хурсанд кардани маро меёбад. Ғайр аз ин, хулқаш ҳам хуб аст: қариб даҳ сол боз оиладорем ва қариб барои ҳеҷ чиз ҷанҷоли сахт накардаем, бисёр одамон ба мо ҳавас мекунанд."
           }
         }
       ]
@@ -741,46 +342,22 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "果汁",
-            "pinyin": "guǒzhī",
+            "zh": "爱情",
+            "pinyin": "àiqíng",
             "pos": "n.",
             "meaning": {
-              "uz": "meva sharbati",
-              "ru": "фруктовый сок",
-              "tj": "шарбати мева"
+              "uz": "sevgi, muhabbat",
+              "ru": "любовь",
+              "tj": "муҳаббат"
             }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "售货员",
-            "pinyin": "shòuhuòyuán",
-            "pos": "n.",
-            "meaning": {
-              "uz": "sotuvchi",
-              "ru": "продавец",
-              "tj": "фурӯшанда"
-            }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "售货员",
-          "pinyin": "shòuhuòyuán",
-          "translation": {
-            "uz": "sotuvchi",
-            "ru": "продавец",
-            "tj": "фурӯшанда"
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "售货员 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 售货员:",
-            "tj": "Маънои калимаи 售货员-ро интихоб кунед:"
+            "uz": "爱情 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 爱情:",
+            "tj": "Маънои калимаи 爱情-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -789,67 +366,63 @@
           },
           "options": [
             {
-              "uz": "sotuvchi",
-              "ru": "продавец",
-              "tj": "фурӯшанда"
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
             },
             {
-              "uz": "paypoq",
-              "ru": "носки",
-              "tj": "ҷӯроб"
+              "uz": "sevgi, muhabbat",
+              "ru": "любовь",
+              "tj": "муҳаббат"
             },
             {
-              "uz": "meva sharbati",
-              "ru": "фруктовый сок",
-              "tj": "шарбати мева"
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
             },
             {
-              "uz": "bezovta qilmoq",
-              "ru": "беспокоить, мешать",
-              "tj": "халал расондан, нороҳат кардан"
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "售货员 = sotuvchi (shòuhuòyuán)",
-            "ru": "售货员 = продавец (shòuhuòyuán)",
-            "tj": "售货员 = фурӯшанда (shòuhuòyuán)"
+            "uz": "爱情 = sevgi, muhabbat (àiqíng)",
+            "ru": "爱情 = любовь (àiqíng)",
+            "tj": "爱情 = муҳаббат (àiqíng)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "袜子",
-            "pinyin": "wàzi",
+            "no": 2,
+            "zh": "星星",
+            "pinyin": "xīngxing",
             "pos": "n.",
             "meaning": {
-              "uz": "paypoq",
-              "ru": "носки",
-              "tj": "ҷӯроб"
+              "uz": "yulduz",
+              "ru": "звезда",
+              "tj": "ситора"
             }
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "打扰",
-            "pinyin": "dǎrǎo",
-            "pos": "v.",
-            "meaning": {
-              "uz": "bezovta qilmoq",
-              "ru": "беспокоить, мешать",
-              "tj": "халал расондан, нороҳат кардан"
-            }
+          "type": "pronunciation",
+          "phrase": "星星",
+          "pinyin": "xīngxing",
+          "translation": {
+            "uz": "yulduz",
+            "ru": "звезда",
+            "tj": "ситора"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "guǒzhī qaysi ieroglif?",
-            "ru": "Какой иероглиф читается guǒzhī?",
-            "tj": "guǒzhī кадом иероглиф аст?"
+            "uz": "xīngxing qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xīngxing?",
+            "tj": "xīngxing кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -857,52 +430,38 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "打扰",
-            "袜子",
-            "果汁",
-            "售货员"
+            "法律",
+            "俩",
+            "印象",
+            "星星"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "果汁 = meva sharbati (guǒzhī)",
-            "ru": "果汁 = фруктовый сок (guǒzhī)",
-            "tj": "果汁 = шарбати мева (guǒzhī)"
+            "uz": "星星 = yulduz (xīngxing)",
+            "ru": "星星 = звезда (xīngxing)",
+            "tj": "星星 = ситора (xīngxing)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "竟然",
-            "pinyin": "jìngrán",
-            "pos": "adv.",
+            "no": 3,
+            "zh": "即使",
+            "pinyin": "jíshǐ",
+            "pos": "conj.",
             "meaning": {
-              "uz": "kutilmaganda, hayratlanarlisi",
-              "ru": "неожиданно, удивительно",
-              "tj": "ногаҳон, тааҷҷубовар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "西红柿",
-            "pinyin": "xīhóngshì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "pomidor",
-              "ru": "помидор",
-              "tj": "помидор"
+              "uz": "hatto ... bo'lsa ham",
+              "ru": "даже если",
+              "tj": "ҳатто агар"
             }
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "果汁 talaffuzini tanlang:",
-            "ru": "Выберите произношение 果汁:",
-            "tj": "Талаффузи 果汁-ро интихоб кунед:"
+            "uz": "即使 talaffuzini tanlang:",
+            "ru": "Выберите произношение 即使:",
+            "tj": "Талаффузи 即使-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -910,52 +469,38 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "wàzi",
-            "shòuhuòyuán",
-            "dǎrǎo",
-            "guǒzhī"
+            "yìnxiàng",
+            "liǎ",
+            "jíshǐ",
+            "fǎlǜ"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "果汁 — guǒzhī",
-            "ru": "果汁 — guǒzhī",
-            "tj": "果汁 — guǒzhī"
+            "uz": "即使 — jíshǐ",
+            "ru": "即使 — jíshǐ",
+            "tj": "即使 — jíshǐ"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 7,
-            "zh": "百分之",
-            "pinyin": "bǎi fēn zhī",
-            "pos": "",
+            "no": 4,
+            "zh": "加班",
+            "pinyin": "jiā bān",
+            "pos": "v.",
             "meaning": {
-              "uz": "foiz",
-              "ru": "процент",
-              "tj": "фоиз"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "倍",
-            "pinyin": "bèi",
-            "pos": "m.",
-            "meaning": {
-              "uz": "marta, baravar",
-              "ru": "раз, крат",
-              "tj": "маротиба, баробар"
+              "uz": "qo'shimcha ishlamoq",
+              "ru": "работать сверхурочно",
+              "tj": "аз вақти кор зиёд кор кардан"
             }
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'foiz' xitoycha qaysi?",
-            "ru": "'процент' по-китайски?",
-            "tj": "'фоиз' ба хитоӣ кадом аст?"
+            "uz": "'qo'shimcha ishlamoq' xitoycha qaysi?",
+            "ru": "'работать сверхурочно' по-китайски?",
+            "tj": "'аз вақти кор зиёд кор кардан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -963,44 +508,16 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "百分之",
-            "果汁",
-            "售货员",
-            "袜子"
+            "法律",
+            "印象",
+            "加班",
+            "俩"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "foiz = 百分之 (bǎi fēn zhī)",
-            "ru": "процент = 百分之 (bǎi fēn zhī)",
-            "tj": "фоиз = 百分之 (bǎi fēn zhī)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "皮肤",
-            "pinyin": "pífū",
-            "pos": "n.",
-            "meaning": {
-              "uz": "teri",
-              "ru": "кожа",
-              "tj": "пӯст"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "好处",
-            "pinyin": "hǎochu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "foyda, afzallik",
-              "ru": "польза, преимущество",
-              "tj": "фоида, бартарӣ"
-            }
+            "uz": "qo'shimcha ishlamoq = 加班 (jiā bān)",
+            "ru": "работать сверхурочно = 加班 (jiā bān)",
+            "tj": "аз вақти кор зиёд кор кардан = 加班 (jiā bān)"
           }
         },
         {
@@ -1010,54 +527,54 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "好处",
-          "pinyin": "hǎochu",
+          "audio_text": "爱情",
+          "pinyin": "àiqíng",
           "options": [
-            "袜子",
-            "果汁",
-            "好处",
-            "售货员"
+            "俩",
+            "爱情",
+            "印象",
+            "法律"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "好处 — foyda, afzallik (hǎochu)",
-            "ru": "好处 — польза, преимущество (hǎochu)",
-            "tj": "好处 — фоида, бартарӣ (hǎochu)"
+            "uz": "爱情 — sevgi, muhabbat (àiqíng)",
+            "ru": "爱情 — любовь (àiqíng)",
+            "tj": "爱情 — муҳаббат (àiqíng)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "果汁",
+              "爱情",
               {
-                "uz": "meva sharbati",
-                "ru": "фруктовый сок",
-                "tj": "шарбати мева"
+                "uz": "sevgi, muhabbat",
+                "ru": "любовь",
+                "tj": "муҳаббат"
               }
             ],
             [
-              "售货员",
+              "星星",
               {
-                "uz": "sotuvchi",
-                "ru": "продавец",
-                "tj": "фурӯшанда"
+                "uz": "yulduz",
+                "ru": "звезда",
+                "tj": "ситора"
               }
             ],
             [
-              "袜子",
+              "即使",
               {
-                "uz": "paypoq",
-                "ru": "носки",
-                "tj": "ҷӯроб"
+                "uz": "hatto ... bo'lsa ham",
+                "ru": "даже если",
+                "tj": "ҳатто агар"
               }
             ],
             [
-              "打扰",
+              "加班",
               {
-                "uz": "bezovta qilmoq",
-                "ru": "беспокоить, мешать",
-                "tj": "халал расондан, нороҳат кардан"
+                "uz": "qo'shimcha ishlamoq",
+                "ru": "работать сверхурочно",
+                "tj": "аз вақти кор зиёд кор кардан"
               }
             ]
           ],
@@ -1072,309 +589,6 @@
     {
       "section_no": 2,
       "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 1,
-            "title": {
-              "uz": "kutilmaganda",
-              "ru": "неожиданно",
-              "tj": "ногаҳон"
-            },
-            "title_zh": "竟然",
-            "rule": {
-              "uz": "Kutilmagan, hayratli natijani bildiradi.",
-              "ru": "Показывает неожиданный, удивительный результат.",
-              "tj": "Натиҷаи ногаҳонӣ ё тааҷҷубоварро нишон медиҳад."
-            },
-            "examples": [
-              {
-                "zh": "竟然忘了去商场的超市买果汁！",
-                "pinyin": "Jìngrán wàngle qù shāngchǎng de chāoshì mǎi guǒzhī!",
-                "translation": {
-                  "uz": "Kutilmaganda savdo markazidagi supermarketga sharbat olishga borishni unutibman!",
-                  "ru": "Неожиданно я забыл пойти в супермаркет торгового центра купить сок!",
-                  "tj": "Ногаҳон фаромӯш кардаам, ки ба супермаркети маркази савдо барои шарбат равам!"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "竟然忘了去商场的超市买____！",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "果汁",
-            "打扰",
-            "袜子",
-            "售货员"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 果汁 (guǒzhī) — meva sharbati",
-            "ru": "Верно: 果汁 (guǒzhī) — фруктовый сок",
-            "tj": "Дуруст: 果汁 (guǒzhī) — шарбати мева"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "marta, baravar",
-              "ru": "раз, крат",
-              "tj": "маротиба, баробар"
-            },
-            "title_zh": "倍",
-            "rule": {
-              "uz": "A 是 B 的 N 倍 shakli A ning B dan necha baravar ekanini bildiradi.",
-              "ru": "Конструкция A 是 B 的 N 倍 показывает, во сколько раз A больше B.",
-              "tj": "Қолиби A 是 B 的 N 倍 нишон медиҳад, ки A аз B чанд баробар аст."
-            },
-            "examples": [
-              {
-                "zh": "今天的价格是昨天的两倍。",
-                "pinyin": "Jīntiān de jiàgé shì zuótiān de liǎng bèi.",
-                "translation": {
-                  "uz": "Bugungi narx kechagining ikki baravari.",
-                  "ru": "Сегодняшняя цена в два раза выше вчерашней.",
-                  "tj": "Нархи имрӯз ду баробари дирӯза аст."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bugungi narx kechagining ikki baravari.",
-            "ru": "Сегодняшняя цена в два раза выше вчерашней.",
-            "tj": "Нархи имрӯз ду баробари дирӯза аст."
-          },
-          "tokens": [
-            "是",
-            "的",
-            "两",
-            "今天",
-            "昨天",
-            "价格",
-            "售货员",
-            "果汁",
-            "倍",
-            "的"
-          ],
-          "answer_tokens": [
-            "今天",
-            "的",
-            "价格",
-            "是",
-            "昨天",
-            "的",
-            "两",
-            "倍"
-          ],
-          "explanation": {
-            "uz": "今天的价格是昨天的两倍。 — Jīntiān de jiàgé shì zuótiān de liǎng bèi.",
-            "ru": "今天的价格是昨天的两倍。 — Jīntiān de jiàgé shì zuótiān de liǎng bèi.",
-            "tj": "今天的价格是昨天的两倍。 — Jīntiān de jiàgé shì zuótiān de liǎng bèi."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "arziydi",
-              "ru": "стоит",
-              "tj": "меарзад"
-            },
-            "title_zh": "值得",
-            "rule": {
-              "uz": "值得 + fe'l/narsa bir ishni qilishga arziydiganini bildiradi.",
-              "ru": "值得 + глагол/предмет означает, что что-то стоит сделать или рассмотреть.",
-              "tj": "值得 + феъл/чиз маънои арзанда будани иҷро ё баррасиро медиҳад."
-            },
-            "examples": [
-              {
-                "zh": "都是值得考虑的。",
-                "pinyin": "Dōu shì zhíde kǎolǜ de.",
-                "translation": {
-                  "uz": "Hammasi ko'rib chiqishga arziydi.",
-                  "ru": "Всё это стоит рассмотреть.",
-                  "tj": "Ҳамааш ба баррасӣ меарзад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Hammasi ko'rib chiqishga arziydi.",
-            "ru": "Всё это стоит рассмотреть.",
-            "tj": "Ҳамааш ба баррасӣ меарзад."
-          },
-          "tokens": [
-            "售货员",
-            "是",
-            "考虑",
-            "果汁",
-            "值得",
-            "的",
-            "都"
-          ],
-          "answer_tokens": [
-            "都",
-            "是",
-            "值得",
-            "考虑",
-            "的"
-          ],
-          "explanation": {
-            "uz": "都是值得考虑的。 — Dōu shì zhíde kǎolǜ de.",
-            "ru": "都是值得考虑的。 — Dōu shì zhíde kǎolǜ de.",
-            "tj": "都是值得考虑的。 — Dōu shì zhíde kǎolǜ de."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 4,
-            "title": {
-              "uz": "ular ichida",
-              "ru": "среди них",
-              "tj": "дар байни онҳо"
-            },
-            "title_zh": "其中",
-            "rule": {
-              "uz": "Oldin aytilgan guruh ichidagi bir qismini ajratib ko'rsatadi.",
-              "ru": "Выделяет часть внутри уже названной группы.",
-              "tj": "Як қисмро аз гурӯҳи пеш гуфташуда ҷудо нишон медиҳад."
-            },
-            "examples": [
-              {
-                "zh": "其中，小说7.5折，地图8折，留学考试用书6折。",
-                "pinyin": "Qízhōng, xiǎoshuō qīwǔ zhé, dìtú bā zhé, liúxué kǎoshì yòngshū liù zhé.",
-                "translation": {
-                  "uz": "Ular ichida romanlar 25% chegirma, xaritalar 20% chegirma, chet elda o'qish imtihoni kitoblari 40% chegirma.",
-                  "ru": "Среди них романы со скидкой 25%, карты со скидкой 20%, книги для экзаменов на обучение за рубежом со скидкой 40%.",
-                  "tj": "Дар байни онҳо романҳо 25% тахфиф, харитаҳо 20% тахфиф, китобҳои имтиҳони таҳсил дар хориҷ 40% тахфиф доранд."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____，小说7.5折，地图8折，留学考试用书6折。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "其中",
-            "袜子",
-            "果汁",
-            "售货员"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 其中 (qízhōng) — ular ichida, shular orasida",
-            "ru": "Верно: 其中 (qízhōng) — среди них, в том числе",
-            "tj": "Дуруст: 其中 (qízhōng) — дар байни онҳо"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 5,
-            "title": {
-              "uz": "... sharoitida",
-              "ru": "в условиях...",
-              "tj": "дар шароити..."
-            },
-            "title_zh": "（在）……下",
-            "rule": {
-              "uz": "O'rtadagi qism odatda ikki bo'g'inli ot yoki fe'l bo'lib, shart yoki vaziyatni bildiradi.",
-              "ru": "Средняя часть обычно двусложное существительное или глагол и обозначает условие или ситуацию.",
-              "tj": "Қисми миёна одатан исм ё феъли дуҳиҷоӣ буда, шарт ё вазъиятро нишон медиҳад."
-            },
-            "examples": [
-              {
-                "zh": "一般情况下，你花的钱越多，买的东西也就越好。",
-                "pinyin": "Yìbān qíngkuàng xià, nǐ huā de qián yuè duō, mǎi de dōngxi yě jiù yuè hǎo.",
-                "translation": {
-                  "uz": "Odatdagi holatda qancha ko'p pul sarflasang, olgan narsang shuncha yaxshi bo'ladi.",
-                  "ru": "В обычных условиях чем больше денег ты тратишь, тем лучше вещь покупаешь.",
-                  "tj": "Дар ҳолати одӣ ҳар қадар пули бештар сарф кунӣ, чизе ки мехарӣ ҳамон қадар беҳтар мешавад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "一般____下，你花的钱越多，买的东西也就越好。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "情况",
-            "果汁",
-            "袜子",
-            "售货员"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 情况 (qíngkuàng) — holat, vaziyat",
-            "ru": "Верно: 情况 (qíngkuàng) — ситуация, положение",
-            "tj": "Дуруст: 情况 (qíngkuàng) — ҳолат, вазъият"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«Ular ichida romanlar 25% chegirma, xaritalar 20% chegirma, chet elda o'qish imtihoni kitoblari 40% chegirma.» — xitoychada qaysi biri?",
-            "ru": "«Среди них романы со скидкой 25%, карты со скидкой 20%, книги для экзаменов на обучение за рубежом со скидкой 40%.» — какое предложение по-китайски?",
-            "tj": "«Дар байни онҳо романҳо 25% тахфиф, харитаҳо 20% тахфиф, китобҳои имтиҳони таҳсил дар хориҷ 40% тахфиф доранд.» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "今天的价格是昨天的两倍。",
-            "其中，小说7.5折，地图8折，留学考试用书6折。",
-            "都是值得考虑的。",
-            "一般情况下，你花的钱越多，买的东西也就越好。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "其中，小说7.5折，地图8折，留学考试用书6折。 — Qízhōng, xiǎoshuō qīwǔ zhé, dìtú bā zhé, liúxué kǎoshì yòngshū liù zhé.",
-            "ru": "其中，小说7.5折，地图8折，留学考试用书6折。 — Qízhōng, xiǎoshuō qīwǔ zhé, dìtú bā zhé, liúxué kǎoshì yòngshū liù zhé.",
-            "tj": "其中，小说7.5折，地图8折，留学考试用书6折。 — Qízhōng, xiǎoshuō qīwǔ zhé, dìtú bā zhé, liúxué kǎoshì yòngshū liù zhé."
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -1382,74 +596,21 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "reverse_builder",
-          "zh": "西红柿新鲜吗？怎么卖？",
-          "pinyin": "Xīhóngshì xīnxiān ma? Zěnme mài?",
+          "type": "pronunciation",
+          "phrase": "即使",
+          "pinyin": "jíshǐ",
           "translation": {
-            "uz": "Pomidorlar yangimi? Qancha turadi?",
-            "ru": "Помидоры свежие? Почём продаёте?",
-            "tj": "Помидорҳо тару тозаанд? Чанд мефурӯшед?"
-          },
-          "tokens": {
-            "uz": [
-              "Pomidorlar",
-              "yangimi",
-              "Qancha",
-              "Kecha",
-              "kechqurun",
-              "turadi"
-            ],
-            "ru": [
-              "Почём",
-              "продаёте",
-              "вечером",
-              "свежие",
-              "Помидоры",
-              "Вчера"
-            ],
-            "tj": [
-              "Чанд",
-              "бегоҳ",
-              "Дирӯз",
-              "тару",
-              "тозаанд",
-              "мефурӯшед",
-              "Помидорҳо"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Pomidorlar",
-              "yangimi",
-              "Qancha",
-              "turadi"
-            ],
-            "ru": [
-              "Помидоры",
-              "свежие",
-              "Почём",
-              "продаёте"
-            ],
-            "tj": [
-              "Помидорҳо",
-              "тару",
-              "тозаанд",
-              "Чанд",
-              "мефурӯшед"
-            ]
-          },
-          "explanation": {
-            "uz": "西红柿新鲜吗？怎么卖？ — Pomidorlar yangimi? Qancha turadi?",
-            "ru": "西红柿新鲜吗？怎么卖？ — Помидоры свежие? Почём продаёте?",
-            "tj": "西红柿新鲜吗？怎么卖？ — Помидорҳо тару тозаанд? Чанд мефурӯшед?"
+            "uz": "hatto ... bo'lsa ham",
+            "ru": "даже если",
+            "tj": "ҳатто агар"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'jihat, tomon' xitoycha qaysi?",
-            "ru": "'сторона, аспект' по-китайски?",
-            "tj": "'ҷиҳат, тараф' ба хитоӣ кадом аст?"
+            "uz": "'nafaqat' xitoycha qaysi?",
+            "ru": "'не только' по-китайски?",
+            "tj": "'на танҳо' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -1457,68 +618,118 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "果汁",
-            "售货员",
-            "方面",
-            "袜子"
+            "印象",
+            "俩",
+            "法律",
+            "不仅"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "jihat, tomon = 方面 (fāngmiàn)",
-            "ru": "сторона, аспект = 方面 (fāngmiàn)",
-            "tj": "ҷиҳат, тараф = 方面 (fāngmiàn)"
+            "uz": "nafaqat = 不仅 (bùjǐn)",
+            "ru": "не только = 不仅 (bùjǐn)",
+            "tj": "на танҳо = 不仅 (bùjǐn)"
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "倍",
-          "pinyin": "bèi",
+          "type": "reverse_builder",
+          "zh": "很多女孩子羡慕浪漫的爱情。",
+          "pinyin": "Hěn duō nǚháizi xiànmù làngmàn de àiqíng.",
           "translation": {
-            "uz": "marta, baravar",
-            "ru": "раз, крат",
-            "tj": "маротиба, баробар"
+            "uz": "Ko'p qizlar romantik sevgiga havas qiladi.",
+            "ru": "Многие девушки восхищаются романтической любовью.",
+            "tj": "Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
+          },
+          "tokens": {
+            "uz": [
+              "Ko'p",
+              "romantik",
+              "havas",
+              "qiladi",
+              "sevgiga",
+              "qizlar"
+            ],
+            "ru": [
+              "Многие",
+              "восхищаются",
+              "романтической",
+              "любовью",
+              "девушки"
+            ],
+            "tj": [
+              "ҳавас",
+              "ба",
+              "духтарон",
+              "мекунанд",
+              "романтикӣ",
+              "муҳаббати",
+              "Бисёр"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ko'p",
+              "qizlar",
+              "romantik",
+              "sevgiga",
+              "havas",
+              "qiladi"
+            ],
+            "ru": [
+              "Многие",
+              "девушки",
+              "восхищаются",
+              "романтической",
+              "любовью"
+            ],
+            "tj": [
+              "Бисёр",
+              "духтарон",
+              "ба",
+              "муҳаббати",
+              "романтикӣ",
+              "ҳавас",
+              "мекунанд"
+            ]
+          },
+          "explanation": {
+            "uz": "很多女孩子羡慕浪漫的爱情。 — Ko'p qizlar romantik sevgiga havas qiladi.",
+            "ru": "很多女孩子羡慕浪漫的爱情。 — Многие девушки восхищаются романтической любовью.",
+            "tj": "很多女孩子羡慕浪漫的爱情。 — Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
           }
         },
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "果汁",
-              {
-                "uz": "meva sharbati",
-                "ru": "фруктовый сок",
-                "tj": "шарбати мева"
-              }
-            ],
-            [
-              "售货员",
-              {
-                "uz": "sotuvchi",
-                "ru": "продавец",
-                "tj": "фурӯшанда"
-              }
-            ],
-            [
-              "袜子",
-              {
-                "uz": "paypoq",
-                "ru": "носки",
-                "tj": "ҷӯроб"
-              }
-            ],
-            [
-              "打扰",
-              {
-                "uz": "bezovta qilmoq",
-                "ru": "беспокоить, мешать",
-                "tj": "халал расондан, нороҳат кардан"
-              }
-            ]
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ko'p qizlar romantik sevgiga havas qiladi.",
+            "ru": "Многие девушки восхищаются романтической любовью.",
+            "tj": "Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
+          },
+          "tokens": [
+            "多",
+            "法律",
+            "俩",
+            "羡慕",
+            "女",
+            "很",
+            "孩子",
+            "的",
+            "爱情",
+            "浪漫"
+          ],
+          "answer_tokens": [
+            "很",
+            "多",
+            "女",
+            "孩子",
+            "羡慕",
+            "浪漫",
+            "的",
+            "爱情"
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+            "uz": "很多女孩子羡慕浪漫的爱情。 — Hěn duō nǚháizi xiànmù làngmàn de àiqíng.",
+            "ru": "很多女孩子羡慕浪漫的爱情。 — Hěn duō nǚháizi xiànmù làngmàn de àiqíng.",
+            "tj": "很多女孩子羡慕浪漫的爱情。 — Hěn duō nǚháizi xiànmù làngmàn de àiqíng."
           }
         },
         {
@@ -1528,220 +739,70 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
-          "pinyin": "Shì a! Huí jiā yǐhòu, wǒ cái fāxiàn, jìngrán wàngle qù shāngchǎng de chāoshì mǎi guǒzhī!",
+          "audio_text": "很多女孩子羡慕浪漫的爱情。",
+          "pinyin": "Hěn duō nǚháizi xiànmù làngmàn de àiqíng.",
           "options": [
-            "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。",
-            "买这么点儿东西也用不了那么长时间啊！",
-            "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-            "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！ — Ha! Uyga qaytgandan keyin bildim, kutilmaganda savdo markazidagi supermarketga sharbat olishga borishni unutibman!",
-            "ru": "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！ — Да! Только вернувшись домой, я обнаружил, что неожиданно забыл сходить в супермаркет торгового центра купить сок!",
-            "tj": "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！ — Ҳа! Ба хона баргашта фаҳмидам, ки ногаҳон фаромӯш кардаам ба супермаркети маркази савдо барои шарбат равам!"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "轻 talaffuzini tanlang:",
-            "ru": "Выберите произношение 轻:",
-            "tj": "Талаффузи 轻-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "shòuhuòyuán",
-            "qīng",
-            "wàzi",
-            "guǒzhī"
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+            "很多女孩子羡慕浪漫的爱情。",
+            "那你们俩是怎么认识的？",
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "轻 — qīng",
-            "ru": "轻 — qīng",
-            "tj": "轻 — qīng"
+            "uz": "很多女孩子羡慕浪漫的爱情。 — Ko'p qizlar romantik sevgiga havas qiladi.",
+            "ru": "很多女孩子羡慕浪漫的爱情。 — Многие девушки восхищаются романтической любовью.",
+            "tj": "很多女孩子羡慕浪漫的爱情。 — Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "西红柿",
-          "pinyin": "xīhóngshì",
-          "translation": {
-            "uz": "pomidor",
-            "ru": "помидор",
-            "tj": "помидор"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-          "pinyin": "Zuótiān wǎnshang wǒ gěi nǐ dǎ diànhuà yìzhí méi rén jiē, nǐ máng shénme ne?",
-          "options": [
-            "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-            "买这么点儿东西也用不了那么长时间啊！",
-            "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。",
-            "我们先去逛了会儿商场。一进门，售货员就热情地为我们介绍这、介绍那，她买了一条裤子、一件衬衫、两双袜子，然后我们就高高兴兴地回家了。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "昨天晚上我给你打电话一直没人接，你忙什么呢？ — Kecha kechqurun senga telefon qildim, hech kim olmadi, nima bilan band eding?",
-            "ru": "昨天晚上我给你打电话一直没人接，你忙什么呢？ — Вчера вечером я звонил тебе, но никто не отвечал. Чем ты был занят?",
-            "tj": "昨天晚上我给你打电话一直没人接，你忙什么呢？ — Дирӯз бегоҳ ба ту занг задам, касе нагирифт. Бо чӣ банд будӣ?"
-          }
-        },
-        {
-          "type": "quick_quiz",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "Dialog oxirida 李进 nima deydi?",
-            "ru": "Что 李进 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 李进 чӣ мегӯяд?"
+            "uz": "加班 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 加班:",
+            "tj": "Маънои калимаи 加班-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-            "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
-            "买这么点儿东西也用不了那么长时间啊！",
-            "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
-            "ru": "Правильный ответ: 是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
-            "tj": "Ҷавоби дуруст: 是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 张远 avval nima deydi?",
-            "ru": "Что 张远 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 张远 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-            "我们先去逛了会儿商场。一进门，售货员就热情地为我们介绍这、介绍那，她买了一条裤子、一件衬衫、两双袜子，然后我们就高高兴兴地回家了。",
-            "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。",
-            "买这么点儿东西也用不了那么长时间啊！"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 昨天晚上我给你打电话一直没人接，你忙什么呢？",
-            "ru": "Правильный ответ: 昨天晚上我给你打电话一直没人接，你忙什么呢？",
-            "tj": "Ҷавоби дуруст: 昨天晚上我给你打电话一直没人接，你忙什么呢？"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
             {
-              "speaker": "张远",
-              "zh": "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-              "blank": false
+              "uz": "qo'shimcha ishlamoq",
+              "ru": "работать сверхурочно",
+              "tj": "аз вақти кор зиёд кор кардан"
             },
             {
-              "speaker": "李进",
-              "zh": "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。",
-              "blank": false
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
             },
             {
-              "speaker": "张远",
-              "zh": "买这么点儿东西也用不了那么长时间啊！",
-              "blank": false
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
             },
             {
-              "speaker": "李进",
-              "zh": "我们先去逛了会儿商场。一进门，售货员就热情地为我们介绍这、介绍那，她买了一条裤子、一件衬衫、两双袜子，然后我们就高高兴兴地回家了。",
-              "blank": false
-            },
-            {
-              "speaker": "张远",
-              "zh": "买东西时我只看自己想买的，而且喜欢自己看、自己选，不希望被别人打扰。",
-              "blank": false
-            },
-            {
-              "speaker": "李进",
-              "zh": "",
-              "blank": true
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
             }
           ],
-          "options": [
-            "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-            "是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
-            "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。",
-            "买这么点儿东西也用不了那么长时间啊！"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
-            "ru": "Правильный ответ: 是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！",
-            "tj": "Ҷавоби дуруст: 是啊！回家以后，我才发现，竟然忘了去商场的超市买果汁！"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____天晚上我给你打电话一直没人接，你忙什么呢？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "昨",
-            "袜",
-            "商",
-            "扰"
-          ],
           "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri: 昨 — 昨天晚上我给你打电话一直没人接，你忙什么呢？ (Kecha kechqurun senga telefon qildim, hech kim olmadi, nima bilan band eding?)",
-            "ru": "Верно: 昨 — 昨天晚上我给你打电话一直没人接，你忙什么呢？ (Вчера вечером я звонил тебе, но никто не отвечал. Чем ты был занят?)",
-            "tj": "Дуруст: 昨 — 昨天晚上我给你打电话一直没人接，你忙什么呢？ (Дирӯз бегоҳ ба ту занг задам, касе нагирифт. Бо чӣ банд будӣ?)"
+            "uz": "加班 = qo'shimcha ishlamoq (jiā bān)",
+            "ru": "加班 = работать сверхурочно (jiā bān)",
+            "tj": "加班 = аз вақти кор зиёд кор кардан (jiā bān)"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "我想买一个轻一点儿的。",
-          "pinyin": "Wǒ xiǎng mǎi yí ge qīng yìdiǎnr de.",
+          "phrase": "星星",
+          "pinyin": "xīngxing",
           "translation": {
-            "uz": "Biroz yengilrog'ini olmoqchiman.",
-            "ru": "Я хочу купить немного полегче.",
-            "tj": "Ман мехоҳам яктои сабуктар харам."
+            "uz": "yulduz",
+            "ru": "звезда",
+            "tj": "ситора"
           }
         }
       ]

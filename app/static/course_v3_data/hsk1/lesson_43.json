@@ -1,0 +1,718 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 43,
+  "source_lesson": 11,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "现在几点",
+  "subtitle": {
+    "uz": "Vaqtni aytish va so'rash, vaqt ravishi, 前 so'zi",
+    "ru": "Говорить и спрашивать о времени, временные наречия, слово 前",
+    "tj": "Гуфтан ва пурсидани вақт, зарфҳои вақт, калимаи 前"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "电影",
+      "pinyin": "diànyǐng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kino, film",
+        "ru": "кино, фильм",
+        "tj": "кино, филм"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "住",
+      "pinyin": "zhù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yashash, turar joy",
+        "ru": "жить, проживать",
+        "tj": "зиндагӣ кардан, истиқомат кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "前",
+      "pinyin": "qián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oldin, avval",
+        "ru": "до, перед",
+        "tj": "пеш аз, қабл аз"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "北京",
+      "pinyin": "Běijīng",
+      "pos": "pn.",
+      "meaning": {
+        "uz": "Pekin",
+        "ru": "Пекин",
+        "tj": "Пекин"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "前 vaqt belgisi",
+        "ru": "前 — временной маркер",
+        "tj": "前 — нишонаи вақт"
+      },
+      "title_zh": "名词 前",
+      "rule": {
+        "uz": "前(qián) — muayyan voqeadan oldingi vaqtni bildiradi.\n\n三天前 — uch kun oldin\n一个星期前 — bir hafta oldin\n四点前 — soat to'rtdan oldin\n星期五前 — juma kunidan oldin\n\nMisol:\n星期五前能回家吗？— Juma kunidan oldin uyga qayta olasizmi?\n八点前去学校。— Soat sakkizdan oldin maktabga boring.",
+        "ru": "前(qián) — указывает на момент времени до определённого события.\n\n三天前 — три дня назад\n一个星期前 — одну неделю назад\n四点前 — до четырёх часов\n星期五前 — до пятницы\n\nПример:\n星期五前能回家吗？— Вы сможете вернуться домой до пятницы?\n八点前去学校。— Идите в школу до восьми.",
+        "tj": "前(qián) — лаҳзаи вақтро пеш аз рӯйдоди муайян нишон медиҳад.\n\n三天前 — се рӯз пеш\n一个星期前 — як ҳафта пеш\n四点前 — пеш аз соати чор\n星期五前 — пеш аз ҷумъа\n\nНамуна:\n星期五前能回家吗？— Шумо метавонед пеш аз ҷумъа ба хона баргардед?\n八点前去学校。— Пеш аз соати ҳашт ба мактаб равед."
+      },
+      "examples": [
+        {
+          "zh": "星期五前能回家吗？",
+          "pinyin": "Xīngqī wǔ qián néng huí jiā ma?",
+          "translation": {
+            "uz": "Juma kunidan oldin uyga qayta olasizmi?",
+            "ru": "Сможете вернуться домой до пятницы?",
+            "tj": "Метавонед пеш аз ҷумъа ба хона баргардед?"
+          }
+        },
+        {
+          "zh": "三天前我在北京。",
+          "pinyin": "Sān tiān qián wǒ zài Běijīng.",
+          "translation": {
+            "uz": "Uch kun oldin men Pekinda edim.",
+            "ru": "Три дня назад я был в Пекине.",
+            "tj": "Се рӯз пеш ман дар Пекин будам."
+          }
+        },
+        {
+          "zh": "八点前来。",
+          "pinyin": "Bā diǎn qián lái.",
+          "translation": {
+            "uz": "Soat sakkizdan oldin keling.",
+            "ru": "Приходите до восьми.",
+            "tj": "Пеш аз соати ҳашт биёед."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kutubxonada — soat so'rash",
+        "ru": "В библиотеке — спрашивают время",
+        "tj": "Дар китобхона — пурсидани вақт"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "现在几点？",
+          "pinyin": "Xiànzài jǐ diǎn?",
+          "text": {
+            "uz": "Hozir soat necha?",
+            "ru": "Сколько сейчас времени?",
+            "tj": "Ҳоло соат чанд аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "现在十点十分。",
+          "pinyin": "Xiànzài shí diǎn shí fēn.",
+          "text": {
+            "uz": "Hozir soat o'nda o'n daqiqa.",
+            "ru": "Сейчас десять минут одиннадцатого.",
+            "tj": "Ҳоло соат даҳ ва даҳ дақиқа аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "中午几点吃饭？",
+          "pinyin": "Zhōngwǔ jǐ diǎn chī fàn?",
+          "text": {
+            "uz": "Tushda soat nechada ovqatlanasiz?",
+            "ru": "В котором часу вы обедаете?",
+            "tj": "Нисфирӯзӣ соат чанд хӯрок мехӯред?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "十二点吃饭。",
+          "pinyin": "Shí'èr diǎn chī fàn.",
+          "text": {
+            "uz": "Soat o'n ikkida ovqatlanamiz.",
+            "ru": "Мы обедаем в двенадцать.",
+            "tj": "Мо соат дувоздаҳ хӯрок мехӯрем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda — otani kutish",
+        "ru": "Дома — ждут папу",
+        "tj": "Дар хона — интизори падар"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "爸爸什么时候回家？",
+          "pinyin": "Bàba shénme shíhou huí jiā?",
+          "text": {
+            "uz": "Dada qachon uyga qaytadi?",
+            "ru": "Когда папа придёт домой?",
+            "tj": "Падар кай ба хона бармегардад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "下午五点。",
+          "pinyin": "Xiàwǔ wǔ diǎn.",
+          "text": {
+            "uz": "Tushdan keyin soat beshda.",
+            "ru": "В пять часов вечера.",
+            "tj": "Соати панҷи баъдазнисфирӯзӣ."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我们什么时候去看电影？",
+          "pinyin": "Wǒmen shénme shíhou qù kàn diànyǐng?",
+          "text": {
+            "uz": "Biz qachon kinoga boramiz?",
+            "ru": "Когда мы идём в кино?",
+            "tj": "Мо кай ба кино меравем?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "六点三十分。",
+          "pinyin": "Liù diǎn sānshí fēn.",
+          "text": {
+            "uz": "Soat olti yarimda.",
+            "ru": "В половине седьмого.",
+            "tj": "Соати шаш ва си дақиқа."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda — Pekin safari rejasi",
+        "ru": "Дома — план поездки в Пекин",
+        "tj": "Дар хона — нақшаи сафар ба Пекин"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "我星期一去北京。",
+          "pinyin": "Wǒ xīngqī yī qù Běijīng.",
+          "text": {
+            "uz": "Men dushanba kuni Pekinga boraman.",
+            "ru": "Я еду в Пекин в понедельник.",
+            "tj": "Ман рӯзи душанбе ба Пекин меравам."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你想在北京住几天？",
+          "pinyin": "Nǐ xiǎng zài Běijīng zhù jǐ tiān?",
+          "text": {
+            "uz": "Pekinda necha kun qolmoqchisiz?",
+            "ru": "Сколько дней вы планируете пробыть в Пекине?",
+            "tj": "Шумо мехоҳед чанд рӯз дар Пекин бимонед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "住三天。",
+          "pinyin": "Zhù sān tiān.",
+          "text": {
+            "uz": "Uch kun.",
+            "ru": "Три дня.",
+            "tj": "Се рӯз."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "星期五前能回家吗？",
+          "pinyin": "Xīngqī wǔ qián néng huí jiā ma?",
+          "text": {
+            "uz": "Juma kunidan oldin uyga qayta olasizmi?",
+            "ru": "Вы сможете вернуться домой до пятницы?",
+            "tj": "Шумо метавонед пеш аз ҷумъа ба хона баргардед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "能。",
+          "pinyin": "Néng.",
+          "text": {
+            "uz": "Ha, qila olaman.",
+            "ru": "Да, смогу.",
+            "tj": "Ҳа, метавонам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "电影",
+            "pinyin": "diànyǐng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kino, film",
+              "ru": "кино, фильм",
+              "tj": "кино, филм"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "电影 talaffuzini tanlang:",
+            "ru": "Выберите произношение 电影:",
+            "tj": "Талаффузи 电影-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "diànyǐng",
+            "diǎn",
+            "fēn",
+            "xiànzài"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "电影 — diànyǐng",
+            "ru": "电影 — diànyǐng",
+            "tj": "电影 — diànyǐng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "住",
+            "pinyin": "zhù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yashash, turar joy",
+              "ru": "жить, проживать",
+              "tj": "зиндагӣ кардан, истиқомат кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yashash, turar joy' xitoycha qaysi?",
+            "ru": "'жить, проживать' по-китайски?",
+            "tj": "'зиндагӣ кардан, истиқомат кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "点",
+            "现在",
+            "分",
+            "住"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "yashash, turar joy = 住 (zhù)",
+            "ru": "жить, проживать = 住 (zhù)",
+            "tj": "зиндагӣ кардан, истиқомат кардан = 住 (zhù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "前",
+            "pinyin": "qián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oldin, avval",
+              "ru": "до, перед",
+              "tj": "пеш аз, қабл аз"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "前",
+          "pinyin": "qián",
+          "translation": {
+            "uz": "oldin, avval",
+            "ru": "до, перед",
+            "tj": "пеш аз, қабл аз"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "前",
+          "pinyin": "qián",
+          "options": [
+            "现在",
+            "点",
+            "前",
+            "分"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "前 — oldin, avval (qián)",
+            "ru": "前 — до, перед (qián)",
+            "tj": "前 — пеш аз, қабл аз (qián)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "北京",
+            "pinyin": "Běijīng",
+            "pos": "pn.",
+            "meaning": {
+              "uz": "Pekin",
+              "ru": "Пекин",
+              "tj": "Пекин"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "北京 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 北京:",
+            "tj": "Маънои калимаи 北京-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "soat (soat uchun o'lchov so'zi)",
+              "ru": "час (счётное слово для часов)",
+              "tj": "соат (вақт)"
+            },
+            {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
+            },
+            {
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
+            },
+            {
+              "uz": "Pekin",
+              "ru": "Пекин",
+              "tj": "Пекин"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "北京 = Pekin (Běijīng)",
+            "ru": "北京 = Пекин (Běijīng)",
+            "tj": "北京 = Пекин (Běijīng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "diànyǐng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается diànyǐng?",
+            "tj": "diànyǐng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "电影",
+            "现在",
+            "点",
+            "分"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "电影 = kino, film (diànyǐng)",
+            "ru": "电影 = кино, фильм (diànyǐng)",
+            "tj": "电影 = кино, филм (diànyǐng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "电影",
+              {
+                "uz": "kino, film",
+                "ru": "кино, фильм",
+                "tj": "кино, филм"
+              }
+            ],
+            [
+              "住",
+              {
+                "uz": "yashash, turar joy",
+                "ru": "жить, проживать",
+                "tj": "зиндагӣ кардан, истиқомат кардан"
+              }
+            ],
+            [
+              "前",
+              {
+                "uz": "oldin, avval",
+                "ru": "до, перед",
+                "tj": "пеш аз, қабл аз"
+              }
+            ],
+            [
+              "北京",
+              {
+                "uz": "Pekin",
+                "ru": "Пекин",
+                "tj": "Пекин"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "前 vaqt belgisi",
+              "ru": "前 — временной маркер",
+              "tj": "前 — нишонаи вақт"
+            },
+            "title_zh": "名词 前",
+            "rule": {
+              "uz": "前(qián) — muayyan voqeadan oldingi vaqtni bildiradi.\n\n三天前 — uch kun oldin\n一个星期前 — bir hafta oldin\n四点前 — soat to'rtdan oldin\n星期五前 — juma kunidan oldin\n\nMisol:\n星期五前能回家吗？— Juma kunidan oldin uyga qayta olasizmi?\n八点前去学校。— Soat sakkizdan oldin maktabga boring.",
+              "ru": "前(qián) — указывает на момент времени до определённого события.\n\n三天前 — три дня назад\n一个星期前 — одну неделю назад\n四点前 — до четырёх часов\n星期五前 — до пятницы\n\nПример:\n星期五前能回家吗？— Вы сможете вернуться домой до пятницы?\n八点前去学校。— Идите в школу до восьми.",
+              "tj": "前(qián) — лаҳзаи вақтро пеш аз рӯйдоди муайян нишон медиҳад.\n\n三天前 — се рӯз пеш\n一个星期前 — як ҳафта пеш\n四点前 — пеш аз соати чор\n星期五前 — пеш аз ҷумъа\n\nНамуна:\n星期五前能回家吗？— Шумо метавонед пеш аз ҷумъа ба хона баргардед?\n八点前去学校。— Пеш аз соати ҳашт ба мактаб равед."
+            },
+            "examples": [
+              {
+                "zh": "星期五前能回家吗？",
+                "pinyin": "Xīngqī wǔ qián néng huí jiā ma?",
+                "translation": {
+                  "uz": "Juma kunidan oldin uyga qayta olasizmi?",
+                  "ru": "Сможете вернуться домой до пятницы?",
+                  "tj": "Метавонед пеш аз ҷумъа ба хона баргардед?"
+                }
+              },
+              {
+                "zh": "三天前我在北京。",
+                "pinyin": "Sān tiān qián wǒ zài Běijīng.",
+                "translation": {
+                  "uz": "Uch kun oldin men Pekinda edim.",
+                  "ru": "Три дня назад я был в Пекине.",
+                  "tj": "Се рӯз пеш ман дар Пекин будам."
+                }
+              },
+              {
+                "zh": "八点前来。",
+                "pinyin": "Bā diǎn qián lái.",
+                "translation": {
+                  "uz": "Soat sakkizdan oldin keling.",
+                  "ru": "Приходите до восьми.",
+                  "tj": "Пеш аз соати ҳашт биёед."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "三天前我在____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "现在",
+            "分",
+            "北京",
+            "点"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 北京 (Běijīng) — Pekin",
+            "ru": "Верно: 北京 (Běijīng) — Пекин",
+            "tj": "Дуруст: 北京 (Běijīng) — Пекин"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Juma kunidan oldin uyga qayta olasizmi?» — xitoychada qaysi biri?",
+            "ru": "«Сможете вернуться домой до пятницы?» — какое предложение по-китайски?",
+            "tj": "«Метавонед пеш аз ҷумъа ба хона баргардед?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "八点前来。",
+            "三天前我在北京。",
+            "星期五前能回家吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "星期五前能回家吗？ — Xīngqī wǔ qián néng huí jiā ma?",
+            "ru": "星期五前能回家吗？ — Xīngqī wǔ qián néng huí jiā ma?",
+            "tj": "星期五前能回家吗？ — Xīngqī wǔ qián néng huí jiā ma?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我们什么时候去看电影？",
+          "pinyin": "Wǒmen shénme shíhou qù kàn diànyǐng?",
+          "options": [
+            "我们什么时候去看电影？",
+            "现在几点？",
+            "中午几点吃饭？",
+            "现在十点十分。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我们什么时候去看电影？ — Biz qachon kinoga boramiz?",
+            "ru": "我们什么时候去看电影？ — Когда мы идём в кино?",
+            "tj": "我们什么时候去看电影？ — Мо кай ба кино меравем?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fēn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fēn?",
+            "tj": "fēn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "现在",
+            "点",
+            "中午",
+            "分"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "分 = daqiqa (fēn)",
+            "ru": "分 = минута (fēn)",
+            "tj": "分 = дақиқа (fēn)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "住",
+          "pinyin": "zhù",
+          "options": [
+            "住",
+            "现在",
+            "分",
+            "点"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "住 — yashash, turar joy (zhù)",
+            "ru": "住 — жить, проживать (zhù)",
+            "tj": "住 — зиндагӣ кардан, истиқомат кардан (zhù)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "前",
+          "pinyin": "qián",
+          "translation": {
+            "uz": "oldin, avval",
+            "ru": "до, перед",
+            "tj": "пеш аз, қабл аз"
+          }
+        }
+      ]
+    }
+  ]
+}

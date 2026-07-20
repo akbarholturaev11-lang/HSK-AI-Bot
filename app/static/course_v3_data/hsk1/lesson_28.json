@@ -1,0 +1,775 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 28,
+  "source_lesson": 8,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我想喝茶",
+  "subtitle": {
+    "uz": "Istak bildirish, narx so'rash va o'lchov so'zlarini o'rganish",
+    "ru": "Выражение желаний, спрашивание цены и изучение счётных слов",
+    "tj": "Ифодаи орзуҳо, пурсидани нарх ва омӯзиши калимаҳои шуморавӣ"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "个",
+      "pinyin": "gè",
+      "pos": "m.",
+      "meaning": {
+        "uz": "umumiy o'lchov so'z (dona/birlik)",
+        "ru": "общее счётное слово (штука/единица)",
+        "tj": "калимаи шуморавии умумӣ (дона/воҳид)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "杯子",
+      "pinyin": "bēizi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "stakan, piyola",
+        "ru": "стакан, кружка",
+        "tj": "косаи пиёла"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "这",
+      "pinyin": "zhè",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bu (ko'rsatish olmoshi)",
+        "ru": "этот, это (указательное местоимение)",
+        "tj": "ин (исми ишора)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "多少",
+      "pinyin": "duōshao",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qancha, nechta (10 dan ortiq)",
+        "ru": "сколько (больше 10)",
+        "tj": "чанд (аз 10 зиёд)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "多少 — Miqdor savoli (10 dan ortiq)",
+        "ru": "多少 — Вопрос о количестве (больше 10)",
+        "tj": "多少 — Савол дар бораи миқдор (аз 10 зиёд)"
+      },
+      "title_zh": "多少 — Qancha so'rog'i (10+)",
+      "rule": {
+        "uz": "多少 (duōshao) — 10 dan ortiq sonlar uchun savol so'zi.\nEslatma: 几 (jǐ) 10 gacha, 多少 (duōshao) 10 dan ortiq.\n\nNarx so'rash: ……多少钱？\n这个杯子多少钱？— Bu piyola qancha turadi?\n\nMiqdor so'rash:\n你们学校有多少学生？— Maktabingizda nechta o'quvchi bor?\n你有多少钱？— Sizda qancha pul bor?",
+        "ru": "多少 (duōshao) — вопросительное слово для чисел больше 10.\nПримечание: 几 (jǐ) для чисел до 10; 多少 (duōshao) для чисел больше 10.\n\nСпросить цену: ……多少钱？\n这个杯子多少钱？— Сколько стоит этот стакан?\n\nСпросить количество:\n你们学校有多少学生？— Сколько учеников в вашей школе?\n你有多少钱？— Сколько у вас денег?",
+        "tj": "多少 (duōshao) — калимаи саволии барои ададҳои аз 10 зиёд.\nҚайд: 几 (jǐ) барои ададҳо то 10; 多少 (duōshao) барои аз 10 зиёд.\n\nПурсидани нарх: ……多少钱？\n这个杯子多少钱？— Ин пиёла чанд пул аст?\n\nПурсидани миқдор:\n你们学校有多少学生？— Дар мактаби шумо чанд нафар шогирд аст?\n你有多少钱？— Шумо чанд пул доред?"
+      },
+      "examples": [
+        {
+          "zh": "这个杯子多少钱？",
+          "pinyin": "Zhège bēizi duōshao qián?",
+          "translation": {
+            "uz": "Bu piyola qancha turadi?",
+            "ru": "Сколько стоит этот стакан?",
+            "tj": "Ин пиёла чанд пул аст?"
+          }
+        },
+        {
+          "zh": "你家有多少口人？",
+          "pinyin": "Nǐ jiā yǒu duōshao kǒu rén?",
+          "translation": {
+            "uz": "Sizning oilangizda nechta kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
+          }
+        },
+        {
+          "zh": "一个苹果多少钱？",
+          "pinyin": "Yī gè píngguǒ duōshao qián?",
+          "translation": {
+            "uz": "Bitta olma qancha turadi?",
+            "ru": "Сколько стоит одно яблоко?",
+            "tj": "Як дона себ чанд пул аст?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda — nima ichish/yeyish",
+        "ru": "В ресторане — что пить/есть",
+        "tj": "Дар тарабхона — чӣ нӯшидан/хӯрдан"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你想喝什么？",
+          "pinyin": "Nǐ xiǎng hē shénme?",
+          "text": {
+            "uz": "Nima ichmoqchisiz?",
+            "ru": "Что вы хотите выпить?",
+            "tj": "Шумо чӣ нӯшидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想喝茶。",
+          "pinyin": "Wǒ xiǎng hē chá.",
+          "text": {
+            "uz": "Men choy ichmoqchiman.",
+            "ru": "Я хочу выпить чай.",
+            "tj": "Ман чой нӯшидан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想吃什么？",
+          "pinyin": "Nǐ xiǎng chī shénme?",
+          "text": {
+            "uz": "Nima yemoqchisiz?",
+            "ru": "Что вы хотите поесть?",
+            "tj": "Шумо чӣ хӯрдан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想吃米饭。",
+          "pinyin": "Wǒ xiǎng chī mǐfàn.",
+          "text": {
+            "uz": "Men guruch yemoqchiman.",
+            "ru": "Я хочу поесть риса.",
+            "tj": "Ман биринҷ хӯрдан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada — tushdan keyingi reja",
+        "ru": "В гостинице — планы на вторую половину дня",
+        "tj": "Дар меҳмонхона — нақшаи баъд аз нисфирӯзӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "下午你想做什么？",
+          "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+          "text": {
+            "uz": "Tushdan keyin nima qilmoqchisiz?",
+            "ru": "Что вы хотите делать во второй половине дня?",
+            "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "下午我想去商店。",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù shāngdiàn.",
+          "text": {
+            "uz": "Tushdan keyin do'konga bormoqchiman.",
+            "ru": "После полудня я хочу сходить в магазин.",
+            "tj": "Баъд аз нисфирӯзӣ ба мағоза рафтан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想买什么？",
+          "pinyin": "Nǐ xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Шумо чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想买一个杯子。",
+          "pinyin": "Wǒ xiǎng mǎi yī gè bēizi.",
+          "text": {
+            "uz": "Bir dona piyola sotib olmoqchiman.",
+            "ru": "Я хочу купить одну кружку.",
+            "tj": "Ман як дона пиёла харидан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda — narx so'rash",
+        "ru": "В магазине — спрашиваем цену",
+        "tj": "Дар мағоза — пурсидани нарх"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你好！这个杯子多少钱？",
+          "pinyin": "Nǐ hǎo! Zhège bēizi duōshao qián?",
+          "text": {
+            "uz": "Salom! Bu piyola qancha turadi?",
+            "ru": "Здравствуйте! Сколько стоит этот стакан?",
+            "tj": "Салом! Ин пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "28块。",
+          "pinyin": "Èrshíbā kuài.",
+          "text": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那个杯子多少钱？",
+          "pinyin": "Nàge bēizi duōshao qián?",
+          "text": {
+            "uz": "U piyola qancha turadi?",
+            "ru": "Сколько стоит тот стакан?",
+            "tj": "Он пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "那个杯子18块钱。",
+          "pinyin": "Nàge bēizi shíbā kuài qián.",
+          "text": {
+            "uz": "U piyola 18 yuan.",
+            "ru": "Тот стакан стоит 18 юаней.",
+            "tj": "Он пиёла 18 юан аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "个",
+            "pinyin": "gè",
+            "pos": "m.",
+            "meaning": {
+              "uz": "umumiy o'lchov so'z (dona/birlik)",
+              "ru": "общее счётное слово (штука/единица)",
+              "tj": "калимаи шуморавии умумӣ (дона/воҳид)"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "个 talaffuzini tanlang:",
+            "ru": "Выберите произношение 个:",
+            "tj": "Талаффузи 个-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chá",
+            "hē",
+            "xiǎng",
+            "gè"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "个 — gè",
+            "ru": "个 — gè",
+            "tj": "个 — gè"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "杯子",
+            "pinyin": "bēizi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "stakan, piyola",
+              "ru": "стакан, кружка",
+              "tj": "косаи пиёла"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'stakan, piyola' xitoycha qaysi?",
+            "ru": "'стакан, кружка' по-китайски?",
+            "tj": "'косаи пиёла' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "茶",
+            "喝",
+            "杯子",
+            "想"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "stakan, piyola = 杯子 (bēizi)",
+            "ru": "стакан, кружка = 杯子 (bēizi)",
+            "tj": "косаи пиёла = 杯子 (bēizi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "这",
+            "pinyin": "zhè",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "bu (ko'rsatish olmoshi)",
+              "ru": "этот, это (указательное местоимение)",
+              "tj": "ин (исми ишора)"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "这",
+          "pinyin": "zhè",
+          "options": [
+            "这",
+            "喝",
+            "想",
+            "茶"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "这 — bu (ko'rsatish olmoshi) (zhè)",
+            "ru": "这 — этот, это (указательное местоимение) (zhè)",
+            "tj": "这 — ин (исми ишора) (zhè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "多少",
+            "pinyin": "duōshao",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qancha, nechta (10 dan ortiq)",
+              "ru": "сколько (больше 10)",
+              "tj": "чанд (аз 10 зиёд)"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "多少",
+          "pinyin": "duōshao",
+          "translation": {
+            "uz": "qancha, nechta (10 dan ortiq)",
+            "ru": "сколько (больше 10)",
+            "tj": "чанд (аз 10 зиёд)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "多少 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 多少:",
+            "tj": "Маънои калимаи 多少-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "qancha, nechta (10 dan ortiq)",
+              "ru": "сколько (больше 10)",
+              "tj": "чанд (аз 10 зиёд)"
+            },
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "多少 = qancha, nechta (10 dan ortiq) (duōshao)",
+            "ru": "多少 = сколько (больше 10) (duōshao)",
+            "tj": "多少 = чанд (аз 10 зиёд) (duōshao)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "gè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gè?",
+            "tj": "gè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "茶",
+            "想",
+            "喝",
+            "个"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "个 = umumiy o'lchov so'z (dona/birlik) (gè)",
+            "ru": "个 = общее счётное слово (штука/единица) (gè)",
+            "tj": "个 = калимаи шуморавии умумӣ (дона/воҳид) (gè)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "个",
+              {
+                "uz": "umumiy o'lchov so'z (dona/birlik)",
+                "ru": "общее счётное слово (штука/единица)",
+                "tj": "калимаи шуморавии умумӣ (дона/воҳид)"
+              }
+            ],
+            [
+              "杯子",
+              {
+                "uz": "stakan, piyola",
+                "ru": "стакан, кружка",
+                "tj": "косаи пиёла"
+              }
+            ],
+            [
+              "这",
+              {
+                "uz": "bu (ko'rsatish olmoshi)",
+                "ru": "этот, это (указательное местоимение)",
+                "tj": "ин (исми ишора)"
+              }
+            ],
+            [
+              "多少",
+              {
+                "uz": "qancha, nechta (10 dan ortiq)",
+                "ru": "сколько (больше 10)",
+                "tj": "чанд (аз 10 зиёд)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "多少 — Miqdor savoli (10 dan ortiq)",
+              "ru": "多少 — Вопрос о количестве (больше 10)",
+              "tj": "多少 — Савол дар бораи миқдор (аз 10 зиёд)"
+            },
+            "title_zh": "多少 — Qancha so'rog'i (10+)",
+            "rule": {
+              "uz": "多少 (duōshao) — 10 dan ortiq sonlar uchun savol so'zi.\nEslatma: 几 (jǐ) 10 gacha, 多少 (duōshao) 10 dan ortiq.\n\nNarx so'rash: ……多少钱？\n这个杯子多少钱？— Bu piyola qancha turadi?\n\nMiqdor so'rash:\n你们学校有多少学生？— Maktabingizda nechta o'quvchi bor?\n你有多少钱？— Sizda qancha pul bor?",
+              "ru": "多少 (duōshao) — вопросительное слово для чисел больше 10.\nПримечание: 几 (jǐ) для чисел до 10; 多少 (duōshao) для чисел больше 10.\n\nСпросить цену: ……多少钱？\n这个杯子多少钱？— Сколько стоит этот стакан?\n\nСпросить количество:\n你们学校有多少学生？— Сколько учеников в вашей школе?\n你有多少钱？— Сколько у вас денег?",
+              "tj": "多少 (duōshao) — калимаи саволии барои ададҳои аз 10 зиёд.\nҚайд: 几 (jǐ) барои ададҳо то 10; 多少 (duōshao) барои аз 10 зиёд.\n\nПурсидани нарх: ……多少钱？\n这个杯子多少钱？— Ин пиёла чанд пул аст?\n\nПурсидани миқдор:\n你们学校有多少学生？— Дар мактаби шумо чанд нафар шогирд аст?\n你有多少钱？— Шумо чанд пул доред?"
+            },
+            "examples": [
+              {
+                "zh": "这个杯子多少钱？",
+                "pinyin": "Zhège bēizi duōshao qián?",
+                "translation": {
+                  "uz": "Bu piyola qancha turadi?",
+                  "ru": "Сколько стоит этот стакан?",
+                  "tj": "Ин пиёла чанд пул аст?"
+                }
+              },
+              {
+                "zh": "你家有多少口人？",
+                "pinyin": "Nǐ jiā yǒu duōshao kǒu rén?",
+                "translation": {
+                  "uz": "Sizning oilangizda nechta kishi bor?",
+                  "ru": "Сколько человек в вашей семье?",
+                  "tj": "Дар оилаи шумо чанд нафар аст?"
+                }
+              },
+              {
+                "zh": "一个苹果多少钱？",
+                "pinyin": "Yī gè píngguǒ duōshao qián?",
+                "translation": {
+                  "uz": "Bitta olma qancha turadi?",
+                  "ru": "Сколько стоит одно яблоко?",
+                  "tj": "Як дона себ чанд пул аст?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sizning oilangizda nechta kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
+          },
+          "tokens": [
+            "人",
+            "家",
+            "喝",
+            "有",
+            "多少",
+            "想",
+            "口",
+            "你"
+          ],
+          "answer_tokens": [
+            "你",
+            "家",
+            "有",
+            "多少",
+            "口",
+            "人"
+          ],
+          "explanation": {
+            "uz": "你家有多少口人？ — Nǐ jiā yǒu duōshao kǒu rén?",
+            "ru": "你家有多少口人？ — Nǐ jiā yǒu duōshao kǒu rén?",
+            "tj": "你家有多少口人？ — Nǐ jiā yǒu duōshao kǒu rén?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu piyola qancha turadi?» — xitoychada qaysi biri?",
+            "ru": "«Сколько стоит этот стакан?» — какое предложение по-китайски?",
+            "tj": "«Ин пиёла чанд пул аст?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "一个苹果多少钱？",
+            "这个杯子多少钱？",
+            "你家有多少口人？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "这个杯子多少钱？ — Zhège bēizi duōshao qián?",
+            "ru": "这个杯子多少钱？ — Zhège bēizi duōshao qián?",
+            "tj": "这个杯子多少钱？ — Zhège bēizi duōshao qián?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "吃 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 吃:",
+            "tj": "Маънои калимаи 吃-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            },
+            {
+              "uz": "yemoq",
+              "ru": "есть, кушать",
+              "tj": "хӯрдан"
+            },
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "吃 = yemoq (chī)",
+            "ru": "吃 = есть, кушать (chī)",
+            "tj": "吃 = хӯрдан (chī)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你家有多少口人？",
+          "pinyin": "Nǐ jiā yǒu duōshao kǒu rén?",
+          "translation": {
+            "uz": "Sizning oilangizda nechta kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
+          },
+          "tokens": {
+            "uz": [
+              "Sizning",
+              "nechta",
+              "kishi",
+              "oilangizda",
+              "bor"
+            ],
+            "ru": [
+              "человек",
+              "вашей",
+              "Сколько",
+              "в",
+              "семье"
+            ],
+            "tj": [
+              "нафар",
+              "шумо",
+              "аст",
+              "чанд",
+              "Дар",
+              "оилаи"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Sizning",
+              "oilangizda",
+              "nechta",
+              "kishi",
+              "bor"
+            ],
+            "ru": [
+              "Сколько",
+              "человек",
+              "в",
+              "вашей",
+              "семье"
+            ],
+            "tj": [
+              "Дар",
+              "оилаи",
+              "шумо",
+              "чанд",
+              "нафар",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "你家有多少口人？ — Sizning oilangizda nechta kishi bor?",
+            "ru": "你家有多少口人？ — Сколько человек в вашей семье?",
+            "tj": "你家有多少口人？ — Дар оилаи шумо чанд нафар аст?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "多少",
+          "pinyin": "duōshao",
+          "options": [
+            "喝",
+            "多少",
+            "想",
+            "茶"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "多少 — qancha, nechta (10 dan ortiq) (duōshao)",
+            "ru": "多少 — сколько (больше 10) (duōshao)",
+            "tj": "多少 — чанд (аз 10 зиёд) (duōshao)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "多少",
+          "pinyin": "duōshao",
+          "translation": {
+            "uz": "qancha, nechta (10 dan ortiq)",
+            "ru": "сколько (больше 10)",
+            "tj": "чанд (аз 10 зиёд)"
+          }
+        }
+      ]
+    }
+  ]
+}

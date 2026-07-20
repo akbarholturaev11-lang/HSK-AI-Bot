@@ -2,806 +2,296 @@
   "schema_version": 2,
   "level": "hsk4",
   "lesson_id": 16,
-  "title": "生活可以更美好",
+  "source_lesson": 2,
+  "part_no": 7,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "真正的朋友",
   "subtitle": {
-    "uz": "o'qish/ish rejasi, imkoniyat, rad etish, hozir boshlash va kamtarlik haqida gapirish; 可, 恐怕, 到底, 拿...来说 va 敢 grammatikalarini ishlatish",
-    "ru": "говорить о планах учёбы и работы, шансах, отказе, начале сейчас и скромности; использовать 可, 恐怕, 到底, 拿...来说 и 敢",
-    "tj": "дар бораи нақшаи таҳсил/кор, имконият, рад кардан, аз ҳозир оғоз кардан ва фурӯтанӣ гуфтугӯ кардан; истифодаи 可, 恐怕, 到底, 拿...来说 ва 敢"
+    "uz": "do'stlik, aloqa va haqiqiy do'st haqida gapirish; 正好, 差不多, 尽管, 却, 而 grammatikalarini ishlatish",
+    "ru": "говорить о дружбе, связи и настоящих друзьях; использовать 正好, 差不多, 尽管, 却, 而",
+    "tj": "дар бораи дӯстӣ, иртибот ва дӯсти ҳақиқӣ гуфтугӯ кардан; истифодаи 正好, 差不多, 尽管, 却, 而"
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "博士",
-      "pinyin": "bóshì",
+      "zh": "镜子",
+      "pinyin": "jìngzi",
       "pos": "n.",
       "meaning": {
-        "uz": "doktorantura darajasi",
-        "ru": "доктор наук, докторская степень",
-        "tj": "доктор, дараҷаи илмӣ"
+        "uz": "ko'zgu",
+        "ru": "зеркало",
+        "tj": "оина"
       }
     },
     {
       "no": 2,
-      "zh": "签证",
-      "pinyin": "qiānzhèng",
-      "pos": "n.",
+      "zh": "而",
+      "pinyin": "ér",
+      "pos": "conj.",
       "meaning": {
-        "uz": "viza",
-        "ru": "виза",
-        "tj": "раводид"
+        "uz": "esa, ammo",
+        "ru": "а, но",
+        "tj": "бошад, аммо"
       }
     },
     {
       "no": 3,
-      "zh": "报名",
-      "pinyin": "bào míng",
-      "pos": "v.",
+      "zh": "当",
+      "pinyin": "dāng",
+      "pos": "prep.",
       "meaning": {
-        "uz": "ro'yxatdan o'tmoq",
-        "ru": "записываться, регистрироваться",
-        "tj": "номнавис шудан"
-      }
-    },
-    {
-      "no": 4,
-      "zh": "表格",
-      "pinyin": "biǎogé",
-      "pos": "n.",
-      "meaning": {
-        "uz": "forma, jadval",
-        "ru": "форма, таблица",
-        "tj": "варақа, ҷадвал"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "传真",
-      "pinyin": "chuánzhēn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "faks orqali yubormoq",
-        "ru": "отправлять факсом",
-        "tj": "бо факс фиристодан"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "号码",
-      "pinyin": "hàomǎ",
-      "pos": "n.",
-      "meaning": {
-        "uz": "raqam",
-        "ru": "номер",
-        "tj": "рақам"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "参观",
-      "pinyin": "cānguān",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tomosha qilmoq, ko'rib chiqmoq",
-        "ru": "посещать, осматривать",
-        "tj": "тамошо кардан"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "激动",
-      "pinyin": "jīdòng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "hayajonlangan",
-        "ru": "взволнованный",
-        "tj": "ҳаяҷонзада"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "小伙子",
-      "pinyin": "xiǎohuǒzi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "yigit",
-        "ru": "парень, молодой человек",
-        "tj": "ҷавонписар"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "记者",
-      "pinyin": "jìzhě",
-      "pos": "n.",
-      "meaning": {
-        "uz": "jurnalist",
-        "ru": "журналист",
-        "tj": "рӯзноманигор"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "代表",
-      "pinyin": "dàibiǎo",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ifodalamoq, vakillik qilmoq",
-        "ru": "представлять, обозначать",
-        "tj": "намояндагӣ кардан, ифода кардан"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "恐怕",
-      "pinyin": "kǒngpà",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "ehtimol, qo'rqaman-ki",
-        "ru": "боюсь, вероятно",
-        "tj": "метарсам ки, эҳтимол"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "失望",
-      "pinyin": "shīwàng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "hafsalasi pir bo'lmoq",
-        "ru": "разочаровываться",
-        "tj": "ноумед шудан"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "郊区",
-      "pinyin": "jiāoqū",
-      "pos": "n.",
-      "meaning": {
-        "uz": "shahar cheti",
-        "ru": "пригород",
-        "tj": "атрофи шаҳр"
-      }
-    },
-    {
-      "no": 15,
-      "zh": "到底",
-      "pinyin": "dàodǐ",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "aslida, oxiri",
-        "ru": "всё-таки, в конце концов",
-        "tj": "охир, аслан"
-      }
-    },
-    {
-      "no": 16,
-      "zh": "呀",
-      "pinyin": "ya",
-      "pos": "part.",
-      "meaning": {
-        "uz": "savol ohangini yumshatuvchi zarra",
-        "ru": "частица для смягчения вопроса",
-        "tj": "ҳиссача барои нарм кардани савол"
-      }
-    },
-    {
-      "no": 17,
-      "zh": "导游",
-      "pinyin": "dǎoyóu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "gid",
-        "ru": "гид",
-        "tj": "роҳбалад"
-      }
-    },
-    {
-      "no": 18,
-      "zh": "礼貌",
-      "pinyin": "lǐmào",
-      "pos": "n.",
-      "meaning": {
-        "uz": "odob, xushmuomalalik",
-        "ru": "вежливость",
-        "tj": "одоб"
-      }
-    },
-    {
-      "no": 19,
-      "zh": "原谅",
-      "pinyin": "yuánliàng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "kechirmoq",
-        "ru": "прощать",
-        "tj": "бахшидан"
-      }
-    },
-    {
-      "no": 20,
-      "zh": "挂",
-      "pinyin": "guà",
-      "pos": "v.",
-      "meaning": {
-        "uz": "osmoq; og'izda aylantirmoq",
-        "ru": "вешать; держать на устах",
-        "tj": "овехтан; ба забон овардан"
-      }
-    },
-    {
-      "no": 21,
-      "zh": "同情",
-      "pinyin": "tóngqíng",
-      "pos": "n./v.",
-      "meaning": {
-        "uz": "hamdardlik",
-        "ru": "сочувствие, сочувствовать",
-        "tj": "ҳамдардӣ"
-      }
-    },
-    {
-      "no": 22,
-      "zh": "推",
-      "pinyin": "tuī",
-      "pos": "v.",
-      "meaning": {
-        "uz": "surmoq, kechiktirmoq",
-        "ru": "откладывать, отодвигать",
-        "tj": "ба таъхир гузоштан"
-      }
-    },
-    {
-      "no": 23,
-      "zh": "预习",
-      "pinyin": "yùxí",
-      "pos": "v.",
-      "meaning": {
-        "uz": "oldindan tayyorlanmoq",
-        "ru": "готовиться заранее",
-        "tj": "пешакӣ тайёрӣ дидан"
-      }
-    },
-    {
-      "no": 24,
-      "zh": "重点",
-      "pinyin": "zhòngdiǎn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "asosiy nuqta",
-        "ru": "ключевой пункт",
-        "tj": "нуқтаи муҳим"
-      }
-    },
-    {
-      "no": 25,
-      "zh": "马虎",
-      "pinyin": "mǎhu",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "beparvo, pala-partish",
-        "ru": "небрежный",
-        "tj": "бепарво"
-      }
-    },
-    {
-      "no": 26,
-      "zh": "自信",
-      "pinyin": "zìxìn",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "o'ziga ishongan",
-        "ru": "уверенный в себе",
-        "tj": "ба худ боварӣ дошта"
-      }
-    },
-    {
-      "no": 27,
-      "zh": "冷静",
-      "pinyin": "lěngjìng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "xotirjam, sovuqqon",
-        "ru": "спокойный, хладнокровный",
-        "tj": "ором, хунсард"
-      }
-    },
-    {
-      "no": 28,
-      "zh": "输",
-      "pinyin": "shū",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yutqazmoq",
-        "ru": "проигрывать",
-        "tj": "бохтан"
-      }
-    },
-    {
-      "no": 29,
-      "zh": "重视",
-      "pinyin": "zhòngshì",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ahamiyat bermoq",
-        "ru": "придавать значение",
-        "tj": "аҳамият додан"
-      }
-    },
-    {
-      "no": 30,
-      "zh": "敢",
-      "pinyin": "gǎn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "jur'at qilmoq",
-        "ru": "сметь, решаться",
-        "tj": "ҷуръат кардан"
-      }
-    },
-    {
-      "no": 31,
-      "zh": "尊重",
-      "pinyin": "zūnzhòng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "hurmat qilmoq",
-        "ru": "уважать",
-        "tj": "эҳтиром кардан"
+        "uz": "... paytda",
+        "ru": "когда, в момент",
+        "tj": "вақте ки, ҳангоми"
       }
     }
   ],
-  "grammar": [
-    {
-      "no": 1,
-      "title": {
-        "uz": "ta'kidlovchi ravish",
-        "ru": "усилительная частица/наречие",
-        "tj": "равиши таъкидӣ"
-      },
-      "title_zh": "可",
-      "rule": {
-        "uz": "Gapning ohangini kuchaytiradi, ayniqsa muammo yoki hayratni ta'kidlaydi.",
-        "ru": "Усиливает тон предложения, особенно проблему или удивление.",
-        "tj": "Оҳанги ҷумларо пурқувват мекунад, хусусан мушкил ё ҳайратро."
-      },
-      "examples": [
-        {
-          "zh": "这可是个大问题，我也不太清楚。",
-          "pinyin": "Zhè kě shì ge dà wèntí, wǒ yě bú tài qīngchu.",
-          "translation": {
-            "uz": "Bu juda katta muammo-ku, men ham aniq bilmayman.",
-            "ru": "Это ведь большая проблема, я тоже не очень понимаю.",
-            "tj": "Ин воқеан мушкили калон аст, ман ҳам хуб намедонам."
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "ehtimol, qo'rqaman-ki",
-        "ru": "боюсь, вероятно",
-        "tj": "метарсам ки, эҳтимол"
-      },
-      "title_zh": "恐怕",
-      "rule": {
-        "uz": "Taxmin bilan birga biroz xavotir bildiradi.",
-        "ru": "Выражает предположение с оттенком беспокойства.",
-        "tj": "Тахминро бо каме нигаронӣ мефаҳмонад."
-      },
-      "examples": [
-        {
-          "zh": "听完我的回答，恐怕你已经知道我的答案了吧。",
-          "pinyin": "Tīngwán wǒ de huídá, kǒngpà nǐ yǐjīng zhīdào wǒ de dá'àn le ba.",
-          "translation": {
-            "uz": "Javobimni eshitgach, ehtimol mening javobimni allaqachon bilgandirsiz.",
-            "ru": "Услышав мой ответ, вы, наверное, уже знаете мой ответ.",
-            "tj": "Ҷавобамро шунида, эҳтимол ҷавоби маро аллакай донистед."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "aslida, oxiri",
-        "ru": "всё-таки, в конце концов",
-        "tj": "охир, аслан"
-      },
-      "title_zh": "到底",
-      "rule": {
-        "uz": "Savolni chuqurlashtirib, aniq javob talab qiladi.",
-        "ru": "Углубляет вопрос и требует точного ответа.",
-        "tj": "Саволро амиқ карда, ҷавоби дақиқ мехоҳад."
-      },
-      "examples": [
-        {
-          "zh": "你到底怎么打算的呀？",
-          "pinyin": "Nǐ dàodǐ zěnme dǎsuàn de ya?",
-          "translation": {
-            "uz": "Oxiri nima qilmoqchisan o'zi?",
-            "ru": "Так что ты всё-таки собираешься делать?",
-            "tj": "Охир ту чӣ нақша дорӣ?"
-          }
-        }
-      ]
-    },
-    {
-      "no": 4,
-      "title": {
-        "uz": "...ni misol qilib olsak",
-        "ru": "если взять ... как пример",
-        "tj": "агар ...-ро мисол гирем"
-      },
-      "title_zh": "拿……来说",
-      "rule": {
-        "uz": "Tushuntirilayotgan mavzu uchun misolni kiritadi.",
-        "ru": "Вводит пример для объясняемой темы.",
-        "tj": "Барои фаҳмондани мавзӯъ мисол меорад."
-      },
-      "examples": [
-        {
-          "zh": "就拿学汉语来说吧，首先要注意课前预习。",
-          "pinyin": "Jiù ná xué Hànyǔ lái shuō ba, shǒuxiān yào zhùyì kè qián yùxí.",
-          "translation": {
-            "uz": "Xitoy tilini o'rganishni misol qilsak, avvalo darsdan oldin tayyorlanishga e'tibor berish kerak.",
-            "ru": "Если взять изучение китайского как пример, сначала нужно готовиться перед уроком.",
-            "tj": "Агар омӯзиши чиниро мисол гирем, аввал ба омодагии пеш аз дарс диққат додан лозим."
-          }
-        }
-      ]
-    },
-    {
-      "no": 5,
-      "title": {
-        "uz": "jur'at qilmoq",
-        "ru": "сметь, решаться",
-        "tj": "ҷуръат кардан"
-      },
-      "title_zh": "敢",
-      "rule": {
-        "uz": "Fe'l oldida kelib, bir ishni qilishga jur'at yoki ishonch borligini bildiradi.",
-        "ru": "Перед глаголом показывает смелость или уверенность сделать что-то.",
-        "tj": "Пеш аз феъл омада, ҷуръат ё боварӣ ба иҷрои амалро нишон медиҳад."
-      },
-      "examples": [
-        {
-          "zh": "如果你敢诚实地说出自己对哪方面不了解，并不说明自己比别人差。",
-          "pinyin": "Rúguǒ nǐ gǎn chéngshí de shuōchū zìjǐ duì nǎ fāngmiàn bù liǎojiě, bìng bù shuōmíng zìjǐ bǐ biérén chà.",
-          "translation": {
-            "uz": "Agar bilmagan tomoningni rost aytishga jur'at qilsang, bu boshqalardan yomonligingni anglatmaydi.",
-            "ru": "Если ты осмелишься честно сказать, чего не понимаешь, это не значит, что ты хуже других.",
-            "tj": "Агар ҷуръат карда рост гӯӣ, ки кадом чизро намефаҳмӣ, ин маънои аз дигарон бад буданатро надорад."
-          }
-        }
-      ]
-    }
-  ],
+  "grammar": [],
   "dialogues": [
     {
       "scene": {
-        "uz": "Xiaxia chet elda doktoranturada o'qish hujjatlarini tayyorlaydi",
-        "ru": "Сяося готовит документы для докторантуры за рубежом",
-        "tj": "Сяося ҳуҷҷатҳои таҳсил дар докторантураи хориҷро омода мекунад"
+        "uz": "小夏 va 马克 uning xitoylik do'sti haqida gaplashadi",
+        "ru": "小夏 и Марк говорят о его китайском друге",
+        "tj": "小夏 ва Марк дар бораи дӯсти чинии ӯ суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "小雨",
-          "zh": "你马上就要硕士毕业了吧？将来有什么打算？",
-          "pinyin": "Nǐ mǎshàng jiù yào shuòshì bìyè le ba? Jiānglái yǒu shénme dǎsuàn?",
+          "speaker": "小夏",
+          "zh": "来中国快一年了，你适应这儿的生活了吗？",
+          "pinyin": "Lái Zhōngguó kuài yì nián le, nǐ shìyìng zhèr de shēnghuó le ma?",
           "text": {
-            "uz": "Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?",
-            "ru": "Ты скоро заканчиваешь магистратуру? Какие планы на будущее?",
-            "tj": "Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?"
+            "uz": "Xitoyga kelganingga deyarli bir yil bo'ldi, bu yerdagi hayotga moslashdingmi?",
+            "ru": "Ты в Китае почти год. Уже привык к здешней жизни?",
+            "tj": "Ба Чин омаданат қариб як сол шуд. Ба зиндагии ин ҷо одат кардӣ?"
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "开始有点儿不习惯，后来就慢慢适应了，最近我还交了一个中国朋友。",
+          "pinyin": "Kāishǐ yǒudiǎnr bù xíguàn, hòulái jiù mànmàn shìyìng le, zuìjìn wǒ hái jiāo le yí ge Zhōngguó péngyou.",
+          "text": {
+            "uz": "Boshida biroz o'rganmagan edim, keyin asta-sekin moslashdim, yaqinda yana bir xitoylik do'st orttirdim.",
+            "ru": "Сначала было немного непривычно, потом постепенно адаптировался; недавно я еще завел китайского друга.",
+            "tj": "Дар аввал каме одат надоштам, баъд оҳиста-оҳиста мутобиқ шудам; ба наздикӣ як дӯсти чинӣ ҳам пайдо кардам."
           }
         },
         {
           "speaker": "小夏",
-          "zh": "我想出国读博士，一直在准备办签证需要的材料。",
-          "pinyin": "Wǒ xiǎng chū guó dú bóshì, yìzhí zài zhǔnbèi bàn qiānzhèng xūyào de cáiliào.",
+          "zh": "那就好，快给我讲讲你新交的中国朋友。",
+          "pinyin": "Nà jiù hǎo, kuài gěi wǒ jiǎngjiang nǐ xīn jiāo de Zhōngguó péngyou.",
           "text": {
-            "uz": "Men chet elga doktorantura o'qishga bormoqchiman, viza uchun kerakli hujjatlarni tayyorlayapman.",
-            "ru": "Я хочу поехать за границу учиться в докторантуре и всё время готовлю материалы для визы.",
-            "tj": "Ман мехоҳам барои докторантура ба хориҷ равам ва ҳуҷҷатҳои лозими раводидро омода карда истодаам."
+            "uz": "Yaxshi bo'libdi, yangi xitoylik do'sting haqida tezroq aytib ber.",
+            "ru": "Хорошо. Скорее расскажи мне о своем новом китайском друге.",
+            "tj": "Хуб. Зудтар дар бораи дӯсти нави чиниат нақл кун."
           }
         },
         {
-          "speaker": "小雨",
-          "zh": "现在材料准备得怎么样了？",
-          "pinyin": "Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?",
+          "speaker": "马克",
+          "zh": "我们是在图书馆认识的。平时我们常常一起看书、逛街、踢足球。有时候他还给我发一些幽默短信。",
+          "pinyin": "Wǒmen shì zài túshūguǎn rènshi de. Píngshí wǒmen chángcháng yìqǐ kàn shū, guàngjiē, tī zúqiú. Yǒu shíhou tā hái gěi wǒ fā yìxiē yōumò duǎnxìn.",
           "text": {
-            "uz": "Hozir hujjatlar tayyorgarligi qanday?",
-            "ru": "Как сейчас с подготовкой документов?",
-            "tj": "Ҳоло омодагии ҳуҷҷатҳо чӣ хел аст?"
-          }
-        },
-        {
-          "speaker": "小夏",
-          "zh": "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
-          "pinyin": "Chéngjì zhèngmíng hé hùzhào yǐjīng zhǔnbèi hǎo le, lìngwài, hái gēn guówài de dàxué qǔdé le liánxì, tiánxiě le bào míng biǎogé.",
-          "text": {
-            "uz": "Baholar ma'lumotnomasi va pasport tayyor, yana chet eldagi universitet bilan aloqa qildim va ro'yxatdan o'tish formasini to'ldirdim.",
-            "ru": "Справка об оценках и паспорт уже готовы, кроме того, я связался с зарубежным университетом и заполнил форму регистрации.",
-            "tj": "Маълумномаи баҳоҳо ва шиноснома омодаанд, ҳамчунин бо донишгоҳи хориҷӣ тамос гирифтам ва варақаи номнависиро пур кардам."
-          }
-        },
-        {
-          "speaker": "小雨",
-          "zh": "还应该有国外大学给你的邀请信吧？他们把邀请信传真给你了吗？",
-          "pinyin": "Hái yīnggāi yǒu guówài dàxué gěi nǐ de yāoqǐngxìn ba? Tāmen bǎ yāoqǐngxìn chuánzhēn gěi nǐ le ma?",
-          "text": {
-            "uz": "Chet el universitetidan taklif xati ham bo'lishi kerak-ku? Ular taklif xatini senga faks qildimi?",
-            "ru": "Ещё должно быть приглашение от зарубежного университета, верно? Они отправили его тебе факсом?",
-            "tj": "Аз донишгоҳи хориҷӣ бояд номаи даъват ҳам бошад, дуруст? Онҳо онро ба ту факс карданд?"
+            "uz": "Biz kutubxonada tanishganmiz. Odatda birga kitob o'qiymiz, ko'cha aylanamiz, futbol o'ynaymiz. Ba'zan u menga hazilli SMSlar ham yuboradi.",
+            "ru": "Мы познакомились в библиотеке. Обычно мы вместе читаем, гуляем по улицам и играем в футбол. Иногда он еще присылает мне смешные SMS.",
+            "tj": "Мо дар китобхона шинос шудем. Одатан якҷо китоб мехонем, кӯча мегардем ва футбол бозӣ мекунем. Баъзан ӯ ба ман паёмҳои ҳазломез мефиристад."
           }
         },
         {
           "speaker": "小夏",
-          "zh": "没有啊，下个星期我就要去使馆办签证了，这可怎么办？",
-          "pinyin": "Méiyǒu a, xià ge xīngqī wǒ jiù yào qù shǐguǎn bàn qiānzhèng le, zhè kě zěnme bàn?",
+          "zh": "你的这个朋友真不错！下次介绍我们认识认识，怎么样？",
+          "pinyin": "Nǐ de zhè ge péngyou zhēn búcuò! Xià cì jièshào wǒmen rènshi rènshi, zěnmeyàng?",
           "text": {
-            "uz": "Yo'q, keyingi hafta elchixonaga viza olishga borishim kerak, endi nima qilaman?",
-            "ru": "Нет, а на следующей неделе мне уже идти в посольство оформлять визу. Что же делать?",
-            "tj": "Не, ҳафтаи оянда бояд ба сафорат барои раводид равам, акнун чӣ кор кунам?"
+            "uz": "Bu do'sting juda yaxshi ekan! Keyingi safar meni ham tanishtirsang-chi?",
+            "ru": "Этот твой друг правда неплохой! В следующий раз познакомишь нас, как тебе?",
+            "tj": "Ин дӯстат дар ҳақиқат хуб аст! Дафъаи оянда моро шинос мекунӣ, чӣ хел?"
           }
         },
         {
-          "speaker": "小雨",
-          "zh": "这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
-          "pinyin": "Zhè kě shì ge dà wèntí, wǒ yě bú tài qīngchu. Wǒ bāng nǐ chá yíxià xuéxiào de diànhuà hàomǎ, nǐ dǎ diànhuà wèn yíxià ba.",
+          "speaker": "马克",
+          "zh": "没问题！我们下午要去踢足球，正好一起去吧。",
+          "pinyin": "Méi wèntí! Wǒmen xiàwǔ yào qù tī zúqiú, zhènghǎo yìqǐ qù ba.",
           "text": {
-            "uz": "Bu juda katta muammo-ku, men ham aniq bilmayman. Men senga maktab telefon raqamini topib beraman, qo'ng'iroq qilib so'rab ko'r.",
-            "ru": "Это серьёзная проблема, я тоже не очень знаю. Я помогу найти номер университета, позвони и спроси.",
-            "tj": "Ин мушкили калон аст, ман ҳам хуб намедонам. Рақами телефони донишгоҳро ёфта медиҳам, занг зада пурс."
+            "uz": "Muammo yo'q! Tushdan keyin futbol o'ynashga boramiz, aynan birga boraylik.",
+            "ru": "Без проблем! Мы днем собираемся играть в футбол, как раз пойдем вместе.",
+            "tj": "Мушкил нест! Мо баъд аз нисфирӯзӣ футбол бозӣ карданӣ ҳастем, маҳз якҷо меравем."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Wang boshliq Li Jinga muvaffaqiyat tajribasini tushuntiradi",
-        "ru": "Босс Ван объясняет Ли Цзиню свой опыт успеха",
-        "tj": "Роҳбари Ван ба Ли Ҷин таҷрибаи муваффақияти худро мефаҳмонад"
+        "uz": "小李 va 小林 sinfdoshlar uchrashuvi haqida gaplashadi",
+        "ru": "小李 и 小林 говорят о встрече однокурсников",
+        "tj": "小李 ва 小林 дар бораи вохӯрии ҳамсинфон суҳбат мекунанд"
       },
       "dialogue": [
-        {
-          "speaker": "李进",
-          "zh": "谢谢您带我参观您的公司。在参观过程中我很激动，有个问题一直想问您。",
-          "pinyin": "Xièxie nín dài wǒ cānguān nín de gōngsī. Zài cānguān guòchéng zhōng wǒ hěn jīdòng, yǒu ge wèntí yìzhí xiǎng wèn nín.",
-          "text": {
-            "uz": "Kompaniyangizni ko'rsatganingiz uchun rahmat. Tashrif davomida juda hayajonlandim, doim sizdan so'ramoqchi bo'lgan savolim bor.",
-            "ru": "Спасибо, что показали мне вашу компанию. Во время осмотра я был очень впечатлён, у меня давно есть вопрос к вам.",
-            "tj": "Ташаккур, ки ширкати худро нишон додед. Ҳангоми тамошо хеле ҳаяҷон доштам, саволе дорам, ки дер боз мехостам пурсам."
-          }
-        },
-        {
-          "speaker": "王老板",
-          "zh": "好啊！小伙子，咱们一边吃西瓜，一边聊。",
-          "pinyin": "Hǎo a! Xiǎohuǒzi, zánmen yìbiān chī xīguā, yìbiān liáo.",
-          "text": {
-            "uz": "Yaxshi! Yigit, keling, tarvuz yeyib gaplashamiz.",
-            "ru": "Хорошо! Молодой человек, давай есть арбуз и разговаривать.",
-            "tj": "Хуб! Ҷавонписар, биё тарбуз хӯрему суҳбат кунем."
-          }
-        },
-        {
-          "speaker": "李进",
-          "zh": "您从大学毕业开始工作，到现在才十年时间，怎么给公司赚了这么多钱？这让我非常吃惊。我想向您学习一下成功的经验。",
-          "pinyin": "Nín cóng dàxué bìyè kāishǐ gōngzuò, dào xiànzài cái shí nián shíjiān, zěnme gěi gōngsī zhuànle zhème duō qián? Zhè ràng wǒ fēicháng chījīng. Wǒ xiǎng xiàng nín xuéxí yíxià chénggōng de jīngyàn.",
-          "text": {
-            "uz": "Universitetni bitirib ishlay boshlaganingizga endi o'n yil bo'libdi, kompaniyaga bunchalik ko'p pulni qanday ishlatdingiz? Bu meni juda hayron qoldirdi. Sizdan muvaffaqiyat tajribasini o'rganmoqchiman.",
-            "ru": "Вы работаете всего десять лет после университета, как вы заработали для компании столько денег? Это меня очень удивило. Я хочу поучиться у вас опыту успеха.",
-            "tj": "Аз хатми донишгоҳ то ҳоло ҳамагӣ даҳ сол шудааст, чӣ тавр барои ширкат ин қадар пул кор кардед? Ин маро хеле ҳайрон кард. Мехоҳам аз таҷрибаи муваффақияти шумо омӯзам."
-          }
-        },
-        {
-          "speaker": "王老板",
-          "zh": "这个问题以前一个记者也问过我。做生意时虽然会遇到各种压力和困难，但是大家的机会都是相同的。",
-          "pinyin": "Zhège wèntí yǐqián yí ge jìzhě yě wèn guo wǒ. Zuò shēngyi shí suīrán huì yùdào gè zhǒng yālì hé kùnnan, dànshì dàjiā de jīhuì dōu shì xiāngtóng de.",
-          "text": {
-            "uz": "Bu savolni oldin bir jurnalist ham so'ragan. Biznes qilganda turli bosim va qiyinchiliklar bo'ladi, lekin hammaning imkoniyati bir xil.",
-            "ru": "Этот вопрос мне раньше задавал один журналист. В бизнесе бывают разные давления и трудности, но возможности у всех одинаковые.",
-            "tj": "Ин саволро пештар як рӯзноманигор ҳам пурсид. Дар тиҷорат фишор ва душвориҳои гуногун мешавад, аммо имконияти ҳама якхела аст."
-          }
-        },
-        {
-          "speaker": "王老板",
-          "zh": "你看，这里有三块大小不同的西瓜，我们用西瓜的大小代表钱的多少，要是我们一起开始吃，你会先选哪块？",
-          "pinyin": "Nǐ kàn, zhèlǐ yǒu sān kuài dàxiǎo bù tóng de xīguā, wǒmen yòng xīguā de dàxiǎo dàibiǎo qián de duōshǎo, yàoshi wǒmen yìqǐ kāishǐ chī, nǐ huì xiān xuǎn nǎ kuài?",
-          "text": {
-            "uz": "Qarang, bu yerda kattaligi har xil uch bo'lak tarvuz bor. Tarvuz kattaligi pul miqdorini ifodalasin. Agar birga yeyishni boshlasak, avval qaysi bo'lakni tanlaysiz?",
-            "ru": "Смотри, здесь три куска арбуза разного размера. Пусть размер означает количество денег. Если начнём есть вместе, какой кусок ты выберешь первым?",
-            "tj": "Бин, ин ҷо се пора тарбузи ҳаҷмашон гуногун аст. Ҳаҷми тарбуз миқдори пулро ифода кунад. Агар якҷо хӯрданро сар кунем, аввал кадом пораро интихоб мекунӣ?"
-          }
-        },
-        {
-          "speaker": "李进",
-          "zh": "我肯定先吃最大的一块了，难道您会先吃小的，放弃吃大块的机会吗？",
-          "pinyin": "Wǒ kěndìng xiān chī zuì dà de yí kuài le, nándào nín huì xiān chī xiǎo de, fàngqì chī dà kuài de jīhuì ma?",
-          "text": {
-            "uz": "Men albatta eng kattasini birinchi yeyman. Nahotki siz kichigini yeb, katta bo'lak imkoniyatidan voz kechsangiz?",
-            "ru": "Я, конечно, сначала съем самый большой. Неужели вы сначала возьмёте маленький и откажетесь от шанса съесть большой?",
-            "tj": "Ман албатта аввал калонтаринро мехӯрам. Наход шумо аввал хурдро хӯрда, аз имкони пораи калон даст мекашед?"
-          }
-        },
-        {
-          "speaker": "王老板",
-          "zh": "我会先吃最小的一块，因为在你没吃完最大的那块时，我还有时间再多吃一块，最后一定比你吃的西瓜多。听完我的回答，恐怕你已经知道我的答案了吧。",
-          "pinyin": "Wǒ huì xiān chī zuì xiǎo de yí kuài, yīnwèi zài nǐ méi chīwán zuì dà de nà kuài shí, wǒ hái yǒu shíjiān zài duō chī yí kuài, zuìhòu yídìng bǐ nǐ chī de xīguā duō. Tīngwán wǒ de huídá, kǒngpà nǐ yǐjīng zhīdào wǒ de dá'àn le ba.",
-          "text": {
-            "uz": "Men avval eng kichigini yeyman, chunki siz eng kattasini tugatguningizcha, men yana bir bo'lak yeyishga ulguraman va oxirida sizdan ko'proq tarvuz yeyman. Javobimni eshitgach, ehtimol mening javobimni bilib oldingiz.",
-            "ru": "Я сначала съем самый маленький, потому что пока ты не доешь самый большой, я успею съесть ещё один кусок и в итоге съем больше. Услышав мой ответ, ты, наверное, уже понял мой ответ.",
-            "tj": "Ман аввал хурдтаринро мехӯрам, чун то ту калонтаринро тамом кунӣ, ман боз як пора хӯрда метавонам ва дар охир аз ту зиёдтар мехӯрам. Ҷавобамро шунида, эҳтимол ҷавобамро фаҳмидӣ."
-          }
-        }
-      ]
-    },
-    {
-      "scene": {
-        "uz": "Xiao Lin do'stini rad etishga uyaladi",
-        "ru": "Сяо Лин стесняется отказать другу",
-        "tj": "Сяо Лин аз рад кардани дӯст шарм медорад"
-      },
-      "dialogue": [
-        {
-          "speaker": "小林",
-          "zh": "今年放假我又回不了家了，这次我父母又要失望了。你有什么计划？",
-          "pinyin": "Jīnnián fàng jià wǒ yòu huí bu liǎo jiā le, zhè cì wǒ fùmǔ yòu yào shīwàng le. Nǐ yǒu shénme jìhuà?",
-          "text": {
-            "uz": "Bu yil ta'tilda yana uyga qaytolmayman, ota-onam yana hafsalasi pir bo'ladi. Sening qanday rejang bor?",
-            "ru": "В этом году на каникулах я опять не смогу поехать домой, родители снова расстроятся. Какие у тебя планы?",
-            "tj": "Имсол дар таътил боз ба хона рафта наметавонам, падару модарам боз ноумед мешаванд. Ту чӣ нақша дорӣ?"
-          }
-        },
         {
           "speaker": "小李",
-          "zh": "我计划去郊区住一个月。你不是已经买好火车票了吗？你到底怎么打算的呀？",
-          "pinyin": "Wǒ jìhuà qù jiāoqū zhù yí ge yuè. Nǐ bú shì yǐjīng mǎi hǎo huǒchēpiào le ma? Nǐ dàodǐ zěnme dǎsuàn de ya?",
+          "zh": "星期天同学聚会，你能来吗？",
+          "pinyin": "Xīngqītiān tóngxué jùhuì, nǐ néng lái ma?",
           "text": {
-            "uz": "Men shahar chetiga bir oy yashashga borishni rejalayapman. Sen poyezd chiptasini olib bo'lgan eding-ku? Oxiri nima qilmoqchisan?",
-            "ru": "Я планирую пожить месяц в пригороде. Ты ведь уже купил билет на поезд? Так что ты всё-таки собираешься делать?",
-            "tj": "Ман нақша дорам як моҳ дар атрофи шаҳр зиндагӣ кунам. Ту билетро харида будӣ-ку? Охир чӣ нақша дорӣ?"
+            "uz": "Yakshanba kuni sinfdoshlar uchrashuvi, kela olasanmi?",
+            "ru": "В воскресенье встреча однокурсников, ты сможешь прийти?",
+            "tj": "Якшанбе вохӯрии ҳамсинфон аст, омада метавонӣ?"
           }
         },
         {
           "speaker": "小林",
-          "zh": "昨天一个外地的好朋友打电话说要来旅游，让我当导游，我实在不好意思拒绝。",
-          "pinyin": "Zuótiān yí ge wàidì de hǎo péngyou dǎ diànhuà shuō yào lái lǚyóu, ràng wǒ dāng dǎoyóu, wǒ shízài bù hǎoyìsi jùjué.",
+          "zh": "能来。班里同学你联系得怎么样了？来多少人？",
+          "pinyin": "Néng lái. Bān lǐ tóngxué nǐ liánxì de zěnmeyàng le? Lái duōshǎo rén?",
           "text": {
-            "uz": "Kecha boshqa joydagi yaxshi do'stim qo'ng'iroq qilib, sayohatga kelishini va menga gid bo'lishimni aytdi. Rostdan rad etishga uyalayapman.",
-            "ru": "Вчера хороший друг из другого города позвонил и сказал, что приедет путешествовать и хочет, чтобы я был гидом. Мне правда неудобно отказать.",
-            "tj": "Дирӯз як дӯсти наздики берун аз шаҳр занг зада гуфт, ки барои саёҳат меояд ва мехоҳад ман роҳбалад шавам. Ростӣ рад кардан бароям нороҳат аст."
+            "uz": "Kela olaman. Guruhdagi sinfdoshlar bilan bog'lanish qanday ketdi? Necha kishi keladi?",
+            "ru": "Смогу. Как у тебя с контактами однокурсников из группы? Сколько человек придет?",
+            "tj": "Меоям. Бо ҳамсинфони гурӯҳ чӣ хел тамос гирифтӣ? Чанд нафар меоянд?"
           }
         },
         {
           "speaker": "小李",
-          "zh": "其实拒绝并不表示不愿意帮忙。遇到解决不了的问题或者无法完成的任务时，拒绝正好说明你对朋友负责。这也是对你父母负责的态度。",
-          "pinyin": "Qíshí jùjué bìng bù biǎoshì bù yuànyì bāng máng. Yùdào jiějué bu liǎo de wèntí huòzhě wúfǎ wánchéng de rènwu shí, jùjué zhènghǎo shuōmíng nǐ duì péngyou fùzé. Zhè yě shì duì nǐ fùmǔ fùzé de tàidu.",
+          "zh": "差不多一半儿吧，张远还专门从国外飞回来呢。",
+          "pinyin": "Chàbuduō yíbànr ba, Zhāng Yuǎn hái zhuānmén cóng guówài fēi huílai ne.",
           "text": {
-            "uz": "Aslida rad etish yordam bermoqchi emasligingni bildirmaydi. Hal qilib bo'lmaydigan muammo yoki bajarib bo'lmaydigan vazifa bo'lsa, rad etish do'stga mas'uliyatli ekaningni ko'rsatadi. Bu ota-onang oldidagi mas'uliyat ham.",
-            "ru": "На самом деле отказ не означает нежелание помочь. Если проблема нерешаемая или задача невыполнимая, отказ как раз показывает ответственность перед другом. Это также ответственное отношение к родителям.",
-            "tj": "Дар асл рад кардан маънои ёрӣ додан нахостанро надорад. Агар мушкил ҳалнашаванда ё вазифа иҷронашаванда бошад, рад кардан масъулият ба дӯстро нишон медиҳад. Ин ҳам муносибати масъулона ба падару модар аст."
+            "uz": "Taxminan yarmi bo'lsa kerak, Zhang Yuan hatto maxsus chetdan uchib keladi.",
+            "ru": "Наверное, примерно половина. Чжан Юань даже специально прилетит из-за границы.",
+            "tj": "Тақрибан нисфашон бошад. Чжан Юан ҳатто махсус аз хориҷа парвоз карда меояд."
           }
         },
         {
           "speaker": "小林",
-          "zh": "既然别人找我帮忙，说明他真的很需要我的帮助。我担心要是说“不”的话，会让他误会和伤心。",
-          "pinyin": "Jìrán biérén zhǎo wǒ bāng máng, shuōmíng tā zhēn de hěn xūyào wǒ de bāngzhù. Wǒ dānxīn yàoshi shuō “bù” dehuà, huì ràng tā wùhuì hé shāngxīn.",
+          "zh": "是吗？毕业都快十年了，真想大家啊！对了，今天早上，我在地铁站遇到了王静，她毕业后就去上海工作了，她这次是来旅游的。",
+          "pinyin": "Shì ma? Bìyè dōu kuài shí nián le, zhēn xiǎng dàjiā a! Duì le, jīntiān zǎoshang, wǒ zài dìtiězhàn yùdào le Wáng Jìng, tā bìyè hòu jiù qù Shànghǎi gōngzuò le, tā zhè cì shì lái lǚyóu de.",
           "text": {
-            "uz": "Modomiki u mendan yordam so'ragan ekan, demak u haqiqatan yordamimga muhtoj. \"Yo'q\" desam, noto'g'ri tushunib, xafa bo'lishidan qo'rqaman.",
-            "ru": "Раз он обратился ко мне за помощью, значит ему правда нужна моя помощь. Я боюсь, что если скажу «нет», он неправильно поймёт и расстроится.",
-            "tj": "Модом ки ӯ аз ман ёрӣ хост, демак воқеан ба кӯмакам ниёз дорад. Метарсам агар «не» гӯям, нодуруст мефаҳмад ва меранҷад."
+            "uz": "Rostdanmi? Bitirganimizga deyarli o'n yil bo'ldi, hammani juda sog'indim! Aytgancha, bugun ertalab metro bekatida Wang Jingni uchratdim, u bitirgandan keyin Shanghaiga ishlashga ketgandi, bu safar sayohatga kelibdi.",
+            "ru": "Правда? Уже почти десять лет после выпуска, очень скучаю по всем! Кстати, сегодня утром я встретил Ван Цзин на станции метро. После выпуска она уехала работать в Шанхай, а в этот раз приехала путешествовать.",
+            "tj": "Ростӣ? Аз хатм қариб даҳ сол гузаштааст, ҳамаро хеле пазмон шудам! Воқеан, имрӯз субҳ дар истгоҳи метро Ван Ҷинро дидам. Пас аз хатм ӯ ба Шанхай барои кор рафта буд, ин дафъа барои саёҳат омадааст."
           }
         },
         {
           "speaker": "小李",
-          "zh": "别担心！如果你用一个既合适又礼貌的方法告诉朋友，他一定会原谅你的。",
-          "pinyin": "Bié dānxīn! Rúguǒ nǐ yòng yí ge jì héshì yòu lǐmào de fāngfǎ gàosu péngyou, tā yídìng huì yuánliàng nǐ de.",
+          "zh": "那太好了！麻烦你跟她联系一下，请她一起来参加同学聚会。聚会就在学校门口那个饭店，六点半。别迟到啊！",
+          "pinyin": "Nà tài hǎo le! Máfan nǐ gēn tā liánxì yíxià, qǐng tā yìqǐ lái cānjiā tóngxué jùhuì. Jùhuì jiù zài xuéxiào ménkǒu nà ge fàndiàn, liù diǎn bàn. Bié chídào a!",
           "text": {
-            "uz": "Xavotir olma! Agar do'stingga mos va odobli usulda aytsang, u albatta seni kechiradi.",
-            "ru": "Не волнуйся! Если ты скажешь другу подходящим и вежливым способом, он обязательно тебя простит.",
-            "tj": "Хавотир нашав! Агар бо роҳи мувофиқ ва боодобона ба дӯстат гӯӣ, ӯ ҳатман туро мебахшад."
+            "uz": "Juda yaxshi! Iltimos, u bilan bog'lanib, uni ham sinfdoshlar uchrashuviga taklif qil. Uchrashuv maktab eshigi oldidagi restoranda, olti yarimda. Kech qolma!",
+            "ru": "Это отлично! Пожалуйста, свяжись с ней и пригласи ее тоже прийти на встречу однокурсников. Встреча будет в ресторане у входа в школу, в половине седьмого. Не опаздывай!",
+            "tj": "Ин хеле хуб! Илтимос, бо ӯ тамос гир ва ӯро ҳам ба вохӯрии ҳамсинфон даъват кун. Вохӯрӣ дар ҳамон тарабхонаи назди дарвозаи мактаб, соати шашу ним. Дер накун!"
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "放心吧。星期天六点半见！",
+          "pinyin": "Fàngxīn ba. Xīngqītiān liù diǎn bàn jiàn!",
+          "text": {
+            "uz": "Xotirjam bo'l. Yakshanba olti yarimda ko'rishamiz!",
+            "ru": "Не волнуйся. Увидимся в воскресенье в половине седьмого!",
+            "tj": "Хавотир нашав. Якшанбе соати шашу ним мебинем!"
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Ishni ertaga surmaslik va xitoy tilini o'rganish haqida matn",
-        "ru": "Текст о том, как не откладывать дела и учить китайский",
-        "tj": "Матн дар бораи ба фардо нагузоштани кор ва омӯзиши чинӣ"
+        "uz": "孙月 va 王静 do'stlari haqida gaplashadi",
+        "ru": "孙月 и 王静 говорят о друзьях",
+        "tj": "孙月 ва 王静 дар бораи дӯстон суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "旁白",
-          "zh": "有些同学经常把“明天”和“将来”挂在嘴边，常说作业明天再完成，下次考试一定好好儿复习，等等。",
-          "pinyin": "Yǒuxiē tóngxué jīngcháng bǎ “míngtiān” hé “jiānglái” guà zài zuǐ biān, cháng shuō zuòyè míngtiān zài wánchéng, xià cì kǎoshì yídìng hǎohāor fùxí, děngděng.",
+          "speaker": "孙月",
+          "zh": "这是什么时候的照片？你真年轻！",
+          "pinyin": "Zhè shì shénme shíhou de zhàopiàn? Nǐ zhēn niánqīng!",
           "text": {
-            "uz": "Ba'zi o'quvchilar \"ertaga\" va \"kelajakda\" degan gaplarni og'zidan tushirmaydi: vazifani ertaga qilaman, keyingi imtihonga yaxshilab tayyorlanaman va hokazo.",
-            "ru": "Некоторые ученики постоянно говорят «завтра» и «в будущем»: домашку сделаю завтра, к следующему экзамену обязательно хорошо подготовлюсь и так далее.",
-            "tj": "Баъзе донишҷӯён «пагоҳ» ва «оянда»-ро аз даҳон намемонанд: вазифаро пагоҳ мекунам, ба имтиҳони оянда хуб тайёр мешавам ва ғайра."
+            "uz": "Bu qachongi surat? Juda yosh ekansan!",
+            "ru": "Когда была сделана эта фотография? Ты такая молодая!",
+            "tj": "Ин сурати кай аст? Ту хеле ҷавон будаӣ!"
           }
         },
         {
-          "speaker": "旁白",
-          "zh": "这种态度会浪费时间，不但会让你到最后什么事情都做不成，而且还得不到别人的同情。",
-          "pinyin": "Zhè zhǒng tàidu huì làngfèi shíjiān, bùdàn huì ràng nǐ dào zuìhòu shénme shìqing dōu zuò bù chéng, érqiě hái dé bu dào biérén de tóngqíng.",
+          "speaker": "王静",
+          "zh": "这是上大学时的照片。一看到这张照片，我就想起过去那段快乐的日子，好像重新回到了校园。",
+          "pinyin": "Zhè shì shàng dàxué shí de zhàopiàn. Yí kàndào zhè zhāng zhàopiàn, wǒ jiù xiǎngqǐ guòqù nà duàn kuàilè de rìzi, hǎoxiàng chóngxīn huídào le xiàoyuán.",
           "text": {
-            "uz": "Bunday munosabat vaqtni isrof qiladi; oxirida hech narsani tugata olmay qolasan va boshqalarning hamdardligini ham olmaysan.",
-            "ru": "Такое отношение тратит время: в итоге ничего не сделаешь и даже не получишь сочувствия.",
-            "tj": "Ин муносибат вақтро беҳуда мекунад: дар охир ҳеҷ корро анҷом дода наметавонӣ ва ҳамдардии дигаронро ҳам намегирӣ."
+            "uz": "Bu universitet paytidagi surat. Bu suratni ko'rishim bilan o'tmishdagi o'sha baxtli kunlar esimga tushadi, go'yo qaytadan kampusga qaytgandek bo'laman.",
+            "ru": "Это фото времен университета. Как только вижу эту фотографию, вспоминаю те счастливые дни прошлого, будто снова вернулась в кампус.",
+            "tj": "Ин сурати давраи донишгоҳ аст. Ҳамин ки ин суратро мебинам, он рӯзҳои хуши гузаштаро ба ёд меорам, гӯё дубора ба донишгоҳ баргашта бошам."
           }
         },
         {
-          "speaker": "旁白",
-          "zh": "所以不要把什么事情都推到“明天”，一切从现在做起。",
-          "pinyin": "Suǒyǐ búyào bǎ shénme shìqing dōu tuīdào “míngtiān”, yíqiè cóng xiànzài zuòqǐ.",
+          "speaker": "孙月",
+          "zh": "旁边这个人一定是你的好朋友吧？你们现在还联系吗？",
+          "pinyin": "Pángbiān zhè ge rén yídìng shì nǐ de hǎo péngyou ba? Nǐmen xiànzài hái liánxì ma?",
           "text": {
-            "uz": "Shuning uchun hamma ishni \"ertaga\"ga surma, hammasini hozirdan boshlagin.",
-            "ru": "Поэтому не откладывай всё на «завтра», начинай всё сейчас.",
-            "tj": "Бинобар ин ҳама корро ба «пагоҳ» нагузор, ҳама чизро аз ҳозир оғоз кун."
+            "uz": "Yonindagi bu odam albatta yaqin do'sting bo'lsa kerak? Hozir ham aloqadamisizlar?",
+            "ru": "Человек рядом, наверное, твой хороший друг? Вы сейчас еще общаетесь?",
+            "tj": "Ин одам дар паҳлӯят ҳатман дӯсти наздикат аст, ҳамин тавр? Ҳоло ҳам дар тамос ҳастед?"
           }
         },
         {
-          "speaker": "旁白",
-          "zh": "就拿学汉语来说吧，首先要注意课前预习，找出第二天要学习的重点；其次，上课时要认真听，不能马虎；最后，课后要记得复习。只要这样，汉语就能越学越好，越说越自信。",
-          "pinyin": "Jiù ná xué Hànyǔ lái shuō ba, shǒuxiān yào zhùyì kè qián yùxí, zhǎochū dì-èr tiān yào xuéxí de zhòngdiǎn; qícì shàng kè shí yào rènzhēn tīng, bù néng mǎhu; zuìhòu, kè hòu yào jìde fùxí. Zhǐyào zhèyàng, Hànyǔ jiù néng yuè xué yuè hǎo, yuè shuō yuè zìxìn.",
+          "speaker": "王静",
+          "zh": "当然了，尽管已经毕业这么多年，我们还是经常联系的，每次都有说不完的话。",
+          "pinyin": "Dāngrán le, jǐnguǎn yǐjīng bìyè zhème duō nián, wǒmen háishì jīngcháng liánxì de, měi cì dōu yǒu shuō bu wán de huà.",
           "text": {
-            "uz": "Xitoy tilini o'rganishni misol qilsak, avval darsdan oldin tayyorlanib, ertangi mavzuning asosiy joylarini topish kerak; keyin darsda diqqat bilan tinglash, beparvo bo'lmaslik kerak; oxirida darsdan keyin takrorlash kerak. Shunda xitoy tili tobora yaxshi o'rganiladi va gapirgan sari ishonch ortadi.",
-            "ru": "Если взять изучение китайского, сначала нужно готовиться перед уроком и находить ключевые места следующего занятия; затем внимательно слушать на уроке, не быть небрежным; наконец, после урока повторять. Только так китайский будет становиться всё лучше, а речь увереннее.",
-            "tj": "Агар омӯзиши чиниро мисол гирем, аввал пеш аз дарс тайёрӣ дида, нуқтаҳои муҳими дарси ояндаро ёфтан лозим; баъд дар дарс бодиққат гӯш кардан, бепарво набудан; охир баъди дарс такрор кардан. Ҳамин тавр чинӣ рӯз ба рӯз беҳтар ва гуфтор боэътимодтар мешавад."
+            "uz": "Albatta, garchi bitirganimizga shuncha yil bo'lgan bo'lsa ham, biz baribir tez-tez aloqada bo'lamiz, har safar gapimiz tugamaydi.",
+            "ru": "Конечно. Хотя после выпуска прошло столько лет, мы все еще часто общаемся, и каждый раз нам есть о чем говорить без конца.",
+            "tj": "Албатта. Гарчанде аз хатм ин қадар сол гузаштааст, мо ҳанӯз бисёр вақт дар тамосем ва ҳар дафъа суханамон тамом намешавад."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "真羡慕你！我上大学时最好的朋友去了南方工作，我们俩已经好久没联系了。我一会儿就给她打个电话。",
+          "pinyin": "Zhēn xiànmù nǐ! Wǒ shàng dàxué shí zuì hǎo de péngyou qù le nánfāng gōngzuò, wǒmen liǎ yǐjīng hǎo jiǔ méi liánxì le. Wǒ yíhuìr jiù gěi tā dǎ ge diànhuà.",
+          "text": {
+            "uz": "Senga juda havas qildim! Universitetdagi eng yaxshi do'stim janubga ishlashga ketgan, biz anchadan beri bog'lanmadik. Hozir unga telefon qilaman.",
+            "ru": "Завидую тебе! Моя лучшая подруга из университета уехала работать на юг, мы давно не общались. Сейчас я ей позвоню.",
+            "tj": "Ба ту ҳавасам меояд! Дӯсти беҳтаринам аз давраи донишгоҳ ба ҷануб барои кор рафтааст, мо кайҳост тамос надорем. Ҳозир ба ӯ занг мезанам."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "对。要知道，能有一个真正的朋友，有一段真正的友谊，是多么不容易！",
+          "pinyin": "Duì. Yào zhīdào, néng yǒu yí ge zhēnzhèng de péngyou, yǒu yí duàn zhēnzhèng de yǒuyì, shì duōme bù róngyì!",
+          "text": {
+            "uz": "To'g'ri. Bilasanmi, haqiqiy do'stga ega bo'lish, haqiqiy do'stlikka ega bo'lish naqadar oson emas!",
+            "ru": "Верно. Нужно понимать: иметь настоящего друга и настоящую дружбу - это совсем нелегко.",
+            "tj": "Дуруст. Бояд донист: доштани дӯсти ҳақиқӣ ва дӯстии ҳақиқӣ кори осон нест."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "A'lo bo'lganda ham xotirjam va kamtar qolish haqida matn",
-        "ru": "Текст о спокойствии и скромности, даже когда ты силён",
-        "tj": "Матн дар бораи оромӣ ва фурӯтанӣ ҳатто вақте беҳтарин ҳастӣ"
+        "uz": "Do'st orttirish haqida matn",
+        "ru": "Текст о том, как заводить друзей",
+        "tj": "Матн дар бораи дӯст пайдо кардан"
       },
       "dialogue": [
         {
           "speaker": "旁白",
-          "zh": "当你认为自己在哪方面很优秀时，千万要冷静，不要骄傲。",
-          "pinyin": "Dāng nǐ rènwéi zìjǐ zài nǎ fāngmiàn hěn yōuxiù shí, qiānwàn yào lěngjìng, búyào jiāo'ào.",
+          "zh": "每个人都需要朋友，朋友可以丰富我们的生活。离开朋友，我们的生活一定会非常无聊。那么，怎样才能交到更多的朋友呢？当然，要有好脾气。一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。因为没有人会喜欢跟一个总是容易生气的人在一起。我们还要经常跟周围的人交流。交流能让人们互相了解，如果有共同的兴趣、爱好或者习惯，就更容易成为朋友了。",
+          "pinyin": "Měi ge rén dōu xūyào péngyou, péngyou kěyǐ fēngfù wǒmen de shēnghuó. Líkāi péngyou, wǒmen de shēnghuó yídìng huì fēicháng wúliáo. Nàme, zěnyàng cái néng jiāo dào gèng duō de péngyou ne? Dāngrán, yào yǒu hǎo píqi. Yí ge píqi bù hǎo de rén suīrán bù yídìng ràng rén tǎoyàn, dànshì què hěn nán gēn rén jiāo péngyou. Yīnwèi méiyǒu rén huì xǐhuan gēn yí ge zǒng shì róngyì shēngqì de rén zài yìqǐ. Wǒmen hái yào jīngcháng gēn zhōuwéi de rén jiāoliú. Jiāoliú néng ràng rénmen hùxiāng liǎojiě, rúguǒ yǒu gòngtóng de xìngqù, àihào huòzhě xíguàn, jiù gèng róngyì chéngwéi péngyou le.",
           "text": {
-            "uz": "Qaysidir sohada o'zingni juda yaxshi deb bilsang, albatta xotirjam bo'l, kibr qilma.",
-            "ru": "Когда считаешь себя сильным в какой-то области, обязательно сохраняй спокойствие и не гордись.",
-            "tj": "Вақте худро дар ягон соҳа хеле хуб медонӣ, ҳатман ором бош ва мағрур нашав."
+            "uz": "Har bir odamga do'st kerak, do'stlar hayotimizni boyitadi. Do'stlarsiz hayotimiz juda zerikarli bo'ladi. Unda ko'proq do'stni qanday orttirish mumkin? Albatta, yaxshi fe'l bo'lishi kerak. Fe'li yomon odam odamlarni albatta bezdirmasligi mumkin, lekin u bilan do'stlashish qiyin. Chunki hech kim doim oson jahli chiqadigan odam bilan birga bo'lishni yoqtirmaydi. Biz atrofimizdagi odamlar bilan tez-tez muloqot qilishimiz ham kerak. Muloqot odamlarni bir-birini tushunishga yordam beradi, agar umumiy qiziqish, hobbi yoki odat bo'lsa, do'st bo'lish osonroq bo'ladi.",
+            "ru": "Каждому нужны друзья, друзья могут обогатить нашу жизнь. Без друзей жизнь точно станет очень скучной. Тогда как завести больше друзей? Конечно, нужен хороший характер. Человек с плохим характером не обязательно всем неприятен, но с ним трудно дружить. Ведь никто не любит быть рядом с тем, кто всегда легко злится. Также нам нужно чаще общаться с окружающими. Общение помогает людям понимать друг друга; если есть общие интересы, увлечения или привычки, стать друзьями легче.",
+            "tj": "Ҳар кас ба дӯст ниёз дорад, дӯстон зиндагии моро ғанӣ мекунанд. Бе дӯстон зиндагии мо ҳатман хеле дилгиркунанда мешавад. Пас чӣ тавр дӯстони бештар пайдо кардан мумкин? Албатта, хулқи хуб лозим аст. Одами бадхулқ ҳатман нафратовар нест, аммо бо ӯ дӯст шудан душвор аст. Зеро ҳеҷ кас бо шахсе, ки ҳамеша зуд асабонӣ мешавад, буданро дӯст намедорад. Мо инчунин бояд бо одамони атроф бештар муошират кунем. Муошират одамонро ба фаҳмидани ҳамдигар мерасонад; агар шавқ, ҳавас ё одати умумӣ бошад, дӯст шудан осонтар мешавад."
           }
-        },
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Haqiqiy do'st haqida matn",
+        "ru": "Текст о настоящем друге",
+        "tj": "Матн дар бораи дӯсти ҳақиқӣ"
+      },
+      "dialogue": [
         {
           "speaker": "旁白",
-          "zh": "因为这个世界很大，“天外有天，人外有人”，很可能有人在这方面比你更厉害。你现在是第一，并不表示你永远都是第一。",
-          "pinyin": "Yīnwèi zhège shìjiè hěn dà, “tiān wài yǒu tiān, rén wài yǒu rén”, hěn kěnéng yǒu rén zài zhè fāngmiàn bǐ nǐ gèng lìhai. Nǐ xiànzài shì dì-yī, bìng bù biǎoshì nǐ yǒngyuǎn dōu shì dì-yī.",
+          "zh": "人的一生可以什么也没有，但不能没有朋友，而且必须要有自己真正的朋友。什么是真正的朋友？不同的人会有不同的理解。有些人觉得朋友就是能和自己一起快乐的人；有些人觉得朋友应该像镜子，能帮自己看到缺点。而我的理解是：当你遇到困难的时候，真正的朋友会站出来，及时给你帮助；当你无聊或者难过的时候，真正的朋友会陪在你身边，想办法让你感到幸福。",
+          "pinyin": "Rén de yìshēng kěyǐ shénme yě méiyǒu, dàn bù néng méiyǒu péngyou, érqiě bìxū yào yǒu zìjǐ zhēnzhèng de péngyou. Shénme shì zhēnzhèng de péngyou? Bùtóng de rén huì yǒu bùtóng de lǐjiě. Yǒuxiē rén juéde péngyou jiùshì néng hé zìjǐ yìqǐ kuàilè de rén; yǒuxiē rén juéde péngyou yīnggāi xiàng jìngzi, néng bāng zìjǐ kàndào quēdiǎn. Ér wǒ de lǐjiě shì: dāng nǐ yùdào kùnnan de shíhou, zhēnzhèng de péngyou huì zhàn chūlai, jíshí gěi nǐ bāngzhù; dāng nǐ wúliáo huòzhě nánguò de shíhou, zhēnzhèng de péngyou huì péi zài nǐ shēnbiān, xiǎng bànfǎ ràng nǐ gǎndào xìngfú.",
           "text": {
-            "uz": "Chunki dunyo juda katta, \"osmon ustida osmon, odam ustida odam bor\"; ehtimol bu sohada sendan ham kuchliroq odam bordir. Hozir birinchi bo'lishing doim birinchi bo'lasan degani emas.",
-            "ru": "Мир огромен: «за небом есть небо, среди людей есть более сильные». Возможно, кто-то в этой области сильнее тебя. То, что ты сейчас первый, не значит, что всегда будешь первым.",
-            "tj": "Зеро дунё хеле калон аст: «болои осмон осмон, миёни одамон одам ҳаст». Эҳтимол касе дар ин соҳа аз ту зӯртар бошад. Ҳоло якум буданат маънои ҳамеша якум буданро надорад."
-          }
-        },
-        {
-          "speaker": "旁白",
-          "zh": "就像比赛一样，没有人会永远输，也没有人会一直赢。我们知道的越多，就会发现自己不懂的也越多。",
-          "pinyin": "Jiù xiàng bǐsài yíyàng, méiyǒu rén huì yǒngyuǎn shū, yě méiyǒu rén huì yìzhí yíng. Wǒmen zhīdào de yuè duō, jiù huì fāxiàn zìjǐ bù dǒng de yě yuè duō.",
-          "text": {
-            "uz": "Musobaqadek: hech kim abadiy yutqazmaydi, hech kim doim yutmaydi. Qancha ko'p bilsak, bilmaydigan narsamiz ham shuncha ko'p ekanini ko'ramiz.",
-            "ru": "Как в соревновании: никто не проигрывает вечно и никто не выигрывает всегда. Чем больше мы знаем, тем больше понимаем, чего не знаем.",
-            "tj": "Мисли мусобиқа: ҳеҷ кас ҳамеша намебозад ва ҳеҷ кас ҳамеша намебарад. Ҳар қадар бештар донем, ҳамон қадар бештар мефаҳмем, ки намедонем."
-          }
-        },
-        {
-          "speaker": "旁白",
-          "zh": "我们应该重视平时的积累，多向周围的人学习。如果你敢诚实地说出自己对哪方面不了解，并不说明自己比别人差，相反，这样做更能得到别人的尊重。",
-          "pinyin": "Wǒmen yīnggāi zhòngshì píngshí de jīlěi, duō xiàng zhōuwéi de rén xuéxí. Rúguǒ nǐ gǎn chéngshí de shuōchū zìjǐ duì nǎ fāngmiàn bù liǎojiě, bìng bù shuōmíng zìjǐ bǐ biérén chà, xiāngfǎn, zhèyàng zuò gèng néng dédào biérén de zūnzhòng.",
-          "text": {
-            "uz": "Kundalik to'plash va o'rganishga ahamiyat berib, atrofdagilardan ko'proq o'rganishimiz kerak. Agar bilmagan tomoningni rost aytishga jur'at qilsang, bu boshqalardan yomonligingni bildirmaydi; aksincha, shunday qilish boshqalarning hurmatini ko'proq keltiradi.",
-            "ru": "Нужно ценить повседневное накопление и больше учиться у окружающих. Если ты осмелишься честно сказать, чего не понимаешь, это не значит, что ты хуже других; наоборот, так легче получить уважение.",
-            "tj": "Бояд ба ҷамъ кардани дониш дар рӯзҳои одӣ аҳамият диҳем ва аз атрофиён бештар омӯзем. Агар ҷуръат карда рост гӯӣ, ки чӣ чизро намефаҳмӣ, ин маънои аз дигарон бад буданатро надорад; баръакс, чунин кор эҳтироми дигаронро бештар меорад."
+            "uz": "Inson hayotida hech narsa bo'lmasligi mumkin, lekin do'stsiz bo'lishi mumkin emas, yana o'zining haqiqiy do'sti bo'lishi shart. Haqiqiy do'st nima? Turli odamlar turlicha tushunadi. Ba'zilar do'st - o'zi bilan birga xursand bo'la oladigan odam deb o'ylaydi; ba'zilar do'st ko'zgu kabi bo'lishi, o'z kamchiligini ko'ra olishga yordam berishi kerak deb o'ylaydi. Mening tushuncham esa: qiyinchilikka duch kelganingda, haqiqiy do'st oldinga chiqib, o'z vaqtida yordam beradi; zerikkaningda yoki xafa bo'lganingda, haqiqiy do'st yoningda bo'lib, seni baxtli his qildirish yo'lini topadi.",
+            "ru": "В жизни человека может не быть ничего, но без друзей жить нельзя, и обязательно должен быть настоящий друг. Что такое настоящий друг? У разных людей разное понимание. Одни считают, что друг - это тот, кто может радоваться вместе с тобой; другие думают, что друг должен быть как зеркало и помогать увидеть свои недостатки. А мое понимание такое: когда ты сталкиваешься с трудностями, настоящий друг выходит вперед и вовремя помогает; когда тебе скучно или грустно, настоящий друг остается рядом и находит способ дать тебе почувствовать счастье.",
+            "tj": "Дар ҳаёти инсон шояд ҳеҷ чиз набошад, аммо бе дӯст будан мумкин нест, ва ҳатман бояд дӯсти ҳақиқии худ дошта бошад. Дӯсти ҳақиқӣ чист? Одамони гуногун онро гуногун мефаҳманд. Баъзеҳо фикр мекунанд, ки дӯст касест, ки бо ту якҷо шод шуда метавонад; баъзеҳо мегӯянд, дӯст бояд мисли оина бошад ва ба ту камбудиҳоятро нишон диҳад. Фаҳмиши ман бошад чунин аст: вақте ба мушкилӣ дучор мешавӣ, дӯсти ҳақиқӣ пеш мебарояд ва сари вақт кӯмак мекунад; вақте дилгир ё ғамгин ҳастӣ, дӯсти ҳақиқӣ дар паҳлӯят мемонад ва роҳи хушбахт ҳис кардани туро меёбад."
           }
         }
       ]
@@ -821,36 +311,32 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "博士",
-            "pinyin": "bóshì",
+            "zh": "镜子",
+            "pinyin": "jìngzi",
             "pos": "n.",
             "meaning": {
-              "uz": "doktorantura darajasi",
-              "ru": "доктор наук, докторская степень",
-              "tj": "доктор, дараҷаи илмӣ"
+              "uz": "ko'zgu",
+              "ru": "зеркало",
+              "tj": "оина"
             }
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "签证",
-            "pinyin": "qiānzhèng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "viza",
-              "ru": "виза",
-              "tj": "раводид"
-            }
+          "type": "pronunciation",
+          "phrase": "镜子",
+          "pinyin": "jìngzi",
+          "translation": {
+            "uz": "ko'zgu",
+            "ru": "зеркало",
+            "tj": "оина"
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "签证 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 签证:",
-            "tj": "Маънои калимаи 签证-ро интихоб кунед:"
+            "uz": "镜子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 镜子:",
+            "tj": "Маънои калимаи 镜子-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -859,77 +345,53 @@
           },
           "options": [
             {
-              "uz": "viza",
-              "ru": "виза",
-              "tj": "раводид"
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
             },
             {
-              "uz": "forma, jadval",
-              "ru": "форма, таблица",
-              "tj": "варақа, ҷадвал"
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
             },
             {
-              "uz": "ro'yxatdan o'tmoq",
-              "ru": "записываться, регистрироваться",
-              "tj": "номнавис шудан"
+              "uz": "ko'zgu",
+              "ru": "зеркало",
+              "tj": "оина"
             },
             {
-              "uz": "doktorantura darajasi",
-              "ru": "доктор наук, докторская степень",
-              "tj": "доктор, дараҷаи илмӣ"
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "签证 = viza (qiānzhèng)",
-            "ru": "签证 = виза (qiānzhèng)",
-            "tj": "签证 = раводид (qiānzhèng)"
+            "uz": "镜子 = ko'zgu (jìngzi)",
+            "ru": "镜子 = зеркало (jìngzi)",
+            "tj": "镜子 = оина (jìngzi)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "报名",
-            "pinyin": "bào míng",
-            "pos": "v.",
+            "no": 2,
+            "zh": "而",
+            "pinyin": "ér",
+            "pos": "conj.",
             "meaning": {
-              "uz": "ro'yxatdan o'tmoq",
-              "ru": "записываться, регистрироваться",
-              "tj": "номнавис шудан"
+              "uz": "esa, ammo",
+              "ru": "а, но",
+              "tj": "бошад, аммо"
             }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "表格",
-            "pinyin": "biǎogé",
-            "pos": "n.",
-            "meaning": {
-              "uz": "forma, jadval",
-              "ru": "форма, таблица",
-              "tj": "варақа, ҷадвал"
-            }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "表格",
-          "pinyin": "biǎogé",
-          "translation": {
-            "uz": "forma, jadval",
-            "ru": "форма, таблица",
-            "tj": "варақа, ҷадвал"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "biǎogé qaysi ieroglif?",
-            "ru": "Какой иероглиф читается biǎogé?",
-            "tj": "biǎogé кадом иероглиф аст?"
+            "uz": "ér qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ér?",
+            "tj": "ér кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -937,52 +399,38 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "表格",
-            "报名",
-            "签证",
-            "博士"
+            "平时",
+            "交",
+            "适应",
+            "而"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "表格 = forma, jadval (biǎogé)",
-            "ru": "表格 = форма, таблица (biǎogé)",
-            "tj": "表格 = варақа, ҷадвал (biǎogé)"
+            "uz": "而 = esa, ammo (ér)",
+            "ru": "而 = а, но (ér)",
+            "tj": "而 = бошад, аммо (ér)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "传真",
-            "pinyin": "chuánzhēn",
-            "pos": "v.",
+            "no": 3,
+            "zh": "当",
+            "pinyin": "dāng",
+            "pos": "prep.",
             "meaning": {
-              "uz": "faks orqali yubormoq",
-              "ru": "отправлять факсом",
-              "tj": "бо факс фиристодан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "号码",
-            "pinyin": "hàomǎ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "raqam",
-              "ru": "номер",
-              "tj": "рақам"
+              "uz": "... paytda",
+              "ru": "когда, в момент",
+              "tj": "вақте ки, ҳангоми"
             }
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "号码 talaffuzini tanlang:",
-            "ru": "Выберите произношение 号码:",
-            "tj": "Талаффузи 号码-ро интихоб кунед:"
+            "uz": "当 talaffuzini tanlang:",
+            "ru": "Выберите произношение 当:",
+            "tj": "Талаффузи 当-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -990,52 +438,24 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qiānzhèng",
-            "hàomǎ",
-            "bóshì",
-            "bào míng"
+            "jiāo",
+            "dāng",
+            "píngshí",
+            "shìyìng"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "号码 — hàomǎ",
-            "ru": "号码 — hàomǎ",
-            "tj": "号码 — hàomǎ"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 7,
-            "zh": "参观",
-            "pinyin": "cānguān",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tomosha qilmoq, ko'rib chiqmoq",
-              "ru": "посещать, осматривать",
-              "tj": "тамошо кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "激动",
-            "pinyin": "jīdòng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "hayajonlangan",
-              "ru": "взволнованный",
-              "tj": "ҳаяҷонзада"
-            }
+            "uz": "当 — dāng",
+            "ru": "当 — dāng",
+            "tj": "当 — dāng"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'tomosha qilmoq, ko'rib chiqmoq' xitoycha qaysi?",
-            "ru": "'посещать, осматривать' по-китайски?",
-            "tj": "'тамошо кардан' ба хитоӣ кадом аст?"
+            "uz": "'ko'zgu' xitoycha qaysi?",
+            "ru": "'зеркало' по-китайски?",
+            "tj": "'оина' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -1043,101 +463,43 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "参观",
-            "报名",
-            "博士",
-            "签证"
+            "镜子",
+            "适应",
+            "交",
+            "平时"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "tomosha qilmoq, ko'rib chiqmoq = 参观 (cānguān)",
-            "ru": "посещать, осматривать = 参观 (cānguān)",
-            "tj": "тамошо кардан = 参观 (cānguān)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "小伙子",
-            "pinyin": "xiǎohuǒzi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "yigit",
-              "ru": "парень, молодой человек",
-              "tj": "ҷавонписар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "记者",
-            "pinyin": "jìzhě",
-            "pos": "n.",
-            "meaning": {
-              "uz": "jurnalist",
-              "ru": "журналист",
-              "tj": "рӯзноманигор"
-            }
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "签证",
-          "pinyin": "qiānzhèng",
-          "options": [
-            "签证",
-            "博士",
-            "表格",
-            "报名"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "签证 — viza (qiānzhèng)",
-            "ru": "签证 — виза (qiānzhèng)",
-            "tj": "签证 — раводид (qiānzhèng)"
+            "uz": "ko'zgu = 镜子 (jìngzi)",
+            "ru": "зеркало = 镜子 (jìngzi)",
+            "tj": "оина = 镜子 (jìngzi)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "博士",
+              "镜子",
               {
-                "uz": "doktorantura darajasi",
-                "ru": "доктор наук, докторская степень",
-                "tj": "доктор, дараҷаи илмӣ"
+                "uz": "ko'zgu",
+                "ru": "зеркало",
+                "tj": "оина"
               }
             ],
             [
-              "签证",
+              "而",
               {
-                "uz": "viza",
-                "ru": "виза",
-                "tj": "раводид"
+                "uz": "esa, ammo",
+                "ru": "а, но",
+                "tj": "бошад, аммо"
               }
             ],
             [
-              "报名",
+              "当",
               {
-                "uz": "ro'yxatdan o'tmoq",
-                "ru": "записываться, регистрироваться",
-                "tj": "номнавис шудан"
-              }
-            ],
-            [
-              "表格",
-              {
-                "uz": "forma, jadval",
-                "ru": "форма, таблица",
-                "tj": "варақа, ҷадвал"
+                "uz": "... paytda",
+                "ru": "когда, в момент",
+                "tj": "вақте ки, ҳангоми"
               }
             ]
           ],
@@ -1152,255 +514,6 @@
     {
       "section_no": 2,
       "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 1,
-            "title": {
-              "uz": "ta'kidlovchi ravish",
-              "ru": "усилительная частица/наречие",
-              "tj": "равиши таъкидӣ"
-            },
-            "title_zh": "可",
-            "rule": {
-              "uz": "Gapning ohangini kuchaytiradi, ayniqsa muammo yoki hayratni ta'kidlaydi.",
-              "ru": "Усиливает тон предложения, особенно проблему или удивление.",
-              "tj": "Оҳанги ҷумларо пурқувват мекунад, хусусан мушкил ё ҳайратро."
-            },
-            "examples": [
-              {
-                "zh": "这可是个大问题，我也不太清楚。",
-                "pinyin": "Zhè kě shì ge dà wèntí, wǒ yě bú tài qīngchu.",
-                "translation": {
-                  "uz": "Bu juda katta muammo-ku, men ham aniq bilmayman.",
-                  "ru": "Это ведь большая проблема, я тоже не очень понимаю.",
-                  "tj": "Ин воқеан мушкили калон аст, ман ҳам хуб намедонам."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "ehtimol, qo'rqaman-ki",
-              "ru": "боюсь, вероятно",
-              "tj": "метарсам ки, эҳтимол"
-            },
-            "title_zh": "恐怕",
-            "rule": {
-              "uz": "Taxmin bilan birga biroz xavotir bildiradi.",
-              "ru": "Выражает предположение с оттенком беспокойства.",
-              "tj": "Тахминро бо каме нигаронӣ мефаҳмонад."
-            },
-            "examples": [
-              {
-                "zh": "听完我的回答，恐怕你已经知道我的答案了吧。",
-                "pinyin": "Tīngwán wǒ de huídá, kǒngpà nǐ yǐjīng zhīdào wǒ de dá'àn le ba.",
-                "translation": {
-                  "uz": "Javobimni eshitgach, ehtimol mening javobimni allaqachon bilgandirsiz.",
-                  "ru": "Услышав мой ответ, вы, наверное, уже знаете мой ответ.",
-                  "tj": "Ҷавобамро шунида, эҳтимол ҷавоби маро аллакай донистед."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "听完我的回答，____你已经知道我的答案了吧。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "恐怕",
-            "签证",
-            "博士",
-            "报名"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 恐怕 (kǒngpà) — ehtimol, qo'rqaman-ki",
-            "ru": "Верно: 恐怕 (kǒngpà) — боюсь, вероятно",
-            "tj": "Дуруст: 恐怕 (kǒngpà) — метарсам ки, эҳтимол"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "aslida, oxiri",
-              "ru": "всё-таки, в конце концов",
-              "tj": "охир, аслан"
-            },
-            "title_zh": "到底",
-            "rule": {
-              "uz": "Savolni chuqurlashtirib, aniq javob talab qiladi.",
-              "ru": "Углубляет вопрос и требует точного ответа.",
-              "tj": "Саволро амиқ карда, ҷавоби дақиқ мехоҳад."
-            },
-            "examples": [
-              {
-                "zh": "你到底怎么打算的呀？",
-                "pinyin": "Nǐ dàodǐ zěnme dǎsuàn de ya?",
-                "translation": {
-                  "uz": "Oxiri nima qilmoqchisan o'zi?",
-                  "ru": "Так что ты всё-таки собираешься делать?",
-                  "tj": "Охир ту чӣ нақша дорӣ?"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Oxiri nima qilmoqchisan o'zi?",
-            "ru": "Так что ты всё-таки собираешься делать?",
-            "tj": "Охир ту чӣ нақша дорӣ?"
-          },
-          "tokens": [
-            "呀",
-            "怎么",
-            "的",
-            "打算",
-            "博士",
-            "到底",
-            "签证",
-            "你"
-          ],
-          "answer_tokens": [
-            "你",
-            "到底",
-            "怎么",
-            "打算",
-            "的",
-            "呀"
-          ],
-          "explanation": {
-            "uz": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?",
-            "ru": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?",
-            "tj": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 4,
-            "title": {
-              "uz": "...ni misol qilib olsak",
-              "ru": "если взять ... как пример",
-              "tj": "агар ...-ро мисол гирем"
-            },
-            "title_zh": "拿……来说",
-            "rule": {
-              "uz": "Tushuntirilayotgan mavzu uchun misolni kiritadi.",
-              "ru": "Вводит пример для объясняемой темы.",
-              "tj": "Барои фаҳмондани мавзӯъ мисол меорад."
-            },
-            "examples": [
-              {
-                "zh": "就拿学汉语来说吧，首先要注意课前预习。",
-                "pinyin": "Jiù ná xué Hànyǔ lái shuō ba, shǒuxiān yào zhùyì kè qián yùxí.",
-                "translation": {
-                  "uz": "Xitoy tilini o'rganishni misol qilsak, avvalo darsdan oldin tayyorlanishga e'tibor berish kerak.",
-                  "ru": "Если взять изучение китайского как пример, сначала нужно готовиться перед уроком.",
-                  "tj": "Агар омӯзиши чиниро мисол гирем, аввал ба омодагии пеш аз дарс диққат додан лозим."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "就拿学汉语来说吧，首先要注意课前____。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "签证",
-            "预习",
-            "报名",
-            "博士"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 预习 (yùxí) — oldindan tayyorlanmoq",
-            "ru": "Верно: 预习 (yùxí) — готовиться заранее",
-            "tj": "Дуруст: 预习 (yùxí) — пешакӣ тайёрӣ дидан"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 5,
-            "title": {
-              "uz": "jur'at qilmoq",
-              "ru": "сметь, решаться",
-              "tj": "ҷуръат кардан"
-            },
-            "title_zh": "敢",
-            "rule": {
-              "uz": "Fe'l oldida kelib, bir ishni qilishga jur'at yoki ishonch borligini bildiradi.",
-              "ru": "Перед глаголом показывает смелость или уверенность сделать что-то.",
-              "tj": "Пеш аз феъл омада, ҷуръат ё боварӣ ба иҷрои амалро нишон медиҳад."
-            },
-            "examples": [
-              {
-                "zh": "如果你敢诚实地说出自己对哪方面不了解，并不说明自己比别人差。",
-                "pinyin": "Rúguǒ nǐ gǎn chéngshí de shuōchū zìjǐ duì nǎ fāngmiàn bù liǎojiě, bìng bù shuōmíng zìjǐ bǐ biérén chà.",
-                "translation": {
-                  "uz": "Agar bilmagan tomoningni rost aytishga jur'at qilsang, bu boshqalardan yomonligingni anglatmaydi.",
-                  "ru": "Если ты осмелишься честно сказать, чего не понимаешь, это не значит, что ты хуже других.",
-                  "tj": "Агар ҷуръат карда рост гӯӣ, ки кадом чизро намефаҳмӣ, ин маънои аз дигарон бад буданатро надорад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«Oxiri nima qilmoqchisan o'zi?» — xitoychada qaysi biri?",
-            "ru": "«Так что ты всё-таки собираешься делать?» — какое предложение по-китайски?",
-            "tj": "«Охир ту чӣ нақша дорӣ?» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "你到底怎么打算的呀？",
-            "如果你敢诚实地说出自己对哪方面不了解，并不说明自己比别人差。",
-            "听完我的回答，恐怕你已经知道我的答案了吧。",
-            "这可是个大问题，我也不太清楚。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?",
-            "ru": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?",
-            "tj": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -1408,25 +521,44 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "真正 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 真正:",
+            "tj": "Маънои калимаи 真正-ро интихоб кунед:"
           },
-          "audio_text": "我计划去郊区住一个月。你不是已经买好火车票了吗？你到底怎么打算的呀？",
-          "pinyin": "Wǒ jìhuà qù jiāoqū zhù yí ge yuè. Nǐ bú shì yǐjīng mǎi hǎo huǒchēpiào le ma? Nǐ dàodǐ zěnme dǎsuàn de ya?",
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
           "options": [
-            "你马上就要硕士毕业了吧？将来有什么打算？",
-            "我计划去郊区住一个月。你不是已经买好火车票了吗？你到底怎么打算的呀？",
-            "我想出国读博士，一直在准备办签证需要的材料。",
-            "现在材料准备得怎么样了？"
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            },
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            },
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "haqiqiy",
+              "ru": "настоящий, подлинный",
+              "tj": "ҳақиқӣ, воқеӣ"
+            }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "我计划去郊区住一个月。你不是已经买好火车票了吗？你到底怎么打算的呀？ — Men shahar chetiga bir oy yashashga borishni rejalayapman. Sen poyezd chiptasini olib bo'lgan eding-ku? Oxiri nima qilmoqchisan?",
-            "ru": "我计划去郊区住一个月。你不是已经买好火车票了吗？你到底怎么打算的呀？ — Я планирую пожить месяц в пригороде. Ты ведь уже купил билет на поезд? Так что ты всё-таки собираешься делать?",
-            "tj": "我计划去郊区住一个月。你不是已经买好火车票了吗？你到底怎么打算的呀？ — Ман нақша дорам як моҳ дар атрофи шаҳр зиндагӣ кунам. Ту билетро харида будӣ-ку? Охир чӣ нақша дорӣ?"
+            "uz": "真正 = haqiqiy (zhēnzhèng)",
+            "ru": "真正 = настоящий, подлинный (zhēnzhèng)",
+            "tj": "真正 = ҳақиқӣ, воқеӣ (zhēnzhèng)"
           }
         },
         {
@@ -1436,418 +568,76 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "导游",
-          "pinyin": "dǎoyóu",
+          "audio_text": "而",
+          "pinyin": "ér",
           "options": [
-            "签证",
-            "导游",
-            "博士",
-            "报名"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "导游 — gid (dǎoyóu)",
-            "ru": "导游 — гид (dǎoyóu)",
-            "tj": "导游 — роҳбалад (dǎoyóu)"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "博士",
-              {
-                "uz": "doktorantura darajasi",
-                "ru": "доктор наук, докторская степень",
-                "tj": "доктор, дараҷаи илмӣ"
-              }
-            ],
-            [
-              "签证",
-              {
-                "uz": "viza",
-                "ru": "виза",
-                "tj": "раводид"
-              }
-            ],
-            [
-              "报名",
-              {
-                "uz": "ro'yxatdan o'tmoq",
-                "ru": "записываться, регистрироваться",
-                "tj": "номнавис шудан"
-              }
-            ],
-            [
-              "表格",
-              {
-                "uz": "forma, jadval",
-                "ru": "форма, таблица",
-                "tj": "варақа, ҷадвал"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Hozir hujjatlar tayyorgarligi qanday?",
-            "ru": "Как сейчас с подготовкой документов?",
-            "tj": "Ҳоло омодагии ҳуҷҷатҳо чӣ хел аст?"
-          },
-          "tokens": [
-            "现在",
-            "怎么样",
-            "博士",
-            "得",
-            "准备",
-            "了",
-            "材料",
-            "签证"
-          ],
-          "answer_tokens": [
-            "现在",
-            "材料",
-            "准备",
-            "得",
-            "怎么样",
-            "了"
-          ],
-          "explanation": {
-            "uz": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?",
-            "ru": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?",
-            "tj": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "这可是个大问题，我也不太清楚。",
-          "pinyin": "Zhè kě shì ge dà wèntí, wǒ yě bú tài qīngchu.",
-          "translation": {
-            "uz": "Bu juda katta muammo-ku, men ham aniq bilmayman.",
-            "ru": "Это ведь большая проблема, я тоже не очень понимаю.",
-            "tj": "Ин воқеан мушкили калон аст, ман ҳам хуб намедонам."
-          },
-          "tokens": {
-            "uz": [
-              "Tez",
-              "katta",
-              "muammo-ku",
-              "ham",
-              "orada",
-              "men",
-              "bilmayman",
-              "juda",
-              "aniq",
-              "Bu"
-            ],
-            "ru": [
-              "не",
-              "большая",
-              "ведь",
-              "проблема",
-              "я",
-              "тоже",
-              "скоро",
-              "Ты",
-              "Это",
-              "очень",
-              "понимаю"
-            ],
-            "tj": [
-              "калон",
-              "наздикӣ",
-              "аст",
-              "хуб",
-              "намедонам",
-              "Ба",
-              "ман",
-              "воқеан",
-              "ҳам",
-              "Ин",
-              "мушкили"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Bu",
-              "juda",
-              "katta",
-              "muammo-ku",
-              "men",
-              "ham",
-              "aniq",
-              "bilmayman"
-            ],
-            "ru": [
-              "Это",
-              "ведь",
-              "большая",
-              "проблема",
-              "я",
-              "тоже",
-              "не",
-              "очень",
-              "понимаю"
-            ],
-            "tj": [
-              "Ин",
-              "воқеан",
-              "мушкили",
-              "калон",
-              "аст",
-              "ман",
-              "ҳам",
-              "хуб",
-              "намедонам"
-            ]
-          },
-          "explanation": {
-            "uz": "这可是个大问题，我也不太清楚。 — Bu juda katta muammo-ku, men ham aniq bilmayman.",
-            "ru": "这可是个大问题，我也不太清楚。 — Это ведь большая проблема, я тоже не очень понимаю.",
-            "tj": "这可是个大问题，我也不太清楚。 — Ин воқеан мушкили калон аст, ман ҳам хуб намедонам."
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "到底 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 到底:",
-            "tj": "Маънои калимаи 到底-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ro'yxatdan o'tmoq",
-              "ru": "записываться, регистрироваться",
-              "tj": "номнавис шудан"
-            },
-            {
-              "uz": "doktorantura darajasi",
-              "ru": "доктор наук, докторская степень",
-              "tj": "доктор, дараҷаи илмӣ"
-            },
-            {
-              "uz": "aslida, oxiri",
-              "ru": "всё-таки, в конце концов",
-              "tj": "охир, аслан"
-            },
-            {
-              "uz": "viza",
-              "ru": "виза",
-              "tj": "раводид"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "到底 = aslida, oxiri (dàodǐ)",
-            "ru": "到底 = всё-таки, в конце концов (dàodǐ)",
-            "tj": "到底 = охир, аслан (dàodǐ)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "jiāoqū qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiāoqū?",
-            "tj": "jiāoqū кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "郊区",
-            "报名",
-            "签证",
-            "博士"
+            "而",
+            "适应",
+            "平时",
+            "交"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "郊区 = shahar cheti (jiāoqū)",
-            "ru": "郊区 = пригород (jiāoqū)",
-            "tj": "郊区 = атрофи шаҳр (jiāoqū)"
+            "uz": "而 — esa, ammo (ér)",
+            "ru": "而 — а, но (ér)",
+            "tj": "而 — бошад, аммо (ér)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "镜子",
+          "pinyin": "jìngzi",
+          "options": [
+            "平时",
+            "镜子",
+            "适应",
+            "交"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "镜子 — ko'zgu (jìngzi)",
+            "ru": "镜子 — зеркало (jìngzi)",
+            "tj": "镜子 — оина (jìngzi)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'... paytda' xitoycha qaysi?",
+            "ru": "'когда, в момент' по-китайски?",
+            "tj": "'вақте ки, ҳангоми' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "当",
+            "平时",
+            "交",
+            "适应"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "... paytda = 当 (dāng)",
+            "ru": "когда, в момент = 当 (dāng)",
+            "tj": "вақте ки, ҳангоми = 当 (dāng)"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "呀",
-          "pinyin": "ya",
+          "phrase": "镜子",
+          "pinyin": "jìngzi",
           "translation": {
-            "uz": "savol ohangini yumshatuvchi zarra",
-            "ru": "частица для смягчения вопроса",
-            "tj": "ҳиссача барои нарм кардани савол"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "你马上就要硕士毕业了吧？将来有什么打算？",
-          "pinyin": "Nǐ mǎshàng jiù yào shuòshì bìyè le ba? Jiānglái yǒu shénme dǎsuàn?",
-          "options": [
-            "我想出国读博士，一直在准备办签证需要的材料。",
-            "你马上就要硕士毕业了吧？将来有什么打算？",
-            "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
-            "现在材料准备得怎么样了？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "你马上就要硕士毕业了吧？将来有什么打算？ — Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?",
-            "ru": "你马上就要硕士毕业了吧？将来有什么打算？ — Ты скоро заканчиваешь магистратуру? Какие планы на будущее?",
-            "tj": "你马上就要硕士毕业了吧？将来有什么打算？ — Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____马上就要硕士毕业了吧？将来有什么打算？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "袜",
-            "扰",
-            "商",
-            "你"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?)",
-            "ru": "Верно: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Ты скоро заканчиваешь магистратуру? Какие планы на будущее?)",
-            "tj": "Дуруст: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?)"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "小雨",
-              "zh": "你马上就要硕士毕业了吧？将来有什么打算？",
-              "blank": false
-            },
-            {
-              "speaker": "小夏",
-              "zh": "我想出国读博士，一直在准备办签证需要的材料。",
-              "blank": false
-            },
-            {
-              "speaker": "小雨",
-              "zh": "现在材料准备得怎么样了？",
-              "blank": false
-            },
-            {
-              "speaker": "小夏",
-              "zh": "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
-              "blank": false
-            },
-            {
-              "speaker": "小雨",
-              "zh": "还应该有国外大学给你的邀请信吧？他们把邀请信传真给你了吗？",
-              "blank": false
-            },
-            {
-              "speaker": "小夏",
-              "zh": "没有啊，下个星期我就要去使馆办签证了，这可怎么办？",
-              "blank": false
-            },
-            {
-              "speaker": "小雨",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "现在材料准备得怎么样了？",
-            "你马上就要硕士毕业了吧？将来有什么打算？",
-            "这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
-            "我想出国读博士，一直在准备办签证需要的材料。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
-            "ru": "Правильный ответ: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
-            "tj": "Ҷавоби дуруст: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 小雨 avval nima deydi?",
-            "ru": "Что 小雨 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 小雨 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我想出国读博士，一直在准备办签证需要的材料。",
-            "现在材料准备得怎么样了？",
-            "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
-            "你马上就要硕士毕业了吧？将来有什么打算？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 你马上就要硕士毕业了吧？将来有什么打算？",
-            "ru": "Правильный ответ: 你马上就要硕士毕业了吧？将来有什么打算？",
-            "tj": "Ҷавоби дуруст: 你马上就要硕士毕业了吧？将来有什么打算？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小雨 nima deydi?",
-            "ru": "Что 小雨 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 小雨 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "你马上就要硕士毕业了吧？将来有什么打算？",
-            "这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
-            "我想出国读博士，一直在准备办签证需要的材料。",
-            "现在材料准备得怎么样了？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
-            "ru": "Правильный ответ: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
-            "tj": "Ҷавоби дуруст: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。"
+            "uz": "ko'zgu",
+            "ru": "зеркало",
+            "tj": "оина"
           }
         }
       ]

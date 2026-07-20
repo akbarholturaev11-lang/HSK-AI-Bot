@@ -1,0 +1,758 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 16,
+  "source_lesson": 4,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "这个工作是他帮我介绍的",
+  "subtitle": {
+    "uz": "O'tgan hodisalarning vaqti, joyi va usulini ta'kidlab gapira olish; '是……的' qolipini, 给 old ko'makchisini va 已经 ravishini o'zlashtirish.",
+    "ru": "Научиться делать акцент на времени, месте и способе совершения прошедшего действия; освоить конструкцию 是……的, предлог 给 и наречие 已经.",
+    "tj": "Таъкид кардан ба вақт, ҷой ва усули амали гузашта; азхудкунии конструксияи 是……的, пешоянди 给 ва зарфи 已经."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "生日",
+      "pinyin": "shēngrì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tug'ilgan kun",
+        "ru": "день рождения",
+        "tj": "рӯзи таваллуд"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "快乐",
+      "pinyin": "kuàilè",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "baxtli, xursand",
+        "ru": "счастливый, радостный",
+        "tj": "хушбахт, шод"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "给",
+      "pinyin": "gěi",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+        "ru": "для, кому (давать или направлять)",
+        "tj": "барои, ба (додан ё равона кардан)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "接",
+      "pinyin": "jiē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+        "ru": "принимать, получать; отвечать на телефон",
+        "tj": "қабул кардан; ба телефон ҷавоб додан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "'是……的' qolipi: ta'kidlash",
+        "ru": "Конструкция 是……的: выделение",
+        "tj": "Конструксияи 是……的: таъкид"
+      },
+      "title_zh": "“是……的”句：强调施事",
+      "rule": {
+        "uz": "'是……的' qolipida o'tgan hodisaning vaqti, joyi yoki usuli ta'kidlanadi. Gap tuzilishi: 是 + ta'kidlanadigan ma'lumot + fe'l + 的. Bu qolip hodisaning o'zi emas, balki uning qanday, qachon yoki kim tomonidan bajarilgani muhim bo'lganda ishlatiladi.",
+        "ru": "Конструкция 是……的 подчёркивает время, место или способ совершения прошедшего действия. Структура: 是 + выделяемая информация + глагол + 的. Используется, когда важен не сам факт действия, а то как, когда или кем оно было выполнено.",
+        "tj": "Конструксияи 是……的 вақт, ҷой ё усули амали гузаштаро таъкид мекунад. Сохт: 是 + маълумоти таъкидшаванда + феъл + 的. Вақте истифода мешавад, ки на худи амал, балки чӣ тавр, кай ё аз ҷониби кӣ иҷро шудани он муҳим аст."
+      },
+      "examples": [
+        {
+          "zh": "这个工作是他帮我介绍的。",
+          "pinyin": "Zhège gōngzuò shì tā bāng wǒ jièshào de.",
+          "translation": {
+            "uz": "Bu ishni u menga tavsiya qilgan edi.",
+            "ru": "Именно он порекомендовал мне эту работу.",
+            "tj": "Ин корро ӯ ба ман тавсия кард."
+          }
+        },
+        {
+          "zh": "我是2011年来的。",
+          "pinyin": "Wǒ shì èr líng yī yī nián lái de.",
+          "translation": {
+            "uz": "Men 2011-yilda kelgan edim.",
+            "ru": "Я приехал именно в 2011 году.",
+            "tj": "Ман маҳз соли 2011 омадам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "生日快乐！这是送给你的！",
+          "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+          "text": {
+            "uz": "Tug'ilgan kuning bilan! Bu senga sovg'a!",
+            "ru": "С днём рождения! Это тебе подарок!",
+            "tj": "Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是什么？是一本书吗？",
+          "pinyin": "Shì shénme? Shì yì běn shū ma?",
+          "text": {
+            "uz": "Bu nima? Kitobmi?",
+            "ru": "Что это? Книга?",
+            "tj": "Ин чист? Китоб аст?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "对，这本书是我写给你的。",
+          "pinyin": "Duì, zhè běn shū shì wǒ xiě gěi nǐ de.",
+          "text": {
+            "uz": "Ha, bu kitobni men sen uchun yozdim.",
+            "ru": "Да, эту книгу я написал для тебя.",
+            "tj": "Бале, ин китобро ман барои ту навиштам."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "太谢谢你了！",
+          "pinyin": "Tài xièxie nǐ le!",
+          "text": {
+            "uz": "Juda rahmat!",
+            "ru": "Огромное спасибо!",
+            "tj": "Хеле ташаккур!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "早上有你一个电话。",
+          "pinyin": "Zǎoshang yǒu nǐ yí ge diànhuà.",
+          "text": {
+            "uz": "Ertalab seni bir kishi qo'ng'iroq qildi.",
+            "ru": "Утром тебе звонили.",
+            "tj": "Субҳ ба ту як нафар занг зад."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "电话是谁打的？",
+          "pinyin": "Diànhuà shì shéi dǎ de?",
+          "text": {
+            "uz": "Telefon kimdan edi?",
+            "ru": "Кто звонил?",
+            "tj": "Занг аз кӣ буд?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "不知道，是儿子接的。",
+          "pinyin": "Bù zhīdào, shì érzi jiē de.",
+          "text": {
+            "uz": "Bilmadim, o'g'lim qabul qildi.",
+            "ru": "Не знаю, трубку взял сын.",
+            "tj": "Намедонам, писарам ҷавоб дод."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，晚上我问一下儿子。",
+          "pinyin": "Hǎo, wǎnshang wǒ wèn yíxià érzi.",
+          "text": {
+            "uz": "Yaxshi, kechqurun o'g'limdan so'rayman.",
+            "ru": "Хорошо, вечером спрошу у сына.",
+            "tj": "Хуб, шом аз писарам мепурсам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport maydonchasida",
+        "ru": "На спортивной площадке",
+        "tj": "Дар майдони варзишӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你喜欢踢足球吗？",
+          "pinyin": "Nǐ xǐhuan tī zúqiú ma?",
+          "text": {
+            "uz": "Futbol o'ynashni yaxshi ko'rasanmi?",
+            "ru": "Тебе нравится играть в футбол?",
+            "tj": "Оё ту футбол бозӣ кардан ро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "非常喜欢。",
+          "pinyin": "Fēicháng xǐhuan.",
+          "text": {
+            "uz": "Juda yaxshi ko'raman.",
+            "ru": "Очень нравится.",
+            "tj": "Хеле дӯст медорам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你是什么时候开始踢足球的？",
+          "pinyin": "Nǐ shì shénme shíhou kāishǐ tī zúqiú de?",
+          "text": {
+            "uz": "Sen qachon futbol o'ynashni boshlagansan?",
+            "ru": "Когда ты начал играть в футбол?",
+            "tj": "Ту кай футбол бозӣ карданро оғоз кардӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我十一岁的时候开始踢足球，已经踢了十年了。",
+          "pinyin": "Wǒ shíyī suì de shíhou kāishǐ tī zúqiú, yǐjīng tī le shí nián le.",
+          "text": {
+            "uz": "Men o'n bir yoshimda futbol o'ynashni boshladim, allaqachon o'n yil bo'ldi.",
+            "ru": "Я начал играть в футбол в одиннадцать лет, уже прошло десять лет.",
+            "tj": "Ман дар синни ёздаҳсолагӣ футбол бозӣ карданро оғоз кардам, аллакай даҳ сол шудааст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada",
+        "ru": "В компании",
+        "tj": "Дар ширкат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在这儿工作多长时间了？",
+          "pinyin": "Nǐ zài zhèr gōngzuò duō cháng shíjiān le?",
+          "text": {
+            "uz": "Bu yerda qancha vaqtdan beri ishlayapsan?",
+            "ru": "Сколько времени ты здесь работаешь?",
+            "tj": "Ту аз кай инҷо кор мекунӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "已经两年多了，我是2011年来的。",
+          "pinyin": "Yǐjīng liǎng nián duō le, wǒ shì èr líng yī yī nián lái de.",
+          "text": {
+            "uz": "Allaqachon ikki yildan oshdi, men 2011-yilda kelgan edim.",
+            "ru": "Уже больше двух лет, я приехал в 2011 году.",
+            "tj": "Аллакай зиёда аз ду сол, ман соли 2011 омадам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你认识谢先生吗？",
+          "pinyin": "Nǐ rènshi Xiè xiānsheng ma?",
+          "text": {
+            "uz": "Xie janobini tanaysanmi?",
+            "ru": "Вы знакомы с господином Се?",
+            "tj": "Оё шумо ҷаноби Ксиеро мешиносед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "认识，我们是大学同学，这个工作是他帮我介绍的。",
+          "pinyin": "Rènshi, wǒmen shì dàxué tóngxué, zhège gōngzuò shì tā bāng wǒ jièshào de.",
+          "text": {
+            "uz": "Ha, biz universitetda bir guruhda o'qiganmiz, bu ishni u menga tavsiya qilgan edi.",
+            "ru": "Знаком, мы однокурсники в университете, именно он порекомендовал мне эту работу.",
+            "tj": "Мешиносам, мо дар донишгоҳ ҳамгурӯҳ будем, ӯ ин корро ба ман тавсия кард."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "生日",
+            "pinyin": "shēngrì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "生日 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生日:",
+            "tj": "Маънои калимаи 生日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            },
+            {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            },
+            {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            },
+            {
+              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+              "ru": "принимать, получать; отвечать на телефон",
+              "tj": "қабул кардан; ба телефон ҷавоб додан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "生日 = tug'ilgan kun (shēngrì)",
+            "ru": "生日 = день рождения (shēngrì)",
+            "tj": "生日 = рӯзи таваллуд (shēngrì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "快乐",
+            "pinyin": "kuàilè",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kuàilè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kuàilè?",
+            "tj": "kuàilè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "给",
+            "快乐",
+            "生日",
+            "接"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "快乐 = baxtli, xursand (kuàilè)",
+            "ru": "快乐 = счастливый, радостный (kuàilè)",
+            "tj": "快乐 = хушбахт, шод (kuàilè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "给",
+            "pinyin": "gěi",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "给 talaffuzini tanlang:",
+            "ru": "Выберите произношение 给:",
+            "tj": "Талаффузи 给-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "kuàilè",
+            "shēngrì",
+            "gěi",
+            "jiē"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "给 — gěi",
+            "ru": "给 — gěi",
+            "tj": "给 — gěi"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "接",
+            "pinyin": "jiē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+              "ru": "принимать, получать; отвечать на телефон",
+              "tj": "қабул кардан; ба телефон ҷавоб додан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "接",
+          "pinyin": "jiē",
+          "translation": {
+            "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+            "ru": "принимать, получать; отвечать на телефон",
+            "tj": "қабул кардан; ба телефон ҷавоб додан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qabul qilmoq, olmoq; telefonga javob bermoq' xitoycha qaysi?",
+            "ru": "'принимать, получать; отвечать на телефон' по-китайски?",
+            "tj": "'қабул кардан; ба телефон ҷавоб додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "给",
+            "生日",
+            "接",
+            "快乐"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qabul qilmoq, olmoq; telefonga javob bermoq = 接 (jiē)",
+            "ru": "принимать, получать; отвечать на телефон = 接 (jiē)",
+            "tj": "қабул кардан; ба телефон ҷавоб додан = 接 (jiē)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "生日",
+          "pinyin": "shēngrì",
+          "options": [
+            "生日",
+            "快乐",
+            "接",
+            "给"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "生日 — tug'ilgan kun (shēngrì)",
+            "ru": "生日 — день рождения (shēngrì)",
+            "tj": "生日 — рӯзи таваллуд (shēngrì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "生日",
+              {
+                "uz": "tug'ilgan kun",
+                "ru": "день рождения",
+                "tj": "рӯзи таваллуд"
+              }
+            ],
+            [
+              "快乐",
+              {
+                "uz": "baxtli, xursand",
+                "ru": "счастливый, радостный",
+                "tj": "хушбахт, шод"
+              }
+            ],
+            [
+              "给",
+              {
+                "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+                "ru": "для, кому (давать или направлять)",
+                "tj": "барои, ба (додан ё равона кардан)"
+              }
+            ],
+            [
+              "接",
+              {
+                "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+                "ru": "принимать, получать; отвечать на телефон",
+                "tj": "қабул кардан; ба телефон ҷавоб додан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "'是……的' qolipi: ta'kidlash",
+              "ru": "Конструкция 是……的: выделение",
+              "tj": "Конструксияи 是……的: таъкид"
+            },
+            "title_zh": "“是……的”句：强调施事",
+            "rule": {
+              "uz": "'是……的' qolipida o'tgan hodisaning vaqti, joyi yoki usuli ta'kidlanadi. Gap tuzilishi: 是 + ta'kidlanadigan ma'lumot + fe'l + 的. Bu qolip hodisaning o'zi emas, balki uning qanday, qachon yoki kim tomonidan bajarilgani muhim bo'lganda ishlatiladi.",
+              "ru": "Конструкция 是……的 подчёркивает время, место или способ совершения прошедшего действия. Структура: 是 + выделяемая информация + глагол + 的. Используется, когда важен не сам факт действия, а то как, когда или кем оно было выполнено.",
+              "tj": "Конструксияи 是……的 вақт, ҷой ё усули амали гузаштаро таъкид мекунад. Сохт: 是 + маълумоти таъкидшаванда + феъл + 的. Вақте истифода мешавад, ки на худи амал, балки чӣ тавр, кай ё аз ҷониби кӣ иҷро шудани он муҳим аст."
+            },
+            "examples": [
+              {
+                "zh": "这个工作是他帮我介绍的。",
+                "pinyin": "Zhège gōngzuò shì tā bāng wǒ jièshào de.",
+                "translation": {
+                  "uz": "Bu ishni u menga tavsiya qilgan edi.",
+                  "ru": "Именно он порекомендовал мне эту работу.",
+                  "tj": "Ин корро ӯ ба ман тавсия кард."
+                }
+              },
+              {
+                "zh": "我是2011年来的。",
+                "pinyin": "Wǒ shì èr líng yī yī nián lái de.",
+                "translation": {
+                  "uz": "Men 2011-yilda kelgan edim.",
+                  "ru": "Я приехал именно в 2011 году.",
+                  "tj": "Ман маҳз соли 2011 омадам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men 2011-yilda kelgan edim.",
+            "ru": "Я приехал именно в 2011 году.",
+            "tj": "Ман маҳз соли 2011 омадам."
+          },
+          "tokens": [
+            "我",
+            "是",
+            "来",
+            "年",
+            "快乐",
+            "的",
+            "生日"
+          ],
+          "answer_tokens": [
+            "我",
+            "是",
+            "年",
+            "来",
+            "的"
+          ],
+          "explanation": {
+            "uz": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de.",
+            "ru": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de.",
+            "tj": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "生日",
+          "pinyin": "shēngrì",
+          "translation": {
+            "uz": "tug'ilgan kun",
+            "ru": "день рождения",
+            "tj": "рӯзи таваллуд"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "红 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 红:",
+            "tj": "Маънои калимаи 红-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            },
+            {
+              "uz": "qizil",
+              "ru": "красный",
+              "tj": "сурх"
+            },
+            {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            },
+            {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "红 = qizil (hóng)",
+            "ru": "红 = красный (hóng)",
+            "tj": "红 = сурх (hóng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bilmadim, o'g'lim qabul qildi.",
+            "ru": "Не знаю, трубку взял сын.",
+            "tj": "Намедонам, писарам ҷавоб дод."
+          },
+          "tokens": [
+            "不",
+            "生日",
+            "知道",
+            "接",
+            "是",
+            "的",
+            "快乐",
+            "儿子"
+          ],
+          "answer_tokens": [
+            "不",
+            "知道",
+            "是",
+            "儿子",
+            "接",
+            "的"
+          ],
+          "explanation": {
+            "uz": "不知道，是儿子接的。 — Bù zhīdào, shì érzi jiē de.",
+            "ru": "不知道，是儿子接的。 — Bù zhīdào, shì érzi jiē de.",
+            "tj": "不知道，是儿子接的。 — Bù zhīdào, shì érzi jiē de."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "生日快乐！这是送给你的！",
+          "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+          "options": [
+            "太谢谢你了！",
+            "生日快乐！这是送给你的！",
+            "对，这本书是我写给你的。",
+            "是什么？是一本书吗？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "生日快乐！这是送给你的！ — Tug'ilgan kuning bilan! Bu senga sovg'a!",
+            "ru": "生日快乐！这是送给你的！ — С днём рождения! Это тебе подарок!",
+            "tj": "生日快乐！这是送给你的！ — Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "接",
+          "pinyin": "jiē",
+          "translation": {
+            "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+            "ru": "принимать, получать; отвечать на телефон",
+            "tj": "қабул кардан; ба телефон ҷавоб додан"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,704 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 27,
+  "source_lesson": 6,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你怎么不吃了",
+  "subtitle": {
+    "uz": "Sabab va oqibat haqida gapira olish, 怎么 so'roq olmoshi, miqdor ko'makchilarining takrorlanishi va 因为……所以…… bog'lovchi qolipini o'zlashtirish.",
+    "ru": "Научиться говорить о причине и следствии, вопросительное местоимение 怎么, удвоение счётных слов и союзная конструкция 因为……所以……",
+    "tj": "Омӯзиши гуфтан дар бораи сабаб ва натиҷа, исми саволии 怎么, такрори калимаҳои шуморавӣ ва сохти пайвандакии 因为……所以……"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "好吃",
+      "pinyin": "hǎochī",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "mazali (ovqat haqida)",
+        "ru": "вкусный (о еде)",
+        "tj": "хӯрданӣ, болаззат (дар бораи хӯрок)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "面条",
+      "pinyin": "miàntiáo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "makaron, lag'mon",
+        "ru": "лапша",
+        "tj": "лоғмон, макарон"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "打篮球",
+      "pinyin": "dǎ lánqiú",
+      "pos": "v.",
+      "meaning": {
+        "uz": "basketbol o'ynamoq",
+        "ru": "играть в баскетбол",
+        "tj": "баскетбол бозӣ кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Miqdor ko'makchilarining takrorlanishi",
+        "ru": "Удвоение счётных слов",
+        "tj": "Такрори калимаҳои шуморавӣ"
+      },
+      "title_zh": "量词的重叠",
+      "rule": {
+        "uz": "Miqdor ko'makchilarini takrorlash orqali 'har bir, har qaysi' ma'nosi hosil qilinadi.\nMasalan, 天天 = har kuni, 年年 = har yili.\nBu qolip davomiylik va takrorlanuvchilikni ta'kidlaydi.",
+        "ru": "Удвоение счётных слов образует значение 'каждый, любой'.\nНапример, 天天 = каждый день, 年年 = каждый год.\nЭта конструкция подчёркивает постоянство и повторяемость.",
+        "tj": "Такрори калимаҳои шуморавӣ маъноии 'ҳар, ҳар як'-ро месозад.\nМасалан, 天天 = ҳар рӯз, 年年 = ҳар сол.\nИн сохт давомнокӣ ва такрорпазириро таъкид мекунад."
+      },
+      "examples": [
+        {
+          "zh": "这个星期我天天都吃羊肉。",
+          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu.",
+          "translation": {
+            "uz": "Bu hafta har kuni qo'y go'shti edim.",
+            "ru": "На этой неделе я ел баранину каждый день.",
+            "tj": "Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам."
+          }
+        },
+        {
+          "zh": "这个月我天天都游泳。",
+          "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng.",
+          "translation": {
+            "uz": "Bu oy har kuni suzaman.",
+            "ru": "В этом месяце я плаваю каждый день.",
+            "tj": "Ин моҳ ман ҳар рӯз шино мекунам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你知道小王今天什么时候来学校吗？",
+          "pinyin": "Nǐ zhīdào Xiǎo Wáng jīntiān shénme shíhou lái xuéxiào ma?",
+          "text": {
+            "uz": "Kichik Vang bugun qachon maktabga kelishini bilasanmi?",
+            "ru": "Ты знаешь, когда Маленький Ван придёт в школу сегодня?",
+            "tj": "Оё медонӣ, ки Сяо Ван имрӯз кай ба мактаб меояд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他已经来了。",
+          "pinyin": "Tā yǐjīng lái le.",
+          "text": {
+            "uz": "U allaqachon keldi.",
+            "ru": "Он уже пришёл.",
+            "tj": "Вай аллакай омадааст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你怎么知道他来了？",
+          "pinyin": "Nǐ zěnme zhīdào tā lái le?",
+          "text": {
+            "uz": "U kelganini qanday bilding?",
+            "ru": "Как ты узнал, что он пришёл?",
+            "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我在门外看见他的自行车了。",
+          "pinyin": "Wǒ zài mén wài kànjian tā de zìxíngchē le.",
+          "text": {
+            "uz": "Eshik tashqarisida uning velosipedini ko'rdim.",
+            "ru": "Я увидел его велосипед за дверью.",
+            "tj": "Ман берун аз дар велосипеди ӯро дидам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda",
+        "ru": "В ресторане",
+        "tj": "Дар тарабхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天的羊肉很好吃，你怎么不吃了？",
+          "pinyin": "Jīntiān de yángròu hěn hǎochī, nǐ zěnme bù chī le?",
+          "text": {
+            "uz": "Bugungi qo'y go'shti juda mazali, nega yemayapsan?",
+            "ru": "Сегодняшняя баранина очень вкусная, почему ты не ешь?",
+            "tj": "Гӯшти гӯсфанди имрӯз бисёр болаззат аст, ту чаро намехӯрӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这个星期我天天都吃羊肉，不想吃了。",
+          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu, bù xiǎng chī le.",
+          "text": {
+            "uz": "Bu hafta har kuni qo'y go'shti edim, endi yeygim kelmayapti.",
+            "ru": "На этой неделе я ел баранину каждый день, больше не хочу.",
+            "tj": "Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам, дигар намехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那你想吃什么？",
+          "pinyin": "Nà nǐ xiǎng chī shénme?",
+          "text": {
+            "uz": "Unda nima yemoqchisan?",
+            "ru": "Тогда что ты хочешь поесть?",
+            "tj": "Пас ту чӣ хӯрдан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "来一点儿面条吧。",
+          "pinyin": "Lái yìdiǎnr miàntiáo ba.",
+          "text": {
+            "uz": "Bir oz lag'mon gapirtiraylik.",
+            "ru": "Давай закажем немного лапши.",
+            "tj": "Каме лоғмон оварем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport zalida",
+        "ru": "В спортзале",
+        "tj": "Дар толори варзиш"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天你们怎么都没去打篮球？",
+          "pinyin": "Zuótiān nǐmen zěnme dōu méi qù dǎ lánqiú?",
+          "text": {
+            "uz": "Kecha nega barchang basketbol o'ynamaganga bormadinglar?",
+            "ru": "Почему вы все вчера не пошли играть в баскетбол?",
+            "tj": "Дирӯз шумо чаро ҳама наравон бозии баскетбол накардед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "因为昨天下雨，所以我们都没去。我去游泳了。",
+          "pinyin": "Yīnwèi zuótiān xiàyǔ, suǒyǐ wǒmen dōu méi qù. Wǒ qù yóuyǒng le.",
+          "text": {
+            "uz": "Chunki kecha yomg'ir yog'di, shuning uchun barchimiz bormadik. Men suzgani bordim.",
+            "ru": "Потому что вчера шёл дождь, поэтому мы все не пошли. Я пошёл плавать.",
+            "tj": "Зеро дирӯз борон меборид, аз ин сабаб мо ҳама наравон. Ман рафтам шино кардам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你经常游泳吗？",
+          "pinyin": "Nǐ jīngcháng yóuyǒng ma?",
+          "text": {
+            "uz": "Sen tez-tez suzasanmi?",
+            "ru": "Ты часто плаваешь?",
+            "tj": "Оё ту зуд-зуд шино мекунӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这个月我天天都游泳，我现在七十公斤了。",
+          "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng, wǒ xiànzài qīshí gōngjīn le.",
+          "text": {
+            "uz": "Bu oy har kuni suzaman, hozir yetmish kilogram bo'ldim.",
+            "ru": "В этом месяце я плаваю каждый день, сейчас вешу семьдесят килограмм.",
+            "tj": "Ин моҳ ман ҳар рӯз шино мекунам, ҳоло ҳафтод килограмм шудам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Idorada",
+        "ru": "В офисе",
+        "tj": "Дар идора"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "这两天怎么没看见小张？",
+          "pinyin": "Zhè liǎng tiān zěnme méi kànjian Xiǎo Zhāng?",
+          "text": {
+            "uz": "Bu ikki kunda nega Kichik Jangni ko'rmadim?",
+            "ru": "Почему я не видел Маленького Чжана эти два дня?",
+            "tj": "Ин ду рӯз чаро Сяо Чжанро надидам?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他去北京了。",
+          "pinyin": "Tā qù Běijīng le.",
+          "text": {
+            "uz": "U Pekinga ketdi.",
+            "ru": "Он уехал в Пекин.",
+            "tj": "Вай ба Пекин рафтааст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "去北京了？是去旅游吗？",
+          "pinyin": "Qù Běijīng le? Shì qù lǚyóu ma?",
+          "text": {
+            "uz": "Pekinga ketdimi? Sayohatgami?",
+            "ru": "Уехал в Пекин? На экскурсию?",
+            "tj": "Ба Пекин рафт? Сайёҳӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不是，听说是去看他姐姐。",
+          "pinyin": "Bú shì, tīngshuō shì qù kàn tā jiějie.",
+          "text": {
+            "uz": "Yo'q, eshitdim, opasini ko'rgani ketgan.",
+            "ru": "Нет, говорят, поехал навестить старшую сестру.",
+            "tj": "Не, шунидам, рафтааст хоҳари калониашро бинад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "好吃",
+            "pinyin": "hǎochī",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "mazali (ovqat haqida)",
+              "ru": "вкусный (о еде)",
+              "tj": "хӯрданӣ, болаззат (дар бораи хӯрок)"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hǎochī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hǎochī?",
+            "tj": "hǎochī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "外",
+            "门",
+            "好吃",
+            "自行车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "好吃 = mazali (ovqat haqida) (hǎochī)",
+            "ru": "好吃 = вкусный (о еде) (hǎochī)",
+            "tj": "好吃 = хӯрданӣ, болаззат (дар бораи хӯрок) (hǎochī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "面条",
+            "pinyin": "miàntiáo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "makaron, lag'mon",
+              "ru": "лапша",
+              "tj": "лоғмон, макарон"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "面条 talaffuzini tanlang:",
+            "ru": "Выберите произношение 面条:",
+            "tj": "Талаффузи 面条-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "miàntiáo",
+            "zìxíngchē",
+            "wài",
+            "mén"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "面条 — miàntiáo",
+            "ru": "面条 — miàntiáo",
+            "tj": "面条 — miàntiáo"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "打篮球",
+            "pinyin": "dǎ lánqiú",
+            "pos": "v.",
+            "meaning": {
+              "uz": "basketbol o'ynamoq",
+              "ru": "играть в баскетбол",
+              "tj": "баскетбол бозӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "打篮球",
+          "pinyin": "dǎ lánqiú",
+          "translation": {
+            "uz": "basketbol o'ynamoq",
+            "ru": "играть в баскетбол",
+            "tj": "баскетбол бозӣ кардан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'basketbol o'ynamoq' xitoycha qaysi?",
+            "ru": "'играть в баскетбол' по-китайски?",
+            "tj": "'баскетбол бозӣ кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打篮球",
+            "自行车",
+            "门",
+            "外"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "basketbol o'ynamoq = 打篮球 (dǎ lánqiú)",
+            "ru": "играть в баскетбол = 打篮球 (dǎ lánqiú)",
+            "tj": "баскетбол бозӣ кардан = 打篮球 (dǎ lánqiú)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "好吃",
+          "pinyin": "hǎochī",
+          "options": [
+            "好吃",
+            "自行车",
+            "门",
+            "外"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "好吃 — mazali (ovqat haqida) (hǎochī)",
+            "ru": "好吃 — вкусный (о еде) (hǎochī)",
+            "tj": "好吃 — хӯрданӣ, болаззат (дар бораи хӯрок) (hǎochī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "好吃",
+              {
+                "uz": "mazali (ovqat haqida)",
+                "ru": "вкусный (о еде)",
+                "tj": "хӯрданӣ, болаззат (дар бораи хӯрок)"
+              }
+            ],
+            [
+              "面条",
+              {
+                "uz": "makaron, lag'mon",
+                "ru": "лапша",
+                "tj": "лоғмон, макарон"
+              }
+            ],
+            [
+              "打篮球",
+              {
+                "uz": "basketbol o'ynamoq",
+                "ru": "играть в баскетбол",
+                "tj": "баскетбол бозӣ кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Miqdor ko'makchilarining takrorlanishi",
+              "ru": "Удвоение счётных слов",
+              "tj": "Такрори калимаҳои шуморавӣ"
+            },
+            "title_zh": "量词的重叠",
+            "rule": {
+              "uz": "Miqdor ko'makchilarini takrorlash orqali 'har bir, har qaysi' ma'nosi hosil qilinadi.\nMasalan, 天天 = har kuni, 年年 = har yili.\nBu qolip davomiylik va takrorlanuvchilikni ta'kidlaydi.",
+              "ru": "Удвоение счётных слов образует значение 'каждый, любой'.\nНапример, 天天 = каждый день, 年年 = каждый год.\nЭта конструкция подчёркивает постоянство и повторяемость.",
+              "tj": "Такрори калимаҳои шуморавӣ маъноии 'ҳар, ҳар як'-ро месозад.\nМасалан, 天天 = ҳар рӯз, 年年 = ҳар сол.\nИн сохт давомнокӣ ва такрорпазириро таъкид мекунад."
+            },
+            "examples": [
+              {
+                "zh": "这个星期我天天都吃羊肉。",
+                "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu.",
+                "translation": {
+                  "uz": "Bu hafta har kuni qo'y go'shti edim.",
+                  "ru": "На этой неделе я ел баранину каждый день.",
+                  "tj": "Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам."
+                }
+              },
+              {
+                "zh": "这个月我天天都游泳。",
+                "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng.",
+                "translation": {
+                  "uz": "Bu oy har kuni suzaman.",
+                  "ru": "В этом месяце я плаваю каждый день.",
+                  "tj": "Ин моҳ ман ҳар рӯз шино мекунам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "这个星期我天天都吃____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "门",
+            "羊肉",
+            "外",
+            "自行车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 羊肉 (yángròu) — qo'y go'shti",
+            "ru": "Верно: 羊肉 (yángròu) — баранина",
+            "tj": "Дуруст: 羊肉 (yángròu) — гӯшти гӯсфанд"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "来一点儿面条吧。",
+          "pinyin": "Lái yìdiǎnr miàntiáo ba.",
+          "options": [
+            "他已经来了。",
+            "你知道小王今天什么时候来学校吗？",
+            "来一点儿面条吧。",
+            "你怎么知道他来了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "来一点儿面条吧。 — Bir oz lag'mon gapirtiraylik.",
+            "ru": "来一点儿面条吧。 — Давай закажем немного лапши.",
+            "tj": "来一点儿面条吧。 — Каме лоғмон оварем."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zìxíngchē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zìxíngchē?",
+            "tj": "zìxíngchē кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "羊肉",
+            "外",
+            "自行车",
+            "门"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "自行车 = velosiped (zìxíngchē)",
+            "ru": "自行车 = велосипед (zìxíngchē)",
+            "tj": "自行车 = велосипед (zìxíngchē)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "今天的羊肉很好吃，你怎么不吃了？",
+          "pinyin": "Jīntiān de yángròu hěn hǎochī, nǐ zěnme bù chī le?",
+          "translation": {
+            "uz": "Bugungi qo'y go'shti juda mazali, nega yemayapsan?",
+            "ru": "Сегодняшняя баранина очень вкусная, почему ты не ешь?",
+            "tj": "Гӯшти гӯсфанди имрӯз бисёр болаззат аст, ту чаро намехӯрӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "qo'y",
+              "Bugungi",
+              "oz",
+              "juda",
+              "Bir",
+              "yemayapsan",
+              "go'shti",
+              "mazali",
+              "nega"
+            ],
+            "ru": [
+              "Давай",
+              "вкусная",
+              "ты",
+              "очень",
+              "баранина",
+              "ешь",
+              "почему",
+              "закажем",
+              "Сегодняшняя",
+              "не"
+            ],
+            "tj": [
+              "гӯсфанди",
+              "бисёр",
+              "Гӯшти",
+              "лоғмон",
+              "болаззат",
+              "имрӯз",
+              "намехӯрӣ",
+              "чаро",
+              "аст",
+              "ту",
+              "Каме"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bugungi",
+              "qo'y",
+              "go'shti",
+              "juda",
+              "mazali",
+              "nega",
+              "yemayapsan"
+            ],
+            "ru": [
+              "Сегодняшняя",
+              "баранина",
+              "очень",
+              "вкусная",
+              "почему",
+              "ты",
+              "не",
+              "ешь"
+            ],
+            "tj": [
+              "Гӯшти",
+              "гӯсфанди",
+              "имрӯз",
+              "бисёр",
+              "болаззат",
+              "аст",
+              "ту",
+              "чаро",
+              "намехӯрӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "今天的羊肉很好吃，你怎么不吃了？ — Bugungi qo'y go'shti juda mazali, nega yemayapsan?",
+            "ru": "今天的羊肉很好吃，你怎么不吃了？ — Сегодняшняя баранина очень вкусная, почему ты не ешь?",
+            "tj": "今天的羊肉很好吃，你怎么不吃了？ — Гӯшти гӯсфанди имрӯз бисёр болаззат аст, ту чаро намехӯрӣ?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "打篮球",
+          "pinyin": "dǎ lánqiú",
+          "translation": {
+            "uz": "basketbol o'ynamoq",
+            "ru": "играть в баскетбол",
+            "tj": "баскетбол бозӣ кардан"
+          }
+        }
+      ]
+    }
+  ]
+}

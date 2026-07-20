@@ -1,0 +1,747 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 18,
+  "source_lesson": 4,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "这个工作是他帮我介绍的",
+  "subtitle": {
+    "uz": "O'tgan hodisalarning vaqti, joyi va usulini ta'kidlab gapira olish; '是……的' qolipini, 给 old ko'makchisini va 已经 ravishini o'zlashtirish.",
+    "ru": "Научиться делать акцент на времени, месте и способе совершения прошедшего действия; освоить конструкцию 是……的, предлог 给 и наречие 已经.",
+    "tj": "Таъкид кардан ба вақт, ҷой ва усули амали гузашта; азхудкунии конструксияи 是……的, пешоянди 给 ва зарфи 已经."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "开始",
+      "pinyin": "kāishǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "boshlamoq, boshlanmoq",
+        "ru": "начинать, начинаться",
+        "tj": "оғоз кардан, шурӯъ кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "已经",
+      "pinyin": "yǐjīng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "allaqachon, avvaldan",
+        "ru": "уже",
+        "tj": "аллакай, пешакӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "长",
+      "pinyin": "cháng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "uzun; (vaqt) uzoq",
+        "ru": "длинный; (о времени) долгий",
+        "tj": "дароз; (вақт) тӯлонӣ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Vaqt ravishi '已经'",
+        "ru": "Наречие времени 已经",
+        "tj": "Зарфи вақт 已经"
+      },
+      "title_zh": "时间副词“已经”",
+      "rule": {
+        "uz": "'已经' ravishi 'allaqachon' ma'nosini beradi. U fe'ldan oldin keladi va ko'pincha '了' bilan birga ishlatiladi. Biror harakatning avvalroq bajarilganini ta'kidlaydi.",
+        "ru": "Наречие 已经 означает «уже». Ставится перед глаголом и часто используется в связке с 了. Подчёркивает, что действие совершилось ранее.",
+        "tj": "Зарфи 已经 маънои 'аллакай' дорад. Пеш аз феъл меояд ва аксар бо 了 дар якҷоягӣ истифода мешавад. Таъкид мекунад, ки амал пешак иҷро шудааст."
+      },
+      "examples": [
+        {
+          "zh": "已经踢了十年了。",
+          "pinyin": "Yǐjīng tī le shí nián le.",
+          "translation": {
+            "uz": "Allaqachon o'n yil bo'ldi.",
+            "ru": "Уже прошло десять лет.",
+            "tj": "Аллакай даҳ сол шудааст."
+          }
+        },
+        {
+          "zh": "我已经吃饭了。",
+          "pinyin": "Wǒ yǐjīng chīfàn le.",
+          "translation": {
+            "uz": "Men allaqachon ovqatlandim.",
+            "ru": "Я уже поел.",
+            "tj": "Ман аллакай хӯрок хӯрдам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "生日快乐！这是送给你的！",
+          "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+          "text": {
+            "uz": "Tug'ilgan kuning bilan! Bu senga sovg'a!",
+            "ru": "С днём рождения! Это тебе подарок!",
+            "tj": "Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是什么？是一本书吗？",
+          "pinyin": "Shì shénme? Shì yì běn shū ma?",
+          "text": {
+            "uz": "Bu nima? Kitobmi?",
+            "ru": "Что это? Книга?",
+            "tj": "Ин чист? Китоб аст?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "对，这本书是我写给你的。",
+          "pinyin": "Duì, zhè běn shū shì wǒ xiě gěi nǐ de.",
+          "text": {
+            "uz": "Ha, bu kitobni men sen uchun yozdim.",
+            "ru": "Да, эту книгу я написал для тебя.",
+            "tj": "Бале, ин китобро ман барои ту навиштам."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "太谢谢你了！",
+          "pinyin": "Tài xièxie nǐ le!",
+          "text": {
+            "uz": "Juda rahmat!",
+            "ru": "Огромное спасибо!",
+            "tj": "Хеле ташаккур!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "早上有你一个电话。",
+          "pinyin": "Zǎoshang yǒu nǐ yí ge diànhuà.",
+          "text": {
+            "uz": "Ertalab seni bir kishi qo'ng'iroq qildi.",
+            "ru": "Утром тебе звонили.",
+            "tj": "Субҳ ба ту як нафар занг зад."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "电话是谁打的？",
+          "pinyin": "Diànhuà shì shéi dǎ de?",
+          "text": {
+            "uz": "Telefon kimdan edi?",
+            "ru": "Кто звонил?",
+            "tj": "Занг аз кӣ буд?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "不知道，是儿子接的。",
+          "pinyin": "Bù zhīdào, shì érzi jiē de.",
+          "text": {
+            "uz": "Bilmadim, o'g'lim qabul qildi.",
+            "ru": "Не знаю, трубку взял сын.",
+            "tj": "Намедонам, писарам ҷавоб дод."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，晚上我问一下儿子。",
+          "pinyin": "Hǎo, wǎnshang wǒ wèn yíxià érzi.",
+          "text": {
+            "uz": "Yaxshi, kechqurun o'g'limdan so'rayman.",
+            "ru": "Хорошо, вечером спрошу у сына.",
+            "tj": "Хуб, шом аз писарам мепурсам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport maydonchasida",
+        "ru": "На спортивной площадке",
+        "tj": "Дар майдони варзишӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你喜欢踢足球吗？",
+          "pinyin": "Nǐ xǐhuan tī zúqiú ma?",
+          "text": {
+            "uz": "Futbol o'ynashni yaxshi ko'rasanmi?",
+            "ru": "Тебе нравится играть в футбол?",
+            "tj": "Оё ту футбол бозӣ кардан ро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "非常喜欢。",
+          "pinyin": "Fēicháng xǐhuan.",
+          "text": {
+            "uz": "Juda yaxshi ko'raman.",
+            "ru": "Очень нравится.",
+            "tj": "Хеле дӯст медорам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你是什么时候开始踢足球的？",
+          "pinyin": "Nǐ shì shénme shíhou kāishǐ tī zúqiú de?",
+          "text": {
+            "uz": "Sen qachon futbol o'ynashni boshlagansan?",
+            "ru": "Когда ты начал играть в футбол?",
+            "tj": "Ту кай футбол бозӣ карданро оғоз кардӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我十一岁的时候开始踢足球，已经踢了十年了。",
+          "pinyin": "Wǒ shíyī suì de shíhou kāishǐ tī zúqiú, yǐjīng tī le shí nián le.",
+          "text": {
+            "uz": "Men o'n bir yoshimda futbol o'ynashni boshladim, allaqachon o'n yil bo'ldi.",
+            "ru": "Я начал играть в футбол в одиннадцать лет, уже прошло десять лет.",
+            "tj": "Ман дар синни ёздаҳсолагӣ футбол бозӣ карданро оғоз кардам, аллакай даҳ сол шудааст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada",
+        "ru": "В компании",
+        "tj": "Дар ширкат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在这儿工作多长时间了？",
+          "pinyin": "Nǐ zài zhèr gōngzuò duō cháng shíjiān le?",
+          "text": {
+            "uz": "Bu yerda qancha vaqtdan beri ishlayapsan?",
+            "ru": "Сколько времени ты здесь работаешь?",
+            "tj": "Ту аз кай инҷо кор мекунӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "已经两年多了，我是2011年来的。",
+          "pinyin": "Yǐjīng liǎng nián duō le, wǒ shì èr líng yī yī nián lái de.",
+          "text": {
+            "uz": "Allaqachon ikki yildan oshdi, men 2011-yilda kelgan edim.",
+            "ru": "Уже больше двух лет, я приехал в 2011 году.",
+            "tj": "Аллакай зиёда аз ду сол, ман соли 2011 омадам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你认识谢先生吗？",
+          "pinyin": "Nǐ rènshi Xiè xiānsheng ma?",
+          "text": {
+            "uz": "Xie janobini tanaysanmi?",
+            "ru": "Вы знакомы с господином Се?",
+            "tj": "Оё шумо ҷаноби Ксиеро мешиносед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "认识，我们是大学同学，这个工作是他帮我介绍的。",
+          "pinyin": "Rènshi, wǒmen shì dàxué tóngxué, zhège gōngzuò shì tā bāng wǒ jièshào de.",
+          "text": {
+            "uz": "Ha, biz universitetda bir guruhda o'qiganmiz, bu ishni u menga tavsiya qilgan edi.",
+            "ru": "Знаком, мы однокурсники в университете, именно он порекомендовал мне эту работу.",
+            "tj": "Мешиносам, мо дар донишгоҳ ҳамгурӯҳ будем, ӯ ин корро ба ман тавсия кард."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "开始",
+            "pinyin": "kāishǐ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "boshlamoq, boshlanmoq",
+              "ru": "начинать, начинаться",
+              "tj": "оғоз кардан, шурӯъ кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "开始 talaffuzini tanlang:",
+            "ru": "Выберите произношение 开始:",
+            "tj": "Талаффузи 开始-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gěi",
+            "kāishǐ",
+            "shēngrì",
+            "kuàilè"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "开始 — kāishǐ",
+            "ru": "开始 — kāishǐ",
+            "tj": "开始 — kāishǐ"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "已经",
+            "pinyin": "yǐjīng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "allaqachon, avvaldan",
+              "ru": "уже",
+              "tj": "аллакай, пешакӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'allaqachon, avvaldan' xitoycha qaysi?",
+            "ru": "'уже' по-китайски?",
+            "tj": "'аллакай, пешакӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "生日",
+            "快乐",
+            "已经",
+            "给"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "allaqachon, avvaldan = 已经 (yǐjīng)",
+            "ru": "уже = 已经 (yǐjīng)",
+            "tj": "аллакай, пешакӣ = 已经 (yǐjīng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "长",
+            "pinyin": "cháng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "uzun; (vaqt) uzoq",
+              "ru": "длинный; (о времени) долгий",
+              "tj": "дароз; (вақт) тӯлонӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "长",
+          "pinyin": "cháng",
+          "translation": {
+            "uz": "uzun; (vaqt) uzoq",
+            "ru": "длинный; (о времени) долгий",
+            "tj": "дароз; (вақт) тӯлонӣ"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "长",
+          "pinyin": "cháng",
+          "options": [
+            "生日",
+            "给",
+            "快乐",
+            "长"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "长 — uzun; (vaqt) uzoq (cháng)",
+            "ru": "长 — длинный; (о времени) долгий (cháng)",
+            "tj": "长 — дароз; (вақт) тӯлонӣ (cháng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "开始 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 开始:",
+            "tj": "Маънои калимаи 开始-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "boshlamoq, boshlanmoq",
+              "ru": "начинать, начинаться",
+              "tj": "оғоз кардан, шурӯъ кардан"
+            },
+            {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            },
+            {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            },
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "开始 = boshlamoq, boshlanmoq (kāishǐ)",
+            "ru": "开始 = начинать, начинаться (kāishǐ)",
+            "tj": "开始 = оғоз кардан, шурӯъ кардан (kāishǐ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "开始",
+              {
+                "uz": "boshlamoq, boshlanmoq",
+                "ru": "начинать, начинаться",
+                "tj": "оғоз кардан, шурӯъ кардан"
+              }
+            ],
+            [
+              "已经",
+              {
+                "uz": "allaqachon, avvaldan",
+                "ru": "уже",
+                "tj": "аллакай, пешакӣ"
+              }
+            ],
+            [
+              "长",
+              {
+                "uz": "uzun; (vaqt) uzoq",
+                "ru": "длинный; (о времени) долгий",
+                "tj": "дароз; (вақт) тӯлонӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Vaqt ravishi '已经'",
+              "ru": "Наречие времени 已经",
+              "tj": "Зарфи вақт 已经"
+            },
+            "title_zh": "时间副词“已经”",
+            "rule": {
+              "uz": "'已经' ravishi 'allaqachon' ma'nosini beradi. U fe'ldan oldin keladi va ko'pincha '了' bilan birga ishlatiladi. Biror harakatning avvalroq bajarilganini ta'kidlaydi.",
+              "ru": "Наречие 已经 означает «уже». Ставится перед глаголом и часто используется в связке с 了. Подчёркивает, что действие совершилось ранее.",
+              "tj": "Зарфи 已经 маънои 'аллакай' дорад. Пеш аз феъл меояд ва аксар бо 了 дар якҷоягӣ истифода мешавад. Таъкид мекунад, ки амал пешак иҷро шудааст."
+            },
+            "examples": [
+              {
+                "zh": "已经踢了十年了。",
+                "pinyin": "Yǐjīng tī le shí nián le.",
+                "translation": {
+                  "uz": "Allaqachon o'n yil bo'ldi.",
+                  "ru": "Уже прошло десять лет.",
+                  "tj": "Аллакай даҳ сол шудааст."
+                }
+              },
+              {
+                "zh": "我已经吃饭了。",
+                "pinyin": "Wǒ yǐjīng chīfàn le.",
+                "translation": {
+                  "uz": "Men allaqachon ovqatlandim.",
+                  "ru": "Я уже поел.",
+                  "tj": "Ман аллакай хӯрок хӯрдам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men allaqachon ovqatlandim.",
+            "ru": "Я уже поел.",
+            "tj": "Ман аллакай хӯрок хӯрдам."
+          },
+          "tokens": [
+            "吃饭",
+            "我",
+            "生日",
+            "已经",
+            "了",
+            "快乐"
+          ],
+          "answer_tokens": [
+            "我",
+            "已经",
+            "吃饭",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我已经吃饭了。 — Wǒ yǐjīng chīfàn le.",
+            "ru": "我已经吃饭了。 — Wǒ yǐjīng chīfàn le.",
+            "tj": "我已经吃饭了。 — Wǒ yǐjīng chīfàn le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men allaqachon ovqatlandim.",
+            "ru": "Я уже поел.",
+            "tj": "Ман аллакай хӯрок хӯрдам."
+          },
+          "tokens": [
+            "我",
+            "已经",
+            "生日",
+            "了",
+            "快乐",
+            "吃饭"
+          ],
+          "answer_tokens": [
+            "我",
+            "已经",
+            "吃饭",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我已经吃饭了。 — Wǒ yǐjīng chīfàn le.",
+            "ru": "我已经吃饭了。 — Wǒ yǐjīng chīfàn le.",
+            "tj": "我已经吃饭了。 — Wǒ yǐjīng chīfàn le."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你是什么时候开始踢足球的？",
+          "pinyin": "Nǐ shì shénme shíhou kāishǐ tī zúqiú de?",
+          "options": [
+            "对，这本书是我写给你的。",
+            "你是什么时候开始踢足球的？",
+            "是什么？是一本书吗？",
+            "生日快乐！这是送给你的！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你是什么时候开始踢足球的？ — Sen qachon futbol o'ynashni boshlagansan?",
+            "ru": "你是什么时候开始踢足球的？ — Когда ты начал играть в футбол?",
+            "tj": "你是什么时候开始踢足球的？ — Ту кай футбол бозӣ карданро оғоз кардӣ?"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qabul qilmoq, olmoq; telefonga javob bermoq' xitoycha qaysi?",
+            "ru": "'принимать, получать; отвечать на телефон' по-китайски?",
+            "tj": "'қабул кардан; ба телефон ҷавоб додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "生日",
+            "给",
+            "接",
+            "快乐"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qabul qilmoq, olmoq; telefonga javob bermoq = 接 (jiē)",
+            "ru": "принимать, получать; отвечать на телефон = 接 (jiē)",
+            "tj": "қабул кардан; ба телефон ҷавоб додан = 接 (jiē)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我已经吃饭了。",
+          "pinyin": "Wǒ yǐjīng chīfàn le.",
+          "translation": {
+            "uz": "Men allaqachon ovqatlandim.",
+            "ru": "Я уже поел.",
+            "tj": "Ман аллакай хӯрок хӯрдам."
+          },
+          "tokens": {
+            "uz": [
+              "Sen",
+              "ovqatlandim",
+              "qachon",
+              "Men",
+              "allaqachon"
+            ],
+            "ru": [
+              "Когда",
+              "Я",
+              "уже",
+              "ты",
+              "поел"
+            ],
+            "tj": [
+              "кай",
+              "Ман",
+              "аллакай",
+              "хӯрдам",
+              "хӯрок",
+              "Ту"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "allaqachon",
+              "ovqatlandim"
+            ],
+            "ru": [
+              "Я",
+              "уже",
+              "поел"
+            ],
+            "tj": [
+              "Ман",
+              "аллакай",
+              "хӯрок",
+              "хӯрдам"
+            ]
+          },
+          "explanation": {
+            "uz": "我已经吃饭了。 — Men allaqachon ovqatlandim.",
+            "ru": "我已经吃饭了。 — Я уже поел.",
+            "tj": "我已经吃饭了。 — Ман аллакай хӯрок хӯрдам."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "开始",
+          "pinyin": "kāishǐ",
+          "options": [
+            "快乐",
+            "开始",
+            "给",
+            "生日"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "开始 — boshlamoq, boshlanmoq (kāishǐ)",
+            "ru": "开始 — начинать, начинаться (kāishǐ)",
+            "tj": "开始 — оғоз кардан, шурӯъ кардан (kāishǐ)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "长",
+          "pinyin": "cháng",
+          "translation": {
+            "uz": "uzun; (vaqt) uzoq",
+            "ru": "длинный; (о времени) долгий",
+            "tj": "дароз; (вақт) тӯлонӣ"
+          }
+        }
+      ]
+    }
+  ]
+}

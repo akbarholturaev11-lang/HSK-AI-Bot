@@ -11,6 +11,7 @@ from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
+from app.services.course_v3_parts import source_lesson_for_part
 
 
 CHALLENGE_STATUSES = {"pending", "accepted", "rejected", "completed"}
@@ -97,7 +98,11 @@ class CourseChallengeService:
         try:
             progress = await CourseProgressRepository(self.session).get_by_user_id(int(user.id))
             if progress and self._practice_level(self._level(progress.level)) == practice_level:
-                max_lesson = max(1, int(getattr(progress, "completed_lessons_count", 0) or 0) + 1)
+                completed_parts = int(getattr(progress, "completed_lessons_count", 0) or 0)
+                # completed_lessons_count endi MINI-QISMLARNI sanaydi; savol banki
+                # esa darslik darslari tartibida — qismni asl darsga aylantiramiz.
+                src = source_lesson_for_part(practice_level, completed_parts + 1)
+                max_lesson = max(1, src if src else completed_parts + 1)
         except Exception:  # noqa: BLE001
             max_lesson = None
 

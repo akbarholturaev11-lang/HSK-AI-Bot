@@ -1,0 +1,720 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 19,
+  "source_lesson": 6,
+  "part_no": 2,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我会说汉语",
+  "subtitle": {
+    "uz": "Modal fe'l 会 yordamida qobiliyat va mahorat haqida gapirish",
+    "ru": "Говорить о способностях и умениях с помощью модального глагола 会",
+    "tj": "Дар бораи қобилият ва маҳорат бо ёрии феъли модалии 会 гап задан"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "很",
+      "pinyin": "hěn",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda, ancha",
+        "ru": "очень, довольно",
+        "tj": "хеле, басо"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "好吃",
+      "pinyin": "hǎochī",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "mazali, lazzatli",
+        "ru": "вкусный, аппетитный",
+        "tj": "болаззат, хуштаъм"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "做",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qilmoq, tayyorlamoq",
+        "ru": "делать, готовить",
+        "tj": "кардан, тайёр кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "写",
+      "pinyin": "xiě",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yozmoq",
+        "ru": "писать",
+        "tj": "навиштан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Sifat kesimli gap",
+        "ru": "Предложение с прилагательным-сказуемым",
+        "tj": "Ҷумла бо сифати хабарӣ"
+      },
+      "title_zh": "形容词谓语句",
+      "rule": {
+        "uz": "Sifat kesimli gap: Ega + 很/不 + Sifat\n\nXitoy tilida sifat gap kesimi bo'la oladi.\nTasdiq gaplarda odatda 很(hěn) ishlatiladi:\n中国菜很好吃。— Xitoy taomlari juda mazali.\n\nInkor gaplarda 不 ishlatiladi (很 shart emas):\n我妈妈的汉语不好。— Onamning xitoy tili yaxshi emas.\n\nEslatma: 很 ko'pincha grammatik talab sifatida ishlatiladi.",
+        "ru": "Предложение с прилагательным: Подлежащее + 很/不 + Прилагательное\n\nВ китайском языке прилагательное может быть сказуемым.\nВ утвердительных предложениях обычно используется 很(hěn):\n中国菜很好吃。— Китайская еда очень вкусная.\n\nВ отрицательных предложениях используется 不 (很 не нужен):\n我妈妈的汉语不好。— Китайский мамы нехороший.\n\nПримечание: 很 часто семантически слабый, нужен по грамматике.",
+        "tj": "Ҷумла бо сифати хабарӣ: Мубтадо + 很/不 + Сифат\n\nДар забони чинӣ сифат метавонад хабар бошад.\nДар ҷумлаҳои тасдиқӣ одатан 很(hěn) истифода мешавад:\n中国菜很好吃。— Хӯроки чинӣ хеле болаззат аст.\n\nДар ҷумлаҳои инкорӣ 不 истифода мешавад (很 лозим нест):\n我妈妈的汉语不好。— Забони чинии модарам хуб нест.\n\nЭзоҳ: 很 аксар аз рӯи талаботи грамматикӣ истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "中国菜很好吃。",
+          "pinyin": "Zhōngguó cài hěn hǎochī.",
+          "translation": {
+            "uz": "Xitoy taomlari juda mazali.",
+            "ru": "Китайская еда очень вкусная.",
+            "tj": "Хӯроки чинӣ хеле болаззат аст."
+          }
+        },
+        {
+          "zh": "她的汉语很好。",
+          "pinyin": "Tā de Hànyǔ hěn hǎo.",
+          "translation": {
+            "uz": "Uning xitoy tili juda yaxshi.",
+            "ru": "Её китайский очень хороший.",
+            "tj": "Забони чинии вай хеле хуб аст."
+          }
+        },
+        {
+          "zh": "我妈妈的汉语不好。",
+          "pinyin": "Wǒ māma de Hànyǔ bù hǎo.",
+          "translation": {
+            "uz": "Onamning xitoy tili yaxshi emas.",
+            "ru": "Китайский мамы нехороший.",
+            "tj": "Забони чинии модарам хуб нест."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Maktabda — xitoy tilida gapirish",
+        "ru": "В школе — разговор на китайском",
+        "tj": "Дар мактаб — гуфтугӯ ба забони чинӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你会说汉语吗？",
+          "pinyin": "Nǐ huì shuō Hànyǔ ma?",
+          "text": {
+            "uz": "Siz xitoycha gapira olasizmi?",
+            "ru": "Вы умеете говорить по-китайски?",
+            "tj": "Оё шумо метавонед ба забони чинӣ гап бизанед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我会说汉语。",
+          "pinyin": "Wǒ huì shuō Hànyǔ.",
+          "text": {
+            "uz": "Men xitoycha gapira olaman.",
+            "ru": "Я умею говорить по-китайски.",
+            "tj": "Ман метавонам ба забони чинӣ гап бизанам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你妈妈会说汉语吗？",
+          "pinyin": "Nǐ māma huì shuō Hànyǔ ma?",
+          "text": {
+            "uz": "Onangi xitoycha gapira oladimi?",
+            "ru": "Ваша мама умеет говорить по-китайски?",
+            "tj": "Оё модаратон метавонад ба забони чинӣ гап бизанад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她不会说。",
+          "pinyin": "Tā bú huì shuō.",
+          "text": {
+            "uz": "U gapira olmaydi.",
+            "ru": "Она не умеет говорить.",
+            "tj": "Вай наметавонад гап бизанад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Oshxonada — xitoy taomi",
+        "ru": "На кухне — китайская еда",
+        "tj": "Дар ошхона — хӯроки чинӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "中国菜好吃吗？",
+          "pinyin": "Zhōngguó cài hǎochī ma?",
+          "text": {
+            "uz": "Xitoy taomlari mazalimi?",
+            "ru": "Китайская еда вкусная?",
+            "tj": "Оё хӯроки чинӣ болаззат аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "中国菜很好吃。",
+          "pinyin": "Zhōngguó cài hěn hǎochī.",
+          "text": {
+            "uz": "Xitoy taomlari juda mazali.",
+            "ru": "Китайская еда очень вкусная.",
+            "tj": "Хӯроки чинӣ хеле болаззат аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你会做中国菜吗？",
+          "pinyin": "Nǐ huì zuò Zhōngguó cài ma?",
+          "text": {
+            "uz": "Siz xitoy taomlarini tayyorlay olasizmi?",
+            "ru": "Вы умеете готовить китайскую еду?",
+            "tj": "Оё шумо метавонед хӯроки чинӣ тайёр кунед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我不会做。",
+          "pinyin": "Wǒ bú huì zuò.",
+          "text": {
+            "uz": "Men tayyorlay olmayman.",
+            "ru": "Я не умею готовить.",
+            "tj": "Ман наметавонам тайёр кунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kutubxonada — xitoy yozuvi",
+        "ru": "В библиотеке — китайские иероглифы",
+        "tj": "Дар китобхона — иероглифҳои чинӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你会写汉字吗？",
+          "pinyin": "Nǐ huì xiě Hànzì ma?",
+          "text": {
+            "uz": "Siz xitoy ierogliflarini yoza olasizmi?",
+            "ru": "Вы умеете писать иероглифы?",
+            "tj": "Оё шумо метавонед иероглифҳои чинӣ нависед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我会写。",
+          "pinyin": "Wǒ huì xiě.",
+          "text": {
+            "uz": "Men yoza olaman.",
+            "ru": "Я умею писать.",
+            "tj": "Ман метавонам нависам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个字怎么写？",
+          "pinyin": "Zhège zì zěnme xiě?",
+          "text": {
+            "uz": "Bu ieroglif qanday yoziladi?",
+            "ru": "Как пишется этот иероглиф?",
+            "tj": "Ин иероглиф чӣ тавр навишта мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "对不起，这个字我会读，不会写。",
+          "pinyin": "Duìbuqǐ, zhège zì wǒ huì dú, bú huì xiě.",
+          "text": {
+            "uz": "Kechirasiz, bu ieroglifni o'qiy olaman, lekin yoza olmayman.",
+            "ru": "Извините, этот иероглиф я умею читать, но не умею писать.",
+            "tj": "Бубахшед, ин иероглифро ман метавонам бихонам, аммо навишта наметавонам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "很",
+            "pinyin": "hěn",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "juda, ancha",
+              "ru": "очень, довольно",
+              "tj": "хеле, басо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'juda, ancha' xitoycha qaysi?",
+            "ru": "'очень, довольно' по-китайски?",
+            "tj": "'хеле, басо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "妈妈",
+            "很",
+            "说",
+            "会"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "juda, ancha = 很 (hěn)",
+            "ru": "очень, довольно = 很 (hěn)",
+            "tj": "хеле, басо = 很 (hěn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "好吃",
+            "pinyin": "hǎochī",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "mazali, lazzatli",
+              "ru": "вкусный, аппетитный",
+              "tj": "болаззат, хуштаъм"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "好吃",
+          "pinyin": "hǎochī",
+          "options": [
+            "会",
+            "好吃",
+            "说",
+            "妈妈"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "好吃 — mazali, lazzatli (hǎochī)",
+            "ru": "好吃 — вкусный, аппетитный (hǎochī)",
+            "tj": "好吃 — болаззат, хуштаъм (hǎochī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "做",
+            "pinyin": "zuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qilmoq, tayyorlamoq",
+              "ru": "делать, готовить",
+              "tj": "кардан, тайёр кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "做",
+          "pinyin": "zuò",
+          "translation": {
+            "uz": "qilmoq, tayyorlamoq",
+            "ru": "делать, готовить",
+            "tj": "кардан, тайёр кардан"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "做 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 做:",
+            "tj": "Маънои калимаи 做-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ona, onaxon",
+              "ru": "мама",
+              "tj": "модар, модарҷон"
+            },
+            {
+              "uz": "qilmoq, tayyorlamoq",
+              "ru": "делать, готовить",
+              "tj": "кардан, тайёр кардан"
+            },
+            {
+              "uz": "gapirmoq, aytmoq",
+              "ru": "говорить, сказать",
+              "tj": "гап задан, гуфтан"
+            },
+            {
+              "uz": "qila olmoq (o'rganish orqali)",
+              "ru": "мочь, уметь (через обучение)",
+              "tj": "тавонистан (бо ёрии омӯзиш)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "做 = qilmoq, tayyorlamoq (zuò)",
+            "ru": "做 = делать, готовить (zuò)",
+            "tj": "做 = кардан, тайёр кардан (zuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "写",
+            "pinyin": "xiě",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yozmoq",
+              "ru": "писать",
+              "tj": "навиштан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xiě qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xiě?",
+            "tj": "xiě кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "会",
+            "写",
+            "妈妈",
+            "说"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "写 = yozmoq (xiě)",
+            "ru": "写 = писать (xiě)",
+            "tj": "写 = навиштан (xiě)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "很 talaffuzini tanlang:",
+            "ru": "Выберите произношение 很:",
+            "tj": "Талаффузи 很-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hěn",
+            "huì",
+            "māma",
+            "shuō"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "很 — hěn",
+            "ru": "很 — hěn",
+            "tj": "很 — hěn"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "很",
+              {
+                "uz": "juda, ancha",
+                "ru": "очень, довольно",
+                "tj": "хеле, басо"
+              }
+            ],
+            [
+              "好吃",
+              {
+                "uz": "mazali, lazzatli",
+                "ru": "вкусный, аппетитный",
+                "tj": "болаззат, хуштаъм"
+              }
+            ],
+            [
+              "做",
+              {
+                "uz": "qilmoq, tayyorlamoq",
+                "ru": "делать, готовить",
+                "tj": "кардан, тайёр кардан"
+              }
+            ],
+            [
+              "写",
+              {
+                "uz": "yozmoq",
+                "ru": "писать",
+                "tj": "навиштан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Sifat kesimli gap",
+              "ru": "Предложение с прилагательным-сказуемым",
+              "tj": "Ҷумла бо сифати хабарӣ"
+            },
+            "title_zh": "形容词谓语句",
+            "rule": {
+              "uz": "Sifat kesimli gap: Ega + 很/不 + Sifat\n\nXitoy tilida sifat gap kesimi bo'la oladi.\nTasdiq gaplarda odatda 很(hěn) ishlatiladi:\n中国菜很好吃。— Xitoy taomlari juda mazali.\n\nInkor gaplarda 不 ishlatiladi (很 shart emas):\n我妈妈的汉语不好。— Onamning xitoy tili yaxshi emas.\n\nEslatma: 很 ko'pincha grammatik talab sifatida ishlatiladi.",
+              "ru": "Предложение с прилагательным: Подлежащее + 很/不 + Прилагательное\n\nВ китайском языке прилагательное может быть сказуемым.\nВ утвердительных предложениях обычно используется 很(hěn):\n中国菜很好吃。— Китайская еда очень вкусная.\n\nВ отрицательных предложениях используется 不 (很 не нужен):\n我妈妈的汉语不好。— Китайский мамы нехороший.\n\nПримечание: 很 часто семантически слабый, нужен по грамматике.",
+              "tj": "Ҷумла бо сифати хабарӣ: Мубтадо + 很/不 + Сифат\n\nДар забони чинӣ сифат метавонад хабар бошад.\nДар ҷумлаҳои тасдиқӣ одатан 很(hěn) истифода мешавад:\n中国菜很好吃。— Хӯроки чинӣ хеле болаззат аст.\n\nДар ҷумлаҳои инкорӣ 不 истифода мешавад (很 лозим нест):\n我妈妈的汉语不好。— Забони чинии модарам хуб нест.\n\nЭзоҳ: 很 аксар аз рӯи талаботи грамматикӣ истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "中国菜很好吃。",
+                "pinyin": "Zhōngguó cài hěn hǎochī.",
+                "translation": {
+                  "uz": "Xitoy taomlari juda mazali.",
+                  "ru": "Китайская еда очень вкусная.",
+                  "tj": "Хӯроки чинӣ хеле болаззат аст."
+                }
+              },
+              {
+                "zh": "她的汉语很好。",
+                "pinyin": "Tā de Hànyǔ hěn hǎo.",
+                "translation": {
+                  "uz": "Uning xitoy tili juda yaxshi.",
+                  "ru": "Её китайский очень хороший.",
+                  "tj": "Забони чинии вай хеле хуб аст."
+                }
+              },
+              {
+                "zh": "我妈妈的汉语不好。",
+                "pinyin": "Wǒ māma de Hànyǔ bù hǎo.",
+                "translation": {
+                  "uz": "Onamning xitoy tili yaxshi emas.",
+                  "ru": "Китайский мамы нехороший.",
+                  "tj": "Забони чинии модарам хуб нест."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Xitoy taomlari juda mazali.",
+            "ru": "Китайская еда очень вкусная.",
+            "tj": "Хӯроки чинӣ хеле болаззат аст."
+          },
+          "tokens": [
+            "说",
+            "会",
+            "很",
+            "好吃",
+            "菜",
+            "中国"
+          ],
+          "answer_tokens": [
+            "中国",
+            "菜",
+            "很",
+            "好吃"
+          ],
+          "explanation": {
+            "uz": "中国菜很好吃。 — Zhōngguó cài hěn hǎochī.",
+            "ru": "中国菜很好吃。 — Zhōngguó cài hěn hǎochī.",
+            "tj": "中国菜很好吃。 — Zhōngguó cài hěn hǎochī."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Xitoy taomlari juda mazali.» — xitoychada qaysi biri?",
+            "ru": "«Китайская еда очень вкусная.» — какое предложение по-китайски?",
+            "tj": "«Хӯроки чинӣ хеле болаззат аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "她的汉语很好。",
+            "我妈妈的汉语不好。",
+            "中国菜很好吃。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "中国菜很好吃。 — Zhōngguó cài hěn hǎochī.",
+            "ru": "中国菜很好吃。 — Zhōngguó cài hěn hǎochī.",
+            "tj": "中国菜很好吃。 — Zhōngguó cài hěn hǎochī."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "写",
+          "pinyin": "xiě",
+          "options": [
+            "说",
+            "写",
+            "会",
+            "妈妈"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "写 — yozmoq (xiě)",
+            "ru": "写 — писать (xiě)",
+            "tj": "写 — навиштан (xiě)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz xitoy taomlarini tayyorlay olasizmi?",
+            "ru": "Вы умеете готовить китайскую еду?",
+            "tj": "Оё шумо метавонед хӯроки чинӣ тайёр кунед?"
+          },
+          "tokens": [
+            "菜",
+            "妈妈",
+            "做",
+            "吗",
+            "你",
+            "中国",
+            "说",
+            "会"
+          ],
+          "answer_tokens": [
+            "你",
+            "会",
+            "做",
+            "中国",
+            "菜",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你会做中国菜吗？ — Nǐ huì zuò Zhōngguó cài ma?",
+            "ru": "你会做中国菜吗？ — Nǐ huì zuò Zhōngguó cài ma?",
+            "tj": "你会做中国菜吗？ — Nǐ huì zuò Zhōngguó cài ma?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我会写。",
+          "pinyin": "Wǒ huì xiě.",
+          "options": [
+            "我会写。",
+            "你妈妈会说汉语吗？",
+            "你会说汉语吗？",
+            "我会说汉语。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我会写。 — Men yoza olaman.",
+            "ru": "我会写。 — Я умею писать.",
+            "tj": "我会写。 — Ман метавонам нависам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "做",
+          "pinyin": "zuò",
+          "translation": {
+            "uz": "qilmoq, tayyorlamoq",
+            "ru": "делать, готовить",
+            "tj": "кардан, тайёр кардан"
+          }
+        }
+      ]
+    }
+  ]
+}

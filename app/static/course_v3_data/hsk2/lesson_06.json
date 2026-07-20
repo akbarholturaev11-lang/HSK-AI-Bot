@@ -2,156 +2,61 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 6,
-  "title": "你怎么不吃了",
+  "source_lesson": 2,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我每天六点起床",
   "subtitle": {
-    "uz": "Sabab va oqibat haqida gapira olish, 怎么 so'roq olmoshi, miqdor ko'makchilarining takrorlanishi va 因为……所以…… bog'lovchi qolipini o'zlashtirish.",
-    "ru": "Научиться говорить о причине и следствии, вопросительное местоимение 怎么, удвоение счётных слов и союзная конструкция 因为……所以……",
-    "tj": "Омӯзиши гуфтан дар бораи сабаб ва натиҷа, исми саволии 怎么, такрори калимаҳои шуморавӣ ва сохти пайвандакии 因为……所以……"
+    "uz": "Kundalik hayot tartibi, sog'liq va jismoniy faoliyat haqida gapira olish; 是不是 savol qolipini, 每 olmoshini va 多 so'roq olmoshini o'zlashtirish.",
+    "ru": "Научиться говорить о распорядке дня, здоровье и физической активности; освоить вопросный шаблон 是不是, местоимение 每 и вопросительное местоимение 多.",
+    "tj": "Гуфтугӯ дар бораи тартиби рӯзона, саломатӣ ва фаъолияти ҷисмонӣ; азхудкунии шакли саволии 是不是, ҷонишини 每 ва ҷонишини саволии 多."
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "门",
-      "pinyin": "mén",
-      "pos": "n.",
+      "zh": "生病",
+      "pinyin": "shēngbìng",
+      "pos": "v.",
       "meaning": {
-        "uz": "eshik, darvoza",
-        "ru": "дверь, ворота",
-        "tj": "дар, дарвоза"
+        "uz": "kasal bo'lmoq",
+        "ru": "заболевать, болеть",
+        "tj": "бемор шудан, касал шудан"
       }
     },
     {
       "no": 2,
-      "zh": "外",
-      "pinyin": "wài",
-      "pos": "n.",
+      "zh": "每",
+      "pinyin": "měi",
+      "pos": "pron.",
       "meaning": {
-        "uz": "tashqarisi, tashqi tomon",
-        "ru": "снаружи, внешняя сторона",
-        "tj": "берун, тарафи берун"
+        "uz": "har (bir), har qaysi",
+        "ru": "каждый",
+        "tj": "ҳар (як), ҳар кадом"
       }
     },
     {
       "no": 3,
-      "zh": "自行车",
-      "pinyin": "zìxíngchē",
+      "zh": "早上",
+      "pinyin": "zǎoshang",
       "pos": "n.",
       "meaning": {
-        "uz": "velosiped",
-        "ru": "велосипед",
-        "tj": "велосипед"
+        "uz": "ertalab",
+        "ru": "утро, утром",
+        "tj": "субҳ, субҳгоҳ"
       }
     },
     {
       "no": 4,
-      "zh": "羊肉",
-      "pinyin": "yángròu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "qo'y go'shti",
-        "ru": "баранина",
-        "tj": "гӯшти гӯсфанд"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "好吃",
-      "pinyin": "hǎochī",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "mazali (ovqat haqida)",
-        "ru": "вкусный (о еде)",
-        "tj": "хӯрданӣ, болаззат (дар бораи хӯрок)"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "面条",
-      "pinyin": "miàntiáo",
-      "pos": "n.",
-      "meaning": {
-        "uz": "makaron, lag'mon",
-        "ru": "лапша",
-        "tj": "лоғмон, макарон"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "打篮球",
-      "pinyin": "dǎ lánqiú",
+      "zh": "跑步",
+      "pinyin": "pǎobù",
       "pos": "v.",
       "meaning": {
-        "uz": "basketbol o'ynamoq",
-        "ru": "играть в баскетбол",
-        "tj": "баскетбол бозӣ кардан"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "因为",
-      "pinyin": "yīnwèi",
-      "pos": "conj.",
-      "meaning": {
-        "uz": "chunki, sababi",
-        "ru": "потому что, так как",
-        "tj": "зеро, чунки"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "所以",
-      "pinyin": "suǒyǐ",
-      "pos": "conj.",
-      "meaning": {
-        "uz": "shuning uchun, shunday qilib",
-        "ru": "поэтому, вот почему",
-        "tj": "аз ин сабаб, бинобар ин"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "游泳",
-      "pinyin": "yóuyǒng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "suzmoq",
-        "ru": "плавать",
-        "tj": "шино кардан"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "经常",
-      "pinyin": "jīngcháng",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "tez-tez, ko'pincha",
-        "ru": "часто, постоянно",
-        "tj": "зуд-зуд, аксар вақт"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "公斤",
-      "pinyin": "gōngjīn",
-      "pos": "m.",
-      "meaning": {
-        "uz": "kilogram",
-        "ru": "килограмм",
-        "tj": "килограмм"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "姐姐",
-      "pinyin": "jiějie",
-      "pos": "n.",
-      "meaning": {
-        "uz": "katta singl (aka-ukaniki), opa",
-        "ru": "старшая сестра",
-        "tj": "хоҳари калонӣ"
+        "uz": "yugurmoq, chopmoq",
+        "ru": "бегать, бежать",
+        "tj": "давидан"
       }
     }
   ],
@@ -159,101 +64,33 @@
     {
       "no": 1,
       "title": {
-        "uz": "So'roq olmoshi 怎么",
-        "ru": "Вопросительное местоимение 怎么",
-        "tj": "Исми саволии 怎么"
+        "uz": "'是不是' bilan savol gaplari",
+        "ru": "Вопросы с 是不是",
+        "tj": "Саволҳо бо 是不是"
       },
-      "title_zh": "疑问代词“怎么”",
+      "title_zh": "用“是不是”的问句",
       "rule": {
-        "uz": "'怎么' so'roq olmoshi ikki xil ma'noda ishlatiladi:\n1) 'Qanday qilib? Qanday yo'l bilan?' — usul yoki harakat tarzini so'rashda;\n2) 'Nega? Nima uchun?' — hayrat yoki tushunmovchilik bildiruvchi savolda.\nIkkinchi ma'noda ko'pincha salbiy gaplarda uchraydi.",
-        "ru": "Вопросительное местоимение '怎么' используется в двух значениях:\n1) 'Как? Каким образом?' — для вопроса о способе или методе действия;\n2) 'Почему? Как так?' — для выражения удивления или непонимания.\nВо втором значении часто встречается в отрицательных предложениях.",
-        "tj": "Исми саволии '怎么' дар ду маъно истифода мешавад:\n1) 'Чӣ тавр? Бо кадом роҳ?' — барои пурсидани усул ё тарзи амал;\n2) 'Чаро? Чи хел?' — барои ифодаи шигифт ё нофаҳмӣ.\nДар маъноии дуввум аксар вақт дар ҷумлаҳои инкорӣ истифода мешавад."
+        "uz": "'是不是' bilan tuzilgan savol gaplari. Bu qolip orqali biror narsa haqida taxmin qilib so'raladi. '是不是' gap boshida yoki o'rtasida kelishi mumkin. Javob 'shunday' yoki 'yo'q' shaklida bo'ladi.",
+        "ru": "Вопросы, построенные с 是不是. С помощью этого шаблона задаётся вопрос-предположение. 是不是 может стоять в начале или середине предложения. Ответ — «да» или «нет».",
+        "tj": "Саволҳое, ки бо 是不是 сохта мешаванд. Бо ёрии ин қолиб гумонии чизе пурсида мешавад. 是不是 метавонад дар аввал ё миёнаи ҷумла биояд. Ҷавоб бо 'бале' ё 'не' дода мешавад."
       },
       "examples": [
         {
-          "zh": "你怎么知道他来了？",
-          "pinyin": "Nǐ zěnme zhīdào tā lái le?",
+          "zh": "你是不是喜欢运动？",
+          "pinyin": "Nǐ shì bú shì xǐhuan yùndòng?",
           "translation": {
-            "uz": "U kelganini qanday bilding?",
-            "ru": "Как ты узнал, что он пришёл?",
-            "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+            "uz": "Sen sportni yaxshi ko'rasanmi?",
+            "ru": "Ты любишь спорт?",
+            "tj": "Оё ту варзишро дӯст медорӣ?"
           }
         },
         {
-          "zh": "你怎么不吃了？",
-          "pinyin": "Nǐ zěnme bù chī le?",
+          "zh": "他是不是你的朋友？",
+          "pinyin": "Tā shì bú shì nǐ de péngyou?",
           "translation": {
-            "uz": "Nega yemayapsan?",
-            "ru": "Почему ты не ешь?",
-            "tj": "Ту чаро намехӯрӣ?"
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "Miqdor ko'makchilarining takrorlanishi",
-        "ru": "Удвоение счётных слов",
-        "tj": "Такрори калимаҳои шуморавӣ"
-      },
-      "title_zh": "量词的重叠",
-      "rule": {
-        "uz": "Miqdor ko'makchilarini takrorlash orqali 'har bir, har qaysi' ma'nosi hosil qilinadi.\nMasalan, 天天 = har kuni, 年年 = har yili.\nBu qolip davomiylik va takrorlanuvchilikni ta'kidlaydi.",
-        "ru": "Удвоение счётных слов образует значение 'каждый, любой'.\nНапример, 天天 = каждый день, 年年 = каждый год.\nЭта конструкция подчёркивает постоянство и повторяемость.",
-        "tj": "Такрори калимаҳои шуморавӣ маъноии 'ҳар, ҳар як'-ро месозад.\nМасалан, 天天 = ҳар рӯз, 年年 = ҳар сол.\nИн сохт давомнокӣ ва такрорпазириро таъкид мекунад."
-      },
-      "examples": [
-        {
-          "zh": "这个星期我天天都吃羊肉。",
-          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu.",
-          "translation": {
-            "uz": "Bu hafta har kuni qo'y go'shti edim.",
-            "ru": "На этой неделе я ел баранину каждый день.",
-            "tj": "Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам."
-          }
-        },
-        {
-          "zh": "这个月我天天都游泳。",
-          "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng.",
-          "translation": {
-            "uz": "Bu oy har kuni suzaman.",
-            "ru": "В этом месяце я плаваю каждый день.",
-            "tj": "Ин моҳ ман ҳар рӯз шино мекунам."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "Bog'lovchi 因为……所以…… (chunki...shuning uchun...)",
-        "ru": "Союзная конструкция 因为……所以…… (потому что...поэтому...)",
-        "tj": "Пайвандаки 因为……所以…… (зеро...аз ин сабаб...)"
-      },
-      "title_zh": "关联词“因为……，所以……”",
-      "rule": {
-        "uz": "'因为……所以……' qolipida sabab va oqibat ko'rsatiladi.\n因为 sabab gapini, 所以 esa oqibat gapini boshlab keladi.\nO'zbek tilidagi 'chunki…, shuning uchun…' iborasiga to'g'ri keladi.\nIkkala qism ham birgalikda yoki alohida ishlatilishi mumkin.",
-        "ru": "Конструкция '因为……所以……' выражает причину и следствие.\n因为 вводит предложение с причиной, 所以 — со следствием.\nСоответствует русскому 'потому что…, поэтому…'.\nОбе части могут использоваться вместе или по отдельности.",
-        "tj": "Дар сохти '因为……所以……' сабаб ва натиҷа нишон дода мешавад.\n因为 ҷумлаи сабабро, 所以 ҷумлаи натиҷаро мебарад.\nБа форсии тоҷикӣ 'зеро…, аз ин сабаб…' мувофиқат мекунад.\nҲар ду қисм метавонанд якҷоя ё алоҳида истифода шаванд."
-      },
-      "examples": [
-        {
-          "zh": "因为昨天下雨，所以我们都没去。",
-          "pinyin": "Yīnwèi zuótiān xiàyǔ, suǒyǐ wǒmen dōu méi qù.",
-          "translation": {
-            "uz": "Chunki kecha yomg'ir yog'di, shuning uchun barchimiz bormadik.",
-            "ru": "Потому что вчера шёл дождь, поэтому мы все не пошли.",
-            "tj": "Зеро дирӯз борон меборид, аз ин сабаб мо ҳама наравон."
-          }
-        },
-        {
-          "zh": "因为他很忙，所以没来。",
-          "pinyin": "Yīnwèi tā hěn máng, suǒyǐ méi lái.",
-          "translation": {
-            "uz": "Chunki u juda band edi, shuning uchun kelmadi.",
-            "ru": "Потому что он был очень занят, поэтому не пришёл.",
-            "tj": "Зеро вай бисёр машғул буд, аз ин сабаб наомад."
+            "uz": "U sening do'stingmi?",
+            "ru": "Он твой друг?",
+            "tj": "Оё ӯ дӯсти туст?"
           }
         }
       ]
@@ -262,196 +99,216 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Maktabda",
-        "ru": "В школе",
-        "tj": "Дар мактаб"
+        "uz": "Sport maydonchasida",
+        "ru": "На спортивной площадке",
+        "tj": "Дар майдони варзишӣ"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "你知道小王今天什么时候来学校吗？",
-          "pinyin": "Nǐ zhīdào Xiǎo Wáng jīntiān shénme shíhou lái xuéxiào ma?",
+          "zh": "你很少生病，是不是喜欢运动？",
+          "pinyin": "Nǐ hěn shǎo shēngbìng, shì bú shì xǐhuan yùndòng?",
           "text": {
-            "uz": "Kichik Vang bugun qachon maktabga kelishini bilasanmi?",
-            "ru": "Ты знаешь, когда Маленький Ван придёт в школу сегодня?",
-            "tj": "Оё медонӣ, ки Сяо Ван имрӯз кай ба мактаб меояд?"
+            "uz": "Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?",
+            "ru": "Ты редко болеешь, ты любишь спорт?",
+            "tj": "Ту кам касал мешавӣ, оё варзишро дӯст медорӣ?"
           }
         },
         {
           "speaker": "B",
-          "zh": "他已经来了。",
-          "pinyin": "Tā yǐjīng lái le.",
+          "zh": "是啊，我每天早上都要出去跑步。",
+          "pinyin": "Shì a, wǒ měitiān zǎoshang dōu yào chūqù pǎobù.",
           "text": {
-            "uz": "U allaqachon keldi.",
-            "ru": "Он уже пришёл.",
-            "tj": "Вай аллакай омадааст."
+            "uz": "Ha, men har kuni ertalab tashqariga chiqib yuguraman.",
+            "ru": "Да, я каждое утро выхожу бегать.",
+            "tj": "Бале, ман ҳар субҳ берун мебароям ва медавам."
           }
         },
         {
           "speaker": "A",
-          "zh": "你怎么知道他来了？",
-          "pinyin": "Nǐ zěnme zhīdào tā lái le?",
+          "zh": "你每天几点起床？",
+          "pinyin": "Nǐ měitiān jǐ diǎn qǐchuáng?",
           "text": {
-            "uz": "U kelganini qanday bilding?",
-            "ru": "Как ты узнал, что он пришёл?",
-            "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+            "uz": "Sen har kuni soat nechada turasan?",
+            "ru": "В котором часу ты каждый день встаёшь?",
+            "tj": "Ту ҳар рӯз соати чанд аз хоб мехезӣ?"
           }
         },
         {
           "speaker": "B",
-          "zh": "我在门外看见他的自行车了。",
-          "pinyin": "Wǒ zài mén wài kànjian tā de zìxíngchē le.",
+          "zh": "我每天六点起床。",
+          "pinyin": "Wǒ měitiān liù diǎn qǐchuáng.",
           "text": {
-            "uz": "Eshik tashqarisida uning velosipedini ko'rdim.",
-            "ru": "Я увидел его велосипед за дверью.",
-            "tj": "Ман берун аз дар велосипеди ӯро дидам."
+            "uz": "Men har kuni soat oltida turaman.",
+            "ru": "Я каждый день встаю в шесть часов.",
+            "tj": "Ман ҳар рӯз соати шаш аз хоб мехезам."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Restoranda",
-        "ru": "В ресторане",
-        "tj": "Дар тарабхона"
+        "uz": "Kasalxonada",
+        "ru": "В больнице",
+        "tj": "Дар беморхона"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天的羊肉很好吃，你怎么不吃了？",
-          "pinyin": "Jīntiān de yángròu hěn hǎochī, nǐ zěnme bù chī le?",
+          "zh": "吃药了吗？现在身体怎么样？",
+          "pinyin": "Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
           "text": {
-            "uz": "Bugungi qo'y go'shti juda mazali, nega yemayapsan?",
-            "ru": "Сегодняшняя баранина очень вкусная, почему ты не ешь?",
-            "tj": "Гӯшти гӯсфанди имрӯз бисёр болаззат аст, ту чаро намехӯрӣ?"
+            "uz": "Dori ichdingmi? Hozir sog'liqing qanday?",
+            "ru": "Ты принял лекарство? Как сейчас самочувствие?",
+            "tj": "Оё дору хӯрдӣ? Ҳоло саломатиат чӣ тавр аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "这个星期我天天都吃羊肉，不想吃了。",
-          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu, bù xiǎng chī le.",
+          "zh": "吃了。现在好多了。",
+          "pinyin": "Chī le. Xiànzài hǎo duō le.",
           "text": {
-            "uz": "Bu hafta har kuni qo'y go'shti edim, endi yeygim kelmayapti.",
-            "ru": "На этой неделе я ел баранину каждый день, больше не хочу.",
-            "tj": "Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам, дигар намехоҳам."
+            "uz": "Ichdim. Hozir ancha yaxshi.",
+            "ru": "Принял. Сейчас намного лучше.",
+            "tj": "Хӯрдам. Ҳоло хеле беҳтар шудам."
           }
         },
         {
           "speaker": "A",
-          "zh": "那你想吃什么？",
-          "pinyin": "Nà nǐ xiǎng chī shénme?",
+          "zh": "什么时候能出院？",
+          "pinyin": "Shénme shíhou néng chūyuàn?",
           "text": {
-            "uz": "Unda nima yemoqchisan?",
-            "ru": "Тогда что ты хочешь поесть?",
-            "tj": "Пас ту чӣ хӯрдан мехоҳӣ?"
+            "uz": "Qachon kasalxonadan chiqasiz?",
+            "ru": "Когда вы сможете выписаться?",
+            "tj": "Кай аз беморхона баромада метавонед?"
           }
         },
         {
           "speaker": "B",
-          "zh": "来一点儿面条吧。",
-          "pinyin": "Lái yìdiǎnr miàntiáo ba.",
+          "zh": "医生说下个星期。",
+          "pinyin": "Yīshēng shuō xià ge xīngqī.",
           "text": {
-            "uz": "Bir oz lag'mon gapirtiraylik.",
-            "ru": "Давай закажем немного лапши.",
-            "tj": "Каме лоғмон оварем."
+            "uz": "Shifokor keyingi haftada, dedi.",
+            "ru": "Врач сказал — на следующей неделе.",
+            "tj": "Духтур гуфт ҳафтаи оянда."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Sport zalida",
-        "ru": "В спортзале",
-        "tj": "Дар толори варзиш"
+        "uz": "Sport maydonchasida",
+        "ru": "На площадке",
+        "tj": "Дар майдончаи варзишӣ"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "昨天你们怎么都没去打篮球？",
-          "pinyin": "Zuótiān nǐmen zěnme dōu méi qù dǎ lánqiú?",
+          "zh": "大卫今年多大？",
+          "pinyin": "Dàwèi jīnnián duō dà?",
           "text": {
-            "uz": "Kecha nega barchang basketbol o'ynamaganga bormadinglar?",
-            "ru": "Почему вы все вчера не пошли играть в баскетбол?",
-            "tj": "Дирӯз шумо чаро ҳама наравон бозии баскетбол накардед?"
+            "uz": "Devid bu yil necha yoshda?",
+            "ru": "Сколько лет Дэвиду в этом году?",
+            "tj": "Дэвид имсол чанд сола шудааст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "因为昨天下雨，所以我们都没去。我去游泳了。",
-          "pinyin": "Yīnwèi zuótiān xiàyǔ, suǒyǐ wǒmen dōu méi qù. Wǒ qù yóuyǒng le.",
+          "zh": "二十多岁。",
+          "pinyin": "Èrshí duō suì.",
           "text": {
-            "uz": "Chunki kecha yomg'ir yog'di, shuning uchun barchimiz bormadik. Men suzgani bordim.",
-            "ru": "Потому что вчера шёл дождь, поэтому мы все не пошли. Я пошёл плавать.",
-            "tj": "Зеро дирӯз борон меборид, аз ин сабаб мо ҳама наравон. Ман рафтам шино кардам."
+            "uz": "Yigirma yoshdan oshgan.",
+            "ru": "Больше двадцати лет.",
+            "tj": "Зиёда аз бист сол."
           }
         },
         {
           "speaker": "A",
-          "zh": "你经常游泳吗？",
-          "pinyin": "Nǐ jīngcháng yóuyǒng ma?",
+          "zh": "他多高？",
+          "pinyin": "Tā duō gāo?",
           "text": {
-            "uz": "Sen tez-tez suzasanmi?",
-            "ru": "Ты часто плаваешь?",
-            "tj": "Оё ту зуд-зуд шино мекунӣ?"
+            "uz": "Uning bo'yi qancha?",
+            "ru": "Какой у него рост?",
+            "tj": "Қади ӯ чанд аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "这个月我天天都游泳，我现在七十公斤了。",
-          "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng, wǒ xiànzài qīshí gōngjīn le.",
+          "zh": "一米八几。",
+          "pinyin": "Yì mǐ bā jǐ.",
           "text": {
-            "uz": "Bu oy har kuni suzaman, hozir yetmish kilogram bo'ldim.",
-            "ru": "В этом месяце я плаваю каждый день, сейчас вешу семьдесят килограмм.",
-            "tj": "Ин моҳ ман ҳар рӯз шино мекунам, ҳоло ҳафтод килограмм шудам."
+            "uz": "Bir metr saksoni bir necha santimetr.",
+            "ru": "Метр восемьдесят с чем-то.",
+            "tj": "Як метру ҳаштоду чанд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你怎么知道这么多啊？",
+          "pinyin": "Nǐ zěnme zhīdào zhème duō a?",
+          "text": {
+            "uz": "Sen bularni qanday bilasan?",
+            "ru": "Откуда ты так много знаешь?",
+            "tj": "Чӣ тавр ин қадар медонӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他是我同学。",
+          "pinyin": "Tā shì wǒ tóngxué.",
+          "text": {
+            "uz": "U mening sinfдошim.",
+            "ru": "Он мой однокурсник.",
+            "tj": "Ӯ ҳамсинфи ман аст."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Idorada",
-        "ru": "В офисе",
-        "tj": "Дар идора"
+        "uz": "Xonada",
+        "ru": "В комнате",
+        "tj": "Дар хона"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "这两天怎么没看见小张？",
-          "pinyin": "Zhè liǎng tiān zěnme méi kànjian Xiǎo Zhāng?",
+          "zh": "张老师星期六也不休息啊？",
+          "pinyin": "Zhāng lǎoshī xīngqīliù yě bù xiūxi a?",
           "text": {
-            "uz": "Bu ikki kunda nega Kichik Jangni ko'rmadim?",
-            "ru": "Почему я не видел Маленького Чжана эти два дня?",
-            "tj": "Ин ду рӯз чаро Сяо Чжанро надидам?"
+            "uz": "Zhang o'qituvchi shanba kuni ham dam olmaydi, shundaymi?",
+            "ru": "Учитель Чжан и в субботу не отдыхает?",
+            "tj": "Муаллим Чжан рӯзи шанбе ҳам истироҳат намекунад?"
           }
         },
         {
           "speaker": "B",
-          "zh": "他去北京了。",
-          "pinyin": "Tā qù Běijīng le.",
+          "zh": "是啊，他这几天很忙，没有时间休息。",
+          "pinyin": "Shì a, tā zhè jǐ tiān hěn máng, méiyǒu shíjiān xiūxi.",
           "text": {
-            "uz": "U Pekinga ketdi.",
-            "ru": "Он уехал в Пекин.",
-            "tj": "Вай ба Пекин рафтааст."
+            "uz": "Ha, u bu bir necha kunda juda band, dam olishga vaqti yo'q.",
+            "ru": "Да, он эти несколько дней очень занят, нет времени отдыхать.",
+            "tj": "Бале, ӯ ин чанд рӯз хеле банд аст, вақт барои истироҳат надорад."
           }
         },
         {
           "speaker": "A",
-          "zh": "去北京了？是去旅游吗？",
-          "pinyin": "Qù Běijīng le? Shì qù lǚyóu ma?",
+          "zh": "那会很累吧？",
+          "pinyin": "Nà huì hěn lèi ba?",
           "text": {
-            "uz": "Pekinga ketdimi? Sayohatgami?",
-            "ru": "Уехал в Пекин? На экскурсию?",
-            "tj": "Ба Пекин рафт? Сайёҳӣ?"
+            "uz": "U holda juda charchagan bo'lsa kerak?",
+            "ru": "Наверное, он очень устаёт?",
+            "tj": "Пас ӯ хеле хаста мешавад?"
           }
         },
         {
           "speaker": "B",
-          "zh": "不是，听说是去看他姐姐。",
-          "pinyin": "Bú shì, tīngshuō shì qù kàn tā jiějie.",
+          "zh": "他每天回来都很累。",
+          "pinyin": "Tā měitiān huílái dōu hěn lèi.",
           "text": {
-            "uz": "Yo'q, eshitdim, opasini ko'rgani ketgan.",
-            "ru": "Нет, говорят, поехал навестить старшую сестру.",
-            "tj": "Не, шунидам, рафтааст хоҳари калониашро бинад."
+            "uz": "U har kuni qaytib kelganida juda charchagan bo'ladi.",
+            "ru": "Он каждый день возвращается очень усталым.",
+            "tj": "Ӯ ҳар рӯз хеле хаста бармегардад."
           }
         }
       ]
@@ -471,46 +328,22 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "门",
-            "pinyin": "mén",
-            "pos": "n.",
+            "zh": "生病",
+            "pinyin": "shēngbìng",
+            "pos": "v.",
             "meaning": {
-              "uz": "eshik, darvoza",
-              "ru": "дверь, ворота",
-              "tj": "дар, дарвоза"
+              "uz": "kasal bo'lmoq",
+              "ru": "заболевать, болеть",
+              "tj": "бемор шудан, касал шудан"
             }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "外",
-            "pinyin": "wài",
-            "pos": "n.",
-            "meaning": {
-              "uz": "tashqarisi, tashqi tomon",
-              "ru": "снаружи, внешняя сторона",
-              "tj": "берун, тарафи берун"
-            }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "外",
-          "pinyin": "wài",
-          "translation": {
-            "uz": "tashqarisi, tashqi tomon",
-            "ru": "снаружи, внешняя сторона",
-            "tj": "берун, тарафи берун"
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "门 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 门:",
-            "tj": "Маънои калимаи 门-ро интихоб кунед:"
+            "uz": "生病 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生病:",
+            "tj": "Маънои калимаи 生病-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -519,67 +352,63 @@
           },
           "options": [
             {
-              "uz": "eshik, darvoza",
-              "ru": "дверь, ворота",
-              "tj": "дар, дарвоза"
+              "uz": "yugurmoq, chopmoq",
+              "ru": "бегать, бежать",
+              "tj": "давидан"
             },
             {
-              "uz": "qo'y go'shti",
-              "ru": "баранина",
-              "tj": "гӯшти гӯсфанд"
+              "uz": "har (bir), har qaysi",
+              "ru": "каждый",
+              "tj": "ҳар (як), ҳар кадом"
             },
             {
-              "uz": "velosiped",
-              "ru": "велосипед",
-              "tj": "велосипед"
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
             },
             {
-              "uz": "tashqarisi, tashqi tomon",
-              "ru": "снаружи, внешняя сторона",
-              "tj": "берун, тарафи берун"
+              "uz": "kasal bo'lmoq",
+              "ru": "заболевать, болеть",
+              "tj": "бемор шудан, касал шудан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "门 = eshik, darvoza (mén)",
-            "ru": "门 = дверь, ворота (mén)",
-            "tj": "门 = дар, дарвоза (mén)"
+            "uz": "生病 = kasal bo'lmoq (shēngbìng)",
+            "ru": "生病 = заболевать, болеть (shēngbìng)",
+            "tj": "生病 = бемор шудан, касал шудан (shēngbìng)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "自行车",
-            "pinyin": "zìxíngchē",
-            "pos": "n.",
+            "no": 2,
+            "zh": "每",
+            "pinyin": "měi",
+            "pos": "pron.",
             "meaning": {
-              "uz": "velosiped",
-              "ru": "велосипед",
-              "tj": "велосипед"
+              "uz": "har (bir), har qaysi",
+              "ru": "каждый",
+              "tj": "ҳар (як), ҳар кадом"
             }
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "羊肉",
-            "pinyin": "yángròu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "qo'y go'shti",
-              "ru": "баранина",
-              "tj": "гӯшти гӯсфанд"
-            }
+          "type": "pronunciation",
+          "phrase": "每",
+          "pinyin": "měi",
+          "translation": {
+            "uz": "har (bir), har qaysi",
+            "ru": "каждый",
+            "tj": "ҳар (як), ҳар кадом"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "mén qaysi ieroglif?",
-            "ru": "Какой иероглиф читается mén?",
-            "tj": "mén кадом иероглиф аст?"
+            "uz": "měi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается měi?",
+            "tj": "měi кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -587,52 +416,38 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "自行车",
-            "外",
-            "羊肉",
-            "门"
+            "跑步",
+            "早上",
+            "生病",
+            "每"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "门 = eshik, darvoza (mén)",
-            "ru": "门 = дверь, ворота (mén)",
-            "tj": "门 = дар, дарвоза (mén)"
+            "uz": "每 = har (bir), har qaysi (měi)",
+            "ru": "每 = каждый (měi)",
+            "tj": "每 = ҳар (як), ҳар кадом (měi)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "好吃",
-            "pinyin": "hǎochī",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "mazali (ovqat haqida)",
-              "ru": "вкусный (о еде)",
-              "tj": "хӯрданӣ, болаззат (дар бораи хӯрок)"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "面条",
-            "pinyin": "miàntiáo",
+            "no": 3,
+            "zh": "早上",
+            "pinyin": "zǎoshang",
             "pos": "n.",
             "meaning": {
-              "uz": "makaron, lag'mon",
-              "ru": "лапша",
-              "tj": "лоғмон, макарон"
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
             }
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "面条 talaffuzini tanlang:",
-            "ru": "Выберите произношение 面条:",
-            "tj": "Талаффузи 面条-ро интихоб кунед:"
+            "uz": "早上 talaffuzini tanlang:",
+            "ru": "Выберите произношение 早上:",
+            "tj": "Талаффузи 早上-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -640,52 +455,38 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "mén",
-            "miàntiáo",
-            "zìxíngchē",
-            "wài"
+            "pǎobù",
+            "měi",
+            "zǎoshang",
+            "shēngbìng"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "面条 — miàntiáo",
-            "ru": "面条 — miàntiáo",
-            "tj": "面条 — miàntiáo"
+            "uz": "早上 — zǎoshang",
+            "ru": "早上 — zǎoshang",
+            "tj": "早上 — zǎoshang"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 7,
-            "zh": "打篮球",
-            "pinyin": "dǎ lánqiú",
+            "no": 4,
+            "zh": "跑步",
+            "pinyin": "pǎobù",
             "pos": "v.",
             "meaning": {
-              "uz": "basketbol o'ynamoq",
-              "ru": "играть в баскетбол",
-              "tj": "баскетбол бозӣ кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "因为",
-            "pinyin": "yīnwèi",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "chunki, sababi",
-              "ru": "потому что, так как",
-              "tj": "зеро, чунки"
+              "uz": "yugurmoq, chopmoq",
+              "ru": "бегать, бежать",
+              "tj": "давидан"
             }
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'tashqarisi, tashqi tomon' xitoycha qaysi?",
-            "ru": "'снаружи, внешняя сторона' по-китайски?",
-            "tj": "'берун, тарафи берун' ба хитоӣ кадом аст?"
+            "uz": "'yugurmoq, chopmoq' xitoycha qaysi?",
+            "ru": "'бегать, бежать' по-китайски?",
+            "tj": "'давидан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -693,44 +494,16 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "羊肉",
-            "外",
-            "自行车",
-            "门"
+            "跑步",
+            "生病",
+            "每",
+            "早上"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "tashqarisi, tashqi tomon = 外 (wài)",
-            "ru": "снаружи, внешняя сторона = 外 (wài)",
-            "tj": "берун, тарафи берун = 外 (wài)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "所以",
-            "pinyin": "suǒyǐ",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "shuning uchun, shunday qilib",
-              "ru": "поэтому, вот почему",
-              "tj": "аз ин сабаб, бинобар ин"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "游泳",
-            "pinyin": "yóuyǒng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "suzmoq",
-              "ru": "плавать",
-              "tj": "шино кардан"
-            }
+            "uz": "yugurmoq, chopmoq = 跑步 (pǎobù)",
+            "ru": "бегать, бежать = 跑步 (pǎobù)",
+            "tj": "давидан = 跑步 (pǎobù)"
           }
         },
         {
@@ -740,54 +513,54 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "羊肉",
-          "pinyin": "yángròu",
+          "audio_text": "生病",
+          "pinyin": "shēngbìng",
           "options": [
-            "外",
-            "自行车",
-            "门",
-            "羊肉"
+            "早上",
+            "跑步",
+            "每",
+            "生病"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "羊肉 — qo'y go'shti (yángròu)",
-            "ru": "羊肉 — баранина (yángròu)",
-            "tj": "羊肉 — гӯшти гӯсфанд (yángròu)"
+            "uz": "生病 — kasal bo'lmoq (shēngbìng)",
+            "ru": "生病 — заболевать, болеть (shēngbìng)",
+            "tj": "生病 — бемор шудан, касал шудан (shēngbìng)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "门",
+              "生病",
               {
-                "uz": "eshik, darvoza",
-                "ru": "дверь, ворота",
-                "tj": "дар, дарвоза"
+                "uz": "kasal bo'lmoq",
+                "ru": "заболевать, болеть",
+                "tj": "бемор шудан, касал шудан"
               }
             ],
             [
-              "外",
+              "每",
               {
-                "uz": "tashqarisi, tashqi tomon",
-                "ru": "снаружи, внешняя сторона",
-                "tj": "берун, тарафи берун"
+                "uz": "har (bir), har qaysi",
+                "ru": "каждый",
+                "tj": "ҳар (як), ҳар кадом"
               }
             ],
             [
-              "自行车",
+              "早上",
               {
-                "uz": "velosiped",
-                "ru": "велосипед",
-                "tj": "велосипед"
+                "uz": "ertalab",
+                "ru": "утро, утром",
+                "tj": "субҳ, субҳгоҳ"
               }
             ],
             [
-              "羊肉",
+              "跑步",
               {
-                "uz": "qo'y go'shti",
-                "ru": "баранина",
-                "tj": "гӯшти гӯсфанд"
+                "uz": "yugurmoq, chopmoq",
+                "ru": "бегать, бежать",
+                "tj": "давидан"
               }
             ]
           ],
@@ -813,33 +586,33 @@
           "g": {
             "no": 1,
             "title": {
-              "uz": "So'roq olmoshi 怎么",
-              "ru": "Вопросительное местоимение 怎么",
-              "tj": "Исми саволии 怎么"
+              "uz": "'是不是' bilan savol gaplari",
+              "ru": "Вопросы с 是不是",
+              "tj": "Саволҳо бо 是不是"
             },
-            "title_zh": "疑问代词“怎么”",
+            "title_zh": "用“是不是”的问句",
             "rule": {
-              "uz": "'怎么' so'roq olmoshi ikki xil ma'noda ishlatiladi:\n1) 'Qanday qilib? Qanday yo'l bilan?' — usul yoki harakat tarzini so'rashda;\n2) 'Nega? Nima uchun?' — hayrat yoki tushunmovchilik bildiruvchi savolda.\nIkkinchi ma'noda ko'pincha salbiy gaplarda uchraydi.",
-              "ru": "Вопросительное местоимение '怎么' используется в двух значениях:\n1) 'Как? Каким образом?' — для вопроса о способе или методе действия;\n2) 'Почему? Как так?' — для выражения удивления или непонимания.\nВо втором значении часто встречается в отрицательных предложениях.",
-              "tj": "Исми саволии '怎么' дар ду маъно истифода мешавад:\n1) 'Чӣ тавр? Бо кадом роҳ?' — барои пурсидани усул ё тарзи амал;\n2) 'Чаро? Чи хел?' — барои ифодаи шигифт ё нофаҳмӣ.\nДар маъноии дуввум аксар вақт дар ҷумлаҳои инкорӣ истифода мешавад."
+              "uz": "'是不是' bilan tuzilgan savol gaplari. Bu qolip orqali biror narsa haqida taxmin qilib so'raladi. '是不是' gap boshida yoki o'rtasida kelishi mumkin. Javob 'shunday' yoki 'yo'q' shaklida bo'ladi.",
+              "ru": "Вопросы, построенные с 是不是. С помощью этого шаблона задаётся вопрос-предположение. 是不是 может стоять в начале или середине предложения. Ответ — «да» или «нет».",
+              "tj": "Саволҳое, ки бо 是不是 сохта мешаванд. Бо ёрии ин қолиб гумонии чизе пурсида мешавад. 是不是 метавонад дар аввал ё миёнаи ҷумла биояд. Ҷавоб бо 'бале' ё 'не' дода мешавад."
             },
             "examples": [
               {
-                "zh": "你怎么知道他来了？",
-                "pinyin": "Nǐ zěnme zhīdào tā lái le?",
+                "zh": "你是不是喜欢运动？",
+                "pinyin": "Nǐ shì bú shì xǐhuan yùndòng?",
                 "translation": {
-                  "uz": "U kelganini qanday bilding?",
-                  "ru": "Как ты узнал, что он пришёл?",
-                  "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+                  "uz": "Sen sportni yaxshi ko'rasanmi?",
+                  "ru": "Ты любишь спорт?",
+                  "tj": "Оё ту варзишро дӯст медорӣ?"
                 }
               },
               {
-                "zh": "你怎么不吃了？",
-                "pinyin": "Nǐ zěnme bù chī le?",
+                "zh": "他是不是你的朋友？",
+                "pinyin": "Tā shì bú shì nǐ de péngyou?",
                 "translation": {
-                  "uz": "Nega yemayapsan?",
-                  "ru": "Почему ты не ешь?",
-                  "tj": "Ту чаро намехӯрӣ?"
+                  "uz": "U sening do'stingmi?",
+                  "ru": "Он твой друг?",
+                  "tj": "Оё ӯ дӯсти туст?"
                 }
               }
             ]
@@ -848,173 +621,32 @@
         {
           "type": "sentence_builder",
           "sentence": {
-            "uz": "U kelganini qanday bilding?",
-            "ru": "Как ты узнал, что он пришёл?",
-            "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+            "uz": "Sen sportni yaxshi ko'rasanmi?",
+            "ru": "Ты любишь спорт?",
+            "tj": "Оё ту варзишро дӯст медорӣ?"
           },
           "tokens": [
-            "来",
-            "怎么",
-            "了",
-            "知道",
-            "门",
-            "外",
-            "他",
-            "你"
+            "不",
+            "是",
+            "是",
+            "你",
+            "生病",
+            "每",
+            "喜欢",
+            "运动"
           ],
           "answer_tokens": [
             "你",
-            "怎么",
-            "知道",
-            "他",
-            "来",
-            "了"
+            "是",
+            "不",
+            "是",
+            "喜欢",
+            "运动"
           ],
           "explanation": {
-            "uz": "你怎么知道他来了？ — Nǐ zěnme zhīdào tā lái le?",
-            "ru": "你怎么知道他来了？ — Nǐ zěnme zhīdào tā lái le?",
-            "tj": "你怎么知道他来了？ — Nǐ zěnme zhīdào tā lái le?"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "Miqdor ko'makchilarining takrorlanishi",
-              "ru": "Удвоение счётных слов",
-              "tj": "Такрори калимаҳои шуморавӣ"
-            },
-            "title_zh": "量词的重叠",
-            "rule": {
-              "uz": "Miqdor ko'makchilarini takrorlash orqali 'har bir, har qaysi' ma'nosi hosil qilinadi.\nMasalan, 天天 = har kuni, 年年 = har yili.\nBu qolip davomiylik va takrorlanuvchilikni ta'kidlaydi.",
-              "ru": "Удвоение счётных слов образует значение 'каждый, любой'.\nНапример, 天天 = каждый день, 年年 = каждый год.\nЭта конструкция подчёркивает постоянство и повторяемость.",
-              "tj": "Такрори калимаҳои шуморавӣ маъноии 'ҳар, ҳар як'-ро месозад.\nМасалан, 天天 = ҳар рӯз, 年年 = ҳар сол.\nИн сохт давомнокӣ ва такрорпазириро таъкид мекунад."
-            },
-            "examples": [
-              {
-                "zh": "这个星期我天天都吃羊肉。",
-                "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu.",
-                "translation": {
-                  "uz": "Bu hafta har kuni qo'y go'shti edim.",
-                  "ru": "На этой неделе я ел баранину каждый день.",
-                  "tj": "Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам."
-                }
-              },
-              {
-                "zh": "这个月我天天都游泳。",
-                "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng.",
-                "translation": {
-                  "uz": "Bu oy har kuni suzaman.",
-                  "ru": "В этом месяце я плаваю каждый день.",
-                  "tj": "Ин моҳ ман ҳар рӯз шино мекунам."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "这个星期我天天都吃____。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "自行车",
-            "羊肉",
-            "门",
-            "外"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 羊肉 (yángròu) — qo'y go'shti",
-            "ru": "Верно: 羊肉 (yángròu) — баранина",
-            "tj": "Дуруст: 羊肉 (yángròu) — гӯшти гӯсфанд"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "Bog'lovchi 因为……所以…… (chunki...shuning uchun...)",
-              "ru": "Союзная конструкция 因为……所以…… (потому что...поэтому...)",
-              "tj": "Пайвандаки 因为……所以…… (зеро...аз ин сабаб...)"
-            },
-            "title_zh": "关联词“因为……，所以……”",
-            "rule": {
-              "uz": "'因为……所以……' qolipida sabab va oqibat ko'rsatiladi.\n因为 sabab gapini, 所以 esa oqibat gapini boshlab keladi.\nO'zbek tilidagi 'chunki…, shuning uchun…' iborasiga to'g'ri keladi.\nIkkala qism ham birgalikda yoki alohida ishlatilishi mumkin.",
-              "ru": "Конструкция '因为……所以……' выражает причину и следствие.\n因为 вводит предложение с причиной, 所以 — со следствием.\nСоответствует русскому 'потому что…, поэтому…'.\nОбе части могут использоваться вместе или по отдельности.",
-              "tj": "Дар сохти '因为……所以……' сабаб ва натиҷа нишон дода мешавад.\n因为 ҷумлаи сабабро, 所以 ҷумлаи натиҷаро мебарад.\nБа форсии тоҷикӣ 'зеро…, аз ин сабаб…' мувофиқат мекунад.\nҲар ду қисм метавонанд якҷоя ё алоҳида истифода шаванд."
-            },
-            "examples": [
-              {
-                "zh": "因为昨天下雨，所以我们都没去。",
-                "pinyin": "Yīnwèi zuótiān xiàyǔ, suǒyǐ wǒmen dōu méi qù.",
-                "translation": {
-                  "uz": "Chunki kecha yomg'ir yog'di, shuning uchun barchimiz bormadik.",
-                  "ru": "Потому что вчера шёл дождь, поэтому мы все не пошли.",
-                  "tj": "Зеро дирӯз борон меборид, аз ин сабаб мо ҳама наравон."
-                }
-              },
-              {
-                "zh": "因为他很忙，所以没来。",
-                "pinyin": "Yīnwèi tā hěn máng, suǒyǐ méi lái.",
-                "translation": {
-                  "uz": "Chunki u juda band edi, shuning uchun kelmadi.",
-                  "ru": "Потому что он был очень занят, поэтому не пришёл.",
-                  "tj": "Зеро вай бисёр машғул буд, аз ин сабаб наомад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____昨天下雨，所以我们都没去。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "外",
-            "门",
-            "自行车",
-            "因为"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 因为 (yīnwèi) — chunki, sababi",
-            "ru": "Верно: 因为 (yīnwèi) — потому что, так как",
-            "tj": "Дуруст: 因为 (yīnwèi) — зеро, чунки"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«Bu oy har kuni suzaman.» — xitoychada qaysi biri?",
-            "ru": "«В этом месяце я плаваю каждый день.» — какое предложение по-китайски?",
-            "tj": "«Ин моҳ ман ҳар рӯз шино мекунам.» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "这个星期我天天都吃羊肉。",
-            "因为他很忙，所以没来。",
-            "这个月我天天都游泳。",
-            "因为昨天下雨，所以我们都没去。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "这个月我天天都游泳。 — Zhège yuè wǒ tiāntiān dōu yóuyǒng.",
-            "ru": "这个月我天天都游泳。 — Zhège yuè wǒ tiāntiān dōu yóuyǒng.",
-            "tj": "这个月我天天都游泳。 — Zhège yuè wǒ tiāntiān dōu yóuyǒng."
+            "uz": "你是不是喜欢运动？ — Nǐ shì bú shì xǐhuan yùndòng?",
+            "ru": "你是不是喜欢运动？ — Nǐ shì bú shì xǐhuan yùndòng?",
+            "tj": "你是不是喜欢运动？ — Nǐ shì bú shì xǐhuan yùndòng?"
           }
         }
       ]
@@ -1029,28 +661,68 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "公斤 talaffuzini tanlang:",
-            "ru": "Выберите произношение 公斤:",
-            "tj": "Талаффузи 公斤-ро интихоб кунед:"
+          "type": "reverse_builder",
+          "zh": "每个学生都有书。",
+          "pinyin": "Měi ge xuésheng dōu yǒu shū.",
+          "translation": {
+            "uz": "Har bir talabaning kitobi bor.",
+            "ru": "У каждого студента есть книга.",
+            "tj": "Ҳар донишҷӯ китоб дорад."
           },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+          "tokens": {
+            "uz": [
+              "kamdan-kam",
+              "Har",
+              "kitobi",
+              "bor",
+              "bir",
+              "talabaning",
+              "Sen"
+            ],
+            "ru": [
+              "студента",
+              "есть",
+              "редко",
+              "книга",
+              "У",
+              "Ты",
+              "каждого"
+            ],
+            "tj": [
+              "кам",
+              "китоб",
+              "Ту",
+              "Ҳар",
+              "донишҷӯ",
+              "дорад"
+            ]
           },
-          "options": [
-            "mén",
-            "zìxíngchē",
-            "wài",
-            "gōngjīn"
-          ],
-          "correct_index": 3,
+          "answer_tokens": {
+            "uz": [
+              "Har",
+              "bir",
+              "talabaning",
+              "kitobi",
+              "bor"
+            ],
+            "ru": [
+              "У",
+              "каждого",
+              "студента",
+              "есть",
+              "книга"
+            ],
+            "tj": [
+              "Ҳар",
+              "донишҷӯ",
+              "китоб",
+              "дорад"
+            ]
+          },
           "explanation": {
-            "uz": "公斤 — gōngjīn",
-            "ru": "公斤 — gōngjīn",
-            "tj": "公斤 — gōngjīn"
+            "uz": "每个学生都有书。 — Har bir talabaning kitobi bor.",
+            "ru": "每个学生都有书。 — У каждого студента есть книга.",
+            "tj": "每个学生都有书。 — Ҳар донишҷӯ китоб дорад."
           }
         },
         {
@@ -1060,132 +732,27 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "打篮球",
-          "pinyin": "dǎ lánqiú",
+          "audio_text": "早上",
+          "pinyin": "zǎoshang",
           "options": [
-            "打篮球",
-            "外",
-            "自行车",
-            "门"
+            "生病",
+            "跑步",
+            "早上",
+            "每"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "打篮球 — basketbol o'ynamoq (dǎ lánqiú)",
-            "ru": "打篮球 — играть в баскетбол (dǎ lánqiú)",
-            "tj": "打篮球 — баскетбол бозӣ кардан (dǎ lánqiú)"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "门",
-              {
-                "uz": "eshik, darvoza",
-                "ru": "дверь, ворота",
-                "tj": "дар, дарвоза"
-              }
-            ],
-            [
-              "外",
-              {
-                "uz": "tashqarisi, tashqi tomon",
-                "ru": "снаружи, внешняя сторона",
-                "tj": "берун, тарафи берун"
-              }
-            ],
-            [
-              "自行车",
-              {
-                "uz": "velosiped",
-                "ru": "велосипед",
-                "tj": "велосипед"
-              }
-            ],
-            [
-              "羊肉",
-              {
-                "uz": "qo'y go'shti",
-                "ru": "баранина",
-                "tj": "гӯшти гӯсфанд"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "那你想吃什么？",
-          "pinyin": "Nà nǐ xiǎng chī shénme?",
-          "translation": {
-            "uz": "Unda nima yemoqchisan?",
-            "ru": "Тогда что ты хочешь поесть?",
-            "tj": "Пас ту чӣ хӯрдан мехоҳӣ?"
-          },
-          "tokens": {
-            "uz": [
-              "nima",
-              "Vang",
-              "Unda",
-              "yemoqchisan",
-              "Kichik"
-            ],
-            "ru": [
-              "ты",
-              "знаешь",
-              "Ты",
-              "Тогда",
-              "что",
-              "хочешь",
-              "поесть"
-            ],
-            "tj": [
-              "хӯрдан",
-              "ту",
-              "Пас",
-              "Оё",
-              "медонӣ",
-              "мехоҳӣ",
-              "чӣ"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Unda",
-              "nima",
-              "yemoqchisan"
-            ],
-            "ru": [
-              "Тогда",
-              "что",
-              "ты",
-              "хочешь",
-              "поесть"
-            ],
-            "tj": [
-              "Пас",
-              "ту",
-              "чӣ",
-              "хӯрдан",
-              "мехоҳӣ"
-            ]
-          },
-          "explanation": {
-            "uz": "那你想吃什么？ — Unda nima yemoqchisan?",
-            "ru": "那你想吃什么？ — Тогда что ты хочешь поесть?",
-            "tj": "那你想吃什么？ — Пас ту чӣ хӯрдан мехоҳӣ?"
+            "uz": "早上 — ertalab (zǎoshang)",
+            "ru": "早上 — утро, утром (zǎoshang)",
+            "tj": "早上 — субҳ, субҳгоҳ (zǎoshang)"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'katta singl (aka-ukaniki), opa' xitoycha qaysi?",
-            "ru": "'старшая сестра' по-китайски?",
-            "tj": "'хоҳари калонӣ' ба хитоӣ кадом аст?"
+            "uz": "'sport; sport qilmoq' xitoycha qaysi?",
+            "ru": "'спорт; заниматься спортом' по-китайски?",
+            "tj": "'варзиш; варзиш кардан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -1193,16 +760,16 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "外",
-            "姐姐",
-            "自行车",
-            "门"
+            "生病",
+            "每",
+            "运动",
+            "早上"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "katta singl (aka-ukaniki), opa = 姐姐 (jiějie)",
-            "ru": "старшая сестра = 姐姐 (jiějie)",
-            "tj": "хоҳари калонӣ = 姐姐 (jiějie)"
+            "uz": "sport; sport qilmoq = 运动 (yùndòng)",
+            "ru": "спорт; заниматься спортом = 运动 (yùndòng)",
+            "tj": "варзиш; варзиш кардан = 运动 (yùndòng)"
           }
         },
         {
@@ -1212,212 +779,29 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "这个星期我天天都吃羊肉，不想吃了。",
-          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu, bù xiǎng chī le.",
+          "audio_text": "你很少生病，是不是喜欢运动？",
+          "pinyin": "Nǐ hěn shǎo shēngbìng, shì bú shì xǐhuan yùndòng?",
           "options": [
-            "你怎么知道他来了？",
-            "你知道小王今天什么时候来学校吗？",
-            "这个星期我天天都吃羊肉，不想吃了。",
-            "他已经来了。"
+            "是啊，我每天早上都要出去跑步。",
+            "我每天六点起床。",
+            "你很少生病，是不是喜欢运动？",
+            "你每天几点起床？"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "这个星期我天天都吃羊肉，不想吃了。 — Bu hafta har kuni qo'y go'shti edim, endi yeygim kelmayapti.",
-            "ru": "这个星期我天天都吃羊肉，不想吃了。 — На этой неделе я ел баранину каждый день, больше не хочу.",
-            "tj": "这个星期我天天都吃羊肉，不想吃了。 — Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам, дигар намехоҳам."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "U allaqachon keldi.",
-            "ru": "Он уже пришёл.",
-            "tj": "Вай аллакай омадааст."
-          },
-          "tokens": [
-            "已经",
-            "了",
-            "外",
-            "他",
-            "来",
-            "门"
-          ],
-          "answer_tokens": [
-            "他",
-            "已经",
-            "来",
-            "了"
-          ],
-          "explanation": {
-            "uz": "他已经来了。 — Tā yǐjīng lái le.",
-            "ru": "他已经来了。 — Tā yǐjīng lái le.",
-            "tj": "他已经来了。 — Tā yǐjīng lái le."
+            "uz": "你很少生病，是不是喜欢运动？ — Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?",
+            "ru": "你很少生病，是不是喜欢运动？ — Ты редко болеешь, ты любишь спорт?",
+            "tj": "你很少生病，是不是喜欢运动？ — Ту кам касал мешавӣ, оё варзишро дӯст медорӣ?"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "面条",
-          "pinyin": "miàntiáo",
+          "phrase": "每",
+          "pinyin": "měi",
           "translation": {
-            "uz": "makaron, lag'mon",
-            "ru": "лапша",
-            "tj": "лоғмон, макарон"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "你知道小王今天什么时候来学校吗？",
-          "pinyin": "Nǐ zhīdào Xiǎo Wáng jīntiān shénme shíhou lái xuéxiào ma?",
-          "options": [
-            "你怎么知道他来了？",
-            "他已经来了。",
-            "我在门外看见他的自行车了。",
-            "你知道小王今天什么时候来学校吗？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "你知道小王今天什么时候来学校吗？ — Kichik Vang bugun qachon maktabga kelishini bilasanmi?",
-            "ru": "你知道小王今天什么时候来学校吗？ — Ты знаешь, когда Маленький Ван придёт в школу сегодня?",
-            "tj": "你知道小王今天什么时候来学校吗？ — Оё медонӣ, ки Сяо Ван имрӯз кай ба мактаб меояд?"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "你知道小王今天什么时候来学校吗？",
-            "你怎么知道他来了？",
-            "他已经来了。",
-            "我在门外看见他的自行车了。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 我在门外看见他的自行车了。",
-            "ru": "Правильный ответ: 我在门外看见他的自行车了。",
-            "tj": "Ҷавоби дуруст: 我在门外看见他的自行车了。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "你知道小王今天什么时候来学校吗？",
-            "他已经来了。",
-            "你怎么知道他来了？",
-            "我在门外看见他的自行车了。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 你知道小王今天什么时候来学校吗？",
-            "ru": "Правильный ответ: 你知道小王今天什么时候来学校吗？",
-            "tj": "Ҷавоби дуруст: 你知道小王今天什么时候来学校吗？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____知道小王今天什么时候来学校吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "件",
-            "商",
-            "你",
-            "羊"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你知道小王今天什么时候来学校吗？ (Kichik Vang bugun qachon maktabga kelishini bilasanmi?)",
-            "ru": "Верно: 你 — 你知道小王今天什么时候来学校吗？ (Ты знаешь, когда Маленький Ван придёт в школу сегодня?)",
-            "tj": "Дуруст: 你 — 你知道小王今天什么时候来学校吗？ (Оё медонӣ, ки Сяо Ван имрӯз кай ба мактаб меояд?)"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "A",
-              "zh": "你知道小王今天什么时候来学校吗？",
-              "blank": false
-            },
-            {
-              "speaker": "B",
-              "zh": "他已经来了。",
-              "blank": false
-            },
-            {
-              "speaker": "A",
-              "zh": "你怎么知道他来了？",
-              "blank": false
-            },
-            {
-              "speaker": "B",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "他已经来了。",
-            "你怎么知道他来了？",
-            "你知道小王今天什么时候来学校吗？",
-            "我在门外看见他的自行车了。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 我在门外看见他的自行车了。",
-            "ru": "Правильный ответ: 我在门外看见他的自行车了。",
-            "tj": "Ҷавоби дуруст: 我在门外看见他的自行车了。"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "去北京了？是去旅游吗？",
-          "pinyin": "Qù Běijīng le? Shì qù lǚyóu ma?",
-          "translation": {
-            "uz": "Pekinga ketdimi? Sayohatgami?",
-            "ru": "Уехал в Пекин? На экскурсию?",
-            "tj": "Ба Пекин рафт? Сайёҳӣ?"
+            "uz": "har (bir), har qaysi",
+            "ru": "каждый",
+            "tj": "ҳар (як), ҳар кадом"
           }
         }
       ]

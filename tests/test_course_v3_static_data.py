@@ -4,7 +4,15 @@ from pathlib import Path
 
 
 BASE = Path("app/static/course_v3_data")
+# Har HSK darsi 3-4 so'zlik mini-darslarga (qismlarga) bo'lingan; sonlar —
+# flat qismlar soni (parts_manifest.json bilan mos bo'lishi ham tekshiriladi).
 EXPECTED_LESSON_COUNTS = {
+    "hsk1": 63,
+    "hsk2": 72,
+    "hsk3": 109,
+    "hsk4": 181,
+}
+EXPECTED_SOURCE_LESSONS = {
     "hsk1": 15,
     "hsk2": 15,
     "hsk3": 20,
@@ -28,6 +36,19 @@ class CourseV3StaticMapTests(unittest.TestCase):
                 self.assertEqual(data["progress"]["xp"], 0)
                 self.assertEqual(data["progress"]["completed"], 0)
                 self.assertEqual(len(lessons), expected_count)
+                # Unit = bitta HSK darsligi darsi; oxirgi tugun — checkpoint.
+                self.assertEqual(len(data["units"]), EXPECTED_SOURCE_LESSONS[level])
+                for unit in data["units"]:
+                    self.assertTrue(unit["lessons"], unit.get("no"))
+                    self.assertTrue(unit["lessons"][-1].get("checkpoint"), unit.get("no"))
+
+                manifest = json.loads(
+                    (BASE / "parts_manifest.json").read_text(encoding="utf-8")
+                )[level]
+                self.assertEqual(manifest["total_parts"], expected_count)
+                self.assertEqual(
+                    [l["n"] for l in lessons], list(range(1, expected_count + 1))
+                )
 
                 self.assertEqual(lessons[0]["status"], "current")
                 for lesson in lessons[:3]:
@@ -99,30 +120,44 @@ class CourseV3StaticMapTests(unittest.TestCase):
 
     def test_interactive_cards_present_and_level_gated(self):
         """New Duolingo-style cards (sentence_builder, listening_choice,
-        dialog_cloze) appear and only use already-learned vocabulary."""
-        order = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
+        dialog_cloze) appear and only use already-learned vocabulary.
+
+        Qismlarga bo'lingandan keyin: har QISM 2-4 yangi so'z o'rgatadi (yoki
+        checkpoint — 0 yangi so'z, dialog bilan yakunlaydi); tinglash va dialog
+        to'ldirish har HSK darsining qismlar guruhida albatta bor."""
+        manifest = json.loads((BASE / "parts_manifest.json").read_text(encoding="utf-8"))
         known_words: set[str] = set()
         known_lines: set[str] = set()
-        for level, count in order:
-            for n in range(1, count + 1):
-                data = json.loads(
-                    (BASE / level / f"lesson_{n:02d}.json").read_text(encoding="utf-8")
-                )
-                where = f"{level}/lesson_{n:02d}"
-                lesson_words = {w["zh"] for w in data["active_words"]}
-                lesson_lines = {
-                    ln["zh"]
-                    for b in data["dialogues"]
-                    for ln in b["dialogue"]
-                    if ln.get("zh")
-                }
-                gate_words = known_words | lesson_words
-                gate_lines = known_lines | lesson_lines
+        for level in ("hsk1", "hsk2", "hsk3", "hsk4"):
+            for src_lesson in manifest[level]["lessons"]:
+                group_types = set()
+                for n in src_lesson["parts"]:
+                    data = json.loads(
+                        (BASE / level / f"lesson_{n:02d}.json").read_text(encoding="utf-8")
+                    )
+                    where = f"{level}/lesson_{n:02d}"
+                    is_checkpoint = n == src_lesson["checkpoint"]
+                    self.assertEqual(data["checkpoint"], is_checkpoint, where)
+                    self.assertEqual(data["source_lesson"], src_lesson["src"], where)
+                    # dialoglar har qismda to'liq ma'lumotnoma sifatida turadi
+                    lesson_lines = {
+                        ln["zh"]
+                        for b in data["dialogues"]
+                        for ln in b["dialogue"]
+                        if ln.get("zh")
+                    }
+                    cards = [c for sec in data["sections"] for c in sec["cards"]]
+                    new_words = [c["word"]["zh"] for c in cards if c["type"] == "active_word"]
+                    if is_checkpoint:
+                        self.assertEqual(new_words, [], where)
+                    else:
+                        self.assertTrue(2 <= len(new_words) <= 4, f"{where}: {len(new_words)} new words")
+                    part_words = {w["zh"] for w in data["active_words"]}
+                    gate_words = known_words | part_words
+                    gate_lines = known_lines | lesson_lines
 
-                types = set()
-                for sec in data["sections"]:
-                    for c in sec["cards"]:
-                        types.add(c["type"])
+                    for c in cards:
+                        group_types.add(c["type"])
                         if c["type"] == "sentence_builder":
                             ans = c["answer_tokens"]
                             self.assertTrue(2 <= len(ans) <= 8, where)
@@ -147,12 +182,14 @@ class CourseV3StaticMapTests(unittest.TestCase):
                                 c["options"][c["correct_index"]], gate_lines, where
                             )
 
-                # Every lesson is interactive: listening + dialogue completion.
-                self.assertIn("listening_choice", types, where)
-                self.assertIn("dialog_cloze", types, where)
+                    known_words |= part_words
+                    known_lines |= lesson_lines
 
-                known_words |= lesson_words
-                known_lines |= lesson_lines
+                # Har HSK darsi (qismlar guruhi) interaktiv bo'lib qoladi:
+                # tinglash + dialog to'ldirish.
+                where = f"{level}/src_{src_lesson['src']}"
+                self.assertIn("listening_choice", group_types, where)
+                self.assertIn("dialog_cloze", group_types, where)
 
     def test_hsk_exam_options_hide_pinyin_and_hint_labels(self):
         html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")

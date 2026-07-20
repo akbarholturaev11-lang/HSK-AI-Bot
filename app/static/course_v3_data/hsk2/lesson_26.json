@@ -1,0 +1,810 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 26,
+  "source_lesson": 6,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你怎么不吃了",
+  "subtitle": {
+    "uz": "Sabab va oqibat haqida gapira olish, 怎么 so'roq olmoshi, miqdor ko'makchilarining takrorlanishi va 因为……所以…… bog'lovchi qolipini o'zlashtirish.",
+    "ru": "Научиться говорить о причине и следствии, вопросительное местоимение 怎么, удвоение счётных слов и союзная конструкция 因为……所以……",
+    "tj": "Омӯзиши гуфтан дар бораи сабаб ва натиҷа, исми саволии 怎么, такрори калимаҳои шуморавӣ ва сохти пайвандакии 因为……所以……"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "门",
+      "pinyin": "mén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "eshik, darvoza",
+        "ru": "дверь, ворота",
+        "tj": "дар, дарвоза"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "外",
+      "pinyin": "wài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tashqarisi, tashqi tomon",
+        "ru": "снаружи, внешняя сторона",
+        "tj": "берун, тарафи берун"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "自行车",
+      "pinyin": "zìxíngchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "velosiped",
+        "ru": "велосипед",
+        "tj": "велосипед"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "羊肉",
+      "pinyin": "yángròu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qo'y go'shti",
+        "ru": "баранина",
+        "tj": "гӯшти гӯсфанд"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "So'roq olmoshi 怎么",
+        "ru": "Вопросительное местоимение 怎么",
+        "tj": "Исми саволии 怎么"
+      },
+      "title_zh": "疑问代词“怎么”",
+      "rule": {
+        "uz": "'怎么' so'roq olmoshi ikki xil ma'noda ishlatiladi:\n1) 'Qanday qilib? Qanday yo'l bilan?' — usul yoki harakat tarzini so'rashda;\n2) 'Nega? Nima uchun?' — hayrat yoki tushunmovchilik bildiruvchi savolda.\nIkkinchi ma'noda ko'pincha salbiy gaplarda uchraydi.",
+        "ru": "Вопросительное местоимение '怎么' используется в двух значениях:\n1) 'Как? Каким образом?' — для вопроса о способе или методе действия;\n2) 'Почему? Как так?' — для выражения удивления или непонимания.\nВо втором значении часто встречается в отрицательных предложениях.",
+        "tj": "Исми саволии '怎么' дар ду маъно истифода мешавад:\n1) 'Чӣ тавр? Бо кадом роҳ?' — барои пурсидани усул ё тарзи амал;\n2) 'Чаро? Чи хел?' — барои ифодаи шигифт ё нофаҳмӣ.\nДар маъноии дуввум аксар вақт дар ҷумлаҳои инкорӣ истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "你怎么知道他来了？",
+          "pinyin": "Nǐ zěnme zhīdào tā lái le?",
+          "translation": {
+            "uz": "U kelganini qanday bilding?",
+            "ru": "Как ты узнал, что он пришёл?",
+            "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+          }
+        },
+        {
+          "zh": "你怎么不吃了？",
+          "pinyin": "Nǐ zěnme bù chī le?",
+          "translation": {
+            "uz": "Nega yemayapsan?",
+            "ru": "Почему ты не ешь?",
+            "tj": "Ту чаро намехӯрӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你知道小王今天什么时候来学校吗？",
+          "pinyin": "Nǐ zhīdào Xiǎo Wáng jīntiān shénme shíhou lái xuéxiào ma?",
+          "text": {
+            "uz": "Kichik Vang bugun qachon maktabga kelishini bilasanmi?",
+            "ru": "Ты знаешь, когда Маленький Ван придёт в школу сегодня?",
+            "tj": "Оё медонӣ, ки Сяо Ван имрӯз кай ба мактаб меояд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他已经来了。",
+          "pinyin": "Tā yǐjīng lái le.",
+          "text": {
+            "uz": "U allaqachon keldi.",
+            "ru": "Он уже пришёл.",
+            "tj": "Вай аллакай омадааст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你怎么知道他来了？",
+          "pinyin": "Nǐ zěnme zhīdào tā lái le?",
+          "text": {
+            "uz": "U kelganini qanday bilding?",
+            "ru": "Как ты узнал, что он пришёл?",
+            "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我在门外看见他的自行车了。",
+          "pinyin": "Wǒ zài mén wài kànjian tā de zìxíngchē le.",
+          "text": {
+            "uz": "Eshik tashqarisida uning velosipedini ko'rdim.",
+            "ru": "Я увидел его велосипед за дверью.",
+            "tj": "Ман берун аз дар велосипеди ӯро дидам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda",
+        "ru": "В ресторане",
+        "tj": "Дар тарабхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天的羊肉很好吃，你怎么不吃了？",
+          "pinyin": "Jīntiān de yángròu hěn hǎochī, nǐ zěnme bù chī le?",
+          "text": {
+            "uz": "Bugungi qo'y go'shti juda mazali, nega yemayapsan?",
+            "ru": "Сегодняшняя баранина очень вкусная, почему ты не ешь?",
+            "tj": "Гӯшти гӯсфанди имрӯз бисёр болаззат аст, ту чаро намехӯрӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这个星期我天天都吃羊肉，不想吃了。",
+          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu, bù xiǎng chī le.",
+          "text": {
+            "uz": "Bu hafta har kuni qo'y go'shti edim, endi yeygim kelmayapti.",
+            "ru": "На этой неделе я ел баранину каждый день, больше не хочу.",
+            "tj": "Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам, дигар намехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那你想吃什么？",
+          "pinyin": "Nà nǐ xiǎng chī shénme?",
+          "text": {
+            "uz": "Unda nima yemoqchisan?",
+            "ru": "Тогда что ты хочешь поесть?",
+            "tj": "Пас ту чӣ хӯрдан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "来一点儿面条吧。",
+          "pinyin": "Lái yìdiǎnr miàntiáo ba.",
+          "text": {
+            "uz": "Bir oz lag'mon gapirtiraylik.",
+            "ru": "Давай закажем немного лапши.",
+            "tj": "Каме лоғмон оварем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport zalida",
+        "ru": "В спортзале",
+        "tj": "Дар толори варзиш"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天你们怎么都没去打篮球？",
+          "pinyin": "Zuótiān nǐmen zěnme dōu méi qù dǎ lánqiú?",
+          "text": {
+            "uz": "Kecha nega barchang basketbol o'ynamaganga bormadinglar?",
+            "ru": "Почему вы все вчера не пошли играть в баскетбол?",
+            "tj": "Дирӯз шумо чаро ҳама наравон бозии баскетбол накардед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "因为昨天下雨，所以我们都没去。我去游泳了。",
+          "pinyin": "Yīnwèi zuótiān xiàyǔ, suǒyǐ wǒmen dōu méi qù. Wǒ qù yóuyǒng le.",
+          "text": {
+            "uz": "Chunki kecha yomg'ir yog'di, shuning uchun barchimiz bormadik. Men suzgani bordim.",
+            "ru": "Потому что вчера шёл дождь, поэтому мы все не пошли. Я пошёл плавать.",
+            "tj": "Зеро дирӯз борон меборид, аз ин сабаб мо ҳама наравон. Ман рафтам шино кардам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你经常游泳吗？",
+          "pinyin": "Nǐ jīngcháng yóuyǒng ma?",
+          "text": {
+            "uz": "Sen tez-tez suzasanmi?",
+            "ru": "Ты часто плаваешь?",
+            "tj": "Оё ту зуд-зуд шино мекунӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这个月我天天都游泳，我现在七十公斤了。",
+          "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng, wǒ xiànzài qīshí gōngjīn le.",
+          "text": {
+            "uz": "Bu oy har kuni suzaman, hozir yetmish kilogram bo'ldim.",
+            "ru": "В этом месяце я плаваю каждый день, сейчас вешу семьдесят килограмм.",
+            "tj": "Ин моҳ ман ҳар рӯз шино мекунам, ҳоло ҳафтод килограмм шудам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Idorada",
+        "ru": "В офисе",
+        "tj": "Дар идора"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "这两天怎么没看见小张？",
+          "pinyin": "Zhè liǎng tiān zěnme méi kànjian Xiǎo Zhāng?",
+          "text": {
+            "uz": "Bu ikki kunda nega Kichik Jangni ko'rmadim?",
+            "ru": "Почему я не видел Маленького Чжана эти два дня?",
+            "tj": "Ин ду рӯз чаро Сяо Чжанро надидам?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他去北京了。",
+          "pinyin": "Tā qù Běijīng le.",
+          "text": {
+            "uz": "U Pekinga ketdi.",
+            "ru": "Он уехал в Пекин.",
+            "tj": "Вай ба Пекин рафтааст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "去北京了？是去旅游吗？",
+          "pinyin": "Qù Běijīng le? Shì qù lǚyóu ma?",
+          "text": {
+            "uz": "Pekinga ketdimi? Sayohatgami?",
+            "ru": "Уехал в Пекин? На экскурсию?",
+            "tj": "Ба Пекин рафт? Сайёҳӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不是，听说是去看他姐姐。",
+          "pinyin": "Bú shì, tīngshuō shì qù kàn tā jiějie.",
+          "text": {
+            "uz": "Yo'q, eshitdim, opasini ko'rgani ketgan.",
+            "ru": "Нет, говорят, поехал навестить старшую сестру.",
+            "tj": "Не, шунидам, рафтааст хоҳари калониашро бинад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "门",
+            "pinyin": "mén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "eshik, darvoza",
+              "ru": "дверь, ворота",
+              "tj": "дар, дарвоза"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "门 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 门:",
+            "tj": "Маънои калимаи 门-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo'y go'shti",
+              "ru": "баранина",
+              "tj": "гӯшти гӯсфанд"
+            },
+            {
+              "uz": "eshik, darvoza",
+              "ru": "дверь, ворота",
+              "tj": "дар, дарвоза"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            },
+            {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "门 = eshik, darvoza (mén)",
+            "ru": "门 = дверь, ворота (mén)",
+            "tj": "门 = дар, дарвоза (mén)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "外",
+            "pinyin": "wài",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "外",
+          "pinyin": "wài",
+          "translation": {
+            "uz": "tashqarisi, tashqi tomon",
+            "ru": "снаружи, внешняя сторона",
+            "tj": "берун, тарафи берун"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wài?",
+            "tj": "wài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "门",
+            "自行车",
+            "外",
+            "羊肉"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "外 = tashqarisi, tashqi tomon (wài)",
+            "ru": "外 = снаружи, внешняя сторона (wài)",
+            "tj": "外 = берун, тарафи берун (wài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "自行车",
+            "pinyin": "zìxíngchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "自行车 talaffuzini tanlang:",
+            "ru": "Выберите произношение 自行车:",
+            "tj": "Талаффузи 自行车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "mén",
+            "zìxíngchē",
+            "yángròu",
+            "wài"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "自行车 — zìxíngchē",
+            "ru": "自行车 — zìxíngchē",
+            "tj": "自行车 — zìxíngchē"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "羊肉",
+            "pinyin": "yángròu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qo'y go'shti",
+              "ru": "баранина",
+              "tj": "гӯшти гӯсфанд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qo'y go'shti' xitoycha qaysi?",
+            "ru": "'баранина' по-китайски?",
+            "tj": "'гӯшти гӯсфанд' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "外",
+            "门",
+            "羊肉",
+            "自行车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qo'y go'shti = 羊肉 (yángròu)",
+            "ru": "баранина = 羊肉 (yángròu)",
+            "tj": "гӯшти гӯсфанд = 羊肉 (yángròu)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "门",
+          "pinyin": "mén",
+          "options": [
+            "门",
+            "自行车",
+            "外",
+            "羊肉"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "门 — eshik, darvoza (mén)",
+            "ru": "门 — дверь, ворота (mén)",
+            "tj": "门 — дар, дарвоза (mén)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "门",
+              {
+                "uz": "eshik, darvoza",
+                "ru": "дверь, ворота",
+                "tj": "дар, дарвоза"
+              }
+            ],
+            [
+              "外",
+              {
+                "uz": "tashqarisi, tashqi tomon",
+                "ru": "снаружи, внешняя сторона",
+                "tj": "берун, тарафи берун"
+              }
+            ],
+            [
+              "自行车",
+              {
+                "uz": "velosiped",
+                "ru": "велосипед",
+                "tj": "велосипед"
+              }
+            ],
+            [
+              "羊肉",
+              {
+                "uz": "qo'y go'shti",
+                "ru": "баранина",
+                "tj": "гӯшти гӯсфанд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "So'roq olmoshi 怎么",
+              "ru": "Вопросительное местоимение 怎么",
+              "tj": "Исми саволии 怎么"
+            },
+            "title_zh": "疑问代词“怎么”",
+            "rule": {
+              "uz": "'怎么' so'roq olmoshi ikki xil ma'noda ishlatiladi:\n1) 'Qanday qilib? Qanday yo'l bilan?' — usul yoki harakat tarzini so'rashda;\n2) 'Nega? Nima uchun?' — hayrat yoki tushunmovchilik bildiruvchi savolda.\nIkkinchi ma'noda ko'pincha salbiy gaplarda uchraydi.",
+              "ru": "Вопросительное местоимение '怎么' используется в двух значениях:\n1) 'Как? Каким образом?' — для вопроса о способе или методе действия;\n2) 'Почему? Как так?' — для выражения удивления или непонимания.\nВо втором значении часто встречается в отрицательных предложениях.",
+              "tj": "Исми саволии '怎么' дар ду маъно истифода мешавад:\n1) 'Чӣ тавр? Бо кадом роҳ?' — барои пурсидани усул ё тарзи амал;\n2) 'Чаро? Чи хел?' — барои ифодаи шигифт ё нофаҳмӣ.\nДар маъноии дуввум аксар вақт дар ҷумлаҳои инкорӣ истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "你怎么知道他来了？",
+                "pinyin": "Nǐ zěnme zhīdào tā lái le?",
+                "translation": {
+                  "uz": "U kelganini qanday bilding?",
+                  "ru": "Как ты узнал, что он пришёл?",
+                  "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+                }
+              },
+              {
+                "zh": "你怎么不吃了？",
+                "pinyin": "Nǐ zěnme bù chī le?",
+                "translation": {
+                  "uz": "Nega yemayapsan?",
+                  "ru": "Почему ты не ешь?",
+                  "tj": "Ту чаро намехӯрӣ?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U kelganini qanday bilding?",
+            "ru": "Как ты узнал, что он пришёл?",
+            "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+          },
+          "tokens": [
+            "来",
+            "门",
+            "怎么",
+            "知道",
+            "外",
+            "了",
+            "你",
+            "他"
+          ],
+          "answer_tokens": [
+            "你",
+            "怎么",
+            "知道",
+            "他",
+            "来",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你怎么知道他来了？ — Nǐ zěnme zhīdào tā lái le?",
+            "ru": "你怎么知道他来了？ — Nǐ zěnme zhīdào tā lái le?",
+            "tj": "你怎么知道他来了？ — Nǐ zěnme zhīdào tā lái le?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "自行车",
+          "pinyin": "zìxíngchē",
+          "options": [
+            "羊肉",
+            "外",
+            "自行车",
+            "门"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "自行车 — velosiped (zìxíngchē)",
+            "ru": "自行车 — велосипед (zìxíngchē)",
+            "tj": "自行车 — велосипед (zìxíngchē)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我在门外看见他的自行车了。",
+          "pinyin": "Wǒ zài mén wài kànjian tā de zìxíngchē le.",
+          "options": [
+            "他已经来了。",
+            "你怎么知道他来了？",
+            "我在门外看见他的自行车了。",
+            "你知道小王今天什么时候来学校吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我在门外看见他的自行车了。 — Eshik tashqarisida uning velosipedini ko'rdim.",
+            "ru": "我在门外看见他的自行车了。 — Я увидел его велосипед за дверью.",
+            "tj": "我在门外看见他的自行车了。 — Ман берун аз дар велосипеди ӯро дидам."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yordam bermoq' xitoycha qaysi?",
+            "ru": "'помогать' по-китайски?",
+            "tj": "'кӯмак кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "帮",
+            "外",
+            "门",
+            "自行车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yordam bermoq = 帮 (bāng)",
+            "ru": "помогать = 帮 (bāng)",
+            "tj": "кӯмак кардан = 帮 (bāng)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "今天的羊肉很好吃，你怎么不吃了？",
+          "pinyin": "Jīntiān de yángròu hěn hǎochī, nǐ zěnme bù chī le?",
+          "translation": {
+            "uz": "Bugungi qo'y go'shti juda mazali, nega yemayapsan?",
+            "ru": "Сегодняшняя баранина очень вкусная, почему ты не ешь?",
+            "tj": "Гӯшти гӯсфанди имрӯз бисёр болаззат аст, ту чаро намехӯрӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "qo'y",
+              "nega",
+              "tashqarisida",
+              "juda",
+              "go'shti",
+              "mazali",
+              "Bugungi",
+              "Eshik",
+              "yemayapsan"
+            ],
+            "ru": [
+              "Я",
+              "баранина",
+              "Сегодняшняя",
+              "вкусная",
+              "почему",
+              "очень",
+              "увидел",
+              "не",
+              "ешь",
+              "ты"
+            ],
+            "tj": [
+              "берун",
+              "гӯсфанди",
+              "чаро",
+              "имрӯз",
+              "Гӯшти",
+              "Ман",
+              "намехӯрӣ",
+              "болаззат",
+              "ту",
+              "бисёр",
+              "аст"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bugungi",
+              "qo'y",
+              "go'shti",
+              "juda",
+              "mazali",
+              "nega",
+              "yemayapsan"
+            ],
+            "ru": [
+              "Сегодняшняя",
+              "баранина",
+              "очень",
+              "вкусная",
+              "почему",
+              "ты",
+              "не",
+              "ешь"
+            ],
+            "tj": [
+              "Гӯшти",
+              "гӯсфанди",
+              "имрӯз",
+              "бисёр",
+              "болаззат",
+              "аст",
+              "ту",
+              "чаро",
+              "намехӯрӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "今天的羊肉很好吃，你怎么不吃了？ — Bugungi qo'y go'shti juda mazali, nega yemayapsan?",
+            "ru": "今天的羊肉很好吃，你怎么不吃了？ — Сегодняшняя баранина очень вкусная, почему ты не ешь?",
+            "tj": "今天的羊肉很好吃，你怎么不吃了？ — Гӯшти гӯсфанди имрӯз бисёр болаззат аст, ту чаро намехӯрӣ?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "外",
+          "pinyin": "wài",
+          "translation": {
+            "uz": "tashqarisi, tashqi tomon",
+            "ru": "снаружи, внешняя сторона",
+            "tj": "берун, тарафи берун"
+          }
+        }
+      ]
+    }
+  ]
+}

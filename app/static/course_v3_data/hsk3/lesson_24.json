@@ -1,0 +1,1071 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 24,
+  "source_lesson": 4,
+  "part_no": 6,
+  "part_count": 6,
+  "checkpoint": true,
+  "title": "她总是笑着跟客人说话",
+  "subtitle": {
+    "uz": "'又……又……', V₁着+V₂ hamroh harakat qolipini va '总是' ravishi bilan doim takrorlanadigan harakatlarni o'zlashtirish.",
+    "ru": "Освоить конструкцию 又……又……, сопутствующее действие V₁着+V₂ и привычные действия с наречием 总是.",
+    "tj": "Азхудкунии сохти 又……又……, амали ҳамроҳ V₁着+V₂ ва амалҳои одатии бо қайди 总是."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "比赛",
+      "pinyin": "bǐsài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "musobaqa",
+        "ru": "соревнование",
+        "tj": "мусобиқа"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "照片",
+      "pinyin": "zhàopiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "surat, fotosurat",
+        "ru": "фотография",
+        "tj": "акс"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "年级",
+      "pinyin": "niánjí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sinf, kurs, bosqich",
+        "ru": "класс, курс",
+        "tj": "синф, курс"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "又",
+      "pinyin": "yòu",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "ham, yana; 又...又... qolipida",
+        "ru": "и, также; в конструкции 又...又...",
+        "tj": "ҳам, боз; дар сохти 又...又..."
+      }
+    },
+    {
+      "no": 5,
+      "zh": "聪明",
+      "pinyin": "cōngming",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "aqlli, zukko",
+        "ru": "умный, сообразительный",
+        "tj": "доно, зирак"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "热情",
+      "pinyin": "rèqíng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "samimiy, iliq, faol",
+        "ru": "тёплый, радушный, энергичный",
+        "tj": "самимӣ, гарму ҷӯшон"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "努力",
+      "pinyin": "nǔlì",
+      "pos": "adj./v.",
+      "meaning": {
+        "uz": "tirishqoq; harakat qilmoq",
+        "ru": "старательный; стараться",
+        "tj": "боғайрат; кӯшиш кардан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "总是",
+      "pinyin": "zǒngshì",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "har doim, doim",
+        "ru": "всегда",
+        "tj": "ҳамеша"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "回答",
+      "pinyin": "huídá",
+      "pos": "v.",
+      "meaning": {
+        "uz": "javob bermoq",
+        "ru": "отвечать",
+        "tj": "ҷавоб додан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "站",
+      "pinyin": "zhàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "turmoq",
+        "ru": "стоять",
+        "tj": "истодан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "饿",
+      "pinyin": "è",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "och, qorni och",
+        "ru": "голодный",
+        "tj": "гурусна"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "超市",
+      "pinyin": "chāoshì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "supermarket",
+        "ru": "супермаркет",
+        "tj": "супермаркет"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "蛋糕",
+      "pinyin": "dàngāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tort, pirog",
+        "ru": "торт, пирожное",
+        "tj": "торт, кулча"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "年轻",
+      "pinyin": "niánqīng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yosh",
+        "ru": "молодой",
+        "tj": "ҷавон"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "认真",
+      "pinyin": "rènzhēn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "jiddiy, mas'uliyatli",
+        "ru": "серьёзный, добросовестный",
+        "tj": "ҷиддӣ, масъулиятнок"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "客人",
+      "pinyin": "kèrén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mehmon, mijoz",
+        "ru": "гость, клиент",
+        "tj": "меҳмон, муштарӣ"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "小明",
+      "pinyin": "Xiǎomíng",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Xiaoming (ism)",
+        "ru": "Сяомин (имя)",
+        "tj": "Сяомин (ном)"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "马可",
+      "pinyin": "Mǎkě",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Marco (ism)",
+        "ru": "Марко (имя)",
+        "tj": "Марко (ном)"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "李小美",
+      "pinyin": "Lǐ Xiǎoměi",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Li Xiaomei (ism)",
+        "ru": "Ли Сяомэй (имя)",
+        "tj": "Ли Сяомэй (ном)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "'又……又……' — ham...ham... (ikki xususiyat)",
+        "ru": "Конструкция «又……又……» — и...и... (два качества)",
+        "tj": "Сохти «又……又……» — ҳам...ҳам... (ду сифат)"
+      },
+      "title_zh": "\"又……又……\"",
+      "rule": {
+        "uz": "'又……又……' qolipi biror narsa yoki odamda bir vaqtda ikki sifat yoki holat borligini bildiradi.\nQolip: 又 + Sifat/fe'l + 又 + Sifat/fe'l\nMasalan:\n  又聪明又努力 (ham aqlli ham g'ayratli)\n  又新鲜又甜 (ham yangi ham shirin)\n  又便宜又好看 (ham arzon ham chiroyli)",
+        "ru": "Конструкция '又……又……' выражает наличие двух качеств или состояний одновременно.\nСтруктура: 又 + Прил./Гл. + 又 + Прил./Гл.\nНапример:\n  又聪明又努力 (и умный, и старательный)\n  又新鲜又甜 (и свежий, и сладкий)\n  又便宜又好看 (и дешёвый, и красивый)",
+        "tj": "Сохти '又……又……' мавҷудияти ду сифат ё ҳолатро дар як вақт ифода мекунад.\nСохт: 又 + Сифат/Феъл + 又 + Сифат/Феъл\nМасалан:\n  又聪明又努力 (ҳам зирак ҳам кӯшишкор)\n  又新鲜又甜 (ҳам тоза ҳам ширин)\n  又便宜又好看 (ҳам арзон ҳам зебо)"
+      },
+      "examples": [
+        {
+          "zh": "小丽又聪明又认真，总是第一个回答问题。",
+          "pinyin": "Xiǎo Lì yòu cōngmíng yòu rènzhēn, zǒngshì dì yī ge huídá wèntí.",
+          "translation": {
+            "uz": "Kichik Li ham aqlli ham mas'uliyatli, doim birinchi bo'lib savollarga javob beradi.",
+            "ru": "Маленькая Ли и умная, и ответственная — всегда первой отвечает на вопросы.",
+            "tj": "Сяо Ли ҳам зирак ҳам масъулиятшинос аст, ҳамеша аввалин ҷавоб медиҳад."
+          }
+        },
+        {
+          "zh": "超市里有很多又好吃又新鲜的东西。",
+          "pinyin": "Chāoshì lǐ yǒu hěn duō yòu hǎochī yòu xīnxiān de dōngxi.",
+          "translation": {
+            "uz": "Supermarketda juda ko'p ham mazali ham yangi narsalar bor.",
+            "ru": "В супермаркете много вкусного и свежего.",
+            "tj": "Дар супермаркет чизҳои ҳам хӯрданӣ ҳам тозаи зиёде ҳаст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Hamroh harakat: V₁着 + V₂",
+        "ru": "Сопутствующее действие: V₁着 + V₂",
+        "tj": "Амали ҳамроҳ: V₁着 + V₂"
+      },
+      "title_zh": "动作的伴随：V₁着(O₁) + V₂(O₂)",
+      "rule": {
+        "uz": "Bu qolip V₂ ni V₁ bilan bir vaqtda bajarishni ifodalaydi — V₁ asosiy harakatning shaklini beradi.\nQolip: V₁ + 着 + (O₁) + V₂ + (O₂)\n着 — birinchi harakatning davomiy holatini bildiradi.\nMasalan:\n  笑着说话 (kulib gaplashmoq)\n  站着工作 (tik turib ishlash)\n  听着音乐学习 (musiqa tinglab o'rganish)",
+        "ru": "Конструкция выражает выполнение V₂ одновременно с V₁ — V₁ задаёт способ действия.\nСтруктура: V₁ + 着 + (O₁) + V₂ + (O₂)\n着 — обозначает длящееся состояние первого действия.\nНапример:\n  笑着说话 (разговаривать с улыбкой)\n  站着工作 (работать стоя)\n  听着音乐学习 (учиться под музыку)",
+        "tj": "Ин сохт иҷрои V₂-ро дар як вақт бо V₁ ифода мекунад — V₁ тарзи амалро медиҳад.\nСохт: V₁ + 着 + (O₁) + V₂ + (O₂)\n着 — ҳолати давомандаи амали аввалро нишон медиҳад.\nМасалан:\n  笑着说话 (бо табассум сӯҳбат кардан)\n  站着工作 (истода кор кардан)\n  听着音乐学习 (бо мусиқа омӯхтан)"
+      },
+      "examples": [
+        {
+          "zh": "她总是笑着跟客人说话。",
+          "pinyin": "Tā zǒngshì xiào zhe gēn kèrén shuōhuà.",
+          "translation": {
+            "uz": "U doim kulib mehmonlar bilan gaplashadi.",
+            "ru": "Она всегда разговаривает с покупателями с улыбкой.",
+            "tj": "Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад."
+          }
+        },
+        {
+          "zh": "他站着工作了这么多小时，真不容易！",
+          "pinyin": "Tā zhàn zhe gōngzuò le zhème duō xiǎoshí, zhēn bù róngyì!",
+          "translation": {
+            "uz": "U shu qadar ko'p soat tik turib ishladi, bu rostdan ham oson emas!",
+            "ru": "Он столько часов проработал стоя — это действительно нелегко!",
+            "tj": "Вай ин қадар соатҳо истода кор кард, ин воқеан осон нест!"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "'总是'+V — doim takrorlanadigan harakat",
+        "ru": "«总是»+V — привычное, повторяющееся действие",
+        "tj": "«总是»+V — амали одатии такроршаванда"
+      },
+      "title_zh": "\"总是\"+V 表示习惯性动作",
+      "rule": {
+        "uz": "'总是' ravishi fe'l oldidan keladi va harakatning doim yoki ko'p marta takrorlanishini bildiradi.\nMa'nosi: doim, hamisha, ko'pincha\nQolip: 主语 + 总是 + V + (O)\nMasalan:\n  她总是第一个回答问题。(U doim birinchi bo'lib javob beradi.)\n  他总是迟到。(U doim kechikadi.)\n  我总是喝热茶。(Men doim issiq choy ichaman.)",
+        "ru": "Наречие '总是' стоит перед глаголом и означает постоянное или повторяющееся действие.\nЗначение: всегда, постоянно\nСтруктура: Подлеж. + 总是 + Гл. + (Доп.)\nНапример:\n  她总是第一个回答问题。(Она всегда первой отвечает.)\n  他总是迟到。(Он всегда опаздывает.)\n  我总是喝热茶。(Я всегда пью горячий чай.)",
+        "tj": "Қайди '总是' пеш аз феъл меояд ва амали доимӣ ё такроршавандаро ифода мекунад.\nМаъно: ҳамеша, доимо\nСохт: Мубтадо + 总是 + Феъл + (Иловаи феълӣ)\nМасалан:\n  她总是第一个回答问题。(Вай ҳамеша аввалин ҷавоб медиҳад.)\n  他总是迟到。(Вай ҳамеша дер меояд.)\n  我总是喝热茶。(Ман ҳамеша чои гарм менӯшам.)"
+      },
+      "examples": [
+        {
+          "zh": "她总是笑着跟客人说话，客人都很喜欢她。",
+          "pinyin": "Tā zǒngshì xiào zhe gēn kèrén shuōhuà, kèrén dōu hěn xǐhuan tā.",
+          "translation": {
+            "uz": "U doim kulib mehmonlar bilan gaplashadi, barcha mehmonlar uni yaxshi ko'rishadi.",
+            "ru": "Она всегда разговаривает с покупателями с улыбкой — все её любят.",
+            "tj": "Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад, ҳама харидорон ӯро дӯст медоранд."
+          }
+        },
+        {
+          "zh": "我的老师总是鼓励我，非常感谢他。",
+          "pinyin": "Wǒ de lǎoshī zǒngshì gǔlì wǒ, fēicháng gǎnxiè tā.",
+          "translation": {
+            "uz": "Mening o'qituvchim doim meni rag'batlantiradi, unga juda minnatdorman.",
+            "ru": "Мой учитель всегда меня поддерживает — очень ему благодарен.",
+            "tj": "Омӯзгорам ҳамеша маро ҳавасманд мекунад, хеле миннатдорам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfda",
+        "ru": "В классе",
+        "tj": "Дар синф"
+      },
+      "dialogue": [
+        {
+          "speaker": "小明",
+          "zh": "这是你们比赛的照片吗？",
+          "pinyin": "Zhè shì nǐmen bǐsài de zhàopiàn ma?",
+          "text": {
+            "uz": "Bu sizlarning musobaqadagi suratingizmi?",
+            "ru": "Это ваша фотография с соревнования?",
+            "tj": "Ин акси мусобиқаи шумост?"
+          }
+        },
+        {
+          "speaker": "马可",
+          "zh": "是，这是我们比赛后照的。",
+          "pinyin": "Shì, zhè shì wǒmen bǐsài hòu zhào de.",
+          "text": {
+            "uz": "Ha, bu musobaqadan keyin tushgan suratimiz.",
+            "ru": "Да, это фото мы сделали после соревнования.",
+            "tj": "Ҳа, ин аксро баъд аз мусобиқа гирифтаем."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "照得不错，你们都是一个年级的吗？",
+          "pinyin": "Zhào de búcuò, nǐmen dōu shì yí ge niánjí de ma?",
+          "text": {
+            "uz": "Yaxshi tushibdi. Hammangiz bir sinfdamisiz?",
+            "ru": "Хорошо получилось. Вы все из одного класса?",
+            "tj": "Хуб баромадааст. Ҳамаатон аз як синфед?"
+          }
+        },
+        {
+          "speaker": "马可",
+          "zh": "不是。那个又高又漂亮的女孩儿是二年级的。",
+          "pinyin": "Bú shì. Nà ge yòu gāo yòu piàoliang de nǚháir shì èr niánjí de.",
+          "text": {
+            "uz": "Yo'q. Ana u baland bo'yli va chiroyli qiz ikkinchi kursda.",
+            "ru": "Нет. Та высокая и красивая девушка со второго курса.",
+            "tj": "Не. Он духтари қадбаланду зебо аз курси дуюм аст."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "旁边那个拿着书笑的人是谁？",
+          "pinyin": "Pángbiān nà ge názhe shū xiào de rén shì shéi?",
+          "text": {
+            "uz": "Yonidagi kitob ushlab kulib turgan odam kim?",
+            "ru": "Кто тот человек рядом, который улыбается с книгой в руках?",
+            "tj": "Касе ки паҳлӯяш китоб дар даст механдад, кист?"
+          }
+        },
+        {
+          "speaker": "马可",
+          "zh": "那是我！",
+          "pinyin": "Nà shì wǒ!",
+          "text": {
+            "uz": "U menman!",
+            "ru": "Это я!",
+            "tj": "Ин манам!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda",
+        "ru": "В классе",
+        "tj": "Дар синф"
+      },
+      "dialogue": [
+        {
+          "speaker": "小丽",
+          "zh": "你觉得李小美怎么样？",
+          "pinyin": "Nǐ juéde Lǐ Xiǎoměi zěnmeyàng?",
+          "text": {
+            "uz": "Li Xiaomei haqida qanday fikrdasan?",
+            "ru": "Что ты думаешь о Ли Сяомэй?",
+            "tj": "Ба фикрат Ли Сяомэй чӣ гуна аст?"
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "她又聪明又热情，也很努力。",
+          "pinyin": "Tā yòu cōngming yòu rèqíng, yě hěn nǔlì.",
+          "text": {
+            "uz": "U ham aqlli, ham samimiy, juda tirishqoq ham.",
+            "ru": "Она и умная, и приветливая, и очень старательная.",
+            "tj": "Вай ҳам доно, ҳам самимӣ ва хеле боғайрат аст."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "我看她总是笑着回答老师的问题。",
+          "pinyin": "Wǒ kàn tā zǒngshì xiàozhe huídá lǎoshī de wèntí.",
+          "text": {
+            "uz": "Ko'rsam, u doim kulib o'qituvchining savollariga javob beradi.",
+            "ru": "Я вижу, она всегда отвечает на вопросы учителя с улыбкой.",
+            "tj": "Мебинам, вай ҳамеша бо табассум ба саволҳои муаллим ҷавоб медиҳад."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "她对每个人都笑，也常常对我笑。",
+          "pinyin": "Tā duì měi ge rén dōu xiào, yě chángcháng duì wǒ xiào.",
+          "text": {
+            "uz": "U hammaga kulib qaraydi, menga ham tez-tez kuladi.",
+            "ru": "Она улыбается каждому и часто улыбается мне.",
+            "tj": "Вай ба ҳар кас механдад, ба ман ҳам зуд-зуд механдад."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "你是不是喜欢她啊？",
+          "pinyin": "Nǐ shì bu shì xǐhuan tā a?",
+          "text": {
+            "uz": "Sen uni yoqtirib qoldingmi?",
+            "ru": "Ты что, она тебе нравится?",
+            "tj": "Ту ӯро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "喜欢她的人太多了，你看那些拿着鲜花站在门口的，都是等她的。",
+          "pinyin": "Xǐhuan tā de rén tài duō le, nǐ kàn nàxiē názhe xiānhuā zhàn zài ménkǒu de, dōu shì děng tā de.",
+          "text": {
+            "uz": "Uni yoqtiradiganlar juda ko'p. Qara, eshik oldida gul ushlab turganlarning hammasi uni kutyapti.",
+            "ru": "Тех, кому она нравится, очень много. Видишь тех с цветами у двери? Все ждут её.",
+            "tj": "Онҳое, ки ӯро дӯст медоранд, хеле зиёданд. Ана онҳое, ки дар назди дар гул доранд, ҳама ӯро интизоранд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Supermarket kirishida",
+        "ru": "У входа в супермаркет",
+        "tj": "Дар даромади супермаркет"
+      },
+      "dialogue": [
+        {
+          "speaker": "小刚",
+          "zh": "我有点儿饿了，我们进超市买点儿东西吧。",
+          "pinyin": "Wǒ yǒudiǎnr è le, wǒmen jìn chāoshì mǎi diǎnr dōngxi ba.",
+          "text": {
+            "uz": "Qornim biroz ochdi, supermarketga kirib biror narsa olaylik.",
+            "ru": "Я немного проголодался, давай зайдём в супермаркет и что-нибудь купим.",
+            "tj": "Ман каме гурусна шудам, ба супермаркет даромада чизе харем."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "好啊，这家超市的蛋糕又便宜又好吃，一块只要2.99元。",
+          "pinyin": "Hǎo a, zhè jiā chāoshì de dàngāo yòu piányi yòu hǎochī, yí kuài zhǐ yào èr diǎn jiǔ jiǔ yuán.",
+          "text": {
+            "uz": "Yaxshi, bu supermarketning torti ham arzon, ham mazali, bir bo'lagi faqat 2.99 yuan.",
+            "ru": "Хорошо, в этом супермаркете торт и дешёвый, и вкусный: кусок всего 2.99 юаня.",
+            "tj": "Хуб, торти ин супермаркет ҳам арзон, ҳам болаззат аст, як дона ҳамагӣ 2.99 юан."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "我们买两块，回家吃着蛋糕看电视，怎么样？",
+          "pinyin": "Wǒmen mǎi liǎng kuài, huí jiā chīzhe dàngāo kàn diànshì, zěnmeyàng?",
+          "text": {
+            "uz": "Ikki bo'lak olaylik, uyga borib tort yeb televizor ko'ramiz, qalay?",
+            "ru": "Купим два куска, дома будем есть торт и смотреть телевизор, как тебе?",
+            "tj": "Ду дона мехарем, ба хона рафта торт мехӯрему телевизор мебинем, чӣ хел?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "好啊，我再去买一些喝的。",
+          "pinyin": "Hǎo a, wǒ zài qù mǎi yìxiē hē de.",
+          "text": {
+            "uz": "Yaxshi, men yana ichimlik olib kelaman.",
+            "ru": "Хорошо, я ещё куплю что-нибудь выпить.",
+            "tj": "Хуб, ман боз каме нӯшокӣ мехарам."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "喝着咖啡吃蛋糕，太好了！",
+          "pinyin": "Hēzhe kāfēi chī dàngāo, tài hǎo le!",
+          "text": {
+            "uz": "Qahva ichib tort yeyish, juda zo'r!",
+            "ru": "Пить кофе и есть торт - отлично!",
+            "tj": "Қаҳва нӯшида торт хӯрдан - хеле хуб!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda",
+        "ru": "В ресторане",
+        "tj": "Дар тарабхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "经理",
+          "zh": "您好！您找谁？",
+          "pinyin": "Nín hǎo! Nín zhǎo shéi?",
+          "text": {
+            "uz": "Salom! Kimni izlayapsiz?",
+            "ru": "Здравствуйте! Кого вы ищете?",
+            "tj": "Салом! Шумо киро меҷӯед?"
+          }
+        },
+        {
+          "speaker": "客人",
+          "zh": "你们这儿是不是有一个又年轻又漂亮的服务员？",
+          "pinyin": "Nǐmen zhèr shì bu shì yǒu yí ge yòu niánqīng yòu piàoliang de fúwùyuán?",
+          "text": {
+            "uz": "Sizlarda yosh va chiroyli ofitsiant qiz bormi?",
+            "ru": "У вас здесь есть молодая и красивая официантка?",
+            "tj": "Дар ин ҷо як хизматрасони ҷавону зебо ҳаст?"
+          }
+        },
+        {
+          "speaker": "经理",
+          "zh": "我们这儿年轻、漂亮的服务员有很多。",
+          "pinyin": "Wǒmen zhèr niánqīng, piàoliang de fúwùyuán yǒu hěn duō.",
+          "text": {
+            "uz": "Bizda yosh va chiroyli ofitsiantlar ko'p.",
+            "ru": "У нас много молодых и красивых официанток.",
+            "tj": "Дар мо хизматрасонҳои ҷавону зебо бисёранд."
+          }
+        },
+        {
+          "speaker": "客人",
+          "zh": "她工作又认真又热情。",
+          "pinyin": "Tā gōngzuò yòu rènzhēn yòu rèqíng.",
+          "text": {
+            "uz": "U ishda ham jiddiy, ham samimiy.",
+            "ru": "Она работает и серьёзно, и приветливо.",
+            "tj": "Вай дар кор ҳам ҷиддӣ, ҳам самимӣ аст."
+          }
+        },
+        {
+          "speaker": "经理",
+          "zh": "您能再说说吗？",
+          "pinyin": "Nín néng zài shuōshuo ma?",
+          "text": {
+            "uz": "Yana biroz aytib bera olasizmi?",
+            "ru": "Можете рассказать ещё?",
+            "tj": "Метавонед боз каме гӯед?"
+          }
+        },
+        {
+          "speaker": "客人",
+          "zh": "她总是笑着跟客人说话。",
+          "pinyin": "Tā zǒngshì xiàozhe gēn kèrén shuōhuà.",
+          "text": {
+            "uz": "U doim mijozlar bilan kulib gaplashadi.",
+            "ru": "Она всегда разговаривает с гостями с улыбкой.",
+            "tj": "Вай ҳамеша бо муштариён бо табассум суҳбат мекунад."
+          }
+        },
+        {
+          "speaker": "经理",
+          "zh": "啊，我知道了，你说的是李小美吧？",
+          "pinyin": "A, wǒ zhīdào le, nǐ shuō de shì Lǐ Xiǎoměi ba?",
+          "text": {
+            "uz": "A, tushundim, siz Li Xiaomei haqida gapiryapsiz, shundaymi?",
+            "ru": "А, понял, вы говорите о Ли Сяомэй, да?",
+            "tj": "А, фаҳмидам, шумо дар бораи Ли Сяомэй мегӯед, ҳамин тавр?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "比赛",
+              {
+                "uz": "musobaqa",
+                "ru": "соревнование",
+                "tj": "мусобиқа"
+              }
+            ],
+            [
+              "照片",
+              {
+                "uz": "surat, fotosurat",
+                "ru": "фотография",
+                "tj": "акс"
+              }
+            ],
+            [
+              "年级",
+              {
+                "uz": "sinf, kurs, bosqich",
+                "ru": "класс, курс",
+                "tj": "синф, курс"
+              }
+            ],
+            [
+              "又",
+              {
+                "uz": "ham, yana; 又...又... qolipida",
+                "ru": "и, также; в конструкции 又...又...",
+                "tj": "ҳам, боз; дар сохти 又...又..."
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "努力 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 努力:",
+            "tj": "Маънои калимаи 努力-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            },
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
+              "uz": "tirishqoq; harakat qilmoq",
+              "ru": "старательный; стараться",
+              "tj": "боғайрат; кӯшиш кардан"
+            },
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "努力 = tirishqoq; harakat qilmoq (nǔlì)",
+            "ru": "努力 = старательный; стараться (nǔlì)",
+            "tj": "努力 = боғайрат; кӯшиш кардан (nǔlì)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U doim kulib mehmonlar bilan gaplashadi.» — xitoychada qaysi biri?",
+            "ru": "«Она всегда разговаривает с покупателями с улыбкой.» — какое предложение по-китайски?",
+            "tj": "«Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "她总是笑着跟客人说话。",
+            "他站着工作了这么多小时，真不容易！",
+            "我的老师总是鼓励我，非常感谢他。",
+            "她总是笑着跟客人说话，客人都很喜欢她。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "她总是笑着跟客人说话。 — Tā zǒngshì xiào zhe gēn kèrén shuōhuà.",
+            "ru": "她总是笑着跟客人说话。 — Tā zǒngshì xiào zhe gēn kèrén shuōhuà.",
+            "tj": "她总是笑着跟客人说话。 — Tā zǒngshì xiào zhe gēn kèrén shuōhuà."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "超市里有很多又好吃又新鲜的东西。",
+          "pinyin": "Chāoshì lǐ yǒu hěn duō yòu hǎochī yòu xīnxiān de dōngxi.",
+          "translation": {
+            "uz": "Supermarketda juda ko'p ham mazali ham yangi narsalar bor.",
+            "ru": "В супермаркете много вкусного и свежего.",
+            "tj": "Дар супермаркет чизҳои ҳам хӯрданӣ ҳам тозаи зиёде ҳаст."
+          },
+          "tokens": {
+            "uz": [
+              "mazali",
+              "bor",
+              "ham",
+              "Bu",
+              "narsalar",
+              "ham",
+              "yangi",
+              "juda",
+              "sizlarning",
+              "Supermarketda",
+              "ko'p"
+            ],
+            "ru": [
+              "и",
+              "ваша",
+              "Это",
+              "супермаркете",
+              "много",
+              "вкусного",
+              "свежего",
+              "В"
+            ],
+            "tj": [
+              "Дар",
+              "зиёде",
+              "супермаркет",
+              "хӯрданӣ",
+              "Ин",
+              "акси",
+              "ҳаст",
+              "тозаи",
+              "чизҳои",
+              "ҳам",
+              "ҳам"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Supermarketda",
+              "juda",
+              "ko'p",
+              "ham",
+              "mazali",
+              "ham",
+              "yangi",
+              "narsalar",
+              "bor"
+            ],
+            "ru": [
+              "В",
+              "супермаркете",
+              "много",
+              "вкусного",
+              "и",
+              "свежего"
+            ],
+            "tj": [
+              "Дар",
+              "супермаркет",
+              "чизҳои",
+              "ҳам",
+              "хӯрданӣ",
+              "ҳам",
+              "тозаи",
+              "зиёде",
+              "ҳаст"
+            ]
+          },
+          "explanation": {
+            "uz": "超市里有很多又好吃又新鲜的东西。 — Supermarketda juda ko'p ham mazali ham yangi narsalar bor.",
+            "ru": "超市里有很多又好吃又新鲜的东西。 — В супермаркете много вкусного и свежего.",
+            "tj": "超市里有很多又好吃又新鲜的东西。 — Дар супермаркет чизҳои ҳам хӯрданӣ ҳам тозаи зиёде ҳаст."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "聪明",
+              {
+                "uz": "aqlli, zukko",
+                "ru": "умный, сообразительный",
+                "tj": "доно, зирак"
+              }
+            ],
+            [
+              "热情",
+              {
+                "uz": "samimiy, iliq, faol",
+                "ru": "тёплый, радушный, энергичный",
+                "tj": "самимӣ, гарму ҷӯшон"
+              }
+            ],
+            [
+              "努力",
+              {
+                "uz": "tirishqoq; harakat qilmoq",
+                "ru": "старательный; стараться",
+                "tj": "боғайрат; кӯшиш кардан"
+              }
+            ],
+            [
+              "总是",
+              {
+                "uz": "har doim, doim",
+                "ru": "всегда",
+                "tj": "ҳамеша"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "聪明",
+          "pinyin": "cōngming",
+          "options": [
+            "聪明",
+            "年级",
+            "照片",
+            "比赛"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "聪明 — aqlli, zukko (cōngming)",
+            "ru": "聪明 — умный, сообразительный (cōngming)",
+            "tj": "聪明 — доно, зирак (cōngming)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "回答 talaffuzini tanlang:",
+            "ru": "Выберите произношение 回答:",
+            "tj": "Талаффузи 回答-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhàopiàn",
+            "huídá",
+            "niánjí",
+            "bǐsài"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "回答 — huídá",
+            "ru": "回答 — huídá",
+            "tj": "回答 — huídá"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "这是你们比赛的照片吗？",
+          "pinyin": "Zhè shì nǐmen bǐsài de zhàopiàn ma?",
+          "options": [
+            "不是。那个又高又漂亮的女孩儿是二年级的。",
+            "是，这是我们比赛后照的。",
+            "照得不错，你们都是一个年级的吗？",
+            "这是你们比赛的照片吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "这是你们比赛的照片吗？ — Bu sizlarning musobaqadagi suratingizmi?",
+            "ru": "这是你们比赛的照片吗？ — Это ваша фотография с соревнования?",
+            "tj": "这是你们比赛的照片吗？ — Ин акси мусобиқаи шумост?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____是你们比赛的照片吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "这",
+            "到",
+            "咖",
+            "因"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 这 — 这是你们比赛的照片吗？ (Bu sizlarning musobaqadagi suratingizmi?)",
+            "ru": "Верно: 这 — 这是你们比赛的照片吗？ (Это ваша фотография с соревнования?)",
+            "tj": "Дуруст: 这 — 这是你们比赛的照片吗？ (Ин акси мусобиқаи шумост?)"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "小明",
+              "zh": "这是你们比赛的照片吗？",
+              "blank": false
+            },
+            {
+              "speaker": "马可",
+              "zh": "是，这是我们比赛后照的。",
+              "blank": false
+            },
+            {
+              "speaker": "小明",
+              "zh": "照得不错，你们都是一个年级的吗？",
+              "blank": false
+            },
+            {
+              "speaker": "马可",
+              "zh": "不是。那个又高又漂亮的女孩儿是二年级的。",
+              "blank": false
+            },
+            {
+              "speaker": "小明",
+              "zh": "旁边那个拿着书笑的人是谁？",
+              "blank": false
+            },
+            {
+              "speaker": "马可",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "这是你们比赛的照片吗？",
+            "照得不错，你们都是一个年级的吗？",
+            "是，这是我们比赛后照的。",
+            "那是我！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 那是我！",
+            "ru": "Правильный ответ: 那是我！",
+            "tj": "Ҷавоби дуруст: 那是我！"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 马可 nima deydi?",
+            "ru": "Что 马可 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 马可 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "照得不错，你们都是一个年级的吗？",
+            "这是你们比赛的照片吗？",
+            "是，这是我们比赛后照的。",
+            "那是我！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 那是我！",
+            "ru": "Правильный ответ: 那是我！",
+            "tj": "Ҷавоби дуруст: 那是我！"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 小明 avval nima deydi?",
+            "ru": "Что 小明 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 小明 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "这是你们比赛的照片吗？",
+            "不是。那个又高又漂亮的女孩儿是二年级的。",
+            "是，这是我们比赛后照的。",
+            "照得不错，你们都是一个年级的吗？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 这是你们比赛的照片吗？",
+            "ru": "Правильный ответ: 这是你们比赛的照片吗？",
+            "tj": "Ҷавоби дуруст: 这是你们比赛的照片吗？"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "她工作又认真又热情。",
+          "pinyin": "Tā gōngzuò yòu rènzhēn yòu rèqíng.",
+          "translation": {
+            "uz": "U ishda ham jiddiy, ham samimiy.",
+            "ru": "Она работает и серьёзно, и приветливо.",
+            "tj": "Вай дар кор ҳам ҷиддӣ, ҳам самимӣ аст."
+          }
+        }
+      ]
+    }
+  ]
+}

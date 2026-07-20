@@ -1,0 +1,750 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 169,
+  "source_lesson": 19,
+  "part_no": 6,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "生活的味道",
+  "subtitle": {
+    "uz": "anketa, pasport, ovqat, raqs, ijara va sport haqida gapirish; so'roq olmoshlari, 上, 出来, 总的来说 va 在于 grammatikalarini ishlatish",
+    "ru": "говорить об анкетах, паспорте, еде, танцах, аренде и спорте; использовать вопросительные местоимения, 上, 出来, 总的来说 и 在于",
+    "tj": "дар бораи варақа, шиноснома, хӯрок, рақс, иҷора ва варзиш гуфтугӯ кардан; истифодаи ҷонишинҳои саволӣ, 上, 出来, 总的来说 ва 在于"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "转",
+      "pinyin": "zhuǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "burilmoq",
+        "ru": "поворачивать",
+        "tj": "гардондан, тоб хӯрдан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "租",
+      "pinyin": "zū",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ijaraga olmoq/bermoq",
+        "ru": "арендовать, сдавать",
+        "tj": "иҷора гирифтан/додан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "吵",
+      "pinyin": "chǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "shovqinli",
+        "ru": "шумный",
+        "tj": "серғавғо"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "厨房",
+      "pinyin": "chúfáng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oshxona",
+        "ru": "кухня",
+        "tj": "ошхона"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mark keyingi semestr uchun ariza to'ldiradi",
+        "ru": "Марк заполняет заявление на следующий семестр",
+        "tj": "Марк барои нимсолаи дигар ариза пур мекунад"
+      },
+      "dialogue": [
+        {
+          "speaker": "马克",
+          "zh": "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
+          "pinyin": "Lǎoshī, nín hǎo! Wǒ xīwàng xià ge xuéqī zài zhèli jìxù xuéxí, qǐngwèn hái xūyào chóngxīn shēnqǐng ma?",
+          "text": {
+            "uz": "Ustoz, salom! Keyingi semestrda ham shu yerda o'qishni davom ettirmoqchiman. Qayta ariza berishim kerakmi?",
+            "ru": "Здравствуйте, учитель! Я хочу продолжить учёбу здесь в следующем семестре. Нужно снова подавать заявление?",
+            "tj": "Устод, салом! Мехоҳам нимсолаи оянда ҳам дар ин ҷо таҳсилро давом диҳам. Оё боз ариза додан лозим?"
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。",
+          "pinyin": "Shì de. Gěi nǐ biǎogé, chūshēng nián yuè, xìngbié, hùzhào hàomǎ dōu yào tián, hái yǒu liánxì dìzhǐ, liánxì diànhuà.",
+          "text": {
+            "uz": "Ha. Mana senga anketa, tug'ilgan yil-oy, jins, pasport raqami, aloqa manzili va telefon raqamini to'ldirish kerak.",
+            "ru": "Да. Вот анкета, нужно заполнить дату рождения, пол, номер паспорта, контактный адрес и телефон.",
+            "tj": "Ҳа. Ин варақа, соли таваллуд, ҷинс, рақами шиноснома, суроға ва телефони тамосро пур кардан лозим."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？",
+          "pinyin": "Zhēn bàoqiàn, wǒ bù xiǎoxīn bǎ hùzhào hàomǎ tián cuò le, nín néng zài gěi wǒ yí fèn xīn de shēnqǐngbiǎo ma?",
+          "text": {
+            "uz": "Uzr, bexosdan pasport raqamini noto'g'ri to'ldirib qo'ydim. Yangi ariza varaqasini yana bera olasizmi?",
+            "ru": "Извините, я случайно неправильно заполнил номер паспорта. Можете дать мне новую анкету?",
+            "tj": "Узр, нохост рақами шиносномаро нодуруст пур кардам. Метавонед як аризаи нав диҳед?"
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "没关系，不用道歉，谁都有粗心填错的时候。申请表都被别人拿走了，我给你重新打印一份，你等一下。",
+          "pinyin": "Méi guānxi, búyòng dàoqiàn, shéi dōu yǒu cūxīn tián cuò de shíhou. Shēnqǐngbiǎo dōu bèi biérén názǒu le, wǒ gěi nǐ chóngxīn dǎyìn yí fèn, nǐ děng yíxià.",
+          "text": {
+            "uz": "Hechqisi yo'q, uzr so'rash shart emas, har kim beparvolik qilib xato to'ldirishi mumkin. Ariza blankalarini boshqalar olib ketibdi, senga qayta chiqarib beraman, bir oz kut.",
+            "ru": "Ничего, не извиняйся, у всех бывает, что по невнимательности заполняют неправильно. Все бланки забрали, я распечатаю тебе ещё один, подожди.",
+            "tj": "Ҳеҷ гап не, узр напурс, ҳар кас гоҳе аз беэътиноӣ хато пур мекунад. Варақаҳоро дигарон гирифтаанд, ман бароят дубора чоп мекунам, каме интизор шав."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "这次我按照要求都填写完了，请问还需要做别的事情吗？",
+          "pinyin": "Zhè cì wǒ ànzhào yāoqiú dōu tiánxiě wán le, qǐngwèn hái xūyào zuò biéde shìqing ma?",
+          "text": {
+            "uz": "Bu safar hammasini talab bo'yicha to'ldirib bo'ldim. Yana boshqa ish qilish kerakmi?",
+            "ru": "На этот раз я всё заполнил по требованиям. Нужно ещё что-нибудь?",
+            "tj": "Ин дафъа ҳамаашро мувофиқи талаб пур кардам. Боз кори дигар лозим аст?"
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "请把你的护照给我，我们要把护照复印一下。",
+          "pinyin": "Qǐng bǎ nǐ de hùzhào gěi wǒ, wǒmen yào bǎ hùzhào fùyìn yíxià.",
+          "text": {
+            "uz": "Pasportingni menga ber, pasportdan nusxa olishimiz kerak.",
+            "ru": "Дай мне, пожалуйста, паспорт, нам нужно сделать копию.",
+            "tj": "Лутфан шиносномаатро диҳ, мо бояд нусха кунем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Jing chuchvara qilayotib qo'lini kesib oladi",
+        "ru": "Ван Цзин порезала руку, готовя пельмени",
+        "tj": "Ван Ҷинг ҳангоми тайёр кардани самбӯса дасташро бурид"
+      },
+      "dialogue": [
+        {
+          "speaker": "李进",
+          "zh": "呀，你的手怎么流血了？等一下，我给你包起来。",
+          "pinyin": "Ya, nǐ de shǒu zěnme liú xiě le? Děng yíxià, wǒ gěi nǐ bāo qǐlai.",
+          "text": {
+            "uz": "Voy, qo'ling nega qonayapti? Bir oz kut, bog'lab qo'yaman.",
+            "ru": "Ой, почему у тебя кровь на руке? Подожди, я перевяжу.",
+            "tj": "Вой, чаро дастат хун шуд? Каме ист, ман мебандам."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "没关系，我想给你做点儿羊肉饺子，刚才用刀切肉的时候把手弄破了。",
+          "pinyin": "Méi guānxi, wǒ xiǎng gěi nǐ zuò diǎnr yángròu jiǎozi, gāngcái yòng dāo qiē ròu de shíhou bǎ shǒu nòng pò le.",
+          "text": {
+            "uz": "Hechqisi yo'q, senga qo'y go'shtli chuchvara qilmoqchi edim, hozir pichoq bilan go'sht kesayotib qo'limni shikastlab oldim.",
+            "ru": "Ничего, я хотела приготовить тебе пельмени с бараниной, только что, когда резала мясо ножом, поранила руку.",
+            "tj": "Ҳеҷ гап не, мехостам бароят самбӯсаи гӯсфандӣ кунам, ҳозир ҳангоми бо корд гӯшт буридан дастамро бурида гирифтам."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "你也太不小心了，不过好像不太严重，过几天就好了。衣服上也有一点儿血，你把衣服脱下来，我给你洗洗。",
+          "pinyin": "Nǐ yě tài bù xiǎoxīn le, búguò hǎoxiàng bú tài yánzhòng, guò jǐ tiān jiù hǎo le. Yīfu shang yě yǒu yìdiǎnr xiě, nǐ bǎ yīfu tuō xiàlai, wǒ gěi nǐ xǐxi.",
+          "text": {
+            "uz": "Juda ehtiyotsiz ekansan, lekin uncha jiddiy emasga o'xshaydi, bir necha kunda tuzaladi. Kiyimingga ham ozgina qon tekkan, yechib ber, yuvib qo'yaman.",
+            "ru": "Ты слишком невнимательна, но, похоже, не очень серьёзно, через пару дней пройдёт. На одежде тоже немного крови, сними, я постираю.",
+            "tj": "Ту хеле беэҳтиётӣ, аммо гӯё ҷиддӣ нест, баъди чанд рӯз хуб мешавад. Ба либос ҳам каме хун расидааст, кашида деҳ, мешӯям."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "看来今天吃不上羊肉饺子了。",
+          "pinyin": "Kànlái jīntiān chī bu shàng yángròu jiǎozi le.",
+          "text": {
+            "uz": "Ko'rinishidan, bugun qo'y go'shtli chuchvara yeyolmaymiz.",
+            "ru": "Похоже, сегодня не поедим пельмени с бараниной.",
+            "tj": "Маълум мешавад, имрӯз самбӯсаи гӯсфандӣ хӯрда наметавонем."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "那我们就吃点儿别的。我常去的那家理发店附近有个餐厅，那里的包子很好吃，我一会儿去买一点儿。",
+          "pinyin": "Nà wǒmen jiù chī diǎnr biéde. Wǒ cháng qù de nà jiā lǐfàdiàn fùjìn yǒu ge cāntīng, nàli de bāozi hěn hǎochī, wǒ yíhuìr qù mǎi yìdiǎnr.",
+          "text": {
+            "uz": "Unda boshqa narsa yeymiz. Men tez-tez boradigan sartaroshxona yaqinida restoran bor, u yerning baozisi juda mazali, bir ozdan keyin olib kelaman.",
+            "ru": "Тогда поедим что-нибудь другое. Рядом с парикмахерской, куда я часто хожу, есть ресторан, там вкусные баоцзы, я скоро куплю немного.",
+            "tj": "Пас чизи дигар мехӯрем. Наздики сартарошхонае, ки бисёр меравам, тарабхона ҳаст, баозии он ҷо болаззат аст, ҳозир харида меорам."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "好吧，我衣服口袋里有十几块零钱，买包子应该够。",
+          "pinyin": "Hǎo ba, wǒ yīfu kǒudài li yǒu shí jǐ kuài língqián, mǎi bāozi yīnggāi gòu.",
+          "text": {
+            "uz": "Mayli, kiyimim cho'ntagida o'n necha yuan mayda pul bor, baozi olishga yetsa kerak.",
+            "ru": "Хорошо, в кармане одежды есть мелочь, больше десяти юаней, должно хватить на баоцзы.",
+            "tj": "Хуб, дар ҷайби либосам каме пули майда, бештар аз даҳ юан ҳаст, барои харидани баози бояд расад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Anna Markga xitoycha raqs harakatini ko'rsatadi",
+        "ru": "Анна показывает Марку движение китайского танца",
+        "tj": "Анна ба Марк ҳаракати рақси чиниро нишон медиҳад"
+      },
+      "dialogue": [
+        {
+          "speaker": "马克",
+          "zh": "我早上跟你打招呼，你没看见。想不到又在这儿碰见你了。",
+          "pinyin": "Wǒ zǎoshang gēn nǐ dǎ zhāohu, nǐ méi kànjiàn. Xiǎng bu dào yòu zài zhèr pèngjiàn nǐ le.",
+          "text": {
+            "uz": "Ertalab senga salom bergandim, ko'rmading. Bu yerda yana uchrataman deb o'ylamagandim.",
+            "ru": "Утром я поздоровался с тобой, ты не заметила. Не думал снова встретить тебя здесь.",
+            "tj": "Саҳар ба ту салом додам, надидӣ. Фикр намекардам, ки боз дар ин ҷо мебинамат."
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "真是对不起，我不是故意的，今天早上我忘戴眼镜了，看不清楚。",
+          "pinyin": "Zhēn shì duìbuqǐ, wǒ bú shì gùyì de, jīntiān zǎoshang wǒ wàng dài yǎnjìng le, kàn bù qīngchu.",
+          "text": {
+            "uz": "Kechirasan, ataylab emas, bugun ertalab ko'zoynagimni taqishni unutibman, aniq ko'ra olmadim.",
+            "ru": "Извини, я не специально, сегодня утром забыла надеть очки и плохо видела.",
+            "tj": "Бубахш, қасдан не, имрӯз саҳар айнак пӯшиданро фаромӯш кардам, равшан надидам."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "刚才我在旁边看到你跳中国舞了，没看出来你跳得这么好！难道你以前在你们国家就学过中国舞蹈吗？",
+          "pinyin": "Gāngcái wǒ zài pángbiān kàndào nǐ tiào Zhōngguó wǔ le, méi kàn chūlai nǐ tiào de zhème hǎo! Nándào nǐ yǐqián zài nǐmen guójiā jiù xuéguo Zhōngguó wǔdǎo ma?",
+          "text": {
+            "uz": "Hozir yon tomondan xitoycha raqsga tushayotganingni ko'rdim, bunchalik yaxshi raqs tushishingni bilmagan ekanman! Nahotki avval o'z yurtingda xitoycha raqs o'rgangan bo'lsang?",
+            "ru": "Я только что видел, как ты танцуешь китайский танец, не знал, что ты так хорошо танцуешь! Разве ты раньше у себя в стране учила китайский танец?",
+            "tj": "Ҳозир аз паҳлӯ дидам, ки рақси чинӣ мерақсӣ, намедонистам ин қадар хуб мерақсӣ! Магар пештар дар кишвари худ рақси чинӣ омӯхта будӣ?"
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "我小时候妈妈教我跳过两年的舞，所以稍微有点儿基础。再说，舞蹈毕竟是一门艺术，也是一种“语言”，这种语言与国籍无关，无论哪个国家的人都能看懂。",
+          "pinyin": "Wǒ xiǎoshíhou māma jiāo wǒ tiàoguo liǎng nián de wǔ, suǒyǐ shāowēi yǒu diǎnr jīchǔ. Zàishuō, wǔdǎo bìjìng shì yì mén yìshù, yě shì yì zhǒng “yǔyán”, zhè zhǒng yǔyán yǔ guójí wúguān, wúlùn nǎ ge guójiā de rén dōu néng kàndǒng.",
+          "text": {
+            "uz": "Bolaligimda onam ikki yil raqs o'rgatgan, shuning uchun ozgina asosim bor. Qolaversa, raqs baribir san'at va bir tur “til”; bu til fuqarolik bilan bog'liq emas, qaysi davlat odami bo'lmasin tushuna oladi.",
+            "ru": "В детстве мама два года учила меня танцам, поэтому есть небольшая база. К тому же танец - искусство и своего рода «язык», он не связан с гражданством, его могут понять люди любой страны.",
+            "tj": "Дар кӯдакӣ модарам ду сол ба ман рақс омӯзонида буд, барои ҳамин каме асос дорам. Боз рақс охир санъат ва як навъ «забон» аст; ин забон ба шаҳрвандӣ рабт надорад, одамони ҳар кишвар мефаҳманд."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "太好了！我刚学习跳这种舞没多久，你帮我看看，我的这个动作对不对。",
+          "pinyin": "Tài hǎo le! Wǒ gāng xuéxí tiào zhè zhǒng wǔ méi duōjiǔ, nǐ bāng wǒ kànkan, wǒ de zhège dòngzuò duì bu duì.",
+          "text": {
+            "uz": "Juda yaxshi! Men bu raqsni endigina o'rganyapman, harakatim to'g'rimi, ko'rib ber.",
+            "ru": "Отлично! Я только недавно начал учить этот танец, посмотри, правильно ли я делаю движение.",
+            "tj": "Бисёр хуб! Ман ин рақсро нав омӯхта истодаам, нигоҳ кун, ҳаракатам дуруст аст ё не."
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "你这个动作做得还是不太标准，我给你跳一遍。你仔细看着，应该像我这样：先抬胳膊，然后抬腿，最后腿再向右转一下。",
+          "pinyin": "Nǐ zhège dòngzuò zuò de háishi bú tài biāozhǔn, wǒ gěi nǐ tiào yí biàn. Nǐ zǐxì kàn zhe, yīnggāi xiàng wǒ zhèyàng: xiān tái gēbo, ránhòu tái tuǐ, zuìhòu tuǐ zài xiàng yòu zhuǎn yíxià.",
+          "text": {
+            "uz": "Bu harakating hali uncha standart emas, men bir marta ko'rsataman. Diqqat bilan qara: avval qo'lni ko'tarish, keyin oyoqni ko'tarish, oxirida oyoqni o'ngga burish kerak.",
+            "ru": "Это движение у тебя пока не очень стандартное, я покажу один раз. Смотри внимательно: сначала подними руку, потом ногу, в конце поверни ногу вправо.",
+            "tj": "Ин ҳаракатат ҳанӯз стандартӣ нест, ман як бор нишон медиҳам. Диққат кун: аввал даст, баъд пойро боло кун, дар охир пойро ба рост гардон."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Markning uy almashtirish va ijara e'loni haqida matn",
+        "ru": "Текст о том, как Марк хотел сменить жильё по объявлению",
+        "tj": "Матн дар бораи иваз кардани хона ва эълони иҷора"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "马克去年租的房子离马路很近，对面有大大小小的商店，周围环境非常吵。所以，房子还没到期，马克就开始着急换房子了。",
+          "pinyin": "Mǎkè qùnián zū de fángzi lí mǎlù hěn jìn, duìmiàn yǒu dàdà xiǎoxiǎo de shāngdiàn, zhōuwéi huánjìng fēicháng chǎo. Suǒyǐ, fángzi hái méi dàoqī, Mǎkè jiù kāishǐ zháojí huàn fángzi le.",
+          "text": {
+            "uz": "Mark o'tgan yili ijaraga olgan uy yo'lga juda yaqin, qarshisida katta-kichik do'konlar bor, atrofi juda shovqinli. Shuning uchun ijara muddati tugamasdan uyni almashtirishga shoshila boshladi.",
+            "ru": "Квартира, которую Марк снял в прошлом году, была очень близко к дороге, напротив много магазинов, вокруг очень шумно. Поэтому ещё до окончания срока аренды Марк начал срочно искать другое жильё.",
+            "tj": "Хонае, ки Марк соли гузашта иҷора гирифта буд, ба роҳ хеле наздик буд, рӯ ба рӯяш дӯконҳои калон-хурд зиёд, атрофаш бисёр серғавғо. Барои ҳамин пеш аз анҷоми муҳлат ба иваз кардани хона шитоб кард."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "有一天，他在小区门口看到一个租房子的广告。广告上说房子交通方便，周围很安静，厨房很大。",
+          "pinyin": "Yǒu yì tiān, tā zài xiǎoqū ménkǒu kàndào yí ge zū fángzi de guǎnggào. Guǎnggào shang shuō fángzi jiāotōng fāngbiàn, zhōuwéi hěn ānjìng, chúfáng hěn dà.",
+          "text": {
+            "uz": "Bir kuni u turar-joy kiraverishida uy ijarasi e'lonini ko'rdi. E'londa transport qulay, atrof sokin, oshxona katta deyilgan edi.",
+            "ru": "Однажды у входа в жилой комплекс он увидел объявление о сдаче квартиры. В объявлении говорилось, что транспорт удобный, вокруг тихо, кухня большая.",
+            "tj": "Як рӯз дар назди даромади маҳалла эълони иҷораи хона дид. Дар эълон навишта буд: нақлиёт қулай, атроф ором, ошхона калон."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "总的来说，这套房子他很满意，于是他就记下了房东的手机号码。",
+          "pinyin": "Zǒng de lái shuō, zhè tào fángzi tā hěn mǎnyì, yúshì tā jiù jìxià le fángdōng de shǒujī hàomǎ.",
+          "text": {
+            "uz": "Umuman olganda, bu uy unga juda yoqdi, shuning uchun uy egasining telefon raqamini yozib oldi.",
+            "ru": "В целом квартира ему очень понравилась, поэтому он записал номер телефона арендодателя.",
+            "tj": "Умуман, ин хона ба ӯ хеле маъқул шуд, бинобар ин рақами телефони соҳиби хонаро навишт."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "可回家后打电话，电话总是占线。第二天，他路过小区门口时，又仔细看了一下广告，原来在记号码的时候写错了一个数字。",
+          "pinyin": "Kě huí jiā hòu dǎ diànhuà, diànhuà zǒngshì zhànxiàn. Dì-èr tiān, tā lùguò xiǎoqū ménkǒu shí, yòu zǐxì kàn le yíxià guǎnggào, yuánlái zài jì hàomǎ de shíhou xiě cuò le yí ge shùzì.",
+          "text": {
+            "uz": "Lekin uyga qaytib qo'ng'iroq qilsa, telefon doim band edi. Ertasi kuni kiraverishdan o'tayotib e'lonni yana diqqat bilan ko'rdi: raqamni yozganda bitta raqamni noto'g'ri yozgan ekan.",
+            "ru": "Но когда он вернулся домой и позвонил, линия всё время была занята. На следующий день, проходя мимо входа, он снова внимательно посмотрел объявление и понял, что при записи номера ошибся одной цифрой.",
+            "tj": "Аммо ба хона баргашта занг зад, телефон ҳамеша банд буд. Рӯзи дигар аз назди даромад гузашта, эълонро боз бодиққат дид: маълум шуд, ки ҳангоми навиштани рақам як ададро хато кардааст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xitoyda kungfu, stol tennisi va sport haqida matn",
+        "ru": "Текст о кунфу, настольном теннисе и спорте в Китае",
+        "tj": "Матн дар бораи кунгфу, тенниси рӯимизӣ ва варзиш дар Чин"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "很多外国人认为所有中国人都会功夫和乒乓球，其实只是喜爱这两种运动的中国人比较多。",
+          "pinyin": "Hěn duō wàiguó rén rènwéi suǒyǒu Zhōngguó rén dōu huì gōngfu hé pīngpāngqiú, qíshí zhǐshì xǐ'ài zhè liǎng zhǒng yùndòng de Zhōngguó rén bǐjiào duō.",
+          "text": {
+            "uz": "Ko'p chet elliklar barcha xitoyliklar kungfu va stol tennisini biladi deb o'ylaydi. Aslida bu ikki sportni yaxshi ko'radigan xitoyliklar ko'proq, xolos.",
+            "ru": "Многие иностранцы думают, что все китайцы умеют кунфу и настольный теннис. На самом деле просто много китайцев любят эти два вида спорта.",
+            "tj": "Бисёр хориҷиҳо фикр мекунанд, ки ҳама чиниҳо кунгфу ва тенниси рӯимизиро медонанд. Дар асл танҳо дӯстдорони ин ду варзиш дар Чин зиёданд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "中国人特别喜欢打乒乓球，在中国你会发现到处都有乒乓球桌。",
+          "pinyin": "Zhōngguó rén tèbié xǐhuan dǎ pīngpāngqiú, zài Zhōngguó nǐ huì fāxiàn dàochù dōu yǒu pīngpāngqiú zhuō.",
+          "text": {
+            "uz": "Xitoyliklar stol tennisini juda yaxshi ko'radi; Xitoyda hamma joyda tennis stollarini ko'rasiz.",
+            "ru": "Китайцы особенно любят играть в настольный теннис; в Китае повсюду можно увидеть столы для пинг-понга.",
+            "tj": "Чиниҳо тенниси рӯимизиро хеле дӯст медоранд; дар Чин қариб ҳама ҷо мизҳои пингпонг ҳаст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "像乒乓球、羽毛球、跑步等运动对条件要求不高，所以它们都成为人们运动不错的选择。",
+          "pinyin": "Xiàng pīngpāngqiú, yǔmáoqiú, pǎobù děng yùndòng duì tiáojiàn yāoqiú bù gāo, suǒyǐ tāmen dōu chéngwéi rénmen yùndòng búcuò de xuǎnzé.",
+          "text": {
+            "uz": "Stol tennisi, badminton, yugurish kabi sportlar sharoitga yuqori talab qo'ymaydi, shuning uchun odamlar uchun yaxshi tanlovga aylangan.",
+            "ru": "Такие виды спорта, как настольный теннис, бадминтон и бег, не требуют особых условий, поэтому стали хорошим выбором для занятий.",
+            "tj": "Варзишҳое мисли пингпонг, бадминтон ва давидан шароити зиёд намехоҳанд, барои ҳамин интихоби хуби одамон шудаанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "人们常说“生命在于运动”，所以很多人一到周末就会到体育馆打几场球。",
+          "pinyin": "Rénmen cháng shuō “shēngmìng zài yú yùndòng”, suǒyǐ hěn duō rén yí dào zhōumò jiù huì dào tǐyùguǎn dǎ jǐ chǎng qiú.",
+          "text": {
+            "uz": "Odamlar ko'pincha “hayot harakatdadir” deyishadi, shuning uchun ko'pchilik dam olish kunlari sport zaliga borib bir necha o'yin o'ynaydi.",
+            "ru": "Люди часто говорят: «жизнь в движении», поэтому многие по выходным идут в спортзал сыграть несколько игр.",
+            "tj": "Одамон бисёр мегӯянд: «зиндагӣ дар ҳаракат аст», барои ҳамин бисёриҳо рӯзҳои истироҳат ба толори варзиш рафта чанд бозӣ мекунанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "“乒乓球”这个名字也很有意思，“乒”和“乓”就是打球时发出的声音。在看乒乓球比赛时，尤其是在运动员发球的时候，观众要安静，禁止大声讲话或者离开座位随便走动。",
+          "pinyin": "“Pīngpāngqiú” zhège míngzi yě hěn yǒu yìsi, “pīng” hé “pāng” jiù shì dǎ qiú shí fāchū de shēngyīn. Zài kàn pīngpāngqiú bǐsài shí, yóuqí shì zài yùndòngyuán fā qiú de shíhou, guānzhòng yào ānjìng, jìnzhǐ dàshēng jiǎnghuà huòzhě líkāi zuòwèi suíbiàn zǒudòng.",
+          "text": {
+            "uz": "“Pingpong” nomi ham qiziq: “ping” va “pong” to'p urilganda chiqadigan tovushdir. Stol tennisi musobaqasini tomosha qilayotganda, ayniqsa sportchi to'p uzatayotganda, tomoshabinlar jim turishi, baland gapirmasligi va o'rindiqdan turib yurmasligi kerak.",
+            "ru": "Название «пинг-понг» тоже интересно: «пинг» и «понг» - это звуки удара по мячу. Во время матча, особенно при подаче, зрители должны быть тихими; запрещено громко говорить или уходить с места и ходить.",
+            "tj": "Номи «пингпонг» ҳам ҷолиб аст: «пинг» ва «понг» садои задани тӯб аст. Ҳангоми тамошои мусобиқа, махсусан вақти хизмат, тамошобинон бояд ором бошанд; баланд гап задан ё аз ҷой хеста гаштан манъ аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "转",
+            "pinyin": "zhuǎn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "burilmoq",
+              "ru": "поворачивать",
+              "tj": "гардондан, тоб хӯрдан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "转",
+          "pinyin": "zhuǎn",
+          "translation": {
+            "uz": "burilmoq",
+            "ru": "поворачивать",
+            "tj": "гардондан, тоб хӯрдан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'burilmoq' xitoycha qaysi?",
+            "ru": "'поворачивать' по-китайски?",
+            "tj": "'гардондан, тоб хӯрдан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "性别",
+            "出生",
+            "学期",
+            "转"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "burilmoq = 转 (zhuǎn)",
+            "ru": "поворачивать = 转 (zhuǎn)",
+            "tj": "гардондан, тоб хӯрдан = 转 (zhuǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "租",
+            "pinyin": "zū",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ijaraga olmoq/bermoq",
+              "ru": "арендовать, сдавать",
+              "tj": "иҷора гирифтан/додан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "租",
+          "pinyin": "zū",
+          "options": [
+            "出生",
+            "学期",
+            "租",
+            "性别"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "租 — ijaraga olmoq/bermoq (zū)",
+            "ru": "租 — арендовать, сдавать (zū)",
+            "tj": "租 — иҷора гирифтан/додан (zū)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "吵",
+            "pinyin": "chǎo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "shovqinli",
+              "ru": "шумный",
+              "tj": "серғавғо"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "吵 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 吵:",
+            "tj": "Маънои калимаи 吵-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
+            },
+            {
+              "uz": "shovqinli",
+              "ru": "шумный",
+              "tj": "серғавғо"
+            },
+            {
+              "uz": "jins",
+              "ru": "пол",
+              "tj": "ҷинс"
+            },
+            {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "吵 = shovqinli (chǎo)",
+            "ru": "吵 = шумный (chǎo)",
+            "tj": "吵 = серғавғо (chǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "厨房",
+            "pinyin": "chúfáng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oshxona",
+              "ru": "кухня",
+              "tj": "ошхона"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chúfáng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chúfáng?",
+            "tj": "chúfáng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "出生",
+            "厨房",
+            "性别",
+            "学期"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "厨房 = oshxona (chúfáng)",
+            "ru": "厨房 = кухня (chúfáng)",
+            "tj": "厨房 = ошхона (chúfáng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "转 talaffuzini tanlang:",
+            "ru": "Выберите произношение 转:",
+            "tj": "Талаффузи 转-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chūshēng",
+            "xìngbié",
+            "xuéqī",
+            "zhuǎn"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "转 — zhuǎn",
+            "ru": "转 — zhuǎn",
+            "tj": "转 — zhuǎn"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "转",
+              {
+                "uz": "burilmoq",
+                "ru": "поворачивать",
+                "tj": "гардондан, тоб хӯрдан"
+              }
+            ],
+            [
+              "租",
+              {
+                "uz": "ijaraga olmoq/bermoq",
+                "ru": "арендовать, сдавать",
+                "tj": "иҷора гирифтан/додан"
+              }
+            ],
+            [
+              "吵",
+              {
+                "uz": "shovqinli",
+                "ru": "шумный",
+                "tj": "серғавғо"
+              }
+            ],
+            [
+              "厨房",
+              {
+                "uz": "oshxona",
+                "ru": "кухня",
+                "tj": "ошхона"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "破 talaffuzini tanlang:",
+            "ru": "Выберите произношение 破:",
+            "tj": "Талаффузи 破-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xìngbié",
+            "chūshēng",
+            "pò",
+            "xuéqī"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "破 — pò",
+            "ru": "破 — pò",
+            "tj": "破 — pò"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "转",
+              {
+                "uz": "burilmoq",
+                "ru": "поворачивать",
+                "tj": "гардондан, тоб хӯрдан"
+              }
+            ],
+            [
+              "租",
+              {
+                "uz": "ijaraga olmoq/bermoq",
+                "ru": "арендовать, сдавать",
+                "tj": "иҷора гирифтан/додан"
+              }
+            ],
+            [
+              "吵",
+              {
+                "uz": "shovqinli",
+                "ru": "шумный",
+                "tj": "серғавғо"
+              }
+            ],
+            [
+              "厨房",
+              {
+                "uz": "oshxona",
+                "ru": "кухня",
+                "tj": "ошхона"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "转",
+          "pinyin": "zhuǎn",
+          "options": [
+            "转",
+            "学期",
+            "性别",
+            "出生"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "转 — burilmoq (zhuǎn)",
+            "ru": "转 — поворачивать (zhuǎn)",
+            "tj": "转 — гардондан, тоб хӯрдан (zhuǎn)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "转",
+          "pinyin": "zhuǎn",
+          "translation": {
+            "uz": "burilmoq",
+            "ru": "поворачивать",
+            "tj": "гардондан, тоб хӯрдан"
+          }
+        }
+      ]
+    }
+  ]
+}

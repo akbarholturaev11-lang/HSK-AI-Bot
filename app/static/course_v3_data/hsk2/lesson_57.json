@@ -1,0 +1,747 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 57,
+  "source_lesson": 12,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你穿得太少了",
+  "subtitle": {
+    "uz": "Holat to'ldiruvchisi ('de' yuklamasi bilan) va 'bǐ' qiyoslash gapining kengaytirilgan shaklini o'rganish.",
+    "ru": "Изучение дополнения состояния (с частицей 'de') и расширенной формы конструкции сравнения 'bǐ'.",
+    "tj": "Омӯзиши илова ба ҳолат (бо зарраи 'de') ва шакли васеъшудаи конструксияи муқоисавии 'bǐ'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "少",
+      "pinyin": "shǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "oz, kam",
+        "ru": "мало, немного",
+        "tj": "кам, андак"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "早",
+      "pinyin": "zǎo",
+      "pos": "adj./adv.",
+      "meaning": {
+        "uz": "erta; ertaroq",
+        "ru": "ранний; рано, пораньше",
+        "tj": "барвақт; зудтар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "冷",
+      "pinyin": "lěng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "sovuq",
+        "ru": "холодный",
+        "tj": "сард"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Yo'nalish to'ldiruvchisi (进, 出, 上, 下)",
+        "ru": "Направленное дополнение (进, 出, 上, 下)",
+        "tj": "Иловаи самт (进, 出, 上, 下)"
+      },
+      "title_zh": "趋向补语（进、出、上、下）",
+      "rule": {
+        "uz": "Yo'nalish to'ldiruvchisi fe'ldan keyin kelib, harakatning yo'nalishini bildiradi.\nOddiy shakl: fe'l + 进/出/上/下 (va h.k.)\nMurakkab shakl: fe'l + 进/出 + 来/去 (yaqin yoki uzoqlashuv uchun).\nMasalan: 进来 (kiring — yaqin), 进去 (kiring — uzoq), 出来/出去 (chiqing).",
+        "ru": "Направленное дополнение ставится после глагола и указывает направление действия.\nПростая форма: глагол + 进/出/上/下 и т.д.\nСоставная форма: глагол + 进/出 + 来/去 (для приближения или удаления).\nНапример: 进来 (войдите — приближение), 进去 (войдите — удаление), 出来/出去 (выйдите).",
+        "tj": "Иловаи самт баъд аз феъл меояд ва самти амалро нишон медиҳад.\nШакли оддӣ: феъл + 进/出/上/下 ва ғ.\nШакли мураккаб: феъл + 进/出 + 来/去 (барои наздик шудан ё дур шудан).\nМасалан: 进来 (дароед — наздик), 进去 (дароед — дур), 出来/出去 (берун шавед)."
+      },
+      "examples": [
+        {
+          "zh": "外边冷，我们进房间吧。",
+          "pinyin": "Wàibian lěng, wǒmen jìn fángjiān ba.",
+          "translation": {
+            "uz": "Tashqari sovuq, xonaga kiraylik.",
+            "ru": "На улице холодно, давай зайдём в комнату.",
+            "tj": "Берун сард аст, биёем ба хона дарем."
+          }
+        },
+        {
+          "zh": "她弟弟走进来了。",
+          "pinyin": "Tā dìdi zǒu jìn lái le.",
+          "translation": {
+            "uz": "Uning ukasi kirib keldi.",
+            "ru": "Её младший брат вошёл (сюда).",
+            "tj": "Бародари хурдиаш даромад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你每天早上几点起床？",
+          "pinyin": "Nǐ měitiān zǎoshang jǐ diǎn qǐchuáng?",
+          "text": {
+            "uz": "Siz har kuni ertalab soat nechada turasiz?",
+            "ru": "В котором часу ты встаёшь каждое утро?",
+            "tj": "Ҳар рӯз субҳ шумо соати чанд бармехезед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "六点多。",
+          "pinyin": "Liù diǎn duō.",
+          "text": {
+            "uz": "Oltidan o'tganda.",
+            "ru": "Чуть больше шести.",
+            "tj": "Каме аз соати шаш гузашта."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你比我早起一个小时。",
+          "pinyin": "Nǐ bǐ wǒ zǎo qǐ yí ge xiǎoshí.",
+          "text": {
+            "uz": "Siz mendan bir soat oldin turasiz.",
+            "ru": "Ты встаёшь на час раньше меня.",
+            "tj": "Шумо аз ман як соат зудтар бармехезед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
+          "pinyin": "Wǒ shuì de yě zǎo, wǒ měitiān wǎnshang shí diǎn jiù shuìjiào. Zǎo shuì zǎo qǐ duì shēntǐ hǎo.",
+          "text": {
+            "uz": "Men ham erta yotaman, har kuni kechqurun o'n da yotaman. Erta yotib erta turish sog'liq uchun foydali.",
+            "ru": "Я тоже ложусь рано, каждый вечер в десять. Рано ложиться и рано вставать полезно для здоровья.",
+            "tj": "Ман ҳам барвақт мехобам, ҳар шаб соати даҳ мехобам. Барвақт хобидан ва барвақт бархестан барои саломатӣ муфид аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'st uyida",
+        "ru": "В доме друга",
+        "tj": "Дар хонаи дӯст"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "再来点儿米饭吧，你吃得太少了。",
+          "pinyin": "Zài lái diǎnr mǐfàn ba, nǐ chī de tài shǎo le.",
+          "text": {
+            "uz": "Yana biroz guruch oling, siz juda oz yedingiz.",
+            "ru": "Возьми ещё немного риса, ты съел(а) слишком мало.",
+            "tj": "Боз каме биринҷ гиред, шумо хеле кам хӯрдед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不心了，今天吃得很好，太谢谢你了。",
+          "pinyin": "Bù xīn le, jīntiān chī de hěn hǎo, tài xièxie nǐ le.",
+          "text": {
+            "uz": "Kerak emas, bugun juda yaxshi yedim, katta rahmat sizga.",
+            "ru": "Не надо, сегодня я поел(а) очень хорошо, большое тебе спасибо.",
+            "tj": "Даркор нест, имрӯз хеле хуб хӯрдам, ташаккури зиёд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你饭做得怎么样？",
+          "pinyin": "Nǐ fàn zuò de zěnmeyàng?",
+          "text": {
+            "uz": "Siz ovqat qanday pishirasiz?",
+            "ru": "Как ты готовишь еду?",
+            "tj": "Шумо хӯрок чӣ хел мепазед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不怎么样，我妻子比我饭做得好。",
+          "pinyin": "Bù zěnmeyàng, wǒ qīzi bǐ wǒ zuò fàn zuò de hǎo.",
+          "text": {
+            "uz": "Unchalik emas, xotinim mendan yaxshiroq ovqat pishiradi.",
+            "ru": "Не очень, моя жена готовит лучше меня.",
+            "tj": "Чандон не, занам аз ман беҳтар хӯрок мепазад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uy eshigi oldida",
+        "ru": "У двери дома",
+        "tj": "Дар пеши дари хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "下雪了，今天真冷。",
+          "pinyin": "Xià xuě le, jīntiān zhēn lěng.",
+          "text": {
+            "uz": "Qor yog'yapti, bugun juda sovuq.",
+            "ru": "Пошёл снег, сегодня очень холодно.",
+            "tj": "Барф борид, имрӯз хеле сард аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "有零下10度吧？",
+          "pinyin": "Yǒu líng xià shí dù ba?",
+          "text": {
+            "uz": "Minus o'n daraja bo'lsa kerak?",
+            "ru": "Наверное, минус десять градусов?",
+            "tj": "Эҳтимол даҳ дараҷа зер аз сифр бошад?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "是啊，你穿得太少了，我们进房间吧。",
+          "pinyin": "Shì a, nǐ chuān de tài shǎo le, wǒmen jìn fángjiān ba.",
+          "text": {
+            "uz": "Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好吧。",
+          "pinyin": "Hǎo ba.",
+          "text": {
+            "uz": "Xo'p bo'lmasa.",
+            "ru": "Ладно.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在忙什么呢？",
+          "pinyin": "Nǐ zài máng shénme ne?",
+          "text": {
+            "uz": "Siz nima bilan bandsiniz?",
+            "ru": "Чем ты сейчас занят(а)?",
+            "tj": "Шумо ба чӣ машғул ҳастед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我弟弟让我帮他找个房子，现在他离公司有点儿远。",
+          "pinyin": "Wǒ dìdi ràng wǒ bāng tā zhǎo ge fángzi, xiànzài tā lí gōngsī yǒudiǎnr yuǎn.",
+          "text": {
+            "uz": "Ukam menga unga uy topishda yordam berishimni so'radi, hozir u kompaniyadan biroz uzoqda turadi.",
+            "ru": "Мой младший брат попросил помочь найти ему жильё, сейчас он живёт немного далеко от компании.",
+            "tj": "Бародари хурдиам хоҳиш кард ба ӯ хона ёбам, ҳоло ӯ аз ширкат каме дур зиндагӣ мекунад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "住得远真的很累！",
+          "pinyin": "Zhù de yuǎn zhēn de hěn lèi!",
+          "text": {
+            "uz": "Uzoqda yashash chindan ham charchatadi!",
+            "ru": "Жить далеко действительно очень утомительно!",
+            "tj": "Дур зиндагӣ кардан воқеан хеле монандакор аст!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，他也希望能住得近一点儿。",
+          "pinyin": "Shì a, tā yě xīwàng néng zhù de jìn yìdiǎnr.",
+          "text": {
+            "uz": "Ha, u ham biroz yaqinroqda yashashni xohlaydi.",
+            "ru": "Да, он тоже хочет жить немного ближе.",
+            "tj": "Бале, ӯ ҳам мехоҳад каме наздиктар зиндагӣ кунад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "少",
+            "pinyin": "shǎo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "oz, kam",
+              "ru": "мало, немного",
+              "tj": "кам, андак"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shǎo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shǎo?",
+            "tj": "shǎo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "少",
+            "妻子",
+            "得",
+            "雪"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "少 = oz, kam (shǎo)",
+            "ru": "少 = мало, немного (shǎo)",
+            "tj": "少 = кам, андак (shǎo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "早",
+            "pinyin": "zǎo",
+            "pos": "adj./adv.",
+            "meaning": {
+              "uz": "erta; ertaroq",
+              "ru": "ранний; рано, пораньше",
+              "tj": "барвақт; зудтар"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "早 talaffuzini tanlang:",
+            "ru": "Выберите произношение 早:",
+            "tj": "Талаффузи 早-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zǎo",
+            "de",
+            "qīzi",
+            "xuě"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "早 — zǎo",
+            "ru": "早 — zǎo",
+            "tj": "早 — zǎo"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "冷",
+            "pinyin": "lěng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "sovuq",
+              "ru": "холодный",
+              "tj": "сард"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "冷",
+          "pinyin": "lěng",
+          "translation": {
+            "uz": "sovuq",
+            "ru": "холодный",
+            "tj": "сард"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sovuq' xitoycha qaysi?",
+            "ru": "'холодный' по-китайски?",
+            "tj": "'сард' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "雪",
+            "得",
+            "妻子",
+            "冷"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "sovuq = 冷 (lěng)",
+            "ru": "холодный = 冷 (lěng)",
+            "tj": "сард = 冷 (lěng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "少",
+          "pinyin": "shǎo",
+          "options": [
+            "雪",
+            "得",
+            "妻子",
+            "少"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "少 — oz, kam (shǎo)",
+            "ru": "少 — мало, немного (shǎo)",
+            "tj": "少 — кам, андак (shǎo)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "少",
+              {
+                "uz": "oz, kam",
+                "ru": "мало, немного",
+                "tj": "кам, андак"
+              }
+            ],
+            [
+              "早",
+              {
+                "uz": "erta; ertaroq",
+                "ru": "ранний; рано, пораньше",
+                "tj": "барвақт; зудтар"
+              }
+            ],
+            [
+              "冷",
+              {
+                "uz": "sovuq",
+                "ru": "холодный",
+                "tj": "сард"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Yo'nalish to'ldiruvchisi (进, 出, 上, 下)",
+              "ru": "Направленное дополнение (进, 出, 上, 下)",
+              "tj": "Иловаи самт (进, 出, 上, 下)"
+            },
+            "title_zh": "趋向补语（进、出、上、下）",
+            "rule": {
+              "uz": "Yo'nalish to'ldiruvchisi fe'ldan keyin kelib, harakatning yo'nalishini bildiradi.\nOddiy shakl: fe'l + 进/出/上/下 (va h.k.)\nMurakkab shakl: fe'l + 进/出 + 来/去 (yaqin yoki uzoqlashuv uchun).\nMasalan: 进来 (kiring — yaqin), 进去 (kiring — uzoq), 出来/出去 (chiqing).",
+              "ru": "Направленное дополнение ставится после глагола и указывает направление действия.\nПростая форма: глагол + 进/出/上/下 и т.д.\nСоставная форма: глагол + 进/出 + 来/去 (для приближения или удаления).\nНапример: 进来 (войдите — приближение), 进去 (войдите — удаление), 出来/出去 (выйдите).",
+              "tj": "Иловаи самт баъд аз феъл меояд ва самти амалро нишон медиҳад.\nШакли оддӣ: феъл + 进/出/上/下 ва ғ.\nШакли мураккаб: феъл + 进/出 + 来/去 (барои наздик шудан ё дур шудан).\nМасалан: 进来 (дароед — наздик), 进去 (дароед — дур), 出来/出去 (берун шавед)."
+            },
+            "examples": [
+              {
+                "zh": "外边冷，我们进房间吧。",
+                "pinyin": "Wàibian lěng, wǒmen jìn fángjiān ba.",
+                "translation": {
+                  "uz": "Tashqari sovuq, xonaga kiraylik.",
+                  "ru": "На улице холодно, давай зайдём в комнату.",
+                  "tj": "Берун сард аст, биёем ба хона дарем."
+                }
+              },
+              {
+                "zh": "她弟弟走进来了。",
+                "pinyin": "Tā dìdi zǒu jìn lái le.",
+                "translation": {
+                  "uz": "Uning ukasi kirib keldi.",
+                  "ru": "Её младший брат вошёл (сюда).",
+                  "tj": "Бародари хурдиаш даромад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Uning ukasi kirib keldi.",
+            "ru": "Её младший брат вошёл (сюда).",
+            "tj": "Бародари хурдиаш даромад."
+          },
+          "tokens": [
+            "得",
+            "她",
+            "进",
+            "了",
+            "弟弟",
+            "走",
+            "妻子",
+            "来"
+          ],
+          "answer_tokens": [
+            "她",
+            "弟弟",
+            "走",
+            "进",
+            "来",
+            "了"
+          ],
+          "explanation": {
+            "uz": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le.",
+            "ru": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le.",
+            "tj": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "是啊，你穿得太少了，我们进房间吧。",
+          "pinyin": "Shì a, nǐ chuān de tài shǎo le, wǒmen jìn fángjiān ba.",
+          "options": [
+            "是啊，你穿得太少了，我们进房间吧。",
+            "你每天早上几点起床？",
+            "你比我早起一个小时。",
+            "六点多。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "是啊，你穿得太少了，我们进房间吧。 — Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "是啊，你穿得太少了，我们进房间吧。 — Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "是啊，你穿得太少了，我们进房间吧。 — Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "少",
+              {
+                "uz": "oz, kam",
+                "ru": "мало, немного",
+                "tj": "кам, андак"
+              }
+            ],
+            [
+              "早",
+              {
+                "uz": "erta; ertaroq",
+                "ru": "ранний; рано, пораньше",
+                "tj": "барвақт; зудтар"
+              }
+            ],
+            [
+              "冷",
+              {
+                "uz": "sovuq",
+                "ru": "холодный",
+                "tj": "сард"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "是啊，你穿得太少了，我们进房间吧。",
+          "pinyin": "Shì a, nǐ chuān de tài shǎo le, wǒmen jìn fángjiān ba.",
+          "translation": {
+            "uz": "Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          },
+          "tokens": {
+            "uz": [
+              "juda",
+              "siz",
+              "xonaga",
+              "kiraylik",
+              "kam",
+              "Siz",
+              "Ha",
+              "kiyingiz"
+            ],
+            "ru": [
+              "в",
+              "Да",
+              "комнату",
+              "слишком",
+              "Ты",
+              "давай",
+              "мало",
+              "ты",
+              "зайдём",
+              "надел(а"
+            ],
+            "tj": [
+              "шумо",
+              "дарем",
+              "пӯшидед",
+              "хеле",
+              "хона",
+              "биёед",
+              "Шумо",
+              "ба",
+              "кам",
+              "Бале"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "siz",
+              "juda",
+              "kam",
+              "kiyingiz",
+              "xonaga",
+              "kiraylik"
+            ],
+            "ru": [
+              "Да",
+              "ты",
+              "слишком",
+              "мало",
+              "надел(а",
+              "давай",
+              "зайдём",
+              "в",
+              "комнату"
+            ],
+            "tj": [
+              "Бале",
+              "шумо",
+              "хеле",
+              "кам",
+              "пӯшидед",
+              "биёед",
+              "ба",
+              "хона",
+              "дарем"
+            ]
+          },
+          "explanation": {
+            "uz": "是啊，你穿得太少了，我们进房间吧。 — Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "是啊，你穿得太少了，我们进房间吧。 — Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "是啊，你穿得太少了，我们进房间吧。 — Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "进 talaffuzini tanlang:",
+            "ru": "Выберите произношение 进:",
+            "tj": "Талаффузи 进-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jìn",
+            "xuě",
+            "de",
+            "qīzi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "进 — jìn",
+            "ru": "进 — jìn",
+            "tj": "进 — jìn"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "冷",
+          "pinyin": "lěng",
+          "translation": {
+            "uz": "sovuq",
+            "ru": "холодный",
+            "tj": "сард"
+          }
+        }
+      ]
+    }
+  ]
+}

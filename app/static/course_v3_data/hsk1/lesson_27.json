@@ -1,0 +1,760 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 27,
+  "source_lesson": 8,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我想喝茶",
+  "subtitle": {
+    "uz": "Istak bildirish, narx so'rash va o'lchov so'zlarini o'rganish",
+    "ru": "Выражение желаний, спрашивание цены и изучение счётных слов",
+    "tj": "Ифодаи орзуҳо, пурсидани нарх ва омӯзиши калимаҳои шуморавӣ"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "米饭",
+      "pinyin": "mǐfàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "guruch, pishirilgan guruch",
+        "ru": "рис, варёный рис",
+        "tj": "биринҷ, биринҷи пухта"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "下午",
+      "pinyin": "xiàwǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tushdan keyin",
+        "ru": "после полудня, вторая половина дня",
+        "tj": "баъд аз нисфирӯзӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "商店",
+      "pinyin": "shāngdiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "do'kon, magazin",
+        "ru": "магазин",
+        "tj": "мағоза, дӯкон"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "买",
+      "pinyin": "mǎi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sotib olmoq",
+        "ru": "покупать",
+        "tj": "харидан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 4,
+      "title": {
+        "uz": "Pul miqdorini ifodalash",
+        "ru": "Выражение денежных сумм",
+        "tj": "Ифодаи маблағи пул"
+      },
+      "title_zh": "钱数的表达 — Pul miqdori",
+      "rule": {
+        "uz": "Xitoy valyutasi: 人民币 (Renminbi, RMB)\nRasmiy: 元 (yuán)\nSo'zlashuv: 块 (kuài)\n\nMisol:\n28块 = 28元 — 28 yuan\n18块钱 — 18 yuan (so'zlashuv shakli)\n\n这个杯子多少钱？— Bu piyola qancha turadi?\n28块。— 28 yuan.",
+        "ru": "Китайская валюта: 人民币 (Жэньминьби, RMB)\nОфициально: 元 (yuán)\nРазговорно: 块 (kuài)\n\nПример:\n28块 = 28元 — 28 юаней\n18块钱 — 18 юаней (разговорная форма)\n\n这个杯子多少钱？— Сколько стоит этот стакан?\n28块。— 28 юаней.",
+        "tj": "Асъори чинӣ: 人民币 (Жэньминьби, RMB)\nРасмӣ: 元 (yuán)\nГуфтугӯӣ: 块 (kuài)\n\nМисол:\n28块 = 28元 — 28 юан\n18块钱 — 18 юан (шакли гуфтугӯӣ)\n\n这个杯子多少钱？— Ин пиёла чанд пул аст?\n28块。— 28 юан."
+      },
+      "examples": [
+        {
+          "zh": "这个多少钱？",
+          "pinyin": "Zhège duōshao qián?",
+          "translation": {
+            "uz": "Bu qancha turadi?",
+            "ru": "Сколько это стоит?",
+            "tj": "Ин чанд пул аст?"
+          }
+        },
+        {
+          "zh": "28块钱。",
+          "pinyin": "Èrshíbā kuài qián.",
+          "translation": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          }
+        },
+        {
+          "zh": "一百块。",
+          "pinyin": "Yìbǎi kuài.",
+          "translation": {
+            "uz": "100 yuan.",
+            "ru": "100 юаней.",
+            "tj": "100 юан."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda — nima ichish/yeyish",
+        "ru": "В ресторане — что пить/есть",
+        "tj": "Дар тарабхона — чӣ нӯшидан/хӯрдан"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你想喝什么？",
+          "pinyin": "Nǐ xiǎng hē shénme?",
+          "text": {
+            "uz": "Nima ichmoqchisiz?",
+            "ru": "Что вы хотите выпить?",
+            "tj": "Шумо чӣ нӯшидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想喝茶。",
+          "pinyin": "Wǒ xiǎng hē chá.",
+          "text": {
+            "uz": "Men choy ichmoqchiman.",
+            "ru": "Я хочу выпить чай.",
+            "tj": "Ман чой нӯшидан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想吃什么？",
+          "pinyin": "Nǐ xiǎng chī shénme?",
+          "text": {
+            "uz": "Nima yemoqchisiz?",
+            "ru": "Что вы хотите поесть?",
+            "tj": "Шумо чӣ хӯрдан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想吃米饭。",
+          "pinyin": "Wǒ xiǎng chī mǐfàn.",
+          "text": {
+            "uz": "Men guruch yemoqchiman.",
+            "ru": "Я хочу поесть риса.",
+            "tj": "Ман биринҷ хӯрдан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada — tushdan keyingi reja",
+        "ru": "В гостинице — планы на вторую половину дня",
+        "tj": "Дар меҳмонхона — нақшаи баъд аз нисфирӯзӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "下午你想做什么？",
+          "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+          "text": {
+            "uz": "Tushdan keyin nima qilmoqchisiz?",
+            "ru": "Что вы хотите делать во второй половине дня?",
+            "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "下午我想去商店。",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù shāngdiàn.",
+          "text": {
+            "uz": "Tushdan keyin do'konga bormoqchiman.",
+            "ru": "После полудня я хочу сходить в магазин.",
+            "tj": "Баъд аз нисфирӯзӣ ба мағоза рафтан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想买什么？",
+          "pinyin": "Nǐ xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Шумо чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想买一个杯子。",
+          "pinyin": "Wǒ xiǎng mǎi yī gè bēizi.",
+          "text": {
+            "uz": "Bir dona piyola sotib olmoqchiman.",
+            "ru": "Я хочу купить одну кружку.",
+            "tj": "Ман як дона пиёла харидан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda — narx so'rash",
+        "ru": "В магазине — спрашиваем цену",
+        "tj": "Дар мағоза — пурсидани нарх"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你好！这个杯子多少钱？",
+          "pinyin": "Nǐ hǎo! Zhège bēizi duōshao qián?",
+          "text": {
+            "uz": "Salom! Bu piyola qancha turadi?",
+            "ru": "Здравствуйте! Сколько стоит этот стакан?",
+            "tj": "Салом! Ин пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "28块。",
+          "pinyin": "Èrshíbā kuài.",
+          "text": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那个杯子多少钱？",
+          "pinyin": "Nàge bēizi duōshao qián?",
+          "text": {
+            "uz": "U piyola qancha turadi?",
+            "ru": "Сколько стоит тот стакан?",
+            "tj": "Он пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "那个杯子18块钱。",
+          "pinyin": "Nàge bēizi shíbā kuài qián.",
+          "text": {
+            "uz": "U piyola 18 yuan.",
+            "ru": "Тот стакан стоит 18 юаней.",
+            "tj": "Он пиёла 18 юан аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "米饭",
+            "pinyin": "mǐfàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "guruch, pishirilgan guruch",
+              "ru": "рис, варёный рис",
+              "tj": "биринҷ, биринҷи пухта"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "mǐfàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается mǐfàn?",
+            "tj": "mǐfàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "想",
+            "米饭",
+            "茶",
+            "喝"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "米饭 = guruch, pishirilgan guruch (mǐfàn)",
+            "ru": "米饭 = рис, варёный рис (mǐfàn)",
+            "tj": "米饭 = биринҷ, биринҷи пухта (mǐfàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "下午",
+            "pinyin": "xiàwǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tushdan keyin",
+              "ru": "после полудня, вторая половина дня",
+              "tj": "баъд аз нисфирӯзӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "下午 talaffuzini tanlang:",
+            "ru": "Выберите произношение 下午:",
+            "tj": "Талаффузи 下午-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiǎng",
+            "xiàwǔ",
+            "hē",
+            "chá"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "下午 — xiàwǔ",
+            "ru": "下午 — xiàwǔ",
+            "tj": "下午 — xiàwǔ"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "商店",
+            "pinyin": "shāngdiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "do'kon, magazin",
+              "ru": "магазин",
+              "tj": "мағоза, дӯкон"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "商店",
+          "pinyin": "shāngdiàn",
+          "translation": {
+            "uz": "do'kon, magazin",
+            "ru": "магазин",
+            "tj": "мағоза, дӯкон"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'do'kon, magazin' xitoycha qaysi?",
+            "ru": "'магазин' по-китайски?",
+            "tj": "'мағоза, дӯкон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "商店",
+            "喝",
+            "茶",
+            "想"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "do'kon, magazin = 商店 (shāngdiàn)",
+            "ru": "магазин = 商店 (shāngdiàn)",
+            "tj": "мағоза, дӯкон = 商店 (shāngdiàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "买",
+            "pinyin": "mǎi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sotib olmoq",
+              "ru": "покупать",
+              "tj": "харидан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "买",
+          "pinyin": "mǎi",
+          "options": [
+            "想",
+            "买",
+            "茶",
+            "喝"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "买 — sotib olmoq (mǎi)",
+            "ru": "买 — покупать (mǎi)",
+            "tj": "买 — харидан (mǎi)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "米饭 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 米饭:",
+            "tj": "Маънои калимаи 米饭-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            },
+            {
+              "uz": "guruch, pishirilgan guruch",
+              "ru": "рис, варёный рис",
+              "tj": "биринҷ, биринҷи пухта"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "米饭 = guruch, pishirilgan guruch (mǐfàn)",
+            "ru": "米饭 = рис, варёный рис (mǐfàn)",
+            "tj": "米饭 = биринҷ, биринҷи пухта (mǐfàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "米饭",
+              {
+                "uz": "guruch, pishirilgan guruch",
+                "ru": "рис, варёный рис",
+                "tj": "биринҷ, биринҷи пухта"
+              }
+            ],
+            [
+              "下午",
+              {
+                "uz": "tushdan keyin",
+                "ru": "после полудня, вторая половина дня",
+                "tj": "баъд аз нисфирӯзӣ"
+              }
+            ],
+            [
+              "商店",
+              {
+                "uz": "do'kon, magazin",
+                "ru": "магазин",
+                "tj": "мағоза, дӯкон"
+              }
+            ],
+            [
+              "买",
+              {
+                "uz": "sotib olmoq",
+                "ru": "покупать",
+                "tj": "харидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "Pul miqdorini ifodalash",
+              "ru": "Выражение денежных сумм",
+              "tj": "Ифодаи маблағи пул"
+            },
+            "title_zh": "钱数的表达 — Pul miqdori",
+            "rule": {
+              "uz": "Xitoy valyutasi: 人民币 (Renminbi, RMB)\nRasmiy: 元 (yuán)\nSo'zlashuv: 块 (kuài)\n\nMisol:\n28块 = 28元 — 28 yuan\n18块钱 — 18 yuan (so'zlashuv shakli)\n\n这个杯子多少钱？— Bu piyola qancha turadi?\n28块。— 28 yuan.",
+              "ru": "Китайская валюта: 人民币 (Жэньминьби, RMB)\nОфициально: 元 (yuán)\nРазговорно: 块 (kuài)\n\nПример:\n28块 = 28元 — 28 юаней\n18块钱 — 18 юаней (разговорная форма)\n\n这个杯子多少钱？— Сколько стоит этот стакан?\n28块。— 28 юаней.",
+              "tj": "Асъори чинӣ: 人民币 (Жэньминьби, RMB)\nРасмӣ: 元 (yuán)\nГуфтугӯӣ: 块 (kuài)\n\nМисол:\n28块 = 28元 — 28 юан\n18块钱 — 18 юан (шакли гуфтугӯӣ)\n\n这个杯子多少钱？— Ин пиёла чанд пул аст?\n28块。— 28 юан."
+            },
+            "examples": [
+              {
+                "zh": "这个多少钱？",
+                "pinyin": "Zhège duōshao qián?",
+                "translation": {
+                  "uz": "Bu qancha turadi?",
+                  "ru": "Сколько это стоит?",
+                  "tj": "Ин чанд пул аст?"
+                }
+              },
+              {
+                "zh": "28块钱。",
+                "pinyin": "Èrshíbā kuài qián.",
+                "translation": {
+                  "uz": "28 yuan.",
+                  "ru": "28 юаней.",
+                  "tj": "28 юан."
+                }
+              },
+              {
+                "zh": "一百块。",
+                "pinyin": "Yìbǎi kuài.",
+                "translation": {
+                  "uz": "100 yuan.",
+                  "ru": "100 юаней.",
+                  "tj": "100 юан."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu qancha turadi?» — xitoychada qaysi biri?",
+            "ru": "«Сколько это стоит?» — какое предложение по-китайски?",
+            "tj": "«Ин чанд пул аст?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "28块钱。",
+            "一百块。",
+            "这个多少钱？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "这个多少钱？ — Zhège duōshao qián?",
+            "ru": "这个多少钱？ — Zhège duōshao qián?",
+            "tj": "这个多少钱？ — Zhège duōshao qián?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你想买什么？",
+          "pinyin": "Nǐ xiǎng mǎi shénme?",
+          "options": [
+            "你想喝什么？",
+            "我想喝茶。",
+            "你想吃什么？",
+            "你想买什么？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "你想买什么？ — Nima sotib olmoqchisiz?",
+            "ru": "你想买什么？ — Что вы хотите купить?",
+            "tj": "你想买什么？ — Шумо чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "下午你想做什么？",
+          "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+          "translation": {
+            "uz": "Tushdan keyin nima qilmoqchisiz?",
+            "ru": "Что вы хотите делать во второй половине дня?",
+            "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+          },
+          "tokens": {
+            "uz": [
+              "nima",
+              "keyin",
+              "Men",
+              "qilmoqchisiz",
+              "Tushdan",
+              "guruch"
+            ],
+            "ru": [
+              "второй",
+              "делать",
+              "во",
+              "вы",
+              "Что",
+              "Я",
+              "хотите",
+              "половине",
+              "дня",
+              "хочу"
+            ],
+            "tj": [
+              "чӣ",
+              "нисфирӯзӣ",
+              "мехоҳед",
+              "аз",
+              "Баъд",
+              "Ман",
+              "биринҷ",
+              "кардан"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Tushdan",
+              "keyin",
+              "nima",
+              "qilmoqchisiz"
+            ],
+            "ru": [
+              "Что",
+              "вы",
+              "хотите",
+              "делать",
+              "во",
+              "второй",
+              "половине",
+              "дня"
+            ],
+            "tj": [
+              "Баъд",
+              "аз",
+              "нисфирӯзӣ",
+              "чӣ",
+              "кардан",
+              "мехоҳед"
+            ]
+          },
+          "explanation": {
+            "uz": "下午你想做什么？ — Tushdan keyin nima qilmoqchisiz?",
+            "ru": "下午你想做什么？ — Что вы хотите делать во второй половине дня?",
+            "tj": "下午你想做什么？ — Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "买",
+          "pinyin": "mǎi",
+          "options": [
+            "茶",
+            "想",
+            "喝",
+            "买"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "买 — sotib olmoq (mǎi)",
+            "ru": "买 — покупать (mǎi)",
+            "tj": "买 — харидан (mǎi)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chá qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chá?",
+            "tj": "chá кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "喝",
+            "茶",
+            "想",
+            "吃"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "茶 = choy (chá)",
+            "ru": "茶 = чай (chá)",
+            "tj": "茶 = чой (chá)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "商店",
+          "pinyin": "shāngdiàn",
+          "translation": {
+            "uz": "do'kon, magazin",
+            "ru": "магазин",
+            "tj": "мағоза, дӯкон"
+          }
+        }
+      ]
+    }
+  ]
+}

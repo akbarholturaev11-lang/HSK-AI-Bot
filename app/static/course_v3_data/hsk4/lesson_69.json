@@ -1,0 +1,766 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 69,
+  "source_lesson": 8,
+  "part_no": 5,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "生活中不缺少美",
+  "subtitle": {
+    "uz": "kayfiyat, go'zallik va hayotga munosabat haqida gapirish; 使, 只要, 可不是, 因此 va 往往 grammatikalarini ishlatish",
+    "ru": "говорить о настроении, красоте и отношении к жизни; использовать 使, 只要, 可不是, 因此 и 往往",
+    "tj": "дар бораи кайфият, зебоӣ ва муносибат ба зиндагӣ гуфтугӯ кардан; истифодаи 使, 只要, 可不是, 因此 ва 往往"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "距离",
+      "pinyin": "jùlí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "masofa",
+        "ru": "расстояние",
+        "tj": "масофа"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "耐心",
+      "pinyin": "nàixīn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sabr",
+        "ru": "терпение",
+        "tj": "сабр"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "生命",
+      "pinyin": "shēngmìng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hayot",
+        "ru": "жизнь",
+        "tj": "ҳаёт"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "缺少",
+      "pinyin": "quēshǎo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kam bo'lmoq, yetishmaslik",
+        "ru": "недоставать",
+        "tj": "камӣ кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 4,
+      "title": {
+        "uz": "shuning uchun",
+        "ru": "поэтому",
+        "tj": "бинобар ин"
+      },
+      "title_zh": "因此",
+      "rule": {
+        "uz": "Oldingi sababdan kelib chiqqan natijani bog'laydi.",
+        "ru": "Связывает результат с предыдущей причиной.",
+        "tj": "Натиҷаро бо сабаби пешина мепайвандад."
+      },
+      "examples": [
+        {
+          "zh": "生活的态度要自己选择，因此，遇到烦恼时，你应该想一些办法让自己从不高兴的心情中走出来。",
+          "pinyin": "Shēnghuó de tàidu yào zìjǐ xuǎnzé, yīncǐ, yùdào fánnǎo shí, nǐ yīnggāi xiǎng yìxiē bànfǎ.",
+          "translation": {
+            "uz": "Hayotga munosabatni o'zing tanlaysan, shuning uchun tashvishga duch kelsang, kayfiyatni chiqarish yo'lini topish kerak.",
+            "ru": "Отношение к жизни выбираешь сам, поэтому при тревогах нужно найти способ выйти из плохого настроения.",
+            "tj": "Муносибат ба зиндагиро худ интихоб мекунӣ, бинобар ин ҳангоми ташвиш бояд роҳи баромадан аз кайфияти бадро ёфт."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "李老师 va 高老师 shokolad va kayfiyat haqida gaplashadi",
+        "ru": "李老师 и 高老师 говорят о шоколаде и настроении",
+        "tj": "李老师 ва 高老师 дар бораи шоколад ва кайфият гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "李老师",
+          "zh": "这种巧克力味道不错，你在哪儿买的？",
+          "pinyin": "Zhè zhǒng qiǎokèlì wèidao búcuò, nǐ zài nǎr mǎi de?",
+          "text": {
+            "uz": "Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?",
+            "ru": "У этого шоколада хороший вкус, где вы его купили?",
+            "tj": "Маззаи ин шоколад хуб аст, аз куҷо харидед?"
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "不是我买的，是我女儿给我从国外带回来的礼物。",
+          "pinyin": "Bú shì wǒ mǎi de, shì wǒ nǚ'ér gěi wǒ cóng guówài dài huílai de lǐwù.",
+          "text": {
+            "uz": "Men olmaganman, qizim chet eldan olib kelgan sovg'a.",
+            "ru": "Это не я купила, это подарок, который дочь привезла мне из-за границы.",
+            "tj": "Ман нахаридаам, ин туҳфаест, ки духтарам аз хориҷ овардааст."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
+          "pinyin": "Hěn duō rén chūguó hòu chángcháng huì mǎi wàiguó de qiǎokèlì, huílai sòng gěi qīnqi péngyou.",
+          "text": {
+            "uz": "Ko'p odamlar chet elga chiqqach xorijiy shokolad olib, qaytgach qarindosh-do'stlarga sovg'a qiladi.",
+            "ru": "Многие после поездки за границу покупают иностранный шоколад и дарят родственникам и друзьям.",
+            "tj": "Бисёриҳо баъди хориҷ рафтан шоколади хориҷӣ харида, ба хешу дӯстҳо туҳфа мекунанд."
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "是啊，因为很多人都爱吃巧克力，尤其是女性。",
+          "pinyin": "Shì a, yīnwèi hěn duō rén dōu ài chī qiǎokèlì, yóuqí shì nǚxìng.",
+          "text": {
+            "uz": "Ha, chunki ko'pchilik shokoladni yaxshi ko'radi, ayniqsa ayollar.",
+            "ru": "Да, потому что многие любят шоколад, особенно женщины.",
+            "tj": "Ҳа, чун бисёриҳо шоколадро дӯст медоранд, хусусан занон."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "这是为什么呢？",
+          "pinyin": "Zhè shì wèishénme ne?",
+          "text": {
+            "uz": "Nega shunday?",
+            "ru": "Почему так?",
+            "tj": "Чаро чунин?"
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
+          "pinyin": "Qiǎokèlì dàduō shì tián de, ér hěn duō nǚxìng dōu xǐhuan chī tián de. Érqiě, tīngshuō shāngxīn nánguò de shíhou chī kuàir qiǎokèlì, hái néng shǐ rén de xīnqíng biàn de yúkuài.",
+          "text": {
+            "uz": "Shokoladning ko'pi shirin, ko'p ayollar esa shirinlikni yoqtiradi. Yana eshitishimcha, xafa bo'lganda bir bo'lak shokolad yeyish kayfiyatni yaxshilaydi.",
+            "ru": "Шоколад в основном сладкий, а многие женщины любят сладкое. К тому же говорят, когда грустно, кусочек шоколада может улучшить настроение.",
+            "tj": "Шоколад асосан ширин аст, бисёр занон шириниро дӯст медоранд. Боз мегӯянд, вақте ғамгин ҳастӣ, як порча шоколад кайфиятро хуш мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "小夏 va 马克 futbol o'yini va bosim haqida gaplashadi",
+        "ru": "小夏 и 马克 говорят о матче и давлении",
+        "tj": "小夏 ва 马克 дар бораи бозӣ ва фишор гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小夏",
+          "zh": "这里的景色真美，空气也好。",
+          "pinyin": "Zhèli de jǐngsè zhēn měi, kōngqì yě hǎo.",
+          "text": {
+            "uz": "Bu yerning manzarasi juda chiroyli, havosi ham yaxshi.",
+            "ru": "Здесь очень красивый вид и хороший воздух.",
+            "tj": "Манзараи ин ҷо бисёр зебо аст, ҳавояш ҳам хуб."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "怎么样，心情好些了吗？",
+          "pinyin": "Zěnmeyàng, xīnqíng hǎo xiē le ma?",
+          "text": {
+            "uz": "Qalay, kayfiyating yaxshilandi-mi?",
+            "ru": "Ну как, настроение стало лучше?",
+            "tj": "Чӣ хел, кайфиятат беҳтар шуд?"
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "好多了，上次足球比赛后，好久都没这么放松了。",
+          "pinyin": "Hǎo duō le, shàng cì zúqiú bǐsài hòu, hǎojiǔ dōu méi zhème fàngsōng le.",
+          "text": {
+            "uz": "Ancha yaxshi, o'tgan futbol o'yinidan beri anchadan buyon bunchalik bo'shashmagan edim.",
+            "ru": "Намного лучше, после прошлой футбольной игры я давно так не расслаблялся.",
+            "tj": "Хеле беҳтар, баъди бозии футболи гузашта дер боз ин қадар ором нашуда будам."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "你不要有压力，好好儿准备下次比赛就好了。",
+          "pinyin": "Nǐ búyào yǒu yālì, hǎohāor zhǔnbèi xià cì bǐsài jiù hǎo le.",
+          "text": {
+            "uz": "Bosim qilma, keyingi o'yinga yaxshi tayyorlansang bo'ldi.",
+            "ru": "Не дави на себя, просто хорошо подготовься к следующему матчу.",
+            "tj": "Фишор нагир, танҳо ба бозии навбатӣ хуб тайёр шав."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "这段时间我总是一个人坐在房间里回忆那次比赛。如果我们能再努力一点儿，就一定会多进一个球。",
+          "pinyin": "Zhè duàn shíjiān wǒ zǒng shì yí ge rén zuò zài fángjiān li huíyì nà cì bǐsài. Rúguǒ wǒmen néng zài nǔlì yìdiǎnr, jiù yídìng huì duō jìn yí ge qiú.",
+          "text": {
+            "uz": "Bu vaqtda doim xonada yolg'iz o'tirib o'sha o'yinni eslayman. Agar yana biroz harakat qilganimizda, albatta yana bitta gol urardik.",
+            "ru": "В последнее время я всё время один сижу в комнате и вспоминаю тот матч. Если бы мы постарались ещё немного, точно забили бы ещё один гол.",
+            "tj": "Ин вақтҳо ҳамеша танҳо дар ҳуҷра нишаста он бозиро ба ёд меорам. Агар каме бештар кӯшиш мекардем, ҳатман боз як гол мезадем."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "事情已经发生了，过去的就让它成为过去吧。只要这次你好好儿准备，一定能把比赛踢好。",
+          "pinyin": "Shìqing yǐjīng fāshēng le, guòqù de jiù ràng tā chéngwéi guòqù ba. Zhǐyào zhè cì nǐ hǎohāor zhǔnbèi, yídìng néng bǎ bǐsài tī hǎo.",
+          "text": {
+            "uz": "Ish allaqachon bo'ldi, o'tgan narsa o'tmishda qolsin. Bu safar yaxshi tayyorlansang, albatta o'yinni yaxshi o'tkaza olasan.",
+            "ru": "Это уже произошло, пусть прошлое останется прошлым. Если в этот раз хорошо подготовишься, обязательно сыграешь хорошо.",
+            "tj": "Кор аллакай шуд, бигзор гузашта гузашта монад. Агар ин дафъа хуб тайёр шавӣ, ҳатман бозиро хуб мегузаронӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "马克 va haydovchi tirbandlik haqida gaplashadi",
+        "ru": "马克 и водитель говорят о пробках",
+        "tj": "马克 ва ронанда дар бораи роҳбандӣ гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "马克",
+          "zh": "师傅，我去大使馆，你是不是走错了？",
+          "pinyin": "Shīfu, wǒ qù dàshǐguǎn, nǐ shì bú shì zǒu cuò le?",
+          "text": {
+            "uz": "Usta, men elchixonaga boraman, adashib ketmadingizmi?",
+            "ru": "Водитель, мне в посольство, вы не туда поехали?",
+            "tj": "Усто, ман ба сафорат меравам, магар роҳро хато нарафтед?"
+          }
+        },
+        {
+          "speaker": "师傅",
+          "zh": "现在是上班时间，前面有点儿堵车，我们走另外一条路，距离差不多。",
+          "pinyin": "Xiànzài shì shàngbān shíjiān, qiánmian yǒudiǎnr dǔchē, wǒmen zǒu lìngwài yì tiáo lù, jùlí chàbuduō.",
+          "text": {
+            "uz": "Hozir ishga borish vaqti, oldinda biroz tirbandlik bor. Boshqa yo'ldan yuramiz, masofa deyarli bir xil.",
+            "ru": "Сейчас время поездки на работу, впереди пробка. Поедем другой дорогой, расстояние почти такое же.",
+            "tj": "Ҳоло вақти ба кор рафтан аст, пеш каме роҳбандӣ ҳаст. Аз роҳи дигар меравем, масофа қариб як хел."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "那就好，堵车浪费时间，遇到堵车，心情也“堵”。",
+          "pinyin": "Nà jiù hǎo, dǔchē làngfèi shíjiān, yùdào dǔchē, xīnqíng yě dǔ.",
+          "text": {
+            "uz": "Unda yaxshi, tirbandlik vaqtni isrof qiladi, tirbandlikka duch kelsang kayfiyat ham 'tiqilib' qoladi.",
+            "ru": "Тогда хорошо. Пробки тратят время, а когда попадаешь в пробку, настроение тоже будто застревает.",
+            "tj": "Пас хуб. Роҳбандӣ вақтро беҳуда мекунад, ба роҳбандӣ афтидан кайфиятро ҳам 'мебандад'."
+          }
+        },
+        {
+          "speaker": "师傅",
+          "zh": "可不是！上班堵车怕迟到，下班堵车怕回家晚。每天在马路上开车，要想不遇到堵车，还真难。",
+          "pinyin": "Kěbúshì! Shàngbān dǔchē pà chídào, xiàbān dǔchē pà huí jiā wǎn. Měitiān zài mǎlù shang kāichē, yào xiǎng bù yùdào dǔchē, hái zhēn nán.",
+          "text": {
+            "uz": "Ha, aynan shunday! Ishga ketayotganda kech qolishdan, ishdan qaytayotganda uyga kech borishdan qo'rqasan. Har kuni yo'lda mashina haydasang, tirbandlikka uchramaslik rostdan qiyin.",
+            "ru": "Ещё бы! Утром боишься опоздать, вечером - поздно вернуться домой. Если каждый день водить по дорогам, не попасть в пробку действительно трудно.",
+            "tj": "Ҳа, айнан ҳамин! Ба кор рафтанда аз дер мондан, аз кор баргаштанда аз дер расидан метарсӣ. Ҳар рӯз дар роҳ рондан бошад, ба роҳбандӣ наафтодан воқеан душвор."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "一遇到堵车，人们就容易变得没有耐心。长期这样，还会影响脾气甚至性格。但是您的心情为什么这么好呢？",
+          "pinyin": "Yí yùdào dǔchē, rénmen jiù róngyì biàn de méiyǒu nàixīn. Chángqī zhèyàng, hái huì yǐngxiǎng píqi shènzhì xìnggé. Dànshì nín de xīnqíng wèishénme zhème hǎo ne?",
+          "text": {
+            "uz": "Tirbandlikka duch kelsa, odamlar oson sabrsiz bo'lib qoladi. Uzoq vaqt shunday bo'lsa, fe'lga, hatto xarakterga ham ta'sir qiladi. Lekin sizning kayfiyatingiz nega bunchalik yaxshi?",
+            "ru": "Когда попадаешь в пробку, люди легко теряют терпение. Если так долго, это влияет на нрав и даже характер. Но почему у вас такое хорошее настроение?",
+            "tj": "Ба роҳбандӣ афтад, одамон зуд бесабр мешаванд. Агар дароз чунин бошад, ба феъл ва ҳатто характер таъсир мекунад. Аммо чаро кайфияти шумо ин қадар хуб аст?"
+          }
+        },
+        {
+          "speaker": "师傅",
+          "zh": "我们改变不了堵车，但是可以试着改变自己的心情。堵车时正好可以休息一下，还可以听听自己喜欢的音乐。",
+          "pinyin": "Wǒmen gǎibiàn bùliǎo dǔchē, dànshì kěyǐ shì zhe gǎibiàn zìjǐ de xīnqíng. Dǔchē shí zhènghǎo kěyǐ xiūxi yíxià, hái kěyǐ tīng ting zìjǐ xǐhuan de yīnyuè.",
+          "text": {
+            "uz": "Tirbandlikni o'zgartira olmaymiz, lekin o'z kayfiyatimizni o'zgartirib ko'rishimiz mumkin. Tirbandlik paytida aynan dam olish, yoqtirgan musiqani tinglash mumkin.",
+            "ru": "Пробку мы изменить не можем, но можем попробовать изменить своё настроение. Во время пробки как раз можно отдохнуть и послушать любимую музыку.",
+            "tj": "Мо роҳбандиро тағйир дода наметавонем, вале кайфияти худро тағйир додан мумкин. Ҳангоми роҳбандӣ маҳз дам гирифтан ва мусиқии дӯстдоштаро шунидан мумкин."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Hayotdagi go'zallikni ko'rish haqida matn",
+        "ru": "Текст о том, как видеть красоту в жизни",
+        "tj": "Матн дар бораи дидани зебоӣ дар зиндагӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "草绿了，那是生命的颜色；花开了，那是大自然的礼物。生活中不缺少美，缺少的是发现美的眼睛。只要有心，生活中的美到处都是。生活的态度要自己选择，因此，遇到烦恼时，你应该想一些办法让自己从不高兴的心情中走出来。窗外是什么样子，我们无法改变，但我们可以选择站在哪个窗户前。选择一个能够带给我们快乐的窗户，这样才能选对心情，选对生活的态度。",
+          "pinyin": "Cǎo lǜ le, nà shì shēngmìng de yánsè; huā kāi le, nà shì dà zìrán de lǐwù.",
+          "text": {
+            "uz": "Maysa yashillansa, bu hayot rangi; gul ochilsa, bu tabiat sovg'asi. Hayotda go'zallik kam emas, kam narsa - go'zallikni ko'ra oladigan ko'z. Ko'ngil bo'lsa, hayotdagi go'zallik hamma joyda. Hayotga munosabatni o'zing tanlaysan, shuning uchun tashvishga duch kelsang, yomon kayfiyatdan chiqish yo'lini topishing kerak. Deraza tashqarisi qandayligini o'zgartira olmaymiz, lekin qaysi deraza oldida turishni tanlay olamiz. Bizga quvonch olib keladigan derazani tanlasak, kayfiyat va hayotga munosabatni to'g'ri tanlagan bo'lamiz.",
+            "ru": "Трава зеленеет - это цвет жизни; цветы распускаются - это подарок природы. В жизни хватает красоты, не хватает глаз, которые её находят. Если есть желание, красота повсюду. Отношение к жизни выбираешь сам, поэтому при тревогах нужно найти способ выйти из плохого настроения. Мы не можем изменить то, что за окном, но можем выбрать, у какого окна стоять. Выбрав окно, которое приносит радость, мы выбираем правильное настроение и отношение к жизни.",
+            "tj": "Сабза сабз мешавад - ин ранги ҳаёт аст; гул мешукуфад - ин туҳфаи табиат аст. Дар зиндагӣ зебоӣ кам нест, чашме кам аст, ки онро ёбад. Агар дил бошад, зебоӣ ҳама ҷо ҳаст. Муносибат ба зиндагиро худ интихоб мекунӣ, бинобар ин ҳангоми ташвиш бояд роҳи баромадан аз кайфияти бадро ёбӣ. Мо намуди беруни тирезаро дигар карда наметавонем, вале метавонем интихоб кунем назди кадом тиреза истем. Тирезаеро интихоб кунем, ки хурсандӣ меорад, пас кайфият ва муносибати зиндагиро дуруст интихоб мекунем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Rang tanlovi va xarakter haqida matn",
+        "ru": "Текст о выборе цвета и характере",
+        "tj": "Матн дар бораи интихоби ранг ва характер"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "科学研究证明，女孩子对衣服颜色的选择往往与她们的性格有关。喜欢穿白色衣服的女孩子性格比较阳光，生活态度积极向上是她们的共同特点；而喜欢穿红色衣服的女孩子性格比较浪漫。颜色也会影响人的心情，不同的颜色会给我们带来不同的感情变化。红色让人变得热情；黄色和白色让人心情愉快；黑色却容易让人感到伤心；人们在看到蓝色时会觉得很舒服，变得安静下来；绿色让我们的眼睛得到休息。",
+          "pinyin": "Kēxué yánjiū zhèngmíng, nǚháizi duì yīfu yánsè de xuǎnzé wǎngwǎng yǔ tāmen de xìnggé yǒuguān.",
+          "text": {
+            "uz": "Ilmiy tadqiqotlar qizlarning kiyim rangi tanlovi ko'pincha xarakteri bilan bog'liq ekanini isbotlaydi. Oq kiyimni yoqtiradigan qizlar xarakteri quyoshdek ochiqroq, hayotga faol va ijobiy munosabat ularning umumiy xususiyati; qizil kiyimni yoqtiradigan qizlar esa romantikroq bo'ladi. Ranglar ham odam kayfiyatiga ta'sir qiladi, turli ranglar turli hissiy o'zgarishlar olib keladi. Qizil odamni jo'shqin qiladi; sariq va oq kayfiyatni ko'taradi; qora esa oson g'amgin qiladi; ko'kni ko'rganda odam o'zini qulay sezadi va tinchlanadi; yashil ko'zimizni dam oldiradi.",
+            "ru": "Научные исследования доказывают, что выбор цвета одежды у девушек часто связан с их характером. Девушки, любящие белую одежду, обычно более солнечные, их общая черта - активное и позитивное отношение к жизни; девушки, любящие красный, более романтичные. Цвета тоже влияют на настроение и приносят разные эмоциональные изменения. Красный делает людей более страстными; жёлтый и белый улучшают настроение; чёрный легко вызывает грусть; синий даёт ощущение комфорта и спокойствия; зелёный даёт глазам отдых.",
+            "tj": "Таҳқиқоти илмӣ исбот мекунад, ки интихоби ранги либос дар духтарон аксаран бо характери онҳо вобаста аст. Духтароне, ки либоси сафедро дӯст медоранд, одатан кушодадилтаранд, муносибати фаъол ва мусбат ба зиндагӣ хусусияти умумии онҳост; духтароне, ки сурхро дӯст медоранд, бештар романтикӣ мешаванд. Рангҳо ба кайфият ҳам таъсир мекунанд ва эҳсосоти гуногун меоранд. Сурх одамро пурҳарорат мекунад; зард ва сафед кайфиятро хуш мекунанд; сиёҳ осон ғамгин мекунад; кабуд роҳат ва оромӣ медиҳад; сабз чашмро дам медиҳад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "距离",
+            "pinyin": "jùlí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "masofa",
+              "ru": "расстояние",
+              "tj": "масофа"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "距离",
+          "pinyin": "jùlí",
+          "translation": {
+            "uz": "masofa",
+            "ru": "расстояние",
+            "tj": "масофа"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'masofa' xitoycha qaysi?",
+            "ru": "'расстояние' по-китайски?",
+            "tj": "'масофа' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "伤心",
+            "亲戚",
+            "距离",
+            "巧克力"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "masofa = 距离 (jùlí)",
+            "ru": "расстояние = 距离 (jùlí)",
+            "tj": "масофа = 距离 (jùlí)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "耐心",
+            "pinyin": "nàixīn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sabr",
+              "ru": "терпение",
+              "tj": "сабр"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "耐心",
+          "pinyin": "nàixīn",
+          "options": [
+            "耐心",
+            "伤心",
+            "亲戚",
+            "巧克力"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "耐心 — sabr (nàixīn)",
+            "ru": "耐心 — терпение (nàixīn)",
+            "tj": "耐心 — сабр (nàixīn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "生命",
+            "pinyin": "shēngmìng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hayot",
+              "ru": "жизнь",
+              "tj": "ҳаёт"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "生命 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生命:",
+            "tj": "Маънои калимаи 生命-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
+            },
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            },
+            {
+              "uz": "hayot",
+              "ru": "жизнь",
+              "tj": "ҳаёт"
+            },
+            {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "生命 = hayot (shēngmìng)",
+            "ru": "生命 = жизнь (shēngmìng)",
+            "tj": "生命 = ҳаёт (shēngmìng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "缺少",
+            "pinyin": "quēshǎo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kam bo'lmoq, yetishmaslik",
+              "ru": "недоставать",
+              "tj": "камӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "quēshǎo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается quēshǎo?",
+            "tj": "quēshǎo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "亲戚",
+            "伤心",
+            "缺少",
+            "巧克力"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "缺少 = kam bo'lmoq, yetishmaslik (quēshǎo)",
+            "ru": "缺少 = недоставать (quēshǎo)",
+            "tj": "缺少 = камӣ кардан (quēshǎo)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "距离 talaffuzini tanlang:",
+            "ru": "Выберите произношение 距离:",
+            "tj": "Талаффузи 距离-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qiǎokèlì",
+            "qīnqi",
+            "shāngxīn",
+            "jùlí"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "距离 — jùlí",
+            "ru": "距离 — jùlí",
+            "tj": "距离 — jùlí"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "距离",
+              {
+                "uz": "masofa",
+                "ru": "расстояние",
+                "tj": "масофа"
+              }
+            ],
+            [
+              "耐心",
+              {
+                "uz": "sabr",
+                "ru": "терпение",
+                "tj": "сабр"
+              }
+            ],
+            [
+              "生命",
+              {
+                "uz": "hayot",
+                "ru": "жизнь",
+                "tj": "ҳаёт"
+              }
+            ],
+            [
+              "缺少",
+              {
+                "uz": "kam bo'lmoq, yetishmaslik",
+                "ru": "недоставать",
+                "tj": "камӣ кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "shuning uchun",
+              "ru": "поэтому",
+              "tj": "бинобар ин"
+            },
+            "title_zh": "因此",
+            "rule": {
+              "uz": "Oldingi sababdan kelib chiqqan natijani bog'laydi.",
+              "ru": "Связывает результат с предыдущей причиной.",
+              "tj": "Натиҷаро бо сабаби пешина мепайвандад."
+            },
+            "examples": [
+              {
+                "zh": "生活的态度要自己选择，因此，遇到烦恼时，你应该想一些办法让自己从不高兴的心情中走出来。",
+                "pinyin": "Shēnghuó de tàidu yào zìjǐ xuǎnzé, yīncǐ, yùdào fánnǎo shí, nǐ yīnggāi xiǎng yìxiē bànfǎ.",
+                "translation": {
+                  "uz": "Hayotga munosabatni o'zing tanlaysan, shuning uchun tashvishga duch kelsang, kayfiyatni chiqarish yo'lini topish kerak.",
+                  "ru": "Отношение к жизни выбираешь сам, поэтому при тревогах нужно найти способ выйти из плохого настроения.",
+                  "tj": "Муносибат ба зиндагиро худ интихоб мекунӣ, бинобар ин ҳангоми ташвиш бояд роҳи баромадан аз кайфияти бадро ёфт."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "生活的态度要自己选择，因此，遇到烦恼时，你应该想一些办法让自己从不高兴的____中走出来。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "亲戚",
+            "巧克力",
+            "伤心",
+            "心情"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 心情 (xīnqíng) — kayfiyat",
+            "ru": "Верно: 心情 (xīnqíng) — настроение",
+            "tj": "Дуруст: 心情 (xīnqíng) — кайфият"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "心情 talaffuzini tanlang:",
+            "ru": "Выберите произношение 心情:",
+            "tj": "Талаффузи 心情-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qiǎokèlì",
+            "shāngxīn",
+            "qīnqi",
+            "xīnqíng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "心情 — xīnqíng",
+            "ru": "心情 — xīnqíng",
+            "tj": "心情 — xīnqíng"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "距离",
+          "pinyin": "jùlí",
+          "options": [
+            "亲戚",
+            "巧克力",
+            "距离",
+            "伤心"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "距离 — masofa (jùlí)",
+            "ru": "距离 — расстояние (jùlí)",
+            "tj": "距离 — масофа (jùlí)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "距离",
+              {
+                "uz": "masofa",
+                "ru": "расстояние",
+                "tj": "масофа"
+              }
+            ],
+            [
+              "耐心",
+              {
+                "uz": "sabr",
+                "ru": "терпение",
+                "tj": "сабр"
+              }
+            ],
+            [
+              "生命",
+              {
+                "uz": "hayot",
+                "ru": "жизнь",
+                "tj": "ҳаёт"
+              }
+            ],
+            [
+              "缺少",
+              {
+                "uz": "kam bo'lmoq, yetishmaslik",
+                "ru": "недоставать",
+                "tj": "камӣ кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "距离",
+          "pinyin": "jùlí",
+          "translation": {
+            "uz": "masofa",
+            "ru": "расстояние",
+            "tj": "масофа"
+          }
+        }
+      ]
+    }
+  ]
+}

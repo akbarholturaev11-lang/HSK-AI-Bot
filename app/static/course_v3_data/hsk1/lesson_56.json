@@ -1,0 +1,761 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 56,
+  "source_lesson": 14,
+  "part_no": 3,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "她买了不少衣服",
+  "subtitle": {
+    "uz": "Tugallangan harakatlar uchun 了 yuklamasi, vaqt ko'rsatkichi sifatida 后 va ravish 都",
+    "ru": "Частица 了 для завершённых действий, 后 как временной маркер и наречие 都",
+    "tj": "Зарраи 了 барои амалҳои анҷомшуда, 后 ҳамчун нишонаи вақт ва зарфи 都"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "分钟",
+      "pinyin": "fēnzhōng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "daqiqa (vaqt birligi)",
+        "ru": "минута (единица времени)",
+        "tj": "дақиқа (воҳиди вақт)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "后",
+      "pinyin": "hòu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "keyin, so'ng",
+        "ru": "после, позже",
+        "tj": "баъд аз, пас аз"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "衣服",
+      "pinyin": "yīfu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kiyim",
+        "ru": "одежда",
+        "tj": "либос, кӯйлак"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "后 vaqt belgisi",
+        "ru": "后 — временной маркер",
+        "tj": "后 — нишонаи вақт"
+      },
+      "title_zh": "名词 后",
+      "rule": {
+        "uz": "后(hòu) — muayyan voqeadan keyingi vaqtni bildiradi.\n\n40分钟后 — 40 daqiqadan keyin\n三天后 — uch kundan keyin\n一个星期后 — bir haftadan keyin\n五点后 — soat beshdan keyin\n\nMisol:\n40分钟后回来。— 40 daqiqadan keyin qaytadi.\n三天后我去北京。— Uch kundan keyin Pekinga boraman.",
+        "ru": "后(hòu) — указывает на момент времени после определённого события.\n\n40分钟后 — через 40 минут\n三天后 — через три дня\n一个星期后 — через одну неделю\n五点后 — после пяти часов\n\nПример:\n40分钟后回来。— Вернётся через 40 минут.\n三天后我去北京。— Я поеду в Пекин через три дня.",
+        "tj": "后(hòu) — лаҳзаи вақтро баъд аз рӯйдоди муайян нишон медиҳад.\n\n40分钟后 — баъд аз 40 дақиқа\n三天后 — баъд аз се рӯз\n一个星期后 — баъд аз як ҳафта\n五点后 — баъд аз соати панҷ\n\nНамуна:\n40分钟后回来。— Баъд аз 40 дақиқа бармегардад.\n三天后我去北京。— Баъд аз се рӯз ман ба Пекин меравам."
+      },
+      "examples": [
+        {
+          "zh": "40分钟后回来。",
+          "pinyin": "Sìshí fēnzhōng hòu huílai.",
+          "translation": {
+            "uz": "40 daqiqadan keyin qaytadi.",
+            "ru": "Вернётся через 40 минут.",
+            "tj": "Баъд аз 40 дақиқа бармегардад."
+          }
+        },
+        {
+          "zh": "三天后见。",
+          "pinyin": "Sān tiān hòu jiàn.",
+          "translation": {
+            "uz": "Uch kundan keyin ko'rishamiz.",
+            "ru": "Увидимся через три дня.",
+            "tj": "Баъд аз се рӯз мебинамон."
+          }
+        },
+        {
+          "zh": "八点后能来吗？",
+          "pinyin": "Bā diǎn hòu néng lái ma?",
+          "translation": {
+            "uz": "Soat sakkizdan keyin kela olasizmi?",
+            "ru": "Вы можете прийти после восьми?",
+            "tj": "Баъд аз соати ҳашт омада метавонед?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Yotoqxonada — kecha nima qilding",
+        "ru": "В комнате — что делал вчера",
+        "tj": "Дар хоб — дирӯз чӣ кардӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天上午你去哪儿了？",
+          "pinyin": "Zuótiān shàngwǔ nǐ qù nǎr le?",
+          "text": {
+            "uz": "Kecha ertalab qayerga bordingiz?",
+            "ru": "Куда вы ходили вчера утром?",
+            "tj": "Дирӯз субҳ шумо куҷо рафтед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我去商店买东西了。",
+          "pinyin": "Wǒ qù shāngdiàn mǎi dōngxi le.",
+          "text": {
+            "uz": "Men do'konga narsa sotib olishga bordim.",
+            "ru": "Я ходил в магазин за покупками.",
+            "tj": "Ман ба дӯкон рафтам, чизҳо харидам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你买什么了？",
+          "pinyin": "Nǐ mǎi shénme le?",
+          "text": {
+            "uz": "Nima sotib oldingiz?",
+            "ru": "Что вы купили?",
+            "tj": "Шумо чӣ харидед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我买了一点儿苹果。",
+          "pinyin": "Wǒ mǎile yīdiǎnr píngguǒ.",
+          "text": {
+            "uz": "Men bir oz olma sotib oldim.",
+            "ru": "Я купил немного яблок.",
+            "tj": "Ман каме себ харидам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada — Zhang janobni ko'rdingizmi",
+        "ru": "В компании — видели ли вы господина Чжана",
+        "tj": "Дар ширкат — ҷаноби Чжанро дидед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你看见张先生了吗？",
+          "pinyin": "Nǐ kànjiàn Zhāng xiānsheng le ma?",
+          "text": {
+            "uz": "Janob Jangni ko'rdingizmi?",
+            "ru": "Вы видели господина Чжана?",
+            "tj": "Шумо ҷаноби Чжанро дидед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "看见了，他去学开车了。",
+          "pinyin": "Kànjiàn le, tā qù xué kāi chē le.",
+          "text": {
+            "uz": "Ko'rdim, u mashina haydashni o'rganishga ketdi.",
+            "ru": "Да, видел — он пошёл учиться водить машину.",
+            "tj": "Ҳа, дидам — ӯ рафт рондани мошинро биомӯзад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "他什么时候能回来？",
+          "pinyin": "Tā shénme shíhou néng huílai?",
+          "text": {
+            "uz": "Qachon qaytib kela oladi?",
+            "ru": "Когда он сможет вернуться?",
+            "tj": "Ӯ кай баргашта метавонад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "40分钟后回来。",
+          "pinyin": "Sìshí fēnzhōng hòu huílai.",
+          "text": {
+            "uz": "40 daqiqadan keyin qaytadi.",
+            "ru": "Вернётся через 40 минут.",
+            "tj": "Баъд аз 40 дақиқа бармегардад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'kon oldida — kiyimlar",
+        "ru": "У магазина — одежда",
+        "tj": "Дар назди дӯкон — либосҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "王方的衣服太漂亮了！",
+          "pinyin": "Wáng Fāng de yīfu tài piàoliang le!",
+          "text": {
+            "uz": "Van Fanning kiyimlari juda chiroyli!",
+            "ru": "Одежда Ван Фан такая красивая!",
+            "tj": "Либоси Ван Фан хеле зебо аст!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，她买了不少衣服。",
+          "pinyin": "Shì a, tā mǎile bùshǎo yīfu.",
+          "text": {
+            "uz": "Ha, u juda ko'p kiyim sotib oldi.",
+            "ru": "Да уж — она купила немало одежды.",
+            "tj": "Ҳа, ӯ хеле зиёд либос харид."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你买什么了？",
+          "pinyin": "Nǐ mǎi shénme le?",
+          "text": {
+            "uz": "Siz nima sotib oldingiz?",
+            "ru": "А вы что купили?",
+            "tj": "Шумо чӣ харидед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我没买，这些都是王方的东西。",
+          "pinyin": "Wǒ méi mǎi, zhèxiē dōu shì Wáng Fāng de dōngxi.",
+          "text": {
+            "uz": "Men hech narsa sotib olmadim, bular hammasi Van Fanning narsalari.",
+            "ru": "Я ничего не купила — всё это вещи Ван Фан.",
+            "tj": "Ман ҳеҷ чиз нахаридам, инҳо ҳама чизҳои Ван Фан аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "分钟",
+            "pinyin": "fēnzhōng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "daqiqa (vaqt birligi)",
+              "ru": "минута (единица времени)",
+              "tj": "дақиқа (воҳиди вақт)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "分钟 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 分钟:",
+            "tj": "Маънои калимаи 分钟-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "olma",
+              "ru": "яблоко",
+              "tj": "себ"
+            },
+            {
+              "uz": "daqiqa (vaqt birligi)",
+              "ru": "минута (единица времени)",
+              "tj": "дақиқа (воҳиди вақт)"
+            },
+            {
+              "uz": "narsa, buyum",
+              "ru": "вещь, предмет",
+              "tj": "чиз, асбоб"
+            },
+            {
+              "uz": "bir oz, biroz",
+              "ru": "немного, чуть-чуть",
+              "tj": "каме, андаке"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "分钟 = daqiqa (vaqt birligi) (fēnzhōng)",
+            "ru": "分钟 = минута (единица времени) (fēnzhōng)",
+            "tj": "分钟 = дақиқа (воҳиди вақт) (fēnzhōng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "后",
+            "pinyin": "hòu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "keyin, so'ng",
+              "ru": "после, позже",
+              "tj": "баъд аз, пас аз"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "后",
+          "pinyin": "hòu",
+          "translation": {
+            "uz": "keyin, so'ng",
+            "ru": "после, позже",
+            "tj": "баъд аз, пас аз"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hòu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hòu?",
+            "tj": "hòu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "一点儿",
+            "苹果",
+            "后",
+            "东西"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "后 = keyin, so'ng (hòu)",
+            "ru": "后 = после, позже (hòu)",
+            "tj": "后 = баъд аз, пас аз (hòu)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "衣服",
+            "pinyin": "yīfu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kiyim",
+              "ru": "одежда",
+              "tj": "либос, кӯйлак"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "衣服 talaffuzini tanlang:",
+            "ru": "Выберите произношение 衣服:",
+            "tj": "Талаффузи 衣服-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yīfu",
+            "píngguǒ",
+            "yīdiǎnr",
+            "dōngxi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "衣服 — yīfu",
+            "ru": "衣服 — yīfu",
+            "tj": "衣服 — yīfu"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'daqiqa (vaqt birligi)' xitoycha qaysi?",
+            "ru": "'минута (единица времени)' по-китайски?",
+            "tj": "'дақиқа (воҳиди вақт)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "苹果",
+            "分钟",
+            "东西",
+            "一点儿"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "daqiqa (vaqt birligi) = 分钟 (fēnzhōng)",
+            "ru": "минута (единица времени) = 分钟 (fēnzhōng)",
+            "tj": "дақиқа (воҳиди вақт) = 分钟 (fēnzhōng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "分钟",
+              {
+                "uz": "daqiqa (vaqt birligi)",
+                "ru": "минута (единица времени)",
+                "tj": "дақиқа (воҳиди вақт)"
+              }
+            ],
+            [
+              "后",
+              {
+                "uz": "keyin, so'ng",
+                "ru": "после, позже",
+                "tj": "баъд аз, пас аз"
+              }
+            ],
+            [
+              "衣服",
+              {
+                "uz": "kiyim",
+                "ru": "одежда",
+                "tj": "либос, кӯйлак"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "后 vaqt belgisi",
+              "ru": "后 — временной маркер",
+              "tj": "后 — нишонаи вақт"
+            },
+            "title_zh": "名词 后",
+            "rule": {
+              "uz": "后(hòu) — muayyan voqeadan keyingi vaqtni bildiradi.\n\n40分钟后 — 40 daqiqadan keyin\n三天后 — uch kundan keyin\n一个星期后 — bir haftadan keyin\n五点后 — soat beshdan keyin\n\nMisol:\n40分钟后回来。— 40 daqiqadan keyin qaytadi.\n三天后我去北京。— Uch kundan keyin Pekinga boraman.",
+              "ru": "后(hòu) — указывает на момент времени после определённого события.\n\n40分钟后 — через 40 минут\n三天后 — через три дня\n一个星期后 — через одну неделю\n五点后 — после пяти часов\n\nПример:\n40分钟后回来。— Вернётся через 40 минут.\n三天后我去北京。— Я поеду в Пекин через три дня.",
+              "tj": "后(hòu) — лаҳзаи вақтро баъд аз рӯйдоди муайян нишон медиҳад.\n\n40分钟后 — баъд аз 40 дақиқа\n三天后 — баъд аз се рӯз\n一个星期后 — баъд аз як ҳафта\n五点后 — баъд аз соати панҷ\n\nНамуна:\n40分钟后回来。— Баъд аз 40 дақиқа бармегардад.\n三天后我去北京。— Баъд аз се рӯз ман ба Пекин меравам."
+            },
+            "examples": [
+              {
+                "zh": "40分钟后回来。",
+                "pinyin": "Sìshí fēnzhōng hòu huílai.",
+                "translation": {
+                  "uz": "40 daqiqadan keyin qaytadi.",
+                  "ru": "Вернётся через 40 минут.",
+                  "tj": "Баъд аз 40 дақиқа бармегардад."
+                }
+              },
+              {
+                "zh": "三天后见。",
+                "pinyin": "Sān tiān hòu jiàn.",
+                "translation": {
+                  "uz": "Uch kundan keyin ko'rishamiz.",
+                  "ru": "Увидимся через три дня.",
+                  "tj": "Баъд аз се рӯз мебинамон."
+                }
+              },
+              {
+                "zh": "八点后能来吗？",
+                "pinyin": "Bā diǎn hòu néng lái ma?",
+                "translation": {
+                  "uz": "Soat sakkizdan keyin kela olasizmi?",
+                  "ru": "Вы можете прийти после восьми?",
+                  "tj": "Баъд аз соати ҳашт омада метавонед?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "40 daqiqadan keyin qaytadi.",
+            "ru": "Вернётся через 40 минут.",
+            "tj": "Баъд аз 40 дақиқа бармегардад."
+          },
+          "tokens": [
+            "回来",
+            "东西",
+            "分钟",
+            "一点儿",
+            "后"
+          ],
+          "answer_tokens": [
+            "分钟",
+            "后",
+            "回来"
+          ],
+          "explanation": {
+            "uz": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
+            "ru": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
+            "tj": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Soat sakkizdan keyin kela olasizmi?» — xitoychada qaysi biri?",
+            "ru": "«Вы можете прийти после восьми?» — какое предложение по-китайски?",
+            "tj": "«Баъд аз соати ҳашт омада метавонед?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "40分钟后回来。",
+            "三天后见。",
+            "八点后能来吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "八点后能来吗？ — Bā diǎn hòu néng lái ma?",
+            "ru": "八点后能来吗？ — Bā diǎn hòu néng lái ma?",
+            "tj": "八点后能来吗？ — Bā diǎn hòu néng lái ma?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "40分钟后回来。",
+          "pinyin": "Sìshí fēnzhōng hòu huílai.",
+          "translation": {
+            "uz": "40 daqiqadan keyin qaytadi.",
+            "ru": "Вернётся через 40 минут.",
+            "tj": "Баъд аз 40 дақиқа бармегардад."
+          },
+          "tokens": {
+            "uz": [
+              "keyin",
+              "daqiqadan",
+              "qaytadi",
+              "40"
+            ],
+            "ru": [
+              "через",
+              "Вернётся",
+              "40",
+              "минут"
+            ],
+            "tj": [
+              "аз",
+              "дақиқа",
+              "бармегардад",
+              "Баъд",
+              "40"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "40",
+              "daqiqadan",
+              "keyin",
+              "qaytadi"
+            ],
+            "ru": [
+              "Вернётся",
+              "через",
+              "40",
+              "минут"
+            ],
+            "tj": [
+              "Баъд",
+              "аз",
+              "40",
+              "дақиқа",
+              "бармегардад"
+            ]
+          },
+          "explanation": {
+            "uz": "40分钟后回来。 — 40 daqiqadan keyin qaytadi.",
+            "ru": "40分钟后回来。 — Вернётся через 40 минут.",
+            "tj": "40分钟后回来。 — Баъд аз 40 дақиқа бармегардад."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "40 daqiqadan keyin qaytadi.",
+            "ru": "Вернётся через 40 минут.",
+            "tj": "Баъд аз 40 дақиқа бармегардад."
+          },
+          "tokens": [
+            "东西",
+            "后",
+            "分钟",
+            "回来",
+            "一点儿"
+          ],
+          "answer_tokens": [
+            "分钟",
+            "后",
+            "回来"
+          ],
+          "explanation": {
+            "uz": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
+            "ru": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
+            "tj": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "回来 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 回来:",
+            "tj": "Маънои калимаи 回来-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qaytib kelmoq",
+              "ru": "вернуться, прийти обратно",
+              "tj": "баргаштан, бозгашт кардан"
+            },
+            {
+              "uz": "bir oz, biroz",
+              "ru": "немного, чуть-чуть",
+              "tj": "каме, андаке"
+            },
+            {
+              "uz": "olma",
+              "ru": "яблоко",
+              "tj": "себ"
+            },
+            {
+              "uz": "narsa, buyum",
+              "ru": "вещь, предмет",
+              "tj": "чиз, асбоб"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "回来 = qaytib kelmoq (huílai)",
+            "ru": "回来 = вернуться, прийти обратно (huílai)",
+            "tj": "回来 = баргаштан, бозгашт кардан (huílai)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "40 daqiqadan keyin qaytadi.",
+            "ru": "Вернётся через 40 минут.",
+            "tj": "Баъд аз 40 дақиқа бармегардад."
+          },
+          "tokens": [
+            "后",
+            "一点儿",
+            "分钟",
+            "回来",
+            "东西"
+          ],
+          "answer_tokens": [
+            "分钟",
+            "后",
+            "回来"
+          ],
+          "explanation": {
+            "uz": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
+            "ru": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
+            "tj": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kiyim' xitoycha qaysi?",
+            "ru": "'одежда' по-китайски?",
+            "tj": "'либос, кӯйлак' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "东西",
+            "一点儿",
+            "衣服",
+            "苹果"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kiyim = 衣服 (yīfu)",
+            "ru": "одежда = 衣服 (yīfu)",
+            "tj": "либос, кӯйлак = 衣服 (yīfu)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "后",
+          "pinyin": "hòu",
+          "translation": {
+            "uz": "keyin, so'ng",
+            "ru": "после, позже",
+            "tj": "баъд аз, пас аз"
+          }
+        }
+      ]
+    }
+  ]
+}

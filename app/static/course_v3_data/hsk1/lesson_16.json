@@ -1,0 +1,730 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 16,
+  "source_lesson": 5,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "她女儿今年二十岁",
+  "subtitle": {
+    "uz": "Yosh va oila a'zolari haqida gapirish, 100 gacha raqamlarni o'rganing",
+    "ru": "Говорить о возрасте и членах семьи, выучить числа до 100",
+    "tj": "Дар бораи синну сол ва аъзоёни оила гап задан, рақамҳоро то 100 омӯхтан"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "今年",
+      "pinyin": "jīnnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bu yil",
+        "ru": "в этом году",
+        "tj": "امسол، ин сол"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "多",
+      "pinyin": "duō",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "ko'p, qancha (daraja)",
+        "ru": "много, как (степень)",
+        "tj": "зиёд, чӣ қадар (дараҷа)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "大",
+      "pinyin": "dà",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "katta, ulug' (yoshda)",
+        "ru": "большой, старший (по возрасту)",
+        "tj": "калон, бузург (аз рӯи синну сол)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "了 — holat o'zgarishi yuklamasi",
+        "ru": "了 — частица изменения состояния",
+        "tj": "了 — ҳарфи тағйири ҳолат"
+      },
+      "title_zh": "了 — holat o'zgarishi yuklamasi",
+      "rule": {
+        "uz": "了(le) — gap oxiriga qo'yilsa, yangi holat yoki o'zgarishni bildiradi.\n\nMisol:\n她今年五十岁了。— U bu yil ellik yoshga kirdi (yangi holat).\n我女儿四岁了。— Qizim to'rt yoshga to'ldi.\n\n多大了？— Necha yoshga kirdingiz? (yosh so'rash)",
+        "ru": "了(le) — ставится в конце предложения, указывая на новое состояние или изменение.\n\nПример:\n她今年五十岁了。— В этом году ей исполнилось пятьдесят (новое состояние).\n我女儿四岁了。— Моей дочери исполнилось четыре.\n\n多大了？— Сколько вам лет? (спрашиваем возраст)",
+        "tj": "了(le) — дар охири ҷумла ҳолати нав ё тағйирро нишон медиҳад.\n\nМисол:\n她今年五十岁了。— Вай имсол панҷоҳ сол шуд (ҳолати нав).\n我女儿四岁了。— Духтарам чор сол шуд.\n\n多大了？— Шумо чанд сол шудед? (пурсидани синну сол)"
+      },
+      "examples": [
+        {
+          "zh": "她今年二十岁了。",
+          "pinyin": "Tā jīnnián èrshí suì le.",
+          "translation": {
+            "uz": "U bu yil yigirma yoshga kirdi.",
+            "ru": "В этом году ей исполнилось двадцать.",
+            "tj": "Вай имсол бист сол шуд."
+          }
+        },
+        {
+          "zh": "他五十岁了。",
+          "pinyin": "Tā wǔshí suì le.",
+          "translation": {
+            "uz": "U ellik yoshga kirdi.",
+            "ru": "Ему исполнилось пятьдесят.",
+            "tj": "Вай панҷоҳ сол шуд."
+          }
+        },
+        {
+          "zh": "你多大了？",
+          "pinyin": "Nǐ duō dà le?",
+          "translation": {
+            "uz": "Siz necha yoshdasiz?",
+            "ru": "Сколько вам лет?",
+            "tj": "Шумо чанд сол доред?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Maktabda — oila a'zolari",
+        "ru": "В школе — о членах семьи",
+        "tj": "Дар мактаб — дар бораи аъзоёни оила"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+          "text": {
+            "uz": "Sizning oilangizda necha kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我家有三口人。",
+          "pinyin": "Wǒ jiā yǒu sān kǒu rén.",
+          "text": {
+            "uz": "Bizning oilamizda uch kishi bor.",
+            "ru": "В нашей семье трое человек.",
+            "tj": "Дар оилаи мо се нафар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda — yosh so'rash (bolalar)",
+        "ru": "В офисе — спрашиваем возраст (ребёнок)",
+        "tj": "Дар идора — пурсидани синну сол (кӯдак)"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你女儿几岁了？",
+          "pinyin": "Nǐ nǚ'ér jǐ suì le?",
+          "text": {
+            "uz": "Qizingiz necha yoshda?",
+            "ru": "Сколько лет вашей дочери?",
+            "tj": "Духтаратон чанд сол дорад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她今年四岁了。",
+          "pinyin": "Tā jīnnián sì suì le.",
+          "text": {
+            "uz": "U bu yil to'rt yoshga to'ldi.",
+            "ru": "Ей в этом году исполнилось четыре года.",
+            "tj": "Вай имсол чор сол шуд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda — kattalar yoshi",
+        "ru": "В офисе — возраст взрослых",
+        "tj": "Дар идора — синну соли калонсолон"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "李老师多大了？",
+          "pinyin": "Lǐ lǎoshī duō dà le?",
+          "text": {
+            "uz": "Muallima Li necha yoshda?",
+            "ru": "Сколько лет преподавателю Ли?",
+            "tj": "Муаллима Ли чанд сол дорад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她今年50岁了。",
+          "pinyin": "Tā jīnnián wǔshí suì le.",
+          "text": {
+            "uz": "U bu yil ellik yoshga kirdi.",
+            "ru": "В этом году ей исполнилось пятьдесят.",
+            "tj": "Вай имсол панҷоҳ сол шуд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "她女儿呢？",
+          "pinyin": "Tā nǚ'ér ne?",
+          "text": {
+            "uz": "Uning qizi-chi?",
+            "ru": "А её дочь?",
+            "tj": "Духтараш чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她女儿今年20岁。",
+          "pinyin": "Tā nǚ'ér jīnnián èrshí suì.",
+          "text": {
+            "uz": "Uning qizi bu yil yigirma yoshda.",
+            "ru": "Её дочери в этом году двадцать лет.",
+            "tj": "Духтараш имсол бист сол дорад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "今年",
+            "pinyin": "jīnnián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bu yil",
+              "ru": "в этом году",
+              "tj": "امسол، ин сол"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "今年",
+          "pinyin": "jīnnián",
+          "translation": {
+            "uz": "bu yil",
+            "ru": "в этом году",
+            "tj": "امسол، ин сол"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "今年 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 今年:",
+            "tj": "Маънои калимаи 今年-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
+            },
+            {
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
+            },
+            {
+              "uz": "bu yil",
+              "ru": "в этом году",
+              "tj": "امسол، ин сол"
+            },
+            {
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "今年 = bu yil (jīnnián)",
+            "ru": "今年 = в этом году (jīnnián)",
+            "tj": "今年 = امسол، ин сол (jīnnián)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "多",
+            "pinyin": "duō",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "ko'p, qancha (daraja)",
+              "ru": "много, как (степень)",
+              "tj": "зиёд, чӣ қадар (дараҷа)"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "duō qaysi ieroglif?",
+            "ru": "Какой иероглиф читается duō?",
+            "tj": "duō кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "口",
+            "有",
+            "多",
+            "家"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "多 = ko'p, qancha (daraja) (duō)",
+            "ru": "多 = много, как (степень) (duō)",
+            "tj": "多 = зиёд, чӣ қадар (дараҷа) (duō)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "大",
+            "pinyin": "dà",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "katta, ulug' (yoshda)",
+              "ru": "большой, старший (по возрасту)",
+              "tj": "калон, бузург (аз рӯи синну сол)"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "大 talaffuzini tanlang:",
+            "ru": "Выберите произношение 大:",
+            "tj": "Талаффузи 大-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dà",
+            "yǒu",
+            "kǒu",
+            "jiā"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "大 — dà",
+            "ru": "大 — dà",
+            "tj": "大 — dà"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bu yil' xitoycha qaysi?",
+            "ru": "'в этом году' по-китайски?",
+            "tj": "'امسол، ин сол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "家",
+            "口",
+            "有",
+            "今年"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bu yil = 今年 (jīnnián)",
+            "ru": "в этом году = 今年 (jīnnián)",
+            "tj": "امسол، ин сол = 今年 (jīnnián)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "今年",
+              {
+                "uz": "bu yil",
+                "ru": "в этом году",
+                "tj": "امسол، ин сол"
+              }
+            ],
+            [
+              "多",
+              {
+                "uz": "ko'p, qancha (daraja)",
+                "ru": "много, как (степень)",
+                "tj": "зиёд, чӣ қадар (дараҷа)"
+              }
+            ],
+            [
+              "大",
+              {
+                "uz": "katta, ulug' (yoshda)",
+                "ru": "большой, старший (по возрасту)",
+                "tj": "калон, бузург (аз рӯи синну сол)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "了 — holat o'zgarishi yuklamasi",
+              "ru": "了 — частица изменения состояния",
+              "tj": "了 — ҳарфи тағйири ҳолат"
+            },
+            "title_zh": "了 — holat o'zgarishi yuklamasi",
+            "rule": {
+              "uz": "了(le) — gap oxiriga qo'yilsa, yangi holat yoki o'zgarishni bildiradi.\n\nMisol:\n她今年五十岁了。— U bu yil ellik yoshga kirdi (yangi holat).\n我女儿四岁了。— Qizim to'rt yoshga to'ldi.\n\n多大了？— Necha yoshga kirdingiz? (yosh so'rash)",
+              "ru": "了(le) — ставится в конце предложения, указывая на новое состояние или изменение.\n\nПример:\n她今年五十岁了。— В этом году ей исполнилось пятьдесят (новое состояние).\n我女儿四岁了。— Моей дочери исполнилось четыре.\n\n多大了？— Сколько вам лет? (спрашиваем возраст)",
+              "tj": "了(le) — дар охири ҷумла ҳолати нав ё тағйирро нишон медиҳад.\n\nМисол:\n她今年五十岁了。— Вай имсол панҷоҳ сол шуд (ҳолати нав).\n我女儿四岁了。— Духтарам чор сол шуд.\n\n多大了？— Шумо чанд сол шудед? (пурсидани синну сол)"
+            },
+            "examples": [
+              {
+                "zh": "她今年二十岁了。",
+                "pinyin": "Tā jīnnián èrshí suì le.",
+                "translation": {
+                  "uz": "U bu yil yigirma yoshga kirdi.",
+                  "ru": "В этом году ей исполнилось двадцать.",
+                  "tj": "Вай имсол бист сол шуд."
+                }
+              },
+              {
+                "zh": "他五十岁了。",
+                "pinyin": "Tā wǔshí suì le.",
+                "translation": {
+                  "uz": "U ellik yoshga kirdi.",
+                  "ru": "Ему исполнилось пятьдесят.",
+                  "tj": "Вай панҷоҳ сол шуд."
+                }
+              },
+              {
+                "zh": "你多大了？",
+                "pinyin": "Nǐ duō dà le?",
+                "translation": {
+                  "uz": "Siz necha yoshdasiz?",
+                  "ru": "Сколько вам лет?",
+                  "tj": "Шумо чанд сол доред?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz necha yoshdasiz?",
+            "ru": "Сколько вам лет?",
+            "tj": "Шумо чанд сол доред?"
+          },
+          "tokens": [
+            "多",
+            "有",
+            "家",
+            "你",
+            "了",
+            "大"
+          ],
+          "answer_tokens": [
+            "你",
+            "多",
+            "大",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你多大了？ — Nǐ duō dà le?",
+            "ru": "你多大了？ — Nǐ duō dà le?",
+            "tj": "你多大了？ — Nǐ duō dà le?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U bu yil yigirma yoshga kirdi.» — xitoychada qaysi biri?",
+            "ru": "«В этом году ей исполнилось двадцать.» — какое предложение по-китайски?",
+            "tj": "«Вай имсол бист сол шуд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你多大了？",
+            "她今年二十岁了。",
+            "他五十岁了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "她今年二十岁了。 — Tā jīnnián èrshí suì le.",
+            "ru": "她今年二十岁了。 — Tā jīnnián èrshí suì le.",
+            "tj": "她今年二十岁了。 — Tā jīnnián èrshí suì le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "你多大了？",
+          "pinyin": "Nǐ duō dà le?",
+          "translation": {
+            "uz": "Siz necha yoshdasiz? (kattalar)",
+            "ru": "Сколько вам лет? (взрослые)",
+            "tj": "Шумо чанд сол доред? (калонсолон)"
+          },
+          "tokens": {
+            "uz": [
+              "necha",
+              "kattalar",
+              "bu",
+              "U",
+              "yoshdasiz",
+              "Siz"
+            ],
+            "ru": [
+              "вам",
+              "В",
+              "этом",
+              "взрослые",
+              "лет",
+              "Сколько"
+            ],
+            "tj": [
+              "имсол",
+              "Вай",
+              "калонсолон",
+              "чанд",
+              "Шумо",
+              "доред",
+              "сол"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Siz",
+              "necha",
+              "yoshdasiz",
+              "kattalar"
+            ],
+            "ru": [
+              "Сколько",
+              "вам",
+              "лет",
+              "взрослые"
+            ],
+            "tj": [
+              "Шумо",
+              "чанд",
+              "сол",
+              "доред",
+              "калонсолон"
+            ]
+          },
+          "explanation": {
+            "uz": "你多大了？ — Siz necha yoshdasiz? (kattalar)",
+            "ru": "你多大了？ — Сколько вам лет? (взрослые)",
+            "tj": "你多大了？ — Шумо чанд сол доред? (калонсолон)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Uning qizi bu yil yigirma yoshda.",
+            "ru": "Её дочери в этом году двадцать лет.",
+            "tj": "Духтараш имсол бист сол дорад."
+          },
+          "tokens": [
+            "有",
+            "她",
+            "今年",
+            "家",
+            "女儿",
+            "岁"
+          ],
+          "answer_tokens": [
+            "她",
+            "女儿",
+            "今年",
+            "岁"
+          ],
+          "explanation": {
+            "uz": "她女儿今年20岁。 — Tā nǚ'ér jīnnián èrshí suì.",
+            "ru": "她女儿今年20岁。 — Tā nǚ'ér jīnnián èrshí suì.",
+            "tj": "她女儿今年20岁。 — Tā nǚ'ér jīnnián èrshí suì."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz necha yoshdasiz? (kattalar)",
+            "ru": "Сколько вам лет? (взрослые)",
+            "tj": "Шумо чанд сол доред? (калонсолон)"
+          },
+          "tokens": [
+            "你",
+            "大",
+            "有",
+            "家",
+            "了",
+            "多"
+          ],
+          "answer_tokens": [
+            "你",
+            "多",
+            "大",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你多大了？ — Nǐ duō dà le?",
+            "ru": "你多大了？ — Nǐ duō dà le?",
+            "tj": "你多大了？ — Nǐ duō dà le?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "她今年50岁了。",
+          "pinyin": "Tā jīnnián wǔshí suì le.",
+          "options": [
+            "她今年50岁了。",
+            "你女儿几岁了？",
+            "我家有三口人。",
+            "你家有几口人？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "她今年50岁了。 — U bu yil ellik yoshga kirdi.",
+            "ru": "她今年50岁了。 — В этом году ей исполнилось пятьдесят.",
+            "tj": "她今年50岁了。 — Вай имсол панҷоҳ сол шуд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "有 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 有:",
+            "tj": "Маънои калимаи 有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
+            },
+            {
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар (фарзанд)"
+            },
+            {
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
+            },
+            {
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有 = bor, ega bo'lmoq (yǒu)",
+            "ru": "有 = иметь, есть (yǒu)",
+            "tj": "有 = доштан, мавҷуд будан (yǒu)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "今年",
+          "pinyin": "jīnnián",
+          "translation": {
+            "uz": "bu yil",
+            "ru": "в этом году",
+            "tj": "امسол، ин сол"
+          }
+        }
+      ]
+    }
+  ]
+}

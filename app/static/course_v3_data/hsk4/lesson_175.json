@@ -1,0 +1,770 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 175,
+  "source_lesson": 20,
+  "part_no": 3,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "路上的风景",
+  "subtitle": {
+    "uz": "yo'l, safar, aeroport, janub-shimol farqi va sayohat ta'mlari haqida gapirish; V+着+V+着, 一...就..., 究竟, 起来 va V+起 grammatikalarini ishlatish",
+    "ru": "говорить о дороге, поездке, аэропорте, различиях севера и юга и вкусах путешествий; использовать V+着+V+着, 一...就..., 究竟, 起来 и V+起",
+    "tj": "дар бораи роҳ, сафар, фурудгоҳ, фарқи шимол ва ҷануб ва таъми сафар гуфтугӯ кардан; истифодаи V+着+V+着, 一...就..., 究竟, 起来 ва V+起"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "可怜",
+      "pinyin": "kělián",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "bechora, achinarli",
+        "ru": "бедный, жалкий",
+        "tj": "бечора, раҳмовар"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "对面",
+      "pinyin": "duìmiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qarshi tomon",
+        "ru": "напротив",
+        "tj": "рӯ ба рӯ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "烤鸭",
+      "pinyin": "kǎoyā",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qovurilgan o'rdak",
+        "ru": "жареная утка",
+        "tj": "мурғобии бирён"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "祝贺",
+      "pinyin": "zhùhè",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tabriklamoq",
+        "ru": "поздравлять",
+        "tj": "табрик кардан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Xiao Zhang aeroportga ketayotib yoqilg'i va reys vaqtini tekshiradi",
+        "ru": "Сяо Чжан по дороге в аэропорт уточняет заправку и время рейса",
+        "tj": "Сяо Ҷанг дар роҳ ба фурудгоҳ сӯзишворӣ ва вақти парвозро месанҷад"
+      },
+      "dialogue": [
+        {
+          "speaker": "朋友",
+          "zh": "该加油了，去机场的路上有加油站吗？",
+          "pinyin": "Gāi jiā yóu le, qù jīchǎng de lùshang yǒu jiāyóuzhàn ma?",
+          "text": {
+            "uz": "Yoqilg'i quyish vaqti bo'ldi, aeroport yo'lida zapravka bormi?",
+            "ru": "Пора заправиться, по дороге в аэропорт есть заправка?",
+            "tj": "Вақти сӯзишворӣ шуд, дар роҳи фурудгоҳ нуқтаи сӯзишворӣ ҳаст?"
+          }
+        },
+        {
+          "speaker": "小张",
+          "zh": "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
+          "pinyin": "Wǒ jìde guò le Chángjiāng Dàqiáo wǎng yòu yì guǎi jiù yǒu yí ge, dàgài yǒu sì-wǔ gōnglǐ yuǎn.",
+          "text": {
+            "uz": "Esimda, Changjiang ko'prigidan o'tib o'ngga burilsak bittasi bor, taxminan to'rt-besh kilometr.",
+            "ru": "Насколько помню, после моста Чанцзян повернуть направо - там есть одна, примерно в четырёх-пяти километрах.",
+            "tj": "Ба ёдам, аз пули Чангҷян гузаштем, ба рост гардем, якто ҳаст, тақрибан чор-панҷ километр."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？",
+          "pinyin": "Hǎo, nà wǒ jiù fàngxīn le, bié kāi zhe kāi zhe méi yóu le. Nǐ qù Běijīng de hángbān shì jǐ diǎn de? Shíjiān láidejí ma?",
+          "text": {
+            "uz": "Yaxshi, unda ko'nglim joyiga tushdi, haydab ketayotib benzin tugab qolmasin. Pekinga reysing soat nechida? Vaqt yetadimi?",
+            "ru": "Хорошо, тогда я спокоен: как бы по дороге не закончился бензин. Во сколько твой рейс в Пекин? Успеваем?",
+            "tj": "Хуб, пас хотирам ҷамъ шуд, ҳангоми рондан сӯзишворӣ тамом нашавад. Парвози ту ба Пекин соати чанд аст? Вақт мерасад?"
+          }
+        },
+        {
+          "speaker": "小张",
+          "zh": "航班本来是十点的，后来机场网站上通知推迟了一个小时，所以九点半以前到就应该没问题。",
+          "pinyin": "Hángbān běnlái shì shí diǎn de, hòulái jīchǎng wǎngzhàn shang tōngzhī tuīchí le yí ge xiǎoshí, suǒyǐ jiǔ diǎn bàn yǐqián dào jiù yīnggāi méi wèntí.",
+          "text": {
+            "uz": "Reys aslida soat o'nda edi, keyin aeroport saytida bir soatga kechiktirilgani xabar qilindi, shuning uchun 9:30 gacha yetib borsam muammo bo'lmasa kerak.",
+            "ru": "Рейс был в десять, потом на сайте аэропорта сообщили, что его перенесли на час, поэтому если приехать до 9:30, проблем быть не должно.",
+            "tj": "Парвоз аслан соати даҳ буд, баъд дар сайти фурудгоҳ хабар доданд, ки як соат таъхир мешавад, барои ҳамин то 9:30 расам, мушкил нест."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "刚才我还有点儿担心来不及呢。一会儿加完油，往西走五百米就能上高速公路。走高速公路大约半个小时就到了。",
+          "pinyin": "Gāngcái wǒ hái yǒudiǎnr dānxīn láibují ne. Yíhuìr jiā wán yóu, wǎng xī zǒu wǔbǎi mǐ jiù néng shàng gāosù gōnglù. Zǒu gāosù gōnglù dàyuē bàn ge xiǎoshí jiù dào le.",
+          "text": {
+            "uz": "Hozirgina yetolmaymizmi deb ozgina xavotir olgandim. Bir ozdan keyin yoqilg'i quyib bo'lgach, g'arbga 500 metr yursak avtomagistralga chiqamiz. Magistraldan taxminan yarim soatda yetamiz.",
+            "ru": "Я только что немного переживал, что не успеем. После заправки проедем 500 метров на запад и выйдем на скоростную трассу. По ней примерно за полчаса доедем.",
+            "tj": "Ҳозир каме хавотир будам, ки намерасем. Баъди сӯзишворӣ, 500 метр ба ғарб равем, ба роҳи тезгард мебароем. Аз он ҷо тақрибан ним соатда мерасем."
+          }
+        },
+        {
+          "speaker": "小张",
+          "zh": "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",
+          "pinyin": "Yíhuìr wǒ zìjǐ jìn qù huàn dēngjīpái, nǐ jiù búyòng sòng wǒ le, děng wǒ dào le Shǒudū Jīchǎng zài gěi nǐ fā duǎnxìn.",
+          "text": {
+            "uz": "Keyin o'zim ichkariga kirib boarding pass olaman, meni kuzatishing shart emas. Poytaxt aeroportiga yetgach senga xabar yozaman.",
+            "ru": "Потом я сам зайду получить посадочный талон, провожать меня не нужно. Когда прилечу в аэропорт Шоуду, напишу тебе сообщение.",
+            "tj": "Баъд худам даромада талони нишастро мегирам, маро гусел кардан шарт нест. Вақте ба фурудгоҳи Шоуду расам, ба ту SMS мефиристам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sun Yue eri bilan qizi uchun qishki sayohatni rejalaydi",
+        "ru": "Сунь Юэ с мужем планируют зимнюю поездку для дочери",
+        "tj": "Сун Юэ бо шавҳараш барои духтараш сафари зимистониро нақша мекунад"
+      },
+      "dialogue": [
+        {
+          "speaker": "孙月",
+          "zh": "女儿下个星期就要放寒假了，到时候咱们带她去旅游，放松放松，怎么样？",
+          "pinyin": "Nǚ'ér xià ge xīngqī jiù yào fàng hánjià le, dào shíhou zánmen dài tā qù lǚyóu, fàngsōng fàngsōng, zěnmeyàng?",
+          "text": {
+            "uz": "Qizimiz keyingi hafta qishki ta'tilga chiqadi, o'shanda uni sayohatga olib borib dam oldirsak, qalay?",
+            "ru": "На следующей неделе у дочери начнутся зимние каникулы, давай тогда возьмём её в путешествие, чтобы расслабиться?",
+            "tj": "Духтарамон ҳафтаи оянда ба таътили зимистона мебарояд, ӯро ба сафар барем, каме дам гирад, чӣ мегӯӣ?"
+          }
+        },
+        {
+          "speaker": "丈夫",
+          "zh": "平时女儿那么多课，总是说想去旅行，但是没时间，怪可怜的。这次放假咱们带她去哪儿玩儿比较好呢？",
+          "pinyin": "Píngshí nǚ'ér nàme duō kè, zǒngshì shuō xiǎng qù lǚxíng, dànshì méi shíjiān, guài kělián de. Zhè cì fàng jià zánmen dài tā qù nǎr wánr bǐjiào hǎo ne?",
+          "text": {
+            "uz": "Odatda qizimizda dars juda ko'p, doim sayohat qilgisi kelishini aytadi, lekin vaqti yo'q, bechora. Bu ta'tilda uni qayerga olib borsak yaxshi?",
+            "ru": "Обычно у дочери так много занятий, она всё время говорит, что хочет путешествовать, но времени нет, бедняжка. Куда её лучше свозить на этих каникулах?",
+            "tj": "Одатан дарсҳои духтарамон бисёр аст, ҳамеша мегӯяд сафар кардан мехоҳад, аммо вақт надорад, бечора. Ин таътил ӯро ба куҷо барем беҳтар?"
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "去年我同事带她儿子去广西玩儿了一趟，听说很不错，我们就去广西吧。",
+          "pinyin": "Qùnián wǒ tóngshì dài tā érzi qù Guǎngxī wánr le yì tàng, tīngshuō hěn búcuò, wǒmen jiù qù Guǎngxī ba.",
+          "text": {
+            "uz": "O'tgan yili hamkasbim o'g'lini Guangxiga bir olib borgan, eshitishimcha juda yaxshi ekan, biz ham Guangxiga boraylik.",
+            "ru": "В прошлом году моя коллега возила сына в Гуанси, говорят, очень неплохо, давай поедем в Гуанси.",
+            "tj": "Соли гузашта ҳамкорам писарашро ба Гуанси бурда буд, мегӯянд хеле хуб аст, мо ҳам ба Гуанси равем."
+          }
+        },
+        {
+          "speaker": "丈夫",
+          "zh": "好啊，那里的气候和北方很不同，即使是冬天，也非常暖和，还能吃到许多新鲜的水果。等女儿一回来我就告诉她这个好消息。",
+          "pinyin": "Hǎo a, nàli de qìhòu hé běifāng hěn bù tóng, jíshǐ shì dōngtiān, yě fēicháng nuǎnhuo, hái néng chīdào xǔduō xīnxiān de shuǐguǒ. Děng nǚ'ér yì huílai wǒ jiù gàosu tā zhège hǎo xiāoxi.",
+          "text": {
+            "uz": "Yaxshi, u yerning iqlimi shimoldan juda farq qiladi, qishda ham juda iliq, ko'p yangi meva ham yeyish mumkin. Qizimiz qaytishi bilan bu yaxshi xabarni aytaman.",
+            "ru": "Хорошо, там климат сильно отличается от севера, даже зимой очень тепло, ещё можно есть много свежих фруктов. Как только дочь вернётся, я скажу ей эту хорошую новость.",
+            "tj": "Хуб, иқлими он ҷо аз шимол хеле фарқ мекунад, ҳатто зимистон ҳам бисёр гарм аст, меваи тару тоза ҳам зиёд мехӯрад. Ҳамин ки духтарамон баргардад, ин хабари хушро мегӯям."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "先别着急说。中午我们不是要去对面的饭店吃烤鸭，祝贺她考试成绩都合格吗？那时候再告诉她，不是更好？",
+          "pinyin": "Xiān bié zháojí shuō. Zhōngwǔ wǒmen bú shì yào qù duìmiàn de fàndiàn chī kǎoyā, zhùhè tā kǎoshì chéngjì dōu hégé ma? Nà shíhou zài gàosu tā, bú shì gèng hǎo?",
+          "text": {
+            "uz": "Avval shoshilmay tur. Tushda qarshidagi restoranga qovurilgan o'rdak yeyishga, imtihonlari hammasi o'tganini tabriklashga bormoqchi edik-ku? O'shanda aytsak yaxshiroq emasmi?",
+            "ru": "Пока не спеши говорить. В обед мы ведь идём в ресторан напротив есть утку и поздравлять её с тем, что все экзамены сданы? Разве не лучше сказать тогда?",
+            "tj": "Ҳозир шитоб накун. Нисфирӯзӣ ба тарабхонаи рӯ ба рӯ барои хӯрдани мурғобии бирён ва табрик кардани натиҷаҳои имтиҳонаш мерафтем-ку? Он вақт гӯем беҳтар нест?"
+          }
+        },
+        {
+          "speaker": "丈夫",
+          "zh": "好主意，到时她知道了肯定特别开心。",
+          "pinyin": "Hǎo zhǔyi, dào shí tā zhīdào le kěndìng tèbié kāixīn.",
+          "text": {
+            "uz": "Yaxshi fikr, o'shanda bilsa albatta juda xursand bo'ladi.",
+            "ru": "Хорошая идея, тогда она точно очень обрадуется.",
+            "tj": "Фикри хуб, он вақт фаҳмад, ҳатман бисёр хурсанд мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Anna Markga Lijiang sayohati suratlari va gid haqida gapiradi",
+        "ru": "Анна рассказывает Марку о фотографиях из Лицзяна и гиде",
+        "tj": "Анна ба Марк дар бораи аксҳои Лиҷян ва роҳбалад нақл мекунад"
+      },
+      "dialogue": [
+        {
+          "speaker": "马克",
+          "zh": "这么多照片，都是你这次去丽江旅行时照的？那里的自然风景可真美！",
+          "pinyin": "Zhème duō zhàopiàn, dōu shì nǐ zhè cì qù Lìjiāng lǚxíng shí zhào de? Nàli de zìrán fēngjǐng kě zhēn měi!",
+          "text": {
+            "uz": "Buncha suratning hammasi Lijiangga sayohat qilganingda tushirilganmi? U yerning tabiiy manzarasi juda chiroyli ekan!",
+            "ru": "Столько фотографий, все сняты во время твоей поездки в Лицзян? Природа там действительно красивая!",
+            "tj": "Ин қадар акс, ҳамаашро дар сафари Лиҷян гирифтаӣ? Манзараи табиии он ҷо воқеан зебост!"
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "是啊，小城四季的风景都很美，而且环境保护得也很好，因此每年都吸引着成千上万的游客去那儿旅游。",
+          "pinyin": "Shì a, xiǎo chéng sìjì de fēngjǐng dōu hěn měi, érqiě huánjìng bǎohù de yě hěn hǎo, yīncǐ měi nián dōu xīyǐn zhe chéng qiān shàng wàn de yóukè qù nàr lǚyóu.",
+          "text": {
+            "uz": "Ha, kichik shaharning to'rt fasldagi manzarasi ham chiroyli, atrof-muhit ham yaxshi himoyalangan, shuning uchun har yili minglab-minglab sayyohlarni jalb qiladi.",
+            "ru": "Да, пейзажи маленького города красивы в любое время года, и окружающую среду там хорошо охраняют, поэтому каждый год туда приезжают тысячи туристов.",
+            "tj": "Ҳа, манзараи ин шаҳри хурд дар чор фасл зебост, муҳиташ ҳам хуб ҳифз мешавад, барои ҳамин ҳар сол ҳазорҳо сайёҳро ҷалб мекунад."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "这张照片上和你干杯的那个人是少数民族吗？她打扮得真漂亮。",
+          "pinyin": "Zhè zhāng zhàopiàn shang hé nǐ gān bēi de nà ge rén shì shǎoshù mínzú ma? Tā dǎban de zhēn piàoliang.",
+          "text": {
+            "uz": "Bu suratda sen bilan qadah ko'tarayotgan odam ozchilik millat vakilimi? Juda chiroyli kiyinibdi.",
+            "ru": "На этой фотографии человек, который чокается с тобой, из национального меньшинства? Она очень красиво одета.",
+            "tj": "Дар ин акс шахсе, ки бо ту қадаҳ мебардорад, аз ақаллияти миллӣ аст? Хеле зебо либос пӯшидааст."
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "她是我们的导游，不是少数民族。一路上她给我们讲了很多有趣的笑话。有一次我把存包的钥匙丢了，最后还是她帮我找到的。这张照片就是找到钥匙后，我们一起照的。",
+          "pinyin": "Tā shì wǒmen de dǎoyóu, bú shì shǎoshù mínzú. Yí lù shang tā gěi wǒmen jiǎng le hěn duō yǒuqù de xiàohua. Yǒu yí cì wǒ bǎ cún bāo de yàoshi diū le, zuìhòu háishi tā bāng wǒ zhǎodào de. Zhè zhāng zhàopiàn jiù shì zhǎodào yàoshi hòu, wǒmen yìqǐ zhào de.",
+          "text": {
+            "uz": "U bizning gidimiz, ozchilik millat vakili emas. Yo'l davomida bizga ko'p qiziq hazillar aytib berdi. Bir safar yuk saqlash kalitini yo'qotib qo'ydim, oxiri aynan u topib berdi. Bu surat kalit topilgandan keyin birga tushganimiz.",
+            "ru": "Она наш гид, не представитель национального меньшинства. По дороге она рассказывала нам много интересных шуток. Однажды я потеряла ключ от камеры хранения, в итоге она помогла найти. Эта фотография сделана после того, как ключ нашли.",
+            "tj": "Ӯ роҳбалади мо буд, аз ақаллияти миллӣ нест. Дар роҳ ба мо бисёр шӯхиҳои ҷолиб гуфт. Як бор калиди ҷойи нигоҳдории борро гум кардам, охир ӯ ёфта дод. Ин акс пас аз ёфтани калид якҷоя гирифта шудааст."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "明年我有机会也去那儿看看，到时把你的导游介绍给我吧。究竟哪个季节去丽江旅游比较好呢？",
+          "pinyin": "Míngnián wǒ yǒu jīhuì yě qù nàr kànkan, dào shí bǎ nǐ de dǎoyóu jièshào gěi wǒ ba. Jiūjìng nǎ ge jìjié qù Lìjiāng lǚyóu bǐjiào hǎo ne?",
+          "text": {
+            "uz": "Kelasi yili imkon bo'lsa men ham u yerga borib ko'raman, o'shanda gidingni menga tanishtir. Lijiangga aynan qaysi faslda borgan yaxshiroq?",
+            "ru": "В следующем году, если будет возможность, я тоже съезжу туда, тогда познакомь меня со своим гидом. Всё-таки в какой сезон лучше ехать в Лицзян?",
+            "tj": "Соли оянда имконият бошад, ман ҳам ба он ҷо меравам, он вақт роҳбаладатро ба ман шинос кун. Дар асл кадом фасл барои сафар ба Лиҷян беҳтар аст?"
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "那儿最美的季节是春天和秋天，不过那时候人比较多。稍微好一点儿的时间是每年12月到第二年3月。这段时间去丽江的话，无论交通还是吃、住都很便宜。",
+          "pinyin": "Nàr zuì měi de jìjié shì chūntiān hé qiūtiān, búguò nà shíhou rén bǐjiào duō. Shāowēi hǎo yìdiǎnr de shíjiān shì měinián shí'èryuè dào dì-èr nián sānyuè. Zhè duàn shíjiān qù Lìjiāng de huà, wúlùn jiāotōng háishi chī, zhù dōu hěn piányi.",
+          "text": {
+            "uz": "U yerning eng chiroyli fasllari bahor va kuz, lekin o'shanda odam ko'p bo'ladi. Biroz yaxshiroq vaqt har yili dekabrdan keyingi yil martgacha. Shu davrda Lijiangga borsang, transport ham, ovqat va turar joy ham arzon.",
+            "ru": "Самые красивые сезоны там - весна и осень, но в это время людей много. Немного лучшее время - с декабря по март следующего года. Если ехать в этот период, и транспорт, и еда, и проживание будут дешёвыми.",
+            "tj": "Зеботарин фаслҳои он ҷо баҳор ва тирамоҳанд, аммо он вақт одам зиёд аст. Вақти каме беҳтар ҳар сол аз декабр то марти соли дигар аст. Дар ин давра ба Лиҷян равӣ, нақлиёт, хӯрок ва ҷой ҳама арзон мешаванд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xitoyning shimol va janubi, manzara hamda til farqi haqida matn",
+        "ru": "Текст о различиях севера и юга Китая, пейзажах и языке",
+        "tj": "Матн дар бораи фарқи шимолу ҷануби Чин, манзара ва забон"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "中国南北距离约5500公里，因此南北气候有很大区别。",
+          "pinyin": "Zhōngguó nán běi jùlí yuē wǔqiān wǔbǎi gōnglǐ, yīncǐ nán běi qìhòu yǒu hěn dà qūbié.",
+          "text": {
+            "uz": "Xitoyning shimoli va janubi orasidagi masofa taxminan 5500 kilometr, shuning uchun iqlimda katta farq bor.",
+            "ru": "Расстояние между севером и югом Китая около 5500 километров, поэтому климат сильно отличается.",
+            "tj": "Масофаи шимол ва ҷануби Чин тақрибан 5500 километр аст, бинобар ин иқлим хеле фарқ мекунад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "每年三四月份的时候，如果从北方坐火车到南方去旅游，一路上你会发现，不同的地方有不同的风景。",
+          "pinyin": "Měi nián sān-sì yuèfèn de shíhou, rúguǒ cóng běifāng zuò huǒchē dào nánfāng qù lǚyóu, yí lù shang nǐ huì fāxiàn, bù tóng de dìfang yǒu bù tóng de fēngjǐng.",
+          "text": {
+            "uz": "Har yili mart-aprel oylarida shimoldan janubga poyezdda sayohat qilsangiz, yo'l davomida har joyning manzarasi boshqacha ekanini ko'rasiz.",
+            "ru": "Каждый год в марте-апреле, если ехать поездом с севера на юг, по дороге можно заметить: в разных местах разные пейзажи.",
+            "tj": "Ҳар сол дар моҳҳои март-апрел, агар аз шимол ба ҷануб бо қатора сафар кунед, дар роҳ мебинед, ки ҳар ҷой манзараи дигар дорад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "窗外的树一棵一棵地变绿，北方也许还下着雪，南方却已经到处都是绿色了。",
+          "pinyin": "Chuāngwài de shù yì kē yì kē de biàn lǜ, běifāng yěxǔ hái xià zhe xuě, nánfāng què yǐjīng dàochù dōu shì lǜsè le.",
+          "text": {
+            "uz": "Deraza tashqarisidagi daraxtlar bittalab yashil tusga kiradi; shimolda hali qor yog'ayotgan bo'lishi mumkin, janub esa allaqachon yashillikka to'lgan.",
+            "ru": "Деревья за окном одно за другим зеленеют; на севере, возможно, ещё идёт снег, а на юге уже повсюду зелень.",
+            "tj": "Дарахтони беруни тиреза як-як сабз мешаванд; дар шимол шояд ҳанӯз барф борад, аммо ҷануб аллакай пур аз сабзист."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "南方菜很有特点，特别是汤，味道鲜美，很多北方人都喜欢喝。",
+          "pinyin": "Nánfāng cài hěn yǒu tèdiǎn, tèbié shì tāng, wèidào xiānměi, hěn duō běifāng rén dōu xǐhuan hē.",
+          "text": {
+            "uz": "Janub taomlari juda o'ziga xos, ayniqsa sho'rvalari mazali, ko'p shimolliklar ichishni yaxshi ko'radi.",
+            "ru": "Южная кухня очень характерная, особенно супы: вкус свежий и приятный, многие северяне любят их.",
+            "tj": "Таоми ҷанубӣ хеле хос аст, махсусан шӯрбоҳо, маззаашон тару болаззат, бисёр шимолиҳо дӯст медоранд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "另外，南方和北方的语言也有很大不同。比如你跟上海人对话时，会发现上海话听起来就像外语一样。虽然上海人也会讲普通话，可是仔细听，还是有上海味儿。",
+          "pinyin": "Lìngwài, nánfāng hé běifāng de yǔyán yě yǒu hěn dà bù tóng. Bǐrú nǐ gēn Shànghǎi rén duìhuà shí, huì fāxiàn Shànghǎihuà tīng qǐlai jiù xiàng wàiyǔ yíyàng. Suīrán Shànghǎi rén yě huì jiǎng Pǔtōnghuà, kěshì zǐxì tīng, háishi yǒu Shànghǎi wèir.",
+          "text": {
+            "uz": "Bundan tashqari, janub va shimol tillari ham ancha farq qiladi. Masalan, shanxayliklar bilan gaplashsangiz, shanxaycha eshitilganda xuddi chet tiliga o'xshaydi. Shanxayliklar putonghua ham gapira olsa-da, diqqat bilan eshitsangiz baribir Shanxay ohangi bor.",
+            "ru": "Кроме того, языки юга и севера тоже сильно отличаются. Например, когда разговариваешь с шанхайцами, шанхайский диалект на слух похож на иностранный язык. Хотя шанхайцы говорят на путунхуа, если внимательно слушать, всё равно слышен шанхайский оттенок.",
+            "tj": "Ғайр аз ин, забони ҷануб ва шимол ҳам хеле фарқ мекунад. Масалан, бо шанхайиҳо суҳбат кунӣ, мефаҳмӣ, ки лаҳҷаи Шанхай мисли забони хориҷӣ садо медиҳад. Ҳарчанд шанхайиҳо путунхуа ҳам мегӯянд, бодиққат гӯш кунӣ, боз ҳам таъми Шанхай дорад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sayohat va turli joylarning mashhur yengil taomlari haqida matn",
+        "ru": "Текст о путешествиях и знаменитых местных закусках",
+        "tj": "Матн дар бораи сафар ва хӯрокҳои сабуки машҳури ҷойҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "一个人有时间一定要去旅行，旅行不仅能丰富一个人的经历，而且是很好的减压方法。",
+          "pinyin": "Yí ge rén yǒu shíjiān yídìng yào qù lǚxíng, lǚxíng bùjǐn néng fēngfù yí ge rén de jīnglì, érqiě shì hěn hǎo de jiǎnyā fāngfǎ.",
+          "text": {
+            "uz": "Odamning vaqti bo'lsa albatta sayohat qilishi kerak; sayohat nafaqat tajribani boyitadi, balki stressni kamaytirishning yaxshi usuli hamdir.",
+            "ru": "Если у человека есть время, обязательно нужно путешествовать: путешествие не только обогащает опыт, но и хорошо снимает стресс.",
+            "tj": "Агар одам вақт дошта бошад, ҳатман бояд сафар кунад; сафар на танҳо таҷрибаро ғанӣ мекунад, балки роҳи хуби кам кардани фишор аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "但对我来说，最重要的是旅行能让我有机会尝到各地有名的小吃。",
+          "pinyin": "Dàn duì wǒ lái shuō, zuì zhòngyào de shì lǚxíng néng ràng wǒ yǒu jīhuì chángdào gè dì yǒumíng de xiǎochī.",
+          "text": {
+            "uz": "Lekin men uchun eng muhimi, sayohat menga turli joylarning mashhur yengil taomlarini tatib ko'rish imkonini beradi.",
+            "ru": "Но для меня самое главное - путешествие даёт возможность попробовать известные местные закуски.",
+            "tj": "Аммо барои ман муҳимтаринаш ин аст, ки сафар имкони чашидани хӯрокҳои сабуки машҳури ҳар минтақаро медиҳад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "放假的时候，我会收拾好行李，带上地图，买张火车票，向目的地出发。",
+          "pinyin": "Fàngjià de shíhou, wǒ huì shōushi hǎo xíngli, dàishàng dìtú, mǎi zhāng huǒchēpiào, xiàng mùdìdì chūfā.",
+          "text": {
+            "uz": "Ta'tilda yuklarimni yig'ishtirib, xaritani olib, poyezd chiptasi sotib olaman va manzil tomon yo'lga chiqaman.",
+            "ru": "Во время каникул я собираю багаж, беру карту, покупаю билет на поезд и отправляюсь к месту назначения.",
+            "tj": "Дар таътил борҳоямро ҷамъ карда, харитаро мегирам, билети қатора мехарам ва ба самти мақсад ба роҳ мебароям."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "说起吃的东西，给我印象最深的是湖南菜，湖南菜的特点就是辣，与其他地方的辣不同，湖南菜的辣主要是鲜辣、香辣和酸辣。",
+          "pinyin": "Shuōqǐ chī de dōngxi, gěi wǒ yìnxiàng zuì shēn de shì Húnán cài, Húnán cài de tèdiǎn jiù shì là, yǔ qítā dìfang de là bù tóng, Húnán cài de là zhǔyào shì xiān là, xiāng là hé suān là.",
+          "text": {
+            "uz": "Ovqat haqida gap ketganda, menda eng kuchli taassurot qoldirgani Hunan taomlari. Hunan taomlarining xususiyati achchiqlik; boshqa joylardagi achchiqlikdan farqli ravishda u asosan yangi achchiq, xushbo'y achchiq va nordon achchiq bo'ladi.",
+            "ru": "Если говорить о еде, самое глубокое впечатление на меня произвела хунаньская кухня. Её особенность - острота; в отличие от остроты других мест, это в основном свежая, ароматная и кисло-острая острота.",
+            "tj": "Агар дар бораи хӯрок гап занем, таоми Ҳунан ба ман аз ҳама бештар таъсир кардааст. Хусусияти таоми Ҳунан тундист; аз тундии ҷойҳои дигар фарқ карда, асосан тундии тару тоза, хушбӯй ва турш-тунд аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "虽然全国各地都有湖南饭馆儿，但最好还是直接去那里尝一尝。",
+          "pinyin": "Suīrán quánguó gè dì dōu yǒu Húnán fànguǎnr, dàn zuìhǎo háishi zhíjiē qù nàli cháng yi cháng.",
+          "text": {
+            "uz": "Butun mamlakatda Hunan restoranlari bo'lsa-da, eng yaxshisi baribir o'sha yerga borib tatib ko'rish.",
+            "ru": "Хотя по всей стране есть хунаньские рестораны, лучше всё же поехать туда и попробовать напрямую.",
+            "tj": "Гарчанде дар тамоми кишвар тарабхонаҳои Ҳунан ҳастанд, беҳтараш худи он ҷо рафта чашидан аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "每次旅行结束后，我都会精神百倍地开始我的工作。",
+          "pinyin": "Měi cì lǚxíng jiéshù hòu, wǒ dōu huì jīngshén bǎibèi de kāishǐ wǒ de gōngzuò.",
+          "text": {
+            "uz": "Har safar sayohat tugagach, ishni yuz karra kuchli ruh bilan boshlayman.",
+            "ru": "После каждого путешествия я с удвоенной энергией начинаю работать.",
+            "tj": "Баъди ҳар сафар корамро бо рӯҳи садчанд оғоз мекунам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "可怜",
+            "pinyin": "kělián",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "bechora, achinarli",
+              "ru": "бедный, жалкий",
+              "tj": "бечора, раҳмовар"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "可怜",
+          "pinyin": "kělián",
+          "options": [
+            "可怜",
+            "推迟",
+            "航班",
+            "加油站"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "可怜 — bechora, achinarli (kělián)",
+            "ru": "可怜 — бедный, жалкий (kělián)",
+            "tj": "可怜 — бечора, раҳмовар (kělián)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "对面",
+            "pinyin": "duìmiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qarshi tomon",
+              "ru": "напротив",
+              "tj": "рӯ ба рӯ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "对面 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 对面:",
+            "tj": "Маънои калимаи 对面-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            },
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
+            },
+            {
+              "uz": "qarshi tomon",
+              "ru": "напротив",
+              "tj": "рӯ ба рӯ"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "对面 = qarshi tomon (duìmiàn)",
+            "ru": "对面 = напротив (duìmiàn)",
+            "tj": "对面 = рӯ ба рӯ (duìmiàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "烤鸭",
+            "pinyin": "kǎoyā",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qovurilgan o'rdak",
+              "ru": "жареная утка",
+              "tj": "мурғобии бирён"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "烤鸭",
+          "pinyin": "kǎoyā",
+          "translation": {
+            "uz": "qovurilgan o'rdak",
+            "ru": "жареная утка",
+            "tj": "мурғобии бирён"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kǎoyā qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kǎoyā?",
+            "tj": "kǎoyā кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "推迟",
+            "航班",
+            "加油站",
+            "烤鸭"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "烤鸭 = qovurilgan o'rdak (kǎoyā)",
+            "ru": "烤鸭 = жареная утка (kǎoyā)",
+            "tj": "烤鸭 = мурғобии бирён (kǎoyā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "祝贺",
+            "pinyin": "zhùhè",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tabriklamoq",
+              "ru": "поздравлять",
+              "tj": "табрик кардан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "祝贺 talaffuzini tanlang:",
+            "ru": "Выберите произношение 祝贺:",
+            "tj": "Талаффузи 祝贺-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiāyóuzhàn",
+            "zhùhè",
+            "hángbān",
+            "tuīchí"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "祝贺 — zhùhè",
+            "ru": "祝贺 — zhùhè",
+            "tj": "祝贺 — zhùhè"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bechora, achinarli' xitoycha qaysi?",
+            "ru": "'бедный, жалкий' по-китайски?",
+            "tj": "'бечора, раҳмовар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "加油站",
+            "推迟",
+            "航班",
+            "可怜"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bechora, achinarli = 可怜 (kělián)",
+            "ru": "бедный, жалкий = 可怜 (kělián)",
+            "tj": "бечора, раҳмовар = 可怜 (kělián)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "可怜",
+              {
+                "uz": "bechora, achinarli",
+                "ru": "бедный, жалкий",
+                "tj": "бечора, раҳмовар"
+              }
+            ],
+            [
+              "对面",
+              {
+                "uz": "qarshi tomon",
+                "ru": "напротив",
+                "tj": "рӯ ба рӯ"
+              }
+            ],
+            [
+              "烤鸭",
+              {
+                "uz": "qovurilgan o'rdak",
+                "ru": "жареная утка",
+                "tj": "мурғобии бирён"
+              }
+            ],
+            [
+              "祝贺",
+              {
+                "uz": "tabriklamoq",
+                "ru": "поздравлять",
+                "tj": "табрик кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "lǚxíng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается lǚxíng?",
+            "tj": "lǚxíng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "航班",
+            "推迟",
+            "旅行",
+            "加油站"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "旅行 = sayohat qilmoq, sayohat (lǚxíng)",
+            "ru": "旅行 = путешествовать, путешествие (lǚxíng)",
+            "tj": "旅行 = сафар кардан, сафар (lǚxíng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "烤鸭",
+          "pinyin": "kǎoyā",
+          "options": [
+            "航班",
+            "烤鸭",
+            "推迟",
+            "加油站"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "烤鸭 — qovurilgan o'rdak (kǎoyā)",
+            "ru": "烤鸭 — жареная утка (kǎoyā)",
+            "tj": "烤鸭 — мурғобии бирён (kǎoyā)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "可怜",
+              {
+                "uz": "bechora, achinarli",
+                "ru": "бедный, жалкий",
+                "tj": "бечора, раҳмовар"
+              }
+            ],
+            [
+              "对面",
+              {
+                "uz": "qarshi tomon",
+                "ru": "напротив",
+                "tj": "рӯ ба рӯ"
+              }
+            ],
+            [
+              "烤鸭",
+              {
+                "uz": "qovurilgan o'rdak",
+                "ru": "жареная утка",
+                "tj": "мурғобии бирён"
+              }
+            ],
+            [
+              "祝贺",
+              {
+                "uz": "tabriklamoq",
+                "ru": "поздравлять",
+                "tj": "табрик кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "烤鸭",
+          "pinyin": "kǎoyā",
+          "translation": {
+            "uz": "qovurilgan o'rdak",
+            "ru": "жареная утка",
+            "tj": "мурғобии бирён"
+          }
+        }
+      ]
+    }
+  ]
+}

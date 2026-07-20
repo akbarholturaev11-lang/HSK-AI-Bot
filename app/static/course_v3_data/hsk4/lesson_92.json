@@ -1,0 +1,756 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 92,
+  "source_lesson": 11,
+  "part_no": 1,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "读书好，读好书，好读书",
+  "subtitle": {
+    "uz": "o'qish odati, imtihon va kitob tanlash haqida gapirish; 连, 否则, 无论, 然而 va 同时 grammatikalarini ishlatish",
+    "ru": "говорить о чтении, экзаменах и выборе книг; использовать 连, 否则, 无论, 然而 и 同时",
+    "tj": "дар бораи мутолиа, имтиҳон ва интихоби китоб гуфтугӯ кардан; истифодаи 连, 否则, 无论, 然而 ва 同时"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "流利",
+      "pinyin": "liúlì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ravon",
+        "ru": "беглый, свободный",
+        "tj": "равон"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "厉害",
+      "pinyin": "lìhai",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "zo'r, kuchli",
+        "ru": "сильный, впечатляющий",
+        "tj": "зӯр, қавӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "语法",
+      "pinyin": "yǔfǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "grammatika",
+        "ru": "грамматика",
+        "tj": "грамматика"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "准确",
+      "pinyin": "zhǔnquè",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "aniq, to'g'ri",
+        "ru": "точный, правильный",
+        "tj": "дақиқ, дуруст"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mark xitoy tilini qanday o'rganishini tushuntiradi",
+        "ru": "Марк рассказывает, как он учит китайский",
+        "tj": "Марк мефаҳмонад, ки чӣ тавр чинӣ меомӯзад"
+      },
+      "dialogue": [
+        {
+          "speaker": "大卫",
+          "zh": "你来中国才一年，汉语就说得这么流利，真厉害！",
+          "pinyin": "Nǐ lái Zhōngguó cái yì nián, Hànyǔ jiù shuō de zhème liúlì, zhēn lìhai!",
+          "text": {
+            "uz": "Xitoyga kelganingga endi bir yil bo'ldi, xitoychang shunchalik ravon, juda zo'r!",
+            "ru": "Ты в Китае всего год, а говоришь по-китайски так бегло, здорово!",
+            "tj": "Ба Чин ҳамагӣ як сол шуд омадӣ, вале чинӣ ин қадар равон мегӯӣ, зӯр!"
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
+          "pinyin": "Xièxie! Qíshí wǒ de yǔfǎ bú tài hǎo, hěn duō jùzi shuō de dōu bú tài zhǔnquè.",
+          "text": {
+            "uz": "Rahmat! Aslida grammatikam uncha yaxshi emas, ko'p gaplarni ham aniq ayta olmayman.",
+            "ru": "Спасибо! На самом деле грамматика у меня не очень, многие фразы я говорю не совсем точно.",
+            "tj": "Раҳмат! Дар асл грамматикам чандон хуб нест, бисёр ҷумлаҳоро дақиқ гуфта наметавонам."
+          }
+        },
+        {
+          "speaker": "大卫",
+          "zh": "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
+          "pinyin": "Dànshì wǒ kàn nǐ gēn Zhōngguó rén jiāoliú méi shénme wèntí, nǐ shì zěnme zuò dào de?",
+          "text": {
+            "uz": "Lekin xitoyliklar bilan muloqotingda muammo yo'q ko'rinadi, bunga qanday erishding?",
+            "ru": "Но я вижу, что ты без проблем общаешься с китайцами. Как тебе это удалось?",
+            "tj": "Аммо мебинам бо чиниҳо бе мушкил муошират мекунӣ. Чӣ тавр ба ин расидӣ?"
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。",
+          "pinyin": "Píngshí duō jiāo yìxiē Zhōngguó péngyou, jīngcháng hé tāmen liáotiānr, tīngshuō nénglì zìrán jiù néng dédào hěn dà de tígāo. Lìngwài, wǒ jiànyì nǐ jiānchí kàn Zhōngwén bàozhǐ, zhèyàng néng xuédào hěn duō xīn cíyǔ.",
+          "text": {
+            "uz": "Odatda ko'proq xitoylik do'st orttirib, ular bilan tez-tez gaplashish kerak, shunda tinglash va gapirish tabiiy ravishda ancha yaxshilanadi. Yana xitoycha gazeta o'qishni davom ettirishni maslahat beraman, ko'p yangi so'z o'rganasan.",
+            "ru": "Нужно заводить китайских друзей и часто с ними разговаривать, тогда аудирование и речь естественно улучшатся. Ещё советую регулярно читать китайские газеты, так выучишь много новых слов.",
+            "tj": "Бояд бештар дӯстони чинӣ пайдо карда, бо онҳо зуд-зуд суҳбат кунӣ, он гоҳ шунидану гуфтан табиӣ беҳтар мешавад. Боз маслиҳат медиҳам рӯзномаи чинӣ бихонӣ, бисёр калимаи нав меомӯзӣ."
+          }
+        },
+        {
+          "speaker": "大卫",
+          "zh": "你太厉害了！连中文报纸都看得懂。",
+          "pinyin": "Nǐ tài lìhai le! Lián Zhōngwén bàozhǐ dōu kàn de dǒng.",
+          "text": {
+            "uz": "Juda zo'rsan! Hatto xitoycha gazetani ham tushunib o'qiyapsan.",
+            "ru": "Ты просто молодец! Даже китайские газеты понимаешь.",
+            "tj": "Ту хеле зӯрӣ! Ҳатто рӯзномаи чиниро мефаҳмӣ."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "刚开始肯定有困难，不过遇到不认识的词语，你可以查词典，然后写在本子上，有空儿就拿出来复习一下，慢慢地就会发现中文报纸也没那么难了。",
+          "pinyin": "Gāng kāishǐ kěndìng yǒu kùnnan, búguò yùdào bú rènshi de cíyǔ, nǐ kěyǐ chá cídiǎn, ránhòu xiě zài běnzi shang, yǒu kòngr jiù ná chūlai fùxí yíxià, mànmàn de jiù huì fāxiàn Zhōngwén bàozhǐ yě méi nàme nán le.",
+          "text": {
+            "uz": "Boshlanishida albatta qiyin bo'ladi, lekin notanish so'z uchrasa lug'atdan qarab, daftarga yozib qo'y, bo'sh vaqtda takrorla. Asta-sekin xitoycha gazeta ham unchalik qiyin emasligini ko'rasan.",
+            "ru": "Сначала, конечно, трудно, но незнакомые слова можно смотреть в словаре, записывать в тетрадь и повторять в свободное время. Постепенно увидишь, что китайские газеты не такие уж трудные.",
+            "tj": "Аввал албатта душвор аст, вале калимаи ношиносро аз луғат нигоҳ карда, ба дафтар навис ва вақти холӣ такрор кун. Оҳиста мефаҳмӣ, ки рӯзномаи чинӣ он қадар душвор нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiaoxia va Xiaoyu imtihon natijasini muhokama qiladi",
+        "ru": "Сяося и Сяоюй обсуждают экзамен",
+        "tj": "Сяося ва Сяоюй натиҷаи имтиҳонро муҳокима мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小夏",
+          "zh": "考试结束了，你对自己的成绩满意吗？",
+          "pinyin": "Kǎoshì jiéshù le, nǐ duì zìjǐ de chéngjì mǎnyì ma?",
+          "text": {
+            "uz": "Imtihon tugadi, natijangdan mamnunmisan?",
+            "ru": "Экзамен закончился, ты доволен своим результатом?",
+            "tj": "Имтиҳон тамом шуд, аз натиҷаат розӣ ҳастӣ?"
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "说真的，我不太满意。这次阅读考试的题太多了，我没做完。",
+          "pinyin": "Shuō zhēn de, wǒ bú tài mǎnyì. Zhè cì yuèdú kǎoshì de tí tài duō le, wǒ méi zuò wán.",
+          "text": {
+            "uz": "Rostini aytsam, uncha mamnun emasman. Bu safargi o'qish imtihonida savol juda ko'p edi, tugata olmadim.",
+            "ru": "Честно говоря, не очень доволен. В этом экзамене по чтению было слишком много заданий, я не успел закончить.",
+            "tj": "Росташ, чандон розӣ нестам. Дар ин имтиҳони хониш саволҳо хеле зиёд буданд, тамом карда натавонистам."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "两个小时的时间应该来得及吧？",
+          "pinyin": "Liǎng ge xiǎoshí de shíjiān yīnggāi láidejí ba?",
+          "text": {
+            "uz": "Ikki soat vaqt yetishi kerak edi-ku?",
+            "ru": "Двух часов должно было хватить, нет?",
+            "tj": "Ду соат вақт бояд мерасид-ку?"
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "这次主要是因为我先做了比较难、比较复杂的题，结果花了太多时间，后面简单的题我虽然会，可是时间来不及，最后只好放弃了。",
+          "pinyin": "Zhè cì zhǔyào shì yīnwèi wǒ xiān zuò le bǐjiào nán, bǐjiào fùzá de tí, jiéguǒ huā le tài duō shíjiān, hòumian jiǎndān de tí wǒ suīrán huì, kěshì shíjiān láibují, zuìhòu zhǐhǎo fàngqì le.",
+          "text": {
+            "uz": "Asosan avval qiyinroq, murakkabroq savollarni ishlaganim uchun juda ko'p vaqt ketdi. Keyingi oson savollarni bilardim, lekin vaqt yetmadi, oxiri tashlab qo'yishga majbur bo'ldim.",
+            "ru": "Главная причина в том, что я сначала делал трудные и сложные задания, потратил слишком много времени. Простые задания в конце я знал, но времени не хватило, пришлось отказаться.",
+            "tj": "Сабабаш ин буд, ки аввал саволҳои душвору мураккабро кардам ва вақти зиёд рафт. Саволҳои осони охирро медонистам, вале вақт нарасид, маҷбур шудам тарк кунам."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "其实我考得也不怎么样。有几个填空题不会做，有几个选择题，实在想不出来该选哪个，就随便猜了一个答案，结果一个都没猜对。",
+          "pinyin": "Qíshí wǒ kǎo de yě bù zěnmeyàng. Yǒu jǐ ge tiánkòng tí bú huì zuò, yǒu jǐ ge xuǎnzé tí, shízài xiǎng bu chūlai gāi xuǎn nǎ ge, jiù suíbiàn cāi le yí ge dá'àn, jiéguǒ yí ge dōu méi cāi duì.",
+          "text": {
+            "uz": "Men ham uncha yaxshi topshirmadim. Bir nechta to'ldirish savolini qila olmadim, bir nechta testda qaysi javobni tanlashni topolmay, tasodifan belgiladim, lekin bittasi ham to'g'ri chiqmadi.",
+            "ru": "Я тоже сдал не очень. Несколько пропусков не смог сделать, в нескольких тестах не знал, что выбрать, просто угадал, но ни один ответ не оказался верным.",
+            "tj": "Ман ҳам чандон хуб насупоридам. Чанд саволи ҷойи холиро карда натавонистам, дар чанд тест намедонистам кадомашро интихоб кунам, тахмин кардам, вале ҳеҷ яке дуруст нашуд."
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "看来要想考好，不但要认真复习，还得注意考试的方法，否则，会做的题也没时间做了。",
+          "pinyin": "Kànlái yào xiǎng kǎo hǎo, bùdàn yào rènzhēn fùxí, hái děi zhùyì kǎoshì de fāngfǎ, fǒuzé, huì zuò de tí yě méi shíjiān zuò le.",
+          "text": {
+            "uz": "Yaxshi topshirish uchun jiddiy takrorlashdan tashqari, imtihon usuliga ham e'tibor berish kerak ekan, aks holda bilgan savolga ham vaqt qolmaydi.",
+            "ru": "Похоже, чтобы хорошо сдать, нужно не только серьёзно повторять, но и следить за методом экзамена, иначе не хватит времени даже на знакомые задания.",
+            "tj": "Барои хуб супоридан на танҳо ҷиддӣ такрор кардан, балки ба усули имтиҳон ҳам диққат додан лозим, вагарна ба саволҳои медониста ҳам вақт намерасад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiaoli Xiaolinga o'qish foydasini aytadi",
+        "ru": "Сяоли рассказывает Сяолиню о пользе чтения",
+        "tj": "Сяоли ба Сяолин фоидаи хонданро мегӯяд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小林",
+          "zh": "你的客厅里怎么到处是书啊？这些书你都喜欢看吗？",
+          "pinyin": "Nǐ de kètīng li zěnme dàochù shì shū a? Zhèxiē shū nǐ dōu xǐhuan kàn ma?",
+          "text": {
+            "uz": "Mehmonxonangda nega hamma joy kitob? Bu kitoblarning hammasini o'qishni yoqtirasanmi?",
+            "ru": "Почему у тебя в гостиной везде книги? Ты любишь читать все эти книги?",
+            "tj": "Чаро дар меҳмонхонаат ҳама ҷо китоб аст? Ҳамаи ин китобҳоро хонданро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "当然，我每天都要看书。无论是普通杂志，还是著名小说，只要打开它们，就会发现，世界上有那么多有意思的事情，有那么多不一样的生活。",
+          "pinyin": "Dāngrán, wǒ měi tiān dōu yào kàn shū. Wúlùn shì pǔtōng zázhì, háishi zhùmíng xiǎoshuō, zhǐyào dǎkāi tāmen, jiù huì fāxiàn, shìjiè shang yǒu nàme duō yǒu yìsi de shìqing, yǒu nàme duō bù yíyàng de shēnghuó.",
+          "text": {
+            "uz": "Albatta, men har kuni kitob o'qiyman. Oddiy jurnal bo'ladimi yoki mashhur romanmi, ochsangiz dunyoda qancha qiziq narsalar va turli hayotlar borligini ko'rasiz.",
+            "ru": "Конечно, я каждый день читаю. Будь то обычный журнал или известный роман, откроешь и увидишь, сколько в мире интересного и сколько разных жизней.",
+            "tj": "Албатта, ман ҳар рӯз китоб мехонам. Маҷаллаи одӣ бошад ё романи машҳур, кушоӣ мебинӣ, ки дар дунё чӣ қадар чизҳои ҷолиб ва зиндагии гуногун ҳаст."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "想不到你工作那么忙，还能每天坚持阅读。",
+          "pinyin": "Xiǎngbudào nǐ gōngzuò nàme máng, hái néng měi tiān jiānchí yuèdú.",
+          "text": {
+            "uz": "Ishing shunchalik band bo'lsa ham, har kuni o'qishni davom ettirishingni kutmagandim.",
+            "ru": "Не думал, что при такой занятости ты всё равно читаешь каждый день.",
+            "tj": "Фикр намекардам, бо ин қадар серкорӣ ҳар рӯз хонданро давом медиҳӣ."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "如果3分钟读一页书，半个小时就可以读10页。每天花半个小时来读书，一个月就可以读300页，差不多就是一本书了。",
+          "pinyin": "Rúguǒ sān fēnzhōng dú yí yè shū, bàn ge xiǎoshí jiù kěyǐ dú shí yè. Měi tiān huā bàn ge xiǎoshí lái dú shū, yí ge yuè jiù kěyǐ dú sānbǎi yè, chàbuduō jiùshì yì běn shū le.",
+          "text": {
+            "uz": "Agar 3 daqiqada bir sahifa o'qilsa, yarim soatda 10 sahifa bo'ladi. Har kuni yarim soat o'qisang, bir oyda 300 sahifa, deyarli bitta kitob o'qiysan.",
+            "ru": "Если читать страницу за 3 минуты, за полчаса можно прочитать 10 страниц. Если читать по полчаса в день, за месяц будет 300 страниц, почти книга.",
+            "tj": "Агар дар 3 дақиқа як саҳифа хонӣ, дар ним соат 10 саҳифа мешавад. Ҳар рӯз ним соат хонӣ, дар як моҳ 300 саҳифа, тақрибан як китоб мешавад."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "是啊，一个真正爱看书的人总能找出时间来阅读。",
+          "pinyin": "Shì a, yí ge zhēnzhèng ài kàn shū de rén zǒng néng zhǎo chū shíjiān lái yuèdú.",
+          "text": {
+            "uz": "Ha, kitobni chin yoqtiradigan odam o'qishga albatta vaqt topadi.",
+            "ru": "Да, тот, кто действительно любит книги, всегда найдёт время для чтения.",
+            "tj": "Ҳа, касе ки китобро воқеан дӯст медорад, барои хондан вақт меёбад."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "坚持阅读，除了能增加知识外，还能帮助我减轻压力，人也会变得轻松起来。",
+          "pinyin": "Jiānchí yuèdú, chúle néng zēngjiā zhīshi wài, hái néng bāngzhù wǒ jiǎnqīng yālì, rén yě huì biàn de qīngsōng qǐlai.",
+          "text": {
+            "uz": "O'qishni davom ettirish bilimni oshiradi, bundan tashqari bosimni kamaytirib, odamni yengillashtiradi.",
+            "ru": "Регулярное чтение не только увеличивает знания, но и помогает мне снять стресс, человек становится легче.",
+            "tj": "Давом додани хондан донишро зиёд мекунад, инчунин фишорро кам карда, одамро сабуктар мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O'qish qaydlari o'qish qobiliyatini oshirishi haqida matn",
+        "ru": "Текст о том, как читательские заметки повышают навык чтения",
+        "tj": "Матн дар бораи он ки қайдҳои китобхонӣ маҳорати хонданро баланд мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "根据调查，阅读能力好的人，不但容易找到工作，而且工资也比较高。",
+          "pinyin": "Gēnjù diàochá, yuèdú nénglì hǎo de rén, bùdàn róngyì zhǎodào gōngzuò, érqiě gōngzī yě bǐjiào gāo.",
+          "text": {
+            "uz": "Tadqiqotga ko'ra, o'qish qobiliyati yaxshi odamlar ishni oson topadi va maoshi ham yuqoriroq bo'ladi.",
+            "ru": "По данным опроса, людям с хорошим навыком чтения легче найти работу, и зарплата у них выше.",
+            "tj": "Тибқи таҳқиқ, одамони дорои маҳорати хуби хондан корро осонтар меёбанд ва маошашон баландтар аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "怎么才能有效提高自己的阅读能力呢？做读书笔记就是其中一种好方法。",
+          "pinyin": "Zěnme cái néng yǒuxiào tígāo zìjǐ de yuèdú nénglì ne? Zuò dúshū bǐjì jiù shì qízhōng yì zhǒng hǎo fāngfǎ.",
+          "text": {
+            "uz": "O'qish qobiliyatini qanday samarali oshirish mumkin? O'qish qaydlari yozish - yaxshi usullardan biri.",
+            "ru": "Как эффективно повысить навык чтения? Один из хороших способов - делать читательские заметки.",
+            "tj": "Чӣ тавр маҳорати хонданро самаранок беҳтар кардан мумкин? Яке аз роҳҳои хуб - қайдҳои китобхонӣ аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "读书笔记有很多种，最简单的就是把自己喜欢或者觉得有用的词语和句子记下来。",
+          "pinyin": "Dúshū bǐjì yǒu hěn duō zhǒng, zuì jiǎndān de jiùshì bǎ zìjǐ xǐhuan huòzhě juéde yǒuyòng de cíyǔ hé jùzi jì xiàlai.",
+          "text": {
+            "uz": "O'qish qaydlarining turlari ko'p. Eng sodda usul - o'zingiz yoqtirgan yoki foydali deb bilgan so'z va gaplarni yozib borish.",
+            "ru": "Есть много видов читательских заметок. Самый простой - записывать слова и предложения, которые понравились или кажутся полезными.",
+            "tj": "Қайдҳои китобхонӣ навъҳои зиёд доранд. Роҳи содда - калимаҳо ва ҷумлаҳои писанд ё фоиданокро навиштан."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "另外，在看完一篇文章或一本书之后，还可以把它的主要内容和自己的想法写下来。",
+          "pinyin": "Lìngwài, zài kàn wán yì piān wénzhāng huò yì běn shū zhīhòu, hái kěyǐ bǎ tā de zhǔyào nèiróng hé zìjǐ de xiǎngfǎ xiě xiàlai.",
+          "text": {
+            "uz": "Bundan tashqari, bir maqola yoki kitobni tugatgach, uning asosiy mazmuni va o'z fikringizni yozib qo'yish mumkin.",
+            "ru": "Кроме того, после статьи или книги можно записать основное содержание и свои мысли.",
+            "tj": "Ғайр аз ин, баъди хондани мақола ё китоб мазмуни асосӣ ва фикри худро навиштан мумкин."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "然而，你不能完全相信书本上的内容，要有自己的看法和判断。坚持做读书笔记，对提高阅读能力有很大帮助。",
+          "pinyin": "Rán'ér, nǐ bù néng wánquán xiāngxìn shūběn shang de nèiróng, yào yǒu zìjǐ de kànfǎ hé pànduàn. Jiānchí zuò dúshū bǐjì, duì tígāo yuèdú nénglì yǒu hěn dà bāngzhù.",
+          "text": {
+            "uz": "Biroq kitobdagi mazmunga butunlay ishonib qolmasdan, o'z qarash va hukmingiz bo'lishi kerak. O'qish qaydlarini davomli yozish o'qish qobiliyatini oshirishga katta yordam beradi.",
+            "ru": "Однако нельзя полностью верить содержанию книги, нужно иметь своё мнение и суждение. Регулярные заметки сильно помогают улучшить навык чтения.",
+            "tj": "Аммо ба мазмуни китоб пурра бовар кардан мумкин нест, назари худ ва баҳодиҳии худ лозим аст. Давом додани қайдҳои китобхонӣ ба беҳтар шудани хондан бисёр ёрӣ медиҳад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "读书好，读好书，好读书 iborasining ma'nosi haqida matn",
+        "ru": "Текст о смысле фразы 读书好，读好书，好读书",
+        "tj": "Матн дар бораи маънои ибораи 读书好，读好书，好读书"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "“读书好，读好书，好读书”。虽然这句话只用了三个相同的汉字，但是不同的顺序却表示了不同的意思。",
+          "pinyin": "Dú shū hǎo, dú hǎo shū, hào dú shū. Suīrán zhè jù huà zhǐ yòng le sān ge xiāngtóng de Hànzì, dànshì bùtóng de shùnxù què biǎoshì le bùtóng de yìsi.",
+          "text": {
+            "uz": "“O'qish yaxshi, yaxshi kitob o'qi, o'qishni yaxshi ko'r.” Bu gapda faqat uchta bir xil iyeroglif ishlatilgan bo'lsa ham, tartib o'zgarganda ma'no ham o'zgaradi.",
+            "ru": "«Читать хорошо, читать хорошие книги, любить чтение». В этой фразе три одинаковых иероглифа, но разный порядок даёт разные смыслы.",
+            "tj": "«Хондан хуб аст, китоби хуб хон, хонданро дӯст дор». Дар ин ҷумла се иероглифи якхела ҳаст, аммо тартиби гуногун маънои гуногун медиҳад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "首先，“读书好”说的是读书有很多好处；其次，每个人的时间都是有限的，不可能把世界上每一本书都读完，所以要读好的书。",
+          "pinyin": "Shǒuxiān, “dú shū hǎo” shuō de shì dúshū yǒu hěn duō hǎochu; qícì, měi ge rén de shíjiān dōu shì yǒuxiàn de, bù kěnéng bǎ shìjiè shang měi yì běn shū dōu dú wán, suǒyǐ yào dú hǎo de shū.",
+          "text": {
+            "uz": "Avvalo, “读书好” o'qishning foydasi ko'pligini bildiradi. Ikkinchidan, hammaning vaqti cheklangan, dunyodagi har bir kitobni o'qib bo'lmaydi, shuning uchun yaxshi kitob o'qish kerak.",
+            "ru": "Во-первых, «读书好» говорит, что чтение полезно. Во-вторых, время каждого ограничено, невозможно прочитать все книги мира, поэтому нужно читать хорошие книги.",
+            "tj": "Аввал, «读书好» фоидаи зиёди хонданро мегӯяд. Дуюм, вақти ҳар кас маҳдуд аст, ҳамаи китобҳои дунёро хондан имкон надорад, пас китобҳои хуб хондан лозим."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "最后，“好读书”就是要养成阅读的习惯，使读书真正成为自己的兴趣爱好。",
+          "pinyin": "Zuìhòu, “hào dú shū” jiùshì yào yǎngchéng yuèdú de xíguàn, shǐ dúshū zhēnzhèng chéngwéi zìjǐ de xìngqù àihào.",
+          "text": {
+            "uz": "Oxirida, “好读书” o'qish odatini shakllantirib, o'qishni haqiqiy qiziqishga aylantirishdir.",
+            "ru": "Наконец, «好读书» означает сформировать привычку читать и сделать чтение настоящим интересом.",
+            "tj": "Ниҳоят, «好读书» маънои ташаккули одати хондан ва табдил додани хондан ба шавқи ҳақиқӣ аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "阅读有许多好处，它能丰富你的知识，让你找到解决问题的办法；同时，它还会丰富你的情感，使你的生活更精彩。",
+          "pinyin": "Yuèdú yǒu xǔduō hǎochu, tā néng fēngfù nǐ de zhīshi, ràng nǐ zhǎodào jiějué wèntí de bànfǎ; tóngshí, tā hái huì fēngfù nǐ de qínggǎn, shǐ nǐ de shēnghuó gèng jīngcǎi.",
+          "text": {
+            "uz": "O'qishning foydasi ko'p: bilimingizni boyitadi, muammoni hal qilish yo'lini topishga yordam beradi. Shu bilan birga, hissiyotingizni boyitib, hayotingizni yanada mazmunli qiladi.",
+            "ru": "У чтения много пользы: оно обогащает знания и помогает находить решения проблем. При этом оно обогащает чувства и делает жизнь ярче.",
+            "tj": "Хондан фоидаи зиёд дорад: донишро ғанӣ мекунад ва роҳи ҳалли мушкилро меёбонад. Ҳамзамон эҳсосотро ғанӣ карда, зиндагиро ҷолибтар мекунад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "所以，让阅读成为你的习惯吧！",
+          "pinyin": "Suǒyǐ, ràng yuèdú chéngwéi nǐ de xíguàn ba!",
+          "text": {
+            "uz": "Shuning uchun o'qishni odatingizga aylantiring.",
+            "ru": "Поэтому пусть чтение станет вашей привычкой.",
+            "tj": "Пас бигзор хондан ба одати шумо табдил ёбад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "流利",
+            "pinyin": "liúlì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liúlì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liúlì?",
+            "tj": "liúlì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "流利",
+            "语法",
+            "厉害",
+            "准确"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "流利 = ravon (liúlì)",
+            "ru": "流利 = беглый, свободный (liúlì)",
+            "tj": "流利 = равон (liúlì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "厉害",
+            "pinyin": "lìhai",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "厉害 talaffuzini tanlang:",
+            "ru": "Выберите произношение 厉害:",
+            "tj": "Талаффузи 厉害-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yǔfǎ",
+            "lìhai",
+            "liúlì",
+            "zhǔnquè"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "厉害 — lìhai",
+            "ru": "厉害 — lìhai",
+            "tj": "厉害 — lìhai"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "语法",
+            "pinyin": "yǔfǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'grammatika' xitoycha qaysi?",
+            "ru": "'грамматика' по-китайски?",
+            "tj": "'грамматика' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "语法",
+            "准确",
+            "厉害",
+            "流利"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "grammatika = 语法 (yǔfǎ)",
+            "ru": "грамматика = 语法 (yǔfǎ)",
+            "tj": "грамматика = 语法 (yǔfǎ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "准确",
+            "pinyin": "zhǔnquè",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "aniq, to'g'ri",
+              "ru": "точный, правильный",
+              "tj": "дақиқ, дуруст"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "准确",
+          "pinyin": "zhǔnquè",
+          "translation": {
+            "uz": "aniq, to'g'ri",
+            "ru": "точный, правильный",
+            "tj": "дақиқ, дуруст"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "准确",
+          "pinyin": "zhǔnquè",
+          "options": [
+            "流利",
+            "语法",
+            "准确",
+            "厉害"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "准确 — aniq, to'g'ri (zhǔnquè)",
+            "ru": "准确 — точный, правильный (zhǔnquè)",
+            "tj": "准确 — дақиқ, дуруст (zhǔnquè)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "流利 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 流利:",
+            "tj": "Маънои калимаи 流利-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aniq, to'g'ri",
+              "ru": "точный, правильный",
+              "tj": "дақиқ, дуруст"
+            },
+            {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            },
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "流利 = ravon (liúlì)",
+            "ru": "流利 = беглый, свободный (liúlì)",
+            "tj": "流利 = равон (liúlì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "流利",
+              {
+                "uz": "ravon",
+                "ru": "беглый, свободный",
+                "tj": "равон"
+              }
+            ],
+            [
+              "厉害",
+              {
+                "uz": "zo'r, kuchli",
+                "ru": "сильный, впечатляющий",
+                "tj": "зӯр, қавӣ"
+              }
+            ],
+            [
+              "语法",
+              {
+                "uz": "grammatika",
+                "ru": "грамматика",
+                "tj": "грамматика"
+              }
+            ],
+            [
+              "准确",
+              {
+                "uz": "aniq, to'g'ri",
+                "ru": "точный, правильный",
+                "tj": "дақиқ, дуруст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "擦 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 擦:",
+            "tj": "Маънои калимаи 擦-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            },
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            },
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "擦 = artmoq (cā)",
+            "ru": "擦 = вытирать (cā)",
+            "tj": "擦 = пок кардан, молидан (cā)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
+          "pinyin": "Xièxie! Qíshí wǒ de yǔfǎ bú tài hǎo, hěn duō jùzi shuō de dōu bú tài zhǔnquè.",
+          "options": [
+            "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
+            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
+            "你来中国才一年，汉语就说得这么流利，真厉害！",
+            "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Rahmat! Aslida grammatikam uncha yaxshi emas, ko'p gaplarni ham aniq ayta olmayman.",
+            "ru": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Спасибо! На самом деле грамматика у меня не очень, многие фразы я говорю не совсем точно.",
+            "tj": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Раҳмат! Дар асл грамматикам чандон хуб нест, бисёр ҷумлаҳоро дақиқ гуфта наметавонам."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "流利",
+          "pinyin": "liúlì",
+          "options": [
+            "厉害",
+            "语法",
+            "流利",
+            "准确"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "流利 — ravon (liúlì)",
+            "ru": "流利 — беглый, свободный (liúlì)",
+            "tj": "流利 — равон (liúlì)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "准确",
+          "pinyin": "zhǔnquè",
+          "translation": {
+            "uz": "aniq, to'g'ri",
+            "ru": "точный, правильный",
+            "tj": "дақиқ, дуруст"
+          }
+        }
+      ]
+    }
+  ]
+}

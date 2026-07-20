@@ -2,487 +2,258 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 15,
-  "title": "其他都没什么问题",
+  "source_lesson": 3,
+  "part_no": 3,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "桌子上放着很多饮料",
   "subtitle": {
-    "uz": "'Bundan tashqari ham/yana' iboralari, so'roq olmoshlarining umumlashtiruvchi qo'llanishi va 'juda' ifodalovchi '极了' o'rganish",
-    "ru": "Выражения 'помимо/кроме', обобщающее использование вопросительных местоимений и '极了' (очень)",
-    "tj": "Ибораҳои 'ғайр аз/ба ҷуз', истифодаи умумикунандаи зомирҳои саволӣ ва '极了' (хеле)"
+    "uz": "'还是' va '或者' farqini, mavjudlik gapini va '会' ehtimol ma'nosini o'zlashtirish.",
+    "ru": "Освоить разницу 还是/或者, предложение существования и значение вероятности 会.",
+    "tj": "Азхудкунии фарқи 还是/或者, ҷумлаи мавҷудият ва маънои эҳтимолии 会."
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "留学",
-      "pinyin": "liú xué",
-      "pos": "v.",
+      "zh": "新鲜",
+      "pinyin": "xīnxiān",
+      "pos": "adj.",
       "meaning": {
-        "uz": "chet elda o'qimoq",
-        "ru": "учиться за границей",
-        "tj": "дар хориҷ таҳсил кардан"
+        "uz": "yangi, sarhil",
+        "ru": "свежий",
+        "tj": "тару тоза"
       }
     },
     {
       "no": 2,
-      "zh": "水平",
-      "pinyin": "shuǐpíng",
-      "pos": "n.",
+      "zh": "甜",
+      "pinyin": "tián",
+      "pos": "adj.",
       "meaning": {
-        "uz": "daraja, saviya",
-        "ru": "уровень, стандарт",
-        "tj": "сатҳ, дараҷа"
+        "uz": "shirin",
+        "ru": "сладкий",
+        "tj": "ширин"
       }
     },
     {
       "no": 3,
-      "zh": "提高",
-      "pinyin": "tí gāo",
-      "pos": "v.",
-      "meaning": {
-        "uz": "oshirmoq, yaxshilamoq",
-        "ru": "повышать, улучшать",
-        "tj": "баланд кардан, беҳтар кардан"
-      }
-    },
-    {
-      "no": 4,
-      "zh": "练习",
-      "pinyin": "liànxí",
-      "pos": "n.",
-      "meaning": {
-        "uz": "mashq",
-        "ru": "упражнение",
-        "tj": "машқ"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "完成",
-      "pinyin": "wán chéng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tugatmoq, yakunlamoq",
-        "ru": "закончить, завершить",
-        "tj": "тамом кардан"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "句子",
-      "pinyin": "jùzi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "gap, jumla",
-        "ru": "предложение",
-        "tj": "ҷумла"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "其他",
-      "pinyin": "qítā",
-      "pos": "pron.",
-      "meaning": {
-        "uz": "boshqalar, qolganlari",
-        "ru": "остальное, другие",
-        "tj": "дигарон, боқимонда"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "发",
-      "pinyin": "fā",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yubormoq",
-        "ru": "отправлять",
-        "tj": "фиристодан"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "要求",
-      "pinyin": "yāoqiú",
-      "pos": "n.",
-      "meaning": {
-        "uz": "talab",
-        "ru": "требование",
-        "tj": "талаб"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "注意",
-      "pinyin": "zhù yì",
-      "pos": "v.",
-      "meaning": {
-        "uz": "e'tibor bermoq",
-        "ru": "обращать внимание",
-        "tj": "диққат додан"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "上网",
-      "pinyin": "shàng wǎng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "internetga kirmoq",
-        "ru": "выходить в интернет",
-        "tj": "ба интернет даромадан"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "除了",
-      "pinyin": "chúle",
-      "pos": "prep.",
-      "meaning": {
-        "uz": "dan tashqari",
-        "ru": "кроме",
-        "tj": "ба ғайр аз"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "新闻",
-      "pinyin": "xīnwén",
-      "pos": "n.",
-      "meaning": {
-        "uz": "yangiliklar",
-        "ru": "новости",
-        "tj": "хабарҳо"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "花",
-      "pinyin": "huā",
-      "pos": "v.",
-      "meaning": {
-        "uz": "sarflamoq",
-        "ru": "тратить",
-        "tj": "сарф кардан"
-      }
-    },
-    {
-      "no": 15,
-      "zh": "极（了）",
-      "pinyin": "jí (le)",
+      "zh": "只",
+      "pinyin": "zhǐ",
       "pos": "adv.",
       "meaning": {
-        "uz": "juda, nihoyatda",
-        "ru": "крайне, чрезвычайно",
-        "tj": "ниҳоят"
-      }
-    },
-    {
-      "no": 16,
-      "zh": "节日",
-      "pinyin": "jiérì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "bayram",
-        "ru": "праздник",
-        "tj": "ид"
-      }
-    },
-    {
-      "no": 17,
-      "zh": "举行",
-      "pinyin": "jǔxíng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "o'tkazmoq",
-        "ru": "проводить",
-        "tj": "баргузор кардан"
-      }
-    },
-    {
-      "no": 18,
-      "zh": "世界",
-      "pinyin": "shìjiè",
-      "pos": "n.",
-      "meaning": {
-        "uz": "dunyo",
-        "ru": "мир",
-        "tj": "ҷаҳон"
-      }
-    },
-    {
-      "no": 19,
-      "zh": "街道",
-      "pinyin": "jiēdào",
-      "pos": "n.",
-      "meaning": {
-        "uz": "ko'cha",
-        "ru": "улица",
-        "tj": "кӯча"
-      }
-    },
-    {
-      "no": 20,
-      "zh": "各",
-      "pinyin": "gè",
-      "pos": "pron.",
-      "meaning": {
-        "uz": "har bir",
-        "ru": "каждый",
-        "tj": "ҳар"
-      }
-    },
-    {
-      "no": 21,
-      "zh": "文化",
-      "pinyin": "wénhuà",
-      "pos": "n.",
-      "meaning": {
-        "uz": "madaniyat",
-        "ru": "культура",
-        "tj": "фарҳанг"
-      }
-    },
-    {
-      "no": 22,
-      "zh": "小云",
-      "pinyin": "Xiǎoyún",
-      "pos": "proper noun",
-      "meaning": {
-        "uz": "Xiaoyun (ism)",
-        "ru": "Сяоюнь (имя)",
-        "tj": "Сяоюн (ном)"
+        "uz": "faqat",
+        "ru": "только",
+        "tj": "фақат"
       }
     }
   ],
-  "grammar": [
-    {
-      "no": 1,
-      "title": {
-        "uz": "……dan tashqari, hammasi/ham/yana……",
-        "ru": "Кроме……, всё/тоже/ещё……",
-        "tj": "Ба ғайр аз……, ҳама/ҳам/боз……"
-      },
-      "title_zh": "除了……以外，都/还/也……",
-      "rule": {
-        "uz": "'除了A以外，都/还/也+B' tuzilmasi ikki ma'noda ishlatiladi: (1) A dan tashqari hamma narsa B (都) — istisno; (2) A dan tashqari B ham (还/也) — qo'shimcha. Farqni '都' va '还/也' orqali tushunish kerak.",
-        "ru": "Конструкция '除了A以外，都/还/也+B' имеет два значения: (1) Кроме A всё является B (都) — исключение; (2) Кроме A, B тоже (还/也) — добавление. Разницу нужно понять через '都' и '还/也'.",
-        "tj": "Сохти '除了A以外，都/还/也+B' ду маъно дорад: (1) Ба ғайр аз A ҳама B аст (都) — истисно; (2) Ба ғайр аз A, B ҳам (还/也) — илова. Фарқро бо ёрии '都' ва '还/也' фаҳмидан лозим аст."
-      },
-      "examples": [
-        {
-          "zh": "除了血压以外，其他都没问题。",
-          "pinyin": "Chúle xuèyā yǐwài, qítā dōu méi wèntí.",
-          "translation": {
-            "uz": "Qon bosimdan tashqari, boshqa hamma narsa muammosiz.",
-            "ru": "Кроме давления, всё остальное без проблем.",
-            "tj": "Ба ғайр аз фишори хун, ҳама чизи дигар мушкиле нест."
-          }
-        },
-        {
-          "zh": "除了汉语，她还会说日语。",
-          "pinyin": "Chúle Hànyǔ, tā hái huì shuō Rìyǔ.",
-          "translation": {
-            "uz": "Xitoy tilidan tashqari, u yapon tilini ham biladi.",
-            "ru": "Кроме китайского, она ещё умеет говорить по-японски.",
-            "tj": "Ба ғайр аз чинӣ, вай ҳам ба ҷопонӣ ҳарф мезанад."
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "So'roq olmoshlarining maxsus qo'llanishi②: hech qayerda/hech narsa (inkor)",
-        "ru": "Особое употребление вопросительных местоимений②: нигде/ничего (отрицание)",
-        "tj": "Истифодаи хоси зомирҳои саволӣ②: ҳеҷ куҷо/ҳеҷ чиз (манфӣ)"
-      },
-      "title_zh": "疑问代词活用②：哪儿都/什么都（否定）",
-      "rule": {
-        "uz": "So'roq olmoshlari + 都 + inkor fe'l = mutlaq inkor. Masalan: 什么都不 = hech narsani emas; 哪儿都不 = hech qayerda emas; 谁都不 = hech kim emas. Bular kuchli umumlashtiruvchi inkorlar.",
-        "ru": "Вопросительное местоимение + 都 + отрицательный глагол = абсолютное отрицание. Например: 什么都不 = ничего не; 哪儿都不 = нигде не; 谁都不 = никто не. Это сильные обобщающие отрицания.",
-        "tj": "Зомири саволӣ + 都 + феъли манфӣ = инкори мутлақ. Масалан: 什么都不 = ҳеҷ чизро не; 哪儿都不 = ҳеҷ куҷо не; 谁都不 = ҳеҷ кас не. Инҳо инкорҳои умумикунандаи қавӣ ҳастанд."
-      },
-      "examples": [
-        {
-          "zh": "什么都不如健康重要！",
-          "pinyin": "Shénme dōu bùrú jiànkāng zhòngyào!",
-          "translation": {
-            "uz": "Hech narsa sog'liqdan muhim emas!",
-            "ru": "Ничто не важнее здоровья!",
-            "tj": "Ҳеҷ чиз аз саломатӣ муҳимтар нест!"
-          }
-        },
-        {
-          "zh": "他哪儿都不想去。",
-          "pinyin": "Tā nǎr dōu bù xiǎng qù.",
-          "translation": {
-            "uz": "U hech qayerga bormoqchi emas.",
-            "ru": "Он никуда не хочет идти.",
-            "tj": "Вай ҳеҷ куҷо рафтан намехоҳад."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "Sifat/Fe'l + 极了 (juda, nihoyatda)",
-        "ru": "Прилагательное/Глагол + 极了 (очень, крайне)",
-        "tj": "Сифат/Феъл + 极了 (хеле, ниҳоят)"
-      },
-      "title_zh": "形容词/动词 + 极了",
-      "rule": {
-        "uz": "'极了' sifat yoki fe'ldan keyin kelib, eng yuqori darajani bildiradi. '非常' dan kuchliroq. Masalan: 好极了 = zo'r (juda ajoyib), 满意极了 = nihoyatda mamnun.",
-        "ru": "'极了' следует за прилагательным или глаголом и выражает высшую степень. Сильнее, чем '非常'. Например: 好极了 = отлично (очень здорово), 满意极了 = чрезвычайно доволен.",
-        "tj": "'极了' баъди сифат ё феъл омада, дараҷаи олиро ифода мекунад. Аз '非常' қавитар. Масалан: 好极了 = олӣ (хеле аҷоиб), 满意极了 = ниҳоят қаноатманд."
-      },
-      "examples": [
-        {
-          "zh": "好极了！就这样做！",
-          "pinyin": "Hǎo jí le! Jiù zhèyàng zuò!",
-          "translation": {
-            "uz": "Zo'r! Xuddi shunday qiling!",
-            "ru": "Отлично! Именно так и делайте!",
-            "tj": "Олӣ! Маҳз ҳамин тавр кунед!"
-          }
-        },
-        {
-          "zh": "你写得认真极了！",
-          "pinyin": "Nǐ xiě de rènzhēn jí le!",
-          "translation": {
-            "uz": "Siz juda puxta yozdingiz!",
-            "ru": "Вы написали крайне добросовестно!",
-            "tj": "Шумо ниҳоят масъулиятшиносона навиштед!"
-          }
-        }
-      ]
-    }
-  ],
+  "grammar": [],
   "dialogues": [
     {
       "scene": {
-        "uz": "Ofisda",
-        "ru": "В офисе",
-        "tj": "Дар идора"
+        "uz": "Xiaolining uyida",
+        "ru": "У Сяоли дома",
+        "tj": "Дар хонаи Сяоли"
       },
       "dialogue": [
         {
-          "speaker": "大山",
-          "zh": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-          "pinyin": "Lǎoshī, wǒ lái Zhōngguó liú xué liǎng nián le, dànshì wǒ de Hànyǔ shuǐpíng tí gāo de yìdiǎnr yě bù kuài a.",
+          "speaker": "小刚",
+          "zh": "明天是晴天还是阴天？",
+          "pinyin": "Míngtiān shì qíngtiān háishi yīntiān?",
           "text": {
-            "uz": "Ustoz, Xitoyga o'qishga kelganimga ikki yil bo'ldi, lekin xitoy tili darajam deyarli tez oshmayapti.",
-            "ru": "Учитель, я приехал в Китай учиться уже два года назад, но мой уровень китайского совсем не быстро растёт.",
-            "tj": "Устод, ду сол шуд, ки ба Чин барои таҳсил омадам, аммо сатҳи забони чиниям тамоман зуд баланд намешавад."
+            "uz": "Ertaga havo ochiq bo'ladimi yoki bulutlimi?",
+            "ru": "Завтра будет ясно или пасмурно?",
+            "tj": "Пагоҳ ҳаво офтобӣ мешавад ё абрнок?"
           }
         },
         {
-          "speaker": "老师",
-          "zh": "你每天认真学习，做练习、完成作业，一直不错啊。",
-          "pinyin": "Nǐ měi tiān rènzhēn xuéxí, zuò liànxí, wán chéng zuòyè, yìzhí búcuò a.",
+          "speaker": "小丽",
+          "zh": "阴天，电视上说多云。怎么了？有事？",
+          "pinyin": "Yīntiān, diànshì shang shuō duōyún. Zěnme le? Yǒu shì?",
           "text": {
-            "uz": "Sen har kuni jiddiy o'qiysan, mashq qilasan, uy vazifasini tugatasan, doim yaxshi-ku.",
-            "ru": "Ты каждый день серьёзно учишься, делаешь упражнения, выполняешь домашнее задание, всё время неплохо.",
-            "tj": "Ту ҳар рӯз ҷиддӣ мехонӣ, машқ мекунӣ, вазифаи хонагиро анҷом медиҳӣ, ҳамеша хуб аст."
+            "uz": "Bulutli, televizorda ko'p bulut bo'ladi dedi. Nima bo'ldi? Ishing bormi?",
+            "ru": "Пасмурно, по телевизору сказали облачно. Что случилось? Есть дела?",
+            "tj": "Абрнок, телевизион гуфт абрнок мешавад. Чӣ шуд? Коре дорӣ?"
           }
         },
         {
-          "speaker": "大山",
-          "zh": "这是我昨天的作业，您帮我看看对不对？",
-          "pinyin": "Zhè shì wǒ zuótiān de zuòyè, nín bāng wǒ kànkan duì bu duì?",
+          "speaker": "小刚",
+          "zh": "没事，我们明天要去爬山。",
+          "pinyin": "Méi shì, wǒmen míngtiān yào qù pá shān.",
           "text": {
-            "uz": "Bu kechagi uy vazifam, to'g'ri yoki yo'qligini ko'rib bera olasizmi?",
-            "ru": "Это моё вчерашнее домашнее задание, посмотрите, правильно ли?",
-            "tj": "Ин вазифаи хонагии дирӯзаам аст, мебинед дуруст аст ё не?"
+            "uz": "Hech narsa, ertaga toqqa chiqmoqchimiz.",
+            "ru": "Ничего, завтра мы собираемся идти в горы.",
+            "tj": "Ҳеҷ чиз, пагоҳ мехоҳем ба кӯҳ бароем."
           }
         },
         {
-          "speaker": "老师",
-          "zh": "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
-          "pinyin": "Xiě de búcuò, chúle zhè ge jùzi yìsi yǒuxiē bù qīngchu wài, qítā dōu méi shénme wèntí.",
+          "speaker": "小丽",
+          "zh": "爬山的时候要小心点儿。",
+          "pinyin": "Pá shān de shíhou yào xiǎoxīn diǎnr.",
           "text": {
-            "uz": "Yaxshi yozilgan, faqat bu gapning ma'nosi biroz noaniq, qolganlarida muammo yo'q.",
-            "ru": "Написано неплохо, кроме того, что смысл этого предложения немного неясен, с остальным проблем нет.",
-            "tj": "Хуб навишта шудааст, ба ғайр аз он ки маънои ин ҷумла каме норавшан аст, боқимонда мушкил надорад."
+            "uz": "Toqqa chiqayotganda ehtiyot bo'linglar.",
+            "ru": "Когда будете подниматься в горы, будьте осторожны.",
+            "tj": "Вақти ба кӯҳ баромадан эҳтиёт бошед."
           }
         },
         {
-          "speaker": "大山",
-          "zh": "谢谢老师！",
-          "pinyin": "Xièxie lǎoshī!",
+          "speaker": "小刚",
+          "zh": "好，你也去吗？",
+          "pinyin": "Hǎo, nǐ yě qù ma?",
           "text": {
-            "uz": "Rahmat, ustoz!",
-            "ru": "Спасибо, учитель!",
-            "tj": "Ташаккур, устод!"
+            "uz": "Xo'p, sen ham borasanmi?",
+            "ru": "Хорошо, ты тоже пойдёшь?",
+            "tj": "Хуб, ту ҳам меравӣ?"
           }
         },
         {
-          "speaker": "老师",
-          "zh": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
-          "pinyin": "Yǐhòu yǒu shénme bù míngbai de dìfang, kěyǐ gěi wǒ dǎ diànhuà huòzhě fā diànzǐ yóujiàn.",
+          "speaker": "小丽",
+          "zh": "我不去，我有事。",
+          "pinyin": "Wǒ bú qù, wǒ yǒu shì.",
           "text": {
-            "uz": "Keyin tushunmagan joying bo'lsa, menga qo'ng'iroq qilishing yoki email yuborishing mumkin.",
-            "ru": "Если потом что-то будет непонятно, можешь позвонить мне или отправить электронное письмо.",
-            "tj": "Баъд агар чизе нофаҳмо бошад, метавонӣ ба ман занг занӣ ё почтаи электронӣ фиристӣ."
+            "uz": "Bormayman, ishim bor.",
+            "ru": "Я не пойду, у меня дела.",
+            "tj": "Ман намеравам, кор дорам."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Sinfda",
-        "ru": "В классе",
-        "tj": "Дар синф"
+        "uz": "Savdo markazida",
+        "ru": "В торговом центре",
+        "tj": "Дар маркази савдо"
       },
       "dialogue": [
         {
-          "speaker": "学生",
-          "zh": "老师，除了小云，其他人都来了。",
-          "pinyin": "Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
+          "speaker": "周太太",
+          "zh": "你觉得这条裤子怎么样？",
+          "pinyin": "Nǐ juéde zhè tiáo kùzi zěnmeyàng?",
           "text": {
-            "uz": "Ustoz, Xiaoyundan tashqari hamma keldi.",
-            "ru": "Учитель, кроме Сяоюнь, все пришли.",
-            "tj": "Устод, ба ғайр аз Сяоюн ҳама омаданд."
+            "uz": "Bu shim qalay deb o'ylaysiz?",
+            "ru": "Как тебе эти брюки?",
+            "tj": "Ин шим ба назарат чӣ хел?"
           }
         },
         {
-          "speaker": "老师",
-          "zh": "比赛马上就要开始了，小云怎么还没来？",
-          "pinyin": "Bǐsài mǎshàng jiù yào kāishǐ le, Xiǎoyún zěnme hái méi lái?",
+          "speaker": "周明",
+          "zh": "我记得你已经有两条这样的裤子了。",
+          "pinyin": "Wǒ jìde nǐ yǐjīng yǒu liǎng tiáo zhèyàng de kùzi le.",
           "text": {
-            "uz": "Musobaqa hozir boshlanadi, Xiaoyun nega hali kelmadi?",
-            "ru": "Соревнование вот-вот начнётся, почему Сяоюнь ещё не пришла?",
-            "tj": "Мусобиқа ҳозир сар мешавад, чаро Сяоюн ҳоло наомад?"
+            "uz": "Esimda, senda bunday shimdan allaqachon ikkita bor.",
+            "ru": "Я помню, у тебя уже есть две пары таких брюк.",
+            "tj": "Дар ёдам ҳаст, ту аллакай ду чунин шим дорӣ."
           }
         },
         {
-          "speaker": "学生",
-          "zh": "刚才给她打电话了，她在路上呢。",
-          "pinyin": "Gāngcái gěi tā dǎ diànhuà le, tā zài lùshang ne.",
+          "speaker": "周太太",
+          "zh": "那我们再看看别的。",
+          "pinyin": "Nà wǒmen zài kànkan bié de.",
           "text": {
-            "uz": "Hozirgina unga qo'ng'iroq qildim, u yo'lda.",
-            "ru": "Я только что звонил ей, она в пути.",
-            "tj": "Ҳозир ба ӯ занг задам, дар роҳ аст."
+            "uz": "Unda boshqa narsalarni ko'raylik.",
+            "ru": "Тогда посмотрим что-нибудь другое.",
+            "tj": "Пас чизҳои дигарро бинем."
           }
         },
         {
-          "speaker": "老师",
-          "zh": "不等她了，我先给大家讲讲这次比赛的要求和一些需要注意的地方。",
-          "pinyin": "Bù děng tā le, wǒ xiān gěi dàjiā jiǎngjiang zhè cì bǐsài de yāoqiú hé yìxiē xūyào zhù yì de dìfang.",
+          "speaker": "周明",
+          "zh": "这件衬衫怎么样？",
+          "pinyin": "Zhè jiàn chènshān zěnmeyàng?",
           "text": {
-            "uz": "Uni kutmaymiz, avval hammaga bu musobaqaning talablarini va e'tibor berish kerak bo'lgan joylarini tushuntirib beraman.",
-            "ru": "Не будем ждать её, сначала я расскажу всем требования этого соревнования и моменты, на которые нужно обратить внимание.",
-            "tj": "Ӯро интизор намешавем, аввал ба ҳама талабҳои ин мусобиқа ва ҷойҳои лозими диққатро мефаҳмонам."
+            "uz": "Bu ko'ylak-chi?",
+            "ru": "Как эта рубашка?",
+            "tj": "Ин курта чӣ хел?"
           }
         },
         {
-          "speaker": "学生",
-          "zh": "老师，您放心，今天的比赛我们一定能拿第一。",
-          "pinyin": "Lǎoshī, nín fàngxīn, jīntiān de bǐsài wǒmen yídìng néng ná dì yī.",
+          "speaker": "周太太",
+          "zh": "还不错，多少钱？",
+          "pinyin": "Hái búcuò, duōshao qián?",
           "text": {
-            "uz": "Ustoz, xavotir olmang, bugungi musobaqada albatta birinchi o'rinni olamiz.",
-            "ru": "Учитель, не волнуйтесь, сегодня мы обязательно займём первое место.",
-            "tj": "Устод, хотирҷамъ бошед, дар мусобиқаи имрӯз мо ҳатман ҷойи аввалро мегирем."
+            "uz": "Yomon emas, qancha turadi?",
+            "ru": "Неплохо, сколько стоит?",
+            "tj": "Бад нест, чанд пул?"
+          }
+        },
+        {
+          "speaker": "周明",
+          "zh": "这上面写着320元。",
+          "pinyin": "Zhè shàngmian xiězhe sān bǎi èrshí yuán.",
+          "text": {
+            "uz": "Bu yerida 320 yuan deb yozilgan.",
+            "ru": "Здесь написано 320 юаней.",
+            "tj": "Дар ин ҷо 320 юан навишта шудааст."
+          }
+        },
+        {
+          "speaker": "周太太",
+          "zh": "买一件。",
+          "pinyin": "Mǎi yí jiàn.",
+          "text": {
+            "uz": "Bittasini olaylik.",
+            "ru": "Купим одну.",
+            "tj": "Якторо мехарем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Meva do'konida",
+        "ru": "В фруктовом магазине",
+        "tj": "Дар мағозаи мева"
+      },
+      "dialogue": [
+        {
+          "speaker": "周太太",
+          "zh": "这些水果真新鲜，我们买西瓜还是苹果？",
+          "pinyin": "Zhèxiē shuǐguǒ zhēn xīnxiān, wǒmen mǎi xīguā háishi píngguǒ?",
+          "text": {
+            "uz": "Bu mevalar juda sarhil, tarvuz olamizmi yoki olma?",
+            "ru": "Эти фрукты очень свежие, купим арбуз или яблоки?",
+            "tj": "Ин меваҳо хеле тару тозаанд, тарбуз мехарем ё себ?"
+          }
+        },
+        {
+          "speaker": "周明",
+          "zh": "西瓜吧。你看，这上面写着“西瓜不甜不要钱”。",
+          "pinyin": "Xīguā ba. Nǐ kàn, zhè shàngmian xiězhe 'xīguā bù tián bú yào qián'.",
+          "text": {
+            "uz": "Tarvuz olaylik. Qara, bu yerda 'tarvuz shirin bo'lmasa pul olmaymiz' deb yozilgan.",
+            "ru": "Давай арбуз. Смотри, здесь написано: «если арбуз не сладкий, денег не берём».",
+            "tj": "Тарбуз гирем. Бубин, ин ҷо навиштааст: «агар тарбуз ширин набошад, пул намегирем»."
+          }
+        },
+        {
+          "speaker": "周太太",
+          "zh": "那我们买一个大点儿的吧。",
+          "pinyin": "Nà wǒmen mǎi yí ge dà diǎnr de ba.",
+          "text": {
+            "uz": "Unda kattarog'ini olaylik.",
+            "ru": "Тогда купим побольше.",
+            "tj": "Пас яктои калонтарашро мехарем."
+          }
+        },
+        {
+          "speaker": "周明",
+          "zh": "再买几个苹果。",
+          "pinyin": "Zài mǎi jǐ ge píngguǒ.",
+          "text": {
+            "uz": "Yana bir nechta olma olaylik.",
+            "ru": "Ещё купим несколько яблок.",
+            "tj": "Боз чанд себ мехарем."
+          }
+        },
+        {
+          "speaker": "周太太",
+          "zh": "好啊，今天晚上只吃水果不吃饭！",
+          "pinyin": "Hǎo a, jīntiān wǎnshang zhǐ chī shuǐguǒ bù chī fàn!",
+          "text": {
+            "uz": "Yaxshi, bugun kechqurun faqat meva yeymiz, ovqat yemaymiz!",
+            "ru": "Хорошо, сегодня вечером будем есть только фрукты, без ужина!",
+            "tj": "Хуб, имрӯз бегоҳ фақат мева мехӯрем, хӯрок не!"
           }
         }
       ]
@@ -491,86 +262,57 @@
       "scene": {
         "uz": "Dam olish xonasida",
         "ru": "В комнате отдыха",
-        "tj": "Дар утоқи истироҳат"
+        "tj": "Дар ҳуҷраи истироҳат"
       },
       "dialogue": [
         {
-          "speaker": "同事",
-          "zh": "现在用电脑上网真方便啊！",
-          "pinyin": "Xiànzài yòng diànnǎo shàng wǎng zhēn fāngbiàn a!",
+          "speaker": "小丽",
+          "zh": "桌子上放着很多饮料，你喝什么？",
+          "pinyin": "Zhuōzi shang fàngzhe hěn duō yǐnliào, nǐ hē shénme?",
           "text": {
-            "uz": "Hozir kompyuterda internetga kirish juda qulay!",
-            "ru": "Сейчас пользоваться интернетом на компьютере очень удобно!",
-            "tj": "Ҳоло бо компютер ба интернет даромадан хеле қулай аст!"
+            "uz": "Stol ustida ko'p ichimlik turibdi, nima ichasan?",
+            "ru": "На столе стоит много напитков, что будешь пить?",
+            "tj": "Дар рӯи миз нӯшокиҳои бисёр гузошта шудаанд, чӣ менӯшӣ?"
           }
         },
         {
           "speaker": "小刚",
-          "zh": "是啊，除了看新闻，人们还可以在网上听歌、看电影、买东西。",
-          "pinyin": "Shì a, chúle kàn xīnwén, rénmen hái kěyǐ zài wǎngshang tīng gē, kàn diànyǐng, mǎi dōngxi.",
+          "zh": "茶或者咖啡都可以。你呢？你喝什么？",
+          "pinyin": "Chá huòzhě kāfēi dōu kěyǐ. Nǐ ne? Nǐ hē shénme?",
           "text": {
-            "uz": "Ha, yangilik ko'rishdan tashqari, odamlar internetda qo'shiq tinglash, film ko'rish va narsa sotib olishlari ham mumkin.",
-            "ru": "Да, кроме просмотра новостей, люди могут в интернете слушать песни, смотреть фильмы и покупать вещи.",
-            "tj": "Ҳа, ба ғайр аз дидани хабарҳо, одамон дар интернет суруд мешунаванд, кино мебинанд ва чиз мехаранд."
+            "uz": "Choy yoki qahva, ikkalasi ham bo'ladi. Sen-chi? Nima ichasan?",
+            "ru": "Чай или кофе, всё подойдёт. А ты? Что будешь пить?",
+            "tj": "Чой ё қаҳва, ҳарду мешавад. Ту чӣ? Чӣ менӯшӣ?"
           }
         },
         {
-          "speaker": "同事",
-          "zh": "对了，你从网上买的那件衣服呢？怎么没见你穿？",
-          "pinyin": "Duì le, nǐ cóng wǎngshang mǎi de nà jiàn yīfu ne? Zěnme méi jiàn nǐ chuān?",
+          "speaker": "小丽",
+          "zh": "我喝茶，茶是我的最爱。天冷了或者工作累了的时候，喝杯热茶会很舒服。",
+          "pinyin": "Wǒ hē chá, chá shì wǒ de zuì ài. Tiān lěng le huòzhě gōngzuò lèi le de shíhou, hē bēi rè chá huì hěn shūfu.",
           "text": {
-            "uz": "Aytgancha, internetdan olgan o'sha kiyiming-chi? Nega kiyganingni ko'rmadim?",
-            "ru": "Кстати, где та одежда, которую ты купил в интернете? Почему я не видел, чтобы ты её носил?",
-            "tj": "Дар омади гап, он либосе, ки аз интернет харидӣ, куҷост? Чаро туро дар он надидам?"
-          }
-        },
-        {
-          "speaker": "小刚",
-          "zh": "那件衣服我穿着有点儿小，给我弟弟了。",
-          "pinyin": "Nà jiàn yīfu wǒ chuānzhe yǒudiǎnr xiǎo, gěi wǒ dìdi le.",
-          "text": {
-            "uz": "U kiyim menga biroz kichik bo'ldi, ukamga berdim.",
-            "ru": "Эта одежда на мне была немного мала, я отдал её младшему брату.",
-            "tj": "Он либос ба ман каме хурд буд, ба додарам додам."
-          }
-        },
-        {
-          "speaker": "同事",
-          "zh": "他满意吗？",
-          "pinyin": "Tā mǎnyì ma?",
-          "text": {
-            "uz": "U rozi bo'ldimi?",
-            "ru": "Он доволен?",
-            "tj": "Ӯ қаноатманд аст?"
+            "uz": "Men choy ichaman, choy eng yoqtirganim. Havo sovuq bo'lganda yoki ishda charchaganda bir piyola issiq choy ichish juda rohat.",
+            "ru": "Я буду чай, чай — моё любимое. Когда холодно или устал на работе, чашка горячего чая очень приятна.",
+            "tj": "Ман чой менӯшам, чой дӯстдоштаи ман аст. Вақте ҳаво сард аст ё аз кор хаста мешавӣ, як пиёла чойи гарм хеле роҳат аст."
           }
         },
         {
           "speaker": "小刚",
-          "zh": "不用花钱，还有新衣服穿，他满意极了。",
-          "pinyin": "Búyòng huā qián, hái yǒu xīn yīfu chuān, tā mǎnyì jí le.",
+          "zh": "你喜欢喝什么茶？",
+          "pinyin": "Nǐ xǐhuan hē shénme chá?",
           "text": {
-            "uz": "Pul sarflamaydi, yangi kiyim ham kiyadi, u nihoyatda mamnun.",
-            "ru": "Не нужно тратить деньги, и есть новая одежда, он очень доволен.",
-            "tj": "Пул сарф намекунад, либоси нав ҳам мепӯшад, хеле қаноатманд аст."
+            "uz": "Qanday choy ichishni yoqtirasan?",
+            "ru": "Какой чай ты любишь пить?",
+            "tj": "Кадом чойро нӯшидан дӯст медорӣ?"
           }
-        }
-      ]
-    },
-    {
-      "scene": {
-        "uz": "Pivo bayrami haqida matn",
-        "ru": "Текст о пивном фестивале",
-        "tj": "Матн дар бораи ҷашни пиво"
-      },
-      "dialogue": [
+        },
         {
-          "speaker": "旁白",
-          "zh": "除了春节、中秋节以外，啤酒节也是这里很重要的一个节日。这个地方每年夏天都要举行一次啤酒节。在啤酒节上，你可以喝到世界上不同地方的啤酒。除了喝啤酒，你还可以在街道两边看到世界上不同地方的歌舞，你想不想了解世界各个地方的啤酒文化？来这里的啤酒节看看吧。",
-          "pinyin": "Chúle Chūnjié, Zhōngqiū Jié yǐwài, píjiǔ jié yě shì zhèlǐ hěn zhòngyào de yí ge jiérì. Zhège dìfang měi nián xiàtiān dōu yào jǔxíng yí cì píjiǔ jié. Zài píjiǔ jié shang, nǐ kěyǐ hēdào shìjiè shang bùtóng dìfang de píjiǔ. Chúle hē píjiǔ, nǐ hái kěyǐ zài jiēdào liǎng biān kàndào shìjiè shang bùtóng dìfang de gēwǔ, nǐ xiǎng bu xiǎng liǎojiě shìjiè gè ge dìfang de píjiǔ wénhuà? Lái zhèlǐ de píjiǔ jié kànkan ba.",
+          "speaker": "小丽",
+          "zh": "花茶、绿茶、红茶，我都喜欢。",
+          "pinyin": "Huāchá, lǜchá, hóngchá, wǒ dōu xǐhuan.",
           "text": {
-            "uz": "Bahor bayrami va O'rta kuz bayramidan tashqari, pivo festivali ham bu yerda juda muhim bayram. Bu joyda har yili yozda bir marta pivo festivali o'tkaziladi. Pivo festivalida dunyoning turli joylaridagi pivolarni ichib ko'rishingiz mumkin. Pivo ichishdan tashqari, ko'chaning ikki tomonida dunyoning turli joylaridagi qo'shiq va raqslarni ham ko'rishingiz mumkin. Dunyoning turli joylaridagi pivo madaniyatini bilishni xohlaysizmi? Bu yerdagi pivo festivaliga kelib ko'ring.",
-            "ru": "Кроме Праздника весны и Праздника середины осени, пивной фестиваль здесь тоже очень важный праздник. В этом месте каждое лето проводят пивной фестиваль. На фестивале можно попробовать пиво из разных мест мира. Кроме пива, по обе стороны улицы можно увидеть песни и танцы разных стран. Хотите узнать пивную культуру разных мест мира? Приезжайте посмотреть местный пивной фестиваль.",
-            "tj": "Ба ғайр аз Иди баҳор ва Иди миёнаи тирамоҳ, ҷашни пиво ҳам дар ин ҷо иди хеле муҳим аст. Ин ҷо ҳар тобистон як бор ҷашни пиво баргузор мешавад. Дар ҷашни пиво метавонед пивои ҷойҳои гуногуни ҷаҳонро бинӯшед. Ба ғайр аз пиво нӯшидан, дар ду тарафи кӯча метавонед суруду рақси ҷойҳои гуногуни ҷаҳонро бинед. Мехоҳед фарҳанги пивои ҷойҳои гуногуни ҷаҳонро фаҳмед? Ба ҷашни пивои ин ҷо омада бинед."
+            "uz": "Gul choyi, ko'k choy, qora choy — hammasini yaxshi ko'raman.",
+            "ru": "Цветочный, зелёный, красный чай — всё люблю.",
+            "tj": "Чойи гул, чойи сабз, чойи сурх — ҳамаро дӯст медорам."
           }
         }
       ]
@@ -590,27 +332,13 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "留学",
-            "pinyin": "liú xué",
-            "pos": "v.",
+            "zh": "新鲜",
+            "pinyin": "xīnxiān",
+            "pos": "adj.",
             "meaning": {
-              "uz": "chet elda o'qimoq",
-              "ru": "учиться за границей",
-              "tj": "дар хориҷ таҳсил кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "水平",
-            "pinyin": "shuǐpíng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "daraja, saviya",
-              "ru": "уровень, стандарт",
-              "tj": "сатҳ, дараҷа"
+              "uz": "yangi, sarhil",
+              "ru": "свежий",
+              "tj": "тару тоза"
             }
           }
         },
@@ -621,65 +349,41 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "水平",
-          "pinyin": "shuǐpíng",
+          "audio_text": "新鲜",
+          "pinyin": "xīnxiān",
           "options": [
-            "练习",
-            "提高",
-            "留学",
-            "水平"
+            "小心",
+            "还是",
+            "爬山",
+            "新鲜"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "水平 — daraja, saviya (shuǐpíng)",
-            "ru": "水平 — уровень, стандарт (shuǐpíng)",
-            "tj": "水平 — сатҳ, дараҷа (shuǐpíng)"
+            "uz": "新鲜 — yangi, sarhil (xīnxiān)",
+            "ru": "新鲜 — свежий (xīnxiān)",
+            "tj": "新鲜 — тару тоза (xīnxiān)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "提高",
-            "pinyin": "tí gāo",
-            "pos": "v.",
+            "no": 2,
+            "zh": "甜",
+            "pinyin": "tián",
+            "pos": "adj.",
             "meaning": {
-              "uz": "oshirmoq, yaxshilamoq",
-              "ru": "повышать, улучшать",
-              "tj": "баланд кардан, беҳтар кардан"
-            }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "提高",
-          "pinyin": "tí gāo",
-          "translation": {
-            "uz": "oshirmoq, yaxshilamoq",
-            "ru": "повышать, улучшать",
-            "tj": "баланд кардан, беҳтар кардан"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "练习",
-            "pinyin": "liànxí",
-            "pos": "n.",
-            "meaning": {
-              "uz": "mashq",
-              "ru": "упражнение",
-              "tj": "машқ"
+              "uz": "shirin",
+              "ru": "сладкий",
+              "tj": "ширин"
             }
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "练习 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 练习:",
-            "tj": "Маънои калимаи 练习-ро интихоб кунед:"
+            "uz": "甜 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 甜:",
+            "tj": "Маънои калимаи 甜-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -688,67 +392,63 @@
           },
           "options": [
             {
-              "uz": "daraja, saviya",
-              "ru": "уровень, стандарт",
-              "tj": "сатҳ, дараҷа"
+              "uz": "shirin",
+              "ru": "сладкий",
+              "tj": "ширин"
             },
             {
-              "uz": "mashq",
-              "ru": "упражнение",
-              "tj": "машқ"
+              "uz": "yoki (savolda tanlov)",
+              "ru": "или (в вопросе выбора)",
+              "tj": "ё (дар саволи интихобӣ)"
             },
             {
-              "uz": "chet elda o'qimoq",
-              "ru": "учиться за границей",
-              "tj": "дар хориҷ таҳсил кардан"
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
             },
             {
-              "uz": "oshirmoq, yaxshilamoq",
-              "ru": "повышать, улучшать",
-              "tj": "баланд кардан, беҳтар кардан"
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "练习 = mashq (liànxí)",
-            "ru": "练习 = упражнение (liànxí)",
-            "tj": "练习 = машқ (liànxí)"
+            "uz": "甜 = shirin (tián)",
+            "ru": "甜 = сладкий (tián)",
+            "tj": "甜 = ширин (tián)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "完成",
-            "pinyin": "wán chéng",
-            "pos": "v.",
+            "no": 3,
+            "zh": "只",
+            "pinyin": "zhǐ",
+            "pos": "adv.",
             "meaning": {
-              "uz": "tugatmoq, yakunlamoq",
-              "ru": "закончить, завершить",
-              "tj": "тамом кардан"
+              "uz": "faqat",
+              "ru": "только",
+              "tj": "фақат"
             }
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "句子",
-            "pinyin": "jùzi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "gap, jumla",
-              "ru": "предложение",
-              "tj": "ҷумла"
-            }
+          "type": "pronunciation",
+          "phrase": "只",
+          "pinyin": "zhǐ",
+          "translation": {
+            "uz": "faqat",
+            "ru": "только",
+            "tj": "фақат"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "jùzi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jùzi?",
-            "tj": "jùzi кадом иероглиф аст?"
+            "uz": "zhǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhǐ?",
+            "tj": "zhǐ кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -756,52 +456,24 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "水平",
-            "句子",
-            "提高",
-            "留学"
+            "只",
+            "还是",
+            "小心",
+            "爬山"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "句子 = gap, jumla (jùzi)",
-            "ru": "句子 = предложение (jùzi)",
-            "tj": "句子 = ҷумла (jùzi)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 7,
-            "zh": "其他",
-            "pinyin": "qítā",
-            "pos": "pron.",
-            "meaning": {
-              "uz": "boshqalar, qolganlari",
-              "ru": "остальное, другие",
-              "tj": "дигарон, боқимонда"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "发",
-            "pinyin": "fā",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yubormoq",
-              "ru": "отправлять",
-              "tj": "фиристодан"
-            }
+            "uz": "只 = faqat (zhǐ)",
+            "ru": "只 = только (zhǐ)",
+            "tj": "只 = фақат (zhǐ)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "其他 talaffuzini tanlang:",
-            "ru": "Выберите произношение 其他:",
-            "tj": "Талаффузи 其他-ро интихоб кунед:"
+            "uz": "新鲜 talaffuzini tanlang:",
+            "ru": "Выберите произношение 新鲜:",
+            "tj": "Талаффузи 新鲜-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -809,104 +481,43 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tí gāo",
-            "liú xué",
-            "shuǐpíng",
-            "qítā"
+            "xiǎoxīn",
+            "pá shān",
+            "háishi",
+            "xīnxiān"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "其他 — qítā",
-            "ru": "其他 — qítā",
-            "tj": "其他 — qítā"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "要求",
-            "pinyin": "yāoqiú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "talab",
-              "ru": "требование",
-              "tj": "талаб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "注意",
-            "pinyin": "zhù yì",
-            "pos": "v.",
-            "meaning": {
-              "uz": "e'tibor bermoq",
-              "ru": "обращать внимание",
-              "tj": "диққат додан"
-            }
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'e'tibor bermoq' xitoycha qaysi?",
-            "ru": "'обращать внимание' по-китайски?",
-            "tj": "'диққат додан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "水平",
-            "留学",
-            "注意",
-            "提高"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "e'tibor bermoq = 注意 (zhù yì)",
-            "ru": "обращать внимание = 注意 (zhù yì)",
-            "tj": "диққат додан = 注意 (zhù yì)"
+            "uz": "新鲜 — xīnxiān",
+            "ru": "新鲜 — xīnxiān",
+            "tj": "新鲜 — xīnxiān"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "留学",
+              "新鲜",
               {
-                "uz": "chet elda o'qimoq",
-                "ru": "учиться за границей",
-                "tj": "дар хориҷ таҳсил кардан"
+                "uz": "yangi, sarhil",
+                "ru": "свежий",
+                "tj": "тару тоза"
               }
             ],
             [
-              "水平",
+              "甜",
               {
-                "uz": "daraja, saviya",
-                "ru": "уровень, стандарт",
-                "tj": "сатҳ, дараҷа"
+                "uz": "shirin",
+                "ru": "сладкий",
+                "tj": "ширин"
               }
             ],
             [
-              "提高",
+              "只",
               {
-                "uz": "oshirmoq, yaxshilamoq",
-                "ru": "повышать, улучшать",
-                "tj": "баланд кардан, беҳтар кардан"
-              }
-            ],
-            [
-              "练习",
-              {
-                "uz": "mashq",
-                "ru": "упражнение",
-                "tj": "машқ"
+                "uz": "faqat",
+                "ru": "только",
+                "tj": "фақат"
               }
             ]
           ],
@@ -921,205 +532,6 @@
     {
       "section_no": 2,
       "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 1,
-            "title": {
-              "uz": "……dan tashqari, hammasi/ham/yana……",
-              "ru": "Кроме……, всё/тоже/ещё……",
-              "tj": "Ба ғайр аз……, ҳама/ҳам/боз……"
-            },
-            "title_zh": "除了……以外，都/还/也……",
-            "rule": {
-              "uz": "'除了A以外，都/还/也+B' tuzilmasi ikki ma'noda ishlatiladi: (1) A dan tashqari hamma narsa B (都) — istisno; (2) A dan tashqari B ham (还/也) — qo'shimcha. Farqni '都' va '还/也' orqali tushunish kerak.",
-              "ru": "Конструкция '除了A以外，都/还/也+B' имеет два значения: (1) Кроме A всё является B (都) — исключение; (2) Кроме A, B тоже (还/也) — добавление. Разницу нужно понять через '都' и '还/也'.",
-              "tj": "Сохти '除了A以外，都/还/也+B' ду маъно дорад: (1) Ба ғайр аз A ҳама B аст (都) — истисно; (2) Ба ғайр аз A, B ҳам (还/也) — илова. Фарқро бо ёрии '都' ва '还/也' фаҳмидан лозим аст."
-            },
-            "examples": [
-              {
-                "zh": "除了血压以外，其他都没问题。",
-                "pinyin": "Chúle xuèyā yǐwài, qítā dōu méi wèntí.",
-                "translation": {
-                  "uz": "Qon bosimdan tashqari, boshqa hamma narsa muammosiz.",
-                  "ru": "Кроме давления, всё остальное без проблем.",
-                  "tj": "Ба ғайр аз фишори хун, ҳама чизи дигар мушкиле нест."
-                }
-              },
-              {
-                "zh": "除了汉语，她还会说日语。",
-                "pinyin": "Chúle Hànyǔ, tā hái huì shuō Rìyǔ.",
-                "translation": {
-                  "uz": "Xitoy tilidan tashqari, u yapon tilini ham biladi.",
-                  "ru": "Кроме китайского, она ещё умеет говорить по-японски.",
-                  "tj": "Ба ғайр аз чинӣ, вай ҳам ба ҷопонӣ ҳарф мезанад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "除了血压以外，____都没问题。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "其他",
-            "水平",
-            "提高",
-            "留学"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 其他 (qítā) — boshqalar, qolganlari",
-            "ru": "Верно: 其他 (qítā) — остальное, другие",
-            "tj": "Дуруст: 其他 (qítā) — дигарон, боқимонда"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "So'roq olmoshlarining maxsus qo'llanishi②: hech qayerda/hech narsa (inkor)",
-              "ru": "Особое употребление вопросительных местоимений②: нигде/ничего (отрицание)",
-              "tj": "Истифодаи хоси зомирҳои саволӣ②: ҳеҷ куҷо/ҳеҷ чиз (манфӣ)"
-            },
-            "title_zh": "疑问代词活用②：哪儿都/什么都（否定）",
-            "rule": {
-              "uz": "So'roq olmoshlari + 都 + inkor fe'l = mutlaq inkor. Masalan: 什么都不 = hech narsani emas; 哪儿都不 = hech qayerda emas; 谁都不 = hech kim emas. Bular kuchli umumlashtiruvchi inkorlar.",
-              "ru": "Вопросительное местоимение + 都 + отрицательный глагол = абсолютное отрицание. Например: 什么都不 = ничего не; 哪儿都不 = нигде не; 谁都不 = никто не. Это сильные обобщающие отрицания.",
-              "tj": "Зомири саволӣ + 都 + феъли манфӣ = инкори мутлақ. Масалан: 什么都不 = ҳеҷ чизро не; 哪儿都不 = ҳеҷ куҷо не; 谁都不 = ҳеҷ кас не. Инҳо инкорҳои умумикунандаи қавӣ ҳастанд."
-            },
-            "examples": [
-              {
-                "zh": "什么都不如健康重要！",
-                "pinyin": "Shénme dōu bùrú jiànkāng zhòngyào!",
-                "translation": {
-                  "uz": "Hech narsa sog'liqdan muhim emas!",
-                  "ru": "Ничто не важнее здоровья!",
-                  "tj": "Ҳеҷ чиз аз саломатӣ муҳимтар нест!"
-                }
-              },
-              {
-                "zh": "他哪儿都不想去。",
-                "pinyin": "Tā nǎr dōu bù xiǎng qù.",
-                "translation": {
-                  "uz": "U hech qayerga bormoqchi emas.",
-                  "ru": "Он никуда не хочет идти.",
-                  "tj": "Вай ҳеҷ куҷо рафтан намехоҳад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "U hech qayerga bormoqchi emas.",
-            "ru": "Он никуда не хочет идти.",
-            "tj": "Вай ҳеҷ куҷо рафтан намехоҳад."
-          },
-          "tokens": [
-            "都",
-            "哪儿",
-            "留学",
-            "不",
-            "水平",
-            "他",
-            "想",
-            "去"
-          ],
-          "answer_tokens": [
-            "他",
-            "哪儿",
-            "都",
-            "不",
-            "想",
-            "去"
-          ],
-          "explanation": {
-            "uz": "他哪儿都不想去。 — Tā nǎr dōu bù xiǎng qù.",
-            "ru": "他哪儿都不想去。 — Tā nǎr dōu bù xiǎng qù.",
-            "tj": "他哪儿都不想去。 — Tā nǎr dōu bù xiǎng qù."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "Sifat/Fe'l + 极了 (juda, nihoyatda)",
-              "ru": "Прилагательное/Глагол + 极了 (очень, крайне)",
-              "tj": "Сифат/Феъл + 极了 (хеле, ниҳоят)"
-            },
-            "title_zh": "形容词/动词 + 极了",
-            "rule": {
-              "uz": "'极了' sifat yoki fe'ldan keyin kelib, eng yuqori darajani bildiradi. '非常' dan kuchliroq. Masalan: 好极了 = zo'r (juda ajoyib), 满意极了 = nihoyatda mamnun.",
-              "ru": "'极了' следует за прилагательным или глаголом и выражает высшую степень. Сильнее, чем '非常'. Например: 好极了 = отлично (очень здорово), 满意极了 = чрезвычайно доволен.",
-              "tj": "'极了' баъди сифат ё феъл омада, дараҷаи олиро ифода мекунад. Аз '非常' қавитар. Масалан: 好极了 = олӣ (хеле аҷоиб), 满意极了 = ниҳоят қаноатманд."
-            },
-            "examples": [
-              {
-                "zh": "好极了！就这样做！",
-                "pinyin": "Hǎo jí le! Jiù zhèyàng zuò!",
-                "translation": {
-                  "uz": "Zo'r! Xuddi shunday qiling!",
-                  "ru": "Отлично! Именно так и делайте!",
-                  "tj": "Олӣ! Маҳз ҳамин тавр кунед!"
-                }
-              },
-              {
-                "zh": "你写得认真极了！",
-                "pinyin": "Nǐ xiě de rènzhēn jí le!",
-                "translation": {
-                  "uz": "Siz juda puxta yozdingiz!",
-                  "ru": "Вы написали крайне добросовестно!",
-                  "tj": "Шумо ниҳоят масъулиятшиносона навиштед!"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«Xitoy tilidan tashqari, u yapon tilini ham biladi.» — xitoychada qaysi biri?",
-            "ru": "«Кроме китайского, она ещё умеет говорить по-японски.» — какое предложение по-китайски?",
-            "tj": "«Ба ғайр аз чинӣ, вай ҳам ба ҷопонӣ ҳарф мезанад.» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "好极了！就这样做！",
-            "除了汉语，她还会说日语。",
-            "你写得认真极了！",
-            "什么都不如健康重要！"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "除了汉语，她还会说日语。 — Chúle Hànyǔ, tā hái huì shuō Rìyǔ.",
-            "ru": "除了汉语，她还会说日语。 — Chúle Hànyǔ, tā hái huì shuō Rìyǔ.",
-            "tj": "除了汉语，她还会说日语。 — Chúle Hànyǔ, tā hái huì shuō Rìyǔ."
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -1127,186 +539,130 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "reverse_builder",
-          "zh": "他满意吗？",
-          "pinyin": "Tā mǎnyì ma?",
-          "translation": {
-            "uz": "U rozi bo'ldimi?",
-            "ru": "Он доволен?",
-            "tj": "Ӯ қаноатманд аст?"
-          },
-          "tokens": {
-            "uz": [
-              "U",
-              "rozi",
-              "bo'ldimi",
-              "Xitoyga",
-              "Ustoz"
-            ],
-            "ru": [
-              "Он",
-              "я",
-              "доволен",
-              "Учитель"
-            ],
-            "tj": [
-              "аст",
-              "ду",
-              "қаноатманд",
-              "Ӯ",
-              "Устод"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "U",
-              "rozi",
-              "bo'ldimi"
-            ],
-            "ru": [
-              "Он",
-              "доволен"
-            ],
-            "tj": [
-              "Ӯ",
-              "қаноатманд",
-              "аст"
-            ]
-          },
-          "explanation": {
-            "uz": "他满意吗？ — U rozi bo'ldimi?",
-            "ru": "他满意吗？ — Он доволен?",
-            "tj": "他满意吗？ — Ӯ қаноатманд аст?"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Rahmat, ustoz!",
-            "ru": "Спасибо, учитель!",
-            "tj": "Ташаккур, устод!"
-          },
-          "tokens": [
-            "留学",
-            "老师",
-            "谢谢",
-            "水平"
-          ],
-          "answer_tokens": [
-            "谢谢",
-            "老师"
-          ],
-          "explanation": {
-            "uz": "谢谢老师！ — Xièxie lǎoshī!",
-            "ru": "谢谢老师！ — Xièxie lǎoshī!",
-            "tj": "谢谢老师！ — Xièxie lǎoshī!"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "留学",
-              {
-                "uz": "chet elda o'qimoq",
-                "ru": "учиться за границей",
-                "tj": "дар хориҷ таҳсил кардан"
-              }
-            ],
-            [
-              "水平",
-              {
-                "uz": "daraja, saviya",
-                "ru": "уровень, стандарт",
-                "tj": "сатҳ, дараҷа"
-              }
-            ],
-            [
-              "提高",
-              {
-                "uz": "oshirmoq, yaxshilamoq",
-                "ru": "повышать, улучшать",
-                "tj": "баланд кардан, беҳтар кардан"
-              }
-            ],
-            [
-              "练习",
-              {
-                "uz": "mashq",
-                "ru": "упражнение",
-                "tj": "машқ"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yangiliklar' xitoycha qaysi?",
-            "ru": "'новости' по-китайски?",
-            "tj": "'хабарҳо' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "提高",
-            "新闻",
-            "水平",
-            "留学"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "yangiliklar = 新闻 (xīnwén)",
-            "ru": "новости = 新闻 (xīnwén)",
-            "tj": "хабарҳо = 新闻 (xīnwén)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "那件衣服我穿着有点儿小，给我弟弟了。",
-          "pinyin": "Nà jiàn yīfu wǒ chuānzhe yǒudiǎnr xiǎo, gěi wǒ dìdi le.",
+          "audio_text": "好啊，今天晚上只吃水果不吃饭！",
+          "pinyin": "Hǎo a, jīntiān wǎnshang zhǐ chī shuǐguǒ bù chī fàn!",
           "options": [
-            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-            "那件衣服我穿着有点儿小，给我弟弟了。",
-            "这是我昨天的作业，您帮我看看对不对？",
-            "你每天认真学习，做练习、完成作业，一直不错啊。"
+            "阴天，电视上说多云。怎么了？有事？",
+            "明天是晴天还是阴天？",
+            "好啊，今天晚上只吃水果不吃饭！",
+            "没事，我们明天要去爬山。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "那件衣服我穿着有点儿小，给我弟弟了。 — U kiyim menga biroz kichik bo'ldi, ukamga berdim.",
-            "ru": "那件衣服我穿着有点儿小，给我弟弟了。 — Эта одежда на мне была немного мала, я отдал её младшему брату.",
-            "tj": "那件衣服我穿着有点儿小，给我弟弟了。 — Он либос ба ман каме хурд буд, ба додарам додам."
+            "uz": "好啊，今天晚上只吃水果不吃饭！ — Yaxshi, bugun kechqurun faqat meva yeymiz, ovqat yemaymiz!",
+            "ru": "好啊，今天晚上只吃水果不吃饭！ — Хорошо, сегодня вечером будем есть только фрукты, без ужина!",
+            "tj": "好啊，今天晚上只吃水果不吃饭！ — Хуб, имрӯз бегоҳ фақат мева мехӯрем, хӯрок не!"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "举行",
-          "pinyin": "jǔxíng",
+          "phrase": "新鲜",
+          "pinyin": "xīnxiān",
           "translation": {
-            "uz": "o'tkazmoq",
-            "ru": "проводить",
-            "tj": "баргузор кардан"
+            "uz": "yangi, sarhil",
+            "ru": "свежий",
+            "tj": "тару тоза"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "这些水果真新鲜，我们买西瓜还是苹果？",
+          "pinyin": "Zhèxiē shuǐguǒ zhēn xīnxiān, wǒmen mǎi xīguā háishi píngguǒ?",
+          "translation": {
+            "uz": "Bu mevalar juda sarhil, tarvuz olamizmi yoki olma?",
+            "ru": "Эти фрукты очень свежие, купим арбуз или яблоки?",
+            "tj": "Ин меваҳо хеле тару тозаанд, тарбуз мехарем ё себ?"
+          },
+          "tokens": {
+            "uz": [
+              "yoki",
+              "olamizmi",
+              "sarhil",
+              "bugun",
+              "mevalar",
+              "Yaxshi",
+              "tarvuz",
+              "olma",
+              "juda",
+              "Bu"
+            ],
+            "ru": [
+              "сегодня",
+              "арбуз",
+              "фрукты",
+              "купим",
+              "яблоки",
+              "или",
+              "Эти",
+              "очень",
+              "Хорошо",
+              "свежие"
+            ],
+            "tj": [
+              "Ин",
+              "Хуб",
+              "тарбуз",
+              "мехарем",
+              "ё",
+              "хеле",
+              "себ",
+              "тару",
+              "меваҳо",
+              "имрӯз",
+              "тозаанд"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bu",
+              "mevalar",
+              "juda",
+              "sarhil",
+              "tarvuz",
+              "olamizmi",
+              "yoki",
+              "olma"
+            ],
+            "ru": [
+              "Эти",
+              "фрукты",
+              "очень",
+              "свежие",
+              "купим",
+              "арбуз",
+              "или",
+              "яблоки"
+            ],
+            "tj": [
+              "Ин",
+              "меваҳо",
+              "хеле",
+              "тару",
+              "тозаанд",
+              "тарбуз",
+              "мехарем",
+              "ё",
+              "себ"
+            ]
+          },
+          "explanation": {
+            "uz": "这些水果真新鲜，我们买西瓜还是苹果？ — Bu mevalar juda sarhil, tarvuz olamizmi yoki olma?",
+            "ru": "这些水果真新鲜，我们买西瓜还是苹果？ — Эти фрукты очень свежие, купим арбуз или яблоки?",
+            "tj": "这些水果真新鲜，我们买西瓜还是苹果？ — Ин меваҳо хеле тару тозаанд, тарбуз мехарем ё себ?"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "huā qaysi ieroglif?",
-            "ru": "Какой иероглиф читается huā?",
-            "tj": "huā кадом иероглиф аст?"
+            "uz": "chènshān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chènshān?",
+            "tj": "chènshān кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -1314,192 +670,48 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "留学",
-            "花",
-            "水平",
-            "提高"
+            "爬山",
+            "衬衫",
+            "还是",
+            "小心"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "花 = sarflamoq (huā)",
-            "ru": "花 = тратить (huā)",
-            "tj": "花 = сарф кардан (huā)"
+            "uz": "衬衫 = ko'ylak, rubashka (chènshān)",
+            "ru": "衬衫 = рубашка (chènshān)",
+            "tj": "衬衫 = курта (chènshān)"
           }
         },
-        {
-          "type": "pronunciation",
-          "phrase": "极（了）",
-          "pinyin": "jí (le)",
-          "translation": {
-            "uz": "juda, nihoyatda",
-            "ru": "крайне, чрезвычайно",
-            "tj": "ниҳоят"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-          "pinyin": "Lǎoshī, wǒ lái Zhōngguó liú xué liǎng nián le, dànshì wǒ de Hànyǔ shuǐpíng tí gāo de yìdiǎnr yě bù kuài a.",
+          "audio_text": "甜",
+          "pinyin": "tián",
           "options": [
-            "这是我昨天的作业，您帮我看看对不对？",
-            "你每天认真学习，做练习、完成作业，一直不错啊。",
-            "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
-            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 — Ustoz, Xitoyga o'qishga kelganimga ikki yil bo'ldi, lekin xitoy tili darajam deyarli tez oshmayapti.",
-            "ru": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 — Учитель, я приехал в Китай учиться уже два года назад, но мой уровень китайского совсем не быстро растёт.",
-            "tj": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 — Устод, ду сол шуд, ки ба Чин барои таҳсил омадам, аммо сатҳи забони чиниям тамоман зуд баланд намешавад."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "老",
-            "商",
-            "司",
-            "阿"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 老 — 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 (Ustoz, Xitoyga o'qishga kelganimga ikki yil bo'ldi, lekin xitoy tili darajam deyarli tez oshmayapti.)",
-            "ru": "Верно: 老 — 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 (Учитель, я приехал в Китай учиться уже два года назад, но мой уровень китайского совсем не быстро растёт.)",
-            "tj": "Дуруст: 老 — 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。 (Устод, ду сол шуд, ки ба Чин барои таҳсил омадам, аммо сатҳи забони чиниям тамоман зуд баланд намешавад.)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 老师 nima deydi?",
-            "ru": "Что 老师 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 老师 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
-            "这是我昨天的作业，您帮我看看对不对？",
-            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-            "你每天认真学习，做练习、完成作业，一直不错啊。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
-            "ru": "Правильный ответ: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
-            "tj": "Ҷавоби дуруст: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 大山 avval nima deydi?",
-            "ru": "Что 大山 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 大山 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "你每天认真学习，做练习、完成作业，一直不错啊。",
-            "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
-            "这是我昨天的作业，您帮我看看对不对？",
-            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-            "ru": "Правильный ответ: 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-            "tj": "Ҷавоби дуруст: 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "大山",
-              "zh": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-              "blank": false
-            },
-            {
-              "speaker": "老师",
-              "zh": "你每天认真学习，做练习、完成作业，一直不错啊。",
-              "blank": false
-            },
-            {
-              "speaker": "大山",
-              "zh": "这是我昨天的作业，您帮我看看对不对？",
-              "blank": false
-            },
-            {
-              "speaker": "老师",
-              "zh": "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
-              "blank": false
-            },
-            {
-              "speaker": "大山",
-              "zh": "谢谢老师！",
-              "blank": false
-            },
-            {
-              "speaker": "老师",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "你每天认真学习，做练习、完成作业，一直不错啊。",
-            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-            "以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
-            "这是我昨天的作业，您帮我看看对不对？"
+            "还是",
+            "小心",
+            "甜",
+            "爬山"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri javob: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
-            "ru": "Правильный ответ: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
-            "tj": "Ҷавоби дуруст: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。"
+            "uz": "甜 — shirin (tián)",
+            "ru": "甜 — сладкий (tián)",
+            "tj": "甜 — ширин (tián)"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "谢谢老师！",
-          "pinyin": "Xièxie lǎoshī!",
+          "phrase": "只",
+          "pinyin": "zhǐ",
           "translation": {
-            "uz": "Rahmat, ustoz!",
-            "ru": "Спасибо, учитель!",
-            "tj": "Ташаккур, устод!"
+            "uz": "faqat",
+            "ru": "только",
+            "tj": "фақат"
           }
         }
       ]

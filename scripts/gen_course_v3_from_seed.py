@@ -23,6 +23,11 @@ Strict level gating:
   * Grammar examples and dialogue lines are kept verbatim from the graded
     HSK textbook content (by construction they only use learned vocabulary).
 
+SPLIT (2026-07): har HSK darsligi darsi bir nechta QISQA mini-darsga bo'linadi
+(3-4 yangi so'z + mustahkamlash; oxirida checkpoint qismi — dialog + takror).
+Qismlar darajada tekis raqamlanadi: lesson_01.json .. lesson_NN.json. HSK dars
+-> qismlar xaritasi parts_manifest.json da.
+
 Run:  venv_311/bin/python3.11 scripts/gen_course_v3_from_seed.py [--level hsk4] [--lesson 1]
 """
 
@@ -37,12 +42,17 @@ from pathlib import Path
 BASE = Path("app/static/course_v3_data")
 LEVELS = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
 
-# Max NEW words taught (flash + interleaved check) in the intro of one lesson.
-# Book lessons can carry ~30 words (HSK4); teaching them all makes a single
-# lesson 70+ cards long. We cap the intro so the lesson stays Duolingo-short;
-# the remaining vocabulary still lives in `active_words` (word reference) and
-# appears inside the practice / dialogue exercises.
-INTRO_WORD_CAP = 10
+# Har bir HSK darsligi darsi bir nechta QISQA mini-darsga (qismga) bo'linadi:
+# har qismda ko'pi bilan PART_MAX_WORDS yangi so'z o'rgatiladi va shu qism
+# ichida mustahkamlanadi (Duolingo uslubi). Dars oxirida alohida "checkpoint"
+# qismi bo'ladi: yangi so'z yo'q — dialog + butun dars so'zlarini aralash
+# takrorlash. Qismlar darajada TEKIS (flat) raqamlanadi (lesson_01.json,
+# lesson_02.json, ...), shuning uchun backend (completed_lessons_count,
+# max_lesson, unlock) semantikasi o'zgarmaydi.
+PART_MAX_WORDS = 4
+
+# Bitta mini-dars karta byudjeti (charchatmaydigan ~5-7 daqiqa).
+PART_CARD_BUDGET = 18
 
 # Deterministic shuffling so re-runs produce identical files.
 RNG = random.Random(20240629)
@@ -590,15 +600,11 @@ def make_word_listen_card(w, pool) -> dict | None:
     }
 
 
-# Har dars o'z "arxetipi"da o'tadi — bir xil shablon zerikishini yo'qotish uchun.
+# Har qism o'z "arxetipi"da o'tadi — bir xil shablon zerikishini yo'qotish uchun.
 # listen: tinglash ko'proq; build: gap yig'ish ko'proq; speak: talaffuz ko'proq;
-# mix: gap_fill / juftlash ko'proq. Level+order bo'yicha deterministik aylanadi.
+# mix: juftlash ko'proq. Level + flat qism raqami bo'yicha deterministik aylanadi
+# (ketma-ket qismlar har doim boshqa arxetip oladi).
 ARCHETYPES = ("listen", "build", "speak", "mix")
-
-
-def lesson_archetype(level: str, order: int) -> str:
-    lvl = int(level.replace("hsk", "") or 1)
-    return ARCHETYPES[(lvl + order) % len(ARCHETYPES)]
 
 
 def make_grammar_meaning_card(grammar_raw, known_words) -> dict | None:
@@ -636,47 +642,46 @@ def make_grammar_meaning_card(grammar_raw, known_words) -> dict | None:
     }
 
 
-def build_intro_section(active_words, vocab, known_prior, order, lr) -> list[dict]:
-    """Duolingo interleaving: teach a word (flash card) then immediately check a
-    recently taught word with a rotating question type — instead of a flat wall
-    of flash cards. ALL vocabulary of the lesson is introduced (the old client
-    logic only ever drilled the first 4 words).
+def build_part_intro(chunk, chunk_active, taught, known_prior, flat_n, lr,
+                     lean: bool = False) -> list[dict]:
+    """Qism introsi (Duolingo interleaving): 3-4 yangi so'zning HAR BIRI uchun
+    flash-karta -> DARHOL tekshiruv (format so'zma-so'z aylanadi), bitta tez
+    talaffuz, oxirida match_pairs rekap. Shu bilan har yangi so'z o'z qismida
+    kamida 3-4 marta uchraydi; qism mashqi va checkpoint yana qo'shadi.
 
     NOTE: the flash card uses the BUILT active_word shape (`meaning` sub-dict),
     while the check builders (mc_*) need the RAW vocab shape (top-level uz/ru/tj),
-    so both lists are taken and kept index-aligned."""
+    so both lists are taken and kept index-aligned.
+
+    Distraktorlar FAQAT shu paytgacha o'rgatilgan so'zlardan (`taught` — shu
+    darsning 1..k chunklari + `known_prior`) — o'quvchi hali ko'rmagan ieroglif
+    variant sifatida ham chiqmaydi."""
     cards: list[dict] = []
-    if not active_words:
+    if not chunk:
         return cards
-    # Cap how many NEW words are actively taught here (keeps the lesson short).
-    # The rest stay in `active_words` and surface inside the exercises.
-    teach_n = min(len(active_words), INTRO_WORD_CAP)
-    # Distractors may come from the whole lesson + earlier lessons (all gated).
-    # The check builders read the RAW vocab shape, so the pool is raw too.
-    pool = list(vocab) + list(known_prior)
-    # 5 rotating check formats (incl. audio) so consecutive lessons open with a
-    # different drill sequence — kills the "same template every lesson" feel.
+    pool = list(taught) + list(known_prior)
+    # 5 rotating check formats (incl. audio) so consecutive parts open with a
+    # different drill sequence — kills the "same template every part" feel.
     check_cycle = [mc_meaning, mc_hanzi, mc_pinyin, mc_translation, make_word_listen_card]
-    ci = (order - 1) % len(check_cycle)
-    # One quick speaking rep right after a freshly taught word (varies per lesson).
-    pron_at = (order - 1) % max(1, min(teach_n, 4))
-    taught: list[dict] = []  # raw vocab words already introduced
-    for i in range(teach_n):
-        cards.append({"type": "active_word", "word": active_words[i]})
-        taught.append(vocab[i])
+    ci = (flat_n - 1) % len(check_cycle)
+    pron_at = (flat_n - 1) % len(chunk)
+    for i, w in enumerate(chunk):
+        cards.append({"type": "active_word", "word": chunk_active[i]})
         if i == pron_at:
-            cards.append(pron_card(vocab[i]))
-        # After every 2nd new word, immediately check one already taught.
-        if len(taught) >= 2 and i % 2 == 1:
-            builder = check_cycle[ci % len(check_cycle)]
-            ci += 1
-            target = taught[-1] if lr.random() < 0.5 else lr.choice(taught)
-            card = builder(target, pool)
-            if card:
-                cards.append(card)
-    # Recap: match new words to their meanings (only when there are enough).
-    if teach_n >= 3:
-        cards.append(mc_match(vocab[: min(4, teach_n)]))
+            cards.append(pron_card(w))
+        card = check_cycle[ci % len(check_cycle)](w, pool)
+        ci += 1
+        if card:
+            cards.append(card)
+    # Birinchi so'zga IKKINCHI formatdagi qo'shimcha tekshiruv (eng eski so'z
+    # unutilmasin — mini spaced repetition qism ichida). `lean` rejimda (qismda
+    # katta grammatika bo'lsa) tashlab ketiladi — byudjet oshib ketmasin.
+    if len(chunk) >= 2 and not lean:
+        card = check_cycle[ci % len(check_cycle)](chunk[0], pool)
+        if card:
+            cards.append(card)
+    if len(chunk) >= 3:
+        cards.append(mc_match(chunk))
     return cards
 
 
@@ -746,111 +751,97 @@ def _grammar_gap_fill(g, vocab, pool) -> dict | None:
 
 
 
-def build_practice(vocab: list[dict], known_prior: list[dict], grammar: list[dict],
-                   dialogue_raw: list[dict] | None = None, order: int = 1,
-                   lr=None, archetype: str = "mix") -> list[dict]:
-    """Build practice cards. Distractors come from `vocab` (current lesson) and,
-    if needed, `known_prior` (earlier lessons). Never from future / higher words.
+def build_part_practice(chunk, taught, known_prior, grammar_all, dialogue_raw,
+                        flat_n, lr, archetype: str, budget: int) -> list[dict]:
+    """Qism mini-mashqi: yangi so'zlar endi GAP ICHIDA ishlatiladi ("qayerda va
+    qanday" konteksti) — dialog satri / grammatika misolidan builder, tinglash
+    va teskari builder; ustiga bitta spaced-review (oldingi qism yoki dars
+    so'zi). Distraktorlar faqat o'rganilgan so'zlardan. Talaffuz doim oxirida.
 
-    The card TYPES stay authentic and gated, but their ORDER is shuffled per
-    lesson (deterministic `lr`) AND each lesson's archetype adds its own extra
-    exercise flavor (listen / build / speak / mix), so no two lessons feel like
-    the same template. The pronunciation card is always kept last (microphone)."""
-    lr = lr or random.Random(order)
+    `budget` — qismning umumiy karta byudjetidan mashqqa qolgan joy; ortiqcha
+    kartalar tashlab yuboriladi (qism 12-18 kartadan oshmasin)."""
     cards: list[dict] = []
-    if not vocab:
+    if not chunk:
         return cards
-
-    # Pool used to pad distractors: current lesson first, then earlier lessons.
-    pool = vocab + known_prior
+    pool = list(taught) + list(known_prior)
     known_words = {x.get("zh", "") for x in pool if x.get("zh")}
+    chunk_zh = {w.get("zh", "") for w in chunk if w.get("zh")}
     dialogue_raw = dialogue_raw or []
     all_lines = [ln for b in dialogue_raw for ln in b.get("dialogue", []) if ln.get("zh")]
-    v = vocab
 
-    # Two multiple-choice drills; the starting type rotates by lesson order so
-    # consecutive lessons don't open with the same question type. For large
-    # lessons, draw these words from the part of the vocabulary that the (capped)
-    # intro did NOT actively teach, so those later words still get one real check.
-    mc_builders = [mc_meaning, mc_pinyin, mc_translation, mc_hanzi]
-    start = (order - 1) % len(mc_builders)
-    tail = v[INTRO_WORD_CAP:] if len(v) > INTRO_WORD_CAP else v
+    # Kontekst nomzodlari: shu qism so'zi QATNASHGAN va o'rganilgan so'zlar
+    # bilan to'liq segmentlanadigan real gaplar (dialog satrlari + grammatika
+    # misollari). Aynan shular so'zni "ishlatishni" o'rgatadi.
+    ctx: list[dict] = []
+    ctx_dialog: list[dict] = []  # faqat dialog satrlari (tinglash uchun)
+    gram_examples = [ex for g in (grammar_all or []) for ex in g.get("examples", []) if ex.get("zh")]
+    for ln in all_lines + gram_examples:
+        toks = segment_zh(ln.get("zh", ""), known_words)
+        if toks and any(t in chunk_zh for t in toks):
+            ctx.append(ln)
+            if ln in all_lines:
+                ctx_dialog.append(ln)
+
     varied: list[dict] = []
-    for k in range(2):
-        b = mc_builders[(start + k) % len(mc_builders)]
-        w = tail[(start + k) % len(tail)]
-        varied.append(b(w, pool))
 
-    # Interactive: rebuild a real dialogue line from word tiles (gated).
-    for ln in all_lines:
+    # 1) Gap yig'ish: kontekst gapini plitkalardan qurish.
+    if ctx:
+        ln = ctx[(flat_n - 1) % len(ctx)]
         bc = make_builder_card(ln.get("zh", ""), ln.get("pinyin", ""), t3(ln), known_words, pool)
         if bc:
             varied.append(bc)
-            break
 
-    # Interactive: "tap what you heard" — the target line rotates per lesson.
-    if all_lines:
-        lc = make_listen_card(all_lines[(order - 1) % len(all_lines)], all_lines)
-        if lc:
-            varied.append(lc)
+    # 2) Tinglash: kontekstdagi dialog satri (variantlar ham dialog satrlari —
+    #    gate saqlanadi); bo'lmasa — qism so'zining o'zi.
+    lc = None
+    if ctx_dialog:
+        lc = make_listen_card(ctx_dialog[flat_n % len(ctx_dialog)], all_lines)
+    if not lc:
+        lc = make_word_listen_card(chunk[(flat_n - 1) % len(chunk)], pool)
+    if lc:
+        varied.append(lc)
 
-    # Duolingo teskari builder: xitoy gap (dialog satri yoki grammatika misoli)
-    # eshitiladi — tarjimasi ona tili plitkalaridan yig'iladi. Tanlov darsga
-    # qarab aylanadi, shunda har darsda boshqa gap tushadi.
-    rb_cand = list(all_lines)
-    for g in grammar or []:
-        rb_cand.extend(ex for ex in g.get("examples", []) if ex.get("zh"))
-    if rb_cand:
-        rb_trs = [t3(x) for x in rb_cand]
-        st = (order - 1) % len(rb_cand)
-        for k in range(len(rb_cand)):
-            ri = (st + k) % len(rb_cand)
-            others = rb_trs[:ri] + rb_trs[ri + 1:]
+    # 3) Teskari builder: xitoy gap eshitiladi — tarjimasi ona tili
+    #    plitkalaridan yig'iladi (Duolingo yadro mashqi).
+    if ctx:
+        trs = [t3(x) for x in ctx]
+        st = (flat_n - 1) % len(ctx)
+        for k in range(len(ctx)):
+            ri = (st + k) % len(ctx)
             rb = make_reverse_builder_card(
-                rb_cand[ri].get("zh", ""), rb_cand[ri].get("pinyin", ""), rb_trs[ri], others, lr
+                ctx[ri].get("zh", ""), ctx[ri].get("pinyin", ""), trs[ri],
+                trs[:ri] + trs[ri + 1:], lr
             )
             if rb:
                 varied.append(rb)
                 break
 
-    varied.append(mc_match(v[: min(4, len(v))]))
+    # 4) Spaced review: oldingi qism/dars so'zidan bitta tekshiruv.
+    review_pool = [w for w in taught if w.get("zh") not in chunk_zh] or list(known_prior)
+    if review_pool:
+        mc_builders = [mc_meaning, mc_pinyin, mc_translation, mc_hanzi]
+        w = review_pool[(flat_n - 1) % len(review_pool)]
+        varied.append(mc_builders[flat_n % len(mc_builders)](w, pool))
 
-    # Archetype extra: each lesson leans into ONE flavor so lessons feel distinct.
+    # 5) Arxetip qo'shimchasi — qismlar bir-biridan farq qilsin.
     if archetype == "listen":
-        wl = make_word_listen_card(v[order % len(v)], pool)
+        wl = make_word_listen_card(chunk[flat_n % len(chunk)], pool)
         if wl:
             varied.append(wl)
-    elif archetype == "build":
-        # Extra tile-builder from a grammar example (reverse order so it does not
-        # duplicate the grammar section drill, which takes the FIRST buildable).
-        for g in reversed(grammar or []):
-            done = None
-            for ex in reversed(g.get("examples", [])):
-                done = make_builder_card(ex.get("zh", ""), ex.get("pinyin", ""), t3(ex), known_words, pool)
-                if done:
-                    break
-            if done:
-                varied.append(done)
-                break
+    elif archetype == "build" and len(ctx) >= 2:
+        ln = ctx[(flat_n + 1) % len(ctx)]
+        bc = make_builder_card(ln.get("zh", ""), ln.get("pinyin", ""), t3(ln), known_words, pool)
+        if bc:
+            varied.append(bc)
     elif archetype == "speak":
-        varied.append(pron_card(v[(order + 1) % len(v)]))
-    else:  # "mix"
-        if len(v) >= 8:
-            varied.append(mc_match(v[4:8]))
-        else:
-            gf = None
-            for g in grammar or []:
-                gf = _grammar_gap_fill(g, v, pool)
-                if gf:
-                    break
-            if gf:
-                varied.append(gf)
+        varied.append(pron_card(chunk[flat_n % len(chunk)]))
+    elif len(chunk) >= 3:  # "mix"
+        varied.append(mc_match(chunk))
 
-    # Shuffle the practice order so the sequence differs every lesson, then keep
-    # the pronunciation (microphone) card last. The spoken word also rotates.
+    # Tartib har qismda boshqacha; byudjetga sig'dirib, talaffuz doim oxirida.
     lr.shuffle(varied)
-    cards = [c for c in varied if c]
-    cards.append(pron_card(v[(order - 1) % len(v)]))
+    cards = [c for c in varied if c][: max(2, budget - 1)]
+    cards.append(pron_card(chunk[(flat_n - 1) % len(chunk)]))
     return cards
 
 
@@ -982,87 +973,283 @@ def build_dialog_section(blocks: list[dict], pool: list[dict], lr=None) -> list[
     return cards
 
 
+def build_checkpoint_sections(vocab, known_prior, grammar_raw, dialogue_raw,
+                              flat_n, lr) -> list[dict]:
+    """HSK darsining YAKUNIY mustahkamlash qismi: yangi so'z YO'Q — butun dars
+    so'zlari aralash takrorlanadi (match, aylanuvchi MC, teskari builder,
+    grammatika-tushunish), so'ng to'liq interaktiv dialog bo'limi. Bu qism
+    tugaganda dars (bo'lim) yopiladi — frontendda katta bayram."""
+    pool = list(vocab) + list(known_prior)
+    known_words = {x.get("zh", "") for x in pool if x.get("zh")}
+    review: list[dict] = []
+    if len(vocab) >= 3:
+        review.append(mc_match(vocab[: min(4, len(vocab))]))
+    if len(vocab) >= 8:
+        review.append(mc_match(vocab[4:8]))
+
+    # Aylanuvchi formatdagi tekshiruvlar — dars so'zlari bo'ylab sakrab yuradi.
+    if vocab:
+        mc_builders = [mc_meaning, mc_pinyin, mc_translation, mc_hanzi, make_word_listen_card]
+        st = (flat_n - 1) % len(vocab)
+        for k in range(min(3, len(vocab))):
+            w = vocab[(st + 2 * k) % len(vocab)]
+            c = mc_builders[(flat_n + k) % len(mc_builders)](w, pool)
+            if c:
+                review.append(c)
+
+    gm = make_grammar_meaning_card(grammar_raw or [], known_words)
+    if gm:
+        review.append(gm)
+
+    # Teskari builder: dars gaplaridan biri (dialog satri / grammatika misoli).
+    rb_cand = [ln for b in (dialogue_raw or []) for ln in b.get("dialogue", []) if ln.get("zh")]
+    rb_cand += [ex for g in (grammar_raw or []) for ex in g.get("examples", []) if ex.get("zh")]
+    if rb_cand:
+        trs = [t3(x) for x in rb_cand]
+        st = (flat_n - 1) % len(rb_cand)
+        for k in range(len(rb_cand)):
+            ri = (st + k) % len(rb_cand)
+            rb = make_reverse_builder_card(
+                rb_cand[ri].get("zh", ""), rb_cand[ri].get("pinyin", ""), trs[ri],
+                trs[:ri] + trs[ri + 1:], lr
+            )
+            if rb:
+                review.append(rb)
+                break
+
+    lr.shuffle(review)
+    review = review[:7]
+
+    dialog_cards = build_dialog_section(dialogue_raw or [], pool, lr)
+
+    sections = [{
+        "section_no": 1,
+        "section_title": {"uz": "Takrorlash", "ru": "Повторение", "tj": "Такрор"},
+        "section_purpose": "practice",
+        "cards": review,
+    }]
+    if dialog_cards:
+        sections.append({
+            "section_no": 2,
+            "section_title": {"uz": "Dialog", "ru": "Диалог", "tj": "Гуфтугӯ"},
+            "section_purpose": "dialog",
+            "cards": dialog_cards,
+        })
+    return sections
+
+
 # --------------------------------------------------------------------------
-# Top-level lesson builder
+# Darsni qismlarga bo'lish (split plan) va qism quruvchisi
 # --------------------------------------------------------------------------
-def build_v3_lesson(level: str, order: int, seed: dict, known_prior: list[dict]) -> dict:
-    vocab = loadjson(seed.get("vocabulary_json"), [])
+def chunk_words(vocab: list[dict]) -> list[list[dict]]:
+    """Dars lug'atini 3-4 talik qismlarga bo'lish. Bo'laklar imkon qadar teng:
+    11 so'z -> 4+4+3, 9 -> 3+3+3. Faqat juda kichik qoldiqda (masalan 5 -> 3+2)
+    2 talik chunk chiqishi mumkin."""
+    n = len(vocab)
+    if n == 0:
+        return []
+    if n <= PART_MAX_WORDS:
+        return [list(vocab)]
+    k = -(-n // PART_MAX_WORDS)  # ceil
+    base, rem = divmod(n, k)
+    sizes = [base + 1] * rem + [base] * (k - rem)
+    chunks, i = [], 0
+    for s in sizes:
+        chunks.append(list(vocab[i:i + s]))
+        i += s
+    return chunks
+
+
+def assign_grammar(grammar_raw: list[dict], chunks: list[list[dict]],
+                   known_prior_words: set[str]) -> list[list[int]]:
+    """Grammatika qoidalarini so'z-qismlarga taqsimlash. Qoida ENG ERTA shu
+    qismga tushadi: misollaridan biri o'sha paytgacha o'rganilgan so'zlar bilan
+    segmentlanadigan bo'lsa (qoida darsligi misoli tushunarli bo'lishi uchun).
+    Hech bir misol segmentlanmasa — qismlar bo'ylab tekis taqsim. Qoidalar
+    qismlarga sig'sa — har qismga bittadan (yoyish), sig'masa 2 tagacha."""
+    P = len(chunks)
+    assign: list[list[int]] = [[] for _ in range(P)]
+    if not grammar_raw or P == 0:
+        return assign
+    cap = 1 if len(grammar_raw) <= P else 2
+    cum_known: list[set[str]] = []
+    known = set(known_prior_words)
+    for ch in chunks:
+        known = known | {w["zh"] for w in ch if w.get("zh")}
+        cum_known.append(set(known))
+    for gi, g in enumerate(grammar_raw):
+        pref = None
+        for k in range(P):
+            if any(segment_zh(ex.get("zh", ""), cum_known[k])
+                   for ex in g.get("examples", [])):
+                pref = k
+                break
+        if pref is None:
+            pref = min(gi * P // max(1, len(grammar_raw)), P - 1)
+        placed = False
+        for k in list(range(pref, P)) + list(range(pref - 1, -1, -1)):
+            if len(assign[k]) < cap:
+                assign[k].append(gi)
+                placed = True
+                break
+        if not placed:
+            assign[P - 1].append(gi)
+    return assign
+
+
+def build_split_plan() -> dict:
+    """Yagona haqiqat manbai: har daraja uchun HSK darsi -> qismlar xaritasi.
+    Generatsiya, sync_maps, lesson_gate va parts_manifest hammasi shundan
+    o'qiydi (raqamlash hech qayerda ikki xil hisoblanmaydi)."""
+    plan: dict[str, dict] = {}
+    for level, count in LEVELS:
+        flat = 0
+        lessons = []
+        for src in range(1, count + 1):
+            seed = load_seed_lesson(level, src)
+            vocab = loadjson(seed.get("vocabulary_json"), [])
+            chunks = chunk_words(vocab)
+            parts = []
+            for pi, chunk in enumerate(chunks):
+                flat += 1
+                parts.append({"flat": flat, "part_idx": pi, "chunk": chunk,
+                              "checkpoint": False})
+            flat += 1
+            parts.append({"flat": flat, "part_idx": len(chunks), "chunk": [],
+                          "checkpoint": True})
+            lessons.append({"src": src, "seed": seed, "vocab": vocab,
+                            "chunks": chunks, "parts": parts})
+        plan[level] = {"lessons": lessons, "total": flat}
+    return plan
+
+
+def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
+                  part: dict, grammar_assign: list[list[int]],
+                  known_prior: list[dict]) -> dict:
+    """Bitta mini-dars (qism) JSONi. So'z-qism: intro (3-4 so'z) + [grammatika]
+    + mini-mashq. Checkpoint: takror + dialog. Sxema eski dars sxemasi bilan
+    bir xil (schema_version 2 + qism maydonlari) — frontend Flow o'zgarishsiz
+    o'ynaydi."""
+    seed = lesson["seed"]
+    vocab = lesson["vocab"]
+    chunks = lesson["chunks"]
     grammar_raw = loadjson(seed.get("grammar_json"), [])
     dialogue_raw = loadjson(seed.get("dialogue_json"), [])
     goal = loadjson(seed.get("goal"), {})
     if not isinstance(goal, dict):
         goal = {}
 
-    active_words = build_active_words(vocab)
-    grammar = build_grammar(grammar_raw)
-    dialogues = build_dialogues(dialogue_raw)
+    lvl = int(level.replace("hsk", "") or 0)
+    pi = part["part_idx"]
+    checkpoint = part["checkpoint"]
+    part_count = len(lesson["parts"])
+    # Per-part deterministic RNG: qayta ishga tushirishda bayt-bay bir xil.
+    lr = random.Random(lvl * 100000 + src * 100 + pi + 1)
+    archetype = ARCHETYPES[(lvl + flat_n) % len(ARCHETYPES)]
 
-    # Per-lesson deterministic RNG: same lesson -> same order on every re-run,
-    # but different lessons get different exercise sequences (kills the "one
-    # format, one sequence, every lesson" monotony).
-    lr = random.Random(int(level.replace("hsk", "") or 0) * 1000 + order)
-    archetype = lesson_archetype(level, order)
+    if checkpoint:
+        taught = list(vocab)
+        sections = build_checkpoint_sections(vocab, known_prior, grammar_raw,
+                                             dialogue_raw, flat_n, lr)
+        active = build_active_words(vocab)
+        grammar_shaped = build_grammar(grammar_raw)
+    else:
+        chunk = part["chunk"]
+        # Shu paytgacha o'rgatilgan dars so'zlari (1..pi chunklari) — gating.
+        taught = [w for ch in chunks[: pi + 1] for w in ch]
+        active_all = build_active_words(chunk)
+        part_grammar = [grammar_raw[i] for i in grammar_assign[pi]] if pi < len(grammar_assign) else []
 
-    intro_cards = build_intro_section(active_words, vocab, known_prior, order, lr)
-    grammar_cards = build_grammar_section(grammar_raw, vocab, known_prior, order, lr)
-    practice_cards = build_practice(vocab, known_prior, grammar_raw, dialogue_raw, order, lr,
-                                    archetype=archetype)
-    dialog_cards = build_dialog_section(dialogue_raw, vocab + known_prior, lr)
+        grammar_cards = build_grammar_section(part_grammar, taught, known_prior, flat_n, lr)
+        # Grammatikasi katta qismda intro ixchamlashadi (byudjet 18 dan oshmasin).
+        intro_cards = build_part_intro(chunk, active_all, taught, known_prior, flat_n, lr,
+                                       lean=len(grammar_cards) >= 4)
+        budget = PART_CARD_BUDGET - len(intro_cards) - len(grammar_cards)
+        practice_cards = build_part_practice(chunk, taught, known_prior, grammar_raw,
+                                             dialogue_raw, flat_n, lr, archetype, budget)
 
-    sections = [
-        {
+        # Qamrov kafolati: qismning HAR yangi so'zi kamida 4 kartada uchrashi
+        # kerak (flash + tekshiruv + match + mashq). Yetmay qolgan so'zga
+        # talaffuzdan oldin bitta aylanuvchi tekshiruv qo'shiladi.
+        pool = taught + list(known_prior)
+
+        def _hits(zh: str, cards_: list[dict]) -> int:
+            return sum(1 for c in cards_ if zh and zh in json.dumps(c, ensure_ascii=False))
+
+        all_cards = intro_cards + grammar_cards + practice_cards
+        fill_cycle = [mc_translation, mc_hanzi, mc_meaning, make_word_listen_card]
+        fills = 0
+        for w in chunk:
+            if _hits(w.get("zh", ""), all_cards) < 4:
+                card = fill_cycle[(flat_n + fills) % len(fill_cycle)](w, pool)
+                if card:
+                    practice_cards.insert(max(0, len(practice_cards) - 1), card)
+                    fills += 1
+
+        # Byudjetdan oshgan bo'lsa — qamrovni BUZMAYDIGAN mashq kartalarini
+        # (oxirgi talaffuzdan tashqari) olib tashlaymiz.
+        total = len(intro_cards) + len(grammar_cards) + len(practice_cards)
+        i = len(practice_cards) - 2
+        while total > PART_CARD_BUDGET and i >= 0:
+            cand = practice_cards[:i] + practice_cards[i + 1:]
+            rest = intro_cards + grammar_cards + cand
+            if all(_hits(w.get("zh", ""), rest) >= 4 for w in chunk):
+                practice_cards = cand
+                total -= 1
+            i -= 1
+
+        sections = [{
             "section_no": 1,
             "section_title": {"uz": "Yangi so'zlar", "ru": "Новые слова", "tj": "Калимаҳои нав"},
             "section_purpose": "intro",
             "cards": intro_cards,
-        },
-    ]
-    # Grammar becomes its own interactive section (only when grammar exists).
-    next_no = 2
-    if grammar_cards:
+        }]
+        next_no = 2
+        if grammar_cards:
+            sections.append({
+                "section_no": next_no,
+                "section_title": {"uz": "Grammatika", "ru": "Грамматика", "tj": "Грамматика"},
+                "section_purpose": "grammar",
+                "cards": grammar_cards,
+            })
+            next_no += 1
         sections.append({
             "section_no": next_no,
-            "section_title": {"uz": "Grammatika", "ru": "Грамматика", "tj": "Грамматика"},
-            "section_purpose": "grammar",
-            "cards": grammar_cards,
+            "section_title": {"uz": "Mashq", "ru": "Упражнение", "tj": "Машқ"},
+            "section_purpose": "practice",
+            "cards": practice_cards,
         })
-        next_no += 1
-    sections.append({
-        "section_no": next_no,
-        "section_title": {"uz": "Mashq", "ru": "Упражнение", "tj": "Машқ"},
-        "section_purpose": "practice",
-        "cards": practice_cards,
-    })
-    next_no += 1
-    sections.append({
-        "section_no": next_no,
-        "section_title": {"uz": "Dialog", "ru": "Диалог", "tj": "Гуфтугӯ"},
-        "section_purpose": "dialog",
-        "cards": dialog_cards,
-    })
+        active = active_all
+        grammar_shaped = build_grammar(part_grammar)
 
     subtitle = {
         "uz": goal.get("uz", ""),
         "ru": goal.get("ru", goal.get("uz", "")),
         "tj": goal.get("tj", goal.get("uz", "")),
     }
-
     zh_title, _ = parse_title(seed)
     return {
         "schema_version": 2,
         "level": level,
-        "lesson_id": order,
+        "lesson_id": flat_n,
+        # Qism metadatasi — frontend yorliqlar ("X-dars · Y-qism") va checkpoint
+        # bayrami uchun ishlatadi.
+        "source_lesson": src,
+        "part_no": pi + 1,
+        "part_count": part_count,
+        "checkpoint": checkpoint,
         "title": zh_title,
         "subtitle": subtitle,
         # Markers: the intro/grammar sections are already interleaved (teach +
         # check) by the generator, so the client must NOT re-apply its old
-        # transform. Older, un-regenerated lessons lack these flags and keep the
-        # previous client behavior — fully backward compatible.
+        # transform.
         "intro_prebuilt": True,
         "grammar_prebuilt": True,
-        "active_words": active_words,
-        "grammar": grammar,
-        "dialogues": dialogues,
+        "active_words": active,
+        "grammar": grammar_shaped,
+        # Dialoglar har qism JSONida to'liq turadi (frontend ma'lumotnoma uchun
+        # ishlatishi mumkin); dialog KARTALARI faqat checkpoint qismida.
+        "dialogues": build_dialogues(dialogue_raw),
         "sections": sections,
     }
 
@@ -1112,73 +1299,140 @@ def title_pinyin(zh: str, idx: dict) -> str:
     return " ".join(p for p in out if p).strip()
 
 
-def sync_maps(dry: bool = False):
-    """Rewrite each <level>.json lesson entry (zh/py/tr) to match the real
-    seeded lesson, keeping n/status/locked_premium/content untouched."""
+def sync_maps(plan: dict | None = None, dry: bool = False):
+    """<level>.json xaritasini split plandan TO'LIQ qayta qurish: bitta unit =
+    bitta HSK darsligi darsi (sarlavha + qism tugunlari + checkpoint tuguni).
+    Fayl darajasidagi maydonlar (schema_version, label, progress, ...)
+    o'zgarishsiz qoladi."""
+    plan = plan or build_split_plan()
     idx = build_word_pinyin_index()
     for level, count in LEVELS:
         path = BASE / f"{level}.json"
         data = json.loads(path.read_text(encoding="utf-8"))
-        seeds = {o: load_seed_lesson(level, o) for o in range(1, count + 1)}
-        changed = 0
-        for unit in data.get("units", []):
-            # Neutral unit headers: the old themed titles no longer match the
-            # real lessons grouped under them. No invented topic / translation.
-            uno = unit.get("no", 0)
-            unit["title"] = {
-                "uz": f"{uno}-bo'lim",
-                "ru": f"Раздел {uno}",
-                "tj": f"Боби {uno}",
+        units = []
+        for les in plan[level]["lessons"]:
+            src = les["src"]
+            zh_title, _ = parse_title(les["seed"])
+            part_count = len(les["parts"])
+            unit = {
+                "no": src,
+                "title": {
+                    "uz": f"{src}-dars · {zh_title}",
+                    "ru": f"Урок {src} · {zh_title}",
+                    "tj": f"Дарси {src} · {zh_title}",
+                },
+                "lessons": [],
             }
-            for entry in unit.get("lessons", []):
-                seed = seeds.get(entry.get("n"))
-                if not seed:
-                    continue
-                zh, title_tr = parse_title(seed)
-                goal = loadjson(seed.get("goal"), {})
-                if not isinstance(goal, dict):
-                    goal = {}
-                tr = title_tr or {
-                    "uz": goal.get("uz", ""),
-                    "ru": goal.get("ru", goal.get("uz", "")),
-                    "tj": goal.get("tj", goal.get("uz", "")),
+            for part in les["parts"]:
+                n = part["flat"]
+                entry = {
+                    "n": n,
+                    "src": src,
+                    "part": part["part_idx"] + 1,
+                    "part_count": part_count,
+                    "checkpoint": part["checkpoint"],
+                    "status": "locked",
+                    "content": f"lesson_{n:02d}",
                 }
-                entry["zh"] = zh
-                entry["py"] = title_pinyin(zh, idx)
-                entry["tr"] = tr
-                changed += 1
+                if part["checkpoint"]:
+                    entry["zh"] = zh_title
+                    entry["py"] = title_pinyin(zh_title, idx)
+                    entry["tr"] = {
+                        "uz": "Mustahkamlash — dialog va takror",
+                        "ru": "Закрепление — диалог и повторение",
+                        "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор",
+                    }
+                else:
+                    chunk = part["chunk"]
+                    entry["zh"] = " · ".join(w.get("zh", "") for w in chunk)
+                    entry["py"] = " · ".join(w.get("pinyin", "") for w in chunk)
+                    p = part["part_idx"] + 1
+                    entry["tr"] = {
+                        "uz": f"{p}-qism — yangi so'zlar",
+                        "ru": f"Часть {p} — новые слова",
+                        "tj": f"Қисми {p} — калимаҳои нав",
+                    }
+                unit["lessons"].append(entry)
+            # Boss/chest kadansi eski holatda qoladi: har 5-darsdan keyin.
+            if src % 5 == 0:
+                unit["milestone"] = {
+                    "title": {
+                        "uz": f"{src - 4}–{src}-darslar takrori",
+                        "ru": f"Повторение уроков {src - 4}–{src}",
+                        "tj": f"Такрори дарсҳои {src - 4}–{src}",
+                    },
+                    "status": "locked",
+                }
+            units.append(unit)
+        # Statik (autentifikatsiyasiz) holat: birinchi tugun current, 3-dan
+        # keyingilar premium-qulf. Server /api/v3/map da jonli qiymat qo'yadi.
+        if units and units[0]["lessons"]:
+            units[0]["lessons"][0]["status"] = "current"
+        for u in units:
+            for e in u["lessons"]:
+                if e["n"] > 3:
+                    e["locked_premium"] = True
+        data["units"] = units
         text = json.dumps(data, ensure_ascii=False, indent=2)
         if dry:
-            print(f"[dry] {path}: would update {changed} lessons")
+            print(f"[dry] {path}: would rebuild {len(units)} units / {plan[level]['total']} parts")
         else:
             path.write_text(text + "\n", encoding="utf-8")
-            print(f"updated map {path}: {changed} lessons")
+            print(f"rebuilt map {path}: {len(units)} units / {plan[level]['total']} parts")
 
 
-def write_lesson_gate(dry: bool = False):
-    """so'z/belgi -> [HSK daraja, dars raqami] (birinchi o'rgatilgan joyi).
+def write_parts_manifest(plan: dict | None = None, dry: bool = False):
+    """parts_manifest.json — HSK dars -> qismlar xaritasi (flat raqamlar).
+    Progress migratsiyasi va tekshiruv skriptlari uchun yagona manba."""
+    plan = plan or build_split_plan()
+    out: dict[str, dict] = {}
+    for level, count in LEVELS:
+        lessons = []
+        for les in plan[level]["lessons"]:
+            zh_title, _ = parse_title(les["seed"])
+            lessons.append({
+                "src": les["src"],
+                "zh": zh_title,
+                "words": len(les["vocab"]),
+                "parts": [p["flat"] for p in les["parts"]],
+                "checkpoint": les["parts"][-1]["flat"],
+            })
+        out[level] = {"total_parts": plan[level]["total"], "lessons": lessons}
+    path = BASE / "parts_manifest.json"
+    text = json.dumps(out, ensure_ascii=False, indent=2)
+    if dry:
+        print(f"[dry] {path}: {sum(v['total_parts'] for v in out.values())} parts")
+    else:
+        path.write_text(text + "\n", encoding="utf-8")
+        print(f"wrote {path}: " + ", ".join(f"{lv}={v['total_parts']}" for lv, v in out.items()))
+
+
+def write_lesson_gate(plan: dict | None = None, dry: bool = False):
+    """so'z/belgi -> [HSK daraja, qism raqami] (birinchi O'RGATILGAN joyi —
+    endi flat mini-dars raqami).
 
     Mashq sahifalari (ieroglif tanish / talaffuz / yodlash) kontentni userning
-    O'RGANILGAN darslari bilan cheklaydi: user 4-darsda bo'lsa, o'z darajasining
-    7-dars so'zlari mashqqa chiqmaydi (quyi darajalar to'liq ochiq)."""
+    O'RGANILGAN qismlari bilan cheklaydi: user 4-qismda bo'lsa, o'z darajasining
+    7-qism so'zlari mashqqa chiqmaydi (quyi darajalar to'liq ochiq)."""
+    plan = plan or build_split_plan()
     words: dict[str, list[int]] = {}
     chars: dict[str, list[int]] = {}
     for level, count in LEVELS:
         lvl = int(level.replace("hsk", "") or 1)
-        for order in range(1, count + 1):
-            seed = load_seed_lesson(level, order)
-            for w in loadjson(seed.get("vocabulary_json"), []):
-                zh = str(w.get("zh") or "")
-                if not zh:
-                    continue
-                if zh not in words:
-                    words[zh] = [lvl, order]
-                for ch in zh:
-                    if "一" <= ch <= "鿿" and ch not in chars:
-                        chars[ch] = [lvl, order]
+        for les in plan[level]["lessons"]:
+            for part in les["parts"]:
+                for w in part["chunk"]:
+                    zh = str(w.get("zh") or "")
+                    if not zh:
+                        continue
+                    if zh not in words:
+                        words[zh] = [lvl, part["flat"]]
+                    for ch in zh:
+                        if "一" <= ch <= "鿿" and ch not in chars:
+                            chars[ch] = [lvl, part["flat"]]
     text = (
-        "/* GENERATED by scripts/gen_course_v3_from_seed.py — so'z/belgi -> [HSK daraja, dars]\n"
-        "   (birinchi o'rgatilgan joyi). Qo'lda tahrirlamang. */\n"
+        "/* GENERATED by scripts/gen_course_v3_from_seed.py — so'z/belgi -> [HSK daraja, qism]\n"
+        "   (birinchi o'rgatilgan joyi; flat mini-dars raqami). Qo'lda tahrirlamang. */\n"
         "window.HSK_WORD_GATE=" + json.dumps(words, ensure_ascii=False, separators=(",", ":")) + ";\n"
         "window.HSK_CHAR_GATE=" + json.dumps(chars, ensure_ascii=False, separators=(",", ":")) + ";\n"
     )
@@ -1193,54 +1447,65 @@ def write_lesson_gate(dry: bool = False):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--level", help="only this level (hsk1..hsk4)")
-    ap.add_argument("--lesson", type=int, help="only this lesson order")
+    ap.add_argument("--lesson", type=int, help="only this SOURCE lesson (uning hamma qismlari)")
     ap.add_argument("--dry", action="store_true", help="print, do not write")
     ap.add_argument("--maps-only", action="store_true", help="only sync <level>.json maps")
     ap.add_argument("--no-maps", action="store_true", help="skip map sync")
     args = ap.parse_args()
 
+    plan = build_split_plan()
+
     if args.maps_only:
-        sync_maps(dry=args.dry)
-        write_lesson_gate(dry=args.dry)
+        sync_maps(plan, dry=args.dry)
+        write_lesson_gate(plan, dry=args.dry)
+        write_parts_manifest(plan, dry=args.dry)
         return
 
     known_prior: list[dict] = []  # cumulative vocab across all earlier lessons
     written = 0
     for level, count in LEVELS:
-        for order in range(1, count + 1):
-            seed = load_seed_lesson(level, order)
-            vocab = loadjson(seed.get("vocabulary_json"), [])
-
+        # To'liq (filtrsiz) regeneratsiyada darajaning eski lesson fayllari
+        # o'chiriladi — raqamlash o'zgarganda quyruq fayllar qolib ketmasin.
+        if not args.dry and not args.lesson and (not args.level or args.level == level):
+            for old in sorted((BASE / level).glob("lesson_*.json")):
+                old.unlink()
+        for les in plan[level]["lessons"]:
             want = (not args.level or args.level == level) and (
-                not args.lesson or args.lesson == order
+                not args.lesson or args.lesson == les["src"]
             )
             if want:
-                lesson = build_v3_lesson(level, order, seed, known_prior)
-                out_path = BASE / level / f"lesson_{order:02d}.json"
-                text = json.dumps(lesson, ensure_ascii=False, indent=2)
-                if args.dry:
-                    print(f"--- {out_path} ---")
-                    print(text[:2000])
-                else:
-                    out_path.write_text(text + "\n", encoding="utf-8")
-                    written += 1
-                    sec_counts = {s["section_purpose"]: len(s["cards"]) for s in lesson["sections"]}
-                    print(f"wrote {out_path}  (vocab={len(vocab)}, "
-                          f"grammar_cards={sec_counts.get('grammar', 0)}, "
-                          f"practice={sec_counts.get('practice', 0)}, "
-                          f"dialog={sec_counts.get('dialog', 0)})")
+                known_words = {w.get("zh", "") for w in known_prior if w.get("zh")}
+                grammar_raw = loadjson(les["seed"].get("grammar_json"), [])
+                gassign = assign_grammar(grammar_raw, les["chunks"], known_words)
+                for part in les["parts"]:
+                    lesson = build_v3_part(level, part["flat"], les["src"], les,
+                                           part, gassign, known_prior)
+                    out_path = BASE / level / f"lesson_{part['flat']:02d}.json"
+                    text = json.dumps(lesson, ensure_ascii=False, indent=2)
+                    if args.dry:
+                        print(f"--- {out_path} ---")
+                        print(text[:2000])
+                    else:
+                        out_path.write_text(text + "\n", encoding="utf-8")
+                        written += 1
+                        total_cards = sum(len(s["cards"]) for s in lesson["sections"])
+                        kind = "checkpoint" if part["checkpoint"] else f"words={len(part['chunk'])}"
+                        print(f"wrote {out_path}  (src={les['src']} "
+                              f"part={lesson['part_no']}/{lesson['part_count']} "
+                              f"{kind} cards={total_cards})")
 
             # Grow the cumulative known pool AFTER this lesson is processed so a
             # lesson never uses its own future siblings as distractors source
             # beyond its own vocab.
-            known_prior = vocab + known_prior
+            known_prior = les["vocab"] + known_prior
 
     if not args.dry:
         print(f"\nTotal written: {written}")
 
     if not args.no_maps and not args.level and not args.lesson:
-        sync_maps(dry=args.dry)
-        write_lesson_gate(dry=args.dry)
+        sync_maps(plan, dry=args.dry)
+        write_lesson_gate(plan, dry=args.dry)
+        write_parts_manifest(plan, dry=args.dry)
 
 
 if __name__ == "__main__":

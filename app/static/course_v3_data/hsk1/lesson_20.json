@@ -1,0 +1,735 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 20,
+  "source_lesson": 6,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我会说汉语",
+  "subtitle": {
+    "uz": "Modal fe'l 会 yordamida qobiliyat va mahorat haqida gapirish",
+    "ru": "Говорить о способностях и умениях с помощью модального глагола 会",
+    "tj": "Дар бораи қобилият ва маҳорат бо ёрии феъли модалии 会 гап задан"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "汉字",
+      "pinyin": "Hànzì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xitoy ierogliflari",
+        "ru": "китайские иероглифы",
+        "tj": "иероглифҳои чинӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "字",
+      "pinyin": "zì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "belgi, harf, ieroglif",
+        "ru": "иероглиф, буква, знак",
+        "tj": "аломат, ҳарф, иероглиф"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "怎么",
+      "pinyin": "zěnme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday, qay yo'l bilan",
+        "ru": "как, каким образом",
+        "tj": "чӣ тавр, ба кадом роҳ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "读",
+      "pinyin": "dú",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o'qimoq (baland ovozda)",
+        "ru": "читать (вслух)",
+        "tj": "хондан (баланд)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "怎么 — qanday so'roq olmoshi",
+        "ru": "怎么 — вопросительное наречие",
+        "tj": "怎么 — ҷонишини саволии тарзӣ"
+      },
+      "title_zh": "怎么 — qanday so'roq olmoshi",
+      "rule": {
+        "uz": "怎么(zěnme) — fe'l oldiga qo'yilib, harakat usulini so'raydi.\nTuzilma: Ega + 怎么 + Fe'l?\n\nMisol:\n这个字怎么写？— Bu ieroglif qanday yoziladi?\n这个字怎么读？— Bu ieroglif qanday o'qiladi?\n中国菜怎么做？— Xitoy taomini qanday tayyorlash kerak?",
+        "ru": "怎么(zěnme) — ставится перед глаголом, спрашивает о способе действия.\nСтруктура: Подлежащее + 怎么 + Глагол?\n\nПример:\n这个字怎么写？— Как пишется этот иероглиф?\n这个字怎么读？— Как читается этот иероглиф?\n中国菜怎么做？— Как готовить китайскую еду?",
+        "tj": "怎么(zěnme) — пеш аз феъл гузошта, тарзи амалро мепурсад.\nСохт: Мубтадо + 怎么 + Феъл?\n\nМисол:\n这个字怎么写？— Ин иероглиф чӣ тавр навишта мешавад?\n这个字怎么读？— Ин иероглиф чӣ тавр хонда мешавад?\n中国菜怎么做？— Хӯроки чинӣ чӣ тавр тайёр карда мешавад?"
+      },
+      "examples": [
+        {
+          "zh": "这个字怎么写？",
+          "pinyin": "Zhège zì zěnme xiě?",
+          "translation": {
+            "uz": "Bu ieroglif qanday yoziladi?",
+            "ru": "Как пишется этот иероглиф?",
+            "tj": "Ин иероглиф чӣ тавр навишта мешавад?"
+          }
+        },
+        {
+          "zh": "这个字怎么读？",
+          "pinyin": "Zhège zì zěnme dú?",
+          "translation": {
+            "uz": "Bu ieroglif qanday o'qiladi?",
+            "ru": "Как читается этот иероглиф?",
+            "tj": "Ин иероглиф чӣ тавр хонда мешавад?"
+          }
+        },
+        {
+          "zh": "汉语怎么说？",
+          "pinyin": "Hànyǔ zěnme shuō?",
+          "translation": {
+            "uz": "Bu xitoycha qanday aytiladi?",
+            "ru": "Как это сказать по-китайски?",
+            "tj": "Ин ба забони чинӣ чӣ тавр гуфта мешавад?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Maktabda — xitoy tilida gapirish",
+        "ru": "В школе — разговор на китайском",
+        "tj": "Дар мактаб — гуфтугӯ ба забони чинӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你会说汉语吗？",
+          "pinyin": "Nǐ huì shuō Hànyǔ ma?",
+          "text": {
+            "uz": "Siz xitoycha gapira olasizmi?",
+            "ru": "Вы умеете говорить по-китайски?",
+            "tj": "Оё шумо метавонед ба забони чинӣ гап бизанед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我会说汉语。",
+          "pinyin": "Wǒ huì shuō Hànyǔ.",
+          "text": {
+            "uz": "Men xitoycha gapira olaman.",
+            "ru": "Я умею говорить по-китайски.",
+            "tj": "Ман метавонам ба забони чинӣ гап бизанам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你妈妈会说汉语吗？",
+          "pinyin": "Nǐ māma huì shuō Hànyǔ ma?",
+          "text": {
+            "uz": "Onangi xitoycha gapira oladimi?",
+            "ru": "Ваша мама умеет говорить по-китайски?",
+            "tj": "Оё модаратон метавонад ба забони чинӣ гап бизанад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她不会说。",
+          "pinyin": "Tā bú huì shuō.",
+          "text": {
+            "uz": "U gapira olmaydi.",
+            "ru": "Она не умеет говорить.",
+            "tj": "Вай наметавонад гап бизанад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Oshxonada — xitoy taomi",
+        "ru": "На кухне — китайская еда",
+        "tj": "Дар ошхона — хӯроки чинӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "中国菜好吃吗？",
+          "pinyin": "Zhōngguó cài hǎochī ma?",
+          "text": {
+            "uz": "Xitoy taomlari mazalimi?",
+            "ru": "Китайская еда вкусная?",
+            "tj": "Оё хӯроки чинӣ болаззат аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "中国菜很好吃。",
+          "pinyin": "Zhōngguó cài hěn hǎochī.",
+          "text": {
+            "uz": "Xitoy taomlari juda mazali.",
+            "ru": "Китайская еда очень вкусная.",
+            "tj": "Хӯроки чинӣ хеле болаззат аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你会做中国菜吗？",
+          "pinyin": "Nǐ huì zuò Zhōngguó cài ma?",
+          "text": {
+            "uz": "Siz xitoy taomlarini tayyorlay olasizmi?",
+            "ru": "Вы умеете готовить китайскую еду?",
+            "tj": "Оё шумо метавонед хӯроки чинӣ тайёр кунед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我不会做。",
+          "pinyin": "Wǒ bú huì zuò.",
+          "text": {
+            "uz": "Men tayyorlay olmayman.",
+            "ru": "Я не умею готовить.",
+            "tj": "Ман наметавонам тайёр кунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kutubxonada — xitoy yozuvi",
+        "ru": "В библиотеке — китайские иероглифы",
+        "tj": "Дар китобхона — иероглифҳои чинӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你会写汉字吗？",
+          "pinyin": "Nǐ huì xiě Hànzì ma?",
+          "text": {
+            "uz": "Siz xitoy ierogliflarini yoza olasizmi?",
+            "ru": "Вы умеете писать иероглифы?",
+            "tj": "Оё шумо метавонед иероглифҳои чинӣ нависед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我会写。",
+          "pinyin": "Wǒ huì xiě.",
+          "text": {
+            "uz": "Men yoza olaman.",
+            "ru": "Я умею писать.",
+            "tj": "Ман метавонам нависам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个字怎么写？",
+          "pinyin": "Zhège zì zěnme xiě?",
+          "text": {
+            "uz": "Bu ieroglif qanday yoziladi?",
+            "ru": "Как пишется этот иероглиф?",
+            "tj": "Ин иероглиф чӣ тавр навишта мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "对不起，这个字我会读，不会写。",
+          "pinyin": "Duìbuqǐ, zhège zì wǒ huì dú, bú huì xiě.",
+          "text": {
+            "uz": "Kechirasiz, bu ieroglifni o'qiy olaman, lekin yoza olmayman.",
+            "ru": "Извините, этот иероглиф я умею читать, но не умею писать.",
+            "tj": "Бубахшед, ин иероглифро ман метавонам бихонам, аммо навишта наметавонам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "汉字",
+            "pinyin": "Hànzì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xitoy ierogliflari",
+              "ru": "китайские иероглифы",
+              "tj": "иероглифҳои чинӣ"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "汉字",
+          "pinyin": "Hànzì",
+          "options": [
+            "说",
+            "妈妈",
+            "会",
+            "汉字"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "汉字 — xitoy ierogliflari (Hànzì)",
+            "ru": "汉字 — китайские иероглифы (Hànzì)",
+            "tj": "汉字 — иероглифҳои чинӣ (Hànzì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "字",
+            "pinyin": "zì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "belgi, harf, ieroglif",
+              "ru": "иероглиф, буква, знак",
+              "tj": "аломат, ҳарф, иероглиф"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "字 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 字:",
+            "tj": "Маънои калимаи 字-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "belgi, harf, ieroglif",
+              "ru": "иероглиф, буква, знак",
+              "tj": "аломат, ҳарф, иероглиф"
+            },
+            {
+              "uz": "qila olmoq (o'rganish orqali)",
+              "ru": "мочь, уметь (через обучение)",
+              "tj": "тавонистан (бо ёрии омӯзиш)"
+            },
+            {
+              "uz": "ona, onaxon",
+              "ru": "мама",
+              "tj": "модар, модарҷон"
+            },
+            {
+              "uz": "gapirmoq, aytmoq",
+              "ru": "говорить, сказать",
+              "tj": "гап задан, гуфтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "字 = belgi, harf, ieroglif (zì)",
+            "ru": "字 = иероглиф, буква, знак (zì)",
+            "tj": "字 = аломат, ҳарф, иероглиф (zì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "怎么",
+            "pinyin": "zěnme",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qanday, qay yo'l bilan",
+              "ru": "как, каким образом",
+              "tj": "чӣ тавр, ба кадом роҳ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zěnme qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zěnme?",
+            "tj": "zěnme кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "会",
+            "说",
+            "怎么",
+            "妈妈"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "怎么 = qanday, qay yo'l bilan (zěnme)",
+            "ru": "怎么 = как, каким образом (zěnme)",
+            "tj": "怎么 = чӣ тавр, ба кадом роҳ (zěnme)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "读",
+            "pinyin": "dú",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o'qimoq (baland ovozda)",
+              "ru": "читать (вслух)",
+              "tj": "хондан (баланд)"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "读",
+          "pinyin": "dú",
+          "translation": {
+            "uz": "o'qimoq (baland ovozda)",
+            "ru": "читать (вслух)",
+            "tj": "хондан (баланд)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "读 talaffuzini tanlang:",
+            "ru": "Выберите произношение 读:",
+            "tj": "Талаффузи 读-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dú",
+            "shuō",
+            "māma",
+            "huì"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "读 — dú",
+            "ru": "读 — dú",
+            "tj": "读 — dú"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xitoy ierogliflari' xitoycha qaysi?",
+            "ru": "'китайские иероглифы' по-китайски?",
+            "tj": "'иероглифҳои чинӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "妈妈",
+            "说",
+            "汉字",
+            "会"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "xitoy ierogliflari = 汉字 (Hànzì)",
+            "ru": "китайские иероглифы = 汉字 (Hànzì)",
+            "tj": "иероглифҳои чинӣ = 汉字 (Hànzì)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "汉字",
+              {
+                "uz": "xitoy ierogliflari",
+                "ru": "китайские иероглифы",
+                "tj": "иероглифҳои чинӣ"
+              }
+            ],
+            [
+              "字",
+              {
+                "uz": "belgi, harf, ieroglif",
+                "ru": "иероглиф, буква, знак",
+                "tj": "аломат, ҳарф, иероглиф"
+              }
+            ],
+            [
+              "怎么",
+              {
+                "uz": "qanday, qay yo'l bilan",
+                "ru": "как, каким образом",
+                "tj": "чӣ тавр, ба кадом роҳ"
+              }
+            ],
+            [
+              "读",
+              {
+                "uz": "o'qimoq (baland ovozda)",
+                "ru": "читать (вслух)",
+                "tj": "хондан (баланд)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "怎么 — qanday so'roq olmoshi",
+              "ru": "怎么 — вопросительное наречие",
+              "tj": "怎么 — ҷонишини саволии тарзӣ"
+            },
+            "title_zh": "怎么 — qanday so'roq olmoshi",
+            "rule": {
+              "uz": "怎么(zěnme) — fe'l oldiga qo'yilib, harakat usulini so'raydi.\nTuzilma: Ega + 怎么 + Fe'l?\n\nMisol:\n这个字怎么写？— Bu ieroglif qanday yoziladi?\n这个字怎么读？— Bu ieroglif qanday o'qiladi?\n中国菜怎么做？— Xitoy taomini qanday tayyorlash kerak?",
+              "ru": "怎么(zěnme) — ставится перед глаголом, спрашивает о способе действия.\nСтруктура: Подлежащее + 怎么 + Глагол?\n\nПример:\n这个字怎么写？— Как пишется этот иероглиф?\n这个字怎么读？— Как читается этот иероглиф?\n中国菜怎么做？— Как готовить китайскую еду?",
+              "tj": "怎么(zěnme) — пеш аз феъл гузошта, тарзи амалро мепурсад.\nСохт: Мубтадо + 怎么 + Феъл?\n\nМисол:\n这个字怎么写？— Ин иероглиф чӣ тавр навишта мешавад?\n这个字怎么读？— Ин иероглиф чӣ тавр хонда мешавад?\n中国菜怎么做？— Хӯроки чинӣ чӣ тавр тайёр карда мешавад?"
+            },
+            "examples": [
+              {
+                "zh": "这个字怎么写？",
+                "pinyin": "Zhège zì zěnme xiě?",
+                "translation": {
+                  "uz": "Bu ieroglif qanday yoziladi?",
+                  "ru": "Как пишется этот иероглиф?",
+                  "tj": "Ин иероглиф чӣ тавр навишта мешавад?"
+                }
+              },
+              {
+                "zh": "这个字怎么读？",
+                "pinyin": "Zhège zì zěnme dú?",
+                "translation": {
+                  "uz": "Bu ieroglif qanday o'qiladi?",
+                  "ru": "Как читается этот иероглиф?",
+                  "tj": "Ин иероглиф чӣ тавр хонда мешавад?"
+                }
+              },
+              {
+                "zh": "汉语怎么说？",
+                "pinyin": "Hànyǔ zěnme shuō?",
+                "translation": {
+                  "uz": "Bu xitoycha qanday aytiladi?",
+                  "ru": "Как это сказать по-китайски?",
+                  "tj": "Ин ба забони чинӣ чӣ тавр гуфта мешавад?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu xitoycha qanday aytiladi?",
+            "ru": "Как это сказать по-китайски?",
+            "tj": "Ин ба забони чинӣ чӣ тавр гуфта мешавад?"
+          },
+          "tokens": [
+            "汉语",
+            "说",
+            "怎么",
+            "妈妈",
+            "会"
+          ],
+          "answer_tokens": [
+            "汉语",
+            "怎么",
+            "说"
+          ],
+          "explanation": {
+            "uz": "汉语怎么说？ — Hànyǔ zěnme shuō?",
+            "ru": "汉语怎么说？ — Hànyǔ zěnme shuō?",
+            "tj": "汉语怎么说？ — Hànyǔ zěnme shuō?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu xitoycha qanday aytiladi?» — xitoychada qaysi biri?",
+            "ru": "«Как это сказать по-китайски?» — какое предложение по-китайски?",
+            "tj": "«Ин ба забони чинӣ чӣ тавр гуфта мешавад?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这个字怎么写？",
+            "这个字怎么读？",
+            "汉语怎么说？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "汉语怎么说？ — Hànyǔ zěnme shuō?",
+            "ru": "汉语怎么说？ — Hànyǔ zěnme shuō?",
+            "tj": "汉语怎么说？ — Hànyǔ zěnme shuō?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz xitoy ierogliflarini yoza olasizmi?",
+            "ru": "Вы умеете писать иероглифы?",
+            "tj": "Оё шумо метавонед иероглифҳои чинӣ нависед?"
+          },
+          "tokens": [
+            "汉字",
+            "吗",
+            "你",
+            "妈妈",
+            "写",
+            "会",
+            "说"
+          ],
+          "answer_tokens": [
+            "你",
+            "会",
+            "写",
+            "汉字",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你会写汉字吗？ — Nǐ huì xiě Hànzì ma?",
+            "ru": "你会写汉字吗？ — Nǐ huì xiě Hànzì ma?",
+            "tj": "你会写汉字吗？ — Nǐ huì xiě Hànzì ma?"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "菜 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 菜:",
+            "tj": "Маънои калимаи 菜-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gapirmoq, aytmoq",
+              "ru": "говорить, сказать",
+              "tj": "гап задан, гуфтан"
+            },
+            {
+              "uz": "ona, onaxon",
+              "ru": "мама",
+              "tj": "модар, модарҷон"
+            },
+            {
+              "uz": "qila olmoq (o'rganish orqali)",
+              "ru": "мочь, уметь (через обучение)",
+              "tj": "тавонистан (бо ёрии омӯзиш)"
+            },
+            {
+              "uz": "taom, sabzavot",
+              "ru": "блюдо, овощ",
+              "tj": "хӯрок, сабзавот"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "菜 = taom, sabzavot (cài)",
+            "ru": "菜 = блюдо, овощ (cài)",
+            "tj": "菜 = хӯрок, сабзавот (cài)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你会写汉字吗？",
+          "pinyin": "Nǐ huì xiě Hànzì ma?",
+          "options": [
+            "你妈妈会说汉语吗？",
+            "你会写汉字吗？",
+            "你会说汉语吗？",
+            "我会说汉语。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你会写汉字吗？ — Siz xitoy ierogliflarini yoza olasizmi?",
+            "ru": "你会写汉字吗？ — Вы умеете писать иероглифы?",
+            "tj": "你会写汉字吗？ — Оё шумо метавонед иероглифҳои чинӣ нависед?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "读",
+          "pinyin": "dú",
+          "translation": {
+            "uz": "o'qimoq (baland ovozda)",
+            "ru": "читать (вслух)",
+            "tj": "хондан (баланд)"
+          }
+        }
+      ]
+    }
+  ]
+}

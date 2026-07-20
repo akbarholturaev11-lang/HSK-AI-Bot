@@ -1,0 +1,856 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 49,
+  "source_lesson": 12,
+  "part_no": 5,
+  "part_count": 5,
+  "checkpoint": true,
+  "title": "明天天气怎么样",
+  "subtitle": {
+    "uz": "Ob-havo haqida gaplashish, 怎么样 so'roq so'zi va 太...了 tuzilmasi",
+    "ru": "Говорить о погоде, вопросительное слово 怎么样 и конструкция 太...了",
+    "tj": "Сухан дар бораи обу ҳаво, калимаи суолии 怎么样 ва сохти 太...了"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "天气",
+      "pinyin": "tiānqì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ob-havo",
+        "ru": "погода",
+        "tj": "обу ҳаво"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "怎么样",
+      "pinyin": "zěnmeyàng",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday, qanaqa",
+        "ru": "как, какой",
+        "tj": "чӣ тавр, чӣ хел"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "太",
+      "pinyin": "tài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda, haddan tashqari",
+        "ru": "слишком, очень",
+        "tj": "хеле зиёд, аз ҳад зиёд"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "热",
+      "pinyin": "rè",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "issiq",
+        "ru": "жарко, горячий",
+        "tj": "гарм, гармо"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "冷",
+      "pinyin": "lěng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "sovuq",
+        "ru": "холодно, холодный",
+        "tj": "сард, хунук"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "下雨",
+      "pinyin": "xià yǔ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yomg'ir yog'moq",
+        "ru": "идти дождю",
+        "tj": "борон боридан"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "小姐",
+      "pinyin": "xiǎojiě",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xonim, mademoiselle",
+        "ru": "мисс, барышня",
+        "tj": "хонум, духтар (мурофиа)"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "来",
+      "pinyin": "lái",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kelmoq",
+        "ru": "приходить, приезжать",
+        "tj": "омадан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "身体",
+      "pinyin": "shēntǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tana, sog'liq",
+        "ru": "тело, здоровье",
+        "tj": "бадан, саломатӣ"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "爱",
+      "pinyin": "ài",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sevmoq, yaxshi ko'rmoq",
+        "ru": "любить",
+        "tj": "дӯст доштан, ишқ доштан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "些",
+      "pinyin": "xiē",
+      "pos": "m.",
+      "meaning": {
+        "uz": "bir oz, bir nechta",
+        "ru": "немного, несколько",
+        "tj": "каме, чанд"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "水果",
+      "pinyin": "shuǐguǒ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "meva",
+        "ru": "фрукты",
+        "tj": "мева"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "水",
+      "pinyin": "shuǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "suv",
+        "ru": "вода",
+        "tj": "об"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Holat so'roq olmoshi 怎么样",
+        "ru": "Вопросительное слово состояния 怎么样",
+        "tj": "Калимаи суолии ҳол 怎么样"
+      },
+      "title_zh": "怎么样",
+      "rule": {
+        "uz": "怎么样(zěnmeyàng) — holat, sifat yoki fikrni so'rash uchun ishlatiladi.\nTuzilish: Ega + 怎么样?\n\n天气怎么样？— Ob-havo qanday?\n你身体怎么样？— Sog'ligingiz qanday?\n你的汉语怎么样？— Xitoy tilingiz qanday?",
+        "ru": "怎么样(zěnmeyàng) — используется для спроса о состоянии, качестве или мнении.\nСтруктура: Подлежащее + 怎么样?\n\n天气怎么样？— Какая погода?\n你身体怎么样？— Как ваше здоровье?\n你的汉语怎么样？— Как ваш китайский?",
+        "tj": "怎么样(zěnmeyàng) — барои пурсидани ҳол, сифат ё андеша истифода мешавад.\nСохт: Муб. + 怎么样?\n\n天气怎么样？— Обу ҳаво чӣ хел аст?\n你身体怎么样？— Саломатии шумо чӣ хел аст?\n你的汉语怎么样？— Забони чинии шумо чӣ хел аст?"
+      },
+      "examples": [
+        {
+          "zh": "明天天气怎么样？",
+          "pinyin": "Míngtiān tiānqì zěnmeyàng?",
+          "translation": {
+            "uz": "Ertaga ob-havo qanday bo'ladi?",
+            "ru": "Какая будет погода завтра?",
+            "tj": "Фардо обу ҳаво чӣ хел мешавад?"
+          }
+        },
+        {
+          "zh": "你身体怎么样？",
+          "pinyin": "Nǐ shēntǐ zěnmeyàng?",
+          "translation": {
+            "uz": "Sog'ligingiz qanday?",
+            "ru": "Как ваше здоровье?",
+            "tj": "Саломатии шумо чӣ хел аст?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Haddan tashqari: 太……了",
+        "ru": "Конструкция 太……了 (слишком, очень)",
+        "tj": "Сохти 太……了 (хеле зиёд)"
+      },
+      "title_zh": "太……了",
+      "rule": {
+        "uz": "太(tài) + Sifat + 了 — 'juda, haddan tashqari'\nInkor: 不太 + Sifat (了 ishlatilmaydi)\n\n天气太热了。— Ob-havo juda issiq.\n太冷了！— Juda sovuq!\n我身体不太好。— Sog'ligim unchalik yaxshi emas.",
+        "ru": "太(tài) + Прилагательное + 了 — 'слишком, очень'\nОтрицание: 不太 + Прилагательное (без 了)\n\n天气太热了。— Погода слишком жаркая.\n太冷了！— Слишком холодно!\n我身体不太好。— Здоровье не очень хорошее.",
+        "tj": "太(tài) + Сифат + 了 — 'хеле зиёд, аз ҳад зиёд'\nИнкор: 不太 + Сифат (بدуни 了)\n\n天气太热了。— Обу ҳаво хеле гарм аст.\n太冷了！— Хеле сард аст!\n我身体不太好。— Саломатиям зияд хуб нест."
+      },
+      "examples": [
+        {
+          "zh": "太热了！",
+          "pinyin": "Tài rè le!",
+          "translation": {
+            "uz": "Juda issiq!",
+            "ru": "Слишком жарко!",
+            "tj": "Хеле гарм аст!"
+          }
+        },
+        {
+          "zh": "天气太冷了。",
+          "pinyin": "Tiānqì tài lěng le.",
+          "translation": {
+            "uz": "Ob-havo juda sovuq.",
+            "ru": "Погода слишком холодная.",
+            "tj": "Обу ҳаво хеле сард аст."
+          }
+        },
+        {
+          "zh": "我不太好。",
+          "pinyin": "Wǒ bú tài hǎo.",
+          "translation": {
+            "uz": "Men unchalik yaxshi emasman.",
+            "ru": "Я не очень хорошо.",
+            "tj": "Ман зияд хуб нестам."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Modal fe'l 会 — ehtimollik bildiradi",
+        "ru": "Модальный глагол 会 (2) — вероятность",
+        "tj": "Феъли модалии 会 (2) — эҳтимол"
+      },
+      "title_zh": "能愿动词 会 (2)",
+      "rule": {
+        "uz": "会 — kelajakda biror narsa sodir bo'lish ehtimolini bildiradi.\n\n今天会下雨吗？— Bugun yomg'ir yog'adimi?\n她会来吗？— U keladimi?\n不会 — bo'lmaydi, sodir bo'lmaydi",
+        "ru": "会 — указывает на вероятность наступления события в будущем.\n\n今天会下雨吗？— Сегодня будет дождь?\n她会来吗？— Она придёт?\n不会 — не произойдёт, не будет",
+        "tj": "会 — эҳтимоли рӯй додани чизеро дар оянда нишон медиҳад.\n\n今天会下雨吗？— Имрӯз борон меборад?\n她会来吗？— Ӯ меояд?\n不会 — намешавад, рӯй намедиҳад"
+      },
+      "examples": [
+        {
+          "zh": "今天会下雨吗？",
+          "pinyin": "Jīntiān huì xià yǔ ma?",
+          "translation": {
+            "uz": "Bugun yomg'ir yog'adimi?",
+            "ru": "Сегодня будет дождь?",
+            "tj": "Имрӯз борон меборад?"
+          }
+        },
+        {
+          "zh": "明天会冷吗？",
+          "pinyin": "Míngtiān huì lěng ma?",
+          "translation": {
+            "uz": "Ertaga sovuq bo'ladimi?",
+            "ru": "Завтра будет холодно?",
+            "tj": "Фардо сард мешавад?"
+          }
+        },
+        {
+          "zh": "她今天不会来。",
+          "pinyin": "Tā jīntiān bú huì lái.",
+          "translation": {
+            "uz": "U bugun kelmaydi.",
+            "ru": "Она сегодня не придёт.",
+            "tj": "Ӯ имрӯз намеояд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Yo'lda — ob-havo muhokamasi",
+        "ru": "На улице — обсуждение погоды",
+        "tj": "Дар роҳ — муҳокимаи обу ҳаво"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天北京的天气怎么样？",
+          "pinyin": "Zuótiān Běijīng de tiānqì zěnmeyàng?",
+          "text": {
+            "uz": "Kecha Pekindagi ob-havo qanday edi?",
+            "ru": "Какая вчера была погода в Пекине?",
+            "tj": "Дирӯз дар Пекин обу ҳаво чӣ хел буд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "太热了。",
+          "pinyin": "Tài rè le.",
+          "text": {
+            "uz": "Juda issiq edi.",
+            "ru": "Было очень жарко.",
+            "tj": "Хеле гарм буд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "明天呢？明天天气怎么样？",
+          "pinyin": "Míngtiān ne? Míngtiān tiānqì zěnmeyàng?",
+          "text": {
+            "uz": "Ertaga-chi? Ertaga ob-havo qanday bo'ladi?",
+            "ru": "А завтра? Какая будет погода?",
+            "tj": "Фардо чӣ? Фардо обу ҳаво чӣ хел мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "明天天气很好，不冷不热。",
+          "pinyin": "Míngtiān tiānqì hěn hǎo, bù lěng bú rè.",
+          "text": {
+            "uz": "Ertaga ob-havo yaxshi bo'ladi, na sovuq na issiq.",
+            "ru": "Завтра погода будет хорошей, ни холодно ни жарко.",
+            "tj": "Фардо обу ҳаво хуб мешавад, на сард на гарм."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport zalda — yomg'ir va sovuq",
+        "ru": "В спортзале — дождь и холод",
+        "tj": "Дар варзишгоҳ — борон ва сармо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天会下雨吗？",
+          "pinyin": "Jīntiān huì xià yǔ ma?",
+          "text": {
+            "uz": "Bugun yomg'ir yog'adimi?",
+            "ru": "Сегодня будет дождь?",
+            "tj": "Имрӯз борон меборад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "今天不会下雨。",
+          "pinyin": "Jīntiān bú huì xià yǔ.",
+          "text": {
+            "uz": "Bugun yomg'ir yog'maydi.",
+            "ru": "Сегодня дождя не будет.",
+            "tj": "Имрӯз борон намеборад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "王小姐今天会来吗？",
+          "pinyin": "Wáng xiǎojiě jīntiān huì lái ma?",
+          "text": {
+            "uz": "Xonim Van bugun keladimi?",
+            "ru": "Мисс Ван сегодня придёт?",
+            "tj": "Хонум Ван имрӯз меояд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不会来，天气太冷了。",
+          "pinyin": "Bú huì lái, tiānqì tài lěng le.",
+          "text": {
+            "uz": "Kelmaydi, ob-havo juda sovuq.",
+            "ru": "Не придёт — погода слишком холодная.",
+            "tj": "Намеояд, обу ҳаво хеле сард аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada — sog'liq haqida",
+        "ru": "В больнице — о здоровье",
+        "tj": "Дар беморхона — дар бораи саломатӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你身体怎么样？",
+          "pinyin": "Nǐ shēntǐ zěnmeyàng?",
+          "text": {
+            "uz": "Sog'ligingiz qanday?",
+            "ru": "Как ваше здоровье?",
+            "tj": "Саломатии шумо чӣ хел аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我身体不太好。天气太热了，不爱吃饭。",
+          "pinyin": "Wǒ shēntǐ bú tài hǎo. Tiānqì tài rè le, bú ài chī fàn.",
+          "text": {
+            "uz": "Sog'ligim unchalik yaxshi emas. Ob-havo juda issiq, ovqat yegim kelmayapti.",
+            "ru": "Здоровье не очень. Погода слишком жаркая, есть не хочется.",
+            "tj": "Саломатиям зияд хуб нест. Обу ҳаво хеле гарм аст, хӯрок хӯрданам намеояд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你多吃些水果，多喝水。",
+          "pinyin": "Nǐ duō chī xiē shuǐguǒ, duō hē shuǐ.",
+          "text": {
+            "uz": "Ko'proq meva yeng, ko'proq suv iching.",
+            "ru": "Ешьте больше фруктов и пейте больше воды.",
+            "tj": "Бештар мева хӯред, бештар об нӯшед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "谢谢你，医生。",
+          "pinyin": "Xièxie nǐ, yīshēng.",
+          "text": {
+            "uz": "Rahmat, doktor.",
+            "ru": "Спасибо, доктор.",
+            "tj": "Ташаккур, духтур."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "天气 talaffuzini tanlang:",
+            "ru": "Выберите произношение 天气:",
+            "tj": "Талаффузи 天气-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tiānqì",
+            "tài",
+            "rè",
+            "zěnmeyàng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "天气 — tiānqì",
+            "ru": "天气 — tiānqì",
+            "tj": "天气 — tiānqì"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "天气",
+              {
+                "uz": "ob-havo",
+                "ru": "погода",
+                "tj": "обу ҳаво"
+              }
+            ],
+            [
+              "怎么样",
+              {
+                "uz": "qanday, qanaqa",
+                "ru": "как, какой",
+                "tj": "чӣ тавр, чӣ хел"
+              }
+            ],
+            [
+              "太",
+              {
+                "uz": "juda, haddan tashqari",
+                "ru": "слишком, очень",
+                "tj": "хеле зиёд, аз ҳад зиёд"
+              }
+            ],
+            [
+              "热",
+              {
+                "uz": "issiq",
+                "ru": "жарко, горячий",
+                "tj": "гарм, гармо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你身体怎么样？",
+          "pinyin": "Nǐ shēntǐ zěnmeyàng?",
+          "translation": {
+            "uz": "Sog'ligingiz qanday?",
+            "ru": "Как ваше здоровье?",
+            "tj": "Саломатии шумо чӣ хел аст?"
+          },
+          "tokens": {
+            "uz": [
+              "Kecha",
+              "Pekindagi",
+              "Sog'ligingiz",
+              "qanday"
+            ],
+            "ru": [
+              "Как",
+              "Какая",
+              "вчера",
+              "ваше",
+              "здоровье"
+            ],
+            "tj": [
+              "шумо",
+              "дар",
+              "Саломатии",
+              "Дирӯз",
+              "хел",
+              "чӣ",
+              "аст"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Sog'ligingiz",
+              "qanday"
+            ],
+            "ru": [
+              "Как",
+              "ваше",
+              "здоровье"
+            ],
+            "tj": [
+              "Саломатии",
+              "шумо",
+              "чӣ",
+              "хел",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "你身体怎么样？ — Sog'ligingiz qanday?",
+            "ru": "你身体怎么样？ — Как ваше здоровье?",
+            "tj": "你身体怎么样？ — Саломатии шумо чӣ хел аст?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bugun yomg'ir yog'adimi?» — xitoychada qaysi biri?",
+            "ru": "«Сегодня будет дождь?» — какое предложение по-китайски?",
+            "tj": "«Имрӯз борон меборад?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "今天会下雨吗？",
+            "你身体怎么样？",
+            "明天天气怎么样？",
+            "天气太冷了。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "今天会下雨吗？ — Jīntiān huì xià yǔ ma?",
+            "ru": "今天会下雨吗？ — Jīntiān huì xià yǔ ma?",
+            "tj": "今天会下雨吗？ — Jīntiān huì xià yǔ ma?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "爱",
+          "pinyin": "ài",
+          "options": [
+            "怎么样",
+            "爱",
+            "太",
+            "天气"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "爱 — sevmoq, yaxshi ko'rmoq (ài)",
+            "ru": "爱 — любить (ài)",
+            "tj": "爱 — дӯст доштан, ишқ доштан (ài)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "水果 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 水果:",
+            "tj": "Маънои калимаи 水果-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "meva",
+              "ru": "фрукты",
+              "tj": "мева"
+            },
+            {
+              "uz": "juda, haddan tashqari",
+              "ru": "слишком, очень",
+              "tj": "хеле зиёд, аз ҳад зиёд"
+            },
+            {
+              "uz": "qanday, qanaqa",
+              "ru": "как, какой",
+              "tj": "чӣ тавр, чӣ хел"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "水果 = meva (shuǐguǒ)",
+            "ru": "水果 = фрукты (shuǐguǒ)",
+            "tj": "水果 = мева (shuǐguǒ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "冷",
+              {
+                "uz": "sovuq",
+                "ru": "холодно, холодный",
+                "tj": "сард, хунук"
+              }
+            ],
+            [
+              "下雨",
+              {
+                "uz": "yomg'ir yog'moq",
+                "ru": "идти дождю",
+                "tj": "борон боридан"
+              }
+            ],
+            [
+              "小姐",
+              {
+                "uz": "xonim, mademoiselle",
+                "ru": "мисс, барышня",
+                "tj": "хонум, духтар (мурофиа)"
+              }
+            ],
+            [
+              "来",
+              {
+                "uz": "kelmoq",
+                "ru": "приходить, приезжать",
+                "tj": "омадан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "昨天北京的天气怎么样？",
+          "pinyin": "Zuótiān Běijīng de tiānqì zěnmeyàng?",
+          "options": [
+            "昨天北京的天气怎么样？",
+            "明天天气很好，不冷不热。",
+            "太热了。",
+            "明天呢？明天天气怎么样？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "昨天北京的天气怎么样？ — Kecha Pekindagi ob-havo qanday edi?",
+            "ru": "昨天北京的天气怎么样？ — Какая вчера была погода в Пекине?",
+            "tj": "昨天北京的天气怎么样？ — Дирӯз дар Пекин обу ҳаво чӣ хел буд?"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "昨天北京的天气怎么样？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "太热了。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "明天呢？明天天气怎么样？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "昨天北京的天气怎么样？",
+            "太热了。",
+            "明天呢？明天天气怎么样？",
+            "明天天气很好，不冷不热。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 明天天气很好，不冷不热。",
+            "ru": "Правильный ответ: 明天天气很好，不冷不热。",
+            "tj": "Ҷавоби дуруст: 明天天气很好，不冷不热。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "明天呢？明天天气怎么样？",
+            "太热了。",
+            "昨天北京的天气怎么样？",
+            "明天天气很好，不冷不热。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 昨天北京的天气怎么样？",
+            "ru": "Правильный ответ: 昨天北京的天气怎么样？",
+            "tj": "Ҷавоби дуруст: 昨天北京的天气怎么样？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____天北京的天气怎么样？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "昨",
+            "是",
+            "少",
+            "美"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 昨 — 昨天北京的天气怎么样？ (Kecha Pekindagi ob-havo qanday edi?)",
+            "ru": "Верно: 昨 — 昨天北京的天气怎么样？ (Какая вчера была погода в Пекине?)",
+            "tj": "Дуруст: 昨 — 昨天北京的天气怎么样？ (Дирӯз дар Пекин обу ҳаво чӣ хел буд?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "昨天北京的天气怎么样？",
+            "明天天气很好，不冷不热。",
+            "明天呢？明天天气怎么样？",
+            "太热了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 明天天气很好，不冷不热。",
+            "ru": "Правильный ответ: 明天天气很好，不冷不热。",
+            "tj": "Ҷавоби дуруст: 明天天气很好，不冷不热。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "明天呢？明天天气怎么样？",
+          "pinyin": "Míngtiān ne? Míngtiān tiānqì zěnmeyàng?",
+          "translation": {
+            "uz": "Ertaga-chi? Ertaga ob-havo qanday bo'ladi?",
+            "ru": "А завтра? Какая будет погода?",
+            "tj": "Фардо чӣ? Фардо обу ҳаво чӣ хел мешавад?"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -192,11 +192,12 @@ class CourseMiniAppAccessTests(unittest.TestCase):
         self.assertEqual(COURSE_DAILY_FREE_LIMITS.get("recognition"), 1)
 
     def test_unpaid_course_lesson_policy_keeps_only_first_lesson_free(self):
-        # Bepul trial: faqat 1-dars to'liq bepul; 2-dars (yarim preview) va
-        # keyingilari premium. Reklama darslardan mashq bo'limlariga ko'chdi.
+        # Bepul trial (mini-qismlar): 1-2-qism to'liq bepul; 3-qism (yarim
+        # preview) va keyingilari premium. Reklama mashq bo'limlarida.
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 1))
-        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 2))
+        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 2))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 3))
+        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 4))
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 1))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk4", 4))
 

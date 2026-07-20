@@ -2,758 +2,327 @@
   "schema_version": 2,
   "level": "hsk4",
   "lesson_id": 7,
-  "title": "最好的医生是自己",
+  "source_lesson": 1,
+  "part_no": 7,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "简单的爱情",
   "subtitle": {
-    "uz": "sog'liq, odatlar va sport haqida gapirish; 估计, 来不及, 离合词重叠, 要是 va 既...又 grammatikalarini ishlatish",
-    "ru": "говорить о здоровье, привычках и спорте; использовать 估计, 来不及, удвоение разделяемых слов, 要是 и 既...又",
-    "tj": "дар бораи саломатӣ, одатҳо ва варзиш гуфтугӯ кардан; истифодаи 估计, 来不及, такрори калимаҳои ҷудошаванда, 要是 ва 既...又"
+    "uz": "sevgi va munosabatlar haqida gapirish; 不仅, 从来, 刚, 即使 va (在)...上 grammatikalarini ishlatish",
+    "ru": "говорить о любви и отношениях; использовать 不仅, 从来, 刚, 即使 и (在)...上",
+    "tj": "дар бораи муҳаббат ва муносибатҳо гуфтугӯ кардан; истифодаи 不仅, 从来, 刚, 即使 ва (在)...上"
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "流血",
-      "pinyin": "liú xiě",
+      "zh": "亮",
+      "pinyin": "liàng",
       "pos": "v.",
       "meaning": {
-        "uz": "qon ketmoq",
-        "ru": "кровоточить",
-        "tj": "хун рафтан"
+        "uz": "yorishmoq, chiroq yonmoq",
+        "ru": "светиться, гореть",
+        "tj": "равшан будан, фурӯзон будан"
       }
     },
     {
       "no": 2,
-      "zh": "擦",
-      "pinyin": "cā",
+      "zh": "感动",
+      "pinyin": "gǎndòng",
       "pos": "v.",
       "meaning": {
-        "uz": "artmoq",
-        "ru": "вытирать",
-        "tj": "пок кардан, молидан"
+        "uz": "ta'sirlantirmoq",
+        "ru": "тронуть, растрогать",
+        "tj": "таъсир кардан"
       }
     },
     {
       "no": 3,
-      "zh": "气候",
-      "pinyin": "qìhòu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "iqlim",
-        "ru": "климат",
-        "tj": "иқлим"
-      }
-    },
-    {
-      "no": 4,
-      "zh": "估计",
-      "pinyin": "gūjì",
-      "pos": "v.",
-      "meaning": {
-        "uz": "taxmin qilmoq",
-        "ru": "предполагать, оценивать",
-        "tj": "тахмин кардан"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "咳嗽",
-      "pinyin": "késou",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yo'talmoq",
-        "ru": "кашлять",
-        "tj": "сулфа кардан"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "严重",
-      "pinyin": "yánzhòng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "jiddiy, og'ir",
-        "ru": "серьёзный",
-        "tj": "ҷиддӣ, вазнин"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "窗户",
-      "pinyin": "chuānghu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "deraza",
-        "ru": "окно",
-        "tj": "тиреза"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "空气",
-      "pinyin": "kōngqì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "havo",
-        "ru": "воздух",
-        "tj": "ҳаво"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "抽烟",
-      "pinyin": "chōu yān",
-      "pos": "v.",
-      "meaning": {
-        "uz": "chekmoq",
-        "ru": "курить",
-        "tj": "тамоку кашидан"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "动作",
-      "pinyin": "dòngzuò",
-      "pos": "n.",
-      "meaning": {
-        "uz": "harakat",
-        "ru": "движение, действие",
-        "tj": "ҳаракат"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "帅",
-      "pinyin": "shuài",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "kelishgan",
-        "ru": "красивый, стильный",
-        "tj": "зебо, хушсурат"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "出现",
-      "pinyin": "chūxiàn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "paydo bo'lmoq",
-        "ru": "появляться",
-        "tj": "пайдо шудан"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "后悔",
-      "pinyin": "hòuhuǐ",
-      "pos": "v.",
-      "meaning": {
-        "uz": "pushaymon bo'lmoq",
-        "ru": "сожалеть",
-        "tj": "пушаймон шудан"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "来不及",
-      "pinyin": "láibují",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ulgurmaslik, kech bo'lmoq",
-        "ru": "не успеть, быть поздно",
-        "tj": "вақт нарасидан, дер шудан"
-      }
-    },
-    {
-      "no": 15,
-      "zh": "反对",
-      "pinyin": "fǎnduì",
-      "pos": "v.",
-      "meaning": {
-        "uz": "qarshi bo'lmoq",
-        "ru": "быть против",
-        "tj": "муқобил будан"
-      }
-    },
-    {
-      "no": 16,
-      "zh": "大夫",
-      "pinyin": "dàifu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "shifokor",
-        "ru": "врач",
-        "tj": "духтур"
-      }
-    },
-    {
-      "no": 17,
-      "zh": "植物",
-      "pinyin": "zhíwù",
-      "pos": "n.",
-      "meaning": {
-        "uz": "o'simlik",
-        "ru": "растение",
-        "tj": "растанӣ"
-      }
-    },
-    {
-      "no": 18,
-      "zh": "研究",
-      "pinyin": "yánjiū",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tadqiq qilmoq",
-        "ru": "исследовать",
-        "tj": "таҳқиқ кардан"
-      }
-    },
-    {
-      "no": 19,
-      "zh": "超过",
-      "pinyin": "chāoguò",
-      "pos": "v.",
-      "meaning": {
-        "uz": "oshib ketmoq",
-        "ru": "превышать",
-        "tj": "зиёд шудан"
-      }
-    },
-    {
-      "no": 20,
-      "zh": "散步",
-      "pinyin": "sàn bù",
-      "pos": "v.",
-      "meaning": {
-        "uz": "sayr qilmoq",
-        "ru": "гулять",
-        "tj": "сайругашт кардан"
-      }
-    },
-    {
-      "no": 21,
-      "zh": "指",
-      "pinyin": "zhǐ",
-      "pos": "v.",
-      "meaning": {
-        "uz": "nazarda tutmoq",
-        "ru": "указывать, означать",
-        "tj": "ишора кардан, маъно додан"
-      }
-    },
-    {
-      "no": 22,
-      "zh": "精神",
-      "pinyin": "jīngshén",
-      "pos": "n.",
-      "meaning": {
-        "uz": "ruhiy holat, ruh",
-        "ru": "дух, психика",
-        "tj": "руҳ, ҳолати равонӣ"
-      }
-    },
-    {
-      "no": 23,
-      "zh": "教授",
-      "pinyin": "jiàoshòu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "professor",
-        "ru": "профессор",
-        "tj": "профессор"
-      }
-    },
-    {
-      "no": 24,
-      "zh": "数字",
-      "pinyin": "shùzì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "raqam",
-        "ru": "цифра, число",
-        "tj": "рақам"
-      }
-    },
-    {
-      "no": 25,
-      "zh": "说明",
-      "pinyin": "shuōmíng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tushuntirmoq, ko'rsatmoq",
-        "ru": "объяснять, показывать",
-        "tj": "фаҳмондан, нишон додан"
-      }
-    },
-    {
-      "no": 26,
-      "zh": "要是",
-      "pinyin": "yàoshi",
-      "pos": "conj.",
-      "meaning": {
-        "uz": "agar",
-        "ru": "если",
-        "tj": "агар"
-      }
-    },
-    {
-      "no": 27,
-      "zh": "既",
-      "pinyin": "jì",
+      "zh": "自然",
+      "pinyin": "zìrán",
       "pos": "adv.",
       "meaning": {
-        "uz": "既...又: ham...ham",
-        "ru": "и..., и...",
-        "tj": "ҳам...ҳам"
+        "uz": "tabiiy ravishda",
+        "ru": "естественно",
+        "tj": "табиӣ равишда"
       }
-    },
-    {
-      "no": 28,
-      "zh": "减肥",
-      "pinyin": "jiǎn féi",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ozmoq",
-        "ru": "худеть",
-        "tj": "вазн кам кардан"
-      }
-    },
-    {
-      "no": 29,
-      "zh": "辛苦",
-      "pinyin": "xīnkǔ",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "mashaqqatli",
-        "ru": "тяжёлый, утомительный",
-        "tj": "заҳматнок"
-      }
-    },
-    {
-      "no": 30,
-      "zh": "肚子",
-      "pinyin": "dùzi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "qorin",
-        "ru": "живот",
-        "tj": "шикам"
-      }
-    },
-    {
-      "no": 31,
-      "zh": "感情",
-      "pinyin": "gǎnqíng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "his-tuyg'u, munosabat",
-        "ru": "чувства, отношения",
-        "tj": "эҳсос, муносибат"
-      }
-    },
-    {
-      "no": 32,
-      "zh": "烦恼",
-      "pinyin": "fánnǎo",
-      "pos": "adj./n.",
-      "meaning": {
-        "uz": "tashvish, xafa bo'lish",
-        "ru": "забота, тревога",
-        "tj": "ташвиш, ғам"
-      }
-    },
-    {
-      "no": 33,
-      "zh": "掉",
-      "pinyin": "diào",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tushib ketmoq; yo'qolmoq",
-        "ru": "падать; исчезать",
-        "tj": "афтидан; гум шудан"
-      }
-    }
-  ],
-  "grammar": [
-    {
-      "no": 1,
-      "title": {
-        "uz": "taxmin qilish",
-        "ru": "предполагать",
-        "tj": "тахмин кардан"
-      },
-      "title_zh": "估计",
-      "rule": {
-        "uz": "Aniq dalil bo'lmaganda sabab yoki natijani ehtimol sifatida aytadi.",
-        "ru": "Используется, когда причина или результат называются как предположение.",
-        "tj": "Вақте сабаб ё натиҷа тахминӣ гуфта мешавад, истифода мешавад."
-      },
-      "examples": [
-        {
-          "zh": "我还不习惯北方的气候，估计是天气太干。",
-          "pinyin": "Wǒ hái bù xíguàn běifāng de qìhòu, gūjì shì tiānqì tài gān.",
-          "translation": {
-            "uz": "Men hali shimol iqlimiga ko'nikmadim, taxminan havo juda quruq.",
-            "ru": "Я ещё не привык к северному климату, наверное, воздух слишком сухой.",
-            "tj": "Ман ҳанӯз ба иқлими шимол одат накардаам, шояд ҳаво хеле хушк аст."
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "ulgurmaslik, kech bo'lish",
-        "ru": "не успеть, быть слишком поздно",
-        "tj": "вақт нарасидан, дер шудан"
-      },
-      "title_zh": "来不及",
-      "rule": {
-        "uz": "Biror ishni qilishga vaqt yetmasligini yoki keyin pushaymon bo'lish kech bo'lishini bildiradi.",
-        "ru": "Показывает, что времени на действие не хватит или сожалеть будет уже поздно.",
-        "tj": "Нишон медиҳад, ки барои амал вақт намерасад ё баъд пушаймон шудан дер мешавад."
-      },
-      "examples": [
-        {
-          "zh": "等你身体出现问题了，后悔就来不及了。",
-          "pinyin": "Děng nǐ shēntǐ chūxiàn wèntí le, hòuhuǐ jiù láibují le.",
-          "translation": {
-            "uz": "Tanangda muammo paydo bo'lgandan keyin pushaymon bo'lish kech bo'ladi.",
-            "ru": "Когда со здоровьем появятся проблемы, сожалеть будет уже поздно.",
-            "tj": "Вақте дар саломатият мушкил пайдо шавад, пушаймон шудан дер мешавад."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "ajraladigan fe'lni takrorlash",
-        "ru": "удвоение разделяемых глаголов",
-        "tj": "такрори феълҳои ҷудошаванда"
-      },
-      "title_zh": "离合词重叠",
-      "rule": {
-        "uz": "散步 kabi ajraladigan fe'llarda birinchi bo'g'in takrorlanib, harakatni yengil va qisqa ko'rsatadi.",
-        "ru": "В разделяемых глаголах вроде 散步 первый компонент повторяется, показывая лёгкое короткое действие.",
-        "tj": "Дар феълҳои ҷудошаванда мисли 散步 қисми аввал такрор шуда, амали сабук ва кӯтоҳро нишон медиҳад."
-      },
-      "examples": [
-        {
-          "zh": "咱们午饭后就去附近的公园散散步吧。",
-          "pinyin": "Zánmen wǔfàn hòu jiù qù fùjìn de gōngyuán sàn san bù ba.",
-          "translation": {
-            "uz": "Tushlikdan keyin yaqin bog'ga biroz sayr qilgani boraylik.",
-            "ru": "После обеда давай немного прогуляемся в ближайшем парке.",
-            "tj": "Баъди хӯроки нисфирӯзӣ ба боғи наздик каме сайр кунем."
-          }
-        }
-      ]
     },
     {
       "no": 4,
-      "title": {
-        "uz": "agar, mabodo",
-        "ru": "если",
-        "tj": "агар"
-      },
-      "title_zh": "要是",
-      "rule": {
-        "uz": "Shart kiritadi; ko'pincha natija keyingi qismda keladi.",
-        "ru": "Вводит условие; результат обычно стоит во второй части.",
-        "tj": "Шартро меорад; натиҷа одатан дар қисми дуюм меояд."
-      },
-      "examples": [
-        {
-          "zh": "要是健康是1，其他都是1后面的0。",
-          "pinyin": "Yàoshi jiànkāng shì yī, qítā dōu shì yī hòumian de líng.",
-          "translation": {
-            "uz": "Agar sog'liq 1 bo'lsa, qolgan narsalar 1 ortidagi nollar.",
-            "ru": "Если здоровье это 1, всё остальное - нули после единицы.",
-            "tj": "Агар саломатӣ 1 бошад, чизҳои дигар сифрҳои баъди онанд."
-          }
-        }
-      ]
-    },
-    {
-      "no": 5,
-      "title": {
-        "uz": "ham..., ham...",
-        "ru": "и..., и...",
-        "tj": "ҳам..., ҳам..."
-      },
-      "title_zh": "既……又/也/还……",
-      "rule": {
-        "uz": "Bir narsaning ikki ijobiy tomoni borligini bog'lab ko'rsatadi.",
-        "ru": "Соединяет два положительных качества или результата одного действия.",
-        "tj": "Ду тарафи мусбати як чизро пайваст нишон медиҳад."
-      },
-      "examples": [
-        {
-          "zh": "散步是生活中最简单的锻炼方法，既可以活动身体，又可以减肥。",
-          "pinyin": "Sànbù shì shēnghuó zhōng zuì jiǎndān de duànliàn fāngfǎ, jì kěyǐ huódòng shēntǐ, yòu kěyǐ jiǎnféi.",
-          "translation": {
-            "uz": "Sayr qilish eng oddiy mashq usuli: ham tanani harakatlantiradi, ham ozishga yordam beradi.",
-            "ru": "Прогулка - самый простой способ тренировки: и тело двигается, и худеть помогает.",
-            "tj": "Сайр содатарин усули машқ аст: ҳам баданро ҳаракат медиҳад, ҳам ба кам кардани вазн ёрӣ мекунад."
-          }
-        }
-      ]
+      "zh": "原因",
+      "pinyin": "yuányīn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sabab",
+        "ru": "причина",
+        "tj": "сабаб"
+      }
     }
   ],
+  "grammar": [],
   "dialogues": [
     {
       "scene": {
-        "uz": "小李 va 小林 iqlim, shamollash va havo almashtirish haqida gaplashadi",
-        "ru": "小李 и 小林 говорят о климате, простуде и проветривании",
-        "tj": "小李 ва 小林 дар бораи иқлим, шамолхӯрӣ ва ҳавои тоза гуфтугӯ мекунанд"
+        "uz": "孙月 va 王静 uning yigit do'sti haqida gaplashadi",
+        "ru": "孙月 и 王静 разговаривают о ее парне",
+        "tj": "孙月 ва 王静 дар бораи дӯстписари ӯ суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "小李",
-          "zh": "你的鼻子怎么流血了？快用纸擦擦。",
-          "pinyin": "Nǐ de bízi zěnme liúxiě le? Kuài yòng zhǐ cā ca.",
+          "speaker": "孙月",
+          "zh": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+          "pinyin": "Tīngshuō nǐ nánpéngyou Lǐ Jìn gēn nǐ shì yí ge xuéxiào de, shì nǐ tóngxué ma?",
           "text": {
-            "uz": "Burningdan nega qon ketyapti? Tez qog'oz bilan art.",
-            "ru": "Почему у тебя кровь из носа? Быстро вытри бумагой.",
-            "tj": "Чаро аз биният хун меравад? Зуд бо коғаз пок кун."
+            "uz": "Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?",
+            "ru": "Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?",
+            "tj": "Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?"
           }
         },
         {
-          "speaker": "小林",
-          "zh": "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-          "pinyin": "Wǒ hái bù xíguàn běifāng de qìhòu, gūjì shì tiānqì tài gān. Jīntiān tiānqì bú shì hěn lěng, nǐ zěnme chuān zhème duō?",
+          "speaker": "王静",
+          "zh": "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+          "pinyin": "Shì de, tā xué de shì xīnwén, wǒ xué de shì fǎlǜ, wǒ hé tā bú shì yí ge bān.",
           "text": {
-            "uz": "Men hali shimol iqlimiga ko'nikmadim, taxminan havo juda quruq. Bugun havo uncha sovuq emas, nega bunchalik ko'p kiyinding?",
-            "ru": "Я ещё не привык к северному климату, наверное, слишком сухо. Сегодня не очень холодно, почему ты так тепло оделся?",
-            "tj": "Ман ҳанӯз ба иқлими шимол одат накардаам, шояд ҳаво хеле хушк аст. Имрӯз ҳаво он қадар сард нест, чаро ин қадар бисёр пӯшидаӣ?"
+            "uz": "Ha, u jurnalistika o'qiydi, men huquq o'qiyman, biz bir guruhda emasmiz.",
+            "ru": "Да, он изучает журналистику, а я право; мы не в одной группе.",
+            "tj": "Ҳа, ӯ журналистика мехонад, ман ҳуқуқ мехонам; мо дар як гурӯҳ нестем."
           }
         },
         {
-          "speaker": "小李",
-          "zh": "就是因为昨天穿得太少，我都感冒了。",
-          "pinyin": "Jiù shì yīnwèi zuótiān chuān de tài shǎo, wǒ dōu gǎnmào le.",
+          "speaker": "孙月",
+          "zh": "那你们俩是怎么认识的？",
+          "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
           "text": {
-            "uz": "Aynan kecha kam kiyinganim uchun shamollab qoldim.",
-            "ru": "Именно потому что вчера я оделся слишком легко, я простудился.",
-            "tj": "Маҳз барои он ки дирӯз кам пӯшидам, шамол хӯрдам."
+            "uz": "Unda siz ikkalangiz qanday tanishgansiz?",
+            "ru": "Тогда как вы двое познакомились?",
+            "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
           }
         },
         {
-          "speaker": "小林",
-          "zh": "最近感冒的人特别多。你去看医生了吗？",
-          "pinyin": "Zuìjìn gǎnmào de rén tèbié duō. Nǐ qù kàn yīshēng le ma?",
+          "speaker": "王静",
+          "zh": "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+          "pinyin": "Wǒmen shì zài yí cì zúqiú bǐsài zhōng rènshi de. Wǒmen bān gēn tāmen bān bǐsài, tā yí ge rén tī jìn liǎng ge qiú, wǒ duì tā yìnxiàng hěn shēn, hòulái jiù mànmàn shúxī le.",
           "text": {
-            "uz": "So'nggi payt shamollaganlar juda ko'p. Shifokorga bordingmi?",
-            "ru": "В последнее время простуженных особенно много. Ты ходил к врачу?",
-            "tj": "Вақтҳои охир одамони шамолхӯрда хеле зиёданд. Ба духтур рафтӣ?"
+            "uz": "Biz bir futbol musobaqasida tanishganmiz. Bizning guruh ular guruhi bilan o'ynagan, u bir o'zi ikkita gol urgan, menda chuqur taassurot qoldirgan, keyin asta-sekin tanishib ketdik.",
+            "ru": "Мы познакомились на футбольном матче. Наша группа играла с их группой, он один забил два гола, и у меня осталось сильное впечатление; потом мы постепенно познакомились ближе.",
+            "tj": "Мо дар як мусобиқаи футбол шинос шудем. Гурӯҳи мо бо гурӯҳи онҳо бозӣ кард, ӯ танҳо ду гол зад, ба ман таассуроти амиқ гузошт; баъд оҳиста-оҳиста наздик шинос шудем."
           }
         },
         {
-          "speaker": "小李",
-          "zh": "没有，我只是咳嗽，有点儿头疼，不严重，多喝点儿水就好了。",
-          "pinyin": "Méiyǒu, wǒ zhǐshì késou, yǒudiǎnr tóuténg, bù yánzhòng, duō hē diǎnr shuǐ jiù hǎo le.",
+          "speaker": "孙月",
+          "zh": "你为什么喜欢他？",
+          "pinyin": "Nǐ wèishénme xǐhuan tā?",
           "text": {
-            "uz": "Yo'q, faqat yo'talyapman, boshim biroz og'riyapti, jiddiy emas, ko'proq suv ichsam bo'ladi.",
-            "ru": "Нет, я только кашляю, немного болит голова, не серьёзно, побольше воды - и пройдёт.",
-            "tj": "Не, танҳо сулфа мекунам, каме сарам дард мекунад, ҷиддӣ нест, бештар об нӯшам хуб мешавад."
+            "uz": "Nega uni yoqtirasan?",
+            "ru": "Почему он тебе нравится?",
+            "tj": "Чаро ӯро дӯст медорӣ?"
           }
         },
         {
-          "speaker": "小林",
-          "zh": "春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
-          "pinyin": "Chūntiān tiānqì shí lěng shí rè, tèbié róngyì gǎnmào. Zhè shíhou yídìng yào duō zhùyì bǎonuǎn, lìngwài, zuìhǎo jīngcháng dǎkāi chuānghu huàn huan kōngqì.",
+          "speaker": "王静",
+          "zh": "他不仅足球踢得好，性格也不错。",
+          "pinyin": "Tā bùjǐn zúqiú tī de hǎo, xìnggé yě búcuò.",
           "text": {
-            "uz": "Bahorda havo goh sovuq, goh issiq bo'ladi, juda oson shamollab qolasan. Bu paytda issiq yurishga e'tibor berish kerak, yana derazani tez-tez ochib havoni almashtirgan yaxshi.",
-            "ru": "Весной погода то холодная, то тёплая, очень легко простудиться. В это время важно беречь тепло, а ещё лучше часто открывать окна и проветривать.",
-            "tj": "Баҳор ҳаво гоҳ сард, гоҳ гарм мешавад, зуд шамол хӯрдан мумкин. Дар ин вақт бояд гармиро нигоҳ дошт, инчунин беҳтар аст тирезаҳоро зуд-зуд кушода ҳаворо иваз кард."
+            "uz": "U nafaqat futbolni yaxshi o'ynaydi, xarakteri ham yaxshi.",
+            "ru": "Он не только хорошо играет в футбол, но и характер у него хороший.",
+            "tj": "Ӯ на танҳо футболро хуб бозӣ мекунад, хислаташ ҳам хуб аст."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "小夏 va 小雨 chekishning zararini muhokama qiladi",
-        "ru": "小夏 и 小雨 обсуждают вред курения",
-        "tj": "小夏 ва 小雨 зарари тамокукаширо муҳокима мекунанд"
+        "uz": "王静 Li o'qituvchi bilan turmush qurishi haqida gaplashadi",
+        "ru": "王静 говорит с учителем Ли о свадьбе",
+        "tj": "王静 бо муаллими Ли дар бораи издивоҷ суҳбат мекунад"
       },
       "dialogue": [
         {
-          "speaker": "小夏",
-          "zh": "你咳嗽好点儿了吗？医生怎么说的？",
-          "pinyin": "Nǐ késou hǎo diǎnr le ma? Yīshēng zěnme shuō de?",
+          "speaker": "王静",
+          "zh": "李老师，我下个月5号就要结婚了。",
+          "pinyin": "Lǐ lǎoshī, wǒ xià ge yuè wǔ hào jiù yào jiéhūn le.",
           "text": {
-            "uz": "Yo'taling yaxshiroq bo'ldimi? Shifokor nima dedi?",
-            "ru": "Кашель стал лучше? Что сказал врач?",
-            "tj": "Сулфаат беҳтар шуд? Духтур чӣ гуфт?"
+            "uz": "Li ustoz, men keyingi oyning 5-kuni turmushga chiqaman.",
+            "ru": "Учитель Ли, пятого числа следующего месяца я выхожу замуж.",
+            "tj": "Муаллими Ли, рӯзи 5-уми моҳи оянда ман издивоҷ мекунам."
           }
         },
         {
-          "speaker": "小雨",
-          "zh": "还是老样子，他让我以后不要再抽烟了。",
-          "pinyin": "Háishi lǎo yàngzi, tā ràng wǒ yǐhòu búyào zài chōuyān le.",
+          "speaker": "李老师",
+          "zh": "你是在开玩笑吧？你们不是才认识一个月？",
+          "pinyin": "Nǐ shì zài kāi wánxiào ba? Nǐmen bú shì cái rènshi yí ge yuè?",
           "text": {
-            "uz": "Hali ham o'sha holat, u menga bundan keyin chekmaslikni aytdi.",
-            "ru": "Всё по-старому, он сказал мне больше не курить.",
-            "tj": "Ҳоло ҳам ҳамон хел, ӯ гуфт, ки минбаъд тамоку накашам."
+            "uz": "Hazil qilyapsanmi? Sizlar endigina bir oy oldin tanishgansiz-ku?",
+            "ru": "Ты шутишь? Разве вы не познакомились всего месяц назад?",
+            "tj": "Шӯхӣ мекунӣ? Магар шумо ҳамагӣ як моҳ пеш шинос нашудед?"
           }
         },
         {
-          "speaker": "小夏",
-          "zh": "抽烟对身体一点儿好处也没有。",
-          "pinyin": "Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
+          "speaker": "王静",
+          "zh": "虽然我们认识的时间不长，但我从来没这么快乐过。",
+          "pinyin": "Suīrán wǒmen rènshi de shíjiān bù cháng, dàn wǒ cónglái méi zhème kuàilè guo.",
           "text": {
-            "uz": "Chekishning tanaga biror foydasi ham yo'q.",
-            "ru": "Курение совсем не приносит пользы здоровью.",
-            "tj": "Тамокукашӣ ба бадан ҳеҷ фоида надорад."
+            "uz": "Tanishganimizga ko'p bo'lmagan bo'lsa ham, men hech qachon bunchalik xursand bo'lmaganman.",
+            "ru": "Хотя мы знакомы недолго, я никогда не была такой счастливой.",
+            "tj": "Гарчанде мо дер боз шинос нестем, ман ҳеч вақт ин қадар хушбахт набудам."
           }
         },
         {
-          "speaker": "小雨",
-          "zh": "我也知道，可是我觉得抽烟这个动作看上去很帅。",
-          "pinyin": "Wǒ yě zhīdào, kěshì wǒ juéde chōuyān zhège dòngzuò kàn shangqu hěn shuài.",
+          "speaker": "李老师",
+          "zh": "两个人在一起，最好能有共同的兴趣和爱好。",
+          "pinyin": "Liǎng ge rén zài yìqǐ, zuìhǎo néng yǒu gòngtóng de xìngqù hé àihào.",
           "text": {
-            "uz": "Men ham bilaman, lekin chekish harakati ko'rinishidan juda kelishgan tuyuladi.",
-            "ru": "Я тоже знаю, но мне кажется, что жест курения выглядит стильно.",
-            "tj": "Ман ҳам медонам, вале ба назарам ҳаракати тамокукашӣ зебо менамояд."
+            "uz": "Ikki kishi birga bo'lsa, umumiy qiziqish va hobbilari bo'lgani yaxshi.",
+            "ru": "Когда два человека вместе, лучше всего иметь общие интересы и увлечения.",
+            "tj": "Вақте ду нафар якҷо ҳастанд, беҳтараш шавқ ва ҳавасҳои умумӣ дошта бошанд."
           }
         },
         {
-          "speaker": "小夏",
-          "zh": "等你身体出现问题了，后悔就来不及了。",
-          "pinyin": "Děng nǐ shēntǐ chūxiàn wèntí le, hòuhuǐ jiù láibují le.",
+          "speaker": "王静",
+          "zh": "我们有很多共同的爱好，经常一起打球、唱歌、做菜。",
+          "pinyin": "Wǒmen yǒu hěn duō gòngtóng de àihào, jīngcháng yìqǐ dǎqiú, chànggē, zuò cài.",
           "text": {
-            "uz": "Tanangda muammo paydo bo'lgandan keyin pushaymon bo'lish kech bo'ladi.",
-            "ru": "Когда появятся проблемы со здоровьем, сожалеть будет поздно.",
-            "tj": "Вақте дар саломатият мушкил пайдо шавад, пушаймон шудан дер мешавад."
+            "uz": "Bizning umumiy qiziqishlarimiz ko'p, ko'pincha birga to'p o'ynaymiz, qo'shiq aytamiz, ovqat qilamiz.",
+            "ru": "У нас много общих увлечений: мы часто вместе играем в мяч, поем и готовим.",
+            "tj": "Мо ҳавасҳои муштараки зиёд дорем: бисёр вақт якҷо тӯббозӣ, сурудхонӣ ва хӯрокпазӣ мекунем."
           }
         },
         {
-          "speaker": "小雨",
-          "zh": "其实家人也一直反对我抽烟，我自己却觉得没什么。但最近总是咳嗽，所以我有些担心了。",
-          "pinyin": "Qíshí jiārén yě yìzhí fǎnduì wǒ chōuyān, wǒ zìjǐ què juéde méi shénme. Dàn zuìjìn zǒng shì késou, suǒyǐ wǒ yǒuxiē dānxīn le.",
+          "speaker": "李老师",
+          "zh": "看来你真的找到适合你的人了。祝你们幸福！",
+          "pinyin": "Kànlái nǐ zhēn de zhǎodào shìhé nǐ de rén le. Zhù nǐmen xìngfú!",
           "text": {
-            "uz": "Aslida oilam ham doim chekishimga qarshi, men esa buni hech narsa emas deb o'ylardim. Lekin oxirgi payt doim yo'talyapman, shuning uchun biroz xavotirdaman.",
-            "ru": "Вообще семья всегда была против моего курения, а я думал, что это ничего страшного. Но в последнее время я всё время кашляю, поэтому начал беспокоиться.",
-            "tj": "Дар асл оилаам ҳамеша зидди тамокукашии ман буд, вале худам фикр мекардам ҳеҷ гап нест. Аммо вақтҳои охир ҳамеша сулфа мекунам, бинобар ин каме хавотир шудам."
-          }
-        },
-        {
-          "speaker": "小夏",
-          "zh": "抽烟不仅对自己没好处，还会影响周围人的身体健康。为了你和你的家人，别再抽了。",
-          "pinyin": "Chōuyān bùjǐn duì zìjǐ méi hǎochù, hái huì yǐngxiǎng zhōuwéi rén de shēntǐ jiànkāng. Wèile nǐ hé nǐ de jiārén, bié zài chōu le.",
-          "text": {
-            "uz": "Chekish nafaqat o'zingga foydasiz, atrofdagilar sog'lig'iga ham ta'sir qiladi. O'zing va oilang uchun boshqa chekma.",
-            "ru": "Курение не только тебе не полезно, оно ещё влияет на здоровье окружающих. Ради себя и семьи больше не кури.",
-            "tj": "Тамокукашӣ на танҳо ба худат фоида надорад, ба саломатии атрофиён ҳам таъсир мекунад. Барои худат ва оилаат дигар накаш."
+            "uz": "Demak sen haqiqatan ham o'zingga mos odamni topibsan. Sizlarga baxt tilayman!",
+            "ru": "Похоже, ты действительно нашла подходящего человека. Желаю вам счастья!",
+            "tj": "Ба назар мерасад, ки ту воқеан шахси мувофиқро ёфтаӣ. Ба шумо хушбахтӣ мехоҳам!"
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "小李 va 小林 kompyuter oldida uzoq o'tirish haqida gaplashadi",
-        "ru": "小李 и 小林 говорят о долгой работе за компьютером",
-        "tj": "小李 ва 小林 дар бораи дароз нишастан назди компютер гуфтугӯ мекунанд"
+        "uz": "高老师 va 李老师 turmush hayoti haqida gaplashadi",
+        "ru": "Учитель Гао и учитель Ли говорят о семейной жизни",
+        "tj": "Муаллими Гао ва муаллими Ли дар бораи зиндагии оилавӣ суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "小李",
-          "zh": "我最近眼睛总是跳，大夫说是因为我长时间看电脑，眼睛太累。",
-          "pinyin": "Wǒ zuìjìn yǎnjing zǒng shì tiào, dàifu shuō shì yīnwèi wǒ cháng shíjiān kàn diànnǎo, yǎnjing tài lèi.",
+          "speaker": "高老师",
+          "zh": "听说您跟妻子结婚快二十年了？",
+          "pinyin": "Tīngshuō nín gēn qīzi jiéhūn kuài èrshí nián le?",
           "text": {
-            "uz": "Oxirgi payt ko'zim tez-tez uchyapti, shifokor uzoq vaqt kompyuterga qaraganim uchun ko'zim juda charchaganini aytdi.",
-            "ru": "В последнее время у меня часто дёргается глаз, врач сказал, что это из-за долгой работы за компьютером: глаза слишком устали.",
-            "tj": "Вақтҳои охир чашмам зуд-зуд мепарад, духтур гуфт, ки аз дароз ба компютер нигоҳ кардан аст, чашмҳо хеле хаста шудаанд."
+            "uz": "Eshitishimcha, siz rafiqangiz bilan turmush qurganingizga deyarli yigirma yil bo'libdi?",
+            "ru": "Слышал, вы с женой женаты почти двадцать лет?",
+            "tj": "Шунидам, ки шумо бо ҳамсаратон қариб бист сол боз издивоҷ кардаед?"
           }
         },
         {
-          "speaker": "小林",
-          "zh": "长时间坐在电脑前面工作，眼睛很容易累。最好是每过一小时就休息休息，然后再开始工作。",
-          "pinyin": "Cháng shíjiān zuò zài diànnǎo qiánmian gōngzuò, yǎnjing hěn róngyì lèi. Zuìhǎo shì měi guò yì xiǎoshí jiù xiūxi xiūxi, ránhòu zài kāishǐ gōngzuò.",
+          "speaker": "李老师",
+          "zh": "到6月9号，我们就结婚二十年了。这么多年，我们的生活一直挺幸福的。",
+          "pinyin": "Dào liù yuè jiǔ hào, wǒmen jiù jiéhūn èrshí nián le. Zhème duō nián, wǒmen de shēnghuó yìzhí tǐng xìngfú de.",
           "text": {
-            "uz": "Kompyuter oldida uzoq ishlaganda ko'z oson charchaydi. Har bir soatdan keyin biroz dam olib, keyin yana ishlagan yaxshi.",
-            "ru": "Если долго сидеть за компьютером, глаза легко устают. Лучше каждый час немного отдыхать, а потом снова работать.",
-            "tj": "Агар муддати дароз назди компютер кор кунӣ, чашм зуд хаста мешавад. Беҳтар аст ҳар як соат каме истироҳат карда, баъд корро давом диҳӣ."
+            "uz": "6-iyunga kelib turmush qurganimizga yigirma yil bo'ladi. Shu yillar davomida hayotimiz doim ancha baxtli bo'lgan.",
+            "ru": "К 9 июня будет двадцать лет со дня нашей свадьбы. Все эти годы наша жизнь была довольно счастливой.",
+            "tj": "То 9-уми июн издивоҷи мо бистсола мешавад. Дар ин солҳо зиндагии мо ҳамеша хеле хушбахтона буд."
           }
         },
         {
-          "speaker": "小李",
-          "zh": "医生也这么说，他还告诉我要多向远处看看，尤其是多看看绿色的植物。",
-          "pinyin": "Yīshēng yě zhème shuō, tā hái gàosu wǒ yào duō xiàng yuǎnchù kàn kan, yóuqí shì duō kàn kan lǜsè de zhíwù.",
+          "speaker": "高老师",
+          "zh": "我和丈夫刚结婚的时候，每天都觉得很新鲜，在一起有说不完的话。但是现在……",
+          "pinyin": "Wǒ hé zhàngfu gāng jiéhūn de shíhou, měi tiān dōu juéde hěn xīnxiān, zài yìqǐ yǒu shuō bu wán de huà. Dànshì xiànzài...",
           "text": {
-            "uz": "Shifokor ham shunday dedi, u yana ko'proq uzoqqa, ayniqsa yashil o'simliklarga qarashim kerakligini aytdi.",
-            "ru": "Врач тоже так сказал, ещё посоветовал чаще смотреть вдаль, особенно на зелёные растения.",
-            "tj": "Духтур ҳам ҳаминро гуфт, боз маслиҳат дод, ки бештар ба дурӣ, хусусан ба растаниҳои сабз нигоҳ кунам."
+            "uz": "Erim bilan endi turmush qurgan paytimda har kuni hamma narsa yangi tuyulardi, birga bo'lsak gapimiz tugamasdi. Lekin hozir...",
+            "ru": "Когда мы с мужем только поженились, каждый день казался новым, и нам было о чем говорить без конца. Но сейчас...",
+            "tj": "Вақте ману шавҳарам нав издивоҷ карда будем, ҳар рӯз ҳама чиз нав менамуд ва суханамон тамом намешуд. Аммо ҳоло..."
           }
         },
         {
-          "speaker": "小林",
-          "zh": "长时间对着电脑不仅对眼睛不好，身体也会不舒服。研究发现，如果人一天静坐超过6小时，就会影响身体健康。",
-          "pinyin": "Cháng shíjiān duì zhe diànnǎo bùjǐn duì yǎnjing bù hǎo, shēntǐ yě huì bù shūfu. Yánjiū fāxiàn, rúguǒ rén yì tiān jìngzuò chāoguò liù xiǎoshí, jiù huì yǐngxiǎng shēntǐ jiànkāng.",
+          "speaker": "李老师",
+          "zh": "两个人共同生活，只有浪漫和新鲜感是不够的。",
+          "pinyin": "Liǎng ge rén gòngtóng shēnghuó, zhǐyǒu làngmàn hé xīnxiāngǎn shì bú gòu de.",
           "text": {
-            "uz": "Kompyuterga uzoq tikilish nafaqat ko'zga yomon, tana ham noqulay bo'ladi. Tadqiqotga ko'ra, odam bir kunda 6 soatdan ortiq jim o'tirsa, sog'lig'iga ta'sir qiladi.",
-            "ru": "Долго сидеть перед компьютером плохо не только для глаз, тело тоже чувствует дискомфорт. Исследования показывают: если человек сидит неподвижно больше 6 часов в день, это влияет на здоровье.",
-            "tj": "Дароз назди компютер будан на танҳо барои чашм бад аст, бадан ҳам нороҳат мешавад. Таҳқиқот нишон медиҳад: агар одам дар як рӯз зиёда аз 6 соат беҳаракат нишинад, ба саломатӣ таъсир мекунад."
+            "uz": "Ikki kishi birga yashasa, faqat romantika va yangilik hissi yetarli emas.",
+            "ru": "Для совместной жизни двух людей одной романтики и новизны недостаточно.",
+            "tj": "Барои зиндагии муштараки ду нафар танҳо романтика ва ҳисси навӣ кофӣ нест."
           }
         },
         {
-          "speaker": "小李",
-          "zh": "是啊！像咱们这些久坐办公室的人要注意，有时间应该多站起来活动活动。",
-          "pinyin": "Shì a! Xiàng zánmen zhèxiē jiǔ zuò bàngōngshì de rén yào zhùyì, yǒu shíjiān yīnggāi duō zhàn qǐlai huódòng huódòng.",
+          "speaker": "高老师",
+          "zh": "您说的对！我现在每天看到的都是他的缺点。",
+          "pinyin": "Nín shuō de duì! Wǒ xiànzài měi tiān kàndào de dōu shì tā de quēdiǎn.",
           "text": {
-            "uz": "Ha! Biz kabi ofisda uzoq o'tiradigan odamlar e'tibor berishi kerak, vaqt bo'lsa ko'proq turib harakat qilish kerak.",
-            "ru": "Да! Людям вроде нас, которые долго сидят в офисе, нужно быть внимательнее; когда есть время, надо вставать и двигаться.",
-            "tj": "Ҳа! Одамоне мисли мо, ки дар офис дер менишинанд, бояд диққат кунанд; вақт бошад, бештар хеста ҳаракат кардан лозим."
+            "uz": "To'g'ri aytasiz! Men hozir har kuni faqat uning kamchiliklarini ko'raman.",
+            "ru": "Вы правы! Сейчас я каждый день вижу только его недостатки.",
+            "tj": "Шумо дуруст мегӯед! Ҳоло ман ҳар рӯз фақат камбудиҳои ӯро мебинам."
           }
         },
         {
-          "speaker": "小林",
-          "zh": "好，咱们午饭后就去附近的公园散散步吧。",
-          "pinyin": "Hǎo, zánmen wǔfàn hòu jiù qù fùjìn de gōngyuán sàn san bù ba.",
+          "speaker": "李老师",
+          "zh": "两个人在一起时间长了，就会有很多问题。只有接受了他的缺点，你们才能更好地一起生活。",
+          "pinyin": "Liǎng ge rén zài yìqǐ shíjiān cháng le, jiù huì yǒu hěn duō wèntí. Zhǐyǒu jiēshòu le tā de quēdiǎn, nǐmen cái néng gèng hǎo de yìqǐ shēnghuó.",
           "text": {
-            "uz": "Mayli, tushlikdan keyin yaqin bog'ga biroz sayr qilgani boraylik.",
-            "ru": "Хорошо, после обеда пойдём немного прогуляемся в ближайший парк.",
-            "tj": "Хуб, баъди хӯроки нисфирӯзӣ ба боғи наздик каме сайр кунем."
+            "uz": "Ikki kishi uzoq vaqt birga bo'lsa, ko'p muammo bo'ladi. Faqat uning kamchiliklarini qabul qilgandagina yaxshiroq birga yashay olasizlar.",
+            "ru": "Когда два человека долго вместе, появляется много проблем. Только приняв его недостатки, вы сможете лучше жить вместе.",
+            "tj": "Вақте ду нафар муддати дароз якҷо бошанд, мушкилоти зиёд пайдо мешавад. Танҳо баъд аз қабул кардани камбудиҳои ӯ шумо метавонед беҳтар якҷо зиндагӣ кунед."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Sog'liq faqat kasal bo'lmaslik emasligi haqida matn",
-        "ru": "Текст о том, что здоровье - это не только отсутствие болезни",
-        "tj": "Матн дар бораи он ки саломатӣ танҳо бемор набудан нест"
+        "uz": "Romantik sevgi haqida matn",
+        "ru": "Текст о романтической любви",
+        "tj": "Матн дар бораи муҳаббати романтикӣ"
       },
       "dialogue": [
         {
           "speaker": "旁白",
-          "zh": "每个人都希望自己健康，那么什么才是健康呢？过去，人们认为健康就是指身体不生病。但是，现在人们认识到，健康还指精神上的健康。只有身体和精神都健康，才算是真正的健康。有一位教授用数字来说明健康有多么重要：要是健康是1，其他都是1后面的0；如果没有1，不管有多少0也没用。所以我们平时一定要注意锻炼，别等健康出问题了才后悔。",
-          "pinyin": "Měi ge rén dōu xīwàng zìjǐ jiànkāng, nàme shénme cái shì jiànkāng ne? Guòqù, rénmen rènwéi jiànkāng jiùshì zhǐ shēntǐ bù shēngbìng. Dànshì, xiànzài rénmen rènshi dào, jiànkāng hái zhǐ jīngshén shàng de jiànkāng.",
+          "zh": "很多女孩子羡慕浪漫的爱情。",
+          "pinyin": "Hěn duō nǚháizi xiànmù làngmàn de àiqíng.",
           "text": {
-            "uz": "Har bir odam sog'lom bo'lishni xohlaydi, unda sog'liq nima? Avvallari odamlar sog'liq tananing kasal bo'lmasligi deb o'ylardi. Hozir esa sog'liq ruhiy sog'liqni ham anglatishini tushunishadi. Tana ham ruh ham sog'lom bo'lsagina haqiqiy sog'liq bo'ladi. Bir professor sog'liq muhimligini raqam bilan tushuntirgan: agar sog'liq 1 bo'lsa, qolgan hammasi uning ortidagi 0; 1 bo'lmasa, qancha 0 bo'lsa ham foydasi yo'q. Shuning uchun odatda mashq qilishga e'tibor berish kerak, sog'liq muammoga aylangandan keyin pushaymon bo'lmang.",
-            "ru": "Каждый хочет быть здоровым. Но что такое здоровье? Раньше люди думали, что здоровье - это когда тело не болеет. Сейчас люди понимают, что здоровье включает и психическое состояние. Только когда здоровы и тело, и дух, это настоящее здоровье. Один профессор объяснил важность здоровья цифрами: если здоровье - это 1, всё остальное - нули после него; если нет 1, сколько бы нулей ни было, пользы нет. Поэтому обычно нужно заниматься физической активностью и не ждать проблем со здоровьем, чтобы сожалеть.",
-            "tj": "Ҳар кас мехоҳад солим бошад. Пас саломатӣ чист? Пештар одамон фикр мекарданд, саломатӣ яъне бадан бемор нест. Ҳоло одамон мефаҳманд, ки саломатӣ ҳолати равониро ҳам дар бар мегирад. Танҳо вақте бадан ва руҳ ҳарду солиманд, саломатии ҳақиқӣ аст. Як профессор бо рақамҳо фаҳмонд, ки саломатӣ чӣ қадар муҳим аст: агар саломатӣ 1 бошад, дигар чизҳо сифрҳои баъди онанд; агар 1 набошад, ҳар қадар сифр бошад ҳам фоида надорад. Бинобар ин одатан бояд ба машқ диққат кунем ва мунтазир нашавем, ки мушкил пайдо шуда баъд пушаймон шавем."
+            "uz": "Ko'p qizlar romantik sevgiga havas qiladi.",
+            "ru": "Многие девушки восхищаются романтической любовью.",
+            "tj": "Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "那什么是浪漫呢？年轻人说：浪漫是她想要月亮时，你不会给她星星；中年人说：浪漫是即使晚上加班到零点，到家时，自己家里也还亮着灯；老年人说：浪漫其实就像歌中唱的那样，“我能想到最浪漫的事，就是和你一起慢慢变老。”其实，让我们感动的，就是生活中简单的爱情。有时候，简单就是最大的幸福。",
+          "pinyin": "Nà shénme shì làngmàn ne? Niánqīngrén shuō: làngmàn shì tā xiǎng yào yuèliang shí, nǐ bú huì gěi tā xīngxing; zhōngnián rén shuō: làngmàn shì jíshǐ wǎnshang jiābān dào língdiǎn, dào jiā shí, zìjǐ jiā lǐ yě hái liàngzhe dēng; lǎonián rén shuō: làngmàn qíshí jiù xiàng gē zhōng chàng de nàyàng, 'wǒ néng xiǎngdào zuì làngmàn de shì, jiùshì hé nǐ yìqǐ mànmàn biàn lǎo.' Qíshí, ràng wǒmen gǎndòng de, jiùshì shēnghuó zhōng jiǎndān de àiqíng. Yǒu shíhou, jiǎndān jiùshì zuì dà de xìngfú.",
+          "text": {
+            "uz": "Romantika nima o'zi? Yoshlar aytadi: romantika - u oy so'rasa, unga yulduz bermaslik; o'rta yoshlilar aytadi: romantika - hatto kechasi yarimgacha ishlasa ham, uyga kelganda uy chirog'i yonib turishi; keksalar aytadi: romantika qo'shiqdagi kabi, 'men tasavvur qila oladigan eng romantik ish - sen bilan birga asta qarish'. Aslida bizni ta'sirlantiradigan narsa hayotdagi oddiy sevgi. Ba'zan oddiylik eng katta baxtdir.",
+            "ru": "Так что такое романтика? Молодые говорят: романтика - это когда она просит луну, а ты не даешь ей звезды; люди среднего возраста говорят: романтика - это когда даже после сверхурочной работы до полуночи дома все еще горит свет; пожилые говорят: романтика похожа на слова песни: 'самое романтичное, что я могу представить, - медленно стареть вместе с тобой'. На самом деле нас трогает простая любовь в повседневной жизни. Иногда простота и есть самое большое счастье.",
+            "tj": "Пас романтика чист? Ҷавонон мегӯянд: романтика он аст, ки вақте ӯ моҳро мехоҳад, ту ба ӯ ситора намедиҳӣ; миёнсолон мегӯянд: романтика он аст, ки ҳатто шаб то нисфи шаб изофакорӣ кунӣ, вақте ба хона мерасӣ, чароғи хонаат ҳанӯз фурӯзон аст; пиронсолон мегӯянд: романтика мисли суруд аст: 'романтиктарин чизе, ки тасаввур мекунам, ин бо ту оҳиста пир шудан аст'. Дар асл, чизе ки моро таъсир мекунад, муҳаббати одии зиндагист. Баъзан одӣ будан бузургтарин хушбахтист."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Sayr qilish eng oddiy mashq ekanligi haqida matn",
-        "ru": "Текст о прогулке как самом простом виде тренировки",
-        "tj": "Матн дар бораи сайр ҳамчун содатарин машқ"
+        "uz": "Turmush va xarakter haqida matn",
+        "ru": "Текст о браке и характере",
+        "tj": "Матн дар бораи издивоҷ ва хислат"
       },
       "dialogue": [
         {
           "speaker": "旁白",
-          "zh": "我听一位医生说过一句话：“最好的医生是自己，最好的药是时间，最好的运动是散步。”前两条我理解得不深，最后一条我完全同意。散步是生活中最简单的锻炼方法，既可以活动身体，又可以减肥，而且不会像跑步那样辛苦。晚饭后，一家人一起出去散散步，是一件很幸福的事情。肚子吃饱了需要活动，家人忙了一天需要交流，夫妻说说一天的工作能加深感情，听孩子谈谈学校里有意思的事，一天的烦恼就都跑掉了。",
-          "pinyin": "Wǒ tīng yí wèi yīshēng shuōguo yí jù huà: Zuì hǎo de yīshēng shì zìjǐ, zuì hǎo de yào shì shíjiān, zuì hǎo de yùndòng shì sànbù.",
+          "zh": "说到结婚，人们就会很自然地想起爱情。爱情是结婚的重要原因，但两个人共同生活，不仅需要浪漫的爱情，更需要性格上互相吸引。",
+          "pinyin": "Shuō dào jiéhūn, rénmen jiù huì hěn zìrán de xiǎngqǐ àiqíng. Àiqíng shì jiéhūn de zhòngyào yuányīn, dàn liǎng ge rén gòngtóng shēnghuó, bùjǐn xūyào làngmàn de àiqíng, gèng xūyào xìnggé shang hùxiāng xīyǐn.",
           "text": {
-            "uz": "Men bir shifokordan shunday gap eshitganman: eng yaxshi shifokor - o'zing, eng yaxshi dori - vaqt, eng yaxshi sport - sayr. Birinchi ikki fikrni chuqur tushunmayman, lekin oxirgisiga to'liq qo'shilaman. Sayr hayotdagi eng oddiy mashq: ham tanani harakatlantiradi, ham ozishga yordam beradi, yugurishdek mashaqqatli emas. Kechki ovqatdan keyin oila bilan sayr qilish juda baxtli ish. Qorin to'yganda harakat kerak, oila a'zolari kun bo'yi band bo'lgach muloqot kerak, er-xotin ish haqida gaplashsa munosabat chuqurlashadi, bola maktabdagi qiziq voqealarni aytsa, kunlik tashvishlar yo'qoladi.",
-            "ru": "Я слышал от одного врача фразу: лучший врач - ты сам, лучшее лекарство - время, лучший спорт - прогулка. Первые две мысли я понимаю не глубоко, но с последней полностью согласен. Прогулка - самый простой способ тренировки: она двигает тело, помогает худеть и не такая тяжёлая, как бег. После ужина всей семьёй выйти погулять - очень счастливое дело. После еды телу нужно движение, семье после занятого дня нужно общение; разговор супругов о работе укрепляет отношения, рассказы ребёнка о школе уносят дневные заботы.",
-            "tj": "Ман аз як духтур чунин сухан шунидаам: беҳтарин духтур худат ҳастӣ, беҳтарин дору вақт аст, беҳтарин варзиш сайр аст. Ду фикри аввалро чандон чуқур намефаҳмам, вале бо охирин пурра розиям. Сайр содатарин машқ аст: ҳам баданро ҳаракат медиҳад, ҳам вазнро кам мекунад ва мисли давидан заҳматнок нест. Баъди шом оила якҷоя сайр кунад, кори хушбахтона аст. Баъди сер шудан бадан ҳаракат мехоҳад, аҳли оила баъди рӯзи серкор муошират мехоҳанд; гуфтугӯи ҳамсарҳо муносибатро амиқ мекунад, сухани кӯдак аз мактаб ташвишҳои рӯзро мебарад."
+            "uz": "Turmush qurish haqida gap ketganda, odamlar tabiiy ravishda sevgini eslaydi. Sevgi turmushning muhim sababi, lekin ikki kishi birga yashashi uchun nafaqat romantik sevgi, balki xarakter jihatidan o'zaro jalb qilishi ham ko'proq kerak.",
+            "ru": "Когда речь заходит о браке, люди естественно вспоминают любовь. Любовь - важная причина брака, но для совместной жизни двух людей нужна не только романтическая любовь, еще важнее взаимное притяжение характеров.",
+            "tj": "Вақте сухан дар бораи издивоҷ меравад, одамон табиатан муҳаббатро ба ёд меоранд. Муҳаббат сабаби муҳими издивоҷ аст, аммо барои зиндагии муштараки ду нафар на танҳо муҳаббати романтикӣ, балки ҷалби ҳамдигар аз ҷиҳати хислат бештар лозим аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "我丈夫是个很幽默的人。即使是很普通的事情，从他嘴里说出来也会变得很有意思。在我难过的时候，他总是有办法让我高兴起来。而且他的脾气也不错，结婚快十年了，我们俩几乎没因为什么事红过脸，很多人都特别羡慕我们。",
+          "pinyin": "Wǒ zhàngfu shì ge hěn yōumò de rén. Jíshǐ shì hěn pǔtōng de shìqing, cóng tā zuǐ lǐ shuō chūlai yě huì biàn de hěn yǒu yìsi. Zài wǒ nánguò de shíhou, tā zǒng shì yǒu bànfǎ ràng wǒ gāoxìng qǐlai. Érqiě tā de píqi yě búcuò, jiéhūn kuài shí nián le, wǒmen liǎ jīhū méi yīnwèi shénme shì hóng guo liǎn, hěn duō rén dōu tèbié xiànmù wǒmen.",
+          "text": {
+            "uz": "Erim juda hazilkash odam. Hatto juda oddiy narsalar ham uning og'zidan chiqqanda qiziqarli bo'lib ketadi. Men xafa bo'lganimda u meni xursand qilishning yo'lini topadi. Bundan tashqari fe'li ham yaxshi: turmush qurganimizga qariyb o'n yil bo'ldi, deyarli hech narsa uchun yuzimiz qizargancha urishmaganmiz, ko'p odamlar bizga juda havas qiladi.",
+            "ru": "Мой муж очень остроумный человек. Даже обычные вещи из его уст становятся интересными. Когда мне грустно, он всегда находит способ поднять мне настроение. Кроме того, у него хороший характер: мы женаты почти десять лет и почти ни разу не ссорились до красноты лица, многие нам особенно завидуют.",
+            "tj": "Шавҳарам шахси хеле шӯхтабъ аст. Ҳатто чизҳои одӣ аз даҳони ӯ ҷолиб мешаванд. Вақте ман ғамгин мешавам, ӯ ҳамеша роҳи хурсанд кардани маро меёбад. Ғайр аз ин, хулқаш ҳам хуб аст: қариб даҳ сол боз оиладорем ва қариб барои ҳеҷ чиз ҷанҷоли сахт накардаем, бисёр одамон ба мо ҳавас мекунанд."
           }
         }
       ]
@@ -773,36 +342,22 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "流血",
-            "pinyin": "liú xiě",
+            "zh": "亮",
+            "pinyin": "liàng",
             "pos": "v.",
             "meaning": {
-              "uz": "qon ketmoq",
-              "ru": "кровоточить",
-              "tj": "хун рафтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "擦",
-            "pinyin": "cā",
-            "pos": "v.",
-            "meaning": {
-              "uz": "artmoq",
-              "ru": "вытирать",
-              "tj": "пок кардан, молидан"
+              "uz": "yorishmoq, chiroq yonmoq",
+              "ru": "светиться, гореть",
+              "tj": "равшан будан, фурӯзон будан"
             }
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "cā qaysi ieroglif?",
-            "ru": "Какой иероглиф читается cā?",
-            "tj": "cā кадом иероглиф аст?"
+            "uz": "liàng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liàng?",
+            "tj": "liàng кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -810,62 +365,38 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "气候",
-            "擦",
-            "流血",
-            "估计"
+            "印象",
+            "法律",
+            "亮",
+            "俩"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "擦 = artmoq (cā)",
-            "ru": "擦 = вытирать (cā)",
-            "tj": "擦 = пок кардан, молидан (cā)"
+            "uz": "亮 = yorishmoq, chiroq yonmoq (liàng)",
+            "ru": "亮 = светиться, гореть (liàng)",
+            "tj": "亮 = равшан будан, фурӯзон будан (liàng)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "气候",
-            "pinyin": "qìhòu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "iqlim",
-              "ru": "климат",
-              "tj": "иқлим"
-            }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "气候",
-          "pinyin": "qìhòu",
-          "translation": {
-            "uz": "iqlim",
-            "ru": "климат",
-            "tj": "иқлим"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "估计",
-            "pinyin": "gūjì",
+            "no": 2,
+            "zh": "感动",
+            "pinyin": "gǎndòng",
             "pos": "v.",
             "meaning": {
-              "uz": "taxmin qilmoq",
-              "ru": "предполагать, оценивать",
-              "tj": "тахмин кардан"
+              "uz": "ta'sirlantirmoq",
+              "ru": "тронуть, растрогать",
+              "tj": "таъсир кардан"
             }
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "估计 talaffuzini tanlang:",
-            "ru": "Выберите произношение 估计:",
-            "tj": "Талаффузи 估计-ро интихоб кунед:"
+            "uz": "感动 talaffuzini tanlang:",
+            "ru": "Выберите произношение 感动:",
+            "tj": "Талаффузи 感动-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -873,52 +404,48 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "gūjì",
-            "qìhòu",
-            "liú xiě",
-            "cā"
+            "yìnxiàng",
+            "gǎndòng",
+            "fǎlǜ",
+            "liǎ"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "估计 — gūjì",
-            "ru": "估计 — gūjì",
-            "tj": "估计 — gūjì"
+            "uz": "感动 — gǎndòng",
+            "ru": "感动 — gǎndòng",
+            "tj": "感动 — gǎndòng"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "咳嗽",
-            "pinyin": "késou",
-            "pos": "v.",
+            "no": 3,
+            "zh": "自然",
+            "pinyin": "zìrán",
+            "pos": "adv.",
             "meaning": {
-              "uz": "yo'talmoq",
-              "ru": "кашлять",
-              "tj": "сулфа кардан"
+              "uz": "tabiiy ravishda",
+              "ru": "естественно",
+              "tj": "табиӣ равишда"
             }
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "严重",
-            "pinyin": "yánzhòng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "jiddiy, og'ir",
-              "ru": "серьёзный",
-              "tj": "ҷиддӣ, вазнин"
-            }
+          "type": "pronunciation",
+          "phrase": "自然",
+          "pinyin": "zìrán",
+          "translation": {
+            "uz": "tabiiy ravishda",
+            "ru": "естественно",
+            "tj": "табиӣ равишда"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'jiddiy, og'ir' xitoycha qaysi?",
-            "ru": "'серьёзный' по-китайски?",
-            "tj": "'ҷиддӣ, вазнин' ба хитоӣ кадом аст?"
+            "uz": "'tabiiy ravishda' xitoycha qaysi?",
+            "ru": "'естественно' по-китайски?",
+            "tj": "'табиӣ равишда' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -926,43 +453,29 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "严重",
-            "流血",
-            "气候",
-            "擦"
+            "法律",
+            "印象",
+            "自然",
+            "俩"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "jiddiy, og'ir = 严重 (yánzhòng)",
-            "ru": "серьёзный = 严重 (yánzhòng)",
-            "tj": "ҷиддӣ, вазнин = 严重 (yánzhòng)"
+            "uz": "tabiiy ravishda = 自然 (zìrán)",
+            "ru": "естественно = 自然 (zìrán)",
+            "tj": "табиӣ равишда = 自然 (zìrán)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 7,
-            "zh": "窗户",
-            "pinyin": "chuānghu",
+            "no": 4,
+            "zh": "原因",
+            "pinyin": "yuányīn",
             "pos": "n.",
             "meaning": {
-              "uz": "deraza",
-              "ru": "окно",
-              "tj": "тиреза"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "空气",
-            "pinyin": "kōngqì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "havo",
-              "ru": "воздух",
-              "tj": "ҳаво"
+              "uz": "sabab",
+              "ru": "причина",
+              "tj": "сабаб"
             }
           }
         },
@@ -973,55 +486,27 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "空气",
-          "pinyin": "kōngqì",
+          "audio_text": "原因",
+          "pinyin": "yuányīn",
           "options": [
-            "气候",
-            "流血",
-            "空气",
-            "擦"
+            "俩",
+            "法律",
+            "原因",
+            "印象"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "空气 — havo (kōngqì)",
-            "ru": "空气 — воздух (kōngqì)",
-            "tj": "空气 — ҳаво (kōngqì)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "抽烟",
-            "pinyin": "chōu yān",
-            "pos": "v.",
-            "meaning": {
-              "uz": "chekmoq",
-              "ru": "курить",
-              "tj": "тамоку кашидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "动作",
-            "pinyin": "dòngzuò",
-            "pos": "n.",
-            "meaning": {
-              "uz": "harakat",
-              "ru": "движение, действие",
-              "tj": "ҳаракат"
-            }
+            "uz": "原因 — sabab (yuányīn)",
+            "ru": "原因 — причина (yuányīn)",
+            "tj": "原因 — сабаб (yuányīn)"
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "动作 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 动作:",
-            "tj": "Маънои калимаи 动作-ро интихоб кунед:"
+            "uz": "亮 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 亮:",
+            "tj": "Маънои калимаи 亮-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -1030,66 +515,66 @@
           },
           "options": [
             {
-              "uz": "iqlim",
-              "ru": "климат",
-              "tj": "иқлим"
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
             },
             {
-              "uz": "qon ketmoq",
-              "ru": "кровоточить",
-              "tj": "хун рафтан"
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
             },
             {
-              "uz": "harakat",
-              "ru": "движение, действие",
-              "tj": "ҳаракат"
+              "uz": "yorishmoq, chiroq yonmoq",
+              "ru": "светиться, гореть",
+              "tj": "равшан будан, фурӯзон будан"
             },
             {
-              "uz": "artmoq",
-              "ru": "вытирать",
-              "tj": "пок кардан, молидан"
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
             }
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "动作 = harakat (dòngzuò)",
-            "ru": "动作 = движение, действие (dòngzuò)",
-            "tj": "动作 = ҳаракат (dòngzuò)"
+            "uz": "亮 = yorishmoq, chiroq yonmoq (liàng)",
+            "ru": "亮 = светиться, гореть (liàng)",
+            "tj": "亮 = равшан будан, фурӯзон будан (liàng)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "流血",
+              "亮",
               {
-                "uz": "qon ketmoq",
-                "ru": "кровоточить",
-                "tj": "хун рафтан"
+                "uz": "yorishmoq, chiroq yonmoq",
+                "ru": "светиться, гореть",
+                "tj": "равшан будан, фурӯзон будан"
               }
             ],
             [
-              "擦",
+              "感动",
               {
-                "uz": "artmoq",
-                "ru": "вытирать",
-                "tj": "пок кардан, молидан"
+                "uz": "ta'sirlantirmoq",
+                "ru": "тронуть, растрогать",
+                "tj": "таъсир кардан"
               }
             ],
             [
-              "气候",
+              "自然",
               {
-                "uz": "iqlim",
-                "ru": "климат",
-                "tj": "иқлим"
+                "uz": "tabiiy ravishda",
+                "ru": "естественно",
+                "tj": "табиӣ равишда"
               }
             ],
             [
-              "估计",
+              "原因",
               {
-                "uz": "taxmin qilmoq",
-                "ru": "предполагать, оценивать",
-                "tj": "тахмин кардан"
+                "uz": "sabab",
+                "ru": "причина",
+                "tj": "сабаб"
               }
             ]
           ],
@@ -1104,301 +589,6 @@
     {
       "section_no": 2,
       "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 1,
-            "title": {
-              "uz": "taxmin qilish",
-              "ru": "предполагать",
-              "tj": "тахмин кардан"
-            },
-            "title_zh": "估计",
-            "rule": {
-              "uz": "Aniq dalil bo'lmaganda sabab yoki natijani ehtimol sifatida aytadi.",
-              "ru": "Используется, когда причина или результат называются как предположение.",
-              "tj": "Вақте сабаб ё натиҷа тахминӣ гуфта мешавад, истифода мешавад."
-            },
-            "examples": [
-              {
-                "zh": "我还不习惯北方的气候，估计是天气太干。",
-                "pinyin": "Wǒ hái bù xíguàn běifāng de qìhòu, gūjì shì tiānqì tài gān.",
-                "translation": {
-                  "uz": "Men hali shimol iqlimiga ko'nikmadim, taxminan havo juda quruq.",
-                  "ru": "Я ещё не привык к северному климату, наверное, воздух слишком сухой.",
-                  "tj": "Ман ҳанӯз ба иқлими шимол одат накардаам, шояд ҳаво хеле хушк аст."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "我还不习惯北方的____，估计是天气太干。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "气候",
-            "估计",
-            "流血",
-            "擦"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 气候 (qìhòu) — iqlim",
-            "ru": "Верно: 气候 (qìhòu) — климат",
-            "tj": "Дуруст: 气候 (qìhòu) — иқлим"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "ulgurmaslik, kech bo'lish",
-              "ru": "не успеть, быть слишком поздно",
-              "tj": "вақт нарасидан, дер шудан"
-            },
-            "title_zh": "来不及",
-            "rule": {
-              "uz": "Biror ishni qilishga vaqt yetmasligini yoki keyin pushaymon bo'lish kech bo'lishini bildiradi.",
-              "ru": "Показывает, что времени на действие не хватит или сожалеть будет уже поздно.",
-              "tj": "Нишон медиҳад, ки барои амал вақт намерасад ё баъд пушаймон шудан дер мешавад."
-            },
-            "examples": [
-              {
-                "zh": "等你身体出现问题了，后悔就来不及了。",
-                "pinyin": "Děng nǐ shēntǐ chūxiàn wèntí le, hòuhuǐ jiù láibují le.",
-                "translation": {
-                  "uz": "Tanangda muammo paydo bo'lgandan keyin pushaymon bo'lish kech bo'ladi.",
-                  "ru": "Когда со здоровьем появятся проблемы, сожалеть будет уже поздно.",
-                  "tj": "Вақте дар саломатият мушкил пайдо шавад, пушаймон шудан дер мешавад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "等你身体____问题了，后悔就来不及了。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "擦",
-            "流血",
-            "出现",
-            "气候"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 出现 (chūxiàn) — paydo bo'lmoq",
-            "ru": "Верно: 出现 (chūxiàn) — появляться",
-            "tj": "Дуруст: 出现 (chūxiàn) — пайдо шудан"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "ajraladigan fe'lni takrorlash",
-              "ru": "удвоение разделяемых глаголов",
-              "tj": "такрори феълҳои ҷудошаванда"
-            },
-            "title_zh": "离合词重叠",
-            "rule": {
-              "uz": "散步 kabi ajraladigan fe'llarda birinchi bo'g'in takrorlanib, harakatni yengil va qisqa ko'rsatadi.",
-              "ru": "В разделяемых глаголах вроде 散步 первый компонент повторяется, показывая лёгкое короткое действие.",
-              "tj": "Дар феълҳои ҷудошаванда мисли 散步 қисми аввал такрор шуда, амали сабук ва кӯтоҳро нишон медиҳад."
-            },
-            "examples": [
-              {
-                "zh": "咱们午饭后就去附近的公园散散步吧。",
-                "pinyin": "Zánmen wǔfàn hòu jiù qù fùjìn de gōngyuán sàn san bù ba.",
-                "translation": {
-                  "uz": "Tushlikdan keyin yaqin bog'ga biroz sayr qilgani boraylik.",
-                  "ru": "После обеда давай немного прогуляемся в ближайшем парке.",
-                  "tj": "Баъди хӯроки нисфирӯзӣ ба боғи наздик каме сайр кунем."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "咱们午饭后就去附近的公园散____吧。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "散步",
-            "气候",
-            "流血",
-            "擦"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 散步 (sàn bù) — sayr qilmoq",
-            "ru": "Верно: 散步 (sàn bù) — гулять",
-            "tj": "Дуруст: 散步 (sàn bù) — сайругашт кардан"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 4,
-            "title": {
-              "uz": "agar, mabodo",
-              "ru": "если",
-              "tj": "агар"
-            },
-            "title_zh": "要是",
-            "rule": {
-              "uz": "Shart kiritadi; ko'pincha natija keyingi qismda keladi.",
-              "ru": "Вводит условие; результат обычно стоит во второй части.",
-              "tj": "Шартро меорад; натиҷа одатан дар қисми дуюм меояд."
-            },
-            "examples": [
-              {
-                "zh": "要是健康是1，其他都是1后面的0。",
-                "pinyin": "Yàoshi jiànkāng shì yī, qítā dōu shì yī hòumian de líng.",
-                "translation": {
-                  "uz": "Agar sog'liq 1 bo'lsa, qolgan narsalar 1 ortidagi nollar.",
-                  "ru": "Если здоровье это 1, всё остальное - нули после единицы.",
-                  "tj": "Агар саломатӣ 1 бошад, чизҳои дигар сифрҳои баъди онанд."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Agar sog'liq 1 bo'lsa, qolgan narsalar 1 ortidagi nollar.",
-            "ru": "Если здоровье это 1, всё остальное - нули после единицы.",
-            "tj": "Агар саломатӣ 1 бошад, чизҳои дигар сифрҳои баъди онанд."
-          },
-          "tokens": [
-            "健康",
-            "其他",
-            "后面",
-            "是",
-            "都",
-            "要是",
-            "的",
-            "擦",
-            "流血",
-            "是"
-          ],
-          "answer_tokens": [
-            "要是",
-            "健康",
-            "是",
-            "其他",
-            "都",
-            "是",
-            "后面",
-            "的"
-          ],
-          "explanation": {
-            "uz": "要是健康是1，其他都是1后面的0。 — Yàoshi jiànkāng shì yī, qítā dōu shì yī hòumian de líng.",
-            "ru": "要是健康是1，其他都是1后面的0。 — Yàoshi jiànkāng shì yī, qítā dōu shì yī hòumian de líng.",
-            "tj": "要是健康是1，其他都是1后面的0。 — Yàoshi jiànkāng shì yī, qítā dōu shì yī hòumian de líng."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 5,
-            "title": {
-              "uz": "ham..., ham...",
-              "ru": "и..., и...",
-              "tj": "ҳам..., ҳам..."
-            },
-            "title_zh": "既……又/也/还……",
-            "rule": {
-              "uz": "Bir narsaning ikki ijobiy tomoni borligini bog'lab ko'rsatadi.",
-              "ru": "Соединяет два положительных качества или результата одного действия.",
-              "tj": "Ду тарафи мусбати як чизро пайваст нишон медиҳад."
-            },
-            "examples": [
-              {
-                "zh": "散步是生活中最简单的锻炼方法，既可以活动身体，又可以减肥。",
-                "pinyin": "Sànbù shì shēnghuó zhōng zuì jiǎndān de duànliàn fāngfǎ, jì kěyǐ huódòng shēntǐ, yòu kěyǐ jiǎnféi.",
-                "translation": {
-                  "uz": "Sayr qilish eng oddiy mashq usuli: ham tanani harakatlantiradi, ham ozishga yordam beradi.",
-                  "ru": "Прогулка - самый простой способ тренировки: и тело двигается, и худеть помогает.",
-                  "tj": "Сайр содатарин усули машқ аст: ҳам баданро ҳаракат медиҳад, ҳам ба кам кардани вазн ёрӣ мекунад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____是生活中最简单的锻炼方法，既可以活动身体，又可以减肥。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "擦",
-            "气候",
-            "散步",
-            "流血"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 散步 (sàn bù) — sayr qilmoq",
-            "ru": "Верно: 散步 (sàn bù) — гулять",
-            "tj": "Дуруст: 散步 (sàn bù) — сайругашт кардан"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«Men hali shimol iqlimiga ko'nikmadim, taxminan havo juda quruq.» — xitoychada qaysi biri?",
-            "ru": "«Я ещё не привык к северному климату, наверное, воздух слишком сухой.» — какое предложение по-китайски?",
-            "tj": "«Ман ҳанӯз ба иқлими шимол одат накардаам, шояд ҳаво хеле хушк аст.» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "要是健康是1，其他都是1后面的0。",
-            "散步是生活中最简单的锻炼方法，既可以活动身体，又可以减肥。",
-            "我还不习惯北方的气候，估计是天气太干。",
-            "等你身体出现问题了，后悔就来不及了。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "我还不习惯北方的气候，估计是天气太干。 — Wǒ hái bù xíguàn běifāng de qìhòu, gūjì shì tiānqì tài gān.",
-            "ru": "我还不习惯北方的气候，估计是天气太干。 — Wǒ hái bù xíguàn běifāng de qìhòu, gūjì shì tiānqì tài gān.",
-            "tj": "我还不习惯北方的气候，估计是天气太干。 — Wǒ hái bù xíguàn běifāng de qìhòu, gūjì shì tiānqì tài gān."
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -1406,75 +596,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你咳嗽好点儿了吗？医生怎么说的？",
-          "pinyin": "Nǐ késou hǎo diǎnr le ma? Yīshēng zěnme shuō de?",
-          "options": [
-            "你咳嗽好点儿了吗？医生怎么说的？",
-            "你的鼻子怎么流血了？快用纸擦擦。",
-            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-            "就是因为昨天穿得太少，我都感冒了。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "你咳嗽好点儿了吗？医生怎么说的？ — Yo'taling yaxshiroq bo'ldimi? Shifokor nima dedi?",
-            "ru": "你咳嗽好点儿了吗？医生怎么说的？ — Кашель стал лучше? Что сказал врач?",
-            "tj": "你咳嗽好点儿了吗？医生怎么说的？ — Сулфаат беҳтар шуд? Духтур чӣ гуфт?"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "流血",
-              {
-                "uz": "qon ketmoq",
-                "ru": "кровоточить",
-                "tj": "хун рафтан"
-              }
-            ],
-            [
-              "擦",
-              {
-                "uz": "artmoq",
-                "ru": "вытирать",
-                "tj": "пок кардан, молидан"
-              }
-            ],
-            [
-              "气候",
-              {
-                "uz": "iqlim",
-                "ru": "климат",
-                "tj": "иқлим"
-              }
-            ],
-            [
-              "估计",
-              {
-                "uz": "taxmin qilmoq",
-                "ru": "предполагать, оценивать",
-                "tj": "тахмин кардан"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "láibují qaysi ieroglif?",
-            "ru": "Какой иероглиф читается láibují?",
-            "tj": "láibují кадом иероглиф аст?"
+            "uz": "xìnggé qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xìnggé?",
+            "tj": "xìnggé кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -1482,109 +608,51 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "来不及",
-            "擦",
-            "气候",
-            "流血"
+            "性格",
+            "俩",
+            "印象",
+            "法律"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "来不及 = ulgurmaslik, kech bo'lmoq (láibují)",
-            "ru": "来不及 = не успеть, быть поздно (láibují)",
-            "tj": "来不及 = вақт нарасидан, дер шудан (láibují)"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'pushaymon bo'lmoq' xitoycha qaysi?",
-            "ru": "'сожалеть' по-китайски?",
-            "tj": "'пушаймон шудан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "后悔",
-            "气候",
-            "流血",
-            "擦"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "pushaymon bo'lmoq = 后悔 (hòuhuǐ)",
-            "ru": "сожалеть = 后悔 (hòuhuǐ)",
-            "tj": "пушаймон шудан = 后悔 (hòuhuǐ)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Chekishning tanaga biror foydasi ham yo'q.",
-            "ru": "Курение совсем не приносит пользы здоровью.",
-            "tj": "Тамокукашӣ ба бадан ҳеҷ фоида надорад."
-          },
-          "tokens": [
-            "好处",
-            "流血",
-            "身体",
-            "没有",
-            "对",
-            "一点儿",
-            "擦",
-            "抽烟",
-            "也"
-          ],
-          "answer_tokens": [
-            "抽烟",
-            "对",
-            "身体",
-            "一点儿",
-            "好处",
-            "也",
-            "没有"
-          ],
-          "explanation": {
-            "uz": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
-            "ru": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
-            "tj": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu."
+            "uz": "性格 = xarakter, fe'l-atvor (xìnggé)",
+            "ru": "性格 = характер (xìnggé)",
+            "tj": "性格 = хислат, характер (xìnggé)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "咳嗽",
+              "亮",
               {
-                "uz": "yo'talmoq",
-                "ru": "кашлять",
-                "tj": "сулфа кардан"
+                "uz": "yorishmoq, chiroq yonmoq",
+                "ru": "светиться, гореть",
+                "tj": "равшан будан, фурӯзон будан"
               }
             ],
             [
-              "严重",
+              "感动",
               {
-                "uz": "jiddiy, og'ir",
-                "ru": "серьёзный",
-                "tj": "ҷиддӣ, вазнин"
+                "uz": "ta'sirlantirmoq",
+                "ru": "тронуть, растрогать",
+                "tj": "таъсир кардан"
               }
             ],
             [
-              "窗户",
+              "自然",
               {
-                "uz": "deraza",
-                "ru": "окно",
-                "tj": "тиреза"
+                "uz": "tabiiy ravishda",
+                "ru": "естественно",
+                "tj": "табиӣ равишда"
               }
             ],
             [
-              "空气",
+              "原因",
               {
-                "uz": "havo",
-                "ru": "воздух",
-                "tj": "ҳаво"
+                "uz": "sabab",
+                "ru": "причина",
+                "tj": "сабаб"
               }
             ]
           ],
@@ -1595,242 +663,35 @@
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "你咳嗽好点儿了吗？医生怎么说的？",
-          "pinyin": "Nǐ késou hǎo diǎnr le ma? Yīshēng zěnme shuō de?",
-          "translation": {
-            "uz": "Yo'taling yaxshiroq bo'ldimi? Shifokor nima dedi?",
-            "ru": "Кашель стал лучше? Что сказал врач?",
-            "tj": "Сулфаат беҳтар шуд? Духтур чӣ гуфт?"
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
-          "tokens": {
-            "uz": [
-              "bo'ldimi",
-              "nima",
-              "Burningdan",
-              "Yo'taling",
-              "dedi",
-              "nega",
-              "yaxshiroq",
-              "Shifokor"
-            ],
-            "ru": [
-              "стал",
-              "у",
-              "Кашель",
-              "сказал",
-              "лучше",
-              "врач",
-              "Почему",
-              "Что"
-            ],
-            "tj": [
-              "аз",
-              "шуд",
-              "гуфт",
-              "Чаро",
-              "чӣ",
-              "Сулфаат",
-              "беҳтар",
-              "Духтур"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Yo'taling",
-              "yaxshiroq",
-              "bo'ldimi",
-              "Shifokor",
-              "nima",
-              "dedi"
-            ],
-            "ru": [
-              "Кашель",
-              "стал",
-              "лучше",
-              "Что",
-              "сказал",
-              "врач"
-            ],
-            "tj": [
-              "Сулфаат",
-              "беҳтар",
-              "шуд",
-              "Духтур",
-              "чӣ",
-              "гуфт"
-            ]
-          },
+          "audio_text": "自然",
+          "pinyin": "zìrán",
+          "options": [
+            "自然",
+            "法律",
+            "印象",
+            "俩"
+          ],
+          "correct_index": 0,
           "explanation": {
-            "uz": "你咳嗽好点儿了吗？医生怎么说的？ — Yo'taling yaxshiroq bo'ldimi? Shifokor nima dedi?",
-            "ru": "你咳嗽好点儿了吗？医生怎么说的？ — Кашель стал лучше? Что сказал врач?",
-            "tj": "你咳嗽好点儿了吗？医生怎么说的？ — Сулфаат беҳтар шуд? Духтур чӣ гуфт?"
+            "uz": "自然 — tabiiy ravishda (zìrán)",
+            "ru": "自然 — естественно (zìrán)",
+            "tj": "自然 — табиӣ равишда (zìrán)"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "窗户",
-          "pinyin": "chuānghu",
+          "phrase": "自然",
+          "pinyin": "zìrán",
           "translation": {
-            "uz": "deraza",
-            "ru": "окно",
-            "tj": "тиреза"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "你的鼻子怎么流血了？快用纸擦擦。",
-          "pinyin": "Nǐ de bízi zěnme liúxiě le? Kuài yòng zhǐ cā ca.",
-          "options": [
-            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-            "就是因为昨天穿得太少，我都感冒了。",
-            "最近感冒的人特别多。你去看医生了吗？",
-            "你的鼻子怎么流血了？快用纸擦擦。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "你的鼻子怎么流血了？快用纸擦擦。 — Burningdan nega qon ketyapti? Tez qog'oz bilan art.",
-            "ru": "你的鼻子怎么流血了？快用纸擦擦。 — Почему у тебя кровь из носа? Быстро вытри бумагой.",
-            "tj": "你的鼻子怎么流血了？快用纸擦擦。 — Чаро аз биният хун меравад? Зуд бо коғаз пок кун."
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小林 nima deydi?",
-            "ru": "Что 小林 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 小林 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-            "你的鼻子怎么流血了？快用纸擦擦。",
-            "春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
-            "就是因为昨天穿得太少，我都感冒了。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
-            "ru": "Правильный ответ: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
-            "tj": "Ҷавоби дуруст: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____的鼻子怎么流血了？快用纸擦擦。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "袜",
-            "你",
-            "商",
-            "扰"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Burningdan nega qon ketyapti? Tez qog'oz bilan art.)",
-            "ru": "Верно: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Почему у тебя кровь из носа? Быстро вытри бумагой.)",
-            "tj": "Дуруст: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Чаро аз биният хун меравад? Зуд бо коғаз пок кун.)"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "小李",
-              "zh": "你的鼻子怎么流血了？快用纸擦擦。",
-              "blank": false
-            },
-            {
-              "speaker": "小林",
-              "zh": "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-              "blank": false
-            },
-            {
-              "speaker": "小李",
-              "zh": "就是因为昨天穿得太少，我都感冒了。",
-              "blank": false
-            },
-            {
-              "speaker": "小林",
-              "zh": "最近感冒的人特别多。你去看医生了吗？",
-              "blank": false
-            },
-            {
-              "speaker": "小李",
-              "zh": "没有，我只是咳嗽，有点儿头疼，不严重，多喝点儿水就好了。",
-              "blank": false
-            },
-            {
-              "speaker": "小林",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-            "春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
-            "就是因为昨天穿得太少，我都感冒了。",
-            "你的鼻子怎么流血了？快用纸擦擦。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
-            "ru": "Правильный ответ: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
-            "tj": "Ҷавоби дуруст: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 小李 avval nima deydi?",
-            "ru": "Что 小李 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 小李 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "最近感冒的人特别多。你去看医生了吗？",
-            "你的鼻子怎么流血了？快用纸擦擦。",
-            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-            "就是因为昨天穿得太少，我都感冒了。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 你的鼻子怎么流血了？快用纸擦擦。",
-            "ru": "Правильный ответ: 你的鼻子怎么流血了？快用纸擦擦。",
-            "tj": "Ҷавоби дуруст: 你的鼻子怎么流血了？快用纸擦擦。"
+            "uz": "tabiiy ravishda",
+            "ru": "естественно",
+            "tj": "табиӣ равишда"
           }
         }
       ]

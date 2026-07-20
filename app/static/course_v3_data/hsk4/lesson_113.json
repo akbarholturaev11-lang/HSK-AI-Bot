@@ -1,0 +1,740 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 113,
+  "source_lesson": 13,
+  "part_no": 4,
+  "part_count": 10,
+  "checkpoint": false,
+  "title": "喝着茶看京剧",
+  "subtitle": {
+    "uz": "Pekin operasi, an'anaviy madaniyat, chopstik va choy haqida gapirish; 大概, 偶尔, 由, 进行 va 随着 grammatikalarini ishlatish",
+    "ru": "говорить о пекинской опере, традиционной культуре, палочках и чае; использовать 大概, 偶尔, 由, 进行 и 随着",
+    "tj": "дар бораи операи Пекин, фарҳанги суннатӣ, чӯбчаҳои хӯрок ва чой гуфтугӯ кардан; истифодаи 大概, 偶尔, 由, 进行 ва 随着"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "正常",
+      "pinyin": "zhèngcháng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "normal, odatiy",
+        "ru": "нормальный",
+        "tj": "муқаррарӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "申请",
+      "pinyin": "shēnqǐng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ariza bermoq",
+        "ru": "подавать заявку",
+        "tj": "ариза додан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "有趣",
+      "pinyin": "yǒuqù",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qiziqarli",
+        "ru": "интересный",
+        "tj": "ҷолиб"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "开心",
+      "pinyin": "kāixīn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xursand",
+        "ru": "радостный, весёлый",
+        "tj": "хурсанд"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Xiaoyu va Xiaxia bobosi Pekin operasi kuylashi haqida gaplashadi",
+        "ru": "Сяоюй и Сяося говорят о том, как дедушка Сяося поёт пекинскую оперу",
+        "tj": "Сяоюй ва Сяося дар бораи операи Пекини бобои Сяося суҳбат мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小雨",
+          "zh": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
+          "pinyin": "Xiǎo Xià, nǐ yéye jīngjù chàng de zhēn zhuānyè, wǒ hái yǐwéi tā shì jīngjù yǎnyuán ne.",
+          "text": {
+            "uz": "Xiaxia, bobongiz Pekin operasini juda professional kuylarkan, uni aktyor deb o'ylabman.",
+            "ru": "Сяося, твой дедушка так профессионально поёт пекинскую оперу, я думал, он актёр.",
+            "tj": "Сяося, бобоят операи Пекинро бисёр касбӣ месарояд, ман фикр кардам ӯ актёр аст."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "对啊，他本来就是京剧演员，年轻时在我们那儿很有名，深受观众们的喜爱。",
+          "pinyin": "Duì a, tā běnlái jiùshì jīngjù yǎnyuán, niánqīng shí zài wǒmen nàr hěn yǒumíng, shēn shòu guānzhòng men de xǐ'ài.",
+          "text": {
+            "uz": "Ha, u aslida Pekin operasi aktyori bo'lgan, yoshligida biz tomonda juda mashhur, tomoshabinlar uni juda yaxshi ko'rgan.",
+            "ru": "Да, он и был актёром пекинской оперы. В молодости он был у нас очень известен и любим зрителями.",
+            "tj": "Ҳа, ӯ аслан актёри операи Пекин буд, ҷавонӣ дар ҷои мо хеле машҳур ва дӯстдоштаи тамошобинон буд."
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "你爷爷一定对京剧有着很深厚的感情。",
+          "pinyin": "Nǐ yéye yídìng duì jīngjù yǒuzhe hěn shēnhòu de gǎnqíng.",
+          "text": {
+            "uz": "Bobongizning Pekin operasiga muhabbati juda chuqur bo'lsa kerak.",
+            "ru": "У твоего дедушки наверняка очень глубокие чувства к пекинской опере.",
+            "tj": "Бобоят ба операи Пекин эҳсоси хеле амиқ дорад."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "是呀，他8岁就开始上台演出，到现在大概唱了60多年了，他对这门艺术的喜爱从来没有改变过。",
+          "pinyin": "Shì ya, tā bā suì jiù kāishǐ shàng tái yǎnchū, dào xiànzài dàgài chàng le liùshí duō nián le, tā duì zhè mén yìshù de xǐ'ài cónglái méiyǒu gǎibiàn guo.",
+          "text": {
+            "uz": "Ha, u 8 yoshidan sahnaga chiqqan, hozirgacha taxminan oltmish yildan ko'proq kuylagan, bu san'atga muhabbati hech qachon o'zgarmagan.",
+            "ru": "Да, он начал выступать на сцене в 8 лет и поёт уже примерно больше шестидесяти лет. Его любовь к этому искусству никогда не менялась.",
+            "tj": "Ҳа, аз 8-солагӣ ба саҳна баромадааст, то имрӯз тақрибан беш аз шаст сол сурудааст, муҳаббаташ ба ин санъат ҳеҷ гоҳ тағйир наёфтааст."
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "这么说你喜欢听京剧也是受了你爷爷的影响？",
+          "pinyin": "Zhème shuō nǐ xǐhuan tīng jīngjù yě shì shòu le nǐ yéye de yǐngxiǎng?",
+          "text": {
+            "uz": "Demak, Pekin operasini yoqtirishingga ham bobongiz ta'sir qilganmi?",
+            "ru": "Значит, любовь к пекинской опере у тебя тоже под влиянием дедушки?",
+            "tj": "Пас, дӯст доштани операи Пекин ҳам аз таъсири бобоят будааст?"
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。",
+          "pinyin": "Wǒ xiǎoshíhou jīngcháng qù kàn tā de yǎnchū. Píngshí tā hái gěi wǒ jiǎng hěn duō jīngjù li de lìshǐ gùshi, ràng wǒ xué dào le hěn duō zhīshi.",
+          "text": {
+            "uz": "Bolaligimda uning chiqishlarini tez-tez ko'rgani borardim. Odatda u menga Pekin operasidagi ko'p tarixiy hikoyalarni aytib berib, ko'p bilim o'rgatgan.",
+            "ru": "В детстве я часто ходил смотреть его выступления. Обычно он ещё рассказывал мне много исторических сюжетов из оперы, и я многое узнал.",
+            "tj": "Кӯдакӣ зуд-зуд намоишҳои ӯро медидaм. Одатан ба ман ҳикояҳои таърихии операи Пекинро мегуфт ва ман бисёр чиз омӯхтам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiaoyu va Mark Pekin operasini qanday o'rganganini muhokama qiladi",
+        "ru": "Сяоюй и Марк обсуждают, как Марк выучил пекинскую оперу",
+        "tj": "Сяоюй ва Марк муҳокима мекунанд, ки Марк операи Пекинро чӣ гуна омӯхтааст"
+      },
+      "dialogue": [
+        {
+          "speaker": "小雨",
+          "zh": "真没想到你一个来自美国的外国留学生，能把京剧唱得这么好。",
+          "pinyin": "Zhēn méi xiǎngdào nǐ yí ge láizì Měiguó de wàiguó liúxuéshēng, néng bǎ jīngjù chàng de zhème hǎo.",
+          "text": {
+            "uz": "AQShdan kelgan chet ellik talaba bo'lib, Pekin operasini bunchalik yaxshi kuylashingni kutmagandim.",
+            "ru": "Не ожидал, что иностранный студент из США может так хорошо петь пекинскую оперу.",
+            "tj": "Фикр намекардам, ки донишҷӯи хориҷӣ аз Амрико операи Пекинро ин қадар хуб месарояд."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "我常常跟着电视学唱京剧，然后一遍一遍地练习，偶尔跟中国人一起唱上几句。",
+          "pinyin": "Wǒ chángcháng gēnzhe diànshì xué chàng jīngjù, ránhòu yí biàn yí biàn de liànxí, ǒu'ěr gēn Zhōngguó rén yìqǐ chàng shang jǐ jù.",
+          "text": {
+            "uz": "Men ko'pincha televizorga ergashib Pekin operasi kuylashni o'rganaman, keyin qayta-qayta mashq qilaman, ba'zida xitoyliklar bilan bir necha misra kuylayman.",
+            "ru": "Я часто учусь петь пекинскую оперу по телевизору, затем многократно практикуюсь, иногда пою несколько строк с китайцами.",
+            "tj": "Ман аксар вақт аз телевизор операи Пекинро ёд мегирам, баъд такрор ба такрор машқ мекунам, гоҳ-гоҳ бо чиниҳо чанд ҷумла месароям."
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "难道你从来没有接受过京剧方面的专门教育吗？",
+          "pinyin": "Nándào nǐ cónglái méiyǒu jiēshòu guo jīngjù fāngmiàn de zhuānmén jiàoyù ma?",
+          "text": {
+            "uz": "Nahotki Pekin operasi bo'yicha hech qachon maxsus ta'lim olmagan bo'lsang?",
+            "ru": "Неужели ты никогда не получал специального образования по пекинской опере?",
+            "tj": "Наход ту ҳеҷ гоҳ аз рӯи операи Пекин таълими махсус нагирифтаӣ?"
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "别吃惊，因为我以前学习过音乐，有一些音乐基础，又对京剧这种表演艺术非常感兴趣，所以能比较容易地学会它的唱法。",
+          "pinyin": "Bié chījīng, yīnwèi wǒ yǐqián xuéxí guo yīnyuè, yǒu yìxiē yīnyuè jīchǔ, yòu duì jīngjù zhè zhǒng biǎoyǎn yìshù fēicháng gǎn xìngqù, suǒyǐ néng bǐjiào róngyì de xuéhuì tā de chàngfǎ.",
+          "text": {
+            "uz": "Hayron bo'lma, oldin musiqa o'rganganman, ozgina musiqiy asosim bor, yana Pekin operasi kabi sahna san'atiga juda qiziqaman, shuning uchun kuylash usulini nisbatan oson o'rgandim.",
+            "ru": "Не удивляйся: раньше я изучал музыку, у меня есть основа, и мне очень интересна такая исполнительская форма, поэтому я довольно легко освоил манеру пения.",
+            "tj": "Ҳайрон нашав: пештар мусиқӣ омӯхтаам, каме асоси мусиқӣ дорам ва ба чунин санъати иҷро хеле шавқ дорам, барои ҳамин тарзи сурудашро нисбатан осон омӯхтам."
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "你真厉害！竟然连很多中国人都听不懂的京剧也能学会。我还是比较喜欢听流行音乐。",
+          "pinyin": "Nǐ zhēn lìhai! Jìngrán lián hěn duō Zhōngguó rén dōu tīng bù dǒng de jīngjù yě néng xuéhuì. Wǒ háishi bǐjiào xǐhuan tīng liúxíng yīnyuè.",
+          "text": {
+            "uz": "Juda zo'rsan! Ko'p xitoyliklar ham tushunmaydigan Pekin operasini o'rgana olibsan. Men baribir pop musiqa tinglashni ko'proq yoqtiraman.",
+            "ru": "Ты молодец! Даже пекинскую оперу, которую многие китайцы не понимают, смог выучить. А я всё-таки больше люблю поп-музыку.",
+            "tj": "Ту зӯрӣ! Ҳатто операи Пекинро, ки бисёр чиниҳо намефаҳманд, ёд гирифтаӣ. Ман бошад бештар мусиқии попро дӯст медорам."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "那是你不了解京剧的唱法。在音乐方面，京剧给了我很多新的想法。我还把京剧的一些特点增加到了自己的音乐中，达到了很好的效果。",
+          "pinyin": "Nà shì nǐ bù liǎojiě jīngjù de chàngfǎ. Zài yīnyuè fāngmiàn, jīngjù gěi le wǒ hěn duō xīn de xiǎngfǎ. Wǒ hái bǎ jīngjù de yìxiē tèdiǎn zēngjiā dào le zìjǐ de yīnyuè zhōng, dádào le hěn hǎo de xiàoguǒ.",
+          "text": {
+            "uz": "Bu sen Pekin operasi kuylash usulini tushunmaganing uchun. Musiqa borasida Pekin operasi menga ko'p yangi fikr berdi. Men hatto uning ayrim xususiyatlarini o'z musiqamga qo'shib, yaxshi natijaga erishdim.",
+            "ru": "Это потому, что ты не понимаешь манеру пения пекинской оперы. В музыке она дала мне много новых идей. Я добавил некоторые её особенности в свою музыку и получил хороший эффект.",
+            "tj": "Ин барои он аст, ки ту тарзи сурудани операи Пекинро намефаҳмӣ. Дар мусиқӣ он ба ман фикрҳои нав дод. Ман баъзе хусусиятҳои онро ба мусиқии худ илова карда, натиҷаи хуб гирифтам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Li o'qituvchi madaniyat festivali o'tkazish uchun ruxsat so'raydi",
+        "ru": "Учитель Ли просит разрешение провести фестиваль китайской культуры",
+        "tj": "Муаллим Ли барои гузаронидани фестивали фарҳанги Чин иҷозат мепурсад"
+      },
+      "dialogue": [
+        {
+          "speaker": "李老师",
+          "zh": "校长，因为外国留学生不了解中国文化，有时候会影响他们和中国人之间的正常交流，甚至还可能引起误会，带来麻烦，所以我们想申请举办一次中国传统文化节活动。",
+          "pinyin": "Xiàozhǎng, yīnwèi wàiguó liúxuéshēng bù liǎojiě Zhōngguó wénhuà, yǒu shíhou huì yǐngxiǎng tāmen hé Zhōngguó rén zhījiān de zhèngcháng jiāoliú, shènzhì hái kěnéng yǐnqǐ wùhuì, dàilái máfan, suǒyǐ wǒmen xiǎng shēnqǐng jǔbàn yí cì Zhōngguó chuántǒng wénhuà jié huódòng.",
+          "text": {
+            "uz": "Direktor, chet ellik talabalar Xitoy madaniyatini yaxshi bilmagani uchun ba'zan ularning xitoyliklar bilan normal muloqotiga ta'sir qiladi, hatto tushunmovchilik va muammo keltirishi mumkin. Shuning uchun Xitoy an'anaviy madaniyat festivali o'tkazishga ariza bermoqchimiz.",
+            "ru": "Директор, иностранные студенты не знают китайскую культуру, поэтому иногда это влияет на нормальное общение с китайцами и даже вызывает недоразумения. Поэтому мы хотим подать заявку на проведение фестиваля традиционной китайской культуры.",
+            "tj": "Ҷаноби директор, донишҷӯёни хориҷӣ фарҳанги Чинро намедонанд, баъзан ин ба муоширати онҳо бо чиниҳо таъсир мекунад ва ҳатто нофаҳмӣ меорад. Барои ҳамин мехоҳем барои фестивали фарҳанги суннатии Чин ариза диҳем."
+          }
+        },
+        {
+          "speaker": "校长",
+          "zh": "你们的想法很好，举办文化节活动，一方面能让各国学生更好地了解中国，另一方面也能为学生们提供互相交流和学习的机会。",
+          "pinyin": "Nǐmen de xiǎngfǎ hěn hǎo, jǔbàn wénhuà jié huódòng, yì fāngmiàn néng ràng gè guó xuésheng gèng hǎo de liǎojiě Zhōngguó, lìng yì fāngmiàn yě néng wèi xuésheng men tígōng hùxiāng jiāoliú hé xuéxí de jīhuì.",
+          "text": {
+            "uz": "Fikringiz yaxshi. Madaniyat festivali bir tomondan turli mamlakat talabalariga Xitoyni yaxshiroq tushunishga yordam beradi, boshqa tomondan o'zaro muloqot va o'rganish imkonini beradi.",
+            "ru": "Хорошая идея. Такой фестиваль, с одной стороны, поможет студентам разных стран лучше понять Китай, с другой - даст возможность общаться и учиться друг у друга.",
+            "tj": "Фикратон хуб аст. Фестивали фарҳанг аз як тараф ба донишҷӯёни кишварҳои гуногун Чинро беҳтар мефаҳмонад, аз тарафи дигар имкони муошират ва омӯзиши байниҳамдигарӣ медиҳад."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "谢谢您的支持！",
+          "pinyin": "Xièxie nín de zhīchí!",
+          "text": {
+            "uz": "Qo'llab-quvvatlaganingiz uchun rahmat!",
+            "ru": "Спасибо за вашу поддержку!",
+            "tj": "Барои дастгириятон раҳмат!"
+          }
+        },
+        {
+          "speaker": "校长",
+          "zh": "上次的春游活动你们办得非常有趣，大家都玩儿得很开心，这次活动继续由你负责，相信也一定会很成功。",
+          "pinyin": "Shàng cì de chūnyóu huódòng nǐmen bàn de fēicháng yǒuqù, dàjiā dōu wánr de hěn kāixīn, zhè cì huódòng jìxù yóu nǐ fùzé, xiāngxìn yě yídìng huì hěn chénggōng.",
+          "text": {
+            "uz": "O'tgan safargi bahor sayohatini juda qiziqarli o'tkazgandingiz, hamma xursand bo'lgandi. Bu tadbirga ham sen mas'ul bo'l, ishonamanki muvaffaqiyatli bo'ladi.",
+            "ru": "Прошлая весенняя поездка у вас получилась очень интересной, все были довольны. За это мероприятие снова отвечаешь ты, уверен, оно тоже будет успешным.",
+            "tj": "Сайри баҳории гузаштаатон хеле ҷолиб буд, ҳама хурсанд шуданд. Ин чорабинӣ ҳам аз тарафи ту идора шавад, бовар дорам муваффақ мешавад."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "我们回去就开会讨论，星期五之前把详细的计划书发给您。",
+          "pinyin": "Wǒmen huíqù jiù kāihuì tǎolùn, xīngqīwǔ zhīqián bǎ xiángxì de jìhuàshū fā gěi nín.",
+          "text": {
+            "uz": "Qaytiboq yig'ilishda muhokama qilamiz va juma kunigacha batafsil reja hujjatini sizga yuboramiz.",
+            "ru": "Мы вернёмся, сразу обсудим на собрании и до пятницы отправим вам подробный план.",
+            "tj": "Баргашта, дар ҷаласа муҳокима мекунем ва то рӯзи ҷумъа нақшаи муфассалро ба шумо мефиристем."
+          }
+        },
+        {
+          "speaker": "校长",
+          "zh": "好的，准备过程中有什么问题，你们可以直接来找我。",
+          "pinyin": "Hǎo de, zhǔnbèi guòchéng zhōng yǒu shénme wèntí, nǐmen kěyǐ zhíjiē lái zhǎo wǒ.",
+          "text": {
+            "uz": "Yaxshi, tayyorgarlik jarayonida muammo bo'lsa, to'g'ridan-to'g'ri menga murojaat qilinglar.",
+            "ru": "Хорошо, если в процессе подготовки будут вопросы, можете прямо обращаться ко мне.",
+            "tj": "Хуб, агар дар раванди омодагӣ мушкил шавад, метавонед бевосита ба ман муроҷиат кунед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Chopstikdan to'g'ri foydalanish haqida matn",
+        "ru": "Текст о правильном использовании палочек",
+        "tj": "Матн дар бораи истифодаи дурусти чӯбчаҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "筷子在中国大约已经有3000多年的历史了。对外国人来说，使用筷子吃饭并不容易，所以，国外的一些中国餐厅在放筷子的纸袋上会提供使用筷子的详细说明。",
+          "pinyin": "Kuàizi zài Zhōngguó dàyuē yǐjīng yǒu sānqiān duō nián de lìshǐ le. Duì wàiguó rén lái shuō, shǐyòng kuàizi chīfàn bìng bù róngyì, suǒyǐ, guówài de yìxiē Zhōngguó cāntīng zài fàng kuàizi de zhǐdài shang huì tígōng shǐyòng kuàizi de xiángxì shuōmíng.",
+          "text": {
+            "uz": "Chopstiklar Xitoyda taxminan 3000 yildan ortiq tarixga ega. Chet elliklar uchun chopstik bilan ovqatlanish oson emas, shuning uchun xorijdagi ba'zi xitoy restoranlari chopstik solingan qog'oz paketda batafsil ko'rsatma beradi.",
+            "ru": "Палочки в Китае имеют историю примерно более 3000 лет. Иностранцам нелегко есть палочками, поэтому некоторые китайские рестораны за рубежом дают подробную инструкцию на бумажном пакете для палочек.",
+            "tj": "Чӯбчаҳо дар Чин тақрибан зиёда аз 3000 сол таърих доранд. Барои хориҷиён бо чӯбча хӯрок хӯрдан осон нест, бинобар ин баъзе тарабхонаҳои чинӣ дар хориҷ дар халтаи коғазии чӯбчаҳо дастури муфассал медиҳанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "不过，如果你认为每个中国人都会正确使用筷子，那就错了。",
+          "pinyin": "Búguò, rúguǒ nǐ rènwéi měi ge Zhōngguó rén dōu huì zhèngquè shǐyòng kuàizi, nà jiù cuò le.",
+          "text": {
+            "uz": "Lekin har bir xitoylik chopstikdan to'g'ri foydalana oladi deb o'ylasangiz, adashasiz.",
+            "ru": "Но если вы думаете, что каждый китаец правильно пользуется палочками, вы ошибаетесь.",
+            "tj": "Аммо агар фикр кунед, ки ҳар чинӣ чӯбчаро дуруст истифода мебарад, хато мекунед."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "有人在互联网上专门进行过调查，结果发现每六个中国人中就有一个使用筷子的方法是错误的。",
+          "pinyin": "Yǒu rén zài hùliánwǎng shang zhuānmén jìnxíng guo diàochá, jiéguǒ fāxiàn měi liù ge Zhōngguó rén zhōng jiù yǒu yí ge shǐyòng kuàizi de fāngfǎ shì cuòwù de.",
+          "text": {
+            "uz": "Kimdir internetda maxsus so'rov o'tkazgan va natijada har olti xitoylikdan bittasi chopstikdan noto'g'ri foydalanishi aniqlangan.",
+            "ru": "Кто-то специально провёл опрос в интернете и выяснил, что один из шести китайцев пользуется палочками неправильно.",
+            "tj": "Касе дар интернет махсус таҳқиқ гузаронидааст ва маълум шудааст, ки аз ҳар шаш чинӣ яке чӯбчаро нодуруст истифода мебарад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "如果你想正确使用筷子，那就好好练习吧。",
+          "pinyin": "Rúguǒ nǐ xiǎng zhèngquè shǐyòng kuàizi, nà jiù hǎohāo liànxí ba.",
+          "text": {
+            "uz": "Agar chopstikdan to'g'ri foydalanmoqchi bo'lsangiz, yaxshilab mashq qiling.",
+            "ru": "Если хотите правильно пользоваться палочками, хорошо потренируйтесь.",
+            "tj": "Агар хоҳед чӯбчаро дуруст истифода баред, хуб машқ кунед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xitoy choy madaniyati haqida matn",
+        "ru": "Текст о китайской чайной культуре",
+        "tj": "Матн дар бораи фарҳанги чойи Чин"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "茶在中国有几千年的历史，是中国最常见的饮料。最早的时候，茶只是被当作一种药，而不是饮料。",
+          "pinyin": "Chá zài Zhōngguó yǒu jǐqiān nián de lìshǐ, shì Zhōngguó zuì chángjiàn de yǐnliào. Zuì zǎo de shíhou, chá zhǐshì bèi dàngzuò yì zhǒng yào, ér bú shì yǐnliào.",
+          "text": {
+            "uz": "Choy Xitoyda bir necha ming yillik tarixga ega va Xitoyda eng keng tarqalgan ichimlikdir. Eng boshida choy ichimlik emas, dori sifatida ko'rilgan.",
+            "ru": "Чай в Китае имеет историю в несколько тысяч лет и является самым распространённым напитком. В самом начале чай считался лекарством, а не напитком.",
+            "tj": "Чой дар Чин чанд ҳазор сол таърих дорад ва маъмултарин нӯшокии Чин аст. Дар аввал чойро нӯшокӣ не, балки дору мешумориданд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "后来，随着人们对茶的认识的加深，慢慢开始把它当作解渴的饮料，这才慢慢有了中国的茶文化。",
+          "pinyin": "Hòulái, suízhe rénmen duì chá de rènshi de jiāshēn, mànmàn kāishǐ bǎ tā dàngzuò jiěkě de yǐnliào, zhè cái mànmàn yǒu le Zhōngguó de chá wénhuà.",
+          "text": {
+            "uz": "Keyinchalik odamlarning choy haqidagi tushunchasi chuqurlashgani sari, uni asta-sekin chanqoq bosadigan ichimlik deb qabul qila boshlashdi va shundan Xitoy choy madaniyati paydo bo'ldi.",
+            "ru": "Позже, по мере углубления понимания чая, люди постепенно стали считать его напитком для утоления жажды, и так постепенно возникла китайская чайная культура.",
+            "tj": "Баъдтар, бо амиқ шудани фаҳмиши мардум дар бораи чой, онро оҳиста-оҳиста нӯшокии рафъи ташнагӣ донистанд ва ҳамин тавр фарҳанги чойи Чин пайдо шуд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "在中国，喝茶是一种十分普遍的生活习惯。对很多中国人来说，喝茶已成为他们生活中不可缺少的一部分。",
+          "pinyin": "Zài Zhōngguó, hē chá shì yì zhǒng shífēn pǔbiàn de shēnghuó xíguàn. Duì hěn duō Zhōngguó rén lái shuō, hē chá yǐ chéngwéi tāmen shēnghuó zhōng bù kě quēshǎo de yí bùfen.",
+          "text": {
+            "uz": "Xitoyda choy ichish juda keng tarqalgan hayotiy odat. Ko'p xitoyliklar uchun choy ichish hayotining ajralmas qismiga aylangan.",
+            "ru": "В Китае пить чай - очень распространённая жизненная привычка. Для многих китайцев чай стал неотъемлемой частью жизни.",
+            "tj": "Дар Чин чой нӯшидан одати хеле маъмул аст. Барои бисёр чиниҳо чой нӯшидан қисми ҷудонашавандаи зиндагӣ шудааст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "但是有的饮料虽然名字叫“茶”，却并不是真正的茶。比如广东省的人爱喝的“凉茶”，它的味道稍微有点儿苦，其实是一种用中药做成的饮料。",
+          "pinyin": "Dànshì yǒu de yǐnliào suīrán míngzi jiào “chá”, què bìng bú shì zhēnzhèng de chá. Bǐrú Guǎngdōng Shěng de rén ài hē de “liángchá”, tā de wèidào shāowēi yǒu diǎnr kǔ, qíshí shì yì zhǒng yòng zhōngyào zuò chéng de yǐnliào.",
+          "text": {
+            "uz": "Lekin ayrim ichimliklar nomida choy bo'lsa ham, haqiqiy choy emas. Masalan, Guangdongdagilar yoqtiradigan liangcha biroz achchiq bo'ladi, aslida u xitoy dorivor o'simliklaridan tayyorlangan ichimlik.",
+            "ru": "Но некоторые напитки называются «чаем», хотя настоящим чаем не являются. Например, любимый в провинции Гуандун «ляньча» немного горький, на самом деле это напиток из китайских лекарственных трав.",
+            "tj": "Аммо баъзе нӯшокиҳо номашон «чой» бошад ҳам, чойи ҳақиқӣ нестанд. Масалан, «лянча»-е, ки мардуми Гуандун дӯст медоранд, каме талх аст ва дар асл аз доруҳои чинӣ тайёр мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "正常",
+            "pinyin": "zhèngcháng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "normal, odatiy",
+              "ru": "нормальный",
+              "tj": "муқаррарӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "正常",
+          "pinyin": "zhèngcháng",
+          "translation": {
+            "uz": "normal, odatiy",
+            "ru": "нормальный",
+            "tj": "муқаррарӣ"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "正常 talaffuzini tanlang:",
+            "ru": "Выберите произношение 正常:",
+            "tj": "Талаффузи 正常-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhèngcháng",
+            "yǎnyuán",
+            "guānzhòng",
+            "jīngjù"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "正常 — zhèngcháng",
+            "ru": "正常 — zhèngcháng",
+            "tj": "正常 — zhèngcháng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "申请",
+            "pinyin": "shēnqǐng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ariza bermoq",
+              "ru": "подавать заявку",
+              "tj": "ариза додан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ariza bermoq' xitoycha qaysi?",
+            "ru": "'подавать заявку' по-китайски?",
+            "tj": "'ариза додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "京剧",
+            "观众",
+            "演员",
+            "申请"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ariza bermoq = 申请 (shēnqǐng)",
+            "ru": "подавать заявку = 申请 (shēnqǐng)",
+            "tj": "ариза додан = 申请 (shēnqǐng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "有趣",
+            "pinyin": "yǒuqù",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qiziqarli",
+              "ru": "интересный",
+              "tj": "ҷолиб"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "有趣",
+          "pinyin": "yǒuqù",
+          "options": [
+            "京剧",
+            "演员",
+            "有趣",
+            "观众"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "有趣 — qiziqarli (yǒuqù)",
+            "ru": "有趣 — интересный (yǒuqù)",
+            "tj": "有趣 — ҷолиб (yǒuqù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "开心",
+            "pinyin": "kāixīn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "xursand",
+              "ru": "радостный, весёлый",
+              "tj": "хурсанд"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "开心 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 开心:",
+            "tj": "Маънои калимаи 开心-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            },
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            },
+            {
+              "uz": "xursand",
+              "ru": "радостный, весёлый",
+              "tj": "хурсанд"
+            },
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "开心 = xursand (kāixīn)",
+            "ru": "开心 = радостный, весёлый (kāixīn)",
+            "tj": "开心 = хурсанд (kāixīn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhèngcháng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhèngcháng?",
+            "tj": "zhèngcháng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "演员",
+            "观众",
+            "正常",
+            "京剧"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "正常 = normal, odatiy (zhèngcháng)",
+            "ru": "正常 = нормальный (zhèngcháng)",
+            "tj": "正常 = муқаррарӣ (zhèngcháng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "正常",
+              {
+                "uz": "normal, odatiy",
+                "ru": "нормальный",
+                "tj": "муқаррарӣ"
+              }
+            ],
+            [
+              "申请",
+              {
+                "uz": "ariza bermoq",
+                "ru": "подавать заявку",
+                "tj": "ариза додан"
+              }
+            ],
+            [
+              "有趣",
+              {
+                "uz": "qiziqarli",
+                "ru": "интересный",
+                "tj": "ҷолиб"
+              }
+            ],
+            [
+              "开心",
+              {
+                "uz": "xursand",
+                "ru": "радостный, весёлый",
+                "tj": "хурсанд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "演出 talaffuzini tanlang:",
+            "ru": "Выберите произношение 演出:",
+            "tj": "Талаффузи 演出-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yǎnyuán",
+            "jīngjù",
+            "guānzhòng",
+            "yǎnchū"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "演出 — yǎnchū",
+            "ru": "演出 — yǎnchū",
+            "tj": "演出 — yǎnchū"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "正常",
+          "pinyin": "zhèngcháng",
+          "options": [
+            "京剧",
+            "观众",
+            "演员",
+            "正常"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "正常 — normal, odatiy (zhèngcháng)",
+            "ru": "正常 — нормальный (zhèngcháng)",
+            "tj": "正常 — муқаррарӣ (zhèngcháng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "正常",
+              {
+                "uz": "normal, odatiy",
+                "ru": "нормальный",
+                "tj": "муқаррарӣ"
+              }
+            ],
+            [
+              "申请",
+              {
+                "uz": "ariza bermoq",
+                "ru": "подавать заявку",
+                "tj": "ариза додан"
+              }
+            ],
+            [
+              "有趣",
+              {
+                "uz": "qiziqarli",
+                "ru": "интересный",
+                "tj": "ҷолиб"
+              }
+            ],
+            [
+              "开心",
+              {
+                "uz": "xursand",
+                "ru": "радостный, весёлый",
+                "tj": "хурсанд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "正常",
+          "pinyin": "zhèngcháng",
+          "translation": {
+            "uz": "normal, odatiy",
+            "ru": "нормальный",
+            "tj": "муқаррарӣ"
+          }
+        }
+      ]
+    }
+  ]
+}

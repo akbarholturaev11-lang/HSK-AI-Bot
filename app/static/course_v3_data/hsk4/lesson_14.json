@@ -2,490 +2,86 @@
   "schema_version": 2,
   "level": "hsk4",
   "lesson_id": 14,
-  "title": "保护地球母亲",
+  "source_lesson": 2,
+  "part_no": 5,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "真正的朋友",
   "subtitle": {
-    "uz": "atrof-muhitni himoya qilish, tejash va ekologik odatlar haqida gapirish; 够, 以, 既然, 于是/因此 va 只有...才 grammatikalarini ishlatish",
-    "ru": "говорить о защите окружающей среды, экономии и экологичных привычках; использовать 够, 以, 既然, 于是/因此 и 只有...才",
-    "tj": "дар бораи ҳифзи муҳити зист, сарфа ва одатҳои экологӣ гуфтугӯ кардан; истифодаи 够, 以, 既然, 于是/因此 ва 只有...才"
+    "uz": "do'stlik, aloqa va haqiqiy do'st haqida gapirish; 正好, 差不多, 尽管, 却, 而 grammatikalarini ishlatish",
+    "ru": "говорить о дружбе, связи и настоящих друзьях; использовать 正好, 差不多, 尽管, 却, 而",
+    "tj": "дар бораи дӯстӣ, иртибот ва дӯсти ҳақиқӣ гуфтугӯ кардан; истифодаи 正好, 差不多, 尽管, 却, 而"
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "出差",
-      "pinyin": "chūchāi",
-      "pos": "v.",
+      "zh": "友谊",
+      "pinyin": "yǒuyì",
+      "pos": "n.",
       "meaning": {
-        "uz": "xizmat safariga bormoq",
-        "ru": "ехать в командировку",
-        "tj": "ба сафари хизматӣ рафтан"
+        "uz": "do'stlik",
+        "ru": "дружба",
+        "tj": "дӯстӣ"
       }
     },
     {
       "no": 2,
-      "zh": "毛巾",
-      "pinyin": "máojīn",
-      "pos": "n.",
+      "zh": "丰富",
+      "pinyin": "fēngfù",
+      "pos": "v.",
       "meaning": {
-        "uz": "sochiq",
-        "ru": "полотенце",
-        "tj": "дастмол"
+        "uz": "boyitmoq",
+        "ru": "обогащать, богатый",
+        "tj": "ғанӣ кардан, бой"
       }
     },
     {
       "no": 3,
-      "zh": "牙膏",
-      "pinyin": "yágāo",
-      "pos": "n.",
+      "zh": "无聊",
+      "pinyin": "wúliáo",
+      "pos": "adj.",
       "meaning": {
-        "uz": "tish pastasi",
-        "ru": "зубная паста",
-        "tj": "хамираи дандон"
+        "uz": "zerikarli",
+        "ru": "скучный",
+        "tj": "дилгиркунанда"
       }
     },
     {
       "no": 4,
-      "zh": "重",
-      "pinyin": "zhòng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "og'ir",
-        "ru": "тяжёлый",
-        "tj": "вазнин"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "行",
-      "pinyin": "xíng",
+      "zh": "讨厌",
+      "pinyin": "tǎoyàn",
       "pos": "v.",
       "meaning": {
-        "uz": "bo'ladi, mayli",
-        "ru": "подходит, хорошо",
-        "tj": "мешавад, хуб"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "省",
-      "pinyin": "shěng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tejamoq",
-        "ru": "экономить",
-        "tj": "сарфа кардан"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "污染",
-      "pinyin": "wūrǎn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ifloslantirmoq",
-        "ru": "загрязнять",
-        "tj": "ифлос кардан"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "卫生间",
-      "pinyin": "wèishēngjiān",
-      "pos": "n.",
-      "meaning": {
-        "uz": "hojatxona",
-        "ru": "туалет, уборная",
-        "tj": "ҳоҷатхона"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "脏",
-      "pinyin": "zāng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "kir, iflos",
-        "ru": "грязный",
-        "tj": "ифлос"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "抱歉",
-      "pinyin": "bàoqiàn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "uzr so'ramoq, afsuslanmoq",
-        "ru": "извиняться, сожалеть",
-        "tj": "узр пурсидан"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "空",
-      "pinyin": "kōng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "bo'sh",
-        "ru": "пустой",
-        "tj": "холӣ"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "盒子",
-      "pinyin": "hézi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "quti",
-        "ru": "коробка",
-        "tj": "қуттӣ"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "扔",
-      "pinyin": "rēng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tashlamoq, uloqtirmoq",
-        "ru": "выбрасывать, бросать",
-        "tj": "партофтан"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "以",
-      "pinyin": "yǐ",
-      "pos": "prep.",
-      "meaning": {
-        "uz": "orqali, vositasida",
-        "ru": "через, посредством",
-        "tj": "бо воситаи"
-      }
-    },
-    {
-      "no": 15,
-      "zh": "速度",
-      "pinyin": "sùdù",
-      "pos": "n.",
-      "meaning": {
-        "uz": "tezlik",
-        "ru": "скорость",
-        "tj": "суръат"
-      }
-    },
-    {
-      "no": 16,
-      "zh": "地球",
-      "pinyin": "dìqiú",
-      "pos": "n.",
-      "meaning": {
-        "uz": "Yer sayyorasi",
-        "ru": "Земля, земной шар",
-        "tj": "Замин"
-      }
-    },
-    {
-      "no": 17,
-      "zh": "既然",
-      "pinyin": "jìrán",
-      "pos": "conj.",
-      "meaning": {
-        "uz": "modomiki, shunday ekan",
-        "ru": "раз уж, поскольку",
-        "tj": "азбаски, модом ки"
-      }
-    },
-    {
-      "no": 18,
-      "zh": "停",
-      "pinyin": "tíng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "to'xtamoq, to'xtatmoq",
-        "ru": "останавливаться",
-        "tj": "истодан, қатъ кардан"
-      }
-    },
-    {
-      "no": 19,
-      "zh": "得意",
-      "pinyin": "déyì",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "o'zidan mamnun",
-        "ru": "довольный собой",
-        "tj": "худписандона хурсанд"
-      }
-    },
-    {
-      "no": 20,
-      "zh": "目的",
-      "pinyin": "mùdì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "maqsad",
-        "ru": "цель",
-        "tj": "мақсад"
-      }
-    },
-    {
-      "no": 21,
-      "zh": "暖",
-      "pinyin": "nuǎn",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "iliq",
-        "ru": "тёплый",
-        "tj": "гарм"
-      }
-    },
-    {
-      "no": 22,
-      "zh": "塑料袋",
-      "pinyin": "sùliàodài",
-      "pos": "n.",
-      "meaning": {
-        "uz": "plastik paket",
-        "ru": "пластиковый пакет",
-        "tj": "халтаи пластикӣ"
-      }
-    },
-    {
-      "no": 23,
-      "zh": "于是",
-      "pinyin": "yúshì",
-      "pos": "conj.",
-      "meaning": {
-        "uz": "shuning uchun, natijada",
-        "ru": "поэтому, вследствие этого",
-        "tj": "бинобар ин, пас"
-      }
-    },
-    {
-      "no": 24,
-      "zh": "鼓励",
-      "pinyin": "gǔlì",
-      "pos": "v.",
-      "meaning": {
-        "uz": "rag'batlantirmoq",
-        "ru": "поощрять",
-        "tj": "ҳавасманд кардан"
-      }
-    },
-    {
-      "no": 25,
-      "zh": "拒绝",
-      "pinyin": "jùjué",
-      "pos": "v.",
-      "meaning": {
-        "uz": "rad etmoq",
-        "ru": "отказывать",
-        "tj": "рад кардан"
-      }
-    },
-    {
-      "no": 26,
-      "zh": "减少",
-      "pinyin": "jiǎnshǎo",
-      "pos": "v.",
-      "meaning": {
-        "uz": "kamaytirmoq",
-        "ru": "сокращать",
-        "tj": "кам кардан"
-      }
-    },
-    {
-      "no": 27,
-      "zh": "数量",
-      "pinyin": "shùliàng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "miqdor",
-        "ru": "количество",
-        "tj": "миқдор"
-      }
-    },
-    {
-      "no": 28,
-      "zh": "温度",
-      "pinyin": "wēndù",
-      "pos": "n.",
-      "meaning": {
-        "uz": "harorat",
-        "ru": "температура",
-        "tj": "ҳарорат"
-      }
-    },
-    {
-      "no": 29,
-      "zh": "乘坐",
-      "pinyin": "chéngzuò",
-      "pos": "v.",
-      "meaning": {
-        "uz": "transportga minmoq",
-        "ru": "ехать на транспорте",
-        "tj": "савор шудан"
-      }
-    },
-    {
-      "no": 30,
-      "zh": "丢",
-      "pinyin": "diū",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tashlamoq, yo'qotmoq",
-        "ru": "бросать, терять",
-        "tj": "партофтан, гум кардан"
-      }
-    },
-    {
-      "no": 31,
-      "zh": "垃圾桶",
-      "pinyin": "lājītǒng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "axlat qutisi",
-        "ru": "мусорное ведро",
-        "tj": "қуттии партов"
-      }
-    },
-    {
-      "no": 32,
-      "zh": "美丽",
-      "pinyin": "měilì",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "go'zal",
-        "ru": "красивый",
-        "tj": "зебо"
+        "uz": "yoqtirmaslik",
+        "ru": "не любить, раздражать",
+        "tj": "бад дидан, безор шудан"
       }
     }
   ],
   "grammar": [
     {
-      "no": 1,
-      "title": {
-        "uz": "yetarli darajada",
-        "ru": "достаточно",
-        "tj": "ба қадри кофӣ"
-      },
-      "title_zh": "够",
-      "rule": {
-        "uz": "Sifat yoki fe'l oldida daraja yetganini bildiradi.",
-        "ru": "Показывает, что степень уже достигнута.",
-        "tj": "Нишон медиҳад, ки дараҷа ба ҳадди кофӣ расидааст."
-      },
-      "examples": [
-        {
-          "zh": "箱子已经够重的了！",
-          "pinyin": "Xiāngzi yǐjīng gòu zhòng de le!",
-          "translation": {
-            "uz": "Chamadon allaqachon yetarlicha og'ir bo'libdi!",
-            "ru": "Чемодан уже достаточно тяжёлый!",
-            "tj": "Ҷомадон аллакай кофӣ вазнин шудааст!"
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "orqali, vositasida",
-        "ru": "посредством, с помощью",
-        "tj": "бо воситаи"
-      },
-      "title_zh": "以",
-      "rule": {
-        "uz": "Usul, vosita yoki standartni oldinga chiqaradi.",
-        "ru": "Выносит вперёд способ, средство или стандарт.",
-        "tj": "Усул, восита ё меъёрро пеш меорад."
-      },
-      "examples": [
-        {
-          "zh": "我一定以最快的速度完成。",
-          "pinyin": "Wǒ yídìng yǐ zuì kuài de sùdù wánchéng.",
-          "translation": {
-            "uz": "Men albatta eng tez sur'atda tugataman.",
-            "ru": "Я обязательно выполню с максимальной скоростью.",
-            "tj": "Ман ҳатман бо суръати баландтарин анҷом медиҳам."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "modomiki..., unda...",
-        "ru": "раз уж..., то...",
-        "tj": "модом ки..., пас..."
-      },
-      "title_zh": "既然……那么/就……",
-      "rule": {
-        "uz": "Birinchi gapda mavjud fakt aytiladi, keyingisida tabiiy xulosa beriladi.",
-        "ru": "В первой части дан факт, во второй - логичный вывод.",
-        "tj": "Дар қисми аввал факт, дар қисми дуюм хулосаи табиӣ меояд."
-      },
-      "examples": [
-        {
-          "zh": "既然明天晚上公司会关灯停电，那么我们肯定不用加班了。",
-          "pinyin": "Jìrán míngtiān wǎnshang gōngsī huì guān dēng tíng diàn, nàme wǒmen kěndìng búyòng jiābān le.",
-          "translation": {
-            "uz": "Modomiki ertaga kechqurun kompaniyada chiroq o'chsa, unda biz albatta qo'shimcha ishlamaymiz.",
-            "ru": "Раз завтра вечером в компании выключат свет, значит нам точно не нужно работать сверхурочно.",
-            "tj": "Модом ки пагоҳ шаб дар ширкат чароғ хомӯш мешавад, пас мо бешак изофакорӣ намекунем."
-          }
-        }
-      ]
-    },
-    {
       "no": 4,
       "title": {
-        "uz": "shuning uchun, natijada",
-        "ru": "поэтому, вследствие этого",
-        "tj": "бинобар ин, дар натиҷа"
+        "uz": "lekin, ammo",
+        "ru": "却 — однако, но",
+        "tj": "却 — аммо, вале"
       },
-      "title_zh": "于是/因此",
+      "title_zh": "却",
       "rule": {
-        "uz": "Oldingi sabab yoki vaziyatdan keyingi natijani bog'laydi.",
-        "ru": "Связывает предыдущую причину или ситуацию с результатом.",
-        "tj": "Сабаб ё вазъияти пешинаро бо натиҷа мепайвандад."
+        "uz": "Kutilgan natijaga teskari holatni ko'rsatadi.",
+        "ru": "Подчеркивает результат, противоположный ожиданию.",
+        "tj": "Натиҷаеро нишон медиҳад, ки ба интизорӣ баръакс аст."
       },
       "examples": [
         {
-          "zh": "于是，一些国家规定，超市、商场不能为顾客提供免费塑料袋。",
-          "pinyin": "Yúshì, yìxiē guójiā guīdìng, chāoshì, shāngchǎng bù néng wèi gùkè tígōng miǎnfèi sùliàodài.",
+          "zh": "一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。",
+          "pinyin": "Yí ge píqi bù hǎo de rén suīrán bù yídìng ràng rén tǎoyàn, dànshì què hěn nán gēn rén jiāo péngyou.",
           "translation": {
-            "uz": "Shuning uchun ayrim davlatlar supermarket va savdo markazlariga bepul plastik paket berishni taqiqladi.",
-            "ru": "Поэтому некоторые страны постановили, что супермаркеты и торговые центры не могут бесплатно выдавать пластиковые пакеты.",
-            "tj": "Бинобар ин баъзе давлатҳо муқаррар карданд, ки супермаркетҳо ва марказҳои савдо халтаи пластикии ройгон дода наметавонанд."
-          }
-        }
-      ]
-    },
-    {
-      "no": 5,
-      "title": {
-        "uz": "faqat...gina...",
-        "ru": "только если..., тогда...",
-        "tj": "танҳо агар..., он гоҳ..."
-      },
-      "title_zh": "只有……才……",
-      "rule": {
-        "uz": "Zarur shartni bildiradi: shart bajarilsa, natija bo'ladi.",
-        "ru": "Выражает необходимое условие: результат возможен только при нём.",
-        "tj": "Шарти заруриро нишон медиҳад: натиҷа танҳо бо иҷрои он мешавад."
-      },
-      "examples": [
-        {
-          "zh": "只有大家共同努力，减少污染，保护环境，才能使我们的家变得更美丽。",
-          "pinyin": "Zhǐyǒu dàjiā gòngtóng nǔlì, jiǎnshǎo wūrǎn, bǎohù huánjìng, cái néng shǐ wǒmen de jiā biàn de gèng měilì.",
-          "translation": {
-            "uz": "Faqat hamma birga harakat qilib, ifloslanishni kamaytirsa va muhitni himoya qilsagina uyimiz yanada go'zal bo'ladi.",
-            "ru": "Только если все вместе будут стараться, уменьшать загрязнение и защищать среду, наш дом станет красивее.",
-            "tj": "Танҳо агар ҳама якҷо кӯшиш карда, ифлосиро кам ва муҳитро ҳифз кунанд, хонаи мо зеботар мешавад."
+            "uz": "Fe'li yomon odam odamlarni albatta bezdirmasligi mumkin, lekin u bilan do'stlashish qiyin.",
+            "ru": "Человек с плохим характером не обязательно всем неприятен, но с ним трудно дружить.",
+            "tj": "Одами бадхулқ ҳатман нафратовар нест, аммо бо ӯ дӯст шудан душвор аст."
           }
         }
       ]
@@ -494,305 +90,245 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Li Jin xizmat safariga tayyorlanadi, Wang Jing ekologik odatlarni eslatadi",
-        "ru": "Ли Цзинь готовится к командировке, Ван Цзин напоминает об экологичных привычках",
-        "tj": "Ли Ҷин ба сафари хизматӣ омода мешавад, Ван Ҷинг одатҳои экологиро ёдрас мекунад"
+        "uz": "小夏 va 马克 uning xitoylik do'sti haqida gaplashadi",
+        "ru": "小夏 и Марк говорят о его китайском друге",
+        "tj": "小夏 ва Марк дар бораи дӯсти чинии ӯ суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "王静",
-          "zh": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-          "pinyin": "Zhè shì míngtiān nǐ chūchāi yào dài de máojīn, yágāo hé yáshuā, bǎ tāmen fàngdào xiāngzi li ba.",
+          "speaker": "小夏",
+          "zh": "来中国快一年了，你适应这儿的生活了吗？",
+          "pinyin": "Lái Zhōngguó kuài yì nián le, nǐ shìyìng zhèr de shēnghuó le ma?",
           "text": {
-            "uz": "Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.",
-            "ru": "Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.",
-            "tj": "Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор."
+            "uz": "Xitoyga kelganingga deyarli bir yil bo'ldi, bu yerdagi hayotga moslashdingmi?",
+            "ru": "Ты в Китае почти год. Уже привык к здешней жизни?",
+            "tj": "Ба Чин омаданат қариб як сол шуд. Ба зиндагии ин ҷо одат кардӣ?"
           }
         },
         {
-          "speaker": "李进",
-          "zh": "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-          "pinyin": "Bùyòng ná zhèxiē, bīnguǎn dōu huì miǎnfèi tígōng de. Zàishuō, xiāngzi yǐjīng gòu zhòng de le!",
+          "speaker": "马克",
+          "zh": "开始有点儿不习惯，后来就慢慢适应了，最近我还交了一个中国朋友。",
+          "pinyin": "Kāishǐ yǒudiǎnr bù xíguàn, hòulái jiù mànmàn shìyìng le, zuìjìn wǒ hái jiāo le yí ge Zhōngguó péngyou.",
           "text": {
-            "uz": "Bularni olish shart emas, mehmonxonada bepul beradi. Yana chamadon allaqachon yetarlicha og'ir.",
-            "ru": "Это брать не нужно, гостиница всё предоставит бесплатно. К тому же чемодан уже достаточно тяжёлый.",
-            "tj": "Инҳоро гирифтан шарт нест, меҳмонхона ройгон медиҳад. Ба ғайр аз ин, ҷомадон аллакай кофӣ вазнин аст."
+            "uz": "Boshida biroz o'rganmagan edim, keyin asta-sekin moslashdim, yaqinda yana bir xitoylik do'st orttirdim.",
+            "ru": "Сначала было немного непривычно, потом постепенно адаптировался; недавно я еще завел китайского друга.",
+            "tj": "Дар аввал каме одат надоштам, баъд оҳиста-оҳиста мутобиқ шудам; ба наздикӣ як дӯсти чинӣ ҳам пайдо кардам."
           }
         },
         {
-          "speaker": "王静",
-          "zh": "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
-          "pinyin": "Wǒ dāngrán zhīdào bīnguǎn li yǒu. Nǐ bú shì yìzhí shuō yào bǎohù huánjìng ma? Xiànzài jiù cóng shēnbiān de xiǎo shì zuòqǐ ba.",
+          "speaker": "小夏",
+          "zh": "那就好，快给我讲讲你新交的中国朋友。",
+          "pinyin": "Nà jiù hǎo, kuài gěi wǒ jiǎngjiang nǐ xīn jiāo de Zhōngguó péngyou.",
           "text": {
-            "uz": "Mehmonxonada borligini bilaman. Sen doim atrof-muhitni himoya qilish kerak derding-ku? Endi yonimizdagi kichik ishlardan boshlaylik.",
-            "ru": "Я, конечно, знаю, что в гостинице это есть. Ты ведь всегда говорил о защите среды? Начнём с мелочей рядом с собой.",
-            "tj": "Ман албатта медонам, ки дар меҳмонхона ҳаст. Ту ҳамеша мегуфтӣ муҳитро ҳифз кардан лозим? Пас аз корҳои хурди гирду атроф сар кунем."
+            "uz": "Yaxshi bo'libdi, yangi xitoylik do'sting haqida tezroq aytib ber.",
+            "ru": "Хорошо. Скорее расскажи мне о своем новом китайском друге.",
+            "tj": "Хуб. Зудтар дар бораи дӯсти нави чиниат нақл кун."
           }
         },
         {
-          "speaker": "李进",
-          "zh": "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
-          "pinyin": "Xíng, méi wèntí. Wǒ míngtiān shàngwǔ shí diǎn de fēijī, nǐ néng kāi chē bǎ wǒ sòngdào jīchǎng ma?",
+          "speaker": "马克",
+          "zh": "我们是在图书馆认识的。平时我们常常一起看书、逛街、踢足球。有时候他还给我发一些幽默短信。",
+          "pinyin": "Wǒmen shì zài túshūguǎn rènshi de. Píngshí wǒmen chángcháng yìqǐ kàn shū, guàngjiē, tī zúqiú. Yǒu shíhou tā hái gěi wǒ fā yìxiē yōumò duǎnxìn.",
           "text": {
-            "uz": "Mayli, muammo yo'q. Ertaga ertalab soat 10 da samolyotim bor, meni mashinada aeroportga olib bora olasanmi?",
-            "ru": "Хорошо, без проблем. Завтра в 10 утра у меня самолёт, можешь отвезти меня в аэропорт?",
-            "tj": "Майлаш, мушкил нест. Пагоҳ соати 10 ҳавопаймо дорам, маро бо мошин ба фурудгоҳ мебарӣ?"
+            "uz": "Biz kutubxonada tanishganmiz. Odatda birga kitob o'qiymiz, ko'cha aylanamiz, futbol o'ynaymiz. Ba'zan u menga hazilli SMSlar ham yuboradi.",
+            "ru": "Мы познакомились в библиотеке. Обычно мы вместе читаем, гуляем по улицам и играем в футбол. Иногда он еще присылает мне смешные SMS.",
+            "tj": "Мо дар китобхона шинос шудем. Одатан якҷо китоб мехонем, кӯча мегардем ва футбол бозӣ мекунем. Баъзан ӯ ба ман паёмҳои ҳазломез мефиристад."
           }
         },
         {
-          "speaker": "王静",
-          "zh": "那个时间路上堵车多严重啊！你还是坐地铁去机场吧。这样不仅省油钱，而且还不会污染空气。",
-          "pinyin": "Nàge shíjiān lùshang dǔ chē duō yánzhòng a! Nǐ háishi zuò dìtiě qù jīchǎng ba. Zhèyàng bùjǐn shěng yóu qián, érqiě hái bú huì wūrǎn kōngqì.",
+          "speaker": "小夏",
+          "zh": "你的这个朋友真不错！下次介绍我们认识认识，怎么样？",
+          "pinyin": "Nǐ de zhè ge péngyou zhēn búcuò! Xià cì jièshào wǒmen rènshi rènshi, zěnmeyàng?",
           "text": {
-            "uz": "O'sha payt yo'lda tiqilinch juda kuchli bo'ladi. Aeroportga metroda bora qol. Shunda nafaqat benzin puli tejaladi, balki havoni ham ifloslantirmaysan.",
-            "ru": "В это время на дорогах сильные пробки. Лучше езжай в аэропорт на метро. Так ты сэкономишь на бензине и не загрязнишь воздух.",
-            "tj": "Он вақт роҳҳо сахт сермошин мешаванд. Беҳтараш ба фурудгоҳ бо метро рав. Ҳам пули бензин сарфа мешавад, ҳам ҳаво ифлос намешавад."
+            "uz": "Bu do'sting juda yaxshi ekan! Keyingi safar meni ham tanishtirsang-chi?",
+            "ru": "Этот твой друг правда неплохой! В следующий раз познакомишь нас, как тебе?",
+            "tj": "Ин дӯстат дар ҳақиқат хуб аст! Дафъаи оянда моро шинос мекунӣ, чӣ хел?"
           }
         },
         {
-          "speaker": "李进",
-          "zh": "好，那就听你的。",
-          "pinyin": "Hǎo, nà jiù tīng nǐ de.",
+          "speaker": "马克",
+          "zh": "没问题！我们下午要去踢足球，正好一起去吧。",
+          "pinyin": "Méi wèntí! Wǒmen xiàwǔ yào qù tī zúqiú, zhènghǎo yìqǐ qù ba.",
           "text": {
-            "uz": "Yaxshi, unda sen aytgandek qilaman.",
-            "ru": "Хорошо, тогда послушаю тебя.",
-            "tj": "Хуб, пас ба гапи ту мекунам."
+            "uz": "Muammo yo'q! Tushdan keyin futbol o'ynashga boramiz, aynan birga boraylik.",
+            "ru": "Без проблем! Мы днем собираемся играть в футбол, как раз пойдем вместе.",
+            "tj": "Мушкил нест! Мо баъд аз нисфирӯзӣ футбол бозӣ карданӣ ҳастем, маҳз якҷо меравем."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Menejer restoran tozaligi va xizmat tezligini tekshiradi",
-        "ru": "Менеджер проверяет чистоту ресторана и скорость работы",
-        "tj": "Менеҷер тозагии тарабхона ва суръати корро месанҷад"
+        "uz": "小李 va 小林 sinfdoshlar uchrashuvi haqida gaplashadi",
+        "ru": "小李 и 小林 говорят о встрече однокурсников",
+        "tj": "小李 ва 小林 дар бораи вохӯрии ҳамсинфон суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "经理",
-          "zh": "小王，卫生间怎么那么脏啊？这会给客人留下不好的印象，快去打扫一下。",
-          "pinyin": "Xiǎo Wáng, wèishēngjiān zěnme nàme zāng a? Zhè huì gěi kèrén liúxià bù hǎo de yìnxiàng, kuài qù dǎsǎo yíxià.",
+          "speaker": "小李",
+          "zh": "星期天同学聚会，你能来吗？",
+          "pinyin": "Xīngqītiān tóngxué jùhuì, nǐ néng lái ma?",
           "text": {
-            "uz": "Xiao Wang, hojatxona nega bunchalik kir? Bu mijozlarda yomon taassurot qoldiradi, tez borib tozalab kel.",
-            "ru": "Сяо Ван, почему туалет такой грязный? Это оставит плохое впечатление у гостей, быстро убери.",
-            "tj": "Сяо Ван, чаро ҳоҷатхона ин қадар ифлос аст? Ин ба меҳмонон таассуроти бад медиҳад, зуд тоза кун."
+            "uz": "Yakshanba kuni sinfdoshlar uchrashuvi, kela olasanmi?",
+            "ru": "В воскресенье встреча однокурсников, ты сможешь прийти?",
+            "tj": "Якшанбе вохӯрии ҳамсинфон аст, омада метавонӣ?"
           }
         },
         {
-          "speaker": "服务员",
-          "zh": "经理，实在抱歉。今天店里太忙了，我还没来得及打扫。",
-          "pinyin": "Jīnglǐ, shízài bàoqiàn. Jīntiān diàn li tài máng le, wǒ hái méi láidejí dǎsǎo.",
+          "speaker": "小林",
+          "zh": "能来。班里同学你联系得怎么样了？来多少人？",
+          "pinyin": "Néng lái. Bān lǐ tóngxué nǐ liánxì de zěnmeyàng le? Lái duōshǎo rén?",
           "text": {
-            "uz": "Menejer, juda uzr. Bugun do'kon juda band edi, tozalashga ulgurmadim.",
-            "ru": "Менеджер, очень извиняюсь. Сегодня в заведении слишком много работы, я ещё не успел убрать.",
-            "tj": "Менеҷер, хеле узр. Имрӯз ҷой хеле серкор буд, ҳанӯз ба тоза кардан нарасидем."
+            "uz": "Kela olaman. Guruhdagi sinfdoshlar bilan bog'lanish qanday ketdi? Necha kishi keladi?",
+            "ru": "Смогу. Как у тебя с контактами однокурсников из группы? Сколько человек придет?",
+            "tj": "Меоям. Бо ҳамсинфони гурӯҳ чӣ хел тамос гирифтӣ? Чанд нафар меоянд?"
           }
         },
         {
-          "speaker": "经理",
-          "zh": "那张桌子下面还有一些空饮料瓶子和纸盒子。",
-          "pinyin": "Nà zhāng zhuōzi xiàmian hái yǒu yìxiē kōng yǐnliào píngzi hé zhǐ hézi.",
+          "speaker": "小李",
+          "zh": "差不多一半儿吧，张远还专门从国外飞回来呢。",
+          "pinyin": "Chàbuduō yíbànr ba, Zhāng Yuǎn hái zhuānmén cóng guówài fēi huílai ne.",
           "text": {
-            "uz": "Ana u stol ostida bo'sh ichimlik shishalari va qog'oz qutilar ham bor.",
-            "ru": "Под тем столом ещё есть пустые бутылки от напитков и бумажные коробки.",
-            "tj": "Зери он миз чанд шишаи холии нӯшокӣ ва қуттии коғазӣ ҳам ҳаст."
+            "uz": "Taxminan yarmi bo'lsa kerak, Zhang Yuan hatto maxsus chetdan uchib keladi.",
+            "ru": "Наверное, примерно половина. Чжан Юань даже специально прилетит из-за границы.",
+            "tj": "Тақрибан нисфашон бошад. Чжан Юан ҳатто махсус аз хориҷа парвоз карда меояд."
           }
         },
         {
-          "speaker": "服务员",
-          "zh": "好的，我马上就去把它们扔掉。",
-          "pinyin": "Hǎo de, wǒ mǎshàng jiù qù bǎ tāmen rēngdiào.",
+          "speaker": "小林",
+          "zh": "是吗？毕业都快十年了，真想大家啊！对了，今天早上，我在地铁站遇到了王静，她毕业后就去上海工作了，她这次是来旅游的。",
+          "pinyin": "Shì ma? Bìyè dōu kuài shí nián le, zhēn xiǎng dàjiā a! Duì le, jīntiān zǎoshang, wǒ zài dìtiězhàn yùdào le Wáng Jìng, tā bìyè hòu jiù qù Shànghǎi gōngzuò le, tā zhè cì shì lái lǚyóu de.",
           "text": {
-            "uz": "Xo'p, hoziroq borib ularni tashlab yuboraman.",
-            "ru": "Хорошо, сейчас же выброшу их.",
-            "tj": "Хуб, ҳозир онҳоро мепартоям."
+            "uz": "Rostdanmi? Bitirganimizga deyarli o'n yil bo'ldi, hammani juda sog'indim! Aytgancha, bugun ertalab metro bekatida Wang Jingni uchratdim, u bitirgandan keyin Shanghaiga ishlashga ketgandi, bu safar sayohatga kelibdi.",
+            "ru": "Правда? Уже почти десять лет после выпуска, очень скучаю по всем! Кстати, сегодня утром я встретил Ван Цзин на станции метро. После выпуска она уехала работать в Шанхай, а в этот раз приехала путешествовать.",
+            "tj": "Ростӣ? Аз хатм қариб даҳ сол гузаштааст, ҳамаро хеле пазмон шудам! Воқеан, имрӯз субҳ дар истгоҳи метро Ван Ҷинро дидам. Пас аз хатм ӯ ба Шанхай барои кор рафта буд, ин дафъа барои саёҳат омадааст."
           }
         },
         {
-          "speaker": "经理",
-          "zh": "以后你一定得注意这个问题，不管客人多不多，生意多忙，我们都要保证餐厅干净卫生。",
-          "pinyin": "Yǐhòu nǐ yídìng děi zhùyì zhège wèntí, bùguǎn kèrén duō bu duō, shēngyì duō máng, wǒmen dōu yào bǎozhèng cāntīng gānjìng wèishēng.",
+          "speaker": "小李",
+          "zh": "那太好了！麻烦你跟她联系一下，请她一起来参加同学聚会。聚会就在学校门口那个饭店，六点半。别迟到啊！",
+          "pinyin": "Nà tài hǎo le! Máfan nǐ gēn tā liánxì yíxià, qǐng tā yìqǐ lái cānjiā tóngxué jùhuì. Jùhuì jiù zài xuéxiào ménkǒu nà ge fàndiàn, liù diǎn bàn. Bié chídào a!",
           "text": {
-            "uz": "Keyin bu masalaga albatta e'tibor berishing kerak. Mijoz ko'pmi-yo'qmi, ish qanchalik band bo'lmasin, restoran toza va gigiyenik bo'lishi shart.",
-            "ru": "Впредь обязательно обращай внимание на это. Независимо от количества гостей и занятости, ресторан должен быть чистым.",
-            "tj": "Минбаъд ба ин масъала ҳатман диққат деҳ. Меҳмон зиёд бошад ё не, кор сер бошад ҳам, тарабхона бояд тоза бошад."
+            "uz": "Juda yaxshi! Iltimos, u bilan bog'lanib, uni ham sinfdoshlar uchrashuviga taklif qil. Uchrashuv maktab eshigi oldidagi restoranda, olti yarimda. Kech qolma!",
+            "ru": "Это отлично! Пожалуйста, свяжись с ней и пригласи ее тоже прийти на встречу однокурсников. Встреча будет в ресторане у входа в школу, в половине седьмого. Не опаздывай!",
+            "tj": "Ин хеле хуб! Илтимос, бо ӯ тамос гир ва ӯро ҳам ба вохӯрии ҳамсинфон даъват кун. Вохӯрӣ дар ҳамон тарабхонаи назди дарвозаи мактаб, соати шашу ним. Дер накун!"
           }
         },
         {
-          "speaker": "服务员",
-          "zh": "经理您放心，我一定以最快的速度完成。不过咱们真的应该再多招聘几个服务员了。",
-          "pinyin": "Jīnglǐ nín fàngxīn, wǒ yídìng yǐ zuì kuài de sùdù wánchéng. Búguò zánmen zhēn de yīnggāi zài duō zhāopìn jǐ ge fúwùyuán le.",
+          "speaker": "小林",
+          "zh": "放心吧。星期天六点半见！",
+          "pinyin": "Fàngxīn ba. Xīngqītiān liù diǎn bàn jiàn!",
           "text": {
-            "uz": "Xotirjam bo'ling, men albatta eng tez sur'atda bajaraman. Lekin haqiqatan ham yana bir nechta ofitsiant olishimiz kerak.",
-            "ru": "Не волнуйтесь, я обязательно выполню это как можно быстрее. Но нам правда стоит нанять ещё нескольких официантов.",
-            "tj": "Ором бошед, ман ҳатман бо суръати баландтарин анҷом медиҳам. Аммо дар ҳақиқат бояд боз чанд пешхизмат гирем."
+            "uz": "Xotirjam bo'l. Yakshanba olti yarimda ko'rishamiz!",
+            "ru": "Не волнуйся. Увидимся в воскресенье в половине седьмого!",
+            "tj": "Хавотир нашав. Якшанбе соати шашу ним мебинем!"
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Sun Yue va Wang Jing \"Yer soati\" haqida gaplashadi",
-        "ru": "Сунь Юэ и Ван Цзин говорят о «Часе Земли»",
-        "tj": "Сун Юэ ва Ван Ҷинг дар бораи «Соати Замин» суҳбат мекунанд"
+        "uz": "孙月 va 王静 do'stlari haqida gaplashadi",
+        "ru": "孙月 и 王静 говорят о друзьях",
+        "tj": "孙月 ва 王静 дар бораи дӯстон суҳбат мекунанд"
       },
       "dialogue": [
         {
           "speaker": "孙月",
-          "zh": "早上听新闻说明天有一个叫“地球一小时”的活动，你对这个活动了解吗？",
-          "pinyin": "Zǎoshang tīng xīnwén shuō míngtiān yǒu yí ge jiào “Dìqiú Yì Xiǎoshí” de huódòng, nǐ duì zhège huódòng liǎojiě ma?",
+          "zh": "这是什么时候的照片？你真年轻！",
+          "pinyin": "Zhè shì shénme shíhou de zhàopiàn? Nǐ zhēn niánqīng!",
           "text": {
-            "uz": "Ertalab xabarda ertaga \"Yer soati\" degan tadbir bo'lishini eshitdim, bu tadbirni bilasanmi?",
-            "ru": "Утром в новостях сказали, что завтра будет акция «Час Земли». Ты о ней знаешь?",
-            "tj": "Саҳар аз хабар шунидам, ки пагоҳ чорабинии «Соати Замин» мешавад. Ту онро медонӣ?"
+            "uz": "Bu qachongi surat? Juda yosh ekansan!",
+            "ru": "Когда была сделана эта фотография? Ты такая молодая!",
+            "tj": "Ин сурати кай аст? Ту хеле ҷавон будаӣ!"
           }
         },
         {
           "speaker": "王静",
-          "zh": "这个活动年年都有，最早是从2007年开始的。明天晚上很多人都会关灯一小时，支持这个活动。你没看到门口的通知吗？我们公司也参加。",
-          "pinyin": "Zhège huódòng niánnián dōu yǒu, zuì zǎo shì cóng èr líng líng qī nián kāishǐ de. Míngtiān wǎnshang hěn duō rén dōu huì guān dēng yì xiǎoshí, zhīchí zhège huódòng. Nǐ méi kàndào ménkǒu de tōngzhī ma? Wǒmen gōngsī yě cānjiā.",
+          "zh": "这是上大学时的照片。一看到这张照片，我就想起过去那段快乐的日子，好像重新回到了校园。",
+          "pinyin": "Zhè shì shàng dàxué shí de zhàopiàn. Yí kàndào zhè zhāng zhàopiàn, wǒ jiù xiǎngqǐ guòqù nà duàn kuàilè de rìzi, hǎoxiàng chóngxīn huídào le xiàoyuán.",
           "text": {
-            "uz": "Bu tadbir har yili bo'ladi, ilk bor 2007-yilda boshlangan. Ertaga kechqurun ko'p odamlar bir soat chiroqni o'chirib, tadbirni qo'llab-quvvatlaydi. Eshik oldidagi e'lonni ko'rmadingmi? Bizning kompaniya ham qatnashadi.",
-            "ru": "Эта акция проводится каждый год, впервые она началась в 2007 году. Завтра вечером многие выключат свет на час в поддержку акции. Ты не видел объявление у входа? Наша компания тоже участвует.",
-            "tj": "Ин чорабинӣ ҳар сол мешавад, аввалин бор соли 2007 оғоз шудааст. Пагоҳ шаб бисёриҳо барои дастгирӣ як соат чароғро хомӯш мекунанд. Эълони назди дарро надидӣ? Ширкати мо ҳам иштирок мекунад."
+            "uz": "Bu universitet paytidagi surat. Bu suratni ko'rishim bilan o'tmishdagi o'sha baxtli kunlar esimga tushadi, go'yo qaytadan kampusga qaytgandek bo'laman.",
+            "ru": "Это фото времен университета. Как только вижу эту фотографию, вспоминаю те счастливые дни прошлого, будто снова вернулась в кампус.",
+            "tj": "Ин сурати давраи донишгоҳ аст. Ҳамин ки ин суратро мебинам, он рӯзҳои хуши гузаштаро ба ёд меорам, гӯё дубора ба донишгоҳ баргашта бошам."
           }
         },
         {
           "speaker": "孙月",
-          "zh": "真的吗？太好了！既然明天晚上公司会关灯停电，那么我们肯定不用加班了。",
-          "pinyin": "Zhēn de ma? Tài hǎo le! Jìrán míngtiān wǎnshang gōngsī huì guān dēng tíng diàn, nàme wǒmen kěndìng búyòng jiābān le.",
+          "zh": "旁边这个人一定是你的好朋友吧？你们现在还联系吗？",
+          "pinyin": "Pángbiān zhè ge rén yídìng shì nǐ de hǎo péngyou ba? Nǐmen xiànzài hái liánxì ma?",
           "text": {
-            "uz": "Rostdanmi? Juda yaxshi! Modomiki ertaga kechqurun kompaniyada chiroq o'chsa, unda biz albatta qo'shimcha ishlamaymiz.",
-            "ru": "Правда? Отлично! Раз завтра вечером компания выключит свет, значит нам точно не нужно работать сверхурочно.",
-            "tj": "Рост? Хеле хуб! Модом ки пагоҳ шаб ширкат чароғро хомӯш мекунад, пас мо бешак изофакорӣ намекунем."
+            "uz": "Yonindagi bu odam albatta yaqin do'sting bo'lsa kerak? Hozir ham aloqadamisizlar?",
+            "ru": "Человек рядом, наверное, твой хороший друг? Вы сейчас еще общаетесь?",
+            "tj": "Ин одам дар паҳлӯят ҳатман дӯсти наздикат аст, ҳамин тавр? Ҳоло ҳам дар тамос ҳастед?"
           }
         },
         {
           "speaker": "王静",
-          "zh": "看你得意的样子！还以为你高兴是为了支持环保，原来是因为不用加班啊！",
-          "pinyin": "Kàn nǐ déyì de yàngzi! Hái yǐwéi nǐ gāoxìng shì wèile zhīchí huánbǎo, yuánlái shì yīnwèi búyòng jiābān a!",
+          "zh": "当然了，尽管已经毕业这么多年，我们还是经常联系的，每次都有说不完的话。",
+          "pinyin": "Dāngrán le, jǐnguǎn yǐjīng bìyè zhème duō nián, wǒmen háishì jīngcháng liánxì de, měi cì dōu yǒu shuō bu wán de huà.",
           "text": {
-            "uz": "O'zingdan mamnunligingni qara! Xursandliging ekologiyani qo'llab-quvvatlash uchun deb o'ylabman, aslida qo'shimcha ish yo'qligi uchun ekan-da!",
-            "ru": "Посмотри, как ты радуешься! Я думала, ты рад ради защиты среды, а оказалось, потому что не надо перерабатывать!",
-            "tj": "Бин, чӣ қадар хушҳолӣ! Фикр кардам барои дастгирии муҳит хурсандӣ, маълум шуд барои изофакорӣ накардан будааст!"
+            "uz": "Albatta, garchi bitirganimizga shuncha yil bo'lgan bo'lsa ham, biz baribir tez-tez aloqada bo'lamiz, har safar gapimiz tugamaydi.",
+            "ru": "Конечно. Хотя после выпуска прошло столько лет, мы все еще часто общаемся, и каждый раз нам есть о чем говорить без конца.",
+            "tj": "Албатта. Гарчанде аз хатм ин қадар сол гузаштааст, мо ҳанӯз бисёр вақт дар тамосем ва ҳар дафъа суханамон тамом намешавад."
           }
         },
         {
           "speaker": "孙月",
-          "zh": "环境保护我当然也支持了！对了，为什么会有这么一个活动啊？",
-          "pinyin": "Huánjìng bǎohù wǒ dāngrán yě zhīchí le! Duì le, wèishénme huì yǒu zhème yí ge huódòng a?",
+          "zh": "真羡慕你！我上大学时最好的朋友去了南方工作，我们俩已经好久没联系了。我一会儿就给她打个电话。",
+          "pinyin": "Zhēn xiànmù nǐ! Wǒ shàng dàxué shí zuì hǎo de péngyou qù le nánfāng gōngzuò, wǒmen liǎ yǐjīng hǎo jiǔ méi liánxì le. Wǒ yíhuìr jiù gěi tā dǎ ge diànhuà.",
           "text": {
-            "uz": "Atrof-muhit himoyasini albatta qo'llab-quvvatlayman! Aytgancha, nega bunday tadbir bor?",
-            "ru": "Защиту среды я, конечно, тоже поддерживаю! Кстати, почему вообще есть такая акция?",
-            "tj": "Ҳифзи муҳитро албатта ман ҳам дастгирӣ мекунам! Ростӣ, чаро чунин чорабинӣ ҳаст?"
+            "uz": "Senga juda havas qildim! Universitetdagi eng yaxshi do'stim janubga ishlashga ketgan, biz anchadan beri bog'lanmadik. Hozir unga telefon qilaman.",
+            "ru": "Завидую тебе! Моя лучшая подруга из университета уехала работать на юг, мы давно не общались. Сейчас я ей позвоню.",
+            "tj": "Ба ту ҳавасам меояд! Дӯсти беҳтаринам аз давраи донишгоҳ ба ҷануб барои кор рафтааст, мо кайҳост тамос надорем. Ҳозир ба ӯ занг мезанам."
           }
         },
         {
           "speaker": "王静",
-          "zh": "其实目的挺简单的，就是提醒人们节约用电，希望引起人们对气候变暖问题的关注。",
-          "pinyin": "Qíshí mùdì tǐng jiǎndān de, jiù shì tíxǐng rénmen jiéyuē yòng diàn, xīwàng yǐnqǐ rénmen duì qìhòu biàn nuǎn wèntí de guānzhù.",
+          "zh": "对。要知道，能有一个真正的朋友，有一段真正的友谊，是多么不容易！",
+          "pinyin": "Duì. Yào zhīdào, néng yǒu yí ge zhēnzhèng de péngyou, yǒu yí duàn zhēnzhèng de yǒuyì, shì duōme bù róngyì!",
           "text": {
-            "uz": "Aslida maqsad oddiy: odamlarga elektrni tejashni eslatish va iqlim isishi muammosiga e'tibor qaratish.",
-            "ru": "На самом деле цель простая: напомнить людям экономить электричество и привлечь внимание к потеплению климата.",
-            "tj": "Дар асл мақсад сода аст: ба мардум сарфаи барқро ёдрас кардан ва таваҷҷуҳро ба гармшавии иқлим ҷалб кардан."
+            "uz": "To'g'ri. Bilasanmi, haqiqiy do'stga ega bo'lish, haqiqiy do'stlikka ega bo'lish naqadar oson emas!",
+            "ru": "Верно. Нужно понимать: иметь настоящего друга и настоящую дружбу - это совсем нелегко.",
+            "tj": "Дуруст. Бояд донист: доштани дӯсти ҳақиқӣ ва дӯстии ҳақиқӣ кори осон нест."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Plastik paketlardan foydalanish va ekologiya haqida matn",
-        "ru": "Текст о пластиковых пакетах и экологии",
-        "tj": "Матн дар бораи халтаҳои пластикӣ ва экологӣ"
+        "uz": "Do'st orttirish haqida matn",
+        "ru": "Текст о том, как заводить друзей",
+        "tj": "Матн дар бораи дӯст пайдо кардан"
       },
       "dialogue": [
         {
           "speaker": "旁白",
-          "zh": "塑料袋给人们的生活带来方便，受到人们的普遍欢迎，可是，它的大量使用也带来了严重的环境污染问题。",
-          "pinyin": "Sùliàodài gěi rénmen de shēnghuó dàilái fāngbiàn, shòudào rénmen de pǔbiàn huānyíng, kěshì, tā de dàliàng shǐyòng yě dàiláile yánzhòng de huánjìng wūrǎn wèntí.",
+          "zh": "每个人都需要朋友，朋友可以丰富我们的生活。离开朋友，我们的生活一定会非常无聊。那么，怎样才能交到更多的朋友呢？当然，要有好脾气。一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。因为没有人会喜欢跟一个总是容易生气的人在一起。我们还要经常跟周围的人交流。交流能让人们互相了解，如果有共同的兴趣、爱好或者习惯，就更容易成为朋友了。",
+          "pinyin": "Měi ge rén dōu xūyào péngyou, péngyou kěyǐ fēngfù wǒmen de shēnghuó. Líkāi péngyou, wǒmen de shēnghuó yídìng huì fēicháng wúliáo. Nàme, zěnyàng cái néng jiāo dào gèng duō de péngyou ne? Dāngrán, yào yǒu hǎo píqi. Yí ge píqi bù hǎo de rén suīrán bù yídìng ràng rén tǎoyàn, dànshì què hěn nán gēn rén jiāo péngyou. Yīnwèi méiyǒu rén huì xǐhuan gēn yí ge zǒng shì róngyì shēngqì de rén zài yìqǐ. Wǒmen hái yào jīngcháng gēn zhōuwéi de rén jiāoliú. Jiāoliú néng ràng rénmen hùxiāng liǎojiě, rúguǒ yǒu gòngtóng de xìngqù, àihào huòzhě xíguàn, jiù gèng róngyì chéngwéi péngyou le.",
           "text": {
-            "uz": "Plastik paketlar odamlar hayotiga qulaylik olib keldi va keng ommalashdi, lekin ularning ko'p ishlatilishi jiddiy ekologik ifloslanish muammosini ham keltirdi.",
-            "ru": "Пластиковые пакеты удобны и широко популярны, но их массовое использование принесло серьёзную проблему загрязнения среды.",
-            "tj": "Халтаҳои пластикӣ ба зиндагӣ осонӣ оварданд ва маъмул шуданд, аммо истифодаи зиёди онҳо мушкили ҷиддии ифлосшавии муҳитро овард."
-          }
-        },
-        {
-          "speaker": "旁白",
-          "zh": "于是，一些国家规定，超市、商场不能为顾客提供免费塑料袋，并且鼓励大家购买可以多次使用的购物袋。",
-          "pinyin": "Yúshì, yìxiē guójiā guīdìng, chāoshì, shāngchǎng bù néng wèi gùkè tígōng miǎnfèi sùliàodài, bìngqiě gǔlì dàjiā gòumǎi kěyǐ duō cì shǐyòng de gòuwùdài.",
-          "text": {
-            "uz": "Shuning uchun ayrim davlatlar supermarket va savdo markazlari mijozlarga bepul plastik paket bera olmasligini belgiladi va qayta ishlatiladigan xarid xaltalarini olishga undadi.",
-            "ru": "Поэтому некоторые страны запретили супермаркетам и торговым центрам бесплатно выдавать пакеты и поощряют покупать многоразовые сумки.",
-            "tj": "Бинобар ин баъзе давлатҳо супермаркету марказҳои савдоро аз додани халтаи ройгон манъ карданд ва харидани халтаҳои чандбористифодаро ташвиқ намуданд."
-          }
-        },
-        {
-          "speaker": "旁白",
-          "zh": "我们每个人都有责任保护环境，因此，请大家节约使用塑料袋，或者购物时自备购物袋，甚至拒绝使用塑料袋。",
-          "pinyin": "Wǒmen měi ge rén dōu yǒu zérèn bǎohù huánjìng, yīncǐ, qǐng dàjiā jiéyuē shǐyòng sùliàodài, huòzhě gòuwù shí zì bèi gòuwùdài, shènzhì jùjué shǐyòng sùliàodài.",
-          "text": {
-            "uz": "Har birimiz atrof-muhitni himoya qilishga mas'ulmiz, shuning uchun plastik paketni tejab ishlating yoki xarid payti o'z xaltangizni olib boring, hatto plastik paketdan voz keching.",
-            "ru": "Каждый из нас отвечает за защиту среды, поэтому экономьте пакеты, берите свою сумку или даже отказывайтесь от пластиковых пакетов.",
-            "tj": "Ҳар яки мо барои ҳифзи муҳит масъулем, бинобар ин халтаи пластикиро сарфа кунед, ҳангоми харид халтаи худатонро баред ё ҳатто онро рад кунед."
-          }
-        },
-        {
-          "speaker": "旁白",
-          "zh": "虽然这是一件很小的事，但这样做可以减少塑料袋的使用数量，对环境保护有很大的作用。",
-          "pinyin": "Suīrán zhè shì yí jiàn hěn xiǎo de shì, dàn zhèyàng zuò kěyǐ jiǎnshǎo sùliàodài de shǐyòng shùliàng, duì huánjìng bǎohù yǒu hěn dà de zuòyòng.",
-          "text": {
-            "uz": "Bu kichik ish bo'lsa ham, shunday qilish plastik paket miqdorini kamaytiradi va ekologiya himoyasiga katta foyda beradi.",
-            "ru": "Хотя это мелочь, так можно сократить количество пакетов и сильно помочь защите среды.",
-            "tj": "Гарчанде ин кори хурд аст, чунин кардан миқдори халтаҳоро кам мекунад ва ба ҳифзи муҳит бисёр ёрӣ медиҳад."
+            "uz": "Har bir odamga do'st kerak, do'stlar hayotimizni boyitadi. Do'stlarsiz hayotimiz juda zerikarli bo'ladi. Unda ko'proq do'stni qanday orttirish mumkin? Albatta, yaxshi fe'l bo'lishi kerak. Fe'li yomon odam odamlarni albatta bezdirmasligi mumkin, lekin u bilan do'stlashish qiyin. Chunki hech kim doim oson jahli chiqadigan odam bilan birga bo'lishni yoqtirmaydi. Biz atrofimizdagi odamlar bilan tez-tez muloqot qilishimiz ham kerak. Muloqot odamlarni bir-birini tushunishga yordam beradi, agar umumiy qiziqish, hobbi yoki odat bo'lsa, do'st bo'lish osonroq bo'ladi.",
+            "ru": "Каждому нужны друзья, друзья могут обогатить нашу жизнь. Без друзей жизнь точно станет очень скучной. Тогда как завести больше друзей? Конечно, нужен хороший характер. Человек с плохим характером не обязательно всем неприятен, но с ним трудно дружить. Ведь никто не любит быть рядом с тем, кто всегда легко злится. Также нам нужно чаще общаться с окружающими. Общение помогает людям понимать друг друга; если есть общие интересы, увлечения или привычки, стать друзьями легче.",
+            "tj": "Ҳар кас ба дӯст ниёз дорад, дӯстон зиндагии моро ғанӣ мекунанд. Бе дӯстон зиндагии мо ҳатман хеле дилгиркунанда мешавад. Пас чӣ тавр дӯстони бештар пайдо кардан мумкин? Албатта, хулқи хуб лозим аст. Одами бадхулқ ҳатман нафратовар нест, аммо бо ӯ дӯст шудан душвор аст. Зеро ҳеҷ кас бо шахсе, ки ҳамеша зуд асабонӣ мешавад, буданро дӯст намедорад. Мо инчунин бояд бо одамони атроф бештар муошират кунем. Муошират одамонро ба фаҳмидани ҳамдигар мерасонад; агар шавқ, ҳавас ё одати умумӣ бошад, дӯст шудан осонтар мешавад."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Kundalik ekologik odatlar haqida matn",
-        "ru": "Текст о повседневных экологичных привычках",
-        "tj": "Матн дар бораи одатҳои ҳаррӯзаи экологӣ"
+        "uz": "Haqiqiy do'st haqida matn",
+        "ru": "Текст о настоящем друге",
+        "tj": "Матн дар бораи дӯсти ҳақиқӣ"
       },
       "dialogue": [
         {
           "speaker": "旁白",
-          "zh": "保护地球环境，并不是一件离我们很远、很难做到的事情。实际上，我们只需注意一下身边的小事就可以。",
-          "pinyin": "Bǎohù dìqiú huánjìng, bìng bú shì yí jiàn lí wǒmen hěn yuǎn, hěn nán zuòdào de shìqing. Shíjì shang, wǒmen zhǐ xū zhùyì yíxià shēnbiān de xiǎo shì jiù kěyǐ.",
+          "zh": "人的一生可以什么也没有，但不能没有朋友，而且必须要有自己真正的朋友。什么是真正的朋友？不同的人会有不同的理解。有些人觉得朋友就是能和自己一起快乐的人；有些人觉得朋友应该像镜子，能帮自己看到缺点。而我的理解是：当你遇到困难的时候，真正的朋友会站出来，及时给你帮助；当你无聊或者难过的时候，真正的朋友会陪在你身边，想办法让你感到幸福。",
+          "pinyin": "Rén de yìshēng kěyǐ shénme yě méiyǒu, dàn bù néng méiyǒu péngyou, érqiě bìxū yào yǒu zìjǐ zhēnzhèng de péngyou. Shénme shì zhēnzhèng de péngyou? Bùtóng de rén huì yǒu bùtóng de lǐjiě. Yǒuxiē rén juéde péngyou jiùshì néng hé zìjǐ yìqǐ kuàilè de rén; yǒuxiē rén juéde péngyou yīnggāi xiàng jìngzi, néng bāng zìjǐ kàndào quēdiǎn. Ér wǒ de lǐjiě shì: dāng nǐ yùdào kùnnan de shíhou, zhēnzhèng de péngyou huì zhàn chūlai, jíshí gěi nǐ bāngzhù; dāng nǐ wúliáo huòzhě nánguò de shíhou, zhēnzhèng de péngyou huì péi zài nǐ shēnbiān, xiǎng bànfǎ ràng nǐ gǎndào xìngfú.",
           "text": {
-            "uz": "Yer muhitini himoya qilish bizdan uzoq yoki bajarish qiyin ish emas. Aslida yonimizdagi kichik ishlarga e'tibor bersak kifoya.",
-            "ru": "Защита Земли - не что-то далёкое и трудное. На самом деле достаточно обращать внимание на мелочи рядом с нами.",
-            "tj": "Ҳифзи муҳити Замин кори дур ё душвор нест. Дар асл ба корҳои хурди гирду атроф диққат диҳем, кофист."
-          }
-        },
-        {
-          "speaker": "旁白",
-          "zh": "例如，夏天把空调的温度开得高一些，出门时记得关空调和电脑，这样可以节约用电。",
-          "pinyin": "Lìrú, xiàtiān bǎ kōngtiáo de wēndù kāi de gāo yìxiē, chūmén shí jìde guān kōngtiáo hé diànnǎo, zhèyàng kěyǐ jiéyuē yòng diàn.",
-          "text": {
-            "uz": "Masalan, yozda konditsioner haroratini biroz balandroq qo'yish, chiqishda konditsioner va kompyuterni o'chirish elektrni tejaydi.",
-            "ru": "Например, летом ставить кондиционер чуть выше и выключать кондиционер и компьютер при выходе - это экономит электричество.",
-            "tj": "Масалан, тобистон ҳарорати кондитсионерро каме баландтар гузоштан ва ҳангоми баромадан онро бо компютер хомӯш кардан барқро сарфа мекунад."
-          }
-        },
-        {
-          "speaker": "旁白",
-          "zh": "少开车，多骑车或者乘坐地铁和公共汽车，这样能降低空气污染；还有养成把垃圾丢进垃圾桶的习惯什么的。",
-          "pinyin": "Shǎo kāi chē, duō qí chē huòzhě chéngzuò dìtiě hé gōnggòng qìchē, zhèyàng néng jiàngdī kōngqì wūrǎn; hái yǒu yǎngchéng bǎ lājī diūjìn lājītǒng de xíguàn shénme de.",
-          "text": {
-            "uz": "Kamroq mashina haydab, ko'proq velosiped, metro yoki avtobusdan foydalanish havo ifloslanishini kamaytiradi; yana axlatni axlat qutisiga tashlash odatini shakllantirish kerak.",
-            "ru": "Меньше ездить на машине, чаще на велосипеде, метро или автобусе - это снижает загрязнение воздуха; ещё нужно привыкнуть бросать мусор в урну.",
-            "tj": "Камтар мошин рондан, бештар дучарха, метро ё автобус савор шудан ифлосшавии ҳаворо кам мекунад; боз одати ба қуттии партов партофтани партовро бояд дошт."
-          }
-        },
-        {
-          "speaker": "旁白",
-          "zh": "这些是我们每个人都能够做到的小事，但却有实实在在的效果。地球是我们共同的家，只有大家共同努力，减少污染，保护环境，才能使我们的家变得更美丽。",
-          "pinyin": "Zhèxiē shì wǒmen měi ge rén dōu nénggòu zuòdào de xiǎo shì, dàn què yǒu shíshízàizài de xiàoguǒ. Dìqiú shì wǒmen gòngtóng de jiā, zhǐyǒu dàjiā gòngtóng nǔlì, jiǎnshǎo wūrǎn, bǎohù huánjìng, cái néng shǐ wǒmen de jiā biàn de gèng měilì.",
-          "text": {
-            "uz": "Bular har birimiz qila oladigan kichik ishlar, lekin haqiqiy ta'siri bor. Yer bizning umumiy uyimiz; faqat hammamiz birga harakat qilib, ifloslanishni kamaytirsak va muhitni himoya qilsak, uyimiz yanada go'zal bo'ladi.",
-            "ru": "Это мелочи, которые может сделать каждый, но у них реальный эффект. Земля - наш общий дом; только общими усилиями, снижая загрязнение и защищая среду, мы сделаем его красивее.",
-            "tj": "Инҳо корҳои хурде ҳастанд, ки ҳар яки мо карда метавонем, аммо таъсири воқеӣ доранд. Замин хонаи умумии мост; танҳо бо кӯшиши якҷоя, кам кардани ифлосӣ ва ҳифзи муҳит хонаамон зеботар мешавад."
+            "uz": "Inson hayotida hech narsa bo'lmasligi mumkin, lekin do'stsiz bo'lishi mumkin emas, yana o'zining haqiqiy do'sti bo'lishi shart. Haqiqiy do'st nima? Turli odamlar turlicha tushunadi. Ba'zilar do'st - o'zi bilan birga xursand bo'la oladigan odam deb o'ylaydi; ba'zilar do'st ko'zgu kabi bo'lishi, o'z kamchiligini ko'ra olishga yordam berishi kerak deb o'ylaydi. Mening tushuncham esa: qiyinchilikka duch kelganingda, haqiqiy do'st oldinga chiqib, o'z vaqtida yordam beradi; zerikkaningda yoki xafa bo'lganingda, haqiqiy do'st yoningda bo'lib, seni baxtli his qildirish yo'lini topadi.",
+            "ru": "В жизни человека может не быть ничего, но без друзей жить нельзя, и обязательно должен быть настоящий друг. Что такое настоящий друг? У разных людей разное понимание. Одни считают, что друг - это тот, кто может радоваться вместе с тобой; другие думают, что друг должен быть как зеркало и помогать увидеть свои недостатки. А мое понимание такое: когда ты сталкиваешься с трудностями, настоящий друг выходит вперед и вовремя помогает; когда тебе скучно или грустно, настоящий друг остается рядом и находит способ дать тебе почувствовать счастье.",
+            "tj": "Дар ҳаёти инсон шояд ҳеҷ чиз набошад, аммо бе дӯст будан мумкин нест, ва ҳатман бояд дӯсти ҳақиқии худ дошта бошад. Дӯсти ҳақиқӣ чист? Одамони гуногун онро гуногун мефаҳманд. Баъзеҳо фикр мекунанд, ки дӯст касест, ки бо ту якҷо шод шуда метавонад; баъзеҳо мегӯянд, дӯст бояд мисли оина бошад ва ба ту камбудиҳоятро нишон диҳад. Фаҳмиши ман бошад чунин аст: вақте ба мушкилӣ дучор мешавӣ, дӯсти ҳақиқӣ пеш мебарояд ва сари вақт кӯмак мекунад; вақте дилгир ё ғамгин ҳастӣ, дӯсти ҳақиқӣ дар паҳлӯят мемонад ва роҳи хушбахт ҳис кардани туро меёбад."
           }
         }
       ]
@@ -812,46 +348,22 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "出差",
-            "pinyin": "chūchāi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "xizmat safariga bormoq",
-              "ru": "ехать в командировку",
-              "tj": "ба сафари хизматӣ рафтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "毛巾",
-            "pinyin": "máojīn",
+            "zh": "友谊",
+            "pinyin": "yǒuyì",
             "pos": "n.",
             "meaning": {
-              "uz": "sochiq",
-              "ru": "полотенце",
-              "tj": "дастмол"
+              "uz": "do'stlik",
+              "ru": "дружба",
+              "tj": "дӯстӣ"
             }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "毛巾",
-          "pinyin": "máojīn",
-          "translation": {
-            "uz": "sochiq",
-            "ru": "полотенце",
-            "tj": "дастмол"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'sochiq' xitoycha qaysi?",
-            "ru": "'полотенце' по-китайски?",
-            "tj": "'дастмол' ба хитоӣ кадом аст?"
+            "uz": "'do'stlik' xitoycha qaysi?",
+            "ru": "'дружба' по-китайски?",
+            "tj": "'дӯстӣ' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -859,44 +371,40 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "毛巾",
-            "出差",
-            "重",
-            "牙膏"
+            "适应",
+            "交",
+            "友谊",
+            "平时"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "sochiq = 毛巾 (máojīn)",
-            "ru": "полотенце = 毛巾 (máojīn)",
-            "tj": "дастмол = 毛巾 (máojīn)"
+            "uz": "do'stlik = 友谊 (yǒuyì)",
+            "ru": "дружба = 友谊 (yǒuyì)",
+            "tj": "дӯстӣ = 友谊 (yǒuyì)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "牙膏",
-            "pinyin": "yágāo",
-            "pos": "n.",
+            "no": 2,
+            "zh": "丰富",
+            "pinyin": "fēngfù",
+            "pos": "v.",
             "meaning": {
-              "uz": "tish pastasi",
-              "ru": "зубная паста",
-              "tj": "хамираи дандон"
+              "uz": "boyitmoq",
+              "ru": "обогащать, богатый",
+              "tj": "ғанӣ кардан, бой"
             }
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "重",
-            "pinyin": "zhòng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "og'ir",
-              "ru": "тяжёлый",
-              "tj": "вазнин"
-            }
+          "type": "pronunciation",
+          "phrase": "丰富",
+          "pinyin": "fēngfù",
+          "translation": {
+            "uz": "boyitmoq",
+            "ru": "обогащать, богатый",
+            "tj": "ғанӣ кардан, бой"
           }
         },
         {
@@ -906,55 +414,41 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "毛巾",
-          "pinyin": "máojīn",
+          "audio_text": "丰富",
+          "pinyin": "fēngfù",
           "options": [
-            "牙膏",
-            "毛巾",
-            "重",
-            "出差"
+            "丰富",
+            "平时",
+            "交",
+            "适应"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "毛巾 — sochiq (máojīn)",
-            "ru": "毛巾 — полотенце (máojīn)",
-            "tj": "毛巾 — дастмол (máojīn)"
+            "uz": "丰富 — boyitmoq (fēngfù)",
+            "ru": "丰富 — обогащать, богатый (fēngfù)",
+            "tj": "丰富 — ғанӣ кардан, бой (fēngfù)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "行",
-            "pinyin": "xíng",
-            "pos": "v.",
+            "no": 3,
+            "zh": "无聊",
+            "pinyin": "wúliáo",
+            "pos": "adj.",
             "meaning": {
-              "uz": "bo'ladi, mayli",
-              "ru": "подходит, хорошо",
-              "tj": "мешавад, хуб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "省",
-            "pinyin": "shěng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tejamoq",
-              "ru": "экономить",
-              "tj": "сарфа кардан"
+              "uz": "zerikarli",
+              "ru": "скучный",
+              "tj": "дилгиркунанда"
             }
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "毛巾 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 毛巾:",
-            "tj": "Маънои калимаи 毛巾-ро интихоб кунед:"
+            "uz": "无聊 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 无聊:",
+            "tj": "Маънои калимаи 无聊-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -963,67 +457,53 @@
           },
           "options": [
             {
-              "uz": "sochiq",
-              "ru": "полотенце",
-              "tj": "дастмол"
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
             },
             {
-              "uz": "xizmat safariga bormoq",
-              "ru": "ехать в командировку",
-              "tj": "ба сафари хизматӣ рафтан"
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
             },
             {
-              "uz": "og'ir",
-              "ru": "тяжёлый",
-              "tj": "вазнин"
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
             },
             {
-              "uz": "tish pastasi",
-              "ru": "зубная паста",
-              "tj": "хамираи дандон"
+              "uz": "zerikarli",
+              "ru": "скучный",
+              "tj": "дилгиркунанда"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "毛巾 = sochiq (máojīn)",
-            "ru": "毛巾 = полотенце (máojīn)",
-            "tj": "毛巾 = дастмол (máojīn)"
+            "uz": "无聊 = zerikarli (wúliáo)",
+            "ru": "无聊 = скучный (wúliáo)",
+            "tj": "无聊 = дилгиркунанда (wúliáo)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 7,
-            "zh": "污染",
-            "pinyin": "wūrǎn",
+            "no": 4,
+            "zh": "讨厌",
+            "pinyin": "tǎoyàn",
             "pos": "v.",
             "meaning": {
-              "uz": "ifloslantirmoq",
-              "ru": "загрязнять",
-              "tj": "ифлос кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "卫生间",
-            "pinyin": "wèishēngjiān",
-            "pos": "n.",
-            "meaning": {
-              "uz": "hojatxona",
-              "ru": "туалет, уборная",
-              "tj": "ҳоҷатхона"
+              "uz": "yoqtirmaslik",
+              "ru": "не любить, раздражать",
+              "tj": "бад дидан, безор шудан"
             }
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "wèishēngjiān qaysi ieroglif?",
-            "ru": "Какой иероглиф читается wèishēngjiān?",
-            "tj": "wèishēngjiān кадом иероглиф аст?"
+            "uz": "tǎoyàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tǎoyàn?",
+            "tj": "tǎoyàn кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -1031,52 +511,24 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "出差",
-            "牙膏",
-            "毛巾",
-            "卫生间"
+            "讨厌",
+            "交",
+            "平时",
+            "适应"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "卫生间 = hojatxona (wèishēngjiān)",
-            "ru": "卫生间 = туалет, уборная (wèishēngjiān)",
-            "tj": "卫生间 = ҳоҷатхона (wèishēngjiān)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "脏",
-            "pinyin": "zāng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "kir, iflos",
-              "ru": "грязный",
-              "tj": "ифлос"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "抱歉",
-            "pinyin": "bàoqiàn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "uzr so'ramoq, afsuslanmoq",
-              "ru": "извиняться, сожалеть",
-              "tj": "узр пурсидан"
-            }
+            "uz": "讨厌 = yoqtirmaslik (tǎoyàn)",
+            "ru": "讨厌 = не любить, раздражать (tǎoyàn)",
+            "tj": "讨厌 = бад дидан, безор шудан (tǎoyàn)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "出差 talaffuzini tanlang:",
-            "ru": "Выберите произношение 出差:",
-            "tj": "Талаффузи 出差-ро интихоб кунед:"
+            "uz": "友谊 talaffuzini tanlang:",
+            "ru": "Выберите произношение 友谊:",
+            "tj": "Талаффузи 友谊-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -1084,51 +536,51 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "máojīn",
-            "zhòng",
-            "yágāo",
-            "chūchāi"
+            "jiāo",
+            "píngshí",
+            "shìyìng",
+            "yǒuyì"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "出差 — chūchāi",
-            "ru": "出差 — chūchāi",
-            "tj": "出差 — chūchāi"
+            "uz": "友谊 — yǒuyì",
+            "ru": "友谊 — yǒuyì",
+            "tj": "友谊 — yǒuyì"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "出差",
+              "友谊",
               {
-                "uz": "xizmat safariga bormoq",
-                "ru": "ехать в командировку",
-                "tj": "ба сафари хизматӣ рафтан"
+                "uz": "do'stlik",
+                "ru": "дружба",
+                "tj": "дӯстӣ"
               }
             ],
             [
-              "毛巾",
+              "丰富",
               {
-                "uz": "sochiq",
-                "ru": "полотенце",
-                "tj": "дастмол"
+                "uz": "boyitmoq",
+                "ru": "обогащать, богатый",
+                "tj": "ғанӣ кардан, бой"
               }
             ],
             [
-              "牙膏",
+              "无聊",
               {
-                "uz": "tish pastasi",
-                "ru": "зубная паста",
-                "tj": "хамираи дандон"
+                "uz": "zerikarli",
+                "ru": "скучный",
+                "tj": "дилгиркунанда"
               }
             ],
             [
-              "重",
+              "讨厌",
               {
-                "uz": "og'ir",
-                "ru": "тяжёлый",
-                "tj": "вазнин"
+                "uz": "yoqtirmaslik",
+                "ru": "не любить, раздражать",
+                "tj": "бад дидан, безор шудан"
               }
             ]
           ],
@@ -1152,166 +604,26 @@
         {
           "type": "_grammar",
           "g": {
-            "no": 1,
-            "title": {
-              "uz": "yetarli darajada",
-              "ru": "достаточно",
-              "tj": "ба қадри кофӣ"
-            },
-            "title_zh": "够",
-            "rule": {
-              "uz": "Sifat yoki fe'l oldida daraja yetganini bildiradi.",
-              "ru": "Показывает, что степень уже достигнута.",
-              "tj": "Нишон медиҳад, ки дараҷа ба ҳадди кофӣ расидааст."
-            },
-            "examples": [
-              {
-                "zh": "箱子已经够重的了！",
-                "pinyin": "Xiāngzi yǐjīng gòu zhòng de le!",
-                "translation": {
-                  "uz": "Chamadon allaqachon yetarlicha og'ir bo'libdi!",
-                  "ru": "Чемодан уже достаточно тяжёлый!",
-                  "tj": "Ҷомадон аллакай кофӣ вазнин шудааст!"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "orqali, vositasida",
-              "ru": "посредством, с помощью",
-              "tj": "бо воситаи"
-            },
-            "title_zh": "以",
-            "rule": {
-              "uz": "Usul, vosita yoki standartni oldinga chiqaradi.",
-              "ru": "Выносит вперёд способ, средство или стандарт.",
-              "tj": "Усул, восита ё меъёрро пеш меорад."
-            },
-            "examples": [
-              {
-                "zh": "我一定以最快的速度完成。",
-                "pinyin": "Wǒ yídìng yǐ zuì kuài de sùdù wánchéng.",
-                "translation": {
-                  "uz": "Men albatta eng tez sur'atda tugataman.",
-                  "ru": "Я обязательно выполню с максимальной скоростью.",
-                  "tj": "Ман ҳатман бо суръати баландтарин анҷом медиҳам."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men albatta eng tez sur'atda tugataman.",
-            "ru": "Я обязательно выполню с максимальной скоростью.",
-            "tj": "Ман ҳатман бо суръати баландтарин анҷом медиҳам."
-          },
-          "tokens": [
-            "以",
-            "我",
-            "的",
-            "完成",
-            "毛巾",
-            "速度",
-            "最",
-            "出差",
-            "一定",
-            "快"
-          ],
-          "answer_tokens": [
-            "我",
-            "一定",
-            "以",
-            "最",
-            "快",
-            "的",
-            "速度",
-            "完成"
-          ],
-          "explanation": {
-            "uz": "我一定以最快的速度完成。 — Wǒ yídìng yǐ zuì kuài de sùdù wánchéng.",
-            "ru": "我一定以最快的速度完成。 — Wǒ yídìng yǐ zuì kuài de sùdù wánchéng.",
-            "tj": "我一定以最快的速度完成。 — Wǒ yídìng yǐ zuì kuài de sùdù wánchéng."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "modomiki..., unda...",
-              "ru": "раз уж..., то...",
-              "tj": "модом ки..., пас..."
-            },
-            "title_zh": "既然……那么/就……",
-            "rule": {
-              "uz": "Birinchi gapda mavjud fakt aytiladi, keyingisida tabiiy xulosa beriladi.",
-              "ru": "В первой части дан факт, во второй - логичный вывод.",
-              "tj": "Дар қисми аввал факт, дар қисми дуюм хулосаи табиӣ меояд."
-            },
-            "examples": [
-              {
-                "zh": "既然明天晚上公司会关灯停电，那么我们肯定不用加班了。",
-                "pinyin": "Jìrán míngtiān wǎnshang gōngsī huì guān dēng tíng diàn, nàme wǒmen kěndìng búyòng jiābān le.",
-                "translation": {
-                  "uz": "Modomiki ertaga kechqurun kompaniyada chiroq o'chsa, unda biz albatta qo'shimcha ishlamaymiz.",
-                  "ru": "Раз завтра вечером в компании выключат свет, значит нам точно не нужно работать сверхурочно.",
-                  "tj": "Модом ки пагоҳ шаб дар ширкат чароғ хомӯш мешавад, пас мо бешак изофакорӣ намекунем."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____明天晚上公司会关灯停电，那么我们肯定不用加班了。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "出差",
-            "牙膏",
-            "毛巾",
-            "既然"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 既然 (jìrán) — modomiki, shunday ekan",
-            "ru": "Верно: 既然 (jìrán) — раз уж, поскольку",
-            "tj": "Дуруст: 既然 (jìrán) — азбаски, модом ки"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
             "no": 4,
             "title": {
-              "uz": "shuning uchun, natijada",
-              "ru": "поэтому, вследствие этого",
-              "tj": "бинобар ин, дар натиҷа"
+              "uz": "lekin, ammo",
+              "ru": "却 — однако, но",
+              "tj": "却 — аммо, вале"
             },
-            "title_zh": "于是/因此",
+            "title_zh": "却",
             "rule": {
-              "uz": "Oldingi sabab yoki vaziyatdan keyingi natijani bog'laydi.",
-              "ru": "Связывает предыдущую причину или ситуацию с результатом.",
-              "tj": "Сабаб ё вазъияти пешинаро бо натиҷа мепайвандад."
+              "uz": "Kutilgan natijaga teskari holatni ko'rsatadi.",
+              "ru": "Подчеркивает результат, противоположный ожиданию.",
+              "tj": "Натиҷаеро нишон медиҳад, ки ба интизорӣ баръакс аст."
             },
             "examples": [
               {
-                "zh": "于是，一些国家规定，超市、商场不能为顾客提供免费塑料袋。",
-                "pinyin": "Yúshì, yìxiē guójiā guīdìng, chāoshì, shāngchǎng bù néng wèi gùkè tígōng miǎnfèi sùliàodài.",
+                "zh": "一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。",
+                "pinyin": "Yí ge píqi bù hǎo de rén suīrán bù yídìng ràng rén tǎoyàn, dànshì què hěn nán gēn rén jiāo péngyou.",
                 "translation": {
-                  "uz": "Shuning uchun ayrim davlatlar supermarket va savdo markazlariga bepul plastik paket berishni taqiqladi.",
-                  "ru": "Поэтому некоторые страны постановили, что супермаркеты и торговые центры не могут бесплатно выдавать пластиковые пакеты.",
-                  "tj": "Бинобар ин баъзе давлатҳо муқаррар карданд, ки супермаркетҳо ва марказҳои савдо халтаи пластикии ройгон дода наметавонанд."
+                  "uz": "Fe'li yomon odam odamlarni albatta bezdirmasligi mumkin, lekin u bilan do'stlashish qiyin.",
+                  "ru": "Человек с плохим характером не обязательно всем неприятен, но с ним трудно дружить.",
+                  "tj": "Одами бадхулқ ҳатман нафратовар нест, аммо бо ӯ дӯст шудан душвор аст."
                 }
               }
             ]
@@ -1319,97 +631,23 @@
         },
         {
           "type": "gap_fill",
-          "sentence": "于是，一些国家规定，超市、商场不能为顾客提供免费____。",
+          "sentence": "一个脾气不好的人虽然不一定让人____，但是却很难跟人交朋友。",
           "prompt": {
             "uz": "Bo'sh joyga mos so'zni tanlang:",
             "ru": "Выберите слово для пропуска:",
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "出差",
-            "牙膏",
-            "毛巾",
-            "塑料袋"
+            "讨厌",
+            "平时",
+            "交",
+            "适应"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri: 塑料袋 (sùliàodài) — plastik paket",
-            "ru": "Верно: 塑料袋 (sùliàodài) — пластиковый пакет",
-            "tj": "Дуруст: 塑料袋 (sùliàodài) — халтаи пластикӣ"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 5,
-            "title": {
-              "uz": "faqat...gina...",
-              "ru": "только если..., тогда...",
-              "tj": "танҳо агар..., он гоҳ..."
-            },
-            "title_zh": "只有……才……",
-            "rule": {
-              "uz": "Zarur shartni bildiradi: shart bajarilsa, natija bo'ladi.",
-              "ru": "Выражает необходимое условие: результат возможен только при нём.",
-              "tj": "Шарти заруриро нишон медиҳад: натиҷа танҳо бо иҷрои он мешавад."
-            },
-            "examples": [
-              {
-                "zh": "只有大家共同努力，减少污染，保护环境，才能使我们的家变得更美丽。",
-                "pinyin": "Zhǐyǒu dàjiā gòngtóng nǔlì, jiǎnshǎo wūrǎn, bǎohù huánjìng, cái néng shǐ wǒmen de jiā biàn de gèng měilì.",
-                "translation": {
-                  "uz": "Faqat hamma birga harakat qilib, ifloslanishni kamaytirsa va muhitni himoya qilsagina uyimiz yanada go'zal bo'ladi.",
-                  "ru": "Только если все вместе будут стараться, уменьшать загрязнение и защищать среду, наш дом станет красивее.",
-                  "tj": "Танҳо агар ҳама якҷо кӯшиш карда, ифлосиро кам ва муҳитро ҳифз кунанд, хонаи мо зеботар мешавад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "只有大家共同努力，减少____，保护环境，才能使我们的家变得更美丽。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "牙膏",
-            "出差",
-            "污染",
-            "毛巾"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 污染 (wūrǎn) — ifloslantirmoq",
-            "ru": "Верно: 污染 (wūrǎn) — загрязнять",
-            "tj": "Дуруст: 污染 (wūrǎn) — ифлос кардан"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«Shuning uchun ayrim davlatlar supermarket va savdo markazlariga bepul plastik paket berishni taqiqladi.» — xitoychada qaysi biri?",
-            "ru": "«Поэтому некоторые страны постановили, что супермаркеты и торговые центры не могут бесплатно выдавать пластиковые пакеты.» — какое предложение по-китайски?",
-            "tj": "«Бинобар ин баъзе давлатҳо муқаррар карданд, ки супермаркетҳо ва марказҳои савдо халтаи пластикии ройгон дода наметавонанд.» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "箱子已经够重的了！",
-            "既然明天晚上公司会关灯停电，那么我们肯定不用加班了。",
-            "于是，一些国家规定，超市、商场不能为顾客提供免费塑料袋。",
-            "只有大家共同努力，减少污染，保护环境，才能使我们的家变得更美丽。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "于是，一些国家规定，超市、商场不能为顾客提供免费塑料袋。 — Yúshì, yìxiē guójiā guīdìng, chāoshì, shāngchǎng bù néng wèi gùkè tígōng miǎnfèi sùliàodài.",
-            "ru": "于是，一些国家规定，超市、商场不能为顾客提供免费塑料袋。 — Yúshì, yìxiē guójiā guīdìng, chāoshì, shāngchǎng bù néng wèi gùkè tígōng miǎnfèi sùliàodài.",
-            "tj": "于是，一些国家规定，超市、商场不能为顾客提供免费塑料袋。 — Yúshì, yìxiē guójiā guīdìng, chāoshì, shāngchǎng bù néng wèi gùkè tígōng miǎnfèi sùliàodài."
+            "uz": "To'g'ri: 讨厌 (tǎoyàn) — yoqtirmaslik",
+            "ru": "Верно: 讨厌 (tǎoyàn) — не любить, раздражать",
+            "tj": "Дуруст: 讨厌 (tǎoyàn) — бад дидан, безор шудан"
           }
         }
       ]
@@ -1424,165 +662,43 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "出差",
-              {
-                "uz": "xizmat safariga bormoq",
-                "ru": "ехать в командировку",
-                "tj": "ба сафари хизматӣ рафтан"
-              }
-            ],
-            [
-              "毛巾",
-              {
-                "uz": "sochiq",
-                "ru": "полотенце",
-                "tj": "дастмол"
-              }
-            ],
-            [
-              "牙膏",
-              {
-                "uz": "tish pastasi",
-                "ru": "зубная паста",
-                "tj": "хамираи дандон"
-              }
-            ],
-            [
-              "重",
-              {
-                "uz": "og'ir",
-                "ru": "тяжёлый",
-                "tj": "вазнин"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "箱子已经够重的了！",
-          "pinyin": "Xiāngzi yǐjīng gòu zhòng de le!",
-          "translation": {
-            "uz": "Chamadon allaqachon yetarlicha og'ir bo'libdi!",
-            "ru": "Чемодан уже достаточно тяжёлый!",
-            "tj": "Ҷомадон аллакай кофӣ вазнин шудааст!"
-          },
-          "tokens": {
-            "uz": [
-              "Bular",
-              "og'ir",
-              "bo'libdi",
-              "Chamadon",
-              "yetarlicha",
-              "ertaga",
-              "allaqachon"
-            ],
-            "ru": [
-              "Чемодан",
-              "тяжёлый",
-              "уже",
-              "полотенце",
-              "Это",
-              "достаточно"
-            ],
-            "tj": [
-              "вазнин",
-              "кофӣ",
-              "Инҳо",
-              "шудааст",
-              "аллакай",
-              "дастмол",
-              "Ҷомадон"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Chamadon",
-              "allaqachon",
-              "yetarlicha",
-              "og'ir",
-              "bo'libdi"
-            ],
-            "ru": [
-              "Чемодан",
-              "уже",
-              "достаточно",
-              "тяжёлый"
-            ],
-            "tj": [
-              "Ҷомадон",
-              "аллакай",
-              "кофӣ",
-              "вазнин",
-              "шудааст"
-            ]
-          },
-          "explanation": {
-            "uz": "箱子已经够重的了！ — Chamadon allaqachon yetarlicha og'ir bo'libdi!",
-            "ru": "箱子已经够重的了！ — Чемодан уже достаточно тяжёлый!",
-            "tj": "箱子已经够重的了！ — Ҷомадон аллакай кофӣ вазнин шудааст!"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "盒子 talaffuzini tanlang:",
-            "ru": "Выберите произношение 盒子:",
-            "tj": "Талаффузи 盒子-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "hézi",
-            "máojīn",
-            "chūchāi",
-            "yágāo"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "盒子 — hézi",
-            "ru": "盒子 — hézi",
-            "tj": "盒子 — hézi"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "这个活动年年都有，最早是从2007年开始的。明天晚上很多人都会关灯一小时，支持这个活动。你没看到门口的通知吗？我们公司也参加。",
-          "pinyin": "Zhège huódòng niánnián dōu yǒu, zuì zǎo shì cóng èr líng líng qī nián kāishǐ de. Míngtiān wǎnshang hěn duō rén dōu huì guān dēng yì xiǎoshí, zhīchí zhège huódòng. Nǐ méi kàndào ménkǒu de tōngzhī ma? Wǒmen gōngsī yě cānjiā.",
+          "audio_text": "丰富",
+          "pinyin": "fēngfù",
           "options": [
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "这个活动年年都有，最早是从2007年开始的。明天晚上很多人都会关灯一小时，支持这个活动。你没看到门口的通知吗？我们公司也参加。",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。"
+            "平时",
+            "适应",
+            "丰富",
+            "交"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "这个活动年年都有，最早是从2007年开始的。明天晚上很多人都会关灯一小时，支持这个活动。你没看到门口的通知吗？我们公司也参加。 — Bu tadbir har yili bo'ladi, ilk bor 2007-yilda boshlangan. Ertaga kechqurun ko'p odamlar bir soat chiroqni o'chirib, tadbirni qo'llab-quvvatlaydi. Eshik oldidagi e'lonni ko'rmadingmi? Bizning kompaniya ham qatnashadi.",
-            "ru": "这个活动年年都有，最早是从2007年开始的。明天晚上很多人都会关灯一小时，支持这个活动。你没看到门口的通知吗？我们公司也参加。 — Эта акция проводится каждый год, впервые она началась в 2007 году. Завтра вечером многие выключат свет на час в поддержку акции. Ты не видел объявление у входа? Наша компания тоже участвует.",
-            "tj": "这个活动年年都有，最早是从2007年开始的。明天晚上很多人都会关灯一小时，支持这个活动。你没看到门口的通知吗？我们公司也参加。 — Ин чорабинӣ ҳар сол мешавад, аввалин бор соли 2007 оғоз шудааст. Пагоҳ шаб бисёриҳо барои дастгирӣ як соат чароғро хомӯш мекунанд. Эълони назди дарро надидӣ? Ширкати мо ҳам иштирок мекунад."
+            "uz": "丰富 — boyitmoq (fēngfù)",
+            "ru": "丰富 — обогащать, богатый (fēngfù)",
+            "tj": "丰富 — ғанӣ кардан, бой (fēngfù)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "无聊",
+          "pinyin": "wúliáo",
+          "translation": {
+            "uz": "zerikarli",
+            "ru": "скучный",
+            "tj": "дилгиркунанда"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'tashlamoq, uloqtirmoq' xitoycha qaysi?",
-            "ru": "'выбрасывать, бросать' по-китайски?",
-            "tj": "'партофтан' ба хитоӣ кадом аст?"
+            "uz": "'qaytadan' xitoycha qaysi?",
+            "ru": "'заново, снова' по-китайски?",
+            "tj": "'аз нав, дубора' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -1590,233 +706,26 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "出差",
-            "毛巾",
-            "牙膏",
-            "扔"
+            "交",
+            "适应",
+            "平时",
+            "重新"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "tashlamoq, uloqtirmoq = 扔 (rēng)",
-            "ru": "выбрасывать, бросать = 扔 (rēng)",
-            "tj": "партофтан = 扔 (rēng)"
+            "uz": "qaytadan = 重新 (chóngxīn)",
+            "ru": "заново, снова = 重新 (chóngxīn)",
+            "tj": "аз нав, дубора = 重新 (chóngxīn)"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "地球",
-          "pinyin": "dìqiú",
+          "phrase": "丰富",
+          "pinyin": "fēngfù",
           "translation": {
-            "uz": "Yer sayyorasi",
-            "ru": "Земля, земной шар",
-            "tj": "Замин"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Yaxshi, unda sen aytgandek qilaman.",
-            "ru": "Хорошо, тогда послушаю тебя.",
-            "tj": "Хуб, пас ба гапи ту мекунам."
-          },
-          "tokens": [
-            "毛巾",
-            "你",
-            "出差",
-            "好",
-            "的",
-            "听",
-            "那",
-            "就"
-          ],
-          "answer_tokens": [
-            "好",
-            "那",
-            "就",
-            "听",
-            "你",
-            "的"
-          ],
-          "explanation": {
-            "uz": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de.",
-            "ru": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de.",
-            "tj": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de."
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "以",
-          "pinyin": "yǐ",
-          "translation": {
-            "uz": "orqali, vositasida",
-            "ru": "через, посредством",
-            "tj": "бо воситаи"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-          "pinyin": "Zhè shì míngtiān nǐ chūchāi yào dài de máojīn, yágāo hé yáshuā, bǎ tāmen fàngdào xiāngzi li ba.",
-          "options": [
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
-            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.",
-            "ru": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.",
-            "tj": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор."
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "王静",
-              "zh": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-              "blank": false
-            },
-            {
-              "speaker": "李进",
-              "zh": "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-              "blank": false
-            },
-            {
-              "speaker": "王静",
-              "zh": "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
-              "blank": false
-            },
-            {
-              "speaker": "李进",
-              "zh": "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
-              "blank": false
-            },
-            {
-              "speaker": "王静",
-              "zh": "那个时间路上堵车多严重啊！你还是坐地铁去机场吧。这样不仅省油钱，而且还不会污染空气。",
-              "blank": false
-            },
-            {
-              "speaker": "李进",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "好，那就听你的。",
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 好，那就听你的。",
-            "ru": "Правильный ответ: 好，那就听你的。",
-            "tj": "Ҷавоби дуруст: 好，那就听你的。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 李进 nima deydi?",
-            "ru": "Что 李进 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 李进 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "好，那就听你的。",
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 好，那就听你的。",
-            "ru": "Правильный ответ: 好，那就听你的。",
-            "tj": "Ҷавоби дуруст: 好，那就听你的。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "袜",
-            "商",
-            "扰",
-            "这"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.)",
-            "ru": "Верно: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.)",
-            "tj": "Дуруст: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор.)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 王静 avval nima deydi?",
-            "ru": "Что 王静 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 王静 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "ru": "Правильный ответ: 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "tj": "Ҷавоби дуруст: 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "好，那就听你的。",
-          "pinyin": "Hǎo, nà jiù tīng nǐ de.",
-          "translation": {
-            "uz": "Yaxshi, unda sen aytgandek qilaman.",
-            "ru": "Хорошо, тогда послушаю тебя.",
-            "tj": "Хуб, пас ба гапи ту мекунам."
+            "uz": "boyitmoq",
+            "ru": "обогащать, богатый",
+            "tj": "ғанӣ кардан, бой"
           }
         }
       ]

@@ -1,0 +1,726 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 84,
+  "source_lesson": 10,
+  "part_no": 2,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "幸福的标准",
+  "subtitle": {
+    "uz": "baxt, oila, ish tanlovi va hayot sharoiti haqida gapirish; 不过, 确实, 在...看来, 由于 va 比如 grammatikalarini ishlatish",
+    "ru": "говорить о счастье, семье, выборе работы и условиях жизни; использовать 不过, 确实, 在...看来, 由于 и 比如",
+    "tj": "дар бораи хушбахтӣ, оила, интихоби кор ва шароити зиндагӣ гуфтугӯ кардан; истифодаи 不过, 确实, 在...看来, 由于 ва 比如"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "永远",
+      "pinyin": "yǒngyuǎn",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "abadiy, doim",
+        "ru": "навсегда, всегда",
+        "tj": "ҳамеша, абадӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "方向",
+      "pinyin": "fāngxiàng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yo'nalish",
+        "ru": "направление",
+        "tj": "самт"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "优秀",
+      "pinyin": "yōuxiù",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "a'lo, zo'r",
+        "ru": "выдающийся, отличный",
+        "tj": "аъло, беҳтарин"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "硕士",
+      "pinyin": "shuòshì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "magistr",
+        "ru": "магистр",
+        "tj": "магистр"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "孙月 va 王静 oila mas'uliyati va baxt haqida gaplashadi",
+        "ru": "孙月 и 王静 говорят о семейной ответственности и счастье",
+        "tj": "孙月 ва 王静 дар бораи масъулияти оила ва хушбахтӣ гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "孙月",
+          "zh": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
+          "pinyin": "Lǐbàitiān yǒu kòngr ma? Péi wǒ qù guàngjiē zěnmeyàng? Wǒ xiǎng qù gěi zhàngfu mǎi ge shēngrì lǐwù.",
+          "text": {
+            "uz": "Yakshanba bo'sh vaqting bormi? Men bilan ko'cha aylangani borsang-chi? Erimga tug'ilgan kun sovg'asi olmoqchiman.",
+            "ru": "В воскресенье есть время? Как насчёт сходить со мной по магазинам? Хочу купить мужу подарок на день рождения.",
+            "tj": "Якшанбе вақти холӣ дорӣ? Бо ман ба дӯконгардӣ равӣ чӣ? Ба шавҳарам туҳфаи зодрӯз харидан мехоҳам."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "我可能去不了，最近事情多。",
+          "pinyin": "Wǒ kěnéng qù bùliǎo, zuìjìn shìqing duō.",
+          "text": {
+            "uz": "Bora olmasam kerak, oxirgi payt ishlarim ko'p.",
+            "ru": "Наверное, не смогу, в последнее время много дел.",
+            "tj": "Эҳтимол рафта наметавонам, вақтҳои охир корам зиёд."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "你最近是不是工作特别忙？",
+          "pinyin": "Nǐ zuìjìn shì bú shì gōngzuò tèbié máng?",
+          "text": {
+            "uz": "Oxirgi payt ishing juda bandmi?",
+            "ru": "Ты в последнее время особенно занята на работе?",
+            "tj": "Вақтҳои охир корат хеле серкор аст?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "我现在上有老，下有小。除了工作以外，家里还有母亲和儿子需要照顾。",
+          "pinyin": "Wǒ xiànzài shàng yǒu lǎo, xià yǒu xiǎo. Chúle gōngzuò yǐwài, jiā li hái yǒu mǔqīn hé érzi xūyào zhàogu.",
+          "text": {
+            "uz": "Hozir tepamda kattalar, pastimda bolalar bor. Ishdan tashqari uyda onam va o'g'limga qarashim kerak.",
+            "ru": "У меня сейчас старшие и младшие в семье. Кроме работы, дома нужно заботиться о матери и сыне.",
+            "tj": "Ҳоло дар хона калонсол ва кӯдак дорам. Ғайр аз кор, дар хона модарам ва писарамро нигоҳубин кардан лозим."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "真是辛苦啊！你最近脸色不太好，是不是哪儿不舒服？要注意身体啊。",
+          "pinyin": "Zhēn shì xīnkǔ a! Nǐ zuìjìn liǎnsè bú tài hǎo, shì bú shì nǎr bù shūfu? Yào zhùyì shēntǐ a.",
+          "text": {
+            "uz": "Rostdan mashaqqatli ekan! Oxirgi payt yuzing yaxshi emas, qayeringdir noqulaymi? Sog'lig'ingga e'tibor ber.",
+            "ru": "Это правда тяжело! В последнее время у тебя неважный цвет лица, тебе нездоровится? Береги здоровье.",
+            "tj": "Ростӣ заҳматнок аст! Вақтҳои охир ранги рӯят хуб нест, ҷое нороҳат аст? Ба саломатият диққат кун."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。",
+          "pinyin": "Méishìr, xièxie! Búguò xiànzài wǒ hěn xìngfú, yīnwèi zài mǔqīn miànqián wǒ kěyǐ zuò yí ge yǒngyuǎn zhǎng bù dà de háizi; zài háizi miànqián wǒ yòu shì ge néng zhàogu tā de mǔqīn, zhè ràng wǒ yǒu le nǔlì de fāngxiàng.",
+          "text": {
+            "uz": "Hech narsa emas, rahmat! Lekin hozir men baxtliman: onam oldida abadiy katta bo'lmaydigan bola bo'la olaman; bolam oldida esa unga qaray oladigan onaman. Bu menga harakat yo'nalishini berdi.",
+            "ru": "Ничего, спасибо! Но сейчас я счастлива: перед матерью я могу быть ребёнком, который никогда не вырастает; перед ребёнком я мать, которая может о нём заботиться. Это дало мне направление для усилий.",
+            "tj": "Ҳеҷ гап нест, раҳмат! Аммо ҳоло ман хушбахтам: назди модарам метавонам кӯдаке бошам, ки ҳамеша калон намешавад; назди фарзандам бошад модаре ҳастам, ки ӯро нигоҳубин мекунад. Ин ба ман самти кӯшиш дод."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "高老师 va 李老师 boshqalarga havas qilish haqida gaplashadi",
+        "ru": "高老师 и 李老师 говорят о зависти к чужому счастью",
+        "tj": "高老师 ва 李老师 дар бораи ҳавас ба хушбахтии дигарон гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "高老师",
+          "zh": "你看人家王老师，刚来这儿工作三年就当了教授，还有个好妻子，真让人羡慕！",
+          "pinyin": "Nǐ kàn rénjiā Wáng lǎoshī, gāng lái zhèr gōngzuò sān nián jiù dāng le jiàoshòu, hái yǒu ge hǎo qīzi, zhēn ràng rén xiànmù!",
+          "text": {
+            "uz": "Qarang, 王 ustoz bu yerga kelib atigi uch yil ishladi-yu professor bo'ldi, yana yaxshi xotini bor, odam havas qiladi!",
+            "ru": "Посмотрите на учителя Вана: всего три года работает здесь и уже стал профессором, ещё и хорошая жена, прямо завидно!",
+            "tj": "Ба устод Ван нигоҳ кунед: ҳамагӣ се сол ин ҷо кор кард ва профессор шуд, боз зани хуб дорад, одам ҳавас мекунад!"
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "其实，你在别人眼中也是很幸福的，只是你自己没有发现。",
+          "pinyin": "Qíshí, nǐ zài biérén yǎn zhōng yě shì hěn xìngfú de, zhǐshì nǐ zìjǐ méiyǒu fāxiàn.",
+          "text": {
+            "uz": "Aslida boshqalar nazarida siz ham juda baxtlisiz, faqat o'zingiz payqamadingiz.",
+            "ru": "На самом деле в глазах других вы тоже очень счастливы, просто сами этого не заметили.",
+            "tj": "Дар асл дар назари дигарон шумо ҳам хеле хушбахтед, танҳо худатон пай набурдаед."
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "是吗？我哪能跟王老师比啊？",
+          "pinyin": "Shì ma? Wǒ nǎ néng gēn Wáng lǎoshī bǐ a?",
+          "text": {
+            "uz": "Rostdanmi? Men qayoqda 王 ustoz bilan tenglashaman?",
+            "ru": "Правда? Разве я могу сравниться с учителем Ваном?",
+            "tj": "Ростӣ? Ман чӣ хел бо устод Ван муқоиса шавам?"
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "你有一个漂亮的女儿，还那么优秀，硕士毕业后就当了翻译。",
+          "pinyin": "Nǐ yǒu yí ge piàoliang de nǚ'ér, hái nàme yōuxiù, shuòshì bìyè hòu jiù dāng le fānyì.",
+          "text": {
+            "uz": "Sizning chiroyli qizingiz bor, yana shunchalik zo'r, magistraturani bitirib tarjimon bo'ldi.",
+            "ru": "У вас красивая дочь, к тому же такая способная: после магистратуры стала переводчиком.",
+            "tj": "Шумо духтари зебо доред, боз ин қадар аъло: баъди магистратура тарҷумон шуд."
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "我女儿确实不错，记得她刚拿到第一个月工资时，就兴奋地拉着我和她爸俩去商场，给我们买礼物，那时我和她爸心里别提多美了！",
+          "pinyin": "Wǒ nǚ'ér quèshí búcuò, jìde tā gāng nádào dì yī ge yuè gōngzī shí, jiù xīngfèn de lā zhe wǒ hé tā bà liǎ qù shāngchǎng, gěi wǒmen mǎi lǐwù, nà shí wǒ hé tā bà xīnli biétí duō měi le!",
+          "text": {
+            "uz": "Qizim haqiqatan ham yaxshi. Esimda, birinchi oyligini olganda hayajon bilan meni va otasini savdo markaziga olib borib, bizga sovg'a olgan edi; o'shanda men va otasi ich-ichimizdan juda xursand bo'lganmiz!",
+            "ru": "Моя дочь действительно хорошая. Помню, когда она получила первую зарплату, радостно потащила меня и её отца в торговый центр купить нам подарки; тогда мы с её отцом были невероятно счастливы!",
+            "tj": "Духтарам воқеан хуб аст. Дар ёдам, вақте маоши аввалашро гирифт, бо ҳаяҷон ману падарашро ба маркази савдо бурда, ба мо туҳфа харид; он вақт ману падараш хеле хушҳол будем!"
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "所以说每个人有每个人的生活，不用羡慕别人。你羡慕别人的时候，他们可能也正在羡慕你呢。",
+          "pinyin": "Suǒyǐ shuō měi ge rén yǒu měi ge rén de shēnghuó, búyòng xiànmù biérén. Nǐ xiànmù biérén de shíhou, tāmen kěnéng yě zhèngzài xiànmù nǐ ne.",
+          "text": {
+            "uz": "Shuning uchun har kimning o'z hayoti bor, boshqalarga havas qilish shart emas. Siz boshqalarga havas qilganingizda, ular ham balki sizga havas qilayotgandir.",
+            "ru": "Поэтому у каждого своя жизнь, не нужно завидовать другим. Когда вы завидуете другим, они, возможно, тоже завидуют вам.",
+            "tj": "Бинобар ин ҳар кас зиндагии худро дорад, ба дигарон ҳавас кардан шарт нест. Вақте шумо ба дигарон ҳавас мекунед, шояд онҳо ҳам ба шумо ҳавас доранд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "小雨 va 小夏 kasb tanlashda pul va qiziqish haqida gaplashadi",
+        "ru": "小雨 и 小夏 говорят о деньгах и интересе при выборе профессии",
+        "tj": "小雨 ва 小夏 дар бораи пул ва шавқ ҳангоми интихоби касб гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小雨",
+          "zh": "时间过得真快，马上就要毕业了。毕业后你打算做什么？",
+          "pinyin": "Shíjiān guò de zhēn kuài, mǎshàng jiù yào bìyè le. Bìyè hòu nǐ dǎsuàn zuò shénme?",
+          "text": {
+            "uz": "Vaqt juda tez o'tyapti, tez orada bitiramiz. Bitirgandan keyin nima qilmoqchisan?",
+            "ru": "Время летит быстро, скоро выпуск. Что собираешься делать после выпуска?",
+            "tj": "Вақт бисёр тез мегузарад, ба зудӣ хатм мекунем. Баъди хатм чӣ кор кардан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "我还没想好呢，正想听听你的建议。你觉得在选择职业时，收入重要吗？",
+          "pinyin": "Wǒ hái méi xiǎng hǎo ne, zhèng xiǎng tīng ting nǐ de jiànyì. Nǐ juéde zài xuǎnzé zhíyè shí, shōurù zhòngyào ma?",
+          "text": {
+            "uz": "Hali aniq o'ylamadim, aynan sening maslahatingni eshitmoqchiman. Kasb tanlashda daromad muhim deb o'ylaysanmi?",
+            "ru": "Я ещё не решил, как раз хочу услышать твой совет. Как думаешь, при выборе профессии доход важен?",
+            "tj": "Ҳанӯз хуб фикр накардаам, мехоҳам маслиҳати туро шунавам. Ба фикрат, ҳангоми интихоби касб даромад муҳим аст?"
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "在我看来，赚钱多少不是最重要的，兴趣才是关键。只有做自己喜欢的事，才会觉得幸福，将来也会有更好的发展。",
+          "pinyin": "Zài wǒ kànlai, zhuànqián duōshǎo bú shì zuì zhòngyào de, xìngqù cái shì guānjiàn. Zhǐyǒu zuò zìjǐ xǐhuan de shì, cái huì juéde xìngfú, jiānglái yě huì yǒu gèng hǎo de fāzhǎn.",
+          "text": {
+            "uz": "Mening nazarimda qancha pul topish eng muhimi emas, qiziqish asosiy. Faqat o'zing yoqtirgan ishni qilsang baxtni his qilasan va kelajakda yaxshiroq rivojlanasan.",
+            "ru": "На мой взгляд, сколько зарабатывать - не самое важное, ключевой фактор - интерес. Только занимаясь любимым делом, чувствуешь счастье и в будущем развиваешься лучше.",
+            "tj": "Аз назари ман, чӣ қадар пул ёфтан муҳимтарин нест, шавқ калид аст. Танҳо кори дӯстдоштаатро кунӣ, хушбахтӣ ҳис мекунӣ ва дар оянда рушди беҳтар мешавад."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "我也这么想。如果我带着热情去做自己喜欢的工作，就不会感到累。不过，现在什么东西都那么贵，生活压力太大了，没有钱也不会过得幸福啊！",
+          "pinyin": "Wǒ yě zhème xiǎng. Rúguǒ wǒ dài zhe rèqíng qù zuò zìjǐ xǐhuan de gōngzuò, jiù bú huì gǎndào lèi. Búguò, xiànzài shénme dōngxi dōu nàme guì, shēnghuó yālì tài dà le, méiyǒu qián yě bú huì guò de xìngfú a!",
+          "text": {
+            "uz": "Men ham shunday o'ylayman. Agar yoqtirgan ishimni ishtiyoq bilan qilsam, charchoq sezmayman. Lekin hozir hamma narsa qimmat, hayot bosimi juda katta, pulsiz ham baxtli yashab bo'lmaydi-ku!",
+            "ru": "Я тоже так думаю. Если с энтузиазмом заниматься любимой работой, не будешь чувствовать усталость. Но сейчас всё дорого, давление жизни огромное, без денег тоже счастливым не будешь!",
+            "tj": "Ман ҳам ҳамин тавр фикр мекунам. Агар кори дӯстдоштаамро бо шавқ кунам, хаста намешавам. Аммо ҳоло ҳама чиз қимат аст, фишори зиндагӣ зиёд, бе пул ҳам хушбахт зиндагӣ карда намешавад!"
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "幸福其实很简单，它不是只要有钱就能买到的。我觉得工作结束回家后，洗个热水澡，然后躺在床上看看书、听听音乐，困了睡睡觉，就很幸福。",
+          "pinyin": "Xìngfú qíshí hěn jiǎndān, tā bú shì zhǐyào yǒu qián jiù néng mǎi dào de. Wǒ juéde gōngzuò jiéshù huí jiā hòu, xǐ ge rèshuǐzǎo, ránhòu tǎng zài chuáng shang kàn kan shū, tīng ting yīnyuè, kùn le shuì shuì jiào, jiù hěn xìngfú.",
+          "text": {
+            "uz": "Baxt aslida juda oddiy, uni faqat pul bo'lsa sotib olib bo'lmaydi. Menimcha, ishdan uyga qaytib, issiq dush qabul qilish, keyin karavotda yotib kitob o'qish, musiqa tinglash, uyqu kelganda uxlash - juda baxt.",
+            "ru": "Счастье на самом деле простое, его нельзя купить только потому, что есть деньги. По-моему, после работы вернуться домой, принять горячий душ, лечь на кровать, почитать, послушать музыку и поспать, когда сонно, - это уже счастье.",
+            "tj": "Хушбахтӣ дар асл хеле содда аст, онро танҳо бо пул харида намешавад. Ба назарам, баъди кор ба хона баргашта, души гарм гирифтан, баъд дар кат хобида китоб хондану мусиқӣ шунидан, хоболуд шавӣ хобидан - ҳамин хушбахтист."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "你说的也对。如果能找到一份自己既感兴趣，收入又不错的工作，那就最好了。",
+          "pinyin": "Nǐ shuō de yě duì. Rúguǒ néng zhǎodào yí fèn zìjǐ jì gǎn xìngqù, shōurù yòu búcuò de gōngzuò, nà jiù zuì hǎo le.",
+          "text": {
+            "uz": "Gaping ham to'g'ri. Agar o'zim qiziqadigan va daromadi ham yaxshi ish topsam, eng yaxshi bo'lardi.",
+            "ru": "Ты тоже прав. Если найти работу, которая и интересна, и с хорошим доходом, это было бы лучше всего.",
+            "tj": "Гапат ҳам дуруст. Агар коре ёбам, ки ҳам ба он шавқ дорам, ҳам даромадаш хуб аст, беҳтарин мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pul va baxt o'rtasidagi munosabat haqida matn",
+        "ru": "Текст о связи денег и счастья",
+        "tj": "Матн дар бораи робитаи пул ва хушбахтӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "有的人希望穿得再好一些，房子再大一些，认为经济条件越好人就越幸福。其实有很多富人过得并不愉快，而有些穷人却过得很快乐。有钱不一定幸福，因为很多东西都是不能用钱买到的，例如时间、感情、生活经历等。但是，从另外一个方面看，如果没钱，也很难过得幸福。当你生病了，如果由于缺钱而不能及时去看医生，你的健康都很难得到保证，就更别说幸福了。",
+          "pinyin": "Yǒu de rén xīwàng chuān de zài hǎo yìxiē, fángzi zài dà yìxiē, rènwéi jīngjì tiáojiàn yuè hǎo rén jiù yuè xìngfú.",
+          "text": {
+            "uz": "Ba'zi odamlar yaxshiroq kiyinishni, kattaroq uyda yashashni xohlaydi va iqtisodiy sharoit qancha yaxshi bo'lsa, odam shuncha baxtli deb o'ylaydi. Aslida ko'p boylar xursand yashamaydi, ba'zi kambag'allar esa juda quvonchli yashaydi. Pul bo'lishi shartli ravishda baxt emas, chunki vaqt, his-tuyg'u, hayot tajribasi kabi ko'p narsani pulga sotib olib bo'lmaydi. Lekin boshqa tomondan qaralsa, pul bo'lmasa ham baxtli yashash qiyin. Kasal bo'lganda, pul yetishmagani sababli vaqtida shifokorga bora olmasang, sog'lig'ing ham kafolatlanmaydi, baxtni-ku aytmasa ham bo'ladi.",
+            "ru": "Некоторые хотят одеваться лучше, иметь дом побольше и считают: чем лучше экономические условия, тем счастливее человек. На самом деле многие богатые живут нерадостно, а некоторые бедные очень счастливы. Деньги не обязательно дают счастье, потому что время, чувства, жизненный опыт и многое другое нельзя купить. Но с другой стороны, без денег тоже трудно быть счастливым. Если заболел и из-за нехватки денег не можешь вовремя обратиться к врачу, даже здоровье трудно гарантировать, не говоря уже о счастье.",
+            "tj": "Баъзеҳо мехоҳанд беҳтар пӯшанд, хонаи калонтар дошта бошанд ва фикр мекунанд ҳар қадар шароити иқтисодӣ хуб бошад, одам ҳамон қадар хушбахт аст. Дар асл бисёр бойҳо хуш зиндагӣ намекунанд, баъзе камбағалон бошанд хеле хурсанданд. Пул ҳатман хушбахтӣ нест, зеро вақт, эҳсос, таҷрибаи зиндагӣ ва бисёр чизҳоро бо пул харида намешавад. Аммо аз тарафи дигар, бе пул ҳам хушбахт зиндагӣ кардан душвор аст. Вақте бемор мешавӣ, агар аз сабаби камии пул сари вақт ба духтур рафта натавонӣ, саломатият ҳам кафолат надорад, хушбахтӣ бошад ҷойи худ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Baxtning yagona standarti yo'qligi haqida matn",
+        "ru": "Текст о том, что у счастья нет единого стандарта",
+        "tj": "Матн дар бораи он ки хушбахтӣ стандарти ягона надорад"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "什么是幸福？有的人认为，工资高、能赚钱就是幸福；有的人认为，心情放松、身体健康才是幸福；也有人认为，能帮助别人就是一种幸福。还有人说，小时候幸福是一件东西，比如一块橡皮、一块糖，得到了就很幸福；长大后幸福是一种态度，生活的态度决定了我们幸福感的高低。那怎样才算是真正的幸福？其实，幸福并没有一个标准答案，每个人对幸福都有不同的理解。不管你认为幸福是什么，只要你用心去找，就一定能发现它。",
+          "pinyin": "Shénme shì xìngfú? Yǒu de rén rènwéi, gōngzī gāo, néng zhuànqián jiù shì xìngfú.",
+          "text": {
+            "uz": "Baxt nima? Ba'zilar yuqori maosh va pul topish baxt deb o'ylaydi; ba'zilar kayfiyat xotirjam, tana sog'lom bo'lishi baxt deb biladi; yana boshqalarga yordam bera olish ham baxt deydiganlar bor. Yana kimdir aytadi: bolalikda baxt bir narsa, masalan bir dona o'chirg'ich yoki konfet - olsang baxtli bo'lasan; ulg'ayganda esa baxt bir munosabat, hayotga munosabat baxt hissi baland-pastligini belgilaydi. Unda haqiqiy baxt nima? Aslida baxtning standart javobi yo'q, har kim uni turlicha tushunadi. Baxtni nima deb bilishingdan qat'i nazar, chin dildan izlasang, albatta topasan.",
+            "ru": "Что такое счастье? Одни считают, что высокая зарплата и возможность зарабатывать - это счастье; другие считают, что спокойное настроение и здоровое тело - счастье; третьи думают, что помогать другим - тоже счастье. Ещё говорят: в детстве счастье - это вещь, например ластик или конфета, получил - и счастлив; во взрослом возрасте счастье - это отношение, отношение к жизни определяет уровень ощущения счастья. Что же считать настоящим счастьем? На самом деле у счастья нет стандартного ответа, каждый понимает его по-своему. Что бы ты ни считал счастьем, если будешь искать сердцем, обязательно найдёшь.",
+            "tj": "Хушбахтӣ чист? Баъзеҳо фикр мекунанд маоши баланд ва пул ёфтан хушбахтист; баъзеҳо кайфияти ором ва бадани солимро хушбахтӣ медонанд; баъзеҳо ёрӣ ба дигаронро ҳам хушбахтӣ мешуморанд. Боз мегӯянд: дар кӯдакӣ хушбахтӣ як чиз аст, масалан як хатпоккунак ё як қанд, онро гирӣ хушбахт мешавӣ; калон шавӣ, хушбахтӣ як муносибат аст, муносибат ба зиндагӣ дараҷаи ҳисси хушбахтиро муайян мекунад. Пас хушбахтии ҳақиқӣ чист? Дар асл хушбахтӣ ҷавоби стандартӣ надорад, ҳар кас онро гуногун мефаҳмад. Новобаста аз он ки хушбахтиро чӣ медонӣ, агар бо дил ҷустуҷӯ кунӣ, ҳатман меёбӣ."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "永远",
+            "pinyin": "yǒngyuǎn",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "abadiy, doim",
+              "ru": "навсегда, всегда",
+              "tj": "ҳамеша, абадӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'abadiy, doim' xitoycha qaysi?",
+            "ru": "'навсегда, всегда' по-китайски?",
+            "tj": "'ҳамеша, абадӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "空儿",
+            "永远",
+            "母亲",
+            "礼拜天"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "abadiy, doim = 永远 (yǒngyuǎn)",
+            "ru": "навсегда, всегда = 永远 (yǒngyuǎn)",
+            "tj": "ҳамеша, абадӣ = 永远 (yǒngyuǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "方向",
+            "pinyin": "fāngxiàng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yo'nalish",
+              "ru": "направление",
+              "tj": "самт"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "方向",
+          "pinyin": "fāngxiàng",
+          "options": [
+            "方向",
+            "礼拜天",
+            "母亲",
+            "空儿"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "方向 — yo'nalish (fāngxiàng)",
+            "ru": "方向 — направление (fāngxiàng)",
+            "tj": "方向 — самт (fāngxiàng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "优秀",
+            "pinyin": "yōuxiù",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "a'lo, zo'r",
+              "ru": "выдающийся, отличный",
+              "tj": "аъло, беҳтарин"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "优秀 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 优秀:",
+            "tj": "Маънои калимаи 优秀-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            },
+            {
+              "uz": "ona",
+              "ru": "мать",
+              "tj": "модар"
+            },
+            {
+              "uz": "a'lo, zo'r",
+              "ru": "выдающийся, отличный",
+              "tj": "аъло, беҳтарин"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "优秀 = a'lo, zo'r (yōuxiù)",
+            "ru": "优秀 = выдающийся, отличный (yōuxiù)",
+            "tj": "优秀 = аъло, беҳтарин (yōuxiù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "硕士",
+            "pinyin": "shuòshì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "magistr",
+              "ru": "магистр",
+              "tj": "магистр"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "硕士",
+          "pinyin": "shuòshì",
+          "translation": {
+            "uz": "magistr",
+            "ru": "магистр",
+            "tj": "магистр"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shuòshì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shuòshì?",
+            "tj": "shuòshì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "硕士",
+            "礼拜天",
+            "空儿",
+            "母亲"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "硕士 = magistr (shuòshì)",
+            "ru": "硕士 = магистр (shuòshì)",
+            "tj": "硕士 = магистр (shuòshì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "永远 talaffuzini tanlang:",
+            "ru": "Выберите произношение 永远:",
+            "tj": "Талаффузи 永远-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "lǐbàitiān",
+            "kòngr",
+            "yǒngyuǎn",
+            "mǔqīn"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "永远 — yǒngyuǎn",
+            "ru": "永远 — yǒngyuǎn",
+            "tj": "永远 — yǒngyuǎn"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "永远",
+              {
+                "uz": "abadiy, doim",
+                "ru": "навсегда, всегда",
+                "tj": "ҳамеша, абадӣ"
+              }
+            ],
+            [
+              "方向",
+              {
+                "uz": "yo'nalish",
+                "ru": "направление",
+                "tj": "самт"
+              }
+            ],
+            [
+              "优秀",
+              {
+                "uz": "a'lo, zo'r",
+                "ru": "выдающийся, отличный",
+                "tj": "аъло, беҳтарин"
+              }
+            ],
+            [
+              "硕士",
+              {
+                "uz": "magistr",
+                "ru": "магистр",
+                "tj": "магистр"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "硕士",
+          "pinyin": "shuòshì",
+          "options": [
+            "空儿",
+            "母亲",
+            "礼拜天",
+            "硕士"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "硕士 — magistr (shuòshì)",
+            "ru": "硕士 — магистр (shuòshì)",
+            "tj": "硕士 — магистр (shuòshì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "永远",
+          "pinyin": "yǒngyuǎn",
+          "options": [
+            "空儿",
+            "永远",
+            "母亲",
+            "礼拜天"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "永远 — abadiy, doim (yǒngyuǎn)",
+            "ru": "永远 — навсегда, всегда (yǒngyuǎn)",
+            "tj": "永远 — ҳамеша, абадӣ (yǒngyuǎn)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "不过 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 不过:",
+            "tj": "Маънои калимаи 不过-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "lekin, biroq",
+              "ru": "однако, но",
+              "tj": "аммо, вале"
+            },
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            },
+            {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
+              "uz": "ona",
+              "ru": "мать",
+              "tj": "модар"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "不过 = lekin, biroq (búguò)",
+            "ru": "不过 = однако, но (búguò)",
+            "tj": "不过 = аммо, вале (búguò)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yo'nalish' xitoycha qaysi?",
+            "ru": "'направление' по-китайски?",
+            "tj": "'самт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "礼拜天",
+            "空儿",
+            "母亲",
+            "方向"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "yo'nalish = 方向 (fāngxiàng)",
+            "ru": "направление = 方向 (fāngxiàng)",
+            "tj": "самт = 方向 (fāngxiàng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yōuxiù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yōuxiù?",
+            "tj": "yōuxiù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "优秀",
+            "空儿",
+            "礼拜天",
+            "母亲"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "优秀 = a'lo, zo'r (yōuxiù)",
+            "ru": "优秀 = выдающийся, отличный (yōuxiù)",
+            "tj": "优秀 = аъло, беҳтарин (yōuxiù)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "硕士",
+          "pinyin": "shuòshì",
+          "translation": {
+            "uz": "magistr",
+            "ru": "магистр",
+            "tj": "магистр"
+          }
+        }
+      ]
+    }
+  ]
+}

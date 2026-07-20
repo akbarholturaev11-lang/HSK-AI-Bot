@@ -2,167 +2,61 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 10,
-  "title": "我能坐这儿吗",
+  "source_lesson": 4,
+  "part_no": 1,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "她是我的汉语老师",
   "subtitle": {
-    "uz": "Joylashuvni ifodalash, 有-gaplar, modal fe'l 能 va bog'lovchi 和",
-    "ru": "Выражение местонахождения, предложения с 有, модальный глагол 能 и союз 和",
-    "tj": "Баёни ҷой, ҷумлаҳои 有, феъли модалии 能 ва пайвандаки 和"
+    "uz": "Uchinchi shaxslar haqida gapirish, 的 bilan egalikni ifodalash va 谁/哪 so'roq so'zlarini ishlatish",
+    "ru": "Говорить о третьих лицах, выражать принадлежность с 的 и использовать вопросительные слова 谁/哪",
+    "tj": "Дар бораи шахсони сеюм гап задан, ифодаи соҳибӣ бо 的 ва истифодаи калимаҳои саволии 谁/哪"
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "桌子",
-      "pinyin": "zhuōzi",
-      "pos": "n.",
+      "zh": "她",
+      "pinyin": "tā",
+      "pos": "pron.",
       "meaning": {
-        "uz": "stol, parta",
-        "ru": "стол",
-        "tj": "мӣз"
+        "uz": "u (ayol)",
+        "ru": "она",
+        "tj": "вай (зан)"
       }
     },
     {
       "no": 2,
-      "zh": "上",
-      "pinyin": "shàng",
-      "pos": "n.",
+      "zh": "谁",
+      "pinyin": "shéi",
+      "pos": "pron.",
       "meaning": {
-        "uz": "ustida, tepasida",
-        "ru": "сверху, на",
-        "tj": "болои, дар болои"
+        "uz": "kim",
+        "ru": "кто",
+        "tj": "кӣ"
       }
     },
     {
       "no": 3,
-      "zh": "电脑",
-      "pinyin": "diànnǎo",
-      "pos": "n.",
+      "zh": "的",
+      "pinyin": "de",
+      "pos": "part.",
       "meaning": {
-        "uz": "kompyuter",
-        "ru": "компьютер",
-        "tj": "компютер"
+        "uz": "ning (egalik yuklamasi)",
+        "ru": "-'s (показатель принадлежности)",
+        "tj": "и, -и (ҳарфи соҳибӣ)"
       }
     },
     {
       "no": 4,
-      "zh": "和",
-      "pinyin": "hé",
-      "pos": "conj.",
-      "meaning": {
-        "uz": "va, bilan",
-        "ru": "и, с",
-        "tj": "ва, бо"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "本",
-      "pinyin": "běn",
-      "pos": "m.",
-      "meaning": {
-        "uz": "dona (kitob uchun o'lchov so'zi)",
-        "ru": "штука (счётное слово для книг)",
-        "tj": "адад (барои китоб)"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "里",
-      "pinyin": "lǐ",
+      "zh": "汉语",
+      "pinyin": "Hànyǔ",
       "pos": "n.",
       "meaning": {
-        "uz": "ichida",
-        "ru": "внутри, в",
-        "tj": "дарун, дохили"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "前面",
-      "pinyin": "qiánmiàn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "oldinida, oldida",
-        "ru": "спереди, перед",
-        "tj": "пеш, пешаш"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "后面",
-      "pinyin": "hòumiàn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "orqasida, ketida",
-        "ru": "сзади, за",
-        "tj": "қафо, паси"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "这儿",
-      "pinyin": "zhèr",
-      "pos": "pron.",
-      "meaning": {
-        "uz": "bu yerda, shu yerda",
-        "ru": "здесь, тут",
-        "tj": "ин ҷо, ин ҷост"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "没有",
-      "pinyin": "méiyǒu",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "yo'q, mavjud emas",
-        "ru": "нет, не имеется",
-        "tj": "не, нест"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "能",
-      "pinyin": "néng",
-      "pos": "mod.",
-      "meaning": {
-        "uz": "mumkin, qodir (ruxsat/imkoniyat)",
-        "ru": "можно, мочь (способность/разрешение)",
-        "tj": "тавонистан, мумкин (иҷозат/қобилият)"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "坐",
-      "pinyin": "zuò",
-      "pos": "v.",
-      "meaning": {
-        "uz": "o'tirmoq",
-        "ru": "сидеть, садиться",
-        "tj": "нишастан"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "王方",
-      "pinyin": "Wáng Fāng",
-      "pos": "pn.",
-      "meaning": {
-        "uz": "Wang Fang (ism)",
-        "ru": "Ван Фан (имя)",
-        "tj": "Ван Фан (ном)"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "谢朋",
-      "pinyin": "Xiè Péng",
-      "pos": "pn.",
-      "meaning": {
-        "uz": "Xie Peng (ism)",
-        "ru": "Се Пэн (имя)",
-        "tj": "Ше Пен (ном)"
+        "uz": "xitoy tili",
+        "ru": "китайский язык",
+        "tj": "забони чинӣ"
       }
     }
   ],
@@ -170,128 +64,42 @@
     {
       "no": 1,
       "title": {
-        "uz": "有 gapi (mavjudlik)",
-        "ru": "Предложения с 有 (существование)",
-        "tj": "Ҷумлаи 有 (мавҷудият)"
+        "uz": "的 — egalik yuklamasi",
+        "ru": "的 — показатель принадлежности",
+        "tj": "的 — ҳарфи соҳибӣ"
       },
-      "title_zh": "有字句",
+      "title_zh": "结构助词 的",
       "rule": {
-        "uz": "有(yǒu) — biror joyda narsa yoki kishining borligini bildiradi.\nTuzilish: Joy + 有 + Narsa/Kishi\n\nInkor: 没有 (méiyǒu)\n椅子下面没有小狗。— Stul ostida it yo'q.\n这儿有人吗？ — 没有。— Bu yerda kimdir bormi? — Yo'q.",
-        "ru": "有(yǒu) — указывает на существование чего-то/кого-то в определённом месте.\nСтруктура: Место + 有 + Предмет/Человек\n\nОтрицание: 没有 (méiyǒu)\n椅子下面没有小狗。— Под стулом нет собаки.\n这儿有人吗？ — 没有。— Здесь кто-то есть? — Нет.",
-        "tj": "有(yǒu) — мавҷудияти чизе ё касеро дар ҷои муайян нишон медиҳад.\nСохт: Ҷой + 有 + Чиз/Кас\n\nИнкор: 没有 (méiyǒu)\n椅子下面没有小狗。— Зери курсӣ саг нест.\n这儿有人吗？ — 没有。— Ин ҷо кас ҳаст? — Не."
+        "uz": "的(de) — egalikni yoki bog'liqlikni ifodalaydi.\nTuzilma: Ot/Olmosh + 的 + Ot\n\nMisol:\n我的老师 — mening o'qituvchim\n她的朋友 — uning do'sti\n\nEslatma: Qarindoshlik va shaxsiy otlar oldida 的 tushirilishi mumkin:\n我(的)老师 ✓ — mening o'qituvchim\n我(的)朋友 ✓ — mening do'stim",
+        "ru": "的(de) — выражает принадлежность или ассоциацию.\nСтруктура: Существительное/Местоимение + 的 + Существительное\n\nПример:\n我的老师 — мой учитель\n她的朋友 — её подруга\n\nПримечание: 的 может опускаться перед терминами родства и личными существительными:\n我(的)老师 ✓ — мой учитель\n我(的)朋友 ✓ — мой друг",
+        "tj": "的(de) — соҳибӣ ё алоқаро ифода мекунад.\nСохт: Исм/Ҷонишин + 的 + Исм\n\nМисол:\n我的老师 — муаллими ман\n她的朋友 — дӯсти вай\n\nЭзоҳ: 的 пеш аз истилоҳоти хешутаборӣ ва исмҳои шахсӣ метавонад ҳазф шавад:\n我(的)老师 ✓ — муаллими ман\n我(的)朋友 ✓ — дӯсти ман"
       },
       "examples": [
         {
-          "zh": "桌子上有一个电脑。",
-          "pinyin": "Zhuōzi shàng yǒu yī gè diànnǎo.",
+          "zh": "我的汉语老师",
+          "pinyin": "wǒ de Hànyǔ lǎoshī",
           "translation": {
-            "uz": "Stol ustida bitta kompyuter bor.",
-            "ru": "На столе стоит компьютер.",
-            "tj": "Болои мӣз як компютер аст."
+            "uz": "mening xitoy tili o'qituvchim",
+            "ru": "мой преподаватель китайского",
+            "tj": "муаллими забони чинии ман"
           }
         },
         {
-          "zh": "学校里没有商店。",
-          "pinyin": "Xuéxiào lǐ méiyǒu shāngdiàn.",
+          "zh": "他的同学",
+          "pinyin": "tā de tóngxué",
           "translation": {
-            "uz": "Maktabda do'kon yo'q.",
-            "ru": "В школе нет магазина.",
-            "tj": "Дар мактаб дӯкон нест."
+            "uz": "uning sinfdoshi",
+            "ru": "его одноклассник",
+            "tj": "ҳамсинфи вай"
           }
         },
         {
-          "zh": "这儿有人吗？",
-          "pinyin": "Zhèr yǒu rén ma?",
+          "zh": "你的朋友",
+          "pinyin": "nǐ de péngyou",
           "translation": {
-            "uz": "Bu yerda kimdir bormi?",
-            "ru": "Здесь кто-то есть?",
-            "tj": "Ин ҷо кас ҳаст?"
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "Bog'lovchi 和",
-        "ru": "Союз 和",
-        "tj": "Пайвандаки 和"
-      },
-      "title_zh": "连词 和",
-      "rule": {
-        "uz": "和(hé) — ikki ot yoki olmoshni birlashtiradi ('va', 'bilan').\nTuzilish: Ot1 + 和 + Ot2\n\nEslatma: 和 faqat ot va olmoshlarni bog'laydi —\nfe'l va gaplarni bog'lay olmaydi.",
-        "ru": "和(hé) — соединяет два существительных или местоимения ('и', 'с').\nСтруктура: Сущ1 + 和 + Сущ2\n\nПримечание: 和 соединяет только существительные и местоимения —\nглаголы и предложения оно не соединяет.",
-        "tj": "和(hé) — ду исм ё ҷонишинро мепайвандад ('ва', 'бо').\nСохт: Исм1 + 和 + Исм2\n\nЭзоҳ: 和 танҳо исмҳо ва ҷонишинҳоро мепайвандад —\nфеълҳо ва ҷумлаҳоро пайвандакӣ карда наметавонад."
-      },
-      "examples": [
-        {
-          "zh": "电脑和书",
-          "pinyin": "diànnǎo hé shū",
-          "translation": {
-            "uz": "kompyuter va kitob",
-            "ru": "компьютер и книга",
-            "tj": "компютер ва китоб"
-          }
-        },
-        {
-          "zh": "爸爸和妈妈",
-          "pinyin": "bàba hé māma",
-          "translation": {
-            "uz": "ota va ona",
-            "ru": "папа и мама",
-            "tj": "падар ва модар"
-          }
-        },
-        {
-          "zh": "我有一个中国朋友和一个美国朋友。",
-          "pinyin": "Wǒ yǒu yī gè Zhōngguó péngyou hé yī gè Měiguó péngyou.",
-          "translation": {
-            "uz": "Mening bitta xitoy do'stim va bitta amerikalik do'stim bor.",
-            "ru": "У меня есть один китайский друг и один американский друг.",
-            "tj": "Ман як дӯсти чинӣ ва як дӯсти амрикоӣ дорам."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "Modal fe'l 能",
-        "ru": "Модальный глагол 能",
-        "tj": "Феъли модалии 能"
-      },
-      "title_zh": "能愿动词 能",
-      "rule": {
-        "uz": "能(néng) — imkoniyat yoki ruxsatni bildiradi.\nTuzilish: Ega + 能 + Fe'l\n\n能 va 会 farqi:\n会 — o'rganib orttirgan mahorat (biladi)\n能 — sharoitga asoslangan imkoniyat/ruxsat (qila oladi/mumkin)",
-        "ru": "能(néng) — выражает способность или разрешение.\nСтруктура: Подлежащее + 能 + Глагол\n\nРазница 能 и 会:\n会 — умение, приобретённое в результате обучения\n能 — возможность/разрешение в зависимости от обстоятельств",
-        "tj": "能(néng) — қобилият ё иҷозатро баён мекунад.\nСохт: Муб. + 能 + Феъл\n\nФарқи 能 ва 会:\n会 — маҳорати аз омӯзиш ба даст омада\n能 — имконият/иҷозат вобаста ба шароит"
-      },
-      "examples": [
-        {
-          "zh": "我能坐这儿吗？",
-          "pinyin": "Wǒ néng zuò zhèr ma?",
-          "translation": {
-            "uz": "Men bu yerga o'tirsam bo'ladimi?",
-            "ru": "Можно мне здесь сесть?",
-            "tj": "Ман метавонам ин ҷо нишинам?"
-          }
-        },
-        {
-          "zh": "你能在这儿工作吗？",
-          "pinyin": "Nǐ néng zài zhèr gōngzuò ma?",
-          "translation": {
-            "uz": "Siz bu yerda ishlay olasizmi?",
-            "ru": "Вы можете здесь работать?",
-            "tj": "Шумо метавонед ин ҷо кор кунед?"
-          }
-        },
-        {
-          "zh": "明天你能去商店吗？",
-          "pinyin": "Míngtiān nǐ néng qù shāngdiàn ma?",
-          "translation": {
-            "uz": "Ertaga do'konga bora olasizmi?",
-            "ru": "Вы можете завтра пойти в магазин?",
-            "tj": "Фардо шумо метавонед ба дӯкон равед?"
+            "uz": "sening do'sting",
+            "ru": "твой друг",
+            "tj": "дӯсти ту"
           }
         }
       ]
@@ -300,147 +108,117 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Ofisda — stol ustida nima bor",
-        "ru": "В офисе — что на столе",
-        "tj": "Дар идора — болои мӣз чӣ аст"
+        "uz": "Sinfda — o'qituvchi haqida",
+        "ru": "В классе — о преподавателе",
+        "tj": "Дар синф — дар бораи муаллим"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "桌子上有什么？",
-          "pinyin": "Zhuōzi shàng yǒu shénme?",
+          "zh": "她是谁？",
+          "pinyin": "Tā shì shéi?",
           "text": {
-            "uz": "Stol ustida nima bor?",
-            "ru": "Что на столе?",
-            "tj": "Болои мӣз чӣ аст?"
+            "uz": "U kim?",
+            "ru": "Кто она?",
+            "tj": "Вай кӣ аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "桌子上有一个电脑和一本书。",
-          "pinyin": "Zhuōzi shàng yǒu yī gè diànnǎo hé yī běn shū.",
+          "zh": "她是我的汉语老师，她叫李月。",
+          "pinyin": "Tā shì wǒ de Hànyǔ lǎoshī, tā jiào Lǐ Yuè.",
           "text": {
-            "uz": "Stol ustida bitta kompyuter va bitta kitob bor.",
-            "ru": "На столе стоит компьютер и лежит книга.",
-            "tj": "Болои мӣз як компютер ва як китоб аст."
-          }
-        },
-        {
-          "speaker": "A",
-          "zh": "杯子在哪儿？",
-          "pinyin": "Bēizi zài nǎr?",
-          "text": {
-            "uz": "Piyola qayerda?",
-            "ru": "Где стакан?",
-            "tj": "Пиёла куҷост?"
-          }
-        },
-        {
-          "speaker": "B",
-          "zh": "杯子在桌子里。",
-          "pinyin": "Bēizi zài zhuōzi lǐ.",
-          "text": {
-            "uz": "Piyola stol ichida.",
-            "ru": "Стакан внутри стола.",
-            "tj": "Пиёла дохили мӣз аст."
+            "uz": "U mening xitoy tili o'qituvchim, uning ismi Li Yue.",
+            "ru": "Она моя преподаватель китайского, её зовут Ли Юэ.",
+            "tj": "Вай муаллимаи забони чинии ман аст, номаш Ли Юэ аст."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Sport zalda — oldida va orqasida kim",
-        "ru": "В спортзале — кто спереди и сзади",
-        "tj": "Дар варзишгоҳ — пеш ва қафо кӣ аст"
+        "uz": "Kutubxonada — millat so'rash",
+        "ru": "В библиотеке — спрашиваем о национальности",
+        "tj": "Дар китобхона — пурсидани миллат"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "前面那个人叫什么名字？",
-          "pinyin": "Qiánmiàn nàge rén jiào shénme míngzi?",
+          "zh": "你是哪国人？",
+          "pinyin": "Nǐ shì nǎ guó rén?",
           "text": {
-            "uz": "Oldidagi odam nomi nima?",
-            "ru": "Как зовут человека спереди?",
-            "tj": "Номи одами пешаш чист?"
+            "uz": "Siz qaysi mamlakatdansiz?",
+            "ru": "Вы из какой страны?",
+            "tj": "Шумо аз кадом кишвар ҳастед?"
           }
         },
         {
           "speaker": "B",
-          "zh": "她叫王方，在医院工作。",
-          "pinyin": "Tā jiào Wáng Fāng, zài yīyuàn gōngzuò.",
+          "zh": "我是美国人。你呢？",
+          "pinyin": "Wǒ shì Měiguó rén. Nǐ ne?",
           "text": {
-            "uz": "Uning ismi Van Fan, kasalxonada ishlaydi.",
-            "ru": "Её зовут Ван Фан — она работает в больнице.",
-            "tj": "Номаш Ван Фан аст, дар беморхона кор мекунад."
+            "uz": "Men amerikalikman. Siz-chi?",
+            "ru": "Я американец. А вы?",
+            "tj": "Ман амрикоӣ ҳастам. Шумо чӣ?"
           }
         },
         {
           "speaker": "A",
-          "zh": "后面那个人呢？他叫什么名字？",
-          "pinyin": "Hòumiàn nàge rén ne? Tā jiào shénme míngzi?",
+          "zh": "我是中国人。",
+          "pinyin": "Wǒ shì Zhōngguó rén.",
           "text": {
-            "uz": "Orqasidagi odam-chi? Uning ismi nima?",
-            "ru": "А человек сзади? Как его зовут?",
-            "tj": "Одами қафоаш чӣ? Номаш чист?"
-          }
-        },
-        {
-          "speaker": "B",
-          "zh": "他叫谢朋，在商店工作。",
-          "pinyin": "Tā jiào Xiè Péng, zài shāngdiàn gōngzuò.",
-          "text": {
-            "uz": "Uning ismi She Pen, do'konda ishlaydi.",
-            "ru": "Его зовут Се Пэн — он работает в магазине.",
-            "tj": "Номаш Ше Пен аст, дар дӯкон кор мекунад."
+            "uz": "Men xitoylikman.",
+            "ru": "Я китаец.",
+            "tj": "Ман хитоӣ ҳастам."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Kutubxonada — o'tirish so'rash",
-        "ru": "В библиотеке — просьба сесть",
-        "tj": "Дар китобхона — хоҳиши нишастан"
+        "uz": "Fotoda — do'st va sinfdosh",
+        "ru": "На фото — друг и одноклассник",
+        "tj": "Дар акс — дӯст ва ҳамсинф"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "这儿有人吗？",
-          "pinyin": "Zhèr yǒu rén ma?",
+          "zh": "他是谁？",
+          "pinyin": "Tā shì shéi?",
           "text": {
-            "uz": "Bu yerda kimdir o'tiribdimi?",
-            "ru": "Здесь кто-то сидит?",
-            "tj": "Ин ҷо касе нишастаст?"
+            "uz": "U kim?",
+            "ru": "Кто он?",
+            "tj": "Вай кӣ аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "没有。",
-          "pinyin": "Méiyǒu.",
+          "zh": "他是我同学。",
+          "pinyin": "Tā shì wǒ tóngxué.",
           "text": {
-            "uz": "Yo'q.",
-            "ru": "Нет.",
-            "tj": "Не."
+            "uz": "U mening sinfdoshim.",
+            "ru": "Он мой одноклассник.",
+            "tj": "Вай ҳамсинфи ман аст."
           }
         },
         {
           "speaker": "A",
-          "zh": "我能坐这儿吗？",
-          "pinyin": "Wǒ néng zuò zhèr ma?",
+          "zh": "她呢？她是你同学吗？",
+          "pinyin": "Tā ne? Tā shì nǐ tóngxué ma?",
           "text": {
-            "uz": "Men bu yerga o'tirsam bo'ladimi?",
-            "ru": "Можно мне здесь сесть?",
-            "tj": "Ман метавонам ин ҷо нишинам?"
+            "uz": "U-chi? U ham sening sinfdoshing?",
+            "ru": "А она? Она тоже твой одноклассник?",
+            "tj": "Вай чӣ? Оё вай ҳам ҳамсинфи ту аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "请坐。",
-          "pinyin": "Qǐng zuò.",
+          "zh": "她不是我同学，她是我朋友。",
+          "pinyin": "Tā bú shì wǒ tóngxué, tā shì wǒ péngyou.",
           "text": {
-            "uz": "Marhamat, o'tiring.",
-            "ru": "Пожалуйста, садитесь.",
-            "tj": "Хоҳиш мекунам, биниш."
+            "uz": "U mening sinfdoshim emas, u mening do'stim.",
+            "ru": "Она не моя одноклассница, она моя подруга.",
+            "tj": "Вай ҳамсинфи ман нест, вай дӯсти ман аст."
           }
         }
       ]
@@ -460,38 +238,14 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "桌子",
-            "pinyin": "zhuōzi",
-            "pos": "n.",
+            "zh": "她",
+            "pinyin": "tā",
+            "pos": "pron.",
             "meaning": {
-              "uz": "stol, parta",
-              "ru": "стол",
-              "tj": "мӣз"
+              "uz": "u (ayol)",
+              "ru": "она",
+              "tj": "вай (зан)"
             }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "上",
-            "pinyin": "shàng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ustida, tepasida",
-              "ru": "сверху, на",
-              "tj": "болои, дар болои"
-            }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "上",
-          "pinyin": "shàng",
-          "translation": {
-            "uz": "ustida, tepasida",
-            "ru": "сверху, на",
-            "tj": "болои, дар болои"
           }
         },
         {
@@ -501,55 +255,51 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "桌子",
-          "pinyin": "zhuōzi",
+          "audio_text": "她",
+          "pinyin": "tā",
           "options": [
-            "上",
-            "桌子",
-            "电脑",
-            "和"
+            "汉语",
+            "她",
+            "谁",
+            "的"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "桌子 — stol, parta (zhuōzi)",
-            "ru": "桌子 — стол (zhuōzi)",
-            "tj": "桌子 — мӣз (zhuōzi)"
+            "uz": "她 — u (ayol) (tā)",
+            "ru": "她 — она (tā)",
+            "tj": "她 — вай (зан) (tā)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "电脑",
-            "pinyin": "diànnǎo",
-            "pos": "n.",
+            "no": 2,
+            "zh": "谁",
+            "pinyin": "shéi",
+            "pos": "pron.",
             "meaning": {
-              "uz": "kompyuter",
-              "ru": "компьютер",
-              "tj": "компютер"
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
             }
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "和",
-            "pinyin": "hé",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "va, bilan",
-              "ru": "и, с",
-              "tj": "ва, бо"
-            }
+          "type": "pronunciation",
+          "phrase": "谁",
+          "pinyin": "shéi",
+          "translation": {
+            "uz": "kim",
+            "ru": "кто",
+            "tj": "кӣ"
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "和 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 和:",
-            "tj": "Маънои калимаи 和-ро интихоб кунед:"
+            "uz": "谁 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 谁:",
+            "tj": "Маънои калимаи 谁-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -558,67 +308,53 @@
           },
           "options": [
             {
-              "uz": "kompyuter",
-              "ru": "компьютер",
-              "tj": "компютер"
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
             },
             {
-              "uz": "va, bilan",
-              "ru": "и, с",
-              "tj": "ва, бо"
+              "uz": "u (ayol)",
+              "ru": "она",
+              "tj": "вай (зан)"
             },
             {
-              "uz": "ustida, tepasida",
-              "ru": "сверху, на",
-              "tj": "болои, дар болои"
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи соҳибӣ)"
             },
             {
-              "uz": "stol, parta",
-              "ru": "стол",
-              "tj": "мӣз"
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "和 = va, bilan (hé)",
-            "ru": "和 = и, с (hé)",
-            "tj": "和 = ва, бо (hé)"
+            "uz": "谁 = kim (shéi)",
+            "ru": "谁 = кто (shéi)",
+            "tj": "谁 = кӣ (shéi)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "本",
-            "pinyin": "běn",
-            "pos": "m.",
+            "no": 3,
+            "zh": "的",
+            "pinyin": "de",
+            "pos": "part.",
             "meaning": {
-              "uz": "dona (kitob uchun o'lchov so'zi)",
-              "ru": "штука (счётное слово для книг)",
-              "tj": "адад (барои китоб)"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "里",
-            "pinyin": "lǐ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ichida",
-              "ru": "внутри, в",
-              "tj": "дарун, дохили"
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи соҳибӣ)"
             }
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "lǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается lǐ?",
-            "tj": "lǐ кадом иероглиф аст?"
+            "uz": "de qaysi ieroglif?",
+            "ru": "Какой иероглиф читается de?",
+            "tj": "de кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -626,52 +362,38 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "桌子",
-            "里",
-            "电脑",
-            "上"
+            "汉语",
+            "谁",
+            "她",
+            "的"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "里 = ichida (lǐ)",
-            "ru": "里 = внутри, в (lǐ)",
-            "tj": "里 = дарун, дохили (lǐ)"
+            "uz": "的 = ning (egalik yuklamasi) (de)",
+            "ru": "的 = -'s (показатель принадлежности) (de)",
+            "tj": "的 = и, -и (ҳарфи соҳибӣ) (de)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 7,
-            "zh": "前面",
-            "pinyin": "qiánmiàn",
+            "no": 4,
+            "zh": "汉语",
+            "pinyin": "Hànyǔ",
             "pos": "n.",
             "meaning": {
-              "uz": "oldinida, oldida",
-              "ru": "спереди, перед",
-              "tj": "пеш, пешаш"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "后面",
-            "pinyin": "hòumiàn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "orqasida, ketida",
-              "ru": "сзади, за",
-              "tj": "қафо, паси"
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
             }
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "后面 talaffuzini tanlang:",
-            "ru": "Выберите произношение 后面:",
-            "tj": "Талаффузи 后面-ро интихоб кунед:"
+            "uz": "汉语 talaffuzini tanlang:",
+            "ru": "Выберите произношение 汉语:",
+            "tj": "Талаффузи 汉语-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -679,52 +401,24 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "hòumiàn",
-            "zhuōzi",
-            "diànnǎo",
-            "shàng"
+            "de",
+            "shéi",
+            "Hànyǔ",
+            "tā"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "后面 — hòumiàn",
-            "ru": "后面 — hòumiàn",
-            "tj": "后面 — hòumiàn"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "这儿",
-            "pinyin": "zhèr",
-            "pos": "pron.",
-            "meaning": {
-              "uz": "bu yerda, shu yerda",
-              "ru": "здесь, тут",
-              "tj": "ин ҷо, ин ҷост"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "没有",
-            "pinyin": "méiyǒu",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "yo'q, mavjud emas",
-              "ru": "нет, не имеется",
-              "tj": "не, нест"
-            }
+            "uz": "汉语 — Hànyǔ",
+            "ru": "汉语 — Hànyǔ",
+            "tj": "汉语 — Hànyǔ"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'yo'q, mavjud emas' xitoycha qaysi?",
-            "ru": "'нет, не имеется' по-китайски?",
-            "tj": "'не, нест' ба хитоӣ кадом аст?"
+            "uz": "'u (ayol)' xitoycha qaysi?",
+            "ru": "'она' по-китайски?",
+            "tj": "'вай (зан)' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -732,51 +426,51 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "上",
-            "电脑",
-            "桌子",
-            "没有"
+            "汉语",
+            "谁",
+            "她",
+            "的"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "yo'q, mavjud emas = 没有 (méiyǒu)",
-            "ru": "нет, не имеется = 没有 (méiyǒu)",
-            "tj": "не, нест = 没有 (méiyǒu)"
+            "uz": "u (ayol) = 她 (tā)",
+            "ru": "она = 她 (tā)",
+            "tj": "вай (зан) = 她 (tā)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "桌子",
+              "她",
               {
-                "uz": "stol, parta",
-                "ru": "стол",
-                "tj": "мӣз"
+                "uz": "u (ayol)",
+                "ru": "она",
+                "tj": "вай (зан)"
               }
             ],
             [
-              "上",
+              "谁",
               {
-                "uz": "ustida, tepasida",
-                "ru": "сверху, на",
-                "tj": "болои, дар болои"
+                "uz": "kim",
+                "ru": "кто",
+                "tj": "кӣ"
               }
             ],
             [
-              "电脑",
+              "的",
               {
-                "uz": "kompyuter",
-                "ru": "компьютер",
-                "tj": "компютер"
+                "uz": "ning (egalik yuklamasi)",
+                "ru": "-'s (показатель принадлежности)",
+                "tj": "и, -и (ҳарфи соҳибӣ)"
               }
             ],
             [
-              "和",
+              "汉语",
               {
-                "uz": "va, bilan",
-                "ru": "и, с",
-                "tj": "ва, бо"
+                "uz": "xitoy tili",
+                "ru": "китайский язык",
+                "tj": "забони чинӣ"
               }
             ]
           ],
@@ -802,42 +496,42 @@
           "g": {
             "no": 1,
             "title": {
-              "uz": "有 gapi (mavjudlik)",
-              "ru": "Предложения с 有 (существование)",
-              "tj": "Ҷумлаи 有 (мавҷудият)"
+              "uz": "的 — egalik yuklamasi",
+              "ru": "的 — показатель принадлежности",
+              "tj": "的 — ҳарфи соҳибӣ"
             },
-            "title_zh": "有字句",
+            "title_zh": "结构助词 的",
             "rule": {
-              "uz": "有(yǒu) — biror joyda narsa yoki kishining borligini bildiradi.\nTuzilish: Joy + 有 + Narsa/Kishi\n\nInkor: 没有 (méiyǒu)\n椅子下面没有小狗。— Stul ostida it yo'q.\n这儿有人吗？ — 没有。— Bu yerda kimdir bormi? — Yo'q.",
-              "ru": "有(yǒu) — указывает на существование чего-то/кого-то в определённом месте.\nСтруктура: Место + 有 + Предмет/Человек\n\nОтрицание: 没有 (méiyǒu)\n椅子下面没有小狗。— Под стулом нет собаки.\n这儿有人吗？ — 没有。— Здесь кто-то есть? — Нет.",
-              "tj": "有(yǒu) — мавҷудияти чизе ё касеро дар ҷои муайян нишон медиҳад.\nСохт: Ҷой + 有 + Чиз/Кас\n\nИнкор: 没有 (méiyǒu)\n椅子下面没有小狗。— Зери курсӣ саг нест.\n这儿有人吗？ — 没有。— Ин ҷо кас ҳаст? — Не."
+              "uz": "的(de) — egalikni yoki bog'liqlikni ifodalaydi.\nTuzilma: Ot/Olmosh + 的 + Ot\n\nMisol:\n我的老师 — mening o'qituvchim\n她的朋友 — uning do'sti\n\nEslatma: Qarindoshlik va shaxsiy otlar oldida 的 tushirilishi mumkin:\n我(的)老师 ✓ — mening o'qituvchim\n我(的)朋友 ✓ — mening do'stim",
+              "ru": "的(de) — выражает принадлежность или ассоциацию.\nСтруктура: Существительное/Местоимение + 的 + Существительное\n\nПример:\n我的老师 — мой учитель\n她的朋友 — её подруга\n\nПримечание: 的 может опускаться перед терминами родства и личными существительными:\n我(的)老师 ✓ — мой учитель\n我(的)朋友 ✓ — мой друг",
+              "tj": "的(de) — соҳибӣ ё алоқаро ифода мекунад.\nСохт: Исм/Ҷонишин + 的 + Исм\n\nМисол:\n我的老师 — муаллими ман\n她的朋友 — дӯсти вай\n\nЭзоҳ: 的 пеш аз истилоҳоти хешутаборӣ ва исмҳои шахсӣ метавонад ҳазф шавад:\n我(的)老师 ✓ — муаллими ман\n我(的)朋友 ✓ — дӯсти ман"
             },
             "examples": [
               {
-                "zh": "桌子上有一个电脑。",
-                "pinyin": "Zhuōzi shàng yǒu yī gè diànnǎo.",
+                "zh": "我的汉语老师",
+                "pinyin": "wǒ de Hànyǔ lǎoshī",
                 "translation": {
-                  "uz": "Stol ustida bitta kompyuter bor.",
-                  "ru": "На столе стоит компьютер.",
-                  "tj": "Болои мӣз як компютер аст."
+                  "uz": "mening xitoy tili o'qituvchim",
+                  "ru": "мой преподаватель китайского",
+                  "tj": "муаллими забони чинии ман"
                 }
               },
               {
-                "zh": "学校里没有商店。",
-                "pinyin": "Xuéxiào lǐ méiyǒu shāngdiàn.",
+                "zh": "他的同学",
+                "pinyin": "tā de tóngxué",
                 "translation": {
-                  "uz": "Maktabda do'kon yo'q.",
-                  "ru": "В школе нет магазина.",
-                  "tj": "Дар мактаб дӯкон нест."
+                  "uz": "uning sinfdoshi",
+                  "ru": "его одноклассник",
+                  "tj": "ҳамсинфи вай"
                 }
               },
               {
-                "zh": "这儿有人吗？",
-                "pinyin": "Zhèr yǒu rén ma?",
+                "zh": "你的朋友",
+                "pinyin": "nǐ de péngyou",
                 "translation": {
-                  "uz": "Bu yerda kimdir bormi?",
-                  "ru": "Здесь кто-то есть?",
-                  "tj": "Ин ҷо кас ҳаст?"
+                  "uz": "sening do'sting",
+                  "ru": "твой друг",
+                  "tj": "дӯсти ту"
                 }
               }
             ]
@@ -846,182 +540,36 @@
         {
           "type": "sentence_builder",
           "sentence": {
-            "uz": "Maktabda do'kon yo'q.",
-            "ru": "В школе нет магазина.",
-            "tj": "Дар мактаб дӯкон нест."
+            "uz": "mening xitoy tili o'qituvchim",
+            "ru": "мой преподаватель китайского",
+            "tj": "муаллими забони чинии ман"
           },
           "tokens": [
-            "学校",
-            "没有",
-            "里",
-            "上",
-            "桌子",
-            "商店"
-          ],
-          "answer_tokens": [
-            "学校",
-            "里",
-            "没有",
-            "商店"
-          ],
-          "explanation": {
-            "uz": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn.",
-            "ru": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn.",
-            "tj": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "Bog'lovchi 和",
-              "ru": "Союз 和",
-              "tj": "Пайвандаки 和"
-            },
-            "title_zh": "连词 和",
-            "rule": {
-              "uz": "和(hé) — ikki ot yoki olmoshni birlashtiradi ('va', 'bilan').\nTuzilish: Ot1 + 和 + Ot2\n\nEslatma: 和 faqat ot va olmoshlarni bog'laydi —\nfe'l va gaplarni bog'lay olmaydi.",
-              "ru": "和(hé) — соединяет два существительных или местоимения ('и', 'с').\nСтруктура: Сущ1 + 和 + Сущ2\n\nПримечание: 和 соединяет только существительные и местоимения —\nглаголы и предложения оно не соединяет.",
-              "tj": "和(hé) — ду исм ё ҷонишинро мепайвандад ('ва', 'бо').\nСохт: Исм1 + 和 + Исм2\n\nЭзоҳ: 和 танҳо исмҳо ва ҷонишинҳоро мепайвандад —\nфеълҳо ва ҷумлаҳоро пайвандакӣ карда наметавонад."
-            },
-            "examples": [
-              {
-                "zh": "电脑和书",
-                "pinyin": "diànnǎo hé shū",
-                "translation": {
-                  "uz": "kompyuter va kitob",
-                  "ru": "компьютер и книга",
-                  "tj": "компютер ва китоб"
-                }
-              },
-              {
-                "zh": "爸爸和妈妈",
-                "pinyin": "bàba hé māma",
-                "translation": {
-                  "uz": "ota va ona",
-                  "ru": "папа и мама",
-                  "tj": "падар ва модар"
-                }
-              },
-              {
-                "zh": "我有一个中国朋友和一个美国朋友。",
-                "pinyin": "Wǒ yǒu yī gè Zhōngguó péngyou hé yī gè Měiguó péngyou.",
-                "translation": {
-                  "uz": "Mening bitta xitoy do'stim va bitta amerikalik do'stim bor.",
-                  "ru": "У меня есть один китайский друг и один американский друг.",
-                  "tj": "Ман як дӯсти чинӣ ва як дӯсти амрикоӣ дорам."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "kompyuter va kitob",
-            "ru": "компьютер и книга",
-            "tj": "компютер ва китоб"
-          },
-          "tokens": [
-            "电脑",
-            "和",
-            "桌子",
-            "上",
-            "书"
-          ],
-          "answer_tokens": [
-            "电脑",
-            "和",
-            "书"
-          ],
-          "explanation": {
-            "uz": "电脑和书 — diànnǎo hé shū",
-            "ru": "电脑和书 — diànnǎo hé shū",
-            "tj": "电脑和书 — diànnǎo hé shū"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "Modal fe'l 能",
-              "ru": "Модальный глагол 能",
-              "tj": "Феъли модалии 能"
-            },
-            "title_zh": "能愿动词 能",
-            "rule": {
-              "uz": "能(néng) — imkoniyat yoki ruxsatni bildiradi.\nTuzilish: Ega + 能 + Fe'l\n\n能 va 会 farqi:\n会 — o'rganib orttirgan mahorat (biladi)\n能 — sharoitga asoslangan imkoniyat/ruxsat (qila oladi/mumkin)",
-              "ru": "能(néng) — выражает способность или разрешение.\nСтруктура: Подлежащее + 能 + Глагол\n\nРазница 能 и 会:\n会 — умение, приобретённое в результате обучения\n能 — возможность/разрешение в зависимости от обстоятельств",
-              "tj": "能(néng) — қобилият ё иҷозатро баён мекунад.\nСохт: Муб. + 能 + Феъл\n\nФарқи 能 ва 会:\n会 — маҳорати аз омӯзиш ба даст омада\n能 — имконият/иҷозат вобаста ба шароит"
-            },
-            "examples": [
-              {
-                "zh": "我能坐这儿吗？",
-                "pinyin": "Wǒ néng zuò zhèr ma?",
-                "translation": {
-                  "uz": "Men bu yerga o'tirsam bo'ladimi?",
-                  "ru": "Можно мне здесь сесть?",
-                  "tj": "Ман метавонам ин ҷо нишинам?"
-                }
-              },
-              {
-                "zh": "你能在这儿工作吗？",
-                "pinyin": "Nǐ néng zài zhèr gōngzuò ma?",
-                "translation": {
-                  "uz": "Siz bu yerda ishlay olasizmi?",
-                  "ru": "Вы можете здесь работать?",
-                  "tj": "Шумо метавонед ин ҷо кор кунед?"
-                }
-              },
-              {
-                "zh": "明天你能去商店吗？",
-                "pinyin": "Míngtiān nǐ néng qù shāngdiàn ma?",
-                "translation": {
-                  "uz": "Ertaga do'konga bora olasizmi?",
-                  "ru": "Вы можете завтра пойти в магазин?",
-                  "tj": "Фардо шумо метавонед ба дӯкон равед?"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men bu yerga o'tirsam bo'ladimi?",
-            "ru": "Можно мне здесь сесть?",
-            "tj": "Ман метавонам ин ҷо нишинам?"
-          },
-          "tokens": [
+            "谁",
             "我",
-            "坐",
-            "吗",
-            "能",
-            "桌子",
-            "这儿",
-            "上"
+            "她",
+            "汉语",
+            "老师",
+            "的"
           ],
           "answer_tokens": [
             "我",
-            "能",
-            "坐",
-            "这儿",
-            "吗"
+            "的",
+            "汉语",
+            "老师"
           ],
           "explanation": {
-            "uz": "我能坐这儿吗？ — Wǒ néng zuò zhèr ma?",
-            "ru": "我能坐这儿吗？ — Wǒ néng zuò zhèr ma?",
-            "tj": "我能坐这儿吗？ — Wǒ néng zuò zhèr ma?"
+            "uz": "我的汉语老师 — wǒ de Hànyǔ lǎoshī",
+            "ru": "我的汉语老师 — wǒ de Hànyǔ lǎoshī",
+            "tj": "我的汉语老师 — wǒ de Hànyǔ lǎoshī"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Bu yerda kimdir bormi?» — xitoychada qaysi biri?",
-            "ru": "«Здесь кто-то есть?» — какое предложение по-китайски?",
-            "tj": "«Ин ҷо кас ҳаст?» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«uning sinfdoshi» — xitoychada qaysi biri?",
+            "ru": "«его одноклассник» — какое предложение по-китайски?",
+            "tj": "«ҳамсинфи вай» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1029,16 +577,15 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "你能在这儿工作吗？",
-            "明天你能去商店吗？",
-            "爸爸和妈妈",
-            "这儿有人吗？"
+            "他的同学",
+            "我的汉语老师",
+            "你的朋友"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "这儿有人吗？ — Zhèr yǒu rén ma?",
-            "ru": "这儿有人吗？ — Zhèr yǒu rén ma?",
-            "tj": "这儿有人吗？ — Zhèr yǒu rén ma?"
+            "uz": "他的同学 — tā de tóngxué",
+            "ru": "他的同学 — tā de tóngxué",
+            "tj": "他的同学 — tā de tóngxué"
           }
         }
       ]
@@ -1053,234 +600,33 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Stol ustida nima bor?",
-            "ru": "Что на столе?",
-            "tj": "Болои мӣз чӣ аст?"
-          },
-          "tokens": [
-            "和",
-            "电脑",
-            "桌子",
-            "上",
-            "有",
-            "什么"
-          ],
-          "answer_tokens": [
-            "桌子",
-            "上",
-            "有",
-            "什么"
-          ],
-          "explanation": {
-            "uz": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?",
-            "ru": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?",
-            "tj": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "桌子",
-              {
-                "uz": "stol, parta",
-                "ru": "стол",
-                "tj": "мӣз"
-              }
-            ],
-            [
-              "上",
-              {
-                "uz": "ustida, tepasida",
-                "ru": "сверху, на",
-                "tj": "болои, дар болои"
-              }
-            ],
-            [
-              "电脑",
-              {
-                "uz": "kompyuter",
-                "ru": "компьютер",
-                "tj": "компютер"
-              }
-            ],
-            [
-              "和",
-              {
-                "uz": "va, bilan",
-                "ru": "и, с",
-                "tj": "ва, бо"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "没有。",
-          "pinyin": "Méiyǒu.",
+          "audio_text": "她是谁？",
+          "pinyin": "Tā shì shéi?",
           "options": [
-            "杯子在哪儿？",
-            "没有。",
-            "桌子上有什么？",
-            "桌子上有一个电脑和一本书。"
+            "你是哪国人？",
+            "她是谁？",
+            "她是我的汉语老师，她叫李月。",
+            "我是美国人。你呢？"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "没有。 — Yo'q.",
-            "ru": "没有。 — Нет.",
-            "tj": "没有。 — Не."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "坐 talaffuzini tanlang:",
-            "ru": "Выберите произношение 坐:",
-            "tj": "Талаффузи 坐-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "diànnǎo",
-            "zuò",
-            "zhuōzi",
-            "shàng"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "坐 — zuò",
-            "ru": "坐 — zuò",
-            "tj": "坐 — zuò"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "本",
-              {
-                "uz": "dona (kitob uchun o'lchov so'zi)",
-                "ru": "штука (счётное слово для книг)",
-                "tj": "адад (барои китоб)"
-              }
-            ],
-            [
-              "里",
-              {
-                "uz": "ichida",
-                "ru": "внутри, в",
-                "tj": "дарун, дохили"
-              }
-            ],
-            [
-              "前面",
-              {
-                "uz": "oldinida, oldida",
-                "ru": "спереди, перед",
-                "tj": "пеш, пешаш"
-              }
-            ],
-            [
-              "后面",
-              {
-                "uz": "orqasida, ketida",
-                "ru": "сзади, за",
-                "tj": "қафо, паси"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "我能坐这儿吗？",
-          "pinyin": "Wǒ néng zuò zhèr ma?",
-          "translation": {
-            "uz": "Men bu yerga o'tirsam bo'ladimi?",
-            "ru": "Можно мне здесь сесть?",
-            "tj": "Ман метавонам ин ҷо нишинам?"
-          },
-          "tokens": {
-            "uz": [
-              "o'tirsam",
-              "bo'ladimi",
-              "ustida",
-              "yerga",
-              "Men",
-              "bu",
-              "Stol"
-            ],
-            "ru": [
-              "мне",
-              "Можно",
-              "Что",
-              "здесь",
-              "на",
-              "сесть"
-            ],
-            "tj": [
-              "метавонам",
-              "мӣз",
-              "ҷо",
-              "ин",
-              "Болои",
-              "нишинам",
-              "Ман"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Men",
-              "bu",
-              "yerga",
-              "o'tirsam",
-              "bo'ladimi"
-            ],
-            "ru": [
-              "Можно",
-              "мне",
-              "здесь",
-              "сесть"
-            ],
-            "tj": [
-              "Ман",
-              "метавонам",
-              "ин",
-              "ҷо",
-              "нишинам"
-            ]
-          },
-          "explanation": {
-            "uz": "我能坐这儿吗？ — Men bu yerga o'tirsam bo'ladimi?",
-            "ru": "我能坐这儿吗？ — Можно мне здесь сесть?",
-            "tj": "我能坐这儿吗？ — Ман метавонам ин ҷо нишинам?"
+            "uz": "她是谁？ — U kim?",
+            "ru": "她是谁？ — Кто она?",
+            "tj": "她是谁？ — Вай кӣ аст?"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'Wang Fang (ism)' xitoycha qaysi?",
-            "ru": "'Ван Фан (имя)' по-китайски?",
-            "tj": "'Ван Фан (ном)' ба хитоӣ кадом аст?"
+            "uz": "'Li Yue (ism)' xitoycha qaysi?",
+            "ru": "'Ли Юэ (имя)' по-китайски?",
+            "tj": "'Ли Юэ (ном)' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -1288,182 +634,68 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "电脑",
-            "王方",
-            "上",
-            "桌子"
+            "的",
+            "李月",
+            "谁",
+            "她"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "Wang Fang (ism) = 王方 (Wáng Fāng)",
-            "ru": "Ван Фан (имя) = 王方 (Wáng Fāng)",
-            "tj": "Ван Фан (ном) = 王方 (Wáng Fāng)"
+            "uz": "Li Yue (ism) = 李月 (Lǐ Yuè)",
+            "ru": "Ли Юэ (имя) = 李月 (Lǐ Yuè)",
+            "tj": "Ли Юэ (ном) = 李月 (Lǐ Yuè)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "她",
+              {
+                "uz": "u (ayol)",
+                "ru": "она",
+                "tj": "вай (зан)"
+              }
+            ],
+            [
+              "谁",
+              {
+                "uz": "kim",
+                "ru": "кто",
+                "tj": "кӣ"
+              }
+            ],
+            [
+              "的",
+              {
+                "uz": "ning (egalik yuklamasi)",
+                "ru": "-'s (показатель принадлежности)",
+                "tj": "и, -и (ҳарфи соҳибӣ)"
+              }
+            ],
+            [
+              "汉语",
+              {
+                "uz": "xitoy tili",
+                "ru": "китайский язык",
+                "tj": "забони чинӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "没有",
-          "pinyin": "méiyǒu",
+          "phrase": "谁",
+          "pinyin": "shéi",
           "translation": {
-            "uz": "yo'q, mavjud emas",
-            "ru": "нет, не имеется",
-            "tj": "не, нест"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "桌子上有什么？",
-          "pinyin": "Zhuōzi shàng yǒu shénme?",
-          "options": [
-            "桌子上有一个电脑和一本书。",
-            "杯子在桌子里。",
-            "杯子在哪儿？",
-            "桌子上有什么？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "桌子上有什么？ — Stol ustida nima bor?",
-            "ru": "桌子上有什么？ — Что на столе?",
-            "tj": "桌子上有什么？ — Болои мӣз чӣ аст?"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "A",
-              "zh": "桌子上有什么？",
-              "blank": false
-            },
-            {
-              "speaker": "B",
-              "zh": "桌子上有一个电脑和一本书。",
-              "blank": false
-            },
-            {
-              "speaker": "A",
-              "zh": "杯子在哪儿？",
-              "blank": false
-            },
-            {
-              "speaker": "B",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "桌子上有一个电脑和一本书。",
-            "杯子在哪儿？",
-            "桌子上有什么？",
-            "杯子在桌子里。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 杯子在桌子里。",
-            "ru": "Правильный ответ: 杯子在桌子里。",
-            "tj": "Ҷавоби дуруст: 杯子在桌子里。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "桌子上有一个电脑和一本书。",
-            "杯子在哪儿？",
-            "杯子在桌子里。",
-            "桌子上有什么？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 杯子在桌子里。",
-            "ru": "Правильный ответ: 杯子在桌子里。",
-            "tj": "Ҷавоби дуруст: 杯子在桌子里。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "杯子在哪儿？",
-            "桌子上有什么？",
-            "杯子在桌子里。",
-            "桌子上有一个电脑和一本书。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 桌子上有什么？",
-            "ru": "Правильный ответ: 桌子上有什么？",
-            "tj": "Ҷавоби дуруст: 桌子上有什么？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____子上有什么？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "后",
-            "桌",
-            "商",
-            "请"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 桌 — 桌子上有什么？ (Stol ustida nima bor?)",
-            "ru": "Верно: 桌 — 桌子上有什么？ (Что на столе?)",
-            "tj": "Дуруст: 桌 — 桌子上有什么？ (Болои мӣз чӣ аст?)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "桌子上有什么？",
-          "pinyin": "Zhuōzi shàng yǒu shénme?",
-          "translation": {
-            "uz": "Stol ustida nima bor?",
-            "ru": "Что на столе?",
-            "tj": "Болои мӣз чӣ аст?"
+            "uz": "kim",
+            "ru": "кто",
+            "tj": "кӣ"
           }
         }
       ]

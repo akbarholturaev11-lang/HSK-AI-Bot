@@ -11,10 +11,11 @@ from app.services.user_access_state_service import UserAccessStateService
 
 
 FREE_FEATURE_LIMITS = {feature_key: 1 for feature_key in COURSE_FEATURE_KEYS}
-# Yangi bepul user faqat 1-darsni to'liq bepul o'tadi. 2-dars — obuna oynasi
-# (frontend darsning ~yarmida paywall ko'rsatadi), 3-dars va keyingilar — qulf.
+# Darslar mini-qismlarga bo'lingan (3-4 yangi so'z, ~5-7 daqiqa). Yangi bepul
+# user 2 ta mini-darsni to'liq bepul o'tadi. 3-mini-dars — obuna oynasi
+# (frontend darsning ~yarmida paywall ko'rsatadi), 4-chi va keyingilar — qulf.
 # Reklama endi darslarda EMAS, mashq bo'limlarida ishlaydi (pastdagi *_ad limitlar).
-FREE_COURSE_LESSONS_PER_LEVEL = 1
+FREE_COURSE_LESSONS_PER_LEVEL = 2
 
 # Course Mini App "Mashq" bo'limlari — YANGI model:
 #   • Har bo'lim UMRDA 1 marta bepul (reklamasiz). Kunlik yangilanish YO'Q

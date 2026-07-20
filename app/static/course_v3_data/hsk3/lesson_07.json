@@ -2,145 +2,61 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 7,
-  "title": "我跟她都认识五年了",
+  "source_lesson": 2,
+  "part_no": 1,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "他什么时候回来",
   "subtitle": {
-    "uz": "Vaqt davomiyligini ifodalash, qiziqishni bildirish va soat vaqtlarini o'rganish",
-    "ru": "Выражать продолжительность времени, интерес и обозначение времени",
-    "tj": "Ифода кардани давомнокии вақт, изҳор кардани шавқ ва таъйин кардани вақт"
+    "uz": "Yo'nalish to'ldiruvchilari, ketma-ket harakatlar va ritorik so'roqlarni o'zlashtirish.",
+    "ru": "Освоить направленные дополнения, последовательные действия и риторические вопросы.",
+    "tj": "Азхудкунии иловаҳои самтнок, амалҳои пайдарпай ва саволҳои риторикӣ."
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "同事",
-      "pinyin": "tóngshì",
+      "zh": "腿",
+      "pinyin": "tuǐ",
       "pos": "n.",
       "meaning": {
-        "uz": "hamkasb",
-        "ru": "коллега",
-        "tj": "ҳамкор"
+        "uz": "oyoq",
+        "ru": "нога",
+        "tj": "по"
       }
     },
     {
       "no": 2,
-      "zh": "以前",
-      "pinyin": "yǐqián",
-      "pos": "n.",
+      "zh": "疼",
+      "pinyin": "téng",
+      "pos": "adj.",
       "meaning": {
-        "uz": "oldin, ilgari",
-        "ru": "раньше, прежде",
-        "tj": "пештар, қаблан"
+        "uz": "og'riqli, og'rimoq",
+        "ru": "болеть, больной",
+        "tj": "дард кардан, дарднок"
       }
     },
     {
       "no": 3,
-      "zh": "银行",
-      "pinyin": "yínháng",
+      "zh": "脚",
+      "pinyin": "jiǎo",
       "pos": "n.",
       "meaning": {
-        "uz": "bank",
-        "ru": "банк",
-        "tj": "бонк"
+        "uz": "oyoq panjasi",
+        "ru": "стопа, нога",
+        "tj": "кафи по"
       }
     },
     {
       "no": 4,
-      "zh": "久",
-      "pinyin": "jiǔ",
-      "pos": "adj.",
+      "zh": "树",
+      "pinyin": "shù",
+      "pos": "n.",
       "meaning": {
-        "uz": "uzoq vaqt",
-        "ru": "долго, длительный",
-        "tj": "муддати дароз"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "感兴趣",
-      "pinyin": "gǎn xìngqù",
-      "pos": "v.",
-      "meaning": {
-        "uz": "qiziqmoq",
-        "ru": "интересоваться",
-        "tj": "шавқ доштан"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "结婚",
-      "pinyin": "jié hūn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "turmush qurmoq, uylanmoq",
-        "ru": "жениться, выходить замуж",
-        "tj": "оиладор шудан"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "欢迎",
-      "pinyin": "huānyíng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "xush kelibsiz demoq, kutib olmoq",
-        "ru": "приветствовать",
-        "tj": "хуш омадед гуфтан, пешвоз гирифтан"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "迟到",
-      "pinyin": "chídào",
-      "pos": "v.",
-      "meaning": {
-        "uz": "kech qolmoq",
-        "ru": "опаздывать",
-        "tj": "дер мондан"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "半",
-      "pinyin": "bàn",
-      "pos": "num.",
-      "meaning": {
-        "uz": "yarim",
-        "ru": "половина",
-        "tj": "ним"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "接",
-      "pinyin": "jiē",
-      "pos": "v.",
-      "meaning": {
-        "uz": "kutib olmoq, olib ketmoq",
-        "ru": "встречать, забирать",
-        "tj": "пешвоз гирифтан, бурдан"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "刻",
-      "pinyin": "kè",
-      "pos": "m.",
-      "meaning": {
-        "uz": "chorak soat",
-        "ru": "четверть часа",
-        "tj": "чоряки соат"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "差",
-      "pinyin": "chà",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yetishmaslik, kam bo'lmoq",
-        "ru": "не хватать, без",
-        "tj": "кам будан"
+        "uz": "daraxt",
+        "ru": "дерево",
+        "tj": "дарахт"
       }
     }
   ],
@@ -148,101 +64,33 @@
     {
       "no": 1,
       "title": {
-        "uz": "Vaqt davomiyligini ifodalash: F + le + muddat + le",
-        "ru": "Выражение продолжительности: Гл + 了 + период + 了",
-        "tj": "Ифодаи давомнокии вақт: Ф + 了 + муддат + 了"
+        "uz": "Oddiy yo'nalish to'ldiruvchisi",
+        "ru": "Простые направленные дополнения",
+        "tj": "Иловаҳои самтноки содда"
       },
-      "title_zh": "时段的表达：V + 了 + 时段 + 了",
+      "title_zh": "简单趋向补语",
       "rule": {
-        "uz": "Biror harakat qancha davom etganini bildirishda 'V + 了 + vaqt davomiyligi + 了' tuzilmasi ishlatiladi. Birinchi 了 harakatning tugaganini, ikkinchisi hozirgi holatni bildiradi.",
-        "ru": "Для выражения продолжительности действия используется конструкция 'Гл + 了 + период времени + 了'. Первое 了 обозначает завершённость действия, второе — текущее состояние.",
-        "tj": "Барои ифодаи давомнокии амал сохти 'Ф + 了 + муддати вақт + 了' истифода мешавад. Аввалин 了 тамомшавии амалро, дуввумаш ҳолати кунуниро нишон медиҳад."
+        "uz": "Yo'nalish to'ldiruvchilari fe'lga qo'shilgan 来 yoki 去 dan iborat.\n来 — harakat so'zlovchi tomonga yoki ma'lum nuqtaga qarab;\n去 — harakat so'zlovchidan yoki ma'lum nuqtadan uzoqlashipti.\nQolip: V + 来/去\nMasalan: 回来 (qaytib kelmoq), 进去 (kirib ketmoq), 上来 (yuqoriga chiqib kelmoq),\n         拿回来 (olib qaytmoq), 跑进去 (yugurib kirib ketmoq).",
+        "ru": "Направленные дополнения состоят из 来 или 去, присоединённых к глаголу.\n来 — движение к говорящему или к определённой точке;\n去 — движение от говорящего или от точки.\nСтруктура: Глагол + 来/去\nНапример: 回来 (вернуться), 进去 (войти), 上来 (подняться),\n          拿回来 (принести обратно), 跑进去 (забежать).",
+        "tj": "Иловаҳои самтнок аз 来 ё 去, ки ба феъл ҳамроҳ мешаванд, иборатанд.\n来 — ҳаракат ба сӯи гӯянда ё нуқтаи муайян;\n去 — ҳаракат аз гӯянда ё аз нуқта.\nСохт: Феъл + 来/去\nМасалан: 回来 (баргаштан), 进去 (дохил шудан), 上来 (боло омадан),\n         拿回来 (бо худ оварадан), 跑进去 (давида дохил шудан)."
       },
       "examples": [
         {
-          "zh": "我们认识五年了。",
-          "pinyin": "Wǒmen rènshi wǔ nián le.",
+          "zh": "他先去三楼拿文件，马上就回来。",
+          "pinyin": "Tā xiān qù sān lóu ná wénjiàn, mǎshàng jiù huílai.",
           "translation": {
-            "uz": "Biz tanishganimizga besh yil bo'ldi.",
-            "ru": "Мы знакомы уже пять лет.",
-            "tj": "Мо панҷ сол боз ошно ҳастем."
+            "uz": "U avval uchinchi qavatga hujjat olishga ketdi, hoziroq qaytadi.",
+            "ru": "Он сначала пошёл на третий этаж за документами, сейчас вернётся.",
+            "tj": "Вай аввал ба ошёнаи сеюм барои ҳуҷҷат рафт, ҳозир бармегардад."
           }
         },
         {
-          "zh": "他在银行工作三年了。",
-          "pinyin": "Tā zài yínháng gōngzuò sān nián le.",
+          "zh": "我跑进去拿伞，你等我一下！",
+          "pinyin": "Wǒ pǎo jìnqu ná sǎn, nǐ děng wǒ yīxià!",
           "translation": {
-            "uz": "U bankda uch yildan beri ishlaydi.",
-            "ru": "Он работает в банке уже три года.",
-            "tj": "Вай се сол боз дар бонк кор мекунад."
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "…ga qiziqish his qilmoq",
-        "ru": "Интересоваться …",
-        "tj": "Ба … шавқ доштан"
-      },
-      "title_zh": "对……感兴趣",
-      "rule": {
-        "uz": "'对……感兴趣' - biror narsaga qiziqishni ifodalash uchun ishlatiladi. '对' + ob'ekt + '感兴趣' tuzilmasi mavjud. '特别感兴趣' esa 'ayniqsa qiziqish' ma'nosini beradi.",
-        "ru": "'对……感兴趣' используется для выражения интереса к чему-либо. Структура: '对' + объект + '感兴趣'. '特别感兴趣' означает 'особенно интересоваться'.",
-        "tj": "'对……感兴趣' барои ифодаи шавқ ба чизе истифода мешавад. Сохт: '对' + объект + '感兴趣'. '特别感兴趣' маънои 'хусусан шавқ доштан'-ро дорад."
-      },
-      "examples": [
-        {
-          "zh": "我对音乐很感兴趣。",
-          "pinyin": "Wǒ duì yīnyuè hěn gǎn xìngqù.",
-          "translation": {
-            "uz": "Men musiqaga juda qiziqaman.",
-            "ru": "Мне очень интересна музыка.",
-            "tj": "Ман ба мусиқӣ хеле шавқ дорам."
-          }
-        },
-        {
-          "zh": "她对历史特别感兴趣。",
-          "pinyin": "Tā duì lìshǐ tèbié gǎn xìngqù.",
-          "translation": {
-            "uz": "U tarixga ayniqsa qiziqadi.",
-            "ru": "Она особенно интересуется историей.",
-            "tj": "Вай ба таърих хусусан шавқ дорад."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "\"Yarim\", \"chorak\" va \"kam\" vaqt ifodalovchi so'zlar",
-        "ru": "\"Половина\", \"четверть\" и \"без\" для обозначения времени",
-        "tj": "\"Ним\", \"чорак\" ва \"кам\" барои ифодаи вақт"
-      },
-      "title_zh": "\"半\"\"刻\"\"差\"表示时间",
-      "rule": {
-        "uz": "Soat vaqtini ifodalashda: '半' = soat va yarim (masalan: 两点半 = 2:30), '刻' = 15 daqiqa (一刻 = :15, 三刻 = :45), '差' = vaqtdan oldin 'kam' (差五分八点 = 7:55).",
-        "ru": "Для обозначения времени: '半' = полчаса (两点半 = 2:30), '刻' = 15 минут (一刻 = :15, 三刻 = :45), '差' = без (差五分八点 = без пяти восемь = 7:55).",
-        "tj": "Барои таъйин кардани вақт: '半' = ним соат (两点半 = 2:30), '刻' = 15 дақиқа (一刻 = :15, 三刻 = :45), '差' = кам (差五分八点 = панҷ дақиқа ба ҳашт = 7:55)."
-      },
-      "examples": [
-        {
-          "zh": "现在差一刻八点。",
-          "pinyin": "Xiànzài chà yī kè bā diǎn.",
-          "translation": {
-            "uz": "Hozir soat sakkizga chorak qoldi (7:45).",
-            "ru": "Сейчас без четверти восемь (7:45).",
-            "tj": "Ҳоло чорак ба ҳашт монда (7:45)."
-          }
-        },
-        {
-          "zh": "我们三点半见面吧。",
-          "pinyin": "Wǒmen sān diǎn bàn jiànmiàn ba.",
-          "translation": {
-            "uz": "Biz soat uch yarimda uchrashaylik.",
-            "ru": "Давай встретимся в половине четвёртого.",
-            "tj": "Биё соати се ва ним вохӯрем."
+            "uz": "Men yugurib kirib soyabon olib chiqaman, bir oz kutib turing!",
+            "ru": "Я забегу за зонтом, подождите меня!",
+            "tj": "Ман давида дохил мешавам чатр мегирам, каме интизор шав!"
           }
         }
       ]
@@ -251,276 +99,256 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Ofisda",
-        "ru": "В офисе",
-        "tj": "Дар идора"
+        "uz": "Tog'dan tushayotgan yo'lda",
+        "ru": "На пути вниз с горы",
+        "tj": "Дар роҳи фаромадан аз кӯҳ"
       },
       "dialogue": [
         {
-          "speaker": "同事",
-          "zh": "那个漂亮的新同事是谁？",
-          "pinyin": "Nà ge piàoliang de xīn tóngshì shì shéi?",
+          "speaker": "小丽",
+          "zh": "休息一下吧。",
+          "pinyin": "Xiūxi yíxià ba.",
           "text": {
-            "uz": "Anavi chiroyli yangi hamkasb kim?",
-            "ru": "Кто эта красивая новая коллега?",
-            "tj": "Он ҳамкори нави зебо кист?"
+            "uz": "Bir oz dam olaylik.",
+            "ru": "Давай немного отдохнём.",
+            "tj": "Каме истироҳат кунем."
           }
         },
         {
           "speaker": "小刚",
-          "zh": "那是小丽。",
-          "pinyin": "Nà shì Xiǎolì.",
+          "zh": "怎么了？",
+          "pinyin": "Zěnme le?",
           "text": {
-            "uz": "U Xiaoli.",
-            "ru": "Это Сяоли.",
-            "tj": "Ин Сяоли аст."
+            "uz": "Nima bo'ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ шуд?"
           }
         },
         {
-          "speaker": "同事",
-          "zh": "她刚来北京吗？",
-          "pinyin": "Tā gāng lái Běijīng ma?",
+          "speaker": "小丽",
+          "zh": "我现在腿也疼，脚也疼。",
+          "pinyin": "Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
           "text": {
-            "uz": "U Pekinga hozirgina keldimi?",
-            "ru": "Она только что приехала в Пекин?",
-            "tj": "Ӯ нав ба Пекин омад?"
-          }
-        },
-        {
-          "speaker": "小刚",
-          "zh": "不，她在北京工作三年了。",
-          "pinyin": "Bù, tā zài Běijīng gōngzuò sān nián le.",
-          "text": {
-            "uz": "Yo'q, u Pekinda uch yil ishlagan.",
-            "ru": "Нет, она уже три года работает в Пекине.",
-            "tj": "Не, ӯ дар Пекин се сол кор кардааст."
-          }
-        },
-        {
-          "speaker": "同事",
-          "zh": "以前她在哪儿工作？",
-          "pinyin": "Yǐqián tā zài nǎr gōngzuò?",
-          "text": {
-            "uz": "Oldin u qayerda ishlagan?",
-            "ru": "Где она работала раньше?",
-            "tj": "Пештар ӯ дар куҷо кор мекард?"
+            "uz": "Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
+            "ru": "Сейчас у меня болят и ноги, и стопы.",
+            "tj": "Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
           }
         },
         {
           "speaker": "小刚",
-          "zh": "她在银行工作了两年以后来的我们公司。",
-          "pinyin": "Tā zài yínháng gōngzuò le liǎng nián yǐhòu lái de wǒmen gōngsī.",
+          "zh": "好，那边树多，我们过去坐一下吧。",
+          "pinyin": "Hǎo, nàbiān shù duō, wǒmen guòqu zuò yíxià ba.",
           "text": {
-            "uz": "U bankda ikki yil ishlab, keyin bizning kompaniyaga kelgan.",
-            "ru": "Она проработала в банке два года, потом пришла в нашу компанию.",
-            "tj": "Ӯ дар бонк ду сол кор карда, баъд ба ширкати мо омад."
+            "uz": "Xo'p, u tomonda daraxt ko'p, borib bir oz o'tiraylik.",
+            "ru": "Хорошо, там много деревьев, пойдём посидим немного.",
+            "tj": "Хуб, он тараф дарахт бисёр аст, равем каме нишинем."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "上来的时候我怎么没觉得这么累？",
+          "pinyin": "Shànglái de shíhou wǒ zěnme méi juéde zhème lèi?",
+          "text": {
+            "uz": "Yuqoriga chiqayotganimda nega bunchalik charchaganimni sezmadim?",
+            "ru": "Почему, когда поднималась, я не чувствовала такой усталости?",
+            "tj": "Чаро вақти боло омадан ин қадар хастагиро ҳис накардам?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "上山容易下山难，你不知道？",
+          "pinyin": "Shàng shān róngyì xià shān nán, nǐ bù zhīdào?",
+          "text": {
+            "uz": "Tog'ga chiqish oson, tushish qiyin, bilmaysanmi?",
+            "ru": "Подниматься в гору легко, спускаться трудно, разве не знаешь?",
+            "tj": "Ба кӯҳ баромадан осон, фаромадан душвор, намедонӣ?"
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Dam olish xonasida",
-        "ru": "В комнате отдыха",
-        "tj": "Дар ҳуҷраи истироҳат"
+        "uz": "Telefonda",
+        "ru": "По телефону",
+        "tj": "Дар телефон"
       },
       "dialogue": [
         {
-          "speaker": "同事",
-          "zh": "周末你跟小丽去哪儿玩儿了？",
-          "pinyin": "Zhōumò nǐ gēn Xiǎolì qù nǎr wánr le?",
+          "speaker": "周太太",
+          "zh": "喂，你好，请问周明在吗？",
+          "pinyin": "Wèi, nǐ hǎo, qǐngwèn Zhōu Míng zài ma?",
           "text": {
-            "uz": "Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
-            "ru": "Куда ты ходил с Сяоли на выходных?",
-            "tj": "Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
+            "uz": "Alo, salom, Zhou Ming bormi?",
+            "ru": "Алло, здравствуйте, скажите, Чжоу Мин на месте?",
+            "tj": "Алло, салом, Zhou Ming ҳаст?"
           }
         },
         {
-          "speaker": "小刚",
-          "zh": "我们去唱歌了。",
-          "pinyin": "Wǒmen qù chàng gē le.",
+          "speaker": "秘书",
+          "zh": "周经理出去了，不在办公室。",
+          "pinyin": "Zhōu jīnglǐ chūqu le, bú zài bàngōngshì.",
           "text": {
-            "uz": "Qo'shiq aytishga bordik.",
-            "ru": "Мы ходили петь.",
-            "tj": "Мо барои сурудхонӣ рафтем."
+            "uz": "Menejer Zhou chiqib ketdi, ofisda emas.",
+            "ru": "Менеджер Чжоу вышел, его нет в офисе.",
+            "tj": "Мудир Чжоу баромадааст, дар идора нест."
           }
         },
         {
-          "speaker": "同事",
-          "zh": "你们唱了多久？",
-          "pinyin": "Nǐmen chàng le duō jiǔ?",
+          "speaker": "周太太",
+          "zh": "他去哪儿了？什么时候回来？",
+          "pinyin": "Tā qù nǎr le? Shénme shíhou huílai?",
           "text": {
-            "uz": "Qancha vaqt qo'shiq aytdinglar?",
-            "ru": "Как долго вы пели?",
-            "tj": "Чанд вақт суруд хондед?"
+            "uz": "U qayerga ketdi? Qachon qaytadi?",
+            "ru": "Куда он ушёл? Когда вернётся?",
+            "tj": "Ӯ ба куҷо рафт? Кай бармегардад?"
           }
         },
         {
-          "speaker": "小刚",
-          "zh": "我们唱了两个小时歌，晚上还去听音乐会了。",
-          "pinyin": "Wǒmen chàng le liǎng ge xiǎoshí gē, wǎnshang hái qù tīng yīnyuèhuì le.",
+          "speaker": "秘书",
+          "zh": "他出去办事了，下午回来。",
+          "pinyin": "Tā chūqu bàn shì le, xiàwǔ huílai.",
           "text": {
-            "uz": "Ikki soat qo'shiq aytdik, kechqurun yana konsertga bordik.",
-            "ru": "Мы пели два часа, вечером ещё ходили на концерт.",
-            "tj": "Ду соат суруд хондем, бегоҳ боз ба консерт рафтем."
+            "uz": "U ish bilan chiqib ketdi, tushdan keyin qaytadi.",
+            "ru": "Он вышел по делам, вернётся после обеда.",
+            "tj": "Ӯ барои кор баромад, баъд аз нисфирӯзӣ бармегардад."
           }
         },
         {
-          "speaker": "同事",
-          "zh": "你们都对音乐感兴趣吗？",
-          "pinyin": "Nǐmen dōu duì yīnyuè gǎn xìngqù ma?",
+          "speaker": "周太太",
+          "zh": "回来了就让他给我打个电话。",
+          "pinyin": "Huílai le jiù ràng tā gěi wǒ dǎ ge diànhuà.",
           "text": {
-            "uz": "Ikkalangiz ham musiqaga qiziqasizmi?",
-            "ru": "Вы оба интересуетесь музыкой?",
-            "tj": "Ҳардуятон ба мусиқӣ шавқ доред?"
+            "uz": "Qaytgach menga qo'ng'iroq qilsin.",
+            "ru": "Когда вернётся, пусть позвонит мне.",
+            "tj": "Вақте баргашт, бигӯ ба ман занг занад."
           }
         },
         {
-          "speaker": "小刚",
-          "zh": "她对音乐感兴趣，我对她更感兴趣。",
-          "pinyin": "Tā duì yīnyuè gǎn xìngqù, wǒ duì tā gèng gǎn xìngqù.",
+          "speaker": "秘书",
+          "zh": "好的，他到了办公室我就告诉他。",
+          "pinyin": "Hǎo de, tā dào le bàngōngshì wǒ jiù gàosu tā.",
           "text": {
-            "uz": "U musiqaga qiziqadi, men esa unga ko'proq qiziqaman.",
-            "ru": "Она интересуется музыкой, а я больше интересуюсь ею.",
-            "tj": "Ӯ ба мусиқӣ шавқ дорад, ман бошад ба ӯ бештар шавқ дорам."
+            "uz": "Xo'p, u ofisga kelgach unga aytaman.",
+            "ru": "Хорошо, как только он придёт в офис, я ему скажу.",
+            "tj": "Хуб, вақте ба идора омад, ба ӯ мегӯям."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Dam olish xonasida",
-        "ru": "В комнате отдыха",
-        "tj": "Дар ҳуҷраи истироҳат"
+        "uz": "Bino kirishida do'stni kuzatish",
+        "ru": "У выхода из здания, провожая друга",
+        "tj": "Дар назди даромади бино, гусел кардани дӯст"
       },
       "dialogue": [
         {
           "speaker": "小刚",
-          "zh": "我跟小丽下个月结婚，到时候欢迎你来。",
-          "pinyin": "Wǒ gēn Xiǎolì xià ge yuè jié hūn, dào shíhou huānyíng nǐ lái.",
+          "zh": "雨下得真大。你怎么回去？我送你吧。",
+          "pinyin": "Yǔ xià de zhēn dà. Nǐ zěnme huíqu? Wǒ sòng nǐ ba.",
           "text": {
-            "uz": "Men Xiaoli bilan keyingi oy turmush quraman, o'shanda kelishingdan xursand bo'lamiz.",
-            "ru": "Мы с Сяоли в следующем месяце женимся, будем рады, если придёшь.",
-            "tj": "Ман бо Сяоли моҳи дигар оиладор мешавам, он вақт хуш омадед."
+            "uz": "Yomg'ir juda kuchli yog'yapti. Qanday qaytasan? Men seni kuzatib qo'yay.",
+            "ru": "Дождь идёт очень сильный. Как ты вернёшься? Давай я провожу тебя.",
+            "tj": "Борон хеле сахт меборад. Чӣ тавр бармегардӣ? Ман туро гусел кунам."
           }
         },
         {
-          "speaker": "同事",
-          "zh": "什么？结婚？",
-          "pinyin": "Shénme? Jié hūn?",
+          "speaker": "小丽",
+          "zh": "没事，我出去叫辆出租车就行了。",
+          "pinyin": "Méi shì, wǒ chūqu jiào liàng chūzūchē jiù xíng le.",
           "text": {
-            "uz": "Nima? Turmush qurasizlar?",
-            "ru": "Что? Женитесь?",
-            "tj": "Чӣ? Оиладор мешавед?"
-          }
-        },
-        {
-          "speaker": "小刚",
-          "zh": "对啊，突然吗？",
-          "pinyin": "Duì a, tūrán ma?",
-          "text": {
-            "uz": "Ha, to'satdanmi?",
-            "ru": "Да, неожиданно?",
-            "tj": "Ҳа, ногаҳонӣ аст?"
-          }
-        },
-        {
-          "speaker": "同事",
-          "zh": "你们不是刚认识吗？",
-          "pinyin": "Nǐmen bú shì gāng rènshi ma?",
-          "text": {
-            "uz": "Sizlar endigina tanishmaganmidilaring?",
-            "ru": "Разве вы не только что познакомились?",
-            "tj": "Магар шумо нав шинос нашуда будед?"
+            "uz": "Hechqisi yo'q, chiqib taksi chaqirsam bo'ladi.",
+            "ru": "Ничего, выйду и вызову такси.",
+            "tj": "Ҳеҷ гап не, берун рафта таксӣ мегирам."
           }
         },
         {
           "speaker": "小刚",
-          "zh": "我跟她都认识五年了。",
-          "pinyin": "Wǒ gēn tā dōu rènshi wǔ nián le.",
+          "zh": "那你等等，我上楼去给你拿把伞。",
+          "pinyin": "Nà nǐ děngdeng, wǒ shàng lóu qù gěi nǐ ná bǎ sǎn.",
           "text": {
-            "uz": "Men u bilan besh yildan beri tanishman.",
-            "ru": "Мы знакомы уже пять лет.",
-            "tj": "Ман бо ӯ панҷ сол боз шиносам."
+            "uz": "Unda kutib tur, yuqoriga chiqib senga soyabon olib kelaman.",
+            "ru": "Тогда подожди, я поднимусь наверх и принесу тебе зонт.",
+            "tj": "Пас интизор шав, ман боло меравам ва барои ту чатр меорам."
           }
         },
         {
-          "speaker": "同事",
-          "zh": "你跟她结婚，那我怎么办啊？",
-          "pinyin": "Nǐ gēn tā jié hūn, nà wǒ zěnme bàn a?",
+          "speaker": "小丽",
+          "zh": "好的。我跟你一起上去吧。",
+          "pinyin": "Hǎo de. Wǒ gēn nǐ yìqǐ shàngqu ba.",
           "text": {
-            "uz": "Sen u bilan turmush qursang, men nima qilaman?",
-            "ru": "Если ты женишься на ней, что мне делать?",
-            "tj": "Агар ту бо ӯ оиладор шавӣ, ман чӣ кор мекунам?"
+            "uz": "Xo'p. Men sen bilan birga yuqoriga chiqay.",
+            "ru": "Хорошо. Я поднимусь вместе с тобой.",
+            "tj": "Хуб. Ман бо ту якҷоя боло меравам."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "你在这儿等吧，我拿了伞就下来。",
+          "pinyin": "Nǐ zài zhèr děng ba, wǒ ná le sǎn jiù xiàlai.",
+          "text": {
+            "uz": "Sen shu yerda kut, soyabonni olib darhol tushaman.",
+            "ru": "Ты подожди здесь, я возьму зонт и сразу спущусь.",
+            "tj": "Ту ҳамин ҷо интизор шав, ман чатрро гирифта фавран поён меоям."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Kompaniya binosi eshigida",
-        "ru": "У выхода из здания компании",
-        "tj": "Дар баромади бинои ширкат"
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
       },
       "dialogue": [
         {
-          "speaker": "小丽",
-          "zh": "你看看手表，怎么迟到了？",
-          "pinyin": "Nǐ kànkan shǒubiǎo, zěnme chídào le?",
+          "speaker": "周太太",
+          "zh": "你看，我这么胖，怎么办呢？",
+          "pinyin": "Nǐ kàn, wǒ zhème pàng, zěnme bàn ne?",
           "text": {
-            "uz": "Soatingga qara, nega kech qolding?",
-            "ru": "Посмотри на часы, почему опоздал?",
-            "tj": "Ба соатат нигоҳ кун, чаро дер мондӣ?"
+            "uz": "Qara, men shuncha semizman, nima qilaman?",
+            "ru": "Смотри, я такая полная, что мне делать?",
+            "tj": "Бубин, ман ин қадар фарбеҳам, чӣ кор кунам?"
           }
         },
         {
-          "speaker": "小刚",
-          "zh": "没迟到啊。",
-          "pinyin": "Méi chídào a.",
+          "speaker": "周明",
+          "zh": "你每天晚上吃了饭就睡觉，也不出去走走，能不胖吗？",
+          "pinyin": "Nǐ měitiān wǎnshang chī le fàn jiù shuìjiào, yě bù chūqu zǒuzou, néng bù pàng ma?",
           "text": {
-            "uz": "Kech qolmadim-ku.",
-            "ru": "Я не опоздал.",
-            "tj": "Ман дер намондам."
+            "uz": "Har kuni kechqurun ovqat yeysan-u uxlaysan, tashqariga chiqib yurmayapsan ham, semirmaslik mumkinmi?",
+            "ru": "Каждый вечер поешь и сразу спишь, даже не выходишь прогуляться, как тут не поправиться?",
+            "tj": "Ҳар шаб хӯрок мехӯрӣ ва мехобӣ, берун ҳам намебароӣ, чӣ тавр фарбеҳ намешавӣ?"
           }
         },
         {
-          "speaker": "小丽",
-          "zh": "你不是说七点半来接我吗？你迟到了一刻钟。",
-          "pinyin": "Nǐ bú shì shuō qī diǎn bàn lái jiē wǒ ma? Nǐ chídào le yí kè zhōng.",
+          "speaker": "周太太",
+          "zh": "其实我每天都运动。",
+          "pinyin": "Qíshí wǒ měitiān dōu yùndòng.",
           "text": {
-            "uz": "Soat yetti yarimda meni olib ketaman demaganmiding? Sen chorak soat kech qolding.",
-            "ru": "Разве ты не говорил, что заберёшь меня в 7:30? Ты опоздал на четверть часа.",
-            "tj": "Магар нагуфта будӣ, ки соати ҳафту ним маро мебарӣ? Ту чоряк соат дер мондӣ."
+            "uz": "Aslida men har kuni mashq qilaman.",
+            "ru": "На самом деле я каждый день занимаюсь спортом.",
+            "tj": "Дар асл ман ҳар рӯз варзиш мекунам."
           }
         },
         {
-          "speaker": "小刚",
-          "zh": "现在不是七点半吗？",
-          "pinyin": "Xiànzài bú shì qī diǎn bàn ma?",
+          "speaker": "周明",
+          "zh": "但是你一点儿也没瘦！你做什么运动了？",
+          "pinyin": "Dànshì nǐ yìdiǎnr yě méi shòu! Nǐ zuò shénme yùndòng le?",
           "text": {
-            "uz": "Hozir yetti yarim emasmi?",
-            "ru": "Разве сейчас не 7:30?",
-            "tj": "Ҳоло ҳафту ним нест?"
+            "uz": "Lekin umuman ozmagansan! Qanday mashq qilding?",
+            "ru": "Но ты совсем не похудела! Каким спортом ты занималась?",
+            "tj": "Аммо ту тамоман лоғар нашудаӣ! Чӣ варзиш кардӣ?"
           }
         },
         {
-          "speaker": "小丽",
-          "zh": "已经差一刻八点了！我都在这儿坐了半个小时了。",
-          "pinyin": "Yǐjīng chà yí kè bā diǎn le! Wǒ dōu zài zhèr zuò le bàn ge xiǎoshí le.",
+          "speaker": "周太太",
+          "zh": "做饭啊。",
+          "pinyin": "Zuò fàn a.",
           "text": {
-            "uz": "Allaqachon sakkizga chorak qoldi! Men bu yerda yarim soat o'tiribman.",
-            "ru": "Уже без четверти восемь! Я тут уже полчаса сижу.",
-            "tj": "Аллакай чоряк ба ҳашт мондааст! Ман ин ҷо ним соат нишастаам."
-          }
-        },
-        {
-          "speaker": "小刚",
-          "zh": "不是我迟到了，是你的表快了一刻钟。",
-          "pinyin": "Bú shì wǒ chídào le, shì nǐ de biǎo kuài le yí kè zhōng.",
-          "text": {
-            "uz": "Men kech qolmadim, sening soating chorak soat oldinda.",
-            "ru": "Это не я опоздал, это твои часы спешат на четверть часа.",
-            "tj": "Ман дер намондаам, соати ту чоряк соат пеш аст."
+            "uz": "Ovqat pishirish-da.",
+            "ru": "Готовкой еды.",
+            "tj": "Хӯрокпазӣ."
           }
         }
       ]
@@ -540,36 +368,22 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "同事",
-            "pinyin": "tóngshì",
+            "zh": "腿",
+            "pinyin": "tuǐ",
             "pos": "n.",
             "meaning": {
-              "uz": "hamkasb",
-              "ru": "коллега",
-              "tj": "ҳамкор"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "以前",
-            "pinyin": "yǐqián",
-            "pos": "n.",
-            "meaning": {
-              "uz": "oldin, ilgari",
-              "ru": "раньше, прежде",
-              "tj": "пештар, қаблан"
+              "uz": "oyoq",
+              "ru": "нога",
+              "tj": "по"
             }
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "yǐqián qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yǐqián?",
-            "tj": "yǐqián кадом иероглиф аст?"
+            "uz": "tuǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tuǐ?",
+            "tj": "tuǐ кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -577,62 +391,38 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "以前",
-            "银行",
-            "同事",
-            "久"
+            "疼",
+            "腿",
+            "脚",
+            "树"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "以前 = oldin, ilgari (yǐqián)",
-            "ru": "以前 = раньше, прежде (yǐqián)",
-            "tj": "以前 = пештар, қаблан (yǐqián)"
+            "uz": "腿 = oyoq (tuǐ)",
+            "ru": "腿 = нога (tuǐ)",
+            "tj": "腿 = по (tuǐ)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "银行",
-            "pinyin": "yínháng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "bank",
-              "ru": "банк",
-              "tj": "бонк"
-            }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "银行",
-          "pinyin": "yínháng",
-          "translation": {
-            "uz": "bank",
-            "ru": "банк",
-            "tj": "бонк"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "久",
-            "pinyin": "jiǔ",
+            "no": 2,
+            "zh": "疼",
+            "pinyin": "téng",
             "pos": "adj.",
             "meaning": {
-              "uz": "uzoq vaqt",
-              "ru": "долго, длительный",
-              "tj": "муддати дароз"
+              "uz": "og'riqli, og'rimoq",
+              "ru": "болеть, больной",
+              "tj": "дард кардан, дарднок"
             }
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "久 talaffuzini tanlang:",
-            "ru": "Выберите произношение 久:",
-            "tj": "Талаффузи 久-ро интихоб кунед:"
+            "uz": "疼 talaffuzini tanlang:",
+            "ru": "Выберите произношение 疼:",
+            "tj": "Талаффузи 疼-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -640,52 +430,48 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yǐqián",
-            "jiǔ",
-            "yínháng",
-            "tóngshì"
+            "téng",
+            "shù",
+            "jiǎo",
+            "tuǐ"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "久 — jiǔ",
-            "ru": "久 — jiǔ",
-            "tj": "久 — jiǔ"
+            "uz": "疼 — téng",
+            "ru": "疼 — téng",
+            "tj": "疼 — téng"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "感兴趣",
-            "pinyin": "gǎn xìngqù",
-            "pos": "v.",
+            "no": 3,
+            "zh": "脚",
+            "pinyin": "jiǎo",
+            "pos": "n.",
             "meaning": {
-              "uz": "qiziqmoq",
-              "ru": "интересоваться",
-              "tj": "шавқ доштан"
+              "uz": "oyoq panjasi",
+              "ru": "стопа, нога",
+              "tj": "кафи по"
             }
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "结婚",
-            "pinyin": "jié hūn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "turmush qurmoq, uylanmoq",
-              "ru": "жениться, выходить замуж",
-              "tj": "оиладор шудан"
-            }
+          "type": "pronunciation",
+          "phrase": "脚",
+          "pinyin": "jiǎo",
+          "translation": {
+            "uz": "oyoq panjasi",
+            "ru": "стопа, нога",
+            "tj": "кафи по"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'turmush qurmoq, uylanmoq' xitoycha qaysi?",
-            "ru": "'жениться, выходить замуж' по-китайски?",
-            "tj": "'оиладор шудан' ба хитоӣ кадом аст?"
+            "uz": "'oyoq panjasi' xitoycha qaysi?",
+            "ru": "'стопа, нога' по-китайски?",
+            "tj": "'кафи по' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -693,43 +479,29 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "同事",
-            "结婚",
-            "以前",
-            "银行"
+            "脚",
+            "疼",
+            "腿",
+            "树"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "turmush qurmoq, uylanmoq = 结婚 (jié hūn)",
-            "ru": "жениться, выходить замуж = 结婚 (jié hūn)",
-            "tj": "оиладор шудан = 结婚 (jié hūn)"
+            "uz": "oyoq panjasi = 脚 (jiǎo)",
+            "ru": "стопа, нога = 脚 (jiǎo)",
+            "tj": "кафи по = 脚 (jiǎo)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 7,
-            "zh": "欢迎",
-            "pinyin": "huānyíng",
-            "pos": "v.",
+            "no": 4,
+            "zh": "树",
+            "pinyin": "shù",
+            "pos": "n.",
             "meaning": {
-              "uz": "xush kelibsiz demoq, kutib olmoq",
-              "ru": "приветствовать",
-              "tj": "хуш омадед гуфтан, пешвоз гирифтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "迟到",
-            "pinyin": "chídào",
-            "pos": "v.",
-            "meaning": {
-              "uz": "kech qolmoq",
-              "ru": "опаздывать",
-              "tj": "дер мондан"
+              "uz": "daraxt",
+              "ru": "дерево",
+              "tj": "дарахт"
             }
           }
         },
@@ -740,55 +512,27 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "结婚",
-          "pinyin": "jié hūn",
+          "audio_text": "树",
+          "pinyin": "shù",
           "options": [
-            "结婚",
-            "银行",
-            "以前",
-            "同事"
+            "脚",
+            "腿",
+            "树",
+            "疼"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "结婚 — turmush qurmoq, uylanmoq (jié hūn)",
-            "ru": "结婚 — жениться, выходить замуж (jié hūn)",
-            "tj": "结婚 — оиладор шудан (jié hūn)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "半",
-            "pinyin": "bàn",
-            "pos": "num.",
-            "meaning": {
-              "uz": "yarim",
-              "ru": "половина",
-              "tj": "ним"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "接",
-            "pinyin": "jiē",
-            "pos": "v.",
-            "meaning": {
-              "uz": "kutib olmoq, olib ketmoq",
-              "ru": "встречать, забирать",
-              "tj": "пешвоз гирифтан, бурдан"
-            }
+            "uz": "树 — daraxt (shù)",
+            "ru": "树 — дерево (shù)",
+            "tj": "树 — дарахт (shù)"
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "接 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 接:",
-            "tj": "Маънои калимаи 接-ро интихоб кунед:"
+            "uz": "腿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 腿:",
+            "tj": "Маънои калимаи 腿-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -797,66 +541,66 @@
           },
           "options": [
             {
-              "uz": "bank",
-              "ru": "банк",
-              "tj": "бонк"
+              "uz": "daraxt",
+              "ru": "дерево",
+              "tj": "дарахт"
             },
             {
-              "uz": "kutib olmoq, olib ketmoq",
-              "ru": "встречать, забирать",
-              "tj": "пешвоз гирифтан, бурдан"
+              "uz": "og'riqli, og'rimoq",
+              "ru": "болеть, больной",
+              "tj": "дард кардан, дарднок"
             },
             {
-              "uz": "oldin, ilgari",
-              "ru": "раньше, прежде",
-              "tj": "пештар, қаблан"
+              "uz": "oyoq",
+              "ru": "нога",
+              "tj": "по"
             },
             {
-              "uz": "hamkasb",
-              "ru": "коллега",
-              "tj": "ҳамкор"
+              "uz": "oyoq panjasi",
+              "ru": "стопа, нога",
+              "tj": "кафи по"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "接 = kutib olmoq, olib ketmoq (jiē)",
-            "ru": "接 = встречать, забирать (jiē)",
-            "tj": "接 = пешвоз гирифтан, бурдан (jiē)"
+            "uz": "腿 = oyoq (tuǐ)",
+            "ru": "腿 = нога (tuǐ)",
+            "tj": "腿 = по (tuǐ)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "同事",
+              "腿",
               {
-                "uz": "hamkasb",
-                "ru": "коллега",
-                "tj": "ҳамкор"
+                "uz": "oyoq",
+                "ru": "нога",
+                "tj": "по"
               }
             ],
             [
-              "以前",
+              "疼",
               {
-                "uz": "oldin, ilgari",
-                "ru": "раньше, прежде",
-                "tj": "пештар, қаблан"
+                "uz": "og'riqli, og'rimoq",
+                "ru": "болеть, больной",
+                "tj": "дард кардан, дарднок"
               }
             ],
             [
-              "银行",
+              "脚",
               {
-                "uz": "bank",
-                "ru": "банк",
-                "tj": "бонк"
+                "uz": "oyoq panjasi",
+                "ru": "стопа, нога",
+                "tj": "кафи по"
               }
             ],
             [
-              "久",
+              "树",
               {
-                "uz": "uzoq vaqt",
-                "ru": "долго, длительный",
-                "tj": "муддати дароз"
+                "uz": "daraxt",
+                "ru": "дерево",
+                "tj": "дарахт"
               }
             ]
           ],
@@ -882,185 +626,36 @@
           "g": {
             "no": 1,
             "title": {
-              "uz": "Vaqt davomiyligini ifodalash: F + le + muddat + le",
-              "ru": "Выражение продолжительности: Гл + 了 + период + 了",
-              "tj": "Ифодаи давомнокии вақт: Ф + 了 + муддат + 了"
+              "uz": "Oddiy yo'nalish to'ldiruvchisi",
+              "ru": "Простые направленные дополнения",
+              "tj": "Иловаҳои самтноки содда"
             },
-            "title_zh": "时段的表达：V + 了 + 时段 + 了",
+            "title_zh": "简单趋向补语",
             "rule": {
-              "uz": "Biror harakat qancha davom etganini bildirishda 'V + 了 + vaqt davomiyligi + 了' tuzilmasi ishlatiladi. Birinchi 了 harakatning tugaganini, ikkinchisi hozirgi holatni bildiradi.",
-              "ru": "Для выражения продолжительности действия используется конструкция 'Гл + 了 + период времени + 了'. Первое 了 обозначает завершённость действия, второе — текущее состояние.",
-              "tj": "Барои ифодаи давомнокии амал сохти 'Ф + 了 + муддати вақт + 了' истифода мешавад. Аввалин 了 тамомшавии амалро, дуввумаш ҳолати кунуниро нишон медиҳад."
+              "uz": "Yo'nalish to'ldiruvchilari fe'lga qo'shilgan 来 yoki 去 dan iborat.\n来 — harakat so'zlovchi tomonga yoki ma'lum nuqtaga qarab;\n去 — harakat so'zlovchidan yoki ma'lum nuqtadan uzoqlashipti.\nQolip: V + 来/去\nMasalan: 回来 (qaytib kelmoq), 进去 (kirib ketmoq), 上来 (yuqoriga chiqib kelmoq),\n         拿回来 (olib qaytmoq), 跑进去 (yugurib kirib ketmoq).",
+              "ru": "Направленные дополнения состоят из 来 или 去, присоединённых к глаголу.\n来 — движение к говорящему или к определённой точке;\n去 — движение от говорящего или от точки.\nСтруктура: Глагол + 来/去\nНапример: 回来 (вернуться), 进去 (войти), 上来 (подняться),\n          拿回来 (принести обратно), 跑进去 (забежать).",
+              "tj": "Иловаҳои самтнок аз 来 ё 去, ки ба феъл ҳамроҳ мешаванд, иборатанд.\n来 — ҳаракат ба сӯи гӯянда ё нуқтаи муайян;\n去 — ҳаракат аз гӯянда ё аз нуқта.\nСохт: Феъл + 来/去\nМасалан: 回来 (баргаштан), 进去 (дохил шудан), 上来 (боло омадан),\n         拿回来 (бо худ оварадан), 跑进去 (давида дохил шудан)."
             },
             "examples": [
               {
-                "zh": "我们认识五年了。",
-                "pinyin": "Wǒmen rènshi wǔ nián le.",
+                "zh": "他先去三楼拿文件，马上就回来。",
+                "pinyin": "Tā xiān qù sān lóu ná wénjiàn, mǎshàng jiù huílai.",
                 "translation": {
-                  "uz": "Biz tanishganimizga besh yil bo'ldi.",
-                  "ru": "Мы знакомы уже пять лет.",
-                  "tj": "Мо панҷ сол боз ошно ҳастем."
+                  "uz": "U avval uchinchi qavatga hujjat olishga ketdi, hoziroq qaytadi.",
+                  "ru": "Он сначала пошёл на третий этаж за документами, сейчас вернётся.",
+                  "tj": "Вай аввал ба ошёнаи сеюм барои ҳуҷҷат рафт, ҳозир бармегардад."
                 }
               },
               {
-                "zh": "他在银行工作三年了。",
-                "pinyin": "Tā zài yínháng gōngzuò sān nián le.",
+                "zh": "我跑进去拿伞，你等我一下！",
+                "pinyin": "Wǒ pǎo jìnqu ná sǎn, nǐ děng wǒ yīxià!",
                 "translation": {
-                  "uz": "U bankda uch yildan beri ishlaydi.",
-                  "ru": "Он работает в банке уже три года.",
-                  "tj": "Вай се сол боз дар бонк кор мекунад."
+                  "uz": "Men yugurib kirib soyabon olib chiqaman, bir oz kutib turing!",
+                  "ru": "Я забегу за зонтом, подождите меня!",
+                  "tj": "Ман давида дохил мешавам чатр мегирам, каме интизор шав!"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "他在____工作三年了。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "同事",
-            "银行",
-            "久",
-            "以前"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 银行 (yínháng) — bank",
-            "ru": "Верно: 银行 (yínháng) — банк",
-            "tj": "Дуруст: 银行 (yínháng) — бонк"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "…ga qiziqish his qilmoq",
-              "ru": "Интересоваться …",
-              "tj": "Ба … шавқ доштан"
-            },
-            "title_zh": "对……感兴趣",
-            "rule": {
-              "uz": "'对……感兴趣' - biror narsaga qiziqishni ifodalash uchun ishlatiladi. '对' + ob'ekt + '感兴趣' tuzilmasi mavjud. '特别感兴趣' esa 'ayniqsa qiziqish' ma'nosini beradi.",
-              "ru": "'对……感兴趣' используется для выражения интереса к чему-либо. Структура: '对' + объект + '感兴趣'. '特别感兴趣' означает 'особенно интересоваться'.",
-              "tj": "'对……感兴趣' барои ифодаи шавқ ба чизе истифода мешавад. Сохт: '对' + объект + '感兴趣'. '特别感兴趣' маънои 'хусусан шавқ доштан'-ро дорад."
-            },
-            "examples": [
-              {
-                "zh": "我对音乐很感兴趣。",
-                "pinyin": "Wǒ duì yīnyuè hěn gǎn xìngqù.",
-                "translation": {
-                  "uz": "Men musiqaga juda qiziqaman.",
-                  "ru": "Мне очень интересна музыка.",
-                  "tj": "Ман ба мусиқӣ хеле шавқ дорам."
-                }
-              },
-              {
-                "zh": "她对历史特别感兴趣。",
-                "pinyin": "Tā duì lìshǐ tèbié gǎn xìngqù.",
-                "translation": {
-                  "uz": "U tarixga ayniqsa qiziqadi.",
-                  "ru": "Она особенно интересуется историей.",
-                  "tj": "Вай ба таърих хусусан шавқ дорад."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men musiqaga juda qiziqaman.",
-            "ru": "Мне очень интересна музыка.",
-            "tj": "Ман ба мусиқӣ хеле шавқ дорам."
-          },
-          "tokens": [
-            "感兴趣",
-            "对",
-            "音乐",
-            "同事",
-            "以前",
-            "我",
-            "很"
-          ],
-          "answer_tokens": [
-            "我",
-            "对",
-            "音乐",
-            "很",
-            "感兴趣"
-          ],
-          "explanation": {
-            "uz": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù.",
-            "ru": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù.",
-            "tj": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "\"Yarim\", \"chorak\" va \"kam\" vaqt ifodalovchi so'zlar",
-              "ru": "\"Половина\", \"четверть\" и \"без\" для обозначения времени",
-              "tj": "\"Ним\", \"чорак\" ва \"кам\" барои ифодаи вақт"
-            },
-            "title_zh": "\"半\"\"刻\"\"差\"表示时间",
-            "rule": {
-              "uz": "Soat vaqtini ifodalashda: '半' = soat va yarim (masalan: 两点半 = 2:30), '刻' = 15 daqiqa (一刻 = :15, 三刻 = :45), '差' = vaqtdan oldin 'kam' (差五分八点 = 7:55).",
-              "ru": "Для обозначения времени: '半' = полчаса (两点半 = 2:30), '刻' = 15 минут (一刻 = :15, 三刻 = :45), '差' = без (差五分八点 = без пяти восемь = 7:55).",
-              "tj": "Барои таъйин кардани вақт: '半' = ним соат (两点半 = 2:30), '刻' = 15 дақиқа (一刻 = :15, 三刻 = :45), '差' = кам (差五分八点 = панҷ дақиқа ба ҳашт = 7:55)."
-            },
-            "examples": [
-              {
-                "zh": "现在差一刻八点。",
-                "pinyin": "Xiànzài chà yī kè bā diǎn.",
-                "translation": {
-                  "uz": "Hozir soat sakkizga chorak qoldi (7:45).",
-                  "ru": "Сейчас без четверти восемь (7:45).",
-                  "tj": "Ҳоло чорак ба ҳашт монда (7:45)."
-                }
-              },
-              {
-                "zh": "我们三点半见面吧。",
-                "pinyin": "Wǒmen sān diǎn bàn jiànmiàn ba.",
-                "translation": {
-                  "uz": "Biz soat uch yarimda uchrashaylik.",
-                  "ru": "Давай встретимся в половине четвёртого.",
-                  "tj": "Биё соати се ва ним вохӯрем."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«Men musiqaga juda qiziqaman.» — xitoychada qaysi biri?",
-            "ru": "«Мне очень интересна музыка.» — какое предложение по-китайски?",
-            "tj": "«Ман ба мусиқӣ хеле шавқ дорам.» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "我对音乐很感兴趣。",
-            "我们三点半见面吧。",
-            "他在银行工作三年了。",
-            "现在差一刻八点。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù.",
-            "ru": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù.",
-            "tj": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù."
           }
         }
       ]
@@ -1077,9 +672,9 @@
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "chà qaysi ieroglif?",
-            "ru": "Какой иероглиф читается chà?",
-            "tj": "chà кадом иероглиф аст?"
+            "uz": "zuòyè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zuòyè?",
+            "tj": "zuòyè кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -1087,16 +682,16 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "同事",
-            "以前",
-            "银行",
-            "差"
+            "腿",
+            "疼",
+            "脚",
+            "作业"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "差 = yetishmaslik, kam bo'lmoq (chà)",
-            "ru": "差 = не хватать, без (chà)",
-            "tj": "差 = кам будан (chà)"
+            "uz": "作业 = uy vazifasi (zuòyè)",
+            "ru": "作业 = домашнее задание (zuòyè)",
+            "tj": "作业 = вазифаи хонагӣ (zuòyè)"
           }
         },
         {
@@ -1106,388 +701,151 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "周末你跟小丽去哪儿玩儿了？",
-          "pinyin": "Zhōumò nǐ gēn Xiǎolì qù nǎr wánr le?",
+          "audio_text": "我现在腿也疼，脚也疼。",
+          "pinyin": "Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
           "options": [
-            "那个漂亮的新同事是谁？",
-            "那是小丽。",
-            "她刚来北京吗？",
-            "周末你跟小丽去哪儿玩儿了？"
+            "好，那边树多，我们过去坐一下吧。",
+            "怎么了？",
+            "我现在腿也疼，脚也疼。",
+            "休息一下吧。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "周末你跟小丽去哪儿玩儿了？ — Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
-            "ru": "周末你跟小丽去哪儿玩儿了？ — Куда ты ходил с Сяоли на выходных?",
-            "tj": "周末你跟小丽去哪儿玩儿了？ — Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "半",
-          "pinyin": "bàn",
-          "translation": {
-            "uz": "yarim",
-            "ru": "половина",
-            "tj": "ним"
+            "uz": "我现在腿也疼，脚也疼。 — Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
+            "ru": "我现在腿也疼，脚也疼。 — Сейчас у меня болят и ноги, и стопы.",
+            "tj": "我现在腿也疼，脚也疼。 — Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
           }
         },
         {
           "type": "sentence_builder",
           "sentence": {
-            "uz": "Anavi chiroyli yangi hamkasb kim?",
-            "ru": "Кто эта красивая новая коллега?",
-            "tj": "Он ҳамкори нави зебо кист?"
+            "uz": "Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
+            "ru": "Сейчас у меня болят и ноги, и стопы.",
+            "tj": "Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
           },
           "tokens": [
-            "那",
-            "以前",
-            "新",
-            "是",
-            "谁",
-            "银行",
-            "的",
-            "同事",
-            "个",
-            "漂亮"
+            "周末",
+            "脚",
+            "也",
+            "疼",
+            "腿",
+            "我",
+            "现在",
+            "也",
+            "树",
+            "疼"
           ],
           "answer_tokens": [
-            "那",
-            "个",
-            "漂亮",
-            "的",
-            "新",
-            "同事",
-            "是",
-            "谁"
+            "我",
+            "现在",
+            "腿",
+            "也",
+            "疼",
+            "脚",
+            "也",
+            "疼"
           ],
           "explanation": {
-            "uz": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?",
-            "ru": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?",
-            "tj": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?"
+            "uz": "我现在腿也疼，脚也疼。 — Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
+            "ru": "我现在腿也疼，脚也疼。 — Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
+            "tj": "我现在腿也疼，脚也疼。 — Wǒ xiànzài tuǐ yě téng, jiǎo yě téng."
           }
         },
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "同事",
-              {
-                "uz": "hamkasb",
-                "ru": "коллега",
-                "tj": "ҳамкор"
-              }
-            ],
-            [
-              "以前",
-              {
-                "uz": "oldin, ilgari",
-                "ru": "раньше, прежде",
-                "tj": "пештар, қаблан"
-              }
-            ],
-            [
-              "银行",
-              {
-                "uz": "bank",
-                "ru": "банк",
-                "tj": "бонк"
-              }
-            ],
-            [
-              "久",
-              {
-                "uz": "uzoq vaqt",
-                "ru": "долго, длительный",
-                "tj": "муддати дароз"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          "type": "pronunciation",
+          "phrase": "树",
+          "pinyin": "shù",
+          "translation": {
+            "uz": "daraxt",
+            "ru": "дерево",
+            "tj": "дарахт"
           }
         },
         {
           "type": "reverse_builder",
-          "zh": "周末你跟小丽去哪儿玩儿了？",
-          "pinyin": "Zhōumò nǐ gēn Xiǎolì qù nǎr wánr le?",
+          "zh": "我现在腿也疼，脚也疼。",
+          "pinyin": "Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
           "translation": {
-            "uz": "Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
-            "ru": "Куда ты ходил с Сяоли на выходных?",
-            "tj": "Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
+            "uz": "Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
+            "ru": "Сейчас у меня болят и ноги, и стопы.",
+            "tj": "Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
           },
           "tokens": {
             "uz": [
-              "Anavi",
-              "aylangani",
-              "chiroyli",
-              "Hafta",
-              "bilan",
-              "Xiaoli",
-              "bording",
-              "oxiri",
-              "qayerga"
+              "ham",
+              "ham",
+              "oyoq",
+              "Hozir",
+              "og'riyapti",
+              "oyog'im",
+              "panjam"
             ],
             "ru": [
-              "Сяоли",
-              "эта",
-              "Куда",
-              "ходил",
-              "выходных",
-              "с",
-              "ты",
-              "Кто",
-              "на"
+              "стопы",
+              "и",
+              "у",
+              "Сейчас",
+              "и",
+              "меня",
+              "ноги",
+              "болят"
             ],
             "tj": [
-              "Он",
-              "куҷо",
-              "бо",
-              "рафта",
-              "ба",
-              "Охири",
-              "Сяоли",
-              "ҳафта",
-              "будӣ",
-              "ҳамкори"
+              "Ҳоло",
+              "дард",
+              "ҳам",
+              "поям",
+              "поям",
+              "ҳам",
+              "мекунад",
+              "кафи"
             ]
           },
           "answer_tokens": {
             "uz": [
-              "Hafta",
-              "oxiri",
-              "Xiaoli",
-              "bilan",
-              "qayerga",
-              "aylangani",
-              "bording"
+              "Hozir",
+              "oyog'im",
+              "ham",
+              "oyoq",
+              "panjam",
+              "ham",
+              "og'riyapti"
             ],
             "ru": [
-              "Куда",
-              "ты",
-              "ходил",
-              "с",
-              "Сяоли",
-              "на",
-              "выходных"
+              "Сейчас",
+              "у",
+              "меня",
+              "болят",
+              "и",
+              "ноги",
+              "и",
+              "стопы"
             ],
             "tj": [
-              "Охири",
-              "ҳафта",
-              "бо",
-              "Сяоли",
-              "ба",
-              "куҷо",
-              "рафта",
-              "будӣ"
+              "Ҳоло",
+              "поям",
+              "ҳам",
+              "кафи",
+              "поям",
+              "ҳам",
+              "дард",
+              "мекунад"
             ]
           },
           "explanation": {
-            "uz": "周末你跟小丽去哪儿玩儿了？ — Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
-            "ru": "周末你跟小丽去哪儿玩儿了？ — Куда ты ходил с Сяоли на выходных?",
-            "tj": "周末你跟小丽去哪儿玩儿了？ — Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'chorak soat' xitoycha qaysi?",
-            "ru": "'четверть часа' по-китайски?",
-            "tj": "'чоряки соат' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "银行",
-            "刻",
-            "同事",
-            "以前"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "chorak soat = 刻 (kè)",
-            "ru": "четверть часа = 刻 (kè)",
-            "tj": "чоряки соат = 刻 (kè)"
+            "uz": "我现在腿也疼，脚也疼。 — Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
+            "ru": "我现在腿也疼，脚也疼。 — Сейчас у меня болят и ноги, и стопы.",
+            "tj": "我现在腿也疼，脚也疼。 — Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "欢迎",
-          "pinyin": "huānyíng",
+          "phrase": "脚",
+          "pinyin": "jiǎo",
           "translation": {
-            "uz": "xush kelibsiz demoq, kutib olmoq",
-            "ru": "приветствовать",
-            "tj": "хуш омадед гуфтан, пешвоз гирифтан"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "那个漂亮的新同事是谁？",
-          "pinyin": "Nà ge piàoliang de xīn tóngshì shì shéi?",
-          "options": [
-            "她刚来北京吗？",
-            "那是小丽。",
-            "不，她在北京工作三年了。",
-            "那个漂亮的新同事是谁？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "那个漂亮的新同事是谁？ — Anavi chiroyli yangi hamkasb kim?",
-            "ru": "那个漂亮的新同事是谁？ — Кто эта красивая новая коллега?",
-            "tj": "那个漂亮的新同事是谁？ — Он ҳамкори нави зебо кист?"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "同事",
-              "zh": "那个漂亮的新同事是谁？",
-              "blank": false
-            },
-            {
-              "speaker": "小刚",
-              "zh": "那是小丽。",
-              "blank": false
-            },
-            {
-              "speaker": "同事",
-              "zh": "她刚来北京吗？",
-              "blank": false
-            },
-            {
-              "speaker": "小刚",
-              "zh": "不，她在北京工作三年了。",
-              "blank": false
-            },
-            {
-              "speaker": "同事",
-              "zh": "以前她在哪儿工作？",
-              "blank": false
-            },
-            {
-              "speaker": "小刚",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "她刚来北京吗？",
-            "她在银行工作了两年以后来的我们公司。",
-            "那是小丽。",
-            "那个漂亮的新同事是谁？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
-            "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
-            "tj": "Ҷавоби дуруст: 她在银行工作了两年以后来的我们公司。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小刚 nima deydi?",
-            "ru": "Что 小刚 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 小刚 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "她在银行工作了两年以后来的我们公司。",
-            "她刚来北京吗？",
-            "那是小丽。",
-            "那个漂亮的新同事是谁？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
-            "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
-            "tj": "Ҷавоби дуруст: 她在银行工作了两年以后来的我们公司。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____个漂亮的新同事是谁？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "那",
-            "商",
-            "羊",
-            "司"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 那 — 那个漂亮的新同事是谁？ (Anavi chiroyli yangi hamkasb kim?)",
-            "ru": "Верно: 那 — 那个漂亮的新同事是谁？ (Кто эта красивая новая коллега?)",
-            "tj": "Дуруст: 那 — 那个漂亮的新同事是谁？ (Он ҳамкори нави зебо кист?)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 同事 avval nima deydi?",
-            "ru": "Что 同事 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 同事 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "那是小丽。",
-            "她刚来北京吗？",
-            "那个漂亮的新同事是谁？",
-            "不，她在北京工作三年了。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 那个漂亮的新同事是谁？",
-            "ru": "Правильный ответ: 那个漂亮的新同事是谁？",
-            "tj": "Ҷавоби дуруст: 那个漂亮的新同事是谁？"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "她刚来北京吗？",
-          "pinyin": "Tā gāng lái Běijīng ma?",
-          "translation": {
-            "uz": "U Pekinga hozirgina keldimi?",
-            "ru": "Она только что приехала в Пекин?",
-            "tj": "Ӯ нав ба Пекин омад?"
+            "uz": "oyoq panjasi",
+            "ru": "стопа, нога",
+            "tj": "кафи по"
           }
         }
       ]

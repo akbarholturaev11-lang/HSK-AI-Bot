@@ -59,6 +59,7 @@ from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import (
     COURSE_AI_PRACTICE_FEATURES,
+    FREE_COURSE_LESSONS_PER_LEVEL,
     CourseMiniAppAccessService,
 )
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
@@ -949,6 +950,13 @@ def _course_v3_level(value: str | None) -> str:
 # Band tugaganda keyingi HSK bandiga avtomatik o'tish (user.level yangilanadi).
 _COURSE_V3_NEXT_BAND = {"hsk1": "hsk2", "hsk2": "hsk3", "hsk3": "hsk4"}
 
+# Darslar mini-qismlarga bo'lingandan keyin band chegarasi legacy
+# course_lessons jadvalidan emas, parts_manifest.json dan aniqlanadi.
+def _course_v3_total_parts(level: str) -> int:
+    from app.services.course_v3_parts import total_parts
+
+    return total_parts(_course_v3_level(level))
+
 
 def _course_v3_user_level(user) -> str:
     return _course_v3_level(getattr(user, "level", None))
@@ -975,9 +983,10 @@ def _apply_course_v3_access_policy(data: dict, *, level: str, completed: int, is
 
             requires_premium = CourseMiniAppAccessService.lesson_requires_premium(level, n)
             if not is_paid and requires_premium and n > completed:
-                if n == completed + 1 and n == 2:
-                    # 2-dars: yangi bepul user uni ochib, ~yarmigacha ko'radi;
-                    # frontend kartalar o'rtasida obuna oynasini chiqaradi.
+                if n == completed + 1 and n == FREE_COURSE_LESSONS_PER_LEVEL + 1:
+                    # Birinchi pullik mini-dars: yangi bepul user uni ochib,
+                    # ~yarmigacha ko'radi; frontend kartalar o'rtasida obuna
+                    # oynasini chiqaradi.
                     lesson["status"] = "current"
                     lesson["preview_half"] = True
                     lesson.pop("locked_premium", None)
@@ -1683,10 +1692,13 @@ async def v3_course_lesson_unlock(request: Request):
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
         resolved_level = _course_v3_user_level(user)
+        total_parts = _course_v3_total_parts(resolved_level)
+        if total_parts and lesson_order > total_parts:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
+        # Legacy course_lessons qatori endi shart emas (qismlar flat raqamlanadi
+        # va jadvaldagi eski tartibdan ko'p) — topilsa bookkeeping uchun olamiz.
         lesson_repo = CourseLessonRepository(session)
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
-        if not lesson:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
 
         access = CourseMiniAppAccessService(session)
         is_paid = access.is_paid_user(user)
@@ -1699,7 +1711,7 @@ async def v3_course_lesson_unlock(request: Request):
             progress = await progress_repo.create(
                 user_id=user.id,
                 level=resolved_level,
-                current_lesson_id=lesson.id,
+                current_lesson_id=getattr(lesson, "id", None),
                 current_step="intro",
                 waiting_for="none",
             )
@@ -1710,7 +1722,7 @@ async def v3_course_lesson_unlock(request: Request):
         )
         await progress_repo.set_current_lesson_and_step(
             progress=progress,
-            lesson_id=lesson.id,
+            lesson_id=getattr(lesson, "id", None),
             step="intro",
             waiting_for="none",
         )
@@ -1723,7 +1735,7 @@ async def v3_course_lesson_unlock(request: Request):
             level=resolved_level,
             lesson_id=getattr(lesson, "id", None),
             lesson_order=lesson_order,
-            dedupe_key=f"course-v3:skip-test:{lesson.id}",
+            dedupe_key=f"course-v3:skip-test:{resolved_level}:{lesson_order}",
             payload={
                 "score": max(0, min(100, score)),
                 "unlock_completed_lessons_count": int(progress.completed_lessons_count or 0),
@@ -1765,17 +1777,20 @@ async def v3_course_lesson_complete(request: Request):
         # foydalanuvchining haqiqiy bandiga ishonadi (QA rejim bilan bir xil).
         resolved_level = _course_v3_user_level(user)
 
+        total_parts = _course_v3_total_parts(resolved_level)
+        if total_parts and lesson_order > total_parts:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
+        # Legacy course_lessons qatori endi shart emas (qismlar flat raqamlanadi
+        # va jadvaldagi eski tartibdan ko'p) — topilsa bookkeeping uchun olamiz.
         lesson_repo = CourseLessonRepository(session)
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
-        if not lesson:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
 
         access = CourseMiniAppAccessService(session)
         is_paid = access.is_paid_user(user)
         # Darslarda reklama YO'Q. Bepul user faqat bepul trial doirasidagi
-        # darsni (1-dars) yakunlay oladi; premium dars (2+) — obuna majburiy.
+        # mini-darslarni (1-2) yakunlay oladi; premium qism (3+) — obuna majburiy.
         # Bu serverdagi asosiy chegara: klient buzilgan bo'lsa ham aylanib
-        # o'tib bo'lmaydi (frontend 2-darsni yarmida paywall bilan to'xtatadi).
+        # o'tib bo'lmaydi (frontend 3-qismni yarmida paywall bilan to'xtatadi).
         if not is_paid and CourseMiniAppAccessService.lesson_requires_premium(
             resolved_level, lesson_order
         ):
@@ -1787,7 +1802,7 @@ async def v3_course_lesson_complete(request: Request):
             progress = await progress_repo.create(
                 user_id=user.id,
                 level=resolved_level,
-                current_lesson_id=lesson.id,
+                current_lesson_id=getattr(lesson, "id", None),
                 current_step="intro",
                 waiting_for="none",
             )
@@ -1812,7 +1827,7 @@ async def v3_course_lesson_complete(request: Request):
 
         await progress_repo.set_current_lesson_and_step(
             progress=progress,
-            lesson_id=lesson.id,
+            lesson_id=getattr(lesson, "id", None),
             step="intro",
             waiting_for="none",
         )
@@ -1820,13 +1835,16 @@ async def v3_course_lesson_complete(request: Request):
         snapshot = await gamification.award(
             user,
             activity_type="lesson",
-            activity_ref=f"v3-lesson:{lesson.id}:complete",
+            activity_ref=f"v3-part:{resolved_level}:{lesson_order}:complete",
             base_xp=20,
             level=resolved_level,
         )
 
-        next_lesson = await lesson_repo.get_next_lesson(resolved_level, lesson_order)
-        if next_lesson is None:
+        # Keyingi qism bormi — manifest chegarasidan (legacy jadvaldan emas).
+        # Manifest o'qilmasa (total_parts=0) band avto-o'tishi o'chiq qoladi.
+        has_next = bool(total_parts) and lesson_order < total_parts
+        next_order = lesson_order + 1 if has_next else None
+        if total_parts and not has_next:
             # Joriy band to'liq tugadi: keyingi HSK bandiga o'tamiz va user.level ni
             # yangilaymiz, shunda QA rejim ham yangi bandda bo'ladi (sinxron qoladi).
             # Progress keyingi map ochilganda yangi banddan noldan boshlanadi.
@@ -1834,13 +1852,12 @@ async def v3_course_lesson_complete(request: Request):
             if next_band:
                 user.level = next_band
         next_requires_premium = CourseMiniAppAccessService.lesson_requires_premium(
-            resolved_level,
-            int(getattr(next_lesson, "lesson_order", 0) or 0) if next_lesson else None,
+            resolved_level, next_order
         )
-        if next_lesson and (is_paid or not next_requires_premium):
+        if has_next and (is_paid or not next_requires_premium):
             await progress_repo.set_current_lesson_and_step(
                 progress=progress,
-                lesson_id=next_lesson.id,
+                lesson_id=getattr(lesson, "id", None),
                 step="intro",
                 waiting_for="none",
             )
@@ -1848,7 +1865,7 @@ async def v3_course_lesson_complete(request: Request):
         else:
             await progress_repo.set_current_lesson_and_step(
                 progress=progress,
-                lesson_id=lesson.id,
+                lesson_id=getattr(lesson, "id", None),
                 step="completed",
                 waiting_for="none",
             )
@@ -1862,11 +1879,11 @@ async def v3_course_lesson_complete(request: Request):
             lesson_id=getattr(lesson, "id", None),
             lesson_order=lesson_order,
             session_id=lesson_session_id,
-            dedupe_key=f"v3-lesson:{lesson.id}:completed",
+            dedupe_key=f"v3-part:{resolved_level}:{lesson_order}:completed",
             payload={
                 "lesson_order": lesson_order,
                 "is_paid": is_paid,
-                "next_lesson": getattr(next_lesson, "lesson_order", None),
+                "next_lesson": next_order,
             },
         )
         await session.commit()
@@ -1874,7 +1891,7 @@ async def v3_course_lesson_complete(request: Request):
             content={
                 "ok": True,
                 "completed_lesson": lesson_order,
-                "next_lesson": getattr(next_lesson, "lesson_order", None),
+                "next_lesson": next_order,
                 "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
                 "gamification": snapshot,
             }

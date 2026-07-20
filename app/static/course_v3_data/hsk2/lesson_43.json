@@ -1,0 +1,719 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 43,
+  "source_lesson": 9,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "题太多，我没做完",
+  "subtitle": {
+    "uz": "Natija fe'llari, 'cóng' old ko'makchisi va 'dì' tartib ko'rsatkichi yordamida gaplar tuzishni o'rganish.",
+    "ru": "Научиться строить предложения с результативными глаголами, предлогом 'cóng' и порядковым показателем 'dì'.",
+    "tj": "Омӯзиши тартиб додани ҷумлаҳо бо феълҳои натиҷавӣ, пешоянди 'cóng' ва нишондиҳандаи тартиби 'dì'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "懂",
+      "pinyin": "dǒng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tushunmoq",
+        "ru": "понимать",
+        "tj": "фаҳмидан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "完",
+      "pinyin": "wán",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tugamoq, tamomlamoq",
+        "ru": "заканчивать, завершать",
+        "tj": "тамом кардан, ба охир расидан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "题",
+      "pinyin": "tí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "savol, topshiriq, masala",
+        "ru": "вопрос, задание, задача",
+        "tj": "савол, супориш, масъала"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Natija to'ldiruvchisi (结果补语)",
+        "ru": "Результативное дополнение (结果补语)",
+        "tj": "Пуркунандаи натиҷавӣ (结果补语)"
+      },
+      "title_zh": "结果补语",
+      "rule": {
+        "uz": "Natija to'ldiruvchisi (结果补语) fe'ldan keyin qo'shilib, harakatning natijasini bildiradi.\nMasalan: 听懂 (eshitib tushunmoq), 做完 (tamomlamoq), 找到 (topmoq).\nInkor shaklida 没 yoki 没有 ishlatiladi: 没做完 (tamomlaolmadim).",
+        "ru": "Результативное дополнение (结果补语) добавляется после глагола и выражает результат действия.\nНапример: 听懂 (услышать и понять), 做完 (закончить), 找到 (найти).\nВ отрицании используется 没 или 没有: 没做完 (не успел закончить).",
+        "tj": "Пуркунандаи натиҷавӣ (结果补语) баъд аз феъл илова мешавад ва натиҷаи амалро нишон медиҳад.\nМасалан: 听懂 (шунида фаҳмидан), 做完 (тамом кардан), 找到 (ёфтан).\nДар инкор 没 ё 没有 истифода мешавад: 没做完 (нарасидам тамом кунам)."
+      },
+      "examples": [
+        {
+          "zh": "我听懂了。",
+          "pinyin": "Wǒ tīngdǒng le.",
+          "translation": {
+            "uz": "Men eshitib tushundim.",
+            "ru": "Я понял на слух.",
+            "tj": "Ман шунида фаҳмидам."
+          }
+        },
+        {
+          "zh": "题太多，我没做完。",
+          "pinyin": "Tí tài duō, wǒ méi zuòwán.",
+          "translation": {
+            "uz": "Savollar ko'p edi, men tamomlaolmadim.",
+            "ru": "Заданий было много, я не успел закончить.",
+            "tj": "Саволҳо зиёд буданд, ман нарасидам тамом кунам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Telefon qo'ng'iroqi",
+        "ru": "Телефонный разговор",
+        "tj": "Занги телефон"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你好！请问张欢在吗？",
+          "pinyin": "Nǐ hǎo! Qǐngwèn Zhāng Huān zài ma?",
+          "text": {
+            "uz": "Salom! Iltimos, Chjan Xuan bormi?",
+            "ru": "Здравствуйте! Скажите, Чжан Хуань здесь?",
+            "tj": "Салом! Лутфан, Чжан Хуан ҳаст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你打错了，我们这儿没有叫张欢的。",
+          "pinyin": "Nǐ dǎ cuò le, wǒmen zhèr méiyǒu jiào Zhāng Huān de.",
+          "text": {
+            "uz": "Siz xato raqamga terdingiz, bizda Chjan Xuan ismli odam yo'q.",
+            "ru": "Вы набрали неправильный номер, у нас нет человека по имени Чжан Хуань.",
+            "tj": "Шумо рақами хато зададед, дар ин ҷо Чжан Хуан нест."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "对不起。",
+          "pinyin": "Duìbuqǐ.",
+          "text": {
+            "uz": "Kechirasiz.",
+            "ru": "Извините.",
+            "tj": "Бубахшед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "您从几岁开始学跳舞？",
+          "pinyin": "Nín cóng jǐ suì kāishǐ xué tiàowǔ?",
+          "text": {
+            "uz": "Siz necha yoshdan raqs o'rganishni boshladingiz?",
+            "ru": "С какого возраста вы начали учиться танцевать?",
+            "tj": "Шумо аз чанд солагӣ рақс омӯхтанро оғоз кардед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我第一次跳舞是在七岁的时候。",
+          "pinyin": "Wǒ dì yī cì tiàowǔ shì zài qī suì de shíhou.",
+          "text": {
+            "uz": "Men birinchi marta etti yoshimda raqs tushganman.",
+            "ru": "Я впервые станцевал в семь лет.",
+            "tj": "Ман бори аввал дар ҳафт солагӣ рақс кардам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我女儿今年七岁了。我希望她能跟您学跳舞，可以吗？",
+          "pinyin": "Wǒ nǚ'ér jīnnián qī suì le. Wǒ xīwàng tā néng gēn nín xué tiàowǔ, kěyǐ ma?",
+          "text": {
+            "uz": "Mening qizim bu yil etti yoshga kirdi. Umid qilamanki u sizdan raqs o'rgansa bo'ladimi?",
+            "ru": "Моей дочери в этом году исполнилось семь лет. Я надеюсь, она сможет учиться танцевать у вас, можно?",
+            "tj": "Духтарам имсол ҳафт сола шуд. Умедворам, ки вай метавонад назди шумо рақс ёд гирад, мумкин?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "没问题，非常欢迎。",
+          "pinyin": "Méi wèntí, fēicháng huānyíng.",
+          "text": {
+            "uz": "Muammo yo'q, juda xush kelibsiz.",
+            "ru": "Нет проблем, очень рады.",
+            "tj": "Мушкил нест, хуш омадед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你知道吗？大卫找到工作了。",
+          "pinyin": "Nǐ zhīdào ma? Dàwèi zhǎodào gōngzuò le.",
+          "text": {
+            "uz": "Bilasizmi? Devid ish topdi.",
+            "ru": "Знаешь? Дэвид нашёл работу.",
+            "tj": "Медонӣ? Дэвид кор ёфт."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "太好了！他从什么时候开始上班？",
+          "pinyin": "Tài hǎo le! Tā cóng shénme shíhou kāishǐ shàngbān?",
+          "text": {
+            "uz": "Juda yaxshi! U qachondan boshlab ishga chiqadi?",
+            "ru": "Отлично! С какого времени он начнёт работать?",
+            "tj": "Аъло! Вай аз кай кор мекунад?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "从下个星期一开始。",
+          "pinyin": "Cóng xià ge xīngqīyī kāishǐ.",
+          "text": {
+            "uz": "Kelasi dushanba kundan boshlab.",
+            "ru": "С ближайшего понедельника.",
+            "tj": "Аз душанбаи оянда."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这是他的第一个工作，希望他能喜欢。",
+          "pinyin": "Zhè shì tā de dì yī ge gōngzuò, xīwàng tā néng xǐhuan.",
+          "text": {
+            "uz": "Bu uning birinchi ishi, umid qilamanki yoqadi.",
+            "ru": "Это его первая работа, надеюсь, ему понравится.",
+            "tj": "Ин кори аввалинаш аст, умедворам, ки писандаш ояд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天的考试怎么样？你都听懂了吗？",
+          "pinyin": "Zuótiān de kǎoshì zěnmeyàng? Nǐ dōu tīngdǒng le ma?",
+          "text": {
+            "uz": "Kechagi imtihon qanday o'tdi? Hamma narsani eshitib tushundingizmi?",
+            "ru": "Как вчерашний экзамен? Ты всё понял на слух?",
+            "tj": "Имтиҳони дирӯз чӣ тавр гузашт? Оё ту ҳама чизро шунида фаҳмидӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "听懂了。",
+          "pinyin": "Tīngdǒng le.",
+          "text": {
+            "uz": "Eshitib tushundim.",
+            "ru": "Всё понял на слух.",
+            "tj": "Шунида фаҳмидам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你都做完了没有？",
+          "pinyin": "Nǐ dōu zuòwán le méiyǒu?",
+          "text": {
+            "uz": "Hammasini bajardingizmi?",
+            "ru": "Ты всё выполнил?",
+            "tj": "Оё ту ҳамаро иҷро кардӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "题太多，我没做完。",
+          "pinyin": "Tí tài duō, wǒ méi zuòwán.",
+          "text": {
+            "uz": "Savollar juda ko'p edi, men tamomlab ulgurmadim.",
+            "ru": "Заданий было слишком много, я не успел сделать всё.",
+            "tj": "Саволҳо бисёр буданд, ман нарасидам тамом кунам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "懂",
+            "pinyin": "dǒng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tushunmoq",
+              "ru": "понимать",
+              "tj": "фаҳмидан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "懂",
+          "pinyin": "dǒng",
+          "translation": {
+            "uz": "tushunmoq",
+            "ru": "понимать",
+            "tj": "фаҳмидан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "懂 talaffuzini tanlang:",
+            "ru": "Выберите произношение 懂:",
+            "tj": "Талаффузи 懂-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "cuò",
+            "cóng",
+            "tiàowǔ",
+            "dǒng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "懂 — dǒng",
+            "ru": "懂 — dǒng",
+            "tj": "懂 — dǒng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "完",
+            "pinyin": "wán",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tugamoq, tamomlamoq",
+              "ru": "заканчивать, завершать",
+              "tj": "тамом кардан, ба охир расидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tugamoq, tamomlamoq' xitoycha qaysi?",
+            "ru": "'заканчивать, завершать' по-китайски?",
+            "tj": "'тамом кардан, ба охир расидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "完",
+            "从",
+            "跳舞",
+            "错"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "tugamoq, tamomlamoq = 完 (wán)",
+            "ru": "заканчивать, завершать = 完 (wán)",
+            "tj": "тамом кардан, ба охир расидан = 完 (wán)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "题",
+            "pinyin": "tí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "savol, topshiriq, masala",
+              "ru": "вопрос, задание, задача",
+              "tj": "савол, супориш, масъала"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "题",
+          "pinyin": "tí",
+          "options": [
+            "题",
+            "跳舞",
+            "从",
+            "错"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "题 — savol, topshiriq, masala (tí)",
+            "ru": "题 — вопрос, задание, задача (tí)",
+            "tj": "题 — савол, супориш, масъала (tí)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "懂 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 懂:",
+            "tj": "Маънои калимаи 懂-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dan, boshlab (joy yoki vaqt)",
+              "ru": "от, с, начиная с (место или время)",
+              "tj": "аз, аз ибтидои (ҷой ё вақт)"
+            },
+            {
+              "uz": "raqs tushmoq",
+              "ru": "танцевать",
+              "tj": "рақс кардан"
+            },
+            {
+              "uz": "xato, noto'g'ri",
+              "ru": "неправильный, ошибочный",
+              "tj": "хато, нодуруст"
+            },
+            {
+              "uz": "tushunmoq",
+              "ru": "понимать",
+              "tj": "фаҳмидан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "懂 = tushunmoq (dǒng)",
+            "ru": "懂 = понимать (dǒng)",
+            "tj": "懂 = фаҳмидан (dǒng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "懂",
+              {
+                "uz": "tushunmoq",
+                "ru": "понимать",
+                "tj": "фаҳмидан"
+              }
+            ],
+            [
+              "完",
+              {
+                "uz": "tugamoq, tamomlamoq",
+                "ru": "заканчивать, завершать",
+                "tj": "тамом кардан, ба охир расидан"
+              }
+            ],
+            [
+              "题",
+              {
+                "uz": "savol, topshiriq, masala",
+                "ru": "вопрос, задание, задача",
+                "tj": "савол, супориш, масъала"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Natija to'ldiruvchisi (结果补语)",
+              "ru": "Результативное дополнение (结果补语)",
+              "tj": "Пуркунандаи натиҷавӣ (结果补语)"
+            },
+            "title_zh": "结果补语",
+            "rule": {
+              "uz": "Natija to'ldiruvchisi (结果补语) fe'ldan keyin qo'shilib, harakatning natijasini bildiradi.\nMasalan: 听懂 (eshitib tushunmoq), 做完 (tamomlamoq), 找到 (topmoq).\nInkor shaklida 没 yoki 没有 ishlatiladi: 没做完 (tamomlaolmadim).",
+              "ru": "Результативное дополнение (结果补语) добавляется после глагола и выражает результат действия.\nНапример: 听懂 (услышать и понять), 做完 (закончить), 找到 (найти).\nВ отрицании используется 没 или 没有: 没做完 (не успел закончить).",
+              "tj": "Пуркунандаи натиҷавӣ (结果补语) баъд аз феъл илова мешавад ва натиҷаи амалро нишон медиҳад.\nМасалан: 听懂 (шунида фаҳмидан), 做完 (тамом кардан), 找到 (ёфтан).\nДар инкор 没 ё 没有 истифода мешавад: 没做完 (нарасидам тамом кунам)."
+            },
+            "examples": [
+              {
+                "zh": "我听懂了。",
+                "pinyin": "Wǒ tīngdǒng le.",
+                "translation": {
+                  "uz": "Men eshitib tushundim.",
+                  "ru": "Я понял на слух.",
+                  "tj": "Ман шунида фаҳмидам."
+                }
+              },
+              {
+                "zh": "题太多，我没做完。",
+                "pinyin": "Tí tài duō, wǒ méi zuòwán.",
+                "translation": {
+                  "uz": "Savollar ko'p edi, men tamomlaolmadim.",
+                  "ru": "Заданий было много, я не успел закончить.",
+                  "tj": "Саволҳо зиёд буданд, ман нарасидам тамом кунам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men eshitib tushundim.",
+            "ru": "Я понял на слух.",
+            "tj": "Ман шунида фаҳмидам."
+          },
+          "tokens": [
+            "我",
+            "了",
+            "错",
+            "从",
+            "懂",
+            "听"
+          ],
+          "answer_tokens": [
+            "我",
+            "听",
+            "懂",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我听懂了。 — Wǒ tīngdǒng le.",
+            "ru": "我听懂了。 — Wǒ tīngdǒng le.",
+            "tj": "我听懂了。 — Wǒ tīngdǒng le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "听懂了。",
+          "pinyin": "Tīngdǒng le.",
+          "options": [
+            "听懂了。",
+            "你好！请问张欢在吗？",
+            "你打错了，我们这儿没有叫张欢的。",
+            "对不起。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "听懂了。 — Eshitib tushundim.",
+            "ru": "听懂了。 — Всё понял на слух.",
+            "tj": "听懂了。 — Шунида фаҳмидам."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tiàowǔ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tiàowǔ?",
+            "tj": "tiàowǔ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "第一",
+            "从",
+            "错",
+            "跳舞"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "跳舞 = raqs tushmoq (tiàowǔ)",
+            "ru": "跳舞 = танцевать (tiàowǔ)",
+            "tj": "跳舞 = рақс кардан (tiàowǔ)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你都做完了没有？",
+          "pinyin": "Nǐ dōu zuòwán le méiyǒu?",
+          "translation": {
+            "uz": "Hammasini bajardingizmi?",
+            "ru": "Ты всё выполнил?",
+            "tj": "Оё ту ҳамаро иҷро кардӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "imtihon",
+              "Hammasini",
+              "bajardingizmi",
+              "Kechagi"
+            ],
+            "ru": [
+              "Ты",
+              "всё",
+              "выполнил",
+              "вчерашний",
+              "Как"
+            ],
+            "tj": [
+              "ту",
+              "Имтиҳони",
+              "дирӯз",
+              "ҳамаро",
+              "кардӣ",
+              "иҷро",
+              "Оё"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Hammasini",
+              "bajardingizmi"
+            ],
+            "ru": [
+              "Ты",
+              "всё",
+              "выполнил"
+            ],
+            "tj": [
+              "Оё",
+              "ту",
+              "ҳамаро",
+              "иҷро",
+              "кардӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "你都做完了没有？ — Hammasini bajardingizmi?",
+            "ru": "你都做完了没有？ — Ты всё выполнил?",
+            "tj": "你都做完了没有？ — Оё ту ҳамаро иҷро кардӣ?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hammasini bajardingizmi?",
+            "ru": "Ты всё выполнил?",
+            "tj": "Оё ту ҳамаро иҷро кардӣ?"
+          },
+          "tokens": [
+            "错",
+            "你",
+            "完",
+            "做",
+            "都",
+            "从",
+            "了",
+            "没有"
+          ],
+          "answer_tokens": [
+            "你",
+            "都",
+            "做",
+            "完",
+            "了",
+            "没有"
+          ],
+          "explanation": {
+            "uz": "你都做完了没有？ — Nǐ dōu zuòwán le méiyǒu?",
+            "ru": "你都做完了没有？ — Nǐ dōu zuòwán le méiyǒu?",
+            "tj": "你都做完了没有？ — Nǐ dōu zuòwán le méiyǒu?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "懂",
+          "pinyin": "dǒng",
+          "translation": {
+            "uz": "tushunmoq",
+            "ru": "понимать",
+            "tj": "фаҳмидан"
+          }
+        }
+      ]
+    }
+  ]
+}

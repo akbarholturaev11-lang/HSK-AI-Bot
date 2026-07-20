@@ -1,0 +1,680 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 25,
+  "source_lesson": 3,
+  "part_no": 7,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "经理对我印象不错",
+  "subtitle": {
+    "uz": "intervyu, ishga qabul qilish va birinchi taassurot haqida gapirish; 挺, 本来, 另外, 首先, 不管 grammatikalarini ishlatish",
+    "ru": "говорить о собеседовании, найме и первом впечатлении; использовать 挺, 本来, 另外, 首先, 不管",
+    "tj": "дар бораи мусоҳиба, қабул ба кор ва таассуроти аввал гуфтугӯ кардан; истифодаи 挺, 本来, 另外, 首先, 不管"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "感觉",
+      "pinyin": "gǎnjué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "his, taassurot",
+        "ru": "чувство, впечатление",
+        "tj": "ҳис, таассурот"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "判断",
+      "pinyin": "pànduàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "hukm qilmoq, baholamoq",
+        "ru": "оценивать, судить",
+        "tj": "баҳо додан, хулоса кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "顾客",
+      "pinyin": "gùkè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mijoz",
+        "ru": "клиент, покупатель",
+        "tj": "муштарӣ"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "准时",
+      "pinyin": "zhǔnshí",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "vaqtida, punktual",
+        "ru": "пунктуальный, вовремя",
+        "tj": "сари вақт, вақтшинос"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "小夏 va 小雨 intervyu haqida gaplashadi",
+        "ru": "小夏 и 小雨 говорят о собеседовании",
+        "tj": "小夏 ва 小雨 дар бораи мусоҳиба суҳбат мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小夏",
+          "zh": "你上午的面试怎么样？",
+          "pinyin": "Nǐ shàngwǔ de miànshì zěnmeyàng?",
+          "text": {
+            "uz": "Ertalabki intervyuing qanday bo'ldi?",
+            "ru": "Как прошло твое утреннее собеседование?",
+            "tj": "Мусоҳибаи саҳарият чӣ хел гузашт?"
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
+          "pinyin": "Hái kěyǐ, tāmen wèn de wèntí dōu tǐng róngyì de, jiùshì wǒ yǒudiǎnr jǐnzhāng.",
+          "text": {
+            "uz": "Yomon emas, ular so'ragan savollar ancha oson edi, faqat men biroz hayajonlandim.",
+            "ru": "Нормально, вопросы, которые они задавали, были довольно легкими, просто я немного нервничал.",
+            "tj": "Бад не, саволҳое ки онҳо доданд, хеле осон буданд, фақат ман каме изтироб доштам."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "面试的时候，一定要对自己有信心，要相信自己的能力。",
+          "pinyin": "Miànshì de shíhou, yídìng yào duì zìjǐ yǒu xìnxīn, yào xiāngxìn zìjǐ de nénglì.",
+          "text": {
+            "uz": "Intervyu paytida albatta o'zingga ishonishing, o'z qobiliyatingga ishonishing kerak.",
+            "ru": "На собеседовании обязательно нужно быть уверенным в себе и верить в свои способности.",
+            "tj": "Дар вақти мусоҳиба ҳатман бояд ба худ бовар дошта бошӣ ва ба қобилияти худ эътимод кунӣ."
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？",
+          "pinyin": "Nǐ shuō de duì! Sān yuè shíwǔ hào shàngwǔ bā diǎn zài xuéxiào tǐyùguǎn hái yǒu yí ge zhāopìnhuì, nǐ qù ma?",
+          "text": {
+            "uz": "To'g'ri aytding! 15-mart ertalab soat 8 da maktab sport zalida yana bir ish yarmarkasi bor, borasanmi?",
+            "ru": "Ты прав! 15 марта в 8 утра в школьном спортзале будет еще одна ярмарка вакансий, ты пойдешь?",
+            "tj": "Дуруст гуфтӣ! 15-уми март соати 8-и саҳар дар толори варзиши мактаб боз як ярмаркаи кор ҳаст, меравӣ?"
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "我还没决定呢。",
+          "pinyin": "Wǒ hái méi juédìng ne.",
+          "text": {
+            "uz": "Hali qaror qilmadim.",
+            "ru": "Я еще не решил.",
+            "tj": "Ман ҳанӯз қарор накардаам."
+          }
+        },
+        {
+          "speaker": "小雨",
+          "zh": "听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
+          "pinyin": "Tīngshuō zhè cì zhāopìnhuì tígōng de gōngzuò jīhuì hěn duō, wǒmen yìqǐ qù kànkan ba.",
+          "text": {
+            "uz": "Eshitishimcha bu ish yarmarkasi ko'p ish imkoniyatlarini taqdim qiladi, birga borib ko'raylik.",
+            "ru": "Слышал, эта ярмарка вакансий предлагает много рабочих возможностей. Давай сходим посмотрим вместе.",
+            "tj": "Шунидам, ки ин ярмаркаи кор имкониятҳои зиёди кор пешниҳод мекунад. Биё якҷо рафта мебинем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "马经理 va 小林 ishga qabul qilish haqida gaplashadi",
+        "ru": "Менеджер Ма и 小林 говорят о найме",
+        "tj": "Менеҷер Ма ва 小林 дар бораи қабул ба кор суҳбат мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "马经理",
+          "zh": "小林，这次招聘不是小李负责吗？",
+          "pinyin": "Xiǎo Lín, zhè cì zhāopìn bú shì Xiǎo Lǐ fùzé ma?",
+          "text": {
+            "uz": "Xiao Lin, bu safargi ishga qabulga Xiao Li mas'ul emasmi?",
+            "ru": "Сяо Линь, разве за этот набор не отвечает Сяо Ли?",
+            "tj": "Сяо Лин, магар ин қабули корро Сяо Ли масъул нест?"
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "本来是小李负责的，但是他突然生病住院了，所以就交给我来做了。",
+          "pinyin": "Běnlái shì Xiǎo Lǐ fùzé de, dànshì tā tūrán shēngbìng zhùyuàn le, suǒyǐ jiù jiāo gěi wǒ lái zuò le.",
+          "text": {
+            "uz": "Aslida Xiao Li mas'ul edi, lekin u to'satdan kasal bo'lib kasalxonaga yotdi, shuning uchun menga topshirildi.",
+            "ru": "Изначально отвечал Сяо Ли, но он внезапно заболел и лег в больницу, поэтому это поручили мне.",
+            "tj": "Аслан Сяо Ли масъул буд, аммо ӯ ногаҳон бемор шуда ба беморхона хобид, барои ҳамин ин корро ба ман супурданд."
+          }
+        },
+        {
+          "speaker": "马经理",
+          "zh": "哦，这次应聘的人多吗？",
+          "pinyin": "Ó, zhè cì yìngpìn de rén duō ma?",
+          "text": {
+            "uz": "Ha, bu safar ishga ariza berganlar ko'pmi?",
+            "ru": "О, в этот раз много кандидатов?",
+            "tj": "О, ин дафъа довталабони кор зиёданд?"
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "经理，这次来应聘的一共有15人。经过笔试和面试，有两个不错。这是他们的材料，您看看。",
+          "pinyin": "Jīnglǐ, zhè cì lái yìngpìn de yígòng yǒu shíwǔ rén. Jīngguò bǐshì hé miànshì, yǒu liǎng ge búcuò. Zhè shì tāmen de cáiliào, nín kànkan.",
+          "text": {
+            "uz": "Menejer, bu safar jami 15 kishi ishga ariza berdi. Yozma imtihon va intervyudan keyin ikkitasi yaxshi chiqdi. Mana ularning materiallari, ko'rib chiqing.",
+            "ru": "Менеджер, в этот раз всего 15 кандидатов. После письменного теста и собеседования двое оказались неплохими. Вот их документы, посмотрите.",
+            "tj": "Менеҷер, ин дафъа ҳамагӣ 15 нафар барои кор муроҷиат карданд. Пас аз имтиҳони хаттӣ ва мусоҳиба ду нафарашон хуб баромаданд. Ин маводҳои онҳо, бинед."
+          }
+        },
+        {
+          "speaker": "马经理",
+          "zh": "这两个人的能力都比较符合我们的要求。你通知他们下周一上午九点来我办公室吧。",
+          "pinyin": "Zhè liǎng ge rén de nénglì dōu bǐjiào fúhé wǒmen de yāoqiú. Nǐ tōngzhī tāmen xià zhōu yī shàngwǔ jiǔ diǎn lái wǒ bàngōngshì ba.",
+          "text": {
+            "uz": "Bu ikki kishining qobiliyati talablarimizga ancha mos. Ularga kelasi dushanba ertalab soat to'qqizda mening ofisimga kelishlarini xabar qil.",
+            "ru": "Способности этих двух людей довольно хорошо соответствуют нашим требованиям. Сообщи им, чтобы они пришли в мой офис в следующий понедельник в 9 утра.",
+            "tj": "Қобилияти ин ду нафар ба талаботи мо хеле мувофиқ аст. Ба онҳо хабар деҳ, ки рӯзи душанбеи оянда соати 9-и саҳар ба утоқи ман биёянд."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "好的，那我马上跟他们联系。",
+          "pinyin": "Hǎo de, nà wǒ mǎshàng gēn tāmen liánxì.",
+          "text": {
+            "uz": "Xo'p, unda hoziroq ular bilan bog'lanaman.",
+            "ru": "Хорошо, тогда я сразу с ними свяжусь.",
+            "tj": "Хуб, пас ман ҳозир бо онҳо тамос мегирам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "小林 va 王静 uning ishi haqida gaplashadi",
+        "ru": "小林 и 王静 говорят о ее работе",
+        "tj": "小林 ва 王静 дар бораи кори ӯ суҳбат мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小林",
+          "zh": "王静，好久不见了！大学毕业后就没联系了，你现在在哪儿工作呢？",
+          "pinyin": "Wáng Jìng, hǎo jiǔ bú jiàn le! Dàxué bìyè hòu jiù méi liánxì le, nǐ xiànzài zài nǎr gōngzuò ne?",
+          "text": {
+            "uz": "Wang Jing, anchadan beri ko'rishmadik! Universitetni bitirgandan beri aloqada bo'lmadik, hozir qayerda ishlayapsan?",
+            "ru": "Ван Цзин, давно не виделись! После университета мы не общались. Где ты сейчас работаешь?",
+            "tj": "Ван Ҷин, дер боз надидаем! Пас аз хатми донишгоҳ тамос надоштем. Ҳоло дар куҷо кор мекунӣ?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "我一毕业就去上海当律师了。",
+          "pinyin": "Wǒ yì bìyè jiù qù Shànghǎi dāng lǜshī le.",
+          "text": {
+            "uz": "Bitirishim bilan Shanghaiga advokat bo'lib ishlashga ketdim.",
+            "ru": "Сразу после выпуска я поехала в Шанхай работать юристом.",
+            "tj": "Ҳамин ки хатм кардам, ба Шанхай рафта адвокат шудам."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "你对现在的工作一定非常满意吧？",
+          "pinyin": "Nǐ duì xiànzài de gōngzuò yídìng fēicháng mǎnyì ba?",
+          "text": {
+            "uz": "Hozirgi ishingdan albatta juda mamnundirsan?",
+            "ru": "Ты, наверное, очень довольна своей нынешней работой?",
+            "tj": "Аз кори ҳозираат ҳатман хеле розӣ ҳастӣ, дуруст?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "我很喜欢现在的工作，因为我学的就是法律专业，而且同事们都很喜欢我。另外，收入也不错。",
+          "pinyin": "Wǒ hěn xǐhuan xiànzài de gōngzuò, yīnwèi wǒ xué de jiùshì fǎlǜ zhuānyè, érqiě tóngshìmen dōu hěn xǐhuan wǒ. Lìngwài, shōurù yě búcuò.",
+          "text": {
+            "uz": "Hozirgi ishimni juda yoqtiraman, chunki men o'qigan yo'nalish aynan huquq, hamkasblarim ham meni juda yoqtiradi. Bundan tashqari, daromadi ham yaxshi.",
+            "ru": "Мне очень нравится нынешняя работа, потому что моя специальность как раз право, к тому же коллеги меня любят. Кроме того, доход тоже неплохой.",
+            "tj": "Ман кори ҳозираамро хеле дӯст медорам, чун ихтисосам маҳз ҳуқуқ аст, ҳамкоронам ҳам маро дӯст медоранд. Ғайр аз ин, даромад ҳам хуб аст."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "星期天咱们同学聚会，你能来参加吗？",
+          "pinyin": "Xīngqītiān zánmen tóngxué jùhuì, nǐ néng lái cānjiā ma?",
+          "text": {
+            "uz": "Yakshanba kuni sinfdoshlar uchrashuvi, qatnasha olasanmi?",
+            "ru": "В воскресенье у нас встреча однокурсников, сможешь прийти?",
+            "tj": "Якшанбе вохӯрии ҳамсинфони мост, иштирок карда метавонӣ?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "能来。虽然这次来北京，时间安排得很紧张，但我一定借这次机会去跟大家见见面。",
+          "pinyin": "Néng lái. Suīrán zhè cì lái Běijīng, shíjiān ānpái de hěn jǐnzhāng, dàn wǒ yídìng jiè zhè cì jīhuì qù gēn dàjiā jiànjian miàn.",
+          "text": {
+            "uz": "Kela olaman. Bu safar Pekinga kelganimda vaqt jadvalim juda tig'iz bo'lsa ham, men albatta shu imkoniyatdan foydalanib hamma bilan uchrashaman.",
+            "ru": "Смогу. Хотя в этот приезд в Пекин у меня очень плотный график, я обязательно воспользуюсь возможностью встретиться со всеми.",
+            "tj": "Меоям. Гарчанде ин дафъа ба Пекин омаданам бо ҷадвали хеле танг аст, ман ҳатман аз ин фурсат истифода карда бо ҳама вохӯрӣ мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Intervyuda nimalarga e'tibor berish haqida matn",
+        "ru": "Текст о том, на что обратить внимание на собеседовании",
+        "tj": "Матн дар бораи чизҳое, ки дар мусоҳиба бояд аҳамият дод"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "面试的时候，经理对我印象不错，还通知我明天就可以上班了。真没想到，我工作这么顺利。你想知道面试需要注意什么吗？首先，要穿正式的衣服，这会给面试者留下一个好的印象，让他觉得你是一个认真的人。其次，应聘时不要紧张。回答问题时，说得不要太快，声音也不要太小，要相信自己有能力做好。当然，最重要的是回答问题要诚实。",
+          "pinyin": "Miànshì de shíhou, jīnglǐ duì wǒ yìnxiàng búcuò, hái tōngzhī wǒ míngtiān jiù kěyǐ shàngbān le. Zhēn méi xiǎngdào, wǒ gōngzuò zhème shùnlì. Nǐ xiǎng zhīdào miànshì xūyào zhùyì shénme ma? Shǒuxiān, yào chuān zhèngshì de yīfu, zhè huì gěi miànshìzhě liúxià yí ge hǎo de yìnxiàng, ràng tā juéde nǐ shì yí ge rènzhēn de rén. Qícì, yìngpìn shí bú yào jǐnzhāng. Huídá wèntí shí, shuō de bú yào tài kuài, shēngyīn yě bú yào tài xiǎo, yào xiāngxìn zìjǐ yǒu nénglì zuò hǎo. Dāngrán, zuì zhòngyào de shì huídá wèntí yào chéngshí.",
+          "text": {
+            "uz": "Intervyu paytida menejer menda yaxshi taassurot oldi, yana menga ertagayoq ishga chiqishim mumkinligini xabar qildi. Rostdan ham o'ylamagandim, ishim shunchalik silliq ketdi. Intervyuda nimalarga e'tibor berish kerakligini bilmoqchimisiz? Avvalo, rasmiy kiyim kiyish kerak, bu intervyu oluvchida yaxshi taassurot qoldiradi va u sizni jiddiy odam deb o'ylaydi. Ikkinchidan, ishga ariza berganda hayajonlanmaslik kerak. Savollarga javob berayotganda juda tez gapirmang, ovozingiz ham juda past bo'lmasin, o'zingizda yaxshi bajarish qobiliyati borligiga ishoning. Albatta, eng muhimi savollarga halol javob berishdir.",
+            "ru": "На собеседовании менеджер получил обо мне хорошее впечатление и сообщил, что я могу выйти на работу уже завтра. Я правда не ожидал, что все пройдет так гладко. Хотите знать, на что нужно обратить внимание на собеседовании? Во-первых, нужно надеть официальную одежду: это оставит у интервьюера хорошее впечатление и заставит его считать вас серьезным человеком. Во-вторых, при устройстве на работу не нервничайте. Отвечая на вопросы, не говорите слишком быстро и слишком тихо, верьте, что у вас есть способность хорошо справиться. Конечно, самое важное - отвечать честно.",
+            "tj": "Дар вақти мусоҳиба менеҷер аз ман таассуроти хуб гирифт ва хабар дод, ки пагоҳ метавонам ба кор равам. Ростӣ, фикр намекардам, ки корам ин қадар хуб пеш меравад. Мехоҳед донед, дар мусоҳиба ба чӣ аҳамият додан лозим? Аввалан, либоси расмӣ пӯшидан лозим, ин ба мусоҳибакунанда таассуроти хуб медиҳад ва ӯ шуморо шахси ҷиддӣ мешуморад. Дуюм, ҳангоми муроҷиат ба кор асабонӣ нашавед. Вақте ба саволҳо ҷавоб медиҳед, хеле тез ва хеле паст гап назанед, ба қобилияти худ бовар кунед. Албатта, муҳимтаринаш ин аст, ки ба саволҳо ростқавлона ҷавоб диҳед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Birinchi taassurot haqida matn",
+        "ru": "Текст о первом впечатлении",
+        "tj": "Матн дар бораи таассуроти аввал"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "第一印象就是在第一次见面时给别人留下的印象。虽然第一印象不总是对的，但如果想改变却很困难。你给别人的第一印象会影响他们以后对你的感觉和判断。所以，给第一次见面的同事留下好的印象，以后的工作可能会更顺利；给第一次见面的顾客留下好的印象，你可能会卖出更多的东西。但是，如果第一次见面给别人留下像不准时这样的坏印象，那么以后就很难让别人相信你。所以不管是上课、上班，还是与别人约会，准时都非常重要。",
+          "pinyin": "Dì yī yìnxiàng jiùshì zài dì yī cì jiànmiàn shí gěi biéren liúxià de yìnxiàng. Suīrán dì yī yìnxiàng bù zǒng shì duì de, dàn rúguǒ xiǎng gǎibiàn què hěn kùnnan. Nǐ gěi biéren de dì yī yìnxiàng huì yǐngxiǎng tāmen yǐhòu duì nǐ de gǎnjué hé pànduàn. Suǒyǐ, gěi dì yī cì jiànmiàn de tóngshì liúxià hǎo de yìnxiàng, yǐhòu de gōngzuò kěnéng huì gèng shùnlì; gěi dì yī cì jiànmiàn de gùkè liúxià hǎo de yìnxiàng, nǐ kěnéng huì mài chū gèng duō de dōngxi. Dànshì, rúguǒ dì yī cì jiànmiàn gěi biéren liúxià xiàng bù zhǔnshí zhèyàng de huài yìnxiàng, nàme yǐhòu jiù hěn nán ràng biéren xiāngxìn nǐ. Suǒyǐ bùguǎn shì shàngkè, shàngbān, háishì yǔ biéren yuēhuì, zhǔnshí dōu fēicháng zhòngyào.",
+          "text": {
+            "uz": "Birinchi taassurot - birinchi uchrashuvda boshqalarda qoldirgan taassurotingiz. Birinchi taassurot doim to'g'ri bo'lmasa ham, uni o'zgartirish juda qiyin. Siz boshqalarda qoldirgan birinchi taassurot ularning keyinchalik siz haqingizdagi hislari va bahosiga ta'sir qiladi. Shuning uchun birinchi marta uchrashgan hamkasbda yaxshi taassurot qoldirsangiz, keyingi ish yanada silliq bo'lishi mumkin; birinchi marta uchrashgan mijozda yaxshi taassurot qoldirsangiz, ko'proq narsa sotishingiz mumkin. Lekin birinchi uchrashuvda boshqalarda vaqtida kelmaslik kabi yomon taassurot qoldirsangiz, keyinchalik boshqalarni sizga ishontirish qiyin bo'ladi. Shuning uchun dars bo'ladimi, ish bo'ladimi yoki boshqalar bilan uchrashuv bo'ladimi, vaqtida borish juda muhim.",
+            "ru": "Первое впечатление - это впечатление, которое вы оставляете при первой встрече. Хотя первое впечатление не всегда верное, изменить его очень трудно. Первое впечатление о вас влияет на то, как люди будут чувствовать и оценивать вас позже. Поэтому, если вы оставите хорошее впечатление у коллеги при первой встрече, дальнейшая работа может пойти более гладко; если оставите хорошее впечатление у первого клиента, возможно, продадите больше. Но если при первой встрече вы оставите плохое впечатление, например непунктуальность, потом людям будет трудно поверить вам. Поэтому будь то учеба, работа или встреча с другими людьми, пунктуальность очень важна.",
+            "tj": "Таассуроти аввал ин таассуротест, ки ҳангоми вохӯрии аввал дар дигарон мегузоред. Гарчанде таассуроти аввал ҳамеша дуруст нест, тағйир додани он хеле душвор аст. Таассуроти аввали шумо ба ҳис ва баҳодиҳии минбаъдаи дигарон нисбати шумо таъсир мекунад. Барои ҳамин, агар дар ҳамкори аввалинбордида таассуроти хуб гузоред, кори баъдӣ метавонад осонтар пеш равад; агар дар муштарии аввалинбордида таассуроти хуб гузоред, шояд бештар чиз фурӯшед. Аммо агар дар вохӯрии аввал таассуроти бад, мисли дер омадан, гузоред, баъд бовар кунонидани дигарон душвор мешавад. Аз ин рӯ, хоҳ дарс бошад, хоҳ кор, хоҳ мулоқот бо дигарон, сари вақт будан хеле муҳим аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "感觉",
+            "pinyin": "gǎnjué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "his, taassurot",
+              "ru": "чувство, впечатление",
+              "tj": "ҳис, таассурот"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "感觉",
+          "pinyin": "gǎnjué",
+          "translation": {
+            "uz": "his, taassurot",
+            "ru": "чувство, впечатление",
+            "tj": "ҳис, таассурот"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "感觉",
+          "pinyin": "gǎnjué",
+          "options": [
+            "紧张",
+            "感觉",
+            "信心",
+            "挺"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "感觉 — his, taassurot (gǎnjué)",
+            "ru": "感觉 — чувство, впечатление (gǎnjué)",
+            "tj": "感觉 — ҳис, таассурот (gǎnjué)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "判断",
+            "pinyin": "pànduàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "hukm qilmoq, baholamoq",
+              "ru": "оценивать, судить",
+              "tj": "баҳо додан, хулоса кардан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "判断 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 判断:",
+            "tj": "Маънои калимаи 判断-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
+              "uz": "hukm qilmoq, baholamoq",
+              "ru": "оценивать, судить",
+              "tj": "баҳо додан, хулоса кардан"
+            },
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "判断 = hukm qilmoq, baholamoq (pànduàn)",
+            "ru": "判断 = оценивать, судить (pànduàn)",
+            "tj": "判断 = баҳо додан, хулоса кардан (pànduàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "顾客",
+            "pinyin": "gùkè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mijoz",
+              "ru": "клиент, покупатель",
+              "tj": "муштарӣ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "gùkè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gùkè?",
+            "tj": "gùkè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "信心",
+            "挺",
+            "顾客",
+            "紧张"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "顾客 = mijoz (gùkè)",
+            "ru": "顾客 = клиент, покупатель (gùkè)",
+            "tj": "顾客 = муштарӣ (gùkè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "准时",
+            "pinyin": "zhǔnshí",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "vaqtida, punktual",
+              "ru": "пунктуальный, вовремя",
+              "tj": "сари вақт, вақтшинос"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "准时 talaffuzini tanlang:",
+            "ru": "Выберите произношение 准时:",
+            "tj": "Талаффузи 准时-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xìnxīn",
+            "tǐng",
+            "jǐnzhāng",
+            "zhǔnshí"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "准时 — zhǔnshí",
+            "ru": "准时 — zhǔnshí",
+            "tj": "准时 — zhǔnshí"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'his, taassurot' xitoycha qaysi?",
+            "ru": "'чувство, впечатление' по-китайски?",
+            "tj": "'ҳис, таассурот' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "挺",
+            "感觉",
+            "紧张",
+            "信心"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "his, taassurot = 感觉 (gǎnjué)",
+            "ru": "чувство, впечатление = 感觉 (gǎnjué)",
+            "tj": "ҳис, таассурот = 感觉 (gǎnjué)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "感觉",
+              {
+                "uz": "his, taassurot",
+                "ru": "чувство, впечатление",
+                "tj": "ҳис, таассурот"
+              }
+            ],
+            [
+              "判断",
+              {
+                "uz": "hukm qilmoq, baholamoq",
+                "ru": "оценивать, судить",
+                "tj": "баҳо додан, хулоса кардан"
+              }
+            ],
+            [
+              "顾客",
+              {
+                "uz": "mijoz",
+                "ru": "клиент, покупатель",
+                "tj": "муштарӣ"
+              }
+            ],
+            [
+              "准时",
+              {
+                "uz": "vaqtida, punktual",
+                "ru": "пунктуальный, вовремя",
+                "tj": "сари вақт, вақтшинос"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "感觉",
+              {
+                "uz": "his, taassurot",
+                "ru": "чувство, впечатление",
+                "tj": "ҳис, таассурот"
+              }
+            ],
+            [
+              "判断",
+              {
+                "uz": "hukm qilmoq, baholamoq",
+                "ru": "оценивать, судить",
+                "tj": "баҳо додан, хулоса кардан"
+              }
+            ],
+            [
+              "顾客",
+              {
+                "uz": "mijoz",
+                "ru": "клиент, покупатель",
+                "tj": "муштарӣ"
+              }
+            ],
+            [
+              "准时",
+              {
+                "uz": "vaqtida, punktual",
+                "ru": "пунктуальный, вовремя",
+                "tj": "сари вақт, вақтшинос"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "挺 talaffuzini tanlang:",
+            "ru": "Выберите произношение 挺:",
+            "tj": "Талаффузи 挺-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jǐnzhāng",
+            "tǐng",
+            "nénglì",
+            "xìnxīn"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "挺 — tǐng",
+            "ru": "挺 — tǐng",
+            "tj": "挺 — tǐng"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "感觉",
+          "pinyin": "gǎnjué",
+          "options": [
+            "信心",
+            "感觉",
+            "挺",
+            "紧张"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "感觉 — his, taassurot (gǎnjué)",
+            "ru": "感觉 — чувство, впечатление (gǎnjué)",
+            "tj": "感觉 — ҳис, таассурот (gǎnjué)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "感觉",
+          "pinyin": "gǎnjué",
+          "translation": {
+            "uz": "his, taassurot",
+            "ru": "чувство, впечатление",
+            "tj": "ҳис, таассурот"
+          }
+        }
+      ]
+    }
+  ]
+}

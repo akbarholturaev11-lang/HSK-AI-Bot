@@ -1,0 +1,774 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 37,
+  "source_lesson": 7,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我跟她都认识五年了",
+  "subtitle": {
+    "uz": "Vaqt davomiyligini ifodalash, qiziqishni bildirish va soat vaqtlarini o'rganish",
+    "ru": "Выражать продолжительность времени, интерес и обозначение времени",
+    "tj": "Ифода кардани давомнокии вақт, изҳор кардани шавқ ва таъйин кардани вақт"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "半",
+      "pinyin": "bàn",
+      "pos": "num.",
+      "meaning": {
+        "uz": "yarim",
+        "ru": "половина",
+        "tj": "ним"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "接",
+      "pinyin": "jiē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutib olmoq, olib ketmoq",
+        "ru": "встречать, забирать",
+        "tj": "пешвоз гирифтан, бурдан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "刻",
+      "pinyin": "kè",
+      "pos": "m.",
+      "meaning": {
+        "uz": "chorak soat",
+        "ru": "четверть часа",
+        "tj": "чоряки соат"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "差",
+      "pinyin": "chà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yetishmaslik, kam bo'lmoq",
+        "ru": "не хватать, без",
+        "tj": "кам будан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "\"Yarim\", \"chorak\" va \"kam\" vaqt ifodalovchi so'zlar",
+        "ru": "\"Половина\", \"четверть\" и \"без\" для обозначения времени",
+        "tj": "\"Ним\", \"чорак\" ва \"кам\" барои ифодаи вақт"
+      },
+      "title_zh": "\"半\"\"刻\"\"差\"表示时间",
+      "rule": {
+        "uz": "Soat vaqtini ifodalashda: '半' = soat va yarim (masalan: 两点半 = 2:30), '刻' = 15 daqiqa (一刻 = :15, 三刻 = :45), '差' = vaqtdan oldin 'kam' (差五分八点 = 7:55).",
+        "ru": "Для обозначения времени: '半' = полчаса (两点半 = 2:30), '刻' = 15 минут (一刻 = :15, 三刻 = :45), '差' = без (差五分八点 = без пяти восемь = 7:55).",
+        "tj": "Барои таъйин кардани вақт: '半' = ним соат (两点半 = 2:30), '刻' = 15 дақиқа (一刻 = :15, 三刻 = :45), '差' = кам (差五分八点 = панҷ дақиқа ба ҳашт = 7:55)."
+      },
+      "examples": [
+        {
+          "zh": "现在差一刻八点。",
+          "pinyin": "Xiànzài chà yī kè bā diǎn.",
+          "translation": {
+            "uz": "Hozir soat sakkizga chorak qoldi (7:45).",
+            "ru": "Сейчас без четверти восемь (7:45).",
+            "tj": "Ҳоло чорак ба ҳашт монда (7:45)."
+          }
+        },
+        {
+          "zh": "我们三点半见面吧。",
+          "pinyin": "Wǒmen sān diǎn bàn jiànmiàn ba.",
+          "translation": {
+            "uz": "Biz soat uch yarimda uchrashaylik.",
+            "ru": "Давай встретимся в половине четвёртого.",
+            "tj": "Биё соати се ва ним вохӯрем."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ofisda",
+        "ru": "В офисе",
+        "tj": "Дар идора"
+      },
+      "dialogue": [
+        {
+          "speaker": "同事",
+          "zh": "那个漂亮的新同事是谁？",
+          "pinyin": "Nà ge piàoliang de xīn tóngshì shì shéi?",
+          "text": {
+            "uz": "Anavi chiroyli yangi hamkasb kim?",
+            "ru": "Кто эта красивая новая коллега?",
+            "tj": "Он ҳамкори нави зебо кист?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "那是小丽。",
+          "pinyin": "Nà shì Xiǎolì.",
+          "text": {
+            "uz": "U Xiaoli.",
+            "ru": "Это Сяоли.",
+            "tj": "Ин Сяоли аст."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "她刚来北京吗？",
+          "pinyin": "Tā gāng lái Běijīng ma?",
+          "text": {
+            "uz": "U Pekinga hozirgina keldimi?",
+            "ru": "Она только что приехала в Пекин?",
+            "tj": "Ӯ нав ба Пекин омад?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "不，她在北京工作三年了。",
+          "pinyin": "Bù, tā zài Běijīng gōngzuò sān nián le.",
+          "text": {
+            "uz": "Yo'q, u Pekinda uch yil ishlagan.",
+            "ru": "Нет, она уже три года работает в Пекине.",
+            "tj": "Не, ӯ дар Пекин се сол кор кардааст."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "以前她在哪儿工作？",
+          "pinyin": "Yǐqián tā zài nǎr gōngzuò?",
+          "text": {
+            "uz": "Oldin u qayerda ishlagan?",
+            "ru": "Где она работала раньше?",
+            "tj": "Пештар ӯ дар куҷо кор мекард?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "她在银行工作了两年以后来的我们公司。",
+          "pinyin": "Tā zài yínháng gōngzuò le liǎng nián yǐhòu lái de wǒmen gōngsī.",
+          "text": {
+            "uz": "U bankda ikki yil ishlab, keyin bizning kompaniyaga kelgan.",
+            "ru": "Она проработала в банке два года, потом пришла в нашу компанию.",
+            "tj": "Ӯ дар бонк ду сол кор карда, баъд ба ширкати мо омад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Dam olish xonasida",
+        "ru": "В комнате отдыха",
+        "tj": "Дар ҳуҷраи истироҳат"
+      },
+      "dialogue": [
+        {
+          "speaker": "同事",
+          "zh": "周末你跟小丽去哪儿玩儿了？",
+          "pinyin": "Zhōumò nǐ gēn Xiǎolì qù nǎr wánr le?",
+          "text": {
+            "uz": "Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
+            "ru": "Куда ты ходил с Сяоли на выходных?",
+            "tj": "Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "我们去唱歌了。",
+          "pinyin": "Wǒmen qù chàng gē le.",
+          "text": {
+            "uz": "Qo'shiq aytishga bordik.",
+            "ru": "Мы ходили петь.",
+            "tj": "Мо барои сурудхонӣ рафтем."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "你们唱了多久？",
+          "pinyin": "Nǐmen chàng le duō jiǔ?",
+          "text": {
+            "uz": "Qancha vaqt qo'shiq aytdinglar?",
+            "ru": "Как долго вы пели?",
+            "tj": "Чанд вақт суруд хондед?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "我们唱了两个小时歌，晚上还去听音乐会了。",
+          "pinyin": "Wǒmen chàng le liǎng ge xiǎoshí gē, wǎnshang hái qù tīng yīnyuèhuì le.",
+          "text": {
+            "uz": "Ikki soat qo'shiq aytdik, kechqurun yana konsertga bordik.",
+            "ru": "Мы пели два часа, вечером ещё ходили на концерт.",
+            "tj": "Ду соат суруд хондем, бегоҳ боз ба консерт рафтем."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "你们都对音乐感兴趣吗？",
+          "pinyin": "Nǐmen dōu duì yīnyuè gǎn xìngqù ma?",
+          "text": {
+            "uz": "Ikkalangiz ham musiqaga qiziqasizmi?",
+            "ru": "Вы оба интересуетесь музыкой?",
+            "tj": "Ҳардуятон ба мусиқӣ шавқ доред?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "她对音乐感兴趣，我对她更感兴趣。",
+          "pinyin": "Tā duì yīnyuè gǎn xìngqù, wǒ duì tā gèng gǎn xìngqù.",
+          "text": {
+            "uz": "U musiqaga qiziqadi, men esa unga ko'proq qiziqaman.",
+            "ru": "Она интересуется музыкой, а я больше интересуюсь ею.",
+            "tj": "Ӯ ба мусиқӣ шавқ дорад, ман бошад ба ӯ бештар шавқ дорам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Dam olish xonasida",
+        "ru": "В комнате отдыха",
+        "tj": "Дар ҳуҷраи истироҳат"
+      },
+      "dialogue": [
+        {
+          "speaker": "小刚",
+          "zh": "我跟小丽下个月结婚，到时候欢迎你来。",
+          "pinyin": "Wǒ gēn Xiǎolì xià ge yuè jié hūn, dào shíhou huānyíng nǐ lái.",
+          "text": {
+            "uz": "Men Xiaoli bilan keyingi oy turmush quraman, o'shanda kelishingdan xursand bo'lamiz.",
+            "ru": "Мы с Сяоли в следующем месяце женимся, будем рады, если придёшь.",
+            "tj": "Ман бо Сяоли моҳи дигар оиладор мешавам, он вақт хуш омадед."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "什么？结婚？",
+          "pinyin": "Shénme? Jié hūn?",
+          "text": {
+            "uz": "Nima? Turmush qurasizlar?",
+            "ru": "Что? Женитесь?",
+            "tj": "Чӣ? Оиладор мешавед?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "对啊，突然吗？",
+          "pinyin": "Duì a, tūrán ma?",
+          "text": {
+            "uz": "Ha, to'satdanmi?",
+            "ru": "Да, неожиданно?",
+            "tj": "Ҳа, ногаҳонӣ аст?"
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "你们不是刚认识吗？",
+          "pinyin": "Nǐmen bú shì gāng rènshi ma?",
+          "text": {
+            "uz": "Sizlar endigina tanishmaganmidilaring?",
+            "ru": "Разве вы не только что познакомились?",
+            "tj": "Магар шумо нав шинос нашуда будед?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "我跟她都认识五年了。",
+          "pinyin": "Wǒ gēn tā dōu rènshi wǔ nián le.",
+          "text": {
+            "uz": "Men u bilan besh yildan beri tanishman.",
+            "ru": "Мы знакомы уже пять лет.",
+            "tj": "Ман бо ӯ панҷ сол боз шиносам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "你跟她结婚，那我怎么办啊？",
+          "pinyin": "Nǐ gēn tā jié hūn, nà wǒ zěnme bàn a?",
+          "text": {
+            "uz": "Sen u bilan turmush qursang, men nima qilaman?",
+            "ru": "Если ты женишься на ней, что мне делать?",
+            "tj": "Агар ту бо ӯ оиладор шавӣ, ман чӣ кор мекунам?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniya binosi eshigida",
+        "ru": "У выхода из здания компании",
+        "tj": "Дар баромади бинои ширкат"
+      },
+      "dialogue": [
+        {
+          "speaker": "小丽",
+          "zh": "你看看手表，怎么迟到了？",
+          "pinyin": "Nǐ kànkan shǒubiǎo, zěnme chídào le?",
+          "text": {
+            "uz": "Soatingga qara, nega kech qolding?",
+            "ru": "Посмотри на часы, почему опоздал?",
+            "tj": "Ба соатат нигоҳ кун, чаро дер мондӣ?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "没迟到啊。",
+          "pinyin": "Méi chídào a.",
+          "text": {
+            "uz": "Kech qolmadim-ku.",
+            "ru": "Я не опоздал.",
+            "tj": "Ман дер намондам."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "你不是说七点半来接我吗？你迟到了一刻钟。",
+          "pinyin": "Nǐ bú shì shuō qī diǎn bàn lái jiē wǒ ma? Nǐ chídào le yí kè zhōng.",
+          "text": {
+            "uz": "Soat yetti yarimda meni olib ketaman demaganmiding? Sen chorak soat kech qolding.",
+            "ru": "Разве ты не говорил, что заберёшь меня в 7:30? Ты опоздал на четверть часа.",
+            "tj": "Магар нагуфта будӣ, ки соати ҳафту ним маро мебарӣ? Ту чоряк соат дер мондӣ."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "现在不是七点半吗？",
+          "pinyin": "Xiànzài bú shì qī diǎn bàn ma?",
+          "text": {
+            "uz": "Hozir yetti yarim emasmi?",
+            "ru": "Разве сейчас не 7:30?",
+            "tj": "Ҳоло ҳафту ним нест?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "已经差一刻八点了！我都在这儿坐了半个小时了。",
+          "pinyin": "Yǐjīng chà yí kè bā diǎn le! Wǒ dōu zài zhèr zuò le bàn ge xiǎoshí le.",
+          "text": {
+            "uz": "Allaqachon sakkizga chorak qoldi! Men bu yerda yarim soat o'tiribman.",
+            "ru": "Уже без четверти восемь! Я тут уже полчаса сижу.",
+            "tj": "Аллакай чоряк ба ҳашт мондааст! Ман ин ҷо ним соат нишастаам."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "不是我迟到了，是你的表快了一刻钟。",
+          "pinyin": "Bú shì wǒ chídào le, shì nǐ de biǎo kuài le yí kè zhōng.",
+          "text": {
+            "uz": "Men kech qolmadim, sening soating chorak soat oldinda.",
+            "ru": "Это не я опоздал, это твои часы спешат на четверть часа.",
+            "tj": "Ман дер намондаам, соати ту чоряк соат пеш аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "半",
+            "pinyin": "bàn",
+            "pos": "num.",
+            "meaning": {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "半",
+          "pinyin": "bàn",
+          "translation": {
+            "uz": "yarim",
+            "ru": "половина",
+            "tj": "ним"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bàn?",
+            "tj": "bàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "同事",
+            "半",
+            "银行",
+            "以前"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "半 = yarim (bàn)",
+            "ru": "半 = половина (bàn)",
+            "tj": "半 = ним (bàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "接",
+            "pinyin": "jiē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kutib olmoq, olib ketmoq",
+              "ru": "встречать, забирать",
+              "tj": "пешвоз гирифтан, бурдан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "接 talaffuzini tanlang:",
+            "ru": "Выберите произношение 接:",
+            "tj": "Талаффузи 接-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yǐqián",
+            "tóngshì",
+            "yínháng",
+            "jiē"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "接 — jiē",
+            "ru": "接 — jiē",
+            "tj": "接 — jiē"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "刻",
+            "pinyin": "kè",
+            "pos": "m.",
+            "meaning": {
+              "uz": "chorak soat",
+              "ru": "четверть часа",
+              "tj": "чоряки соат"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chorak soat' xitoycha qaysi?",
+            "ru": "'четверть часа' по-китайски?",
+            "tj": "'чоряки соат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "以前",
+            "银行",
+            "同事",
+            "刻"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "chorak soat = 刻 (kè)",
+            "ru": "четверть часа = 刻 (kè)",
+            "tj": "чоряки соат = 刻 (kè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "差",
+            "pinyin": "chà",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yetishmaslik, kam bo'lmoq",
+              "ru": "не хватать, без",
+              "tj": "кам будан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "差",
+          "pinyin": "chà",
+          "options": [
+            "以前",
+            "同事",
+            "差",
+            "银行"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "差 — yetishmaslik, kam bo'lmoq (chà)",
+            "ru": "差 — не хватать, без (chà)",
+            "tj": "差 — кам будан (chà)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "半 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 半:",
+            "tj": "Маънои калимаи 半-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hamkasb",
+              "ru": "коллега",
+              "tj": "ҳамкор"
+            },
+            {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            },
+            {
+              "uz": "oldin, ilgari",
+              "ru": "раньше, прежде",
+              "tj": "пештар, қаблан"
+            },
+            {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "半 = yarim (bàn)",
+            "ru": "半 = половина (bàn)",
+            "tj": "半 = ним (bàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "半",
+              {
+                "uz": "yarim",
+                "ru": "половина",
+                "tj": "ним"
+              }
+            ],
+            [
+              "接",
+              {
+                "uz": "kutib olmoq, olib ketmoq",
+                "ru": "встречать, забирать",
+                "tj": "пешвоз гирифтан, бурдан"
+              }
+            ],
+            [
+              "刻",
+              {
+                "uz": "chorak soat",
+                "ru": "четверть часа",
+                "tj": "чоряки соат"
+              }
+            ],
+            [
+              "差",
+              {
+                "uz": "yetishmaslik, kam bo'lmoq",
+                "ru": "не хватать, без",
+                "tj": "кам будан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "\"Yarim\", \"chorak\" va \"kam\" vaqt ifodalovchi so'zlar",
+              "ru": "\"Половина\", \"четверть\" и \"без\" для обозначения времени",
+              "tj": "\"Ним\", \"чорак\" ва \"кам\" барои ифодаи вақт"
+            },
+            "title_zh": "\"半\"\"刻\"\"差\"表示时间",
+            "rule": {
+              "uz": "Soat vaqtini ifodalashda: '半' = soat va yarim (masalan: 两点半 = 2:30), '刻' = 15 daqiqa (一刻 = :15, 三刻 = :45), '差' = vaqtdan oldin 'kam' (差五分八点 = 7:55).",
+              "ru": "Для обозначения времени: '半' = полчаса (两点半 = 2:30), '刻' = 15 минут (一刻 = :15, 三刻 = :45), '差' = без (差五分八点 = без пяти восемь = 7:55).",
+              "tj": "Барои таъйин кардани вақт: '半' = ним соат (两点半 = 2:30), '刻' = 15 дақиқа (一刻 = :15, 三刻 = :45), '差' = кам (差五分八点 = панҷ дақиқа ба ҳашт = 7:55)."
+            },
+            "examples": [
+              {
+                "zh": "现在差一刻八点。",
+                "pinyin": "Xiànzài chà yī kè bā diǎn.",
+                "translation": {
+                  "uz": "Hozir soat sakkizga chorak qoldi (7:45).",
+                  "ru": "Сейчас без четверти восемь (7:45).",
+                  "tj": "Ҳоло чорак ба ҳашт монда (7:45)."
+                }
+              },
+              {
+                "zh": "我们三点半见面吧。",
+                "pinyin": "Wǒmen sān diǎn bàn jiànmiàn ba.",
+                "translation": {
+                  "uz": "Biz soat uch yarimda uchrashaylik.",
+                  "ru": "Давай встретимся в половине четвёртого.",
+                  "tj": "Биё соати се ва ним вохӯрем."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "半",
+          "pinyin": "bàn",
+          "options": [
+            "半",
+            "银行",
+            "同事",
+            "以前"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "半 — yarim (bàn)",
+            "ru": "半 — половина (bàn)",
+            "tj": "半 — ним (bàn)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "接",
+          "pinyin": "jiē",
+          "options": [
+            "以前",
+            "银行",
+            "同事",
+            "接"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "接 — kutib olmoq, olib ketmoq (jiē)",
+            "ru": "接 — встречать, забирать (jiē)",
+            "tj": "接 — пешвоз гирифтан, бурдан (jiē)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "感兴趣 talaffuzini tanlang:",
+            "ru": "Выберите произношение 感兴趣:",
+            "tj": "Талаффузи 感兴趣-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tóngshì",
+            "gǎn xìngqù",
+            "yínháng",
+            "yǐqián"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "感兴趣 — gǎn xìngqù",
+            "ru": "感兴趣 — gǎn xìngqù",
+            "tj": "感兴趣 — gǎn xìngqù"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "半",
+          "pinyin": "bàn",
+          "translation": {
+            "uz": "yarim",
+            "ru": "половина",
+            "tj": "ним"
+          }
+        }
+      ]
+    }
+  ]
+}

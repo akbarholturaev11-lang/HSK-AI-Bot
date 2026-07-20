@@ -2,329 +2,113 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 14,
-  "title": "她买了不少衣服",
+  "source_lesson": 5,
+  "part_no": 1,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "她女儿今年二十岁",
   "subtitle": {
-    "uz": "Tugallangan harakatlar uchun 了 yuklamasi, vaqt ko'rsatkichi sifatida 后 va ravish 都",
-    "ru": "Частица 了 для завершённых действий, 后 как временной маркер и наречие 都",
-    "tj": "Зарраи 了 барои амалҳои анҷомшуда, 后 ҳамчун нишонаи вақт ва зарфи 都"
+    "uz": "Yosh va oila a'zolari haqida gapirish, 100 gacha raqamlarni o'rganing",
+    "ru": "Говорить о возрасте и членах семьи, выучить числа до 100",
+    "tj": "Дар бораи синну сол ва аъзоёни оила гап задан, рақамҳоро то 100 омӯхтан"
   },
   "intro_prebuilt": true,
   "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
-      "zh": "东西",
-      "pinyin": "dōngxi",
+      "zh": "家",
+      "pinyin": "jiā",
       "pos": "n.",
       "meaning": {
-        "uz": "narsa, buyum",
-        "ru": "вещь, предмет",
-        "tj": "чиз, асбоб"
+        "uz": "oila, uy",
+        "ru": "семья, дом",
+        "tj": "оила, хона"
       }
     },
     {
       "no": 2,
-      "zh": "一点儿",
-      "pinyin": "yīdiǎnr",
-      "pos": "num.",
+      "zh": "有",
+      "pinyin": "yǒu",
+      "pos": "v.",
       "meaning": {
-        "uz": "bir oz, biroz",
-        "ru": "немного, чуть-чуть",
-        "tj": "каме, андаке"
+        "uz": "bor, ega bo'lmoq",
+        "ru": "иметь, есть",
+        "tj": "доштан, мавҷуд будан"
       }
     },
     {
       "no": 3,
-      "zh": "苹果",
-      "pinyin": "píngguǒ",
-      "pos": "n.",
+      "zh": "口",
+      "pinyin": "kǒu",
+      "pos": "m.",
       "meaning": {
-        "uz": "olma",
-        "ru": "яблоко",
-        "tj": "себ"
+        "uz": "o'lchov so'zi (oila a'zolari uchun)",
+        "ru": "счётное слово (для членов семьи)",
+        "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
       }
     },
     {
       "no": 4,
-      "zh": "看见",
-      "pinyin": "kànjiàn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ko'rmoq, ko'rib qolmoq",
-        "ru": "увидеть, заметить",
-        "tj": "дидан, мушоҳида кардан"
-      }
-    },
-    {
-      "no": 5,
-      "zh": "先生",
-      "pinyin": "xiānsheng",
+      "zh": "女儿",
+      "pinyin": "nǚ'ér",
       "pos": "n.",
       "meaning": {
-        "uz": "janob, ser",
-        "ru": "господин, мистер",
-        "tj": "ҷаноб, оғо"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "开",
-      "pinyin": "kāi",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ochmoq, haydamoq (mashina)",
-        "ru": "открывать, водить (машину)",
-        "tj": "кушодан, рондан (мошин)"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "车",
-      "pinyin": "chē",
-      "pos": "n.",
-      "meaning": {
-        "uz": "mashina, transport",
-        "ru": "машина, транспорт",
-        "tj": "мошин, нақлиёт"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "回来",
-      "pinyin": "huílai",
-      "pos": "v.",
-      "meaning": {
-        "uz": "qaytib kelmoq",
-        "ru": "вернуться, прийти обратно",
-        "tj": "баргаштан, бозгашт кардан"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "分钟",
-      "pinyin": "fēnzhōng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "daqiqa (vaqt birligi)",
-        "ru": "минута (единица времени)",
-        "tj": "дақиқа (воҳиди вақт)"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "后",
-      "pinyin": "hòu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "keyin, so'ng",
-        "ru": "после, позже",
-        "tj": "баъд аз, пас аз"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "衣服",
-      "pinyin": "yīfu",
-      "pos": "n.",
-      "meaning": {
-        "uz": "kiyim",
-        "ru": "одежда",
-        "tj": "либос, кӯйлак"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "漂亮",
-      "pinyin": "piàoliang",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "chiroyli, go'zal",
-        "ru": "красивый, симпатичный",
-        "tj": "зебо, хушрӯй"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "啊",
-      "pinyin": "a",
-      "pos": "part.",
-      "meaning": {
-        "uz": "ha, voy (undov yuklamasi)",
-        "ru": "ах, да (восклицательная частица)",
-        "tj": "оҳ, ҳа (зарраи ҳайҷонӣ)"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "少",
-      "pinyin": "shǎo",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "kam, oz",
-        "ru": "мало, немного",
-        "tj": "кам, андак"
-      }
-    },
-    {
-      "no": 15,
-      "zh": "这些",
-      "pinyin": "zhèxiē",
-      "pos": "pron.",
-      "meaning": {
-        "uz": "bular, shu narsalar",
-        "ru": "эти, эти вещи",
-        "tj": "инҳо, ин чизҳо"
-      }
-    },
-    {
-      "no": 16,
-      "zh": "都",
-      "pinyin": "dōu",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "hammasi, barchasi",
-        "ru": "все, всё, оба",
-        "tj": "ҳама, тамом"
-      }
-    },
-    {
-      "no": 17,
-      "zh": "张",
-      "pinyin": "Zhāng",
-      "pos": "pn.",
-      "meaning": {
-        "uz": "Zhang (familiya)",
-        "ru": "Чжан (фамилия)",
-        "tj": "Чжан (насаб)"
+        "uz": "qiz farzand",
+        "ru": "дочь",
+        "tj": "духтар (фарзанд)"
       }
     }
   ],
   "grammar": [
     {
-      "no": 1,
-      "title": {
-        "uz": "了 — tugallangan harakat",
-        "ru": "了 — завершённое действие",
-        "tj": "了 — амали анҷомшуда"
-      },
-      "title_zh": "了 — harakat tugallangani",
-      "rule": {
-        "uz": "了(le) gapning oxirida — harakatning sodir bo'lganligi yoki tugallanganligini bildiradi.\n\nTuzilish:\nEga + Fe'l + 了 (gapning oxiri)\nEga + Fe'l + 了 + Son/Sifat + Ot\n\nMisol:\n我去商店了。— Men do'konga bordim.\n她买了不少衣服。— U juda ko'p kiyim sotib oldi.\n\nInkor: 没 + Fe'l (了 tushirib qoldiriladi)\n我没买。— Men hech narsa sotib olmadim.\n她没去商店。— U do'konga bormadi.",
-        "ru": "了(le) в конце предложения — указывает, что действие произошло или завершилось.\n\nСтруктура:\nПодлежащее + Глагол + 了 (конец предложения)\nПодлежащее + Глагол + 了 + Число/Прилагательное + Существительное\n\nПример:\n我去商店了。— Я ходил в магазин.\n她买了不少衣服。— Она купила немало одежды.\n\nОтрицание: 没 + Глагол (了 опускается)\n我没买。— Я ничего не купил.\n她没去商店。— Она не ходила в магазин.",
-        "tj": "了(le) дар охири ҷумла — нишон медиҳад, ки амал рӯй додааст ё анҷом ёфтааст.\n\nСохт:\nМуб. + Феъл + 了 (охири ҷумла)\nМуб. + Феъл + 了 + Адад/Сифат + Исм\n\nНамуна:\n我去商店了。— Ман ба дӯкон рафтам.\n她买了不少衣服。— Ӯ хеле зиёд либос харид.\n\nИнкор: 没 + Феъл (了 меафтад)\n我没买。— Ман ҳеҷ чиз нахаридам.\n她没去商店。— Ӯ ба дӯкон нарафт."
-      },
-      "examples": [
-        {
-          "zh": "我去商店了。",
-          "pinyin": "Wǒ qù shāngdiàn le.",
-          "translation": {
-            "uz": "Men do'konga bordim.",
-            "ru": "Я ходил в магазин.",
-            "tj": "Ман ба дӯкон рафтам."
-          }
-        },
-        {
-          "zh": "她买了不少衣服。",
-          "pinyin": "Tā mǎile bùshǎo yīfu.",
-          "translation": {
-            "uz": "U juda ko'p kiyim sotib oldi.",
-            "ru": "Она купила немало одежды.",
-            "tj": "Ӯ хеле зиёд либос харид."
-          }
-        },
-        {
-          "zh": "我没买。",
-          "pinyin": "Wǒ méi mǎi.",
-          "translation": {
-            "uz": "Men hech narsa sotib olmadim.",
-            "ru": "Я ничего не купил.",
-            "tj": "Ман ҳеҷ чиз нахаридам."
-          }
-        }
-      ]
-    },
-    {
       "no": 2,
       "title": {
-        "uz": "后 vaqt belgisi",
-        "ru": "后 — временной маркер",
-        "tj": "后 — нишонаи вақт"
+        "uz": "100 gacha raqamlar",
+        "ru": "Числа до 100",
+        "tj": "Рақамҳо то 100"
       },
-      "title_zh": "名词 后",
+      "title_zh": "100 gacha raqamlar",
       "rule": {
-        "uz": "后(hòu) — muayyan voqeadan keyingi vaqtni bildiradi.\n\n40分钟后 — 40 daqiqadan keyin\n三天后 — uch kundan keyin\n一个星期后 — bir haftadan keyin\n五点后 — soat beshdan keyin\n\nMisol:\n40分钟后回来。— 40 daqiqadan keyin qaytadi.\n三天后我去北京。— Uch kundan keyin Pekinga boraman.",
-        "ru": "后(hòu) — указывает на момент времени после определённого события.\n\n40分钟后 — через 40 минут\n三天后 — через три дня\n一个星期后 — через одну неделю\n五点后 — после пяти часов\n\nПример:\n40分钟后回来。— Вернётся через 40 минут.\n三天后我去北京。— Я поеду в Пекин через три дня.",
-        "tj": "后(hòu) — лаҳзаи вақтро баъд аз рӯйдоди муайян нишон медиҳад.\n\n40分钟后 — баъд аз 40 дақиқа\n三天后 — баъд аз се рӯз\n一个星期后 — баъд аз як ҳафта\n五点后 — баъд аз соати панҷ\n\nНамуна:\n40分钟后回来。— Баъд аз 40 дақиқа бармегардад.\n三天后我去北京。— Баъд аз се рӯз ман ба Пекин меравам."
+        "uz": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nO'nliklar:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nAralash:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)",
+        "ru": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nДесятки:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nСоставные:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)",
+        "tj": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nДаҳгонаҳо:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nОмехта:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)"
       },
       "examples": [
         {
-          "zh": "40分钟后回来。",
-          "pinyin": "Sìshí fēnzhōng hòu huílai.",
+          "zh": "二十",
+          "pinyin": "èrshí",
           "translation": {
-            "uz": "40 daqiqadan keyin qaytadi.",
-            "ru": "Вернётся через 40 минут.",
-            "tj": "Баъд аз 40 дақиқа бармегардад."
+            "uz": "yigirma",
+            "ru": "двадцать",
+            "tj": "бист"
           }
         },
         {
-          "zh": "三天后见。",
-          "pinyin": "Sān tiān hòu jiàn.",
+          "zh": "五十",
+          "pinyin": "wǔshí",
           "translation": {
-            "uz": "Uch kundan keyin ko'rishamiz.",
-            "ru": "Увидимся через три дня.",
-            "tj": "Баъд аз се рӯз мебинамон."
+            "uz": "ellik",
+            "ru": "пятьдесят",
+            "tj": "панҷоҳ"
           }
         },
         {
-          "zh": "八点后能来吗？",
-          "pinyin": "Bā diǎn hòu néng lái ma?",
+          "zh": "二十三",
+          "pinyin": "èrshísān",
           "translation": {
-            "uz": "Soat sakkizdan keyin kela olasizmi?",
-            "ru": "Вы можете прийти после восьми?",
-            "tj": "Баъд аз соати ҳашт омада метавонед?"
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "Ravish 都 — hammasi",
-        "ru": "Наречие 都 — все, всё",
-        "tj": "Зарфи 都 — ҳама"
-      },
-      "title_zh": "副词 都",
-      "rule": {
-        "uz": "都(dōu) — 'hammasi, barchasi, ikkalasi' ma'nosini bildiradi.\nMuhim: sanab o'tilayotgan narsalar 都 DAN OLDIN keladi.\n\nMisol:\n这些都是王方的东西。— Bular hammasi Van Fanning narsalari.\n我们都是中国人。— Biz hammamiz xitoylarmiz.\n他们都喜欢喝茶。— Ularning hammasi choy ichishni yaxshi ko'radi.",
-        "ru": "都(dōu) — означает 'все, всё, оба'.\nВажно: перечисляемые объекты стоят ПЕРЕД 都.\n\nПример:\n这些都是王方的东西。— Всё это вещи Ван Фан.\n我们都是中国人。— Мы все китайцы.\n他们都喜欢喝茶。— Они все любят пить чай.",
-        "tj": "都(dōu) — маънои 'ҳама, тамом, ҳарду' дорад.\nМуҳим: чизҳои шуморидашуда ПЕШ АЗ 都 меоянд.\n\nНамуна:\n这些都是王方的东西。— Инҳо ҳама чизҳои Ван Фан аст.\n我们都是中国人。— Мо ҳама чинӣ ҳастем.\n他们都喜欢喝茶。— Онҳо ҳама чой нӯшиданро дӯст доранд."
-      },
-      "examples": [
-        {
-          "zh": "这些都是王方的东西。",
-          "pinyin": "Zhèxiē dōu shì Wáng Fāng de dōngxi.",
-          "translation": {
-            "uz": "Bular hammasi Van Fanning narsalari.",
-            "ru": "Всё это вещи Ван Фан.",
-            "tj": "Инҳо ҳама чизҳои Ван Фан аст."
+            "uz": "yigirma uch",
+            "ru": "двадцать три",
+            "tj": "бисту се"
           }
         },
         {
-          "zh": "我们都是中国人。",
-          "pinyin": "Wǒmen dōu shì Zhōngguó rén.",
+          "zh": "九十九",
+          "pinyin": "jiǔshíjiǔ",
           "translation": {
-            "uz": "Biz hammamiz xitoylarmiz.",
-            "ru": "Мы все китайцы.",
-            "tj": "Мо ҳама чинӣ ҳастем."
-          }
-        },
-        {
-          "zh": "他们都喜欢喝茶。",
-          "pinyin": "Tāmen dōu xǐhuan hē chá.",
-          "translation": {
-            "uz": "Ularning hammasi choy ichishni yaxshi ko'radi.",
-            "ru": "Они все любят пить чай.",
-            "tj": "Онҳо ҳама чой нӯшиданро дӯст доранд."
+            "uz": "to'qson to'qqiz",
+            "ru": "девяносто девять",
+            "tj": "навадуно"
           }
         }
       ]
@@ -333,147 +117,107 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Yotoqxonada — kecha nima qilding",
-        "ru": "В комнате — что делал вчера",
-        "tj": "Дар хоб — дирӯз чӣ кардӣ"
+        "uz": "Maktabda — oila a'zolari",
+        "ru": "В школе — о членах семьи",
+        "tj": "Дар мактаб — дар бораи аъзоёни оила"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "昨天上午你去哪儿了？",
-          "pinyin": "Zuótiān shàngwǔ nǐ qù nǎr le?",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
           "text": {
-            "uz": "Kecha ertalab qayerga bordingiz?",
-            "ru": "Куда вы ходили вчера утром?",
-            "tj": "Дирӯз субҳ шумо куҷо рафтед?"
+            "uz": "Sizning oilangizda necha kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "我去商店买东西了。",
-          "pinyin": "Wǒ qù shāngdiàn mǎi dōngxi le.",
+          "zh": "我家有三口人。",
+          "pinyin": "Wǒ jiā yǒu sān kǒu rén.",
           "text": {
-            "uz": "Men do'konga narsa sotib olishga bordim.",
-            "ru": "Я ходил в магазин за покупками.",
-            "tj": "Ман ба дӯкон рафтам, чизҳо харидам."
-          }
-        },
-        {
-          "speaker": "A",
-          "zh": "你买什么了？",
-          "pinyin": "Nǐ mǎi shénme le?",
-          "text": {
-            "uz": "Nima sotib oldingiz?",
-            "ru": "Что вы купили?",
-            "tj": "Шумо чӣ харидед?"
-          }
-        },
-        {
-          "speaker": "B",
-          "zh": "我买了一点儿苹果。",
-          "pinyin": "Wǒ mǎile yīdiǎnr píngguǒ.",
-          "text": {
-            "uz": "Men bir oz olma sotib oldim.",
-            "ru": "Я купил немного яблок.",
-            "tj": "Ман каме себ харидам."
+            "uz": "Bizning oilamizda uch kishi bor.",
+            "ru": "В нашей семье трое человек.",
+            "tj": "Дар оилаи мо се нафар аст."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Kompaniyada — Zhang janobni ko'rdingizmi",
-        "ru": "В компании — видели ли вы господина Чжана",
-        "tj": "Дар ширкат — ҷаноби Чжанро дидед"
+        "uz": "Ofisda — yosh so'rash (bolalar)",
+        "ru": "В офисе — спрашиваем возраст (ребёнок)",
+        "tj": "Дар идора — пурсидани синну сол (кӯдак)"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "你看见张先生了吗？",
-          "pinyin": "Nǐ kànjiàn Zhāng xiānsheng le ma?",
+          "zh": "你女儿几岁了？",
+          "pinyin": "Nǐ nǚ'ér jǐ suì le?",
           "text": {
-            "uz": "Janob Jangni ko'rdingizmi?",
-            "ru": "Вы видели господина Чжана?",
-            "tj": "Шумо ҷаноби Чжанро дидед?"
+            "uz": "Qizingiz necha yoshda?",
+            "ru": "Сколько лет вашей дочери?",
+            "tj": "Духтаратон чанд сол дорад?"
           }
         },
         {
           "speaker": "B",
-          "zh": "看见了，他去学开车了。",
-          "pinyin": "Kànjiàn le, tā qù xué kāi chē le.",
+          "zh": "她今年四岁了。",
+          "pinyin": "Tā jīnnián sì suì le.",
           "text": {
-            "uz": "Ko'rdim, u mashina haydashni o'rganishga ketdi.",
-            "ru": "Да, видел — он пошёл учиться водить машину.",
-            "tj": "Ҳа, дидам — ӯ рафт рондани мошинро биомӯзад."
-          }
-        },
-        {
-          "speaker": "A",
-          "zh": "他什么时候能回来？",
-          "pinyin": "Tā shénme shíhou néng huílai?",
-          "text": {
-            "uz": "Qachon qaytib kela oladi?",
-            "ru": "Когда он сможет вернуться?",
-            "tj": "Ӯ кай баргашта метавонад?"
-          }
-        },
-        {
-          "speaker": "B",
-          "zh": "40分钟后回来。",
-          "pinyin": "Sìshí fēnzhōng hòu huílai.",
-          "text": {
-            "uz": "40 daqiqadan keyin qaytadi.",
-            "ru": "Вернётся через 40 минут.",
-            "tj": "Баъд аз 40 дақиқа бармегардад."
+            "uz": "U bu yil to'rt yoshga to'ldi.",
+            "ru": "Ей в этом году исполнилось четыре года.",
+            "tj": "Вай имсол чор сол шуд."
           }
         }
       ]
     },
     {
       "scene": {
-        "uz": "Do'kon oldida — kiyimlar",
-        "ru": "У магазина — одежда",
-        "tj": "Дар назди дӯкон — либосҳо"
+        "uz": "Ofisda — kattalar yoshi",
+        "ru": "В офисе — возраст взрослых",
+        "tj": "Дар идора — синну соли калонсолон"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "王方的衣服太漂亮了！",
-          "pinyin": "Wáng Fāng de yīfu tài piàoliang le!",
+          "zh": "李老师多大了？",
+          "pinyin": "Lǐ lǎoshī duō dà le?",
           "text": {
-            "uz": "Van Fanning kiyimlari juda chiroyli!",
-            "ru": "Одежда Ван Фан такая красивая!",
-            "tj": "Либоси Ван Фан хеле зебо аст!"
+            "uz": "Muallima Li necha yoshda?",
+            "ru": "Сколько лет преподавателю Ли?",
+            "tj": "Муаллима Ли чанд сол дорад?"
           }
         },
         {
           "speaker": "B",
-          "zh": "是啊，她买了不少衣服。",
-          "pinyin": "Shì a, tā mǎile bùshǎo yīfu.",
+          "zh": "她今年50岁了。",
+          "pinyin": "Tā jīnnián wǔshí suì le.",
           "text": {
-            "uz": "Ha, u juda ko'p kiyim sotib oldi.",
-            "ru": "Да уж — она купила немало одежды.",
-            "tj": "Ҳа, ӯ хеле зиёд либос харид."
+            "uz": "U bu yil ellik yoshga kirdi.",
+            "ru": "В этом году ей исполнилось пятьдесят.",
+            "tj": "Вай имсол панҷоҳ сол шуд."
           }
         },
         {
           "speaker": "A",
-          "zh": "你买什么了？",
-          "pinyin": "Nǐ mǎi shénme le?",
+          "zh": "她女儿呢？",
+          "pinyin": "Tā nǚ'ér ne?",
           "text": {
-            "uz": "Siz nima sotib oldingiz?",
-            "ru": "А вы что купили?",
-            "tj": "Шумо чӣ харидед?"
+            "uz": "Uning qizi-chi?",
+            "ru": "А её дочь?",
+            "tj": "Духтараш чӣ?"
           }
         },
         {
           "speaker": "B",
-          "zh": "我没买，这些都是王方的东西。",
-          "pinyin": "Wǒ méi mǎi, zhèxiē dōu shì Wáng Fāng de dōngxi.",
+          "zh": "她女儿今年20岁。",
+          "pinyin": "Tā nǚ'ér jīnnián èrshí suì.",
           "text": {
-            "uz": "Men hech narsa sotib olmadim, bular hammasi Van Fanning narsalari.",
-            "ru": "Я ничего не купила — всё это вещи Ван Фан.",
-            "tj": "Ман ҳеҷ чиз нахаридам, инҳо ҳама чизҳои Ван Фан аст."
+            "uz": "Uning qizi bu yil yigirma yoshda.",
+            "ru": "Её дочери в этом году двадцать лет.",
+            "tj": "Духтараш имсол бист сол дорад."
           }
         }
       ]
@@ -493,46 +237,22 @@
           "type": "active_word",
           "word": {
             "no": 1,
-            "zh": "东西",
-            "pinyin": "dōngxi",
+            "zh": "家",
+            "pinyin": "jiā",
             "pos": "n.",
             "meaning": {
-              "uz": "narsa, buyum",
-              "ru": "вещь, предмет",
-              "tj": "чиз, асбоб"
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
             }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "一点儿",
-            "pinyin": "yīdiǎnr",
-            "pos": "num.",
-            "meaning": {
-              "uz": "bir oz, biroz",
-              "ru": "немного, чуть-чуть",
-              "tj": "каме, андаке"
-            }
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "一点儿",
-          "pinyin": "yīdiǎnr",
-          "translation": {
-            "uz": "bir oz, biroz",
-            "ru": "немного, чуть-чуть",
-            "tj": "каме, андаке"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'narsa, buyum' xitoycha qaysi?",
-            "ru": "'вещь, предмет' по-китайски?",
-            "tj": "'чиз, асбоб' ба хитоӣ кадом аст?"
+            "uz": "'oila, uy' xitoycha qaysi?",
+            "ru": "'семья, дом' по-китайски?",
+            "tj": "'оила, хона' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -540,44 +260,40 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "东西",
-            "苹果",
-            "看见",
-            "一点儿"
+            "有",
+            "口",
+            "家",
+            "女儿"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "narsa, buyum = 东西 (dōngxi)",
-            "ru": "вещь, предмет = 东西 (dōngxi)",
-            "tj": "чиз, асбоб = 东西 (dōngxi)"
+            "uz": "oila, uy = 家 (jiā)",
+            "ru": "семья, дом = 家 (jiā)",
+            "tj": "оила, хона = 家 (jiā)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 3,
-            "zh": "苹果",
-            "pinyin": "píngguǒ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "olma",
-              "ru": "яблоко",
-              "tj": "себ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 4,
-            "zh": "看见",
-            "pinyin": "kànjiàn",
+            "no": 2,
+            "zh": "有",
+            "pinyin": "yǒu",
             "pos": "v.",
             "meaning": {
-              "uz": "ko'rmoq, ko'rib qolmoq",
-              "ru": "увидеть, заметить",
-              "tj": "дидан, мушоҳида кардан"
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
             }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "有",
+          "pinyin": "yǒu",
+          "translation": {
+            "uz": "bor, ega bo'lmoq",
+            "ru": "иметь, есть",
+            "tj": "доштан, мавҷуд будан"
           }
         },
         {
@@ -587,55 +303,41 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "看见",
-          "pinyin": "kànjiàn",
+          "audio_text": "有",
+          "pinyin": "yǒu",
           "options": [
-            "东西",
-            "看见",
-            "苹果",
-            "一点儿"
+            "女儿",
+            "口",
+            "有",
+            "家"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "看见 — ko'rmoq, ko'rib qolmoq (kànjiàn)",
-            "ru": "看见 — увидеть, заметить (kànjiàn)",
-            "tj": "看见 — дидан, мушоҳида кардан (kànjiàn)"
+            "uz": "有 — bor, ega bo'lmoq (yǒu)",
+            "ru": "有 — иметь, есть (yǒu)",
+            "tj": "有 — доштан, мавҷуд будан (yǒu)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 5,
-            "zh": "先生",
-            "pinyin": "xiānsheng",
-            "pos": "n.",
+            "no": 3,
+            "zh": "口",
+            "pinyin": "kǒu",
+            "pos": "m.",
             "meaning": {
-              "uz": "janob, ser",
-              "ru": "господин, мистер",
-              "tj": "ҷаноб, оғо"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "开",
-            "pinyin": "kāi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ochmoq, haydamoq (mashina)",
-              "ru": "открывать, водить (машину)",
-              "tj": "кушодан, рондан (мошин)"
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
             }
           }
         },
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "开 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 开:",
-            "tj": "Маънои калимаи 开-ро интихоб кунед:"
+            "uz": "口 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 口:",
+            "tj": "Маънои калимаи 口-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -644,67 +346,53 @@
           },
           "options": [
             {
-              "uz": "olma",
-              "ru": "яблоко",
-              "tj": "себ"
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
             },
             {
-              "uz": "bir oz, biroz",
-              "ru": "немного, чуть-чуть",
-              "tj": "каме, андаке"
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
             },
             {
-              "uz": "ochmoq, haydamoq (mashina)",
-              "ru": "открывать, водить (машину)",
-              "tj": "кушодан, рондан (мошин)"
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар (фарзанд)"
             },
             {
-              "uz": "narsa, buyum",
-              "ru": "вещь, предмет",
-              "tj": "чиз, асбоб"
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "开 = ochmoq, haydamoq (mashina) (kāi)",
-            "ru": "开 = открывать, водить (машину) (kāi)",
-            "tj": "开 = кушодан, рондан (мошин) (kāi)"
+            "uz": "口 = o'lchov so'zi (oila a'zolari uchun) (kǒu)",
+            "ru": "口 = счётное слово (для членов семьи) (kǒu)",
+            "tj": "口 = калимаи шуморавӣ (барои аъзоёни оила) (kǒu)"
           }
         },
         {
           "type": "active_word",
           "word": {
-            "no": 7,
-            "zh": "车",
-            "pinyin": "chē",
+            "no": 4,
+            "zh": "女儿",
+            "pinyin": "nǚ'ér",
             "pos": "n.",
             "meaning": {
-              "uz": "mashina, transport",
-              "ru": "машина, транспорт",
-              "tj": "мошин, нақлиёт"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "回来",
-            "pinyin": "huílai",
-            "pos": "v.",
-            "meaning": {
-              "uz": "qaytib kelmoq",
-              "ru": "вернуться, прийти обратно",
-              "tj": "баргаштан, бозгашт кардан"
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар (фарзанд)"
             }
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "píngguǒ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается píngguǒ?",
-            "tj": "píngguǒ кадом иероглиф аст?"
+            "uz": "nǚ'ér qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǚ'ér?",
+            "tj": "nǚ'ér кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -712,52 +400,24 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "东西",
-            "看见",
-            "一点儿",
-            "苹果"
+            "女儿",
+            "家",
+            "口",
+            "有"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "苹果 = olma (píngguǒ)",
-            "ru": "苹果 = яблоко (píngguǒ)",
-            "tj": "苹果 = себ (píngguǒ)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "分钟",
-            "pinyin": "fēnzhōng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "daqiqa (vaqt birligi)",
-              "ru": "минута (единица времени)",
-              "tj": "дақиқа (воҳиди вақт)"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "后",
-            "pinyin": "hòu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "keyin, so'ng",
-              "ru": "после, позже",
-              "tj": "баъд аз, пас аз"
-            }
+            "uz": "女儿 = qiz farzand (nǚ'ér)",
+            "ru": "女儿 = дочь (nǚ'ér)",
+            "tj": "女儿 = духтар (фарзанд) (nǚ'ér)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "后 talaffuzini tanlang:",
-            "ru": "Выберите произношение 后:",
-            "tj": "Талаффузи 后-ро интихоб кунед:"
+            "uz": "家 talaffuzini tanlang:",
+            "ru": "Выберите произношение 家:",
+            "tj": "Талаффузи 家-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -765,51 +425,51 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dōngxi",
-            "hòu",
-            "yīdiǎnr",
-            "píngguǒ"
+            "kǒu",
+            "yǒu",
+            "jiā",
+            "nǚ'ér"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "后 — hòu",
-            "ru": "后 — hòu",
-            "tj": "后 — hòu"
+            "uz": "家 — jiā",
+            "ru": "家 — jiā",
+            "tj": "家 — jiā"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "东西",
+              "家",
               {
-                "uz": "narsa, buyum",
-                "ru": "вещь, предмет",
-                "tj": "чиз, асбоб"
+                "uz": "oila, uy",
+                "ru": "семья, дом",
+                "tj": "оила, хона"
               }
             ],
             [
-              "一点儿",
+              "有",
               {
-                "uz": "bir oz, biroz",
-                "ru": "немного, чуть-чуть",
-                "tj": "каме, андаке"
+                "uz": "bor, ega bo'lmoq",
+                "ru": "иметь, есть",
+                "tj": "доштан, мавҷуд будан"
               }
             ],
             [
-              "苹果",
+              "口",
               {
-                "uz": "olma",
-                "ru": "яблоко",
-                "tj": "себ"
+                "uz": "o'lchov so'zi (oila a'zolari uchun)",
+                "ru": "счётное слово (для членов семьи)",
+                "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
               }
             ],
             [
-              "看见",
+              "女儿",
               {
-                "uz": "ko'rmoq, ko'rib qolmoq",
-                "ru": "увидеть, заметить",
-                "tj": "дидан, мушоҳида кардан"
+                "uz": "qiz farzand",
+                "ru": "дочь",
+                "tj": "духтар (фарзанд)"
               }
             ]
           ],
@@ -833,230 +493,64 @@
         {
           "type": "_grammar",
           "g": {
-            "no": 1,
-            "title": {
-              "uz": "了 — tugallangan harakat",
-              "ru": "了 — завершённое действие",
-              "tj": "了 — амали анҷомшуда"
-            },
-            "title_zh": "了 — harakat tugallangani",
-            "rule": {
-              "uz": "了(le) gapning oxirida — harakatning sodir bo'lganligi yoki tugallanganligini bildiradi.\n\nTuzilish:\nEga + Fe'l + 了 (gapning oxiri)\nEga + Fe'l + 了 + Son/Sifat + Ot\n\nMisol:\n我去商店了。— Men do'konga bordim.\n她买了不少衣服。— U juda ko'p kiyim sotib oldi.\n\nInkor: 没 + Fe'l (了 tushirib qoldiriladi)\n我没买。— Men hech narsa sotib olmadim.\n她没去商店。— U do'konga bormadi.",
-              "ru": "了(le) в конце предложения — указывает, что действие произошло или завершилось.\n\nСтруктура:\nПодлежащее + Глагол + 了 (конец предложения)\nПодлежащее + Глагол + 了 + Число/Прилагательное + Существительное\n\nПример:\n我去商店了。— Я ходил в магазин.\n她买了不少衣服。— Она купила немало одежды.\n\nОтрицание: 没 + Глагол (了 опускается)\n我没买。— Я ничего не купил.\n她没去商店。— Она не ходила в магазин.",
-              "tj": "了(le) дар охири ҷумла — нишон медиҳад, ки амал рӯй додааст ё анҷом ёфтааст.\n\nСохт:\nМуб. + Феъл + 了 (охири ҷумла)\nМуб. + Феъл + 了 + Адад/Сифат + Исм\n\nНамуна:\n我去商店了。— Ман ба дӯкон рафтам.\n她买了不少衣服。— Ӯ хеле зиёд либос харид.\n\nИнкор: 没 + Феъл (了 меафтад)\n我没买。— Ман ҳеҷ чиз нахаридам.\n她没去商店。— Ӯ ба дӯкон нарафт."
-            },
-            "examples": [
-              {
-                "zh": "我去商店了。",
-                "pinyin": "Wǒ qù shāngdiàn le.",
-                "translation": {
-                  "uz": "Men do'konga bordim.",
-                  "ru": "Я ходил в магазин.",
-                  "tj": "Ман ба дӯкон рафтам."
-                }
-              },
-              {
-                "zh": "她买了不少衣服。",
-                "pinyin": "Tā mǎile bùshǎo yīfu.",
-                "translation": {
-                  "uz": "U juda ko'p kiyim sotib oldi.",
-                  "ru": "Она купила немало одежды.",
-                  "tj": "Ӯ хеле зиёд либос харид."
-                }
-              },
-              {
-                "zh": "我没买。",
-                "pinyin": "Wǒ méi mǎi.",
-                "translation": {
-                  "uz": "Men hech narsa sotib olmadim.",
-                  "ru": "Я ничего не купил.",
-                  "tj": "Ман ҳеҷ чиз нахаридам."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men do'konga bordim.",
-            "ru": "Я ходил в магазин.",
-            "tj": "Ман ба дӯкон рафтам."
-          },
-          "tokens": [
-            "了",
-            "商店",
-            "东西",
-            "一点儿",
-            "去",
-            "我"
-          ],
-          "answer_tokens": [
-            "我",
-            "去",
-            "商店",
-            "了"
-          ],
-          "explanation": {
-            "uz": "我去商店了。 — Wǒ qù shāngdiàn le.",
-            "ru": "我去商店了。 — Wǒ qù shāngdiàn le.",
-            "tj": "我去商店了。 — Wǒ qù shāngdiàn le."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
             "no": 2,
             "title": {
-              "uz": "后 vaqt belgisi",
-              "ru": "后 — временной маркер",
-              "tj": "后 — нишонаи вақт"
+              "uz": "100 gacha raqamlar",
+              "ru": "Числа до 100",
+              "tj": "Рақамҳо то 100"
             },
-            "title_zh": "名词 后",
+            "title_zh": "100 gacha raqamlar",
             "rule": {
-              "uz": "后(hòu) — muayyan voqeadan keyingi vaqtni bildiradi.\n\n40分钟后 — 40 daqiqadan keyin\n三天后 — uch kundan keyin\n一个星期后 — bir haftadan keyin\n五点后 — soat beshdan keyin\n\nMisol:\n40分钟后回来。— 40 daqiqadan keyin qaytadi.\n三天后我去北京。— Uch kundan keyin Pekinga boraman.",
-              "ru": "后(hòu) — указывает на момент времени после определённого события.\n\n40分钟后 — через 40 минут\n三天后 — через три дня\n一个星期后 — через одну неделю\n五点后 — после пяти часов\n\nПример:\n40分钟后回来。— Вернётся через 40 минут.\n三天后我去北京。— Я поеду в Пекин через три дня.",
-              "tj": "后(hòu) — лаҳзаи вақтро баъд аз рӯйдоди муайян нишон медиҳад.\n\n40分钟后 — баъд аз 40 дақиқа\n三天后 — баъд аз се рӯз\n一个星期后 — баъд аз як ҳафта\n五点后 — баъд аз соати панҷ\n\nНамуна:\n40分钟后回来。— Баъд аз 40 дақиқа бармегардад.\n三天后我去北京。— Баъд аз се рӯз ман ба Пекин меравам."
+              "uz": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nO'nliklar:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nAralash:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)",
+              "ru": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nДесятки:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nСоставные:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)",
+              "tj": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nДаҳгонаҳо:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nОмехта:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)"
             },
             "examples": [
               {
-                "zh": "40分钟后回来。",
-                "pinyin": "Sìshí fēnzhōng hòu huílai.",
+                "zh": "二十",
+                "pinyin": "èrshí",
                 "translation": {
-                  "uz": "40 daqiqadan keyin qaytadi.",
-                  "ru": "Вернётся через 40 минут.",
-                  "tj": "Баъд аз 40 дақиқа бармегардад."
+                  "uz": "yigirma",
+                  "ru": "двадцать",
+                  "tj": "бист"
                 }
               },
               {
-                "zh": "三天后见。",
-                "pinyin": "Sān tiān hòu jiàn.",
+                "zh": "五十",
+                "pinyin": "wǔshí",
                 "translation": {
-                  "uz": "Uch kundan keyin ko'rishamiz.",
-                  "ru": "Увидимся через три дня.",
-                  "tj": "Баъд аз се рӯз мебинамон."
+                  "uz": "ellik",
+                  "ru": "пятьдесят",
+                  "tj": "панҷоҳ"
                 }
               },
               {
-                "zh": "八点后能来吗？",
-                "pinyin": "Bā diǎn hòu néng lái ma?",
+                "zh": "二十三",
+                "pinyin": "èrshísān",
                 "translation": {
-                  "uz": "Soat sakkizdan keyin kela olasizmi?",
-                  "ru": "Вы можете прийти после восьми?",
-                  "tj": "Баъд аз соати ҳашт омада метавонед?"
+                  "uz": "yigirma uch",
+                  "ru": "двадцать три",
+                  "tj": "бисту се"
+                }
+              },
+              {
+                "zh": "九十九",
+                "pinyin": "jiǔshíjiǔ",
+                "translation": {
+                  "uz": "to'qson to'qqiz",
+                  "ru": "девяносто девять",
+                  "tj": "навадуно"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "40 daqiqadan keyin qaytadi.",
-            "ru": "Вернётся через 40 минут.",
-            "tj": "Баъд аз 40 дақиқа бармегардад."
-          },
-          "tokens": [
-            "东西",
-            "后",
-            "回来",
-            "一点儿",
-            "分钟"
-          ],
-          "answer_tokens": [
-            "分钟",
-            "后",
-            "回来"
-          ],
-          "explanation": {
-            "uz": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
-            "ru": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
-            "tj": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai."
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "Ravish 都 — hammasi",
-              "ru": "Наречие 都 — все, всё",
-              "tj": "Зарфи 都 — ҳама"
-            },
-            "title_zh": "副词 都",
-            "rule": {
-              "uz": "都(dōu) — 'hammasi, barchasi, ikkalasi' ma'nosini bildiradi.\nMuhim: sanab o'tilayotgan narsalar 都 DAN OLDIN keladi.\n\nMisol:\n这些都是王方的东西。— Bular hammasi Van Fanning narsalari.\n我们都是中国人。— Biz hammamiz xitoylarmiz.\n他们都喜欢喝茶。— Ularning hammasi choy ichishni yaxshi ko'radi.",
-              "ru": "都(dōu) — означает 'все, всё, оба'.\nВажно: перечисляемые объекты стоят ПЕРЕД 都.\n\nПример:\n这些都是王方的东西。— Всё это вещи Ван Фан.\n我们都是中国人。— Мы все китайцы.\n他们都喜欢喝茶。— Они все любят пить чай.",
-              "tj": "都(dōu) — маънои 'ҳама, тамом, ҳарду' дорад.\nМуҳим: чизҳои шуморидашуда ПЕШ АЗ 都 меоянд.\n\nНамуна:\n这些都是王方的东西。— Инҳо ҳама чизҳои Ван Фан аст.\n我们都是中国人。— Мо ҳама чинӣ ҳастем.\n他们都喜欢喝茶。— Онҳо ҳама чой нӯшиданро дӯст доранд."
-            },
-            "examples": [
-              {
-                "zh": "这些都是王方的东西。",
-                "pinyin": "Zhèxiē dōu shì Wáng Fāng de dōngxi.",
-                "translation": {
-                  "uz": "Bular hammasi Van Fanning narsalari.",
-                  "ru": "Всё это вещи Ван Фан.",
-                  "tj": "Инҳо ҳама чизҳои Ван Фан аст."
-                }
-              },
-              {
-                "zh": "我们都是中国人。",
-                "pinyin": "Wǒmen dōu shì Zhōngguó rén.",
-                "translation": {
-                  "uz": "Biz hammamiz xitoylarmiz.",
-                  "ru": "Мы все китайцы.",
-                  "tj": "Мо ҳама чинӣ ҳастем."
-                }
-              },
-              {
-                "zh": "他们都喜欢喝茶。",
-                "pinyin": "Tāmen dōu xǐhuan hē chá.",
-                "translation": {
-                  "uz": "Ularning hammasi choy ichishni yaxshi ko'radi.",
-                  "ru": "Они все любят пить чай.",
-                  "tj": "Онҳо ҳама чой нӯшиданро дӯст доранд."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bular hammasi Van Fanning narsalari.",
-            "ru": "Всё это вещи Ван Фан.",
-            "tj": "Инҳо ҳама чизҳои Ван Фан аст."
-          },
-          "tokens": [
-            "东西",
-            "都",
-            "苹果",
-            "是",
-            "王方",
-            "一点儿",
-            "的",
-            "这些"
-          ],
-          "answer_tokens": [
-            "这些",
-            "都",
-            "是",
-            "王方",
-            "的",
-            "东西"
-          ],
-          "explanation": {
-            "uz": "这些都是王方的东西。 — Zhèxiē dōu shì Wáng Fāng de dōngxi.",
-            "ru": "这些都是王方的东西。 — Zhèxiē dōu shì Wáng Fāng de dōngxi.",
-            "tj": "这些都是王方的东西。 — Zhèxiē dōu shì Wáng Fāng de dōngxi."
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«40 daqiqadan keyin qaytadi.» — xitoychada qaysi biri?",
-            "ru": "«Вернётся через 40 минут.» — какое предложение по-китайски?",
-            "tj": "«Баъд аз 40 дақиқа бармегардад.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«yigirma uch» — xitoychada qaysi biri?",
+            "ru": "«двадцать три» — какое предложение по-китайски?",
+            "tj": "«бисту се» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1064,16 +558,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "三天后见。",
-            "她买了不少衣服。",
-            "40分钟后回来。",
-            "我没买。"
+            "二十",
+            "二十三",
+            "九十九",
+            "五十"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
-            "ru": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
-            "tj": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai."
+            "uz": "二十三 — èrshísān",
+            "ru": "二十三 — èrshísān",
+            "tj": "二十三 — èrshísān"
           }
         }
       ]
@@ -1088,95 +582,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "先生",
-              {
-                "uz": "janob, ser",
-                "ru": "господин, мистер",
-                "tj": "ҷаноб, оғо"
-              }
-            ],
-            [
-              "开",
-              {
-                "uz": "ochmoq, haydamoq (mashina)",
-                "ru": "открывать, водить (машину)",
-                "tj": "кушодан, рондан (мошин)"
-              }
-            ],
-            [
-              "车",
-              {
-                "uz": "mashina, transport",
-                "ru": "машина, транспорт",
-                "tj": "мошин, нақлиёт"
-              }
-            ],
-            [
-              "回来",
-              {
-                "uz": "qaytib kelmoq",
-                "ru": "вернуться, прийти обратно",
-                "tj": "баргаштан, бозгашт кардан"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "东西",
-              {
-                "uz": "narsa, buyum",
-                "ru": "вещь, предмет",
-                "tj": "чиз, асбоб"
-              }
-            ],
-            [
-              "一点儿",
-              {
-                "uz": "bir oz, biroz",
-                "ru": "немного, чуть-чуть",
-                "tj": "каме, андаке"
-              }
-            ],
-            [
-              "苹果",
-              {
-                "uz": "olma",
-                "ru": "яблоко",
-                "tj": "себ"
-              }
-            ],
-            [
-              "看见",
-              {
-                "uz": "ko'rmoq, ko'rib qolmoq",
-                "ru": "увидеть, заметить",
-                "tj": "дидан, мушоҳида кардан"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'ha, voy (undov yuklamasi)' xitoycha qaysi?",
-            "ru": "'ах, да (восклицательная частица)' по-китайски?",
-            "tj": "'оҳ, ҳа (зарраи ҳайҷонӣ)' ба хитоӣ кадом аст?"
+            "uz": "'men' xitoycha qaysi?",
+            "ru": "'я, меня' по-китайски?",
+            "tj": "'ман' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -1184,83 +594,86 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "苹果",
-            "啊",
-            "一点儿",
-            "东西"
+            "我",
+            "有",
+            "口",
+            "家"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "ha, voy (undov yuklamasi) = 啊 (a)",
-            "ru": "ах, да (восклицательная частица) = 啊 (a)",
-            "tj": "оҳ, ҳа (зарраи ҳайҷонӣ) = 啊 (a)"
+            "uz": "men = 我 (wǒ)",
+            "ru": "я, меня = 我 (wǒ)",
+            "tj": "ман = 我 (wǒ)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Uning qizi-chi?",
+            "ru": "А её дочь?",
+            "tj": "Духтараш чӣ?"
+          },
+          "tokens": [
+            "她",
+            "家",
+            "呢",
+            "女儿",
+            "有"
+          ],
+          "answer_tokens": [
+            "她",
+            "女儿",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "她女儿呢？ — Tā nǚ'ér ne?",
+            "ru": "她女儿呢？ — Tā nǚ'ér ne?",
+            "tj": "她女儿呢？ — Tā nǚ'ér ne?"
           }
         },
         {
           "type": "reverse_builder",
-          "zh": "她买了不少衣服。",
-          "pinyin": "Tā mǎile bùshǎo yīfu.",
+          "zh": "她女儿呢？",
+          "pinyin": "Tā nǚ'ér ne?",
           "translation": {
-            "uz": "U juda ko'p kiyim sotib oldi.",
-            "ru": "Она купила немало одежды.",
-            "tj": "Ӯ хеле зиёд либос харид."
+            "uz": "Uning qizi-chi?",
+            "ru": "А её дочь?",
+            "tj": "Духтараш чӣ?"
           },
           "tokens": {
             "uz": [
-              "juda",
-              "Kecha",
-              "U",
-              "sotib",
-              "kiyim",
-              "oldi",
-              "ko'p",
-              "ertalab"
+              "qizi-chi",
+              "Uning"
             ],
             "ru": [
-              "одежды",
-              "немало",
-              "Она",
-              "вы",
-              "Куда",
-              "купила"
+              "её",
+              "А",
+              "дочь"
             ],
             "tj": [
-              "либос",
-              "Дирӯз",
-              "Ӯ",
-              "хеле",
-              "субҳ",
-              "харид",
-              "зиёд"
+              "чӣ",
+              "Духтараш"
             ]
           },
           "answer_tokens": {
             "uz": [
-              "U",
-              "juda",
-              "ko'p",
-              "kiyim",
-              "sotib",
-              "oldi"
+              "Uning",
+              "qizi-chi"
             ],
             "ru": [
-              "Она",
-              "купила",
-              "немало",
-              "одежды"
+              "А",
+              "её",
+              "дочь"
             ],
             "tj": [
-              "Ӯ",
-              "хеле",
-              "зиёд",
-              "либос",
-              "харид"
+              "Духтараш",
+              "чӣ"
             ]
           },
           "explanation": {
-            "uz": "她买了不少衣服。 — U juda ko'p kiyim sotib oldi.",
-            "ru": "她买了不少衣服。 — Она купила немало одежды.",
-            "tj": "她买了不少衣服。 — Ӯ хеле зиёд либос харид."
+            "uz": "她女儿呢？ — Uning qizi-chi?",
+            "ru": "她女儿呢？ — А её дочь?",
+            "tj": "她女儿呢？ — Духтараш чӣ?"
           }
         },
         {
@@ -1270,241 +683,29 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "我去商店买东西了。",
-          "pinyin": "Wǒ qù shāngdiàn mǎi dōngxi le.",
+          "audio_text": "她女儿呢？",
+          "pinyin": "Tā nǚ'ér ne?",
           "options": [
-            "我买了一点儿苹果。",
-            "昨天上午你去哪儿了？",
-            "我去商店买东西了。",
-            "你买什么了？"
+            "我家有三口人。",
+            "你女儿几岁了？",
+            "她女儿呢？",
+            "你家有几口人？"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "我去商店买东西了。 — Men do'konga narsa sotib olishga bordim.",
-            "ru": "我去商店买东西了。 — Я ходил в магазин за покупками.",
-            "tj": "我去商店买东西了。 — Ман ба дӯкон рафтам, чизҳо харидам."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Kecha ertalab qayerga bordingiz?",
-            "ru": "Куда вы ходили вчера утром?",
-            "tj": "Дирӯз субҳ шумо куҷо рафтед?"
-          },
-          "tokens": [
-            "你",
-            "上午",
-            "哪儿",
-            "东西",
-            "一点儿",
-            "去",
-            "了",
-            "昨天"
-          ],
-          "answer_tokens": [
-            "昨天",
-            "上午",
-            "你",
-            "去",
-            "哪儿",
-            "了"
-          ],
-          "explanation": {
-            "uz": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?",
-            "ru": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?",
-            "tj": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "漂亮 talaffuzini tanlang:",
-            "ru": "Выберите произношение 漂亮:",
-            "tj": "Талаффузи 漂亮-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "piàoliang",
-            "yīdiǎnr",
-            "dōngxi",
-            "píngguǒ"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "漂亮 — piàoliang",
-            "ru": "漂亮 — piàoliang",
-            "tj": "漂亮 — piàoliang"
+            "uz": "她女儿呢？ — Uning qizi-chi?",
+            "ru": "她女儿呢？ — А её дочь?",
+            "tj": "她女儿呢？ — Духтараш чӣ?"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "少",
-          "pinyin": "shǎo",
+          "phrase": "有",
+          "pinyin": "yǒu",
           "translation": {
-            "uz": "kam, oz",
-            "ru": "мало, немного",
-            "tj": "кам, андак"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "昨天上午你去哪儿了？",
-          "pinyin": "Zuótiān shàngwǔ nǐ qù nǎr le?",
-          "options": [
-            "你买什么了？",
-            "我去商店买东西了。",
-            "昨天上午你去哪儿了？",
-            "我买了一点儿苹果。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "昨天上午你去哪儿了？ — Kecha ertalab qayerga bordingiz?",
-            "ru": "昨天上午你去哪儿了？ — Куда вы ходили вчера утром?",
-            "tj": "昨天上午你去哪儿了？ — Дирӯз субҳ шумо куҷо рафтед?"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我去商店买东西了。",
-            "你买什么了？",
-            "我买了一点儿苹果。",
-            "昨天上午你去哪儿了？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 昨天上午你去哪儿了？",
-            "ru": "Правильный ответ: 昨天上午你去哪儿了？",
-            "tj": "Ҷавоби дуруст: 昨天上午你去哪儿了？"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "A",
-              "zh": "昨天上午你去哪儿了？",
-              "blank": false
-            },
-            {
-              "speaker": "B",
-              "zh": "我去商店买东西了。",
-              "blank": false
-            },
-            {
-              "speaker": "A",
-              "zh": "你买什么了？",
-              "blank": false
-            },
-            {
-              "speaker": "B",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "我去商店买东西了。",
-            "我买了一点儿苹果。",
-            "昨天上午你去哪儿了？",
-            "你买什么了？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 我买了一点儿苹果。",
-            "ru": "Правильный ответ: 我买了一点儿苹果。",
-            "tj": "Ҷавоби дуруст: 我买了一点儿苹果。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "昨天上午你去哪儿了？",
-            "我买了一点儿苹果。",
-            "你买什么了？",
-            "我去商店买东西了。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 我买了一点儿苹果。",
-            "ru": "Правильный ответ: 我买了一点儿苹果。",
-            "tj": "Ҷавоби дуруст: 我买了一点儿苹果。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____天上午你去哪儿了？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "请",
-            "昨",
-            "后",
-            "商"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 昨 — 昨天上午你去哪儿了？ (Kecha ertalab qayerga bordingiz?)",
-            "ru": "Верно: 昨 — 昨天上午你去哪儿了？ (Куда вы ходили вчера утром?)",
-            "tj": "Дуруст: 昨 — 昨天上午你去哪儿了？ (Дирӯз субҳ шумо куҷо рафтед?)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "王方的衣服太漂亮了！",
-          "pinyin": "Wáng Fāng de yīfu tài piàoliang le!",
-          "translation": {
-            "uz": "Van Fanning kiyimlari juda chiroyli!",
-            "ru": "Одежда Ван Фан такая красивая!",
-            "tj": "Либоси Ван Фан хеле зебо аст!"
+            "uz": "bor, ega bo'lmoq",
+            "ru": "иметь, есть",
+            "tj": "доштан, мавҷуд будан"
           }
         }
       ]

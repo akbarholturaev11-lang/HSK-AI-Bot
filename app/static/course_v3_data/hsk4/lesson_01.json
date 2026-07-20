@@ -2,6 +2,10 @@
   "schema_version": 2,
   "level": "hsk4",
   "lesson_id": 1,
+  "source_lesson": 1,
+  "part_no": 1,
+  "part_count": 9,
+  "checkpoint": false,
   "title": "简单的爱情",
   "subtitle": {
     "uz": "sevgi va munosabatlar haqida gapirish; 不仅, 从来, 刚, 即使 va (在)...上 grammatikalarini ishlatish",
@@ -54,314 +58,6 @@
         "ru": "глубокий",
         "tj": "чуқур"
       }
-    },
-    {
-      "no": 5,
-      "zh": "熟悉",
-      "pinyin": "shúxī",
-      "pos": "v.",
-      "meaning": {
-        "uz": "tanish bo'lmoq, yaxshi bilmoq",
-        "ru": "быть знакомым, хорошо знать",
-        "tj": "шинос будан, хуб донистан"
-      }
-    },
-    {
-      "no": 6,
-      "zh": "不仅",
-      "pinyin": "bùjǐn",
-      "pos": "conj.",
-      "meaning": {
-        "uz": "nafaqat",
-        "ru": "не только",
-        "tj": "на танҳо"
-      }
-    },
-    {
-      "no": 7,
-      "zh": "性格",
-      "pinyin": "xìnggé",
-      "pos": "n.",
-      "meaning": {
-        "uz": "xarakter, fe'l-atvor",
-        "ru": "характер",
-        "tj": "хислат, характер"
-      }
-    },
-    {
-      "no": 8,
-      "zh": "开玩笑",
-      "pinyin": "kāi wánxiào",
-      "pos": "v.",
-      "meaning": {
-        "uz": "hazil qilmoq",
-        "ru": "шутить",
-        "tj": "шӯхӣ кардан"
-      }
-    },
-    {
-      "no": 9,
-      "zh": "从来",
-      "pinyin": "cónglái",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "doim; hech qachon (inkor bilan)",
-        "ru": "всегда; никогда (с отрицанием)",
-        "tj": "ҳамеша; ҳеч вақт (бо инкор)"
-      }
-    },
-    {
-      "no": 10,
-      "zh": "最好",
-      "pinyin": "zuìhǎo",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "eng yaxshisi, yaxshisi",
-        "ru": "лучше всего, лучше бы",
-        "tj": "беҳтараш, беҳтарин"
-      }
-    },
-    {
-      "no": 11,
-      "zh": "共同",
-      "pinyin": "gòngtóng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "umumiy, birgalikdagi",
-        "ru": "общий, совместный",
-        "tj": "умумӣ, муштарак"
-      }
-    },
-    {
-      "no": 12,
-      "zh": "适合",
-      "pinyin": "shìhé",
-      "pos": "v.",
-      "meaning": {
-        "uz": "mos kelmoq",
-        "ru": "подходить",
-        "tj": "мувофиқ будан"
-      }
-    },
-    {
-      "no": 13,
-      "zh": "幸福",
-      "pinyin": "xìngfú",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "baxtli",
-        "ru": "счастливый; счастье",
-        "tj": "хушбахт; хушбахтӣ"
-      }
-    },
-    {
-      "no": 14,
-      "zh": "生活",
-      "pinyin": "shēnghuó",
-      "pos": "n./v.",
-      "meaning": {
-        "uz": "hayot; yashamoq",
-        "ru": "жизнь; жить",
-        "tj": "зиндагӣ; зиндагӣ кардан"
-      }
-    },
-    {
-      "no": 15,
-      "zh": "刚",
-      "pinyin": "gāng",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "endi, hozirgina",
-        "ru": "только что, недавно",
-        "tj": "ҳозир, нав"
-      }
-    },
-    {
-      "no": 16,
-      "zh": "浪漫",
-      "pinyin": "làngmàn",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "romantik",
-        "ru": "романтичный",
-        "tj": "романтикӣ"
-      }
-    },
-    {
-      "no": 17,
-      "zh": "够",
-      "pinyin": "gòu",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yetarli bo'lmoq",
-        "ru": "быть достаточным",
-        "tj": "кофӣ будан"
-      }
-    },
-    {
-      "no": 18,
-      "zh": "缺点",
-      "pinyin": "quēdiǎn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "kamchilik",
-        "ru": "недостаток",
-        "tj": "камбудӣ"
-      }
-    },
-    {
-      "no": 19,
-      "zh": "接受",
-      "pinyin": "jiēshòu",
-      "pos": "v.",
-      "meaning": {
-        "uz": "qabul qilmoq",
-        "ru": "принимать",
-        "tj": "қабул кардан"
-      }
-    },
-    {
-      "no": 20,
-      "zh": "羡慕",
-      "pinyin": "xiànmù",
-      "pos": "v.",
-      "meaning": {
-        "uz": "havas qilmoq, qoyil qolmoq",
-        "ru": "завидовать, восхищаться",
-        "tj": "ҳавас кардан, ҳасад бурдан"
-      }
-    },
-    {
-      "no": 21,
-      "zh": "爱情",
-      "pinyin": "àiqíng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "sevgi, muhabbat",
-        "ru": "любовь",
-        "tj": "муҳаббат"
-      }
-    },
-    {
-      "no": 22,
-      "zh": "星星",
-      "pinyin": "xīngxing",
-      "pos": "n.",
-      "meaning": {
-        "uz": "yulduz",
-        "ru": "звезда",
-        "tj": "ситора"
-      }
-    },
-    {
-      "no": 23,
-      "zh": "即使",
-      "pinyin": "jíshǐ",
-      "pos": "conj.",
-      "meaning": {
-        "uz": "hatto ... bo'lsa ham",
-        "ru": "даже если",
-        "tj": "ҳатто агар"
-      }
-    },
-    {
-      "no": 24,
-      "zh": "加班",
-      "pinyin": "jiā bān",
-      "pos": "v.",
-      "meaning": {
-        "uz": "qo'shimcha ishlamoq",
-        "ru": "работать сверхурочно",
-        "tj": "аз вақти кор зиёд кор кардан"
-      }
-    },
-    {
-      "no": 25,
-      "zh": "亮",
-      "pinyin": "liàng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yorishmoq, chiroq yonmoq",
-        "ru": "светиться, гореть",
-        "tj": "равшан будан, фурӯзон будан"
-      }
-    },
-    {
-      "no": 26,
-      "zh": "感动",
-      "pinyin": "gǎndòng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ta'sirlantirmoq",
-        "ru": "тронуть, растрогать",
-        "tj": "таъсир кардан"
-      }
-    },
-    {
-      "no": 27,
-      "zh": "自然",
-      "pinyin": "zìrán",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "tabiiy ravishda",
-        "ru": "естественно",
-        "tj": "табиӣ равишда"
-      }
-    },
-    {
-      "no": 28,
-      "zh": "原因",
-      "pinyin": "yuányīn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "sabab",
-        "ru": "причина",
-        "tj": "сабаб"
-      }
-    },
-    {
-      "no": 29,
-      "zh": "互相",
-      "pinyin": "hùxiāng",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "o'zaro, bir-biriga",
-        "ru": "взаимно, друг друга",
-        "tj": "якдигарро, мутақобилан"
-      }
-    },
-    {
-      "no": 30,
-      "zh": "吸引",
-      "pinyin": "xīyǐn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "jalb qilmoq",
-        "ru": "привлекать",
-        "tj": "ҷалб кардан"
-      }
-    },
-    {
-      "no": 31,
-      "zh": "幽默",
-      "pinyin": "yōumò",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "hazilkash, yumorga boy",
-        "ru": "с юмором, остроумный",
-        "tj": "шӯхтабъ, ҳазломез"
-      }
-    },
-    {
-      "no": 32,
-      "zh": "脾气",
-      "pinyin": "píqi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "fe'l, mijoz, xarakter",
-        "ru": "характер, нрав",
-        "tj": "феъл, хулқ"
-      }
     }
   ],
   "grammar": [
@@ -386,106 +82,6 @@
             "uz": "U nafaqat futbolni yaxshi o'ynaydi, xarakteri ham yaxshi.",
             "ru": "Он не только хорошо играет в футбол, но и характер у него хороший.",
             "tj": "Ӯ на танҳо футболро хуб бозӣ мекунад, хислаташ ҳам хуб аст."
-          }
-        }
-      ]
-    },
-    {
-      "no": 2,
-      "title": {
-        "uz": "doim; hech qachon (inkor bilan)",
-        "ru": "从来 — всегда; никогда (с отрицанием)",
-        "tj": "从来 — ҳамеша; ҳеч вақт (бо инкор)"
-      },
-      "title_zh": "从来",
-      "rule": {
-        "uz": "Odatda inkor bilan kelib, 'hech qachon bunday bo'lmagan' ma'nosini beradi.",
-        "ru": "Чаще всего стоит с отрицанием 不 или 没 и подчеркивает, что такого никогда не было.",
-        "tj": "Одатан бо 不 ё 没 меояд ва таъкид мекунад, ки чунин ҳолат ҳеҷ вақт набудааст."
-      },
-      "examples": [
-        {
-          "zh": "我从来没这么快乐过。",
-          "pinyin": "Wǒ cónglái méi zhème kuàilè guo.",
-          "translation": {
-            "uz": "Men hech qachon bunchalik xursand bo'lmaganman.",
-            "ru": "Я никогда не была такой счастливой.",
-            "tj": "Ман ҳеч вақт ин қадар хушбахт набудам."
-          }
-        }
-      ]
-    },
-    {
-      "no": 3,
-      "title": {
-        "uz": "endi, hozirgina",
-        "ru": "刚 — только что, недавно",
-        "tj": "刚 — ҳозир, нав"
-      },
-      "title_zh": "刚",
-      "rule": {
-        "uz": "Harakat yaqinda yoki endi bo'lganini bildiradi.",
-        "ru": "Показывает, что действие произошло совсем недавно или только началось.",
-        "tj": "Нишон медиҳад, ки амал нав рӯй додааст ё нав оғоз шудааст."
-      },
-      "examples": [
-        {
-          "zh": "我和丈夫刚结婚的时候，每天都觉得很新鲜。",
-          "pinyin": "Wǒ hé zhàngfu gāng jiéhūn de shíhou, měi tiān dōu juéde hěn xīnxiān.",
-          "translation": {
-            "uz": "Erim bilan endi turmush qurgan paytimda har kuni hamma narsa yangi tuyulardi.",
-            "ru": "Когда мы с мужем только поженились, каждый день казался новым.",
-            "tj": "Вақте ману шавҳарам нав издивоҷ карда будем, ҳар рӯз ҳама чиз нав менамуд."
-          }
-        }
-      ]
-    },
-    {
-      "no": 4,
-      "title": {
-        "uz": "hatto ... bo'lsa ham",
-        "ru": "即使...也... — даже если..., все равно...",
-        "tj": "即使...也... — ҳатто агар..., боз ҳам..."
-      },
-      "title_zh": "即使……也……",
-      "rule": {
-        "uz": "Shart kuchli bo'lsa ham natija o'zgarmasligini bildiradi.",
-        "ru": "Показывает, что результат не меняется даже при сильном условии.",
-        "tj": "Нишон медиҳад, ки натиҷа ҳатто бо шарти қавӣ ҳам тағйир намеёбад."
-      },
-      "examples": [
-        {
-          "zh": "即使晚上加班到零点，到家时，自己家里也还亮着灯。",
-          "pinyin": "Jíshǐ wǎnshang jiābān dào língdiǎn, dào jiā shí, zìjǐ jiā lǐ yě hái liàngzhe dēng.",
-          "translation": {
-            "uz": "Hatto kechasi yarimgacha ishlasa ham, uyga kelganda uyida chiroq yonib turadi.",
-            "ru": "Даже если работаешь сверхурочно до полуночи, дома все равно горит свет.",
-            "tj": "Ҳатто агар шаб то нисфи шаб изофакорӣ кунӣ, ҳангоми ба хона расидан чароғи хона ҳанӯз фурӯзон аст."
-          }
-        }
-      ]
-    },
-    {
-      "no": 5,
-      "title": {
-        "uz": "... jihatdan, ... borasida",
-        "ru": "（在）...上 — в плане..., с точки зрения...",
-        "tj": "（在）...上 — аз ҷиҳати..., дар масъалаи..."
-      },
-      "title_zh": "（在）……上",
-      "rule": {
-        "uz": "Mavzu yoki sohani ko'rsatadi: xarakter jihatidan, ish borasida kabi.",
-        "ru": "Указывает область или аспект: в характере, в работе, в учебе и т.д.",
-        "tj": "Соҳа ё ҷиҳатро нишон медиҳад: аз ҷиҳати хислат, кор, таҳсил ва ғайра."
-      },
-      "examples": [
-        {
-          "zh": "更需要性格上互相吸引。",
-          "pinyin": "Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
-          "translation": {
-            "uz": "Xarakter jihatidan bir-birini jalb qilish yanada kerak.",
-            "ru": "Еще важнее взаимное притяжение характеров.",
-            "tj": "Ҷалби ҳамдигар аз ҷиҳати хислат боз ҳам муҳимтар аст."
           }
         }
       ]
@@ -793,25 +389,11 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 2,
-            "zh": "俩",
-            "pinyin": "liǎ",
-            "pos": "num.-m.",
-            "meaning": {
-              "uz": "ikkalasi, ikki kishi",
-              "ru": "двое, оба",
-              "tj": "ду нафар, ҳарду"
-            }
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "俩 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 俩:",
-            "tj": "Маънои калимаи 俩-ро интихоб кунед:"
+            "uz": "法律 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 法律:",
+            "tj": "Маънои калимаи 法律-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -819,6 +401,11 @@
             "tj": "Маъно чист?"
           },
           "options": [
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            },
             {
               "uz": "qonun, huquq",
               "ru": "закон, право",
@@ -833,12 +420,46 @@
               "uz": "chuqur",
               "ru": "глубокий",
               "tj": "чуқур"
-            },
-            {
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "法律 = qonun, huquq (fǎlǜ)",
+            "ru": "法律 = закон, право (fǎlǜ)",
+            "tj": "法律 = қонун, ҳуқуқ (fǎlǜ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "俩",
+            "pinyin": "liǎ",
+            "pos": "num.-m.",
+            "meaning": {
               "uz": "ikkalasi, ikki kishi",
               "ru": "двое, оба",
               "tj": "ду нафар, ҳарду"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liǎ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liǎ?",
+            "tj": "liǎ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "深",
+            "印象",
+            "法律",
+            "俩"
           ],
           "correct_index": 3,
           "explanation": {
@@ -862,6 +483,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "印象 talaffuzini tanlang:",
+            "ru": "Выберите произношение 印象:",
+            "tj": "Талаффузи 印象-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "fǎlǜ",
+            "yìnxiàng",
+            "shēn",
+            "liǎ"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "印象 — yìnxiàng",
+            "ru": "印象 — yìnxiàng",
+            "tj": "印象 — yìnxiàng"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 4,
@@ -876,117 +522,11 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shēn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shēn?",
-            "tj": "shēn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "俩",
-            "法律",
-            "印象",
-            "深"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "深 = chuqur (shēn)",
-            "ru": "深 = глубокий (shēn)",
-            "tj": "深 = чуқур (shēn)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 5,
-            "zh": "熟悉",
-            "pinyin": "shúxī",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tanish bo'lmoq, yaxshi bilmoq",
-              "ru": "быть знакомым, хорошо знать",
-              "tj": "шинос будан, хуб донистан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 6,
-            "zh": "不仅",
-            "pinyin": "bùjǐn",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "nafaqat",
-              "ru": "не только",
-              "tj": "на танҳо"
-            }
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "不仅 talaffuzini tanlang:",
-            "ru": "Выберите произношение 不仅:",
-            "tj": "Талаффузи 不仅-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "bùjǐn",
-            "liǎ",
-            "fǎlǜ",
-            "yìnxiàng"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "不仅 — bùjǐn",
-            "ru": "不仅 — bùjǐn",
-            "tj": "不仅 — bùjǐn"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 7,
-            "zh": "性格",
-            "pinyin": "xìnggé",
-            "pos": "n.",
-            "meaning": {
-              "uz": "xarakter, fe'l-atvor",
-              "ru": "характер",
-              "tj": "хислат, характер"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 8,
-            "zh": "开玩笑",
-            "pinyin": "kāi wánxiào",
-            "pos": "v.",
-            "meaning": {
-              "uz": "hazil qilmoq",
-              "ru": "шутить",
-              "tj": "шӯхӣ кардан"
-            }
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'hazil qilmoq' xitoycha qaysi?",
-            "ru": "'шутить' по-китайски?",
-            "tj": "'шӯхӣ кардан' ба хитоӣ кадом аст?"
+            "uz": "'chuqur' xitoycha qaysi?",
+            "ru": "'глубокий' по-китайски?",
+            "tj": "'чуқур' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -995,43 +535,15 @@
           },
           "options": [
             "印象",
-            "开玩笑",
-            "法律",
-            "俩"
+            "深",
+            "俩",
+            "法律"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "hazil qilmoq = 开玩笑 (kāi wánxiào)",
-            "ru": "шутить = 开玩笑 (kāi wánxiào)",
-            "tj": "шӯхӣ кардан = 开玩笑 (kāi wánxiào)"
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 9,
-            "zh": "从来",
-            "pinyin": "cónglái",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "doim; hech qachon (inkor bilan)",
-              "ru": "всегда; никогда (с отрицанием)",
-              "tj": "ҳамеша; ҳеч вақт (бо инкор)"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 10,
-            "zh": "最好",
-            "pinyin": "zuìhǎo",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "eng yaxshisi, yaxshisi",
-              "ru": "лучше всего, лучше бы",
-              "tj": "беҳтараш, беҳтарин"
-            }
+            "uz": "chuqur = 深 (shēn)",
+            "ru": "глубокий = 深 (shēn)",
+            "tj": "чуқур = 深 (shēn)"
           }
         },
         {
@@ -1041,19 +553,19 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "最好",
-          "pinyin": "zuìhǎo",
+          "audio_text": "法律",
+          "pinyin": "fǎlǜ",
           "options": [
-            "最好",
-            "俩",
+            "深",
             "法律",
+            "俩",
             "印象"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "最好 — eng yaxshisi, yaxshisi (zuìhǎo)",
-            "ru": "最好 — лучше всего, лучше бы (zuìhǎo)",
-            "tj": "最好 — беҳтараш, беҳтарин (zuìhǎo)"
+            "uz": "法律 — qonun, huquq (fǎlǜ)",
+            "ru": "法律 — закон, право (fǎlǜ)",
+            "tj": "法律 — қонун, ҳуқуқ (fǎlǜ)"
           }
         },
         {
@@ -1136,237 +648,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "他____足球踢得好，性格也不错。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "俩",
-            "印象",
-            "不仅",
-            "法律"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 不仅 (bùjǐn) — nafaqat",
-            "ru": "Верно: 不仅 (bùjǐn) — не только",
-            "tj": "Дуруст: 不仅 (bùjǐn) — на танҳо"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 2,
-            "title": {
-              "uz": "doim; hech qachon (inkor bilan)",
-              "ru": "从来 — всегда; никогда (с отрицанием)",
-              "tj": "从来 — ҳамеша; ҳеч вақт (бо инкор)"
-            },
-            "title_zh": "从来",
-            "rule": {
-              "uz": "Odatda inkor bilan kelib, 'hech qachon bunday bo'lmagan' ma'nosini beradi.",
-              "ru": "Чаще всего стоит с отрицанием 不 или 没 и подчеркивает, что такого никогда не было.",
-              "tj": "Одатан бо 不 ё 没 меояд ва таъкид мекунад, ки чунин ҳолат ҳеҷ вақт набудааст."
-            },
-            "examples": [
-              {
-                "zh": "我从来没这么快乐过。",
-                "pinyin": "Wǒ cónglái méi zhème kuàilè guo.",
-                "translation": {
-                  "uz": "Men hech qachon bunchalik xursand bo'lmaganman.",
-                  "ru": "Я никогда не была такой счастливой.",
-                  "tj": "Ман ҳеч вақт ин қадар хушбахт набудам."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "我____没这么快乐过。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "从来",
-            "印象",
-            "法律",
-            "俩"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 从来 (cónglái) — doim; hech qachon (inkor bilan)",
-            "ru": "Верно: 从来 (cónglái) — всегда; никогда (с отрицанием)",
-            "tj": "Дуруст: 从来 (cónglái) — ҳамеша; ҳеч вақт (бо инкор)"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 3,
-            "title": {
-              "uz": "endi, hozirgina",
-              "ru": "刚 — только что, недавно",
-              "tj": "刚 — ҳозир, нав"
-            },
-            "title_zh": "刚",
-            "rule": {
-              "uz": "Harakat yaqinda yoki endi bo'lganini bildiradi.",
-              "ru": "Показывает, что действие произошло совсем недавно или только началось.",
-              "tj": "Нишон медиҳад, ки амал нав рӯй додааст ё нав оғоз шудааст."
-            },
-            "examples": [
-              {
-                "zh": "我和丈夫刚结婚的时候，每天都觉得很新鲜。",
-                "pinyin": "Wǒ hé zhàngfu gāng jiéhūn de shíhou, měi tiān dōu juéde hěn xīnxiān.",
-                "translation": {
-                  "uz": "Erim bilan endi turmush qurgan paytimda har kuni hamma narsa yangi tuyulardi.",
-                  "ru": "Когда мы с мужем только поженились, каждый день казался новым.",
-                  "tj": "Вақте ману шавҳарам нав издивоҷ карда будем, ҳар рӯз ҳама чиз нав менамуд."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 4,
-            "title": {
-              "uz": "hatto ... bo'lsa ham",
-              "ru": "即使...也... — даже если..., все равно...",
-              "tj": "即使...也... — ҳатто агар..., боз ҳам..."
-            },
-            "title_zh": "即使……也……",
-            "rule": {
-              "uz": "Shart kuchli bo'lsa ham natija o'zgarmasligini bildiradi.",
-              "ru": "Показывает, что результат не меняется даже при сильном условии.",
-              "tj": "Нишон медиҳад, ки натиҷа ҳатто бо шарти қавӣ ҳам тағйир намеёбад."
-            },
-            "examples": [
-              {
-                "zh": "即使晚上加班到零点，到家时，自己家里也还亮着灯。",
-                "pinyin": "Jíshǐ wǎnshang jiābān dào língdiǎn, dào jiā shí, zìjǐ jiā lǐ yě hái liàngzhe dēng.",
-                "translation": {
-                  "uz": "Hatto kechasi yarimgacha ishlasa ham, uyga kelganda uyida chiroq yonib turadi.",
-                  "ru": "Даже если работаешь сверхурочно до полуночи, дома все равно горит свет.",
-                  "tj": "Ҳатто агар шаб то нисфи шаб изофакорӣ кунӣ, ҳангоми ба хона расидан чароғи хона ҳанӯз фурӯзон аст."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____晚上加班到零点，到家时，自己家里也还亮着灯。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "印象",
-            "俩",
-            "即使",
-            "法律"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 即使 (jíshǐ) — hatto ... bo'lsa ham",
-            "ru": "Верно: 即使 (jíshǐ) — даже если",
-            "tj": "Дуруст: 即使 (jíshǐ) — ҳатто агар"
-          }
-        },
-        {
-          "type": "_grammar",
-          "g": {
-            "no": 5,
-            "title": {
-              "uz": "... jihatdan, ... borasida",
-              "ru": "（在）...上 — в плане..., с точки зрения...",
-              "tj": "（在）...上 — аз ҷиҳати..., дар масъалаи..."
-            },
-            "title_zh": "（在）……上",
-            "rule": {
-              "uz": "Mavzu yoki sohani ko'rsatadi: xarakter jihatidan, ish borasida kabi.",
-              "ru": "Указывает область или аспект: в характере, в работе, в учебе и т.д.",
-              "tj": "Соҳа ё ҷиҳатро нишон медиҳад: аз ҷиҳати хислат, кор, таҳсил ва ғайра."
-            },
-            "examples": [
-              {
-                "zh": "更需要性格上互相吸引。",
-                "pinyin": "Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
-                "translation": {
-                  "uz": "Xarakter jihatidan bir-birini jalb qilish yanada kerak.",
-                  "ru": "Еще важнее взаимное притяжение характеров.",
-                  "tj": "Ҷалби ҳамдигар аз ҷиҳати хислат боз ҳам муҳимтар аст."
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Xarakter jihatidan bir-birini jalb qilish yanada kerak.",
-            "ru": "Еще важнее взаимное притяжение характеров.",
-            "tj": "Ҷалби ҳамдигар аз ҷиҳати хислат боз ҳам муҳимтар аст."
-          },
-          "tokens": [
-            "俩",
-            "更",
-            "法律",
-            "互相",
-            "上",
-            "需要",
-            "吸引",
-            "性格"
-          ],
-          "answer_tokens": [
-            "更",
-            "需要",
-            "性格",
-            "上",
-            "互相",
-            "吸引"
-          ],
-          "explanation": {
-            "uz": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
-            "ru": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
-            "tj": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn."
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "«U nafaqat futbolni yaxshi o'ynaydi, xarakteri ham yaxshi.» — xitoychada qaysi biri?",
-            "ru": "«Он не только хорошо играет в футбол, но и характер у него хороший.» — какое предложение по-китайски?",
-            "tj": "«Ӯ на танҳо футболро хуб бозӣ мекунад, хислаташ ҳам хуб аст.» — кадом ҷумла ба хитоӣ аст?"
-          },
-          "title": {
-            "uz": "To'g'ri gapni tanlang",
-            "ru": "Выберите верное предложение",
-            "tj": "Ҷумлаи дурустро интихоб кунед"
-          },
-          "options": [
-            "我和丈夫刚结婚的时候，每天都觉得很新鲜。",
-            "他不仅足球踢得好，性格也不错。",
-            "即使晚上加班到零点，到家时，自己家里也还亮着灯。",
-            "更需要性格上互相吸引。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "他不仅足球踢得好，性格也不错。 — Tā bùjǐn zúqiú tī de hǎo, xìnggé yě búcuò.",
-            "ru": "他不仅足球踢得好，性格也不错。 — Tā bùjǐn zúqiú tī de hǎo, xìnggé yě búcuò.",
-            "tj": "他不仅足球踢得好，性格也不错。 — Tā bùjǐn zúqiú tī de hǎo, xìnggé yě búcuò."
-          }
         }
       ]
     },
@@ -1422,53 +703,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-          "pinyin": "Tīngshuō nǐ nánpéngyou Lǐ Jìn gēn nǐ shì yí ge xuéxiào de, shì nǐ tóngxué ma?",
-          "options": [
-            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
-            "那你们俩是怎么认识的？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?",
-            "ru": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?",
-            "tj": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "适合 talaffuzini tanlang:",
-            "ru": "Выберите произношение 适合:",
-            "tj": "Талаффузи 适合-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "liǎ",
-            "fǎlǜ",
-            "shìhé",
-            "yìnxiàng"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "适合 — shìhé",
-            "ru": "适合 — shìhé",
-            "tj": "适合 — shìhé"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "那你们俩是怎么认识的？",
           "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
@@ -1479,33 +713,27 @@
           },
           "tokens": {
             "uz": [
-              "Unda",
-              "tanishgansiz",
-              "Eshitishimcha",
-              "qanday",
-              "ikkalangiz",
               "siz",
-              "yigiting"
+              "tanishgansiz",
+              "ikkalangiz",
+              "Unda",
+              "qanday"
             ],
             "ru": [
+              "Тогда",
               "вы",
               "двое",
-              "Слышала",
-              "познакомились",
-              "Тогда",
               "как",
-              "твой"
+              "познакомились"
             ],
             "tj": [
-              "шудед",
-              "Шунидам",
               "нафар",
-              "шинос",
-              "Пас",
-              "чӣ",
-              "дӯстписарат",
-              "ду",
               "тавр",
+              "шинос",
+              "шудед",
+              "чӣ",
+              "Пас",
+              "ду",
               "шумо"
             ]
           },
@@ -1542,75 +770,50 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "共同 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 共同:",
-            "tj": "Маънои калимаи 共同-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "那你们俩是怎么认识的？",
+          "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
           "options": [
-            {
-              "uz": "umumiy, birgalikdagi",
-              "ru": "общий, совместный",
-              "tj": "умумӣ, муштарак"
-            },
-            {
-              "uz": "taassurot",
-              "ru": "впечатление",
-              "tj": "таассурот"
-            },
-            {
-              "uz": "ikkalasi, ikki kishi",
-              "ru": "двое, оба",
-              "tj": "ду нафар, ҳарду"
-            },
-            {
-              "uz": "qonun, huquq",
-              "ru": "закон, право",
-              "tj": "қонун, ҳуқуқ"
-            }
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+            "那你们俩是怎么认识的？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "共同 = umumiy, birgalikdagi (gòngtóng)",
-            "ru": "共同 = общий, совместный (gòngtóng)",
-            "tj": "共同 = умумӣ, муштарак (gòngtóng)"
+            "uz": "那你们俩是怎么认识的？ — Unda siz ikkalangiz qanday tanishgansiz?",
+            "ru": "那你们俩是怎么认识的？ — Тогда как вы двое познакомились?",
+            "tj": "那你们俩是怎么认识的？ — Пас шумо ду нафар чӣ тавр шинос шудед?"
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Xarakter jihatidan bir-birini jalb qilish yanada kerak.",
-            "ru": "Еще важнее взаимное притяжение характеров.",
-            "tj": "Ҷалби ҳамдигар аз ҷиҳати хислат боз ҳам муҳимтар аст."
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "照相机 talaffuzini tanlang:",
+            "ru": "Выберите произношение 照相机:",
+            "tj": "Талаффузи 照相机-ро интихоб кунед:"
           },
-          "tokens": [
-            "法律",
-            "更",
-            "互相",
-            "需要",
-            "上",
-            "性格",
-            "吸引",
-            "俩"
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhàoxiàngjī",
+            "yìnxiàng",
+            "fǎlǜ",
+            "liǎ"
           ],
-          "answer_tokens": [
-            "更",
-            "需要",
-            "性格",
-            "上",
-            "互相",
-            "吸引"
-          ],
+          "correct_index": 0,
           "explanation": {
-            "uz": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
-            "ru": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
-            "tj": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn."
+            "uz": "照相机 — zhàoxiàngjī",
+            "ru": "照相机 — zhàoxiàngjī",
+            "tj": "照相机 — zhàoxiàngjī"
           }
         },
         {
@@ -1621,15 +824,15 @@
             "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
           },
           "tokens": [
-            "法律",
-            "印象",
-            "怎么",
-            "是",
-            "俩",
             "认识",
-            "那",
+            "是",
+            "印象",
+            "俩",
             "的",
-            "你们"
+            "你们",
+            "怎么",
+            "那",
+            "法律"
           ],
           "answer_tokens": [
             "那",
@@ -1654,172 +857,6 @@
             "uz": "qonun, huquq",
             "ru": "закон, право",
             "tj": "қонун, ҳуқуқ"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 4,
-      "section_title": {
-        "uz": "Dialog",
-        "ru": "Диалог",
-        "tj": "Гуфтугӯ"
-      },
-      "section_purpose": "dialog",
-      "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — nima dedi?",
-            "ru": "Послушайте — что сказали?",
-            "tj": "Гӯш кунед — чӣ гуфт?"
-          },
-          "audio_text": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-          "pinyin": "Tīngshuō nǐ nánpéngyou Lǐ Jìn gēn nǐ shì yí ge xuéxiào de, shì nǐ tóngxué ma?",
-          "options": [
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "那你们俩是怎么认识的？",
-            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?",
-            "ru": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?",
-            "tj": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 王静 nima deydi?",
-            "ru": "Что 王静 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 王静 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "那你们俩是怎么认识的？",
-            "他不仅足球踢得好，性格也不错。",
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 他不仅足球踢得好，性格也不错。",
-            "ru": "Правильный ответ: 他不仅足球踢得好，性格也不错。",
-            "tj": "Ҷавоби дуруст: 他不仅足球踢得好，性格也不错。"
-          }
-        },
-        {
-          "type": "dialog_cloze",
-          "title": {
-            "uz": "Dialogni to'ldiring",
-            "ru": "Дополните диалог",
-            "tj": "Гуфтугӯро пурра кунед"
-          },
-          "lines": [
-            {
-              "speaker": "孙月",
-              "zh": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-              "blank": false
-            },
-            {
-              "speaker": "王静",
-              "zh": "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
-              "blank": false
-            },
-            {
-              "speaker": "孙月",
-              "zh": "那你们俩是怎么认识的？",
-              "blank": false
-            },
-            {
-              "speaker": "王静",
-              "zh": "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
-              "blank": false
-            },
-            {
-              "speaker": "孙月",
-              "zh": "你为什么喜欢他？",
-              "blank": false
-            },
-            {
-              "speaker": "王静",
-              "zh": "",
-              "blank": true
-            }
-          ],
-          "options": [
-            "他不仅足球踢得好，性格也不错。",
-            "那你们俩是怎么认识的？",
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 他不仅足球踢得好，性格也不错。",
-            "ru": "Правильный ответ: 他不仅足球踢得好，性格也不错。",
-            "tj": "Ҷавоби дуруст: 他不仅足球踢得好，性格也不错。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____说你男朋友李进跟你是一个学校的，是你同学吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "阿",
-            "司",
-            "商",
-            "听"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?)",
-            "ru": "Верно: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?)",
-            "tj": "Дуруст: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 孙月 avval nima deydi?",
-            "ru": "Что 孙月 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 孙月 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
-            "那你们俩是怎么认识的？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "ru": "Правильный ответ: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "tj": "Ҷавоби дуруст: 听说你男朋友李进跟你是一个学校的，是你同学吗？"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "那你们俩是怎么认识的？",
-          "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
-          "translation": {
-            "uz": "Unda siz ikkalangiz qanday tanishgansiz?",
-            "ru": "Тогда как вы двое познакомились?",
-            "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
           }
         }
       ]

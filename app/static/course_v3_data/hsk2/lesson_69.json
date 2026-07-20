@@ -1,0 +1,748 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 69,
+  "source_lesson": 15,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "新年就要到了",
+  "subtitle": {
+    "uz": "Yaqin kelajakda bo'ladigan voqeani bildiruvchi '要……了' / '快要……了' va '都……了' konstruktsiyalarini o'rganish.",
+    "ru": "Изучение конструкций '要……了' / '快要……了' для выражения ближайшего будущего и конструкции '都……了'.",
+    "tj": "Омӯзиши конструксияҳои '要……了' / '快要……了' барои ифодаи оянда ва '都……了'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "大家",
+      "pinyin": "dàjiā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "hamma, barchalar",
+        "ru": "все, каждый",
+        "tj": "ҳама, тамоми"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "更",
+      "pinyin": "gèng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "yanada, bundan ham ko'proq",
+        "ru": "ещё более, ещё больше",
+        "tj": "ҳатто бештар, боз ҳам зиёдтар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "妹妹",
+      "pinyin": "mèimei",
+      "pos": "n.",
+      "meaning": {
+        "uz": "singil",
+        "ru": "младшая сестра",
+        "tj": "хоҳари хурдӣ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "'Dōu……le' ta'kid konstruktsiyasi",
+        "ru": "Конструкция '都……了' для выражения удивления",
+        "tj": "Конструксияи '都……了' барои таъкид"
+      },
+      "title_zh": "\"都……了\"",
+      "rule": {
+        "uz": "'Dōu……le' konstruktsiyasi ta'kid bildiradi: vaqt yoki miqdor allaqachon ancha ko'p yoki kutilgandan ortiq bo'lib qoldi. O'zbek tilidagi '…bo'lib ketdi!' yoki '…bo'lib qoldi-ku!' iborasiga o'xshaydi. Ko'pincha hayrat yoki norozilik ifodalamoqda qo'llanadi.",
+        "ru": "Конструкция '都……了' выражает акцент: время или количество уже достигло неожиданного или чрезмерного уровня. Аналог русского 'уже … же!' или 'ну и…!'. Часто выражает удивление или недовольство.",
+        "tj": "Конструксияи '都……了' таъкид мекунад: вақт ё миқдор аллакай ба сатҳи ғайричашмдошт ё аз ҳад зиёд расидааст. Ба ибораҳои '…шуду рафт!' ё '…шуд-ку!' дар тоҷикӣ монанд аст. Аксар вақт ҳайрат ё норозигиро ифода мекунад."
+      },
+      "examples": [
+        {
+          "zh": "都八点四十了！",
+          "pinyin": "Dōu bā diǎn sìshí le!",
+          "translation": {
+            "uz": "Soat sakkiz qirq bo'lib qoldi!",
+            "ru": "Уже восемь сорок!",
+            "tj": "Дигар соати ҳашту чил шуд!"
+          }
+        },
+        {
+          "zh": "都等她半个小时了！",
+          "pinyin": "Dōu děng tā bàn ge xiǎoshí le!",
+          "translation": {
+            "uz": "Uni yarim soatdan beri kutib turibmiz!",
+            "ru": "Мы уже полчаса её ждём!",
+            "tj": "Мо нимсоат интизораш шудем!"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Do'st uyida",
+        "ru": "В доме друга",
+        "tj": "Дар хонаи дӯст"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天是12月20日，新年就要到了。",
+          "pinyin": "Jīntiān shì shí'èr yuè èrshí rì, xīnnián jiù yào dào le.",
+          "text": {
+            "uz": "Bugun 20-dekabr, yangi yil yaqinlashib qoldi.",
+            "ru": "Сегодня 20 декабря, новый год уже совсем скоро.",
+            "tj": "Имрӯз 20 декабр аст, соли нав наздик шуд."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "新年你准备做什么？",
+          "pinyin": "Xīnnián nǐ zhǔnbèi zuò shénme?",
+          "text": {
+            "uz": "Yangi yilda nima qilishni rejalashtirganmisiz?",
+            "ru": "Что ты планируешь делать на новый год?",
+            "tj": "Дар соли нав чӣ кор карданӣ ҳастед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我想去北京旅游，北京很不错，我去过一次。",
+          "pinyin": "Wǒ xiǎng qù Běijīng lǚyóu, Běijīng hěn búcuò, wǒ qùguo yí cì.",
+          "text": {
+            "uz": "Pekinga sayohat qilmoqchiman, Pekin juda yaxshi joy, bir marta borgan edim.",
+            "ru": "Хочу съездить в Пекин, там очень хорошо, я уже был(а) там один раз.",
+            "tj": "Мехоҳам ба Пекин сафар кунам, Пекин хеле хуб аст, як маротиба рафтаам."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你买票了吗？",
+          "pinyin": "Nǐ mǎi piào le ma?",
+          "text": {
+            "uz": "Chipta oldingizmi?",
+            "ru": "Ты уже купил(а) билет?",
+            "tj": "Оё шумо чиптаи сафар харидаед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "还没有呢，明天就去火车站买票。",
+          "pinyin": "Hái méiyǒu ne, míngtiān jiù qù huǒchēzhàn mǎi piào.",
+          "text": {
+            "uz": "Hali olmadim, ertaga vokzalga borib chipta olaman.",
+            "ru": "Ещё нет, завтра пойду на вокзал за билетом.",
+            "tj": "Ҳанӯз не, фардо ба вокзал мераваму чипта мехарам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada",
+        "ru": "В компании",
+        "tj": "Дар ширкат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "时间过得真快，新的一年快要到了！",
+          "pinyin": "Shíjiān guò de zhēn kuài, xīn de yì nián kuài yào dào le!",
+          "text": {
+            "uz": "Vaqt juda tez o'tar ekan, yangi yil ham tez orada keladi!",
+            "ru": "Время летит так быстро, новый год уже вот-вот!",
+            "tj": "Вақт хеле зуд мегузарад, соли нав ҳам наздик шуд!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，谢谢大家这一年对我的帮助！",
+          "pinyin": "Shì a, xièxie dàjiā zhè yì nián duì wǒ de bāngzhù!",
+          "text": {
+            "uz": "Ha, hammaga bu yil menga bergan yordamlari uchun katta rahmat!",
+            "ru": "Да, спасибо всем за помощь в этом году!",
+            "tj": "Бале, ташаккур ба ҳама барои ёрии ин сол!"
+          }
+        },
+        {
+          "speaker": "C",
+          "zh": "希望我们的公司明年更好！",
+          "pinyin": "Xīwàng wǒmen de gōngsī míngnián gèng hǎo!",
+          "text": {
+            "uz": "Umid qilamanki kompaniyamiz kelasi yil yanada yaxshilansin!",
+            "ru": "Надеюсь, в следующем году наша компания будет ещё лучше!",
+            "tj": "Умедворам ширкати мо соли оянда боз ҳам беҳтар шавад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Stantsiyada",
+        "ru": "На станции",
+        "tj": "Дар истгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你妹妹怎么还没来？都八点四十了！",
+          "pinyin": "Nǐ mèimei zěnme hái méi lái? Dōu bā diǎn sìshí le!",
+          "text": {
+            "uz": "Singling nima uchun hali kelmadi? Soat sakkiz qirq bo'lib qoldi!",
+            "ru": "Почему твоя сестра ещё не пришла? Уже восемь сорок!",
+            "tj": "Чаро хоҳари хурдиат ҳанӯз наомад? Дигар соати ҳашту чил шуд!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们再等她几分钟吧。",
+          "pinyin": "Wǒmen zài děng tā jǐ fēnzhōng ba.",
+          "text": {
+            "uz": "Uni yana bir necha daqiqa kutaylik.",
+            "ru": "Давай подождём её ещё несколько минут.",
+            "tj": "Биёед чанд дақиқаи дигар интизораш шавем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "都等她半个小时了！",
+          "pinyin": "Dōu děng tā bàn ge xiǎoshí le!",
+          "text": {
+            "uz": "Uni yarim soatdan beri kutib turibmiz!",
+            "ru": "Мы уже полчаса её ждём!",
+            "tj": "Мо нимсоат интизораш шудем!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她来了，我听见她说话了。",
+          "pinyin": "Tā lái le, wǒ tīngjiàn tā shuōhuà le.",
+          "text": {
+            "uz": "U keldi, uning gapirayotganini eshitdim.",
+            "ru": "Она пришла, я слышу, как она говорит.",
+            "tj": "Вай омад, ман садои ӯро шунидам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxona oldida",
+        "ru": "У входа в кафе",
+        "tj": "Дар пеши қаҳвахона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "天阴了，我要回去了。",
+          "pinyin": "Tiān yīn le, wǒ yào huíqù le.",
+          "text": {
+            "uz": "Osmon bulutlandi, ketishim kerak.",
+            "ru": "Небо затянулось тучами, мне нужно идти.",
+            "tj": "Осмон абрнок шуд, бояд бираваm."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好的，快要下雨了，你路上慢点儿。",
+          "pinyin": "Hǎo de, kuài yào xiàyǔ le, nǐ lùshang màn diǎnr.",
+          "text": {
+            "uz": "Yaxshi, tez orada yomg'ir yog'adi, yo'lda ehtiyot bo'ling.",
+            "ru": "Хорошо, скоро пойдёт дождь, будьте осторожны в дороге.",
+            "tj": "Хуб, зуд борон мешавад, дар роҳ эҳтиёт шавед."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "没关系，我坐公共汽车。",
+          "pinyin": "Méi guānxi, wǒ zuò gōnggòng qìchē.",
+          "text": {
+            "uz": "Muammo yo'q, men avtobus bilan boraman.",
+            "ru": "Ничего, я поеду на автобусе.",
+            "tj": "Мушкил нест, ман бо автобус мераваm."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好的，再见。",
+          "pinyin": "Hǎo de, zàijiàn.",
+          "text": {
+            "uz": "Yaxshi, xayr.",
+            "ru": "Хорошо, до свидания.",
+            "tj": "Хуб, хайр."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "大家",
+            "pinyin": "dàjiā",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "hamma, barchalar",
+              "ru": "все, каждый",
+              "tj": "ҳама, тамоми"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hamma, barchalar' xitoycha qaysi?",
+            "ru": "'все, каждый' по-китайски?",
+            "tj": "'ҳама, тамоми' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "大家",
+            "票",
+            "日",
+            "新年"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "hamma, barchalar = 大家 (dàjiā)",
+            "ru": "все, каждый = 大家 (dàjiā)",
+            "tj": "ҳама, тамоми = 大家 (dàjiā)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "更",
+            "pinyin": "gèng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "yanada, bundan ham ko'proq",
+              "ru": "ещё более, ещё больше",
+              "tj": "ҳатто бештар, боз ҳам зиёдтар"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "更",
+          "pinyin": "gèng",
+          "options": [
+            "更",
+            "票",
+            "新年",
+            "日"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "更 — yanada, bundan ham ko'proq (gèng)",
+            "ru": "更 — ещё более, ещё больше (gèng)",
+            "tj": "更 — ҳатто бештар, боз ҳам зиёдтар (gèng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "妹妹",
+            "pinyin": "mèimei",
+            "pos": "n.",
+            "meaning": {
+              "uz": "singil",
+              "ru": "младшая сестра",
+              "tj": "хоҳари хурдӣ"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "妹妹",
+          "pinyin": "mèimei",
+          "translation": {
+            "uz": "singil",
+            "ru": "младшая сестра",
+            "tj": "хоҳари хурдӣ"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "妹妹 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 妹妹:",
+            "tj": "Маънои калимаи 妹妹-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "singil",
+              "ru": "младшая сестра",
+              "tj": "хоҳари хурдӣ"
+            },
+            {
+              "uz": "chipta, bilet",
+              "ru": "билет",
+              "tj": "чиптаи сафар"
+            },
+            {
+              "uz": "yangi yil",
+              "ru": "новый год",
+              "tj": "соли нав"
+            },
+            {
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "妹妹 = singil (mèimei)",
+            "ru": "妹妹 = младшая сестра (mèimei)",
+            "tj": "妹妹 = хоҳари хурдӣ (mèimei)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dàjiā qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dàjiā?",
+            "tj": "dàjiā кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "新年",
+            "日",
+            "票",
+            "大家"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "大家 = hamma, barchalar (dàjiā)",
+            "ru": "大家 = все, каждый (dàjiā)",
+            "tj": "大家 = ҳама, тамоми (dàjiā)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "大家",
+              {
+                "uz": "hamma, barchalar",
+                "ru": "все, каждый",
+                "tj": "ҳама, тамоми"
+              }
+            ],
+            [
+              "更",
+              {
+                "uz": "yanada, bundan ham ko'proq",
+                "ru": "ещё более, ещё больше",
+                "tj": "ҳатто бештар, боз ҳам зиёдтар"
+              }
+            ],
+            [
+              "妹妹",
+              {
+                "uz": "singil",
+                "ru": "младшая сестра",
+                "tj": "хоҳари хурдӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "'Dōu……le' ta'kid konstruktsiyasi",
+              "ru": "Конструкция '都……了' для выражения удивления",
+              "tj": "Конструксияи '都……了' барои таъкид"
+            },
+            "title_zh": "\"都……了\"",
+            "rule": {
+              "uz": "'Dōu……le' konstruktsiyasi ta'kid bildiradi: vaqt yoki miqdor allaqachon ancha ko'p yoki kutilgandan ortiq bo'lib qoldi. O'zbek tilidagi '…bo'lib ketdi!' yoki '…bo'lib qoldi-ku!' iborasiga o'xshaydi. Ko'pincha hayrat yoki norozilik ifodalamoqda qo'llanadi.",
+              "ru": "Конструкция '都……了' выражает акцент: время или количество уже достигло неожиданного или чрезмерного уровня. Аналог русского 'уже … же!' или 'ну и…!'. Часто выражает удивление или недовольство.",
+              "tj": "Конструксияи '都……了' таъкид мекунад: вақт ё миқдор аллакай ба сатҳи ғайричашмдошт ё аз ҳад зиёд расидааст. Ба ибораҳои '…шуду рафт!' ё '…шуд-ку!' дар тоҷикӣ монанд аст. Аксар вақт ҳайрат ё норозигиро ифода мекунад."
+            },
+            "examples": [
+              {
+                "zh": "都八点四十了！",
+                "pinyin": "Dōu bā diǎn sìshí le!",
+                "translation": {
+                  "uz": "Soat sakkiz qirq bo'lib qoldi!",
+                  "ru": "Уже восемь сорок!",
+                  "tj": "Дигар соати ҳашту чил шуд!"
+                }
+              },
+              {
+                "zh": "都等她半个小时了！",
+                "pinyin": "Dōu děng tā bàn ge xiǎoshí le!",
+                "translation": {
+                  "uz": "Uni yarim soatdan beri kutib turibmiz!",
+                  "ru": "Мы уже полчаса её ждём!",
+                  "tj": "Мо нимсоат интизораш шудем!"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "北京比这儿更好玩儿。",
+          "pinyin": "Běijīng bǐ zhèr gèng hǎo wánr.",
+          "translation": {
+            "uz": "Pekin bu yerdan yanada qiziqarliroq.",
+            "ru": "В Пекине ещё интереснее, чем здесь.",
+            "tj": "Пекин аз ин ҷо боз ҳам ҷолибтар аст."
+          },
+          "tokens": {
+            "uz": [
+              "yerdan",
+              "qiziqarliroq",
+              "yanada",
+              "Pekin",
+              "bu"
+            ],
+            "ru": [
+              "Пекине",
+              "чем",
+              "В",
+              "интереснее",
+              "здесь",
+              "ещё"
+            ],
+            "tj": [
+              "ин",
+              "ҷолибтар",
+              "аз",
+              "ҷо",
+              "боз",
+              "Пекин",
+              "ҳам",
+              "аст"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Pekin",
+              "bu",
+              "yerdan",
+              "yanada",
+              "qiziqarliroq"
+            ],
+            "ru": [
+              "В",
+              "Пекине",
+              "ещё",
+              "интереснее",
+              "чем",
+              "здесь"
+            ],
+            "tj": [
+              "Пекин",
+              "аз",
+              "ин",
+              "ҷо",
+              "боз",
+              "ҳам",
+              "ҷолибтар",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "北京比这儿更好玩儿。 — Pekin bu yerdan yanada qiziqarliroq.",
+            "ru": "北京比这儿更好玩儿。 — В Пекине ещё интереснее, чем здесь.",
+            "tj": "北京比这儿更好玩儿。 — Пекин аз ин ҷо боз ҳам ҷолибтар аст."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "大家",
+              {
+                "uz": "hamma, barchalar",
+                "ru": "все, каждый",
+                "tj": "ҳама, тамоми"
+              }
+            ],
+            [
+              "更",
+              {
+                "uz": "yanada, bundan ham ko'proq",
+                "ru": "ещё более, ещё больше",
+                "tj": "ҳатто бештар, боз ҳам зиёдтар"
+              }
+            ],
+            [
+              "妹妹",
+              {
+                "uz": "singil",
+                "ru": "младшая сестра",
+                "tj": "хоҳари хурдӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Pekin bu yerdan yanada qiziqarliroq.",
+            "ru": "В Пекине ещё интереснее, чем здесь.",
+            "tj": "Пекин аз ин ҷо боз ҳам ҷолибтар аст."
+          },
+          "tokens": [
+            "玩儿",
+            "比",
+            "这儿",
+            "好",
+            "更",
+            "日",
+            "北京",
+            "新年"
+          ],
+          "answer_tokens": [
+            "北京",
+            "比",
+            "这儿",
+            "更",
+            "好",
+            "玩儿"
+          ],
+          "explanation": {
+            "uz": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr.",
+            "ru": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr.",
+            "tj": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "妹妹",
+          "pinyin": "mèimei",
+          "options": [
+            "新年",
+            "妹妹",
+            "日",
+            "票"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "妹妹 — singil (mèimei)",
+            "ru": "妹妹 — младшая сестра (mèimei)",
+            "tj": "妹妹 — хоҳари хурдӣ (mèimei)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "日 talaffuzini tanlang:",
+            "ru": "Выберите произношение 日:",
+            "tj": "Талаффузи 日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huǒchēzhàn",
+            "xīnnián",
+            "piào",
+            "rì"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "日 — rì",
+            "ru": "日 — rì",
+            "tj": "日 — rì"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "妹妹",
+          "pinyin": "mèimei",
+          "translation": {
+            "uz": "singil",
+            "ru": "младшая сестра",
+            "tj": "хоҳари хурдӣ"
+          }
+        }
+      ]
+    }
+  ]
+}

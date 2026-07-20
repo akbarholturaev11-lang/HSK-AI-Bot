@@ -1,0 +1,728 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 61,
+  "source_lesson": 15,
+  "part_no": 2,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我是坐飞机来的",
+  "subtitle": {
+    "uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash",
+    "ru": "Конструкция 是……的 — выделение времени, места и способа действия",
+    "tj": "Сохти 是……的 — таъкиди вақт, ҷой ва усули амал"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "饭店",
+      "pinyin": "fàndiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "restoran, mehmonxona",
+        "ru": "ресторан, гостиница",
+        "tj": "тарабхона, меҳмонхона"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "出租车",
+      "pinyin": "chūzūchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "taksi",
+        "ru": "такси",
+        "tj": "таксӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "一起",
+      "pinyin": "yīqǐ",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "birga",
+        "ru": "вместе",
+        "tj": "якҷоя"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "To'liq sana ifodalash (2)",
+        "ru": "Выражение полной даты (2)",
+        "tj": "Ифодаи санаи пурра (2)"
+      },
+      "title_zh": "日期的表达(2) — To'liq sana ifodalash",
+      "rule": {
+        "uz": "Xitoy tilida to'liq sana eng kattadan eng kichigiga qadar ifodalanadi:\nYil + Oy + Kun + Haftaning kuni\n\nYilni o'qish: har bir raqam alohida o'qiladi\n2011 → 二零一一年 (èr líng yī yī nián)\n2024 → 二零二四年 (èr líng èr sì nián)\n\nTo'liq misol:\n2011年9月10号，星期三\n2011-yil, sentabr, 10-chi, chorshanba",
+        "ru": "В китайском языке полная дата выражается от большего к меньшему:\nГод + Месяц + День + День недели\n\nЧтение года: каждая цифра читается отдельно\n2011 → 二零一一年 (èr líng yī yī nián)\n2024 → 二零二四年 (èr líng èr sì nián)\n\nПолный пример:\n2011年9月10号，星期三\n2011 год, сентябрь, 10-е, среда",
+        "tj": "Дар забони чинӣ санаи пурра аз калон ба хурд ифода мешавад:\nСол + Моҳ + Рӯз + Рӯзи ҳафта\n\nХондани сол: ҳар рақам алоҳида хонда мешавад\n2011 → 二零一一年 (èr líng yī yī nián)\n2024 → 二零二四年 (èr líng èr sì nián)\n\nМисоли пурра:\n2011年9月10号，星期三\nСоли 2011, сентябр, 10-ум, чоршанбе"
+      },
+      "examples": [
+        {
+          "zh": "2011年9月认识的",
+          "pinyin": "èr líng yī yī nián jiǔ yuè rènshi de",
+          "translation": {
+            "uz": "2011-yilning sentabrida tanishgan",
+            "ru": "познакомились в сентябре 2011 года",
+            "tj": "дар моҳи сентябри соли 2011 шинос шудем"
+          }
+        },
+        {
+          "zh": "今天是2024年4月26号。",
+          "pinyin": "Jīntiān shì èr líng èr sì nián sì yuè èrshíliù hào.",
+          "translation": {
+            "uz": "Bugun 2024-yilning 26-apreli.",
+            "ru": "Сегодня 26 апреля 2024 года.",
+            "tj": "Имрӯз 26-уми апрели соли 2024 аст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Dasturxon yonida — qachon va qayerda tanishdingiz",
+        "ru": "За столом — когда и где познакомились",
+        "tj": "Дар сари дастурхон — кай ва дар куҷо шинос шудед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你和李小姐是什么时候认识的？",
+          "pinyin": "Nǐ hé Lǐ xiǎojiě shì shénme shíhou rènshi de?",
+          "text": {
+            "uz": "Siz Xonim Li bilan qachon tanishdingiz?",
+            "ru": "Когда вы познакомились с мисс Ли?",
+            "tj": "Шумо бо хонум Ли кай шинос шудед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是2011年9月认识的。",
+          "pinyin": "Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
+          "text": {
+            "uz": "Biz 2011-yilning sentabrida tanishdik.",
+            "ru": "Мы познакомились в сентябре 2011 года.",
+            "tj": "Мо дар моҳи сентябри соли 2011 шинос шудем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你们在哪儿认识的？",
+          "pinyin": "Nǐmen zài nǎr rènshi de?",
+          "text": {
+            "uz": "Siz ikkovingiz qayerda tanishdingiz?",
+            "ru": "Где вы двое познакомились?",
+            "tj": "Шумо дуто дар куҷо шинос шудед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是在学校认识的，她是我大学同学。",
+          "pinyin": "Wǒmen shì zài xuéxiào rènshi de, tā shì wǒ dàxué tóngxué.",
+          "text": {
+            "uz": "Biz maktabda tanishdik, u mening universitetdosh do'stim.",
+            "ru": "Мы познакомились в школе; она моя однокурсница.",
+            "tj": "Мо дар мактаб шинос шудем, вай ҳамдарси донишгоҳии ман аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxona oldida — qanday keldingiz",
+        "ru": "Перед гостиницей — как добрались",
+        "tj": "Дар назди меҳмонхона — чӣ гуна омадед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你们是怎么来饭店的？",
+          "pinyin": "Nǐmen shì zěnme lái fàndiàn de?",
+          "text": {
+            "uz": "Siz restoranga qanday keldingiz?",
+            "ru": "Как вы добрались до ресторана?",
+            "tj": "Шумо ба тарабхона чӣ гуна омадед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是坐出租车来的。",
+          "pinyin": "Wǒmen shì zuò chūzūchē lái de.",
+          "text": {
+            "uz": "Biz taksi bilan keldik.",
+            "ru": "Мы приехали на такси.",
+            "tj": "Мо бо таксӣ омадем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "李先生呢？",
+          "pinyin": "Lǐ xiānsheng ne?",
+          "text": {
+            "uz": "Janob Li-chi?",
+            "ru": "А господин Ли?",
+            "tj": "Ҷаноб Ли чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他是和朋友一起开车来的。",
+          "pinyin": "Tā shì hé péngyou yīqǐ kāi chē lái de.",
+          "text": {
+            "uz": "U do'sti bilan birga mashina haydab keldi.",
+            "ru": "Он приехал вместе с другом на машине.",
+            "tj": "Вай бо дӯсташ якҷоя бо мошин омад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada — samolyot bilan kelding",
+        "ru": "В компании — прилетел на самолёте",
+        "tj": "Дар ширкат — бо ҳавопаймо омадед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "很高兴认识您！李小姐。",
+          "pinyin": "Hěn gāoxìng rènshi nín! Lǐ xiǎojiě.",
+          "text": {
+            "uz": "Siz bilan tanishganimdan juda xursandman, Xonim Li!",
+            "ru": "Очень рад познакомиться с вами, мисс Ли!",
+            "tj": "Аз шиноси бо шумо бисёр хурсандам, хонум Ли!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "认识你我也很高兴！",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
+          "text": {
+            "uz": "Siz bilan tanishganimdan men ham juda xursandman!",
+            "ru": "Мне тоже очень приятно познакомиться с вами!",
+            "tj": "Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "听张先生说，您是坐飞机来北京的？",
+          "pinyin": "Tīng Zhāng xiānsheng shuō, nín shì zuò fēijī lái Běijīng de?",
+          "text": {
+            "uz": "Janob Jan aytishicha, siz Pekinga samolyot bilan kelgansiz?",
+            "ru": "Господин Чжан сказал, что вы прилетели в Пекин на самолёте?",
+            "tj": "Ҷаноб Чжан гуфт, ки шумо ба Пекин бо ҳавопаймо омадед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是的。",
+          "pinyin": "Shì de.",
+          "text": {
+            "uz": "Ha, to'g'ri.",
+            "ru": "Да, именно.",
+            "tj": "Бале, дуруст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "饭店",
+            "pinyin": "fàndiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "restoran, mehmonxona",
+              "ru": "ресторан, гостиница",
+              "tj": "тарабхона, меҳмонхона"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "饭店",
+          "pinyin": "fàndiàn",
+          "translation": {
+            "uz": "restoran, mehmonxona",
+            "ru": "ресторан, гостиница",
+            "tj": "тарабхона, меҳмонхона"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "饭店 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 饭店:",
+            "tj": "Маънои калимаи 饭店-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "restoran, mehmonxona",
+              "ru": "ресторан, гостиница",
+              "tj": "тарабхона, меҳмонхона"
+            },
+            {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            },
+            {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
+            },
+            {
+              "uz": "yil",
+              "ru": "год",
+              "tj": "сол"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "饭店 = restoran, mehmonxona (fàndiàn)",
+            "ru": "饭店 = ресторан, гостиница (fàndiàn)",
+            "tj": "饭店 = тарабхона, меҳмонхона (fàndiàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "出租车",
+            "pinyin": "chūzūchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "taksi",
+              "ru": "такси",
+              "tj": "таксӣ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chūzūchē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chūzūchē?",
+            "tj": "chūzūchē кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "年",
+            "大学",
+            "出租车",
+            "认识"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "出租车 = taksi (chūzūchē)",
+            "ru": "出租车 = такси (chūzūchē)",
+            "tj": "出租车 = таксӣ (chūzūchē)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "一起",
+            "pinyin": "yīqǐ",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "birga",
+              "ru": "вместе",
+              "tj": "якҷоя"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "一起 talaffuzini tanlang:",
+            "ru": "Выберите произношение 一起:",
+            "tj": "Талаффузи 一起-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "rènshi",
+            "yīqǐ",
+            "nián",
+            "dàxué"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "一起 — yīqǐ",
+            "ru": "一起 — yīqǐ",
+            "tj": "一起 — yīqǐ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'restoran, mehmonxona' xitoycha qaysi?",
+            "ru": "'ресторан, гостиница' по-китайски?",
+            "tj": "'тарабхона, меҳмонхона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "年",
+            "饭店",
+            "认识",
+            "大学"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "restoran, mehmonxona = 饭店 (fàndiàn)",
+            "ru": "ресторан, гостиница = 饭店 (fàndiàn)",
+            "tj": "тарабхона, меҳмонхона = 饭店 (fàndiàn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "饭店",
+              {
+                "uz": "restoran, mehmonxona",
+                "ru": "ресторан, гостиница",
+                "tj": "тарабхона, меҳмонхона"
+              }
+            ],
+            [
+              "出租车",
+              {
+                "uz": "taksi",
+                "ru": "такси",
+                "tj": "таксӣ"
+              }
+            ],
+            [
+              "一起",
+              {
+                "uz": "birga",
+                "ru": "вместе",
+                "tj": "якҷоя"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "To'liq sana ifodalash (2)",
+              "ru": "Выражение полной даты (2)",
+              "tj": "Ифодаи санаи пурра (2)"
+            },
+            "title_zh": "日期的表达(2) — To'liq sana ifodalash",
+            "rule": {
+              "uz": "Xitoy tilida to'liq sana eng kattadan eng kichigiga qadar ifodalanadi:\nYil + Oy + Kun + Haftaning kuni\n\nYilni o'qish: har bir raqam alohida o'qiladi\n2011 → 二零一一年 (èr líng yī yī nián)\n2024 → 二零二四年 (èr líng èr sì nián)\n\nTo'liq misol:\n2011年9月10号，星期三\n2011-yil, sentabr, 10-chi, chorshanba",
+              "ru": "В китайском языке полная дата выражается от большего к меньшему:\nГод + Месяц + День + День недели\n\nЧтение года: каждая цифра читается отдельно\n2011 → 二零一一年 (èr líng yī yī nián)\n2024 → 二零二四年 (èr líng èr sì nián)\n\nПолный пример:\n2011年9月10号，星期三\n2011 год, сентябрь, 10-е, среда",
+              "tj": "Дар забони чинӣ санаи пурра аз калон ба хурд ифода мешавад:\nСол + Моҳ + Рӯз + Рӯзи ҳафта\n\nХондани сол: ҳар рақам алоҳида хонда мешавад\n2011 → 二零一一年 (èr líng yī yī nián)\n2024 → 二零二四年 (èr líng èr sì nián)\n\nМисоли пурра:\n2011年9月10号，星期三\nСоли 2011, сентябр, 10-ум, чоршанбе"
+            },
+            "examples": [
+              {
+                "zh": "2011年9月认识的",
+                "pinyin": "èr líng yī yī nián jiǔ yuè rènshi de",
+                "translation": {
+                  "uz": "2011-yilning sentabrida tanishgan",
+                  "ru": "познакомились в сентябре 2011 года",
+                  "tj": "дар моҳи сентябри соли 2011 шинос шудем"
+                }
+              },
+              {
+                "zh": "今天是2024年4月26号。",
+                "pinyin": "Jīntiān shì èr líng èr sì nián sì yuè èrshíliù hào.",
+                "translation": {
+                  "uz": "Bugun 2024-yilning 26-apreli.",
+                  "ru": "Сегодня 26 апреля 2024 года.",
+                  "tj": "Имрӯз 26-уми апрели соли 2024 аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "2011-yilning sentabrida tanishgan",
+            "ru": "познакомились в сентябре 2011 года",
+            "tj": "дар моҳи сентябри соли 2011 шинос шудем"
+          },
+          "tokens": [
+            "大学",
+            "认识",
+            "年",
+            "月",
+            "的",
+            "饭店"
+          ],
+          "answer_tokens": [
+            "年",
+            "月",
+            "认识",
+            "的"
+          ],
+          "explanation": {
+            "uz": "2011年9月认识的 — èr líng yī yī nián jiǔ yuè rènshi de",
+            "ru": "2011年9月认识的 — èr líng yī yī nián jiǔ yuè rènshi de",
+            "tj": "2011年9月认识的 — èr líng yī yī nián jiǔ yuè rènshi de"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我们是坐出租车来的。",
+          "pinyin": "Wǒmen shì zuò chūzūchē lái de.",
+          "options": [
+            "你和李小姐是什么时候认识的？",
+            "我们是2011年9月认识的。",
+            "你们在哪儿认识的？",
+            "我们是坐出租车来的。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我们是坐出租车来的。 — Biz taksi bilan keldik.",
+            "ru": "我们是坐出租车来的。 — Мы приехали на такси.",
+            "tj": "我们是坐出租车来的。 — Мо бо таксӣ омадем."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你们是怎么来饭店的？",
+          "pinyin": "Nǐmen shì zěnme lái fàndiàn de?",
+          "translation": {
+            "uz": "Siz restoranga qanday keldingiz?",
+            "ru": "Как вы добрались до ресторана?",
+            "tj": "Шумо ба тарабхона чӣ гуна омадед?"
+          },
+          "tokens": {
+            "uz": [
+              "qanday",
+              "keldingiz",
+              "Biz",
+              "taksi",
+              "Siz",
+              "restoranga"
+            ],
+            "ru": [
+              "Как",
+              "Мы",
+              "приехали",
+              "ресторана",
+              "вы",
+              "до",
+              "добрались"
+            ],
+            "tj": [
+              "омадед",
+              "гуна",
+              "Мо",
+              "бо",
+              "тарабхона",
+              "чӣ",
+              "Шумо",
+              "ба"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Siz",
+              "restoranga",
+              "qanday",
+              "keldingiz"
+            ],
+            "ru": [
+              "Как",
+              "вы",
+              "добрались",
+              "до",
+              "ресторана"
+            ],
+            "tj": [
+              "Шумо",
+              "ба",
+              "тарабхона",
+              "чӣ",
+              "гуна",
+              "омадед"
+            ]
+          },
+          "explanation": {
+            "uz": "你们是怎么来饭店的？ — Siz restoranga qanday keldingiz?",
+            "ru": "你们是怎么来饭店的？ — Как вы добрались до ресторана?",
+            "tj": "你们是怎么来饭店的？ — Шумо ба тарабхона чӣ гуна омадед?"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "认识 talaffuzini tanlang:",
+            "ru": "Выберите произношение 认识:",
+            "tj": "Талаффузи 认识-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dàxué",
+            "rènshi",
+            "nián",
+            "fàndiàn"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "认识 — rènshi",
+            "ru": "认识 — rènshi",
+            "tj": "认识 — rènshi"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz restoranga qanday keldingiz?",
+            "ru": "Как вы добрались до ресторана?",
+            "tj": "Шумо ба тарабхона чӣ гуна омадед?"
+          },
+          "tokens": [
+            "来",
+            "怎么",
+            "是",
+            "饭店",
+            "的",
+            "认识",
+            "年",
+            "你们"
+          ],
+          "answer_tokens": [
+            "你们",
+            "是",
+            "怎么",
+            "来",
+            "饭店",
+            "的"
+          ],
+          "explanation": {
+            "uz": "你们是怎么来饭店的？ — Nǐmen shì zěnme lái fàndiàn de?",
+            "ru": "你们是怎么来饭店的？ — Nǐmen shì zěnme lái fàndiàn de?",
+            "tj": "你们是怎么来饭店的？ — Nǐmen shì zěnme lái fàndiàn de?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "出租车",
+          "pinyin": "chūzūchē",
+          "translation": {
+            "uz": "taksi",
+            "ru": "такси",
+            "tj": "таксӣ"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yīqǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yīqǐ?",
+            "tj": "yīqǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "年",
+            "认识",
+            "一起",
+            "大学"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "一起 = birga (yīqǐ)",
+            "ru": "一起 = вместе (yīqǐ)",
+            "tj": "一起 = якҷоя (yīqǐ)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "饭店",
+          "pinyin": "fàndiàn",
+          "translation": {
+            "uz": "restoran, mehmonxona",
+            "ru": "ресторан, гостиница",
+            "tj": "тарабхона, меҳмонхона"
+          }
+        }
+      ]
+    }
+  ]
+}

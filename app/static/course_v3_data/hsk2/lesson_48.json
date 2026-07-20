@@ -1,0 +1,650 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 48,
+  "source_lesson": 10,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "别找了，手机在桌子上呢",
+  "subtitle": {
+    "uz": "Buyruq gaplarini ('别……了'), 'duì' old ko'makchisini va 'zhèngzài' davom ko'rsatkichini ishlatishni o'rganish.",
+    "ru": "Научиться использовать побудительные предложения ('别……了'), предлог 'duì' и показатель продолжения 'zhèngzài'.",
+    "tj": "Омӯзиши истифодаи ҷумлаҳои фармоишӣ ('别……了'), пешоянди 'duì' ва нишондиҳандаи давомнокии 'zhèngzài'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "身体",
+      "pinyin": "shēntǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tana, sog'liq",
+        "ru": "тело, здоровье",
+        "tj": "тан, саломатӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "准备",
+      "pinyin": "zhǔnbèi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tayyorlanmoq, tayyorlamoq",
+        "ru": "готовиться, подготавливать",
+        "tj": "омода шудан, тайёр кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "报纸",
+      "pinyin": "bàozhǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "gazeta",
+        "ru": "газета",
+        "tj": "рӯзнома"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "别看电视了，明天上午还有汉语课呢。",
+          "pinyin": "Bié kàn diànshì le，míngtiān shàngwǔ hái yǒu Hànyǔ kè ne.",
+          "text": {
+            "uz": "Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.",
+            "ru": "Хватит смотреть телевизор, завтра утром ещё есть урок китайского.",
+            "tj": "Дигар телевизор нагард, фардо субҳ боз дарси чинӣ аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "看电视对学汉语有帮助。",
+          "pinyin": "Kàn diànshì duì xué Hànyǔ yǒu bāngzhù.",
+          "text": {
+            "uz": "Televizor ko'rish xitoy tili o'rganishga yordam beradi.",
+            "ru": "Просмотр телевизора помогает в изучении китайского.",
+            "tj": "Тамошои телевизор дар омӯхтани чинӣ кӯмак мекунад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "明天的课你都准备好了吗？",
+          "pinyin": "Míngtiān de kè nǐ dōu zhǔnbèi hǎo le ma?",
+          "text": {
+            "uz": "Ertangi darsga to'liq tayyorlandingizmi?",
+            "ru": "Ты полностью подготовился к завтрашнему уроку?",
+            "tj": "Оё ту ба дарси фардо пурра омода шудӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "都准备好了。",
+          "pinyin": "Dōu zhǔnbèi hǎo le.",
+          "text": {
+            "uz": "Hammasi tayyor.",
+            "ru": "Всё готово.",
+            "tj": "Ҳама омода."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada",
+        "ru": "В больнице",
+        "tj": "Дар беморхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "别看报纸了，医生说你要多休息。",
+          "pinyin": "Bié kàn bàozhǐ le，yīshēng shuō nǐ yào duō xiūxi.",
+          "text": {
+            "uz": "Gazeta o'qishni bas qil, shifokor ko'proq dam olishing kerak dedi.",
+            "ru": "Хватит читать газету, доктор сказал, что тебе нужно больше отдыхать.",
+            "tj": "Дигар рӯзнома нахон, духтур гуфт, ки ту бояд бештар истироҳат кунӣ."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，不看了。给我一杯茶吧。",
+          "pinyin": "Hǎo，bù kàn le. Gěi wǒ yì bēi chá ba.",
+          "text": {
+            "uz": "Yaxshi, o'qimayman. Menga bir piyola choy bering.",
+            "ru": "Хорошо, не буду читать. Дайте мне чашку чая.",
+            "tj": "Хуб, нахонам. Ба ман як коса чой диҳед."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "医生说吃药后的两个小时不要喝茶。",
+          "pinyin": "Yīshēng shuō chī yàohòu de liǎng ge xiǎoshí búyào hē chá.",
+          "text": {
+            "uz": "Shifokor dori ichganidan keyin ikki soat choy ichmaslik kerak dedi.",
+            "ru": "Доктор сказал, что два часа после приёма лекарства нельзя пить чай.",
+            "tj": "Духтур гуфт, ки ду соат баъд аз доруи хӯрдан чой нӯшидан мумкин нест."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "医生还说什么了？",
+          "pinyin": "Yīshēng hái shuō shénme le?",
+          "text": {
+            "uz": "Shifokor yana nima dedi?",
+            "ru": "Что ещё сказал доктор?",
+            "tj": "Духтур боз чӣ гуфт?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "医生让你听我的。",
+          "pinyin": "Yīshēng ràng nǐ tīng wǒ de.",
+          "text": {
+            "uz": "Shifokor menga quloq soling dedi.",
+            "ru": "Доктор сказал слушаться меня.",
+            "tj": "Духтур гуфт, ки ба ман гӯш кун."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你怎么买了这么多东西啊？",
+          "pinyin": "Nǐ zěnme mǎi le zhème duō dōngxi a?",
+          "text": {
+            "uz": "Nima uchun bu qadar ko'p narsa sotib oldingiz?",
+            "ru": "Почему ты купил так много всего?",
+            "tj": "Чаро ту ин қадар зиёд чиз харидӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "哥哥今天中午回来吃饭。",
+          "pinyin": "Gēge jīntiān zhōngwǔ huílái chīfàn.",
+          "text": {
+            "uz": "Aka bugun tushlikka keladi.",
+            "ru": "Старший брат сегодня придёт на обед.",
+            "tj": "Бародари калонӣ имрӯз барои нисфирӯзӣ меояд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？",
+          "pinyin": "Wǒ kànkan mǎi shénme le. Yángròu，jīdàn，miàntiáo，xīguā…… zhēn bù shǎo! Māma ne?",
+          "text": {
+            "uz": "Ko'ray-chi nima olibsiz. Qo'y go'shti, tuxum, erişta, tarvuz… juda ko'p! Ona-chi?",
+            "ru": "Дай посмотрю, что купил. Баранина, яйца, лапша, арбуз… действительно много! А мама?",
+            "tj": "Биё бинам чӣ харидӣ. Гӯшти гӯсфанд, тухм, лоғмон, тарбуз… воқеан зиёд! Модар чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "正在准备午饭呢！",
+          "pinyin": "Zhèngzài zhǔnbèi wǔfàn ne!",
+          "text": {
+            "uz": "Hozir tushlikni tayyorlayapti!",
+            "ru": "Сейчас готовит обед!",
+            "tj": "Ҳоло нисфирӯзиро тайёр мекунад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在找什么？",
+          "pinyin": "Nǐ zài zhǎo shénme?",
+          "text": {
+            "uz": "Siz nima qidiryapsiz?",
+            "ru": "Что ты ищешь?",
+            "tj": "Ту чӣ мекобӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你看见我的手机了吗？白色的。",
+          "pinyin": "Nǐ kànjian wǒ de shǒujī le ma? Báisè de.",
+          "text": {
+            "uz": "Mening telefonim ko'rdingizmi? Oq rangli.",
+            "ru": "Ты видел мой телефон? Белый.",
+            "tj": "Ту телефони маро дидӣ? Сафеди."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "别找了，手机在桌子上呢，电脑旁边。",
+          "pinyin": "Bié zhǎo le，shǒujī zài zhuōzi shang ne，diànnǎo pángbiān.",
+          "text": {
+            "uz": "Qidirishni bas qil, telefon stol ustida, kompyuter yonida.",
+            "ru": "Хватит искать, телефон на столе, рядом с компьютером.",
+            "tj": "Дигар накоб, телефон рӯи мизи аст, паҳлӯи компютер."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你看见我的衣服了吗？红色的那件。",
+          "pinyin": "Nǐ kànjian wǒ de yīfu le ma? Hóngsè de nà jiàn.",
+          "text": {
+            "uz": "Kiyimlarimni ko'rdingizmi? O'sha qizil ranglisini.",
+            "ru": "Ты видел мою одежду? Ту красную.",
+            "tj": "Ту либосамро дидӣ? Онро, ки сурх аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那件衣服我帮你洗了，在外边呢。",
+          "pinyin": "Nà jiàn yīfu wǒ bāng nǐ xǐ le，zài wàibian ne.",
+          "text": {
+            "uz": "O'sha kiyimni sizga yuvib qo'ydim, tashqarida.",
+            "ru": "Я постирал ту одежду за тебя, она на улице.",
+            "tj": "Ман он либосро барои ту шустам, берун аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "身体",
+            "pinyin": "shēntǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tana, sog'liq",
+              "ru": "тело, здоровье",
+              "tj": "тан, саломатӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "身体 talaffuzini tanlang:",
+            "ru": "Выберите произношение 身体:",
+            "tj": "Талаффузи 身体-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shēntǐ",
+            "kè",
+            "bāngzhù",
+            "bié"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "身体 — shēntǐ",
+            "ru": "身体 — shēntǐ",
+            "tj": "身体 — shēntǐ"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "准备",
+            "pinyin": "zhǔnbèi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tayyorlanmoq, tayyorlamoq",
+              "ru": "готовиться, подготавливать",
+              "tj": "омода шудан, тайёр кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tayyorlanmoq, tayyorlamoq' xitoycha qaysi?",
+            "ru": "'готовиться, подготавливать' по-китайски?",
+            "tj": "'омода шудан, тайёр кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "课",
+            "别",
+            "准备",
+            "帮助"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "tayyorlanmoq, tayyorlamoq = 准备 (zhǔnbèi)",
+            "ru": "готовиться, подготавливать = 准备 (zhǔnbèi)",
+            "tj": "омода шудан, тайёр кардан = 准备 (zhǔnbèi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "报纸",
+            "pinyin": "bàozhǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "报纸",
+          "pinyin": "bàozhǐ",
+          "translation": {
+            "uz": "gazeta",
+            "ru": "газета",
+            "tj": "рӯзнома"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "报纸",
+          "pinyin": "bàozhǐ",
+          "options": [
+            "报纸",
+            "课",
+            "别",
+            "帮助"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "报纸 — gazeta (bàozhǐ)",
+            "ru": "报纸 — газета (bàozhǐ)",
+            "tj": "报纸 — рӯзнома (bàozhǐ)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "身体 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 身体:",
+            "tj": "Маънои калимаи 身体-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tana, sog'liq",
+              "ru": "тело, здоровье",
+              "tj": "тан, саломатӣ"
+            },
+            {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            },
+            {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
+            },
+            {
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "身体 = tana, sog'liq (shēntǐ)",
+            "ru": "身体 = тело, здоровье (shēntǐ)",
+            "tj": "身体 = тан, саломатӣ (shēntǐ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "身体",
+              {
+                "uz": "tana, sog'liq",
+                "ru": "тело, здоровье",
+                "tj": "тан, саломатӣ"
+              }
+            ],
+            [
+              "准备",
+              {
+                "uz": "tayyorlanmoq, tayyorlamoq",
+                "ru": "готовиться, подготавливать",
+                "tj": "омода шудан, тайёр кардан"
+              }
+            ],
+            [
+              "报纸",
+              {
+                "uz": "gazeta",
+                "ru": "газета",
+                "tj": "рӯзнома"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "手机 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 手机:",
+            "tj": "Маънои калимаи 手机-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
+            },
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            },
+            {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            },
+            {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "手机 = mobil telefon (shǒujī)",
+            "ru": "手机 = мобильный телефон (shǒujī)",
+            "tj": "手机 = телефони мобилӣ (shǒujī)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "明天的课你都准备好了吗？",
+          "pinyin": "Míngtiān de kè nǐ dōu zhǔnbèi hǎo le ma?",
+          "options": [
+            "都准备好了。",
+            "别看电视了，明天上午还有汉语课呢。",
+            "明天的课你都准备好了吗？",
+            "看电视对学汉语有帮助。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "明天的课你都准备好了吗？ — Ertangi darsga to'liq tayyorlandingizmi?",
+            "ru": "明天的课你都准备好了吗？ — Ты полностью подготовился к завтрашнему уроку?",
+            "tj": "明天的课你都准备好了吗？ — Оё ту ба дарси фардо пурра омода шудӣ?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "明天的课你都准备好了吗？",
+          "pinyin": "Míngtiān de kè nǐ dōu zhǔnbèi hǎo le ma?",
+          "translation": {
+            "uz": "Ertangi darsga to'liq tayyorlandingizmi?",
+            "ru": "Ты полностью подготовился к завтрашнему уроку?",
+            "tj": "Оё ту ба дарси фардо пурра омода шудӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "Ertangi",
+              "darsga",
+              "to'liq",
+              "tayyor",
+              "Hammasi",
+              "tayyorlandingizmi"
+            ],
+            "ru": [
+              "к",
+              "завтрашнему",
+              "Ты",
+              "Всё",
+              "уроку",
+              "подготовился",
+              "готово",
+              "полностью"
+            ],
+            "tj": [
+              "ту",
+              "шудӣ",
+              "Дигар",
+              "дарси",
+              "фардо",
+              "Оё",
+              "Ҳама",
+              "омода",
+              "ба",
+              "пурра"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ertangi",
+              "darsga",
+              "to'liq",
+              "tayyorlandingizmi"
+            ],
+            "ru": [
+              "Ты",
+              "полностью",
+              "подготовился",
+              "к",
+              "завтрашнему",
+              "уроку"
+            ],
+            "tj": [
+              "Оё",
+              "ту",
+              "ба",
+              "дарси",
+              "фардо",
+              "пурра",
+              "омода",
+              "шудӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "明天的课你都准备好了吗？ — Ertangi darsga to'liq tayyorlandingizmi?",
+            "ru": "明天的课你都准备好了吗？ — Ты полностью подготовился к завтрашнему уроку?",
+            "tj": "明天的课你都准备好了吗？ — Оё ту ба дарси фардо пурра омода шудӣ?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "身体",
+          "pinyin": "shēntǐ",
+          "translation": {
+            "uz": "tana, sog'liq",
+            "ru": "тело, здоровье",
+            "tj": "тан, саломатӣ"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "报纸",
+          "pinyin": "bàozhǐ",
+          "translation": {
+            "uz": "gazeta",
+            "ru": "газета",
+            "tj": "рӯзнома"
+          }
+        }
+      ]
+    }
+  ]
+}

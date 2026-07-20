@@ -1,0 +1,800 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 45,
+  "source_lesson": 10,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "别找了，手机在桌子上呢",
+  "subtitle": {
+    "uz": "Buyruq gaplarini ('别……了'), 'duì' old ko'makchisini va 'zhèngzài' davom ko'rsatkichini ishlatishni o'rganish.",
+    "ru": "Научиться использовать побудительные предложения ('别……了'), предлог 'duì' и показатель продолжения 'zhèngzài'.",
+    "tj": "Омӯзиши истифодаи ҷумлаҳои фармоишӣ ('别……了'), пешоянди 'duì' ва нишондиҳандаи давомнокии 'zhèngzài'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "课",
+      "pinyin": "kè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dars, mashg'ulot",
+        "ru": "урок, занятие",
+        "tj": "дарс, машғулот"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "帮助",
+      "pinyin": "bāngzhù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yordam bermoq",
+        "ru": "помогать",
+        "tj": "кӯмак кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "别",
+      "pinyin": "bié",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "…qilma (taqiq)",
+        "ru": "не (запрет)",
+        "tj": "накун (манъ)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "哥哥",
+      "pinyin": "gēge",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aka",
+        "ru": "старший брат",
+        "tj": "бародари калонӣ"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Buyruq gapi: 不要……了; 别……了 (endi …qilma)",
+        "ru": "Побудительное предложение: 不要……了; 别……了 (хватит, не делай)",
+        "tj": "Ҷумлаи фармоишӣ: 不要……了; 别……了 (дигар накун)"
+      },
+      "title_zh": "祈使句：不要……了；别……了",
+      "rule": {
+        "uz": "Biror harakatni to'xtatishni buyurish uchun 'bié……le' yoki 'búyào……le' ishlatiladi.\nBu ikkalasi ham 'endi …qilma' ma'nosini beradi.\n'Bié' so'zlashuv tilida ko'proq qo'llanadi.\nGap oxiridagi 'le' holatning o'zgarganligini yoki da'vatni kuchaytiradi.",
+        "ru": "Для приказания прекратить действие используется 'bié……le' или 'búyào……le'.\nОба означают 'больше не делай, хватит'.\n'Bié' чаще используется в разговорной речи.\nЧастица 'le' в конце предложения усиливает призыв или сигнализирует об изменении ситуации.",
+        "tj": "Барои дастур додан ба қатъи амал 'bié……le' ё 'búyào……le' истифода мешавад.\nҲар ду маъноии 'дигар накун' доранд.\n'Bié' дар забони гуфтугӯӣ бештар истифода мешавад.\nҶузъаи 'le' дар охири ҷумла даъватро тақвият медиҳад ё тағйири вазъиятро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "别看电视了，去睡觉吧。",
+          "pinyin": "Bié kàn diànshì le, qù shuìjiào ba.",
+          "translation": {
+            "uz": "Endi televizor ko'rma, uxlash vaqti.",
+            "ru": "Хватит смотреть телевизор, иди спать.",
+            "tj": "Дигар телевизор нагард, барав бихоб."
+          }
+        },
+        {
+          "zh": "不要喝茶了，吃药吧。",
+          "pinyin": "Búyào hē chá le, chī yào ba.",
+          "translation": {
+            "uz": "Choy ichmay, dori ich.",
+            "ru": "Не пей чай, прими лекарство.",
+            "tj": "Дигар чой нанӯш, дору хӯр."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "别看电视了，明天上午还有汉语课呢。",
+          "pinyin": "Bié kàn diànshì le，míngtiān shàngwǔ hái yǒu Hànyǔ kè ne.",
+          "text": {
+            "uz": "Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.",
+            "ru": "Хватит смотреть телевизор, завтра утром ещё есть урок китайского.",
+            "tj": "Дигар телевизор нагард, фардо субҳ боз дарси чинӣ аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "看电视对学汉语有帮助。",
+          "pinyin": "Kàn diànshì duì xué Hànyǔ yǒu bāngzhù.",
+          "text": {
+            "uz": "Televizor ko'rish xitoy tili o'rganishga yordam beradi.",
+            "ru": "Просмотр телевизора помогает в изучении китайского.",
+            "tj": "Тамошои телевизор дар омӯхтани чинӣ кӯмак мекунад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "明天的课你都准备好了吗？",
+          "pinyin": "Míngtiān de kè nǐ dōu zhǔnbèi hǎo le ma?",
+          "text": {
+            "uz": "Ertangi darsga to'liq tayyorlandingizmi?",
+            "ru": "Ты полностью подготовился к завтрашнему уроку?",
+            "tj": "Оё ту ба дарси фардо пурра омода шудӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "都准备好了。",
+          "pinyin": "Dōu zhǔnbèi hǎo le.",
+          "text": {
+            "uz": "Hammasi tayyor.",
+            "ru": "Всё готово.",
+            "tj": "Ҳама омода."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada",
+        "ru": "В больнице",
+        "tj": "Дар беморхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "别看报纸了，医生说你要多休息。",
+          "pinyin": "Bié kàn bàozhǐ le，yīshēng shuō nǐ yào duō xiūxi.",
+          "text": {
+            "uz": "Gazeta o'qishni bas qil, shifokor ko'proq dam olishing kerak dedi.",
+            "ru": "Хватит читать газету, доктор сказал, что тебе нужно больше отдыхать.",
+            "tj": "Дигар рӯзнома нахон, духтур гуфт, ки ту бояд бештар истироҳат кунӣ."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，不看了。给我一杯茶吧。",
+          "pinyin": "Hǎo，bù kàn le. Gěi wǒ yì bēi chá ba.",
+          "text": {
+            "uz": "Yaxshi, o'qimayman. Menga bir piyola choy bering.",
+            "ru": "Хорошо, не буду читать. Дайте мне чашку чая.",
+            "tj": "Хуб, нахонам. Ба ман як коса чой диҳед."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "医生说吃药后的两个小时不要喝茶。",
+          "pinyin": "Yīshēng shuō chī yàohòu de liǎng ge xiǎoshí búyào hē chá.",
+          "text": {
+            "uz": "Shifokor dori ichganidan keyin ikki soat choy ichmaslik kerak dedi.",
+            "ru": "Доктор сказал, что два часа после приёма лекарства нельзя пить чай.",
+            "tj": "Духтур гуфт, ки ду соат баъд аз доруи хӯрдан чой нӯшидан мумкин нест."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "医生还说什么了？",
+          "pinyin": "Yīshēng hái shuō shénme le?",
+          "text": {
+            "uz": "Shifokor yana nima dedi?",
+            "ru": "Что ещё сказал доктор?",
+            "tj": "Духтур боз чӣ гуфт?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "医生让你听我的。",
+          "pinyin": "Yīshēng ràng nǐ tīng wǒ de.",
+          "text": {
+            "uz": "Shifokor menga quloq soling dedi.",
+            "ru": "Доктор сказал слушаться меня.",
+            "tj": "Духтур гуфт, ки ба ман гӯш кун."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你怎么买了这么多东西啊？",
+          "pinyin": "Nǐ zěnme mǎi le zhème duō dōngxi a?",
+          "text": {
+            "uz": "Nima uchun bu qadar ko'p narsa sotib oldingiz?",
+            "ru": "Почему ты купил так много всего?",
+            "tj": "Чаро ту ин қадар зиёд чиз харидӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "哥哥今天中午回来吃饭。",
+          "pinyin": "Gēge jīntiān zhōngwǔ huílái chīfàn.",
+          "text": {
+            "uz": "Aka bugun tushlikka keladi.",
+            "ru": "Старший брат сегодня придёт на обед.",
+            "tj": "Бародари калонӣ имрӯз барои нисфирӯзӣ меояд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？",
+          "pinyin": "Wǒ kànkan mǎi shénme le. Yángròu，jīdàn，miàntiáo，xīguā…… zhēn bù shǎo! Māma ne?",
+          "text": {
+            "uz": "Ko'ray-chi nima olibsiz. Qo'y go'shti, tuxum, erişta, tarvuz… juda ko'p! Ona-chi?",
+            "ru": "Дай посмотрю, что купил. Баранина, яйца, лапша, арбуз… действительно много! А мама?",
+            "tj": "Биё бинам чӣ харидӣ. Гӯшти гӯсфанд, тухм, лоғмон, тарбуз… воқеан зиёд! Модар чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "正在准备午饭呢！",
+          "pinyin": "Zhèngzài zhǔnbèi wǔfàn ne!",
+          "text": {
+            "uz": "Hozir tushlikni tayyorlayapti!",
+            "ru": "Сейчас готовит обед!",
+            "tj": "Ҳоло нисфирӯзиро тайёр мекунад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在找什么？",
+          "pinyin": "Nǐ zài zhǎo shénme?",
+          "text": {
+            "uz": "Siz nima qidiryapsiz?",
+            "ru": "Что ты ищешь?",
+            "tj": "Ту чӣ мекобӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你看见我的手机了吗？白色的。",
+          "pinyin": "Nǐ kànjian wǒ de shǒujī le ma? Báisè de.",
+          "text": {
+            "uz": "Mening telefonim ko'rdingizmi? Oq rangli.",
+            "ru": "Ты видел мой телефон? Белый.",
+            "tj": "Ту телефони маро дидӣ? Сафеди."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "别找了，手机在桌子上呢，电脑旁边。",
+          "pinyin": "Bié zhǎo le，shǒujī zài zhuōzi shang ne，diànnǎo pángbiān.",
+          "text": {
+            "uz": "Qidirishni bas qil, telefon stol ustida, kompyuter yonida.",
+            "ru": "Хватит искать, телефон на столе, рядом с компьютером.",
+            "tj": "Дигар накоб, телефон рӯи мизи аст, паҳлӯи компютер."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你看见我的衣服了吗？红色的那件。",
+          "pinyin": "Nǐ kànjian wǒ de yīfu le ma? Hóngsè de nà jiàn.",
+          "text": {
+            "uz": "Kiyimlarimni ko'rdingizmi? O'sha qizil ranglisini.",
+            "ru": "Ты видел мою одежду? Ту красную.",
+            "tj": "Ту либосамро дидӣ? Онро, ки сурх аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那件衣服我帮你洗了，在外边呢。",
+          "pinyin": "Nà jiàn yīfu wǒ bāng nǐ xǐ le，zài wàibian ne.",
+          "text": {
+            "uz": "O'sha kiyimni sizga yuvib qo'ydim, tashqarida.",
+            "ru": "Я постирал ту одежду за тебя, она на улице.",
+            "tj": "Ман он либосро барои ту шустам, берун аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "课",
+            "pinyin": "kè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "课",
+          "pinyin": "kè",
+          "translation": {
+            "uz": "dars, mashg'ulot",
+            "ru": "урок, занятие",
+            "tj": "дарс, машғулот"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "课",
+          "pinyin": "kè",
+          "options": [
+            "课",
+            "别",
+            "帮助",
+            "哥哥"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "课 — dars, mashg'ulot (kè)",
+            "ru": "课 — урок, занятие (kè)",
+            "tj": "课 — дарс, машғулот (kè)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "帮助",
+            "pinyin": "bāngzhù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "帮助 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 帮助:",
+            "tj": "Маънои калимаи 帮助-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            },
+            {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            },
+            {
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
+            },
+            {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "帮助 = yordam bermoq (bāngzhù)",
+            "ru": "帮助 = помогать (bāngzhù)",
+            "tj": "帮助 = кӯмак кардан (bāngzhù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "别",
+            "pinyin": "bié",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bié qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bié?",
+            "tj": "bié кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "别",
+            "帮助",
+            "课",
+            "哥哥"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "别 = …qilma (taqiq) (bié)",
+            "ru": "别 = не (запрет) (bié)",
+            "tj": "别 = накун (манъ) (bié)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "哥哥",
+            "pinyin": "gēge",
+            "pos": "n.",
+            "meaning": {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "哥哥 talaffuzini tanlang:",
+            "ru": "Выберите произношение 哥哥:",
+            "tj": "Талаффузи 哥哥-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bāngzhù",
+            "bié",
+            "gēge",
+            "kè"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "哥哥 — gēge",
+            "ru": "哥哥 — gēge",
+            "tj": "哥哥 — gēge"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'dars, mashg'ulot' xitoycha qaysi?",
+            "ru": "'урок, занятие' по-китайски?",
+            "tj": "'дарс, машғулот' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "课",
+            "哥哥",
+            "帮助",
+            "别"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "dars, mashg'ulot = 课 (kè)",
+            "ru": "урок, занятие = 课 (kè)",
+            "tj": "дарс, машғулот = 课 (kè)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "课",
+              {
+                "uz": "dars, mashg'ulot",
+                "ru": "урок, занятие",
+                "tj": "дарс, машғулот"
+              }
+            ],
+            [
+              "帮助",
+              {
+                "uz": "yordam bermoq",
+                "ru": "помогать",
+                "tj": "кӯмак кардан"
+              }
+            ],
+            [
+              "别",
+              {
+                "uz": "…qilma (taqiq)",
+                "ru": "не (запрет)",
+                "tj": "накун (манъ)"
+              }
+            ],
+            [
+              "哥哥",
+              {
+                "uz": "aka",
+                "ru": "старший брат",
+                "tj": "бародари калонӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Buyruq gapi: 不要……了; 别……了 (endi …qilma)",
+              "ru": "Побудительное предложение: 不要……了; 别……了 (хватит, не делай)",
+              "tj": "Ҷумлаи фармоишӣ: 不要……了; 别……了 (дигар накун)"
+            },
+            "title_zh": "祈使句：不要……了；别……了",
+            "rule": {
+              "uz": "Biror harakatni to'xtatishni buyurish uchun 'bié……le' yoki 'búyào……le' ishlatiladi.\nBu ikkalasi ham 'endi …qilma' ma'nosini beradi.\n'Bié' so'zlashuv tilida ko'proq qo'llanadi.\nGap oxiridagi 'le' holatning o'zgarganligini yoki da'vatni kuchaytiradi.",
+              "ru": "Для приказания прекратить действие используется 'bié……le' или 'búyào……le'.\nОба означают 'больше не делай, хватит'.\n'Bié' чаще используется в разговорной речи.\nЧастица 'le' в конце предложения усиливает призыв или сигнализирует об изменении ситуации.",
+              "tj": "Барои дастур додан ба қатъи амал 'bié……le' ё 'búyào……le' истифода мешавад.\nҲар ду маъноии 'дигар накун' доранд.\n'Bié' дар забони гуфтугӯӣ бештар истифода мешавад.\nҶузъаи 'le' дар охири ҷумла даъватро тақвият медиҳад ё тағйири вазъиятро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "别看电视了，去睡觉吧。",
+                "pinyin": "Bié kàn diànshì le, qù shuìjiào ba.",
+                "translation": {
+                  "uz": "Endi televizor ko'rma, uxlash vaqti.",
+                  "ru": "Хватит смотреть телевизор, иди спать.",
+                  "tj": "Дигар телевизор нагард, барав бихоб."
+                }
+              },
+              {
+                "zh": "不要喝茶了，吃药吧。",
+                "pinyin": "Búyào hē chá le, chī yào ba.",
+                "translation": {
+                  "uz": "Choy ichmay, dori ich.",
+                  "ru": "Не пей чай, прими лекарство.",
+                  "tj": "Дигар чой нанӯш, дору хӯр."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Endi televizor ko'rma, uxlash vaqti.",
+            "ru": "Хватит смотреть телевизор, иди спать.",
+            "tj": "Дигар телевизор нагард, барав бихоб."
+          },
+          "tokens": [
+            "了",
+            "课",
+            "电视",
+            "去",
+            "吧",
+            "睡觉",
+            "帮助",
+            "看",
+            "别"
+          ],
+          "answer_tokens": [
+            "别",
+            "看",
+            "电视",
+            "了",
+            "去",
+            "睡觉",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba.",
+            "ru": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba.",
+            "tj": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "课",
+              {
+                "uz": "dars, mashg'ulot",
+                "ru": "урок, занятие",
+                "tj": "дарс, машғулот"
+              }
+            ],
+            [
+              "帮助",
+              {
+                "uz": "yordam bermoq",
+                "ru": "помогать",
+                "tj": "кӯмак кардан"
+              }
+            ],
+            [
+              "别",
+              {
+                "uz": "…qilma (taqiq)",
+                "ru": "не (запрет)",
+                "tj": "накун (манъ)"
+              }
+            ],
+            [
+              "哥哥",
+              {
+                "uz": "aka",
+                "ru": "старший брат",
+                "tj": "бародари калонӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "明天的课你都准备好了吗？",
+          "pinyin": "Míngtiān de kè nǐ dōu zhǔnbèi hǎo le ma?",
+          "options": [
+            "别看电视了，明天上午还有汉语课呢。",
+            "都准备好了。",
+            "明天的课你都准备好了吗？",
+            "看电视对学汉语有帮助。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "明天的课你都准备好了吗？ — Ertangi darsga to'liq tayyorlandingizmi?",
+            "ru": "明天的课你都准备好了吗？ — Ты полностью подготовился к завтрашнему уроку?",
+            "tj": "明天的课你都准备好了吗？ — Оё ту ба дарси фардо пурра омода шудӣ?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Endi televizor ko'rma, uxlash vaqti.",
+            "ru": "Хватит смотреть телевизор, иди спать.",
+            "tj": "Дигар телевизор нагард, барав бихоб."
+          },
+          "tokens": [
+            "课",
+            "去",
+            "电视",
+            "帮助",
+            "睡觉",
+            "吧",
+            "看",
+            "别",
+            "了"
+          ],
+          "answer_tokens": [
+            "别",
+            "看",
+            "电视",
+            "了",
+            "去",
+            "睡觉",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba.",
+            "ru": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba.",
+            "tj": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "因为 talaffuzini tanlang:",
+            "ru": "Выберите произношение 因为:",
+            "tj": "Талаффузи 因为-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yīnwèi",
+            "bié",
+            "bāngzhù",
+            "kè"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "因为 — yīnwèi",
+            "ru": "因为 — yīnwèi",
+            "tj": "因为 — yīnwèi"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "课",
+          "pinyin": "kè",
+          "translation": {
+            "uz": "dars, mashg'ulot",
+            "ru": "урок, занятие",
+            "tj": "дарс, машғулот"
+          }
+        }
+      ]
+    }
+  ]
+}

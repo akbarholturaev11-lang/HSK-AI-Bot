@@ -1,0 +1,805 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 147,
+  "source_lesson": 17,
+  "part_no": 1,
+  "part_count": 8,
+  "checkpoint": false,
+  "title": "人与自然",
+  "subtitle": {
+    "uz": "tabiat, hayvonlar, o'simliklar va okean haqida gapirish; 倒, 干, 趟, 为了...而... va 仍然 grammatikalarini ishlatish",
+    "ru": "говорить о природе, животных, растениях и океане; использовать 倒, 干, 趟, 为了...而... и 仍然",
+    "tj": "дар бораи табиат, ҳайвонот, растаниҳо ва уқёнус гуфтугӯ кардан; истифодаи 倒, 干, 趟, 为了...而... ва 仍然"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "凉快",
+      "pinyin": "liángkuai",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "salqin, yoqimli sovuq",
+        "ru": "прохладный, приятно свежий",
+        "tj": "салқин, форам"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "热闹",
+      "pinyin": "rènao",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "gavjum, shovqinli",
+        "ru": "оживлённый, шумный",
+        "tj": "серодам, пурҷӯшу хурӯш"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "广播",
+      "pinyin": "guǎngbō",
+      "pos": "n.",
+      "meaning": {
+        "uz": "radio, eshittirish",
+        "ru": "радио, передача",
+        "tj": "радио, пахш"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "超",
+      "pinyin": "chāo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "oshib ketmoq",
+        "ru": "превышать",
+        "tj": "зиёд шудан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "kutilganiga qarshi ohang",
+        "ru": "наоборот; вопреки ожиданию",
+        "tj": "баръакс; хилофи интизор"
+      },
+      "title_zh": "倒",
+      "rule": {
+        "uz": "Fe'l bo'lsa 'quymoq', ravish bo'lsa kutilganiga qarama-qarshi, tanbeh yoki yon berish ohangini beradi.",
+        "ru": "Как глагол значит 'наливать', как наречие показывает противоположность ожиданию, упрёк или уступку.",
+        "tj": "Ҳамчун феъл 'рехтан', ҳамчун зарф хилофи интизор, танбеҳ ё гузаштро медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "去长城倒是一个好主意。",
+          "pinyin": "Qù Chángchéng dào shì yí ge hǎo zhǔyi.",
+          "translation": {
+            "uz": "Buyuk devorga borish esa yaxshi fikr.",
+            "ru": "Съездить на Великую стену - наоборот, хорошая идея.",
+            "tj": "Ба Девори бузург рафтан бошад, фикри хуб аст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Xiao Xia va Anna kuzgi ob-havo va qizil barglarni muhokama qiladi",
+        "ru": "Сяо Ся и Анна обсуждают осеннюю погоду и красные листья",
+        "tj": "Сяо Ся ва Анна обу ҳавои тирамоҳ ва баргҳои сурхро муҳокима мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "小夏",
+          "zh": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
+          "pinyin": "Zuìjìn tiānqì yuè lái yuè liángkuai le, fēng yì guā, cǎodì shang jiù huì yǒu yì céng hòuhòu de huángyè, kànlái qiūtiān yǐjīng dào le.",
+          "text": {
+            "uz": "Oxirgi payt havo tobora salqinlashdi, shamol essa, maysazor ustida qalin sariq barglar paydo bo'ladi. Kuz kelganga o'xshaydi.",
+            "ru": "В последнее время становится всё прохладнее. Стоит подуть ветру, как на траве появляется толстый слой жёлтых листьев. Похоже, осень уже пришла.",
+            "tj": "Охирҳо ҳаво торафт салқин мешавад. Бод вазад, болои сабза қабати ғафси баргҳои зард пайдо мешавад. Ба назар тирамоҳ расидааст."
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。",
+          "pinyin": "Zhè jǐ tiān Xiāng Shān tèbié rènao, suízhe qìwēn de jiàngdī, nàli xǔduō zhíwù de yèzi dōu yóu lǜ biàn huáng huòzhě biàn hóng, xīyǐn le hěn duō yóukè cānguān, zánmen jīntiān yě qù kànkan ba.",
+          "text": {
+            "uz": "Bu kunlarda Xiangshan juda gavjum. Harorat pasaygani sari u yerdagi ko'p o'simliklarning barglari yashildan sariq yoki qizilga aylanib, ko'p turistlarni jalb qilmoqda. Bugun biz ham borib ko'raylik.",
+            "ru": "В эти дни в Сяншане очень оживлённо. С понижением температуры листья многих растений там из зелёных становятся жёлтыми или красными и привлекают много туристов. Давай сегодня тоже съездим.",
+            "tj": "Ин рӯзҳо Сяншан бисёр серодам аст. Бо паст шудани ҳарорат баргҳои бисёр растаниҳо аз сабз ба зард ё сурх мегарданд ва сайёҳони зиёдро ҷалб мекунанд. Имрӯз мо ҳам равем."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。",
+          "pinyin": "Nǐ kàn tiānshang de yún, jīntiān kěndìng yǔ dà. Zàishuō, Xiāng Shān shang kàn hóngyè de rén tài duō le. Zánmen gǎitiān qù Chángchéng ba, guǎngbō li shuō nàli yě yǒu bù shǎo zhuānmén kàn hóngyè de hǎo dìfang.",
+          "text": {
+            "uz": "Osmondagi bulutlarga qara, bugun yomg'ir kuchli bo'lsa kerak. Yana Xiangshanda qizil barg ko'ruvchilar juda ko'p. Boshqa kuni Buyuk devorga boraylik, radioda u yerda ham qizil barg ko'radigan yaxshi joylar ko'p deyishdi.",
+            "ru": "Посмотри на облака, сегодня наверняка будет сильный дождь. К тому же в Сяншане слишком много людей смотрит красные листья. Давай в другой день поедем на Великую стену, по радио сказали, что там тоже много хороших мест для этого.",
+            "tj": "Ба абрҳои осмон нигоҳ кун, имрӯз борон сахт мешавад. Боз дар Сяншан одамони тамошои барги сурх хеле зиёданд. Рӯзи дигар ба Девори бузург равем, дар радио гуфтанд, ки он ҷо ҳам ҷойҳои хуби тамошои барги сурх кам нест."
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "真可惜，我还想多照点儿香山的照片呢。去长城倒是一个好主意，那我们明天去吧。",
+          "pinyin": "Zhēn kěxī, wǒ hái xiǎng duō zhào diǎnr Xiāng Shān de zhàopiàn ne. Qù Chángchéng dào shì yí ge hǎo zhǔyi, nà wǒmen míngtiān qù ba.",
+          "text": {
+            "uz": "Afsus, men Xiangshanda ko'proq surat olmoqchi edim. Buyuk devorga borish esa yaxshi fikr, unda ertaga boraylik.",
+            "ru": "Жаль, я хотела сделать побольше фотографий Сяншаня. Съездить на Великую стену - хорошая идея, тогда поедем завтра.",
+            "tj": "Афсӯс, мехостам дар Сяншан бештар акс гирам. Ба Девори бузург рафтан бошад фикри хуб аст, пас пагоҳ равем."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "明天恐怕也不行，明天是我爸的生日。",
+          "pinyin": "Míngtiān kǒngpà yě bù xíng, míngtiān shì wǒ bà de shēngrì.",
+          "text": {
+            "uz": "Ertaga ham bo'lmasa kerak, ertaga dadamning tug'ilgan kuni.",
+            "ru": "Завтра, боюсь, тоже не получится, у папы день рождения.",
+            "tj": "Пагоҳ ҳам намешавад, пагоҳ зодрӯзи падарам аст."
+          }
+        },
+        {
+          "speaker": "安娜",
+          "zh": "没关系，那我们再约时间。",
+          "pinyin": "Méi guānxi, nà wǒmen zài yuē shíjiān.",
+          "text": {
+            "uz": "Mayli, unda boshqa vaqt kelishamiz.",
+            "ru": "Ничего, тогда договоримся на другое время.",
+            "tj": "Ҳеҷ гап не, пас вақти дигарро маслиҳат мекунем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiao Lin Xiao Lining itini va uni o'rgatish usulini so'raydi",
+        "ru": "Сяо Лин спрашивает о собаке Сяо Ли и способе её обучения",
+        "tj": "Сяо Лин дар бораи саги Сяо Ли ва роҳи омӯзонидани он мепурсад"
+      },
+      "dialogue": [
+        {
+          "speaker": "小林",
+          "zh": "你的这只大黑狗毛真漂亮，而且这么聪明，每次见了都想抱一抱它。",
+          "pinyin": "Nǐ de zhè zhī dà hēi gǒu máo zhēn piàoliang, érqiě zhème cōngming, měi cì jiàn le dōu xiǎng bào yi bào tā.",
+          "text": {
+            "uz": "Sening bu katta qora itingning juni juda chiroyli, ustiga-ustak juda aqlli, har ko'rganimda uni quchoqlagim keladi.",
+            "ru": "У твоей большой чёрной собаки такая красивая шерсть, и она такая умная, каждый раз хочется её обнять.",
+            "tj": "Пашми ин саги калони сиёҳат бисёр зебо аст, боз ин қадар доно, ҳар бор дидам ба оғӯш гирифтан мехоҳам."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "狗是很聪明的动物，只要稍微花点儿时间教教它，它就能学会很多东西。",
+          "pinyin": "Gǒu shì hěn cōngming de dòngwù, zhǐyào shāowēi huā diǎnr shíjiān jiāojiao tā, tā jiù néng xuéhuì hěn duō dōngxi.",
+          "text": {
+            "uz": "It juda aqlli hayvon, ozgina vaqt ajratib o'rgatsang, ko'p narsani o'rganadi.",
+            "ru": "Собака - очень умное животное, стоит немного потратить времени на обучение, и она многому научится.",
+            "tj": "Саг ҳайвони хеле доност, каме вақт ҷудо карда омӯзонӣ, бисёр чизро меомӯзад."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "听你这么一说，我现在也想养一只狗了。每次你让它干什么，它就像能听懂你的话一样去做。你教它是不是用了什么特别的方法？",
+          "pinyin": "Tīng nǐ zhème yì shuō, wǒ xiànzài yě xiǎng yǎng yì zhī gǒu le. Měi cì nǐ ràng tā gàn shénme, tā jiù xiàng néng tīngdǒng nǐ de huà yíyàng qù zuò. Nǐ jiāo tā shì bu shì yòng le shénme tèbié de fāngfǎ?",
+          "text": {
+            "uz": "Buni eshitib, men ham it boqgim keldi. Har safar undan nima qilishni so'rasang, gapni tushungandek bajaradi. Uni o'rgatishda maxsus usul ishlatdingmi?",
+            "ru": "Слушаю тебя и тоже хочу завести собаку. Каждый раз, когда ты просишь её что-то сделать, она делает так, будто понимает тебя. Ты использовал особый метод?",
+            "tj": "Инро шунида, ман ҳам мехоҳам саг нигоҳ дорам. Ҳар дафъа чизе фармоӣ, гӯё суханатро фаҳмад, иҷро мекунад. Оё усули махсус истифода кардӣ?"
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "要让它完成一些任务，只教一次是不够的，应该耐心地一遍一遍地教给它，使它熟悉，然后它就会严格按照你的要求做了。",
+          "pinyin": "Yào ràng tā wánchéng yìxiē rènwu, zhǐ jiāo yí cì shì bù gòu de, yīnggāi nàixīn de yí biàn yí biàn de jiāo gěi tā, shǐ tā shúxī, ránhòu tā jiù huì yángé ànzhào nǐ de yāoqiú zuò le.",
+          "text": {
+            "uz": "Unga ba'zi vazifalarni bajartirish uchun bir marta o'rgatish yetmaydi. Sabr bilan qayta-qayta o'rgatish kerak, u ko'nikadi va keyin talabing bo'yicha qat'iy bajaradi.",
+            "ru": "Чтобы она выполняла задания, одного обучения мало. Нужно терпеливо учить снова и снова, чтобы она привыкла, и потом она будет строго выполнять твои требования.",
+            "tj": "Барои иҷрои вазифаҳо як бор омӯзонидан кофӣ нест. Бояд бо сабр борҳо омӯзонӣ, то одат кунад, баъд мувофиқи талабат қатъӣ иҷро мекунад."
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "看来没有想的那么容易。",
+          "pinyin": "Kànlái méiyǒu xiǎng de nàme róngyì.",
+          "text": {
+            "uz": "Ko'rinishidan, o'ylaganimdek oson emas ekan.",
+            "ru": "Похоже, это не так легко, как я думал.",
+            "tj": "Маълум мешавад, он қадар осон нест."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "狗是我们的好朋友，它能听懂人的话，明白人的心情。在你心里难受的时候，它会一直陪着你。",
+          "pinyin": "Gǒu shì wǒmen de hǎo péngyou, tā néng tīngdǒng rén de huà, míngbai rén de xīnqíng. Zài nǐ xīn li nánshòu de shíhou, tā huì yìzhí péizhe nǐ.",
+          "text": {
+            "uz": "It bizning yaxshi do'stimiz. U odamning gapini tushunadi, kayfiyatini sezadi. Iching siqilganda u doim yoningda bo'ladi.",
+            "ru": "Собака - наш хороший друг. Она понимает слова и настроение человека. Когда тебе тяжело на душе, она всегда рядом.",
+            "tj": "Саг дӯсти хуби мост. Вай сухани инсон ва ҳолати ӯро мефаҳмад. Вақте дилат нороҳат аст, ҳамеша ҳамроҳат мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mark va Xiao Xia Pekin hayvonot bog'i va panda haqida gaplashadi",
+        "ru": "Марк и Сяо Ся говорят о Пекинском зоопарке и пандах",
+        "tj": "Марк ва Сяо Ся дар бораи боғи ҳайвоноти Пекин ва пандаҳо суҳбат мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "马克",
+          "zh": "上个月我去了趟北京动物园，那里约有500种动物，听导游说北京动物园是亚洲最大的动物园之一。",
+          "pinyin": "Shàng ge yuè wǒ qù le tàng Běijīng Dòngwùyuán, nàli yuē yǒu wǔbǎi zhǒng dòngwù, tīng dǎoyóu shuō Běijīng Dòngwùyuán shì Yàzhōu zuì dà de dòngwùyuán zhī yī.",
+          "text": {
+            "uz": "O'tgan oy Pekin hayvonot bog'iga bir borib keldim. U yerda taxminan 500 tur hayvon bor, gidning aytishicha, bu Osiyodagi eng katta hayvonot bog'laridan biri.",
+            "ru": "В прошлом месяце я съездил в Пекинский зоопарк. Там около 500 видов животных, гид сказал, что это один из крупнейших зоопарков Азии.",
+            "tj": "Моҳи гузашта як бор ба боғи ҳайвоноти Пекин рафтам. Он ҷо тақрибан 500 навъи ҳайвон ҳаст, роҳбалад гуфт, ки яке аз калонтарин боғҳои ҳайвоноти Осиёст."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "去年放暑假的时候，我也去过一次，我在那儿看了马、熊猫、老虎等动物。我特别喜欢熊猫，可惜它们当时大都在睡觉。",
+          "pinyin": "Qùnián fàng shǔjià de shíhou, wǒ yě qùguo yí cì, wǒ zài nàr kàn le mǎ, xióngmāo, lǎohǔ děng dòngwù. Wǒ tèbié xǐhuan xióngmāo, kěxī tāmen dāngshí dàdōu zài shuì jiào.",
+          "text": {
+            "uz": "O'tgan yozgi ta'tilda men ham bir marta borganman. U yerda ot, panda, yo'lbars kabi hayvonlarni ko'rdim. Pandalarni juda yaxshi ko'raman, afsuski, o'shanda ularning ko'pi uxlayotgan edi.",
+            "ru": "В прошлом году на летних каникулах я тоже там был. Видел лошадей, панд, тигров и других животных. Особенно люблю панд, жаль, тогда большинство спало.",
+            "tj": "Соли гузашта дар таътили тобистона ман ҳам як бор рафта будам. Он ҷо асп, панда, паланг ва ҳайвоноти дигарро дидам. Пандаро хеле дӯст медорам, афсӯс он вақт аксарашон хоб буданд."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "我去的那天正赶上六一儿童节，许多父母带着孩子去动物园。入口处排队的人很多，动物园里热闹极了。大熊猫们也变得特别活泼，我还给它们照了不少照片呢。",
+          "pinyin": "Wǒ qù de nà tiān zhèng gǎnshàng Liùyī Értóngjié, xǔduō fùmǔ dài zhe háizi qù dòngwùyuán. Rùkǒu chù pái duì de rén hěn duō, dòngwùyuán li rènao jí le. Dà xióngmāomen yě biàn de tèbié huópo, wǒ hái gěi tāmen zhào le bù shǎo zhàopiàn ne.",
+          "text": {
+            "uz": "Men borgan kun Bolalar kuniga to'g'ri kelib qoldi, ko'p ota-onalar bolalarini olib kelgan. Kirishda navbat juda ko'p, hayvonot bog'i nihoyatda gavjum edi. Pandalar ham juda serharakat bo'lib ketgan, ulardan ko'p surat oldim.",
+            "ru": "Я попал туда как раз на День детей, многие родители привели детей. У входа было много людей в очереди, в зоопарке было очень оживлённо. Панды тоже стали особенно активными, я сделал много фотографий.",
+            "tj": "Рӯзе, ки ман рафтам, ба Рӯзи кӯдакон рост омад, бисёр падару модар кӯдаконро оварда буданд. Дар даромадгоҳ навбат зиёд буд, боғ бисёр серодам буд. Пандаҳо ҳам хеле серҳаракат буданд, аз онҳо бисёр акс гирифтам."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "大熊猫身子胖胖的，样子可爱极了。",
+          "pinyin": "Dà xióngmāo shēnzi pàngpàng de, yàngzi kě'ài jí le.",
+          "text": {
+            "uz": "Pandalarning tanasi do'mboq, ko'rinishi juda yoqimtoy.",
+            "ru": "У панд пухлое тело, они очень милые.",
+            "tj": "Пандаҳо танашон фарбеҳча, намудشان бисёр ширин аст."
+          }
+        },
+        {
+          "speaker": "马克",
+          "zh": "不过，它们数量不多，现在全世界一共才有一千多只吧。",
+          "pinyin": "Búguò, tāmen shùliàng bù duō, xiànzài quán shìjiè yígòng cái yǒu yìqiān duō zhī ba.",
+          "text": {
+            "uz": "Lekin ularning soni ko'p emas, hozir butun dunyoda jami mingdan sal ko'proq bo'lsa kerak.",
+            "ru": "Но их немного, сейчас во всём мире всего чуть больше тысячи.",
+            "tj": "Аммо шумораашон зиёд нест, ҳоло дар тамоми ҷаҳон ҳамагӣ каме бештар аз ҳазорто ҳаст."
+          }
+        },
+        {
+          "speaker": "小夏",
+          "zh": "以前只有中国有大熊猫，为了表示友好，从1957年开始，中国把大熊猫作为礼物送给其他一些国家。现在，很多国家的人们在本国都能看到大熊猫了。",
+          "pinyin": "Yǐqián zhǐyǒu Zhōngguó yǒu dà xióngmāo, wèile biǎoshì yǒuhǎo, cóng yī jiǔ wǔ qī nián kāishǐ, Zhōngguó bǎ dà xióngmāo zuòwéi lǐwù sòng gěi qítā yìxiē guójiā. Xiànzài, hěn duō guójiā de rénmen zài běnguó dōu néng kàndào dà xióngmāo le.",
+          "text": {
+            "uz": "Avval pandalar faqat Xitoyda bor edi. Do'stlikni bildirish uchun 1957-yildan boshlab Xitoy pandalarni sovg'a sifatida boshqa davlatlarga yubora boshladi. Hozir ko'p mamlakat odamlariga pandani o'z yurtida ko'rish mumkin.",
+            "ru": "Раньше большие панды были только в Китае. Чтобы выразить дружбу, с 1957 года Китай стал дарить панд некоторым странам. Теперь люди во многих странах могут видеть панд у себя.",
+            "tj": "Пештар панда танҳо дар Чин буд. Барои нишон додани дӯстӣ, аз соли 1957 Чин пандаро ҳамчун тӯҳфа ба баъзе кишварҳо фиристод. Ҳоло одамони бисёр кишварҳо дар ватани худ пандаро дида метавонанд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O'simliklar quyosh, havo va suv uchun qanday raqobatlashishi haqida matn",
+        "ru": "Текст о том, как растения конкурируют за свет, воздух и воду",
+        "tj": "Матн дар бораи рақобати растаниҳо барои нур, ҳаво ва об"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "不仅社会上的人与人之间有竞争，森林里的各种植物之间也有竞争，这一点儿也不奇怪。",
+          "pinyin": "Bùjǐn shèhuì shang de rén yǔ rén zhījiān yǒu jìngzhēng, sēnlín li de gè zhǒng zhíwù zhījiān yě yǒu jìngzhēng, zhè yìdiǎnr yě bù qíguài.",
+          "text": {
+            "uz": "Jamiyatda odamlar o'rtasida raqobat bo'lishigina emas, o'rmondagi turli o'simliklar o'rtasida ham raqobat bor. Bu ajablanarli emas.",
+            "ru": "Конкуренция есть не только между людьми в обществе, но и между разными растениями в лесу. Это совсем не странно.",
+            "tj": "На танҳо байни одамони ҷомеа рақобат ҳаст, балки байни растаниҳои гуногуни ҷангал ҳам ҳаст. Ин аҷиб нест."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "植物会为了阳光、空气和水而竞争，一些高大的植物往往能获得更多的阳光、空气和水，而剩下的一些比较低矮的植物就只能长在这些高大植物的下面。",
+          "pinyin": "Zhíwù huì wèile yángguāng, kōngqì hé shuǐ ér jìngzhēng, yìxiē gāodà de zhíwù wǎngwǎng néng huòdé gèng duō de yángguāng, kōngqì hé shuǐ, ér shèngxià de yìxiē bǐjiào dī'ǎi de zhíwù jiù zhǐ néng zhǎng zài zhèxiē gāodà zhíwù de xiàmian.",
+          "text": {
+            "uz": "O'simliklar quyosh nuri, havo va suv uchun raqobatlashadi. Ba'zi baland o'simliklar ko'proq nurlar, havo va suv oladi, qolgan pastroq o'simliklar esa ularning tagida o'sishga majbur.",
+            "ru": "Растения конкурируют за солнечный свет, воздух и воду. Высокие растения часто получают больше света, воздуха и воды, а оставшиеся низкие могут расти только под ними.",
+            "tj": "Растаниҳо барои нури офтоб, ҳаво ва об рақобат мекунанд. Растаниҳои баланд одатан бештар нур, ҳаво ва об мегиранд, пасттарҳо бошад танҳо зери онҳо мерӯянд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "由于气候条件不同，世界各地植物叶子的样子也很不相同。",
+          "pinyin": "Yóuyú qìhòu tiáojiàn bù tóng, shìjiè gè dì zhíwù yèzi de yàngzi yě hěn bù xiāngtóng.",
+          "text": {
+            "uz": "Iqlim sharoiti turlicha bo'lgani uchun dunyoning turli joylarida o'simlik barglari ham juda farq qiladi.",
+            "ru": "Из-за разных климатических условий листья растений в разных местах мира сильно отличаются.",
+            "tj": "Азбаски шароити иқлим гуногун аст, шакли баргҳои растаниҳои ҷойҳои гуногуни ҷаҳон ҳам бисёр фарқ мекунад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "在暖和、水分比较多的地方，叶子往往长得又大又厚；在阳光特别厉害、水分少的地方，叶子就会长得又细又长。",
+          "pinyin": "Zài nuǎnhuo, shuǐfèn bǐjiào duō de dìfang, yèzi wǎngwǎng zhǎng de yòu dà yòu hòu; zài yángguāng tèbié lìhai, shuǐfèn shǎo de dìfang, yèzi jiù huì zhǎng de yòu xì yòu cháng.",
+          "text": {
+            "uz": "Iliq va namligi ko'p joylarda barglar odatda katta va qalin bo'ladi. Quyoshi kuchli, suvi kam joylarda esa barglar ingichka va uzun o'sadi.",
+            "ru": "В тёплых и влажных местах листья обычно большие и толстые; там, где солнце сильное и воды мало, листья становятся тонкими и длинными.",
+            "tj": "Дар ҷойҳои гарм ва намнок баргҳо одатан калон ва ғафс мешаванд; дар ҷойҳои офтобаш сахт ва обаш кам бошад, баргҳо борик ва дароз мешаванд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Okean va dengiz tubidagi hayot haqida matn",
+        "ru": "Текст об океане и жизни на морском дне",
+        "tj": "Матн дар бораи уқёнус ва ҳаёти қаъри баҳр"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "地球上大约百分之七十一的地方是蓝色的海洋，在美丽的海底世界里，生活着各种各样的植物和动物。",
+          "pinyin": "Dìqiú shang dàyuē bǎi fēn zhī qīshíyī de dìfang shì lán sè de hǎiyáng, zài měilì de hǎidǐ shìjiè li, shēnghuó zhe gè zhǒng gè yàng de zhíwù hé dòngwù.",
+          "text": {
+            "uz": "Yer yuzining taxminan 71 foizi ko'k okeanlardan iborat. Go'zal dengiz tubida turli-tuman o'simlik va hayvonlar yashaydi.",
+            "ru": "Около 71 процента Земли - это синие океаны. В красивом подводном мире живут самые разные растения и животные.",
+            "tj": "Тақрибан 71 фоизи Замин уқёнусҳои кабуд аст. Дар олами зебои қаъри баҳр растаниҳо ва ҳайвоноти гуногун зиндагӣ мекунанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "我们小时候都听过美人鱼的故事，其实真正的海底世界比故事里写的更美。",
+          "pinyin": "Wǒmen xiǎoshíhou dōu tīngguo měirényú de gùshi, qíshí zhēnzhèng de hǎidǐ shìjiè bǐ gùshi li xiě de gèng měi.",
+          "text": {
+            "uz": "Bolaligimizda hammamiz suv parisi haqidagi hikoyalarni eshitganmiz. Aslida haqiqiy dengiz tubi hikoyadagidan ham go'zal.",
+            "ru": "В детстве мы все слышали сказки о русалках. На самом деле настоящий подводный мир красивее, чем в сказках.",
+            "tj": "Дар кӯдакӣ ҳамаамон қиссаи пари баҳриро шунидаем. Дар асл дунёи ҳақиқии қаъри баҳр аз қиссаҳо ҳам зеботар аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "科学研究发现，海洋底部看上去非常安静，然而却不是一点儿声音也没有，海底的动物们一直在“说话”，只不过人的耳朵是听不到的。",
+          "pinyin": "Kēxué yánjiū fāxiàn, hǎiyáng dǐbù kàn shangqu fēicháng ānjìng, rán'ér què bú shì yìdiǎnr shēngyīn yě méiyǒu, hǎidǐ de dòngwùmen yìzhí zài “shuōhuà”, zhǐ bùguò rén de ěrduo shì tīng bu dào de.",
+          "text": {
+            "uz": "Ilmiy tadqiqotlar shuni aniqlagan: okean tubi juda sokin ko'rinsa-da, u yerda umuman tovush yo'q emas. Dengiz tubidagi hayvonlar doim “gaplashadi”, faqat inson qulog'i eshitmaydi.",
+            "ru": "Научные исследования показали: дно океана кажется очень тихим, но это не значит, что там нет звуков. Подводные животные всё время «разговаривают», просто человеческое ухо этого не слышит.",
+            "tj": "Тадқиқоти илмӣ нишон додааст: қаъри уқёнус хеле ором менамояд, аммо комилан бесадо нест. Ҳайвоноти баҳрӣ ҳамеша «суҳбат» мекунанд, танҳо гӯши инсон намешунавад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "另外，就算在几公里深的海底也仍然能看到东西，许多鱼会发出各种颜色的亮光，像一个个排列起来的灯，美极了，就像在梦里一样。",
+          "pinyin": "Lìngwài, jiùsuàn zài jǐ gōnglǐ shēn de hǎidǐ yě réngrán néng kàndào dōngxi, xǔduō yú huì fāchū gè zhǒng yánsè de liàngguāng, xiàng yí ge ge páiliè qǐlai de dēng, měi jí le, jiù xiàng zài mèng li yíyàng.",
+          "text": {
+            "uz": "Bundan tashqari, bir necha kilometr chuqurlikda ham baribir narsalarni ko'rish mumkin. Ko'p baliqlar turli rangda nur chiqaradi, tizilgan chiroqlarga o'xshaydi, juda go'zal, xuddi tushdagidek.",
+            "ru": "Кроме того, даже на глубине нескольких километров всё ещё можно что-то видеть. Многие рыбы излучают разноцветный свет, похожий на ряды ламп, это очень красиво, словно во сне.",
+            "tj": "Ғайр аз ин, ҳатто дар чанд километр чуқурӣ ҳам чизҳоро дидан мумкин аст. Бисёр моҳӣ нурҳои рангоранг мебароранд, мисли чароғҳои сафкашида, бисёр зебо, гӯё дар хоб."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "凉快",
+            "pinyin": "liángkuai",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liángkuai qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liángkuai?",
+            "tj": "liángkuai кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "超",
+            "广播",
+            "热闹",
+            "凉快"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "凉快 = salqin, yoqimli sovuq (liángkuai)",
+            "ru": "凉快 = прохладный, приятно свежий (liángkuai)",
+            "tj": "凉快 = салқин, форам (liángkuai)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "热闹",
+            "pinyin": "rènao",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "热闹 talaffuzini tanlang:",
+            "ru": "Выберите произношение 热闹:",
+            "tj": "Талаффузи 热闹-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chāo",
+            "liángkuai",
+            "rènao",
+            "guǎngbō"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "热闹 — rènao",
+            "ru": "热闹 — rènao",
+            "tj": "热闹 — rènao"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "广播",
+            "pinyin": "guǎngbō",
+            "pos": "n.",
+            "meaning": {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "广播",
+          "pinyin": "guǎngbō",
+          "translation": {
+            "uz": "radio, eshittirish",
+            "ru": "радио, передача",
+            "tj": "радио, пахш"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'radio, eshittirish' xitoycha qaysi?",
+            "ru": "'радио, передача' по-китайски?",
+            "tj": "'радио, пахш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "广播",
+            "凉快",
+            "热闹",
+            "超"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "radio, eshittirish = 广播 (guǎngbō)",
+            "ru": "радио, передача = 广播 (guǎngbō)",
+            "tj": "радио, пахш = 广播 (guǎngbō)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "超",
+            "pinyin": "chāo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "oshib ketmoq",
+              "ru": "превышать",
+              "tj": "зиёд шудан"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "超",
+          "pinyin": "chāo",
+          "options": [
+            "凉快",
+            "热闹",
+            "广播",
+            "超"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "超 — oshib ketmoq (chāo)",
+            "ru": "超 — превышать (chāo)",
+            "tj": "超 — зиёд шудан (chāo)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "凉快 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 凉快:",
+            "tj": "Маънои калимаи 凉快-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            },
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            },
+            {
+              "uz": "oshib ketmoq",
+              "ru": "превышать",
+              "tj": "зиёд шудан"
+            },
+            {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "凉快 = salqin, yoqimli sovuq (liángkuai)",
+            "ru": "凉快 = прохладный, приятно свежий (liángkuai)",
+            "tj": "凉快 = салқин, форам (liángkuai)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "凉快",
+              {
+                "uz": "salqin, yoqimli sovuq",
+                "ru": "прохладный, приятно свежий",
+                "tj": "салқин, форам"
+              }
+            ],
+            [
+              "热闹",
+              {
+                "uz": "gavjum, shovqinli",
+                "ru": "оживлённый, шумный",
+                "tj": "серодам, пурҷӯшу хурӯш"
+              }
+            ],
+            [
+              "广播",
+              {
+                "uz": "radio, eshittirish",
+                "ru": "радио, передача",
+                "tj": "радио, пахш"
+              }
+            ],
+            [
+              "超",
+              {
+                "uz": "oshib ketmoq",
+                "ru": "превышать",
+                "tj": "зиёд шудан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "kutilganiga qarshi ohang",
+              "ru": "наоборот; вопреки ожиданию",
+              "tj": "баръакс; хилофи интизор"
+            },
+            "title_zh": "倒",
+            "rule": {
+              "uz": "Fe'l bo'lsa 'quymoq', ravish bo'lsa kutilganiga qarama-qarshi, tanbeh yoki yon berish ohangini beradi.",
+              "ru": "Как глагол значит 'наливать', как наречие показывает противоположность ожиданию, упрёк или уступку.",
+              "tj": "Ҳамчун феъл 'рехтан', ҳамчун зарф хилофи интизор, танбеҳ ё гузаштро медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "去长城倒是一个好主意。",
+                "pinyin": "Qù Chángchéng dào shì yí ge hǎo zhǔyi.",
+                "translation": {
+                  "uz": "Buyuk devorga borish esa yaxshi fikr.",
+                  "ru": "Съездить на Великую стену - наоборот, хорошая идея.",
+                  "tj": "Ба Девори бузург рафтан бошад, фикри хуб аст."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "广播",
+          "pinyin": "guǎngbō",
+          "options": [
+            "热闹",
+            "超",
+            "广播",
+            "凉快"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "广播 — radio, eshittirish (guǎngbō)",
+            "ru": "广播 — радио, передача (guǎngbō)",
+            "tj": "广播 — радио, пахш (guǎngbō)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shǐyòng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shǐyòng?",
+            "tj": "shǐyòng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "使用",
+            "广播",
+            "热闹",
+            "凉快"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "使用 = ishlatmoq, foydalanmoq (shǐyòng)",
+            "ru": "使用 = использовать (shǐyòng)",
+            "tj": "使用 = истифода кардан (shǐyòng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "凉快",
+              {
+                "uz": "salqin, yoqimli sovuq",
+                "ru": "прохладный, приятно свежий",
+                "tj": "салқин, форам"
+              }
+            ],
+            [
+              "热闹",
+              {
+                "uz": "gavjum, shovqinli",
+                "ru": "оживлённый, шумный",
+                "tj": "серодам, пурҷӯшу хурӯш"
+              }
+            ],
+            [
+              "广播",
+              {
+                "uz": "radio, eshittirish",
+                "ru": "радио, передача",
+                "tj": "радио, пахш"
+              }
+            ],
+            [
+              "超",
+              {
+                "uz": "oshib ketmoq",
+                "ru": "превышать",
+                "tj": "зиёд шудан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "广播",
+          "pinyin": "guǎngbō",
+          "translation": {
+            "uz": "radio, eshittirish",
+            "ru": "радио, передача",
+            "tj": "радио, пахш"
+          }
+        }
+      ]
+    }
+  ]
+}

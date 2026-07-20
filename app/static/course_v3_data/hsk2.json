@@ -13,250 +13,1397 @@
     {
       "no": 1,
       "title": {
-        "uz": "1-bo'lim",
-        "ru": "Раздел 1",
-        "tj": "Боби 1"
+        "uz": "1-dars · 九月去北京旅游最好",
+        "ru": "Урок 1 · 九月去北京旅游最好",
+        "tj": "Дарси 1 · 九月去北京旅游最好"
       },
       "lessons": [
         {
           "n": 1,
-          "zh": "九月去北京旅游最好",
-          "py": "jiǔ yuè qù Běijīng lǚyóu zuìhǎo",
-          "tr": {
-            "uz": "Sayohat, sport va kundalik hayot mavzularida suhbat qurish; 要, 最 va taxminiy sonlarni ishlatishni o'rganish.",
-            "ru": "Научиться вести беседу о путешествиях, спорте и повседневной жизни; освоить вспомогательный глагол 要, наречие степени 最 и приблизительные числа.",
-            "tj": "Гуфтугӯ дар мавзӯи сафар, варзиш ва ҳаёти рӯзмарра; омӯхтани феъли ёрдамии 要, зарфи дараҷаи 最 ва рақамҳои тахминӣ."
-          },
+          "src": 1,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
           "status": "current",
-          "content": "lesson_01"
+          "content": "lesson_01",
+          "zh": "旅游 · 觉得 · 最 · 为什么",
+          "py": "lǚyóu · juéde · zuì · wèi shénme",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          }
         },
         {
           "n": 2,
-          "zh": "我每天六点起床",
-          "py": "wǒ měi tiān liù diǎn qǐchuáng",
-          "tr": {
-            "uz": "Kundalik hayot tartibi, sog'liq va jismoniy faoliyat haqida gapira olish; 是不是 savol qolipini, 每 olmoshini va 多 so'roq olmoshini o'zlashtirish.",
-            "ru": "Научиться говорить о распорядке дня, здоровье и физической активности; освоить вопросный шаблон 是不是, местоимение 每 и вопросительное местоимение 多.",
-            "tj": "Гуфтугӯ дар бораи тартиби рӯзона, саломатӣ ва фаъолияти ҷисмонӣ; азхудкунии шакли саволии 是不是, ҷонишини 每 ва ҷонишини саволии 多."
-          },
+          "src": 1,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
           "status": "locked",
-          "content": "lesson_02"
+          "content": "lesson_02",
+          "zh": "也 · 运动 · 踢足球",
+          "py": "yě · yùndòng · tī zúqiú",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          }
         },
         {
           "n": 3,
-          "zh": "左边那个红色的是我的",
-          "py": "zuǒbian nà gè hóngsè de shì wǒ de",
-          "tr": {
-            "uz": "Narsalarning egasini, rangini va joylashuvini tasvirlash; '的' qo'shimchasi bilan ot-so'z birikmalarini, 一下 miqdorini va 真 kuchaytiruvchi ravishini o'zlashtirish.",
-            "ru": "Научиться описывать владельца, цвет и местоположение предметов; освоить именные словосочетания с 的, количественное слово 一下 и усилительное наречие 真.",
-            "tj": "Тасвири соҳиб, ранг ва ҷои ашё; азхудкунии ибораҳои исмӣ бо 的, воҳиди 一下 ва зарфи тақвиятии 真."
-          },
+          "src": 1,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
           "status": "locked",
-          "content": "lesson_03"
+          "content": "lesson_03",
+          "zh": "一起 · 要 · 新",
+          "py": "yìqǐ · yào · xīn",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          }
         },
         {
           "n": 4,
-          "zh": "这个工作是他帮我介绍的",
-          "py": "zhè gè gōngzuò shì tā bāng wǒ jièshào de",
-          "tr": {
-            "uz": "O'tgan hodisalarning vaqti, joyi va usulini ta'kidlab gapira olish; '是……的' qolipini, 给 old ko'makchisini va 已经 ravishini o'zlashtirish.",
-            "ru": "Научиться делать акцент на времени, месте и способе совершения прошедшего действия; освоить конструкцию 是……的, предлог 给 и наречие 已经.",
-            "tj": "Таъкид кардан ба вақт, ҷой ва усули амали гузашта; азхудкунии конструксияи 是……的, пешоянди 给 ва зарфи 已经."
-          },
+          "src": 1,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
           "status": "locked",
           "content": "lesson_04",
+          "zh": "它 · 眼睛 · 花花",
+          "py": "tā · yǎnjing · Huāhua",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
           "locked_premium": true
         },
         {
           "n": 5,
+          "src": 1,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_05",
+          "zh": "九月去北京旅游最好",
+          "py": "jiǔ yuè qù Běijīng lǚyóu zuìhǎo",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "2-dars · 我每天六点起床",
+        "ru": "Урок 2 · 我每天六点起床",
+        "tj": "Дарси 2 · 我每天六点起床"
+      },
+      "lessons": [
+        {
+          "n": 6,
+          "src": 2,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_06",
+          "zh": "生病 · 每 · 早上 · 跑步",
+          "py": "shēngbìng · měi · zǎoshang · pǎobù",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 7,
+          "src": 2,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_07",
+          "zh": "起床 · 药 · 身体 · 出院",
+          "py": "qǐchuáng · yào · shēntǐ · chūyuàn",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 8,
+          "src": 2,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_08",
+          "zh": "出 · 高 · 米 · 知道",
+          "py": "chū · gāo · mǐ · zhīdào",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 9,
+          "src": 2,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_09",
+          "zh": "休息 · 忙 · 时间",
+          "py": "xiūxi · máng · shíjiān",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 10,
+          "src": 2,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_10",
+          "zh": "我每天六点起床",
+          "py": "wǒ měi tiān liù diǎn qǐchuáng",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "3-dars · 左边那个红色的是我的",
+        "ru": "Урок 3 · 左边那个红色的是我的",
+        "tj": "Дарси 3 · 左边那个红色的是我的"
+      },
+      "lessons": [
+        {
+          "n": 11,
+          "src": 3,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_11",
+          "zh": "手表 · 千 · 报纸 · 送",
+          "py": "shǒubiǎo · qiān · bàozhǐ · sòng",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 12,
+          "src": 3,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_12",
+          "zh": "一下 · 牛奶 · 房间 · 丈夫",
+          "py": "yíxià · niúnǎi · fángjiān · zhàngfu",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 13,
+          "src": 3,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_13",
+          "zh": "旁边 · 真 · 粉色 · 粉",
+          "py": "pángbiān · zhēn · fěnsè · fěn",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 14,
+          "src": 3,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_14",
+          "zh": "颜色 · 左边 · 红色 · 红",
+          "py": "yánsè · zuǒbian · hóngsè · hóng",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 15,
+          "src": 3,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_15",
+          "zh": "左边那个红色的是我的",
+          "py": "zuǒbian nà gè hóngsè de shì wǒ de",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "4-dars · 这个工作是他帮我介绍的",
+        "ru": "Урок 4 · 这个工作是他帮我介绍的",
+        "tj": "Дарси 4 · 这个工作是他帮我介绍的"
+      },
+      "lessons": [
+        {
+          "n": 16,
+          "src": 4,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_16",
+          "zh": "生日 · 快乐 · 给 · 接",
+          "py": "shēngrì · kuàilè · gěi · jiē",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 17,
+          "src": 4,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_17",
+          "zh": "晚上 · 问 · 非常",
+          "py": "wǎnshang · wèn · fēicháng",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 18,
+          "src": 4,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_18",
+          "zh": "开始 · 已经 · 长",
+          "py": "kāishǐ · yǐjīng · cháng",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 19,
+          "src": 4,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_19",
+          "zh": "两 · 帮 · 介绍",
+          "py": "liǎng · bāng · jièshào",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 20,
+          "src": 4,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_20",
+          "zh": "这个工作是他帮我介绍的",
+          "py": "zhè gè gōngzuò shì tā bāng wǒ jièshào de",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": {
+        "uz": "5-dars · 就买这件吧",
+        "ru": "Урок 5 · 就买这件吧",
+        "tj": "Дарси 5 · 就买这件吧"
+      },
+      "lessons": [
+        {
+          "n": 21,
+          "src": 5,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_21",
+          "zh": "外面 · 准备 · 就 · 鱼",
+          "py": "wàimiàn · zhǔnbèi · jiù · yú",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 22,
+          "src": 5,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_22",
+          "zh": "吧 · 件 · 还 · 可以",
+          "py": "ba · jiàn · hái · kěyǐ",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 23,
+          "src": 5,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_23",
+          "zh": "不错 · 考试 · 意思",
+          "py": "búcuò · kǎoshì · yìsi",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 24,
+          "src": 5,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_24",
+          "zh": "咖啡 · 对 · 以后",
+          "py": "kāfēi · duì · yǐhòu",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 25,
+          "src": 5,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_25",
           "zh": "就买这件吧",
           "py": "jiù mǎi zhè jiàn ba",
           "tr": {
-            "uz": "Xarid qilish, ovqatlanish va dam olish haqidagi suhbatlarda o'z fikrini bildira olish; 就 ravishi, 还 ravishi va 有点儿 miqdor birikmasini o'zlashtirish.",
-            "ru": "Научиться выражать своё мнение в разговорах о покупках, еде и отдыхе; освоить наречие 就, наречие 还 и конструкцию 有点儿.",
-            "tj": "Баён кардани фикр дар сӯҳбатҳо дар бораи харидорӣ, хӯрок ва истироҳат; азхудкунии зарфи 就, зарфи 还 ва ибораи 有点儿."
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
           },
-          "status": "locked",
-          "content": "lesson_05",
           "locked_premium": true
         }
       ],
       "milestone": {
         "title": {
-          "uz": "1-bo‘lim takrori",
-          "ru": "Повторение раздела 1",
-          "tj": "Такрори фасли 1"
+          "uz": "1–5-darslar takrori",
+          "ru": "Повторение уроков 1–5",
+          "tj": "Такрори дарсҳои 1–5"
         },
         "status": "locked"
       }
     },
     {
-      "no": 2,
+      "no": 6,
       "title": {
-        "uz": "2-bo'lim",
-        "ru": "Раздел 2",
-        "tj": "Боби 2"
+        "uz": "6-dars · 你怎么不吃了",
+        "ru": "Урок 6 · 你怎么不吃了",
+        "tj": "Дарси 6 · 你怎么不吃了"
       },
       "lessons": [
         {
-          "n": 6,
+          "n": 26,
+          "src": 6,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_26",
+          "zh": "门 · 外 · 自行车 · 羊肉",
+          "py": "mén · wài · zìxíngchē · yángròu",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 27,
+          "src": 6,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_27",
+          "zh": "好吃 · 面条 · 打篮球",
+          "py": "hǎochī · miàntiáo · dǎ lánqiú",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 28,
+          "src": 6,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_28",
+          "zh": "因为 · 所以 · 游泳",
+          "py": "yīnwèi · suǒyǐ · yóuyǒng",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 29,
+          "src": 6,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_29",
+          "zh": "经常 · 公斤 · 姐姐",
+          "py": "jīngcháng · gōngjīn · jiějie",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 30,
+          "src": 6,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_30",
           "zh": "你怎么不吃了",
           "py": "nǐ zěnme bù chī le",
           "tr": {
-            "uz": "Sabab va oqibat haqida gapira olish, 怎么 so'roq olmoshi, miqdor ko'makchilarining takrorlanishi va 因为……所以…… bog'lovchi qolipini o'zlashtirish.",
-            "ru": "Научиться говорить о причине и следствии, вопросительное местоимение 怎么, удвоение счётных слов и союзная конструкция 因为……所以……",
-            "tj": "Омӯзиши гуфтан дар бораи сабаб ва натиҷа, исми саволии 怎么, такрори калимаҳои шуморавӣ ва сохти пайвандакии 因为……所以……"
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
           },
-          "status": "locked",
-          "content": "lesson_06",
-          "locked_premium": true
-        },
-        {
-          "n": 7,
-          "zh": "你家离公司远吗",
-          "py": "nǐ jiā lí gōngsī yuǎn ma",
-          "tr": {
-            "uz": "Masofa, yo'l vaqti va joylashuv haqida gapira olish; 还 ravishining ikkinchi ma'nosini, 就 vaqt ravishinini, 离 old ko'makchisini va 呢 yuklamasini o'zlashtirish.",
-            "ru": "Научиться говорить о расстоянии, времени в пути и местонахождении; освоить второе значение 还, наречие времени 就, предлог 离 и частицу 呢.",
-            "tj": "Омӯзиши гуфтан дар бораи масофа, вақти роҳ ва ҷой; аз бар кардани маъноии дуввуми 还, зарфи вақтии 就, пешояндии 离 ва ҷузъаи 呢."
-          },
-          "status": "locked",
-          "content": "lesson_07",
-          "locked_premium": true
-        },
-        {
-          "n": 8,
-          "zh": "让我想想再告诉你",
-          "py": "ràng wǒ xiǎng xiǎng zài gàosu nǐ",
-          "tr": {
-            "uz": "Taklif so'rash, ruxsat berish va harakatni keyinga qoldirish haqida gapira olish; '……好吗' savol qolipini, 再 ravishin, 让 pivotal fe'lni va fe'llarning takrorlanishini o'zlashtirish.",
-            "ru": "Научиться просить разрешения, откладывать действие; освоить вопросную конструкцию '……好吗', наречие 再, глагол-пивот 让 и удвоение глаголов.",
-            "tj": "Омӯзиши хостани иҷозат, ба баъд гузоштани амал; аз бар кардани сохти саволии '……好吗', зарфи 再, феъли пивотии 让 ва такрори феълҳо."
-          },
-          "status": "locked",
-          "content": "lesson_08",
-          "locked_premium": true
-        },
-        {
-          "n": 9,
-          "zh": "题太多，我没做完",
-          "py": "tí tài duō wǒ méi zuò wán",
-          "tr": {
-            "uz": "Natija fe'llari, 'cóng' old ko'makchisi va 'dì' tartib ko'rsatkichi yordamida gaplar tuzishni o'rganish.",
-            "ru": "Научиться строить предложения с результативными глаголами, предлогом 'cóng' и порядковым показателем 'dì'.",
-            "tj": "Омӯзиши тартиб додани ҷумлаҳо бо феълҳои натиҷавӣ, пешоянди 'cóng' ва нишондиҳандаи тартиби 'dì'."
-          },
-          "status": "locked",
-          "content": "lesson_09",
-          "locked_premium": true
-        },
-        {
-          "n": 10,
-          "zh": "别找了，手机在桌子上呢",
-          "py": "bié zhǎo le shǒujī zài zhuōzi shàng ne",
-          "tr": {
-            "uz": "Buyruq gaplarini ('别……了'), 'duì' old ko'makchisini va 'zhèngzài' davom ko'rsatkichini ishlatishni o'rganish.",
-            "ru": "Научиться использовать побудительные предложения ('别……了'), предлог 'duì' и показатель продолжения 'zhèngzài'.",
-            "tj": "Омӯзиши истифодаи ҷумлаҳои фармоишӣ ('别……了'), пешоянди 'duì' ва нишондиҳандаи давомнокии 'zhèngzài'."
-          },
-          "status": "locked",
-          "content": "lesson_10",
           "locked_premium": true
         }
-      ],
-      "milestone": {
-        "title": {
-          "uz": "2-bo‘lim takrori",
-          "ru": "Повторение раздела 2",
-          "tj": "Такрори фасли 2"
-        },
-        "status": "locked"
-      },
-      "status": "locked"
+      ]
     },
     {
-      "no": 3,
+      "no": 7,
       "title": {
-        "uz": "3-bo'lim",
-        "ru": "Раздел 3",
-        "tj": "Боби 3"
+        "uz": "7-dars · 你家离公司远吗",
+        "ru": "Урок 7 · 你家离公司远吗",
+        "tj": "Дарси 7 · 你家离公司远吗"
       },
       "lessons": [
         {
-          "n": 11,
-          "zh": "他比我大三岁",
-          "py": "tā bǐ wǒ dà sān suì",
-          "tr": {
-            "uz": "'Bǐ' qiyoslash konstruktsiyasini, fe'l sifatdoshini aniqlovchi sifatida ishlatishni va 'kěnéng' yordamchi fe'lini o'rganish.",
-            "ru": "Изучение конструкции сравнения 'bǐ', использования глагольных конструкций в роли определения и модального глагола 'kěnéng'.",
-            "tj": "Омӯзиши конструксияи муқоисавии 'bǐ', истифодаи сохтҳои феълӣ ҳамчун муайянкунанда ва феъли ёрирасони 'kěnéng'."
-          },
+          "n": 31,
+          "src": 7,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
           "status": "locked",
-          "content": "lesson_11",
+          "content": "lesson_31",
+          "zh": "教室 · 机场 · 路 · 离",
+          "py": "jiàoshì · jīchǎng · lù · lí",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
           "locked_premium": true
         },
         {
-          "n": 12,
-          "zh": "你穿得太少了",
-          "py": "nǐ chuān de tài shǎo le",
-          "tr": {
-            "uz": "Holat to'ldiruvchisi ('de' yuklamasi bilan) va 'bǐ' qiyoslash gapining kengaytirilgan shaklini o'rganish.",
-            "ru": "Изучение дополнения состояния (с частицей 'de') и расширенной формы конструкции сравнения 'bǐ'.",
-            "tj": "Омӯзиши илова ба ҳолат (бо зарраи 'de') ва шакли васеъшудаи конструксияи муқоисавии 'bǐ'."
-          },
+          "n": 32,
+          "src": 7,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
           "status": "locked",
-          "content": "lesson_12",
+          "content": "lesson_32",
+          "zh": "公司 · 远 · 公共汽车",
+          "py": "gōngsī · yuǎn · gōnggòng qìchē",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
           "locked_premium": true
         },
         {
-          "n": 13,
-          "zh": "门开着呢",
-          "py": "mén kāi zhe ne",
-          "tr": {
-            "uz": "Davom etayotgan holatni bildiruvchi '着' yuklamasini, 'wǎng' yo'nalish ko'makchisini va '不是……吗' ritorik savol shaklini o'rganish.",
-            "ru": "Изучение частицы '着', обозначающей продолжающееся состояние, предлога направления 'wǎng' и риторической конструкции '不是……吗'.",
-            "tj": "Омӯзиши зарраи '着' ифодакунандаи ҳолати давомдор, пешоянди самт 'wǎng' ва шакли пурсиши риторикии '不是……吗'."
-          },
+          "n": 33,
+          "src": 7,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
           "status": "locked",
-          "content": "lesson_13",
+          "content": "lesson_33",
+          "zh": "小时 · 慢 · 快",
+          "py": "xiǎoshí · màn · kuài",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
           "locked_premium": true
         },
         {
-          "n": 14,
-          "zh": "你看过那个电影吗",
-          "py": "nǐ kàn guò nà gè diànyǐng ma",
-          "tr": {
-            "uz": "O'tgan tajribani bildiruvchi '过' yuklamasini, 'suīrán……dànshì' bog'lovchi juftligini va '次' harakat miqdori to'ldiruvchisini o'rganish.",
-            "ru": "Изучение частицы '过', обозначающей прошлый опыт, союзного сочетания 'suīrán……dànshì' и счётного слова '次' для количества действий.",
-            "tj": "Омӯзиши зарраи '过' ифодакунандаи таҷрибаи гузашта, ҷуфти пайвандии 'suīrán……dànshì' ва калимаи шуморавии '次' барои миқдори амал."
-          },
+          "n": 34,
+          "src": 7,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
           "status": "locked",
-          "content": "lesson_14",
+          "content": "lesson_34",
+          "zh": "过 · 走 · 到",
+          "py": "guò · zǒu · dào",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
           "locked_premium": true
         },
         {
-          "n": 15,
-          "zh": "新年就要到了",
-          "py": "xīnnián jiù yào dào le",
-          "tr": {
-            "uz": "Yaqin kelajakda bo'ladigan voqeani bildiruvchi '要……了' / '快要……了' va '都……了' konstruktsiyalarini o'rganish.",
-            "ru": "Изучение конструкций '要……了' / '快要……了' для выражения ближайшего будущего и конструкции '都……了'.",
-            "tj": "Омӯзиши конструксияҳои '要……了' / '快要……了' барои ифодаи оянда ва '都……了'."
-          },
+          "n": 35,
+          "src": 7,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
           "status": "locked",
-          "content": "lesson_15",
+          "content": "lesson_35",
+          "zh": "你家离公司远吗",
+          "py": "nǐ jiā lí gōngsī yuǎn ma",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 8,
+      "title": {
+        "uz": "8-dars · 让我想想再告诉你",
+        "ru": "Урок 8 · 让我想想再告诉你",
+        "tj": "Дарси 8 · 让我想想再告诉你"
+      },
+      "lessons": [
+        {
+          "n": 36,
+          "src": 8,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_36",
+          "zh": "再 · 让 · 告诉 · 等",
+          "py": "zài · ràng · gàosu · děng",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 37,
+          "src": 8,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_37",
+          "zh": "找 · 事情 · 服务员",
+          "py": "zhǎo · shìqing · fúwùyuán",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 38,
+          "src": 8,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_38",
+          "zh": "白 · 黑 · 贵",
+          "py": "bái · hēi · guì",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 39,
+          "src": 8,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_39",
+          "zh": "病 · 运动 · 颜色",
+          "py": "bìng · yùndòng · yánsè",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 40,
+          "src": 8,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_40",
+          "zh": "让我想想再告诉你",
+          "py": "ràng wǒ xiǎng xiǎng zài gàosu nǐ",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 9,
+      "title": {
+        "uz": "9-dars · 题太多，我没做完",
+        "ru": "Урок 9 · 题太多，我没做完",
+        "tj": "Дарси 9 · 题太多，我没做完"
+      },
+      "lessons": [
+        {
+          "n": 41,
+          "src": 9,
+          "part": 1,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_41",
+          "zh": "错 · 从 · 跳舞 · 第一",
+          "py": "cuò · cóng · tiàowǔ · dìyī",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 42,
+          "src": 9,
+          "part": 2,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_42",
+          "zh": "希望 · 问题 · 欢迎 · 上班",
+          "py": "xīwàng · wèntí · huānyíng · shàngbān",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 43,
+          "src": 9,
+          "part": 3,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_43",
+          "zh": "懂 · 完 · 题",
+          "py": "dǒng · wán · tí",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 44,
+          "src": 9,
+          "part": 4,
+          "part_count": 4,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_44",
+          "zh": "题太多，我没做完",
+          "py": "tí tài duō wǒ méi zuò wán",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 10,
+      "title": {
+        "uz": "10-dars · 别找了，手机在桌子上呢",
+        "ru": "Урок 10 · 别找了，手机在桌子上呢",
+        "tj": "Дарси 10 · 别找了，手机在桌子上呢"
+      },
+      "lessons": [
+        {
+          "n": 45,
+          "src": 10,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_45",
+          "zh": "课 · 帮助 · 别 · 哥哥",
+          "py": "kè · bāngzhù · bié · gēge",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 46,
+          "src": 10,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_46",
+          "zh": "鸡蛋 · 西瓜 · 正在",
+          "py": "jīdàn · xīguā · zhèngzài",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 47,
+          "src": 10,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_47",
+          "zh": "手机 · 洗 · 药",
+          "py": "shǒujī · xǐ · yào",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 48,
+          "src": 10,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_48",
+          "zh": "身体 · 准备 · 报纸",
+          "py": "shēntǐ · zhǔnbèi · bàozhǐ",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 49,
+          "src": 10,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_49",
+          "zh": "别找了，手机在桌子上呢",
+          "py": "bié zhǎo le shǒujī zài zhuōzi shàng ne",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
           "locked_premium": true
         }
       ],
       "milestone": {
         "title": {
-          "uz": "3-bo‘lim takrori",
-          "ru": "Повторение раздела 3",
-          "tj": "Такрори фасли 3"
+          "uz": "6–10-darslar takrori",
+          "ru": "Повторение уроков 6–10",
+          "tj": "Такрори дарсҳои 6–10"
         },
         "status": "locked"
+      }
+    },
+    {
+      "no": 11,
+      "title": {
+        "uz": "11-dars · 他比我大三岁",
+        "ru": "Урок 11 · 他比我大三岁",
+        "tj": "Дарси 11 · 他比我大三岁"
       },
-      "status": "locked"
+      "lessons": [
+        {
+          "n": 50,
+          "src": 11,
+          "part": 1,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_50",
+          "zh": "唱歌 · 男 · 女 · 孩子",
+          "py": "chànggē · nán · nǚ · háizi",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 51,
+          "src": 11,
+          "part": 2,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_51",
+          "zh": "右边 · 比 · 便宜 · 说话",
+          "py": "yòubian · bǐ · piányi · shuōhuà",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 52,
+          "src": 11,
+          "part": 3,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_52",
+          "zh": "可能 · 去年 · 姓",
+          "py": "kěnéng · qùnián · xìng",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 53,
+          "src": 11,
+          "part": 4,
+          "part_count": 4,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_53",
+          "zh": "他比我大三岁",
+          "py": "tā bǐ wǒ dà sān suì",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 12,
+      "title": {
+        "uz": "12-dars · 你穿得太少了",
+        "ru": "Урок 12 · 你穿得太少了",
+        "tj": "Дарси 12 · 你穿得太少了"
+      },
+      "lessons": [
+        {
+          "n": 54,
+          "src": 12,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_54",
+          "zh": "得 · 妻子 · 雪 · 零",
+          "py": "de · qīzi · xuě · líng",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 55,
+          "src": 12,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_55",
+          "zh": "度 · 穿 · 进",
+          "py": "dù · chuān · jìn",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 56,
+          "src": 12,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_56",
+          "zh": "弟弟 · 近 · 身体",
+          "py": "dìdi · jìn · shēntǐ",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 57,
+          "src": 12,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_57",
+          "zh": "少 · 早 · 冷",
+          "py": "shǎo · zǎo · lěng",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 58,
+          "src": 12,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_58",
+          "zh": "你穿得太少了",
+          "py": "nǐ chuān de tài shǎo le",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 13,
+      "title": {
+        "uz": "13-dars · 门开着呢",
+        "ru": "Урок 13 · 门开着呢",
+        "tj": "Дарси 13 · 门开着呢"
+      },
+      "lessons": [
+        {
+          "n": 59,
+          "src": 13,
+          "part": 1,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_59",
+          "zh": "着 · 手 · 拿 · 铅笔",
+          "py": "zhe · shǒu · ná · qiānbǐ",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 60,
+          "src": 13,
+          "part": 2,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_60",
+          "zh": "班 · 长 · 笑 · 宾馆",
+          "py": "bān · zhǎng · xiào · bīnguǎn",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 61,
+          "src": 13,
+          "part": 3,
+          "part_count": 4,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_61",
+          "zh": "一直 · 往 · 路口",
+          "py": "yìzhí · wǎng · lùkǒu",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 62,
+          "src": 13,
+          "part": 4,
+          "part_count": 4,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_62",
+          "zh": "门开着呢",
+          "py": "mén kāi zhe ne",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 14,
+      "title": {
+        "uz": "14-dars · 你看过那个电影吗",
+        "ru": "Урок 14 · 你看过那个电影吗",
+        "tj": "Дарси 14 · 你看过那个电影吗"
+      },
+      "lessons": [
+        {
+          "n": 63,
+          "src": 14,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_63",
+          "zh": "有意思 · 但是 · 虽然 · 次",
+          "py": "yǒu yìsi · dànshì · suīrán · cì",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 64,
+          "src": 14,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_64",
+          "zh": "玩儿 · 晴 · 百",
+          "py": "wánr · qíng · bǎi",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 65,
+          "src": 14,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_65",
+          "zh": "自己 · 旅游 · 跑步",
+          "py": "zìjǐ · lǚyóu · pǎobù",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 66,
+          "src": 14,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_66",
+          "zh": "参加 · 表演 · 商店",
+          "py": "cānjia · biǎoyǎn · shāngdiàn",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 67,
+          "src": 14,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_67",
+          "zh": "你看过那个电影吗",
+          "py": "nǐ kàn guò nà gè diànyǐng ma",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ]
+    },
+    {
+      "no": 15,
+      "title": {
+        "uz": "15-dars · 新年就要到了",
+        "ru": "Урок 15 · 新年就要到了",
+        "tj": "Дарси 15 · 新年就要到了"
+      },
+      "lessons": [
+        {
+          "n": 68,
+          "src": 15,
+          "part": 1,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_68",
+          "zh": "日 · 新年 · 票 · 火车站",
+          "py": "rì · xīnnián · piào · huǒchēzhàn",
+          "tr": {
+            "uz": "1-qism — yangi so'zlar",
+            "ru": "Часть 1 — новые слова",
+            "tj": "Қисми 1 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 69,
+          "src": 15,
+          "part": 2,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_69",
+          "zh": "大家 · 更 · 妹妹",
+          "py": "dàjiā · gèng · mèimei",
+          "tr": {
+            "uz": "2-qism — yangi so'zlar",
+            "ru": "Часть 2 — новые слова",
+            "tj": "Қисми 2 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 70,
+          "src": 15,
+          "part": 3,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_70",
+          "zh": "阴 · 旅游 · 伞",
+          "py": "yīn · lǚyóu · sǎn",
+          "tr": {
+            "uz": "3-qism — yangi so'zlar",
+            "ru": "Часть 3 — новые слова",
+            "tj": "Қисми 3 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 71,
+          "src": 15,
+          "part": 4,
+          "part_count": 5,
+          "checkpoint": false,
+          "status": "locked",
+          "content": "lesson_71",
+          "zh": "月 · 节日 · 祝",
+          "py": "yuè · jiérì · zhù",
+          "tr": {
+            "uz": "4-qism — yangi so'zlar",
+            "ru": "Часть 4 — новые слова",
+            "tj": "Қисми 4 — калимаҳои нав"
+          },
+          "locked_premium": true
+        },
+        {
+          "n": 72,
+          "src": 15,
+          "part": 5,
+          "part_count": 5,
+          "checkpoint": true,
+          "status": "locked",
+          "content": "lesson_72",
+          "zh": "新年就要到了",
+          "py": "xīnnián jiù yào dào le",
+          "tr": {
+            "uz": "Mustahkamlash — dialog va takror",
+            "ru": "Закрепление — диалог и повторение",
+            "tj": "Мустаҳкамкунӣ — гуфтугӯ ва такрор"
+          },
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "11–15-darslar takrori",
+          "ru": "Повторение уроков 11–15",
+          "tj": "Такрори дарсҳои 11–15"
+        },
+        "status": "locked"
+      }
     }
   ]
 }

@@ -1,0 +1,732 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 39,
+  "source_lesson": 10,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我能坐这儿吗",
+  "subtitle": {
+    "uz": "Joylashuvni ifodalash, 有-gaplar, modal fe'l 能 va bog'lovchi 和",
+    "ru": "Выражение местонахождения, предложения с 有, модальный глагол 能 и союз 和",
+    "tj": "Баёни ҷой, ҷумлаҳои 有, феъли модалии 能 ва пайвандаки 和"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "坐",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o'tirmoq",
+        "ru": "сидеть, садиться",
+        "tj": "нишастан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "王方",
+      "pinyin": "Wáng Fāng",
+      "pos": "pn.",
+      "meaning": {
+        "uz": "Wang Fang (ism)",
+        "ru": "Ван Фан (имя)",
+        "tj": "Ван Фан (ном)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "谢朋",
+      "pinyin": "Xiè Péng",
+      "pos": "pn.",
+      "meaning": {
+        "uz": "Xie Peng (ism)",
+        "ru": "Се Пэн (имя)",
+        "tj": "Ше Пен (ном)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Modal fe'l 能",
+        "ru": "Модальный глагол 能",
+        "tj": "Феъли модалии 能"
+      },
+      "title_zh": "能愿动词 能",
+      "rule": {
+        "uz": "能(néng) — imkoniyat yoki ruxsatni bildiradi.\nTuzilish: Ega + 能 + Fe'l\n\n能 va 会 farqi:\n会 — o'rganib orttirgan mahorat (biladi)\n能 — sharoitga asoslangan imkoniyat/ruxsat (qila oladi/mumkin)",
+        "ru": "能(néng) — выражает способность или разрешение.\nСтруктура: Подлежащее + 能 + Глагол\n\nРазница 能 и 会:\n会 — умение, приобретённое в результате обучения\n能 — возможность/разрешение в зависимости от обстоятельств",
+        "tj": "能(néng) — қобилият ё иҷозатро баён мекунад.\nСохт: Муб. + 能 + Феъл\n\nФарқи 能 ва 会:\n会 — маҳорати аз омӯзиш ба даст омада\n能 — имконият/иҷозат вобаста ба шароит"
+      },
+      "examples": [
+        {
+          "zh": "我能坐这儿吗？",
+          "pinyin": "Wǒ néng zuò zhèr ma?",
+          "translation": {
+            "uz": "Men bu yerga o'tirsam bo'ladimi?",
+            "ru": "Можно мне здесь сесть?",
+            "tj": "Ман метавонам ин ҷо нишинам?"
+          }
+        },
+        {
+          "zh": "你能在这儿工作吗？",
+          "pinyin": "Nǐ néng zài zhèr gōngzuò ma?",
+          "translation": {
+            "uz": "Siz bu yerda ishlay olasizmi?",
+            "ru": "Вы можете здесь работать?",
+            "tj": "Шумо метавонед ин ҷо кор кунед?"
+          }
+        },
+        {
+          "zh": "明天你能去商店吗？",
+          "pinyin": "Míngtiān nǐ néng qù shāngdiàn ma?",
+          "translation": {
+            "uz": "Ertaga do'konga bora olasizmi?",
+            "ru": "Вы можете завтра пойти в магазин?",
+            "tj": "Фардо шумо метавонед ба дӯкон равед?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ofisda — stol ustida nima bor",
+        "ru": "В офисе — что на столе",
+        "tj": "Дар идора — болои мӣз чӣ аст"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "桌子上有什么？",
+          "pinyin": "Zhuōzi shàng yǒu shénme?",
+          "text": {
+            "uz": "Stol ustida nima bor?",
+            "ru": "Что на столе?",
+            "tj": "Болои мӣз чӣ аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "桌子上有一个电脑和一本书。",
+          "pinyin": "Zhuōzi shàng yǒu yī gè diànnǎo hé yī běn shū.",
+          "text": {
+            "uz": "Stol ustida bitta kompyuter va bitta kitob bor.",
+            "ru": "На столе стоит компьютер и лежит книга.",
+            "tj": "Болои мӣз як компютер ва як китоб аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "杯子在哪儿？",
+          "pinyin": "Bēizi zài nǎr?",
+          "text": {
+            "uz": "Piyola qayerda?",
+            "ru": "Где стакан?",
+            "tj": "Пиёла куҷост?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "杯子在桌子里。",
+          "pinyin": "Bēizi zài zhuōzi lǐ.",
+          "text": {
+            "uz": "Piyola stol ichida.",
+            "ru": "Стакан внутри стола.",
+            "tj": "Пиёла дохили мӣз аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport zalda — oldida va orqasida kim",
+        "ru": "В спортзале — кто спереди и сзади",
+        "tj": "Дар варзишгоҳ — пеш ва қафо кӣ аст"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "前面那个人叫什么名字？",
+          "pinyin": "Qiánmiàn nàge rén jiào shénme míngzi?",
+          "text": {
+            "uz": "Oldidagi odam nomi nima?",
+            "ru": "Как зовут человека спереди?",
+            "tj": "Номи одами пешаш чист?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她叫王方，在医院工作。",
+          "pinyin": "Tā jiào Wáng Fāng, zài yīyuàn gōngzuò.",
+          "text": {
+            "uz": "Uning ismi Van Fan, kasalxonada ishlaydi.",
+            "ru": "Её зовут Ван Фан — она работает в больнице.",
+            "tj": "Номаш Ван Фан аст, дар беморхона кор мекунад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "后面那个人呢？他叫什么名字？",
+          "pinyin": "Hòumiàn nàge rén ne? Tā jiào shénme míngzi?",
+          "text": {
+            "uz": "Orqasidagi odam-chi? Uning ismi nima?",
+            "ru": "А человек сзади? Как его зовут?",
+            "tj": "Одами қафоаш чӣ? Номаш чист?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他叫谢朋，在商店工作。",
+          "pinyin": "Tā jiào Xiè Péng, zài shāngdiàn gōngzuò.",
+          "text": {
+            "uz": "Uning ismi She Pen, do'konda ishlaydi.",
+            "ru": "Его зовут Се Пэн — он работает в магазине.",
+            "tj": "Номаш Ше Пен аст, дар дӯкон кор мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kutubxonada — o'tirish so'rash",
+        "ru": "В библиотеке — просьба сесть",
+        "tj": "Дар китобхона — хоҳиши нишастан"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "这儿有人吗？",
+          "pinyin": "Zhèr yǒu rén ma?",
+          "text": {
+            "uz": "Bu yerda kimdir o'tiribdimi?",
+            "ru": "Здесь кто-то сидит?",
+            "tj": "Ин ҷо касе нишастаст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "没有。",
+          "pinyin": "Méiyǒu.",
+          "text": {
+            "uz": "Yo'q.",
+            "ru": "Нет.",
+            "tj": "Не."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我能坐这儿吗？",
+          "pinyin": "Wǒ néng zuò zhèr ma?",
+          "text": {
+            "uz": "Men bu yerga o'tirsam bo'ladimi?",
+            "ru": "Можно мне здесь сесть?",
+            "tj": "Ман метавонам ин ҷо нишинам?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "请坐。",
+          "pinyin": "Qǐng zuò.",
+          "text": {
+            "uz": "Marhamat, o'tiring.",
+            "ru": "Пожалуйста, садитесь.",
+            "tj": "Хоҳиш мекунам, биниш."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "坐",
+            "pinyin": "zuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o'tirmoq",
+              "ru": "сидеть, садиться",
+              "tj": "нишастан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'tirmoq' xitoycha qaysi?",
+            "ru": "'сидеть, садиться' по-китайски?",
+            "tj": "'нишастан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "上",
+            "桌子",
+            "电脑",
+            "坐"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "o'tirmoq = 坐 (zuò)",
+            "ru": "сидеть, садиться = 坐 (zuò)",
+            "tj": "нишастан = 坐 (zuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "王方",
+            "pinyin": "Wáng Fāng",
+            "pos": "pn.",
+            "meaning": {
+              "uz": "Wang Fang (ism)",
+              "ru": "Ван Фан (имя)",
+              "tj": "Ван Фан (ном)"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "王方",
+          "pinyin": "Wáng Fāng",
+          "options": [
+            "桌子",
+            "电脑",
+            "王方",
+            "上"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "王方 — Wang Fang (ism) (Wáng Fāng)",
+            "ru": "王方 — Ван Фан (имя) (Wáng Fāng)",
+            "tj": "王方 — Ван Фан (ном) (Wáng Fāng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "谢朋",
+            "pinyin": "Xiè Péng",
+            "pos": "pn.",
+            "meaning": {
+              "uz": "Xie Peng (ism)",
+              "ru": "Се Пэн (имя)",
+              "tj": "Ше Пен (ном)"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "谢朋",
+          "pinyin": "Xiè Péng",
+          "translation": {
+            "uz": "Xie Peng (ism)",
+            "ru": "Се Пэн (имя)",
+            "tj": "Ше Пен (ном)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "谢朋 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 谢朋:",
+            "tj": "Маънои калимаи 谢朋-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "Xie Peng (ism)",
+              "ru": "Се Пэн (имя)",
+              "tj": "Ше Пен (ном)"
+            },
+            {
+              "uz": "kompyuter",
+              "ru": "компьютер",
+              "tj": "компютер"
+            },
+            {
+              "uz": "stol, parta",
+              "ru": "стол",
+              "tj": "мӣз"
+            },
+            {
+              "uz": "ustida, tepasida",
+              "ru": "сверху, на",
+              "tj": "болои, дар болои"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "谢朋 = Xie Peng (ism) (Xiè Péng)",
+            "ru": "谢朋 = Се Пэн (имя) (Xiè Péng)",
+            "tj": "谢朋 = Ше Пен (ном) (Xiè Péng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zuò qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zuò?",
+            "tj": "zuò кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "坐",
+            "上",
+            "电脑",
+            "桌子"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "坐 = o'tirmoq (zuò)",
+            "ru": "坐 = сидеть, садиться (zuò)",
+            "tj": "坐 = нишастан (zuò)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "坐",
+              {
+                "uz": "o'tirmoq",
+                "ru": "сидеть, садиться",
+                "tj": "нишастан"
+              }
+            ],
+            [
+              "王方",
+              {
+                "uz": "Wang Fang (ism)",
+                "ru": "Ван Фан (имя)",
+                "tj": "Ван Фан (ном)"
+              }
+            ],
+            [
+              "谢朋",
+              {
+                "uz": "Xie Peng (ism)",
+                "ru": "Се Пэн (имя)",
+                "tj": "Ше Пен (ном)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Modal fe'l 能",
+              "ru": "Модальный глагол 能",
+              "tj": "Феъли модалии 能"
+            },
+            "title_zh": "能愿动词 能",
+            "rule": {
+              "uz": "能(néng) — imkoniyat yoki ruxsatni bildiradi.\nTuzilish: Ega + 能 + Fe'l\n\n能 va 会 farqi:\n会 — o'rganib orttirgan mahorat (biladi)\n能 — sharoitga asoslangan imkoniyat/ruxsat (qila oladi/mumkin)",
+              "ru": "能(néng) — выражает способность или разрешение.\nСтруктура: Подлежащее + 能 + Глагол\n\nРазница 能 и 会:\n会 — умение, приобретённое в результате обучения\n能 — возможность/разрешение в зависимости от обстоятельств",
+              "tj": "能(néng) — қобилият ё иҷозатро баён мекунад.\nСохт: Муб. + 能 + Феъл\n\nФарқи 能 ва 会:\n会 — маҳорати аз омӯзиш ба даст омада\n能 — имконият/иҷозат вобаста ба шароит"
+            },
+            "examples": [
+              {
+                "zh": "我能坐这儿吗？",
+                "pinyin": "Wǒ néng zuò zhèr ma?",
+                "translation": {
+                  "uz": "Men bu yerga o'tirsam bo'ladimi?",
+                  "ru": "Можно мне здесь сесть?",
+                  "tj": "Ман метавонам ин ҷо нишинам?"
+                }
+              },
+              {
+                "zh": "你能在这儿工作吗？",
+                "pinyin": "Nǐ néng zài zhèr gōngzuò ma?",
+                "translation": {
+                  "uz": "Siz bu yerda ishlay olasizmi?",
+                  "ru": "Вы можете здесь работать?",
+                  "tj": "Шумо метавонед ин ҷо кор кунед?"
+                }
+              },
+              {
+                "zh": "明天你能去商店吗？",
+                "pinyin": "Míngtiān nǐ néng qù shāngdiàn ma?",
+                "translation": {
+                  "uz": "Ertaga do'konga bora olasizmi?",
+                  "ru": "Вы можете завтра пойти в магазин?",
+                  "tj": "Фардо шумо метавонед ба дӯкон равед?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men bu yerga o'tirsam bo'ladimi?",
+            "ru": "Можно мне здесь сесть?",
+            "tj": "Ман метавонам ин ҷо нишинам?"
+          },
+          "tokens": [
+            "我",
+            "这儿",
+            "桌子",
+            "吗",
+            "上",
+            "坐",
+            "能"
+          ],
+          "answer_tokens": [
+            "我",
+            "能",
+            "坐",
+            "这儿",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "我能坐这儿吗？ — Wǒ néng zuò zhèr ma?",
+            "ru": "我能坐这儿吗？ — Wǒ néng zuò zhèr ma?",
+            "tj": "我能坐这儿吗？ — Wǒ néng zuò zhèr ma?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Ertaga do'konga bora olasizmi?» — xitoychada qaysi biri?",
+            "ru": "«Вы можете завтра пойти в магазин?» — какое предложение по-китайски?",
+            "tj": "«Фардо шумо метавонед ба дӯкон равед?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你能在这儿工作吗？",
+            "我能坐这儿吗？",
+            "明天你能去商店吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "明天你能去商店吗？ — Míngtiān nǐ néng qù shāngdiàn ma?",
+            "ru": "明天你能去商店吗？ — Míngtiān nǐ néng qù shāngdiàn ma?",
+            "tj": "明天你能去商店吗？ — Míngtiān nǐ néng qù shāngdiàn ma?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "坐",
+          "pinyin": "zuò",
+          "options": [
+            "电脑",
+            "桌子",
+            "坐",
+            "上"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "坐 — o'tirmoq (zuò)",
+            "ru": "坐 — сидеть, садиться (zuò)",
+            "tj": "坐 — нишастан (zuò)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "请坐。",
+          "pinyin": "Qǐng zuò.",
+          "translation": {
+            "uz": "Marhamat, o'tiring.",
+            "ru": "Пожалуйста, садитесь.",
+            "tj": "Хоҳиш мекунам, биниш."
+          },
+          "tokens": {
+            "uz": [
+              "Uning",
+              "Marhamat",
+              "ismi",
+              "o'tiring"
+            ],
+            "ru": [
+              "зовут",
+              "садитесь",
+              "Её",
+              "Пожалуйста"
+            ],
+            "tj": [
+              "Ван",
+              "Хоҳиш",
+              "Номаш",
+              "мекунам",
+              "биниш"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Marhamat",
+              "o'tiring"
+            ],
+            "ru": [
+              "Пожалуйста",
+              "садитесь"
+            ],
+            "tj": [
+              "Хоҳиш",
+              "мекунам",
+              "биниш"
+            ]
+          },
+          "explanation": {
+            "uz": "请坐。 — Marhamat, o'tiring.",
+            "ru": "请坐。 — Пожалуйста, садитесь.",
+            "tj": "请坐。 — Хоҳиш мекунам, биниш."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "lǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается lǐ?",
+            "tj": "lǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "里",
+            "上",
+            "桌子",
+            "电脑"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "里 = ichida (lǐ)",
+            "ru": "里 = внутри, в (lǐ)",
+            "tj": "里 = дарун, дохили (lǐ)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Marhamat, o'tiring.",
+            "ru": "Пожалуйста, садитесь.",
+            "tj": "Хоҳиш мекунам, биниш."
+          },
+          "tokens": [
+            "桌子",
+            "坐",
+            "请",
+            "上"
+          ],
+          "answer_tokens": [
+            "请",
+            "坐"
+          ],
+          "explanation": {
+            "uz": "请坐。 — Qǐng zuò.",
+            "ru": "请坐。 — Qǐng zuò.",
+            "tj": "请坐。 — Qǐng zuò."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "王方",
+          "pinyin": "Wáng Fāng",
+          "options": [
+            "王方",
+            "桌子",
+            "上",
+            "电脑"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "王方 — Wang Fang (ism) (Wáng Fāng)",
+            "ru": "王方 — Ван Фан (имя) (Wáng Fāng)",
+            "tj": "王方 — Ван Фан (ном) (Wáng Fāng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "谢朋",
+          "pinyin": "Xiè Péng",
+          "translation": {
+            "uz": "Xie Peng (ism)",
+            "ru": "Се Пэн (имя)",
+            "tj": "Ше Пен (ном)"
+          }
+        }
+      ]
+    }
+  ]
+}

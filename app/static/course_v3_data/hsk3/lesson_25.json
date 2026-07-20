@@ -1,0 +1,764 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 25,
+  "source_lesson": 5,
+  "part_no": 1,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我最近越来越胖了",
+  "subtitle": {
+    "uz": "'了' o'zgarishni bildirishi, '越来越+Adj' va 'для (了)' maqsad qolipini o'zlashtirish.",
+    "ru": "Освоить 了 как изменение состояния, 越来越+Adj и конструкцию 为(了) для цели.",
+    "tj": "Азхудкунии 了 ҳамчун ифодаи тағйирот, 越来越+Adj ва сохти мақсади 为(了)."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "发烧",
+      "pinyin": "fāshāo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "isitmasi chiqmoq",
+        "ru": "температурить",
+        "tj": "таб кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "为",
+      "pinyin": "wèi",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "uchun",
+        "ru": "для, ради",
+        "tj": "барои"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "照顾",
+      "pinyin": "zhàogù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qaramoq, parvarish qilmoq",
+        "ru": "заботиться, ухаживать",
+        "tj": "нигоҳубин кардан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "用",
+      "pinyin": "yòng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kerak bo'lmoq, ishlatmoq",
+        "ru": "нужно; использовать",
+        "tj": "лозим шудан; истифода бурдан"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Xiaolining uyida",
+        "ru": "У Сяоли дома",
+        "tj": "Дар хонаи Сяоли"
+      },
+      "dialogue": [
+        {
+          "speaker": "朋友",
+          "zh": "我听说你身体不舒服，怎么了？",
+          "pinyin": "Wǒ tīngshuō nǐ shēntǐ bù shūfu, zěnme le?",
+          "text": {
+            "uz": "Eshitishimcha, mazang yo'q ekan, nima bo'ldi?",
+            "ru": "Я слышал, ты плохо себя чувствуешь, что случилось?",
+            "tj": "Шунидам, ки худро хуб ҳис намекунӣ, чӣ шуд?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "前几天有点儿发烧，现在好多了。",
+          "pinyin": "Qián jǐ tiān yǒudiǎnr fāshāo, xiànzài hǎoduō le.",
+          "text": {
+            "uz": "Bir necha kun oldin biroz isitmam bor edi, hozir ancha yaxshi.",
+            "ru": "Несколько дней назад была небольшая температура, сейчас намного лучше.",
+            "tj": "Чанд рӯз пеш каме таб доштам, ҳоло хеле беҳтар аст."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "喝杯茶吧，这是我为你买的绿茶，很不错。",
+          "pinyin": "Hē bēi chá ba, zhè shì wǒ wèi nǐ mǎi de lǜchá, hěn búcuò.",
+          "text": {
+            "uz": "Bir piyola choy ich, bu men sen uchun olgan yashil choy, juda yaxshi.",
+            "ru": "Выпей чашку чая, это зелёный чай, который я купил для тебя, очень неплохой.",
+            "tj": "Як пиёла чой нӯш, ин чойи сабзест, ки барои ту харидам, хеле хуб аст."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "谢谢，我要吃药，不喝茶了。",
+          "pinyin": "Xièxie, wǒ yào chī yào, bù hē chá le.",
+          "text": {
+            "uz": "Rahmat, dori ichishim kerak, endi choy ichmayman.",
+            "ru": "Спасибо, мне нужно принять лекарство, чай уже не буду пить.",
+            "tj": "Ташаккур, бояд дору хӯрам, дигар чой намехӯрам."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "那喝杯水吧。",
+          "pinyin": "Nà hē bēi shuǐ ba.",
+          "text": {
+            "uz": "Unda bir piyola suv ich.",
+            "ru": "Тогда выпей стакан воды.",
+            "tj": "Пас як пиёла об нӯш."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "好的。",
+          "pinyin": "Hǎo de.",
+          "text": {
+            "uz": "Xo'p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Telefonda",
+        "ru": "По телефону",
+        "tj": "Дар телефон"
+      },
+      "dialogue": [
+        {
+          "speaker": "周太太",
+          "zh": "对不起，我明天不能和你们出去玩儿了。",
+          "pinyin": "Duìbuqǐ, wǒ míngtiān bù néng hé nǐmen chūqu wánr le.",
+          "text": {
+            "uz": "Kechirasiz, ertaga sizlar bilan aylanishga chiqa olmayman.",
+            "ru": "Извините, завтра я не смогу пойти с вами гулять.",
+            "tj": "Бубахшед, пагоҳ бо шумо берун рафта наметавонам."
+          }
+        },
+        {
+          "speaker": "张太太",
+          "zh": "为什么？怎么了？",
+          "pinyin": "Wèi shénme? Zěnme le?",
+          "text": {
+            "uz": "Nega? Nima bo'ldi?",
+            "ru": "Почему? Что случилось?",
+            "tj": "Чаро? Чӣ шуд?"
+          }
+        },
+        {
+          "speaker": "周太太",
+          "zh": "我儿子生病了，我要在家照顾他。",
+          "pinyin": "Wǒ érzi shēng bìng le, wǒ yào zài jiā zhàogù tā.",
+          "text": {
+            "uz": "O'g'lim kasal bo'lib qoldi, uyda unga qarashim kerak.",
+            "ru": "Мой сын заболел, мне нужно дома ухаживать за ним.",
+            "tj": "Писарам бемор шуд, бояд дар хона ӯро нигоҳубин кунам."
+          }
+        },
+        {
+          "speaker": "张太太",
+          "zh": "他吃药了吗？要不要去医院？",
+          "pinyin": "Tā chī yào le ma? Yào bu yào qù yīyuàn?",
+          "text": {
+            "uz": "U dori ichdimi? Kasalxonaga borish kerakmi?",
+            "ru": "Он принял лекарство? Нужно ехать в больницу?",
+            "tj": "Ӯ дору хӯрд? Ба беморхона рафтан лозим аст?"
+          }
+        },
+        {
+          "speaker": "周太太",
+          "zh": "不用去医院，昨天吃了感冒药，现在好一些了。",
+          "pinyin": "Búyòng qù yīyuàn, zuótiān chī le gǎnmào yào, xiànzài hǎo yìxiē le.",
+          "text": {
+            "uz": "Kasalxonaga borish shart emas, kecha shamollash dorisini ichdi, hozir biroz yaxshi.",
+            "ru": "В больницу не нужно, вчера принял лекарство от простуды, сейчас немного лучше.",
+            "tj": "Ба беморхона рафтан лозим нест, дирӯз доруи шамолхӯрӣ хӯрд, ҳоло каме беҳтар аст."
+          }
+        },
+        {
+          "speaker": "张太太",
+          "zh": "那我们下次再一起出去玩儿吧。",
+          "pinyin": "Nà wǒmen xià cì zài yìqǐ chūqu wánr ba.",
+          "text": {
+            "uz": "Unda keyingi safar birga chiqamiz.",
+            "ru": "Тогда в следующий раз вместе пойдём гулять.",
+            "tj": "Пас дафъаи дигар якҷоя берун меравем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiaogangning uyida",
+        "ru": "У Сяогана дома",
+        "tj": "Дар хонаи Сяогang"
+      },
+      "dialogue": [
+        {
+          "speaker": "小丽",
+          "zh": "你最喜欢哪个季节？",
+          "pinyin": "Nǐ zuì xǐhuan nǎ ge jìjié?",
+          "text": {
+            "uz": "Qaysi faslni eng yaxshi ko'rasan?",
+            "ru": "Какое время года тебе нравится больше всего?",
+            "tj": "Кадом фаслро аз ҳама бештар дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "当然是春天，天气不那么冷了，草和树都绿了，花也开了。",
+          "pinyin": "Dāngrán shì chūntiān, tiānqì bù nàme lěng le, cǎo hé shù dōu lǜ le, huā yě kāi le.",
+          "text": {
+            "uz": "Albatta bahor, havo endi unchalik sovuq emas, o'tlar va daraxtlar yashillandi, gullar ham ochildi.",
+            "ru": "Конечно весну: погода уже не такая холодная, трава и деревья стали зелёными, цветы тоже раскрылись.",
+            "tj": "Албатта баҳорро: ҳаво дигар он қадар сард нест, алафу дарахтон сабз шуданд, гулҳо ҳам кушоданд."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "我最喜欢夏天，因为我可以穿漂亮的裙子了。",
+          "pinyin": "Wǒ zuì xǐhuan xiàtiān, yīnwèi wǒ kěyǐ chuān piàoliang de qúnzi le.",
+          "text": {
+            "uz": "Men yozni eng yaxshi ko'raman, chunki chiroyli ko'ylak kiyishim mumkin bo'ladi.",
+            "ru": "Мне больше всего нравится лето, потому что можно носить красивое платье.",
+            "tj": "Ман тобистонро аз ҳама бештар дӯст медорам, чунки метавонам куртаи зебо пӯшам."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "那我也喜欢夏天了。",
+          "pinyin": "Nà wǒ yě xǐhuan xiàtiān le.",
+          "text": {
+            "uz": "Unda men ham yozni yaxshi ko'rib qoldim.",
+            "ru": "Тогда мне тоже стало нравиться лето.",
+            "tj": "Пас ман ҳам тобистонро дӯст медорам."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "怎么？你也有漂亮的裙子？",
+          "pinyin": "Zěnme? Nǐ yě yǒu piàoliang de qúnzi?",
+          "text": {
+            "uz": "Nima? Senda ham chiroyli ko'ylak bormi?",
+            "ru": "Что? У тебя тоже есть красивое платье?",
+            "tj": "Чӣ? Ту ҳам куртаи зебо дорӣ?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "不，我喜欢看你穿漂亮的裙子。",
+          "pinyin": "Bù, wǒ xǐhuan kàn nǐ chuān piàoliang de qúnzi.",
+          "text": {
+            "uz": "Yo'q, men seni chiroyli ko'ylakda ko'rishni yaxshi ko'raman.",
+            "ru": "Нет, мне нравится смотреть, как ты носишь красивое платье.",
+            "tj": "Не, ман дидани туро бо куртаи зебо дӯст медорам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiaogangning uyida",
+        "ru": "У Сяогана дома",
+        "tj": "Дар хонаи Сяогang"
+      },
+      "dialogue": [
+        {
+          "speaker": "小丽",
+          "zh": "我最近越来越胖了。",
+          "pinyin": "Wǒ zuìjìn yuè lái yuè pàng le.",
+          "text": {
+            "uz": "Oxirgi paytlarda tobora semirib ketyapman.",
+            "ru": "В последнее время я становлюсь всё полнее.",
+            "tj": "Вақтҳои охир торафт фарбеҳ шуда истодаам."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "谁说的？我觉得你越来越漂亮了。",
+          "pinyin": "Shéi shuō de? Wǒ juéde nǐ yuè lái yuè piàoliang le.",
+          "text": {
+            "uz": "Kim aytdi? Menimcha sen tobora chiroyli bo'lyapsan.",
+            "ru": "Кто сказал? По-моему, ты становишься всё красивее.",
+            "tj": "Кӣ гуфт? Ба фикрам ту торафт зеботар мешавӣ."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "你看，这条裙子是去年买的，今年就不能穿了。",
+          "pinyin": "Nǐ kàn, zhè tiáo qúnzi shì qùnián mǎi de, jīnnián jiù bù néng chuān le.",
+          "text": {
+            "uz": "Qara, bu ko'ylakni o'tgan yili olgandim, bu yil kiyolmay qoldim.",
+            "ru": "Смотри, это платье куплено в прошлом году, а в этом году уже не могу его носить.",
+            "tj": "Бубин, ин куртаро соли гузашта харида будам, имсол дигар пӯшида наметавонам."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "那是因为你吃得太多了，少吃点儿吧。",
+          "pinyin": "Nà shì yīnwèi nǐ chī de tài duō le, shǎo chī diǎnr ba.",
+          "text": {
+            "uz": "Bu sen juda ko'p yeganing uchun, kamroq ye.",
+            "ru": "Это потому что ты слишком много ешь, ешь поменьше.",
+            "tj": "Ин барои он аст, ки бисёр мехӯрӣ, камтар бихӯр."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "我做的饭越来越好吃，我能少吃吗？",
+          "pinyin": "Wǒ zuò de fàn yuè lái yuè hǎochī, wǒ néng shǎo chī ma?",
+          "text": {
+            "uz": "Men pishirgan ovqat tobora mazali bo'lyapti, kam yeya olamanmi?",
+            "ru": "Еда, которую я готовлю, становится всё вкуснее, разве я могу есть меньше?",
+            "tj": "Хӯроке, ки ман мепазам, торафт болаззат мешавад, магар кам хӯрда метавонам?"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "发烧",
+            "pinyin": "fāshāo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "发烧",
+          "pinyin": "fāshāo",
+          "translation": {
+            "uz": "isitmasi chiqmoq",
+            "ru": "температурить",
+            "tj": "таб кардан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "发烧",
+          "pinyin": "fāshāo",
+          "options": [
+            "发烧",
+            "照顾",
+            "用",
+            "为"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "发烧 — isitmasi chiqmoq (fāshāo)",
+            "ru": "发烧 — температурить (fāshāo)",
+            "tj": "发烧 — таб кардан (fāshāo)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "为",
+            "pinyin": "wèi",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "为 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 为:",
+            "tj": "Маънои калимаи 为-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kerak bo'lmoq, ishlatmoq",
+              "ru": "нужно; использовать",
+              "tj": "лозим шудан; истифода бурдан"
+            },
+            {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            },
+            {
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            },
+            {
+              "uz": "qaramoq, parvarish qilmoq",
+              "ru": "заботиться, ухаживать",
+              "tj": "нигоҳубин кардан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "为 = uchun (wèi)",
+            "ru": "为 = для, ради (wèi)",
+            "tj": "为 = барои (wèi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "照顾",
+            "pinyin": "zhàogù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qaramoq, parvarish qilmoq",
+              "ru": "заботиться, ухаживать",
+              "tj": "нигоҳубин кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhàogù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhàogù?",
+            "tj": "zhàogù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "发烧",
+            "为",
+            "照顾",
+            "用"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "照顾 = qaramoq, parvarish qilmoq (zhàogù)",
+            "ru": "照顾 = заботиться, ухаживать (zhàogù)",
+            "tj": "照顾 = нигоҳубин кардан (zhàogù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "用",
+            "pinyin": "yòng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kerak bo'lmoq, ishlatmoq",
+              "ru": "нужно; использовать",
+              "tj": "лозим шудан; истифода бурдан"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "用 talaffuzini tanlang:",
+            "ru": "Выберите произношение 用:",
+            "tj": "Талаффузи 用-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yòng",
+            "wèi",
+            "zhàogù",
+            "fāshāo"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "用 — yòng",
+            "ru": "用 — yòng",
+            "tj": "用 — yòng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'isitmasi chiqmoq' xitoycha qaysi?",
+            "ru": "'температурить' по-китайски?",
+            "tj": "'таб кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "为",
+            "发烧",
+            "照顾",
+            "用"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "isitmasi chiqmoq = 发烧 (fāshāo)",
+            "ru": "температурить = 发烧 (fāshāo)",
+            "tj": "таб кардан = 发烧 (fāshāo)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "发烧",
+              {
+                "uz": "isitmasi chiqmoq",
+                "ru": "температурить",
+                "tj": "таб кардан"
+              }
+            ],
+            [
+              "为",
+              {
+                "uz": "uchun",
+                "ru": "для, ради",
+                "tj": "барои"
+              }
+            ],
+            [
+              "照顾",
+              {
+                "uz": "qaramoq, parvarish qilmoq",
+                "ru": "заботиться, ухаживать",
+                "tj": "нигоҳубин кардан"
+              }
+            ],
+            [
+              "用",
+              {
+                "uz": "kerak bo'lmoq, ishlatmoq",
+                "ru": "нужно; использовать",
+                "tj": "лозим шудан; истифода бурдан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "我儿子生病了，我要在家照顾他。",
+          "pinyin": "Wǒ érzi shēng bìng le, wǒ yào zài jiā zhàogù tā.",
+          "translation": {
+            "uz": "O'g'lim kasal bo'lib qoldi, uyda unga qarashim kerak.",
+            "ru": "Мой сын заболел, мне нужно дома ухаживать за ним.",
+            "tj": "Писарам бемор шуд, бояд дар хона ӯро нигоҳубин кунам."
+          },
+          "tokens": {
+            "uz": [
+              "qoldi",
+              "uyda",
+              "O'g'lim",
+              "bo'lib",
+              "kerak",
+              "qarashim",
+              "unga",
+              "kasal"
+            ],
+            "ru": [
+              "мне",
+              "сын",
+              "ухаживать",
+              "дома",
+              "нужно",
+              "Мой",
+              "ним",
+              "заболел",
+              "за"
+            ],
+            "tj": [
+              "дар",
+              "хона",
+              "бемор",
+              "шуд",
+              "ӯро",
+              "Писарам",
+              "кунам",
+              "нигоҳубин",
+              "бояд"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "O'g'lim",
+              "kasal",
+              "bo'lib",
+              "qoldi",
+              "uyda",
+              "unga",
+              "qarashim",
+              "kerak"
+            ],
+            "ru": [
+              "Мой",
+              "сын",
+              "заболел",
+              "мне",
+              "нужно",
+              "дома",
+              "ухаживать",
+              "за",
+              "ним"
+            ],
+            "tj": [
+              "Писарам",
+              "бемор",
+              "шуд",
+              "бояд",
+              "дар",
+              "хона",
+              "ӯро",
+              "нигоҳубин",
+              "кунам"
+            ]
+          },
+          "explanation": {
+            "uz": "我儿子生病了，我要在家照顾他。 — O'g'lim kasal bo'lib qoldi, uyda unga qarashim kerak.",
+            "ru": "我儿子生病了，我要在家照顾他。 — Мой сын заболел, мне нужно дома ухаживать за ним.",
+            "tj": "我儿子生病了，我要在家照顾他。 — Писарам бемор шуд, бояд дар хона ӯро нигоҳубин кунам."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我儿子生病了，我要在家照顾他。",
+          "pinyin": "Wǒ érzi shēng bìng le, wǒ yào zài jiā zhàogù tā.",
+          "options": [
+            "前几天有点儿发烧，现在好多了。",
+            "我听说你身体不舒服，怎么了？",
+            "我儿子生病了，我要在家照顾他。",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我儿子生病了，我要在家照顾他。 — O'g'lim kasal bo'lib qoldi, uyda unga qarashim kerak.",
+            "ru": "我儿子生病了，我要在家照顾他。 — Мой сын заболел, мне нужно дома ухаживать за ним.",
+            "tj": "我儿子生病了，我要在家照顾他。 — Писарам бемор шуд, бояд дар хона ӯро нигоҳубин кунам."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "为",
+          "pinyin": "wèi",
+          "options": [
+            "用",
+            "照顾",
+            "为",
+            "发烧"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "为 — uchun (wèi)",
+            "ru": "为 — для, ради (wèi)",
+            "tj": "为 — барои (wèi)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "记得 talaffuzini tanlang:",
+            "ru": "Выберите произношение 记得:",
+            "tj": "Талаффузи 记得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "fāshāo",
+            "wèi",
+            "zhàogù",
+            "jìde"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "记得 — jìde",
+            "ru": "记得 — jìde",
+            "tj": "记得 — jìde"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "发烧",
+          "pinyin": "fāshāo",
+          "translation": {
+            "uz": "isitmasi chiqmoq",
+            "ru": "температурить",
+            "tj": "таб кардан"
+          }
+        }
+      ]
+    }
+  ]
+}

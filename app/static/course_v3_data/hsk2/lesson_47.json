@@ -1,0 +1,752 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 47,
+  "source_lesson": 10,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "别找了，手机在桌子上呢",
+  "subtitle": {
+    "uz": "Buyruq gaplarini ('别……了'), 'duì' old ko'makchisini va 'zhèngzài' davom ko'rsatkichini ishlatishni o'rganish.",
+    "ru": "Научиться использовать побудительные предложения ('别……了'), предлог 'duì' и показатель продолжения 'zhèngzài'.",
+    "tj": "Омӯзиши истифодаи ҷумлаҳои фармоишӣ ('别……了'), пешоянди 'duì' ва нишондиҳандаи давомнокии 'zhèngzài'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "手机",
+      "pinyin": "shǒujī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mobil telefon",
+        "ru": "мобильный телефон",
+        "tj": "телефони мобилӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "洗",
+      "pinyin": "xǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yuvmoq",
+        "ru": "мыть, стирать",
+        "tj": "шустан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "药",
+      "pinyin": "yào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dori-darmon",
+        "ru": "лекарство",
+        "tj": "дору"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "'Zhèngzài' ravishi va 'ne' yuklama (davom etayotgan harakat)",
+        "ru": "Наречие 'zhèngzài' и частица 'ne' (продолжающееся действие)",
+        "tj": "Зарфи 'zhèngzài' ва зарраи 'ne' (амали ҷорӣ)"
+      },
+      "title_zh": "副词\"正在\"和语气助词\"呢\"",
+      "rule": {
+        "uz": "'正在' ravishi fe'l oldidan kelib, harakatning aynan hozir davom etayotganini bildiradi.\nIngliz tilidagi 'am/is/are …-ing' ga o'xshaydi.\nGap oxiriga '呢' yuklama qo'shilsa, davom etayotgan holat yanada ta'kidlanadi.\nTuzilish: 正在 + fe'l (+呢). Shuningdek, faqat '在 + fe'l' yoki 'fe'l + 着 + 呢' ham ishlatiladi.",
+        "ru": "Наречие '正在' стоит перед глаголом и указывает, что действие происходит прямо сейчас.\nАналог английского 'am/is/are …-ing'.\nЕсли в конце добавляется частица '呢', продолжение состояния подчёркивается.\nСтруктура: 正在 + глагол (+呢). Также используется: 在 + глагол или глагол + 着 + 呢.",
+        "tj": "Зарфи '正在' пеш аз феъл меояд ва нишон медиҳад амал айни ҳол ҷараён дорад.\nБа 'am/is/are …-ing' дар забони англисӣ монанд аст.\nАгар дар охири ҷумла зарраи '呢' илова шавад, ҷараёни ҳолат бештар таъкид мешавад.\nСохт: 正在 + феъл (+呢). Инчунин: 在 + феъл ё феъл + 着 + 呢 истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "妈妈正在准备午饭呢！",
+          "pinyin": "Māma zhèngzài zhǔnbèi wǔfàn ne!",
+          "translation": {
+            "uz": "Ona hozir tushlikni tayyorlayapti!",
+            "ru": "Мама сейчас готовит обед!",
+            "tj": "Модар ҳоло нисфирӯзиро тайёр мекунад!"
+          }
+        },
+        {
+          "zh": "你在找什么？",
+          "pinyin": "Nǐ zài zhǎo shénme?",
+          "translation": {
+            "uz": "Siz nima qidiryapsiz?",
+            "ru": "Что ты ищешь?",
+            "tj": "Ту чӣ мекобӣ?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "别看电视了，明天上午还有汉语课呢。",
+          "pinyin": "Bié kàn diànshì le，míngtiān shàngwǔ hái yǒu Hànyǔ kè ne.",
+          "text": {
+            "uz": "Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.",
+            "ru": "Хватит смотреть телевизор, завтра утром ещё есть урок китайского.",
+            "tj": "Дигар телевизор нагард, фардо субҳ боз дарси чинӣ аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "看电视对学汉语有帮助。",
+          "pinyin": "Kàn diànshì duì xué Hànyǔ yǒu bāngzhù.",
+          "text": {
+            "uz": "Televizor ko'rish xitoy tili o'rganishga yordam beradi.",
+            "ru": "Просмотр телевизора помогает в изучении китайского.",
+            "tj": "Тамошои телевизор дар омӯхтани чинӣ кӯмак мекунад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "明天的课你都准备好了吗？",
+          "pinyin": "Míngtiān de kè nǐ dōu zhǔnbèi hǎo le ma?",
+          "text": {
+            "uz": "Ertangi darsga to'liq tayyorlandingizmi?",
+            "ru": "Ты полностью подготовился к завтрашнему уроку?",
+            "tj": "Оё ту ба дарси фардо пурра омода шудӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "都准备好了。",
+          "pinyin": "Dōu zhǔnbèi hǎo le.",
+          "text": {
+            "uz": "Hammasi tayyor.",
+            "ru": "Всё готово.",
+            "tj": "Ҳама омода."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada",
+        "ru": "В больнице",
+        "tj": "Дар беморхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "别看报纸了，医生说你要多休息。",
+          "pinyin": "Bié kàn bàozhǐ le，yīshēng shuō nǐ yào duō xiūxi.",
+          "text": {
+            "uz": "Gazeta o'qishni bas qil, shifokor ko'proq dam olishing kerak dedi.",
+            "ru": "Хватит читать газету, доктор сказал, что тебе нужно больше отдыхать.",
+            "tj": "Дигар рӯзнома нахон, духтур гуфт, ки ту бояд бештар истироҳат кунӣ."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，不看了。给我一杯茶吧。",
+          "pinyin": "Hǎo，bù kàn le. Gěi wǒ yì bēi chá ba.",
+          "text": {
+            "uz": "Yaxshi, o'qimayman. Menga bir piyola choy bering.",
+            "ru": "Хорошо, не буду читать. Дайте мне чашку чая.",
+            "tj": "Хуб, нахонам. Ба ман як коса чой диҳед."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "医生说吃药后的两个小时不要喝茶。",
+          "pinyin": "Yīshēng shuō chī yàohòu de liǎng ge xiǎoshí búyào hē chá.",
+          "text": {
+            "uz": "Shifokor dori ichganidan keyin ikki soat choy ichmaslik kerak dedi.",
+            "ru": "Доктор сказал, что два часа после приёма лекарства нельзя пить чай.",
+            "tj": "Духтур гуфт, ки ду соат баъд аз доруи хӯрдан чой нӯшидан мумкин нест."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "医生还说什么了？",
+          "pinyin": "Yīshēng hái shuō shénme le?",
+          "text": {
+            "uz": "Shifokor yana nima dedi?",
+            "ru": "Что ещё сказал доктор?",
+            "tj": "Духтур боз чӣ гуфт?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "医生让你听我的。",
+          "pinyin": "Yīshēng ràng nǐ tīng wǒ de.",
+          "text": {
+            "uz": "Shifokor menga quloq soling dedi.",
+            "ru": "Доктор сказал слушаться меня.",
+            "tj": "Духтур гуфт, ки ба ман гӯш кун."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你怎么买了这么多东西啊？",
+          "pinyin": "Nǐ zěnme mǎi le zhème duō dōngxi a?",
+          "text": {
+            "uz": "Nima uchun bu qadar ko'p narsa sotib oldingiz?",
+            "ru": "Почему ты купил так много всего?",
+            "tj": "Чаро ту ин қадар зиёд чиз харидӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "哥哥今天中午回来吃饭。",
+          "pinyin": "Gēge jīntiān zhōngwǔ huílái chīfàn.",
+          "text": {
+            "uz": "Aka bugun tushlikka keladi.",
+            "ru": "Старший брат сегодня придёт на обед.",
+            "tj": "Бародари калонӣ имрӯз барои нисфирӯзӣ меояд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？",
+          "pinyin": "Wǒ kànkan mǎi shénme le. Yángròu，jīdàn，miàntiáo，xīguā…… zhēn bù shǎo! Māma ne?",
+          "text": {
+            "uz": "Ko'ray-chi nima olibsiz. Qo'y go'shti, tuxum, erişta, tarvuz… juda ko'p! Ona-chi?",
+            "ru": "Дай посмотрю, что купил. Баранина, яйца, лапша, арбуз… действительно много! А мама?",
+            "tj": "Биё бинам чӣ харидӣ. Гӯшти гӯсфанд, тухм, лоғмон, тарбуз… воқеан зиёд! Модар чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "正在准备午饭呢！",
+          "pinyin": "Zhèngzài zhǔnbèi wǔfàn ne!",
+          "text": {
+            "uz": "Hozir tushlikni tayyorlayapti!",
+            "ru": "Сейчас готовит обед!",
+            "tj": "Ҳоло нисфирӯзиро тайёр мекунад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在找什么？",
+          "pinyin": "Nǐ zài zhǎo shénme?",
+          "text": {
+            "uz": "Siz nima qidiryapsiz?",
+            "ru": "Что ты ищешь?",
+            "tj": "Ту чӣ мекобӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你看见我的手机了吗？白色的。",
+          "pinyin": "Nǐ kànjian wǒ de shǒujī le ma? Báisè de.",
+          "text": {
+            "uz": "Mening telefonim ko'rdingizmi? Oq rangli.",
+            "ru": "Ты видел мой телефон? Белый.",
+            "tj": "Ту телефони маро дидӣ? Сафеди."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "别找了，手机在桌子上呢，电脑旁边。",
+          "pinyin": "Bié zhǎo le，shǒujī zài zhuōzi shang ne，diànnǎo pángbiān.",
+          "text": {
+            "uz": "Qidirishni bas qil, telefon stol ustida, kompyuter yonida.",
+            "ru": "Хватит искать, телефон на столе, рядом с компьютером.",
+            "tj": "Дигар накоб, телефон рӯи мизи аст, паҳлӯи компютер."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你看见我的衣服了吗？红色的那件。",
+          "pinyin": "Nǐ kànjian wǒ de yīfu le ma? Hóngsè de nà jiàn.",
+          "text": {
+            "uz": "Kiyimlarimni ko'rdingizmi? O'sha qizil ranglisini.",
+            "ru": "Ты видел мою одежду? Ту красную.",
+            "tj": "Ту либосамро дидӣ? Онро, ки сурх аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那件衣服我帮你洗了，在外边呢。",
+          "pinyin": "Nà jiàn yīfu wǒ bāng nǐ xǐ le，zài wàibian ne.",
+          "text": {
+            "uz": "O'sha kiyimni sizga yuvib qo'ydim, tashqarida.",
+            "ru": "Я постирал ту одежду за тебя, она на улице.",
+            "tj": "Ман он либосро барои ту шустам, берун аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "手机",
+            "pinyin": "shǒujī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shǒujī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shǒujī?",
+            "tj": "shǒujī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "课",
+            "帮助",
+            "手机",
+            "别"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "手机 = mobil telefon (shǒujī)",
+            "ru": "手机 = мобильный телефон (shǒujī)",
+            "tj": "手机 = телефони мобилӣ (shǒujī)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "洗",
+            "pinyin": "xǐ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yuvmoq",
+              "ru": "мыть, стирать",
+              "tj": "шустан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "洗",
+          "pinyin": "xǐ",
+          "translation": {
+            "uz": "yuvmoq",
+            "ru": "мыть, стирать",
+            "tj": "шустан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "洗 talaffuzini tanlang:",
+            "ru": "Выберите произношение 洗:",
+            "tj": "Талаффузи 洗-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xǐ",
+            "kè",
+            "bié",
+            "bāngzhù"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "洗 — xǐ",
+            "ru": "洗 — xǐ",
+            "tj": "洗 — xǐ"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "药",
+            "pinyin": "yào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dori-darmon",
+              "ru": "лекарство",
+              "tj": "дору"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'dori-darmon' xitoycha qaysi?",
+            "ru": "'лекарство' по-китайски?",
+            "tj": "'дору' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "别",
+            "课",
+            "药",
+            "帮助"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "dori-darmon = 药 (yào)",
+            "ru": "лекарство = 药 (yào)",
+            "tj": "дору = 药 (yào)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "手机",
+          "pinyin": "shǒujī",
+          "options": [
+            "别",
+            "课",
+            "手机",
+            "帮助"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "手机 — mobil telefon (shǒujī)",
+            "ru": "手机 — мобильный телефон (shǒujī)",
+            "tj": "手机 — телефони мобилӣ (shǒujī)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "手机",
+              {
+                "uz": "mobil telefon",
+                "ru": "мобильный телефон",
+                "tj": "телефони мобилӣ"
+              }
+            ],
+            [
+              "洗",
+              {
+                "uz": "yuvmoq",
+                "ru": "мыть, стирать",
+                "tj": "шустан"
+              }
+            ],
+            [
+              "药",
+              {
+                "uz": "dori-darmon",
+                "ru": "лекарство",
+                "tj": "дору"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "'Zhèngzài' ravishi va 'ne' yuklama (davom etayotgan harakat)",
+              "ru": "Наречие 'zhèngzài' и частица 'ne' (продолжающееся действие)",
+              "tj": "Зарфи 'zhèngzài' ва зарраи 'ne' (амали ҷорӣ)"
+            },
+            "title_zh": "副词\"正在\"和语气助词\"呢\"",
+            "rule": {
+              "uz": "'正在' ravishi fe'l oldidan kelib, harakatning aynan hozir davom etayotganini bildiradi.\nIngliz tilidagi 'am/is/are …-ing' ga o'xshaydi.\nGap oxiriga '呢' yuklama qo'shilsa, davom etayotgan holat yanada ta'kidlanadi.\nTuzilish: 正在 + fe'l (+呢). Shuningdek, faqat '在 + fe'l' yoki 'fe'l + 着 + 呢' ham ishlatiladi.",
+              "ru": "Наречие '正在' стоит перед глаголом и указывает, что действие происходит прямо сейчас.\nАналог английского 'am/is/are …-ing'.\nЕсли в конце добавляется частица '呢', продолжение состояния подчёркивается.\nСтруктура: 正在 + глагол (+呢). Также используется: 在 + глагол или глагол + 着 + 呢.",
+              "tj": "Зарфи '正在' пеш аз феъл меояд ва нишон медиҳад амал айни ҳол ҷараён дорад.\nБа 'am/is/are …-ing' дар забони англисӣ монанд аст.\nАгар дар охири ҷумла зарраи '呢' илова шавад, ҷараёни ҳолат бештар таъкид мешавад.\nСохт: 正在 + феъл (+呢). Инчунин: 在 + феъл ё феъл + 着 + 呢 истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "妈妈正在准备午饭呢！",
+                "pinyin": "Māma zhèngzài zhǔnbèi wǔfàn ne!",
+                "translation": {
+                  "uz": "Ona hozir tushlikni tayyorlayapti!",
+                  "ru": "Мама сейчас готовит обед!",
+                  "tj": "Модар ҳоло нисфирӯзиро тайёр мекунад!"
+                }
+              },
+              {
+                "zh": "你在找什么？",
+                "pinyin": "Nǐ zài zhǎo shénme?",
+                "translation": {
+                  "uz": "Siz nima qidiryapsiz?",
+                  "ru": "Что ты ищешь?",
+                  "tj": "Ту чӣ мекобӣ?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz nima qidiryapsiz?",
+            "ru": "Что ты ищешь?",
+            "tj": "Ту чӣ мекобӣ?"
+          },
+          "tokens": [
+            "什么",
+            "你",
+            "课",
+            "找",
+            "帮助",
+            "在"
+          ],
+          "answer_tokens": [
+            "你",
+            "在",
+            "找",
+            "什么"
+          ],
+          "explanation": {
+            "uz": "你在找什么？ — Nǐ zài zhǎo shénme?",
+            "ru": "你在找什么？ — Nǐ zài zhǎo shénme?",
+            "tj": "你在找什么？ — Nǐ zài zhǎo shénme?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "别找了，手机在桌子上呢，电脑旁边。",
+          "pinyin": "Bié zhǎo le，shǒujī zài zhuōzi shang ne，diànnǎo pángbiān.",
+          "options": [
+            "明天的课你都准备好了吗？",
+            "别看电视了，明天上午还有汉语课呢。",
+            "看电视对学汉语有帮助。",
+            "别找了，手机在桌子上呢，电脑旁边。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "别找了，手机在桌子上呢，电脑旁边。 — Qidirishni bas qil, telefon stol ustida, kompyuter yonida.",
+            "ru": "别找了，手机在桌子上呢，电脑旁边。 — Хватит искать, телефон на столе, рядом с компьютером.",
+            "tj": "别找了，手机在桌子上呢，电脑旁边。 — Дигар накоб, телефон рӯи мизи аст, паҳлӯи компютер."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīdàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīdàn?",
+            "tj": "jīdàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "鸡蛋",
+            "课",
+            "别",
+            "帮助"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "鸡蛋 = tuxum (jīdàn)",
+            "ru": "鸡蛋 = яйцо (jīdàn)",
+            "tj": "鸡蛋 = тухм (jīdàn)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "别找了，手机在桌子上呢，电脑旁边。",
+          "pinyin": "Bié zhǎo le，shǒujī zài zhuōzi shang ne，diànnǎo pángbiān.",
+          "translation": {
+            "uz": "Qidirishni bas qil, telefon stol ustida, kompyuter yonida.",
+            "ru": "Хватит искать, телефон на столе, рядом с компьютером.",
+            "tj": "Дигар накоб, телефон рӯи мизи аст, паҳлӯи компютер."
+          },
+          "tokens": {
+            "uz": [
+              "yonida",
+              "Shifokor",
+              "qil",
+              "telefon",
+              "Qidirishni",
+              "stol",
+              "dori",
+              "ustida",
+              "bas",
+              "kompyuter"
+            ],
+            "ru": [
+              "с",
+              "рядом",
+              "Хватит",
+              "столе",
+              "телефон",
+              "искать",
+              "на",
+              "сказал",
+              "Доктор",
+              "компьютером"
+            ],
+            "tj": [
+              "рӯи",
+              "гуфт",
+              "Духтур",
+              "компютер",
+              "накоб",
+              "телефон",
+              "паҳлӯи",
+              "мизи",
+              "Дигар",
+              "аст"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Qidirishni",
+              "bas",
+              "qil",
+              "telefon",
+              "stol",
+              "ustida",
+              "kompyuter",
+              "yonida"
+            ],
+            "ru": [
+              "Хватит",
+              "искать",
+              "телефон",
+              "на",
+              "столе",
+              "рядом",
+              "с",
+              "компьютером"
+            ],
+            "tj": [
+              "Дигар",
+              "накоб",
+              "телефон",
+              "рӯи",
+              "мизи",
+              "аст",
+              "паҳлӯи",
+              "компютер"
+            ]
+          },
+          "explanation": {
+            "uz": "别找了，手机在桌子上呢，电脑旁边。 — Qidirishni bas qil, telefon stol ustida, kompyuter yonida.",
+            "ru": "别找了，手机在桌子上呢，电脑旁边。 — Хватит искать, телефон на столе, рядом с компьютером.",
+            "tj": "别找了，手机在桌子上呢，电脑旁边。 — Дигар накоб, телефон рӯи мизи аст, паҳлӯи компютер."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "药",
+          "pinyin": "yào",
+          "options": [
+            "帮助",
+            "别",
+            "课",
+            "药"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "药 — dori-darmon (yào)",
+            "ru": "药 — лекарство (yào)",
+            "tj": "药 — дору (yào)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "洗",
+          "pinyin": "xǐ",
+          "translation": {
+            "uz": "yuvmoq",
+            "ru": "мыть, стирать",
+            "tj": "шустан"
+          }
+        }
+      ]
+    }
+  ]
+}

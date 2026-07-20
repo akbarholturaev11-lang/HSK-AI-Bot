@@ -1,0 +1,734 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 106,
+  "source_lesson": 20,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我被他影响了",
+  "subtitle": {
+    "uz": "'被' passiv konstruktsiya, '只有…才…' shartli gap va '多么…啊' hayrat undalmasi",
+    "ru": "Пассивная конструкция '被', условное '只有…才…' и восклицание '多么…啊'",
+    "tj": "Сохти пассивии '被', шартии '只有…才…' ва ندای тааҷубии '多么…啊'"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "信用卡",
+      "pinyin": "xìnyòngkǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kredit karta",
+        "ru": "кредитная карта",
+        "tj": "корти кредитӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "关心",
+      "pinyin": "guānxīn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qiziqmoq, e'tibor bermoq",
+        "ru": "заботиться, интересоваться",
+        "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "只有……才……",
+      "pinyin": "zhǐyǒu... cái...",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "faqat...gina...",
+        "ru": "только если..., тогда...",
+        "tj": "танҳо...才..."
+      }
+    },
+    {
+      "no": 4,
+      "zh": "成绩",
+      "pinyin": "chéngjì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "natija, baho, o'zlashtirish",
+        "ru": "оценки, результат, успеваемость",
+        "tj": "натиҷа, баҳо, пешрафт"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Faqat……bo'lgandagina……mumkin",
+        "ru": "Только……тогда только……",
+        "tj": "Танҳо……вақте ки……мумкин аст"
+      },
+      "title_zh": "只有……才……",
+      "rule": {
+        "uz": "'只有…才…' = biror shart faqat shu tarzda bajarilsa, natijaga erishish mumkin. '只要…就…' dan farqi: '只有' kuchliroq shart, bitta to'g'ri yo'l bor; '只要' = yetarli shart, boshqa yo'llar ham mumkin.",
+        "ru": "'只有…才…' = результат возможен только при выполнении именно этого условия. Отличие от '只要…就…': '只有' — более строгое условие, только один правильный путь; '只要' — достаточное условие, другие пути тоже возможны.",
+        "tj": "'只有…才…' = натиҷа танҳо ҳангоми иҷрои маҳз ин шарт имконпазир аст. Фарқ аз '只要…就…': '只有' — шарти қатъитар, танҳо як роҳи дуруст; '只要' — шарти кофӣ, роҳҳои дигар ҳам мумкин."
+      },
+      "examples": [
+        {
+          "zh": "只有经历失败，才能变得更强！",
+          "pinyin": "Zhǐyǒu jīnglì shībài, cái néng biàn de gèng qiáng!",
+          "translation": {
+            "uz": "Faqat mag'lubiyatni boshdan kechirganingizda, kuchliroq bo'la olasiz!",
+            "ru": "Только пережив поражение, можно стать сильнее!",
+            "tj": "Танҳо вақте шикастро аз сар гузаронед, метавонед қавитар шавед!"
+          }
+        },
+        {
+          "zh": "只有努力学习，才能考上大学。",
+          "pinyin": "Zhǐyǒu nǔlì xuéxí, cái néng kǎo shàng dàxué.",
+          "translation": {
+            "uz": "Faqat qattiq o'qisangizgina, universitetga kira olasiz.",
+            "ru": "Только усердно учась, можно поступить в университет.",
+            "tj": "Танҳо сахт омӯхтан имкон медиҳад ба донишгоҳ дохил шавед."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Dam olish xonasida yo'qolgan kamera",
+        "ru": "Потерянная камера в комнате отдыха",
+        "tj": "Камераи гумшуда дар хонаи истироҳат"
+      },
+      "dialogue": [
+        {
+          "speaker": "小丽",
+          "zh": "我的照相机被谁拿走了？怎么找不到了？",
+          "pinyin": "Wǒ de zhàoxiàngjī bèi shéi ná zǒu le? Zěnme zhǎo bu dào le?",
+          "text": {
+            "uz": "Fotoapparatimni kim olib ketdi? Nega topa olmayapman?",
+            "ru": "Кто забрал мой фотоаппарат? Почему я не могу его найти?",
+            "tj": "Фотоаппарати маро кӣ гирифта рафт? Чаро ёфта наметавонам?"
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "你再找找。是不是没带来？",
+          "pinyin": "Nǐ zài zhǎozhao. Shì bu shì méi dài lái?",
+          "text": {
+            "uz": "Yana bir qidirib ko'r. Balki olib kelmagandirsan?",
+            "ru": "Поищи еще. Может, ты его не принесла?",
+            "tj": "Боз ҷустуҷӯ кун. Шояд наовардаӣ?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "我找了，没找到啊。",
+          "pinyin": "Wǒ zhǎo le, méi zhǎodào a.",
+          "text": {
+            "uz": "Qidirdim, topmadim-ku.",
+            "ru": "Я искала, но не нашла.",
+            "tj": "Ҷустуҷӯ кардам, наёфтам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "别难过，再买一个吧，公司东门外不就有一个大商场吗？",
+          "pinyin": "Bié nánguò, zài mǎi yí ge ba, gōngsī dōng mén wài bù jiù yǒu yí ge dà shāngchǎng ma?",
+          "text": {
+            "uz": "Xafa bo'lma, yana bittasini ol, kompaniyaning sharqiy darvozasi tashqarisida katta savdo markazi bor-ku.",
+            "ru": "Не расстраивайся, купи еще один. У восточных ворот компании ведь есть большой торговый центр.",
+            "tj": "Ғамгин нашав, боз якто хар. Берун аз дарвозаи шарқии ширкат маркази савдои калон ҳаст-ку."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "但是我这个月信用卡里的钱已经花得差不多了。",
+          "pinyin": "Dànshì wǒ zhège yuè xìnyòngkǎ lǐ de qián yǐjīng huā de chà bu duō le.",
+          "text": {
+            "uz": "Lekin bu oy kredit kartamdagi pul deyarli tugab bo'ldi.",
+            "ru": "Но в этом месяце деньги на моей кредитной карте почти закончились.",
+            "tj": "Аммо ин моҳ пули корти кредитиям қариб тамом шудааст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda futbol ta'siri haqida",
+        "ru": "В классе о влиянии футбола",
+        "tj": "Дар синф дар бораи таъсири футбол"
+      },
+      "dialogue": [
+        {
+          "speaker": "小明",
+          "zh": "你怎么突然关心起体育来了？",
+          "pinyin": "Nǐ zěnme tūrán guānxīn qǐ tǐyù lái le?",
+          "text": {
+            "uz": "Nega birdan sportga qiziqib qolding?",
+            "ru": "Почему ты вдруг стала интересоваться спортом?",
+            "tj": "Чаро ногаҳон ба варзиш таваҷҷӯҳ пайдо кардӣ?"
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "我的男朋友喜欢看足球比赛，我被他影响的。",
+          "pinyin": "Wǒ de nánpéngyou xǐhuan kàn zúqiú bǐsài, wǒ bèi tā yǐngxiǎng de.",
+          "text": {
+            "uz": "Yigitim futbol o'yinlarini ko'rishni yoqtiradi, men unga ta'sirlandim.",
+            "ru": "Мой парень любит смотреть футбольные матчи, я попала под его влияние.",
+            "tj": "Дӯстписарам тамошои футболро дӯст медорад, ман аз ӯ таъсир гирифтам."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "看来只有爱，才能让人有变化。",
+          "pinyin": "Kànlái zhǐyǒu ài, cái néng ràng rén yǒu biànhuà.",
+          "text": {
+            "uz": "Ko'rinishicha, faqat sevgi odamni o'zgartira oladi.",
+            "ru": "Похоже, только любовь может изменить человека.",
+            "tj": "Ба назар мерасад, танҳо муҳаббат метавонад одамро дигар кунад."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "是啊，为了和他的爱好一样，我天天看球赛。",
+          "pinyin": "Shì a, wèile hé tā de àihào yíyàng, wǒ tiāntiān kàn qiúsài.",
+          "text": {
+            "uz": "Ha, uning qiziqishi bilan bir xil bo'lish uchun har kuni o'yin ko'raman.",
+            "ru": "Да, чтобы разделять его увлечение, я каждый день смотрю матчи.",
+            "tj": "Ҳа, барои он ки ҳавасам бо ӯ як хел бошад, ҳар рӯз бозӣ мебинам."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "除了足球，他还影响你什么了？",
+          "pinyin": "Chúle zúqiú, tā hái yǐngxiǎng nǐ shénme le?",
+          "text": {
+            "uz": "Futboldan tashqari, u yana nimaga ta'sir qildi?",
+            "ru": "Кроме футбола, в чем еще он на тебя повлиял?",
+            "tj": "Ғайр аз футбол, ӯ боз ба чӣ таъсир кард?"
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "我最近天天上网玩儿游戏，我的成绩差极了。",
+          "pinyin": "Wǒ zuìjìn tiāntiān shàng wǎng wánr yóuxì, wǒ de chéngjì chà jí le.",
+          "text": {
+            "uz": "So'nggi paytlar har kuni internetda o'yin o'ynayapman, baholarim juda yomonlashdi.",
+            "ru": "В последнее время я каждый день играю онлайн, мои оценки стали ужасными.",
+            "tj": "Вақтҳои охир ҳар рӯз онлайн бозӣ мекунам, баҳоҳоям хеле бад шуданд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda aka-uka haqida",
+        "ru": "В ресторане о братьях",
+        "tj": "Дар тарабхона дар бораи бародарон"
+      },
+      "dialogue": [
+        {
+          "speaker": "朋友",
+          "zh": "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。",
+          "pinyin": "Nà ge názhe wǎn chī fàn de rén shì nǐ gēge ma? Tā hé nǐ zhǎng de zhēn xiàng.",
+          "text": {
+            "uz": "Ana u kosa ushlab ovqat yeyayotgan odam akangmi? U senga juda o'xsharkan.",
+            "ru": "Тот человек, который ест с миской в руках, твой старший брат? Он очень похож на тебя.",
+            "tj": "Он касаро дошта хӯрок мехӯрад, бародари калониат аст? Ӯ ба ту хеле монанд аст."
+          }
+        },
+        {
+          "speaker": "大卫",
+          "zh": "我们经常被别人认错。",
+          "pinyin": "Wǒmen jīngcháng bèi biérén rèncuò.",
+          "text": {
+            "uz": "Bizni boshqalar tez-tez adashtirib qo'yadi.",
+            "ru": "Нас часто путают другие люди.",
+            "tj": "Моро дигарон зуд-зуд иштибоҳ мекунанд."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "只有你们的爸爸妈妈才能分出来哪个是哥哥，哪个是弟弟吧。",
+          "pinyin": "Zhǐyǒu nǐmen de bàba māma cái néng fēn chūlai nǎ ge shì gēge, nǎ ge shì dìdi ba.",
+          "text": {
+            "uz": "Qaysi biri aka, qaysi biri uka ekanini faqat ota-onangiz farqlay olsa kerak.",
+            "ru": "Наверное, только ваши родители могут отличить, кто старший брат, а кто младший.",
+            "tj": "Шояд танҳо падару модаратон фарқ карда тавонанд, кадомаш ака ва кадомаш ука аст."
+          }
+        },
+        {
+          "speaker": "大卫",
+          "zh": "除了父母以外，还有我们自己也能啊。",
+          "pinyin": "Chúle fùmǔ yǐwài, hái yǒu wǒmen zìjǐ yě néng a.",
+          "text": {
+            "uz": "Ota-onadan tashqari, o'zimiz ham farqlay olamiz-da.",
+            "ru": "Кроме родителей, мы сами тоже можем.",
+            "tj": "Ғайр аз падару модар, худамон ҳам метавонем."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "你们两个除了长得像，还有什么相同的地方？",
+          "pinyin": "Nǐmen liǎng ge chúle zhǎng de xiàng, hái yǒu shénme xiāngtóng de dìfang?",
+          "text": {
+            "uz": "Ikkalangiz tashqi ko'rinishdan tashqari yana nimada o'xshaysiz?",
+            "ru": "Кроме внешнего сходства, что у вас еще общего?",
+            "tj": "Шумо ду нафар ғайр аз монанд будан, боз чӣ ҷои якхела доред?"
+          }
+        },
+        {
+          "speaker": "大卫",
+          "zh": "我们住在同一个楼、同一个房间……",
+          "pinyin": "Wǒmen zhù zài tóng yí ge lóu, tóng yí ge fángjiān...",
+          "text": {
+            "uz": "Biz bir binoda, bir xonada yashaymiz...",
+            "ru": "Мы живем в одном здании, в одной комнате...",
+            "tj": "Мо дар як бино, дар як хона зиндагӣ мекунем..."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Muammolarni hal qilish haqida matn",
+        "ru": "Текст о решении проблем",
+        "tj": "Матн дар бораи ҳалли мушкилот"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "年轻人遇到难题，常常很着急，不知道怎么办。其实，不同的问题有不同的解决办法。有些问题看上去很难，但是做起来非常简单，所以得试着做做。有些问题看上去虽然简单，但是解决起来难极了。所以只有真正做事情的时候，才能了解有多难。不过，我们一定要相信：多么难的问题，都会被解决的。",
+          "pinyin": "Niánqīng rén yùdào nántí, chángcháng hěn zháojí, bù zhīdào zěnme bàn. Qíshí, bùtóng de wèntí yǒu bùtóng de jiějué bànfǎ. Yǒuxiē wèntí kàn shangqu hěn nán, dànshì zuò qǐlai fēicháng jiǎndān, suǒyǐ děi shìzhe zuòzuo. Yǒuxiē wèntí kàn shangqu suīrán jiǎndān, dànshì jiějué qǐlai nán jí le. Suǒyǐ zhǐyǒu zhēnzhèng zuò shìqing de shíhou, cái néng liǎojiě yǒu duō nán. Búguò, wǒmen yídìng yào xiāngxìn: duōme nán de wèntí, dōu huì bèi jiějué de.",
+          "text": {
+            "uz": "Yoshlar qiyin masalaga duch kelganda ko'pincha shoshilib, nima qilishni bilmay qoladi. Aslida turli muammolarning turli yechimlari bor. Ba'zi muammolar qiyin ko'rinadi, lekin bajarish juda oson, shuning uchun sinab ko'rish kerak. Ba'zi muammolar oddiy ko'rinsa ham, hal qilish nihoyatda qiyin. Shuning uchun faqat ishni haqiqatan qilganda uning qanchalik qiyinligini tushunish mumkin. Ammo ishonishimiz kerak: muammo qanchalik qiyin bo'lmasin, hal qilinadi.",
+            "ru": "Когда молодые люди сталкиваются с трудностями, они часто сильно переживают и не знают, что делать. На самом деле у разных проблем разные способы решения. Некоторые проблемы выглядят сложными, но делать их очень просто, поэтому нужно попробовать. Некоторые проблемы выглядят простыми, но решать их крайне трудно. Поэтому только когда действительно делаешь дело, можно понять, насколько оно сложное. Однако мы обязательно должны верить: какой бы трудной ни была проблема, она будет решена.",
+            "tj": "Ҷавонон вақте ба мушкил рӯ ба рӯ мешаванд, бисёр вақт саросема мешаванд ва намедонанд чӣ кор кунанд. Дар асл, барои мушкилҳои гуногун роҳҳои гуногуни ҳал ҳаст. Баъзе мушкилҳо душвор менамоянд, аммо иҷрояшон хеле осон аст, бинобар ин бояд санҷида дид. Баъзе мушкилҳо одӣ менамоянд, аммо ҳал карданашон бисёр душвор аст. Аз ин рӯ танҳо вақте воқеан кор мекунӣ, мефаҳмӣ чӣ қадар душвор аст. Аммо мо бояд бовар кунем: ҳар қадар мушкил душвор бошад ҳам, ҳал мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "信用卡",
+            "pinyin": "xìnyòngkǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kredit karta",
+              "ru": "кредитная карта",
+              "tj": "корти кредитӣ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "信用卡 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 信用卡:",
+            "tj": "Маънои калимаи 信用卡-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            },
+            {
+              "uz": "kredit karta",
+              "ru": "кредитная карта",
+              "tj": "корти кредитӣ"
+            },
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "信用卡 = kredit karta (xìnyòngkǎ)",
+            "ru": "信用卡 = кредитная карта (xìnyòngkǎ)",
+            "tj": "信用卡 = корти кредитӣ (xìnyòngkǎ)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "关心",
+            "pinyin": "guānxīn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qiziqmoq, e'tibor bermoq",
+              "ru": "заботиться, интересоваться",
+              "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "关心",
+          "pinyin": "guānxīn",
+          "translation": {
+            "uz": "qiziqmoq, e'tibor bermoq",
+            "ru": "заботиться, интересоваться",
+            "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "guānxīn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается guānxīn?",
+            "tj": "guānxīn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "被",
+            "照相机",
+            "难过",
+            "关心"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "关心 = qiziqmoq, e'tibor bermoq (guānxīn)",
+            "ru": "关心 = заботиться, интересоваться (guānxīn)",
+            "tj": "关心 = ғамхорӣ кардан, таваҷҷӯҳ доштан (guānxīn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "只有……才……",
+            "pinyin": "zhǐyǒu... cái...",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "faqat...gina...",
+              "ru": "только если..., тогда...",
+              "tj": "танҳо...才..."
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "只有……才…… talaffuzini tanlang:",
+            "ru": "Выберите произношение 只有……才……:",
+            "tj": "Талаффузи 只有……才……-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhǐyǒu... cái...",
+            "nánguò",
+            "zhàoxiàngjī",
+            "bèi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "只有……才…… — zhǐyǒu... cái...",
+            "ru": "只有……才…… — zhǐyǒu... cái...",
+            "tj": "只有……才…… — zhǐyǒu... cái..."
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "成绩",
+            "pinyin": "chéngjì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "natija, baho, o'zlashtirish",
+              "ru": "оценки, результат, успеваемость",
+              "tj": "натиҷа, баҳо, пешрафт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'natija, baho, o'zlashtirish' xitoycha qaysi?",
+            "ru": "'оценки, результат, успеваемость' по-китайски?",
+            "tj": "'натиҷа, баҳо, пешрафт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "被",
+            "照相机",
+            "成绩",
+            "难过"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "natija, baho, o'zlashtirish = 成绩 (chéngjì)",
+            "ru": "оценки, результат, успеваемость = 成绩 (chéngjì)",
+            "tj": "натиҷа, баҳо, пешрафт = 成绩 (chéngjì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "信用卡",
+          "pinyin": "xìnyòngkǎ",
+          "options": [
+            "被",
+            "难过",
+            "照相机",
+            "信用卡"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "信用卡 — kredit karta (xìnyòngkǎ)",
+            "ru": "信用卡 — кредитная карта (xìnyòngkǎ)",
+            "tj": "信用卡 — корти кредитӣ (xìnyòngkǎ)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "信用卡",
+              {
+                "uz": "kredit karta",
+                "ru": "кредитная карта",
+                "tj": "корти кредитӣ"
+              }
+            ],
+            [
+              "关心",
+              {
+                "uz": "qiziqmoq, e'tibor bermoq",
+                "ru": "заботиться, интересоваться",
+                "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+              }
+            ],
+            [
+              "只有……才……",
+              {
+                "uz": "faqat...gina...",
+                "ru": "только если..., тогда...",
+                "tj": "танҳо...才..."
+              }
+            ],
+            [
+              "成绩",
+              {
+                "uz": "natija, baho, o'zlashtirish",
+                "ru": "оценки, результат, успеваемость",
+                "tj": "натиҷа, баҳо, пешрафт"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Faqat……bo'lgandagina……mumkin",
+              "ru": "Только……тогда только……",
+              "tj": "Танҳо……вақте ки……мумкин аст"
+            },
+            "title_zh": "只有……才……",
+            "rule": {
+              "uz": "'只有…才…' = biror shart faqat shu tarzda bajarilsa, natijaga erishish mumkin. '只要…就…' dan farqi: '只有' kuchliroq shart, bitta to'g'ri yo'l bor; '只要' = yetarli shart, boshqa yo'llar ham mumkin.",
+              "ru": "'只有…才…' = результат возможен только при выполнении именно этого условия. Отличие от '只要…就…': '只有' — более строгое условие, только один правильный путь; '只要' — достаточное условие, другие пути тоже возможны.",
+              "tj": "'只有…才…' = натиҷа танҳо ҳангоми иҷрои маҳз ин шарт имконпазир аст. Фарқ аз '只要…就…': '只有' — шарти қатъитар, танҳо як роҳи дуруст; '只要' — шарти кофӣ, роҳҳои дигар ҳам мумкин."
+            },
+            "examples": [
+              {
+                "zh": "只有经历失败，才能变得更强！",
+                "pinyin": "Zhǐyǒu jīnglì shībài, cái néng biàn de gèng qiáng!",
+                "translation": {
+                  "uz": "Faqat mag'lubiyatni boshdan kechirganingizda, kuchliroq bo'la olasiz!",
+                  "ru": "Только пережив поражение, можно стать сильнее!",
+                  "tj": "Танҳо вақте шикастро аз сар гузаронед, метавонед қавитар шавед!"
+                }
+              },
+              {
+                "zh": "只有努力学习，才能考上大学。",
+                "pinyin": "Zhǐyǒu nǔlì xuéxí, cái néng kǎo shàng dàxué.",
+                "translation": {
+                  "uz": "Faqat qattiq o'qisangizgina, universitetga kira olasiz.",
+                  "ru": "Только усердно учась, можно поступить в университет.",
+                  "tj": "Танҳо сахт омӯхтан имкон медиҳад ба донишгоҳ дохил шавед."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "但是我这个月信用卡里的钱已经花得差不多了。",
+          "pinyin": "Dànshì wǒ zhège yuè xìnyòngkǎ lǐ de qián yǐjīng huā de chà bu duō le.",
+          "options": [
+            "我的照相机被谁拿走了？怎么找不到了？",
+            "我找了，没找到啊。",
+            "但是我这个月信用卡里的钱已经花得差不多了。",
+            "你再找找。是不是没带来？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "但是我这个月信用卡里的钱已经花得差不多了。 — Lekin bu oy kredit kartamdagi pul deyarli tugab bo'ldi.",
+            "ru": "但是我这个月信用卡里的钱已经花得差不多了。 — Но в этом месяце деньги на моей кредитной карте почти закончились.",
+            "tj": "但是我这个月信用卡里的钱已经花得差不多了。 — Аммо ин моҳ пули корти кредитиям қариб тамом шудааст."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "信用卡",
+              {
+                "uz": "kredit karta",
+                "ru": "кредитная карта",
+                "tj": "корти кредитӣ"
+              }
+            ],
+            [
+              "关心",
+              {
+                "uz": "qiziqmoq, e'tibor bermoq",
+                "ru": "заботиться, интересоваться",
+                "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+              }
+            ],
+            [
+              "只有……才……",
+              {
+                "uz": "faqat...gina...",
+                "ru": "только если..., тогда...",
+                "tj": "танҳо...才..."
+              }
+            ],
+            [
+              "成绩",
+              {
+                "uz": "natija, baho, o'zlashtirish",
+                "ru": "оценки, результат, успеваемость",
+                "tj": "натиҷа, баҳо, пешрафт"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'majhul nisbatni bildiruvchi predlog' xitoycha qaysi?",
+            "ru": "'предлог пассивного залога' по-китайски?",
+            "tj": "'пешоянди нишондиҳандаи шакли маҷҳул' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "难过",
+            "东",
+            "被",
+            "照相机"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "majhul nisbatni bildiruvchi predlog = 被 (bèi)",
+            "ru": "предлог пассивного залога = 被 (bèi)",
+            "tj": "пешоянди нишондиҳандаи шакли маҷҳул = 被 (bèi)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "关心",
+          "pinyin": "guānxīn",
+          "translation": {
+            "uz": "qiziqmoq, e'tibor bermoq",
+            "ru": "заботиться, интересоваться",
+            "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+          }
+        }
+      ]
+    }
+  ]
+}

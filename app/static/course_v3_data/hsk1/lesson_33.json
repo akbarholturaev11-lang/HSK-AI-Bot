@@ -1,0 +1,720 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 33,
+  "source_lesson": 9,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你儿子在哪儿工作",
+  "subtitle": {
+    "uz": "Joylashuv va ish joyi haqida so'rash, fe'l va predlog 在",
+    "ru": "Спрашивать о местонахождении и месте работы, глагол и предлог 在",
+    "tj": "Пурсидан дар бораи ҷой ва ҷои кор, феъл ва пешояндаи 在"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "哪儿",
+      "pinyin": "nǎr",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qayerda",
+        "ru": "где",
+        "tj": "куҷо"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "工作",
+      "pinyin": "gōngzuò",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "ishlash / ish, mehnat",
+        "ru": "работать / работа",
+        "tj": "кор кардан / кор"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "儿子",
+      "pinyin": "érzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'g'il",
+        "ru": "сын",
+        "tj": "писар"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "哪儿 — joylashuv so'roq olmoshi",
+        "ru": "哪儿 — вопросительное местоимение места",
+        "tj": "哪儿 — зарфи истифсори ҷой"
+      },
+      "title_zh": "哪儿 — jo'ylashuv so'roq olmoshi",
+      "rule": {
+        "uz": "哪儿(nǎr) — joylashuvni so'rash uchun ishlatiladigan so'roq so'zi.\nTuzilish: Ega + 在 + 哪儿?\n\nMisol:\n小猫在哪儿？— Mushuk qayerda?\n你在哪儿工作？— Siz qaerda ishlaysiz?\n他在哪儿呢？— Xo'sh, u qayerda?",
+        "ru": "哪儿(nǎr) — вопросительное слово для уточнения места.\nСтруктура: Подлежащее + 在 + 哪儿?\n\nПример:\n小猫在哪儿？— Где кошка?\n你在哪儿工作？— Где вы работаете?\n他在哪儿呢？— Где же он?",
+        "tj": "哪儿(nǎr) — калимаи суол барои пурсидани ҷой.\nСохт: Муб. + 在 + 哪儿?\n\nНамуна:\n小猫在哪儿？— Гурба куҷост?\n你在哪儿工作？— Шумо дар куҷо кор мекунед?\n他在哪儿呢？— Пас ӯ куҷост?"
+      },
+      "examples": [
+        {
+          "zh": "你在哪儿工作？",
+          "pinyin": "Nǐ zài nǎr gōngzuò?",
+          "translation": {
+            "uz": "Siz qaerda ishlaysiz?",
+            "ru": "Где вы работаете?",
+            "tj": "Шумо дар куҷо кор мекунед?"
+          }
+        },
+        {
+          "zh": "小狗在哪儿？",
+          "pinyin": "Xiǎo gǒu zài nǎr?",
+          "translation": {
+            "uz": "It qayerda?",
+            "ru": "Где собака?",
+            "tj": "Саг куҷост?"
+          }
+        },
+        {
+          "zh": "他爸爸在哪儿呢？",
+          "pinyin": "Tā bàba zài nǎr ne?",
+          "translation": {
+            "uz": "Uning otasi qayerda?",
+            "ru": "Где же его папа?",
+            "tj": "Падари ӯ куҷост?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda — mushuk va it qayerda",
+        "ru": "Дома — где кошка и собака",
+        "tj": "Дар хона — гурба ва саг куҷост"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "小猫在哪儿？",
+          "pinyin": "Xiǎo māo zài nǎr?",
+          "text": {
+            "uz": "Mushuk qayerda?",
+            "ru": "Где кошка?",
+            "tj": "Гурба куҷост?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "小猫在那儿。",
+          "pinyin": "Xiǎo māo zài nàr.",
+          "text": {
+            "uz": "Mushuk u yerda.",
+            "ru": "Кошка вон там.",
+            "tj": "Гурба он ҷост."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "小狗在哪儿？",
+          "pinyin": "Xiǎo gǒu zài nǎr?",
+          "text": {
+            "uz": "It qayerda?",
+            "ru": "Где собака?",
+            "tj": "Саг куҷост?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "小狗在椅子下面。",
+          "pinyin": "Xiǎo gǒu zài yǐzi xiàmian.",
+          "text": {
+            "uz": "It stulning ostida.",
+            "ru": "Собака под стулом.",
+            "tj": "Саг зери курсӣ аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Temir yo'l stansiyasida — ish joyi",
+        "ru": "На вокзале — место работы",
+        "tj": "Дар истгоҳи роҳи оҳан — ҷои кор"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在哪儿工作？",
+          "pinyin": "Nǐ zài nǎr gōngzuò?",
+          "text": {
+            "uz": "Siz qaerda ishlaysiz?",
+            "ru": "Где вы работаете?",
+            "tj": "Шумо дар куҷо кор мекунед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我在学校工作。",
+          "pinyin": "Wǒ zài xuéxiào gōngzuò.",
+          "text": {
+            "uz": "Men maktabda ishlaymen.",
+            "ru": "Я работаю в школе.",
+            "tj": "Ман дар мактаб кор мекунам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你儿子在哪儿工作？",
+          "pinyin": "Nǐ érzi zài nǎr gōngzuò?",
+          "text": {
+            "uz": "Sizning o'g'lingiz qaerda ishlaydi?",
+            "ru": "Где работает ваш сын?",
+            "tj": "Писари шумо дар куҷо кор мекунад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我儿子在医院工作，他是医生。",
+          "pinyin": "Wǒ érzi zài yīyuàn gōngzuò, tā shì yīshēng.",
+          "text": {
+            "uz": "O'g'lim kasalxonada ishlaydi, u shifokor.",
+            "ru": "Мой сын работает в больнице — он врач.",
+            "tj": "Писарам дар беморхона кор мекунад, ӯ духтур аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Telefonda — ota qayerda",
+        "ru": "По телефону — где папа",
+        "tj": "Аз телефон — падар куҷост"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你爸爸在家吗？",
+          "pinyin": "Nǐ bàba zài jiā ma?",
+          "text": {
+            "uz": "Otangiz uyda ekanmi?",
+            "ru": "Ваш папа дома?",
+            "tj": "Падари шумо дар хона аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不在家。",
+          "pinyin": "Bú zài jiā.",
+          "text": {
+            "uz": "Uyda yo'q.",
+            "ru": "Нет, не дома.",
+            "tj": "Дар хона нест."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "他在哪儿呢？",
+          "pinyin": "Tā zài nǎr ne?",
+          "text": {
+            "uz": "Xo'sh, u qayerda?",
+            "ru": "Тогда где же он?",
+            "tj": "Пас ӯ куҷост?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他在医院。",
+          "pinyin": "Tā zài yīyuàn.",
+          "text": {
+            "uz": "U kasalxonada.",
+            "ru": "Он в больнице.",
+            "tj": "Ӯ дар беморхона аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "哪儿",
+            "pinyin": "nǎr",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qayerda",
+              "ru": "где",
+              "tj": "куҷо"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "哪儿 talaffuzini tanlang:",
+            "ru": "Выберите произношение 哪儿:",
+            "tj": "Талаффузи 哪儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zài",
+            "nǎr",
+            "māo",
+            "xiǎo"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "哪儿 — nǎr",
+            "ru": "哪儿 — nǎr",
+            "tj": "哪儿 — nǎr"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "工作",
+            "pinyin": "gōngzuò",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "ishlash / ish, mehnat",
+              "ru": "работать / работа",
+              "tj": "кор кардан / кор"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ishlash / ish, mehnat' xitoycha qaysi?",
+            "ru": "'работать / работа' по-китайски?",
+            "tj": "'кор кардан / кор' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "猫",
+            "在",
+            "工作",
+            "小"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ishlash / ish, mehnat = 工作 (gōngzuò)",
+            "ru": "работать / работа = 工作 (gōngzuò)",
+            "tj": "кор кардан / кор = 工作 (gōngzuò)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "儿子",
+            "pinyin": "érzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'g'il",
+              "ru": "сын",
+              "tj": "писар"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "儿子",
+          "pinyin": "érzi",
+          "translation": {
+            "uz": "o'g'il",
+            "ru": "сын",
+            "tj": "писар"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "儿子",
+          "pinyin": "érzi",
+          "options": [
+            "猫",
+            "儿子",
+            "小",
+            "在"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "儿子 — o'g'il (érzi)",
+            "ru": "儿子 — сын (érzi)",
+            "tj": "儿子 — писар (érzi)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "哪儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 哪儿:",
+            "tj": "Маънои калимаи 哪儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qayerda",
+              "ru": "где",
+              "tj": "куҷо"
+            },
+            {
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
+            },
+            {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            },
+            {
+              "uz": "kichik, mayda",
+              "ru": "маленький, небольшой",
+              "tj": "хурд, майда"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "哪儿 = qayerda (nǎr)",
+            "ru": "哪儿 = где (nǎr)",
+            "tj": "哪儿 = куҷо (nǎr)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "哪儿",
+              {
+                "uz": "qayerda",
+                "ru": "где",
+                "tj": "куҷо"
+              }
+            ],
+            [
+              "工作",
+              {
+                "uz": "ishlash / ish, mehnat",
+                "ru": "работать / работа",
+                "tj": "кор кардан / кор"
+              }
+            ],
+            [
+              "儿子",
+              {
+                "uz": "o'g'il",
+                "ru": "сын",
+                "tj": "писар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "哪儿 — joylashuv so'roq olmoshi",
+              "ru": "哪儿 — вопросительное местоимение места",
+              "tj": "哪儿 — зарфи истифсори ҷой"
+            },
+            "title_zh": "哪儿 — jo'ylashuv so'roq olmoshi",
+            "rule": {
+              "uz": "哪儿(nǎr) — joylashuvni so'rash uchun ishlatiladigan so'roq so'zi.\nTuzilish: Ega + 在 + 哪儿?\n\nMisol:\n小猫在哪儿？— Mushuk qayerda?\n你在哪儿工作？— Siz qaerda ishlaysiz?\n他在哪儿呢？— Xo'sh, u qayerda?",
+              "ru": "哪儿(nǎr) — вопросительное слово для уточнения места.\nСтруктура: Подлежащее + 在 + 哪儿?\n\nПример:\n小猫在哪儿？— Где кошка?\n你在哪儿工作？— Где вы работаете?\n他在哪儿呢？— Где же он?",
+              "tj": "哪儿(nǎr) — калимаи суол барои пурсидани ҷой.\nСохт: Муб. + 在 + 哪儿?\n\nНамуна:\n小猫在哪儿？— Гурба куҷост?\n你在哪儿工作？— Шумо дар куҷо кор мекунед?\n他在哪儿呢？— Пас ӯ куҷост?"
+            },
+            "examples": [
+              {
+                "zh": "你在哪儿工作？",
+                "pinyin": "Nǐ zài nǎr gōngzuò?",
+                "translation": {
+                  "uz": "Siz qaerda ishlaysiz?",
+                  "ru": "Где вы работаете?",
+                  "tj": "Шумо дар куҷо кор мекунед?"
+                }
+              },
+              {
+                "zh": "小狗在哪儿？",
+                "pinyin": "Xiǎo gǒu zài nǎr?",
+                "translation": {
+                  "uz": "It qayerda?",
+                  "ru": "Где собака?",
+                  "tj": "Саг куҷост?"
+                }
+              },
+              {
+                "zh": "他爸爸在哪儿呢？",
+                "pinyin": "Tā bàba zài nǎr ne?",
+                "translation": {
+                  "uz": "Uning otasi qayerda?",
+                  "ru": "Где же его папа?",
+                  "tj": "Падари ӯ куҷост?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz qaerda ishlaysiz?",
+            "ru": "Где вы работаете?",
+            "tj": "Шумо дар куҷо кор мекунед?"
+          },
+          "tokens": [
+            "工作",
+            "在",
+            "小",
+            "你",
+            "哪儿",
+            "猫"
+          ],
+          "answer_tokens": [
+            "你",
+            "在",
+            "哪儿",
+            "工作"
+          ],
+          "explanation": {
+            "uz": "你在哪儿工作？ — Nǐ zài nǎr gōngzuò?",
+            "ru": "你在哪儿工作？ — Nǐ zài nǎr gōngzuò?",
+            "tj": "你在哪儿工作？ — Nǐ zài nǎr gōngzuò?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Siz qaerda ishlaysiz?» — xitoychada qaysi biri?",
+            "ru": "«Где вы работаете?» — какое предложение по-китайски?",
+            "tj": "«Шумо дар куҷо кор мекунед?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "他爸爸在哪儿呢？",
+            "小狗在哪儿？",
+            "你在哪儿工作？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你在哪儿工作？ — Nǐ zài nǎr gōngzuò?",
+            "ru": "你在哪儿工作？ — Nǐ zài nǎr gōngzuò?",
+            "tj": "你在哪儿工作？ — Nǐ zài nǎr gōngzuò?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "小猫在哪儿？",
+          "pinyin": "Xiǎo māo zài nǎr?",
+          "translation": {
+            "uz": "Mushuk qayerda?",
+            "ru": "Где кошка?",
+            "tj": "Гурба куҷост?"
+          },
+          "tokens": {
+            "uz": [
+              "qayerda",
+              "Siz",
+              "Mushuk",
+              "It"
+            ],
+            "ru": [
+              "собака",
+              "кошка",
+              "вы",
+              "Где"
+            ],
+            "tj": [
+              "Саг",
+              "куҷост",
+              "Гурба",
+              "Шумо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Mushuk",
+              "qayerda"
+            ],
+            "ru": [
+              "Где",
+              "кошка"
+            ],
+            "tj": [
+              "Гурба",
+              "куҷост"
+            ]
+          },
+          "explanation": {
+            "uz": "小猫在哪儿？ — Mushuk qayerda?",
+            "ru": "小猫在哪儿？ — Где кошка?",
+            "tj": "小猫在哪儿？ — Гурба куҷост?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Mushuk qayerda?",
+            "ru": "Где кошка?",
+            "tj": "Гурба куҷост?"
+          },
+          "tokens": [
+            "小",
+            "那儿",
+            "猫",
+            "哪儿",
+            "狗",
+            "在"
+          ],
+          "answer_tokens": [
+            "小",
+            "猫",
+            "在",
+            "哪儿"
+          ],
+          "explanation": {
+            "uz": "小猫在哪儿？ — Xiǎo māo zài nǎr?",
+            "ru": "小猫在哪儿？ — Xiǎo māo zài nǎr?",
+            "tj": "小猫在哪儿？ — Xiǎo māo zài nǎr?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我在学校工作。",
+          "pinyin": "Wǒ zài xuéxiào gōngzuò.",
+          "options": [
+            "小猫在哪儿？",
+            "我在学校工作。",
+            "小狗在哪儿？",
+            "小猫在那儿。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我在学校工作。 — Men maktabda ishlaymen.",
+            "ru": "我在学校工作。 — Я работаю в школе.",
+            "tj": "我在学校工作。 — Ман дар мактаб кор мекунам."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "小 talaffuzini tanlang:",
+            "ru": "Выберите произношение 小:",
+            "tj": "Талаффузи 小-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zài",
+            "xiǎo",
+            "māo",
+            "nàr"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "小 — xiǎo",
+            "ru": "小 — xiǎo",
+            "tj": "小 — xiǎo"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "哪儿",
+          "pinyin": "nǎr",
+          "translation": {
+            "uz": "qayerda",
+            "ru": "где",
+            "tj": "куҷо"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "儿子",
+          "pinyin": "érzi",
+          "translation": {
+            "uz": "o'g'il",
+            "ru": "сын",
+            "tj": "писар"
+          }
+        }
+      ]
+    }
+  ]
+}

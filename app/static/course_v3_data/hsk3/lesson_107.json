@@ -1,0 +1,628 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 107,
+  "source_lesson": 20,
+  "part_no": 3,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我被他影响了",
+  "subtitle": {
+    "uz": "'被' passiv konstruktsiya, '只有…才…' shartli gap va '多么…啊' hayrat undalmasi",
+    "ru": "Пассивная конструкция '被', условное '只有…才…' и восклицание '多么…啊'",
+    "tj": "Сохти пассивии '被', шартии '只有…才…' ва ندای тааҷубии '多么…啊'"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "碗",
+      "pinyin": "wǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kosa, piyola",
+        "ru": "миска, чашка",
+        "tj": "коса"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "分",
+      "pinyin": "fēn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "farqlamoq, ajratmoq",
+        "ru": "различать, отделять",
+        "tj": "фарқ кардан, ҷудо кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "解决",
+      "pinyin": "jiějué",
+      "pos": "v.",
+      "meaning": {
+        "uz": "hal qilmoq",
+        "ru": "решать",
+        "tj": "ҳал кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Qanchalik……! (hayrat undalmasi)",
+        "ru": "Как……! (восклицательное предложение)",
+        "tj": "Чӣ қадар……! (ҷумлаи тааҷубӣ)"
+      },
+      "title_zh": "多么……啊！（感叹句）",
+      "rule": {
+        "uz": "'多么…啊！' tuzilmasi kuchli his-tuyg'u, hayrat yoki quvonchni ifodalaydi. Tuzilma: 多么 + sifat/holat + 啊！ Ingilizcha 'How …!' ga o'xshaydi. Og'zaki nutqda '啊' o'rniga '呀' ishlatilishi mumkin.",
+        "ru": "Конструкция '多么…啊！' выражает сильные эмоции, восхищение или радость. Структура: 多么 + прилагательное/состояние + 啊！ Похоже на английское 'How …!'. В разговорной речи '啊' может заменяться на '呀'.",
+        "tj": "Сохти '多么…啊！' эҳсосоти қавӣ, тааҷуб ё шодиро ифода мекунад. Сохт: 多么 + сифат/ҳол + 啊！ Ба 'How …!'-и инглисӣ монанд. Дар забони гуфторӣ '啊' ба '呀' иваз шуда метавонад."
+      },
+      "examples": [
+        {
+          "zh": "多么美好的未来在等着你啊！",
+          "pinyin": "Duōme měihǎo de wèilái zài děngzhe nǐ a!",
+          "translation": {
+            "uz": "Qanchalik ajoyib kelajak sizi kutmoqda!",
+            "ru": "Как прекрасное будущее тебя ждёт!",
+            "tj": "Чӣ қадар ояндаи зебо шуморо интизор аст!"
+          }
+        },
+        {
+          "zh": "多么宝贵的经历啊！",
+          "pinyin": "Duōme bǎoguì de jīnglì a!",
+          "translation": {
+            "uz": "Qanchalik qimmatli tajriba!",
+            "ru": "Как ценный опыт!",
+            "tj": "Чӣ қадар таҷрибаи гаронбаҳо!"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Dam olish xonasida yo'qolgan kamera",
+        "ru": "Потерянная камера в комнате отдыха",
+        "tj": "Камераи гумшуда дар хонаи истироҳат"
+      },
+      "dialogue": [
+        {
+          "speaker": "小丽",
+          "zh": "我的照相机被谁拿走了？怎么找不到了？",
+          "pinyin": "Wǒ de zhàoxiàngjī bèi shéi ná zǒu le? Zěnme zhǎo bu dào le?",
+          "text": {
+            "uz": "Fotoapparatimni kim olib ketdi? Nega topa olmayapman?",
+            "ru": "Кто забрал мой фотоаппарат? Почему я не могу его найти?",
+            "tj": "Фотоаппарати маро кӣ гирифта рафт? Чаро ёфта наметавонам?"
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "你再找找。是不是没带来？",
+          "pinyin": "Nǐ zài zhǎozhao. Shì bu shì méi dài lái?",
+          "text": {
+            "uz": "Yana bir qidirib ko'r. Balki olib kelmagandirsan?",
+            "ru": "Поищи еще. Может, ты его не принесла?",
+            "tj": "Боз ҷустуҷӯ кун. Шояд наовардаӣ?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "我找了，没找到啊。",
+          "pinyin": "Wǒ zhǎo le, méi zhǎodào a.",
+          "text": {
+            "uz": "Qidirdim, topmadim-ku.",
+            "ru": "Я искала, но не нашла.",
+            "tj": "Ҷустуҷӯ кардам, наёфтам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "别难过，再买一个吧，公司东门外不就有一个大商场吗？",
+          "pinyin": "Bié nánguò, zài mǎi yí ge ba, gōngsī dōng mén wài bù jiù yǒu yí ge dà shāngchǎng ma?",
+          "text": {
+            "uz": "Xafa bo'lma, yana bittasini ol, kompaniyaning sharqiy darvozasi tashqarisida katta savdo markazi bor-ku.",
+            "ru": "Не расстраивайся, купи еще один. У восточных ворот компании ведь есть большой торговый центр.",
+            "tj": "Ғамгин нашав, боз якто хар. Берун аз дарвозаи шарқии ширкат маркази савдои калон ҳаст-ку."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "但是我这个月信用卡里的钱已经花得差不多了。",
+          "pinyin": "Dànshì wǒ zhège yuè xìnyòngkǎ lǐ de qián yǐjīng huā de chà bu duō le.",
+          "text": {
+            "uz": "Lekin bu oy kredit kartamdagi pul deyarli tugab bo'ldi.",
+            "ru": "Но в этом месяце деньги на моей кредитной карте почти закончились.",
+            "tj": "Аммо ин моҳ пули корти кредитиям қариб тамом шудааст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda futbol ta'siri haqida",
+        "ru": "В классе о влиянии футбола",
+        "tj": "Дар синф дар бораи таъсири футбол"
+      },
+      "dialogue": [
+        {
+          "speaker": "小明",
+          "zh": "你怎么突然关心起体育来了？",
+          "pinyin": "Nǐ zěnme tūrán guānxīn qǐ tǐyù lái le?",
+          "text": {
+            "uz": "Nega birdan sportga qiziqib qolding?",
+            "ru": "Почему ты вдруг стала интересоваться спортом?",
+            "tj": "Чаро ногаҳон ба варзиш таваҷҷӯҳ пайдо кардӣ?"
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "我的男朋友喜欢看足球比赛，我被他影响的。",
+          "pinyin": "Wǒ de nánpéngyou xǐhuan kàn zúqiú bǐsài, wǒ bèi tā yǐngxiǎng de.",
+          "text": {
+            "uz": "Yigitim futbol o'yinlarini ko'rishni yoqtiradi, men unga ta'sirlandim.",
+            "ru": "Мой парень любит смотреть футбольные матчи, я попала под его влияние.",
+            "tj": "Дӯстписарам тамошои футболро дӯст медорад, ман аз ӯ таъсир гирифтам."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "看来只有爱，才能让人有变化。",
+          "pinyin": "Kànlái zhǐyǒu ài, cái néng ràng rén yǒu biànhuà.",
+          "text": {
+            "uz": "Ko'rinishicha, faqat sevgi odamni o'zgartira oladi.",
+            "ru": "Похоже, только любовь может изменить человека.",
+            "tj": "Ба назар мерасад, танҳо муҳаббат метавонад одамро дигар кунад."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "是啊，为了和他的爱好一样，我天天看球赛。",
+          "pinyin": "Shì a, wèile hé tā de àihào yíyàng, wǒ tiāntiān kàn qiúsài.",
+          "text": {
+            "uz": "Ha, uning qiziqishi bilan bir xil bo'lish uchun har kuni o'yin ko'raman.",
+            "ru": "Да, чтобы разделять его увлечение, я каждый день смотрю матчи.",
+            "tj": "Ҳа, барои он ки ҳавасам бо ӯ як хел бошад, ҳар рӯз бозӣ мебинам."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "除了足球，他还影响你什么了？",
+          "pinyin": "Chúle zúqiú, tā hái yǐngxiǎng nǐ shénme le?",
+          "text": {
+            "uz": "Futboldan tashqari, u yana nimaga ta'sir qildi?",
+            "ru": "Кроме футбола, в чем еще он на тебя повлиял?",
+            "tj": "Ғайр аз футбол, ӯ боз ба чӣ таъсир кард?"
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "我最近天天上网玩儿游戏，我的成绩差极了。",
+          "pinyin": "Wǒ zuìjìn tiāntiān shàng wǎng wánr yóuxì, wǒ de chéngjì chà jí le.",
+          "text": {
+            "uz": "So'nggi paytlar har kuni internetda o'yin o'ynayapman, baholarim juda yomonlashdi.",
+            "ru": "В последнее время я каждый день играю онлайн, мои оценки стали ужасными.",
+            "tj": "Вақтҳои охир ҳар рӯз онлайн бозӣ мекунам, баҳоҳоям хеле бад шуданд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda aka-uka haqida",
+        "ru": "В ресторане о братьях",
+        "tj": "Дар тарабхона дар бораи бародарон"
+      },
+      "dialogue": [
+        {
+          "speaker": "朋友",
+          "zh": "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。",
+          "pinyin": "Nà ge názhe wǎn chī fàn de rén shì nǐ gēge ma? Tā hé nǐ zhǎng de zhēn xiàng.",
+          "text": {
+            "uz": "Ana u kosa ushlab ovqat yeyayotgan odam akangmi? U senga juda o'xsharkan.",
+            "ru": "Тот человек, который ест с миской в руках, твой старший брат? Он очень похож на тебя.",
+            "tj": "Он касаро дошта хӯрок мехӯрад, бародари калониат аст? Ӯ ба ту хеле монанд аст."
+          }
+        },
+        {
+          "speaker": "大卫",
+          "zh": "我们经常被别人认错。",
+          "pinyin": "Wǒmen jīngcháng bèi biérén rèncuò.",
+          "text": {
+            "uz": "Bizni boshqalar tez-tez adashtirib qo'yadi.",
+            "ru": "Нас часто путают другие люди.",
+            "tj": "Моро дигарон зуд-зуд иштибоҳ мекунанд."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "只有你们的爸爸妈妈才能分出来哪个是哥哥，哪个是弟弟吧。",
+          "pinyin": "Zhǐyǒu nǐmen de bàba māma cái néng fēn chūlai nǎ ge shì gēge, nǎ ge shì dìdi ba.",
+          "text": {
+            "uz": "Qaysi biri aka, qaysi biri uka ekanini faqat ota-onangiz farqlay olsa kerak.",
+            "ru": "Наверное, только ваши родители могут отличить, кто старший брат, а кто младший.",
+            "tj": "Шояд танҳо падару модаратон фарқ карда тавонанд, кадомаш ака ва кадомаш ука аст."
+          }
+        },
+        {
+          "speaker": "大卫",
+          "zh": "除了父母以外，还有我们自己也能啊。",
+          "pinyin": "Chúle fùmǔ yǐwài, hái yǒu wǒmen zìjǐ yě néng a.",
+          "text": {
+            "uz": "Ota-onadan tashqari, o'zimiz ham farqlay olamiz-da.",
+            "ru": "Кроме родителей, мы сами тоже можем.",
+            "tj": "Ғайр аз падару модар, худамон ҳам метавонем."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "你们两个除了长得像，还有什么相同的地方？",
+          "pinyin": "Nǐmen liǎng ge chúle zhǎng de xiàng, hái yǒu shénme xiāngtóng de dìfang?",
+          "text": {
+            "uz": "Ikkalangiz tashqi ko'rinishdan tashqari yana nimada o'xshaysiz?",
+            "ru": "Кроме внешнего сходства, что у вас еще общего?",
+            "tj": "Шумо ду нафар ғайр аз монанд будан, боз чӣ ҷои якхела доред?"
+          }
+        },
+        {
+          "speaker": "大卫",
+          "zh": "我们住在同一个楼、同一个房间……",
+          "pinyin": "Wǒmen zhù zài tóng yí ge lóu, tóng yí ge fángjiān...",
+          "text": {
+            "uz": "Biz bir binoda, bir xonada yashaymiz...",
+            "ru": "Мы живем в одном здании, в одной комнате...",
+            "tj": "Мо дар як бино, дар як хона зиндагӣ мекунем..."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Muammolarni hal qilish haqida matn",
+        "ru": "Текст о решении проблем",
+        "tj": "Матн дар бораи ҳалли мушкилот"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "年轻人遇到难题，常常很着急，不知道怎么办。其实，不同的问题有不同的解决办法。有些问题看上去很难，但是做起来非常简单，所以得试着做做。有些问题看上去虽然简单，但是解决起来难极了。所以只有真正做事情的时候，才能了解有多难。不过，我们一定要相信：多么难的问题，都会被解决的。",
+          "pinyin": "Niánqīng rén yùdào nántí, chángcháng hěn zháojí, bù zhīdào zěnme bàn. Qíshí, bùtóng de wèntí yǒu bùtóng de jiějué bànfǎ. Yǒuxiē wèntí kàn shangqu hěn nán, dànshì zuò qǐlai fēicháng jiǎndān, suǒyǐ děi shìzhe zuòzuo. Yǒuxiē wèntí kàn shangqu suīrán jiǎndān, dànshì jiějué qǐlai nán jí le. Suǒyǐ zhǐyǒu zhēnzhèng zuò shìqing de shíhou, cái néng liǎojiě yǒu duō nán. Búguò, wǒmen yídìng yào xiāngxìn: duōme nán de wèntí, dōu huì bèi jiějué de.",
+          "text": {
+            "uz": "Yoshlar qiyin masalaga duch kelganda ko'pincha shoshilib, nima qilishni bilmay qoladi. Aslida turli muammolarning turli yechimlari bor. Ba'zi muammolar qiyin ko'rinadi, lekin bajarish juda oson, shuning uchun sinab ko'rish kerak. Ba'zi muammolar oddiy ko'rinsa ham, hal qilish nihoyatda qiyin. Shuning uchun faqat ishni haqiqatan qilganda uning qanchalik qiyinligini tushunish mumkin. Ammo ishonishimiz kerak: muammo qanchalik qiyin bo'lmasin, hal qilinadi.",
+            "ru": "Когда молодые люди сталкиваются с трудностями, они часто сильно переживают и не знают, что делать. На самом деле у разных проблем разные способы решения. Некоторые проблемы выглядят сложными, но делать их очень просто, поэтому нужно попробовать. Некоторые проблемы выглядят простыми, но решать их крайне трудно. Поэтому только когда действительно делаешь дело, можно понять, насколько оно сложное. Однако мы обязательно должны верить: какой бы трудной ни была проблема, она будет решена.",
+            "tj": "Ҷавонон вақте ба мушкил рӯ ба рӯ мешаванд, бисёр вақт саросема мешаванд ва намедонанд чӣ кор кунанд. Дар асл, барои мушкилҳои гуногун роҳҳои гуногуни ҳал ҳаст. Баъзе мушкилҳо душвор менамоянд, аммо иҷрояшон хеле осон аст, бинобар ин бояд санҷида дид. Баъзе мушкилҳо одӣ менамоянд, аммо ҳал карданашон бисёр душвор аст. Аз ин рӯ танҳо вақте воқеан кор мекунӣ, мефаҳмӣ чӣ қадар душвор аст. Аммо мо бояд бовар кунем: ҳар қадар мушкил душвор бошад ҳам, ҳал мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "碗",
+            "pinyin": "wǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kosa, piyola",
+              "ru": "миска, чашка",
+              "tj": "коса"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wǎn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wǎn?",
+            "tj": "wǎn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "照相机",
+            "碗",
+            "被",
+            "难过"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "碗 = kosa, piyola (wǎn)",
+            "ru": "碗 = миска, чашка (wǎn)",
+            "tj": "碗 = коса (wǎn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "分",
+            "pinyin": "fēn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "farqlamoq, ajratmoq",
+              "ru": "различать, отделять",
+              "tj": "фарқ кардан, ҷудо кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "分",
+          "pinyin": "fēn",
+          "translation": {
+            "uz": "farqlamoq, ajratmoq",
+            "ru": "различать, отделять",
+            "tj": "фарқ кардан, ҷудо кардан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "分 talaffuzini tanlang:",
+            "ru": "Выберите произношение 分:",
+            "tj": "Талаффузи 分-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "fēn",
+            "nánguò",
+            "zhàoxiàngjī",
+            "bèi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "分 — fēn",
+            "ru": "分 — fēn",
+            "tj": "分 — fēn"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "解决",
+            "pinyin": "jiějué",
+            "pos": "v.",
+            "meaning": {
+              "uz": "hal qilmoq",
+              "ru": "решать",
+              "tj": "ҳал кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hal qilmoq' xitoycha qaysi?",
+            "ru": "'решать' по-китайски?",
+            "tj": "'ҳал кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "照相机",
+            "解决",
+            "难过",
+            "被"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "hal qilmoq = 解决 (jiějué)",
+            "ru": "решать = 解决 (jiějué)",
+            "tj": "ҳал кардан = 解决 (jiějué)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "碗",
+          "pinyin": "wǎn",
+          "options": [
+            "照相机",
+            "碗",
+            "被",
+            "难过"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "碗 — kosa, piyola (wǎn)",
+            "ru": "碗 — миска, чашка (wǎn)",
+            "tj": "碗 — коса (wǎn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "碗",
+              {
+                "uz": "kosa, piyola",
+                "ru": "миска, чашка",
+                "tj": "коса"
+              }
+            ],
+            [
+              "分",
+              {
+                "uz": "farqlamoq, ajratmoq",
+                "ru": "различать, отделять",
+                "tj": "фарқ кардан, ҷудо кардан"
+              }
+            ],
+            [
+              "解决",
+              {
+                "uz": "hal qilmoq",
+                "ru": "решать",
+                "tj": "ҳал кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Qanchalik……! (hayrat undalmasi)",
+              "ru": "Как……! (восклицательное предложение)",
+              "tj": "Чӣ қадар……! (ҷумлаи тааҷубӣ)"
+            },
+            "title_zh": "多么……啊！（感叹句）",
+            "rule": {
+              "uz": "'多么…啊！' tuzilmasi kuchli his-tuyg'u, hayrat yoki quvonchni ifodalaydi. Tuzilma: 多么 + sifat/holat + 啊！ Ingilizcha 'How …!' ga o'xshaydi. Og'zaki nutqda '啊' o'rniga '呀' ishlatilishi mumkin.",
+              "ru": "Конструкция '多么…啊！' выражает сильные эмоции, восхищение или радость. Структура: 多么 + прилагательное/состояние + 啊！ Похоже на английское 'How …!'. В разговорной речи '啊' может заменяться на '呀'.",
+              "tj": "Сохти '多么…啊！' эҳсосоти қавӣ, тааҷуб ё шодиро ифода мекунад. Сохт: 多么 + сифат/ҳол + 啊！ Ба 'How …!'-и инглисӣ монанд. Дар забони гуфторӣ '啊' ба '呀' иваз шуда метавонад."
+            },
+            "examples": [
+              {
+                "zh": "多么美好的未来在等着你啊！",
+                "pinyin": "Duōme měihǎo de wèilái zài děngzhe nǐ a!",
+                "translation": {
+                  "uz": "Qanchalik ajoyib kelajak sizi kutmoqda!",
+                  "ru": "Как прекрасное будущее тебя ждёт!",
+                  "tj": "Чӣ қадар ояндаи зебо шуморо интизор аст!"
+                }
+              },
+              {
+                "zh": "多么宝贵的经历啊！",
+                "pinyin": "Duōme bǎoguì de jīnglì a!",
+                "translation": {
+                  "uz": "Qanchalik qimmatli tajriba!",
+                  "ru": "Как ценный опыт!",
+                  "tj": "Чӣ қадар таҷрибаи гаронбаҳо!"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nánguò qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nánguò?",
+            "tj": "nánguò кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "东",
+            "被",
+            "照相机",
+            "难过"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "难过 = xafa, g'amgin (nánguò)",
+            "ru": "难过 = грустный, печальный (nánguò)",
+            "tj": "难过 = ғамгин, хафа (nánguò)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "解决",
+          "pinyin": "jiějué",
+          "translation": {
+            "uz": "hal qilmoq",
+            "ru": "решать",
+            "tj": "ҳал кардан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。",
+          "pinyin": "Nà ge názhe wǎn chī fàn de rén shì nǐ gēge ma? Tā hé nǐ zhǎng de zhēn xiàng.",
+          "options": [
+            "我找了，没找到啊。",
+            "你再找找。是不是没带来？",
+            "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。",
+            "我的照相机被谁拿走了？怎么找不到了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。 — Ana u kosa ushlab ovqat yeyayotgan odam akangmi? U senga juda o'xsharkan.",
+            "ru": "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。 — Тот человек, который ест с миской в руках, твой старший брат? Он очень похож на тебя.",
+            "tj": "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。 — Он касаро дошта хӯрок мехӯрад, бародари калониат аст? Ӯ ба ту хеле монанд аст."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "分",
+          "pinyin": "fēn",
+          "translation": {
+            "uz": "farqlamoq, ajratmoq",
+            "ru": "различать, отделять",
+            "tj": "фарқ кардан, ҷудо кардан"
+          }
+        }
+      ]
+    }
+  ]
+}

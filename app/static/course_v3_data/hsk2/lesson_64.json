@@ -1,0 +1,738 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 64,
+  "source_lesson": 14,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你看过那个电影吗",
+  "subtitle": {
+    "uz": "O'tgan tajribani bildiruvchi '过' yuklamasini, 'suīrán……dànshì' bog'lovchi juftligini va '次' harakat miqdori to'ldiruvchisini o'rganish.",
+    "ru": "Изучение частицы '过', обозначающей прошлый опыт, союзного сочетания 'suīrán……dànshì' и счётного слова '次' для количества действий.",
+    "tj": "Омӯзиши зарраи '过' ифодакунандаи таҷрибаи гузашта, ҷуфти пайвандии 'suīrán……dànshì' ва калимаи шуморавии '次' барои миқдори амал."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "玩儿",
+      "pinyin": "wánr",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o'ynamoq, sayr qilmoq, dam olmoq",
+        "ru": "играть, гулять, отдыхать",
+        "tj": "бозӣ кардан, сайр кардан, истироҳат кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "晴",
+      "pinyin": "qíng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ochiq (ob-havo), quyoshli",
+        "ru": "ясный, солнечный (о погоде)",
+        "tj": "ҳаво равшан, офтобӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "百",
+      "pinyin": "bǎi",
+      "pos": "num.",
+      "meaning": {
+        "uz": "yuz (100)",
+        "ru": "сто (100)",
+        "tj": "сад (100)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "'Suīrán……dànshì……' bog'lovchi juftligi",
+        "ru": "Союзная пара 'suīrán……dànshì……'",
+        "tj": "Ҷуфти пайвандии 'suīrán……dànshì……'"
+      },
+      "title_zh": "关联词“虽然……，但是……”",
+      "rule": {
+        "uz": "'Suīrán……dànshì……' bog'lovchi juftligi 'garchi……bo'lsa ham, lekin……' ma'nosini beradi. Birinchi qismda tan olingan holat, ikkinchi qismda unga qarama-qarshi fikr ifodalanadi. 'Suīrán' ko'pincha gap boshida yoki ot/sifatdan oldin keladi.",
+        "ru": "Союзная пара 'suīrán……dànshì……' означает 'хотя……но……'. В первой части признаётся некоторый факт, во второй выражается противоположная мысль. 'Suīrán' обычно стоит в начале предложения или перед существительным/прилагательным.",
+        "tj": "Ҷуфти пайвандии 'suīrán……dànshì……' маъниаш 'гарчи……бошад ҳам, аммо……' аст. Дар қисми аввал ҳолате эътироф мешавад, дар қисми дуввум фикри муқобил ифода мешавад. 'Suīrán' одатан дар аввали ҷумла ё пеш аз исм/сифат меояд."
+      },
+      "examples": [
+        {
+          "zh": "虽然是晴天，但是很冷。",
+          "pinyin": "Suīrán shì qíngtiān, dànshì hěn lěng.",
+          "translation": {
+            "uz": "Garchi quyoshli kun bo'lsa ham, lekin juda sovuq.",
+            "ru": "Хотя солнечно, но очень холодно.",
+            "tj": "Гарчи рӯзи офтобӣ бошад ҳам, аммо хеле сард аст."
+          }
+        },
+        {
+          "zh": "虽然去过好几次，但是还想再去。",
+          "pinyin": "Suīrán qùguo hǎo jǐ cì, dànshì hái xiǎng zài qù.",
+          "translation": {
+            "uz": "Garchi bir necha marta borgan bo'lsam ham, lekin yana bormoqchiman.",
+            "ru": "Хотя бывал(а) несколько раз, но всё равно хочу поехать снова.",
+            "tj": "Гарчи чанд маротиба рафта бошам ҳам, аммо боз рафтанӣ ҳастам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你看过那个电影没有？",
+          "pinyin": "Nǐ kànguo nàge diànyǐng méiyǒu?",
+          "text": {
+            "uz": "Siz u filmni ko'rganmisiz?",
+            "ru": "Ты смотрел(а) тот фильм?",
+            "tj": "Оё шумо он филмро дидаед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "没看过，听说很有意思。",
+          "pinyin": "Méi kànguo, tīngshuō hěn yǒu yìsi.",
+          "text": {
+            "uz": "Ko'rmaganman, eshitishimcha juda qiziqarli emish.",
+            "ru": "Не смотрел(а), говорят, очень интересный.",
+            "tj": "Надидаам, гуфтанд хеле ҷолиб аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那我们下个星期一一起去看吧？",
+          "pinyin": "Nà wǒmen xià ge xīngqīyī yìqǐ qù kàn ba?",
+          "text": {
+            "uz": "Unda biz kelasi dushanbada birga ko'rishga borsakchi?",
+            "ru": "Тогда давай в следующий понедельник вместе сходим?",
+            "tj": "Пас биёед душанбаи оянда якҷоя биравем тамошо кунем?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "可以，但是我女朋友也想去。",
+          "pinyin": "Kěyǐ, dànshì wǒ nǚpéngyou yě xiǎng qù.",
+          "text": {
+            "uz": "Bo'ladi, lekin qiz do'stim ham bormoqchi.",
+            "ru": "Можно, но моя девушка тоже хочет пойти.",
+            "tj": "Мешавад, аммо дӯстдухтарам ҳам мехоҳад биравад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda",
+        "ru": "В офисе",
+        "tj": "Дар дафтар"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "听说你去过中国，还想去吗？",
+          "pinyin": "Tīngshuō nǐ qùguo Zhōngguó, hái xiǎng qù ma?",
+          "text": {
+            "uz": "Eshitdimki siz Xitoyga borgansiz, yana bormoqchimisiz?",
+            "ru": "Говорят, ты бывал(а) в Китае, хочешь съездить снова?",
+            "tj": "Шунидам ки шумо ба Чин рафтаед, боз рафтанӣ ҳастед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我虽然去过好几次，但是还想再去中国玩儿。",
+          "pinyin": "Wǒ suīrán qùguo hǎo jǐ cì, dànshì hái xiǎng zài qù Zhōngguó wánr.",
+          "text": {
+            "uz": "Men garchi bir necha marta borgan bo'lsam ham, lekin yana Xitoyga sayohat qilmoqchiman.",
+            "ru": "Хотя я там бывал(а) несколько раз, всё равно хочу снова поехать в Китай.",
+            "tj": "Гарчи ман чанд маротиба рафта бошам ҳам, аммо боз мехоҳам ба Чин барам сайр кунам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那我们一起去吧。",
+          "pinyin": "Nà wǒmen yìqǐ qù ba.",
+          "text": {
+            "uz": "Unda birga boraylik.",
+            "ru": "Тогда давай поедем вместе.",
+            "tj": "Пас биёед якҷоя биравем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好啊，到时候我给你打电话。",
+          "pinyin": "Hǎo a, dào shíhou wǒ gěi nǐ dǎ diànhuà.",
+          "text": {
+            "uz": "Yaxshi, o'sha vaqt kelganda telefon qilaman.",
+            "ru": "Хорошо, когда придёт время, позвоню тебе.",
+            "tj": "Хуб, вақташ расид занг мезанам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xonada",
+        "ru": "В комнате",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "明天天气怎么样？",
+          "pinyin": "Míngtiān tiānqì zěnmeyàng?",
+          "text": {
+            "uz": "Ertaga ob-havo qanday bo'ladi?",
+            "ru": "Какая завтра будет погода?",
+            "tj": "Фардо ҳаво чӣ хел мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "虽然是晴天，但是很冷。",
+          "pinyin": "Suīrán shì qíngtiān, dànshì hěn lěng.",
+          "text": {
+            "uz": "Garchi quyoshli kun bo'lsa ham, lekin juda sovuq.",
+            "ru": "Хотя будет солнечно, но очень холодно.",
+            "tj": "Гарчи рӯзи офтобӣ бошад ҳам, аммо хеле сард аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那还能够跑步吗？",
+          "pinyin": "Nà hái nénggòu pǎobù ma?",
+          "text": {
+            "uz": "Unda yugurish mumkinmi?",
+            "ru": "Тогда ещё можно бегать?",
+            "tj": "Пас ҳанӯз давидан мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "可以，但是你自己去吧，我还有很多事情要做。",
+          "pinyin": "Kěyǐ, dànshì nǐ zìjǐ qù ba, wǒ hái yǒu hěn duō shìqing yào zuò.",
+          "text": {
+            "uz": "Mumkin, lekin o'zingiz boring, menda hali ko'p ish bor.",
+            "ru": "Можно, но иди сам(а), у меня ещё много дел.",
+            "tj": "Мешавад, аммо худатон равед, ман ҳанӯз кори зиёд дорам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda",
+        "ru": "В магазине",
+        "tj": "Дар мағоза"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在这个商店买过东西没有？",
+          "pinyin": "Nǐ zài zhège shāngdiàn mǎiguo dōngxi méiyǒu?",
+          "text": {
+            "uz": "Siz bu do'konda narsa sotib olganmisiz?",
+            "ru": "Ты когда-нибудь покупал(а) что-то в этом магазине?",
+            "tj": "Оё шумо дар ин дӯкон чизе харидаед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "买过一次，这儿的东西还可以，就是有点儿贵。",
+          "pinyin": "Mǎiguo yí cì, zhèr de dōngxi hái kěyǐ, jiùshì yǒudiǎnr guì.",
+          "text": {
+            "uz": "Bir marta olganman, bu yerdagi narsalar yomonmas, faqat biroz qimmat.",
+            "ru": "Покупал(а) один раз, товары здесь неплохие, только немного дорогие.",
+            "tj": "Як маротиба харидаам, молҳои ин ҷо бад нест, фақат каме гарон."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我喜欢这件衣服，但是觉得有点儿贵。",
+          "pinyin": "Wǒ xǐhuan zhè jiàn yīfu, dànshì juéde yǒudiǎnr guì.",
+          "text": {
+            "uz": "Men bu kiyimni yoqtiraman, lekin biroz qimmat deb hisoblayman.",
+            "ru": "Мне нравится эта одежда, но думаю, немного дорого.",
+            "tj": "Ман ин либосро дӯст медорам, аммо фикр мекунам каме гарон аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "两百块还可以，喜欢就买吧。",
+          "pinyin": "Liǎng bǎi kuài hái kěyǐ, xǐhuan jiù mǎi ba.",
+          "text": {
+            "uz": "Ikki yuz yuan yomonmas, yoqsa olaverıng.",
+            "ru": "Двести юаней — нормально, если нравится, покупай.",
+            "tj": "Дусад юан бад нест, агар дӯст дорӣ бихар."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "玩儿",
+            "pinyin": "wánr",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o'ynamoq, sayr qilmoq, dam olmoq",
+              "ru": "играть, гулять, отдыхать",
+              "tj": "бозӣ кардан, сайр кардан, истироҳат кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "玩儿",
+          "pinyin": "wánr",
+          "translation": {
+            "uz": "o'ynamoq, sayr qilmoq, dam olmoq",
+            "ru": "играть, гулять, отдыхать",
+            "tj": "бозӣ кардан, сайр кардан, истироҳат кардан"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'ynamoq, sayr qilmoq, dam olmoq' xitoycha qaysi?",
+            "ru": "'играть, гулять, отдыхать' по-китайски?",
+            "tj": "'бозӣ кардан, сайр кардан, истироҳат кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "玩儿",
+            "虽然",
+            "有意思",
+            "但是"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "o'ynamoq, sayr qilmoq, dam olmoq = 玩儿 (wánr)",
+            "ru": "играть, гулять, отдыхать = 玩儿 (wánr)",
+            "tj": "бозӣ кардан, сайр кардан, истироҳат кардан = 玩儿 (wánr)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "晴",
+            "pinyin": "qíng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ochiq (ob-havo), quyoshli",
+              "ru": "ясный, солнечный (о погоде)",
+              "tj": "ҳаво равшан, офтобӣ"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "晴",
+          "pinyin": "qíng",
+          "options": [
+            "晴",
+            "虽然",
+            "有意思",
+            "但是"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "晴 — ochiq (ob-havo), quyoshli (qíng)",
+            "ru": "晴 — ясный, солнечный (о погоде) (qíng)",
+            "tj": "晴 — ҳаво равшан, офтобӣ (qíng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "百",
+            "pinyin": "bǎi",
+            "pos": "num.",
+            "meaning": {
+              "uz": "yuz (100)",
+              "ru": "сто (100)",
+              "tj": "сад (100)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "百 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 百:",
+            "tj": "Маънои калимаи 百-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "garchi, garchanda",
+              "ru": "хотя, несмотря на то что",
+              "tj": "гарчи, ҳарчанд"
+            },
+            {
+              "uz": "lekin, ammo",
+              "ru": "но, однако",
+              "tj": "аммо, вале"
+            },
+            {
+              "uz": "qiziqarli, maroqli",
+              "ru": "интересный, занимательный",
+              "tj": "ҷолиб, хонанданӣ"
+            },
+            {
+              "uz": "yuz (100)",
+              "ru": "сто (100)",
+              "tj": "сад (100)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "百 = yuz (100) (bǎi)",
+            "ru": "百 = сто (100) (bǎi)",
+            "tj": "百 = сад (100) (bǎi)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wánr qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wánr?",
+            "tj": "wánr кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "玩儿",
+            "虽然",
+            "有意思",
+            "但是"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "玩儿 = o'ynamoq, sayr qilmoq, dam olmoq (wánr)",
+            "ru": "玩儿 = играть, гулять, отдыхать (wánr)",
+            "tj": "玩儿 = бозӣ кардан, сайр кардан, истироҳат кардан (wánr)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "玩儿",
+              {
+                "uz": "o'ynamoq, sayr qilmoq, dam olmoq",
+                "ru": "играть, гулять, отдыхать",
+                "tj": "бозӣ кардан, сайр кардан, истироҳат кардан"
+              }
+            ],
+            [
+              "晴",
+              {
+                "uz": "ochiq (ob-havo), quyoshli",
+                "ru": "ясный, солнечный (о погоде)",
+                "tj": "ҳаво равшан, офтобӣ"
+              }
+            ],
+            [
+              "百",
+              {
+                "uz": "yuz (100)",
+                "ru": "сто (100)",
+                "tj": "сад (100)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "'Suīrán……dànshì……' bog'lovchi juftligi",
+              "ru": "Союзная пара 'suīrán……dànshì……'",
+              "tj": "Ҷуфти пайвандии 'suīrán……dànshì……'"
+            },
+            "title_zh": "关联词“虽然……，但是……”",
+            "rule": {
+              "uz": "'Suīrán……dànshì……' bog'lovchi juftligi 'garchi……bo'lsa ham, lekin……' ma'nosini beradi. Birinchi qismda tan olingan holat, ikkinchi qismda unga qarama-qarshi fikr ifodalanadi. 'Suīrán' ko'pincha gap boshida yoki ot/sifatdan oldin keladi.",
+              "ru": "Союзная пара 'suīrán……dànshì……' означает 'хотя……но……'. В первой части признаётся некоторый факт, во второй выражается противоположная мысль. 'Suīrán' обычно стоит в начале предложения или перед существительным/прилагательным.",
+              "tj": "Ҷуфти пайвандии 'suīrán……dànshì……' маъниаш 'гарчи……бошад ҳам, аммо……' аст. Дар қисми аввал ҳолате эътироф мешавад, дар қисми дуввум фикри муқобил ифода мешавад. 'Suīrán' одатан дар аввали ҷумла ё пеш аз исм/сифат меояд."
+            },
+            "examples": [
+              {
+                "zh": "虽然是晴天，但是很冷。",
+                "pinyin": "Suīrán shì qíngtiān, dànshì hěn lěng.",
+                "translation": {
+                  "uz": "Garchi quyoshli kun bo'lsa ham, lekin juda sovuq.",
+                  "ru": "Хотя солнечно, но очень холодно.",
+                  "tj": "Гарчи рӯзи офтобӣ бошад ҳам, аммо хеле сард аст."
+                }
+              },
+              {
+                "zh": "虽然去过好几次，但是还想再去。",
+                "pinyin": "Suīrán qùguo hǎo jǐ cì, dànshì hái xiǎng zài qù.",
+                "translation": {
+                  "uz": "Garchi bir necha marta borgan bo'lsam ham, lekin yana bormoqchiman.",
+                  "ru": "Хотя бывал(а) несколько раз, но всё равно хочу поехать снова.",
+                  "tj": "Гарчи чанд маротиба рафта бошам ҳам, аммо боз рафтанӣ ҳастам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "虽然是晴天，____很冷。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "次",
+            "但是",
+            "有意思",
+            "虽然"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 但是 (dànshì) — lekin, ammo",
+            "ru": "Верно: 但是 (dànshì) — но, однако",
+            "tj": "Дуруст: 但是 (dànshì) — аммо, вале"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我虽然去过好几次，但是还想再去中国玩儿。",
+          "pinyin": "Wǒ suīrán qùguo hǎo jǐ cì, dànshì hái xiǎng zài qù Zhōngguó wánr.",
+          "options": [
+            "那我们下个星期一一起去看吧？",
+            "我虽然去过好几次，但是还想再去中国玩儿。",
+            "没看过，听说很有意思。",
+            "你看过那个电影没有？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我虽然去过好几次，但是还想再去中国玩儿。 — Men garchi bir necha marta borgan bo'lsam ham, lekin yana Xitoyga sayohat qilmoqchiman.",
+            "ru": "我虽然去过好几次，但是还想再去中国玩儿。 — Хотя я там бывал(а) несколько раз, всё равно хочу снова поехать в Китай.",
+            "tj": "我虽然去过好几次，但是还想再去中国玩儿。 — Гарчи ман чанд маротиба рафта бошам ҳам, аммо боз мехоҳам ба Чин барам сайр кунам."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "次 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 次:",
+            "tj": "Маънои калимаи 次-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qiziqarli, maroqli",
+              "ru": "интересный, занимательный",
+              "tj": "ҷолиб, хонанданӣ"
+            },
+            {
+              "uz": "lekin, ammo",
+              "ru": "но, однако",
+              "tj": "аммо, вале"
+            },
+            {
+              "uz": "marta, safar (harakat o'lchovi)",
+              "ru": "раз (счётное слово для действий)",
+              "tj": "маротиба, бор (воҳиди шуморавӣ)"
+            },
+            {
+              "uz": "garchi, garchanda",
+              "ru": "хотя, несмотря на то что",
+              "tj": "гарчи, ҳарчанд"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "次 = marta, safar (harakat o'lchovi) (cì)",
+            "ru": "次 = раз (счётное слово для действий) (cì)",
+            "tj": "次 = маротиба, бор (воҳиди шуморавӣ) (cì)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "晴",
+          "pinyin": "qíng",
+          "translation": {
+            "uz": "ochiq (ob-havo), quyoshli",
+            "ru": "ясный, солнечный (о погоде)",
+            "tj": "ҳаво равшан, офтобӣ"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "两百块还可以，喜欢就买吧。",
+          "pinyin": "Liǎng bǎi kuài hái kěyǐ, xǐhuan jiù mǎi ba.",
+          "translation": {
+            "uz": "Ikki yuz yuan yomonmas, yoqsa olaverıng.",
+            "ru": "Двести юаней — нормально, если нравится, покупай.",
+            "tj": "Дусад юан бад нест, агар дӯст дорӣ бихар."
+          },
+          "tokens": {
+            "uz": [
+              "yoqsa",
+              "yomonmas",
+              "Men",
+              "Ikki",
+              "olaverıng",
+              "yuan",
+              "yuz",
+              "garchi"
+            ],
+            "ru": [
+              "нормально",
+              "Двести",
+              "я",
+              "если",
+              "покупай",
+              "нравится",
+              "Хотя",
+              "юаней"
+            ],
+            "tj": [
+              "агар",
+              "бихар",
+              "ман",
+              "дорӣ",
+              "Дусад",
+              "дӯст",
+              "юан",
+              "Гарчи",
+              "нест",
+              "бад"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ikki",
+              "yuz",
+              "yuan",
+              "yomonmas",
+              "yoqsa",
+              "olaverıng"
+            ],
+            "ru": [
+              "Двести",
+              "юаней",
+              "нормально",
+              "если",
+              "нравится",
+              "покупай"
+            ],
+            "tj": [
+              "Дусад",
+              "юан",
+              "бад",
+              "нест",
+              "агар",
+              "дӯст",
+              "дорӣ",
+              "бихар"
+            ]
+          },
+          "explanation": {
+            "uz": "两百块还可以，喜欢就买吧。 — Ikki yuz yuan yomonmas, yoqsa olaverıng.",
+            "ru": "两百块还可以，喜欢就买吧。 — Двести юаней — нормально, если нравится, покупай.",
+            "tj": "两百块还可以，喜欢就买吧。 — Дусад юан бад нест, агар дӯст дорӣ бихар."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "玩儿",
+          "pinyin": "wánr",
+          "translation": {
+            "uz": "o'ynamoq, sayr qilmoq, dam olmoq",
+            "ru": "играть, гулять, отдыхать",
+            "tj": "бозӣ кардан, сайр кардан, истироҳат кардан"
+          }
+        }
+      ]
+    }
+  ]
+}

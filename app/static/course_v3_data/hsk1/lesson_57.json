@@ -1,0 +1,574 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 57,
+  "source_lesson": 14,
+  "part_no": 4,
+  "part_count": 6,
+  "checkpoint": false,
+  "title": "她买了不少衣服",
+  "subtitle": {
+    "uz": "Tugallangan harakatlar uchun 了 yuklamasi, vaqt ko'rsatkichi sifatida 后 va ravish 都",
+    "ru": "Частица 了 для завершённых действий, 后 как временной маркер и наречие 都",
+    "tj": "Зарраи 了 барои амалҳои анҷомшуда, 后 ҳамчун нишонаи вақт ва зарфи 都"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "漂亮",
+      "pinyin": "piàoliang",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "chiroyli, go'zal",
+        "ru": "красивый, симпатичный",
+        "tj": "зебо, хушрӯй"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "啊",
+      "pinyin": "a",
+      "pos": "part.",
+      "meaning": {
+        "uz": "ha, voy (undov yuklamasi)",
+        "ru": "ах, да (восклицательная частица)",
+        "tj": "оҳ, ҳа (зарраи ҳайҷонӣ)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "少",
+      "pinyin": "shǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kam, oz",
+        "ru": "мало, немного",
+        "tj": "кам, андак"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Yotoqxonada — kecha nima qilding",
+        "ru": "В комнате — что делал вчера",
+        "tj": "Дар хоб — дирӯз чӣ кардӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天上午你去哪儿了？",
+          "pinyin": "Zuótiān shàngwǔ nǐ qù nǎr le?",
+          "text": {
+            "uz": "Kecha ertalab qayerga bordingiz?",
+            "ru": "Куда вы ходили вчера утром?",
+            "tj": "Дирӯз субҳ шумо куҷо рафтед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我去商店买东西了。",
+          "pinyin": "Wǒ qù shāngdiàn mǎi dōngxi le.",
+          "text": {
+            "uz": "Men do'konga narsa sotib olishga bordim.",
+            "ru": "Я ходил в магазин за покупками.",
+            "tj": "Ман ба дӯкон рафтам, чизҳо харидам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你买什么了？",
+          "pinyin": "Nǐ mǎi shénme le?",
+          "text": {
+            "uz": "Nima sotib oldingiz?",
+            "ru": "Что вы купили?",
+            "tj": "Шумо чӣ харидед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我买了一点儿苹果。",
+          "pinyin": "Wǒ mǎile yīdiǎnr píngguǒ.",
+          "text": {
+            "uz": "Men bir oz olma sotib oldim.",
+            "ru": "Я купил немного яблок.",
+            "tj": "Ман каме себ харидам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada — Zhang janobni ko'rdingizmi",
+        "ru": "В компании — видели ли вы господина Чжана",
+        "tj": "Дар ширкат — ҷаноби Чжанро дидед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你看见张先生了吗？",
+          "pinyin": "Nǐ kànjiàn Zhāng xiānsheng le ma?",
+          "text": {
+            "uz": "Janob Jangni ko'rdingizmi?",
+            "ru": "Вы видели господина Чжана?",
+            "tj": "Шумо ҷаноби Чжанро дидед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "看见了，他去学开车了。",
+          "pinyin": "Kànjiàn le, tā qù xué kāi chē le.",
+          "text": {
+            "uz": "Ko'rdim, u mashina haydashni o'rganishga ketdi.",
+            "ru": "Да, видел — он пошёл учиться водить машину.",
+            "tj": "Ҳа, дидам — ӯ рафт рондани мошинро биомӯзад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "他什么时候能回来？",
+          "pinyin": "Tā shénme shíhou néng huílai?",
+          "text": {
+            "uz": "Qachon qaytib kela oladi?",
+            "ru": "Когда он сможет вернуться?",
+            "tj": "Ӯ кай баргашта метавонад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "40分钟后回来。",
+          "pinyin": "Sìshí fēnzhōng hòu huílai.",
+          "text": {
+            "uz": "40 daqiqadan keyin qaytadi.",
+            "ru": "Вернётся через 40 минут.",
+            "tj": "Баъд аз 40 дақиқа бармегардад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'kon oldida — kiyimlar",
+        "ru": "У магазина — одежда",
+        "tj": "Дар назди дӯкон — либосҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "王方的衣服太漂亮了！",
+          "pinyin": "Wáng Fāng de yīfu tài piàoliang le!",
+          "text": {
+            "uz": "Van Fanning kiyimlari juda chiroyli!",
+            "ru": "Одежда Ван Фан такая красивая!",
+            "tj": "Либоси Ван Фан хеле зебо аст!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，她买了不少衣服。",
+          "pinyin": "Shì a, tā mǎile bùshǎo yīfu.",
+          "text": {
+            "uz": "Ha, u juda ko'p kiyim sotib oldi.",
+            "ru": "Да уж — она купила немало одежды.",
+            "tj": "Ҳа, ӯ хеле зиёд либос харид."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你买什么了？",
+          "pinyin": "Nǐ mǎi shénme le?",
+          "text": {
+            "uz": "Siz nima sotib oldingiz?",
+            "ru": "А вы что купили?",
+            "tj": "Шумо чӣ харидед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我没买，这些都是王方的东西。",
+          "pinyin": "Wǒ méi mǎi, zhèxiē dōu shì Wáng Fāng de dōngxi.",
+          "text": {
+            "uz": "Men hech narsa sotib olmadim, bular hammasi Van Fanning narsalari.",
+            "ru": "Я ничего не купила — всё это вещи Ван Фан.",
+            "tj": "Ман ҳеҷ чиз нахаридам, инҳо ҳама чизҳои Ван Фан аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "漂亮",
+            "pinyin": "piàoliang",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "chiroyli, go'zal",
+              "ru": "красивый, симпатичный",
+              "tj": "зебо, хушрӯй"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "piàoliang qaysi ieroglif?",
+            "ru": "Какой иероглиф читается piàoliang?",
+            "tj": "piàoliang кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "东西",
+            "一点儿",
+            "漂亮",
+            "苹果"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "漂亮 = chiroyli, go'zal (piàoliang)",
+            "ru": "漂亮 = красивый, симпатичный (piàoliang)",
+            "tj": "漂亮 = зебо, хушрӯй (piàoliang)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "啊",
+            "pinyin": "a",
+            "pos": "part.",
+            "meaning": {
+              "uz": "ha, voy (undov yuklamasi)",
+              "ru": "ах, да (восклицательная частица)",
+              "tj": "оҳ, ҳа (зарраи ҳайҷонӣ)"
+            }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "啊 talaffuzini tanlang:",
+            "ru": "Выберите произношение 啊:",
+            "tj": "Талаффузи 啊-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "a",
+            "yīdiǎnr",
+            "píngguǒ",
+            "dōngxi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "啊 — a",
+            "ru": "啊 — a",
+            "tj": "啊 — a"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "少",
+            "pinyin": "shǎo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "kam, oz",
+              "ru": "мало, немного",
+              "tj": "кам, андак"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "少",
+          "pinyin": "shǎo",
+          "translation": {
+            "uz": "kam, oz",
+            "ru": "мало, немного",
+            "tj": "кам, андак"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kam, oz' xitoycha qaysi?",
+            "ru": "'мало, немного' по-китайски?",
+            "tj": "'кам, андак' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "苹果",
+            "东西",
+            "少",
+            "一点儿"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kam, oz = 少 (shǎo)",
+            "ru": "мало, немного = 少 (shǎo)",
+            "tj": "кам, андак = 少 (shǎo)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "漂亮",
+          "pinyin": "piàoliang",
+          "options": [
+            "漂亮",
+            "东西",
+            "苹果",
+            "一点儿"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "漂亮 — chiroyli, go'zal (piàoliang)",
+            "ru": "漂亮 — красивый, симпатичный (piàoliang)",
+            "tj": "漂亮 — зебо, хушрӯй (piàoliang)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "漂亮",
+              {
+                "uz": "chiroyli, go'zal",
+                "ru": "красивый, симпатичный",
+                "tj": "зебо, хушрӯй"
+              }
+            ],
+            [
+              "啊",
+              {
+                "uz": "ha, voy (undov yuklamasi)",
+                "ru": "ах, да (восклицательная частица)",
+                "tj": "оҳ, ҳа (зарраи ҳайҷонӣ)"
+              }
+            ],
+            [
+              "少",
+              {
+                "uz": "kam, oz",
+                "ru": "мало, немного",
+                "tj": "кам, андак"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "reverse_builder",
+          "zh": "她买了不少衣服。",
+          "pinyin": "Tā mǎile bùshǎo yīfu.",
+          "translation": {
+            "uz": "U juda ko'p kiyim sotib oldi.",
+            "ru": "Она купила немало одежды.",
+            "tj": "Ӯ хеле зиёд либос харид."
+          },
+          "tokens": {
+            "uz": [
+              "juda",
+              "sotib",
+              "U",
+              "Fanning",
+              "oldi",
+              "Van",
+              "kiyim",
+              "ko'p"
+            ],
+            "ru": [
+              "Она",
+              "Одежда",
+              "одежды",
+              "купила",
+              "немало",
+              "Ван"
+            ],
+            "tj": [
+              "Ӯ",
+              "Ван",
+              "хеле",
+              "Либоси",
+              "зиёд",
+              "харид",
+              "либос"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "juda",
+              "ko'p",
+              "kiyim",
+              "sotib",
+              "oldi"
+            ],
+            "ru": [
+              "Она",
+              "купила",
+              "немало",
+              "одежды"
+            ],
+            "tj": [
+              "Ӯ",
+              "хеле",
+              "зиёд",
+              "либос",
+              "харид"
+            ]
+          },
+          "explanation": {
+            "uz": "她买了不少衣服。 — U juda ko'p kiyim sotib oldi.",
+            "ru": "她买了不少衣服。 — Она купила немало одежды.",
+            "tj": "她买了不少衣服。 — Ӯ хеле зиёд либос харид."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "漂亮",
+          "pinyin": "piàoliang",
+          "translation": {
+            "uz": "chiroyli, go'zal",
+            "ru": "красивый, симпатичный",
+            "tj": "зебо, хушрӯй"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U juda ko'p kiyim sotib oldi.",
+            "ru": "Она купила немало одежды.",
+            "tj": "Ӯ хеле зиёд либос харид."
+          },
+          "tokens": [
+            "买",
+            "她",
+            "了",
+            "少",
+            "衣服",
+            "不",
+            "东西",
+            "一点儿"
+          ],
+          "answer_tokens": [
+            "她",
+            "买",
+            "了",
+            "不",
+            "少",
+            "衣服"
+          ],
+          "explanation": {
+            "uz": "她买了不少衣服。 — Tā mǎile bùshǎo yīfu.",
+            "ru": "她买了不少衣服。 — Tā mǎile bùshǎo yīfu.",
+            "tj": "她买了不少衣服。 — Tā mǎile bùshǎo yīfu."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "是啊，她买了不少衣服。",
+          "pinyin": "Shì a, tā mǎile bùshǎo yīfu.",
+          "options": [
+            "昨天上午你去哪儿了？",
+            "我去商店买东西了。",
+            "是啊，她买了不少衣服。",
+            "你买什么了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "是啊，她买了不少衣服。 — Ha, u juda ko'p kiyim sotib oldi.",
+            "ru": "是啊，她买了不少衣服。 — Да уж — она купила немало одежды.",
+            "tj": "是啊，她买了不少衣服。 — Ҳа, ӯ хеле зиёд либос харид."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "一点儿 talaffuzini tanlang:",
+            "ru": "Выберите произношение 一点儿:",
+            "tj": "Талаффузи 一点儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yīdiǎnr",
+            "kànjiàn",
+            "píngguǒ",
+            "dōngxi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "一点儿 — yīdiǎnr",
+            "ru": "一点儿 — yīdiǎnr",
+            "tj": "一点儿 — yīdiǎnr"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "少",
+          "pinyin": "shǎo",
+          "translation": {
+            "uz": "kam, oz",
+            "ru": "мало, немного",
+            "tj": "кам, андак"
+          }
+        }
+      ]
+    }
+  ]
+}

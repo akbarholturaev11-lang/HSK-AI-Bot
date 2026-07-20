@@ -1,0 +1,740 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 29,
+  "source_lesson": 8,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "我想喝茶",
+  "subtitle": {
+    "uz": "Istak bildirish, narx so'rash va o'lchov so'zlarini o'rganish",
+    "ru": "Выражение желаний, спрашивание цены и изучение счётных слов",
+    "tj": "Ифодаи орзуҳо, пурсидани нарх ва омӯзиши калимаҳои шуморавӣ"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "钱",
+      "pinyin": "qián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "pul",
+        "ru": "деньги",
+        "tj": "пул"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "块",
+      "pinyin": "kuài",
+      "pos": "m.",
+      "meaning": {
+        "uz": "yuan (so'zlashuv)",
+        "ru": "юань (разговорный)",
+        "tj": "юан (забони гуфтугӯӣ)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "那",
+      "pinyin": "nà",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u, o'sha (ko'rsatish olmoshi)",
+        "ru": "тот, та (указательное местоимение)",
+        "tj": "он, он (исми ишора)"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "O'lchov so'zlar 个/口",
+        "ru": "Счётные слова 个/口",
+        "tj": "Калимаҳои шуморавӣ 个/口"
+      },
+      "title_zh": "量词 个/口 — O'lchov so'zlar",
+      "rule": {
+        "uz": "Xitoy tilida son va otning orasida o'lchov so'z kerak.\n\n个 (gè) — eng umumiy o'lchov so'z:\n一个杯子 — bir piyola\n三个学生 — uch o'quvchi\n两个老师 — ikki o'qituvchi\n\n口 (kǒu) — oila a'zolari uchun:\n三口人 — uch kishilik oila\n六口人 — olti kishilik oila",
+        "ru": "В китайском языке между числом и существительным необходимо счётное слово.\n\n个 (gè) — наиболее общее счётное слово:\n一个杯子 — один стакан\n三个学生 — три ученика\n两个老师 — два учителя\n\n口 (kǒu) — для членов семьи:\n三口人 — семья из трёх человек\n六口人 — семья из шести человек",
+        "tj": "Дар забони чинӣ байни адад ва исм калимаи шуморавӣ лозим аст.\n\n个 (gè) — умумитарин калимаи шуморавӣ:\n一个杯子 — як дона пиёла\n三个学生 — се нафар шогирд\n两个老师 — ду нафар устод\n\n口 (kǒu) — барои аъзоёни оила:\n三口人 — оилаи се нафара\n六口人 — оилаи шаш нафара"
+      },
+      "examples": [
+        {
+          "zh": "一个杯子",
+          "pinyin": "yī gè bēizi",
+          "translation": {
+            "uz": "bir piyola",
+            "ru": "один стакан",
+            "tj": "як дона пиёла"
+          }
+        },
+        {
+          "zh": "五个学生",
+          "pinyin": "wǔ gè xuésheng",
+          "translation": {
+            "uz": "besh o'quvchi",
+            "ru": "пять учеников",
+            "tj": "панҷ нафар шогирд"
+          }
+        },
+        {
+          "zh": "三口人",
+          "pinyin": "sān kǒu rén",
+          "translation": {
+            "uz": "uch kishilik oila",
+            "ru": "семья из трёх человек",
+            "tj": "оилаи се нафара"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoranda — nima ichish/yeyish",
+        "ru": "В ресторане — что пить/есть",
+        "tj": "Дар тарабхона — чӣ нӯшидан/хӯрдан"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你想喝什么？",
+          "pinyin": "Nǐ xiǎng hē shénme?",
+          "text": {
+            "uz": "Nima ichmoqchisiz?",
+            "ru": "Что вы хотите выпить?",
+            "tj": "Шумо чӣ нӯшидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想喝茶。",
+          "pinyin": "Wǒ xiǎng hē chá.",
+          "text": {
+            "uz": "Men choy ichmoqchiman.",
+            "ru": "Я хочу выпить чай.",
+            "tj": "Ман чой нӯшидан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想吃什么？",
+          "pinyin": "Nǐ xiǎng chī shénme?",
+          "text": {
+            "uz": "Nima yemoqchisiz?",
+            "ru": "Что вы хотите поесть?",
+            "tj": "Шумо чӣ хӯрдан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想吃米饭。",
+          "pinyin": "Wǒ xiǎng chī mǐfàn.",
+          "text": {
+            "uz": "Men guruch yemoqchiman.",
+            "ru": "Я хочу поесть риса.",
+            "tj": "Ман биринҷ хӯрдан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada — tushdan keyingi reja",
+        "ru": "В гостинице — планы на вторую половину дня",
+        "tj": "Дар меҳмонхона — нақшаи баъд аз нисфирӯзӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "下午你想做什么？",
+          "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+          "text": {
+            "uz": "Tushdan keyin nima qilmoqchisiz?",
+            "ru": "Что вы хотите делать во второй половине дня?",
+            "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "下午我想去商店。",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù shāngdiàn.",
+          "text": {
+            "uz": "Tushdan keyin do'konga bormoqchiman.",
+            "ru": "После полудня я хочу сходить в магазин.",
+            "tj": "Баъд аз нисфирӯзӣ ба мағоза рафтан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想买什么？",
+          "pinyin": "Nǐ xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Шумо чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想买一个杯子。",
+          "pinyin": "Wǒ xiǎng mǎi yī gè bēizi.",
+          "text": {
+            "uz": "Bir dona piyola sotib olmoqchiman.",
+            "ru": "Я хочу купить одну кружку.",
+            "tj": "Ман як дона пиёла харидан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda — narx so'rash",
+        "ru": "В магазине — спрашиваем цену",
+        "tj": "Дар мағоза — пурсидани нарх"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你好！这个杯子多少钱？",
+          "pinyin": "Nǐ hǎo! Zhège bēizi duōshao qián?",
+          "text": {
+            "uz": "Salom! Bu piyola qancha turadi?",
+            "ru": "Здравствуйте! Сколько стоит этот стакан?",
+            "tj": "Салом! Ин пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "28块。",
+          "pinyin": "Èrshíbā kuài.",
+          "text": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那个杯子多少钱？",
+          "pinyin": "Nàge bēizi duōshao qián?",
+          "text": {
+            "uz": "U piyola qancha turadi?",
+            "ru": "Сколько стоит тот стакан?",
+            "tj": "Он пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "那个杯子18块钱。",
+          "pinyin": "Nàge bēizi shíbā kuài qián.",
+          "text": {
+            "uz": "U piyola 18 yuan.",
+            "ru": "Тот стакан стоит 18 юаней.",
+            "tj": "Он пиёла 18 юан аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "钱",
+            "pinyin": "qián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "pul",
+              "ru": "деньги",
+              "tj": "пул"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'pul' xitoycha qaysi?",
+            "ru": "'деньги' по-китайски?",
+            "tj": "'пул' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "喝",
+            "茶",
+            "想",
+            "钱"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "pul = 钱 (qián)",
+            "ru": "деньги = 钱 (qián)",
+            "tj": "пул = 钱 (qián)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "块",
+            "pinyin": "kuài",
+            "pos": "m.",
+            "meaning": {
+              "uz": "yuan (so'zlashuv)",
+              "ru": "юань (разговорный)",
+              "tj": "юан (забони гуфтугӯӣ)"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "块",
+          "pinyin": "kuài",
+          "translation": {
+            "uz": "yuan (so'zlashuv)",
+            "ru": "юань (разговорный)",
+            "tj": "юан (забони гуфтугӯӣ)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "块",
+          "pinyin": "kuài",
+          "options": [
+            "块",
+            "茶",
+            "喝",
+            "想"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "块 — yuan (so'zlashuv) (kuài)",
+            "ru": "块 — юань (разговорный) (kuài)",
+            "tj": "块 — юан (забони гуфтугӯӣ) (kuài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "那",
+            "pinyin": "nà",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u, o'sha (ko'rsatish olmoshi)",
+              "ru": "тот, та (указательное местоимение)",
+              "tj": "он, он (исми ишора)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "那 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 那:",
+            "tj": "Маънои калимаи 那-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "u, o'sha (ko'rsatish olmoshi)",
+              "ru": "тот, та (указательное местоимение)",
+              "tj": "он, он (исми ишора)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "那 = u, o'sha (ko'rsatish olmoshi) (nà)",
+            "ru": "那 = тот, та (указательное местоимение) (nà)",
+            "tj": "那 = он, он (исми ишора) (nà)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "qián qaysi ieroglif?",
+            "ru": "Какой иероглиф читается qián?",
+            "tj": "qián кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "喝",
+            "钱",
+            "茶",
+            "想"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "钱 = pul (qián)",
+            "ru": "钱 = деньги (qián)",
+            "tj": "钱 = пул (qián)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "钱",
+              {
+                "uz": "pul",
+                "ru": "деньги",
+                "tj": "пул"
+              }
+            ],
+            [
+              "块",
+              {
+                "uz": "yuan (so'zlashuv)",
+                "ru": "юань (разговорный)",
+                "tj": "юан (забони гуфтугӯӣ)"
+              }
+            ],
+            [
+              "那",
+              {
+                "uz": "u, o'sha (ko'rsatish olmoshi)",
+                "ru": "тот, та (указательное местоимение)",
+                "tj": "он, он (исми ишора)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "O'lchov so'zlar 个/口",
+              "ru": "Счётные слова 个/口",
+              "tj": "Калимаҳои шуморавӣ 个/口"
+            },
+            "title_zh": "量词 个/口 — O'lchov so'zlar",
+            "rule": {
+              "uz": "Xitoy tilida son va otning orasida o'lchov so'z kerak.\n\n个 (gè) — eng umumiy o'lchov so'z:\n一个杯子 — bir piyola\n三个学生 — uch o'quvchi\n两个老师 — ikki o'qituvchi\n\n口 (kǒu) — oila a'zolari uchun:\n三口人 — uch kishilik oila\n六口人 — olti kishilik oila",
+              "ru": "В китайском языке между числом и существительным необходимо счётное слово.\n\n个 (gè) — наиболее общее счётное слово:\n一个杯子 — один стакан\n三个学生 — три ученика\n两个老师 — два учителя\n\n口 (kǒu) — для членов семьи:\n三口人 — семья из трёх человек\n六口人 — семья из шести человек",
+              "tj": "Дар забони чинӣ байни адад ва исм калимаи шуморавӣ лозим аст.\n\n个 (gè) — умумитарин калимаи шуморавӣ:\n一个杯子 — як дона пиёла\n三个学生 — се нафар шогирд\n两个老师 — ду нафар устод\n\n口 (kǒu) — барои аъзоёни оила:\n三口人 — оилаи се нафара\n六口人 — оилаи шаш нафара"
+            },
+            "examples": [
+              {
+                "zh": "一个杯子",
+                "pinyin": "yī gè bēizi",
+                "translation": {
+                  "uz": "bir piyola",
+                  "ru": "один стакан",
+                  "tj": "як дона пиёла"
+                }
+              },
+              {
+                "zh": "五个学生",
+                "pinyin": "wǔ gè xuésheng",
+                "translation": {
+                  "uz": "besh o'quvchi",
+                  "ru": "пять учеников",
+                  "tj": "панҷ нафар шогирд"
+                }
+              },
+              {
+                "zh": "三口人",
+                "pinyin": "sān kǒu rén",
+                "translation": {
+                  "uz": "uch kishilik oila",
+                  "ru": "семья из трёх человек",
+                  "tj": "оилаи се нафара"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "一个____",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "杯子",
+            "茶",
+            "喝",
+            "想"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 杯子 (bēizi) — stakan, piyola",
+            "ru": "Верно: 杯子 (bēizi) — стакан, кружка",
+            "tj": "Дуруст: 杯子 (bēizi) — косаи пиёла"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«uch kishilik oila» — xitoychada qaysi biri?",
+            "ru": "«семья из трёх человек» — какое предложение по-китайски?",
+            "tj": "«оилаи се нафара» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "一个杯子",
+            "五个学生",
+            "三口人"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "三口人 — sān kǒu rén",
+            "ru": "三口人 — sān kǒu rén",
+            "tj": "三口人 — sān kǒu rén"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "米饭 talaffuzini tanlang:",
+            "ru": "Выберите произношение 米饭:",
+            "tj": "Талаффузи 米饭-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hē",
+            "xiǎng",
+            "mǐfàn",
+            "chá"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "米饭 — mǐfàn",
+            "ru": "米饭 — mǐfàn",
+            "tj": "米饭 — mǐfàn"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "28块。",
+          "pinyin": "Èrshíbā kuài.",
+          "options": [
+            "你想喝什么？",
+            "你想吃什么？",
+            "28块。",
+            "我想喝茶。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "28块。 — 28 yuan.",
+            "ru": "28块。 — 28 юаней.",
+            "tj": "28块。 — 28 юан."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "那",
+          "pinyin": "nà",
+          "translation": {
+            "uz": "u, o'sha (ko'rsatish olmoshi)",
+            "ru": "тот, та (указательное местоимение)",
+            "tj": "он, он (исми ишора)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Salom! Bu piyola qancha turadi?",
+            "ru": "Здравствуйте! Сколько стоит этот стакан?",
+            "tj": "Салом! Ин пиёла чанд пул аст?"
+          },
+          "tokens": [
+            "喝",
+            "多少",
+            "这",
+            "好",
+            "想",
+            "你",
+            "杯子",
+            "钱",
+            "个"
+          ],
+          "answer_tokens": [
+            "你",
+            "好",
+            "这",
+            "个",
+            "杯子",
+            "多少",
+            "钱"
+          ],
+          "explanation": {
+            "uz": "你好！这个杯子多少钱？ — Nǐ hǎo! Zhège bēizi duōshao qián?",
+            "ru": "你好！这个杯子多少钱？ — Nǐ hǎo! Zhège bēizi duōshao qián?",
+            "tj": "你好！这个杯子多少钱？ — Nǐ hǎo! Zhège bēizi duōshao qián?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你好！这个杯子多少钱？",
+          "pinyin": "Nǐ hǎo! Zhège bēizi duōshao qián?",
+          "translation": {
+            "uz": "Salom! Bu piyola qancha turadi?",
+            "ru": "Здравствуйте! Сколько стоит этот стакан?",
+            "tj": "Салом! Ин пиёла чанд пул аст?"
+          },
+          "tokens": {
+            "uz": [
+              "Bu",
+              "turadi",
+              "28",
+              "piyola",
+              "qancha",
+              "Salom",
+              "yuan"
+            ],
+            "ru": [
+              "стоит",
+              "28",
+              "Сколько",
+              "этот",
+              "юаней",
+              "Здравствуйте",
+              "стакан"
+            ],
+            "tj": [
+              "пул",
+              "аст",
+              "чанд",
+              "28",
+              "пиёла",
+              "Ин",
+              "юан",
+              "Салом"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Salom",
+              "Bu",
+              "piyola",
+              "qancha",
+              "turadi"
+            ],
+            "ru": [
+              "Здравствуйте",
+              "Сколько",
+              "стоит",
+              "этот",
+              "стакан"
+            ],
+            "tj": [
+              "Салом",
+              "Ин",
+              "пиёла",
+              "чанд",
+              "пул",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "你好！这个杯子多少钱？ — Salom! Bu piyola qancha turadi?",
+            "ru": "你好！这个杯子多少钱？ — Здравствуйте! Сколько стоит этот стакан?",
+            "tj": "你好！这个杯子多少钱？ — Салом! Ин пиёла чанд пул аст?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "块",
+          "pinyin": "kuài",
+          "translation": {
+            "uz": "yuan (so'zlashuv)",
+            "ru": "юань (разговорный)",
+            "tj": "юан (забони гуфтугӯӣ)"
+          }
+        }
+      ]
+    }
+  ]
+}

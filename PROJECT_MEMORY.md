@@ -207,6 +207,51 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-20 — DARSLAR MINI-QISMLARGA BO'LINDI (3-4 so'z + checkpoint, flat raqamlash)
+
+Changed (foydalanuvchi: "bitta darsda 40+ mashq charchatadi; 3-4 yangi so'z + mustahkamlash"):
+- Har HSK darsligi darsi bir nechta QISQA mini-darsga bo'lindi: har qismda 2-4 yangi so'z
+  (flash → darhol tekshiruv → match → gap-kontekst mashqi; har so'z ≥4 kartada), qism
+  11-18 karta (~5-7 daqiqa). Dars oxirida CHECKPOINT qismi: yangi so'z yo'q — dialog +
+  butun dars so'zlari aralash takror; tugaganda katta bayram ("胜 {n}-dars to'liq yakunlandi").
+- Qismlar darajada TEKIS raqamlanadi: lesson_01..lesson_NN.json (hsk1=63, hsk2=72,
+  hsk3=109, hsk4=181; jami 425). `completed_lessons_count` endi QISMLARNI sanaydi.
+  HSK dars → qismlar xaritasi: `course_v3_data/parts_manifest.json` (GENERATED, yagona manba);
+  server o'quvchisi: `app/services/course_v3_parts.py` (total_parts, source_lesson_for_part).
+- Generator (`gen_course_v3_from_seed.py`): chunk_words (3-4 talik), assign_grammar (qoida eng
+  erta segmentlanadigan qismga, cap 1-2), build_part_intro/practice, build_checkpoint_sections,
+  build_split_plan; INTRO_WORD_CAP olib tashlandi — endi HSK4'da ham HAMMA so'z o'rgatiladi
+  (avval 31 so'zdan faqat 10 tasi o'rgatilardi).
+- Xarita: bitta unit = bitta HSK darsi ("7-dars · 你好" banner), qism tugunlari so'z-preview
+  bilan ("你 · 好 · 您" + "1-qism"), checkpoint tuguni bayroq + "Takrorlash"; milestone
+  (boss/chest) har 5-darsda qoladi. sync_maps endi units'ni to'liq qayta quradi.
+- Trial: `FREE_COURSE_LESSONS_PER_LEVEL = 2` (2 mini-dars to'liq bepul) + 3-qism preview_half
+  (`_apply_course_v3_access_policy` konstantadan oladi; frontend flip next.n===3).
+- `/api/v3/lesson/complete|unlock`: legacy `course_lessons` qatori endi SHART EMAS (topilmasa
+  ham davom etadi); band tugashi parts_manifest chegarasidan; XP ref `v3-part:{level}:{n}`.
+- MIGRATSIYA `0065_course_progress_parts`: eski completed (HSK darslari) → yangi (qismlar,
+  1..N darslar qismlari yig'indisi) CASE bilan atomik; downgrade teskari. CHECKPOINTS
+  konstantasi migration ichida — kurs qayta bo'linsa migration O'ZGARMAYDI.
+- Challenge: `source_lesson_for_part` bilan qism → darslik darsi konvertatsiyasi (savol banki
+  eski dars tartibida), widen +4 saqlanadi. lesson_gate.js endi so'z → [daraja, QISM raqami].
+- Frontend: resume kaliti `hsk_v3_lesson_resume:v2:` (eski raqamlash qoldiqlari mos kelmasin),
+  showLevelUp("checkpoint") varianti, dars varag'ida "X-dars · Y-qism" chip + real 3 bosqich.
+
+Files touched:
+- `scripts/gen_course_v3_from_seed.py`, `app/static/course_v3_data/**` (425 JSON + maplar +
+  gate + manifest), `app/main.py`, `app/services/course_miniapp_access_service.py`,
+  `app/services/course_challenge_service.py`, `app/services/course_v3_parts.py` (yangi),
+  `alembic/versions/0065_course_progress_parts.py` (yangi), `app/static/course-v3.html`,
+  `tests/test_course_v3_static_data.py`, `tests/test_course_miniapp_foundation.py`
+
+Risk / Deploy:
+- ATOMIK deploy shart: data + backend + frontend + 0065 migratsiya bitta relizda (aralash
+  holat progressni buzadi). Rollback: git revert + `alembic downgrade`.
+- Legacy bot kursi (app/bot/handlers/course.py) `completed_lessons_count`ni darslik darsi
+  deb o'qiydi — v3 user uchun endi qism soni (skew). Bot kursi legacy, asosiy yuza Mini App.
+- Testlar (164) o'tdi; lokal HTTP preview'da xarita/varaq/dars oqimi/checkpoint bayrami/
+  trial flip vizual tekshirildi. Real Telegram'da 1-2-3-qism + paywall smoke-test tavsiya.
+
 ### 2026-07-20 — Duolingo O'RGATISH USLUBI darslarda + challenge dars-progress gating
 
 Changed (foydalanuvchi: "struktura emas, o'rgatish stili — Duolingo'dan shablon ol"):

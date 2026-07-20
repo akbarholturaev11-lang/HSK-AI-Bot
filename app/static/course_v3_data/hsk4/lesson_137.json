@@ -1,0 +1,1221 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 137,
+  "source_lesson": 15,
+  "part_no": 9,
+  "part_count": 9,
+  "checkpoint": true,
+  "title": "教育孩子的艺术",
+  "subtitle": {
+    "uz": "bolani tarbiyalash, odat, vaqtni boshqarish, maqtash va mos usul tanlash haqida gapirish; 想起来, 弄, 千万, 来 va 左右 grammatikalarini ishlatish",
+    "ru": "говорить о воспитании детей, привычках, управлении временем, похвале и выборе метода; использовать 想起来, 弄, 千万, 来 и 左右",
+    "tj": "дар бораи тарбияи кӯдак, одат, идораи вақт, таъриф ва интихоби усул гуфтугӯ кардан; истифодаи 想起来, 弄, 千万, 来 ва 左右"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "弹钢琴",
+      "pinyin": "tán gāngqín",
+      "pos": "v.",
+      "meaning": {
+        "uz": "pianino chalmoq",
+        "ru": "играть на пианино",
+        "tj": "пианино навохтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "棒",
+      "pinyin": "bàng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "zo'r, ajoyib",
+        "ru": "отличный, замечательный",
+        "tj": "олӣ, зӯр"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "孙子",
+      "pinyin": "sūnzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "nabira o'g'il",
+        "ru": "внук",
+        "tj": "набераи писар"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "寒假",
+      "pinyin": "hánjià",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qishki ta'til",
+        "ru": "зимние каникулы",
+        "tj": "таътили зимистона"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "父亲",
+      "pinyin": "fùqin",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ota",
+        "ru": "отец",
+        "tj": "падар"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "闹钟",
+      "pinyin": "nàozhōng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "budilnik",
+        "ru": "будильник",
+        "tj": "соати зангдор"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "响",
+      "pinyin": "xiǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "jiringlamoq, ovoz chiqarmoq",
+        "ru": "звенеть, звучать",
+        "tj": "садо додан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "醒",
+      "pinyin": "xǐng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uyg'onmoq",
+        "ru": "просыпаться",
+        "tj": "бедор шудан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "赶",
+      "pinyin": "gǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "shoshilmoq, ulgurishga urunmoq",
+        "ru": "спешить, торопиться",
+        "tj": "шитоб кардан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "厕所",
+      "pinyin": "cèsuǒ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hojatxona",
+        "ru": "туалет",
+        "tj": "ҳоҷатхона"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "批评",
+      "pinyin": "pīpíng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tanqid qilmoq",
+        "ru": "критиковать",
+        "tj": "танқид кардан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "弄",
+      "pinyin": "nòng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qilmoq, yasamoq",
+        "ru": "делать, приводить",
+        "tj": "кардан, ба ҳол овардан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "管理",
+      "pinyin": "guǎnlǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "boshqarmoq",
+        "ru": "управлять",
+        "tj": "идора кардан"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "打针",
+      "pinyin": "dǎ zhēn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ukol qilmoq/olmoq",
+        "ru": "делать укол",
+        "tj": "сӯзандору задан/гирифтан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "护士",
+      "pinyin": "hùshi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hamshira",
+        "ru": "медсестра",
+        "tj": "ҳамшира"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "表扬",
+      "pinyin": "biǎoyáng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "maqtab qo'ymoq",
+        "ru": "хвалить",
+        "tj": "таъриф кардан"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "千万",
+      "pinyin": "qiānwàn",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "albatta, zinhor",
+        "ru": "обязательно, ни в коем случае",
+        "tj": "ҳатман, зинҳор"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "怀疑",
+      "pinyin": "huáiyí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "shubhalanmoq",
+        "ru": "сомневаться",
+        "tj": "шубҳа кардан"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "故意",
+      "pinyin": "gùyì",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "ataylab",
+        "ru": "намеренно",
+        "tj": "қасдан"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "敲",
+      "pinyin": "qiāo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "taqillatmoq, urmoq",
+        "ru": "стучать, ударять",
+        "tj": "тақ-тақ кардан, задан"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "整理",
+      "pinyin": "zhěnglǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tartibga solmoq",
+        "ru": "приводить в порядок",
+        "tj": "ба тартиб овардан"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "合适",
+      "pinyin": "héshì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "mos, to'g'ri",
+        "ru": "подходящий",
+        "tj": "мувофиқ"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "骗",
+      "pinyin": "piàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "aldamoq",
+        "ru": "обманывать",
+        "tj": "фиреб додан"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "儿童",
+      "pinyin": "értóng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bolalar",
+        "ru": "дети",
+        "tj": "кӯдакон"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "假",
+      "pinyin": "jiǎ",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "soxta, yolg'on",
+        "ru": "ложный, фальшивый",
+        "tj": "қалбакӣ, дурӯғ"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "左右",
+      "pinyin": "zuǒyòu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "atrofida, taxminan",
+        "ru": "примерно, около",
+        "tj": "тақрибан"
+      }
+    },
+    {
+      "no": 27,
+      "zh": "懒",
+      "pinyin": "lǎn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "dangasa",
+        "ru": "ленивый",
+        "tj": "танбал"
+      }
+    },
+    {
+      "no": 28,
+      "zh": "笨",
+      "pinyin": "bèn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "befahm, ahmoq",
+        "ru": "глупый",
+        "tj": "нодон"
+      }
+    },
+    {
+      "no": 29,
+      "zh": "粗心",
+      "pinyin": "cūxīn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "beparvo",
+        "ru": "невнимательный",
+        "tj": "бепарво"
+      }
+    },
+    {
+      "no": 30,
+      "zh": "骄傲",
+      "pinyin": "jiāo'ào",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kibrli, mag'rur",
+        "ru": "высокомерный",
+        "tj": "мағрур, худписанд"
+      }
+    },
+    {
+      "no": 31,
+      "zh": "害羞",
+      "pinyin": "hàixiū",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uyalmoq, tortinmoq",
+        "ru": "стесняться",
+        "tj": "шарм доштан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "esga tushmoq",
+        "ru": "вспомнить",
+        "tj": "ба ёд омадан"
+      },
+      "title_zh": "想起来",
+      "rule": {
+        "uz": "想 dan keyin kelib, xotiradan odam yoki voqeani topishni bildiradi.",
+        "ru": "После 想 означает вспомнить человека или событие.",
+        "tj": "Баъд аз 想 омаданаш ба ёд овардани одам ё воқеаро мефаҳмонад."
+      },
+      "examples": [
+        {
+          "zh": "我想起来了，这孩子又聪明又可爱。",
+          "pinyin": "Wǒ xiǎng qilai le, zhè háizi yòu cōngming yòu kě'ài.",
+          "translation": {
+            "uz": "Esimga tushdi, bu bola ham aqlli, ham yoqimtoy.",
+            "ru": "Я вспомнила, этот ребёнок и умный, и милый.",
+            "tj": "Ба ёдам омад, ин кӯдак ҳам доно, ҳам ширин аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "qilmoq, holatga keltirmoq",
+        "ru": "делать, приводить к состоянию",
+        "tj": "кардан, ба ҳолат овардан"
+      },
+      "title_zh": "弄",
+      "rule": {
+        "uz": "Og'zaki tilda ko'p fe'llar o'rnida kelib, natijaviy holatni bildiradi.",
+        "ru": "В разговорной речи заменяет разные глаголы и показывает результат.",
+        "tj": "Дар гуфтори рӯзмарра ба ҷои феълҳои гуногун омада, натиҷаро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "每天因为这些小事批评她，弄得我俩心情都不好。",
+          "pinyin": "Měi tiān yīnwèi zhèxiē xiǎo shì pīpíng tā, nòng de wǒ liǎ xīnqíng dōu bù hǎo.",
+          "translation": {
+            "uz": "Har kuni shu mayda ishlar uchun uni tanqid qilib, ikkalamizning kayfiyatimiz ham yomon bo'ladi.",
+            "ru": "Каждый день критикую её из-за мелочей, и настроение у нас обеих портится.",
+            "tj": "Ҳар рӯз барои ин корҳои хурд танқид мекунам ва кайфияти ҳардуямон бад мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "albatta; zinhor",
+        "ru": "обязательно; ни в коем случае",
+        "tj": "ҳатман; зинҳор"
+      },
+      "title_zh": "千万",
+      "rule": {
+        "uz": "Kuchli eslatma beradi, ko'pincha 不要/别 bilan inkor shaklida ishlatiladi.",
+        "ru": "Выражает сильное предупреждение, часто с отрицанием 不要/别.",
+        "tj": "Огоҳии қавӣ медиҳад, аксаран бо 不要/别 дар шакли инкор меояд."
+      },
+      "examples": [
+        {
+          "zh": "表扬千万不要太多。",
+          "pinyin": "Biǎoyáng qiānwàn búyào tài duō.",
+          "translation": {
+            "uz": "Maqtash zinhor haddan tashqari ko'p bo'lmasin.",
+            "ru": "Хвалить ни в коем случае нельзя слишком много.",
+            "tj": "Таъриф кардан зинҳор аз ҳад зиёд набошад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "biror ishni bajarish uchun",
+        "ru": "чтобы сделать",
+        "tj": "барои иҷро кардан"
+      },
+      "title_zh": "来",
+      "rule": {
+        "uz": "Boshqa fe'l oldida kelib, bajariladigan ish yoki maqsadni ko'rsatadi.",
+        "ru": "Перед другим глаголом показывает действие или цель.",
+        "tj": "Пеш аз феъли дигар омада, амал ё мақсадро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "有的孩子会通过哭、扔东西或者故意敲打来引起父母的注意。",
+          "pinyin": "Yǒude háizi huì tōngguò kū, rēng dōngxi huòzhě gùyì qiāodǎ lái yǐnqǐ fùmǔ de zhùyì.",
+          "translation": {
+            "uz": "Ba'zi bolalar ota-onaning e'tiborini tortish uchun yig'laydi, narsa tashlaydi yoki ataylab taqillatadi.",
+            "ru": "Некоторые дети плачут, бросают вещи или намеренно стучат, чтобы привлечь внимание родителей.",
+            "tj": "Баъзе кӯдакон барои ҷалби диққати падару модар гиря мекунанд, чиз мепартоянд ё қасдан тақ-тақ мекунанд."
+          }
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": {
+        "uz": "taxminan, atrofida",
+        "ru": "примерно, около",
+        "tj": "тақрибан"
+      },
+      "title_zh": "左右",
+      "rule": {
+        "uz": "Son yoki miqdordan keyin kelib, biroz ko'p yoki kamligini bildiradi.",
+        "ru": "После числа показывает приблизительное количество.",
+        "tj": "Пас аз шумора омада, тахминӣ будани миқдорро мефаҳмонад."
+      },
+      "examples": [
+        {
+          "zh": "七岁左右的儿童普遍好动，坐不住。",
+          "pinyin": "Qī suì zuǒyòu de értóng pǔbiàn hào dòng, zuò bu zhù.",
+          "translation": {
+            "uz": "Taxminan yetti yoshdagi bolalar odatda juda harakatchan, joyida o'tirolmaydi.",
+            "ru": "Дети примерно семи лет обычно очень подвижны и не могут усидеть.",
+            "tj": "Кӯдакони тақрибан ҳафтсола одатан серҳаракатанд ва нишаста наметавонанд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Li o'qituvchi Wang Jingga yaxshi odat tarbiyasi haqida gapiradi",
+        "ru": "Учитель Ли говорит Ван Цзин о воспитании хороших привычек",
+        "tj": "Муаллим Ли ба Ван Ҷинг дар бораи тарбияи одатҳои хуб мегӯяд"
+      },
+      "dialogue": [
+        {
+          "speaker": "王静",
+          "zh": "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+          "pinyin": "Nàge yìbiān tán gāngqín yìbiān chàng gē de nán háizi shì shéi? Biǎoyǎn de zhēn bàng!",
+          "text": {
+            "uz": "Pianino chalib qo'shiq aytayotgan o'g'il bola kim? Juda zo'r ijro qilyapti!",
+            "ru": "Кто тот мальчик, который играет на пианино и поёт? Выступает отлично!",
+            "tj": "Он писарбачае, ки ҳам пианино менавозаду ҳам месарояд, кист? Бисёр олӣ иҷро мекунад!"
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "是我孙子。去年寒假前的新年晚会他也表演过一次。",
+          "pinyin": "Shì wǒ sūnzi. Qùnián hánjià qián de xīnnián wǎnhuì tā yě biǎoyǎn guo yí cì.",
+          "text": {
+            "uz": "Bu mening nabiram. O'tgan yili qishki ta'til oldidagi Yangi yil kechasida ham bir marta chiqish qilgan.",
+            "ru": "Это мой внук. На новогоднем вечере перед зимними каникулами в прошлом году он тоже выступал.",
+            "tj": "Ин набераи ман аст. Соли гузашта пеш аз таътили зимистона дар шабнишинии Соли нав ҳам баромад карда буд."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "我想起来了，这孩子又聪明又可爱，你们教育得真好！",
+          "pinyin": "Wǒ xiǎng qilai le, zhè háizi yòu cōngming yòu kě'ài, nǐmen jiàoyù de zhēn hǎo!",
+          "text": {
+            "uz": "Esimga tushdi, bu bola ham aqlli, ham yoqimtoy. Sizlar juda yaxshi tarbiya beribsizlar!",
+            "ru": "Я вспомнила, этот ребёнок и умный, и милый. Вы отлично его воспитали!",
+            "tj": "Ба ёдам омад, ин кӯдак ҳам доно, ҳам ширин аст. Шумо хеле хуб тарбия кардаед!"
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "是他父母教育得好。父母是孩子最重要的老师。他父母不仅教他知识，而且还花了很长时间帮助他养成了非常好的习惯，现在他每天都自己练习弹钢琴。",
+          "pinyin": "Shì tā fùmǔ jiàoyù de hǎo. Fùmǔ shì háizi zuì zhòngyào de lǎoshī. Tā fùmǔ bùjǐn jiāo tā zhīshi, érqiě hái huā le hěn cháng shíjiān bāngzhù tā yǎngchéngle fēicháng hǎo de xíguàn, xiànzài tā měi tiān dōu zìjǐ liànxí tán gāngqín.",
+          "text": {
+            "uz": "Uni ota-onasi yaxshi tarbiya qilgan. Ota-ona bola uchun eng muhim o'qituvchi. Ular nafaqat bilim bergan, balki uzoq vaqt yaxshi odat shakllantirishga yordam bergan, hozir u har kuni o'zi pianino mashq qiladi.",
+            "ru": "Это его родители хорошо воспитали. Родители - самые важные учителя ребёнка. Они не только учат знаниям, но и долго помогали ему выработать хорошие привычки; теперь он сам каждый день занимается пианино.",
+            "tj": "Падару модараш хуб тарбия кардаанд. Падару модар муҳимтарин муаллими кӯдаканд. Онҳо на танҳо дониш додаанд, балки муддати дароз барои одати хуб ёфтан ёрӣ додаанд; ҳоло ӯ ҳар рӯз худаш пианино машқ мекунад."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "让孩子养成一个好习惯实在太重要了，看来我得向他父母好好儿学习。",
+          "pinyin": "Ràng háizi yǎngchéng yí ge hǎo xíguàn shízài tài zhòngyào le, kànlái wǒ děi xiàng tā fùmǔ hǎohāor xuéxí.",
+          "text": {
+            "uz": "Bolada yaxshi odat shakllantirish juda muhim ekan, men uning ota-onasidan yaxshilab o'rganishim kerak.",
+            "ru": "Помочь ребёнку выработать хорошую привычку очень важно. Похоже, мне стоит поучиться у его родителей.",
+            "tj": "Ба кӯдак одати хуб додан хеле муҳим будааст, бояд аз падару модараш хуб омӯзам."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。",
+          "pinyin": "Duì. Rúguǒ xīwàng yǒu yí ge yōuxiù de háizi, nǐ jiù yào xiān chéngwéi yí wèi yōuxiù de fùqin huòzhě mǔqin.",
+          "text": {
+            "uz": "To'g'ri. Agar a'lo farzanding bo'lishini istasang, avval o'zing a'lo ota yoki ona bo'lishing kerak.",
+            "ru": "Верно. Если хочешь иметь выдающегося ребёнка, сначала сам стань выдающимся отцом или матерью.",
+            "tj": "Дуруст. Агар фарзанди аъло хоҳӣ, аввал худат падар ё модари аъло шав."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Jing Sun Yuega bolaga vaqtni boshqarishni o'rgatishni maslahat beradi",
+        "ru": "Ван Цзин советует Сунь Юэ учить ребёнка управлять временем",
+        "tj": "Ван Ҷинг ба Сун Юэ маслиҳат медиҳад, ки ба кӯдак идораи вақтро омӯзонад"
+      },
+      "dialogue": [
+        {
+          "speaker": "王静",
+          "zh": "看你脸色不太好，是不是昨晚没休息好？",
+          "pinyin": "Kàn nǐ liǎnsè bú tài hǎo, shì bu shì zuówǎn méi xiūxi hǎo?",
+          "text": {
+            "uz": "Ranging yaxshi emas ko'rinyapti, kecha yaxshi dam olmadingmi?",
+            "ru": "У тебя неважный вид. Ты вчера плохо отдохнула?",
+            "tj": "Рӯят хуб нест, шаби гузашта хуб истироҳат накардӣ?"
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "别提了。我女儿昨晚做作业又做到11点。",
+          "pinyin": "Bié tí le. Wǒ nǚ'ér zuówǎn zuò zuòyè yòu zuòdào shíyī diǎn.",
+          "text": {
+            "uz": "Gapirma qo'yaqol. Qizim kecha yana uy vazifasini 11 gacha qildi.",
+            "ru": "Не говори. Дочь вчера опять делала домашку до 11 часов.",
+            "tj": "Нагӯй беҳтараш. Духтарам шаби гузашта боз то соати 11 вазифа кард."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "睡觉太晚对孩子的身体没有好处。最近孩子作业是不是太多了？",
+          "pinyin": "Shuì jiào tài wǎn duì háizi de shēntǐ méiyǒu hǎochu. Zuìjìn háizi zuòyè shì bu shì tài duō le?",
+          "text": {
+            "uz": "Juda kech yotish bola tanasiga foyda qilmaydi. Oxirgi payt uy vazifasi juda ko'pmi?",
+            "ru": "Поздно ложиться вредно для ребёнка. В последнее время слишком много заданий?",
+            "tj": "Хеле дер хобидан ба саломатии кӯдак хуб нест. Охирҳо вазифааш зиёд шудааст?"
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "主要是她做事情比较慢，比如早上闹钟响了她不醒，我赶时间送她上学，她又急着上厕所。每天因为这些小事批评她，弄得我俩心情都不好。",
+          "pinyin": "Zhǔyào shì tā zuò shìqing bǐjiào màn, bǐrú zǎoshang nàozhōng xiǎng le tā bù xǐng, wǒ gǎn shíjiān sòng tā shàng xué, tā yòu jízhe shàng cèsuǒ. Měi tiān yīnwèi zhèxiē xiǎo shì pīpíng tā, nòng de wǒ liǎ xīnqíng dōu bù hǎo.",
+          "text": {
+            "uz": "Asosiysi u ishni sekin qiladi: masalan, ertalab budilnik jiringlasa ham uyg'onmaydi, men uni maktabga olib borishga shoshilaman, u esa hojatxonaga shoshadi. Har kuni shu mayda narsalar uchun tanqid qilib, ikkalamizning kayfiyatimiz yomon bo'ladi.",
+            "ru": "Главное, она всё делает медленно: утром будильник звонит, а она не просыпается, я спешу отвезти её в школу, а она ещё срочно хочет в туалет. Каждый день критикую её из-за мелочей, и настроение у нас обеих плохое.",
+            "tj": "Асосаш, ӯ корҳоро суст мекунад: саҳар соати зангдор садо медиҳад, вале бедор намешавад, ман барои бурданаш ба мактаб мешитобам, ӯ бошад ба ҳоҷатхона мешитобад. Ҳар рӯз барои ин чизҳои хурд танқид мекунам ва кайфияти ҳардуямон бад мешавад."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "孩子做事慢，往往是因为他们不会安排自己的时间。你应该让孩子学会管理时间。",
+          "pinyin": "Háizi zuò shì màn, wǎngwǎng shì yīnwèi tāmen bú huì ānpái zìjǐ de shíjiān. Nǐ yīnggāi ràng háizi xuéhuì guǎnlǐ shíjiān.",
+          "text": {
+            "uz": "Bola ishni sekin qilsa, ko'pincha o'z vaqtini rejalay olmasligidan bo'ladi. Sen bolaga vaqtni boshqarishni o'rgatishing kerak.",
+            "ru": "Если ребёнок делает всё медленно, часто это потому, что он не умеет распределять время. Тебе нужно научить её управлять временем.",
+            "tj": "Агар кӯдак корро суст кунад, аксаран сабабаш идора карда натавонистани вақти худ аст. Ту бояд ба ӯ идораи вақтро омӯзонӣ."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "看来还是我的教育方法有问题。平时看她做事情慢，总想替她做，以后得让她学会安排时间，自己的事情自己做。",
+          "pinyin": "Kànlái háishi wǒ de jiàoyù fāngfǎ yǒu wèntí. Píngshí kàn tā zuò shìqing màn, zǒng xiǎng tì tā zuò, yǐhòu děi ràng tā xuéhuì ānpái shíjiān, zìjǐ de shìqing zìjǐ zuò.",
+          "text": {
+            "uz": "Demak, mening tarbiya usulimda muammo bor ekan. Odatda u sekin qilsa, uning o'rniga qilishni istayman. Keyin unga vaqtni rejalashni, o'z ishini o'zi qilishni o'rgatishim kerak.",
+            "ru": "Похоже, проблема всё-таки в моём методе воспитания. Обычно, когда она медлит, мне хочется сделать за неё. Теперь нужно дать ей научиться планировать время и делать свои дела самой.",
+            "tj": "Маълум мешавад усули тарбияам мушкил дорад. Одатан вақте суст мекунад, мехоҳам ба ҷояш кунам. Минбаъд бояд ба ӯ банақшагирии вақт ва кори худро худ карданро омӯзонам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Wang Jing va Sun Yue bolani maqtash usulini muhokama qiladi",
+        "ru": "Ван Цзин и Сунь Юэ обсуждают, как хвалить ребёнка",
+        "tj": "Ван Ҷинг ва Сун Юэ тарзи таъриф кардани кӯдакро муҳокима мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "王静",
+          "zh": "明天又要带我儿子去医院打针，想想我就头疼。他就怕打针，每次打针都哭得特别厉害。",
+          "pinyin": "Míngtiān yòu yào dài wǒ érzi qù yīyuàn dǎ zhēn, xiǎngxiang wǒ jiù tóu téng. Tā jiù pà dǎ zhēn, měi cì dǎ zhēn dōu kū de tèbié lìhai.",
+          "text": {
+            "uz": "Ertaga o'g'limni yana kasalxonaga ukolga olib borishim kerak, o'ylasam boshim og'riydi. U ukoldan juda qo'rqadi, har safar qattiq yig'laydi.",
+            "ru": "Завтра опять вести сына в больницу на укол, от одной мысли голова болит. Он боится уколов и каждый раз сильно плачет.",
+            "tj": "Пагоҳ боз писарамро ба беморхона барои сӯзандору мебарам, фикр кунам сарам дард мекунад. Ӯ аз сӯзандору метарсад ва ҳар дафъа сахт гиря мекунад."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "记得我女儿小时候，带她去医院打针，刚开始，她害怕得要哭。我就小声地和护士说我女儿很勇敢，一点儿也不怕打针，女儿听了以后马上就不哭了。",
+          "pinyin": "Jìde wǒ nǚ'ér xiǎoshíhou, dài tā qù yīyuàn dǎ zhēn, gāng kāishǐ, tā hàipà de yào kū. Wǒ jiù xiǎoshēng de hé hùshi shuō wǒ nǚ'ér hěn yǒnggǎn, yìdiǎnr yě bú pà dǎ zhēn, nǚ'ér tīng le yǐhòu mǎshàng jiù bù kū le.",
+          "text": {
+            "uz": "Qizim kichikligida uni ukolga olib borganim esimda. Avvaliga qo'rqib yig'lamoqchi bo'lgan. Men hamshiraga sekingina qizim juda jasur, ukoldan umuman qo'rqmaydi, dedim. Qizim eshitgach darhol yig'lamay qo'ydi.",
+            "ru": "Помню, когда дочь была маленькой и я вела её на укол, сначала она боялась и хотела плакать. Я тихо сказала медсестре, что дочь очень смелая и совсем не боится уколов. Услышав это, она сразу перестала плакать.",
+            "tj": "Дар ёдам ҳаст, вақте духтарам хурд буд ва ба сӯзандору бурдам, аввал метарсид ва мехост гиря кунад. Ман ба ҳамшира оҳиста гуфтам, ки духтарам бисёр ҷасур аст ва аз сӯзандору намеҳаросад. Ӯ шунида, фавран дигар гиря накард."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "原来鼓励和表扬对小孩儿挺有用的，下次我也试试。",
+          "pinyin": "Yuánlái gǔlì hé biǎoyáng duì xiǎoháir tǐng yǒuyòng de, xià cì wǒ yě shìshi.",
+          "text": {
+            "uz": "Demak, rag'bat va maqtov bolalarga ancha foydali ekan, keyingi safar men ham sinab ko'raman.",
+            "ru": "Оказывается, поощрение и похвала довольно полезны для детей, в следующий раз тоже попробую.",
+            "tj": "Маълум мешавад, ҳавасмандӣ ва таъриф барои кӯдак хеле фоида доранд, дафъаи дигар ман ҳам месанҷам."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "不过表扬也是一门艺术，表扬千万不要太多，过多的表扬可能会给孩子带来压力。不仅起不到鼓励的作用，还可能让孩子怀疑自己的能力，变得没有信心。",
+          "pinyin": "Búguò biǎoyáng yě shì yì mén yìshù, biǎoyáng qiānwàn búyào tài duō, guòduō de biǎoyáng kěnéng huì gěi háizi dàilái yālì. Bùjǐn qǐ bu dào gǔlì de zuòyòng, hái kěnéng ràng háizi huáiyí zìjǐ de nénglì, biàn de méiyǒu xìnxīn.",
+          "text": {
+            "uz": "Lekin maqtash ham san'at. Zinhor haddan tashqari ko'p maqtamaslik kerak, ortiqcha maqtov bolaga bosim berishi mumkin. Nafaqat rag'bat bermaydi, balki bola o'z qobiliyatidan shubhalanib, ishonchini yo'qotishi mumkin.",
+            "ru": "Но похвала - тоже искусство. Нельзя хвалить слишком много: чрезмерная похвала может давить на ребёнка. Она не только не поощрит, но и заставит сомневаться в своих способностях и потерять уверенность.",
+            "tj": "Аммо таъриф ҳам санъат аст. Зинҳор аз ҳад зиёд таъриф кардан лозим нест: таърифи зиёд ба кӯдак фишор меорад. На танҳо ҳавасманд намекунад, балки метавонад ӯро ба қобилияти худ шубҳадор ва беэътимод кунад."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "那怎么表扬孩子才会更有效果呢？",
+          "pinyin": "Nà zěnme biǎoyáng háizi cái huì gèng yǒu xiàoguǒ ne?",
+          "text": {
+            "uz": "Unda bolani qanday maqtasa samaraliroq bo'ladi?",
+            "ru": "Тогда как хвалить ребёнка эффективнее?",
+            "tj": "Пас кӯдакро чӣ гуна таъриф кунем, ки таъсирноктар бошад?"
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "我认为表扬要及时，而且表扬不仅仅要看结果，更要看过程，这样才能鼓励他的积极性，让他变得勇敢，不怕困难。",
+          "pinyin": "Wǒ rènwéi biǎoyáng yào jíshí, érqiě biǎoyáng bù jǐnjǐn yào kàn jiéguǒ, gèng yào kàn guòchéng, zhèyàng cái néng gǔlì tā de jījíxìng, ràng tā biàn de yǒnggǎn, bú pà kùnnan.",
+          "text": {
+            "uz": "Menimcha, maqtov o'z vaqtida bo'lishi kerak; faqat natijaga emas, jarayonga ham qarash kerak. Shunda uning faolligi rag'batlanadi, jasur bo'ladi va qiyinchilikdan qo'rqmaydi.",
+            "ru": "Думаю, хвалить нужно вовремя, смотреть не только на результат, но и на процесс. Так можно поощрить активность, сделать ребёнка смелее и не боящимся трудностей.",
+            "tj": "Ба фикрам, таъриф бояд сари вақт бошад; на танҳо натиҷа, балки равандро ҳам дидан лозим. Ҳамин тавр фаъолнокӣ ҳавасманд мешавад, кӯдак ҷасур ва аз мушкил натарс мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Bola e'tibor talab qilganda ota-onaning munosabati haqida matn",
+        "ru": "Текст о реакции родителей, когда ребёнок требует внимания",
+        "tj": "Матн дар бораи муносибати падару модар вақте кӯдак диққат мехоҳад"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "有的孩子在得不到自己想要的东西的时候，会通过哭、扔东西或者故意敲打来引起父母的注意。",
+          "pinyin": "Yǒude háizi zài dé bu dào zìjǐ xiǎng yào de dōngxi de shíhou, huì tōngguò kū, rēng dōngxi huòzhě gùyì qiāodǎ lái yǐnqǐ fùmǔ de zhùyì.",
+          "text": {
+            "uz": "Ba'zi bolalar xohlagan narsasini ololmaganda, yig'lash, narsa tashlash yoki ataylab taqillatish orqali ota-onaning e'tiborini tortadi.",
+            "ru": "Некоторые дети, не получив желаемого, привлекают внимание родителей плачем, бросанием вещей или намеренным стуком.",
+            "tj": "Баъзе кӯдакон вақте чизи хостаашонро намегиранд, бо гиря, чизпартоӣ ё қасдан тақ-тақ кардан диққати падару модарро ҷалб мекунанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "在这种情况下，建议父母先不要生气，应该停下手中的事情，陪孩子整理整理东西，和他们聊聊天儿，弄清楚他们的问题。",
+          "pinyin": "Zài zhè zhǒng qíngkuàng xià, jiànyì fùmǔ xiān búyào shēng qì, yīnggāi tíngxià shǒu zhōng de shìqing, péi háizi zhěnglǐ zhěnglǐ dōngxi, hé tāmen liáoliáo tiānr, nòng qīngchu tāmen de wèntí.",
+          "text": {
+            "uz": "Bunday holatda ota-ona avval jahli chiqmasin, qo'lidagi ishni to'xtatib, bola bilan narsalarni tartiblasin, gaplashsin va muammoni aniqlasin.",
+            "ru": "В такой ситуации родителям лучше сначала не сердиться, отложить дела, помочь ребёнку прибраться, поговорить и выяснить проблему.",
+            "tj": "Дар чунин ҳолат падару модар аввал хашмгин нашаванд, кори дасташонро монда, бо кӯдак чизҳоро тартиб диҳанд, суҳбат кунанд ва мушкилро равшан кунанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "父母的关心，可以让孩子心情愉快起来。教育孩子应该选择合适的教育方法，最好不要为了解决问题而骗孩子。",
+          "pinyin": "Fùmǔ de guānxīn, kěyǐ ràng háizi xīnqíng yúkuài qǐlái. Jiàoyù háizi yīnggāi xuǎnzé héshì de jiàoyù fāngfǎ, zuì hǎo búyào wèile jiějué wèntí ér piàn háizi.",
+          "text": {
+            "uz": "Ota-onaning e'tibori bolani xursand qiladi. Bolani tarbiyalashda mos usul tanlash kerak, muammoni hal qilish uchun bolani aldamagan yaxshi.",
+            "ru": "Забота родителей может улучшить настроение ребёнка. В воспитании нужно выбирать подходящий метод и лучше не обманывать ребёнка ради решения проблемы.",
+            "tj": "Диққати падару модар кайфияти кӯдакро хуб мекунад. Дар тарбия усули мувофиқ интихоб кардан лозим, барои ҳалли мушкил кӯдакро фиреб надодан беҳтар аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "这是因为儿童缺少判断能力，看到父母骗人，他们也会学着说假话。",
+          "pinyin": "Zhè shì yīnwèi értóng quēshǎo pànduàn nénglì, kàndào fùmǔ piàn rén, tāmen yě huì xuézhe shuō jiǎhuà.",
+          "text": {
+            "uz": "Chunki bolalarda hukm qilish qobiliyati yetarli emas; ota-onasi aldaganini ko'rsa, ular ham yolg'on gapirishni o'rganadi.",
+            "ru": "Потому что детям не хватает способности судить; увидев, что родители обманывают, они тоже учатся говорить неправду.",
+            "tj": "Зеро кӯдакон қобилияти доварии кофӣ надоранд; агар фиреб додани падару модарро бинанд, онҳо ҳам дурӯғ гуфтанро меомӯзанд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Turli xarakterdagi bolalarga mos tarbiya haqida matn",
+        "ru": "Текст о подходящих методах воспитания детей с разным характером",
+        "tj": "Матн дар бораи усулҳои мувофиқи тарбияи кӯдакони гуногунхислат"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "七岁左右的儿童普遍好动，坐不住，所以老师在教这个年龄段的孩子时，一定要想办法引起他们的兴趣。",
+          "pinyin": "Qī suì zuǒyòu de értóng pǔbiàn hào dòng, zuò bu zhù, suǒyǐ lǎoshī zài jiāo zhège niánlíng duàn de háizi shí, yídìng yào xiǎng bànfǎ yǐnqǐ tāmen de xìngqù.",
+          "text": {
+            "uz": "Taxminan yetti yoshdagi bolalar odatda harakatchan bo'lib, joyida o'tirolmaydi, shuning uchun o'qituvchi bu yoshdagi bolalarni o'qitganda ularning qiziqishini uyg'otishi kerak.",
+            "ru": "Дети примерно семи лет обычно подвижны и не могут усидеть, поэтому учителю нужно искать способ вызвать их интерес.",
+            "tj": "Кӯдакони тақрибан ҳафтсола одатан серҳаракатанд ва нишаста наметавонанд, бинобар ин муаллим бояд шавқи онҳоро бедор кунад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "只有让他们觉得你教的内容有趣，他们才会愿意努力学习。",
+          "pinyin": "Zhǐyǒu ràng tāmen juéde nǐ jiāo de nèiróng yǒuqù, tāmen cái huì yuànyì nǔlì xuéxí.",
+          "text": {
+            "uz": "Faqat o'qitayotgan narsang qiziq tuyulsagina ular astoydil o'qishga rozi bo'ladi.",
+            "ru": "Только если материал покажется им интересным, они захотят старательно учиться.",
+            "tj": "Танҳо агар маводи таълимӣ барои онҳо ҷолиб бошад, онҳо бо хоҳиш мехонанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "当孩子不明白时，应该多鼓励他，不要用“懒”“笨”“粗心”这种词批评他，这样对他们的正常发展不好。",
+          "pinyin": "Dāng háizi bù míngbai shí, yīnggāi duō gǔlì tā, búyào yòng “lǎn” “bèn” “cūxīn” zhè zhǒng cí pīpíng tā, zhèyàng duì tāmen de zhèngcháng fāzhǎn bù hǎo.",
+          "text": {
+            "uz": "Bola tushunmaganida uni ko'proq rag'batlantirish kerak; \"dangasa\", \"befahm\", \"beparvo\" kabi so'zlar bilan tanqid qilmaslik kerak, bu normal rivojlanishga yomon.",
+            "ru": "Когда ребёнок не понимает, его нужно больше поощрять, а не критиковать словами «ленивый», «глупый», «невнимательный», это вредно для нормального развития.",
+            "tj": "Вақте кӯдак намефаҳмад, ӯро бештар рӯҳбаланд кардан лозим; бо калимаҳои «танбал», «нодон», «бепарво» танқид кардан ба рушди муқаррарӣ зарар дорад."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "而且，对不同性格的孩子要使用不同的教育方法。如果孩子比较骄傲，应该让他明白还有很多知识需要学习；要是孩子性格有些害羞，就要经常鼓励他说出自己的看法，这样才能让每一个孩子都健康地发展。",
+          "pinyin": "Érqiě, duì bù tóng xìnggé de háizi yào shǐyòng bù tóng de jiàoyù fāngfǎ. Rúguǒ háizi bǐjiào jiāo'ào, yīnggāi ràng tā míngbai hái yǒu hěn duō zhīshi xūyào xuéxí; yàoshi háizi xìnggé yǒuxiē hàixiū, jiù yào jīngcháng gǔlì tā shuōchū zìjǐ de kànfǎ, zhèyàng cái néng ràng měi yí ge háizi dōu jiànkāng de fāzhǎn.",
+          "text": {
+            "uz": "Bundan tashqari, har xil xarakterdagi bolaga har xil tarbiya usuli kerak. Bola kibrliroq bo'lsa, unga hali ko'p bilim o'rganishi kerakligini tushuntirish kerak; tortinchoq bo'lsa, o'z fikrini aytishga tez-tez undash kerak. Shunda har bir bola sog'lom rivojlanadi.",
+            "ru": "Кроме того, детям с разным характером нужны разные методы. Если ребёнок высокомерен, нужно дать понять, что ещё много знаний предстоит изучить; если он застенчив, часто поощряйте его высказывать мнение. Так каждый ребёнок будет развиваться здорово.",
+            "tj": "Ғайр аз ин, барои кӯдакони гуногунхислат усулҳои гуногун лозиманд. Агар кӯдак мағрур бошад, бояд фаҳмад, ки ҳанӯз дониши зиёд омӯхтан лозим; агар шармгин бошад, зуд-зуд ӯро ба гуфтани фикраш ташвиқ кардан лозим. Ҳамин тавр ҳар кӯдак солим рушд мекунад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Takrorlash",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "父亲",
+              {
+                "uz": "ota",
+                "ru": "отец",
+                "tj": "падар"
+              }
+            ],
+            [
+              "闹钟",
+              {
+                "uz": "budilnik",
+                "ru": "будильник",
+                "tj": "соати зангдор"
+              }
+            ],
+            [
+              "响",
+              {
+                "uz": "jiringlamoq, ovoz chiqarmoq",
+                "ru": "звенеть, звучать",
+                "tj": "садо додан"
+              }
+            ],
+            [
+              "醒",
+              {
+                "uz": "uyg'onmoq",
+                "ru": "просыпаться",
+                "tj": "бедор шудан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Har kuni shu mayda ishlar uchun uni tanqid qilib, ikkalamizning kayfiyatimiz ham yomon bo'ladi.» — xitoychada qaysi biri?",
+            "ru": "«Каждый день критикую её из-за мелочей, и настроение у нас обеих портится.» — какое предложение по-китайски?",
+            "tj": "«Ҳар рӯз барои ин корҳои хурд танқид мекунам ва кайфияти ҳардуямон бад мешавад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "有的孩子会通过哭、扔东西或者故意敲打来引起父母的注意。",
+            "我想起来了，这孩子又聪明又可爱。",
+            "七岁左右的儿童普遍好动，坐不住。",
+            "每天因为这些小事批评她，弄得我俩心情都不好。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "每天因为这些小事批评她，弄得我俩心情都不好。 — Měi tiān yīnwèi zhèxiē xiǎo shì pīpíng tā, nòng de wǒ liǎ xīnqíng dōu bù hǎo.",
+            "ru": "每天因为这些小事批评她，弄得我俩心情都不好。 — Měi tiān yīnwèi zhèxiē xiǎo shì pīpíng tā, nòng de wǒ liǎ xīnqíng dōu bù hǎo.",
+            "tj": "每天因为这些小事批评她，弄得我俩心情都不好。 — Měi tiān yīnwèi zhèxiē xiǎo shì pīpíng tā, nòng de wǒ liǎ xīnqíng dōu bù hǎo."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "弹钢琴",
+              {
+                "uz": "pianino chalmoq",
+                "ru": "играть на пианино",
+                "tj": "пианино навохтан"
+              }
+            ],
+            [
+              "棒",
+              {
+                "uz": "zo'r, ajoyib",
+                "ru": "отличный, замечательный",
+                "tj": "олӣ, зӯр"
+              }
+            ],
+            [
+              "孙子",
+              {
+                "uz": "nabira o'g'il",
+                "ru": "внук",
+                "tj": "набераи писар"
+              }
+            ],
+            [
+              "寒假",
+              {
+                "uz": "qishki ta'til",
+                "ru": "зимние каникулы",
+                "tj": "таътили зимистона"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'boshqarmoq' xitoycha qaysi?",
+            "ru": "'управлять' по-китайски?",
+            "tj": "'идора кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "管理",
+            "弹钢琴",
+            "棒",
+            "孙子"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "boshqarmoq = 管理 (guǎnlǐ)",
+            "ru": "управлять = 管理 (guǎnlǐ)",
+            "tj": "идора кардан = 管理 (guǎnlǐ)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "千万",
+          "pinyin": "qiānwàn",
+          "options": [
+            "弹钢琴",
+            "孙子",
+            "棒",
+            "千万"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "千万 — albatta, zinhor (qiānwàn)",
+            "ru": "千万 — обязательно, ни в коем случае (qiānwàn)",
+            "tj": "千万 — ҳатман, зинҳор (qiānwàn)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "那怎么表扬孩子才会更有效果呢？",
+          "pinyin": "Nà zěnme biǎoyáng háizi cái huì gèng yǒu xiàoguǒ ne?",
+          "translation": {
+            "uz": "Unda bolani qanday maqtasa samaraliroq bo'ladi?",
+            "ru": "Тогда как хвалить ребёнка эффективнее?",
+            "tj": "Пас кӯдакро чӣ гуна таъриф кунем, ки таъсирноктар бошад?"
+          },
+          "tokens": {
+            "uz": [
+              "maqtasa",
+              "bolani",
+              "Unda",
+              "bo'ladi",
+              "Pianino",
+              "chalib",
+              "qanday",
+              "samaraliroq"
+            ],
+            "ru": [
+              "Тогда",
+              "эффективнее",
+              "ребёнка",
+              "как",
+              "хвалить",
+              "Кто",
+              "тот"
+            ],
+            "tj": [
+              "Он",
+              "ки",
+              "гуна",
+              "Пас",
+              "писарбачае",
+              "бошад",
+              "таъриф",
+              "кӯдакро",
+              "чӣ",
+              "таъсирноктар",
+              "кунем"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Unda",
+              "bolani",
+              "qanday",
+              "maqtasa",
+              "samaraliroq",
+              "bo'ladi"
+            ],
+            "ru": [
+              "Тогда",
+              "как",
+              "хвалить",
+              "ребёнка",
+              "эффективнее"
+            ],
+            "tj": [
+              "Пас",
+              "кӯдакро",
+              "чӣ",
+              "гуна",
+              "таъриф",
+              "кунем",
+              "ки",
+              "таъсирноктар",
+              "бошад"
+            ]
+          },
+          "explanation": {
+            "uz": "那怎么表扬孩子才会更有效果呢？ — Unda bolani qanday maqtasa samaraliroq bo'ladi?",
+            "ru": "那怎么表扬孩子才会更有效果呢？ — Тогда как хвалить ребёнка эффективнее?",
+            "tj": "那怎么表扬孩子才会更有效果呢？ — Пас кӯдакро чӣ гуна таъриф кунем, ки таъсирноктар бошад?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hùshi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hùshi?",
+            "tj": "hùshi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "弹钢琴",
+            "护士",
+            "孙子",
+            "棒"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "护士 = hamshira (hùshi)",
+            "ru": "护士 = медсестра (hùshi)",
+            "tj": "护士 = ҳамшира (hùshi)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Гуфтугӯ"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+          "pinyin": "Nàge yìbiān tán gāngqín yìbiān chàng gē de nán háizi shì shéi? Biǎoyǎn de zhēn bàng!",
+          "options": [
+            "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+            "是我孙子。去年寒假前的新年晚会他也表演过一次。",
+            "我想起来了，这孩子又聪明又可爱，你们教育得真好！",
+            "是他父母教育得好。父母是孩子最重要的老师。他父母不仅教他知识，而且还花了很长时间帮助他养成了非常好的习惯，现在他每天都自己练习弹钢琴。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！ — Pianino chalib qo'shiq aytayotgan o'g'il bola kim? Juda zo'r ijro qilyapti!",
+            "ru": "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！ — Кто тот мальчик, который играет на пианино и поёт? Выступает отлично!",
+            "tj": "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！ — Он писарбачае, ки ҳам пианино менавозаду ҳам месарояд, кист? Бисёр олӣ иҷро мекунад!"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 李老师 nima deydi?",
+            "ru": "Что 李老师 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 李老师 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。",
+            "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+            "我想起来了，这孩子又聪明又可爱，你们教育得真好！",
+            "是我孙子。去年寒假前的新年晚会他也表演过一次。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。",
+            "ru": "Правильный ответ: 对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。",
+            "tj": "Ҷавоби дуруст: 对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 王静 avval nima deydi?",
+            "ru": "Что 王静 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 王静 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "是他父母教育得好。父母是孩子最重要的老师。他父母不仅教他知识，而且还花了很长时间帮助他养成了非常好的习惯，现在他每天都自己练习弹钢琴。",
+            "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+            "我想起来了，这孩子又聪明又可爱，你们教育得真好！",
+            "是我孙子。去年寒假前的新年晚会他也表演过一次。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+            "ru": "Правильный ответ: 那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+            "tj": "Ҷавоби дуруст: 那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！"
+          }
+        },
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Гуфтугӯро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "王静",
+              "zh": "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+              "blank": false
+            },
+            {
+              "speaker": "李老师",
+              "zh": "是我孙子。去年寒假前的新年晚会他也表演过一次。",
+              "blank": false
+            },
+            {
+              "speaker": "王静",
+              "zh": "我想起来了，这孩子又聪明又可爱，你们教育得真好！",
+              "blank": false
+            },
+            {
+              "speaker": "李老师",
+              "zh": "是他父母教育得好。父母是孩子最重要的老师。他父母不仅教他知识，而且还花了很长时间帮助他养成了非常好的习惯，现在他每天都自己练习弹钢琴。",
+              "blank": false
+            },
+            {
+              "speaker": "王静",
+              "zh": "让孩子养成一个好习惯实在太重要了，看来我得向他父母好好儿学习。",
+              "blank": false
+            },
+            {
+              "speaker": "李老师",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "我想起来了，这孩子又聪明又可爱，你们教育得真好！",
+            "那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+            "对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。",
+            "是我孙子。去年寒假前的新年晚会他也表演过一次。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。",
+            "ru": "Правильный ответ: 对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。",
+            "tj": "Ҷавоби дуруст: 对。如果希望有一个优秀的孩子，你就要先成为一位优秀的父亲或者母亲。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "到",
+            "结",
+            "咖",
+            "那"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 那 — 那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！ (Pianino chalib qo'shiq aytayotgan o'g'il bola kim? Juda zo'r ijro qilyapti!)",
+            "ru": "Верно: 那 — 那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！ (Кто тот мальчик, который играет на пианино и поёт? Выступает отлично!)",
+            "tj": "Дуруст: 那 — 那个一边弹钢琴一边唱歌的男孩子是谁？表演得真棒！ (Он писарбачае, ки ҳам пианино менавозаду ҳам месарояд, кист? Бисёр олӣ иҷро мекунад!)"
+          }
+        }
+      ]
+    }
+  ]
+}

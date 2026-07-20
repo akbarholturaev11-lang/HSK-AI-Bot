@@ -1,0 +1,561 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 62,
+  "source_lesson": 15,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "我是坐飞机来的",
+  "subtitle": {
+    "uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash",
+    "ru": "Конструкция 是……的 — выделение времени, места и способа действия",
+    "tj": "Сохти 是……的 — таъкиди вақт, ҷой ва усули амал"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "高兴",
+      "pinyin": "gāoxìng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xursand, shod",
+        "ru": "рад, доволен",
+        "tj": "хурсанд, шод"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "听",
+      "pinyin": "tīng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "eshitmoq, tinglаmoq",
+        "ru": "слушать, слышать",
+        "tj": "шунидан, гӯш кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "飞机",
+      "pinyin": "fēijī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "samolyot",
+        "ru": "самолёт",
+        "tj": "ҳавопаймо"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Dasturxon yonida — qachon va qayerda tanishdingiz",
+        "ru": "За столом — когда и где познакомились",
+        "tj": "Дар сари дастурхон — кай ва дар куҷо шинос шудед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你和李小姐是什么时候认识的？",
+          "pinyin": "Nǐ hé Lǐ xiǎojiě shì shénme shíhou rènshi de?",
+          "text": {
+            "uz": "Siz Xonim Li bilan qachon tanishdingiz?",
+            "ru": "Когда вы познакомились с мисс Ли?",
+            "tj": "Шумо бо хонум Ли кай шинос шудед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是2011年9月认识的。",
+          "pinyin": "Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
+          "text": {
+            "uz": "Biz 2011-yilning sentabrida tanishdik.",
+            "ru": "Мы познакомились в сентябре 2011 года.",
+            "tj": "Мо дар моҳи сентябри соли 2011 шинос шудем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你们在哪儿认识的？",
+          "pinyin": "Nǐmen zài nǎr rènshi de?",
+          "text": {
+            "uz": "Siz ikkovingiz qayerda tanishdingiz?",
+            "ru": "Где вы двое познакомились?",
+            "tj": "Шумо дуто дар куҷо шинос шудед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是在学校认识的，她是我大学同学。",
+          "pinyin": "Wǒmen shì zài xuéxiào rènshi de, tā shì wǒ dàxué tóngxué.",
+          "text": {
+            "uz": "Biz maktabda tanishdik, u mening universitetdosh do'stim.",
+            "ru": "Мы познакомились в школе; она моя однокурсница.",
+            "tj": "Мо дар мактаб шинос шудем, вай ҳамдарси донишгоҳии ман аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxona oldida — qanday keldingiz",
+        "ru": "Перед гостиницей — как добрались",
+        "tj": "Дар назди меҳмонхона — чӣ гуна омадед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你们是怎么来饭店的？",
+          "pinyin": "Nǐmen shì zěnme lái fàndiàn de?",
+          "text": {
+            "uz": "Siz restoranga qanday keldingiz?",
+            "ru": "Как вы добрались до ресторана?",
+            "tj": "Шумо ба тарабхона чӣ гуна омадед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们是坐出租车来的。",
+          "pinyin": "Wǒmen shì zuò chūzūchē lái de.",
+          "text": {
+            "uz": "Biz taksi bilan keldik.",
+            "ru": "Мы приехали на такси.",
+            "tj": "Мо бо таксӣ омадем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "李先生呢？",
+          "pinyin": "Lǐ xiānsheng ne?",
+          "text": {
+            "uz": "Janob Li-chi?",
+            "ru": "А господин Ли?",
+            "tj": "Ҷаноб Ли чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他是和朋友一起开车来的。",
+          "pinyin": "Tā shì hé péngyou yīqǐ kāi chē lái de.",
+          "text": {
+            "uz": "U do'sti bilan birga mashina haydab keldi.",
+            "ru": "Он приехал вместе с другом на машине.",
+            "tj": "Вай бо дӯсташ якҷоя бо мошин омад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada — samolyot bilan kelding",
+        "ru": "В компании — прилетел на самолёте",
+        "tj": "Дар ширкат — бо ҳавопаймо омадед"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "很高兴认识您！李小姐。",
+          "pinyin": "Hěn gāoxìng rènshi nín! Lǐ xiǎojiě.",
+          "text": {
+            "uz": "Siz bilan tanishganimdan juda xursandman, Xonim Li!",
+            "ru": "Очень рад познакомиться с вами, мисс Ли!",
+            "tj": "Аз шиноси бо шумо бисёр хурсандам, хонум Ли!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "认识你我也很高兴！",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
+          "text": {
+            "uz": "Siz bilan tanishganimdan men ham juda xursandman!",
+            "ru": "Мне тоже очень приятно познакомиться с вами!",
+            "tj": "Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "听张先生说，您是坐飞机来北京的？",
+          "pinyin": "Tīng Zhāng xiānsheng shuō, nín shì zuò fēijī lái Běijīng de?",
+          "text": {
+            "uz": "Janob Jan aytishicha, siz Pekinga samolyot bilan kelgansiz?",
+            "ru": "Господин Чжан сказал, что вы прилетели в Пекин на самолёте?",
+            "tj": "Ҷаноб Чжан гуфт, ки шумо ба Пекин бо ҳавопаймо омадед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是的。",
+          "pinyin": "Shì de.",
+          "text": {
+            "uz": "Ha, to'g'ri.",
+            "ru": "Да, именно.",
+            "tj": "Бале, дуруст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "高兴",
+            "pinyin": "gāoxìng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "xursand, shod",
+              "ru": "рад, доволен",
+              "tj": "хурсанд, шод"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "gāoxìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gāoxìng?",
+            "tj": "gāoxìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "高兴",
+            "大学",
+            "认识",
+            "年"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "高兴 = xursand, shod (gāoxìng)",
+            "ru": "高兴 = рад, доволен (gāoxìng)",
+            "tj": "高兴 = хурсанд, шод (gāoxìng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "听",
+            "pinyin": "tīng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "eshitmoq, tinglаmoq",
+              "ru": "слушать, слышать",
+              "tj": "шунидан, гӯш кардан"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "听",
+          "pinyin": "tīng",
+          "translation": {
+            "uz": "eshitmoq, tinglаmoq",
+            "ru": "слушать, слышать",
+            "tj": "шунидан, гӯш кардан"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "听 talaffuzini tanlang:",
+            "ru": "Выберите произношение 听:",
+            "tj": "Талаффузи 听-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nián",
+            "rènshi",
+            "dàxué",
+            "tīng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "听 — tīng",
+            "ru": "听 — tīng",
+            "tj": "听 — tīng"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "飞机",
+            "pinyin": "fēijī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "samolyot",
+              "ru": "самолёт",
+              "tj": "ҳавопаймо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'samolyot' xitoycha qaysi?",
+            "ru": "'самолёт' по-китайски?",
+            "tj": "'ҳавопаймо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "认识",
+            "年",
+            "飞机",
+            "大学"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "samolyot = 飞机 (fēijī)",
+            "ru": "самолёт = 飞机 (fēijī)",
+            "tj": "ҳавопаймо = 飞机 (fēijī)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "高兴",
+          "pinyin": "gāoxìng",
+          "options": [
+            "认识",
+            "高兴",
+            "大学",
+            "年"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "高兴 — xursand, shod (gāoxìng)",
+            "ru": "高兴 — рад, доволен (gāoxìng)",
+            "tj": "高兴 — хурсанд, шод (gāoxìng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "高兴",
+              {
+                "uz": "xursand, shod",
+                "ru": "рад, доволен",
+                "tj": "хурсанд, шод"
+              }
+            ],
+            [
+              "听",
+              {
+                "uz": "eshitmoq, tinglаmoq",
+                "ru": "слушать, слышать",
+                "tj": "шунидан, гӯш кардан"
+              }
+            ],
+            [
+              "飞机",
+              {
+                "uz": "samolyot",
+                "ru": "самолёт",
+                "tj": "ҳавопаймо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "高兴",
+              {
+                "uz": "xursand, shod",
+                "ru": "рад, доволен",
+                "tj": "хурсанд, шод"
+              }
+            ],
+            [
+              "听",
+              {
+                "uz": "eshitmoq, tinglаmoq",
+                "ru": "слушать, слышать",
+                "tj": "шунидан, гӯш кардан"
+              }
+            ],
+            [
+              "飞机",
+              {
+                "uz": "samolyot",
+                "ru": "самолёт",
+                "tj": "ҳавопаймо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yil' xitoycha qaysi?",
+            "ru": "'год' по-китайски?",
+            "tj": "'сол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "年",
+            "认识",
+            "大学",
+            "饭店"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yil = 年 (nián)",
+            "ru": "год = 年 (nián)",
+            "tj": "сол = 年 (nián)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "认识你我也很高兴！",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
+          "options": [
+            "你和李小姐是什么时候认识的？",
+            "我们是2011年9月认识的。",
+            "你们在哪儿认识的？",
+            "认识你我也很高兴！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "认识你我也很高兴！ — Siz bilan tanishganimdan men ham juda xursandman!",
+            "ru": "认识你我也很高兴！ — Мне тоже очень приятно познакомиться с вами!",
+            "tj": "认识你我也很高兴！ — Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我是坐飞机来的。",
+          "pinyin": "Wǒ shì zuò fēijī lái de.",
+          "translation": {
+            "uz": "Men samolyot bilan keldim.",
+            "ru": "Я прилетел на самолёте.",
+            "tj": "Ман бо ҳавопаймо омадам."
+          },
+          "tokens": {
+            "uz": [
+              "bilan",
+              "keldim",
+              "Men",
+              "samolyot",
+              "Siz",
+              "tanishganimdan"
+            ],
+            "ru": [
+              "прилетел",
+              "Я",
+              "тоже",
+              "Мне",
+              "на",
+              "самолёте"
+            ],
+            "tj": [
+              "ҳавопаймо",
+              "Ман",
+              "Аз",
+              "шиноси",
+              "омадам",
+              "бо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "samolyot",
+              "bilan",
+              "keldim"
+            ],
+            "ru": [
+              "Я",
+              "прилетел",
+              "на",
+              "самолёте"
+            ],
+            "tj": [
+              "Ман",
+              "бо",
+              "ҳавопаймо",
+              "омадам"
+            ]
+          },
+          "explanation": {
+            "uz": "我是坐飞机来的。 — Men samolyot bilan keldim.",
+            "ru": "我是坐飞机来的。 — Я прилетел на самолёте.",
+            "tj": "我是坐飞机来的。 — Ман бо ҳавопаймо омадам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "听",
+          "pinyin": "tīng",
+          "translation": {
+            "uz": "eshitmoq, tinglаmoq",
+            "ru": "слушать, слышать",
+            "tj": "шунидан, гӯш кардан"
+          }
+        }
+      ]
+    }
+  ]
+}

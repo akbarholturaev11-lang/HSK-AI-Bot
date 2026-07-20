@@ -1,0 +1,745 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 39,
+  "source_lesson": 5,
+  "part_no": 3,
+  "part_count": 9,
+  "checkpoint": false,
+  "title": "只买对的，不买贵的",
+  "subtitle": {
+    "uz": "xarid, narx, sifat va onlayn savdo haqida gapirish; 肯定, 再说, 实际, 对……来说 va 尤其 grammatikalarini ishlatish",
+    "ru": "говорить о покупках, цене, качестве и онлайн-покупках; использовать 肯定, 再说, 实际, 对……来说 и 尤其",
+    "tj": "дар бораи харид, нарх, сифат ва хариди онлайн гуфтугӯ кардан; истифодаи 肯定, 再说, 实际, 对……来说 ва 尤其"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "台",
+      "pinyin": "tái",
+      "pos": "m.",
+      "meaning": {
+        "uz": "texnika uchun hisob so'zi",
+        "ru": "счётное слово для техники",
+        "tj": "ҳисобвожа барои техника"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "光",
+      "pinyin": "guāng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "faqatgina",
+        "ru": "только, лишь",
+        "tj": "танҳо"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "实在",
+      "pinyin": "shízài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "haqiqatan, juda",
+        "ru": "действительно, очень",
+        "tj": "воқеан, хеле"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "制冷",
+      "pinyin": "zhìlěng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sovutmoq",
+        "ru": "охлаждать",
+        "tj": "хунук кардан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "qolaversa, bundan tashqari",
+        "ru": "к тому же, кроме того",
+        "tj": "ғайр аз ин, гузашта аз ин"
+      },
+      "title_zh": "再说",
+      "rule": {
+        "uz": "Oldingi fikrga yana bir sabab qo'shadi.",
+        "ru": "Добавляет ещё одну причину к предыдущей мысли.",
+        "tj": "Ба фикри пешина боз як сабаб илова мекунад."
+      },
+      "examples": [
+        {
+          "zh": "再说，这个月家里已经花了五千多了。",
+          "pinyin": "Zàishuō, zhège yuè jiā li yǐjīng huāle wǔqiān duō le.",
+          "translation": {
+            "uz": "Qolaversa, bu oy uyda allaqachon besh mingdan ko'p sarfladik.",
+            "ru": "К тому же в этом месяце дома уже потратили больше пяти тысяч.",
+            "tj": "Гузашта аз ин, ин моҳ дар хона аллакай беш аз панҷ ҳазор сарф шуд."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "王静 mebel do'konida divan sotib oladi",
+        "ru": "王静 покупает диван в мебельном магазине",
+        "tj": "王静 дар мағозаи мебел диван мехарад"
+      },
+      "dialogue": [
+        {
+          "speaker": "售货员",
+          "zh": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
+          "pinyin": "Xiǎojiě, nín hǎo! Nín xiǎng mǎi shénme jiājù? Xūyào wǒ wèi nín jièshào yíxià ma?",
+          "text": {
+            "uz": "Assalomu alaykum, xonim! Qanday mebel olmoqchisiz? Sizga tanishtirib berishim kerakmi?",
+            "ru": "Здравствуйте, девушка! Какую мебель вы хотите купить? Нужно, чтобы я вам представил?",
+            "tj": "Салом, хонум! Шумо чӣ гуна мебел харидан мехоҳед? Лозим аст ман бароятон шинос кунам?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "谢谢，我想买沙发。",
+          "pinyin": "Xièxie, wǒ xiǎng mǎi shāfā.",
+          "text": {
+            "uz": "Rahmat, men divan olmoqchiman.",
+            "ru": "Спасибо, я хочу купить диван.",
+            "tj": "Ташаккур, ман диван харидан мехоҳам."
+          }
+        },
+        {
+          "speaker": "售货员",
+          "zh": "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
+          "pinyin": "Nín kàn zhège shāfā zěnmeyàng? Xiànzài zhèngzài dǎ zhé, bǐ píngshí piányile yìqiān kuài.",
+          "text": {
+            "uz": "Mana bu divan qanday? Hozir chegirmada, odatdagidan ming yuan arzonroq.",
+            "ru": "Как вам этот диван? Сейчас на него скидка, он на тысячу дешевле обычного.",
+            "tj": "Ин диван чӣ хел? Ҳоло тахфиф дорад, аз вақти одӣ ҳазор юан арзонтар."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "价格还可以，就是不知道质量有没有保证。",
+          "pinyin": "Jiàgé hái kěyǐ, jiùshì bù zhīdào zhìliàng yǒu méiyǒu bǎozhèng.",
+          "text": {
+            "uz": "Narxi yomon emas, faqat sifatiga kafolat bormi-yo'qmi bilmayman.",
+            "ru": "Цена ещё приемлемая, только не знаю, есть ли гарантия качества.",
+            "tj": "Нархаш бад нест, фақат намедонам сифаташ кафолат дорад ё не."
+          }
+        },
+        {
+          "speaker": "售货员",
+          "zh": "您放心，质量肯定不“打折”，这种沙发是今年最流行的。有很多种颜色可以选择，您可以看一下。",
+          "pinyin": "Nín fàng xīn, zhìliàng kěndìng bù “dǎ zhé”, zhè zhǒng shāfā shì jīnnián zuì liúxíng de. Yǒu hěn duō zhǒng yánsè kěyǐ xuǎnzé, nín kěyǐ kàn yíxià.",
+          "text": {
+            "uz": "Xotirjam bo'ling, sifat albatta 'chegirmaga tushmaydi', bu turdagi divan bu yil eng ommabop. Tanlash uchun ko'p ranglar bor, ko'rib chiqishingiz mumkin.",
+            "ru": "Не беспокойтесь, качество точно не 'со скидкой'; такой диван самый модный в этом году. Есть много цветов на выбор, можете посмотреть.",
+            "tj": "Хотирҷамъ бошед, сифат ҳатман 'тахфиф' намешавад, ин намуди диван имсол хеле мӯд аст. Рангҳои зиёд барои интихоб ҳаст, метавонед бинед."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "这个蓝色的看上去不错，就要这个吧。",
+          "pinyin": "Zhège lán sè de kàn shangqu búcuò, jiù yào zhège ba.",
+          "text": {
+            "uz": "Mana bu ko'ki yaxshi ko'rinyapti, shuni olay.",
+            "ru": "Этот синий выглядит неплохо, возьму его.",
+            "tj": "Ин ранги кабуд хуб менамояд, ҳаминро мегирам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "王静 va 李进 savdo markazida xarid qiladi",
+        "ru": "王静 и 李进 делают покупки в торговом центре",
+        "tj": "王静 ва 李进 дар маркази савдо харид мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "王静",
+          "zh": "咱家的冰箱太旧了，商场正好打折，我们顺便也买一台吧。",
+          "pinyin": "Zán jiā de bīngxiāng tài jiù le, shāngchǎng zhènghǎo dǎ zhé, wǒmen shùnbiàn yě mǎi yì tái ba.",
+          "text": {
+            "uz": "Uyimizdagi muzlatkich juda eski, savdo markazida aynan chegirma bor, yo'l-yo'lakay bittasini ham olaylik.",
+            "ru": "Наш холодильник слишком старый, в торговом центре как раз скидка, давай заодно купим один.",
+            "tj": "Яхдони хонаамон хеле кӯҳна шудааст, дар маркази савдо айни вақт тахфиф аст, якбора якто ҳам бихарем."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "今天买的东西太多了。再说，这个月家里已经花了五千多了。",
+          "pinyin": "Jīntiān mǎi de dōngxi tài duō le. Zàishuō, zhège yuè jiā li yǐjīng huāle wǔqiān duō le.",
+          "text": {
+            "uz": "Bugun olgan narsalarimiz juda ko'p bo'ldi. Qolaversa, bu oy uyda allaqachon besh mingdan ko'p sarfladik.",
+            "ru": "Сегодня мы купили слишком много вещей. К тому же в этом месяце дома уже потратили больше пяти тысяч.",
+            "tj": "Имрӯз чизҳои харидаамон хеле зиёд шуд. Гузашта аз ин, ин моҳ дар хона аллакай беш аз панҷ ҳазор сарф шуд."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "这么多？你不会是记错了吧？",
+          "pinyin": "Zhème duō? Nǐ bú huì shì jìcuò le ba?",
+          "text": {
+            "uz": "Shuncha ko'pmi? Adashib yozib qo'ymagandirsan?",
+            "ru": "Так много? Ты ведь не мог ошибиться в подсчётах?",
+            "tj": "Ин қадар зиёд? Шояд хато ҳисоб карда бошӣ?"
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "没错。上个星期光买沙发就花了两千多。",
+          "pinyin": "Méi cuò. Shàng ge xīngqī guāng mǎi shāfā jiù huāle liǎngqiān duō.",
+          "text": {
+            "uz": "Xato emas. O'tgan hafta faqat divanning o'ziga ikki mingdan ko'p ketdi.",
+            "ru": "Не ошибся. На прошлой неделе только на диван ушло больше двух тысяч.",
+            "tj": "Хато нест. Ҳафтаи гузашта танҳо барои диван беш аз ду ҳазор сарф шуд."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "但是咱家的冰箱实在太旧了，制冷效果也不太好了，还是买个新的吧。",
+          "pinyin": "Dànshì zán jiā de bīngxiāng shízài tài jiù le, zhìlěng xiàoguǒ yě bú tài hǎo le, háishi mǎi ge xīn de ba.",
+          "text": {
+            "uz": "Lekin uyimizdagi muzlatkich haqiqatan juda eski, sovutish effekti ham uncha yaxshi emas, baribir yangisini olaylik.",
+            "ru": "Но наш холодильник действительно слишком старый, охлаждает уже не очень хорошо, всё-таки купим новый.",
+            "tj": "Аммо яхдони хонаамон воқеан хеле кӯҳна аст, хунуккуниаш ҳам он қадар хуб нест, беҳтараш нав бихарем."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "那好吧，我带的现金不够，用你的信用卡吧。",
+          "pinyin": "Nà hǎo ba, wǒ dài de xiànjīn bú gòu, yòng nǐ de xìnyòngkǎ ba.",
+          "text": {
+            "uz": "Unda mayli, mendagi naqd pul yetmaydi, sening kredit kartangdan foydalanaylik.",
+            "ru": "Ну хорошо, наличных у меня не хватает, воспользуемся твоей кредитной картой.",
+            "tj": "Хуб, пули нақди ман намерасад, аз корти кредитии ту истифода мекунем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "李进 va 王静 sovg'a tanlaydi",
+        "ru": "李进 и 王静 выбирают подарок",
+        "tj": "李进 ва 王静 тӯҳфа интихоб мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "李进",
+          "zh": "李老师邀请咱们去他家做客，给他带点儿什么礼物好呢？",
+          "pinyin": "Lǐ lǎoshī yāoqǐng zánmen qù tā jiā zuò kè, gěi tā dài diǎnr shénme lǐwù hǎo ne?",
+          "text": {
+            "uz": "Li ustoz bizni uyiga mehmonga taklif qildi, unga qanday sovg'a olib borsak yaxshi?",
+            "ru": "Учитель Ли пригласил нас в гости, какой подарок ему лучше взять?",
+            "tj": "Муаллим Ли моро ба хонааш меҳмонӣ даъват кард, ба ӯ чӣ тӯҳфа бурдан хуб?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "他很喜欢葡萄酒，我们就给他买两瓶葡萄酒吧。",
+          "pinyin": "Tā hěn xǐhuan pútaojiǔ, wǒmen jiù gěi tā mǎi liǎng píng pútaojiǔ ba.",
+          "text": {
+            "uz": "U uzum vinosini juda yaxshi ko'radi, unga ikki shisha vino olaylik.",
+            "ru": "Он очень любит виноградное вино, давай купим ему две бутылки.",
+            "tj": "Ӯ шароби ангуриро хеле дӯст медорад, ба ӯ ду шиша шароб мехарем."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "可是这里有这么多种，你知道哪种好吗？",
+          "pinyin": "Kěshì zhèli yǒu zhème duō zhǒng, nǐ zhīdào nǎ zhǒng hǎo ma?",
+          "text": {
+            "uz": "Lekin bu yerda turi juda ko'p, qaysi biri yaxshi bilasanmi?",
+            "ru": "Но здесь столько видов, ты знаешь, какой хороший?",
+            "tj": "Аммо инҷо навъҳо бисёранд, медонӣ кадомаш хуб аст?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "我觉得这种不错，你看它酒瓶做得都这么艺术。而且电视上经常有它的广告，我想味道应该不错。",
+          "pinyin": "Wǒ juéde zhè zhǒng búcuò, nǐ kàn tā jiǔpíng zuò de dōu zhème yìshù. Érqiě diànshì shang jīngcháng yǒu tā de guǎnggào, wǒ xiǎng wèidào yīnggāi búcuò.",
+          "text": {
+            "uz": "Menimcha bu turi yaxshi, qaragin shishasi ham juda san'atkorona ishlangan. Bundan tashqari televizorda uning reklamasi tez-tez chiqadi, ta'mi ham yaxshi bo'lsa kerak.",
+            "ru": "Мне кажется, этот неплохой, посмотри, бутылка сделана так художественно. К тому же по телевизору часто идёт его реклама, думаю, вкус должен быть неплохим.",
+            "tj": "Ба фикрам ин навъ хуб аст, бин, шишааш хеле санъаткорона сохта шудааст. Ғайр аз ин, дар телевизор рекламааш зиёд мешавад, фикр мекунам маззааш хуб бошад."
+          }
+        },
+        {
+          "speaker": "李进",
+          "zh": "广告只会介绍优点，却不会说它的缺点。实际上，很多东西并不像广告上说的那么好，所以不能完全相信广告。",
+          "pinyin": "Guǎnggào zhǐ huì jièshào yōudiǎn, què bú huì shuō tā de quēdiǎn. Shíjì shang, hěn duō dōngxi bìng bú xiàng guǎnggào shang shuō de nàme hǎo, suǒyǐ bù néng wánquán xiāngxìn guǎnggào.",
+          "text": {
+            "uz": "Reklama faqat afzalliklarini tanishtiradi, kamchiliklarini aytmaydi. Aslida ko'p narsalar reklamada aytilgandek yaxshi emas, shuning uchun reklamaga to'liq ishonib bo'lmaydi.",
+            "ru": "Реклама рассказывает только о плюсах и не говорит о недостатках. На самом деле многие вещи вовсе не так хороши, как говорится в рекламе, поэтому нельзя полностью верить рекламе.",
+            "tj": "Реклама танҳо бартариҳоро мегӯяд, камбудиҳоро намегӯяд. Дар асл бисёр чизҳо мисли реклама гуфтагиашон хуб нестанд, бинобар ин ба реклама пурра бовар кардан мумкин нест."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "你说的也对。",
+          "pinyin": "Nǐ shuō de yě duì.",
+          "text": {
+            "uz": "Gaping ham to'g'ri.",
+            "ru": "Ты тоже прав.",
+            "tj": "Гапат ҳам дуруст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kiyim tanlash mezoni haqida matn",
+        "ru": "Текст о критериях выбора одежды",
+        "tj": "Матн дар бораи меъёри интихоби либос"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "买衣服只考虑价格当然不好，但是只考虑买好看的也不一定对。我买衣服的标准是“只买对的，不买贵的”。第一，自己穿着舒服；第二，衣服的质量要好，而且又不能太贵。对我来说，衣服的样子流行不流行并不是很重要。很多年龄大的人喜欢在打折的时候买便宜的衣服，但对那些衣服是不是适合自己却考虑得不多。这点是我理解不了的，因为如果不适合自己，即使花钱很少，也是一种浪费。",
+          "pinyin": "Mǎi yīfu zhǐ kǎolǜ jiàgé dāngrán bù hǎo, dànshì zhǐ kǎolǜ mǎi hǎokàn de yě bú yídìng duì. Wǒ mǎi yīfu de biāozhǔn shì “zhǐ mǎi duì de, bù mǎi guì de”. Dì yī, zìjǐ chuānzhe shūfu; dì èr, yīfu de zhìliàng yào hǎo, érqiě yòu bù néng tài guì. Duì wǒ lái shuō, yīfu de yàngzi liúxíng bu liúxíng bìng bú shì hěn zhòngyào. Hěn duō niánlíng dà de rén xǐhuan zài dǎ zhé de shíhou mǎi piányi de yīfu, dàn duì nàxiē yīfu shì bu shì shìhé zìjǐ què kǎolǜ de bù duō. Zhè diǎn shì wǒ lǐjiě bù liǎo de, yīnwèi rúguǒ bú shìhé zìjǐ, jíshǐ huā qián hěn shǎo, yě shì yì zhǒng làngfèi.",
+          "text": {
+            "uz": "Kiyim olayotganda faqat narxni hisobga olish albatta yaxshi emas, lekin faqat chiroylisini olishni o'ylash ham doim to'g'ri bo'lavermaydi. Men kiyim olishda 'faqat mosini olaman, qimmatini olmayman' degan mezonga amal qilaman. Birinchidan, o'zim kiyganda qulay bo'lishi kerak; ikkinchidan, kiyim sifati yaxshi bo'lishi va juda qimmat bo'lmasligi kerak. Men uchun kiyimning ko'rinishi moda yoki moda emasligi juda muhim emas. Yoshi katta odamlarning ko'pi chegirma paytida arzon kiyim olishni yoqtiradi, lekin u kiyimlar o'ziga mos keladimi-yo'qmi ko'p o'ylamaydi. Buni tushunolmayman, chunki agar o'ziga mos kelmasa, juda oz pul sarflasa ham bu isrofdir.",
+            "ru": "Покупая одежду, конечно, плохо учитывать только цену, но думать только о красивом тоже не обязательно правильно. Мой стандарт при покупке одежды: 'покупать только подходящее, а не дорогое'. Во-первых, чтобы самому было удобно носить; во-вторых, качество одежды должно быть хорошим, и она не должна быть слишком дорогой. Для меня не так важно, модный ли фасон одежды. Многие люди старшего возраста любят покупать дешёвую одежду во время скидок, но мало думают о том, подходит ли она им. Этого я не понимаю, потому что если вещь тебе не подходит, даже если денег потрачено мало, это всё равно трата впустую.",
+            "tj": "Ҳангоми либос харидан танҳо нархро ба назар гирифтан албатта хуб нест, аммо танҳо зебо буданашро фикр кардан ҳам ҳатман дуруст нест. Меъёри ман барои харидани либос чунин аст: 'фақат мувофиқашро мехарам, қиматашро не'. Якум, ҳангоми пӯшидан бароям роҳат бошад; дуввум, сифати либос хуб бошад ва хеле қимат набошад. Барои ман мӯд будан ё набудани намуди либос он қадар муҳим нест. Бисёр одамони калонсол ҳангоми тахфиф либоси арзон хариданро дӯст медоранд, аммо дар бораи мувофиқ буданаш ба худ кам фикр мекунанд. Инро ман фаҳмида наметавонам, зеро агар ба худ мувофиқ набошад, ҳатто пули кам сарф шавад ҳам, ин як навъи исроф аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Onlayn xaridning ommalashuvi haqida matn",
+        "ru": "Текст о популярности онлайн-покупок",
+        "tj": "Матн дар бораи машҳур шудани хариди онлайн"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "现在网上购物变得越来越流行了，年轻人尤其喜欢在网上买东西。在网上几乎什么都可以买到，你可以上网买书、买衣服、买包，还可以买家具、买手机。网上购物能够受到人们的喜爱，原因主要有两个：首先，网上的东西很多，而且比去商店买便宜，这是吸引人们购买的主要原因。其次，人们可以在任何时间上网购买自己喜欢的东西，卖家可以把你买的东西寄到你办公室或者家里，非常方便。",
+          "pinyin": "Xiànzài wǎng shang gòu wù biàn de yuè lái yuè liúxíng le, niánqīng rén yóuqí xǐhuan zài wǎng shang mǎi dōngxi. Zài wǎng shang jīhū shénme dōu kěyǐ mǎidào, nǐ kěyǐ shàng wǎng mǎi shū, mǎi yīfu, mǎi bāo, hái kěyǐ mǎi jiājù, mǎi shǒujī. Wǎng shang gòu wù nénggòu shòudào rénmen de xǐ'ài, yuányīn zhǔyào yǒu liǎng ge: Shǒuxiān, wǎng shang de dōngxi hěn duō, érqiě bǐ qù shāngdiàn mǎi piányi, zhè shì xīyǐn rénmen gòumǎi de zhǔyào yuányīn. Qícì, rénmen kěyǐ zài rènhé shíjiān shàng wǎng gòumǎi zìjǐ xǐhuan de dōngxi, mài jiā kěyǐ bǎ nǐ mǎi de dōngxi jì dào nǐ bàngōngshì huòzhě jiālǐ, fēicháng fāngbiàn.",
+          "text": {
+            "uz": "Hozir internetda xarid qilish tobora ommalashyapti, yoshlar ayniqsa internetda narsa olishni yoqtiradi. Internetda deyarli hamma narsani topish mumkin: kitob, kiyim, sumka, mebel, telefon. Onlayn xarid odamlar tomonidan yoqtirilishining asosan ikki sababi bor: birinchidan, internetda narsa juda ko'p va do'konga borib olgandan arzonroq, bu odamlarni xaridga jalb qiladigan asosiy sabab. Ikkinchidan, odamlar istalgan vaqtda internetga kirib yoqtirgan narsasini sotib olishi mumkin, sotuvchi esa xarid qilingan narsani ofisingizga yoki uyingizga jo'natadi, juda qulay.",
+            "ru": "Сейчас покупки в интернете становятся всё популярнее, молодые люди особенно любят покупать вещи онлайн. В интернете можно купить почти всё: книги, одежду, сумки, мебель, телефоны. Есть две основные причины, почему онлайн-покупки нравятся людям: во-первых, в интернете много товаров, и они дешевле, чем в магазине; это главная причина, которая привлекает людей покупать. Во-вторых, люди могут в любое время купить в интернете то, что им нравится, а продавец может отправить покупку в офис или домой, это очень удобно.",
+            "tj": "Ҳоло хариди интернетӣ рӯз ба рӯз маъмултар мешавад, ҷавонон хусусан дар интернет чиз хариданро дӯст медоранд. Дар интернет қариб ҳама чизро харидан мумкин: китоб, либос, сумка, мебел, телефон. Сабаби дӯстдошта шудани хариди онлайн асосан дутост: аввал, дар интернет чизҳо зиёданд ва аз мағоза арзонтаранд, ин сабаби асосии ҷалби одамон ба харид аст. Дуввум, одамон метавонанд дар ҳар вақт чизҳои писандидаашонро онлайн харанд, фурӯшанда бошад чизро ба офис ё хона мефиристад, хеле қулай аст."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "台",
+            "pinyin": "tái",
+            "pos": "m.",
+            "meaning": {
+              "uz": "texnika uchun hisob so'zi",
+              "ru": "счётное слово для техники",
+              "tj": "ҳисобвожа барои техника"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'texnika uchun hisob so'zi' xitoycha qaysi?",
+            "ru": "'счётное слово для техники' по-китайски?",
+            "tj": "'ҳисобвожа барои техника' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "台",
+            "家具",
+            "打折",
+            "沙发"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "texnika uchun hisob so'zi = 台 (tái)",
+            "ru": "счётное слово для техники = 台 (tái)",
+            "tj": "ҳисобвожа барои техника = 台 (tái)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "光",
+            "pinyin": "guāng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "faqatgina",
+              "ru": "только, лишь",
+              "tj": "танҳо"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "光",
+          "pinyin": "guāng",
+          "options": [
+            "光",
+            "沙发",
+            "打折",
+            "家具"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "光 — faqatgina (guāng)",
+            "ru": "光 — только, лишь (guāng)",
+            "tj": "光 — танҳо (guāng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "实在",
+            "pinyin": "shízài",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "haqiqatan, juda",
+              "ru": "действительно, очень",
+              "tj": "воқеан, хеле"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "实在",
+          "pinyin": "shízài",
+          "translation": {
+            "uz": "haqiqatan, juda",
+            "ru": "действительно, очень",
+            "tj": "воқеан, хеле"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "实在 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 实在:",
+            "tj": "Маънои калимаи 实在-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "haqiqatan, juda",
+              "ru": "действительно, очень",
+              "tj": "воқеан, хеле"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "实在 = haqiqatan, juda (shízài)",
+            "ru": "实在 = действительно, очень (shízài)",
+            "tj": "实在 = воқеан, хеле (shízài)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "制冷",
+            "pinyin": "zhìlěng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sovutmoq",
+              "ru": "охлаждать",
+              "tj": "хунук кардан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhìlěng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhìlěng?",
+            "tj": "zhìlěng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "制冷",
+            "家具",
+            "沙发",
+            "打折"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "制冷 = sovutmoq (zhìlěng)",
+            "ru": "制冷 = охлаждать (zhìlěng)",
+            "tj": "制冷 = хунук кардан (zhìlěng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "台 talaffuzini tanlang:",
+            "ru": "Выберите произношение 台:",
+            "tj": "Талаффузи 台-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dǎzhé",
+            "jiājù",
+            "shāfā",
+            "tái"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "台 — tái",
+            "ru": "台 — tái",
+            "tj": "台 — tái"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "台",
+              {
+                "uz": "texnika uchun hisob so'zi",
+                "ru": "счётное слово для техники",
+                "tj": "ҳисобвожа барои техника"
+              }
+            ],
+            [
+              "光",
+              {
+                "uz": "faqatgina",
+                "ru": "только, лишь",
+                "tj": "танҳо"
+              }
+            ],
+            [
+              "实在",
+              {
+                "uz": "haqiqatan, juda",
+                "ru": "действительно, очень",
+                "tj": "воқеан, хеле"
+              }
+            ],
+            [
+              "制冷",
+              {
+                "uz": "sovutmoq",
+                "ru": "охлаждать",
+                "tj": "хунук кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "qolaversa, bundan tashqari",
+              "ru": "к тому же, кроме того",
+              "tj": "ғайр аз ин, гузашта аз ин"
+            },
+            "title_zh": "再说",
+            "rule": {
+              "uz": "Oldingi fikrga yana bir sabab qo'shadi.",
+              "ru": "Добавляет ещё одну причину к предыдущей мысли.",
+              "tj": "Ба фикри пешина боз як сабаб илова мекунад."
+            },
+            "examples": [
+              {
+                "zh": "再说，这个月家里已经花了五千多了。",
+                "pinyin": "Zàishuō, zhège yuè jiā li yǐjīng huāle wǔqiān duō le.",
+                "translation": {
+                  "uz": "Qolaversa, bu oy uyda allaqachon besh mingdan ko'p sarfladik.",
+                  "ru": "К тому же в этом месяце дома уже потратили больше пяти тысяч.",
+                  "tj": "Гузашта аз ин, ин моҳ дар хона аллакай беш аз панҷ ҳазор сарф шуд."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liúxíng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liúxíng?",
+            "tj": "liúxíng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "家具",
+            "打折",
+            "流行",
+            "沙发"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "流行 = moda bo'lmoq, ommalashmoq (liúxíng)",
+            "ru": "流行 = быть популярным, модным (liúxíng)",
+            "tj": "流行 = мӯд шудан, паҳн шудан (liúxíng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "台",
+              {
+                "uz": "texnika uchun hisob so'zi",
+                "ru": "счётное слово для техники",
+                "tj": "ҳисобвожа барои техника"
+              }
+            ],
+            [
+              "光",
+              {
+                "uz": "faqatgina",
+                "ru": "только, лишь",
+                "tj": "танҳо"
+              }
+            ],
+            [
+              "实在",
+              {
+                "uz": "haqiqatan, juda",
+                "ru": "действительно, очень",
+                "tj": "воқеан, хеле"
+              }
+            ],
+            [
+              "制冷",
+              {
+                "uz": "sovutmoq",
+                "ru": "охлаждать",
+                "tj": "хунук кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "实在",
+          "pinyin": "shízài",
+          "options": [
+            "家具",
+            "打折",
+            "沙发",
+            "实在"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "实在 — haqiqatan, juda (shízài)",
+            "ru": "实在 — действительно, очень (shízài)",
+            "tj": "实在 — воқеан, хеле (shízài)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "实在",
+          "pinyin": "shízài",
+          "translation": {
+            "uz": "haqiqatan, juda",
+            "ru": "действительно, очень",
+            "tj": "воқеан, хеле"
+          }
+        }
+      ]
+    }
+  ]
+}

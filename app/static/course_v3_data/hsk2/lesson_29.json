@@ -1,0 +1,651 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 29,
+  "source_lesson": 6,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你怎么不吃了",
+  "subtitle": {
+    "uz": "Sabab va oqibat haqida gapira olish, 怎么 so'roq olmoshi, miqdor ko'makchilarining takrorlanishi va 因为……所以…… bog'lovchi qolipini o'zlashtirish.",
+    "ru": "Научиться говорить о причине и следствии, вопросительное местоимение 怎么, удвоение счётных слов и союзная конструкция 因为……所以……",
+    "tj": "Омӯзиши гуфтан дар бораи сабаб ва натиҷа, исми саволии 怎么, такрори калимаҳои шуморавӣ ва сохти пайвандакии 因为……所以……"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "经常",
+      "pinyin": "jīngcháng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "tez-tez, ko'pincha",
+        "ru": "часто, постоянно",
+        "tj": "зуд-зуд, аксар вақт"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "公斤",
+      "pinyin": "gōngjīn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "kilogram",
+        "ru": "килограмм",
+        "tj": "килограмм"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "姐姐",
+      "pinyin": "jiějie",
+      "pos": "n.",
+      "meaning": {
+        "uz": "katta singl (aka-ukaniki), opa",
+        "ru": "старшая сестра",
+        "tj": "хоҳари калонӣ"
+      }
+    }
+  ],
+  "grammar": [],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你知道小王今天什么时候来学校吗？",
+          "pinyin": "Nǐ zhīdào Xiǎo Wáng jīntiān shénme shíhou lái xuéxiào ma?",
+          "text": {
+            "uz": "Kichik Vang bugun qachon maktabga kelishini bilasanmi?",
+            "ru": "Ты знаешь, когда Маленький Ван придёт в школу сегодня?",
+            "tj": "Оё медонӣ, ки Сяо Ван имрӯз кай ба мактаб меояд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他已经来了。",
+          "pinyin": "Tā yǐjīng lái le.",
+          "text": {
+            "uz": "U allaqachon keldi.",
+            "ru": "Он уже пришёл.",
+            "tj": "Вай аллакай омадааст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你怎么知道他来了？",
+          "pinyin": "Nǐ zěnme zhīdào tā lái le?",
+          "text": {
+            "uz": "U kelganini qanday bilding?",
+            "ru": "Как ты узнал, что он пришёл?",
+            "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我在门外看见他的自行车了。",
+          "pinyin": "Wǒ zài mén wài kànjian tā de zìxíngchē le.",
+          "text": {
+            "uz": "Eshik tashqarisida uning velosipedini ko'rdim.",
+            "ru": "Я увидел его велосипед за дверью.",
+            "tj": "Ман берун аз дар велосипеди ӯро дидам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Restoranda",
+        "ru": "В ресторане",
+        "tj": "Дар тарабхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天的羊肉很好吃，你怎么不吃了？",
+          "pinyin": "Jīntiān de yángròu hěn hǎochī, nǐ zěnme bù chī le?",
+          "text": {
+            "uz": "Bugungi qo'y go'shti juda mazali, nega yemayapsan?",
+            "ru": "Сегодняшняя баранина очень вкусная, почему ты не ешь?",
+            "tj": "Гӯшти гӯсфанди имрӯз бисёр болаззат аст, ту чаро намехӯрӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这个星期我天天都吃羊肉，不想吃了。",
+          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu, bù xiǎng chī le.",
+          "text": {
+            "uz": "Bu hafta har kuni qo'y go'shti edim, endi yeygim kelmayapti.",
+            "ru": "На этой неделе я ел баранину каждый день, больше не хочу.",
+            "tj": "Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам, дигар намехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那你想吃什么？",
+          "pinyin": "Nà nǐ xiǎng chī shénme?",
+          "text": {
+            "uz": "Unda nima yemoqchisan?",
+            "ru": "Тогда что ты хочешь поесть?",
+            "tj": "Пас ту чӣ хӯрдан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "来一点儿面条吧。",
+          "pinyin": "Lái yìdiǎnr miàntiáo ba.",
+          "text": {
+            "uz": "Bir oz lag'mon gapirtiraylik.",
+            "ru": "Давай закажем немного лапши.",
+            "tj": "Каме лоғмон оварем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport zalida",
+        "ru": "В спортзале",
+        "tj": "Дар толори варзиш"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天你们怎么都没去打篮球？",
+          "pinyin": "Zuótiān nǐmen zěnme dōu méi qù dǎ lánqiú?",
+          "text": {
+            "uz": "Kecha nega barchang basketbol o'ynamaganga bormadinglar?",
+            "ru": "Почему вы все вчера не пошли играть в баскетбол?",
+            "tj": "Дирӯз шумо чаро ҳама наравон бозии баскетбол накардед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "因为昨天下雨，所以我们都没去。我去游泳了。",
+          "pinyin": "Yīnwèi zuótiān xiàyǔ, suǒyǐ wǒmen dōu méi qù. Wǒ qù yóuyǒng le.",
+          "text": {
+            "uz": "Chunki kecha yomg'ir yog'di, shuning uchun barchimiz bormadik. Men suzgani bordim.",
+            "ru": "Потому что вчера шёл дождь, поэтому мы все не пошли. Я пошёл плавать.",
+            "tj": "Зеро дирӯз борон меборид, аз ин сабаб мо ҳама наравон. Ман рафтам шино кардам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你经常游泳吗？",
+          "pinyin": "Nǐ jīngcháng yóuyǒng ma?",
+          "text": {
+            "uz": "Sen tez-tez suzasanmi?",
+            "ru": "Ты часто плаваешь?",
+            "tj": "Оё ту зуд-зуд шино мекунӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这个月我天天都游泳，我现在七十公斤了。",
+          "pinyin": "Zhège yuè wǒ tiāntiān dōu yóuyǒng, wǒ xiànzài qīshí gōngjīn le.",
+          "text": {
+            "uz": "Bu oy har kuni suzaman, hozir yetmish kilogram bo'ldim.",
+            "ru": "В этом месяце я плаваю каждый день, сейчас вешу семьдесят килограмм.",
+            "tj": "Ин моҳ ман ҳар рӯз шино мекунам, ҳоло ҳафтод килограмм шудам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Idorada",
+        "ru": "В офисе",
+        "tj": "Дар идора"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "这两天怎么没看见小张？",
+          "pinyin": "Zhè liǎng tiān zěnme méi kànjian Xiǎo Zhāng?",
+          "text": {
+            "uz": "Bu ikki kunda nega Kichik Jangni ko'rmadim?",
+            "ru": "Почему я не видел Маленького Чжана эти два дня?",
+            "tj": "Ин ду рӯз чаро Сяо Чжанро надидам?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他去北京了。",
+          "pinyin": "Tā qù Běijīng le.",
+          "text": {
+            "uz": "U Pekinga ketdi.",
+            "ru": "Он уехал в Пекин.",
+            "tj": "Вай ба Пекин рафтааст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "去北京了？是去旅游吗？",
+          "pinyin": "Qù Běijīng le? Shì qù lǚyóu ma?",
+          "text": {
+            "uz": "Pekinga ketdimi? Sayohatgami?",
+            "ru": "Уехал в Пекин? На экскурсию?",
+            "tj": "Ба Пекин рафт? Сайёҳӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不是，听说是去看他姐姐。",
+          "pinyin": "Bú shì, tīngshuō shì qù kàn tā jiějie.",
+          "text": {
+            "uz": "Yo'q, eshitdim, opasini ko'rgani ketgan.",
+            "ru": "Нет, говорят, поехал навестить старшую сестру.",
+            "tj": "Не, шунидам, рафтааст хоҳари калониашро бинад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "经常",
+            "pinyin": "jīngcháng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "tez-tez, ko'pincha",
+              "ru": "часто, постоянно",
+              "tj": "зуд-зуд, аксар вақт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tez-tez, ko'pincha' xitoycha qaysi?",
+            "ru": "'часто, постоянно' по-китайски?",
+            "tj": "'зуд-зуд, аксар вақт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "外",
+            "经常",
+            "门",
+            "自行车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tez-tez, ko'pincha = 经常 (jīngcháng)",
+            "ru": "часто, постоянно = 经常 (jīngcháng)",
+            "tj": "зуд-зуд, аксар вақт = 经常 (jīngcháng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "公斤",
+            "pinyin": "gōngjīn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "kilogram",
+              "ru": "килограмм",
+              "tj": "килограмм"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "公斤",
+          "pinyin": "gōngjīn",
+          "translation": {
+            "uz": "kilogram",
+            "ru": "килограмм",
+            "tj": "килограмм"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "公斤",
+          "pinyin": "gōngjīn",
+          "options": [
+            "公斤",
+            "自行车",
+            "外",
+            "门"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "公斤 — kilogram (gōngjīn)",
+            "ru": "公斤 — килограмм (gōngjīn)",
+            "tj": "公斤 — килограмм (gōngjīn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "姐姐",
+            "pinyin": "jiějie",
+            "pos": "n.",
+            "meaning": {
+              "uz": "katta singl (aka-ukaniki), opa",
+              "ru": "старшая сестра",
+              "tj": "хоҳари калонӣ"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "姐姐 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 姐姐:",
+            "tj": "Маънои калимаи 姐姐-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            },
+            {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
+            },
+            {
+              "uz": "katta singl (aka-ukaniki), opa",
+              "ru": "старшая сестра",
+              "tj": "хоҳари калонӣ"
+            },
+            {
+              "uz": "eshik, darvoza",
+              "ru": "дверь, ворота",
+              "tj": "дар, дарвоза"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "姐姐 = katta singl (aka-ukaniki), opa (jiějie)",
+            "ru": "姐姐 = старшая сестра (jiějie)",
+            "tj": "姐姐 = хоҳари калонӣ (jiějie)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīngcháng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīngcháng?",
+            "tj": "jīngcháng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "门",
+            "外",
+            "经常",
+            "自行车"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "经常 = tez-tez, ko'pincha (jīngcháng)",
+            "ru": "经常 = часто, постоянно (jīngcháng)",
+            "tj": "经常 = зуд-зуд, аксар вақт (jīngcháng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "经常",
+              {
+                "uz": "tez-tez, ko'pincha",
+                "ru": "часто, постоянно",
+                "tj": "зуд-зуд, аксар вақт"
+              }
+            ],
+            [
+              "公斤",
+              {
+                "uz": "kilogram",
+                "ru": "килограмм",
+                "tj": "килограмм"
+              }
+            ],
+            [
+              "姐姐",
+              {
+                "uz": "katta singl (aka-ukaniki), opa",
+                "ru": "старшая сестра",
+                "tj": "хоҳари калонӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "不是，听说是去看他姐姐。",
+          "pinyin": "Bú shì, tīngshuō shì qù kàn tā jiějie.",
+          "options": [
+            "你怎么知道他来了？",
+            "他已经来了。",
+            "不是，听说是去看他姐姐。",
+            "你知道小王今天什么时候来学校吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "不是，听说是去看他姐姐。 — Yo'q, eshitdim, opasini ko'rgani ketgan.",
+            "ru": "不是，听说是去看他姐姐。 — Нет, говорят, поехал навестить старшую сестру.",
+            "tj": "不是，听说是去看他姐姐。 — Не, шунидам, рафтааст хоҳари калониашро бинад."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "所以 talaffuzini tanlang:",
+            "ru": "Выберите произношение 所以:",
+            "tj": "Талаффузи 所以-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "suǒyǐ",
+            "wài",
+            "mén",
+            "zìxíngchē"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "所以 — suǒyǐ",
+            "ru": "所以 — suǒyǐ",
+            "tj": "所以 — suǒyǐ"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sen tez-tez suzasanmi?",
+            "ru": "Ты часто плаваешь?",
+            "tj": "Оё ту зуд-зуд шино мекунӣ?"
+          },
+          "tokens": [
+            "外",
+            "你",
+            "游泳",
+            "门",
+            "经常",
+            "吗"
+          ],
+          "answer_tokens": [
+            "你",
+            "经常",
+            "游泳",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?",
+            "ru": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?",
+            "tj": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "经常",
+              {
+                "uz": "tez-tez, ko'pincha",
+                "ru": "часто, постоянно",
+                "tj": "зуд-зуд, аксар вақт"
+              }
+            ],
+            [
+              "公斤",
+              {
+                "uz": "kilogram",
+                "ru": "килограмм",
+                "tj": "килограмм"
+              }
+            ],
+            [
+              "姐姐",
+              {
+                "uz": "katta singl (aka-ukaniki), opa",
+                "ru": "старшая сестра",
+                "tj": "хоҳари калонӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你经常游泳吗？",
+          "pinyin": "Nǐ jīngcháng yóuyǒng ma?",
+          "translation": {
+            "uz": "Sen tez-tez suzasanmi?",
+            "ru": "Ты часто плаваешь?",
+            "tj": "Оё ту зуд-зуд шино мекунӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "suzasanmi",
+              "tez-tez",
+              "eshitdim",
+              "Yo'q",
+              "Sen"
+            ],
+            "ru": [
+              "говорят",
+              "плаваешь",
+              "Нет",
+              "часто",
+              "Ты"
+            ],
+            "tj": [
+              "шино",
+              "Не",
+              "мекунӣ",
+              "шунидам",
+              "зуд-зуд",
+              "ту",
+              "Оё"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Sen",
+              "tez-tez",
+              "suzasanmi"
+            ],
+            "ru": [
+              "Ты",
+              "часто",
+              "плаваешь"
+            ],
+            "tj": [
+              "Оё",
+              "ту",
+              "зуд-зуд",
+              "шино",
+              "мекунӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "你经常游泳吗？ — Sen tez-tez suzasanmi?",
+            "ru": "你经常游泳吗？ — Ты часто плаваешь?",
+            "tj": "你经常游泳吗？ — Оё ту зуд-зуд шино мекунӣ?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "公斤",
+          "pinyin": "gōngjīn",
+          "translation": {
+            "uz": "kilogram",
+            "ru": "килограмм",
+            "tj": "килограмм"
+          }
+        }
+      ]
+    }
+  ]
+}

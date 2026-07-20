@@ -1,0 +1,723 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 24,
+  "source_lesson": 5,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "就买这件吧",
+  "subtitle": {
+    "uz": "Xarid qilish, ovqatlanish va dam olish haqidagi suhbatlarda o'z fikrini bildira olish; 就 ravishi, 还 ravishi va 有点儿 miqdor birikmasini o'zlashtirish.",
+    "ru": "Научиться выражать своё мнение в разговорах о покупках, еде и отдыхе; освоить наречие 就, наречие 还 и конструкцию 有点儿.",
+    "tj": "Баён кардани фикр дар сӯҳбатҳо дар бораи харидорӣ, хӯрок ва истироҳат; азхудкунии зарфи 就, зарфи 还 ва ибораи 有点儿."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "咖啡",
+      "pinyin": "kāfēi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qahva",
+        "ru": "кофе",
+        "tj": "қаҳва"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "对",
+      "pinyin": "duì",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "uchun, ga nisbatan (ta'sir ko'rsatish)",
+        "ru": "для, в отношении (воздействие)",
+        "tj": "барои, нисбат ба (таъсир)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "以后",
+      "pinyin": "yǐhòu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "keyingi, keyin, bundan buyon",
+        "ru": "после, впоследствии, с этих пор",
+        "tj": "баъд, минбаъд"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 3,
+      "title": {
+        "uz": "Daraja ravishi '有点儿'",
+        "ru": "Наречие степени 有点儿",
+        "tj": "Зарфи дараҷа 有点儿"
+      },
+      "title_zh": "程度副词“有点儿”",
+      "rule": {
+        "uz": "'有点儿' sifat yoki fe'l oldidan kelib 'biroz, sal, ozgina' ma'nosini beradi. Ko'pincha salbiy yoki noqulay holatlarda ishlatiladi. O'zbek tilidagi 'biroz, sal ko'p, ozgina' ifodasiga to'g'ri keladi.",
+        "ru": "有点儿 ставится перед прилагательным или глаголом и означает «немного, чуть-чуть». Чаще используется в отрицательных или некомфортных ситуациях. Аналог русского «немного, слегка».",
+        "tj": "有点儿 пеш аз сифат ё феъл меояд ва маънои 'каме, андак' дорад. Аксар дар вазъиятҳои манфӣ ё номатлуб истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "这件衣服有点儿大。",
+          "pinyin": "Zhè jiàn yīfu yǒudiǎnr dà.",
+          "translation": {
+            "uz": "Bu kiyim biroz katta.",
+            "ru": "Эта одежда немного велика.",
+            "tj": "Ин либос каме калон аст."
+          }
+        },
+        {
+          "zh": "这两天有点儿累。",
+          "pinyin": "Zhè liǎng tiān yǒudiǎnr lèi.",
+          "translation": {
+            "uz": "Bu ikki kunda biroz charchadim.",
+            "ru": "Эти пару дней немного устал.",
+            "tj": "Ин ду рӯз каме хаста шудам."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "晚上我们去饭馆吃饭，怎么样？",
+          "pinyin": "Wǎnshang wǒmen qù fànguǎn chīfàn, zěnmeyàng?",
+          "text": {
+            "uz": "Kechqurun restoranga borib ovqatlansak qanday?",
+            "ru": "Как насчёт того, чтобы вечером пойти поесть в ресторан?",
+            "tj": "Шом мо ба тарабхона рафта хӯрок хӯрем, чӣ тавр?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我不想去外面吃，我想在家吃。",
+          "pinyin": "Wǒ bù xiǎng qù wàimiàn chī, wǒ xiǎng zài jiā chī.",
+          "text": {
+            "uz": "Men tashqariga chiqib ovqatlanmoqchi emasman, uyda ovqatlanmoqchiman.",
+            "ru": "Я не хочу идти есть на улицу, хочу дома.",
+            "tj": "Ман намехоҳам берун рафта хӯрок хӯрам, мехоҳам дар хона хӯрам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那你准备做什么呢？",
+          "pinyin": "Nà nǐ zhǔnbèi zuò shénme ne?",
+          "text": {
+            "uz": "Unda nima pishirmoqchisan?",
+            "ru": "Тогда что ты собираешься готовить?",
+            "tj": "Пас ту чӣ пухтан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "就做你爱吃的鱼吧。",
+          "pinyin": "Jiù zuò nǐ ài chī de yú ba.",
+          "text": {
+            "uz": "Sen sevadigan baliqni pishiraylik, shu bo'ladi.",
+            "ru": "Вот приготовлю рыбу, которую ты любишь.",
+            "tj": "Маҳз моҳии дӯстдоштатро мепазам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda",
+        "ru": "В магазине",
+        "tj": "Дар мағоза"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "帮我看一下这件衣服怎么样。",
+          "pinyin": "Bāng wǒ kàn yíxià zhè jiàn yīfu zěnmeyàng.",
+          "text": {
+            "uz": "Bu kiyimga bir qarab ber, qandayligini ayt.",
+            "ru": "Посмотри, как тебе эта одежда.",
+            "tj": "Ба ин либос як нигоҳ кун, чӣ тавр аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "颜色还可以，就是有点儿大。",
+          "pinyin": "Yánsè hái kěyǐ, jiùshì yǒudiǎnr dà.",
+          "text": {
+            "uz": "Rangi qabul qilarli, faqat biroz katta.",
+            "ru": "Цвет ничего, только немного велик.",
+            "tj": "Ранг қабул аст, фақат каме калон аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这件小的怎么样？",
+          "pinyin": "Zhè jiàn xiǎo de zěnmeyàng?",
+          "text": {
+            "uz": "Bu kichkina kiyim qanday?",
+            "ru": "Как тебе вот этот поменьше?",
+            "tj": "Ин хурдтараш чӣ тавр?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这件不错，就买这件吧。",
+          "pinyin": "Zhè jiàn búcuò, jiù mǎi zhè jiàn ba.",
+          "text": {
+            "uz": "Bu yamon emas, mana shuni olavering.",
+            "ru": "Этот неплохой, вот его и покупай.",
+            "tj": "Ин бад нест, маҳз ҳамин харед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天去不去打球？",
+          "pinyin": "Jīntiān qù bú qù dǎ qiú?",
+          "text": {
+            "uz": "Bugun to'p o'ynagani borami?",
+            "ru": "Сегодня идёшь играть в мяч?",
+            "tj": "Имрӯз ба бозии тӯб меравӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这两天有点儿累，不去打球了。",
+          "pinyin": "Zhè liǎng tiān yǒudiǎnr lèi, bù qù dǎ qiú le.",
+          "text": {
+            "uz": "Bu ikki kunda biroz charchadim, to'p o'ynagani bormayman.",
+            "ru": "Эти пару дней немного устал, не пойду играть.",
+            "tj": "Ин ду рӯз каме хаста шудам, ба бозии тӯб намеравам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你在做什么呢？是在想昨天的考试吗？",
+          "pinyin": "Nǐ zài zuò shénme ne? Shì zài xiǎng zuótiān de kǎoshì ma?",
+          "text": {
+            "uz": "Nima qilyapsan? Kechagi imtihon haqida o'ylayapsanmi?",
+            "ru": "Что ты делаешь? Думаешь о вчерашнем экзамене?",
+            "tj": "Ту чӣ мекунӣ? Дар бораи имтиҳони дирӯз фикр мекунӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。",
+          "pinyin": "Shì a, wǒ juéde tīng hé shuō hái kěyǐ, dú hé xiě bù hǎo, hěn duō zì wǒ dōu bù zhīdào shì shénme yìsi.",
+          "text": {
+            "uz": "Ha, eshitish va gapirish qabul qilarli, o'qish va yozish yomon, juda ko'p ierogliflarning ma'nosini bilmadim.",
+            "ru": "Да, слушание и говорение ничего, а чтение и письмо плохо, многие иероглифы я не знал.",
+            "tj": "Бале, гӯш додан ва гапидан қабул аст, хондан ва навиштан бад, маъноии хеле зиёд иероглифҳоро надонистам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada",
+        "ru": "В офисе",
+        "tj": "Дар идора"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "休息一下吧，喝咖啡吗？",
+          "pinyin": "Xiūxi yíxià ba, hē kāfēi ma?",
+          "text": {
+            "uz": "Bir oz dam oling, qahva ichasizmi?",
+            "ru": "Отдохни немного, будешь кофе?",
+            "tj": "Каме истироҳат кун, қаҳва менӯшӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不喝了，我已经喝两杯了。",
+          "pinyin": "Bù hē le, wǒ yǐjīng hē liǎng bēi le.",
+          "text": {
+            "uz": "Ichmayman, allaqachon ikki stakan ichdim.",
+            "ru": "Нет, уже выпил две чашки.",
+            "tj": "Не, аллакай ду косача нӯшидам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "是啊，咖啡喝多了对身体不好。",
+          "pinyin": "Shì a, kāfēi hē duō le duì shēntǐ bù hǎo.",
+          "text": {
+            "uz": "Ha, qahvani ko'p ichish sog'liq uchun yaxshi emas.",
+            "ru": "Да, много кофе пить вредно для здоровья.",
+            "tj": "Бале, зиёд нӯшидани қаҳва барои саломатӣ зарар аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "以后我少喝一点儿，每天喝一杯。",
+          "pinyin": "Yǐhòu wǒ shǎo hē yìdiǎnr, měitiān hē yì bēi.",
+          "text": {
+            "uz": "Keyingi vaqtda kamroq ichaman, har kuni bir stakan.",
+            "ru": "Впредь буду пить меньше — одну чашку в день.",
+            "tj": "Минбаъд камтар менӯшам, ҳар рӯз як косача."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "咖啡",
+            "pinyin": "kāfēi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qahva",
+              "ru": "кофе",
+              "tj": "қаҳва"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qahva' xitoycha qaysi?",
+            "ru": "'кофе' по-китайски?",
+            "tj": "'қаҳва' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "准备",
+            "外面",
+            "咖啡",
+            "就"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qahva = 咖啡 (kāfēi)",
+            "ru": "кофе = 咖啡 (kāfēi)",
+            "tj": "қаҳва = 咖啡 (kāfēi)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "对",
+            "pinyin": "duì",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "uchun, ga nisbatan (ta'sir ko'rsatish)",
+              "ru": "для, в отношении (воздействие)",
+              "tj": "барои, нисбат ба (таъсир)"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "对",
+          "pinyin": "duì",
+          "options": [
+            "准备",
+            "就",
+            "外面",
+            "对"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "对 — uchun, ga nisbatan (ta'sir ko'rsatish) (duì)",
+            "ru": "对 — для, в отношении (воздействие) (duì)",
+            "tj": "对 — барои, нисбат ба (таъсир) (duì)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "以后",
+            "pinyin": "yǐhòu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "keyingi, keyin, bundan buyon",
+              "ru": "после, впоследствии, с этих пор",
+              "tj": "баъд, минбаъд"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "以后",
+          "pinyin": "yǐhòu",
+          "translation": {
+            "uz": "keyingi, keyin, bundan buyon",
+            "ru": "после, впоследствии, с этих пор",
+            "tj": "баъд, минбаъд"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "以后 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 以后:",
+            "tj": "Маънои калимаи 以后-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "keyingi, keyin, bundan buyon",
+              "ru": "после, впоследствии, с этих пор",
+              "tj": "баъд, минбаъд"
+            },
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
+            },
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "以后 = keyingi, keyin, bundan buyon (yǐhòu)",
+            "ru": "以后 = после, впоследствии, с этих пор (yǐhòu)",
+            "tj": "以后 = баъд, минбаъд (yǐhòu)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kāfēi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kāfēi?",
+            "tj": "kāfēi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "准备",
+            "咖啡",
+            "外面",
+            "就"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "咖啡 = qahva (kāfēi)",
+            "ru": "咖啡 = кофе (kāfēi)",
+            "tj": "咖啡 = қаҳва (kāfēi)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "咖啡",
+              {
+                "uz": "qahva",
+                "ru": "кофе",
+                "tj": "қаҳва"
+              }
+            ],
+            [
+              "对",
+              {
+                "uz": "uchun, ga nisbatan (ta'sir ko'rsatish)",
+                "ru": "для, в отношении (воздействие)",
+                "tj": "барои, нисбат ба (таъсир)"
+              }
+            ],
+            [
+              "以后",
+              {
+                "uz": "keyingi, keyin, bundan buyon",
+                "ru": "после, впоследствии, с этих пор",
+                "tj": "баъд, минбаъд"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Daraja ravishi '有点儿'",
+              "ru": "Наречие степени 有点儿",
+              "tj": "Зарфи дараҷа 有点儿"
+            },
+            "title_zh": "程度副词“有点儿”",
+            "rule": {
+              "uz": "'有点儿' sifat yoki fe'l oldidan kelib 'biroz, sal, ozgina' ma'nosini beradi. Ko'pincha salbiy yoki noqulay holatlarda ishlatiladi. O'zbek tilidagi 'biroz, sal ko'p, ozgina' ifodasiga to'g'ri keladi.",
+              "ru": "有点儿 ставится перед прилагательным или глаголом и означает «немного, чуть-чуть». Чаще используется в отрицательных или некомфортных ситуациях. Аналог русского «немного, слегка».",
+              "tj": "有点儿 пеш аз сифат ё феъл меояд ва маънои 'каме, андак' дорад. Аксар дар вазъиятҳои манфӣ ё номатлуб истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "这件衣服有点儿大。",
+                "pinyin": "Zhè jiàn yīfu yǒudiǎnr dà.",
+                "translation": {
+                  "uz": "Bu kiyim biroz katta.",
+                  "ru": "Эта одежда немного велика.",
+                  "tj": "Ин либос каме калон аст."
+                }
+              },
+              {
+                "zh": "这两天有点儿累。",
+                "pinyin": "Zhè liǎng tiān yǒudiǎnr lèi.",
+                "translation": {
+                  "uz": "Bu ikki kunda biroz charchadim.",
+                  "ru": "Эти пару дней немного устал.",
+                  "tj": "Ин ду рӯз каме хаста шудам."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "咖啡",
+          "pinyin": "kāfēi",
+          "translation": {
+            "uz": "qahva",
+            "ru": "кофе",
+            "tj": "қаҳва"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "准备 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 准备:",
+            "tj": "Маънои калимаи 准备-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
+            },
+            {
+              "uz": "baliq",
+              "ru": "рыба",
+              "tj": "моҳӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "准备 = tayyorlamoq, tayyorgarlik ko'rmoq (zhǔnbèi)",
+            "ru": "准备 = готовить, готовиться (zhǔnbèi)",
+            "tj": "准备 = омода кардан, тайёр шудан (zhǔnbèi)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "是啊，咖啡喝多了对身体不好。",
+          "pinyin": "Shì a, kāfēi hē duō le duì shēntǐ bù hǎo.",
+          "translation": {
+            "uz": "Ha, qahvani ko'p ichish sog'liq uchun yaxshi emas.",
+            "ru": "Да, много кофе пить вредно для здоровья.",
+            "tj": "Бале, зиёд нӯшидани қаҳва барои саломатӣ зарар аст."
+          },
+          "tokens": {
+            "uz": [
+              "yaxshi",
+              "ichish",
+              "uchun",
+              "Bir",
+              "emas",
+              "oz",
+              "qahvani",
+              "ko'p",
+              "sog'liq",
+              "Ha"
+            ],
+            "ru": [
+              "Да",
+              "кофе",
+              "пить",
+              "Отдохни",
+              "много",
+              "здоровья",
+              "вредно",
+              "немного",
+              "для"
+            ],
+            "tj": [
+              "аст",
+              "саломатӣ",
+              "қаҳва",
+              "нӯшидани",
+              "зарар",
+              "барои",
+              "Каме",
+              "истироҳат",
+              "Бале",
+              "зиёд"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "qahvani",
+              "ko'p",
+              "ichish",
+              "sog'liq",
+              "uchun",
+              "yaxshi",
+              "emas"
+            ],
+            "ru": [
+              "Да",
+              "много",
+              "кофе",
+              "пить",
+              "вредно",
+              "для",
+              "здоровья"
+            ],
+            "tj": [
+              "Бале",
+              "зиёд",
+              "нӯшидани",
+              "қаҳва",
+              "барои",
+              "саломатӣ",
+              "зарар",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "是啊，咖啡喝多了对身体不好。 — Ha, qahvani ko'p ichish sog'liq uchun yaxshi emas.",
+            "ru": "是啊，咖啡喝多了对身体不好。 — Да, много кофе пить вредно для здоровья.",
+            "tj": "是啊，咖啡喝多了对身体不好。 — Бале, зиёд нӯшидани қаҳва барои саломатӣ зарар аст."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "休息一下吧，喝咖啡吗？",
+          "pinyin": "Xiūxi yíxià ba, hē kāfēi ma?",
+          "options": [
+            "我不想去外面吃，我想在家吃。",
+            "休息一下吧，喝咖啡吗？",
+            "晚上我们去饭馆吃饭，怎么样？",
+            "那你准备做什么呢？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "休息一下吧，喝咖啡吗？ — Bir oz dam oling, qahva ichasizmi?",
+            "ru": "休息一下吧，喝咖啡吗？ — Отдохни немного, будешь кофе?",
+            "tj": "休息一下吧，喝咖啡吗？ — Каме истироҳат кун, қаҳва менӯшӣ?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "以后",
+          "pinyin": "yǐhòu",
+          "translation": {
+            "uz": "keyingi, keyin, bundan buyon",
+            "ru": "после, впоследствии, с этих пор",
+            "tj": "баъд, минбаъд"
+          }
+        }
+      ]
+    }
+  ]
+}

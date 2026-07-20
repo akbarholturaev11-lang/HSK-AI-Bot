@@ -1,0 +1,729 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 55,
+  "source_lesson": 12,
+  "part_no": 2,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "你穿得太少了",
+  "subtitle": {
+    "uz": "Holat to'ldiruvchisi ('de' yuklamasi bilan) va 'bǐ' qiyoslash gapining kengaytirilgan shaklini o'rganish.",
+    "ru": "Изучение дополнения состояния (с частицей 'de') и расширенной формы конструкции сравнения 'bǐ'.",
+    "tj": "Омӯзиши илова ба ҳолат (бо зарраи 'de') ва шакли васеъшудаи конструксияи муқоисавии 'bǐ'."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "度",
+      "pinyin": "dù",
+      "pos": "n./m.",
+      "meaning": {
+        "uz": "daraja (harorat o'lchovi)",
+        "ru": "градус (единица температуры)",
+        "tj": "дараҷа (воҳиди ҳарорат)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "穿",
+      "pinyin": "chuān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kiymoq (kiyim-bosh)",
+        "ru": "надевать, носить (одежду)",
+        "tj": "пӯшидан (либос)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "进",
+      "pinyin": "jìn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kirmoq",
+        "ru": "войти, заходить",
+        "tj": "даромадан"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Holat to'ldiruvchisi",
+        "ru": "Дополнение состояния",
+        "tj": "Иловаи ҳолат"
+      },
+      "title_zh": "状态补语",
+      "rule": {
+        "uz": "Holat to'ldiruvchisi fe'ldan keyin '得(de)' yuklamasi qo'shilib, harakatning qanday bajarilganligini yoki natijani bildiradi. Tuzilish: Fe'l + 得 + sifat/holat. Agar fe'lning to'ldiruvchisi bo'lsa, fe'l takrorlanadi: 做饭做得好. Inkor: 得 dan keyin '不' qo'yiladi: 做得不好.",
+        "ru": "Дополнение состояния образуется после глагола с частицей '得(de)' и описывает, как выполняется действие или каков его результат. Структура: Глагол + 得 + прилагательное/состояние. Если у глагола есть дополнение, глагол повторяется: 做饭做得好. Отрицание: после '得' ставится '不': 做得不好.",
+        "tj": "Иловаи ҳолат баъд аз феъл бо зарраи '得(de)' омада, тавсиф мекунад амал чӣ тавр иҷро мешавад ё натиҷааш чист. Сохт: Феъл + 得 + сифат/ҳолат. Агар феъл иловаи хос дошта бошад, феъл такрор мешавад: 做饭做得好. Инкор: баъд аз '得' '不' гузошта мешавад: 做得不好."
+      },
+      "examples": [
+        {
+          "zh": "你穿得太少了。",
+          "pinyin": "Nǐ chuān de tài shǎo le.",
+          "translation": {
+            "uz": "Siz juda kam kiyingiz.",
+            "ru": "Ты надел(а) слишком мало.",
+            "tj": "Шумо хеле кам пӯшидед."
+          }
+        },
+        {
+          "zh": "她睡得很早。",
+          "pinyin": "Tā shuì de hěn zǎo.",
+          "translation": {
+            "uz": "U juda erta yotadi.",
+            "ru": "Она ложится спать очень рано.",
+            "tj": "Ӯ хеле барвақт мехобад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sinfxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你每天早上几点起床？",
+          "pinyin": "Nǐ měitiān zǎoshang jǐ diǎn qǐchuáng?",
+          "text": {
+            "uz": "Siz har kuni ertalab soat nechada turasiz?",
+            "ru": "В котором часу ты встаёшь каждое утро?",
+            "tj": "Ҳар рӯз субҳ шумо соати чанд бармехезед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "六点多。",
+          "pinyin": "Liù diǎn duō.",
+          "text": {
+            "uz": "Oltidan o'tganda.",
+            "ru": "Чуть больше шести.",
+            "tj": "Каме аз соати шаш гузашта."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你比我早起一个小时。",
+          "pinyin": "Nǐ bǐ wǒ zǎo qǐ yí ge xiǎoshí.",
+          "text": {
+            "uz": "Siz mendan bir soat oldin turasiz.",
+            "ru": "Ты встаёшь на час раньше меня.",
+            "tj": "Шумо аз ман як соат зудтар бармехезед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
+          "pinyin": "Wǒ shuì de yě zǎo, wǒ měitiān wǎnshang shí diǎn jiù shuìjiào. Zǎo shuì zǎo qǐ duì shēntǐ hǎo.",
+          "text": {
+            "uz": "Men ham erta yotaman, har kuni kechqurun o'n da yotaman. Erta yotib erta turish sog'liq uchun foydali.",
+            "ru": "Я тоже ложусь рано, каждый вечер в десять. Рано ложиться и рано вставать полезно для здоровья.",
+            "tj": "Ман ҳам барвақт мехобам, ҳар шаб соати даҳ мехобам. Барвақт хобидан ва барвақт бархестан барои саломатӣ муфид аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'st uyida",
+        "ru": "В доме друга",
+        "tj": "Дар хонаи дӯст"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "再来点儿米饭吧，你吃得太少了。",
+          "pinyin": "Zài lái diǎnr mǐfàn ba, nǐ chī de tài shǎo le.",
+          "text": {
+            "uz": "Yana biroz guruch oling, siz juda oz yedingiz.",
+            "ru": "Возьми ещё немного риса, ты съел(а) слишком мало.",
+            "tj": "Боз каме биринҷ гиред, шумо хеле кам хӯрдед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不心了，今天吃得很好，太谢谢你了。",
+          "pinyin": "Bù xīn le, jīntiān chī de hěn hǎo, tài xièxie nǐ le.",
+          "text": {
+            "uz": "Kerak emas, bugun juda yaxshi yedim, katta rahmat sizga.",
+            "ru": "Не надо, сегодня я поел(а) очень хорошо, большое тебе спасибо.",
+            "tj": "Даркор нест, имрӯз хеле хуб хӯрдам, ташаккури зиёд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你饭做得怎么样？",
+          "pinyin": "Nǐ fàn zuò de zěnmeyàng?",
+          "text": {
+            "uz": "Siz ovqat qanday pishirasiz?",
+            "ru": "Как ты готовишь еду?",
+            "tj": "Шумо хӯрок чӣ хел мепазед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不怎么样，我妻子比我饭做得好。",
+          "pinyin": "Bù zěnmeyàng, wǒ qīzi bǐ wǒ zuò fàn zuò de hǎo.",
+          "text": {
+            "uz": "Unchalik emas, xotinim mendan yaxshiroq ovqat pishiradi.",
+            "ru": "Не очень, моя жена готовит лучше меня.",
+            "tj": "Чандон не, занам аз ман беҳтар хӯрок мепазад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uy eshigi oldida",
+        "ru": "У двери дома",
+        "tj": "Дар пеши дари хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "下雪了，今天真冷。",
+          "pinyin": "Xià xuě le, jīntiān zhēn lěng.",
+          "text": {
+            "uz": "Qor yog'yapti, bugun juda sovuq.",
+            "ru": "Пошёл снег, сегодня очень холодно.",
+            "tj": "Барф борид, имрӯз хеле сард аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "有零下10度吧？",
+          "pinyin": "Yǒu líng xià shí dù ba?",
+          "text": {
+            "uz": "Minus o'n daraja bo'lsa kerak?",
+            "ru": "Наверное, минус десять градусов?",
+            "tj": "Эҳтимол даҳ дараҷа зер аз сифр бошад?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "是啊，你穿得太少了，我们进房间吧。",
+          "pinyin": "Shì a, nǐ chuān de tài shǎo le, wǒmen jìn fángjiān ba.",
+          "text": {
+            "uz": "Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好吧。",
+          "pinyin": "Hǎo ba.",
+          "text": {
+            "uz": "Xo'p bo'lmasa.",
+            "ru": "Ладно.",
+            "tj": "Хуб."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在忙什么呢？",
+          "pinyin": "Nǐ zài máng shénme ne?",
+          "text": {
+            "uz": "Siz nima bilan bandsiniz?",
+            "ru": "Чем ты сейчас занят(а)?",
+            "tj": "Шумо ба чӣ машғул ҳастед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我弟弟让我帮他找个房子，现在他离公司有点儿远。",
+          "pinyin": "Wǒ dìdi ràng wǒ bāng tā zhǎo ge fángzi, xiànzài tā lí gōngsī yǒudiǎnr yuǎn.",
+          "text": {
+            "uz": "Ukam menga unga uy topishda yordam berishimni so'radi, hozir u kompaniyadan biroz uzoqda turadi.",
+            "ru": "Мой младший брат попросил помочь найти ему жильё, сейчас он живёт немного далеко от компании.",
+            "tj": "Бародари хурдиам хоҳиш кард ба ӯ хона ёбам, ҳоло ӯ аз ширкат каме дур зиндагӣ мекунад."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "住得远真的很累！",
+          "pinyin": "Zhù de yuǎn zhēn de hěn lèi!",
+          "text": {
+            "uz": "Uzoqda yashash chindan ham charchatadi!",
+            "ru": "Жить далеко действительно очень утомительно!",
+            "tj": "Дур зиндагӣ кардан воқеан хеле монандакор аст!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，他也希望能住得近一点儿。",
+          "pinyin": "Shì a, tā yě xīwàng néng zhù de jìn yìdiǎnr.",
+          "text": {
+            "uz": "Ha, u ham biroz yaqinroqda yashashni xohlaydi.",
+            "ru": "Да, он тоже хочет жить немного ближе.",
+            "tj": "Бале, ӯ ҳам мехоҳад каме наздиктар зиндагӣ кунад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "度",
+            "pinyin": "dù",
+            "pos": "n./m.",
+            "meaning": {
+              "uz": "daraja (harorat o'lchovi)",
+              "ru": "градус (единица температуры)",
+              "tj": "дараҷа (воҳиди ҳарорат)"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "度",
+          "pinyin": "dù",
+          "translation": {
+            "uz": "daraja (harorat o'lchovi)",
+            "ru": "градус (единица температуры)",
+            "tj": "дараҷа (воҳиди ҳарорат)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "度",
+          "pinyin": "dù",
+          "options": [
+            "度",
+            "妻子",
+            "得",
+            "雪"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "度 — daraja (harorat o'lchovi) (dù)",
+            "ru": "度 — градус (единица температуры) (dù)",
+            "tj": "度 — дараҷа (воҳиди ҳарорат) (dù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "穿",
+            "pinyin": "chuān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kiymoq (kiyim-bosh)",
+              "ru": "надевать, носить (одежду)",
+              "tj": "пӯшидан (либос)"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "穿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 穿:",
+            "tj": "Маънои калимаи 穿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xotin, turmush o'rtoq (ayol)",
+              "ru": "жена, супруга",
+              "tj": "зан, ҳамсар (зан)"
+            },
+            {
+              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+              "ru": "частица дополнения состояния (после глагола)",
+              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+            },
+            {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            },
+            {
+              "uz": "kiymoq (kiyim-bosh)",
+              "ru": "надевать, носить (одежду)",
+              "tj": "пӯшидан (либос)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "穿 = kiymoq (kiyim-bosh) (chuān)",
+            "ru": "穿 = надевать, носить (одежду) (chuān)",
+            "tj": "穿 = пӯшидан (либос) (chuān)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "进",
+            "pinyin": "jìn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kirmoq",
+              "ru": "войти, заходить",
+              "tj": "даромадан"
+            }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jìn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jìn?",
+            "tj": "jìn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "雪",
+            "进",
+            "妻子",
+            "得"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "进 = kirmoq (jìn)",
+            "ru": "进 = войти, заходить (jìn)",
+            "tj": "进 = даромадан (jìn)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "度 talaffuzini tanlang:",
+            "ru": "Выберите произношение 度:",
+            "tj": "Талаффузи 度-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dù",
+            "qīzi",
+            "de",
+            "xuě"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "度 — dù",
+            "ru": "度 — dù",
+            "tj": "度 — dù"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "度",
+              {
+                "uz": "daraja (harorat o'lchovi)",
+                "ru": "градус (единица температуры)",
+                "tj": "дараҷа (воҳиди ҳарорат)"
+              }
+            ],
+            [
+              "穿",
+              {
+                "uz": "kiymoq (kiyim-bosh)",
+                "ru": "надевать, носить (одежду)",
+                "tj": "пӯшидан (либос)"
+              }
+            ],
+            [
+              "进",
+              {
+                "uz": "kirmoq",
+                "ru": "войти, заходить",
+                "tj": "даромадан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Holat to'ldiruvchisi",
+              "ru": "Дополнение состояния",
+              "tj": "Иловаи ҳолат"
+            },
+            "title_zh": "状态补语",
+            "rule": {
+              "uz": "Holat to'ldiruvchisi fe'ldan keyin '得(de)' yuklamasi qo'shilib, harakatning qanday bajarilganligini yoki natijani bildiradi. Tuzilish: Fe'l + 得 + sifat/holat. Agar fe'lning to'ldiruvchisi bo'lsa, fe'l takrorlanadi: 做饭做得好. Inkor: 得 dan keyin '不' qo'yiladi: 做得不好.",
+              "ru": "Дополнение состояния образуется после глагола с частицей '得(de)' и описывает, как выполняется действие или каков его результат. Структура: Глагол + 得 + прилагательное/состояние. Если у глагола есть дополнение, глагол повторяется: 做饭做得好. Отрицание: после '得' ставится '不': 做得不好.",
+              "tj": "Иловаи ҳолат баъд аз феъл бо зарраи '得(de)' омада, тавсиф мекунад амал чӣ тавр иҷро мешавад ё натиҷааш чист. Сохт: Феъл + 得 + сифат/ҳолат. Агар феъл иловаи хос дошта бошад, феъл такрор мешавад: 做饭做得好. Инкор: баъд аз '得' '不' гузошта мешавад: 做得不好."
+            },
+            "examples": [
+              {
+                "zh": "你穿得太少了。",
+                "pinyin": "Nǐ chuān de tài shǎo le.",
+                "translation": {
+                  "uz": "Siz juda kam kiyingiz.",
+                  "ru": "Ты надел(а) слишком мало.",
+                  "tj": "Шумо хеле кам пӯшидед."
+                }
+              },
+              {
+                "zh": "她睡得很早。",
+                "pinyin": "Tā shuì de hěn zǎo.",
+                "translation": {
+                  "uz": "U juda erta yotadi.",
+                  "ru": "Она ложится спать очень рано.",
+                  "tj": "Ӯ хеле барвақт мехобад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz juda kam kiyingiz.",
+            "ru": "Ты надел(а) слишком мало.",
+            "tj": "Шумо хеле кам пӯшидед."
+          },
+          "tokens": [
+            "得",
+            "你",
+            "少",
+            "穿",
+            "了",
+            "妻子",
+            "雪",
+            "太"
+          ],
+          "answer_tokens": [
+            "你",
+            "穿",
+            "得",
+            "太",
+            "少",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你穿得太少了。 — Nǐ chuān de tài shǎo le.",
+            "ru": "你穿得太少了。 — Nǐ chuān de tài shǎo le.",
+            "tj": "你穿得太少了。 — Nǐ chuān de tài shǎo le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xuě qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xuě?",
+            "tj": "xuě кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "妻子",
+            "得",
+            "雪",
+            "零"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "雪 = qor (xuě)",
+            "ru": "雪 = снег (xuě)",
+            "tj": "雪 = барф (xuě)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "是啊，你穿得太少了，我们进房间吧。",
+          "pinyin": "Shì a, nǐ chuān de tài shǎo le, wǒmen jìn fángjiān ba.",
+          "translation": {
+            "uz": "Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          },
+          "tokens": {
+            "uz": [
+              "kiraylik",
+              "Siz",
+              "xonaga",
+              "kiyingiz",
+              "juda",
+              "kam",
+              "Ha",
+              "siz"
+            ],
+            "ru": [
+              "Ты",
+              "ты",
+              "слишком",
+              "надел(а",
+              "Да",
+              "давай",
+              "комнату",
+              "зайдём",
+              "в",
+              "мало"
+            ],
+            "tj": [
+              "хеле",
+              "хона",
+              "Шумо",
+              "пӯшидед",
+              "шумо",
+              "биёед",
+              "кам",
+              "Бале",
+              "ба",
+              "дарем"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ha",
+              "siz",
+              "juda",
+              "kam",
+              "kiyingiz",
+              "xonaga",
+              "kiraylik"
+            ],
+            "ru": [
+              "Да",
+              "ты",
+              "слишком",
+              "мало",
+              "надел(а",
+              "давай",
+              "зайдём",
+              "в",
+              "комнату"
+            ],
+            "tj": [
+              "Бале",
+              "шумо",
+              "хеле",
+              "кам",
+              "пӯшидед",
+              "биёед",
+              "ба",
+              "хона",
+              "дарем"
+            ]
+          },
+          "explanation": {
+            "uz": "是啊，你穿得太少了，我们进房间吧。 — Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "是啊，你穿得太少了，我们进房间吧。 — Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "是啊，你穿得太少了，我们进房间吧。 — Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "是啊，你穿得太少了，我们进房间吧。",
+          "pinyin": "Shì a, nǐ chuān de tài shǎo le, wǒmen jìn fángjiān ba.",
+          "options": [
+            "你比我早起一个小时。",
+            "六点多。",
+            "你每天早上几点起床？",
+            "是啊，你穿得太少了，我们进房间吧。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "是啊，你穿得太少了，我们进房间吧。 — Ha, siz juda kam kiyingiz, xonaga kiraylik.",
+            "ru": "是啊，你穿得太少了，我们进房间吧。 — Да, ты слишком мало надел(а), давай зайдём в комнату.",
+            "tj": "是啊，你穿得太少了，我们进房间吧。 — Бале, шумо хеле кам пӯшидед, биёед ба хона дарем."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "度",
+          "pinyin": "dù",
+          "translation": {
+            "uz": "daraja (harorat o'lchovi)",
+            "ru": "градус (единица температуры)",
+            "tj": "дараҷа (воҳиди ҳарорат)"
+          }
+        }
+      ]
+    }
+  ]
+}

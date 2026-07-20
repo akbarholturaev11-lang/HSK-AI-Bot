@@ -1,0 +1,782 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 24,
+  "source_lesson": 7,
+  "part_no": 3,
+  "part_count": 4,
+  "checkpoint": false,
+  "title": "今天几号",
+  "subtitle": {
+    "uz": "Sanalar, haftaning kunlari va ketma-ket fe'l gaplarini o'rganish",
+    "ru": "Изучение дат, дней недели и предложений с последовательными глаголами",
+    "tj": "Омӯзиши санаҳо, рӯзҳои ҳафта ва ҷумлаҳо бо феъли пайдарпай"
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "去",
+      "pinyin": "qù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bormoq",
+        "ru": "идти, ехать",
+        "tj": "рафтан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "学校",
+      "pinyin": "xuéxiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maktab",
+        "ru": "школа",
+        "tj": "мактаб"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "看",
+      "pinyin": "kàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qaramoq, ko'rmoq, o'qimoq",
+        "ru": "смотреть, читать",
+        "tj": "нигоҳ кардан, хондан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "书",
+      "pinyin": "shū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kitob",
+        "ru": "книга",
+        "tj": "китоб"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 2,
+      "title": {
+        "uz": "Ot kesimli gap",
+        "ru": "Предложение с именным сказуемым",
+        "tj": "Ҷумлаи бо исми хабар"
+      },
+      "title_zh": "名词谓语句 — Ot kesimli gap",
+      "rule": {
+        "uz": "Ot yoki raqam kesim bo'lib kela oladi (是 talab etilmaydi).\nKo'pincha yosh, sana va vaqtni ifodalashda ishlatiladi.\n\nMisol:\n今天9月1号。— Bugun 1-sentabr. (9月1号 — ot kesim)\n明天星期三。— Ertaga chorshanba.\n我的汉语老师33岁。— Mening xitoy tili o'qituvchim 33 yoshda.",
+        "ru": "Существительное или числительное может выступать сказуемым (是 не требуется).\nЧасто используется для выражения возраста, дат и времени.\n\nПример:\n今天9月1号。— Сегодня 1 сентября. (9月1号 — именное сказуемое)\n明天星期三。— Завтра среда.\n我的汉语老师33岁。— Моему учителю китайского 33 года.",
+        "tj": "Исм ё рақам метавонад хабар бошад (是 лозим нест).\nАксар вақт барои ифодаи синну сол, сана ва вақт истифода мешавад.\n\nМисол:\n今天9月1号。— Имрӯз 1-уми сентябр аст. (9月1号 — хабари исмӣ)\n明天星期三。— Фардо чоршанбе аст.\n我的汉语老师33岁。— Устоди забони чинии ман 33 сола аст."
+      },
+      "examples": [
+        {
+          "zh": "今天9月1号。",
+          "pinyin": "Jīntiān jiǔ yuè yī hào.",
+          "translation": {
+            "uz": "Bugun 1-sentabr.",
+            "ru": "Сегодня 1 сентября.",
+            "tj": "Имрӯз 1-уми сентябр аст."
+          }
+        },
+        {
+          "zh": "明天星期三。",
+          "pinyin": "Míngtiān xīngqī sān.",
+          "translation": {
+            "uz": "Ertaga chorshanba.",
+            "ru": "Завтра среда.",
+            "tj": "Фардо чоршанбе аст."
+          }
+        },
+        {
+          "zh": "她今年二十岁。",
+          "pinyin": "Tā jīnnián èrshí suì.",
+          "translation": {
+            "uz": "U bu yil yigirma yoshda.",
+            "ru": "Ей в этом году двадцать лет.",
+            "tj": "Вай имсол бист сола аст."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Bankda — bugungi sana",
+        "ru": "В банке — сегодняшняя дата",
+        "tj": "Дар бонк — санаи имрӯз"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "请问，今天几号？",
+          "pinyin": "Qǐngwèn, jīntiān jǐ hào?",
+          "text": {
+            "uz": "Kechirasiz, bugun nechanchi sana?",
+            "ru": "Извините, какое сегодня число?",
+            "tj": "Бубахшед, имрӯз чанди сана аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "今天9月1号。",
+          "pinyin": "Jīntiān jiǔ yuè yī hào.",
+          "text": {
+            "uz": "Bugun 1-sentabr.",
+            "ru": "Сегодня 1 сентября.",
+            "tj": "Имрӯз 1-уми сентябр аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "今天星期几？",
+          "pinyin": "Jīntiān xīngqī jǐ?",
+          "text": {
+            "uz": "Bugun haftaning nechanchi kuni?",
+            "ru": "Какой сегодня день недели?",
+            "tj": "Имрӯз кадом рӯзи ҳафта аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "星期三。",
+          "pinyin": "Xīngqī sān.",
+          "text": {
+            "uz": "Chorshanba.",
+            "ru": "Среда.",
+            "tj": "Чоршанбе."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Taqvimga qarab — kecha va ertaga",
+        "ru": "По календарю — вчера и завтра",
+        "tj": "Тибқи тақвим — дирӯз ва фардо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天是几月几号？",
+          "pinyin": "Zuótiān shì jǐ yuè jǐ hào?",
+          "text": {
+            "uz": "Kecha nechanchi oy, nechanchi sana edi?",
+            "ru": "Какое число какого месяца было вчера?",
+            "tj": "Дирӯз чанди моҳ ва чанди сана буд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "昨天是8月31号，星期二。",
+          "pinyin": "Zuótiān shì bā yuè sānshíyī hào, xīngqī èr.",
+          "text": {
+            "uz": "Kecha 31-avgust, seshanba edi.",
+            "ru": "Вчера было 31 августа, вторник.",
+            "tj": "Дирӯз 31-уми август, сешанбе буд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "明天呢？",
+          "pinyin": "Míngtiān ne?",
+          "text": {
+            "uz": "Ertaga-chi?",
+            "ru": "А завтра?",
+            "tj": "Фардо чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "明天是9月2号，星期四。",
+          "pinyin": "Míngtiān shì jiǔ yuè èr hào, xīngqī sì.",
+          "text": {
+            "uz": "Ertaga 2-sentabr, payshanba.",
+            "ru": "Завтра 2 сентября, четверг.",
+            "tj": "Фардо 2-юми сентябр, панҷшанбе аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada — ertangi reja",
+        "ru": "В кафе — планы на завтра",
+        "tj": "Дар қаҳвахона — нақшаи фардо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "明天星期六，你去学校吗？",
+          "pinyin": "Míngtiān xīngqī liù, nǐ qù xuéxiào ma?",
+          "text": {
+            "uz": "Ertaga shanba — maktabga borасанmi?",
+            "ru": "Завтра суббота — ты идёшь в школу?",
+            "tj": "Фардо шанбе — ту ба мактаб меравӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我去学校。",
+          "pinyin": "Wǒ qù xuéxiào.",
+          "text": {
+            "uz": "Men maktabga boraman.",
+            "ru": "Я иду в школу.",
+            "tj": "Ман ба мактаб мераваm."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你去学校做什么？",
+          "pinyin": "Nǐ qù xuéxiào zuò shénme?",
+          "text": {
+            "uz": "Maktabga nima qilgani borasan?",
+            "ru": "Зачем ты идёшь в школу?",
+            "tj": "Ту ба мактаб барои чӣ меравӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我去学校看书。",
+          "pinyin": "Wǒ qù xuéxiào kàn shū.",
+          "text": {
+            "uz": "Men maktabga kitob o'qigani boraman.",
+            "ru": "Я иду в школу читать книги.",
+            "tj": "Ман ба мактаб рафта китоб мехонам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "去",
+            "pinyin": "qù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bormoq",
+              "ru": "идти, ехать",
+              "tj": "рафтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bormoq' xitoycha qaysi?",
+            "ru": "'идти, ехать' по-китайски?",
+            "tj": "'рафтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "去",
+            "请",
+            "问",
+            "今天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "bormoq = 去 (qù)",
+            "ru": "идти, ехать = 去 (qù)",
+            "tj": "рафтан = 去 (qù)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "学校",
+            "pinyin": "xuéxiào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maktab",
+              "ru": "школа",
+              "tj": "мактаб"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "学校",
+          "pinyin": "xuéxiào",
+          "options": [
+            "今天",
+            "问",
+            "学校",
+            "请"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "学校 — maktab (xuéxiào)",
+            "ru": "学校 — школа (xuéxiào)",
+            "tj": "学校 — мактаб (xuéxiào)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "看",
+            "pinyin": "kàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qaramoq, ko'rmoq, o'qimoq",
+              "ru": "смотреть, читать",
+              "tj": "нигоҳ кардан, хондан"
+            }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "看 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 看:",
+            "tj": "Маънои калимаи 看-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            },
+            {
+              "uz": "qaramoq, ko'rmoq, o'qimoq",
+              "ru": "смотреть, читать",
+              "tj": "нигоҳ кардан, хондан"
+            },
+            {
+              "uz": "iltimos, marhamat",
+              "ru": "пожалуйста, разрешите спросить",
+              "tj": "лутфан, иҷозат диҳед"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "看 = qaramoq, ko'rmoq, o'qimoq (kàn)",
+            "ru": "看 = смотреть, читать (kàn)",
+            "tj": "看 = нигоҳ кардан, хондан (kàn)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "书",
+            "pinyin": "shū",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kitob",
+              "ru": "книга",
+              "tj": "китоб"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "书",
+          "pinyin": "shū",
+          "translation": {
+            "uz": "kitob",
+            "ru": "книга",
+            "tj": "китоб"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shū qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shū?",
+            "tj": "shū кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "书",
+            "问",
+            "请",
+            "今天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "书 = kitob (shū)",
+            "ru": "书 = книга (shū)",
+            "tj": "书 = китоб (shū)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "去 talaffuzini tanlang:",
+            "ru": "Выберите произношение 去:",
+            "tj": "Талаффузи 去-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qù",
+            "jīntiān",
+            "qǐng",
+            "wèn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "去 — qù",
+            "ru": "去 — qù",
+            "tj": "去 — qù"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "去",
+              {
+                "uz": "bormoq",
+                "ru": "идти, ехать",
+                "tj": "рафтан"
+              }
+            ],
+            [
+              "学校",
+              {
+                "uz": "maktab",
+                "ru": "школа",
+                "tj": "мактаб"
+              }
+            ],
+            [
+              "看",
+              {
+                "uz": "qaramoq, ko'rmoq, o'qimoq",
+                "ru": "смотреть, читать",
+                "tj": "нигоҳ кардан, хондан"
+              }
+            ],
+            [
+              "书",
+              {
+                "uz": "kitob",
+                "ru": "книга",
+                "tj": "китоб"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Ot kesimli gap",
+              "ru": "Предложение с именным сказуемым",
+              "tj": "Ҷумлаи бо исми хабар"
+            },
+            "title_zh": "名词谓语句 — Ot kesimli gap",
+            "rule": {
+              "uz": "Ot yoki raqam kesim bo'lib kela oladi (是 talab etilmaydi).\nKo'pincha yosh, sana va vaqtni ifodalashda ishlatiladi.\n\nMisol:\n今天9月1号。— Bugun 1-sentabr. (9月1号 — ot kesim)\n明天星期三。— Ertaga chorshanba.\n我的汉语老师33岁。— Mening xitoy tili o'qituvchim 33 yoshda.",
+              "ru": "Существительное или числительное может выступать сказуемым (是 не требуется).\nЧасто используется для выражения возраста, дат и времени.\n\nПример:\n今天9月1号。— Сегодня 1 сентября. (9月1号 — именное сказуемое)\n明天星期三。— Завтра среда.\n我的汉语老师33岁。— Моему учителю китайского 33 года.",
+              "tj": "Исм ё рақам метавонад хабар бошад (是 лозим нест).\nАксар вақт барои ифодаи синну сол, сана ва вақт истифода мешавад.\n\nМисол:\n今天9月1号。— Имрӯз 1-уми сентябр аст. (9月1号 — хабари исмӣ)\n明天星期三。— Фардо чоршанбе аст.\n我的汉语老师33岁。— Устоди забони чинии ман 33 сола аст."
+            },
+            "examples": [
+              {
+                "zh": "今天9月1号。",
+                "pinyin": "Jīntiān jiǔ yuè yī hào.",
+                "translation": {
+                  "uz": "Bugun 1-sentabr.",
+                  "ru": "Сегодня 1 сентября.",
+                  "tj": "Имрӯз 1-уми сентябр аст."
+                }
+              },
+              {
+                "zh": "明天星期三。",
+                "pinyin": "Míngtiān xīngqī sān.",
+                "translation": {
+                  "uz": "Ertaga chorshanba.",
+                  "ru": "Завтра среда.",
+                  "tj": "Фардо чоршанбе аст."
+                }
+              },
+              {
+                "zh": "她今年二十岁。",
+                "pinyin": "Tā jīnnián èrshí suì.",
+                "translation": {
+                  "uz": "U bu yil yigirma yoshda.",
+                  "ru": "Ей в этом году двадцать лет.",
+                  "tj": "Вай имсол бист сола аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bugun 1-sentabr.",
+            "ru": "Сегодня 1 сентября.",
+            "tj": "Имрӯз 1-уми сентябр аст."
+          },
+          "tokens": [
+            "月",
+            "号",
+            "问",
+            "请",
+            "今天"
+          ],
+          "answer_tokens": [
+            "今天",
+            "月",
+            "号"
+          ],
+          "explanation": {
+            "uz": "今天9月1号。 — Jīntiān jiǔ yuè yī hào.",
+            "ru": "今天9月1号。 — Jīntiān jiǔ yuè yī hào.",
+            "tj": "今天9月1号。 — Jīntiān jiǔ yuè yī hào."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U bu yil yigirma yoshda.» — xitoychada qaysi biri?",
+            "ru": "«Ей в этом году двадцать лет.» — какое предложение по-китайски?",
+            "tj": "«Вай имсол бист сола аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "今天9月1号。",
+            "明天星期三。",
+            "她今年二十岁。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "她今年二十岁。 — Tā jīnnián èrshí suì.",
+            "ru": "她今年二十岁。 — Tā jīnnián èrshí suì.",
+            "tj": "她今年二十岁。 — Tā jīnnián èrshí suì."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "明天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 明天:",
+            "tj": "Маънои калимаи 明天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iltimos, marhamat",
+              "ru": "пожалуйста, разрешите спросить",
+              "tj": "лутфан, иҷозат диҳед"
+            },
+            {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            },
+            {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "明天 = ertaga (míngtiān)",
+            "ru": "明天 = завтра (míngtiān)",
+            "tj": "明天 = фардо (míngtiān)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我去学校看书。",
+          "pinyin": "Wǒ qù xuéxiào kàn shū.",
+          "translation": {
+            "uz": "Men maktabga kitob o'qigani boraman.",
+            "ru": "Я иду в школу читать.",
+            "tj": "Ман ба мактаб рафта китоб мехонам."
+          },
+          "tokens": {
+            "uz": [
+              "maktabga",
+              "Maktabga",
+              "Men",
+              "boraman",
+              "kitob",
+              "nima",
+              "o'qigani"
+            ],
+            "ru": [
+              "ты",
+              "читать",
+              "школу",
+              "Зачем",
+              "в",
+              "иду",
+              "Я"
+            ],
+            "tj": [
+              "Ман",
+              "мераваm",
+              "мехонам",
+              "Ту",
+              "рафта",
+              "китоб",
+              "мактаб",
+              "ба"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "maktabga",
+              "kitob",
+              "o'qigani",
+              "boraman"
+            ],
+            "ru": [
+              "Я",
+              "иду",
+              "в",
+              "школу",
+              "читать"
+            ],
+            "tj": [
+              "Ман",
+              "ба",
+              "мактаб",
+              "рафта",
+              "китоб",
+              "мехонам"
+            ]
+          },
+          "explanation": {
+            "uz": "我去学校看书。 — Men maktabga kitob o'qigani boraman.",
+            "ru": "我去学校看书。 — Я иду в школу читать.",
+            "tj": "我去学校看书。 — Ман ба мактаб рафта китоб мехонам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men maktabga kitob o'qigani boraman.",
+            "ru": "Я иду в школу читать.",
+            "tj": "Ман ба мактаб рафта китоб мехонам."
+          },
+          "tokens": [
+            "学校",
+            "请",
+            "看",
+            "我",
+            "问",
+            "去",
+            "书"
+          ],
+          "answer_tokens": [
+            "我",
+            "去",
+            "学校",
+            "看",
+            "书"
+          ],
+          "explanation": {
+            "uz": "我去学校看书。 — Wǒ qù xuéxiào kàn shū.",
+            "ru": "我去学校看书。 — Wǒ qù xuéxiào kàn shū.",
+            "tj": "我去学校看书。 — Wǒ qù xuéxiào kàn shū."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "书",
+          "pinyin": "shū",
+          "translation": {
+            "uz": "kitob",
+            "ru": "книга",
+            "tj": "китоб"
+          }
+        }
+      ]
+    }
+  ]
+}

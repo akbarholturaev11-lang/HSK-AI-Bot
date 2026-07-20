@@ -1,0 +1,706 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 39,
+  "source_lesson": 8,
+  "part_no": 4,
+  "part_count": 5,
+  "checkpoint": false,
+  "title": "让我想想再告诉你",
+  "subtitle": {
+    "uz": "Taklif so'rash, ruxsat berish va harakatni keyinga qoldirish haqida gapira olish; '……好吗' savol qolipini, 再 ravishin, 让 pivotal fe'lni va fe'llarning takrorlanishini o'zlashtirish.",
+    "ru": "Научиться просить разрешения, откладывать действие; освоить вопросную конструкцию '……好吗', наречие 再, глагол-пивот 让 и удвоение глаголов.",
+    "tj": "Омӯзиши хостани иҷозат, ба баъд гузоштани амал; аз бар кардани сохти саволии '……好吗', зарфи 再, феъли пивотии 让 ва такрори феълҳо."
+  },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "病",
+      "pinyin": "bìng",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "kasal bo'lmoq; kasallik",
+        "ru": "болеть; болезнь",
+        "tj": "бемор шудан; беморӣ"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "运动",
+      "pinyin": "yùndòng",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "sport qilmoq; sport, mashq",
+        "ru": "заниматься спортом; спорт, движение",
+        "tj": "варзиш кардан; варзиш"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "颜色",
+      "pinyin": "yánsè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "rang",
+        "ru": "цвет",
+        "tj": "ранг"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 4,
+      "title": {
+        "uz": "Fe'lning takrorlanishi (kamaytirish ma'nosi)",
+        "ru": "Удвоение глагола (смягчение действия)",
+        "tj": "Такрори феъл (сабуктарини амал)"
+      },
+      "title_zh": "动词的重叠",
+      "rule": {
+        "uz": "Fe'lni takrorlash harakatning qisqa yoki engil bajarilishini bildiradi.\nBir bo'g'inli fe'l AB shaklida (看看, 想想),\nikki bo'g'inli fe'l ABAB shaklida (运动运动) takrorlanadi.\nBu usul muloyim yoki noaniq ifodalar uchun ishlatiladi.",
+        "ru": "Удвоение глагола означает краткое или лёгкое выполнение действия.\nОдносложный глагол удваивается по схеме AB (看看, 想想),\nдвусложный — по схеме ABAB (运动运动).\nИспользуется для смягчённых или неопределённых выражений.",
+        "tj": "Такрори феъл нишон медиҳад, ки амал кӯтоҳ ё сабук иҷро мешавад.\nФеъли яктаҳарфа бо схемаи AB такрор мешавад (看看, 想想),\nфеъли дутаҳарфа бо схемаи ABAB (运动运动).\nБарои ифодаҳои нарм ё ноаниқ истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "让我想想再告诉你。",
+          "pinyin": "Ràng wǒ xiǎngxiang zài gàosu nǐ.",
+          "translation": {
+            "uz": "Bir o'ylab, keyin aytaman.",
+            "ru": "Дай подумаю и потом скажу.",
+            "tj": "Бигзор андеша кунам, баъд мегӯям."
+          }
+        },
+        {
+          "zh": "我们出去运动运动吧。",
+          "pinyin": "Wǒmen chūqù yùndòng yùndòng ba.",
+          "translation": {
+            "uz": "Chiqib sport qilaylik.",
+            "ru": "Выйдем позанимаемся спортом.",
+            "tj": "Биёем берун чоре варзиш кунем."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "我们下午去看电影，好吗？",
+          "pinyin": "Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
+          "text": {
+            "uz": "Tushdan keyin kino ko'rgani boramizmi?",
+            "ru": "Давай во второй половине дня сходим в кино, хорошо?",
+            "tj": "Биёед баъд аз нисфирӯзӣ ба кино равем, хуб аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "今天下午我没有时间，明天下午再去吧。",
+          "pinyin": "Jīntiān xiàwǔ wǒ méiyǒu shíjiān, míngtiān xiàwǔ zài qù ba.",
+          "text": {
+            "uz": "Bugun tushdan keyin vaqtim yo'q, ertaga tushdan keyin boramiz.",
+            "ru": "Сегодня после полудня у меня нет времени, пойдём завтра.",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ вақт надорам, фардо равем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想看什么电影？",
+          "pinyin": "Nǐ xiǎng kàn shénme diànyǐng?",
+          "text": {
+            "uz": "Qanday film ko'rmoqchisan?",
+            "ru": "Какой фильм ты хочешь посмотреть?",
+            "tj": "Ту чӣ филм дидан мехоҳӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "让我想想再告诉你。",
+          "pinyin": "Ràng wǒ xiǎngxiang zài gàosu nǐ.",
+          "text": {
+            "uz": "Bir o'ylab, keyin aytaman.",
+            "ru": "Дай подумаю и потом скажу.",
+            "tj": "Бигзор андеша кунам, баъд мегӯям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yotoqxonada",
+        "ru": "В общежитии",
+        "tj": "Дар хобгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "外边天气很好，我们出去运动运动吧！",
+          "pinyin": "Wàibian tiānqì hěn hǎo, wǒmen chūqù yùndòng yùndòng ba!",
+          "text": {
+            "uz": "Tashqarida havo juda yaxshi, chiqib sport qilaylik!",
+            "ru": "На улице хорошая погода, выйдем позанимаемся спортом!",
+            "tj": "Берун хаво хуб аст, биёем чоре варзиш кунем!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你等等我，好吗？王老师让我给大卫打个电话。",
+          "pinyin": "Nǐ děngdeng wǒ, hǎo ma? Wáng lǎoshī ràng wǒ gěi Dàwèi dǎ ge diànhuà.",
+          "text": {
+            "uz": "Menga bir kuting, bo'ladimi? Vang o'qituvchi Devidga qo'ng'iroq qilishimni so'radi.",
+            "ru": "Подожди меня, хорошо? Учитель Ван попросил меня позвонить Дэвиду.",
+            "tj": "Маро каме интизор шав, хуб аст? Устод Ван аз ман хост, ки ба Дэвид занг занам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "回来再打吧。找大卫有什么事情吗？",
+          "pinyin": "Huílái zài dǎ ba. Zhǎo Dàwèi yǒu shénme shìqing ma?",
+          "text": {
+            "uz": "Qaytib kelgach qo'ng'iroq qilarsiz. Devidga nima ish bor?",
+            "ru": "Позвони потом, когда вернёшься. Какое дело к Дэвиду?",
+            "tj": "Баъди баргашт занг зан. Бо Дэвид чӣ кор дорӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "听说大卫病了，我想找时间去看看他。",
+          "pinyin": "Tīngshuō Dàwèi bìng le, wǒ xiǎng zhǎo shíjiān qù kànkan tā.",
+          "text": {
+            "uz": "Eshitdim, Devid kasal, uни ko'rgani borishga vaqt topmoqchiman.",
+            "ru": "Говорят, Дэвид заболел, хочу найти время навестить его.",
+            "tj": "Шунидам, Дэвид бемор шуд, мехоҳам вақт ёбам ва ӯро бинам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonaning qabulida",
+        "ru": "На стойке регистрации гостиницы",
+        "tj": "Дар қабулгоҳи меҳмонхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "服务员，我房间的门打不开了。",
+          "pinyin": "Fúwùyuán, wǒ fángjiān de mén dǎ bù kāi le.",
+          "text": {
+            "uz": "Ofitsiant, xonamning eshigi ochmayapti.",
+            "ru": "Сотрудник, дверь моего номера не открывается.",
+            "tj": "Хизматрасон, дари хонаи ман намекушояд."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "您住哪个房间？",
+          "pinyin": "Nín zhù nǎ ge fángjiān?",
+          "text": {
+            "uz": "Siz qaysi xonada turasiz?",
+            "ru": "В каком номере вы проживаете?",
+            "tj": "Шумо дар кадом хона ҳастед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "317。",
+          "pinyin": "Sān yāo qī.",
+          "text": {
+            "uz": "317-xona.",
+            "ru": "317.",
+            "tj": "317."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好的，我叫人去看看。",
+          "pinyin": "Hǎo de, wǒ jiào rén qù kànkan.",
+          "text": {
+            "uz": "Xop, birovni yuborib qarayman.",
+            "ru": "Хорошо, пошлю кого-нибудь посмотреть.",
+            "tj": "Хуб, касеро мефиристам бинад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda",
+        "ru": "В магазине",
+        "tj": "Дар мағоза"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你看看这几件衣服怎么样。",
+          "pinyin": "Nǐ kànkan zhè jǐ jiàn yīfu zěnmeyàng.",
+          "text": {
+            "uz": "Bu bir nechta kiyimga bir qarab ber, qandayligini ayt.",
+            "ru": "Посмотри на эти несколько вещей, как они?",
+            "tj": "Ин чанд либосро каме бин, чӣ гуна?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这件白的有点儿长，那件黑的有点儿贵。",
+          "pinyin": "Zhè jiàn bái de yǒudiǎnr cháng, nà jiàn hēi de yǒudiǎnr guì.",
+          "text": {
+            "uz": "Bu oqi biroz uzun, u qorasi biroz qimmat.",
+            "ru": "Эта белая немного длинная, та чёрная немного дорогая.",
+            "tj": "Ин сафеда каме дароз, он сиёҳа каме гарон."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这件红的呢？这是今天新来的。",
+          "pinyin": "Zhè jiàn hóng de ne? Zhè shì jīntiān xīn lái de.",
+          "text": {
+            "uz": "Bu qizilchi? Bu bugun yangi kelgan.",
+            "ru": "А эта красная? Это новинка сегодняшнего дня.",
+            "tj": "Ин сурхча чӣ? Ин имрӯз нав омадааст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "让我再看看。",
+          "pinyin": "Ràng wǒ zài kànkan.",
+          "text": {
+            "uz": "Yana bir qarayin.",
+            "ru": "Дай посмотрю ещё раз.",
+            "tj": "Бигзор боз бинам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "no": 1,
+            "zh": "病",
+            "pinyin": "bìng",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "kasal bo'lmoq; kasallik",
+              "ru": "болеть; болезнь",
+              "tj": "бемор шудан; беморӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kasal bo'lmoq; kasallik' xitoycha qaysi?",
+            "ru": "'болеть; болезнь' по-китайски?",
+            "tj": "'бемор шудан; беморӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "再",
+            "告诉",
+            "病",
+            "让"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kasal bo'lmoq; kasallik = 病 (bìng)",
+            "ru": "болеть; болезнь = 病 (bìng)",
+            "tj": "бемор шудан; беморӣ = 病 (bìng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "运动",
+            "pinyin": "yùndòng",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "sport qilmoq; sport, mashq",
+              "ru": "заниматься спортом; спорт, движение",
+              "tj": "варзиш кардан; варзиш"
+            }
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "运动",
+          "pinyin": "yùndòng",
+          "options": [
+            "告诉",
+            "再",
+            "运动",
+            "让"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "运动 — sport qilmoq; sport, mashq (yùndòng)",
+            "ru": "运动 — заниматься спортом; спорт, движение (yùndòng)",
+            "tj": "运动 — варзиш кардан; варзиш (yùndòng)"
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "颜色",
+            "pinyin": "yánsè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "rang",
+              "ru": "цвет",
+              "tj": "ранг"
+            }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "颜色",
+          "pinyin": "yánsè",
+          "translation": {
+            "uz": "rang",
+            "ru": "цвет",
+            "tj": "ранг"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "颜色 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 颜色:",
+            "tj": "Маънои калимаи 颜色-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+              "ru": "позволять, разрешать; приказывать",
+              "tj": "иҷозат додан; дастур додан"
+            },
+            {
+              "uz": "rang",
+              "ru": "цвет",
+              "tj": "ранг"
+            },
+            {
+              "uz": "yana, keyin, qayta (kelajak uchun)",
+              "ru": "снова, потом, опять (о будущем)",
+              "tj": "боз, баъд, дубора (барои оянда)"
+            },
+            {
+              "uz": "aytib bermoq, xabar bermoq",
+              "ru": "сказать, сообщить",
+              "tj": "гуфтан, хабар додан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "颜色 = rang (yánsè)",
+            "ru": "颜色 = цвет (yánsè)",
+            "tj": "颜色 = ранг (yánsè)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bìng?",
+            "tj": "bìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "再",
+            "病",
+            "告诉",
+            "让"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "病 = kasal bo'lmoq; kasallik (bìng)",
+            "ru": "病 = болеть; болезнь (bìng)",
+            "tj": "病 = бемор шудан; беморӣ (bìng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "病",
+              {
+                "uz": "kasal bo'lmoq; kasallik",
+                "ru": "болеть; болезнь",
+                "tj": "бемор шудан; беморӣ"
+              }
+            ],
+            [
+              "运动",
+              {
+                "uz": "sport qilmoq; sport, mashq",
+                "ru": "заниматься спортом; спорт, движение",
+                "tj": "варзиш кардан; варзиш"
+              }
+            ],
+            [
+              "颜色",
+              {
+                "uz": "rang",
+                "ru": "цвет",
+                "tj": "ранг"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "Fe'lning takrorlanishi (kamaytirish ma'nosi)",
+              "ru": "Удвоение глагола (смягчение действия)",
+              "tj": "Такрори феъл (сабуктарини амал)"
+            },
+            "title_zh": "动词的重叠",
+            "rule": {
+              "uz": "Fe'lni takrorlash harakatning qisqa yoki engil bajarilishini bildiradi.\nBir bo'g'inli fe'l AB shaklida (看看, 想想),\nikki bo'g'inli fe'l ABAB shaklida (运动运动) takrorlanadi.\nBu usul muloyim yoki noaniq ifodalar uchun ishlatiladi.",
+              "ru": "Удвоение глагола означает краткое или лёгкое выполнение действия.\nОдносложный глагол удваивается по схеме AB (看看, 想想),\nдвусложный — по схеме ABAB (运动运动).\nИспользуется для смягчённых или неопределённых выражений.",
+              "tj": "Такрори феъл нишон медиҳад, ки амал кӯтоҳ ё сабук иҷро мешавад.\nФеъли яктаҳарфа бо схемаи AB такрор мешавад (看看, 想想),\nфеъли дутаҳарфа бо схемаи ABAB (运动运动).\nБарои ифодаҳои нарм ё ноаниқ истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "让我想想再告诉你。",
+                "pinyin": "Ràng wǒ xiǎngxiang zài gàosu nǐ.",
+                "translation": {
+                  "uz": "Bir o'ylab, keyin aytaman.",
+                  "ru": "Дай подумаю и потом скажу.",
+                  "tj": "Бигзор андеша кунам, баъд мегӯям."
+                }
+              },
+              {
+                "zh": "我们出去运动运动吧。",
+                "pinyin": "Wǒmen chūqù yùndòng yùndòng ba.",
+                "translation": {
+                  "uz": "Chiqib sport qilaylik.",
+                  "ru": "Выйдем позанимаемся спортом.",
+                  "tj": "Биёем берун чоре варзиш кунем."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bir o'ylab, keyin aytaman.",
+            "ru": "Дай подумаю и потом скажу.",
+            "tj": "Бигзор андеша кунам, баъд мегӯям."
+          },
+          "tokens": [
+            "想",
+            "想",
+            "你",
+            "再",
+            "找",
+            "等",
+            "我",
+            "告诉",
+            "让"
+          ],
+          "answer_tokens": [
+            "让",
+            "我",
+            "想",
+            "想",
+            "再",
+            "告诉",
+            "你"
+          ],
+          "explanation": {
+            "uz": "让我想想再告诉你。 — Ràng wǒ xiǎngxiang zài gàosu nǐ.",
+            "ru": "让我想想再告诉你。 — Ràng wǒ xiǎngxiang zài gàosu nǐ.",
+            "tj": "让我想想再告诉你。 — Ràng wǒ xiǎngxiang zài gàosu nǐ."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "听说大卫病了，我想找时间去看看他。",
+          "pinyin": "Tīngshuō Dàwèi bìng le, wǒ xiǎng zhǎo shíjiān qù kànkan tā.",
+          "options": [
+            "我们下午去看电影，好吗？",
+            "你想看什么电影？",
+            "今天下午我没有时间，明天下午再去吧。",
+            "听说大卫病了，我想找时间去看看他。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "听说大卫病了，我想找时间去看看他。 — Eshitdim, Devid kasal, uни ko'rgani borishga vaqt topmoqchiman.",
+            "ru": "听说大卫病了，我想找时间去看看他。 — Говорят, Дэвид заболел, хочу найти время навестить его.",
+            "tj": "听说大卫病了，我想找时间去看看他。 — Шунидам, Дэвид бемор шуд, мехоҳам вақт ёбам ва ӯро бинам."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我们出去运动运动吧。",
+          "pinyin": "Wǒmen chūqù yùndòng yùndòng ba.",
+          "translation": {
+            "uz": "Chiqib sport qilaylik.",
+            "ru": "Выйдем позанимаемся спортом.",
+            "tj": "Биёем берун чоре варзиш кунем."
+          },
+          "tokens": {
+            "uz": [
+              "Devid",
+              "Eshitdim",
+              "sport",
+              "Chiqib",
+              "qilaylik"
+            ],
+            "ru": [
+              "Дэвид",
+              "Выйдем",
+              "позанимаемся",
+              "спортом",
+              "Говорят"
+            ],
+            "tj": [
+              "варзиш",
+              "Дэвид",
+              "кунем",
+              "чоре",
+              "берун",
+              "Шунидам",
+              "Биёем"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Chiqib",
+              "sport",
+              "qilaylik"
+            ],
+            "ru": [
+              "Выйдем",
+              "позанимаемся",
+              "спортом"
+            ],
+            "tj": [
+              "Биёем",
+              "берун",
+              "чоре",
+              "варзиш",
+              "кунем"
+            ]
+          },
+          "explanation": {
+            "uz": "我们出去运动运动吧。 — Chiqib sport qilaylik.",
+            "ru": "我们出去运动运动吧。 — Выйдем позанимаемся спортом.",
+            "tj": "我们出去运动运动吧。 — Биёем берун чоре варзиш кунем."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hēi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hēi?",
+            "tj": "hēi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "黑",
+            "让",
+            "告诉",
+            "再"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "黑 = qora (rang) (hēi)",
+            "ru": "黑 = чёрный (цвет) (hēi)",
+            "tj": "黑 = сиёҳ (ранг) (hēi)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "颜色",
+          "pinyin": "yánsè",
+          "translation": {
+            "uz": "rang",
+            "ru": "цвет",
+            "tj": "ранг"
+          }
+        }
+      ]
+    }
+  ]
+}
