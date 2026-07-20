@@ -20,11 +20,21 @@
 
   /* Darsdagi T() ad-* kalitlaridan olingan matnlar (3 til). */
   var I18N = {
-    uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"Obuna olish",adSubCont:"Reklama bilan davom etish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitHead:"To'xtama — eng zo'r qismi oldinda!",limitSub:"Obunani ochsang, barcha cheklovlar yo'qoladi: tez, oson va cheksiz o'rganasan. Xitoy tilini bir necha oyda o'zlashtir — bugun boshlaganing ertaga natijaga aylanadi.",limitSubscribe:"Obunani ochish",limitAd:"Yoki reklama ko'rib davom etish",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish"},
-    ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Оформить подписку",adSubCont:"Продолжить с рекламой",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitHead:"Не останавливайся — впереди самое интересное!",limitSub:"С подпиской исчезают все ограничения: учишься быстро, легко и без лимитов. Освой китайский за пару месяцев — то, что начнёшь сегодня, завтра станет результатом.",limitSubscribe:"Открыть подписку",limitAd:"Или продолжить с рекламой",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу"},
-    tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"Обуна шудан",adSubCont:"Идома бо реклама",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitHead:"Наист — беҳтарин қисмаш дар пеш аст!",limitSub:"Бо обуна ҳама маҳдудиятҳо нест мешаванд: зуд, осон ва бе лимит меомӯзӣ. Забони чиниро дар чанд моҳ аз худ кун — он чи имрӯз оғоз мекунӣ, фардо натиҷа мешавад.",limitSubscribe:"Кушодани обуна",limitAd:"Ё бо реклама идома додан",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст"}
+    uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"Obuna olish",adSubCont:"Reklama bilan davom etish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitHead:"To'xtama — eng zo'r qismi oldinda!",limitSub:"Obunani ochsang, barcha cheklovlar yo'qoladi: tez, oson va cheksiz o'rganasan. Xitoy tilini bir necha oyda o'zlashtir — bugun boshlaganing ertaga natijaga aylanadi.",limitSubscribe:"Obunani ochish",limitAd:"Yoki reklama ko'rib davom etish",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
+        f_recognition:"Ieroglif tanish",f_pronunciation:"Talaffuz mashqi",f_memorize:"Yodlash",f_training_test:"Test markazi",f_placement:"Daraja aniqlash testi",f_mistake_review:"Xatolar ustida ishlash"},
+    ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Оформить подписку",adSubCont:"Продолжить с рекламой",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitHead:"Не останавливайся — впереди самое интересное!",limitSub:"С подпиской исчезают все ограничения: учишься быстро, легко и без лимитов. Освой китайский за пару месяцев — то, что начнёшь сегодня, завтра станет результатом.",limitSubscribe:"Открыть подписку",limitAd:"Или продолжить с рекламой",limitWhy:"Бесплатная практика на сегодня закончилась: «{s}» в бесплатном режиме открывается 1 раз в день. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",limitWhyPlain:"Бесплатный лимит на сегодня исчерпан. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу",
+        f_recognition:"Распознавание иероглифов",f_pronunciation:"Произношение",f_memorize:"Запоминание",f_training_test:"Тест-центр",f_placement:"Тест на уровень",f_mistake_review:"Работа над ошибками"},
+    tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"Обуна шудан",adSubCont:"Идома бо реклама",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitHead:"Наист — беҳтарин қисмаш дар пеш аст!",limitSub:"Бо обуна ҳама маҳдудиятҳо нест мешаванд: зуд, осон ва бе лимит меомӯзӣ. Забони чиниро дар чанд моҳ аз худ кун — он чи имрӯз оғоз мекунӣ, фардо натиҷа мешавад.",limitSubscribe:"Кушодани обуна",limitAd:"Ё бо реклама идома додан",limitWhy:"Машқи ройгони имрӯза тамом шуд: «{s}» дар ҳолати ройгон рӯзе 1 маротиба кушода мешавад. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",limitWhyPlain:"Лимити ройгони имрӯза тамом шуд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст",
+        f_recognition:"Шинохти иероглиф",f_pronunciation:"Машқи талаффуз",f_memorize:"Азёдкунӣ",f_training_test:"Маркази тест",f_placement:"Тести муайянкунии сатҳ",f_mistake_review:"Кор бар хатоҳо"}
   };
   function T(){ return I18N[CFG.lang] || I18N.uz; }
+  /* "Nega bu oyna chiqdi?" — limit ekranida sababni ochiq aytamiz: qaysi bo'lim,
+     qanday limit, qachon yana ochiladi. Bo'lim nomi topilmasa umumiy matn. */
+  function limitWhyText(feature){
+    var t=T(),name=t["f_"+String(feature||"")];
+    if(!name)return t.limitWhyPlain||"";
+    return String(t.limitWhy||"").replace("{s}",name);
+  }
 
   var PROMO = {
     uz:[{i:"microphone-2",t:"Birinchi kundan gapirasan",s:"Panda 阿宝 sabr bilan tinglaydi va xatoingni yumshoq tuzatadi"},
@@ -86,10 +96,19 @@
   +'.caa-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px}'
   +'.caa-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);transition:width .3s,background .3s}'
   +'.caa-dots i.on{width:18px;border-radius:6px;background:#D6493C}'
-  /* Limit-promo (bepul tugagach): obuna asosiy, reklama mayda ikkilamchi */
+  /* Limit-promo (bepul tugagach): obuna asosiy, reklama mayda ikkilamchi.
+     Matn uzun tilda (ru/tj) ekranga sig'masligi mumkin — shuning uchun bu
+     rejimda karusel o'z balandligini oladi va blok kerak bo'lsa scroll bo'ladi
+     (aks holda promo bloki obuna kartasining ustiga chiqib ketardi). */
+  +'.caa-ov.limit{overflow-y:auto;-webkit-overflow-scrolling:touch}'
+  +'.caa-ov.limit .caa-promo{height:auto;min-height:210px}'
   +'.caa-ov.limit .caa-sub-t{font-size:17px;line-height:1.3;margin:0 0 6px}'
   +'.caa-sub-desc{margin:0 0 6px;font-size:13px;line-height:1.45;color:rgba(255,255,255,.72);text-align:center}'
   +'.caa-sub-desc[hidden]{display:none!important}'
+  /* "Nega bu oyna chiqdi?" — sabab qatori (limit ekranida, sarlavha ustida) */
+  +'.caa-why{display:flex;align-items:flex-start;gap:9px;margin:0 0 4px;padding:11px 12px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);border-radius:13px;font-size:12.5px;line-height:1.45;color:rgba(255,255,255,.8);text-align:left}'
+  +'.caa-why[hidden]{display:none!important}'
+  +'.caa-why i{color:#F0C56A;font-size:17px;flex-shrink:0;margin-top:1px}'
   +'.caa-limit-foot{display:flex;flex-direction:column;gap:2px;margin-top:6px}'
   +'.caa-limit-foot[hidden]{display:none!important}'
   +'.caa-limit-link{background:transparent;border:none;color:rgba(255,255,255,.58);font-family:inherit;font-size:13px;font-weight:600;padding:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}'
@@ -125,7 +144,8 @@
       +'<div class="caa-meta"><b class="caa-title"></b><small class="caa-note"></small>'
       +'<div class="caa-ps"></div>'
       +'<button class="caa-cta caa-cta0" disabled></button>'
-      +'<div class="caa-sub" hidden><p class="caa-sub-t"></p><p class="caa-sub-desc" hidden></p><div class="caa-benefits"></div>'
+      +'<div class="caa-sub" hidden><div class="caa-why" hidden><i class="ti ti-info-circle"></i><span class="caa-why-t"></span></div>'
+      +'<p class="caa-sub-t"></p><p class="caa-sub-desc" hidden></p><div class="caa-benefits"></div>'
       +'<button class="caa-cta caa-pay"></button><button class="caa-cta ghost caa-cont"></button>'
       +'<div class="caa-limit-foot" hidden><button class="caa-limit-link ad caa-lim-ad" hidden></button></div></div>'
       +'</div>'
@@ -137,7 +157,8 @@
       video:q(".caa-video"), status:q(".caa-status"), visit:q(".caa-visit"), visitT:q(".caa-visit-t"),
       promo:q(".caa-promo"), promoSlide:q(".caa-promo-slide"), dots:q(".caa-dots"),
       title:q(".caa-title"), note:q(".caa-note"), ps:q(".caa-ps"), cta0:q(".caa-cta0"), sub:q(".caa-sub"),
-      subTitle:q(".caa-sub-t"), subDesc:q(".caa-sub-desc"), benefits:q(".caa-benefits"), pay:q(".caa-pay"), cont:q(".caa-cont"),
+      subTitle:q(".caa-sub-t"), subDesc:q(".caa-sub-desc"), why:q(".caa-why"), whyT:q(".caa-why-t"),
+      benefits:q(".caa-benefits"), pay:q(".caa-pay"), cont:q(".caa-cont"),
       limFoot:q(".caa-limit-foot"), limAd:q(".caa-lim-ad"), x:q(".caa-x")};
     els.vwrap.addEventListener("click", openAdLink);
     els.ps.addEventListener("click", onPsClick);
@@ -276,7 +297,7 @@
         els.pay.innerHTML='<i class="ti ti-lock-open"></i> '+esc(t.adSubPay);
         els.pay.onclick=subscribe;els.cont.onclick=done;
         /* Limit-promodan qolgan holatni tozalaymiz (subDesc, foot, cont ko'rinishi). */
-        els.subDesc.hidden=true;els.limFoot.hidden=true;els.cont.style.display="";
+        els.subDesc.hidden=true;els.why.hidden=true;els.limFoot.hidden=true;els.cont.style.display="";
         els.ov.classList.remove("limit");
         els.ov.classList.add("on");els.ov.setAttribute("aria-hidden","false");
         clearInterval(STATE.timer);
@@ -373,16 +394,21 @@
     els.ov.classList.remove("on","caa-done","limit");
     els.ov.setAttribute("aria-hidden","true");
     if(els.limFoot)els.limFoot.hidden=true;
+    if(els.why)els.why.hidden=true;
   }
   /* Bepul limit tugagach ko'rsatiladigan promo ekran — reklama tugaganidagi
      ekran bilan bir xil uslub (aylanuvchi karusel + obuna), lekin obuna ASOSIY,
      "reklama bilan davom etish" esa mayda ikkilamchi havola.
-     opts: {adAvailable, onSubscribe, onContinueAd, onBack}. */
+     Eng tepada — "nega bu oyna chiqdi" sababi (qaysi bo'lim, qanday limit,
+     qachon yana ochiladi), keyin obunaning foydasi.
+     opts: {adAvailable, onSubscribe, onContinueAd, onBack, reason}. */
   function showLimitPromo(opts){
     opts=opts||{};
     ensureDom();
     hidePs();
     var t=T();
+    var why=opts.reason||limitWhyText(CFG.feature);
+    if(why){els.whyT.textContent=why;els.why.hidden=false}else{els.why.hidden=true}
     els.subTitle.textContent=t.limitHead||t.adSubTitle;
     if(t.limitSub){els.subDesc.textContent=t.limitSub;els.subDesc.hidden=false}else{els.subDesc.hidden=true}
     els.benefits.innerHTML="";

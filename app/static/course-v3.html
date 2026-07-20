@@ -147,6 +147,9 @@ button{cursor:pointer}
 .adpromo-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px}
 .adpromo-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);transition:width .3s,background .3s}
 .adpromo-dots i.on{width:18px;border-radius:6px;background:#D6493C}
+/* "nega bu oyna chiqdi" sabab qatori (paywall ichida, promodan yuqorida) */
+.paywhy{display:flex;align-items:flex-start;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:10px;font-size:12.5px;line-height:1.5;color:var(--ink2);text-align:left}
+.paywhy i{color:var(--gold);font-size:17px;flex-shrink:0;margin-top:1px}
 /* sheet/paywall ichidagi promo (och fon) */
 .spromo{position:relative;text-align:center;background:var(--cinbg);border:1px solid var(--line);border-radius:16px;padding:20px 16px 30px;margin-bottom:10px;overflow:hidden}
 .spromo-slide{display:flex;flex-direction:column;align-items:center;animation:promoIn .5s ease}
@@ -2908,10 +2911,33 @@ function getPaywallTitle(ctx){
   }
   return ctx==="lockedLesson"?t.lockedLesson:t.payTitle;
 }
+/* "Nega bu oyna chiqdi?" — user hayron bo'lmasligi uchun sababni ochiq aytamiz
+   va darhol obunaning foydasiga bog'laymiz. Profil (user o'zi ochgan) va
+   umumiy holatda sabab yo'q — u yerda oyna kutilgan. */
+function payWhyText(ctx){
+  var m={
+    uz:{lesson:"Bepul darslaring tugadi: bepul rejimda har darajadan dastlabki qismlar ochiladi. Obuna bilan HSK 1–4 ning barcha darslari shu zahoti ochiladi va to'xtamay davom etasan.",
+        pron:"Bugungi bepul talaffuz tekshiruvlaring tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheksiz gapirib mashq qilasan."},
+    ru:{lesson:"Бесплатные уроки закончились: в бесплатном режиме открыты только первые части каждого уровня. С подпиской все уроки HSK 1–4 открываются сразу, и вы идёте дальше без пауз.",
+        pron:"Бесплатные проверки произношения на сегодня закончились. Завтра снова бесплатно — а с подпиской говорите без ограничений уже сегодня."},
+    tj:{lesson:"Дарсҳои ройгон тамом шуданд: дар ҳолати ройгон танҳо қисмҳои аввали ҳар сатҳ кушода мешаванд. Бо обуна ҳамаи дарсҳои HSK 1–4 фавран кушода мешаванд ва бе таваққуф идома медиҳӣ.",
+        pron:"Санҷишҳои ройгони талаффузи имрӯза тамом шуданд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият гап мезанӣ."}
+  }[LANG]||{};
+  if(typeof ctx==="object" && ctx && ctx.lesson)return m.lesson||"";
+  if(ctx==="lockedLesson")return m.lesson||"";
+  if(ctx==="pronLimit")return m.pron||"";
+  return "";
+}
+function payWhyHtml(ctx){
+  var why=payWhyText(ctx);
+  if(!why)return "";
+  return '<div class="paywhy"><i class="ti ti-info-circle"></i><span>'+esc(why)+'</span></div>';
+}
 function paywallHtml(ctx){
   var t=T();var ctxTitle=getPaywallTitle(ctx);
   var showSubtitle=typeof ctx!=="object" || !ctx.lesson;
   return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:14px;color:var(--ink)">'+esc(ctxTitle)+'</div>'+(showSubtitle?'<div class="tr">'+t.paySub+'</div>':'')+'</div>'
+    +payWhyHtml(ctx)
     +promoBlockHtml()
     +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+t.subscribe+'</button>'
     +payHintHtml();
