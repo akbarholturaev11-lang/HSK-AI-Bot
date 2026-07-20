@@ -159,6 +159,18 @@ html.theme-light .lang-btn.active{border-color:rgba(194,64,58,.55);}
 html.theme-light .lang-switch{display:none;}
 html.theme-light .hero-copy{display:none;}
 html.theme-light .hero{padding-bottom:10px;}
+/* ---- dars ichidan ochiladigan yozilish ekrani (?fast=1) ---- */
+.fw-card{max-width:340px}
+.fw-box{width:min(330px,86vw);height:min(330px,86vw);touch-action:pan-y}
+.fw-info{margin-top:18px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:14px 16px;text-align:center}
+.fw-py{font-size:23px;font-weight:700;color:var(--accent);line-height:1.25}
+.fw-mn{margin-top:9px;padding-top:10px;border-top:1px solid var(--border);font-size:14.5px;color:var(--text);line-height:1.5}
+.fw-info.no-py .fw-py{display:none}
+.fw-info.no-mn .fw-mn{display:none}
+.fw-info.no-py .fw-mn{margin-top:0;padding-top:0;border-top:none}
+.fw-hint{margin-top:12px;font-size:11.5px;color:var(--text2);text-align:center;line-height:1.4}
+.fw-back{margin-top:14px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-family:inherit;font-size:15px;font-weight:700}
+.fw-back:active{opacity:.88}
 </style>
 </head>
 <body>
@@ -373,9 +385,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var isFastLight = fastParams.get('theme') === 'light';
     if(isFastLight) document.documentElement.classList.add('theme-light');
     var labels = {
-      uz:{close:'Yopish',play:'Ko\'rsatish',replay:'Qayta',dict:'Lug\'atda ochish',strokes:function(n){return n + ' chiziq';},fallback:'Yozilish animatsiyasi yuklanmadi'},
-      ru:{close:'Закрыть',play:'Показать',replay:'Повторить',dict:'Открыть в словаре',strokes:function(n){return n + ' черт';},fallback:'Анимация написания не загрузилась'},
-      tj:{close:'Пӯшидан',play:'Нишон додан',replay:'Такрор',dict:'Дар луғат кушодан',strokes:function(n){return n + ' хат';},fallback:'Аниматсияи навишт бор нашуд'}
+      uz:{close:'Yopish',play:'Ko\'rsatish',replay:'Qayta',dict:'Lug\'atda ochish',strokes:function(n){return n + ' chiziq';},fallback:'Yozilish animatsiyasi yuklanmadi',back:'Darsga qaytish',swipe:'Keyingi ieroglif uchun yon tomonga suring'},
+      ru:{close:'Закрыть',play:'Показать',replay:'Повторить',dict:'Открыть в словаре',strokes:function(n){return n + ' черт';},fallback:'Анимация написания не загрузилась',back:'Вернуться к уроку',swipe:'Проведите в сторону — следующий иероглиф'},
+      tj:{close:'Пӯшидан',play:'Нишон додан',replay:'Такрор',dict:'Дар луғат кушодан',strokes:function(n){return n + ' хат';},fallback:'Аниматсияи навишт бор нашуд',back:'Бозгашт ба дарс',swipe:'Барои иероглифи навбатӣ ба паҳлӯ кашед'}
     }[lang] || {};
     var raw = fastParams.get('char') || '字';
     var chars = Array.from(raw).filter(function(c){return c.trim();});
@@ -398,26 +410,30 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     }
     app.innerHTML =
       '<div class="view" style="display:flex">'+
-        '<div class="detail-header"><button class="back-btn" id="fast-close">×</button><div class="detail-level">'+e(chars.length>1?'1 / '+chars.length:'HSK AI')+'</div></div>'+
+        '<div class="detail-header"><button class="back-btn" id="fast-close">×</button><div class="detail-level">HSK AI</div></div>'+
         '<div class="detail-body">'+
-          '<div class="writer-card">'+
+          '<div class="writer-card fw-card">'+
             '<div class="writer-toolbar">'+
               '<button class="nav-arrow" id="fast-prev">‹</button>'+
               '<div class="writer-info"><div class="writer-pos" id="fast-pos"></div><div class="writer-strokes" id="fast-strokes"></div></div>'+
               '<button class="nav-arrow" id="fast-next">›</button>'+
             '</div>'+
-            '<div class="char-box-lg" id="fast-box"></div>'+
-            '<div class="detail-pinyin" id="fast-pinyin" style="margin-top:16px"></div>'+
-            '<div class="detail-meaning" id="fast-meaning"></div>'+
+            '<div class="char-box-lg fw-box" id="fast-box"></div>'+
             '<div class="writer-controls">'+
-              '<button class="ctrl-btn ctrl-main" id="fast-play">▶</button>'+
+              '<button class="ctrl-btn ctrl-main" id="fast-play">⏸</button>'+
               '<button class="ctrl-btn" id="fast-replay">↻</button>'+
             '</div>'+
-            '<button class="next-word-btn" id="fast-dict"><span>字</span><b>'+e(labels.dict)+'</b></button>'+
+            (chars.length > 1 ? '<div class="fw-hint">'+e(labels.swipe)+'</div>' : '')+
+            '<div class="fw-info" id="fast-info">'+
+              '<div class="fw-py" id="fast-pinyin"></div>'+
+              '<div class="fw-mn" id="fast-meaning"></div>'+
+            '</div>'+
+            '<button class="next-word-btn" id="fast-dict" style="margin-top:14px"><span>字</span><b>'+e(labels.dict)+'</b></button>'+
+            '<button class="fw-back" id="fast-back">'+e(labels.back)+'</button>'+
           '</div>'+
         '</div>'+
       '</div>';
-    var idx = 0, writer = null;
+    var idx = 0, writer = null, paused = false;
     var box = document.getElementById('fast-box');
     var pos = document.getElementById('fast-pos');
     var strokes = document.getElementById('fast-strokes');
@@ -426,27 +442,37 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     var play = document.getElementById('fast-play');
     var replay = document.getElementById('fast-replay');
     document.getElementById('fast-close').onclick = closeFast;
+    document.getElementById('fast-back').onclick = closeFast;
     document.getElementById('fast-dict').onclick = function(){
       location.href = '/hsk-lugat.html?theme=light&char=' + encodeURIComponent(raw) + '&lang=' + encodeURIComponent(lang);
     };
     function drawPlain(ch){box.innerHTML = '<div class="plain-char">'+e(ch)+'</div>';strokes.textContent = labels.fallback;}
+    function setPlayIcon(){play.textContent = paused ? '▶' : '⏸';}
     function render(){
       var ch = chars[idx];
       writer = null;
+      paused = false;
+      setPlayIcon();
       pos.textContent = chars.length > 1 ? (idx + 1) + ' / ' + chars.length : '';
       pos.classList.toggle('hidden', chars.length <= 1);
       prev.disabled = idx === 0;
       next.disabled = idx === chars.length - 1;
-      document.querySelector('.detail-level').textContent = chars.length > 1 ? (idx + 1) + ' / ' + chars.length : 'HSK AI';
+      var info = document.getElementById('fast-info');
       document.getElementById('fast-pinyin').textContent = pinyin;
       document.getElementById('fast-meaning').textContent = meaning;
+      info.classList.toggle('no-py', !pinyin);
+      info.classList.toggle('no-mn', !meaning);
+      info.style.display = (pinyin || meaning) ? '' : 'none';
       strokes.textContent = '';
       box.innerHTML = grid();
+      var size = Math.max(200, box.clientWidth || 300);
       try{
         writer = HanziWriter.create(document.getElementById('fast-target'), ch, {
-          width:236,height:236,padding:12,showOutline:true,showCharacter:false,
+          width:size,height:size,padding:14,showOutline:true,showCharacter:false,
           outlineColor:isFastLight?'rgba(33,29,23,.14)':'rgba(255,255,255,.16)',
-          strokeColor:'#d6453a',strokeAnimationSpeed:1,delayBetweenStrokes:280,
+          /* Ekran ochilishi bilan yozilish tartibi o'zi aylanib turadi:
+             sekinroq chiziqlar, chiziqlar orasida pauza yo'q. */
+          strokeColor:'#d6453a',strokeAnimationSpeed:0.65,delayBetweenStrokes:40,delayBetweenLoops:900,
           charDataLoader:function(c,onComplete,onError){
             var xhr = new XMLHttpRequest();
             xhr.overrideMimeType && xhr.overrideMimeType('application/json');
@@ -463,14 +489,43 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
           onLoadCharDataError:function(){drawPlain(ch)}
         });
         writer.getCharacterData().then(function(data){
-          if(chars[idx] === ch) strokes.textContent = labels.strokes((data.strokes || []).length);
+          if(chars[idx] !== ch) return;
+          strokes.textContent = labels.strokes((data.strokes || []).length);
+          try{writer.loopCharacterAnimation()}catch(err){}
         }).catch(function(){drawPlain(ch)});
       }catch(err){drawPlain(ch)}
     }
-    prev.onclick = function(){if(idx>0){idx--;render()}};
-    next.onclick = function(){if(idx<chars.length-1){idx++;render()}};
-    play.onclick = function(){if(writer)writer.animateCharacter()};
-    replay.onclick = function(){render();setTimeout(function(){if(writer)writer.animateCharacter()},60)};
+    function go(step){
+      var n = idx + step;
+      if(n < 0 || n > chars.length - 1) return;
+      idx = n; render();
+    }
+    prev.onclick = function(){go(-1)};
+    next.onclick = function(){go(1)};
+    play.onclick = function(){
+      if(!writer) return;
+      paused = !paused;
+      try{paused ? writer.pauseAnimation() : writer.resumeAnimation()}catch(err){}
+      setPlayIcon();
+    };
+    replay.onclick = function(){render()};
+    /* Keyingi/oldingi ieroglifga qo'l bilan yon tomonga surib ham o'tish */
+    (function(){
+      var x0 = null, y0 = null;
+      box.addEventListener('touchstart', function(ev){
+        var t = ev.touches && ev.touches[0]; if(!t) return;
+        x0 = t.clientX; y0 = t.clientY;
+      }, {passive:true});
+      box.addEventListener('touchend', function(ev){
+        if(x0 === null) return;
+        var t = ev.changedTouches && ev.changedTouches[0];
+        if(t){
+          var dx = t.clientX - x0, dy = t.clientY - y0;
+          if(Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+        }
+        x0 = y0 = null;
+      }, {passive:true});
+    })();
     try{
       var tg = window.Telegram && window.Telegram.WebApp;
       if(tg && tg.ready) tg.ready();

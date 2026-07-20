@@ -22,10 +22,10 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 .q{font-size:17px;font-weight:500;color:var(--ink);text-align:center;margin:10px 4px 4px;line-height:1.4}
 .bigchar{font-size:74px;line-height:1.1;color:var(--ink);text-align:center;margin:6px 0}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center}
-.card .py{font-size:24px;color:var(--cin2);font-weight:500}
-.card .mn{font-size:16px;color:var(--ink);margin-top:3px}
+.card .py{font-size:24px;color:var(--cin2);font-weight:500;line-height:1.2}
+.card .mn{font-size:16px;color:var(--ink);margin-top:9px;padding-top:10px;border-top:1px solid var(--line);line-height:1.45}
 .card .nt{font-size:13px;color:var(--ink2);margin-top:8px;line-height:1.5}
-.au{margin-top:12px;width:44px;height:44px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:21px;display:inline-flex;align-items:center;justify-content:center}
+.au{margin-top:12px;display:inline-flex;align-items:center;gap:7px;background:var(--cinbg);color:var(--cin2);border:none;border-radius:20px;padding:9px 17px;font-family:inherit;font-size:14px;font-weight:500}
 .opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .opt{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font-family:inherit;font-size:15px;color:var(--ink);text-align:left;display:flex;flex-direction:column;gap:2px;transition:border-color .15s,background .15s}
 .opt .s{font-size:12px;color:var(--ink3)}
@@ -243,7 +243,7 @@ function sGuess(){
 /* B2 — meaning */
 function sMeaning(){
   speak(H);
-  setHTML('<div class="card"><div class="bigchar han" style="margin:0">'+H+'</div><div class="py">'+pin(H)+'</div><div class="mn">'+mean(H)+'</div><div class="nt">'+t(D.note)+'</div><button class="au" onclick="speak(\''+H+'\')"><i class="ti ti-volume"></i></button></div><div id="ct"></div>');
+  setHTML('<div class="card"><div class="bigchar han" style="margin:0">'+H+'</div><div class="py">'+pin(H)+'</div><div class="mn">'+mean(H)+'</div><div class="nt">'+t(D.note)+'</div><button class="au" onclick="speak(\''+H+'\')"><i class="ti ti-volume"></i>'+t({uz:"Tinglash",ru:"Послушать",tj:"Гӯш кардан"})+'</button></div><div id="ct"></div>');
   showCont();
 }
 /* B3 — radical */

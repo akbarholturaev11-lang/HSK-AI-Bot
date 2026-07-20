@@ -20,9 +20,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 .body{flex:1;padding:8px 18px 0}
 .lead{font-size:13px;color:var(--ink2);text-align:center;margin:12px 0 10px}
 .target{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;text-align:center;margin-bottom:6px}
-.target .py{font-size:27px;color:var(--cin2);font-weight:500}
-.target .mn{font-size:15px;color:var(--ink2);margin-top:4px}
-.target .au{margin-top:10px;width:42px;height:42px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:20px;display:inline-flex;align-items:center;justify-content:center}
+.target .py{font-size:27px;color:var(--cin2);font-weight:500;line-height:1.2}
+.target .mn{font-size:15px;color:var(--ink);margin-top:9px;padding-top:10px;border-top:1px solid var(--line);line-height:1.45}
+.target .au{margin-top:12px;display:inline-flex;align-items:center;gap:7px;background:var(--cinbg);color:var(--cin2);border:none;border-radius:20px;padding:9px 17px;font-family:inherit;font-size:14px;font-weight:500}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .tile{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px 0 12px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit}
 .tile .h{font-size:52px;line-height:1;color:var(--ink)}
@@ -48,9 +48,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
-  uz:{lead:"O'xshashlardan to'g'risini toping",done:"to'g'ri",doneSub:"O'xshash ieroglyflarni yaxshi farqlaysiz!",again:"Yana mashq",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga",adCont:"Reklama bilan davom etish",adLimitSub:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
-  tj:{lead:"Аз байни монандҳо дурустро ёбед",done:"дуруст",doneSub:"Шумо иероглифҳои монандро хуб фарқ мекунед!",again:"Боз",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт",adCont:"Идома бо реклама",adLimitSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
+var L={ru:{listen:"Послушать",lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
+  uz:{listen:"Tinglash",lead:"O'xshashlardan to'g'risini toping",done:"to'g'ri",doneSub:"O'xshash ieroglyflarni yaxshi farqlaysiz!",again:"Yana mashq",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga",adCont:"Reklama bilan davom etish",adLimitSub:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
+  tj:{listen:"Гӯш кардан",lead:"Аз байни монандҳо дурустро ёбед",done:"дуруст",doneSub:"Шумо иероглифҳои монандро хуб фарқ мекунед!",again:"Боз",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт",adCont:"Идома бо реклама",adLimitSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function initData(){return (tg&&tg.initData)?tg.initData:""}
@@ -169,7 +169,7 @@ function render(){
   document.getElementById("prog").style.width=Math.round(qi/quiz.length*100)+"%";
   var q=quiz[qi];
   document.getElementById("body").innerHTML='<div class="lead">'+L.lead+'</div>'
-    +'<div class="target"><div class="py">'+q.py+'</div><div class="mn">'+q.mn+'</div><button class="au" onclick="speak(\''+q.zh+'\')" aria-label="audio"><i class="ti ti-volume"></i></button></div>'
+    +'<div class="target"><div class="py">'+q.py+'</div><div class="mn">'+q.mn+'</div><button class="au" onclick="speak(\''+q.zh+'\')"><i class="ti ti-volume"></i>'+L.listen+'</button></div>'
     +'<div class="grid">'+q.opts.map(function(o,k){return '<button class="tile" data-k="'+k+'" onclick="pick('+k+')"><span class="h han">'+o.h+'</span><span class="p">'+o.p+'</span></button>'}).join("")+'</div>';
 }
 function pick(k){

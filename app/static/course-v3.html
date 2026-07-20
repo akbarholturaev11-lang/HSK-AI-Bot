@@ -211,12 +211,13 @@ button{cursor:pointer}
 .nw-label{margin-top:14px;font-weight:800;font-size:21px;letter-spacing:2px;color:var(--cin);animation:nwUp .45s .25s both}
 .nw-spark{position:absolute;color:var(--gold);font-size:18px;opacity:0;animation:nwSpark 1.1s .3s ease-out}
 .nw-spark.s1{left:16%;top:4%}.nw-spark.s2{right:13%;top:22%;font-size:24px;animation-delay:.45s}.nw-spark.s3{left:24%;bottom:10%;font-size:13px;animation-delay:.6s}
-.nw-info{opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s;text-align:center;margin-top:10px}
+.nw-info{opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s;text-align:center;margin:16px auto 0;max-width:330px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px 18px 16px}
 .nw-info.on{opacity:1;transform:none}
-.nw-info .py{font-size:26px;color:var(--cin2);font-weight:500;display:inline-flex;align-items:center;gap:10px}
-.nw-info .py .audio{width:38px;height:38px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:18px;display:inline-flex;align-items:center;justify-content:center}
-.nw-info .mn{font-size:19px;margin-top:8px}
-.nw-info .pos{display:inline-block;font-size:12px;color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:3px 11px}
+.nw-info .pyrow{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}
+.nw-info .py{font-size:26px;color:var(--cin2);font-weight:500;line-height:1.2}
+.nw-info .mn{font-size:17px;line-height:1.45;color:var(--ink);margin-top:9px;padding-top:10px;border-top:1px solid var(--line)}
+.nw-info .pos{font-size:11.5px;color:var(--ink3);background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:3px 9px;line-height:1.3}
+.wl-au{margin-top:13px;display:inline-flex;align-items:center;gap:7px;background:var(--cinbg);color:var(--cin2);border:none;border-radius:20px;padding:9px 17px;font-family:inherit;font-size:14px;font-weight:500}
 @keyframes nwPop{0%{transform:scale(.3) rotate(-6deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
 @keyframes nwUp{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:none}}
 @keyframes nwSpark{0%{opacity:0;transform:scale(.4)}40%{opacity:1;transform:scale(1.25)}100%{opacity:0;transform:scale(.7) translateY(-16px)}}
@@ -261,6 +262,8 @@ button{cursor:pointer}
 .bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .tok{background:var(--card);border:1.5px solid var(--line);border-radius:11px;padding:9px 15px;font-family:inherit;font-size:18px;color:var(--ink)}
 .tok.han{font-family:"Songti SC",serif;font-weight:600}
+/* Plitka tepaga ko'chganda bankdagi joyi yo'qolmasin — xira iz qoladi */
+.tok.ghost{background:var(--paper);border-style:dashed;color:transparent;box-shadow:none;opacity:.55;pointer-events:none}
 .pairs{display:flex;gap:10px}
 .pairs .col{flex:1;display:flex;flex-direction:column;gap:8px}
 .pcell{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:13px;text-align:center;font-family:inherit;font-size:16px;color:var(--ink)}
@@ -1912,8 +1915,10 @@ function cardWord(c){
     +'<span class="nw-spark s1"><i class="ti ti-sparkles"></i></span><span class="nw-spark s2"><i class="ti ti-north-star"></i></span><span class="nw-spark s3"><i class="ti ti-sparkles"></i></span>'
     +'<div class="nw-card"><div class="big han">'+esc(w.zh||"")+'</div></div>'
     +'<div class="nw-label">'+esc(NW)+'</div></div>'
-    +'<div class="nw-info" id="nwinfo"><div class="py">'+esc(w.pinyin||"")+'<button class="audio" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>'
-    +'<div style="margin-top:6px"><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div></div>';
+    +'<div class="nw-info" id="nwinfo">'
+    +'<div class="pyrow"><span class="py">'+esc(w.pinyin||"")+'</span>'+(w.pos?'<span class="pos">'+esc(w.pos)+'</span>':'')+'</div>'
+    +'<div class="mn">'+esc(tr(w.meaning))+'</div>'
+    +'<button class="wl-au" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i>'+esc(T().listen)+'</button></div>';
   beep([784,1046]);haptic("light");
   setTimeout(function(){speak(w.zh||"")},400);
   setTimeout(function(){var el=$("#nwinfo");if(el)el.classList.add("on");$("#f-cta").style.display="flex"},900);
@@ -2011,7 +2016,7 @@ function cardBuilder(c){
   var line=[]; /* chosen bank indices, in order — index-based so duplicate tiles work */
   function draw(){
     $("#bld-line").innerHTML=line.map(function(bi,pos){return '<button class="tok han" onclick="window._bldUn('+pos+')">'+esc(bank[bi])+'</button>'}).join("");
-    $("#bld-bank").innerHTML=bank.map(function(x,i){return line.indexOf(i)>=0?'':'<button class="tok han" onclick="window._bldAdd('+i+')">'+esc(x)+'</button>'}).join("");
+    $("#bld-bank").innerHTML=bank.map(function(x,i){return line.indexOf(i)>=0?'<span class="tok han ghost" aria-hidden="true">'+esc(x)+'</span>':'<button class="tok han" onclick="window._bldAdd('+i+')">'+esc(x)+'</button>'}).join("");
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===(c.answer_tokens||[]).length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
@@ -2032,7 +2037,7 @@ function cardReverse(c){
   var line=[]; /* tanlangan bank indekslari — takroriy plitkalar to'g'ri ishlashi uchun */
   function draw(){
     $("#bld-line").innerHTML=line.map(function(bi,pos){return '<button class="tok" onclick="window._bldUn('+pos+')">'+esc(bank[bi])+'</button>'}).join("");
-    $("#bld-bank").innerHTML=bank.map(function(x,i){return line.indexOf(i)>=0?'':'<button class="tok" onclick="window._bldAdd('+i+')">'+esc(x)+'</button>'}).join("");
+    $("#bld-bank").innerHTML=bank.map(function(x,i){return line.indexOf(i)>=0?'<span class="tok ghost" aria-hidden="true">'+esc(x)+'</span>':'<button class="tok" onclick="window._bldAdd('+i+')">'+esc(x)+'</button>'}).join("");
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===ans.length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
