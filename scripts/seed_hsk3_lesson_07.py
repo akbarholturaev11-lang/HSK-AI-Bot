@@ -127,7 +127,7 @@ LESSON = {
                 {"no": 1, "uz": "Biz tanishganimizga besh yil bo'ldi.", "ru": "Мы знакомы уже пять лет.", "tj": "Мо панҷ сол боз ошно ҳастем."},
                 {"no": 2, "uz": "Men musiqaga juda qiziqaman.", "ru": "Мне очень интересна музыка.", "tj": "Ман ба мусиқӣ хеле шавқ дорам."},
                 {"no": 3, "uz": "Hozir soat sakkizga chorak qoldi.", "ru": "Сейчас без четверти восемь.", "tj": "Ҳоло чорак ба ҳашт монда."},
-                {"no": 4, "uz": "Kechikma, yarım soatdan keyin ko'rishamiz!", "ru": "Не опаздывай, встретимся через полчаса!", "tj": "Дер наоед, баъди ним соат вомехӯрем!"},
+                {"no": 4, "uz": "Kechikma, yarim soatdan keyin ko'rishamiz!", "ru": "Не опаздывай, встретимся через полчаса!", "tj": "Дер наоед, баъди ним соат вомехӯрем!"},
                 {"no": 5, "uz": "U tarixga ayniqsa qiziqadi.", "ru": "Она особенно интересуется историей.", "tj": "Вай ба таърих хусусан шавқ дорад."}
             ]
         },

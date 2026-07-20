@@ -67,7 +67,7 @@ LESSON = {
             "dialogue": [
                 {"speaker": "A", "zh": "你怎么买了这么多东西啊？", "pinyin": "Nǐ zěnme mǎi le zhème duō dōngxi a?", "uz": "Nima uchun bu qadar ko'p narsa sotib oldingiz?", "ru": "Почему ты купил так много всего?", "tj": "Чаро ту ин қадар зиёд чиз харидӣ?"},
                 {"speaker": "B", "zh": "哥哥今天中午回来吃饭。", "pinyin": "Gēge jīntiān zhōngwǔ huílái chīfàn.", "uz": "Aka bugun tushlikka keladi.", "ru": "Старший брат сегодня придёт на обед.", "tj": "Бародари калонӣ имрӯз барои нисфирӯзӣ меояд."},
-                {"speaker": "A", "zh": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？", "pinyin": "Wǒ kànkan mǎi shénme le. Yángròu，jīdàn，miàntiáo，xīguā…… zhēn bù shǎo! Māma ne?", "uz": "Ko'ray-chi nima olibsiz. Qo'y go'shti, tuxum, erişta, tarvuz… juda ko'p! Ona-chi?", "ru": "Дай посмотрю, что купил. Баранина, яйца, лапша, арбуз… действительно много! А мама?", "tj": "Биё бинам чӣ харидӣ. Гӯшти гӯсфанд, тухм, лоғмон, тарбуз… воқеан зиёд! Модар чӣ?"},
+                {"speaker": "A", "zh": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？", "pinyin": "Wǒ kànkan mǎi shénme le. Yángròu，jīdàn，miàntiáo，xīguā…… zhēn bù shǎo! Māma ne?", "uz": "Ko'ray-chi nima olibsiz. Qo'y go'shti, tuxum, erishta, tarvuz… juda ko'p! Ona-chi?", "ru": "Дай посмотрю, что купил. Баранина, яйца, лапша, арбуз… действительно много! А мама?", "tj": "Биё бинам чӣ харидӣ. Гӯшти гӯсфанд, тухм, лоғмон, тарбуз… воқеан зиёд! Модар чӣ?"},
                 {"speaker": "B", "zh": "正在准备午饭呢！", "pinyin": "Zhèngzài zhǔnbèi wǔfàn ne!", "uz": "Hozir tushlikni tayyorlayapti!", "ru": "Сейчас готовит обед!", "tj": "Ҳоло нисфирӯзиро тайёр мекунад!"},
             ]
         },

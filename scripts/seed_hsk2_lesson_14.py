@@ -80,7 +80,7 @@ LESSON = {
                 {"speaker": "A", "zh": "你在这个商店买过东西没有？", "pinyin": "Nǐ zài zhège shāngdiàn mǎiguo dōngxi méiyǒu?", "uz": "Siz bu do'konda narsa sotib olganmisiz?", "ru": "Ты когда-нибудь покупал(а) что-то в этом магазине?", "tj": "Оё шумо дар ин дӯкон чизе харидаед?"},
                 {"speaker": "B", "zh": "买过一次，这儿的东西还可以，就是有点儿贵。", "pinyin": "Mǎiguo yí cì, zhèr de dōngxi hái kěyǐ, jiùshì yǒudiǎnr guì.", "uz": "Bir marta olganman, bu yerdagi narsalar yomonmas, faqat biroz qimmat.", "ru": "Покупал(а) один раз, товары здесь неплохие, только немного дорогие.", "tj": "Як маротиба харидаам, молҳои ин ҷо бад нест, фақат каме гарон."},
                 {"speaker": "A", "zh": "我喜欢这件衣服，但是觉得有点儿贵。", "pinyin": "Wǒ xǐhuan zhè jiàn yīfu, dànshì juéde yǒudiǎnr guì.", "uz": "Men bu kiyimni yoqtiraman, lekin biroz qimmat deb hisoblayman.", "ru": "Мне нравится эта одежда, но думаю, немного дорого.", "tj": "Ман ин либосро дӯст медорам, аммо фикр мекунам каме гарон аст."},
-                {"speaker": "B", "zh": "两百块还可以，喜欢就买吧。", "pinyin": "Liǎng bǎi kuài hái kěyǐ, xǐhuan jiù mǎi ba.", "uz": "Ikki yuz yuan yomonmas, yoqsa olaverıng.", "ru": "Двести юаней — нормально, если нравится, покупай.", "tj": "Дусад юан бад нест, агар дӯст дорӣ бихар."}
+                {"speaker": "B", "zh": "两百块还可以，喜欢就买吧。", "pinyin": "Liǎng bǎi kuài hái kěyǐ, xǐhuan jiù mǎi ba.", "uz": "Ikki yuz yuan yomonmas, yoqsa olavering.", "ru": "Двести юаней — нормально, если нравится, покупай.", "tj": "Дусад юан бад нест, агар дӯст дорӣ бихар."}
             ]
         }
     ], ensure_ascii=False),

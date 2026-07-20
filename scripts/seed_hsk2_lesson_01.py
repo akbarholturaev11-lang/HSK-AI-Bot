@@ -168,7 +168,7 @@ LESSON = {
             "rule_uz": (
                 "Taxminiy sonni ifodalash usullari:\n"
                 "• 几 (jǐ) — 'bir nechta' (odatda 10 gacha), noaniq miqdor.\n"
-                "• 多 (duō) — son + ölçü + 多 shaklida 'dan ko'proq, ziyod' ma'nosini beradi."
+                "• 多 (duō) — son + sanoq so'zi + 多 shaklida 'dan ko'proq, ziyod' ma'nosini beradi."
             ),
             "rule_ru": (
                 "Способы выражения приблизительного числа:\n"
