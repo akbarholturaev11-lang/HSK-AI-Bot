@@ -18,6 +18,7 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.ai_service import AIService, AIUsageResult
+from app.services.ai_provider import GEMINI_FAST_MODEL
 from app.services.ai_usage_budget_service import AIUsageBudgetService, BudgetRecordResult
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_mistake_service import CourseMistakeService
@@ -518,21 +519,19 @@ class VoicePracticeService:
                 messages.append({"role": "assistant", "content": assistant_text[:360]})
         messages.append({"role": "user", "content": transcription[:500]})
 
-        model = "gpt-4o-mini"
+        # AI Voice suhbatini tezlashtirish uchun Gemini eng tez modeli (flash-lite)
+        # bilan javob beradi; Gemini yo'q/xato bo'lsa OpenAI gpt-4o-mini zaxira.
+        # JSON sxema (chinese_reply/pinyin/translation/correction) o'zgarmaydi.
         ai = AIService()
-        response = await ai.client.chat.completions.create(
-            model=model,
+        usage_result = await ai.complete_messages_with_usage(
             messages=messages,
+            openai_model="gpt-4o-mini",
             response_format={"type": "json_object"},
             max_completion_tokens=VOICE_REPLY_MAX_TOKENS,
             temperature=0.85,
             frequency_penalty=0.5,
             presence_penalty=0.3,
-        )
-        usage_result = ai._result_from_response(
-            response=response,
-            model=model,
-            content=response.choices[0].message.content or "",
+            gemini_model=GEMINI_FAST_MODEL,
         )
         return self._clean_reply(usage_result.content), usage_result
 
@@ -544,7 +543,7 @@ class VoicePracticeService:
         audio_bytes: bytes,
         filename: str,
     ) -> dict:
-        if not settings.OPENAI_API_KEY:
+        if not settings.ai_enabled:
             raise VoicePracticeError("AI_UNAVAILABLE", "Voice AI sozlanmagan.", 503)
         if not audio_bytes:
             raise VoicePracticeError("EMPTY_AUDIO", "Audio bo'sh.")
@@ -568,6 +567,7 @@ class VoicePracticeService:
                     filename=filename,
                     user_language=item.language,
                     user_level=item.level,
+                    gemini_model=GEMINI_FAST_MODEL,
                 ),
                 timeout=35,
             )
@@ -673,7 +673,7 @@ class VoicePracticeService:
         language: str,
         level: str,
     ) -> dict:
-        if not settings.OPENAI_API_KEY:
+        if not settings.ai_enabled:
             raise VoicePracticeError("AI_UNAVAILABLE", "Voice AI sozlanmagan.", 503)
         if not self._cjk_chars(target):
             raise VoicePracticeError("INVALID_TARGET", "Talaffuz uchun so'z topilmadi.")
@@ -706,6 +706,7 @@ class VoicePracticeService:
                     user_language=(language or "ru"),
                     user_level=(level or "hsk1"),
                     speech_hint=f"{target} ({target_pinyin})" if target_pinyin else target,
+                    gemini_model=GEMINI_FAST_MODEL,
                 ),
                 timeout=35,
             )

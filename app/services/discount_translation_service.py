@@ -1,23 +1,22 @@
 import json
 from typing import Dict
 
-from openai import AsyncOpenAI
-
 from app.config import settings
+from app.services.ai_service import AIService
 
 
 class DiscountTranslationService:
     def __init__(self):
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        self.ai_service = AIService()
 
     async def translate_title(self, title: str) -> Dict[str, str]:
         fallback = {"tj": title, "ru": title, "uz": title}
-        if not settings.OPENAI_API_KEY or not title.strip():
+        if not settings.ai_enabled or not title.strip():
             return fallback
 
         try:
-            response = await self.client.chat.completions.create(
-                model="o4-mini",
+            result = await self.ai_service.complete_messages_with_usage(
+                openai_model="o4-mini",
                 messages=[
                     {
                         "role": "system",
@@ -30,7 +29,7 @@ class DiscountTranslationService:
                     {"role": "user", "content": title[:120]},
                 ],
             )
-            raw = response.choices[0].message.content or ""
+            raw = result.content or ""
             start = raw.find("{")
             end = raw.rfind("}")
             payload = json.loads(raw[start : end + 1] if start >= 0 and end >= 0 else raw)
@@ -52,12 +51,12 @@ class DiscountTranslationService:
             "reason_ru": reason,
             "reason_uz": reason,
         }
-        if not settings.OPENAI_API_KEY:
+        if not settings.ai_enabled:
             return fallback
 
         try:
-            response = await self.client.chat.completions.create(
-                model="o4-mini",
+            result = await self.ai_service.complete_messages_with_usage(
+                openai_model="o4-mini",
                 messages=[
                     {
                         "role": "system",
@@ -77,7 +76,7 @@ class DiscountTranslationService:
                     },
                 ],
             )
-            raw = response.choices[0].message.content or ""
+            raw = result.content or ""
             start = raw.find("{")
             end = raw.rfind("}")
             payload = json.loads(raw[start : end + 1] if start >= 0 and end >= 0 else raw)

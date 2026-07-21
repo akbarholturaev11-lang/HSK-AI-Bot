@@ -104,6 +104,12 @@ from app.services.voice_practice_service import VoicePracticeError, VoicePractic
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages as decode_ad_languages
 from app.repositories.bot_setting_repo import BotSettingRepository
+from app.services.ai_provider import (
+    ACTIVE_GEMINI_MODEL_KEY,
+    GEMINI_MODEL_OPTIONS,
+    get_active_gemini_model,
+    set_active_gemini_model_cache,
+)
 from app.repositories.course_audio_repo import CourseAudioRepository
 from app.repositories.user_repo import UserRepository
 from app.repositories.payment_repo import PaymentRepository
@@ -634,6 +640,11 @@ async def _admin_miniapp_management_payload(session) -> dict:
         "ok": True,
         "prices": price_items,
         "payment_details": (await setting_repo.get(PAYMENT_DETAILS_KEY) or settings.PAYMENT_DETAILS or "").strip(),
+        "gemini": {
+            "configured": bool(settings.GEMINI_API_KEY),
+            "active_model": await get_active_gemini_model(),
+            "options": GEMINI_MODEL_OPTIONS,
+        },
         "channels": {
             "enabled": await channels_service.is_enabled(),
             "items": [
@@ -2397,6 +2408,26 @@ async def admin_miniapp_payment_details_save(request: Request):
     async with async_session_maker() as session:
         await BotSettingRepository(session).set(PAYMENT_DETAILS_KEY, text_value)
         await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/ai-model/save")
+async def admin_miniapp_ai_model_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    model = str(payload.get("gemini_model") or "").strip()
+    if model not in GEMINI_MODEL_OPTIONS:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_model"})
+    async with async_session_maker() as session:
+        await BotSettingRepository(session).set(ACTIVE_GEMINI_MODEL_KEY, model)
+        await session.commit()
+    set_active_gemini_model_cache(model)
     return JSONResponse(content={"ok": True})
 
 

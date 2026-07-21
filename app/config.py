@@ -12,6 +12,16 @@ class Settings(BaseSettings):
     BOT_TOKEN: str = ""
     OPENAI_API_KEY: str = ""
 
+    # Gemini (asosiy AI provayder). GEMINI_API_KEY bo'lsa Gemini ishlaydi,
+    # bo'lmasa yoki xato bersa OpenAI zaxira sifatida ishga tushadi.
+    GEMINI_API_KEY: str = ""
+    # Admin panel model tanlamagan bo'lsa ishlatiladigan standart Gemini modeli.
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+    # Gemini'ning OpenAI-mos endpointi (matn/vision/JSON shu orqali ketadi).
+    GEMINI_BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
+    # Gemini osilib qolsa OpenAI'ga tez o'tish uchun so'rov timeouti (soniya).
+    AI_PRIMARY_TIMEOUT_SECONDS: float = 30.0
+
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/telegram_chinese_bot"
     REDIS_URL: str = "redis://localhost:6379/0"
 
@@ -40,6 +50,11 @@ class Settings(BaseSettings):
     @property
     def feedback_notify_chat_id_list(self) -> List[int]:
         return [int(x.strip()) for x in self.FEEDBACK_NOTIFY_CHAT_IDS.split(",") if x.strip()]
+
+    @property
+    def ai_enabled(self) -> bool:
+        """Kamida bitta AI provayder (Gemini yoki OpenAI) sozlangan bo'lsa True."""
+        return bool(self.GEMINI_API_KEY or self.OPENAI_API_KEY)
 
 
 settings = Settings()

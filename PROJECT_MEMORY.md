@@ -207,6 +207,49 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-21 — AI provayder: Gemini asosiy + OpenAI zaxira, admin model tanlash, AI Voice tezlashtirildi
+
+Changed:
+- Yangi provayder qatlami `app/services/ai_provider.py` (`AIProviderChain`): Gemini asosiy, OpenAI
+  zaxira. `GEMINI_API_KEY` bo'lsa Gemini ishlaydi; bo'lmasa yoki ish vaqtida xato bersa har chaqiruvda
+  avtomatik OpenAI'ga o'tadi (log bilan). Matn/vision/JSON Gemini'ning **OpenAI-mos endpointi**
+  (`GEMINI_BASE_URL`, xuddi shu `AsyncOpenAI` mijozi) orqali; STT (ovoz->matn) native `google-genai`
+  SDK orqali, OpenAI transkripsiyasi zaxira. OpenAI modellari/parametrlari o'zgarmagan.
+- `AIService` endi `self.chain` ishlatadi; yangi `complete_messages_with_usage(...)` umumiy metod.
+  4 ta ommaviy metod (reply/vision/translate/transcribe) shu zanjirdan o'tadi — imzolar o'zgarmagan.
+  `broadcast_translation_service` va `discount_translation_service` endi o'z `AsyncOpenAI`i o'rniga
+  `AIService().complete_messages_with_usage`ni ishlatadi. Barcha AI-mavjudlik guardlari
+  `settings.OPENAI_API_KEY` -> `settings.ai_enabled` (Gemini yoki OpenAI kaliti).
+- **Admin panelda model tanlash**: `admin.html` "Boshqaruv" bo'limida "AI modeli (Gemini)" kartasi
+  (3 model: `gemini-2.5-flash-lite`/`gemini-2.5-flash`/`gemini-2.5-pro`). Tanlov `bot_settings`
+  (`active_gemini_model`) ga yoziladi (yangi migratsiya YO'Q), `get_active_gemini_model` ~60s keshli.
+  Endpoint `POST /api/admin-miniapp/ai-model/save`; management payloadga `gemini` bloki.
+- **AI Voice tezlashtirildi**: roleplay javobi va STT eng tez model `gemini-2.5-flash-lite` bilan
+  (admin global tanlovidan qat'i nazar). AI Voice logikasi/UI (correction, done-ekran, "Xatolarim",
+  subtitr) va JSON sxema O'ZGARMAGAN — faqat model tezroq. `course_v3_voice.html` tegilmagan.
+- Narx hisobi: `ai_usage_budget_service.MODEL_PRICING_USD_PER_1M`ga 3 Gemini modeli (taxminiy narx).
+- `requirements.txt`: `google-genai==1.75.0`; `.env.example`/`config.py`: `GEMINI_API_KEY`,
+  `GEMINI_MODEL` (default `gemini-2.5-flash`), `GEMINI_BASE_URL`, `AI_PRIMARY_TIMEOUT_SECONDS`.
+
+Why:
+- Foydalanuvchi: OpenAI turgan hamma joyda Gemini asosiy bo'lsin, ishlamasa OpenAI zaxira; admin
+  qaysi Gemini modeli ishlashini o'zi tanlasin; AI Voice suhbati kechikishsizroq bo'lsin.
+
+Files touched:
+- Yangi: `app/services/ai_provider.py`, `tests/test_ai_provider.py`
+- Edited: `app/config.py`, `app/services/ai_service.py`, `app/services/broadcast_translation_service.py`,
+  `app/services/discount_translation_service.py`, `app/services/voice_practice_service.py`,
+  `app/services/ai_usage_budget_service.py`, `app/main.py`, `app/static/admin.html`,
+  `requirements.txt`, `.env.example`
+
+Risk / follow-up:
+- To'lov/obuna/XP/ruxsat va TTS (edge-tts) tegilmagan. Testlar: 176 passed (2 e2e course-v3 dars-oqim
+  testi AVVALDAN yiqiq, bu ishga aloqasiz). Deployda `pip install -r requirements.txt` (google-genai);
+  Railway env'ga `GEMINI_API_KEY` qo'yilsin. Gemini narxlari va `google-genai` versiyasi tekshirilsin.
+- **STT Gemini orqali** — Gemini qo'llamaydigan audio formatlar (mp4/webm) OpenAI'ga fallback bo'ladi;
+  talaffuz baholash aniqligi flash-lite'da o'zgarishi mumkin. Real Telegram mikrofon smoke-test tavsiya.
+  Muammo bo'lsa `GEMINI_API_KEY`ni olib qo'yish darhol hammani OpenAI'ga qaytaradi.
+
 ### 2026-07-20 — DARSLAR MINI-QISMLARGA BO'LINDI (3-4 so'z + checkpoint, flat raqamlash)
 
 Changed (foydalanuvchi: "bitta darsda 40+ mashq charchatadi; 3-4 yangi so'z + mustahkamlash"):

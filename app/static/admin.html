@@ -379,6 +379,10 @@
           <div class="grid settings-grid" id="moduleGrid"></div>
         </div>
         <div class="sec">
+          <div class="sec-head"><div><div class="sec-title">🤖 AI modeli</div><div class="sec-note">Gemini asosiy, OpenAI zaxira — qaysi Gemini modeli ishlashini tanlang</div></div></div>
+          <div id="aiModelBox"><p class="empty">Yuklanmoqda…</p></div>
+        </div>
+        <div class="sec">
           <div class="sec-head"><div><div class="sec-title">🔔 Motivatsion eslatmalar</div><div class="sec-note">UZ/RU/TJ matn, yoqish/o'chirish, media</div></div></div>
           <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
         </div>
@@ -518,7 +522,7 @@
       renderPayments();
       renderModules();
       loadSubEntry(); loadNotifications(); loadCourseAds();
-      loadManagement(true).catch(()=>{});
+      loadManagement(true).then(renderAiModel).catch(()=>{});
     }
 
     /* ---------- DASHBOARD ---------- */
@@ -781,6 +785,14 @@
     /* ---------- MODULES (settings) ---------- */
     function renderModules(){
       $("moduleGrid").innerHTML = (state.overview.modules||[]).map(m=>`<button class="srow" data-module="${m.key}"><div><h3>${m.icon} ${esc(m.title)}</h3><p>${esc(m.note)}</p></div><span class="tag green">ochish</span></button>`).join("");
+    }
+    function renderAiModel(){
+      const host=$("aiModelBox"); if(!host) return;
+      const g=(state.management&&state.management.gemini)||null;
+      if(!g){ host.innerHTML="<p class='empty'>Ma'lumot yo'q.</p>"; return; }
+      const opts=(g.options||[]).map(m=>`<option value="${esc(m)}"${m===g.active_model?" selected":""}>${esc(m)}</option>`).join("");
+      const note=g.configured?"Gemini asosiy ishlaydi; xato bo'lsa OpenAI zaxira.":"Gemini API key sozlanmagan — hozircha OpenAI ishlaydi.";
+      host.innerHTML=`<div class="mcard"><h3>Gemini modeli</h3><p>${esc(note)}</p><div class="row"><select class="input" id="aiModelSel" style="max-width:230px">${opts}</select><button class="btn" data-aimodelsave>Saqlash</button></div></div>`;
     }
     function moduleTitle(key){ const m=(state.overview.modules||[]).find(x=>x.key===key); return m?`${m.icon} ${m.title}`:"Boshqaruv"; }
 
@@ -1299,6 +1311,7 @@
       if((el=T("[data-user]"))) return openUser(el.dataset.user);
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pdsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$("payDetails").value}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-chmode]"))) return saveChannel({action:"mode",enabled:el.dataset.chmode==="1"},el);
       if((el=T("[data-chadd]"))) return saveChannel({action:"add",title:$("chTitle").value,chat_id:$("chId").value,invite_link:$("chInvite").value},el);
       if((el=T("[data-chtoggle]"))) return saveChannel({action:"toggle",channel_id:Number(el.dataset.chtoggle),active:el.dataset.active==="1"},el);

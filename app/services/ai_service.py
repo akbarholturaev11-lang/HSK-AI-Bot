@@ -3,9 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Optional
 
-from openai import AsyncOpenAI
-
-from app.config import settings
+from app.services.ai_provider import AIProviderChain
 
 
 @dataclass(frozen=True)
@@ -19,7 +17,7 @@ class AIUsageResult:
 
 class AIService:
     def __init__(self):
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        self.chain = AIProviderChain()
         self.prompt_path = Path("app/prompts/qa_system.txt")
 
     def _build_system_prompt(self, user_language: str, user_level: str) -> str:
@@ -56,6 +54,39 @@ class AIService:
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
             total_tokens=total_tokens,
+        )
+
+    async def complete_messages_with_usage(
+        self,
+        *,
+        messages,
+        openai_model: str,
+        max_completion_tokens: int | None = None,
+        temperature: float | None = None,
+        frequency_penalty: float | None = None,
+        presence_penalty: float | None = None,
+        response_format=None,
+        gemini_model: str | None = None,
+    ) -> AIUsageResult:
+        """Umumiy chat chaqiruvi — Gemini asosiy, OpenAI zaxira (provayder zanjiri orqali).
+
+        `openai_model` — OpenAI ishlatilganda qaysi model (asl xatti-harakat saqlanadi).
+        `gemini_model` — berilsa admin global tanlovi o'rniga shu Gemini modeli ishlatiladi.
+        """
+        response, model_used = await self.chain.chat_completion(
+            openai_model=openai_model,
+            messages=messages,
+            max_completion_tokens=max_completion_tokens,
+            temperature=temperature,
+            frequency_penalty=frequency_penalty,
+            presence_penalty=presence_penalty,
+            response_format=response_format,
+            gemini_model=gemini_model,
+        )
+        return self._result_from_response(
+            response=response,
+            model=model_used,
+            content=response.choices[0].message.content or "",
         )
 
     async def generate_reply_with_usage(
@@ -99,19 +130,10 @@ class AIService:
         )
 
         model = model_override or "o4-mini"
-        request = {
-            "model": model,
-            "messages": messages,
-        }
-        if max_completion_tokens is not None:
-            request["max_completion_tokens"] = max_completion_tokens
-
-        response = await self.client.chat.completions.create(**request)
-
-        return self._result_from_response(
-            response=response,
-            model=model,
-            content=response.choices[0].message.content or "",
+        return await self.complete_messages_with_usage(
+            messages=messages,
+            openai_model=model,
+            max_completion_tokens=max_completion_tokens,
         )
 
     async def generate_reply(
@@ -143,31 +165,18 @@ class AIService:
         image_b64 = base64.b64encode(image_bytes).decode("utf-8")
         data_url = f"data:{mime_type};base64,{image_b64}"
 
-        response = await self.client.chat.completions.create(
-            model=model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": prompt,
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": data_url,
-                            },
-                        },
-                    ],
-                }
-            ],
-        )
-
-        return self._result_from_response(
-            response=response,
-            model=model,
-            content=response.choices[0].message.content or "",
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url", "image_url": {"url": data_url}},
+                ],
+            }
+        ]
+        return await self.complete_messages_with_usage(
+            messages=messages,
+            openai_model=model,
         )
 
     async def generate_vision_reply(
@@ -190,6 +199,7 @@ class AIService:
         user_language: str,
         user_level: str,
         speech_hint: str | None = None,
+        gemini_model: str | None = None,
     ) -> AIUsageResult:
         lang_labels = {
             "tj": "Tajik",
@@ -208,7 +218,6 @@ class AIService:
                 "Use the hint only to resolve unclear Chinese sounds; do not copy it if it was not spoken."
             )
 
-        model = "gpt-4o-mini-transcribe"
         mime_type = {
             ".aac": "audio/aac",
             ".m4a": "audio/mp4",
@@ -218,20 +227,23 @@ class AIService:
             ".mp3": "audio/mpeg",
             ".wav": "audio/wav",
         }.get(Path(filename).suffix.lower(), "application/octet-stream")
-        response = await self.client.audio.transcriptions.create(
-            model=model,
-            chunking_strategy="auto",
-            file=(filename, audio_bytes, mime_type),
-            prompt=prompt,
-            temperature=0,
-        )
 
-        if isinstance(response, str):
-            return AIUsageResult(content=response.strip(), model=model)
-        return self._result_from_response(
-            response=response,
-            model=model,
-            content=(getattr(response, "text", "") or "").strip(),
+        text, usage, model_used = await self.chain.transcribe(
+            audio_bytes=audio_bytes,
+            filename=filename,
+            mime_type=mime_type,
+            prompt=prompt,
+            gemini_model=gemini_model,
+        )
+        total_tokens = usage.get("total_tokens", 0) or (
+            usage.get("prompt_tokens", 0) + usage.get("completion_tokens", 0)
+        )
+        return AIUsageResult(
+            content=text,
+            model=model_used,
+            prompt_tokens=usage.get("prompt_tokens", 0),
+            completion_tokens=usage.get("completion_tokens", 0),
+            total_tokens=total_tokens,
         )
 
     async def transcribe_voice(
@@ -312,14 +324,8 @@ class AIService:
             }
         )
 
-        response = await self.client.chat.completions.create(
-            model=model,
+        return await self.complete_messages_with_usage(
             messages=messages,
+            openai_model=model,
             max_completion_tokens=300,
-        )
-
-        return self._result_from_response(
-            response=response,
-            model=model,
-            content=response.choices[0].message.content or "",
         )

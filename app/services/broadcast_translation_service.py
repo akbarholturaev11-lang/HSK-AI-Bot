@@ -2,9 +2,8 @@ import json
 from dataclasses import dataclass
 from typing import Iterable, Optional
 
-from openai import AsyncOpenAI
-
 from app.config import settings
+from app.services.ai_service import AIService
 
 
 SUPPORTED_BROADCAST_LANGUAGES = ("tj", "uz", "ru")
@@ -71,7 +70,7 @@ def localized_broadcast_preview(value: Optional[str], *, language: str = "tj", l
 
 class BroadcastTranslationService:
     def __init__(self):
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        self.ai_service = AIService()
 
     def _fallback(self, text: str, target_languages: Iterable[str], max_length: int) -> LocalizedBroadcastText:
         source = text[:max_length]
@@ -94,12 +93,12 @@ class BroadcastTranslationService:
 
         texts = {lang: source for lang in targets}
         translation_targets = [lang for lang in targets if lang in {"uz", "ru"}]
-        if not settings.OPENAI_API_KEY or not translation_targets:
+        if not settings.ai_enabled or not translation_targets:
             return LocalizedBroadcastText(texts=texts, translated=False)
 
         try:
-            response = await self.client.chat.completions.create(
-                model="gpt-4o-mini",
+            result = await self.ai_service.complete_messages_with_usage(
+                openai_model="gpt-4o-mini",
                 messages=[
                     {
                         "role": "system",
@@ -127,7 +126,7 @@ class BroadcastTranslationService:
                 ],
                 temperature=0,
             )
-            raw = response.choices[0].message.content or ""
+            raw = result.content or ""
             start = raw.find("{")
             end = raw.rfind("}")
             payload = json.loads(raw[start : end + 1] if start >= 0 and end >= 0 else raw)
