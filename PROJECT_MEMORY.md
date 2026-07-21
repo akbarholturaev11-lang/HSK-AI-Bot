@@ -207,6 +207,38 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-21 — Gemini yoqilganda limit tizimi o'zgaradi + bir martalik e'lon
+
+Changed (access/limit logikasi — ehtiyotkorlik bilan):
+- Yangi signal `gemini_active()` (`app/services/ai_provider.py`): Railway env'da `GEMINI_API_KEY`
+  bor bo'lsa Gemini asosiy provayder. Shu signal qaysi limit tizimi ishlashini tanlaydi.
+- Gemini YOQILGANDA (bepul/obunasiz userlar uchun): chatda MATN cheksiz (kunlik text limit
+  o'chadi), FOTO kuniga 5 ta (avval 2), OVOZ kuniga 5 ta (avval bepul userga ovoz umuman yopiq
+  edi; pullik/trial ovoz mantig'i o'z joyida). Gemini O'CHIQ (OpenAI) bo'lsa hozirgi limit
+  tizimi AYNAN qoladi.
+- `AccessService`: `_can_use_daily_text_limit` gemini bo'lsa (True,"") qaytaradi;
+  `_can_use_daily_image_limit` limiti `GEMINI_FREE_PHOTO_DAILY=5` / `OPENAI_FREE_PHOTO_DAILY=2`;
+  yangi `can_use_free_daily_voice` + `count_voice_messages_today` (content_type "voice" +
+  "voice_translator", `GEMINI_FREE_VOICE_DAILY=5`).
+- `handle_voice_message` (messages.py): gemini yoqilgan + obunasiz + trial emas bo'lsa
+  `can_use_free_daily_voice` orqali 5/kun ruxsat; limit tugasa `access_daily_voice_limit_reached`
+  (uz/ru/tj). Ovoz soni saqlangan xabarlardan sanaladi (migratsiyasiz).
+- Yangi `GeminiSwitchAnnouncementService` (`announce_if_needed`, scheduler har tsiklda chaqiradi):
+  Gemini birinchi marta yoqilganda HAMMA bloklamagan userga o'z tilida (uz/ru/tj) bir martalik
+  "matn cheksiz, foto/ovoz 5/kun" xabari. `bot_settings.gemini_switch_announced` flagi bilan
+  takrorlanmaydi; yetkazish scheduler tsiklini bloklamaslik uchun alohida background task'da.
+
+Files touched:
+- `app/services/ai_provider.py`, `app/services/access_service.py`, `app/bot/handlers/messages.py`,
+  `app/bot/utils/i18n.py`, `app/main.py`, `app/services/gemini_switch_announcement_service.py` (yangi),
+  `tests/test_gemini_limits.py` (yangi)
+
+Risk:
+- Migratsiyasiz. To'lov/obuna/budjet logikasi tegilmadi (pullik userlar budjet bo'yicha ishlaydi).
+  Faqat bepul-tier gating o'zgardi va FAQAT `gemini_active()` bo'lganda. E'lon flagi yuborishdan
+  OLDIN o'rnatiladi (dublikatsiz; lekin yuborish o'rtasida crash bo'lsa qolganlar xabarni olmaydi).
+  Testlar: `test_gemini_limits` (11) + `test_ai_provider` (6) + regress (14) o'tdi.
+
 ### 2026-07-21 — AI provayder: Gemini asosiy + OpenAI zaxira, admin model tanlash, AI Voice tezlashtirildi
 
 Changed:

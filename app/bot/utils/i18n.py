@@ -46,6 +46,7 @@ TEXTS = {
         "referral_daily_limit_offer": "<b>📊 Лимити матни имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Бепул AI пагоҳ боз нав мешавад. Барои истифодаи бе лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Лимити фотои имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.</blockquote>",
+        "access_daily_voice_limit_reached": "<b>🎙 Лимити паёмҳои овозии имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Дар як рӯз 5 паёми овозӣ ройгон. Пагоҳ боз нав мешавад. Бо матн бошад бе маҳдудият навишта метавонед.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Лимити фотои имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
         "referral_invite_button": "👥 Дӯст даъват кардан",
         "referral_bonus_question_button": "🎁 Саволи бонусӣ гирифтан",
@@ -203,6 +204,7 @@ TEXTS = {
         "referral_daily_limit_offer": "<b>📊 Ваш текстовый лимит на сегодня закончился</b>\n\n<blockquote>Бесплатный AI обновится завтра. Оформите подписку, чтобы пользоваться без лимита.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.</blockquote>",
+        "access_daily_voice_limit_reached": "<b>🎙 Ваш лимит голосовых на сегодня закончился</b>\n\n<blockquote>5 голосовых в день бесплатно. Завтра обновится. А текстом можно писать без ограничений.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
         "referral_invite_button": "👥 Пригласить друга",
         "referral_bonus_question_button": "🎁 Получить бонусные вопросы",
@@ -371,6 +373,7 @@ TEXTS = {
         "referral_daily_limit_offer": "<b>📊 Bugungi matn limitingiz tugadi</b>\n\n<blockquote>Bepul AI ertaga yana yangilanadi. Limitsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Bugungi foto limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.</blockquote>",
+        "access_daily_voice_limit_reached": "<b>🎙 Bugungi ovozli xabar limitingiz tugadi</b>\n\n<blockquote>Kuniga 5 ta ovozli xabar bepul. Ertaga yana yangilanadi. Matn orqali esa cheksiz yozishingiz mumkin.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Bugungi foto limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",
         "referral_invite_button": "👥 Do‘st chaqirish",
         "referral_bonus_question_button": "🎁 Bonus savol olish",

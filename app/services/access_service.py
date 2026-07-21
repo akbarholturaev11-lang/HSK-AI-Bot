@@ -9,8 +9,17 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
 from app.repositories.payment_repo import PaymentRepository
 from app.services.admin_access import ensure_admin_active, is_admin_user
+from app.services.ai_provider import gemini_active
 from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
 from app.services.user_access_state_service import UserAccessStateService
+
+# Gemini asosiy provayder bo'lganda bepul (obunasiz) foydalanuvchilar uchun kunlik limitlar.
+# Matn/chat bu holatda umuman cheklanmaydi; faqat foto va ovoz kuniga shu miqdorda.
+GEMINI_FREE_PHOTO_DAILY = 5
+GEMINI_FREE_VOICE_DAILY = 5
+# OpenAI (Gemini o'chiq) holatdagi eski foto limiti.
+OPENAI_FREE_PHOTO_DAILY = 2
+
 
 class AccessService:
     def __init__(self, session):
@@ -179,6 +188,11 @@ class AccessService:
         return True, "", False, True
 
     async def _can_use_daily_text_limit(self, user) -> Tuple[bool, str]:
+        # Gemini asosiy provayder bo'lsa chat/matn cheksiz — bepul foydalanuvchi
+        # bemalol matn orqali AI bilan xitoy tilini o'rganadi (foto/ovoz alohida 5/kun).
+        if gemini_active():
+            return True, ""
+
         now = datetime.now(timezone.utc)
 
         if user.last_limit_reset_at is None or now - user.last_limit_reset_at >= timedelta(days=1):
@@ -215,9 +229,33 @@ class AccessService:
             user_id=user.id,
             content_type="image",
         )
-        if today_image_count >= 2:
+        photo_limit = GEMINI_FREE_PHOTO_DAILY if gemini_active() else OPENAI_FREE_PHOTO_DAILY
+        if today_image_count >= photo_limit:
             return False, "access_daily_image_limit_reached"
 
+        return True, ""
+
+    async def count_voice_messages_today(self, user) -> int:
+        """Bugun (UTC) yuborilgan ovozli xabarlar soni (QA ovoz + tarjimon ovoz)."""
+        qa_voice = await self.message_repo.count_user_messages_today(
+            user_id=user.id,
+            content_type="voice",
+        )
+        translator_voice = await self.message_repo.count_user_messages_today(
+            user_id=user.id,
+            content_type="voice_translator",
+        )
+        return qa_voice + translator_voice
+
+    async def can_use_free_daily_voice(self, user) -> Tuple[bool, str]:
+        """Gemini yoqilganda bepul (obunasiz) foydalanuvchi uchun kunlik ovoz limiti.
+
+        Faqat `gemini_active()` bo'lganda ma'noga ega — bu holatda bepul userga
+        kuniga `GEMINI_FREE_VOICE_DAILY` ta ovozli xabar ruxsat etiladi.
+        """
+        today_voice_count = await self.count_voice_messages_today(user)
+        if today_voice_count >= GEMINI_FREE_VOICE_DAILY:
+            return False, "access_daily_voice_limit_reached"
         return True, ""
 
     async def downgrade_expired_active_users(self) -> tuple[int, list[int]]:

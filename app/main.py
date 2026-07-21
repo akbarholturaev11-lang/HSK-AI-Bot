@@ -35,6 +35,7 @@ from app.services.motivation_reminder_service import (
 )
 from app.services.access_service import AccessService
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.gemini_switch_announcement_service import announce_if_needed
 from app.services.daily_reset_service import DailyResetService
 from app.services.expiry_reminder_service import ExpiryReminderService
 from app.services.course_reminder_service import CourseReminderService
@@ -55,6 +56,7 @@ from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonF
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_hsk_exam_service import CourseHskExamService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import (
@@ -360,6 +362,8 @@ async def _background_scheduler(bot: Bot) -> None:
                 await SubscriptionChurnService(session).send_due_followups(bot)
             async with async_session_maker() as session:
                 await BotBlockStatusService(session).scan_due_users(bot, limit=100)
+            # Gemini yoqilgan bo'lsa "limit o'zgardi" e'lonini bir marta yuboradi.
+            await announce_if_needed(bot)
         except Exception as e:
             print("Scheduler error:", e)
 
@@ -1051,10 +1055,9 @@ async def course_v3_data_file(filename: str):
 
 @app.get("/course_v3_data/exams/{filename}")
 async def course_v3_exam_file(filename: str):
-    import re
-    if not re.fullmatch(r"hsk[1-4]\.json", filename):
-        return JSONResponse(status_code=404, content={"error": "not_found"})
-    return static_json_response(f"app/static/course_v3_data/exams/{filename}")
+    # Answer keys are server-only. The Test Center receives a randomized public
+    # projection from `/api/v3/exams/start` and submits blind answers for grading.
+    return JSONResponse(status_code=404, content={"ok": False, "error": "exam_material_private"})
 
 
 @app.get("/course_v3_data/{level}/{filename}")
@@ -1681,6 +1684,53 @@ async def v3_practice_ad_gate(request: Request):
         )
 
 
+@app.post("/api/v3/exams/start")
+async def v3_hsk_exam_start(request: Request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    if not init_data:
+        init_data = str(payload.get("initData") or "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        async with async_session_maker() as session:
+            result = await CourseHskExamService(session).start(
+                telegram_id,
+                level=str(payload.get("level") or ""),
+                lang=str(payload.get("lang") or ""),
+            )
+    except ValueError as error:
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_hsk_exam_payload", "message": str(error)},
+        )
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
+
+
+@app.post("/api/v3/exams/complete")
+async def v3_hsk_exam_complete(request: Request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+    except ValueError:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_hsk_exam_payload"})
+    async with async_session_maker() as session:
+        result = await CourseHskExamService(session).complete(
+            telegram_id,
+            session_id=str(payload.get("session_id") or ""),
+            answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+        )
+    status_code = 200 if result.get("ok") else 409 if result.get("error") == "hsk_exam_material_changed" else 400
+    return JSONResponse(status_code=status_code, content=result)
+
+
 @app.post("/api/v3/lesson/unlock")
 async def v3_course_lesson_unlock(request: Request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
@@ -1773,6 +1823,8 @@ async def v3_course_lesson_complete(request: Request):
         payload = await request.json()
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
         lesson_session_id = _checkout_text(payload.get("session_id"), 80) or None
+        lesson_mistakes = payload.get("mistakes") if isinstance(payload.get("mistakes"), list) else []
+        lesson_mistakes = [item for item in lesson_mistakes[:50] if isinstance(item, dict)]
     except (TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
     if lesson_order <= 0:
@@ -1897,6 +1949,15 @@ async def v3_course_lesson_complete(request: Request):
                 "next_lesson": next_order,
             },
         )
+        if lesson_mistakes:
+            await CourseMistakeService(session).record_items(
+                user,
+                lesson_mistakes,
+                source="lesson",
+                level=resolved_level,
+                lesson_id=getattr(lesson, "id", None),
+                lesson_order=lesson_order,
+            )
         await session.commit()
         return JSONResponse(
             content={

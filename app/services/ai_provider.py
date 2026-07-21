@@ -43,6 +43,15 @@ _MODEL_CACHE_TTL_SECONDS = 60.0
 _model_cache = {"value": None, "ts": 0.0}
 
 
+def gemini_active() -> bool:
+    """Gemini hozir asosiy provaydermi? (Railway env'da `GEMINI_API_KEY` bor-yo'qligi.)
+
+    Bu signal limit tizimini tanlaydi: Gemini yoqilgan bo'lsa chatda matn cheksiz
+    (foto/ovoz kuniga 5 tadan), aks holda hozirgi (OpenAI) limit tizimi ishlaydi.
+    """
+    return bool(settings.GEMINI_API_KEY)
+
+
 def _default_gemini_model() -> str:
     model = (settings.GEMINI_MODEL or "").strip()
     return model if model in GEMINI_MODEL_OPTIONS else "gemini-2.5-flash"

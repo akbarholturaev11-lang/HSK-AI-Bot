@@ -66,6 +66,7 @@ from app.bot.utils.course_miniapp import (
 from app.repositories.message_repo import MessageRepository
 from app.repositories.user_repo import UserRepository
 from app.services.access_service import AccessService
+from app.services.ai_provider import gemini_active
 from app.services.ai_service import AIService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.app_error_context_service import AppErrorContextService
@@ -1012,8 +1013,23 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
     trial_voice_allowed = False
     if not paid_voice_allowed:
         trial_voice_allowed = access_service.can_use_trial_voice(user)
-    if not paid_voice_allowed and not trial_voice_allowed:
+
+    # Gemini asosiy provayder bo'lsa, obunasiz foydalanuvchiga ham ovoz ochiladi:
+    # kuniga GEMINI_FREE_VOICE_DAILY (5) ta. OpenAI holatida eski xatti-harakat qoladi.
+    gemini_voice_allowed = False
+    gemini_voice_message_key = ""
+    if not paid_voice_allowed and not trial_voice_allowed and gemini_active():
+        gemini_voice_allowed, gemini_voice_message_key = await access_service.can_use_free_daily_voice(user)
+
+    if not paid_voice_allowed and not trial_voice_allowed and not gemini_voice_allowed:
         await session.commit()
+        if gemini_active():
+            # Gemini yoqilgan: ovoz bepul mavjud, faqat bugungi 5 ta limit tugagan.
+            await message.answer(
+                t(gemini_voice_message_key or "access_daily_voice_limit_reached", user_lang),
+                parse_mode="HTML",
+            )
+            return
         message_key = (
             "voice_trial_daily_limit_reached"
             if access_service.trial_voice_used_today(user)
@@ -1026,7 +1042,7 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         )
         return
 
-    if not can_use:
+    if not can_use and not gemini_voice_allowed:
         await message.answer(t(message_key, user_lang), parse_mode="HTML")
         return
 
