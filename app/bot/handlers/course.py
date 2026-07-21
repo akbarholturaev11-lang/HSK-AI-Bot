@@ -63,6 +63,10 @@ from app.bot.utils.course_formatter import (
     format_intro, format_vocab, format_dialogue,
     format_grammar, format_exercise, format_step,
 )
+from app.services.course_v3_parts import (
+    current_part as course_v3_current_part,
+    part_meta as course_v3_part_meta,
+)
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.course import course_reminder_timezone_keyboard
 from app.bot.middlewares.required_channel import (
@@ -119,7 +123,7 @@ async def show_free_qa_level_choice(
     )
 
 
-def course_miniapp_entry_text(lang: str, *, lesson: int | None = None) -> str:
+def course_miniapp_entry_text(lang: str, *, lesson: int | None = None, level: str | None = None) -> str:
     texts = {
         "uz": (
             "📚 <b>HSK AI kursi — Mini App</b>\n\n"
@@ -138,13 +142,13 @@ def course_miniapp_entry_text(lang: str, *, lesson: int | None = None) -> str:
         ),
     }
     lead = {
-        "uz": "\n\n{label} darsni hoziroq boshlaymiz 👇",
-        "ru": "\n\nНачнём {label} урок прямо сейчас 👇",
-        "tj": "\n\nДарси {label}-ро ҳозир оғоз мекунем 👇",
+        "uz": "\n\n{label}dan hoziroq boshlaymiz 👇",
+        "ru": "\n\nНачнём с «{label}» прямо сейчас 👇",
+        "tj": "\n\nАз «{label}» ҳозир оғоз мекунем 👇",
     }
     base = texts.get(lang, texts["ru"])
     if lesson:
-        label = _entry_lesson_ordinal(lang, lesson)
+        label = _course_part_label(lang, level, lesson)
         base += lead.get(lang, lead["ru"]).format(label=label)
     return base
 
@@ -158,12 +162,39 @@ def _entry_lesson_ordinal(lang: str, lesson: int) -> str:
     return labels.get(lang, labels["ru"])
 
 
-def course_miniapp_reentry_text(lang: str, lesson: int | None = None) -> str:
+def _course_part_label(lang: str, level: str | None, flat: int | None) -> str:
+    """Foydalanuvchiga tushunarli yorliq: darslar mini-qismlarga bo'lingani
+    uchun FLAT raqam ("20-dars") chalg'itadi. Buning o'rniga asl HSK darsi +
+    qism ko'rsatiladi: "5-dars · 2-qism" / checkpoint uchun "5-dars · yakun".
+    Manifest topilmasa flat raqamga qaytadi."""
+    meta = course_v3_part_meta(level or "", int(flat or 0)) if flat else {}
+    if not meta:
+        return {
+            "uz": f"{flat}-dars",
+            "ru": f"урок {flat}",
+            "tj": f"дарси {flat}",
+        }.get(lang, f"урок {flat}")
+    src, part = meta.get("src"), meta.get("part")
+    if meta.get("checkpoint"):
+        return {
+            "uz": f"{src}-dars · yakuniy qism",
+            "ru": f"урок {src} · итоговая часть",
+            "tj": f"дарси {src} · қисми ниҳоӣ",
+        }.get(lang, f"урок {src} · итоговая часть")
+    return {
+        "uz": f"{src}-dars · {part}-qism",
+        "ru": f"урок {src} · часть {part}",
+        "tj": f"дарси {src} · қисми {part}",
+    }.get(lang, f"урок {src} · часть {part}")
+
+
+def course_miniapp_reentry_text(lang: str, lesson: int | None = None, level: str | None = None) -> str:
     if lesson and lesson > 1:
+        label = _course_part_label(lang, level, lesson)
         texts = {
-            "uz": f"📚 <b>Davom etamiz</b>\n\n{lesson}-darsni ochish uchun bosing 👇",
-            "ru": f"📚 <b>Продолжаем</b>\n\nНажмите, чтобы открыть урок {lesson} 👇",
-            "tj": f"📚 <b>Идома медиҳем</b>\n\nБарои кушодани дарси {lesson} зер кунед 👇",
+            "uz": f"📚 <b>Davom etamiz</b>\n\n{label}ni ochish uchun bosing 👇",
+            "ru": f"📚 <b>Продолжаем</b>\n\nНажмите, чтобы открыть {label} 👇",
+            "tj": f"📚 <b>Идома медиҳем</b>\n\nБарои кушодани {label} зер кунед 👇",
         }
     else:
         texts = {
@@ -174,7 +205,7 @@ def course_miniapp_reentry_text(lang: str, lesson: int | None = None) -> str:
     return texts.get(lang, texts["ru"])
 
 
-def _course_entry_button_label(lang: str, lesson: int | None) -> str:
+def _course_entry_button_label(lang: str, lesson: int | None, level: str | None = None) -> str:
     if not lesson or lesson <= 1:
         labels = {
             "uz": "▶️ 1-darsni boshlash",
@@ -182,10 +213,11 @@ def _course_entry_button_label(lang: str, lesson: int | None) -> str:
             "tj": "▶️ Оғози дарси 1",
         }
     else:
+        label = _course_part_label(lang, level, lesson)
         labels = {
-            "uz": f"▶️ Davom etish · {lesson}-dars",
-            "ru": f"▶️ Продолжить · урок {lesson}",
-            "tj": f"▶️ Идома · дарси {lesson}",
+            "uz": f"▶️ Davom · {label}",
+            "ru": f"▶️ Продолжить · {label}",
+            "tj": f"▶️ Идома · {label}",
         }
     return labels.get(lang, labels["ru"])
 
@@ -217,23 +249,15 @@ async def send_course_miniapp_entry(
     if entry_lesson is None:
         try:
             engine = CourseEngineService(session)
-            lessons, resolved_level = await _resolve_lessons_for_user_level(
-                engine, getattr(user, "level", None)
-            )
-            if lessons:
-                # get_or_create_progress -> (user, progress, error_key)
-                _u, progress, _err = await engine.get_or_create_progress(telegram_id)
-                completed = int(getattr(progress, "completed_lessons_count", 0) or 0) if progress else 0
-                # Mini App bilan bir xil qoida: joriy dars = completed + 1,
-                # lekin mavjud darslar oralig'idan chiqib ketmasin.
-                orders = [int(getattr(l, "lesson_order", 0) or 0) for l in lessons]
-                next_order = min(completed + 1, max(orders))
-                target = next(
-                    (l for l in lessons if int(getattr(l, "lesson_order", 0) or 0) == next_order),
-                    lessons[0],
-                )
-                entry_level = resolved_level
-                entry_lesson = int(getattr(target, "lesson_order", 0) or 0) or None
+            resolved_level = _course_level_candidates(getattr(user, "level", None))[0]
+            # get_or_create_progress -> (user, progress, error_key)
+            _u, progress, _err = await engine.get_or_create_progress(telegram_id)
+            completed = int(getattr(progress, "completed_lessons_count", 0) or 0) if progress else 0
+            # Darslar mini-qismlarga bo'lingan: joriy qism = tugatilgan + 1 (FLAT
+            # raqamlash), darajadagi jami qismlardan oshmagan holda. Bu Mini App
+            # xaritasi (/api/v3/map) bilan bir xil raqamni beradi.
+            entry_level = resolved_level
+            entry_lesson = course_v3_current_part(resolved_level, completed)
         except Exception:
             entry_level = level
             entry_lesson = None
@@ -249,16 +273,16 @@ async def send_course_miniapp_entry(
 
     if entry_lesson:
         text = (
-            course_miniapp_entry_text(lang, lesson=entry_lesson)
+            course_miniapp_entry_text(lang, lesson=entry_lesson, level=entry_level)
             if first_time
-            else course_miniapp_reentry_text(lang, entry_lesson)
+            else course_miniapp_reentry_text(lang, entry_lesson, level=entry_level)
         )
         keyboard = course_study_miniapp_keyboard(
             lang,
             level=entry_level,
             lesson=entry_lesson,
             tab="course",
-            text=_course_entry_button_label(lang, entry_lesson),
+            text=_course_entry_button_label(lang, entry_lesson, level=entry_level),
         )
     else:
         text = course_miniapp_entry_text(lang)

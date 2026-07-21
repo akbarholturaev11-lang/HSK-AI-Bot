@@ -9,6 +9,7 @@ from aiogram.types import (
     CallbackQuery,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
+    WebAppInfo,
 )
 from sqlalchemy import select, func
 from app.db.models.user import User
@@ -25,6 +26,7 @@ from app.bot.keyboards.subscription import (
     subscription_miniapp_keyboard,
 )
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
+from app.bot.utils.course_miniapp import course_v3_miniapp_url
 from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
 from app.services.help_settings_service import build_help_text
@@ -409,7 +411,12 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
             InlineKeyboardButton(text=t("menu_partner", lang), callback_data="partner:open"),
         ],
         [
-            InlineKeyboardButton(text=t("profile_to_course_button", lang), callback_data="profile_menu:course"),
+            # Profil ostidagi tugma kursni BIR bosishda ochadi (oraliq xabar
+            # yo'q) — resume=1 orqali foydalanuvchi turgan qismga tushadi.
+            InlineKeyboardButton(
+                text=t("profile_to_course_button", lang),
+                web_app=WebAppInfo(url=course_v3_miniapp_url(lang=lang, resume=True, tab="course")),
+            ),
         ],
     ]
     return InlineKeyboardMarkup(inline_keyboard=rows)

@@ -41,12 +41,51 @@ def source_lesson_for_part(level: str, part_n: int) -> int:
     Legacy tizimlar (challenge/practice savol banki) hali darslik darsi
     tartibida ishlaydi — qism raqamini shunga aylantirish uchun.
     Manifest bo'lmasa 0 qaytadi (chaqiruvchi eski xatti-harakatga qaytsin)."""
+    meta = part_meta(level, part_n)
+    return int(meta.get("src") or 0)
+
+
+def part_meta(level: str, part_n: int) -> dict:
+    """Flat qism raqami -> {src, part, part_count, checkpoint}.
+
+    src — asl HSK darsligi darsi (1-based); part — shu dars ichidagi qism
+    tartibi (1-based); part_count — shu darsning jami qismlari; checkpoint —
+    oxirgi (mustahkamlash) qismimi. Manifest topilmasa bo'sh dict."""
     part_n = int(part_n or 0)
+    if part_n <= 0:
+        return {}
     lessons = _level_data(level).get("lessons") or []
     for les in lessons:
         parts = les.get("parts") or []
         if parts and part_n <= int(parts[-1]):
-            return int(les.get("src") or 0)
+            try:
+                idx = parts.index(part_n)
+            except ValueError:
+                # Qism aynan chegaraga tegishli, lekin ro'yxatda yo'q (nazariy).
+                idx = len(parts) - 1
+            return {
+                "src": int(les.get("src") or 0),
+                "part": idx + 1,
+                "part_count": len(parts),
+                "checkpoint": part_n == int(les.get("checkpoint") or parts[-1]),
+            }
     if lessons and part_n > 0:
-        return int(lessons[-1].get("src") or 0)
-    return 0
+        les = lessons[-1]
+        parts = les.get("parts") or []
+        return {
+            "src": int(les.get("src") or 0),
+            "part": len(parts),
+            "part_count": len(parts),
+            "checkpoint": True,
+        }
+    return {}
+
+
+def current_part(level: str, completed_parts: int) -> int:
+    """Foydalanuvchining JORIY qismi = tugatilgan qismlar + 1, darajadagi jami
+    qismlardan oshmagan holda. Manifest bo'lmasa oddiy completed+1."""
+    nxt = int(completed_parts or 0) + 1
+    total = total_parts(level)
+    if total:
+        return max(1, min(nxt, total))
+    return max(1, nxt)

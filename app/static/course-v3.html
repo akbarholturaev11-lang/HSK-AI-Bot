@@ -2965,6 +2965,15 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     var sp=new URLSearchParams(location.search);
     App.show(sp.get("tab")||"course");
     var initialLesson=Number(sp.get("lesson")||0);
+    // resume=1: aniq lesson berilmagan bo'lsa, server progresidan JORIY qismni
+    // (status==="current") topib darhol ochamiz — botdagi "Davom" / profil
+    // tugmasi bir bosishda foydalanuvchi turgan darsni ochadi.
+    if(initialLesson<=0&&sp.get("resume")==="1"){
+      var all=allLessons();
+      var ci=-1;all.forEach(function(l,i){if(ci<0&&l.status==="current")ci=i});
+      if(ci<0)all.forEach(function(l,i){if(ci<0&&l.status!=="done")ci=i});
+      if(ci>=0)initialLesson=Number(all[ci].n)||0;
+    }
     if(initialLesson>0){
       var idx=-1;allLessons().forEach(function(l,i){if(Number(l.n)===initialLesson)idx=i});
       if(idx>=0)setTimeout(function(){

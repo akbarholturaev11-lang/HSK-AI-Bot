@@ -180,10 +180,19 @@ def subscription_miniapp_url(
     return f"{base_url}{separator}{urlencode(params)}"
 
 
-def course_v3_miniapp_url(lang: str | None = None) -> str:
+def course_v3_miniapp_url(
+    lang: str | None = None, *, resume: bool = False, tab: str | None = None
+) -> str:
     base_url = _miniapp_base_url_for_file("course-v3.html")
     separator = "&" if "?" in base_url else "?"
-    return f"{base_url}{separator}{urlencode({'lang': normalize_miniapp_lang(lang), 'v': MINIAPP_ASSET_VERSION})}"
+    params = {"lang": normalize_miniapp_lang(lang), "v": MINIAPP_ASSET_VERSION}
+    if tab:
+        params["tab"] = _course_v3_tab(tab)
+    if resume:
+        # Mini App server progresidan (/api/v3/map) foydalanuvchining JORIY
+        # qismini topib, o'sha darsni darhol ochadi — bir bosishda davom.
+        params["resume"] = 1
+    return f"{base_url}{separator}{urlencode(params)}"
 
 
 def admin_miniapp_url() -> str:
