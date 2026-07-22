@@ -8,11 +8,14 @@ TEXTS = {
         "level_saved_explained": "✅ Сатҳи шумо сабт шуд. Ин ба мо кӯмак мекунад, ки дарсҳоро ба шумо мувофиқ кунем.",
         "trial_started_info": "🎁 Ба шумо дастрасии ройгон кушода шуд.",
         "free_mode_info": "💬 <b>Реҷаи ройгон фаъол шуд</b>\n\n<blockquote>Бо лимити рӯзона савол нависед ё аз китоб/дафтар сурат фиристед — AI мефаҳмонад.</blockquote>",
+        "free_mode_info_gemini": "💬 <b>Реҷаи ройгон фаъол шуд</b>\n\n<blockquote>Бо матн <b>бе лимит</b> савол нависед — AI забони хитоиро ройгон меомӯзонад.\n\nСурат ва паёми овозӣ рӯзе 5-тогӣ.</blockquote>",
         "ai_response_failed": "⚠️ AI ҷавобро тайёр карда натавонист. Лутфан дубора фиристед.",
         "ai_empty_response": "⚠️ AI ҷавоби холӣ баргардонд. Лутфан саволро каме равшантар фиристед.",
         "user_not_found": "Лутфан, аввал /start ро пахш кунед.",
         "onboarding_special_welcome": "🌟 Шумо <b>{user_num}</b>-умин корбари мо шудед!\n\n<blockquote>🎁 Ба шумо як дарси курс пурра ройгон кушода мешавад. Матн ва фото бо лимити рӯзона кор мекунанд.</blockquote>",
+        "onboarding_special_welcome_gemini": "🌟 Шумо <b>{user_num}</b>-умин корбари мо шудед!\n\n<blockquote>🎁 Ба шумо як дарси курс пурра ройгон кушода мешавад. Матн бе лимит, сурат ва овоз рӯзе 5-тогӣ.</blockquote>",
         "trial_24h_info": "🎁 <b>Дастрасии ройгон кушода шуд!</b>\n\n<blockquote>Як дарси интихобшудаи курсро пурра месанҷед.\n\nМатн ва фото бо лимити рӯзона кор мекунанд.</blockquote>",
+        "trial_24h_info_gemini": "🎁 <b>Дастрасии ройгон кушода шуд!</b>\n\n<blockquote>Як дарси интихобшудаи курсро пурра месанҷед.\n\nМатн бе лимит, сурат ва овоз рӯзе 5-тогӣ.</blockquote>",
         "send_first_message": "Акнун калима, ҷумла ё саволи хитоии худро фиристед — дарсро аз ҳамон ҷо оғоз мекунем.",
         "level_beginner": "Аз 0",
 
@@ -46,12 +49,15 @@ TEXTS = {
         "referral_daily_limit_offer": "<b>📊 Лимити матни имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Бепул AI пагоҳ боз нав мешавад. Барои истифодаи бе лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Лимити фотои имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.</blockquote>",
+        "access_daily_image_limit_reached_gemini": "<b>📸 Лимити сурати имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Рӯзе 5 сурат ройгон. Пагоҳ боз нав мешавад.\n\nБо матн бошад ҳозир ҳам бе маҳдудият навишта метавонед.</blockquote>",
         "access_daily_voice_limit_reached": "<b>🎙 Лимити паёмҳои овозии имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Дар як рӯз 5 паёми овозӣ ройгон. Пагоҳ боз нав мешавад. Бо матн бошад бе маҳдудият навишта метавонед.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Лимити фотои имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
+        "referral_image_limit_offer_gemini": "<b>📸 Лимити сурати имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Рӯзе 5 сурат ройгон. Пагоҳ боз нав мешавад. Бо матн бошад бе маҳдудият навишта метавонед.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
         "referral_invite_button": "👥 Дӯст даъват кардан",
         "referral_bonus_question_button": "🎁 Саволи бонусӣ гирифтан",
         "referral_bonus_received": "Таклифи шумо қабул шуд ✅\nБа шумо +5 саволи бонусӣ дода шуд. Акнун метавонед боз аз бот истифода баред.\n\nҲисоби дастрасии 3-рӯза: {count}/{required}",
         "referral_trial_access_unlocked": "<b>✅ {days} рӯз дастрасии ройгон кушода шуд</b>\n\n<blockquote>Ин обунаи пулакӣ нест. Матн, курс ва фото бо лимити ройгони $2 кор мекунанд. Саволи овозӣ танҳо бо обунаи пулакӣ кушода мешавад.</blockquote>",
+        "referral_trial_access_unlocked_gemini": "<b>✅ {days} рӯз дастрасии ройгон кушода шуд</b>\n\n<blockquote>Ин обунаи пулакӣ нест. Матн бе лимит, сурат ва паёми овозӣ рӯзе 5-тогӣ кор мекунанд.</blockquote>",
         "referral_invite_text": "<b>Силкаи даъвати шумо:</b>\n<code>{link}</code>\n\n<blockquote>Дӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯсти фаъол даъват кунед ва {days} рӯз дастрасии ройгон гиред.\n\n👥 Бо силка даромаданд: {joined_count}\n✅ Ҳисоби фаъол: {count}/{required}</blockquote>",
 
         "payment_back": "⬅️ Бозгашт",        
@@ -174,11 +180,14 @@ TEXTS = {
         "level_saved_explained": "✅ Ваш уровень сохранён. Это поможет нам подстроить уроки под вас.",
         "trial_started_info": "🎁 Вам открыт бесплатный доступ.",
         "free_mode_info": "💬 <b>Бесплатный режим включён</b>\n\n<blockquote>Задавайте вопросы или отправляйте фото из книги/тетради с дневным лимитом — AI объяснит.</blockquote>",
+        "free_mode_info_gemini": "💬 <b>Бесплатный режим включён</b>\n\n<blockquote>Пишите вопросы текстом <b>без лимита</b> — AI бесплатно научит китайскому.\n\nФото и голосовые — по 5 в день.</blockquote>",
         "ai_response_failed": "⚠️ AI не смог подготовить ответ. Пожалуйста, отправьте вопрос ещё раз.",
         "ai_empty_response": "⚠️ AI вернул пустой ответ. Пожалуйста, задайте вопрос чуть точнее.",
         "user_not_found": "Пожалуйста, сначала нажмите /start.",
         "onboarding_special_welcome": "🌟 Вы стали нашим <b>{user_num}-м</b> пользователем!\n\n<blockquote>🎁 Вам открыт один полный урок курса бесплатно. Текст и фото работают с дневными лимитами.</blockquote>",
+        "onboarding_special_welcome_gemini": "🌟 Вы стали нашим <b>{user_num}-м</b> пользователем!\n\n<blockquote>🎁 Вам открыт один полный урок курса бесплатно. Текст без лимита, фото и голосовые — по 5 в день.</blockquote>",
         "trial_24h_info": "🎁 <b>Бесплатный доступ открыт!</b>\n\n<blockquote>Вы полностью попробуете один выбранный урок курса.\n\nТекст и фото работают с дневными лимитами.</blockquote>",
+        "trial_24h_info_gemini": "🎁 <b>Бесплатный доступ открыт!</b>\n\n<blockquote>Вы полностью попробуете один выбранный урок курса.\n\nТекст без лимита, фото и голосовые — по 5 в день.</blockquote>",
         "send_first_message": "Теперь отправьте китайское слово, фразу или свой вопрос — и начнём урок с этого.",
         "level_beginner": "С нуля",
 
@@ -204,12 +213,15 @@ TEXTS = {
         "referral_daily_limit_offer": "<b>📊 Ваш текстовый лимит на сегодня закончился</b>\n\n<blockquote>Бесплатный AI обновится завтра. Оформите подписку, чтобы пользоваться без лимита.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.</blockquote>",
+        "access_daily_image_limit_reached_gemini": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>5 фото в день бесплатно. Завтра обновится.\n\nА текстом можно писать без ограничений прямо сейчас.</blockquote>",
         "access_daily_voice_limit_reached": "<b>🎙 Ваш лимит голосовых на сегодня закончился</b>\n\n<blockquote>5 голосовых в день бесплатно. Завтра обновится. А текстом можно писать без ограничений.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
+        "referral_image_limit_offer_gemini": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>5 фото в день бесплатно. Завтра обновится. А текстом можно писать без ограничений.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
         "referral_invite_button": "👥 Пригласить друга",
         "referral_bonus_question_button": "🎁 Получить бонусные вопросы",
         "referral_bonus_received": "Ваше приглашение принято ✅\nВам начислено +5 бонусных вопросов. Теперь вы снова можете пользоваться ботом.\n\nСчетчик доступа на 3 дня: {count}/{required}",
         "referral_trial_access_unlocked": "<b>✅ Открыт бесплатный доступ на {days} дня</b>\n\n<blockquote>Это не платная подписка. Текст, курс и фото работают с бесплатным лимитом $2. Голосовые вопросы открываются только с платной подпиской.</blockquote>",
+        "referral_trial_access_unlocked_gemini": "<b>✅ Открыт бесплатный доступ на {days} дня</b>\n\n<blockquote>Это не платная подписка. Текст без лимита, фото и голосовые — по 5 в день.</blockquote>",
         "referral_invite_text": "<b>Ваша ссылка:</b>\n<code>{link}</code>\n\n<blockquote>Пригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} активных друзей и получите {days} дня бесплатного доступа.\n\n👥 Перешли по ссылке: {joined_count}\n✅ Активный счетчик: {count}/{required}</blockquote>",
         "subscription_expires_tomorrow": "Завтра день окончания вашей подписки.",
         "daily_limit_renewed": "✅ Ваш дневной лимит обновлён. Снова можете пользоваться ботом.",
@@ -336,11 +348,14 @@ TEXTS = {
         "level_saved_explained": "✅ Darajangiz saqlandi. Bu darslarni sizga moslashtirishga yordam beradi.",
         "trial_started_info": "🎁 Sizga bepul kirish ochildi.",
         "free_mode_info": "💬 <b>Bepul rejim yoqildi</b>\n\n<blockquote>Kunlik limit bilan savol yozing yoki kitob/daftardan rasm yuboring — AI tushuntiradi.</blockquote>",
+        "free_mode_info_gemini": "💬 <b>Bepul rejim yoqildi</b>\n\n<blockquote>Matn orqali <b>cheksiz</b> savol yozing — AI xitoy tilini bepul o'rgatadi.\n\nRasm va ovozli xabar kuniga 5 tadan.</blockquote>",
         "ai_response_failed": "⚠️ AI javob tayyorlay olmadi. Iltimos, savolni qayta yuboring.",
         "ai_empty_response": "⚠️ AI bo‘sh javob qaytardi. Iltimos, savolni aniqroq yozing.",
         "user_not_found": "Iltimos, avval /start ni bosing.",
         "onboarding_special_welcome": "🌟 Siz bizning <b>{user_num}-chi</b> foydalanuvchimiz bo’ldingiz!\n\n<blockquote>🎁 Sizga bitta kurs darsi to‘liq bepul ochiladi. Matn va rasm kunlik limit bilan ishlaydi.</blockquote>",
+        "onboarding_special_welcome_gemini": "🌟 Siz bizning <b>{user_num}-chi</b> foydalanuvchimiz bo’ldingiz!\n\n<blockquote>🎁 Sizga bitta kurs darsi to‘liq bepul ochiladi. Matn cheksiz, rasm va ovoz kuniga 5 tadan.</blockquote>",
         "trial_24h_info": "🎁 <b>Bepul kirish ochildi!</b>\n\n<blockquote>Bitta tanlangan kurs darsini to‘liq sinab ko‘rasiz.\n\nMatn va rasm kunlik limit bilan ishlaydi.</blockquote>",
+        "trial_24h_info_gemini": "🎁 <b>Bepul kirish ochildi!</b>\n\n<blockquote>Bitta tanlangan kurs darsini to‘liq sinab ko‘rasiz.\n\nMatn cheksiz, rasm va ovoz kuniga 5 tadan.</blockquote>",
         "send_first_message": "Endi xitoycha so’z, gap yoki savolingizni yuboring — darsni o’sha yerdan boshlaymiz.",
         "level_beginner": "0 dan",
 
@@ -373,12 +388,15 @@ TEXTS = {
         "referral_daily_limit_offer": "<b>📊 Bugungi matn limitingiz tugadi</b>\n\n<blockquote>Bepul AI ertaga yana yangilanadi. Limitsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Bugungi foto limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.</blockquote>",
+        "access_daily_image_limit_reached_gemini": "<b>📸 Bugungi rasm limitingiz tugadi</b>\n\n<blockquote>Kuniga 5 ta rasm bepul. Ertaga yana yangilanadi.\n\nMatn orqali esa hozir ham cheksiz yozishingiz mumkin.</blockquote>",
         "access_daily_voice_limit_reached": "<b>🎙 Bugungi ovozli xabar limitingiz tugadi</b>\n\n<blockquote>Kuniga 5 ta ovozli xabar bepul. Ertaga yana yangilanadi. Matn orqali esa cheksiz yozishingiz mumkin.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Bugungi foto limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",
+        "referral_image_limit_offer_gemini": "<b>📸 Bugungi rasm limitingiz tugadi</b>\n\n<blockquote>Kuniga 5 ta rasm bepul. Ertaga yana yangilanadi. Matn orqali esa cheksiz yozishingiz mumkin.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",
         "referral_invite_button": "👥 Do‘st chaqirish",
         "referral_bonus_question_button": "🎁 Bonus savol olish",
         "referral_bonus_received": "Taklifingiz qabul qilindi ✅\nSizga +5 bonus savol berildi. Endi botdan yana foydalanishingiz mumkin.\n\n3 kunlik kirish hisobi: {count}/{required}",
         "referral_trial_access_unlocked": "<b>✅ {days} kun bepul foydalanish ochildi</b>\n\n<blockquote>Bu pullik obuna emas. Matn, kurs va foto 2 dollarlik bepul limit bilan ishlaydi. Ovozli savol faqat pullik obunada ochiladi.</blockquote>",
+        "referral_trial_access_unlocked_gemini": "<b>✅ {days} kun bepul foydalanish ochildi</b>\n\n<blockquote>Bu pullik obuna emas. Matn cheksiz, rasm va ovozli xabar kuniga 5 tadan ishlaydi.</blockquote>",
         "referral_invite_text": "<b>Sizning taklif havolangiz:</b>\n<code>{link}</code>\n\n<blockquote>Do‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} ta faol do‘st chaqiring va {days} kun bepul foydalanish oling.\n\n👥 Havola orqali kirganlar: {joined_count}\n✅ Faol hisob: {count}/{required}</blockquote>",
 
         "payment_back": "⬅️ Orqaga",
@@ -492,9 +510,17 @@ TEXTS = {
 }
 
 
-def t(key: str, lang: str = "ru", **kwargs) -> str:
-    lang = lang if lang in TEXTS else "ru"
+def _gemini_texts_active() -> bool:
+    """Gemini asosiy provaydermi? Limit matnlari shunga qarab tanlanadi."""
+    try:
+        from app.services.ai_provider import gemini_active
 
+        return gemini_active()
+    except Exception:
+        return False
+
+
+def _lookup_text(key: str, lang: str):
     text = TEXTS.get(lang, {}).get(key)
 
     if text is None:
@@ -505,6 +531,22 @@ def t(key: str, lang: str = "ru", **kwargs) -> str:
 
     if text is None:
         text = COURSE_I18N.get("ru", {}).get(key)
+
+    return text
+
+
+def t(key: str, lang: str = "ru", **kwargs) -> str:
+    lang = lang if lang in TEXTS else "ru"
+
+    # Gemini yoqilganda limitlar boshqacha (matn cheksiz, rasm/ovoz 5/kun), shuning
+    # uchun avval `<kalit>_gemini` variantini qidiramiz. Variant yo'q bo'lsa oddiy
+    # kalit ishlatiladi — ya'ni faqat limitga aloqador matnlar o'zgaradi.
+    text = None
+    if _gemini_texts_active():
+        text = _lookup_text(f"{key}_gemini", lang)
+
+    if text is None:
+        text = _lookup_text(key, lang)
 
     if text is None:
         return key

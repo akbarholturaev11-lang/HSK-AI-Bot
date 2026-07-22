@@ -2,6 +2,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
+from app.bot.utils.i18n import TEXTS, t
 from app.services.access_service import AccessService
 from app.services.gemini_switch_announcement_service import (
     ANNOUNCEMENT_TEXT,
@@ -114,6 +115,55 @@ class GeminiAnnouncementTests(unittest.IsolatedAsyncioTestCase):
         bot.send_message = AsyncMock()
         await announce_if_needed(bot)  # DB'ga tegmasdan qaytadi
         bot.send_message.assert_not_awaited()
+
+
+class GeminiTextVariantTests(unittest.TestCase):
+    """Gemini yoqilganda limit matnlari `_gemini` variantiga o'tishi kerak."""
+
+    LANGS = ("uz", "ru", "tj")
+    KEYS = (
+        "free_mode_info",
+        "onboarding_special_welcome",
+        "trial_24h_info",
+        "referral_trial_access_unlocked",
+        "access_daily_image_limit_reached",
+        "referral_image_limit_offer",
+    )
+
+    def test_gemini_variant_exists_in_all_languages(self):
+        for lang in self.LANGS:
+            for key in self.KEYS:
+                with self.subTest(lang=lang, key=key):
+                    self.assertIn(f"{key}_gemini", TEXTS[lang])
+
+    def test_openai_keeps_original_text(self):
+        with patch("app.config.settings.GEMINI_API_KEY", ""):
+            for lang in self.LANGS:
+                for key in self.KEYS:
+                    with self.subTest(lang=lang, key=key):
+                        self.assertEqual(
+                            t(key, lang, required=3, days=3, user_num=1),
+                            TEXTS[lang][key].format(required=3, days=3, user_num=1),
+                        )
+
+    def test_gemini_uses_variant_text(self):
+        with patch("app.config.settings.GEMINI_API_KEY", "test-key"):
+            for lang in self.LANGS:
+                for key in self.KEYS:
+                    with self.subTest(lang=lang, key=key):
+                        self.assertEqual(
+                            t(key, lang, required=3, days=3, user_num=1),
+                            TEXTS[lang][f"{key}_gemini"].format(required=3, days=3, user_num=1),
+                        )
+
+    def test_key_without_variant_falls_back(self):
+        # Varianti yo'q kalit Gemini holatida ham oddiy matnini beradi.
+        with patch("app.config.settings.GEMINI_API_KEY", "test-key"):
+            self.assertEqual(t("daily_limit_renewed", "uz"), TEXTS["uz"]["daily_limit_renewed"])
+
+    def test_unknown_key_still_returns_key(self):
+        with patch("app.config.settings.GEMINI_API_KEY", "test-key"):
+            self.assertEqual(t("bunday_kalit_yoq", "uz"), "bunday_kalit_yoq")
 
 
 if __name__ == "__main__":

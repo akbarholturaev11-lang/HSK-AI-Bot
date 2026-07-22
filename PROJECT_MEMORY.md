@@ -247,17 +247,28 @@ Changed (access/limit logikasi — ehtiyotkorlik bilan):
   Gemini birinchi marta yoqilganda HAMMA bloklamagan userga o'z tilida (uz/ru/tj) bir martalik
   "matn cheksiz, foto/ovoz 5/kun" xabari. `bot_settings.gemini_switch_announced` flagi bilan
   takrorlanmaydi; yetkazish scheduler tsiklini bloklamaslik uchun alohida background task'da.
+- **Limit MATNLARI ham provayderga moslashadi** (raqam o'zgarib, matn eski qolib ketmasligi uchun):
+  `t()` (`i18n.py`) endi `gemini_active()` bo'lsa AVVAL `<kalit>_gemini` variantini qidiradi,
+  topilmasa oddiy kalitga tushadi — ya'ni chaqiruv joylari umuman o'zgarmaydi va faqat limitga
+  aloqador matnlar boshqacha chiqadi. 6 kalitga 3 tildan variant qo'shildi (18 ta):
+  `free_mode_info`, `onboarding_special_welcome`, `trial_24h_info`, `referral_trial_access_unlocked`,
+  `access_daily_image_limit_reached`, `referral_image_limit_offer` — Gemini variantlarida
+  "matn cheksiz, rasm/ovoz kuniga 5 tadan" deyiladi. Matndagi raqamlar `access_service`
+  konstantalariga (5/5) mos; OpenAI holatida matnlar AYNAN eskicha qoladi.
 
 Files touched:
 - `app/services/ai_provider.py`, `app/services/access_service.py`, `app/bot/handlers/messages.py`,
-  `app/bot/utils/i18n.py`, `app/main.py`, `app/services/gemini_switch_announcement_service.py` (yangi),
+  `app/bot/utils/i18n.py` (`t()` + `_lookup_text` + `_gemini_texts_active`),
+  `app/main.py`, `app/services/gemini_switch_announcement_service.py` (yangi),
   `tests/test_gemini_limits.py` (yangi)
 
 Risk:
 - Migratsiyasiz. To'lov/obuna/budjet logikasi tegilmadi (pullik userlar budjet bo'yicha ishlaydi).
   Faqat bepul-tier gating o'zgardi va FAQAT `gemini_active()` bo'lganda. E'lon flagi yuborishdan
   OLDIN o'rnatiladi (dublikatsiz; lekin yuborish o'rtasida crash bo'lsa qolganlar xabarni olmaydi).
-  Testlar: `test_gemini_limits` (11) + `test_ai_provider` (6) + regress (14) o'tdi.
+  `t()` butun bot bo'ylab ishlatiladi — `_gemini` varianti yo'q kalitlar uchun xatti-harakat
+  o'zgarmagan (fallback testlari bor). Testlar: `test_gemini_limits` (15 + 54 subtest) +
+  to'liq to'plam 240 test o'tdi.
 
 ### 2026-07-21 — AI provayder: Gemini asosiy + OpenAI zaxira, admin model tanlash, AI Voice tezlashtirildi
 
