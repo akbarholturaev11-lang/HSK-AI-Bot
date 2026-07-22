@@ -10,6 +10,7 @@ from app.bot.keyboards.subscription import admin_discount_entry_keyboard
 from app.db.models.discount_campaign import DiscountCampaign
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.user_repo import UserRepository
+from app.services.user_access_state_service import UserAccessStateService
 
 
 @dataclass
@@ -96,11 +97,15 @@ class DiscountNotificationService:
         if campaign.target_telegram_id:
             user = await self.user_repo.get_by_telegram_id(campaign.target_telegram_id)
             return [user] if user else []
-        return await self.user_repo.get_filtered_users(
+        users = await self.user_repo.get_filtered_users(
             language=campaign.audience_language,
             status=campaign.audience_status,
             level=campaign.audience_level,
         )
+        # Faol pullik obunachi chegirma e'lonini olmaydi — u "obunam tugadimi?"
+        # degan noto'g'ri xabar beradi. `status="active"` filtri ularni ham
+        # qamrab olgani uchun bu yerda alohida chiqarib tashlanadi.
+        return [user for user in users if not UserAccessStateService.is_paid(user)]
 
     async def _notification_text(
         self,

@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -7,6 +8,7 @@ from sqlalchemy import select
 from app.bot.keyboards.feedback import (
     feedback_dislike_keyboard,
     feedback_like_keyboard,
+    feedback_paid_keyboard,
     feedback_price_offer_keyboard,
 )
 from app.bot.utils.i18n import t
@@ -17,6 +19,7 @@ from app.repositories.bot_feedback_repo import (
     BotFeedbackRepository,
 )
 from app.repositories.user_repo import UserRepository
+from app.services.user_access_state_service import UserAccessStateService
 
 
 FEEDBACK_PERIOD_DAYS = 30
@@ -24,6 +27,19 @@ FEEDBACK_JOIN_DELAY = timedelta(days=1)
 FEEDBACK_RETRY_AFTER = timedelta(hours=24)
 FEEDBACK_REWARD_DURATION = timedelta(minutes=30)
 FEEDBACK_PRICE_OFFER_DELAY = timedelta(minutes=5)
+# Scheduler har 60 soniyada ishlaydi — bitta yugurishda hammaga yubormaymiz,
+# aks holda Telegram rate limitiga uriladi.
+FEEDBACK_SEND_BATCH_LIMIT = 60
+FEEDBACK_SEND_DELAY = 0.05
+
+
+def feedback_prompt_for(user: User, feedback: BotFeedback, lang: str):
+    """Obunachiga chegirma emas, "obuna arzidimi?" savoli beriladi."""
+    if UserAccessStateService.is_paid(user):
+        return t("feedback_paid_question", lang), feedback_paid_keyboard(feedback.id, lang)
+    if feedback.liked_code and not feedback.disliked_code:
+        return t("feedback_dislike_question", lang), feedback_dislike_keyboard(feedback.id, lang)
+    return t("feedback_like_question", lang), feedback_like_keyboard(feedback.id, lang)
 
 
 class BotFeedbackService:
@@ -65,7 +81,6 @@ class BotFeedbackService:
         result = await self.session.execute(
             select(User)
             .where(User.created_at <= oldest_join_time)
-            .where(User.daily_limit_offer_sent_at.is_not(None))
             .where(User.status != "blocked")
             .order_by(User.created_at.asc())
         )
@@ -73,17 +88,15 @@ class BotFeedbackService:
 
         sent_count = 0
         for user in users:
+            if sent_count >= FEEDBACK_SEND_BATCH_LIMIT:
+                break
+
             feedback = await self._get_or_create_due_feedback(user, now)
             if not feedback or not self._is_prompt_due(feedback, now):
                 continue
 
             lang = user.language if user.language else "ru"
-            if feedback.liked_code and not feedback.disliked_code:
-                text = t("feedback_dislike_question", lang)
-                keyboard = feedback_dislike_keyboard(feedback.id, lang)
-            else:
-                text = t("feedback_like_question", lang)
-                keyboard = feedback_like_keyboard(feedback.id, lang)
+            text, keyboard = feedback_prompt_for(user, feedback, lang)
 
             message_id = None
             try:
@@ -91,6 +104,7 @@ class BotFeedbackService:
                     chat_id=user.telegram_id,
                     text=text,
                     reply_markup=keyboard,
+                    parse_mode="HTML",
                 )
                 message_id = msg.message_id
                 sent_count += 1
@@ -98,6 +112,7 @@ class BotFeedbackService:
                 pass
 
             await self.feedback_repo.mark_prompt_sent(feedback, message_id)
+            await asyncio.sleep(FEEDBACK_SEND_DELAY)
 
         await self.session.commit()
         return sent_count
@@ -108,6 +123,11 @@ class BotFeedbackService:
         feedback: BotFeedback,
     ) -> None:
         if feedback.reward_granted_at:
+            return
+
+        # Pullik obunachida limit yo'q — 30 daqiqalik "bonus" ularga hech narsa
+        # bermaydi, aksincha selected_plan_type/end_date'ni buzadi.
+        if UserAccessStateService.is_paid(user):
             return
 
         now = datetime.now(timezone.utc)
@@ -134,9 +154,12 @@ class BotFeedbackService:
         user: User,
     ) -> None:
         await self.feedback_repo.complete(feedback)
+        # Faol obunachiga chegirma taklifi yuborilmaydi — u "obunam tugadimi?"
+        # degan noto'g'ri signal beradi.
         if (
             feedback.disliked_code in FEEDBACK_DISCOUNT_OFFER_CODES
             and not feedback.price_offer_due_at
+            and not UserAccessStateService.is_paid(user)
         ):
             await self.feedback_repo.schedule_price_offer(
                 feedback,
@@ -151,7 +174,7 @@ class BotFeedbackService:
         sent_count = 0
         for feedback in feedbacks:
             user = await self.user_repo.get_by_telegram_id(feedback.telegram_id)
-            if not user or user.status == "blocked":
+            if not user or user.status == "blocked" or UserAccessStateService.is_paid(user):
                 await self.feedback_repo.mark_price_offer_sent(feedback)
                 continue
 

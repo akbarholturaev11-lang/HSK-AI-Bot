@@ -1036,6 +1036,49 @@ FEEDBACK_I18N = {
         "feedback_price_offer_payment_choose": "💳 Барои истифодаи 20% тахфиф усули пардохтро интихоб кунед:",
         "feedback_price_offer_plan_choose": "🎁 <b>20% тахфифи махсус</b>\n\n<blockquote>{lines}</blockquote>\n\nТарифро интихоб кунед:",
         "feedback_price_offer_expired": "Ин пешниҳоди махсус дигар дастрас нест.",
+        "feedback_like_sub_question": (
+            "<b>Аниқтар гӯед 👇</b>\n\n"
+            "<blockquote>Маҳз кадом қисм бештар кӯмак кард?</blockquote>"
+        ),
+        "feedback_sub_other_prompt": "Кӯтоҳ нависед — маҳз кадом қисм?",
+        "feedback_sub_lessons": "📖 Дарсҳо",
+        "feedback_sub_exercises": "🎯 Машқҳо",
+        "feedback_sub_voice": "🎙 AI Voice",
+        "feedback_sub_speed": "⚡️ Суръати ҷавобҳо",
+        "feedback_sub_clarity": "🧠 Фаҳмо будани шарҳ",
+        "feedback_sub_examples": "📝 Мисолу ҷумлаҳо",
+        "feedback_sub_hanzi": "🈶 Шинохти иероглиф",
+        "feedback_sub_translate": "🌐 Тарҷума",
+        "feedback_sub_homework": "✅ Санҷиши вазифаи хонагӣ",
+        "feedback_sub_daily": "🔥 Машқи ҳаррӯза",
+        "feedback_sub_memorize": "🧩 Азёд кардани калимаҳо",
+        "feedback_sub_quiz": "📊 Тестҳо",
+        "feedback_sub_content": "📚 Мавод кам буд",
+        "feedback_sub_slow": "🐢 Натиҷа суст меояд",
+        "feedback_sub_tech": "⚙️ Мушкилоти техникӣ буд",
+        "feedback_sub_time": "⏳ Вақт наёфтам",
+        "feedback_sub_other": "✍️ Дигар",
+        "feedback_paid_question": (
+            "<b>Дар бораи обунаатон рост гӯед 🙏</b>\n\n"
+            "<blockquote>Ҳоло ба он ки обуна гирифтед, чӣ гуна нигоҳ мекунед?</blockquote>"
+        ),
+        "feedback_paid_worth": "💎 Арзид — ба дӯстам ҳам тавсия медиҳам",
+        "feedback_paid_useful": "🙂 Фоида дорад, истифода мебарам",
+        "feedback_paid_unsure": "🤔 Ҳанӯз баҳо дода наметавонам",
+        "feedback_paid_regret": "😕 Он тавре ки интизор будам, набаромад",
+        "feedback_paid_sub_positive_question": (
+            "<b>Ташаккур 💚</b>\n\n"
+            "<blockquote>Аз кадом қисм бештар фоида дидед?</blockquote>"
+        ),
+        "feedback_paid_sub_negative_question": (
+            "<b>Фаҳмидем.</b>\n\n"
+            "<blockquote>Чӣ намерасид? Ростӣ қайд кунед — маҳз ҳаминро ислоҳ мекунем.</blockquote>"
+        ),
+        "feedback_paid_thanks": (
+            "<b>Ташаккур, фикри шумо сабт шуд ✅</b>\n\n"
+            "<blockquote>Обунаи шумо дар ҷояш аст — ҳеҷ чиз тағйир намеёбад.\n"
+            "Гуфтаи шуморо ба рӯйхати аввалиндараҷа медарорем.</blockquote>"
+        ),
         "feedback_like_course": "📚 Режими курс қулай аст",
         "feedback_like_answers": "💬 Ҷавобҳо зуд ва фаҳмоанд",
         "feedback_like_photo": "📸 Кор бо сурат/иероглиф қулай аст",
@@ -1093,6 +1136,49 @@ FEEDBACK_I18N = {
         "feedback_price_offer_payment_choose": "💳 Выберите способ оплаты для скидки 20%:",
         "feedback_price_offer_plan_choose": "🎁 <b>Специальная скидка 20%</b>\n\n<blockquote>{lines}</blockquote>\n\nВыберите тариф:",
         "feedback_price_offer_expired": "Это специальное предложение больше недоступно.",
+        "feedback_like_sub_question": (
+            "<b>Уточните 👇</b>\n\n"
+            "<blockquote>Что именно помогло больше всего?</blockquote>"
+        ),
+        "feedback_sub_other_prompt": "Напишите коротко — что именно?",
+        "feedback_sub_lessons": "📖 Уроки",
+        "feedback_sub_exercises": "🎯 Упражнения",
+        "feedback_sub_voice": "🎙 AI Voice",
+        "feedback_sub_speed": "⚡️ Скорость ответов",
+        "feedback_sub_clarity": "🧠 Понятность объяснений",
+        "feedback_sub_examples": "📝 Примеры и фразы",
+        "feedback_sub_hanzi": "🈶 Распознавание иероглифов",
+        "feedback_sub_translate": "🌐 Перевод",
+        "feedback_sub_homework": "✅ Проверка домашнего задания",
+        "feedback_sub_daily": "🔥 Ежедневная практика",
+        "feedback_sub_memorize": "🧩 Запоминание слов",
+        "feedback_sub_quiz": "📊 Тесты",
+        "feedback_sub_content": "📚 Мало материала",
+        "feedback_sub_slow": "🐢 Результат идёт медленно",
+        "feedback_sub_tech": "⚙️ Были технические проблемы",
+        "feedback_sub_time": "⏳ Не нашёл времени",
+        "feedback_sub_other": "✍️ Другое",
+        "feedback_paid_question": (
+            "<b>Честно о вашей подписке 🙏</b>\n\n"
+            "<blockquote>Как вы сейчас смотрите на то, что оформили подписку?</blockquote>"
+        ),
+        "feedback_paid_worth": "💎 Стоила того — посоветую другу",
+        "feedback_paid_useful": "🙂 Польза есть, пользуюсь",
+        "feedback_paid_unsure": "🤔 Пока не могу оценить",
+        "feedback_paid_regret": "😕 Ожидал большего",
+        "feedback_paid_sub_positive_question": (
+            "<b>Спасибо 💚</b>\n\n"
+            "<blockquote>От какой части было больше всего пользы?</blockquote>"
+        ),
+        "feedback_paid_sub_negative_question": (
+            "<b>Поняли.</b>\n\n"
+            "<blockquote>Чего не хватило? Отметьте честно — именно это и исправим.</blockquote>"
+        ),
+        "feedback_paid_thanks": (
+            "<b>Спасибо, ваш отзыв записан ✅</b>\n\n"
+            "<blockquote>С подпиской всё в порядке — ничего не меняется.\n"
+            "То, что вы отметили, добавим в приоритет.</blockquote>"
+        ),
         "feedback_like_course": "📚 Удобный режим курса",
         "feedback_like_answers": "💬 Быстрые и понятные ответы",
         "feedback_like_photo": "📸 Удобная работа с фото/иероглифами",
@@ -1150,6 +1236,49 @@ FEEDBACK_I18N = {
         "feedback_price_offer_payment_choose": "💳 20% chegirma uchun to'lov usulini tanlang:",
         "feedback_price_offer_plan_choose": "🎁 <b>Maxsus 20% chegirma</b>\n\n<blockquote>{lines}</blockquote>\n\nTarifni tanlang:",
         "feedback_price_offer_expired": "Bu maxsus taklif endi mavjud emas.",
+        "feedback_like_sub_question": (
+            "<b>Aniqroq ayting 👇</b>\n\n"
+            "<blockquote>Aynan qaysi qismi ko'proq yordam berdi?</blockquote>"
+        ),
+        "feedback_sub_other_prompt": "Qisqacha yozing — aynan qaysi qismi?",
+        "feedback_sub_lessons": "📖 Darslar",
+        "feedback_sub_exercises": "🎯 Mashqlar",
+        "feedback_sub_voice": "🎙 AI Voice",
+        "feedback_sub_speed": "⚡️ Javob tezligi",
+        "feedback_sub_clarity": "🧠 Tushuntirish aniqligi",
+        "feedback_sub_examples": "📝 Misol va gaplar",
+        "feedback_sub_hanzi": "🈶 Ieroglifni tanish",
+        "feedback_sub_translate": "🌐 Tarjima",
+        "feedback_sub_homework": "✅ Uy vazifasini tekshirish",
+        "feedback_sub_daily": "🔥 Kundalik mashq",
+        "feedback_sub_memorize": "🧩 So'z yodlash",
+        "feedback_sub_quiz": "📊 Testlar",
+        "feedback_sub_content": "📚 Kontent kam keldi",
+        "feedback_sub_slow": "🐢 Natija sekin sezildi",
+        "feedback_sub_tech": "⚙️ Texnik muammolar bo'ldi",
+        "feedback_sub_time": "⏳ Vaqt topa olmadim",
+        "feedback_sub_other": "✍️ Boshqa",
+        "feedback_paid_question": (
+            "<b>Obunangiz haqida rostini ayting 🙏</b>\n\n"
+            "<blockquote>Obunani olganingizga hozir qanday qaraysiz?</blockquote>"
+        ),
+        "feedback_paid_worth": "💎 Arzidi — do'stimga ham tavsiya qilaman",
+        "feedback_paid_useful": "🙂 Foydasi bor, ishlatib turibman",
+        "feedback_paid_unsure": "🤔 Hali baholay olmadim",
+        "feedback_paid_regret": "😕 Kutganimdek chiqmadi",
+        "feedback_paid_sub_positive_question": (
+            "<b>Rahmat 💚</b>\n\n"
+            "<blockquote>Eng ko'p foydasi qaysi qismidan bo'ldi?</blockquote>"
+        ),
+        "feedback_paid_sub_negative_question": (
+            "<b>Tushundik.</b>\n\n"
+            "<blockquote>Nima yetishmadi? Rostini belgilang — biz aynan shuni tuzatamiz.</blockquote>"
+        ),
+        "feedback_paid_thanks": (
+            "<b>Rahmat, fikringiz yozib olindi ✅</b>\n\n"
+            "<blockquote>Obunangiz joyida — hech narsa o'zgarmaydi.\n"
+            "Siz aytgan kamchilikni ustuvor ro'yxatga qo'shamiz.</blockquote>"
+        ),
         "feedback_like_course": "📚 Kurs rejimi qulay",
         "feedback_like_answers": "💬 Javoblar tez va tushunarli",
         "feedback_like_photo": "📸 Foto/ieroglif bilan ishlash qulay",

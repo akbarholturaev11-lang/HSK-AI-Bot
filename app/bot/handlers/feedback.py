@@ -7,12 +7,22 @@ from aiogram.types import CallbackQuery, Message
 
 from app.bot.fsm.feedback import FeedbackStates
 from app.bot.keyboards.feedback import (
+    LIKE_SUB_OPTIONS,
+    PAID_OPTIONS,
+    PAID_SUB_NEGATIVE,
+    PAID_SUB_POSITIVE,
     admin_feedback_reply_cancel_keyboard,
     feedback_cancel_keyboard,
     feedback_dislike_keyboard,
     feedback_dislike_label,
     feedback_like_keyboard,
     feedback_like_label,
+    feedback_like_sub_keyboard,
+    feedback_paid_keyboard,
+    feedback_paid_label,
+    feedback_paid_sub_keyboard,
+    feedback_sub_label,
+    is_paid_positive,
 )
 from app.bot.utils.i18n import t
 from app.config import settings
@@ -20,6 +30,7 @@ from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.user_repo import UserRepository
 from app.services.admin_notify_service import AdminNotifyService
 from app.services.bot_feedback_service import BotFeedbackService
+from app.services.user_access_state_service import UserAccessStateService
 from app.bot.utils.workflow_message import (
     delete_message_safely,
     edit_callback_workflow_message,
@@ -47,9 +58,26 @@ def _parse_feedback_callback(data: str):
         feedback_id = int(parts[1])
     except ValueError:
         return None
-    action = parts[2]
-    code = parts[3] if len(parts) > 3 else None
-    return feedback_id, action, code
+    return feedback_id, parts[2], parts[3:]
+
+
+def _thanks_text(user, lang: str) -> str:
+    key = "feedback_paid_thanks" if UserAccessStateService.is_paid(user) else "feedback_thanks"
+    return t(key, lang)
+
+
+def _paid_sub_question(parent: str, lang: str) -> str:
+    key = (
+        "feedback_paid_sub_positive_question"
+        if is_paid_positive(parent)
+        else "feedback_paid_sub_negative_question"
+    )
+    return t(key, lang)
+
+
+def _combine_liked(feedback, sub_text: str) -> str:
+    base = (feedback.liked_text or "").strip()
+    return f"{base} → {sub_text}"[:1000] if base else sub_text[:1000]
 
 
 async def _load_feedback_context(session, telegram_id: int, feedback_id: int):
@@ -135,7 +163,8 @@ async def feedback_callback_handler(callback: CallbackQuery, state: FSMContext, 
         await callback.answer()
         return
 
-    feedback_id, action, code = parsed
+    feedback_id, action, args = parsed
+    code = args[0] if args else None
     feedback_repo, feedback, user = await _load_feedback_context(
         session,
         callback.from_user.id,
@@ -154,12 +183,31 @@ async def feedback_callback_handler(callback: CallbackQuery, state: FSMContext, 
     if action == "cancel_other":
         data = await state.get_data()
         field = data.get("field")
+        parent = str(data.get("sub_parent") or "")
         await state.clear()
-        if field in {"disliked", "disliked_detail"}:
+        if field == "paid_sub" and parent:
+            await _edit_message(
+                callback.message,
+                _paid_sub_question(parent, lang),
+                feedback_paid_sub_keyboard(feedback.id, parent, lang),
+            )
+        elif field == "liked_sub" and parent:
+            await _edit_message(
+                callback.message,
+                t("feedback_like_sub_question", lang),
+                feedback_like_sub_keyboard(feedback.id, parent, lang),
+            )
+        elif field in {"disliked", "disliked_detail"}:
             await _edit_message(
                 callback.message,
                 t("feedback_dislike_question", lang),
                 feedback_dislike_keyboard(feedback.id, lang),
+            )
+        elif UserAccessStateService.is_paid(user):
+            await _edit_message(
+                callback.message,
+                t("feedback_paid_question", lang),
+                feedback_paid_keyboard(feedback.id, lang),
             )
         else:
             await _edit_message(
@@ -167,6 +215,57 @@ async def feedback_callback_handler(callback: CallbackQuery, state: FSMContext, 
                 t("feedback_like_question", lang),
                 feedback_like_keyboard(feedback.id, lang),
             )
+        await callback.answer()
+        return
+
+    # ── Obunachi oqimi: "obuna arzidimi?" → aniqlashtiruvchi savol → rahmat ──
+    if action == "paid" and code in PAID_OPTIONS:
+        await feedback_repo.save_liked(
+            feedback,
+            f"paid_{code}",
+            feedback_paid_label(code, lang),
+        )
+        await _edit_message(
+            callback.message,
+            _paid_sub_question(code, lang),
+            feedback_paid_sub_keyboard(feedback.id, code, lang),
+        )
+        await session.commit()
+        await callback.answer()
+        return
+
+    if action == "psub" and len(args) >= 2:
+        parent, sub = args[0], args[1]
+        allowed = PAID_SUB_POSITIVE if is_paid_positive(parent) else PAID_SUB_NEGATIVE
+        if parent not in PAID_OPTIONS or sub not in allowed:
+            await callback.answer()
+            return
+
+        if sub == "other":
+            await state.set_state(FeedbackStates.waiting_other_text)
+            await state.update_data(
+                feedback_id=feedback.id,
+                field="paid_sub",
+                sub_parent=parent,
+                message_id=callback.message.message_id,
+            )
+            await _edit_message(
+                callback.message,
+                t("feedback_sub_other_prompt", lang),
+                feedback_cancel_keyboard(feedback.id, lang),
+            )
+            await callback.answer()
+            return
+
+        await feedback_repo.save_disliked(feedback, f"paid_{sub}", feedback_sub_label(sub, lang))
+        await BotFeedbackService(session).finish_feedback(feedback, user)
+        await session.commit()
+        await _edit_message(callback.message, _thanks_text(user, lang))
+        await AdminNotifyService().notify_bot_feedback(
+            bot=callback.bot,
+            feedback=feedback,
+            user=user,
+        )
         await callback.answer()
         return
 
@@ -187,6 +286,49 @@ async def feedback_callback_handler(callback: CallbackQuery, state: FSMContext, 
             return
 
         await feedback_repo.save_liked(feedback, code, feedback_like_label(code, lang))
+        if code in LIKE_SUB_OPTIONS:
+            await _edit_message(
+                callback.message,
+                t("feedback_like_sub_question", lang),
+                feedback_like_sub_keyboard(feedback.id, code, lang),
+            )
+        else:
+            await _edit_message(
+                callback.message,
+                t("feedback_dislike_question", lang),
+                feedback_dislike_keyboard(feedback.id, lang),
+            )
+        await session.commit()
+        await callback.answer()
+        return
+
+    if action == "lsub" and len(args) >= 2:
+        parent, sub = args[0], args[1]
+        if parent not in LIKE_SUB_OPTIONS or sub not in LIKE_SUB_OPTIONS[parent]:
+            await callback.answer()
+            return
+
+        if sub == "other":
+            await state.set_state(FeedbackStates.waiting_other_text)
+            await state.update_data(
+                feedback_id=feedback.id,
+                field="liked_sub",
+                sub_parent=parent,
+                message_id=callback.message.message_id,
+            )
+            await _edit_message(
+                callback.message,
+                t("feedback_sub_other_prompt", lang),
+                feedback_cancel_keyboard(feedback.id, lang),
+            )
+            await callback.answer()
+            return
+
+        await feedback_repo.save_liked(
+            feedback,
+            parent,
+            _combine_liked(feedback, feedback_sub_label(sub, lang)),
+        )
         await _edit_message(
             callback.message,
             t("feedback_dislike_question", lang),
@@ -232,7 +374,7 @@ async def feedback_callback_handler(callback: CallbackQuery, state: FSMContext, 
         await feedback_repo.save_disliked(feedback, code, feedback_dislike_label(code, lang))
         await BotFeedbackService(session).finish_feedback(feedback, user)
         await session.commit()
-        await _edit_message(callback.message, t("feedback_thanks", lang))
+        await _edit_message(callback.message, _thanks_text(user, lang))
         await AdminNotifyService().notify_bot_feedback(
             bot=callback.bot,
             feedback=feedback,
@@ -400,15 +542,29 @@ async def feedback_other_text_handler(message: Message, state: FSMContext, sessi
         )
         return
 
-    if field == "disliked":
-        await feedback_repo.save_disliked(feedback, "other", text[:1000])
+    if field == "liked_sub":
+        parent = str(data.get("sub_parent") or feedback.liked_code or "other")
+        await feedback_repo.save_liked(feedback, parent, _combine_liked(feedback, text))
+        await state.clear()
+        await session.commit()
+        await _edit_stored_message(
+            message,
+            int(message_id or feedback.prompt_message_id or message.message_id),
+            t("feedback_dislike_question", lang),
+            feedback_dislike_keyboard(feedback.id, lang),
+        )
+        return
+
+    if field in {"disliked", "paid_sub"}:
+        code = "paid_other" if field == "paid_sub" else "other"
+        await feedback_repo.save_disliked(feedback, code, text[:1000])
         await BotFeedbackService(session).finish_feedback(feedback, user)
         await state.clear()
         await session.commit()
         await _edit_stored_message(
             message,
             int(message_id or feedback.prompt_message_id or message.message_id),
-            t("feedback_thanks", lang),
+            _thanks_text(user, lang),
         )
         await AdminNotifyService().notify_bot_feedback(
             bot=message.bot,
@@ -479,7 +635,7 @@ async def feedback_dislike_detail_handler(message: Message, state: FSMContext, s
     await _edit_stored_message(
         message,
         int(message_id or feedback.prompt_message_id or message.message_id),
-        t("feedback_thanks", lang),
+        _thanks_text(user, lang),
         delete_input=attachment_file_id is None,
     )
     await AdminNotifyService().notify_bot_feedback(

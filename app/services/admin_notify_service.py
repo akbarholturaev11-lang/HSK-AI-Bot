@@ -276,10 +276,13 @@ class AdminNotifyService:
         level = escape(self._feedback_level_label(user))
         mode = escape(self._feedback_mode_label(user))
         reward = "berildi" if getattr(feedback, "reward_granted_at", None) else "berilmadi"
+        # Obunachi oqimida kodlar `paid_` bilan boshlanadi — savollar ham,
+        # javob variantlari ham boshqa.
+        is_paid_flow = str(getattr(feedback, "liked_code", None) or "").startswith("paid_")
 
         return "\n".join(
             [
-                "📝 <b>Yangi bot otzivi</b>",
+                "📝 <b>Yangi obunachi otzivi</b>" if is_paid_flow else "📝 <b>Yangi bot otzivi</b>",
                 "",
                 f"🧾 Otziv ID: <b>#{feedback.id}</b>",
                 f"👤 User: <b>{full_name}</b>",
@@ -289,11 +292,13 @@ class AdminNotifyService:
                 f"🎛 Rejim: <b>{mode}</b>",
                 f"⏱ Botda: <b>{self._feedback_user_age(user)}</b>",
                 "",
-                f"👍 <b>Yoqdi:</b>\n{liked}",
+                f"💳 <b>Obuna arzidimi:</b>\n{liked}" if is_paid_flow else f"👍 <b>Yoqdi:</b>\n{liked}",
                 "",
-                f"👎 <b>Yoqmadi:</b>\n{disliked}",
+                f"🔍 <b>Sababi:</b>\n{disliked}" if is_paid_flow else f"👎 <b>Yoqmadi:</b>\n{disliked}",
                 "",
-                f"🎁 1 kunlik bonus: <b>{reward}</b>",
+                "🎁 Bonus: <b>obunachiga kerak emas</b>"
+                if is_paid_flow
+                else f"🎁 30 daqiqalik bonus: <b>{reward}</b>",
             ]
         )
 

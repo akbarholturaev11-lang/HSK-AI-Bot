@@ -207,6 +207,49 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-07-22 — Chegirma obunachiga bormaydi + otziv oqimi 2 qadamli, obunachiga alohida
+
+Muammo:
+- Faol pullik obunachi chegirma e'lonini olardi (`status="active"` filtri ularni ham qamrardi),
+  bu "obunam tugadimi?" degan noto'g'ri signal berardi.
+- Admin statistikasi 30 daqiqalik feedback bonusini "Obuna boshlangan/tugaydi" deb ko'rsatardi
+  va access turini "✅ Faol (boshqa trial)" deb noaniq yozardi.
+
+Changed (access/obuna klassifikatsiyasi O'ZGARMADI, faqat kimga nima yuborilishi):
+- `UserAccessStateService.is_paid()` endi yagona filtr sifatida ishlatiladi:
+  `DiscountNotificationService._target_users` (broadcast'dan faol obunachi chiqarib tashlanadi;
+  admin `target_telegram_id` bilan bitta userga qo'lda yuborishi saqlanib qoldi),
+  `BotFeedbackService.finish_feedback` (obunachiga price offer rejalashtirilmaydi),
+  `send_due_price_discount_offers` (yuborishdan oldin qayta tekshiriladi),
+  `grant_feedback_reward` (obunachiga 30 daqiqalik bonus berilmaydi — avval u `end_date`ni
+  30 daqiqaga uzaytirib, `selected_plan_type`ni `None` qilib yuborardi).
+- Otziv oqimi 2 qadamli bo'ldi: "kurs yoqdi" → "aynan qaysi qismi? darslar/mashqlar/AI Voice/boshqa"
+  (`LIKE_SUB_OPTIONS`, callback `fb:<id>:lsub:<parent>:<sub>`). Sub-javob `liked_text`ga
+  "parent → sub" ko'rinishida qo'shiladi — migratsiya kerak emas.
+- Obunachiga butunlay boshqa savol: "Obunani olganingizga hozir qanday qaraysiz?"
+  (arzidi / foydasi bor / hali baholay olmadim / kutganimdek chiqmadi) → sababi bo'yicha
+  aniqlashtiruvchi savol → rahmat. Kodlar `liked_code="paid_<javob>"`,
+  `disliked_code="paid_<sabab>"` — `FEEDBACK_DISCOUNT_OFFER_CODES` ("price"/"limits") bilan
+  kesishmaydi, shuning uchun chegirma oqimi ishga tushmaydi. Admin otziv statistikasiga
+  "Obunachilar: obuna arzidimi" bloki qo'shildi.
+- Otziv so'rovi endi HAMMAGA boradi (`daily_limit_offer_sent_at` filtri olib tashlandi),
+  bir tsiklda 60 tadan (`FEEDBACK_SEND_BATCH_LIMIT`) — takror so'rash oralig'i
+  `FEEDBACK_PERIOD_DAYS = 30` kunligicha qoldi.
+- Admin kartasi (`_admin_user_info_text`): access turi `UserAccessStateService.classify` dan
+  olinadi; vaqtinchalik kirish "⏳ Vaqtinchalik kirish (30 daqiqa)" deb yoziladi, sana satrlari
+  pullik bo'lmasa "Kirish muddati", chegirma bloki faol obunachida umuman ko'rsatilmaydi.
+
+Files touched:
+- `app/services/bot_feedback_service.py`, `app/services/discount_notification_service.py`,
+  `app/services/admin_notify_service.py`, `app/bot/handlers/feedback.py`,
+  `app/bot/handlers/admin.py`, `app/bot/keyboards/feedback.py`, `app/bot/utils/i18n.py`
+  (3 tilda ~40 yangi kalit), `tests/test_bot_feedback_service.py` (yangi)
+
+Risk / follow-up:
+- Migratsiya yo'q. To'lov/obuna huquqi (entitlement) tegilmadi — faqat kimga qaysi xabar
+  boradi va admin kartasi matni o'zgardi. Deploydan keyin birinchi kunlarda otziv so'rovi
+  eski userlarga ommaviy ketadi (60/daqiqa) — Telegram rate limit va otziv oqimini kuzatish kerak.
+
 ### 2026-07-22 — HSK tests, challenges, and mistake material V2
 
 Changed:

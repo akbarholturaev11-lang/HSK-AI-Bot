@@ -52,6 +52,7 @@ from app.services.subscription_currency_service import (
 )
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
+from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 from app.services.support_contact_service import (
     ADMIN_CONTACT_KEY,
     admin_contact_url,
@@ -726,6 +727,20 @@ def _course_step_label(value: str | None) -> str:
     return step.replace("_", " ")
 
 
+def _admin_access_left(end_date: datetime | None, now: datetime) -> str:
+    """Vaqtinchalik kirish qancha qolganini odam o'qiydigan ko'rinishda beradi."""
+    if end_date is None:
+        return "muddat yo'q"
+    seconds = int((end_date - now).total_seconds())
+    if seconds <= 0:
+        return "tugagan"
+    if seconds < 3600:
+        return f"{max(seconds // 60, 1)} daqiqa"
+    if seconds < 86400:
+        return f"{seconds // 3600} soat"
+    return f"{seconds // 86400} kun"
+
+
 def _homework_status_label(value: str | None) -> str:
     return _admin_label(
         value,
@@ -825,23 +840,18 @@ async def _admin_user_info_text(session, user: User) -> str:
     bonus_balance = max((user.bonus_questions or 0) - (user.bonus_questions_used or 0), 0)
 
     # Access turi (tarif) — selected_plan_type ko'pincha bo'sh, shuning uchun
-    # haqiqiy holatdan kelib chiqib aniqlanadi.
-    end_date = user.end_date
-    if end_date is not None and end_date.tzinfo is None:
-        end_date = end_date.replace(tzinfo=timezone.utc)
-    is_paid_active = (
-        user.payment_status == "approved"
-        and user.status == "active"
-        and end_date is not None
-        and end_date > now
-    )
+    # loyihaning yagona klassifikatoridan kelib chiqib aniqlanadi.
+    end_date = UserAccessStateService.as_utc(user.end_date)
+    access_state = UserAccessStateService.classify(user, now=now)
+    is_paid_active = access_state == UserAccessState.PAID
+    is_temporary_trial = access_state == UserAccessState.TEMPORARY_TRIAL
     if is_paid_active:
         plan_lbl = _admin_label(latest_approved_plan or user.selected_plan_type, plan_labels)
         access_type = f"💳 Pullik obuna ({plan_lbl})"
     elif referral_trial_budget is not None and user.status == "active":
         access_type = f"🎁 Referral sovg'asi ({REFERRAL_TRIAL_ACCESS_DAYS} kunlik)"
-    elif user.status == "active":
-        access_type = "✅ Faol (boshqa trial)"
+    elif is_temporary_trial:
+        access_type = f"⏳ Vaqtinchalik kirish ({_admin_access_left(end_date, now)})"
     elif user.status == "trial":
         access_type = "🆓 Sinov rejimi"
     elif user.status == "expired":
@@ -849,6 +859,21 @@ async def _admin_user_info_text(session, user: User) -> str:
     else:
         access_type = "🆓 Bepul"
     days_in_bot_str = f"{days_in_bot} kun" if days_in_bot is not None else "—"
+    # 30 daqiqalik bonus ham `end_date`ga yoziladi — uni "Obuna" deb atash
+    # statistikani chalg'itadi.
+    access_period_label = "Obuna" if is_paid_active else "Kirish muddati"
+    # Faol obunachida chegirma bloki keraksiz shovqin — chegirma unga taklif
+    # qilinmaydi.
+    if is_paid_active:
+        referral_section_title = "🎁 <b>Referallar</b>"
+        discount_lines: list[str] = []
+    else:
+        referral_section_title = "🎁 <b>Referallar va chegirma</b>"
+        discount_lines = [
+            f"Chegirma hisobi: <b>{user.discount_referral_count}/3</b>",
+            f"Chegirmaga tayyor: <b>{_yes_no(user.discount_eligible)}</b>",
+            f"Chegirma ishlatilgan: <b>{_yes_no(user.discount_used)}</b>",
+        ]
 
     lines = [
         "🔎 <b>Foydalanuvchi ma'lumoti</b>",
@@ -873,8 +898,8 @@ async def _admin_user_info_text(session, user: User) -> str:
         f"To'lov holati: <b>{_admin_label(user.payment_status, payment_status_labels)}</b>",
         f"To'lov usuli: <b>{escape(_method_label(user.payment_method)) if user.payment_method else '—'}</b>",
         f"Tanlangan tarif: <b>{_admin_label(user.selected_plan_type, plan_labels)}</b>",
-        f"Obuna boshlangan: <code>{_fmt_dt(user.start_date)}</code>",
-        f"Obuna tugaydi: <code>{_fmt_dt(user.end_date)}</code>",
+        f"{access_period_label} boshlandi: <code>{_fmt_dt(user.start_date)}</code>",
+        f"{access_period_label} tugaydi: <code>{_fmt_dt(user.end_date)}</code>",
         f"Savollar: <b>{user.questions_used}/{user.question_limit}</b>",
         f"Bonus savollar qoldig'i: <b>{bonus_balance}</b>",
         f"Daily practice boshlandi: <code>{_fmt_dt(user.daily_practice_started_at)}</code>",
@@ -887,7 +912,7 @@ async def _admin_user_info_text(session, user: User) -> str:
         f"Sinov AI xato tahlili: <code>{_fmt_dt(user.trial_quiz_explanation_used_at)}</code>",
         f"Kanal checkpoint: <code>{_fmt_dt(user.force_sub_required_at)}</code>",
         "",
-        "🎁 <b>Referallar va chegirma</b>",
+        referral_section_title,
         f"Chaqirganlari jami: <b>{referral_total}</b>",
         f"Faollashgan: <b>{referral_counts.get('active', 0)}</b>",
         f"Kutilmoqda: <b>{referral_counts.get('pending', 0)}</b>",
@@ -896,9 +921,7 @@ async def _admin_user_info_text(session, user: User) -> str:
             if referral_trial_budget is not None
             else "Referral sovg'asi: <b>—</b>"
         ),
-        f"Chegirma hisobi: <b>{user.discount_referral_count}/3</b>",
-        f"Chegirmaga tayyor: <b>{_yes_no(user.discount_eligible)}</b>",
-        f"Chegirma ishlatilgan: <b>{_yes_no(user.discount_used)}</b>",
+        *discount_lines,
         f"Taklif qilgan foydalanuvchi: <code>{invited_ref.referrer_telegram_id if invited_ref else '—'}</code>",
         "",
         "💳 <b>To'lovlar</b>",
@@ -2333,6 +2356,21 @@ async def admin_feedback_stats_callback(callback: CallbackQuery, session):
         select(func.count()).select_from(BotFeedback).where(BotFeedback.price_offer_used_at.is_not(None))
     )).scalar() or 0
 
+    # Obunachi oqimida `liked_code` "paid_<javob>" ko'rinishida saqlanadi —
+    # obuna arzidimi yoki pushaymonmi shu yerdan ko'rinadi.
+    paid_counts = {
+        row.liked_code: row.cnt
+        for row in (await session.execute(
+            select(BotFeedback.liked_code, func.count().label("cnt"))
+            .where(
+                BotFeedback.status == "completed",
+                BotFeedback.liked_code.startswith("paid_"),
+            )
+            .group_by(BotFeedback.liked_code)
+        )).fetchall()
+    }
+    paid_total = sum(paid_counts.values())
+
     now_str = now.strftime("%d.%m.%Y %H:%M UTC")
     text = (
         f"📝 <b>Otziv statistikasi</b>  <i>{now_str}</i>\n"
@@ -2346,6 +2384,12 @@ async def admin_feedback_stats_callback(callback: CallbackQuery, session):
         f"Tezlik/pace muammo: <b>{pace}</b>\n"
         f"Boshqa: <b>{other}</b>\n"
         f"Kamchilik yozgan jami: <b>{disliked_total}</b>\n\n"
+        f"<b>Obunachilar: obuna arzidimi</b>\n"
+        f"💎 Arzidi, tavsiya qiladi: <b>{paid_counts.get('paid_worth', 0)}</b>\n"
+        f"🙂 Foydasi bor: <b>{paid_counts.get('paid_useful', 0)}</b>\n"
+        f"🤔 Hali baholay olmadi: <b>{paid_counts.get('paid_unsure', 0)}</b>\n"
+        f"😕 Kutganidek chiqmadi: <b>{paid_counts.get('paid_regret', 0)}</b>\n"
+        f"Javob bergan obunachi: <b>{paid_total}</b>\n\n"
         f"<b>Dalil/izoh</b>\n"
         f"Matnli izoh: <b>{text_comments}</b>\n"
         f"Screenshot: <b>{screenshots}</b>\n\n"
