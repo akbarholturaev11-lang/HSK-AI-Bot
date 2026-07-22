@@ -40,6 +40,9 @@ class CourseMistake(Base):
     user_answer: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     correct_answer: Mapped[str] = mapped_column(Text, nullable=False)
     explanation: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # Canonical, versioned question snapshot used to rebuild a review without
+    # trusting the browser's prompt/answer key. Nullable keeps legacy rows valid.
+    material_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     wrong_count: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     review_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     resolved_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

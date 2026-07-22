@@ -245,6 +245,219 @@ def test_course_v3_support_pages_render_real_static_data(page):
             )
 
 
+def test_hsk_exam_uses_public_questions_and_server_result(page):
+    runtime_errors = []
+    requests = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    page.on(
+        "console",
+        lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
+    )
+    page.on("request", lambda request: requests.append(request.url))
+    mock_telegram_ready(page)
+    page.route(
+        "**/api/voice-practice/me*",
+        lambda route: json_response(route, {"ok": True, "level": "hsk1"}),
+    )
+    page.route(
+        "**/api/v3/practice/daily-gate",
+        lambda route: json_response(route, {"ok": True, "allowed": True}),
+    )
+    page.route(
+        "**/api/v3/exams/start",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "session": {
+                    "id": "hsk-exam:1:hsk1:v2:smoke",
+                    "level": "hsk1",
+                    "duration_min": 25,
+                    "pass_score": 60,
+                    "questions": [
+                        {
+                            "id": "hsk1:q1",
+                            "material_version": 2,
+                            "format": "text_choice",
+                            "section": "reading",
+                            "prompt": "To'g'ri tarjimani tanlang",
+                            "sentence": "你好",
+                            "options": ["Salom", "Xayr"],
+                        },
+                        {
+                            "id": "hsk1:q2",
+                            "material_version": 2,
+                            "format": "text_choice",
+                            "section": "reading",
+                            "prompt": "To'g'ri javobni tanlang",
+                            "sentence": "谢谢",
+                            "options": ["Rahmat", "Kechirasiz"],
+                        },
+                    ],
+                },
+            },
+        ),
+    )
+    page.route(
+        "**/api/v3/exams/complete",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "score": 1,
+                "total": 2,
+                "percent": 50,
+                "passed": False,
+                "pass_score": 60,
+                "section_scores": {"reading": {"score": 1, "total": 2, "percent": 50}},
+                "wrong_items": [{"question": "谢谢", "correct_answer": "Rahmat"}],
+                "reward": {"awarded_xp": 10},
+            },
+        ),
+    )
+
+    page.goto(app_url("/course_v3_test.html?lang=uz&level=hsk1"), wait_until="networkidle")
+    page.get_by_text("HSK 1", exact=True).click()
+    expect(page.locator("#exam .opt")).to_have_count(2)
+    page.locator("#exam .opt").nth(0).click()
+    expect(page.locator("#exam")).to_contain_text("谢谢")
+    expect(page.locator("#exam .opt")).to_have_count(2)
+    page.locator("#exam .opt").nth(1).click()
+
+    expect(page.locator("#exam")).to_contain_text("50%")
+    expect(page.locator("#exam")).to_contain_text("Rahmat")
+    assert not any("/course_v3_data/exams/" in url for url in requests)
+    assert runtime_errors == []
+
+
+def test_mistake_filters_show_real_category_material(page):
+    runtime_errors = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    page.on(
+        "console",
+        lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
+    )
+    mock_telegram_ready(page)
+    page.route(
+        "**/api/miniapp/mistakes*",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "summary": {"total": 3, "categories": {"word": 2, "grammar": 1}},
+                "items": [
+                    {
+                        "id": 1,
+                        "category": "word",
+                        "source": "test",
+                        "question": "你好 nimani anglatadi?",
+                        "user_answer": "Xayr",
+                        "correct_answer": "Salom",
+                        "count": 2,
+                    },
+                    {
+                        "id": 2,
+                        "category": "word",
+                        "source": "challenge",
+                        "question": "谢谢 nimani anglatadi?",
+                        "user_answer": "Salom",
+                        "correct_answer": "Rahmat",
+                        "count": 1,
+                    },
+                    {
+                        "id": 3,
+                        "category": "grammar",
+                        "source": "lesson",
+                        "lesson": 4,
+                        "question": "Gapni to'g'ri tartiblang",
+                        "user_answer": "我去昨天",
+                        "correct_answer": "我昨天去",
+                        "count": 1,
+                    },
+                ],
+            },
+        ),
+    )
+
+    page.goto(app_url("/course_v3_mistakes.html?lang=uz&level=hsk1"), wait_until="networkidle")
+    expect(page.locator("#content")).to_contain_text("HSK test")
+    page.get_by_role("button", name="Grammatika · 1").click()
+    expect(page.locator("#content")).to_contain_text("Gapni to'g'ri tartiblang")
+    expect(page.locator("#content")).not_to_contain_text("你好 nimani anglatadi?")
+    assert runtime_errors == []
+
+
+def test_challenge_question_is_blind_until_server_submit(page):
+    runtime_errors = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    page.on(
+        "console",
+        lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
+    )
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    challenge = {
+        "id": 7,
+        "status": "accepted",
+        "viewer_role": "challenger",
+        "challenger": {"id": 1, "name": "Smoke Test"},
+        "opponent": {"id": 2, "name": "Raqib"},
+        "other_user": {"id": 2, "name": "Raqib"},
+        "viewer_level": "hsk1",
+        "other_level": "hsk2",
+        "viewer_done": False,
+        "opponent_done": False,
+        "challenger_score": None,
+        "challenger_total": None,
+        "opponent_score": None,
+        "opponent_total": None,
+        "winner_user_id": None,
+    }
+    page.route(
+        "**/api/miniapp/challenges",
+        lambda route: json_response(route, {"ok": True, "items": [challenge]}),
+    )
+    page.route(
+        "**/api/miniapp/challenges/7/start",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "session": {
+                    "id": "challenge:7:1",
+                    "questions": [
+                        {
+                            "id": "challenge:q1",
+                            "type": "meaning_to_hanzi",
+                            "prompt": "Salom so'zini tanlang",
+                            "options": ["你好", "谢谢"],
+                        }
+                    ],
+                },
+            },
+        ),
+    )
+    page.add_init_script(
+        "localStorage.setItem('hsk_v3_onb','1'); localStorage.setItem('hsk_v3_level','hsk1');"
+    )
+
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&challenge_id=7&onboarded=1"),
+        wait_until="networkidle",
+    )
+    page.get_by_role("button", name="Raundni boshlash").click()
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+    page.locator("#f-body .opt").nth(0).click()
+
+    expect(page.locator("#f-msg")).to_contain_text("Javob qabul qilindi")
+    assert page.locator("#f-hp").inner_text() == "5"
+    assert page.evaluate("Flow.challenge.answers") == [
+        {"question_id": "challenge:q1", "selected_index": 0}
+    ]
+    assert runtime_errors == []
+
+
 def admin_payload():
     advanced = {
         "explain": "Product health metrikalari tanlangan davr bo'yicha.",

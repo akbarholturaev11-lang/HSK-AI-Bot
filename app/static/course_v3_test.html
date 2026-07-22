@@ -53,6 +53,8 @@ h1{font-size:23px}
 .pl .meter{margin-bottom:18px}.pl .mrow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .pl .mrow .ml{width:54px;font-size:12px;color:var(--ink2);text-align:left}.pl .mrow .mb{flex:1;height:8px;background:var(--line);border-radius:5px;overflow:hidden}.pl .mrow .mb>i{display:block;height:100%;border-radius:5px;background:var(--jade)}.pl .mrow .mv{width:36px;font-size:12px;color:var(--ink2);text-align:right}
 .pl .mrow.rec .ml{color:var(--cin2);font-weight:500}
+.pl .xp-line{display:inline-block;color:#8A6300;background:var(--goldbg);border-radius:10px;padding:5px 11px;font-weight:600;margin-bottom:14px}
+.pl .review-list{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;margin:0 0 16px}.pl .review-list>b{display:block;font-size:13px;margin-bottom:8px}.pl .review-list>div{padding:8px 0;border-top:1px solid var(--line);font-size:12px;line-height:1.4}.pl .review-list>div span,.pl .review-list>div strong,.pl .review-list>div small{display:block}.pl .review-list>div strong{color:var(--jade);margin-top:3px}.pl .review-list>div small{color:var(--cin2);margin-top:2px}
 .pl .cta{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
 .pl .ghost{width:100%;background:none;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:13px;font-family:inherit;font-size:14px;font-weight:500}
 .pl .abtn{width:84px;height:84px;border-radius:50%;background:var(--cin);border:none;color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
@@ -80,17 +82,18 @@ h1{font-size:23px}
   <div class="pl" id="placement"></div>
   <div class="pl" id="exam"></div>
 </div>
-<script src="/course_v3_data/ads.js?v=20260720"></script>
+<script src="/course_v3_data/ads.js?v=20260722"></script>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{title:"Тест-центр",sub:"Проверьте себя в формате реального HSK",pTitle:"Не знаете свой уровень?",pSub:"Пройдите короткий тест — мы определим подходящий уровень HSK.",pBtn:"Тест на уровень · ~10 мин",exHead:"Экзамены HSK",eTitle:"Материал готовится",eSub:"Экзаменационные вопросы будут добавлены позже и подгружены из заданного источника.",eBack:"К списку",listen:"听力 Аудир.",read:"阅读 Чтение",write:"书写 Письмо",q:"вопросов",min:"мин",start:"Начать",limTitle:"Бесплатный тест на сегодня исчерпан",limSub:"В бесплатном режиме тест доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",limPay:"Открыть Premium",limBack:"Назад",adCont:"Продолжить с рекламой",adLimSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
-  uz:{title:"Test markazi",sub:"O'zingizni haqiqiy HSK formatida sinang",pTitle:"Darajangizni bilmaysizmi?",pSub:"Qisqa testdan o'ting — sizga mos HSK darajasini aytamiz.",pBtn:"Daraja aniqlash testi · ~10 daq",exHead:"HSK imtihonlari",eTitle:"Material tayyorlanmoqda",eSub:"Imtihon savollari keyinroq qo'shiladi va belgilangan manbadan yuklanadi.",eBack:"Ro'yxatga",listen:"听力 Tinglash",read:"阅读 O'qish",write:"书写 Yozish",q:"savol",min:"daq",start:"Boshlash",limTitle:"Bugungi bepul test tugadi",limSub:"Bepul rejimda test kuniga 1 marta ochiladi. Cheksiz test uchun Premium oching yoki ertaga qaytib keling.",limPay:"Premium ochish",limBack:"Orqaga",adCont:"Reklama bilan davom etish",adLimSub:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
-  tj:{title:"Маркази тест",sub:"Худро дар формати HSK санҷед",pTitle:"Сатҳи худро намедонед?",pSub:"Тести кӯтоҳро гузаред — сатҳи мувофиқи HSK-ро муайян мекунем.",pBtn:"Тести муайянкунии сатҳ",exHead:"Имтиҳонҳои HSK",eTitle:"Мавод омода мешавад",eSub:"Саволҳои имтиҳон баъдтар илова ва аз манбаи муайян бор карда мешаванд.",eBack:"Ба рӯйхат",listen:"听力 Шунидан",read:"阅读 Хондан",write:"书写 Навиштан",q:"савол",min:"дақ",start:"Оғоз",limTitle:"Тести ройгони имрӯза тамом шуд",limSub:"Дар ҳолати ройгон тест рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",limPay:"Кушодани Premium",limBack:"Бозгашт",adCont:"Идома бо реклама",adLimSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
-var EM={ru:{tfTrue:"Верно",tfFalse:"Неверно",listen:"Прослушать",q:"Вопрос",of:"из",result:"Результат",passed:"Тест пройден!",failed:"Пока не пройден",passSub:"Вы готовы к уровню HSK ",failSub:"Продолжайте подготовку к HSK ",again:"Пройти заново",toList:"К списку экзаменов",sec:{listening:"Аудирование",reading:"Чтение",writing:"Письмо"}},
-  uz:{tfTrue:"To'g'ri",tfFalse:"Noto'g'ri",listen:"Tinglash",q:"Savol",of:"/",result:"Natija",passed:"Test topshirildi!",failed:"Hozircha o'tilmadi",passSub:"Siz HSK darajasiga tayyorsiz: HSK ",failSub:"Tayyorgarlikni davom ettiring: HSK ",again:"Qayta topshirish",toList:"Imtihonlar ro'yxatiga",sec:{listening:"Tinglash",reading:"O'qish",writing:"Yozish"}},
-  tj:{tfTrue:"Дуруст",tfFalse:"Нодуруст",listen:"Шунидан",q:"Савол",of:"аз",result:"Натиҷа",passed:"Тест супорида шуд!",failed:"Ҳоло гузаронида нашуд",passSub:"Шумо ба сатҳи HSK тайёред: HSK ",failSub:"Омодагиро давом диҳед: HSK ",again:"Аз нав супоридан",toList:"Ба рӯйхати имтиҳонҳо",sec:{listening:"Шунидан",reading:"Хондан",writing:"Навиштан"}}}[LANG];
+var L={ru:{title:"Тест-центр",sub:"Короткие тесты по разделам HSK: аудирование, чтение и письмо",pTitle:"Не знаете свой уровень?",pSub:"Пройдите короткий тест — мы определим подходящий уровень HSK.",pBtn:"Тест на уровень · ~5 мин",exHead:"Тесты HSK",eTitle:"Тест не загрузился",eSub:"Проверьте интернет и попробуйте открыть тест ещё раз.",eBack:"К списку",listen:"听力 Аудир.",read:"阅读 Чтение",write:"书写 Письмо",q:"вопросов",min:"мин",start:"Начать",limTitle:"Бесплатная попытка использована",limSub:"Одна попытка доступна бесплатно. Продолжите с рекламой или откройте Premium без ограничений.",limPay:"Открыть Premium",limBack:"Назад",adCont:"Продолжить с рекламой",adLimSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
+  uz:{title:"Test markazi",sub:"HSK bo'limlari bo'yicha qisqa sinov: tinglash, o'qish va yozish",pTitle:"Darajangizni bilmaysizmi?",pSub:"Qisqa testdan o'ting — sizga mos HSK darajasini aytamiz.",pBtn:"Daraja aniqlash testi · ~5 daq",exHead:"HSK testlari",eTitle:"Test yuklanmadi",eSub:"Internetni tekshirib, testni yana ochib ko'ring.",eBack:"Ro'yxatga",listen:"听力 Tinglash",read:"阅读 O'qish",write:"书写 Yozish",q:"savol",min:"daq",start:"Boshlash",limTitle:"Bepul urinish ishlatildi",limSub:"Bitta urinish bepul. Reklama bilan davom eting yoki Premium orqali cheklovsiz ishlang.",limPay:"Premium ochish",limBack:"Orqaga",adCont:"Reklama bilan davom etish",adLimSub:"Bepul urinish ishlatildi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
+  tj:{title:"Маркази тест",sub:"Санҷиши кӯтоҳ аз бахшҳои HSK: шунидан, хондан ва навиштан",pTitle:"Сатҳи худро намедонед?",pSub:"Тести кӯтоҳро гузаред — сатҳи мувофиқи HSK-ро муайян мекунем.",pBtn:"Тести муайянкунии сатҳ · ~5 дақ",exHead:"Тестҳои HSK",eTitle:"Тест бор нашуд",eSub:"Интернетро санҷида, тестро боз кушоед.",eBack:"Ба рӯйхат",listen:"听力 Шунидан",read:"阅读 Хондан",write:"书写 Навиштан",q:"савол",min:"дақ",start:"Оғоз",limTitle:"Кӯшиши ройгон истифода шуд",limSub:"Як кӯшиш ройгон аст. Бо реклама идома диҳед ё Premium кушоед.",limPay:"Кушодани Premium",limBack:"Бозгашт",adCont:"Идома бо реклама",adLimSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
+var EM={ru:{tfTrue:"Верно",tfFalse:"Неверно",listen:"Прослушать",q:"Вопрос",of:"из",result:"Результат",passed:"Тест пройден!",failed:"Пока не пройден",passSub:"Вы готовы к уровню HSK ",failSub:"Продолжайте подготовку к HSK ",again:"Пройти заново",toList:"К списку тестов",saving:"Проверяем на сервере…",saveErr:"Результат не сохранился. Повторите отправку.",retry:"Отправить ещё раз",mistakes:"Повторите эти ответы",xp:"XP получено",sec:{listening:"Аудирование",reading:"Чтение",writing:"Письмо"}},
+  uz:{tfTrue:"To'g'ri",tfFalse:"Noto'g'ri",listen:"Tinglash",q:"Savol",of:"/",result:"Natija",passed:"Test topshirildi!",failed:"Hozircha o'tilmadi",passSub:"Siz HSK darajasiga tayyorsiz: HSK ",failSub:"Tayyorgarlikni davom ettiring: HSK ",again:"Qayta topshirish",toList:"Testlar ro'yxatiga",saving:"Server tekshiryapti…",saveErr:"Natija saqlanmadi. Yana yuboring.",retry:"Qayta yuborish",mistakes:"Shu javoblarni takrorlang",xp:"XP olindi",sec:{listening:"Tinglash",reading:"O'qish",writing:"Yozish"}},
+  tj:{tfTrue:"Дуруст",tfFalse:"Нодуруст",listen:"Шунидан",q:"Савол",of:"аз",result:"Натиҷа",passed:"Тест супорида шуд!",failed:"Ҳоло гузаронида нашуд",passSub:"Шумо ба сатҳи HSK тайёред: HSK ",failSub:"Омодагиро давом диҳед: HSK ",again:"Аз нав супоридан",toList:"Ба рӯйхати тестҳо",saving:"Сервер месанҷад…",saveErr:"Натиҷа сабт нашуд. Боз фиристед.",retry:"Боз фиристодан",mistakes:"Ин ҷавобҳоро такрор кунед",xp:"XP гирифта шуд",sec:{listening:"Шунидан",reading:"Хондан",writing:"Навиштан"}}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+document.documentElement.lang=LANG;document.title=L.title;
 var _ttsAudio=null;
 function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
@@ -99,7 +102,7 @@ var _ttsCache={},_ttsPend={};
 function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||_ttsCache[x]||_ttsPend[x]||!/[一-鿿]/.test(x))return;_ttsPend[x]=fetch("/api/v3/tts?text="+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPend[x];if(b&&b.size)_ttsCache[x]=URL.createObjectURL(b)}).catch(function(){delete _ttsPend[x]})}
 function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)));if(!_ttsCache[t])_ttsPrefetch(t);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
-/* Kunlik limit gate: bepulga kuniga 1 test sessiya (server tomonda). */
+/* Access gate: bepul userga bir martalik test sessiyasi (server tomonda). */
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_test_limit&mode=subscription"}
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — user darajasidagi
@@ -111,25 +114,24 @@ var LV_READY=(function(){var idt=initData();if(!idt)return Promise.resolve();
   return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s}).catch(function(){})})();
 LV_READY.then(function(){try{renderHub()}catch(e){}});
 function lvNum(){return parseInt((LV||"").slice(3),10)||0}
-/* Reklama moduli: kunlik bepul limit tugagach, reklama bilan yana 2 marta/kun. */
+/* Bir martalik bepul urinish tugagach, AI bo'lmagan test reklama bilan davom etadi. */
 if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"training_test",level:(params.get("level")||"hsk1"),onSubscribe:goPremium});
 var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false,PENDING=null;
-function runAdGate(feature){
-  return fetch("/api/v3/practice/ad-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:feature,ref:"ad:"+Date.now()})})
-    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
-}
 /* "Reklama bilan davom etish" — PENDING'da qaysi imtihon/feature ekani saqlangan. */
 function startAdSupported(){
   if(!PENDING)return;
-  var feature=PENDING.feature,which=PENDING.which;
+  var feature=PENDING.feature,which=PENDING.which,accessRef=PENDING.accessRef;
   if(window.CourseAds)CourseAds.config({feature:feature});
-  runAdGate(feature).then(function(o){
-    if(o.status===403){showLimit(false);return}
+  if(!window.CourseAds){showEmpty();return}
+  CourseAds.play("start",accessRef).then(function(){
     AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
-    if(window.CourseAds){CourseAds.play("start").then(function(){_openExam(which)}).catch(function(){_openExam(which)})}else{_openExam(which)}
-  }).catch(function(){showLimit(false)});
+    if(which==="placement")runPlacement();else _openExam(which,true);
+  }).catch(function(){AD_SESSION=false;showEmpty()});
 }
-function gateRef(key,create){try{var k="hsk_gate_"+key;var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
+var GATE_REFS={};
+function newAccessRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}try{if(window.crypto&&crypto.getRandomValues){var a=new Uint32Array(4);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(v){return v.toString(36)}).join("-")}}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
+function gateRef(key,create){var k="hsk_gate_"+key,v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=GATE_REFS[k]||""}if(!v&&create){v=newAccessRef();GATE_REFS[k]=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
+function clearGateRef(key){var k="hsk_gate_"+key;delete GATE_REFS[k];try{sessionStorage.removeItem(k)}catch(e){}}
 function runGate(feature,ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:feature,ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
@@ -168,121 +170,105 @@ function renderHub(){
 function showHub(){$("hub").style.display="block";$("empty").classList.remove("on");$("placement").classList.remove("on");$("exam").classList.remove("on")}
 function openExam(which){
   var feature=which==="placement"?"placement":"training_test";
-  PENDING={which:which,feature:feature};
-  runGate(feature,gateRef(feature,true)).then(function(o){
+  var accessRef=gateRef(feature+":"+which,true);
+  PENDING={which:which,feature:feature,accessRef:accessRef};
+  if(which!=="placement"){
+    AD_SESSION=false;AD_MID_SHOWN=false;AD_END_SHOWN=false;_openExam(which,false);return;
+  }
+  runGate(feature,accessRef).then(function(o){
     if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
+    if(!o.ok||!o.j||!o.j.ok){showEmpty();return}
     AD_SESSION=false;_openExam(which);
-  }).catch(function(){AD_SESSION=false;_openExam(which)});
+  }).catch(function(){AD_SESSION=false;showEmpty()});
 }
-function _openExam(which){
+function _openExam(which,adSupported){
   if(which==="placement"){return runPlacement();}
-  fetch("/course_v3_data/exams/"+which+".json").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(data){
-    if(!data||!data.sections||!data.sections.length)return showEmpty();
+  var accessRef=(PENDING&&PENDING.accessRef)||gateRef("training_test:"+which,true);
+  fetch("/api/v3/exams/start",{method:"POST",headers:{"X-Telegram-Init-Data":initData(),"Content-Type":"application/json"},body:JSON.stringify({level:which,lang:LANG,access_ref:accessRef,ad_supported:!!adSupported})}).then(function(r){return r.json().then(function(d){return {ok:r.ok,status:r.status,d:d}})}).then(function(o){
+    var data=o.d&&o.d.session;
+    if(!o.ok||!o.d||!o.d.ok){var err=(o.d&&o.d.error)||"";if(o.status===403||err==="free_feature_limit_reached"||err==="ad_authorization_required"){showLimit(!(o.d&&o.d.ad&&o.d.ad.available===false));return}throw new Error("exam_start")}
+    if(!data||!data.questions||!data.questions.length)throw new Error("exam_start");
     runExam(data);
   }).catch(function(){showEmpty()});
 }
-/* Qayta topshirish — yangi sessiya, yangi slot (bepulga 1/kun). */
+/* Qayta topshirish — yangi sessiya; bepul urinish ishlatilgan bo'lsa gate reklama/Premium ko'rsatadi. */
 function replayExam(){
-  PENDING={which:(EXD&&EXD.level)||"hsk1",feature:"training_test"};
-  runGate("training_test","replay:"+Date.now()).then(function(o){
-    if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
-    AD_SESSION=false;if(EXD)runExam(EXD);
-  }).catch(function(){AD_SESSION=false;if(EXD)runExam(EXD)});
+  var level=(EXD&&EXD.level)||"hsk1";clearGateRef("training_test:"+level);openExam(level);
 }
 function replayPlacement(){
-  PENDING={which:"placement",feature:"placement"};
-  runGate("placement","replay:"+Date.now()).then(function(o){
-    if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
-    AD_SESSION=false;runPlacement();
-  }).catch(function(){AD_SESSION=false;runPlacement()});
+  clearGateRef("placement:placement");openExam("placement");
 }
-function showEmpty(){$("hub").style.display="none";$("empty").classList.add("on")}
+function showEmpty(){
+  $("hub").style.display="none";$("placement").classList.remove("on");$("exam").classList.remove("on");
+  $("empty").innerHTML='<div class="ic"><i class="ti ti-wifi-off"></i></div><h3>'+esc(L.eTitle)+'</h3><p>'+esc(L.eSub)+'</p><button onclick="showHub()"><i class="ti ti-arrow-left"></i> '+esc(L.eBack)+'</button>';
+  $("empty").classList.add("on");
+}
 
-/* ---- HSK exam runner (loads section/question material from /course_v3_data/exams/{level}.json) ---- */
-var EXD=null,EQ=[],ei=0,eans=[];
-function esc(s){return String(s==null?"":s).replace(/'/g,"\\'").replace(/"/g,"&quot;")}
-function examLabel(o){return o.label?(o.label[LANG]||o.label.ru||o.label.uz||o.label.tj||""):""}
-function examStem(q){return q.stem?(q.stem[LANG]||q.stem.ru||q.stem.uz||q.stem.tj||""):""}
-function isMeaningQuestion(q){
-  var zh=q.stem_zh||"";
-  var stem=examStem(q).toLowerCase();
-  return zh.indexOf("意思")>-1||stem.indexOf("ma'nosi")>-1||stem.indexOf("значит")>-1||stem.indexOf("маъно")>-1;
-}
-function examOptionText(q,o){
-  var lab=examLabel(o),zh=o.zh||"";
-  if(q.type==="audio_choice"||isMeaningQuestion(q))return lab||zh;
-  return zh||lab;
-}
+/* ---- HSK exam runner: V2 material serverdan keladi, baho ham serverda. ---- */
+var EXD=null,EQ=[],ei=0,eans=[],EX_SUBMITTING=false;
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
+function jsq(s){return String(s==null?"":s).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/[\r\n]/g," ").replace(/</g,"\\u003c")}
+function examLabel(o){return typeof o==="string"?o:(o&&o.text)||""}
+function examStem(q){return typeof q.prompt==="string"?q.prompt:(q.prompt&&(q.prompt[LANG]||q.prompt.ru||q.prompt.uz||q.prompt.tj))||""}
+function examOptionText(q,o){return examLabel(o)}
 function runExam(data){
-  EXD=data;EQ=[];ei=0;eans=[];
-  (data.sections||[]).forEach(function(sec){
-    (sec.questions||[]).forEach(function(q){EQ.push({q:q,key:sec.key})});
-  });
+  EXD=data;EQ=(data.questions||[]).map(function(q){return {q:q,key:q.section||((q.source||{}).section)||"reading"}});ei=0;eans=[];EX_SUBMITTING=false;
   if(!EQ.length)return showEmpty();
-  $("hub").style.display="none";$("placement").classList.remove("on");$("exam").classList.add("on");
+  $("hub").style.display="none";$("empty").classList.remove("on");$("placement").classList.remove("on");$("exam").classList.add("on");
   exRender();
 }
 function exRender(){
-  /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
   if(AD_SESSION&&!AD_MID_SHOWN&&EQ.length>=4&&ei===Math.floor(EQ.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(exRender).catch(exRender);return}}
   var item=EQ[ei],q=item.q;
   var lv=String(EXD.level||"").replace("hsk","").toUpperCase();
-  var lead=EM.sec[item.key]||item.key;
-  var card="",opts="";
-  if(q.type==="audio_truefalse"||q.type==="audio_choice"){
-    card='<div class="qcard"><button class="abtn" onclick="speak(\''+esc(q.audio_text)+'\')"><i class="ti ti-volume"></i></button>'
-      +(q.type==="audio_truefalse"?'<div class="qzh han">'+(q.prompt_zh||"")+'</div>':'')
-      +'<div class="ahint">'+EM.listen+'</div></div>';
+  var lead=EM.sec[item.key]||item.key,card="";
+  if(q.audio_text){
+    card='<div class="qcard"><button class="abtn" onclick="speak(\''+jsq(q.audio_text)+'\')"><i class="ti ti-volume"></i></button>'+(q.sentence?'<div class="qzh han">'+esc(q.sentence)+'</div>':'')+'<div class="ahint">'+EM.listen+'</div></div>';
     setTimeout(function(){speak(q.audio_text)},300);
   }else{
-    card='<div class="qcard"><div class="qzh han">'+(q.stem_zh||"")+'</div></div>';
+    card='<div class="qcard"><div class="qzh han">'+esc(q.sentence||"")+'</div></div>';
   }
-  if(q.type==="audio_truefalse"){
-    opts=[{t:EM.tfTrue,ok:q.answer===true},{t:EM.tfFalse,ok:q.answer===false}].map(function(o,k){
-      return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="exPick('+k+',this)"><span class="k">'+(k===0?'✓':'✕')+'</span>'+o.t+'</button>';
-    }).join("");
-  }else{
-    opts=(q.options||[]).map(function(o,k){
-      var text=examOptionText(q,o);
-      var cls=text===(o.zh||"")?' class="han"':"";
-      return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="exPick('+k+',this)"><span class="k">'+"ABCD"[k]+'</span><span'+cls+'>'+text+'</span></button>';
-    }).join("");
-  }
+  var opts=(q.options||[]).map(function(o,k){var text=examOptionText(q,o);return '<button class="opt" onclick="exPick('+k+',this)"><span class="k">'+("ABCD"[k]||(k+1))+'</span><span>'+esc(text)+'</span></button>'}).join("");
   var stem=examStem(q);
-  $("exam").innerHTML='<div class="ptop"><button class="ix2" onclick="exitExam()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(ei/EQ.length*100)+'%"></i></div><span class="lvtag">HSK '+lv+'</span></div>'
-    +'<div class="qlead">'+lead+' · '+EM.q+' '+(ei+1)+' '+EM.of+' '+EQ.length+'</div>'
-    +card
-    +(stem?'<div class="qlead" style="text-align:center;margin-top:-6px">'+stem+'</div>':'')
-    +opts;
+  $("exam").innerHTML='<div class="ptop"><button class="ix2" onclick="exitExam()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(ei/EQ.length*100)+'%"></i></div><span class="lvtag">HSK '+lv+' · '+Number(EXD.duration_min||0)+' '+L.min+'</span></div>'
+    +'<div class="qlead">'+esc(lead)+' · '+EM.q+' '+(ei+1)+' '+EM.of+' '+EQ.length+'</div>'+card
+    +(stem?'<div class="qlead" style="text-align:center;margin-top:-6px">'+esc(stem)+'</div>':'')+opts;
 }
 function exPick(k,el){
-  document.querySelectorAll("#exam .opt").forEach(function(o){o.style.pointerEvents="none"});el.classList.add("sel");
-  eans[ei]=el.getAttribute("data-ok")==="1";
+  var q=EQ[ei].q;document.querySelectorAll("#exam .opt").forEach(function(o){o.style.pointerEvents="none"});el.classList.add("sel");
+  eans[ei]={question_id:String(q.id||""),selected_index:k};
   try{stopSpeak()}catch(e){}
-  setTimeout(function(){ei++;if(ei>=EQ.length){exResult()}else{exRender()}},360);
+  setTimeout(function(){ei++;if(ei>=EQ.length){exResult()}else{exRender()}},280);
 }
 function exitExam(){try{stopSpeak()}catch(e){}showHub()}
 function exResult(){
-  /* Reklama bilan kirilgan sessiya: natijadan oldin yakuniy reklama. */
   if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(exResult).catch(exResult);return}}
-  var per={},order=[];
-  EQ.forEach(function(item,k){var key=item.key;if(!per[key]){per[key]=[0,0];order.push(key)}per[key][1]++;if(eans[k])per[key][0]++});
-  var tot=0,cor=0;EQ.forEach(function(it,k){tot++;if(eans[k])cor++});
-  var pct=tot?Math.round(cor/tot*100):0;
-  var pass=pct>=(EXD.pass_score||60);
-  var lv=String(EXD.level||"").replace("hsk","").toUpperCase();
-  var meter=order.map(function(key){var p=per[key][1]?Math.round(per[key][0]/per[key][1]*100):0;return '<div class="mrow"><span class="ml">'+(EM.sec[key]||key)+'</span><span class="mb"><i style="width:'+p+'%"></i></span><span class="mv">'+p+'%</span></div>'}).join("");
+  submitExam();
+}
+function submitExam(){
+  if(EX_SUBMITTING)return;EX_SUBMITTING=true;
+  $("exam").innerHTML='<div class="res"><div class="lvl"><small>'+EM.result+'</small><b><i class="ti ti-loader-2"></i></b></div><h3>'+EM.saving+'</h3></div>';
+  fetch("/api/v3/exams/complete",{method:"POST",headers:{"X-Telegram-Init-Data":initData(),"Content-Type":"application/json"},body:JSON.stringify({session_id:EXD.id,answers:eans})})
+    .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})}).then(function(o){if(!o.ok||!o.d||!o.d.ok)throw new Error("exam_complete");EX_SUBMITTING=false;clearGateRef("training_test:"+EXD.level);renderExamResult(o.d)})
+    .catch(function(){EX_SUBMITTING=false;$("exam").innerHTML='<div class="res"><div class="lvl"><small>'+EM.result+'</small><b>!</b></div><h3>'+EM.saveErr+'</h3><button class="cta" onclick="submitExam()"><i class="ti ti-refresh"></i> '+EM.retry+'</button><button class="ghost" onclick="showHub()">'+EM.toList+'</button></div>'});
+}
+function renderExamResult(d){
+  var pct=Number(d.percent||0),pass=!!d.passed,lv=String(EXD.level||"").replace("hsk","").toUpperCase();
+  var sections=d.section_scores||{},order=["listening","reading","writing"].filter(function(k){return sections[k]&&Number(sections[k].total||0)>0});
+  var meter=order.map(function(key){var p=Number(sections[key].percent||0);return '<div class="mrow"><span class="ml">'+esc(EM.sec[key]||key)+'</span><span class="mb"><i style="width:'+p+'%"></i></span><span class="mv">'+p+'%</span></div>'}).join("");
+  var wrong=(d.wrong_items||[]).slice(0,4);var review=wrong.length?'<div class="review-list"><b>'+esc(EM.mistakes)+'</b>'+wrong.map(function(w){var detail=[w.pinyin,w.translation].filter(function(v,i,a){return v&&a.indexOf(v)===i}).map(function(v){return '<small>'+esc(v)+'</small>'}).join('');return '<div><span>'+esc(w.question||"")+'</span><strong>✓ '+esc(w.correct_answer||"")+'</strong>'+detail+'</div>'}).join('')+'</div>':'';
+  var xp=Number(d.reward&&d.reward.awarded_xp||0);var xpHtml=xp?'<p class="xp-line">+'+xp+' XP · '+esc(EM.xp)+'</p>':'';
   $("exam").innerHTML='<div class="res"><div class="lvl"><small>'+EM.result+'</small><b>'+pct+'%</b></div>'
-    +'<h3>'+(pass?EM.passed:EM.failed)+'</h3><p>'+(pass?EM.passSub:EM.failSub)+lv+'.</p>'
-    +'<div class="meter">'+meter+'</div>'
+    +'<h3>'+(pass?EM.passed:EM.failed)+'</h3><p>'+(pass?EM.passSub:EM.failSub)+lv+'.</p>'+xpHtml
+    +'<div class="meter">'+meter+'</div>'+review
     +'<button class="cta" onclick="replayExam()"><i class="ti ti-refresh"></i> '+EM.again+'</button>'
     +'<button class="ghost" onclick="showHub()">'+EM.toList+'</button></div>';
 }
 
 /* ---- Placement test (sample questions; real adaptive bank from a defined source later) ---- */
-var PT={ru:{lead:"Выберите значение",rec:"Рекомендуем",recSub:"Вы хорошо освоили нижние уровни. Лучше начать с HSK ",start:"Начать курс HSK ",retake:"Пройти заново",lvl:"HSK"},
-  uz:{lead:"Ma'noni tanlang",rec:"Tavsiya",recSub:"Quyi darajalarni yaxshi egallagansiz. Boshlash uchun eng maqbul — HSK ",start:"HSK ",startEnd:" kursini boshlash",retake:"Qayta test",lvl:"HSK"},
-  tj:{lead:"Маъноро интихоб кунед",rec:"Тавсия",recSub:"Сатҳҳои поёнро хуб азхуд кардаед. Аз HSK ",start:"Курси HSK ",retake:"Аз нав",lvl:"HSK"}}[LANG];
+var PT={ru:{lead:"Выберите значение",rec:"Рекомендуем",recSub:"По результату вам подходит уровень HSK ",back:"Вернуться к курсу",retake:"Пройти заново",lvl:"HSK"},
+  uz:{lead:"Ma'noni tanlang",rec:"Tavsiya",recSub:"Natijangiz bo'yicha sizga mos daraja — HSK ",back:"Kursga qaytish",retake:"Qayta test",lvl:"HSK"},
+  tj:{lead:"Маъноро интихоб кунед",rec:"Тавсия",recSub:"Аз рӯи натиҷа сатҳи мувофиқ барои шумо — HSK ",back:"Ба курс баргаштан",retake:"Аз нав",lvl:"HSK"}}[LANG];
 var QP=[
   {lvl:1,h:"谢谢",py:"xièxie",o:[{ru:"спасибо",uz:"rahmat",tj:"ташаккур",ok:1},{ru:"привет",uz:"salom",tj:"салом"},{ru:"пока",uz:"xayr",tj:"хайр"}]},
   {lvl:1,h:"再见",py:"zàijiàn",o:[{ru:"до свидания",uz:"xayr",tj:"хайр",ok:1},{ru:"спасибо",uz:"rahmat",tj:"ташаккур"},{ru:"да",uz:"ha",tj:"ҳа"}]},
@@ -291,33 +277,34 @@ var QP=[
   {lvl:3,h:"虽然",py:"suīrán",o:[{ru:"хотя",uz:"garchi",tj:"ҳарчанд",ok:1},{ru:"если",uz:"agar",tj:"агар"},{ru:"потому что",uz:"chunki",tj:"зеро"}]},
   {lvl:4,h:"表示",py:"biǎoshì",o:[{ru:"выражать",uz:"ifodalamoq",tj:"ифода кардан",ok:1},{ru:"заканчивать",uz:"tugatmoq",tj:"тамом кардан"},{ru:"начинать",uz:"boshlamoq",tj:"оғоз кардан"}]}
 ];
-var pi=0,pans=[];
+var pi=0,pans=[],PQ=[];
 function olang(o){return o[LANG]||o.ru}
-function runPlacement(){pi=0;pans=[];$("hub").style.display="none";$("placement").classList.add("on");pRender();}
+function shuffled(a){var out=a.slice();for(var i=out.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=out[i];out[i]=out[j];out[j]=x}return out}
+function runPlacement(){pi=0;pans=[];PQ=QP.map(function(q){return {lvl:q.lvl,h:q.h,py:q.py,o:shuffled(q.o)}});$("hub").style.display="none";$("empty").classList.remove("on");$("placement").classList.add("on");pRender();}
 function pRender(){
   /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
-  if(AD_SESSION&&!AD_MID_SHOWN&&QP.length>=4&&pi===Math.floor(QP.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(pRender).catch(pRender);return}}
-  var q=QP[pi];
+  if(AD_SESSION&&!AD_MID_SHOWN&&PQ.length>=4&&pi===Math.floor(PQ.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(pRender).catch(pRender);return}}
+  var q=PQ[pi];
   $("placement").innerHTML='<div class="ptop"><button class="ix2" onclick="showHub()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(pi/QP.length*100)+'%"></i></div><span class="lvtag">'+PT.lvl+" "+q.lvl+'</span></div>'
     +'<div class="qlead">'+PT.lead+'</div><div class="qcard"><div class="h han">'+q.h+'</div><div class="py">'+q.py+'</div></div>'
-    +q.o.map(function(o,k){return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="pPick('+k+',this)"><span class="k">'+"ABC"[k]+'</span>'+olang(o)+'</button>'}).join("");
+    +q.o.map(function(o,k){return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="pPick('+k+',this)"><span class="k">'+"ABC"[k]+'</span>'+esc(olang(o))+'</button>'}).join("");
 }
 function pPick(k,el){
   document.querySelectorAll("#placement .opt").forEach(function(o){o.style.pointerEvents="none"});el.classList.add("sel");
   pans[pi]=el.getAttribute("data-ok")==="1";
-  setTimeout(function(){pi++;if(pi>=QP.length){pResult()}else{pRender()}},380);
+  setTimeout(function(){pi++;if(pi>=PQ.length){pResult()}else{pRender()}},380);
 }
 function pResult(){
   /* Reklama bilan kirilgan sessiya: natijadan oldin yakuniy reklama. */
   if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(pResult).catch(pResult);return}}
   var per={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
-  QP.forEach(function(q,k){per[q.lvl][1]++;if(pans[k])per[q.lvl][0]++});
+  PQ.forEach(function(q,k){per[q.lvl][1]++;if(pans[k])per[q.lvl][0]++});
   var rec=1;for(var Lv=1;Lv<=4;Lv++){var p=per[Lv][1]?per[Lv][0]/per[Lv][1]:0;if(p>=0.5)rec=Lv;else break;}
   var meter="";[1,2,3,4].forEach(function(Lv){var p=per[Lv][1]?Math.round(per[Lv][0]/per[Lv][1]*100):0;meter+='<div class="mrow '+(Lv===rec?"rec":"")+'"><span class="ml">'+PT.lvl+" "+Lv+'</span><span class="mb"><i style="width:'+p+'%"></i></span><span class="mv">'+p+'%</span></div>'});
-  var startTxt=LANG==="uz"?(PT.start+rec+PT.startEnd):(PT.start+rec);
-  $("placement").innerHTML='<div class="res"><div class="lvl"><small>'+PT.rec+'</small><b>'+PT.lvl+" "+rec+'</b></div><h3>'+PT.rec+": "+PT.lvl+" "+rec+'</h3><p>'+PT.recSub+rec+'.</p><div class="meter">'+meter+'</div><button class="cta" onclick="startLevel('+rec+')"><i class="ti ti-player-play"></i> '+startTxt+'</button><button class="ghost" onclick="replayPlacement()"><i class="ti ti-refresh"></i> '+PT.retake+'</button></div>';
+  clearGateRef("placement:placement");
+  $("placement").innerHTML='<div class="res"><div class="lvl"><small>'+PT.rec+'</small><b>'+PT.lvl+" "+rec+'</b></div><h3>'+PT.rec+": "+PT.lvl+" "+rec+'</h3><p>'+PT.recSub+rec+'.</p><div class="meter">'+meter+'</div><button class="cta" onclick="startLevel()"><i class="ti ti-arrow-left"></i> '+PT.back+'</button><button class="ghost" onclick="replayPlacement()"><i class="ti ti-refresh"></i> '+PT.retake+'</button></div>';
 }
-function startLevel(lv){location.href="/course-v3.html?lang="+LANG+"&tab=course"}
+function startLevel(){location.href="/course-v3.html?lang="+LANG+"&tab=course"}
 
 renderHub();
 </script>

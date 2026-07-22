@@ -157,6 +157,11 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "media_size": "INTEGER",
         "media_checksum": "VARCHAR(64)",
     },
+    "course_mistakes": {
+        # V2 material is nullable so old mistake rows remain readable. New
+        # records persist their canonical question snapshot here.
+        "material_json": "TEXT",
+    },
 }
 
 

@@ -10,11 +10,11 @@
  * Foydalanish:
  *   CourseAds.config({lang:"uz", initData:tg.initData, feature:"recognition",
  *                     level:"hsk1", onSubscribe:function(){ ... }});
- *   CourseAds.play("start").then(runSession).catch(runSession);
+ *   CourseAds.play("start", accessRef).then(runSession).catch(showRetry);
  *
- * play(placement) — "start" | "middle" | "end". Rolik(lar) ko'rilib, "davom"
- * bosilganda Promise resolve bo'ladi. Reklama topilmasa yoki yuklanmasa reject
- * bo'ladi (chaqiruvchi baribir davom etadi — userni obunaga majburlamaymiz). */
+ * play(placement, accessRef) — "start" | "middle" | "end". Protected start
+ * oqimida accessRef beriladi; server reklama ko'rilganini aynan shu sessiyaga
+ * bog'laydi. Reklama yoki server yozuvi muvaffaqiyatsiz bo'lsa Promise reject. */
 (function(){
   var CFG = {lang:"uz", initData:"", feature:"", level:"hsk1", onSubscribe:null};
 
@@ -167,8 +167,8 @@
 
   function haptic(ok){try{var tg=window.Telegram&&window.Telegram.WebApp;tg&&tg.HapticFeedback&&tg.HapticFeedback.impactOccurred(ok?"medium":"light")}catch(e){}}
 
-  var STATE = {timer:null,loadTimer:null,resolve:null,reject:null,ad:null,placement:"start",watched:0,ready:false,busy:false};
-  function resetState(){STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,placement:"start",watched:0,ready:false,busy:false}}
+  var STATE = {timer:null,loadTimer:null,resolve:null,reject:null,ad:null,placement:"start",accessRef:"",attemptToken:"",watched:0,ready:false,busy:false};
+  function resetState(){STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,placement:"start",accessRef:"",attemptToken:"",watched:0,ready:false,busy:false}}
   function placementTitle(p){var t=T();return p==="middle"?t.adMiddle:(p==="end"?t.adEnd:t.adStart)}
   function adDuration(ad){return Math.max(5,Math.min(120,Number(ad&&ad.duration_seconds)||7))}
 
@@ -253,10 +253,19 @@
         return ads;
       });
   }
-  function recordView(ad,placement,watched){
-    if(!CFG.initData)return Promise.resolve({ok:true});
+  function startAttempt(ad,placement,accessRef){
+    accessRef=String(accessRef||"").trim().slice(0,48);
+    if(!CFG.initData||!accessRef)return Promise.reject(new Error("ad_attempt_requires_auth"));
+    return fetch("/api/v3/ad/attempt",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},
+      body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:0,feature:CFG.feature||"",access_ref:accessRef,placement:placement})})
+      .then(function(r){return r.json().catch(function(){return {ok:false}})})
+      .then(function(d){if(!d||!d.ok||!d.attempt_token)throw new Error("ad_attempt_failed");return d});
+  }
+  function recordView(ad,placement,watched,accessRef,attemptToken){
+    accessRef=String(accessRef||"").trim().slice(0,48);
+    if(!CFG.initData)return Promise.resolve({ok:!accessRef});
     return fetch("/api/v3/ad/view",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},
-      body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:0,feature:CFG.feature||"",placement:placement,watched_seconds:watched})})
+      body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:0,feature:CFG.feature||"",access_ref:accessRef,attempt_token:String(attemptToken||""),placement:placement,watched_seconds:watched})})
       .then(function(r){return r.json()}).catch(function(){return {ok:false}});
   }
   function openAdLink(){
@@ -282,12 +291,13 @@
     if(!STATE.ready||STATE.busy)return;STATE.busy=true;
     els.cont.disabled=true;els.cont.innerHTML='<i class="ti ti-loader-2"></i> …';
     function finish(){closeOverlay();var r=STATE.resolve;resetState();if(r)r()}
-    recordView(STATE.ad,STATE.placement,STATE.watched).then(finish).catch(finish);
+    recordView(STATE.ad,STATE.placement,STATE.watched,"","").then(finish).catch(finish);
   }
   function subscribe(){closeOverlay();resetState();if(typeof CFG.onSubscribe==="function")CFG.onSubscribe()}
 
-  function play(placement){
+  function play(placement,accessRef){
     ensureDom();
+    accessRef=String(accessRef||"").trim().slice(0,48);
     return new Promise(function(resolve,reject){
       fetchAds(placement).then(function(ads){
         var t=T();
@@ -305,7 +315,7 @@
         function playAd(i){
           var ad=ads[i],duration=adDuration(ad),isLast=(i>=ads.length-1),multi=ads.length>1;
           clearInterval(STATE.timer);clearTimeout(STATE.loadTimer);resetVideo(video);
-          STATE={timer:null,loadTimer:null,resolve:resolve,reject:reject,ad:ad,placement:placement,watched:0,ready:false,busy:false};
+          STATE={timer:null,loadTimer:null,resolve:resolve,reject:reject,ad:ad,placement:placement,accessRef:accessRef,attemptToken:"",watched:0,ready:false,busy:false};
           els.label.textContent=placementTitle(placement)+(multi?" · "+(i+1)+"/"+ads.length:"");
           els.title.textContent=ad.title||placementTitle(placement);
           els.note.textContent=t.adNote;
@@ -320,7 +330,8 @@
           els.cont.disabled=false;els.cont.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
           setSubVisible(false);els.cta0.style.display="none";els.cta0.disabled=true;
           els.count.textContent="...";setStatus(t.loading);
-          var srcBase=ad.media_url,loadAttempt=0,left=duration,timer=null,started=false,failed=false;
+          var srcBase=ad.media_url,loadAttempt=0,left=duration,timer=null,started=false,failed=false,attemptStarting=false;
+          var requiresAttempt=!!accessRef&&placement==="start"&&isLast;
           function setSrc(bust){
             try{video.pause()}catch(e){}
             video.removeAttribute("src");try{video.load()}catch(e){}
@@ -343,7 +354,7 @@
           function draw(){
             els.count.textContent=left>0?left+"s":"OK";
             if(left>0){els.cta0.style.display="none";setSubVisible(false);return}
-            if(!isLast){recordView(ad,placement,duration).catch(function(){});playAd(i+1);}
+            if(!isLast){recordView(ad,placement,duration,"","").catch(function(){});playAd(i+1);}
             else if(placement==="end"){
               /* YAKUNIY reklama tugadi — "Obuna ol / Reklama bilan davom etish"
                  bloki chiqadi (davom bosilganda done() ko'rilganini yozib yakunlaydi). */
@@ -356,17 +367,29 @@
                  bo'lgan, shuning uchun bu yerda YANA obunaga majburlamaymiz:
                  ko'rilganini fonda yozib, to'g'ridan davom etamiz. */
               try{video.pause()}catch(e){}
-              recordView(ad,placement,duration).catch(function(){});
-              var resolve=STATE.resolve;
-              closeOverlay();resetState();
-              if(typeof resolve==="function")resolve();
+              var finishStart=function(result){
+                if(!result||!result.ok){failFlow();return}
+                var resolve=STATE.resolve;
+                closeOverlay();resetState();
+                if(typeof resolve==="function")resolve(result);
+              };
+              recordView(ad,placement,duration,accessRef,STATE.attemptToken).then(finishStart).catch(failFlow);
             }
           }
-          function startCountdown(){
+          function beginCountdown(){
             if(started||failed||STATE.ad!==ad)return;
             started=true;clearTimeout(STATE.loadTimer);setStatus("");draw();
             timer=setInterval(function(){left=Math.max(0,left-1);STATE.watched=duration-left;if(left<=0)clearInterval(timer);draw();},1000);
             STATE.timer=timer;
+          }
+          function startCountdown(){
+            if(started||failed||STATE.ad!==ad)return;
+            if(!requiresAttempt){beginCountdown();return}
+            if(attemptStarting)return;attemptStarting=true;clearTimeout(STATE.loadTimer);
+            startAttempt(ad,placement,accessRef).then(function(result){
+              if(failed||STATE.ad!==ad)return;
+              STATE.attemptToken=String(result.attempt_token||"");beginCountdown();
+            }).catch(failFlow);
           }
           function failFlow(){if(STATE.ad!==ad)return;var rej=STATE.reject||reject;closeOverlay();resetState();if(rej)rej(new Error("course_ad_media_failed"))}
           function mediaFailed(){

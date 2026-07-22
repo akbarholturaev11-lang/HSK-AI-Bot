@@ -198,14 +198,34 @@ Not built yet:
 ## 9. Important Decisions
 
 ### Decision 1
-Date: Unknown  
-Decision: Unknown / needs inspection  
-Reason: Unknown / needs inspection  
-Risk: Unknown / needs inspection  
+Date: 2026-07-22
+Decision: Course material must teach useful, real Chinese first. Sessions should be short and interactive, with honest immediate feedback, visible progress, XP/streak/challenge rewards, and mistake recovery providing appropriate motivation without replacing learning.
+Reason: Product quality and retained knowledge are the goal; engagement mechanics exist to prevent boredom, not to inflate fake progress.
+Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that are disconnected from verified learning activity.
 
 ---
 
 ## 10. Recent Important Changes
+
+### 2026-07-22 — HSK tests, challenges, and mistake material V2
+
+Changed:
+- HSK 1–4 exams now load strict canonical V2 material for Uzbek/Russian/Tajik, hide answer keys from the browser, grade on the server, preserve immutable attempts, report section scores, record rich mistakes, and cap XP to one award per user/level/UTC day.
+- Lesson, HSK, practice, and challenge mistakes persist a versioned `material_json` snapshot (`format`, Chinese sentence/audio, pinyin, language, options, and source). Lesson mistakes are rebuilt from a stable `material_ref`; client-supplied prompts/answers are not trusted.
+- Mistake review now uses format/category/language-matched distractors, real server filters/pagination, compact retry-safe snapshots, and XP only for trusted server-graded sources. Each choice is committed server-side before the answer/explanation is revealed, so browser payload inspection cannot forge resolved mistakes or XP. `course_mistakes.material_json` is nullable and bootstrap-added for legacy DB compatibility.
+- Challenges use exactly 10 learned-level questions, keep answers server-only until submission, score ties by equal percentage, and show concise correction material after the round.
+- HSK and mistake ad continuations require a recent server-recorded authorization bound to `user + ad + feature + access_ref + placement`. A server-timed attempt must reach the creative duration before authorization; client `watched_seconds` and direct `ad_supported=true` cannot bypass access.
+
+Key files:
+- `app/services/course_question_material.py`
+- `app/services/course_hsk_exam_service.py`
+- `app/services/course_lesson_mistake_material_service.py`
+- `app/services/course_mistake_service.py`
+- `app/services/course_challenge_service.py`
+- `app/static/course_v3_test.html`, `app/static/course_v3_mistakes.html`, `app/static/course-v3.html`
+
+Risk / follow-up:
+- Medium: access/session and mistake persistence changed, but payment/subscription entitlement classification did not. Run a real Telegram WebView smoke test after deploy for HSK completion, lesson completion, challenge submission, mistake review, and ad continuation.
 
 ### 2026-07-21 — Gemini yoqilganda limit tizimi o'zgaradi + bir martalik e'lon
 

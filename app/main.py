@@ -56,6 +56,10 @@ from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonF
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_lesson_mistake_material_service import (
+    CourseLessonMistakeMaterialError,
+    CourseLessonMistakeMaterialService,
+)
 from app.services.course_hsk_exam_service import CourseHskExamService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
@@ -1463,7 +1467,7 @@ async def v3_course_ad(
     # Mashq bo'limlarida reklama darsga bog'lanmagan (lesson=0) — `feature`
     # (masalan "recognition") kontekst sifatida keladi. Faqat dars ham,
     # bo'lim ham bo'lmasa xato.
-    if lesson_order <= 0 and section not in _COURSE_DAILY_GATE_FEATURES:
+    if lesson_order <= 0 and section not in _COURSE_AD_GATE_FEATURES:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
     # Foydalanuvchining tiliga mos reklamalarni (shu til + "all") qaytaramiz.
@@ -1500,6 +1504,62 @@ async def v3_course_ad(
         )
 
 
+@app.post("/api/v3/ad/attempt")
+async def v3_course_ad_attempt(request: Request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+        if not isinstance(payload, dict):
+            raise ValueError("invalid_payload")
+        ad_id = int(payload.get("ad_id") or 0)
+        lesson_order = int(payload.get("lesson_order") or payload.get("lesson_id") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_attempt_payload"})
+    section = str(payload.get("feature") or "").strip().lower()
+    access_ref = str(payload.get("access_ref") or "").strip()
+    placement = str(payload.get("placement") or "").strip().lower()
+    if (
+        ad_id <= 0
+        or lesson_order != 0
+        or section not in _COURSE_AD_GATE_FEATURES
+        or not access_ref
+        or placement != "start"
+    ):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_attempt_payload"})
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+        ad_result = await session.execute(
+            select(CourseAdCreative).where(
+                CourseAdCreative.id == ad_id,
+                CourseAdCreative.is_active.is_(True),
+            )
+        )
+        ad = ad_result.scalar_one_or_none()
+        if not ad:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
+        try:
+            result = await CourseMiniAppAccessService(session).start_ad_attempt(
+                user,
+                feature_key=section,
+                access_ref=access_ref,
+                ad_id=ad_id,
+                placement=placement,
+                required_seconds=CourseAdService.normalize_duration(ad.duration_seconds),
+            )
+        except ValueError:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_attempt_payload"})
+        if not result.get("allowed"):
+            return JSONResponse(status_code=403, content={"ok": False, **result})
+        await session.commit()
+        return JSONResponse(content={"ok": True, **result})
+
+
 @app.post("/api/v3/ad/view")
 async def v3_course_ad_view(request: Request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
@@ -1509,15 +1569,19 @@ async def v3_course_ad_view(request: Request):
 
     try:
         payload = await request.json()
+        if not isinstance(payload, dict):
+            raise ValueError("invalid_payload")
         ad_id = int(payload.get("ad_id") or 0)
         lesson_order = int(payload.get("lesson_order") or payload.get("lesson_id") or 0)
         watched_seconds = int(payload.get("watched_seconds") or 0)
     except (TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
     section = str(payload.get("feature") or "").strip().lower()
+    access_ref = str(payload.get("access_ref") or "").strip()
+    attempt_token = str(payload.get("attempt_token") or "").strip()
     # Mashq bo'limi reklamasi darsga bog'lanmagan (lesson_order=0) — bunda
     # `feature` bo'lishi shart.
-    if ad_id <= 0 or (lesson_order <= 0 and section not in _COURSE_DAILY_GATE_FEATURES):
+    if ad_id <= 0 or (lesson_order <= 0 and section not in _COURSE_AD_GATE_FEATURES):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
 
     placement = CourseAdService.normalize_placement(str(payload.get("placement") or "start"))
@@ -1536,6 +1600,26 @@ async def v3_course_ad_view(request: Request):
             placement=placement,
             watched_seconds=watched_seconds,
         )
+        if result.get("ok") and access_ref and lesson_order <= 0:
+            try:
+                authorization = await CourseMiniAppAccessService(session).record_ad_authorization(
+                    user,
+                    feature_key=section,
+                    access_ref=access_ref,
+                    ad_id=ad_id,
+                    placement=placement,
+                    attempt_token=attempt_token,
+                )
+            except ValueError:
+                authorization = {"allowed": False, "error": "invalid_access_ref"}
+            if not authorization.get("allowed"):
+                await session.rollback()
+                status = 403 if authorization.get("error") == "course_access_blocked" else 400
+                return JSONResponse(status_code=status, content={"ok": False, **authorization})
+            result["authorization"] = {
+                "recorded": bool(authorization.get("recorded")),
+                "idempotent": bool(authorization.get("idempotent")),
+            }
         if result.get("ok"):
             await CourseMiniAppAnalyticsService(session).record_server_event(
                 event_name="course_ad_viewed",
@@ -1548,6 +1632,8 @@ async def v3_course_ad_view(request: Request):
                     "ad_id": ad_id,
                     "placement": placement,
                     "watched_seconds": watched_seconds,
+                    "feature": section or None,
+                    "access_ref": access_ref or None,
                 },
             )
         await session.commit()
@@ -1562,6 +1648,7 @@ _COURSE_DAILY_GATE_FEATURES = {
     "placement",
     "training_test",
 }
+_COURSE_AD_GATE_FEATURES = _COURSE_DAILY_GATE_FEATURES | {"mistake_review"}
 
 
 @app.post("/api/v3/practice/daily-gate")
@@ -1702,13 +1789,25 @@ async def v3_hsk_exam_start(request: Request):
                 telegram_id,
                 level=str(payload.get("level") or ""),
                 lang=str(payload.get("lang") or ""),
+                access_ref=str(payload.get("access_ref") or ""),
+                ad_supported=bool(payload.get("ad_supported")),
             )
     except ValueError as error:
         return JSONResponse(
             status_code=400,
             content={"ok": False, "error": "invalid_hsk_exam_payload", "message": str(error)},
         )
-    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
+    if result.get("ok"):
+        status_code = 200
+    elif result.get("error") in {
+        "free_feature_limit_reached",
+        "ad_authorization_required",
+        "course_access_blocked",
+    }:
+        status_code = 403
+    else:
+        status_code = 400
+    return JSONResponse(status_code=status_code, content=result)
 
 
 @app.post("/api/v3/exams/complete")
@@ -1949,6 +2048,18 @@ async def v3_course_lesson_complete(request: Request):
                 "next_lesson": next_order,
             },
         )
+        if lesson_mistakes:
+            try:
+                lesson_mistakes = CourseLessonMistakeMaterialService.canonicalize_items(
+                    level=resolved_level,
+                    lesson_order=lesson_order,
+                    lang=_course_v3_user_lang(user),
+                    items=lesson_mistakes,
+                )
+            except CourseLessonMistakeMaterialError:
+                # Optional mistake telemetry must never block a valid lesson
+                # completion when checked-in material is unavailable/corrupt.
+                lesson_mistakes = []
         if lesson_mistakes:
             await CourseMistakeService(session).record_items(
                 user,
@@ -3473,9 +3584,23 @@ async def miniapp_mistakes(request: Request):
     )
     if not telegram_id:
         return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    category = str(request.query_params.get("category") or "").strip().lower() or None
+    if category == "all":
+        category = None
     async with async_session_maker() as session:
-        result = await CourseMistakeService(session).overview(telegram_id)
-    return JSONResponse(status_code=200 if result.get("ok") else 404, content=result)
+        result = await CourseMistakeService(session).overview(
+            telegram_id,
+            category=category,
+            limit=request.query_params.get("limit", "30"),
+            offset=request.query_params.get("offset", "0"),
+        )
+    if result.get("ok"):
+        status_code = 200
+    elif result.get("error") == "access_start_first":
+        status_code = 404
+    else:
+        status_code = 400
+    return JSONResponse(status_code=status_code, content=result)
 
 
 @app.get("/api/miniapp/gamification")
@@ -3649,10 +3774,49 @@ async def miniapp_mistake_review_start(request: Request):
     except Exception:
         payload = {}
     ad_supported = bool(payload.get("ad_supported")) if isinstance(payload, dict) else False
+    access_ref = str(payload.get("access_ref") or "") if isinstance(payload, dict) else ""
     async with async_session_maker() as session:
-        result = await CourseMistakeService(session).start_review(telegram_id, ad_supported=ad_supported)
-    status_code = 200 if result.get("ok") else 403 if result.get("error") == "free_feature_limit_reached" else 400
+        result = await CourseMistakeService(session).start_review(
+            telegram_id,
+            ad_supported=ad_supported,
+            access_ref=access_ref,
+        )
+    status_code = (
+        200
+        if result.get("ok")
+        else 403
+        if result.get("error") in {
+            "free_feature_limit_reached",
+            "ad_authorization_required",
+            "course_access_blocked",
+        }
+        else 400
+    )
     return JSONResponse(status_code=status_code, content=result)
+
+
+@app.post("/api/miniapp/mistakes/review/answer")
+async def miniapp_mistake_review_answer(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+    except ValueError:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_mistake_review_payload"})
+    if not isinstance(payload, dict):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_mistake_review_payload"})
+    async with async_session_maker() as session:
+        result = await CourseMistakeService(session).answer_review_question(
+            telegram_id,
+            session_id=str(payload.get("session_id") or ""),
+            question_id=str(payload.get("question_id") or ""),
+            selected_index=payload.get("selected_index"),
+        )
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
 
 @app.post("/api/miniapp/mistakes/review/complete")

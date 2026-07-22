@@ -1,4 +1,8 @@
-from datetime import datetime, timezone
+import hashlib
+import json
+import re
+import secrets
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
@@ -49,6 +53,22 @@ COURSE_DAILY_BASE_FEATURES = (
     "training_test",
 )
 COURSE_DAILY_EVENT_NAME = "practice_daily_used"
+
+# Reklama bilan ochiladigan sessiya klient yuborgan ``ad_supported=true`` yoki
+# ``watched_seconds`` ga ishonmaydi. Server urinish boshlanish vaqtini va aniq
+# user/ad/feature/access_ref/placement bindingini yozib, so'ng ruxsat beradi.
+COURSE_AD_AUTH_EVENT_NAME = "course_ad_viewed"
+COURSE_AD_AUTH_EVENT_SOURCE = "course_v3_ad_auth"
+COURSE_AD_AUTH_TTL_SECONDS = 15 * 60
+COURSE_AD_ATTEMPT_EVENT_NAME = "course_ad_attempt_started"
+COURSE_AD_ATTEMPT_EVENT_SOURCE = "course_v3_ad_attempt"
+COURSE_AD_ATTEMPT_TTL_SECONDS = 15 * 60
+COURSE_AD_AUTH_FEATURES = frozenset((*COURSE_DAILY_BASE_FEATURES, "mistake_review"))
+COURSE_ACCESS_REF_PATTERN = re.compile(r"^[A-Za-z0-9._~-]{8,48}$")
+COURSE_AD_ATTEMPT_TOKEN_PATTERN = re.compile(r"^[A-Za-z0-9_-]{24,64}$")
+COURSE_AD_PLACEMENTS = frozenset(("start", "middle", "end"))
+COURSE_AD_MIN_SECONDS = 5
+COURSE_AD_MAX_SECONDS = 120
 
 
 class CourseMiniAppAccessService:
@@ -228,6 +248,389 @@ class CourseMiniAppAccessService:
         if normalized not in COURSE_DAILY_FREE_LIMITS:
             raise ValueError(f"Unknown Course daily feature: {normalized or '<empty>'}")
         return normalized
+
+    @staticmethod
+    def normalize_access_ref(access_ref: str) -> str:
+        """Validate a client-generated opaque retry key.
+
+        The value is deliberately restricted before it is stored in indexed
+        event columns. It is an idempotency key, not an authentication token.
+        """
+
+        normalized = str(access_ref or "").strip()
+        if not COURSE_ACCESS_REF_PATTERN.fullmatch(normalized):
+            raise ValueError("invalid_access_ref")
+        return normalized
+
+    @staticmethod
+    def _normalize_ad_auth_feature(feature_key: str) -> str:
+        normalized = str(feature_key or "").strip().lower()
+        if normalized not in COURSE_AD_AUTH_FEATURES:
+            raise ValueError(f"Unknown Course ad authorization feature: {normalized or '<empty>'}")
+        return normalized
+
+    @classmethod
+    def _ad_authorization_session_id(cls, feature_key: str, access_ref: str) -> str:
+        feature = cls._normalize_ad_auth_feature(feature_key)
+        ref = cls.normalize_access_ref(access_ref)
+        return f"{feature}:{ref}"
+
+    @staticmethod
+    def _normalize_ad_id(ad_id: int) -> int:
+        try:
+            normalized = int(ad_id)
+        except (TypeError, ValueError):
+            normalized = 0
+        if normalized <= 0:
+            raise ValueError("invalid_ad_id")
+        return normalized
+
+    @staticmethod
+    def _normalize_ad_placement(placement: str) -> str:
+        normalized = str(placement or "").strip().lower()
+        if normalized not in COURSE_AD_PLACEMENTS:
+            raise ValueError("invalid_ad_placement")
+        return normalized
+
+    @staticmethod
+    def _normalize_ad_duration(required_seconds: int) -> int:
+        try:
+            normalized = int(required_seconds)
+        except (TypeError, ValueError):
+            normalized = COURSE_AD_MIN_SECONDS
+        return max(COURSE_AD_MIN_SECONDS, min(COURSE_AD_MAX_SECONDS, normalized))
+
+    @staticmethod
+    def _normalize_ad_attempt_token(attempt_token: str) -> str:
+        normalized = str(attempt_token or "").strip()
+        if not COURSE_AD_ATTEMPT_TOKEN_PATTERN.fullmatch(normalized):
+            raise ValueError("invalid_ad_attempt_token")
+        return normalized
+
+    @classmethod
+    def _ad_attempt_session_id(cls, attempt_token: str) -> str:
+        token = cls._normalize_ad_attempt_token(attempt_token)
+        digest = hashlib.sha256(token.encode("utf-8")).hexdigest()
+        return f"ad-attempt:{digest}"
+
+    async def start_ad_attempt(
+        self,
+        user,
+        *,
+        feature_key: str,
+        access_ref: str,
+        ad_id: int,
+        placement: str,
+        required_seconds: int,
+    ) -> dict:
+        """Issue a one-way-tokenized ad attempt anchored to server time.
+
+        The raw token is returned only to the authenticated browser. The event
+        stores its SHA-256 digest together with the exact access binding, so a
+        forged ``watched_seconds`` value cannot authorize protected content.
+        """
+
+        feature = self._normalize_ad_auth_feature(feature_key)
+        ref = self.normalize_access_ref(access_ref)
+        normalized_ad_id = self._normalize_ad_id(ad_id)
+        normalized_placement = self._normalize_ad_placement(placement)
+        duration = self._normalize_ad_duration(required_seconds)
+        if not self.is_paid_user(user) and not self.is_free_user(user):
+            return {"allowed": False, "error": "course_access_blocked"}
+
+        attempt_token = secrets.token_urlsafe(24)
+        session_id = self._ad_attempt_session_id(attempt_token)
+        event = CourseMiniAppEvent(
+            user_id=user.id,
+            telegram_id=int(user.telegram_id),
+            event_name=COURSE_AD_ATTEMPT_EVENT_NAME,
+            source=COURSE_AD_ATTEMPT_EVENT_SOURCE,
+            session_id=session_id,
+            dedupe_key=session_id,
+            payload_json=json.dumps(
+                {
+                    "feature": feature,
+                    "access_ref": ref,
+                    "ad_id": normalized_ad_id,
+                    "placement": normalized_placement,
+                    "required_seconds": duration,
+                },
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ),
+        )
+        try:
+            async with self.session.begin_nested():
+                self.session.add(event)
+                await self.session.flush()
+        except IntegrityError as exc:
+            # A cryptographic token collision is practically impossible. Fail
+            # closed rather than reusing an attempt whose binding is unknown.
+            raise RuntimeError("ad_attempt_token_collision") from exc
+        return {
+            "allowed": True,
+            "attempt_token": attempt_token,
+            "required_seconds": duration,
+            "expires_in": COURSE_AD_ATTEMPT_TTL_SECONDS,
+        }
+
+    async def validate_ad_attempt(
+        self,
+        user,
+        *,
+        feature_key: str,
+        access_ref: str,
+        ad_id: int,
+        placement: str,
+        attempt_token: str,
+    ) -> dict:
+        """Validate exact binding and elapsed server time for an ad attempt."""
+
+        feature = self._normalize_ad_auth_feature(feature_key)
+        ref = self.normalize_access_ref(access_ref)
+        normalized_ad_id = self._normalize_ad_id(ad_id)
+        normalized_placement = self._normalize_ad_placement(placement)
+        try:
+            attempt_session_id = self._ad_attempt_session_id(attempt_token)
+        except ValueError:
+            return {"allowed": False, "error": "ad_attempt_required"}
+
+        result = await self.session.execute(
+            select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.user_id == user.id,
+                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                CourseMiniAppEvent.event_name == COURSE_AD_ATTEMPT_EVENT_NAME,
+                CourseMiniAppEvent.source == COURSE_AD_ATTEMPT_EVENT_SOURCE,
+                CourseMiniAppEvent.session_id == attempt_session_id,
+            )
+        )
+        event = result.scalar_one_or_none()
+        if not event:
+            return {"allowed": False, "error": "ad_attempt_required"}
+        try:
+            payload = json.loads(event.payload_json or "{}")
+            required_seconds = self._normalize_ad_duration(payload["required_seconds"])
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError):
+            return {"allowed": False, "error": "invalid_ad_attempt"}
+        expected = {
+            "feature": feature,
+            "access_ref": ref,
+            "ad_id": normalized_ad_id,
+            "placement": normalized_placement,
+        }
+        actual = {
+            "feature": str(payload.get("feature") or ""),
+            "access_ref": str(payload.get("access_ref") or ""),
+            "ad_id": payload.get("ad_id"),
+            "placement": str(payload.get("placement") or ""),
+        }
+        try:
+            actual["ad_id"] = int(actual["ad_id"])
+        except (TypeError, ValueError):
+            return {"allowed": False, "error": "invalid_ad_attempt"}
+        if actual != expected:
+            return {"allowed": False, "error": "invalid_ad_attempt"}
+
+        started_at = self._as_utc(event.created_at)
+        now = datetime.now(timezone.utc)
+        if not started_at:
+            return {"allowed": False, "error": "invalid_ad_attempt"}
+        elapsed_seconds = (now - started_at).total_seconds()
+        if elapsed_seconds > COURSE_AD_ATTEMPT_TTL_SECONDS:
+            return {"allowed": False, "error": "ad_attempt_expired"}
+        if elapsed_seconds < required_seconds:
+            return {
+                "allowed": False,
+                "error": "ad_attempt_incomplete",
+                "retry_after": max(1, required_seconds - int(max(0, elapsed_seconds))),
+            }
+        return {
+            "allowed": True,
+            "attempt_id": attempt_session_id,
+            "elapsed_seconds": int(elapsed_seconds),
+            "required_seconds": required_seconds,
+        }
+
+    async def record_ad_authorization(
+        self,
+        user,
+        *,
+        feature_key: str,
+        access_ref: str,
+        ad_id: int,
+        placement: str,
+        attempt_token: str = "",
+    ) -> dict:
+        """Record a completed start-ad as a bounded server authorization.
+
+        Call this only after ``CourseAdService.record_view`` returned ``ok``.
+        Other placements are analytics-only and never authorize a new session.
+        """
+
+        feature = self._normalize_ad_auth_feature(feature_key)
+        ref = self.normalize_access_ref(access_ref)
+        if self.is_paid_user(user):
+            return {
+                "allowed": True,
+                "recorded": False,
+                "is_paid": True,
+                "access_ref": ref,
+            }
+        if not self.is_free_user(user):
+            return {"allowed": False, "recorded": False, "error": "course_access_blocked"}
+        normalized_placement = self._normalize_ad_placement(placement)
+        if normalized_placement != "start":
+            return {
+                "allowed": False,
+                "recorded": False,
+                "error": "ad_authorization_requires_start_view",
+            }
+        normalized_ad_id = self._normalize_ad_id(ad_id)
+        attempt = await self.validate_ad_attempt(
+            user,
+            feature_key=feature,
+            access_ref=ref,
+            ad_id=normalized_ad_id,
+            placement=normalized_placement,
+            attempt_token=attempt_token,
+        )
+        if not attempt.get("allowed"):
+            return {"recorded": False, **attempt}
+
+        session_id = self._ad_authorization_session_id(feature, ref)
+        dedupe_key = f"ad-auth:{session_id}"
+        now = datetime.now(timezone.utc)
+        existing_result = await self.session.execute(
+            select(CourseMiniAppEvent).where(
+                CourseMiniAppEvent.user_id == user.id,
+                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                CourseMiniAppEvent.event_name == COURSE_AD_AUTH_EVENT_NAME,
+                CourseMiniAppEvent.source == COURSE_AD_AUTH_EVENT_SOURCE,
+                CourseMiniAppEvent.dedupe_key == dedupe_key,
+            )
+        )
+        existing_event = existing_result.scalar_one_or_none()
+        if existing_event:
+            created_at = self._as_utc(existing_event.created_at)
+            cutoff = now - timedelta(seconds=COURSE_AD_AUTH_TTL_SECONDS)
+            if created_at is None or created_at < cutoff:
+                # A browser can legitimately keep the same sessionStorage ref
+                # beyond the authorization TTL. A newly completed ad must renew
+                # that exact binding instead of remaining permanently stale.
+                existing_event.created_at = now
+                existing_event.payload_json = json.dumps(
+                    {
+                        "feature": feature,
+                        "access_ref": ref,
+                        "ad_id": normalized_ad_id,
+                        "placement": "start",
+                        "attempt_id": attempt["attempt_id"],
+                    },
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                )
+                await self.session.flush()
+                return {
+                    "allowed": True,
+                    "recorded": True,
+                    "refreshed": True,
+                    "is_paid": False,
+                    "idempotent": False,
+                    "access_ref": ref,
+                }
+            return {
+                "allowed": True,
+                "recorded": False,
+                "is_paid": False,
+                "idempotent": True,
+                "access_ref": ref,
+            }
+
+        event = CourseMiniAppEvent(
+            user_id=user.id,
+            telegram_id=int(user.telegram_id),
+            event_name=COURSE_AD_AUTH_EVENT_NAME,
+            source=COURSE_AD_AUTH_EVENT_SOURCE,
+            session_id=session_id,
+            dedupe_key=dedupe_key,
+            payload_json=json.dumps(
+                {
+                    "feature": feature,
+                    "access_ref": ref,
+                    "ad_id": normalized_ad_id,
+                    "placement": "start",
+                    "attempt_id": attempt["attempt_id"],
+                },
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ),
+        )
+        try:
+            async with self.session.begin_nested():
+                self.session.add(event)
+                await self.session.flush()
+        except IntegrityError:
+            duplicate_result = await self.session.execute(
+                select(CourseMiniAppEvent.id).where(
+                    CourseMiniAppEvent.user_id == user.id,
+                    CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                    CourseMiniAppEvent.event_name == COURSE_AD_AUTH_EVENT_NAME,
+                    CourseMiniAppEvent.source == COURSE_AD_AUTH_EVENT_SOURCE,
+                    CourseMiniAppEvent.dedupe_key == dedupe_key,
+                )
+            )
+            if duplicate_result.scalar_one_or_none():
+                return {
+                    "allowed": True,
+                    "recorded": False,
+                    "is_paid": False,
+                    "idempotent": True,
+                    "access_ref": ref,
+                }
+            raise
+        return {
+            "allowed": True,
+            "recorded": True,
+            "is_paid": False,
+            "idempotent": False,
+            "access_ref": ref,
+        }
+
+    async def verify_ad_authorization(
+        self,
+        user,
+        *,
+        feature_key: str,
+        access_ref: str,
+        max_age_seconds: int = COURSE_AD_AUTH_TTL_SECONDS,
+    ) -> dict:
+        """Verify a recent completed ad bound to this user, feature and ref."""
+
+        feature = self._normalize_ad_auth_feature(feature_key)
+        ref = self.normalize_access_ref(access_ref)
+        if self.is_paid_user(user):
+            return {"allowed": True, "is_paid": True, "access_ref": ref}
+        if not self.is_free_user(user):
+            return {"allowed": False, "is_paid": False, "error": "course_access_blocked"}
+        ttl = max(30, min(3600, int(max_age_seconds or COURSE_AD_AUTH_TTL_SECONDS)))
+        cutoff = datetime.now(timezone.utc) - timedelta(seconds=ttl)
+        result = await self.session.execute(
+            select(CourseMiniAppEvent.id).where(
+                CourseMiniAppEvent.user_id == user.id,
+                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                CourseMiniAppEvent.event_name == COURSE_AD_AUTH_EVENT_NAME,
+                CourseMiniAppEvent.source == COURSE_AD_AUTH_EVENT_SOURCE,
+                CourseMiniAppEvent.session_id == self._ad_authorization_session_id(feature, ref),
+                CourseMiniAppEvent.created_at >= cutoff,
+            )
+        )
+        if not result.scalar_one_or_none():
+            return {
+                "allowed": False,
+                "is_paid": False,
+                "error": "ad_authorization_required",
+            }
+        return {"allowed": True, "is_paid": False, "access_ref": ref}
 
     async def _daily_used_today(self, telegram_id: int, feature_key: str, *, lifetime: bool = False) -> int:
         conditions = [

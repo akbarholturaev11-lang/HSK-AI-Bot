@@ -396,6 +396,8 @@ button{cursor:pointer}
 .tmpl{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:9px;font-family:inherit;font-size:14px;color:var(--ink);line-height:1.4}
 .tmpl .tact{display:flex;gap:14px;margin-top:9px}
 .tmpl .tact span{font-size:12px;color:var(--cin);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.ch-review{margin:0 0 12px}.ch-review>b{display:block;font-size:13px;margin-bottom:6px}.ch-review .cr-item{padding:8px 0;border-top:1px solid var(--line)}
+.ch-review .cr-item span{display:block;color:var(--ink2);font-size:12px;white-space:pre-line}.ch-review .cr-item strong{display:block;color:var(--jade);font-size:13px;margin-top:3px}.ch-review .cr-item small{display:block;color:var(--cin2);font-size:12px;margin-top:2px}
 .linkbox{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin:10px 0;font-size:13px;color:var(--ink2)}
 .linkbox .lk{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .linkbox button{background:var(--cin);color:#fff;border:none;border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:500;flex-shrink:0}
@@ -1568,7 +1570,7 @@ function startSkipTest(idx){
   loadLessonData(MAP.level||"hsk1",l.n).then(function(d){
     var q=buildTestQueue(d);
     if(!q.length){completeSkipUnlock(100,idx);return}
-    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test={idx:idx};Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;HP=5;$("#f-hp").textContent=HP;
+    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test={idx:idx};Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;HP=5;$("#f-hp").textContent=HP;
     trackCourseEvent("test_started",{source:"course_v3_skip_test",lesson_order:l.n,dedupe_key:lessonEventKey("skip_test_started",l.n)});
     $("#flow").classList.add("on");renderFlowCard();
   }).catch(function(){toast(skipI18n().notReady,2500)});
@@ -1639,7 +1641,7 @@ function showSkipResult(pct,idx){
 }
 
 /* ---------- Lesson flow engine ---------- */
-var Flow={queue:[],i:0,answered:false,correct:0,graded:0,test:null,challenge:null,lessonIdx:null,ad:null};
+var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null};
 var LESSON_RESUME_TTL_MS=7*24*60*60*1000;
 /* "v2" — darslar mini-qismlarga bo'linib raqamlash o'zgardi; eski kalitlardagi
    pozitsiya yangi qismga adashib ulanmasligi uchun prefiks yangilandi. */
@@ -1720,7 +1722,7 @@ function startLesson(idx,opts){
   if(l.status==="locked")return;
   var lv=MAP.level||"hsk1";
   loadLessonData(lv,l.n).then(function(d){
-    Flow.queue=buildQueue(d);Flow.i=loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
+    Flow.queue=buildQueue(d);Flow.i=loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
     /* Yangi bepul user 3-qismni yarmigacha ko'radi (preview_half): o'rtaga
        yetganda obuna oynasi chiqadi. Backend ham 3-qismni yakunlatmaydi. */
     Flow.previewHalf=!!l.preview_half;
@@ -1738,10 +1740,19 @@ function startLesson(idx,opts){
     toast(msg,2500);
   });
 }
+function lessonMaterialRef(d,sectionNo,cardNo){
+  var level=normalizeLevel((d&&d.level)||(MAP&&MAP.level)||"hsk1");
+  var lesson=Number((d&&d.lesson_id)||flowLessonOrder()||0);
+  return "lesson:"+level+":"+lesson+":section:"+Number(sectionNo||0)+":card:"+Number(cardNo||0);
+}
 function buildQueue(d){
   var q=[];
   (d.sections||[]).forEach(function(sec){
+    var sNo=sec.section_no||0;
     var cards=(sec.cards||[]).slice();
+    cards.forEach(function(c,cardIndex){
+      if(c&&typeof c==="object")c._materialRef=lessonMaterialRef(d,sNo,cardIndex+1);
+    });
     /* New lessons ship an already-interleaved intro (teach + immediate check)
        and set intro_prebuilt — use their cards as-is. Older lessons lack the
        flag and keep the legacy client-side drill (teach 4 words, 4 formats). */
@@ -1765,7 +1776,7 @@ function buildQueue(d){
       cards=gc.concat(cards);
     }
     /* Dialog is now fully interactive (audio/cloze/char-gap) — no passive dump. */
-    var sNo=sec.section_no||0, sTitle=tr(sec.section_title)||(secNames()[(sec.section_no||1)-1]||"");
+    var sTitle=tr(sec.section_title)||(secNames()[(sec.section_no||1)-1]||"");
     cards.forEach(function(c){c._sNo=sNo;c._sTitle=sTitle;q.push(c)});
   });
   return q;
@@ -2019,6 +2030,16 @@ function cardDialogue(d){
   $("#f-body").innerHTML='<span class="kicker k-dia"><i class="ti ti-messages"></i> '+T().dialog+'</span><div class="dia"><div class="scene"><i class="ti ti-map-pin"></i> '+esc(tr(d.scene))+'</div>'+lines+'</div>';
 }
 function optText(o){return typeof o==="string"?o:tr(o)}
+function rememberLessonMistake(c,answer){
+  if(Flow.lessonIdx===null||Flow.challenge||Flow.test)return;
+  if(!c||!c._materialRef||!answer||typeof answer!=="object")return;
+  var item={material_ref:String(c._materialRef)};
+  if(typeof answer.selected_index==="number")item.selected_index=answer.selected_index;
+  if(typeof answer.selected_answer==="string")item.selected_answer=answer.selected_answer;
+  if(Array.isArray(answer.selected_tokens))item.selected_tokens=answer.selected_tokens.slice(0,30).map(String);
+  Flow.mistakes=Flow.mistakes||[];
+  Flow.mistakes.push(item);
+}
 function cardChoice(c){
   $("#f-cta").style.display="none";
   var t=c.type,head="",audio="";
@@ -2036,6 +2057,15 @@ function cardChoice(c){
 Flow.pick=function(el,k){
   if(Flow.answered)return;Flow.answered=true;
   var c=Flow.queue[Flow.i];document.querySelectorAll("#f-body .opt").forEach(function(o){o.style.pointerEvents="none"});
+  /* Bellashuvda answer key klientga berilmaydi. Javob faqat belgilanadi,
+     server raund oxirida baholaydi — brauzerdan to'g'ri javobni ko'rib bo'lmaydi. */
+  if(Flow.challenge&&(c.correct_index===null||typeof c.correct_index==="undefined")){
+    Flow.graded=(Flow.graded||0)+1;
+    Flow.challenge.answers=Flow.challenge.answers||[];
+    Flow.challenge.answers.push({question_id:c.id,selected_index:k});
+    el.classList.add("sel");beep([523,659]);haptic("light");
+    showBar(true,chL().answerSaved,chL().answerSavedSub);return;
+  }
   var ok=k===c.correct_index;Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;
   if(Flow.challenge&&c.id){
     Flow.challenge.answers=Flow.challenge.answers||[];
@@ -2043,6 +2073,7 @@ Flow.pick=function(el,k){
   }
   document.querySelectorAll("#f-body .opt").forEach(function(o){if(+o.dataset.k===c.correct_index)o.classList.add("sel")});
   if(!ok)el.classList.add("bad");
+  if(!ok)rememberLessonMistake(c,{selected_index:k,selected_answer:optText(c.options&&c.options[k])});
   beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");
   if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP}
   showBar(ok,ok?T().correct:T().wrong,ok?tr(c.explanation):T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):""));
@@ -2058,7 +2089,7 @@ function cardBuilder(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===(c.answer_tokens||[]).length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP}showBar(ok,ok?T().correct:T().wrong,(c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,(c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation))}
   draw();
 }
 function cardReverse(c){
@@ -2079,7 +2110,7 @@ function cardReverse(c){
   }
   window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===ans.length){check()}};
   window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
-  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP}showBar(ok,ok?T().correct:T().wrong,ans.join(" ")+" — "+(c.zh||""))}
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP;rememberLessonMistake(c,{selected_tokens:built})}showBar(ok,ok?T().correct:T().wrong,ans.join(" ")+" — "+(c.zh||""))}
   draw();
 }
 function cardMatch(c){
@@ -2305,7 +2336,7 @@ function flowDone(){
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
-  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID})
+  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,mistakes:(Flow.mistakes||[]).slice(0,50)})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){
@@ -2605,9 +2636,9 @@ function toast(msg,dur){
     }).catch(function(){toast(LANG==="ru"?"Не удалось отправить вызов":LANG==="tj"?"Даъват фиристода нашуд":"Chaqiruv yuborilmadi",2400)});
 }
 function chL(){return {
-  ru:{title:"HSK-дуэль",load:"Загружаем дуэль…",same:"10 одинаковых вопросов для обоих игроков",mix:"Слова, пиньинь, перевод и грамматика вперемешку",accept:"Принять",reject:"Отклонить",start:"Начать раунд",wait:"Ожидаем соперника",waitSub:"Ваш результат сохранён. Когда соперник завершит раунд, бот пришлёт итог.",pending:"Соперник ещё не принял дуэль.",done:"Раунд завершён",youWon:"Вы победили",youLost:"Победил соперник",tie:"Ничья",score:"Счёт",xp:"XP получено",rating:"Открыть рейтинг",needTg:"Откройте в Telegram",err:"Дуэль не загрузилась",sent:"Результат сохранён"},
-  uz:{title:"HSK belashuv",load:"Belashuv yuklanyapti…",same:"Ikkala o'yinchiga 10 ta bir xil savol",mix:"So'z, pinyin, tarjima va grammatika aralash",accept:"Qabul qilish",reject:"Rad qilish",start:"Raundni boshlash",wait:"Raqibni kutyapmiz",waitSub:"Natijangiz saqlandi. Raqib yakunlasa, bot yakuniy hisobni yuboradi.",pending:"Raqib hali belashuvni qabul qilmadi.",done:"Raund tugadi",youWon:"Siz yutdingiz",youLost:"Raqib yutdi",tie:"Durrang",score:"Hisob",xp:"XP olindi",rating:"Reytingni ochish",needTg:"Telegram ichida oching",err:"Belashuv yuklanmadi",sent:"Natija saqlandi"},
-  tj:{title:"Рақобати HSK",load:"Рақобат бор мешавад…",same:"Барои ҳар ду бозингар 10 саволи якхела",mix:"Калима, пинйин, тарҷума ва грамматика омехта",accept:"Қабул",reject:"Рад кардан",start:"Оғози раунд",wait:"Рақибро интизорем",waitSub:"Натиҷаи шумо сабт шуд. Вақте рақиб анҷом диҳад, бот ҳисоби ниҳоиро мефиристад.",pending:"Рақиб ҳанӯз рақобатро қабул накардааст.",done:"Раунд анҷом шуд",youWon:"Шумо ғолиб шудед",youLost:"Рақиб ғолиб шуд",tie:"Мусовӣ",score:"Ҳисоб",xp:"XP гирифта шуд",rating:"Кушодани рейтинг",needTg:"Дар Telegram кушоед",err:"Рақобат бор нашуд",sent:"Натиҷа сабт шуд"}
+  ru:{title:"HSK-дуэль",load:"Загружаем дуэль…",same:"Каждому — 10 вопросов своего уровня",mix:"Только уже изученные слова, пиньинь и грамматика",accept:"Принять",reject:"Отклонить",start:"Начать раунд",wait:"Ожидаем соперника",waitSub:"Ваш результат сохранён. Когда соперник завершит раунд, бот пришлёт итог.",pending:"Соперник ещё не принял дуэль.",done:"Раунд завершён",youWon:"Вы победили",youLost:"Победил соперник",tie:"Ничья",score:"Счёт",xp:"XP получено",rating:"Открыть рейтинг",needTg:"Откройте в Telegram",err:"Дуэль не загрузилась",sent:"Результат сохранён",answerSaved:"Ответ принят",answerSavedSub:"Результат проверит сервер в конце раунда",review:"Разберите ошибки",correct:"Правильный ответ"},
+  uz:{title:"HSK bellashuv",load:"Bellashuv yuklanyapti…",same:"Har kimga o'z darajasidan 10 ta savol",mix:"Faqat o'rganilgan so'z, pinyin va grammatika",accept:"Qabul qilish",reject:"Rad qilish",start:"Raundni boshlash",wait:"Raqibni kutyapmiz",waitSub:"Natijangiz saqlandi. Raqib yakunlasa, bot yakuniy hisobni yuboradi.",pending:"Raqib hali bellashuvni qabul qilmadi.",done:"Raund tugadi",youWon:"Siz yutdingiz",youLost:"Raqib yutdi",tie:"Durrang",score:"Hisob",xp:"XP olindi",rating:"Reytingni ochish",needTg:"Telegram ichida oching",err:"Bellashuv yuklanmadi",sent:"Natija saqlandi",answerSaved:"Javob qabul qilindi",answerSavedSub:"Natija raund oxirida serverda tekshiriladi",review:"Xatolarni takrorlang",correct:"To'g'ri javob"},
+  tj:{title:"Рақобати HSK",load:"Рақобат бор мешавад…",same:"Ба ҳар кас 10 саволи сатҳи худаш",mix:"Танҳо калима, пинйин ва грамматикаи омӯхташуда",accept:"Қабул",reject:"Рад кардан",start:"Оғози раунд",wait:"Рақибро интизорем",waitSub:"Натиҷаи шумо сабт шуд. Вақте рақиб анҷом диҳад, бот ҳисоби ниҳоиро мефиристад.",pending:"Рақиб ҳанӯз рақобатро қабул накардааст.",done:"Раунд анҷом шуд",youWon:"Шумо ғолиб шудед",youLost:"Рақиб ғолиб шуд",tie:"Мусовӣ",score:"Ҳисоб",xp:"XP гирифта шуд",rating:"Кушодани рейтинг",needTg:"Дар Telegram кушоед",err:"Рақобат бор нашуд",sent:"Натиҷа сабт шуд",answerSaved:"Ҷавоб қабул шуд",answerSavedSub:"Натиҷаро сервер дар охири раунд месанҷад",review:"Хатоҳоро такрор кунед",correct:"Ҷавоби дуруст"}
 }[LANG]||{}}
 function challengeScore(ch,role){
   var s=role==="challenger"?ch.challenger_score:ch.opponent_score;
@@ -2620,8 +2651,9 @@ function challengeViewerId(ch){
 }
 function renderChallengeSheet(ch){
   var c=chL(),other=(ch.other_user&&ch.other_user.name)||"?";
-  var level=courseLevelLabel(ch.level||((MAP&&MAP.level)||"hsk1"));
-  var head='<div class="shead"><div class="zh han" style="font-size:34px">战</div><div class="tr" style="font-size:16px;color:var(--ink);margin-top:8px">'+esc(c.title)+'</div><div class="tr">'+esc(other)+' · '+esc(level)+'</div></div>'
+  var myLevel=courseLevelLabel(ch.viewer_level||((MAP&&MAP.level)||"hsk1"));
+  var otherLevel=courseLevelLabel(ch.other_level||ch.level||"hsk1");
+  var head='<div class="shead"><div class="zh han" style="font-size:34px">战</div><div class="tr" style="font-size:16px;color:var(--ink);margin-top:8px">'+esc(c.title)+'</div><div class="tr">'+esc(T().you)+' · '+esc(myLevel)+'<br>'+esc(other)+' · '+esc(otherLevel)+'</div></div>'
     +'<div class="tmpl">'+esc(c.same)+'<br>'+esc(c.mix)+'</div>';
   if(ch.status==="pending"){
     if(ch.viewer_role==="opponent"){
@@ -2676,8 +2708,7 @@ function respondChallenge(id,action){
 }
 function challengeCard(q){
   var opts=(q.options||[]).map(function(x){return String(x)});
-  var ans=Number(q.answer_index||0);
-  if(!q.id||opts.length<2||ans<0||ans>=opts.length)return null;
+  if(!q.id||opts.length<2)return null;
   return {
     id:String(q.id),
     type:q.audio_text?"listening_choice":(q.type||"multiple_choice"),
@@ -2686,8 +2717,8 @@ function challengeCard(q){
     sentence:q.sentence||"",
     audio_text:q.audio_text||"",
     options:opts,
-    correct_index:ans,
-    explanation:q.explanation||"",
+    correct_index:null,
+    explanation:"",
     _sNo:1,
     _sTitle:chL().title
   };
@@ -2700,7 +2731,7 @@ function startChallengeRound(id){
     if(!d||!d.ok){openChallengeById(id);return}
     var q=(d.session&&d.session.questions||[]).map(challengeCard).filter(Boolean);
     if(!q.length){toast(c.err,2400);return}
-    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge={id:Number(id),startedAt:Date.now(),answers:[]};Flow.lessonIdx=null;Flow.ad=null;HP=5;$("#f-hp").textContent=HP;
+    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge={id:Number(id),answers:[]};Flow.lessonIdx=null;Flow.ad=null;HP=5;$("#f-hp").textContent=HP;
     $("#flow").classList.add("on");renderFlowCard();
   }).catch(function(){toast(c.err,2400)});
 }
@@ -2718,15 +2749,17 @@ function showChallengeResult(d){
   var title=ch.status==="completed"?(tie?c.tie:(won?c.youWon:c.youLost)):c.sent;
   var xp=Number(d&&d.reward&&d.reward.awarded_xp||0)+Number(d&&d.winner_reward&&d.winner_reward.awarded_xp||0);
   var sub=ch.status==="completed"?(c.score+": "+challengeScore(ch,"challenger")+" vs "+challengeScore(ch,"opponent")):c.waitSub;
+  var wrong=(d&&Array.isArray(d.wrong_items)?d.wrong_items:[]).slice(0,4);
+  var review=wrong.length?'<div class="tmpl ch-review"><b>'+esc(c.review)+'</b>'+wrong.map(function(item){var question=String(item&&item.question||"");var correct=String(item&&item.correct_answer||"");var pinyin=String(item&&item.pinyin||"");return '<div class="cr-item">'+(question?'<span>'+esc(question)+'</span>':'')+'<strong>✓ '+esc(c.correct)+': '+esc(correct)+'</strong>'+(pinyin?'<small>'+esc(pinyin)+'</small>':'')+'</div>'}).join('')+'</div>':"";
   App.openSheet('<div class="shead"><div class="zh han" style="font-size:38px">战</div><div class="tr" style="font-size:18px;color:var(--ink);font-weight:700">'+esc(title)+'</div><div class="tr" style="line-height:1.5">'+esc(sub)+'</div></div>'
     +'<div class="sst"><div><b>'+esc((d.score||0)+" / "+(d.total||0))+'</b><small>'+esc(c.score)+'</small></div><div><b>+'+xp+'</b><small>'+esc(c.xp)+'</small></div></div>'
+    +review
     +'<button class="scta" onclick="App.closeSheet();App.show(\'rating\');ratingLoaded=false;renderRating()"><i class="ti ti-trophy"></i> '+esc(c.rating)+'</button>');
 }
 function finishChallengeRound(){
   var c=chL(),ch=Flow.challenge;if(!ch)return;
   $("#flow").classList.remove("on");$("#f-cta").style.display="none";hideBar();setWriteBtn("");
-  var duration=Math.max(0,Math.round((Date.now()-(ch.startedAt||Date.now()))/1000));
-  var payload={answers:ch.answers||[],duration_seconds:duration};
+  var payload={answers:ch.answers||[]};
   App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">战</div><div class="tr">'+esc(c.load)+'</div></div>');
   _apiPost("/api/miniapp/challenges/"+Number(ch.id)+"/submit",payload).then(function(r){return r.json()}).then(function(d){
     if(!d||!d.ok)throw new Error("submit_failed");

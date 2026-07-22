@@ -178,6 +178,15 @@ class CourseMiniAppAccessTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             CourseMiniAppAccessService._normalize_feature_key("payments")
 
+    def test_access_ref_is_opaque_bounded_and_index_safe(self):
+        self.assertEqual(
+            CourseMiniAppAccessService.normalize_access_ref("attempt-12345678"),
+            "attempt-12345678",
+        )
+        for invalid in ("", "short", "has spaces 123", "x" * 49, "slash/value"):
+            with self.assertRaises(ValueError):
+                CourseMiniAppAccessService.normalize_access_ref(invalid)
+
     def test_blocked_user_is_not_free_eligible(self):
         self.assertFalse(CourseMiniAppAccessService.is_free_user(self._user(status="blocked")))
 
@@ -200,6 +209,219 @@ class CourseMiniAppAccessTests(unittest.TestCase):
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 4))
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 1))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk4", 4))
+
+
+class CourseMiniAppAdAuthorizationTests(unittest.IsolatedAsyncioTestCase):
+    ATTEMPT_TOKEN = "A" * 32
+
+    @staticmethod
+    def _user():
+        return SimpleNamespace(
+            id=7,
+            telegram_id=123,
+            status="trial",
+            payment_status="none",
+            end_date=None,
+        )
+
+    @staticmethod
+    def _session(*, scalar=None, scalars=None):
+        session = _FakeSession()
+        values = list(scalars) if scalars is not None else None
+
+        async def execute(_query):
+            value = values.pop(0) if values is not None else scalar
+            return SimpleNamespace(scalar_one_or_none=lambda: value)
+
+        session.execute = mock.AsyncMock(side_effect=execute)
+        return session
+
+    @classmethod
+    def _attempt_event(cls, *, age_seconds=10, **overrides):
+        payload = {
+            "feature": "training_test",
+            "access_ref": "attempt-12345678",
+            "ad_id": 9,
+            "placement": "start",
+            "required_seconds": 7,
+        }
+        payload.update(overrides)
+        return SimpleNamespace(
+            created_at=datetime.now(timezone.utc) - timedelta(seconds=age_seconds),
+            payload_json=json.dumps(payload),
+        )
+
+    async def test_start_attempt_issues_opaque_token_and_persists_exact_binding(self):
+        session = self._session()
+        result = await CourseMiniAppAccessService(session).start_ad_attempt(
+            self._user(),
+            feature_key="training_test",
+            access_ref="attempt-12345678",
+            ad_id=9,
+            placement="start",
+            required_seconds=7,
+        )
+
+        self.assertTrue(result["allowed"])
+        self.assertRegex(result["attempt_token"], r"^[A-Za-z0-9_-]{24,64}$")
+        self.assertEqual(len(session.added), 1)
+        event = session.added[0]
+        self.assertEqual(event.event_name, "course_ad_attempt_started")
+        self.assertEqual(event.source, "course_v3_ad_attempt")
+        self.assertNotIn(result["attempt_token"], event.session_id)
+        self.assertEqual(
+            json.loads(event.payload_json),
+            {
+                "feature": "training_test",
+                "access_ref": "attempt-12345678",
+                "ad_id": 9,
+                "placement": "start",
+                "required_seconds": 7,
+            },
+        )
+
+    async def test_completed_start_ad_records_feature_bound_authorization(self):
+        session = self._session(scalars=[self._attempt_event(), None])
+        service = CourseMiniAppAccessService(session)
+
+        result = await service.record_ad_authorization(
+            self._user(),
+            feature_key="training_test",
+            access_ref="attempt-12345678",
+            ad_id=9,
+            placement="start",
+            attempt_token=self.ATTEMPT_TOKEN,
+        )
+
+        self.assertTrue(result["allowed"])
+        self.assertTrue(result["recorded"])
+        self.assertEqual(len(session.added), 1)
+        event = session.added[0]
+        self.assertEqual(event.event_name, "course_ad_viewed")
+        self.assertEqual(event.source, "course_v3_ad_auth")
+        self.assertEqual(event.session_id, "training_test:attempt-12345678")
+        self.assertEqual(json.loads(event.payload_json)["ad_id"], 9)
+        self.assertIn("attempt_id", json.loads(event.payload_json))
+
+    async def test_client_watched_seconds_cannot_replace_server_attempt(self):
+        session = self._session()
+        result = await CourseMiniAppAccessService(session).record_ad_authorization(
+            self._user(),
+            feature_key="training_test",
+            access_ref="attempt-12345678",
+            ad_id=9,
+            placement="start",
+            attempt_token="",
+        )
+
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["error"], "ad_attempt_required")
+        self.assertEqual(session.added, [])
+
+    async def test_attempt_must_reach_server_measured_duration(self):
+        session = self._session(scalar=self._attempt_event(age_seconds=2))
+        result = await CourseMiniAppAccessService(session).validate_ad_attempt(
+            self._user(),
+            feature_key="training_test",
+            access_ref="attempt-12345678",
+            ad_id=9,
+            placement="start",
+            attempt_token=self.ATTEMPT_TOKEN,
+        )
+
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["error"], "ad_attempt_incomplete")
+        self.assertGreaterEqual(result["retry_after"], 1)
+
+    async def test_attempt_is_bound_to_ad_feature_ref_and_placement(self):
+        session = self._session(scalar=self._attempt_event())
+        result = await CourseMiniAppAccessService(session).validate_ad_attempt(
+            self._user(),
+            feature_key="training_test",
+            access_ref="different-12345678",
+            ad_id=9,
+            placement="start",
+            attempt_token=self.ATTEMPT_TOKEN,
+        )
+
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["error"], "invalid_ad_attempt")
+
+    async def test_expired_attempt_cannot_refresh_authorization(self):
+        session = self._session(scalar=self._attempt_event(age_seconds=901))
+        result = await CourseMiniAppAccessService(session).validate_ad_attempt(
+            self._user(),
+            feature_key="training_test",
+            access_ref="attempt-12345678",
+            ad_id=9,
+            placement="start",
+            attempt_token=self.ATTEMPT_TOKEN,
+        )
+
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["error"], "ad_attempt_expired")
+
+    async def test_non_start_ad_cannot_authorize_a_new_session(self):
+        session = self._session()
+        result = await CourseMiniAppAccessService(session).record_ad_authorization(
+            self._user(),
+            feature_key="mistake_review",
+            access_ref="review-12345678",
+            ad_id=9,
+            placement="middle",
+        )
+
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["error"], "ad_authorization_requires_start_view")
+        self.assertEqual(session.added, [])
+
+    async def test_completed_ad_refreshes_stale_authorization_for_same_access_ref(self):
+        stale_at = datetime.now(timezone.utc) - timedelta(hours=1)
+        stale_event = SimpleNamespace(
+            id=44,
+            created_at=stale_at,
+            payload_json="{}",
+        )
+        session = self._session(scalars=[self._attempt_event(ad_id=11), stale_event])
+
+        result = await CourseMiniAppAccessService(session).record_ad_authorization(
+            self._user(),
+            feature_key="training_test",
+            access_ref="attempt-12345678",
+            ad_id=11,
+            placement="start",
+            attempt_token=self.ATTEMPT_TOKEN,
+        )
+
+        self.assertTrue(result["allowed"])
+        self.assertTrue(result["recorded"])
+        self.assertTrue(result["refreshed"])
+        self.assertFalse(result["idempotent"])
+        self.assertGreater(stale_event.created_at, stale_at)
+        self.assertEqual(json.loads(stale_event.payload_json)["ad_id"], 11)
+        self.assertEqual(session.flush_count, 1)
+
+    async def test_ad_authorization_is_required_and_checked_by_exact_binding(self):
+        missing = self._session(scalar=None)
+        denied = await CourseMiniAppAccessService(missing).verify_ad_authorization(
+            self._user(),
+            feature_key="mistake_review",
+            access_ref="review-12345678",
+        )
+        self.assertEqual(denied["error"], "ad_authorization_required")
+
+        found = self._session(scalar=44)
+        allowed = await CourseMiniAppAccessService(found).verify_ad_authorization(
+            self._user(),
+            feature_key="training_test",
+            access_ref="attempt-12345678",
+        )
+        self.assertTrue(allowed["allowed"])
+        query = found.execute.await_args.args[0]
+        self.assertIn(
+            "training_test:attempt-12345678",
+            query.compile().params.values(),
+        )
 
 
 class CourseMiniAppEntitlementTests(unittest.IsolatedAsyncioTestCase):

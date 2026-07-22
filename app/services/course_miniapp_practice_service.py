@@ -7,6 +7,7 @@ from app.services.course_miniapp_analytics_service import CourseMiniAppAnalytics
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_question_material import COURSE_QUESTION_MATERIAL_VERSION
 
 
 PRACTICE_VERSION = 1
@@ -46,18 +47,47 @@ class CourseMiniAppPracticeService:
             return None
         if not isinstance(options, list) or len(options) < 2 or not 0 <= answer_index < len(options):
             return None
+        question_type = str(question.get("type") or "multiple_choice")
+        subtype = str(question.get("subtype") or "")
+        audio_text = str(question.get("audioText") or "")
+        material_format = (
+            "listening_choice"
+            if audio_text or question_type in {"listening_choice", "listen_and_fill"}
+            else "meaning_choice"
+            if subtype == "hanzi_to_meaning"
+            else "pinyin_choice"
+            if subtype == "hanzi_to_pinyin"
+            else "hanzi_choice"
+            if subtype in {"meaning_to_hanzi", "pinyin_to_hanzi"}
+            else "sentence_choice"
+        )
+        normalized_options = [str(option) for option in options]
         return {
+            "material_version": COURSE_QUESTION_MATERIAL_VERSION,
             "id": f"{level}:{lesson_order}:{index}",
             "level": level,
             "lesson": lesson_order,
-            "type": str(question.get("type") or "multiple_choice"),
-            "subtype": str(question.get("subtype") or ""),
+            "format": material_format,
+            "category": "grammar" if material_format == "sentence_choice" else "word",
+            "type": question_type,
+            "subtype": subtype,
             "prompt": str(question.get("q") or question.get("prompt") or ""),
             "sentence": str(question.get("sentence") or question.get("source") or ""),
-            "audio_text": str(question.get("audioText") or ""),
-            "options": [str(option) for option in options],
+            "audio_text": audio_text,
+            "pinyin": str(question.get("pinyin") or question.get("py") or ""),
+            "options": normalized_options,
+            "option_materials": [
+                {"id": f"{level}:{lesson_order}:{index}:option:{option_index + 1}", "text": value}
+                for option_index, value in enumerate(normalized_options)
+            ],
             "answer_index": answer_index,
             "explanation": str(question.get("expl") or question.get("explanation") or ""),
+            "source": {
+                "kind": "course_quiz",
+                "level": level,
+                "lesson": lesson_order,
+                "question_no": index,
+            },
         }
 
     @staticmethod
@@ -284,6 +314,20 @@ class CourseMiniAppPracticeService:
                         "level": question["level"],
                         "type": question["type"],
                         "subtype": question["subtype"],
+                        "format": question.get("format") or "sentence_choice",
+                        "sentence": question.get("sentence") or "",
+                        "audio_text": question.get("audio_text") or "",
+                        "pinyin": question.get("pinyin") or "",
+                        "language": lang,
+                        "options": list(question.get("options") or []),
+                        "source": {
+                            **(
+                                question.get("source")
+                                if isinstance(question.get("source"), dict)
+                                else {}
+                            ),
+                            "material_ref": str(question.get("id") or ""),
+                        },
                         "category": (
                             "grammar"
                             if mode == "training" and skill == "writing"

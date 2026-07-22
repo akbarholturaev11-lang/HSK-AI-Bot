@@ -15,6 +15,9 @@ def question(question_id, level="hsk1", answer=0):
         "prompt": "Question",
         "sentence": "",
         "audio_text": "",
+        "pinyin": "",
+        "format": "meaning_choice",
+        "category": "word",
         "options": ["Correct", "Wrong"],
         "answer_index": answer,
         "explanation": "Explanation",
@@ -131,6 +134,11 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
         )
         analytics.record_server_event.assert_awaited_once()
         self.service.mistakes.record_items.assert_awaited_once()
+        mistake_items = self.service.mistakes.record_items.await_args.args[1]
+        self.assertEqual(mistake_items[0]["format"], "meaning_choice")
+        self.assertEqual(mistake_items[0]["language"], "ru")
+        self.assertEqual(mistake_items[0]["options"], ["Correct", "Wrong"])
+        self.assertEqual(mistake_items[0]["source"]["material_ref"], "q2")
         self.service.gamification.award.assert_awaited_once()
 
 

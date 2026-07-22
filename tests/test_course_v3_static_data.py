@@ -191,13 +191,61 @@ class CourseV3StaticMapTests(unittest.TestCase):
                 self.assertIn("listening_choice", group_types, where)
                 self.assertIn("dialog_cloze", group_types, where)
 
-    def test_hsk_exam_options_hide_pinyin_and_hint_labels(self):
+    def test_hsk_exam_uses_server_material_and_server_grading(self):
         html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")
+        ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
 
-        self.assertIn("function examOptionText(q,o)", html)
-        self.assertIn('if(q.type==="audio_choice"||isMeaningQuestion(q))return lab||zh;', html)
-        self.assertNotIn("var py=o.py?", html)
-        self.assertNotIn("'<small>'+lab+'</small>'", html)
+        self.assertIn('fetch("/api/v3/exams/start"', html)
+        self.assertIn('fetch("/api/v3/exams/complete"', html)
+        self.assertIn("selected_index:k", html)
+        self.assertNotIn('fetch("/course_v3_data/exams/"', html)
+        self.assertIn('if(!o.ok||!o.j||!o.j.ok){showEmpty();return}', html)
+        self.assertIn("document.documentElement.lang=LANG", html)
+        self.assertIn('back:"Kursga qaytish"', html)
+        self.assertNotIn('localStorage.setItem("hsk_v3_level",level)', html)
+
+        mistakes = Path("app/static/course_v3_mistakes.html").read_text(encoding="utf-8")
+        self.assertIn('category="+encodeURIComponent(ACTIVE_CAT)', mistakes)
+        self.assertIn("MISTAKE_PAGE.has_more", mistakes)
+        self.assertIn("q.audio_text", mistakes)
+        self.assertIn("access_ref:accessRef", html)
+        self.assertIn("ad_supported:!!adSupported", html)
+        self.assertIn('CourseAds.play("start",accessRef)', html)
+        self.assertNotIn('.catch(function(){_openExam(which)', html)
+        for duration in (25, 30, 35, 40):
+            self.assertIn(f"min:{duration}", html)
+        self.assertIn("EXD.duration_min", html)
+        self.assertIn("access_ref:accessRef", ads)
+        self.assertIn('fetch("/api/v3/ad/attempt"', ads)
+        self.assertIn('attempt_token:String(attemptToken||"")', ads)
+        self.assertIn("recordView(ad,placement,duration,accessRef,STATE.attemptToken).then(finishStart).catch(failFlow)", ads)
+
+    def test_mistake_ad_review_uses_bound_retry_safe_authorization(self):
+        html = Path("app/static/course_v3_mistakes.html").read_text(encoding="utf-8")
+
+        self.assertIn('feature:"mistake_review"', html)
+        self.assertIn('CourseAds.play("start",accessRef)', html)
+        self.assertIn("access_ref:accessRef", html)
+        self.assertIn("clearReviewAccessRef()", html)
+        self.assertIn('fetch("/api/miniapp/mistakes/review/answer"', html)
+        self.assertNotIn("q.answer_index", html)
+        self.assertNotIn("q.explanation", html)
+        self.assertNotIn('.catch(function(){startReview(true)', html)
+
+    def test_course_v3_captures_lesson_mistakes_and_keeps_challenge_answer_key_private(self):
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+        self.assertIn("function rememberLessonMistake", html)
+        self.assertIn("mistakes:(Flow.mistakes||[]).slice(0,50)", html)
+        self.assertIn("correct_index:null", html)
+        self.assertIn("Javob qabul qilindi", html)
+        self.assertIn("Natija raund oxirida serverda tekshiriladi", html)
+        self.assertIn("Результат проверит сервер в конце раунда", html)
+        self.assertIn("Натиҷаро сервер дар охири раунд месанҷад", html)
+        self.assertIn("Array.isArray(d.wrong_items)", html)
+        self.assertIn("d.wrong_items:[]).slice(0,4)", html)
+        self.assertIn("Xatolarni takrorlang", html)
+        self.assertNotIn("var ans=Number(q.answer_index||0)", html)
 
 
 if __name__ == "__main__":

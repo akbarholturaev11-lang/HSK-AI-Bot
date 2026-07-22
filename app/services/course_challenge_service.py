@@ -1,4 +1,5 @@
 import json
+import uuid
 from datetime import datetime, timezone
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
@@ -11,10 +12,13 @@ from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
+from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_question_material import shuffle_question_options
 from app.services.course_v3_parts import source_lesson_for_part
 
 
 CHALLENGE_STATUSES = {"pending", "accepted", "rejected", "completed"}
+CHALLENGE_QUESTION_COUNT = 10
 CHALLENGE_COMPLETE_XP = 6
 CHALLENGE_WIN_XP = 24
 CHALLENGE_TIE_XP = 12
@@ -25,6 +29,7 @@ class CourseChallengeService:
         self.session = session
         self.user_repo = UserRepository(session)
         self.gamification = CourseGamificationService(session)
+        self.mistakes = CourseMistakeService(session)
 
     @staticmethod
     def _level(value: str) -> str:
@@ -84,17 +89,27 @@ class CourseChallengeService:
         data = cls._payload_map(challenge)
         return data.get(role) or data.get("challenger") or []
 
+    @staticmethod
+    def _public_questions(questions: list[dict]) -> list[dict]:
+        """Return the frozen questions without exposing the server answer key."""
+        hidden_fields = {"answer_index", "explanation", "option_materials"}
+        return [
+            {key: value for key, value in question.items() if key not in hidden_fields}
+            for question in questions
+            if isinstance(question, dict)
+        ]
+
     async def _generate_questions_for(self, user: User) -> list[dict]:
         """Generate a fresh practice set matched to this user's own HSK level
         AND lesson progress: savollar faqat o'rganilgan darslardan (tugatilgan+1).
-        Savol 10 taga yetmasa oynani oldinga minimal kengaytiramiz, oxirida
-        butun level fallback (eski xatti-harakat)."""
+        Savollar faqat o'rganilgan/current dars chegarasida qoladi; butun levelga
+        yoki keyingi darslarga fail-open qilmaymiz."""
         level = self._level(getattr(user, "level", None))
         lang = normalize_miniapp_lang(getattr(user, "language", None))
         practice_level = self._practice_level(level)
         svc = CourseMiniAppPracticeService(self.session)
 
-        max_lesson = None
+        max_lesson = 1
         try:
             progress = await CourseProgressRepository(self.session).get_by_user_id(int(user.id))
             if progress and self._practice_level(self._level(progress.level)) == practice_level:
@@ -104,17 +119,18 @@ class CourseChallengeService:
                 src = source_lesson_for_part(practice_level, completed_parts + 1)
                 max_lesson = max(1, src if src else completed_parts + 1)
         except Exception:  # noqa: BLE001
-            max_lesson = None
+            max_lesson = 1
 
-        questions: list[dict] = []
-        if max_lesson is not None:
-            for window in range(max_lesson, max_lesson + 5):
-                questions = await svc._questions("mock", practice_level, lang, "", max_lesson=window)
-                if len(questions) >= 10:
-                    break
-        if len(questions) < 10:
-            questions = await svc._questions("mock", practice_level, lang, "")
-        return questions[:10]
+        questions = await svc._questions(
+            "mock", practice_level, lang, "", max_lesson=max_lesson
+        )
+        if len(questions) < CHALLENGE_QUESTION_COUNT:
+            return []
+        seed = f"challenge:{user.id}:{uuid.uuid4().hex}"
+        return [
+            shuffle_question_options(question, seed)
+            for question in questions[:CHALLENGE_QUESTION_COUNT]
+        ]
 
     async def _ensure_questions(self, challenge: CourseChallenge, user: User, role: str) -> list[dict]:
         """Return this player's questions, generating + persisting them at the
@@ -145,6 +161,8 @@ class CourseChallengeService:
             "challenger": self._user_payload(challenger),
             "opponent": self._user_payload(opponent),
             "other_user": self._user_payload(opponent_user),
+            "viewer_level": self._level(getattr(viewer, "level", None)),
+            "other_level": self._level(getattr(opponent_user, "level", None)),
             "viewer_done": viewer_score is not None,
             "opponent_done": opponent_score is not None,
             "challenger_score": challenge.challenger_score,
@@ -214,7 +232,7 @@ class CourseChallengeService:
         # set is built now; the opponent's is built when they accept (their
         # level may differ). Winner is decided by percentage, not raw score.
         challenger_questions = await self._generate_questions_for(challenger)
-        if not challenger_questions:
+        if len(challenger_questions) != CHALLENGE_QUESTION_COUNT:
             return {"ok": False, "error": "practice_questions_not_found"}
 
         challenge = CourseChallenge(
@@ -265,7 +283,7 @@ class CourseChallengeService:
             # Build the opponent's questions at THEIR own level before marking
             # the round accepted, so a failed generation does not open a broken duel.
             questions = await self._ensure_questions(challenge, user, "opponent")
-            if not questions:
+            if len(questions) != CHALLENGE_QUESTION_COUNT:
                 return {"ok": False, "error": "practice_questions_not_found"}
         challenge.status = "accepted" if action == "accept" else "rejected"
         challenge.accepted_at = datetime.now(timezone.utc) if action == "accept" else None
@@ -280,15 +298,13 @@ class CourseChallengeService:
         if not user or not challenge:
             return {"ok": False, "error": "challenge_not_found"}
         role = "challenger" if int(user.id) == int(challenge.challenger_user_id) else "opponent"
-        questions = await self._ensure_questions(challenge, user, role)
-        if not questions:
-            return {"ok": False, "error": "practice_questions_not_found"}
-        if challenge.status == "pending" and int(user.id) == int(challenge.challenger_user_id):
-            challenge.status = "accepted"
-            challenge.accepted_at = datetime.now(timezone.utc)
-            await self.session.flush()
+        if challenge.status == "pending":
+            return {"ok": False, "error": "challenge_pending"}
         if challenge.status not in {"accepted", "completed"}:
             return {"ok": False, "error": f"challenge_{challenge.status}"}
+        questions = await self._ensure_questions(challenge, user, role)
+        if len(questions) != CHALLENGE_QUESTION_COUNT:
+            return {"ok": False, "error": "practice_questions_not_found"}
         if role == "challenger" and challenge.challenger_score is not None:
             return {"ok": False, "error": "challenge_already_submitted"}
         if role == "opponent" and challenge.opponent_score is not None:
@@ -300,7 +316,8 @@ class CourseChallengeService:
                 "challenge_id": int(challenge.id),
                 "mode": "challenge",
                 "level": self._level(getattr(user, "level", None)),
-                "questions": questions,
+                "started_at": datetime.now(timezone.utc).isoformat(),
+                "questions": self._public_questions(questions),
             },
         }
 
@@ -319,6 +336,7 @@ class CourseChallengeService:
         expected = {str(item["id"]) for item in questions}
         if set(submitted) != expected:
             return {"ok": False, "error": "challenge_answers_incomplete"}
+        player_level = self._level(getattr(user, "level", None))
         score = 0
         wrong = []
         for question in questions:
@@ -330,11 +348,39 @@ class CourseChallengeService:
             correct = selected == int(question["answer_index"])
             score += int(correct)
             if not correct:
+                sentence = str(question.get("sentence") or "").strip()
+                prompt = str(question.get("prompt") or "").strip()
+                question_text = f"{prompt}\n{sentence}" if sentence and sentence not in prompt else prompt
                 wrong.append(
                     {
                         "question_id": question["id"],
-                        "question": question["prompt"],
+                        "question": question_text,
+                        "selected_answer": (
+                            question["options"][selected]
+                            if 0 <= selected < len(question["options"])
+                            else ""
+                        ),
                         "correct_answer": question["options"][question["answer_index"]],
+                        "explanation": str(question.get("explanation") or ""),
+                        "level": player_level,
+                        "lesson": question.get("lesson"),
+                        "type": str(question.get("type") or ""),
+                        "subtype": str(question.get("subtype") or ""),
+                        "format": str(question.get("format") or "sentence_choice"),
+                        "category": str(question.get("category") or "word"),
+                        "sentence": sentence,
+                        "audio_text": str(question.get("audio_text") or ""),
+                        "pinyin": str(question.get("pinyin") or ""),
+                        "language": str(getattr(user, "language", None) or challenge.lang or "uz"),
+                        "options": list(question.get("options") or []),
+                        "source": {
+                            **(
+                                question.get("source")
+                                if isinstance(question.get("source"), dict)
+                                else {}
+                            ),
+                            "material_ref": str(question.get("id") or ""),
+                        },
                     }
                 )
         total = len(questions)
@@ -359,12 +405,18 @@ class CourseChallengeService:
             challenge.opponent_completed_at = now
         self._update_winner(challenge)
         users = await self._users_by_id({int(challenge.challenger_user_id), int(challenge.opponent_user_id)})
+        await self.mistakes.record_items(
+            user,
+            wrong,
+            source="challenge",
+            level=player_level,
+        )
         reward = await self.gamification.award(
             user,
             activity_type="challenge",
             activity_ref=f"challenge:{challenge.id}:user:{user.id}:completed",
             base_xp=CHALLENGE_COMPLETE_XP,
-            level=challenge.level,
+            level=player_level,
         )
         final_rewards = await self._award_final_rewards(challenge, users)
         await self.session.flush()
@@ -402,7 +454,7 @@ class CourseChallengeService:
                     activity_type="challenge_win",
                     activity_ref=f"challenge:{challenge.id}:winner",
                     base_xp=CHALLENGE_WIN_XP,
-                    level=challenge.level,
+                    level=self._level(getattr(winner, "level", None)),
                 )
             return rewards
 
@@ -415,7 +467,7 @@ class CourseChallengeService:
                 activity_type="challenge_tie",
                 activity_ref=f"challenge:{challenge.id}:tie:{player.id}",
                 base_xp=CHALLENGE_TIE_XP,
-                level=challenge.level,
+                level=self._level(getattr(player, "level", None)),
             )
         return rewards
 
@@ -441,14 +493,9 @@ class CourseChallengeService:
         elif opponent_pct > challenger_pct:
             challenge.winner_user_id = int(challenge.opponent_user_id)
         else:
-            challenger_duration = challenge.challenger_duration_seconds or 86400
-            opponent_duration = challenge.opponent_duration_seconds or 86400
-            if challenger_duration < opponent_duration:
-                challenge.winner_user_id = int(challenge.challenger_user_id)
-            elif opponent_duration < challenger_duration:
-                challenge.winner_user_id = int(challenge.opponent_user_id)
-            else:
-                challenge.winner_user_id = None
+            # Duration currently comes from the client and is not trustworthy.
+            # Until starts are persisted server-side, equal percentages are a tie.
+            challenge.winner_user_id = None
 
     @staticmethod
     def _result_percent(score: int | None, total: int | None, percent: int | None) -> int:
@@ -530,21 +577,21 @@ class CourseChallengeService:
             "uz": (
                 "🔥 10 ta savol — so'z, pinyin, tarjima va grammatika aralash.\n"
                 "🎯 Har biringiz O'Z darajangizdagi savollarga javob berasiz — adolatli jang!\n"
-                "🏆 G'olib eng baland foiz bilan aniqlanadi. Teng bo'lsa — tezroq tugatgani oladi.\n\n"
+                "🏆 G'olib eng baland foiz bilan aniqlanadi. Foiz teng bo'lsa — durrang.\n\n"
                 f"⚡ G'olibga +{CHALLENGE_WIN_XP} XP, har bir jangchiga +{CHALLENGE_COMPLETE_XP} XP.\n"
                 "Qani, kuchingni ko'rsat! 💪"
             ),
             "ru": (
                 "🔥 10 вопросов — слова, пиньинь, перевод и грамматика вперемешку.\n"
                 "🎯 Каждый отвечает на вопросы СВОЕГО уровня — честный бой!\n"
-                "🏆 Победитель — у кого выше процент. При равенстве решает скорость.\n\n"
+                "🏆 Победитель — у кого выше процент. При равном проценте — ничья.\n\n"
                 f"⚡ Победителю +{CHALLENGE_WIN_XP} XP, каждому бойцу +{CHALLENGE_COMPLETE_XP} XP.\n"
                 "Покажи, на что способен! 💪"
             ),
             "tj": (
                 "🔥 10 савол — калима, пинйин, тарҷума ва грамматика омехта.\n"
                 "🎯 Ҳар яки шумо ба саволҳои дараҷаи ХУДатон ҷавоб медиҳед — ҷанги одилона!\n"
-                "🏆 Ғолиб бо фоизи баландтар муайян мешавад. Агар баробар бошад — тезтараш мебарад.\n\n"
+                "🏆 Ғолиб бо фоизи баландтар муайян мешавад. Агар фоиз баробар бошад — мусовӣ.\n\n"
                 f"⚡ Ба ғолиб +{CHALLENGE_WIN_XP} XP, ба ҳар ҷанговар +{CHALLENGE_COMPLETE_XP} XP.\n"
                 "Қувваи худро нишон деҳ! 💪"
             ),
