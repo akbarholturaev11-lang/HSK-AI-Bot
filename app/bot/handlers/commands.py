@@ -29,6 +29,7 @@ from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.utils.course_miniapp import course_v3_miniapp_url
 from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
+from app.services.course_reminder_service import reminder_tz_label
 from app.services.help_settings_service import build_help_text
 from app.services.message_draft_service import (
     finish_draft_if_needed,
@@ -202,11 +203,7 @@ def _profile_reminder_line(progress, lang: str) -> str | None:
     except Exception:
         time_text = str(reminder_time)[:5]
 
-    try:
-        tz_offset = int(getattr(progress, "reminder_tz_offset", 5) or 5)
-    except Exception:
-        tz_offset = 5
-    tz_text = f"UTC+{tz_offset}" if tz_offset >= 0 else f"UTC{tz_offset}"
+    tz_text = reminder_tz_label(progress)
 
     label = {
         "tj": "Ёдраскунак",

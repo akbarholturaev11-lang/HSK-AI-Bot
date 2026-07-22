@@ -68,7 +68,7 @@ from app.services.course_v3_parts import (
     part_meta as course_v3_part_meta,
 )
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
-from app.bot.keyboards.course import course_reminder_timezone_keyboard
+from app.services.course_reminder_service import reminder_tz_label
 from app.bot.middlewares.required_channel import (
     FORCE_SUB_ACTION_OPEN_COURSE,
     FORCE_SUB_ACTION_OPEN_FREE_QA,
@@ -2485,13 +2485,19 @@ async def course_set_reminder_time_handler(callback: CallbackQuery, state: FSMCo
     await engine.progress_repo.set_waiting_for(progress, "none")
     await session.commit()
     await callback.answer()
+    # Vaqt zonasini so'ramaymiz — Mini App telefondan aniqlab yuborgan zonani
+    # ishlatamiz (progress.reminder_tz_offset, standart UTC+5).
     await edit_callback_workflow_message(
         callback,
         state,
-        t("course_reminder_tz_title", user.language or "ru"),
+        t(
+            "course_reminder_tz_saved",
+            user.language or "ru",
+            time=reminder_time.strftime("%H:%M"),
+            tz=reminder_tz_label(progress),
+        ),
         chat_id_key=REMINDER_PANEL_CHAT_ID,
         message_id_key=REMINDER_PANEL_MSG_ID,
-        reply_markup=course_reminder_timezone_keyboard(),
     )
 
 
@@ -2518,6 +2524,8 @@ async def course_cancel_reminder_setup_handler(callback: CallbackQuery, state: F
     )
 
 
+# Vaqt zonasi endi Mini App'dan avtomatik keladi; bu handler faqat picker
+# olib tashlanishidan oldin yuborilgan eski tugmalar uchun qoldirilgan.
 @router.callback_query(F.data.startswith("course:set_tz:"))
 async def course_set_timezone_handler(callback: CallbackQuery, state: FSMContext, session):
     user_repo = UserRepository(session)
@@ -2544,8 +2552,7 @@ async def course_set_timezone_handler(callback: CallbackQuery, state: FSMContext
     progress.reminder_tz_offset = tz_offset
     await session.commit()
 
-    tz_labels = {3: "UTC+3 🇷🇺 Москва", 5: "UTC+5 🇺🇿🇹🇯 Тошкент/Душанбе", 8: "UTC+8 🇨🇳 Пекин"}
-    tz_label = tz_labels.get(tz_offset, f"UTC+{tz_offset}")
+    tz_label = reminder_tz_label(progress)
     time_str = progress.reminder_time.strftime("%H:%M")
 
     await callback.answer()

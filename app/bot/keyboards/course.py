@@ -271,16 +271,6 @@ def lesson_selection_keyboard(
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def course_reminder_timezone_keyboard() -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-    builder.button(text="UTC+3 🇷🇺 Москва",   callback_data="course:set_tz:3")
-    builder.button(text="UTC+5 🇺🇿 Тошкент",  callback_data="course:set_tz:5")
-    builder.button(text="UTC+5 🇹🇯 Душанбе",  callback_data="course:set_tz:5")
-    builder.button(text="UTC+8 🇨🇳 Пекин",    callback_data="course:set_tz:8")
-    builder.adjust(2)
-    return builder.as_markup()
-
-
 def course_reminder_notification_keyboard(lang: str) -> InlineKeyboardMarkup:
     labels = {
         "uz": "📖 Darsni davom ettirish",

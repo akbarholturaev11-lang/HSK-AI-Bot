@@ -16,6 +16,26 @@ D1_RECOVERY_EXPERIMENT = "d1_recovery_v1"
 D1_RECOVERY_ASSIGNED_EVENT = "d1_recovery_assigned"
 D1_RECOVERY_HOLDOUT_HOURS = 48
 
+# Mini App telefondan aniqlagan zona /api/v3/map?tz= orqali keladi va
+# progress.reminder_tz_offset ga yoziladi. Mini App hali ochilmagan bo'lsa
+# modeldagi standart (UTC+5) ishlaydi.
+DEFAULT_REMINDER_TZ_OFFSET = 5
+
+
+def reminder_tz_offset(progress) -> int:
+    # UTC+0 ham haqiqiy zona — `or` bilan yozib bo'lmaydi, 0 falsy.
+    value = getattr(progress, "reminder_tz_offset", None)
+    if value is None:
+        return DEFAULT_REMINDER_TZ_OFFSET
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return DEFAULT_REMINDER_TZ_OFFSET
+
+
+def reminder_tz_label(progress) -> str:
+    return f"UTC{reminder_tz_offset(progress):+d}"
+
 
 def _reminder_keyboard(lang: str):
     labels = {
@@ -74,7 +94,7 @@ class CourseReminderService:
             if not progress.reminder_time:
                 continue
 
-            tz_offset = getattr(progress, "reminder_tz_offset", 5) or 5
+            tz_offset = reminder_tz_offset(progress)
             local_now = now_utc + timedelta(hours=tz_offset)
 
             # Vaqtni moslashtirish (soat va daqiqa, ±2 daqiqa oynasi)
@@ -121,7 +141,7 @@ class CourseReminderService:
         summary_service = CourseProgressSummaryService(self.session)
 
         for progress, user in rows:
-            tz_offset = getattr(progress, "reminder_tz_offset", 5) or 5
+            tz_offset = reminder_tz_offset(progress)
             local_now = now_utc + timedelta(hours=tz_offset)
 
             if local_now.weekday() != 0:

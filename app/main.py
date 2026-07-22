@@ -1286,9 +1286,14 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         tz_raw = request.query_params.get("tz")
         if tz_raw is not None:
             try:
-                profile.timezone_offset_minutes = max(-720, min(840, int(tz_raw)))
+                offset_minutes = max(-720, min(840, int(tz_raw)))
             except (TypeError, ValueError):
                 pass
+            else:
+                profile.timezone_offset_minutes = offset_minutes
+                # Eslatmalar ham shu zonada yuborilsin — foydalanuvchidan
+                # vaqt zonasini so'ramaymiz, telefon aytganini olamiz.
+                progress.reminder_tz_offset = round(offset_minutes / 60)
         gamification = await CourseGamificationService(session).snapshot(user, profile=profile)
         is_paid = StudyMiniAppService.is_paid_user(user)
 

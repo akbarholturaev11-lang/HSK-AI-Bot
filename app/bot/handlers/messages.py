@@ -35,7 +35,6 @@ from app.bot.handlers.course import (
 from app.bot.keyboards.course import (
     lesson_selection_keyboard,
     review_choice_keyboard,
-    course_reminder_timezone_keyboard,
     reminder_time_keyboard,
     hsk4_part_selection_keyboard,
     homework_retry_keyboard,
@@ -97,6 +96,7 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.support_contact_service import get_admin_contact_html
 from app.services.required_channel_service import RequiredChannelService
 from app.bot.utils.i18n import t
+from app.services.course_reminder_service import reminder_tz_label
 from app.bot.utils.trial_value_flow import send_trial_quiz_value_teaser
 from app.bot.utils.workflow_message import (
     REMINDER_PANEL_CHAT_ID,
@@ -1546,8 +1546,12 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             await _edit_reminder_panel(
                 message,
                 state,
-                t("course_reminder_tz_title", user_lang),
-                reply_markup=course_reminder_timezone_keyboard(),
+                t(
+                    "course_reminder_tz_saved",
+                    user_lang,
+                    time=reminder_progress.reminder_time.strftime("%H:%M"),
+                    tz=reminder_tz_label(reminder_progress),
+                ),
             )
             return
 
@@ -1677,8 +1681,12 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             await _edit_reminder_panel(
                 message,
                 state,
-                t("course_reminder_tz_title", user_lang),
-                reply_markup=course_reminder_timezone_keyboard(),
+                t(
+                    "course_reminder_tz_saved",
+                    user_lang,
+                    time=parsed_reminder.strftime("%H:%M"),
+                    tz=reminder_tz_label(progress),
+                ),
             )
             return
 
