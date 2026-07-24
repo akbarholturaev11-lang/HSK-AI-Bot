@@ -207,6 +207,42 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-07-24 — Motivatsion matnlar, panda effektlari kutubxonasi, alangali hafta kalendari
+
+Changed (foydalanuvchi: "motivatsion gaplar kuchsiz, effektlar kam, 'streak' so'zi tarjima
+qilinsin, hech kimdan o'tmasa reyting oynasi ochilmasin"):
+- **Motivatsion matnlar qayta yozildi** (uz/ru/tj, umumiy maqtov emas — aniq natijaga bog'liq):
+  `streakCopy(n,reset)` — 1/2/3/7/14/30/100 kun bosqichlari + uzilishdan keyingi qaytish matni;
+  `lessonMotivation(acc,completed)` — avval marra (1/5/10/25/50/100-dars), bo'lmasa shu darsdagi
+  haqiqiy aniqlik (100% / ≥85 / ≥60 / past); `renderCheer` dalda matnlari va checkpoint/rank-up
+  matnlari ham kuchaytirildi. Rank-up sub matni endi kimdan o'tganini aytadi (nom `esc()` bilan).
+- **"Streak" so'zi ko'rinadigan joylarda tarjima qilindi**: uz "ketma-ket kunlar / seriya",
+  tj "рӯзҳои пайдарпай / силсила", ru "серия дней" (`course-v3.html` profil, bildirishnoma
+  tavsifi, yutuqlar + `notification_template_service` KEY_STREAK uz matni).
+- **Hafta kalendari alangalarga o'tdi** (`miniFlameSvg`): faol kun — yonayotgan alanga
+  (miltillash animatsiyasi), o'tkazib yuborilgan o'tgan kun — muzlagan ko'k alanga,
+  kelajak kun — so'nik. Avval oddiy ✓ doiralar edi.
+- **Panda effektlari kutubxonasi** (`PANDA_FX` + `pandaFx(el,kind)`, WAAPI, `prefers-reduced-motion`
+  hurmat qilinadi): `fly` (supermen parvozi — osmonga otiladi, tepada muallaq turadi, changli
+  qo'nadi + sahna silkinishi), `land` (osmondan changli qo'nish), `zoom` (uzoqdan otilib chiqish),
+  `roll` (dumalab kirish), `pop` (sakrash). Ulangan joylar: streak ekrani (fly), dars/checkpoint/
+  level bayrami (land), rank-up taxtasi (zoom), sandiq (roll), dalda ekrani + AI Voice bo'limi (pop).
+  Chang zarralari `pandaDust`, silkinish `stageQuake`.
+- **Reyting oynasi qat'iylashtirildi**: `renderRankUpBoard` endi o'zi hech kimdan o'tmagan bo'lsa
+  (pastda o'yinchi yo'q yoki men ro'yxatda yo'q) umuman ochilmaydi; Telegram tashqarisida
+  (initData yo'q) ham ochilmaydi. `closeLevelUp(dest)` — faqat haqiqiy ko'tarilishda reyting
+  ekraniga o'tadi, aks holda o'quvchi kurs xaritasiga qaytadi (avval har dars oxirida
+  reyting ekrani ochilardi).
+
+Files touched:
+- `app/static/course-v3.html`, `app/services/notification_template_service.py`
+
+Risk / follow-up:
+- Faqat frontend matn/effekt + 1 bot matni; to'lov/obuna/XP/progress backend tegilmadi.
+- Dars tugagach navigatsiya o'zgardi (reyting o'rniga kurs xaritasi) — bu ataylab.
+- Testlar: 256 passed (o'sha 4 e2e smoke AVVALDAN yiqiq). Lokal preview'da 3 tilda matnlar,
+  alangali kalendar, panda parvozi (11 chang zarrasi) va reyting qat'iyligi tekshirildi.
+
 ### 2026-07-24 — Dars oxirida "Aralash takror" + real haftalik streak kalendari
 
 Changed (Codex boshlagan ishning yakuni — dars formati + streak effektlari):

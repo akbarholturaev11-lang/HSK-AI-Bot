@@ -241,7 +241,7 @@ button{cursor:pointer}
 .pron-skip{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink3);font-family:inherit;font-size:13px;font-weight:700;letter-spacing:1px}
 /* Xatodan keyin dalda ekrani (panda) */
 .cheer{display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 10px 10px}
-.cheer .cpd{width:110px;height:110px;animation:nwPop .5s both}
+.cheer .cpd{width:110px;height:110px;position:relative}
 .cheer .cbub{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;font-size:16px;line-height:1.5;max-width:320px;animation:nwUp .4s .2s both}
 /* Pinyin ko'rsatish sozlamasi (Duolingo uslubi) */
 .fgear{width:30px;height:30px;border-radius:50%;border:none;background:none;color:var(--ink3);font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -507,15 +507,26 @@ button{cursor:pointer}
 @keyframes skGlow{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
 .sk-flick{animation:skFlick 1.3s ease-in-out infinite;transform-origin:50% 88%}
 @keyframes skFlick{0%,100%{transform:scaleY(1) scaleX(1)}30%{transform:scaleY(1.05) scaleX(.97)}60%{transform:scaleY(.96) scaleX(1.03)}}
-.sk-num{font-size:74px;font-weight:800;line-height:1;color:var(--gold);text-shadow:0 3px 0 rgba(0,0,0,.35)}
+.sk-num{font-size:74px;font-weight:800;line-height:1;color:var(--gold);text-shadow:0 3px 0 rgba(0,0,0,.35);animation:skNumPop .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes skNumPop{0%{transform:scale(.35);opacity:0}55%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
 .sk-days{display:flex;gap:9px;justify-content:center;margin:20px 0 4px}
-.sk-day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,.55)}
-.sk-day .c{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.10);display:flex;align-items:center;justify-content:center;font-size:15px;color:rgba(255,255,255,.35)}
+.sk-day{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:600;color:rgba(255,255,255,.55)}
+.sk-day .c{width:34px;height:38px;display:flex;align-items:flex-end;justify-content:center}
+.sk-day .c svg{width:30px;height:34px;display:block}
 .sk-day.on{color:var(--gold)}
-.sk-day.on .c{background:var(--gold);color:#fff}
-.sk-day.tod .c{outline:3px solid rgba(233,169,22,.45);outline-offset:2px}
+.sk-day.on .c svg{filter:drop-shadow(0 0 8px rgba(233,169,22,.55))}
+.sk-day.on .fmini{animation:fmFlick 1.5s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes fmFlick{0%,100%{transform:scaleY(1) scaleX(1)}45%{transform:scaleY(1.08) scaleX(.95)}70%{transform:scaleY(.94) scaleX(1.05)}}
+.sk-day.ice{color:#9CC6DF}
+.sk-day.ice .c svg{filter:drop-shadow(0 0 5px rgba(143,198,232,.35));opacity:.92}
+.sk-day.fut .c svg{opacity:.26}
+.sk-day.tod>span:first-child{color:#fff}
 .sk-day.just .c{animation:skStamp .65s cubic-bezier(.15,1.5,.35,1)}
 @keyframes skStamp{0%{transform:scale(2.1) rotate(-12deg);opacity:0}58%{transform:scale(.88) rotate(3deg)}100%{transform:scale(1);opacity:1}}
+/* panda "supermen" parvozi: chang zarralari + qo'nish silkinishi */
+.sk-dust{position:absolute;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#D8CBB6,#A08F76);opacity:0;pointer-events:none;filter:blur(1px);z-index:3}
+.lu-stage.quake{animation:luQuake .42s cubic-bezier(.3,.1,.3,1)}
+@keyframes luQuake{0%{transform:translateY(0)}22%{transform:translateY(6px)}50%{transform:translateY(-3px)}76%{transform:translateY(2px)}100%{transform:translateY(0)}}
 .sk-weekgoal{width:min(310px,100%);margin:17px auto 0;padding:12px 14px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);text-align:left}
 .sk-weekhead{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.72)}
 .sk-weekhead b{font-size:13px;color:#fff;font-weight:650}.sk-weekhead span{color:var(--gold);font-weight:700}
@@ -549,7 +560,7 @@ button{cursor:pointer}
 /* yo'lakcha bezaklari: daraxt, pagoda, buta, tosh, o't (dekorativ) */
 .decor{position:absolute;top:50%;margin-top:-26px;width:60px;height:60px;pointer-events:none;z-index:0;opacity:.95;filter:drop-shadow(0 3px 2px rgba(60,44,20,.14))}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
-@media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.lu-stage.quake{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
 </style>
 </head>
 <body>
@@ -747,7 +758,7 @@ var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudio
 /* ---------- App ---------- */
 var MAP=null,SCREEN="course",HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
 function syncNotify(){if(MAP&&MAP.notify&&typeof MAP.notify.enabled==="boolean")notifOn=MAP.notify.enabled}
-function notifTimesHtml(){var c={uz:{head:"Bot quyidagi holatlarda xabar yuboradi:",items:["Reytingda kimdir sizdan o'zib ketsa","Kun tugayotganda darsni hali bajarmagan bo'lsangiz","Streak (kunlar ketma-ketligi) uzilish xavfi bo'lsa"]},ru:{head:"Бот пришлёт уведомление, когда:",items:["кто-то обгоняет вас в рейтинге","день заканчивается, а урок ещё не пройден","серия (streak) под угрозой"]},tj:{head:"Бот вақте огоҳӣ мефиристад, ки:",items:["касе дар рейтинг аз шумо пеш меравад","рӯз ба охир мерасаду дарс иҷро нашудааст","силсила (streak) дар хатар аст"]}}[LANG]||{head:"",items:[]};return '<b style="color:var(--ink);font-weight:500">'+esc(c.head)+'</b>'+c.items.map(function(x){return '<div style="margin-top:3px">• '+esc(x)+'</div>'}).join("");}
+function notifTimesHtml(){var c={uz:{head:"Bot quyidagi holatlarda xabar yuboradi:",items:["Reytingda kimdir sizdan o'zib ketsa","Kun tugayotganda darsni hali bajarmagan bo'lsangiz","Ketma-ket kunlar seriyangiz uzilish xavfida bo'lsa"]},ru:{head:"Бот пришлёт уведомление, когда:",items:["кто-то обгоняет вас в рейтинге","день заканчивается, а урок ещё не пройден","ваша серия дней под угрозой"]},tj:{head:"Бот вақте огоҳӣ мефиристад, ки:",items:["касе дар рейтинг аз шумо пеш меравад","рӯз ба охир мерасаду дарс иҷро нашудааст","силсилаи рӯзҳои пайдарпайи шумо дар хатар аст"]}}[LANG]||{head:"",items:[]};return '<b style="color:var(--ink);font-weight:500">'+esc(c.head)+'</b>'+c.items.map(function(x){return '<div style="margin-top:3px">• '+esc(x)+'</div>'}).join("");}
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;renderAll()},
   show:function(s){SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
@@ -794,9 +805,9 @@ var App={
   },
   closeWriter:function(){var ov=$("#writeov"),fr=$("#writeframe");ov.classList.remove("on");ov.classList.remove("loading");try{fr.onload=null;fr.src="about:blank"}catch(e){}},
   showLevelUp:function(type,data,extra){
-    var lu={ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",cpH:"Урок {n} полностью пройден!",cpP:"Диалог и все слова закреплены. Большой шаг — вперёд!",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
-      uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",cpH:"{n}-dars to'liq yakunlandi!",cpP:"Dialog va barcha so'zlar mustahkamlandi. Katta qadam — oldinga!",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
-      tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",cpH:"Дарси {n} пурра анҷом ёфт!",cpP:"Гуфтугӯ ва ҳамаи калимаҳо мустаҳкам шуданд. Қадами калон — ба пеш!",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}}[LANG];
+    var lu={ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",cpH:"Урок {n} полностью пройден!",cpP:"Весь урок ваш: слова, диалог и грамматика. Теперь вы можете использовать их в речи.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
+      uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",cpH:"{n}-dars to'liq yakunlandi!",cpP:"Butun dars sizniki: so'zlar, dialog va grammatika. Endi ularni gapda ishlata olasiz.",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
+      tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",cpH:"Дарси {n} пурра анҷом ёфт!",cpP:"Тамоми дарс аз они шумост: калимаҳо, гуфтугӯ ва грамматика. Акнун онҳоро дар нутқ истифода бурда метавонед.",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}}[LANG];
     var curLv=(MAP&&MAP.level)||"hsk1",nextLv=(_NEXT_LEVEL&&_NEXT_LEVEL[curLv])||"",curLabel=courseLevelLabel(curLv),nextLabel=nextLv?courseLevelLabel(nextLv):"";
     var levelCopy={
       ru:{h:curLabel+" пройден!",p:nextLabel?"Поздравляем! Открыт "+nextLabel+".":"Поздравляем! Этот уровень завершён."},
@@ -808,7 +819,10 @@ var App={
     var xpRows=awardedXp>0?[["+"+awardedXp,"XP"]]:[];
     var levelRows=[[nextLabel||curLabel,lu.opened]].concat(xpRows);
     var cpSrc=(extra&&extra.src)||"";
-    var V={lesson:{emb:'<span class="h2 han">毕</span>',h:lu.lessonH,p:lu.lessonP,rw:xpRows},
+    /* Bayram matni shu darsdagi haqiqiy natijaga bog'lanadi (umumiy maqtov emas) */
+    var acc=(Flow&&Flow.graded)?Math.round((Flow.correct||0)/Flow.graded*100):0;
+    var doneCount=Number((MAP&&MAP.progress&&MAP.progress.completed)||0);
+    var V={lesson:{emb:'<span class="h2 han">毕</span>',h:lu.lessonH,p:lessonMotivation(acc,doneCount)||lu.lessonP,rw:xpRows},
       /* checkpoint: HSK darsining yakuniy mustahkamlash qismi tugadi — kattaroq bayram */
       checkpoint:{emb:'<span class="h2 han">胜</span>',h:lu.cpH.replace("{n}",cpSrc),p:lu.cpP,rw:xpRows},
       level:{emb:'<span class="h2 han">二</span>',h:levelCopy.h||lu.levelH,p:levelCopy.p||lu.levelP,rw:levelRows},
@@ -821,18 +835,19 @@ var App={
     $("#lu-cta").setAttribute("onclick",(t0==="lesson"||t0==="checkpoint"||window._pendingStreak)?"App.showStreakScreen()":"App.closeLevelUp()");
     $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+lu.cont;
     $("#levelup").classList.add("on");setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
+    pandaFx($("#lu-panda"),"land");
     luRain();beep([523,659,784,1046]);haptic("ok");
   },
-  /* Duolingo uslubidagi streak alanga ekrani — dars tugagach */
+  /* Duolingo uslubidagi alanga ekrani — dars tugagach */
   showStreakScreen:function(){
     var ps=window._pendingStreak;window._pendingStreak=null;
     var n=ps?ps.now:0;
     if(!ps||!n||!ps.extended){App.showRankUp();return}
-    var W={ru:{one:"день в ударе!",few:"дня в ударе!",many:"дней в ударе!",lit:"Пламя зажжено! Занимайся каждый день.",keep:"Серия продолжается — так держать!",reset:"Новая серия началась. Сегодня — первый уверенный шаг!",cont:"Продолжить"},
-      uz:{one:"kun ketma-ket!",few:"kun ketma-ket!",many:"kun ketma-ket!",lit:"Alanga yondi! Har kuni shug'ullan.",keep:"Seriya davom etmoqda — zo'r ketyapsan!",reset:"Yangi streak boshlandi. Bugun — birinchi kuchli qadam!",cont:"Davom etish"},
-      tj:{one:"рӯз пайдарпай!",few:"рӯз пайдарпай!",many:"рӯз пайдарпай!",lit:"Аланга даргирифт! Ҳар рӯз машқ кун.",keep:"Силсила идома дорад — офарин!",reset:"Силсилаи нав оғоз шуд. Имрӯз — қадами аввали устувор!",cont:"Идома"}}[LANG];
+    var W={ru:{one:"день в ударе!",few:"дня в ударе!",many:"дней в ударе!",cont:"Продолжить"},
+      uz:{one:"kun ketma-ket!",few:"kun ketma-ket!",many:"kun ketma-ket!",cont:"Davom etish"},
+      tj:{one:"рӯз пайдарпай!",few:"рӯз пайдарпай!",many:"рӯз пайдарпай!",cont:"Идома"}}[LANG];
     var lbl=LANG==="ru"?(n%10===1&&n%100!==11?W.one:(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?W.few:W.many)):W.one;
-    var desc=ps.reset?W.reset:(n===1?W.lit:W.keep);
+    var desc=streakCopy(n,!!ps.reset);
     $("#lu-panda").innerHTML="";
     $("#lu-stage").innerHTML='<div class="sk-flame '+(ps.extended?"lit":"dim")+'">'+flameSvg()
       +'<div class="sk-panda">'+pandaChar("celebrate")+'</div></div>'
@@ -842,6 +857,11 @@ var App={
     $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+W.cont;
     $("#levelup").classList.add("on");
     if(ps.extended){setTimeout(function(){beep([392,523,659,784]);haptic("heavy")},350)}
+    /* Haftalik natija ko'ringach — panda "supermen" parvozi + changli qo'nish */
+    setTimeout(function(){
+      if(!$("#levelup").classList.contains("on"))return;
+      pandaFx(document.querySelector("#lu-stage .sk-panda"),"fly");
+    },1100);
   },
   showRankUp:function(){
     var beforeRank=pendingRankUp&&pendingRankUp.before;pendingRankUp=null;
@@ -857,8 +877,9 @@ var App={
       }).catch(function(){App.closeLevelUp()});
       return;
     }
-    if(!beforeRank){App.closeLevelUp();return}
-    App.renderRankUpBoard();
+    /* Telegram tashqarisida (preview) reyting ma'lumoti yo'q — hech kimdan
+       o'tganini tasdiqlay olmaymiz, demak bayram oynasi ochilmaydi. */
+    App.closeLevelUp();
   },
   renderRankUpBoard:function(){
     sortRatingUsers();
@@ -867,8 +888,12 @@ var App={
     var aboveU=meIdx>0?ratingUsers[meIdx-1]:null;
     var belowU=meIdx>=0&&meIdx<ratingUsers.length-1?ratingUsers[meIdx+1]:null;
     var passedU=belowU;
-    var sub=passedU?(LANG==="ru"?"Вы обогнали "+passedU.n:LANG==="tj"?"Аз "+passedU.n+" пеш гузаштед":passedU.n+"dan o'tdingiz"):"";
-    var r={title:LANG==="ru"?"Вы поднялись в рейтинге!":LANG==="tj"?"Дар рейтинг боло рафтед!":"Reytingda ko'tarildingiz!",sub:sub,cont:T().cont};
+    /* Kimdandir o'tmagan bo'lsa — bo'sh "ko'tarildingiz" oynasini ko'rsatmaymiz. */
+    if(!meU||!passedU){App.closeLevelUp();return}
+    var RU={ru:{t:"Вы поднялись в рейтинге!",s:"{n} остался позади. Сегодняшний урок решил это."},
+      uz:{t:"Reytingda ko'tarildingiz!",s:"{n} ortda qoldi. Buni bugungi darsingiz hal qildi."},
+      tj:{t:"Дар рейтинг боло рафтед!",s:"{n} қафо монд. Инро дарси имрӯзаатон ҳал кард."}}[LANG]||{t:"",s:"{n}"};
+    var r={title:RU.t,sub:RU.s.replace("{n}",esc(passedU.n||"")),cont:T().cont};
     var rows=[];
 	    if(aboveU)rows.push({rk:meIdx,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
 	    if(meU)rows.push({rk:meIdx+1,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
@@ -877,11 +902,18 @@ var App={
     $("#lu-panda").innerHTML=pandaChar("celebrate");
     $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+r.title+'</h2><p>'+r.sub+'</p><div class="ru-board">'+rows.map(function(u){return '<div class="ru-row '+(u.me?"me":"")+'" data-from="'+(u.from||0)+'"><span class="ru-rk">'+u.rk+'</span><span class="ru-av'+(u.me?" han":"")+'">'+u.a+'</span><span class="ru-nm">'+esc(u.n)+'</span><span class="ru-xp">'+u.xp+'</span></div>'}).join("")+'</div></div>';
     $("#levelup").classList.add("on");
+    pandaFx($("#lu-panda"),"zoom");
     document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){var f=+row.dataset.from;if(f)row.style.transform="translateY("+(f*58)+"px)"});
     setTimeout(function(){document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){row.style.transform="translateY(0)"});luRain();beep([784,988,1175,1318]);haptic("ok")},420);
-    $("#lu-cta").setAttribute("onclick","App.closeLevelUp()");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
+    $("#lu-cta").setAttribute("onclick","App.closeLevelUp('rating')");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
   },
-  closeLevelUp:function(){$("#levelup").classList.remove("on");App.exitFlow();App.show("rating");renderRating()},
+  /* Reytingda haqiqatan ko'tarilgan bo'lsa — reyting ekraniga, aks holda
+     o'quvchi kurs xaritasiga qaytadi (bo'sh reyting oynasi ochilmaydi). */
+  closeLevelUp:function(dest){
+    $("#levelup").classList.remove("on");App.exitFlow();
+    if(dest==="rating"){App.show("rating");renderRating();return}
+    App.show("course");renderAll();
+  },
   /* Sovg'a sandig'i: yo'ldagi chest bosilganda */
   openChest:function(){
     var ct=chestT();var rc=(MAP&&MAP.progress&&MAP.progress.reward_chest)||null;
@@ -916,6 +948,7 @@ var App={
     $("#lu-cta").setAttribute("onclick","App.closeChest()");
     $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+ct.cont;
     $("#levelup").classList.add("on");
+    pandaFx($("#lu-panda"),"roll");
     setTimeout(function(){
       var f=$("#chestfig");if(f){f.classList.remove("shake");f.classList.add("open")}
       var x=$("#chestxp");if(x)x.classList.add("in");
@@ -949,7 +982,7 @@ var App={
       mMist:"Xatolarim — xato qilgan so'zlar shu yerda yig'iladi. Zaif joylarni takrorlang!",
       v:"AI Voice — panda 阿宝 bilan jonli xitoycha suhbat. Gapiring — darhol tuzatish oling!",
       r:"朱雀 ligasi — o'quvchilar orasidagi o'rningiz. Har kuni XP to'plang va yuqoriga chiqing!",
-      p:"Profil: streak, kunlik maqsad va yutuqlar. Til, bildirishnoma va XP maqsadini sozlang.",
+      p:"Profil: ketma-ket kunlar, kunlik maqsad va yutuqlar. Til, bildirishnoma va XP maqsadini sozlang.",
       skip:"O'tkazib yuborish",voice:"Ovoz",done:"Boshlaylik!",next:"Keyingi"
     },
     tj:{
@@ -963,7 +996,7 @@ var App={
       mMist:"Хатоҳои ман — калимаҳое ки хато кардед. Ҷойҳои заифро такрор кунед!",
       v:"AI Voice — сӯҳбати зиндаи чинӣ бо панда 阿宝. Гӯед — ислоҳи фаврӣ гиред!",
       r:"Лигаи 朱雀 — ҷойгоҳи шумо миёни донишҷӯён. Ҳар рӯз XP ҷамъ кунед ва боло равед!",
-      p:"Профил: streak, ҳадафи рӯзона ва дастовардҳо. Забон, огоҳиҳо ва XP-ро танзим кунед.",
+      p:"Профил: рӯзҳои пайдарпай, ҳадафи рӯзона ва дастовардҳо. Забон, огоҳиҳо ва XP-ро танзим кунед.",
       skip:"Гузарондан",voice:"Овоз",done:"Сар кардем!",next:"Баъдӣ"
     }}[LANG];
     TOUR={i:0,t:t,steps:[
@@ -1845,6 +1878,105 @@ function flameSvg(){
     +'<path d="M50 36 C55 47 66 51 66 64 A16 17 0 0 1 34 64 C34 54 43 50 46 41 C48 46 49 44 50 36 Z" fill="#E9A916"/>'
     +'<ellipse cx="50" cy="67" rx="9" ry="10" fill="#FFF3D6"/></g></svg>';
 }
+/* Hafta kunlari uchun kichik alanga: yonayotgan (faol kun) yoki muzlagan
+   (o'tkazib yuborilgan kun). Kelajak kunlar — so'nik. */
+function miniFlameSvg(state){
+  var hot=state==="on",ice=state==="ice";
+  var outer=hot?"#E04A40":(ice?"#7FB4D6":"#4A4A4A"),inner=hot?"#E9A916":(ice?"#BEE3F5":"#5E5E5E"),core=hot?"#FFF3D6":(ice?"#EAF7FF":"#6E6E6E");
+  return '<svg viewBox="0 0 100 100"><g class="fmini">'
+    +'<path d="M50 6 C57 22 76 32 76 56 A26 28 0 0 1 24 56 C24 42 34 33 39 20 C43 29 48 30 50 6 Z" fill="'+outer+'"/>'
+    +'<path d="M50 36 C55 47 66 51 66 64 A16 17 0 0 1 34 64 C34 54 43 50 46 41 C48 46 49 44 50 36 Z" fill="'+inner+'"/>'
+    +'<ellipse cx="50" cy="67" rx="9" ry="10" fill="'+core+'"/>'
+    +(ice?'<path d="M26 44 L74 40 L76 52 L24 57 Z" fill="#DCF1FB" opacity=".55"/><path d="M30 34 l7 5 -7 5 z" fill="#EAF7FF" opacity=".8"/><path d="M70 62 l7 5 -7 5 z" fill="#EAF7FF" opacity=".8"/>':'')
+    +'</g></svg>';
+}
+/* Streak matnlari — kun soniga qarab kuchayadi (Duolingo uslubi:
+   qisqa, shaxsiy, yutuqni nomlaydigan gap). */
+function streakCopy(n,reset){
+  var C={
+    uz:{reset:"Muhimi — qaytding. Bugundan yangi hisob boshlandi.",
+      d1:"Birinchi uchqun sizniki. Ertaga yana kelsangiz — alanga o'chmaydi.",
+      d2:"Ikki kun. Endi bu tasodif emas — bu odat boshlanishi.",
+      d3:"Uch kun ketma-ket. Ko'pchilik shu yerda to'xtaydi, siz esa yo'q.",
+      d7:"Bir hafta to'liq. Xitoy tili endi kunlik hayotingizning bir qismi.",
+      d14:"Ikki hafta. Bu darajaga har o'ninchi o'quvchi yetadi.",
+      d30:"Bir oy uzluksiz. Siz o'zingizga so'zingizni bajarib chiqdingiz.",
+      d100:"Yuz kun. Bu shunchaki seriya emas — bu xarakter."},
+    ru:{reset:"Главное — вы вернулись. С сегодняшнего дня счёт начат заново.",
+      d1:"Первая искра ваша. Придёте завтра — пламя не погаснет.",
+      d2:"Два дня. Это уже не случайность — это начало привычки.",
+      d3:"Три дня подряд. Большинство сходит с дистанции здесь, а вы — нет.",
+      d7:"Целая неделя. Китайский стал частью вашего дня.",
+      d14:"Две недели. До этой отметки доходит один из десяти.",
+      d30:"Месяц без пропусков. Вы сдержали слово, данное самому себе.",
+      d100:"Сто дней. Это уже не серия — это характер."},
+    tj:{reset:"Муҳим он аст, ки баргаштед. Аз имрӯз ҳисоб аз нав оғоз шуд.",
+      d1:"Аввалин шарора аз они шумост. Фардо биёед — аланга хомӯш намешавад.",
+      d2:"Ду рӯз. Ин дигар тасодуф нест — ин оғози одат аст.",
+      d3:"Се рӯзи пайдарпай. Аксарият дар ҳамин ҷо бозмеистанд, шумо не.",
+      d7:"Як ҳафтаи пурра. Забони чинӣ қисми рӯзи шумо шуд.",
+      d14:"Ду ҳафта. Ба ин нишона аз даҳ нафар яке мерасад.",
+      d30:"Як моҳ бе танаффус. Ба худатон додаи ваъдаро иҷро кардед.",
+      d100:"Сад рӯз. Ин дигар силсила нест — ин хислат аст."}
+  }[LANG]||{};
+  if(reset)return C.reset;
+  if(n>=100)return C.d100;
+  if(n>=30)return C.d30;
+  if(n>=14)return C.d14;
+  if(n>=7)return C.d7;
+  if(n>=3)return C.d3;
+  if(n>=2)return C.d2;
+  return C.d1;
+}
+/* Dars tugaganda chiqadigan gap: avval bosib o'tilgan marra (nechanchi dars),
+   bo'lmasa shu darsdagi haqiqiy natija bo'yicha. Umumiy maqtov emas —
+   o'quvchi aynan nima qilganini aytadi. */
+function lessonMotivation(acc,completed){
+  var C={
+    uz:{m1:"Birinchi darsingiz ortda. Eng og'iri — boshlash edi, uni qildingiz.",
+      m5:"Beshinchi dars. Endi bu qiziqish emas — bu jarayon.",
+      m10:"O'ninchi dars. Endi xitoycha gaplarni tanib turibsiz.",
+      m25:"25 dars ortda. Bu yo'lni ko'pchilik boshlaydi — siz yuryapsiz.",
+      m50:"50 dars. Bu shunchaki mashq emas, bu allaqachon tajriba.",
+      m100:"100 dars. Bir yil oldin bu ro'yxatdagi orzu edi.",
+      perfect:"Bitta ham xato yo'q. Bu darsni haqiqatan o'zlashtirdingiz.",
+      high:"Deyarli hammasi to'g'ri. Bu so'zlar endi sizniki.",
+      mid:"Xatolar bo'ldi, lekin oxirigacha yetdingiz — o'rganish aynan shunday ko'rinadi.",
+      low:"Qiyin dars edi, siz esa tashlab ketmadingiz. Ertaga osonroq bo'ladi."},
+    ru:{m1:"Первый урок позади. Самое трудное — начать, и вы это сделали.",
+      m5:"Пятый урок. Это уже не интерес — это процесс.",
+      m10:"Десятый урок. Вы уже узнаёте китайские фразы на слух.",
+      m25:"25 уроков позади. Этот путь начинают многие — вы по нему идёте.",
+      m50:"50 уроков. Это уже не практика, это опыт.",
+      m100:"100 уроков. Год назад это было просто пунктом в списке желаний.",
+      perfect:"Ни одной ошибки. Этот урок вы действительно освоили.",
+      high:"Почти всё верно. Эти слова теперь ваши.",
+      mid:"Ошибки были, но вы дошли до конца — так и выглядит учёба.",
+      low:"Урок был трудным, а вы не бросили. Завтра будет легче."},
+    tj:{m1:"Дарси аввал қафо монд. Душвортаринаш — оғоз кардан буд, шумо инро кардед.",
+      m5:"Дарси панҷум. Ин дигар шавқ нест — ин раванд аст.",
+      m10:"Дарси даҳум. Акнун ибораҳои чиниро мешиносед.",
+      m25:"25 дарс қафо монд. Ин роҳро бисёриҳо оғоз мекунанд — шумо мераведу.",
+      m50:"50 дарс. Ин дигар машқ нест, ин таҷриба аст.",
+      m100:"100 дарс. Як сол пеш ин танҳо як орзу буд.",
+      perfect:"Ягон хато нест. Ин дарсро воқеан аз худ кардед.",
+      high:"Қариб ҳама дуруст. Ин калимаҳо акнун аз они шумост.",
+      mid:"Хатоҳо буданд, вале то охир расидед — омӯзиш маҳз ҳамин тавр аст.",
+      low:"Дарс душвор буд, шумо вале нагузоштед. Фардо осонтар мешавад."}
+  }[LANG]||{};
+  var n=Number(completed||0);
+  if(n===1)return C.m1;
+  if(n===5)return C.m5;
+  if(n===10)return C.m10;
+  if(n===25)return C.m25;
+  if(n===50)return C.m50;
+  if(n===100)return C.m100;
+  var a=Number(acc||0);
+  if(a>=100)return C.perfect;
+  if(a>=85)return C.high;
+  if(a>=60)return C.mid;
+  return C.low;
+}
 function validIsoDay(v){return /^\d{4}-\d{2}-\d{2}$/.test(String(v||""))}
 function shiftIsoDay(iso,delta){
   var p=String(iso||"").split("-").map(Number);
@@ -1874,12 +2006,17 @@ function skDaysHtml(streak,animateToday,source){
   var p=pl(),m=weekCalendarMeta(source);
   return p.calDays.map(function(d,i){
     var on=m.real?!!m.active[m.dates[i]]:(i<=m.today&&(m.today-i)<Number(streak||0));
-    return '<div class="sk-day'+(on?" on":"")+(i===m.today?" tod":"")+(animateToday&&on&&i===m.today?" just":"")+'"><span>'+d+'</span><span class="c">'+(on?'<i class="ti ti-check"></i>':"")+'</span></div>';
+    /* faol kun — yonayotgan alanga; o'tkazib yuborilgan o'tgan kun — muzlagan;
+       kelajak kun — so'nik. */
+    var st=on?"on":(i<m.today?"ice":"fut");
+    return '<div class="sk-day '+st+(i===m.today?" tod":"")+(animateToday&&on&&i===m.today?" just":"")+'"><span>'+d+'</span><span class="c">'+miniFlameSvg(st)+'</span></div>';
   }).join("");
 }
 function skWeekGoalHtml(source){
   var streak=Number(source&&source.now||MAP&&MAP.progress&&MAP.progress.streak||0),count=weekActiveCount(source,streak),left=Math.max(0,7-count);
-  var W={ru:{title:"Активность за неделю",left:"До цели: {n} дн.",done:"Недельная цель выполнена!"},uz:{title:"Haftalik faollik",left:"Marragacha {n} kun",done:"Haftalik marra bajarildi!"},tj:{title:"Фаъолияти ҳафта",left:"То ҳадаф {n} рӯз",done:"Ҳадафи ҳафта иҷро шуд!"}}[LANG];
+  var W={ru:{title:"Ваша неделя",left:"Ещё {n} дн. — и неделя закрыта полностью",done:"Полная неделя. Ни одного пропуска!"},
+    uz:{title:"Sizning haftangiz",left:"Yana {n} kun — hafta to'liq yopiladi",done:"To'liq hafta. Bironta ham kun tashlanmadi!"},
+    tj:{title:"Ҳафтаи шумо",left:"Боз {n} рӯз — ҳафта пурра пӯшида мешавад",done:"Ҳафтаи пурра. Ягон рӯз партофта нашуд!"}}[LANG];
   return '<div class="sk-weekgoal'+(count===7?" done":"")+'"><div class="sk-weekhead"><b>'+W.title+'</b><span>'+count+' / 7</span></div><div class="sk-weekbar"><i style="width:'+Math.round(count/7*100)+'%"></i></div><div style="font-size:11px;color:rgba(255,255,255,.58);margin-top:7px">'+(count===7?W.done:W.left.replace("{n}",left))+'</div></div>';
 }
 function chestT(){return {
@@ -1966,12 +2103,19 @@ function renderFlowCard(){
 }
 function teachContinue(){var cta=$("#f-cta");cta.style.display="flex"}
 function renderCheer(){
-  var M={uz:["Xato — o'rganishning bir qismi! Aynan shu payt miya o'sadi 💪","Hechqisi yo'q! Har bir xato sizni kuchliroq qiladi 🐼"],
-    ru:["Не расстраивайтесь из-за ошибок: на них мы учимся! 💪","Ничего страшного! Каждая ошибка делает вас сильнее 🐼"],
-    tj:["Аз хатоҳо хафа нашавед: мо аз онҳо меомӯзем! 💪","Ҳеҷ гап не! Ҳар хато шуморо қавитар мекунад 🐼"]}[LANG]||[];
+  var M={uz:["Xato bo'ldi — demak siz haqiqatan o'ylayapsiz. Aynan shunday esda qoladi.",
+      "Bu so'z hozir qiyin keldi. Ikkinchi uchrashuvda osonroq bo'ladi — shu bilan o'rganiladi.",
+      "To'xtamang: bitta xato butun darsni buzmaydi."],
+    ru:["Ошибка — значит, вы действительно думаете. Именно так и запоминается.",
+      "Это слово сейчас далось трудно. При второй встрече будет легче — так и учатся.",
+      "Не останавливайтесь: одна ошибка не портит весь урок."],
+    tj:["Хато шуд — яъне шумо воқеан фикр карда истодаед. Маҳз ҳамин тавр дар ёд мемонад.",
+      "Ин калима ҳоло душвор омад. Бори дуюм осонтар мешавад — ҳамин тавр меомӯзанд.",
+      "Наистед: як хато тамоми дарсро вайрон намекунад."]}[LANG]||[];
   var msg=M[Math.floor(Math.random()*M.length)]||"";
   setWriteBtn("");hideBar();
   $("#f-body").innerHTML='<div class="cheer"><div class="cpd">'+pandaChar("happy")+'</div><div class="cbub">'+esc(msg)+'</div></div>';
+  pandaFx(document.querySelector("#f-body .cpd"),"pop");
   var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+T().cont;
   haptic("light");
 }
@@ -2445,6 +2589,96 @@ function renderVoice(){
   var t=T();
   $("#s-voice").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-microphone"></i> AI Voice</span></div>'
     +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+t.voiceTitle+'</h3><p>'+t.voiceSub+'</p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+t.voiceStart+'</button></div>';
+  /* Bo'lim ochilganda panda sakrab kirib keladi */
+  pandaFx(document.querySelector("#s-voice .voicebox .pd"),"pop");
+}
+/* ---------- Panda maskot kirish effektlari ----------
+   Panda chiqadigan har bir bayram/bo'lim shu effektlardan biri bilan
+   boshlanadi: fly (supermen parvozi), land (osmondan changli qo'nish),
+   zoom (uzoqdan otilib chiqish), roll (dumalab kirish), pop (sakrash).
+   Qurilma "kamroq harakat" rejimida bo'lsa — hech qanday effekt yo'q. */
+function fxOff(){try{return !!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)}catch(e){return false}}
+function pandaDust(el,n,spread){
+  if(!el)return;
+  n=n||11;spread=spread||44;
+  for(var i=0;i<n;i++){(function(i){
+    var s=document.createElement("span");s.className="sk-dust";
+    s.style.left="50%";s.style.bottom="0px";
+    el.appendChild(s);
+    var dir=i%2?1:-1,dx=dir*(12+Math.random()*spread),dy=-(2+Math.random()*12),sc=.6+Math.random()*1.4;
+    if(s.animate)s.animate([
+      {opacity:0,transform:"translate(-50%,0) scale(.35)"},
+      {opacity:.85,transform:"translate(calc(-50% + "+Math.round(dx*.55)+"px),"+Math.round(dy)+"px) scale("+sc.toFixed(2)+")",offset:.32},
+      {opacity:0,transform:"translate(calc(-50% + "+Math.round(dx)+"px),"+Math.round(dy*.4)+"px) scale("+(sc*1.3).toFixed(2)+")"}
+    ],{duration:640+Math.round(Math.random()*260),easing:"cubic-bezier(.2,.7,.4,1)"});
+    setTimeout(function(){s.remove()},980);
+  })(i)}
+}
+/* Qo'nish zarbi — sahna qisqa silkinadi */
+function stageQuake(){
+  var st=document.querySelector("#lu-stage");if(!st)return;
+  st.classList.remove("quake");void st.offsetWidth;st.classList.add("quake");
+}
+var PANDA_FX={
+  /* Supermen: yerdan otilib osmonga chiqadi, tepada muallaq turadi, keyin
+     tez pastga tushib changda qo'nadi. */
+  fly:function(el){
+    var D=1950;el.style.zIndex="4";
+    el.animate([
+      {transform:"translateY(0) rotate(0deg) scale(1)",easing:"cubic-bezier(.5,0,.8,.4)"},
+      {transform:"translateY(8px) scaleY(.78) scaleX(1.16)",offset:.13,easing:"cubic-bezier(.15,.9,.3,1)"},
+      {transform:"translateY(-330px) scale(.9) rotate(-8deg)",offset:.36,easing:"ease-in-out"},
+      {transform:"translateY(-352px) scale(.87) rotate(6deg)",offset:.52,easing:"ease-in-out"},
+      {transform:"translateY(-340px) scale(.89) rotate(2deg)",offset:.62,easing:"cubic-bezier(.55,0,.85,.45)"},
+      {transform:"translateY(7px) scaleY(.7) scaleX(1.24)",offset:.87,easing:"cubic-bezier(.2,1.4,.4,1)"},
+      {transform:"translateY(0) rotate(0deg) scale(1)"}
+    ],{duration:D});
+    setTimeout(function(){pandaDust(el);stageQuake();haptic("heavy");beep([110,82])},Math.round(D*.85));
+  },
+  /* Osmondan tushib changli qo'nish */
+  land:function(el){
+    var D=980;
+    el.animate([
+      {opacity:0,transform:"translateY(-300px) scale(.82) rotate(-7deg)",easing:"cubic-bezier(.55,0,.85,.45)"},
+      {opacity:1,transform:"translateY(-40px) scale(.96) rotate(-2deg)",offset:.55,easing:"cubic-bezier(.6,0,.9,.4)"},
+      {opacity:1,transform:"translateY(6px) scaleY(.72) scaleX(1.22) rotate(0deg)",offset:.72,easing:"cubic-bezier(.2,1.5,.4,1)"},
+      {transform:"translateY(-9px) scaleY(1.06) scaleX(.96)",offset:.86,easing:"cubic-bezier(.4,0,.4,1)"},
+      {transform:"translateY(0) scale(1)"}
+    ],{duration:D});
+    setTimeout(function(){pandaDust(el,9,38);stageQuake();haptic("med");beep([120,90])},Math.round(D*.7));
+  },
+  /* Uzoqdan otilib chiqadi (kichkinadan kattaga, biroz oshib ketib) */
+  zoom:function(el){
+    el.animate([
+      {opacity:0,transform:"scale(.12) rotate(-16deg)",easing:"cubic-bezier(.2,.7,.3,1)"},
+      {opacity:1,transform:"scale(1.2) rotate(5deg)",offset:.62,easing:"cubic-bezier(.3,1.4,.5,1)"},
+      {transform:"scale(.94) rotate(-2deg)",offset:.82},
+      {transform:"scale(1) rotate(0deg)"}
+    ],{duration:760});
+    setTimeout(function(){haptic("light")},420);
+  },
+  /* Yon tomondan dumalab kirib keladi */
+  roll:function(el){
+    el.animate([
+      {opacity:0,transform:"translateX(-190px) rotate(-380deg) scale(.85)",easing:"cubic-bezier(.25,.6,.3,1)"},
+      {opacity:1,transform:"translateX(6px) rotate(12deg) scale(1.04)",offset:.72,easing:"cubic-bezier(.2,1.4,.4,1)"},
+      {transform:"translateX(0) rotate(0deg) scale(1)"}
+    ],{duration:860});
+    setTimeout(function(){pandaDust(el,6,26);haptic("light")},560);
+  },
+  /* Qisqa quvnoq sakrash */
+  pop:function(el){
+    el.animate([
+      {opacity:0,transform:"translateY(14px) scale(.42)",easing:"cubic-bezier(.2,1.5,.4,1)"},
+      {opacity:1,transform:"translateY(-10px) scale(1.12)",offset:.55},
+      {transform:"translateY(2px) scale(.98)",offset:.78},
+      {transform:"translateY(0) scale(1)"}
+    ],{duration:620});
+  }
+};
+function pandaFx(el,kind){
+  if(!el||!el.animate||fxOff())return;
+  (PANDA_FX[kind]||PANDA_FX.pop)(el);
 }
 function pandaChar(mood,opts){
   /* Do'mboq, ifodali panda (Duolingo maskot uslubi). API o'zgarmagan:
@@ -2948,8 +3182,8 @@ function openInviteSheet(){
 
 /* ---------- Profile ---------- */
 function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня"},
-  uz:{calTitle:"Streak kalendari",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun streak",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad"},
-  tj:{calTitle:"Тақвими streak",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза"}}[LANG]}
+  uz:{calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad"},
+  tj:{calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза"}}[LANG]}
 function streakCalHtml(){var p=pl();
   var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0);
   /* Server bergan real hafta faolligi (week_activity_dates) birinchi o'rinda;

@@ -49,7 +49,7 @@ TEMPLATE_META: dict[str, dict] = {
     },
     KEY_STREAK: {
         "title": "🔥 Streak uzilmoqda",
-        "note": "Kun oxirida bugun kirmagan, lekin streaki bor foydalanuvchiga yuboriladi.",
+        "note": "Kun oxirida bugun kirmagan, lekin ketma-ket kunlar seriyasi bor foydalanuvchiga yuboriladi.",
         "placeholders": ["{streak}"],
     },
 }
@@ -124,9 +124,9 @@ DEFAULT_TEXTS: dict[str, dict[str, str]] = {
     },
     KEY_STREAK: {
         "uz": (
-            "🔥 <b>{streak} kunlik streak xavf ostida!</b>\n"
-            "Bugun kirmasangiz, streak uziladi va kalendarda kun yo'qoladi.\n"
-            "Bitta kichik dars — streak saqlanadi 🔥"
+            "🔥 <b>{streak} kunlik seriyangiz xavf ostida!</b>\n"
+            "Bugun kirmasangiz, ketma-ketlik uziladi va kalendarda kun muzlab qoladi.\n"
+            "Bitta kichik dars — seriya saqlanadi 🔥"
         ),
         "ru": (
             "🔥 <b>Серия из {streak} дней под угрозой!</b>\n"
