@@ -305,12 +305,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "wàn",
             "xiàng",
-            "zhī",
-            "tèdiǎn"
+            "tèdiǎn",
+            "wàn",
+            "zhī"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "特点 — tèdiǎn",
             "ru": "特点 — tèdiǎn",
@@ -354,12 +354,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "向",
-            "只",
             "万",
-            "奇怪"
+            "奇怪",
+            "只",
+            "向"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "g'alati = 奇怪 (qíguài)",
             "ru": "странный = 奇怪 (qíguài)",
@@ -390,10 +390,10 @@
           "audio_text": "地",
           "pinyin": "de",
           "options": [
-            "向",
             "万",
+            "只",
             "地",
-            "只"
+            "向"
           ],
           "correct_index": 2,
           "explanation": {
@@ -416,11 +416,6 @@
           },
           "options": [
             {
-              "uz": "ayrim hayvonlar uchun hisob so'zi",
-              "ru": "счетное слово для некоторых животных",
-              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
-            },
-            {
               "uz": "o'n ming",
               "ru": "десять тысяч",
               "tj": "даҳ ҳазор"
@@ -429,6 +424,11 @@
               "uz": "tomon, ga",
               "ru": "к, по направлению к",
               "tj": "ба сӯи, ба"
+            },
+            {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
             },
             {
               "uz": "xususiyat",
@@ -489,6 +489,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "奇怪",
+          "pinyin": "qíguài",
+          "options": [
+            "只",
+            "万",
+            "向",
+            "奇怪"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "奇怪 — g'alati (qíguài)",
+            "ru": "奇怪 — странный (qíguài)",
+            "tj": "奇怪 — аҷиб, ғалатӣ (qíguài)"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -523,53 +545,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "奇怪",
-          "pinyin": "qíguài",
-          "options": [
-            "奇怪",
-            "只",
-            "万",
-            "向"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "奇怪 — g'alati (qíguài)",
-            "ru": "奇怪 — странный (qíguài)",
-            "tj": "奇怪 — аҷиб, ғалатӣ (qíguài)"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'tur, xil' xitoycha qaysi?",
-            "ru": "'вид, тип' по-китайски?",
-            "tj": "'навъ, гуна' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "向",
-            "种",
-            "只",
-            "万"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "tur, xil = 种 (zhǒng)",
-            "ru": "вид, тип = 种 (zhǒng)",
-            "tj": "навъ, гуна = 种 (zhǒng)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "奇怪",
           "pinyin": "qíguài",
@@ -577,6 +552,105 @@
             "uz": "g'alati",
             "ru": "странный",
             "tj": "аҷиб, ғалатӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "国家 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 国家:",
+            "tj": "Маънои калимаи 国家-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "davlat, mamlakat",
+              "ru": "страна, государство",
+              "tj": "давлат, кишвар"
+            },
+            {
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
+            },
+            {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            },
+            {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "国家 = davlat, mamlakat (guójiā)",
+            "ru": "国家 = страна, государство (guójiā)",
+            "tj": "国家 = давлат, кишвар (guójiā)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "国家",
+            "pinyin": "guójiā",
+            "meaning": {
+              "uz": "davlat, mamlakat",
+              "ru": "страна, государство",
+              "tj": "давлат, кишвар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'g'alati' xitoycha qaysi?",
+            "ru": "'странный' по-китайски?",
+            "tj": "'аҷиб, ғалатӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "万",
+            "奇怪",
+            "向",
+            "只"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "g'alati = 奇怪 (qíguài)",
+            "ru": "странный = 奇怪 (qíguài)",
+            "tj": "аҷиб, ғалатӣ = 奇怪 (qíguài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "奇怪",
+            "pinyin": "qíguài",
+            "meaning": {
+              "uz": "g'alati",
+              "ru": "странный",
+              "tj": "аҷиб, ғалатӣ"
+            }
           }
         }
       ]

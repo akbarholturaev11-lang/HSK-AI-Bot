@@ -630,70 +630,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你想吃什么？",
-          "pinyin": "Nǐ xiǎng chī shénme?",
-          "options": [
-            "我想吃米饭。",
-            "你想吃什么？",
-            "我想喝茶。",
-            "你想喝什么？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "你想吃什么？ — Nima yemoqchisiz?",
-            "ru": "你想吃什么？ — Что вы хотите поесть?",
-            "tj": "你想吃什么？ — Шумо чӣ хӯрдан мехоҳед?"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "想",
-              {
-                "uz": "xohlamoq, istаmoq",
-                "ru": "хотеть, желать",
-                "tj": "хостан, орзу доштан"
-              }
-            ],
-            [
-              "喝",
-              {
-                "uz": "ichmoq",
-                "ru": "пить",
-                "tj": "нӯшидан"
-              }
-            ],
-            [
-              "茶",
-              {
-                "uz": "choy",
-                "ru": "чай",
-                "tj": "чой"
-              }
-            ],
-            [
-              "吃",
-              {
-                "uz": "yemoq",
-                "ru": "есть, кушать",
-                "tj": "хӯрдан"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Nima ichmoqchisiz?",
@@ -728,6 +664,105 @@
             "uz": "ichmoq",
             "ru": "пить",
             "tj": "нӯшидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "问 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 问:",
+            "tj": "Маънои калимаи 问-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            },
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "问 = so'ramoq (wèn)",
+            "ru": "问 = спрашивать (wèn)",
+            "tj": "问 = пурсидан (wèn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "问",
+            "pinyin": "wèn",
+            "meaning": {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ichmoq' xitoycha qaysi?",
+            "ru": "'пить' по-китайски?",
+            "tj": "'нӯшидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "想",
+            "喝",
+            "吃",
+            "茶"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ichmoq = 喝 (hē)",
+            "ru": "пить = 喝 (hē)",
+            "tj": "нӯшидан = 喝 (hē)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "喝",
+            "pinyin": "hē",
+            "meaning": {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            }
           }
         }
       ]

@@ -425,12 +425,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "马虎",
             "签证",
             "报名",
-            "马虎",
             "博士"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "beparvo, pala-partish = 马虎 (mǎhu)",
             "ru": "небрежный = 马虎 (mǎhu)",
@@ -461,8 +461,8 @@
           "audio_text": "自信",
           "pinyin": "zìxìn",
           "options": [
-            "报名",
             "签证",
+            "报名",
             "自信",
             "博士"
           ],
@@ -501,14 +501,14 @@
           },
           "options": [
             {
-              "uz": "doktorantura darajasi",
-              "ru": "доктор наук, докторская степень",
-              "tj": "доктор, дараҷаи илмӣ"
-            },
-            {
               "uz": "viza",
               "ru": "виза",
               "tj": "раводид"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
             },
             {
               "uz": "xotirjam, sovuqqon",
@@ -566,11 +566,11 @@
           },
           "options": [
             "报名",
+            "签证",
             "博士",
-            "输",
-            "签证"
+            "输"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "输 = yutqazmoq (shū)",
             "ru": "输 = проигрывать (shū)",
@@ -590,12 +590,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qiānzhèng",
-            "mǎhu",
+            "bào míng",
             "bóshì",
-            "bào míng"
+            "mǎhu",
+            "qiānzhèng"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "马虎 — mǎhu",
             "ru": "马虎 — mǎhu",
@@ -656,44 +656,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "重点 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 重点:",
-            "tj": "Маънои калимаи 重点-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "马虎",
+          "pinyin": "mǎhu",
           "options": [
-            {
-              "uz": "ro'yxatdan o'tmoq",
-              "ru": "записываться, регистрироваться",
-              "tj": "номнавис шудан"
-            },
-            {
-              "uz": "viza",
-              "ru": "виза",
-              "tj": "раводид"
-            },
-            {
-              "uz": "doktorantura darajasi",
-              "ru": "доктор наук, докторская степень",
-              "tj": "доктор, дараҷаи илмӣ"
-            },
-            {
-              "uz": "asosiy nuqta",
-              "ru": "ключевой пункт",
-              "tj": "нуқтаи муҳим"
-            }
+            "马虎",
+            "签证",
+            "报名",
+            "博士"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "重点 = asosiy nuqta (zhòngdiǎn)",
-            "ru": "重点 = ключевой пункт (zhòngdiǎn)",
-            "tj": "重点 = нуқтаи муҳим (zhòngdiǎn)"
+            "uz": "马虎 — beparvo, pala-partish (mǎhu)",
+            "ru": "马虎 — небрежный (mǎhu)",
+            "tj": "马虎 — бепарво (mǎhu)"
           }
         },
         {
@@ -706,38 +687,16 @@
           "audio_text": "就像比赛一样，没有人会永远输，也没有人会一直赢。我们知道的越多，就会发现自己不懂的也越多。",
           "pinyin": "Jiù xiàng bǐsài yíyàng, méiyǒu rén huì yǒngyuǎn shū, yě méiyǒu rén huì yìzhí yíng. Wǒmen zhīdào de yuè duō, jiù huì fāxiàn zìjǐ bù dǒng de yě yuè duō.",
           "options": [
+            "就像比赛一样，没有人会永远输，也没有人会一直赢。我们知道的越多，就会发现自己不懂的也越多。",
             "你马上就要硕士毕业了吧？将来有什么打算？",
             "我想出国读博士，一直在准备办签证需要的材料。",
-            "现在材料准备得怎么样了？",
-            "就像比赛一样，没有人会永远输，也没有人会一直赢。我们知道的越多，就会发现自己不懂的也越多。"
+            "现在材料准备得怎么样了？"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "就像比赛一样，没有人会永远输，也没有人会一直赢。我们知道的越多，就会发现自己不懂的也越多。 — Musobaqadek: hech kim abadiy yutqazmaydi, hech kim doim yutmaydi. Qancha ko'p bilsak, bilmaydigan narsamiz ham shuncha ko'p ekanini ko'ramiz.",
             "ru": "就像比赛一样，没有人会永远输，也没有人会一直赢。我们知道的越多，就会发现自己不懂的也越多。 — Как в соревновании: никто не проигрывает вечно и никто не выигрывает всегда. Чем больше мы знаем, тем больше понимаем, чего не знаем.",
             "tj": "就像比赛一样，没有人会永远输，也没有人会一直赢。我们知道的越多，就会发现自己不懂的也越多。 — Мисли мусобиқа: ҳеҷ кас ҳамеша намебозад ва ҳеҷ кас ҳамеша намебарад. Ҳар қадар бештар донем, ҳамон қадар бештар мефаҳмем, ки намедонем."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "马虎",
-          "pinyin": "mǎhu",
-          "options": [
-            "马虎",
-            "博士",
-            "报名",
-            "签证"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "马虎 — beparvo, pala-partish (mǎhu)",
-            "ru": "马虎 — небрежный (mǎhu)",
-            "tj": "马虎 — бепарво (mǎhu)"
           }
         },
         {
@@ -753,12 +712,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "自信",
-            "博士",
+            "签证",
             "报名",
-            "签证"
+            "自信",
+            "博士"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "o'ziga ishongan = 自信 (zìxìn)",
             "ru": "уверенный в себе = 自信 (zìxìn)",
@@ -779,9 +738,9 @@
           },
           "options": [
             "冷静",
+            "报名",
             "签证",
-            "博士",
-            "报名"
+            "博士"
           ],
           "correct_index": 0,
           "explanation": {
@@ -798,6 +757,105 @@
             "uz": "yutqazmoq",
             "ru": "проигрывать",
             "tj": "бохтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "重点 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 重点:",
+            "tj": "Маънои калимаи 重点-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "asosiy nuqta",
+              "ru": "ключевой пункт",
+              "tj": "нуқтаи муҳим"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "重点 = asosiy nuqta (zhòngdiǎn)",
+            "ru": "重点 = ключевой пункт (zhòngdiǎn)",
+            "tj": "重点 = нуқтаи муҳим (zhòngdiǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "重点",
+            "pinyin": "zhòngdiǎn",
+            "meaning": {
+              "uz": "asosiy nuqta",
+              "ru": "ключевой пункт",
+              "tj": "нуқтаи муҳим"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yutqazmoq' xitoycha qaysi?",
+            "ru": "'проигрывать' по-китайски?",
+            "tj": "'бохтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "签证",
+            "输",
+            "博士",
+            "报名"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yutqazmoq = 输 (shū)",
+            "ru": "проигрывать = 输 (shū)",
+            "tj": "бохтан = 输 (shū)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "输",
+            "pinyin": "shū",
+            "meaning": {
+              "uz": "yutqazmoq",
+              "ru": "проигрывать",
+              "tj": "бохтан"
+            }
           }
         }
       ]

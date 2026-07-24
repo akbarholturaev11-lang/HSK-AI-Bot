@@ -369,11 +369,11 @@
           "pinyin": "zǒngjié",
           "options": [
             "饼干",
+            "得",
             "难道",
-            "总结",
-            "得"
+            "总结"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "总结 — xulosa qilmoq (zǒngjié)",
             "ru": "总结 — подводить итог (zǒngjié)",
@@ -408,16 +408,6 @@
           },
           "options": [
             {
-              "uz": "olmoq, qo'lga kiritmoq",
-              "ru": "получать, брать",
-              "tj": "гирифтан"
-            },
-            {
-              "uz": "nahotki",
-              "ru": "неужели",
-              "tj": "магар"
-            },
-            {
               "uz": "pechenye",
               "ru": "печенье",
               "tj": "печенье"
@@ -426,9 +416,19 @@
               "uz": "kerak, majbur bo'lmoq",
               "ru": "нужно, придётся",
               "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "olmoq, qo'lga kiritmoq",
+              "ru": "получать, брать",
+              "tj": "гирифтан"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "取 = olmoq, qo'lga kiritmoq (qǔ)",
             "ru": "取 = получать, брать (qǔ)",
@@ -462,12 +462,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "经历",
             "得",
-            "饼干",
-            "难道"
+            "难道",
+            "经历",
+            "饼干"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "经历 = boshdan kechirmoq; tajriba (jīnglì)",
             "ru": "经历 = переживать; опыт (jīnglì)",
@@ -512,11 +512,11 @@
           },
           "options": [
             "bǐnggān",
+            "xǔduō",
             "nándào",
-            "děi",
-            "xǔduō"
+            "děi"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "许多 — xǔduō",
             "ru": "许多 — xǔduō",
@@ -536,12 +536,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "难道",
             "总结",
+            "饼干",
             "得",
-            "饼干"
+            "难道"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "xulosa qilmoq = 总结 (zǒngjié)",
             "ru": "подводить итог = 总结 (zǒngjié)",
@@ -650,79 +650,16 @@
           "audio_text": "许多",
           "pinyin": "xǔduō",
           "options": [
+            "许多",
             "得",
             "难道",
-            "许多",
             "饼干"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "许多 — ko'p (xǔduō)",
             "ru": "许多 — много (xǔduō)",
             "tj": "许多 — бисёр (xǔduō)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "国际 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 国际:",
-            "tj": "Маънои калимаи 国际-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "pechenye",
-              "ru": "печенье",
-              "tj": "печенье"
-            },
-            {
-              "uz": "xalqaro",
-              "ru": "международный",
-              "tj": "байналмилалӣ"
-            },
-            {
-              "uz": "kerak, majbur bo'lmoq",
-              "ru": "нужно, придётся",
-              "tj": "лозим аст, бояд"
-            },
-            {
-              "uz": "nahotki",
-              "ru": "неужели",
-              "tj": "магар"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "国际 = xalqaro (guójì)",
-            "ru": "国际 = международный (guójì)",
-            "tj": "国际 = байналмилалӣ (guójì)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "总结",
-          "pinyin": "zǒngjié",
-          "options": [
-            "总结",
-            "饼干",
-            "难道",
-            "得"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "总结 — xulosa qilmoq (zǒngjié)",
-            "ru": "总结 — подводить итог (zǒngjié)",
-            "tj": "总结 — хулоса кардан (zǒngjié)"
           }
         },
         {
@@ -740,10 +677,10 @@
           "options": [
             "饼干",
             "难道",
-            "取",
-            "得"
+            "得",
+            "取"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "olmoq, qo'lga kiritmoq = 取 (qǔ)",
             "ru": "получать, брать = 取 (qǔ)",
@@ -763,12 +700,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "饼干",
             "经历",
-            "难道",
-            "得"
+            "饼干",
+            "得",
+            "难道"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "经历 = boshdan kechirmoq; tajriba (jīnglì)",
             "ru": "经历 = переживать; опыт (jīnglì)",
@@ -783,6 +720,105 @@
             "uz": "ko'p",
             "ru": "много",
             "tj": "бисёр"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "至少 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 至少:",
+            "tj": "Маънои калимаи 至少-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kamida",
+              "ru": "по крайней мере",
+              "tj": "ҳадди ақал"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "至少 = kamida (zhìshǎo)",
+            "ru": "至少 = по крайней мере (zhìshǎo)",
+            "tj": "至少 = ҳадди ақал (zhìshǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "至少",
+            "pinyin": "zhìshǎo",
+            "meaning": {
+              "uz": "kamida",
+              "ru": "по крайней мере",
+              "tj": "ҳадди ақал"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko'p' xitoycha qaysi?",
+            "ru": "'много' по-китайски?",
+            "tj": "'бисёр' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "难道",
+            "许多",
+            "饼干",
+            "得"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ko'p = 许多 (xǔduō)",
+            "ru": "много = 许多 (xǔduō)",
+            "tj": "бисёр = 许多 (xǔduō)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "许多",
+            "pinyin": "xǔduō",
+            "meaning": {
+              "uz": "ko'p",
+              "ru": "много",
+              "tj": "бисёр"
+            }
           }
         }
       ]

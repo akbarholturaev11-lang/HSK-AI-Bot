@@ -452,9 +452,9 @@
           },
           "options": [
             {
-              "uz": "muallif",
-              "ru": "автор",
-              "tj": "муаллиф"
+              "uz": "xarita",
+              "ru": "карта",
+              "tj": "харита"
             },
             {
               "uz": "mashhur, urf bo'lgan",
@@ -462,17 +462,17 @@
               "tj": "машҳур, серхаридор"
             },
             {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
               "uz": "qo'nmoq",
               "ru": "приземляться",
               "tj": "фуруд омадан"
-            },
-            {
-              "uz": "xarita",
-              "ru": "карта",
-              "tj": "харита"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "地图 = xarita (dìtú)",
             "ru": "地图 = карта (dìtú)",
@@ -545,12 +545,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "huǒ",
-            "jiàngluò",
+            "zuòzhě",
             "shìjì",
-            "zuòzhě"
+            "huǒ",
+            "jiàngluò"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "世纪 — shìjì",
             "ru": "世纪 — shìjì",
@@ -584,12 +584,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "降落",
             "火",
-            "邮局",
             "作者",
-            "降落"
+            "邮局"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "pochta = 邮局 (yóujú)",
             "ru": "почта = 邮局 (yóujú)",
@@ -606,12 +606,12 @@
           "audio_text": "地图",
           "pinyin": "dìtú",
           "options": [
-            "降落",
             "地图",
             "作者",
+            "降落",
             "火"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "地图 — xarita (dìtú)",
             "ru": "地图 — карта (dìtú)",
@@ -721,8 +721,8 @@
           "pinyin": "dìtú",
           "options": [
             "降落",
-            "作者",
             "火",
+            "作者",
             "地图"
           ],
           "correct_index": 3,
@@ -730,31 +730,6 @@
             "uz": "地图 — xarita (dìtú)",
             "ru": "地图 — карта (dìtú)",
             "tj": "地图 — харита (dìtú)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "接着 talaffuzini tanlang:",
-            "ru": "Выберите произношение 接着:",
-            "tj": "Талаффузи 接着-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "huǒ",
-            "jiēzhe",
-            "jiàngluò",
-            "zuòzhě"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "接着 — jiēzhe",
-            "ru": "接着 — jiēzhe",
-            "tj": "接着 — jiēzhe"
           }
         },
         {
@@ -807,6 +782,105 @@
             "uz": "xarita",
             "ru": "карта",
             "tj": "харита"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "矿泉水 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 矿泉水:",
+            "tj": "Маънои калимаи 矿泉水-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
+            },
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            },
+            {
+              "uz": "mineral suv",
+              "ru": "минеральная вода",
+              "tj": "оби минералӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "矿泉水 = mineral suv (kuàngquánshuǐ)",
+            "ru": "矿泉水 = минеральная вода (kuàngquánshuǐ)",
+            "tj": "矿泉水 = оби минералӣ (kuàngquánshuǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "矿泉水",
+            "pinyin": "kuàngquánshuǐ",
+            "meaning": {
+              "uz": "mineral suv",
+              "ru": "минеральная вода",
+              "tj": "оби минералӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xarita' xitoycha qaysi?",
+            "ru": "'карта' по-китайски?",
+            "tj": "'харита' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "作者",
+            "地图",
+            "降落",
+            "火"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "xarita = 地图 (dìtú)",
+            "ru": "карта = 地图 (dìtú)",
+            "tj": "харита = 地图 (dìtú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "地图",
+            "pinyin": "dìtú",
+            "meaning": {
+              "uz": "xarita",
+              "ru": "карта",
+              "tj": "харита"
+            }
           }
         }
       ]

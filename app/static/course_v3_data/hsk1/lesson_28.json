@@ -634,129 +634,45 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "吃 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 吃:",
-            "tj": "Маънои калимаи 吃-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "choy",
-              "ru": "чай",
-              "tj": "чой"
-            },
-            {
-              "uz": "xohlamoq, istаmoq",
-              "ru": "хотеть, желать",
-              "tj": "хостан, орзу доштан"
-            },
-            {
-              "uz": "yemoq",
-              "ru": "есть, кушать",
-              "tj": "хӯрдан"
-            },
-            {
-              "uz": "ichmoq",
-              "ru": "пить",
-              "tj": "нӯшидан"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "吃 = yemoq (chī)",
-            "ru": "吃 = есть, кушать (chī)",
-            "tj": "吃 = хӯрдан (chī)"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "你家有多少口人？",
-          "pinyin": "Nǐ jiā yǒu duōshao kǒu rén?",
-          "translation": {
-            "uz": "Sizning oilangizda nechta kishi bor?",
-            "ru": "Сколько человек в вашей семье?",
-            "tj": "Дар оилаи шумо чанд нафар аст?"
-          },
-          "tokens": {
-            "uz": [
-              "Sizning",
-              "nechta",
-              "kishi",
-              "oilangizda",
-              "bor"
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "个",
+              {
+                "uz": "umumiy o'lchov so'z (dona/birlik)",
+                "ru": "общее счётное слово (штука/единица)",
+                "tj": "калимаи шуморавии умумӣ (дона/воҳид)"
+              }
             ],
-            "ru": [
-              "человек",
-              "вашей",
-              "Сколько",
-              "в",
-              "семье"
+            [
+              "杯子",
+              {
+                "uz": "stakan, piyola",
+                "ru": "стакан, кружка",
+                "tj": "косаи пиёла"
+              }
             ],
-            "tj": [
-              "нафар",
-              "шумо",
-              "аст",
-              "чанд",
-              "Дар",
-              "оилаи"
+            [
+              "这",
+              {
+                "uz": "bu (ko'rsatish olmoshi)",
+                "ru": "этот, это (указательное местоимение)",
+                "tj": "ин (исми ишора)"
+              }
+            ],
+            [
+              "多少",
+              {
+                "uz": "qancha, nechta (10 dan ortiq)",
+                "ru": "сколько (больше 10)",
+                "tj": "чанд (аз 10 зиёд)"
+              }
             ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Sizning",
-              "oilangizda",
-              "nechta",
-              "kishi",
-              "bor"
-            ],
-            "ru": [
-              "Сколько",
-              "человек",
-              "в",
-              "вашей",
-              "семье"
-            ],
-            "tj": [
-              "Дар",
-              "оилаи",
-              "шумо",
-              "чанд",
-              "нафар",
-              "аст"
-            ]
-          },
-          "explanation": {
-            "uz": "你家有多少口人？ — Sizning oilangizda nechta kishi bor?",
-            "ru": "你家有多少口人？ — Сколько человек в вашей семье?",
-            "tj": "你家有多少口人？ — Дар оилаи шумо чанд нафар аст?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "多少",
-          "pinyin": "duōshao",
-          "options": [
-            "喝",
-            "多少",
-            "想",
-            "茶"
           ],
-          "correct_index": 1,
           "explanation": {
-            "uz": "多少 — qancha, nechta (10 dan ortiq) (duōshao)",
-            "ru": "多少 — сколько (больше 10) (duōshao)",
-            "tj": "多少 — чанд (аз 10 зиёд) (duōshao)"
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -767,6 +683,105 @@
             "uz": "qancha, nechta (10 dan ortiq)",
             "ru": "сколько (больше 10)",
             "tj": "чанд (аз 10 зиёд)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "买 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 买:",
+            "tj": "Маънои калимаи 买-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "sotib olmoq",
+              "ru": "покупать",
+              "tj": "харидан"
+            },
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "买 = sotib olmoq (mǎi)",
+            "ru": "买 = покупать (mǎi)",
+            "tj": "买 = харидан (mǎi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "买",
+            "pinyin": "mǎi",
+            "meaning": {
+              "uz": "sotib olmoq",
+              "ru": "покупать",
+              "tj": "харидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qancha, nechta (10 dan ortiq)' xitoycha qaysi?",
+            "ru": "'сколько (больше 10)' по-китайски?",
+            "tj": "'чанд (аз 10 зиёд)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "多少",
+            "喝",
+            "想",
+            "茶"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "qancha, nechta (10 dan ortiq) = 多少 (duōshao)",
+            "ru": "сколько (больше 10) = 多少 (duōshao)",
+            "tj": "чанд (аз 10 зиёд) = 多少 (duōshao)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "多少",
+            "pinyin": "duōshao",
+            "meaning": {
+              "uz": "qancha, nechta (10 dan ortiq)",
+              "ru": "сколько (больше 10)",
+              "tj": "чанд (аз 10 зиёд)"
+            }
           }
         }
       ]

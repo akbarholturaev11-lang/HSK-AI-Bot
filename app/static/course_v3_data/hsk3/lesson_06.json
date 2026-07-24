@@ -558,12 +558,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "打算",
             "周末",
             "南方",
+            "打算",
             "啊"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "南方 = janub, janubiy tomon (nánfāng)",
             "ru": "南方 = юг, южная сторона (nánfāng)",
@@ -573,9 +573,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Unday bo'lsa shanba kuni vaqting bormi? Birgalikda parka boraylik.» — xitoychada qaysi biri?",
-            "ru": "«Тогда есть ли у тебя время в субботу? Пойдём вместе в парк.» — какое предложение по-китайски?",
-            "tj": "«Пас шанбе вақт дорӣ? Биёед якҷоя ба боғ равем.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Barcha uy vazifalari bajarildi!» — xitoychada qaysi biri?",
+            "ru": "«Все домашние задания сделаны!» — какое предложение по-китайски?",
+            "tj": "«Ҳамаи вазифаҳои хонагӣ иҷро шуд!» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -584,15 +584,15 @@
           },
           "options": [
             "作业都做好了！",
-            "那你星期六有没有时间？我们一起去公园吧。",
-            "他一个电话也没打，我很着急。",
-            "那天我一点儿都不想出去。"
+            "那天我一点儿都不想出去。",
+            "好，那你去吧。记得早点儿回来。",
+            "他一个电话也没打，我很着急。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "那你星期六有没有时间？我们一起去公园吧。 — Nà nǐ xīngqīliù yǒu méiyǒu shíjiān? Wǒmen yīqǐ qù gōngyuán ba.",
-            "ru": "那你星期六有没有时间？我们一起去公园吧。 — Nà nǐ xīngqīliù yǒu méiyǒu shíjiān? Wǒmen yīqǐ qù gōngyuán ba.",
-            "tj": "那你星期六有没有时间？我们一起去公园吧。 — Nà nǐ xīngqīliù yǒu méiyǒu shíjiān? Wǒmen yīqǐ qù gōngyuán ba."
+            "uz": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
+            "ru": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
+            "tj": "作业都做好了！ — Zuòyè dōu zuò hǎo le!"
           }
         },
         {
@@ -608,12 +608,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "着急",
             "打算",
             "啊",
-            "周末",
-            "着急"
+            "周末"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "xavotirli, shoshilgan, tashvishlangan = 着急 (zháojí)",
             "ru": "волноваться, беспокоиться = 着急 (zháojí)",
@@ -772,12 +772,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yóuxì",
+            "zhōumò",
             "dǎsuàn",
             "a",
-            "zhōumò"
+            "yóuxì"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "游戏 — yóuxì",
             "ru": "游戏 — yóuxì",
@@ -805,12 +805,12 @@
           "audio_text": "周末你有什么打算？",
           "pinyin": "Zhōumò nǐ yǒu shénme dǎsuàn?",
           "options": [
-            "周末你有什么打算？",
             "是啊，我已经找好饭馆了，电影票也买好了。",
+            "请我？",
             "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "请我？"
+            "周末你有什么打算？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "周末你有什么打算？ — Hafta oxiri nima rejang bor?",
             "ru": "周末你有什么打算？ — Какие у тебя планы на выходные?",
@@ -853,11 +853,11 @@
           ],
           "options": [
             "周末你有什么打算？",
+            "我还没想好要不要跟你去呢。",
             "请我？",
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "我还没想好要不要跟你去呢。"
+            "我早就想好了，请你吃饭、看电影、喝咖啡。"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 我还没想好要不要跟你去呢。",
             "ru": "Правильный ответ: 我还没想好要不要跟你去呢。",
@@ -877,12 +877,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "我还没想好要不要跟你去呢。",
             "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "请我？",
-            "周末你有什么打算？"
+            "我还没想好要不要跟你去呢。",
+            "周末你有什么打算？",
+            "请我？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 我还没想好要不要跟你去呢。",
             "ru": "Правильный ответ: 我还没想好要不要跟你去呢。",
@@ -902,12 +902,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
             "请我？",
             "是啊，我已经找好饭馆了，电影票也买好了。",
-            "周末你有什么打算？"
+            "周末你有什么打算？",
+            "我早就想好了，请你吃饭、看电影、喝咖啡。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 周末你有什么打算？",
             "ru": "Правильный ответ: 周末你有什么打算？",
@@ -923,12 +923,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "周",
-            "到",
-            "咖",
-            "因"
+            "的",
+            "鸡",
+            "后",
+            "周"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 周 — 周末你有什么打算？ (Hafta oxiri nima rejang bor?)",
             "ru": "Верно: 周 — 周末你有什么打算？ (Какие у тебя планы на выходные?)",

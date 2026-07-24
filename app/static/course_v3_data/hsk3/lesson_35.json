@@ -408,12 +408,12 @@
           "audio_text": "同事",
           "pinyin": "tóngshì",
           "options": [
-            "以前",
-            "同事",
             "久",
-            "银行"
+            "银行",
+            "以前",
+            "同事"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "同事 — hamkasb (tóngshì)",
             "ru": "同事 — коллега (tóngshì)",
@@ -448,9 +448,9 @@
           },
           "options": [
             {
-              "uz": "bank",
-              "ru": "банк",
-              "tj": "бонк"
+              "uz": "oldin, ilgari",
+              "ru": "раньше, прежде",
+              "tj": "пештар, қаблан"
             },
             {
               "uz": "uzoq vaqt",
@@ -458,9 +458,9 @@
               "tj": "муддати дароз"
             },
             {
-              "uz": "oldin, ilgari",
-              "ru": "раньше, прежде",
-              "tj": "пештар, қаблан"
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
             },
             {
               "uz": "hamkasb",
@@ -468,7 +468,7 @@
               "tj": "ҳамкор"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "以前 = oldin, ilgari (yǐqián)",
             "ru": "以前 = раньше, прежде (yǐqián)",
@@ -512,12 +512,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "银行",
-            "久",
             "同事",
-            "以前"
+            "久",
+            "以前",
+            "银行"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "银行 = bank (yínháng)",
             "ru": "银行 = банк (yínháng)",
@@ -551,12 +551,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tóngshì",
-            "jiǔ",
             "yǐqián",
-            "yínháng"
+            "tóngshì",
+            "yínháng",
+            "jiǔ"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "久 — jiǔ",
             "ru": "久 — jiǔ",
@@ -576,12 +576,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "以前",
             "久",
             "同事",
-            "银行"
+            "银行",
+            "以前"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "hamkasb = 同事 (tóngshì)",
             "ru": "коллега = 同事 (tóngshì)",
@@ -687,12 +687,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "久",
+            "银行",
             "以前",
-            "同事",
-            "银行"
+            "久",
+            "同事"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 银行 (yínháng) — bank",
             "ru": "Верно: 银行 (yínháng) — банк",
@@ -710,67 +710,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "她在银行工作了两年以后来的我们公司。",
-          "pinyin": "Tā zài yínháng gōngzuò le liǎng nián yǐhòu lái de wǒmen gōngsī.",
-          "options": [
-            "那个漂亮的新同事是谁？",
-            "她在银行工作了两年以后来的我们公司。",
-            "那是小丽。",
-            "她刚来北京吗？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "她在银行工作了两年以后来的我们公司。 — U bankda ikki yil ishlab, keyin bizning kompaniyaga kelgan.",
-            "ru": "她在银行工作了两年以后来的我们公司。 — Она проработала в банке два года, потом пришла в нашу компанию.",
-            "tj": "她在银行工作了两年以后来的我们公司。 — Ӯ дар бонк ду сол кор карда, баъд ба ширкати мо омад."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Oldin u qayerda ishlagan?",
-            "ru": "Где она работала раньше?",
-            "tj": "Пештар ӯ дар куҷо кор мекард?"
-          },
-          "tokens": [
-            "工作",
-            "以前",
-            "在",
-            "她",
-            "哪儿",
-            "同事",
-            "银行"
-          ],
-          "answer_tokens": [
-            "以前",
-            "她",
-            "在",
-            "哪儿",
-            "工作"
-          ],
-          "explanation": {
-            "uz": "以前她在哪儿工作？ — Yǐqián tā zài nǎr gōngzuò?",
-            "ru": "以前她在哪儿工作？ — Yǐqián tā zài nǎr gōngzuò?",
-            "tj": "以前她在哪儿工作？ — Yǐqián tā zài nǎr gōngzuò?"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "久",
-          "pinyin": "jiǔ",
-          "translation": {
-            "uz": "uzoq vaqt",
-            "ru": "долго, длительный",
-            "tj": "муддати дароз"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "以前她在哪儿工作？",
@@ -837,6 +776,35 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Oldin u qayerda ishlagan?",
+            "ru": "Где она работала раньше?",
+            "tj": "Пештар ӯ дар куҷо кор мекард?"
+          },
+          "tokens": [
+            "她",
+            "哪儿",
+            "银行",
+            "以前",
+            "工作",
+            "在",
+            "同事"
+          ],
+          "answer_tokens": [
+            "以前",
+            "她",
+            "在",
+            "哪儿",
+            "工作"
+          ],
+          "explanation": {
+            "uz": "以前她在哪儿工作？ — Yǐqián tā zài nǎr gōngzuò?",
+            "ru": "以前她在哪儿工作？ — Yǐqián tā zài nǎr gōngzuò?",
+            "tj": "以前她在哪儿工作？ — Yǐqián tā zài nǎr gōngzuò?"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "银行",
           "pinyin": "yínháng",
@@ -844,6 +812,105 @@
             "uz": "bank",
             "ru": "банк",
             "tj": "бонк"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "离开 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 离开:",
+            "tj": "Маънои калимаи 离开-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oldin, ilgari",
+              "ru": "раньше, прежде",
+              "tj": "пештар, қаблан"
+            },
+            {
+              "uz": "tark etmoq, ajralmoq",
+              "ru": "покидать, расставаться",
+              "tj": "тарк кардан, ҷудо шудан"
+            },
+            {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            },
+            {
+              "uz": "hamkasb",
+              "ru": "коллега",
+              "tj": "ҳамкор"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "离开 = tark etmoq, ajralmoq (líkāi)",
+            "ru": "离开 = покидать, расставаться (líkāi)",
+            "tj": "离开 = тарк кардан, ҷудо шудан (líkāi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "离开",
+            "pinyin": "líkāi",
+            "meaning": {
+              "uz": "tark etmoq, ajralmoq",
+              "ru": "покидать, расставаться",
+              "tj": "тарк кардан, ҷудо шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bank' xitoycha qaysi?",
+            "ru": "'банк' по-китайски?",
+            "tj": "'бонк' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "同事",
+            "以前",
+            "久",
+            "银行"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bank = 银行 (yínháng)",
+            "ru": "банк = 银行 (yínháng)",
+            "tj": "бонк = 银行 (yínháng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "银行",
+            "pinyin": "yínháng",
+            "meaning": {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            }
           }
         }
       ]

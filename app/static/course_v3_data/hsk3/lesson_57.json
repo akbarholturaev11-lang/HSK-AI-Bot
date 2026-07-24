@@ -391,12 +391,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "空调",
-            "词典",
             "图书馆",
-            "借"
+            "词典",
+            "借",
+            "空调"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "空调 = konditsioner (kōngtiáo)",
             "ru": "空调 = кондиционер (kōngtiáo)",
@@ -430,12 +430,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "guān",
+            "jiè",
             "túshūguǎn",
             "cídiǎn",
-            "jiè"
+            "guān"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "关 — guān",
             "ru": "关 — guān",
@@ -469,12 +469,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "借",
-            "地铁",
             "图书馆",
-            "词典"
+            "借",
+            "词典",
+            "地铁"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "metro = 地铁 (dìtiě)",
             "ru": "метро = 地铁 (dìtiě)",
@@ -505,12 +505,12 @@
           "audio_text": "双",
           "pinyin": "shuāng",
           "options": [
-            "双",
-            "词典",
             "借",
-            "图书馆"
+            "图书馆",
+            "词典",
+            "双"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "双 — juft narsalar uchun hisob so'zi (shuāng)",
             "ru": "双 — счётное слово для парных предметов (shuāng)",
@@ -656,13 +656,13 @@
             "tj": "Ман кондитсионерро хомӯш кардам."
           },
           "tokens": [
-            "空调",
-            "把",
+            "了",
             "借",
             "我",
-            "图书馆",
             "关",
-            "了"
+            "空调",
+            "把",
+            "图书馆"
           ],
           "answer_tokens": [
             "我",
@@ -689,53 +689,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "会议结束后，别忘记把空调关了。",
-          "pinyin": "Huìyì jiéshù hòu, bié wàngjì bǎ kōngtiáo guān le.",
-          "options": [
-            "我先走了。",
-            "你去哪儿？",
-            "我去图书馆借本书。",
-            "会议结束后，别忘记把空调关了。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "会议结束后，别忘记把空调关了。 — Majlis tugagach, konditsionerni o'chirishni unutma.",
-            "ru": "会议结束后，别忘记把空调关了。 — После окончания совещания не забудь выключить кондиционер.",
-            "tj": "会议结束后，别忘记把空调关了。 — Баъд аз анҷоми маҷлис хомӯш кардани кондитсионерро фаромӯш накун."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "图书馆 talaffuzini tanlang:",
-            "ru": "Выберите произношение 图书馆:",
-            "tj": "Талаффузи 图书馆-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jiè",
-            "huán",
-            "cídiǎn",
-            "túshūguǎn"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "图书馆 — túshūguǎn",
-            "ru": "图书馆 — túshūguǎn",
-            "tj": "图书馆 — túshūguǎn"
-          }
-        },
-        {
           "type": "hanzi_choice",
           "prompt": {
             "uz": "dìtiě qaysi ieroglif?",
@@ -748,12 +701,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "地铁",
             "借",
-            "词典",
-            "图书馆"
+            "图书馆",
+            "地铁",
+            "词典"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "地铁 = metro (dìtiě)",
             "ru": "地铁 = метро (dìtiě)",
@@ -779,9 +732,9 @@
               "tj": "луғат"
             },
             {
-              "uz": "qarzga olmoq, qarzga bermoq",
-              "ru": "брать в долг, одалживать",
-              "tj": "қарз гирифтан, қарз додан"
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
             },
             {
               "uz": "juft narsalar uchun hisob so'zi",
@@ -789,9 +742,9 @@
               "tj": "ҳисобвожа барои ҷуфт"
             },
             {
-              "uz": "kutubxona",
-              "ru": "библиотека",
-              "tj": "китобхона"
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
             }
           ],
           "correct_index": 2,
@@ -809,6 +762,105 @@
             "uz": "konditsioner",
             "ru": "кондиционер",
             "tj": "кондитсионер"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "灯 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 灯:",
+            "tj": "Маънои калимаи 灯-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
+            },
+            {
+              "uz": "chiroq",
+              "ru": "лампа, свет",
+              "tj": "чароғ"
+            },
+            {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "灯 = chiroq (dēng)",
+            "ru": "灯 = лампа, свет (dēng)",
+            "tj": "灯 = чароғ (dēng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "灯",
+            "pinyin": "dēng",
+            "meaning": {
+              "uz": "chiroq",
+              "ru": "лампа, свет",
+              "tj": "чароғ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'konditsioner' xitoycha qaysi?",
+            "ru": "'кондиционер' по-китайски?",
+            "tj": "'кондитсионер' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "空调",
+            "词典",
+            "借",
+            "图书馆"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "konditsioner = 空调 (kōngtiáo)",
+            "ru": "кондиционер = 空调 (kōngtiáo)",
+            "tj": "кондитсионер = 空调 (kōngtiáo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "空调",
+            "pinyin": "kōngtiáo",
+            "meaning": {
+              "uz": "konditsioner",
+              "ru": "кондиционер",
+              "tj": "кондитсионер"
+            }
           }
         }
       ]

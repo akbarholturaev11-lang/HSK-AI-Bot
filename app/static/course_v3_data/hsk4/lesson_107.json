@@ -441,12 +441,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "事半功倍",
             "规定",
             "可惜",
+            "事半功倍",
             "死"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "事半功倍 = kam kuch bilan ko'p natija (shì bàn gōng bèi)",
             "ru": "事半功倍 = получить больший результат меньшими усилиями (shì bàn gōng bèi)",
@@ -482,10 +482,10 @@
           "options": [
             "guīdìng",
             "sǐ",
-            "jiéyuē",
-            "kěxī"
+            "kěxī",
+            "jiéyuē"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "节约 — jiéyuē",
             "ru": "节约 — jiéyuē",
@@ -531,8 +531,8 @@
           "options": [
             "规定",
             "力气",
-            "死",
-            "可惜"
+            "可惜",
+            "死"
           ],
           "correct_index": 1,
           "explanation": {
@@ -591,14 +591,9 @@
           },
           "options": [
             {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
-            },
-            {
-              "uz": "qoida, belgilangan tartib",
-              "ru": "правило, положение",
-              "tj": "қоида, тартиб"
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
             },
             {
               "uz": "kam kuch bilan ko'p natija",
@@ -606,12 +601,17 @@
               "tj": "бо кӯшиши кам натиҷаи зиёд гирифтан"
             },
             {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "事半功倍 = kam kuch bilan ko'p natija (shì bàn gōng bèi)",
             "ru": "事半功倍 = получить больший результат меньшими усилиями (shì bàn gōng bèi)",
@@ -709,9 +709,9 @@
           },
           "options": [
             "相反",
-            "可惜",
             "规定",
-            "死"
+            "死",
+            "可惜"
           ],
           "correct_index": 0,
           "explanation": {
@@ -774,31 +774,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zuòyòng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zuòyòng?",
-            "tj": "zuòyòng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "规定",
-            "死",
-            "作用",
-            "可惜"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "作用 = ta'sir, vazifa (zuòyòng)",
-            "ru": "作用 = роль, функция (zuòyòng)",
-            "tj": "作用 = нақш, таъсир (zuòyòng)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -808,12 +783,12 @@
           "audio_text": "力气",
           "pinyin": "lìqi",
           "options": [
-            "可惜",
+            "死",
             "规定",
-            "力气",
-            "死"
+            "可惜",
+            "力气"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "力气 — kuch, mehnat (lìqi)",
             "ru": "力气 — силы, усилия (lìqi)",
@@ -828,6 +803,105 @@
             "uz": "kuch, mehnat",
             "ru": "силы, усилия",
             "tj": "қувват, заҳмат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "误会 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 误会:",
+            "tj": "Маънои калимаи 误会-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tushunmovchilik",
+              "ru": "недоразумение",
+              "tj": "нофаҳмӣ"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "误会 = tushunmovchilik (wùhuì)",
+            "ru": "误会 = недоразумение (wùhuì)",
+            "tj": "误会 = нофаҳмӣ (wùhuì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "误会",
+            "pinyin": "wùhuì",
+            "meaning": {
+              "uz": "tushunmovchilik",
+              "ru": "недоразумение",
+              "tj": "нофаҳмӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kuch, mehnat' xitoycha qaysi?",
+            "ru": "'силы, усилия' по-китайски?",
+            "tj": "'қувват, заҳмат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "可惜",
+            "规定",
+            "死",
+            "力气"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kuch, mehnat = 力气 (lìqi)",
+            "ru": "силы, усилия = 力气 (lìqi)",
+            "tj": "қувват, заҳмат = 力气 (lìqi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "力气",
+            "pinyin": "lìqi",
+            "meaning": {
+              "uz": "kuch, mehnat",
+              "ru": "силы, усилия",
+              "tj": "қувват, заҳмат"
+            }
           }
         }
       ]

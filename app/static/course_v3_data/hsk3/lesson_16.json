@@ -401,14 +401,14 @@
           },
           "options": [
             {
+              "uz": "yoki (savolda tanlov)",
+              "ru": "или (в вопросе выбора)",
+              "tj": "ё (дар саволи интихобӣ)"
+            },
+            {
               "uz": "ehtiyotkor, ehtiyot bo'lmoq",
               "ru": "осторожный, быть осторожным",
               "tj": "эҳтиёткор, эҳтиёт шудан"
-            },
-            {
-              "uz": "toqqa chiqmoq",
-              "ru": "подниматься в гору",
-              "tj": "ба кӯҳ баромадан"
             },
             {
               "uz": "qo'ymoq, joylashtirmoq",
@@ -416,9 +416,9 @@
               "tj": "гузоштан"
             },
             {
-              "uz": "yoki (savolda tanlov)",
-              "ru": "или (в вопросе выбора)",
-              "tj": "ё (дар саволи интихобӣ)"
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
             }
           ],
           "correct_index": 2,
@@ -494,10 +494,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "pá shān",
+            "xiǎoxīn",
             "háishi",
             "huòzhě",
-            "xiǎoxīn"
+            "pá shān"
           ],
           "correct_index": 2,
           "explanation": {
@@ -519,12 +519,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "爬山",
+            "小心",
             "还是",
-            "放",
-            "小心"
+            "爬山",
+            "放"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "qo'ymoq, joylashtirmoq = 放 (fàng)",
             "ru": "класть, ставить = 放 (fàng)",
@@ -622,12 +622,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "还是",
-            "爬山",
+            "小心",
             "新鲜",
-            "小心"
+            "爬山",
+            "还是"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 新鲜 (xīnxiān) — yangi, sarhil",
             "ru": "Верно: 新鲜 (xīnxiān) — свежий",
@@ -645,103 +645,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "裤子 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 裤子:",
-            "tj": "Маънои калимаи 裤子-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "toqqa chiqmoq",
-              "ru": "подниматься в гору",
-              "tj": "ба кӯҳ баромадан"
-            },
-            {
-              "uz": "yoki (savolda tanlov)",
-              "ru": "или (в вопросе выбора)",
-              "tj": "ё (дар саволи интихобӣ)"
-            },
-            {
-              "uz": "shim",
-              "ru": "брюки, штаны",
-              "tj": "шим"
-            },
-            {
-              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
-              "ru": "осторожный, быть осторожным",
-              "tj": "эҳтиёткор, эҳтиёт шудан"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "裤子 = shim (kùzi)",
-            "ru": "裤子 = брюки, штаны (kùzi)",
-            "tj": "裤子 = шим (kùzi)"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "放",
-              {
-                "uz": "qo'ymoq, joylashtirmoq",
-                "ru": "класть, ставить",
-                "tj": "гузоштан"
-              }
-            ],
-            [
-              "饮料",
-              {
-                "uz": "ichimlik",
-                "ru": "напиток",
-                "tj": "нӯшокӣ"
-              }
-            ],
-            [
-              "或者",
-              {
-                "uz": "yoki (darak gapda)",
-                "ru": "или (в повествовательном предложении)",
-                "tj": "ё (дар ҷумлаи хабарӣ)"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "桌子上放着很多饮料，你喝什么？",
-          "pinyin": "Zhuōzi shang fàngzhe hěn duō yǐnliào, nǐ hē shénme?",
-          "options": [
-            "桌子上放着很多饮料，你喝什么？",
-            "没事，我们明天要去爬山。",
-            "阴天，电视上说多云。怎么了？有事？",
-            "明天是晴天还是阴天？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "桌子上放着很多饮料，你喝什么？ — Stol ustida ko'p ichimlik turibdi, nima ichasan?",
-            "ru": "桌子上放着很多饮料，你喝什么？ — На столе стоит много напитков, что будешь пить?",
-            "tj": "桌子上放着很多饮料，你喝什么？ — Дар рӯи миз нӯшокиҳои бисёр гузошта шудаанд, чӣ менӯшӣ?"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "桌子上放着很多饮料，你喝什么？",
@@ -828,6 +731,62 @@
           }
         },
         {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "放",
+              {
+                "uz": "qo'ymoq, joylashtirmoq",
+                "ru": "класть, ставить",
+                "tj": "гузоштан"
+              }
+            ],
+            [
+              "饮料",
+              {
+                "uz": "ichimlik",
+                "ru": "напиток",
+                "tj": "нӯшокӣ"
+              }
+            ],
+            [
+              "或者",
+              {
+                "uz": "yoki (darak gapda)",
+                "ru": "или (в повествовательном предложении)",
+                "tj": "ё (дар ҷумлаи хабарӣ)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "桌子上放着很多饮料，你喝什么？",
+          "pinyin": "Zhuōzi shang fàngzhe hěn duō yǐnliào, nǐ hē shénme?",
+          "options": [
+            "桌子上放着很多饮料，你喝什么？",
+            "没事，我们明天要去爬山。",
+            "阴天，电视上说多云。怎么了？有事？",
+            "明天是晴天还是阴天？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "桌子上放着很多饮料，你喝什么？ — Stol ustida ko'p ichimlik turibdi, nima ichasan?",
+            "ru": "桌子上放着很多饮料，你喝什么？ — На столе стоит много напитков, что будешь пить?",
+            "tj": "桌子上放着很多饮料，你喝什么？ — Дар рӯи миз нӯшокиҳои бисёр гузошта шудаанд, чӣ менӯшӣ?"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "放",
           "pinyin": "fàng",
@@ -835,6 +794,105 @@
             "uz": "qo'ymoq, joylashtirmoq",
             "ru": "класть, ставить",
             "tj": "гузоштан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "新鲜 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 新鲜:",
+            "tj": "Маънои калимаи 新鲜-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
+            },
+            {
+              "uz": "yoki (savolda tanlov)",
+              "ru": "или (в вопросе выбора)",
+              "tj": "ё (дар саволи интихобӣ)"
+            },
+            {
+              "uz": "yangi, sarhil",
+              "ru": "свежий",
+              "tj": "тару тоза"
+            },
+            {
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "新鲜 = yangi, sarhil (xīnxiān)",
+            "ru": "新鲜 = свежий (xīnxiān)",
+            "tj": "新鲜 = тару тоза (xīnxiān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "新鲜",
+            "pinyin": "xīnxiān",
+            "meaning": {
+              "uz": "yangi, sarhil",
+              "ru": "свежий",
+              "tj": "тару тоза"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qo'ymoq, joylashtirmoq' xitoycha qaysi?",
+            "ru": "'класть, ставить' по-китайски?",
+            "tj": "'гузоштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "爬山",
+            "放",
+            "小心",
+            "还是"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "qo'ymoq, joylashtirmoq = 放 (fàng)",
+            "ru": "класть, ставить = 放 (fàng)",
+            "tj": "гузоштан = 放 (fàng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "放",
+            "pinyin": "fàng",
+            "meaning": {
+              "uz": "qo'ymoq, joylashtirmoq",
+              "ru": "класть, ставить",
+              "tj": "гузоштан"
+            }
           }
         }
       ]

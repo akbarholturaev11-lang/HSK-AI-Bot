@@ -432,9 +432,9 @@
           },
           "options": [
             "出差",
-            "牙膏",
+            "毛巾",
             "既然",
-            "毛巾"
+            "牙膏"
           ],
           "correct_index": 2,
           "explanation": {
@@ -467,10 +467,10 @@
           "audio_text": "停",
           "pinyin": "tíng",
           "options": [
-            "出差",
+            "牙膏",
             "毛巾",
             "停",
-            "牙膏"
+            "出差"
           ],
           "correct_index": 2,
           "explanation": {
@@ -507,11 +507,6 @@
           },
           "options": [
             {
-              "uz": "sochiq",
-              "ru": "полотенце",
-              "tj": "дастмол"
-            },
-            {
               "uz": "xizmat safariga bormoq",
               "ru": "ехать в командировку",
               "tj": "ба сафари хизматӣ рафтан"
@@ -520,6 +515,11 @@
               "uz": "tish pastasi",
               "ru": "зубная паста",
               "tj": "хамираи дандон"
+            },
+            {
+              "uz": "sochiq",
+              "ru": "полотенце",
+              "tj": "дастмол"
             },
             {
               "uz": "o'zidan mamnun",
@@ -572,11 +572,11 @@
           },
           "options": [
             "出差",
-            "牙膏",
             "目的",
+            "牙膏",
             "毛巾"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "目的 = maqsad (mùdì)",
             "ru": "目的 = цель (mùdì)",
@@ -596,10 +596,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "máojīn",
             "chūchāi",
+            "yágāo",
             "jìrán",
-            "yágāo"
+            "máojīn"
           ],
           "correct_index": 2,
           "explanation": {
@@ -698,12 +698,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "牙膏",
-            "毛巾",
             "出差",
-            "既然"
+            "牙膏",
+            "既然",
+            "毛巾"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 既然 (jìrán) — modomiki, shunday ekan",
             "ru": "Верно: 既然 (jìrán) — раз уж, поскольку",
@@ -722,69 +722,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "盒子 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 盒子:",
-            "tj": "Маънои калимаи 盒子-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "sochiq",
-              "ru": "полотенце",
-              "tj": "дастмол"
-            },
-            {
-              "uz": "xizmat safariga bormoq",
-              "ru": "ехать в командировку",
-              "tj": "ба сафари хизматӣ рафтан"
-            },
-            {
-              "uz": "quti",
-              "ru": "коробка",
-              "tj": "қуттӣ"
-            },
-            {
-              "uz": "tish pastasi",
-              "ru": "зубная паста",
-              "tj": "хамираи дандон"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "盒子 = quti (hézi)",
-            "ru": "盒子 = коробка (hézi)",
-            "tj": "盒子 = қуттӣ (hézi)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "目的",
-          "pinyin": "mùdì",
-          "options": [
-            "目的",
-            "毛巾",
-            "出差",
-            "牙膏"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "目的 — maqsad (mùdì)",
-            "ru": "目的 — цель (mùdì)",
-            "tj": "目的 — мақсад (mùdì)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -794,10 +731,10 @@
           "audio_text": "既然",
           "pinyin": "jìrán",
           "options": [
+            "毛巾",
             "牙膏",
-            "出差",
             "既然",
-            "毛巾"
+            "出差"
           ],
           "correct_index": 2,
           "explanation": {
@@ -819,12 +756,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "得意",
+            "牙膏",
             "出差",
             "毛巾",
-            "牙膏"
+            "得意"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "o'zidan mamnun = 得意 (déyì)",
             "ru": "довольный собой = 得意 (déyì)",
@@ -839,6 +776,105 @@
             "uz": "maqsad",
             "ru": "цель",
             "tj": "мақсад"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "地球 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 地球:",
+            "tj": "Маънои калимаи 地球-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sochiq",
+              "ru": "полотенце",
+              "tj": "дастмол"
+            },
+            {
+              "uz": "Yer sayyorasi",
+              "ru": "Земля, земной шар",
+              "tj": "Замин"
+            },
+            {
+              "uz": "tish pastasi",
+              "ru": "зубная паста",
+              "tj": "хамираи дандон"
+            },
+            {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "地球 = Yer sayyorasi (dìqiú)",
+            "ru": "地球 = Земля, земной шар (dìqiú)",
+            "tj": "地球 = Замин (dìqiú)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "地球",
+            "pinyin": "dìqiú",
+            "meaning": {
+              "uz": "Yer sayyorasi",
+              "ru": "Земля, земной шар",
+              "tj": "Замин"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'maqsad' xitoycha qaysi?",
+            "ru": "'цель' по-китайски?",
+            "tj": "'мақсад' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "牙膏",
+            "目的",
+            "出差",
+            "毛巾"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "maqsad = 目的 (mùdì)",
+            "ru": "цель = 目的 (mùdì)",
+            "tj": "мақсад = 目的 (mùdì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "目的",
+            "pinyin": "mùdì",
+            "meaning": {
+              "uz": "maqsad",
+              "ru": "цель",
+              "tj": "мақсад"
+            }
           }
         }
       ]

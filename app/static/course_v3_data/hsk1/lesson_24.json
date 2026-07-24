@@ -628,47 +628,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "明天 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 明天:",
-            "tj": "Маънои калимаи 明天-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "iltimos, marhamat",
-              "ru": "пожалуйста, разрешите спросить",
-              "tj": "лутфан, иҷозат диҳед"
-            },
-            {
-              "uz": "ertaga",
-              "ru": "завтра",
-              "tj": "фардо"
-            },
-            {
-              "uz": "so'ramoq",
-              "ru": "спрашивать",
-              "tj": "пурсидан"
-            },
-            {
-              "uz": "bugun",
-              "ru": "сегодня",
-              "tj": "имрӯз"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "明天 = ertaga (míngtiān)",
-            "ru": "明天 = завтра (míngtiān)",
-            "tj": "明天 = фардо (míngtiān)"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "我去学校看书。",
           "pinyin": "Wǒ qù xuéxiào kàn shū.",
@@ -738,35 +697,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men maktabga kitob o'qigani boraman.",
-            "ru": "Я иду в школу читать.",
-            "tj": "Ман ба мактаб рафта китоб мехонам."
-          },
-          "tokens": [
-            "学校",
-            "请",
-            "看",
-            "我",
-            "问",
-            "去",
-            "书"
-          ],
-          "answer_tokens": [
-            "我",
-            "去",
-            "学校",
-            "看",
-            "书"
-          ],
-          "explanation": {
-            "uz": "我去学校看书。 — Wǒ qù xuéxiào kàn shū.",
-            "ru": "我去学校看书。 — Wǒ qù xuéxiào kàn shū.",
-            "tj": "我去学校看书。 — Wǒ qù xuéxiào kàn shū."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "书",
           "pinyin": "shū",
@@ -774,6 +704,105 @@
             "uz": "kitob",
             "ru": "книга",
             "tj": "китоб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "明天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 明天:",
+            "tj": "Маънои калимаи 明天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iltimos, marhamat",
+              "ru": "пожалуйста, разрешите спросить",
+              "tj": "лутфан, иҷозат диҳед"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            },
+            {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "明天 = ertaga (míngtiān)",
+            "ru": "明天 = завтра (míngtiān)",
+            "tj": "明天 = фардо (míngtiān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "明天",
+            "pinyin": "míngtiān",
+            "meaning": {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kitob' xitoycha qaysi?",
+            "ru": "'книга' по-китайски?",
+            "tj": "'китоб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "书",
+            "问",
+            "请",
+            "今天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kitob = 书 (shū)",
+            "ru": "книга = 书 (shū)",
+            "tj": "китоб = 书 (shū)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "书",
+            "pinyin": "shū",
+            "meaning": {
+              "uz": "kitob",
+              "ru": "книга",
+              "tj": "китоб"
+            }
           }
         }
       ]

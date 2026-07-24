@@ -632,77 +632,60 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Mushuk u yerda.",
-            "ru": "Кошка вон там.",
-            "tj": "Гурба он ҷост."
+          "type": "reverse_builder",
+          "zh": "小狗在椅子下面。",
+          "pinyin": "Xiǎo gǒu zài yǐzi xiàmian.",
+          "translation": {
+            "uz": "It stulning ostida.",
+            "ru": "Собака под стулом.",
+            "tj": "Саг зери курсӣ аст."
           },
-          "tokens": [
-            "那儿",
-            "小",
-            "狗",
-            "椅子",
-            "猫",
-            "在"
-          ],
-          "answer_tokens": [
-            "小",
-            "猫",
-            "在",
-            "那儿"
-          ],
+          "tokens": {
+            "uz": [
+              "ostida",
+              "u",
+              "It",
+              "Mushuk",
+              "stulning"
+            ],
+            "ru": [
+              "Собака",
+              "Кошка",
+              "вон",
+              "стулом",
+              "под"
+            ],
+            "tj": [
+              "Саг",
+              "аст",
+              "он",
+              "Гурба",
+              "зери",
+              "курсӣ"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "It",
+              "stulning",
+              "ostida"
+            ],
+            "ru": [
+              "Собака",
+              "под",
+              "стулом"
+            ],
+            "tj": [
+              "Саг",
+              "зери",
+              "курсӣ",
+              "аст"
+            ]
+          },
           "explanation": {
-            "uz": "小猫在那儿。 — Xiǎo māo zài nàr.",
-            "ru": "小猫在那儿。 — Xiǎo māo zài nàr.",
-            "tj": "小猫在那儿。 — Xiǎo māo zài nàr."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "不在家。",
-          "pinyin": "Bú zài jiā.",
-          "options": [
-            "不在家。",
-            "小猫在哪儿？",
-            "小猫在那儿。",
-            "小狗在哪儿？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "不在家。 — Uyda yo'q.",
-            "ru": "不在家。 — Нет, не дома.",
-            "tj": "不在家。 — Дар хона нест."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'pastda, ostida' xitoycha qaysi?",
-            "ru": "'внизу, под' по-китайски?",
-            "tj": "'дар поён, зери' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "猫",
-            "在",
-            "下面",
-            "小"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "pastda, ostida = 下面 (xiàmian)",
-            "ru": "внизу, под = 下面 (xiàmian)",
-            "tj": "дар поён, зери = 下面 (xiàmian)"
+            "uz": "小狗在椅子下面。 — It stulning ostida.",
+            "ru": "小狗在椅子下面。 — Собака под стулом.",
+            "tj": "小狗在椅子下面。 — Саг зери курсӣ аст."
           }
         },
         {
@@ -713,6 +696,105 @@
             "uz": "-da, -da (joy ko'rsatgich)",
             "ru": "в, на (показатель места)",
             "tj": "дар (нишондиҳандаи ҷой)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "猫 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 猫:",
+            "tj": "Маънои калимаи 猫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "u yerda, ana o'sha yerda",
+              "ru": "там, вон там",
+              "tj": "он ҷо, дар он ҷо"
+            },
+            {
+              "uz": "kichik, mayda",
+              "ru": "маленький, небольшой",
+              "tj": "хурд, майда"
+            },
+            {
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
+            },
+            {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "猫 = mushuk (māo)",
+            "ru": "猫 = кошка (māo)",
+            "tj": "猫 = гурба (māo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "猫",
+            "pinyin": "māo",
+            "meaning": {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'-da, -da (joy ko'rsatgich)' xitoycha qaysi?",
+            "ru": "'в, на (показатель места)' по-китайски?",
+            "tj": "'дар (нишондиҳандаи ҷой)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "小",
+            "在",
+            "那儿",
+            "猫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "-da, -da (joy ko'rsatgich) = 在 (zài)",
+            "ru": "в, на (показатель места) = 在 (zài)",
+            "tj": "дар (нишондиҳандаи ҷой) = 在 (zài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "在",
+            "pinyin": "zài",
+            "meaning": {
+              "uz": "-da, -da (joy ko'rsatgich)",
+              "ru": "в, на (показатель места)",
+              "tj": "дар (нишондиҳандаи ҷой)"
+            }
           }
         }
       ]

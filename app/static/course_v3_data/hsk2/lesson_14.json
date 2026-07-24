@@ -718,72 +718,44 @@
           }
         },
         {
-          "type": "translation_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "'ming (1000)' xitoycha qaysi?",
-            "ru": "'тысяча (1000)' по-китайски?",
-            "tj": "'ҳазор (1000)' ба хитоӣ кадом аст?"
+            "uz": "红色 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 红色:",
+            "tj": "Маънои калимаи 红色-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "报纸",
-            "手表",
-            "送",
-            "千"
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            },
+            {
+              "uz": "qizil rang",
+              "ru": "красный цвет",
+              "tj": "ранги сурх"
+            },
+            {
+              "uz": "ming (1000)",
+              "ru": "тысяча (1000)",
+              "tj": "ҳазор (1000)"
+            },
+            {
+              "uz": "qo'l soati",
+              "ru": "наручные часы",
+              "tj": "соати дасти"
+            }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "ming (1000) = 千 (qiān)",
-            "ru": "тысяча (1000) = 千 (qiān)",
-            "tj": "ҳазор (1000) = 千 (qiān)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "是啊，粉色是我女儿最喜欢的颜色。",
-          "pinyin": "Shì a, fěnsè shì wǒ nǚ'ér zuì xǐhuan de yánsè.",
-          "options": [
-            "这块手表是你的吗？",
-            "不是我的。是我爸爸的。",
-            "多少钱买的？",
-            "是啊，粉色是我女儿最喜欢的颜色。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "是啊，粉色是我女儿最喜欢的颜色。 — Ha, pushti rang qizimning eng sevimli rangi.",
-            "ru": "是啊，粉色是我女儿最喜欢的颜色。 — Да, розовый — любимый цвет моей дочки.",
-            "tj": "是啊，粉色是我女儿最喜欢的颜色。 — Бале, гулобӣ ранги дӯстдоштатарини духтарам аст."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "红色",
-          "pinyin": "hóngsè",
-          "options": [
-            "红色",
-            "手表",
-            "报纸",
-            "千"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "红色 — qizil rang (hóngsè)",
-            "ru": "红色 — красный цвет (hóngsè)",
-            "tj": "红色 — ранги сурх (hóngsè)"
+            "uz": "红色 = qizil rang (hóngsè)",
+            "ru": "红色 = красный цвет (hóngsè)",
+            "tj": "红色 = ранги сурх (hóngsè)"
           }
         },
         {
@@ -794,6 +766,105 @@
             "uz": "chap tomon",
             "ru": "левая сторона",
             "tj": "тарафи чап"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "真 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 真:",
+            "tj": "Маънои калимаи 真-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo'l soati",
+              "ru": "наручные часы",
+              "tj": "соати дасти"
+            },
+            {
+              "uz": "haqiqatan, juda (ta'kidlash uchun)",
+              "ru": "действительно, очень (для усиления)",
+              "tj": "воқеан, хеле (барои тақвият)"
+            },
+            {
+              "uz": "ming (1000)",
+              "ru": "тысяча (1000)",
+              "tj": "ҳазор (1000)"
+            },
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "真 = haqiqatan, juda (ta'kidlash uchun) (zhēn)",
+            "ru": "真 = действительно, очень (для усиления) (zhēn)",
+            "tj": "真 = воқеан, хеле (барои тақвият) (zhēn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "真",
+            "pinyin": "zhēn",
+            "meaning": {
+              "uz": "haqiqatan, juda (ta'kidlash uchun)",
+              "ru": "действительно, очень (для усиления)",
+              "tj": "воқеан, хеле (барои тақвият)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chap tomon' xitoycha qaysi?",
+            "ru": "'левая сторона' по-китайски?",
+            "tj": "'тарафи чап' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "左边",
+            "手表",
+            "千",
+            "报纸"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "chap tomon = 左边 (zuǒbian)",
+            "ru": "левая сторона = 左边 (zuǒbian)",
+            "tj": "тарафи чап = 左边 (zuǒbian)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "左边",
+            "pinyin": "zuǒbian",
+            "meaning": {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            }
           }
         }
       ]

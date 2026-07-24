@@ -437,9 +437,9 @@
               "tj": "операи Пекин"
             },
             {
-              "uz": "tomoshabin",
-              "ru": "зрители, публика",
-              "tj": "тамошобинон"
+              "uz": "amalga oshirmoq, olib bormoq",
+              "ru": "проводить, осуществлять",
+              "tj": "гузаронидан, анҷом додан"
             },
             {
               "uz": "aktyor",
@@ -447,12 +447,12 @@
               "tj": "актёр"
             },
             {
-              "uz": "amalga oshirmoq, olib bormoq",
-              "ru": "проводить, осуществлять",
-              "tj": "гузаронидан, анҷом додан"
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "进行 = amalga oshirmoq, olib bormoq (jìnxíng)",
             "ru": "进行 = проводить, осуществлять (jìnxíng)",
@@ -488,8 +488,8 @@
           "options": [
             "观众",
             "错误",
-            "演员",
-            "京剧"
+            "京剧",
+            "演员"
           ],
           "correct_index": 1,
           "explanation": {
@@ -525,12 +525,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jīngjù",
-            "guānzhòng",
             "suízhe",
-            "yǎnyuán"
+            "yǎnyuán",
+            "jīngjù",
+            "guānzhòng"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "随着 — suízhe",
             "ru": "随着 — suízhe",
@@ -574,12 +574,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "京剧",
-            "演员",
+            "十分",
             "观众",
-            "十分"
+            "京剧",
+            "演员"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "juda, nihoyatda = 十分 (shífēn)",
             "ru": "очень, весьма = 十分 (shífēn)",
@@ -596,10 +596,10 @@
           "audio_text": "进行",
           "pinyin": "jìnxíng",
           "options": [
+            "京剧",
             "演员",
-            "观众",
             "进行",
-            "京剧"
+            "观众"
           ],
           "correct_index": 2,
           "explanation": {
@@ -698,12 +698,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "京剧",
-            "演员",
             "观众",
-            "互联网"
+            "京剧",
+            "互联网",
+            "演员"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 互联网 (hùliánwǎng) — internet",
             "ru": "Верно: 互联网 (hùliánwǎng) — интернет",
@@ -722,50 +722,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "进行",
-          "pinyin": "jìnxíng",
-          "options": [
-            "演员",
-            "观众",
-            "京剧",
-            "进行"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "进行 — amalga oshirmoq, olib bormoq (jìnxíng)",
-            "ru": "进行 — проводить, осуществлять (jìnxíng)",
-            "tj": "进行 — гузаронидан, анҷом додан (jìnxíng)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "十分",
-          "pinyin": "shífēn",
-          "options": [
-            "十分",
-            "观众",
-            "演员",
-            "京剧"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "十分 — juda, nihoyatda (shífēn)",
-            "ru": "十分 — очень, весьма (shífēn)",
-            "tj": "十分 — хеле, бисёр (shífēn)"
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'xato' xitoycha qaysi?",
@@ -779,11 +735,11 @@
           },
           "options": [
             "演员",
-            "观众",
             "错误",
-            "京剧"
+            "京剧",
+            "观众"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "xato = 错误 (cuòwù)",
             "ru": "ошибка = 错误 (cuòwù)",
@@ -803,12 +759,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "观众",
             "京剧",
             "演员",
-            "随着",
-            "观众"
+            "随着"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "随着 = ...bilan birga, ...sari (suízhe)",
             "ru": "随着 = по мере, вместе с (suízhe)",
@@ -823,6 +779,105 @@
             "uz": "juda, nihoyatda",
             "ru": "очень, весьма",
             "tj": "хеле, бисёр"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "互联网 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 互联网:",
+            "tj": "Маънои калимаи 互联网-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            },
+            {
+              "uz": "internet",
+              "ru": "интернет",
+              "tj": "интернет"
+            },
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            },
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "互联网 = internet (hùliánwǎng)",
+            "ru": "互联网 = интернет (hùliánwǎng)",
+            "tj": "互联网 = интернет (hùliánwǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "互联网",
+            "pinyin": "hùliánwǎng",
+            "meaning": {
+              "uz": "internet",
+              "ru": "интернет",
+              "tj": "интернет"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'juda, nihoyatda' xitoycha qaysi?",
+            "ru": "'очень, весьма' по-китайски?",
+            "tj": "'хеле, бисёр' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "演员",
+            "十分",
+            "观众",
+            "京剧"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "juda, nihoyatda = 十分 (shífēn)",
+            "ru": "очень, весьма = 十分 (shífēn)",
+            "tj": "хеле, бисёр = 十分 (shífēn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "十分",
+            "pinyin": "shífēn",
+            "meaning": {
+              "uz": "juda, nihoyatda",
+              "ru": "очень, весьма",
+              "tj": "хеле, бисёр"
+            }
           }
         }
       ]

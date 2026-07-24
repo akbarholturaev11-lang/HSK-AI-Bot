@@ -365,12 +365,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "ǎi",
-            "lìshǐ",
             "zhǔyào",
-            "gèzi"
+            "lìshǐ",
+            "gèzi",
+            "ǎi"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "主要 — zhǔyào",
             "ru": "主要 — zhǔyào",
@@ -414,12 +414,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "个子",
-            "环境",
+            "历史",
             "矮",
-            "历史"
+            "个子",
+            "环境"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "muhit, atrof-muhit = 环境 (huánjìng)",
             "ru": "среда, окружение = 环境 (huánjìng)",
@@ -450,12 +450,12 @@
           "audio_text": "附近",
           "pinyin": "fùjìn",
           "options": [
-            "附近",
             "个子",
+            "矮",
             "历史",
-            "矮"
+            "附近"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "附近 — yaqin atrof (fùjìn)",
             "ru": "附近 — поблизости, окрестности (fùjìn)",
@@ -476,9 +476,9 @@
           },
           "options": [
             {
-              "uz": "past bo'yli",
-              "ru": "низкий, невысокий",
-              "tj": "пастқад"
+              "uz": "bo'y, gavda balandligi",
+              "ru": "рост",
+              "tj": "қад"
             },
             {
               "uz": "tarix",
@@ -486,17 +486,17 @@
               "tj": "таърих"
             },
             {
+              "uz": "past bo'yli",
+              "ru": "низкий, невысокий",
+              "tj": "пастқад"
+            },
+            {
               "uz": "asosiy, muhim",
               "ru": "главный, основной",
               "tj": "асосӣ"
-            },
-            {
-              "uz": "bo'y, gavda balandligi",
-              "ru": "рост",
-              "tj": "қад"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "主要 = asosiy, muhim (zhǔyào)",
             "ru": "主要 = главный, основной (zhǔyào)",
@@ -548,31 +548,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "数学 talaffuzini tanlang:",
-            "ru": "Выберите произношение 数学:",
-            "tj": "Талаффузи 数学-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "lìshǐ",
-            "ǎi",
-            "shùxué",
-            "gèzi"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "数学 — shùxué",
-            "ru": "数学 — shùxué",
-            "tj": "数学 — shùxué"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "大小没关系，主要是环境，哪个更安静？",
@@ -651,28 +626,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "附近",
-          "pinyin": "fùjìn",
-          "options": [
-            "历史",
-            "个子",
-            "附近",
-            "矮"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "附近 — yaqin atrof (fùjìn)",
-            "ru": "附近 — поблизости, окрестности (fùjìn)",
-            "tj": "附近 — наздикӣ (fùjìn)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
@@ -680,16 +633,38 @@
           "audio_text": "大小没关系，主要是环境，哪个更安静？",
           "pinyin": "Dàxiǎo méi guānxi, zhǔyào shì huánjìng, nǎ ge gèng ānjìng?",
           "options": [
-            "那你们谁大？",
-            "大小没关系，主要是环境，哪个更安静？",
             "马可比我高，我比马可矮一点儿。",
-            "大山，你和马可谁个子高？"
+            "大山，你和马可谁个子高？",
+            "那你们谁大？",
+            "大小没关系，主要是环境，哪个更安静？"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "大小没关系，主要是环境，哪个更安静？ — Kattaligi muhim emas, asosiysi muhit, qaysisi tinchroq?",
             "ru": "大小没关系，主要是环境，哪个更安静？ — Размер не важен, главное окружение, где тише?",
             "tj": "大小没关系，主要是环境，哪个更安静？ — Андоза муҳим нест, асосӣ муҳит аст, кадомаш оромтар?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "附近",
+          "pinyin": "fùjìn",
+          "options": [
+            "附近",
+            "个子",
+            "矮",
+            "历史"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "附近 — yaqin atrof (fùjìn)",
+            "ru": "附近 — поблизости, окрестности (fùjìn)",
+            "tj": "附近 — наздикӣ (fùjìn)"
           }
         },
         {
@@ -700,6 +675,105 @@
             "uz": "muhit, atrof-muhit",
             "ru": "среда, окружение",
             "tj": "муҳит"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "旧 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 旧:",
+            "tj": "Маънои калимаи 旧-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tarix",
+              "ru": "история",
+              "tj": "таърих"
+            },
+            {
+              "uz": "past bo'yli",
+              "ru": "низкий, невысокий",
+              "tj": "пастқад"
+            },
+            {
+              "uz": "bo'y, gavda balandligi",
+              "ru": "рост",
+              "tj": "қад"
+            },
+            {
+              "uz": "eski",
+              "ru": "старый, бывший в употреблении",
+              "tj": "кӯҳна"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "旧 = eski (jiù)",
+            "ru": "旧 = старый, бывший в употреблении (jiù)",
+            "tj": "旧 = кӯҳна (jiù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "旧",
+            "pinyin": "jiù",
+            "meaning": {
+              "uz": "eski",
+              "ru": "старый, бывший в употреблении",
+              "tj": "кӯҳна"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'muhit, atrof-muhit' xitoycha qaysi?",
+            "ru": "'среда, окружение' по-китайски?",
+            "tj": "'муҳит' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "个子",
+            "环境",
+            "历史",
+            "矮"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "muhit, atrof-muhit = 环境 (huánjìng)",
+            "ru": "среда, окружение = 环境 (huánjìng)",
+            "tj": "муҳит = 环境 (huánjìng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "环境",
+            "pinyin": "huánjìng",
+            "meaning": {
+              "uz": "muhit, atrof-muhit",
+              "ru": "среда, окружение",
+              "tj": "муҳит"
+            }
           }
         }
       ]

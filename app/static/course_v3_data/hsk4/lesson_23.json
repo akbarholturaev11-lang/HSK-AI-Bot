@@ -371,12 +371,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zánmen",
-            "tǐng",
             "jǐnzhāng",
-            "xìnxīn"
+            "zánmen",
+            "xìnxīn",
+            "tǐng"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "咱们 — zánmen",
             "ru": "咱们 — zánmen",
@@ -410,12 +410,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "挺",
-            "紧张",
             "信心",
-            "安排"
+            "安排",
+            "紧张",
+            "挺"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "tartibga solmoq, rejalashtirmoq = 安排 (ānpái)",
             "ru": "организовывать, планировать = 安排 (ānpái)",
@@ -456,12 +456,12 @@
           "audio_text": "首先",
           "pinyin": "shǒuxiān",
           "options": [
-            "紧张",
             "信心",
             "挺",
-            "首先"
+            "首先",
+            "紧张"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "首先 — avvalo, birinchi navbatda (shǒuxiān)",
             "ru": "首先 — прежде всего, во-первых (shǒuxiān)",
@@ -496,27 +496,27 @@
           },
           "options": [
             {
-              "uz": "hayajonlangan, asabiy",
-              "ru": "нервный, напряженный",
-              "tj": "изтиробнок, асабӣ"
-            },
-            {
               "uz": "ishonch",
               "ru": "уверенность",
               "tj": "боварӣ"
             },
             {
-              "uz": "rasmiy",
-              "ru": "официальный",
-              "tj": "расмӣ"
-            },
-            {
               "uz": "ancha, juda",
               "ru": "довольно, весьма",
               "tj": "хеле, анча"
+            },
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
+              "uz": "rasmiy",
+              "ru": "официальный",
+              "tj": "расмӣ"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "正式 = rasmiy (zhèngshì)",
             "ru": "正式 = официальный (zhèngshì)",
@@ -536,12 +536,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "紧张",
-            "信心",
+            "挺",
             "咱们",
-            "挺"
+            "紧张",
+            "信心"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "咱们 = biz (zánmen)",
             "ru": "咱们 = мы (включая собеседника) (zánmen)",
@@ -637,14 +637,14 @@
             "tj": "Аввалан, либоси расмӣ пӯшидан лозим."
           },
           "tokens": [
-            "穿",
-            "紧张",
-            "要",
-            "首先",
-            "的",
             "正式",
             "挺",
-            "衣服"
+            "首先",
+            "要",
+            "穿",
+            "衣服",
+            "的",
+            "紧张"
           ],
           "answer_tokens": [
             "首先",
@@ -671,101 +671,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "首先",
-          "pinyin": "shǒuxiān",
-          "options": [
-            "首先",
-            "紧张",
-            "挺",
-            "信心"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "首先 — avvalo, birinchi navbatda (shǒuxiān)",
-            "ru": "首先 — прежде всего, во-первых (shǒuxiān)",
-            "tj": "首先 — пеш аз ҳама, аввалан (shǒuxiān)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Avvalo, rasmiy kiyim kiyish kerak.",
-            "ru": "Прежде всего, нужно надеть официальную одежду.",
-            "tj": "Аввалан, либоси расмӣ пӯшидан лозим."
-          },
-          "tokens": [
-            "衣服",
-            "挺",
-            "正式",
-            "要",
-            "的",
-            "首先",
-            "穿",
-            "紧张"
-          ],
-          "answer_tokens": [
-            "首先",
-            "要",
-            "穿",
-            "正式",
-            "的",
-            "衣服"
-          ],
-          "explanation": {
-            "uz": "首先，要穿正式的衣服。 — Shǒuxiān, yào chuān zhèngshì de yīfu.",
-            "ru": "首先，要穿正式的衣服。 — Shǒuxiān, yào chuān zhèngshì de yīfu.",
-            "tj": "首先，要穿正式的衣服。 — Shǒuxiān, yào chuān zhèngshì de yīfu."
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "咱们",
-              {
-                "uz": "biz",
-                "ru": "мы (включая собеседника)",
-                "tj": "мо"
-              }
-            ],
-            [
-              "安排",
-              {
-                "uz": "tartibga solmoq, rejalashtirmoq",
-                "ru": "организовывать, планировать",
-                "tj": "ба нақша гирифтан, тартиб додан"
-              }
-            ],
-            [
-              "首先",
-              {
-                "uz": "avvalo, birinchi navbatda",
-                "ru": "прежде всего, во-первых",
-                "tj": "пеш аз ҳама, аввалан"
-              }
-            ],
-            [
-              "正式",
-              {
-                "uz": "rasmiy",
-                "ru": "официальный",
-                "tj": "расмӣ"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "首先，要穿正式的衣服。",
@@ -830,6 +735,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "安排",
+          "pinyin": "ānpái",
+          "options": [
+            "挺",
+            "紧张",
+            "信心",
+            "安排"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "安排 — tartibga solmoq, rejalashtirmoq (ānpái)",
+            "ru": "安排 — организовывать, планировать (ānpái)",
+            "tj": "安排 — ба нақша гирифтан, тартиб додан (ānpái)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "首先",
           "pinyin": "shǒuxiān",
@@ -837,6 +764,105 @@
             "uz": "avvalo, birinchi navbatda",
             "ru": "прежде всего, во-первых",
             "tj": "пеш аз ҳама, аввалан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "另外 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 另外:",
+            "tj": "Маънои калимаи 另外-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            },
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
+              "uz": "bundan tashqari",
+              "ru": "кроме того",
+              "tj": "ғайр аз ин"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "另外 = bundan tashqari (lìngwài)",
+            "ru": "另外 = кроме того (lìngwài)",
+            "tj": "另外 = ғайр аз ин (lìngwài)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "另外",
+            "pinyin": "lìngwài",
+            "meaning": {
+              "uz": "bundan tashqari",
+              "ru": "кроме того",
+              "tj": "ғайр аз ин"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'avvalo, birinchi navbatda' xitoycha qaysi?",
+            "ru": "'прежде всего, во-первых' по-китайски?",
+            "tj": "'пеш аз ҳама, аввалан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "首先",
+            "挺",
+            "紧张",
+            "信心"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "avvalo, birinchi navbatda = 首先 (shǒuxiān)",
+            "ru": "прежде всего, во-первых = 首先 (shǒuxiān)",
+            "tj": "пеш аз ҳама, аввалан = 首先 (shǒuxiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "首先",
+            "pinyin": "shǒuxiān",
+            "meaning": {
+              "uz": "avvalo, birinchi navbatda",
+              "ru": "прежде всего, во-первых",
+              "tj": "пеш аз ҳама, аввалан"
+            }
           }
         }
       ]

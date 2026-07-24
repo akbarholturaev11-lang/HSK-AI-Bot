@@ -301,12 +301,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "点",
             "现在",
-            "吃饭",
-            "分"
+            "点",
+            "分",
+            "吃饭"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "吃饭 = ovqat yemoq, ovqatlanmoq (chī fàn)",
             "ru": "吃饭 = есть, обедать (chī fàn)",
@@ -350,12 +350,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "diǎn",
             "fēn",
             "xiànzài",
-            "shíhou",
-            "diǎn"
+            "shíhou"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "时候 — shíhou",
             "ru": "时候 — shíhou",
@@ -389,12 +389,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "点",
             "分",
-            "回",
             "现在",
-            "点"
+            "回"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "qaytmoq, orqaga kelmoq = 回 (huí)",
             "ru": "возвращаться = 回 (huí)",
@@ -426,11 +426,11 @@
           "pinyin": "wǒmen",
           "options": [
             "点",
+            "我们",
             "现在",
-            "分",
-            "我们"
+            "分"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "我们 — biz (wǒmen)",
             "ru": "我们 — мы (wǒmen)",
@@ -451,9 +451,9 @@
           },
           "options": [
             {
-              "uz": "daqiqa",
-              "ru": "минута",
-              "tj": "дақиқа"
+              "uz": "ovqat yemoq, ovqatlanmoq",
+              "ru": "есть, обедать",
+              "tj": "хӯрдан, хӯрок хӯрдан"
             },
             {
               "uz": "soat (soat uchun o'lchov so'zi)",
@@ -461,17 +461,17 @@
               "tj": "соат (вақт)"
             },
             {
-              "uz": "ovqat yemoq, ovqatlanmoq",
-              "ru": "есть, обедать",
-              "tj": "хӯрдан, хӯрок хӯрдан"
-            },
-            {
               "uz": "hozir, shu vaqtda",
               "ru": "сейчас, в данный момент",
               "tj": "ҳоло, дар ин лаҳза"
+            },
+            {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "吃饭 = ovqat yemoq, ovqatlanmoq (chī fàn)",
             "ru": "吃饭 = есть, обедать (chī fàn)",
@@ -585,13 +585,13 @@
             "tj": "Шумо кай ба хона бармегардед?"
           },
           "tokens": [
-            "点",
-            "回",
-            "时候",
-            "现在",
-            "什么",
             "你",
-            "家"
+            "家",
+            "点",
+            "什么",
+            "现在",
+            "回",
+            "时候"
           ],
           "answer_tokens": [
             "你",
@@ -609,9 +609,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Qachon uyga qaytasiz?» — xitoychada qaysi biri?",
-            "ru": "«Когда вы идёте домой?» — какое предложение по-китайски?",
-            "tj": "«Шумо кай ба хона бармегардед?» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Men dushanba kuni Pekinga boraman.» — xitoychada qaysi biri?",
+            "ru": "«Я еду в Пекин в понедельник.» — какое предложение по-китайски?",
+            "tj": "«Ман рӯзи душанбе ба Пекин меравам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -619,15 +619,15 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
+            "我星期一去北京。",
             "他们六点吃饭。",
-            "你什么时候回家？",
-            "我星期一去北京。"
+            "你什么时候回家？"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "你什么时候回家？ — Nǐ shénme shíhou huí jiā?",
-            "ru": "你什么时候回家？ — Nǐ shénme shíhou huí jiā?",
-            "tj": "你什么时候回家？ — Nǐ shénme shíhou huí jiā?"
+            "uz": "我星期一去北京。 — Wǒ xīngqī yī qù Běijīng.",
+            "ru": "我星期一去北京。 — Wǒ xīngqī yī qù Běijīng.",
+            "tj": "我星期一去北京。 — Wǒ xīngqī yī qù Běijīng."
           }
         }
       ]
@@ -641,77 +641,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Qachon uyga qaytasiz?",
-            "ru": "Когда вы идёте домой?",
-            "tj": "Шумо кай ба хона бармегардед?"
-          },
-          "tokens": [
-            "回",
-            "家",
-            "时候",
-            "点",
-            "什么",
-            "你",
-            "现在"
-          ],
-          "answer_tokens": [
-            "你",
-            "什么",
-            "时候",
-            "回",
-            "家"
-          ],
-          "explanation": {
-            "uz": "你什么时候回家？ — Nǐ shénme shíhou huí jiā?",
-            "ru": "你什么时候回家？ — Nǐ shénme shíhou huí jiā?",
-            "tj": "你什么时候回家？ — Nǐ shénme shíhou huí jiā?"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "吃饭",
-              {
-                "uz": "ovqat yemoq, ovqatlanmoq",
-                "ru": "есть, обедать",
-                "tj": "хӯрдан, хӯрок хӯрдан"
-              }
-            ],
-            [
-              "时候",
-              {
-                "uz": "vaqt, lahza",
-                "ru": "время, момент",
-                "tj": "вақт, лаҳза"
-              }
-            ],
-            [
-              "回",
-              {
-                "uz": "qaytmoq, orqaga kelmoq",
-                "ru": "возвращаться",
-                "tj": "баргаштан, бозгашт"
-              }
-            ],
-            [
-              "我们",
-              {
-                "uz": "biz",
-                "ru": "мы",
-                "tj": "мо"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "你什么时候回家？",
@@ -781,6 +710,105 @@
             "uz": "vaqt, lahza",
             "ru": "время, момент",
             "tj": "вақт, лаҳза"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "点 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 点:",
+            "tj": "Маънои калимаи 点-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
+            },
+            {
+              "uz": "tush, yarim kun",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ, нимрӯз"
+            },
+            {
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
+            },
+            {
+              "uz": "soat (soat uchun o'lchov so'zi)",
+              "ru": "час (счётное слово для часов)",
+              "tj": "соат (вақт)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "点 = soat (soat uchun o'lchov so'zi) (diǎn)",
+            "ru": "点 = час (счётное слово для часов) (diǎn)",
+            "tj": "点 = соат (вақт) (diǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "点",
+            "pinyin": "diǎn",
+            "meaning": {
+              "uz": "soat (soat uchun o'lchov so'zi)",
+              "ru": "час (счётное слово для часов)",
+              "tj": "соат (вақт)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'vaqt, lahza' xitoycha qaysi?",
+            "ru": "'время, момент' по-китайски?",
+            "tj": "'вақт, лаҳза' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "时候",
+            "分",
+            "点",
+            "现在"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "vaqt, lahza = 时候 (shíhou)",
+            "ru": "время, момент = 时候 (shíhou)",
+            "tj": "вақт, лаҳза = 时候 (shíhou)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "时候",
+            "pinyin": "shíhou",
+            "meaning": {
+              "uz": "vaqt, lahza",
+              "ru": "время, момент",
+              "tj": "вақт, лаҳза"
+            }
           }
         }
       ]

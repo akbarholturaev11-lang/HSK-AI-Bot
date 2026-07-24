@@ -331,11 +331,11 @@
           },
           "options": [
             "zìxíngchē",
-            "yīnwèi",
             "wài",
-            "mén"
+            "mén",
+            "yīnwèi"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "因为 — yīnwèi",
             "ru": "因为 — yīnwèi",
@@ -369,12 +369,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "自行车",
             "外",
-            "所以",
-            "门"
+            "门",
+            "自行车",
+            "所以"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "shuning uchun, shunday qilib = 所以 (suǒyǐ)",
             "ru": "поэтому, вот почему = 所以 (suǒyǐ)",
@@ -405,12 +405,12 @@
           "audio_text": "游泳",
           "pinyin": "yóuyǒng",
           "options": [
-            "外",
             "游泳",
             "门",
+            "外",
             "自行车"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "游泳 — suzmoq (yóuyǒng)",
             "ru": "游泳 — плавать (yóuyǒng)",
@@ -431,11 +431,6 @@
           },
           "options": [
             {
-              "uz": "velosiped",
-              "ru": "велосипед",
-              "tj": "велосипед"
-            },
-            {
               "uz": "tashqarisi, tashqi tomon",
               "ru": "снаружи, внешняя сторона",
               "tj": "берун, тарафи берун"
@@ -444,6 +439,11 @@
               "uz": "eshik, darvoza",
               "ru": "дверь, ворота",
               "tj": "дар, дарвоза"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
             },
             {
               "uz": "chunki, sababi",
@@ -550,11 +550,11 @@
           },
           "options": [
             "外",
-            "自行车",
             "因为",
-            "门"
+            "门",
+            "自行车"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 因为 (yīnwèi) — chunki, sababi",
             "ru": "Верно: 因为 (yīnwèi) — потому что, так как",
@@ -572,47 +572,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "打篮球 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 打篮球:",
-            "tj": "Маънои калимаи 打篮球-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "basketbol o'ynamoq",
-              "ru": "играть в баскетбол",
-              "tj": "баскетбол бозӣ кардан"
-            },
-            {
-              "uz": "eshik, darvoza",
-              "ru": "дверь, ворота",
-              "tj": "дар, дарвоза"
-            },
-            {
-              "uz": "tashqarisi, tashqi tomon",
-              "ru": "снаружи, внешняя сторона",
-              "tj": "берун, тарафи берун"
-            },
-            {
-              "uz": "velosiped",
-              "ru": "велосипед",
-              "tj": "велосипед"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "打篮球 = basketbol o'ynamoq (dǎ lánqiú)",
-            "ru": "打篮球 = играть в баскетбол (dǎ lánqiú)",
-            "tj": "打篮球 = баскетбол бозӣ кардан (dǎ lánqiú)"
-          }
-        },
         {
           "type": "pronunciation",
           "phrase": "所以",
@@ -634,11 +593,11 @@
           "pinyin": "yīnwèi",
           "options": [
             "外",
+            "因为",
             "门",
-            "自行车",
-            "因为"
+            "自行车"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "因为 — chunki, sababi (yīnwèi)",
             "ru": "因为 — потому что, так как (yīnwèi)",
@@ -658,12 +617,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "外",
-            "门",
             "自行车",
-            "游泳"
+            "外",
+            "游泳",
+            "门"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "suzmoq = 游泳 (yóuyǒng)",
             "ru": "плавать = 游泳 (yóuyǒng)",
@@ -678,6 +637,105 @@
             "uz": "chunki, sababi",
             "ru": "потому что, так как",
             "tj": "зеро, чунки"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "好吃 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 好吃:",
+            "tj": "Маънои калимаи 好吃-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "eshik, darvoza",
+              "ru": "дверь, ворота",
+              "tj": "дар, дарвоза"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            },
+            {
+              "uz": "mazali (ovqat haqida)",
+              "ru": "вкусный (о еде)",
+              "tj": "хӯрданӣ, болаззат (дар бораи хӯрок)"
+            },
+            {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "好吃 = mazali (ovqat haqida) (hǎochī)",
+            "ru": "好吃 = вкусный (о еде) (hǎochī)",
+            "tj": "好吃 = хӯрданӣ, болаззат (дар бораи хӯрок) (hǎochī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "好吃",
+            "pinyin": "hǎochī",
+            "meaning": {
+              "uz": "mazali (ovqat haqida)",
+              "ru": "вкусный (о еде)",
+              "tj": "хӯрданӣ, болаззат (дар бораи хӯрок)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chunki, sababi' xitoycha qaysi?",
+            "ru": "'потому что, так как' по-китайски?",
+            "tj": "'зеро, чунки' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "因为",
+            "外",
+            "门",
+            "自行车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "chunki, sababi = 因为 (yīnwèi)",
+            "ru": "потому что, так как = 因为 (yīnwèi)",
+            "tj": "зеро, чунки = 因为 (yīnwèi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "因为",
+            "pinyin": "yīnwèi",
+            "meaning": {
+              "uz": "chunki, sababi",
+              "ru": "потому что, так как",
+              "tj": "зеро, чунки"
+            }
           }
         }
       ]

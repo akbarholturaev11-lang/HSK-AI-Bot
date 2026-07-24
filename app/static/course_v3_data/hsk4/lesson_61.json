@@ -355,16 +355,6 @@
           },
           "options": [
             {
-              "uz": "qon ketmoq",
-              "ru": "кровоточить",
-              "tj": "хун рафтан"
-            },
-            {
-              "uz": "tushuntirmoq, ko'rsatmoq",
-              "ru": "объяснять, показывать",
-              "tj": "фаҳмондан, нишон додан"
-            },
-            {
               "uz": "iqlim",
               "ru": "климат",
               "tj": "иқлим"
@@ -373,9 +363,19 @@
               "uz": "artmoq",
               "ru": "вытирать",
               "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "tushuntirmoq, ko'rsatmoq",
+              "ru": "объяснять, показывать",
+              "tj": "фаҳмондан, нишон додан"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "说明 = tushuntirmoq, ko'rsatmoq (shuōmíng)",
             "ru": "说明 = объяснять, показывать (shuōmíng)",
@@ -409,12 +409,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "气候",
-            "擦",
             "要是",
-            "流血"
+            "流血",
+            "气候",
+            "擦"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "要是 = agar (yàoshi)",
             "ru": "要是 = если (yàoshi)",
@@ -448,12 +448,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jì",
-            "liú xiě",
             "qìhòu",
-            "cā"
+            "jì",
+            "cā",
+            "liú xiě"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "既 — jì",
             "ru": "既 — jì",
@@ -473,12 +473,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "擦",
             "流血",
-            "说明",
-            "气候"
+            "气候",
+            "擦",
+            "说明"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "tushuntirmoq, ko'rsatmoq = 说明 (shuōmíng)",
             "ru": "объяснять, показывать = 说明 (shuōmíng)",
@@ -538,16 +538,16 @@
             "tj": "Агар саломатӣ 1 бошад, чизҳои дигар сифрҳои баъди онанд."
           },
           "tokens": [
-            "健康",
-            "的",
-            "要是",
-            "其他",
-            "流血",
+            "后面",
             "都",
             "是",
-            "后面",
+            "要是",
+            "其他",
+            "是",
+            "的",
             "擦",
-            "是"
+            "健康",
+            "流血"
           ],
           "answer_tokens": [
             "要是",
@@ -610,40 +610,15 @@
           "pinyin": "shuōmíng",
           "options": [
             "流血",
+            "擦",
             "气候",
-            "说明",
-            "擦"
+            "说明"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "说明 — tushuntirmoq, ko'rsatmoq (shuōmíng)",
             "ru": "说明 — объяснять, показывать (shuōmíng)",
             "tj": "说明 — фаҳмондан, нишон додан (shuōmíng)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "后悔 talaffuzini tanlang:",
-            "ru": "Выберите произношение 后悔:",
-            "tj": "Талаффузи 后悔-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "qìhòu",
-            "liú xiě",
-            "hòuhuǐ",
-            "cā"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "后悔 — hòuhuǐ",
-            "ru": "后悔 — hòuhuǐ",
-            "tj": "后悔 — hòuhuǐ"
           }
         },
         {
@@ -654,6 +629,105 @@
             "uz": "tushuntirmoq, ko'rsatmoq",
             "ru": "объяснять, показывать",
             "tj": "фаҳмондан, нишон додан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "指 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 指:",
+            "tj": "Маънои калимаи 指-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nazarda tutmoq",
+              "ru": "указывать, означать",
+              "tj": "ишора кардан, маъно додан"
+            },
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
+            },
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "指 = nazarda tutmoq (zhǐ)",
+            "ru": "指 = указывать, означать (zhǐ)",
+            "tj": "指 = ишора кардан, маъно додан (zhǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "指",
+            "pinyin": "zhǐ",
+            "meaning": {
+              "uz": "nazarda tutmoq",
+              "ru": "указывать, означать",
+              "tj": "ишора кардан, маъно додан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tushuntirmoq, ko'rsatmoq' xitoycha qaysi?",
+            "ru": "'объяснять, показывать' по-китайски?",
+            "tj": "'фаҳмондан, нишон додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "气候",
+            "说明",
+            "流血",
+            "擦"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tushuntirmoq, ko'rsatmoq = 说明 (shuōmíng)",
+            "ru": "объяснять, показывать = 说明 (shuōmíng)",
+            "tj": "фаҳмондан, нишон додан = 说明 (shuōmíng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "说明",
+            "pinyin": "shuōmíng",
+            "meaning": {
+              "uz": "tushuntirmoq, ko'rsatmoq",
+              "ru": "объяснять, показывать",
+              "tj": "фаҳмондан, нишон додан"
+            }
           }
         }
       ]

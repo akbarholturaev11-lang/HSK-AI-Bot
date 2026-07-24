@@ -346,12 +346,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiè",
-            "túshūguǎn",
             "cídiǎn",
-            "kuàizi"
+            "jiè",
+            "kuàizi",
+            "túshūguǎn"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "筷子 — kuàizi",
             "ru": "筷子 — kuàizi",
@@ -395,12 +395,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "啤酒",
             "图书馆",
             "借",
-            "啤酒",
             "词典"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "pivo = 啤酒 (píjiǔ)",
             "ru": "пиво = 啤酒 (píjiǔ)",
@@ -431,12 +431,12 @@
           "audio_text": "口",
           "pinyin": "kǒu",
           "options": [
-            "口",
             "借",
-            "词典",
-            "图书馆"
+            "图书馆",
+            "口",
+            "词典"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "口 — qultum, luqma uchun hisob so'zi (kǒu)",
             "ru": "口 — счётное слово для глотков/кусков (kǒu)",
@@ -471,9 +471,9 @@
           },
           "options": [
             {
-              "uz": "qarzga olmoq, qarzga bermoq",
-              "ru": "брать в долг, одалживать",
-              "tj": "қарз гирифтан, қарз додан"
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
             },
             {
               "uz": "shisha, butilka",
@@ -486,9 +486,9 @@
               "tj": "луғат"
             },
             {
-              "uz": "kutubxona",
-              "ru": "библиотека",
-              "tj": "китобхона"
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
             }
           ],
           "correct_index": 1,
@@ -511,10 +511,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "图书馆",
             "词典",
-            "借",
             "筷子",
-            "图书馆"
+            "借"
           ],
           "correct_index": 2,
           "explanation": {
@@ -586,12 +586,12 @@
           "audio_text": "啤酒",
           "pinyin": "píjiǔ",
           "options": [
-            "图书馆",
             "词典",
             "啤酒",
+            "图书馆",
             "借"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "啤酒 — pivo (píjiǔ)",
             "ru": "啤酒 — пиво (píjiǔ)",
@@ -641,11 +641,84 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "啤酒",
+          "pinyin": "píjiǔ",
+          "translation": {
+            "uz": "pivo",
+            "ru": "пиво",
+            "tj": "пиво"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "关 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 关:",
+            "tj": "Маънои калимаи 关-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o'chirmoq, yopmoq",
+              "ru": "выключать, закрывать",
+              "tj": "хомӯш кардан, бастан"
+            },
+            {
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
+            },
+            {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
+            },
+            {
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "关 = o'chirmoq, yopmoq (guān)",
+            "ru": "关 = выключать, закрывать (guān)",
+            "tj": "关 = хомӯш кардан, бастан (guān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "关",
+            "pinyin": "guān",
+            "meaning": {
+              "uz": "o'chirmoq, yopmoq",
+              "ru": "выключать, закрывать",
+              "tj": "хомӯш кардан, бастан"
+            }
+          }
+        },
+        {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'o'chirmoq, yopmoq' xitoycha qaysi?",
-            "ru": "'выключать, закрывать' по-китайски?",
-            "tj": "'хомӯш кардан, бастан' ба хитоӣ кадом аст?"
+            "uz": "'pivo' xitoycha qaysi?",
+            "ru": "'пиво' по-китайски?",
+            "tj": "'пиво' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -654,25 +727,26 @@
           },
           "options": [
             "词典",
-            "借",
-            "关",
-            "图书馆"
+            "啤酒",
+            "图书馆",
+            "借"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "o'chirmoq, yopmoq = 关 (guān)",
-            "ru": "выключать, закрывать = 关 (guān)",
-            "tj": "хомӯш кардан, бастан = 关 (guān)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "啤酒",
-          "pinyin": "píjiǔ",
-          "translation": {
-            "uz": "pivo",
-            "ru": "пиво",
-            "tj": "пиво"
+            "uz": "pivo = 啤酒 (píjiǔ)",
+            "ru": "пиво = 啤酒 (píjiǔ)",
+            "tj": "пиво = 啤酒 (píjiǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "啤酒",
+            "pinyin": "píjiǔ",
+            "meaning": {
+              "uz": "pivo",
+              "ru": "пиво",
+              "tj": "пиво"
+            }
           }
         }
       ]

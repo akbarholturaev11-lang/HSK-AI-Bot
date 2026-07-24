@@ -535,6 +535,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "她今年50岁了。",
+          "pinyin": "Tā jīnnián wǔshí suì le.",
+          "options": [
+            "她今年50岁了。",
+            "你女儿几岁了？",
+            "我家有三口人。",
+            "你家有几口人？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "她今年50岁了。 — U bu yil ellik yoshga kirdi.",
+            "ru": "她今年50岁了。 — В этом году ей исполнилось пятьдесят.",
+            "tj": "她今年50岁了。 — Вай имсол панҷоҳ сол шуд."
+          }
+        },
+        {
           "type": "reverse_builder",
           "zh": "你多大了？",
           "pinyin": "Nǐ duō dà le?",
@@ -600,33 +622,6 @@
         {
           "type": "sentence_builder",
           "sentence": {
-            "uz": "Uning qizi bu yil yigirma yoshda.",
-            "ru": "Её дочери в этом году двадцать лет.",
-            "tj": "Духтараш имсол бист сол дорад."
-          },
-          "tokens": [
-            "有",
-            "她",
-            "今年",
-            "家",
-            "女儿",
-            "岁"
-          ],
-          "answer_tokens": [
-            "她",
-            "女儿",
-            "今年",
-            "岁"
-          ],
-          "explanation": {
-            "uz": "她女儿今年20岁。 — Tā nǚ'ér jīnnián èrshí suì.",
-            "ru": "她女儿今年20岁。 — Tā nǚ'ér jīnnián èrshí suì.",
-            "tj": "她女儿今年20岁。 — Tā nǚ'ér jīnnián èrshí suì."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
             "uz": "Siz necha yoshdasiz? (kattalar)",
             "ru": "Сколько вам лет? (взрослые)",
             "tj": "Шумо чанд сол доред? (калонсолон)"
@@ -652,33 +647,32 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "她今年50岁了。",
-          "pinyin": "Tā jīnnián wǔshí suì le.",
-          "options": [
-            "她今年50岁了。",
-            "你女儿几岁了？",
-            "我家有三口人。",
-            "你家有几口人？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "她今年50岁了。 — U bu yil ellik yoshga kirdi.",
-            "ru": "她今年50岁了。 — В этом году ей исполнилось пятьдесят.",
-            "tj": "她今年50岁了。 — Вай имсол панҷоҳ сол шуд."
+          "type": "pronunciation",
+          "phrase": "今年",
+          "pinyin": "jīnnián",
+          "translation": {
+            "uz": "bu yil",
+            "ru": "в этом году",
+            "tj": "امسол، ин сол"
           }
-        },
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "有 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 有:",
-            "tj": "Маънои калимаи 有-ро интихоб кунед:"
+            "uz": "几 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 几:",
+            "tj": "Маънои калимаи 几-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -692,36 +686,73 @@
               "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
             },
             {
-              "uz": "qiz farzand",
-              "ru": "дочь",
-              "tj": "духтар (фарзанд)"
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
+            },
+            {
+              "uz": "nechta (10 tagacha)",
+              "ru": "сколько (до 10)",
+              "tj": "чанд (то 10)"
             },
             {
               "uz": "bor, ega bo'lmoq",
               "ru": "иметь, есть",
               "tj": "доштан, мавҷуд будан"
-            },
-            {
-              "uz": "oila, uy",
-              "ru": "семья, дом",
-              "tj": "оила, хона"
             }
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "有 = bor, ega bo'lmoq (yǒu)",
-            "ru": "有 = иметь, есть (yǒu)",
-            "tj": "有 = доштан, мавҷуд будан (yǒu)"
+            "uz": "几 = nechta (10 tagacha) (jǐ)",
+            "ru": "几 = сколько (до 10) (jǐ)",
+            "tj": "几 = чанд (то 10) (jǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "几",
+            "pinyin": "jǐ",
+            "meaning": {
+              "uz": "nechta (10 tagacha)",
+              "ru": "сколько (до 10)",
+              "tj": "чанд (то 10)"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "今年",
-          "pinyin": "jīnnián",
-          "translation": {
-            "uz": "bu yil",
-            "ru": "в этом году",
-            "tj": "امسол، ин сол"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bu yil' xitoycha qaysi?",
+            "ru": "'в этом году' по-китайски?",
+            "tj": "'امسол، ин сол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "有",
+            "今年",
+            "口",
+            "家"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bu yil = 今年 (jīnnián)",
+            "ru": "в этом году = 今年 (jīnnián)",
+            "tj": "امسол، ин сол = 今年 (jīnnián)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "今年",
+            "pinyin": "jīnnián",
+            "meaning": {
+              "uz": "bu yil",
+              "ru": "в этом году",
+              "tj": "امسол، ин сол"
+            }
           }
         }
       ]

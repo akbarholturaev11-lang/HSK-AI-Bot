@@ -441,12 +441,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "抱",
-            "广播",
             "热闹",
-            "凉快"
+            "凉快",
+            "广播",
+            "抱"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "quchoqlamoq = 抱 (bào)",
             "ru": "обнимать = 抱 (bào)",
@@ -477,12 +477,12 @@
           "audio_text": "严格",
           "pinyin": "yángé",
           "options": [
-            "热闹",
-            "凉快",
             "严格",
-            "广播"
+            "广播",
+            "凉快",
+            "热闹"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "严格 — qat'iy, qattiq (yángé)",
             "ru": "严格 — строгий (yángé)",
@@ -517,27 +517,27 @@
           },
           "options": [
             {
-              "uz": "radio, eshittirish",
-              "ru": "радио, передача",
-              "tj": "радио, пахш"
-            },
-            {
-              "uz": "noqulay, qiynalgan",
-              "ru": "плохо, тяжело",
-              "tj": "нороҳат, душвор"
-            },
-            {
               "uz": "salqin, yoqimli sovuq",
               "ru": "прохладный, приятно свежий",
               "tj": "салқин, форам"
             },
             {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            },
+            {
               "uz": "gavjum, shovqinli",
               "ru": "оживлённый, шумный",
               "tj": "серодам, пурҷӯшу хурӯш"
+            },
+            {
+              "uz": "noqulay, qiynalgan",
+              "ru": "плохо, тяжело",
+              "tj": "нороҳат, душвор"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "难受 = noqulay, qiynalgan (nánshòu)",
             "ru": "难受 = плохо, тяжело (nánshòu)",
@@ -571,12 +571,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "趟",
-            "凉快",
             "热闹",
-            "广播"
+            "广播",
+            "凉快",
+            "趟"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "趟 = borib-kelish marta (tàng)",
             "ru": "趟 = раз поездки туда-обратно (tàng)",
@@ -596,12 +596,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "liángkuai",
-            "rènao",
             "bào",
-            "guǎngbō"
+            "liángkuai",
+            "guǎngbō",
+            "rènao"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "抱 — bào",
             "ru": "抱 — bào",
@@ -743,31 +743,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "倒 talaffuzini tanlang:",
-            "ru": "Выберите произношение 倒:",
-            "tj": "Талаффузи 倒-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "guǎngbō",
-            "rènao",
-            "dào",
-            "liángkuai"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "倒 — dào",
-            "ru": "倒 — dào",
-            "tj": "倒 — dào"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -777,9 +752,9 @@
           "audio_text": "抱",
           "pinyin": "bào",
           "options": [
+            "热闹",
             "凉快",
             "广播",
-            "热闹",
             "抱"
           ],
           "correct_index": 3,
@@ -797,6 +772,105 @@
             "uz": "quchoqlamoq",
             "ru": "обнимать",
             "tj": "ба оғӯш гирифтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "倒 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 倒:",
+            "tj": "Маънои калимаи 倒-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
+            },
+            {
+              "uz": "aksincha; quymoq",
+              "ru": "наоборот; наливать",
+              "tj": "баръакс; рехтан"
+            },
+            {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            },
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "倒 = aksincha; quymoq (dào)",
+            "ru": "倒 = наоборот; наливать (dào)",
+            "tj": "倒 = баръакс; рехтан (dào)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "倒",
+            "pinyin": "dào",
+            "meaning": {
+              "uz": "aksincha; quymoq",
+              "ru": "наоборот; наливать",
+              "tj": "баръакс; рехтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'quchoqlamoq' xitoycha qaysi?",
+            "ru": "'обнимать' по-китайски?",
+            "tj": "'ба оғӯш гирифтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "凉快",
+            "热闹",
+            "广播",
+            "抱"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "quchoqlamoq = 抱 (bào)",
+            "ru": "обнимать = 抱 (bào)",
+            "tj": "ба оғӯш гирифтан = 抱 (bào)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "抱",
+            "pinyin": "bào",
+            "meaning": {
+              "uz": "quchoqlamoq",
+              "ru": "обнимать",
+              "tj": "ба оғӯш гирифтан"
+            }
           }
         }
       ]

@@ -355,12 +355,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "fèn",
             "yǐwéi",
             "shùnlì",
-            "tí",
-            "fèn"
+            "tí"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "顺利 — shùnlì",
             "ru": "顺利 — shùnlì",
@@ -394,12 +394,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "感谢",
-            "以为",
+            "提",
             "份",
-            "提"
+            "以为",
+            "感谢"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "minnatdor bo'lmoq, rahmat aytmoq = 感谢 (gǎnxiè)",
             "ru": "благодарить = 感谢 (gǎnxiè)",
@@ -430,12 +430,12 @@
           "audio_text": "消息",
           "pinyin": "xiāoxi",
           "options": [
-            "份",
             "以为",
             "消息",
-            "提"
+            "提",
+            "份"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "消息 — xabar, yangilik (xiāoxi)",
             "ru": "消息 — новость, сообщение (xiāoxi)",
@@ -470,27 +470,27 @@
           },
           "options": [
             {
-              "uz": "ish kabi narsalar uchun hisob so'zi",
-              "ru": "счётное слово для работы и др.",
-              "tj": "ҳисобвожа барои кор ва ғайра"
-            },
-            {
-              "uz": "deb o'ylamoq, yanglish hisoblamoq",
-              "ru": "думать, ошибочно полагать",
-              "tj": "фикр кардан, ғалат пиндоштан"
-            },
-            {
               "uz": "o'z vaqtida",
               "ru": "вовремя, по расписанию",
               "tj": "дар вақташ"
             },
             {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            },
+            {
               "uz": "tilga olmoq, aytmoq",
               "ru": "упоминать, говорить",
               "tj": "зикр кардан, гуфтан"
+            },
+            {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "按时 = o'z vaqtida (ànshí)",
             "ru": "按时 = вовремя, по расписанию (ànshí)",
@@ -510,9 +510,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "份",
-            "顺利",
             "以为",
+            "顺利",
+            "份",
             "提"
           ],
           "correct_index": 1,
@@ -576,6 +576,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "顺利",
+          "pinyin": "shùnlì",
+          "options": [
+            "顺利",
+            "份",
+            "提",
+            "以为"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "顺利 — ravon, muammosiz (shùnlì)",
+            "ru": "顺利 — гладкий, успешный (shùnlì)",
+            "tj": "顺利 — равон, бе мушкил (shùnlì)"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -618,53 +640,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "顺利",
-          "pinyin": "shùnlì",
-          "options": [
-            "提",
-            "份",
-            "顺利",
-            "以为"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "顺利 — ravon, muammosiz (shùnlì)",
-            "ru": "顺利 — гладкий, успешный (shùnlì)",
-            "tj": "顺利 — равон, бе мушкил (shùnlì)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "生意 talaffuzini tanlang:",
-            "ru": "Выберите произношение 生意:",
-            "tj": "Талаффузи 生意-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "yǐwéi",
-            "tí",
-            "shēngyi",
-            "fèn"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "生意 — shēngyi",
-            "ru": "生意 — shēngyi",
-            "tj": "生意 — shēngyi"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "顺利",
           "pinyin": "shùnlì",
@@ -672,6 +647,105 @@
             "uz": "ravon, muammosiz",
             "ru": "гладкий, успешный",
             "tj": "равон, бе мушкил"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "经验 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 经验:",
+            "tj": "Маънои калимаи 经验-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            },
+            {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "tajriba",
+              "ru": "опыт",
+              "tj": "таҷриба"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "经验 = tajriba (jīngyàn)",
+            "ru": "经验 = опыт (jīngyàn)",
+            "tj": "经验 = таҷриба (jīngyàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "经验",
+            "pinyin": "jīngyàn",
+            "meaning": {
+              "uz": "tajriba",
+              "ru": "опыт",
+              "tj": "таҷриба"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ravon, muammosiz' xitoycha qaysi?",
+            "ru": "'гладкий, успешный' по-китайски?",
+            "tj": "'равон, бе мушкил' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "以为",
+            "顺利",
+            "提",
+            "份"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ravon, muammosiz = 顺利 (shùnlì)",
+            "ru": "гладкий, успешный = 顺利 (shùnlì)",
+            "tj": "равон, бе мушкил = 顺利 (shùnlì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "顺利",
+            "pinyin": "shùnlì",
+            "meaning": {
+              "uz": "ravon, muammosiz",
+              "ru": "гладкий, успешный",
+              "tj": "равон, бе мушкил"
+            }
           }
         }
       ]

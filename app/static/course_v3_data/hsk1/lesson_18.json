@@ -630,94 +630,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "reverse_builder",
-          "zh": "我妈妈的汉语不好。",
-          "pinyin": "Wǒ māma de Hànyǔ bù hǎo.",
-          "translation": {
-            "uz": "Onamning xitoy tili yaxshi emas.",
-            "ru": "Китайский мамы нехороший.",
-            "tj": "Забони чинии модарам хуб нест."
-          },
-          "tokens": {
-            "uz": [
-              "yaxshi",
-              "xitoycha",
-              "xitoy",
-              "tili",
-              "Siz",
-              "Onamning",
-              "emas"
-            ],
-            "ru": [
-              "Китайский",
-              "Вы",
-              "мамы",
-              "нехороший",
-              "умеете"
-            ],
-            "tj": [
-              "модарам",
-              "хуб",
-              "нест",
-              "Забони",
-              "Оё",
-              "шумо",
-              "чинии"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Onamning",
-              "xitoy",
-              "tili",
-              "yaxshi",
-              "emas"
-            ],
-            "ru": [
-              "Китайский",
-              "мамы",
-              "нехороший"
-            ],
-            "tj": [
-              "Забони",
-              "чинии",
-              "модарам",
-              "хуб",
-              "нест"
-            ]
-          },
-          "explanation": {
-            "uz": "我妈妈的汉语不好。 — Onamning xitoy tili yaxshi emas.",
-            "ru": "我妈妈的汉语不好。 — Китайский мамы нехороший.",
-            "tj": "我妈妈的汉语不好。 — Забони чинии модарам хуб нест."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'u (erkak)' xitoycha qaysi?",
-            "ru": "'он' по-китайски?",
-            "tj": "'вай (мард)' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "他",
-            "说",
-            "妈妈",
-            "会"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "u (erkak) = 他 (tā)",
-            "ru": "он = 他 (tā)",
-            "tj": "вай (мард) = 他 (tā)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -747,6 +659,105 @@
             "uz": "gapirmoq, aytmoq",
             "ru": "говорить, сказать",
             "tj": "гап задан, гуфтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "有 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 有:",
+            "tj": "Маънои калимаи 有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qila olmoq (o'rganish orqali)",
+              "ru": "мочь, уметь (через обучение)",
+              "tj": "тавонистан (бо ёрии омӯзиш)"
+            },
+            {
+              "uz": "gapirmoq, aytmoq",
+              "ru": "говорить, сказать",
+              "tj": "гап задан, гуфтан"
+            },
+            {
+              "uz": "ona, onaxon",
+              "ru": "мама",
+              "tj": "модар, модарҷон"
+            },
+            {
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "有 = bor, ega bo'lmoq (yǒu)",
+            "ru": "有 = иметь, есть (yǒu)",
+            "tj": "有 = доштан, мавҷуд будан (yǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "有",
+            "pinyin": "yǒu",
+            "meaning": {
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'gapirmoq, aytmoq' xitoycha qaysi?",
+            "ru": "'говорить, сказать' по-китайски?",
+            "tj": "'гап задан, гуфтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "菜",
+            "妈妈",
+            "说",
+            "会"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "gapirmoq, aytmoq = 说 (shuō)",
+            "ru": "говорить, сказать = 说 (shuō)",
+            "tj": "гап задан, гуфтан = 说 (shuō)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "说",
+            "pinyin": "shuō",
+            "meaning": {
+              "uz": "gapirmoq, aytmoq",
+              "ru": "говорить, сказать",
+              "tj": "гап задан, гуфтан"
+            }
           }
         }
       ]

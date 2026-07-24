@@ -438,12 +438,12 @@
           "audio_text": "降落",
           "pinyin": "jiàngluò",
           "options": [
-            "降落",
-            "作者",
             "交通",
-            "火"
+            "降落",
+            "火",
+            "作者"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "降落 — qo'nmoq (jiàngluò)",
             "ru": "降落 — приземляться (jiàngluò)",
@@ -478,9 +478,9 @@
           },
           "options": [
             {
-              "uz": "qo'nmoq",
-              "ru": "приземляться",
-              "tj": "фуруд омадан"
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
             },
             {
               "uz": "transport, aloqa",
@@ -488,9 +488,9 @@
               "tj": "нақлиёт, иртибот"
             },
             {
-              "uz": "mashhur, urf bo'lgan",
-              "ru": "популярный, горячий",
-              "tj": "машҳур, серхаридор"
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
             },
             {
               "uz": "muallif",
@@ -498,7 +498,7 @@
               "tj": "муаллиф"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "火 = mashhur, urf bo'lgan (huǒ)",
             "ru": "火 = популярный, горячий (huǒ)",
@@ -542,10 +542,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "交通",
             "降落",
-            "火",
             "作者",
-            "交通"
+            "火"
           ],
           "correct_index": 2,
           "explanation": {
@@ -582,11 +582,11 @@
           },
           "options": [
             "jiàngluò",
-            "huǒ",
             "jiāotōng",
+            "huǒ",
             "zuòzhě"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "交通 — jiāotōng",
             "ru": "交通 — jiāotōng",
@@ -753,31 +753,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shěng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shěng?",
-            "tj": "shěng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "省",
-            "降落",
-            "作者",
-            "火"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "省 = provinsiya (shěng)",
-            "ru": "省 = провинция (shěng)",
-            "tj": "省 = вилоят (shěng)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -787,12 +762,12 @@
           "audio_text": "作者",
           "pinyin": "zuòzhě",
           "options": [
-            "作者",
             "火",
             "降落",
+            "作者",
             "交通"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "作者 — muallif (zuòzhě)",
             "ru": "作者 — автор (zuòzhě)",
@@ -807,6 +782,105 @@
             "uz": "muallif",
             "ru": "автор",
             "tj": "муаллиф"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "广播 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 广播:",
+            "tj": "Маънои калимаи 广播-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
+            },
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            },
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "广播 = radio, eshittirish (guǎngbō)",
+            "ru": "广播 = радио, передача (guǎngbō)",
+            "tj": "广播 = радио, пахш (guǎngbō)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "广播",
+            "pinyin": "guǎngbō",
+            "meaning": {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'muallif' xitoycha qaysi?",
+            "ru": "'автор' по-китайски?",
+            "tj": "'муаллиф' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "交通",
+            "降落",
+            "火",
+            "作者"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "muallif = 作者 (zuòzhě)",
+            "ru": "автор = 作者 (zuòzhě)",
+            "tj": "муаллиф = 作者 (zuòzhě)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "作者",
+            "pinyin": "zuòzhě",
+            "meaning": {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            }
           }
         }
       ]

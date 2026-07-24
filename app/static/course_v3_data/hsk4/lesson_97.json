@@ -461,12 +461,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "之",
+            "厉害",
             "语法",
-            "流利",
-            "厉害"
+            "之",
+            "流利"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "之 = otlarni bog'lovchi zarracha (zhī)",
             "ru": "之 = книжная частица связи (zhī)",
@@ -500,10 +500,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "yǔfǎ",
             "lìhai",
-            "liúlì",
             "nèiróng",
-            "yǔfǎ"
+            "liúlì"
           ],
           "correct_index": 2,
           "explanation": {
@@ -540,11 +540,11 @@
           },
           "options": [
             "流利",
-            "然而",
+            "语法",
             "厉害",
-            "语法"
+            "然而"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "biroq, ammo = 然而 (rán'ér)",
             "ru": "однако = 然而 (rán'ér)",
@@ -576,11 +576,11 @@
           "pinyin": "kànfǎ",
           "options": [
             "语法",
-            "厉害",
             "流利",
-            "看法"
+            "看法",
+            "厉害"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "看法 — fikr, qarash (kànfǎ)",
             "ru": "看法 — мнение, взгляд (kànfǎ)",
@@ -601,9 +601,9 @@
           },
           "options": [
             {
-              "uz": "ravon",
-              "ru": "беглый, свободный",
-              "tj": "равон"
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
             },
             {
               "uz": "otlarni bog'lovchi zarracha",
@@ -611,14 +611,14 @@
               "tj": "зарраи пайвандӣ"
             },
             {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
               "uz": "grammatika",
               "ru": "грамматика",
               "tj": "грамматика"
-            },
-            {
-              "uz": "zo'r, kuchli",
-              "ru": "сильный, впечатляющий",
-              "tj": "зӯр, қавӣ"
             }
           ],
           "correct_index": 1,
@@ -718,12 +718,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "语法",
             "内容",
             "厉害",
+            "语法",
             "流利"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 内容 (nèiróng) — mazmun",
             "ru": "Верно: 内容 (nèiróng) — содержание",
@@ -741,53 +741,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "著名 talaffuzini tanlang:",
-            "ru": "Выберите произношение 著名:",
-            "tj": "Талаффузи 著名-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "liúlì",
-            "yǔfǎ",
-            "lìhai",
-            "zhùmíng"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "著名 — zhùmíng",
-            "ru": "著名 — zhùmíng",
-            "tj": "著名 — zhùmíng"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "之",
-          "pinyin": "zhī",
-          "options": [
-            "语法",
-            "之",
-            "流利",
-            "厉害"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "之 — otlarni bog'lovchi zarracha (zhī)",
-            "ru": "之 — книжная частица связи (zhī)",
-            "tj": "之 — зарраи пайвандӣ (zhī)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -831,6 +784,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "之",
+          "pinyin": "zhī",
+          "options": [
+            "之",
+            "语法",
+            "厉害",
+            "流利"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "之 — otlarni bog'lovchi zarracha (zhī)",
+            "ru": "之 — книжная частица связи (zhī)",
+            "tj": "之 — зарраи пайвандӣ (zhī)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "之",
           "pinyin": "zhī",
@@ -838,6 +813,105 @@
             "uz": "otlarni bog'lovchi zarracha",
             "ru": "книжная частица связи",
             "tj": "зарраи пайвандӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "著名 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 著名:",
+            "tj": "Маънои калимаи 著名-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            },
+            {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
+              "uz": "mashhur",
+              "ru": "известный",
+              "tj": "машҳур"
+            },
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "著名 = mashhur (zhùmíng)",
+            "ru": "著名 = известный (zhùmíng)",
+            "tj": "著名 = машҳур (zhùmíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "著名",
+            "pinyin": "zhùmíng",
+            "meaning": {
+              "uz": "mashhur",
+              "ru": "известный",
+              "tj": "машҳур"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'otlarni bog'lovchi zarracha' xitoycha qaysi?",
+            "ru": "'книжная частица связи' по-китайски?",
+            "tj": "'зарраи пайвандӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "流利",
+            "厉害",
+            "语法",
+            "之"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "otlarni bog'lovchi zarracha = 之 (zhī)",
+            "ru": "книжная частица связи = 之 (zhī)",
+            "tj": "зарраи пайвандӣ = 之 (zhī)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "之",
+            "pinyin": "zhī",
+            "meaning": {
+              "uz": "otlarni bog'lovchi zarracha",
+              "ru": "книжная частица связи",
+              "tj": "зарраи пайвандӣ"
+            }
           }
         }
       ]

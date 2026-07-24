@@ -318,9 +318,9 @@
           "pinyin": "zìjǐ",
           "options": [
             "有意思",
-            "但是",
+            "虽然",
             "自己",
-            "虽然"
+            "但是"
           ],
           "correct_index": 2,
           "explanation": {
@@ -421,8 +421,8 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "但是",
             "虽然",
+            "但是",
             "跑步",
             "有意思"
           ],
@@ -446,12 +446,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "suīrán",
             "dànshì",
-            "zìjǐ",
             "yǒu yìsi",
-            "suīrán"
+            "zìjǐ"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "自己 — zìjǐ",
             "ru": "自己 — zìjǐ",
@@ -548,15 +548,15 @@
             "tj": "Ман ба Чин чанд маротиба рафтаам."
           },
           "tokens": [
+            "但是",
             "次",
-            "去",
-            "几",
             "我",
-            "有意思",
+            "几",
+            "过",
             "好",
             "中国",
-            "过",
-            "但是"
+            "去",
+            "有意思"
           ],
           "answer_tokens": [
             "我",
@@ -584,53 +584,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "可以，但是你自己去吧，我还有很多事情要做。",
-          "pinyin": "Kěyǐ, dànshì nǐ zìjǐ qù ba, wǒ hái yǒu hěn duō shìqing yào zuò.",
-          "options": [
-            "那我们下个星期一一起去看吧？",
-            "可以，但是你自己去吧，我还有很多事情要做。",
-            "没看过，听说很有意思。",
-            "你看过那个电影没有？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "可以，但是你自己去吧，我还有很多事情要做。 — Mumkin, lekin o'zingiz boring, menda hali ko'p ish bor.",
-            "ru": "可以，但是你自己去吧，我还有很多事情要做。 — Можно, но иди сам(а), у меня ещё много дел.",
-            "tj": "可以，但是你自己去吧，我还有很多事情要做。 — Мешавад, аммо худатон равед, ман ҳанӯз кори зиёд дорам."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "但是 talaffuzini tanlang:",
-            "ru": "Выберите произношение 但是:",
-            "tj": "Талаффузи 但是-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "suīrán",
-            "yǒu yìsi",
-            "cì",
-            "dànshì"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "但是 — dànshì",
-            "ru": "但是 — dànshì",
-            "tj": "但是 — dànshì"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -751,6 +704,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "可以，但是你自己去吧，我还有很多事情要做。",
+          "pinyin": "Kěyǐ, dànshì nǐ zìjǐ qù ba, wǒ hái yǒu hěn duō shìqing yào zuò.",
+          "options": [
+            "没看过，听说很有意思。",
+            "你看过那个电影没有？",
+            "可以，但是你自己去吧，我还有很多事情要做。",
+            "那我们下个星期一一起去看吧？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "可以，但是你自己去吧，我还有很多事情要做。 — Mumkin, lekin o'zingiz boring, menda hali ko'p ish bor.",
+            "ru": "可以，但是你自己去吧，我还有很多事情要做。 — Можно, но иди сам(а), у меня ещё много дел.",
+            "tj": "可以，但是你自己去吧，我还有很多事情要做。 — Мешавад, аммо худатон равед, ман ҳанӯз кори зиёд дорам."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "旅游",
           "pinyin": "lǚyóu",
@@ -758,6 +733,105 @@
             "uz": "sayohat qilmoq",
             "ru": "путешествовать",
             "tj": "сафар кардан, гашт кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "晴 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 晴:",
+            "tj": "Маънои калимаи 晴-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ochiq (ob-havo), quyoshli",
+              "ru": "ясный, солнечный (о погоде)",
+              "tj": "ҳаво равшан, офтобӣ"
+            },
+            {
+              "uz": "garchi, garchanda",
+              "ru": "хотя, несмотря на то что",
+              "tj": "гарчи, ҳарчанд"
+            },
+            {
+              "uz": "qiziqarli, maroqli",
+              "ru": "интересный, занимательный",
+              "tj": "ҷолиб, хонанданӣ"
+            },
+            {
+              "uz": "lekin, ammo",
+              "ru": "но, однако",
+              "tj": "аммо, вале"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "晴 = ochiq (ob-havo), quyoshli (qíng)",
+            "ru": "晴 = ясный, солнечный (о погоде) (qíng)",
+            "tj": "晴 = ҳаво равшан, офтобӣ (qíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "晴",
+            "pinyin": "qíng",
+            "meaning": {
+              "uz": "ochiq (ob-havo), quyoshli",
+              "ru": "ясный, солнечный (о погоде)",
+              "tj": "ҳаво равшан, офтобӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sayohat qilmoq' xitoycha qaysi?",
+            "ru": "'путешествовать' по-китайски?",
+            "tj": "'сафар кардан, гашт кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "虽然",
+            "旅游",
+            "但是",
+            "有意思"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "sayohat qilmoq = 旅游 (lǚyóu)",
+            "ru": "путешествовать = 旅游 (lǚyóu)",
+            "tj": "сафар кардан, гашт кардан = 旅游 (lǚyóu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "旅游",
+            "pinyin": "lǚyóu",
+            "meaning": {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан, гашт кардан"
+            }
           }
         }
       ]

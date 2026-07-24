@@ -417,9 +417,9 @@
               "tj": "синф, гурӯҳ"
             },
             {
-              "uz": "xitoy tili",
-              "ru": "китайский язык",
-              "tj": "забони чинӣ"
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
             },
             {
               "uz": "xotirjam bo'lmoq",
@@ -427,9 +427,9 @@
               "tj": "хотирҷамъ шудан"
             },
             {
-              "uz": "bir xil, xuddi ... kabi",
-              "ru": "одинаковый, такой же",
-              "tj": "якхела, мисли"
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
             }
           ],
           "correct_index": 2,
@@ -476,10 +476,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "一样",
+            "班",
             "一定",
-            "中文",
-            "班"
+            "一样",
+            "中文"
           ],
           "correct_index": 1,
           "explanation": {
@@ -576,12 +576,12 @@
           "audio_text": "放心",
           "pinyin": "fàngxīn",
           "options": [
-            "班",
             "放心",
+            "班",
             "一样",
             "中文"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "放心 — xotirjam bo'lmoq (fàngxīn)",
             "ru": "放心 — успокоиться, не беспокоиться (fàngxīn)",
@@ -686,15 +686,15 @@
             "tj": "Ин монанди он қимат аст."
           },
           "tokens": [
-            "贵",
-            "一样",
-            "中文",
-            "那",
+            "班",
             "跟",
             "这",
             "个",
-            "个",
-            "班"
+            "那",
+            "一样",
+            "贵",
+            "中文",
+            "个"
           ],
           "answer_tokens": [
             "这",
@@ -765,31 +765,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'sinf, guruh' xitoycha qaysi?",
-            "ru": "'класс, группа' по-китайски?",
-            "tj": "'синф, гурӯҳ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "中文",
-            "一样",
-            "最后",
-            "班"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "sinf, guruh = 班 (bān)",
-            "ru": "класс, группа = 班 (bān)",
-            "tj": "синф, гурӯҳ = 班 (bān)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -799,12 +774,12 @@
           "audio_text": "一定",
           "pinyin": "yídìng",
           "options": [
-            "班",
-            "一样",
             "中文",
-            "一定"
+            "一定",
+            "一样",
+            "班"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "一定 — albatta, aniq (yídìng)",
             "ru": "一定 — обязательно, непременно (yídìng)",
@@ -819,6 +794,105 @@
             "uz": "albatta, aniq",
             "ru": "обязательно, непременно",
             "tj": "албатта, ҳатман"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "班 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 班:",
+            "tj": "Маънои калимаи 班-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
+            },
+            {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            },
+            {
+              "uz": "oxirgi, so'nggi",
+              "ru": "последний",
+              "tj": "охирин"
+            },
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "班 = sinf, guruh (bān)",
+            "ru": "班 = класс, группа (bān)",
+            "tj": "班 = синф, гурӯҳ (bān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "班",
+            "pinyin": "bān",
+            "meaning": {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'albatta, aniq' xitoycha qaysi?",
+            "ru": "'обязательно, непременно' по-китайски?",
+            "tj": "'албатта, ҳатман' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "一样",
+            "中文",
+            "一定",
+            "班"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "albatta, aniq = 一定 (yídìng)",
+            "ru": "обязательно, непременно = 一定 (yídìng)",
+            "tj": "албатта, ҳатман = 一定 (yídìng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "一定",
+            "pinyin": "yídìng",
+            "meaning": {
+              "uz": "albatta, aniq",
+              "ru": "обязательно, непременно",
+              "tj": "албатта, ҳатман"
+            }
           }
         }
       ]

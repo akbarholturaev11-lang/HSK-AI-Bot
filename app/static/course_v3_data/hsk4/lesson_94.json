@@ -451,12 +451,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "语法",
-            "复杂",
+            "流利",
             "厉害",
-            "流利"
+            "语法",
+            "复杂"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "murakkab = 复杂 (fùzá)",
             "ru": "сложный = 复杂 (fùzá)",
@@ -497,12 +497,12 @@
           "audio_text": "只好",
           "pinyin": "zhǐhǎo",
           "options": [
+            "只好",
             "语法",
-            "流利",
             "厉害",
-            "只好"
+            "流利"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "只好 — majbur bo'lmoq (zhǐhǎo)",
             "ru": "只好 — вынужденно (zhǐhǎo)",
@@ -542,11 +542,6 @@
               "tj": "ҷойи холиро пур кардан"
             },
             {
-              "uz": "zo'r, kuchli",
-              "ru": "сильный, впечатляющий",
-              "tj": "зӯр, қавӣ"
-            },
-            {
               "uz": "ravon",
               "ru": "беглый, свободный",
               "tj": "равон"
@@ -555,6 +550,11 @@
               "uz": "grammatika",
               "ru": "грамматика",
               "tj": "грамматика"
+            },
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
             }
           ],
           "correct_index": 0,
@@ -591,12 +591,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "厉害",
             "语法",
-            "流利",
-            "猜"
+            "猜",
+            "厉害",
+            "流利"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "猜 = taxmin qilmoq (cāi)",
             "ru": "猜 = угадывать (cāi)",
@@ -616,12 +616,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "lìhai",
             "fùzá",
+            "yǔfǎ",
             "liúlì",
-            "yǔfǎ"
+            "lìhai"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "复杂 — fùzá",
             "ru": "复杂 — fùzá",
@@ -732,39 +732,14 @@
           "options": [
             "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
             "你来中国才一年，汉语就说得这么流利，真厉害！",
-            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
-            "这次主要是因为我先做了比较难、比较复杂的题，结果花了太多时间，后面简单的题我虽然会，可是时间来不及，最后只好放弃了。"
+            "这次主要是因为我先做了比较难、比较复杂的题，结果花了太多时间，后面简单的题我虽然会，可是时间来不及，最后只好放弃了。",
+            "但是我看你跟中国人交流没什么问题，你是怎么做到的？"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "这次主要是因为我先做了比较难、比较复杂的题，结果花了太多时间，后面简单的题我虽然会，可是时间来不及，最后只好放弃了。 — Asosan avval qiyinroq, murakkabroq savollarni ishlaganim uchun juda ko'p vaqt ketdi. Keyingi oson savollarni bilardim, lekin vaqt yetmadi, oxiri tashlab qo'yishga majbur bo'ldim.",
             "ru": "这次主要是因为我先做了比较难、比较复杂的题，结果花了太多时间，后面简单的题我虽然会，可是时间来不及，最后只好放弃了。 — Главная причина в том, что я сначала делал трудные и сложные задания, потратил слишком много времени. Простые задания в конце я знал, но времени не хватило, пришлось отказаться.",
             "tj": "这次主要是因为我先做了比较难、比较复杂的题，结果花了太多时间，后面简单的题我虽然会，可是时间来不及，最后只好放弃了。 — Сабабаш ин буд, ки аввал саволҳои душвору мураккабро кардам ва вақти зиёд рафт. Саволҳои осони охирро медонистам, вале вақт нарасид, маҷбур шудам тарк кунам."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'hatto' xitoycha qaysi?",
-            "ru": "'даже' по-китайски?",
-            "tj": "'ҳатто' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "厉害",
-            "语法",
-            "流利",
-            "连"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "hatto = 连 (lián)",
-            "ru": "даже = 连 (lián)",
-            "tj": "ҳатто = 连 (lián)"
           }
         },
         {
@@ -791,27 +766,27 @@
           },
           "options": [
             {
-              "uz": "zo'r, kuchli",
-              "ru": "сильный, впечатляющий",
-              "tj": "зӯр, қавӣ"
-            },
-            {
               "uz": "grammatika",
               "ru": "грамматика",
               "tj": "грамматика"
             },
             {
-              "uz": "taxmin qilmoq",
-              "ru": "угадывать",
-              "tj": "тахмин кардан"
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
             },
             {
               "uz": "ravon",
               "ru": "беглый, свободный",
               "tj": "равон"
+            },
+            {
+              "uz": "taxmin qilmoq",
+              "ru": "угадывать",
+              "tj": "тахмин кардан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "猜 = taxmin qilmoq (cāi)",
             "ru": "猜 = угадывать (cāi)",
@@ -826,6 +801,105 @@
             "uz": "majbur bo'lmoq",
             "ru": "вынужденно",
             "tj": "маҷбурона"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "连 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 连:",
+            "tj": "Маънои калимаи 连-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            },
+            {
+              "uz": "hatto",
+              "ru": "даже",
+              "tj": "ҳатто"
+            },
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "连 = hatto (lián)",
+            "ru": "连 = даже (lián)",
+            "tj": "连 = ҳатто (lián)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "连",
+            "pinyin": "lián",
+            "meaning": {
+              "uz": "hatto",
+              "ru": "даже",
+              "tj": "ҳатто"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'majbur bo'lmoq' xitoycha qaysi?",
+            "ru": "'вынужденно' по-китайски?",
+            "tj": "'маҷбурона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "厉害",
+            "只好",
+            "流利",
+            "语法"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "majbur bo'lmoq = 只好 (zhǐhǎo)",
+            "ru": "вынужденно = 只好 (zhǐhǎo)",
+            "tj": "маҷбурона = 只好 (zhǐhǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "只好",
+            "pinyin": "zhǐhǎo",
+            "meaning": {
+              "uz": "majbur bo'lmoq",
+              "ru": "вынужденно",
+              "tj": "маҷбурона"
+            }
           }
         }
       ]

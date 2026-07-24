@@ -441,12 +441,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "出生",
+            "学期",
             "性别",
-            "护照",
-            "学期"
+            "出生",
+            "护照"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "semestr, o'quv muddati = 学期 (xuéqī)",
             "ru": "семестр = 学期 (xuéqī)",
@@ -477,12 +477,12 @@
           "audio_text": "出生",
           "pinyin": "chūshēng",
           "options": [
-            "出生",
-            "护照",
             "学期",
+            "护照",
+            "出生",
             "性别"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "出生 — tug'ilmoq (chūshēng)",
             "ru": "出生 — родиться (chūshēng)",
@@ -517,6 +517,11 @@
           },
           "options": [
             {
+              "uz": "pasport",
+              "ru": "паспорт",
+              "tj": "шиноснома"
+            },
+            {
               "uz": "semestr, o'quv muddati",
               "ru": "семестр",
               "tj": "нимсолаи таҳсил"
@@ -525,11 +530,6 @@
               "uz": "tug'ilmoq",
               "ru": "родиться",
               "tj": "таваллуд шудан"
-            },
-            {
-              "uz": "pasport",
-              "ru": "паспорт",
-              "tj": "шиноснома"
             },
             {
               "uz": "jins",
@@ -581,12 +581,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "学期",
-            "护照",
             "出生",
-            "性别"
+            "性别",
+            "护照",
+            "学期"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "护照 = pasport (hùzhào)",
             "ru": "护照 = паспорт (hùzhào)",
@@ -606,12 +606,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "hùzhào",
-            "chūshēng",
+            "xuéqī",
             "xìngbié",
-            "xuéqī"
+            "chūshēng",
+            "hùzhào"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "学期 — xuéqī",
             "ru": "学期 — xuéqī",
@@ -711,47 +711,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "吃惊 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 吃惊:",
-            "tj": "Маънои калимаи 吃惊-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "hayron qolmoq",
-              "ru": "удивляться",
-              "tj": "ҳайрон шудан"
-            },
-            {
-              "uz": "semestr, o'quv muddati",
-              "ru": "семестр",
-              "tj": "нимсолаи таҳсил"
-            },
-            {
-              "uz": "tug'ilmoq",
-              "ru": "родиться",
-              "tj": "таваллуд шудан"
-            },
-            {
-              "uz": "jins",
-              "ru": "пол",
-              "tj": "ҷинс"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "吃惊 = hayron qolmoq (chījīng)",
-            "ru": "吃惊 = удивляться (chījīng)",
-            "tj": "吃惊 = ҳайрон шудан (chījīng)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -761,9 +720,9 @@
           "audio_text": "学期",
           "pinyin": "xuéqī",
           "options": [
-            "性别",
-            "护照",
             "出生",
+            "护照",
+            "性别",
             "学期"
           ],
           "correct_index": 3,
@@ -803,6 +762,105 @@
             "uz": "pasport",
             "ru": "паспорт",
             "tj": "шиноснома"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "交通 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 交通:",
+            "tj": "Маънои калимаи 交通-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jins",
+              "ru": "пол",
+              "tj": "ҷинс"
+            },
+            {
+              "uz": "transport, aloqa",
+              "ru": "транспорт, сообщение",
+              "tj": "нақлиёт, иртибот"
+            },
+            {
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
+            },
+            {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "交通 = transport, aloqa (jiāotōng)",
+            "ru": "交通 = транспорт, сообщение (jiāotōng)",
+            "tj": "交通 = нақлиёт, иртибот (jiāotōng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "交通",
+            "pinyin": "jiāotōng",
+            "meaning": {
+              "uz": "transport, aloqa",
+              "ru": "транспорт, сообщение",
+              "tj": "нақлиёт, иртибот"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'pasport' xitoycha qaysi?",
+            "ru": "'паспорт' по-китайски?",
+            "tj": "'шиноснома' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "护照",
+            "出生",
+            "学期",
+            "性别"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "pasport = 护照 (hùzhào)",
+            "ru": "паспорт = 护照 (hùzhào)",
+            "tj": "шиноснома = 护照 (hùzhào)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "护照",
+            "pinyin": "hùzhào",
+            "meaning": {
+              "uz": "pasport",
+              "ru": "паспорт",
+              "tj": "шиноснома"
+            }
           }
         }
       ]

@@ -374,11 +374,11 @@
           "pinyin": "cōngming",
           "options": [
             "照片",
-            "年级",
             "比赛",
-            "聪明"
+            "聪明",
+            "年级"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "聪明 — aqlli, zukko (cōngming)",
             "ru": "聪明 — умный, сообразительный (cōngming)",
@@ -413,9 +413,9 @@
           },
           "options": [
             {
-              "uz": "musobaqa",
-              "ru": "соревнование",
-              "tj": "мусобиқа"
+              "uz": "samimiy, iliq, faol",
+              "ru": "тёплый, радушный, энергичный",
+              "tj": "самимӣ, гарму ҷӯшон"
             },
             {
               "uz": "sinf, kurs, bosqich",
@@ -423,17 +423,17 @@
               "tj": "синф, курс"
             },
             {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            },
+            {
               "uz": "surat, fotosurat",
               "ru": "фотография",
               "tj": "акс"
-            },
-            {
-              "uz": "samimiy, iliq, faol",
-              "ru": "тёплый, радушный, энергичный",
-              "tj": "самимӣ, гарму ҷӯшон"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "热情 = samimiy, iliq, faol (rèqíng)",
             "ru": "热情 = тёплый, радушный, энергичный (rèqíng)",
@@ -467,8 +467,8 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "年级",
             "照片",
+            "年级",
             "比赛",
             "努力"
           ],
@@ -516,12 +516,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "niánjí",
             "zǒngshì",
+            "niánjí",
             "zhàopiàn",
             "bǐsài"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "总是 — zǒngshì",
             "ru": "总是 — zǒngshì",
@@ -542,11 +542,11 @@
           },
           "options": [
             "比赛",
-            "聪明",
             "照片",
+            "聪明",
             "年级"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "aqlli, zukko = 聪明 (cōngming)",
             "ru": "умный, сообразительный = 聪明 (cōngming)",
@@ -607,6 +607,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "她又聪明又热情，也很努力。",
+          "pinyin": "Tā yòu cōngming yòu rèqíng, yě hěn nǔlì.",
+          "options": [
+            "照得不错，你们都是一个年级的吗？",
+            "是，这是我们比赛后照的。",
+            "这是你们比赛的照片吗？",
+            "她又聪明又热情，也很努力。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "她又聪明又热情，也很努力。 — U ham aqlli, ham samimiy, juda tirishqoq ham.",
+            "ru": "她又聪明又热情，也很努力。 — Она и умная, и приветливая, и очень старательная.",
+            "tj": "她又聪明又热情，也很努力。 — Вай ҳам доно, ҳам самимӣ ва хеле боғайрат аст."
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U ham aqlli, ham samimiy, juda tirishqoq ham.",
@@ -614,16 +636,16 @@
             "tj": "Вай ҳам доно, ҳам самимӣ ва хеле боғайрат аст."
           },
           "tokens": [
-            "比赛",
             "热情",
-            "也",
-            "努力",
-            "很",
-            "又",
-            "照片",
             "聪明",
+            "照片",
+            "努力",
+            "又",
+            "也",
             "她",
-            "又"
+            "又",
+            "很",
+            "比赛"
           ],
           "answer_tokens": [
             "她",
@@ -639,47 +661,6 @@
             "uz": "她又聪明又热情，也很努力。 — Tā yòu cōngming yòu rèqíng, yě hěn nǔlì.",
             "ru": "她又聪明又热情，也很努力。 — Tā yòu cōngming yòu rèqíng, yě hěn nǔlì.",
             "tj": "她又聪明又热情，也很努力。 — Tā yòu cōngming yòu rèqíng, yě hěn nǔlì."
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "又 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 又:",
-            "tj": "Маънои калимаи 又-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ham, yana; 又...又... qolipida",
-              "ru": "и, также; в конструкции 又...又...",
-              "tj": "ҳам, боз; дар сохти 又...又..."
-            },
-            {
-              "uz": "musobaqa",
-              "ru": "соревнование",
-              "tj": "мусобиқа"
-            },
-            {
-              "uz": "sinf, kurs, bosqich",
-              "ru": "класс, курс",
-              "tj": "синф, курс"
-            },
-            {
-              "uz": "surat, fotosurat",
-              "ru": "фотография",
-              "tj": "акс"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "又 = ham, yana; 又...又... qolipida (yòu)",
-            "ru": "又 = и, также; в конструкции 又...又... (yòu)",
-            "tj": "又 = ҳам, боз; дар сохти 又...又... (yòu)"
           }
         },
         {
@@ -722,28 +703,6 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "她又聪明又热情，也很努力。",
-          "pinyin": "Tā yòu cōngming yòu rèqíng, yě hěn nǔlì.",
-          "options": [
-            "照得不错，你们都是一个年级的吗？",
-            "是，这是我们比赛后照的。",
-            "这是你们比赛的照片吗？",
-            "她又聪明又热情，也很努力。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "她又聪明又热情，也很努力。 — U ham aqlli, ham samimiy, juda tirishqoq ham.",
-            "ru": "她又聪明又热情，也很努力。 — Она и умная, и приветливая, и очень старательная.",
-            "tj": "她又聪明又热情，也很努力。 — Вай ҳам доно, ҳам самимӣ ва хеле боғайрат аст."
           }
         },
         {
@@ -835,6 +794,105 @@
             "uz": "har doim, doim",
             "ru": "всегда",
             "tj": "ҳамеша"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "又 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 又:",
+            "tj": "Маънои калимаи 又-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ham, yana; 又...又... qolipida",
+              "ru": "и, также; в конструкции 又...又...",
+              "tj": "ҳам, боз; дар сохти 又...又..."
+            },
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            },
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "又 = ham, yana; 又...又... qolipida (yòu)",
+            "ru": "又 = и, также; в конструкции 又...又... (yòu)",
+            "tj": "又 = ҳам, боз; дар сохти 又...又... (yòu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "又",
+            "pinyin": "yòu",
+            "meaning": {
+              "uz": "ham, yana; 又...又... qolipida",
+              "ru": "и, также; в конструкции 又...又...",
+              "tj": "ҳам, боз; дар сохти 又...又..."
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'har doim, doim' xitoycha qaysi?",
+            "ru": "'всегда' по-китайски?",
+            "tj": "'ҳамеша' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "照片",
+            "比赛",
+            "年级",
+            "总是"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "har doim, doim = 总是 (zǒngshì)",
+            "ru": "всегда = 总是 (zǒngshì)",
+            "tj": "ҳамеша = 总是 (zǒngshì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "总是",
+            "pinyin": "zǒngshì",
+            "meaning": {
+              "uz": "har doim, doim",
+              "ru": "всегда",
+              "tj": "ҳамеша"
+            }
           }
         }
       ]

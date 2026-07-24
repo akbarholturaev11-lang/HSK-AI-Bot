@@ -331,6 +331,11 @@
           },
           "options": [
             {
+              "uz": "to'g'riga, to'xtovsiz",
+              "ru": "прямо, постоянно",
+              "tj": "рост, пайваста"
+            },
+            {
               "uz": "davom etayotgan holatni bildiruvchi yuklama",
               "ru": "частица продолжающегося состояния",
               "tj": "зарраи ҳолати давомдор"
@@ -341,17 +346,12 @@
               "tj": "нигоҳ доштан, бардоштан"
             },
             {
-              "uz": "to'g'riga, to'xtovsiz",
-              "ru": "прямо, постоянно",
-              "tj": "рост, пайваста"
-            },
-            {
               "uz": "qo'l",
               "ru": "рука",
               "tj": "даст"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "一直 = to'g'riga, to'xtovsiz (yìzhí)",
             "ru": "一直 = прямо, постоянно (yìzhí)",
@@ -385,12 +385,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "拿",
             "着",
-            "往",
-            "手"
+            "手",
+            "拿",
+            "往"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "往 = tomon, yo'nalish bildiradi (wǎng)",
             "ru": "往 = в сторону, по направлению к (wǎng)",
@@ -424,12 +424,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shǒu",
             "zhe",
             "lùkǒu",
+            "shǒu",
             "ná"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "路口 — lùkǒu",
             "ru": "路口 — lùkǒu",
@@ -449,12 +449,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "手",
-            "拿",
             "着",
-            "一直"
+            "手",
+            "一直",
+            "拿"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "to'g'riga, to'xtovsiz = 一直 (yìzhí)",
             "ru": "прямо, постоянно = 一直 (yìzhí)",
@@ -551,12 +551,12 @@
             "tj": "Рост пеш равед."
           },
           "tokens": [
-            "前",
-            "走",
             "手",
+            "走",
+            "前",
+            "着",
             "往",
-            "一直",
-            "着"
+            "一直"
           ],
           "answer_tokens": [
             "一直",
@@ -616,28 +616,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "一直",
-          "pinyin": "yìzhí",
-          "options": [
-            "手",
-            "着",
-            "一直",
-            "拿"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "一直 — to'g'riga, to'xtovsiz (yìzhí)",
-            "ru": "一直 — прямо, постоянно (yìzhí)",
-            "tj": "一直 — рост, пайваста (yìzhí)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "To'g'ri oldinga yuring.",
@@ -646,11 +624,11 @@
           },
           "tokens": [
             "着",
-            "前",
             "手",
-            "走",
+            "往",
             "一直",
-            "往"
+            "前",
+            "走"
           ],
           "answer_tokens": [
             "一直",
@@ -665,28 +643,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "班 talaffuzini tanlang:",
-            "ru": "Выберите произношение 班:",
-            "tj": "Талаффузи 班-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "一直",
+          "pinyin": "yìzhí",
           "options": [
-            "bān",
-            "shǒu",
-            "ná",
-            "zhe"
+            "手",
+            "一直",
+            "拿",
+            "着"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "班 — bān",
-            "ru": "班 — bān",
-            "tj": "班 — bān"
+            "uz": "一直 — to'g'riga, to'xtovsiz (yìzhí)",
+            "ru": "一直 — прямо, постоянно (yìzhí)",
+            "tj": "一直 — рост, пайваста (yìzhí)"
           }
         },
         {
@@ -746,6 +721,105 @@
             "uz": "to'g'riga, to'xtovsiz",
             "ru": "прямо, постоянно",
             "tj": "рост, пайваста"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "班 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 班:",
+            "tj": "Маънои калимаи 班-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            },
+            {
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
+            },
+            {
+              "uz": "qo'l",
+              "ru": "рука",
+              "tj": "даст"
+            },
+            {
+              "uz": "davom etayotgan holatni bildiruvchi yuklama",
+              "ru": "частица продолжающегося состояния",
+              "tj": "зарраи ҳолати давомдор"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "班 = sinf, guruh (bān)",
+            "ru": "班 = класс, группа (bān)",
+            "tj": "班 = синф, гурӯҳ (bān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "班",
+            "pinyin": "bān",
+            "meaning": {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'to'g'riga, to'xtovsiz' xitoycha qaysi?",
+            "ru": "'прямо, постоянно' по-китайски?",
+            "tj": "'рост, пайваста' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "拿",
+            "一直",
+            "着",
+            "手"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "to'g'riga, to'xtovsiz = 一直 (yìzhí)",
+            "ru": "прямо, постоянно = 一直 (yìzhí)",
+            "tj": "рост, пайваста = 一直 (yìzhí)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "一直",
+            "pinyin": "yìzhí",
+            "meaning": {
+              "uz": "to'g'riga, to'xtovsiz",
+              "ru": "прямо, постоянно",
+              "tj": "рост, пайваста"
+            }
           }
         }
       ]

@@ -415,12 +415,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "liángkuai",
-            "guǎngbō",
+            "měirényú",
             "rènao",
-            "měirényú"
+            "liángkuai",
+            "guǎngbō"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "美人鱼 — měirényú",
             "ru": "美人鱼 — měirényú",
@@ -454,12 +454,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "广播",
-            "热闹",
+            "公里",
             "凉快",
-            "公里"
+            "广播",
+            "热闹"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "kilometr = 公里 (gōnglǐ)",
             "ru": "километр = 公里 (gōnglǐ)",
@@ -490,8 +490,8 @@
           "audio_text": "仍然",
           "pinyin": "réngrán",
           "options": [
-            "热闹",
             "凉快",
+            "热闹",
             "仍然",
             "广播"
           ],
@@ -530,9 +530,9 @@
           },
           "options": [
             {
-              "uz": "salqin, yoqimli sovuq",
-              "ru": "прохладный, приятно свежий",
-              "tj": "салқин, форам"
+              "uz": "tizilmoq, tartiblamoq",
+              "ru": "выстраивать, располагать",
+              "tj": "саф кашидан, ҷойгир кардан"
             },
             {
               "uz": "gavjum, shovqinli",
@@ -545,12 +545,12 @@
               "tj": "радио, пахш"
             },
             {
-              "uz": "tizilmoq, tartiblamoq",
-              "ru": "выстраивать, располагать",
-              "tj": "саф кашидан, ҷойгир кардан"
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "排列 = tizilmoq, tartiblamoq (páiliè)",
             "ru": "排列 = выстраивать, располагать (páiliè)",
@@ -570,12 +570,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "凉快",
-            "广播",
             "美人鱼",
-            "热闹"
+            "热闹",
+            "广播",
+            "凉快"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "美人鱼 = suv parisi (měirényú)",
             "ru": "美人鱼 = русалка (měirényú)",
@@ -645,12 +645,12 @@
           "audio_text": "美人鱼",
           "pinyin": "měirényú",
           "options": [
-            "广播",
-            "美人鱼",
             "凉快",
-            "热闹"
+            "热闹",
+            "广播",
+            "美人鱼"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "美人鱼 — suv parisi (měirényú)",
             "ru": "美人鱼 — русалка (měirényú)",
@@ -700,31 +700,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "抱 talaffuzini tanlang:",
-            "ru": "Выберите произношение 抱:",
-            "tj": "Талаффузи 抱-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "rènao",
-            "bào",
-            "liángkuai",
-            "guǎngbō"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "抱 — bào",
-            "ru": "抱 — bào",
-            "tj": "抱 — bào"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "美人鱼",
           "pinyin": "měirényú",
@@ -732,6 +707,105 @@
             "uz": "suv parisi",
             "ru": "русалка",
             "tj": "пари баҳрӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "剩 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 剩:",
+            "tj": "Маънои калимаи 剩-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
+            },
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            },
+            {
+              "uz": "ortib qolmoq",
+              "ru": "оставаться",
+              "tj": "боқӣ мондан"
+            },
+            {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "剩 = ortib qolmoq (shèng)",
+            "ru": "剩 = оставаться (shèng)",
+            "tj": "剩 = боқӣ мондан (shèng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "剩",
+            "pinyin": "shèng",
+            "meaning": {
+              "uz": "ortib qolmoq",
+              "ru": "оставаться",
+              "tj": "боқӣ мондан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'suv parisi' xitoycha qaysi?",
+            "ru": "'русалка' по-китайски?",
+            "tj": "'пари баҳрӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "广播",
+            "凉快",
+            "美人鱼",
+            "热闹"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "suv parisi = 美人鱼 (měirényú)",
+            "ru": "русалка = 美人鱼 (měirényú)",
+            "tj": "пари баҳрӣ = 美人鱼 (měirényú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "美人鱼",
+            "pinyin": "měirényú",
+            "meaning": {
+              "uz": "suv parisi",
+              "ru": "русалка",
+              "tj": "пари баҳрӣ"
+            }
           }
         }
       ]

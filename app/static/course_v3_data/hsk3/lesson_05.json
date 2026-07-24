@@ -312,12 +312,12 @@
           "audio_text": "搬",
           "pinyin": "bān",
           "options": [
-            "周末",
-            "啊",
             "打算",
-            "搬"
+            "周末",
+            "搬",
+            "啊"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "搬 — ko'chirmoq, tashimoq (bān)",
             "ru": "搬 — переносить, перевозить (bān)",
@@ -362,14 +362,14 @@
           },
           "options": [
             {
+              "uz": "reja; rejalamoq, niyat qilmoq",
+              "ru": "план; планировать, намереваться",
+              "tj": "нақша; нақша кардан"
+            },
+            {
               "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
               "ru": "частица в конце предложения для подтверждения или пояснения",
               "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
-            },
-            {
-              "uz": "hafta oxiri, dam olish kuni",
-              "ru": "выходные, конец недели",
-              "tj": "охири ҳафта, рӯзи истироҳат"
             },
             {
               "uz": "Xiaoli (ism)",
@@ -377,9 +377,9 @@
               "tj": "Сяоли (ном)"
             },
             {
-              "uz": "reja; rejalamoq, niyat qilmoq",
-              "ru": "план; планировать, намереваться",
-              "tj": "нақша; нақша кардан"
+              "uz": "hafta oxiri, dam olish kuni",
+              "ru": "выходные, конец недели",
+              "tj": "охири ҳафта, рӯзи истироҳат"
             }
           ],
           "correct_index": 2,
@@ -416,12 +416,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "小刚",
             "打算",
+            "周末",
             "啊",
-            "周末"
+            "小刚"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "小刚 = Xiaogang (ism) (Xiǎogāng)",
             "ru": "小刚 = Сяоган (имя) (Xiǎogāng)",
@@ -441,10 +441,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dǎsuàn",
+            "zhōumò",
             "bān",
-            "a",
-            "zhōumò"
+            "dǎsuàn",
+            "a"
           ],
           "correct_index": 1,
           "explanation": {
@@ -508,41 +508,16 @@
           "audio_text": "小刚",
           "pinyin": "Xiǎogāng",
           "options": [
+            "周末",
             "啊",
             "打算",
-            "小刚",
-            "周末"
+            "小刚"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "小刚 — Xiaogang (ism) (Xiǎogāng)",
             "ru": "小刚 — Сяоган (имя) (Xiǎogāng)",
             "tj": "小刚 — Сяоган (ном) (Xiǎogāng)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "一直 talaffuzini tanlang:",
-            "ru": "Выберите произношение 一直:",
-            "tj": "Талаффузи 一直-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "a",
-            "yìzhí",
-            "zhōumò",
-            "dǎsuàn"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "一直 — yìzhí",
-            "ru": "一直 — yìzhí",
-            "tj": "一直 — yìzhí"
           }
         },
         {
@@ -555,12 +530,12 @@
           "audio_text": "小丽",
           "pinyin": "Xiǎolì",
           "options": [
+            "小丽",
             "啊",
             "周末",
-            "打算",
-            "小丽"
+            "打算"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "小丽 — Xiaoli (ism) (Xiǎolì)",
             "ru": "小丽 — Сяоли (имя) (Xiǎolì)",
@@ -575,6 +550,105 @@
             "uz": "Xiaoli (ism)",
             "ru": "Сяоли (имя)",
             "tj": "Сяоли (ном)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "带 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 带:",
+            "tj": "Маънои калимаи 带-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
+              "ru": "частица в конце предложения для подтверждения или пояснения",
+              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
+            },
+            {
+              "uz": "reja; rejalamoq, niyat qilmoq",
+              "ru": "план; планировать, намереваться",
+              "tj": "нақша; нақша кардан"
+            },
+            {
+              "uz": "hafta oxiri, dam olish kuni",
+              "ru": "выходные, конец недели",
+              "tj": "охири ҳафта, рӯзи истироҳат"
+            },
+            {
+              "uz": "olib ketmoq, olib yurmoq",
+              "ru": "брать с собой, нести",
+              "tj": "бо худ гирифтан, бурдан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "带 = olib ketmoq, olib yurmoq (dài)",
+            "ru": "带 = брать с собой, нести (dài)",
+            "tj": "带 = бо худ гирифтан, бурдан (dài)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "带",
+            "pinyin": "dài",
+            "meaning": {
+              "uz": "olib ketmoq, olib yurmoq",
+              "ru": "брать с собой, нести",
+              "tj": "бо худ гирифтан, бурдан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Xiaoli (ism)' xitoycha qaysi?",
+            "ru": "'Сяоли (имя)' по-китайски?",
+            "tj": "'Сяоли (ном)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "周末",
+            "小丽",
+            "啊",
+            "打算"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "Xiaoli (ism) = 小丽 (Xiǎolì)",
+            "ru": "Сяоли (имя) = 小丽 (Xiǎolì)",
+            "tj": "Сяоли (ном) = 小丽 (Xiǎolì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "小丽",
+            "pinyin": "Xiǎolì",
+            "meaning": {
+              "uz": "Xiaoli (ism)",
+              "ru": "Сяоли (имя)",
+              "tj": "Сяоли (ном)"
+            }
           }
         }
       ]

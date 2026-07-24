@@ -371,12 +371,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dǎzhé",
-            "zhìliàng",
             "jiājù",
-            "shāfā"
+            "shāfā",
+            "zhìliàng",
+            "dǎzhé"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "质量 — zhìliàng",
             "ru": "质量 — zhìliàng",
@@ -456,12 +456,12 @@
           "audio_text": "流行",
           "pinyin": "liúxíng",
           "options": [
-            "流行",
             "沙发",
+            "打折",
             "家具",
-            "打折"
+            "流行"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "流行 — moda bo'lmoq, ommalashmoq (liúxíng)",
             "ru": "流行 — быть популярным, модным (liúxíng)",
@@ -496,9 +496,9 @@
           },
           "options": [
             {
-              "uz": "mebel",
-              "ru": "мебель",
-              "tj": "мебел"
+              "uz": "yo'l-yo'lakay, bir yo'la",
+              "ru": "заодно, попутно",
+              "tj": "дар ҳамин асно, якбора"
             },
             {
               "uz": "chegirma qilmoq",
@@ -506,17 +506,17 @@
               "tj": "тахфиф кардан"
             },
             {
-              "uz": "yo'l-yo'lakay, bir yo'la",
-              "ru": "заодно, попутно",
-              "tj": "дар ҳамин асно, якбора"
-            },
-            {
               "uz": "divan",
               "ru": "диван",
               "tj": "диван"
+            },
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "顺便 = yo'l-yo'lakay, bir yo'la (shùnbiàn)",
             "ru": "顺便 = заодно, попутно (shùnbiàn)",
@@ -536,12 +536,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "打折",
-            "沙发",
             "家具",
-            "质量"
+            "打折",
+            "质量",
+            "沙发"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "质量 = sifat (zhìliàng)",
             "ru": "质量 = качество (zhìliàng)",
@@ -637,12 +637,12 @@
             "tj": "Сифат ҳатман 'тахфиф' намешавад."
           },
           "tokens": [
-            "不",
-            "沙发",
-            "肯定",
             "打折",
             "家具",
-            "质量"
+            "肯定",
+            "质量",
+            "不",
+            "沙发"
           ],
           "answer_tokens": [
             "质量",
@@ -668,109 +668,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'divan' xitoycha qaysi?",
-            "ru": "'диван' по-китайски?",
-            "tj": "'диван' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "家具",
-            "沙发",
-            "打折",
-            "价格"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "divan = 沙发 (shāfā)",
-            "ru": "диван = 沙发 (shāfā)",
-            "tj": "диван = 沙发 (shāfā)"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "质量肯定不“打折”。",
-          "pinyin": "Zhìliàng kěndìng bù “dǎ zhé”.",
-          "translation": {
-            "uz": "Sifat albatta 'chegirmaga tushmaydi'.",
-            "ru": "Качество точно не 'со скидкой'.",
-            "tj": "Сифат ҳатман 'тахфиф' намешавад."
-          },
-          "tokens": {
-            "uz": [
-              "albatta",
-              "yomon",
-              "Sifat",
-              "tushmaydi'",
-              "'chegirmaga",
-              "Narxi"
-            ],
-            "ru": [
-              "Цена",
-              "точно",
-              "'со",
-              "не",
-              "скидкой'",
-              "Качество",
-              "ещё"
-            ],
-            "tj": [
-              "Нархаш",
-              "ҳатман",
-              "намешавад",
-              "'тахфиф'",
-              "бад",
-              "Сифат"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Sifat",
-              "albatta",
-              "'chegirmaga",
-              "tushmaydi'"
-            ],
-            "ru": [
-              "Качество",
-              "точно",
-              "не",
-              "'со",
-              "скидкой'"
-            ],
-            "tj": [
-              "Сифат",
-              "ҳатман",
-              "'тахфиф'",
-              "намешавад"
-            ]
-          },
-          "explanation": {
-            "uz": "质量肯定不“打折”。 — Sifat albatta 'chegirmaga tushmaydi'.",
-            "ru": "质量肯定不“打折”。 — Качество точно не 'со скидкой'.",
-            "tj": "质量肯定不“打折”。 — Сифат ҳатман 'тахфиф' намешавад."
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "流行",
-          "pinyin": "liúxíng",
-          "translation": {
-            "uz": "moda bo'lmoq, ommalashmoq",
-            "ru": "быть популярным, модным",
-            "tj": "мӯд шудан, паҳн шудан"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "顺便 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 顺便:",
-            "tj": "Маънои калимаи 顺便-ро интихоб кунед:"
+            "uz": "流行 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 流行:",
+            "tj": "Маънои калимаи 流行-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -779,9 +681,9 @@
           },
           "options": [
             {
-              "uz": "yo'l-yo'lakay, bir yo'la",
-              "ru": "заодно, попутно",
-              "tj": "дар ҳамин асно, якбора"
+              "uz": "moda bo'lmoq, ommalashmoq",
+              "ru": "быть популярным, модным",
+              "tj": "мӯд шудан, паҳн шудан"
             },
             {
               "uz": "chegirma qilmoq",
@@ -801,9 +703,31 @@
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "顺便 = yo'l-yo'lakay, bir yo'la (shùnbiàn)",
-            "ru": "顺便 = заодно, попутно (shùnbiàn)",
-            "tj": "顺便 = дар ҳамин асно, якбора (shùnbiàn)"
+            "uz": "流行 = moda bo'lmoq, ommalashmoq (liúxíng)",
+            "ru": "流行 = быть популярным, модным (liúxíng)",
+            "tj": "流行 = мӯд шудан, паҳн шудан (liúxíng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "顺便",
+          "pinyin": "shùnbiàn",
+          "options": [
+            "沙发",
+            "打折",
+            "家具",
+            "顺便"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "顺便 — yo'l-yo'lakay, bir yo'la (shùnbiàn)",
+            "ru": "顺便 — заодно, попутно (shùnbiàn)",
+            "tj": "顺便 — дар ҳамин асно, якбора (shùnbiàn)"
           }
         },
         {
@@ -814,6 +738,105 @@
             "uz": "albatta, aniq",
             "ru": "обязательно, точно",
             "tj": "ҳатман, аниқ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "沙发 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 沙发:",
+            "tj": "Маънои калимаи 沙发-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "narx",
+              "ru": "цена",
+              "tj": "нарх"
+            },
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "沙发 = divan (shāfā)",
+            "ru": "沙发 = диван (shāfā)",
+            "tj": "沙发 = диван (shāfā)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "沙发",
+            "pinyin": "shāfā",
+            "meaning": {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'albatta, aniq' xitoycha qaysi?",
+            "ru": "'обязательно, точно' по-китайски?",
+            "tj": "'ҳатман, аниқ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "沙发",
+            "肯定",
+            "打折",
+            "家具"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "albatta, aniq = 肯定 (kěndìng)",
+            "ru": "обязательно, точно = 肯定 (kěndìng)",
+            "tj": "ҳатман, аниқ = 肯定 (kěndìng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "肯定",
+            "pinyin": "kěndìng",
+            "meaning": {
+              "uz": "albatta, aniq",
+              "ru": "обязательно, точно",
+              "tj": "ҳатман, аниқ"
+            }
           }
         }
       ]

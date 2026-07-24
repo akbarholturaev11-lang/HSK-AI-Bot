@@ -416,14 +416,14 @@
               "tj": "кола"
             },
             {
-              "uz": "lift",
-              "ru": "лифт",
-              "tj": "лифт"
-            },
-            {
               "uz": "yana (amal allaqachon takrorlangan)",
               "ru": "снова (действие уже повторилось)",
               "tj": "боз (амал аллакай такрор шуд)"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
             },
             {
               "uz": "mamnun bo'lmoq, qoniqmoq",
@@ -475,12 +475,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "满意",
-            "又",
+            "电梯",
             "一会儿",
-            "电梯"
+            "满意",
+            "又"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "一会儿 = bir oz vaqt (yíhuìr)",
             "ru": "一会儿 = немного времени, момент (yíhuìr)",
@@ -514,12 +514,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "mǎnyì",
             "diàntī",
             "mǎshàng",
+            "mǎnyì",
             "yòu"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "马上 — mǎshàng",
             "ru": "马上 — mǎshàng",
@@ -540,11 +540,11 @@
           },
           "options": [
             "电梯",
-            "满意",
+            "可乐",
             "又",
-            "可乐"
+            "满意"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "kola = 可乐 (kělè)",
             "ru": "кола = 可乐 (kělè)",
@@ -641,14 +641,14 @@
             "tj": "Шумо ба куҷо равед, ман ҳам меравам."
           },
           "tokens": [
-            "满意",
-            "哪儿",
-            "就",
-            "去",
-            "又",
-            "我",
             "你",
             "去",
+            "我",
+            "去",
+            "又",
+            "就",
+            "哪儿",
+            "满意",
             "哪儿"
           ],
           "answer_tokens": [
@@ -678,53 +678,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "又 talaffuzini tanlang:",
-            "ru": "Выберите произношение 又:",
-            "tj": "Талаффузи 又-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "diàntī",
-            "yòu",
-            "mǎnyì",
-            "céng"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "又 — yòu",
-            "ru": "又 — yòu",
-            "tj": "又 — yòu"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "喝可乐吧。你等我一会儿，我马上回来。",
-          "pinyin": "Hē kělè ba. Nǐ děng wǒ yíhuìr, wǒ mǎshàng huílai.",
-          "options": [
-            "听说你最近打算买房子？",
-            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "喝可乐吧。你等我一会儿，我马上回来。",
-            "都不满意吗？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "喝可乐吧。你等我一会儿，我马上回来。 — Kola ichaylik. Meni biroz kut, darhol qaytaman.",
-            "ru": "喝可乐吧。你等我一会儿，我马上回来。 — Давай колу. Подожди меня немного, я сразу вернусь.",
-            "tj": "喝可乐吧。你等我一会儿，我马上回来。 — Кола менӯшем. Маро каме интизор шав, фавран бармегардам."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -734,12 +687,12 @@
           "audio_text": "马上",
           "pinyin": "mǎshàng",
           "options": [
-            "又",
             "马上",
+            "又",
             "满意",
             "电梯"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "马上 — darhol (mǎshàng)",
             "ru": "马上 — сразу, немедленно (mǎshàng)",
@@ -824,6 +777,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "喝可乐吧。你等我一会儿，我马上回来。",
+          "pinyin": "Hē kělè ba. Nǐ děng wǒ yíhuìr, wǒ mǎshàng huílai.",
+          "options": [
+            "喝可乐吧。你等我一会儿，我马上回来。",
+            "听说你最近打算买房子？",
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
+            "都不满意吗？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "喝可乐吧。你等我一会儿，我马上回来。 — Kola ichaylik. Meni biroz kut, darhol qaytaman.",
+            "ru": "喝可乐吧。你等我一会儿，我马上回来。 — Давай колу. Подожди меня немного, я сразу вернусь.",
+            "tj": "喝可乐吧。你等我一会儿，我马上回来。 — Кола менӯшем. Маро каме интизор шав, фавран бармегардам."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "一会儿",
           "pinyin": "yíhuìr",
@@ -831,6 +806,105 @@
             "uz": "bir oz vaqt",
             "ru": "немного времени, момент",
             "tj": "як лаҳза, каме вақт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "害怕 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 害怕:",
+            "tj": "Маънои калимаи 害怕-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mamnun bo'lmoq, qoniqmoq",
+              "ru": "быть довольным",
+              "tj": "қаноатманд будан"
+            },
+            {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            },
+            {
+              "uz": "qo'rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "害怕 = qo'rqmoq (hàipà)",
+            "ru": "害怕 = бояться (hàipà)",
+            "tj": "害怕 = тарсидан (hàipà)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "害怕",
+            "pinyin": "hàipà",
+            "meaning": {
+              "uz": "qo'rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bir oz vaqt' xitoycha qaysi?",
+            "ru": "'немного времени, момент' по-китайски?",
+            "tj": "'як лаҳза, каме вақт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "又",
+            "电梯",
+            "满意",
+            "一会儿"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bir oz vaqt = 一会儿 (yíhuìr)",
+            "ru": "немного времени, момент = 一会儿 (yíhuìr)",
+            "tj": "як лаҳза, каме вақт = 一会儿 (yíhuìr)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "一会儿",
+            "pinyin": "yíhuìr",
+            "meaning": {
+              "uz": "bir oz vaqt",
+              "ru": "немного времени, момент",
+              "tj": "як лаҳза, каме вақт"
+            }
           }
         }
       ]

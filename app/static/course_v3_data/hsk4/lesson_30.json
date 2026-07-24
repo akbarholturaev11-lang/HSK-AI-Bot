@@ -342,12 +342,12 @@
           "audio_text": "提前",
           "pinyin": "tíqián",
           "options": [
-            "份",
             "提前",
             "以为",
+            "份",
             "提"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "提前 — oldindan, muddatidan avval bajarmoq (tíqián)",
             "ru": "提前 — сделать заранее, раньше срока (tíqián)",
@@ -392,16 +392,6 @@
           },
           "options": [
             {
-              "uz": "ish kabi narsalar uchun hisob so'zi",
-              "ru": "счётное слово для работы и др.",
-              "tj": "ҳисобвожа барои кор ва ғайра"
-            },
-            {
-              "uz": "tilga olmoq, aytmoq",
-              "ru": "упоминать, говорить",
-              "tj": "зикр кардан, гуфтан"
-            },
-            {
               "uz": "kafolat bermoq",
               "ru": "гарантировать",
               "tj": "кафолат додан"
@@ -410,9 +400,19 @@
               "uz": "deb o'ylamoq, yanglish hisoblamoq",
               "ru": "думать, ошибочно полагать",
               "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "保证 = kafolat bermoq (bǎozhèng)",
             "ru": "保证 = гарантировать (bǎozhèng)",
@@ -446,12 +446,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "提醒",
+            "以为",
             "提",
             "份",
-            "以为"
+            "提醒"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "提醒 = eslatmoq (tíxǐng)",
             "ru": "提醒 = напоминать (tíxǐng)",
@@ -485,10 +485,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yǐwéi",
             "tí",
+            "fèn",
             "luàn",
-            "fèn"
+            "yǐwéi"
           ],
           "correct_index": 2,
           "explanation": {
@@ -510,9 +510,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "提",
-            "提前",
             "以为",
+            "提前",
+            "提",
             "份"
           ],
           "correct_index": 1,
@@ -585,41 +585,16 @@
           "audio_text": "保证",
           "pinyin": "bǎozhèng",
           "options": [
+            "保证",
             "以为",
             "份",
-            "提",
-            "保证"
+            "提"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "保证 — kafolat bermoq (bǎozhèng)",
             "ru": "保证 — гарантировать (bǎozhèng)",
             "tj": "保证 — кафолат додан (bǎozhèng)"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'tekshirmoq, tadqiq qilmoq' xitoycha qaysi?",
-            "ru": "'исследовать, проводить опрос' по-китайски?",
-            "tj": "'таҳқиқ кардан, пурсиш гузаронидан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "以为",
-            "调查",
-            "份",
-            "提"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "tekshirmoq, tadqiq qilmoq = 调查 (diàochá)",
-            "ru": "исследовать, проводить опрос = 调查 (diàochá)",
-            "tj": "таҳқиқ кардан, пурсиш гузаронидан = 调查 (diàochá)"
           }
         },
         {
@@ -646,11 +621,6 @@
           },
           "options": [
             {
-              "uz": "tilga olmoq, aytmoq",
-              "ru": "упоминать, говорить",
-              "tj": "зикр кардан, гуфтан"
-            },
-            {
               "uz": "ish kabi narsalar uchun hisob so'zi",
               "ru": "счётное слово для работы и др.",
               "tj": "ҳисобвожа барои кор ва ғайра"
@@ -664,9 +634,14 @@
               "uz": "tartibsiz, chalkash",
               "ru": "беспорядочный, спутанный",
               "tj": "бетартиб, ошуфта"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "乱 = tartibsiz, chalkash (luàn)",
             "ru": "乱 = беспорядочный, спутанный (luàn)",
@@ -681,6 +656,105 @@
             "uz": "kafolat bermoq",
             "ru": "гарантировать",
             "tj": "кафолат додан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "调查 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 调查:",
+            "tj": "Маънои калимаи 调查-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            },
+            {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            },
+            {
+              "uz": "tekshirmoq, tadqiq qilmoq",
+              "ru": "исследовать, проводить опрос",
+              "tj": "таҳқиқ кардан, пурсиш гузаронидан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "调查 = tekshirmoq, tadqiq qilmoq (diàochá)",
+            "ru": "调查 = исследовать, проводить опрос (diàochá)",
+            "tj": "调查 = таҳқиқ кардан, пурсиш гузаронидан (diàochá)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "调查",
+            "pinyin": "diàochá",
+            "meaning": {
+              "uz": "tekshirmoq, tadqiq qilmoq",
+              "ru": "исследовать, проводить опрос",
+              "tj": "таҳқиқ кардан, пурсиш гузаронидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kafolat bermoq' xitoycha qaysi?",
+            "ru": "'гарантировать' по-китайски?",
+            "tj": "'кафолат додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "提",
+            "份",
+            "以为",
+            "保证"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kafolat bermoq = 保证 (bǎozhèng)",
+            "ru": "гарантировать = 保证 (bǎozhèng)",
+            "tj": "кафолат додан = 保证 (bǎozhèng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "保证",
+            "pinyin": "bǎozhèng",
+            "meaning": {
+              "uz": "kafolat bermoq",
+              "ru": "гарантировать",
+              "tj": "кафолат додан"
+            }
           }
         }
       ]

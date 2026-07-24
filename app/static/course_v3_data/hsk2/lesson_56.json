@@ -321,11 +321,6 @@
           },
           "options": [
             {
-              "uz": "xotin, turmush o'rtoq (ayol)",
-              "ru": "жена, супруга",
-              "tj": "зан, ҳамсар (зан)"
-            },
-            {
               "uz": "uka",
               "ru": "младший брат",
               "tj": "бародари хурдӣ"
@@ -336,12 +331,17 @@
               "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
             },
             {
+              "uz": "xotin, turmush o'rtoq (ayol)",
+              "ru": "жена, супруга",
+              "tj": "зан, ҳамсар (зан)"
+            },
+            {
               "uz": "qor",
               "ru": "снег",
               "tj": "барф"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "弟弟 = uka (dìdi)",
             "ru": "弟弟 = младший брат (dìdi)",
@@ -386,11 +386,11 @@
           },
           "options": [
             "雪",
+            "得",
             "近",
-            "妻子",
-            "得"
+            "妻子"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "近 = yaqin (jìn)",
             "ru": "近 = близкий, недалёкий (jìn)",
@@ -449,12 +449,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "妻子",
-            "得",
             "弟弟",
-            "雪"
+            "雪",
+            "得",
+            "妻子"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "uka = 弟弟 (dìdi)",
             "ru": "младший брат = 弟弟 (dìdi)",
@@ -552,12 +552,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
+            "雪",
             "得",
-            "妻子",
             "零",
-            "雪"
+            "妻子"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 妻子 (qīzi) — xotin, turmush o'rtoq (ayol)",
             "ru": "Верно: 妻子 (qīzi) — жена, супруга",
@@ -575,88 +575,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "pronunciation",
-          "phrase": "身体",
-          "pinyin": "shēntǐ",
-          "translation": {
-            "uz": "tana, sog'liq",
-            "ru": "тело, здоровье",
-            "tj": "тан, саломатӣ"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "进 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 进:",
-            "tj": "Маънои калимаи 进-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qor",
-              "ru": "снег",
-              "tj": "барф"
-            },
-            {
-              "uz": "xotin, turmush o'rtoq (ayol)",
-              "ru": "жена, супруга",
-              "tj": "зан, ҳамсар (зан)"
-            },
-            {
-              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
-              "ru": "частица дополнения состояния (после глагола)",
-              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
-            },
-            {
-              "uz": "kirmoq",
-              "ru": "войти, заходить",
-              "tj": "даромадан"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "进 = kirmoq (jìn)",
-            "ru": "进 = войти, заходить (jìn)",
-            "tj": "进 = даромадан (jìn)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Uning ukasi kirib keldi.",
-            "ru": "Её младший брат вошёл (сюда).",
-            "tj": "Бародари хурдиаш даромад."
-          },
-          "tokens": [
-            "来",
-            "得",
-            "弟弟",
-            "了",
-            "进",
-            "走",
-            "她",
-            "妻子"
-          ],
-          "answer_tokens": [
-            "她",
-            "弟弟",
-            "走",
-            "进",
-            "来",
-            "了"
-          ],
-          "explanation": {
-            "uz": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le.",
-            "ru": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le.",
-            "tj": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le."
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "她弟弟走进来了。",
@@ -719,6 +637,47 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Uning ukasi kirib keldi.",
+            "ru": "Её младший брат вошёл (сюда).",
+            "tj": "Бародари хурдиаш даромад."
+          },
+          "tokens": [
+            "进",
+            "弟弟",
+            "了",
+            "走",
+            "她",
+            "得",
+            "妻子",
+            "来"
+          ],
+          "answer_tokens": [
+            "她",
+            "弟弟",
+            "走",
+            "进",
+            "来",
+            "了"
+          ],
+          "explanation": {
+            "uz": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le.",
+            "ru": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le.",
+            "tj": "她弟弟走进来了。 — Tā dìdi zǒu jìn lái le."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "身体",
+          "pinyin": "shēntǐ",
+          "translation": {
+            "uz": "tana, sog'liq",
+            "ru": "тело, здоровье",
+            "tj": "тан, саломатӣ"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -728,12 +687,12 @@
           "audio_text": "是啊，他也希望能住得近一点儿。",
           "pinyin": "Shì a, tā yě xīwàng néng zhù de jìn yìdiǎnr.",
           "options": [
-            "你比我早起一个小时。",
-            "六点多。",
             "是啊，他也希望能住得近一点儿。",
-            "你每天早上几点起床？"
+            "你每天早上几点起床？",
+            "你比我早起一个小时。",
+            "六点多。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "是啊，他也希望能住得近一点儿。 — Ha, u ham biroz yaqinroqda yashashni xohlaydi.",
             "ru": "是啊，他也希望能住得近一点儿。 — Да, он тоже хочет жить немного ближе.",
@@ -748,6 +707,105 @@
             "uz": "yaqin",
             "ru": "близкий, недалёкий",
             "tj": "наздик"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "穿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 穿:",
+            "tj": "Маънои калимаи 穿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+              "ru": "частица дополнения состояния (после глагола)",
+              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+            },
+            {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            },
+            {
+              "uz": "xotin, turmush o'rtoq (ayol)",
+              "ru": "жена, супруга",
+              "tj": "зан, ҳамсар (зан)"
+            },
+            {
+              "uz": "kiymoq (kiyim-bosh)",
+              "ru": "надевать, носить (одежду)",
+              "tj": "пӯшидан (либос)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "穿 = kiymoq (kiyim-bosh) (chuān)",
+            "ru": "穿 = надевать, носить (одежду) (chuān)",
+            "tj": "穿 = пӯшидан (либос) (chuān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "穿",
+            "pinyin": "chuān",
+            "meaning": {
+              "uz": "kiymoq (kiyim-bosh)",
+              "ru": "надевать, носить (одежду)",
+              "tj": "пӯшидан (либос)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yaqin' xitoycha qaysi?",
+            "ru": "'близкий, недалёкий' по-китайски?",
+            "tj": "'наздик' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "得",
+            "近",
+            "妻子",
+            "雪"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yaqin = 近 (jìn)",
+            "ru": "близкий, недалёкий = 近 (jìn)",
+            "tj": "наздик = 近 (jìn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "近",
+            "pinyin": "jìn",
+            "meaning": {
+              "uz": "yaqin",
+              "ru": "близкий, недалёкий",
+              "tj": "наздик"
+            }
           }
         }
       ]

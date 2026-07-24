@@ -421,12 +421,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "层",
             "电梯",
             "满意",
-            "又"
+            "又",
+            "层"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "yana (amal allaqachon takrorlangan) = 又 (yòu)",
             "ru": "снова (действие уже повторилось) = 又 (yòu)",
@@ -457,12 +457,12 @@
           "audio_text": "满意",
           "pinyin": "mǎnyì",
           "options": [
+            "满意",
             "层",
             "电梯",
-            "又",
-            "满意"
+            "又"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "满意 — mamnun bo'lmoq, qoniqmoq (mǎnyì)",
             "ru": "满意 — быть довольным (mǎnyì)",
@@ -507,6 +507,11 @@
           },
           "options": [
             {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            },
+            {
               "uz": "yana (amal allaqachon takrorlangan)",
               "ru": "снова (действие уже повторилось)",
               "tj": "боз (амал аллакай такрор шуд)"
@@ -517,17 +522,12 @@
               "tj": "қаноатманд будан"
             },
             {
-              "uz": "lift",
-              "ru": "лифт",
-              "tj": "лифт"
-            },
-            {
               "uz": "qavatlar uchun hisob so'zi",
               "ru": "счётное слово для этажей",
               "tj": "ҳисобвожа барои ошёна"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "电梯 = lift (diàntī)",
             "ru": "电梯 = лифт (diàntī)",
@@ -562,11 +562,11 @@
           },
           "options": [
             "满意",
+            "又",
             "层",
-            "电梯",
-            "又"
+            "电梯"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "层 = qavatlar uchun hisob so'zi (céng)",
             "ru": "层 = счётное слово для этажей (céng)",
@@ -586,12 +586,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "céng",
-            "mǎnyì",
             "diàntī",
-            "yòu"
+            "céng",
+            "yòu",
+            "mǎnyì"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "又 — yòu",
             "ru": "又 — yòu",
@@ -696,12 +696,12 @@
             "tj": "Вай боз дер омад! (гузашта)"
           },
           "tokens": [
-            "他",
-            "又",
-            "迟到",
-            "电梯",
+            "了",
             "满意",
-            "了"
+            "他",
+            "迟到",
+            "又",
+            "电梯"
           ],
           "answer_tokens": [
             "他",
@@ -737,11 +737,11 @@
           "pinyin": "Dōu bù mǎnyì ma?",
           "options": [
             "听说你最近打算买房子？",
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
             "都不满意吗？",
-            "一个没有电梯，不方便。一个有电梯，但是在二十层。",
-            "是，昨天去看了看，今天又去看了看，明天还要再去看看。"
+            "一个没有电梯，不方便。一个有电梯，但是在二十层。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "都不满意吗？ — Hech biridan mamnun emasmisan?",
             "ru": "都不满意吗？ — Всеми недовольна?",
@@ -749,118 +749,13 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zuìjìn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zuìjìn?",
-            "tj": "zuìjìn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "又",
-            "满意",
-            "电梯",
-            "最近"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "最近 = yaqinda, oxirgi paytlarda (zuìjìn)",
-            "ru": "最近 = недавно, в последнее время (zuìjìn)",
-            "tj": "最近 = ба наздикӣ, вақтҳои охир (zuìjìn)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "U yana kechikdi! (o'tgan)",
-            "ru": "Он снова опоздал! (прошлое)",
-            "tj": "Вай боз дер омад! (гузашта)"
-          },
-          "tokens": [
-            "又",
-            "电梯",
-            "了",
-            "他",
-            "迟到",
-            "满意"
-          ],
-          "answer_tokens": [
-            "他",
-            "又",
-            "迟到",
-            "了"
-          ],
-          "explanation": {
-            "uz": "他又迟到了！ — Tā yòu chídào le!",
-            "ru": "他又迟到了！ — Tā yòu chídào le!",
-            "tj": "他又迟到了！ — Tā yòu chídào le!"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "他又迟到了！",
-          "pinyin": "Tā yòu chídào le!",
+          "type": "pronunciation",
+          "phrase": "层",
+          "pinyin": "céng",
           "translation": {
-            "uz": "U yana kechikdi! (o'tgan)",
-            "ru": "Он снова опоздал! (прошлое)",
-            "tj": "Вай боз дер омад! (гузашта)"
-          },
-          "tokens": {
-            "uz": [
-              "o'tgan",
-              "U",
-              "yana",
-              "kecha",
-              "Ha",
-              "kechikdi"
-            ],
-            "ru": [
-              "прошлое",
-              "опоздал",
-              "Да",
-              "вчера",
-              "снова",
-              "Он"
-            ],
-            "tj": [
-              "гузашта",
-              "Вай",
-              "дер",
-              "боз",
-              "омад",
-              "Ҳа",
-              "дирӯз"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "U",
-              "yana",
-              "kechikdi",
-              "o'tgan"
-            ],
-            "ru": [
-              "Он",
-              "снова",
-              "опоздал",
-              "прошлое"
-            ],
-            "tj": [
-              "Вай",
-              "боз",
-              "дер",
-              "омад",
-              "гузашта"
-            ]
-          },
-          "explanation": {
-            "uz": "他又迟到了！ — U yana kechikdi! (o'tgan)",
-            "ru": "他又迟到了！ — Он снова опоздал! (прошлое)",
-            "tj": "他又迟到了！ — Вай боз дер омад! (гузашта)"
+            "uz": "qavatlar uchun hisob so'zi",
+            "ru": "счётное слово для этажей",
+            "tj": "ҳисобвожа барои ошёна"
           }
         },
         {
@@ -871,6 +766,105 @@
             "uz": "lift",
             "ru": "лифт",
             "tj": "лифт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "银行 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 银行:",
+            "tj": "Маънои калимаи 银行-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
+            },
+            {
+              "uz": "mamnun bo'lmoq, qoniqmoq",
+              "ru": "быть довольным",
+              "tj": "қаноатманд будан"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            },
+            {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "银行 = bank (yínháng)",
+            "ru": "银行 = банк (yínháng)",
+            "tj": "银行 = бонк (yínháng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "银行",
+            "pinyin": "yínháng",
+            "meaning": {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'lift' xitoycha qaysi?",
+            "ru": "'лифт' по-китайски?",
+            "tj": "'лифт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "电梯",
+            "满意",
+            "层",
+            "又"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "lift = 电梯 (diàntī)",
+            "ru": "лифт = 电梯 (diàntī)",
+            "tj": "лифт = 电梯 (diàntī)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "电梯",
+            "pinyin": "diàntī",
+            "meaning": {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            }
           }
         }
       ]

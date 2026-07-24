@@ -431,12 +431,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dào",
             "guǎngbō",
             "liángkuai",
+            "dào",
             "rènao"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "倒 — dào",
             "ru": "倒 — dào",
@@ -470,12 +470,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "热闹",
+            "安娜",
             "广播",
-            "凉快",
-            "安娜"
+            "热闹",
+            "凉快"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "Anna = 安娜 (Ānnà)",
             "ru": "Анна = 安娜 (Ānnà)",
@@ -506,12 +506,12 @@
           "audio_text": "香山",
           "pinyin": "Xiāng Shān",
           "options": [
-            "热闹",
-            "广播",
+            "香山",
             "凉快",
-            "香山"
+            "热闹",
+            "广播"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "香山 — Xiangshan (Xiāng Shān)",
             "ru": "香山 — Сяншань (Xiāng Shān)",
@@ -556,27 +556,27 @@
           },
           "options": [
             {
-              "uz": "Buyuk Xitoy devori",
-              "ru": "Великая китайская стена",
-              "tj": "Девори бузурги Чин"
-            },
-            {
-              "uz": "radio, eshittirish",
-              "ru": "радио, передача",
-              "tj": "радио, пахш"
-            },
-            {
               "uz": "salqin, yoqimli sovuq",
               "ru": "прохладный, приятно свежий",
               "tj": "салқин, форам"
             },
             {
+              "uz": "Buyuk Xitoy devori",
+              "ru": "Великая китайская стена",
+              "tj": "Девори бузурги Чин"
+            },
+            {
               "uz": "gavjum, shovqinli",
               "ru": "оживлённый, шумный",
               "tj": "серодам, пурҷӯшу хурӯш"
+            },
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "长城 = Buyuk Xitoy devori (Chángchéng)",
             "ru": "长城 = Великая китайская стена (Chángchéng)",
@@ -597,9 +597,9 @@
           },
           "options": [
             "倒",
-            "热闹",
+            "凉快",
             "广播",
-            "凉快"
+            "热闹"
           ],
           "correct_index": 0,
           "explanation": {
@@ -701,47 +701,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "超 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 超:",
-            "tj": "Маънои калимаи 超-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "oshib ketmoq",
-              "ru": "превышать",
-              "tj": "зиёд шудан"
-            },
-            {
-              "uz": "salqin, yoqimli sovuq",
-              "ru": "прохладный, приятно свежий",
-              "tj": "салқин, форам"
-            },
-            {
-              "uz": "radio, eshittirish",
-              "ru": "радио, передача",
-              "tj": "радио, пахш"
-            },
-            {
-              "uz": "gavjum, shovqinli",
-              "ru": "оживлённый, шумный",
-              "tj": "серодам, пурҷӯшу хурӯш"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "超 = oshib ketmoq (chāo)",
-            "ru": "超 = превышать (chāo)",
-            "tj": "超 = зиёд шудан (chāo)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -751,38 +710,16 @@
           "audio_text": "倒",
           "pinyin": "dào",
           "options": [
-            "热闹",
-            "广播",
-            "凉快",
-            "倒"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "倒 — aksincha; quymoq (dào)",
-            "ru": "倒 — наоборот; наливать (dào)",
-            "tj": "倒 — баръакс; рехтан (dào)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "长城",
-          "pinyin": "Chángchéng",
-          "options": [
-            "长城",
+            "倒",
             "广播",
             "热闹",
             "凉快"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "长城 — Buyuk Xitoy devori (Chángchéng)",
-            "ru": "长城 — Великая китайская стена (Chángchéng)",
-            "tj": "长城 — Девори бузурги Чин (Chángchéng)"
+            "uz": "倒 — aksincha; quymoq (dào)",
+            "ru": "倒 — наоборот; наливать (dào)",
+            "tj": "倒 — баръакс; рехтан (dào)"
           }
         },
         {
@@ -799,9 +736,9 @@
           },
           "options": [
             "安娜",
+            "广播",
             "凉快",
-            "热闹",
-            "广播"
+            "热闹"
           ],
           "correct_index": 0,
           "explanation": {
@@ -823,12 +760,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "凉快",
             "热闹",
-            "广播",
-            "香山"
+            "凉快",
+            "香山",
+            "广播"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "香山 = Xiangshan (Xiāng Shān)",
             "ru": "香山 = Сяншань (Xiāng Shān)",
@@ -843,6 +780,105 @@
             "uz": "Buyuk Xitoy devori",
             "ru": "Великая китайская стена",
             "tj": "Девори бузурги Чин"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "超 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 超:",
+            "tj": "Маънои калимаи 超-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            },
+            {
+              "uz": "oshib ketmoq",
+              "ru": "превышать",
+              "tj": "зиёд шудан"
+            },
+            {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
+            },
+            {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "超 = oshib ketmoq (chāo)",
+            "ru": "超 = превышать (chāo)",
+            "tj": "超 = зиёд шудан (chāo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "超",
+            "pinyin": "chāo",
+            "meaning": {
+              "uz": "oshib ketmoq",
+              "ru": "превышать",
+              "tj": "зиёд шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Buyuk Xitoy devori' xitoycha qaysi?",
+            "ru": "'Великая китайская стена' по-китайски?",
+            "tj": "'Девори бузурги Чин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "热闹",
+            "广播",
+            "长城",
+            "凉快"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "Buyuk Xitoy devori = 长城 (Chángchéng)",
+            "ru": "Великая китайская стена = 长城 (Chángchéng)",
+            "tj": "Девори бузурги Чин = 长城 (Chángchéng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "长城",
+            "pinyin": "Chángchéng",
+            "meaning": {
+              "uz": "Buyuk Xitoy devori",
+              "ru": "Великая китайская стена",
+              "tj": "Девори бузурги Чин"
+            }
           }
         }
       ]

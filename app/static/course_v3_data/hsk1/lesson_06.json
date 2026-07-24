@@ -617,58 +617,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yaxshi, ajoyib' xitoycha qaysi?",
-            "ru": "'хорошо, хороший' по-китайски?",
-            "tj": "'хуб, олӣ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "名字",
-            "好",
-            "叫",
-            "什么"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "yaxshi, ajoyib = 好 (hǎo)",
-            "ru": "хорошо, хороший = 好 (hǎo)",
-            "tj": "хуб, олӣ = 好 (hǎo)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Ismingiz nima?",
-            "ru": "Как вас зовут?",
-            "tj": "Номи шумо чист?"
-          },
-          "tokens": [
-            "什么",
-            "我",
-            "名字",
-            "叫",
-            "你",
-            "谢谢"
-          ],
-          "answer_tokens": [
-            "你",
-            "叫",
-            "什么",
-            "名字"
-          ],
-          "explanation": {
-            "uz": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
-            "ru": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
-            "tj": "你叫什么名字？ — Nǐ jiào shénme míngzi?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "什么",
           "pinyin": "shénme",
@@ -676,6 +624,105 @@
             "uz": "nima, qaysi",
             "ru": "что, какой",
             "tj": "чӣ, кадом"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "不 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 不:",
+            "tj": "Маънои калимаи 不-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yo'q, emas",
+              "ru": "нет, не",
+              "tj": "не, нест"
+            },
+            {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номида шудан, даъват кардан"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            },
+            {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "不 = yo'q, emas (bù)",
+            "ru": "不 = нет, не (bù)",
+            "tj": "不 = не, нест (bù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "不",
+            "pinyin": "bù",
+            "meaning": {
+              "uz": "yo'q, emas",
+              "ru": "нет, не",
+              "tj": "не, нест"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'nima, qaysi' xitoycha qaysi?",
+            "ru": "'что, какой' по-китайски?",
+            "tj": "'чӣ, кадом' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "叫",
+            "我",
+            "什么",
+            "名字"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "nima, qaysi = 什么 (shénme)",
+            "ru": "что, какой = 什么 (shénme)",
+            "tj": "чӣ, кадом = 什么 (shénme)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "什么",
+            "pinyin": "shénme",
+            "meaning": {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            }
           }
         }
       ]

@@ -735,31 +735,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "认识 talaffuzini tanlang:",
-            "ru": "Выберите произношение 认识:",
-            "tj": "Талаффузи 认识-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "juéde",
-            "rènshi",
-            "zuì",
-            "lǚyóu"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "认识 — rènshi",
-            "ru": "认识 — rènshi",
-            "tj": "认识 — rènshi"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "旅游",
           "pinyin": "lǚyóu",
@@ -767,6 +742,105 @@
             "uz": "sayohat qilmoq",
             "ru": "путешествовать",
             "tj": "сафар кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "认识 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 认识:",
+            "tj": "Маънои калимаи 认识-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
+            },
+            {
+              "uz": "eng, juda",
+              "ru": "самый, наиболее",
+              "tj": "аз ҳама, бештар"
+            },
+            {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            },
+            {
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "认识 = tanish bo'lmoq, uchrashmoq (rènshi)",
+            "ru": "认识 = знать, познакомиться (rènshi)",
+            "tj": "认识 = шинохтан, шинос шудан (rènshi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "认识",
+            "pinyin": "rènshi",
+            "meaning": {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sayohat qilmoq' xitoycha qaysi?",
+            "ru": "'путешествовать' по-китайски?",
+            "tj": "'сафар кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "觉得",
+            "最",
+            "旅游",
+            "为什么"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "sayohat qilmoq = 旅游 (lǚyóu)",
+            "ru": "путешествовать = 旅游 (lǚyóu)",
+            "tj": "сафар кардан = 旅游 (lǚyóu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "旅游",
+            "pinyin": "lǚyóu",
+            "meaning": {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
+            }
           }
         }
       ]

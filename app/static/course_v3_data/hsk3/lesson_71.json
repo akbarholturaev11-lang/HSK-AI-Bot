@@ -342,27 +342,27 @@
           },
           "options": [
             {
-              "uz": "muzlatkich",
-              "ru": "холодильник",
-              "tj": "яхдон"
-            },
-            {
               "uz": "keyin, undan so'ng",
               "ru": "потом, затем",
               "tj": "баъд, сипас"
             },
             {
-              "uz": "tozalamoq, supurmoq",
-              "ru": "убирать, подметать",
-              "tj": "тоза кардан, рӯфтан"
-            },
-            {
               "uz": "toza",
               "ru": "чистый",
               "tj": "тоза"
+            },
+            {
+              "uz": "muzlatkich",
+              "ru": "холодильник",
+              "tj": "яхдон"
+            },
+            {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "打扫 = tozalamoq, supurmoq (dǎsǎo)",
             "ru": "打扫 = убирать, подметать (dǎsǎo)",
@@ -396,9 +396,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "然后",
-            "干净",
             "打扫",
+            "干净",
+            "然后",
             "冰箱"
           ],
           "correct_index": 1,
@@ -445,12 +445,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dǎsǎo",
-            "gānjìng",
             "bīngxiāng",
-            "ránhòu"
+            "ránhòu",
+            "dǎsǎo",
+            "gānjìng"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "然后 — ránhòu",
             "ru": "然后 — ránhòu",
@@ -484,10 +484,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "然后",
+            "打扫",
             "冰箱",
             "干净",
-            "打扫"
+            "然后"
           ],
           "correct_index": 1,
           "explanation": {
@@ -506,12 +506,12 @@
           "audio_text": "打扫",
           "pinyin": "dǎsǎo",
           "options": [
-            "冰箱",
+            "打扫",
             "干净",
-            "然后",
-            "打扫"
+            "冰箱",
+            "然后"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "打扫 — tozalamoq, supurmoq (dǎsǎo)",
             "ru": "打扫 — убирать, подметать (dǎsǎo)",
@@ -616,13 +616,13 @@
             "tj": "Себро хуб бишӯй!"
           },
           "tokens": [
-            "把",
-            "了",
+            "干净",
             "然后",
+            "把",
+            "洗",
             "苹果",
             "打扫",
-            "干净",
-            "洗"
+            "了"
           ],
           "answer_tokens": [
             "把",
@@ -714,53 +714,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "bǐjiào qaysi ieroglif?",
-            "ru": "Какой иероглиф читается bǐjiào?",
-            "tj": "bǐjiào кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "然后",
-            "干净",
-            "打扫",
-            "比较"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "比较 = nisbatan, ancha (bǐjiào)",
-            "ru": "比较 = сравнительно, довольно (bǐjiào)",
-            "tj": "比较 = нисбатан (bǐjiào)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "先把茶和杯子放好，然后把冰箱里的西瓜拿出来。",
-          "pinyin": "Xiān bǎ chá hé bēizi fàng hǎo, ránhòu bǎ bīngxiāng li de xīguā ná chūlai.",
-          "options": [
-            "那你也不能看电视啊。",
-            "客人就要来了，你怎么还不打扫房间啊？",
-            "先把茶和杯子放好，然后把冰箱里的西瓜拿出来。",
-            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "先把茶和杯子放好，然后把冰箱里的西瓜拿出来。 — Avval choy va piyolalarni qo'yib chiqing, keyin muzlatkichdagi tarvuzni olib chiqing.",
-            "ru": "先把茶和杯子放好，然后把冰箱里的西瓜拿出来。 — Сначала расставь чай и чашки, затем достань арбуз из холодильника.",
-            "tj": "先把茶和杯子放好，然后把冰箱里的西瓜拿出来。 — Аввал чой ва пиёлаҳоро ҷо ба ҷо кун, баъд тарбузро аз яхдон барор."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "然后",
           "pinyin": "ránhòu",
@@ -768,6 +721,105 @@
             "uz": "keyin, undan so'ng",
             "ru": "потом, затем",
             "tj": "баъд, сипас"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "礼物 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 礼物:",
+            "tj": "Маънои калимаи 礼物-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
+            },
+            {
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
+            },
+            {
+              "uz": "sovg'a",
+              "ru": "подарок",
+              "tj": "туҳфа"
+            },
+            {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "礼物 = sovg'a (lǐwù)",
+            "ru": "礼物 = подарок (lǐwù)",
+            "tj": "礼物 = туҳфа (lǐwù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "礼物",
+            "pinyin": "lǐwù",
+            "meaning": {
+              "uz": "sovg'a",
+              "ru": "подарок",
+              "tj": "туҳфа"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'keyin, undan so'ng' xitoycha qaysi?",
+            "ru": "'потом, затем' по-китайски?",
+            "tj": "'баъд, сипас' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "干净",
+            "冰箱",
+            "然后",
+            "打扫"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "keyin, undan so'ng = 然后 (ránhòu)",
+            "ru": "потом, затем = 然后 (ránhòu)",
+            "tj": "баъд, сипас = 然后 (ránhòu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "然后",
+            "pinyin": "ránhòu",
+            "meaning": {
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
+            }
           }
         }
       ]

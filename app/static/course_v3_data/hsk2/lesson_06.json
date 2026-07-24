@@ -728,53 +728,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "早上",
-          "pinyin": "zǎoshang",
-          "options": [
-            "生病",
-            "跑步",
-            "早上",
-            "每"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "早上 — ertalab (zǎoshang)",
-            "ru": "早上 — утро, утром (zǎoshang)",
-            "tj": "早上 — субҳ, субҳгоҳ (zǎoshang)"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'sport; sport qilmoq' xitoycha qaysi?",
-            "ru": "'спорт; заниматься спортом' по-китайски?",
-            "tj": "'варзиш; варзиш кардан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "生病",
-            "每",
-            "运动",
-            "早上"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "sport; sport qilmoq = 运动 (yùndòng)",
-            "ru": "спорт; заниматься спортом = 运动 (yùndòng)",
-            "tj": "варзиш; варзиш кардан = 运动 (yùndòng)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
@@ -802,6 +755,105 @@
             "uz": "har (bir), har qaysi",
             "ru": "каждый",
             "tj": "ҳар (як), ҳар кадом"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "觉得 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 觉得:",
+            "tj": "Маънои калимаи 觉得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
+            },
+            {
+              "uz": "kasal bo'lmoq",
+              "ru": "заболевать, болеть",
+              "tj": "бемор шудан, касал шудан"
+            },
+            {
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
+            },
+            {
+              "uz": "har (bir), har qaysi",
+              "ru": "каждый",
+              "tj": "ҳар (як), ҳар кадом"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "觉得 = deb o'ylash, his qilish (juéde)",
+            "ru": "觉得 = думать, считать, чувствовать (juéde)",
+            "tj": "觉得 = фикр кардан, ҳис кардан (juéde)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "觉得",
+            "pinyin": "juéde",
+            "meaning": {
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'har (bir), har qaysi' xitoycha qaysi?",
+            "ru": "'каждый' по-китайски?",
+            "tj": "'ҳар (як), ҳар кадом' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "生病",
+            "跑步",
+            "每",
+            "早上"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "har (bir), har qaysi = 每 (měi)",
+            "ru": "каждый = 每 (měi)",
+            "tj": "ҳар (як), ҳар кадом = 每 (měi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "每",
+            "pinyin": "měi",
+            "meaning": {
+              "uz": "har (bir), har qaysi",
+              "ru": "каждый",
+              "tj": "ҳар (як), ҳар кадом"
+            }
           }
         }
       ]

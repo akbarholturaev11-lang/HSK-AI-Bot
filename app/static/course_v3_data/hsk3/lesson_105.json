@@ -358,12 +358,12 @@
           "audio_text": "照相机",
           "pinyin": "zhàoxiàngjī",
           "options": [
-            "照相机",
-            "难过",
             "被",
-            "东"
+            "照相机",
+            "东",
+            "难过"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "照相机 — fotoapparat, kamera (zhàoxiàngjī)",
             "ru": "照相机 — фотоаппарат, камера (zhàoxiàngjī)",
@@ -398,14 +398,14 @@
           },
           "options": [
             {
-              "uz": "majhul nisbatni bildiruvchi predlog",
-              "ru": "предлог пассивного залога",
-              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
-            },
-            {
               "uz": "fotoapparat, kamera",
               "ru": "фотоаппарат, камера",
               "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
             },
             {
               "uz": "xafa, g'amgin",
@@ -418,7 +418,7 @@
               "tj": "шарқ"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "被 = majhul nisbatni bildiruvchi predlog (bèi)",
             "ru": "被 = предлог пассивного залога (bèi)",
@@ -452,12 +452,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "难过",
+            "东",
             "被",
-            "照相机",
-            "东"
+            "难过",
+            "照相机"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "难过 = xafa, g'amgin (nánguò)",
             "ru": "难过 = грустный, печальный (nánguò)",
@@ -491,12 +491,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zhàoxiàngjī",
-            "dōng",
+            "nánguò",
             "bèi",
-            "nánguò"
+            "zhàoxiàngjī",
+            "dōng"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "东 — dōng",
             "ru": "东 — dōng",
@@ -626,13 +626,13 @@
             "tj": "Вай ба ман таъсир кард!"
           },
           "tokens": [
-            "影响",
-            "被",
-            "难过",
             "我",
-            "了",
+            "难过",
+            "照相机",
             "他",
-            "照相机"
+            "被",
+            "了",
+            "影响"
           ],
           "answer_tokens": [
             "我",
@@ -658,53 +658,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "被",
-          "pinyin": "bèi",
-          "options": [
-            "被",
-            "东",
-            "照相机",
-            "难过"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "被 — majhul nisbatni bildiruvchi predlog (bèi)",
-            "ru": "被 — предлог пассивного залога (bèi)",
-            "tj": "被 — пешоянди нишондиҳандаи шакли маҷҳул (bèi)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "礼物 talaffuzini tanlang:",
-            "ru": "Выберите произношение 礼物:",
-            "tj": "Талаффузи 礼物-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zhàoxiàngjī",
-            "lǐwù",
-            "bèi",
-            "nánguò"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "礼物 — lǐwù",
-            "ru": "礼物 — lǐwù",
-            "tj": "礼物 — lǐwù"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "我被他影响了！",
@@ -776,12 +729,12 @@
           "audio_text": "我的照相机被谁拿走了？怎么找不到了？",
           "pinyin": "Wǒ de zhàoxiàngjī bèi shéi ná zǒu le? Zěnme zhǎo bu dào le?",
           "options": [
-            "我的照相机被谁拿走了？怎么找不到了？",
-            "别难过，再买一个吧，公司东门外不就有一个大商场吗？",
+            "你再找找。是不是没带来？",
             "我找了，没找到啊。",
-            "你再找找。是不是没带来？"
+            "别难过，再买一个吧，公司东门外不就有一个大商场吗？",
+            "我的照相机被谁拿走了？怎么找不到了？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "我的照相机被谁拿走了？怎么找不到了？ — Fotoapparatimni kim olib ketdi? Nega topa olmayapman?",
             "ru": "我的照相机被谁拿走了？怎么找不到了？ — Кто забрал мой фотоаппарат? Почему я не могу его найти?",
@@ -796,6 +749,105 @@
             "uz": "fotoapparat, kamera",
             "ru": "фотоаппарат, камера",
             "tj": "фотоаппарат, камера"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "耳朵 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 耳朵:",
+            "tj": "Маънои калимаи 耳朵-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            },
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            },
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            },
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "耳朵 = quloq (ěrduo)",
+            "ru": "耳朵 = ухо (ěrduo)",
+            "tj": "耳朵 = гӯш (ěrduo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "耳朵",
+            "pinyin": "ěrduo",
+            "meaning": {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'fotoapparat, kamera' xitoycha qaysi?",
+            "ru": "'фотоаппарат, камера' по-китайски?",
+            "tj": "'фотоаппарат, камера' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "被",
+            "难过",
+            "照相机",
+            "东"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "fotoapparat, kamera = 照相机 (zhàoxiàngjī)",
+            "ru": "фотоаппарат, камера = 照相机 (zhàoxiàngjī)",
+            "tj": "фотоаппарат, камера = 照相机 (zhàoxiàngjī)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "照相机",
+            "pinyin": "zhàoxiàngjī",
+            "meaning": {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            }
           }
         }
       ]

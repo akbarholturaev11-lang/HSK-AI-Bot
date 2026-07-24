@@ -400,12 +400,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "niánjí",
             "zhàopiàn",
-            "bǐsài",
-            "Xiǎomíng"
+            "Xiǎomíng",
+            "niánjí",
+            "bǐsài"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "小明 — Xiǎomíng",
             "ru": "小明 — Xiǎomíng",
@@ -449,12 +449,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "比赛",
-            "马可",
             "年级",
-            "照片"
+            "照片",
+            "马可",
+            "比赛"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "Marco (ism) = 马可 (Mǎkě)",
             "ru": "Марко (имя) = 马可 (Mǎkě)",
@@ -485,12 +485,12 @@
           "audio_text": "李小美",
           "pinyin": "Lǐ Xiǎoměi",
           "options": [
-            "年级",
             "李小美",
             "照片",
+            "年级",
             "比赛"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "李小美 — Li Xiaomei (ism) (Lǐ Xiǎoměi)",
             "ru": "李小美 — Ли Сяомэй (имя) (Lǐ Xiǎoměi)",
@@ -511,14 +511,14 @@
           },
           "options": [
             {
-              "uz": "Xiaoming (ism)",
-              "ru": "Сяомин (имя)",
-              "tj": "Сяомин (ном)"
-            },
-            {
               "uz": "surat, fotosurat",
               "ru": "фотография",
               "tj": "акс"
+            },
+            {
+              "uz": "Xiaoming (ism)",
+              "ru": "Сяомин (имя)",
+              "tj": "Сяомин (ном)"
             },
             {
               "uz": "musobaqa",
@@ -531,7 +531,7 @@
               "tj": "синф, курс"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "小明 = Xiaoming (ism) (Xiǎomíng)",
             "ru": "小明 = Сяомин (имя) (Xiǎomíng)",
@@ -629,12 +629,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "总是",
-            "照片",
             "比赛",
-            "年级"
+            "年级",
+            "总是",
+            "照片"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 总是 (zǒngshì) — har doim, doim",
             "ru": "Верно: 总是 (zǒngshì) — всегда",
@@ -653,33 +653,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Li Xiaomei haqida qanday fikrdasan?",
-            "ru": "Что ты думаешь о Ли Сяомэй?",
-            "tj": "Ба фикрат Ли Сяомэй чӣ гуна аст?"
-          },
-          "tokens": [
-            "觉得",
-            "比赛",
-            "李小美",
-            "你",
-            "怎么样",
-            "照片"
-          ],
-          "answer_tokens": [
-            "你",
-            "觉得",
-            "李小美",
-            "怎么样"
-          ],
-          "explanation": {
-            "uz": "你觉得李小美怎么样？ — Nǐ juéde Lǐ Xiǎoměi zěnmeyàng?",
-            "ru": "你觉得李小美怎么样？ — Nǐ juéde Lǐ Xiǎoměi zěnmeyàng?",
-            "tj": "你觉得李小美怎么样？ — Nǐ juéde Lǐ Xiǎoměi zěnmeyàng?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "李小美",
           "pinyin": "Lǐ Xiǎoměi",
@@ -687,31 +660,6 @@
             "uz": "Li Xiaomei (ism)",
             "ru": "Ли Сяомэй (имя)",
             "tj": "Ли Сяомэй (ном)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "nǔlì qaysi ieroglif?",
-            "ru": "Какой иероглиф читается nǔlì?",
-            "tj": "nǔlì кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "比赛",
-            "年级",
-            "照片",
-            "努力"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "努力 = tirishqoq; harakat qilmoq (nǔlì)",
-            "ru": "努力 = старательный; стараться (nǔlì)",
-            "tj": "努力 = боғайрат; кӯшиш кардан (nǔlì)"
           }
         },
         {
@@ -724,16 +672,43 @@
           "audio_text": "啊，我知道了，你说的是李小美吧？",
           "pinyin": "A, wǒ zhīdào le, nǐ shuō de shì Lǐ Xiǎoměi ba?",
           "options": [
-            "是，这是我们比赛后照的。",
-            "啊，我知道了，你说的是李小美吧？",
+            "这是你们比赛的照片吗？",
             "照得不错，你们都是一个年级的吗？",
-            "这是你们比赛的照片吗？"
+            "是，这是我们比赛后照的。",
+            "啊，我知道了，你说的是李小美吧？"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "啊，我知道了，你说的是李小美吧？ — A, tushundim, siz Li Xiaomei haqida gapiryapsiz, shundaymi?",
             "ru": "啊，我知道了，你说的是李小美吧？ — А, понял, вы говорите о Ли Сяомэй, да?",
             "tj": "啊，我知道了，你说的是李小美吧？ — А, фаҳмидам, шумо дар бораи Ли Сяомэй мегӯед, ҳамин тавр?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Li Xiaomei haqida qanday fikrdasan?",
+            "ru": "Что ты думаешь о Ли Сяомэй?",
+            "tj": "Ба фикрат Ли Сяомэй чӣ гуна аст?"
+          },
+          "tokens": [
+            "你",
+            "照片",
+            "觉得",
+            "怎么样",
+            "李小美",
+            "比赛"
+          ],
+          "answer_tokens": [
+            "你",
+            "觉得",
+            "李小美",
+            "怎么样"
+          ],
+          "explanation": {
+            "uz": "你觉得李小美怎么样？ — Nǐ juéde Lǐ Xiǎoměi zěnmeyàng?",
+            "ru": "你觉得李小美怎么样？ — Nǐ juéde Lǐ Xiǎoměi zěnmeyàng?",
+            "tj": "你觉得李小美怎么样？ — Nǐ juéde Lǐ Xiǎoměi zěnmeyàng?"
           }
         },
         {
@@ -817,6 +792,105 @@
             "uz": "Marco (ism)",
             "ru": "Марко (имя)",
             "tj": "Марко (ном)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "认真 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 认真:",
+            "tj": "Маънои калимаи 认真-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            },
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            },
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
+              "uz": "jiddiy, mas'uliyatli",
+              "ru": "серьёзный, добросовестный",
+              "tj": "ҷиддӣ, масъулиятнок"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "认真 = jiddiy, mas'uliyatli (rènzhēn)",
+            "ru": "认真 = серьёзный, добросовестный (rènzhēn)",
+            "tj": "认真 = ҷиддӣ, масъулиятнок (rènzhēn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "认真",
+            "pinyin": "rènzhēn",
+            "meaning": {
+              "uz": "jiddiy, mas'uliyatli",
+              "ru": "серьёзный, добросовестный",
+              "tj": "ҷиддӣ, масъулиятнок"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Marco (ism)' xitoycha qaysi?",
+            "ru": "'Марко (имя)' по-китайски?",
+            "tj": "'Марко (ном)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "马可",
+            "比赛",
+            "照片",
+            "年级"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "Marco (ism) = 马可 (Mǎkě)",
+            "ru": "Марко (имя) = 马可 (Mǎkě)",
+            "tj": "Марко (ном) = 马可 (Mǎkě)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "马可",
+            "pinyin": "Mǎkě",
+            "meaning": {
+              "uz": "Marco (ism)",
+              "ru": "Марко (имя)",
+              "tj": "Марко (ном)"
+            }
           }
         }
       ]

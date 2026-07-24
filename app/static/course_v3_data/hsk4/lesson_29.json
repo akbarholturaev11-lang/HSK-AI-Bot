@@ -382,11 +382,11 @@
           },
           "options": [
             "份",
-            "赚",
+            "提",
             "以为",
-            "提"
+            "赚"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "pul topmoq = 赚 (zhuàn)",
             "ru": "зарабатывать = 赚 (zhuàn)",
@@ -417,12 +417,12 @@
           "audio_text": "调查",
           "pinyin": "diàochá",
           "options": [
-            "调查",
             "以为",
             "提",
-            "份"
+            "份",
+            "调查"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "调查 — tekshirmoq, tadqiq qilmoq (diàochá)",
             "ru": "调查 — исследовать, проводить опрос (diàochá)",
@@ -462,14 +462,14 @@
               "tj": "ҳисобвожа барои кор ва ғайра"
             },
             {
-              "uz": "tilga olmoq, aytmoq",
-              "ru": "упоминать, говорить",
-              "tj": "зикр кардан, гуфтан"
-            },
-            {
               "uz": "asl, oldingi",
               "ru": "первоначальный, прежний",
               "tj": "аввала, пешина"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
             },
             {
               "uz": "deb o'ylamoq, yanglish hisoblamoq",
@@ -477,7 +477,7 @@
               "tj": "фикр кардан, ғалат пиндоштан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "原来 = asl, oldingi (yuánlái)",
             "ru": "原来 = первоначальный, прежний (yuánlái)",
@@ -511,9 +511,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "提",
-            "计划",
             "以为",
+            "计划",
+            "提",
             "份"
           ],
           "correct_index": 1,
@@ -536,8 +536,8 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "fèn",
             "tí",
+            "fèn",
             "yǐwéi",
             "zhuàn"
           ],
@@ -638,12 +638,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "份",
+            "以为",
             "提",
-            "原来",
-            "以为"
+            "份",
+            "原来"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 原来 (yuánlái) — asl, oldingi",
             "ru": "Верно: 原来 (yuánlái) — первоначальный, прежний",
@@ -661,6 +661,28 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "赚",
+          "pinyin": "zhuàn",
+          "options": [
+            "份",
+            "提",
+            "以为",
+            "赚"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "赚 — pul topmoq (zhuàn)",
+            "ru": "赚 — зарабатывать (zhuàn)",
+            "tj": "赚 — пул даромад кардан (zhuàn)"
+          }
+        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -704,53 +726,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "赚",
-          "pinyin": "zhuàn",
-          "options": [
-            "份",
-            "以为",
-            "赚",
-            "提"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "赚 — pul topmoq (zhuàn)",
-            "ru": "赚 — зарабатывать (zhuàn)",
-            "tj": "赚 — пул даромад кардан (zhuàn)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "提 talaffuzini tanlang:",
-            "ru": "Выберите произношение 提:",
-            "tj": "Талаффузи 提-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "tí",
-            "fèn",
-            "yǐwéi",
-            "wánquán"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "提 — tí",
-            "ru": "提 — tí",
-            "tj": "提 — tí"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "赚",
           "pinyin": "zhuàn",
@@ -758,6 +733,105 @@
             "uz": "pul topmoq",
             "ru": "зарабатывать",
             "tj": "пул даромад кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "提 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 提:",
+            "tj": "Маънои калимаи 提-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            },
+            {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "butunlay, to'liq",
+              "ru": "полностью, совершенно",
+              "tj": "пурра, комилан"
+            },
+            {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "提 = tilga olmoq, aytmoq (tí)",
+            "ru": "提 = упоминать, говорить (tí)",
+            "tj": "提 = зикр кардан, гуфтан (tí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "提",
+            "pinyin": "tí",
+            "meaning": {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'pul topmoq' xitoycha qaysi?",
+            "ru": "'зарабатывать' по-китайски?",
+            "tj": "'пул даромад кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "赚",
+            "提",
+            "以为",
+            "份"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "pul topmoq = 赚 (zhuàn)",
+            "ru": "зарабатывать = 赚 (zhuàn)",
+            "tj": "пул даромад кардан = 赚 (zhuàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "赚",
+            "pinyin": "zhuàn",
+            "meaning": {
+              "uz": "pul topmoq",
+              "ru": "зарабатывать",
+              "tj": "пул даромад кардан"
+            }
           }
         }
       ]

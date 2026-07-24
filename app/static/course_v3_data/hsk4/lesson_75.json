@@ -368,12 +368,12 @@
           "audio_text": "放弃",
           "pinyin": "fàngqì",
           "options": [
-            "得",
+            "放弃",
             "难道",
-            "饼干",
-            "放弃"
+            "得",
+            "饼干"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "放弃 — voz kechmoq (fàngqì)",
             "ru": "放弃 — отказываться, бросать (fàngqì)",
@@ -408,11 +408,6 @@
           },
           "options": [
             {
-              "uz": "nahotki",
-              "ru": "неужели",
-              "tj": "магар"
-            },
-            {
               "uz": "pechenye",
               "ru": "печенье",
               "tj": "печенье"
@@ -426,9 +421,14 @@
               "uz": "fikr, qaror",
               "ru": "идея, решение",
               "tj": "фикр, қарор"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "主意 = fikr, qaror (zhǔyi)",
             "ru": "主意 = идея, решение (zhǔyi)",
@@ -472,9 +472,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "饼干",
-            "难道",
             "得",
+            "难道",
+            "饼干",
             "网球"
           ],
           "correct_index": 3,
@@ -511,12 +511,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "nándào",
-            "děi",
+            "bǐnggān",
             "guójì",
-            "bǐnggān"
+            "nándào",
+            "děi"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "国际 — guójì",
             "ru": "国际 — guójì",
@@ -536,10 +536,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "难道",
             "得",
-            "饼干",
             "放弃",
-            "难道"
+            "饼干"
           ],
           "correct_index": 2,
           "explanation": {
@@ -641,53 +641,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "děi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается děi?",
-            "tj": "děi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "得",
-            "难道",
-            "坚持",
-            "饼干"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "得 = kerak, majbur bo'lmoq (děi)",
-            "ru": "得 = нужно, придётся (děi)",
-            "tj": "得 = лозим аст, бояд (děi)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "网球",
-          "pinyin": "wǎngqiú",
-          "options": [
-            "饼干",
-            "得",
-            "难道",
-            "网球"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "网球 — tennis (wǎngqiú)",
-            "ru": "网球 — теннис (wǎngqiú)",
-            "tj": "网球 — теннис (wǎngqiú)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -730,6 +683,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "网球",
+          "pinyin": "wǎngqiú",
+          "options": [
+            "难道",
+            "得",
+            "网球",
+            "饼干"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "网球 — tennis (wǎngqiú)",
+            "ru": "网球 — теннис (wǎngqiú)",
+            "tj": "网球 — теннис (wǎngqiú)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "网球",
           "pinyin": "wǎngqiú",
@@ -737,6 +712,105 @@
             "uz": "tennis",
             "ru": "теннис",
             "tj": "теннис"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "得 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 得:",
+            "tj": "Маънои калимаи 得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "qat'iy davom etmoq",
+              "ru": "настаивать, продолжать",
+              "tj": "истодагарӣ кардан"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "得 = kerak, majbur bo'lmoq (děi)",
+            "ru": "得 = нужно, придётся (děi)",
+            "tj": "得 = лозим аст, бояд (děi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "得",
+            "pinyin": "děi",
+            "meaning": {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tennis' xitoycha qaysi?",
+            "ru": "'теннис' по-китайски?",
+            "tj": "'теннис' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饼干",
+            "难道",
+            "网球",
+            "得"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "tennis = 网球 (wǎngqiú)",
+            "ru": "теннис = 网球 (wǎngqiú)",
+            "tj": "теннис = 网球 (wǎngqiú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "网球",
+            "pinyin": "wǎngqiú",
+            "meaning": {
+              "uz": "tennis",
+              "ru": "теннис",
+              "tj": "теннис"
+            }
           }
         }
       ]

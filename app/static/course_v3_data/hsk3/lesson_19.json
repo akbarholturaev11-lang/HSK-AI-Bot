@@ -376,12 +376,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "又",
-            "比赛",
             "年级",
-            "照片"
+            "又",
+            "照片",
+            "比赛"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "musobaqa = 比赛 (bǐsài)",
             "ru": "соревнование = 比赛 (bǐsài)",
@@ -413,11 +413,11 @@
           "pinyin": "zhàopiàn",
           "options": [
             "比赛",
+            "又",
             "年级",
-            "照片",
-            "又"
+            "照片"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "照片 — surat, fotosurat (zhàopiàn)",
             "ru": "照片 — фотография (zhàopiàn)",
@@ -462,9 +462,9 @@
           },
           "options": [
             {
-              "uz": "musobaqa",
-              "ru": "соревнование",
-              "tj": "мусобиқа"
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
             },
             {
               "uz": "ham, yana; 又...又... qolipida",
@@ -472,9 +472,9 @@
               "tj": "ҳам, боз; дар сохти 又...又..."
             },
             {
-              "uz": "surat, fotosurat",
-              "ru": "фотография",
-              "tj": "акс"
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
             },
             {
               "uz": "sinf, kurs, bosqich",
@@ -516,12 +516,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "比赛",
             "年级",
             "照片",
-            "又",
-            "比赛"
+            "又"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "又 = ham, yana; 又...又... qolipida (yòu)",
             "ru": "又 = и, также; в конструкции 又...又... (yòu)",
@@ -541,12 +541,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zhàopiàn",
-            "bǐsài",
             "yòu",
-            "niánjí"
+            "niánjí",
+            "zhàopiàn",
+            "bǐsài"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "比赛 — bǐsài",
             "ru": "比赛 — bǐsài",
@@ -664,16 +664,6 @@
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "又",
-          "pinyin": "yòu",
-          "translation": {
-            "uz": "ham, yana; 又...又... qolipida",
-            "ru": "и, также; в конструкции 又...又...",
-            "tj": "ҳам, боз; дар сохти 又...又..."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -684,11 +674,11 @@
           "pinyin": "Zhè shì nǐmen bǐsài de zhàopiàn ma?",
           "options": [
             "照得不错，你们都是一个年级的吗？",
-            "是，这是我们比赛后照的。",
+            "这是你们比赛的照片吗？",
             "不是。那个又高又漂亮的女孩儿是二年级的。",
-            "这是你们比赛的照片吗？"
+            "是，这是我们比赛后照的。"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "这是你们比赛的照片吗？ — Bu sizlarning musobaqadagi suratingizmi?",
             "ru": "这是你们比赛的照片吗？ — Это ваша фотография с соревнования?",
@@ -703,15 +693,15 @@
             "tj": "Ин акси мусобиқаи шумост?"
           },
           "tokens": [
-            "你们",
+            "吗",
             "又",
             "这",
             "是",
             "照片",
-            "吗",
             "的",
+            "年级",
             "比赛",
-            "年级"
+            "你们"
           ],
           "answer_tokens": [
             "这",
@@ -729,28 +719,13 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "téng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается téng?",
-            "tj": "téng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "年级",
-            "照片",
-            "疼",
-            "比赛"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "疼 = og'riqli, og'rimoq (téng)",
-            "ru": "疼 = болеть, больной (téng)",
-            "tj": "疼 = дард кардан, дарднок (téng)"
+          "type": "pronunciation",
+          "phrase": "又",
+          "pinyin": "yòu",
+          "translation": {
+            "uz": "ham, yana; 又...又... qolipida",
+            "ru": "и, также; в конструкции 又...又...",
+            "tj": "ҳам, боз; дар сохти 又...又..."
           }
         },
         {
@@ -761,6 +736,105 @@
             "uz": "sinf, kurs, bosqich",
             "ru": "класс, курс",
             "tj": "синф, курс"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "小心 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 小心:",
+            "tj": "Маънои калимаи 小心-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
+            },
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "小心 = ehtiyotkor, ehtiyot bo'lmoq (xiǎoxīn)",
+            "ru": "小心 = осторожный, быть осторожным (xiǎoxīn)",
+            "tj": "小心 = эҳтиёткор, эҳтиёт шудан (xiǎoxīn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "小心",
+            "pinyin": "xiǎoxīn",
+            "meaning": {
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sinf, kurs, bosqich' xitoycha qaysi?",
+            "ru": "'класс, курс' по-китайски?",
+            "tj": "'синф, курс' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "比赛",
+            "年级",
+            "又",
+            "照片"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "sinf, kurs, bosqich = 年级 (niánjí)",
+            "ru": "класс, курс = 年级 (niánjí)",
+            "tj": "синф, курс = 年级 (niánjí)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "年级",
+            "pinyin": "niánjí",
+            "meaning": {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            }
           }
         }
       ]

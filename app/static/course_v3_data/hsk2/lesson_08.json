@@ -655,79 +655,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Sening bo'ying qancha?",
-            "ru": "Какой у тебя рост?",
-            "tj": "Қади ту чанд аст?"
-          },
-          "tokens": [
-            "多",
-            "高",
-            "你",
-            "生病",
-            "每"
-          ],
-          "answer_tokens": [
-            "你",
-            "多",
-            "高"
-          ],
-          "explanation": {
-            "uz": "你多高？ — Nǐ duō gāo?",
-            "ru": "你多高？ — Nǐ duō gāo?",
-            "tj": "你多高？ — Nǐ duō gāo?"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "出",
-          "pinyin": "chū",
-          "translation": {
-            "uz": "chiqmoq",
-            "ru": "выходить, выезжать",
-            "tj": "баромадан, берун шудан"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "出院 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 出院:",
-            "tj": "Маънои калимаи 出院-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "他多高？",
+          "pinyin": "Tā duō gāo?",
           "options": [
-            {
-              "uz": "har (bir), har qaysi",
-              "ru": "каждый",
-              "tj": "ҳар (як), ҳар кадом"
-            },
-            {
-              "uz": "kasalxonadan chiqmoq",
-              "ru": "выписаться из больницы",
-              "tj": "аз беморхона баромадан"
-            },
-            {
-              "uz": "kasal bo'lmoq",
-              "ru": "заболевать, болеть",
-              "tj": "бемор шудан, касал шудан"
-            },
-            {
-              "uz": "ertalab",
-              "ru": "утро, утром",
-              "tj": "субҳ, субҳгоҳ"
-            }
+            "是啊，我每天早上都要出去跑步。",
+            "他多高？",
+            "你每天几点起床？",
+            "你很少生病，是不是喜欢运动？"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "出院 = kasalxonadan chiqmoq (chūyuàn)",
-            "ru": "出院 = выписаться из больницы (chūyuàn)",
-            "tj": "出院 = аз беморхона баромадан (chūyuàn)"
+            "uz": "他多高？ — Uning bo'yi qancha?",
+            "ru": "他多高？ — Какой у него рост?",
+            "tj": "他多高？ — Қади ӯ чанд аст?"
           }
         },
         {
@@ -763,6 +709,105 @@
             "uz": "bilmoq",
             "ru": "знать",
             "tj": "донистан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "出院 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 出院:",
+            "tj": "Маънои калимаи 出院-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "har (bir), har qaysi",
+              "ru": "каждый",
+              "tj": "ҳар (як), ҳар кадом"
+            },
+            {
+              "uz": "kasal bo'lmoq",
+              "ru": "заболевать, болеть",
+              "tj": "бемор шудан, касал шудан"
+            },
+            {
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
+            },
+            {
+              "uz": "kasalxonadan chiqmoq",
+              "ru": "выписаться из больницы",
+              "tj": "аз беморхона баромадан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "出院 = kasalxonadan chiqmoq (chūyuàn)",
+            "ru": "出院 = выписаться из больницы (chūyuàn)",
+            "tj": "出院 = аз беморхона баромадан (chūyuàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "出院",
+            "pinyin": "chūyuàn",
+            "meaning": {
+              "uz": "kasalxonadan chiqmoq",
+              "ru": "выписаться из больницы",
+              "tj": "аз беморхона баромадан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bilmoq' xitoycha qaysi?",
+            "ru": "'знать' по-китайски?",
+            "tj": "'донистан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "每",
+            "知道",
+            "生病",
+            "早上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bilmoq = 知道 (zhīdào)",
+            "ru": "знать = 知道 (zhīdào)",
+            "tj": "донистан = 知道 (zhīdào)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "知道",
+            "pinyin": "zhīdào",
+            "meaning": {
+              "uz": "bilmoq",
+              "ru": "знать",
+              "tj": "донистан"
+            }
           }
         }
       ]

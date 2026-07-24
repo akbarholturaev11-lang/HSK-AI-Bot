@@ -402,27 +402,27 @@
           },
           "options": [
             {
-              "uz": "ikkalasi, ikki kishi",
-              "ru": "двое, оба",
-              "tj": "ду нафар, ҳарду"
-            },
-            {
               "uz": "qonun, huquq",
               "ru": "закон, право",
               "tj": "қонун, ҳуқуқ"
             },
             {
-              "uz": "taassurot",
-              "ru": "впечатление",
-              "tj": "таассурот"
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
             },
             {
               "uz": "chuqur",
               "ru": "глубокий",
               "tj": "чуқур"
+            },
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "法律 = qonun, huquq (fǎlǜ)",
             "ru": "法律 = закон, право (fǎlǜ)",
@@ -456,12 +456,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "深",
+            "俩",
             "印象",
-            "法律",
-            "俩"
+            "深",
+            "法律"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "俩 = ikkalasi, ikki kishi (liǎ)",
             "ru": "俩 = двое, оба (liǎ)",
@@ -495,12 +495,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "shēn",
             "fǎlǜ",
             "yìnxiàng",
-            "shēn",
             "liǎ"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "印象 — yìnxiàng",
             "ru": "印象 — yìnxiàng",
@@ -534,12 +534,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "印象",
-            "深",
             "俩",
-            "法律"
+            "法律",
+            "深",
+            "印象"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "chuqur = 深 (shēn)",
             "ru": "глубокий = 深 (shēn)",
@@ -556,10 +556,10 @@
           "audio_text": "法律",
           "pinyin": "fǎlǜ",
           "options": [
-            "深",
-            "法律",
             "俩",
-            "印象"
+            "法律",
+            "印象",
+            "深"
           ],
           "correct_index": 1,
           "explanation": {
@@ -779,74 +779,16 @@
           "audio_text": "那你们俩是怎么认识的？",
           "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
           "options": [
+            "那你们俩是怎么认识的？",
             "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
             "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
-            "那你们俩是怎么认识的？"
+            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "那你们俩是怎么认识的？ — Unda siz ikkalangiz qanday tanishgansiz?",
             "ru": "那你们俩是怎么认识的？ — Тогда как вы двое познакомились?",
             "tj": "那你们俩是怎么认识的？ — Пас шумо ду нафар чӣ тавр шинос шудед?"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "照相机 talaffuzini tanlang:",
-            "ru": "Выберите произношение 照相机:",
-            "tj": "Талаффузи 照相机-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zhàoxiàngjī",
-            "yìnxiàng",
-            "fǎlǜ",
-            "liǎ"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "照相机 — zhàoxiàngjī",
-            "ru": "照相机 — zhàoxiàngjī",
-            "tj": "照相机 — zhàoxiàngjī"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Unda siz ikkalangiz qanday tanishgansiz?",
-            "ru": "Тогда как вы двое познакомились?",
-            "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
-          },
-          "tokens": [
-            "认识",
-            "是",
-            "印象",
-            "俩",
-            "的",
-            "你们",
-            "怎么",
-            "那",
-            "法律"
-          ],
-          "answer_tokens": [
-            "那",
-            "你们",
-            "俩",
-            "是",
-            "怎么",
-            "认识",
-            "的"
-          ],
-          "explanation": {
-            "uz": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?",
-            "ru": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?",
-            "tj": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?"
           }
         },
         {
@@ -857,6 +799,105 @@
             "uz": "qonun, huquq",
             "ru": "закон, право",
             "tj": "қонун, ҳуқуқ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "照相机 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 照相机:",
+            "tj": "Маънои калимаи 照相机-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            },
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "照相机 = fotoapparat, kamera (zhàoxiàngjī)",
+            "ru": "照相机 = фотоаппарат, камера (zhàoxiàngjī)",
+            "tj": "照相机 = фотоаппарат, камера (zhàoxiàngjī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "照相机",
+            "pinyin": "zhàoxiàngjī",
+            "meaning": {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qonun, huquq' xitoycha qaysi?",
+            "ru": "'закон, право' по-китайски?",
+            "tj": "'қонун, ҳуқуқ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "俩",
+            "印象",
+            "法律",
+            "深"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qonun, huquq = 法律 (fǎlǜ)",
+            "ru": "закон, право = 法律 (fǎlǜ)",
+            "tj": "қонун, ҳуқуқ = 法律 (fǎlǜ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "法律",
+            "pinyin": "fǎlǜ",
+            "meaning": {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            }
           }
         }
       ]

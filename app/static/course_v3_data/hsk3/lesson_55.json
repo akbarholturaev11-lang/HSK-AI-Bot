@@ -378,12 +378,12 @@
           "audio_text": "图书馆",
           "pinyin": "túshūguǎn",
           "options": [
-            "图书馆",
+            "还",
             "借",
             "词典",
-            "还"
+            "图书馆"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "图书馆 — kutubxona (túshūguǎn)",
             "ru": "图书馆 — библиотека (túshūguǎn)",
@@ -423,14 +423,14 @@
               "tj": "қарз гирифтан, қарз додан"
             },
             {
-              "uz": "kutubxona",
-              "ru": "библиотека",
-              "tj": "китобхона"
-            },
-            {
               "uz": "qaytarmoq",
               "ru": "возвращать",
               "tj": "баргардондан"
+            },
+            {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
             },
             {
               "uz": "lug'at",
@@ -483,11 +483,11 @@
           },
           "options": [
             "借",
-            "还",
+            "词典",
             "图书馆",
-            "词典"
+            "还"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "词典 = lug'at (cídiǎn)",
             "ru": "词典 = словарь (cídiǎn)",
@@ -521,12 +521,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiè",
             "huán",
-            "túshūguǎn",
-            "cídiǎn"
+            "jiè",
+            "cídiǎn",
+            "túshūguǎn"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "还 — huán",
             "ru": "还 — huán",
@@ -547,9 +547,9 @@
           },
           "options": [
             "图书馆",
-            "词典",
             "还",
-            "借"
+            "借",
+            "词典"
           ],
           "correct_index": 0,
           "explanation": {
@@ -656,16 +656,16 @@
             "tj": "Вай китобро ба болои миз монд."
           },
           "tokens": [
-            "到",
-            "借",
-            "桌子",
-            "图书馆",
-            "放",
-            "上",
             "了",
             "他",
+            "书",
+            "图书馆",
             "把",
-            "书"
+            "到",
+            "上",
+            "桌子",
+            "放",
+            "借"
           ],
           "answer_tokens": [
             "他",
@@ -695,31 +695,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "chídào qaysi ieroglif?",
-            "ru": "Какой иероглиф читается chídào?",
-            "tj": "chídào кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "迟到",
-            "词典",
-            "图书馆",
-            "借"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "迟到 = kech qolmoq (chídào)",
-            "ru": "迟到 = опаздывать (chídào)",
-            "tj": "迟到 = дер мондан (chídào)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "还",
           "pinyin": "huán",
@@ -739,47 +714,16 @@
           "audio_text": "帮我把这本词典还了吧。",
           "pinyin": "Bāng wǒ bǎ zhè běn cídiǎn huán le ba.",
           "options": [
-            "我先走了。",
             "帮我把这本词典还了吧。",
+            "我去图书馆借本书。",
             "你去哪儿？",
-            "我去图书馆借本书。"
+            "我先走了。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "帮我把这本词典还了吧。 — Menga yordam berib, shu lug'atni qaytarib qo'y.",
             "ru": "帮我把这本词典还了吧。 — Помоги мне вернуть этот словарь.",
             "tj": "帮我把这本词典还了吧。 — Ба ман ёрӣ деҳ, ин луғатро баргардон."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Kutubxonaga kitob olishga boraman.",
-            "ru": "Пойду в библиотеку взять книгу.",
-            "tj": "Ба китобхона барои гирифтани китоб меравам."
-          },
-          "tokens": [
-            "我",
-            "词典",
-            "书",
-            "还",
-            "本",
-            "去",
-            "借",
-            "图书馆"
-          ],
-          "answer_tokens": [
-            "我",
-            "去",
-            "图书馆",
-            "借",
-            "本",
-            "书"
-          ],
-          "explanation": {
-            "uz": "我去图书馆借本书。 — Wǒ qù túshūguǎn jiè běn shū.",
-            "ru": "我去图书馆借本书。 — Wǒ qù túshūguǎn jiè běn shū.",
-            "tj": "我去图书馆借本书。 — Wǒ qù túshūguǎn jiè běn shū."
           }
         },
         {
@@ -790,6 +734,105 @@
             "uz": "lug'at",
             "ru": "словарь",
             "tj": "луғат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "历史 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 历史:",
+            "tj": "Маънои калимаи 历史-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
+            },
+            {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
+            },
+            {
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "tarix",
+              "ru": "история",
+              "tj": "таърих"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "历史 = tarix (lìshǐ)",
+            "ru": "历史 = история (lìshǐ)",
+            "tj": "历史 = таърих (lìshǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "历史",
+            "pinyin": "lìshǐ",
+            "meaning": {
+              "uz": "tarix",
+              "ru": "история",
+              "tj": "таърих"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'lug'at' xitoycha qaysi?",
+            "ru": "'словарь' по-китайски?",
+            "tj": "'луғат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "借",
+            "图书馆",
+            "还",
+            "词典"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "lug'at = 词典 (cídiǎn)",
+            "ru": "словарь = 词典 (cídiǎn)",
+            "tj": "луғат = 词典 (cídiǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "词典",
+            "pinyin": "cídiǎn",
+            "meaning": {
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            }
           }
         }
       ]

@@ -402,12 +402,12 @@
           "audio_text": "放暑假",
           "pinyin": "fàng shǔjià",
           "options": [
-            "广播",
             "凉快",
-            "放暑假",
-            "热闹"
+            "广播",
+            "热闹",
+            "放暑假"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "放暑假 — yozgi ta'tilga chiqmoq (fàng shǔjià)",
             "ru": "放暑假 — уйти на летние каникулы (fàng shǔjià)",
@@ -452,27 +452,27 @@
           },
           "options": [
             {
-              "uz": "salqin, yoqimli sovuq",
-              "ru": "прохладный, приятно свежий",
-              "tj": "салқин, форам"
-            },
-            {
-              "uz": "gavjum, shovqinli",
-              "ru": "оживлённый, шумный",
-              "tj": "серодам, пурҷӯшу хурӯш"
-            },
-            {
               "uz": "yo'lbars",
               "ru": "тигр",
               "tj": "паланг"
             },
             {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            },
+            {
               "uz": "radio, eshittirish",
               "ru": "радио, передача",
               "tj": "радио, пахш"
+            },
+            {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "老虎 = yo'lbars (lǎohǔ)",
             "ru": "老虎 = тигр (lǎohǔ)",
@@ -506,12 +506,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "热闹",
-            "入口",
             "广播",
-            "凉快"
+            "凉快",
+            "热闹",
+            "入口"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "入口 = kirish joyi (rùkǒu)",
             "ru": "入口 = вход (rùkǒu)",
@@ -545,12 +545,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "rènao",
             "liángkuai",
-            "pái duì",
-            "guǎngbō"
+            "guǎngbō",
+            "rènao",
+            "pái duì"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "排队 — pái duì",
             "ru": "排队 — pái duì",
@@ -645,12 +645,12 @@
           "audio_text": "老虎",
           "pinyin": "lǎohǔ",
           "options": [
-            "老虎",
+            "热闹",
             "凉快",
-            "广播",
-            "热闹"
+            "老虎",
+            "广播"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "老虎 — yo'lbars (lǎohǔ)",
             "ru": "老虎 — тигр (lǎohǔ)",
@@ -668,31 +668,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'Anna' xitoycha qaysi?",
-            "ru": "'Анна' по-китайски?",
-            "tj": "'Анна' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "广播",
-            "凉快",
-            "安娜",
-            "热闹"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "Anna = 安娜 (Ānnà)",
-            "ru": "Анна = 安娜 (Ānnà)",
-            "tj": "Анна = 安娜 (Ānnà)"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "排队 so'zining ma'nosini tanlang:",
@@ -706,9 +681,9 @@
           },
           "options": [
             {
-              "uz": "navbatda turmoq",
-              "ru": "стоять в очереди",
-              "tj": "дар навбат истодан"
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
             },
             {
               "uz": "radio, eshittirish",
@@ -716,17 +691,17 @@
               "tj": "радио, пахш"
             },
             {
+              "uz": "navbatda turmoq",
+              "ru": "стоять в очереди",
+              "tj": "дар навбат истодан"
+            },
+            {
               "uz": "gavjum, shovqinli",
               "ru": "оживлённый, шумный",
               "tj": "серодам, пурҷӯшу хурӯш"
-            },
-            {
-              "uz": "salqin, yoqimli sovuq",
-              "ru": "прохладный, приятно свежий",
-              "tj": "салқин, форам"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "排队 = navbatda turmoq (pái duì)",
             "ru": "排队 = стоять в очереди (pái duì)",
@@ -741,6 +716,105 @@
             "uz": "yo'lbars",
             "ru": "тигр",
             "tj": "паланг"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "严格 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 严格:",
+            "tj": "Маънои калимаи 严格-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
+            },
+            {
+              "uz": "qat'iy, qattiq",
+              "ru": "строгий",
+              "tj": "қатъӣ, сахтгир"
+            },
+            {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            },
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "严格 = qat'iy, qattiq (yángé)",
+            "ru": "严格 = строгий (yángé)",
+            "tj": "严格 = қатъӣ, сахтгир (yángé)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "严格",
+            "pinyin": "yángé",
+            "meaning": {
+              "uz": "qat'iy, qattiq",
+              "ru": "строгий",
+              "tj": "қатъӣ, сахтгир"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yo'lbars' xitoycha qaysi?",
+            "ru": "'тигр' по-китайски?",
+            "tj": "'паланг' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "老虎",
+            "热闹",
+            "广播",
+            "凉快"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yo'lbars = 老虎 (lǎohǔ)",
+            "ru": "тигр = 老虎 (lǎohǔ)",
+            "tj": "паланг = 老虎 (lǎohǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "老虎",
+            "pinyin": "lǎohǔ",
+            "meaning": {
+              "uz": "yo'lbars",
+              "ru": "тигр",
+              "tj": "паланг"
+            }
           }
         }
       ]

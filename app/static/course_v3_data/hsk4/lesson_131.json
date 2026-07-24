@@ -406,9 +406,9 @@
           },
           "options": [
             {
-              "uz": "zo'r, ajoyib",
-              "ru": "отличный, замечательный",
-              "tj": "олӣ, зӯр"
+              "uz": "shoshilmoq, ulgurishga urunmoq",
+              "ru": "спешить, торопиться",
+              "tj": "шитоб кардан"
             },
             {
               "uz": "nabira o'g'il",
@@ -421,12 +421,12 @@
               "tj": "пианино навохтан"
             },
             {
-              "uz": "shoshilmoq, ulgurishga urunmoq",
-              "ru": "спешить, торопиться",
-              "tj": "шитоб кардан"
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "赶 = shoshilmoq, ulgurishga urunmoq (gǎn)",
             "ru": "赶 = спешить, торопиться (gǎn)",
@@ -460,9 +460,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "棒",
             "弹钢琴",
             "孙子",
-            "棒",
             "厕所"
           ],
           "correct_index": 3,
@@ -509,12 +509,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tán gāngqín",
+            "pīpíng",
             "bàng",
             "sūnzi",
-            "pīpíng"
+            "tán gāngqín"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "批评 — pīpíng",
             "ru": "批评 — pīpíng",
@@ -548,12 +548,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "棒",
+            "弄",
             "弹钢琴",
-            "孙子",
-            "弄"
+            "棒",
+            "孙子"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "qilmoq, yasamoq = 弄 (nòng)",
             "ru": "делать, приводить = 弄 (nòng)",
@@ -571,11 +571,11 @@
           "pinyin": "gǎn",
           "options": [
             "孙子",
-            "赶",
+            "弹钢琴",
             "棒",
-            "弹钢琴"
+            "赶"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "赶 — shoshilmoq, ulgurishga urunmoq (gǎn)",
             "ru": "赶 — спешить, торопиться (gǎn)",
@@ -636,31 +636,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "sūnzi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается sūnzi?",
-            "tj": "sūnzi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "寒假",
-            "弹钢琴",
-            "棒",
-            "孙子"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "孙子 = nabira o'g'il (sūnzi)",
-            "ru": "孙子 = внук (sūnzi)",
-            "tj": "孙子 = набераи писар (sūnzi)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -712,12 +687,12 @@
           "audio_text": "批评",
           "pinyin": "pīpíng",
           "options": [
+            "棒",
             "批评",
             "孙子",
-            "棒",
             "弹钢琴"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "批评 — tanqid qilmoq (pīpíng)",
             "ru": "批评 — критиковать (pīpíng)",
@@ -732,6 +707,105 @@
             "uz": "tanqid qilmoq",
             "ru": "критиковать",
             "tj": "танқид кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "响 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 响:",
+            "tj": "Маънои калимаи 响-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "pianino chalmoq",
+              "ru": "играть на пианино",
+              "tj": "пианино навохтан"
+            },
+            {
+              "uz": "nabira o'g'il",
+              "ru": "внук",
+              "tj": "набераи писар"
+            },
+            {
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
+            },
+            {
+              "uz": "jiringlamoq, ovoz chiqarmoq",
+              "ru": "звенеть, звучать",
+              "tj": "садо додан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "响 = jiringlamoq, ovoz chiqarmoq (xiǎng)",
+            "ru": "响 = звенеть, звучать (xiǎng)",
+            "tj": "响 = садо додан (xiǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "响",
+            "pinyin": "xiǎng",
+            "meaning": {
+              "uz": "jiringlamoq, ovoz chiqarmoq",
+              "ru": "звенеть, звучать",
+              "tj": "садо додан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tanqid qilmoq' xitoycha qaysi?",
+            "ru": "'критиковать' по-китайски?",
+            "tj": "'танқид кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "弹钢琴",
+            "棒",
+            "孙子",
+            "批评"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "tanqid qilmoq = 批评 (pīpíng)",
+            "ru": "критиковать = 批评 (pīpíng)",
+            "tj": "танқид кардан = 批评 (pīpíng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "批评",
+            "pinyin": "pīpíng",
+            "meaning": {
+              "uz": "tanqid qilmoq",
+              "ru": "критиковать",
+              "tj": "танқид кардан"
+            }
           }
         }
       ]

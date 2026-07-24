@@ -331,12 +331,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "cì",
             "suīrán",
-            "dànshì",
-            "yǒu yìsi"
+            "cì",
+            "yǒu yìsi",
+            "dànshì"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "有意思 — yǒu yìsi",
             "ru": "有意思 — yǒu yìsi",
@@ -370,10 +370,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "次",
             "虽然",
+            "有意思",
             "但是",
-            "有意思"
+            "次"
           ],
           "correct_index": 2,
           "explanation": {
@@ -417,8 +417,8 @@
           "pinyin": "suīrán",
           "options": [
             "虽然",
-            "有意思",
             "次",
+            "有意思",
             "但是"
           ],
           "correct_index": 0,
@@ -456,9 +456,9 @@
           },
           "options": [
             {
-              "uz": "garchi, garchanda",
-              "ru": "хотя, несмотря на то что",
-              "tj": "гарчи, ҳарчанд"
+              "uz": "lekin, ammo",
+              "ru": "но, однако",
+              "tj": "аммо, вале"
             },
             {
               "uz": "marta, safar (harakat o'lchovi)",
@@ -466,14 +466,14 @@
               "tj": "маротиба, бор (воҳиди шуморавӣ)"
             },
             {
-              "uz": "lekin, ammo",
-              "ru": "но, однако",
-              "tj": "аммо, вале"
-            },
-            {
               "uz": "qiziqarli, maroqli",
               "ru": "интересный, занимательный",
               "tj": "ҷолиб, хонанданӣ"
+            },
+            {
+              "uz": "garchi, garchanda",
+              "ru": "хотя, несмотря на то что",
+              "tj": "гарчи, ҳарчанд"
             }
           ],
           "correct_index": 1,
@@ -496,12 +496,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "但是",
             "有意思",
-            "次",
-            "虽然"
+            "虽然",
+            "但是",
+            "次"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "有意思 = qiziqarli, maroqli (yǒu yìsi)",
             "ru": "有意思 = интересный, занимательный (yǒu yìsi)",
@@ -606,15 +606,15 @@
             "tj": "Оё шумо он филмро дидаед?"
           },
           "tokens": [
-            "吗",
-            "你",
-            "但是",
+            "有意思",
             "那",
-            "过",
-            "个",
+            "但是",
             "电影",
+            "个",
             "看",
-            "有意思"
+            "过",
+            "你",
+            "吗"
           ],
           "answer_tokens": [
             "你",
@@ -643,53 +643,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "可以，但是我女朋友也想去。",
-          "pinyin": "Kěyǐ, dànshì wǒ nǚpéngyou yě xiǎng qù.",
-          "options": [
-            "你看过那个电影没有？",
-            "可以，但是我女朋友也想去。",
-            "没看过，听说很有意思。",
-            "那我们下个星期一一起去看吧？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "可以，但是我女朋友也想去。 — Bo'ladi, lekin qiz do'stim ham bormoqchi.",
-            "ru": "可以，但是我女朋友也想去。 — Можно, но моя девушка тоже хочет пойти.",
-            "tj": "可以，但是我女朋友也想去。 — Мешавад, аммо дӯстдухтарам ҳам мехоҳад биравад."
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "děng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается děng?",
-            "tj": "děng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "等",
-            "但是",
-            "有意思",
-            "虽然"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "等 = kutmoq (děng)",
-            "ru": "等 = ждать (děng)",
-            "tj": "等 = интизор мондан (děng)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Bo'ladi, lekin qiz do'stim ham bormoqchi.",
@@ -697,15 +650,15 @@
             "tj": "Мешавад, аммо дӯстдухтарам ҳам мехоҳад биравад."
           },
           "tokens": [
-            "去",
-            "女",
+            "可以",
             "有意思",
-            "我",
+            "女",
+            "去",
+            "也",
             "虽然",
             "朋友",
             "但是",
-            "也",
-            "可以",
+            "我",
             "想"
           ],
           "answer_tokens": [
@@ -805,6 +758,105 @@
             "uz": "garchi, garchanda",
             "ru": "хотя, несмотря на то что",
             "tj": "гарчи, ҳарчанд"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "拿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 拿:",
+            "tj": "Маънои калимаи 拿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "garchi, garchanda",
+              "ru": "хотя, несмотря на то что",
+              "tj": "гарчи, ҳарчанд"
+            },
+            {
+              "uz": "lekin, ammo",
+              "ru": "но, однако",
+              "tj": "аммо, вале"
+            },
+            {
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
+            },
+            {
+              "uz": "qiziqarli, maroqli",
+              "ru": "интересный, занимательный",
+              "tj": "ҷолиб, хонанданӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "拿 = ushlamoq, ko'tarmoq (ná)",
+            "ru": "拿 = держать, нести (ná)",
+            "tj": "拿 = нигоҳ доштан, бардоштан (ná)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "拿",
+            "pinyin": "ná",
+            "meaning": {
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'garchi, garchanda' xitoycha qaysi?",
+            "ru": "'хотя, несмотря на то что' по-китайски?",
+            "tj": "'гарчи, ҳарчанд' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "有意思",
+            "虽然",
+            "但是",
+            "次"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "garchi, garchanda = 虽然 (suīrán)",
+            "ru": "хотя, несмотря на то что = 虽然 (suīrán)",
+            "tj": "гарчи, ҳарчанд = 虽然 (suīrán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "虽然",
+            "pinyin": "suīrán",
+            "meaning": {
+              "uz": "garchi, garchanda",
+              "ru": "хотя, несмотря на то что",
+              "tj": "гарчи, ҳарчанд"
+            }
           }
         }
       ]

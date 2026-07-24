@@ -448,9 +448,9 @@
           "pinyin": "zhòngshì",
           "options": [
             "重视",
-            "签证",
             "报名",
-            "博士"
+            "博士",
+            "签证"
           ],
           "correct_index": 0,
           "explanation": {
@@ -487,14 +487,14 @@
           },
           "options": [
             {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
               "uz": "ro'yxatdan o'tmoq",
               "ru": "записываться, регистрироваться",
               "tj": "номнавис шудан"
-            },
-            {
-              "uz": "jur'at qilmoq",
-              "ru": "сметь, решаться",
-              "tj": "ҷуръат кардан"
             },
             {
               "uz": "doktorantura darajasi",
@@ -502,12 +502,12 @@
               "tj": "доктор, дараҷаи илмӣ"
             },
             {
-              "uz": "viza",
-              "ru": "виза",
-              "tj": "раводид"
+              "uz": "jur'at qilmoq",
+              "ru": "сметь, решаться",
+              "tj": "ҷуръат кардан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "敢 = jur'at qilmoq (gǎn)",
             "ru": "敢 = сметь, решаться (gǎn)",
@@ -541,12 +541,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "尊重",
             "签证",
+            "报名",
             "博士",
-            "报名"
+            "尊重"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "尊重 = hurmat qilmoq (zūnzhòng)",
             "ru": "尊重 = уважать (zūnzhòng)",
@@ -566,12 +566,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bào míng",
             "zhòngshì",
+            "bào míng",
             "bóshì",
             "qiānzhèng"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "重视 — zhòngshì",
             "ru": "重视 — zhòngshì",
@@ -663,6 +663,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "重视",
+          "pinyin": "zhòngshì",
+          "options": [
+            "重视",
+            "签证",
+            "报名",
+            "博士"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "重视 — ahamiyat bermoq (zhòngshì)",
+            "ru": "重视 — придавать значение (zhòngshì)",
+            "tj": "重视 — аҳамият додан (zhòngshì)"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -697,53 +719,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "重视",
-          "pinyin": "zhòngshì",
-          "options": [
-            "报名",
-            "签证",
-            "博士",
-            "重视"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "重视 — ahamiyat bermoq (zhòngshì)",
-            "ru": "重视 — придавать значение (zhòngshì)",
-            "tj": "重视 — аҳамият додан (zhòngshì)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "传真 talaffuzini tanlang:",
-            "ru": "Выберите произношение 传真:",
-            "tj": "Талаффузи 传真-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "qiānzhèng",
-            "bóshì",
-            "chuánzhēn",
-            "bào míng"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "传真 — chuánzhēn",
-            "ru": "传真 — chuánzhēn",
-            "tj": "传真 — chuánzhēn"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "重视",
           "pinyin": "zhòngshì",
@@ -751,6 +726,105 @@
             "uz": "ahamiyat bermoq",
             "ru": "придавать значение",
             "tj": "аҳамият додан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "马虎 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 马虎:",
+            "tj": "Маънои калимаи 马虎-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "beparvo, pala-partish",
+              "ru": "небрежный",
+              "tj": "бепарво"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "马虎 = beparvo, pala-partish (mǎhu)",
+            "ru": "马虎 = небрежный (mǎhu)",
+            "tj": "马虎 = бепарво (mǎhu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "马虎",
+            "pinyin": "mǎhu",
+            "meaning": {
+              "uz": "beparvo, pala-partish",
+              "ru": "небрежный",
+              "tj": "бепарво"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ahamiyat bermoq' xitoycha qaysi?",
+            "ru": "'придавать значение' по-китайски?",
+            "tj": "'аҳамият додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "博士",
+            "重视",
+            "签证",
+            "报名"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ahamiyat bermoq = 重视 (zhòngshì)",
+            "ru": "придавать значение = 重视 (zhòngshì)",
+            "tj": "аҳамият додан = 重视 (zhòngshì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "重视",
+            "pinyin": "zhòngshì",
+            "meaning": {
+              "uz": "ahamiyat bermoq",
+              "ru": "придавать значение",
+              "tj": "аҳамият додан"
+            }
           }
         }
       ]

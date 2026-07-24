@@ -391,12 +391,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "幸福",
-            "俩",
             "法律",
-            "印象"
+            "俩",
+            "印象",
+            "幸福"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "baxtli = 幸福 (xìngfú)",
             "ru": "счастливый; счастье = 幸福 (xìngfú)",
@@ -427,12 +427,12 @@
           "audio_text": "生活",
           "pinyin": "shēnghuó",
           "options": [
-            "生活",
+            "印象",
             "俩",
-            "法律",
-            "印象"
+            "生活",
+            "法律"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "生活 — hayot; yashamoq (shēnghuó)",
             "ru": "生活 — жизнь; жить (shēnghuó)",
@@ -532,11 +532,11 @@
           },
           "options": [
             "俩",
-            "印象",
             "浪漫",
+            "印象",
             "法律"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "浪漫 = romantik (làngmàn)",
             "ru": "浪漫 = романтичный (làngmàn)",
@@ -556,12 +556,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "liǎ",
+            "xìngfú",
             "yìnxiàng",
             "fǎlǜ",
-            "xìngfú"
+            "liǎ"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "幸福 — xìngfú",
             "ru": "幸福 — xìngfú",
@@ -663,28 +663,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "幸福",
-          "pinyin": "xìngfú",
-          "options": [
-            "俩",
-            "印象",
-            "幸福",
-            "法律"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "幸福 — baxtli (xìngfú)",
-            "ru": "幸福 — счастливый; счастье (xìngfú)",
-            "tj": "幸福 — хушбахт; хушбахтӣ (xìngfú)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
@@ -705,44 +683,25 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "深 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 深:",
-            "tj": "Маънои калимаи 深-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "幸福",
+          "pinyin": "xìngfú",
           "options": [
-            {
-              "uz": "ikkalasi, ikki kishi",
-              "ru": "двое, оба",
-              "tj": "ду нафар, ҳарду"
-            },
-            {
-              "uz": "taassurot",
-              "ru": "впечатление",
-              "tj": "таассурот"
-            },
-            {
-              "uz": "qonun, huquq",
-              "ru": "закон, право",
-              "tj": "қонун, ҳуқуқ"
-            },
-            {
-              "uz": "chuqur",
-              "ru": "глубокий",
-              "tj": "чуқур"
-            }
+            "俩",
+            "幸福",
+            "印象",
+            "法律"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "深 = chuqur (shēn)",
-            "ru": "深 = глубокий (shēn)",
-            "tj": "深 = чуқур (shēn)"
+            "uz": "幸福 — baxtli (xìngfú)",
+            "ru": "幸福 — счастливый; счастье (xìngfú)",
+            "tj": "幸福 — хушбахт; хушбахтӣ (xìngfú)"
           }
         },
         {
@@ -758,12 +717,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "印象",
             "俩",
             "法律",
-            "生活",
-            "印象"
+            "生活"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "hayot; yashamoq = 生活 (shēnghuó)",
             "ru": "жизнь; жить = 生活 (shēnghuó)",
@@ -778,6 +737,105 @@
             "uz": "romantik",
             "ru": "романтичный",
             "tj": "романтикӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "适合 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 适合:",
+            "tj": "Маънои калимаи 适合-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mos kelmoq",
+              "ru": "подходить",
+              "tj": "мувофиқ будан"
+            },
+            {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            },
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "适合 = mos kelmoq (shìhé)",
+            "ru": "适合 = подходить (shìhé)",
+            "tj": "适合 = мувофиқ будан (shìhé)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "适合",
+            "pinyin": "shìhé",
+            "meaning": {
+              "uz": "mos kelmoq",
+              "ru": "подходить",
+              "tj": "мувофиқ будан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'romantik' xitoycha qaysi?",
+            "ru": "'романтичный' по-китайски?",
+            "tj": "'романтикӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "浪漫",
+            "俩",
+            "印象",
+            "法律"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "romantik = 浪漫 (làngmàn)",
+            "ru": "романтичный = 浪漫 (làngmàn)",
+            "tj": "романтикӣ = 浪漫 (làngmàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "浪漫",
+            "pinyin": "làngmàn",
+            "meaning": {
+              "uz": "romantik",
+              "ru": "романтичный",
+              "tj": "романтикӣ"
+            }
           }
         }
       ]

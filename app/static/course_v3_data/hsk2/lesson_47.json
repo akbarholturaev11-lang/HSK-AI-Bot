@@ -340,12 +340,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "课",
             "帮助",
-            "手机",
-            "别"
+            "别",
+            "课",
+            "手机"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "手机 = mobil telefon (shǒujī)",
             "ru": "手机 = мобильный телефон (shǒujī)",
@@ -391,8 +391,8 @@
           "options": [
             "xǐ",
             "kè",
-            "bié",
-            "bāngzhù"
+            "bāngzhù",
+            "bié"
           ],
           "correct_index": 0,
           "explanation": {
@@ -428,8 +428,8 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "别",
             "课",
+            "别",
             "药",
             "帮助"
           ],
@@ -450,12 +450,12 @@
           "audio_text": "手机",
           "pinyin": "shǒujī",
           "options": [
-            "别",
-            "课",
             "手机",
+            "课",
+            "别",
             "帮助"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "手机 — mobil telefon (shǒujī)",
             "ru": "手机 — мобильный телефон (shǒujī)",
@@ -552,12 +552,12 @@
             "tj": "Ту чӣ мекобӣ?"
           },
           "tokens": [
-            "什么",
-            "你",
-            "课",
-            "找",
             "帮助",
-            "在"
+            "什么",
+            "在",
+            "找",
+            "课",
+            "你"
           ],
           "answer_tokens": [
             "你",
@@ -592,41 +592,16 @@
           "audio_text": "别找了，手机在桌子上呢，电脑旁边。",
           "pinyin": "Bié zhǎo le，shǒujī zài zhuōzi shang ne，diànnǎo pángbiān.",
           "options": [
-            "明天的课你都准备好了吗？",
-            "别看电视了，明天上午还有汉语课呢。",
+            "别找了，手机在桌子上呢，电脑旁边。",
             "看电视对学汉语有帮助。",
-            "别找了，手机在桌子上呢，电脑旁边。"
+            "明天的课你都准备好了吗？",
+            "别看电视了，明天上午还有汉语课呢。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "别找了，手机在桌子上呢，电脑旁边。 — Qidirishni bas qil, telefon stol ustida, kompyuter yonida.",
             "ru": "别找了，手机在桌子上呢，电脑旁边。 — Хватит искать, телефон на столе, рядом с компьютером.",
             "tj": "别找了，手机在桌子上呢，电脑旁边。 — Дигар накоб, телефон рӯи мизи аст, паҳлӯи компютер."
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "jīdàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jīdàn?",
-            "tj": "jīdàn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "鸡蛋",
-            "课",
-            "别",
-            "帮助"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "鸡蛋 = tuxum (jīdàn)",
-            "ru": "鸡蛋 = яйцо (jīdàn)",
-            "tj": "鸡蛋 = тухм (jīdàn)"
           }
         },
         {
@@ -724,12 +699,12 @@
           "audio_text": "药",
           "pinyin": "yào",
           "options": [
-            "帮助",
-            "别",
             "课",
-            "药"
+            "药",
+            "帮助",
+            "别"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "药 — dori-darmon (yào)",
             "ru": "药 — лекарство (yào)",
@@ -744,6 +719,105 @@
             "uz": "yuvmoq",
             "ru": "мыть, стирать",
             "tj": "шустан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "西瓜 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 西瓜:",
+            "tj": "Маънои калимаи 西瓜-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
+            },
+            {
+              "uz": "tarvuz",
+              "ru": "арбуз",
+              "tj": "тарбуз"
+            },
+            {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            },
+            {
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "西瓜 = tarvuz (xīguā)",
+            "ru": "西瓜 = арбуз (xīguā)",
+            "tj": "西瓜 = тарбуз (xīguā)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "西瓜",
+            "pinyin": "xīguā",
+            "meaning": {
+              "uz": "tarvuz",
+              "ru": "арбуз",
+              "tj": "тарбуз"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yuvmoq' xitoycha qaysi?",
+            "ru": "'мыть, стирать' по-китайски?",
+            "tj": "'шустан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "帮助",
+            "别",
+            "洗",
+            "课"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "yuvmoq = 洗 (xǐ)",
+            "ru": "мыть, стирать = 洗 (xǐ)",
+            "tj": "шустан = 洗 (xǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "洗",
+            "pinyin": "xǐ",
+            "meaning": {
+              "uz": "yuvmoq",
+              "ru": "мыть, стирать",
+              "tj": "шустан"
+            }
           }
         }
       ]

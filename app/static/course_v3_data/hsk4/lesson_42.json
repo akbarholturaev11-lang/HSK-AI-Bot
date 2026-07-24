@@ -371,12 +371,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "实际",
             "家具",
             "打折",
-            "沙发",
-            "实际"
+            "沙发"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "实际 = haqiqiy, amaliy (shíjì)",
             "ru": "实际 = реальный, практический (shíjì)",
@@ -420,8 +420,8 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiājù",
             "dǎzhé",
+            "jiājù",
             "shāfā",
             "kǎolǜ"
           ],
@@ -459,12 +459,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "家具",
-            "标准",
+            "打折",
             "沙发",
-            "打折"
+            "家具",
+            "标准"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "standart, mezon = 标准 (biāozhǔn)",
             "ru": "стандарт, критерий = 标准 (biāozhǔn)",
@@ -526,6 +526,11 @@
               "tj": "тахфиф кардан"
             },
             {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
               "uz": "divan",
               "ru": "диван",
               "tj": "диван"
@@ -534,14 +539,9 @@
               "uz": "haqiqiy, amaliy",
               "ru": "реальный, практический",
               "tj": "воқеӣ, амалӣ"
-            },
-            {
-              "uz": "mebel",
-              "ru": "мебель",
-              "tj": "мебел"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "实际 = haqiqiy, amaliy (shíjì)",
             "ru": "实际 = реальный, практический (shíjì)",
@@ -638,12 +638,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "打折",
+            "流行",
             "沙发",
             "家具",
-            "流行"
+            "打折"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 流行 (liúxíng) — moda bo'lmoq, ommalashmoq",
             "ru": "Верно: 流行 (liúxíng) — быть популярным, модным",
@@ -672,31 +672,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'divan' xitoycha qaysi?",
-            "ru": "'диван' по-китайски?",
-            "tj": "'диван' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "家具",
-            "沙发",
-            "价格",
-            "打折"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "divan = 沙发 (shāfā)",
-            "ru": "диван = 沙发 (shāfā)",
-            "tj": "диван = 沙发 (shāfā)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -706,12 +681,12 @@
           "audio_text": "考虑",
           "pinyin": "kǎolǜ",
           "options": [
-            "家具",
             "考虑",
-            "打折",
-            "沙发"
+            "家具",
+            "沙发",
+            "打折"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "考虑 — o'ylab ko'rmoq, hisobga olmoq (kǎolǜ)",
             "ru": "考虑 — обдумывать, учитывать (kǎolǜ)",
@@ -726,6 +701,105 @@
             "uz": "o'ylab ko'rmoq, hisobga olmoq",
             "ru": "обдумывать, учитывать",
             "tj": "андеша кардан, ба назар гирифтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "广告 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 广告:",
+            "tj": "Маънои калимаи 广告-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "reklama; reklama qilmoq",
+              "ru": "реклама; рекламировать",
+              "tj": "реклама; реклама кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "广告 = reklama; reklama qilmoq (guǎnggào)",
+            "ru": "广告 = реклама; рекламировать (guǎnggào)",
+            "tj": "广告 = реклама; реклама кардан (guǎnggào)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "广告",
+            "pinyin": "guǎnggào",
+            "meaning": {
+              "uz": "reklama; reklama qilmoq",
+              "ru": "реклама; рекламировать",
+              "tj": "реклама; реклама кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'ylab ko'rmoq, hisobga olmoq' xitoycha qaysi?",
+            "ru": "'обдумывать, учитывать' по-китайски?",
+            "tj": "'андеша кардан, ба назар гирифтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "考虑",
+            "打折",
+            "沙发",
+            "家具"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "o'ylab ko'rmoq, hisobga olmoq = 考虑 (kǎolǜ)",
+            "ru": "обдумывать, учитывать = 考虑 (kǎolǜ)",
+            "tj": "андеша кардан, ба назар гирифтан = 考虑 (kǎolǜ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "考虑",
+            "pinyin": "kǎolǜ",
+            "meaning": {
+              "uz": "o'ylab ko'rmoq, hisobga olmoq",
+              "ru": "обдумывать, учитывать",
+              "tj": "андеша кардан, ба назар гирифтан"
+            }
           }
         }
       ]

@@ -355,12 +355,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "价格",
             "沙发",
             "打折",
-            "家具",
-            "价格"
+            "家具"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "家具 = mebel (jiājù)",
             "ru": "家具 = мебель (jiājù)",
@@ -395,11 +395,11 @@
           },
           "options": [
             "jiājù",
-            "shāfā",
             "jiàgé",
-            "dǎzhé"
+            "dǎzhé",
+            "shāfā"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "沙发 — shāfā",
             "ru": "沙发 — shāfā",
@@ -433,12 +433,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "打折",
             "家具",
-            "沙发",
-            "价格"
+            "价格",
+            "打折",
+            "沙发"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "chegirma qilmoq = 打折 (dǎzhé)",
             "ru": "делать скидку = 打折 (dǎzhé)",
@@ -469,12 +469,12 @@
           "audio_text": "价格",
           "pinyin": "jiàgé",
           "options": [
-            "家具",
-            "沙发",
             "打折",
-            "价格"
+            "价格",
+            "沙发",
+            "家具"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "价格 — narx (jiàgé)",
             "ru": "价格 — цена (jiàgé)",
@@ -500,6 +500,11 @@
               "tj": "нарх"
             },
             {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
               "uz": "divan",
               "ru": "диван",
               "tj": "диван"
@@ -508,14 +513,9 @@
               "uz": "mebel",
               "ru": "мебель",
               "tj": "мебел"
-            },
-            {
-              "uz": "chegirma qilmoq",
-              "ru": "делать скидку",
-              "tj": "тахфиф кардан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "家具 = mebel (jiājù)",
             "ru": "家具 = мебель (jiājù)",
@@ -576,31 +576,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "提供 talaffuzini tanlang:",
-            "ru": "Выберите произношение 提供:",
-            "tj": "Талаффузи 提供-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jiājù",
-            "shāfā",
-            "tígōng",
-            "dǎzhé"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "提供 — tígōng",
-            "ru": "提供 — tígōng",
-            "tj": "提供 — tígōng"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -610,12 +585,12 @@
           "audio_text": "谢谢，我想买沙发。",
           "pinyin": "Xièxie, wǒ xiǎng mǎi shāfā.",
           "options": [
-            "谢谢，我想买沙发。",
+            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
             "价格还可以，就是不知道质量有没有保证。",
-            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
-            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？"
+            "谢谢，我想买沙发。",
+            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "谢谢，我想买沙发。 — Rahmat, men divan olmoqchiman.",
             "ru": "谢谢，我想买沙发。 — Спасибо, я хочу купить диван.",
@@ -695,6 +670,105 @@
             "uz": "mebel",
             "ru": "мебель",
             "tj": "мебел"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "提 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 提:",
+            "tj": "Маънои калимаи 提-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "提 = tilga olmoq, aytmoq (tí)",
+            "ru": "提 = упоминать, говорить (tí)",
+            "tj": "提 = зикр кардан, гуфтан (tí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "提",
+            "pinyin": "tí",
+            "meaning": {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mebel' xitoycha qaysi?",
+            "ru": "'мебель' по-китайски?",
+            "tj": "'мебел' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "价格",
+            "家具",
+            "沙发",
+            "打折"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "mebel = 家具 (jiājù)",
+            "ru": "мебель = 家具 (jiājù)",
+            "tj": "мебел = 家具 (jiājù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "家具",
+            "pinyin": "jiājù",
+            "meaning": {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            }
           }
         }
       ]

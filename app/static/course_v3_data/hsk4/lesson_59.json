@@ -381,12 +381,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "气候",
+            "植物",
             "流血",
-            "擦",
-            "植物"
+            "气候",
+            "擦"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "o'simlik = 植物 (zhíwù)",
             "ru": "растение = 植物 (zhíwù)",
@@ -417,9 +417,9 @@
           "audio_text": "研究",
           "pinyin": "yánjiū",
           "options": [
-            "擦",
-            "气候",
             "流血",
+            "气候",
+            "擦",
             "研究"
           ],
           "correct_index": 3,
@@ -467,6 +467,11 @@
           },
           "options": [
             {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            },
+            {
               "uz": "iqlim",
               "ru": "климат",
               "tj": "иқлим"
@@ -480,14 +485,9 @@
               "uz": "artmoq",
               "ru": "вытирать",
               "tj": "пок кардан, молидан"
-            },
-            {
-              "uz": "qon ketmoq",
-              "ru": "кровоточить",
-              "tj": "хун рафтан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "超过 = oshib ketmoq (chāoguò)",
             "ru": "超过 = превышать (chāoguò)",
@@ -521,12 +521,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "散步",
-            "擦",
+            "气候",
             "流血",
-            "气候"
+            "散步",
+            "擦"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "散步 = sayr qilmoq (sàn bù)",
             "ru": "散步 = гулять (sàn bù)",
@@ -546,12 +546,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "zhíwù",
             "cā",
-            "qìhòu",
             "liú xiě",
-            "zhíwù"
+            "qìhòu"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "植物 — zhíwù",
             "ru": "植物 — zhíwù",
@@ -648,12 +648,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "擦",
             "散步",
             "气候",
-            "流血"
+            "流血",
+            "擦"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 散步 (sàn bù) — sayr qilmoq",
             "ru": "Верно: 散步 (sàn bù) — гулять",
@@ -681,41 +681,16 @@
           "audio_text": "超过",
           "pinyin": "chāoguò",
           "options": [
-            "流血",
-            "气候",
             "超过",
-            "擦"
+            "擦",
+            "气候",
+            "流血"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "超过 — oshib ketmoq (chāoguò)",
             "ru": "超过 — превышать (chāoguò)",
             "tj": "超过 — зиёд шудан (chāoguò)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shuài qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shuài?",
-            "tj": "shuài кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "流血",
-            "帅",
-            "擦",
-            "气候"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "帅 = kelishgan (shuài)",
-            "ru": "帅 = красивый, стильный (shuài)",
-            "tj": "帅 = зебо, хушсурат (shuài)"
           }
         },
         {
@@ -768,6 +743,105 @@
             "uz": "oshib ketmoq",
             "ru": "превышать",
             "tj": "зиёд шудан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "反对 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 反对:",
+            "tj": "Маънои калимаи 反对-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "qarshi bo'lmoq",
+              "ru": "быть против",
+              "tj": "муқобил будан"
+            },
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "反对 = qarshi bo'lmoq (fǎnduì)",
+            "ru": "反对 = быть против (fǎnduì)",
+            "tj": "反对 = муқобил будан (fǎnduì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "反对",
+            "pinyin": "fǎnduì",
+            "meaning": {
+              "uz": "qarshi bo'lmoq",
+              "ru": "быть против",
+              "tj": "муқобил будан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'oshib ketmoq' xitoycha qaysi?",
+            "ru": "'превышать' по-китайски?",
+            "tj": "'зиёд шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "流血",
+            "擦",
+            "超过",
+            "气候"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "oshib ketmoq = 超过 (chāoguò)",
+            "ru": "превышать = 超过 (chāoguò)",
+            "tj": "зиёд шудан = 超过 (chāoguò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "超过",
+            "pinyin": "chāoguò",
+            "meaning": {
+              "uz": "oshib ketmoq",
+              "ru": "превышать",
+              "tj": "зиёд шудан"
+            }
           }
         }
       ]

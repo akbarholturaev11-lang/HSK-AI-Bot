@@ -462,16 +462,6 @@
           },
           "options": [
             {
-              "uz": "doktorantura darajasi",
-              "ru": "доктор наук, докторская степень",
-              "tj": "доктор, дараҷаи илмӣ"
-            },
-            {
-              "uz": "ro'yxatdan o'tmoq",
-              "ru": "записываться, регистрироваться",
-              "tj": "номнавис шудан"
-            },
-            {
               "uz": "viza",
               "ru": "виза",
               "tj": "раводид"
@@ -480,9 +470,19 @@
               "uz": "hafsalasi pir bo'lmoq",
               "ru": "разочаровываться",
               "tj": "ноумед шудан"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "失望 = hafsalasi pir bo'lmoq (shīwàng)",
             "ru": "失望 = разочаровываться (shīwàng)",
@@ -516,10 +516,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "博士",
+            "报名",
             "郊区",
-            "签证",
-            "报名"
+            "博士",
+            "签证"
           ],
           "correct_index": 1,
           "explanation": {
@@ -555,12 +555,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bóshì",
-            "bào míng",
             "qiānzhèng",
-            "dàodǐ"
+            "bào míng",
+            "dàodǐ",
+            "bóshì"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "到底 — dàodǐ",
             "ru": "到底 — dàodǐ",
@@ -594,12 +594,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "博士",
             "报名",
             "签证",
-            "呀"
+            "呀",
+            "博士"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "savol ohangini yumshatuvchi zarra = 呀 (ya)",
             "ru": "частица для смягчения вопроса = 呀 (ya)",
@@ -616,12 +616,12 @@
           "audio_text": "失望",
           "pinyin": "shīwàng",
           "options": [
-            "失望",
             "博士",
             "签证",
+            "失望",
             "报名"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "失望 — hafsalasi pir bo'lmoq (shīwàng)",
             "ru": "失望 — разочаровываться (shīwàng)",
@@ -717,14 +717,14 @@
             "tj": "Охир ту чӣ нақша дорӣ?"
           },
           "tokens": [
+            "到底",
             "的",
-            "打算",
+            "你",
             "呀",
+            "签证",
             "怎么",
             "博士",
-            "到底",
-            "你",
-            "签证"
+            "打算"
           ],
           "answer_tokens": [
             "你",
@@ -813,62 +813,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Oxiri nima qilmoqchisan o'zi?",
-            "ru": "Так что ты всё-таки собираешься делать?",
-            "tj": "Охир ту чӣ нақша дорӣ?"
-          },
-          "tokens": [
-            "怎么",
-            "打算",
-            "的",
-            "到底",
-            "你",
-            "签证",
-            "博士",
-            "呀"
-          ],
-          "answer_tokens": [
-            "你",
-            "到底",
-            "怎么",
-            "打算",
-            "的",
-            "呀"
-          ],
-          "explanation": {
-            "uz": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?",
-            "ru": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?",
-            "tj": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "小伙子 talaffuzini tanlang:",
-            "ru": "Выберите произношение 小伙子:",
-            "tj": "Талаффузи 小伙子-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "bào míng",
-            "xiǎohuǒzi",
-            "bóshì",
-            "qiānzhèng"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "小伙子 — xiǎohuǒzi",
-            "ru": "小伙子 — xiǎohuǒzi",
-            "tj": "小伙子 — xiǎohuǒzi"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -918,6 +862,105 @@
             "uz": "hafsalasi pir bo'lmoq",
             "ru": "разочаровываться",
             "tj": "ноумед шудан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "小伙子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 小伙子:",
+            "tj": "Маънои калимаи 小伙子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            },
+            {
+              "uz": "yigit",
+              "ru": "парень, молодой человек",
+              "tj": "ҷавонписар"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "小伙子 = yigit (xiǎohuǒzi)",
+            "ru": "小伙子 = парень, молодой человек (xiǎohuǒzi)",
+            "tj": "小伙子 = ҷавонписар (xiǎohuǒzi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "小伙子",
+            "pinyin": "xiǎohuǒzi",
+            "meaning": {
+              "uz": "yigit",
+              "ru": "парень, молодой человек",
+              "tj": "ҷавонписар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hafsalasi pir bo'lmoq' xitoycha qaysi?",
+            "ru": "'разочаровываться' по-китайски?",
+            "tj": "'ноумед шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "博士",
+            "报名",
+            "失望",
+            "签证"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "hafsalasi pir bo'lmoq = 失望 (shīwàng)",
+            "ru": "разочаровываться = 失望 (shīwàng)",
+            "tj": "ноумед шудан = 失望 (shīwàng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "失望",
+            "pinyin": "shīwàng",
+            "meaning": {
+              "uz": "hafsalasi pir bo'lmoq",
+              "ru": "разочаровываться",
+              "tj": "ноумед шудан"
+            }
           }
         }
       ]

@@ -432,12 +432,12 @@ def make_char_gap_card(line, known_chars) -> dict | None:
 # so the same gated logic produces every check. Distractors are padded only
 # from `pool` (current lesson + earlier lessons), never future / higher words.
 # --------------------------------------------------------------------------
-def mc_meaning(w, pool):
+def mc_meaning(w, pool, rng=RNG):
     correct = word_meaning(w)
     opts = [correct]
     _distinct_pad(opts, [word_meaning(x) for x in pool], key=lambda m: m["uz"])
     order = opts[:]
-    RNG.shuffle(order)
+    rng.shuffle(order)
     return {
         "type": "meaning_guess",
         "prompt": {
@@ -456,12 +456,12 @@ def mc_meaning(w, pool):
     }
 
 
-def mc_pinyin(w, pool):
+def mc_pinyin(w, pool, rng=RNG):
     right = w.get("pinyin", "")
     opts = [right]
     _distinct_pad(opts, [x.get("pinyin", "") for x in pool], key=lambda s: s)
     order = opts[:]
-    RNG.shuffle(order)
+    rng.shuffle(order)
     return {
         "type": "pinyin_choice",
         "prompt": {
@@ -480,12 +480,12 @@ def mc_pinyin(w, pool):
     }
 
 
-def mc_translation(w, pool):
+def mc_translation(w, pool, rng=RNG):
     m = word_meaning(w)
     opts = [w["zh"]]
     _distinct_pad(opts, [x["zh"] for x in pool], key=lambda s: s)
     order = opts[:]
-    RNG.shuffle(order)
+    rng.shuffle(order)
     return {
         "type": "translation_choice",
         "prompt": {
@@ -504,11 +504,11 @@ def mc_translation(w, pool):
     }
 
 
-def mc_hanzi(w, pool):
+def mc_hanzi(w, pool, rng=RNG):
     opts = [w["zh"]]
     _distinct_pad(opts, [x["zh"] for x in pool], key=lambda s: s)
     order = opts[:]
-    RNG.shuffle(order)
+    rng.shuffle(order)
     return {
         "type": "hanzi_choice",
         "prompt": {
@@ -755,8 +755,9 @@ def build_part_practice(chunk, taught, known_prior, grammar_all, dialogue_raw,
                         flat_n, lr, archetype: str, budget: int) -> list[dict]:
     """Qism mini-mashqi: yangi so'zlar endi GAP ICHIDA ishlatiladi ("qayerda va
     qanday" konteksti) — dialog satri / grammatika misolidan builder, tinglash
-    va teskari builder; ustiga bitta spaced-review (oldingi qism yoki dars
-    so'zi). Distraktorlar faqat o'rganilgan so'zlardan. Talaffuz doim oxirida.
+    va teskari builder. Distraktorlar faqat o'rganilgan so'zlardan. Talaffuz
+    doim oxirida. Oldingi + joriy qism retention testi alohida yakuniy
+    `retention_review` bo'limida quriladi, shuning uchun shuffle ichida yo'qolmaydi.
 
     `budget` — qismning umumiy karta byudjetidan mashqqa qolgan joy; ortiqcha
     kartalar tashlab yuboriladi (qism 12-18 kartadan oshmasin)."""
@@ -816,14 +817,16 @@ def build_part_practice(chunk, taught, known_prior, grammar_all, dialogue_raw,
                 varied.append(rb)
                 break
 
-    # 4) Spaced review: oldingi qism/dars so'zidan bitta tekshiruv.
-    review_pool = [w for w in taught if w.get("zh") not in chunk_zh] or list(known_prior)
-    if review_pool:
-        mc_builders = [mc_meaning, mc_pinyin, mc_translation, mc_hanzi]
-        w = review_pool[(flat_n - 1) % len(review_pool)]
-        varied.append(mc_builders[flat_n % len(mc_builders)](w, pool))
+    # Keep the legacy global RNG progression stable. The former in-flow spaced
+    # review consumed one choice-card shuffle here; the visible review now lives
+    # in the deterministic final `retention_review` section below.
+    legacy_review_pool = [w for w in taught if w.get("zh") not in chunk_zh] or list(known_prior)
+    if legacy_review_pool:
+        legacy_builders = [mc_meaning, mc_pinyin, mc_translation, mc_hanzi]
+        legacy_word = legacy_review_pool[(flat_n - 1) % len(legacy_review_pool)]
+        legacy_builders[flat_n % len(legacy_builders)](legacy_word, pool)
 
-    # 5) Arxetip qo'shimchasi — qismlar bir-biridan farq qilsin.
+    # 4) Arxetip qo'shimchasi — qismlar bir-biridan farq qilsin.
     if archetype == "listen":
         wl = make_word_listen_card(chunk[flat_n % len(chunk)], pool)
         if wl:
@@ -842,6 +845,49 @@ def build_part_practice(chunk, taught, known_prior, grammar_all, dialogue_raw,
     lr.shuffle(varied)
     cards = [c for c in varied if c][: max(2, budget - 1)]
     cards.append(pron_card(chunk[(flat_n - 1) % len(chunk)]))
+    return cards
+
+
+def build_retention_review(chunk, previous_words, pool, flat_n) -> list[dict]:
+    """Har oddiy mini-dars oxiridagi qisqa aralash test.
+
+    Bitta savol bevosita oldingi qism/darsdan, bittasi joriy qismdan olinadi.
+    Birinchi mini-darsda oldingi material bo'lmasa, ikkita turli joriy so'z
+    ishlatiladi. Mavjud choice-card sxemasi saqlanadi, shuning uchun javob,
+    feedback va mistake material canonicalization bir xil oqimdan o'tadi.
+    """
+    current = [w for w in chunk if w.get("zh")]
+    if not current:
+        return []
+    current_zh = {w["zh"] for w in current}
+    previous = [w for w in previous_words if w.get("zh") and w["zh"] not in current_zh]
+
+    selected: list[tuple[dict, str]] = []
+    if previous:
+        selected.append((previous[(flat_n - 1) % len(previous)], "previous"))
+    selected.append((current[(flat_n - 1) % len(current)], "current"))
+    if len(selected) < 2 and len(current) > 1:
+        selected.insert(0, (current[flat_n % len(current)], "current"))
+
+    # This block must not move the generator-wide RNG forward: adding a review
+    # to one lesson must not reshuffle content in every later lesson.
+    review_rng = random.Random(970000 + int(flat_n))
+    cards: list[dict] = []
+    for idx, (word, origin) in enumerate(selected[:2]):
+        # Oldingi so'zni xitoychadan ma'noga, joriy so'zni ma'nodan xitoychaga
+        # eslatish — bir xil test shakli ketma-ket takrorlanmaydi.
+        builder = mc_meaning if origin == "previous" else mc_translation
+        if not previous and idx == 0:
+            builder = mc_meaning
+        card = builder(word, pool, review_rng)
+        card["review_mix"] = True
+        card["review_origin"] = origin
+        card["review_word"] = {
+            "zh": word["zh"],
+            "pinyin": word.get("pinyin", ""),
+            "meaning": word_meaning(word),
+        }
+        cards.append(card)
     return cards
 
 
@@ -1164,7 +1210,14 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
         # Grammatikasi katta qismda intro ixchamlashadi (byudjet 18 dan oshmasin).
         intro_cards = build_part_intro(chunk, active_all, taught, known_prior, flat_n, lr,
                                        lean=len(grammar_cards) >= 4)
-        budget = PART_CARD_BUDGET - len(intro_cards) - len(grammar_cards)
+        previous_words = chunks[pi - 1] if pi > 0 else list(known_prior)[:PART_MAX_WORDS]
+        review_cards = build_retention_review(
+            chunk,
+            previous_words,
+            taught + list(known_prior),
+            flat_n,
+        )
+        budget = PART_CARD_BUDGET - len(intro_cards) - len(grammar_cards) - len(review_cards)
         practice_cards = build_part_practice(chunk, taught, known_prior, grammar_raw,
                                              dialogue_raw, flat_n, lr, archetype, budget)
 
@@ -1188,11 +1241,11 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
 
         # Byudjetdan oshgan bo'lsa — qamrovni BUZMAYDIGAN mashq kartalarini
         # (oxirgi talaffuzdan tashqari) olib tashlaymiz.
-        total = len(intro_cards) + len(grammar_cards) + len(practice_cards)
+        total = len(intro_cards) + len(grammar_cards) + len(practice_cards) + len(review_cards)
         i = len(practice_cards) - 2
         while total > PART_CARD_BUDGET and i >= 0:
             cand = practice_cards[:i] + practice_cards[i + 1:]
-            rest = intro_cards + grammar_cards + cand
+            rest = intro_cards + grammar_cards + cand + review_cards
             if all(_hits(w.get("zh", ""), rest) >= 4 for w in chunk):
                 practice_cards = cand
                 total -= 1
@@ -1219,6 +1272,18 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
             "section_purpose": "practice",
             "cards": practice_cards,
         })
+        next_no += 1
+        if review_cards:
+            sections.append({
+                "section_no": next_no,
+                "section_title": {
+                    "uz": "Aralash takror",
+                    "ru": "Смешанное повторение",
+                    "tj": "Такрори омехта",
+                },
+                "section_purpose": "retention_review",
+                "cards": review_cards,
+            })
         active = active_all
         grammar_shaped = build_grammar(part_grammar)
 

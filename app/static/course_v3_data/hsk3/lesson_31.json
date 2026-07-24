@@ -412,6 +412,16 @@
           },
           "options": [
             {
+              "uz": "tark etmoq, ajralmoq",
+              "ru": "покидать, расставаться",
+              "tj": "тарк кардан, ҷудо шудан"
+            },
+            {
+              "uz": "hozirgina, sal oldin",
+              "ru": "только что",
+              "tj": "ҳозир, каме пеш"
+            },
+            {
               "uz": "ko'zoynak",
               "ru": "очки",
               "tj": "айнак"
@@ -420,19 +430,9 @@
               "uz": "to'satdan",
               "ru": "вдруг, внезапно",
               "tj": "ногаҳон"
-            },
-            {
-              "uz": "hozirgina, sal oldin",
-              "ru": "только что",
-              "tj": "ҳозир, каме пеш"
-            },
-            {
-              "uz": "tark etmoq, ajralmoq",
-              "ru": "покидать, расставаться",
-              "tj": "тарк кардан, ҷудо шудан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "刚才 = hozirgina, sal oldin (gāngcái)",
             "ru": "刚才 = только что (gāngcái)",
@@ -466,12 +466,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "帮忙",
             "突然",
             "离开",
-            "眼镜",
-            "帮忙"
+            "眼镜"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "帮忙 = yordam bermoq (bāng máng)",
             "ru": "帮忙 = помогать (bāng máng)",
@@ -516,11 +516,11 @@
           },
           "options": [
             "líkāi",
-            "tèbié",
             "tūrán",
-            "yǎnjing"
+            "yǎnjing",
+            "tèbié"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "特别 — tèbié",
             "ru": "特别 — tèbié",
@@ -556,10 +556,10 @@
           "options": [
             "眼镜",
             "离开",
-            "突然",
-            "讲"
+            "讲",
+            "突然"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "tushuntirmoq, aytmoq = 讲 (jiǎng)",
             "ru": "объяснять, говорить = 讲 (jiǎng)",
@@ -576,12 +576,12 @@
           "audio_text": "刚才",
           "pinyin": "gāngcái",
           "options": [
-            "离开",
             "刚才",
+            "眼镜",
             "突然",
-            "眼镜"
+            "离开"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "刚才 — hozirgina, sal oldin (gāngcái)",
             "ru": "刚才 — только что (gāngcái)",
@@ -687,12 +687,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "突然",
-            "清楚",
             "眼镜",
-            "离开"
+            "清楚",
+            "离开",
+            "突然"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 眼镜 (yǎnjing) — ko'zoynak",
             "ru": "Верно: 眼镜 (yǎnjing) — очки",
@@ -711,97 +711,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "讲",
-          "pinyin": "jiǎng",
-          "translation": {
-            "uz": "tushuntirmoq, aytmoq",
-            "ru": "объяснять, говорить",
-            "tj": "фаҳмондан, гуфтан"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "我的眼镜呢？刚才还在桌子上。",
-          "pinyin": "Wǒ de yǎnjìng ne? Gāngcái hái zài zhuōzi shàng.",
-          "translation": {
-            "uz": "Ko'zoynagim qani? Hozirgina stol ustida edi.",
-            "ru": "Где мои очки? Только что были на столе.",
-            "tj": "Айнакам куҷост? Як лаҳза пеш рӯйи миз буд."
-          },
-          "tokens": {
-            "uz": [
-              "Xonaga",
-              "stol",
-              "Ko'zoynagim",
-              "qani",
-              "borib",
-              "edi",
-              "ustida",
-              "Hozirgina"
-            ],
-            "ru": [
-              "были",
-              "что",
-              "Пойди",
-              "в",
-              "столе",
-              "Где",
-              "Только",
-              "очки",
-              "мои",
-              "на"
-            ],
-            "tj": [
-              "Айнакам",
-              "буд",
-              "куҷост",
-              "хона",
-              "Як",
-              "Ба",
-              "миз",
-              "рӯйи",
-              "лаҳза",
-              "пеш"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Ko'zoynagim",
-              "qani",
-              "Hozirgina",
-              "stol",
-              "ustida",
-              "edi"
-            ],
-            "ru": [
-              "Где",
-              "мои",
-              "очки",
-              "Только",
-              "что",
-              "были",
-              "на",
-              "столе"
-            ],
-            "tj": [
-              "Айнакам",
-              "куҷост",
-              "Як",
-              "лаҳза",
-              "пеш",
-              "рӯйи",
-              "миз",
-              "буд"
-            ]
-          },
-          "explanation": {
-            "uz": "我的眼镜呢？刚才还在桌子上。 — Ko'zoynagim qani? Hozirgina stol ustida edi.",
-            "ru": "我的眼镜呢？刚才还在桌子上。 — Где мои очки? Только что были на столе.",
-            "tj": "我的眼镜呢？刚才还在桌子上。 — Айнакам куҷост? Як лаҳза пеш рӯйи миз буд."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -811,12 +720,12 @@
           "audio_text": "我怎么看得到啊？你快过来帮忙啊。",
           "pinyin": "Wǒ zěnme kàn de dào a? Nǐ kuài guòlai bāngmáng a.",
           "options": [
-            "我怎么看得到啊？你快过来帮忙啊。",
             "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
-            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
-            "我没看见啊。"
+            "我怎么看得到啊？你快过来帮忙啊。",
+            "我没看见啊。",
+            "我的眼镜呢？怎么突然找不到了？你看见了吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "我怎么看得到啊？你快过来帮忙啊。 — Qanday qilib ko'ra olaman? Tez kelib yordam ber.",
             "ru": "我怎么看得到啊？你快过来帮忙啊。 — Как я смогу увидеть? Иди скорее помоги.",
@@ -824,28 +733,25 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "líkāi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается líkāi?",
-            "tj": "líkāi кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "讲",
+          "pinyin": "jiǎng",
           "options": [
             "突然",
-            "眼镜",
             "离开",
-            "清楚"
+            "眼镜",
+            "讲"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "离开 = tark etmoq, ajralmoq (líkāi)",
-            "ru": "离开 = покидать, расставаться (líkāi)",
-            "tj": "离开 = тарк кардан, ҷудо шудан (líkāi)"
+            "uz": "讲 — tushuntirmoq, aytmoq (jiǎng)",
+            "ru": "讲 — объяснять, говорить (jiǎng)",
+            "tj": "讲 — фаҳмондан, гуфтан (jiǎng)"
           }
         },
         {
@@ -856,6 +762,105 @@
             "uz": "ayniqsa, juda",
             "ru": "особенно, чрезвычайно",
             "tj": "махсусан, хеле"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "离开 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 离开:",
+            "tj": "Маънои калимаи 离开-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aniq, ravshan",
+              "ru": "ясный, чёткий",
+              "tj": "равшан, аниқ"
+            },
+            {
+              "uz": "to'satdan",
+              "ru": "вдруг, внезапно",
+              "tj": "ногаҳон"
+            },
+            {
+              "uz": "ko'zoynak",
+              "ru": "очки",
+              "tj": "айнак"
+            },
+            {
+              "uz": "tark etmoq, ajralmoq",
+              "ru": "покидать, расставаться",
+              "tj": "тарк кардан, ҷудо шудан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "离开 = tark etmoq, ajralmoq (líkāi)",
+            "ru": "离开 = покидать, расставаться (líkāi)",
+            "tj": "离开 = тарк кардан, ҷудо шудан (líkāi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "离开",
+            "pinyin": "líkāi",
+            "meaning": {
+              "uz": "tark etmoq, ajralmoq",
+              "ru": "покидать, расставаться",
+              "tj": "тарк кардан, ҷудо шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ayniqsa, juda' xitoycha qaysi?",
+            "ru": "'особенно, чрезвычайно' по-китайски?",
+            "tj": "'махсусан, хеле' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "离开",
+            "特别",
+            "突然",
+            "眼镜"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ayniqsa, juda = 特别 (tèbié)",
+            "ru": "особенно, чрезвычайно = 特别 (tèbié)",
+            "tj": "махсусан, хеле = 特别 (tèbié)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "特别",
+            "pinyin": "tèbié",
+            "meaning": {
+              "uz": "ayniqsa, juda",
+              "ru": "особенно, чрезвычайно",
+              "tj": "махсусан, хеле"
+            }
           }
         }
       ]

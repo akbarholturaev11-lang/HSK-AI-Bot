@@ -425,12 +425,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "流利",
             "语法",
+            "准确",
             "厉害",
-            "准确"
+            "流利"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "流利 = ravon (liúlì)",
             "ru": "流利 = беглый, свободный (liúlì)",
@@ -503,12 +503,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "语法",
-            "准确",
             "厉害",
-            "流利"
+            "流利",
+            "准确",
+            "语法"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "grammatika = 语法 (yǔfǎ)",
             "ru": "грамматика = 语法 (yǔfǎ)",
@@ -549,12 +549,12 @@
           "audio_text": "准确",
           "pinyin": "zhǔnquè",
           "options": [
-            "流利",
+            "厉害",
             "语法",
-            "准确",
-            "厉害"
+            "流利",
+            "准确"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "准确 — aniq, to'g'ri (zhǔnquè)",
             "ru": "准确 — точный, правильный (zhǔnquè)",
@@ -575,6 +575,11 @@
           },
           "options": [
             {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            },
+            {
               "uz": "aniq, to'g'ri",
               "ru": "точный, правильный",
               "tj": "дақиқ, дуруст"
@@ -585,17 +590,12 @@
               "tj": "равон"
             },
             {
-              "uz": "grammatika",
-              "ru": "грамматика",
-              "tj": "грамматика"
-            },
-            {
               "uz": "zo'r, kuchli",
               "ru": "сильный, впечатляющий",
               "tj": "зӯр, қавӣ"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "流利 = ravon (liúlì)",
             "ru": "流利 = беглый, свободный (liúlì)",
@@ -656,11 +656,76 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "流利",
+          "pinyin": "liúlì",
+          "options": [
+            "语法",
+            "准确",
+            "厉害",
+            "流利"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "流利 — ravon (liúlì)",
+            "ru": "流利 — беглый, свободный (liúlì)",
+            "tj": "流利 — равон (liúlì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
+          "pinyin": "Xièxie! Qíshí wǒ de yǔfǎ bú tài hǎo, hěn duō jùzi shuō de dōu bú tài zhǔnquè.",
+          "options": [
+            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
+            "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
+            "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。",
+            "你来中国才一年，汉语就说得这么流利，真厉害！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Rahmat! Aslida grammatikam uncha yaxshi emas, ko'p gaplarni ham aniq ayta olmayman.",
+            "ru": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Спасибо! На самом деле грамматика у меня не очень, многие фразы я говорю не совсем точно.",
+            "tj": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Раҳмат! Дар асл грамматикам чандон хуб нест, бисёр ҷумлаҳоро дақиқ гуфта наметавонам."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "准确",
+          "pinyin": "zhǔnquè",
+          "translation": {
+            "uz": "aniq, to'g'ri",
+            "ru": "точный, правильный",
+            "tj": "дақиқ, дуруст"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "擦 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 擦:",
-            "tj": "Маънои калимаи 擦-ро интихоб кунед:"
+            "uz": "不过 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 不过:",
+            "tj": "Маънои калимаи 不过-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -674,6 +739,11 @@
               "tj": "равон"
             },
             {
+              "uz": "lekin, biroq",
+              "ru": "однако, но",
+              "tj": "аммо, вале"
+            },
+            {
               "uz": "zo'r, kuchli",
               "ru": "сильный, впечатляющий",
               "tj": "зӯр, қавӣ"
@@ -682,72 +752,60 @@
               "uz": "grammatika",
               "ru": "грамматика",
               "tj": "грамматика"
-            },
-            {
-              "uz": "artmoq",
-              "ru": "вытирать",
-              "tj": "пок кардан, молидан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "擦 = artmoq (cā)",
-            "ru": "擦 = вытирать (cā)",
-            "tj": "擦 = пок кардан, молидан (cā)"
+            "uz": "不过 = lekin, biroq (búguò)",
+            "ru": "不过 = однако, но (búguò)",
+            "tj": "不过 = аммо, вале (búguò)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "不过",
+            "pinyin": "búguò",
+            "meaning": {
+              "uz": "lekin, biroq",
+              "ru": "однако, но",
+              "tj": "аммо, вале"
+            }
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aniq, to'g'ri' xitoycha qaysi?",
+            "ru": "'точный, правильный' по-китайски?",
+            "tj": "'дақиқ, дуруст' ба хитоӣ кадом аст?"
           },
-          "audio_text": "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
-          "pinyin": "Xièxie! Qíshí wǒ de yǔfǎ bú tài hǎo, hěn duō jùzi shuō de dōu bú tài zhǔnquè.",
-          "options": [
-            "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
-            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
-            "你来中国才一年，汉语就说得这么流利，真厉害！",
-            "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Rahmat! Aslida grammatikam uncha yaxshi emas, ko'p gaplarni ham aniq ayta olmayman.",
-            "ru": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Спасибо! На самом деле грамматика у меня не очень, многие фразы я говорю не совсем точно.",
-            "tj": "谢谢！其实我的语法不太好，很多句子说得都不太准确。 — Раҳмат! Дар асл грамматикам чандон хуб нест, бисёр ҷумлаҳоро дақиқ гуфта наметавонам."
-          }
-        },
-        {
-          "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
-          "audio_text": "流利",
-          "pinyin": "liúlì",
           "options": [
-            "厉害",
             "语法",
+            "厉害",
             "流利",
             "准确"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "流利 — ravon (liúlì)",
-            "ru": "流利 — беглый, свободный (liúlì)",
-            "tj": "流利 — равон (liúlì)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "准确",
-          "pinyin": "zhǔnquè",
-          "translation": {
-            "uz": "aniq, to'g'ri",
-            "ru": "точный, правильный",
-            "tj": "дақиқ, дуруст"
+            "uz": "aniq, to'g'ri = 准确 (zhǔnquè)",
+            "ru": "точный, правильный = 准确 (zhǔnquè)",
+            "tj": "дақиқ, дуруст = 准确 (zhǔnquè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "准确",
+            "pinyin": "zhǔnquè",
+            "meaning": {
+              "uz": "aniq, to'g'ri",
+              "ru": "точный, правильный",
+              "tj": "дақиқ, дуруст"
+            }
           }
         }
       ]

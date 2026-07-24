@@ -448,10 +448,10 @@
           "audio_text": "打印",
           "pinyin": "dǎyìn",
           "options": [
-            "性别",
             "学期",
+            "出生",
             "打印",
-            "出生"
+            "性别"
           ],
           "correct_index": 2,
           "explanation": {
@@ -498,17 +498,17 @@
               "tj": "ҷинс"
             },
             {
-              "uz": "nusxa ko'chirmoq",
-              "ru": "копировать",
-              "tj": "нусха кардан"
-            },
-            {
               "uz": "semestr, o'quv muddati",
               "ru": "семестр",
               "tj": "нимсолаи таҳсил"
+            },
+            {
+              "uz": "nusxa ko'chirmoq",
+              "ru": "копировать",
+              "tj": "нусха кардан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "复印 = nusxa ko'chirmoq (fùyìn)",
             "ru": "复印 = копировать (fùyìn)",
@@ -543,11 +543,11 @@
           },
           "options": [
             "性别",
-            "饺子",
             "学期",
+            "饺子",
             "出生"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "饺子 = chuchvara (jiǎozi)",
             "ru": "饺子 = пельмени, цзяоцзы (jiǎozi)",
@@ -581,12 +581,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xuéqī",
-            "xìngbié",
             "chūshēng",
-            "dāo"
+            "xuéqī",
+            "dāo",
+            "xìngbié"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "刀 — dāo",
             "ru": "刀 — dāo",
@@ -606,12 +606,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "出生",
             "打印",
             "性别",
-            "出生",
             "学期"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "printerdan chiqarmoq = 打印 (dǎyìn)",
             "ru": "распечатывать = 打印 (dǎyìn)",
@@ -708,12 +708,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "饺子",
-            "出生",
+            "学期",
             "性别",
-            "学期"
+            "饺子",
+            "出生"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 饺子 (jiǎozi) — chuchvara",
             "ru": "Верно: 饺子 (jiǎozi) — пельмени, цзяоцзы",
@@ -732,107 +732,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "看来今天吃不上羊肉饺子了。",
-          "pinyin": "Kànlái jīntiān chī bu shàng yángròu jiǎozi le.",
-          "options": [
-            "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。",
-            "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？",
-            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
-            "看来今天吃不上羊肉饺子了。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "看来今天吃不上羊肉饺子了。 — Ko'rinishidan, bugun qo'y go'shtli chuchvara yeyolmaymiz.",
-            "ru": "看来今天吃不上羊肉饺子了。 — Похоже, сегодня не поедим пельмени с бараниной.",
-            "tj": "看来今天吃不上羊肉饺子了。 — Маълум мешавад, имрӯз самбӯсаи гӯсфандӣ хӯрда наметавонем."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "看来今天吃不上羊肉饺子了。",
-          "pinyin": "Kànlái jīntiān chī bu shàng yángròu jiǎozi le.",
-          "translation": {
-            "uz": "Ko'rinishidan, bugun qo'y go'shtli chuchvara yeyolmaymiz.",
-            "ru": "Похоже, сегодня не удастся поесть пельмени с бараниной.",
-            "tj": "Маълум мешавад, имрӯз самбӯсаи гӯсфандиро хӯрда наметавонем."
-          },
-          "tokens": {
-            "uz": [
-              "bugun",
-              "qo'y",
-              "Pasportingni",
-              "Ko'rinishidan",
-              "chuchvara",
-              "go'shtli",
-              "yeyolmaymiz",
-              "menga"
-            ],
-            "ru": [
-              "сегодня",
-              "Дай",
-              "Похоже",
-              "не",
-              "бараниной",
-              "мне",
-              "пельмени",
-              "удастся",
-              "поесть",
-              "с"
-            ],
-            "tj": [
-              "гӯсфандиро",
-              "шиносномаатро",
-              "имрӯз",
-              "хӯрда",
-              "Маълум",
-              "самбӯсаи",
-              "Лутфан",
-              "мешавад",
-              "наметавонем"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Ko'rinishidan",
-              "bugun",
-              "qo'y",
-              "go'shtli",
-              "chuchvara",
-              "yeyolmaymiz"
-            ],
-            "ru": [
-              "Похоже",
-              "сегодня",
-              "не",
-              "удастся",
-              "поесть",
-              "пельмени",
-              "с",
-              "бараниной"
-            ],
-            "tj": [
-              "Маълум",
-              "мешавад",
-              "имрӯз",
-              "самбӯсаи",
-              "гӯсфандиро",
-              "хӯрда",
-              "наметавонем"
-            ]
-          },
-          "explanation": {
-            "uz": "看来今天吃不上羊肉饺子了。 — Ko'rinishidan, bugun qo'y go'shtli chuchvara yeyolmaymiz.",
-            "ru": "看来今天吃不上羊肉饺子了。 — Похоже, сегодня не удастся поесть пельмени с бараниной.",
-            "tj": "看来今天吃不上羊肉饺子了。 — Маълум мешавад, имрӯз самбӯсаи гӯсфандиро хӯрда наметавонем."
-          }
-        },
-        {
           "type": "hanzi_choice",
           "prompt": {
             "uz": "fùyìn qaysi ieroglif?",
@@ -845,12 +744,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "学期",
-            "性别",
             "出生",
-            "复印"
+            "学期",
+            "复印",
+            "性别"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "复印 = nusxa ko'chirmoq (fùyìn)",
             "ru": "复印 = копировать (fùyìn)",
@@ -871,27 +770,27 @@
           },
           "options": [
             {
-              "uz": "semestr, o'quv muddati",
-              "ru": "семестр",
-              "tj": "нимсолаи таҳсил"
-            },
-            {
-              "uz": "tug'ilmoq",
-              "ru": "родиться",
-              "tj": "таваллуд шудан"
-            },
-            {
               "uz": "pichoq",
               "ru": "нож",
               "tj": "корд"
             },
             {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            },
+            {
               "uz": "jins",
               "ru": "пол",
               "tj": "ҷинс"
+            },
+            {
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "刀 = pichoq (dāo)",
             "ru": "刀 = нож (dāo)",
@@ -906,6 +805,105 @@
             "uz": "printerdan chiqarmoq",
             "ru": "распечатывать",
             "tj": "чоп кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "学期 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 学期:",
+            "tj": "Маънои калимаи 学期-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
+            },
+            {
+              "uz": "pasport",
+              "ru": "паспорт",
+              "tj": "шиноснома"
+            },
+            {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            },
+            {
+              "uz": "jins",
+              "ru": "пол",
+              "tj": "ҷинс"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "学期 = semestr, o'quv muddati (xuéqī)",
+            "ru": "学期 = семестр (xuéqī)",
+            "tj": "学期 = нимсолаи таҳсил (xuéqī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "学期",
+            "pinyin": "xuéqī",
+            "meaning": {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'printerdan chiqarmoq' xitoycha qaysi?",
+            "ru": "'распечатывать' по-китайски?",
+            "tj": "'чоп кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "学期",
+            "性别",
+            "出生",
+            "打印"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "printerdan chiqarmoq = 打印 (dǎyìn)",
+            "ru": "распечатывать = 打印 (dǎyìn)",
+            "tj": "чоп кардан = 打印 (dǎyìn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "打印",
+            "pinyin": "dǎyìn",
+            "meaning": {
+              "uz": "printerdan chiqarmoq",
+              "ru": "распечатывать",
+              "tj": "чоп кардан"
+            }
           }
         }
       ]

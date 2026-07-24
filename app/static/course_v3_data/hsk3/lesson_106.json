@@ -352,6 +352,11 @@
           },
           "options": [
             {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
               "uz": "majhul nisbatni bildiruvchi predlog",
               "ru": "предлог пассивного залога",
               "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
@@ -362,17 +367,12 @@
               "tj": "корти кредитӣ"
             },
             {
-              "uz": "fotoapparat, kamera",
-              "ru": "фотоаппарат, камера",
-              "tj": "фотоаппарат, камера"
-            },
-            {
               "uz": "xafa, g'amgin",
               "ru": "грустный, печальный",
               "tj": "ғамгин, хафа"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "信用卡 = kredit karta (xìnyòngkǎ)",
             "ru": "信用卡 = кредитная карта (xìnyòngkǎ)",
@@ -416,12 +416,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "关心",
             "被",
-            "照相机",
             "难过",
-            "关心"
+            "照相机"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "关心 = qiziqmoq, e'tibor bermoq (guānxīn)",
             "ru": "关心 = заботиться, интересоваться (guānxīn)",
@@ -456,9 +456,9 @@
           },
           "options": [
             "zhǐyǒu... cái...",
-            "nánguò",
             "zhàoxiàngjī",
-            "bèi"
+            "bèi",
+            "nánguò"
           ],
           "correct_index": 0,
           "explanation": {
@@ -494,12 +494,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "被",
-            "照相机",
+            "难过",
             "成绩",
-            "难过"
+            "被",
+            "照相机"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "natija, baho, o'zlashtirish = 成绩 (chéngjì)",
             "ru": "оценки, результат, успеваемость = 成绩 (chéngjì)",
@@ -518,10 +518,10 @@
           "options": [
             "被",
             "难过",
-            "照相机",
-            "信用卡"
+            "信用卡",
+            "照相机"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "信用卡 — kredit karta (xìnyòngkǎ)",
             "ru": "信用卡 — кредитная карта (xìnyòngkǎ)",
@@ -639,12 +639,12 @@
           "audio_text": "但是我这个月信用卡里的钱已经花得差不多了。",
           "pinyin": "Dànshì wǒ zhège yuè xìnyòngkǎ lǐ de qián yǐjīng huā de chà bu duō le.",
           "options": [
-            "我的照相机被谁拿走了？怎么找不到了？",
-            "我找了，没找到啊。",
+            "你再找找。是不是没带来？",
             "但是我这个月信用卡里的钱已经花得差不多了。",
-            "你再找找。是不是没带来？"
+            "我找了，没找到啊。",
+            "我的照相机被谁拿走了？怎么找不到了？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "但是我这个月信用卡里的钱已经花得差不多了。 — Lekin bu oy kredit kartamdagi pul deyarli tugab bo'ldi.",
             "ru": "但是我这个月信用卡里的钱已经花得差不多了。 — Но в этом месяце деньги на моей кредитной карте почти закончились.",
@@ -694,31 +694,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'majhul nisbatni bildiruvchi predlog' xitoycha qaysi?",
-            "ru": "'предлог пассивного залога' по-китайски?",
-            "tj": "'пешоянди нишондиҳандаи шакли маҷҳул' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "难过",
-            "东",
-            "被",
-            "照相机"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "majhul nisbatni bildiruvchi predlog = 被 (bèi)",
-            "ru": "предлог пассивного залога = 被 (bèi)",
-            "tj": "пешоянди нишондиҳандаи шакли маҷҳул = 被 (bèi)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "关心",
           "pinyin": "guānxīn",
@@ -726,6 +701,105 @@
             "uz": "qiziqmoq, e'tibor bermoq",
             "ru": "заботиться, интересоваться",
             "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "被 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 被:",
+            "tj": "Маънои калимаи 被-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            },
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            },
+            {
+              "uz": "sharq",
+              "ru": "восток",
+              "tj": "шарқ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "被 = majhul nisbatni bildiruvchi predlog (bèi)",
+            "ru": "被 = предлог пассивного залога (bèi)",
+            "tj": "被 = пешоянди нишондиҳандаи шакли маҷҳул (bèi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "被",
+            "pinyin": "bèi",
+            "meaning": {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qiziqmoq, e'tibor bermoq' xitoycha qaysi?",
+            "ru": "'заботиться, интересоваться' по-китайски?",
+            "tj": "'ғамхорӣ кардан, таваҷҷӯҳ доштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "照相机",
+            "难过",
+            "被",
+            "关心"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qiziqmoq, e'tibor bermoq = 关心 (guānxīn)",
+            "ru": "заботиться, интересоваться = 关心 (guānxīn)",
+            "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан = 关心 (guānxīn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "关心",
+            "pinyin": "guānxīn",
+            "meaning": {
+              "uz": "qiziqmoq, e'tibor bermoq",
+              "ru": "заботиться, интересоваться",
+              "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+            }
           }
         }
       ]

@@ -410,8 +410,8 @@
           "options": [
             "眼镜",
             "清楚",
-            "离开",
-            "突然"
+            "突然",
+            "离开"
           ],
           "correct_index": 0,
           "explanation": {
@@ -468,17 +468,17 @@
               "tj": "айнак"
             },
             {
-              "uz": "aniq, ravshan",
-              "ru": "ясный, чёткий",
-              "tj": "равшан, аниқ"
-            },
-            {
               "uz": "to'satdan",
               "ru": "вдруг, внезапно",
               "tj": "ногаҳон"
+            },
+            {
+              "uz": "aniq, ravshan",
+              "ru": "ясный, чёткий",
+              "tj": "равшан, аниқ"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "突然 = to'satdan (tūrán)",
             "ru": "突然 = вдруг, внезапно (tūrán)",
@@ -512,10 +512,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "清楚",
             "突然",
-            "眼镜",
             "离开",
-            "清楚"
+            "眼镜"
           ],
           "correct_index": 2,
           "explanation": {
@@ -551,12 +551,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "líkāi",
             "tūrán",
             "yǎnjing",
-            "qīngchu"
+            "qīngchu",
+            "líkāi"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "清楚 — qīngchu",
             "ru": "清楚 — qīngchu",
@@ -576,12 +576,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "突然",
             "离开",
             "眼镜",
-            "突然",
             "清楚"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "ko'zoynak = 眼镜 (yǎnjing)",
             "ru": "очки = 眼镜 (yǎnjing)",
@@ -686,16 +686,16 @@
             "tj": "Вай хеле тез гап мезанад, ман фаҳмида наметавонам."
           },
           "tokens": [
-            "太",
-            "我",
-            "眼镜",
             "快",
-            "听",
-            "说话",
-            "他",
-            "懂",
             "突然",
-            "不"
+            "不",
+            "说话",
+            "我",
+            "听",
+            "懂",
+            "他",
+            "眼镜",
+            "太"
           ],
           "answer_tokens": [
             "他",
@@ -724,31 +724,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'mehmon, mijoz' xitoycha qaysi?",
-            "ru": "'гость, клиент' по-китайски?",
-            "tj": "'меҳмон, муштарӣ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "离开",
-            "眼镜",
-            "突然",
-            "客人"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "mehmon, mijoz = 客人 (kèrén)",
-            "ru": "гость, клиент = 客人 (kèrén)",
-            "tj": "меҳмон, муштарӣ = 客人 (kèrén)"
-          }
-        },
         {
           "type": "listening_choice",
           "title": {
@@ -860,6 +835,105 @@
             "uz": "to'satdan",
             "ru": "вдруг, внезапно",
             "tj": "ногаҳон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "为 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 为:",
+            "tj": "Маънои калимаи 为-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tark etmoq, ajralmoq",
+              "ru": "покидать, расставаться",
+              "tj": "тарк кардан, ҷудо шудан"
+            },
+            {
+              "uz": "to'satdan",
+              "ru": "вдруг, внезапно",
+              "tj": "ногаҳон"
+            },
+            {
+              "uz": "ko'zoynak",
+              "ru": "очки",
+              "tj": "айнак"
+            },
+            {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "为 = uchun (wèi)",
+            "ru": "为 = для, ради (wèi)",
+            "tj": "为 = барои (wèi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "为",
+            "pinyin": "wèi",
+            "meaning": {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'to'satdan' xitoycha qaysi?",
+            "ru": "'вдруг, внезапно' по-китайски?",
+            "tj": "'ногаҳон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "眼镜",
+            "清楚",
+            "离开",
+            "突然"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "to'satdan = 突然 (tūrán)",
+            "ru": "вдруг, внезапно = 突然 (tūrán)",
+            "tj": "ногаҳон = 突然 (tūrán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "突然",
+            "pinyin": "tūrán",
+            "meaning": {
+              "uz": "to'satdan",
+              "ru": "вдруг, внезапно",
+              "tj": "ногаҳон"
+            }
           }
         }
       ]

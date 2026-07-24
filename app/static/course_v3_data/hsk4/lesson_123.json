@@ -431,8 +431,8 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "máojīn",
             "yágāo",
+            "máojīn",
             "rēng",
             "chūchāi"
           ],
@@ -470,12 +470,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "出差",
+            "以",
             "牙膏",
-            "毛巾",
-            "以"
+            "出差",
+            "毛巾"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "orqali, vositasida = 以 (yǐ)",
             "ru": "через, посредством = 以 (yǐ)",
@@ -517,11 +517,11 @@
           "pinyin": "sùdù",
           "options": [
             "毛巾",
-            "出差",
             "速度",
-            "牙膏"
+            "牙膏",
+            "出差"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "速度 — tezlik (sùdù)",
             "ru": "速度 — скорость (sùdù)",
@@ -556,6 +556,11 @@
           },
           "options": [
             {
+              "uz": "Yer sayyorasi",
+              "ru": "Земля, земной шар",
+              "tj": "Замин"
+            },
+            {
               "uz": "tish pastasi",
               "ru": "зубная паста",
               "tj": "хамираи дандон"
@@ -569,14 +574,9 @@
               "uz": "sochiq",
               "ru": "полотенце",
               "tj": "дастмол"
-            },
-            {
-              "uz": "Yer sayyorasi",
-              "ru": "Земля, земной шар",
-              "tj": "Замин"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "地球 = Yer sayyorasi (dìqiú)",
             "ru": "地球 = Земля, земной шар (dìqiú)",
@@ -596,12 +596,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "扔",
+            "牙膏",
             "毛巾",
             "出差",
-            "牙膏"
+            "扔"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "扔 = tashlamoq, uloqtirmoq (rēng)",
             "ru": "扔 = выбрасывать, бросать (rēng)",
@@ -697,16 +697,16 @@
             "tj": "Ман ҳатман бо суръати баландтарин анҷом медиҳам."
           },
           "tokens": [
-            "完成",
             "我",
-            "以",
-            "一定",
             "出差",
-            "毛巾",
+            "一定",
+            "完成",
+            "以",
             "速度",
+            "的",
             "快",
-            "最",
-            "的"
+            "毛巾",
+            "最"
           ],
           "answer_tokens": [
             "我",
@@ -735,53 +735,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "经理您放心，我一定以最快的速度完成。不过咱们真的应该再多招聘几个服务员了。",
-          "pinyin": "Jīnglǐ nín fàngxīn, wǒ yídìng yǐ zuì kuài de sùdù wánchéng. Búguò zánmen zhēn de yīnggāi zài duō zhāopìn jǐ ge fúwùyuán le.",
-          "options": [
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "经理您放心，我一定以最快的速度完成。不过咱们真的应该再多招聘几个服务员了。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "经理您放心，我一定以最快的速度完成。不过咱们真的应该再多招聘几个服务员了。 — Xotirjam bo'ling, men albatta eng tez sur'atda bajaraman. Lekin haqiqatan ham yana bir nechta ofitsiant olishimiz kerak.",
-            "ru": "经理您放心，我一定以最快的速度完成。不过咱们真的应该再多招聘几个服务员了。 — Не волнуйтесь, я обязательно выполню это как можно быстрее. Но нам правда стоит нанять ещё нескольких официантов.",
-            "tj": "经理您放心，我一定以最快的速度完成。不过咱们真的应该再多招聘几个服务员了。 — Ором бошед, ман ҳатман бо суръати баландтарин анҷом медиҳам. Аммо дар ҳақиқат бояд боз чанд пешхизмат гирем."
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yágāo qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yágāo?",
-            "tj": "yágāo кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "牙膏",
-            "出差",
-            "毛巾",
-            "重"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "牙膏 = tish pastasi (yágāo)",
-            "ru": "牙膏 = зубная паста (yágāo)",
-            "tj": "牙膏 = хамираи дандон (yágāo)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -907,6 +860,105 @@
             "uz": "tezlik",
             "ru": "скорость",
             "tj": "суръат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "空 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 空:",
+            "tj": "Маънои калимаи 空-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sochiq",
+              "ru": "полотенце",
+              "tj": "дастмол"
+            },
+            {
+              "uz": "tish pastasi",
+              "ru": "зубная паста",
+              "tj": "хамираи дандон"
+            },
+            {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
+            },
+            {
+              "uz": "bo'sh",
+              "ru": "пустой",
+              "tj": "холӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "空 = bo'sh (kōng)",
+            "ru": "空 = пустой (kōng)",
+            "tj": "空 = холӣ (kōng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "空",
+            "pinyin": "kōng",
+            "meaning": {
+              "uz": "bo'sh",
+              "ru": "пустой",
+              "tj": "холӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tezlik' xitoycha qaysi?",
+            "ru": "'скорость' по-китайски?",
+            "tj": "'суръат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "毛巾",
+            "牙膏",
+            "速度",
+            "出差"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "tezlik = 速度 (sùdù)",
+            "ru": "скорость = 速度 (sùdù)",
+            "tj": "суръат = 速度 (sùdù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "速度",
+            "pinyin": "sùdù",
+            "meaning": {
+              "uz": "tezlik",
+              "ru": "скорость",
+              "tj": "суръат"
+            }
           }
         }
       ]

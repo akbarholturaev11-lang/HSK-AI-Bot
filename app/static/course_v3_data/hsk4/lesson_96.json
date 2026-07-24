@@ -426,6 +426,11 @@
           },
           "options": [
             {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
               "uz": "zo'r, kuchli",
               "ru": "сильный, впечатляющий",
               "tj": "зӯр, қавӣ"
@@ -434,11 +439,6 @@
               "uz": "grammatika",
               "ru": "грамматика",
               "tj": "грамматика"
-            },
-            {
-              "uz": "ravon",
-              "ru": "беглый, свободный",
-              "tj": "равон"
             },
             {
               "uz": "mashhur",
@@ -480,9 +480,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "流利",
             "语法",
             "厉害",
-            "流利",
             "页"
           ],
           "correct_index": 3,
@@ -519,12 +519,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zēngjiā",
+            "liúlì",
             "yǔfǎ",
             "lìhai",
-            "liúlì"
+            "zēngjiā"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "增加 — zēngjiā",
             "ru": "增加 — zēngjiā",
@@ -568,12 +568,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "厉害",
-            "语法",
+            "流利",
             "文章",
-            "流利"
+            "语法",
+            "厉害"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "maqola, matn = 文章 (wénzhāng)",
             "ru": "статья, текст = 文章 (wénzhāng)",
@@ -656,47 +656,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "杂志 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 杂志:",
-            "tj": "Маънои калимаи 杂志-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "grammatika",
-              "ru": "грамматика",
-              "tj": "грамматика"
-            },
-            {
-              "uz": "jurnal",
-              "ru": "журнал",
-              "tj": "маҷалла"
-            },
-            {
-              "uz": "ravon",
-              "ru": "беглый, свободный",
-              "tj": "равон"
-            },
-            {
-              "uz": "zo'r, kuchli",
-              "ru": "сильный, впечатляющий",
-              "tj": "зӯр, қавӣ"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "杂志 = jurnal (zázhì)",
-            "ru": "杂志 = журнал (zázhì)",
-            "tj": "杂志 = маҷалла (zázhì)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -706,12 +665,12 @@
           "audio_text": "著名",
           "pinyin": "zhùmíng",
           "options": [
-            "流利",
-            "厉害",
             "语法",
-            "著名"
+            "著名",
+            "流利",
+            "厉害"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "著名 — mashhur (zhùmíng)",
             "ru": "著名 — известный (zhùmíng)",
@@ -728,12 +687,12 @@
           "audio_text": "文章",
           "pinyin": "wénzhāng",
           "options": [
+            "文章",
             "流利",
             "厉害",
-            "文章",
             "语法"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "文章 — maqola, matn (wénzhāng)",
             "ru": "文章 — статья, текст (wénzhāng)",
@@ -778,12 +737,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "增加",
-            "流利",
             "语法",
+            "流利",
+            "增加",
             "厉害"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "增加 = oshirmoq, ko'paytirmoq (zēngjiā)",
             "ru": "增加 = увеличивать (zēngjiā)",
@@ -798,6 +757,105 @@
             "uz": "maqola, matn",
             "ru": "статья, текст",
             "tj": "мақола, матн"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "杂志 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 杂志:",
+            "tj": "Маънои калимаи 杂志-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            },
+            {
+              "uz": "jurnal",
+              "ru": "журнал",
+              "tj": "маҷалла"
+            },
+            {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "杂志 = jurnal (zázhì)",
+            "ru": "杂志 = журнал (zázhì)",
+            "tj": "杂志 = маҷалла (zázhì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "杂志",
+            "pinyin": "zázhì",
+            "meaning": {
+              "uz": "jurnal",
+              "ru": "журнал",
+              "tj": "маҷалла"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'maqola, matn' xitoycha qaysi?",
+            "ru": "'статья, текст' по-китайски?",
+            "tj": "'мақола, матн' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "流利",
+            "厉害",
+            "文章",
+            "语法"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "maqola, matn = 文章 (wénzhāng)",
+            "ru": "статья, текст = 文章 (wénzhāng)",
+            "tj": "мақола, матн = 文章 (wénzhāng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "文章",
+            "pinyin": "wénzhāng",
+            "meaning": {
+              "uz": "maqola, matn",
+              "ru": "статья, текст",
+              "tj": "мақола, матн"
+            }
           }
         }
       ]

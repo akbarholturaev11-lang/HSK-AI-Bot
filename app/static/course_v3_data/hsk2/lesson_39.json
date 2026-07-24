@@ -320,12 +320,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "病",
             "再",
             "告诉",
-            "病",
             "让"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "kasal bo'lmoq; kasallik = 病 (bìng)",
             "ru": "болеть; болезнь = 病 (bìng)",
@@ -406,6 +406,11 @@
           },
           "options": [
             {
+              "uz": "aytib bermoq, xabar bermoq",
+              "ru": "сказать, сообщить",
+              "tj": "гуфтан, хабар додан"
+            },
+            {
               "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
               "ru": "позволять, разрешать; приказывать",
               "tj": "иҷозат додан; дастур додан"
@@ -419,14 +424,9 @@
               "uz": "yana, keyin, qayta (kelajak uchun)",
               "ru": "снова, потом, опять (о будущем)",
               "tj": "боз, баъд, дубора (барои оянда)"
-            },
-            {
-              "uz": "aytib bermoq, xabar bermoq",
-              "ru": "сказать, сообщить",
-              "tj": "гуфтан, хабар додан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "颜色 = rang (yánsè)",
             "ru": "颜色 = цвет (yánsè)",
@@ -446,12 +446,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "再",
             "病",
+            "让",
             "告诉",
-            "让"
+            "再"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "病 = kasal bo'lmoq; kasallik (bìng)",
             "ru": "病 = болеть; болезнь (bìng)",
@@ -548,15 +548,15 @@
             "tj": "Бигзор андеша кунам, баъд мегӯям."
           },
           "tokens": [
-            "想",
-            "想",
             "你",
-            "再",
-            "找",
-            "等",
+            "想",
             "我",
-            "告诉",
-            "让"
+            "等",
+            "让",
+            "想",
+            "找",
+            "再",
+            "告诉"
           ],
           "answer_tokens": [
             "让",
@@ -594,12 +594,12 @@
           "audio_text": "听说大卫病了，我想找时间去看看他。",
           "pinyin": "Tīngshuō Dàwèi bìng le, wǒ xiǎng zhǎo shíjiān qù kànkan tā.",
           "options": [
-            "我们下午去看电影，好吗？",
-            "你想看什么电影？",
+            "听说大卫病了，我想找时间去看看他。",
             "今天下午我没有时间，明天下午再去吧。",
-            "听说大卫病了，我想找时间去看看他。"
+            "你想看什么电影？",
+            "我们下午去看电影，好吗？"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "听说大卫病了，我想找时间去看看他。 — Eshitdim, Devid kasal, uни ko'rgani borishga vaqt topmoqchiman.",
             "ru": "听说大卫病了，我想找时间去看看他。 — Говорят, Дэвид заболел, хочу найти время навестить его.",
@@ -666,31 +666,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "hēi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается hēi?",
-            "tj": "hēi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "黑",
-            "让",
-            "告诉",
-            "再"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "黑 = qora (rang) (hēi)",
-            "ru": "黑 = чёрный (цвет) (hēi)",
-            "tj": "黑 = сиёҳ (ранг) (hēi)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "颜色",
           "pinyin": "yánsè",
@@ -698,6 +673,105 @@
             "uz": "rang",
             "ru": "цвет",
             "tj": "ранг"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "贵 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 贵:",
+            "tj": "Маънои калимаи 贵-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yana, keyin, qayta (kelajak uchun)",
+              "ru": "снова, потом, опять (о будущем)",
+              "tj": "боз, баъд, дубора (барои оянда)"
+            },
+            {
+              "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+              "ru": "позволять, разрешать; приказывать",
+              "tj": "иҷозат додан; дастур додан"
+            },
+            {
+              "uz": "aytib bermoq, xabar bermoq",
+              "ru": "сказать, сообщить",
+              "tj": "гуфтан, хабар додан"
+            },
+            {
+              "uz": "qimmat, narxi yuqori",
+              "ru": "дорогой, высокая цена",
+              "tj": "гарон, нарх баланд"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "贵 = qimmat, narxi yuqori (guì)",
+            "ru": "贵 = дорогой, высокая цена (guì)",
+            "tj": "贵 = гарон, нарх баланд (guì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "贵",
+            "pinyin": "guì",
+            "meaning": {
+              "uz": "qimmat, narxi yuqori",
+              "ru": "дорогой, высокая цена",
+              "tj": "гарон, нарх баланд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'rang' xitoycha qaysi?",
+            "ru": "'цвет' по-китайски?",
+            "tj": "'ранг' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "颜色",
+            "让",
+            "告诉",
+            "再"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "rang = 颜色 (yánsè)",
+            "ru": "цвет = 颜色 (yánsè)",
+            "tj": "ранг = 颜色 (yánsè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "颜色",
+            "pinyin": "yánsè",
+            "meaning": {
+              "uz": "rang",
+              "ru": "цвет",
+              "tj": "ранг"
+            }
           }
         }
       ]

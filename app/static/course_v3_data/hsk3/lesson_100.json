@@ -348,12 +348,12 @@
           "audio_text": "耳朵",
           "pinyin": "ěrduo",
           "options": [
-            "脸",
-            "耳朵",
             "短",
-            "马"
+            "马",
+            "脸",
+            "耳朵"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "耳朵 — quloq (ěrduo)",
             "ru": "耳朵 — ухо (ěrduo)",
@@ -388,9 +388,9 @@
           },
           "options": [
             {
-              "uz": "kalta, qisqa",
-              "ru": "короткий",
-              "tj": "кӯтоҳ"
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
             },
             {
               "uz": "yuz",
@@ -398,14 +398,14 @@
               "tj": "рӯй"
             },
             {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
               "uz": "ot",
               "ru": "лошадь",
               "tj": "асп"
-            },
-            {
-              "uz": "quloq",
-              "ru": "ухо",
-              "tj": "гӯш"
             }
           ],
           "correct_index": 1,
@@ -442,8 +442,8 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "脸",
             "马",
+            "脸",
             "短",
             "耳朵"
           ],
@@ -491,12 +491,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "liǎn",
-            "ěrduo",
             "duǎn",
-            "mǎ"
+            "mǎ",
+            "liǎn",
+            "ěrduo"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "马 — mǎ",
             "ru": "马 — mǎ",
@@ -516,9 +516,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "马",
-            "短",
             "脸",
+            "短",
+            "马",
             "耳朵"
           ],
           "correct_index": 3,
@@ -630,6 +630,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+          "pinyin": "Nǚ'ér zuìjìn xǐhuan bǎ tóufa fàng zài ěrduo hòumiàn, nǐ zhīdào wèi shénme ma?",
+          "options": [
+            "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
+            "我最近觉得她和以前不太一样了。",
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "这样可以使她的脸看上去漂亮一些。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Qizimiz yaqinda sochini qulog'ining orqasiga qo'yishni yoqtirib qoldi, nima uchunligini bilasanmi?",
+            "ru": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Дочь в последнее время любит убирать волосы за уши, знаешь почему?",
+            "tj": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Духтарамон вақтҳои охир мӯяшро пушти гӯш мегузорад, медонӣ чаро?"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -672,33 +694,32 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
-          "pinyin": "Nǚ'ér zuìjìn xǐhuan bǎ tóufa fàng zài ěrduo hòumiàn, nǐ zhīdào wèi shénme ma?",
-          "options": [
-            "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
-            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
-            "我最近觉得她和以前不太一样了。",
-            "这样可以使她的脸看上去漂亮一些。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Qizimiz yaqinda sochini qulog'ining orqasiga qo'yishni yoqtirib qoldi, nima uchunligini bilasanmi?",
-            "ru": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Дочь в последнее время любит убирать волосы за уши, знаешь почему?",
-            "tj": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Духтарамон вақтҳои охир мӯяшро пушти гӯш мегузорад, медонӣ чаро?"
+          "type": "pronunciation",
+          "phrase": "马",
+          "pinyin": "mǎ",
+          "translation": {
+            "uz": "ot",
+            "ru": "лошадь",
+            "tj": "асп"
           }
-        },
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "生活 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 生活:",
-            "tj": "Маънои калимаи 生活-ро интихоб кунед:"
+            "uz": "嘴 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 嘴:",
+            "tj": "Маънои калимаи 嘴-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -707,19 +728,19 @@
           },
           "options": [
             {
-              "uz": "hayot",
-              "ru": "жизнь",
-              "tj": "зиндагӣ"
-            },
-            {
-              "uz": "quloq",
-              "ru": "ухо",
-              "tj": "гӯш"
+              "uz": "og'iz",
+              "ru": "рот",
+              "tj": "даҳон"
             },
             {
               "uz": "kalta, qisqa",
               "ru": "короткий",
               "tj": "кӯтоҳ"
+            },
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
             },
             {
               "uz": "yuz",
@@ -729,19 +750,56 @@
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "生活 = hayot (shēnghuó)",
-            "ru": "生活 = жизнь (shēnghuó)",
-            "tj": "生活 = зиндагӣ (shēnghuó)"
+            "uz": "嘴 = og'iz (zuǐ)",
+            "ru": "嘴 = рот (zuǐ)",
+            "tj": "嘴 = даҳон (zuǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "嘴",
+            "pinyin": "zuǐ",
+            "meaning": {
+              "uz": "og'iz",
+              "ru": "рот",
+              "tj": "даҳон"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "马",
-          "pinyin": "mǎ",
-          "translation": {
-            "uz": "ot",
-            "ru": "лошадь",
-            "tj": "асп"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ot' xitoycha qaysi?",
+            "ru": "'лошадь' по-китайски?",
+            "tj": "'асп' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "马",
+            "脸",
+            "耳朵",
+            "短"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "ot = 马 (mǎ)",
+            "ru": "лошадь = 马 (mǎ)",
+            "tj": "асп = 马 (mǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "马",
+            "pinyin": "mǎ",
+            "meaning": {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            }
           }
         }
       ]

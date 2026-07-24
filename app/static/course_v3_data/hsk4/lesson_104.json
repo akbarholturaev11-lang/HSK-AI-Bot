@@ -441,12 +441,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "可惜",
+            "节",
             "死",
-            "规定",
-            "节"
+            "可惜",
+            "规定"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "bo'lim, dars qismi = 节 (jié)",
             "ru": "раздел, часть = 节 (jié)",
@@ -477,12 +477,12 @@
           "audio_text": "详细",
           "pinyin": "xiángxì",
           "options": [
-            "规定",
-            "可惜",
             "死",
-            "详细"
+            "详细",
+            "可惜",
+            "规定"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "详细 — batafsil (xiángxì)",
             "ru": "详细 — подробный (xiángxì)",
@@ -517,27 +517,27 @@
           },
           "options": [
             {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
-            },
-            {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
-            },
-            {
               "uz": "qoida, belgilangan tartib",
               "ru": "правило, положение",
               "tj": "қоида, тартиб"
             },
             {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
               "uz": "tushuntirmoq",
               "ru": "объяснять",
               "tj": "шарҳ додан"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "解释 = tushuntirmoq (jiěshì)",
             "ru": "解释 = объяснять (jiěshì)",
@@ -581,12 +581,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "死",
-            "规定",
+            "对于",
             "可惜",
-            "对于"
+            "规定",
+            "死"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "对于 = ...ga nisbatan, ...borasida (duìyú)",
             "ru": "对于 = по отношению к, что касается (duìyú)",
@@ -606,12 +606,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "guīdìng",
             "jié",
-            "sǐ",
-            "kěxī"
+            "guīdìng",
+            "kěxī",
+            "sǐ"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "节 — jié",
             "ru": "节 — jié",
@@ -709,9 +709,9 @@
           },
           "options": [
             "对于",
-            "死",
+            "规定",
             "可惜",
-            "规定"
+            "死"
           ],
           "correct_index": 0,
           "explanation": {
@@ -734,69 +734,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "节",
-          "pinyin": "jié",
-          "options": [
-            "节",
-            "死",
-            "规定",
-            "可惜"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "节 — bo'lim, dars qismi (jié)",
-            "ru": "节 — раздел, часть (jié)",
-            "tj": "节 — қисм, бахш (jié)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "盐 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 盐:",
-            "tj": "Маънои калимаи 盐-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
-            },
-            {
-              "uz": "qoida, belgilangan tartib",
-              "ru": "правило, положение",
-              "tj": "қоида, тартиб"
-            },
-            {
-              "uz": "tuz",
-              "ru": "соль",
-              "tj": "намак"
-            },
-            {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "盐 = tuz (yán)",
-            "ru": "盐 = соль (yán)",
-            "tj": "盐 = намак (yán)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
@@ -804,12 +741,12 @@
           "audio_text": "谢谢！您能详细谈谈对我的课的看法吗？",
           "pinyin": "Xièxie! Nín néng xiángxì tán tan duì wǒ de kè de kànfǎ ma?",
           "options": [
-            "谢谢！您能详细谈谈对我的课的看法吗？",
             "听说这次生意你到现在还没谈成。",
             "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
+            "谢谢！您能详细谈谈对我的课的看法吗？",
             "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "谢谢！您能详细谈谈对我的课的看法吗？ — Rahmat! Darsim haqidagi fikringizni batafsil aytib bera olasizmi?",
             "ru": "谢谢！您能详细谈谈对我的课的看法吗？ — Спасибо! Можете подробно рассказать, что вы думаете о моём уроке?",
@@ -829,10 +766,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "可惜",
+            "死",
             "规定",
             "解释",
-            "死"
+            "可惜"
           ],
           "correct_index": 2,
           "explanation": {
@@ -849,6 +786,105 @@
             "uz": "...ga nisbatan, ...borasida",
             "ru": "по отношению к, что касается",
             "tj": "нисбат ба, дар мавриди"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "无法 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 无法:",
+            "tj": "Маънои калимаи 无法-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qila olmaslik",
+              "ru": "быть не в состоянии",
+              "tj": "натавонистан"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "无法 = qila olmaslik (wúfǎ)",
+            "ru": "无法 = быть не в состоянии (wúfǎ)",
+            "tj": "无法 = натавонистан (wúfǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "无法",
+            "pinyin": "wúfǎ",
+            "meaning": {
+              "uz": "qila olmaslik",
+              "ru": "быть не в состоянии",
+              "tj": "натавонистан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'...ga nisbatan, ...borasida' xitoycha qaysi?",
+            "ru": "'по отношению к, что касается' по-китайски?",
+            "tj": "'нисбат ба, дар мавриди' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "死",
+            "规定",
+            "可惜",
+            "对于"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "...ga nisbatan, ...borasida = 对于 (duìyú)",
+            "ru": "по отношению к, что касается = 对于 (duìyú)",
+            "tj": "нисбат ба, дар мавриди = 对于 (duìyú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "对于",
+            "pinyin": "duìyú",
+            "meaning": {
+              "uz": "...ga nisbatan, ...borasida",
+              "ru": "по отношению к, что касается",
+              "tj": "нисбат ба, дар мавриди"
+            }
           }
         }
       ]

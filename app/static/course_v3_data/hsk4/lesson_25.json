@@ -352,12 +352,12 @@
           "audio_text": "感觉",
           "pinyin": "gǎnjué",
           "options": [
-            "紧张",
-            "感觉",
             "信心",
-            "挺"
+            "挺",
+            "紧张",
+            "感觉"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "感觉 — his, taassurot (gǎnjué)",
             "ru": "感觉 — чувство, впечатление (gǎnjué)",
@@ -392,11 +392,6 @@
           },
           "options": [
             {
-              "uz": "ishonch",
-              "ru": "уверенность",
-              "tj": "боварӣ"
-            },
-            {
               "uz": "hukm qilmoq, baholamoq",
               "ru": "оценивать, судить",
               "tj": "баҳо додан, хулоса кардан"
@@ -407,12 +402,17 @@
               "tj": "изтиробнок, асабӣ"
             },
             {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
               "uz": "ancha, juda",
               "ru": "довольно, весьма",
               "tj": "хеле, анча"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "判断 = hukm qilmoq, baholamoq (pànduàn)",
             "ru": "判断 = оценивать, судить (pànduàn)",
@@ -447,9 +447,9 @@
           },
           "options": [
             "信心",
-            "挺",
+            "紧张",
             "顾客",
-            "紧张"
+            "挺"
           ],
           "correct_index": 2,
           "explanation": {
@@ -485,12 +485,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xìnxīn",
+            "zhǔnshí",
             "tǐng",
-            "jǐnzhāng",
-            "zhǔnshí"
+            "xìnxīn",
+            "jǐnzhāng"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "准时 — zhǔnshí",
             "ru": "准时 — zhǔnshí",
@@ -510,9 +510,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "挺",
-            "感觉",
             "紧张",
+            "感觉",
+            "挺",
             "信心"
           ],
           "correct_index": 1,
@@ -618,31 +618,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "挺 talaffuzini tanlang:",
-            "ru": "Выберите произношение 挺:",
-            "tj": "Талаффузи 挺-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jǐnzhāng",
-            "tǐng",
-            "nénglì",
-            "xìnxīn"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "挺 — tǐng",
-            "ru": "挺 — tǐng",
-            "tj": "挺 — tǐng"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -652,12 +627,12 @@
           "audio_text": "感觉",
           "pinyin": "gǎnjué",
           "options": [
-            "信心",
-            "感觉",
             "挺",
-            "紧张"
+            "紧张",
+            "感觉",
+            "信心"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "感觉 — his, taassurot (gǎnjué)",
             "ru": "感觉 — чувство, впечатление (gǎnjué)",
@@ -672,6 +647,105 @@
             "uz": "his, taassurot",
             "ru": "чувство, впечатление",
             "tj": "ҳис, таассурот"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "留 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 留:",
+            "tj": "Маънои калимаи 留-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            },
+            {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
+              "uz": "qoldirmoq",
+              "ru": "оставлять",
+              "tj": "мондан, гузоштан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "留 = qoldirmoq (liú)",
+            "ru": "留 = оставлять (liú)",
+            "tj": "留 = мондан, гузоштан (liú)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "留",
+            "pinyin": "liú",
+            "meaning": {
+              "uz": "qoldirmoq",
+              "ru": "оставлять",
+              "tj": "мондан, гузоштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'his, taassurot' xitoycha qaysi?",
+            "ru": "'чувство, впечатление' по-китайски?",
+            "tj": "'ҳис, таассурот' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "挺",
+            "信心",
+            "紧张",
+            "感觉"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "his, taassurot = 感觉 (gǎnjué)",
+            "ru": "чувство, впечатление = 感觉 (gǎnjué)",
+            "tj": "ҳис, таассурот = 感觉 (gǎnjué)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "感觉",
+            "pinyin": "gǎnjué",
+            "meaning": {
+              "uz": "his, taassurot",
+              "ru": "чувство, впечатление",
+              "tj": "ҳис, таассурот"
+            }
           }
         }
       ]

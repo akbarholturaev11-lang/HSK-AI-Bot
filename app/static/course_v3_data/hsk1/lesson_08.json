@@ -570,102 +570,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "reverse_builder",
-          "zh": "我不是中国人，我是美国人。",
-          "pinyin": "Wǒ bú shì Zhōngguó rén, wǒ shì Měiguó rén.",
-          "translation": {
-            "uz": "Men xitoylik emasman, men amerikalikman.",
-            "ru": "Я не китаец, я американец.",
-            "tj": "Ман хитоӣ нестам, ман амрикоӣ ҳастам."
-          },
-          "tokens": {
-            "uz": [
-              "amerikalikman",
-              "ismim",
-              "Men",
-              "xitoylik",
-              "Mening",
-              "emasman",
-              "men"
-            ],
-            "ru": [
-              "не",
-              "китаец",
-              "Меня",
-              "американец",
-              "Я",
-              "я",
-              "зовут"
-            ],
-            "tj": [
-              "ман",
-              "амрикоӣ",
-              "ҳастам",
-              "Номи",
-              "нестам",
-              "Ли",
-              "Ман",
-              "хитоӣ"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Men",
-              "xitoylik",
-              "emasman",
-              "men",
-              "amerikalikman"
-            ],
-            "ru": [
-              "Я",
-              "не",
-              "китаец",
-              "я",
-              "американец"
-            ],
-            "tj": [
-              "Ман",
-              "хитоӣ",
-              "нестам",
-              "ман",
-              "амрикоӣ",
-              "ҳастам"
-            ]
-          },
-          "explanation": {
-            "uz": "我不是中国人，我是美国人。 — Men xitoylik emasman, men amerikalikman.",
-            "ru": "我不是中国人，我是美国人。 — Я не китаец, я американец.",
-            "tj": "我不是中国人，我是美国人。 — Ман хитоӣ нестам, ман амрикоӣ ҳастам."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Ismingiz Li Yuemi?",
-            "ru": "Вас зовут Ли Юэ?",
-            "tj": "Оё номи шумо Ли Юэ аст?"
-          },
-          "tokens": [
-            "叫",
-            "吗",
-            "你",
-            "李月",
-            "什么",
-            "名字"
-          ],
-          "answer_tokens": [
-            "你",
-            "叫",
-            "李月",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "你叫李月吗？ — Nǐ jiào Lǐ Yuè ma?",
-            "ru": "你叫李月吗？ — Nǐ jiào Lǐ Yuè ma?",
-            "tj": "你叫李月吗？ — Nǐ jiào Lǐ Yuè ma?"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -695,6 +599,105 @@
             "uz": "Amerika, AQSH",
             "ru": "Америка, США",
             "tj": "Амрико, ИМА"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "学生 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 学生:",
+            "tj": "Маънои калимаи 学生-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            },
+            {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номида шудан, даъват кардан"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            },
+            {
+              "uz": "o'quvchi, talaba",
+              "ru": "ученик, студент",
+              "tj": "хонанда, донишҷӯ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "学生 = o'quvchi, talaba (xuésheng)",
+            "ru": "学生 = ученик, студент (xuésheng)",
+            "tj": "学生 = хонанда, донишҷӯ (xuésheng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "学生",
+            "pinyin": "xuésheng",
+            "meaning": {
+              "uz": "o'quvchi, talaba",
+              "ru": "ученик, студент",
+              "tj": "хонанда, донишҷӯ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Amerika, AQSH' xitoycha qaysi?",
+            "ru": "'Америка, США' по-китайски?",
+            "tj": "'Амрико, ИМА' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "什么",
+            "美国",
+            "叫",
+            "名字"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "Amerika, AQSH = 美国 (Měiguó)",
+            "ru": "Америка, США = 美国 (Měiguó)",
+            "tj": "Амрико, ИМА = 美国 (Měiguó)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "美国",
+            "pinyin": "Měiguó",
+            "meaning": {
+              "uz": "Amerika, AQSH",
+              "ru": "Америка, США",
+              "tj": "Амрико, ИМА"
+            }
           }
         }
       ]

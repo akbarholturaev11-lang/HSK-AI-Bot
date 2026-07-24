@@ -595,28 +595,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "踢足球",
-          "pinyin": "tī zúqiú",
-          "options": [
-            "觉得",
-            "踢足球",
-            "最",
-            "旅游"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "踢足球 — futbol o'ynamoq (tī zúqiú)",
-            "ru": "踢足球 — играть в футбол (tī zúqiú)",
-            "tj": "踢足球 — футбол бозӣ кардан (tī zúqiú)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
@@ -637,28 +615,25 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'deb o'ylash, his qilish' xitoycha qaysi?",
-            "ru": "'думать, считать, чувствовать' по-китайски?",
-            "tj": "'фикр кардан, ҳис кардан' ба хитоӣ кадом аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "踢足球",
+          "pinyin": "tī zúqiú",
           "options": [
-            "旅游",
-            "最",
             "觉得",
-            "为什么"
+            "踢足球",
+            "最",
+            "旅游"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "deb o'ylash, his qilish = 觉得 (juéde)",
-            "ru": "думать, считать, чувствовать = 觉得 (juéde)",
-            "tj": "фикр кардан, ҳис кардан = 觉得 (juéde)"
+            "uz": "踢足球 — futbol o'ynamoq (tī zúqiú)",
+            "ru": "踢足球 — играть в футбол (tī zúqiú)",
+            "tj": "踢足球 — футбол бозӣ кардан (tī zúqiú)"
           }
         },
         {
@@ -771,6 +746,105 @@
             "uz": "sport; sport qilmoq",
             "ru": "спорт; заниматься спортом",
             "tj": "варзиш; варзиш кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "觉得 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 觉得:",
+            "tj": "Маънои калимаи 觉得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
+            },
+            {
+              "uz": "eng, juda",
+              "ru": "самый, наиболее",
+              "tj": "аз ҳама, бештар"
+            },
+            {
+              "uz": "nega, nima uchun",
+              "ru": "почему, зачем",
+              "tj": "чаро, барои чӣ"
+            },
+            {
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "觉得 = deb o'ylash, his qilish (juéde)",
+            "ru": "觉得 = думать, считать, чувствовать (juéde)",
+            "tj": "觉得 = фикр кардан, ҳис кардан (juéde)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "觉得",
+            "pinyin": "juéde",
+            "meaning": {
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sport; sport qilmoq' xitoycha qaysi?",
+            "ru": "'спорт; заниматься спортом' по-китайски?",
+            "tj": "'варзиш; варзиш кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "觉得",
+            "运动",
+            "旅游",
+            "最"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "sport; sport qilmoq = 运动 (yùndòng)",
+            "ru": "спорт; заниматься спортом = 运动 (yùndòng)",
+            "tj": "варзиш; варзиш кардан = 运动 (yùndòng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "运动",
+            "pinyin": "yùndòng",
+            "meaning": {
+              "uz": "sport; sport qilmoq",
+              "ru": "спорт; заниматься спортом",
+              "tj": "варзиш; варзиш кардан"
+            }
           }
         }
       ]

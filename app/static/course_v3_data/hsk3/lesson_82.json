@@ -317,8 +317,8 @@
           "options": [
             "各",
             "提高",
-            "留学",
-            "水平"
+            "水平",
+            "留学"
           ],
           "correct_index": 0,
           "explanation": {
@@ -354,12 +354,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "liú xué",
             "shuǐpíng",
-            "tí gāo",
-            "wénhuà"
+            "wénhuà",
+            "liú xué",
+            "tí gāo"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "文化 — wénhuà",
             "ru": "文化 — wénhuà",
@@ -393,12 +393,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "提高",
-            "留学",
             "水平",
-            "小云"
+            "小云",
+            "留学",
+            "提高"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "Xiaoyun (ism) = 小云 (Xiǎoyún)",
             "ru": "Сяоюнь (имя) = 小云 (Xiǎoyún)",
@@ -416,11 +416,11 @@
           "pinyin": "gè",
           "options": [
             "水平",
-            "提高",
             "各",
+            "提高",
             "留学"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "各 — har bir (gè)",
             "ru": "各 — каждый (gè)",
@@ -538,88 +538,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'gap, jumla' xitoycha qaysi?",
-            "ru": "'предложение' по-китайски?",
-            "tj": "'ҷумла' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "提高",
-            "句子",
-            "水平",
-            "留学"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "gap, jumla = 句子 (jùzi)",
-            "ru": "предложение = 句子 (jùzi)",
-            "tj": "ҷумла = 句子 (jùzi)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "老师，除了小云，其他人都来了。",
-          "pinyin": "Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
-          "options": [
-            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-            "老师，除了小云，其他人都来了。",
-            "这是我昨天的作业，您帮我看看对不对？",
-            "你每天认真学习，做练习、完成作业，一直不错啊。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "老师，除了小云，其他人都来了。 — Ustoz, Xiaoyundan tashqari hamma keldi.",
-            "ru": "老师，除了小云，其他人都来了。 — Учитель, кроме Сяоюнь, все пришли.",
-            "tj": "老师，除了小云，其他人都来了。 — Устод, ба ғайр аз Сяоюн ҳама омаданд."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Ustoz, Xiaoyundan tashqari hamma keldi.",
-            "ru": "Учитель, кроме Сяоюнь, все пришли.",
-            "tj": "Устод, ба ғайр аз Сяоюн ҳама омаданд."
-          },
-          "tokens": [
-            "除了",
-            "都",
-            "老师",
-            "留学",
-            "了",
-            "人",
-            "其他",
-            "小云",
-            "水平",
-            "来"
-          ],
-          "answer_tokens": [
-            "老师",
-            "除了",
-            "小云",
-            "其他",
-            "人",
-            "都",
-            "来",
-            "了"
-          ],
-          "explanation": {
-            "uz": "老师，除了小云，其他人都来了。 — Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
-            "ru": "老师，除了小云，其他人都来了。 — Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
-            "tj": "老师，除了小云，其他人都来了。 — Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le."
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -654,6 +572,63 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "老师，除了小云，其他人都来了。",
+          "pinyin": "Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
+          "options": [
+            "这是我昨天的作业，您帮我看看对不对？",
+            "你每天认真学习，做练习、完成作业，一直不错啊。",
+            "老师，除了小云，其他人都来了。",
+            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "老师，除了小云，其他人都来了。 — Ustoz, Xiaoyundan tashqari hamma keldi.",
+            "ru": "老师，除了小云，其他人都来了。 — Учитель, кроме Сяоюнь, все пришли.",
+            "tj": "老师，除了小云，其他人都来了。 — Устод, ба ғайр аз Сяоюн ҳама омаданд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ustoz, Xiaoyundan tashqari hamma keldi.",
+            "ru": "Учитель, кроме Сяоюнь, все пришли.",
+            "tj": "Устод, ба ғайр аз Сяоюн ҳама омаданд."
+          },
+          "tokens": [
+            "来",
+            "留学",
+            "老师",
+            "其他",
+            "水平",
+            "都",
+            "了",
+            "小云",
+            "除了",
+            "人"
+          ],
+          "answer_tokens": [
+            "老师",
+            "除了",
+            "小云",
+            "其他",
+            "人",
+            "都",
+            "来",
+            "了"
+          ],
+          "explanation": {
+            "uz": "老师，除了小云，其他人都来了。 — Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
+            "ru": "老师，除了小云，其他人都来了。 — Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
+            "tj": "老师，除了小云，其他人都来了。 — Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "各",
           "pinyin": "gè",
@@ -661,6 +636,105 @@
             "uz": "har bir",
             "ru": "каждый",
             "tj": "ҳар"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "举行 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 举行:",
+            "tj": "Маънои калимаи 举行-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            },
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            },
+            {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            },
+            {
+              "uz": "o'tkazmoq",
+              "ru": "проводить",
+              "tj": "баргузор кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "举行 = o'tkazmoq (jǔxíng)",
+            "ru": "举行 = проводить (jǔxíng)",
+            "tj": "举行 = баргузор кардан (jǔxíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "举行",
+            "pinyin": "jǔxíng",
+            "meaning": {
+              "uz": "o'tkazmoq",
+              "ru": "проводить",
+              "tj": "баргузор кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'har bir' xitoycha qaysi?",
+            "ru": "'каждый' по-китайски?",
+            "tj": "'ҳар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "留学",
+            "提高",
+            "各",
+            "水平"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "har bir = 各 (gè)",
+            "ru": "каждый = 各 (gè)",
+            "tj": "ҳар = 各 (gè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "各",
+            "pinyin": "gè",
+            "meaning": {
+              "uz": "har bir",
+              "ru": "каждый",
+              "tj": "ҳар"
+            }
           }
         }
       ]

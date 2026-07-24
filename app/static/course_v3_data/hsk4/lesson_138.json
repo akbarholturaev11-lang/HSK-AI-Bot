@@ -451,9 +451,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "biǎogé",
-            "bào míng",
             "qiānzhèng",
+            "bào míng",
+            "biǎogé",
             "bóshì"
           ],
           "correct_index": 3,
@@ -500,12 +500,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "报名",
-            "表格",
             "博士",
-            "签证"
+            "报名",
+            "签证",
+            "表格"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "viza = 签证 (qiānzhèng)",
             "ru": "виза = 签证 (qiānzhèng)",
@@ -536,12 +536,12 @@
           "audio_text": "报名",
           "pinyin": "bào míng",
           "options": [
-            "博士",
-            "报名",
+            "签证",
             "表格",
-            "签证"
+            "博士",
+            "报名"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "报名 — ro'yxatdan o'tmoq (bào míng)",
             "ru": "报名 — записываться, регистрироваться (bào míng)",
@@ -581,11 +581,6 @@
               "tj": "доктор, дараҷаи илмӣ"
             },
             {
-              "uz": "ro'yxatdan o'tmoq",
-              "ru": "записываться, регистрироваться",
-              "tj": "номнавис шудан"
-            },
-            {
               "uz": "viza",
               "ru": "виза",
               "tj": "раводид"
@@ -594,9 +589,14 @@
               "uz": "forma, jadval",
               "ru": "форма, таблица",
               "tj": "варақа, ҷадвал"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "表格 = forma, jadval (biǎogé)",
             "ru": "表格 = форма, таблица (biǎogé)",
@@ -616,12 +616,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "博士",
+            "表格",
             "报名",
             "签证",
-            "表格"
+            "博士"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "博士 = doktorantura darajasi (bóshì)",
             "ru": "博士 = доктор наук, докторская степень (bóshì)",
@@ -730,12 +730,12 @@
           "audio_text": "签证",
           "pinyin": "qiānzhèng",
           "options": [
+            "博士",
             "签证",
-            "报名",
             "表格",
-            "博士"
+            "报名"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "签证 — viza (qiānzhèng)",
             "ru": "签证 — виза (qiānzhèng)",
@@ -753,11 +753,84 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "签证",
+          "pinyin": "qiānzhèng",
+          "translation": {
+            "uz": "viza",
+            "ru": "виза",
+            "tj": "раводид"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "棒 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 棒:",
+            "tj": "Маънои калимаи 棒-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "棒 = zo'r, ajoyib (bàng)",
+            "ru": "棒 = отличный, замечательный (bàng)",
+            "tj": "棒 = олӣ, зӯр (bàng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "棒",
+            "pinyin": "bàng",
+            "meaning": {
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
+            }
+          }
+        },
+        {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'murakkab' xitoycha qaysi?",
-            "ru": "'сложный' по-китайски?",
-            "tj": "'мураккаб' ба хитоӣ кадом аст?"
+            "uz": "'viza' xitoycha qaysi?",
+            "ru": "'виза' по-китайски?",
+            "tj": "'раводид' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -766,25 +839,26 @@
           },
           "options": [
             "签证",
+            "表格",
             "博士",
-            "复杂",
             "报名"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "murakkab = 复杂 (fùzá)",
-            "ru": "сложный = 复杂 (fùzá)",
-            "tj": "мураккаб = 复杂 (fùzá)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "签证",
-          "pinyin": "qiānzhèng",
-          "translation": {
-            "uz": "viza",
-            "ru": "виза",
-            "tj": "раводид"
+            "uz": "viza = 签证 (qiānzhèng)",
+            "ru": "виза = 签证 (qiānzhèng)",
+            "tj": "раводид = 签证 (qiānzhèng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "签证",
+            "pinyin": "qiānzhèng",
+            "meaning": {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            }
           }
         }
       ]

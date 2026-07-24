@@ -421,6 +421,11 @@
               "tj": "мешавад, хуб"
             },
             {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
+            },
+            {
               "uz": "sochiq",
               "ru": "полотенце",
               "tj": "дастмол"
@@ -429,11 +434,6 @@
               "uz": "tish pastasi",
               "ru": "зубная паста",
               "tj": "хамираи дандон"
-            },
-            {
-              "uz": "xizmat safariga bormoq",
-              "ru": "ехать в командировку",
-              "tj": "ба сафари хизматӣ рафтан"
             }
           ],
           "correct_index": 0,
@@ -471,11 +471,11 @@
           },
           "options": [
             "牙膏",
+            "毛巾",
             "出差",
-            "省",
-            "毛巾"
+            "省"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "省 = tejamoq (shěng)",
             "ru": "省 = экономить (shěng)",
@@ -509,10 +509,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "chūchāi",
             "yágāo",
-            "máojīn",
             "wūrǎn",
-            "chūchāi"
+            "máojīn"
           ],
           "correct_index": 2,
           "explanation": {
@@ -548,10 +548,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "出差",
             "毛巾",
-            "牙膏",
             "卫生间",
-            "出差"
+            "牙膏"
           ],
           "correct_index": 2,
           "explanation": {
@@ -570,12 +570,12 @@
           "audio_text": "行",
           "pinyin": "xíng",
           "options": [
+            "毛巾",
             "出差",
-            "行",
             "牙膏",
-            "毛巾"
+            "行"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "行 — bo'ladi, mayli (xíng)",
             "ru": "行 — подходит, хорошо (xíng)",
@@ -647,10 +647,10 @@
           "options": [
             "出差",
             "牙膏",
-            "毛巾",
-            "行"
+            "行",
+            "毛巾"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "行 — bo'ladi, mayli (xíng)",
             "ru": "行 — подходит, хорошо (xíng)",
@@ -700,31 +700,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "出差 talaffuzini tanlang:",
-            "ru": "Выберите произношение 出差:",
-            "tj": "Талаффузи 出差-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zhòng",
-            "yágāo",
-            "chūchāi",
-            "máojīn"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "出差 — chūchāi",
-            "ru": "出差 — chūchāi",
-            "tj": "出差 — chūchāi"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "行",
           "pinyin": "xíng",
@@ -732,6 +707,105 @@
             "uz": "bo'ladi, mayli",
             "ru": "подходит, хорошо",
             "tj": "мешавад, хуб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "出差 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 出差:",
+            "tj": "Маънои калимаи 出差-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
+            },
+            {
+              "uz": "sochiq",
+              "ru": "полотенце",
+              "tj": "дастмол"
+            },
+            {
+              "uz": "tish pastasi",
+              "ru": "зубная паста",
+              "tj": "хамираи дандон"
+            },
+            {
+              "uz": "og'ir",
+              "ru": "тяжёлый",
+              "tj": "вазнин"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "出差 = xizmat safariga bormoq (chūchāi)",
+            "ru": "出差 = ехать в командировку (chūchāi)",
+            "tj": "出差 = ба сафари хизматӣ рафтан (chūchāi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "出差",
+            "pinyin": "chūchāi",
+            "meaning": {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bo'ladi, mayli' xitoycha qaysi?",
+            "ru": "'подходит, хорошо' по-китайски?",
+            "tj": "'мешавад, хуб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "毛巾",
+            "行",
+            "出差",
+            "牙膏"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bo'ladi, mayli = 行 (xíng)",
+            "ru": "подходит, хорошо = 行 (xíng)",
+            "tj": "мешавад, хуб = 行 (xíng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "行",
+            "pinyin": "xíng",
+            "meaning": {
+              "uz": "bo'ladi, mayli",
+              "ru": "подходит, хорошо",
+              "tj": "мешавад, хуб"
+            }
           }
         }
       ]

@@ -301,12 +301,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "diànyǐng",
-            "diǎn",
+            "xiànzài",
             "fēn",
-            "xiànzài"
+            "diànyǐng",
+            "diǎn"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "电影 — diànyǐng",
             "ru": "电影 — diànyǐng",
@@ -340,12 +340,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "点",
-            "现在",
             "分",
-            "住"
+            "现在",
+            "住",
+            "点"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "yashash, turar joy = 住 (zhù)",
             "ru": "жить, проживать = 住 (zhù)",
@@ -386,12 +386,12 @@
           "audio_text": "前",
           "pinyin": "qián",
           "options": [
-            "现在",
-            "点",
             "前",
-            "分"
+            "点",
+            "分",
+            "现在"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "前 — oldin, avval (qián)",
             "ru": "前 — до, перед (qián)",
@@ -431,14 +431,14 @@
               "tj": "соат (вақт)"
             },
             {
-              "uz": "daqiqa",
-              "ru": "минута",
-              "tj": "дақиқа"
-            },
-            {
               "uz": "hozir, shu vaqtda",
               "ru": "сейчас, в данный момент",
               "tj": "ҳоло, дар ин лаҳза"
+            },
+            {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
             },
             {
               "uz": "Pekin",
@@ -466,12 +466,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "电影",
             "现在",
             "点",
+            "电影",
             "分"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "电影 = kino, film (diànyǐng)",
             "ru": "电影 = кино, фильм (diànyǐng)",
@@ -588,10 +588,10 @@
           "options": [
             "现在",
             "分",
-            "北京",
-            "点"
+            "点",
+            "北京"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 北京 (Běijīng) — Pekin",
             "ru": "Верно: 北京 (Běijīng) — Пекин",
@@ -601,9 +601,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Juma kunidan oldin uyga qayta olasizmi?» — xitoychada qaysi biri?",
-            "ru": "«Сможете вернуться домой до пятницы?» — какое предложение по-китайски?",
-            "tj": "«Метавонед пеш аз ҷумъа ба хона баргардед?» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Uch kun oldin men Pekinda edim.» — xitoychada qaysi biri?",
+            "ru": "«Три дня назад я был в Пекине.» — какое предложение по-китайски?",
+            "tj": "«Се рӯз пеш ман дар Пекин будам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -615,11 +615,11 @@
             "三天前我在北京。",
             "星期五前能回家吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "星期五前能回家吗？ — Xīngqī wǔ qián néng huí jiā ma?",
-            "ru": "星期五前能回家吗？ — Xīngqī wǔ qián néng huí jiā ma?",
-            "tj": "星期五前能回家吗？ — Xīngqī wǔ qián néng huí jiā ma?"
+            "uz": "三天前我在北京。 — Sān tiān qián wǒ zài Běijīng.",
+            "ru": "三天前我在北京。 — Sān tiān qián wǒ zài Běijīng.",
+            "tj": "三天前我在北京。 — Sān tiān qián wǒ zài Běijīng."
           }
         }
       ]
@@ -636,53 +636,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我们什么时候去看电影？",
-          "pinyin": "Wǒmen shénme shíhou qù kàn diànyǐng?",
-          "options": [
-            "我们什么时候去看电影？",
-            "现在几点？",
-            "中午几点吃饭？",
-            "现在十点十分。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "我们什么时候去看电影？ — Biz qachon kinoga boramiz?",
-            "ru": "我们什么时候去看电影？ — Когда мы идём в кино?",
-            "tj": "我们什么时候去看电影？ — Мо кай ба кино меравем?"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "fēn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается fēn?",
-            "tj": "fēn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "现在",
-            "点",
-            "中午",
-            "分"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "分 = daqiqa (fēn)",
-            "ru": "分 = минута (fēn)",
-            "tj": "分 = дақиқа (fēn)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Tinglang — qaysi so'z?",
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
@@ -690,12 +643,12 @@
           "audio_text": "住",
           "pinyin": "zhù",
           "options": [
-            "住",
-            "现在",
             "分",
-            "点"
+            "点",
+            "住",
+            "现在"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "住 — yashash, turar joy (zhù)",
             "ru": "住 — жить, проживать (zhù)",
@@ -710,6 +663,105 @@
             "uz": "oldin, avval",
             "ru": "до, перед",
             "tj": "пеш аз, қабл аз"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "回 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 回:",
+            "tj": "Маънои калимаи 回-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qaytmoq, orqaga kelmoq",
+              "ru": "возвращаться",
+              "tj": "баргаштан, бозгашт"
+            },
+            {
+              "uz": "soat (soat uchun o'lchov so'zi)",
+              "ru": "час (счётное слово для часов)",
+              "tj": "соат (вақт)"
+            },
+            {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
+            },
+            {
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "回 = qaytmoq, orqaga kelmoq (huí)",
+            "ru": "回 = возвращаться (huí)",
+            "tj": "回 = баргаштан, бозгашт (huí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "回",
+            "pinyin": "huí",
+            "meaning": {
+              "uz": "qaytmoq, orqaga kelmoq",
+              "ru": "возвращаться",
+              "tj": "баргаштан, бозгашт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'oldin, avval' xitoycha qaysi?",
+            "ru": "'до, перед' по-китайски?",
+            "tj": "'пеш аз, қабл аз' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "前",
+            "分",
+            "点",
+            "现在"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "oldin, avval = 前 (qián)",
+            "ru": "до, перед = 前 (qián)",
+            "tj": "пеш аз, қабл аз = 前 (qián)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "前",
+            "pinyin": "qián",
+            "meaning": {
+              "uz": "oldin, avval",
+              "ru": "до, перед",
+              "tj": "пеш аз, қабл аз"
+            }
           }
         }
       ]

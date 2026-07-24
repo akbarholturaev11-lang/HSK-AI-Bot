@@ -590,96 +590,6 @@
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "我不是老师，我是学生。",
-          "pinyin": "Wǒ bú shì lǎoshī, wǒ shì xuésheng.",
-          "translation": {
-            "uz": "Men o'qituvchi emasman, men talabaman.",
-            "ru": "Я не учитель, я студент.",
-            "tj": "Ман муаллим нестам, ман донишҷӯ ҳастам."
-          },
-          "tokens": {
-            "uz": [
-              "Siz",
-              "o'qituvchimisiz",
-              "Men",
-              "men",
-              "o'qituvchi",
-              "emasman",
-              "talabaman"
-            ],
-            "ru": [
-              "Вы",
-              "студент",
-              "я",
-              "не",
-              "учитель",
-              "Я"
-            ],
-            "tj": [
-              "донишҷӯ",
-              "нестам",
-              "шумо",
-              "ҳастам",
-              "ман",
-              "Оё",
-              "Ман",
-              "муаллим"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Men",
-              "o'qituvchi",
-              "emasman",
-              "men",
-              "talabaman"
-            ],
-            "ru": [
-              "Я",
-              "не",
-              "учитель",
-              "я",
-              "студент"
-            ],
-            "tj": [
-              "Ман",
-              "муаллим",
-              "нестам",
-              "ман",
-              "донишҷӯ",
-              "ҳастам"
-            ]
-          },
-          "explanation": {
-            "uz": "我不是老师，我是学生。 — Men o'qituvchi emasman, men talabaman.",
-            "ru": "我不是老师，我是学生。 — Я не учитель, я студент.",
-            "tj": "我不是老师，我是学生。 — Ман муаллим нестам, ман донишҷӯ ҳастам."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "学生",
-          "pinyin": "xuésheng",
-          "options": [
-            "叫",
-            "什么",
-            "学生",
-            "名字"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "学生 — o'quvchi, talaba (xuésheng)",
-            "ru": "学生 — ученик, студент (xuésheng)",
-            "tj": "学生 — хонанда, донишҷӯ (xuésheng)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "吗",
           "pinyin": "ma",
@@ -687,6 +597,105 @@
             "uz": "so'roq yuklamasi",
             "ru": "вопросительная частица",
             "tj": "ҳарфи саволӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "名字 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 名字:",
+            "tj": "Маънои калимаи 名字-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "men",
+              "ru": "я, меня",
+              "tj": "ман"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            },
+            {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номида шудан, даъват кардан"
+            },
+            {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "名字 = ism (míngzi)",
+            "ru": "名字 = имя (míngzi)",
+            "tj": "名字 = ном, исм (míngzi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "名字",
+            "pinyin": "míngzi",
+            "meaning": {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'so'roq yuklamasi' xitoycha qaysi?",
+            "ru": "'вопросительная частица' по-китайски?",
+            "tj": "'ҳарфи саволӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "吗",
+            "名字",
+            "什么",
+            "叫"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "so'roq yuklamasi = 吗 (ma)",
+            "ru": "вопросительная частица = 吗 (ma)",
+            "tj": "ҳарфи саволӣ = 吗 (ma)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "吗",
+            "pinyin": "ma",
+            "meaning": {
+              "uz": "so'roq yuklamasi",
+              "ru": "вопросительная частица",
+              "tj": "ҳарфи саволӣ"
+            }
           }
         }
       ]

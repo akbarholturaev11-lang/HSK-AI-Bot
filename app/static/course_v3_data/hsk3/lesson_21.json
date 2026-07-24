@@ -422,6 +422,16 @@
           },
           "options": [
             {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            },
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            },
+            {
               "uz": "javob bermoq",
               "ru": "отвечать",
               "tj": "ҷавоб додан"
@@ -430,19 +440,9 @@
               "uz": "sinf, kurs, bosqich",
               "ru": "класс, курс",
               "tj": "синф, курс"
-            },
-            {
-              "uz": "surat, fotosurat",
-              "ru": "фотография",
-              "tj": "акс"
-            },
-            {
-              "uz": "musobaqa",
-              "ru": "соревнование",
-              "tj": "мусобиқа"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "回答 = javob bermoq (huídá)",
             "ru": "回答 = отвечать (huídá)",
@@ -476,12 +476,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "比赛",
             "照片",
             "站",
+            "比赛",
             "年级"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "站 = turmoq (zhàn)",
             "ru": "站 = стоять (zhàn)",
@@ -515,12 +515,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bǐsài",
             "è",
+            "bǐsài",
             "zhàopiàn",
             "niánjí"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "饿 — è",
             "ru": "饿 — è",
@@ -554,12 +554,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "年级",
-            "比赛",
             "照片",
-            "超市"
+            "超市",
+            "年级",
+            "比赛"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "supermarket = 超市 (chāoshì)",
             "ru": "супермаркет = 超市 (chāoshì)",
@@ -687,12 +687,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "照片",
-            "年级",
+            "聪明",
             "比赛",
-            "聪明"
+            "照片",
+            "年级"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 聪明 (cōngming) — aqlli, zukko",
             "ru": "Верно: 聪明 (cōngming) — умный, сообразительный",
@@ -711,143 +711,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "聪明 talaffuzini tanlang:",
-            "ru": "Выберите произношение 聪明:",
-            "tj": "Талаффузи 聪明-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "bǐsài",
-            "zhàopiàn",
-            "cōngming",
-            "niánjí"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "聪明 — cōngming",
-            "ru": "聪明 — cōngming",
-            "tj": "聪明 — cōngming"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "超市里有很多又好吃又新鲜的东西。",
-          "pinyin": "Chāoshì lǐ yǒu hěn duō yòu hǎochī yòu xīnxiān de dōngxi.",
-          "translation": {
-            "uz": "Supermarketda juda ko'p ham mazali ham yangi narsalar bor.",
-            "ru": "В супермаркете много вкусного и свежего.",
-            "tj": "Дар супермаркет чизҳои ҳам хӯрданӣ ҳам тозаи зиёде ҳаст."
-          },
-          "tokens": {
-            "uz": [
-              "yangi",
-              "juda",
-              "ham",
-              "narsalar",
-              "bor",
-              "Ko'rsam",
-              "ko'p",
-              "mazali",
-              "ham",
-              "u",
-              "Supermarketda"
-            ],
-            "ru": [
-              "В",
-              "свежего",
-              "много",
-              "вкусного",
-              "Я",
-              "и",
-              "супермаркете",
-              "вижу"
-            ],
-            "tj": [
-              "тозаи",
-              "ҳам",
-              "чизҳои",
-              "вай",
-              "ҳаст",
-              "зиёде",
-              "ҳам",
-              "Мебинам",
-              "супермаркет",
-              "хӯрданӣ",
-              "Дар"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Supermarketda",
-              "juda",
-              "ko'p",
-              "ham",
-              "mazali",
-              "ham",
-              "yangi",
-              "narsalar",
-              "bor"
-            ],
-            "ru": [
-              "В",
-              "супермаркете",
-              "много",
-              "вкусного",
-              "и",
-              "свежего"
-            ],
-            "tj": [
-              "Дар",
-              "супермаркет",
-              "чизҳои",
-              "ҳам",
-              "хӯрданӣ",
-              "ҳам",
-              "тозаи",
-              "зиёде",
-              "ҳаст"
-            ]
-          },
-          "explanation": {
-            "uz": "超市里有很多又好吃又新鲜的东西。 — Supermarketda juda ko'p ham mazali ham yangi narsalar bor.",
-            "ru": "超市里有很多又好吃又新鲜的东西。 — В супермаркете много вкусного и свежего.",
-            "tj": "超市里有很多又好吃又新鲜的东西。 — Дар супермаркет чизҳои ҳам хӯрданӣ ҳам тозаи зиёде ҳаст."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "站",
-          "pinyin": "zhàn",
-          "options": [
-            "站",
-            "比赛",
-            "照片",
-            "年级"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "站 — turmoq (zhàn)",
-            "ru": "站 — стоять (zhàn)",
-            "tj": "站 — истодан (zhàn)"
-          }
-        },
-        {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "è qaysi ieroglif?",
-            "ru": "Какой иероглиф читается è?",
-            "tj": "è кадом иероглиф аст?"
+            "uz": "zhàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhàn?",
+            "tj": "zhàn кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -855,10 +723,51 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "比赛",
+            "站",
             "照片",
-            "饿",
-            "年级"
+            "年级",
+            "比赛"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "站 = turmoq (zhàn)",
+            "ru": "站 = стоять (zhàn)",
+            "tj": "站 = истодан (zhàn)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "饿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 饿:",
+            "tj": "Маънои калимаи 饿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            },
+            {
+              "uz": "och, qorni och",
+              "ru": "голодный",
+              "tj": "гурусна"
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            }
           ],
           "correct_index": 2,
           "explanation": {
@@ -875,6 +784,105 @@
             "uz": "javob bermoq",
             "ru": "отвечать",
             "tj": "ҷавоб додан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "聪明 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 聪明:",
+            "tj": "Маънои калимаи 聪明-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            },
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
+              "uz": "aqlli, zukko",
+              "ru": "умный, сообразительный",
+              "tj": "доно, зирак"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "聪明 = aqlli, zukko (cōngming)",
+            "ru": "聪明 = умный, сообразительный (cōngming)",
+            "tj": "聪明 = доно, зирак (cōngming)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "聪明",
+            "pinyin": "cōngming",
+            "meaning": {
+              "uz": "aqlli, zukko",
+              "ru": "умный, сообразительный",
+              "tj": "доно, зирак"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'javob bermoq' xitoycha qaysi?",
+            "ru": "'отвечать' по-китайски?",
+            "tj": "'ҷавоб додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "回答",
+            "比赛",
+            "照片",
+            "年级"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "javob bermoq = 回答 (huídá)",
+            "ru": "отвечать = 回答 (huídá)",
+            "tj": "ҷавоб додан = 回答 (huídá)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "回答",
+            "pinyin": "huídá",
+            "meaning": {
+              "uz": "javob bermoq",
+              "ru": "отвечать",
+              "tj": "ҷавоб додан"
+            }
           }
         }
       ]

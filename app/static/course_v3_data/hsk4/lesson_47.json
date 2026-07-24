@@ -372,8 +372,8 @@
           },
           "options": [
             "售货员",
-            "果汁",
             "袜子",
+            "果汁",
             "竟然"
           ],
           "correct_index": 3,
@@ -411,11 +411,11 @@
           },
           "options": [
             "shòuhuòyuán",
-            "xīhóngshì",
+            "wàzi",
             "guǒzhī",
-            "wàzi"
+            "xīhóngshì"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "西红柿 — xīhóngshì",
             "ru": "西红柿 — xīhóngshì",
@@ -460,11 +460,11 @@
           },
           "options": [
             "袜子",
-            "售货员",
             "百分之",
-            "果汁"
+            "果汁",
+            "售货员"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "foiz = 百分之 (bǎi fēn zhī)",
             "ru": "процент = 百分之 (bǎi fēn zhī)",
@@ -495,12 +495,12 @@
           "audio_text": "倍",
           "pinyin": "bèi",
           "options": [
-            "倍",
-            "售货员",
             "袜子",
-            "果汁"
+            "果汁",
+            "售货员",
+            "倍"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "倍 — marta, baravar (bèi)",
             "ru": "倍 — раз, крат (bèi)",
@@ -521,16 +521,6 @@
           },
           "options": [
             {
-              "uz": "kutilmaganda, hayratlanarlisi",
-              "ru": "неожиданно, удивительно",
-              "tj": "ногаҳон, тааҷҷубовар"
-            },
-            {
-              "uz": "meva sharbati",
-              "ru": "фруктовый сок",
-              "tj": "шарбати мева"
-            },
-            {
               "uz": "paypoq",
               "ru": "носки",
               "tj": "ҷӯроб"
@@ -539,9 +529,19 @@
               "uz": "sotuvchi",
               "ru": "продавец",
               "tj": "фурӯшанда"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            },
+            {
+              "uz": "kutilmaganda, hayratlanarlisi",
+              "ru": "неожиданно, удивительно",
+              "tj": "ногаҳон, тааҷҷубовар"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "竟然 = kutilmaganda, hayratlanarlisi (jìngrán)",
             "ru": "竟然 = неожиданно, удивительно (jìngrán)",
@@ -637,16 +637,16 @@
             "tj": "Нархи имрӯз ду баробари дирӯза аст."
           },
           "tokens": [
+            "两",
             "价格",
-            "今天",
-            "果汁",
-            "倍",
-            "售货员",
-            "的",
             "是",
+            "售货员",
+            "果汁",
+            "的",
             "的",
             "昨天",
-            "两"
+            "倍",
+            "今天"
           ],
           "answer_tokens": [
             "今天",
@@ -675,28 +675,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "百分之",
-          "pinyin": "bǎi fēn zhī",
-          "options": [
-            "售货员",
-            "袜子",
-            "百分之",
-            "果汁"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "百分之 — foiz (bǎi fēn zhī)",
-            "ru": "百分之 — процент (bǎi fēn zhī)",
-            "tj": "百分之 — фоиз (bǎi fēn zhī)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -747,16 +725,16 @@
             "tj": "Нархи имрӯз ду баробари дирӯза аст."
           },
           "tokens": [
-            "价格",
             "昨天",
-            "的",
-            "售货员",
-            "果汁",
-            "是",
             "倍",
+            "价格",
+            "是",
+            "的",
+            "两",
+            "果汁",
             "的",
             "今天",
-            "两"
+            "售货员"
           ],
           "answer_tokens": [
             "今天",
@@ -775,31 +753,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "wàzi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается wàzi?",
-            "tj": "wàzi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "售货员",
-            "打扰",
-            "袜子",
-            "果汁"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "袜子 = paypoq (wàzi)",
-            "ru": "袜子 = носки (wàzi)",
-            "tj": "袜子 = ҷӯроб (wàzi)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "百分之",
           "pinyin": "bǎi fēn zhī",
@@ -807,6 +760,105 @@
             "uz": "foiz",
             "ru": "процент",
             "tj": "фоиз"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "袜子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 袜子:",
+            "tj": "Маънои калимаи 袜子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bezovta qilmoq",
+              "ru": "беспокоить, мешать",
+              "tj": "халал расондан, нороҳат кардан"
+            },
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "袜子 = paypoq (wàzi)",
+            "ru": "袜子 = носки (wàzi)",
+            "tj": "袜子 = ҷӯроб (wàzi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "袜子",
+            "pinyin": "wàzi",
+            "meaning": {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'foiz' xitoycha qaysi?",
+            "ru": "'процент' по-китайски?",
+            "tj": "'фоиз' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "售货员",
+            "袜子",
+            "百分之",
+            "果汁"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "foiz = 百分之 (bǎi fēn zhī)",
+            "ru": "процент = 百分之 (bǎi fēn zhī)",
+            "tj": "фоиз = 百分之 (bǎi fēn zhī)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "百分之",
+            "pinyin": "bǎi fēn zhī",
+            "meaning": {
+              "uz": "foiz",
+              "ru": "процент",
+              "tj": "фоиз"
+            }
           }
         }
       ]

@@ -405,14 +405,14 @@
           },
           "options": [
             {
-              "uz": "nabira o'g'il",
-              "ru": "внук",
-              "tj": "набераи писар"
-            },
-            {
               "uz": "beparvo",
               "ru": "невнимательный",
               "tj": "бепарво"
+            },
+            {
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
             },
             {
               "uz": "pianino chalmoq",
@@ -420,12 +420,12 @@
               "tj": "пианино навохтан"
             },
             {
-              "uz": "zo'r, ajoyib",
-              "ru": "отличный, замечательный",
-              "tj": "олӣ, зӯр"
+              "uz": "nabira o'g'il",
+              "ru": "внук",
+              "tj": "набераи писар"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "粗心 = beparvo (cūxīn)",
             "ru": "粗心 = невнимательный (cūxīn)",
@@ -459,12 +459,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "弹钢琴",
-            "孙子",
             "骄傲",
-            "棒"
+            "棒",
+            "孙子",
+            "弹钢琴"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "骄傲 = kibrli, mag'rur (jiāo'ào)",
             "ru": "骄傲 = высокомерный (jiāo'ào)",
@@ -498,12 +498,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "sūnzi",
-            "hàixiū",
+            "bàng",
             "tán gāngqín",
-            "bàng"
+            "hàixiū",
+            "sūnzi"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "害羞 — hàixiū",
             "ru": "害羞 — hàixiū",
@@ -523,10 +523,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "弹钢琴",
             "棒",
+            "孙子",
             "粗心",
-            "孙子"
+            "弹钢琴"
           ],
           "correct_index": 2,
           "explanation": {
@@ -581,47 +581,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "儿童 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 儿童:",
-            "tj": "Маънои калимаи 儿童-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "nabira o'g'il",
-              "ru": "внук",
-              "tj": "набераи писар"
-            },
-            {
-              "uz": "bolalar",
-              "ru": "дети",
-              "tj": "кӯдакон"
-            },
-            {
-              "uz": "zo'r, ajoyib",
-              "ru": "отличный, замечательный",
-              "tj": "олӣ, зӯр"
-            },
-            {
-              "uz": "pianino chalmoq",
-              "ru": "играть на пианино",
-              "tj": "пианино навохтан"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "儿童 = bolalar (értóng)",
-            "ru": "儿童 = дети (értóng)",
-            "tj": "儿童 = кӯдакон (értóng)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -631,12 +590,12 @@
           "audio_text": "骄傲",
           "pinyin": "jiāo'ào",
           "options": [
-            "棒",
             "弹钢琴",
-            "孙子",
-            "骄傲"
+            "骄傲",
+            "棒",
+            "孙子"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "骄傲 — kibrli, mag'rur (jiāo'ào)",
             "ru": "骄傲 — высокомерный (jiāo'ào)",
@@ -654,8 +613,8 @@
           "pinyin": "cūxīn",
           "options": [
             "粗心",
-            "棒",
             "孙子",
+            "棒",
             "弹钢琴"
           ],
           "correct_index": 0,
@@ -678,12 +637,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "害羞",
-            "棒",
             "孙子",
+            "棒",
+            "害羞",
             "弹钢琴"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "uyalmoq, tortinmoq = 害羞 (hàixiū)",
             "ru": "стесняться = 害羞 (hàixiū)",
@@ -698,6 +657,105 @@
             "uz": "beparvo",
             "ru": "невнимательный",
             "tj": "бепарво"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "笨 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 笨:",
+            "tj": "Маънои калимаи 笨-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nabira o'g'il",
+              "ru": "внук",
+              "tj": "набераи писар"
+            },
+            {
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
+            },
+            {
+              "uz": "befahm, ahmoq",
+              "ru": "глупый",
+              "tj": "нодон"
+            },
+            {
+              "uz": "pianino chalmoq",
+              "ru": "играть на пианино",
+              "tj": "пианино навохтан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "笨 = befahm, ahmoq (bèn)",
+            "ru": "笨 = глупый (bèn)",
+            "tj": "笨 = нодон (bèn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "笨",
+            "pinyin": "bèn",
+            "meaning": {
+              "uz": "befahm, ahmoq",
+              "ru": "глупый",
+              "tj": "нодон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'beparvo' xitoycha qaysi?",
+            "ru": "'невнимательный' по-китайски?",
+            "tj": "'бепарво' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "弹钢琴",
+            "棒",
+            "孙子",
+            "粗心"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "beparvo = 粗心 (cūxīn)",
+            "ru": "невнимательный = 粗心 (cūxīn)",
+            "tj": "бепарво = 粗心 (cūxīn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "粗心",
+            "pinyin": "cūxīn",
+            "meaning": {
+              "uz": "beparvo",
+              "ru": "невнимательный",
+              "tj": "бепарво"
+            }
           }
         }
       ]

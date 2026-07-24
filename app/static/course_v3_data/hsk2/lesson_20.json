@@ -571,12 +571,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "kuàilè",
             "yǐjīng",
-            "gěi",
             "shēngrì",
-            "kuàilè"
+            "gěi"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "已经 — yǐjīng",
             "ru": "已经 — yǐjīng",
@@ -586,9 +586,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Men 2011-yilda kelgan edim.» — xitoychada qaysi biri?",
-            "ru": "«Я приехал именно в 2011 году.» — какое предложение по-китайски?",
-            "tj": "«Ман маҳз соли 2011 омадам.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Allaqachon o'n yil bo'ldi.» — xitoychada qaysi biri?",
+            "ru": "«Уже прошло десять лет.» — какое предложение по-китайски?",
+            "tj": "«Аллакай даҳ сол шудааст.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -596,16 +596,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "我是2011年来的。",
+            "我已经吃饭了。",
             "刚结婚的时候，每天都很浪漫。",
-            "这个工作是他帮我介绍的。",
-            "我已经吃饭了。"
+            "已经踢了十年了。",
+            "我十一岁的时候开始踢足球。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de.",
-            "ru": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de.",
-            "tj": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de."
+            "uz": "已经踢了十年了。 — Yǐjīng tī le shí nián le.",
+            "ru": "已经踢了十年了。 — Yǐjīng tī le shí nián le.",
+            "tj": "已经踢了十年了。 — Yǐjīng tī le shí nián le."
           }
         },
         {
@@ -664,16 +664,6 @@
           },
           "options": [
             {
-              "uz": "tug'ilgan kun",
-              "ru": "день рождения",
-              "tj": "рӯзи таваллуд"
-            },
-            {
-              "uz": "baxtli, xursand",
-              "ru": "счастливый, радостный",
-              "tj": "хушбахт, шод"
-            },
-            {
               "uz": "juda, nihoyatda",
               "ru": "очень, чрезвычайно",
               "tj": "хеле, бағоят"
@@ -682,9 +672,19 @@
               "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
               "ru": "для, кому (давать или направлять)",
               "tj": "барои, ба (додан ё равона кардан)"
+            },
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            },
+            {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "非常 = juda, nihoyatda (fēicháng)",
             "ru": "非常 = очень, чрезвычайно (fēicháng)",
@@ -704,12 +704,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "快乐",
             "两",
             "生日",
-            "给"
+            "给",
+            "快乐"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "ikki (ko'makchi bilan birga ishlatiladi) = 两 (liǎng)",
             "ru": "два (используется со счётным словом) = 两 (liǎng)",
@@ -779,10 +779,10 @@
           "audio_text": "生日快乐！这是送给你的！",
           "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
           "options": [
-            "太谢谢你了！",
             "是什么？是一本书吗？",
+            "对，这本书是我写给你的。",
             "生日快乐！这是送给你的！",
-            "对，这本书是我写给你的。"
+            "太谢谢你了！"
           ],
           "correct_index": 2,
           "explanation": {
@@ -822,8 +822,8 @@
           ],
           "options": [
             "对，这本书是我写给你的。",
-            "是什么？是一本书吗？",
             "生日快乐！这是送给你的！",
+            "是什么？是一本书吗？",
             "太谢谢你了！"
           ],
           "correct_index": 3,
@@ -846,9 +846,9 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "太谢谢你了！",
             "是什么？是一本书吗？",
             "对，这本书是我写给你的。",
+            "太谢谢你了！",
             "生日快乐！这是送给你的！"
           ],
           "correct_index": 3,
@@ -892,12 +892,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "服",
-            "觉",
-            "生",
-            "少"
+            "分",
+            "个",
+            "租",
+            "生"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 生 — 生日快乐！这是送给你的！ (Tug'ilgan kuning bilan! Bu senga sovg'a!)",
             "ru": "Верно: 生 — 生日快乐！这是送给你的！ (С днём рождения! Это тебе подарок!)",

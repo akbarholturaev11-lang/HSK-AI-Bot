@@ -404,6 +404,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "是啊，她买了不少衣服。",
+          "pinyin": "Shì a, tā mǎile bùshǎo yīfu.",
+          "options": [
+            "昨天上午你去哪儿了？",
+            "我去商店买东西了。",
+            "是啊，她买了不少衣服。",
+            "你买什么了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "是啊，她买了不少衣服。 — Ha, u juda ko'p kiyim sotib oldi.",
+            "ru": "是啊，她买了不少衣服。 — Да уж — она купила немало одежды.",
+            "tj": "是啊，她买了不少衣服。 — Ҳа, ӯ хеле зиёд либос харид."
+          }
+        },
+        {
           "type": "reverse_builder",
           "zh": "她买了不少衣服。",
           "pinyin": "Tā mǎile bùshǎo yīfu.",
@@ -471,16 +493,6 @@
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "漂亮",
-          "pinyin": "piàoliang",
-          "translation": {
-            "uz": "chiroyli, go'zal",
-            "ru": "красивый, симпатичный",
-            "tj": "зебо, хушрӯй"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U juda ko'p kiyim sotib oldi.",
@@ -512,50 +524,13 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "是啊，她买了不少衣服。",
-          "pinyin": "Shì a, tā mǎile bùshǎo yīfu.",
-          "options": [
-            "昨天上午你去哪儿了？",
-            "我去商店买东西了。",
-            "是啊，她买了不少衣服。",
-            "你买什么了？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "是啊，她买了不少衣服。 — Ha, u juda ko'p kiyim sotib oldi.",
-            "ru": "是啊，她买了不少衣服。 — Да уж — она купила немало одежды.",
-            "tj": "是啊，她买了不少衣服。 — Ҳа, ӯ хеле зиёд либос харид."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "一点儿 talaffuzini tanlang:",
-            "ru": "Выберите произношение 一点儿:",
-            "tj": "Талаффузи 一点儿-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "yīdiǎnr",
-            "kànjiàn",
-            "píngguǒ",
-            "dōngxi"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "一点儿 — yīdiǎnr",
-            "ru": "一点儿 — yīdiǎnr",
-            "tj": "一点儿 — yīdiǎnr"
+          "type": "pronunciation",
+          "phrase": "漂亮",
+          "pinyin": "piàoliang",
+          "translation": {
+            "uz": "chiroyli, go'zal",
+            "ru": "красивый, симпатичный",
+            "tj": "зебо, хушрӯй"
           }
         },
         {
@@ -566,6 +541,105 @@
             "uz": "kam, oz",
             "ru": "мало, немного",
             "tj": "кам, андак"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "衣服 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 衣服:",
+            "tj": "Маънои калимаи 衣服-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "olma",
+              "ru": "яблоко",
+              "tj": "себ"
+            },
+            {
+              "uz": "bir oz, biroz",
+              "ru": "немного, чуть-чуть",
+              "tj": "каме, андаке"
+            },
+            {
+              "uz": "kiyim",
+              "ru": "одежда",
+              "tj": "либос, кӯйлак"
+            },
+            {
+              "uz": "narsa, buyum",
+              "ru": "вещь, предмет",
+              "tj": "чиз, асбоб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "衣服 = kiyim (yīfu)",
+            "ru": "衣服 = одежда (yīfu)",
+            "tj": "衣服 = либос, кӯйлак (yīfu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "衣服",
+            "pinyin": "yīfu",
+            "meaning": {
+              "uz": "kiyim",
+              "ru": "одежда",
+              "tj": "либос, кӯйлак"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kam, oz' xitoycha qaysi?",
+            "ru": "'мало, немного' по-китайски?",
+            "tj": "'кам, андак' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "少",
+            "苹果",
+            "一点儿",
+            "东西"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kam, oz = 少 (shǎo)",
+            "ru": "мало, немного = 少 (shǎo)",
+            "tj": "кам, андак = 少 (shǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "少",
+            "pinyin": "shǎo",
+            "meaning": {
+              "uz": "kam, oz",
+              "ru": "мало, немного",
+              "tj": "кам, андак"
+            }
           }
         }
       ]

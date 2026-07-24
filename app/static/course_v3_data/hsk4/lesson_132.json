@@ -431,12 +431,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "棒",
-            "弹钢琴",
             "管理",
-            "孙子"
+            "棒",
+            "孙子",
+            "弹钢琴"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "管理 = boshqarmoq (guǎnlǐ)",
             "ru": "管理 = управлять (guǎnlǐ)",
@@ -470,12 +470,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bàng",
-            "dǎ zhēn",
+            "tán gāngqín",
             "sūnzi",
-            "tán gāngqín"
+            "bàng",
+            "dǎ zhēn"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "打针 — dǎ zhēn",
             "ru": "打针 — dǎ zhēn",
@@ -509,12 +509,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "弹钢琴",
-            "孙子",
+            "棒",
             "护士",
-            "棒"
+            "孙子",
+            "弹钢琴"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "hamshira = 护士 (hùshi)",
             "ru": "медсестра = 护士 (hùshi)",
@@ -556,11 +556,11 @@
           "pinyin": "biǎoyáng",
           "options": [
             "孙子",
-            "表扬",
+            "弹钢琴",
             "棒",
-            "弹钢琴"
+            "表扬"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "表扬 — maqtab qo'ymoq (biǎoyáng)",
             "ru": "表扬 — хвалить (biǎoyáng)",
@@ -581,27 +581,27 @@
           },
           "options": [
             {
-              "uz": "nabira o'g'il",
-              "ru": "внук",
-              "tj": "набераи писар"
-            },
-            {
               "uz": "boshqarmoq",
               "ru": "управлять",
               "tj": "идора кардан"
             },
             {
-              "uz": "pianino chalmoq",
-              "ru": "играть на пианино",
-              "tj": "пианино навохтан"
+              "uz": "nabira o'g'il",
+              "ru": "внук",
+              "tj": "набераи писар"
             },
             {
               "uz": "zo'r, ajoyib",
               "ru": "отличный, замечательный",
               "tj": "олӣ, зӯр"
+            },
+            {
+              "uz": "pianino chalmoq",
+              "ru": "играть на пианино",
+              "tj": "пианино навохтан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "管理 = boshqarmoq (guǎnlǐ)",
             "ru": "管理 = управлять (guǎnlǐ)",
@@ -697,15 +697,15 @@
             "tj": "Таъриф кардан зинҳор аз ҳад зиёд набошад."
           },
           "tokens": [
-            "弹钢琴",
-            "要",
-            "棒",
-            "表扬",
-            "多",
-            "太",
             "千",
+            "多",
+            "万",
+            "弹钢琴",
+            "太",
+            "要",
             "不",
-            "万"
+            "表扬",
+            "棒"
           ],
           "answer_tokens": [
             "表扬",
@@ -734,101 +734,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "表扬",
-          "pinyin": "biǎoyáng",
-          "options": [
-            "孙子",
-            "弹钢琴",
-            "棒",
-            "表扬"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "表扬 — maqtab qo'ymoq (biǎoyáng)",
-            "ru": "表扬 — хвалить (biǎoyáng)",
-            "tj": "表扬 — таъриф кардан (biǎoyáng)"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "表扬千万不要太多。",
-          "pinyin": "Biǎoyáng qiānwàn búyào tài duō.",
-          "translation": {
-            "uz": "Maqtash zinhor haddan tashqari ko'p bo'lmasin.",
-            "ru": "Хвалить ни в коем случае нельзя слишком много.",
-            "tj": "Таъриф кардан зинҳор аз ҳад зиёд набошад."
-          },
-          "tokens": {
-            "uz": [
-              "ko'p",
-              "tashqari",
-              "zinhor",
-              "Maqtash",
-              "haddan",
-              "bo'lmasin"
-            ],
-            "ru": [
-              "много",
-              "слишком",
-              "в",
-              "Хвалить",
-              "коем",
-              "нельзя",
-              "случае",
-              "ни"
-            ],
-            "tj": [
-              "набошад",
-              "аз",
-              "ҳад",
-              "зиёд",
-              "зинҳор",
-              "кардан",
-              "Таъриф"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Maqtash",
-              "zinhor",
-              "haddan",
-              "tashqari",
-              "ko'p",
-              "bo'lmasin"
-            ],
-            "ru": [
-              "Хвалить",
-              "ни",
-              "в",
-              "коем",
-              "случае",
-              "нельзя",
-              "слишком",
-              "много"
-            ],
-            "tj": [
-              "Таъриф",
-              "кардан",
-              "зинҳор",
-              "аз",
-              "ҳад",
-              "зиёд",
-              "набошад"
-            ]
-          },
-          "explanation": {
-            "uz": "表扬千万不要太多。 — Maqtash zinhor haddan tashqari ko'p bo'lmasin.",
-            "ru": "表扬千万不要太多。 — Хвалить ни в коем случае нельзя слишком много.",
-            "tj": "表扬千万不要太多。 — Таъриф кардан зинҳор аз ҳад зиёд набошад."
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'ukol qilmoq/olmoq' xitoycha qaysi?",
@@ -841,12 +746,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "弹钢琴",
             "棒",
             "打针",
-            "弹钢琴",
             "孙子"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "ukol qilmoq/olmoq = 打针 (dǎ zhēn)",
             "ru": "делать укол = 打针 (dǎ zhēn)",
@@ -866,12 +771,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "棒",
             "护士",
             "弹钢琴",
-            "棒",
             "孙子"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "护士 = hamshira (hùshi)",
             "ru": "护士 = медсестра (hùshi)",
@@ -886,6 +791,105 @@
             "uz": "maqtab qo'ymoq",
             "ru": "хвалить",
             "tj": "таъриф кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "弄 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 弄:",
+            "tj": "Маънои калимаи 弄-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "pianino chalmoq",
+              "ru": "играть на пианино",
+              "tj": "пианино навохтан"
+            },
+            {
+              "uz": "nabira o'g'il",
+              "ru": "внук",
+              "tj": "набераи писар"
+            },
+            {
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
+            },
+            {
+              "uz": "qilmoq, yasamoq",
+              "ru": "делать, приводить",
+              "tj": "кардан, ба ҳол овардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "弄 = qilmoq, yasamoq (nòng)",
+            "ru": "弄 = делать, приводить (nòng)",
+            "tj": "弄 = кардан, ба ҳол овардан (nòng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "弄",
+            "pinyin": "nòng",
+            "meaning": {
+              "uz": "qilmoq, yasamoq",
+              "ru": "делать, приводить",
+              "tj": "кардан, ба ҳол овардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'maqtab qo'ymoq' xitoycha qaysi?",
+            "ru": "'хвалить' по-китайски?",
+            "tj": "'таъриф кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "弹钢琴",
+            "表扬",
+            "棒",
+            "孙子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "maqtab qo'ymoq = 表扬 (biǎoyáng)",
+            "ru": "хвалить = 表扬 (biǎoyáng)",
+            "tj": "таъриф кардан = 表扬 (biǎoyáng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "表扬",
+            "pinyin": "biǎoyáng",
+            "meaning": {
+              "uz": "maqtab qo'ymoq",
+              "ru": "хвалить",
+              "tj": "таъриф кардан"
+            }
           }
         }
       ]

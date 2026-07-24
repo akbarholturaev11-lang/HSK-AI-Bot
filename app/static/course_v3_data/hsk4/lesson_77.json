@@ -381,12 +381,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "得",
             "难道",
             "饼干",
-            "通过"
+            "通过",
+            "得"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "通过 = orqali; o'tmoq (tōngguò)",
             "ru": "通过 = через; проходить (tōngguò)",
@@ -420,12 +420,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bǐnggān",
             "děi",
-            "nándào",
-            "piān"
+            "bǐnggān",
+            "piān",
+            "nándào"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "篇 — piān",
             "ru": "篇 — piān",
@@ -459,12 +459,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "饼干",
             "作家",
-            "难道",
             "得",
-            "饼干"
+            "难道"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "yozuvchi = 作家 (zuòjiā)",
             "ru": "писатель = 作家 (zuòjiā)",
@@ -496,9 +496,9 @@
           "pinyin": "dāngshí",
           "options": [
             "饼干",
-            "得",
+            "难道",
             "当时",
-            "难道"
+            "得"
           ],
           "correct_index": 2,
           "explanation": {
@@ -521,9 +521,9 @@
           },
           "options": [
             {
-              "uz": "kerak, majbur bo'lmoq",
-              "ru": "нужно, придётся",
-              "tj": "лозим аст, бояд"
+              "uz": "orqali; o'tmoq",
+              "ru": "через; проходить",
+              "tj": "бо ёрии; гузаштан"
             },
             {
               "uz": "nahotki",
@@ -536,12 +536,12 @@
               "tj": "печенье"
             },
             {
-              "uz": "orqali; o'tmoq",
-              "ru": "через; проходить",
-              "tj": "бо ёрии; гузаштан"
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "通过 = orqali; o'tmoq (tōngguò)",
             "ru": "通过 = через; проходить (tōngguò)",
@@ -638,8 +638,8 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "难道",
             "得",
+            "难道",
             "饼干",
             "坚持"
           ],
@@ -671,12 +671,12 @@
           "audio_text": "通过",
           "pinyin": "tōngguò",
           "options": [
-            "饼干",
             "通过",
-            "难道",
-            "得"
+            "得",
+            "饼干",
+            "难道"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "通过 — orqali; o'tmoq (tōngguò)",
             "ru": "通过 — через; проходить (tōngguò)",
@@ -726,31 +726,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "放弃 talaffuzini tanlang:",
-            "ru": "Выберите произношение 放弃:",
-            "tj": "Талаффузи 放弃-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "nándào",
-            "děi",
-            "fàngqì",
-            "bǐnggān"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "放弃 — fàngqì",
-            "ru": "放弃 — fàngqì",
-            "tj": "放弃 — fàngqì"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "通过",
           "pinyin": "tōngguò",
@@ -758,6 +733,105 @@
             "uz": "orqali; o'tmoq",
             "ru": "через; проходить",
             "tj": "бо ёрии; гузаштан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "轻松 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 轻松:",
+            "tj": "Маънои калимаи 轻松-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            },
+            {
+              "uz": "oson, yengil",
+              "ru": "лёгкий, расслабленный",
+              "tj": "осон, сабук"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "轻松 = oson, yengil (qīngsōng)",
+            "ru": "轻松 = лёгкий, расслабленный (qīngsōng)",
+            "tj": "轻松 = осон, сабук (qīngsōng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "轻松",
+            "pinyin": "qīngsōng",
+            "meaning": {
+              "uz": "oson, yengil",
+              "ru": "лёгкий, расслабленный",
+              "tj": "осон, сабук"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'orqali; o'tmoq' xitoycha qaysi?",
+            "ru": "'через; проходить' по-китайски?",
+            "tj": "'бо ёрии; гузаштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饼干",
+            "得",
+            "难道",
+            "通过"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "orqali; o'tmoq = 通过 (tōngguò)",
+            "ru": "через; проходить = 通过 (tōngguò)",
+            "tj": "бо ёрии; гузаштан = 通过 (tōngguò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "通过",
+            "pinyin": "tōngguò",
+            "meaning": {
+              "uz": "orqali; o'tmoq",
+              "ru": "через; проходить",
+              "tj": "бо ёрии; гузаштан"
+            }
           }
         }
       ]

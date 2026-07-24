@@ -289,12 +289,12 @@
           "audio_text": "天气",
           "pinyin": "tiānqì",
           "options": [
-            "太",
             "热",
             "天气",
-            "怎么样"
+            "怎么样",
+            "太"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "天气 — ob-havo (tiānqì)",
             "ru": "天气 — погода (tiānqì)",
@@ -339,17 +339,17 @@
               "tj": "обу ҳаво"
             },
             {
-              "uz": "juda, haddan tashqari",
-              "ru": "слишком, очень",
-              "tj": "хеле зиёд, аз ҳад зиёд"
-            },
-            {
               "uz": "qanday, qanaqa",
               "ru": "как, какой",
               "tj": "чӣ тавр, чӣ хел"
+            },
+            {
+              "uz": "juda, haddan tashqari",
+              "ru": "слишком, очень",
+              "tj": "хеле зиёд, аз ҳад зиёд"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "怎么样 = qanday, qanaqa (zěnmeyàng)",
             "ru": "怎么样 = как, какой (zěnmeyàng)",
@@ -383,12 +383,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "天气",
-            "太",
+            "热",
             "怎么样",
-            "热"
+            "太",
+            "天气"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "太 = juda, haddan tashqari (tài)",
             "ru": "太 = слишком, очень (tài)",
@@ -422,12 +422,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "rè",
-            "tài",
+            "zěnmeyàng",
             "tiānqì",
-            "zěnmeyàng"
+            "rè",
+            "tài"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "热 — rè",
             "ru": "热 — rè",
@@ -447,12 +447,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "热",
             "怎么样",
             "天气",
-            "太"
+            "太",
+            "热"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "ob-havo = 天气 (tiānqì)",
             "ru": "погода = 天气 (tiānqì)",
@@ -557,11 +557,11 @@
             "tj": "Фардо обу ҳаво чӣ хел мешавад?"
           },
           "tokens": [
-            "热",
-            "明天",
             "太",
+            "怎么样",
             "天气",
-            "怎么样"
+            "明天",
+            "热"
           ],
           "answer_tokens": [
             "明天",
@@ -586,28 +586,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "米饭 talaffuzini tanlang:",
-            "ru": "Выберите произношение 米饭:",
-            "tj": "Талаффузи 米饭-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "昨天北京的天气怎么样？",
+          "pinyin": "Zuótiān Běijīng de tiānqì zěnmeyàng?",
           "options": [
-            "mǐfàn",
-            "tài",
-            "zěnmeyàng",
-            "tiānqì"
+            "明天呢？明天天气怎么样？",
+            "昨天北京的天气怎么样？",
+            "太热了。",
+            "明天天气很好，不冷不热。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "米饭 — mǐfàn",
-            "ru": "米饭 — mǐfàn",
-            "tj": "米饭 — mǐfàn"
+            "uz": "昨天北京的天气怎么样？ — Kecha Pekindagi ob-havo qanday edi?",
+            "ru": "昨天北京的天气怎么样？ — Какая вчера была погода в Пекине?",
+            "tj": "昨天北京的天气怎么样？ — Дирӯз дар Пекин обу ҳаво чӣ хел буд?"
           }
         },
         {
@@ -621,57 +618,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Ertaga-chi? Ertaga ob-havo qanday bo'ladi?",
-            "ru": "А завтра? Какая будет погода?",
-            "tj": "Фардо чӣ? Фардо обу ҳаво чӣ хел мешавад?"
-          },
-          "tokens": [
-            "呢",
-            "明天",
-            "明天",
-            "热",
-            "天气",
-            "怎么样",
-            "太"
-          ],
-          "answer_tokens": [
-            "明天",
-            "呢",
-            "明天",
-            "天气",
-            "怎么样"
-          ],
-          "explanation": {
-            "uz": "明天呢？明天天气怎么样？ — Míngtiān ne? Míngtiān tiānqì zěnmeyàng?",
-            "ru": "明天呢？明天天气怎么样？ — Míngtiān ne? Míngtiān tiānqì zěnmeyàng?",
-            "tj": "明天呢？明天天气怎么样？ — Míngtiān ne? Míngtiān tiānqì zěnmeyàng?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "昨天北京的天气怎么样？",
-          "pinyin": "Zuótiān Běijīng de tiānqì zěnmeyàng?",
-          "options": [
-            "昨天北京的天气怎么样？",
-            "明天天气很好，不冷不热。",
-            "明天呢？明天天气怎么样？",
-            "太热了。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "昨天北京的天气怎么样？ — Kecha Pekindagi ob-havo qanday edi?",
-            "ru": "昨天北京的天气怎么样？ — Какая вчера была погода в Пекине?",
-            "tj": "昨天北京的天气怎么样？ — Дирӯз дар Пекин обу ҳаво чӣ хел буд?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "天气",
           "pinyin": "tiānqì",
@@ -679,6 +625,105 @@
             "uz": "ob-havo",
             "ru": "погода",
             "tj": "обу ҳаво"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "现在 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 现在:",
+            "tj": "Маънои калимаи 现在-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "qanday, qanaqa",
+              "ru": "как, какой",
+              "tj": "чӣ тавр, чӣ хел"
+            },
+            {
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
+            },
+            {
+              "uz": "juda, haddan tashqari",
+              "ru": "слишком, очень",
+              "tj": "хеле зиёд, аз ҳад зиёд"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "现在 = hozir, shu vaqtda (xiànzài)",
+            "ru": "现在 = сейчас, в данный момент (xiànzài)",
+            "tj": "现在 = ҳоло, дар ин лаҳза (xiànzài)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "现在",
+            "pinyin": "xiànzài",
+            "meaning": {
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ob-havo' xitoycha qaysi?",
+            "ru": "'погода' по-китайски?",
+            "tj": "'обу ҳаво' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "太",
+            "怎么样",
+            "热",
+            "天气"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ob-havo = 天气 (tiānqì)",
+            "ru": "погода = 天气 (tiānqì)",
+            "tj": "обу ҳаво = 天气 (tiānqì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "天气",
+            "pinyin": "tiānqì",
+            "meaning": {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            }
           }
         }
       ]

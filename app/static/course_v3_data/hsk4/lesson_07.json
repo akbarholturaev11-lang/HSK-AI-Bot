@@ -365,12 +365,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "亮",
             "印象",
             "法律",
-            "亮",
             "俩"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "亮 = yorishmoq, chiroq yonmoq (liàng)",
             "ru": "亮 = светиться, гореть (liàng)",
@@ -404,12 +404,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yìnxiàng",
             "gǎndòng",
             "fǎlǜ",
+            "yìnxiàng",
             "liǎ"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "感动 — gǎndòng",
             "ru": "感动 — gǎndòng",
@@ -454,11 +454,11 @@
           },
           "options": [
             "法律",
+            "俩",
             "印象",
-            "自然",
-            "俩"
+            "自然"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "tabiiy ravishda = 自然 (zìrán)",
             "ru": "естественно = 自然 (zìrán)",
@@ -489,12 +489,12 @@
           "audio_text": "原因",
           "pinyin": "yuányīn",
           "options": [
-            "俩",
             "法律",
             "原因",
+            "俩",
             "印象"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "原因 — sabab (yuányīn)",
             "ru": "原因 — причина (yuányīn)",
@@ -515,14 +515,14 @@
           },
           "options": [
             {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
               "uz": "ikkalasi, ikki kishi",
               "ru": "двое, оба",
               "tj": "ду нафар, ҳарду"
-            },
-            {
-              "uz": "qonun, huquq",
-              "ru": "закон, право",
-              "tj": "қонун, ҳуқуқ"
             },
             {
               "uz": "yorishmoq, chiroq yonmoq",
@@ -530,9 +530,9 @@
               "tj": "равшан будан, фурӯзон будан"
             },
             {
-              "uz": "taassurot",
-              "ru": "впечатление",
-              "tj": "таассурот"
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
             }
           ],
           "correct_index": 2,
@@ -596,31 +596,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "xìnggé qaysi ieroglif?",
-            "ru": "Какой иероглиф читается xìnggé?",
-            "tj": "xìnggé кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "性格",
-            "俩",
-            "印象",
-            "法律"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "性格 = xarakter, fe'l-atvor (xìnggé)",
-            "ru": "性格 = характер (xìnggé)",
-            "tj": "性格 = хислат, характер (xìnggé)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -672,12 +647,12 @@
           "audio_text": "自然",
           "pinyin": "zìrán",
           "options": [
-            "自然",
-            "法律",
             "印象",
-            "俩"
+            "法律",
+            "俩",
+            "自然"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "自然 — tabiiy ravishda (zìrán)",
             "ru": "自然 — естественно (zìrán)",
@@ -692,6 +667,105 @@
             "uz": "tabiiy ravishda",
             "ru": "естественно",
             "tj": "табиӣ равишда"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "即使 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 即使:",
+            "tj": "Маънои калимаи 即使-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
+              "uz": "hatto ... bo'lsa ham",
+              "ru": "даже если",
+              "tj": "ҳатто агар"
+            },
+            {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            },
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "即使 = hatto ... bo'lsa ham (jíshǐ)",
+            "ru": "即使 = даже если (jíshǐ)",
+            "tj": "即使 = ҳатто агар (jíshǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "即使",
+            "pinyin": "jíshǐ",
+            "meaning": {
+              "uz": "hatto ... bo'lsa ham",
+              "ru": "даже если",
+              "tj": "ҳатто агар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tabiiy ravishda' xitoycha qaysi?",
+            "ru": "'естественно' по-китайски?",
+            "tj": "'табиӣ равишда' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "自然",
+            "印象",
+            "俩",
+            "法律"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "tabiiy ravishda = 自然 (zìrán)",
+            "ru": "естественно = 自然 (zìrán)",
+            "tj": "табиӣ равишда = 自然 (zìrán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "自然",
+            "pinyin": "zìrán",
+            "meaning": {
+              "uz": "tabiiy ravishda",
+              "ru": "естественно",
+              "tj": "табиӣ равишда"
+            }
           }
         }
       ]

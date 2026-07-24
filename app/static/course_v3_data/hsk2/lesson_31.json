@@ -332,9 +332,9 @@
           },
           "options": [
             {
-              "uz": "yo'l, ko'cha",
-              "ru": "дорога, улица",
-              "tj": "роҳ, кӯча"
+              "uz": "aeroport",
+              "ru": "аэропорт",
+              "tj": "фурудгоҳ"
             },
             {
               "uz": "darsxona, sinf xonasi",
@@ -347,9 +347,9 @@
               "tj": "аз (барои ифодаи масофа)"
             },
             {
-              "uz": "aeroport",
-              "ru": "аэропорт",
-              "tj": "фурудгоҳ"
+              "uz": "yo'l, ko'cha",
+              "ru": "дорога, улица",
+              "tj": "роҳ, кӯча"
             }
           ],
           "correct_index": 1,
@@ -386,12 +386,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "离",
-            "教室",
+            "路",
             "机场",
-            "路"
+            "离",
+            "教室"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "机场 = aeroport (jīchǎng)",
             "ru": "机场 = аэропорт (jīchǎng)",
@@ -436,9 +436,9 @@
           },
           "options": [
             "lù",
+            "jīchǎng",
             "lí",
-            "jiàoshì",
-            "jīchǎng"
+            "jiàoshì"
           ],
           "correct_index": 0,
           "explanation": {
@@ -474,8 +474,8 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "教室",
             "路",
+            "教室",
             "机场",
             "离"
           ],
@@ -496,12 +496,12 @@
           "audio_text": "教室",
           "pinyin": "jiàoshì",
           "options": [
-            "机场",
             "教室",
             "离",
-            "路"
+            "路",
+            "机场"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "教室 — darsxona, sinf xonasi (jiàoshì)",
             "ru": "教室 — классная комната, аудитория (jiàoshì)",
@@ -606,12 +606,12 @@
             "tj": "Вай ҳанӯз дар синфхона дарс мехонад."
           },
           "tokens": [
-            "机场",
-            "呢",
-            "在",
-            "他",
             "路",
             "教室",
+            "机场",
+            "呢",
+            "他",
+            "在",
             "还",
             "学习"
           ],
@@ -641,31 +641,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "jiē qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiē?",
-            "tj": "jiē кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "路",
-            "机场",
-            "接",
-            "教室"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "接 = qabul qilmoq, olmoq; telefonga javob bermoq (jiē)",
-            "ru": "接 = принимать, получать; отвечать на телефон (jiē)",
-            "tj": "接 = қабул кардан; ба телефон ҷавоб додан (jiē)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Yo'q, u hali darsxonada o'qiyapti.",
@@ -673,15 +648,15 @@
             "tj": "Не, вай ҳанӯз дар синфхона дарс мехонад."
           },
           "tokens": [
-            "他",
+            "还",
+            "教室",
+            "学习",
+            "在",
             "机场",
             "呢",
             "路",
-            "教室",
             "没有",
-            "在",
-            "学习",
-            "还"
+            "他"
           ],
           "answer_tokens": [
             "没有",
@@ -708,49 +683,16 @@
           "audio_text": "没有，他还在教室学习呢。",
           "pinyin": "Méiyǒu, tā hái zài jiàoshì xuéxí ne.",
           "options": [
-            "大卫回来了吗？",
+            "明天有考试，他说今天要好好准备。",
             "已经9点多了，他怎么还在学习？",
-            "没有，他还在教室学习呢。",
-            "明天有考试，他说今天要好好准备。"
+            "大卫回来了吗？",
+            "没有，他还在教室学习呢。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "没有，他还在教室学习呢。 — Yo'q, u hali darsxonada o'qiyapti.",
             "ru": "没有，他还在教室学习呢。 — Нет, он ещё занимается в классе.",
             "tj": "没有，他还在教室学习呢。 — Не, вай ҳанӯз дар синфхона дарс мехонад."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Yo'q, u hali darsxonada o'qiyapti.",
-            "ru": "Нет, он ещё занимается в классе.",
-            "tj": "Не, вай ҳанӯз дар синфхона дарс мехонад."
-          },
-          "tokens": [
-            "学习",
-            "他",
-            "路",
-            "在",
-            "还",
-            "呢",
-            "没有",
-            "教室",
-            "机场"
-          ],
-          "answer_tokens": [
-            "没有",
-            "他",
-            "还",
-            "在",
-            "教室",
-            "学习",
-            "呢"
-          ],
-          "explanation": {
-            "uz": "没有，他还在教室学习呢。 — Méiyǒu, tā hái zài jiàoshì xuéxí ne.",
-            "ru": "没有，他还在教室学习呢。 — Méiyǒu, tā hái zài jiàoshì xuéxí ne.",
-            "tj": "没有，他还在教室学习呢。 — Méiyǒu, tā hái zài jiàoshì xuéxí ne."
           }
         },
         {
@@ -761,6 +703,105 @@
             "uz": "yo'l, ko'cha",
             "ru": "дорога, улица",
             "tj": "роҳ, кӯча"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "自行车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 自行车:",
+            "tj": "Маънои калимаи 自行车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yo'l, ko'cha",
+              "ru": "дорога, улица",
+              "tj": "роҳ, кӯча"
+            },
+            {
+              "uz": "aeroport",
+              "ru": "аэропорт",
+              "tj": "фурудгоҳ"
+            },
+            {
+              "uz": "darsxona, sinf xonasi",
+              "ru": "классная комната, аудитория",
+              "tj": "синфхона, толори дарс"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "自行车 = velosiped (zìxíngchē)",
+            "ru": "自行车 = велосипед (zìxíngchē)",
+            "tj": "自行车 = велосипед (zìxíngchē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "自行车",
+            "pinyin": "zìxíngchē",
+            "meaning": {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yo'l, ko'cha' xitoycha qaysi?",
+            "ru": "'дорога, улица' по-китайски?",
+            "tj": "'роҳ, кӯча' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "离",
+            "路",
+            "机场",
+            "教室"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yo'l, ko'cha = 路 (lù)",
+            "ru": "дорога, улица = 路 (lù)",
+            "tj": "роҳ, кӯча = 路 (lù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "路",
+            "pinyin": "lù",
+            "meaning": {
+              "uz": "yo'l, ko'cha",
+              "ru": "дорога, улица",
+              "tj": "роҳ, кӯча"
+            }
           }
         }
       ]

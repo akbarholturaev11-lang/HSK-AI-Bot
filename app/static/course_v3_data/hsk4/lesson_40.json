@@ -368,10 +368,10 @@
           "audio_text": "效果",
           "pinyin": "xiàoguǒ",
           "options": [
-            "打折",
+            "家具",
             "效果",
-            "沙发",
-            "家具"
+            "打折",
+            "沙发"
           ],
           "correct_index": 1,
           "explanation": {
@@ -408,16 +408,6 @@
           },
           "options": [
             {
-              "uz": "chegirma qilmoq",
-              "ru": "делать скидку",
-              "tj": "тахфиф кардан"
-            },
-            {
-              "uz": "divan",
-              "ru": "диван",
-              "tj": "диван"
-            },
-            {
               "uz": "mebel",
               "ru": "мебель",
               "tj": "мебел"
@@ -426,9 +416,19 @@
               "uz": "naqd pul",
               "ru": "наличные",
               "tj": "пули нақд"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "现金 = naqd pul (xiànjīn)",
             "ru": "现金 = наличные (xiànjīn)",
@@ -462,12 +462,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "家具",
             "打折",
             "邀请",
+            "家具",
             "沙发"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "邀请 = taklif qilmoq (yāoqǐng)",
             "ru": "邀请 = приглашать (yāoqǐng)",
@@ -511,8 +511,8 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shāfā",
             "jiājù",
+            "shāfā",
             "dǎzhé",
             "pútao"
           ],
@@ -536,12 +536,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "沙发",
             "打折",
             "家具",
-            "效果",
-            "沙发"
+            "效果"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "natija, effekt = 效果 (xiàoguǒ)",
             "ru": "эффект, результат = 效果 (xiàoguǒ)",
@@ -641,44 +641,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "价格 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 价格:",
-            "tj": "Маънои калимаи 价格-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "效果",
+          "pinyin": "xiàoguǒ",
           "options": [
-            {
-              "uz": "chegirma qilmoq",
-              "ru": "делать скидку",
-              "tj": "тахфиф кардан"
-            },
-            {
-              "uz": "narx",
-              "ru": "цена",
-              "tj": "нарх"
-            },
-            {
-              "uz": "divan",
-              "ru": "диван",
-              "tj": "диван"
-            },
-            {
-              "uz": "mebel",
-              "ru": "мебель",
-              "tj": "мебел"
-            }
+            "效果",
+            "家具",
+            "打折",
+            "沙发"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "价格 = narx (jiàgé)",
-            "ru": "价格 = цена (jiàgé)",
-            "tj": "价格 = нарх (jiàgé)"
+            "uz": "效果 — natija, effekt (xiàoguǒ)",
+            "ru": "效果 — эффект, результат (xiàoguǒ)",
+            "tj": "效果 — натиҷа, таъсир (xiàoguǒ)"
           }
         },
         {
@@ -691,38 +672,16 @@
           "audio_text": "那好吧，我带的现金不够，用你的信用卡吧。",
           "pinyin": "Nà hǎo ba, wǒ dài de xiànjīn bú gòu, yòng nǐ de xìnyòngkǎ ba.",
           "options": [
-            "谢谢，我想买沙发。",
             "那好吧，我带的现金不够，用你的信用卡吧。",
-            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
-            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。"
+            "谢谢，我想买沙发。",
+            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
+            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "那好吧，我带的现金不够，用你的信用卡吧。 — Unda mayli, mendagi naqd pul yetmaydi, sening kredit kartangdan foydalanaylik.",
             "ru": "那好吧，我带的现金不够，用你的信用卡吧。 — Ну хорошо, наличных у меня не хватает, воспользуемся твоей кредитной картой.",
             "tj": "那好吧，我带的现金不够，用你的信用卡吧。 — Хуб, пули нақди ман намерасад, аз корти кредитии ту истифода мекунем."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "效果",
-          "pinyin": "xiàoguǒ",
-          "options": [
-            "家具",
-            "打折",
-            "沙发",
-            "效果"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "效果 — natija, effekt (xiàoguǒ)",
-            "ru": "效果 — эффект, результат (xiàoguǒ)",
-            "tj": "效果 — натиҷа, таъсир (xiàoguǒ)"
           }
         },
         {
@@ -738,12 +697,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "沙发",
-            "打折",
             "家具",
-            "邀请"
+            "邀请",
+            "沙发",
+            "打折"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "taklif qilmoq = 邀请 (yāoqǐng)",
             "ru": "приглашать = 邀请 (yāoqǐng)",
@@ -758,6 +717,105 @@
             "uz": "uzum",
             "ru": "виноград",
             "tj": "ангур"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "制冷 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 制冷:",
+            "tj": "Маънои калимаи 制冷-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "sovutmoq",
+              "ru": "охлаждать",
+              "tj": "хунук кардан"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "制冷 = sovutmoq (zhìlěng)",
+            "ru": "制冷 = охлаждать (zhìlěng)",
+            "tj": "制冷 = хунук кардан (zhìlěng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "制冷",
+            "pinyin": "zhìlěng",
+            "meaning": {
+              "uz": "sovutmoq",
+              "ru": "охлаждать",
+              "tj": "хунук кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uzum' xitoycha qaysi?",
+            "ru": "'виноград' по-китайски?",
+            "tj": "'ангур' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "家具",
+            "葡萄",
+            "打折",
+            "沙发"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uzum = 葡萄 (pútao)",
+            "ru": "виноград = 葡萄 (pútao)",
+            "tj": "ангур = 葡萄 (pútao)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "葡萄",
+            "pinyin": "pútao",
+            "meaning": {
+              "uz": "uzum",
+              "ru": "виноград",
+              "tj": "ангур"
+            }
           }
         }
       ]

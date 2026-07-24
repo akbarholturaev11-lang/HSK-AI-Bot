@@ -335,12 +335,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "图书馆",
             "笔记本(电脑)",
-            "借",
-            "词典"
+            "词典",
+            "图书馆",
+            "借"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "noutbuk = 笔记本(电脑) (bǐjìběn (diànnǎo))",
             "ru": "ноутбук = 笔记本(电脑) (bǐjìběn (diànnǎo))",
@@ -381,12 +381,12 @@
           "audio_text": "电子邮件",
           "pinyin": "diànzǐ yóujiàn",
           "options": [
-            "电子邮件",
-            "图书馆",
             "借",
+            "图书馆",
+            "电子邮件",
             "词典"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "电子邮件 — elektron pochta (diànzǐ yóujiàn)",
             "ru": "电子邮件 — электронная почта (diànzǐ yóujiàn)",
@@ -421,27 +421,27 @@
           },
           "options": [
             {
-              "uz": "lug'at",
-              "ru": "словарь",
-              "tj": "луғат"
-            },
-            {
               "uz": "odatlanmoq; odat",
               "ru": "привыкать; привычка",
               "tj": "одат кардан; одат"
             },
             {
-              "uz": "qarzga olmoq, qarzga bermoq",
-              "ru": "брать в долг, одалживать",
-              "tj": "қарз гирифтан, қарз додан"
-            },
-            {
               "uz": "kutubxona",
               "ru": "библиотека",
               "tj": "китобхона"
+            },
+            {
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "习惯 = odatlanmoq; odat (xíguàn)",
             "ru": "习惯 = привыкать; привычка (xíguàn)",
@@ -461,12 +461,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "笔记本(电脑)",
-            "借",
             "图书馆",
-            "词典"
+            "借",
+            "词典",
+            "笔记本(电脑)"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "笔记本(电脑) = noutbuk (bǐjìběn (diànnǎo))",
             "ru": "笔记本(电脑) = ноутбук (bǐjìběn (diànnǎo))",
@@ -519,28 +519,13 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "dìtiě qaysi ieroglif?",
-            "ru": "Какой иероглиф читается dìtiě?",
-            "tj": "dìtiě кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "借",
-            "图书馆",
-            "地铁",
-            "词典"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "地铁 = metro (dìtiě)",
-            "ru": "地铁 = метро (dìtiě)",
-            "tj": "地铁 = метро (dìtiě)"
+          "type": "pronunciation",
+          "phrase": "习惯",
+          "pinyin": "xíguàn",
+          "translation": {
+            "uz": "odatlanmoq; odat",
+            "ru": "привыкать; привычка",
+            "tj": "одат кардан; одат"
           }
         },
         {
@@ -553,26 +538,16 @@
           "audio_text": "电子邮件",
           "pinyin": "diànzǐ yóujiàn",
           "options": [
-            "词典",
-            "借",
+            "电子邮件",
             "图书馆",
-            "电子邮件"
+            "借",
+            "词典"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "电子邮件 — elektron pochta (diànzǐ yóujiàn)",
             "ru": "电子邮件 — электронная почта (diànzǐ yóujiàn)",
             "tj": "电子邮件 — почтаи электронӣ (diànzǐ yóujiàn)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "习惯",
-          "pinyin": "xíguàn",
-          "translation": {
-            "uz": "odatlanmoq; odat",
-            "ru": "привыкать; привычка",
-            "tj": "одат кардан; одат"
           }
         },
         {
@@ -583,6 +558,105 @@
             "uz": "elektron pochta",
             "ru": "электронная почта",
             "tj": "почтаи электронӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "口 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 口:",
+            "tj": "Маънои калимаи 口-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
+            },
+            {
+              "uz": "qultum, luqma uchun hisob so'zi",
+              "ru": "счётное слово для глотков/кусков",
+              "tj": "ҳисобвожа барои ҷуръа/луқма"
+            },
+            {
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "口 = qultum, luqma uchun hisob so'zi (kǒu)",
+            "ru": "口 = счётное слово для глотков/кусков (kǒu)",
+            "tj": "口 = ҳисобвожа барои ҷуръа/луқма (kǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "口",
+            "pinyin": "kǒu",
+            "meaning": {
+              "uz": "qultum, luqma uchun hisob so'zi",
+              "ru": "счётное слово для глотков/кусков",
+              "tj": "ҳисобвожа барои ҷуръа/луқма"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'elektron pochta' xitoycha qaysi?",
+            "ru": "'электронная почта' по-китайски?",
+            "tj": "'почтаи электронӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "图书馆",
+            "借",
+            "电子邮件",
+            "词典"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "elektron pochta = 电子邮件 (diànzǐ yóujiàn)",
+            "ru": "электронная почта = 电子邮件 (diànzǐ yóujiàn)",
+            "tj": "почтаи электронӣ = 电子邮件 (diànzǐ yóujiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "电子邮件",
+            "pinyin": "diànzǐ yóujiàn",
+            "meaning": {
+              "uz": "elektron pochta",
+              "ru": "электронная почта",
+              "tj": "почтаи электронӣ"
+            }
           }
         }
       ]

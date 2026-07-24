@@ -460,12 +460,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yǐqián",
             "tóngshì",
             "yínháng",
-            "jiē"
+            "jiē",
+            "yǐqián"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "接 — jiē",
             "ru": "接 — jiē",
@@ -499,12 +499,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "以前",
-            "银行",
+            "刻",
             "同事",
-            "刻"
+            "以前",
+            "银行"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "chorak soat = 刻 (kè)",
             "ru": "четверть часа = 刻 (kè)",
@@ -535,12 +535,12 @@
           "audio_text": "差",
           "pinyin": "chà",
           "options": [
-            "以前",
             "同事",
             "差",
+            "以前",
             "银行"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "差 — yetishmaslik, kam bo'lmoq (chà)",
             "ru": "差 — не хватать, без (chà)",
@@ -561,27 +561,27 @@
           },
           "options": [
             {
-              "uz": "hamkasb",
-              "ru": "коллега",
-              "tj": "ҳамкор"
-            },
-            {
               "uz": "bank",
               "ru": "банк",
               "tj": "бонк"
             },
             {
-              "uz": "oldin, ilgari",
-              "ru": "раньше, прежде",
-              "tj": "пештар, қаблан"
-            },
-            {
               "uz": "yarim",
               "ru": "половина",
               "tj": "ним"
+            },
+            {
+              "uz": "hamkasb",
+              "ru": "коллега",
+              "tj": "ҳамкор"
+            },
+            {
+              "uz": "oldin, ilgari",
+              "ru": "раньше, прежде",
+              "tj": "пештар, қаблан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "半 = yarim (bàn)",
             "ru": "半 = половина (bàn)",
@@ -721,41 +721,16 @@
           "audio_text": "接",
           "pinyin": "jiē",
           "options": [
-            "以前",
-            "银行",
             "同事",
-            "接"
+            "银行",
+            "接",
+            "以前"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "接 — kutib olmoq, olib ketmoq (jiē)",
             "ru": "接 — встречать, забирать (jiē)",
             "tj": "接 — пешвоз гирифтан, бурдан (jiē)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "感兴趣 talaffuzini tanlang:",
-            "ru": "Выберите произношение 感兴趣:",
-            "tj": "Талаффузи 感兴趣-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "tóngshì",
-            "gǎn xìngqù",
-            "yínháng",
-            "yǐqián"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "感兴趣 — gǎn xìngqù",
-            "ru": "感兴趣 — gǎn xìngqù",
-            "tj": "感兴趣 — gǎn xìngqù"
           }
         },
         {
@@ -766,6 +741,105 @@
             "uz": "yarim",
             "ru": "половина",
             "tj": "ним"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "感兴趣 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 感兴趣:",
+            "tj": "Маънои калимаи 感兴趣-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hamkasb",
+              "ru": "коллега",
+              "tj": "ҳамкор"
+            },
+            {
+              "uz": "oldin, ilgari",
+              "ru": "раньше, прежде",
+              "tj": "пештар, қаблан"
+            },
+            {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            },
+            {
+              "uz": "qiziqmoq",
+              "ru": "интересоваться",
+              "tj": "шавқ доштан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "感兴趣 = qiziqmoq (gǎn xìngqù)",
+            "ru": "感兴趣 = интересоваться (gǎn xìngqù)",
+            "tj": "感兴趣 = шавқ доштан (gǎn xìngqù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "感兴趣",
+            "pinyin": "gǎn xìngqù",
+            "meaning": {
+              "uz": "qiziqmoq",
+              "ru": "интересоваться",
+              "tj": "шавқ доштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yarim' xitoycha qaysi?",
+            "ru": "'половина' по-китайски?",
+            "tj": "'ним' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "银行",
+            "半",
+            "同事",
+            "以前"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yarim = 半 (bàn)",
+            "ru": "половина = 半 (bàn)",
+            "tj": "ним = 半 (bàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "半",
+            "pinyin": "bàn",
+            "meaning": {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            }
           }
         }
       ]

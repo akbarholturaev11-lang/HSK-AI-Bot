@@ -585,6 +585,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "大卫也在看书吗？",
+          "pinyin": "Dàwèi yě zài kàn shū ma?",
+          "options": [
+            "喂，你在做什么呢？",
+            "他没看书，他在学做中国菜呢。",
+            "我在看书呢。",
+            "大卫也在看书吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "大卫也在看书吗？ — Devid ham kitob o'qiyaptimi?",
+            "ru": "大卫也在看书吗？ — Дэвид тоже читает?",
+            "tj": "大卫也在看书吗？ — Дэвид ҳам китоб мехонад?"
+          }
+        },
+        {
           "type": "reverse_builder",
           "zh": "请坐吧。",
           "pinyin": "Qǐng zuò ba.",
@@ -636,33 +658,32 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "大卫也在看书吗？",
-          "pinyin": "Dàwèi yě zài kàn shū ma?",
-          "options": [
-            "喂，你在做什么呢？",
-            "他没看书，他在学做中国菜呢。",
-            "我在看书呢。",
-            "大卫也在看书吗？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "大卫也在看书吗？ — Devid ham kitob o'qiyaptimi?",
-            "ru": "大卫也在看书吗？ — Дэвид тоже читает?",
-            "tj": "大卫也在看书吗？ — Дэвид ҳам китоб мехонад?"
+          "type": "pronunciation",
+          "phrase": "打电话",
+          "pinyin": "dǎ diànhuà",
+          "translation": {
+            "uz": "qo'ng'iroq qilmoq, telefon qilmoq",
+            "ru": "звонить по телефону",
+            "tj": "занг задан, телефон кардан"
           }
-        },
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "上午 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 上午:",
-            "tj": "Маънои калимаи 上午-ро интихоб кунед:"
+            "uz": "给 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 给:",
+            "tj": "Маънои калимаи 给-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -671,9 +692,9 @@
           },
           "options": [
             {
-              "uz": "ham, shuningdek",
-              "ru": "тоже, также",
-              "tj": "ҳам, инчунин"
+              "uz": "uchun, ga (birovga)",
+              "ru": "для, кому-то (кому)",
+              "tj": "барои, ба (касе)"
             },
             {
               "uz": "allo (telefonda)",
@@ -686,51 +707,63 @@
               "tj": "хондан, омӯхтан"
             },
             {
-              "uz": "ertalab (tushgacha)",
-              "ru": "утро (до полудня)",
-              "tj": "субҳ (то нисфирӯзӣ)"
+              "uz": "ham, shuningdek",
+              "ru": "тоже, также",
+              "tj": "ҳам, инчунин"
             }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "给 = uchun, ga (birovga) (gěi)",
+            "ru": "给 = для, кому-то (кому) (gěi)",
+            "tj": "给 = барои, ба (касе) (gěi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "给",
+            "pinyin": "gěi",
+            "meaning": {
+              "uz": "uchun, ga (birovga)",
+              "ru": "для, кому-то (кому)",
+              "tj": "барои, ба (касе)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qo'ng'iroq qilmoq, telefon qilmoq' xitoycha qaysi?",
+            "ru": "'звонить по телефону' по-китайски?",
+            "tj": "'занг задан, телефон кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "也",
+            "学习",
+            "喂",
+            "打电话"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "上午 = ertalab (tushgacha) (shàngwǔ)",
-            "ru": "上午 = утро (до полудня) (shàngwǔ)",
-            "tj": "上午 = субҳ (то нисфирӯзӣ) (shàngwǔ)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Marhamat, o'tiring.",
-            "ru": "Пожалуйста, садитесь.",
-            "tj": "Хоҳиш мекунам, биниш."
+            "uz": "qo'ng'iroq qilmoq, telefon qilmoq = 打电话 (dǎ diànhuà)",
+            "ru": "звонить по телефону = 打电话 (dǎ diànhuà)",
+            "tj": "занг задан, телефон кардан = 打电话 (dǎ diànhuà)"
           },
-          "tokens": [
-            "也",
-            "坐",
-            "喂",
-            "吧",
-            "请"
-          ],
-          "answer_tokens": [
-            "请",
-            "坐",
-            "吧"
-          ],
-          "explanation": {
-            "uz": "请坐吧。 — Qǐng zuò ba.",
-            "ru": "请坐吧。 — Qǐng zuò ba.",
-            "tj": "请坐吧。 — Qǐng zuò ba."
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "打电话",
-          "pinyin": "dǎ diànhuà",
-          "translation": {
-            "uz": "qo'ng'iroq qilmoq, telefon qilmoq",
-            "ru": "звонить по телефону",
-            "tj": "занг задан, телефон кардан"
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "打电话",
+            "pinyin": "dǎ diànhuà",
+            "meaning": {
+              "uz": "qo'ng'iroq qilmoq, telefon qilmoq",
+              "ru": "звонить по телефону",
+              "tj": "занг задан, телефон кардан"
+            }
           }
         }
       ]

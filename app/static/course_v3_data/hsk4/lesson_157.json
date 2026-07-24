@@ -425,12 +425,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "降落",
             "火",
-            "受不了",
             "作者",
-            "降落"
+            "受不了"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "受不了 = chiday olmaslik (shòubuliǎo)",
             "ru": "受不了 = не выдерживать (shòubuliǎo)",
@@ -464,9 +464,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "jiàngluò",
             "huǒ",
             "zuòzhě",
-            "jiàngluò",
             "shǐ"
           ],
           "correct_index": 3,
@@ -503,12 +503,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "安全",
             "作者",
-            "降落",
-            "火"
+            "安全",
+            "火",
+            "降落"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "xavfsiz = 安全 (ānquán)",
             "ru": "безопасный = 安全 (ānquán)",
@@ -539,10 +539,10 @@
           "audio_text": "密码",
           "pinyin": "mìmǎ",
           "options": [
+            "作者",
             "火",
-            "降落",
             "密码",
-            "作者"
+            "降落"
           ],
           "correct_index": 2,
           "explanation": {
@@ -565,14 +565,14 @@
           },
           "options": [
             {
-              "uz": "muallif",
-              "ru": "автор",
-              "tj": "муаллиф"
-            },
-            {
               "uz": "mashhur, urf bo'lgan",
               "ru": "популярный, горячий",
               "tj": "машҳур, серхаридор"
+            },
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
             },
             {
               "uz": "qo'nmoq",
@@ -646,31 +646,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "技术 talaffuzini tanlang:",
-            "ru": "Выберите произношение 技术:",
-            "tj": "Талаффузи 技术-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jìshù",
-            "zuòzhě",
-            "jiàngluò",
-            "huǒ"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "技术 — jìshù",
-            "ru": "技术 — jìshù",
-            "tj": "技术 — jìshù"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -722,12 +697,12 @@
           "audio_text": "受不了",
           "pinyin": "shòubuliǎo",
           "options": [
+            "降落",
             "作者",
             "受不了",
-            "降落",
             "火"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "受不了 — chiday olmaslik (shòubuliǎo)",
             "ru": "受不了 — не выдерживать (shòubuliǎo)",
@@ -742,6 +717,105 @@
             "uz": "chiday olmaslik",
             "ru": "не выдерживать",
             "tj": "тоб оварда натавонистан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "技术 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 技术:",
+            "tj": "Маънои калимаи 技术-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "texnologiya, texnika",
+              "ru": "технология, техника",
+              "tj": "технология, техника"
+            },
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
+            },
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "技术 = texnologiya, texnika (jìshù)",
+            "ru": "技术 = технология, техника (jìshù)",
+            "tj": "技术 = технология, техника (jìshù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "技术",
+            "pinyin": "jìshù",
+            "meaning": {
+              "uz": "texnologiya, texnika",
+              "ru": "технология, техника",
+              "tj": "технология, техника"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chiday olmaslik' xitoycha qaysi?",
+            "ru": "'не выдерживать' по-китайски?",
+            "tj": "'тоб оварда натавонистан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "火",
+            "作者",
+            "受不了",
+            "降落"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "chiday olmaslik = 受不了 (shòubuliǎo)",
+            "ru": "не выдерживать = 受不了 (shòubuliǎo)",
+            "tj": "тоб оварда натавонистан = 受不了 (shòubuliǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "受不了",
+            "pinyin": "shòubuliǎo",
+            "meaning": {
+              "uz": "chiday olmaslik",
+              "ru": "не выдерживать",
+              "tj": "тоб оварда натавонистан"
+            }
           }
         }
       ]

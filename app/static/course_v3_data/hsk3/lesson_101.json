@@ -362,9 +362,9 @@
           },
           "options": [
             {
-              "uz": "tekis narsalar uchun hisob so'zi",
-              "ru": "счетное слово для плоских предметов",
-              "tj": "ҳисобвожа барои чизҳои ҳамвор"
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
             },
             {
               "uz": "yuz",
@@ -372,17 +372,17 @@
               "tj": "рӯй"
             },
             {
+              "uz": "tekis narsalar uchun hisob so'zi",
+              "ru": "счетное слово для плоских предметов",
+              "tj": "ҳисобвожа барои чизҳои ҳамвор"
+            },
+            {
               "uz": "kalta, qisqa",
               "ru": "короткий",
               "tj": "кӯтоҳ"
-            },
-            {
-              "uz": "quloq",
-              "ru": "ухо",
-              "tj": "гӯш"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "张 = tekis narsalar uchun hisob so'zi (zhāng)",
             "ru": "张 = счетное слово для плоских предметов (zhāng)",
@@ -416,12 +416,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "短",
             "脸",
             "位",
-            "耳朵"
+            "耳朵",
+            "短"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "位 = odamlar uchun hurmatli hisob so'zi (wèi)",
             "ru": "位 = вежливое счетное слово для людей (wèi)",
@@ -455,12 +455,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "ěrduo",
             "liǎn",
             "lán",
-            "duǎn",
-            "ěrduo"
+            "duǎn"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "蓝 — lán",
             "ru": "蓝 — lán",
@@ -495,11 +495,11 @@
           },
           "options": [
             "脸",
-            "耳朵",
             "秋(天)",
-            "短"
+            "短",
+            "耳朵"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "kuz = 秋(天) (qiū(tiān))",
             "ru": "осень = 秋(天) (qiū(tiān))",
@@ -516,12 +516,12 @@
           "audio_text": "张",
           "pinyin": "zhāng",
           "options": [
-            "耳朵",
             "张",
+            "耳朵",
             "脸",
             "短"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "张 — tekis narsalar uchun hisob so'zi (zhāng)",
             "ru": "张 — счетное слово для плоских предметов (zhāng)",
@@ -626,15 +626,15 @@
             "tj": "Вай ба ман фармод, ки ба дигарон нагӯям."
           },
           "tokens": [
-            "他",
-            "叫",
+            "我",
             "耳朵",
             "告诉",
-            "要",
             "不",
             "脸",
             "别人",
-            "我"
+            "要",
+            "叫",
+            "他"
           ],
           "answer_tokens": [
             "他",
@@ -672,38 +672,16 @@
           "audio_text": "快给我看看。骑得最快的这位是谁？",
           "pinyin": "Kuài gěi wǒ kànkan. Qí de zuì kuài de zhè wèi shì shéi?",
           "options": [
-            "这样可以使她的脸看上去漂亮一些。",
+            "快给我看看。骑得最快的这位是谁？",
             "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
             "我最近觉得她和以前不太一样了。",
-            "快给我看看。骑得最快的这位是谁？"
+            "这样可以使她的脸看上去漂亮一些。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "快给我看看。骑得最快的这位是谁？ — Tezroq ko'rsat. Eng tez mingan bu kishi kim?",
             "ru": "快给我看看。骑得最快的这位是谁？ — Скорее покажи. Кто этот человек, который ехал быстрее всех?",
             "tj": "快给我看看。骑得最快的这位是谁？ — Зуд ба ман нишон деҳ. Ин шахсе, ки аз ҳама тез савор шудааст, кист?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "位",
-          "pinyin": "wèi",
-          "options": [
-            "脸",
-            "短",
-            "耳朵",
-            "位"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "位 — odamlar uchun hurmatli hisob so'zi (wèi)",
-            "ru": "位 — вежливое счетное слово для людей (wèi)",
-            "tj": "位 — ҳисобвожаи эҳтиромӣ барои одамон (wèi)"
           }
         },
         {
@@ -719,10 +697,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "耳朵",
+            "短",
             "蓝",
-            "脸",
-            "短"
+            "耳朵",
+            "脸"
           ],
           "correct_index": 1,
           "explanation": {
@@ -745,11 +723,6 @@
           },
           "options": [
             {
-              "uz": "kalta, qisqa",
-              "ru": "короткий",
-              "tj": "кӯтоҳ"
-            },
-            {
               "uz": "yuz",
               "ru": "лицо",
               "tj": "рӯй"
@@ -760,12 +733,17 @@
               "tj": "тирамоҳ"
             },
             {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
               "uz": "quloq",
               "ru": "ухо",
               "tj": "гӯш"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "秋(天) = kuz (qiū(tiān))",
             "ru": "秋(天) = осень (qiū(tiān))",
@@ -780,6 +758,105 @@
             "uz": "tekis narsalar uchun hisob so'zi",
             "ru": "счетное слово для плоских предметов",
             "tj": "ҳисобвожа барои чизҳои ҳамвор"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "耳朵 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 耳朵:",
+            "tj": "Маънои калимаи 耳朵-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            },
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            },
+            {
+              "uz": "yuz",
+              "ru": "лицо",
+              "tj": "рӯй"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "耳朵 = quloq (ěrduo)",
+            "ru": "耳朵 = ухо (ěrduo)",
+            "tj": "耳朵 = гӯш (ěrduo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "耳朵",
+            "pinyin": "ěrduo",
+            "meaning": {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tekis narsalar uchun hisob so'zi' xitoycha qaysi?",
+            "ru": "'счетное слово для плоских предметов' по-китайски?",
+            "tj": "'ҳисобвожа барои чизҳои ҳамвор' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "短",
+            "张",
+            "脸",
+            "耳朵"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tekis narsalar uchun hisob so'zi = 张 (zhāng)",
+            "ru": "счетное слово для плоских предметов = 张 (zhāng)",
+            "tj": "ҳисобвожа барои чизҳои ҳамвор = 张 (zhāng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "张",
+            "pinyin": "zhāng",
+            "meaning": {
+              "uz": "tekis narsalar uchun hisob so'zi",
+              "ru": "счетное слово для плоских предметов",
+              "tj": "ҳисобвожа барои чизҳои ҳамвор"
+            }
           }
         }
       ]

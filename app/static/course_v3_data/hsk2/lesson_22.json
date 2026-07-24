@@ -331,12 +331,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "准备",
-            "外面",
             "就",
-            "吧"
+            "吧",
+            "外面",
+            "准备"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "吧 = so'roq yoki taklif yuklamasi (shunday emasmi, keling) (ba)",
             "ru": "吧 = частица вопроса или предложения (ведь, давай) (ba)",
@@ -381,11 +381,11 @@
           },
           "options": [
             "jiù",
+            "zhǔnbèi",
             "jiàn",
-            "wàimiàn",
-            "zhǔnbèi"
+            "wàimiàn"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "件 — jiàn",
             "ru": "件 — jiàn",
@@ -419,12 +419,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "就",
             "准备",
-            "还",
-            "外面"
+            "外面",
+            "就",
+            "还"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "hali, yana; qabul qilarli, yaxshi = 还 (hái)",
             "ru": "ещё, пока; приемлемо, неплохо = 还 (hái)",
@@ -456,11 +456,11 @@
           "pinyin": "kěyǐ",
           "options": [
             "准备",
-            "外面",
+            "可以",
             "就",
-            "可以"
+            "外面"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "可以 — mumkin, yaxshi, qabul qilarli (kěyǐ)",
             "ru": "可以 — можно, хорошо, приемлемо (kěyǐ)",
@@ -481,14 +481,14 @@
           },
           "options": [
             {
-              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
-              "ru": "готовить, готовиться",
-              "tj": "омода кардан, тайёр шудан"
-            },
-            {
               "uz": "so'roq yoki taklif yuklamasi (shunday emasmi, keling)",
               "ru": "частица вопроса или предложения (ведь, давай)",
               "tj": "зарраи савол ё пешниҳод"
+            },
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
             },
             {
               "uz": "aynan, shu, xuddi shunday; darhol",
@@ -501,7 +501,7 @@
               "tj": "берун, берунӣ"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "吧 = so'roq yoki taklif yuklamasi (shunday emasmi, keling) (ba)",
             "ru": "吧 = частица вопроса или предложения (ведь, давай) (ba)",
@@ -606,13 +606,13 @@
             "tj": "Маҳз ҳамин харед."
           },
           "tokens": [
-            "买",
             "准备",
-            "吧",
-            "这",
+            "买",
             "件",
+            "吧",
+            "就",
             "外面",
-            "就"
+            "这"
           ],
           "answer_tokens": [
             "就",
@@ -639,63 +639,44 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bu kiyimga bir qarab ber, qandayligini ayt.",
-            "ru": "Посмотри, как тебе эта одежда.",
-            "tj": "Ба ин либос як нигоҳ кун, чӣ тавр аст."
-          },
-          "tokens": [
-            "看",
-            "我",
-            "帮",
-            "衣服",
-            "怎么样",
-            "准备",
-            "件",
-            "外面",
-            "这",
-            "一下"
-          ],
-          "answer_tokens": [
-            "帮",
-            "我",
-            "看",
-            "一下",
-            "这",
-            "件",
-            "衣服",
-            "怎么样"
-          ],
-          "explanation": {
-            "uz": "帮我看一下这件衣服怎么样。 — Bāng wǒ kàn yíxià zhè jiàn yīfu zěnmeyàng.",
-            "ru": "帮我看一下这件衣服怎么样。 — Bāng wǒ kàn yíxià zhè jiàn yīfu zěnmeyàng.",
-            "tj": "帮我看一下这件衣服怎么样。 — Bāng wǒ kàn yíxià zhè jiàn yīfu zěnmeyàng."
-          }
-        },
-        {
-          "type": "translation_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "'tayyorlamoq, tayyorgarlik ko'rmoq' xitoycha qaysi?",
-            "ru": "'готовить, готовиться' по-китайски?",
-            "tj": "'омода кардан, тайёр шудан' ба хитоӣ кадом аст?"
+            "uz": "还 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 还:",
+            "tj": "Маънои калимаи 还-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "准备",
-            "就",
-            "外面",
-            "鱼"
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
+            },
+            {
+              "uz": "hali, yana; qabul qilarli, yaxshi",
+              "ru": "ещё, пока; приемлемо, неплохо",
+              "tj": "ҳанӯз, боз; қобили қабул"
+            },
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "tayyorlamoq, tayyorgarlik ko'rmoq = 准备 (zhǔnbèi)",
-            "ru": "готовить, готовиться = 准备 (zhǔnbèi)",
-            "tj": "омода кардан, тайёр шудан = 准备 (zhǔnbèi)"
+            "uz": "还 = hali, yana; qabul qilarli, yaxshi (hái)",
+            "ru": "还 = ещё, пока; приемлемо, неплохо (hái)",
+            "tj": "还 = ҳанӯз, боз; қобили қабул (hái)"
           }
         },
         {
@@ -705,60 +686,19 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "还",
-          "pinyin": "hái",
+          "audio_text": "可以",
+          "pinyin": "kěyǐ",
           "options": [
+            "可以",
             "就",
-            "还",
             "准备",
             "外面"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "还 — hali, yana; qabul qilarli, yaxshi (hái)",
-            "ru": "还 — ещё, пока; приемлемо, неплохо (hái)",
-            "tj": "还 — ҳанӯз, боз; қобили қабул (hái)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "可以 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 可以:",
-            "tj": "Маънои калимаи 可以-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "aynan, shu, xuddi shunday; darhol",
-              "ru": "именно, вот; сразу, тут же",
-              "tj": "маҳз, ҳамин; фавран"
-            },
-            {
-              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
-              "ru": "готовить, готовиться",
-              "tj": "омода кардан, тайёр шудан"
-            },
-            {
-              "uz": "tashqarida, tashqi tomon",
-              "ru": "снаружи, на улице",
-              "tj": "берун, берунӣ"
-            },
-            {
-              "uz": "mumkin, yaxshi, qabul qilarli",
-              "ru": "можно, хорошо, приемлемо",
-              "tj": "мумкин, қабул аст"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "可以 = mumkin, yaxshi, qabul qilarli (kěyǐ)",
-            "ru": "可以 = можно, хорошо, приемлемо (kěyǐ)",
-            "tj": "可以 = мумкин, қабул аст (kěyǐ)"
+            "uz": "可以 — mumkin, yaxshi, qabul qilarli (kěyǐ)",
+            "ru": "可以 — можно, хорошо, приемлемо (kěyǐ)",
+            "tj": "可以 — мумкин, қабул аст (kěyǐ)"
           }
         },
         {
@@ -769,6 +709,105 @@
             "uz": "dona (kiyim uchun ko'makchi)",
             "ru": "штука (счётное слово для одежды)",
             "tj": "дона (воҳиди шумориши либос)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "准备 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 准备:",
+            "tj": "Маънои калимаи 准备-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
+            },
+            {
+              "uz": "baliq",
+              "ru": "рыба",
+              "tj": "моҳӣ"
+            },
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "准备 = tayyorlamoq, tayyorgarlik ko'rmoq (zhǔnbèi)",
+            "ru": "准备 = готовить, готовиться (zhǔnbèi)",
+            "tj": "准备 = омода кардан, тайёр шудан (zhǔnbèi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "准备",
+            "pinyin": "zhǔnbèi",
+            "meaning": {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'dona (kiyim uchun ko'makchi)' xitoycha qaysi?",
+            "ru": "'штука (счётное слово для одежды)' по-китайски?",
+            "tj": "'дона (воҳиди шумориши либос)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "外面",
+            "准备",
+            "件",
+            "就"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "dona (kiyim uchun ko'makchi) = 件 (jiàn)",
+            "ru": "штука (счётное слово для одежды) = 件 (jiàn)",
+            "tj": "дона (воҳиди шумориши либос) = 件 (jiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "件",
+            "pinyin": "jiàn",
+            "meaning": {
+              "uz": "dona (kiyim uchun ko'makchi)",
+              "ru": "штука (счётное слово для одежды)",
+              "tj": "дона (воҳиди шумориши либос)"
+            }
           }
         }
       ]

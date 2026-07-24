@@ -362,27 +362,27 @@
           },
           "options": [
             {
-              "uz": "nihoyat, oxiri",
-              "ru": "наконец",
-              "tj": "ниҳоят"
-            },
-            {
-              "uz": "sovg'a",
-              "ru": "подарок",
-              "tj": "туҳфа"
-            },
-            {
               "uz": "buvi",
               "ru": "бабушка",
               "tj": "биби"
             },
             {
+              "uz": "nihoyat, oxiri",
+              "ru": "наконец",
+              "tj": "ниҳоят"
+            },
+            {
               "uz": "bobo",
               "ru": "дедушка",
               "tj": "бобо"
+            },
+            {
+              "uz": "sovg'a",
+              "ru": "подарок",
+              "tj": "туҳфа"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "终于 = nihoyat, oxiri (zhōngyú)",
             "ru": "终于 = наконец (zhōngyú)",
@@ -426,12 +426,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "终于",
             "爷爷",
             "礼物",
-            "终于",
             "奶奶"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "爷爷 = bobo (yéye)",
             "ru": "爷爷 = дедушка (yéye)",
@@ -465,12 +465,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "lǐwù",
             "zhōngyú",
-            "yéye",
-            "nǎinai"
+            "lǐwù",
+            "nǎinai",
+            "yéye"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "礼物 — lǐwù",
             "ru": "礼物 — lǐwù",
@@ -504,12 +504,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "礼物",
             "终于",
             "奶奶",
-            "爷爷",
-            "礼物"
+            "爷爷"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "buvi = 奶奶 (nǎinai)",
             "ru": "бабушка = 奶奶 (nǎinai)",
@@ -526,12 +526,12 @@
           "audio_text": "终于",
           "pinyin": "zhōngyú",
           "options": [
-            "终于",
             "爷爷",
-            "奶奶",
-            "礼物"
+            "终于",
+            "礼物",
+            "奶奶"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "终于 — nihoyat, oxiri (zhōngyú)",
             "ru": "终于 — наконец (zhōngyú)",
@@ -636,13 +636,13 @@
             "tj": "Вай пиёда даромад."
           },
           "tokens": [
-            "爷爷",
             "了",
-            "终于",
-            "来",
             "他",
+            "爷爷",
             "走",
-            "进"
+            "进",
+            "来",
+            "终于"
           ],
           "answer_tokens": [
             "他",
@@ -748,31 +748,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'lift' xitoycha qaysi?",
-            "ru": "'лифт' по-китайски?",
-            "tj": "'лифт' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "电梯",
-            "爷爷",
-            "终于",
-            "礼物"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "lift = 电梯 (diàntī)",
-            "ru": "лифт = 电梯 (diàntī)",
-            "tj": "лифт = 电梯 (diàntī)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -782,12 +757,12 @@
           "audio_text": "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。",
           "pinyin": "Zhè shì gěi yéye de lǐwù, míngtiān wǒmen yìqǐ sòng guòqu, kànkan yéye nǎinai.",
           "options": [
-            "怎么还买红酒回来了？谁喝啊？",
-            "都是从那边的商店买回来的。",
             "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。",
-            "你终于回来了！从哪儿买回来这么多东西啊？"
+            "都是从那边的商店买回来的。",
+            "你终于回来了！从哪儿买回来这么多东西啊？",
+            "怎么还买红酒回来了？谁喝啊？"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。 — Bu bobomga sovg'a, ertaga birga olib borib, bobo-buvimni ko'ramiz.",
             "ru": "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。 — Это подарок дедушке, завтра вместе отвезём и навестим бабушку с дедушкой.",
@@ -802,6 +777,105 @@
             "uz": "bobo",
             "ru": "дедушка",
             "tj": "бобо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "西 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 西:",
+            "tj": "Маънои калимаи 西-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bobo",
+              "ru": "дедушка",
+              "tj": "бобо"
+            },
+            {
+              "uz": "sovg'a",
+              "ru": "подарок",
+              "tj": "туҳфа"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
+            },
+            {
+              "uz": "nihoyat, oxiri",
+              "ru": "наконец",
+              "tj": "ниҳоят"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "西 = g'arb (xī)",
+            "ru": "西 = запад (xī)",
+            "tj": "西 = ғарб (xī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "西",
+            "pinyin": "xī",
+            "meaning": {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bobo' xitoycha qaysi?",
+            "ru": "'дедушка' по-китайски?",
+            "tj": "'бобо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "奶奶",
+            "终于",
+            "礼物",
+            "爷爷"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "bobo = 爷爷 (yéye)",
+            "ru": "дедушка = 爷爷 (yéye)",
+            "tj": "бобо = 爷爷 (yéye)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "爷爷",
+            "pinyin": "yéye",
+            "meaning": {
+              "uz": "bobo",
+              "ru": "дедушка",
+              "tj": "бобо"
+            }
           }
         }
       ]

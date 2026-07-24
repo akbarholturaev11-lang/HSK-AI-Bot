@@ -416,9 +416,9 @@
           },
           "options": [
             {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
             },
             {
               "uz": "to'g'ridan-to'g'ri",
@@ -426,14 +426,14 @@
               "tj": "бевосита, рӯирост"
             },
             {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
               "uz": "qoida, belgilangan tartib",
               "ru": "правило, положение",
               "tj": "қоида, тартиб"
-            },
-            {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
             }
           ],
           "correct_index": 1,
@@ -480,12 +480,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "规定",
-            "引起",
+            "可惜",
             "死",
-            "可惜"
+            "引起",
+            "规定"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "引起 = keltirib chiqarmoq (yǐnqǐ)",
             "ru": "引起 = вызывать (yǐnqǐ)",
@@ -521,10 +521,10 @@
           "options": [
             "kěxī",
             "sǐ",
-            "guīdìng",
-            "wùhuì"
+            "wùhuì",
+            "guīdìng"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "误会 — wùhuì",
             "ru": "误会 — wùhuì",
@@ -558,10 +558,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "规定",
+            "可惜",
             "友好",
             "死",
-            "可惜"
+            "规定"
           ],
           "correct_index": 1,
           "explanation": {
@@ -580,12 +580,12 @@
           "audio_text": "直接",
           "pinyin": "zhíjiē",
           "options": [
-            "直接",
             "规定",
-            "可惜",
-            "死"
+            "直接",
+            "死",
+            "可惜"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "直接 — to'g'ridan-to'g'ri (zhíjiē)",
             "ru": "直接 — прямой, прямо (zhíjiē)",
@@ -646,16 +646,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "误会",
-          "pinyin": "wùhuì",
-          "translation": {
-            "uz": "tushunmovchilik",
-            "ru": "недоразумение",
-            "tj": "нофаҳмӣ"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -666,9 +656,9 @@
           "pinyin": "yǐnqǐ",
           "options": [
             "引起",
-            "死",
             "可惜",
-            "规定"
+            "规定",
+            "死"
           ],
           "correct_index": 0,
           "explanation": {
@@ -678,28 +668,13 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'maslahatlashmoq' xitoycha qaysi?",
-            "ru": "'обсуждать, советоваться' по-китайски?",
-            "tj": "'маслиҳат кардан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "死",
-            "商量",
-            "可惜",
-            "规定"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "maslahatlashmoq = 商量 (shāngliang)",
-            "ru": "обсуждать, советоваться = 商量 (shāngliang)",
-            "tj": "маслиҳат кардан = 商量 (shāngliang)"
+          "type": "pronunciation",
+          "phrase": "误会",
+          "pinyin": "wùhuì",
+          "translation": {
+            "uz": "tushunmovchilik",
+            "ru": "недоразумение",
+            "tj": "нофаҳмӣ"
           }
         },
         {
@@ -716,16 +691,6 @@
           },
           "options": [
             {
-              "uz": "qoida, belgilangan tartib",
-              "ru": "правило, положение",
-              "tj": "қоида, тартиб"
-            },
-            {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
-            },
-            {
               "uz": "do'stona",
               "ru": "дружелюбный",
               "tj": "дӯстона"
@@ -734,9 +699,19 @@
               "uz": "qattiq, o'zgarmas",
               "ru": "жёсткий, негибкий",
               "tj": "сахт, тағйирнопазир"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "友好 = do'stona (yǒuhǎo)",
             "ru": "友好 = дружелюбный (yǒuhǎo)",
@@ -751,6 +726,105 @@
             "uz": "keltirib chiqarmoq",
             "ru": "вызывать",
             "tj": "ба вуҷуд овардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "教育 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 教育:",
+            "tj": "Маънои калимаи 教育-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            },
+            {
+              "uz": "ta'lim bermoq, tarbiyalamoq",
+              "ru": "обучать, воспитывать",
+              "tj": "таълим додан, тарбия кардан"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "教育 = ta'lim bermoq, tarbiyalamoq (jiàoyù)",
+            "ru": "教育 = обучать, воспитывать (jiàoyù)",
+            "tj": "教育 = таълим додан, тарбия кардан (jiàoyù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "教育",
+            "pinyin": "jiàoyù",
+            "meaning": {
+              "uz": "ta'lim bermoq, tarbiyalamoq",
+              "ru": "обучать, воспитывать",
+              "tj": "таълим додан, тарбия кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'keltirib chiqarmoq' xitoycha qaysi?",
+            "ru": "'вызывать' по-китайски?",
+            "tj": "'ба вуҷуд овардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "规定",
+            "可惜",
+            "死",
+            "引起"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "keltirib chiqarmoq = 引起 (yǐnqǐ)",
+            "ru": "вызывать = 引起 (yǐnqǐ)",
+            "tj": "ба вуҷуд овардан = 引起 (yǐnqǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "引起",
+            "pinyin": "yǐnqǐ",
+            "meaning": {
+              "uz": "keltirib chiqarmoq",
+              "ru": "вызывать",
+              "tj": "ба вуҷуд овардан"
+            }
           }
         }
       ]

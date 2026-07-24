@@ -361,9 +361,9 @@
           },
           "options": [
             {
-              "uz": "qarindosh",
-              "ru": "родственник",
-              "tj": "хешованд"
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
             },
             {
               "uz": "shokolad",
@@ -371,17 +371,17 @@
               "tj": "шоколад"
             },
             {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный",
-              "tj": "ғамгин"
-            },
-            {
               "uz": "fan, ilm",
               "ru": "наука",
               "tj": "илм"
+            },
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "科学 = fan, ilm (kēxué)",
             "ru": "科学 = наука (kēxué)",
@@ -425,9 +425,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "亲戚",
-            "证明",
             "伤心",
+            "证明",
+            "亲戚",
             "巧克力"
           ],
           "correct_index": 1,
@@ -465,9 +465,9 @@
           },
           "options": [
             "wǎngwǎng",
-            "shāngxīn",
             "qīnqi",
-            "qiǎokèlì"
+            "qiǎokèlì",
+            "shāngxīn"
           ],
           "correct_index": 0,
           "explanation": {
@@ -489,12 +489,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "科学",
-            "巧克力",
             "亲戚",
-            "伤心"
+            "巧克力",
+            "伤心",
+            "科学"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "fan, ilm = 科学 (kēxué)",
             "ru": "наука = 科学 (kēxué)",
@@ -583,9 +583,9 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "亲戚",
-            "伤心",
             "巧克力",
+            "伤心",
+            "亲戚",
             "往往"
           ],
           "correct_index": 3,
@@ -616,12 +616,12 @@
           "audio_text": "证明",
           "pinyin": "zhèngmíng",
           "options": [
-            "巧克力",
-            "亲戚",
+            "证明",
             "伤心",
-            "证明"
+            "亲戚",
+            "巧克力"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "证明 — isbotlamoq (zhèngmíng)",
             "ru": "证明 — доказывать (zhèngmíng)",
@@ -663,31 +663,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "qīnqi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается qīnqi?",
-            "tj": "qīnqi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "亲戚",
-            "使",
-            "伤心",
-            "巧克力"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "亲戚 = qarindosh (qīnqi)",
-            "ru": "亲戚 = родственник (qīnqi)",
-            "tj": "亲戚 = хешованд (qīnqi)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "证明",
           "pinyin": "zhèngmíng",
@@ -695,6 +670,105 @@
             "uz": "isbotlamoq",
             "ru": "доказывать",
             "tj": "исбот кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "态度 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 态度:",
+            "tj": "Маънои калимаи 态度-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
+            },
+            {
+              "uz": "munosabat",
+              "ru": "отношение",
+              "tj": "муносибат"
+            },
+            {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "态度 = munosabat (tàidu)",
+            "ru": "态度 = отношение (tàidu)",
+            "tj": "态度 = муносибат (tàidu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "态度",
+            "pinyin": "tàidu",
+            "meaning": {
+              "uz": "munosabat",
+              "ru": "отношение",
+              "tj": "муносибат"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'isbotlamoq' xitoycha qaysi?",
+            "ru": "'доказывать' по-китайски?",
+            "tj": "'исбот кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "亲戚",
+            "伤心",
+            "证明",
+            "巧克力"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "isbotlamoq = 证明 (zhèngmíng)",
+            "ru": "доказывать = 证明 (zhèngmíng)",
+            "tj": "исбот кардан = 证明 (zhèngmíng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "证明",
+            "pinyin": "zhèngmíng",
+            "meaning": {
+              "uz": "isbotlamoq",
+              "ru": "доказывать",
+              "tj": "исбот кардан"
+            }
           }
         }
       ]

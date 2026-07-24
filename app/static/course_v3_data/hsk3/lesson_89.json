@@ -351,12 +351,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "后来",
             "一共",
             "邻居",
-            "请假",
-            "后来"
+            "请假"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "ruxsat so'ramoq, ta'til so'ramoq = 请假 (qǐng jià)",
             "ru": "просить отпуск, отпрашиваться = 请假 (qǐng jià)",
@@ -387,12 +387,12 @@
           "audio_text": "一共",
           "pinyin": "yígòng",
           "options": [
-            "邻居",
-            "一共",
+            "请假",
             "后来",
-            "请假"
+            "一共",
+            "邻居"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "一共 — jami, hammasi bo'lib (yígòng)",
             "ru": "一共 — всего, в общей сложности (yígòng)",
@@ -427,11 +427,6 @@
           },
           "options": [
             {
-              "uz": "qo'shni",
-              "ru": "сосед",
-              "tj": "ҳамсоя"
-            },
-            {
               "uz": "keyin, keyinchalik",
               "ru": "позже, впоследствии",
               "tj": "баъдтар, баъдан"
@@ -445,9 +440,14 @@
               "uz": "ruxsat so'ramoq, ta'til so'ramoq",
               "ru": "просить отпуск, отпрашиваться",
               "tj": "рухсат пурсидан, рухсатӣ хостан"
+            },
+            {
+              "uz": "qo'shni",
+              "ru": "сосед",
+              "tj": "ҳамсоя"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "邻居 = qo'shni (línjū)",
             "ru": "邻居 = сосед (línjū)",
@@ -481,10 +481,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "请假",
-            "后来",
             "邻居",
-            "一共"
+            "后来",
+            "一共",
+            "请假"
           ],
           "correct_index": 1,
           "explanation": {
@@ -617,14 +617,14 @@
           },
           "tokens": [
             "一共",
-            "朋友",
             "我",
             "请假",
-            "来",
-            "介绍",
             "的",
+            "我",
             "介绍",
-            "我"
+            "介绍",
+            "朋友",
+            "来"
           ],
           "answer_tokens": [
             "我",
@@ -653,28 +653,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "灯 talaffuzini tanlang:",
-            "ru": "Выберите произношение 灯:",
-            "tj": "Талаффузи 灯-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "一共",
+          "pinyin": "yígòng",
           "options": [
-            "dēng",
-            "línjū",
-            "yígòng",
-            "qǐng jià"
+            "一共",
+            "后来",
+            "请假",
+            "邻居"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "灯 — dēng",
-            "ru": "灯 — dēng",
-            "tj": "灯 — dēng"
+            "uz": "一共 — jami, hammasi bo'lib (yígòng)",
+            "ru": "一共 — всего, в общей сложности (yígòng)",
+            "tj": "一共 — ҳамагӣ, ҷамъ (yígòng)"
           }
         },
         {
@@ -688,37 +685,15 @@
           "pinyin": "Wǒmen guòqù shì línjū, hòulái shì dàxué tóngxué, guānxì yìzhí hěn búcuò.",
           "options": [
             "我的一个老朋友结婚，我跟他两年没见了。",
-            "你有什么事？",
             "我们过去是邻居，后来是大学同学，关系一直很不错。",
-            "周经理，下个星期我可以请几天假吗？"
+            "周经理，下个星期我可以请几天假吗？",
+            "你有什么事？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "我们过去是邻居，后来是大学同学，关系一直很不错。 — Biz oldin qo'shni edik, keyin universitetda kursdosh bo'ldik, munosabatimiz doim yaxshi bo'lgan.",
             "ru": "我们过去是邻居，后来是大学同学，关系一直很不错。 — Раньше мы были соседями, потом однокурсниками в университете, отношения всегда были хорошими.",
             "tj": "我们过去是邻居，后来是大学同学，关系一直很不错。 — Пештар ҳамсоя будем, баъд ҳамсабақи донишгоҳ шудем, муносибатамон ҳамеша хуб буд."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "一共",
-          "pinyin": "yígòng",
-          "options": [
-            "一共",
-            "请假",
-            "后来",
-            "邻居"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "一共 — jami, hammasi bo'lib (yígòng)",
-            "ru": "一共 — всего, в общей сложности (yígòng)",
-            "tj": "一共 — ҳамагӣ, ҷамъ (yígòng)"
           }
         },
         {
@@ -729,6 +704,105 @@
             "uz": "ruxsat so'ramoq, ta'til so'ramoq",
             "ru": "просить отпуск, отпрашиваться",
             "tj": "рухсат пурсидан, рухсатӣ хостан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "城市 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 城市:",
+            "tj": "Маънои калимаи 城市-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shahar",
+              "ru": "город",
+              "tj": "шаҳр"
+            },
+            {
+              "uz": "jami, hammasi bo'lib",
+              "ru": "всего, в общей сложности",
+              "tj": "ҳамагӣ, ҷамъ"
+            },
+            {
+              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
+              "ru": "просить отпуск, отпрашиваться",
+              "tj": "рухсат пурсидан, рухсатӣ хостан"
+            },
+            {
+              "uz": "qo'shni",
+              "ru": "сосед",
+              "tj": "ҳамсоя"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "城市 = shahar (chéngshì)",
+            "ru": "城市 = город (chéngshì)",
+            "tj": "城市 = шаҳр (chéngshì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "城市",
+            "pinyin": "chéngshì",
+            "meaning": {
+              "uz": "shahar",
+              "ru": "город",
+              "tj": "шаҳр"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ruxsat so'ramoq, ta'til so'ramoq' xitoycha qaysi?",
+            "ru": "'просить отпуск, отпрашиваться' по-китайски?",
+            "tj": "'рухсат пурсидан, рухсатӣ хостан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "一共",
+            "邻居",
+            "请假",
+            "后来"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ruxsat so'ramoq, ta'til so'ramoq = 请假 (qǐng jià)",
+            "ru": "просить отпуск, отпрашиваться = 请假 (qǐng jià)",
+            "tj": "рухсат пурсидан, рухсатӣ хостан = 请假 (qǐng jià)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "请假",
+            "pinyin": "qǐng jià",
+            "meaning": {
+              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
+              "ru": "просить отпуск, отпрашиваться",
+              "tj": "рухсат пурсидан, рухсатӣ хостан"
+            }
           }
         }
       ]

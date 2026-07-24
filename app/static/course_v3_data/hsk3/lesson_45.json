@@ -419,11 +419,11 @@
           "pinyin": "Zhōngwén",
           "options": [
             "最后",
-            "班",
+            "中文",
             "一样",
-            "中文"
+            "班"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "中文 — xitoy tili (Zhōngwén)",
             "ru": "中文 — китайский язык (Zhōngwén)",
@@ -458,6 +458,16 @@
           },
           "options": [
             {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            },
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            },
+            {
               "uz": "oxirgi, so'nggi",
               "ru": "последний",
               "tj": "охирин"
@@ -466,19 +476,9 @@
               "uz": "bir xil, xuddi ... kabi",
               "ru": "одинаковый, такой же",
               "tj": "якхела, мисли"
-            },
-            {
-              "uz": "sinf, guruh",
-              "ru": "класс, группа",
-              "tj": "синф, гурӯҳ"
-            },
-            {
-              "uz": "xitoy tili",
-              "ru": "китайский язык",
-              "tj": "забони чинӣ"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "班 = sinf, guruh (bān)",
             "ru": "班 = класс, группа (bān)",
@@ -512,12 +512,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "一样",
-            "中文",
             "班",
-            "最后"
+            "一样",
+            "最后",
+            "中文"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "一样 = bir xil, xuddi ... kabi (yíyàng)",
             "ru": "一样 = одинаковый, такой же (yíyàng)",
@@ -551,12 +551,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zuìhòu",
-            "yíyàng",
             "bān",
-            "Zhōngwén"
+            "yíyàng",
+            "Zhōngwén",
+            "zuìhòu"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "最后 — zuìhòu",
             "ru": "最后 — zuìhòu",
@@ -577,11 +577,11 @@
           },
           "options": [
             "班",
-            "中文",
+            "一样",
             "最后",
-            "一样"
+            "中文"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "xitoy tili = 中文 (Zhōngwén)",
             "ru": "китайский язык = 中文 (Zhōngwén)",
@@ -686,14 +686,14 @@
             "tj": "Ҳаво рӯз ба рӯз сардтар мешавад."
           },
           "tokens": [
-            "中文",
-            "来",
-            "班",
-            "了",
             "冷",
+            "天气",
+            "了",
+            "来",
             "越",
             "越",
-            "天气"
+            "中文",
+            "班"
           ],
           "answer_tokens": [
             "天气",
@@ -728,15 +728,15 @@
             "tj": "Ин монанди он қимат аст."
           },
           "tokens": [
+            "那",
+            "跟",
             "中文",
             "这",
             "班",
+            "一样",
             "个",
             "贵",
-            "那",
-            "跟",
-            "个",
-            "一样"
+            "个"
           ],
           "answer_tokens": [
             "这",
@@ -823,53 +823,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "马可，你的中文越说越好了！",
-          "pinyin": "Mǎkě, nǐ de Zhōngwén yuè shuō yuè hǎo le!",
-          "options": [
-            "她的汉语说得跟中国人一样好。",
-            "哪里哪里，我们班李静说得更好。",
-            "马可，你的中文越说越好了！",
-            "怎么好？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "马可，你的中文越说越好了！ — Make, xitoychang tobora yaxshilanib boryapti!",
-            "ru": "马可，你的中文越说越好了！ — Марк, ты говоришь по-китайски всё лучше!",
-            "tj": "马可，你的中文越说越好了！ — Маке, забони чиниат торафт беҳтар мешавад!"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "发烧 talaffuzini tanlang:",
-            "ru": "Выберите произношение 发烧:",
-            "tj": "Талаффузи 发烧-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "bān",
-            "Zhōngwén",
-            "yíyàng",
-            "fāshāo"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "发烧 — fāshāo",
-            "ru": "发烧 — fāshāo",
-            "tj": "发烧 — fāshāo"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "中文",
           "pinyin": "Zhōngwén",
@@ -877,6 +830,105 @@
             "uz": "xitoy tili",
             "ru": "китайский язык",
             "tj": "забони чинӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "又 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 又:",
+            "tj": "Маънои калимаи 又-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            },
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            },
+            {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
+            },
+            {
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "又 = yana (amal allaqachon takrorlangan) (yòu)",
+            "ru": "又 = снова (действие уже повторилось) (yòu)",
+            "tj": "又 = боз (амал аллакай такрор шуд) (yòu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "又",
+            "pinyin": "yòu",
+            "meaning": {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xitoy tili' xitoycha qaysi?",
+            "ru": "'китайский язык' по-китайски?",
+            "tj": "'забони чинӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "一样",
+            "班",
+            "最后",
+            "中文"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "xitoy tili = 中文 (Zhōngwén)",
+            "ru": "китайский язык = 中文 (Zhōngwén)",
+            "tj": "забони чинӣ = 中文 (Zhōngwén)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "中文",
+            "pinyin": "Zhōngwén",
+            "meaning": {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            }
           }
         }
       ]

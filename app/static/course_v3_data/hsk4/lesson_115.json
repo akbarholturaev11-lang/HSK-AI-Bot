@@ -403,11 +403,11 @@
           "pinyin": "cāntīng",
           "options": [
             "演员",
-            "餐厅",
             "观众",
-            "京剧"
+            "京剧",
+            "餐厅"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "餐厅 — restoran, oshxona (cāntīng)",
             "ru": "餐厅 — ресторан, столовая (cāntīng)",
@@ -442,9 +442,9 @@
           },
           "options": [
             {
-              "uz": "Pekin operasi",
-              "ru": "пекинская опера",
-              "tj": "операи Пекин"
+              "uz": "qog'oz paket",
+              "ru": "бумажный пакет",
+              "tj": "халтаи коғазӣ"
             },
             {
               "uz": "aktyor",
@@ -452,17 +452,17 @@
               "tj": "актёр"
             },
             {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            },
+            {
               "uz": "tomoshabin",
               "ru": "зрители, публика",
               "tj": "тамошобинон"
-            },
-            {
-              "uz": "qog'oz paket",
-              "ru": "бумажный пакет",
-              "tj": "халтаи коғазӣ"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "纸袋 = qog'oz paket (zhǐdài)",
             "ru": "纸袋 = бумажный пакет (zhǐdài)",
@@ -506,9 +506,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "京剧",
-            "袋（子）",
             "观众",
+            "袋（子）",
+            "京剧",
             "演员"
           ],
           "correct_index": 1,
@@ -546,11 +546,11 @@
           },
           "options": [
             "yǎnyuán",
-            "jīngjù",
+            "hùliánwǎng",
             "guānzhòng",
-            "hùliánwǎng"
+            "jīngjù"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "互联网 — hùliánwǎng",
             "ru": "互联网 — hùliánwǎng",
@@ -570,12 +570,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "京剧",
-            "演员",
+            "餐厅",
             "观众",
-            "餐厅"
+            "演员",
+            "京剧"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "restoran, oshxona = 餐厅 (cāntīng)",
             "ru": "ресторан, столовая = 餐厅 (cāntīng)",
@@ -645,8 +645,8 @@
           "audio_text": "袋（子）",
           "pinyin": "dài(zi)",
           "options": [
-            "观众",
             "演员",
+            "观众",
             "京剧",
             "袋（子）"
           ],
@@ -655,31 +655,6 @@
             "uz": "袋（子） — paket, xalta (dài(zi))",
             "ru": "袋（子） — пакет, мешок (dài(zi))",
             "tj": "袋（子） — халта (dài(zi))"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yǒuqù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yǒuqù?",
-            "tj": "yǒuqù кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "演员",
-            "有趣",
-            "京剧",
-            "观众"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "有趣 = qiziqarli (yǒuqù)",
-            "ru": "有趣 = интересный (yǒuqù)",
-            "tj": "有趣 = ҷолиб (yǒuqù)"
           }
         },
         {
@@ -732,6 +707,105 @@
             "uz": "paket, xalta",
             "ru": "пакет, мешок",
             "tj": "халта"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "讨论 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 讨论:",
+            "tj": "Маънои калимаи 讨论-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            },
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            },
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            },
+            {
+              "uz": "muhokama qilmoq",
+              "ru": "обсуждать",
+              "tj": "муҳокима кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "讨论 = muhokama qilmoq (tǎolùn)",
+            "ru": "讨论 = обсуждать (tǎolùn)",
+            "tj": "讨论 = муҳокима кардан (tǎolùn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "讨论",
+            "pinyin": "tǎolùn",
+            "meaning": {
+              "uz": "muhokama qilmoq",
+              "ru": "обсуждать",
+              "tj": "муҳокима кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'paket, xalta' xitoycha qaysi?",
+            "ru": "'пакет, мешок' по-китайски?",
+            "tj": "'халта' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "袋（子）",
+            "演员",
+            "观众",
+            "京剧"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "paket, xalta = 袋（子） (dài(zi))",
+            "ru": "пакет, мешок = 袋（子） (dài(zi))",
+            "tj": "халта = 袋（子） (dài(zi))"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "袋（子）",
+            "pinyin": "dài(zi)",
+            "meaning": {
+              "uz": "paket, xalta",
+              "ru": "пакет, мешок",
+              "tj": "халта"
+            }
           }
         }
       ]

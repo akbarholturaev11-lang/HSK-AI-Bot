@@ -425,12 +425,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qiānzhèng",
-            "bào míng",
             "bóshì",
-            "tóngqíng"
+            "bào míng",
+            "tóngqíng",
+            "qiānzhèng"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "同情 — tóngqíng",
             "ru": "同情 — tóngqíng",
@@ -464,12 +464,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "推",
             "签证",
+            "推",
             "报名",
             "博士"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "surmoq, kechiktirmoq = 推 (tuī)",
             "ru": "откладывать, отодвигать = 推 (tuī)",
@@ -511,11 +511,11 @@
           "pinyin": "yùxí",
           "options": [
             "博士",
-            "报名",
             "签证",
-            "预习"
+            "预习",
+            "报名"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "预习 — oldindan tayyorlanmoq (yùxí)",
             "ru": "预习 — готовиться заранее (yùxí)",
@@ -550,9 +550,9 @@
           },
           "options": [
             {
-              "uz": "asosiy nuqta",
-              "ru": "ключевой пункт",
-              "tj": "нуқтаи муҳим"
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
             },
             {
               "uz": "viza",
@@ -560,9 +560,9 @@
               "tj": "раводид"
             },
             {
-              "uz": "ro'yxatdan o'tmoq",
-              "ru": "записываться, регистрироваться",
-              "tj": "номнавис шудан"
+              "uz": "asosiy nuqta",
+              "ru": "ключевой пункт",
+              "tj": "нуқтаи муҳим"
             },
             {
               "uz": "doktorantura darajasi",
@@ -570,7 +570,7 @@
               "tj": "доктор, дараҷаи илмӣ"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "重点 = asosiy nuqta (zhòngdiǎn)",
             "ru": "重点 = ключевой пункт (zhòngdiǎn)",
@@ -590,8 +590,8 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "博士",
             "报名",
+            "博士",
             "同情",
             "签证"
           ],
@@ -667,8 +667,8 @@
           "options": [
             "签证",
             "预习",
-            "报名",
-            "博士"
+            "博士",
+            "报名"
           ],
           "correct_index": 1,
           "explanation": {
@@ -720,31 +720,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "bào míng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается bào míng?",
-            "tj": "bào míng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "表格",
-            "报名",
-            "博士",
-            "签证"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "报名 = ro'yxatdan o'tmoq (bào míng)",
-            "ru": "报名 = записываться, регистрироваться (bào míng)",
-            "tj": "报名 = номнавис шудан (bào míng)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "预习",
           "pinyin": "yùxí",
@@ -752,6 +727,105 @@
             "uz": "oldindan tayyorlanmoq",
             "ru": "готовиться заранее",
             "tj": "пешакӣ тайёрӣ дидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "原谅 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 原谅:",
+            "tj": "Маънои калимаи 原谅-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
+              "uz": "kechirmoq",
+              "ru": "прощать",
+              "tj": "бахшидан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "原谅 = kechirmoq (yuánliàng)",
+            "ru": "原谅 = прощать (yuánliàng)",
+            "tj": "原谅 = бахшидан (yuánliàng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "原谅",
+            "pinyin": "yuánliàng",
+            "meaning": {
+              "uz": "kechirmoq",
+              "ru": "прощать",
+              "tj": "бахшидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'oldindan tayyorlanmoq' xitoycha qaysi?",
+            "ru": "'готовиться заранее' по-китайски?",
+            "tj": "'пешакӣ тайёрӣ дидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "博士",
+            "预习",
+            "报名",
+            "签证"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "oldindan tayyorlanmoq = 预习 (yùxí)",
+            "ru": "готовиться заранее = 预习 (yùxí)",
+            "tj": "пешакӣ тайёрӣ дидан = 预习 (yùxí)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "预习",
+            "pinyin": "yùxí",
+            "meaning": {
+              "uz": "oldindan tayyorlanmoq",
+              "ru": "готовиться заранее",
+              "tj": "пешакӣ тайёрӣ дидан"
+            }
           }
         }
       ]

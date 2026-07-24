@@ -356,27 +356,27 @@
           },
           "options": [
             {
-              "uz": "san'at",
-              "ru": "искусство",
-              "tj": "санъат"
-            },
-            {
               "uz": "chegirma qilmoq",
               "ru": "делать скидку",
               "tj": "тахфиф кардан"
             },
             {
-              "uz": "divan",
-              "ru": "диван",
-              "tj": "диван"
-            },
-            {
               "uz": "mebel",
               "ru": "мебель",
               "tj": "мебел"
+            },
+            {
+              "uz": "san'at",
+              "ru": "искусство",
+              "tj": "санъат"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "艺术 = san'at (yìshù)",
             "ru": "艺术 = искусство (yìshù)",
@@ -410,12 +410,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "家具",
-            "打折",
             "广告",
+            "打折",
+            "家具",
             "沙发"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "广告 = reklama; reklama qilmoq (guǎnggào)",
             "ru": "广告 = реклама; рекламировать (guǎnggào)",
@@ -450,11 +450,11 @@
           },
           "options": [
             "jiājù",
-            "shāfā",
+            "wèidào",
             "dǎzhé",
-            "wèidào"
+            "shāfā"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "味道 — wèidào",
             "ru": "味道 — wèidào",
@@ -488,12 +488,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "优点",
-            "家具",
             "打折",
-            "沙发"
+            "家具",
+            "沙发",
+            "优点"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "afzallik = 优点 (yōudiǎn)",
             "ru": "достоинство, плюс = 优点 (yōudiǎn)",
@@ -512,8 +512,8 @@
           "options": [
             "艺术",
             "打折",
-            "沙发",
-            "家具"
+            "家具",
+            "沙发"
           ],
           "correct_index": 0,
           "explanation": {
@@ -576,53 +576,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "台 talaffuzini tanlang:",
-            "ru": "Выберите произношение 台:",
-            "tj": "Талаффузи 台-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "tái",
-            "jiājù",
-            "dǎzhé",
-            "shāfā"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "台 — tái",
-            "ru": "台 — tái",
-            "tj": "台 — tái"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "艺术",
-          "pinyin": "yìshù",
-          "options": [
-            "沙发",
-            "打折",
-            "家具",
-            "艺术"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "艺术 — san'at (yìshù)",
-            "ru": "艺术 — искусство (yìshù)",
-            "tj": "艺术 — санъат (yìshù)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -665,6 +618,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "艺术",
+          "pinyin": "yìshù",
+          "options": [
+            "艺术",
+            "打折",
+            "家具",
+            "沙发"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "艺术 — san'at (yìshù)",
+            "ru": "艺术 — искусство (yìshù)",
+            "tj": "艺术 — санъат (yìshù)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "艺术",
           "pinyin": "yìshù",
@@ -672,6 +647,105 @@
             "uz": "san'at",
             "ru": "искусство",
             "tj": "санъат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "效果 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 效果:",
+            "tj": "Маънои калимаи 效果-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            },
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "natija, effekt",
+              "ru": "эффект, результат",
+              "tj": "натиҷа, таъсир"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "效果 = natija, effekt (xiàoguǒ)",
+            "ru": "效果 = эффект, результат (xiàoguǒ)",
+            "tj": "效果 = натиҷа, таъсир (xiàoguǒ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "效果",
+            "pinyin": "xiàoguǒ",
+            "meaning": {
+              "uz": "natija, effekt",
+              "ru": "эффект, результат",
+              "tj": "натиҷа, таъсир"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'san'at' xitoycha qaysi?",
+            "ru": "'искусство' по-китайски?",
+            "tj": "'санъат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "家具",
+            "打折",
+            "沙发",
+            "艺术"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "san'at = 艺术 (yìshù)",
+            "ru": "искусство = 艺术 (yìshù)",
+            "tj": "санъат = 艺术 (yìshù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "艺术",
+            "pinyin": "yìshù",
+            "meaning": {
+              "uz": "san'at",
+              "ru": "искусство",
+              "tj": "санъат"
+            }
           }
         }
       ]

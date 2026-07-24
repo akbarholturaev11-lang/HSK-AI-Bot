@@ -640,28 +640,34 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zuì qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zuì?",
-            "tj": "zuì кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Tushdan keyin birga futbol o'ynamizmi?",
+            "ru": "Давай после обеда вместе поиграем в футбол.",
+            "tj": "Баъд аз нисфирӯзӣ биёед якҷо футбол бозем."
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "旅游",
+          "tokens": [
             "觉得",
-            "为什么",
-            "最"
+            "下午",
+            "踢足球",
+            "我们",
+            "去",
+            "旅游",
+            "一起",
+            "吧"
           ],
-          "correct_index": 3,
+          "answer_tokens": [
+            "下午",
+            "我们",
+            "一起",
+            "去",
+            "踢足球",
+            "吧"
+          ],
           "explanation": {
-            "uz": "最 = eng, juda (zuì)",
-            "ru": "最 = самый, наиболее (zuì)",
-            "tj": "最 = аз ҳама, бештар (zuì)"
+            "uz": "下午我们一起去踢足球吧。 — Xiàwǔ wǒmen yìqǐ qù tī zúqiú ba.",
+            "ru": "下午我们一起去踢足球吧。 — Xiàwǔ wǒmen yìqǐ qù tī zúqiú ba.",
+            "tj": "下午我们一起去踢足球吧。 — Xiàwǔ wǒmen yìqǐ qù tī zúqiú ba."
           }
         },
         {
@@ -754,37 +760,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Tushdan keyin birga futbol o'ynamizmi?",
-            "ru": "Давай после обеда вместе поиграем в футбол.",
-            "tj": "Баъд аз нисфирӯзӣ биёед якҷо футбол бозем."
-          },
-          "tokens": [
-            "觉得",
-            "下午",
-            "踢足球",
-            "我们",
-            "去",
-            "旅游",
-            "一起",
-            "吧"
-          ],
-          "answer_tokens": [
-            "下午",
-            "我们",
-            "一起",
-            "去",
-            "踢足球",
-            "吧"
-          ],
-          "explanation": {
-            "uz": "下午我们一起去踢足球吧。 — Xiàwǔ wǒmen yìqǐ qù tī zúqiú ba.",
-            "ru": "下午我们一起去踢足球吧。 — Xiàwǔ wǒmen yìqǐ qù tī zúqiú ba.",
-            "tj": "下午我们一起去踢足球吧。 — Xiàwǔ wǒmen yìqǐ qù tī zúqiú ba."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "新",
           "pinyin": "xīn",
@@ -792,6 +767,105 @@
             "uz": "yangi",
             "ru": "новый",
             "tj": "нав"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "踢足球 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 踢足球:",
+            "tj": "Маънои калимаи 踢足球-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "eng, juda",
+              "ru": "самый, наиболее",
+              "tj": "аз ҳама, бештар"
+            },
+            {
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
+            },
+            {
+              "uz": "futbol o'ynamoq",
+              "ru": "играть в футбол",
+              "tj": "футбол бозӣ кардан"
+            },
+            {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "踢足球 = futbol o'ynamoq (tī zúqiú)",
+            "ru": "踢足球 = играть в футбол (tī zúqiú)",
+            "tj": "踢足球 = футбол бозӣ кардан (tī zúqiú)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "踢足球",
+            "pinyin": "tī zúqiú",
+            "meaning": {
+              "uz": "futbol o'ynamoq",
+              "ru": "играть в футбол",
+              "tj": "футбол бозӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yangi' xitoycha qaysi?",
+            "ru": "'новый' по-китайски?",
+            "tj": "'нав' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "最",
+            "觉得",
+            "旅游",
+            "新"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "yangi = 新 (xīn)",
+            "ru": "новый = 新 (xīn)",
+            "tj": "нав = 新 (xīn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "新",
+            "pinyin": "xīn",
+            "meaning": {
+              "uz": "yangi",
+              "ru": "новый",
+              "tj": "нав"
+            }
           }
         }
       ]

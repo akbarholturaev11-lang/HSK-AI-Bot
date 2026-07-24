@@ -372,11 +372,11 @@
           },
           "options": [
             "售货员",
+            "袜子",
             "所有",
-            "果汁",
-            "袜子"
+            "果汁"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "所有 = barcha, hamma (suǒyǒu)",
             "ru": "所有 = все, весь (suǒyǒu)",
@@ -410,12 +410,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "guǒzhī",
+            "huòdé",
             "shòuhuòyuán",
-            "wàzi",
-            "huòdé"
+            "guǒzhī",
+            "wàzi"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "获得 — huòdé",
             "ru": "获得 — huòdé",
@@ -449,12 +449,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "袜子",
-            "情况",
             "售货员",
-            "果汁"
+            "果汁",
+            "袜子",
+            "情况"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "holat, vaziyat = 情况 (qíngkuàng)",
             "ru": "ситуация, положение = 情况 (qíngkuàng)",
@@ -495,12 +495,12 @@
           "audio_text": "例如",
           "pinyin": "lìrú",
           "options": [
-            "售货员",
-            "袜子",
             "例如",
-            "果汁"
+            "果汁",
+            "袜子",
+            "售货员"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "例如 — masalan (lìrú)",
             "ru": "例如 — например (lìrú)",
@@ -521,11 +521,6 @@
           },
           "options": [
             {
-              "uz": "barcha, hamma",
-              "ru": "все, весь",
-              "tj": "ҳама"
-            },
-            {
               "uz": "paypoq",
               "ru": "носки",
               "tj": "ҷӯроб"
@@ -539,9 +534,14 @@
               "uz": "meva sharbati",
               "ru": "фруктовый сок",
               "tj": "шарбати мева"
+            },
+            {
+              "uz": "barcha, hamma",
+              "ru": "все, весь",
+              "tj": "ҳама"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "所有 = barcha, hamma (suǒyǒu)",
             "ru": "所有 = все, весь (suǒyǒu)",
@@ -639,11 +639,11 @@
           },
           "options": [
             "售货员",
+            "果汁",
             "袜子",
-            "情况",
-            "果汁"
+            "情况"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 情况 (qíngkuàng) — holat, vaziyat",
             "ru": "Верно: 情况 (qíngkuàng) — ситуация, положение",
@@ -671,79 +671,16 @@
           "audio_text": "所有",
           "pinyin": "suǒyǒu",
           "options": [
-            "所有",
             "果汁",
-            "售货员",
-            "袜子"
+            "所有",
+            "袜子",
+            "售货员"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "所有 — barcha, hamma (suǒyǒu)",
             "ru": "所有 — все, весь (suǒyǒu)",
             "tj": "所有 — ҳама (suǒyǒu)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "打扰 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 打扰:",
-            "tj": "Маънои калимаи 打扰-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "paypoq",
-              "ru": "носки",
-              "tj": "ҷӯроб"
-            },
-            {
-              "uz": "meva sharbati",
-              "ru": "фруктовый сок",
-              "tj": "шарбати мева"
-            },
-            {
-              "uz": "sotuvchi",
-              "ru": "продавец",
-              "tj": "фурӯшанда"
-            },
-            {
-              "uz": "bezovta qilmoq",
-              "ru": "беспокоить, мешать",
-              "tj": "халал расондан, нороҳат кардан"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "打扰 = bezovta qilmoq (dǎrǎo)",
-            "ru": "打扰 = беспокоить, мешать (dǎrǎo)",
-            "tj": "打扰 = халал расондан, нороҳат кардан (dǎrǎo)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "例如",
-          "pinyin": "lìrú",
-          "options": [
-            "售货员",
-            "果汁",
-            "袜子",
-            "例如"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "例如 — masalan (lìrú)",
-            "ru": "例如 — например (lìrú)",
-            "tj": "例如 — масалан (lìrú)"
           }
         },
         {
@@ -759,12 +696,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "袜子",
-            "获得",
             "果汁",
-            "售货员"
+            "售货员",
+            "获得",
+            "袜子"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "qo'lga kiritmoq, olmoq = 获得 (huòdé)",
             "ru": "получать, приобретать = 获得 (huòdé)",
@@ -779,6 +716,105 @@
             "uz": "masalan",
             "ru": "например",
             "tj": "масалан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "会员卡 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 会员卡:",
+            "tj": "Маънои калимаи 会员卡-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "a'zolik kartasi",
+              "ru": "членская карта",
+              "tj": "корти аъзогӣ"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            },
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "会员卡 = a'zolik kartasi (huìyuánkǎ)",
+            "ru": "会员卡 = членская карта (huìyuánkǎ)",
+            "tj": "会员卡 = корти аъзогӣ (huìyuánkǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "会员卡",
+            "pinyin": "huìyuánkǎ",
+            "meaning": {
+              "uz": "a'zolik kartasi",
+              "ru": "членская карта",
+              "tj": "корти аъзогӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'masalan' xitoycha qaysi?",
+            "ru": "'например' по-китайски?",
+            "tj": "'масалан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "售货员",
+            "袜子",
+            "果汁",
+            "例如"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "masalan = 例如 (lìrú)",
+            "ru": "например = 例如 (lìrú)",
+            "tj": "масалан = 例如 (lìrú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "例如",
+            "pinyin": "lìrú",
+            "meaning": {
+              "uz": "masalan",
+              "ru": "например",
+              "tj": "масалан"
+            }
           }
         }
       ]

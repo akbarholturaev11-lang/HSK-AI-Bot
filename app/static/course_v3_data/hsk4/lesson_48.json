@@ -345,12 +345,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "pífū",
-            "guǒzhī",
             "shòuhuòyuán",
+            "guǒzhī",
+            "pífū",
             "wàzi"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "皮肤 — pífū",
             "ru": "皮肤 — pífū",
@@ -385,11 +385,11 @@
           },
           "options": [
             "袜子",
-            "果汁",
+            "好处",
             "售货员",
-            "好处"
+            "果汁"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "foyda, afzallik = 好处 (hǎochu)",
             "ru": "польза, преимущество = 好处 (hǎochu)",
@@ -420,9 +420,9 @@
           "audio_text": "尝",
           "pinyin": "cháng",
           "options": [
-            "售货员",
             "袜子",
             "果汁",
+            "售货员",
             "尝"
           ],
           "correct_index": 3,
@@ -470,27 +470,27 @@
           },
           "options": [
             {
-              "uz": "paypoq",
-              "ru": "носки",
-              "tj": "ҷӯроб"
-            },
-            {
               "uz": "meva sharbati",
               "ru": "фруктовый сок",
               "tj": "шарбати мева"
             },
             {
-              "uz": "yengil",
-              "ru": "лёгкий",
-              "tj": "сабук"
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
             },
             {
               "uz": "sotuvchi",
               "ru": "продавец",
               "tj": "фурӯшанда"
+            },
+            {
+              "uz": "yengil",
+              "ru": "лёгкий",
+              "tj": "сабук"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "轻 = yengil (qīng)",
             "ru": "轻 = лёгкий (qīng)",
@@ -511,11 +511,11 @@
           },
           "options": [
             "袜子",
-            "皮肤",
             "果汁",
-            "售货员"
+            "售货员",
+            "皮肤"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "皮肤 = teri (pífū)",
             "ru": "皮肤 = кожа (pífū)",
@@ -585,16 +585,38 @@
           "audio_text": "好，那我先买几个尝尝。",
           "pinyin": "Hǎo, nà wǒ xiān mǎi jǐ ge chángchang.",
           "options": [
-            "好，那我先买几个尝尝。",
-            "买这么点儿东西也用不了那么长时间啊！",
             "昨天晚上我给你打电话一直没人接，你忙什么呢？",
-            "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。"
+            "昨天妻子让我陪她去超市买果汁。我把手机忘在家里了。",
+            "买这么点儿东西也用不了那么长时间啊！",
+            "好，那我先买几个尝尝。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "好，那我先买几个尝尝。 — Yaxshi, unda avval bir nechtasini olib tatib ko'raman.",
             "ru": "好，那我先买几个尝尝。 — Хорошо, тогда сначала куплю несколько попробовать.",
             "tj": "好，那我先买几个尝尝。 — Хуб, пас аввал чандто мехарам, бичашам."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "皮肤",
+          "pinyin": "pífū",
+          "options": [
+            "皮肤",
+            "果汁",
+            "袜子",
+            "售货员"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "皮肤 — teri (pífū)",
+            "ru": "皮肤 — кожа (pífū)",
+            "tj": "皮肤 — пӯст (pífū)"
           }
         },
         {
@@ -669,69 +691,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "倍 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 倍:",
-            "tj": "Маънои калимаи 倍-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "sotuvchi",
-              "ru": "продавец",
-              "tj": "фурӯшанда"
-            },
-            {
-              "uz": "marta, baravar",
-              "ru": "раз, крат",
-              "tj": "маротиба, баробар"
-            },
-            {
-              "uz": "paypoq",
-              "ru": "носки",
-              "tj": "ҷӯроб"
-            },
-            {
-              "uz": "meva sharbati",
-              "ru": "фруктовый сок",
-              "tj": "шарбати мева"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "倍 = marta, baravar (bèi)",
-            "ru": "倍 = раз, крат (bèi)",
-            "tj": "倍 = маротиба, баробар (bèi)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "皮肤",
-          "pinyin": "pífū",
-          "options": [
-            "袜子",
-            "售货员",
-            "皮肤",
-            "果汁"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "皮肤 — teri (pífū)",
-            "ru": "皮肤 — кожа (pífū)",
-            "tj": "皮肤 — пӯст (pífū)"
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'foyda, afzallik' xitoycha qaysi?",
@@ -744,12 +703,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "果汁",
-            "好处",
             "售货员",
-            "袜子"
+            "袜子",
+            "果汁",
+            "好处"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "foyda, afzallik = 好处 (hǎochu)",
             "ru": "польза, преимущество = 好处 (hǎochu)",
@@ -764,6 +723,105 @@
             "uz": "yengil",
             "ru": "лёгкий",
             "tj": "сабук"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "倍 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 倍:",
+            "tj": "Маънои калимаи 倍-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "marta, baravar",
+              "ru": "раз, крат",
+              "tj": "маротиба, баробар"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "倍 = marta, baravar (bèi)",
+            "ru": "倍 = раз, крат (bèi)",
+            "tj": "倍 = маротиба, баробар (bèi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "倍",
+            "pinyin": "bèi",
+            "meaning": {
+              "uz": "marta, baravar",
+              "ru": "раз, крат",
+              "tj": "маротиба, баробар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yengil' xitoycha qaysi?",
+            "ru": "'лёгкий' по-китайски?",
+            "tj": "'сабук' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "轻",
+            "果汁",
+            "袜子",
+            "售货员"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yengil = 轻 (qīng)",
+            "ru": "лёгкий = 轻 (qīng)",
+            "tj": "сабук = 轻 (qīng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "轻",
+            "pinyin": "qīng",
+            "meaning": {
+              "uz": "yengil",
+              "ru": "лёгкий",
+              "tj": "сабук"
+            }
           }
         }
       ]

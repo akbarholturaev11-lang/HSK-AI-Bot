@@ -583,10 +583,10 @@
           "audio_text": "最后",
           "pinyin": "zuìhòu",
           "options": [
-            "中文",
+            "班",
             "一样",
             "最后",
-            "班"
+            "中文"
           ],
           "correct_index": 2,
           "explanation": {
@@ -651,27 +651,27 @@
           },
           "options": [
             {
-              "uz": "sinf, guruh",
-              "ru": "класс, группа",
-              "tj": "синф, гурӯҳ"
-            },
-            {
               "uz": "xitoy tili",
               "ru": "китайский язык",
               "tj": "забони чинӣ"
             },
             {
-              "uz": "albatta, aniq",
-              "ru": "обязательно, непременно",
-              "tj": "албатта, ҳатман"
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
             },
             {
               "uz": "bir xil, xuddi ... kabi",
               "ru": "одинаковый, такой же",
               "tj": "якхела, мисли"
+            },
+            {
+              "uz": "albatta, aniq",
+              "ru": "обязательно, непременно",
+              "tj": "албатта, ҳатман"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "一定 = albatta, aniq (yídìng)",
             "ru": "一定 = обязательно, непременно (yídìng)",
@@ -774,9 +774,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bān",
-            "Zhōngwén",
             "yíyàng",
+            "Zhōngwén",
+            "bān",
             "bǐjiào"
           ],
           "correct_index": 3,
@@ -789,9 +789,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Bugun kecha kabi sovuq emas.» — xitoychada qaysi biri?",
-            "ru": "«Сегодня не так холодно, как вчера.» — какое предложение по-китайски?",
-            "tj": "«Имрӯз ба монанди дирӯз сард нест.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Uning xitoycha gapirishi xitoyliklarnikidek yaxshi.» — xitoychada qaysi biri?",
+            "ru": "«Она говорит по-китайски так же хорошо, как китайцы.» — какое предложение по-китайски?",
+            "tj": "«Вай ба монанди чиниҳо хуб чинӣ ҳарф мезанад.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -799,16 +799,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "她越学越觉得有意思。",
-            "这个跟那个一样贵。",
             "她的汉语说得跟中国人一样好。",
-            "今天没有昨天那么冷。"
+            "今天没有昨天那么冷。",
+            "天气越来越冷了。",
+            "她越学越觉得有意思。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "今天没有昨天那么冷。 — Jīntiān méiyǒu zuótiān nàme lěng.",
-            "ru": "今天没有昨天那么冷。 — Jīntiān méiyǒu zuótiān nàme lěng.",
-            "tj": "今天没有昨天那么冷。 — Jīntiān méiyǒu zuótiān nàme lěng."
+            "uz": "她的汉语说得跟中国人一样好。 — Tā de Hànyǔ shuō de gēn Zhōngguórén yīyàng hǎo.",
+            "ru": "她的汉语说得跟中国人一样好。 — Tā de Hànyǔ shuō de gēn Zhōngguórén yīyàng hǎo.",
+            "tj": "她的汉语说得跟中国人一样好。 — Tā de Hànyǔ shuō de gēn Zhōngguórén yīyàng hǎo."
           }
         },
         {
@@ -899,12 +899,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "怎么好？",
+            "马可，你的中文越说越好了！",
             "哪里哪里，我们班李静说得更好。",
-            "她的汉语说得跟中国人一样好。",
-            "马可，你的中文越说越好了！"
+            "怎么好？",
+            "她的汉语说得跟中国人一样好。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 马可，你的中文越说越好了！",
             "ru": "Правильный ответ: 马可，你的中文越说越好了！",
@@ -920,12 +920,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "到",
-            "咖",
-            "结",
-            "马"
+            "鸡",
+            "马",
+            "树",
+            "衫"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 马 — 马可，你的中文越说越好了！ (Make, xitoychang tobora yaxshilanib boryapti!)",
             "ru": "Верно: 马 — 马可，你的中文越说越好了！ (Марк, ты говоришь по-китайски всё лучше!)",
@@ -998,11 +998,11 @@
           ],
           "options": [
             "哪里哪里，我们班李静说得更好。",
-            "她是我们的汉语老师。",
             "马可，你的中文越说越好了！",
+            "她是我们的汉语老师。",
             "怎么好？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 她是我们的汉语老师。",
             "ru": "Правильный ответ: 她是我们的汉语老师。",

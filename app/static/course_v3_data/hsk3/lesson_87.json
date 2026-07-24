@@ -306,12 +306,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "城市",
-            "如果",
             "刷牙",
-            "认为"
+            "城市",
+            "认为",
+            "如果"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "刷牙 = tish yuvmoq (shuā yá)",
             "ru": "刷牙 = чистить зубы (shuā yá)",
@@ -345,12 +345,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "chéngshì",
-            "rènwéi",
+            "rúguǒ",
             "guānxì",
-            "rúguǒ"
+            "rènwéi",
+            "chéngshì"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "关系 — guānxì",
             "ru": "关系 — guānxì",
@@ -394,12 +394,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "认为",
             "城市",
-            "如果",
-            "别人"
+            "别人",
+            "认为",
+            "如果"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "boshqa odamlar = 别人 (biérén)",
             "ru": "другие люди = 别人 (biérén)",
@@ -430,12 +430,12 @@
           "audio_text": "词语",
           "pinyin": "cíyǔ",
           "options": [
+            "如果",
             "城市",
             "词语",
-            "认为",
-            "如果"
+            "认为"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "词语 — so'z, ibora (cíyǔ)",
             "ru": "词语 — слово, выражение (cíyǔ)",
@@ -537,53 +537,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "rènwéi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается rènwéi?",
-            "tj": "rènwéi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "认为",
-            "如果",
-            "城市",
-            "皮鞋"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "认为 = deb o'ylamoq, hisoblamoq (rènwéi)",
-            "ru": "认为 = считать, полагать (rènwéi)",
-            "tj": "认为 = фикр кардан, ҳисобидан (rènwéi)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "别人",
-          "pinyin": "biérén",
-          "options": [
-            "如果",
-            "城市",
-            "别人",
-            "认为"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "别人 — boshqa odamlar (biérén)",
-            "ru": "别人 — другие люди (biérén)",
-            "tj": "别人 — дигарон (biérén)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "词语",
           "pinyin": "cíyǔ",
@@ -600,15 +553,37 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "别人",
+          "pinyin": "biérén",
+          "options": [
+            "认为",
+            "如果",
+            "别人",
+            "城市"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "别人 — boshqa odamlar (biérén)",
+            "ru": "别人 — другие люди (biérén)",
+            "tj": "别人 — дигарон (biérén)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
           "audio_text": "关系",
           "pinyin": "guānxì",
           "options": [
-            "关系",
             "如果",
-            "认为",
-            "城市"
+            "关系",
+            "城市",
+            "认为"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "关系 — munosabat, aloqa (guānxì)",
             "ru": "关系 — отношение, связь (guānxì)",
@@ -623,6 +598,105 @@
             "uz": "boshqa odamlar",
             "ru": "другие люди",
             "tj": "дигарон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "头发 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 头发:",
+            "tj": "Маънои калимаи 头发-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shahar",
+              "ru": "город",
+              "tj": "шаҳр"
+            },
+            {
+              "uz": "agar",
+              "ru": "если",
+              "tj": "агар"
+            },
+            {
+              "uz": "soch",
+              "ru": "волосы",
+              "tj": "мӯй"
+            },
+            {
+              "uz": "deb o'ylamoq, hisoblamoq",
+              "ru": "считать, полагать",
+              "tj": "фикр кардан, ҳисобидан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "头发 = soch (tóufa)",
+            "ru": "头发 = волосы (tóufa)",
+            "tj": "头发 = мӯй (tóufa)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "头发",
+            "pinyin": "tóufa",
+            "meaning": {
+              "uz": "soch",
+              "ru": "волосы",
+              "tj": "мӯй"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'boshqa odamlar' xitoycha qaysi?",
+            "ru": "'другие люди' по-китайски?",
+            "tj": "'дигарон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "别人",
+            "如果",
+            "城市",
+            "认为"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "boshqa odamlar = 别人 (biérén)",
+            "ru": "другие люди = 别人 (biérén)",
+            "tj": "дигарон = 别人 (biérén)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "别人",
+            "pinyin": "biérén",
+            "meaning": {
+              "uz": "boshqa odamlar",
+              "ru": "другие люди",
+              "tj": "дигарон"
+            }
           }
         }
       ]

@@ -400,12 +400,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "wèi",
-            "fāshāo",
             "zhàogù",
-            "zuìjìn"
+            "wèi",
+            "zuìjìn",
+            "fāshāo"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "最近 — zuìjìn",
             "ru": "最近 — zuìjìn",
@@ -439,12 +439,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "为",
-            "越",
+            "照顾",
             "发烧",
-            "照顾"
+            "越",
+            "为"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "borgan sari, tobora = 越 (yuè)",
             "ru": "чем дальше, тем; всё более = 越 (yuè)",
@@ -475,12 +475,12 @@
           "audio_text": "张",
           "pinyin": "Zhāng",
           "options": [
-            "为",
-            "发烧",
+            "照顾",
             "张",
-            "照顾"
+            "为",
+            "发烧"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "张 — Zhang (familiya) (Zhāng)",
             "ru": "张 — Чжан (фамилия) (Zhāng)",
@@ -501,9 +501,9 @@
           },
           "options": [
             {
-              "uz": "uchun",
-              "ru": "для, ради",
-              "tj": "барои"
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
             },
             {
               "uz": "qaramoq, parvarish qilmoq",
@@ -511,17 +511,17 @@
               "tj": "нигоҳубин кардан"
             },
             {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            },
+            {
               "uz": "yaqinda, oxirgi paytlarda",
               "ru": "недавно, в последнее время",
               "tj": "ба наздикӣ, вақтҳои охир"
-            },
-            {
-              "uz": "isitmasi chiqmoq",
-              "ru": "температурить",
-              "tj": "таб кардан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "最近 = yaqinda, oxirgi paytlarda (zuìjìn)",
             "ru": "最近 = недавно, в последнее время (zuìjìn)",
@@ -618,16 +618,16 @@
             "tj": "Таб баромад, ҳолатам рӯ ба рӯ бадтар мешавад."
           },
           "tokens": [
-            "发烧",
-            "了",
-            "越",
-            "越",
-            "身体",
             "不",
-            "来",
-            "照顾",
+            "越",
             "舒服",
-            "为"
+            "发烧",
+            "身体",
+            "照顾",
+            "了",
+            "为",
+            "来",
+            "越"
           ],
           "answer_tokens": [
             "发烧",
@@ -656,6 +656,61 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我最近越来越胖了。",
+          "pinyin": "Wǒ zuìjìn yuè lái yuè pàng le.",
+          "options": [
+            "我听说你身体不舒服，怎么了？",
+            "前几天有点儿发烧，现在好多了。",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。",
+            "我最近越来越胖了。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我最近越来越胖了。 — Oxirgi paytlarda tobora semirib ketyapman.",
+            "ru": "我最近越来越胖了。 — В последнее время я становлюсь всё полнее.",
+            "tj": "我最近越来越胖了。 — Вақтҳои охир торафт фарбеҳ шуда истодаам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Oxirgi paytlarda tobora semirib ketyapman.",
+            "ru": "В последнее время я становлюсь всё полнее.",
+            "tj": "Вақтҳои охир торафт фарбеҳ шуда истодаам."
+          },
+          "tokens": [
+            "我",
+            "发烧",
+            "为",
+            "来",
+            "胖",
+            "了",
+            "越",
+            "越",
+            "最近"
+          ],
+          "answer_tokens": [
+            "我",
+            "最近",
+            "越",
+            "来",
+            "越",
+            "胖",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我最近越来越胖了。 — Wǒ zuìjìn yuè lái yuè pàng le.",
+            "ru": "我最近越来越胖了。 — Wǒ zuìjìn yuè lái yuè pàng le.",
+            "tj": "我最近越来越胖了。 — Wǒ zuìjìn yuè lái yuè pàng le."
+          }
+        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -688,102 +743,6 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "季节 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 季节:",
-            "tj": "Маънои калимаи 季节-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qaramoq, parvarish qilmoq",
-              "ru": "заботиться, ухаживать",
-              "tj": "нигоҳубин кардан"
-            },
-            {
-              "uz": "isitmasi chiqmoq",
-              "ru": "температурить",
-              "tj": "таб кардан"
-            },
-            {
-              "uz": "uchun",
-              "ru": "для, ради",
-              "tj": "барои"
-            },
-            {
-              "uz": "fasl",
-              "ru": "сезон",
-              "tj": "фасл"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "季节 = fasl (jìjié)",
-            "ru": "季节 = сезон (jìjié)",
-            "tj": "季节 = фасл (jìjié)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Oxirgi paytlarda tobora semirib ketyapman.",
-            "ru": "В последнее время я становлюсь всё полнее.",
-            "tj": "Вақтҳои охир торафт фарбеҳ шуда истодаам."
-          },
-          "tokens": [
-            "发烧",
-            "了",
-            "我",
-            "越",
-            "来",
-            "为",
-            "胖",
-            "越",
-            "最近"
-          ],
-          "answer_tokens": [
-            "我",
-            "最近",
-            "越",
-            "来",
-            "越",
-            "胖",
-            "了"
-          ],
-          "explanation": {
-            "uz": "我最近越来越胖了。 — Wǒ zuìjìn yuè lái yuè pàng le.",
-            "ru": "我最近越来越胖了。 — Wǒ zuìjìn yuè lái yuè pàng le.",
-            "tj": "我最近越来越胖了。 — Wǒ zuìjìn yuè lái yuè pàng le."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我最近越来越胖了。",
-          "pinyin": "Wǒ zuìjìn yuè lái yuè pàng le.",
-          "options": [
-            "我最近越来越胖了。",
-            "我听说你身体不舒服，怎么了？",
-            "前几天有点儿发烧，现在好多了。",
-            "喝杯茶吧，这是我为你买的绿茶，很不错。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "我最近越来越胖了。 — Oxirgi paytlarda tobora semirib ketyapman.",
-            "ru": "我最近越来越胖了。 — В последнее время я становлюсь всё полнее.",
-            "tj": "我最近越来越胖了。 — Вақтҳои охир торафт фарбеҳ шуда истодаам."
           }
         },
         {
@@ -867,6 +826,105 @@
             "uz": "yaqinda, oxirgi paytlarda",
             "ru": "недавно, в последнее время",
             "tj": "ба наздикӣ, вақтҳои охир"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "草 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 草:",
+            "tj": "Маънои калимаи 草-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            },
+            {
+              "uz": "qaramoq, parvarish qilmoq",
+              "ru": "заботиться, ухаживать",
+              "tj": "нигоҳубин кардан"
+            },
+            {
+              "uz": "o't, maysa",
+              "ru": "трава",
+              "tj": "алаф"
+            },
+            {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "草 = o't, maysa (cǎo)",
+            "ru": "草 = трава (cǎo)",
+            "tj": "草 = алаф (cǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "草",
+            "pinyin": "cǎo",
+            "meaning": {
+              "uz": "o't, maysa",
+              "ru": "трава",
+              "tj": "алаф"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yaqinda, oxirgi paytlarda' xitoycha qaysi?",
+            "ru": "'недавно, в последнее время' по-китайски?",
+            "tj": "'ба наздикӣ, вақтҳои охир' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "最近",
+            "为",
+            "发烧",
+            "照顾"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yaqinda, oxirgi paytlarda = 最近 (zuìjìn)",
+            "ru": "недавно, в последнее время = 最近 (zuìjìn)",
+            "tj": "ба наздикӣ, вақтҳои охир = 最近 (zuìjìn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "最近",
+            "pinyin": "zuìjìn",
+            "meaning": {
+              "uz": "yaqinda, oxirgi paytlarda",
+              "ru": "недавно, в последнее время",
+              "tj": "ба наздикӣ, вақтҳои охир"
+            }
           }
         }
       ]

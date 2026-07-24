@@ -407,12 +407,12 @@
           "audio_text": "光",
           "pinyin": "guāng",
           "options": [
-            "光",
-            "沙发",
             "打折",
-            "家具"
+            "沙发",
+            "家具",
+            "光"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "光 — faqatgina (guāng)",
             "ru": "光 — только, лишь (guāng)",
@@ -457,27 +457,27 @@
           },
           "options": [
             {
-              "uz": "chegirma qilmoq",
-              "ru": "делать скидку",
-              "tj": "тахфиф кардан"
-            },
-            {
               "uz": "mebel",
               "ru": "мебель",
               "tj": "мебел"
             },
             {
-              "uz": "haqiqatan, juda",
-              "ru": "действительно, очень",
-              "tj": "воқеан, хеле"
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
             },
             {
               "uz": "divan",
               "ru": "диван",
               "tj": "диван"
+            },
+            {
+              "uz": "haqiqatan, juda",
+              "ru": "действительно, очень",
+              "tj": "воқеан, хеле"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "实在 = haqiqatan, juda (shízài)",
             "ru": "实在 = действительно, очень (shízài)",
@@ -511,12 +511,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "制冷",
             "家具",
+            "打折",
             "沙发",
-            "打折"
+            "制冷"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "制冷 = sovutmoq (zhìlěng)",
             "ru": "制冷 = охлаждать (zhìlěng)",
@@ -536,12 +536,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dǎzhé",
             "jiājù",
+            "tái",
             "shāfā",
-            "tái"
+            "dǎzhé"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "台 — tái",
             "ru": "台 — tái",
@@ -641,31 +641,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "liúxíng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается liúxíng?",
-            "tj": "liúxíng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "家具",
-            "打折",
-            "流行",
-            "沙发"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "流行 = moda bo'lmoq, ommalashmoq (liúxíng)",
-            "ru": "流行 = быть популярным, модным (liúxíng)",
-            "tj": "流行 = мӯд шудан, паҳн шудан (liúxíng)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -718,11 +693,11 @@
           "pinyin": "shízài",
           "options": [
             "家具",
+            "实在",
             "打折",
-            "沙发",
-            "实在"
+            "沙发"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "实在 — haqiqatan, juda (shízài)",
             "ru": "实在 — действительно, очень (shízài)",
@@ -737,6 +712,105 @@
             "uz": "haqiqatan, juda",
             "ru": "действительно, очень",
             "tj": "воқеан, хеле"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "流行 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 流行:",
+            "tj": "Маънои калимаи 流行-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "moda bo'lmoq, ommalashmoq",
+              "ru": "быть популярным, модным",
+              "tj": "мӯд шудан, паҳн шудан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "流行 = moda bo'lmoq, ommalashmoq (liúxíng)",
+            "ru": "流行 = быть популярным, модным (liúxíng)",
+            "tj": "流行 = мӯд шудан, паҳн шудан (liúxíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "流行",
+            "pinyin": "liúxíng",
+            "meaning": {
+              "uz": "moda bo'lmoq, ommalashmoq",
+              "ru": "быть популярным, модным",
+              "tj": "мӯд шудан, паҳн шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'haqiqatan, juda' xitoycha qaysi?",
+            "ru": "'действительно, очень' по-китайски?",
+            "tj": "'воқеан, хеле' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "实在",
+            "沙发",
+            "打折",
+            "家具"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "haqiqatan, juda = 实在 (shízài)",
+            "ru": "действительно, очень = 实在 (shízài)",
+            "tj": "воқеан, хеле = 实在 (shízài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "实在",
+            "pinyin": "shízài",
+            "meaning": {
+              "uz": "haqiqatan, juda",
+              "ru": "действительно, очень",
+              "tj": "воқеан, хеле"
+            }
           }
         }
       ]

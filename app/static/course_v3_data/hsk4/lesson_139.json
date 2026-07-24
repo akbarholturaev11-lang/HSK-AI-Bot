@@ -425,12 +425,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "签证",
+            "博士",
             "报名",
-            "传真",
-            "博士"
+            "签证",
+            "传真"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "faks orqali yubormoq = 传真 (chuánzhēn)",
             "ru": "отправлять факсом = 传真 (chuánzhēn)",
@@ -461,12 +461,12 @@
           "audio_text": "号码",
           "pinyin": "hàomǎ",
           "options": [
-            "号码",
+            "博士",
             "报名",
             "签证",
-            "博士"
+            "号码"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "号码 — raqam (hàomǎ)",
             "ru": "号码 — номер (hàomǎ)",
@@ -516,6 +516,11 @@
               "tj": "тамошо кардан"
             },
             {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
               "uz": "viza",
               "ru": "виза",
               "tj": "раводид"
@@ -524,11 +529,6 @@
               "uz": "ro'yxatdan o'tmoq",
               "ru": "записываться, регистрироваться",
               "tj": "номнавис шудан"
-            },
-            {
-              "uz": "doktorantura darajasi",
-              "ru": "доктор наук, докторская степень",
-              "tj": "доктор, дараҷаи илмӣ"
             }
           ],
           "correct_index": 0,
@@ -567,8 +567,8 @@
           "options": [
             "博士",
             "激动",
-            "签证",
-            "报名"
+            "报名",
+            "签证"
           ],
           "correct_index": 1,
           "explanation": {
@@ -590,8 +590,8 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bào míng",
             "qiānzhèng",
+            "bào míng",
             "chuánzhēn",
             "bóshì"
           ],
@@ -665,12 +665,12 @@
           "audio_text": "参观",
           "pinyin": "cānguān",
           "options": [
-            "参观",
-            "博士",
             "报名",
+            "博士",
+            "参观",
             "签证"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "参观 — tomosha qilmoq, ko'rib chiqmoq (cānguān)",
             "ru": "参观 — посещать, осматривать (cānguān)",
@@ -720,31 +720,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "bào míng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается bào míng?",
-            "tj": "bào míng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "博士",
-            "签证",
-            "报名",
-            "表格"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "报名 = ro'yxatdan o'tmoq (bào míng)",
-            "ru": "报名 = записываться, регистрироваться (bào míng)",
-            "tj": "报名 = номнавис шудан (bào míng)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "参观",
           "pinyin": "cānguān",
@@ -752,6 +727,105 @@
             "uz": "tomosha qilmoq, ko'rib chiqmoq",
             "ru": "посещать, осматривать",
             "tj": "тамошо кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "报名 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 报名:",
+            "tj": "Маънои калимаи 报名-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "forma, jadval",
+              "ru": "форма, таблица",
+              "tj": "варақа, ҷадвал"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "报名 = ro'yxatdan o'tmoq (bào míng)",
+            "ru": "报名 = записываться, регистрироваться (bào míng)",
+            "tj": "报名 = номнавис шудан (bào míng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "报名",
+            "pinyin": "bào míng",
+            "meaning": {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tomosha qilmoq, ko'rib chiqmoq' xitoycha qaysi?",
+            "ru": "'посещать, осматривать' по-китайски?",
+            "tj": "'тамошо кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "博士",
+            "报名",
+            "签证",
+            "参观"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "tomosha qilmoq, ko'rib chiqmoq = 参观 (cānguān)",
+            "ru": "посещать, осматривать = 参观 (cānguān)",
+            "tj": "тамошо кардан = 参观 (cānguān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "参观",
+            "pinyin": "cānguān",
+            "meaning": {
+              "uz": "tomosha qilmoq, ko'rib chiqmoq",
+              "ru": "посещать, осматривать",
+              "tj": "тамошо кардан"
+            }
           }
         }
       ]

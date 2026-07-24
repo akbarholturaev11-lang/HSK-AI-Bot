@@ -365,12 +365,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "流血",
             "气候",
             "抽烟",
-            "擦"
+            "擦",
+            "流血"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "抽烟 = chekmoq (chōu yān)",
             "ru": "抽烟 = курить (chōu yān)",
@@ -404,12 +404,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "liú xiě",
             "dòngzuò",
             "cā",
+            "liú xiě",
             "qìhòu"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "动作 — dòngzuò",
             "ru": "动作 — dòngzuò",
@@ -443,12 +443,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "流血",
             "擦",
-            "帅",
-            "气候"
+            "气候",
+            "流血",
+            "帅"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "kelishgan = 帅 (shuài)",
             "ru": "красивый, стильный = 帅 (shuài)",
@@ -479,12 +479,12 @@
           "audio_text": "出现",
           "pinyin": "chūxiàn",
           "options": [
-            "擦",
-            "出现",
+            "流血",
             "气候",
-            "流血"
+            "出现",
+            "擦"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "出现 — paydo bo'lmoq (chūxiàn)",
             "ru": "出现 — появляться (chūxiàn)",
@@ -505,14 +505,14 @@
           },
           "options": [
             {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            },
+            {
               "uz": "chekmoq",
               "ru": "курить",
               "tj": "тамоку кашидан"
-            },
-            {
-              "uz": "iqlim",
-              "ru": "климат",
-              "tj": "иқлим"
             },
             {
               "uz": "artmoq",
@@ -520,12 +520,12 @@
               "tj": "пок кардан, молидан"
             },
             {
-              "uz": "qon ketmoq",
-              "ru": "кровоточить",
-              "tj": "хун рафтан"
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "抽烟 = chekmoq (chōu yān)",
             "ru": "抽烟 = курить (chōu yān)",
@@ -595,114 +595,16 @@
           "audio_text": "抽烟对身体一点儿好处也没有。",
           "pinyin": "Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
           "options": [
+            "就是因为昨天穿得太少，我都感冒了。",
             "你的鼻子怎么流血了？快用纸擦擦。",
             "抽烟对身体一点儿好处也没有。",
-            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-            "就是因为昨天穿得太少，我都感冒了。"
+            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "抽烟对身体一点儿好处也没有。 — Chekishning tanaga biror foydasi ham yo'q.",
             "ru": "抽烟对身体一点儿好处也没有。 — Курение совсем не приносит пользы здоровью.",
             "tj": "抽烟对身体一点儿好处也没有。 — Тамокукашӣ ба бадан ҳеҷ фоида надорад."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "抽烟对身体一点儿好处也没有。",
-          "pinyin": "Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
-          "translation": {
-            "uz": "Chekishning tanaga biror foydasi ham yo'q.",
-            "ru": "Курение совсем не приносит пользы здоровью.",
-            "tj": "Тамокукашӣ ба бадан ҳеҷ фоида надорад."
-          },
-          "tokens": {
-            "uz": [
-              "tanaga",
-              "yo'q",
-              "foydasi",
-              "biror",
-              "Chekishning",
-              "ham",
-              "Hali",
-              "o'sha"
-            ],
-            "ru": [
-              "Курение",
-              "совсем",
-              "не",
-              "пользы",
-              "Всё",
-              "здоровью",
-              "по-старому",
-              "приносит"
-            ],
-            "tj": [
-              "фоида",
-              "ҳам",
-              "ба",
-              "ҳеҷ",
-              "бадан",
-              "Ҳоло",
-              "надорад",
-              "Тамокукашӣ"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Chekishning",
-              "tanaga",
-              "biror",
-              "foydasi",
-              "ham",
-              "yo'q"
-            ],
-            "ru": [
-              "Курение",
-              "совсем",
-              "не",
-              "приносит",
-              "пользы",
-              "здоровью"
-            ],
-            "tj": [
-              "Тамокукашӣ",
-              "ба",
-              "бадан",
-              "ҳеҷ",
-              "фоида",
-              "надорад"
-            ]
-          },
-          "explanation": {
-            "uz": "抽烟对身体一点儿好处也没有。 — Chekishning tanaga biror foydasi ham yo'q.",
-            "ru": "抽烟对身体一点儿好处也没有。 — Курение совсем не приносит пользы здоровью.",
-            "tj": "抽烟对身体一点儿好处也没有。 — Тамокукашӣ ба бадан ҳеҷ фоида надорад."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "流血 talaffuzini tanlang:",
-            "ru": "Выберите произношение 流血:",
-            "tj": "Талаффузи 流血-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "liú xiě",
-            "gūjì",
-            "cā",
-            "qìhòu"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "流血 — liú xiě",
-            "ru": "流血 — liú xiě",
-            "tj": "流血 — liú xiě"
           }
         },
         {
@@ -718,12 +620,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "气候",
-            "擦",
             "动作",
-            "流血"
+            "擦",
+            "流血",
+            "气候"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "动作 = harakat (dòngzuò)",
             "ru": "动作 = движение, действие (dòngzuò)",
@@ -782,11 +684,11 @@
           "pinyin": "chūxiàn",
           "options": [
             "气候",
+            "出现",
             "流血",
-            "擦",
-            "出现"
+            "擦"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "出现 — paydo bo'lmoq (chūxiàn)",
             "ru": "出现 — появляться (chūxiàn)",
@@ -801,6 +703,105 @@
             "uz": "chekmoq",
             "ru": "курить",
             "tj": "тамоку кашидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "咳嗽 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 咳嗽:",
+            "tj": "Маънои калимаи 咳嗽-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
+            },
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "yo'talmoq",
+              "ru": "кашлять",
+              "tj": "сулфа кардан"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "咳嗽 = yo'talmoq (késou)",
+            "ru": "咳嗽 = кашлять (késou)",
+            "tj": "咳嗽 = сулфа кардан (késou)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "咳嗽",
+            "pinyin": "késou",
+            "meaning": {
+              "uz": "yo'talmoq",
+              "ru": "кашлять",
+              "tj": "сулфа кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chekmoq' xitoycha qaysi?",
+            "ru": "'курить' по-китайски?",
+            "tj": "'тамоку кашидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "抽烟",
+            "气候",
+            "擦",
+            "流血"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "chekmoq = 抽烟 (chōu yān)",
+            "ru": "курить = 抽烟 (chōu yān)",
+            "tj": "тамоку кашидан = 抽烟 (chōu yān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "抽烟",
+            "pinyin": "chōu yān",
+            "meaning": {
+              "uz": "chekmoq",
+              "ru": "курить",
+              "tj": "тамоку кашидан"
+            }
           }
         }
       ]

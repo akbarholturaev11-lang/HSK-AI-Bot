@@ -374,11 +374,11 @@
           },
           "options": [
             "qiǎokèlì",
-            "jījí",
             "shāngxīn",
-            "qīnqi"
+            "qīnqi",
+            "jījí"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "积极 — jījí",
             "ru": "积极 — jījí",
@@ -423,11 +423,11 @@
           },
           "options": [
             "伤心",
+            "亲戚",
             "巧克力",
-            "特点",
-            "亲戚"
+            "特点"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "xususiyat = 特点 (tèdiǎn)",
             "ru": "особенность = 特点 (tèdiǎn)",
@@ -444,12 +444,12 @@
           "audio_text": "阳光",
           "pinyin": "yángguāng",
           "options": [
-            "阳光",
-            "巧克力",
             "亲戚",
-            "伤心"
+            "伤心",
+            "阳光",
+            "巧克力"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "阳光 — quyoshli; ijobiy (yángguāng)",
             "ru": "阳光 — солнечный; позитивный (yángguāng)",
@@ -511,12 +511,12 @@
           "audio_text": "特点",
           "pinyin": "tèdiǎn",
           "options": [
-            "伤心",
-            "巧克力",
             "亲戚",
-            "特点"
+            "伤心",
+            "特点",
+            "巧克力"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "特点 — xususiyat (tèdiǎn)",
             "ru": "特点 — особенность (tèdiǎn)",
@@ -534,8 +534,8 @@
           "pinyin": "yángguāng",
           "options": [
             "伤心",
-            "巧克力",
             "亲戚",
+            "巧克力",
             "阳光"
           ],
           "correct_index": 3,
@@ -543,47 +543,6 @@
             "uz": "阳光 — quyoshli; ijobiy (yángguāng)",
             "ru": "阳光 — солнечный; позитивный (yángguāng)",
             "tj": "阳光 — офтобӣ; мусбат (yángguāng)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "缺少 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 缺少:",
-            "tj": "Маънои калимаи 缺少-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "kam bo'lmoq, yetishmaslik",
-              "ru": "недоставать",
-              "tj": "камӣ кардан"
-            },
-            {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный",
-              "tj": "ғамгин"
-            },
-            {
-              "uz": "qarindosh",
-              "ru": "родственник",
-              "tj": "хешованд"
-            },
-            {
-              "uz": "shokolad",
-              "ru": "шоколад",
-              "tj": "шоколад"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "缺少 = kam bo'lmoq, yetishmaslik (quēshǎo)",
-            "ru": "缺少 = недоставать (quēshǎo)",
-            "tj": "缺少 = камӣ кардан (quēshǎo)"
           }
         },
         {
@@ -599,12 +558,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "积极",
             "亲戚",
             "巧克力",
-            "伤心"
+            "伤心",
+            "积极"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "faol, ijobiy = 积极 (jījí)",
             "ru": "активный, позитивный = 积极 (jījí)",
@@ -619,6 +578,105 @@
             "uz": "xususiyat",
             "ru": "особенность",
             "tj": "хусусият"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "往往 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 往往:",
+            "tj": "Маънои калимаи 往往-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            },
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            },
+            {
+              "uz": "ko'pincha",
+              "ru": "часто, как правило",
+              "tj": "аксар вақт"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "往往 = ko'pincha (wǎngwǎng)",
+            "ru": "往往 = часто, как правило (wǎngwǎng)",
+            "tj": "往往 = аксар вақт (wǎngwǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "往往",
+            "pinyin": "wǎngwǎng",
+            "meaning": {
+              "uz": "ko'pincha",
+              "ru": "часто, как правило",
+              "tj": "аксар вақт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xususiyat' xitoycha qaysi?",
+            "ru": "'особенность' по-китайски?",
+            "tj": "'хусусият' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "特点",
+            "伤心",
+            "亲戚",
+            "巧克力"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "xususiyat = 特点 (tèdiǎn)",
+            "ru": "особенность = 特点 (tèdiǎn)",
+            "tj": "хусусият = 特点 (tèdiǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "特点",
+            "pinyin": "tèdiǎn",
+            "meaning": {
+              "uz": "xususiyat",
+              "ru": "особенность",
+              "tj": "хусусият"
+            }
           }
         }
       ]

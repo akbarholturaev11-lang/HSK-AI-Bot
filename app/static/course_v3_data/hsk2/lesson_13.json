@@ -635,31 +635,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "一下 talaffuzini tanlang:",
-            "ru": "Выберите произношение 一下:",
-            "tj": "Талаффузи 一下-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "bàozhǐ",
-            "yíxià",
-            "qiān",
-            "shǒubiǎo"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "一下 — yíxià",
-            "ru": "一下 — yíxià",
-            "tj": "一下 — yíxià"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "你女儿的房间真漂亮啊！",
           "pinyin": "Nǐ nǚ'ér de fángjiān zhēn piàoliang a!",
@@ -767,28 +742,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你女儿的房间真漂亮啊！都是粉色的。",
-          "pinyin": "Nǐ nǚ'ér de fángjiān zhēn piàoliang a! Dōu shì fěnsè de.",
-          "options": [
-            "不是我的。是我爸爸的。",
-            "多少钱买的？",
-            "你女儿的房间真漂亮啊！都是粉色的。",
-            "这块手表是你的吗？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "你女儿的房间真漂亮啊！都是粉色的。 — Qizingizning xonasi juda chiroyli! Hammasi pushti rangda.",
-            "ru": "你女儿的房间真漂亮啊！都是粉色的。 — Комната вашей дочки действительно красивая! Всё розовое.",
-            "tj": "你女儿的房间真漂亮啊！都是粉色的。 — Хонаи духтаратон воқеан зебо аст! Ҳама чиз гулобӣ ранг аст."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "旁边",
           "pinyin": "pángbiān",
@@ -796,6 +749,105 @@
             "uz": "yonida, yon tomonida",
             "ru": "рядом, сбоку",
             "tj": "дар паҳлӯ, назди"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一下 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一下:",
+            "tj": "Маънои калимаи 一下-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bir oz, bir marta (harakat uchun)",
+              "ru": "немного, разок (для смягчения глагола)",
+              "tj": "якдафъа, каме (барои нармкунии феъл)"
+            },
+            {
+              "uz": "ming (1000)",
+              "ru": "тысяча (1000)",
+              "tj": "ҳазор (1000)"
+            },
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            },
+            {
+              "uz": "qo'l soati",
+              "ru": "наручные часы",
+              "tj": "соати дасти"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "一下 = bir oz, bir marta (harakat uchun) (yíxià)",
+            "ru": "一下 = немного, разок (для смягчения глагола) (yíxià)",
+            "tj": "一下 = якдафъа, каме (барои нармкунии феъл) (yíxià)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "一下",
+            "pinyin": "yíxià",
+            "meaning": {
+              "uz": "bir oz, bir marta (harakat uchun)",
+              "ru": "немного, разок (для смягчения глагола)",
+              "tj": "якдафъа, каме (барои нармкунии феъл)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yonida, yon tomonida' xitoycha qaysi?",
+            "ru": "'рядом, сбоку' по-китайски?",
+            "tj": "'дар паҳлӯ, назди' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "千",
+            "旁边",
+            "报纸",
+            "手表"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yonida, yon tomonida = 旁边 (pángbiān)",
+            "ru": "рядом, сбоку = 旁边 (pángbiān)",
+            "tj": "дар паҳлӯ, назди = 旁边 (pángbiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "旁边",
+            "pinyin": "pángbiān",
+            "meaning": {
+              "uz": "yonida, yon tomonida",
+              "ru": "рядом, сбоку",
+              "tj": "дар паҳлӯ, назди"
+            }
           }
         }
       ]

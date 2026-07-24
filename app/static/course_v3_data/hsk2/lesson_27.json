@@ -320,12 +320,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "外",
-            "门",
             "好吃",
-            "自行车"
+            "自行车",
+            "门",
+            "外"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "好吃 = mazali (ovqat haqida) (hǎochī)",
             "ru": "好吃 = вкусный (о еде) (hǎochī)",
@@ -359,12 +359,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "miàntiáo",
-            "zìxíngchē",
             "wài",
-            "mén"
+            "mén",
+            "miàntiáo",
+            "zìxíngchē"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "面条 — miàntiáo",
             "ru": "面条 — miàntiáo",
@@ -408,12 +408,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "打篮球",
             "自行车",
-            "门",
-            "外"
+            "外",
+            "打篮球",
+            "门"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "basketbol o'ynamoq = 打篮球 (dǎ lánqiú)",
             "ru": "играть в баскетбол = 打篮球 (dǎ lánqiú)",
@@ -430,12 +430,12 @@
           "audio_text": "好吃",
           "pinyin": "hǎochī",
           "options": [
-            "好吃",
+            "外",
             "自行车",
-            "门",
-            "外"
+            "好吃",
+            "门"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "好吃 — mazali (ovqat haqida) (hǎochī)",
             "ru": "好吃 — вкусный (о еде) (hǎochī)",
@@ -533,12 +533,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "门",
             "羊肉",
-            "外",
-            "自行车"
+            "自行车",
+            "门",
+            "外"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 羊肉 (yángròu) — qo'y go'shti",
             "ru": "Верно: 羊肉 (yángròu) — баранина",
@@ -566,41 +566,16 @@
           "audio_text": "来一点儿面条吧。",
           "pinyin": "Lái yìdiǎnr miàntiáo ba.",
           "options": [
-            "他已经来了。",
-            "你知道小王今天什么时候来学校吗？",
+            "你怎么知道他来了？",
             "来一点儿面条吧。",
-            "你怎么知道他来了？"
+            "他已经来了。",
+            "你知道小王今天什么时候来学校吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "来一点儿面条吧。 — Bir oz lag'mon gapirtiraylik.",
             "ru": "来一点儿面条吧。 — Давай закажем немного лапши.",
             "tj": "来一点儿面条吧。 — Каме лоғмон оварем."
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zìxíngchē qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zìxíngchē?",
-            "tj": "zìxíngchē кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "羊肉",
-            "外",
-            "自行车",
-            "门"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "自行车 = velosiped (zìxíngchē)",
-            "ru": "自行车 = велосипед (zìxíngchē)",
-            "tj": "自行车 = велосипед (zìxíngchē)"
           }
         },
         {
@@ -696,6 +671,105 @@
             "uz": "basketbol o'ynamoq",
             "ru": "играть в баскетбол",
             "tj": "баскетбол бозӣ кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "自行车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 自行车:",
+            "tj": "Маънои калимаи 自行车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            },
+            {
+              "uz": "eshik, darvoza",
+              "ru": "дверь, ворота",
+              "tj": "дар, дарвоза"
+            },
+            {
+              "uz": "qo'y go'shti",
+              "ru": "баранина",
+              "tj": "гӯшти гӯсфанд"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "自行车 = velosiped (zìxíngchē)",
+            "ru": "自行车 = велосипед (zìxíngchē)",
+            "tj": "自行车 = велосипед (zìxíngchē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "自行车",
+            "pinyin": "zìxíngchē",
+            "meaning": {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'basketbol o'ynamoq' xitoycha qaysi?",
+            "ru": "'играть в баскетбол' по-китайски?",
+            "tj": "'баскетбол бозӣ кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "门",
+            "打篮球",
+            "外",
+            "自行车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "basketbol o'ynamoq = 打篮球 (dǎ lánqiú)",
+            "ru": "играть в баскетбол = 打篮球 (dǎ lánqiú)",
+            "tj": "баскетбол бозӣ кардан = 打篮球 (dǎ lánqiú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "打篮球",
+            "pinyin": "dǎ lánqiú",
+            "meaning": {
+              "uz": "basketbol o'ynamoq",
+              "ru": "играть в баскетбол",
+              "tj": "баскетбол бозӣ кардан"
+            }
           }
         }
       ]

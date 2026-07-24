@@ -441,12 +441,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "死",
-            "规定",
             "可惜",
-            "也许"
+            "规定",
+            "也许",
+            "死"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "也许 = balki, ehtimol (yěxǔ)",
             "ru": "也许 = может быть, возможно (yěxǔ)",
@@ -492,8 +492,8 @@
           "options": [
             "shāngliang",
             "sǐ",
-            "kěxī",
-            "guīdìng"
+            "guīdìng",
+            "kěxī"
           ],
           "correct_index": 0,
           "explanation": {
@@ -529,12 +529,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "并且",
-            "死",
+            "可惜",
             "规定",
-            "可惜"
+            "并且",
+            "死"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "va, shuningdek = 并且 (bìngqiě)",
             "ru": "и, а также = 并且 (bìngqiě)",
@@ -565,12 +565,12 @@
           "audio_text": "盐",
           "pinyin": "yán",
           "options": [
-            "死",
             "可惜",
-            "规定",
-            "盐"
+            "盐",
+            "死",
+            "规定"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "盐 — tuz (yán)",
             "ru": "盐 — соль (yán)",
@@ -591,16 +591,6 @@
           },
           "options": [
             {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
-            },
-            {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
-            },
-            {
               "uz": "qoida, belgilangan tartib",
               "ru": "правило, положение",
               "tj": "қоида, тартиб"
@@ -609,9 +599,19 @@
               "uz": "balki, ehtimol",
               "ru": "может быть, возможно",
               "tj": "шояд, мумкин"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "也许 = balki, ehtimol (yěxǔ)",
             "ru": "也许 = может быть, возможно (yěxǔ)",
@@ -708,12 +708,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "可惜",
-            "死",
             "并且",
-            "规定"
+            "规定",
+            "死",
+            "可惜"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 并且 (bìngqiě) — va, shuningdek",
             "ru": "Верно: 并且 (bìngqiě) — и, а также",
@@ -732,16 +732,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "并且",
-          "pinyin": "bìngqiě",
-          "translation": {
-            "uz": "va, shuningdek",
-            "ru": "и, а также",
-            "tj": "ва, ҳамчунин"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -751,41 +741,16 @@
           "audio_text": "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",
           "pinyin": "Hǎo, wǒ zài gēn tóngshì shāngliang shāngliang, xīwàng néng jíshí fāxiàn wèntí, bìngqiě zhǔnquè de zhǎodào jiějué wèntí de fāngfǎ.",
           "options": [
-            "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。",
-            "听说这次生意你到现在还没谈成。",
             "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",
-            "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。"
+            "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。",
+            "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
+            "听说这次生意你到现在还没谈成。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。 — Yaxshi, hamkasblarim bilan yana maslahatlashaman, muammoni vaqtida topib, uni aniq hal qilish yo'lini topamiz degan umiddaman.",
             "ru": "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。 — Хорошо, ещё посоветуюсь с коллегами, надеюсь вовремя найти проблему и точно найти способ её решить.",
             "tj": "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。 — Хуб, бо ҳамкорон боз маслиҳат мекунам, умедворам мушкилро сари вақт ёфта, роҳи дурусти ҳалро пайдо кунем."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'qattiq, o'zgarmas' xitoycha qaysi?",
-            "ru": "'жёсткий, негибкий' по-китайски?",
-            "tj": "'сахт, тағйирнопазир' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "规定",
-            "全部",
-            "可惜",
-            "死"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "qattiq, o'zgarmas = 死 (sǐ)",
-            "ru": "жёсткий, негибкий = 死 (sǐ)",
-            "tj": "сахт, тағйирнопазир = 死 (sǐ)"
           }
         },
         {
@@ -802,11 +767,6 @@
           },
           "options": [
             {
-              "uz": "qoida, belgilangan tartib",
-              "ru": "правило, положение",
-              "tj": "қоида, тартиб"
-            },
-            {
               "uz": "qattiq, o'zgarmas",
               "ru": "жёсткий, негибкий",
               "tj": "сахт, тағйирнопазир"
@@ -820,9 +780,14 @@
               "uz": "afsus, achinarli",
               "ru": "жаль, досадно",
               "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "盐 = tuz (yán)",
             "ru": "盐 = соль (yán)",
@@ -837,6 +802,105 @@
             "uz": "maslahatlashmoq",
             "ru": "обсуждать, советоваться",
             "tj": "маслиҳат кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "死 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 死:",
+            "tj": "Маънои калимаи 死-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hammasi, butuni",
+              "ru": "всё, полностью",
+              "tj": "ҳама, пурра"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "死 = qattiq, o'zgarmas (sǐ)",
+            "ru": "死 = жёсткий, негибкий (sǐ)",
+            "tj": "死 = сахт, тағйирнопазир (sǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "死",
+            "pinyin": "sǐ",
+            "meaning": {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'maslahatlashmoq' xitoycha qaysi?",
+            "ru": "'обсуждать, советоваться' по-китайски?",
+            "tj": "'маслиҳат кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "规定",
+            "商量",
+            "可惜",
+            "死"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "maslahatlashmoq = 商量 (shāngliang)",
+            "ru": "обсуждать, советоваться = 商量 (shāngliang)",
+            "tj": "маслиҳат кардан = 商量 (shāngliang)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "商量",
+            "pinyin": "shāngliang",
+            "meaning": {
+              "uz": "maslahatlashmoq",
+              "ru": "обсуждать, советоваться",
+              "tj": "маслиҳат кардан"
+            }
           }
         }
       ]

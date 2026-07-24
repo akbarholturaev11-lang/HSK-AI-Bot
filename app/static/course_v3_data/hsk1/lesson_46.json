@@ -291,9 +291,9 @@
           },
           "options": [
             {
-              "uz": "qanday, qanaqa",
-              "ru": "как, какой",
-              "tj": "чӣ тавр, чӣ хел"
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
             },
             {
               "uz": "juda, haddan tashqari",
@@ -301,9 +301,9 @@
               "tj": "хеле зиёд, аз ҳад зиёд"
             },
             {
-              "uz": "ob-havo",
-              "ru": "погода",
-              "tj": "обу ҳаво"
+              "uz": "qanday, qanaqa",
+              "ru": "как, какой",
+              "tj": "чӣ тавр, чӣ хел"
             },
             {
               "uz": "sovuq",
@@ -345,12 +345,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "天气",
             "下雨",
             "怎么样",
-            "太",
-            "天气"
+            "太"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "下雨 = yomg'ir yog'moq (xià yǔ)",
             "ru": "下雨 = идти дождю (xià yǔ)",
@@ -384,12 +384,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tài",
-            "tiānqì",
             "xiǎojiě",
-            "zěnmeyàng"
+            "zěnmeyàng",
+            "tài",
+            "tiānqì"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "小姐 — xiǎojiě",
             "ru": "小姐 — xiǎojiě",
@@ -410,11 +410,11 @@
           },
           "options": [
             "太",
-            "冷",
             "天气",
+            "冷",
             "怎么样"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "sovuq = 冷 (lěng)",
             "ru": "холодно, холодный = 冷 (lěng)",
@@ -521,10 +521,10 @@
           },
           "tokens": [
             "太",
-            "热",
-            "天气",
+            "了",
             "怎么样",
-            "了"
+            "天气",
+            "热"
           ],
           "answer_tokens": [
             "太",
@@ -550,11 +550,11 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "我不太好。",
             "太热了！",
+            "我不太好。",
             "天气太冷了。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "太热了！ — Tài rè le!",
             "ru": "太热了！ — Tài rè le!",
@@ -573,6 +573,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "今天会下雨吗？",
+          "pinyin": "Jīntiān huì xià yǔ ma?",
+          "options": [
+            "昨天北京的天气怎么样？",
+            "明天呢？明天天气怎么样？",
+            "今天会下雨吗？",
+            "太热了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "今天会下雨吗？ — Bugun yomg'ir yog'adimi?",
+            "ru": "今天会下雨吗？ — Сегодня будет дождь?",
+            "tj": "今天会下雨吗？ — Имрӯз борон меборад?"
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Ob-havo juda sovuq.",
@@ -580,12 +602,12 @@
             "tj": "Обу ҳаво хеле сард аст."
           },
           "tokens": [
+            "太",
             "怎么样",
             "了",
+            "天气",
             "热",
-            "冷",
-            "太",
-            "天气"
+            "冷"
           ],
           "answer_tokens": [
             "天气",
@@ -600,143 +622,44 @@
           }
         },
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "冷",
-              {
-                "uz": "sovuq",
-                "ru": "холодно, холодный",
-                "tj": "сард, хунук"
-              }
-            ],
-            [
-              "下雨",
-              {
-                "uz": "yomg'ir yog'moq",
-                "ru": "идти дождю",
-                "tj": "борон боридан"
-              }
-            ],
-            [
-              "小姐",
-              {
-                "uz": "xonim, mademoiselle",
-                "ru": "мисс, барышня",
-                "tj": "хонум, духтар (мурофиа)"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "天气太冷了。",
-          "pinyin": "Tiānqì tài lěng le.",
-          "translation": {
-            "uz": "Ob-havo juda sovuq.",
-            "ru": "Погода слишком холодная.",
-            "tj": "Обу ҳаво хеле сард аст."
-          },
-          "tokens": {
-            "uz": [
-              "ob-havo",
-              "juda",
-              "sovuq",
-              "Ertaga",
-              "Ob-havo"
-            ],
-            "ru": [
-              "Завтра",
-              "холодная",
-              "погода",
-              "слишком",
-              "Погода"
-            ],
-            "tj": [
-              "аст",
-              "хеле",
-              "сард",
-              "обу",
-              "ҳаво",
-              "Обу",
-              "Фардо"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Ob-havo",
-              "juda",
-              "sovuq"
-            ],
-            "ru": [
-              "Погода",
-              "слишком",
-              "холодная"
-            ],
-            "tj": [
-              "Обу",
-              "ҳаво",
-              "хеле",
-              "сард",
-              "аст"
-            ]
-          },
-          "explanation": {
-            "uz": "天气太冷了。 — Ob-havo juda sovuq.",
-            "ru": "天气太冷了。 — Погода слишком холодная.",
-            "tj": "天气太冷了。 — Обу ҳаво хеле сард аст."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "今天会下雨吗？",
-          "pinyin": "Jīntiān huì xià yǔ ma?",
-          "options": [
-            "今天会下雨吗？",
-            "明天呢？明天天气怎么样？",
-            "太热了。",
-            "昨天北京的天气怎么样？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "今天会下雨吗？ — Bugun yomg'ir yog'adimi?",
-            "ru": "今天会下雨吗？ — Сегодня будет дождь?",
-            "tj": "今天会下雨吗？ — Имрӯз борон меборад?"
-          }
-        },
-        {
-          "type": "translation_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "'qanday, qanaqa' xitoycha qaysi?",
-            "ru": "'как, какой' по-китайски?",
-            "tj": "'чӣ тавр, чӣ хел' ба хитоӣ кадом аст?"
+            "uz": "小姐 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 小姐:",
+            "tj": "Маънои калимаи 小姐-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "怎么样",
-            "天气",
-            "太",
-            "热"
+            {
+              "uz": "xonim, mademoiselle",
+              "ru": "мисс, барышня",
+              "tj": "хонум, духтар (мурофиа)"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "qanday, qanaqa",
+              "ru": "как, какой",
+              "tj": "чӣ тавр, чӣ хел"
+            },
+            {
+              "uz": "juda, haddan tashqari",
+              "ru": "слишком, очень",
+              "tj": "хеле зиёд, аз ҳад зиёд"
+            }
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "qanday, qanaqa = 怎么样 (zěnmeyàng)",
-            "ru": "как, какой = 怎么样 (zěnmeyàng)",
-            "tj": "чӣ тавр, чӣ хел = 怎么样 (zěnmeyàng)"
+            "uz": "小姐 = xonim, mademoiselle (xiǎojiě)",
+            "ru": "小姐 = мисс, барышня (xiǎojiě)",
+            "tj": "小姐 = хонум, духтар (мурофиа) (xiǎojiě)"
           }
         },
         {
@@ -747,6 +670,105 @@
             "uz": "sovuq",
             "ru": "холодно, холодный",
             "tj": "сард, хунук"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "怎么样 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 怎么样:",
+            "tj": "Маънои калимаи 怎么样-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "juda, haddan tashqari",
+              "ru": "слишком, очень",
+              "tj": "хеле зиёд, аз ҳад зиёд"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "issiq",
+              "ru": "жарко, горячий",
+              "tj": "гарм, гармо"
+            },
+            {
+              "uz": "qanday, qanaqa",
+              "ru": "как, какой",
+              "tj": "чӣ тавр, чӣ хел"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "怎么样 = qanday, qanaqa (zěnmeyàng)",
+            "ru": "怎么样 = как, какой (zěnmeyàng)",
+            "tj": "怎么样 = чӣ тавр, чӣ хел (zěnmeyàng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "怎么样",
+            "pinyin": "zěnmeyàng",
+            "meaning": {
+              "uz": "qanday, qanaqa",
+              "ru": "как, какой",
+              "tj": "чӣ тавр, чӣ хел"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sovuq' xitoycha qaysi?",
+            "ru": "'холодно, холодный' по-китайски?",
+            "tj": "'сард, хунук' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "太",
+            "天气",
+            "冷",
+            "怎么样"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "sovuq = 冷 (lěng)",
+            "ru": "холодно, холодный = 冷 (lěng)",
+            "tj": "сард, хунук = 冷 (lěng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "冷",
+            "pinyin": "lěng",
+            "meaning": {
+              "uz": "sovuq",
+              "ru": "холодно, холодный",
+              "tj": "сард, хунук"
+            }
           }
         }
       ]

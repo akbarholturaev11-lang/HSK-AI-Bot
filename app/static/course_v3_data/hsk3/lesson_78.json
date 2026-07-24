@@ -353,8 +353,8 @@
           "options": [
             "tí gāo",
             "wán chéng",
-            "shuǐpíng",
-            "liú xué"
+            "liú xué",
+            "shuǐpíng"
           ],
           "correct_index": 1,
           "explanation": {
@@ -400,12 +400,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "提高",
             "水平",
+            "句子",
             "留学",
-            "句子"
+            "提高"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "gap, jumla = 句子 (jùzi)",
             "ru": "предложение = 句子 (jùzi)",
@@ -436,12 +436,12 @@
           "audio_text": "其他",
           "pinyin": "qítā",
           "options": [
-            "水平",
+            "其他",
             "提高",
-            "留学",
-            "其他"
+            "水平",
+            "留学"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "其他 — boshqalar, qolganlari (qítā)",
             "ru": "其他 — остальное, другие (qítā)",
@@ -476,14 +476,14 @@
           },
           "options": [
             {
-              "uz": "oshirmoq, yaxshilamoq",
-              "ru": "повышать, улучшать",
-              "tj": "баланд кардан, беҳтар кардан"
-            },
-            {
               "uz": "daraja, saviya",
               "ru": "уровень, стандарт",
               "tj": "сатҳ, дараҷа"
+            },
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
             },
             {
               "uz": "yubormoq",
@@ -516,12 +516,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "提高",
             "水平",
             "完成",
-            "留学"
+            "留学",
+            "提高"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "完成 = tugatmoq, yakunlamoq (wán chéng)",
             "ru": "完成 = закончить, завершить (wán chéng)",
@@ -626,14 +626,14 @@
             "tj": "Вай ҳеҷ куҷо рафтан намехоҳад."
           },
           "tokens": [
-            "他",
-            "想",
-            "哪儿",
             "留学",
-            "都",
-            "水平",
+            "他",
             "不",
-            "去"
+            "哪儿",
+            "都",
+            "去",
+            "想",
+            "水平"
           ],
           "answer_tokens": [
             "他",
@@ -660,6 +660,28 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
+          "pinyin": "Yǐhòu yǒu shénme bù míngbai de dìfang, kěyǐ gěi wǒ dǎ diànhuà huòzhě fā diànzǐ yóujiàn.",
+          "options": [
+            "这是我昨天的作业，您帮我看看对不对？",
+            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+            "你每天认真学习，做练习、完成作业，一直不错啊。",
+            "以后有什么不明白的地方，可以给我打电话或者发电子邮件。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。 — Keyin tushunmagan joying bo'lsa, menga qo'ng'iroq qilishing yoki email yuborishing mumkin.",
+            "ru": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。 — Если потом что-то будет непонятно, можешь позвонить мне или отправить электронное письмо.",
+            "tj": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。 — Баъд агар чизе нофаҳмо бошад, метавонӣ ба ман занг занӣ ё почтаи электронӣ фиристӣ."
+          }
+        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -703,33 +725,84 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "pronunciation",
+          "phrase": "句子",
+          "pinyin": "jùzi",
+          "translation": {
+            "uz": "gap, jumla",
+            "ru": "предложение",
+            "tj": "ҷумла"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "水平 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 水平:",
+            "tj": "Маънои калимаи 水平-ро интихоб кунед:"
           },
-          "audio_text": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
-          "pinyin": "Yǐhòu yǒu shénme bù míngbai de dìfang, kěyǐ gěi wǒ dǎ diànhuà huòzhě fā diànzǐ yóujiàn.",
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
           "options": [
-            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-            "这是我昨天的作业，您帮我看看对不对？",
-            "你每天认真学习，做练习、完成作业，一直不错啊。",
-            "以后有什么不明白的地方，可以给我打电话或者发电子邮件。"
+            {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            },
+            {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            },
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            },
+            {
+              "uz": "mashq",
+              "ru": "упражнение",
+              "tj": "машқ"
+            }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。 — Keyin tushunmagan joying bo'lsa, menga qo'ng'iroq qilishing yoki email yuborishing mumkin.",
-            "ru": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。 — Если потом что-то будет непонятно, можешь позвонить мне или отправить электронное письмо.",
-            "tj": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。 — Баъд агар чизе нофаҳмо бошад, метавонӣ ба ман занг занӣ ё почтаи электронӣ фиристӣ."
+            "uz": "水平 = daraja, saviya (shuǐpíng)",
+            "ru": "水平 = уровень, стандарт (shuǐpíng)",
+            "tj": "水平 = сатҳ, дараҷа (shuǐpíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "水平",
+            "pinyin": "shuǐpíng",
+            "meaning": {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            }
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'daraja, saviya' xitoycha qaysi?",
-            "ru": "'уровень, стандарт' по-китайски?",
-            "tj": "'сатҳ, дараҷа' ба хитоӣ кадом аст?"
+            "uz": "'gap, jumla' xitoycha qaysi?",
+            "ru": "'предложение' по-китайски?",
+            "tj": "'ҷумла' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -739,24 +812,25 @@
           "options": [
             "水平",
             "提高",
-            "练习",
-            "留学"
+            "留学",
+            "句子"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "daraja, saviya = 水平 (shuǐpíng)",
-            "ru": "уровень, стандарт = 水平 (shuǐpíng)",
-            "tj": "сатҳ, дараҷа = 水平 (shuǐpíng)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "句子",
-          "pinyin": "jùzi",
-          "translation": {
-            "uz": "gap, jumla",
-            "ru": "предложение",
-            "tj": "ҷумла"
+            "uz": "gap, jumla = 句子 (jùzi)",
+            "ru": "предложение = 句子 (jùzi)",
+            "tj": "ҷумла = 句子 (jùzi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "句子",
+            "pinyin": "jùzi",
+            "meaning": {
+              "uz": "gap, jumla",
+              "ru": "предложение",
+              "tj": "ҷумла"
+            }
           }
         }
       ]

@@ -332,10 +332,10 @@
           "options": [
             "然后",
             "干净",
-            "打扫",
-            "阿姨"
+            "阿姨",
+            "打扫"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "xola, amma = 阿姨 (āyí)",
             "ru": "тётя = 阿姨 (āyí)",
@@ -377,11 +377,11 @@
           "pinyin": "gùshi",
           "options": [
             "干净",
-            "故事",
+            "打扫",
             "然后",
-            "打扫"
+            "故事"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "故事 — hikoya (gùshi)",
             "ru": "故事 — история, рассказ (gùshi)",
@@ -421,11 +421,6 @@
               "tj": "тоза кардан, рӯфтан"
             },
             {
-              "uz": "keyin, undan so'ng",
-              "ru": "потом, затем",
-              "tj": "баъд, сипас"
-            },
-            {
               "uz": "ovoz, tovush",
               "ru": "звук, голос",
               "tj": "овоз, садо"
@@ -434,9 +429,14 @@
               "uz": "toza",
               "ru": "чистый",
               "tj": "тоза"
+            },
+            {
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "声音 = ovoz, tovush (shēngyīn)",
             "ru": "声音 = звук, голос (shēngyīn)",
@@ -456,12 +456,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "阿姨",
             "打扫",
+            "干净",
             "然后",
-            "干净"
+            "阿姨"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "阿姨 = xola, amma (āyí)",
             "ru": "阿姨 = тётя (āyí)",
@@ -562,6 +562,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "故事",
+          "pinyin": "gùshi",
+          "options": [
+            "干净",
+            "然后",
+            "故事",
+            "打扫"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "故事 — hikoya (gùshi)",
+            "ru": "故事 — история, рассказ (gùshi)",
+            "tj": "故事 — ҳикоя (gùshi)"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -596,33 +618,84 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "故事",
+          "type": "pronunciation",
+          "phrase": "故事",
           "pinyin": "gùshi",
+          "translation": {
+            "uz": "hikoya",
+            "ru": "история, рассказ",
+            "tj": "ҳикоя"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "刮风 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 刮风:",
+            "tj": "Маънои калимаи 刮风-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
           "options": [
-            "干净",
-            "然后",
-            "故事",
-            "打扫"
+            {
+              "uz": "shamol esmoq",
+              "ru": "быть ветреным",
+              "tj": "шамол вазидан"
+            },
+            {
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
+            },
+            {
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
+            },
+            {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
+            }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "故事 — hikoya (gùshi)",
-            "ru": "故事 — история, рассказ (gùshi)",
-            "tj": "故事 — ҳикоя (gùshi)"
+            "uz": "刮风 = shamol esmoq (guā fēng)",
+            "ru": "刮风 = быть ветреным (guā fēng)",
+            "tj": "刮风 = шамол вазидан (guā fēng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "刮风",
+            "pinyin": "guā fēng",
+            "meaning": {
+              "uz": "shamol esmoq",
+              "ru": "быть ветреным",
+              "tj": "шамол вазидан"
+            }
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'o'xshamoq' xitoycha qaysi?",
-            "ru": "'быть похожим' по-китайски?",
-            "tj": "'монанд будан' ба хитоӣ кадом аст?"
+            "uz": "'hikoya' xitoycha qaysi?",
+            "ru": "'история, рассказ' по-китайски?",
+            "tj": "'ҳикоя' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -631,25 +704,26 @@
           },
           "options": [
             "干净",
-            "打扫",
+            "故事",
             "然后",
-            "像"
+            "打扫"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "o'xshamoq = 像 (xiàng)",
-            "ru": "быть похожим = 像 (xiàng)",
-            "tj": "монанд будан = 像 (xiàng)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "故事",
-          "pinyin": "gùshi",
-          "translation": {
-            "uz": "hikoya",
-            "ru": "история, рассказ",
-            "tj": "ҳикоя"
+            "uz": "hikoya = 故事 (gùshi)",
+            "ru": "история, рассказ = 故事 (gùshi)",
+            "tj": "ҳикоя = 故事 (gùshi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "故事",
+            "pinyin": "gùshi",
+            "meaning": {
+              "uz": "hikoya",
+              "ru": "история, рассказ",
+              "tj": "ҳикоя"
+            }
           }
         }
       ]

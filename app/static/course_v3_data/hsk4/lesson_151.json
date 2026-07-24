@@ -432,9 +432,9 @@
           },
           "options": [
             {
-              "uz": "salqin, yoqimli sovuq",
-              "ru": "прохладный, приятно свежий",
-              "tj": "салқин, форам"
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
             },
             {
               "uz": "chaqqon, serharakat",
@@ -442,9 +442,9 @@
               "tj": "зиндадил, серҳаракат"
             },
             {
-              "uz": "gavjum, shovqinli",
-              "ru": "оживлённый, шумный",
-              "tj": "серодам, пурҷӯшу хурӯш"
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
             },
             {
               "uz": "radio, eshittirish",
@@ -486,12 +486,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "社会",
-            "凉快",
             "广播",
-            "热闹"
+            "凉快",
+            "热闹",
+            "社会"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "社会 = jamiyat (shèhuì)",
             "ru": "社会 = общество (shèhuì)",
@@ -535,12 +535,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "rènao",
+            "liángkuai",
             "guǎngbō",
-            "jìngzhēng",
-            "liángkuai"
+            "rènao",
+            "jìngzhēng"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "竞争 — jìngzhēng",
             "ru": "竞争 — jìngzhēng",
@@ -574,12 +574,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "森林",
-            "热闹",
             "广播",
-            "凉快"
+            "凉快",
+            "热闹",
+            "森林"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "o'rmon = 森林 (sēnlín)",
             "ru": "лес = 森林 (sēnlín)",
@@ -596,12 +596,12 @@
           "audio_text": "活泼",
           "pinyin": "huópo",
           "options": [
-            "活泼",
             "广播",
+            "凉快",
             "热闹",
-            "凉快"
+            "活泼"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "活泼 — chaqqon, serharakat (huópo)",
             "ru": "活泼 — живой, активный (huópo)",
@@ -698,12 +698,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
+            "广播",
             "竞争",
             "凉快",
-            "热闹",
-            "广播"
+            "热闹"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 竞争 (jìngzhēng) — raqobatlashmoq, raqobat",
             "ru": "Верно: 竞争 (jìngzhēng) — конкурировать, конкуренция",
@@ -845,53 +845,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "Xiāng Shān qaysi ieroglif?",
-            "ru": "Какой иероглиф читается Xiāng Shān?",
-            "tj": "Xiāng Shān кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "热闹",
-            "凉快",
-            "香山",
-            "广播"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "香山 = Xiangshan (Xiāng Shān)",
-            "ru": "香山 = Сяншань (Xiāng Shān)",
-            "tj": "香山 = Сяншан (Xiāng Shān)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "竞争",
-          "pinyin": "jìngzhēng",
-          "options": [
-            "竞争",
-            "广播",
-            "凉快",
-            "热闹"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "竞争 — raqobatlashmoq, raqobat (jìngzhēng)",
-            "ru": "竞争 — конкурировать, конкуренция (jìngzhēng)",
-            "tj": "竞争 — рақобат кардан, рақобат (jìngzhēng)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "竞争",
           "pinyin": "jìngzhēng",
@@ -899,6 +852,105 @@
             "uz": "raqobatlashmoq, raqobat",
             "ru": "конкурировать, конкуренция",
             "tj": "рақобат кардан, рақобат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "入口 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 入口:",
+            "tj": "Маънои калимаи 入口-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            },
+            {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            },
+            {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
+            },
+            {
+              "uz": "kirish joyi",
+              "ru": "вход",
+              "tj": "даромадгоҳ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "入口 = kirish joyi (rùkǒu)",
+            "ru": "入口 = вход (rùkǒu)",
+            "tj": "入口 = даромадгоҳ (rùkǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "入口",
+            "pinyin": "rùkǒu",
+            "meaning": {
+              "uz": "kirish joyi",
+              "ru": "вход",
+              "tj": "даромадгоҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'raqobatlashmoq, raqobat' xitoycha qaysi?",
+            "ru": "'конкурировать, конкуренция' по-китайски?",
+            "tj": "'рақобат кардан, рақобат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "热闹",
+            "凉快",
+            "竞争",
+            "广播"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "raqobatlashmoq, raqobat = 竞争 (jìngzhēng)",
+            "ru": "конкурировать, конкуренция = 竞争 (jìngzhēng)",
+            "tj": "рақобат кардан, рақобат = 竞争 (jìngzhēng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "竞争",
+            "pinyin": "jìngzhēng",
+            "meaning": {
+              "uz": "raqobatlashmoq, raqobat",
+              "ru": "конкурировать, конкуренция",
+              "tj": "рақобат кардан, рақобат"
+            }
           }
         }
       ]

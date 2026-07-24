@@ -321,9 +321,9 @@
           },
           "options": [
             "búcuò",
+            "wàimiàn",
             "jiù",
-            "zhǔnbèi",
-            "wàimiàn"
+            "zhǔnbèi"
           ],
           "correct_index": 0,
           "explanation": {
@@ -369,12 +369,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "外面",
-            "就",
             "考试",
-            "准备"
+            "准备",
+            "就",
+            "外面"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "imtihon = 考试 (kǎoshì)",
             "ru": "экзамен = 考试 (kǎoshì)",
@@ -405,12 +405,12 @@
           "audio_text": "意思",
           "pinyin": "yìsi",
           "options": [
-            "意思",
-            "准备",
             "就",
-            "外面"
+            "外面",
+            "意思",
+            "准备"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "意思 — ma'no, mazmun (yìsi)",
             "ru": "意思 — смысл, значение (yìsi)",
@@ -436,11 +436,6 @@
               "tj": "берун, берунӣ"
             },
             {
-              "uz": "yomon emas, yaxshi",
-              "ru": "неплохой, хороший",
-              "tj": "бад нест, хуб аст"
-            },
-            {
               "uz": "aynan, shu, xuddi shunday; darhol",
               "ru": "именно, вот; сразу, тут же",
               "tj": "маҳз, ҳамин; фавран"
@@ -449,9 +444,14 @@
               "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
               "ru": "готовить, готовиться",
               "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "yomon emas, yaxshi",
+              "ru": "неплохой, хороший",
+              "tj": "бад нест, хуб аст"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "不错 = yomon emas, yaxshi (búcuò)",
             "ru": "不错 = неплохой, хороший (búcuò)",
@@ -548,13 +548,13 @@
             "tj": "Гӯш додан ва гапидан қабул аст."
           },
           "tokens": [
-            "可以",
-            "外面",
-            "听",
             "准备",
-            "说",
+            "和",
             "还",
-            "和"
+            "可以",
+            "听",
+            "说",
+            "外面"
           ],
           "answer_tokens": [
             "听",
@@ -580,88 +580,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bu yamon emas, mana shuni olavering.",
-            "ru": "Этот неплохой, вот его и покупай.",
-            "tj": "Ин бад нест, маҳз ҳамин харед."
-          },
-          "tokens": [
-            "准备",
-            "就",
-            "吧",
-            "件",
-            "买",
-            "件",
-            "这",
-            "不错",
-            "外面",
-            "这"
-          ],
-          "answer_tokens": [
-            "这",
-            "件",
-            "不错",
-            "就",
-            "买",
-            "这",
-            "件",
-            "吧"
-          ],
-          "explanation": {
-            "uz": "这件不错，就买这件吧。 — Zhè jiàn búcuò, jiù mǎi zhè jiàn ba.",
-            "ru": "这件不错，就买这件吧。 — Zhè jiàn búcuò, jiù mǎi zhè jiàn ba.",
-            "tj": "这件不错，就买这件吧。 — Zhè jiàn búcuò, jiù mǎi zhè jiàn ba."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。",
-          "pinyin": "Shì a, wǒ juéde tīng hé shuō hái kěyǐ, dú hé xiě bù hǎo, hěn duō zì wǒ dōu bù zhīdào shì shénme yìsi.",
-          "options": [
-            "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。",
-            "晚上我们去饭馆吃饭，怎么样？",
-            "那你准备做什么呢？",
-            "我不想去外面吃，我想在家吃。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。 — Ha, eshitish va gapirish qabul qilarli, o'qish va yozish yomon, juda ko'p ierogliflarning ma'nosini bilmadim.",
-            "ru": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。 — Да, слушание и говорение ничего, а чтение и письмо плохо, многие иероглифы я не знал.",
-            "tj": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。 — Бале, гӯш додан ва гапидан қабул аст, хондан ва навиштан бад, маъноии хеле зиёд иероглифҳоро надонистам."
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "hái qaysi ieroglif?",
-            "ru": "Какой иероглиф читается hái?",
-            "tj": "hái кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "就",
-            "外面",
-            "还",
-            "准备"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "还 = hali, yana; qabul qilarli, yaxshi (hái)",
-            "ru": "还 = ещё, пока; приемлемо, неплохо (hái)",
-            "tj": "还 = ҳанӯз, боз; қобили қабул (hái)"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "你在做什么呢？是在想昨天的考试吗？",
@@ -744,6 +662,63 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。",
+          "pinyin": "Shì a, wǒ juéde tīng hé shuō hái kěyǐ, dú hé xiě bù hǎo, hěn duō zì wǒ dōu bù zhīdào shì shénme yìsi.",
+          "options": [
+            "那你准备做什么呢？",
+            "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。",
+            "我不想去外面吃，我想在家吃。",
+            "晚上我们去饭馆吃饭，怎么样？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。 — Ha, eshitish va gapirish qabul qilarli, o'qish va yozish yomon, juda ko'p ierogliflarning ma'nosini bilmadim.",
+            "ru": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。 — Да, слушание и говорение ничего, а чтение и письмо плохо, многие иероглифы я не знал.",
+            "tj": "是啊，我觉得听和说还可以，读和写不好，很多字我都不知道是什么意思。 — Бале, гӯш додан ва гапидан қабул аст, хондан ва навиштан бад, маъноии хеле зиёд иероглифҳоро надонистам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu yamon emas, mana shuni olavering.",
+            "ru": "Этот неплохой, вот его и покупай.",
+            "tj": "Ин бад нест, маҳз ҳамин харед."
+          },
+          "tokens": [
+            "这",
+            "件",
+            "外面",
+            "不错",
+            "买",
+            "吧",
+            "准备",
+            "这",
+            "件",
+            "就"
+          ],
+          "answer_tokens": [
+            "这",
+            "件",
+            "不错",
+            "就",
+            "买",
+            "这",
+            "件",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "这件不错，就买这件吧。 — Zhè jiàn búcuò, jiù mǎi zhè jiàn ba.",
+            "ru": "这件不错，就买这件吧。 — Zhè jiàn búcuò, jiù mǎi zhè jiàn ba.",
+            "tj": "这件不错，就买这件吧。 — Zhè jiàn búcuò, jiù mǎi zhè jiàn ba."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "考试",
           "pinyin": "kǎoshì",
@@ -751,6 +726,105 @@
             "uz": "imtihon",
             "ru": "экзамен",
             "tj": "имтиҳон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "还 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 还:",
+            "tj": "Маънои калимаи 还-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            },
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
+            },
+            {
+              "uz": "hali, yana; qabul qilarli, yaxshi",
+              "ru": "ещё, пока; приемлемо, неплохо",
+              "tj": "ҳанӯз, боз; қобили қабул"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "还 = hali, yana; qabul qilarli, yaxshi (hái)",
+            "ru": "还 = ещё, пока; приемлемо, неплохо (hái)",
+            "tj": "还 = ҳанӯз, боз; қобили қабул (hái)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "还",
+            "pinyin": "hái",
+            "meaning": {
+              "uz": "hali, yana; qabul qilarli, yaxshi",
+              "ru": "ещё, пока; приемлемо, неплохо",
+              "tj": "ҳанӯз, боз; қобили қабул"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'imtihon' xitoycha qaysi?",
+            "ru": "'экзамен' по-китайски?",
+            "tj": "'имтиҳон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "考试",
+            "外面",
+            "准备",
+            "就"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "imtihon = 考试 (kǎoshì)",
+            "ru": "экзамен = 考试 (kǎoshì)",
+            "tj": "имтиҳон = 考试 (kǎoshì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "考试",
+            "pinyin": "kǎoshì",
+            "meaning": {
+              "uz": "imtihon",
+              "ru": "экзамен",
+              "tj": "имтиҳон"
+            }
           }
         }
       ]

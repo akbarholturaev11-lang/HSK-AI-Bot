@@ -341,9 +341,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "打扫",
             "然后",
             "干净",
+            "打扫",
             "洗澡"
           ],
           "correct_index": 3,
@@ -380,12 +380,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "ránhòu",
             "gānjìng",
-            "dǎsǎo",
-            "jiémù"
+            "jiémù",
+            "ránhòu",
+            "dǎsǎo"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "节目 — jiémù",
             "ru": "节目 — jiémù",
@@ -419,10 +419,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "打扫",
             "然后",
-            "干净",
             "月亮",
-            "打扫"
+            "干净"
           ],
           "correct_index": 2,
           "explanation": {
@@ -465,12 +465,12 @@
           "audio_text": "像",
           "pinyin": "xiàng",
           "options": [
-            "干净",
             "像",
             "打扫",
-            "然后"
+            "然后",
+            "干净"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "像 — o'xshamoq (xiàng)",
             "ru": "像 — быть похожим (xiàng)",
@@ -496,14 +496,14 @@
               "tj": "тоза"
             },
             {
-              "uz": "cho'milmoq, dush qabul qilmoq",
-              "ru": "принимать ванну/душ",
-              "tj": "оббозӣ кардан, душ гирифтан"
-            },
-            {
               "uz": "keyin, undan so'ng",
               "ru": "потом, затем",
               "tj": "баъд, сипас"
+            },
+            {
+              "uz": "cho'milmoq, dush qabul qilmoq",
+              "ru": "принимать ванну/душ",
+              "tj": "оббозӣ кардан, душ гирифтан"
             },
             {
               "uz": "tozalamoq, supurmoq",
@@ -511,7 +511,7 @@
               "tj": "тоза кардан, рӯфтан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "洗澡 = cho'milmoq, dush qabul qilmoq (xǐ zǎo)",
             "ru": "洗澡 = принимать ванну/душ (xǐ zǎo)",
@@ -616,13 +616,13 @@
             "tj": "Аввал дастро бишӯй, баъд хӯрок бихӯр."
           },
           "tokens": [
-            "干净",
-            "再",
-            "吃饭",
             "洗",
-            "打扫",
+            "吃饭",
+            "再",
+            "干净",
             "手",
-            "先"
+            "先",
+            "打扫"
           ],
           "answer_tokens": [
             "先",
@@ -691,47 +691,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "冰箱 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 冰箱:",
-            "tj": "Маънои калимаи 冰箱-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "muzlatkich",
-              "ru": "холодильник",
-              "tj": "яхдон"
-            },
-            {
-              "uz": "keyin, undan so'ng",
-              "ru": "потом, затем",
-              "tj": "баъд, сипас"
-            },
-            {
-              "uz": "toza",
-              "ru": "чистый",
-              "tj": "тоза"
-            },
-            {
-              "uz": "tozalamoq, supurmoq",
-              "ru": "убирать, подметать",
-              "tj": "тоза кардан, рӯфтан"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "冰箱 = muzlatkich (bīngxiāng)",
-            "ru": "冰箱 = холодильник (bīngxiāng)",
-            "tj": "冰箱 = яхдон (bīngxiāng)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -741,12 +700,12 @@
           "audio_text": "像",
           "pinyin": "xiàng",
           "options": [
-            "打扫",
-            "像",
             "干净",
-            "然后"
+            "打扫",
+            "然后",
+            "像"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "像 — o'xshamoq (xiàng)",
             "ru": "像 — быть похожим (xiàng)",
@@ -761,6 +720,105 @@
             "uz": "o'xshamoq",
             "ru": "быть похожим",
             "tj": "монанд будан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "冰箱 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 冰箱:",
+            "tj": "Маънои калимаи 冰箱-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
+            },
+            {
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
+            },
+            {
+              "uz": "muzlatkich",
+              "ru": "холодильник",
+              "tj": "яхдон"
+            },
+            {
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "冰箱 = muzlatkich (bīngxiāng)",
+            "ru": "冰箱 = холодильник (bīngxiāng)",
+            "tj": "冰箱 = яхдон (bīngxiāng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "冰箱",
+            "pinyin": "bīngxiāng",
+            "meaning": {
+              "uz": "muzlatkich",
+              "ru": "холодильник",
+              "tj": "яхдон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'xshamoq' xitoycha qaysi?",
+            "ru": "'быть похожим' по-китайски?",
+            "tj": "'монанд будан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "像",
+            "然后",
+            "干净",
+            "打扫"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "o'xshamoq = 像 (xiàng)",
+            "ru": "быть похожим = 像 (xiàng)",
+            "tj": "монанд будан = 像 (xiàng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "像",
+            "pinyin": "xiàng",
+            "meaning": {
+              "uz": "o'xshamoq",
+              "ru": "быть похожим",
+              "tj": "монанд будан"
+            }
           }
         }
       ]

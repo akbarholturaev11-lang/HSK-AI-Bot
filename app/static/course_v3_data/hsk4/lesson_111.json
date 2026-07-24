@@ -437,9 +437,9 @@
               "tj": "актёр"
             },
             {
-              "uz": "Pekin operasi",
-              "ru": "пекинская опера",
-              "tj": "операи Пекин"
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
             },
             {
               "uz": "sahnalashtirmoq, chiqish qilmoq",
@@ -447,9 +447,9 @@
               "tj": "намоиш додан, баромад кардан"
             },
             {
-              "uz": "tomoshabin",
-              "ru": "зрители, публика",
-              "tj": "тамошобинон"
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
             }
           ],
           "correct_index": 2,
@@ -486,12 +486,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "大概",
             "京剧",
+            "观众",
             "演员",
-            "观众"
+            "大概"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "大概 = taxminan (dàgài)",
             "ru": "大概 = примерно, вероятно (dàgài)",
@@ -535,12 +535,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "guānzhòng",
             "yǎnyuán",
-            "láizì",
-            "jīngjù"
+            "jīngjù",
+            "guānzhòng",
+            "láizì"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "来自 — láizì",
             "ru": "来自 — láizì",
@@ -574,12 +574,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "演员",
-            "遍",
             "观众",
-            "京剧"
+            "京剧",
+            "遍",
+            "演员"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "marta, boshidan oxirigacha = 遍 (biàn)",
             "ru": "раз, от начала до конца = 遍 (biàn)",
@@ -596,12 +596,12 @@
           "audio_text": "演出",
           "pinyin": "yǎnchū",
           "options": [
+            "演员",
             "观众",
             "演出",
-            "演员",
             "京剧"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "演出 — sahnalashtirmoq, chiqish qilmoq (yǎnchū)",
             "ru": "演出 — выступать, давать представление (yǎnchū)",
@@ -743,31 +743,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "guānzhòng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается guānzhòng?",
-            "tj": "guānzhòng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "京剧",
-            "厚",
-            "观众",
-            "演员"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "观众 = tomoshabin (guānzhòng)",
-            "ru": "观众 = зрители, публика (guānzhòng)",
-            "tj": "观众 = тамошобинон (guānzhòng)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -777,10 +752,10 @@
           "audio_text": "来自",
           "pinyin": "láizì",
           "options": [
-            "观众",
             "京剧",
+            "演员",
             "来自",
-            "演员"
+            "观众"
           ],
           "correct_index": 2,
           "explanation": {
@@ -797,6 +772,105 @@
             "uz": "...dan kelmoq",
             "ru": "быть родом из",
             "tj": "аз ... омадан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "观众 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 观众:",
+            "tj": "Маънои калимаи 观众-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chuqur, qalin",
+              "ru": "глубокий, толстый",
+              "tj": "чуқур, ғафс"
+            },
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            },
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            },
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "观众 = tomoshabin (guānzhòng)",
+            "ru": "观众 = зрители, публика (guānzhòng)",
+            "tj": "观众 = тамошобинон (guānzhòng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "观众",
+            "pinyin": "guānzhòng",
+            "meaning": {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'...dan kelmoq' xitoycha qaysi?",
+            "ru": "'быть родом из' по-китайски?",
+            "tj": "'аз ... омадан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "来自",
+            "演员",
+            "观众",
+            "京剧"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "...dan kelmoq = 来自 (láizì)",
+            "ru": "быть родом из = 来自 (láizì)",
+            "tj": "аз ... омадан = 来自 (láizì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "来自",
+            "pinyin": "láizì",
+            "meaning": {
+              "uz": "...dan kelmoq",
+              "ru": "быть родом из",
+              "tj": "аз ... омадан"
+            }
           }
         }
       ]

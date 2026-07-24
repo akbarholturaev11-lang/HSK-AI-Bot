@@ -391,12 +391,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "印象",
             "俩",
             "熟悉",
-            "法律",
-            "印象"
+            "法律"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "熟悉 = tanish bo'lmoq, yaxshi bilmoq (shúxī)",
             "ru": "熟悉 = быть знакомым, хорошо знать (shúxī)",
@@ -441,11 +441,11 @@
           },
           "options": [
             "fǎlǜ",
-            "yìnxiàng",
+            "bùjǐn",
             "liǎ",
-            "bùjǐn"
+            "yìnxiàng"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "不仅 — bùjǐn",
             "ru": "不仅 — bùjǐn",
@@ -479,12 +479,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "法律",
             "性格",
             "印象",
-            "法律",
             "俩"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "xarakter, fe'l-atvor = 性格 (xìnggé)",
             "ru": "характер = 性格 (xìnggé)",
@@ -516,11 +516,11 @@
           "pinyin": "kāi wánxiào",
           "options": [
             "俩",
-            "印象",
             "法律",
-            "开玩笑"
+            "开玩笑",
+            "印象"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "开玩笑 — hazil qilmoq (kāi wánxiào)",
             "ru": "开玩笑 — шутить (kāi wánxiào)",
@@ -541,6 +541,16 @@
           },
           "options": [
             {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            },
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
               "uz": "qonun, huquq",
               "ru": "закон, право",
               "tj": "қонун, ҳуқуқ"
@@ -549,19 +559,9 @@
               "uz": "tanish bo'lmoq, yaxshi bilmoq",
               "ru": "быть знакомым, хорошо знать",
               "tj": "шинос будан, хуб донистан"
-            },
-            {
-              "uz": "taassurot",
-              "ru": "впечатление",
-              "tj": "таассурот"
-            },
-            {
-              "uz": "ikkalasi, ikki kishi",
-              "ru": "двое, оба",
-              "tj": "ду нафар, ҳарду"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "熟悉 = tanish bo'lmoq, yaxshi bilmoq (shúxī)",
             "ru": "熟悉 = быть знакомым, хорошо знать (shúxī)",
@@ -661,16 +661,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "性格",
-          "pinyin": "xìnggé",
-          "translation": {
-            "uz": "xarakter, fe'l-atvor",
-            "ru": "характер",
-            "tj": "хислат, характер"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -680,12 +670,12 @@
           "audio_text": "不仅",
           "pinyin": "bùjǐn",
           "options": [
+            "俩",
             "印象",
             "不仅",
-            "俩",
             "法律"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "不仅 — nafaqat (bùjǐn)",
             "ru": "不仅 — не только (bùjǐn)",
@@ -693,28 +683,13 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ikkalasi, ikki kishi' xitoycha qaysi?",
-            "ru": "'двое, оба' по-китайски?",
-            "tj": "'ду нафар, ҳарду' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "印象",
-            "俩",
-            "深",
-            "法律"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "ikkalasi, ikki kishi = 俩 (liǎ)",
-            "ru": "двое, оба = 俩 (liǎ)",
-            "tj": "ду нафар, ҳарду = 俩 (liǎ)"
+          "type": "pronunciation",
+          "phrase": "性格",
+          "pinyin": "xìnggé",
+          "translation": {
+            "uz": "xarakter, fe'l-atvor",
+            "ru": "характер",
+            "tj": "хислат, характер"
           }
         },
         {
@@ -731,9 +706,9 @@
           },
           "options": [
             {
-              "uz": "ikkalasi, ikki kishi",
-              "ru": "двое, оба",
-              "tj": "ду нафар, ҳарду"
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
             },
             {
               "uz": "hazil qilmoq",
@@ -741,14 +716,14 @@
               "tj": "шӯхӣ кардан"
             },
             {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            },
+            {
               "uz": "qonun, huquq",
               "ru": "закон, право",
               "tj": "қонун, ҳуқуқ"
-            },
-            {
-              "uz": "taassurot",
-              "ru": "впечатление",
-              "tj": "таассурот"
             }
           ],
           "correct_index": 1,
@@ -766,6 +741,105 @@
             "uz": "nafaqat",
             "ru": "не только",
             "tj": "на танҳо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "俩 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 俩:",
+            "tj": "Маънои калимаи 俩-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            },
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
+              "uz": "chuqur",
+              "ru": "глубокий",
+              "tj": "чуқур"
+            },
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "俩 = ikkalasi, ikki kishi (liǎ)",
+            "ru": "俩 = двое, оба (liǎ)",
+            "tj": "俩 = ду нафар, ҳарду (liǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "俩",
+            "pinyin": "liǎ",
+            "meaning": {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'nafaqat' xitoycha qaysi?",
+            "ru": "'не только' по-китайски?",
+            "tj": "'на танҳо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "俩",
+            "不仅",
+            "法律",
+            "印象"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "nafaqat = 不仅 (bùjǐn)",
+            "ru": "не только = 不仅 (bùjǐn)",
+            "tj": "на танҳо = 不仅 (bùjǐn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "不仅",
+            "pinyin": "bùjǐn",
+            "meaning": {
+              "uz": "nafaqat",
+              "ru": "не только",
+              "tj": "на танҳо"
+            }
           }
         }
       ]

@@ -371,12 +371,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "适应",
-            "交",
+            "平时",
             "友谊",
-            "平时"
+            "适应",
+            "交"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "do'stlik = 友谊 (yǒuyì)",
             "ru": "дружба = 友谊 (yǒuyì)",
@@ -417,12 +417,12 @@
           "audio_text": "丰富",
           "pinyin": "fēngfù",
           "options": [
-            "丰富",
             "平时",
             "交",
-            "适应"
+            "适应",
+            "丰富"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "丰富 — boyitmoq (fēngfù)",
             "ru": "丰富 — обогащать, богатый (fēngfù)",
@@ -457,14 +457,9 @@
           },
           "options": [
             {
-              "uz": "do'st orttirmoq",
-              "ru": "заводить друзей",
-              "tj": "дӯст пайдо кардан"
-            },
-            {
-              "uz": "odatdagi vaqt, odatda",
-              "ru": "обычно, в обычное время",
-              "tj": "одатан, вақтҳои муқаррарӣ"
+              "uz": "zerikarli",
+              "ru": "скучный",
+              "tj": "дилгиркунанда"
             },
             {
               "uz": "moslashmoq, ko'nikmoq",
@@ -472,12 +467,17 @@
               "tj": "мутобиқ шудан, одат кардан"
             },
             {
-              "uz": "zerikarli",
-              "ru": "скучный",
-              "tj": "дилгиркунанда"
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            },
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "无聊 = zerikarli (wúliáo)",
             "ru": "无聊 = скучный (wúliáo)",
@@ -512,8 +512,8 @@
           },
           "options": [
             "讨厌",
-            "交",
             "平时",
+            "交",
             "适应"
           ],
           "correct_index": 0,
@@ -536,12 +536,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiāo",
-            "píngshí",
+            "yǒuyì",
             "shìyìng",
-            "yǒuyì"
+            "jiāo",
+            "píngshí"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "友谊 — yǒuyì",
             "ru": "友谊 — yǒuyì",
@@ -639,9 +639,9 @@
           },
           "options": [
             "讨厌",
-            "平时",
+            "适应",
             "交",
-            "适应"
+            "平时"
           ],
           "correct_index": 0,
           "explanation": {
@@ -671,12 +671,12 @@
           "audio_text": "丰富",
           "pinyin": "fēngfù",
           "options": [
-            "平时",
             "适应",
             "丰富",
+            "平时",
             "交"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "丰富 — boyitmoq (fēngfù)",
             "ru": "丰富 — обогащать, богатый (fēngfù)",
@@ -694,31 +694,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'qaytadan' xitoycha qaysi?",
-            "ru": "'заново, снова' по-китайски?",
-            "tj": "'аз нав, дубора' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "交",
-            "适应",
-            "平时",
-            "重新"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "qaytadan = 重新 (chóngxīn)",
-            "ru": "заново, снова = 重新 (chóngxīn)",
-            "tj": "аз нав, дубора = 重新 (chóngxīn)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "丰富",
           "pinyin": "fēngfù",
@@ -726,6 +701,105 @@
             "uz": "boyitmoq",
             "ru": "обогащать, богатый",
             "tj": "ғанӣ кардан, бой"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "重新 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 重新:",
+            "tj": "Маънои калимаи 重新-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "qaytadan",
+              "ru": "заново, снова",
+              "tj": "аз нав, дубора"
+            },
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            },
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "重新 = qaytadan (chóngxīn)",
+            "ru": "重新 = заново, снова (chóngxīn)",
+            "tj": "重新 = аз нав, дубора (chóngxīn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "重新",
+            "pinyin": "chóngxīn",
+            "meaning": {
+              "uz": "qaytadan",
+              "ru": "заново, снова",
+              "tj": "аз нав, дубора"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'boyitmoq' xitoycha qaysi?",
+            "ru": "'обогащать, богатый' по-китайски?",
+            "tj": "'ғанӣ кардан, бой' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "丰富",
+            "适应",
+            "交",
+            "平时"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "boyitmoq = 丰富 (fēngfù)",
+            "ru": "обогащать, богатый = 丰富 (fēngfù)",
+            "tj": "ғанӣ кардан, бой = 丰富 (fēngfù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "丰富",
+            "pinyin": "fēngfù",
+            "meaning": {
+              "uz": "boyitmoq",
+              "ru": "обогащать, богатый",
+              "tj": "ғанӣ кардан, бой"
+            }
           }
         }
       ]

@@ -461,12 +461,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "航班",
             "登机牌",
             "推迟",
+            "航班",
             "加油站"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "boarding pass, samolyotga chiqish taloni = 登机牌 (dēngjīpái)",
             "ru": "посадочный талон = 登机牌 (dēngjīpái)",
@@ -507,10 +507,10 @@
           "audio_text": "首都",
           "pinyin": "shǒudū",
           "options": [
-            "推迟",
+            "航班",
             "首都",
-            "加油站",
-            "航班"
+            "推迟",
+            "加油站"
           ],
           "correct_index": 1,
           "explanation": {
@@ -547,14 +547,14 @@
           },
           "options": [
             {
-              "uz": "yoqilg'i quyish shoxobchasi",
-              "ru": "заправка",
-              "tj": "нуқтаи сӯзишворӣ"
-            },
-            {
               "uz": "kechiktirmoq",
               "ru": "откладывать, переносить",
               "tj": "ба таъхир гузоштан"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
             },
             {
               "uz": "sayohat qilmoq, sayohat",
@@ -562,9 +562,9 @@
               "tj": "сафар кардан, сафар"
             },
             {
-              "uz": "reys, parvoz",
-              "ru": "рейс, авиарейс",
-              "tj": "парвоз, рейс"
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
             }
           ],
           "correct_index": 2,
@@ -601,12 +601,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "航班",
-            "加油站",
             "推迟",
-            "怪"
+            "航班",
+            "怪",
+            "加油站"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "怪 = ancha, juda (guài)",
             "ru": "怪 = довольно, весьма (guài)",
@@ -627,8 +627,8 @@
           },
           "options": [
             "dēngjīpái",
-            "jiāyóuzhàn",
             "hángbān",
+            "jiāyóuzhàn",
             "tuīchí"
           ],
           "correct_index": 0,
@@ -731,31 +731,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'reys, parvoz' xitoycha qaysi?",
-            "ru": "'рейс, авиарейс' по-китайски?",
-            "tj": "'парвоз, рейс' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "推迟",
-            "高速公路",
-            "航班",
-            "加油站"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "reys, parvoz = 航班 (hángbān)",
-            "ru": "рейс, авиарейс = 航班 (hángbān)",
-            "tj": "парвоз, рейс = 航班 (hángbān)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "旅行",
           "pinyin": "lǚxíng",
@@ -776,11 +751,11 @@
           "pinyin": "Yíhuìr wǒ zìjǐ jìn qù huàn dēngjīpái, nǐ jiù búyòng sòng wǒ le, děng wǒ dào le Shǒudū Jīchǎng zài gěi nǐ fā duǎnxìn.",
           "options": [
             "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？",
+            "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",
             "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
-            "该加油了，去机场的路上有加油站吗？",
-            "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。"
+            "该加油了，去机场的路上有加油站吗？"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。 — Keyin o'zim ichkariga kirib boarding pass olaman, meni kuzatishing shart emas. Poytaxt aeroportiga yetgach senga xabar yozaman.",
             "ru": "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。 — Потом я сам зайду получить посадочный талон, провожать меня не нужно. Когда прилечу в аэропорт Шоуду, напишу тебе сообщение.",
@@ -806,9 +781,9 @@
               "tj": "хеле, бисёр"
             },
             {
-              "uz": "yoqilg'i quyish shoxobchasi",
-              "ru": "заправка",
-              "tj": "нуқтаи сӯзишворӣ"
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
             },
             {
               "uz": "kechiktirmoq",
@@ -816,9 +791,9 @@
               "tj": "ба таъхир гузоштан"
             },
             {
-              "uz": "reys, parvoz",
-              "ru": "рейс, авиарейс",
-              "tj": "парвоз, рейс"
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
             }
           ],
           "correct_index": 0,
@@ -836,6 +811,105 @@
             "uz": "poytaxt",
             "ru": "столица",
             "tj": "пойтахт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "航班 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 航班:",
+            "tj": "Маънои калимаи 航班-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            },
+            {
+              "uz": "tezkor avtomagistral",
+              "ru": "скоростная трасса",
+              "tj": "роҳи автомобилгарди тезгард"
+            },
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "航班 = reys, parvoz (hángbān)",
+            "ru": "航班 = рейс, авиарейс (hángbān)",
+            "tj": "航班 = парвоз, рейс (hángbān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "航班",
+            "pinyin": "hángbān",
+            "meaning": {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'poytaxt' xitoycha qaysi?",
+            "ru": "'столица' по-китайски?",
+            "tj": "'пойтахт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "推迟",
+            "航班",
+            "加油站",
+            "首都"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "poytaxt = 首都 (shǒudū)",
+            "ru": "столица = 首都 (shǒudū)",
+            "tj": "пойтахт = 首都 (shǒudū)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "首都",
+            "pinyin": "shǒudū",
+            "meaning": {
+              "uz": "poytaxt",
+              "ru": "столица",
+              "tj": "пойтахт"
+            }
           }
         }
       ]

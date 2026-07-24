@@ -595,35 +595,6 @@
         {
           "type": "sentence_builder",
           "sentence": {
-            "uz": "Siz ikkovingiz qayerda tanishdingiz?",
-            "ru": "Где вы двое познакомились?",
-            "tj": "Шумо дуто дар куҷо шинос шудед?"
-          },
-          "tokens": [
-            "大学",
-            "的",
-            "在",
-            "认识",
-            "你们",
-            "哪儿",
-            "年"
-          ],
-          "answer_tokens": [
-            "你们",
-            "在",
-            "哪儿",
-            "认识",
-            "的"
-          ],
-          "explanation": {
-            "uz": "你们在哪儿认识的？ — Nǐmen zài nǎr rènshi de?",
-            "ru": "你们在哪儿认识的？ — Nǐmen zài nǎr rènshi de?",
-            "tj": "你们在哪儿认识的？ — Nǐmen zài nǎr rènshi de?"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
             "uz": "Bugun 2024-yilning 26-apreli.",
             "ru": "Сегодня 26 апреля 2024 года.",
             "tj": "Имрӯз 26-уми апрели соли 2024 аст."
@@ -738,11 +709,32 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "大学",
+          "pinyin": "dàxué",
+          "translation": {
+            "uz": "universitet, oliy ta'lim muassasasi",
+            "ru": "университет, вуз",
+            "tj": "донишгоҳ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "前面 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 前面:",
-            "tj": "Маънои калимаи 前面-ро интихоб кунед:"
+            "uz": "看见 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 看见:",
+            "tj": "Маънои калимаи 看见-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -751,9 +743,9 @@
           },
           "options": [
             {
-              "uz": "oldinida, oldida",
-              "ru": "спереди, перед",
-              "tj": "пеш, пешаш"
+              "uz": "ko'rmoq, ko'rib qolmoq",
+              "ru": "увидеть, заметить",
+              "tj": "дидан, мушоҳида кардан"
             },
             {
               "uz": "yil",
@@ -761,31 +753,68 @@
               "tj": "сол"
             },
             {
-              "uz": "universitet, oliy ta'lim muassasasi",
-              "ru": "университет, вуз",
-              "tj": "донишгоҳ"
-            },
-            {
               "uz": "tanish bo'lmoq, uchrashmoq",
               "ru": "знать, познакомиться",
               "tj": "шинохтан, шинос шудан"
+            },
+            {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
             }
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "前面 = oldinida, oldida (qiánmiàn)",
-            "ru": "前面 = спереди, перед (qiánmiàn)",
-            "tj": "前面 = пеш, пешаш (qiánmiàn)"
+            "uz": "看见 = ko'rmoq, ko'rib qolmoq (kànjiàn)",
+            "ru": "看见 = увидеть, заметить (kànjiàn)",
+            "tj": "看见 = дидан, мушоҳида кардан (kànjiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "看见",
+            "pinyin": "kànjiàn",
+            "meaning": {
+              "uz": "ko'rmoq, ko'rib qolmoq",
+              "ru": "увидеть, заметить",
+              "tj": "дидан, мушоҳида кардан"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "大学",
-          "pinyin": "dàxué",
-          "translation": {
-            "uz": "universitet, oliy ta'lim muassasasi",
-            "ru": "университет, вуз",
-            "tj": "донишгоҳ"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'universitet, oliy ta'lim muassasasi' xitoycha qaysi?",
+            "ru": "'университет, вуз' по-китайски?",
+            "tj": "'донишгоҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "东西",
+            "年",
+            "认识",
+            "大学"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "universitet, oliy ta'lim muassasasi = 大学 (dàxué)",
+            "ru": "университет, вуз = 大学 (dàxué)",
+            "tj": "донишгоҳ = 大学 (dàxué)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "大学",
+            "pinyin": "dàxué",
+            "meaning": {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
+            }
           }
         }
       ]

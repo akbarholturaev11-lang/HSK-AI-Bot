@@ -1319,10 +1319,15 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         data["progress"] = {
             "xp": gamification["xp"],
             "streak": gamification["streak"],
+            "longest_streak": gamification.get("longest_streak", 0),
             "weekly_xp": gamification["weekly_xp"],
             "league": gamification["league"],
             "completed": completed,
             "daily_xp": gamification.get("daily_xp", 0),
+            "last_activity_date": gamification.get("last_activity_date"),
+            "local_date": gamification.get("local_date"),
+            "week_start": gamification.get("week_start"),
+            "week_activity_dates": gamification.get("week_activity_dates", []),
             "reward_chest": gamification.get("reward_chest"),
         }
         data["user"] = {

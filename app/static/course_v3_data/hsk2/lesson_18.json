@@ -321,11 +321,11 @@
           },
           "options": [
             "gěi",
+            "kuàilè",
             "kāishǐ",
-            "shēngrì",
-            "kuàilè"
+            "shēngrì"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "开始 — kāishǐ",
             "ru": "开始 — kāishǐ",
@@ -359,10 +359,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "生日",
             "快乐",
+            "给",
             "已经",
-            "给"
+            "生日"
           ],
           "correct_index": 2,
           "explanation": {
@@ -405,12 +405,12 @@
           "audio_text": "长",
           "pinyin": "cháng",
           "options": [
-            "生日",
+            "长",
             "给",
-            "快乐",
-            "长"
+            "生日",
+            "快乐"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "长 — uzun; (vaqt) uzoq (cháng)",
             "ru": "长 — длинный; (о времени) долгий (cháng)",
@@ -436,6 +436,11 @@
               "tj": "оғоз кардан, шурӯъ кардан"
             },
             {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            },
+            {
               "uz": "baxtli, xursand",
               "ru": "счастливый, радостный",
               "tj": "хушбахт, шод"
@@ -444,11 +449,6 @@
               "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
               "ru": "для, кому (давать или направлять)",
               "tj": "барои, ба (додан ё равона кардан)"
-            },
-            {
-              "uz": "tug'ilgan kun",
-              "ru": "день рождения",
-              "tj": "рӯзи таваллуд"
             }
           ],
           "correct_index": 0,
@@ -548,11 +548,11 @@
             "tj": "Ман аллакай хӯрок хӯрдам."
           },
           "tokens": [
-            "吃饭",
+            "了",
+            "已经",
             "我",
             "生日",
-            "已经",
-            "了",
+            "吃饭",
             "快乐"
           ],
           "answer_tokens": [
@@ -586,12 +586,12 @@
             "tj": "Ман аллакай хӯрок хӯрдам."
           },
           "tokens": [
-            "我",
-            "已经",
-            "生日",
             "了",
             "快乐",
-            "吃饭"
+            "吃饭",
+            "我",
+            "生日",
+            "已经"
           ],
           "answer_tokens": [
             "我",
@@ -628,28 +628,25 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'qabul qilmoq, olmoq; telefonga javob bermoq' xitoycha qaysi?",
-            "ru": "'принимать, получать; отвечать на телефон' по-китайски?",
-            "tj": "'қабул кардан; ба телефон ҷавоб додан' ба хитоӣ кадом аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "开始",
+          "pinyin": "kāishǐ",
           "options": [
             "生日",
-            "给",
-            "接",
-            "快乐"
+            "快乐",
+            "开始",
+            "给"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "qabul qilmoq, olmoq; telefonga javob bermoq = 接 (jiē)",
-            "ru": "принимать, получать; отвечать на телефон = 接 (jiē)",
-            "tj": "қабул кардан; ба телефон ҷавоб додан = 接 (jiē)"
+            "uz": "开始 — boshlamoq, boshlanmoq (kāishǐ)",
+            "ru": "开始 — начинать, начинаться (kāishǐ)",
+            "tj": "开始 — оғоз кардан, шурӯъ кардан (kāishǐ)"
           }
         },
         {
@@ -710,28 +707,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "开始",
-          "pinyin": "kāishǐ",
-          "options": [
-            "快乐",
-            "开始",
-            "给",
-            "生日"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "开始 — boshlamoq, boshlanmoq (kāishǐ)",
-            "ru": "开始 — начинать, начинаться (kāishǐ)",
-            "tj": "开始 — оғоз кардан, шурӯъ кардан (kāishǐ)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "长",
           "pinyin": "cháng",
@@ -739,6 +714,105 @@
             "uz": "uzun; (vaqt) uzoq",
             "ru": "длинный; (о времени) долгий",
             "tj": "дароз; (вақт) тӯлонӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "非常 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 非常:",
+            "tj": "Маънои калимаи 非常-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            },
+            {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            },
+            {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            },
+            {
+              "uz": "juda, nihoyatda",
+              "ru": "очень, чрезвычайно",
+              "tj": "хеле, бағоят"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "非常 = juda, nihoyatda (fēicháng)",
+            "ru": "非常 = очень, чрезвычайно (fēicháng)",
+            "tj": "非常 = хеле, бағоят (fēicháng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "非常",
+            "pinyin": "fēicháng",
+            "meaning": {
+              "uz": "juda, nihoyatda",
+              "ru": "очень, чрезвычайно",
+              "tj": "хеле, бағоят"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uzun; (vaqt) uzoq' xitoycha qaysi?",
+            "ru": "'длинный; (о времени) долгий' по-китайски?",
+            "tj": "'дароз; (вақт) тӯлонӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "给",
+            "快乐",
+            "长",
+            "生日"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "uzun; (vaqt) uzoq = 长 (cháng)",
+            "ru": "длинный; (о времени) долгий = 长 (cháng)",
+            "tj": "дароз; (вақт) тӯлонӣ = 长 (cháng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "长",
+            "pinyin": "cháng",
+            "meaning": {
+              "uz": "uzun; (vaqt) uzoq",
+              "ru": "длинный; (о времени) долгий",
+              "tj": "дароз; (вақт) тӯлонӣ"
+            }
           }
         }
       ]

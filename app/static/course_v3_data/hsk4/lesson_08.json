@@ -430,12 +430,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "吸引",
             "俩",
+            "法律",
             "印象",
-            "法律"
+            "吸引"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "jalb qilmoq = 吸引 (xīyǐn)",
             "ru": "привлекать = 吸引 (xīyǐn)",
@@ -466,12 +466,12 @@
           "audio_text": "幽默",
           "pinyin": "yōumò",
           "options": [
-            "幽默",
-            "法律",
+            "印象",
             "俩",
-            "印象"
+            "幽默",
+            "法律"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "幽默 — hazilkash, yumorga boy (yōumò)",
             "ru": "幽默 — с юмором, остроумный (yōumò)",
@@ -521,6 +521,11 @@
               "tj": "феъл, хулқ"
             },
             {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            },
+            {
               "uz": "ikkalasi, ikki kishi",
               "ru": "двое, оба",
               "tj": "ду нафар, ҳарду"
@@ -529,11 +534,6 @@
               "uz": "taassurot",
               "ru": "впечатление",
               "tj": "таассурот"
-            },
-            {
-              "uz": "qonun, huquq",
-              "ru": "закон, право",
-              "tj": "қонун, ҳуқуқ"
             }
           ],
           "correct_index": 0,
@@ -556,12 +556,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "互相",
-            "法律",
             "印象",
-            "俩"
+            "俩",
+            "互相",
+            "法律"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "互相 = o'zaro, bir-biriga (hùxiāng)",
             "ru": "互相 = взаимно, друг друга (hùxiāng)",
@@ -657,14 +657,14 @@
             "tj": "Ҷалби ҳамдигар аз ҷиҳати хислат боз ҳам муҳимтар аст."
           },
           "tokens": [
+            "上",
             "法律",
-            "更",
-            "性格",
+            "需要",
             "俩",
             "互相",
-            "上",
+            "更",
             "吸引",
-            "需要"
+            "性格"
           ],
           "answer_tokens": [
             "更",
@@ -692,28 +692,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "脾气",
-          "pinyin": "píqi",
-          "options": [
-            "印象",
-            "法律",
-            "脾气",
-            "俩"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "脾气 — fe'l, mijoz, xarakter (píqi)",
-            "ru": "脾气 — характер, нрав (píqi)",
-            "tj": "脾气 — феъл, хулқ (píqi)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Xarakter jihatidan bir-birini jalb qilish yanada kerak.",
@@ -721,14 +699,14 @@
             "tj": "Ҷалби ҳамдигар аз ҷиҳати хислат боз ҳам муҳимтар аст."
           },
           "tokens": [
-            "法律",
+            "吸引",
+            "俩",
             "更",
+            "法律",
+            "需要",
             "互相",
             "性格",
-            "吸引",
-            "上",
-            "需要",
-            "俩"
+            "上"
           ],
           "answer_tokens": [
             "更",
@@ -745,28 +723,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "互相",
-          "pinyin": "hùxiāng",
-          "options": [
-            "互相",
-            "印象",
-            "法律",
-            "俩"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "互相 — o'zaro, bir-biriga (hùxiāng)",
-            "ru": "互相 — взаимно, друг друга (hùxiāng)",
-            "tj": "互相 — якдигарро, мутақобилан (hùxiāng)"
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'hazilkash, yumorga boy' xitoycha qaysi?",
@@ -779,12 +735,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "幽默",
-            "法律",
             "印象",
+            "法律",
+            "幽默",
             "俩"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "hazilkash, yumorga boy = 幽默 (yōumò)",
             "ru": "с юмором, остроумный = 幽默 (yōumò)",
@@ -799,6 +755,105 @@
             "uz": "fe'l, mijoz, xarakter",
             "ru": "характер, нрав",
             "tj": "феъл, хулқ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "原因 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 原因:",
+            "tj": "Маънои калимаи 原因-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            },
+            {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            },
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
+              "uz": "sabab",
+              "ru": "причина",
+              "tj": "сабаб"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "原因 = sabab (yuányīn)",
+            "ru": "原因 = причина (yuányīn)",
+            "tj": "原因 = сабаб (yuányīn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "原因",
+            "pinyin": "yuányīn",
+            "meaning": {
+              "uz": "sabab",
+              "ru": "причина",
+              "tj": "сабаб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'fe'l, mijoz, xarakter' xitoycha qaysi?",
+            "ru": "'характер, нрав' по-китайски?",
+            "tj": "'феъл, хулқ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "俩",
+            "脾气",
+            "法律",
+            "印象"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "fe'l, mijoz, xarakter = 脾气 (píqi)",
+            "ru": "характер, нрав = 脾气 (píqi)",
+            "tj": "феъл, хулқ = 脾气 (píqi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "脾气",
+            "pinyin": "píqi",
+            "meaning": {
+              "uz": "fe'l, mijoz, xarakter",
+              "ru": "характер, нрав",
+              "tj": "феъл, хулқ"
+            }
           }
         }
       ]

@@ -317,14 +317,14 @@
               "tj": "ҳоло, дар ин лаҳза"
             },
             {
-              "uz": "daqiqa",
-              "ru": "минута",
-              "tj": "дақиқа"
-            },
-            {
               "uz": "tush, yarim kun",
               "ru": "полдень",
               "tj": "нисфирӯзӣ, нимрӯз"
+            },
+            {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
             },
             {
               "uz": "soat (soat uchun o'lchov so'zi)",
@@ -366,12 +366,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "现在",
-            "点",
             "分",
-            "中午"
+            "中午",
+            "现在",
+            "点"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "点 = soat (soat uchun o'lchov so'zi) (diǎn)",
             "ru": "点 = час (счётное слово для часов) (diǎn)",
@@ -405,12 +405,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "fēn",
+            "xiànzài",
             "zhōngwǔ",
-            "diǎn",
-            "xiànzài"
+            "fēn",
+            "diǎn"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "分 — fēn",
             "ru": "分 — fēn",
@@ -445,11 +445,11 @@
           },
           "options": [
             "点",
-            "分",
             "现在",
-            "中午"
+            "中午",
+            "分"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "tush, yarim kun = 中午 (zhōngwǔ)",
             "ru": "полдень = 中午 (zhōngwǔ)",
@@ -467,11 +467,11 @@
           "pinyin": "xiànzài",
           "options": [
             "中午",
-            "点",
             "现在",
+            "点",
             "分"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "现在 — hozir, shu vaqtda (xiànzài)",
             "ru": "现在 — сейчас, в данный момент (xiànzài)",
@@ -586,12 +586,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
+            "现在",
             "分",
             "中午",
-            "点",
-            "现在"
+            "点"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 现在 (xiànzài) — hozir, shu vaqtda",
             "ru": "Верно: 现在 (xiànzài) — сейчас, в данный момент",
@@ -634,63 +634,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "钱 talaffuzini tanlang:",
-            "ru": "Выберите произношение 钱:",
-            "tj": "Талаффузи 钱-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "现在几点？",
+          "pinyin": "Xiànzài jǐ diǎn?",
           "options": [
-            "qián",
-            "xiànzài",
-            "fēn",
-            "diǎn"
+            "现在十点十分。",
+            "现在几点？",
+            "十二点吃饭。",
+            "中午几点吃饭？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "钱 — qián",
-            "ru": "钱 — qián",
-            "tj": "钱 — qián"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "点",
-          "pinyin": "diǎn",
-          "translation": {
-            "uz": "soat (soat uchun o'lchov so'zi)",
-            "ru": "час (счётное слово для часов)",
-            "tj": "соат (вақт)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Hozir soat necha?",
-            "ru": "Сколько сейчас времени?",
-            "tj": "Ҳоло соат чанд аст?"
-          },
-          "tokens": [
-            "中午",
-            "现在",
-            "几",
-            "分",
-            "点"
-          ],
-          "answer_tokens": [
-            "现在",
-            "几",
-            "点"
-          ],
-          "explanation": {
-            "uz": "现在几点？ — Xiànzài jǐ diǎn?",
-            "ru": "现在几点？ — Xiànzài jǐ diǎn?",
-            "tj": "现在几点？ — Xiànzài jǐ diǎn?"
+            "uz": "现在几点？ — Hozir soat necha?",
+            "ru": "现在几点？ — Сколько сейчас времени?",
+            "tj": "现在几点？ — Ҳоло соат чанд аст?"
           }
         },
         {
@@ -701,6 +663,105 @@
             "uz": "hozir, shu vaqtda",
             "ru": "сейчас, в данный момент",
             "tj": "ҳоло, дар ин лаҳза"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "桌子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 桌子:",
+            "tj": "Маънои калимаи 桌子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "soat (soat uchun o'lchov so'zi)",
+              "ru": "час (счётное слово для часов)",
+              "tj": "соат (вақт)"
+            },
+            {
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
+            },
+            {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
+            },
+            {
+              "uz": "stol, parta",
+              "ru": "стол",
+              "tj": "мӣз"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "桌子 = stol, parta (zhuōzi)",
+            "ru": "桌子 = стол (zhuōzi)",
+            "tj": "桌子 = мӣз (zhuōzi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "桌子",
+            "pinyin": "zhuōzi",
+            "meaning": {
+              "uz": "stol, parta",
+              "ru": "стол",
+              "tj": "мӣз"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hozir, shu vaqtda' xitoycha qaysi?",
+            "ru": "'сейчас, в данный момент' по-китайски?",
+            "tj": "'ҳоло, дар ин лаҳза' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "点",
+            "中午",
+            "分",
+            "现在"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "hozir, shu vaqtda = 现在 (xiànzài)",
+            "ru": "сейчас, в данный момент = 现在 (xiànzài)",
+            "tj": "ҳоло, дар ин лаҳза = 现在 (xiànzài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "现在",
+            "pinyin": "xiànzài",
+            "meaning": {
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
+            }
           }
         }
       ]

@@ -442,9 +442,9 @@
           },
           "options": [
             "零钱",
-            "出生",
             "学期",
-            "性别"
+            "性别",
+            "出生"
           ],
           "correct_index": 0,
           "explanation": {
@@ -480,12 +480,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dǎ zhāohu",
             "xìngbié",
-            "xuéqī",
-            "chūshēng"
+            "chūshēng",
+            "dǎ zhāohu",
+            "xuéqī"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "打招呼 — dǎ zhāohu",
             "ru": "打招呼 — dǎ zhāohu",
@@ -529,10 +529,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "出生",
             "性别",
-            "学期",
             "戴",
-            "出生"
+            "学期"
           ],
           "correct_index": 2,
           "explanation": {
@@ -565,9 +565,9 @@
           "audio_text": "眼镜",
           "pinyin": "yǎnjìng",
           "options": [
-            "学期",
-            "性别",
             "出生",
+            "性别",
+            "学期",
             "眼镜"
           ],
           "correct_index": 3,
@@ -591,9 +591,9 @@
           },
           "options": [
             {
-              "uz": "semestr, o'quv muddati",
-              "ru": "семестр",
-              "tj": "нимсолаи таҳсил"
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
             },
             {
               "uz": "jins",
@@ -601,17 +601,17 @@
               "tj": "ҷинс"
             },
             {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            },
+            {
               "uz": "mayda pul",
               "ru": "мелочь",
               "tj": "пули майда"
-            },
-            {
-              "uz": "tug'ilmoq",
-              "ru": "родиться",
-              "tj": "таваллуд шудан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "零钱 = mayda pul (língqián)",
             "ru": "零钱 = мелочь (língqián)",
@@ -711,53 +711,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "lǐ fà qaysi ieroglif?",
-            "ru": "Какой иероглиф читается lǐ fà?",
-            "tj": "lǐ fà кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "出生",
-            "性别",
-            "学期",
-            "理发"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "理发 = soch oldirmoq (lǐ fà)",
-            "ru": "理发 = стричься (lǐ fà)",
-            "tj": "理发 = мӯй гирифтан (lǐ fà)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "戴",
-          "pinyin": "dài",
-          "options": [
-            "学期",
-            "出生",
-            "戴",
-            "性别"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "戴 — taqmoq, kiymoq (dài)",
-            "ru": "戴 — надевать аксессуары (dài)",
-            "tj": "戴 — пӯшидан, бастан (dài)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -800,6 +753,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "戴",
+          "pinyin": "dài",
+          "options": [
+            "戴",
+            "出生",
+            "性别",
+            "学期"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "戴 — taqmoq, kiymoq (dài)",
+            "ru": "戴 — надевать аксессуары (dài)",
+            "tj": "戴 — пӯшидан, бастан (dài)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "戴",
           "pinyin": "dài",
@@ -807,6 +782,105 @@
             "uz": "taqmoq, kiymoq",
             "ru": "надевать аксессуары",
             "tj": "пӯшидан, бастан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "理发 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 理发:",
+            "tj": "Маънои калимаи 理发-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "soch oldirmoq",
+              "ru": "стричься",
+              "tj": "мӯй гирифтан"
+            },
+            {
+              "uz": "jins",
+              "ru": "пол",
+              "tj": "ҷинс"
+            },
+            {
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
+            },
+            {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "理发 = soch oldirmoq (lǐ fà)",
+            "ru": "理发 = стричься (lǐ fà)",
+            "tj": "理发 = мӯй гирифтан (lǐ fà)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "理发",
+            "pinyin": "lǐ fà",
+            "meaning": {
+              "uz": "soch oldirmoq",
+              "ru": "стричься",
+              "tj": "мӯй гирифтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'taqmoq, kiymoq' xitoycha qaysi?",
+            "ru": "'надевать аксессуары' по-китайски?",
+            "tj": "'пӯшидан, бастан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "出生",
+            "戴",
+            "性别",
+            "学期"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "taqmoq, kiymoq = 戴 (dài)",
+            "ru": "надевать аксессуары = 戴 (dài)",
+            "tj": "пӯшидан, бастан = 戴 (dài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "戴",
+            "pinyin": "dài",
+            "meaning": {
+              "uz": "taqmoq, kiymoq",
+              "ru": "надевать аксессуары",
+              "tj": "пӯшидан, бастан"
+            }
           }
         }
       ]

@@ -342,11 +342,6 @@
           },
           "options": [
             {
-              "uz": "deb o'ylamoq, hisoblamoq",
-              "ru": "считать, полагать",
-              "tj": "фикр кардан, ҳисобидан"
-            },
-            {
               "uz": "kilogramm",
               "ru": "килограмм",
               "tj": "килограмм"
@@ -357,12 +352,17 @@
               "tj": "шаҳр"
             },
             {
+              "uz": "deb o'ylamoq, hisoblamoq",
+              "ru": "считать, полагать",
+              "tj": "фикр кардан, ҳисобидан"
+            },
+            {
               "uz": "agar",
               "ru": "если",
               "tj": "агар"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "公斤 = kilogramm (gōngjīn)",
             "ru": "公斤 = килограмм (gōngjīn)",
@@ -406,12 +406,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "城市",
-            "认为",
+            "鼻子",
             "如果",
-            "鼻子"
+            "认为",
+            "城市"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "鼻子 = burun (bízi)",
             "ru": "鼻子 = нос (bízi)",
@@ -447,8 +447,8 @@
           "options": [
             "rúguǒ",
             "tóufa",
-            "chéngshì",
-            "rènwéi"
+            "rènwéi",
+            "chéngshì"
           ],
           "correct_index": 1,
           "explanation": {
@@ -485,11 +485,11 @@
           },
           "options": [
             "如果",
-            "检查",
+            "城市",
             "认为",
-            "城市"
+            "检查"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "tekshirmoq, ko'rikdan o'tkazmoq = 检查 (jiǎnchá)",
             "ru": "проверять, осматривать = 检查 (jiǎnchá)",
@@ -506,12 +506,12 @@
           "audio_text": "公斤",
           "pinyin": "gōngjīn",
           "options": [
+            "认为",
             "如果",
             "公斤",
-            "认为",
             "城市"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "公斤 — kilogramm (gōngjīn)",
             "ru": "公斤 — килограмм (gōngjīn)",
@@ -616,13 +616,13 @@
             "tj": "Шумо бояд хуб-хуб истироҳат кунед!"
           },
           "tokens": [
-            "好",
-            "如果",
-            "休息",
-            "好",
             "城市",
             "要",
-            "你"
+            "如果",
+            "好",
+            "休息",
+            "你",
+            "好"
           ],
           "answer_tokens": [
             "你",
@@ -648,80 +648,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'o'smoq, ulg'aymoq' xitoycha qaysi?",
-            "ru": "'расти, развиваться' по-китайски?",
-            "tj": "'калон шудан, рушд кардан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "长",
-            "城市",
-            "认为",
-            "如果"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "o'smoq, ulg'aymoq = 长 (zhǎng)",
-            "ru": "расти, развиваться = 长 (zhǎng)",
-            "tj": "калон шудан, рушд кардан = 长 (zhǎng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Deyarli bir metr, 25 kilogramm.",
-            "ru": "Почти один метр, 25 килограммов.",
-            "tj": "Қариб як метр, 25 килограмм."
-          },
-          "tokens": [
-            "米",
-            "公斤",
-            "城市",
-            "了",
-            "快",
-            "如果"
-          ],
-          "answer_tokens": [
-            "快",
-            "米",
-            "了",
-            "公斤"
-          ],
-          "explanation": {
-            "uz": "快1米了，25公斤。 — Kuài yì mǐ le, èrshíwǔ gōngjīn.",
-            "ru": "快1米了，25公斤。 — Kuài yì mǐ le, èrshíwǔ gōngjīn.",
-            "tj": "快1米了，25公斤。 — Kuài yì mǐ le, èrshíwǔ gōngjīn."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "如果不舒服，就去医院检查一下吧。",
-          "pinyin": "Rúguǒ bù shūfu, jiù qù yīyuàn jiǎnchá yíxià ba.",
-          "options": [
-            "如果不舒服，就去医院检查一下吧。",
-            "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。",
-            "我不喜欢一直住在同一个城市，想去其他城市看一看。",
-            "那您现在为什么不去？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "如果不舒服，就去医院检查一下吧。 — Agar noqulay bo'lsa, kasalxonaga borib tekshirtir.",
-            "ru": "如果不舒服，就去医院检查一下吧。 — Если плохо себя чувствуешь, сходи в больницу провериться.",
-            "tj": "如果不舒服，就去医院检查一下吧。 — Агар нороҳат бошӣ, ба беморхона рафта як бор муоина кун."
-          }
-        },
         {
           "type": "meaning_guess",
           "prompt": {
@@ -764,6 +690,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "检查",
+          "pinyin": "jiǎnchá",
+          "options": [
+            "检查",
+            "城市",
+            "如果",
+            "认为"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "检查 — tekshirmoq, ko'rikdan o'tkazmoq (jiǎnchá)",
+            "ru": "检查 — проверять, осматривать (jiǎnchá)",
+            "tj": "检查 — санҷидан, муоина кардан (jiǎnchá)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "鼻子",
           "pinyin": "bízi",
@@ -771,6 +719,105 @@
             "uz": "burun",
             "ru": "нос",
             "tj": "бинӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "长 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 长:",
+            "tj": "Маънои калимаи 长-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "deb o'ylamoq, hisoblamoq",
+              "ru": "считать, полагать",
+              "tj": "фикр кардан, ҳисобидан"
+            },
+            {
+              "uz": "o'smoq, ulg'aymoq",
+              "ru": "расти, развиваться",
+              "tj": "калон шудан, рушд кардан"
+            },
+            {
+              "uz": "agar",
+              "ru": "если",
+              "tj": "агар"
+            },
+            {
+              "uz": "shahar",
+              "ru": "город",
+              "tj": "шаҳр"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "长 = o'smoq, ulg'aymoq (zhǎng)",
+            "ru": "长 = расти, развиваться (zhǎng)",
+            "tj": "长 = калон шудан, рушд кардан (zhǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "长",
+            "pinyin": "zhǎng",
+            "meaning": {
+              "uz": "o'smoq, ulg'aymoq",
+              "ru": "расти, развиваться",
+              "tj": "калон шудан, рушд кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'burun' xitoycha qaysi?",
+            "ru": "'нос' по-китайски?",
+            "tj": "'бинӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "鼻子",
+            "如果",
+            "认为",
+            "城市"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "burun = 鼻子 (bízi)",
+            "ru": "нос = 鼻子 (bízi)",
+            "tj": "бинӣ = 鼻子 (bízi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "鼻子",
+            "pinyin": "bízi",
+            "meaning": {
+              "uz": "burun",
+              "ru": "нос",
+              "tj": "бинӣ"
+            }
           }
         }
       ]

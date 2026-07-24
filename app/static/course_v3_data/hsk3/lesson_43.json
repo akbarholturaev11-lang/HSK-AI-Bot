@@ -385,12 +385,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "biànhuà",
-            "yòu",
             "diàntī",
+            "yòu",
+            "biànhuà",
             "mǎnyì"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "变化 — biànhuà",
             "ru": "变化 — biànhuà",
@@ -424,12 +424,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "满意",
             "电梯",
             "健康",
-            "满意",
             "又"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "sog'lom = 健康 (jiànkāng)",
             "ru": "здоровый = 健康 (jiànkāng)",
@@ -460,12 +460,12 @@
           "audio_text": "重要",
           "pinyin": "zhòngyào",
           "options": [
-            "电梯",
             "重要",
+            "电梯",
             "满意",
             "又"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "重要 — muhim (zhòngyào)",
             "ru": "重要 — важный (zhòngyào)",
@@ -486,14 +486,14 @@
           },
           "options": [
             {
-              "uz": "lift",
-              "ru": "лифт",
-              "tj": "лифт"
-            },
-            {
               "uz": "o'zgarmoq; o'zgarish",
               "ru": "изменяться; изменение",
               "tj": "тағйир ёфтан; тағйирот"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
             },
             {
               "uz": "yana (amal allaqachon takrorlangan)",
@@ -506,7 +506,7 @@
               "tj": "қаноатманд будан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "变化 = o'zgarmoq; o'zgarish (biànhuà)",
             "ru": "变化 = изменяться; изменение (biànhuà)",
@@ -566,14 +566,14 @@
             "tj": "Саломатӣ аз ҳама муҳим аст, фарбеҳӣ ё лоғарӣ муҳим нест."
           },
           "tokens": [
-            "瘦",
-            "胖",
-            "最",
-            "健康",
-            "重要",
-            "没关系",
             "又",
-            "满意"
+            "重要",
+            "满意",
+            "没关系",
+            "瘦",
+            "最",
+            "胖",
+            "健康"
           ],
           "answer_tokens": [
             "健康",
@@ -609,41 +609,16 @@
           "audio_text": "健康最重要，胖瘦没关系。",
           "pinyin": "Jiànkāng zuì zhòngyào, pàng shòu méi guānxi.",
           "options": [
-            "健康最重要，胖瘦没关系。",
+            "都不满意吗？",
             "听说你最近打算买房子？",
             "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "都不满意吗？"
+            "健康最重要，胖瘦没关系。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "健康最重要，胖瘦没关系。 — Sog'liq eng muhim, semizlik yoki ozg'inlik muhim emas.",
             "ru": "健康最重要，胖瘦没关系。 — Здоровье важнее всего, полнота или худоба не имеют значения.",
             "tj": "健康最重要，胖瘦没关系。 — Саломатӣ аз ҳама муҳим аст, фарбеҳӣ ё лоғарӣ муҳим нест."
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yòu qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yòu?",
-            "tj": "yòu кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "满意",
-            "电梯",
-            "又",
-            "层"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "又 = yana (amal allaqachon takrorlangan) (yòu)",
-            "ru": "又 = снова (действие уже повторилось) (yòu)",
-            "tj": "又 = боз (амал аллакай такрор шуд) (yòu)"
           }
         },
         {
@@ -654,6 +629,105 @@
             "uz": "o'zgarmoq; o'zgarish",
             "ru": "изменяться; изменение",
             "tj": "тағйир ёфтан; тағйирот"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "洗手间 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 洗手间:",
+            "tj": "Маънои калимаи 洗手间-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hojatxona",
+              "ru": "туалет",
+              "tj": "ҳоҷатхона"
+            },
+            {
+              "uz": "mamnun bo'lmoq, qoniqmoq",
+              "ru": "быть довольным",
+              "tj": "қаноатманд будан"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            },
+            {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "洗手间 = hojatxona (xǐshǒujiān)",
+            "ru": "洗手间 = туалет (xǐshǒujiān)",
+            "tj": "洗手间 = ҳоҷатхона (xǐshǒujiān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "洗手间",
+            "pinyin": "xǐshǒujiān",
+            "meaning": {
+              "uz": "hojatxona",
+              "ru": "туалет",
+              "tj": "ҳоҷатхона"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'zgarmoq; o'zgarish' xitoycha qaysi?",
+            "ru": "'изменяться; изменение' по-китайски?",
+            "tj": "'тағйир ёфтан; тағйирот' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "变化",
+            "电梯",
+            "满意",
+            "又"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "o'zgarmoq; o'zgarish = 变化 (biànhuà)",
+            "ru": "изменяться; изменение = 变化 (biànhuà)",
+            "tj": "тағйир ёфтан; тағйирот = 变化 (biànhuà)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "变化",
+            "pinyin": "biànhuà",
+            "meaning": {
+              "uz": "o'zgarmoq; o'zgarish",
+              "ru": "изменяться; изменение",
+              "tj": "тағйир ёфтан; тағйирот"
+            }
           }
         }
       ]

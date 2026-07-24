@@ -306,12 +306,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "一共",
             "邻居",
-            "根据",
-            "请假"
+            "一共",
+            "请假",
+            "根据"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "根据 = asosida, ko'ra (gēnjù)",
             "ru": "根据 = согласно, на основании (gēnjù)",
@@ -345,12 +345,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qíngkuàng",
-            "yígòng",
             "línjū",
-            "qǐng jià"
+            "qǐng jià",
+            "yígòng",
+            "qíngkuàng"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "情况 — qíngkuàng",
             "ru": "情况 — qíngkuàng",
@@ -384,12 +384,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "邻居",
             "一共",
             "口",
+            "邻居",
             "请假"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "og'iz = 口 (kǒu)",
             "ru": "рот = 口 (kǒu)",
@@ -430,12 +430,12 @@
           "audio_text": "渴",
           "pinyin": "kě",
           "options": [
-            "请假",
-            "邻居",
+            "渴",
             "一共",
-            "渴"
+            "邻居",
+            "请假"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "渴 — chanqagan (kě)",
             "ru": "渴 — испытывающий жажду (kě)",
@@ -456,6 +456,16 @@
           },
           "options": [
             {
+              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
+              "ru": "просить отпуск, отпрашиваться",
+              "tj": "рухсат пурсидан, рухсатӣ хостан"
+            },
+            {
+              "uz": "asosida, ko'ra",
+              "ru": "согласно, на основании",
+              "tj": "дар асоси, мувофиқи"
+            },
+            {
               "uz": "qo'shni",
               "ru": "сосед",
               "tj": "ҳамсоя"
@@ -464,19 +474,9 @@
               "uz": "jami, hammasi bo'lib",
               "ru": "всего, в общей сложности",
               "tj": "ҳамагӣ, ҷамъ"
-            },
-            {
-              "uz": "asosida, ko'ra",
-              "ru": "согласно, на основании",
-              "tj": "дар асоси, мувофиқи"
-            },
-            {
-              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
-              "ru": "просить отпуск, отпрашиваться",
-              "tj": "рухсат пурсидан, рухсатӣ хостан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "根据 = asosida, ko'ra (gēnjù)",
             "ru": "根据 = согласно, на основании (gēnjù)",
@@ -546,57 +546,16 @@
           "audio_text": "渴",
           "pinyin": "kě",
           "options": [
+            "渴",
             "邻居",
-            "请假",
             "一共",
-            "渴"
+            "请假"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "渴 — chanqagan (kě)",
             "ru": "渴 — испытывающий жажду (kě)",
             "tj": "渴 — ташна (kě)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "为了 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 为了:",
-            "tj": "Маънои калимаи 为了-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qo'shni",
-              "ru": "сосед",
-              "tj": "ҳамсоя"
-            },
-            {
-              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
-              "ru": "просить отпуск, отпрашиваться",
-              "tj": "рухсат пурсидан, рухсатӣ хостан"
-            },
-            {
-              "uz": "jami, hammasi bo'lib",
-              "ru": "всего, в общей сложности",
-              "tj": "ҳамагӣ, ҷамъ"
-            },
-            {
-              "uz": "uchun, maqsadida",
-              "ru": "ради, для того чтобы",
-              "tj": "барои, ба хотири"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "为了 = uchun, maqsadida (wèile)",
-            "ru": "为了 = ради, для того чтобы (wèile)",
-            "tj": "为了 = барои, ба хотири (wèile)"
           }
         },
         {
@@ -649,6 +608,105 @@
             "uz": "chanqagan",
             "ru": "испытывающий жажду",
             "tj": "ташна"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "必须 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 必须:",
+            "tj": "Маънои калимаи 必须-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
+              "ru": "просить отпуск, отпрашиваться",
+              "tj": "рухсат пурсидан, рухсатӣ хостан"
+            },
+            {
+              "uz": "shart, albatta kerak",
+              "ru": "обязательно, должен",
+              "tj": "ҳатман, бояд"
+            },
+            {
+              "uz": "jami, hammasi bo'lib",
+              "ru": "всего, в общей сложности",
+              "tj": "ҳамагӣ, ҷамъ"
+            },
+            {
+              "uz": "qo'shni",
+              "ru": "сосед",
+              "tj": "ҳамсоя"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "必须 = shart, albatta kerak (bìxū)",
+            "ru": "必须 = обязательно, должен (bìxū)",
+            "tj": "必须 = ҳатман, бояд (bìxū)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "必须",
+            "pinyin": "bìxū",
+            "meaning": {
+              "uz": "shart, albatta kerak",
+              "ru": "обязательно, должен",
+              "tj": "ҳатман, бояд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chanqagan' xitoycha qaysi?",
+            "ru": "'испытывающий жажду' по-китайски?",
+            "tj": "'ташна' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "邻居",
+            "一共",
+            "请假",
+            "渴"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "chanqagan = 渴 (kě)",
+            "ru": "испытывающий жажду = 渴 (kě)",
+            "tj": "ташна = 渴 (kě)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "渴",
+            "pinyin": "kě",
+            "meaning": {
+              "uz": "chanqagan",
+              "ru": "испытывающий жажду",
+              "tj": "ташна"
+            }
           }
         }
       ]

@@ -588,47 +588,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "为什么 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 为什么:",
-            "tj": "Маънои калимаи 为什么-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "nega, nima uchun",
-              "ru": "почему, зачем",
-              "tj": "чаро, барои чӣ"
-            },
-            {
-              "uz": "eng, juda",
-              "ru": "самый, наиболее",
-              "tj": "аз ҳама, бештар"
-            },
-            {
-              "uz": "sayohat qilmoq",
-              "ru": "путешествовать",
-              "tj": "сафар кардан"
-            },
-            {
-              "uz": "deb o'ylash, his qilish",
-              "ru": "думать, считать, чувствовать",
-              "tj": "фикр кардан, ҳис кардан"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "为什么 = nega, nima uchun (wèi shénme)",
-            "ru": "为什么 = почему, зачем (wèi shénme)",
-            "tj": "为什么 = чаро, барои чӣ (wèi shénme)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U qancha yoshda?",
@@ -663,6 +622,105 @@
             "uz": "u (hayvon yoki narsa haqida)",
             "ru": "оно, он/она (о животных и предметах)",
             "tj": "он/он (дар бораи ҳайвон ё чиз)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一起 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一起:",
+            "tj": "Маънои калимаи 一起-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "birga, birgalikda",
+              "ru": "вместе",
+              "tj": "якҷо, бо ҳам"
+            },
+            {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
+            },
+            {
+              "uz": "eng, juda",
+              "ru": "самый, наиболее",
+              "tj": "аз ҳама, бештар"
+            },
+            {
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "一起 = birga, birgalikda (yìqǐ)",
+            "ru": "一起 = вместе (yìqǐ)",
+            "tj": "一起 = якҷо, бо ҳам (yìqǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "一起",
+            "pinyin": "yìqǐ",
+            "meaning": {
+              "uz": "birga, birgalikda",
+              "ru": "вместе",
+              "tj": "якҷо, бо ҳам"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'u (hayvon yoki narsa haqida)' xitoycha qaysi?",
+            "ru": "'оно, он/она (о животных и предметах)' по-китайски?",
+            "tj": "'он/он (дар бораи ҳайвон ё чиз)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "它",
+            "觉得",
+            "最",
+            "旅游"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "u (hayvon yoki narsa haqida) = 它 (tā)",
+            "ru": "оно, он/она (о животных и предметах) = 它 (tā)",
+            "tj": "он/он (дар бораи ҳайвон ё чиз) = 它 (tā)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "它",
+            "pinyin": "tā",
+            "meaning": {
+              "uz": "u (hayvon yoki narsa haqida)",
+              "ru": "оно, он/она (о животных и предметах)",
+              "tj": "он/он (дар бораи ҳайвон ё чиз)"
+            }
           }
         }
       ]

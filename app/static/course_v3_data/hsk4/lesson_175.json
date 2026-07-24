@@ -432,12 +432,12 @@
           "audio_text": "可怜",
           "pinyin": "kělián",
           "options": [
-            "可怜",
-            "推迟",
             "航班",
+            "推迟",
+            "可怜",
             "加油站"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "可怜 — bechora, achinarli (kělián)",
             "ru": "可怜 — бедный, жалкий (kělián)",
@@ -472,27 +472,27 @@
           },
           "options": [
             {
-              "uz": "yoqilg'i quyish shoxobchasi",
-              "ru": "заправка",
-              "tj": "нуқтаи сӯзишворӣ"
-            },
-            {
               "uz": "kechiktirmoq",
               "ru": "откладывать, переносить",
               "tj": "ба таъхир гузоштан"
             },
             {
-              "uz": "qarshi tomon",
-              "ru": "напротив",
-              "tj": "рӯ ба рӯ"
-            },
-            {
               "uz": "reys, parvoz",
               "ru": "рейс, авиарейс",
               "tj": "парвоз, рейс"
+            },
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            },
+            {
+              "uz": "qarshi tomon",
+              "ru": "напротив",
+              "tj": "рӯ ба рӯ"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "对面 = qarshi tomon (duìmiàn)",
             "ru": "对面 = напротив (duìmiàn)",
@@ -536,9 +536,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "加油站",
             "推迟",
             "航班",
-            "加油站",
             "烤鸭"
           ],
           "correct_index": 3,
@@ -576,11 +576,11 @@
           },
           "options": [
             "jiāyóuzhàn",
-            "zhùhè",
             "hángbān",
-            "tuīchí"
+            "tuīchí",
+            "zhùhè"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "祝贺 — zhùhè",
             "ru": "祝贺 — zhùhè",
@@ -600,12 +600,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "加油站",
-            "推迟",
             "航班",
-            "可怜"
+            "加油站",
+            "可怜",
+            "推迟"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "bechora, achinarli = 可怜 (kělián)",
             "ru": "бедный, жалкий = 可怜 (kělián)",
@@ -666,53 +666,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "lǚxíng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается lǚxíng?",
-            "tj": "lǚxíng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "航班",
-            "推迟",
-            "旅行",
-            "加油站"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "旅行 = sayohat qilmoq, sayohat (lǚxíng)",
-            "ru": "旅行 = путешествовать, путешествие (lǚxíng)",
-            "tj": "旅行 = сафар кардан, сафар (lǚxíng)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "烤鸭",
-          "pinyin": "kǎoyā",
-          "options": [
-            "航班",
-            "烤鸭",
-            "推迟",
-            "加油站"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "烤鸭 — qovurilgan o'rdak (kǎoyā)",
-            "ru": "烤鸭 — жареная утка (kǎoyā)",
-            "tj": "烤鸭 — мурғобии бирён (kǎoyā)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -755,6 +708,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "烤鸭",
+          "pinyin": "kǎoyā",
+          "options": [
+            "推迟",
+            "航班",
+            "加油站",
+            "烤鸭"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "烤鸭 — qovurilgan o'rdak (kǎoyā)",
+            "ru": "烤鸭 — жареная утка (kǎoyā)",
+            "tj": "烤鸭 — мурғобии бирён (kǎoyā)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "烤鸭",
           "pinyin": "kǎoyā",
@@ -762,6 +737,105 @@
             "uz": "qovurilgan o'rdak",
             "ru": "жареная утка",
             "tj": "мурғобии бирён"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "旅行 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 旅行:",
+            "tj": "Маънои калимаи 旅行-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            },
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
+            },
+            {
+              "uz": "sayohat qilmoq, sayohat",
+              "ru": "путешествовать, путешествие",
+              "tj": "сафар кардан, сафар"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "旅行 = sayohat qilmoq, sayohat (lǚxíng)",
+            "ru": "旅行 = путешествовать, путешествие (lǚxíng)",
+            "tj": "旅行 = сафар кардан, сафар (lǚxíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "旅行",
+            "pinyin": "lǚxíng",
+            "meaning": {
+              "uz": "sayohat qilmoq, sayohat",
+              "ru": "путешествовать, путешествие",
+              "tj": "сафар кардан, сафар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qovurilgan o'rdak' xitoycha qaysi?",
+            "ru": "'жареная утка' по-китайски?",
+            "tj": "'мурғобии бирён' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "加油站",
+            "航班",
+            "推迟",
+            "烤鸭"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qovurilgan o'rdak = 烤鸭 (kǎoyā)",
+            "ru": "жареная утка = 烤鸭 (kǎoyā)",
+            "tj": "мурғобии бирён = 烤鸭 (kǎoyā)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "烤鸭",
+            "pinyin": "kǎoyā",
+            "meaning": {
+              "uz": "qovurilgan o'rdak",
+              "ru": "жареная утка",
+              "tj": "мурғобии бирён"
+            }
           }
         }
       ]

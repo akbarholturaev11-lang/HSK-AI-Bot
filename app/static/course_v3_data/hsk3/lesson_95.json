@@ -348,12 +348,12 @@
           "audio_text": "动物",
           "pinyin": "dòngwù",
           "options": [
-            "万",
+            "动物",
             "向",
-            "只",
-            "动物"
+            "万",
+            "只"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "动物 — hayvon (dòngwù)",
             "ru": "动物 — животное (dòngwù)",
@@ -398,17 +398,17 @@
               "tj": "ба сӯи, ба"
             },
             {
-              "uz": "davr, qism uchun hisob so'zi",
-              "ru": "отрезок, период; счетное слово для частей",
-              "tj": "давра, қисм; ҳисобвожа"
-            },
-            {
               "uz": "o'n ming",
               "ru": "десять тысяч",
               "tj": "даҳ ҳазор"
+            },
+            {
+              "uz": "davr, qism uchun hisob so'zi",
+              "ru": "отрезок, период; счетное слово для частей",
+              "tj": "давра, қисм; ҳисобвожа"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "段 = davr, qism uchun hisob so'zi (duàn)",
             "ru": "段 = отрезок, период; счетное слово для частей (duàn)",
@@ -453,11 +453,11 @@
           },
           "options": [
             "只",
-            "万",
             "向",
-            "不但……而且……"
+            "不但……而且……",
+            "万"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "不但……而且…… = nafaqat..., balki... (bùdàn... érqiě...)",
             "ru": "不但……而且…… = не только..., но и... (bùdàn... érqiě...)",
@@ -492,11 +492,11 @@
           },
           "options": [
             "wàn",
-            "zhī",
+            "yǒumíng",
             "xiàng",
-            "yǒumíng"
+            "zhī"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "有名 — yǒumíng",
             "ru": "有名 — yǒumíng",
@@ -516,12 +516,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "动物",
-            "向",
             "万",
-            "只"
+            "只",
+            "向",
+            "动物"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "hayvon = 动物 (dòngwù)",
             "ru": "животное = 动物 (dòngwù)",
@@ -640,11 +640,11 @@
           "pinyin": "bùdàn... érqiě...",
           "options": [
             "万",
-            "不但……而且……",
             "向",
-            "只"
+            "只",
+            "不但……而且……"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "不但……而且…… — nafaqat..., balki... (bùdàn... érqiě...)",
             "ru": "不但……而且…… — не только..., но и... (bùdàn... érqiě...)",
@@ -662,31 +662,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zhī qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zhī?",
-            "tj": "zhī кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "只",
-            "向",
-            "嘴",
-            "万"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "只 = ayrim hayvonlar uchun hisob so'zi (zhī)",
-            "ru": "只 = счетное слово для некоторых животных (zhī)",
-            "tj": "只 = ҳисобвожа барои баъзе ҳайвонҳо (zhī)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -696,8 +671,8 @@
           "audio_text": "段",
           "pinyin": "duàn",
           "options": [
-            "万",
             "向",
+            "万",
             "段",
             "只"
           ],
@@ -716,6 +691,105 @@
             "uz": "nafaqat..., balki...",
             "ru": "не только..., но и...",
             "tj": "на танҳо..., балки..."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "只 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 只:",
+            "tj": "Маънои калимаи 只-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            },
+            {
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
+            },
+            {
+              "uz": "og'iz",
+              "ru": "рот",
+              "tj": "даҳон"
+            },
+            {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "只 = ayrim hayvonlar uchun hisob so'zi (zhī)",
+            "ru": "只 = счетное слово для некоторых животных (zhī)",
+            "tj": "只 = ҳисобвожа барои баъзе ҳайвонҳо (zhī)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "只",
+            "pinyin": "zhī",
+            "meaning": {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'nafaqat..., balki...' xitoycha qaysi?",
+            "ru": "'не только..., но и...' по-китайски?",
+            "tj": "'на танҳо..., балки...' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "不但……而且……",
+            "万",
+            "只",
+            "向"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "nafaqat..., balki... = 不但……而且…… (bùdàn... érqiě...)",
+            "ru": "не только..., но и... = 不但……而且…… (bùdàn... érqiě...)",
+            "tj": "на танҳо..., балки... = 不但……而且…… (bùdàn... érqiě...)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "不但……而且……",
+            "pinyin": "bùdàn... érqiě...",
+            "meaning": {
+              "uz": "nafaqat..., balki...",
+              "ru": "не только..., но и...",
+              "tj": "на танҳо..., балки..."
+            }
           }
         }
       ]

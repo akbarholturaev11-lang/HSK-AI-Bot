@@ -462,9 +462,9 @@
           },
           "options": [
             {
-              "uz": "reys, parvoz",
-              "ru": "рейс, авиарейс",
-              "tj": "парвоз, рейс"
+              "uz": "talabga javob beradigan, o'tgan",
+              "ru": "соответствующий норме, зачтённый",
+              "tj": "мувофиқ ба талаб, гузашта"
             },
             {
               "uz": "yoqilg'i quyish shoxobchasi",
@@ -477,12 +477,12 @@
               "tj": "ба таъхир гузоштан"
             },
             {
-              "uz": "talabga javob beradigan, o'tgan",
-              "ru": "соответствующий норме, зачтённый",
-              "tj": "мувофиқ ба талаб, гузашта"
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "合格 = talabga javob beradigan, o'tgan (hégé)",
             "ru": "合格 = соответствующий норме, зачтённый (hégé)",
@@ -517,11 +517,11 @@
           },
           "options": [
             "航班",
-            "推迟",
+            "干杯",
             "加油站",
-            "干杯"
+            "推迟"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "干杯 = qadah ko'tarmoq (gān bēi)",
             "ru": "干杯 = пить до дна, тост (gān bēi)",
@@ -555,12 +555,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "mínzú",
             "hángbān",
             "jiāyóuzhàn",
-            "tuīchí",
-            "mínzú"
+            "tuīchí"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "民族 — mínzú",
             "ru": "民族 — mínzú",
@@ -604,12 +604,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "加油站",
             "打扮",
-            "航班",
             "推迟",
-            "加油站"
+            "航班"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "bezantirmoq, kiyinmoq = 打扮 (dǎban)",
             "ru": "наряжаться, одеваться = 打扮 (dǎban)",
@@ -626,12 +626,12 @@
           "audio_text": "合格",
           "pinyin": "hégé",
           "options": [
-            "加油站",
             "合格",
             "航班",
+            "加油站",
             "推迟"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "合格 — talabga javob beradigan, o'tgan (hégé)",
             "ru": "合格 — соответствующий норме, зачтённый (hégé)",
@@ -740,79 +740,16 @@
           "audio_text": "先别着急说。中午我们不是要去对面的饭店吃烤鸭，祝贺她考试成绩都合格吗？那时候再告诉她，不是更好？",
           "pinyin": "Xiān bié zháojí shuō. Zhōngwǔ wǒmen bú shì yào qù duìmiàn de fàndiàn chī kǎoyā, zhùhè tā kǎoshì chéngjì dōu hégé ma? Nà shíhou zài gàosu tā, bú shì gèng hǎo?",
           "options": [
-            "先别着急说。中午我们不是要去对面的饭店吃烤鸭，祝贺她考试成绩都合格吗？那时候再告诉她，不是更好？",
+            "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？",
             "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
             "该加油了，去机场的路上有加油站吗？",
-            "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？"
+            "先别着急说。中午我们不是要去对面的饭店吃烤鸭，祝贺她考试成绩都合格吗？那时候再告诉她，不是更好？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "先别着急说。中午我们不是要去对面的饭店吃烤鸭，祝贺她考试成绩都合格吗？那时候再告诉她，不是更好？ — Avval shoshilmay tur. Tushda qarshidagi restoranga qovurilgan o'rdak yeyishga, imtihonlari hammasi o'tganini tabriklashga bormoqchi edik-ku? O'shanda aytsak yaxshiroq emasmi?",
             "ru": "先别着急说。中午我们不是要去对面的饭店吃烤鸭，祝贺她考试成绩都合格吗？那时候再告诉她，不是更好？ — Пока не спеши говорить. В обед мы ведь идём в ресторан напротив есть утку и поздравлять её с тем, что все экзамены сданы? Разве не лучше сказать тогда?",
             "tj": "先别着急说。中午我们不是要去对面的饭店吃烤鸭，祝贺她考试成绩都合格吗？那时候再告诉她，不是更好？ — Ҳозир шитоб накун. Нисфирӯзӣ ба тарабхонаи рӯ ба рӯ барои хӯрдани мурғобии бирён ва табрик кардани натиҷаҳои имтиҳонаш мерафтем-ку? Он вақт гӯем беҳтар нест?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "合格",
-          "pinyin": "hégé",
-          "options": [
-            "合格",
-            "加油站",
-            "航班",
-            "推迟"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "合格 — talabga javob beradigan, o'tgan (hégé)",
-            "ru": "合格 — соответствующий норме, зачтённый (hégé)",
-            "tj": "合格 — мувофиқ ба талаб, гузашта (hégé)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "怪 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 怪:",
-            "tj": "Маънои калимаи 怪-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "kechiktirmoq",
-              "ru": "откладывать, переносить",
-              "tj": "ба таъхир гузоштан"
-            },
-            {
-              "uz": "reys, parvoz",
-              "ru": "рейс, авиарейс",
-              "tj": "парвоз, рейс"
-            },
-            {
-              "uz": "yoqilg'i quyish shoxobchasi",
-              "ru": "заправка",
-              "tj": "нуқтаи сӯзишворӣ"
-            },
-            {
-              "uz": "ancha, juda",
-              "ru": "довольно, весьма",
-              "tj": "хеле, бисёр"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "怪 = ancha, juda (guài)",
-            "ru": "怪 = довольно, весьма (guài)",
-            "tj": "怪 = хеле, бисёр (guài)"
           }
         },
         {
@@ -828,12 +765,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "干杯",
             "推迟",
+            "加油站",
             "航班",
-            "加油站"
+            "干杯"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "qadah ko'tarmoq = 干杯 (gān bēi)",
             "ru": "пить до дна, тост = 干杯 (gān bēi)",
@@ -853,10 +790,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "航班",
+            "加油站",
             "民族",
-            "推迟",
-            "加油站"
+            "航班",
+            "推迟"
           ],
           "correct_index": 1,
           "explanation": {
@@ -873,6 +810,105 @@
             "uz": "bezantirmoq, kiyinmoq",
             "ru": "наряжаться, одеваться",
             "tj": "оро додан, либос пӯшидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "祝贺 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 祝贺:",
+            "tj": "Маънои калимаи 祝贺-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            },
+            {
+              "uz": "tabriklamoq",
+              "ru": "поздравлять",
+              "tj": "табрик кардан"
+            },
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            },
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "祝贺 = tabriklamoq (zhùhè)",
+            "ru": "祝贺 = поздравлять (zhùhè)",
+            "tj": "祝贺 = табрик кардан (zhùhè)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "祝贺",
+            "pinyin": "zhùhè",
+            "meaning": {
+              "uz": "tabriklamoq",
+              "ru": "поздравлять",
+              "tj": "табрик кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bezantirmoq, kiyinmoq' xitoycha qaysi?",
+            "ru": "'наряжаться, одеваться' по-китайски?",
+            "tj": "'оро додан, либос пӯшидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "航班",
+            "推迟",
+            "打扮",
+            "加油站"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "bezantirmoq, kiyinmoq = 打扮 (dǎban)",
+            "ru": "наряжаться, одеваться = 打扮 (dǎban)",
+            "tj": "оро додан, либос пӯшидан = 打扮 (dǎban)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "打扮",
+            "pinyin": "dǎban",
+            "meaning": {
+              "uz": "bezantirmoq, kiyinmoq",
+              "ru": "наряжаться, одеваться",
+              "tj": "оро додан, либос пӯшидан"
+            }
           }
         }
       ]

@@ -375,12 +375,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "电梯",
-            "满意",
             "又",
-            "洗手间"
+            "满意",
+            "洗手间",
+            "电梯"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "洗手间 = hojatxona (xǐshǒujiān)",
             "ru": "洗手间 = туалет (xǐshǒujiān)",
@@ -414,12 +414,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "lǎo",
             "mǎnyì",
             "diàntī",
-            "yòu",
-            "lǎo"
+            "yòu"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "老 — lǎo",
             "ru": "老 — lǎo",
@@ -463,12 +463,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "又",
             "几乎",
-            "电梯",
-            "满意"
+            "满意",
+            "又",
+            "电梯"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "deyarli = 几乎 (jīhū)",
             "ru": "почти = 几乎 (jīhū)",
@@ -485,12 +485,12 @@
           "audio_text": "洗手间",
           "pinyin": "xǐshǒujiān",
           "options": [
-            "满意",
             "电梯",
-            "又",
-            "洗手间"
+            "满意",
+            "洗手间",
+            "又"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "洗手间 — hojatxona (xǐshǒujiān)",
             "ru": "洗手间 — туалет (xǐshǒujiān)",
@@ -592,6 +592,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我去洗手间。",
+          "pinyin": "Wǒ qù xǐshǒujiān.",
+          "options": [
+            "都不满意吗？",
+            "听说你最近打算买房子？",
+            "我去洗手间。",
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我去洗手间。 — Hojatxonaga boraman.",
+            "ru": "我去洗手间。 — Я иду в туалет.",
+            "tj": "我去洗手间。 — Ба ҳоҷатхона меравам."
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Hojatxonaga boraman.",
@@ -599,11 +621,11 @@
             "tj": "Ба ҳоҷатхона меравам."
           },
           "tokens": [
+            "去",
             "又",
             "满意",
-            "去",
-            "洗手间",
-            "我"
+            "我",
+            "洗手间"
           ],
           "answer_tokens": [
             "我",
@@ -651,53 +673,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我去洗手间。",
-          "pinyin": "Wǒ qù xǐshǒujiān.",
-          "options": [
-            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "都不满意吗？",
-            "我去洗手间。",
-            "听说你最近打算买房子？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "我去洗手间。 — Hojatxonaga boraman.",
-            "ru": "我去洗手间。 — Я иду в туалет.",
-            "tj": "我去洗手间。 — Ба ҳоҷатхона меравам."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'kola' xitoycha qaysi?",
-            "ru": "'кола' по-китайски?",
-            "tj": "'кола' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "可乐",
-            "又",
-            "电梯",
-            "满意"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "kola = 可乐 (kělè)",
-            "ru": "кола = 可乐 (kělè)",
-            "tj": "кола = 可乐 (kělè)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "几乎",
           "pinyin": "jīhū",
@@ -705,6 +680,105 @@
             "uz": "deyarli",
             "ru": "почти",
             "tj": "қариб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "马上 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 马上:",
+            "tj": "Маънои калимаи 马上-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mamnun bo'lmoq, qoniqmoq",
+              "ru": "быть довольным",
+              "tj": "қаноатманд будан"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            },
+            {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
+            },
+            {
+              "uz": "darhol",
+              "ru": "сразу, немедленно",
+              "tj": "фавран"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "马上 = darhol (mǎshàng)",
+            "ru": "马上 = сразу, немедленно (mǎshàng)",
+            "tj": "马上 = фавран (mǎshàng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "马上",
+            "pinyin": "mǎshàng",
+            "meaning": {
+              "uz": "darhol",
+              "ru": "сразу, немедленно",
+              "tj": "фавран"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'deyarli' xitoycha qaysi?",
+            "ru": "'почти' по-китайски?",
+            "tj": "'қариб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "几乎",
+            "电梯",
+            "满意",
+            "又"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "deyarli = 几乎 (jīhū)",
+            "ru": "почти = 几乎 (jīhū)",
+            "tj": "қариб = 几乎 (jīhū)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "几乎",
+            "pinyin": "jīhū",
+            "meaning": {
+              "uz": "deyarli",
+              "ru": "почти",
+              "tj": "қариб"
+            }
           }
         }
       ]

@@ -441,12 +441,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "sháo(zi)",
             "sǐ",
+            "sháo(zi)",
             "kěxī",
             "guīdìng"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "勺（子） — sháo(zi)",
             "ru": "勺（子） — sháo(zi)",
@@ -480,12 +480,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "规定",
             "保护",
             "死",
+            "规定",
             "可惜"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "himoya qilmoq = 保护 (bǎohù)",
             "ru": "защищать = 保护 (bǎohù)",
@@ -526,12 +526,12 @@
           "audio_text": "作用",
           "pinyin": "zuòyòng",
           "options": [
-            "死",
-            "规定",
             "可惜",
-            "作用"
+            "规定",
+            "作用",
+            "死"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "作用 — ta'sir, vazifa (zuòyòng)",
             "ru": "作用 — роль, функция (zuòyòng)",
@@ -576,14 +576,14 @@
               "tj": "натавонистан"
             },
             {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
-            },
-            {
               "uz": "qoida, belgilangan tartib",
               "ru": "правило, положение",
               "tj": "қоида, тартиб"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
             }
           ],
           "correct_index": 1,
@@ -606,12 +606,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "规定",
             "勺（子）",
             "死",
-            "规定",
             "可惜"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "勺（子） = qoshiq (sháo(zi))",
             "ru": "勺（子） = ложка (sháo(zi))",
@@ -720,41 +720,16 @@
           "audio_text": "作用",
           "pinyin": "zuòyòng",
           "options": [
-            "规定",
             "可惜",
-            "作用",
-            "死"
+            "死",
+            "规定",
+            "作用"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "作用 — ta'sir, vazifa (zuòyòng)",
             "ru": "作用 — роль, функция (zuòyòng)",
             "tj": "作用 — нақш, таъсир (zuòyòng)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "bìngqiě qaysi ieroglif?",
-            "ru": "Какой иероглиф читается bìngqiě?",
-            "tj": "bìngqiě кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "并且",
-            "规定",
-            "可惜",
-            "死"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "并且 = va, shuningdek (bìngqiě)",
-            "ru": "并且 = и, а также (bìngqiě)",
-            "tj": "并且 = ва, ҳамчунин (bìngqiě)"
           }
         },
         {
@@ -807,6 +782,105 @@
             "uz": "ta'sir, vazifa",
             "ru": "роль, функция",
             "tj": "нақш, таъсир"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "并且 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 并且:",
+            "tj": "Маънои калимаи 并且-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "va, shuningdek",
+              "ru": "и, а также",
+              "tj": "ва, ҳамчунин"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "并且 = va, shuningdek (bìngqiě)",
+            "ru": "并且 = и, а также (bìngqiě)",
+            "tj": "并且 = ва, ҳамчунин (bìngqiě)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "并且",
+            "pinyin": "bìngqiě",
+            "meaning": {
+              "uz": "va, shuningdek",
+              "ru": "и, а также",
+              "tj": "ва, ҳамчунин"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ta'sir, vazifa' xitoycha qaysi?",
+            "ru": "'роль, функция' по-китайски?",
+            "tj": "'нақш, таъсир' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "可惜",
+            "规定",
+            "作用",
+            "死"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ta'sir, vazifa = 作用 (zuòyòng)",
+            "ru": "роль, функция = 作用 (zuòyòng)",
+            "tj": "нақш, таъсир = 作用 (zuòyòng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "作用",
+            "pinyin": "zuòyòng",
+            "meaning": {
+              "uz": "ta'sir, vazifa",
+              "ru": "роль, функция",
+              "tj": "нақш, таъсир"
+            }
           }
         }
       ]

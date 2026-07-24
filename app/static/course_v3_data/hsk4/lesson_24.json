@@ -346,9 +346,9 @@
           },
           "options": [
             "留",
-            "挺",
+            "信心",
             "紧张",
-            "信心"
+            "挺"
           ],
           "correct_index": 0,
           "explanation": {
@@ -381,12 +381,12 @@
           "audio_text": "其次",
           "pinyin": "qícì",
           "options": [
-            "紧张",
             "其次",
-            "信心",
-            "挺"
+            "挺",
+            "紧张",
+            "信心"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "其次 — ikkinchidan, keyin (qícì)",
             "ru": "其次 — во-вторых, затем (qícì)",
@@ -421,6 +421,11 @@
           },
           "options": [
             {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            },
+            {
               "uz": "hayajonlangan, asabiy",
               "ru": "нервный, напряженный",
               "tj": "изтиробнок, асабӣ"
@@ -434,14 +439,9 @@
               "uz": "ishonch",
               "ru": "уверенность",
               "tj": "боварӣ"
-            },
-            {
-              "uz": "ancha, juda",
-              "ru": "довольно, весьма",
-              "tj": "хеле, анча"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "诚实 = halol, rostgo'y (chéngshí)",
             "ru": "诚实 = честный (chéngshí)",
@@ -485,12 +485,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "挺",
-            "信心",
             "改变",
+            "信心",
+            "挺",
             "紧张"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "改变 = o'zgartirmoq (gǎibiàn)",
             "ru": "改变 = изменять (gǎibiàn)",
@@ -510,9 +510,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xìnxīn",
-            "liú",
             "tǐng",
+            "liú",
+            "xìnxīn",
             "jǐnzhāng"
           ],
           "correct_index": 1,
@@ -576,47 +576,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "能力 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 能力:",
-            "tj": "Маънои калимаи 能力-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qobiliyat",
-              "ru": "способность, умение",
-              "tj": "қобилият"
-            },
-            {
-              "uz": "hayajonlangan, asabiy",
-              "ru": "нервный, напряженный",
-              "tj": "изтиробнок, асабӣ"
-            },
-            {
-              "uz": "ancha, juda",
-              "ru": "довольно, весьма",
-              "tj": "хеле, анча"
-            },
-            {
-              "uz": "ishonch",
-              "ru": "уверенность",
-              "tj": "боварӣ"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "能力 = qobiliyat (nénglì)",
-            "ru": "能力 = способность, умение (nénglì)",
-            "tj": "能力 = қобилият (nénglì)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -626,9 +585,9 @@
           "audio_text": "留",
           "pinyin": "liú",
           "options": [
-            "信心",
-            "留",
             "挺",
+            "留",
+            "信心",
             "紧张"
           ],
           "correct_index": 1,
@@ -648,12 +607,12 @@
           "audio_text": "改变",
           "pinyin": "gǎibiàn",
           "options": [
+            "信心",
             "紧张",
             "改变",
-            "信心",
             "挺"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "改变 — o'zgartirmoq (gǎibiàn)",
             "ru": "改变 — изменять (gǎibiàn)",
@@ -673,12 +632,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "其次",
-            "挺",
             "紧张",
-            "信心"
+            "其次",
+            "信心",
+            "挺"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "ikkinchidan, keyin = 其次 (qícì)",
             "ru": "во-вторых, затем = 其次 (qícì)",
@@ -698,12 +657,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "信心",
             "紧张",
             "诚实",
-            "挺"
+            "挺",
+            "信心"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "诚实 = halol, rostgo'y (chéngshí)",
             "ru": "诚实 = честный (chéngshí)",
@@ -718,6 +677,105 @@
             "uz": "o'zgartirmoq",
             "ru": "изменять",
             "tj": "тағйир додан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "正式 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 正式:",
+            "tj": "Маънои калимаи 正式-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            },
+            {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
+              "uz": "rasmiy",
+              "ru": "официальный",
+              "tj": "расмӣ"
+            },
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "正式 = rasmiy (zhèngshì)",
+            "ru": "正式 = официальный (zhèngshì)",
+            "tj": "正式 = расмӣ (zhèngshì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "正式",
+            "pinyin": "zhèngshì",
+            "meaning": {
+              "uz": "rasmiy",
+              "ru": "официальный",
+              "tj": "расмӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'zgartirmoq' xitoycha qaysi?",
+            "ru": "'изменять' по-китайски?",
+            "tj": "'тағйир додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "改变",
+            "紧张",
+            "挺",
+            "信心"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "o'zgartirmoq = 改变 (gǎibiàn)",
+            "ru": "изменять = 改变 (gǎibiàn)",
+            "tj": "тағйир додан = 改变 (gǎibiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "改变",
+            "pinyin": "gǎibiàn",
+            "meaning": {
+              "uz": "o'zgartirmoq",
+              "ru": "изменять",
+              "tj": "тағйир додан"
+            }
           }
         }
       ]

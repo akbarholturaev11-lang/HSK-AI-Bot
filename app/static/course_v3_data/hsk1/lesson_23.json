@@ -628,65 +628,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "reverse_builder",
-          "zh": "昨天8月31号。",
-          "pinyin": "Zuótiān bā yuè sānshíyī hào.",
-          "translation": {
-            "uz": "Kecha 31-avgust edi.",
-            "ru": "Вчера было 31 августа.",
-            "tj": "Дирӯз 31-уми август буд."
-          },
-          "tokens": {
-            "uz": [
-              "edi",
-              "Bugun",
-              "31-avgust",
-              "Kecha",
-              "1-sentabr"
-            ],
-            "ru": [
-              "Вчера",
-              "1",
-              "31",
-              "Сегодня",
-              "августа",
-              "было"
-            ],
-            "tj": [
-              "Имрӯз",
-              "август",
-              "Дирӯз",
-              "буд",
-              "1-уми",
-              "31-уми"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Kecha",
-              "31-avgust",
-              "edi"
-            ],
-            "ru": [
-              "Вчера",
-              "было",
-              "31",
-              "августа"
-            ],
-            "tj": [
-              "Дирӯз",
-              "31-уми",
-              "август",
-              "буд"
-            ]
-          },
-          "explanation": {
-            "uz": "昨天8月31号。 — Kecha 31-avgust edi.",
-            "ru": "昨天8月31号。 — Вчера было 31 августа.",
-            "tj": "昨天8月31号。 — Дирӯз 31-уми август буд."
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Kecha 31-avgust edi.",
@@ -712,28 +653,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "明天",
-          "pinyin": "míngtiān",
-          "options": [
-            "请",
-            "明天",
-            "问",
-            "今天"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "明天 — ertaga (míngtiān)",
-            "ru": "明天 — завтра (míngtiān)",
-            "tj": "明天 — фардо (míngtiān)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "昨天",
           "pinyin": "zuótiān",
@@ -741,6 +660,105 @@
             "uz": "kecha",
             "ru": "вчера",
             "tj": "дирӯз"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "今天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 今天:",
+            "tj": "Маънои калимаи 今天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iltimos, marhamat",
+              "ru": "пожалуйста, разрешите спросить",
+              "tj": "лутфан, иҷозат диҳед"
+            },
+            {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            },
+            {
+              "uz": "oy kuni (sana)",
+              "ru": "число (день месяца)",
+              "tj": "рӯзи моҳ (сана)"
+            },
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "今天 = bugun (jīntiān)",
+            "ru": "今天 = сегодня (jīntiān)",
+            "tj": "今天 = имрӯз (jīntiān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "今天",
+            "pinyin": "jīntiān",
+            "meaning": {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kecha' xitoycha qaysi?",
+            "ru": "'вчера' по-китайски?",
+            "tj": "'дирӯз' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "昨天",
+            "请",
+            "问",
+            "今天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kecha = 昨天 (zuótiān)",
+            "ru": "вчера = 昨天 (zuótiān)",
+            "tj": "дирӯз = 昨天 (zuótiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "昨天",
+            "pinyin": "zuótiān",
+            "meaning": {
+              "uz": "kecha",
+              "ru": "вчера",
+              "tj": "дирӯз"
+            }
           }
         }
       ]

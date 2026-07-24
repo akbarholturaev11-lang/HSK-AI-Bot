@@ -440,12 +440,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xiāngtóng",
-            "yǔfǎ",
             "liúlì",
-            "lìhai"
+            "yǔfǎ",
+            "lìhai",
+            "xiāngtóng"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "相同 — xiāngtóng",
             "ru": "相同 — xiāngtóng",
@@ -489,12 +489,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "流利",
             "厉害",
             "顺序",
-            "语法",
-            "流利"
+            "语法"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "tartib = 顺序 (shùnxù)",
             "ru": "порядок = 顺序 (shùnxù)",
@@ -525,9 +525,9 @@
           "audio_text": "表示",
           "pinyin": "biǎoshì",
           "options": [
-            "流利",
-            "语法",
             "厉害",
+            "语法",
+            "流利",
             "表示"
           ],
           "correct_index": 3,
@@ -551,27 +551,27 @@
           },
           "options": [
             {
-              "uz": "bir xil",
-              "ru": "одинаковый",
-              "tj": "якхела"
-            },
-            {
               "uz": "zo'r, kuchli",
               "ru": "сильный, впечатляющий",
               "tj": "зӯр, қавӣ"
             },
             {
-              "uz": "grammatika",
-              "ru": "грамматика",
-              "tj": "грамматика"
-            },
-            {
               "uz": "ravon",
               "ru": "беглый, свободный",
               "tj": "равон"
+            },
+            {
+              "uz": "bir xil",
+              "ru": "одинаковый",
+              "tj": "якхела"
+            },
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "相同 = bir xil (xiāngtóng)",
             "ru": "相同 = одинаковый (xiāngtóng)",
@@ -673,31 +673,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'zo'r, kuchli' xitoycha qaysi?",
-            "ru": "'сильный, впечатляющий' по-китайски?",
-            "tj": "'зӯр, қавӣ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "流利",
-            "语法",
-            "准确",
-            "厉害"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "zo'r, kuchli = 厉害 (lìhai)",
-            "ru": "сильный, впечатляющий = 厉害 (lìhai)",
-            "tj": "зӯр, қавӣ = 厉害 (lìhai)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -707,12 +682,12 @@
           "audio_text": "顺序",
           "pinyin": "shùnxù",
           "options": [
-            "厉害",
             "语法",
-            "顺序",
-            "流利"
+            "流利",
+            "厉害",
+            "顺序"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "顺序 — tartib (shùnxù)",
             "ru": "顺序 — порядок (shùnxù)",
@@ -727,6 +702,105 @@
             "uz": "tartib",
             "ru": "порядок",
             "tj": "тартиб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "内容 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 内容:",
+            "tj": "Маънои калимаи 内容-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mazmun",
+              "ru": "содержание",
+              "tj": "мазмун"
+            },
+            {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            },
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "内容 = mazmun (nèiróng)",
+            "ru": "内容 = содержание (nèiróng)",
+            "tj": "内容 = мазмун (nèiróng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "内容",
+            "pinyin": "nèiróng",
+            "meaning": {
+              "uz": "mazmun",
+              "ru": "содержание",
+              "tj": "мазмун"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tartib' xitoycha qaysi?",
+            "ru": "'порядок' по-китайски?",
+            "tj": "'тартиб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "厉害",
+            "顺序",
+            "流利",
+            "语法"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tartib = 顺序 (shùnxù)",
+            "ru": "порядок = 顺序 (shùnxù)",
+            "tj": "тартиб = 顺序 (shùnxù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "顺序",
+            "pinyin": "shùnxù",
+            "meaning": {
+              "uz": "tartib",
+              "ru": "порядок",
+              "tj": "тартиб"
+            }
           }
         }
       ]

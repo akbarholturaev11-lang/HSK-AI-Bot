@@ -391,12 +391,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "róngyì",
             "jiǎo",
-            "tuǐ",
             "téng",
-            "róngyì"
+            "tuǐ"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "容易 — róngyì",
             "ru": "容易 — róngyì",
@@ -430,10 +430,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "脚",
-            "难",
             "疼",
-            "腿"
+            "难",
+            "腿",
+            "脚"
           ],
           "correct_index": 1,
           "explanation": {
@@ -466,12 +466,12 @@
           "audio_text": "太太",
           "pinyin": "tàitai",
           "options": [
-            "疼",
+            "太太",
             "脚",
             "腿",
-            "太太"
+            "疼"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "太太 — xotin, xonim (tàitai)",
             "ru": "太太 — жена, госпожа (tàitai)",
@@ -516,16 +516,6 @@
           },
           "options": [
             {
-              "uz": "og'riqli, og'rimoq",
-              "ru": "болеть, больной",
-              "tj": "дард кардан, дарднок"
-            },
-            {
-              "uz": "oyoq panjasi",
-              "ru": "стопа, нога",
-              "tj": "кафи по"
-            },
-            {
               "uz": "kotib, sekretar",
               "ru": "секретарь",
               "tj": "котиб"
@@ -534,9 +524,19 @@
               "uz": "oyoq",
               "ru": "нога",
               "tj": "по"
+            },
+            {
+              "uz": "oyoq panjasi",
+              "ru": "стопа, нога",
+              "tj": "кафи по"
+            },
+            {
+              "uz": "og'riqli, og'rimoq",
+              "ru": "болеть, больной",
+              "tj": "дард кардан, дарднок"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "秘书 = kotib, sekretar (mìshū)",
             "ru": "秘书 = секретарь (mìshū)",
@@ -556,12 +556,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "腿",
-            "脚",
+            "容易",
             "疼",
-            "容易"
+            "腿",
+            "脚"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "容易 = oson (róngyì)",
             "ru": "容易 = лёгкий, простой (róngyì)",
@@ -670,47 +670,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "树 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 树:",
-            "tj": "Маънои калимаи 树-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "og'riqli, og'rimoq",
-              "ru": "болеть, больной",
-              "tj": "дард кардан, дарднок"
-            },
-            {
-              "uz": "oyoq",
-              "ru": "нога",
-              "tj": "по"
-            },
-            {
-              "uz": "oyoq panjasi",
-              "ru": "стопа, нога",
-              "tj": "кафи по"
-            },
-            {
-              "uz": "daraxt",
-              "ru": "дерево",
-              "tj": "дарахт"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "树 = daraxt (shù)",
-            "ru": "树 = дерево (shù)",
-            "tj": "树 = дарахт (shù)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -762,12 +721,12 @@
           "audio_text": "秘书",
           "pinyin": "mìshū",
           "options": [
-            "秘书",
-            "疼",
             "腿",
-            "脚"
+            "疼",
+            "脚",
+            "秘书"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "秘书 — kotib, sekretar (mìshū)",
             "ru": "秘书 — секретарь (mìshū)",
@@ -782,6 +741,105 @@
             "uz": "kotib, sekretar",
             "ru": "секретарь",
             "tj": "котиб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "树 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 树:",
+            "tj": "Маънои калимаи 树-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "og'riqli, og'rimoq",
+              "ru": "болеть, больной",
+              "tj": "дард кардан, дарднок"
+            },
+            {
+              "uz": "oyoq",
+              "ru": "нога",
+              "tj": "по"
+            },
+            {
+              "uz": "oyoq panjasi",
+              "ru": "стопа, нога",
+              "tj": "кафи по"
+            },
+            {
+              "uz": "daraxt",
+              "ru": "дерево",
+              "tj": "дарахт"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "树 = daraxt (shù)",
+            "ru": "树 = дерево (shù)",
+            "tj": "树 = дарахт (shù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "树",
+            "pinyin": "shù",
+            "meaning": {
+              "uz": "daraxt",
+              "ru": "дерево",
+              "tj": "дарахт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kotib, sekretar' xitoycha qaysi?",
+            "ru": "'секретарь' по-китайски?",
+            "tj": "'котиб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "疼",
+            "秘书",
+            "腿",
+            "脚"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "kotib, sekretar = 秘书 (mìshū)",
+            "ru": "секретарь = 秘书 (mìshū)",
+            "tj": "котиб = 秘书 (mìshū)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "秘书",
+            "pinyin": "mìshū",
+            "meaning": {
+              "uz": "kotib, sekretar",
+              "ru": "секретарь",
+              "tj": "котиб"
+            }
           }
         }
       ]

@@ -428,12 +428,12 @@
           "audio_text": "假",
           "pinyin": "jiǎ",
           "options": [
-            "棒",
-            "弹钢琴",
             "孙子",
-            "假"
+            "弹钢琴",
+            "假",
+            "棒"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "假 — soxta, yolg'on (jiǎ)",
             "ru": "假 — ложный, фальшивый (jiǎ)",
@@ -468,14 +468,9 @@
           },
           "options": [
             {
-              "uz": "pianino chalmoq",
-              "ru": "играть на пианино",
-              "tj": "пианино навохтан"
-            },
-            {
-              "uz": "zo'r, ajoyib",
-              "ru": "отличный, замечательный",
-              "tj": "олӣ, зӯр"
+              "uz": "nabira o'g'il",
+              "ru": "внук",
+              "tj": "набераи писар"
             },
             {
               "uz": "atrofida, taxminan",
@@ -483,12 +478,17 @@
               "tj": "тақрибан"
             },
             {
-              "uz": "nabira o'g'il",
-              "ru": "внук",
-              "tj": "набераи писар"
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
+            },
+            {
+              "uz": "pianino chalmoq",
+              "ru": "играть на пианино",
+              "tj": "пианино навохтан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "左右 = atrofida, taxminan (zuǒyòu)",
             "ru": "左右 = примерно, около (zuǒyòu)",
@@ -532,12 +532,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "棒",
             "懒",
             "弹钢琴",
-            "孙子"
+            "孙子",
+            "棒"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "懒 = dangasa (lǎn)",
             "ru": "懒 = ленивый (lǎn)",
@@ -571,12 +571,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tán gāngqín",
+            "sūnzi",
             "bàng",
-            "bèn",
-            "sūnzi"
+            "tán gāngqín",
+            "bèn"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "笨 — bèn",
             "ru": "笨 — bèn",
@@ -597,11 +597,11 @@
           },
           "options": [
             "棒",
-            "假",
             "孙子",
-            "弹钢琴"
+            "弹钢琴",
+            "假"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "soxta, yolg'on = 假 (jiǎ)",
             "ru": "ложный, фальшивый = 假 (jiǎ)",
@@ -699,11 +699,11 @@
           },
           "options": [
             "孙子",
+            "弹钢琴",
             "棒",
-            "儿童",
-            "弹钢琴"
+            "儿童"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 儿童 (értóng) — bolalar",
             "ru": "Верно: 儿童 (értóng) — дети",
@@ -721,31 +721,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "hùshi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается hùshi?",
-            "tj": "hùshi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "护士",
-            "弹钢琴",
-            "孙子",
-            "棒"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "护士 = hamshira (hùshi)",
-            "ru": "护士 = медсестра (hùshi)",
-            "tj": "护士 = ҳамшира (hùshi)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -798,12 +773,12 @@
           "audio_text": "懒",
           "pinyin": "lǎn",
           "options": [
-            "棒",
             "弹钢琴",
             "懒",
-            "孙子"
+            "孙子",
+            "棒"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "懒 — dangasa (lǎn)",
             "ru": "懒 — ленивый (lǎn)",
@@ -818,6 +793,105 @@
             "uz": "dangasa",
             "ru": "ленивый",
             "tj": "танбал"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "骗 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 骗:",
+            "tj": "Маънои калимаи 骗-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aldamoq",
+              "ru": "обманывать",
+              "tj": "фиреб додан"
+            },
+            {
+              "uz": "pianino chalmoq",
+              "ru": "играть на пианино",
+              "tj": "пианино навохтан"
+            },
+            {
+              "uz": "nabira o'g'il",
+              "ru": "внук",
+              "tj": "набераи писар"
+            },
+            {
+              "uz": "zo'r, ajoyib",
+              "ru": "отличный, замечательный",
+              "tj": "олӣ, зӯр"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "骗 = aldamoq (piàn)",
+            "ru": "骗 = обманывать (piàn)",
+            "tj": "骗 = фиреб додан (piàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "骗",
+            "pinyin": "piàn",
+            "meaning": {
+              "uz": "aldamoq",
+              "ru": "обманывать",
+              "tj": "фиреб додан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'dangasa' xitoycha qaysi?",
+            "ru": "'ленивый' по-китайски?",
+            "tj": "'танбал' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "孙子",
+            "棒",
+            "懒",
+            "弹钢琴"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "dangasa = 懒 (lǎn)",
+            "ru": "ленивый = 懒 (lǎn)",
+            "tj": "танбал = 懒 (lǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "懒",
+            "pinyin": "lǎn",
+            "meaning": {
+              "uz": "dangasa",
+              "ru": "ленивый",
+              "tj": "танбал"
+            }
           }
         }
       ]

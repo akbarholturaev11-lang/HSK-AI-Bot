@@ -609,6 +609,99 @@
           }
         }
       ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "好 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 好:",
+            "tj": "Маънои калимаи 好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "siz (rasmiy/hurmat)",
+              "ru": "вы (вежливая форма)",
+              "tj": "шумо (расмӣ/ҳурматнок)"
+            },
+            {
+              "uz": "yaxshi, ajoyib",
+              "ru": "хорошо, хороший",
+              "tj": "хуб, олӣ"
+            },
+            {
+              "uz": "sen (birlik)",
+              "ru": "ты (единственное число)",
+              "tj": "ту (якка)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "好 = yaxshi, ajoyib (hǎo)",
+            "ru": "好 = хорошо, хороший (hǎo)",
+            "tj": "好 = хуб, олӣ (hǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "好",
+            "pinyin": "hǎo",
+            "meaning": {
+              "uz": "yaxshi, ajoyib",
+              "ru": "хорошо, хороший",
+              "tj": "хуб, олӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sen (birlik)' xitoycha qaysi?",
+            "ru": "'ты (единственное число)' по-китайски?",
+            "tj": "'ту (якка)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "好",
+            "你",
+            "您"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "sen (birlik) = 你 (nǐ)",
+            "ru": "ты (единственное число) = 你 (nǐ)",
+            "tj": "ту (якка) = 你 (nǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "你",
+            "pinyin": "nǐ",
+            "meaning": {
+              "uz": "sen (birlik)",
+              "ru": "ты (единственное число)",
+              "tj": "ту (якка)"
+            }
+          }
+        }
+      ]
     }
   ]
 }

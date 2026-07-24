@@ -411,12 +411,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "突然",
             "眼镜",
             "明白",
-            "离开"
+            "离开",
+            "突然"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "明白 = tushunarli, ravshan (míngbai)",
             "ru": "明白 = понятный, ясный (míngbai)",
@@ -450,12 +450,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "duànliàn",
             "yǎnjing",
             "tūrán",
-            "duànliàn",
             "líkāi"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "锻炼 — duànliàn",
             "ru": "锻炼 — duànliàn",
@@ -489,12 +489,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "突然",
-            "音乐",
+            "离开",
             "眼镜",
-            "离开"
+            "音乐",
+            "突然"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "musiqa = 音乐 (yīnyuè)",
             "ru": "музыка = 音乐 (yīnyuè)",
@@ -535,12 +535,12 @@
           "audio_text": "公园",
           "pinyin": "gōngyuán",
           "options": [
-            "眼镜",
+            "突然",
             "离开",
-            "公园",
-            "突然"
+            "眼镜",
+            "公园"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "公园 — park, bog' (gōngyuán)",
             "ru": "公园 — парк (gōngyuán)",
@@ -689,10 +689,10 @@
           "options": [
             "清楚",
             "离开",
-            "突然",
-            "眼镜"
+            "眼镜",
+            "突然"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 突然 (tūrán) — to'satdan",
             "ru": "Верно: 突然 (tūrán) — вдруг, внезапно",
@@ -794,47 +794,51 @@
           }
         },
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "明白",
-              {
-                "uz": "tushunarli, ravshan",
-                "ru": "понятный, ясный",
-                "tj": "фаҳмо, равшан"
-              }
-            ],
-            [
-              "锻炼",
-              {
-                "uz": "jismoniy mashq qilmoq",
-                "ru": "заниматься физическими упражнениями",
-                "tj": "машқи ҷисмонӣ кардан"
-              }
-            ],
-            [
-              "音乐",
-              {
-                "uz": "musiqa",
-                "ru": "музыка",
-                "tj": "мусиқӣ"
-              }
-            ],
-            [
-              "公园",
-              {
-                "uz": "park, bog'",
-                "ru": "парк",
-                "tj": "боғ"
-              }
-            ]
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'jismoniy mashq qilmoq' xitoycha qaysi?",
+            "ru": "'заниматься физическими упражнениями' по-китайски?",
+            "tj": "'машқи ҷисмонӣ кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "锻炼",
+            "离开",
+            "突然",
+            "眼镜"
           ],
+          "correct_index": 0,
           "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+            "uz": "jismoniy mashq qilmoq = 锻炼 (duànliàn)",
+            "ru": "заниматься физическими упражнениями = 锻炼 (duànliàn)",
+            "tj": "машқи ҷисмонӣ кардан = 锻炼 (duànliàn)"
           }
         },
+        {
+          "type": "pronunciation",
+          "phrase": "公园",
+          "pinyin": "gōngyuán",
+          "translation": {
+            "uz": "park, bog'",
+            "ru": "парк",
+            "tj": "боғ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
         {
           "type": "meaning_guess",
           "prompt": {
@@ -849,16 +853,6 @@
           },
           "options": [
             {
-              "uz": "tushuntirmoq, aytmoq",
-              "ru": "объяснять, говорить",
-              "tj": "фаҳмондан, гуфтан"
-            },
-            {
-              "uz": "to'satdan",
-              "ru": "вдруг, внезапно",
-              "tj": "ногаҳон"
-            },
-            {
               "uz": "tark etmoq, ajralmoq",
               "ru": "покидать, расставаться",
               "tj": "тарк кардан, ҷудо шудан"
@@ -867,45 +861,70 @@
               "uz": "ko'zoynak",
               "ru": "очки",
               "tj": "айнак"
+            },
+            {
+              "uz": "to'satdan",
+              "ru": "вдруг, внезапно",
+              "tj": "ногаҳон"
+            },
+            {
+              "uz": "tushuntirmoq, aytmoq",
+              "ru": "объяснять, говорить",
+              "tj": "фаҳмондан, гуфтан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "讲 = tushuntirmoq, aytmoq (jiǎng)",
             "ru": "讲 = объяснять, говорить (jiǎng)",
             "tj": "讲 = фаҳмондан, гуфтан (jiǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "讲",
+            "pinyin": "jiǎng",
+            "meaning": {
+              "uz": "tushuntirmoq, aytmoq",
+              "ru": "объяснять, говорить",
+              "tj": "фаҳмондан, гуфтан"
+            }
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'park, bog'' xitoycha qaysi?",
+            "ru": "'парк' по-китайски?",
+            "tj": "'боғ' ба хитоӣ кадом аст?"
           },
-          "audio_text": "音乐会人太多，买不到票。",
-          "pinyin": "Yīnyuèhuì rén tài duō, mǎi bu dào piào.",
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
           "options": [
-            "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
-            "音乐会人太多，买不到票。",
-            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
-            "我没看见啊。"
+            "眼镜",
+            "公园",
+            "离开",
+            "突然"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "音乐会人太多，买不到票。 — Konsertda odam juda ko'p, chipta olib bo'lmaydi.",
-            "ru": "音乐会人太多，买不到票。 — На концерте слишком много людей, билетов не купить.",
-            "tj": "音乐会人太多，买不到票。 — Дар консерт одам бисёр аст, билет харида намешавад."
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "公园",
-          "pinyin": "gōngyuán",
-          "translation": {
-            "uz": "park, bog'",
-            "ru": "парк",
-            "tj": "боғ"
+            "uz": "park, bog' = 公园 (gōngyuán)",
+            "ru": "парк = 公园 (gōngyuán)",
+            "tj": "боғ = 公园 (gōngyuán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "公园",
+            "pinyin": "gōngyuán",
+            "meaning": {
+              "uz": "park, bog'",
+              "ru": "парк",
+              "tj": "боғ"
+            }
           }
         }
       ]

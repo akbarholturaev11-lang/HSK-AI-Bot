@@ -371,9 +371,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiājù",
-            "shāfā",
             "dǎzhé",
+            "shāfā",
+            "jiājù",
             "niánlíng"
           ],
           "correct_index": 3,
@@ -410,12 +410,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "沙发",
             "打折",
-            "家具",
-            "浪费"
+            "沙发",
+            "浪费",
+            "家具"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "isrof qilmoq = 浪费 (làngfèi)",
             "ru": "тратить впустую = 浪费 (làngfèi)",
@@ -456,12 +456,12 @@
           "audio_text": "购物",
           "pinyin": "gòuwù",
           "options": [
-            "购物",
             "沙发",
+            "购物",
             "打折",
             "家具"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "购物 — xarid qilmoq (gòuwù)",
             "ru": "购物 — покупать, делать покупки (gòuwù)",
@@ -506,14 +506,14 @@
               "tj": "мебел"
             },
             {
-              "uz": "chegirma qilmoq",
-              "ru": "делать скидку",
-              "tj": "тахфиф кардан"
-            },
-            {
               "uz": "divan",
               "ru": "диван",
               "tj": "диван"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
             }
           ],
           "correct_index": 0,
@@ -536,12 +536,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "年龄",
             "家具",
             "打折",
+            "年龄",
             "沙发"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "年龄 = yosh (niánlíng)",
             "ru": "年龄 = возраст (niánlíng)",
@@ -638,10 +638,10 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "打折",
+            "沙发",
             "尤其",
             "家具",
-            "沙发"
+            "打折"
           ],
           "correct_index": 1,
           "explanation": {
@@ -661,31 +661,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "wèidào qaysi ieroglif?",
-            "ru": "Какой иероглиф читается wèidào?",
-            "tj": "wèidào кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "打折",
-            "家具",
-            "味道",
-            "沙发"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "味道 = ta'm (wèidào)",
-            "ru": "味道 = вкус (wèidào)",
-            "tj": "味道 = мазза (wèidào)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -738,12 +713,12 @@
           "audio_text": "购物",
           "pinyin": "gòuwù",
           "options": [
-            "家具",
             "购物",
+            "家具",
             "沙发",
             "打折"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "购物 — xarid qilmoq (gòuwù)",
             "ru": "购物 — покупать, делать покупки (gòuwù)",
@@ -758,6 +733,105 @@
             "uz": "xarid qilmoq",
             "ru": "покупать, делать покупки",
             "tj": "харид кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "标准 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 标准:",
+            "tj": "Маънои калимаи 标准-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "standart, mezon",
+              "ru": "стандарт, критерий",
+              "tj": "меъёр, стандарт"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "标准 = standart, mezon (biāozhǔn)",
+            "ru": "标准 = стандарт, критерий (biāozhǔn)",
+            "tj": "标准 = меъёр, стандарт (biāozhǔn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "标准",
+            "pinyin": "biāozhǔn",
+            "meaning": {
+              "uz": "standart, mezon",
+              "ru": "стандарт, критерий",
+              "tj": "меъёр, стандарт"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xarid qilmoq' xitoycha qaysi?",
+            "ru": "'покупать, делать покупки' по-китайски?",
+            "tj": "'харид кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "购物",
+            "打折",
+            "沙发",
+            "家具"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "xarid qilmoq = 购物 (gòuwù)",
+            "ru": "покупать, делать покупки = 购物 (gòuwù)",
+            "tj": "харид кардан = 购物 (gòuwù)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "购物",
+            "pinyin": "gòuwù",
+            "meaning": {
+              "uz": "xarid qilmoq",
+              "ru": "покупать, делать покупки",
+              "tj": "харид кардан"
+            }
           }
         }
       ]

@@ -418,12 +418,12 @@
           "audio_text": "害怕",
           "pinyin": "hàipà",
           "options": [
-            "害怕",
             "又",
-            "电梯",
-            "满意"
+            "害怕",
+            "满意",
+            "电梯"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "害怕 — qo'rqmoq (hàipà)",
             "ru": "害怕 — бояться (hàipà)",
@@ -463,14 +463,14 @@
               "tj": "лифт"
             },
             {
-              "uz": "yana (amal allaqachon takrorlangan)",
-              "ru": "снова (действие уже повторилось)",
-              "tj": "боз (амал аллакай такрор шуд)"
-            },
-            {
               "uz": "mamnun bo'lmoq, qoniqmoq",
               "ru": "быть довольным",
               "tj": "қаноатманд будан"
+            },
+            {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
             },
             {
               "uz": "panda",
@@ -512,12 +512,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "电梯",
             "满意",
-            "见面",
-            "又"
+            "电梯",
+            "又",
+            "见面"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "见面 = uchrashmoq (jiàn miàn)",
             "ru": "见面 = встречаться (jiàn miàn)",
@@ -561,12 +561,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "yòu",
             "ānjìng",
             "diàntī",
-            "yòu",
             "mǎnyì"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "安静 — ānjìng",
             "ru": "安静 — ānjìng",
@@ -586,9 +586,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "又",
-            "电梯",
             "满意",
+            "电梯",
+            "又",
             "害怕"
           ],
           "correct_index": 3,
@@ -710,56 +710,15 @@
           "pinyin": "Zhè ge xiǎo xióngmāo sòng gěi nǐ, huānyíng nǐ yǐhòu zài dào Zhōngguó lái.",
           "options": [
             "都不满意吗？",
-            "这个小熊猫送给你，欢迎你以后再到中国来。",
             "听说你最近打算买房子？",
-            "是，昨天去看了看，今天又去看了看，明天还要再去看看。"
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
+            "这个小熊猫送给你，欢迎你以后再到中国来。"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "这个小熊猫送给你，欢迎你以后再到中国来。 — Bu kichkina pandani senga sovg'a qilaman, kelajakda yana Xitoyga kelishingni kutamiz.",
             "ru": "这个小熊猫送给你，欢迎你以后再到中国来。 — Дарю тебе эту маленькую панду, будем рады, если потом снова приедешь в Китай.",
             "tj": "这个小熊猫送给你，欢迎你以后再到中国来。 — Ин пандаи хурдро ба ту тӯҳфа мекунам, хуш меоем, ки баъд боз ба Чин биёӣ."
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "层 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 层:",
-            "tj": "Маънои калимаи 层-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "yana (amal allaqachon takrorlangan)",
-              "ru": "снова (действие уже повторилось)",
-              "tj": "боз (амал аллакай такрор шуд)"
-            },
-            {
-              "uz": "qavatlar uchun hisob so'zi",
-              "ru": "счётное слово для этажей",
-              "tj": "ҳисобвожа барои ошёна"
-            },
-            {
-              "uz": "lift",
-              "ru": "лифт",
-              "tj": "лифт"
-            },
-            {
-              "uz": "mamnun bo'lmoq, qoniqmoq",
-              "ru": "быть довольным",
-              "tj": "қаноатманд будан"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "层 = qavatlar uchun hisob so'zi (céng)",
-            "ru": "层 = счётное слово для этажей (céng)",
-            "tj": "层 = ҳисобвожа барои ошёна (céng)"
           }
         },
         {
@@ -812,6 +771,105 @@
             "uz": "tinch, sokin",
             "ru": "тихий, спокойный",
             "tj": "ором, сокит"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "层 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 层:",
+            "tj": "Маънои калимаи 层-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            },
+            {
+              "uz": "qavatlar uchun hisob so'zi",
+              "ru": "счётное слово для этажей",
+              "tj": "ҳисобвожа барои ошёна"
+            },
+            {
+              "uz": "mamnun bo'lmoq, qoniqmoq",
+              "ru": "быть довольным",
+              "tj": "қаноатманд будан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "层 = qavatlar uchun hisob so'zi (céng)",
+            "ru": "层 = счётное слово для этажей (céng)",
+            "tj": "层 = ҳисобвожа барои ошёна (céng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "层",
+            "pinyin": "céng",
+            "meaning": {
+              "uz": "qavatlar uchun hisob so'zi",
+              "ru": "счётное слово для этажей",
+              "tj": "ҳисобвожа барои ошёна"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tinch, sokin' xitoycha qaysi?",
+            "ru": "'тихий, спокойный' по-китайски?",
+            "tj": "'ором, сокит' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "又",
+            "安静",
+            "电梯",
+            "满意"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tinch, sokin = 安静 (ānjìng)",
+            "ru": "тихий, спокойный = 安静 (ānjìng)",
+            "tj": "ором, сокит = 安静 (ānjìng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "安静",
+            "pinyin": "ānjìng",
+            "meaning": {
+              "uz": "tinch, sokin",
+              "ru": "тихий, спокойный",
+              "tj": "ором, сокит"
+            }
           }
         }
       ]

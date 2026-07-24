@@ -332,6 +332,16 @@
           },
           "options": [
             {
+              "uz": "yana, keyin, qayta (kelajak uchun)",
+              "ru": "снова, потом, опять (о будущем)",
+              "tj": "боз, баъд, дубора (барои оянда)"
+            },
+            {
+              "uz": "aytib bermoq, xabar bermoq",
+              "ru": "сказать, сообщить",
+              "tj": "гуфтан, хабар додан"
+            },
+            {
               "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
               "ru": "позволять, разрешать; приказывать",
               "tj": "иҷозат додан; дастур додан"
@@ -340,19 +350,9 @@
               "uz": "kutmoq",
               "ru": "ждать",
               "tj": "интизор мондан"
-            },
-            {
-              "uz": "aytib bermoq, xabar bermoq",
-              "ru": "сказать, сообщить",
-              "tj": "гуфтан, хабар додан"
-            },
-            {
-              "uz": "yana, keyin, qayta (kelajak uchun)",
-              "ru": "снова, потом, опять (о будущем)",
-              "tj": "боз, баъд, дубора (барои оянда)"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "再 = yana, keyin, qayta (kelajak uchun) (zài)",
             "ru": "再 = снова, потом, опять (о будущем) (zài)",
@@ -386,12 +386,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "让",
             "告诉",
-            "再",
-            "等"
+            "让",
+            "等",
+            "再"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "让 = ruxsat bermoq, qo'ymoq; buyurmoq (ràng)",
             "ru": "让 = позволять, разрешать; приказывать (ràng)",
@@ -425,12 +425,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "ràng",
-            "gàosu",
             "děng",
-            "zài"
+            "zài",
+            "ràng",
+            "gàosu"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "告诉 — gàosu",
             "ru": "告诉 — gàosu",
@@ -474,9 +474,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "告诉",
-            "再",
             "让",
+            "再",
+            "告诉",
             "等"
           ],
           "correct_index": 3,
@@ -497,11 +497,11 @@
           "pinyin": "zài",
           "options": [
             "告诉",
+            "再",
             "让",
-            "等",
-            "再"
+            "等"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "再 — yana, keyin, qayta (kelajak uchun) (zài)",
             "ru": "再 — снова, потом, опять (о будущем) (zài)",
@@ -606,15 +606,15 @@
             "tj": "Баъд аз нисфирӯзӣ ба кино равем, хуб аст?"
           },
           "tokens": [
+            "下午",
+            "看",
+            "再",
+            "好",
+            "让",
+            "电影",
             "吗",
             "去",
-            "看",
-            "电影",
-            "好",
-            "我们",
-            "让",
-            "再",
-            "下午"
+            "我们"
           ],
           "answer_tokens": [
             "我们",
@@ -652,101 +652,12 @@
           "audio_text": "今天下午我没有时间，明天下午再去吧。",
           "pinyin": "Jīntiān xiàwǔ wǒ méiyǒu shíjiān, míngtiān xiàwǔ zài qù ba.",
           "options": [
-            "你想看什么电影？",
             "今天下午我没有时间，明天下午再去吧。",
+            "你想看什么电影？",
             "我们下午去看电影，好吗？",
             "让我想想再告诉你。"
           ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "今天下午我没有时间，明天下午再去吧。 — Bugun tushdan keyin vaqtim yo'q, ertaga tushdan keyin boramiz.",
-            "ru": "今天下午我没有时间，明天下午再去吧。 — Сегодня после полудня у меня нет времени, пойдём завтра.",
-            "tj": "今天下午我没有时间，明天下午再去吧。 — Имрӯз баъд аз нисфирӯзӣ вақт надорам, фардо равем."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "今天下午我没有时间，明天下午再去吧。",
-          "pinyin": "Jīntiān xiàwǔ wǒ méiyǒu shíjiān, míngtiān xiàwǔ zài qù ba.",
-          "translation": {
-            "uz": "Bugun tushdan keyin vaqtim yo'q, ertaga tushdan keyin boramiz.",
-            "ru": "Сегодня после полудня у меня нет времени, пойдём завтра.",
-            "tj": "Имрӯз баъд аз нисфирӯзӣ вақт надорам, фардо равем."
-          },
-          "tokens": {
-            "uz": [
-              "yo'q",
-              "keyin",
-              "keyin",
-              "tushdan",
-              "boramiz",
-              "ertaga",
-              "Bugun",
-              "vaqtim",
-              "tushdan",
-              "Bir",
-              "o'ylab"
-            ],
-            "ru": [
-              "Сегодня",
-              "полудня",
-              "подумаю",
-              "завтра",
-              "пойдём",
-              "у",
-              "нет",
-              "меня",
-              "времени",
-              "Дай",
-              "после"
-            ],
-            "tj": [
-              "фардо",
-              "надорам",
-              "Имрӯз",
-              "нисфирӯзӣ",
-              "аз",
-              "вақт",
-              "равем",
-              "андеша",
-              "Бигзор",
-              "баъд"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Bugun",
-              "tushdan",
-              "keyin",
-              "vaqtim",
-              "yo'q",
-              "ertaga",
-              "tushdan",
-              "keyin",
-              "boramiz"
-            ],
-            "ru": [
-              "Сегодня",
-              "после",
-              "полудня",
-              "у",
-              "меня",
-              "нет",
-              "времени",
-              "пойдём",
-              "завтра"
-            ],
-            "tj": [
-              "Имрӯз",
-              "баъд",
-              "аз",
-              "нисфирӯзӣ",
-              "вақт",
-              "надорам",
-              "фардо",
-              "равем"
-            ]
-          },
+          "correct_index": 0,
           "explanation": {
             "uz": "今天下午我没有时间，明天下午再去吧。 — Bugun tushdan keyin vaqtim yo'q, ertaga tushdan keyin boramiz.",
             "ru": "今天下午我没有时间，明天下午再去吧。 — Сегодня после полудня у меня нет времени, пойдём завтра.",
@@ -764,11 +675,32 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "等",
+          "pinyin": "děng",
+          "translation": {
+            "uz": "kutmoq",
+            "ru": "ждать",
+            "tj": "интизор мондан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "考试 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 考试:",
-            "tj": "Маънои калимаи 考试-ро интихоб кунед:"
+            "uz": "离 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 离:",
+            "tj": "Маънои калимаи 离-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -776,16 +708,6 @@
             "tj": "Маъно чист?"
           },
           "options": [
-            {
-              "uz": "imtihon",
-              "ru": "экзамен",
-              "tj": "имтиҳон"
-            },
-            {
-              "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
-              "ru": "позволять, разрешать; приказывать",
-              "tj": "иҷозат додан; дастур додан"
-            },
             {
               "uz": "yana, keyin, qayta (kelajak uchun)",
               "ru": "снова, потом, опять (о будущем)",
@@ -795,23 +717,70 @@
               "uz": "aytib bermoq, xabar bermoq",
               "ru": "сказать, сообщить",
               "tj": "гуфтан, хабар додан"
+            },
+            {
+              "uz": "dan (masofa ifodalash uchun)",
+              "ru": "от, до (для выражения расстояния)",
+              "tj": "аз (барои ифодаи масофа)"
+            },
+            {
+              "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+              "ru": "позволять, разрешать; приказывать",
+              "tj": "иҷозат додан; дастур додан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "考试 = imtihon (kǎoshì)",
-            "ru": "考试 = экзамен (kǎoshì)",
-            "tj": "考试 = имтиҳон (kǎoshì)"
+            "uz": "离 = dan (masofa ifodalash uchun) (lí)",
+            "ru": "离 = от, до (для выражения расстояния) (lí)",
+            "tj": "离 = аз (барои ифодаи масофа) (lí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "离",
+            "pinyin": "lí",
+            "meaning": {
+              "uz": "dan (masofa ifodalash uchun)",
+              "ru": "от, до (для выражения расстояния)",
+              "tj": "аз (барои ифодаи масофа)"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "等",
-          "pinyin": "děng",
-          "translation": {
-            "uz": "kutmoq",
-            "ru": "ждать",
-            "tj": "интизор мондан"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kutmoq' xitoycha qaysi?",
+            "ru": "'ждать' по-китайски?",
+            "tj": "'интизор мондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "让",
+            "再",
+            "告诉",
+            "等"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "kutmoq = 等 (děng)",
+            "ru": "ждать = 等 (děng)",
+            "tj": "интизор мондан = 等 (děng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "等",
+            "pinyin": "děng",
+            "meaning": {
+              "uz": "kutmoq",
+              "ru": "ждать",
+              "tj": "интизор мондан"
+            }
           }
         }
       ]

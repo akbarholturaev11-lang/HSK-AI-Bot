@@ -645,31 +645,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "mǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается mǐ?",
-            "tj": "mǐ кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "米",
-            "报纸",
-            "千",
-            "手表"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "米 = metr (o'lchov birligi) (mǐ)",
-            "ru": "米 = метр (единица измерения) (mǐ)",
-            "tj": "米 = метр (воҳиди андоза) (mǐ)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Bu qo'l soati seniki ekanmi?",
@@ -710,6 +685,105 @@
             "uz": "gazeta",
             "ru": "газета",
             "tj": "рӯзнома"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "早上 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 早上:",
+            "tj": "Маънои калимаи 早上-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            },
+            {
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
+            },
+            {
+              "uz": "ming (1000)",
+              "ru": "тысяча (1000)",
+              "tj": "ҳазор (1000)"
+            },
+            {
+              "uz": "qo'l soati",
+              "ru": "наручные часы",
+              "tj": "соати дасти"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "早上 = ertalab (zǎoshang)",
+            "ru": "早上 = утро, утром (zǎoshang)",
+            "tj": "早上 = субҳ, субҳгоҳ (zǎoshang)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "早上",
+            "pinyin": "zǎoshang",
+            "meaning": {
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'gazeta' xitoycha qaysi?",
+            "ru": "'газета' по-китайски?",
+            "tj": "'рӯзнома' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "手表",
+            "千",
+            "送",
+            "报纸"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "gazeta = 报纸 (bàozhǐ)",
+            "ru": "газета = 报纸 (bàozhǐ)",
+            "tj": "рӯзнома = 报纸 (bàozhǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "报纸",
+            "pinyin": "bàozhǐ",
+            "meaning": {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            }
           }
         }
       ]

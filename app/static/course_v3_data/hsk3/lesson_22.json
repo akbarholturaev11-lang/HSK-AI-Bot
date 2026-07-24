@@ -411,9 +411,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "比赛",
             "年级",
             "照片",
+            "比赛",
             "蛋糕"
           ],
           "correct_index": 3,
@@ -460,12 +460,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "niánjí",
-            "zhàopiàn",
+            "bǐsài",
             "niánqīng",
-            "bǐsài"
+            "niánjí",
+            "zhàopiàn"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "年轻 — niánqīng",
             "ru": "年轻 — niánqīng",
@@ -499,12 +499,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "比赛",
-            "照片",
             "年级",
-            "认真"
+            "认真",
+            "照片",
+            "比赛"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "jiddiy, mas'uliyatli = 认真 (rènzhēn)",
             "ru": "серьёзный, добросовестный = 认真 (rènzhēn)",
@@ -535,12 +535,12 @@
           "audio_text": "客人",
           "pinyin": "kèrén",
           "options": [
+            "客人",
             "照片",
             "比赛",
-            "年级",
-            "客人"
+            "年级"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "客人 — mehmon, mijoz (kèrén)",
             "ru": "客人 — гость, клиент (kèrén)",
@@ -561,14 +561,9 @@
           },
           "options": [
             {
-              "uz": "sinf, kurs, bosqich",
-              "ru": "класс, курс",
-              "tj": "синф, курс"
-            },
-            {
-              "uz": "tort, pirog",
-              "ru": "торт, пирожное",
-              "tj": "торт, кулча"
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
             },
             {
               "uz": "surat, fotosurat",
@@ -576,12 +571,17 @@
               "tj": "акс"
             },
             {
-              "uz": "musobaqa",
-              "ru": "соревнование",
-              "tj": "мусобиқа"
+              "uz": "tort, pirog",
+              "ru": "торт, пирожное",
+              "tj": "торт, кулча"
+            },
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "蛋糕 = tort, pirog (dàngāo)",
             "ru": "蛋糕 = торт, пирожное (dàngāo)",
@@ -686,15 +686,15 @@
             "tj": "Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад."
           },
           "tokens": [
-            "比赛",
-            "总是",
-            "客人",
-            "笑",
-            "着",
             "她",
-            "跟",
+            "笑",
+            "总是",
+            "说话",
+            "比赛",
+            "客人",
             "照片",
-            "说话"
+            "着",
+            "跟"
           ],
           "answer_tokens": [
             "她",
@@ -732,120 +732,16 @@
           "audio_text": "我们这儿年轻、漂亮的服务员有很多。",
           "pinyin": "Wǒmen zhèr niánqīng, piàoliang de fúwùyuán yǒu hěn duō.",
           "options": [
-            "我们这儿年轻、漂亮的服务员有很多。",
-            "这是你们比赛的照片吗？",
             "是，这是我们比赛后照的。",
-            "照得不错，你们都是一个年级的吗？"
+            "我们这儿年轻、漂亮的服务员有很多。",
+            "照得不错，你们都是一个年级的吗？",
+            "这是你们比赛的照片吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "我们这儿年轻、漂亮的服务员有很多。 — Bizda yosh va chiroyli ofitsiantlar ko'p.",
             "ru": "我们这儿年轻、漂亮的服务员有很多。 — У нас много молодых и красивых официанток.",
             "tj": "我们这儿年轻、漂亮的服务员有很多。 — Дар мо хизматрасонҳои ҷавону зебо бисёранд."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'turmoq' xitoycha qaysi?",
-            "ru": "'стоять' по-китайски?",
-            "tj": "'истодан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "年级",
-            "照片",
-            "站",
-            "比赛"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "turmoq = 站 (zhàn)",
-            "ru": "стоять = 站 (zhàn)",
-            "tj": "истодан = 站 (zhàn)"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "她总是笑着跟客人说话。",
-          "pinyin": "Tā zǒngshì xiào zhe gēn kèrén shuōhuà.",
-          "translation": {
-            "uz": "U doim kulib mehmonlar bilan gaplashadi.",
-            "ru": "Она всегда разговаривает с покупателями с улыбкой.",
-            "tj": "Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад."
-          },
-          "tokens": {
-            "uz": [
-              "U",
-              "mehmonlar",
-              "Ikki",
-              "bilan",
-              "doim",
-              "gaplashadi",
-              "kulib",
-              "bo'lak"
-            ],
-            "ru": [
-              "два",
-              "с",
-              "всегда",
-              "с",
-              "Купим",
-              "Она",
-              "покупателями",
-              "разговаривает",
-              "улыбкой"
-            ],
-            "tj": [
-              "табассум",
-              "дона",
-              "сӯҳбат",
-              "Ду",
-              "Вай",
-              "мекунад",
-              "бо",
-              "харидорон",
-              "бо",
-              "ҳамеша"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "U",
-              "doim",
-              "kulib",
-              "mehmonlar",
-              "bilan",
-              "gaplashadi"
-            ],
-            "ru": [
-              "Она",
-              "всегда",
-              "разговаривает",
-              "с",
-              "покупателями",
-              "с",
-              "улыбкой"
-            ],
-            "tj": [
-              "Вай",
-              "ҳамеша",
-              "бо",
-              "табассум",
-              "бо",
-              "харидорон",
-              "сӯҳбат",
-              "мекунад"
-            ]
-          },
-          "explanation": {
-            "uz": "她总是笑着跟客人说话。 — U doim kulib mehmonlar bilan gaplashadi.",
-            "ru": "她总是笑着跟客人说话。 — Она всегда разговаривает с покупателями с улыбкой.",
-            "tj": "她总是笑着跟客人说话。 — Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад."
           }
         },
         {
@@ -862,27 +758,27 @@
           },
           "options": [
             {
-              "uz": "sinf, kurs, bosqich",
-              "ru": "класс, курс",
-              "tj": "синф, курс"
-            },
-            {
-              "uz": "musobaqa",
-              "ru": "соревнование",
-              "tj": "мусобиқа"
-            },
-            {
               "uz": "jiddiy, mas'uliyatli",
               "ru": "серьёзный, добросовестный",
               "tj": "ҷиддӣ, масъулиятнок"
             },
             {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
               "uz": "surat, fotosurat",
               "ru": "фотография",
               "tj": "акс"
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "认真 = jiddiy, mas'uliyatli (rènzhēn)",
             "ru": "认真 = серьёзный, добросовестный (rènzhēn)",
@@ -897,6 +793,105 @@
             "uz": "yosh",
             "ru": "молодой",
             "tj": "ҷавон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "站 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 站:",
+            "tj": "Маънои калимаи 站-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "turmoq",
+              "ru": "стоять",
+              "tj": "истодан"
+            },
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            },
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "站 = turmoq (zhàn)",
+            "ru": "站 = стоять (zhàn)",
+            "tj": "站 = истодан (zhàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "站",
+            "pinyin": "zhàn",
+            "meaning": {
+              "uz": "turmoq",
+              "ru": "стоять",
+              "tj": "истодан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yosh' xitoycha qaysi?",
+            "ru": "'молодой' по-китайски?",
+            "tj": "'ҷавон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "比赛",
+            "照片",
+            "年轻",
+            "年级"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "yosh = 年轻 (niánqīng)",
+            "ru": "молодой = 年轻 (niánqīng)",
+            "tj": "ҷавон = 年轻 (niánqīng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "年轻",
+            "pinyin": "niánqīng",
+            "meaning": {
+              "uz": "yosh",
+              "ru": "молодой",
+              "tj": "ҷавон"
+            }
           }
         }
       ]

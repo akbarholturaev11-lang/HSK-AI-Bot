@@ -340,10 +340,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "照相机",
+            "难过",
             "碗",
-            "被",
-            "难过"
+            "照相机",
+            "被"
           ],
           "correct_index": 1,
           "explanation": {
@@ -389,12 +389,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "fēn",
+            "bèi",
             "nánguò",
-            "zhàoxiàngjī",
-            "bèi"
+            "fēn",
+            "zhàoxiàngjī"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "分 — fēn",
             "ru": "分 — fēn",
@@ -428,12 +428,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "难过",
             "照相机",
             "解决",
-            "难过",
             "被"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "hal qilmoq = 解决 (jiějué)",
             "ru": "решать = 解决 (jiějué)",
@@ -450,12 +450,12 @@
           "audio_text": "碗",
           "pinyin": "wǎn",
           "options": [
+            "难过",
             "照相机",
             "碗",
-            "被",
-            "难过"
+            "被"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "碗 — kosa, piyola (wǎn)",
             "ru": "碗 — миска, чашка (wǎn)",
@@ -556,31 +556,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "nánguò qaysi ieroglif?",
-            "ru": "Какой иероглиф читается nánguò?",
-            "tj": "nánguò кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "东",
-            "被",
-            "照相机",
-            "难过"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "难过 = xafa, g'amgin (nánguò)",
-            "ru": "难过 = грустный, печальный (nánguò)",
-            "tj": "难过 = ғамгин, хафа (nánguò)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "解决",
           "pinyin": "jiějué",
@@ -600,8 +575,8 @@
           "audio_text": "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。",
           "pinyin": "Nà ge názhe wǎn chī fàn de rén shì nǐ gēge ma? Tā hé nǐ zhǎng de zhēn xiàng.",
           "options": [
-            "我找了，没找到啊。",
             "你再找找。是不是没带来？",
+            "我找了，没找到啊。",
             "那个拿着碗吃饭的人是你哥哥吗？他和你长得真像。",
             "我的照相机被谁拿走了？怎么找不到了？"
           ],
@@ -620,6 +595,105 @@
             "uz": "farqlamoq, ajratmoq",
             "ru": "различать, отделять",
             "tj": "фарқ кардан, ҷудо кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "只有……才…… so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 只有……才……:",
+            "tj": "Маънои калимаи 只有……才……-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "faqat...gina...",
+              "ru": "только если..., тогда...",
+              "tj": "танҳо...才..."
+            },
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "只有……才…… = faqat...gina... (zhǐyǒu... cái...)",
+            "ru": "只有……才…… = только если..., тогда... (zhǐyǒu... cái...)",
+            "tj": "只有……才…… = танҳо...才... (zhǐyǒu... cái...)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "只有……才……",
+            "pinyin": "zhǐyǒu... cái...",
+            "meaning": {
+              "uz": "faqat...gina...",
+              "ru": "только если..., тогда...",
+              "tj": "танҳо...才..."
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'farqlamoq, ajratmoq' xitoycha qaysi?",
+            "ru": "'различать, отделять' по-китайски?",
+            "tj": "'фарқ кардан, ҷудо кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "难过",
+            "照相机",
+            "被",
+            "分"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "farqlamoq, ajratmoq = 分 (fēn)",
+            "ru": "различать, отделять = 分 (fēn)",
+            "tj": "фарқ кардан, ҷудо кардан = 分 (fēn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "分",
+            "pinyin": "fēn",
+            "meaning": {
+              "uz": "farqlamoq, ajratmoq",
+              "ru": "различать, отделять",
+              "tj": "фарқ кардан, ҷудо кардан"
+            }
           }
         }
       ]

@@ -582,28 +582,45 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'men' xitoycha qaysi?",
-            "ru": "'я, меня' по-китайски?",
-            "tj": "'ман' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "我",
-            "有",
-            "口",
-            "家"
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "家",
+              {
+                "uz": "oila, uy",
+                "ru": "семья, дом",
+                "tj": "оила, хона"
+              }
+            ],
+            [
+              "有",
+              {
+                "uz": "bor, ega bo'lmoq",
+                "ru": "иметь, есть",
+                "tj": "доштан, мавҷуд будан"
+              }
+            ],
+            [
+              "口",
+              {
+                "uz": "o'lchov so'zi (oila a'zolari uchun)",
+                "ru": "счётное слово (для членов семьи)",
+                "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
+              }
+            ],
+            [
+              "女儿",
+              {
+                "uz": "qiz farzand",
+                "ru": "дочь",
+                "tj": "духтар (фарзанд)"
+              }
+            ]
           ],
-          "correct_index": 0,
           "explanation": {
-            "uz": "men = 我 (wǒ)",
-            "ru": "я, меня = 我 (wǒ)",
-            "tj": "ман = 我 (wǒ)"
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -632,73 +649,6 @@
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "她女儿呢？",
-          "pinyin": "Tā nǚ'ér ne?",
-          "translation": {
-            "uz": "Uning qizi-chi?",
-            "ru": "А её дочь?",
-            "tj": "Духтараш чӣ?"
-          },
-          "tokens": {
-            "uz": [
-              "qizi-chi",
-              "Uning"
-            ],
-            "ru": [
-              "её",
-              "А",
-              "дочь"
-            ],
-            "tj": [
-              "чӣ",
-              "Духтараш"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Uning",
-              "qizi-chi"
-            ],
-            "ru": [
-              "А",
-              "её",
-              "дочь"
-            ],
-            "tj": [
-              "Духтараш",
-              "чӣ"
-            ]
-          },
-          "explanation": {
-            "uz": "她女儿呢？ — Uning qizi-chi?",
-            "ru": "她女儿呢？ — А её дочь?",
-            "tj": "她女儿呢？ — Духтараш чӣ?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "她女儿呢？",
-          "pinyin": "Tā nǚ'ér ne?",
-          "options": [
-            "我家有三口人。",
-            "你女儿几岁了？",
-            "她女儿呢？",
-            "你家有几口人？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "她女儿呢？ — Uning qizi-chi?",
-            "ru": "她女儿呢？ — А её дочь?",
-            "tj": "她女儿呢？ — Духтараш чӣ?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "有",
           "pinyin": "yǒu",
@@ -706,6 +656,105 @@
             "uz": "bor, ega bo'lmoq",
             "ru": "иметь, есть",
             "tj": "доштан, мавҷуд будан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "谁 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 谁:",
+            "tj": "Маънои калимаи 谁-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
+            },
+            {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            },
+            {
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
+            },
+            {
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "谁 = kim (shéi)",
+            "ru": "谁 = кто (shéi)",
+            "tj": "谁 = кӣ (shéi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "谁",
+            "pinyin": "shéi",
+            "meaning": {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bor, ega bo'lmoq' xitoycha qaysi?",
+            "ru": "'иметь, есть' по-китайски?",
+            "tj": "'доштан, мавҷуд будан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "有",
+            "家",
+            "口",
+            "女儿"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "bor, ega bo'lmoq = 有 (yǒu)",
+            "ru": "иметь, есть = 有 (yǒu)",
+            "tj": "доштан, мавҷуд будан = 有 (yǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "有",
+            "pinyin": "yǒu",
+            "meaning": {
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
+            }
           }
         }
       ]

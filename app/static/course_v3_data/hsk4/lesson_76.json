@@ -346,27 +346,27 @@
           },
           "options": [
             {
-              "uz": "oson, yengil",
-              "ru": "лёгкий, расслабленный",
-              "tj": "осон, сабук"
-            },
-            {
-              "uz": "kerak, majbur bo'lmoq",
-              "ru": "нужно, придётся",
-              "tj": "лозим аст, бояд"
-            },
-            {
               "uz": "pechenye",
               "ru": "печенье",
               "tj": "печенье"
             },
             {
+              "uz": "oson, yengil",
+              "ru": "лёгкий, расслабленный",
+              "tj": "осон, сабук"
+            },
+            {
               "uz": "nahotki",
               "ru": "неужели",
               "tj": "магар"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "轻松 = oson, yengil (qīngsōng)",
             "ru": "轻松 = лёгкий, расслабленный (qīngsōng)",
@@ -400,12 +400,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "饼干",
             "得",
-            "难道",
-            "赢"
+            "饼干",
+            "赢",
+            "难道"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "赢 = yutmoq (yíng)",
             "ru": "赢 = выигрывать (yíng)",
@@ -439,12 +439,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "děi",
             "suíbiàn",
             "nándào",
+            "děi",
             "bǐnggān"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "随便 — suíbiàn",
             "ru": "随便 — suíbiàn",
@@ -489,11 +489,11 @@
           },
           "options": [
             "难道",
-            "饼干",
             "汗",
-            "得"
+            "得",
+            "饼干"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "ter = 汗 (hàn)",
             "ru": "пот = 汗 (hàn)",
@@ -510,12 +510,12 @@
           "audio_text": "轻松",
           "pinyin": "qīngsōng",
           "options": [
-            "轻松",
-            "得",
+            "难道",
             "饼干",
-            "难道"
+            "得",
+            "轻松"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "轻松 — oson, yengil (qīngsōng)",
             "ru": "轻松 — лёгкий, расслабленный (qīngsōng)",
@@ -585,57 +585,16 @@
           "audio_text": "汗",
           "pinyin": "hàn",
           "options": [
-            "难道",
+            "得",
             "汗",
             "饼干",
-            "得"
+            "难道"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "汗 — ter (hàn)",
             "ru": "汗 — пот (hàn)",
             "tj": "汗 — арақ (hàn)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "坚持 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 坚持:",
-            "tj": "Маънои калимаи 坚持-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qat'iy davom etmoq",
-              "ru": "настаивать, продолжать",
-              "tj": "истодагарӣ кардан"
-            },
-            {
-              "uz": "kerak, majbur bo'lmoq",
-              "ru": "нужно, придётся",
-              "tj": "лозим аст, бояд"
-            },
-            {
-              "uz": "pechenye",
-              "ru": "печенье",
-              "tj": "печенье"
-            },
-            {
-              "uz": "nahotki",
-              "ru": "неужели",
-              "tj": "магар"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "坚持 = qat'iy davom etmoq (jiānchí)",
-            "ru": "坚持 = настаивать, продолжать (jiānchí)",
-            "tj": "坚持 = истодагарӣ кардан (jiānchí)"
           }
         },
         {
@@ -648,12 +607,12 @@
           "audio_text": "轻松",
           "pinyin": "qīngsōng",
           "options": [
-            "饼干",
-            "难道",
+            "轻松",
             "得",
-            "轻松"
+            "饼干",
+            "难道"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "轻松 — oson, yengil (qīngsōng)",
             "ru": "轻松 — лёгкий, расслабленный (qīngsōng)",
@@ -673,12 +632,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "难道",
             "赢",
+            "饼干",
             "得",
-            "饼干"
+            "难道"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "yutmoq = 赢 (yíng)",
             "ru": "выигрывать = 赢 (yíng)",
@@ -698,12 +657,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "饼干",
             "难道",
+            "随便",
             "得",
-            "随便"
+            "饼干"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "随便 = xohlagancha, beparvo (suíbiàn)",
             "ru": "随便 = как угодно, случайно (suíbiàn)",
@@ -718,6 +677,105 @@
             "uz": "ter",
             "ru": "пот",
             "tj": "арақ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "国际 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 国际:",
+            "tj": "Маънои калимаи 国际-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            },
+            {
+              "uz": "xalqaro",
+              "ru": "международный",
+              "tj": "байналмилалӣ"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "国际 = xalqaro (guójì)",
+            "ru": "国际 = международный (guójì)",
+            "tj": "国际 = байналмилалӣ (guójì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "国际",
+            "pinyin": "guójì",
+            "meaning": {
+              "uz": "xalqaro",
+              "ru": "международный",
+              "tj": "байналмилалӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ter' xitoycha qaysi?",
+            "ru": "'пот' по-китайски?",
+            "tj": "'арақ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "饼干",
+            "得",
+            "难道",
+            "汗"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ter = 汗 (hàn)",
+            "ru": "пот = 汗 (hàn)",
+            "tj": "арақ = 汗 (hàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "汗",
+            "pinyin": "hàn",
+            "meaning": {
+              "uz": "ter",
+              "ru": "пот",
+              "tj": "арақ"
+            }
           }
         }
       ]

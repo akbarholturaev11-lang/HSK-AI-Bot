@@ -332,9 +332,9 @@
           },
           "options": [
             {
-              "uz": "tug'ilgan kun",
-              "ru": "день рождения",
-              "tj": "рӯзи таваллуд"
+              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+              "ru": "принимать, получать; отвечать на телефон",
+              "tj": "қабул кардан; ба телефон ҷавоб додан"
             },
             {
               "uz": "baxtli, xursand",
@@ -347,12 +347,12 @@
               "tj": "барои, ба (додан ё равона кардан)"
             },
             {
-              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
-              "ru": "принимать, получать; отвечать на телефон",
-              "tj": "қабул кардан; ба телефон ҷавоб додан"
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "生日 = tug'ilgan kun (shēngrì)",
             "ru": "生日 = день рождения (shēngrì)",
@@ -386,12 +386,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "给",
-            "快乐",
+            "接",
             "生日",
-            "接"
+            "给",
+            "快乐"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "快乐 = baxtli, xursand (kuàilè)",
             "ru": "快乐 = счастливый, радостный (kuàilè)",
@@ -425,10 +425,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "kuàilè",
+            "jiē",
             "shēngrì",
             "gěi",
-            "jiē"
+            "kuàilè"
           ],
           "correct_index": 2,
           "explanation": {
@@ -474,12 +474,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "给",
-            "生日",
             "接",
+            "生日",
+            "给",
             "快乐"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "qabul qilmoq, olmoq; telefonga javob bermoq = 接 (jiē)",
             "ru": "принимать, получать; отвечать на телефон = 接 (jiē)",
@@ -497,9 +497,9 @@
           "pinyin": "shēngrì",
           "options": [
             "生日",
-            "快乐",
+            "给",
             "接",
-            "给"
+            "快乐"
           ],
           "correct_index": 0,
           "explanation": {
@@ -607,12 +607,12 @@
           },
           "tokens": [
             "我",
+            "生日",
             "是",
-            "来",
             "年",
             "快乐",
-            "的",
-            "生日"
+            "来",
+            "的"
           ],
           "answer_tokens": [
             "我",
@@ -639,54 +639,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "生日",
-          "pinyin": "shēngrì",
-          "translation": {
-            "uz": "tug'ilgan kun",
-            "ru": "день рождения",
-            "tj": "рӯзи таваллуд"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "红 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 红:",
-            "tj": "Маънои калимаи 红-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "生日快乐！这是送给你的！",
+          "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
           "options": [
-            {
-              "uz": "tug'ilgan kun",
-              "ru": "день рождения",
-              "tj": "рӯзи таваллуд"
-            },
-            {
-              "uz": "qizil",
-              "ru": "красный",
-              "tj": "сурх"
-            },
-            {
-              "uz": "baxtli, xursand",
-              "ru": "счастливый, радостный",
-              "tj": "хушбахт, шод"
-            },
-            {
-              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
-              "ru": "для, кому (давать или направлять)",
-              "tj": "барои, ба (додан ё равона кардан)"
-            }
+            "太谢谢你了！",
+            "对，这本书是我写给你的。",
+            "生日快乐！这是送给你的！",
+            "是什么？是一本书吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "红 = qizil (hóng)",
-            "ru": "红 = красный (hóng)",
-            "tj": "红 = сурх (hóng)"
+            "uz": "生日快乐！这是送给你的！ — Tug'ilgan kuning bilan! Bu senga sovg'a!",
+            "ru": "生日快乐！这是送给你的！ — С днём рождения! Это тебе подарок!",
+            "tj": "生日快乐！这是送给你的！ — Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
           }
         },
         {
@@ -697,14 +668,14 @@
             "tj": "Намедонам, писарам ҷавоб дод."
           },
           "tokens": [
+            "的",
             "不",
             "生日",
-            "知道",
-            "接",
-            "是",
-            "的",
             "快乐",
-            "儿子"
+            "知道",
+            "是",
+            "儿子",
+            "接"
           ],
           "answer_tokens": [
             "不",
@@ -721,28 +692,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "生日快乐！这是送给你的！",
-          "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
-          "options": [
-            "太谢谢你了！",
-            "生日快乐！这是送给你的！",
-            "对，这本书是我写给你的。",
-            "是什么？是一本书吗？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "生日快乐！这是送给你的！ — Tug'ilgan kuning bilan! Bu senga sovg'a!",
-            "ru": "生日快乐！这是送给你的！ — С днём рождения! Это тебе подарок!",
-            "tj": "生日快乐！这是送给你的！ — Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "接",
           "pinyin": "jiē",
@@ -750,6 +699,105 @@
             "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
             "ru": "принимать, получать; отвечать на телефон",
             "tj": "қабул кардан; ба телефон ҷавоб додан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "送 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 送:",
+            "tj": "Маънои калимаи 送-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            },
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            },
+            {
+              "uz": "yetkazib bermoq, sovg'a qilmoq",
+              "ru": "доставлять, дарить",
+              "tj": "расондан, тӯҳфа кардан"
+            },
+            {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "送 = yetkazib bermoq, sovg'a qilmoq (sòng)",
+            "ru": "送 = доставлять, дарить (sòng)",
+            "tj": "送 = расондан, тӯҳфа кардан (sòng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "送",
+            "pinyin": "sòng",
+            "meaning": {
+              "uz": "yetkazib bermoq, sovg'a qilmoq",
+              "ru": "доставлять, дарить",
+              "tj": "расондан, тӯҳфа кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qabul qilmoq, olmoq; telefonga javob bermoq' xitoycha qaysi?",
+            "ru": "'принимать, получать; отвечать на телефон' по-китайски?",
+            "tj": "'қабул кардан; ба телефон ҷавоб додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "快乐",
+            "接",
+            "给",
+            "生日"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "qabul qilmoq, olmoq; telefonga javob bermoq = 接 (jiē)",
+            "ru": "принимать, получать; отвечать на телефон = 接 (jiē)",
+            "tj": "қабул кардан; ба телефон ҷавоб додан = 接 (jiē)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "接",
+            "pinyin": "jiē",
+            "meaning": {
+              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+              "ru": "принимать, получать; отвечать на телефон",
+              "tj": "қабул кардан; ба телефон ҷавоб додан"
+            }
           }
         }
       ]

@@ -345,16 +345,6 @@
           },
           "options": [
             {
-              "uz": "odatdagi vaqt, odatda",
-              "ru": "обычно, в обычное время",
-              "tj": "одатан, вақтҳои муқаррарӣ"
-            },
-            {
-              "uz": "moslashmoq, ko'nikmoq",
-              "ru": "адаптироваться, привыкать",
-              "tj": "мутобиқ шудан, одат кардан"
-            },
-            {
               "uz": "ko'zgu",
               "ru": "зеркало",
               "tj": "оина"
@@ -363,9 +353,19 @@
               "uz": "do'st orttirmoq",
               "ru": "заводить друзей",
               "tj": "дӯст пайдо кардан"
+            },
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "镜子 = ko'zgu (jìngzi)",
             "ru": "镜子 = зеркало (jìngzi)",
@@ -399,12 +399,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "平时",
-            "交",
             "适应",
-            "而"
+            "交",
+            "而",
+            "平时"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "而 = esa, ammo (ér)",
             "ru": "而 = а, но (ér)",
@@ -438,12 +438,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiāo",
-            "dāng",
             "píngshí",
-            "shìyìng"
+            "shìyìng",
+            "dāng",
+            "jiāo"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "当 — dāng",
             "ru": "当 — dāng",
@@ -463,12 +463,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "镜子",
-            "适应",
             "交",
-            "平时"
+            "适应",
+            "平时",
+            "镜子"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "ko'zgu = 镜子 (jìngzi)",
             "ru": "зеркало = 镜子 (jìngzi)",
@@ -521,47 +521,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "真正 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 真正:",
-            "tj": "Маънои калимаи 真正-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "odatdagi vaqt, odatda",
-              "ru": "обычно, в обычное время",
-              "tj": "одатан, вақтҳои муқаррарӣ"
-            },
-            {
-              "uz": "do'st orttirmoq",
-              "ru": "заводить друзей",
-              "tj": "дӯст пайдо кардан"
-            },
-            {
-              "uz": "moslashmoq, ko'nikmoq",
-              "ru": "адаптироваться, привыкать",
-              "tj": "мутобиқ шудан, одат кардан"
-            },
-            {
-              "uz": "haqiqiy",
-              "ru": "настоящий, подлинный",
-              "tj": "ҳақиқӣ, воқеӣ"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "真正 = haqiqiy (zhēnzhèng)",
-            "ru": "真正 = настоящий, подлинный (zhēnzhèng)",
-            "tj": "真正 = ҳақиқӣ, воқеӣ (zhēnzhèng)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -593,12 +552,12 @@
           "audio_text": "镜子",
           "pinyin": "jìngzi",
           "options": [
-            "平时",
             "镜子",
+            "交",
             "适应",
-            "交"
+            "平时"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "镜子 — ko'zgu (jìngzi)",
             "ru": "镜子 — зеркало (jìngzi)",
@@ -618,12 +577,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "当",
+            "适应",
             "平时",
             "交",
-            "适应"
+            "当"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "... paytda = 当 (dāng)",
             "ru": "когда, в момент = 当 (dāng)",
@@ -638,6 +597,105 @@
             "uz": "ko'zgu",
             "ru": "зеркало",
             "tj": "оина"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "理解 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 理解:",
+            "tj": "Маънои калимаи 理解-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            },
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "tushunmoq",
+              "ru": "понимать",
+              "tj": "фаҳмидан"
+            },
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "理解 = tushunmoq (lǐjiě)",
+            "ru": "理解 = понимать (lǐjiě)",
+            "tj": "理解 = фаҳмидан (lǐjiě)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "理解",
+            "pinyin": "lǐjiě",
+            "meaning": {
+              "uz": "tushunmoq",
+              "ru": "понимать",
+              "tj": "фаҳмидан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko'zgu' xitoycha qaysi?",
+            "ru": "'зеркало' по-китайски?",
+            "tj": "'оина' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "交",
+            "镜子",
+            "平时",
+            "适应"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ko'zgu = 镜子 (jìngzi)",
+            "ru": "зеркало = 镜子 (jìngzi)",
+            "tj": "оина = 镜子 (jìngzi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "镜子",
+            "pinyin": "jìngzi",
+            "meaning": {
+              "uz": "ko'zgu",
+              "ru": "зеркало",
+              "tj": "оина"
+            }
           }
         }
       ]

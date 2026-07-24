@@ -343,11 +343,11 @@
           "pinyin": "què",
           "options": [
             "交",
+            "适应",
             "却",
-            "平时",
-            "适应"
+            "平时"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "却 — lekin, ammo (què)",
             "ru": "却 — однако, но (què)",
@@ -382,14 +382,9 @@
           },
           "options": [
             {
-              "uz": "moslashmoq, ko'nikmoq",
-              "ru": "адаптироваться, привыкать",
-              "tj": "мутобиқ шудан, одат кардан"
-            },
-            {
-              "uz": "odatdagi vaqt, odatda",
-              "ru": "обычно, в обычное время",
-              "tj": "одатан, вақтҳои муқаррарӣ"
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
             },
             {
               "uz": "atrof, atrofdagilar",
@@ -397,12 +392,17 @@
               "tj": "атроф, атрофиён"
             },
             {
-              "uz": "do'st orttirmoq",
-              "ru": "заводить друзей",
-              "tj": "дӯст пайдо кардан"
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            },
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "周围 = atrof, atrofdagilar (zhōuwéi)",
             "ru": "周围 = вокруг, окружающие (zhōuwéi)",
@@ -446,12 +446,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "平时",
-            "交流",
+            "交",
             "适应",
-            "交"
+            "交流",
+            "平时"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "交流 = muloqot qilmoq, almashmoq (jiāoliú)",
             "ru": "交流 = общаться, обмениваться (jiāoliú)",
@@ -485,12 +485,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "píngshí",
             "shìyìng",
             "jiāo",
-            "lǐjiě"
+            "lǐjiě",
+            "píngshí"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "理解 — lǐjiě",
             "ru": "理解 — lǐjiě",
@@ -510,9 +510,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "适应",
-            "平时",
             "交",
+            "平时",
+            "适应",
             "却"
           ],
           "correct_index": 3,
@@ -585,12 +585,12 @@
           "audio_text": "交流",
           "pinyin": "jiāoliú",
           "options": [
-            "适应",
             "交",
             "交流",
+            "适应",
             "平时"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "交流 — muloqot qilmoq, almashmoq (jiāoliú)",
             "ru": "交流 — общаться, обмениваться (jiāoliú)",
@@ -640,31 +640,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "jǐnguǎn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jǐnguǎn?",
-            "tj": "jǐnguǎn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "尽管",
-            "适应",
-            "交",
-            "平时"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "尽管 = garchi, ... bo'lsa ham (jǐnguǎn)",
-            "ru": "尽管 = хотя, несмотря на (jǐnguǎn)",
-            "tj": "尽管 = гарчанде, ҳарчанд (jǐnguǎn)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "交流",
           "pinyin": "jiāoliú",
@@ -672,6 +647,105 @@
             "uz": "muloqot qilmoq, almashmoq",
             "ru": "общаться, обмениваться",
             "tj": "муошират кардан, мубодила кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "无聊 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 无聊:",
+            "tj": "Маънои калимаи 无聊-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            },
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            },
+            {
+              "uz": "zerikarli",
+              "ru": "скучный",
+              "tj": "дилгиркунанда"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "无聊 = zerikarli (wúliáo)",
+            "ru": "无聊 = скучный (wúliáo)",
+            "tj": "无聊 = дилгиркунанда (wúliáo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "无聊",
+            "pinyin": "wúliáo",
+            "meaning": {
+              "uz": "zerikarli",
+              "ru": "скучный",
+              "tj": "дилгиркунанда"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'muloqot qilmoq, almashmoq' xitoycha qaysi?",
+            "ru": "'общаться, обмениваться' по-китайски?",
+            "tj": "'муошират кардан, мубодила кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "交流",
+            "平时",
+            "交",
+            "适应"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "muloqot qilmoq, almashmoq = 交流 (jiāoliú)",
+            "ru": "общаться, обмениваться = 交流 (jiāoliú)",
+            "tj": "муошират кардан, мубодила кардан = 交流 (jiāoliú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "交流",
+            "pinyin": "jiāoliú",
+            "meaning": {
+              "uz": "muloqot qilmoq, almashmoq",
+              "ru": "общаться, обмениваться",
+              "tj": "муошират кардан, мубодила кардан"
+            }
           }
         }
       ]

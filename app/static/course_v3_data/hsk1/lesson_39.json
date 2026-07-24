@@ -282,10 +282,10 @@
           "options": [
             "上",
             "桌子",
-            "电脑",
-            "坐"
+            "坐",
+            "电脑"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "o'tirmoq = 坐 (zuò)",
             "ru": "сидеть, садиться = 坐 (zuò)",
@@ -316,10 +316,10 @@
           "audio_text": "王方",
           "pinyin": "Wáng Fāng",
           "options": [
-            "桌子",
+            "上",
             "电脑",
             "王方",
-            "上"
+            "桌子"
           ],
           "correct_index": 2,
           "explanation": {
@@ -366,27 +366,27 @@
           },
           "options": [
             {
-              "uz": "Xie Peng (ism)",
-              "ru": "Се Пэн (имя)",
-              "tj": "Ше Пен (ном)"
-            },
-            {
-              "uz": "kompyuter",
-              "ru": "компьютер",
-              "tj": "компютер"
-            },
-            {
               "uz": "stol, parta",
               "ru": "стол",
               "tj": "мӣз"
             },
             {
+              "uz": "Xie Peng (ism)",
+              "ru": "Се Пэн (имя)",
+              "tj": "Ше Пен (ном)"
+            },
+            {
               "uz": "ustida, tepasida",
               "ru": "сверху, на",
               "tj": "болои, дар болои"
+            },
+            {
+              "uz": "kompyuter",
+              "ru": "компьютер",
+              "tj": "компютер"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "谢朋 = Xie Peng (ism) (Xiè Péng)",
             "ru": "谢朋 = Се Пэн (имя) (Xiè Péng)",
@@ -406,12 +406,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "坐",
             "上",
             "电脑",
-            "桌子"
+            "桌子",
+            "坐"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "坐 = o'tirmoq (zuò)",
             "ru": "坐 = сидеть, садиться (zuò)",
@@ -517,13 +517,13 @@
             "tj": "Ман метавонам ин ҷо нишинам?"
           },
           "tokens": [
-            "我",
-            "这儿",
-            "桌子",
-            "吗",
+            "能",
             "上",
             "坐",
-            "能"
+            "桌子",
+            "吗",
+            "我",
+            "这儿"
           ],
           "answer_tokens": [
             "我",
@@ -583,12 +583,12 @@
           "audio_text": "坐",
           "pinyin": "zuò",
           "options": [
-            "电脑",
-            "桌子",
             "坐",
-            "上"
+            "上",
+            "电脑",
+            "桌子"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "坐 — o'tirmoq (zuò)",
             "ru": "坐 — сидеть, садиться (zuò)",
@@ -647,54 +647,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "lǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается lǐ?",
-            "tj": "lǐ кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "里",
-            "上",
-            "桌子",
-            "电脑"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "里 = ichida (lǐ)",
-            "ru": "里 = внутри, в (lǐ)",
-            "tj": "里 = дарун, дохили (lǐ)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Marhamat, o'tiring.",
-            "ru": "Пожалуйста, садитесь.",
-            "tj": "Хоҳиш мекунам, биниш."
-          },
-          "tokens": [
-            "桌子",
-            "坐",
-            "请",
-            "上"
-          ],
-          "answer_tokens": [
-            "请",
-            "坐"
-          ],
-          "explanation": {
-            "uz": "请坐。 — Qǐng zuò.",
-            "ru": "请坐。 — Qǐng zuò.",
-            "tj": "请坐。 — Qǐng zuò."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -704,12 +656,12 @@
           "audio_text": "王方",
           "pinyin": "Wáng Fāng",
           "options": [
-            "王方",
-            "桌子",
             "上",
+            "桌子",
+            "王方",
             "电脑"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "王方 — Wang Fang (ism) (Wáng Fāng)",
             "ru": "王方 — Ван Фан (имя) (Wáng Fāng)",
@@ -724,6 +676,105 @@
             "uz": "Xie Peng (ism)",
             "ru": "Се Пэн (имя)",
             "tj": "Ше Пен (ном)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "能 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 能:",
+            "tj": "Маънои калимаи 能-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "stol, parta",
+              "ru": "стол",
+              "tj": "мӣз"
+            },
+            {
+              "uz": "ustida, tepasida",
+              "ru": "сверху, на",
+              "tj": "болои, дар болои"
+            },
+            {
+              "uz": "kompyuter",
+              "ru": "компьютер",
+              "tj": "компютер"
+            },
+            {
+              "uz": "mumkin, qodir (ruxsat/imkoniyat)",
+              "ru": "можно, мочь (способность/разрешение)",
+              "tj": "тавонистан, мумкин (иҷозат/қобилият)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "能 = mumkin, qodir (ruxsat/imkoniyat) (néng)",
+            "ru": "能 = можно, мочь (способность/разрешение) (néng)",
+            "tj": "能 = тавонистан, мумкин (иҷозат/қобилият) (néng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "能",
+            "pinyin": "néng",
+            "meaning": {
+              "uz": "mumkin, qodir (ruxsat/imkoniyat)",
+              "ru": "можно, мочь (способность/разрешение)",
+              "tj": "тавонистан, мумкин (иҷозат/қобилият)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Xie Peng (ism)' xitoycha qaysi?",
+            "ru": "'Се Пэн (имя)' по-китайски?",
+            "tj": "'Ше Пен (ном)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "谢朋",
+            "上",
+            "电脑",
+            "桌子"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "Xie Peng (ism) = 谢朋 (Xiè Péng)",
+            "ru": "Се Пэн (имя) = 谢朋 (Xiè Péng)",
+            "tj": "Ше Пен (ном) = 谢朋 (Xiè Péng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "谢朋",
+            "pinyin": "Xiè Péng",
+            "meaning": {
+              "uz": "Xie Peng (ism)",
+              "ru": "Се Пэн (имя)",
+              "tj": "Ше Пен (ном)"
+            }
           }
         }
       ]

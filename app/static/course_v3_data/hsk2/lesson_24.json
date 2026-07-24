@@ -321,11 +321,11 @@
           },
           "options": [
             "准备",
-            "外面",
             "咖啡",
+            "外面",
             "就"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "qahva = 咖啡 (kāfēi)",
             "ru": "кофе = 咖啡 (kāfēi)",
@@ -357,11 +357,11 @@
           "pinyin": "duì",
           "options": [
             "准备",
-            "就",
+            "对",
             "外面",
-            "对"
+            "就"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "对 — uchun, ga nisbatan (ta'sir ko'rsatish) (duì)",
             "ru": "对 — для, в отношении (воздействие) (duì)",
@@ -416,14 +416,14 @@
               "tj": "берун, берунӣ"
             },
             {
-              "uz": "aynan, shu, xuddi shunday; darhol",
-              "ru": "именно, вот; сразу, тут же",
-              "tj": "маҳз, ҳамин; фавран"
-            },
-            {
               "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
               "ru": "готовить, готовиться",
               "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
             }
           ],
           "correct_index": 0,
@@ -446,12 +446,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "准备",
-            "咖啡",
             "外面",
-            "就"
+            "就",
+            "准备",
+            "咖啡"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "咖啡 = qahva (kāfēi)",
             "ru": "咖啡 = кофе (kāfēi)",
@@ -562,47 +562,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "准备 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 准备:",
-            "tj": "Маънои калимаи 准备-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
-              "ru": "готовить, готовиться",
-              "tj": "омода кардан, тайёр шудан"
-            },
-            {
-              "uz": "tashqarida, tashqi tomon",
-              "ru": "снаружи, на улице",
-              "tj": "берун, берунӣ"
-            },
-            {
-              "uz": "aynan, shu, xuddi shunday; darhol",
-              "ru": "именно, вот; сразу, тут же",
-              "tj": "маҳз, ҳамин; фавран"
-            },
-            {
-              "uz": "baliq",
-              "ru": "рыба",
-              "tj": "моҳӣ"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "准备 = tayyorlamoq, tayyorgarlik ko'rmoq (zhǔnbèi)",
-            "ru": "准备 = готовить, готовиться (zhǔnbèi)",
-            "tj": "准备 = омода кардан, тайёр шудан (zhǔnbèi)"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "是啊，咖啡喝多了对身体不好。",
           "pinyin": "Shì a, kāfēi hē duō le duì shēntǐ bù hǎo.",
@@ -696,11 +655,11 @@
           "pinyin": "Xiūxi yíxià ba, hē kāfēi ma?",
           "options": [
             "我不想去外面吃，我想在家吃。",
+            "那你准备做什么呢？",
             "休息一下吧，喝咖啡吗？",
-            "晚上我们去饭馆吃饭，怎么样？",
-            "那你准备做什么呢？"
+            "晚上我们去饭馆吃饭，怎么样？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "休息一下吧，喝咖啡吗？ — Bir oz dam oling, qahva ichasizmi?",
             "ru": "休息一下吧，喝咖啡吗？ — Отдохни немного, будешь кофе?",
@@ -715,6 +674,105 @@
             "uz": "keyingi, keyin, bundan buyon",
             "ru": "после, впоследствии, с этих пор",
             "tj": "баъд, минбаъд"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "意思 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 意思:",
+            "tj": "Маънои калимаи 意思-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
+            },
+            {
+              "uz": "ma'no, mazmun",
+              "ru": "смысл, значение",
+              "tj": "маъно, мазмун"
+            },
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "意思 = ma'no, mazmun (yìsi)",
+            "ru": "意思 = смысл, значение (yìsi)",
+            "tj": "意思 = маъно, мазмун (yìsi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "意思",
+            "pinyin": "yìsi",
+            "meaning": {
+              "uz": "ma'no, mazmun",
+              "ru": "смысл, значение",
+              "tj": "маъно, мазмун"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'keyingi, keyin, bundan buyon' xitoycha qaysi?",
+            "ru": "'после, впоследствии, с этих пор' по-китайски?",
+            "tj": "'баъд, минбаъд' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "以后",
+            "准备",
+            "外面",
+            "就"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "keyingi, keyin, bundan buyon = 以后 (yǐhòu)",
+            "ru": "после, впоследствии, с этих пор = 以后 (yǐhòu)",
+            "tj": "баъд, минбаъд = 以后 (yǐhòu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "以后",
+            "pinyin": "yǐhòu",
+            "meaning": {
+              "uz": "keyingi, keyin, bundan buyon",
+              "ru": "после, впоследствии, с этих пор",
+              "tj": "баъд, минбаъд"
+            }
           }
         }
       ]

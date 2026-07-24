@@ -315,8 +315,8 @@
           "options": [
             "新闻",
             "提高",
-            "水平",
-            "留学"
+            "留学",
+            "水平"
           ],
           "correct_index": 0,
           "explanation": {
@@ -353,6 +353,11 @@
           },
           "options": [
             {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            },
+            {
               "uz": "daraja, saviya",
               "ru": "уровень, стандарт",
               "tj": "сатҳ, дараҷа"
@@ -366,14 +371,9 @@
               "uz": "sarflamoq",
               "ru": "тратить",
               "tj": "сарф кардан"
-            },
-            {
-              "uz": "chet elda o'qimoq",
-              "ru": "учиться за границей",
-              "tj": "дар хориҷ таҳсил кардан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "花 = sarflamoq (huā)",
             "ru": "花 = тратить (huā)",
@@ -407,12 +407,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "水平",
-            "极（了）",
+            "提高",
             "留学",
-            "提高"
+            "水平",
+            "极（了）"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "极（了） = juda, nihoyatda (jí (le))",
             "ru": "极（了） = крайне, чрезвычайно (jí (le))",
@@ -456,12 +456,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tí gāo",
-            "liú xué",
             "shuǐpíng",
-            "jiérì"
+            "tí gāo",
+            "jiérì",
+            "liú xué"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "节日 — jiérì",
             "ru": "节日 — jiérì",
@@ -481,10 +481,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "提高",
-            "新闻",
             "水平",
-            "留学"
+            "新闻",
+            "留学",
+            "提高"
           ],
           "correct_index": 1,
           "explanation": {
@@ -589,47 +589,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "发 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 发:",
-            "tj": "Маънои калимаи 发-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "yubormoq",
-              "ru": "отправлять",
-              "tj": "фиристодан"
-            },
-            {
-              "uz": "chet elda o'qimoq",
-              "ru": "учиться за границей",
-              "tj": "дар хориҷ таҳсил кардан"
-            },
-            {
-              "uz": "oshirmoq, yaxshilamoq",
-              "ru": "повышать, улучшать",
-              "tj": "баланд кардан, беҳтар кардан"
-            },
-            {
-              "uz": "daraja, saviya",
-              "ru": "уровень, стандарт",
-              "tj": "сатҳ, дараҷа"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "发 = yubormoq (fā)",
-            "ru": "发 = отправлять (fā)",
-            "tj": "发 = фиристодан (fā)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -639,12 +598,12 @@
           "audio_text": "节日",
           "pinyin": "jiérì",
           "options": [
-            "水平",
             "节日",
-            "提高",
-            "留学"
+            "留学",
+            "水平",
+            "提高"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "节日 — bayram (jiérì)",
             "ru": "节日 — праздник (jiérì)",
@@ -659,6 +618,105 @@
             "uz": "bayram",
             "ru": "праздник",
             "tj": "ид"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "除了 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 除了:",
+            "tj": "Маънои калимаи 除了-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "dan tashqari",
+              "ru": "кроме",
+              "tj": "ба ғайр аз"
+            },
+            {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            },
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            },
+            {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "除了 = dan tashqari (chúle)",
+            "ru": "除了 = кроме (chúle)",
+            "tj": "除了 = ба ғайр аз (chúle)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "除了",
+            "pinyin": "chúle",
+            "meaning": {
+              "uz": "dan tashqari",
+              "ru": "кроме",
+              "tj": "ба ғайр аз"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bayram' xitoycha qaysi?",
+            "ru": "'праздник' по-китайски?",
+            "tj": "'ид' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "水平",
+            "节日",
+            "留学",
+            "提高"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bayram = 节日 (jiérì)",
+            "ru": "праздник = 节日 (jiérì)",
+            "tj": "ид = 节日 (jiérì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "节日",
+            "pinyin": "jiérì",
+            "meaning": {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            }
           }
         }
       ]

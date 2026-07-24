@@ -415,12 +415,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "jīngjù",
             "zhèngcháng",
-            "yǎnyuán",
             "guānzhòng",
-            "jīngjù"
+            "yǎnyuán"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "正常 — zhèngcháng",
             "ru": "正常 — zhèngcháng",
@@ -454,9 +454,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "演员",
             "京剧",
             "观众",
-            "演员",
             "申请"
           ],
           "correct_index": 3,
@@ -492,10 +492,10 @@
           "options": [
             "京剧",
             "演员",
-            "有趣",
-            "观众"
+            "观众",
+            "有趣"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "有趣 — qiziqarli (yǒuqù)",
             "ru": "有趣 — интересный (yǒuqù)",
@@ -530,9 +530,9 @@
           },
           "options": [
             {
-              "uz": "Pekin operasi",
-              "ru": "пекинская опера",
-              "tj": "операи Пекин"
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
             },
             {
               "uz": "aktyor",
@@ -540,17 +540,17 @@
               "tj": "актёр"
             },
             {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            },
+            {
               "uz": "xursand",
               "ru": "радостный, весёлый",
               "tj": "хурсанд"
-            },
-            {
-              "uz": "tomoshabin",
-              "ru": "зрители, публика",
-              "tj": "тамошобинон"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "开心 = xursand (kāixīn)",
             "ru": "开心 = радостный, весёлый (kāixīn)",
@@ -571,11 +571,11 @@
           },
           "options": [
             "演员",
-            "观众",
             "正常",
-            "京剧"
+            "京剧",
+            "观众"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "正常 = normal, odatiy (zhèngcháng)",
             "ru": "正常 = нормальный (zhèngcháng)",
@@ -636,53 +636,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "演出 talaffuzini tanlang:",
-            "ru": "Выберите произношение 演出:",
-            "tj": "Талаффузи 演出-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "yǎnyuán",
-            "jīngjù",
-            "guānzhòng",
-            "yǎnchū"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "演出 — yǎnchū",
-            "ru": "演出 — yǎnchū",
-            "tj": "演出 — yǎnchū"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "正常",
-          "pinyin": "zhèngcháng",
-          "options": [
-            "京剧",
-            "观众",
-            "演员",
-            "正常"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "正常 — normal, odatiy (zhèngcháng)",
-            "ru": "正常 — нормальный (zhèngcháng)",
-            "tj": "正常 — муқаррарӣ (zhèngcháng)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -725,6 +678,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "正常",
+          "pinyin": "zhèngcháng",
+          "options": [
+            "京剧",
+            "演员",
+            "观众",
+            "正常"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "正常 — normal, odatiy (zhèngcháng)",
+            "ru": "正常 — нормальный (zhèngcháng)",
+            "tj": "正常 — муқаррарӣ (zhèngcháng)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "正常",
           "pinyin": "zhèngcháng",
@@ -732,6 +707,105 @@
             "uz": "normal, odatiy",
             "ru": "нормальный",
             "tj": "муқаррарӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "偶尔 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 偶尔:",
+            "tj": "Маънои калимаи 偶尔-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            },
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            },
+            {
+              "uz": "ba'zan, gohida",
+              "ru": "иногда, изредка",
+              "tj": "гоҳ-гоҳ"
+            },
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "偶尔 = ba'zan, gohida (ǒu'ěr)",
+            "ru": "偶尔 = иногда, изредка (ǒu'ěr)",
+            "tj": "偶尔 = гоҳ-гоҳ (ǒu'ěr)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "偶尔",
+            "pinyin": "ǒu'ěr",
+            "meaning": {
+              "uz": "ba'zan, gohida",
+              "ru": "иногда, изредка",
+              "tj": "гоҳ-гоҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'normal, odatiy' xitoycha qaysi?",
+            "ru": "'нормальный' по-китайски?",
+            "tj": "'муқаррарӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "演员",
+            "观众",
+            "京剧",
+            "正常"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "normal, odatiy = 正常 (zhèngcháng)",
+            "ru": "нормальный = 正常 (zhèngcháng)",
+            "tj": "муқаррарӣ = 正常 (zhèngcháng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "正常",
+            "pinyin": "zhèngcháng",
+            "meaning": {
+              "uz": "normal, odatiy",
+              "ru": "нормальный",
+              "tj": "муқаррарӣ"
+            }
           }
         }
       ]

@@ -386,12 +386,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "女",
-            "比",
             "唱歌",
-            "男"
+            "女",
+            "男",
+            "比"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "比 = … dan (qiyoslash uchun) (bǐ)",
             "ru": "比 = чем… (для сравнения) (bǐ)",
@@ -435,12 +435,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "nǚ",
             "chànggē",
             "piányi",
-            "nǚ",
             "nán"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "便宜 — piányi",
             "ru": "便宜 — piányi",
@@ -474,12 +474,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "男",
             "说话",
-            "女",
-            "唱歌"
+            "男",
+            "唱歌",
+            "女"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "gapirmoq, so'zlamoq = 说话 (shuōhuà)",
             "ru": "говорить, разговаривать = 说话 (shuōhuà)",
@@ -496,12 +496,12 @@
           "audio_text": "右边",
           "pinyin": "yòubian",
           "options": [
-            "唱歌",
             "右边",
-            "男",
-            "女"
+            "唱歌",
+            "女",
+            "男"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "右边 — o'ng tomon (yòubian)",
             "ru": "右边 — правая сторона (yòubian)",
@@ -606,12 +606,12 @@
             "tj": "Себ ба андозаи тарбуз калон нест."
           },
           "tokens": [
-            "唱歌",
-            "大",
-            "男",
-            "没有",
             "西瓜",
-            "苹果"
+            "男",
+            "唱歌",
+            "没有",
+            "苹果",
+            "大"
           ],
           "answer_tokens": [
             "苹果",
@@ -637,110 +637,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Kechaga qaraganda arzon.",
-            "ru": "Дешевле, чем вчера.",
-            "tj": "Аз дирӯз арзонтар аст."
-          },
-          "tokens": [
-            "比",
-            "男",
-            "唱歌",
-            "昨天",
-            "便宜"
-          ],
-          "answer_tokens": [
-            "比",
-            "昨天",
-            "便宜"
-          ],
-          "explanation": {
-            "uz": "比昨天便宜。 — Bǐ zuótiān piányi.",
-            "ru": "比昨天便宜。 — Bǐ zuótiān piányi.",
-            "tj": "比昨天便宜。 — Bǐ zuótiān piányi."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "她比我们老师小两岁。",
-          "pinyin": "Tā bǐ wǒmen lǎoshī xiǎo liǎng suì.",
-          "translation": {
-            "uz": "U bizning o'qituvchimizdan ikki yosh kichik.",
-            "ru": "Она на два года моложе нашего учителя.",
-            "tj": "Ӯ аз муаллими мо ду сол хурдтар аст."
-          },
-          "tokens": {
-            "uz": [
-              "o'ng",
-              "o'qituvchimizdan",
-              "U",
-              "kichik",
-              "yosh",
-              "bizning",
-              "Ha",
-              "ikki"
-            ],
-            "ru": [
-              "два",
-              "года",
-              "а",
-              "на",
-              "учителя",
-              "Она",
-              "Да",
-              "нашего",
-              "моложе"
-            ],
-            "tj": [
-              "мо",
-              "муаллими",
-              "аз",
-              "Бале",
-              "Ӯ",
-              "хурдтар",
-              "ду",
-              "аст",
-              "сол",
-              "он"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "U",
-              "bizning",
-              "o'qituvchimizdan",
-              "ikki",
-              "yosh",
-              "kichik"
-            ],
-            "ru": [
-              "Она",
-              "на",
-              "два",
-              "года",
-              "моложе",
-              "нашего",
-              "учителя"
-            ],
-            "tj": [
-              "Ӯ",
-              "аз",
-              "муаллими",
-              "мо",
-              "ду",
-              "сол",
-              "хурдтар",
-              "аст"
-            ]
-          },
-          "explanation": {
-            "uz": "她比我们老师小两岁。 — U bizning o'qituvchimizdan ikki yosh kichik.",
-            "ru": "她比我们老师小两岁。 — Она на два года моложе нашего учителя.",
-            "tj": "她比我们老师小两岁。 — Ӯ аз муаллими мо ду сол хурдтар аст."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -750,12 +646,12 @@
           "audio_text": "是，右边写字的那个人是我哥哥。",
           "pinyin": "Shì, yòubian xiě zì de nà ge rén shì wǒ gēge.",
           "options": [
-            "王方，昨天和你一起唱歌的人是谁？",
             "是，右边写字的那个人是我哥哥。",
             "什么朋友？是不是男朋友？",
-            "一个朋友。"
+            "一个朋友。",
+            "王方，昨天和你一起唱歌的人是谁？"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "是，右边写字的那个人是我哥哥。 — Ha, o'ng tomonda yozayotgan odam mening akam.",
             "ru": "是，右边写字的那个人是我哥哥。 — Да, а тот, кто справа пишет, это мой старший брат.",
@@ -772,12 +668,12 @@
           "audio_text": "说话",
           "pinyin": "shuōhuà",
           "options": [
-            "说话",
-            "男",
             "唱歌",
+            "男",
+            "说话",
             "女"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "说话 — gapirmoq, so'zlamoq (shuōhuà)",
             "ru": "说话 — говорить, разговаривать (shuōhuà)",
@@ -792,6 +688,105 @@
             "uz": "arzon",
             "ru": "дешёвый",
             "tj": "арзон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "女 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 女:",
+            "tj": "Маънои калимаи 女-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erkak, o'g'il",
+              "ru": "мужской, мальчик",
+              "tj": "мард, писар"
+            },
+            {
+              "uz": "qo'shiq aytmoq",
+              "ru": "петь песню",
+              "tj": "суруд хондан"
+            },
+            {
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
+            },
+            {
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "女 = ayol, qiz (nǚ)",
+            "ru": "女 = женский, девочка (nǚ)",
+            "tj": "女 = зан, духтар (nǚ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "女",
+            "pinyin": "nǚ",
+            "meaning": {
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'arzon' xitoycha qaysi?",
+            "ru": "'дешёвый' по-китайски?",
+            "tj": "'арзон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "唱歌",
+            "男",
+            "便宜",
+            "女"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "arzon = 便宜 (piányi)",
+            "ru": "дешёвый = 便宜 (piányi)",
+            "tj": "арзон = 便宜 (piányi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "便宜",
+            "pinyin": "piányi",
+            "meaning": {
+              "uz": "arzon",
+              "ru": "дешёвый",
+              "tj": "арзон"
+            }
           }
         }
       ]

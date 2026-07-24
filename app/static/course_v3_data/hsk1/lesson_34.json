@@ -248,8 +248,8 @@
           "options": [
             "猫",
             "医院",
-            "在",
-            "小"
+            "小",
+            "在"
           ],
           "correct_index": 1,
           "explanation": {
@@ -282,12 +282,12 @@
           "audio_text": "医生",
           "pinyin": "yīshēng",
           "options": [
-            "小",
-            "在",
+            "猫",
             "医生",
-            "猫"
+            "在",
+            "小"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "医生 — shifokor (yīshēng)",
             "ru": "医生 — врач (yīshēng)",
@@ -322,16 +322,6 @@
           },
           "options": [
             {
-              "uz": "mushuk",
-              "ru": "кошка",
-              "tj": "гурба"
-            },
-            {
-              "uz": "ota, dada",
-              "ru": "папа, отец",
-              "tj": "бобо, падар"
-            },
-            {
               "uz": "kichik, mayda",
               "ru": "маленький, небольшой",
               "tj": "хурд, майда"
@@ -340,9 +330,19 @@
               "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
               "ru": "находиться / в, на (показатель места)",
               "tj": "будан / дар (нишондиҳандаи ҷой)"
+            },
+            {
+              "uz": "ota, dada",
+              "ru": "папа, отец",
+              "tj": "бобо, падар"
+            },
+            {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "爸爸 = ota, dada (bàba)",
             "ru": "爸爸 = папа, отец (bàba)",
@@ -362,10 +362,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "在",
+            "猫",
             "医院",
             "小",
-            "猫"
+            "在"
           ],
           "correct_index": 1,
           "explanation": {
@@ -429,12 +429,12 @@
           "audio_text": "你爸爸在家吗？",
           "pinyin": "Nǐ bàba zài jiā ma?",
           "options": [
-            "小猫在那儿。",
             "小猫在哪儿？",
-            "你爸爸在家吗？",
-            "小狗在哪儿？"
+            "小猫在那儿。",
+            "小狗在哪儿？",
+            "你爸爸在家吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "你爸爸在家吗？ — Otangiz uyda ekanmi?",
             "ru": "你爸爸在家吗？ — Ваш папа дома?",
@@ -442,28 +442,37 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'kichik, mayda' xitoycha qaysi?",
-            "ru": "'маленький, небольшой' по-китайски?",
-            "tj": "'хурд, майда' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "小",
-            "在",
-            "那儿",
-            "猫"
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "医院",
+              {
+                "uz": "kasalxona",
+                "ru": "больница",
+                "tj": "беморхона"
+              }
+            ],
+            [
+              "医生",
+              {
+                "uz": "shifokor",
+                "ru": "врач",
+                "tj": "духтур"
+              }
+            ],
+            [
+              "爸爸",
+              {
+                "uz": "ota, dada",
+                "ru": "папа, отец",
+                "tj": "бобо, падар"
+              }
+            ]
           ],
-          "correct_index": 0,
           "explanation": {
-            "uz": "kichik, mayda = 小 (xiǎo)",
-            "ru": "маленький, небольшой = 小 (xiǎo)",
-            "tj": "хурд, майда = 小 (xiǎo)"
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -474,12 +483,12 @@
             "tj": "Падар дар хона нест."
           },
           "tokens": [
-            "不",
-            "在",
-            "家",
             "小",
             "猫",
-            "爸爸"
+            "爸爸",
+            "不",
+            "家",
+            "在"
           ],
           "answer_tokens": [
             "爸爸",
@@ -551,40 +560,6 @@
           }
         },
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "医院",
-              {
-                "uz": "kasalxona",
-                "ru": "больница",
-                "tj": "беморхона"
-              }
-            ],
-            [
-              "医生",
-              {
-                "uz": "shifokor",
-                "ru": "врач",
-                "tj": "духтур"
-              }
-            ],
-            [
-              "爸爸",
-              {
-                "uz": "ota, dada",
-                "ru": "папа, отец",
-                "tj": "бобо, падар"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "医院",
           "pinyin": "yīyuàn",
@@ -592,6 +567,105 @@
             "uz": "kasalxona",
             "ru": "больница",
             "tj": "беморхона"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "哪儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 哪儿:",
+            "tj": "Маънои калимаи 哪儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
+            },
+            {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            },
+            {
+              "uz": "qayerda",
+              "ru": "где",
+              "tj": "куҷо"
+            },
+            {
+              "uz": "kichik, mayda",
+              "ru": "маленький, небольшой",
+              "tj": "хурд, майда"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "哪儿 = qayerda (nǎr)",
+            "ru": "哪儿 = где (nǎr)",
+            "tj": "哪儿 = куҷо (nǎr)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "哪儿",
+            "pinyin": "nǎr",
+            "meaning": {
+              "uz": "qayerda",
+              "ru": "где",
+              "tj": "куҷо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kasalxona' xitoycha qaysi?",
+            "ru": "'больница' по-китайски?",
+            "tj": "'беморхона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "小",
+            "猫",
+            "医院",
+            "在"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kasalxona = 医院 (yīyuàn)",
+            "ru": "больница = 医院 (yīyuàn)",
+            "tj": "беморхона = 医院 (yīyuàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "医院",
+            "pinyin": "yīyuàn",
+            "meaning": {
+              "uz": "kasalxona",
+              "ru": "больница",
+              "tj": "беморхона"
+            }
           }
         }
       ]

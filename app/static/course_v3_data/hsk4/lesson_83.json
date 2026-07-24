@@ -371,12 +371,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "lǐbàitiān",
             "kòngr",
-            "búguò",
-            "mǔqīn"
+            "lǐbàitiān",
+            "mǔqīn",
+            "búguò"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "礼拜天 — lǐbàitiān",
             "ru": "礼拜天 — lǐbàitiān",
@@ -410,12 +410,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "不过",
             "礼拜天",
             "空儿",
-            "母亲",
-            "不过"
+            "母亲"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "bo'sh vaqt = 空儿 (kòngr)",
             "ru": "свободное время = 空儿 (kòngr)",
@@ -456,10 +456,10 @@
           "audio_text": "母亲",
           "pinyin": "mǔqīn",
           "options": [
-            "礼拜天",
-            "母亲",
             "空儿",
-            "不过"
+            "母亲",
+            "不过",
+            "礼拜天"
           ],
           "correct_index": 1,
           "explanation": {
@@ -496,27 +496,27 @@
           },
           "options": [
             {
-              "uz": "bo'sh vaqt",
-              "ru": "свободное время",
-              "tj": "вақти холӣ"
-            },
-            {
-              "uz": "yakshanba",
-              "ru": "воскресенье",
-              "tj": "якшанбе"
-            },
-            {
               "uz": "ona",
               "ru": "мать",
               "tj": "модар"
             },
             {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
               "uz": "lekin, biroq",
               "ru": "однако, но",
               "tj": "аммо, вале"
+            },
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "不过 = lekin, biroq (búguò)",
             "ru": "不过 = однако, но (búguò)",
@@ -536,12 +536,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "礼拜天",
-            "空儿",
             "不过",
-            "母亲"
+            "母亲",
+            "礼拜天",
+            "空儿"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "礼拜天 = yakshanba (lǐbàitiān)",
             "ru": "礼拜天 = воскресенье (lǐbàitiān)",
@@ -637,13 +637,13 @@
             "tj": "Аммо ҳоло ман хеле хушбахтам."
           },
           "tokens": [
-            "现在",
-            "幸福",
-            "空儿",
             "不过",
             "我",
-            "很",
-            "礼拜天"
+            "幸福",
+            "现在",
+            "礼拜天",
+            "空儿",
+            "很"
           ],
           "answer_tokens": [
             "不过",
@@ -670,28 +670,45 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "jiàoshòu qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiàoshòu?",
-            "tj": "jiàoshòu кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "教授",
-            "母亲",
-            "礼拜天",
-            "空儿"
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "礼拜天",
+              {
+                "uz": "yakshanba",
+                "ru": "воскресенье",
+                "tj": "якшанбе"
+              }
+            ],
+            [
+              "空儿",
+              {
+                "uz": "bo'sh vaqt",
+                "ru": "свободное время",
+                "tj": "вақти холӣ"
+              }
+            ],
+            [
+              "母亲",
+              {
+                "uz": "ona",
+                "ru": "мать",
+                "tj": "модар"
+              }
+            ],
+            [
+              "不过",
+              {
+                "uz": "lekin, biroq",
+                "ru": "однако, но",
+                "tj": "аммо, вале"
+              }
+            ]
           ],
-          "correct_index": 0,
           "explanation": {
-            "uz": "教授 = professor (jiàoshòu)",
-            "ru": "教授 = профессор (jiàoshòu)",
-            "tj": "教授 = профессор (jiàoshòu)"
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -702,13 +719,13 @@
             "tj": "Аммо ҳоло ман хеле хушбахтам."
           },
           "tokens": [
-            "幸福",
             "空儿",
-            "很",
+            "现在",
             "礼拜天",
+            "幸福",
             "不过",
             "我",
-            "现在"
+            "很"
           ],
           "answer_tokens": [
             "不过",
@@ -724,89 +741,6 @@
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "不过现在我很幸福。",
-          "pinyin": "Búguò xiànzài wǒ hěn xìngfú.",
-          "translation": {
-            "uz": "Lekin hozir men juda baxtliman.",
-            "ru": "Однако сейчас я очень счастлива.",
-            "tj": "Аммо ҳоло ман хеле хушбахтам."
-          },
-          "tokens": {
-            "uz": [
-              "baxtliman",
-              "hozir",
-              "men",
-              "juda",
-              "Lekin"
-            ],
-            "ru": [
-              "я",
-              "счастлива",
-              "сейчас",
-              "очень",
-              "Однако"
-            ],
-            "tj": [
-              "хеле",
-              "ман",
-              "ҳоло",
-              "Аммо",
-              "хушбахтам"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Lekin",
-              "hozir",
-              "men",
-              "juda",
-              "baxtliman"
-            ],
-            "ru": [
-              "Однако",
-              "сейчас",
-              "я",
-              "очень",
-              "счастлива"
-            ],
-            "tj": [
-              "Аммо",
-              "ҳоло",
-              "ман",
-              "хеле",
-              "хушбахтам"
-            ]
-          },
-          "explanation": {
-            "uz": "不过现在我很幸福。 — Lekin hozir men juda baxtliman.",
-            "ru": "不过现在我很幸福。 — Однако сейчас я очень счастлива.",
-            "tj": "不过现在我很幸福。 — Аммо ҳоло ман хеле хушбахтам."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "母亲",
-          "pinyin": "mǔqīn",
-          "options": [
-            "礼拜天",
-            "不过",
-            "空儿",
-            "母亲"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "母亲 — ona (mǔqīn)",
-            "ru": "母亲 — мать (mǔqīn)",
-            "tj": "母亲 — модар (mǔqīn)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "母亲",
           "pinyin": "mǔqīn",
@@ -814,6 +748,105 @@
             "uz": "ona",
             "ru": "мать",
             "tj": "модар"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "得 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 得:",
+            "tj": "Маънои калимаи 得-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            },
+            {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
+              "uz": "ona",
+              "ru": "мать",
+              "tj": "модар"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "得 = kerak, majbur bo'lmoq (děi)",
+            "ru": "得 = нужно, придётся (děi)",
+            "tj": "得 = лозим аст, бояд (děi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "得",
+            "pinyin": "děi",
+            "meaning": {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ona' xitoycha qaysi?",
+            "ru": "'мать' по-китайски?",
+            "tj": "'модар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "不过",
+            "母亲",
+            "空儿",
+            "礼拜天"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ona = 母亲 (mǔqīn)",
+            "ru": "мать = 母亲 (mǔqīn)",
+            "tj": "модар = 母亲 (mǔqīn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "母亲",
+            "pinyin": "mǔqīn",
+            "meaning": {
+              "uz": "ona",
+              "ru": "мать",
+              "tj": "модар"
+            }
           }
         }
       ]

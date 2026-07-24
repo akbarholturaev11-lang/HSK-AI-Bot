@@ -600,92 +600,60 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "reverse_builder",
+          "zh": "谁是你的老师？",
+          "pinyin": "Shéi shì nǐ de lǎoshī?",
+          "translation": {
+            "uz": "Kim sening o'qituvching?",
+            "ru": "Кто твой учитель?",
+            "tj": "Кӣ муаллими ту аст?"
           },
-          "audio_text": "她是谁？",
-          "pinyin": "Tā shì shéi?",
-          "options": [
-            "你是哪国人？",
-            "她是谁？",
-            "她是我的汉语老师，她叫李月。",
-            "我是美国人。你呢？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "她是谁？ — U kim?",
-            "ru": "她是谁？ — Кто она?",
-            "tj": "她是谁？ — Вай кӣ аст?"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'Li Yue (ism)' xitoycha qaysi?",
-            "ru": "'Ли Юэ (имя)' по-китайски?",
-            "tj": "'Ли Юэ (ном)' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "的",
-            "李月",
-            "谁",
-            "她"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "Li Yue (ism) = 李月 (Lǐ Yuè)",
-            "ru": "Ли Юэ (имя) = 李月 (Lǐ Yuè)",
-            "tj": "Ли Юэ (ном) = 李月 (Lǐ Yuè)"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "她",
-              {
-                "uz": "u (ayol)",
-                "ru": "она",
-                "tj": "вай (зан)"
-              }
+          "tokens": {
+            "uz": [
+              "o'qituvching",
+              "kim",
+              "sening",
+              "U",
+              "Kim"
             ],
-            [
-              "谁",
-              {
-                "uz": "kim",
-                "ru": "кто",
-                "tj": "кӣ"
-              }
+            "ru": [
+              "твой",
+              "Кто",
+              "учитель",
+              "Она",
+              "она"
             ],
-            [
-              "的",
-              {
-                "uz": "ning (egalik yuklamasi)",
-                "ru": "-'s (показатель принадлежности)",
-                "tj": "и, -и (ҳарфи соҳибӣ)"
-              }
-            ],
-            [
-              "汉语",
-              {
-                "uz": "xitoy tili",
-                "ru": "китайский язык",
-                "tj": "забони чинӣ"
-              }
+            "tj": [
+              "муаллими",
+              "кӣ",
+              "Вай",
+              "ту",
+              "Кӣ",
+              "аст"
             ]
-          ],
+          },
+          "answer_tokens": {
+            "uz": [
+              "Kim",
+              "sening",
+              "o'qituvching"
+            ],
+            "ru": [
+              "Кто",
+              "твой",
+              "учитель"
+            ],
+            "tj": [
+              "Кӣ",
+              "муаллими",
+              "ту",
+              "аст"
+            ]
+          },
           "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+            "uz": "谁是你的老师？ — Kim sening o'qituvching?",
+            "ru": "谁是你的老师？ — Кто твой учитель?",
+            "tj": "谁是你的老师？ — Кӣ муаллими ту аст?"
           }
         },
         {
@@ -696,6 +664,105 @@
             "uz": "kim",
             "ru": "кто",
             "tj": "кӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "什么 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 什么:",
+            "tj": "Маънои калимаи 什么-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "u (ayol)",
+              "ru": "она",
+              "tj": "вай (зан)"
+            },
+            {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            },
+            {
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи соҳибӣ)"
+            },
+            {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "什么 = nima, qaysi (shénme)",
+            "ru": "什么 = что, какой (shénme)",
+            "tj": "什么 = чӣ, кадом (shénme)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "什么",
+            "pinyin": "shénme",
+            "meaning": {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kim' xitoycha qaysi?",
+            "ru": "'кто' по-китайски?",
+            "tj": "'кӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "的",
+            "她",
+            "谁",
+            "汉语"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "kim = 谁 (shéi)",
+            "ru": "кто = 谁 (shéi)",
+            "tj": "кӣ = 谁 (shéi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "谁",
+            "pinyin": "shéi",
+            "meaning": {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            }
           }
         }
       ]

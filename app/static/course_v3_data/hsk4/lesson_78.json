@@ -346,11 +346,11 @@
           },
           "options": [
             "nándào",
-            "děi",
             "kěshì",
+            "děi",
             "bǐnggān"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "可是 — kěshì",
             "ru": "可是 — kěshì",
@@ -395,11 +395,11 @@
           },
           "options": [
             "得",
+            "难道",
             "正确",
-            "饼干",
-            "难道"
+            "饼干"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "to'g'ri = 正确 (zhèngquè)",
             "ru": "правильный = 正确 (zhèngquè)",
@@ -432,8 +432,8 @@
           "options": [
             "饼干",
             "理想",
-            "难道",
-            "得"
+            "得",
+            "难道"
           ],
           "correct_index": 1,
           "explanation": {
@@ -470,9 +470,9 @@
           },
           "options": [
             {
-              "uz": "kerak, majbur bo'lmoq",
-              "ru": "нужно, придётся",
-              "tj": "лозим аст, бояд"
+              "uz": "jasur",
+              "ru": "смелый",
+              "tj": "ҷасур"
             },
             {
               "uz": "pechenye",
@@ -480,17 +480,17 @@
               "tj": "печенье"
             },
             {
-              "uz": "jasur",
-              "ru": "смелый",
-              "tj": "ҷасур"
-            },
-            {
               "uz": "nahotki",
               "ru": "неужели",
               "tj": "магар"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "勇敢 = jasur (yǒnggǎn)",
             "ru": "勇敢 = смелый (yǒnggǎn)",
@@ -510,12 +510,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "可是",
+            "饼干",
             "难道",
-            "得",
-            "饼干"
+            "可是",
+            "得"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "可是 = lekin, ammo (kěshì)",
             "ru": "可是 = но, однако (kěshì)",
@@ -576,16 +576,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "理想",
-          "pinyin": "lǐxiǎng",
-          "translation": {
-            "uz": "orzu, ideal",
-            "ru": "идеал, мечта",
-            "tj": "орзу, идеал"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -595,10 +585,10 @@
           "audio_text": "正确",
           "pinyin": "zhèngquè",
           "options": [
-            "难道",
+            "饼干",
             "正确",
-            "得",
-            "饼干"
+            "难道",
+            "得"
           ],
           "correct_index": 1,
           "explanation": {
@@ -608,28 +598,13 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'maqola/matn uchun hisob so'zi' xitoycha qaysi?",
-            "ru": "'счётное слово для статей' по-китайски?",
-            "tj": "'ҳисобвожа барои мақола' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "难道",
-            "饼干",
-            "得",
-            "篇"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "maqola/matn uchun hisob so'zi = 篇 (piān)",
-            "ru": "счётное слово для статей = 篇 (piān)",
-            "tj": "ҳисобвожа барои мақола = 篇 (piān)"
+          "type": "pronunciation",
+          "phrase": "理想",
+          "pinyin": "lǐxiǎng",
+          "translation": {
+            "uz": "orzu, ideal",
+            "ru": "идеал, мечта",
+            "tj": "орзу, идеал"
           }
         },
         {
@@ -646,14 +621,9 @@
           },
           "options": [
             {
-              "uz": "kerak, majbur bo'lmoq",
-              "ru": "нужно, придётся",
-              "tj": "лозим аст, бояд"
-            },
-            {
-              "uz": "jasur",
-              "ru": "смелый",
-              "tj": "ҷасур"
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
             },
             {
               "uz": "pechenye",
@@ -661,12 +631,17 @@
               "tj": "печенье"
             },
             {
-              "uz": "nahotki",
-              "ru": "неужели",
-              "tj": "магар"
+              "uz": "jasur",
+              "ru": "смелый",
+              "tj": "ҷасур"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "勇敢 = jasur (yǒnggǎn)",
             "ru": "勇敢 = смелый (yǒnggǎn)",
@@ -681,6 +656,105 @@
             "uz": "to'g'ri",
             "ru": "правильный",
             "tj": "дуруст"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "篇 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 篇:",
+            "tj": "Маънои калимаи 篇-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "maqola/matn uchun hisob so'zi",
+              "ru": "счётное слово для статей",
+              "tj": "ҳисобвожа барои мақола"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "篇 = maqola/matn uchun hisob so'zi (piān)",
+            "ru": "篇 = счётное слово для статей (piān)",
+            "tj": "篇 = ҳисобвожа барои мақола (piān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "篇",
+            "pinyin": "piān",
+            "meaning": {
+              "uz": "maqola/matn uchun hisob so'zi",
+              "ru": "счётное слово для статей",
+              "tj": "ҳисобвожа барои мақола"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'to'g'ri' xitoycha qaysi?",
+            "ru": "'правильный' по-китайски?",
+            "tj": "'дуруст' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "难道",
+            "得",
+            "饼干",
+            "正确"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "to'g'ri = 正确 (zhèngquè)",
+            "ru": "правильный = 正确 (zhèngquè)",
+            "tj": "дуруст = 正确 (zhèngquè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "正确",
+            "pinyin": "zhèngquè",
+            "meaning": {
+              "uz": "to'g'ri",
+              "ru": "правильный",
+              "tj": "дуруст"
+            }
           }
         }
       ]

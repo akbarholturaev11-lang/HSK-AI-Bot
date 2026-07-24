@@ -281,11 +281,11 @@
           },
           "options": [
             "zhuōzi",
-            "zhèr",
+            "shàng",
             "diànnǎo",
-            "shàng"
+            "zhèr"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "这儿 — zhèr",
             "ru": "这儿 — zhèr",
@@ -329,12 +329,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "电脑",
             "没有",
             "上",
+            "电脑",
             "桌子"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "yo'q, mavjud emas = 没有 (méiyǒu)",
             "ru": "нет, не имеется = 没有 (méiyǒu)",
@@ -365,12 +365,12 @@
           "audio_text": "能",
           "pinyin": "néng",
           "options": [
-            "能",
             "电脑",
+            "桌子",
             "上",
-            "桌子"
+            "能"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "能 — mumkin, qodir (ruxsat/imkoniyat) (néng)",
             "ru": "能 — можно, мочь (способность/разрешение) (néng)",
@@ -396,11 +396,6 @@
               "tj": "мӣз"
             },
             {
-              "uz": "ustida, tepasida",
-              "ru": "сверху, на",
-              "tj": "болои, дар болои"
-            },
-            {
               "uz": "bu yerda, shu yerda",
               "ru": "здесь, тут",
               "tj": "ин ҷо, ин ҷост"
@@ -409,9 +404,14 @@
               "uz": "kompyuter",
               "ru": "компьютер",
               "tj": "компютер"
+            },
+            {
+              "uz": "ustida, tepasida",
+              "ru": "сверху, на",
+              "tj": "болои, дар болои"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "这儿 = bu yerda, shu yerda (zhèr)",
             "ru": "这儿 = здесь, тут (zhèr)",
@@ -518,11 +518,11 @@
           },
           "tokens": [
             "没有",
-            "里",
+            "学校",
             "商店",
+            "里",
             "桌子",
-            "上",
-            "学校"
+            "上"
           ],
           "answer_tokens": [
             "学校",
@@ -539,9 +539,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Bu yerda kimdir bormi?» — xitoychada qaysi biri?",
-            "ru": "«Здесь кто-то есть?» — какое предложение по-китайски?",
-            "tj": "«Ин ҷо кас ҳаст?» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Maktabda do'kon yo'q.» — xitoychada qaysi biri?",
+            "ru": "«В школе нет магазина.» — какое предложение по-китайски?",
+            "tj": "«Дар мактаб дӯкон нест.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -549,15 +549,15 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
+            "学校里没有商店。",
             "这儿有人吗？",
-            "桌子上有一个电脑。",
-            "学校里没有商店。"
+            "桌子上有一个电脑。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "这儿有人吗？ — Zhèr yǒu rén ma?",
-            "ru": "这儿有人吗？ — Zhèr yǒu rén ma?",
-            "tj": "这儿有人吗？ — Zhèr yǒu rén ma?"
+            "uz": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn.",
+            "ru": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn.",
+            "tj": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn."
           }
         }
       ]
@@ -571,6 +571,62 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "这儿",
+              {
+                "uz": "bu yerda, shu yerda",
+                "ru": "здесь, тут",
+                "tj": "ин ҷо, ин ҷост"
+              }
+            ],
+            [
+              "没有",
+              {
+                "uz": "yo'q, mavjud emas",
+                "ru": "нет, не имеется",
+                "tj": "не, нест"
+              }
+            ],
+            [
+              "能",
+              {
+                "uz": "mumkin, qodir (ruxsat/imkoniyat)",
+                "ru": "можно, мочь (способность/разрешение)",
+                "tj": "тавонистан, мумкин (иҷозат/қобилият)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "这儿有人吗？",
+          "pinyin": "Zhèr yǒu rén ma?",
+          "options": [
+            "杯子在哪儿？",
+            "这儿有人吗？",
+            "桌子上有一个电脑和一本书。",
+            "桌子上有什么？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "这儿有人吗？ — Bu yerda kimdir o'tiribdimi?",
+            "ru": "这儿有人吗？ — Здесь кто-то сидит?",
+            "tj": "这儿有人吗？ — Ин ҷо касе нишастаст?"
+          }
+        },
         {
           "type": "reverse_builder",
           "zh": "学校里没有商店。",
@@ -631,87 +687,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ichida' xitoycha qaysi?",
-            "ru": "'внутри, в' по-китайски?",
-            "tj": "'дарун, дохили' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "里",
-            "上",
-            "电脑",
-            "桌子"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "ichida = 里 (lǐ)",
-            "ru": "внутри, в = 里 (lǐ)",
-            "tj": "дарун, дохили = 里 (lǐ)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "这儿有人吗？",
-          "pinyin": "Zhèr yǒu rén ma?",
-          "options": [
-            "桌子上有一个电脑和一本书。",
-            "杯子在哪儿？",
-            "桌子上有什么？",
-            "这儿有人吗？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "这儿有人吗？ — Bu yerda kimdir o'tiribdimi?",
-            "ru": "这儿有人吗？ — Здесь кто-то сидит?",
-            "tj": "这儿有人吗？ — Ин ҷо касе нишастаст?"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "这儿",
-              {
-                "uz": "bu yerda, shu yerda",
-                "ru": "здесь, тут",
-                "tj": "ин ҷо, ин ҷост"
-              }
-            ],
-            [
-              "没有",
-              {
-                "uz": "yo'q, mavjud emas",
-                "ru": "нет, не имеется",
-                "tj": "не, нест"
-              }
-            ],
-            [
-              "能",
-              {
-                "uz": "mumkin, qodir (ruxsat/imkoniyat)",
-                "ru": "можно, мочь (способность/разрешение)",
-                "tj": "тавонистан, мумкин (иҷозат/қобилият)"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "没有",
           "pinyin": "méiyǒu",
@@ -719,6 +694,105 @@
             "uz": "yo'q, mavjud emas",
             "ru": "нет, не имеется",
             "tj": "не, нест"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "里 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 里:",
+            "tj": "Маънои калимаи 里-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ustida, tepasida",
+              "ru": "сверху, на",
+              "tj": "болои, дар болои"
+            },
+            {
+              "uz": "kompyuter",
+              "ru": "компьютер",
+              "tj": "компютер"
+            },
+            {
+              "uz": "stol, parta",
+              "ru": "стол",
+              "tj": "мӣз"
+            },
+            {
+              "uz": "ichida",
+              "ru": "внутри, в",
+              "tj": "дарун, дохили"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "里 = ichida (lǐ)",
+            "ru": "里 = внутри, в (lǐ)",
+            "tj": "里 = дарун, дохили (lǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "里",
+            "pinyin": "lǐ",
+            "meaning": {
+              "uz": "ichida",
+              "ru": "внутри, в",
+              "tj": "дарун, дохили"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yo'q, mavjud emas' xitoycha qaysi?",
+            "ru": "'нет, не имеется' по-китайски?",
+            "tj": "'не, нест' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "上",
+            "没有",
+            "电脑",
+            "桌子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yo'q, mavjud emas = 没有 (méiyǒu)",
+            "ru": "нет, не имеется = 没有 (méiyǒu)",
+            "tj": "не, нест = 没有 (méiyǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "没有",
+            "pinyin": "méiyǒu",
+            "meaning": {
+              "uz": "yo'q, mavjud emas",
+              "ru": "нет, не имеется",
+              "tj": "не, нест"
+            }
           }
         }
       ]

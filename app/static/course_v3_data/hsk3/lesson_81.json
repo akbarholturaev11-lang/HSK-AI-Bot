@@ -341,14 +341,9 @@
           },
           "options": [
             {
-              "uz": "daraja, saviya",
-              "ru": "уровень, стандарт",
-              "tj": "сатҳ, дараҷа"
-            },
-            {
-              "uz": "oshirmoq, yaxshilamoq",
-              "ru": "повышать, улучшать",
-              "tj": "баланд кардан, беҳтар кардан"
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
             },
             {
               "uz": "o'tkazmoq",
@@ -356,12 +351,17 @@
               "tj": "баргузор кардан"
             },
             {
-              "uz": "chet elda o'qimoq",
-              "ru": "учиться за границей",
-              "tj": "дар хориҷ таҳсил кардан"
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            },
+            {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "举行 = o'tkazmoq (jǔxíng)",
             "ru": "举行 = проводить (jǔxíng)",
@@ -395,12 +395,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "世界",
             "提高",
+            "世界",
             "水平",
             "留学"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "世界 = dunyo (shìjiè)",
             "ru": "世界 = мир (shìjiè)",
@@ -444,12 +444,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shuǐpíng",
-            "jiēdào",
             "liú xué",
-            "tí gāo"
+            "tí gāo",
+            "shuǐpíng",
+            "jiēdào"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "街道 — jiēdào",
             "ru": "街道 — jiēdào",
@@ -469,12 +469,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "留学",
             "提高",
-            "水平",
-            "举行"
+            "举行",
+            "留学",
+            "水平"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "o'tkazmoq = 举行 (jǔxíng)",
             "ru": "проводить = 举行 (jǔxíng)",
@@ -575,28 +575,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "留学 talaffuzini tanlang:",
-            "ru": "Выберите произношение 留学:",
-            "tj": "Талаффузи 留学-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "举行",
+          "pinyin": "jǔxíng",
           "options": [
-            "liànxí",
-            "shuǐpíng",
-            "liú xué",
-            "tí gāo"
+            "水平",
+            "留学",
+            "举行",
+            "提高"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "留学 — liú xué",
-            "ru": "留学 — liú xué",
-            "tj": "留学 — liú xué"
+            "uz": "举行 — o'tkazmoq (jǔxíng)",
+            "ru": "举行 — проводить (jǔxíng)",
+            "tj": "举行 — баргузор кардан (jǔxíng)"
           }
         },
         {
@@ -622,28 +619,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "举行",
-          "pinyin": "jǔxíng",
-          "options": [
-            "提高",
-            "留学",
-            "举行",
-            "水平"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "举行 — o'tkazmoq (jǔxíng)",
-            "ru": "举行 — проводить (jǔxíng)",
-            "tj": "举行 — баргузор кардан (jǔxíng)"
-          }
-        },
-        {
           "type": "hanzi_choice",
           "prompt": {
             "uz": "shìjiè qaysi ieroglif?",
@@ -658,10 +633,10 @@
           "options": [
             "提高",
             "留学",
-            "世界",
-            "水平"
+            "水平",
+            "世界"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "世界 = dunyo (shìjiè)",
             "ru": "世界 = мир (shìjiè)",
@@ -676,6 +651,105 @@
             "uz": "ko'cha",
             "ru": "улица",
             "tj": "кӯча"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "新闻 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 新闻:",
+            "tj": "Маънои калимаи 新闻-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            },
+            {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            },
+            {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            },
+            {
+              "uz": "yangiliklar",
+              "ru": "новости",
+              "tj": "хабарҳо"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "新闻 = yangiliklar (xīnwén)",
+            "ru": "新闻 = новости (xīnwén)",
+            "tj": "新闻 = хабарҳо (xīnwén)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "新闻",
+            "pinyin": "xīnwén",
+            "meaning": {
+              "uz": "yangiliklar",
+              "ru": "новости",
+              "tj": "хабарҳо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko'cha' xitoycha qaysi?",
+            "ru": "'улица' по-китайски?",
+            "tj": "'кӯча' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "提高",
+            "街道",
+            "留学",
+            "水平"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ko'cha = 街道 (jiēdào)",
+            "ru": "улица = 街道 (jiēdào)",
+            "tj": "кӯча = 街道 (jiēdào)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "街道",
+            "pinyin": "jiēdào",
+            "meaning": {
+              "uz": "ko'cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            }
           }
         }
       ]

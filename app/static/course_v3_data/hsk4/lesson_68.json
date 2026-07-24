@@ -371,12 +371,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "shāngxīn",
             "qiǎokèlì",
-            "zhǐyào",
             "qīnqi",
-            "shāngxīn"
+            "zhǐyào"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "只要 — zhǐyào",
             "ru": "只要 — zhǐyào",
@@ -410,12 +410,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "伤心",
-            "巧克力",
             "师傅",
-            "亲戚"
+            "伤心",
+            "亲戚",
+            "巧克力"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "usta; haydovchiga murojaat = 师傅 (shīfu)",
             "ru": "мастер; обращение к водителю = 师傅 (shīfu)",
@@ -446,12 +446,12 @@
           "audio_text": "大使馆",
           "pinyin": "dàshǐguǎn",
           "options": [
-            "巧克力",
             "亲戚",
-            "大使馆",
-            "伤心"
+            "伤心",
+            "巧克力",
+            "大使馆"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "大使馆 — elchixona (dàshǐguǎn)",
             "ru": "大使馆 — посольство (dàshǐguǎn)",
@@ -496,16 +496,6 @@
           },
           "options": [
             {
-              "uz": "tirbandlik bo'lmoq",
-              "ru": "быть пробке",
-              "tj": "роҳбандӣ шудан"
-            },
-            {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный",
-              "tj": "ғамгин"
-            },
-            {
               "uz": "qarindosh",
               "ru": "родственник",
               "tj": "хешованд"
@@ -514,9 +504,19 @@
               "uz": "shokolad",
               "ru": "шоколад",
               "tj": "шоколад"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
+            },
+            {
+              "uz": "tirbandlik bo'lmoq",
+              "ru": "быть пробке",
+              "tj": "роҳбандӣ шудан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "堵车 = tirbandlik bo'lmoq (dǔ chē)",
             "ru": "堵车 = быть пробке (dǔ chē)",
@@ -537,11 +537,11 @@
           },
           "options": [
             "亲戚",
-            "巧克力",
+            "只要",
             "伤心",
-            "只要"
+            "巧克力"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "只要 = faqat ... bo'lsa (zhǐyào)",
             "ru": "只要 = если только (zhǐyào)",
@@ -638,12 +638,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "巧克力",
-            "亲戚",
             "堵车",
-            "伤心"
+            "伤心",
+            "巧克力",
+            "亲戚"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 堵车 (dǔ chē) — tirbandlik bo'lmoq",
             "ru": "Верно: 堵车 (dǔ chē) — быть пробке",
@@ -661,6 +661,28 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "师傅，我去大使馆，你是不是走错了？",
+          "pinyin": "Shīfu, wǒ qù dàshǐguǎn, nǐ shì bú shì zǒu cuò le?",
+          "options": [
+            "师傅，我去大使馆，你是不是走错了？",
+            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
+            "不是我买的，是我女儿给我从国外带回来的礼物。",
+            "这种巧克力味道不错，你在哪儿买的？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "师傅，我去大使馆，你是不是走错了？ — Usta, men elchixonaga boraman, adashib ketmadingizmi?",
+            "ru": "师傅，我去大使馆，你是不是走错了？ — Водитель, мне в посольство, вы не туда поехали?",
+            "tj": "师傅，我去大使馆，你是不是走错了？ — Усто, ман ба сафорат меравам, магар роҳро хато нарафтед?"
+          }
+        },
         {
           "type": "reverse_builder",
           "zh": "师傅，我去大使馆，你是不是走错了？",
@@ -739,33 +761,32 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "师傅，我去大使馆，你是不是走错了？",
-          "pinyin": "Shīfu, wǒ qù dàshǐguǎn, nǐ shì bú shì zǒu cuò le?",
-          "options": [
-            "师傅，我去大使馆，你是不是走错了？",
-            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
-            "这种巧克力味道不错，你在哪儿买的？",
-            "不是我买的，是我女儿给我从国外带回来的礼物。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "师傅，我去大使馆，你是不是走错了？ — Usta, men elchixonaga boraman, adashib ketmadingizmi?",
-            "ru": "师傅，我去大使馆，你是不是走错了？ — Водитель, мне в посольство, вы не туда поехали?",
-            "tj": "师傅，我去大使馆，你是不是走错了？ — Усто, ман ба сафорат меравам, магар роҳро хато нарафтед?"
+          "type": "pronunciation",
+          "phrase": "堵车",
+          "pinyin": "dǔ chē",
+          "translation": {
+            "uz": "tirbandlik bo'lmoq",
+            "ru": "быть пробке",
+            "tj": "роҳбандӣ шудан"
           }
-        },
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "放松 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 放松:",
-            "tj": "Маънои калимаи 放松-ро интихоб кунед:"
+            "uz": "成为 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 成为:",
+            "tj": "Маънои калимаи 成为-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -774,63 +795,78 @@
           },
           "options": [
             {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            },
+            {
               "uz": "xafa, g'amgin",
               "ru": "грустный",
               "tj": "ғамгин"
             },
             {
+              "uz": "bo'lib qolmoq",
+              "ru": "становиться",
+              "tj": "шудан"
+            },
+            {
               "uz": "qarindosh",
               "ru": "родственник",
               "tj": "хешованд"
-            },
-            {
-              "uz": "bo'shashmoq, dam olmoq",
-              "ru": "расслабляться",
-              "tj": "ором шудан"
-            },
-            {
-              "uz": "shokolad",
-              "ru": "шоколад",
-              "tj": "шоколад"
             }
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "放松 = bo'shashmoq, dam olmoq (fàngsōng)",
-            "ru": "放松 = расслабляться (fàngsōng)",
-            "tj": "放松 = ором шудан (fàngsōng)"
+            "uz": "成为 = bo'lib qolmoq (chéngwéi)",
+            "ru": "成为 = становиться (chéngwéi)",
+            "tj": "成为 = шудан (chéngwéi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "成为",
+            "pinyin": "chéngwéi",
+            "meaning": {
+              "uz": "bo'lib qolmoq",
+              "ru": "становиться",
+              "tj": "шудан"
+            }
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tirbandlik bo'lmoq' xitoycha qaysi?",
+            "ru": "'быть пробке' по-китайски?",
+            "tj": "'роҳбандӣ шудан' ба хитоӣ кадом аст?"
           },
-          "audio_text": "只要",
-          "pinyin": "zhǐyào",
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
           "options": [
+            "堵车",
             "伤心",
-            "只要",
             "亲戚",
             "巧克力"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "只要 — faqat ... bo'lsa (zhǐyào)",
-            "ru": "只要 — если только (zhǐyào)",
-            "tj": "只要 — то даме ки, агар (zhǐyào)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "堵车",
-          "pinyin": "dǔ chē",
-          "translation": {
-            "uz": "tirbandlik bo'lmoq",
-            "ru": "быть пробке",
-            "tj": "роҳбандӣ шудан"
+            "uz": "tirbandlik bo'lmoq = 堵车 (dǔ chē)",
+            "ru": "быть пробке = 堵车 (dǔ chē)",
+            "tj": "роҳбандӣ шудан = 堵车 (dǔ chē)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "堵车",
+            "pinyin": "dǔ chē",
+            "meaning": {
+              "uz": "tirbandlik bo'lmoq",
+              "ru": "быть пробке",
+              "tj": "роҳбандӣ шудан"
+            }
           }
         }
       ]

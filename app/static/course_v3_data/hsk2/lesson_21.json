@@ -307,9 +307,9 @@
           },
           "options": [
             {
-              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
-              "ru": "готовить, готовиться",
-              "tj": "омода кардан, тайёр шудан"
+              "uz": "baliq",
+              "ru": "рыба",
+              "tj": "моҳӣ"
             },
             {
               "uz": "aynan, shu, xuddi shunday; darhol",
@@ -317,17 +317,17 @@
               "tj": "маҳз, ҳамин; фавран"
             },
             {
-              "uz": "baliq",
-              "ru": "рыба",
-              "tj": "моҳӣ"
-            },
-            {
               "uz": "tashqarida, tashqi tomon",
               "ru": "снаружи, на улице",
               "tj": "берун, берунӣ"
+            },
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "外面 = tashqarida, tashqi tomon (wàimiàn)",
             "ru": "外面 = снаружи, на улице (wàimiàn)",
@@ -361,12 +361,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "鱼",
-            "就",
+            "外面",
             "准备",
-            "外面"
+            "鱼",
+            "就"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "准备 = tayyorlamoq, tayyorgarlik ko'rmoq (zhǔnbèi)",
             "ru": "准备 = готовить, готовиться (zhǔnbèi)",
@@ -401,11 +401,11 @@
           },
           "options": [
             "wàimiàn",
-            "jiù",
             "yú",
+            "jiù",
             "zhǔnbèi"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "就 — jiù",
             "ru": "就 — jiù",
@@ -439,12 +439,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "外面",
             "就",
-            "鱼",
-            "准备"
+            "准备",
+            "外面",
+            "鱼"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "baliq = 鱼 (yú)",
             "ru": "рыба = 鱼 (yú)",
@@ -527,88 +527,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我不想去外面吃，我想在家吃。",
-          "pinyin": "Wǒ bù xiǎng qù wàimiàn chī, wǒ xiǎng zài jiā chī.",
-          "options": [
-            "就做你爱吃的鱼吧。",
-            "晚上我们去饭馆吃饭，怎么样？",
-            "那你准备做什么呢？",
-            "我不想去外面吃，我想在家吃。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "我不想去外面吃，我想在家吃。 — Men tashqariga chiqib ovqatlanmoqchi emasman, uyda ovqatlanmoqchiman.",
-            "ru": "我不想去外面吃，我想在家吃。 — Я не хочу идти есть на улицу, хочу дома.",
-            "tj": "我不想去外面吃，我想在家吃。 — Ман намехоҳам берун рафта хӯрок хӯрам, мехоҳам дар хона хӯрам."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "丈夫 talaffuzini tanlang:",
-            "ru": "Выберите произношение 丈夫:",
-            "tj": "Талаффузи 丈夫-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zhǔnbèi",
-            "zhàngfu",
-            "wàimiàn",
-            "jiù"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "丈夫 — zhàngfu",
-            "ru": "丈夫 — zhàngfu",
-            "tj": "丈夫 — zhàngfu"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Sen sevadigan baliqni pishiraylik, shu bo'ladi.",
-            "ru": "Вот приготовлю рыбу, которую ты любишь.",
-            "tj": "Маҳз моҳии дӯстдоштатро мепазам."
-          },
-          "tokens": [
-            "吃",
-            "就",
-            "准备",
-            "爱",
-            "鱼",
-            "的",
-            "你",
-            "吧",
-            "做",
-            "外面"
-          ],
-          "answer_tokens": [
-            "就",
-            "做",
-            "你",
-            "爱",
-            "吃",
-            "的",
-            "鱼",
-            "吧"
-          ],
-          "explanation": {
-            "uz": "就做你爱吃的鱼吧。 — Jiù zuò nǐ ài chī de yú ba.",
-            "ru": "就做你爱吃的鱼吧。 — Jiù zuò nǐ ài chī de yú ba.",
-            "tj": "就做你爱吃的鱼吧。 — Jiù zuò nǐ ài chī de yú ba."
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -648,6 +566,63 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sen sevadigan baliqni pishiraylik, shu bo'ladi.",
+            "ru": "Вот приготовлю рыбу, которую ты любишь.",
+            "tj": "Маҳз моҳии дӯстдоштатро мепазам."
+          },
+          "tokens": [
+            "爱",
+            "做",
+            "你",
+            "准备",
+            "就",
+            "的",
+            "鱼",
+            "外面",
+            "吧",
+            "吃"
+          ],
+          "answer_tokens": [
+            "就",
+            "做",
+            "你",
+            "爱",
+            "吃",
+            "的",
+            "鱼",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "就做你爱吃的鱼吧。 — Jiù zuò nǐ ài chī de yú ba.",
+            "ru": "就做你爱吃的鱼吧。 — Jiù zuò nǐ ài chī de yú ba.",
+            "tj": "就做你爱吃的鱼吧。 — Jiù zuò nǐ ài chī de yú ba."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我不想去外面吃，我想在家吃。",
+          "pinyin": "Wǒ bù xiǎng qù wàimiàn chī, wǒ xiǎng zài jiā chī.",
+          "options": [
+            "那你准备做什么呢？",
+            "我不想去外面吃，我想在家吃。",
+            "晚上我们去饭馆吃饭，怎么样？",
+            "就做你爱吃的鱼吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我不想去外面吃，我想在家吃。 — Men tashqariga chiqib ovqatlanmoqchi emasman, uyda ovqatlanmoqchiman.",
+            "ru": "我不想去外面吃，我想在家吃。 — Я не хочу идти есть на улицу, хочу дома.",
+            "tj": "我不想去外面吃，我想在家吃。 — Ман намехоҳам берун рафта хӯрок хӯрам, мехоҳам дар хона хӯрам."
           }
         },
         {
@@ -727,6 +702,105 @@
             "uz": "tashqarida, tashqi tomon",
             "ru": "снаружи, на улице",
             "tj": "берун, берунӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "生日 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生日:",
+            "tj": "Маънои калимаи 生日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
+            },
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "生日 = tug'ilgan kun (shēngrì)",
+            "ru": "生日 = день рождения (shēngrì)",
+            "tj": "生日 = рӯзи таваллуд (shēngrì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "生日",
+            "pinyin": "shēngrì",
+            "meaning": {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tashqarida, tashqi tomon' xitoycha qaysi?",
+            "ru": "'снаружи, на улице' по-китайски?",
+            "tj": "'берун, берунӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "外面",
+            "准备",
+            "就",
+            "鱼"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "tashqarida, tashqi tomon = 外面 (wàimiàn)",
+            "ru": "снаружи, на улице = 外面 (wàimiàn)",
+            "tj": "берун, берунӣ = 外面 (wàimiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "外面",
+            "pinyin": "wàimiàn",
+            "meaning": {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            }
           }
         }
       ]

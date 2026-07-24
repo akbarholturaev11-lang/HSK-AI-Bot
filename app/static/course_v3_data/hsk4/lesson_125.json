@@ -438,12 +438,12 @@
           "audio_text": "暖",
           "pinyin": "nuǎn",
           "options": [
+            "出差",
             "毛巾",
             "暖",
-            "出差",
             "牙膏"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "暖 — iliq (nuǎn)",
             "ru": "暖 — тёплый (nuǎn)",
@@ -478,27 +478,27 @@
           },
           "options": [
             {
-              "uz": "sochiq",
-              "ru": "полотенце",
-              "tj": "дастмол"
-            },
-            {
-              "uz": "xizmat safariga bormoq",
-              "ru": "ехать в командировку",
-              "tj": "ба сафари хизматӣ рафтан"
-            },
-            {
               "uz": "tish pastasi",
               "ru": "зубная паста",
               "tj": "хамираи дандон"
             },
             {
+              "uz": "sochiq",
+              "ru": "полотенце",
+              "tj": "дастмол"
+            },
+            {
               "uz": "plastik paket",
               "ru": "пластиковый пакет",
               "tj": "халтаи пластикӣ"
+            },
+            {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "塑料袋 = plastik paket (sùliàodài)",
             "ru": "塑料袋 = пластиковый пакет (sùliàodài)",
@@ -533,8 +533,8 @@
           },
           "options": [
             "于是",
-            "毛巾",
             "出差",
+            "毛巾",
             "牙膏"
           ],
           "correct_index": 0,
@@ -571,12 +571,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "máojīn",
             "yágāo",
             "gǔlì",
-            "chūchāi"
+            "chūchāi",
+            "máojīn"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "鼓励 — gǔlì",
             "ru": "鼓励 — gǔlì",
@@ -596,12 +596,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "暖",
-            "牙膏",
             "出差",
-            "毛巾"
+            "暖",
+            "毛巾",
+            "牙膏"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "iliq = 暖 (nuǎn)",
             "ru": "тёплый = 暖 (nuǎn)",
@@ -699,9 +699,9 @@
           },
           "options": [
             "塑料袋",
-            "牙膏",
             "毛巾",
-            "出差"
+            "出差",
+            "牙膏"
           ],
           "correct_index": 0,
           "explanation": {
@@ -721,6 +721,28 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "暖",
+          "pinyin": "nuǎn",
+          "options": [
+            "毛巾",
+            "牙膏",
+            "出差",
+            "暖"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "暖 — iliq (nuǎn)",
+            "ru": "暖 — тёплый (nuǎn)",
+            "tj": "暖 — гарм (nuǎn)"
+          }
+        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -764,53 +786,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "暖",
-          "pinyin": "nuǎn",
-          "options": [
-            "出差",
-            "牙膏",
-            "暖",
-            "毛巾"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "暖 — iliq (nuǎn)",
-            "ru": "暖 — тёплый (nuǎn)",
-            "tj": "暖 — гарм (nuǎn)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "行 talaffuzini tanlang:",
-            "ru": "Выберите произношение 行:",
-            "tj": "Талаффузи 行-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "xíng",
-            "yágāo",
-            "máojīn",
-            "chūchāi"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "行 — xíng",
-            "ru": "行 — xíng",
-            "tj": "行 — xíng"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "暖",
           "pinyin": "nuǎn",
@@ -818,6 +793,105 @@
             "uz": "iliq",
             "ru": "тёплый",
             "tj": "гарм"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "既然 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 既然:",
+            "tj": "Маънои калимаи 既然-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tish pastasi",
+              "ru": "зубная паста",
+              "tj": "хамираи дандон"
+            },
+            {
+              "uz": "sochiq",
+              "ru": "полотенце",
+              "tj": "дастмол"
+            },
+            {
+              "uz": "modomiki, shunday ekan",
+              "ru": "раз уж, поскольку",
+              "tj": "азбаски, модом ки"
+            },
+            {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "既然 = modomiki, shunday ekan (jìrán)",
+            "ru": "既然 = раз уж, поскольку (jìrán)",
+            "tj": "既然 = азбаски, модом ки (jìrán)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "既然",
+            "pinyin": "jìrán",
+            "meaning": {
+              "uz": "modomiki, shunday ekan",
+              "ru": "раз уж, поскольку",
+              "tj": "азбаски, модом ки"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'iliq' xitoycha qaysi?",
+            "ru": "'тёплый' по-китайски?",
+            "tj": "'гарм' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "毛巾",
+            "暖",
+            "牙膏",
+            "出差"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "iliq = 暖 (nuǎn)",
+            "ru": "тёплый = 暖 (nuǎn)",
+            "tj": "гарм = 暖 (nuǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "暖",
+            "pinyin": "nuǎn",
+            "meaning": {
+              "uz": "iliq",
+              "ru": "тёплый",
+              "tj": "гарм"
+            }
           }
         }
       ]

@@ -371,12 +371,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "交",
-            "平时",
             "差不多",
+            "平时",
+            "交",
             "适应"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "差不多 = deyarli, taxminan (chàbuduō)",
             "ru": "差不多 = почти, примерно (chàbuduō)",
@@ -410,10 +410,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "píngshí",
+            "shìyìng",
             "jiāo",
             "zhuānmén",
-            "shìyìng"
+            "píngshí"
           ],
           "correct_index": 2,
           "explanation": {
@@ -450,9 +450,9 @@
           },
           "options": [
             "毕业",
-            "适应",
             "平时",
-            "交"
+            "交",
+            "适应"
           ],
           "correct_index": 0,
           "explanation": {
@@ -526,6 +526,11 @@
               "tj": "қариб, тақрибан"
             },
             {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            },
+            {
               "uz": "odatdagi vaqt, odatda",
               "ru": "обычно, в обычное время",
               "tj": "одатан, вақтҳои муқаррарӣ"
@@ -534,11 +539,6 @@
               "uz": "moslashmoq, ko'nikmoq",
               "ru": "адаптироваться, привыкать",
               "tj": "мутобиқ шудан, одат кардан"
-            },
-            {
-              "uz": "do'st orttirmoq",
-              "ru": "заводить друзей",
-              "tj": "дӯст пайдо кардан"
             }
           ],
           "correct_index": 0,
@@ -638,12 +638,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "差不多",
             "交",
-            "平时",
-            "适应"
+            "差不多",
+            "适应",
+            "平时"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 差不多 (chàbuduō) — deyarli, taxminan",
             "ru": "Верно: 差不多 (chàbuduō) — почти, примерно",
@@ -661,69 +661,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "差不多",
-          "pinyin": "chàbuduō",
-          "options": [
-            "交",
-            "适应",
-            "平时",
-            "差不多"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "差不多 — deyarli, taxminan (chàbuduō)",
-            "ru": "差不多 — почти, примерно (chàbuduō)",
-            "tj": "差不多 — қариб, тақрибан (chàbuduō)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "逛 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 逛:",
-            "tj": "Маънои калимаи 逛-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "do'st orttirmoq",
-              "ru": "заводить друзей",
-              "tj": "дӯст пайдо кардан"
-            },
-            {
-              "uz": "aylanmoq, sayr qilmoq",
-              "ru": "гулять, ходить по магазинам",
-              "tj": "сайругашт кардан, дӯконгардӣ"
-            },
-            {
-              "uz": "odatdagi vaqt, odatda",
-              "ru": "обычно, в обычное время",
-              "tj": "одатан, вақтҳои муқаррарӣ"
-            },
-            {
-              "uz": "moslashmoq, ko'nikmoq",
-              "ru": "адаптироваться, привыкать",
-              "tj": "мутобиқ шудан, одат кардан"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "逛 = aylanmoq, sayr qilmoq (guàng)",
-            "ru": "逛 = гулять, ходить по магазинам (guàng)",
-            "tj": "逛 = сайругашт кардан, дӯконгардӣ (guàng)"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -762,12 +699,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "适应",
             "平时",
             "毕业",
-            "交",
-            "适应"
+            "交"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "毕业 = bitirmoq (bìyè)",
             "ru": "毕业 = окончить учебу (bìyè)",
@@ -782,6 +719,105 @@
             "uz": "bezovta qilmoq, ovora qilmoq",
             "ru": "беспокоить, доставлять хлопоты",
             "tj": "ташвиш додан, овора кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "联系 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 联系:",
+            "tj": "Маънои калимаи 联系-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aloqa qilmoq",
+              "ru": "связываться, связь",
+              "tj": "алоқа кардан, робита"
+            },
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            },
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "联系 = aloqa qilmoq (liánxì)",
+            "ru": "联系 = связываться, связь (liánxì)",
+            "tj": "联系 = алоқа кардан, робита (liánxì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "联系",
+            "pinyin": "liánxì",
+            "meaning": {
+              "uz": "aloqa qilmoq",
+              "ru": "связываться, связь",
+              "tj": "алоқа кардан, робита"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bezovta qilmoq, ovora qilmoq' xitoycha qaysi?",
+            "ru": "'беспокоить, доставлять хлопоты' по-китайски?",
+            "tj": "'ташвиш додан, овора кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "适应",
+            "麻烦",
+            "平时",
+            "交"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bezovta qilmoq, ovora qilmoq = 麻烦 (máfan)",
+            "ru": "беспокоить, доставлять хлопоты = 麻烦 (máfan)",
+            "tj": "ташвиш додан, овора кардан = 麻烦 (máfan)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "麻烦",
+            "pinyin": "máfan",
+            "meaning": {
+              "uz": "bezovta qilmoq, ovora qilmoq",
+              "ru": "беспокоить, доставлять хлопоты",
+              "tj": "ташвиш додан, овора кардан"
+            }
           }
         }
       ]

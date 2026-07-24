@@ -603,28 +603,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你想买什么？",
-          "pinyin": "Nǐ xiǎng mǎi shénme?",
-          "options": [
-            "你想喝什么？",
-            "我想喝茶。",
-            "你想吃什么？",
-            "你想买什么？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "你想买什么？ — Nima sotib olmoqchisiz?",
-            "ru": "你想买什么？ — Что вы хотите купить?",
-            "tj": "你想买什么？ — Шумо чӣ харидан мехоҳед?"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "下午你想做什么？",
           "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
@@ -720,31 +698,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "chá qaysi ieroglif?",
-            "ru": "Какой иероглиф читается chá?",
-            "tj": "chá кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "喝",
-            "茶",
-            "想",
-            "吃"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "茶 = choy (chá)",
-            "ru": "茶 = чай (chá)",
-            "tj": "茶 = чой (chá)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "商店",
           "pinyin": "shāngdiàn",
@@ -752,6 +705,105 @@
             "uz": "do'kon, magazin",
             "ru": "магазин",
             "tj": "мағоза, дӯкон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "茶 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 茶:",
+            "tj": "Маънои калимаи 茶-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            },
+            {
+              "uz": "yemoq",
+              "ru": "есть, кушать",
+              "tj": "хӯрдан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "茶 = choy (chá)",
+            "ru": "茶 = чай (chá)",
+            "tj": "茶 = чой (chá)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "茶",
+            "pinyin": "chá",
+            "meaning": {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'do'kon, magazin' xitoycha qaysi?",
+            "ru": "'магазин' по-китайски?",
+            "tj": "'мағоза, дӯкон' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "想",
+            "商店",
+            "喝",
+            "茶"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "do'kon, magazin = 商店 (shāngdiàn)",
+            "ru": "магазин = 商店 (shāngdiàn)",
+            "tj": "мағоза, дӯкон = 商店 (shāngdiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "商店",
+            "pinyin": "shāngdiàn",
+            "meaning": {
+              "uz": "do'kon, magazin",
+              "ru": "магазин",
+              "tj": "мағоза, дӯкон"
+            }
           }
         }
       ]

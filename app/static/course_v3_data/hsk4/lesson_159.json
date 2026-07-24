@@ -441,12 +441,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "火",
-            "接着",
+            "降落",
             "作者",
-            "降落"
+            "火",
+            "接着"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "ketidan, darhol keyin = 接着 (jiēzhe)",
             "ru": "затем, сразу после = 接着 (jiēzhe)",
@@ -477,9 +477,9 @@
           "audio_text": "警察",
           "pinyin": "jǐngchá",
           "options": [
-            "降落",
-            "警察",
             "火",
+            "警察",
+            "降落",
             "作者"
           ],
           "correct_index": 1,
@@ -527,16 +527,6 @@
           },
           "options": [
             {
-              "uz": "ushlamoq, qo'lga olmoq",
-              "ru": "ловить, арестовывать",
-              "tj": "доштан, боздошт кардан"
-            },
-            {
-              "uz": "muallif",
-              "ru": "автор",
-              "tj": "муаллиф"
-            },
-            {
               "uz": "mashhur, urf bo'lgan",
               "ru": "популярный, горячий",
               "tj": "машҳур, серхаридор"
@@ -545,9 +535,19 @@
               "uz": "qo'nmoq",
               "ru": "приземляться",
               "tj": "фуруд омадан"
+            },
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
+              "uz": "ushlamoq, qo'lga olmoq",
+              "ru": "ловить, арестовывать",
+              "tj": "доштан, боздошт кардан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "抓 = ushlamoq, qo'lga olmoq (zhuā)",
             "ru": "抓 = ловить, арестовывать (zhuā)",
@@ -583,10 +583,10 @@
           "options": [
             "作者",
             "降落",
-            "火",
-            "咸"
+            "咸",
+            "火"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "咸 = sho'r (xián)",
             "ru": "咸 = солёный (xián)",
@@ -711,53 +711,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "qiáo qaysi ieroglif?",
-            "ru": "Какой иероглиф читается qiáo?",
-            "tj": "qiáo кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "火",
-            "降落",
-            "作者",
-            "桥"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "桥 = ko'prik (qiáo)",
-            "ru": "桥 = мост (qiáo)",
-            "tj": "桥 = пул (qiáo)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "抓",
-          "pinyin": "zhuā",
-          "options": [
-            "降落",
-            "作者",
-            "火",
-            "抓"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "抓 — ushlamoq, qo'lga olmoq (zhuā)",
-            "ru": "抓 — ловить, арестовывать (zhuā)",
-            "tj": "抓 — доштан, боздошт кардан (zhuā)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -800,6 +753,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "抓",
+          "pinyin": "zhuā",
+          "options": [
+            "火",
+            "降落",
+            "作者",
+            "抓"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "抓 — ushlamoq, qo'lga olmoq (zhuā)",
+            "ru": "抓 — ловить, арестовывать (zhuā)",
+            "tj": "抓 — доштан, боздошт кардан (zhuā)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "抓",
           "pinyin": "zhuā",
@@ -807,6 +782,105 @@
             "uz": "ushlamoq, qo'lga olmoq",
             "ru": "ловить, арестовывать",
             "tj": "доштан, боздошт кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "桥 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 桥:",
+            "tj": "Маънои калимаи 桥-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            },
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
+              "uz": "ko'prik",
+              "ru": "мост",
+              "tj": "пул"
+            },
+            {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "桥 = ko'prik (qiáo)",
+            "ru": "桥 = мост (qiáo)",
+            "tj": "桥 = пул (qiáo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "桥",
+            "pinyin": "qiáo",
+            "meaning": {
+              "uz": "ko'prik",
+              "ru": "мост",
+              "tj": "пул"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ushlamoq, qo'lga olmoq' xitoycha qaysi?",
+            "ru": "'ловить, арестовывать' по-китайски?",
+            "tj": "'доштан, боздошт кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "抓",
+            "作者",
+            "火",
+            "降落"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "ushlamoq, qo'lga olmoq = 抓 (zhuā)",
+            "ru": "ловить, арестовывать = 抓 (zhuā)",
+            "tj": "доштан, боздошт кардан = 抓 (zhuā)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "抓",
+            "pinyin": "zhuā",
+            "meaning": {
+              "uz": "ushlamoq, qo'lga olmoq",
+              "ru": "ловить, арестовывать",
+              "tj": "доштан, боздошт кардан"
+            }
           }
         }
       ]

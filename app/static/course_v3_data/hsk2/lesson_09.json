@@ -511,31 +511,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "出 talaffuzini tanlang:",
-            "ru": "Выберите произношение 出:",
-            "tj": "Талаффузи 出-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "měi",
-            "shēngbìng",
-            "zǎoshang",
-            "chū"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "出 — chū",
-            "ru": "出 — chū",
-            "tj": "出 — chū"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -577,6 +552,105 @@
             "uz": "vaqt",
             "ru": "время",
             "tj": "вақт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "出 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 出:",
+            "tj": "Маънои калимаи 出-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "har (bir), har qaysi",
+              "ru": "каждый",
+              "tj": "ҳар (як), ҳар кадом"
+            },
+            {
+              "uz": "kasal bo'lmoq",
+              "ru": "заболевать, болеть",
+              "tj": "бемор шудан, касал шудан"
+            },
+            {
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
+            },
+            {
+              "uz": "chiqmoq",
+              "ru": "выходить, выезжать",
+              "tj": "баромадан, берун шудан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "出 = chiqmoq (chū)",
+            "ru": "出 = выходить, выезжать (chū)",
+            "tj": "出 = баромадан, берун шудан (chū)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "出",
+            "pinyin": "chū",
+            "meaning": {
+              "uz": "chiqmoq",
+              "ru": "выходить, выезжать",
+              "tj": "баромадан, берун шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'vaqt' xitoycha qaysi?",
+            "ru": "'время' по-китайски?",
+            "tj": "'вақт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "生病",
+            "早上",
+            "每",
+            "时间"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "vaqt = 时间 (shíjiān)",
+            "ru": "время = 时间 (shíjiān)",
+            "tj": "вақт = 时间 (shíjiān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "时间",
+            "pinyin": "shíjiān",
+            "meaning": {
+              "uz": "vaqt",
+              "ru": "время",
+              "tj": "вақт"
+            }
           }
         }
       ]

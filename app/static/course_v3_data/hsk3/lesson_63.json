@@ -350,12 +350,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tàiyáng",
             "qǐfēi",
+            "tàiyáng",
             "xī",
             "shēng qì"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "起飞 — qǐfēi",
             "ru": "起飞 — qǐfēi",
@@ -389,12 +389,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "生气",
-            "西",
             "司机",
+            "西",
+            "生气",
             "太阳"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "haydovchi = 司机 (sījī)",
             "ru": "водитель = 司机 (sījī)",
@@ -435,12 +435,12 @@
           "audio_text": "教",
           "pinyin": "jiāo",
           "options": [
+            "西",
             "生气",
             "太阳",
-            "教",
-            "西"
+            "教"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "教 — o'qitmoq, o'rgatmoq (jiāo)",
             "ru": "教 — учить, преподавать (jiāo)",
@@ -461,6 +461,16 @@
           },
           "options": [
             {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "хашмгин шудан"
+            },
+            {
+              "uz": "uchib ketmoq",
+              "ru": "взлетать",
+              "tj": "парвоз кардан"
+            },
+            {
               "uz": "quyosh",
               "ru": "солнце",
               "tj": "офтоб"
@@ -469,19 +479,9 @@
               "uz": "g'arb",
               "ru": "запад",
               "tj": "ғарб"
-            },
-            {
-              "uz": "uchib ketmoq",
-              "ru": "взлетать",
-              "tj": "парвоз кардан"
-            },
-            {
-              "uz": "jahli chiqmoq",
-              "ru": "сердиться",
-              "tj": "хашмгин шудан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "起飞 = uchib ketmoq (qǐfēi)",
             "ru": "起飞 = взлетать (qǐfēi)",
@@ -578,13 +578,13 @@
             "tj": "Шумо маро хеле хотирҷамъ кардед."
           },
           "tokens": [
-            "让",
-            "你",
             "放心",
             "西",
-            "了",
             "太阳",
             "我",
+            "让",
+            "你",
+            "了",
             "多"
           ],
           "answer_tokens": [
@@ -622,10 +622,10 @@
           "audio_text": "教",
           "pinyin": "jiāo",
           "options": [
-            "太阳",
+            "西",
             "生气",
             "教",
-            "西"
+            "太阳"
           ],
           "correct_index": 2,
           "explanation": {
@@ -645,31 +645,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "fāxiàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается fāxiàn?",
-            "tj": "fāxiàn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "发现",
-            "太阳",
-            "生气",
-            "西"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "发现 = payqamoq, aniqlamoq (fāxiàn)",
-            "ru": "发现 = обнаружить (fāxiàn)",
-            "tj": "发现 = пай бурдан (fāxiàn)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -679,12 +654,12 @@
           "audio_text": "司机",
           "pinyin": "sījī",
           "options": [
-            "西",
             "太阳",
-            "生气",
-            "司机"
+            "西",
+            "司机",
+            "生气"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "司机 — haydovchi (sījī)",
             "ru": "司机 — водитель (sījī)",
@@ -699,6 +674,105 @@
             "uz": "o'qitmoq, o'rgatmoq",
             "ru": "учить, преподавать",
             "tj": "омӯзондан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "发现 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 发现:",
+            "tj": "Маънои калимаи 发现-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "хашмгин шудан"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
+            },
+            {
+              "uz": "payqamoq, aniqlamoq",
+              "ru": "обнаружить",
+              "tj": "пай бурдан"
+            },
+            {
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "发现 = payqamoq, aniqlamoq (fāxiàn)",
+            "ru": "发现 = обнаружить (fāxiàn)",
+            "tj": "发现 = пай бурдан (fāxiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "发现",
+            "pinyin": "fāxiàn",
+            "meaning": {
+              "uz": "payqamoq, aniqlamoq",
+              "ru": "обнаружить",
+              "tj": "пай бурдан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'qitmoq, o'rgatmoq' xitoycha qaysi?",
+            "ru": "'учить, преподавать' по-китайски?",
+            "tj": "'омӯзондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "太阳",
+            "教",
+            "西",
+            "生气"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o'qitmoq, o'rgatmoq = 教 (jiāo)",
+            "ru": "учить, преподавать = 教 (jiāo)",
+            "tj": "омӯзондан = 教 (jiāo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "教",
+            "pinyin": "jiāo",
+            "meaning": {
+              "uz": "o'qitmoq, o'rgatmoq",
+              "ru": "учить, преподавать",
+              "tj": "омӯзондан"
+            }
           }
         }
       ]

@@ -328,12 +328,12 @@
           "audio_text": "班",
           "pinyin": "bān",
           "options": [
-            "着",
             "拿",
-            "班",
-            "手"
+            "手",
+            "着",
+            "班"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "班 — sinf, guruh (bān)",
             "ru": "班 — класс, группа (bān)",
@@ -368,9 +368,9 @@
           },
           "options": [
             {
-              "uz": "o'smoq; uzun",
-              "ru": "расти; длинный",
-              "tj": "калон шудан; дароз"
+              "uz": "qo'l",
+              "ru": "рука",
+              "tj": "даст"
             },
             {
               "uz": "ushlamoq, ko'tarmoq",
@@ -383,12 +383,12 @@
               "tj": "зарраи ҳолати давомдор"
             },
             {
-              "uz": "qo'l",
-              "ru": "рука",
-              "tj": "даст"
+              "uz": "o'smoq; uzun",
+              "ru": "расти; длинный",
+              "tj": "калон шудан; дароз"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "长 = o'smoq; uzun (zhǎng)",
             "ru": "长 = расти; длинный (zhǎng)",
@@ -423,11 +423,11 @@
           },
           "options": [
             "着",
-            "笑",
             "手",
+            "笑",
             "拿"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "笑 = kulmoq (xiào)",
             "ru": "笑 = смеяться, улыбаться (xiào)",
@@ -471,12 +471,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bīnguǎn",
             "ná",
+            "shǒu",
             "zhe",
-            "shǒu"
+            "bīnguǎn"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "宾馆 — bīnguǎn",
             "ru": "宾馆 — bīnguǎn",
@@ -496,12 +496,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "拿",
+            "班",
             "着",
-            "手",
-            "班"
+            "拿",
+            "手"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "sinf, guruh = 班 (bān)",
             "ru": "класс, группа = 班 (bān)",
@@ -607,14 +607,14 @@
           },
           "tokens": [
             "男",
-            "有",
+            "不",
+            "朋友",
             "了",
             "吗",
-            "她",
+            "有",
             "着",
-            "朋友",
             "是",
-            "不",
+            "她",
             "手"
           ],
           "answer_tokens": [
@@ -655,6 +655,49 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。",
+          "pinyin": "Jiù shì wǒmen bān nàge zhǎng zhe liǎng ge dà yǎnjing, fēicháng ài xiào de nǚ háizi.",
+          "options": [
+            "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。",
+            "他出去了。你下午再来吧。",
+            "请问，张先生在吗？",
+            "门开着呢，请进。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。 — Bizning sinfimizdagi o'sha ikki katta ko'zi bor, juda kulishni sevadigan qiz.",
+            "ru": "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。 — Та девушка из нашего класса с двумя большими глазами, которая очень любит смеяться.",
+            "tj": "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。 — Ҳамон духтаре аз синфи мо ки ду чашми калон дорад ва хеле механдад."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "宾馆",
+          "pinyin": "bīnguǎn",
+          "translation": {
+            "uz": "mehmonxona",
+            "ru": "гостиница",
+            "tj": "меҳмонхона"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "铅笔 so'zining ma'nosini tanlang:",
@@ -673,14 +716,14 @@
               "tj": "қалами оддӣ"
             },
             {
-              "uz": "davom etayotgan holatni bildiruvchi yuklama",
-              "ru": "частица продолжающегося состояния",
-              "tj": "зарраи ҳолати давомдор"
-            },
-            {
               "uz": "qo'l",
               "ru": "рука",
               "tj": "даст"
+            },
+            {
+              "uz": "davom etayotgan holatni bildiruvchi yuklama",
+              "ru": "частица продолжающегося состояния",
+              "tj": "зарраи ҳолати давомдор"
             },
             {
               "uz": "ushlamoq, ko'tarmoq",
@@ -693,38 +736,53 @@
             "uz": "铅笔 = qo'rg'oshin qalam (qiānbǐ)",
             "ru": "铅笔 = карандаш (qiānbǐ)",
             "tj": "铅笔 = қалами оддӣ (qiānbǐ)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。",
-          "pinyin": "Jiù shì wǒmen bān nàge zhǎng zhe liǎng ge dà yǎnjing, fēicháng ài xiào de nǚ háizi.",
-          "options": [
-            "请问，张先生在吗？",
-            "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。",
-            "他出去了。你下午再来吧。",
-            "门开着呢，请进。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。 — Bizning sinfimizdagi o'sha ikki katta ko'zi bor, juda kulishni sevadigan qiz.",
-            "ru": "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。 — Та девушка из нашего класса с двумя большими глазами, которая очень любит смеяться.",
-            "tj": "就是我们班那个长着两个大眼睛，非常爱笑的女孩子。 — Ҳамон духтаре аз синфи мо ки ду чашми калон дорад ва хеле механдад."
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "铅笔",
+            "pinyin": "qiānbǐ",
+            "meaning": {
+              "uz": "qo'rg'oshin qalam",
+              "ru": "карандаш",
+              "tj": "қалами оддӣ"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "宾馆",
-          "pinyin": "bīnguǎn",
-          "translation": {
-            "uz": "mehmonxona",
-            "ru": "гостиница",
-            "tj": "меҳмонхона"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mehmonxona' xitoycha qaysi?",
+            "ru": "'гостиница' по-китайски?",
+            "tj": "'меҳмонхона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "拿",
+            "手",
+            "着",
+            "宾馆"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "mehmonxona = 宾馆 (bīnguǎn)",
+            "ru": "гостиница = 宾馆 (bīnguǎn)",
+            "tj": "меҳмонхона = 宾馆 (bīnguǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "宾馆",
+            "pinyin": "bīnguǎn",
+            "meaning": {
+              "uz": "mehmonxona",
+              "ru": "гостиница",
+              "tj": "меҳмонхона"
+            }
           }
         }
       ]

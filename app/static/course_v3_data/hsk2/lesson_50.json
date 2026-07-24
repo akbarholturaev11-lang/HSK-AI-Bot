@@ -329,8 +329,8 @@
           "pinyin": "chànggē",
           "options": [
             "女",
-            "孩子",
             "男",
+            "孩子",
             "唱歌"
           ],
           "correct_index": 3,
@@ -378,27 +378,27 @@
           },
           "options": [
             {
-              "uz": "qo'shiq aytmoq",
-              "ru": "петь песню",
-              "tj": "суруд хондан"
-            },
-            {
               "uz": "erkak, o'g'il",
               "ru": "мужской, мальчик",
               "tj": "мард, писар"
             },
             {
-              "uz": "ayol, qiz",
-              "ru": "женский, девочка",
-              "tj": "зан, духтар"
-            },
-            {
               "uz": "bola",
               "ru": "ребёнок",
               "tj": "кӯдак"
+            },
+            {
+              "uz": "qo'shiq aytmoq",
+              "ru": "петь песню",
+              "tj": "суруд хондан"
+            },
+            {
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "男 = erkak, o'g'il (nán)",
             "ru": "男 = мужской, мальчик (nán)",
@@ -432,12 +432,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "唱歌",
             "女",
+            "唱歌",
             "男",
             "孩子"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "女 = ayol, qiz (nǚ)",
             "ru": "女 = женский, девочка (nǚ)",
@@ -471,9 +471,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "nán",
             "nǚ",
             "chànggē",
-            "nán",
             "háizi"
           ],
           "correct_index": 3,
@@ -496,12 +496,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "男",
-            "孩子",
             "唱歌",
-            "女"
+            "孩子",
+            "女",
+            "男"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "qo'shiq aytmoq = 唱歌 (chànggē)",
             "ru": "петь песню = 唱歌 (chànggē)",
@@ -607,12 +607,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "孩子",
-            "女",
             "唱歌",
-            "男"
+            "男",
+            "女",
+            "孩子"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 孩子 (háizi) — bola",
             "ru": "Верно: 孩子 (háizi) — ребёнок",
@@ -630,6 +630,28 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "女",
+          "pinyin": "nǚ",
+          "options": [
+            "女",
+            "孩子",
+            "唱歌",
+            "男"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "女 — ayol, qiz (nǚ)",
+            "ru": "女 — женский, девочка (nǚ)",
+            "tj": "女 — зан, духтар (nǚ)"
+          }
+        },
         {
           "type": "reverse_builder",
           "zh": "什么朋友？是不是男朋友？",
@@ -704,86 +726,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "女",
-          "pinyin": "nǚ",
-          "options": [
-            "女",
-            "唱歌",
-            "男",
-            "孩子"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "女 — ayol, qiz (nǚ)",
-            "ru": "女 — женский, девочка (nǚ)",
-            "tj": "女 — зан, духтар (nǚ)"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yetib bormoq, kelmoq' xitoycha qaysi?",
-            "ru": "'добираться, прибывать' по-китайски?",
-            "tj": "'расидан, омадан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "到",
-            "女",
-            "唱歌",
-            "男"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "yetib bormoq, kelmoq = 到 (dào)",
-            "ru": "добираться, прибывать = 到 (dào)",
-            "tj": "расидан, омадан = 到 (dào)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Qanday do'st? Yigit do'stingizmi?",
-            "ru": "Что за друг? Это случайно не парень?",
-            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
-          },
-          "tokens": [
-            "不",
-            "朋友",
-            "是",
-            "女",
-            "朋友",
-            "唱歌",
-            "男",
-            "什么",
-            "是"
-          ],
-          "answer_tokens": [
-            "什么",
-            "朋友",
-            "是",
-            "不",
-            "是",
-            "男",
-            "朋友"
-          ],
-          "explanation": {
-            "uz": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
-            "ru": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
-            "tj": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "男",
           "pinyin": "nán",
@@ -791,6 +733,105 @@
             "uz": "erkak, o'g'il",
             "ru": "мужской, мальчик",
             "tj": "мард, писар"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "帮助 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 帮助:",
+            "tj": "Маънои калимаи 帮助-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erkak, o'g'il",
+              "ru": "мужской, мальчик",
+              "tj": "мард, писар"
+            },
+            {
+              "uz": "qo'shiq aytmoq",
+              "ru": "петь песню",
+              "tj": "суруд хондан"
+            },
+            {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            },
+            {
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "帮助 = yordam bermoq (bāngzhù)",
+            "ru": "帮助 = помогать (bāngzhù)",
+            "tj": "帮助 = кӯмак кардан (bāngzhù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "帮助",
+            "pinyin": "bāngzhù",
+            "meaning": {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'erkak, o'g'il' xitoycha qaysi?",
+            "ru": "'мужской, мальчик' по-китайски?",
+            "tj": "'мард, писар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "唱歌",
+            "男",
+            "女",
+            "孩子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "erkak, o'g'il = 男 (nán)",
+            "ru": "мужской, мальчик = 男 (nán)",
+            "tj": "мард, писар = 男 (nán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "男",
+            "pinyin": "nán",
+            "meaning": {
+              "uz": "erkak, o'g'il",
+              "ru": "мужской, мальчик",
+              "tj": "мард, писар"
+            }
           }
         }
       ]

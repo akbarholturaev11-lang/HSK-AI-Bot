@@ -365,12 +365,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "líkāi",
             "tūrán",
-            "yǎnjing",
-            "liáo tiān(r)"
+            "liáo tiān(r)",
+            "líkāi",
+            "yǎnjing"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "聊天(儿) — liáo tiān(r)",
             "ru": "聊天(儿) — liáo tiān(r)",
@@ -404,12 +404,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "眼镜",
             "离开",
             "睡着",
-            "突然"
+            "突然",
+            "眼镜"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "uxlab qolmoq = 睡着 (shuì zháo)",
             "ru": "заснуть = 睡着 (shuì zháo)",
@@ -450,12 +450,12 @@
           "audio_text": "更",
           "pinyin": "gèng",
           "options": [
-            "更",
             "眼镜",
-            "突然",
-            "离开"
+            "更",
+            "离开",
+            "突然"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "更 — yanada, ko'proq (gèng)",
             "ru": "更 — ещё более (gèng)",
@@ -476,9 +476,9 @@
           },
           "options": [
             {
-              "uz": "tark etmoq, ajralmoq",
-              "ru": "покидать, расставаться",
-              "tj": "тарк кардан, ҷудо шудан"
+              "uz": "ko'zoynak",
+              "ru": "очки",
+              "tj": "айнак"
             },
             {
               "uz": "suhbatlashmoq, gaplashmoq",
@@ -486,14 +486,14 @@
               "tj": "суҳбат кардан"
             },
             {
+              "uz": "tark etmoq, ajralmoq",
+              "ru": "покидать, расставаться",
+              "tj": "тарк кардан, ҷудо шудан"
+            },
+            {
               "uz": "to'satdan",
               "ru": "вдруг, внезапно",
               "tj": "ногаҳон"
-            },
-            {
-              "uz": "ko'zoynak",
-              "ru": "очки",
-              "tj": "айнак"
             }
           ],
           "correct_index": 1,
@@ -558,9 +558,9 @@
           "audio_text": "更",
           "pinyin": "gèng",
           "options": [
-            "眼镜",
             "离开",
             "突然",
+            "眼镜",
             "更"
           ],
           "correct_index": 3,
@@ -568,31 +568,6 @@
             "uz": "更 — yanada, ko'proq (gèng)",
             "ru": "更 — ещё более (gèng)",
             "tj": "更 — боз ҳам (gèng)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "明白 talaffuzini tanlang:",
-            "ru": "Выберите произношение 明白:",
-            "tj": "Талаффузи 明白-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "tūrán",
-            "líkāi",
-            "yǎnjing",
-            "míngbai"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "明白 — míngbai",
-            "ru": "明白 — míngbai",
-            "tj": "明白 — míngbai"
           }
         },
         {
@@ -605,12 +580,12 @@
           "audio_text": "聊天(儿)",
           "pinyin": "liáo tiān(r)",
           "options": [
-            "离开",
             "突然",
-            "眼镜",
-            "聊天(儿)"
+            "离开",
+            "聊天(儿)",
+            "眼镜"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "聊天(儿) — suhbatlashmoq, gaplashmoq (liáo tiān(r))",
             "ru": "聊天(儿) — болтать, беседовать (liáo tiān(r))",
@@ -630,12 +605,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "眼镜",
             "睡着",
             "离开",
+            "眼镜",
             "突然"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "睡着 = uxlab qolmoq (shuì zháo)",
             "ru": "睡着 = заснуть (shuì zháo)",
@@ -650,6 +625,105 @@
             "uz": "yanada, ko'proq",
             "ru": "ещё более",
             "tj": "боз ҳам"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "明白 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 明白:",
+            "tj": "Маънои калимаи 明白-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tark etmoq, ajralmoq",
+              "ru": "покидать, расставаться",
+              "tj": "тарк кардан, ҷудо шудан"
+            },
+            {
+              "uz": "ko'zoynak",
+              "ru": "очки",
+              "tj": "айнак"
+            },
+            {
+              "uz": "to'satdan",
+              "ru": "вдруг, внезапно",
+              "tj": "ногаҳон"
+            },
+            {
+              "uz": "tushunarli, ravshan",
+              "ru": "понятный, ясный",
+              "tj": "фаҳмо, равшан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "明白 = tushunarli, ravshan (míngbai)",
+            "ru": "明白 = понятный, ясный (míngbai)",
+            "tj": "明白 = фаҳмо, равшан (míngbai)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "明白",
+            "pinyin": "míngbai",
+            "meaning": {
+              "uz": "tushunarli, ravshan",
+              "ru": "понятный, ясный",
+              "tj": "фаҳмо, равшан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yanada, ko'proq' xitoycha qaysi?",
+            "ru": "'ещё более' по-китайски?",
+            "tj": "'боз ҳам' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "突然",
+            "更",
+            "眼镜",
+            "离开"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yanada, ko'proq = 更 (gèng)",
+            "ru": "ещё более = 更 (gèng)",
+            "tj": "боз ҳам = 更 (gèng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "更",
+            "pinyin": "gèng",
+            "meaning": {
+              "uz": "yanada, ko'proq",
+              "ru": "ещё более",
+              "tj": "боз ҳам"
+            }
           }
         }
       ]

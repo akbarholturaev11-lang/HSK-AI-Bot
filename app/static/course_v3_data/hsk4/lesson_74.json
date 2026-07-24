@@ -372,9 +372,9 @@
           },
           "options": [
             "饼干",
+            "坚持",
             "难道",
-            "得",
-            "坚持"
+            "得"
           ],
           "correct_index": 0,
           "explanation": {
@@ -418,11 +418,11 @@
           "pinyin": "nándào",
           "options": [
             "饼干",
-            "难道",
+            "得",
             "坚持",
-            "得"
+            "难道"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "难道 — nahotki (nándào)",
             "ru": "难道 — неужели (nándào)",
@@ -457,16 +457,6 @@
           },
           "options": [
             {
-              "uz": "pechenye",
-              "ru": "печенье",
-              "tj": "печенье"
-            },
-            {
-              "uz": "qat'iy davom etmoq",
-              "ru": "настаивать, продолжать",
-              "tj": "истодагарӣ кардан"
-            },
-            {
               "uz": "nahotki",
               "ru": "неужели",
               "tj": "магар"
@@ -475,9 +465,19 @@
               "uz": "kerak, majbur bo'lmoq",
               "ru": "нужно, придётся",
               "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "qat'iy davom etmoq",
+              "ru": "настаивать, продолжать",
+              "tj": "истодагарӣ кардан"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "得 = kerak, majbur bo'lmoq (děi)",
             "ru": "得 = нужно, придётся (děi)",
@@ -511,9 +511,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "得",
-            "难道",
             "饼干",
+            "难道",
+            "得",
             "坚持"
           ],
           "correct_index": 3,
@@ -538,10 +538,10 @@
           "options": [
             "děi",
             "jiānchí",
-            "bǐnggān",
-            "nándào"
+            "nándào",
+            "bǐnggān"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "饼干 — bǐnggān",
             "ru": "饼干 — bǐnggān",
@@ -638,12 +638,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "饼干",
-            "坚持",
             "得",
-            "难道"
+            "饼干",
+            "难道",
+            "坚持"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 饼干 (bǐnggān) — pechenye",
             "ru": "Верно: 饼干 (bǐnggān) — печенье",
@@ -671,41 +671,16 @@
           "audio_text": "难道",
           "pinyin": "nándào",
           "options": [
-            "得",
             "坚持",
-            "难道",
-            "饼干"
+            "得",
+            "饼干",
+            "难道"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "难道 — nahotki (nándào)",
             "ru": "难道 — неужели (nándào)",
             "tj": "难道 — магар (nándào)"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yengil' xitoycha qaysi?",
-            "ru": "'лёгкий' по-китайски?",
-            "tj": "'сабук' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "轻",
-            "得",
-            "难道",
-            "饼干"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "yengil = 轻 (qīng)",
-            "ru": "лёгкий = 轻 (qīng)",
-            "tj": "сабук = 轻 (qīng)"
           }
         },
         {
@@ -726,6 +701,105 @@
             "uz": "nahotki",
             "ru": "неужели",
             "tj": "магар"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "亲戚 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 亲戚:",
+            "tj": "Маънои калимаи 亲戚-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "亲戚 = qarindosh (qīnqi)",
+            "ru": "亲戚 = родственник (qīnqi)",
+            "tj": "亲戚 = хешованд (qīnqi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "亲戚",
+            "pinyin": "qīnqi",
+            "meaning": {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'nahotki' xitoycha qaysi?",
+            "ru": "'неужели' по-китайски?",
+            "tj": "'магар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "得",
+            "难道",
+            "坚持",
+            "饼干"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "nahotki = 难道 (nándào)",
+            "ru": "неужели = 难道 (nándào)",
+            "tj": "магар = 难道 (nándào)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "难道",
+            "pinyin": "nándào",
+            "meaning": {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            }
           }
         }
       ]

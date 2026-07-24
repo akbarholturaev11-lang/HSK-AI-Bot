@@ -377,9 +377,9 @@
               "tj": "кайфият"
             },
             {
-              "uz": "shokolad",
-              "ru": "шоколад",
-              "tj": "шоколад"
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
             },
             {
               "uz": "qarindosh",
@@ -387,9 +387,9 @@
               "tj": "хешованд"
             },
             {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный",
-              "tj": "ғамгин"
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
             }
           ],
           "correct_index": 0,
@@ -436,12 +436,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "愉快",
-            "伤心",
             "亲戚",
-            "巧克力"
+            "巧克力",
+            "伤心",
+            "愉快"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "愉快 = xursand, yoqimli (yúkuài)",
             "ru": "愉快 = радостный, приятный (yúkuài)",
@@ -475,12 +475,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qīnqi",
-            "qiǎokèlì",
             "jǐngsè",
-            "shāngxīn"
+            "shāngxīn",
+            "qiǎokèlì",
+            "qīnqi"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "景色 — jǐngsè",
             "ru": "景色 — jǐngsè",
@@ -514,10 +514,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "巧克力",
+            "伤心",
             "亲戚",
             "放松",
-            "伤心"
+            "巧克力"
           ],
           "correct_index": 2,
           "explanation": {
@@ -536,12 +536,12 @@
           "audio_text": "心情",
           "pinyin": "xīnqíng",
           "options": [
+            "伤心",
             "心情",
-            "巧克力",
             "亲戚",
-            "伤心"
+            "巧克力"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "心情 — kayfiyat (xīnqíng)",
             "ru": "心情 — настроение (xīnqíng)",
@@ -648,14 +648,14 @@
             "tj": "Чӣ хел, кайфиятат беҳтар шуд?"
           },
           "tokens": [
-            "怎么样",
-            "好",
-            "心情",
             "吗",
+            "好",
+            "巧克力",
+            "亲戚",
             "些",
             "了",
-            "巧克力",
-            "亲戚"
+            "怎么样",
+            "心情"
           ],
           "answer_tokens": [
             "怎么样",
@@ -669,88 +669,6 @@
             "uz": "怎么样，心情好些了吗？ — Zěnmeyàng, xīnqíng hǎo xiē le ma?",
             "ru": "怎么样，心情好些了吗？ — Zěnmeyàng, xīnqíng hǎo xiē le ma?",
             "tj": "怎么样，心情好些了吗？ — Zěnmeyàng, xīnqíng hǎo xiē le ma?"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "怎么样，心情好些了吗？",
-          "pinyin": "Zěnmeyàng, xīnqíng hǎo xiē le ma?",
-          "translation": {
-            "uz": "Qalay, kayfiyating yaxshilandi-mi?",
-            "ru": "Ну как, настроение стало лучше?",
-            "tj": "Чӣ хел, кайфиятат беҳтар шуд?"
-          },
-          "tokens": {
-            "uz": [
-              "yaxshilandi-mi",
-              "kayfiyating",
-              "Qalay"
-            ],
-            "ru": [
-              "лучше",
-              "Ну",
-              "настроение",
-              "как",
-              "стало"
-            ],
-            "tj": [
-              "шуд",
-              "кайфиятат",
-              "хел",
-              "Чӣ",
-              "беҳтар"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Qalay",
-              "kayfiyating",
-              "yaxshilandi-mi"
-            ],
-            "ru": [
-              "Ну",
-              "как",
-              "настроение",
-              "стало",
-              "лучше"
-            ],
-            "tj": [
-              "Чӣ",
-              "хел",
-              "кайфиятат",
-              "беҳтар",
-              "шуд"
-            ]
-          },
-          "explanation": {
-            "uz": "怎么样，心情好些了吗？ — Qalay, kayfiyating yaxshilandi-mi?",
-            "ru": "怎么样，心情好些了吗？ — Ну как, настроение стало лучше?",
-            "tj": "怎么样，心情好些了吗？ — Чӣ хел, кайфиятат беҳтар шуд?"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'qarindosh' xitoycha qaysi?",
-            "ru": "'родственник' по-китайски?",
-            "tj": "'хешованд' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "巧克力",
-            "伤心",
-            "亲戚",
-            "使"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "qarindosh = 亲戚 (qīnqi)",
-            "ru": "родственник = 亲戚 (qīnqi)",
-            "tj": "хешованд = 亲戚 (qīnqi)"
           }
         },
         {
@@ -777,27 +695,27 @@
           },
           "options": [
             {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный",
-              "tj": "ғамгин"
-            },
-            {
               "uz": "qarindosh",
               "ru": "родственник",
               "tj": "хешованд"
             },
             {
-              "uz": "shokolad",
-              "ru": "шоколад",
-              "tj": "шоколад"
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
             },
             {
               "uz": "bo'shashmoq, dam olmoq",
               "ru": "расслабляться",
               "tj": "ором шудан"
+            },
+            {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "放松 = bo'shashmoq, dam olmoq (fàngsōng)",
             "ru": "放松 = расслабляться (fàngsōng)",
@@ -812,6 +730,105 @@
             "uz": "xursand, yoqimli",
             "ru": "радостный, приятный",
             "tj": "хурсанд, хуш"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "亲戚 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 亲戚:",
+            "tj": "Маънои калимаи 亲戚-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
+            },
+            {
+              "uz": "qilmoq, sabab bo'lmoq",
+              "ru": "заставлять, делать",
+              "tj": "сабаб шудан, кардан"
+            },
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            },
+            {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "亲戚 = qarindosh (qīnqi)",
+            "ru": "亲戚 = родственник (qīnqi)",
+            "tj": "亲戚 = хешованд (qīnqi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "亲戚",
+            "pinyin": "qīnqi",
+            "meaning": {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xursand, yoqimli' xitoycha qaysi?",
+            "ru": "'радостный, приятный' по-китайски?",
+            "tj": "'хурсанд, хуш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "伤心",
+            "巧克力",
+            "亲戚",
+            "愉快"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "xursand, yoqimli = 愉快 (yúkuài)",
+            "ru": "радостный, приятный = 愉快 (yúkuài)",
+            "tj": "хурсанд, хуш = 愉快 (yúkuài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "愉快",
+            "pinyin": "yúkuài",
+            "meaning": {
+              "uz": "xursand, yoqimli",
+              "ru": "радостный, приятный",
+              "tj": "хурсанд, хуш"
+            }
           }
         }
       ]

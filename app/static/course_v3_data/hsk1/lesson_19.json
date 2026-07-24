@@ -632,59 +632,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "写",
-          "pinyin": "xiě",
-          "options": [
-            "说",
-            "写",
-            "会",
-            "妈妈"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "写 — yozmoq (xiě)",
-            "ru": "写 — писать (xiě)",
-            "tj": "写 — навиштан (xiě)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Siz xitoy taomlarini tayyorlay olasizmi?",
-            "ru": "Вы умеете готовить китайскую еду?",
-            "tj": "Оё шумо метавонед хӯроки чинӣ тайёр кунед?"
-          },
-          "tokens": [
-            "菜",
-            "妈妈",
-            "做",
-            "吗",
-            "你",
-            "中国",
-            "说",
-            "会"
-          ],
-          "answer_tokens": [
-            "你",
-            "会",
-            "做",
-            "中国",
-            "菜",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "你会做中国菜吗？ — Nǐ huì zuò Zhōngguó cài ma?",
-            "ru": "你会做中国菜吗？ — Nǐ huì zuò Zhōngguó cài ma?",
-            "tj": "你会做中国菜吗？ — Nǐ huì zuò Zhōngguó cài ma?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
@@ -712,6 +659,105 @@
             "uz": "qilmoq, tayyorlamoq",
             "ru": "делать, готовить",
             "tj": "кардан, тайёр кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "妈妈 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 妈妈:",
+            "tj": "Маънои калимаи 妈妈-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "taom, sabzavot",
+              "ru": "блюдо, овощ",
+              "tj": "хӯрок, сабзавот"
+            },
+            {
+              "uz": "ona, onaxon",
+              "ru": "мама",
+              "tj": "модар, модарҷон"
+            },
+            {
+              "uz": "gapirmoq, aytmoq",
+              "ru": "говорить, сказать",
+              "tj": "гап задан, гуфтан"
+            },
+            {
+              "uz": "qila olmoq (o'rganish orqali)",
+              "ru": "мочь, уметь (через обучение)",
+              "tj": "тавонистан (бо ёрии омӯзиш)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "妈妈 = ona, onaxon (māma)",
+            "ru": "妈妈 = мама (māma)",
+            "tj": "妈妈 = модар, модарҷон (māma)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "妈妈",
+            "pinyin": "māma",
+            "meaning": {
+              "uz": "ona, onaxon",
+              "ru": "мама",
+              "tj": "модар, модарҷон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qilmoq, tayyorlamoq' xitoycha qaysi?",
+            "ru": "'делать, готовить' по-китайски?",
+            "tj": "'кардан, тайёр кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "会",
+            "做",
+            "妈妈",
+            "说"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "qilmoq, tayyorlamoq = 做 (zuò)",
+            "ru": "делать, готовить = 做 (zuò)",
+            "tj": "кардан, тайёр кардан = 做 (zuò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "做",
+            "pinyin": "zuò",
+            "meaning": {
+              "uz": "qilmoq, tayyorlamoq",
+              "ru": "делать, готовить",
+              "tj": "кардан, тайёр кардан"
+            }
           }
         }
       ]

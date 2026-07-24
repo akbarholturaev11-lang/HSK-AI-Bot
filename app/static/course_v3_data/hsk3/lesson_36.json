@@ -417,11 +417,6 @@
               "tj": "шавқ доштан"
             },
             {
-              "uz": "oldin, ilgari",
-              "ru": "раньше, прежде",
-              "tj": "пештар, қаблан"
-            },
-            {
               "uz": "bank",
               "ru": "банк",
               "tj": "бонк"
@@ -430,6 +425,11 @@
               "uz": "hamkasb",
               "ru": "коллега",
               "tj": "ҳамкор"
+            },
+            {
+              "uz": "oldin, ilgari",
+              "ru": "раньше, прежде",
+              "tj": "пештар, қаблан"
             }
           ],
           "correct_index": 0,
@@ -466,12 +466,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "同事",
             "结婚",
-            "以前",
             "银行",
-            "同事"
+            "以前"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "结婚 = turmush qurmoq, uylanmoq (jié hūn)",
             "ru": "结婚 = жениться, выходить замуж (jié hūn)",
@@ -555,11 +555,11 @@
           },
           "options": [
             "同事",
+            "迟到",
             "以前",
-            "银行",
-            "迟到"
+            "银行"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "kech qolmoq = 迟到 (chídào)",
             "ru": "опаздывать = 迟到 (chídào)",
@@ -576,12 +576,12 @@
           "audio_text": "感兴趣",
           "pinyin": "gǎn xìngqù",
           "options": [
+            "同事",
             "感兴趣",
             "以前",
-            "银行",
-            "同事"
+            "银行"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "感兴趣 — qiziqmoq (gǎn xìngqù)",
             "ru": "感兴趣 — интересоваться (gǎn xìngqù)",
@@ -686,12 +686,12 @@
             "tj": "Ман ба мусиқӣ хеле шавқ дорам."
           },
           "tokens": [
+            "以前",
+            "音乐",
+            "我",
             "同事",
             "对",
-            "音乐",
-            "以前",
             "很",
-            "我",
             "感兴趣"
           ],
           "answer_tokens": [
@@ -719,47 +719,76 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "感兴趣",
-              {
-                "uz": "qiziqmoq",
-                "ru": "интересоваться",
-                "tj": "шавқ доштан"
-              }
-            ],
-            [
-              "结婚",
-              {
-                "uz": "turmush qurmoq, uylanmoq",
-                "ru": "жениться, выходить замуж",
-                "tj": "оиладор шудан"
-              }
-            ],
-            [
-              "欢迎",
-              {
-                "uz": "xush kelibsiz demoq, kutib olmoq",
-                "ru": "приветствовать",
-                "tj": "хуш омадед гуфтан, пешвоз гирифтан"
-              }
-            ],
-            [
-              "迟到",
-              {
-                "uz": "kech qolmoq",
-                "ru": "опаздывать",
-                "tj": "дер мондан"
-              }
-            ]
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'turmush qurmoq, uylanmoq' xitoycha qaysi?",
+            "ru": "'жениться, выходить замуж' по-китайски?",
+            "tj": "'оиладор шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "同事",
+            "银行",
+            "结婚",
+            "以前"
           ],
+          "correct_index": 2,
           "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+            "uz": "turmush qurmoq, uylanmoq = 结婚 (jié hūn)",
+            "ru": "жениться, выходить замуж = 结婚 (jié hūn)",
+            "tj": "оиладор шудан = 结婚 (jié hūn)"
           }
         },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "huānyíng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается huānyíng?",
+            "tj": "huānyíng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "欢迎",
+            "以前",
+            "同事",
+            "银行"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "欢迎 = xush kelibsiz demoq, kutib olmoq (huānyíng)",
+            "ru": "欢迎 = приветствовать (huānyíng)",
+            "tj": "欢迎 = хуш омадед гуфтан, пешвоз гирифтан (huānyíng)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "迟到",
+          "pinyin": "chídào",
+          "translation": {
+            "uz": "kech qolmoq",
+            "ru": "опаздывать",
+            "tj": "дер мондан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
         {
           "type": "meaning_guess",
           "prompt": {
@@ -774,6 +803,11 @@
           },
           "options": [
             {
+              "uz": "hamkasb",
+              "ru": "коллега",
+              "tj": "ҳамкор"
+            },
+            {
               "uz": "bank",
               "ru": "банк",
               "tj": "бонк"
@@ -787,122 +821,60 @@
               "uz": "oldin, ilgari",
               "ru": "раньше, прежде",
               "tj": "пештар, қаблан"
-            },
-            {
-              "uz": "hamkasb",
-              "ru": "коллега",
-              "tj": "ҳамкор"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "久 = uzoq vaqt (jiǔ)",
             "ru": "久 = долго, длительный (jiǔ)",
             "tj": "久 = муддати дароз (jiǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "久",
+            "pinyin": "jiǔ",
+            "meaning": {
+              "uz": "uzoq vaqt",
+              "ru": "долго, длительный",
+              "tj": "муддати дароз"
+            }
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Ikkalangiz ham musiqaga qiziqasizmi?",
-            "ru": "Вы оба интересуетесь музыкой?",
-            "tj": "Ҳардуятон ба мусиқӣ шавқ доред?"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kech qolmoq' xitoycha qaysi?",
+            "ru": "'опаздывать' по-китайски?",
+            "tj": "'дер мондан' ба хитоӣ кадом аст?"
           },
-          "tokens": [
-            "感兴趣",
-            "吗",
-            "你们",
-            "同事",
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
             "以前",
-            "对",
-            "音乐",
-            "都"
+            "同事",
+            "银行",
+            "迟到"
           ],
-          "answer_tokens": [
-            "你们",
-            "都",
-            "对",
-            "音乐",
-            "感兴趣",
-            "吗"
-          ],
+          "correct_index": 3,
           "explanation": {
-            "uz": "你们都对音乐感兴趣吗？ — Nǐmen dōu duì yīnyuè gǎn xìngqù ma?",
-            "ru": "你们都对音乐感兴趣吗？ — Nǐmen dōu duì yīnyuè gǎn xìngqù ma?",
-            "tj": "你们都对音乐感兴趣吗？ — Nǐmen dōu duì yīnyuè gǎn xìngqù ma?"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "你们都对音乐感兴趣吗？",
-          "pinyin": "Nǐmen dōu duì yīnyuè gǎn xìngqù ma?",
-          "translation": {
-            "uz": "Ikkalangiz ham musiqaga qiziqasizmi?",
-            "ru": "Вы оба интересуетесь музыкой?",
-            "tj": "Ҳардуятон ба мусиқӣ шавқ доред?"
+            "uz": "kech qolmoq = 迟到 (chídào)",
+            "ru": "опаздывать = 迟到 (chídào)",
+            "tj": "дер мондан = 迟到 (chídào)"
           },
-          "tokens": {
-            "uz": [
-              "qiziqasizmi",
-              "qiziqadi",
-              "ham",
-              "musiqaga",
-              "Ikkalangiz",
-              "U"
-            ],
-            "ru": [
-              "интересуется",
-              "Вы",
-              "музыкой",
-              "интересуетесь",
-              "Она",
-              "оба"
-            ],
-            "tj": [
-              "Ҳардуятон",
-              "доред",
-              "дорад",
-              "шавқ",
-              "мусиқӣ",
-              "ба",
-              "Ӯ"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Ikkalangiz",
-              "ham",
-              "musiqaga",
-              "qiziqasizmi"
-            ],
-            "ru": [
-              "Вы",
-              "оба",
-              "интересуетесь",
-              "музыкой"
-            ],
-            "tj": [
-              "Ҳардуятон",
-              "ба",
-              "мусиқӣ",
-              "шавқ",
-              "доред"
-            ]
-          },
-          "explanation": {
-            "uz": "你们都对音乐感兴趣吗？ — Ikkalangiz ham musiqaga qiziqasizmi?",
-            "ru": "你们都对音乐感兴趣吗？ — Вы оба интересуетесь музыкой?",
-            "tj": "你们都对音乐感兴趣吗？ — Ҳардуятон ба мусиқӣ шавқ доред?"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "迟到",
-          "pinyin": "chídào",
-          "translation": {
-            "uz": "kech qolmoq",
-            "ru": "опаздывать",
-            "tj": "дер мондан"
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "迟到",
+            "pinyin": "chídào",
+            "meaning": {
+              "uz": "kech qolmoq",
+              "ru": "опаздывать",
+              "tj": "дер мондан"
+            }
           }
         }
       ]

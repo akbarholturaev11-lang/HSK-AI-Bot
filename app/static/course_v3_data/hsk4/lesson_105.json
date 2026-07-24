@@ -449,11 +449,11 @@
           "pinyin": "yèzi",
           "options": [
             "规定",
+            "死",
             "叶子",
-            "可惜",
-            "死"
+            "可惜"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "叶子 — barg (yèzi)",
             "ru": "叶子 — лист (yèzi)",
@@ -488,27 +488,27 @@
           },
           "options": [
             {
-              "uz": "ta'lim bermoq, tarbiyalamoq",
-              "ru": "обучать, воспитывать",
-              "tj": "таълим додан, тарбия кардан"
-            },
-            {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
-            },
-            {
               "uz": "qattiq, o'zgarmas",
               "ru": "жёсткий, негибкий",
               "tj": "сахт, тағйирнопазир"
             },
             {
+              "uz": "ta'lim bermoq, tarbiyalamoq",
+              "ru": "обучать, воспитывать",
+              "tj": "таълим додан, тарбия кардан"
+            },
+            {
               "uz": "qoida, belgilangan tartib",
               "ru": "правило, положение",
               "tj": "қоида, тартиб"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "教育 = ta'lim bermoq, tarbiyalamoq (jiàoyù)",
             "ru": "教育 = обучать, воспитывать (jiàoyù)",
@@ -543,8 +543,8 @@
           },
           "options": [
             "可惜",
-            "死",
             "规定",
+            "死",
             "使用"
           ],
           "correct_index": 3,
@@ -581,12 +581,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "guīdìng",
             "sǐ",
-            "yǔyán",
             "kěxī",
-            "guīdìng"
+            "yǔyán"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "语言 — yǔyán",
             "ru": "语言 — yǔyán",
@@ -606,12 +606,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "死",
             "叶子",
+            "死",
             "可惜",
             "规定"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "barg = 叶子 (yèzi)",
             "ru": "лист = 叶子 (yèzi)",
@@ -709,11 +709,11 @@
           },
           "options": [
             "可惜",
+            "规定",
             "解释",
-            "死",
-            "规定"
+            "死"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 解释 (jiěshì) — tushuntirmoq",
             "ru": "Верно: 解释 (jiěshì) — объяснять",
@@ -741,41 +741,16 @@
           "audio_text": "叶子",
           "pinyin": "yèzi",
           "options": [
-            "叶子",
             "死",
             "规定",
+            "叶子",
             "可惜"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "叶子 — barg (yèzi)",
             "ru": "叶子 — лист (yèzi)",
             "tj": "叶子 — барг (yèzi)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "勺（子） talaffuzini tanlang:",
-            "ru": "Выберите произношение 勺（子）:",
-            "tj": "Талаффузи 勺（子）-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "kěxī",
-            "guīdìng",
-            "sháo(zi)",
-            "sǐ"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "勺（子） — sháo(zi)",
-            "ru": "勺（子） — sháo(zi)",
-            "tj": "勺（子） — sháo(zi)"
           }
         },
         {
@@ -828,6 +803,105 @@
             "uz": "barg",
             "ru": "лист",
             "tj": "барг"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "节 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 节:",
+            "tj": "Маънои калимаи 节-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            },
+            {
+              "uz": "bo'lim, dars qismi",
+              "ru": "раздел, часть",
+              "tj": "қисм, бахш"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "节 = bo'lim, dars qismi (jié)",
+            "ru": "节 = раздел, часть (jié)",
+            "tj": "节 = қисм, бахш (jié)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "节",
+            "pinyin": "jié",
+            "meaning": {
+              "uz": "bo'lim, dars qismi",
+              "ru": "раздел, часть",
+              "tj": "қисм, бахш"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'barg' xitoycha qaysi?",
+            "ru": "'лист' по-китайски?",
+            "tj": "'барг' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "规定",
+            "死",
+            "叶子",
+            "可惜"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "barg = 叶子 (yèzi)",
+            "ru": "лист = 叶子 (yèzi)",
+            "tj": "барг = 叶子 (yèzi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "叶子",
+            "pinyin": "yèzi",
+            "meaning": {
+              "uz": "barg",
+              "ru": "лист",
+              "tj": "барг"
+            }
           }
         }
       ]

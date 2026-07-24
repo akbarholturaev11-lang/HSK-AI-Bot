@@ -344,8 +344,8 @@
           "options": [
             "适应",
             "交",
-            "平时",
-            "逛"
+            "逛",
+            "平时"
           ],
           "correct_index": 0,
           "explanation": {
@@ -392,27 +392,27 @@
           },
           "options": [
             {
-              "uz": "aylanmoq, sayr qilmoq",
-              "ru": "гулять, ходить по магазинам",
-              "tj": "сайругашт кардан, дӯконгардӣ"
-            },
-            {
               "uz": "odatdagi vaqt, odatda",
               "ru": "обычно, в обычное время",
               "tj": "одатан, вақтҳои муқаррарӣ"
             },
             {
-              "uz": "do'st orttirmoq",
-              "ru": "заводить друзей",
-              "tj": "дӯст пайдо кардан"
+              "uz": "aylanmoq, sayr qilmoq",
+              "ru": "гулять, ходить по магазинам",
+              "tj": "сайругашт кардан, дӯконгардӣ"
             },
             {
               "uz": "moslashmoq, ko'nikmoq",
               "ru": "адаптироваться, привыкать",
               "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "交 = do'st orttirmoq (jiāo)",
             "ru": "交 = заводить друзей (jiāo)",
@@ -446,12 +446,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "交",
             "平时",
             "逛",
-            "适应"
+            "适应",
+            "交"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "平时 = odatdagi vaqt, odatda (píngshí)",
             "ru": "平时 = обычно, в обычное время (píngshí)",
@@ -485,12 +485,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shìyìng",
             "píngshí",
-            "guàng",
-            "jiāo"
+            "shìyìng",
+            "jiāo",
+            "guàng"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "逛 — guàng",
             "ru": "逛 — guàng",
@@ -512,8 +512,8 @@
           "options": [
             "平时",
             "适应",
-            "交",
-            "逛"
+            "逛",
+            "交"
           ],
           "correct_index": 1,
           "explanation": {
@@ -575,6 +575,38 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "平时",
+          "pinyin": "píngshí",
+          "translation": {
+            "uz": "odatdagi vaqt, odatda",
+            "ru": "обычно, в обычное время",
+            "tj": "одатан, вақтҳои муқаррарӣ"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "那就好，快给我讲讲你新交的中国朋友。",
+          "pinyin": "Nà jiù hǎo, kuài gěi wǒ jiǎngjiang nǐ xīn jiāo de Zhōngguó péngyou.",
+          "options": [
+            "开始有点儿不习惯，后来就慢慢适应了，最近我还交了一个中国朋友。",
+            "来中国快一年了，你适应这儿的生活了吗？",
+            "我们是在图书馆认识的。平时我们常常一起看书、逛街、踢足球。有时候他还给我发一些幽默短信。",
+            "那就好，快给我讲讲你新交的中国朋友。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "那就好，快给我讲讲你新交的中国朋友。 — Yaxshi bo'libdi, yangi xitoylik do'sting haqida tezroq aytib ber.",
+            "ru": "那就好，快给我讲讲你新交的中国朋友。 — Хорошо. Скорее расскажи мне о своем новом китайском друге.",
+            "tj": "那就好，快给我讲讲你新交的中国朋友。 — Хуб. Зудтар дар бораи дӯсти нави чиниат нақл кун."
+          }
+        },
         {
           "type": "reverse_builder",
           "zh": "那就好，快给我讲讲你新交的中国朋友。",
@@ -661,63 +693,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "那就好，快给我讲讲你新交的中国朋友。",
-          "pinyin": "Nà jiù hǎo, kuài gěi wǒ jiǎngjiang nǐ xīn jiāo de Zhōngguó péngyou.",
-          "options": [
-            "那就好，快给我讲讲你新交的中国朋友。",
-            "来中国快一年了，你适应这儿的生活了吗？",
-            "我们是在图书馆认识的。平时我们常常一起看书、逛街、踢足球。有时候他还给我发一些幽默短信。",
-            "开始有点儿不习惯，后来就慢慢适应了，最近我还交了一个中国朋友。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "那就好，快给我讲讲你新交的中国朋友。 — Yaxshi bo'libdi, yangi xitoylik do'sting haqida tezroq aytib ber.",
-            "ru": "那就好，快给我讲讲你新交的中国朋友。 — Хорошо. Скорее расскажи мне о своем новом китайском друге.",
-            "tj": "那就好，快给我讲讲你新交的中国朋友。 — Хуб. Зудтар дар бораи дӯсти нави чиниат нақл кун."
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "平时",
-          "pinyin": "píngshí",
-          "translation": {
-            "uz": "odatdagi vaqt, odatda",
-            "ru": "обычно, в обычное время",
-            "tj": "одатан, вақтҳои муқаррарӣ"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'eng yaxshisi, yaxshisi' xitoycha qaysi?",
-            "ru": "'лучше всего, лучше бы' по-китайски?",
-            "tj": "'беҳтараш, беҳтарин' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "适应",
-            "最好",
-            "平时",
-            "交"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "eng yaxshisi, yaxshisi = 最好 (zuìhǎo)",
-            "ru": "лучше всего, лучше бы = 最好 (zuìhǎo)",
-            "tj": "беҳтараш, беҳтарин = 最好 (zuìhǎo)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "交",
           "pinyin": "jiāo",
@@ -725,6 +700,105 @@
             "uz": "do'st orttirmoq",
             "ru": "заводить друзей",
             "tj": "дӯст пайдо кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "俩 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 俩:",
+            "tj": "Маънои калимаи 俩-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            },
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            },
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "俩 = ikkalasi, ikki kishi (liǎ)",
+            "ru": "俩 = двое, оба (liǎ)",
+            "tj": "俩 = ду нафар, ҳарду (liǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "俩",
+            "pinyin": "liǎ",
+            "meaning": {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'do'st orttirmoq' xitoycha qaysi?",
+            "ru": "'заводить друзей' по-китайски?",
+            "tj": "'дӯст пайдо кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "平时",
+            "适应",
+            "交",
+            "逛"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "do'st orttirmoq = 交 (jiāo)",
+            "ru": "заводить друзей = 交 (jiāo)",
+            "tj": "дӯст пайдо кардан = 交 (jiāo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "交",
+            "pinyin": "jiāo",
+            "meaning": {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            }
           }
         }
       ]

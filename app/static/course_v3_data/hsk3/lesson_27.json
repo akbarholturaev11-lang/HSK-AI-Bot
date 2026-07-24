@@ -390,12 +390,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "草",
-            "发烧",
+            "为",
             "照顾",
-            "为"
+            "草",
+            "发烧"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "草 = o't, maysa (cǎo)",
             "ru": "草 = трава (cǎo)",
@@ -429,12 +429,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xià(tiān)",
-            "fāshāo",
+            "wèi",
             "zhàogù",
-            "wèi"
+            "fāshāo",
+            "xià(tiān)"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "夏(天) — xià(tiān)",
             "ru": "夏(天) — xià(tiān)",
@@ -478,12 +478,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "照顾",
             "为",
             "裙子",
-            "发烧"
+            "发烧",
+            "照顾"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "yubka, ko'ylak = 裙子 (qúnzi)",
             "ru": "юбка, платье = 裙子 (qúnzi)",
@@ -500,12 +500,12 @@
           "audio_text": "草",
           "pinyin": "cǎo",
           "options": [
-            "为",
             "草",
+            "为",
             "发烧",
             "照顾"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "草 — o't, maysa (cǎo)",
             "ru": "草 — трава (cǎo)",
@@ -616,31 +616,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zhàogù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zhàogù?",
-            "tj": "zhàogù кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "用",
-            "为",
-            "发烧",
-            "照顾"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "照顾 = qaramoq, parvarish qilmoq (zhàogù)",
-            "ru": "照顾 = заботиться, ухаживать (zhàogù)",
-            "tj": "照顾 = нигоҳубин кардан (zhàogù)"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "怎么？你也有漂亮的裙子？",
           "pinyin": "Zěnme? Nǐ yě yǒu piàoliang de qúnzi?",
@@ -726,8 +701,8 @@
           "pinyin": "Zěnme? Nǐ yě yǒu piàoliang de qúnzi?",
           "options": [
             "喝杯茶吧，这是我为你买的绿茶，很不错。",
-            "前几天有点儿发烧，现在好多了。",
             "我听说你身体不舒服，怎么了？",
+            "前几天有点儿发烧，现在好多了。",
             "怎么？你也有漂亮的裙子？"
           ],
           "correct_index": 3,
@@ -747,12 +722,12 @@
           "audio_text": "夏(天)",
           "pinyin": "xià(tiān)",
           "options": [
-            "为",
             "夏(天)",
+            "发烧",
             "照顾",
-            "发烧"
+            "为"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "夏(天) — yoz (xià(tiān))",
             "ru": "夏(天) — лето (xià(tiān))",
@@ -767,6 +742,105 @@
             "uz": "yubka, ko'ylak",
             "ru": "юбка, платье",
             "tj": "юбка, курта"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "当然 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 当然:",
+            "tj": "Маънои калимаи 当然-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            },
+            {
+              "uz": "albatta",
+              "ru": "конечно",
+              "tj": "албатта"
+            },
+            {
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            },
+            {
+              "uz": "qaramoq, parvarish qilmoq",
+              "ru": "заботиться, ухаживать",
+              "tj": "нигоҳубин кардан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "当然 = albatta (dāngrán)",
+            "ru": "当然 = конечно (dāngrán)",
+            "tj": "当然 = албатта (dāngrán)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "当然",
+            "pinyin": "dāngrán",
+            "meaning": {
+              "uz": "albatta",
+              "ru": "конечно",
+              "tj": "албатта"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yubka, ko'ylak' xitoycha qaysi?",
+            "ru": "'юбка, платье' по-китайски?",
+            "tj": "'юбка, курта' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "发烧",
+            "裙子",
+            "为",
+            "照顾"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yubka, ko'ylak = 裙子 (qúnzi)",
+            "ru": "юбка, платье = 裙子 (qúnzi)",
+            "tj": "юбка, курта = 裙子 (qúnzi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "裙子",
+            "pinyin": "qúnzi",
+            "meaning": {
+              "uz": "yubka, ko'ylak",
+              "ru": "юбка, платье",
+              "tj": "юбка, курта"
+            }
           }
         }
       ]

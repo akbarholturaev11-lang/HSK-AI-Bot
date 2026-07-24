@@ -378,12 +378,12 @@
           "audio_text": "翻译",
           "pinyin": "fānyì",
           "options": [
-            "空儿",
             "翻译",
-            "母亲",
-            "礼拜天"
+            "空儿",
+            "礼拜天",
+            "母亲"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "翻译 — tarjimon; tarjima qilmoq (fānyì)",
             "ru": "翻译 — переводчик; переводить (fānyì)",
@@ -418,6 +418,11 @@
           },
           "options": [
             {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
               "uz": "ona",
               "ru": "мать",
               "tj": "модар"
@@ -431,14 +436,9 @@
               "uz": "haqiqatan",
               "ru": "действительно",
               "tj": "воқеан"
-            },
-            {
-              "uz": "bo'sh vaqt",
-              "ru": "свободное время",
-              "tj": "вақти холӣ"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "确实 = haqiqatan (quèshí)",
             "ru": "确实 = действительно (quèshí)",
@@ -472,12 +472,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "礼拜天",
             "空儿",
-            "母亲",
-            "兴奋"
+            "礼拜天",
+            "兴奋",
+            "母亲"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "兴奋 = hayajonli, xursand (xīngfèn)",
             "ru": "兴奋 = возбуждённый, радостный (xīngfèn)",
@@ -511,8 +511,8 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "lǐbàitiān",
             "kòngr",
+            "lǐbàitiān",
             "mǔqīn",
             "lā"
           ],
@@ -536,12 +536,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "母亲",
-            "空儿",
             "礼拜天",
-            "翻译"
+            "翻译",
+            "空儿",
+            "母亲"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "tarjimon; tarjima qilmoq = 翻译 (fānyì)",
             "ru": "переводчик; переводить = 翻译 (fānyì)",
@@ -638,11 +638,11 @@
           },
           "tokens": [
             "我",
-            "不错",
-            "礼拜天",
-            "确实",
+            "空儿",
             "女儿",
-            "空儿"
+            "礼拜天",
+            "不错",
+            "确实"
           ],
           "answer_tokens": [
             "我",
@@ -668,149 +668,69 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "翻译",
-              {
-                "uz": "tarjimon; tarjima qilmoq",
-                "ru": "переводчик; переводить",
-                "tj": "тарҷумон; тарҷума кардан"
-              }
-            ],
-            [
-              "确实",
-              {
-                "uz": "haqiqatan",
-                "ru": "действительно",
-                "tj": "воқеан"
-              }
-            ],
-            [
-              "兴奋",
-              {
-                "uz": "hayajonli, xursand",
-                "ru": "возбуждённый, радостный",
-                "tj": "ҳаяҷонзада, хурсанд"
-              }
-            ],
-            [
-              "拉",
-              {
-                "uz": "tortmoq, olib bormoq",
-                "ru": "тянуть, вести",
-                "tj": "кашидан, бурдан"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xīngfèn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xīngfèn?",
+            "tj": "xīngfèn кадом иероглиф аст?"
           },
-          "audio_text": "翻译",
-          "pinyin": "fānyì",
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
           "options": [
             "母亲",
             "礼拜天",
-            "空儿",
-            "翻译"
+            "兴奋",
+            "空儿"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "兴奋 = hayajonli, xursand (xīngfèn)",
+            "ru": "兴奋 = возбуждённый, радостный (xīngfèn)",
+            "tj": "兴奋 = ҳаяҷонзада, хурсанд (xīngfèn)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "拉 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 拉:",
+            "tj": "Маънои калимаи 拉-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
+              "uz": "ona",
+              "ru": "мать",
+              "tj": "модар"
+            },
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            },
+            {
+              "uz": "tortmoq, olib bormoq",
+              "ru": "тянуть, вести",
+              "tj": "кашидан, бурдан"
+            }
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "翻译 — tarjimon; tarjima qilmoq (fānyì)",
-            "ru": "翻译 — переводчик; переводить (fānyì)",
-            "tj": "翻译 — тарҷумон; тарҷума кардан (fānyì)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Qizim haqiqatan ham yaxshi.",
-            "ru": "Моя дочь действительно хорошая.",
-            "tj": "Духтарам воқеан хуб аст."
-          },
-          "tokens": [
-            "不错",
-            "女儿",
-            "礼拜天",
-            "确实",
-            "空儿",
-            "我"
-          ],
-          "answer_tokens": [
-            "我",
-            "女儿",
-            "确实",
-            "不错"
-          ],
-          "explanation": {
-            "uz": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò.",
-            "ru": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò.",
-            "tj": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò."
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "我女儿确实不错。",
-          "pinyin": "Wǒ nǚ'ér quèshí búcuò.",
-          "translation": {
-            "uz": "Qizim haqiqatan ham yaxshi.",
-            "ru": "Моя дочь действительно хорошая.",
-            "tj": "Духтарам воқеан хуб аст."
-          },
-          "tokens": {
-            "uz": [
-              "Qizim",
-              "haqiqatan",
-              "yaxshi",
-              "ham"
-            ],
-            "ru": [
-              "действительно",
-              "дочь",
-              "Моя",
-              "хорошая"
-            ],
-            "tj": [
-              "воқеан",
-              "хуб",
-              "аст",
-              "Духтарам"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Qizim",
-              "haqiqatan",
-              "ham",
-              "yaxshi"
-            ],
-            "ru": [
-              "Моя",
-              "дочь",
-              "действительно",
-              "хорошая"
-            ],
-            "tj": [
-              "Духтарам",
-              "воқеан",
-              "хуб",
-              "аст"
-            ]
-          },
-          "explanation": {
-            "uz": "我女儿确实不错。 — Qizim haqiqatan ham yaxshi.",
-            "ru": "我女儿确实不错。 — Моя дочь действительно хорошая.",
-            "tj": "我女儿确实不错。 — Духтарам воқеан хуб аст."
+            "uz": "拉 = tortmoq, olib bormoq (lā)",
+            "ru": "拉 = тянуть, вести (lā)",
+            "tj": "拉 = кашидан, бурдан (lā)"
           }
         },
         {
@@ -821,6 +741,105 @@
             "uz": "tarjimon; tarjima qilmoq",
             "ru": "переводчик; переводить",
             "tj": "тарҷумон; тарҷума кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "永远 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 永远:",
+            "tj": "Маънои калимаи 永远-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ona",
+              "ru": "мать",
+              "tj": "модар"
+            },
+            {
+              "uz": "abadiy, doim",
+              "ru": "навсегда, всегда",
+              "tj": "ҳамеша, абадӣ"
+            },
+            {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "永远 = abadiy, doim (yǒngyuǎn)",
+            "ru": "永远 = навсегда, всегда (yǒngyuǎn)",
+            "tj": "永远 = ҳамеша, абадӣ (yǒngyuǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "永远",
+            "pinyin": "yǒngyuǎn",
+            "meaning": {
+              "uz": "abadiy, doim",
+              "ru": "навсегда, всегда",
+              "tj": "ҳамеша, абадӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tarjimon; tarjima qilmoq' xitoycha qaysi?",
+            "ru": "'переводчик; переводить' по-китайски?",
+            "tj": "'тарҷумон; тарҷума кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "空儿",
+            "母亲",
+            "翻译",
+            "礼拜天"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "tarjimon; tarjima qilmoq = 翻译 (fānyì)",
+            "ru": "переводчик; переводить = 翻译 (fānyì)",
+            "tj": "тарҷумон; тарҷума кардан = 翻译 (fānyì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "翻译",
+            "pinyin": "fānyì",
+            "meaning": {
+              "uz": "tarjimon; tarjima qilmoq",
+              "ru": "переводчик; переводить",
+              "tj": "тарҷумон; тарҷума кардан"
+            }
           }
         }
       ]

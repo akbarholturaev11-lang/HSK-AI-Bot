@@ -679,79 +679,25 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "kǒu qaysi ieroglif?",
-            "ru": "Какой иероглиф читается kǒu?",
-            "tj": "kǒu кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "有",
-            "口",
-            "家",
-            "女儿"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "口 = o'lchov so'zi (oila a'zolari uchun) (kǒu)",
-            "ru": "口 = счётное слово (для членов семьи) (kǒu)",
-            "tj": "口 = калимаи шуморавӣ (барои аъзоёни оила) (kǒu)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Uning qizi necha yoshda? (bola)",
-            "ru": "Сколько лет её дочери? (ребёнок)",
-            "tj": "Духтараш чанд сол дорад? (кӯдак)"
-          },
-          "tokens": [
-            "女儿",
-            "有",
-            "岁",
-            "她",
-            "家",
-            "了",
-            "几"
-          ],
-          "answer_tokens": [
-            "她",
-            "女儿",
-            "几",
-            "岁",
-            "了"
-          ],
-          "explanation": {
-            "uz": "她女儿几岁了？ — Tā nǚ'ér jǐ suì le?",
-            "ru": "她女儿几岁了？ — Tā nǚ'ér jǐ suì le?",
-            "tj": "她女儿几岁了？ — Tā nǚ'ér jǐ suì le?"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "你女儿几岁了？",
-          "pinyin": "Nǐ nǚ'ér jǐ suì le?",
+          "audio_text": "几",
+          "pinyin": "jǐ",
           "options": [
-            "你女儿几岁了？",
-            "我家有三口人。",
-            "她今年四岁了。",
-            "你家有几口人？"
+            "有",
+            "家",
+            "口",
+            "几"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "你女儿几岁了？ — Qizingiz necha yoshda?",
-            "ru": "你女儿几岁了？ — Сколько лет вашей дочери?",
-            "tj": "你女儿几岁了？ — Духтаратон чанд сол дорад?"
+            "uz": "几 — nechta (10 tagacha) (jǐ)",
+            "ru": "几 — сколько (до 10) (jǐ)",
+            "tj": "几 — чанд (то 10) (jǐ)"
           }
         },
         {
@@ -762,6 +708,105 @@
             "uz": "holat o'zgarishi yuklamasi",
             "ru": "частица изменения состояния",
             "tj": "ҳарфи тағйири ҳолат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "口 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 口:",
+            "tj": "Маънои калимаи 口-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар (фарзанд)"
+            },
+            {
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
+            },
+            {
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
+            },
+            {
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "口 = o'lchov so'zi (oila a'zolari uchun) (kǒu)",
+            "ru": "口 = счётное слово (для членов семьи) (kǒu)",
+            "tj": "口 = калимаи шуморавӣ (барои аъзоёни оила) (kǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "口",
+            "pinyin": "kǒu",
+            "meaning": {
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'holat o'zgarishi yuklamasi' xitoycha qaysi?",
+            "ru": "'частица изменения состояния' по-китайски?",
+            "tj": "'ҳарфи тағйири ҳолат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "了",
+            "口",
+            "有",
+            "家"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "holat o'zgarishi yuklamasi = 了 (le)",
+            "ru": "частица изменения состояния = 了 (le)",
+            "tj": "ҳарфи тағйири ҳолат = 了 (le)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "了",
+            "pinyin": "le",
+            "meaning": {
+              "uz": "holat o'zgarishi yuklamasi",
+              "ru": "частица изменения состояния",
+              "tj": "ҳарфи тағйири ҳолат"
+            }
           }
         }
       ]

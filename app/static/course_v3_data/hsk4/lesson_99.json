@@ -414,9 +414,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "厉害",
             "流利",
             "语法",
-            "厉害",
             "养成"
           ],
           "correct_index": 3,
@@ -450,12 +450,12 @@
           "audio_text": "同时",
           "pinyin": "tóngshí",
           "options": [
-            "流利",
             "语法",
             "厉害",
-            "同时"
+            "同时",
+            "流利"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "同时 — bir vaqtda, shu bilan birga (tóngshí)",
             "ru": "同时 — одновременно (tóngshí)",
@@ -500,14 +500,14 @@
           },
           "options": [
             {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            },
+            {
               "uz": "ravon",
               "ru": "беглый, свободный",
               "tj": "равон"
-            },
-            {
-              "uz": "ajoyib",
-              "ru": "замечательный",
-              "tj": "аҷоиб"
             },
             {
               "uz": "grammatika",
@@ -515,12 +515,12 @@
               "tj": "грамматика"
             },
             {
-              "uz": "zo'r, kuchli",
-              "ru": "сильный, впечатляющий",
-              "tj": "зӯр, қавӣ"
+              "uz": "ajoyib",
+              "ru": "замечательный",
+              "tj": "аҷоиб"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "精彩 = ajoyib (jīngcǎi)",
             "ru": "精彩 = замечательный (jīngcǎi)",
@@ -540,12 +540,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "厉害",
             "养成",
+            "厉害",
             "语法",
             "流利"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "养成 = shakllantirmoq (yǎngchéng)",
             "ru": "养成 = вырабатывать (yǎngchéng)",
@@ -632,31 +632,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yè qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yè?",
-            "tj": "yè кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "页",
-            "流利",
-            "厉害",
-            "语法"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "页 = sahifa (yè)",
-            "ru": "页 = страница (yè)",
-            "tj": "页 = саҳифа (yè)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -667,8 +642,8 @@
           "pinyin": "jīngcǎi",
           "options": [
             "精彩",
-            "流利",
             "厉害",
+            "流利",
             "语法"
           ],
           "correct_index": 0,
@@ -686,6 +661,105 @@
             "uz": "ajoyib",
             "ru": "замечательный",
             "tj": "аҷоиб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "表示 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 表示:",
+            "tj": "Маънои калимаи 表示-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
+              "uz": "bildirmoq, ifodalamoq",
+              "ru": "выражать",
+              "tj": "ифода кардан"
+            },
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            },
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "表示 = bildirmoq, ifodalamoq (biǎoshì)",
+            "ru": "表示 = выражать (biǎoshì)",
+            "tj": "表示 = ифода кардан (biǎoshì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "表示",
+            "pinyin": "biǎoshì",
+            "meaning": {
+              "uz": "bildirmoq, ifodalamoq",
+              "ru": "выражать",
+              "tj": "ифода кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ajoyib' xitoycha qaysi?",
+            "ru": "'замечательный' по-китайски?",
+            "tj": "'аҷоиб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "语法",
+            "精彩",
+            "流利",
+            "厉害"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ajoyib = 精彩 (jīngcǎi)",
+            "ru": "замечательный = 精彩 (jīngcǎi)",
+            "tj": "аҷоиб = 精彩 (jīngcǎi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "精彩",
+            "pinyin": "jīngcǎi",
+            "meaning": {
+              "uz": "ajoyib",
+              "ru": "замечательный",
+              "tj": "аҷоиб"
+            }
           }
         }
       ]

@@ -666,99 +666,6 @@
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "我看一下。不是，是送牛奶的。",
-          "pinyin": "Wǒ kàn yíxià. Bú shì, shì sòng niúnǎi de.",
-          "translation": {
-            "uz": "Bir qarayayin. Yo'q, sut olib keladigan.",
-            "ru": "Посмотрю. Нет, это молочник.",
-            "tj": "Як нигоҳ мекунам. На, шир оварандаи аст."
-          },
-          "tokens": {
-            "uz": [
-              "keladigan",
-              "kimning",
-              "Bir",
-              "Yo'q",
-              "Bu",
-              "olib",
-              "qarayayin",
-              "sut"
-            ],
-            "ru": [
-              "молочник",
-              "Чья",
-              "комната",
-              "это",
-              "Нет",
-              "Посмотрю"
-            ],
-            "tj": [
-              "На",
-              "аст",
-              "Як",
-              "нигоҳ",
-              "хонаи",
-              "оварандаи",
-              "шир",
-              "мекунам",
-              "Ин"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Bir",
-              "qarayayin",
-              "Yo'q",
-              "sut",
-              "olib",
-              "keladigan"
-            ],
-            "ru": [
-              "Посмотрю",
-              "Нет",
-              "это",
-              "молочник"
-            ],
-            "tj": [
-              "Як",
-              "нигоҳ",
-              "мекунам",
-              "На",
-              "шир",
-              "оварандаи",
-              "аст"
-            ]
-          },
-          "explanation": {
-            "uz": "我看一下。不是，是送牛奶的。 — Bir qarayayin. Yo'q, sut olib keladigan.",
-            "ru": "我看一下。不是，是送牛奶的。 — Посмотрю. Нет, это молочник.",
-            "tj": "我看一下。不是，是送牛奶的。 — Як нигоҳ мекунам. На, шир оварандаи аст."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我看一下。不是，是送牛奶的。",
-          "pinyin": "Wǒ kàn yíxià. Bú shì, shì sòng niúnǎi de.",
-          "options": [
-            "多少钱买的？",
-            "我看一下。不是，是送牛奶的。",
-            "这块手表是你的吗？",
-            "不是我的。是我爸爸的。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "我看一下。不是，是送牛奶的。 — Bir qarayayin. Yo'q, sut olib keladigan.",
-            "ru": "我看一下。不是，是送牛奶的。 — Посмотрю. Нет, это молочник.",
-            "tj": "我看一下。不是，是送牛奶的。 — Як нигоҳ мекунам. На, шир оварандаи аст."
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'xona, uy' xitoycha qaysi?",
@@ -791,6 +698,105 @@
             "uz": "er, turmush o'rtoq (erkak)",
             "ru": "муж",
             "tj": "шавҳар"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "送 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 送:",
+            "tj": "Маънои калимаи 送-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yetkazib bermoq, sovg'a qilmoq",
+              "ru": "доставлять, дарить",
+              "tj": "расондан, тӯҳфа кардан"
+            },
+            {
+              "uz": "ming (1000)",
+              "ru": "тысяча (1000)",
+              "tj": "ҳазор (1000)"
+            },
+            {
+              "uz": "qo'l soati",
+              "ru": "наручные часы",
+              "tj": "соати дасти"
+            },
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "送 = yetkazib bermoq, sovg'a qilmoq (sòng)",
+            "ru": "送 = доставлять, дарить (sòng)",
+            "tj": "送 = расондан, тӯҳфа кардан (sòng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "送",
+            "pinyin": "sòng",
+            "meaning": {
+              "uz": "yetkazib bermoq, sovg'a qilmoq",
+              "ru": "доставлять, дарить",
+              "tj": "расондан, тӯҳфа кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'er, turmush o'rtoq (erkak)' xitoycha qaysi?",
+            "ru": "'муж' по-китайски?",
+            "tj": "'шавҳар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "手表",
+            "丈夫",
+            "报纸",
+            "千"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "er, turmush o'rtoq (erkak) = 丈夫 (zhàngfu)",
+            "ru": "муж = 丈夫 (zhàngfu)",
+            "tj": "шавҳар = 丈夫 (zhàngfu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "丈夫",
+            "pinyin": "zhàngfu",
+            "meaning": {
+              "uz": "er, turmush o'rtoq (erkak)",
+              "ru": "муж",
+              "tj": "шавҳар"
+            }
           }
         }
       ]

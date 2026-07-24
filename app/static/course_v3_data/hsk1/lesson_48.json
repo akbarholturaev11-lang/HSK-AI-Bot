@@ -420,82 +420,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Ko'proq meva yeng, ko'proq suv iching.",
-            "ru": "Ешьте больше фруктов и пейте больше воды.",
-            "tj": "Бештар мева хӯред, бештар об нӯшед."
-          },
-          "tokens": [
-            "喝",
-            "多",
-            "水",
-            "怎么样",
-            "些",
-            "天气",
-            "多",
-            "你",
-            "吃",
-            "水果"
-          ],
-          "answer_tokens": [
-            "你",
-            "多",
-            "吃",
-            "些",
-            "水果",
-            "多",
-            "喝",
-            "水"
-          ],
-          "explanation": {
-            "uz": "你多吃些水果，多喝水。 — Nǐ duō chī xiē shuǐguǒ, duō hē shuǐ.",
-            "ru": "你多吃些水果，多喝水。 — Nǐ duō chī xiē shuǐguǒ, duō hē shuǐ.",
-            "tj": "你多吃些水果，多喝水。 — Nǐ duō chī xiē shuǐguǒ, duō hē shuǐ."
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "来 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 来:",
-            "tj": "Маънои калимаи 来-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ob-havo",
-              "ru": "погода",
-              "tj": "обу ҳаво"
-            },
-            {
-              "uz": "kelmoq",
-              "ru": "приходить, приезжать",
-              "tj": "омадан"
-            },
-            {
-              "uz": "qanday, qanaqa",
-              "ru": "как, какой",
-              "tj": "чӣ тавр, чӣ хел"
-            },
-            {
-              "uz": "juda, haddan tashqari",
-              "ru": "слишком, очень",
-              "tj": "хеле зиёд, аз ҳад зиёд"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "来 = kelmoq (lái)",
-            "ru": "来 = приходить, приезжать (lái)",
-            "tj": "来 = омадан (lái)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -549,6 +473,41 @@
             "uz": "你多吃些水果，多喝水。 — Ko'proq meva yeng, ko'proq suv iching.",
             "ru": "你多吃些水果，多喝水。 — Ешьте больше фруктов и пейте больше воды.",
             "tj": "你多吃些水果，多喝水。 — Бештар мева хӯред, бештар об нӯшед."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ko'proq meva yeng, ko'proq suv iching.",
+            "ru": "Ешьте больше фруктов и пейте больше воды.",
+            "tj": "Бештар мева хӯред, бештар об нӯшед."
+          },
+          "tokens": [
+            "喝",
+            "多",
+            "水",
+            "怎么样",
+            "些",
+            "天气",
+            "多",
+            "你",
+            "吃",
+            "水果"
+          ],
+          "answer_tokens": [
+            "你",
+            "多",
+            "吃",
+            "些",
+            "水果",
+            "多",
+            "喝",
+            "水"
+          ],
+          "explanation": {
+            "uz": "你多吃些水果，多喝水。 — Nǐ duō chī xiē shuǐguǒ, duō hē shuǐ.",
+            "ru": "你多吃些水果，多喝水。 — Nǐ duō chī xiē shuǐguǒ, duō hē shuǐ.",
+            "tj": "你多吃些水果，多喝水。 — Nǐ duō chī xiē shuǐguǒ, duō hē shuǐ."
           }
         },
         {
@@ -628,6 +587,105 @@
             "uz": "suv",
             "ru": "вода",
             "tj": "об"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "爱 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 爱:",
+            "tj": "Маънои калимаи 爱-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "juda, haddan tashqari",
+              "ru": "слишком, очень",
+              "tj": "хеле зиёд, аз ҳад зиёд"
+            },
+            {
+              "uz": "sevmoq, yaxshi ko'rmoq",
+              "ru": "любить",
+              "tj": "дӯст доштан, ишқ доштан"
+            },
+            {
+              "uz": "qanday, qanaqa",
+              "ru": "как, какой",
+              "tj": "чӣ тавр, чӣ хел"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "爱 = sevmoq, yaxshi ko'rmoq (ài)",
+            "ru": "爱 = любить (ài)",
+            "tj": "爱 = дӯст доштан, ишқ доштан (ài)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "爱",
+            "pinyin": "ài",
+            "meaning": {
+              "uz": "sevmoq, yaxshi ko'rmoq",
+              "ru": "любить",
+              "tj": "дӯст доштан, ишқ доштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'suv' xitoycha qaysi?",
+            "ru": "'вода' по-китайски?",
+            "tj": "'об' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "水",
+            "天气",
+            "太",
+            "怎么样"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "suv = 水 (shuǐ)",
+            "ru": "вода = 水 (shuǐ)",
+            "tj": "об = 水 (shuǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "水",
+            "pinyin": "shuǐ",
+            "meaning": {
+              "uz": "suv",
+              "ru": "вода",
+              "tj": "об"
+            }
           }
         }
       ]

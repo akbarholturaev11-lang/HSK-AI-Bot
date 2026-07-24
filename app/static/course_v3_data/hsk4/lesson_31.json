@@ -382,14 +382,14 @@
               "tj": "тиҷорат, савдо"
             },
             {
-              "uz": "tilga olmoq, aytmoq",
-              "ru": "упоминать, говорить",
-              "tj": "зикр кардан, гуфтан"
-            },
-            {
               "uz": "deb o'ylamoq, yanglish hisoblamoq",
               "ru": "думать, ошибочно полагать",
               "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
             }
           ],
           "correct_index": 1,
@@ -427,11 +427,11 @@
           },
           "options": [
             "提",
-            "以为",
             "份",
-            "谈"
+            "谈",
+            "以为"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "谈 = gaplashmoq, muhokama qilmoq (tán)",
             "ru": "谈 = разговаривать, обсуждать (tán)",
@@ -475,12 +475,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bìng",
-            "tí",
             "yǐwéi",
+            "tí",
+            "bìng",
             "fèn"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "并 — bìng",
             "ru": "并 — bìng",
@@ -514,9 +514,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "提",
-            "份",
             "以为",
+            "份",
+            "提",
             "积累"
           ],
           "correct_index": 3,
@@ -537,11 +537,11 @@
           "pinyin": "shēngyi",
           "options": [
             "以为",
-            "提",
+            "生意",
             "份",
-            "生意"
+            "提"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "生意 — biznes, savdo (shēngyi)",
             "ru": "生意 — бизнес, торговля (shēngyi)",
@@ -641,31 +641,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yuánlái qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yuánlái?",
-            "tj": "yuánlái кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "以为",
-            "提",
-            "份",
-            "原来"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "原来 = asl, oldingi (yuánlái)",
-            "ru": "原来 = первоначальный, прежний (yuánlái)",
-            "tj": "原来 = аввала, пешина (yuánlái)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -717,12 +692,12 @@
           "audio_text": "并",
           "pinyin": "bìng",
           "options": [
-            "份",
             "提",
+            "并",
             "以为",
-            "并"
+            "份"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "并 — inkor oldida kuchaytiradi: umuman (bìng)",
             "ru": "并 — усиливает отрицание: вовсе (bìng)",
@@ -737,6 +712,105 @@
             "uz": "inkor oldida kuchaytiradi: umuman",
             "ru": "усиливает отрицание: вовсе",
             "tj": "инкорро таъкид мекунад: умуман"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "提醒 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 提醒:",
+            "tj": "Маънои калимаи 提醒-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            },
+            {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            },
+            {
+              "uz": "eslatmoq",
+              "ru": "напоминать",
+              "tj": "ёдрас кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "提醒 = eslatmoq (tíxǐng)",
+            "ru": "提醒 = напоминать (tíxǐng)",
+            "tj": "提醒 = ёдрас кардан (tíxǐng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "提醒",
+            "pinyin": "tíxǐng",
+            "meaning": {
+              "uz": "eslatmoq",
+              "ru": "напоминать",
+              "tj": "ёдрас кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'inkor oldida kuchaytiradi: umuman' xitoycha qaysi?",
+            "ru": "'усиливает отрицание: вовсе' по-китайски?",
+            "tj": "'инкорро таъкид мекунад: умуман' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "份",
+            "并",
+            "以为",
+            "提"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "inkor oldida kuchaytiradi: umuman = 并 (bìng)",
+            "ru": "усиливает отрицание: вовсе = 并 (bìng)",
+            "tj": "инкорро таъкид мекунад: умуман = 并 (bìng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "并",
+            "pinyin": "bìng",
+            "meaning": {
+              "uz": "inkor oldida kuchaytiradi: umuman",
+              "ru": "усиливает отрицание: вовсе",
+              "tj": "инкорро таъкид мекунад: умуман"
+            }
           }
         }
       ]

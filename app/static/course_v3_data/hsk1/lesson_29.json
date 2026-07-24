@@ -566,28 +566,13 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "米饭 talaffuzini tanlang:",
-            "ru": "Выберите произношение 米饭:",
-            "tj": "Талаффузи 米饭-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "hē",
-            "xiǎng",
-            "mǐfàn",
-            "chá"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "米饭 — mǐfàn",
-            "ru": "米饭 — mǐfàn",
-            "tj": "米饭 — mǐfàn"
+          "type": "pronunciation",
+          "phrase": "那",
+          "pinyin": "nà",
+          "translation": {
+            "uz": "u, o'sha (ko'rsatish olmoshi)",
+            "ru": "тот, та (указательное местоимение)",
+            "tj": "он, он (исми ишора)"
           }
         },
         {
@@ -610,16 +595,6 @@
             "uz": "28块。 — 28 yuan.",
             "ru": "28块。 — 28 юаней.",
             "tj": "28块。 — 28 юан."
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "那",
-          "pinyin": "nà",
-          "translation": {
-            "uz": "u, o'sha (ko'rsatish olmoshi)",
-            "ru": "тот, та (указательное местоимение)",
-            "tj": "он, он (исми ишора)"
           }
         },
         {
@@ -656,75 +631,6 @@
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "你好！这个杯子多少钱？",
-          "pinyin": "Nǐ hǎo! Zhège bēizi duōshao qián?",
-          "translation": {
-            "uz": "Salom! Bu piyola qancha turadi?",
-            "ru": "Здравствуйте! Сколько стоит этот стакан?",
-            "tj": "Салом! Ин пиёла чанд пул аст?"
-          },
-          "tokens": {
-            "uz": [
-              "Bu",
-              "turadi",
-              "28",
-              "piyola",
-              "qancha",
-              "Salom",
-              "yuan"
-            ],
-            "ru": [
-              "стоит",
-              "28",
-              "Сколько",
-              "этот",
-              "юаней",
-              "Здравствуйте",
-              "стакан"
-            ],
-            "tj": [
-              "пул",
-              "аст",
-              "чанд",
-              "28",
-              "пиёла",
-              "Ин",
-              "юан",
-              "Салом"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Salom",
-              "Bu",
-              "piyola",
-              "qancha",
-              "turadi"
-            ],
-            "ru": [
-              "Здравствуйте",
-              "Сколько",
-              "стоит",
-              "этот",
-              "стакан"
-            ],
-            "tj": [
-              "Салом",
-              "Ин",
-              "пиёла",
-              "чанд",
-              "пул",
-              "аст"
-            ]
-          },
-          "explanation": {
-            "uz": "你好！这个杯子多少钱？ — Salom! Bu piyola qancha turadi?",
-            "ru": "你好！这个杯子多少钱？ — Здравствуйте! Сколько стоит этот стакан?",
-            "tj": "你好！这个杯子多少钱？ — Салом! Ин пиёла чанд пул аст?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "块",
           "pinyin": "kuài",
@@ -732,6 +638,105 @@
             "uz": "yuan (so'zlashuv)",
             "ru": "юань (разговорный)",
             "tj": "юан (забони гуфтугӯӣ)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "个 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 个:",
+            "tj": "Маънои калимаи 个-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "umumiy o'lchov so'z (dona/birlik)",
+              "ru": "общее счётное слово (штука/единица)",
+              "tj": "калимаи шуморавии умумӣ (дона/воҳид)"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "个 = umumiy o'lchov so'z (dona/birlik) (gè)",
+            "ru": "个 = общее счётное слово (штука/единица) (gè)",
+            "tj": "个 = калимаи шуморавии умумӣ (дона/воҳид) (gè)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "个",
+            "pinyin": "gè",
+            "meaning": {
+              "uz": "umumiy o'lchov so'z (dona/birlik)",
+              "ru": "общее счётное слово (штука/единица)",
+              "tj": "калимаи шуморавии умумӣ (дона/воҳид)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yuan (so'zlashuv)' xitoycha qaysi?",
+            "ru": "'юань (разговорный)' по-китайски?",
+            "tj": "'юан (забони гуфтугӯӣ)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "块",
+            "想",
+            "喝",
+            "茶"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "yuan (so'zlashuv) = 块 (kuài)",
+            "ru": "юань (разговорный) = 块 (kuài)",
+            "tj": "юан (забони гуфтугӯӣ) = 块 (kuài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "块",
+            "pinyin": "kuài",
+            "meaning": {
+              "uz": "yuan (so'zlashuv)",
+              "ru": "юань (разговорный)",
+              "tj": "юан (забони гуфтугӯӣ)"
+            }
           }
         }
       ]

@@ -311,11 +311,6 @@
               "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
             },
             {
-              "uz": "rozi bo'lmoq",
-              "ru": "соглашаться",
-              "tj": "розӣ шудан"
-            },
-            {
               "uz": "o'n ming",
               "ru": "десять тысяч",
               "tj": "даҳ ҳазор"
@@ -324,9 +319,14 @@
               "uz": "tomon, ga",
               "ru": "к, по направлению к",
               "tj": "ба сӯи, ба"
+            },
+            {
+              "uz": "rozi bo'lmoq",
+              "ru": "соглашаться",
+              "tj": "розӣ шудан"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "同意 = rozi bo'lmoq (tóngyì)",
             "ru": "同意 = соглашаться (tóngyì)",
@@ -360,12 +360,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "只",
-            "向",
             "相信",
-            "万"
+            "只",
+            "万",
+            "向"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "相信 = ishonmoq (xiāngxìn)",
             "ru": "相信 = верить (xiāngxìn)",
@@ -409,9 +409,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zhī",
-            "guānyú",
             "xiàng",
+            "guānyú",
+            "zhī",
             "wàn"
           ],
           "correct_index": 1,
@@ -434,12 +434,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "同意",
-            "万",
             "只",
-            "向"
+            "万",
+            "向",
+            "同意"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "rozi bo'lmoq = 同意 (tóngyì)",
             "ru": "соглашаться = 同意 (tóngyì)",
@@ -502,11 +502,11 @@
           "pinyin": "Hǎo, nà nǐ míngtiān lái shàng bān ba. Guānyú zhège gōngzuò, hái yǒu shénme wèntí ma?",
           "options": [
             "还差5万块钱。",
+            "没问题，只要我有，就一定会借给你的。还差多少？",
             "老周，我打算买房子了，想向你借点儿钱。",
-            "好，那你明天来上班吧。关于这个工作，还有什么问题吗？",
-            "没问题，只要我有，就一定会借给你的。还差多少？"
+            "好，那你明天来上班吧。关于这个工作，还有什么问题吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "好，那你明天来上班吧。关于这个工作，还有什么问题吗？ — Yaxshi, unda ertaga ishga keling. Bu ish haqida yana savolingiz bormi?",
             "ru": "好，那你明天来上班吧。关于这个工作，还有什么问题吗？ — Хорошо, тогда завтра приходите на работу. Есть еще вопросы по поводу этой работы?",
@@ -548,6 +548,27 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "关于",
+          "pinyin": "guānyú",
+          "translation": {
+            "uz": "haqida, to'g'risida",
+            "ru": "о, относительно",
+            "tj": "дар бораи"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "有名 so'zining ma'nosini tanlang:",
@@ -561,11 +582,6 @@
           },
           "options": [
             {
-              "uz": "tomon, ga",
-              "ru": "к, по направлению к",
-              "tj": "ба сӯи, ба"
-            },
-            {
               "uz": "o'n ming",
               "ru": "десять тысяч",
               "tj": "даҳ ҳазор"
@@ -576,26 +592,68 @@
               "tj": "машҳур"
             },
             {
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
+            },
+            {
               "uz": "ayrim hayvonlar uchun hisob so'zi",
               "ru": "счетное слово для некоторых животных",
               "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "有名 = mashhur (yǒumíng)",
             "ru": "有名 = известный (yǒumíng)",
             "tj": "有名 = машҳур (yǒumíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "有名",
+            "pinyin": "yǒumíng",
+            "meaning": {
+              "uz": "mashhur",
+              "ru": "известный",
+              "tj": "машҳур"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "关于",
-          "pinyin": "guānyú",
-          "translation": {
-            "uz": "haqida, to'g'risida",
-            "ru": "о, относительно",
-            "tj": "дар бораи"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'haqida, to'g'risida' xitoycha qaysi?",
+            "ru": "'о, относительно' по-китайски?",
+            "tj": "'дар бораи' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "向",
+            "万",
+            "关于",
+            "只"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "haqida, to'g'risida = 关于 (guānyú)",
+            "ru": "о, относительно = 关于 (guānyú)",
+            "tj": "дар бораи = 关于 (guānyú)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "关于",
+            "pinyin": "guānyú",
+            "meaning": {
+              "uz": "haqida, to'g'risida",
+              "ru": "о, относительно",
+              "tj": "дар бораи"
+            }
           }
         }
       ]

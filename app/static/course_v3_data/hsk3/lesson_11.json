@@ -357,14 +357,9 @@
           },
           "options": [
             {
-              "uz": "oyoq",
-              "ru": "нога",
-              "tj": "по"
-            },
-            {
-              "uz": "aslida, haqiqatan",
-              "ru": "на самом деле",
-              "tj": "дар асл"
+              "uz": "og'riqli, og'rimoq",
+              "ru": "болеть, больной",
+              "tj": "дард кардан, дарднок"
             },
             {
               "uz": "oyoq panjasi",
@@ -372,12 +367,17 @@
               "tj": "кафи по"
             },
             {
-              "uz": "og'riqli, og'rimoq",
-              "ru": "болеть, больной",
-              "tj": "дард кардан, дарднок"
+              "uz": "aslida, haqiqatan",
+              "ru": "на самом деле",
+              "tj": "дар асл"
+            },
+            {
+              "uz": "oyoq",
+              "ru": "нога",
+              "tj": "по"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "其实 = aslida, haqiqatan (qíshí)",
             "ru": "其实 = на самом деле (qíshí)",
@@ -412,11 +412,11 @@
           },
           "options": [
             "疼",
+            "瘦",
             "脚",
-            "腿",
-            "瘦"
+            "腿"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "瘦 = ozg'in, oriqlagan (shòu)",
             "ru": "瘦 = худой, похудевший (shòu)",
@@ -460,12 +460,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiǎo",
             "tuǐ",
             "Zhōu",
+            "jiǎo",
             "téng"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "周 — Zhōu",
             "ru": "周 — Zhōu",
@@ -499,12 +499,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "腿",
+            "周明",
             "疼",
-            "脚",
-            "周明"
+            "腿",
+            "脚"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "Zhou Ming (ism) = 周明 (Zhōu Míng)",
             "ru": "Чжоу Мин (имя) = 周明 (Zhōu Míng)",
@@ -521,12 +521,12 @@
           "audio_text": "其实",
           "pinyin": "qíshí",
           "options": [
-            "腿",
-            "其实",
+            "脚",
             "疼",
-            "脚"
+            "腿",
+            "其实"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "其实 — aslida, haqiqatan (qíshí)",
             "ru": "其实 — на самом деле (qíshí)",
@@ -658,16 +658,6 @@
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "周明",
-          "pinyin": "Zhōu Míng",
-          "translation": {
-            "uz": "Zhou Ming (ism)",
-            "ru": "Чжоу Мин (имя)",
-            "tj": "Чжоу Мин (ном)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Alo, salom, Zhou Ming bormi?",
@@ -676,15 +666,15 @@
           },
           "tokens": [
             "好",
-            "喂",
+            "腿",
+            "请",
             "疼",
-            "周明",
-            "吗",
             "在",
             "问",
-            "腿",
             "你",
-            "请"
+            "喂",
+            "吗",
+            "周明"
           ],
           "answer_tokens": [
             "喂",
@@ -703,50 +693,13 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "liàng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается liàng?",
-            "tj": "liàng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "辆",
-            "脚",
-            "疼",
-            "腿"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "辆 = transportlar uchun hisob so'zi (liàng)",
-            "ru": "辆 = счётное слово для транспорта (liàng)",
-            "tj": "辆 = ҳисобвожа барои нақлиёт (liàng)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "周经理出去了，不在办公室。",
-          "pinyin": "Zhōu jīnglǐ chūqu le, bú zài bàngōngshì.",
-          "options": [
-            "怎么了？",
-            "我现在腿也疼，脚也疼。",
-            "休息一下吧。",
-            "周经理出去了，不在办公室。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "周经理出去了，不在办公室。 — Menejer Zhou chiqib ketdi, ofisda emas.",
-            "ru": "周经理出去了，不在办公室。 — Менеджер Чжоу вышел, его нет в офисе.",
-            "tj": "周经理出去了，不在办公室。 — Мудир Чжоу баромадааст, дар идора нест."
+          "type": "pronunciation",
+          "phrase": "周明",
+          "pinyin": "Zhōu Míng",
+          "translation": {
+            "uz": "Zhou Ming (ism)",
+            "ru": "Чжоу Мин (имя)",
+            "tj": "Чжоу Мин (ном)"
           }
         },
         {
@@ -759,12 +712,12 @@
           "audio_text": "瘦",
           "pinyin": "shòu",
           "options": [
-            "疼",
-            "瘦",
             "脚",
-            "腿"
+            "腿",
+            "疼",
+            "瘦"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "瘦 — ozg'in, oriqlagan (shòu)",
             "ru": "瘦 — худой, похудевший (shòu)",
@@ -779,6 +732,105 @@
             "uz": "Zhou (familiya)",
             "ru": "Чжоу (фамилия)",
             "tj": "Чжоу (насаб)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "伞 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 伞:",
+            "tj": "Маънои калимаи 伞-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oyoq panjasi",
+              "ru": "стопа, нога",
+              "tj": "кафи по"
+            },
+            {
+              "uz": "soyabon",
+              "ru": "зонт",
+              "tj": "чатр"
+            },
+            {
+              "uz": "og'riqli, og'rimoq",
+              "ru": "болеть, больной",
+              "tj": "дард кардан, дарднок"
+            },
+            {
+              "uz": "oyoq",
+              "ru": "нога",
+              "tj": "по"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "伞 = soyabon (sǎn)",
+            "ru": "伞 = зонт (sǎn)",
+            "tj": "伞 = чатр (sǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "伞",
+            "pinyin": "sǎn",
+            "meaning": {
+              "uz": "soyabon",
+              "ru": "зонт",
+              "tj": "чатр"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Zhou (familiya)' xitoycha qaysi?",
+            "ru": "'Чжоу (фамилия)' по-китайски?",
+            "tj": "'Чжоу (насаб)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "腿",
+            "疼",
+            "脚",
+            "周"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "Zhou (familiya) = 周 (Zhōu)",
+            "ru": "Чжоу (фамилия) = 周 (Zhōu)",
+            "tj": "Чжоу (насаб) = 周 (Zhōu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "周",
+            "pinyin": "Zhōu",
+            "meaning": {
+              "uz": "Zhou (familiya)",
+              "ru": "Чжоу (фамилия)",
+              "tj": "Чжоу (насаб)"
+            }
           }
         }
       ]

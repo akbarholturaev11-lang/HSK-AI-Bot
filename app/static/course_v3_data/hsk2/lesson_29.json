@@ -285,12 +285,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "门",
             "外",
             "经常",
-            "门",
             "自行车"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "tez-tez, ko'pincha = 经常 (jīngcháng)",
             "ru": "часто, постоянно = 经常 (jīngcháng)",
@@ -331,12 +331,12 @@
           "audio_text": "公斤",
           "pinyin": "gōngjīn",
           "options": [
+            "门",
             "公斤",
-            "自行车",
             "外",
-            "门"
+            "自行车"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "公斤 — kilogram (gōngjīn)",
             "ru": "公斤 — килограмм (gōngjīn)",
@@ -376,14 +376,14 @@
               "tj": "велосипед"
             },
             {
-              "uz": "tashqarisi, tashqi tomon",
-              "ru": "снаружи, внешняя сторона",
-              "tj": "берун, тарафи берун"
-            },
-            {
               "uz": "katta singl (aka-ukaniki), opa",
               "ru": "старшая сестра",
               "tj": "хоҳари калонӣ"
+            },
+            {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
             },
             {
               "uz": "eshik, darvoza",
@@ -391,7 +391,7 @@
               "tj": "дар, дарвоза"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "姐姐 = katta singl (aka-ukaniki), opa (jiějie)",
             "ru": "姐姐 = старшая сестра (jiějie)",
@@ -411,10 +411,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "门",
+            "自行车",
             "外",
             "经常",
-            "自行车"
+            "门"
           ],
           "correct_index": 2,
           "explanation": {
@@ -469,80 +469,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "不是，听说是去看他姐姐。",
-          "pinyin": "Bú shì, tīngshuō shì qù kàn tā jiějie.",
-          "options": [
-            "你怎么知道他来了？",
-            "他已经来了。",
-            "不是，听说是去看他姐姐。",
-            "你知道小王今天什么时候来学校吗？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "不是，听说是去看他姐姐。 — Yo'q, eshitdim, opasini ko'rgani ketgan.",
-            "ru": "不是，听说是去看他姐姐。 — Нет, говорят, поехал навестить старшую сестру.",
-            "tj": "不是，听说是去看他姐姐。 — Не, шунидам, рафтааст хоҳари калониашро бинад."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "所以 talaffuzini tanlang:",
-            "ru": "Выберите произношение 所以:",
-            "tj": "Талаффузи 所以-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "suǒyǐ",
-            "wài",
-            "mén",
-            "zìxíngchē"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "所以 — suǒyǐ",
-            "ru": "所以 — suǒyǐ",
-            "tj": "所以 — suǒyǐ"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Sen tez-tez suzasanmi?",
-            "ru": "Ты часто плаваешь?",
-            "tj": "Оё ту зуд-зуд шино мекунӣ?"
-          },
-          "tokens": [
-            "外",
-            "你",
-            "游泳",
-            "门",
-            "经常",
-            "吗"
-          ],
-          "answer_tokens": [
-            "你",
-            "经常",
-            "游泳",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?",
-            "ru": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?",
-            "tj": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -574,6 +500,55 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sen tez-tez suzasanmi?",
+            "ru": "Ты часто плаваешь?",
+            "tj": "Оё ту зуд-зуд шино мекунӣ?"
+          },
+          "tokens": [
+            "经常",
+            "你",
+            "门",
+            "外",
+            "游泳",
+            "吗"
+          ],
+          "answer_tokens": [
+            "你",
+            "经常",
+            "游泳",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?",
+            "ru": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?",
+            "tj": "你经常游泳吗？ — Nǐ jīngcháng yóuyǒng ma?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "不是，听说是去看他姐姐。",
+          "pinyin": "Bú shì, tīngshuō shì qù kàn tā jiějie.",
+          "options": [
+            "你知道小王今天什么时候来学校吗？",
+            "他已经来了。",
+            "不是，听说是去看他姐姐。",
+            "你怎么知道他来了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "不是，听说是去看他姐姐。 — Yo'q, eshitdim, opasini ko'rgani ketgan.",
+            "ru": "不是，听说是去看他姐姐。 — Нет, говорят, поехал навестить старшую сестру.",
+            "tj": "不是，听说是去看他姐姐。 — Не, шунидам, рафтааст хоҳари калониашро бинад."
           }
         },
         {
@@ -643,6 +618,105 @@
             "uz": "kilogram",
             "ru": "килограмм",
             "tj": "килограмм"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "所以 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 所以:",
+            "tj": "Маънои калимаи 所以-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shuning uchun, shunday qilib",
+              "ru": "поэтому, вот почему",
+              "tj": "аз ин сабаб, бинобар ин"
+            },
+            {
+              "uz": "eshik, darvoza",
+              "ru": "дверь, ворота",
+              "tj": "дар, дарвоза"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            },
+            {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "所以 = shuning uchun, shunday qilib (suǒyǐ)",
+            "ru": "所以 = поэтому, вот почему (suǒyǐ)",
+            "tj": "所以 = аз ин сабаб, бинобар ин (suǒyǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "所以",
+            "pinyin": "suǒyǐ",
+            "meaning": {
+              "uz": "shuning uchun, shunday qilib",
+              "ru": "поэтому, вот почему",
+              "tj": "аз ин сабаб, бинобар ин"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kilogram' xitoycha qaysi?",
+            "ru": "'килограмм' по-китайски?",
+            "tj": "'килограмм' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "公斤",
+            "门",
+            "外",
+            "自行车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "kilogram = 公斤 (gōngjīn)",
+            "ru": "килограмм = 公斤 (gōngjīn)",
+            "tj": "килограмм = 公斤 (gōngjīn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "公斤",
+            "pinyin": "gōngjīn",
+            "meaning": {
+              "uz": "kilogram",
+              "ru": "килограмм",
+              "tj": "килограмм"
+            }
           }
         }
       ]

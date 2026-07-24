@@ -337,16 +337,6 @@
           },
           "options": [
             {
-              "uz": "bilan",
-              "ru": "с, вместе с",
-              "tj": "бо"
-            },
-            {
-              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
-              "ru": "частица в конце предложения для подтверждения или пояснения",
-              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
-            },
-            {
               "uz": "reja; rejalamoq, niyat qilmoq",
               "ru": "план; планировать, намереваться",
               "tj": "нақша; нақша кардан"
@@ -355,9 +345,19 @@
               "uz": "hafta oxiri, dam olish kuni",
               "ru": "выходные, конец недели",
               "tj": "охири ҳафта, рӯзи истироҳат"
+            },
+            {
+              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
+              "ru": "частица в конце предложения для подтверждения или пояснения",
+              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
+            },
+            {
+              "uz": "bilan",
+              "ru": "с, вместе с",
+              "tj": "бо"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "周末 = hafta oxiri, dam olish kuni (zhōumò)",
             "ru": "周末 = выходные, конец недели (zhōumò)",
@@ -391,12 +391,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "打算",
             "周末",
-            "跟",
             "啊",
-            "打算"
+            "跟"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "打算 = reja; rejalamoq, niyat qilmoq (dǎsuàn)",
             "ru": "打算 = план; планировать, намереваться (dǎsuàn)",
@@ -431,8 +431,8 @@
           },
           "options": [
             "gēn",
-            "dǎsuàn",
             "zhōumò",
+            "dǎsuàn",
             "a"
           ],
           "correct_index": 3,
@@ -469,12 +469,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "打算",
             "啊",
-            "周末",
-            "跟"
+            "跟",
+            "打算",
+            "周末"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "bilan = 跟 (gēn)",
             "ru": "с, вместе с = 跟 (gēn)",
@@ -566,63 +566,16 @@
           "audio_text": "那也不能一直玩儿啊。",
           "pinyin": "Nà yě bù néng yìzhí wánr a.",
           "options": [
+            "周末你有什么打算？",
             "我早就想好了，请你吃饭、看电影、喝咖啡。",
             "那也不能一直玩儿啊。",
-            "周末你有什么打算？",
             "请我？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "那也不能一直玩儿啊。 — Unda ham tinmay o'ynayverish mumkin emas-ku.",
             "ru": "那也不能一直玩儿啊。 — Но всё равно нельзя постоянно играть.",
             "tj": "那也不能一直玩儿啊。 — Пас ҳам намешавад ҳамеша бозӣ кард."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "打算",
-          "pinyin": "dǎsuàn",
-          "options": [
-            "啊",
-            "周末",
-            "打算",
-            "跟"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "打算 — reja; rejalamoq, niyat qilmoq (dǎsuàn)",
-            "ru": "打算 — план; планировать, намереваться (dǎsuàn)",
-            "tj": "打算 — нақша; нақша кардан (dǎsuàn)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "日 talaffuzini tanlang:",
-            "ru": "Выберите произношение 日:",
-            "tj": "Талаффузи 日-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "dǎsuàn",
-            "zhōumò",
-            "rì",
-            "a"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "日 — rì",
-            "ru": "日 — rì",
-            "tj": "日 — rì"
           }
         },
         {
@@ -633,13 +586,13 @@
             "tj": "Охири ҳафта чӣ нақша дорӣ?"
           },
           "tokens": [
-            "啊",
-            "什么",
-            "跟",
-            "周末",
             "你",
+            "什么",
+            "啊",
+            "打算",
             "有",
-            "打算"
+            "跟",
+            "周末"
           ],
           "answer_tokens": [
             "周末",
@@ -652,6 +605,28 @@
             "uz": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?",
             "ru": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?",
             "tj": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "打算",
+          "pinyin": "dǎsuàn",
+          "options": [
+            "跟",
+            "啊",
+            "打算",
+            "周末"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "打算 — reja; rejalamoq, niyat qilmoq (dǎsuàn)",
+            "ru": "打算 — план; планировать, намереваться (dǎsuàn)",
+            "tj": "打算 — нақша; нақша кардан (dǎsuàn)"
           }
         },
         {
@@ -731,6 +706,105 @@
             "uz": "hafta oxiri, dam olish kuni",
             "ru": "выходные, конец недели",
             "tj": "охири ҳафта, рӯзи истироҳат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "日 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 日:",
+            "tj": "Маънои калимаи 日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hafta oxiri, dam olish kuni",
+              "ru": "выходные, конец недели",
+              "tj": "охири ҳафта, рӯзи истироҳат"
+            },
+            {
+              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
+              "ru": "частица в конце предложения для подтверждения или пояснения",
+              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
+            },
+            {
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
+            },
+            {
+              "uz": "reja; rejalamoq, niyat qilmoq",
+              "ru": "план; планировать, намереваться",
+              "tj": "нақша; нақша кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "日 = kun, sana (rì)",
+            "ru": "日 = день, дата (rì)",
+            "tj": "日 = рӯз, сана (rì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "日",
+            "pinyin": "rì",
+            "meaning": {
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hafta oxiri, dam olish kuni' xitoycha qaysi?",
+            "ru": "'выходные, конец недели' по-китайски?",
+            "tj": "'охири ҳафта, рӯзи истироҳат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打算",
+            "啊",
+            "周末",
+            "跟"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "hafta oxiri, dam olish kuni = 周末 (zhōumò)",
+            "ru": "выходные, конец недели = 周末 (zhōumò)",
+            "tj": "охири ҳафта, рӯзи истироҳат = 周末 (zhōumò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "周末",
+            "pinyin": "zhōumò",
+            "meaning": {
+              "uz": "hafta oxiri, dam olish kuni",
+              "ru": "выходные, конец недели",
+              "tj": "охири ҳафта, рӯзи истироҳат"
+            }
           }
         }
       ]

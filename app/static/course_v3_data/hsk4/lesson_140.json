@@ -448,12 +448,12 @@
           "audio_text": "小伙子",
           "pinyin": "xiǎohuǒzi",
           "options": [
-            "签证",
             "博士",
-            "小伙子",
-            "报名"
+            "报名",
+            "签证",
+            "小伙子"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "小伙子 — yigit (xiǎohuǒzi)",
             "ru": "小伙子 — парень, молодой человек (xiǎohuǒzi)",
@@ -488,6 +488,16 @@
           },
           "options": [
             {
+              "uz": "jurnalist",
+              "ru": "журналист",
+              "tj": "рӯзноманигор"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
               "uz": "ro'yxatdan o'tmoq",
               "ru": "записываться, регистрироваться",
               "tj": "номнавис шудан"
@@ -496,19 +506,9 @@
               "uz": "doktorantura darajasi",
               "ru": "доктор наук, докторская степень",
               "tj": "доктор, дараҷаи илмӣ"
-            },
-            {
-              "uz": "viza",
-              "ru": "виза",
-              "tj": "раводид"
-            },
-            {
-              "uz": "jurnalist",
-              "ru": "журналист",
-              "tj": "рӯзноманигор"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "记者 = jurnalist (jìzhě)",
             "ru": "记者 = журналист (jìzhě)",
@@ -542,9 +542,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "博士",
-            "报名",
             "签证",
+            "报名",
+            "博士",
             "代表"
           ],
           "correct_index": 3,
@@ -591,12 +591,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "kǒngpà",
+            "bào míng",
             "bóshì",
-            "qiānzhèng",
-            "bào míng"
+            "kǒngpà",
+            "qiānzhèng"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "恐怕 — kǒngpà",
             "ru": "恐怕 — kǒngpà",
@@ -616,12 +616,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "小伙子",
+            "博士",
             "签证",
-            "报名",
-            "博士"
+            "小伙子",
+            "报名"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "yigit = 小伙子 (xiǎohuǒzi)",
             "ru": "парень, молодой человек = 小伙子 (xiǎohuǒzi)",
@@ -719,11 +719,11 @@
           },
           "options": [
             "签证",
-            "报名",
             "恐怕",
+            "报名",
             "博士"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 恐怕 (kǒngpà) — ehtimol, qo'rqaman-ki",
             "ru": "Верно: 恐怕 (kǒngpà) — боюсь, вероятно",
@@ -742,105 +742,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "恐怕",
-          "pinyin": "kǒngpà",
-          "options": [
-            "签证",
-            "博士",
-            "报名",
-            "恐怕"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "恐怕 — ehtimol, qo'rqaman-ki (kǒngpà)",
-            "ru": "恐怕 — боюсь, вероятно (kǒngpà)",
-            "tj": "恐怕 — метарсам ки, эҳтимол (kǒngpà)"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "听完我的回答，恐怕你已经知道我的答案了吧。",
-          "pinyin": "Tīngwán wǒ de huídá, kǒngpà nǐ yǐjīng zhīdào wǒ de dá'àn le ba.",
-          "translation": {
-            "uz": "Javobimni eshitgach, ehtimol mening javobimni allaqachon bilgandirsiz.",
-            "ru": "Услышав мой ответ, вы, наверное, уже знаете мой ответ.",
-            "tj": "Ҷавобамро шунида, эҳтимол ҷавоби маро аллакай донистед."
-          },
-          "tokens": {
-            "uz": [
-              "allaqachon",
-              "ehtimol",
-              "bilgandirsiz",
-              "mening",
-              "Javobimni",
-              "eshitgach",
-              "javobimni"
-            ],
-            "ru": [
-              "ответ",
-              "Услышав",
-              "ответ",
-              "мой",
-              "мой",
-              "наверное",
-              "знаете",
-              "уже",
-              "вы"
-            ],
-            "tj": [
-              "ҷавоби",
-              "донистед",
-              "шунида",
-              "маро",
-              "эҳтимол",
-              "Ҷавобамро",
-              "аллакай"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Javobimni",
-              "eshitgach",
-              "ehtimol",
-              "mening",
-              "javobimni",
-              "allaqachon",
-              "bilgandirsiz"
-            ],
-            "ru": [
-              "Услышав",
-              "мой",
-              "ответ",
-              "вы",
-              "наверное",
-              "уже",
-              "знаете",
-              "мой",
-              "ответ"
-            ],
-            "tj": [
-              "Ҷавобамро",
-              "шунида",
-              "эҳтимол",
-              "ҷавоби",
-              "маро",
-              "аллакай",
-              "донистед"
-            ]
-          },
-          "explanation": {
-            "uz": "听完我的回答，恐怕你已经知道我的答案了吧。 — Javobimni eshitgach, ehtimol mening javobimni allaqachon bilgandirsiz.",
-            "ru": "听完我的回答，恐怕你已经知道我的答案了吧。 — Услышав мой ответ, вы, наверное, уже знаете мой ответ.",
-            "tj": "听完我的回答，恐怕你已经知道我的答案了吧。 — Ҷавобамро шунида, эҳтимол ҷавоби маро аллакай донистед."
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'jurnalist' xitoycha qaysi?",
@@ -853,12 +754,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "博士",
-            "签证",
             "记者",
-            "报名"
+            "签证",
+            "报名",
+            "博士"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "jurnalist = 记者 (jìzhě)",
             "ru": "журналист = 记者 (jìzhě)",
@@ -878,9 +779,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "签证",
-            "报名",
             "博士",
+            "报名",
+            "签证",
             "代表"
           ],
           "correct_index": 3,
@@ -898,6 +799,105 @@
             "uz": "ehtimol, qo'rqaman-ki",
             "ru": "боюсь, вероятно",
             "tj": "метарсам ки, эҳтимол"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "激动 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 激动:",
+            "tj": "Маънои калимаи 激动-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "hayajonlangan",
+              "ru": "взволнованный",
+              "tj": "ҳаяҷонзада"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "激动 = hayajonlangan (jīdòng)",
+            "ru": "激动 = взволнованный (jīdòng)",
+            "tj": "激动 = ҳаяҷонзада (jīdòng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "激动",
+            "pinyin": "jīdòng",
+            "meaning": {
+              "uz": "hayajonlangan",
+              "ru": "взволнованный",
+              "tj": "ҳаяҷонзада"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ehtimol, qo'rqaman-ki' xitoycha qaysi?",
+            "ru": "'боюсь, вероятно' по-китайски?",
+            "tj": "'метарсам ки, эҳтимол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "报名",
+            "博士",
+            "恐怕",
+            "签证"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ehtimol, qo'rqaman-ki = 恐怕 (kǒngpà)",
+            "ru": "боюсь, вероятно = 恐怕 (kǒngpà)",
+            "tj": "метарсам ки, эҳтимол = 恐怕 (kǒngpà)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "恐怕",
+            "pinyin": "kǒngpà",
+            "meaning": {
+              "uz": "ehtimol, qo'rqaman-ki",
+              "ru": "боюсь, вероятно",
+              "tj": "метарсам ки, эҳтимол"
+            }
           }
         }
       ]

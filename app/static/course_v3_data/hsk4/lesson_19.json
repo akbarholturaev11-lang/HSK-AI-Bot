@@ -371,12 +371,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "紧张",
             "能力",
+            "挺",
             "信心",
-            "挺"
+            "紧张"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "ancha, juda = 挺 (tǐng)",
             "ru": "довольно, весьма = 挺 (tǐng)",
@@ -407,10 +407,10 @@
           "audio_text": "紧张",
           "pinyin": "jǐnzhāng",
           "options": [
-            "挺",
-            "紧张",
             "信心",
-            "能力"
+            "紧张",
+            "能力",
+            "挺"
           ],
           "correct_index": 1,
           "explanation": {
@@ -457,14 +457,14 @@
           },
           "options": [
             {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
               "uz": "ishonch",
               "ru": "уверенность",
               "tj": "боварӣ"
-            },
-            {
-              "uz": "qobiliyat",
-              "ru": "способность, умение",
-              "tj": "қобилият"
             },
             {
               "uz": "ancha, juda",
@@ -472,12 +472,12 @@
               "tj": "хеле, анча"
             },
             {
-              "uz": "hayajonlangan, asabiy",
-              "ru": "нервный, напряженный",
-              "tj": "изтиробнок, асабӣ"
+              "uz": "qobiliyat",
+              "ru": "способность, умение",
+              "tj": "қобилият"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "信心 = ishonch (xìnxīn)",
             "ru": "信心 = уверенность (xìnxīn)",
@@ -511,12 +511,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "能力",
             "紧张",
             "信心",
-            "能力",
             "挺"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "能力 = qobiliyat (nénglì)",
             "ru": "能力 = способность, умение (nénglì)",
@@ -536,10 +536,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "nénglì",
+            "xìnxīn",
             "tǐng",
             "jǐnzhāng",
-            "xìnxīn"
+            "nénglì"
           ],
           "correct_index": 1,
           "explanation": {
@@ -641,6 +641,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "信心",
+          "pinyin": "xìnxīn",
+          "options": [
+            "能力",
+            "挺",
+            "紧张",
+            "信心"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "信心 — ishonch (xìnxīn)",
+            "ru": "信心 — уверенность (xìnxīn)",
+            "tj": "信心 — боварӣ (xìnxīn)"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -683,53 +705,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "信心",
-          "pinyin": "xìnxīn",
-          "options": [
-            "紧张",
-            "能力",
-            "信心",
-            "挺"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "信心 — ishonch (xìnxīn)",
-            "ru": "信心 — уверенность (xìnxīn)",
-            "tj": "信心 — боварӣ (xìnxīn)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "wúliáo qaysi ieroglif?",
-            "ru": "Какой иероглиф читается wúliáo?",
-            "tj": "wúliáo кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "无聊",
-            "挺",
-            "信心",
-            "紧张"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "无聊 = zerikarli (wúliáo)",
-            "ru": "无聊 = скучный (wúliáo)",
-            "tj": "无聊 = дилгиркунанда (wúliáo)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "信心",
           "pinyin": "xìnxīn",
@@ -737,6 +712,105 @@
             "uz": "ishonch",
             "ru": "уверенность",
             "tj": "боварӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "平时 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 平时:",
+            "tj": "Маънои калимаи 平时-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            },
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "平时 = odatdagi vaqt, odatda (píngshí)",
+            "ru": "平时 = обычно, в обычное время (píngshí)",
+            "tj": "平时 = одатан, вақтҳои муқаррарӣ (píngshí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "平时",
+            "pinyin": "píngshí",
+            "meaning": {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ishonch' xitoycha qaysi?",
+            "ru": "'уверенность' по-китайски?",
+            "tj": "'боварӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "挺",
+            "信心",
+            "能力",
+            "紧张"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ishonch = 信心 (xìnxīn)",
+            "ru": "уверенность = 信心 (xìnxīn)",
+            "tj": "боварӣ = 信心 (xìnxīn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "信心",
+            "pinyin": "xìnxīn",
+            "meaning": {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            }
           }
         }
       ]

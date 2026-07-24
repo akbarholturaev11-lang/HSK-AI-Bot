@@ -325,10 +325,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "太阳",
             "生气",
-            "西",
             "画",
-            "太阳"
+            "西"
           ],
           "correct_index": 2,
           "explanation": {
@@ -361,12 +361,12 @@
           "audio_text": "需要",
           "pinyin": "xūyào",
           "options": [
+            "西",
             "需要",
             "太阳",
-            "生气",
-            "西"
+            "生气"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "需要 — kerak bo'lmoq, ehtiyoj sezmoq (xūyào)",
             "ru": "需要 — нуждаться, требоваться (xūyào)",
@@ -401,14 +401,14 @@
           },
           "options": [
             {
-              "uz": "quyosh",
-              "ru": "солнце",
-              "tj": "офтоб"
-            },
-            {
               "uz": "doska",
               "ru": "классная доска",
               "tj": "тахтаи синф"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
             },
             {
               "uz": "jahli chiqmoq",
@@ -416,12 +416,12 @@
               "tj": "хашмгин шудан"
             },
             {
-              "uz": "g'arb",
-              "ru": "запад",
-              "tj": "ғарб"
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "黑板 = doska (hēibǎn)",
             "ru": "黑板 = классная доска (hēibǎn)",
@@ -441,12 +441,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "生气",
+            "画",
             "西",
             "太阳",
-            "画"
+            "生气"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "画 = chizmoq; rasm (huà)",
             "ru": "画 = рисовать; рисунок (huà)",
@@ -508,57 +508,16 @@
           "audio_text": "画",
           "pinyin": "huà",
           "options": [
-            "太阳",
             "画",
-            "生气",
-            "西"
+            "太阳",
+            "西",
+            "生气"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "画 — chizmoq; rasm (huà)",
             "ru": "画 — рисовать; рисунок (huà)",
             "tj": "画 — расм кашидан; расм (huà)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "起飞 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 起飞:",
-            "tj": "Маънои калимаи 起飞-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "g'arb",
-              "ru": "запад",
-              "tj": "ғарб"
-            },
-            {
-              "uz": "jahli chiqmoq",
-              "ru": "сердиться",
-              "tj": "хашмгин шудан"
-            },
-            {
-              "uz": "uchib ketmoq",
-              "ru": "взлетать",
-              "tj": "парвоз кардан"
-            },
-            {
-              "uz": "quyosh",
-              "ru": "солнце",
-              "tj": "офтоб"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "起飞 = uchib ketmoq (qǐfēi)",
-            "ru": "起飞 = взлетать (qǐfēi)",
-            "tj": "起飞 = парвоз кардан (qǐfēi)"
           }
         },
         {
@@ -603,6 +562,105 @@
             "uz": "chizmoq; rasm",
             "ru": "рисовать; рисунок",
             "tj": "расм кашидан; расм"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "起飞 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 起飞:",
+            "tj": "Маънои калимаи 起飞-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "хашмгин шудан"
+            },
+            {
+              "uz": "uchib ketmoq",
+              "ru": "взлетать",
+              "tj": "парвоз кардан"
+            },
+            {
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "起飞 = uchib ketmoq (qǐfēi)",
+            "ru": "起飞 = взлетать (qǐfēi)",
+            "tj": "起飞 = парвоз кардан (qǐfēi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "起飞",
+            "pinyin": "qǐfēi",
+            "meaning": {
+              "uz": "uchib ketmoq",
+              "ru": "взлетать",
+              "tj": "парвоз кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chizmoq; rasm' xitoycha qaysi?",
+            "ru": "'рисовать; рисунок' по-китайски?",
+            "tj": "'расм кашидан; расм' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "生气",
+            "西",
+            "画",
+            "太阳"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "chizmoq; rasm = 画 (huà)",
+            "ru": "рисовать; рисунок = 画 (huà)",
+            "tj": "расм кашидан; расм = 画 (huà)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "画",
+            "pinyin": "huà",
+            "meaning": {
+              "uz": "chizmoq; rasm",
+              "ru": "рисовать; рисунок",
+              "tj": "расм кашидан; расм"
+            }
           }
         }
       ]

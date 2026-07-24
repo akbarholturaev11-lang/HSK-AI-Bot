@@ -259,10 +259,10 @@
           "options": [
             "电脑",
             "上",
-            "本",
-            "桌子"
+            "桌子",
+            "本"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "本 = dona (kitob uchun o'lchov so'zi) (běn)",
             "ru": "本 = штука (счётное слово для книг) (běn)",
@@ -297,11 +297,11 @@
           },
           "options": [
             "zhuōzi",
-            "lǐ",
+            "diànnǎo",
             "shàng",
-            "diànnǎo"
+            "lǐ"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "里 — lǐ",
             "ru": "里 — lǐ",
@@ -335,12 +335,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "桌子",
-            "前面",
             "上",
-            "电脑"
+            "桌子",
+            "电脑",
+            "前面"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "oldinida, oldida = 前面 (qiánmiàn)",
             "ru": "спереди, перед = 前面 (qiánmiàn)",
@@ -371,12 +371,12 @@
           "audio_text": "后面",
           "pinyin": "hòumiàn",
           "options": [
-            "上",
-            "后面",
+            "电脑",
             "桌子",
-            "电脑"
+            "上",
+            "后面"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "后面 — orqasida, ketida (hòumiàn)",
             "ru": "后面 — сзади, за (hòumiàn)",
@@ -402,9 +402,9 @@
               "tj": "компютер"
             },
             {
-              "uz": "dona (kitob uchun o'lchov so'zi)",
-              "ru": "штука (счётное слово для книг)",
-              "tj": "адад (барои китоб)"
+              "uz": "ustida, tepasida",
+              "ru": "сверху, на",
+              "tj": "болои, дар болои"
             },
             {
               "uz": "stol, parta",
@@ -412,12 +412,12 @@
               "tj": "мӣз"
             },
             {
-              "uz": "ustida, tepasida",
-              "ru": "сверху, на",
-              "tj": "болои, дар болои"
+              "uz": "dona (kitob uchun o'lchov so'zi)",
+              "ru": "штука (счётное слово для книг)",
+              "tj": "адад (барои китоб)"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "本 = dona (kitob uchun o'lchov so'zi) (běn)",
             "ru": "本 = штука (счётное слово для книг) (běn)",
@@ -487,26 +487,16 @@
           "audio_text": "前面那个人叫什么名字？",
           "pinyin": "Qiánmiàn nàge rén jiào shénme míngzi?",
           "options": [
-            "桌子上有一个电脑和一本书。",
+            "前面那个人叫什么名字？",
             "杯子在哪儿？",
-            "桌子上有什么？",
-            "前面那个人叫什么名字？"
+            "桌子上有一个电脑和一本书。",
+            "桌子上有什么？"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "前面那个人叫什么名字？ — Oldidagi odam nomi nima?",
             "ru": "前面那个人叫什么名字？ — Как зовут человека спереди?",
             "tj": "前面那个人叫什么名字？ — Номи одами пешаш чист?"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "里",
-          "pinyin": "lǐ",
-          "translation": {
-            "uz": "ichida",
-            "ru": "внутри, в",
-            "tj": "дарун, дохили"
           }
         },
         {
@@ -574,12 +564,12 @@
             "tj": "Пиёла дохили мӣз аст."
           },
           "tokens": [
-            "上",
-            "电脑",
-            "杯子",
             "里",
+            "电脑",
+            "在",
             "桌子",
-            "在"
+            "杯子",
+            "上"
           ],
           "answer_tokens": [
             "杯子",
@@ -591,31 +581,6 @@
             "uz": "杯子在桌子里。 — Bēizi zài zhuōzi lǐ.",
             "ru": "杯子在桌子里。 — Bēizi zài zhuōzi lǐ.",
             "tj": "杯子在桌子里。 — Bēizi zài zhuōzi lǐ."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "桌子 talaffuzini tanlang:",
-            "ru": "Выберите произношение 桌子:",
-            "tj": "Талаффузи 桌子-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "diànnǎo",
-            "zhuōzi",
-            "hé",
-            "shàng"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "桌子 — zhuōzi",
-            "ru": "桌子 — zhuōzi",
-            "tj": "桌子 — zhuōzi"
           }
         },
         {
@@ -631,12 +596,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "后面",
             "上",
             "电脑",
-            "桌子"
+            "桌子",
+            "后面"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "后面 = orqasida, ketida (hòumiàn)",
             "ru": "后面 = сзади, за (hòumiàn)",
@@ -651,6 +616,105 @@
             "uz": "dona (kitob uchun o'lchov so'zi)",
             "ru": "штука (счётное слово для книг)",
             "tj": "адад (барои китоб)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "桌子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 桌子:",
+            "tj": "Маънои калимаи 桌子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ustida, tepasida",
+              "ru": "сверху, на",
+              "tj": "болои, дар болои"
+            },
+            {
+              "uz": "kompyuter",
+              "ru": "компьютер",
+              "tj": "компютер"
+            },
+            {
+              "uz": "va, bilan",
+              "ru": "и, с",
+              "tj": "ва, бо"
+            },
+            {
+              "uz": "stol, parta",
+              "ru": "стол",
+              "tj": "мӣз"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "桌子 = stol, parta (zhuōzi)",
+            "ru": "桌子 = стол (zhuōzi)",
+            "tj": "桌子 = мӣз (zhuōzi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "桌子",
+            "pinyin": "zhuōzi",
+            "meaning": {
+              "uz": "stol, parta",
+              "ru": "стол",
+              "tj": "мӣз"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'dona (kitob uchun o'lchov so'zi)' xitoycha qaysi?",
+            "ru": "'штука (счётное слово для книг)' по-китайски?",
+            "tj": "'адад (барои китоб)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "电脑",
+            "本",
+            "桌子",
+            "上"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "dona (kitob uchun o'lchov so'zi) = 本 (běn)",
+            "ru": "штука (счётное слово для книг) = 本 (běn)",
+            "tj": "адад (барои китоб) = 本 (běn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "本",
+            "pinyin": "běn",
+            "meaning": {
+              "uz": "dona (kitob uchun o'lchov so'zi)",
+              "ru": "штука (счётное слово для книг)",
+              "tj": "адад (барои китоб)"
+            }
           }
         }
       ]

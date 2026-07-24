@@ -361,12 +361,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "练习",
-            "留学",
             "水平",
-            "提高"
+            "练习",
+            "提高",
+            "留学"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "留学 = chet elda o'qimoq (liú xué)",
             "ru": "留学 = учиться за границей (liú xué)",
@@ -400,12 +400,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "liànxí",
-            "liú xué",
+            "shuǐpíng",
             "tí gāo",
-            "shuǐpíng"
+            "liànxí",
+            "liú xué"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "水平 — shuǐpíng",
             "ru": "水平 — shuǐpíng",
@@ -440,11 +440,11 @@
           },
           "options": [
             "练习",
-            "留学",
+            "提高",
             "水平",
-            "提高"
+            "留学"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "oshirmoq, yaxshilamoq = 提高 (tí gāo)",
             "ru": "повышать, улучшать = 提高 (tí gāo)",
@@ -476,9 +476,9 @@
           "pinyin": "liànxí",
           "options": [
             "练习",
+            "水平",
             "留学",
-            "提高",
-            "水平"
+            "提高"
           ],
           "correct_index": 0,
           "explanation": {
@@ -501,16 +501,6 @@
           },
           "options": [
             {
-              "uz": "chet elda o'qimoq",
-              "ru": "учиться за границей",
-              "tj": "дар хориҷ таҳсил кардан"
-            },
-            {
-              "uz": "oshirmoq, yaxshilamoq",
-              "ru": "повышать, улучшать",
-              "tj": "баланд кардан, беҳтар кардан"
-            },
-            {
               "uz": "mashq",
               "ru": "упражнение",
               "tj": "машқ"
@@ -519,9 +509,19 @@
               "uz": "daraja, saviya",
               "ru": "уровень, стандарт",
               "tj": "сатҳ, дараҷа"
+            },
+            {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            },
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "留学 = chet elda o'qimoq (liú xué)",
             "ru": "留学 = учиться за границей (liú xué)",
@@ -641,39 +641,14 @@
           "options": [
             "留学",
             "练习",
-            "水平",
-            "提高"
+            "提高",
+            "水平"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "水平 — daraja, saviya (shuǐpíng)",
             "ru": "水平 — уровень, стандарт (shuǐpíng)",
             "tj": "水平 — сатҳ, дараҷа (shuǐpíng)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "中介 talaffuzini tanlang:",
-            "ru": "Выберите произношение 中介:",
-            "tj": "Талаффузи 中介-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zhōngjiè",
-            "tí gāo",
-            "liú xué",
-            "shuǐpíng"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "中介 — zhōngjiè",
-            "ru": "中介 — zhōngjiè",
-            "tj": "中介 — zhōngjiè"
           }
         },
         {
@@ -688,8 +663,8 @@
           "options": [
             "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
             "你每天认真学习，做练习、完成作业，一直不错啊。",
-            "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
-            "这是我昨天的作业，您帮我看看对不对？"
+            "这是我昨天的作业，您帮我看看对不对？",
+            "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -706,6 +681,105 @@
             "uz": "chet elda o'qimoq",
             "ru": "учиться за границей",
             "tj": "дар хориҷ таҳсил кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "打扫 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 打扫:",
+            "tj": "Маънои калимаи 打扫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            },
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            },
+            {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            },
+            {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "打扫 = tozalamoq, supurmoq (dǎsǎo)",
+            "ru": "打扫 = убирать, подметать (dǎsǎo)",
+            "tj": "打扫 = тоза кардан, рӯфтан (dǎsǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "打扫",
+            "pinyin": "dǎsǎo",
+            "meaning": {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'chet elda o'qimoq' xitoycha qaysi?",
+            "ru": "'учиться за границей' по-китайски?",
+            "tj": "'дар хориҷ таҳсил кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "水平",
+            "练习",
+            "提高",
+            "留学"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "chet elda o'qimoq = 留学 (liú xué)",
+            "ru": "учиться за границей = 留学 (liú xué)",
+            "tj": "дар хориҷ таҳсил кардан = 留学 (liú xué)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "留学",
+            "pinyin": "liú xué",
+            "meaning": {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            }
           }
         }
       ]

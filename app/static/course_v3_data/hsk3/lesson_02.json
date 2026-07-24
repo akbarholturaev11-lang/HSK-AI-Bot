@@ -362,11 +362,11 @@
           },
           "options": [
             "啊",
-            "一直",
+            "周末",
             "打算",
-            "周末"
+            "一直"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "一直 = doimo, tinmay, davomli (yìzhí)",
             "ru": "一直 = всё время, постоянно (yìzhí)",
@@ -411,9 +411,9 @@
           },
           "options": [
             "zhōumò",
-            "dǎsuàn",
+            "a",
             "yóuxì",
-            "a"
+            "dǎsuàn"
           ],
           "correct_index": 2,
           "explanation": {
@@ -449,9 +449,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "打算",
-            "周末",
             "啊",
+            "周末",
+            "打算",
             "作业"
           ],
           "correct_index": 3,
@@ -485,12 +485,12 @@
           "audio_text": "着急",
           "pinyin": "zháojí",
           "options": [
-            "周末",
             "啊",
             "着急",
-            "打算"
+            "打算",
+            "周末"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "着急 — xavotirli, shoshilgan, tashvishlangan (zháojí)",
             "ru": "着急 — волноваться, беспокоиться (zháojí)",
@@ -521,17 +521,17 @@
               "tj": "нақша; нақша кардан"
             },
             {
-              "uz": "doimo, tinmay, davomli",
-              "ru": "всё время, постоянно",
-              "tj": "ҳамеша, пайваста"
-            },
-            {
               "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
               "ru": "частица в конце предложения для подтверждения или пояснения",
               "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
+            },
+            {
+              "uz": "doimo, tinmay, davomli",
+              "ru": "всё время, постоянно",
+              "tj": "ҳамеша, пайваста"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "一直 = doimo, tinmay, davomli (yìzhí)",
             "ru": "一直 = всё время, постоянно (yìzhí)",
@@ -636,13 +636,13 @@
             "tj": "Ҳамаи вазифаҳои хонагӣ иҷро шуд!"
           },
           "tokens": [
-            "做",
-            "都",
-            "周末",
-            "打算",
             "好",
+            "打算",
+            "了",
+            "都",
+            "做",
             "作业",
-            "了"
+            "周末"
           ],
           "answer_tokens": [
             "作业",
@@ -754,60 +754,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'reja; rejalamoq, niyat qilmoq' xitoycha qaysi?",
-            "ru": "'план; планировать, намереваться' по-китайски?",
-            "tj": "'нақша; нақша кардан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "跟",
-            "啊",
-            "打算",
-            "周末"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "reja; rejalamoq, niyat qilmoq = 打算 (dǎsuàn)",
-            "ru": "план; планировать, намереваться = 打算 (dǎsuàn)",
-            "tj": "нақша; нақша кардан = 打算 (dǎsuàn)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Barcha uy vazifalari bajarildi!",
-            "ru": "Все домашние задания сделаны!",
-            "tj": "Ҳамаи вазифаҳои хонагӣ иҷро шуд!"
-          },
-          "tokens": [
-            "好",
-            "打算",
-            "了",
-            "都",
-            "做",
-            "作业",
-            "周末"
-          ],
-          "answer_tokens": [
-            "作业",
-            "都",
-            "做",
-            "好",
-            "了"
-          ],
-          "explanation": {
-            "uz": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
-            "ru": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
-            "tj": "作业都做好了！ — Zuòyè dōu zuò hǎo le!"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -817,12 +763,12 @@
           "audio_text": "那也不能一直玩儿啊。",
           "pinyin": "Nà yě bù néng yìzhí wánr a.",
           "options": [
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "那也不能一直玩儿啊。",
             "周末你有什么打算？",
-            "请我？"
+            "请我？",
+            "那也不能一直玩儿啊。",
+            "我早就想好了，请你吃饭、看电影、喝咖啡。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "那也不能一直玩儿啊。 — Unda ham tinmay o'ynayverish mumkin emas-ku.",
             "ru": "那也不能一直玩儿啊。 — Но всё равно нельзя постоянно играть.",
@@ -837,6 +783,105 @@
             "uz": "o'yin",
             "ru": "игра",
             "tj": "бозӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "打算 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 打算:",
+            "tj": "Маънои калимаи 打算-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hafta oxiri, dam olish kuni",
+              "ru": "выходные, конец недели",
+              "tj": "охири ҳафта, рӯзи истироҳат"
+            },
+            {
+              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
+              "ru": "частица в конце предложения для подтверждения или пояснения",
+              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
+            },
+            {
+              "uz": "bilan",
+              "ru": "с, вместе с",
+              "tj": "бо"
+            },
+            {
+              "uz": "reja; rejalamoq, niyat qilmoq",
+              "ru": "план; планировать, намереваться",
+              "tj": "нақша; нақша кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "打算 = reja; rejalamoq, niyat qilmoq (dǎsuàn)",
+            "ru": "打算 = план; планировать, намереваться (dǎsuàn)",
+            "tj": "打算 = нақша; нақша кардан (dǎsuàn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "打算",
+            "pinyin": "dǎsuàn",
+            "meaning": {
+              "uz": "reja; rejalamoq, niyat qilmoq",
+              "ru": "план; планировать, намереваться",
+              "tj": "нақша; нақша кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'yin' xitoycha qaysi?",
+            "ru": "'игра' по-китайски?",
+            "tj": "'бозӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打算",
+            "游戏",
+            "周末",
+            "啊"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o'yin = 游戏 (yóuxì)",
+            "ru": "игра = 游戏 (yóuxì)",
+            "tj": "бозӣ = 游戏 (yóuxì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "游戏",
+            "pinyin": "yóuxì",
+            "meaning": {
+              "uz": "o'yin",
+              "ru": "игра",
+              "tj": "бозӣ"
+            }
           }
         }
       ]

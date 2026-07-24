@@ -630,33 +630,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Mushuk u yerda.",
-            "ru": "Кошка вон там.",
-            "tj": "Гурба он ҷост."
-          },
-          "tokens": [
-            "猫",
-            "想",
-            "在",
-            "小",
-            "那儿",
-            "喝"
-          ],
-          "answer_tokens": [
-            "小",
-            "猫",
-            "在",
-            "那儿"
-          ],
-          "explanation": {
-            "uz": "小猫在那儿。 — Xiǎo māo zài nàr.",
-            "ru": "小猫在那儿。 — Xiǎo māo zài nàr.",
-            "tj": "小猫在那儿。 — Xiǎo māo zài nàr."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -679,31 +652,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "cài qaysi ieroglif?",
-            "ru": "Какой иероглиф читается cài?",
-            "tj": "cài кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "菜",
-            "猫",
-            "在",
-            "小"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "菜 = taom, sabzavot (cài)",
-            "ru": "菜 = блюдо, овощ (cài)",
-            "tj": "菜 = хӯрок, сабзавот (cài)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "在",
           "pinyin": "zài",
@@ -711,6 +659,105 @@
             "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
             "ru": "находиться / в, на (показатель места)",
             "tj": "будан / дар (нишондиҳандаи ҷой)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "茶 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 茶:",
+            "tj": "Маънои калимаи 茶-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
+            },
+            {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            },
+            {
+              "uz": "kichik, mayda",
+              "ru": "маленький, небольшой",
+              "tj": "хурд, майда"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "茶 = choy (chá)",
+            "ru": "茶 = чай (chá)",
+            "tj": "茶 = чой (chá)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "茶",
+            "pinyin": "chá",
+            "meaning": {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'joylashmoq / -da, -da (joy ko'rsatgich)' xitoycha qaysi?",
+            "ru": "'находиться / в, на (показатель места)' по-китайски?",
+            "tj": "'будан / дар (нишондиҳандаи ҷой)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "那儿",
+            "在",
+            "猫",
+            "小"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "joylashmoq / -da, -da (joy ko'rsatgich) = 在 (zài)",
+            "ru": "находиться / в, на (показатель места) = 在 (zài)",
+            "tj": "будан / дар (нишондиҳандаи ҷой) = 在 (zài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "在",
+            "pinyin": "zài",
+            "meaning": {
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
+            }
           }
         }
       ]

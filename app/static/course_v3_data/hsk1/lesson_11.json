@@ -545,28 +545,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "呢",
-          "pinyin": "ne",
-          "options": [
-            "呢",
-            "的",
-            "谁",
-            "她"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "呢 — xo'sh, -chi (qaytarma savol) (ne)",
-            "ru": "呢 — а, ну а (уточняющий вопрос) (ne)",
-            "tj": "呢 — чӣ (савол бозгашт) (ne)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
@@ -584,6 +562,37 @@
             "uz": "我是美国人。你呢？ — Men amerikalikman. Siz-chi?",
             "ru": "我是美国人。你呢？ — Я американец. А вы?",
             "tj": "我是美国人。你呢？ — Ман амрикоӣ ҳастам. Шумо чӣ?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men amerikalikman. Siz-chi?",
+            "ru": "Я американец. А вы?",
+            "tj": "Ман амрикоӣ ҳастам. Шумо чӣ?"
+          },
+          "tokens": [
+            "是",
+            "谁",
+            "人",
+            "你",
+            "她",
+            "我",
+            "呢",
+            "美国"
+          ],
+          "answer_tokens": [
+            "我",
+            "是",
+            "美国",
+            "人",
+            "你",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "我是美国人。你呢？ — Wǒ shì Měiguó rén. Nǐ ne?",
+            "ru": "我是美国人。你呢？ — Wǒ shì Měiguó rén. Nǐ ne?",
+            "tj": "我是美国人。你呢？ — Wǒ shì Měiguó rén. Nǐ ne?"
           }
         },
         {
@@ -648,62 +657,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men amerikalikman. Siz-chi?",
-            "ru": "Я американец. А вы?",
-            "tj": "Ман амрикоӣ ҳастам. Шумо чӣ?"
-          },
-          "tokens": [
-            "是",
-            "谁",
-            "人",
-            "你",
-            "她",
-            "我",
-            "呢",
-            "美国"
-          ],
-          "answer_tokens": [
-            "我",
-            "是",
-            "美国",
-            "人",
-            "你",
-            "呢"
-          ],
-          "explanation": {
-            "uz": "我是美国人。你呢？ — Wǒ shì Měiguó rén. Nǐ ne?",
-            "ru": "我是美国人。你呢？ — Wǒ shì Měiguó rén. Nǐ ne?",
-            "tj": "我是美国人。你呢？ — Wǒ shì Měiguó rén. Nǐ ne?"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "de qaysi ieroglif?",
-            "ru": "Какой иероглиф читается de?",
-            "tj": "de кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "的",
-            "她",
-            "谁",
-            "汉语"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "的 = ning (egalik yuklamasi) (de)",
-            "ru": "的 = -'s (показатель принадлежности) (de)",
-            "tj": "的 = и, -и (ҳарфи соҳибӣ) (de)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "国",
           "pinyin": "guó",
@@ -711,6 +664,105 @@
             "uz": "davlat, mamlakat",
             "ru": "страна, государство",
             "tj": "кишвар, давлат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "的 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 的:",
+            "tj": "Маънои калимаи 的-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            },
+            {
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи соҳибӣ)"
+            },
+            {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            },
+            {
+              "uz": "u (ayol)",
+              "ru": "она",
+              "tj": "вай (зан)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "的 = ning (egalik yuklamasi) (de)",
+            "ru": "的 = -'s (показатель принадлежности) (de)",
+            "tj": "的 = и, -и (ҳарфи соҳибӣ) (de)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "的",
+            "pinyin": "de",
+            "meaning": {
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи соҳибӣ)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'davlat, mamlakat' xitoycha qaysi?",
+            "ru": "'страна, государство' по-китайски?",
+            "tj": "'кишвар, давлат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "她",
+            "谁",
+            "的",
+            "国"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "davlat, mamlakat = 国 (guó)",
+            "ru": "страна, государство = 国 (guó)",
+            "tj": "кишвар, давлат = 国 (guó)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "国",
+            "pinyin": "guó",
+            "meaning": {
+              "uz": "davlat, mamlakat",
+              "ru": "страна, государство",
+              "tj": "кишвар, давлат"
+            }
           }
         }
       ]

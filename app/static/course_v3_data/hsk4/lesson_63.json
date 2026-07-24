@@ -344,12 +344,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "gǎnqíng",
             "qìhòu",
             "liú xiě",
-            "cā",
-            "gǎnqíng"
+            "cā"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "感情 — gǎnqíng",
             "ru": "感情 — gǎnqíng",
@@ -383,12 +383,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "烦恼",
             "流血",
+            "烦恼",
             "擦",
             "气候"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "tashvish, xafa bo'lish = 烦恼 (fánnǎo)",
             "ru": "забота, тревога = 烦恼 (fánnǎo)",
@@ -429,10 +429,10 @@
           "audio_text": "掉",
           "pinyin": "diào",
           "options": [
-            "擦",
             "气候",
+            "流血",
             "掉",
-            "流血"
+            "擦"
           ],
           "correct_index": 2,
           "explanation": {
@@ -455,27 +455,27 @@
           },
           "options": [
             {
-              "uz": "artmoq",
-              "ru": "вытирать",
-              "tj": "пок кардан, молидан"
-            },
-            {
               "uz": "his-tuyg'u, munosabat",
               "ru": "чувства, отношения",
               "tj": "эҳсос, муносибат"
             },
             {
-              "uz": "iqlim",
-              "ru": "климат",
-              "tj": "иқлим"
-            },
-            {
               "uz": "qon ketmoq",
               "ru": "кровоточить",
               "tj": "хун рафтан"
+            },
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "感情 = his-tuyg'u, munosabat (gǎnqíng)",
             "ru": "感情 = чувства, отношения (gǎnqíng)",
@@ -537,12 +537,12 @@
           "audio_text": "掉",
           "pinyin": "diào",
           "options": [
-            "流血",
-            "气候",
             "掉",
-            "擦"
+            "气候",
+            "擦",
+            "流血"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "掉 — tushib ketmoq; yo'qolmoq (diào)",
             "ru": "掉 — падать; исчезать (diào)",
@@ -584,31 +584,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "qìhòu qaysi ieroglif?",
-            "ru": "Какой иероглиф читается qìhòu?",
-            "tj": "qìhòu кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "擦",
-            "估计",
-            "流血",
-            "气候"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "气候 = iqlim (qìhòu)",
-            "ru": "气候 = климат (qìhòu)",
-            "tj": "气候 = иқлим (qìhòu)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "掉",
           "pinyin": "diào",
@@ -616,6 +591,105 @@
             "uz": "tushib ketmoq; yo'qolmoq",
             "ru": "падать; исчезать",
             "tj": "афтидан; гум шудан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "肚子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 肚子:",
+            "tj": "Маънои калимаи 肚子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
+            },
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "qorin",
+              "ru": "живот",
+              "tj": "шикам"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "肚子 = qorin (dùzi)",
+            "ru": "肚子 = живот (dùzi)",
+            "tj": "肚子 = шикам (dùzi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "肚子",
+            "pinyin": "dùzi",
+            "meaning": {
+              "uz": "qorin",
+              "ru": "живот",
+              "tj": "шикам"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tushib ketmoq; yo'qolmoq' xitoycha qaysi?",
+            "ru": "'падать; исчезать' по-китайски?",
+            "tj": "'афтидан; гум шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "流血",
+            "掉",
+            "擦",
+            "气候"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tushib ketmoq; yo'qolmoq = 掉 (diào)",
+            "ru": "падать; исчезать = 掉 (diào)",
+            "tj": "афтидан; гум шудан = 掉 (diào)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "掉",
+            "pinyin": "diào",
+            "meaning": {
+              "uz": "tushib ketmoq; yo'qolmoq",
+              "ru": "падать; исчезать",
+              "tj": "афтидан; гум шудан"
+            }
           }
         }
       ]

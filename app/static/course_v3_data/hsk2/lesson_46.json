@@ -356,9 +356,9 @@
               "tj": "тухм"
             },
             {
-              "uz": "…qilma (taqiq)",
-              "ru": "не (запрет)",
-              "tj": "накун (манъ)"
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
             },
             {
               "uz": "yordam bermoq",
@@ -366,9 +366,9 @@
               "tj": "кӯмак кардан"
             },
             {
-              "uz": "dars, mashg'ulot",
-              "ru": "урок, занятие",
-              "tj": "дарс, машғулот"
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
             }
           ],
           "correct_index": 0,
@@ -445,11 +445,11 @@
           },
           "options": [
             "bié",
-            "kè",
+            "zhèngzài",
             "bāngzhù",
-            "zhèngzài"
+            "kè"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "正在 — zhèngzài",
             "ru": "正在 — zhèngzài",
@@ -470,11 +470,11 @@
           },
           "options": [
             "别",
+            "鸡蛋",
             "课",
-            "帮助",
-            "鸡蛋"
+            "帮助"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "tuxum = 鸡蛋 (jīdàn)",
             "ru": "яйцо = 鸡蛋 (jīdàn)",
@@ -572,10 +572,10 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "别",
+            "哥哥",
             "帮助",
             "课",
-            "哥哥"
+            "别"
           ],
           "correct_index": 1,
           "explanation": {
@@ -605,41 +605,16 @@
           "audio_text": "西瓜",
           "pinyin": "xīguā",
           "options": [
-            "西瓜",
+            "别",
             "课",
-            "帮助",
-            "别"
+            "西瓜",
+            "帮助"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "西瓜 — tarvuz (xīguā)",
             "ru": "西瓜 — арбуз (xīguā)",
             "tj": "西瓜 — тарбуз (xīguā)"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yordam bermoq' xitoycha qaysi?",
-            "ru": "'помогать' по-китайски?",
-            "tj": "'кӯмак кардан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "哥哥",
-            "帮助",
-            "课",
-            "别"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "yordam bermoq = 帮助 (bāngzhù)",
-            "ru": "помогать = 帮助 (bāngzhù)",
-            "tj": "кӯмак кардан = 帮助 (bāngzhù)"
           }
         },
         {
@@ -652,12 +627,12 @@
           "audio_text": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？",
           "pinyin": "Wǒ kànkan mǎi shénme le. Yángròu，jīdàn，miàntiáo，xīguā…… zhēn bù shǎo! Māma ne?",
           "options": [
-            "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？",
             "别看电视了，明天上午还有汉语课呢。",
             "看电视对学汉语有帮助。",
+            "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？",
             "明天的课你都准备好了吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？ — Ko'ray-chi nima olibsiz. Qo'y go'shti, tuxum, erishta, tarvuz… juda ko'p! Ona-chi?",
             "ru": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？ — Дай посмотрю, что купил. Баранина, яйца, лапша, арбуз… действительно много! А мама?",
@@ -678,9 +653,9 @@
           },
           "options": [
             {
-              "uz": "yordam bermoq",
-              "ru": "помогать",
-              "tj": "кӯмак кардан"
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
             },
             {
               "uz": "dars, mashg'ulot",
@@ -693,9 +668,9 @@
               "tj": "ҳоло …қилмоқда (амали ҷорӣ)"
             },
             {
-              "uz": "…qilma (taqiq)",
-              "ru": "не (запрет)",
-              "tj": "накун (манъ)"
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
             }
           ],
           "correct_index": 2,
@@ -713,6 +688,105 @@
             "uz": "tuxum",
             "ru": "яйцо",
             "tj": "тухм"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "帮助 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 帮助:",
+            "tj": "Маънои калимаи 帮助-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
+            },
+            {
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
+            },
+            {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            },
+            {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "帮助 = yordam bermoq (bāngzhù)",
+            "ru": "帮助 = помогать (bāngzhù)",
+            "tj": "帮助 = кӯмак кардан (bāngzhù)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "帮助",
+            "pinyin": "bāngzhù",
+            "meaning": {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tuxum' xitoycha qaysi?",
+            "ru": "'яйцо' по-китайски?",
+            "tj": "'тухм' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "别",
+            "课",
+            "鸡蛋",
+            "帮助"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "tuxum = 鸡蛋 (jīdàn)",
+            "ru": "яйцо = 鸡蛋 (jīdàn)",
+            "tj": "тухм = 鸡蛋 (jīdàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "鸡蛋",
+            "pinyin": "jīdàn",
+            "meaning": {
+              "uz": "tuxum",
+              "ru": "яйцо",
+              "tj": "тухм"
+            }
           }
         }
       ]

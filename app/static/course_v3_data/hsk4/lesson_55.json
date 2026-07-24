@@ -378,12 +378,12 @@
           "audio_text": "流血",
           "pinyin": "liú xiě",
           "options": [
-            "流血",
             "擦",
-            "估计",
-            "气候"
+            "流血",
+            "气候",
+            "估计"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "流血 — qon ketmoq (liú xiě)",
             "ru": "流血 — кровоточить (liú xiě)",
@@ -418,16 +418,6 @@
           },
           "options": [
             {
-              "uz": "qon ketmoq",
-              "ru": "кровоточить",
-              "tj": "хун рафтан"
-            },
-            {
-              "uz": "iqlim",
-              "ru": "климат",
-              "tj": "иқлим"
-            },
-            {
               "uz": "artmoq",
               "ru": "вытирать",
               "tj": "пок кардан, молидан"
@@ -436,9 +426,19 @@
               "uz": "taxmin qilmoq",
               "ru": "предполагать, оценивать",
               "tj": "тахмин кардан"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            },
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "擦 = artmoq (cā)",
             "ru": "擦 = вытирать (cā)",
@@ -482,12 +482,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "气候",
-            "流血",
             "估计",
-            "擦"
+            "擦",
+            "气候",
+            "流血"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "气候 = iqlim (qìhòu)",
             "ru": "气候 = климат (qìhòu)",
@@ -521,12 +521,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "qìhòu",
             "liú xiě",
             "gūjì",
-            "qìhòu",
             "cā"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "估计 — gūjì",
             "ru": "估计 — gūjì",
@@ -546,12 +546,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "估计",
             "擦",
             "气候",
-            "流血",
-            "估计"
+            "流血"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "qon ketmoq = 流血 (liú xiě)",
             "ru": "кровоточить = 流血 (liú xiě)",
@@ -648,12 +648,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "流血",
             "气候",
+            "估计",
             "擦",
-            "估计"
+            "流血"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 气候 (qìhòu) — iqlim",
             "ru": "Верно: 气候 (qìhòu) — климат",
@@ -671,53 +671,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yàngzi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yàngzi?",
-            "tj": "yàngzi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "流血",
-            "样子",
-            "擦",
-            "气候"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "样子 = ko'rinish, shakl (yàngzi)",
-            "ru": "样子 = вид, форма (yàngzi)",
-            "tj": "样子 = намуд, шакл (yàngzi)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "气候",
-          "pinyin": "qìhòu",
-          "options": [
-            "擦",
-            "流血",
-            "估计",
-            "气候"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "气候 — iqlim (qìhòu)",
-            "ru": "气候 — климат (qìhòu)",
-            "tj": "气候 — иқлим (qìhòu)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -761,6 +714,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "气候",
+          "pinyin": "qìhòu",
+          "options": [
+            "估计",
+            "气候",
+            "流血",
+            "擦"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "气候 — iqlim (qìhòu)",
+            "ru": "气候 — климат (qìhòu)",
+            "tj": "气候 — иқлим (qìhòu)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "气候",
           "pinyin": "qìhòu",
@@ -768,6 +743,105 @@
             "uz": "iqlim",
             "ru": "климат",
             "tj": "иқлим"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "袜子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 袜子:",
+            "tj": "Маънои калимаи 袜子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            },
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
+            },
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "袜子 = paypoq (wàzi)",
+            "ru": "袜子 = носки (wàzi)",
+            "tj": "袜子 = ҷӯроб (wàzi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "袜子",
+            "pinyin": "wàzi",
+            "meaning": {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'iqlim' xitoycha qaysi?",
+            "ru": "'климат' по-китайски?",
+            "tj": "'иқлим' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "擦",
+            "流血",
+            "估计",
+            "气候"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "iqlim = 气候 (qìhòu)",
+            "ru": "климат = 气候 (qìhòu)",
+            "tj": "иқлим = 气候 (qìhòu)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "气候",
+            "pinyin": "qìhòu",
+            "meaning": {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
+            }
           }
         }
       ]

@@ -404,87 +404,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "高兴",
-              {
-                "uz": "xursand, shod",
-                "ru": "рад, доволен",
-                "tj": "хурсанд, шод"
-              }
-            ],
-            [
-              "听",
-              {
-                "uz": "eshitmoq, tinglаmoq",
-                "ru": "слушать, слышать",
-                "tj": "шунидан, гӯш кардан"
-              }
-            ],
-            [
-              "飞机",
-              {
-                "uz": "samolyot",
-                "ru": "самолёт",
-                "tj": "ҳавопаймо"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yil' xitoycha qaysi?",
-            "ru": "'год' по-китайски?",
-            "tj": "'сол' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "年",
-            "认识",
-            "大学",
-            "饭店"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "yil = 年 (nián)",
-            "ru": "год = 年 (nián)",
-            "tj": "сол = 年 (nián)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "认识你我也很高兴！",
-          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
-          "options": [
-            "你和李小姐是什么时候认识的？",
-            "我们是2011年9月认识的。",
-            "你们在哪儿认识的？",
-            "认识你我也很高兴！"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "认识你我也很高兴！ — Siz bilan tanishganimdan men ham juda xursandman!",
-            "ru": "认识你我也很高兴！ — Мне тоже очень приятно познакомиться с вами!",
-            "tj": "认识你我也很高兴！ — Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "我是坐飞机来的。",
           "pinyin": "Wǒ shì zuò fēijī lái de.",
@@ -546,6 +465,62 @@
           }
         },
         {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "高兴",
+              {
+                "uz": "xursand, shod",
+                "ru": "рад, доволен",
+                "tj": "хурсанд, шод"
+              }
+            ],
+            [
+              "听",
+              {
+                "uz": "eshitmoq, tinglаmoq",
+                "ru": "слушать, слышать",
+                "tj": "шунидан, гӯш кардан"
+              }
+            ],
+            [
+              "飞机",
+              {
+                "uz": "samolyot",
+                "ru": "самолёт",
+                "tj": "ҳавопаймо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "认识你我也很高兴！",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
+          "options": [
+            "你和李小姐是什么时候认识的？",
+            "我们是2011年9月认识的。",
+            "你们在哪儿认识的？",
+            "认识你我也很高兴！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "认识你我也很高兴！ — Siz bilan tanishganimdan men ham juda xursandman!",
+            "ru": "认识你我也很高兴！ — Мне тоже очень приятно познакомиться с вами!",
+            "tj": "认识你我也很高兴！ — Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "听",
           "pinyin": "tīng",
@@ -553,6 +528,105 @@
             "uz": "eshitmoq, tinglаmoq",
             "ru": "слушать, слышать",
             "tj": "шунидан, гӯш кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "出租车 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 出租车:",
+            "tj": "Маънои калимаи 出租车-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
+            },
+            {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            },
+            {
+              "uz": "yil",
+              "ru": "год",
+              "tj": "сол"
+            },
+            {
+              "uz": "taksi",
+              "ru": "такси",
+              "tj": "таксӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "出租车 = taksi (chūzūchē)",
+            "ru": "出租车 = такси (chūzūchē)",
+            "tj": "出租车 = таксӣ (chūzūchē)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "出租车",
+            "pinyin": "chūzūchē",
+            "meaning": {
+              "uz": "taksi",
+              "ru": "такси",
+              "tj": "таксӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'eshitmoq, tinglаmoq' xitoycha qaysi?",
+            "ru": "'слушать, слышать' по-китайски?",
+            "tj": "'шунидан, гӯш кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "年",
+            "大学",
+            "听",
+            "认识"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "eshitmoq, tinglаmoq = 听 (tīng)",
+            "ru": "слушать, слышать = 听 (tīng)",
+            "tj": "шунидан, гӯш кардан = 听 (tīng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "听",
+            "pinyin": "tīng",
+            "meaning": {
+              "uz": "eshitmoq, tinglаmoq",
+              "ru": "слушать, слышать",
+              "tj": "шунидан, гӯш кардан"
+            }
           }
         }
       ]

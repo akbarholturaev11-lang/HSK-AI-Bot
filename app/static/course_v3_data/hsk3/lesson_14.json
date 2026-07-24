@@ -401,12 +401,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "裤子",
             "爬山",
+            "还是",
             "小心",
-            "还是"
+            "裤子"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "shim = 裤子 (kùzi)",
             "ru": "брюки, штаны = 裤子 (kùzi)",
@@ -447,12 +447,12 @@
           "audio_text": "记得",
           "pinyin": "jìde",
           "options": [
-            "还是",
-            "爬山",
             "小心",
-            "记得"
+            "记得",
+            "爬山",
+            "还是"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "记得 — eslamoq, yodda tutmoq (jìde)",
             "ru": "记得 — помнить (jìde)",
@@ -487,16 +487,6 @@
           },
           "options": [
             {
-              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
-              "ru": "осторожный, быть осторожным",
-              "tj": "эҳтиёткор, эҳтиёт шудан"
-            },
-            {
-              "uz": "yoki (savolda tanlov)",
-              "ru": "или (в вопросе выбора)",
-              "tj": "ё (дар саволи интихобӣ)"
-            },
-            {
               "uz": "ko'ylak, rubashka",
               "ru": "рубашка",
               "tj": "курта"
@@ -505,9 +495,19 @@
               "uz": "toqqa chiqmoq",
               "ru": "подниматься в гору",
               "tj": "ба кӯҳ баромадан"
+            },
+            {
+              "uz": "yoki (savolda tanlov)",
+              "ru": "или (в вопросе выбора)",
+              "tj": "ё (дар саволи интихобӣ)"
+            },
+            {
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "衬衫 = ko'ylak, rubashka (chènshān)",
             "ru": "衬衫 = рубашка (chènshān)",
@@ -541,12 +541,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "元",
             "爬山",
             "还是",
-            "元",
             "小心"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "元 = yuan, pul birligi (yuán)",
             "ru": "元 = юань, денежная единица (yuán)",
@@ -566,12 +566,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "pá shān",
+            "xiǎoxīn",
             "háishi",
-            "kùzi",
-            "xiǎoxīn"
+            "pá shān",
+            "kùzi"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "裤子 — kùzi",
             "ru": "裤子 — kùzi",
@@ -676,14 +676,14 @@
             "tj": "Фардо шояд борон борад, чатр гиред!"
           },
           "tokens": [
-            "伞",
-            "爬山",
-            "下雨",
-            "会",
-            "记得",
-            "明天",
             "带",
-            "还是"
+            "会",
+            "伞",
+            "记得",
+            "爬山",
+            "明天",
+            "还是",
+            "下雨"
           ],
           "answer_tokens": [
             "明天",
@@ -710,31 +710,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'toqqa chiqmoq' xitoycha qaysi?",
-            "ru": "'подниматься в гору' по-китайски?",
-            "tj": "'ба кӯҳ баромадан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "还是",
-            "小心",
-            "爬山",
-            "条"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "toqqa chiqmoq = 爬山 (pá shān)",
-            "ru": "подниматься в гору = 爬山 (pá shān)",
-            "tj": "ба кӯҳ баромадан = 爬山 (pá shān)"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "这件衬衫怎么样？",
@@ -791,37 +766,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bu shim qalay deb o'ylaysiz?",
-            "ru": "Как тебе эти брюки?",
-            "tj": "Ин шим ба назарат чӣ хел?"
-          },
-          "tokens": [
-            "你",
-            "怎么样",
-            "觉得",
-            "条",
-            "裤子",
-            "爬山",
-            "这",
-            "还是"
-          ],
-          "answer_tokens": [
-            "你",
-            "觉得",
-            "这",
-            "条",
-            "裤子",
-            "怎么样"
-          ],
-          "explanation": {
-            "uz": "你觉得这条裤子怎么样？ — Nǐ juéde zhè tiáo kùzi zěnmeyàng?",
-            "ru": "你觉得这条裤子怎么样？ — Nǐ juéde zhè tiáo kùzi zěnmeyàng?",
-            "tj": "你觉得这条裤子怎么样？ — Nǐ juéde zhè tiáo kùzi zěnmeyàng?"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "元 so'zining ma'nosini tanlang:",
@@ -835,27 +779,27 @@
           },
           "options": [
             {
-              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
-              "ru": "осторожный, быть осторожным",
-              "tj": "эҳтиёткор, эҳтиёт шудан"
-            },
-            {
               "uz": "yoki (savolda tanlov)",
               "ru": "или (в вопросе выбора)",
               "tj": "ё (дар саволи интихобӣ)"
             },
             {
-              "uz": "toqqa chiqmoq",
-              "ru": "подниматься в гору",
-              "tj": "ба кӯҳ баромадан"
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
             },
             {
               "uz": "yuan, pul birligi",
               "ru": "юань, денежная единица",
               "tj": "юан, воҳиди пул"
+            },
+            {
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "元 = yuan, pul birligi (yuán)",
             "ru": "元 = юань, денежная единица (yuán)",
@@ -870,6 +814,105 @@
             "uz": "eslamoq, yodda tutmoq",
             "ru": "помнить",
             "tj": "дар ёд доштан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "爬山 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 爬山:",
+            "tj": "Маънои калимаи 爬山-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yoki (savolda tanlov)",
+              "ru": "или (в вопросе выбора)",
+              "tj": "ё (дар саволи интихобӣ)"
+            },
+            {
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
+            },
+            {
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
+            },
+            {
+              "uz": "shim/ko'ylak kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для брюк, платьев и т.п.",
+              "tj": "ҳисобвожа барои шим, курта ва ғ."
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "爬山 = toqqa chiqmoq (pá shān)",
+            "ru": "爬山 = подниматься в гору (pá shān)",
+            "tj": "爬山 = ба кӯҳ баромадан (pá shān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "爬山",
+            "pinyin": "pá shān",
+            "meaning": {
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'eslamoq, yodda tutmoq' xitoycha qaysi?",
+            "ru": "'помнить' по-китайски?",
+            "tj": "'дар ёд доштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "记得",
+            "还是",
+            "爬山",
+            "小心"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "eslamoq, yodda tutmoq = 记得 (jìde)",
+            "ru": "помнить = 记得 (jìde)",
+            "tj": "дар ёд доштан = 记得 (jìde)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "记得",
+            "pinyin": "jìde",
+            "meaning": {
+              "uz": "eslamoq, yodda tutmoq",
+              "ru": "помнить",
+              "tj": "дар ёд доштан"
+            }
           }
         }
       ]

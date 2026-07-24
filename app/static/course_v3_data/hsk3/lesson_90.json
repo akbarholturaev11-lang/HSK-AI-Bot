@@ -338,12 +338,12 @@
           "audio_text": "爱好",
           "pinyin": "àihào",
           "options": [
-            "一共",
-            "请假",
+            "邻居",
             "爱好",
-            "邻居"
+            "请假",
+            "一共"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "爱好 — qiziqish, sevimli mashg'ulot (àihào)",
             "ru": "爱好 — хобби, интерес (àihào)",
@@ -388,11 +388,6 @@
           },
           "options": [
             {
-              "uz": "usul, chora, yo'l",
-              "ru": "способ, метод",
-              "tj": "усул, роҳ, чора"
-            },
-            {
               "uz": "qo'shni",
               "ru": "сосед",
               "tj": "ҳамсоя"
@@ -403,12 +398,17 @@
               "tj": "ҳамагӣ, ҷамъ"
             },
             {
+              "uz": "usul, chora, yo'l",
+              "ru": "способ, метод",
+              "tj": "усул, роҳ, чора"
+            },
+            {
               "uz": "ruxsat so'ramoq, ta'til so'ramoq",
               "ru": "просить отпуск, отпрашиваться",
               "tj": "рухсат пурсидан, рухсатӣ хостан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "办法 = usul, chora, yo'l (bànfǎ)",
             "ru": "办法 = способ, метод (bànfǎ)",
@@ -442,12 +442,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "饱",
             "邻居",
-            "请假",
-            "一共"
+            "饱",
+            "一共",
+            "请假"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "饱 = to'q, qorni to'q (bǎo)",
             "ru": "饱 = сытый (bǎo)",
@@ -481,12 +481,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "wèile",
-            "yígòng",
             "línjū",
+            "yígòng",
+            "wèile",
             "qǐng jià"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "为了 — wèile",
             "ru": "为了 — wèile",
@@ -507,11 +507,11 @@
           },
           "options": [
             "邻居",
-            "一共",
             "请假",
-            "爱好"
+            "爱好",
+            "一共"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "qiziqish, sevimli mashg'ulot = 爱好 (àihào)",
             "ru": "хобби, интерес = 爱好 (àihào)",
@@ -616,15 +616,15 @@
             "tj": "Ҳар вақт ба ман муроҷиат кардан мумкин!"
           },
           "tokens": [
-            "找",
             "请假",
+            "什么",
+            "一共",
+            "可以",
+            "找",
+            "我",
             "时候",
             "来",
-            "一共",
-            "都",
-            "我",
-            "什么",
-            "可以"
+            "都"
           ],
           "answer_tokens": [
             "什么",
@@ -652,31 +652,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'jami, hammasi bo'lib' xitoycha qaysi?",
-            "ru": "'всего, в общей сложности' по-китайски?",
-            "tj": "'ҳамагӣ, ҷамъ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "邻居",
-            "后来",
-            "一共",
-            "请假"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "jami, hammasi bo'lib = 一共 (yígòng)",
-            "ru": "всего, в общей сложности = 一共 (yígòng)",
-            "tj": "ҳамагӣ, ҷамъ = 一共 (yígòng)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -729,12 +704,12 @@
           "audio_text": "办法",
           "pinyin": "bànfǎ",
           "options": [
+            "办法",
             "一共",
             "请假",
-            "办法",
             "邻居"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "办法 — usul, chora, yo'l (bànfǎ)",
             "ru": "办法 — способ, метод (bànfǎ)",
@@ -749,6 +724,105 @@
             "uz": "usul, chora, yo'l",
             "ru": "способ, метод",
             "tj": "усул, роҳ, чора"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一共 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一共:",
+            "tj": "Маънои калимаи 一共-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jami, hammasi bo'lib",
+              "ru": "всего, в общей сложности",
+              "tj": "ҳамагӣ, ҷамъ"
+            },
+            {
+              "uz": "qo'shni",
+              "ru": "сосед",
+              "tj": "ҳамсоя"
+            },
+            {
+              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
+              "ru": "просить отпуск, отпрашиваться",
+              "tj": "рухсат пурсидан, рухсатӣ хостан"
+            },
+            {
+              "uz": "keyin, keyinchalik",
+              "ru": "позже, впоследствии",
+              "tj": "баъдтар, баъдан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "一共 = jami, hammasi bo'lib (yígòng)",
+            "ru": "一共 = всего, в общей сложности (yígòng)",
+            "tj": "一共 = ҳамагӣ, ҷамъ (yígòng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "一共",
+            "pinyin": "yígòng",
+            "meaning": {
+              "uz": "jami, hammasi bo'lib",
+              "ru": "всего, в общей сложности",
+              "tj": "ҳамагӣ, ҷамъ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'usul, chora, yo'l' xitoycha qaysi?",
+            "ru": "'способ, метод' по-китайски?",
+            "tj": "'усул, роҳ, чора' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "邻居",
+            "办法",
+            "请假",
+            "一共"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "usul, chora, yo'l = 办法 (bànfǎ)",
+            "ru": "способ, метод = 办法 (bànfǎ)",
+            "tj": "усул, роҳ, чора = 办法 (bànfǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "办法",
+            "pinyin": "bànfǎ",
+            "meaning": {
+              "uz": "usul, chora, yo'l",
+              "ru": "способ, метод",
+              "tj": "усул, роҳ, чора"
+            }
           }
         }
       ]

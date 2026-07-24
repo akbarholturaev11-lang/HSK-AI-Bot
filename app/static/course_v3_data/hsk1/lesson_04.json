@@ -671,6 +671,27 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "再见",
+          "pinyin": "zàijiàn",
+          "translation": {
+            "uz": "xayr, ko'rishguncha",
+            "ru": "до свидания, пока",
+            "tj": "хайр, то дидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "你们 so'zining ma'nosini tanlang:",
@@ -694,14 +715,14 @@
               "tj": "ташаккур гуфтан, раҳмат"
             },
             {
-              "uz": "yo'q, emas",
-              "ru": "нет, не",
-              "tj": "не, нест"
-            },
-            {
               "uz": "iltimos, muammo yo'q",
               "ru": "пожалуйста, не за что",
               "tj": "хоҳиш мекунам, мушкиле нест"
+            },
+            {
+              "uz": "yo'q, emas",
+              "ru": "нет, не",
+              "tj": "не, нест"
             }
           ],
           "correct_index": 0,
@@ -709,75 +730,53 @@
             "uz": "你们 = sizlar (ko'plik) (nǐmen)",
             "ru": "你们 = вы (множественное число) (nǐmen)",
             "tj": "你们 = шумоён (ҷамъ) (nǐmen)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "你们",
+            "pinyin": "nǐmen",
+            "meaning": {
+              "uz": "sizlar (ko'plik)",
+              "ru": "вы (множественное число)",
+              "tj": "шумоён (ҷамъ)"
+            }
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "不客气",
-          "pinyin": "bú kèqi",
-          "translation": {
-            "uz": "iltimos, muammo yo'q",
-            "ru": "не за что, пожалуйста",
-            "tj": "хоҳиш мекунам, мушкиле нест"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xayr, ko'rishguncha' xitoycha qaysi?",
+            "ru": "'до свидания, пока' по-китайски?",
+            "tj": "'хайр, то дидан' ба хитоӣ кадом аст?"
           },
-          "tokens": {
-            "uz": [
-              "Rahmat",
-              "muammo",
-              "iltimos",
-              "yo'q",
-              "Senga"
-            ],
-            "ru": [
-              "пожалуйста",
-              "за",
-              "тебе",
-              "не",
-              "Спасибо",
-              "что"
-            ],
-            "tj": [
-              "мушкиле",
-              "Аз",
-              "Раҳмат",
-              "мекунам",
-              "нест",
-              "хоҳиш"
-            ]
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
-          "answer_tokens": {
-            "uz": [
-              "iltimos",
-              "muammo",
-              "yo'q"
-            ],
-            "ru": [
-              "не",
-              "за",
-              "что",
-              "пожалуйста"
-            ],
-            "tj": [
-              "хоҳиш",
-              "мекунам",
-              "мушкиле",
-              "нест"
-            ]
-          },
+          "options": [
+            "再见",
+            "不",
+            "不客气",
+            "谢谢"
+          ],
+          "correct_index": 0,
           "explanation": {
-            "uz": "不客气 — iltimos, muammo yo'q",
-            "ru": "不客气 — не за что, пожалуйста",
-            "tj": "不客气 — хоҳиш мекунам, мушкиле нест"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "再见",
-          "pinyin": "zàijiàn",
-          "translation": {
-            "uz": "xayr, ko'rishguncha",
-            "ru": "до свидания, пока",
-            "tj": "хайр, то дидан"
+            "uz": "xayr, ko'rishguncha = 再见 (zàijiàn)",
+            "ru": "до свидания, пока = 再见 (zàijiàn)",
+            "tj": "хайр, то дидан = 再见 (zàijiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "再见",
+            "pinyin": "zàijiàn",
+            "meaning": {
+              "uz": "xayr, ko'rishguncha",
+              "ru": "до свидания, пока",
+              "tj": "хайр, то дидан"
+            }
           }
         }
       ]

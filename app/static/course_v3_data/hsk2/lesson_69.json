@@ -321,9 +321,9 @@
           },
           "options": [
             "大家",
-            "票",
+            "新年",
             "日",
-            "新年"
+            "票"
           ],
           "correct_index": 0,
           "explanation": {
@@ -356,12 +356,12 @@
           "audio_text": "更",
           "pinyin": "gèng",
           "options": [
-            "更",
             "票",
-            "新年",
-            "日"
+            "日",
+            "更",
+            "新年"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "更 — yanada, bundan ham ko'proq (gèng)",
             "ru": "更 — ещё более, ещё больше (gèng)",
@@ -411,9 +411,9 @@
               "tj": "хоҳари хурдӣ"
             },
             {
-              "uz": "chipta, bilet",
-              "ru": "билет",
-              "tj": "чиптаи сафар"
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
             },
             {
               "uz": "yangi yil",
@@ -421,9 +421,9 @@
               "tj": "соли нав"
             },
             {
-              "uz": "kun, sana",
-              "ru": "день, дата",
-              "tj": "рӯз, сана"
+              "uz": "chipta, bilet",
+              "ru": "билет",
+              "tj": "чиптаи сафар"
             }
           ],
           "correct_index": 0,
@@ -446,12 +446,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "新年",
-            "日",
             "票",
-            "大家"
+            "日",
+            "大家",
+            "新年"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "大家 = hamma, barchalar (dàjiā)",
             "ru": "大家 = все, каждый (dàjiā)",
@@ -552,6 +552,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "妹妹",
+          "pinyin": "mèimei",
+          "options": [
+            "票",
+            "妹妹",
+            "日",
+            "新年"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "妹妹 — singil (mèimei)",
+            "ru": "妹妹 — младшая сестра (mèimei)",
+            "tj": "妹妹 — хоҳари хурдӣ (mèimei)"
+          }
+        },
+        {
           "type": "reverse_builder",
           "zh": "北京比这儿更好玩儿。",
           "pinyin": "Běijīng bǐ zhèr gèng hǎo wánr.",
@@ -621,6 +643,37 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Pekin bu yerdan yanada qiziqarliroq.",
+            "ru": "В Пекине ещё интереснее, чем здесь.",
+            "tj": "Пекин аз ин ҷо боз ҳам ҷолибтар аст."
+          },
+          "tokens": [
+            "玩儿",
+            "新年",
+            "这儿",
+            "好",
+            "北京",
+            "更",
+            "日",
+            "比"
+          ],
+          "answer_tokens": [
+            "北京",
+            "比",
+            "这儿",
+            "更",
+            "好",
+            "玩儿"
+          ],
+          "explanation": {
+            "uz": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr.",
+            "ru": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr.",
+            "tj": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr."
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -655,84 +708,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Pekin bu yerdan yanada qiziqarliroq.",
-            "ru": "В Пекине ещё интереснее, чем здесь.",
-            "tj": "Пекин аз ин ҷо боз ҳам ҷолибтар аст."
-          },
-          "tokens": [
-            "玩儿",
-            "比",
-            "这儿",
-            "好",
-            "更",
-            "日",
-            "北京",
-            "新年"
-          ],
-          "answer_tokens": [
-            "北京",
-            "比",
-            "这儿",
-            "更",
-            "好",
-            "玩儿"
-          ],
-          "explanation": {
-            "uz": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr.",
-            "ru": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr.",
-            "tj": "北京比这儿更好玩儿。 — Běijīng bǐ zhèr gèng hǎo wánr."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "妹妹",
-          "pinyin": "mèimei",
-          "options": [
-            "新年",
-            "妹妹",
-            "日",
-            "票"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "妹妹 — singil (mèimei)",
-            "ru": "妹妹 — младшая сестра (mèimei)",
-            "tj": "妹妹 — хоҳари хурдӣ (mèimei)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "日 talaffuzini tanlang:",
-            "ru": "Выберите произношение 日:",
-            "tj": "Талаффузи 日-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "huǒchēzhàn",
-            "xīnnián",
-            "piào",
-            "rì"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "日 — rì",
-            "ru": "日 — rì",
-            "tj": "日 — rì"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "妹妹",
           "pinyin": "mèimei",
@@ -740,6 +715,105 @@
             "uz": "singil",
             "ru": "младшая сестра",
             "tj": "хоҳари хурдӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "日 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 日:",
+            "tj": "Маънои калимаи 日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chipta, bilet",
+              "ru": "билет",
+              "tj": "чиптаи сафар"
+            },
+            {
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
+            },
+            {
+              "uz": "temir yo'l stantsiyasi, vokzal",
+              "ru": "железнодорожная станция, вокзал",
+              "tj": "истгоҳи роҳи оҳан, вокзал"
+            },
+            {
+              "uz": "yangi yil",
+              "ru": "новый год",
+              "tj": "соли нав"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "日 = kun, sana (rì)",
+            "ru": "日 = день, дата (rì)",
+            "tj": "日 = рӯз, сана (rì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "日",
+            "pinyin": "rì",
+            "meaning": {
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'singil' xitoycha qaysi?",
+            "ru": "'младшая сестра' по-китайски?",
+            "tj": "'хоҳари хурдӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "新年",
+            "票",
+            "日",
+            "妹妹"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "singil = 妹妹 (mèimei)",
+            "ru": "младшая сестра = 妹妹 (mèimei)",
+            "tj": "хоҳари хурдӣ = 妹妹 (mèimei)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "妹妹",
+            "pinyin": "mèimei",
+            "meaning": {
+              "uz": "singil",
+              "ru": "младшая сестра",
+              "tj": "хоҳари хурдӣ"
+            }
           }
         }
       ]

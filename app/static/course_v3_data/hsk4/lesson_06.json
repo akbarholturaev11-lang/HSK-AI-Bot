@@ -366,27 +366,27 @@
           },
           "options": [
             {
-              "uz": "ikkalasi, ikki kishi",
-              "ru": "двое, оба",
-              "tj": "ду нафар, ҳарду"
-            },
-            {
               "uz": "sevgi, muhabbat",
               "ru": "любовь",
               "tj": "муҳаббат"
             },
             {
-              "uz": "qonun, huquq",
-              "ru": "закон, право",
-              "tj": "қонун, ҳуқуқ"
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
             },
             {
               "uz": "taassurot",
               "ru": "впечатление",
               "tj": "таассурот"
+            },
+            {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "爱情 = sevgi, muhabbat (àiqíng)",
             "ru": "爱情 = любовь (àiqíng)",
@@ -430,9 +430,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "印象",
             "法律",
             "俩",
-            "印象",
             "星星"
           ],
           "correct_index": 3,
@@ -470,11 +470,11 @@
           },
           "options": [
             "yìnxiàng",
-            "liǎ",
             "jíshǐ",
+            "liǎ",
             "fǎlǜ"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "即使 — jíshǐ",
             "ru": "即使 — jíshǐ",
@@ -508,12 +508,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "俩",
             "法律",
             "印象",
-            "加班",
-            "俩"
+            "加班"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "qo'shimcha ishlamoq = 加班 (jiā bān)",
             "ru": "работать сверхурочно = 加班 (jiā bān)",
@@ -530,12 +530,12 @@
           "audio_text": "爱情",
           "pinyin": "àiqíng",
           "options": [
-            "俩",
             "爱情",
+            "俩",
             "印象",
             "法律"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "爱情 — sevgi, muhabbat (àiqíng)",
             "ru": "爱情 — любовь (àiqíng)",
@@ -603,31 +603,6 @@
             "uz": "hatto ... bo'lsa ham",
             "ru": "даже если",
             "tj": "ҳатто агар"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'nafaqat' xitoycha qaysi?",
-            "ru": "'не только' по-китайски?",
-            "tj": "'на танҳо' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "印象",
-            "俩",
-            "法律",
-            "不仅"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "nafaqat = 不仅 (bùjǐn)",
-            "ru": "не только = 不仅 (bùjǐn)",
-            "tj": "на танҳо = 不仅 (bùjǐn)"
           }
         },
         {
@@ -705,16 +680,16 @@
             "tj": "Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
           },
           "tokens": [
-            "多",
-            "法律",
-            "俩",
-            "羡慕",
-            "女",
+            "浪漫",
             "很",
+            "多",
+            "羡慕",
+            "俩",
+            "法律",
             "孩子",
+            "女",
             "的",
-            "爱情",
-            "浪漫"
+            "爱情"
           ],
           "answer_tokens": [
             "很",
@@ -733,28 +708,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "很多女孩子羡慕浪漫的爱情。",
-          "pinyin": "Hěn duō nǚháizi xiànmù làngmàn de àiqíng.",
-          "options": [
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
-            "很多女孩子羡慕浪漫的爱情。",
-            "那你们俩是怎么认识的？",
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "很多女孩子羡慕浪漫的爱情。 — Ko'p qizlar romantik sevgiga havas qiladi.",
-            "ru": "很多女孩子羡慕浪漫的爱情。 — Многие девушки восхищаются романтической любовью.",
-            "tj": "很多女孩子羡慕浪漫的爱情。 — Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "加班 so'zining ma'nosini tanlang:",
@@ -768,14 +721,14 @@
           },
           "options": [
             {
-              "uz": "qo'shimcha ishlamoq",
-              "ru": "работать сверхурочно",
-              "tj": "аз вақти кор зиёд кор кардан"
-            },
-            {
               "uz": "taassurot",
               "ru": "впечатление",
               "tj": "таассурот"
+            },
+            {
+              "uz": "qo'shimcha ishlamoq",
+              "ru": "работать сверхурочно",
+              "tj": "аз вақти кор зиёд кор кардан"
             },
             {
               "uz": "qonun, huquq",
@@ -788,7 +741,7 @@
               "tj": "ду нафар, ҳарду"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "加班 = qo'shimcha ishlamoq (jiā bān)",
             "ru": "加班 = работать сверхурочно (jiā bān)",
@@ -803,6 +756,105 @@
             "uz": "yulduz",
             "ru": "звезда",
             "tj": "ситора"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "缺点 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 缺点:",
+            "tj": "Маънои калимаи 缺点-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kamchilik",
+              "ru": "недостаток",
+              "tj": "камбудӣ"
+            },
+            {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            },
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "缺点 = kamchilik (quēdiǎn)",
+            "ru": "缺点 = недостаток (quēdiǎn)",
+            "tj": "缺点 = камбудӣ (quēdiǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "缺点",
+            "pinyin": "quēdiǎn",
+            "meaning": {
+              "uz": "kamchilik",
+              "ru": "недостаток",
+              "tj": "камбудӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yulduz' xitoycha qaysi?",
+            "ru": "'звезда' по-китайски?",
+            "tj": "'ситора' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "法律",
+            "印象",
+            "星星",
+            "俩"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "yulduz = 星星 (xīngxing)",
+            "ru": "звезда = 星星 (xīngxing)",
+            "tj": "ситора = 星星 (xīngxing)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "星星",
+            "pinyin": "xīngxing",
+            "meaning": {
+              "uz": "yulduz",
+              "ru": "звезда",
+              "tj": "ситора"
+            }
           }
         }
       ]

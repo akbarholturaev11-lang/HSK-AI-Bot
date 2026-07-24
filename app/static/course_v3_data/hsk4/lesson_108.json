@@ -416,11 +416,11 @@
           },
           "options": [
             "sǐ",
-            "rènwu",
             "guīdìng",
+            "rènwu",
             "kěxī"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "任务 — rènwu",
             "ru": "任务 — rènwu",
@@ -454,12 +454,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "可惜",
-            "规定",
             "死",
-            "意见"
+            "规定",
+            "意见",
+            "可惜"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "fikr, taklif = 意见 (yìjian)",
             "ru": "мнение, предложение = 意见 (yìjian)",
@@ -490,12 +490,12 @@
           "audio_text": "仔细",
           "pinyin": "zǐxì",
           "options": [
-            "规定",
-            "死",
             "可惜",
-            "仔细"
+            "仔细",
+            "死",
+            "规定"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "仔细 — diqqatli, sinchkov (zǐxì)",
             "ru": "仔细 — внимательный, тщательно (zǐxì)",
@@ -540,9 +540,9 @@
           },
           "options": [
             {
-              "uz": "erishmoq",
-              "ru": "достигать",
-              "tj": "расидан"
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
             },
             {
               "uz": "qattiq, o'zgarmas",
@@ -555,12 +555,12 @@
               "tj": "афсӯс, ҳайф"
             },
             {
-              "uz": "qoida, belgilangan tartib",
-              "ru": "правило, положение",
-              "tj": "қоида, тартиб"
+              "uz": "erishmoq",
+              "ru": "достигать",
+              "tj": "расидан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "达到 = erishmoq (dádào)",
             "ru": "达到 = достигать (dádào)",
@@ -580,12 +580,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "死",
             "规定",
-            "任务",
-            "可惜"
+            "死",
+            "可惜",
+            "任务"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "任务 = vazifa (rènwu)",
             "ru": "任务 = задача (rènwu)",
@@ -655,57 +655,16 @@
           "audio_text": "任务",
           "pinyin": "rènwu",
           "options": [
-            "可惜",
-            "死",
             "任务",
-            "规定"
+            "规定",
+            "死",
+            "可惜"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "任务 — vazifa (rènwu)",
             "ru": "任务 — задача (rènwu)",
             "tj": "任务 — вазифа (rènwu)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "友好 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 友好:",
-            "tj": "Маънои калимаи 友好-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
-            },
-            {
-              "uz": "do'stona",
-              "ru": "дружелюбный",
-              "tj": "дӯстона"
-            },
-            {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
-            },
-            {
-              "uz": "qoida, belgilangan tartib",
-              "ru": "правило, положение",
-              "tj": "қоида, тартиб"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "友好 = do'stona (yǒuhǎo)",
-            "ru": "友好 = дружелюбный (yǒuhǎo)",
-            "tj": "友好 = дӯстона (yǒuhǎo)"
           }
         },
         {
@@ -718,12 +677,12 @@
           "audio_text": "达到",
           "pinyin": "dádào",
           "options": [
-            "可惜",
             "达到",
             "规定",
-            "死"
+            "死",
+            "可惜"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "达到 — erishmoq (dádào)",
             "ru": "达到 — достигать (dádào)",
@@ -768,9 +727,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "可惜",
-            "仔细",
             "死",
+            "仔细",
+            "可惜",
             "规定"
           ],
           "correct_index": 1,
@@ -788,6 +747,105 @@
             "uz": "erishmoq",
             "ru": "достигать",
             "tj": "расидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "相反 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 相反:",
+            "tj": "Маънои калимаи 相反-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aksincha",
+              "ru": "наоборот, напротив",
+              "tj": "баръакс"
+            },
+            {
+              "uz": "qoida, belgilangan tartib",
+              "ru": "правило, положение",
+              "tj": "қоида, тартиб"
+            },
+            {
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
+            },
+            {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "相反 = aksincha (xiāngfǎn)",
+            "ru": "相反 = наоборот, напротив (xiāngfǎn)",
+            "tj": "相反 = баръакс (xiāngfǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "相反",
+            "pinyin": "xiāngfǎn",
+            "meaning": {
+              "uz": "aksincha",
+              "ru": "наоборот, напротив",
+              "tj": "баръакс"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'erishmoq' xitoycha qaysi?",
+            "ru": "'достигать' по-китайски?",
+            "tj": "'расидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "规定",
+            "可惜",
+            "死",
+            "达到"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "erishmoq = 达到 (dádào)",
+            "ru": "достигать = 达到 (dádào)",
+            "tj": "расидан = 达到 (dádào)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "达到",
+            "pinyin": "dádào",
+            "meaning": {
+              "uz": "erishmoq",
+              "ru": "достигать",
+              "tj": "расидан"
+            }
           }
         }
       ]

@@ -330,12 +330,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "路",
             "过",
             "机场",
-            "路",
             "教室"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "o'tmoq; o'tkazmoq (bayramni) = 过 (guò)",
             "ru": "проходить; отмечать (праздник) = 过 (guò)",
@@ -367,11 +367,11 @@
           "pinyin": "zǒu",
           "options": [
             "教室",
-            "走",
             "机场",
+            "走",
             "路"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "走 — yurib bormoq, ketmoq (zǒu)",
             "ru": "走 — идти пешком, уходить (zǒu)",
@@ -411,9 +411,9 @@
               "tj": "фурудгоҳ"
             },
             {
-              "uz": "yo'l, ko'cha",
-              "ru": "дорога, улица",
-              "tj": "роҳ, кӯча"
+              "uz": "darsxona, sinf xonasi",
+              "ru": "классная комната, аудитория",
+              "tj": "синфхона, толори дарс"
             },
             {
               "uz": "yetib bormoq, kelmoq",
@@ -421,9 +421,9 @@
               "tj": "расидан, омадан"
             },
             {
-              "uz": "darsxona, sinf xonasi",
-              "ru": "классная комната, аудитория",
-              "tj": "синфхона, толори дарс"
+              "uz": "yo'l, ko'cha",
+              "ru": "дорога, улица",
+              "tj": "роҳ, кӯча"
             }
           ],
           "correct_index": 2,
@@ -446,12 +446,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "教室",
-            "机场",
+            "过",
             "路",
-            "过"
+            "机场",
+            "教室"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "过 = o'tmoq; o'tkazmoq (bayramni) (guò)",
             "ru": "过 = проходить; отмечать (праздник) (guò)",
@@ -549,13 +549,13 @@
           },
           "tokens": [
             "分钟",
-            "到",
+            "了",
+            "就",
+            "机场",
             "几",
             "走",
-            "就",
-            "教室",
-            "机场",
-            "了"
+            "到",
+            "教室"
           ],
           "answer_tokens": [
             "走",
@@ -583,53 +583,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'dan (masofa ifodalash uchun)' xitoycha qaysi?",
-            "ru": "'от, до (для выражения расстояния)' по-китайски?",
-            "tj": "'аз (барои ифодаи масофа)' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "机场",
-            "教室",
-            "离",
-            "路"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "dan (masofa ifodalash uchun) = 离 (lí)",
-            "ru": "от, до (для выражения расстояния) = 离 (lí)",
-            "tj": "аз (барои ифодаи масофа) = 离 (lí)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "在去机场的路上。你已经到了吗？",
-          "pinyin": "Zài qù jīchǎng de lùshang. Nǐ yǐjīng dào le ma?",
-          "options": [
-            "大卫回来了吗？",
-            "没有，他还在教室学习呢。",
-            "在去机场的路上。你已经到了吗？",
-            "已经9点多了，他怎么还在学习？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "在去机场的路上。你已经到了吗？ — Aeroportga ketayotgan yo'ldaman. Sen allaqachon yetib kelding mi?",
-            "ru": "在去机场的路上。你已经到了吗？ — На пути в аэропорт. Ты уже добрался?",
-            "tj": "在去机场的路上。你已经到了吗？ — Дар роҳ ба фурудгоҳам. Оё ту аллакай расидӣ?"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -639,12 +592,12 @@
           "audio_text": "走",
           "pinyin": "zǒu",
           "options": [
-            "走",
             "路",
+            "走",
             "机场",
             "教室"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "走 — yurib bormoq, ketmoq (zǒu)",
             "ru": "走 — идти пешком, уходить (zǒu)",
@@ -735,6 +688,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "在去机场的路上。你已经到了吗？",
+          "pinyin": "Zài qù jīchǎng de lùshang. Nǐ yǐjīng dào le ma?",
+          "options": [
+            "大卫回来了吗？",
+            "没有，他还在教室学习呢。",
+            "在去机场的路上。你已经到了吗？",
+            "已经9点多了，他怎么还在学习？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "在去机场的路上。你已经到了吗？ — Aeroportga ketayotgan yo'ldaman. Sen allaqachon yetib kelding mi?",
+            "ru": "在去机场的路上。你已经到了吗？ — На пути в аэропорт. Ты уже добрался?",
+            "tj": "在去机场的路上。你已经到了吗？ — Дар роҳ ба фурудгоҳам. Оё ту аллакай расидӣ?"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "过",
           "pinyin": "guò",
@@ -742,6 +717,105 @@
             "uz": "o'tmoq; o'tkazmoq (bayramni)",
             "ru": "проходить; отмечать (праздник)",
             "tj": "гузаштан; ҷашн гирифтан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "小时 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 小时:",
+            "tj": "Маънои калимаи 小时-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yo'l, ko'cha",
+              "ru": "дорога, улица",
+              "tj": "роҳ, кӯча"
+            },
+            {
+              "uz": "aeroport",
+              "ru": "аэропорт",
+              "tj": "фурудгоҳ"
+            },
+            {
+              "uz": "soat (vaqt o'lchovi)",
+              "ru": "час (единица времени)",
+              "tj": "соат (воҳиди вақт)"
+            },
+            {
+              "uz": "darsxona, sinf xonasi",
+              "ru": "классная комната, аудитория",
+              "tj": "синфхона, толори дарс"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "小时 = soat (vaqt o'lchovi) (xiǎoshí)",
+            "ru": "小时 = час (единица времени) (xiǎoshí)",
+            "tj": "小时 = соат (воҳиди вақт) (xiǎoshí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "小时",
+            "pinyin": "xiǎoshí",
+            "meaning": {
+              "uz": "soat (vaqt o'lchovi)",
+              "ru": "час (единица времени)",
+              "tj": "соат (воҳиди вақт)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'tmoq; o'tkazmoq (bayramni)' xitoycha qaysi?",
+            "ru": "'проходить; отмечать (праздник)' по-китайски?",
+            "tj": "'гузаштан; ҷашн гирифтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "教室",
+            "机场",
+            "过",
+            "路"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "o'tmoq; o'tkazmoq (bayramni) = 过 (guò)",
+            "ru": "проходить; отмечать (праздник) = 过 (guò)",
+            "tj": "гузаштан; ҷашн гирифтан = 过 (guò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "过",
+            "pinyin": "guò",
+            "meaning": {
+              "uz": "o'tmoq; o'tkazmoq (bayramni)",
+              "ru": "проходить; отмечать (праздник)",
+              "tj": "гузаштан; ҷашн гирифтан"
+            }
           }
         }
       ]

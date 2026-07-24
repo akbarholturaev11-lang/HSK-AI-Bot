@@ -360,12 +360,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "面包",
             "周末",
             "啊",
-            "打算"
+            "打算",
+            "面包"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "non, bulka = 面包 (miànbāo)",
             "ru": "хлеб, булка = 面包 (miànbāo)",
@@ -396,12 +396,12 @@
           "audio_text": "带",
           "pinyin": "dài",
           "options": [
-            "打算",
-            "带",
             "啊",
-            "周末"
+            "周末",
+            "带",
+            "打算"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "带 — olib ketmoq, olib yurmoq (dài)",
             "ru": "带 — брать с собой, нести (dài)",
@@ -441,9 +441,9 @@
               "tj": "харита"
             },
             {
-              "uz": "hafta oxiri, dam olish kuni",
-              "ru": "выходные, конец недели",
-              "tj": "охири ҳафта, рӯзи истироҳат"
+              "uz": "reja; rejalamoq, niyat qilmoq",
+              "ru": "план; планировать, намереваться",
+              "tj": "нақша; нақша кардан"
             },
             {
               "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
@@ -451,9 +451,9 @@
               "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
             },
             {
-              "uz": "reja; rejalamoq, niyat qilmoq",
-              "ru": "план; планировать, намереваться",
-              "tj": "нақша; нақша кардан"
+              "uz": "hafta oxiri, dam olish kuni",
+              "ru": "выходные, конец недели",
+              "tj": "охири ҳафта, рӯзи истироҳат"
             }
           ],
           "correct_index": 0,
@@ -476,12 +476,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "周末",
-            "啊",
             "打算",
-            "面包"
+            "面包",
+            "啊",
+            "周末"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "面包 = non, bulka (miànbāo)",
             "ru": "面包 = хлеб, булка (miànbāo)",
@@ -591,50 +591,16 @@
           "audio_text": "水果、面包、茶都准备好了，我们还带什么？",
           "pinyin": "Shuǐguǒ, miànbāo, chá dōu zhǔnbèi hǎo le, wǒmen hái dài shénme?",
           "options": [
-            "周末你有什么打算？",
             "水果、面包、茶都准备好了，我们还带什么？",
+            "我早就想好了，请你吃饭、看电影、喝咖啡。",
             "请我？",
-            "我早就想好了，请你吃饭、看电影、喝咖啡。"
+            "周末你有什么打算？"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "水果、面包、茶都准备好了，我们还带什么？ — Meva, non va choy hammasi tayyor. Yana nima olib ketamiz?",
             "ru": "水果、面包、茶都准备好了，我们还带什么？ — Фрукты, хлеб и чай уже готовы. Что ещё возьмём?",
             "tj": "水果、面包、茶都准备好了，我们还带什么？ — Мева, нон ва чой ҳама тайёр. Боз чӣ мегирем?"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "面包",
-              {
-                "uz": "non, bulka",
-                "ru": "хлеб, булка",
-                "tj": "нон, булка"
-              }
-            ],
-            [
-              "带",
-              {
-                "uz": "olib ketmoq, olib yurmoq",
-                "ru": "брать с собой, нести",
-                "tj": "бо худ гирифтан, бурдан"
-              }
-            ],
-            [
-              "地图",
-              {
-                "uz": "xarita",
-                "ru": "карта",
-                "tj": "харита"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -716,15 +682,15 @@
             "tj": "Биё боз чанд либоси бештар гирем."
           },
           "tokens": [
-            "吧",
-            "件",
-            "打算",
-            "周末",
             "衣服",
-            "再",
-            "带",
+            "周末",
+            "件",
+            "多",
+            "打算",
             "几",
-            "多"
+            "带",
+            "吧",
+            "再"
           ],
           "answer_tokens": [
             "再",
@@ -742,11 +708,66 @@
           }
         },
         {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "面包",
+              {
+                "uz": "non, bulka",
+                "ru": "хлеб, булка",
+                "tj": "нон, булка"
+              }
+            ],
+            [
+              "带",
+              {
+                "uz": "olib ketmoq, olib yurmoq",
+                "ru": "брать с собой, нести",
+                "tj": "бо худ гирифтан, бурдан"
+              }
+            ],
+            [
+              "地图",
+              {
+                "uz": "xarita",
+                "ru": "карта",
+                "tj": "харита"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "面包",
+          "pinyin": "miànbāo",
+          "translation": {
+            "uz": "non, bulka",
+            "ru": "хлеб, булка",
+            "tj": "нон, булка"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "跟 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 跟:",
-            "tj": "Маънои калимаи 跟-ро интихоб кунед:"
+            "uz": "复习 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 复习:",
+            "tj": "Маънои калимаи 复习-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -754,6 +775,11 @@
             "tj": "Маъно чист?"
           },
           "options": [
+            {
+              "uz": "takrorlamoq, qayta o'qimoq",
+              "ru": "повторять, готовиться",
+              "tj": "такрор кардан, аз нав хондан"
+            },
             {
               "uz": "hafta oxiri, dam olish kuni",
               "ru": "выходные, конец недели",
@@ -768,28 +794,60 @@
               "uz": "reja; rejalamoq, niyat qilmoq",
               "ru": "план; планировать, намереваться",
               "tj": "нақша; нақша кардан"
-            },
-            {
-              "uz": "bilan",
-              "ru": "с, вместе с",
-              "tj": "бо"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "跟 = bilan (gēn)",
-            "ru": "跟 = с, вместе с (gēn)",
-            "tj": "跟 = бо (gēn)"
+            "uz": "复习 = takrorlamoq, qayta o'qimoq (fùxí)",
+            "ru": "复习 = повторять, готовиться (fùxí)",
+            "tj": "复习 = такрор кардан, аз нав хондан (fùxí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "复习",
+            "pinyin": "fùxí",
+            "meaning": {
+              "uz": "takrorlamoq, qayta o'qimoq",
+              "ru": "повторять, готовиться",
+              "tj": "такрор кардан, аз нав хондан"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "面包",
-          "pinyin": "miànbāo",
-          "translation": {
-            "uz": "non, bulka",
-            "ru": "хлеб, булка",
-            "tj": "нон, булка"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'non, bulka' xitoycha qaysi?",
+            "ru": "'хлеб, булка' по-китайски?",
+            "tj": "'нон, булка' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "面包",
+            "打算",
+            "啊",
+            "周末"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "non, bulka = 面包 (miànbāo)",
+            "ru": "хлеб, булка = 面包 (miànbāo)",
+            "tj": "нон, булка = 面包 (miànbāo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "面包",
+            "pinyin": "miànbāo",
+            "meaning": {
+              "uz": "non, bulka",
+              "ru": "хлеб, булка",
+              "tj": "нон, булка"
+            }
           }
         }
       ]

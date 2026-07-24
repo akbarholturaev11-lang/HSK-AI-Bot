@@ -320,10 +320,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "给",
+            "生日",
             "快乐",
             "晚上",
-            "生日"
+            "给"
           ],
           "correct_index": 2,
           "explanation": {
@@ -369,12 +369,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "kuàilè",
-            "gěi",
+            "wèn",
             "shēngrì",
-            "wèn"
+            "kuàilè",
+            "gěi"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "问 — wèn",
             "ru": "问 — wèn",
@@ -408,12 +408,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "生日",
-            "快乐",
             "非常",
-            "给"
+            "给",
+            "生日",
+            "快乐"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "juda, nihoyatda = 非常 (fēicháng)",
             "ru": "очень, чрезвычайно = 非常 (fēicháng)",
@@ -431,9 +431,9 @@
           "pinyin": "wǎnshang",
           "options": [
             "晚上",
-            "生日",
+            "给",
             "快乐",
-            "给"
+            "生日"
           ],
           "correct_index": 0,
           "explanation": {
@@ -544,13 +544,13 @@
           },
           "tokens": [
             "快乐",
-            "儿子",
-            "好",
-            "问",
+            "我",
+            "一下",
             "晚上",
             "生日",
-            "我",
-            "一下"
+            "儿子",
+            "好",
+            "问"
           ],
           "answer_tokens": [
             "好",
@@ -564,31 +564,6 @@
             "uz": "好，晚上我问一下儿子。 — Hǎo, wǎnshang wǒ wèn yíxià érzi.",
             "ru": "好，晚上我问一下儿子。 — Hǎo, wǎnshang wǒ wèn yíxià érzi.",
             "tj": "好，晚上我问一下儿子。 — Hǎo, wǎnshang wǒ wèn yíxià érzi."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "生日 talaffuzini tanlang:",
-            "ru": "Выберите произношение 生日:",
-            "tj": "Талаффузи 生日-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jiē",
-            "shēngrì",
-            "gěi",
-            "kuàilè"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "生日 — shēngrì",
-            "ru": "生日 — shēngrì",
-            "tj": "生日 — shēngrì"
           }
         },
         {
@@ -700,12 +675,12 @@
           "audio_text": "非常喜欢。",
           "pinyin": "Fēicháng xǐhuan.",
           "options": [
-            "生日快乐！这是送给你的！",
-            "是什么？是一本书吗？",
+            "非常喜欢。",
             "对，这本书是我写给你的。",
-            "非常喜欢。"
+            "是什么？是一本书吗？",
+            "生日快乐！这是送给你的！"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "非常喜欢。 — Juda yaxshi ko'raman.",
             "ru": "非常喜欢。 — Очень нравится.",
@@ -720,6 +695,105 @@
             "uz": "so'ramoq",
             "ru": "спрашивать",
             "tj": "пурсидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "生日 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生日:",
+            "tj": "Маънои калимаи 生日-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            },
+            {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            },
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            },
+            {
+              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+              "ru": "принимать, получать; отвечать на телефон",
+              "tj": "қабул кардан; ба телефон ҷавоб додан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "生日 = tug'ilgan kun (shēngrì)",
+            "ru": "生日 = день рождения (shēngrì)",
+            "tj": "生日 = рӯзи таваллуд (shēngrì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "生日",
+            "pinyin": "shēngrì",
+            "meaning": {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'so'ramoq' xitoycha qaysi?",
+            "ru": "'спрашивать' по-китайски?",
+            "tj": "'пурсидан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "给",
+            "问",
+            "快乐",
+            "生日"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "so'ramoq = 问 (wèn)",
+            "ru": "спрашивать = 问 (wèn)",
+            "tj": "пурсидан = 问 (wèn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "问",
+            "pinyin": "wèn",
+            "meaning": {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            }
           }
         }
       ]

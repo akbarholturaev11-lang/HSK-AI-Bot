@@ -292,8 +292,8 @@
           "audio_text": "菜单",
           "pinyin": "càidān",
           "options": [
-            "打扫",
             "干净",
+            "打扫",
             "菜单",
             "然后"
           ],
@@ -332,9 +332,9 @@
           },
           "options": [
             {
-              "uz": "tozalamoq, supurmoq",
-              "ru": "убирать, подметать",
-              "tj": "тоза кардан, рӯфтан"
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
             },
             {
               "uz": "oson, oddiy",
@@ -342,14 +342,14 @@
               "tj": "содда"
             },
             {
-              "uz": "keyin, undan so'ng",
-              "ru": "потом, затем",
-              "tj": "баъд, сипас"
-            },
-            {
               "uz": "toza",
               "ru": "чистый",
               "tj": "тоза"
+            },
+            {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
             }
           ],
           "correct_index": 1,
@@ -396,12 +396,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "香蕉",
-            "然后",
             "干净",
+            "然后",
+            "香蕉",
             "打扫"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "香蕉 = banan (xiāngjiāo)",
             "ru": "香蕉 = банан (xiāngjiāo)",
@@ -421,12 +421,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dǎsǎo",
-            "gānjìng",
+            "ránhòu",
             "càidān",
-            "ránhòu"
+            "dǎsǎo",
+            "gānjìng"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "菜单 — càidān",
             "ru": "菜单 — càidān",
@@ -479,53 +479,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "xǐ zǎo qaysi ieroglif?",
-            "ru": "Какой иероглиф читается xǐ zǎo?",
-            "tj": "xǐ zǎo кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "然后",
-            "洗澡",
-            "干净",
-            "打扫"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "洗澡 = cho'milmoq, dush qabul qilmoq (xǐ zǎo)",
-            "ru": "洗澡 = принимать ванну/душ (xǐ zǎo)",
-            "tj": "洗澡 = оббозӣ кардан, душ гирифтан (xǐ zǎo)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "香蕉",
-          "pinyin": "xiāngjiāo",
-          "options": [
-            "干净",
-            "打扫",
-            "然后",
-            "香蕉"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "香蕉 — banan (xiāngjiāo)",
-            "ru": "香蕉 — банан (xiāngjiāo)",
-            "tj": "香蕉 — банан (xiāngjiāo)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "菜单",
           "pinyin": "càidān",
@@ -542,15 +495,37 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "香蕉",
+          "pinyin": "xiāngjiāo",
+          "options": [
+            "然后",
+            "打扫",
+            "干净",
+            "香蕉"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "香蕉 — banan (xiāngjiāo)",
+            "ru": "香蕉 — банан (xiāngjiāo)",
+            "tj": "香蕉 — банан (xiāngjiāo)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
           "audio_text": "简单",
           "pinyin": "jiǎndān",
           "options": [
-            "然后",
-            "干净",
+            "简单",
             "打扫",
-            "简单"
+            "然后",
+            "干净"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "简单 — oson, oddiy (jiǎndān)",
             "ru": "简单 — простой (jiǎndān)",
@@ -565,6 +540,105 @@
             "uz": "banan",
             "ru": "банан",
             "tj": "банан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "声音 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 声音:",
+            "tj": "Маънои калимаи 声音-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
+            },
+            {
+              "uz": "ovoz, tovush",
+              "ru": "звук, голос",
+              "tj": "овоз, садо"
+            },
+            {
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
+            },
+            {
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "声音 = ovoz, tovush (shēngyīn)",
+            "ru": "声音 = звук, голос (shēngyīn)",
+            "tj": "声音 = овоз, садо (shēngyīn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "声音",
+            "pinyin": "shēngyīn",
+            "meaning": {
+              "uz": "ovoz, tovush",
+              "ru": "звук, голос",
+              "tj": "овоз, садо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'banan' xitoycha qaysi?",
+            "ru": "'банан' по-китайски?",
+            "tj": "'банан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打扫",
+            "干净",
+            "香蕉",
+            "然后"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "banan = 香蕉 (xiāngjiāo)",
+            "ru": "банан = 香蕉 (xiāngjiāo)",
+            "tj": "банан = 香蕉 (xiāngjiāo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "香蕉",
+            "pinyin": "xiāngjiāo",
+            "meaning": {
+              "uz": "banan",
+              "ru": "банан",
+              "tj": "банан"
+            }
           }
         }
       ]

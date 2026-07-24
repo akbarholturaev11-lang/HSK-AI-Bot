@@ -372,16 +372,6 @@
           },
           "options": [
             {
-              "uz": "quyosh",
-              "ru": "солнце",
-              "tj": "офтоб"
-            },
-            {
-              "uz": "g'arb",
-              "ru": "запад",
-              "tj": "ғарб"
-            },
-            {
               "uz": "jomadon, chamadon",
               "ru": "чемодан",
               "tj": "ҷомадон"
@@ -390,9 +380,19 @@
               "uz": "jahli chiqmoq",
               "ru": "сердиться",
               "tj": "хашмгин шудан"
+            },
+            {
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "太阳 = quyosh (tàiyáng)",
             "ru": "太阳 = солнце (tàiyáng)",
@@ -427,11 +427,11 @@
           },
           "options": [
             "太阳",
+            "西",
             "生气",
-            "行李箱",
-            "西"
+            "行李箱"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "西 = g'arb (xī)",
             "ru": "西 = запад (xī)",
@@ -465,12 +465,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shēng qì",
-            "tàiyáng",
             "xī",
+            "tàiyáng",
+            "shēng qì",
             "xínglixiāng"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "生气 — shēng qì",
             "ru": "生气 — shēng qì",
@@ -505,8 +505,8 @@
           },
           "options": [
             "太阳",
-            "生气",
             "西",
+            "生气",
             "行李箱"
           ],
           "correct_index": 3,
@@ -526,12 +526,12 @@
           "audio_text": "太阳",
           "pinyin": "tàiyáng",
           "options": [
-            "行李箱",
             "太阳",
+            "行李箱",
             "西",
             "生气"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "太阳 — quyosh (tàiyáng)",
             "ru": "太阳 — солнце (tàiyáng)",
@@ -649,12 +649,12 @@
           "audio_text": "那我帮你把衣服放到行李箱里吧。什么时候回来？",
           "pinyin": "Nà wǒ bāng nǐ bǎ yīfu fàng dào xínglixiāng lǐ ba. Shénme shíhou huílai?",
           "options": [
-            "那我帮你把衣服放到行李箱里吧。什么时候回来？",
-            "怎么了？",
             "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。",
-            "今天太阳从西边出来了吗？"
+            "那我帮你把衣服放到行李箱里吧。什么时候回来？",
+            "今天太阳从西边出来了吗？",
+            "怎么了？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "那我帮你把衣服放到行李箱里吧。什么时候回来？ — Unda kiyimlaringni jomadonga solishga yordam beraman. Qachon qaytasan?",
             "ru": "那我帮你把衣服放到行李箱里吧。什么时候回来？ — Тогда я помогу положить одежду в чемодан. Когда вернёшься?",
@@ -671,41 +671,16 @@
           "audio_text": "西",
           "pinyin": "xī",
           "options": [
+            "行李箱",
             "生气",
             "西",
-            "行李箱",
             "太阳"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "西 — g'arb (xī)",
             "ru": "西 — запад (xī)",
             "tj": "西 — ғарб (xī)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "洗手间 talaffuzini tanlang:",
-            "ru": "Выберите произношение 洗手间:",
-            "tj": "Талаффузи 洗手间-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "shēng qì",
-            "xī",
-            "tàiyáng",
-            "xǐshǒujiān"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "洗手间 — xǐshǒujiān",
-            "ru": "洗手间 — xǐshǒujiān",
-            "tj": "洗手间 — xǐshǒujiān"
           }
         },
         {
@@ -716,6 +691,105 @@
             "uz": "quyosh",
             "ru": "солнце",
             "tj": "офтоб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "图书馆 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 图书馆:",
+            "tj": "Маънои калимаи 图书馆-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
+            },
+            {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "хашмгин шудан"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
+            },
+            {
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "图书馆 = kutubxona (túshūguǎn)",
+            "ru": "图书馆 = библиотека (túshūguǎn)",
+            "tj": "图书馆 = китобхона (túshūguǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "图书馆",
+            "pinyin": "túshūguǎn",
+            "meaning": {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'quyosh' xitoycha qaysi?",
+            "ru": "'солнце' по-китайски?",
+            "tj": "'офтоб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "行李箱",
+            "太阳",
+            "西",
+            "生气"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "quyosh = 太阳 (tàiyáng)",
+            "ru": "солнце = 太阳 (tàiyáng)",
+            "tj": "офтоб = 太阳 (tàiyáng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "太阳",
+            "pinyin": "tàiyáng",
+            "meaning": {
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
+            }
           }
         }
       ]

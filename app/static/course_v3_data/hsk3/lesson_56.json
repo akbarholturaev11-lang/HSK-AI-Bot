@@ -382,14 +382,9 @@
           },
           "options": [
             {
-              "uz": "chiroq",
-              "ru": "лампа, свет",
-              "tj": "чароғ"
-            },
-            {
-              "uz": "lug'at",
-              "ru": "словарь",
-              "tj": "луғат"
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
             },
             {
               "uz": "qarzga olmoq, qarzga bermoq",
@@ -397,12 +392,17 @@
               "tj": "қарз гирифтан, қарз додан"
             },
             {
-              "uz": "kutubxona",
-              "ru": "библиотека",
-              "tj": "китобхона"
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "chiroq",
+              "ru": "лампа, свет",
+              "tj": "чароғ"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "灯 = chiroq (dēng)",
             "ru": "灯 = лампа, свет (dēng)",
@@ -436,12 +436,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "会议",
-            "借",
             "图书馆",
-            "词典"
+            "词典",
+            "借",
+            "会议"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "会议 = yig'ilish, majlis (huìyì)",
             "ru": "会议 = собрание, совещание (huìyì)",
@@ -475,12 +475,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiè",
+            "cídiǎn",
             "túshūguǎn",
-            "jiéshù",
-            "cídiǎn"
+            "jiè",
+            "jiéshù"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "结束 — jiéshù",
             "ru": "结束 — jiéshù",
@@ -524,12 +524,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "借",
             "忘记",
+            "借",
             "词典",
             "图书馆"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "unutmoq = 忘记 (wàngjì)",
             "ru": "забывать = 忘记 (wàngjì)",
@@ -546,12 +546,12 @@
           "audio_text": "灯",
           "pinyin": "dēng",
           "options": [
-            "图书馆",
-            "灯",
+            "词典",
             "借",
-            "词典"
+            "灯",
+            "图书馆"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "灯 — chiroq (dēng)",
             "ru": "灯 — лампа, свет (dēng)",
@@ -660,47 +660,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "还 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 还:",
-            "tj": "Маънои калимаи 还-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qaytarmoq",
-              "ru": "возвращать",
-              "tj": "баргардондан"
-            },
-            {
-              "uz": "lug'at",
-              "ru": "словарь",
-              "tj": "луғат"
-            },
-            {
-              "uz": "kutubxona",
-              "ru": "библиотека",
-              "tj": "китобхона"
-            },
-            {
-              "uz": "qarzga olmoq, qarzga bermoq",
-              "ru": "брать в долг, одалживать",
-              "tj": "қарз гирифтан, қарз додан"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "还 = qaytarmoq (huán)",
-            "ru": "还 = возвращать (huán)",
-            "tj": "还 = баргардондан (huán)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -752,9 +711,9 @@
           "audio_text": "忘记",
           "pinyin": "wàngjì",
           "options": [
-            "词典",
-            "图书馆",
             "借",
+            "图书馆",
+            "词典",
             "忘记"
           ],
           "correct_index": 3,
@@ -772,6 +731,105 @@
             "uz": "unutmoq",
             "ru": "забывать",
             "tj": "фаромӯш кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "还 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 还:",
+            "tj": "Маънои калимаи 还-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
+            },
+            {
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
+            },
+            {
+              "uz": "qaytarmoq",
+              "ru": "возвращать",
+              "tj": "баргардондан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "还 = qaytarmoq (huán)",
+            "ru": "还 = возвращать (huán)",
+            "tj": "还 = баргардондан (huán)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "还",
+            "pinyin": "huán",
+            "meaning": {
+              "uz": "qaytarmoq",
+              "ru": "возвращать",
+              "tj": "баргардондан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'unutmoq' xitoycha qaysi?",
+            "ru": "'забывать' по-китайски?",
+            "tj": "'фаромӯш кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "图书馆",
+            "忘记",
+            "借",
+            "词典"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "unutmoq = 忘记 (wàngjì)",
+            "ru": "забывать = 忘记 (wàngjì)",
+            "tj": "фаромӯш кардан = 忘记 (wàngjì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "忘记",
+            "pinyin": "wàngjì",
+            "meaning": {
+              "uz": "unutmoq",
+              "ru": "забывать",
+              "tj": "фаромӯш кардан"
+            }
           }
         }
       ]

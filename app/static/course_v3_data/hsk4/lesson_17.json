@@ -360,12 +360,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "适应",
             "困难",
             "平时",
+            "适应",
             "交"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "困难 = qiyinchilik (kùnnan)",
             "ru": "困难 = трудность, сложность (kùnnan)",
@@ -409,12 +409,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shìyìng",
-            "jíshí",
+            "jiāo",
             "píngshí",
-            "jiāo"
+            "jíshí",
+            "shìyìng"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "及时 — jíshí",
             "ru": "及时 — jíshí",
@@ -448,12 +448,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "交",
-            "适应",
+            "平时",
             "陪",
-            "平时"
+            "适应",
+            "交"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "hamrohlik qilmoq = 陪 (péi)",
             "ru": "сопровождать, быть рядом = 陪 (péi)",
@@ -471,11 +471,11 @@
           "pinyin": "kùnnan",
           "options": [
             "交",
-            "困难",
             "平时",
+            "困难",
             "适应"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "困难 — qiyinchilik (kùnnan)",
             "ru": "困难 — трудность, сложность (kùnnan)",
@@ -564,12 +564,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "真正",
             "适应",
+            "真正",
             "交",
             "平时"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 真正 (zhēnzhèng) — haqiqiy",
             "ru": "Верно: 真正 (zhēnzhèng) — настоящий, подлинный",
@@ -587,53 +587,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "友谊 talaffuzini tanlang:",
-            "ru": "Выберите произношение 友谊:",
-            "tj": "Талаффузи 友谊-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "shìyìng",
-            "jiāo",
-            "yǒuyì",
-            "píngshí"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "友谊 — yǒuyì",
-            "ru": "友谊 — yǒuyì",
-            "tj": "友谊 — yǒuyì"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "及时",
-          "pinyin": "jíshí",
-          "options": [
-            "交",
-            "适应",
-            "及时",
-            "平时"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "及时 — o'z vaqtida (jíshí)",
-            "ru": "及时 — вовремя (jíshí)",
-            "tj": "及时 — сари вақт (jíshí)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -669,6 +622,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "及时",
+          "pinyin": "jíshí",
+          "options": [
+            "及时",
+            "适应",
+            "平时",
+            "交"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "及时 — o'z vaqtida (jíshí)",
+            "ru": "及时 — вовремя (jíshí)",
+            "tj": "及时 — сари вақт (jíshí)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "及时",
           "pinyin": "jíshí",
@@ -676,6 +651,105 @@
             "uz": "o'z vaqtida",
             "ru": "вовремя",
             "tj": "сари вақт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "而 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 而:",
+            "tj": "Маънои калимаи 而-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "do'st orttirmoq",
+              "ru": "заводить друзей",
+              "tj": "дӯст пайдо кардан"
+            },
+            {
+              "uz": "moslashmoq, ko'nikmoq",
+              "ru": "адаптироваться, привыкать",
+              "tj": "мутобиқ шудан, одат кардан"
+            },
+            {
+              "uz": "esa, ammo",
+              "ru": "а, но",
+              "tj": "бошад, аммо"
+            },
+            {
+              "uz": "odatdagi vaqt, odatda",
+              "ru": "обычно, в обычное время",
+              "tj": "одатан, вақтҳои муқаррарӣ"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "而 = esa, ammo (ér)",
+            "ru": "而 = а, но (ér)",
+            "tj": "而 = бошад, аммо (ér)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "而",
+            "pinyin": "ér",
+            "meaning": {
+              "uz": "esa, ammo",
+              "ru": "а, но",
+              "tj": "бошад, аммо"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'z vaqtida' xitoycha qaysi?",
+            "ru": "'вовремя' по-китайски?",
+            "tj": "'сари вақт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "平时",
+            "及时",
+            "交",
+            "适应"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o'z vaqtida = 及时 (jíshí)",
+            "ru": "вовремя = 及时 (jíshí)",
+            "tj": "сари вақт = 及时 (jíshí)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "及时",
+            "pinyin": "jíshí",
+            "meaning": {
+              "uz": "o'z vaqtida",
+              "ru": "вовремя",
+              "tj": "сари вақт"
+            }
           }
         }
       ]

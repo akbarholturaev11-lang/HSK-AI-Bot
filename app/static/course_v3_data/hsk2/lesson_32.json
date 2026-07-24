@@ -322,10 +322,10 @@
           "options": [
             "机场",
             "教室",
-            "公司",
-            "路"
+            "路",
+            "公司"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "公司 = kompaniya, firma (gōngsī)",
             "ru": "公司 = компания, фирма (gōngsī)",
@@ -409,11 +409,11 @@
           },
           "options": [
             "教室",
-            "公共汽车",
+            "机场",
             "路",
-            "机场"
+            "公共汽车"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "avtobus (jamoat transporti) = 公共汽车 (gōnggòng qìchē)",
             "ru": "автобус (общественный транспорт) = 公共汽车 (gōnggòng qìchē)",
@@ -430,12 +430,12 @@
           "audio_text": "公司",
           "pinyin": "gōngsī",
           "options": [
-            "机场",
             "路",
+            "公司",
             "教室",
-            "公司"
+            "机场"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "公司 — kompaniya, firma (gōngsī)",
             "ru": "公司 — компания, фирма (gōngsī)",
@@ -532,14 +532,14 @@
             "tj": "Хонаи ту аз ширкат дур аст?"
           },
           "tokens": [
-            "远",
-            "吗",
-            "公司",
             "你",
+            "公司",
+            "教室",
             "离",
-            "机场",
             "家",
-            "教室"
+            "机场",
+            "远",
+            "吗"
           ],
           "answer_tokens": [
             "你",
@@ -626,16 +626,6 @@
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "公共汽车",
-          "pinyin": "gōnggòng qìchē",
-          "translation": {
-            "uz": "avtobus (jamoat transporti)",
-            "ru": "автобус (общественный транспорт)",
-            "tj": "автобус (нақлиёти ҷамъиятӣ)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -645,9 +635,9 @@
           "audio_text": "你家离公司远吗？",
           "pinyin": "Nǐ jiā lí gōngsī yuǎn ma?",
           "options": [
-            "大卫回来了吗？",
-            "没有，他还在教室学习呢。",
             "已经9点多了，他怎么还在学习？",
+            "没有，他还在教室学习呢。",
+            "大卫回来了吗？",
             "你家离公司远吗？"
           ],
           "correct_index": 3,
@@ -666,13 +656,13 @@
           },
           "tokens": [
             "教室",
-            "离",
             "家",
-            "远",
+            "离",
             "吗",
+            "机场",
             "你",
-            "公司",
-            "机场"
+            "远",
+            "公司"
           ],
           "answer_tokens": [
             "你",
@@ -689,6 +679,37 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "公共汽车",
+          "pinyin": "gōnggòng qìchē",
+          "translation": {
+            "uz": "avtobus (jamoat transporti)",
+            "ru": "автобус (общественный транспорт)",
+            "tj": "автобус (нақлиёти ҷамъиятӣ)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "远",
+          "pinyin": "yuǎn",
+          "translation": {
+            "uz": "uzoq (masofa haqida)",
+            "ru": "далёкий, дальний",
+            "tj": "дур (дар бораи масофа)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "离 so'zining ma'nosini tanlang:",
@@ -702,14 +723,14 @@
           },
           "options": [
             {
+              "uz": "yo'l, ko'cha",
+              "ru": "дорога, улица",
+              "tj": "роҳ, кӯча"
+            },
+            {
               "uz": "darsxona, sinf xonasi",
               "ru": "классная комната, аудитория",
               "tj": "синфхона, толори дарс"
-            },
-            {
-              "uz": "dan (masofa ifodalash uchun)",
-              "ru": "от, до (для выражения расстояния)",
-              "tj": "аз (барои ифодаи масофа)"
             },
             {
               "uz": "aeroport",
@@ -717,26 +738,63 @@
               "tj": "фурудгоҳ"
             },
             {
-              "uz": "yo'l, ko'cha",
-              "ru": "дорога, улица",
-              "tj": "роҳ, кӯча"
+              "uz": "dan (masofa ifodalash uchun)",
+              "ru": "от, до (для выражения расстояния)",
+              "tj": "аз (барои ифодаи масофа)"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "离 = dan (masofa ifodalash uchun) (lí)",
             "ru": "离 = от, до (для выражения расстояния) (lí)",
             "tj": "离 = аз (барои ифодаи масофа) (lí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "离",
+            "pinyin": "lí",
+            "meaning": {
+              "uz": "dan (masofa ifodalash uchun)",
+              "ru": "от, до (для выражения расстояния)",
+              "tj": "аз (барои ифодаи масофа)"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "远",
-          "pinyin": "yuǎn",
-          "translation": {
-            "uz": "uzoq (masofa haqida)",
-            "ru": "далёкий, дальний",
-            "tj": "дур (дар бораи масофа)"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'uzoq (masofa haqida)' xitoycha qaysi?",
+            "ru": "'далёкий, дальний' по-китайски?",
+            "tj": "'дур (дар бораи масофа)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "教室",
+            "远",
+            "路",
+            "机场"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "uzoq (masofa haqida) = 远 (yuǎn)",
+            "ru": "далёкий, дальний = 远 (yuǎn)",
+            "tj": "дур (дар бораи масофа) = 远 (yuǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "远",
+            "pinyin": "yuǎn",
+            "meaning": {
+              "uz": "uzoq (masofa haqida)",
+              "ru": "далёкий, дальний",
+              "tj": "дур (дар бораи масофа)"
+            }
           }
         }
       ]

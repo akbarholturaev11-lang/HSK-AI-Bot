@@ -379,11 +379,11 @@
           "pinyin": "qiǎokèlì",
           "options": [
             "伤心",
-            "亲戚",
+            "巧克力",
             "使",
-            "巧克力"
+            "亲戚"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "巧克力 — shokolad (qiǎokèlì)",
             "ru": "巧克力 — шоколад (qiǎokèlì)",
@@ -418,14 +418,9 @@
           },
           "options": [
             {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный",
-              "tj": "ғамгин"
-            },
-            {
-              "uz": "qilmoq, sabab bo'lmoq",
-              "ru": "заставлять, делать",
-              "tj": "сабаб шудан, кардан"
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
             },
             {
               "uz": "shokolad",
@@ -433,12 +428,17 @@
               "tj": "шоколад"
             },
             {
-              "uz": "qarindosh",
-              "ru": "родственник",
-              "tj": "хешованд"
+              "uz": "qilmoq, sabab bo'lmoq",
+              "ru": "заставлять, делать",
+              "tj": "сабаб шудан, кардан"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "亲戚 = qarindosh (qīnqi)",
             "ru": "亲戚 = родственник (qīnqi)",
@@ -472,12 +472,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "伤心",
             "亲戚",
-            "使",
-            "巧克力"
+            "巧克力",
+            "伤心",
+            "使"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "伤心 = xafa, g'amgin (shāngxīn)",
             "ru": "伤心 = грустный (shāngxīn)",
@@ -512,9 +512,9 @@
           },
           "options": [
             "qiǎokèlì",
-            "shāngxīn",
+            "qīnqi",
             "shǐ",
-            "qīnqi"
+            "shāngxīn"
           ],
           "correct_index": 2,
           "explanation": {
@@ -536,12 +536,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "巧克力",
-            "使",
             "亲戚",
-            "伤心"
+            "巧克力",
+            "伤心",
+            "使"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "shokolad = 巧克力 (qiǎokèlì)",
             "ru": "шоколад = 巧克力 (qiǎokèlì)",
@@ -638,12 +638,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "伤心",
-            "使",
+            "亲戚",
             "巧克力",
-            "亲戚"
+            "伤心",
+            "使"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 巧克力 (qiǎokèlì) — shokolad",
             "ru": "Верно: 巧克力 (qiǎokèlì) — шоколад",
@@ -662,31 +662,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "家具 talaffuzini tanlang:",
-            "ru": "Выберите произношение 家具:",
-            "tj": "Талаффузи 家具-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "shāngxīn",
-            "qiǎokèlì",
-            "jiājù",
-            "qīnqi"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "家具 — jiājù",
-            "ru": "家具 — jiājù",
-            "tj": "家具 — jiājù"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -696,91 +671,12 @@
           "audio_text": "这种巧克力味道不错，你在哪儿买的？",
           "pinyin": "Zhè zhǒng qiǎokèlì wèidao búcuò, nǐ zài nǎr mǎi de?",
           "options": [
+            "是啊，因为很多人都爱吃巧克力，尤其是女性。",
             "不是我买的，是我女儿给我从国外带回来的礼物。",
             "这种巧克力味道不错，你在哪儿买的？",
-            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
-            "是啊，因为很多人都爱吃巧克力，尤其是女性。"
+            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。"
           ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "这种巧克力味道不错，你在哪儿买的？ — Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?",
-            "ru": "这种巧克力味道不错，你在哪儿买的？ — У этого шоколада хороший вкус, где вы его купили?",
-            "tj": "这种巧克力味道不错，你在哪儿买的？ — Маззаи ин шоколад хуб аст, аз куҷо харидед?"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "这种巧克力味道不错，你在哪儿买的？",
-          "pinyin": "Zhè zhǒng qiǎokèlì wèidao búcuò, nǐ zài nǎr mǎi de?",
-          "translation": {
-            "uz": "Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?",
-            "ru": "У этого шоколада хороший вкус, где вы его купили?",
-            "tj": "Маззаи ин шоколад хуб аст, аз куҷо харидед?"
-          },
-          "tokens": {
-            "uz": [
-              "Bu",
-              "yaxshi",
-              "ta'mi",
-              "shokoladning",
-              "qayerdan",
-              "oldingiz",
-              "ekan"
-            ],
-            "ru": [
-              "где",
-              "хороший",
-              "У",
-              "вы",
-              "его",
-              "шоколада",
-              "вкус",
-              "купили",
-              "этого"
-            ],
-            "tj": [
-              "хуб",
-              "харидед",
-              "шоколад",
-              "ин",
-              "Маззаи",
-              "аз",
-              "аст",
-              "куҷо"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Bu",
-              "shokoladning",
-              "ta'mi",
-              "yaxshi",
-              "ekan",
-              "qayerdan",
-              "oldingiz"
-            ],
-            "ru": [
-              "У",
-              "этого",
-              "шоколада",
-              "хороший",
-              "вкус",
-              "где",
-              "вы",
-              "его",
-              "купили"
-            ],
-            "tj": [
-              "Маззаи",
-              "ин",
-              "шоколад",
-              "хуб",
-              "аст",
-              "аз",
-              "куҷо",
-              "харидед"
-            ]
-          },
+          "correct_index": 2,
           "explanation": {
             "uz": "这种巧克力味道不错，你在哪儿买的？ — Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?",
             "ru": "这种巧克力味道不错，你在哪儿买的？ — У этого шоколада хороший вкус, где вы его купили?",
@@ -837,6 +733,105 @@
             "uz": "shokolad",
             "ru": "шоколад",
             "tj": "шоколад"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "流血 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 流血:",
+            "tj": "Маънои калимаи 流血-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
+            },
+            {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            },
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "流血 = qon ketmoq (liú xiě)",
+            "ru": "流血 = кровоточить (liú xiě)",
+            "tj": "流血 = хун рафтан (liú xiě)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "流血",
+            "pinyin": "liú xiě",
+            "meaning": {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'shokolad' xitoycha qaysi?",
+            "ru": "'шоколад' по-китайски?",
+            "tj": "'шоколад' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "使",
+            "巧克力",
+            "伤心",
+            "亲戚"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "shokolad = 巧克力 (qiǎokèlì)",
+            "ru": "шоколад = 巧克力 (qiǎokèlì)",
+            "tj": "шоколад = 巧克力 (qiǎokèlì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "巧克力",
+            "pinyin": "qiǎokèlì",
+            "meaning": {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            }
           }
         }
       ]

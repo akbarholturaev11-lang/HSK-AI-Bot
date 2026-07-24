@@ -421,9 +421,9 @@
           },
           "options": [
             "普遍",
-            "观众",
             "演员",
-            "京剧"
+            "京剧",
+            "观众"
           ],
           "correct_index": 0,
           "explanation": {
@@ -459,12 +459,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "jīngjù",
             "yǎnyuán",
             "bùfen",
-            "jīngjù",
             "guānzhòng"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "部分 — bùfen",
             "ru": "部分 — bùfen",
@@ -508,10 +508,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "观众",
-            "稍微",
             "京剧",
-            "演员"
+            "稍微",
+            "演员",
+            "观众"
           ],
           "correct_index": 1,
           "explanation": {
@@ -530,12 +530,12 @@
           "audio_text": "普遍",
           "pinyin": "pǔbiàn",
           "options": [
+            "演员",
             "京剧",
             "观众",
-            "普遍",
-            "演员"
+            "普遍"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "普遍 — keng tarqalgan (pǔbiàn)",
             "ru": "普遍 — распространённый (pǔbiàn)",
@@ -625,11 +625,11 @@
           },
           "options": [
             "演员",
-            "京剧",
             "随着",
+            "京剧",
             "观众"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 随着 (suízhe) — ...bilan birga, ...sari",
             "ru": "Верно: 随着 (suízhe) — по мере, вместе с",
@@ -647,31 +647,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "演出 talaffuzini tanlang:",
-            "ru": "Выберите произношение 演出:",
-            "tj": "Талаффузи 演出-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "yǎnchū",
-            "yǎnyuán",
-            "jīngjù",
-            "guānzhòng"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "演出 — yǎnchū",
-            "ru": "演出 — yǎnchū",
-            "tj": "演出 — yǎnchū"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -716,12 +691,12 @@
           "audio_text": "稍微",
           "pinyin": "shāowēi",
           "options": [
+            "稍微",
             "演员",
-            "观众",
             "京剧",
-            "稍微"
+            "观众"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "稍微 — biroz (shāowēi)",
             "ru": "稍微 — немного, слегка (shāowēi)",
@@ -736,6 +711,105 @@
             "uz": "biroz",
             "ru": "немного, слегка",
             "tj": "каме"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "进行 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 进行:",
+            "tj": "Маънои калимаи 进行-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            },
+            {
+              "uz": "amalga oshirmoq, olib bormoq",
+              "ru": "проводить, осуществлять",
+              "tj": "гузаронидан, анҷом додан"
+            },
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            },
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "进行 = amalga oshirmoq, olib bormoq (jìnxíng)",
+            "ru": "进行 = проводить, осуществлять (jìnxíng)",
+            "tj": "进行 = гузаронидан, анҷом додан (jìnxíng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "进行",
+            "pinyin": "jìnxíng",
+            "meaning": {
+              "uz": "amalga oshirmoq, olib bormoq",
+              "ru": "проводить, осуществлять",
+              "tj": "гузаронидан, анҷом додан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'biroz' xitoycha qaysi?",
+            "ru": "'немного, слегка' по-китайски?",
+            "tj": "'каме' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "演员",
+            "京剧",
+            "稍微",
+            "观众"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "biroz = 稍微 (shāowēi)",
+            "ru": "немного, слегка = 稍微 (shāowēi)",
+            "tj": "каме = 稍微 (shāowēi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "稍微",
+            "pinyin": "shāowēi",
+            "meaning": {
+              "uz": "biroz",
+              "ru": "немного, слегка",
+              "tj": "каме"
+            }
           }
         }
       ]

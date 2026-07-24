@@ -332,16 +332,6 @@
           },
           "options": [
             {
-              "uz": "qo'y go'shti",
-              "ru": "баранина",
-              "tj": "гӯшти гӯсфанд"
-            },
-            {
-              "uz": "eshik, darvoza",
-              "ru": "дверь, ворота",
-              "tj": "дар, дарвоза"
-            },
-            {
               "uz": "velosiped",
               "ru": "велосипед",
               "tj": "велосипед"
@@ -350,9 +340,19 @@
               "uz": "tashqarisi, tashqi tomon",
               "ru": "снаружи, внешняя сторона",
               "tj": "берун, тарафи берун"
+            },
+            {
+              "uz": "eshik, darvoza",
+              "ru": "дверь, ворота",
+              "tj": "дар, дарвоза"
+            },
+            {
+              "uz": "qo'y go'shti",
+              "ru": "баранина",
+              "tj": "гӯшти гӯсфанд"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "门 = eshik, darvoza (mén)",
             "ru": "门 = дверь, ворота (mén)",
@@ -396,12 +396,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "门",
-            "自行车",
             "外",
+            "自行车",
+            "门",
             "羊肉"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "外 = tashqarisi, tashqi tomon (wài)",
             "ru": "外 = снаружи, внешняя сторона (wài)",
@@ -435,12 +435,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "mén",
-            "zìxíngchē",
+            "wài",
             "yángròu",
-            "wài"
+            "zìxíngchē",
+            "mén"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "自行车 — zìxíngchē",
             "ru": "自行车 — zìxíngchē",
@@ -474,12 +474,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "羊肉",
             "外",
             "门",
-            "羊肉",
             "自行车"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "qo'y go'shti = 羊肉 (yángròu)",
             "ru": "баранина = 羊肉 (yángròu)",
@@ -496,12 +496,12 @@
           "audio_text": "门",
           "pinyin": "mén",
           "options": [
-            "门",
+            "羊肉",
             "自行车",
-            "外",
-            "羊肉"
+            "门",
+            "外"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "门 — eshik, darvoza (mén)",
             "ru": "门 — дверь, ворота (mén)",
@@ -606,14 +606,14 @@
             "tj": "Ту чӣ тавр донистӣ, ки вай омад?"
           },
           "tokens": [
-            "来",
-            "门",
-            "怎么",
-            "知道",
-            "外",
             "了",
+            "门",
+            "他",
+            "知道",
+            "来",
+            "怎么",
             "你",
-            "他"
+            "外"
           ],
           "answer_tokens": [
             "你",
@@ -640,75 +640,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "自行车",
-          "pinyin": "zìxíngchē",
-          "options": [
-            "羊肉",
-            "外",
-            "自行车",
-            "门"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "自行车 — velosiped (zìxíngchē)",
-            "ru": "自行车 — велосипед (zìxíngchē)",
-            "tj": "自行车 — велосипед (zìxíngchē)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我在门外看见他的自行车了。",
-          "pinyin": "Wǒ zài mén wài kànjian tā de zìxíngchē le.",
-          "options": [
-            "他已经来了。",
-            "你怎么知道他来了？",
-            "我在门外看见他的自行车了。",
-            "你知道小王今天什么时候来学校吗？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "我在门外看见他的自行车了。 — Eshik tashqarisida uning velosipedini ko'rdim.",
-            "ru": "我在门外看见他的自行车了。 — Я увидел его велосипед за дверью.",
-            "tj": "我在门外看见他的自行车了。 — Ман берун аз дар велосипеди ӯро дидам."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yordam bermoq' xitoycha qaysi?",
-            "ru": "'помогать' по-китайски?",
-            "tj": "'кӯмак кардан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "帮",
-            "外",
-            "门",
-            "自行车"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "yordam bermoq = 帮 (bāng)",
-            "ru": "помогать = 帮 (bāng)",
-            "tj": "кӯмак кардан = 帮 (bāng)"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "今天的羊肉很好吃，你怎么不吃了？",
@@ -795,6 +726,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "自行车",
+          "pinyin": "zìxíngchē",
+          "options": [
+            "自行车",
+            "羊肉",
+            "外",
+            "门"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "自行车 — velosiped (zìxíngchē)",
+            "ru": "自行车 — велосипед (zìxíngchē)",
+            "tj": "自行车 — велосипед (zìxíngchē)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "外",
           "pinyin": "wài",
@@ -802,6 +755,105 @@
             "uz": "tashqarisi, tashqi tomon",
             "ru": "снаружи, внешняя сторона",
             "tj": "берун, тарафи берун"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "准备 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 准备:",
+            "tj": "Маънои калимаи 准备-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
+            },
+            {
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "велосипед"
+            },
+            {
+              "uz": "eshik, darvoza",
+              "ru": "дверь, ворота",
+              "tj": "дар, дарвоза"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "准备 = tayyorlamoq, tayyorgarlik ko'rmoq (zhǔnbèi)",
+            "ru": "准备 = готовить, готовиться (zhǔnbèi)",
+            "tj": "准备 = омода кардан, тайёр шудан (zhǔnbèi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "准备",
+            "pinyin": "zhǔnbèi",
+            "meaning": {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tashqarisi, tashqi tomon' xitoycha qaysi?",
+            "ru": "'снаружи, внешняя сторона' по-китайски?",
+            "tj": "'берун, тарафи берун' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "门",
+            "外",
+            "羊肉",
+            "自行车"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tashqarisi, tashqi tomon = 外 (wài)",
+            "ru": "снаружи, внешняя сторона = 外 (wài)",
+            "tj": "берун, тарафи берун = 外 (wài)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "外",
+            "pinyin": "wài",
+            "meaning": {
+              "uz": "tashqarisi, tashqi tomon",
+              "ru": "снаружи, внешняя сторона",
+              "tj": "берун, тарафи берун"
+            }
           }
         }
       ]

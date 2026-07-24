@@ -361,10 +361,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "lǐwù",
+            "yéye",
             "zhōngyú",
             "yuànyì",
-            "yéye"
+            "lǐwù"
           ],
           "correct_index": 2,
           "explanation": {
@@ -400,12 +400,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "终于",
             "起来",
-            "爷爷",
             "礼物",
-            "终于"
+            "爷爷"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "turmoq, yuqoriga harakatlanmoq = 起来 (qǐlái)",
             "ru": "подниматься, вставать = 起来 (qǐlái)",
@@ -436,12 +436,12 @@
           "audio_text": "应该",
           "pinyin": "yīnggāi",
           "options": [
-            "终于",
-            "爷爷",
             "礼物",
-            "应该"
+            "爷爷",
+            "应该",
+            "终于"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "应该 — kerak, lozim (yīnggāi)",
             "ru": "应该 — следует, должен (yīnggāi)",
@@ -486,27 +486,27 @@
           },
           "options": [
             {
-              "uz": "hayot",
-              "ru": "жизнь",
-              "tj": "зиндагӣ"
-            },
-            {
-              "uz": "sovg'a",
-              "ru": "подарок",
-              "tj": "туҳфа"
-            },
-            {
               "uz": "bobo",
               "ru": "дедушка",
               "tj": "бобо"
             },
             {
+              "uz": "hayot",
+              "ru": "жизнь",
+              "tj": "зиндагӣ"
+            },
+            {
               "uz": "nihoyat, oxiri",
               "ru": "наконец",
               "tj": "ниҳоят"
+            },
+            {
+              "uz": "sovg'a",
+              "ru": "подарок",
+              "tj": "туҳфа"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "生活 = hayot (shēnghuó)",
             "ru": "生活 = жизнь (shēnghuó)",
@@ -526,9 +526,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "爷爷",
             "终于",
             "礼物",
+            "爷爷",
             "愿意"
           ],
           "correct_index": 3,
@@ -636,13 +636,13 @@
             "tj": "Ман пиёда баргаштам. (таъкид бар усул)"
           },
           "tokens": [
-            "我",
-            "走",
+            "回来",
+            "爷爷",
             "的",
             "终于",
+            "走",
             "是",
-            "回来",
-            "爷爷"
+            "我"
           ],
           "answer_tokens": [
             "我",
@@ -668,111 +668,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "愿意",
-              {
-                "uz": "xohlamoq, rozi bo'lmoq",
-                "ru": "хотеть, быть готовым",
-                "tj": "хостан, розӣ будан"
-              }
-            ],
-            [
-              "起来",
-              {
-                "uz": "turmoq, yuqoriga harakatlanmoq",
-                "ru": "подниматься, вставать",
-                "tj": "бархостан, боло шудан"
-              }
-            ],
-            [
-              "应该",
-              {
-                "uz": "kerak, lozim",
-                "ru": "следует, должен",
-                "tj": "бояд"
-              }
-            ],
-            [
-              "生活",
-              {
-                "uz": "hayot",
-                "ru": "жизнь",
-                "tj": "зиндагӣ"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "可以一边吃一边看，坐久了还可以站起来休息一会儿。",
-          "pinyin": "Kěyǐ yìbiān chī yìbiān kàn, zuò jiǔ le hái kěyǐ zhàn qǐlai xiūxi yíhuìr.",
-          "options": [
-            "怎么还买红酒回来了？谁喝啊？",
-            "都是从那边的商店买回来的。",
-            "你终于回来了！从哪儿买回来这么多东西啊？",
-            "可以一边吃一边看，坐久了还可以站起来休息一会儿。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "可以一边吃一边看，坐久了还可以站起来休息一会儿。 — Yeb turib ko'rsa bo'ladi, uzoq o'tirsang turib biroz dam olsa bo'ladi.",
-            "ru": "可以一边吃一边看，坐久了还可以站起来休息一会儿。 — Можно есть и смотреть одновременно, а если долго сидишь, можно встать и отдохнуть.",
-            "tj": "可以一边吃一边看，坐久了还可以站起来休息一会儿。 — Метавонӣ ҳамзамон хӯрӣ ва бинӣ, дер нишинӣ, бархеста каме истироҳат мекунӣ."
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "奶奶 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 奶奶:",
-            "tj": "Маънои калимаи 奶奶-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "buvi",
-              "ru": "бабушка",
-              "tj": "биби"
-            },
-            {
-              "uz": "nihoyat, oxiri",
-              "ru": "наконец",
-              "tj": "ниҳоят"
-            },
-            {
-              "uz": "sovg'a",
-              "ru": "подарок",
-              "tj": "туҳфа"
-            },
-            {
-              "uz": "bobo",
-              "ru": "дедушка",
-              "tj": "бобо"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "奶奶 = buvi (nǎinai)",
-            "ru": "奶奶 = бабушка (nǎinai)",
-            "tj": "奶奶 = биби (nǎinai)"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "有他在，我的生活已经很有意思了。",
@@ -855,6 +750,48 @@
           }
         },
         {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "愿意",
+              {
+                "uz": "xohlamoq, rozi bo'lmoq",
+                "ru": "хотеть, быть готовым",
+                "tj": "хостан, розӣ будан"
+              }
+            ],
+            [
+              "起来",
+              {
+                "uz": "turmoq, yuqoriga harakatlanmoq",
+                "ru": "подниматься, вставать",
+                "tj": "бархостан, боло шудан"
+              }
+            ],
+            [
+              "应该",
+              {
+                "uz": "kerak, lozim",
+                "ru": "следует, должен",
+                "tj": "бояд"
+              }
+            ],
+            [
+              "生活",
+              {
+                "uz": "hayot",
+                "ru": "жизнь",
+                "tj": "зиндагӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "生活",
           "pinyin": "shēnghuó",
@@ -862,6 +799,105 @@
             "uz": "hayot",
             "ru": "жизнь",
             "tj": "зиндагӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一般 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一般:",
+            "tj": "Маънои калимаи 一般-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nihoyat, oxiri",
+              "ru": "наконец",
+              "tj": "ниҳоят"
+            },
+            {
+              "uz": "sovg'a",
+              "ru": "подарок",
+              "tj": "туҳфа"
+            },
+            {
+              "uz": "odatda; umumiy",
+              "ru": "обычно; общий",
+              "tj": "одатан; умумӣ"
+            },
+            {
+              "uz": "bobo",
+              "ru": "дедушка",
+              "tj": "бобо"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "一般 = odatda; umumiy (yìbān)",
+            "ru": "一般 = обычно; общий (yìbān)",
+            "tj": "一般 = одатан; умумӣ (yìbān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "一般",
+            "pinyin": "yìbān",
+            "meaning": {
+              "uz": "odatda; umumiy",
+              "ru": "обычно; общий",
+              "tj": "одатан; умумӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hayot' xitoycha qaysi?",
+            "ru": "'жизнь' по-китайски?",
+            "tj": "'зиндагӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "生活",
+            "礼物",
+            "爷爷",
+            "终于"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "hayot = 生活 (shēnghuó)",
+            "ru": "жизнь = 生活 (shēnghuó)",
+            "tj": "зиндагӣ = 生活 (shēnghuó)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "生活",
+            "pinyin": "shēnghuó",
+            "meaning": {
+              "uz": "hayot",
+              "ru": "жизнь",
+              "tj": "зиндагӣ"
+            }
           }
         }
       ]

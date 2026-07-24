@@ -357,8 +357,8 @@
           "options": [
             "小心",
             "舒服",
-            "爬山",
-            "还是"
+            "还是",
+            "爬山"
           ],
           "correct_index": 1,
           "explanation": {
@@ -404,12 +404,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "háishi",
-            "xiǎoxīn",
+            "pá shān",
             "huā",
-            "pá shān"
+            "xiǎoxīn",
+            "háishi"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "花 — huā",
             "ru": "花 — huā",
@@ -443,12 +443,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "爬山",
             "小心",
-            "绿",
-            "还是"
+            "还是",
+            "爬山",
+            "绿"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "yashil = 绿 (lǜ)",
             "ru": "зелёный = 绿 (lǜ)",
@@ -465,12 +465,12 @@
           "audio_text": "舒服",
           "pinyin": "shūfu",
           "options": [
+            "爬山",
             "小心",
             "还是",
-            "舒服",
-            "爬山"
+            "舒服"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "舒服 — qulay, rohat, o'zini yaxshi his qilish (shūfu)",
             "ru": "舒服 — удобный, комфортный (shūfu)",
@@ -532,12 +532,12 @@
           "audio_text": "花茶、绿茶、红茶，我都喜欢。",
           "pinyin": "Huāchá, lǜchá, hóngchá, wǒ dōu xǐhuan.",
           "options": [
-            "没事，我们明天要去爬山。",
-            "明天是晴天还是阴天？",
+            "花茶、绿茶、红茶，我都喜欢。",
             "阴天，电视上说多云。怎么了？有事？",
-            "花茶、绿茶、红茶，我都喜欢。"
+            "没事，我们明天要去爬山。",
+            "明天是晴天还是阴天？"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "花茶、绿茶、红茶，我都喜欢。 — Gul choyi, ko'k choy, qora choy — hammasini yaxshi ko'raman.",
             "ru": "花茶、绿茶、红茶，我都喜欢。 — Цветочный, зелёный, красный чай — всё люблю.",
@@ -633,41 +633,16 @@
           "audio_text": "绿",
           "pinyin": "lǜ",
           "options": [
-            "小心",
             "还是",
-            "爬山",
-            "绿"
+            "小心",
+            "绿",
+            "爬山"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "绿 — yashil (lǜ)",
             "ru": "绿 — зелёный (lǜ)",
             "tj": "绿 — сабз (lǜ)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "小心 talaffuzini tanlang:",
-            "ru": "Выберите произношение 小心:",
-            "tj": "Талаффузи 小心-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "xiǎoxīn",
-            "tiáo",
-            "pá shān",
-            "háishi"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "小心 — xiǎoxīn",
-            "ru": "小心 — xiǎoxīn",
-            "tj": "小心 — xiǎoxīn"
           }
         },
         {
@@ -678,6 +653,105 @@
             "uz": "gul",
             "ru": "цветок",
             "tj": "гул"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "饮料 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 饮料:",
+            "tj": "Маънои калимаи 饮料-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
+            },
+            {
+              "uz": "yoki (savolda tanlov)",
+              "ru": "или (в вопросе выбора)",
+              "tj": "ё (дар саволи интихобӣ)"
+            },
+            {
+              "uz": "ichimlik",
+              "ru": "напиток",
+              "tj": "нӯшокӣ"
+            },
+            {
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "饮料 = ichimlik (yǐnliào)",
+            "ru": "饮料 = напиток (yǐnliào)",
+            "tj": "饮料 = нӯшокӣ (yǐnliào)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "饮料",
+            "pinyin": "yǐnliào",
+            "meaning": {
+              "uz": "ichimlik",
+              "ru": "напиток",
+              "tj": "нӯшокӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'gul' xitoycha qaysi?",
+            "ru": "'цветок' по-китайски?",
+            "tj": "'гул' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "小心",
+            "花",
+            "爬山",
+            "还是"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "gul = 花 (huā)",
+            "ru": "цветок = 花 (huā)",
+            "tj": "гул = 花 (huā)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "花",
+            "pinyin": "huā",
+            "meaning": {
+              "uz": "gul",
+              "ru": "цветок",
+              "tj": "гул"
+            }
           }
         }
       ]

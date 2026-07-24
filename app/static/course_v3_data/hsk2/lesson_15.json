@@ -575,14 +575,9 @@
           },
           "options": [
             {
-              "uz": "gazeta",
-              "ru": "газета",
-              "tj": "рӯзнома"
-            },
-            {
-              "uz": "qizil rang",
-              "ru": "красный цвет",
-              "tj": "ранги сурх"
+              "uz": "qo'l soati",
+              "ru": "наручные часы",
+              "tj": "соати дасти"
             },
             {
               "uz": "ming (1000)",
@@ -590,12 +585,17 @@
               "tj": "ҳазор (1000)"
             },
             {
-              "uz": "qo'l soati",
-              "ru": "наручные часы",
-              "tj": "соати дасти"
+              "uz": "qizil rang",
+              "ru": "красный цвет",
+              "tj": "ранги сурх"
+            },
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "红色 = qizil rang (hóngsè)",
             "ru": "红色 = красный цвет (hóngsè)",
@@ -657,12 +657,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "手表",
             "报纸",
             "送",
-            "千",
-            "手表"
+            "千"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "gazeta = 报纸 (bàozhǐ)",
             "ru": "газета = 报纸 (bàozhǐ)",
@@ -682,12 +682,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qiān",
-            "bàozhǐ",
             "shǒubiǎo",
-            "sòng"
+            "sòng",
+            "bàozhǐ",
+            "qiān"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "手表 — shǒubiǎo",
             "ru": "手表 — shǒubiǎo",
@@ -697,9 +697,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Sut olib keladigan odam keldi.» — xitoychada qaysi biri?",
-            "ru": "«Пришёл молочник.» — какое предложение по-китайски?",
-            "tj": "«Шир оварандаи омад.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Qizingizning xonasi haqiqatan chiroyli!» — xitoychada qaysi biri?",
+            "ru": "«Комната вашей дочки действительно красивая!» — какое предложение по-китайски?",
+            "tj": "«Хонаи духтаратон воқеан зебо аст!» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -707,16 +707,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "你等一下。",
+            "这个菜真好吃！",
+            "是送牛奶的来了。",
             "我看一下。",
-            "左边那个红色的是我的。",
-            "是送牛奶的来了。"
+            "你女儿的房间真漂亮啊！"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "是送牛奶的来了。 — Shì sòng niúnǎi de lái le.",
-            "ru": "是送牛奶的来了。 — Shì sòng niúnǎi de lái le.",
-            "tj": "是送牛奶的来了。 — Shì sòng niúnǎi de lái le."
+            "uz": "你女儿的房间真漂亮啊！ — Nǐ nǚ'ér de fángjiān zhēn piàoliang a!",
+            "ru": "你女儿的房间真漂亮啊！ — Nǐ nǚ'ér de fángjiān zhēn piàoliang a!",
+            "tj": "你女儿的房间真漂亮啊！ — Nǐ nǚ'ér de fángjiān zhēn piàoliang a!"
           }
         },
         {
@@ -783,11 +783,11 @@
           "pinyin": "Zhè kuài shǒubiǎo shì nǐ de ma?",
           "options": [
             "不是我的。是我爸爸的。",
-            "这块手表是你的吗？",
             "多少钱买的？",
-            "三千多块。"
+            "三千多块。",
+            "这块手表是你的吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "这块手表是你的吗？ — Bu qo'l soati seniki ekanmi?",
             "ru": "这块手表是你的吗？ — Эти часы твои?",
@@ -824,12 +824,12 @@
             }
           ],
           "options": [
-            "不是我的。是我爸爸的。",
             "多少钱买的？",
-            "这块手表是你的吗？",
-            "三千多块。"
+            "不是我的。是我爸爸的。",
+            "三千多块。",
+            "这块手表是你的吗？"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 三千多块。",
             "ru": "Правильный ответ: 三千多块。",
@@ -850,11 +850,11 @@
           },
           "options": [
             "三千多块。",
-            "多少钱买的？",
             "这块手表是你的吗？",
+            "多少钱买的？",
             "不是我的。是我爸爸的。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 这块手表是你的吗？",
             "ru": "Правильный ответ: 这块手表是你的吗？",
@@ -874,12 +874,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "多少钱买的？",
             "三千多块。",
-            "不是我的。是我爸爸的。",
-            "这块手表是你的吗？"
+            "这块手表是你的吗？",
+            "多少钱买的？",
+            "不是我的。是我爸爸的。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 三千多块。",
             "ru": "Правильный ответ: 三千多块。",
@@ -895,12 +895,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "服",
-            "觉",
+            "租",
             "这",
-            "少"
+            "分",
+            "个"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 这 — 这块手表是你的吗？ (Bu qo'l soati seniki ekanmi?)",
             "ru": "Верно: 这 — 这块手表是你的吗？ (Эти часы твои?)",

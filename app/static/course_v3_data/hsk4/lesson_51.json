@@ -400,12 +400,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "其中",
-            "果汁",
+            "售货员",
             "袜子",
-            "售货员"
+            "果汁",
+            "其中"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "其中 = ular ichida, shular orasida (qízhōng)",
             "ru": "其中 = среди них, в том числе (qízhōng)",
@@ -449,8 +449,8 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shòuhuòyuán",
             "wàzi",
+            "shòuhuòyuán",
             "guǒzhī",
             "xiǎoshuō"
           ],
@@ -489,11 +489,11 @@
           },
           "options": [
             "果汁",
+            "会员卡",
             "售货员",
-            "袜子",
-            "会员卡"
+            "袜子"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "a'zolik kartasi = 会员卡 (huìyuánkǎ)",
             "ru": "членская карта = 会员卡 (huìyuánkǎ)",
@@ -510,12 +510,12 @@
           "audio_text": "满",
           "pinyin": "mǎn",
           "options": [
-            "果汁",
-            "售货员",
             "满",
-            "袜子"
+            "果汁",
+            "袜子",
+            "售货员"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "满 — to'lmoq, ma'lum summaga yetmoq (mǎn)",
             "ru": "满 — достигать суммы, быть полным (mǎn)",
@@ -585,41 +585,16 @@
           "audio_text": "小说",
           "pinyin": "xiǎoshuō",
           "options": [
-            "小说",
             "售货员",
+            "小说",
             "果汁",
             "袜子"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "小说 — roman, hikoya (xiǎoshuō)",
             "ru": "小说 — роман, рассказ (xiǎoshuō)",
             "tj": "小说 — роман, ҳикоя (xiǎoshuō)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "cháng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается cháng?",
-            "tj": "cháng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "袜子",
-            "售货员",
-            "果汁",
-            "尝"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "尝 = tatib ko'rmoq (cháng)",
-            "ru": "尝 = пробовать на вкус (cháng)",
-            "tj": "尝 = чашидан (cháng)"
           }
         },
         {
@@ -672,6 +647,105 @@
             "uz": "roman, hikoya",
             "ru": "роман, рассказ",
             "tj": "роман, ҳикоя"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "支持 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 支持:",
+            "tj": "Маънои калимаи 支持-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            },
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "qo'llab-quvvatlamoq",
+              "ru": "поддерживать",
+              "tj": "дастгирӣ кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "支持 = qo'llab-quvvatlamoq (zhīchí)",
+            "ru": "支持 = поддерживать (zhīchí)",
+            "tj": "支持 = дастгирӣ кардан (zhīchí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "支持",
+            "pinyin": "zhīchí",
+            "meaning": {
+              "uz": "qo'llab-quvvatlamoq",
+              "ru": "поддерживать",
+              "tj": "дастгирӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'roman, hikoya' xitoycha qaysi?",
+            "ru": "'роман, рассказ' по-китайски?",
+            "tj": "'роман, ҳикоя' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "果汁",
+            "售货员",
+            "小说",
+            "袜子"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "roman, hikoya = 小说 (xiǎoshuō)",
+            "ru": "роман, рассказ = 小说 (xiǎoshuō)",
+            "tj": "роман, ҳикоя = 小说 (xiǎoshuō)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "小说",
+            "pinyin": "xiǎoshuō",
+            "meaning": {
+              "uz": "roman, hikoya",
+              "ru": "роман, рассказ",
+              "tj": "роман, ҳикоя"
+            }
           }
         }
       ]

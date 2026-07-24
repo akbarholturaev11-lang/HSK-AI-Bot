@@ -365,12 +365,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "yíyàng",
             "Zhōngwén",
             "yǐngxiǎng",
-            "bān",
-            "yíyàng"
+            "bān"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "影响 — yǐngxiǎng",
             "ru": "影响 — yǐngxiǎng",
@@ -404,12 +404,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "中文",
-            "班",
             "大山",
-            "一样"
+            "中文",
+            "一样",
+            "班"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "Dashan (ism) = 大山 (Dàshān)",
             "ru": "Дашань (имя) = 大山 (Dàshān)",
@@ -450,12 +450,12 @@
           "audio_text": "李静",
           "pinyin": "Lǐ Jìng",
           "options": [
-            "李静",
-            "一样",
+            "中文",
             "班",
-            "中文"
+            "李静",
+            "一样"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "李静 — Li Jing (ism) (Lǐ Jìng)",
             "ru": "李静 — Ли Цзин (имя) (Lǐ Jìng)",
@@ -476,6 +476,11 @@
           },
           "options": [
             {
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
+            },
+            {
               "uz": "sinf, guruh",
               "ru": "класс, группа",
               "tj": "синф, гурӯҳ"
@@ -484,11 +489,6 @@
               "uz": "xitoy tili",
               "ru": "китайский язык",
               "tj": "забони чинӣ"
-            },
-            {
-              "uz": "bir xil, xuddi ... kabi",
-              "ru": "одинаковый, такой же",
-              "tj": "якхела, мисли"
             },
             {
               "uz": "ta'sir; ta'sir qilmoq",
@@ -583,47 +583,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "参加 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 参加:",
-            "tj": "Маънои калимаи 参加-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "xitoy tili",
-              "ru": "китайский язык",
-              "tj": "забони чинӣ"
-            },
-            {
-              "uz": "sinf, guruh",
-              "ru": "класс, группа",
-              "tj": "синф, гурӯҳ"
-            },
-            {
-              "uz": "qatnashmoq, ishtirok etmoq",
-              "ru": "участвовать",
-              "tj": "иштирок кардан"
-            },
-            {
-              "uz": "bir xil, xuddi ... kabi",
-              "ru": "одинаковый, такой же",
-              "tj": "якхела, мисли"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "参加 = qatnashmoq, ishtirok etmoq (cānjiā)",
-            "ru": "参加 = участвовать (cānjiā)",
-            "tj": "参加 = иштирок кардан (cānjiā)"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "一定能参加，一点儿影响也没有。",
           "pinyin": "Yídìng néng cānjiā, yìdiǎnr yǐngxiǎng yě méiyǒu.",
@@ -706,15 +665,15 @@
             "tj": "Албатта иштирок карда метавонам, ҳеҷ таъсире надорад."
           },
           "tokens": [
-            "一点儿",
-            "影响",
             "能",
-            "参加",
-            "一定",
-            "班",
             "中文",
             "也",
-            "没有"
+            "一定",
+            "没有",
+            "班",
+            "参加",
+            "影响",
+            "一点儿"
           ],
           "answer_tokens": [
             "一定",
@@ -761,6 +720,105 @@
             "uz": "Li Jing (ism)",
             "ru": "Ли Цзин (имя)",
             "tj": "Ли Ҷинг (ном)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "参加 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 参加:",
+            "tj": "Маънои калимаи 参加-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
+            },
+            {
+              "uz": "qatnashmoq, ishtirok etmoq",
+              "ru": "участвовать",
+              "tj": "иштирок кардан"
+            },
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            },
+            {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "参加 = qatnashmoq, ishtirok etmoq (cānjiā)",
+            "ru": "参加 = участвовать (cānjiā)",
+            "tj": "参加 = иштирок кардан (cānjiā)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "参加",
+            "pinyin": "cānjiā",
+            "meaning": {
+              "uz": "qatnashmoq, ishtirok etmoq",
+              "ru": "участвовать",
+              "tj": "иштирок кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Li Jing (ism)' xitoycha qaysi?",
+            "ru": "'Ли Цзин (имя)' по-китайски?",
+            "tj": "'Ли Ҷинг (ном)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "李静",
+            "中文",
+            "一样",
+            "班"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "Li Jing (ism) = 李静 (Lǐ Jìng)",
+            "ru": "Ли Цзин (имя) = 李静 (Lǐ Jìng)",
+            "tj": "Ли Ҷинг (ном) = 李静 (Lǐ Jìng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "李静",
+            "pinyin": "Lǐ Jìng",
+            "meaning": {
+              "uz": "Li Jing (ism)",
+              "ru": "Ли Цзин (имя)",
+              "tj": "Ли Ҷинг (ном)"
+            }
           }
         }
       ]

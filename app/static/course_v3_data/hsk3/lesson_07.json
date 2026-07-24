@@ -391,12 +391,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "疼",
-            "腿",
+            "树",
             "脚",
-            "树"
+            "腿",
+            "疼"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "腿 = oyoq (tuǐ)",
             "ru": "腿 = нога (tuǐ)",
@@ -430,12 +430,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "téng",
-            "shù",
+            "tuǐ",
             "jiǎo",
-            "tuǐ"
+            "shù",
+            "téng"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "疼 — téng",
             "ru": "疼 — téng",
@@ -479,12 +479,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "脚",
-            "疼",
+            "树",
             "腿",
-            "树"
+            "疼",
+            "脚"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "oyoq panjasi = 脚 (jiǎo)",
             "ru": "стопа, нога = 脚 (jiǎo)",
@@ -516,11 +516,11 @@
           "pinyin": "shù",
           "options": [
             "脚",
-            "腿",
             "树",
-            "疼"
+            "疼",
+            "腿"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "树 — daraxt (shù)",
             "ru": "树 — дерево (shù)",
@@ -541,6 +541,11 @@
           },
           "options": [
             {
+              "uz": "oyoq panjasi",
+              "ru": "стопа, нога",
+              "tj": "кафи по"
+            },
+            {
               "uz": "daraxt",
               "ru": "дерево",
               "tj": "дарахт"
@@ -554,14 +559,9 @@
               "uz": "oyoq",
               "ru": "нога",
               "tj": "по"
-            },
-            {
-              "uz": "oyoq panjasi",
-              "ru": "стопа, нога",
-              "tj": "кафи по"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "腿 = oyoq (tuǐ)",
             "ru": "腿 = нога (tuǐ)",
@@ -670,53 +670,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zuòyè qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zuòyè?",
-            "tj": "zuòyè кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "腿",
-            "疼",
-            "脚",
-            "作业"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "作业 = uy vazifasi (zuòyè)",
-            "ru": "作业 = домашнее задание (zuòyè)",
-            "tj": "作业 = вазифаи хонагӣ (zuòyè)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我现在腿也疼，脚也疼。",
-          "pinyin": "Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
-          "options": [
-            "好，那边树多，我们过去坐一下吧。",
-            "怎么了？",
-            "我现在腿也疼，脚也疼。",
-            "休息一下吧。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "我现在腿也疼，脚也疼。 — Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
-            "ru": "我现在腿也疼，脚也疼。 — Сейчас у меня болят и ноги, и стопы.",
-            "tj": "我现在腿也疼，脚也疼。 — Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
@@ -724,16 +677,16 @@
             "tj": "Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
           },
           "tokens": [
-            "周末",
-            "脚",
             "也",
-            "疼",
             "腿",
-            "我",
-            "现在",
-            "也",
+            "疼",
             "树",
-            "疼"
+            "现在",
+            "脚",
+            "我",
+            "疼",
+            "周末",
+            "也"
           ],
           "answer_tokens": [
             "我",
@@ -752,6 +705,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我现在腿也疼，脚也疼。",
+          "pinyin": "Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
+          "options": [
+            "怎么了？",
+            "休息一下吧。",
+            "好，那边树多，我们过去坐一下吧。",
+            "我现在腿也疼，脚也疼。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我现在腿也疼，脚也疼。 — Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
+            "ru": "我现在腿也疼，脚也疼。 — Сейчас у меня болят и ноги, и стопы.",
+            "tj": "我现在腿也疼，脚也疼。 — Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "树",
           "pinyin": "shù",
@@ -762,83 +737,6 @@
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "我现在腿也疼，脚也疼。",
-          "pinyin": "Wǒ xiànzài tuǐ yě téng, jiǎo yě téng.",
-          "translation": {
-            "uz": "Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
-            "ru": "Сейчас у меня болят и ноги, и стопы.",
-            "tj": "Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
-          },
-          "tokens": {
-            "uz": [
-              "ham",
-              "ham",
-              "oyoq",
-              "Hozir",
-              "og'riyapti",
-              "oyog'im",
-              "panjam"
-            ],
-            "ru": [
-              "стопы",
-              "и",
-              "у",
-              "Сейчас",
-              "и",
-              "меня",
-              "ноги",
-              "болят"
-            ],
-            "tj": [
-              "Ҳоло",
-              "дард",
-              "ҳам",
-              "поям",
-              "поям",
-              "ҳам",
-              "мекунад",
-              "кафи"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Hozir",
-              "oyog'im",
-              "ham",
-              "oyoq",
-              "panjam",
-              "ham",
-              "og'riyapti"
-            ],
-            "ru": [
-              "Сейчас",
-              "у",
-              "меня",
-              "болят",
-              "и",
-              "ноги",
-              "и",
-              "стопы"
-            ],
-            "tj": [
-              "Ҳоло",
-              "поям",
-              "ҳам",
-              "кафи",
-              "поям",
-              "ҳам",
-              "дард",
-              "мекунад"
-            ]
-          },
-          "explanation": {
-            "uz": "我现在腿也疼，脚也疼。 — Hozir oyog'im ham, oyoq panjam ham og'riyapti.",
-            "ru": "我现在腿也疼，脚也疼。 — Сейчас у меня болят и ноги, и стопы.",
-            "tj": "我现在腿也疼，脚也疼。 — Ҳоло поям ҳам, кафи поям ҳам дард мекунад."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "脚",
           "pinyin": "jiǎo",
@@ -846,6 +744,105 @@
             "uz": "oyoq panjasi",
             "ru": "стопа, нога",
             "tj": "кафи по"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "啊 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 啊:",
+            "tj": "Маънои калимаи 啊-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oyoq panjasi",
+              "ru": "стопа, нога",
+              "tj": "кафи по"
+            },
+            {
+              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
+              "ru": "частица в конце предложения для подтверждения или пояснения",
+              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
+            },
+            {
+              "uz": "oyoq",
+              "ru": "нога",
+              "tj": "по"
+            },
+            {
+              "uz": "og'riqli, og'rimoq",
+              "ru": "болеть, больной",
+              "tj": "дард кардан, дарднок"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "啊 = gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama (a)",
+            "ru": "啊 = частица в конце предложения для подтверждения или пояснения (a)",
+            "tj": "啊 = зарра дар охири ҷумла барои тасдиқ ё шарҳ (a)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "啊",
+            "pinyin": "a",
+            "meaning": {
+              "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
+              "ru": "частица в конце предложения для подтверждения или пояснения",
+              "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'oyoq panjasi' xitoycha qaysi?",
+            "ru": "'стопа, нога' по-китайски?",
+            "tj": "'кафи по' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "脚",
+            "树",
+            "疼",
+            "腿"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "oyoq panjasi = 脚 (jiǎo)",
+            "ru": "стопа, нога = 脚 (jiǎo)",
+            "tj": "кафи по = 脚 (jiǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "脚",
+            "pinyin": "jiǎo",
+            "meaning": {
+              "uz": "oyoq panjasi",
+              "ru": "стопа, нога",
+              "tj": "кафи по"
+            }
           }
         }
       ]

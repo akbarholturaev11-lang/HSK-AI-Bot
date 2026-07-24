@@ -461,14 +461,14 @@
           },
           "options": [
             {
-              "uz": "yoqilg'i quyish shoxobchasi",
-              "ru": "заправка",
-              "tj": "нуқтаи сӯзишворӣ"
-            },
-            {
               "uz": "xushbo'y, mazali hidli",
               "ru": "ароматный",
               "tj": "хушбӯй"
+            },
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
             },
             {
               "uz": "reys, parvoz",
@@ -476,12 +476,12 @@
               "tj": "парвоз, рейс"
             },
             {
-              "uz": "kechiktirmoq",
-              "ru": "откладывать, переносить",
-              "tj": "ба таъхир гузоштан"
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "香 = xushbo'y, mazali hidli (xiāng)",
             "ru": "香 = ароматный (xiāng)",
@@ -525,12 +525,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "推迟",
-            "加油站",
             "酸",
-            "航班"
+            "推迟",
+            "航班",
+            "加油站"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "酸 = nordon (suān)",
             "ru": "酸 = кислый (suān)",
@@ -550,12 +550,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "Húnán",
-            "hángbān",
             "tuīchí",
+            "hángbān",
+            "Húnán",
             "jiāyóuzhàn"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "湖南 — Húnán",
             "ru": "湖南 — Húnán",
@@ -608,47 +608,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "存 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 存:",
-            "tj": "Маънои калимаи 存-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "kechiktirmoq",
-              "ru": "откладывать, переносить",
-              "tj": "ба таъхир гузоштан"
-            },
-            {
-              "uz": "yoqilg'i quyish shoxobchasi",
-              "ru": "заправка",
-              "tj": "нуқтаи сӯзишворӣ"
-            },
-            {
-              "uz": "saqlamoq, topshirib qo'ymoq",
-              "ru": "хранить, сдавать на хранение",
-              "tj": "нигоҳ доштан, супоридан"
-            },
-            {
-              "uz": "reys, parvoz",
-              "ru": "рейс, авиарейс",
-              "tj": "парвоз, рейс"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "存 = saqlamoq, topshirib qo'ymoq (cún)",
-            "ru": "存 = хранить, сдавать на хранение (cún)",
-            "tj": "存 = нигоҳ доштан, супоридан (cún)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -659,8 +618,8 @@
           "pinyin": "Húnán",
           "options": [
             "湖南",
-            "加油站",
             "航班",
+            "加油站",
             "推迟"
           ],
           "correct_index": 0,
@@ -680,12 +639,12 @@
           "audio_text": "酸",
           "pinyin": "suān",
           "options": [
-            "推迟",
-            "加油站",
             "航班",
-            "酸"
+            "酸",
+            "推迟",
+            "加油站"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "酸 — nordon (suān)",
             "ru": "酸 — кислый (suān)",
@@ -705,12 +664,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "香",
-            "航班",
             "加油站",
-            "推迟"
+            "推迟",
+            "航班",
+            "香"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "xushbo'y, mazali hidli = 香 (xiāng)",
             "ru": "ароматный = 香 (xiāng)",
@@ -725,6 +684,105 @@
             "uz": "nordon",
             "ru": "кислый",
             "tj": "турш"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "出发 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 出发:",
+            "tj": "Маънои калимаи 出发-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
+            },
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            },
+            {
+              "uz": "yo'lga chiqmoq",
+              "ru": "отправляться",
+              "tj": "ба роҳ баромадан"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "出发 = yo'lga chiqmoq (chūfā)",
+            "ru": "出发 = отправляться (chūfā)",
+            "tj": "出发 = ба роҳ баромадан (chūfā)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "出发",
+            "pinyin": "chūfā",
+            "meaning": {
+              "uz": "yo'lga chiqmoq",
+              "ru": "отправляться",
+              "tj": "ба роҳ баромадан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'nordon' xitoycha qaysi?",
+            "ru": "'кислый' по-китайски?",
+            "tj": "'турш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "航班",
+            "酸",
+            "加油站",
+            "推迟"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "nordon = 酸 (suān)",
+            "ru": "кислый = 酸 (suān)",
+            "tj": "турш = 酸 (suān)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "酸",
+            "pinyin": "suān",
+            "meaning": {
+              "uz": "nordon",
+              "ru": "кислый",
+              "tj": "турш"
+            }
           }
         }
       ]

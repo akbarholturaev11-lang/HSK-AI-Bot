@@ -486,94 +486,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "他是谁？",
-          "pinyin": "Tā shì shéi?",
-          "options": [
-            "她是我的汉语老师，她叫李月。",
-            "她是谁？",
-            "他是谁？",
-            "你是哪国人？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "他是谁？ — U kim?",
-            "ru": "他是谁？ — Кто он?",
-            "tj": "他是谁？ — Вай кӣ аст?"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "哪 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 哪:",
-            "tj": "Маънои калимаи 哪-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ning (egalik yuklamasi)",
-              "ru": "-'s (показатель принадлежности)",
-              "tj": "и, -и (ҳарфи соҳибӣ)"
-            },
-            {
-              "uz": "kim",
-              "ru": "кто",
-              "tj": "кӣ"
-            },
-            {
-              "uz": "qaysi, qayerdan",
-              "ru": "который, откуда",
-              "tj": "кадом, аз куҷо"
-            },
-            {
-              "uz": "u (ayol)",
-              "ru": "она",
-              "tj": "вай (зан)"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "哪 = qaysi, qayerdan (nǎ)",
-            "ru": "哪 = который, откуда (nǎ)",
-            "tj": "哪 = кадом, аз куҷо (nǎ)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "sening do'sting",
-            "ru": "твой друг",
-            "tj": "дӯсти ту"
-          },
-          "tokens": [
-            "她",
-            "朋友",
-            "的",
-            "你",
-            "谁"
-          ],
-          "answer_tokens": [
-            "你",
-            "的",
-            "朋友"
-          ],
-          "explanation": {
-            "uz": "你的朋友 — nǐ de péngyou",
-            "ru": "你的朋友 — nǐ de péngyou",
-            "tj": "你的朋友 — nǐ de péngyou"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "她不是我同学，她是我朋友。",
           "pinyin": "Tā bú shì wǒ tóngxué, tā shì wǒ péngyou.",
@@ -655,6 +567,53 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "他是谁？",
+          "pinyin": "Tā shì shéi?",
+          "options": [
+            "她是我的汉语老师，她叫李月。",
+            "她是谁？",
+            "他是谁？",
+            "你是哪国人？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "他是谁？ — U kim?",
+            "ru": "他是谁？ — Кто он?",
+            "tj": "他是谁？ — Вай кӣ аст?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "sening do'sting",
+            "ru": "твой друг",
+            "tj": "дӯсти ту"
+          },
+          "tokens": [
+            "她",
+            "朋友",
+            "的",
+            "你",
+            "谁"
+          ],
+          "answer_tokens": [
+            "你",
+            "的",
+            "朋友"
+          ],
+          "explanation": {
+            "uz": "你的朋友 — nǐ de péngyou",
+            "ru": "你的朋友 — nǐ de péngyou",
+            "tj": "你的朋友 — nǐ de péngyou"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "朋友",
           "pinyin": "péngyou",
@@ -662,6 +621,105 @@
             "uz": "do'st",
             "ru": "друг, подруга",
             "tj": "дӯст"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "呢 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 呢:",
+            "tj": "Маънои калимаи 呢-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xo'sh, -chi (qaytarma savol)",
+              "ru": "а, ну а (уточняющий вопрос)",
+              "tj": "чӣ (савол бозгашт)"
+            },
+            {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            },
+            {
+              "uz": "u (ayol)",
+              "ru": "она",
+              "tj": "вай (зан)"
+            },
+            {
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи соҳибӣ)"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "呢 = xo'sh, -chi (qaytarma savol) (ne)",
+            "ru": "呢 = а, ну а (уточняющий вопрос) (ne)",
+            "tj": "呢 = чӣ (савол бозгашт) (ne)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "呢",
+            "pinyin": "ne",
+            "meaning": {
+              "uz": "xo'sh, -chi (qaytarma savol)",
+              "ru": "а, ну а (уточняющий вопрос)",
+              "tj": "чӣ (савол бозгашт)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'do'st' xitoycha qaysi?",
+            "ru": "'друг, подруга' по-китайски?",
+            "tj": "'дӯст' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "她",
+            "朋友",
+            "的",
+            "谁"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "do'st = 朋友 (péngyou)",
+            "ru": "друг, подруга = 朋友 (péngyou)",
+            "tj": "дӯст = 朋友 (péngyou)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "朋友",
+            "pinyin": "péngyou",
+            "meaning": {
+              "uz": "do'st",
+              "ru": "друг, подруга",
+              "tj": "дӯст"
+            }
           }
         }
       ]

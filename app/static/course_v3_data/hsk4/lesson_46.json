@@ -372,9 +372,9 @@
           },
           "options": [
             {
-              "uz": "sotuvchi",
-              "ru": "продавец",
-              "tj": "фурӯшанда"
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
             },
             {
               "uz": "bezovta qilmoq",
@@ -382,17 +382,17 @@
               "tj": "халал расондан, нороҳат кардан"
             },
             {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
               "uz": "meva sharbati",
               "ru": "фруктовый сок",
               "tj": "шарбати мева"
-            },
-            {
-              "uz": "paypoq",
-              "ru": "носки",
-              "tj": "ҷӯроб"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "果汁 = meva sharbati (guǒzhī)",
             "ru": "果汁 = фруктовый сок (guǒzhī)",
@@ -436,12 +436,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "售货员",
+            "打扰",
             "果汁",
-            "袜子",
-            "打扰"
+            "售货员",
+            "袜子"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "售货员 = sotuvchi (shòuhuòyuán)",
             "ru": "售货员 = продавец (shòuhuòyuán)",
@@ -475,12 +475,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "wàzi",
             "dǎrǎo",
-            "shòuhuòyuán",
-            "guǒzhī"
+            "wàzi",
+            "guǒzhī",
+            "shòuhuòyuán"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "袜子 — wàzi",
             "ru": "袜子 — wàzi",
@@ -514,12 +514,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "售货员",
-            "果汁",
+            "打扰",
             "袜子",
-            "打扰"
+            "果汁",
+            "售货员"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "bezovta qilmoq = 打扰 (dǎrǎo)",
             "ru": "беспокоить, мешать = 打扰 (dǎrǎo)",
@@ -536,12 +536,12 @@
           "audio_text": "果汁",
           "pinyin": "guǒzhī",
           "options": [
+            "袜子",
             "果汁",
-            "售货员",
             "打扰",
-            "袜子"
+            "售货员"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "果汁 — meva sharbati (guǒzhī)",
             "ru": "果汁 — фруктовый сок (guǒzhī)",
@@ -638,12 +638,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "果汁",
+            "打扰",
             "售货员",
             "袜子",
-            "打扰"
+            "果汁"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 果汁 (guǒzhī) — meva sharbati",
             "ru": "Верно: 果汁 (guǒzhī) — фруктовый сок",
@@ -661,31 +661,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'inkor oldida kuchaytiradi: umuman' xitoycha qaysi?",
-            "ru": "'усиливает отрицание: вовсе' по-китайски?",
-            "tj": "'инкорро таъкид мекунад: умуман' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "袜子",
-            "果汁",
-            "售货员",
-            "并"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "inkor oldida kuchaytiradi: umuman = 并 (bìng)",
-            "ru": "усиливает отрицание: вовсе = 并 (bìng)",
-            "tj": "инкорро таъкид мекунад: умуман = 并 (bìng)"
-          }
-        },
         {
           "type": "pronunciation",
           "phrase": "袜子",
@@ -706,12 +681,12 @@
           "audio_text": "售货员",
           "pinyin": "shòuhuòyuán",
           "options": [
+            "打扰",
             "袜子",
             "售货员",
-            "打扰",
             "果汁"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "售货员 — sotuvchi (shòuhuòyuán)",
             "ru": "售货员 — продавец (shòuhuòyuán)",
@@ -726,6 +701,105 @@
             "uz": "sotuvchi",
             "ru": "продавец",
             "tj": "фурӯшанда"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "沙发 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 沙发:",
+            "tj": "Маънои калимаи 沙发-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            },
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "沙发 = divan (shāfā)",
+            "ru": "沙发 = диван (shāfā)",
+            "tj": "沙发 = диван (shāfā)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "沙发",
+            "pinyin": "shāfā",
+            "meaning": {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sotuvchi' xitoycha qaysi?",
+            "ru": "'продавец' по-китайски?",
+            "tj": "'фурӯшанда' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "打扰",
+            "果汁",
+            "售货员",
+            "袜子"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "sotuvchi = 售货员 (shòuhuòyuán)",
+            "ru": "продавец = 售货员 (shòuhuòyuán)",
+            "tj": "фурӯшанда = 售货员 (shòuhuòyuán)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "售货员",
+            "pinyin": "shòuhuòyuán",
+            "meaning": {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            }
           }
         }
       ]

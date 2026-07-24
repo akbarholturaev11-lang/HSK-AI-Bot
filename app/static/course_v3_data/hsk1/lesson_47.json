@@ -635,56 +635,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "lěng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается lěng?",
-            "tj": "lěng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "天气",
-            "冷",
-            "太",
-            "怎么样"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "冷 = sovuq (lěng)",
-            "ru": "冷 = холодно, холодный (lěng)",
-            "tj": "冷 = сард, хунук (lěng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Sog'ligingiz qanday?",
-            "ru": "Как ваше здоровье?",
-            "tj": "Саломатии шумо чӣ хел аст?"
-          },
-          "tokens": [
-            "天气",
-            "身体",
-            "怎么样",
-            "你",
-            "太"
-          ],
-          "answer_tokens": [
-            "你",
-            "身体",
-            "怎么样"
-          ],
-          "explanation": {
-            "uz": "你身体怎么样？ — Nǐ shēntǐ zěnmeyàng?",
-            "ru": "你身体怎么样？ — Nǐ shēntǐ zěnmeyàng?",
-            "tj": "你身体怎么样？ — Nǐ shēntǐ zěnmeyàng?"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -714,6 +664,105 @@
             "uz": "tana, sog'liq",
             "ru": "тело, здоровье",
             "tj": "бадан, саломатӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "下雨 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 下雨:",
+            "tj": "Маънои калимаи 下雨-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "juda, haddan tashqari",
+              "ru": "слишком, очень",
+              "tj": "хеле зиёд, аз ҳад зиёд"
+            },
+            {
+              "uz": "yomg'ir yog'moq",
+              "ru": "идти дождю",
+              "tj": "борон боридан"
+            },
+            {
+              "uz": "qanday, qanaqa",
+              "ru": "как, какой",
+              "tj": "чӣ тавр, чӣ хел"
+            },
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "下雨 = yomg'ir yog'moq (xià yǔ)",
+            "ru": "下雨 = идти дождю (xià yǔ)",
+            "tj": "下雨 = борон боридан (xià yǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "下雨",
+            "pinyin": "xià yǔ",
+            "meaning": {
+              "uz": "yomg'ir yog'moq",
+              "ru": "идти дождю",
+              "tj": "борон боридан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tana, sog'liq' xitoycha qaysi?",
+            "ru": "'тело, здоровье' по-китайски?",
+            "tj": "'бадан, саломатӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "怎么样",
+            "太",
+            "身体",
+            "天气"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "tana, sog'liq = 身体 (shēntǐ)",
+            "ru": "тело, здоровье = 身体 (shēntǐ)",
+            "tj": "бадан, саломатӣ = 身体 (shēntǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "身体",
+            "pinyin": "shēntǐ",
+            "meaning": {
+              "uz": "tana, sog'liq",
+              "ru": "тело, здоровье",
+              "tj": "бадан, саломатӣ"
+            }
           }
         }
       ]

@@ -622,62 +622,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "认识 talaffuzini tanlang:",
-            "ru": "Выберите произношение 认识:",
-            "tj": "Талаффузи 认识-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "dàxué",
-            "rènshi",
-            "nián",
-            "fàndiàn"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "认识 — rènshi",
-            "ru": "认识 — rènshi",
-            "tj": "认识 — rènshi"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Siz restoranga qanday keldingiz?",
-            "ru": "Как вы добрались до ресторана?",
-            "tj": "Шумо ба тарабхона чӣ гуна омадед?"
-          },
-          "tokens": [
-            "来",
-            "怎么",
-            "是",
-            "饭店",
-            "的",
-            "认识",
-            "年",
-            "你们"
-          ],
-          "answer_tokens": [
-            "你们",
-            "是",
-            "怎么",
-            "来",
-            "饭店",
-            "的"
-          ],
-          "explanation": {
-            "uz": "你们是怎么来饭店的？ — Nǐmen shì zěnme lái fàndiàn de?",
-            "ru": "你们是怎么来饭店的？ — Nǐmen shì zěnme lái fàndiàn de?",
-            "tj": "你们是怎么来饭店的？ — Nǐmen shì zěnme lái fàndiàn de?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "出租车",
           "pinyin": "chūzūchē",
@@ -720,6 +664,105 @@
             "uz": "restoran, mehmonxona",
             "ru": "ресторан, гостиница",
             "tj": "тарабхона, меҳмонхона"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "认识 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 认识:",
+            "tj": "Маънои калимаи 认识-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            },
+            {
+              "uz": "restoran, mehmonxona",
+              "ru": "ресторан, гостиница",
+              "tj": "тарабхона, меҳмонхона"
+            },
+            {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
+            },
+            {
+              "uz": "yil",
+              "ru": "год",
+              "tj": "сол"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "认识 = tanish bo'lmoq, uchrashmoq (rènshi)",
+            "ru": "认识 = знать, познакомиться (rènshi)",
+            "tj": "认识 = шинохтан, шинос шудан (rènshi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "认识",
+            "pinyin": "rènshi",
+            "meaning": {
+              "uz": "tanish bo'lmoq, uchrashmoq",
+              "ru": "знать, познакомиться",
+              "tj": "шинохтан, шинос шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'restoran, mehmonxona' xitoycha qaysi?",
+            "ru": "'ресторан, гостиница' по-китайски?",
+            "tj": "'тарабхона, меҳмонхона' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "大学",
+            "饭店",
+            "认识",
+            "年"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "restoran, mehmonxona = 饭店 (fàndiàn)",
+            "ru": "ресторан, гостиница = 饭店 (fàndiàn)",
+            "tj": "тарабхона, меҳмонхона = 饭店 (fàndiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "饭店",
+            "pinyin": "fàndiàn",
+            "meaning": {
+              "uz": "restoran, mehmonxona",
+              "ru": "ресторан, гостиница",
+              "tj": "тарабхона, меҳмонхона"
+            }
           }
         }
       ]

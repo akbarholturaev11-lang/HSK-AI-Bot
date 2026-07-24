@@ -350,12 +350,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "万",
             "只",
             "向",
-            "机会",
-            "万"
+            "机会"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "机会 = imkoniyat (jīhuì)",
             "ru": "机会 = возможность, шанс (jīhuì)",
@@ -389,12 +389,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xiàng",
-            "zhī",
             "guójiā",
-            "wàn"
+            "zhī",
+            "wàn",
+            "xiàng"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "国家 — guójiā",
             "ru": "国家 — guójiā",
@@ -428,12 +428,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "只",
             "向",
-            "种",
-            "万"
+            "万",
+            "只",
+            "种"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "tur, xil = 种 (zhǒng)",
             "ru": "вид, тип = 种 (zhǒng)",
@@ -450,12 +450,12 @@
           "audio_text": "机会",
           "pinyin": "jīhuì",
           "options": [
-            "机会",
-            "向",
             "万",
-            "只"
+            "机会",
+            "只",
+            "向"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "机会 — imkoniyat (jīhuì)",
             "ru": "机会 — возможность, шанс (jīhuì)",
@@ -565,41 +565,16 @@
           "audio_text": "国家",
           "pinyin": "guójiā",
           "options": [
-            "万",
+            "只",
             "国家",
-            "向",
-            "只"
+            "万",
+            "向"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "国家 — davlat, mamlakat (guójiā)",
             "ru": "国家 — страна, государство (guójiā)",
             "tj": "国家 — давлат, кишвар (guójiā)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "同意 talaffuzini tanlang:",
-            "ru": "Выберите произношение 同意:",
-            "tj": "Талаффузи 同意-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zhī",
-            "xiàng",
-            "tóngyì",
-            "wàn"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "同意 — tóngyì",
-            "ru": "同意 — tóngyì",
-            "tj": "同意 — tóngyì"
           }
         },
         {
@@ -612,8 +587,8 @@
           "audio_text": "没有了，谢谢您给我这个机会，我会努力的。",
           "pinyin": "Méiyǒu le, xièxie nín gěi wǒ zhège jīhuì, wǒ huì nǔlì de.",
           "options": [
-            "还差5万块钱。",
             "老周，我打算买房子了，想向你借点儿钱。",
+            "还差5万块钱。",
             "没问题，只要我有，就一定会借给你的。还差多少？",
             "没有了，谢谢您给我这个机会，我会努力的。"
           ],
@@ -637,12 +612,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "万",
             "只",
-            "向",
-            "种"
+            "万",
+            "种",
+            "向"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "种 = tur, xil (zhǒng)",
             "ru": "种 = вид, тип (zhǒng)",
@@ -657,6 +632,105 @@
             "uz": "imkoniyat",
             "ru": "возможность, шанс",
             "tj": "имконият"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "同意 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 同意:",
+            "tj": "Маънои калимаи 同意-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            },
+            {
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
+            },
+            {
+              "uz": "rozi bo'lmoq",
+              "ru": "соглашаться",
+              "tj": "розӣ шудан"
+            },
+            {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "同意 = rozi bo'lmoq (tóngyì)",
+            "ru": "同意 = соглашаться (tóngyì)",
+            "tj": "同意 = розӣ шудан (tóngyì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "同意",
+            "pinyin": "tóngyì",
+            "meaning": {
+              "uz": "rozi bo'lmoq",
+              "ru": "соглашаться",
+              "tj": "розӣ шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'imkoniyat' xitoycha qaysi?",
+            "ru": "'возможность, шанс' по-китайски?",
+            "tj": "'имконият' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "向",
+            "万",
+            "只",
+            "机会"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "imkoniyat = 机会 (jīhuì)",
+            "ru": "возможность, шанс = 机会 (jīhuì)",
+            "tj": "имконият = 机会 (jīhuì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "机会",
+            "pinyin": "jīhuì",
+            "meaning": {
+              "uz": "imkoniyat",
+              "ru": "возможность, шанс",
+              "tj": "имконият"
+            }
           }
         }
       ]

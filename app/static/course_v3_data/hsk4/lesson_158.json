@@ -441,10 +441,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "huǒ",
             "zuòzhě",
-            "jiàngluò",
             "yǔnxǔ",
-            "huǒ"
+            "jiàngluò"
           ],
           "correct_index": 2,
           "explanation": {
@@ -490,12 +490,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "降落",
-            "座",
             "火",
-            "作者"
+            "降落",
+            "作者",
+            "座"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "ko'prik/bino sanog'i = 座 (zuò)",
             "ru": "счётное слово для мостов/зданий = 座 (zuò)",
@@ -526,12 +526,12 @@
           "audio_text": "桥",
           "pinyin": "qiáo",
           "options": [
-            "降落",
             "作者",
-            "桥",
-            "火"
+            "火",
+            "降落",
+            "桥"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "桥 — ko'prik (qiáo)",
             "ru": "桥 — мост (qiáo)",
@@ -566,6 +566,11 @@
           },
           "options": [
             {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
               "uz": "mashhur, urf bo'lgan",
               "ru": "популярный, горячий",
               "tj": "машҳур, серхаридор"
@@ -579,14 +584,9 @@
               "uz": "xavfli",
               "ru": "опасный",
               "tj": "хатарнок"
-            },
-            {
-              "uz": "muallif",
-              "ru": "автор",
-              "tj": "муаллиф"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "危险 = xavfli (wēixiǎn)",
             "ru": "危险 = опасный (wēixiǎn)",
@@ -607,8 +607,8 @@
           },
           "options": [
             "允许",
-            "降落",
             "作者",
+            "降落",
             "火"
           ],
           "correct_index": 0,
@@ -720,12 +720,12 @@
           "audio_text": "座",
           "pinyin": "zuò",
           "options": [
+            "火",
             "降落",
             "座",
-            "作者",
-            "火"
+            "作者"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "座 — ko'prik/bino sanog'i (zuò)",
             "ru": "座 — счётное слово для мостов/зданий (zuò)",
@@ -743,31 +743,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'mashhur, urf bo'lgan' xitoycha qaysi?",
-            "ru": "'популярный, горячий' по-китайски?",
-            "tj": "'машҳур, серхаридор' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "火",
-            "降落",
-            "作者",
-            "交通"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "mashhur, urf bo'lgan = 火 (huǒ)",
-            "ru": "популярный, горячий = 火 (huǒ)",
-            "tj": "машҳур, серхаридор = 火 (huǒ)"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "危险 so'zining ma'nosini tanlang:",
@@ -781,6 +756,16 @@
           },
           "options": [
             {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
+            },
+            {
+              "uz": "xavfli",
+              "ru": "опасный",
+              "tj": "хатарнок"
+            },
+            {
               "uz": "muallif",
               "ru": "автор",
               "tj": "муаллиф"
@@ -789,19 +774,9 @@
               "uz": "mashhur, urf bo'lgan",
               "ru": "популярный, горячий",
               "tj": "машҳур, серхаридор"
-            },
-            {
-              "uz": "xavfli",
-              "ru": "опасный",
-              "tj": "хатарнок"
-            },
-            {
-              "uz": "qo'nmoq",
-              "ru": "приземляться",
-              "tj": "фуруд омадан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "危险 = xavfli (wēixiǎn)",
             "ru": "危险 = опасный (wēixiǎn)",
@@ -816,6 +791,105 @@
             "uz": "ko'prik/bino sanog'i",
             "ru": "счётное слово для мостов/зданий",
             "tj": "шуморкалима барои пул/бино"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "使 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 使:",
+            "tj": "Маънои калимаи 使-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qildirmoq, sabab bo'lmoq",
+              "ru": "заставлять, приводить к",
+              "tj": "водор кардан, сабаб шудан"
+            },
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
+            },
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "使 = qildirmoq, sabab bo'lmoq (shǐ)",
+            "ru": "使 = заставлять, приводить к (shǐ)",
+            "tj": "使 = водор кардан, сабаб шудан (shǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "使",
+            "pinyin": "shǐ",
+            "meaning": {
+              "uz": "qildirmoq, sabab bo'lmoq",
+              "ru": "заставлять, приводить к",
+              "tj": "водор кардан, сабаб шудан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ko'prik/bino sanog'i' xitoycha qaysi?",
+            "ru": "'счётное слово для мостов/зданий' по-китайски?",
+            "tj": "'шуморкалима барои пул/бино' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "作者",
+            "火",
+            "降落",
+            "座"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "ko'prik/bino sanog'i = 座 (zuò)",
+            "ru": "счётное слово для мостов/зданий = 座 (zuò)",
+            "tj": "шуморкалима барои пул/бино = 座 (zuò)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "座",
+            "pinyin": "zuò",
+            "meaning": {
+              "uz": "ko'prik/bino sanog'i",
+              "ru": "счётное слово для мостов/зданий",
+              "tj": "шуморкалима барои пул/бино"
+            }
           }
         }
       ]

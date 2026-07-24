@@ -348,12 +348,12 @@
           "audio_text": "帽子",
           "pinyin": "màozi",
           "options": [
-            "认为",
+            "帽子",
             "如果",
             "城市",
-            "帽子"
+            "认为"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "帽子 — shlyapa, bosh kiyim (màozi)",
             "ru": "帽子 — шапка, шляпа (màozi)",
@@ -398,14 +398,14 @@
               "tj": "калон шудан, рушд кардан"
             },
             {
-              "uz": "deb o'ylamoq, hisoblamoq",
-              "ru": "считать, полагать",
-              "tj": "фикр кардан, ҳисобидан"
-            },
-            {
               "uz": "agar",
               "ru": "если",
               "tj": "агар"
+            },
+            {
+              "uz": "deb o'ylamoq, hisoblamoq",
+              "ru": "считать, полагать",
+              "tj": "фикр кардан, ҳисобидан"
             }
           ],
           "correct_index": 1,
@@ -443,9 +443,9 @@
           },
           "options": [
             "城市",
-            "如果",
+            "认为",
             "可爱",
-            "认为"
+            "如果"
           ],
           "correct_index": 2,
           "explanation": {
@@ -482,11 +482,11 @@
           },
           "options": [
             "chéngshì",
-            "rènwéi",
             "mǐ",
+            "rènwéi",
             "rúguǒ"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "米 — mǐ",
             "ru": "米 — mǐ",
@@ -506,8 +506,8 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "如果",
             "城市",
+            "如果",
             "帽子",
             "认为"
           ],
@@ -620,98 +620,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "reverse_builder",
-          "zh": "快1米了，25公斤。",
-          "pinyin": "Kuài yì mǐ le, èrshíwǔ gōngjīn.",
-          "translation": {
-            "uz": "Deyarli bir metr, 25 kilogramm.",
-            "ru": "Почти один метр, 25 килограммов.",
-            "tj": "Қариб як метр, 25 килограмм."
-          },
-          "tokens": {
-            "uz": [
-              "Deyarli",
-              "bir",
-              "25",
-              "ko'rgani",
-              "Qizimni",
-              "metr",
-              "kilogramm"
-            ],
-            "ru": [
-              "метр",
-              "один",
-              "что",
-              "25",
-              "килограммов",
-              "Спасибо",
-              "Почти"
-            ],
-            "tj": [
-              "25",
-              "килограмм",
-              "метр",
-              "Ташаккур",
-              "Қариб",
-              "ки",
-              "як"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Deyarli",
-              "bir",
-              "metr",
-              "25",
-              "kilogramm"
-            ],
-            "ru": [
-              "Почти",
-              "один",
-              "метр",
-              "25",
-              "килограммов"
-            ],
-            "tj": [
-              "Қариб",
-              "як",
-              "метр",
-              "25",
-              "килограмм"
-            ]
-          },
-          "explanation": {
-            "uz": "快1米了，25公斤。 — Deyarli bir metr, 25 kilogramm.",
-            "ru": "快1米了，25公斤。 — Почти один метр, 25 килограммов.",
-            "tj": "快1米了，25公斤。 — Қариб як метр, 25 килограмм."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "城市 talaffuzini tanlang:",
-            "ru": "Выберите произношение 城市:",
-            "tj": "Талаффузи 城市-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "rènwéi",
-            "píxié",
-            "chéngshì",
-            "rúguǒ"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "城市 — chéngshì",
-            "ru": "城市 — chéngshì",
-            "tj": "城市 — chéngshì"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -721,12 +629,12 @@
           "audio_text": "快1米了，25公斤。",
           "pinyin": "Kuài yì mǐ le, èrshíwǔ gōngjīn.",
           "options": [
-            "那您现在为什么不去？",
             "我不喜欢一直住在同一个城市，想去其他城市看一看。",
-            "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。",
-            "快1米了，25公斤。"
+            "那您现在为什么不去？",
+            "快1米了，25公斤。",
+            "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "快1米了，25公斤。 — Deyarli bir metr, 25 kilogramm.",
             "ru": "快1米了，25公斤。 — Почти один метр, 25 килограммов.",
@@ -743,12 +651,12 @@
           "audio_text": "长",
           "pinyin": "zhǎng",
           "options": [
-            "长",
             "城市",
-            "如果",
-            "认为"
+            "长",
+            "认为",
+            "如果"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "长 — o'smoq, ulg'aymoq (zhǎng)",
             "ru": "长 — расти, развиваться (zhǎng)",
@@ -788,6 +696,105 @@
             "uz": "shlyapa, bosh kiyim",
             "ru": "шапка, шляпа",
             "tj": "кулоҳ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "城市 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 城市:",
+            "tj": "Маънои калимаи 城市-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "charm tufli",
+              "ru": "кожаная обувь",
+              "tj": "пойафзоли чармӣ"
+            },
+            {
+              "uz": "shahar",
+              "ru": "город",
+              "tj": "шаҳр"
+            },
+            {
+              "uz": "deb o'ylamoq, hisoblamoq",
+              "ru": "считать, полагать",
+              "tj": "фикр кардан, ҳисобидан"
+            },
+            {
+              "uz": "agar",
+              "ru": "если",
+              "tj": "агар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "城市 = shahar (chéngshì)",
+            "ru": "城市 = город (chéngshì)",
+            "tj": "城市 = шаҳр (chéngshì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "城市",
+            "pinyin": "chéngshì",
+            "meaning": {
+              "uz": "shahar",
+              "ru": "город",
+              "tj": "шаҳр"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'shlyapa, bosh kiyim' xitoycha qaysi?",
+            "ru": "'шапка, шляпа' по-китайски?",
+            "tj": "'кулоҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "如果",
+            "认为",
+            "帽子",
+            "城市"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "shlyapa, bosh kiyim = 帽子 (màozi)",
+            "ru": "шапка, шляпа = 帽子 (màozi)",
+            "tj": "кулоҳ = 帽子 (màozi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "帽子",
+            "pinyin": "màozi",
+            "meaning": {
+              "uz": "shlyapa, bosh kiyim",
+              "ru": "шапка, шляпа",
+              "tj": "кулоҳ"
+            }
           }
         }
       ]

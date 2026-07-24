@@ -305,12 +305,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "nánguò",
             "bèi",
-            "shì",
             "zhàoxiàngjī",
-            "nánguò"
+            "shì"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "试 — shì",
             "ru": "试 — shì",
@@ -345,11 +345,11 @@
           },
           "options": [
             "照相机",
-            "被",
+            "真正",
             "难过",
-            "真正"
+            "被"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "haqiqatan, chinakam = 真正 (zhēnzhèng)",
             "ru": "действительно, по-настоящему = 真正 (zhēnzhèng)",
@@ -390,12 +390,12 @@
           "audio_text": "多么",
           "pinyin": "duōme",
           "options": [
-            "多么",
-            "照相机",
             "难过",
-            "被"
+            "多么",
+            "被",
+            "照相机"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "多么 — naqadar, qanchalik (duōme)",
             "ru": "多么 — как, насколько (duōme)",
@@ -416,6 +416,16 @@
           },
           "options": [
             {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            },
+            {
+              "uz": "sinab ko'rmoq",
+              "ru": "пробовать",
+              "tj": "санҷидан"
+            },
+            {
               "uz": "fotoapparat, kamera",
               "ru": "фотоаппарат, камера",
               "tj": "фотоаппарат, камера"
@@ -424,19 +434,9 @@
               "uz": "majhul nisbatni bildiruvchi predlog",
               "ru": "предлог пассивного залога",
               "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
-            },
-            {
-              "uz": "sinab ko'rmoq",
-              "ru": "пробовать",
-              "tj": "санҷидан"
-            },
-            {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный, печальный",
-              "tj": "ғамгин, хафа"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "试 = sinab ko'rmoq (shì)",
             "ru": "试 = пробовать (shì)",
@@ -523,47 +523,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "碗 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 碗:",
-            "tj": "Маънои калимаи 碗-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "kosa, piyola",
-              "ru": "миска, чашка",
-              "tj": "коса"
-            },
-            {
-              "uz": "majhul nisbatni bildiruvchi predlog",
-              "ru": "предлог пассивного залога",
-              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
-            },
-            {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный, печальный",
-              "tj": "ғамгин, хафа"
-            },
-            {
-              "uz": "fotoapparat, kamera",
-              "ru": "фотоаппарат, камера",
-              "tj": "фотоаппарат, камера"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "碗 = kosa, piyola (wǎn)",
-            "ru": "碗 = миска, чашка (wǎn)",
-            "tj": "碗 = коса (wǎn)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -574,11 +533,11 @@
           "pinyin": "duōme",
           "options": [
             "照相机",
-            "被",
             "多么",
+            "被",
             "难过"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "多么 — naqadar, qanchalik (duōme)",
             "ru": "多么 — как, насколько (duōme)",
@@ -593,6 +552,105 @@
             "uz": "naqadar, qanchalik",
             "ru": "как, насколько",
             "tj": "чӣ қадар, то чӣ андоза"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "解决 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 解决:",
+            "tj": "Маънои калимаи 解决-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hal qilmoq",
+              "ru": "решать",
+              "tj": "ҳал кардан"
+            },
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            },
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "解决 = hal qilmoq (jiějué)",
+            "ru": "解决 = решать (jiějué)",
+            "tj": "解决 = ҳал кардан (jiějué)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "解决",
+            "pinyin": "jiějué",
+            "meaning": {
+              "uz": "hal qilmoq",
+              "ru": "решать",
+              "tj": "ҳал кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'naqadar, qanchalik' xitoycha qaysi?",
+            "ru": "'как, насколько' по-китайски?",
+            "tj": "'чӣ қадар, то чӣ андоза' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "照相机",
+            "难过",
+            "被",
+            "多么"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "naqadar, qanchalik = 多么 (duōme)",
+            "ru": "как, насколько = 多么 (duōme)",
+            "tj": "чӣ қадар, то чӣ андоза = 多么 (duōme)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "多么",
+            "pinyin": "duōme",
+            "meaning": {
+              "uz": "naqadar, qanchalik",
+              "ru": "как, насколько",
+              "tj": "чӣ қадар, то чӣ андоза"
+            }
           }
         }
       ]

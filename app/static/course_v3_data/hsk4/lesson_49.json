@@ -381,9 +381,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "果汁",
-            "售货员",
             "袜子",
+            "售货员",
+            "果汁",
             "方面"
           ],
           "correct_index": 3,
@@ -417,12 +417,12 @@
           "audio_text": "值得",
           "pinyin": "zhíde",
           "options": [
-            "售货员",
             "袜子",
             "果汁",
-            "值得"
+            "值得",
+            "售货员"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "值得 — arziydigan (zhíde)",
             "ru": "值得 — стоить, быть достойным (zhíde)",
@@ -457,16 +457,6 @@
           },
           "options": [
             {
-              "uz": "sotuvchi",
-              "ru": "продавец",
-              "tj": "фурӯшанда"
-            },
-            {
-              "uz": "paypoq",
-              "ru": "носки",
-              "tj": "ҷӯроб"
-            },
-            {
               "uz": "meva sharbati",
               "ru": "фруктовый сок",
               "tj": "шарбати мева"
@@ -475,9 +465,19 @@
               "uz": "tadbir, aksiya",
               "ru": "мероприятие, акция",
               "tj": "чорабинӣ, аксия"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "活动 = tadbir, aksiya (huódòng)",
             "ru": "活动 = мероприятие, акция (huódòng)",
@@ -511,12 +511,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "袜子",
             "内",
-            "果汁",
-            "售货员"
+            "售货员",
+            "袜子",
+            "果汁"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "内 = ichida, davomida (nèi)",
             "ru": "内 = внутри, в течение (nèi)",
@@ -536,12 +536,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "wàzi",
             "guǒzhī",
-            "shòuhuòyuán",
-            "fāngmiàn"
+            "wàzi",
+            "fāngmiàn",
+            "shòuhuòyuán"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "方面 — fāngmiàn",
             "ru": "方面 — fāngmiàn",
@@ -637,13 +637,13 @@
             "tj": "Ҳамааш ба баррасӣ меарзад."
           },
           "tokens": [
-            "是",
-            "果汁",
-            "的",
             "值得",
             "考虑",
-            "都",
-            "售货员"
+            "果汁",
+            "售货员",
+            "的",
+            "是",
+            "都"
           ],
           "answer_tokens": [
             "都",
@@ -670,92 +670,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "果汁 talaffuzini tanlang:",
-            "ru": "Выберите произношение 果汁:",
-            "tj": "Талаффузи 果汁-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "dǎrǎo",
-            "shòuhuòyuán",
-            "wàzi",
-            "guǒzhī"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "果汁 — guǒzhī",
-            "ru": "果汁 — guǒzhī",
-            "tj": "果汁 — guǒzhī"
-          }
-        },
-        {
-          "type": "reverse_builder",
-          "zh": "都是值得考虑的。",
-          "pinyin": "Dōu shì zhíde kǎolǜ de.",
-          "translation": {
-            "uz": "Hammasi ko'rib chiqishga arziydi.",
-            "ru": "Всё это стоит рассмотреть.",
-            "tj": "Ҳамааш ба баррасӣ меарзад."
-          },
-          "tokens": {
-            "uz": [
-              "Hammasi",
-              "bunga",
-              "chiqishga",
-              "Mana",
-              "arziydi",
-              "ko'rib"
-            ],
-            "ru": [
-              "этот",
-              "Всё",
-              "стоит",
-              "рассмотреть",
-              "это",
-              "Посмотрите"
-            ],
-            "tj": [
-              "Инро",
-              "баррасӣ",
-              "меарзад",
-              "бинед",
-              "ба",
-              "Ҳамааш"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Hammasi",
-              "ko'rib",
-              "chiqishga",
-              "arziydi"
-            ],
-            "ru": [
-              "Всё",
-              "это",
-              "стоит",
-              "рассмотреть"
-            ],
-            "tj": [
-              "Ҳамааш",
-              "ба",
-              "баррасӣ",
-              "меарзад"
-            ]
-          },
-          "explanation": {
-            "uz": "都是值得考虑的。 — Hammasi ko'rib chiqishga arziydi.",
-            "ru": "都是值得考虑的。 — Всё это стоит рассмотреть.",
-            "tj": "都是值得考虑的。 — Ҳамааш ба баррасӣ меарзад."
-          }
-        },
-        {
           "type": "hanzi_choice",
           "prompt": {
             "uz": "huódòng qaysi ieroglif?",
@@ -768,12 +682,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "果汁",
-            "售货员",
             "袜子",
-            "活动"
+            "果汁",
+            "活动",
+            "售货员"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "活动 = tadbir, aksiya (huódòng)",
             "ru": "活动 = мероприятие, акция (huódòng)",
@@ -794,27 +708,27 @@
           },
           "options": [
             {
-              "uz": "meva sharbati",
-              "ru": "фруктовый сок",
-              "tj": "шарбати мева"
-            },
-            {
-              "uz": "ichida, davomida",
-              "ru": "внутри, в течение",
-              "tj": "дар дохил, дар давоми"
-            },
-            {
               "uz": "sotuvchi",
               "ru": "продавец",
               "tj": "фурӯшанда"
             },
             {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            },
+            {
               "uz": "paypoq",
               "ru": "носки",
               "tj": "ҷӯроб"
+            },
+            {
+              "uz": "ichida, davomida",
+              "ru": "внутри, в течение",
+              "tj": "дар дохил, дар давоми"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "内 = ichida, davomida (nèi)",
             "ru": "内 = внутри, в течение (nèi)",
@@ -829,6 +743,105 @@
             "uz": "jihat, tomon",
             "ru": "сторона, аспект",
             "tj": "ҷиҳат, тараф"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "皮肤 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 皮肤:",
+            "tj": "Маънои калимаи 皮肤-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "teri",
+              "ru": "кожа",
+              "tj": "пӯст"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "皮肤 = teri (pífū)",
+            "ru": "皮肤 = кожа (pífū)",
+            "tj": "皮肤 = пӯст (pífū)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "皮肤",
+            "pinyin": "pífū",
+            "meaning": {
+              "uz": "teri",
+              "ru": "кожа",
+              "tj": "пӯст"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'jihat, tomon' xitoycha qaysi?",
+            "ru": "'сторона, аспект' по-китайски?",
+            "tj": "'ҷиҳат, тараф' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "袜子",
+            "售货员",
+            "方面",
+            "果汁"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "jihat, tomon = 方面 (fāngmiàn)",
+            "ru": "сторона, аспект = 方面 (fāngmiàn)",
+            "tj": "ҷиҳат, тараф = 方面 (fāngmiàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "方面",
+            "pinyin": "fāngmiàn",
+            "meaning": {
+              "uz": "jihat, tomon",
+              "ru": "сторона, аспект",
+              "tj": "ҷиҳат, тараф"
+            }
           }
         }
       ]

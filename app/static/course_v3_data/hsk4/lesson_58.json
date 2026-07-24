@@ -382,8 +382,8 @@
           },
           "options": [
             "hòuhuǐ",
-            "cā",
             "qìhòu",
+            "cā",
             "liú xiě"
           ],
           "correct_index": 0,
@@ -430,10 +430,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "流血",
+            "擦",
             "气候",
             "来不及",
-            "擦"
+            "流血"
           ],
           "correct_index": 2,
           "explanation": {
@@ -506,9 +506,9 @@
           },
           "options": [
             {
-              "uz": "artmoq",
-              "ru": "вытирать",
-              "tj": "пок кардан, молидан"
+              "uz": "shifokor",
+              "ru": "врач",
+              "tj": "духтур"
             },
             {
               "uz": "iqlim",
@@ -516,17 +516,17 @@
               "tj": "иқлим"
             },
             {
-              "uz": "shifokor",
-              "ru": "врач",
-              "tj": "духтур"
-            },
-            {
               "uz": "qon ketmoq",
               "ru": "кровоточить",
               "tj": "хун рафтан"
+            },
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "大夫 = shifokor (dàifu)",
             "ru": "大夫 = врач (dàifu)",
@@ -546,12 +546,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "气候",
-            "擦",
             "流血",
-            "后悔"
+            "后悔",
+            "气候",
+            "擦"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "后悔 = pushaymon bo'lmoq (hòuhuǐ)",
             "ru": "后悔 = сожалеть (hòuhuǐ)",
@@ -648,12 +648,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "气候",
             "出现",
             "流血",
+            "气候",
             "擦"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 出现 (chūxiàn) — paydo bo'lmoq",
             "ru": "Верно: 出现 (chūxiàn) — появляться",
@@ -672,28 +672,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "等你身体出现问题了，后悔就来不及了。",
-          "pinyin": "Děng nǐ shēntǐ chūxiàn wèntí le, hòuhuǐ jiù láibují le.",
-          "options": [
-            "等你身体出现问题了，后悔就来不及了。",
-            "就是因为昨天穿得太少，我都感冒了。",
-            "你的鼻子怎么流血了？快用纸擦擦。",
-            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "等你身体出现问题了，后悔就来不及了。 — Tanangda muammo paydo bo'lgandan keyin pushaymon bo'lish kech bo'ladi.",
-            "ru": "等你身体出现问题了，后悔就来不及了。 — Когда появятся проблемы со здоровьем, сожалеть будет поздно.",
-            "tj": "等你身体出现问题了，后悔就来不及了。 — Вақте дар саломатият мушкил пайдо шавад, пушаймон шудан дер мешавад."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "反对",
           "pinyin": "fǎnduì",
@@ -701,31 +679,6 @@
             "uz": "qarshi bo'lmoq",
             "ru": "быть против",
             "tj": "муқобил будан"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'harakat' xitoycha qaysi?",
-            "ru": "'движение, действие' по-китайски?",
-            "tj": "'ҳаракат' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "擦",
-            "动作",
-            "流血",
-            "气候"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "harakat = 动作 (dòngzuò)",
-            "ru": "движение, действие = 动作 (dòngzuò)",
-            "tj": "ҳаракат = 动作 (dòngzuò)"
           }
         },
         {
@@ -752,17 +705,17 @@
               "tj": "хун рафтан"
             },
             {
-              "uz": "iqlim",
-              "ru": "климат",
-              "tj": "иқлим"
-            },
-            {
               "uz": "shifokor",
               "ru": "врач",
               "tj": "духтур"
+            },
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "大夫 = shifokor (dàifu)",
             "ru": "大夫 = врач (dàifu)",
@@ -777,6 +730,105 @@
             "uz": "ulgurmaslik, kech bo'lmoq",
             "ru": "не успеть, быть поздно",
             "tj": "вақт нарасидан, дер шудан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "动作 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 动作:",
+            "tj": "Маънои калимаи 动作-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "harakat",
+              "ru": "движение, действие",
+              "tj": "ҳаракат"
+            },
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            },
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "动作 = harakat (dòngzuò)",
+            "ru": "动作 = движение, действие (dòngzuò)",
+            "tj": "动作 = ҳаракат (dòngzuò)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "动作",
+            "pinyin": "dòngzuò",
+            "meaning": {
+              "uz": "harakat",
+              "ru": "движение, действие",
+              "tj": "ҳаракат"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ulgurmaslik, kech bo'lmoq' xitoycha qaysi?",
+            "ru": "'не успеть, быть поздно' по-китайски?",
+            "tj": "'вақт нарасидан, дер шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "气候",
+            "来不及",
+            "流血",
+            "擦"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ulgurmaslik, kech bo'lmoq = 来不及 (láibují)",
+            "ru": "не успеть, быть поздно = 来不及 (láibují)",
+            "tj": "вақт нарасидан, дер шудан = 来不及 (láibují)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "来不及",
+            "pinyin": "láibují",
+            "meaning": {
+              "uz": "ulgurmaslik, kech bo'lmoq",
+              "ru": "не успеть, быть поздно",
+              "tj": "вақт нарасидан, дер шудан"
+            }
           }
         }
       ]

@@ -331,12 +331,12 @@
           "audio_text": "不得不",
           "pinyin": "bùdébù",
           "options": [
-            "以为",
-            "不得不",
             "份",
-            "提"
+            "提",
+            "不得不",
+            "以为"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "不得不 — majbur bo'lmoq (bùdébù)",
             "ru": "不得不 — быть вынужденным (bùdébù)",
@@ -381,6 +381,11 @@
           },
           "options": [
             {
+              "uz": "hatto, hattoki",
+              "ru": "даже",
+              "tj": "ҳатто"
+            },
+            {
               "uz": "ish kabi narsalar uchun hisob so'zi",
               "ru": "счётное слово для работы и др.",
               "tj": "ҳисобвожа барои кор ва ғайра"
@@ -391,17 +396,12 @@
               "tj": "фикр кардан, ғалат пиндоштан"
             },
             {
-              "uz": "hatto, hattoki",
-              "ru": "даже",
-              "tj": "ҳатто"
-            },
-            {
               "uz": "tilga olmoq, aytmoq",
               "ru": "упоминать, говорить",
               "tj": "зикр кардан, гуфтан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "甚至 = hatto, hattoki (shènzhì)",
             "ru": "甚至 = даже (shènzhì)",
@@ -435,12 +435,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "责任",
+            "提",
             "以为",
-            "份",
-            "提"
+            "责任",
+            "份"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "责任 = mas'uliyat, javobgarlik (zérèn)",
             "ru": "责任 = ответственность (zérèn)",
@@ -460,12 +460,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bùdébù",
-            "yǐwéi",
+            "fèn",
             "tí",
-            "fèn"
+            "yǐwéi",
+            "bùdébù"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "不得不 — bùdébù",
             "ru": "不得不 — bùdébù",
@@ -518,53 +518,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yuánlái qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yuánlái?",
-            "tj": "yuánlái кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "份",
-            "以为",
-            "原来",
-            "提"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "原来 = asl, oldingi (yuánlái)",
-            "ru": "原来 = первоначальный, прежний (yuánlái)",
-            "tj": "原来 = аввала, пешина (yuánlái)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "甚至",
-          "pinyin": "shènzhì",
-          "options": [
-            "份",
-            "提",
-            "甚至",
-            "以为"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "甚至 — hatto, hattoki (shènzhì)",
-            "ru": "甚至 — даже (shènzhì)",
-            "tj": "甚至 — ҳатто (shènzhì)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -599,6 +552,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "甚至",
+          "pinyin": "shènzhì",
+          "options": [
+            "提",
+            "甚至",
+            "份",
+            "以为"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "甚至 — hatto, hattoki (shènzhì)",
+            "ru": "甚至 — даже (shènzhì)",
+            "tj": "甚至 — ҳатто (shènzhì)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "甚至",
           "pinyin": "shènzhì",
@@ -606,6 +581,105 @@
             "uz": "hatto, hattoki",
             "ru": "даже",
             "tj": "ҳатто"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "方法 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 方法:",
+            "tj": "Маънои калимаи 方法-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "usul, yo'l",
+              "ru": "метод, способ",
+              "tj": "усул, роҳ"
+            },
+            {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "方法 = usul, yo'l (fāngfǎ)",
+            "ru": "方法 = метод, способ (fāngfǎ)",
+            "tj": "方法 = усул, роҳ (fāngfǎ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "方法",
+            "pinyin": "fāngfǎ",
+            "meaning": {
+              "uz": "usul, yo'l",
+              "ru": "метод, способ",
+              "tj": "усул, роҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hatto, hattoki' xitoycha qaysi?",
+            "ru": "'даже' по-китайски?",
+            "tj": "'ҳатто' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "提",
+            "以为",
+            "份",
+            "甚至"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "hatto, hattoki = 甚至 (shènzhì)",
+            "ru": "даже = 甚至 (shènzhì)",
+            "tj": "ҳатто = 甚至 (shènzhì)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "甚至",
+            "pinyin": "shènzhì",
+            "meaning": {
+              "uz": "hatto, hattoki",
+              "ru": "даже",
+              "tj": "ҳатто"
+            }
           }
         }
       ]

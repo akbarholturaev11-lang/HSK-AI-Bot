@@ -435,12 +435,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tuīchí",
-            "hángbān",
             "jiāyóuzhàn",
-            "kē"
+            "hángbān",
+            "kē",
+            "tuīchí"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "棵 — kē",
             "ru": "棵 — kē",
@@ -484,12 +484,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "加油站",
+            "南方",
             "推迟",
             "航班",
-            "南方"
+            "加油站"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "janub = 南方 (nánfāng)",
             "ru": "юг = 南方 (nánfāng)",
@@ -520,12 +520,12 @@
           "audio_text": "对话",
           "pinyin": "duìhuà",
           "options": [
-            "加油站",
-            "航班",
             "推迟",
-            "对话"
+            "对话",
+            "加油站",
+            "航班"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "对话 — suhbatlashmoq, dialog (duìhuà)",
             "ru": "对话 — вести диалог, диалог (duìhuà)",
@@ -560,16 +560,6 @@
           },
           "options": [
             {
-              "uz": "reys, parvoz",
-              "ru": "рейс, авиарейс",
-              "tj": "парвоз, рейс"
-            },
-            {
-              "uz": "yoqilg'i quyish shoxobchasi",
-              "ru": "заправка",
-              "tj": "нуқтаи сӯзишворӣ"
-            },
-            {
               "uz": "putonghua, standart xitoy tili",
               "ru": "путунхуа, стандартный китайский",
               "tj": "путунхуа, забони стандартии чинӣ"
@@ -578,9 +568,19 @@
               "uz": "kechiktirmoq",
               "ru": "откладывать, переносить",
               "tj": "ба таъхир гузоштан"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            },
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "普通话 = putonghua, standart xitoy tili (Pǔtōnghuà)",
             "ru": "普通话 = путунхуа, стандартный китайский (Pǔtōnghuà)",
@@ -600,12 +600,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "推迟",
-            "航班",
             "加油站",
-            "棵"
+            "棵",
+            "航班",
+            "推迟"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "棵 = daraxtlar uchun hisob so'zi (kē)",
             "ru": "棵 = счётное слово для деревьев (kē)",
@@ -666,28 +666,13 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'saqlamoq, topshirib qo'ymoq' xitoycha qaysi?",
-            "ru": "'хранить, сдавать на хранение' по-китайски?",
-            "tj": "'нигоҳ доштан, супоридан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "存",
-            "加油站",
-            "推迟",
-            "航班"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "saqlamoq, topshirib qo'ymoq = 存 (cún)",
-            "ru": "хранить, сдавать на хранение = 存 (cún)",
-            "tj": "нигоҳ доштан, супоридан = 存 (cún)"
+          "type": "pronunciation",
+          "phrase": "对话",
+          "pinyin": "duìhuà",
+          "translation": {
+            "uz": "suhbatlashmoq, dialog",
+            "ru": "вести диалог, диалог",
+            "tj": "суҳбат кардан, гуфтугӯ"
           }
         },
         {
@@ -700,26 +685,16 @@
           "audio_text": "南方",
           "pinyin": "nánfāng",
           "options": [
-            "推迟",
-            "加油站",
             "航班",
-            "南方"
+            "推迟",
+            "南方",
+            "加油站"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "南方 — janub (nánfāng)",
             "ru": "南方 — юг (nánfāng)",
             "tj": "南方 — ҷануб (nánfāng)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "对话",
-          "pinyin": "duìhuà",
-          "translation": {
-            "uz": "suhbatlashmoq, dialog",
-            "ru": "вести диалог, диалог",
-            "tj": "суҳбат кардан, гуфтугӯ"
           }
         },
         {
@@ -741,9 +716,9 @@
               "tj": "парвоз, рейс"
             },
             {
-              "uz": "putonghua, standart xitoy tili",
-              "ru": "путунхуа, стандартный китайский",
-              "tj": "путунхуа, забони стандартии чинӣ"
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
             },
             {
               "uz": "yoqilg'i quyish shoxobchasi",
@@ -751,12 +726,12 @@
               "tj": "нуқтаи сӯзишворӣ"
             },
             {
-              "uz": "kechiktirmoq",
-              "ru": "откладывать, переносить",
-              "tj": "ба таъхир гузоштан"
+              "uz": "putonghua, standart xitoy tili",
+              "ru": "путунхуа, стандартный китайский",
+              "tj": "путунхуа, забони стандартии чинӣ"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "普通话 = putonghua, standart xitoy tili (Pǔtōnghuà)",
             "ru": "普通话 = путунхуа, стандартный китайский (Pǔtōnghuà)",
@@ -771,6 +746,105 @@
             "uz": "janub",
             "ru": "юг",
             "tj": "ҷануб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "存 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 存:",
+            "tj": "Маънои калимаи 存-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            },
+            {
+              "uz": "saqlamoq, topshirib qo'ymoq",
+              "ru": "хранить, сдавать на хранение",
+              "tj": "нигоҳ доштан, супоридан"
+            },
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "存 = saqlamoq, topshirib qo'ymoq (cún)",
+            "ru": "存 = хранить, сдавать на хранение (cún)",
+            "tj": "存 = нигоҳ доштан, супоридан (cún)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "存",
+            "pinyin": "cún",
+            "meaning": {
+              "uz": "saqlamoq, topshirib qo'ymoq",
+              "ru": "хранить, сдавать на хранение",
+              "tj": "нигоҳ доштан, супоридан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'janub' xitoycha qaysi?",
+            "ru": "'юг' по-китайски?",
+            "tj": "'ҷануб' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "航班",
+            "南方",
+            "加油站",
+            "推迟"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "janub = 南方 (nánfāng)",
+            "ru": "юг = 南方 (nánfāng)",
+            "tj": "ҷануб = 南方 (nánfāng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "南方",
+            "pinyin": "nánfāng",
+            "meaning": {
+              "uz": "janub",
+              "ru": "юг",
+              "tj": "ҷануб"
+            }
           }
         }
       ]

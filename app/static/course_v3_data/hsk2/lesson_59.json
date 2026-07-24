@@ -331,12 +331,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "铅笔",
             "手",
-            "着",
-            "拿"
+            "铅笔",
+            "拿",
+            "着"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "davom etayotgan holatni bildiruvchi yuklama = 着 (zhe)",
             "ru": "частица продолжающегося состояния = 着 (zhe)",
@@ -367,12 +367,12 @@
           "audio_text": "手",
           "pinyin": "shǒu",
           "options": [
-            "手",
-            "着",
             "拿",
-            "铅笔"
+            "铅笔",
+            "手",
+            "着"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "手 — qo'l (shǒu)",
             "ru": "手 — рука (shǒu)",
@@ -422,14 +422,14 @@
               "tj": "нигоҳ доштан, бардоштан"
             },
             {
-              "uz": "davom etayotgan holatni bildiruvchi yuklama",
-              "ru": "частица продолжающегося состояния",
-              "tj": "зарраи ҳолати давомдор"
-            },
-            {
               "uz": "qo'rg'oshin qalam",
               "ru": "карандаш",
               "tj": "қалами оддӣ"
+            },
+            {
+              "uz": "davom etayotgan holatni bildiruvchi yuklama",
+              "ru": "частица продолжающегося состояния",
+              "tj": "зарраи ҳолати давомдор"
             },
             {
               "uz": "qo'l",
@@ -471,10 +471,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "手",
             "拿",
-            "着",
             "铅笔",
-            "手"
+            "着"
           ],
           "correct_index": 2,
           "explanation": {
@@ -496,12 +496,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "zhe",
             "qiānbǐ",
             "shǒu",
-            "zhe",
             "ná"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "着 — zhe",
             "ru": "着 — zhe",
@@ -606,14 +606,14 @@
             "tj": "Дар кушода истодааст, дарояд."
           },
           "tokens": [
+            "手",
             "门",
+            "拿",
+            "请",
+            "开",
             "呢",
             "着",
-            "开",
-            "进",
-            "拿",
-            "手",
-            "请"
+            "进"
           ],
           "answer_tokens": [
             "门",
@@ -641,34 +641,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Eshik ochiq turibdi, marhamat kiring.",
-            "ru": "Дверь открыта, пожалуйста, входите.",
-            "tj": "Дар кушода истодааст, марҳамат даред."
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
-          "tokens": [
-            "手",
-            "门",
-            "拿",
-            "请",
-            "开",
-            "呢",
-            "着",
-            "进"
+          "audio_text": "那个手里拿着铅笔的呢？",
+          "pinyin": "Nàge shǒu lǐ ná zhe qiānbǐ de ne?",
+          "options": [
+            "那个手里拿着铅笔的呢？",
+            "请问，张先生在吗？",
+            "他出去了。你下午再来吧。",
+            "门开着呢，请进。"
           ],
-          "answer_tokens": [
-            "门",
-            "开",
-            "着",
-            "呢",
-            "请",
-            "进"
-          ],
+          "correct_index": 0,
           "explanation": {
-            "uz": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
-            "ru": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
-            "tj": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn."
+            "uz": "那个手里拿着铅笔的呢？ — Qo'lida qalam ushlab turgan odam-chi?",
+            "ru": "那个手里拿着铅笔的呢？ — А тот, кто держит в руке карандаш?",
+            "tj": "那个手里拿着铅笔的呢？ — Он касе ки дар дасташ қалам дорад чӣ?"
           }
         },
         {
@@ -749,53 +740,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "那个手里拿着铅笔的呢？",
-          "pinyin": "Nàge shǒu lǐ ná zhe qiānbǐ de ne?",
-          "options": [
-            "那个手里拿着铅笔的呢？",
-            "他出去了。你下午再来吧。",
-            "门开着呢，请进。",
-            "请问，张先生在吗？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "那个手里拿着铅笔的呢？ — Qo'lida qalam ushlab turgan odam-chi?",
-            "ru": "那个手里拿着铅笔的呢？ — А тот, кто держит в руке карандаш?",
-            "tj": "那个手里拿着铅笔的呢？ — Он касе ки дар дасташ қалам дорад чӣ?"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "bìng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается bìng?",
-            "tj": "bìng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "手",
-            "着",
-            "病",
-            "拿"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "病 = kasal bo'lmoq; kasallik (bìng)",
-            "ru": "病 = болеть; болезнь (bìng)",
-            "tj": "病 = бемор шудан; беморӣ (bìng)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "拿",
           "pinyin": "ná",
@@ -803,6 +747,105 @@
             "uz": "ushlamoq, ko'tarmoq",
             "ru": "держать, нести",
             "tj": "нигоҳ доштан, бардоштан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "雪 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 雪:",
+            "tj": "Маънои калимаи 雪-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo'l",
+              "ru": "рука",
+              "tj": "даст"
+            },
+            {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            },
+            {
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
+            },
+            {
+              "uz": "davom etayotgan holatni bildiruvchi yuklama",
+              "ru": "частица продолжающегося состояния",
+              "tj": "зарраи ҳолати давомдор"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "雪 = qor (xuě)",
+            "ru": "雪 = снег (xuě)",
+            "tj": "雪 = барф (xuě)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "雪",
+            "pinyin": "xuě",
+            "meaning": {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ushlamoq, ko'tarmoq' xitoycha qaysi?",
+            "ru": "'держать, нести' по-китайски?",
+            "tj": "'нигоҳ доштан, бардоштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "着",
+            "手",
+            "拿",
+            "铅笔"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "ushlamoq, ko'tarmoq = 拿 (ná)",
+            "ru": "держать, нести = 拿 (ná)",
+            "tj": "нигоҳ доштан, бардоштан = 拿 (ná)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "拿",
+            "pinyin": "ná",
+            "meaning": {
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
+            }
           }
         }
       ]

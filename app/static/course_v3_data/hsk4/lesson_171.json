@@ -416,9 +416,9 @@
           },
           "options": [
             {
-              "uz": "semestr, o'quv muddati",
-              "ru": "семестр",
-              "tj": "нимсолаи таҳсил"
+              "uz": "badminton",
+              "ru": "бадминтон",
+              "tj": "бадминтон"
             },
             {
               "uz": "jins",
@@ -426,17 +426,17 @@
               "tj": "ҷинс"
             },
             {
-              "uz": "badminton",
-              "ru": "бадминтон",
-              "tj": "бадминтон"
-            },
-            {
               "uz": "tug'ilmoq",
               "ru": "родиться",
               "tj": "таваллуд шудан"
+            },
+            {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "羽毛球 = badminton (yǔmáoqiú)",
             "ru": "羽毛球 = бадминтон (yǔmáoqiú)",
@@ -470,9 +470,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "出生",
-            "学期",
             "性别",
+            "学期",
+            "出生",
             "场"
           ],
           "correct_index": 3,
@@ -519,12 +519,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xìngbié",
             "chūshēng",
             "jìnzhǐ",
+            "xìngbié",
             "xuéqī"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "禁止 — jìnzhǐ",
             "ru": "禁止 — jìnzhǐ",
@@ -558,12 +558,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "性别",
             "座位",
-            "出生",
             "学期",
-            "性别"
+            "出生"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "o'rindiq, joy = 座位 (zuòwèi)",
             "ru": "место, сиденье = 座位 (zuòwèi)",
@@ -581,11 +581,11 @@
           "pinyin": "yǔmáoqiú",
           "options": [
             "学期",
-            "羽毛球",
             "性别",
+            "羽毛球",
             "出生"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "羽毛球 — badminton (yǔmáoqiú)",
             "ru": "羽毛球 — бадминтон (yǔmáoqiú)",
@@ -655,41 +655,16 @@
           "audio_text": "禁止",
           "pinyin": "jìnzhǐ",
           "options": [
-            "性别",
+            "出生",
             "学期",
-            "禁止",
-            "出生"
+            "性别",
+            "禁止"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "禁止 — taqiqlamoq (jìnzhǐ)",
             "ru": "禁止 — запрещать (jìnzhǐ)",
             "tj": "禁止 — манъ кардан (jìnzhǐ)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "xìngbié qaysi ieroglif?",
-            "ru": "Какой иероглиф читается xìngbié?",
-            "tj": "xìngbié кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "出生",
-            "学期",
-            "性别",
-            "护照"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "性别 = jins (xìngbié)",
-            "ru": "性别 = пол (xìngbié)",
-            "tj": "性别 = ҷинс (xìngbié)"
           }
         },
         {
@@ -742,6 +717,105 @@
             "uz": "taqiqlamoq",
             "ru": "запрещать",
             "tj": "манъ кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "功夫 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 功夫:",
+            "tj": "Маънои калимаи 功夫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kungfu",
+              "ru": "кунфу",
+              "tj": "кунгфу"
+            },
+            {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            },
+            {
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
+            },
+            {
+              "uz": "jins",
+              "ru": "пол",
+              "tj": "ҷинс"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "功夫 = kungfu (gōngfu)",
+            "ru": "功夫 = кунфу (gōngfu)",
+            "tj": "功夫 = кунгфу (gōngfu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "功夫",
+            "pinyin": "gōngfu",
+            "meaning": {
+              "uz": "kungfu",
+              "ru": "кунфу",
+              "tj": "кунгфу"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'taqiqlamoq' xitoycha qaysi?",
+            "ru": "'запрещать' по-китайски?",
+            "tj": "'манъ кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "出生",
+            "性别",
+            "学期",
+            "禁止"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "taqiqlamoq = 禁止 (jìnzhǐ)",
+            "ru": "запрещать = 禁止 (jìnzhǐ)",
+            "tj": "манъ кардан = 禁止 (jìnzhǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "禁止",
+            "pinyin": "jìnzhǐ",
+            "meaning": {
+              "uz": "taqiqlamoq",
+              "ru": "запрещать",
+              "tj": "манъ кардан"
+            }
           }
         }
       ]

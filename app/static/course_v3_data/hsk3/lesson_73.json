@@ -307,8 +307,8 @@
           "options": [
             "dǎsǎo",
             "pánzi",
-            "gānjìng",
-            "ránhòu"
+            "ránhòu",
+            "gānjìng"
           ],
           "correct_index": 1,
           "explanation": {
@@ -344,12 +344,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "然后",
             "刮风",
-            "打扫",
-            "干净"
+            "然后",
+            "干净",
+            "打扫"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "shamol esmoq = 刮风 (guā fēng)",
             "ru": "быть ветреным = 刮风 (guā fēng)",
@@ -381,11 +381,11 @@
           "pinyin": "shūshu",
           "options": [
             "打扫",
-            "叔叔",
             "干净",
+            "叔叔",
             "然后"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "叔叔 — amaki (shūshu)",
             "ru": "叔叔 — дядя (shūshu)",
@@ -406,9 +406,9 @@
           },
           "options": [
             {
-              "uz": "tarelka, lagan",
-              "ru": "тарелка",
-              "tj": "табақ"
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
             },
             {
               "uz": "tozalamoq, supurmoq",
@@ -421,12 +421,12 @@
               "tj": "баъд, сипас"
             },
             {
-              "uz": "toza",
-              "ru": "чистый",
-              "tj": "тоза"
+              "uz": "tarelka, lagan",
+              "ru": "тарелка",
+              "tj": "табақ"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "盘子 = tarelka, lagan (pánzi)",
             "ru": "盘子 = тарелка (pánzi)",
@@ -479,28 +479,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "打扫 talaffuzini tanlang:",
-            "ru": "Выберите произношение 打扫:",
-            "tj": "Талаффузи 打扫-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "刮风",
+          "pinyin": "guā fēng",
           "options": [
-            "dǎsǎo",
-            "ránhòu",
-            "gānjìng",
-            "bīngxiāng"
+            "打扫",
+            "刮风",
+            "干净",
+            "然后"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "打扫 — dǎsǎo",
-            "ru": "打扫 — dǎsǎo",
-            "tj": "打扫 — dǎsǎo"
+            "uz": "刮风 — shamol esmoq (guā fēng)",
+            "ru": "刮风 — быть ветреным (guā fēng)",
+            "tj": "刮风 — шамол вазидан (guā fēng)"
           }
         },
         {
@@ -513,38 +510,16 @@
           "audio_text": "盘子",
           "pinyin": "pánzi",
           "options": [
-            "干净",
-            "打扫",
             "然后",
-            "盘子"
+            "盘子",
+            "干净",
+            "打扫"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "盘子 — tarelka, lagan (pánzi)",
             "ru": "盘子 — тарелка (pánzi)",
             "tj": "盘子 — табақ (pánzi)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "刮风",
-          "pinyin": "guā fēng",
-          "options": [
-            "然后",
-            "打扫",
-            "干净",
-            "刮风"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "刮风 — shamol esmoq (guā fēng)",
-            "ru": "刮风 — быть ветреным (guā fēng)",
-            "tj": "刮风 — шамол вазидан (guā fēng)"
           }
         },
         {
@@ -560,12 +535,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "打扫",
-            "干净",
             "然后",
-            "叔叔"
+            "打扫",
+            "叔叔",
+            "干净"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "叔叔 = amaki (shūshu)",
             "ru": "叔叔 = дядя (shūshu)",
@@ -580,6 +555,105 @@
             "uz": "tarelka, lagan",
             "ru": "тарелка",
             "tj": "табақ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "洗澡 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 洗澡:",
+            "tj": "Маънои калимаи 洗澡-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
+            },
+            {
+              "uz": "cho'milmoq, dush qabul qilmoq",
+              "ru": "принимать ванну/душ",
+              "tj": "оббозӣ кардан, душ гирифтан"
+            },
+            {
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
+            },
+            {
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "洗澡 = cho'milmoq, dush qabul qilmoq (xǐ zǎo)",
+            "ru": "洗澡 = принимать ванну/душ (xǐ zǎo)",
+            "tj": "洗澡 = оббозӣ кардан, душ гирифтан (xǐ zǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "洗澡",
+            "pinyin": "xǐ zǎo",
+            "meaning": {
+              "uz": "cho'milmoq, dush qabul qilmoq",
+              "ru": "принимать ванну/душ",
+              "tj": "оббозӣ кардан, душ гирифтан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tarelka, lagan' xitoycha qaysi?",
+            "ru": "'тарелка' по-китайски?",
+            "tj": "'табақ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "干净",
+            "盘子",
+            "打扫",
+            "然后"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "tarelka, lagan = 盘子 (pánzi)",
+            "ru": "тарелка = 盘子 (pánzi)",
+            "tj": "табақ = 盘子 (pánzi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "盘子",
+            "pinyin": "pánzi",
+            "meaning": {
+              "uz": "tarelka, lagan",
+              "ru": "тарелка",
+              "tj": "табақ"
+            }
           }
         }
       ]

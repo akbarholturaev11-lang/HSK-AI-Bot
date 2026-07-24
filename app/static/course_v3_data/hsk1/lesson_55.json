@@ -478,53 +478,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "píngguǒ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается píngguǒ?",
-            "tj": "píngguǒ кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "苹果",
-            "一点儿",
-            "看见",
-            "东西"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "苹果 = olma (píngguǒ)",
-            "ru": "苹果 = яблоко (píngguǒ)",
-            "tj": "苹果 = себ (píngguǒ)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "他什么时候能回来？",
-          "pinyin": "Tā shénme shíhou néng huílai?",
-          "options": [
-            "他什么时候能回来？",
-            "我去商店买东西了。",
-            "你买什么了？",
-            "昨天上午你去哪儿了？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "他什么时候能回来？ — Qachon qaytib kela oladi?",
-            "ru": "他什么时候能回来？ — Когда он сможет вернуться?",
-            "tj": "他什么时候能回来？ — Ӯ кай баргашта метавонад?"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "他什么时候能回来？",
           "pinyin": "Tā shénme shíhou néng huílai?",
@@ -582,6 +535,28 @@
         {
           "type": "listening_choice",
           "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "他什么时候能回来？",
+          "pinyin": "Tā shénme shíhou néng huílai?",
+          "options": [
+            "他什么时候能回来？",
+            "我去商店买东西了。",
+            "你买什么了？",
+            "昨天上午你去哪儿了？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "他什么时候能回来？ — Qachon qaytib kela oladi?",
+            "ru": "他什么时候能回来？ — Когда он сможет вернуться?",
+            "tj": "他什么时候能回来？ — Ӯ кай баргашта метавонад?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
             "uz": "Tinglang — qaysi so'z?",
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
@@ -599,35 +574,6 @@
             "uz": "回来 — qaytib kelmoq (huílai)",
             "ru": "回来 — вернуться, прийти обратно (huílai)",
             "tj": "回来 — баргаштан, бозгашт кардан (huílai)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Qachon qaytib kela oladi?",
-            "ru": "Когда он сможет вернуться?",
-            "tj": "Ӯ кай баргашта метавонад?"
-          },
-          "tokens": [
-            "他",
-            "东西",
-            "时候",
-            "什么",
-            "一点儿",
-            "回来",
-            "能"
-          ],
-          "answer_tokens": [
-            "他",
-            "什么",
-            "时候",
-            "能",
-            "回来"
-          ],
-          "explanation": {
-            "uz": "他什么时候能回来？ — Tā shénme shíhou néng huílai?",
-            "ru": "他什么时候能回来？ — Tā shénme shíhou néng huílai?",
-            "tj": "他什么时候能回来？ — Tā shénme shíhou néng huílai?"
           }
         },
         {
@@ -660,6 +606,105 @@
             "uz": "mashina, transport",
             "ru": "машина, транспорт",
             "tj": "мошин, нақлиёт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "苹果 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 苹果:",
+            "tj": "Маънои калимаи 苹果-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bir oz, biroz",
+              "ru": "немного, чуть-чуть",
+              "tj": "каме, андаке"
+            },
+            {
+              "uz": "narsa, buyum",
+              "ru": "вещь, предмет",
+              "tj": "чиз, асбоб"
+            },
+            {
+              "uz": "ko'rmoq, ko'rib qolmoq",
+              "ru": "увидеть, заметить",
+              "tj": "дидан, мушоҳида кардан"
+            },
+            {
+              "uz": "olma",
+              "ru": "яблоко",
+              "tj": "себ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "苹果 = olma (píngguǒ)",
+            "ru": "苹果 = яблоко (píngguǒ)",
+            "tj": "苹果 = себ (píngguǒ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "苹果",
+            "pinyin": "píngguǒ",
+            "meaning": {
+              "uz": "olma",
+              "ru": "яблоко",
+              "tj": "себ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mashina, transport' xitoycha qaysi?",
+            "ru": "'машина, транспорт' по-китайски?",
+            "tj": "'мошин, нақлиёт' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "一点儿",
+            "东西",
+            "苹果",
+            "车"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "mashina, transport = 车 (chē)",
+            "ru": "машина, транспорт = 车 (chē)",
+            "tj": "мошин, нақлиёт = 车 (chē)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "车",
+            "pinyin": "chē",
+            "meaning": {
+              "uz": "mashina, transport",
+              "ru": "машина, транспорт",
+              "tj": "мошин, нақлиёт"
+            }
           }
         }
       ]

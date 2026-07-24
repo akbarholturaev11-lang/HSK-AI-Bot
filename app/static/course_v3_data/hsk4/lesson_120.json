@@ -429,9 +429,9 @@
           "pinyin": "chūchāi",
           "options": [
             "出差",
-            "牙膏",
             "毛巾",
-            "重"
+            "重",
+            "牙膏"
           ],
           "correct_index": 0,
           "explanation": {
@@ -468,14 +468,9 @@
           },
           "options": [
             {
-              "uz": "xizmat safariga bormoq",
-              "ru": "ехать в командировку",
-              "tj": "ба сафари хизматӣ рафтан"
-            },
-            {
-              "uz": "tish pastasi",
-              "ru": "зубная паста",
-              "tj": "хамираи дандон"
+              "uz": "og'ir",
+              "ru": "тяжёлый",
+              "tj": "вазнин"
             },
             {
               "uz": "sochiq",
@@ -483,12 +478,17 @@
               "tj": "дастмол"
             },
             {
-              "uz": "og'ir",
-              "ru": "тяжёлый",
-              "tj": "вазнин"
+              "uz": "tish pastasi",
+              "ru": "зубная паста",
+              "tj": "хамираи дандон"
+            },
+            {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "毛巾 = sochiq (máojīn)",
             "ru": "毛巾 = полотенце (máojīn)",
@@ -522,12 +522,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "出差",
-            "牙膏",
             "毛巾",
-            "重"
+            "重",
+            "牙膏",
+            "出差"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "牙膏 = tish pastasi (yágāo)",
             "ru": "牙膏 = зубная паста (yágāo)",
@@ -571,9 +571,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "máojīn",
             "chūchāi",
             "yágāo",
+            "máojīn",
             "zhòng"
           ],
           "correct_index": 3,
@@ -596,12 +596,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "出差",
             "牙膏",
             "毛巾",
+            "出差",
             "重"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "xizmat safariga bormoq = 出差 (chūchāi)",
             "ru": "ехать в командировку = 出差 (chūchāi)",
@@ -701,44 +701,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "等 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 等:",
-            "tj": "Маънои калимаи 等-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "出差",
+          "pinyin": "chūchāi",
           "options": [
-            {
-              "uz": "va boshqalar",
-              "ru": "и так далее",
-              "tj": "ва ғайра"
-            },
-            {
-              "uz": "tish pastasi",
-              "ru": "зубная паста",
-              "tj": "хамираи дандон"
-            },
-            {
-              "uz": "xizmat safariga bormoq",
-              "ru": "ехать в командировку",
-              "tj": "ба сафари хизматӣ рафтан"
-            },
-            {
-              "uz": "sochiq",
-              "ru": "полотенце",
-              "tj": "дастмол"
-            }
+            "毛巾",
+            "重",
+            "牙膏",
+            "出差"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "等 = va boshqalar (děng)",
-            "ru": "等 = и так далее (děng)",
-            "tj": "等 = ва ғайра (děng)"
+            "uz": "出差 — xizmat safariga bormoq (chūchāi)",
+            "ru": "出差 — ехать в командировку (chūchāi)",
+            "tj": "出差 — ба сафари хизматӣ рафтан (chūchāi)"
           }
         },
         {
@@ -751,38 +732,16 @@
           "audio_text": "重",
           "pinyin": "zhòng",
           "options": [
-            "重",
             "牙膏",
             "出差",
-            "毛巾"
+            "毛巾",
+            "重"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "重 — og'ir (zhòng)",
             "ru": "重 — тяжёлый (zhòng)",
             "tj": "重 — вазнин (zhòng)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "出差",
-          "pinyin": "chūchāi",
-          "options": [
-            "重",
-            "毛巾",
-            "牙膏",
-            "出差"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "出差 — xizmat safariga bormoq (chūchāi)",
-            "ru": "出差 — ехать в командировку (chūchāi)",
-            "tj": "出差 — ба сафари хизматӣ рафтан (chūchāi)"
           }
         },
         {
@@ -793,6 +752,105 @@
             "uz": "og'ir",
             "ru": "тяжёлый",
             "tj": "вазнин"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "厚 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 厚:",
+            "tj": "Маънои калимаи 厚-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sochiq",
+              "ru": "полотенце",
+              "tj": "дастмол"
+            },
+            {
+              "uz": "chuqur, qalin",
+              "ru": "глубокий, толстый",
+              "tj": "чуқур, ғафс"
+            },
+            {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
+            },
+            {
+              "uz": "tish pastasi",
+              "ru": "зубная паста",
+              "tj": "хамираи дандон"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "厚 = chuqur, qalin (hòu)",
+            "ru": "厚 = глубокий, толстый (hòu)",
+            "tj": "厚 = чуқур, ғафс (hòu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "厚",
+            "pinyin": "hòu",
+            "meaning": {
+              "uz": "chuqur, qalin",
+              "ru": "глубокий, толстый",
+              "tj": "чуқур, ғафс"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'og'ir' xitoycha qaysi?",
+            "ru": "'тяжёлый' по-китайски?",
+            "tj": "'вазнин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "毛巾",
+            "牙膏",
+            "重",
+            "出差"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "og'ir = 重 (zhòng)",
+            "ru": "тяжёлый = 重 (zhòng)",
+            "tj": "вазнин = 重 (zhòng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "重",
+            "pinyin": "zhòng",
+            "meaning": {
+              "uz": "og'ir",
+              "ru": "тяжёлый",
+              "tj": "вазнин"
+            }
           }
         }
       ]

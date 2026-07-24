@@ -334,12 +334,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "guǒzhī",
-            "jǔbàn",
             "shòuhuòyuán",
-            "wàzi"
+            "guǒzhī",
+            "wàzi",
+            "jǔbàn"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "举办 — jǔbàn",
             "ru": "举办 — jǔbàn",
@@ -383,12 +383,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "袜子",
-            "售货员",
             "果汁",
-            "各"
+            "各",
+            "售货员",
+            "袜子"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "har xil, har bir = 各 (gè)",
             "ru": "каждый, разные = 各 (gè)",
@@ -420,8 +420,8 @@
           "pinyin": "jiàngdī",
           "options": [
             "果汁",
-            "售货员",
             "袜子",
+            "售货员",
             "降低"
           ],
           "correct_index": 3,
@@ -445,6 +445,11 @@
           },
           "options": [
             {
+              "uz": "tashkil qilmoq, o'tkazmoq",
+              "ru": "организовывать, проводить",
+              "tj": "ташкил кардан, баргузор кардан"
+            },
+            {
               "uz": "sotuvchi",
               "ru": "продавец",
               "tj": "фурӯшанда"
@@ -458,14 +463,9 @@
               "uz": "paypoq",
               "ru": "носки",
               "tj": "ҷӯроб"
-            },
-            {
-              "uz": "tashkil qilmoq, o'tkazmoq",
-              "ru": "организовывать, проводить",
-              "tj": "ташкил кардан, баргузор кардан"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "举办 = tashkil qilmoq, o'tkazmoq (jǔbàn)",
             "ru": "举办 = организовывать, проводить (jǔbàn)",
@@ -552,31 +552,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "所有 talaffuzini tanlang:",
-            "ru": "Выберите произношение 所有:",
-            "tj": "Талаффузи 所有-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "wàzi",
-            "guǒzhī",
-            "suǒyǒu",
-            "shòuhuòyuán"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "所有 — suǒyǒu",
-            "ru": "所有 — suǒyǒu",
-            "tj": "所有 — suǒyǒu"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -586,12 +561,12 @@
           "audio_text": "各",
           "pinyin": "gè",
           "options": [
-            "各",
             "果汁",
             "袜子",
-            "售货员"
+            "售货员",
+            "各"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "各 — har xil, har bir (gè)",
             "ru": "各 — каждый, разные (gè)",
@@ -606,6 +581,105 @@
             "uz": "har xil, har bir",
             "ru": "каждый, разные",
             "tj": "ҳар, гуногун"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "所有 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 所有:",
+            "tj": "Маънои калимаи 所有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "paypoq",
+              "ru": "носки",
+              "tj": "ҷӯроб"
+            },
+            {
+              "uz": "sotuvchi",
+              "ru": "продавец",
+              "tj": "фурӯшанда"
+            },
+            {
+              "uz": "meva sharbati",
+              "ru": "фруктовый сок",
+              "tj": "шарбати мева"
+            },
+            {
+              "uz": "barcha, hamma",
+              "ru": "все, весь",
+              "tj": "ҳама"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "所有 = barcha, hamma (suǒyǒu)",
+            "ru": "所有 = все, весь (suǒyǒu)",
+            "tj": "所有 = ҳама (suǒyǒu)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "所有",
+            "pinyin": "suǒyǒu",
+            "meaning": {
+              "uz": "barcha, hamma",
+              "ru": "все, весь",
+              "tj": "ҳама"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'har xil, har bir' xitoycha qaysi?",
+            "ru": "'каждый, разные' по-китайски?",
+            "tj": "'ҳар, гуногун' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "果汁",
+            "各",
+            "袜子",
+            "售货员"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "har xil, har bir = 各 (gè)",
+            "ru": "каждый, разные = 各 (gè)",
+            "tj": "ҳар, гуногун = 各 (gè)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "各",
+            "pinyin": "gè",
+            "meaning": {
+              "uz": "har xil, har bir",
+              "ru": "каждый, разные",
+              "tj": "ҳар, гуногун"
+            }
           }
         }
       ]

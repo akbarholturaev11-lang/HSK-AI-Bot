@@ -356,14 +356,14 @@
           },
           "options": [
             {
+              "uz": "ishga ariza bermoq",
+              "ru": "устраиваться на работу, подавать заявку",
+              "tj": "барои кор муроҷиат кардан"
+            },
+            {
               "uz": "ancha, juda",
               "ru": "довольно, весьма",
               "tj": "хеле, анча"
-            },
-            {
-              "uz": "ishonch",
-              "ru": "уверенность",
-              "tj": "боварӣ"
             },
             {
               "uz": "hayajonlangan, asabiy",
@@ -371,12 +371,12 @@
               "tj": "изтиробнок, асабӣ"
             },
             {
-              "uz": "ishga ariza bermoq",
-              "ru": "устраиваться на работу, подавать заявку",
-              "tj": "барои кор муроҷиат кардан"
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "应聘 = ishga ariza bermoq (yìngpìn)",
             "ru": "应聘 = устраиваться на работу, подавать заявку (yìngpìn)",
@@ -410,12 +410,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "信心",
+            "挺",
             "紧张",
-            "材料",
-            "挺"
+            "信心",
+            "材料"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "材料 = material, hujjat (cáiliào)",
             "ru": "材料 = материалы, документы (cáiliào)",
@@ -450,11 +450,11 @@
           },
           "options": [
             "jǐnzhāng",
-            "fúhé",
+            "xìnxīn",
             "tǐng",
-            "xìnxīn"
+            "fúhé"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "符合 — fúhé",
             "ru": "符合 — fúhé",
@@ -488,12 +488,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "紧张",
             "信心",
             "通知",
-            "紧张",
             "挺"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "xabar bermoq = 通知 (tōngzhī)",
             "ru": "уведомлять, сообщать = 通知 (tōngzhī)",
@@ -511,11 +511,11 @@
           "pinyin": "yìngpìn",
           "options": [
             "紧张",
-            "应聘",
             "信心",
+            "应聘",
             "挺"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "应聘 — ishga ariza bermoq (yìngpìn)",
             "ru": "应聘 — устраиваться на работу, подавать заявку (yìngpìn)",
@@ -598,31 +598,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "招聘 talaffuzini tanlang:",
-            "ru": "Выберите произношение 招聘:",
-            "tj": "Талаффузи 招聘-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zhāopìn",
-            "jǐnzhāng",
-            "xìnxīn",
-            "tǐng"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "招聘 — zhāopìn",
-            "ru": "招聘 — zhāopìn",
-            "tj": "招聘 — zhāopìn"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -672,6 +647,105 @@
             "uz": "ishga ariza bermoq",
             "ru": "устраиваться на работу, подавать заявку",
             "tj": "барои кор муроҷиат кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "招聘 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 招聘:",
+            "tj": "Маънои калимаи 招聘-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            },
+            {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
+              "uz": "ishga qabul qilmoq, xodim izlamoq",
+              "ru": "нанимать, набор сотрудников",
+              "tj": "ба кор қабул кардан, корманд ҷустуҷӯ кардан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "招聘 = ishga qabul qilmoq, xodim izlamoq (zhāopìn)",
+            "ru": "招聘 = нанимать, набор сотрудников (zhāopìn)",
+            "tj": "招聘 = ба кор қабул кардан, корманд ҷустуҷӯ кардан (zhāopìn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "招聘",
+            "pinyin": "zhāopìn",
+            "meaning": {
+              "uz": "ishga qabul qilmoq, xodim izlamoq",
+              "ru": "нанимать, набор сотрудников",
+              "tj": "ба кор қабул кардан, корманд ҷустуҷӯ кардан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ishga ariza bermoq' xitoycha qaysi?",
+            "ru": "'устраиваться на работу, подавать заявку' по-китайски?",
+            "tj": "'барои кор муроҷиат кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "应聘",
+            "挺",
+            "紧张",
+            "信心"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "ishga ariza bermoq = 应聘 (yìngpìn)",
+            "ru": "устраиваться на работу, подавать заявку = 应聘 (yìngpìn)",
+            "tj": "барои кор муроҷиат кардан = 应聘 (yìngpìn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "应聘",
+            "pinyin": "yìngpìn",
+            "meaning": {
+              "uz": "ishga ariza bermoq",
+              "ru": "устраиваться на работу, подавать заявку",
+              "tj": "барои кор муроҷиат кардан"
+            }
           }
         }
       ]

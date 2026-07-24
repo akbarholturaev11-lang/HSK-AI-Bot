@@ -370,12 +370,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "流血",
             "减肥",
-            "擦",
             "气候",
-            "流血"
+            "擦"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "减肥 = ozmoq (jiǎn féi)",
             "ru": "减肥 = худеть (jiǎn féi)",
@@ -419,10 +419,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "liú xiě",
+            "cā",
             "qìhòu",
             "xīnkǔ",
-            "cā"
+            "liú xiě"
           ],
           "correct_index": 2,
           "explanation": {
@@ -458,9 +458,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "气候",
-            "流血",
             "擦",
+            "流血",
+            "气候",
             "肚子"
           ],
           "correct_index": 3,
@@ -480,9 +480,9 @@
           "audio_text": "减肥",
           "pinyin": "jiǎn féi",
           "options": [
+            "擦",
             "气候",
             "流血",
-            "擦",
             "减肥"
           ],
           "correct_index": 3,
@@ -607,12 +607,12 @@
           "audio_text": "辛苦",
           "pinyin": "xīnkǔ",
           "options": [
-            "流血",
-            "气候",
+            "辛苦",
             "擦",
-            "辛苦"
+            "气候",
+            "流血"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "辛苦 — mashaqqatli (xīnkǔ)",
             "ru": "辛苦 — тяжёлый, утомительный (xīnkǔ)",
@@ -630,31 +630,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'havo' xitoycha qaysi?",
-            "ru": "'воздух' по-китайски?",
-            "tj": "'ҳаво' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "气候",
-            "擦",
-            "流血",
-            "空气"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "havo = 空气 (kōngqì)",
-            "ru": "воздух = 空气 (kōngqì)",
-            "tj": "ҳаво = 空气 (kōngqì)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "辛苦",
           "pinyin": "xīnkǔ",
@@ -662,6 +637,105 @@
             "uz": "mashaqqatli",
             "ru": "тяжёлый, утомительный",
             "tj": "заҳматнок"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "要是 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 要是:",
+            "tj": "Маънои калимаи 要是-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iqlim",
+              "ru": "климат",
+              "tj": "иқлим"
+            },
+            {
+              "uz": "qon ketmoq",
+              "ru": "кровоточить",
+              "tj": "хун рафтан"
+            },
+            {
+              "uz": "artmoq",
+              "ru": "вытирать",
+              "tj": "пок кардан, молидан"
+            },
+            {
+              "uz": "agar",
+              "ru": "если",
+              "tj": "агар"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "要是 = agar (yàoshi)",
+            "ru": "要是 = если (yàoshi)",
+            "tj": "要是 = агар (yàoshi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "要是",
+            "pinyin": "yàoshi",
+            "meaning": {
+              "uz": "agar",
+              "ru": "если",
+              "tj": "агар"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'mashaqqatli' xitoycha qaysi?",
+            "ru": "'тяжёлый, утомительный' по-китайски?",
+            "tj": "'заҳматнок' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "擦",
+            "气候",
+            "辛苦",
+            "流血"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "mashaqqatli = 辛苦 (xīnkǔ)",
+            "ru": "тяжёлый, утомительный = 辛苦 (xīnkǔ)",
+            "tj": "заҳматнок = 辛苦 (xīnkǔ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "辛苦",
+            "pinyin": "xīnkǔ",
+            "meaning": {
+              "uz": "mashaqqatli",
+              "ru": "тяжёлый, утомительный",
+              "tj": "заҳматнок"
+            }
           }
         }
       ]

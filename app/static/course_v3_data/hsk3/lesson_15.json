@@ -352,12 +352,12 @@
           "audio_text": "新鲜",
           "pinyin": "xīnxiān",
           "options": [
-            "小心",
             "还是",
             "爬山",
-            "新鲜"
+            "新鲜",
+            "小心"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "新鲜 — yangi, sarhil (xīnxiān)",
             "ru": "新鲜 — свежий (xīnxiān)",
@@ -392,6 +392,16 @@
           },
           "options": [
             {
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
+            },
+            {
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
+            },
+            {
               "uz": "shirin",
               "ru": "сладкий",
               "tj": "ширин"
@@ -400,19 +410,9 @@
               "uz": "yoki (savolda tanlov)",
               "ru": "или (в вопросе выбора)",
               "tj": "ё (дар саволи интихобӣ)"
-            },
-            {
-              "uz": "toqqa chiqmoq",
-              "ru": "подниматься в гору",
-              "tj": "ба кӯҳ баромадан"
-            },
-            {
-              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
-              "ru": "осторожный, быть осторожным",
-              "tj": "эҳтиёткор, эҳтиёт шудан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "甜 = shirin (tián)",
             "ru": "甜 = сладкий (tián)",
@@ -456,12 +456,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "只",
-            "还是",
+            "爬山",
             "小心",
-            "爬山"
+            "只",
+            "还是"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "只 = faqat (zhǐ)",
             "ru": "只 = только (zhǐ)",
@@ -481,12 +481,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xiǎoxīn",
             "pá shān",
             "háishi",
-            "xīnxiān"
+            "xīnxiān",
+            "xiǎoxīn"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "新鲜 — xīnxiān",
             "ru": "新鲜 — xīnxiān",
@@ -558,16 +558,6 @@
             "uz": "好啊，今天晚上只吃水果不吃饭！ — Yaxshi, bugun kechqurun faqat meva yeymiz, ovqat yemaymiz!",
             "ru": "好啊，今天晚上只吃水果不吃饭！ — Хорошо, сегодня вечером будем есть только фрукты, без ужина!",
             "tj": "好啊，今天晚上只吃水果不吃饭！ — Хуб, имрӯз бегоҳ фақат мева мехӯрем, хӯрок не!"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "新鲜",
-          "pinyin": "xīnxiān",
-          "translation": {
-            "uz": "yangi, sarhil",
-            "ru": "свежий",
-            "tj": "тару тоза"
           }
         },
         {
@@ -658,28 +648,13 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "chènshān qaysi ieroglif?",
-            "ru": "Какой иероглиф читается chènshān?",
-            "tj": "chènshān кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "爬山",
-            "衬衫",
-            "还是",
-            "小心"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "衬衫 = ko'ylak, rubashka (chènshān)",
-            "ru": "衬衫 = рубашка (chènshān)",
-            "tj": "衬衫 = курта (chènshān)"
+          "type": "pronunciation",
+          "phrase": "新鲜",
+          "pinyin": "xīnxiān",
+          "translation": {
+            "uz": "yangi, sarhil",
+            "ru": "свежий",
+            "tj": "тару тоза"
           }
         },
         {
@@ -692,10 +667,10 @@
           "audio_text": "甜",
           "pinyin": "tián",
           "options": [
+            "爬山",
             "还是",
-            "小心",
             "甜",
-            "爬山"
+            "小心"
           ],
           "correct_index": 2,
           "explanation": {
@@ -712,6 +687,105 @@
             "uz": "faqat",
             "ru": "только",
             "tj": "фақат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "衬衫 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 衬衫:",
+            "tj": "Маънои калимаи 衬衫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
+              "ru": "осторожный, быть осторожным",
+              "tj": "эҳтиёткор, эҳтиёт шудан"
+            },
+            {
+              "uz": "yoki (savolda tanlov)",
+              "ru": "или (в вопросе выбора)",
+              "tj": "ё (дар саволи интихобӣ)"
+            },
+            {
+              "uz": "toqqa chiqmoq",
+              "ru": "подниматься в гору",
+              "tj": "ба кӯҳ баромадан"
+            },
+            {
+              "uz": "ko'ylak, rubashka",
+              "ru": "рубашка",
+              "tj": "курта"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "衬衫 = ko'ylak, rubashka (chènshān)",
+            "ru": "衬衫 = рубашка (chènshān)",
+            "tj": "衬衫 = курта (chènshān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "衬衫",
+            "pinyin": "chènshān",
+            "meaning": {
+              "uz": "ko'ylak, rubashka",
+              "ru": "рубашка",
+              "tj": "курта"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'faqat' xitoycha qaysi?",
+            "ru": "'только' по-китайски?",
+            "tj": "'фақат' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "只",
+            "小心",
+            "爬山",
+            "还是"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "faqat = 只 (zhǐ)",
+            "ru": "только = 只 (zhǐ)",
+            "tj": "фақат = 只 (zhǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "只",
+            "pinyin": "zhǐ",
+            "meaning": {
+              "uz": "faqat",
+              "ru": "только",
+              "tj": "фақат"
+            }
           }
         }
       ]

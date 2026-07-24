@@ -331,12 +331,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "huǒchēzhàn",
             "rì",
-            "piào",
-            "xīnnián"
+            "huǒchēzhàn",
+            "xīnnián",
+            "piào"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "日 — rì",
             "ru": "日 — rì",
@@ -370,12 +370,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "票",
-            "日",
             "新年",
-            "火车站"
+            "火车站",
+            "票",
+            "日"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "yangi yil = 新年 (xīnnián)",
             "ru": "новый год = 新年 (xīnnián)",
@@ -406,12 +406,12 @@
           "audio_text": "票",
           "pinyin": "piào",
           "options": [
-            "日",
             "票",
+            "火车站",
             "新年",
-            "火车站"
+            "日"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "票 — chipta, bilet (piào)",
             "ru": "票 — билет (piào)",
@@ -466,17 +466,17 @@
               "tj": "рӯз, сана"
             },
             {
-              "uz": "temir yo'l stantsiyasi, vokzal",
-              "ru": "железнодорожная станция, вокзал",
-              "tj": "истгоҳи роҳи оҳан, вокзал"
-            },
-            {
               "uz": "chipta, bilet",
               "ru": "билет",
               "tj": "чиптаи сафар"
+            },
+            {
+              "uz": "temir yo'l stantsiyasi, vokzal",
+              "ru": "железнодорожная станция, вокзал",
+              "tj": "истгоҳи роҳи оҳан, вокзал"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "火车站 = temir yo'l stantsiyasi, vokzal (huǒchēzhàn)",
             "ru": "火车站 = железнодорожная станция, вокзал (huǒchēzhàn)",
@@ -496,10 +496,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "火车站",
+            "新年",
             "票",
             "日",
-            "新年"
+            "火车站"
           ],
           "correct_index": 2,
           "explanation": {
@@ -606,13 +606,13 @@
             "tj": "Соли нав наздик шуд."
           },
           "tokens": [
+            "日",
             "到",
-            "要",
             "了",
             "票",
             "新年",
-            "就",
-            "日"
+            "要",
+            "就"
           ],
           "answer_tokens": [
             "新年",
@@ -638,38 +638,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "今天是12月20日，新年就要到了。",
-          "pinyin": "Jīntiān shì shí'èr yuè èrshí rì, xīnnián jiù yào dào le.",
-          "options": [
-            "我想去北京旅游，北京很不错，我去过一次。",
-            "今天是12月20日，新年就要到了。",
-            "你买票了吗？",
-            "新年你准备做什么？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "今天是12月20日，新年就要到了。 — Bugun 20-dekabr, yangi yil yaqinlashib qoldi.",
-            "ru": "今天是12月20日，新年就要到了。 — Сегодня 20 декабря, новый год уже совсем скоро.",
-            "tj": "今天是12月20日，新年就要到了。 — Имрӯз 20 декабр аст, соли нав наздик шуд."
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "日",
-          "pinyin": "rì",
-          "translation": {
-            "uz": "kun, sana",
-            "ru": "день, дата",
-            "tj": "рӯз, сана"
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "你买票了吗？",
@@ -730,44 +698,13 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "欢迎 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 欢迎:",
-            "tj": "Маънои калимаи 欢迎-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "yangi yil",
-              "ru": "новый год",
-              "tj": "соли нав"
-            },
-            {
-              "uz": "chipta, bilet",
-              "ru": "билет",
-              "tj": "чиптаи сафар"
-            },
-            {
-              "uz": "xush kelibsiz, kutib olmoq",
-              "ru": "добро пожаловать, приветствовать",
-              "tj": "хуш омадед, пешвоз гирифтан"
-            },
-            {
-              "uz": "kun, sana",
-              "ru": "день, дата",
-              "tj": "рӯз, сана"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "欢迎 = xush kelibsiz, kutib olmoq (huānyíng)",
-            "ru": "欢迎 = добро пожаловать, приветствовать (huānyíng)",
-            "tj": "欢迎 = хуш омадед, пешвоз гирифтан (huānyíng)"
+          "type": "pronunciation",
+          "phrase": "日",
+          "pinyin": "rì",
+          "translation": {
+            "uz": "kun, sana",
+            "ru": "день, дата",
+            "tj": "рӯз, сана"
           }
         },
         {
@@ -778,6 +715,105 @@
             "uz": "temir yo'l stantsiyasi, vokzal",
             "ru": "железнодорожная станция, вокзал",
             "tj": "истгоҳи роҳи оҳан, вокзал"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "次 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 次:",
+            "tj": "Маънои калимаи 次-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
+            },
+            {
+              "uz": "chipta, bilet",
+              "ru": "билет",
+              "tj": "чиптаи сафар"
+            },
+            {
+              "uz": "marta, safar (harakat o'lchovi)",
+              "ru": "раз (счётное слово для действий)",
+              "tj": "маротиба, бор (воҳиди шуморавӣ)"
+            },
+            {
+              "uz": "yangi yil",
+              "ru": "новый год",
+              "tj": "соли нав"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "次 = marta, safar (harakat o'lchovi) (cì)",
+            "ru": "次 = раз (счётное слово для действий) (cì)",
+            "tj": "次 = маротиба, бор (воҳиди шуморавӣ) (cì)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "次",
+            "pinyin": "cì",
+            "meaning": {
+              "uz": "marta, safar (harakat o'lchovi)",
+              "ru": "раз (счётное слово для действий)",
+              "tj": "маротиба, бор (воҳиди шуморавӣ)"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'temir yo'l stantsiyasi, vokzal' xitoycha qaysi?",
+            "ru": "'железнодорожная станция, вокзал' по-китайски?",
+            "tj": "'истгоҳи роҳи оҳан, вокзал' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "火车站",
+            "票",
+            "新年",
+            "日"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "temir yo'l stantsiyasi, vokzal = 火车站 (huǒchēzhàn)",
+            "ru": "железнодорожная станция, вокзал = 火车站 (huǒchēzhàn)",
+            "tj": "истгоҳи роҳи оҳан, вокзал = 火车站 (huǒchēzhàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "火车站",
+            "pinyin": "huǒchēzhàn",
+            "meaning": {
+              "uz": "temir yo'l stantsiyasi, vokzal",
+              "ru": "железнодорожная станция, вокзал",
+              "tj": "истгоҳи роҳи оҳан, вокзал"
+            }
           }
         }
       ]

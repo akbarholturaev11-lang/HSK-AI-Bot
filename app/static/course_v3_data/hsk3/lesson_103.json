@@ -350,9 +350,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "ěrduo",
             "liǎn",
             "duǎn",
-            "ěrduo",
             "Huáng Hé"
           ],
           "correct_index": 3,
@@ -389,12 +389,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "脸",
             "耳朵",
             "短",
-            "船"
+            "船",
+            "脸"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "qayiq, kema = 船 (chuán)",
             "ru": "лодка, корабль = 船 (chuán)",
@@ -425,12 +425,12 @@
           "audio_text": "经过",
           "pinyin": "jīngguò",
           "options": [
-            "短",
             "耳朵",
-            "脸",
-            "经过"
+            "经过",
+            "短",
+            "脸"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "经过 — yonidan o'tmoq, boshdan kechirmoq (jīngguò)",
             "ru": "经过 — проходить мимо, переживать (jīngguò)",
@@ -456,6 +456,11 @@
               "tj": "Ҳуанхэ, Дарёи Зард"
             },
             {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
               "uz": "quloq",
               "ru": "ухо",
               "tj": "гӯш"
@@ -464,11 +469,6 @@
               "uz": "yuz",
               "ru": "лицо",
               "tj": "рӯй"
-            },
-            {
-              "uz": "kalta, qisqa",
-              "ru": "короткий",
-              "tj": "кӯтоҳ"
             }
           ],
           "correct_index": 0,
@@ -568,14 +568,14 @@
             "tj": "Ман аз он кӯча гузашта омадам."
           },
           "tokens": [
-            "的",
-            "那",
-            "条",
-            "经过",
             "来",
             "街道",
-            "我",
+            "那",
             "脸",
+            "的",
+            "经过",
+            "条",
+            "我",
             "耳朵"
           ],
           "answer_tokens": [
@@ -604,39 +604,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men u ko'cha orqali keldim.",
-            "ru": "Я пришёл через ту улицу.",
-            "tj": "Ман аз он кӯча гузашта омадам."
-          },
-          "tokens": [
-            "街道",
-            "那",
-            "经过",
-            "来",
-            "耳朵",
-            "我",
-            "条",
-            "的",
-            "脸"
-          ],
-          "answer_tokens": [
-            "我",
-            "经过",
-            "那",
-            "条",
-            "街道",
-            "来",
-            "的"
-          ],
-          "explanation": {
-            "uz": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de.",
-            "ru": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de.",
-            "tj": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de."
-          }
-        },
         {
           "type": "reverse_builder",
           "zh": "我经过那条街道来的。",
@@ -701,6 +668,61 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "黄河",
+          "pinyin": "Huáng Hé",
+          "options": [
+            "耳朵",
+            "黄河",
+            "脸",
+            "短"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "黄河 — Huanghe, Sariq daryo (Huáng Hé)",
+            "ru": "黄河 — Хуанхэ, Желтая река (Huáng Hé)",
+            "tj": "黄河 — Ҳуанхэ, Дарёи Зард (Huáng Hé)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men u ko'cha orqali keldim.",
+            "ru": "Я пришёл через ту улицу.",
+            "tj": "Ман аз он кӯча гузашта омадам."
+          },
+          "tokens": [
+            "我",
+            "脸",
+            "经过",
+            "条",
+            "那",
+            "耳朵",
+            "街道",
+            "的",
+            "来"
+          ],
+          "answer_tokens": [
+            "我",
+            "经过",
+            "那",
+            "条",
+            "街道",
+            "来",
+            "的"
+          ],
+          "explanation": {
+            "uz": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de.",
+            "ru": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de.",
+            "tj": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "船",
           "pinyin": "chuán",
@@ -711,53 +733,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "黄河",
-          "pinyin": "Huáng Hé",
-          "options": [
-            "短",
-            "黄河",
-            "耳朵",
-            "脸"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "黄河 — Huanghe, Sariq daryo (Huáng Hé)",
-            "ru": "黄河 — Хуанхэ, Желтая река (Huáng Hé)",
-            "tj": "黄河 — Ҳуанхэ, Дарёи Зард (Huáng Hé)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "mǎ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается mǎ?",
-            "tj": "mǎ кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "脸",
-            "马",
-            "短",
-            "耳朵"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "马 = ot (mǎ)",
-            "ru": "马 = лошадь (mǎ)",
-            "tj": "马 = асп (mǎ)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "黄河",
           "pinyin": "Huáng Hé",
@@ -765,6 +740,105 @@
             "uz": "Huanghe, Sariq daryo",
             "ru": "Хуанхэ, Желтая река",
             "tj": "Ҳуанхэ, Дарёи Зард"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "过 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 过:",
+            "tj": "Маънои калимаи 过-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            },
+            {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
+              "uz": "o'tkazmoq, o'tmoq",
+              "ru": "проводить, проходить",
+              "tj": "гузаронидан, гузаштан"
+            },
+            {
+              "uz": "yuz",
+              "ru": "лицо",
+              "tj": "рӯй"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "过 = o'tkazmoq, o'tmoq (guò)",
+            "ru": "过 = проводить, проходить (guò)",
+            "tj": "过 = гузаронидан, гузаштан (guò)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "过",
+            "pinyin": "guò",
+            "meaning": {
+              "uz": "o'tkazmoq, o'tmoq",
+              "ru": "проводить, проходить",
+              "tj": "гузаронидан, гузаштан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Huanghe, Sariq daryo' xitoycha qaysi?",
+            "ru": "'Хуанхэ, Желтая река' по-китайски?",
+            "tj": "'Ҳуанхэ, Дарёи Зард' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "短",
+            "耳朵",
+            "黄河",
+            "脸"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "Huanghe, Sariq daryo = 黄河 (Huáng Hé)",
+            "ru": "Хуанхэ, Желтая река = 黄河 (Huáng Hé)",
+            "tj": "Ҳуанхэ, Дарёи Зард = 黄河 (Huáng Hé)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "黄河",
+            "pinyin": "Huáng Hé",
+            "meaning": {
+              "uz": "Huanghe, Sariq daryo",
+              "ru": "Хуанхэ, Желтая река",
+              "tj": "Ҳуанхэ, Дарёи Зард"
+            }
           }
         }
       ]

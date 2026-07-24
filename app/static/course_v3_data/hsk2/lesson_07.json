@@ -661,31 +661,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zǎoshang qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zǎoshang?",
-            "tj": "zǎoshang кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "每",
-            "早上",
-            "跑步",
-            "生病"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "早上 = ertalab (zǎoshang)",
-            "ru": "早上 = утро, утром (zǎoshang)",
-            "tj": "早上 = субҳ, субҳгоҳ (zǎoshang)"
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "吃药了吗？现在身体怎么样？",
           "pinyin": "Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
@@ -761,39 +736,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Dori ichdingmi? Hozir sog'liqing qanday?",
-            "ru": "Ты принял лекарство? Как сейчас самочувствие?",
-            "tj": "Оё дору хӯрдӣ? Ҳоло саломатиат чӣ тавр аст?"
-          },
-          "tokens": [
-            "怎么样",
-            "身体",
-            "药",
-            "现在",
-            "了",
-            "生病",
-            "吗",
-            "吃",
-            "每"
-          ],
-          "answer_tokens": [
-            "吃",
-            "药",
-            "了",
-            "吗",
-            "现在",
-            "身体",
-            "怎么样"
-          ],
-          "explanation": {
-            "uz": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
-            "ru": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
-            "tj": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -823,6 +765,105 @@
             "uz": "tana, jism; sog'liq",
             "ru": "тело; здоровье",
             "tj": "ҷисм; саломатӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "早上 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 早上:",
+            "tj": "Маънои калимаи 早上-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yugurmoq, chopmoq",
+              "ru": "бегать, бежать",
+              "tj": "давидан"
+            },
+            {
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
+            },
+            {
+              "uz": "kasal bo'lmoq",
+              "ru": "заболевать, болеть",
+              "tj": "бемор шудан, касал шудан"
+            },
+            {
+              "uz": "har (bir), har qaysi",
+              "ru": "каждый",
+              "tj": "ҳар (як), ҳар кадом"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "早上 = ertalab (zǎoshang)",
+            "ru": "早上 = утро, утром (zǎoshang)",
+            "tj": "早上 = субҳ, субҳгоҳ (zǎoshang)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "早上",
+            "pinyin": "zǎoshang",
+            "meaning": {
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tana, jism; sog'liq' xitoycha qaysi?",
+            "ru": "'тело; здоровье' по-китайски?",
+            "tj": "'ҷисм; саломатӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "身体",
+            "早上",
+            "每",
+            "生病"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "tana, jism; sog'liq = 身体 (shēntǐ)",
+            "ru": "тело; здоровье = 身体 (shēntǐ)",
+            "tj": "ҷисм; саломатӣ = 身体 (shēntǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "身体",
+            "pinyin": "shēntǐ",
+            "meaning": {
+              "uz": "tana, jism; sog'liq",
+              "ru": "тело; здоровье",
+              "tj": "ҷисм; саломатӣ"
+            }
           }
         }
       ]

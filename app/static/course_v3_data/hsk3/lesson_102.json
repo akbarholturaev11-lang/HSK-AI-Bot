@@ -306,11 +306,11 @@
           },
           "options": [
             "短",
-            "过",
+            "耳朵",
             "脸",
-            "耳朵"
+            "过"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "过 = o'tkazmoq, o'tmoq (guò)",
             "ru": "过 = проводить, проходить (guò)",
@@ -344,12 +344,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "ěrduo",
-            "liǎn",
+            "niǎo",
             "duǎn",
-            "niǎo"
+            "ěrduo",
+            "liǎn"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "鸟 — niǎo",
             "ru": "鸟 — niǎo",
@@ -393,8 +393,8 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "短",
             "脸",
+            "短",
             "哭",
             "耳朵"
           ],
@@ -415,10 +415,10 @@
           "audio_text": "过",
           "pinyin": "guò",
           "options": [
+            "耳朵",
             "短",
-            "脸",
             "过",
-            "耳朵"
+            "脸"
           ],
           "correct_index": 2,
           "explanation": {
@@ -473,6 +473,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "哭",
+          "pinyin": "kū",
+          "options": [
+            "短",
+            "耳朵",
+            "脸",
+            "哭"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "哭 — yig'lamoq (kū)",
+            "ru": "哭 — плакать (kū)",
+            "tj": "哭 — гиря кардан (kū)"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -507,53 +529,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "哭",
-          "pinyin": "kū",
-          "options": [
-            "耳朵",
-            "短",
-            "脸",
-            "哭"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "哭 — yig'lamoq (kū)",
-            "ru": "哭 — плакать (kū)",
-            "tj": "哭 — гиря кардан (kū)"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'odamlar uchun hurmatli hisob so'zi' xitoycha qaysi?",
-            "ru": "'вежливое счетное слово для людей' по-китайски?",
-            "tj": "'ҳисобвожаи эҳтиромӣ барои одамон' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "脸",
-            "短",
-            "耳朵",
-            "位"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "odamlar uchun hurmatli hisob so'zi = 位 (wèi)",
-            "ru": "вежливое счетное слово для людей = 位 (wèi)",
-            "tj": "ҳисобвожаи эҳтиромӣ барои одамон = 位 (wèi)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "哭",
           "pinyin": "kū",
@@ -561,6 +536,105 @@
             "uz": "yig'lamoq",
             "ru": "плакать",
             "tj": "гиря кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "位 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 位:",
+            "tj": "Маънои калимаи 位-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
+              "uz": "yuz",
+              "ru": "лицо",
+              "tj": "рӯй"
+            },
+            {
+              "uz": "odamlar uchun hurmatli hisob so'zi",
+              "ru": "вежливое счетное слово для людей",
+              "tj": "ҳисобвожаи эҳтиромӣ барои одамон"
+            },
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "位 = odamlar uchun hurmatli hisob so'zi (wèi)",
+            "ru": "位 = вежливое счетное слово для людей (wèi)",
+            "tj": "位 = ҳисобвожаи эҳтиромӣ барои одамон (wèi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "位",
+            "pinyin": "wèi",
+            "meaning": {
+              "uz": "odamlar uchun hurmatli hisob so'zi",
+              "ru": "вежливое счетное слово для людей",
+              "tj": "ҳисобвожаи эҳтиромӣ барои одамон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yig'lamoq' xitoycha qaysi?",
+            "ru": "'плакать' по-китайски?",
+            "tj": "'гиря кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "耳朵",
+            "哭",
+            "短",
+            "脸"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "yig'lamoq = 哭 (kū)",
+            "ru": "плакать = 哭 (kū)",
+            "tj": "гиря кардан = 哭 (kū)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "哭",
+            "pinyin": "kū",
+            "meaning": {
+              "uz": "yig'lamoq",
+              "ru": "плакать",
+              "tj": "гиря кардан"
+            }
           }
         }
       ]

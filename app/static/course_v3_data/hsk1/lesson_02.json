@@ -450,65 +450,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yaxshi, ajoyib' xitoycha qaysi?",
-            "ru": "'хорошо, хороший' по-китайски?",
-            "tj": "'хуб, олӣ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "您",
-            "好",
-            "你们",
-            "你"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "yaxshi, ajoyib = 好 (hǎo)",
-            "ru": "хорошо, хороший = 好 (hǎo)",
-            "tj": "хуб, олӣ = 好 (hǎo)"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "你们",
-              {
-                "uz": "sizlar (ko'plik)",
-                "ru": "вы (множественное число)",
-                "tj": "шумоён (ҷамъ)"
-              }
-            ],
-            [
-              "对不起",
-              {
-                "uz": "kechirasiz, uzr",
-                "ru": "извините, прости",
-                "tj": "бубахшед, узр"
-              }
-            ],
-            [
-              "没关系",
-              {
-                "uz": "hech gap emas, muammo yo'q",
-                "ru": "ничего страшного, всё в порядке",
-                "tj": "майлаш, мушкиле нест"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "你们好！",
           "pinyin": "Nǐmen hǎo!",
@@ -584,6 +525,40 @@
           }
         },
         {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "你们",
+              {
+                "uz": "sizlar (ko'plik)",
+                "ru": "вы (множественное число)",
+                "tj": "шумоён (ҷамъ)"
+              }
+            ],
+            [
+              "对不起",
+              {
+                "uz": "kechirasiz, uzr",
+                "ru": "извините, прости",
+                "tj": "бубахшед, узр"
+              }
+            ],
+            [
+              "没关系",
+              {
+                "uz": "hech gap emas, muammo yo'q",
+                "ru": "ничего страшного, всё в порядке",
+                "tj": "майлаш, мушкиле нест"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "对不起",
           "pinyin": "duìbuqǐ",
@@ -591,6 +566,105 @@
             "uz": "kechirasiz, uzr",
             "ru": "извините, прости",
             "tj": "бубахшед, узр"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "好 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 好:",
+            "tj": "Маънои калимаи 好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sen (birlik)",
+              "ru": "ты (единственное число)",
+              "tj": "ту (якка)"
+            },
+            {
+              "uz": "siz (rasmiy/hurmat)",
+              "ru": "вы (вежливая форма)",
+              "tj": "шумо (расмӣ/ҳурматнок)"
+            },
+            {
+              "uz": "sizlar (ko'plik)",
+              "ru": "вы (множественное число)",
+              "tj": "шумоён (ҷамъ)"
+            },
+            {
+              "uz": "yaxshi, ajoyib",
+              "ru": "хорошо, хороший",
+              "tj": "хуб, олӣ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "好 = yaxshi, ajoyib (hǎo)",
+            "ru": "好 = хорошо, хороший (hǎo)",
+            "tj": "好 = хуб, олӣ (hǎo)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "好",
+            "pinyin": "hǎo",
+            "meaning": {
+              "uz": "yaxshi, ajoyib",
+              "ru": "хорошо, хороший",
+              "tj": "хуб, олӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kechirasiz, uzr' xitoycha qaysi?",
+            "ru": "'извините, прости' по-китайски?",
+            "tj": "'бубахшед, узр' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "好",
+            "对不起",
+            "你",
+            "您"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "kechirasiz, uzr = 对不起 (duìbuqǐ)",
+            "ru": "извините, прости = 对不起 (duìbuqǐ)",
+            "tj": "бубахшед, узр = 对不起 (duìbuqǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "对不起",
+            "pinyin": "duìbuqǐ",
+            "meaning": {
+              "uz": "kechirasiz, uzr",
+              "ru": "извините, прости",
+              "tj": "бубахшед, узр"
+            }
           }
         }
       ]

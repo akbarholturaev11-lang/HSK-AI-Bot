@@ -371,12 +371,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "以为",
             "经验",
             "提",
-            "份"
+            "份",
+            "以为"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "经验 = tajriba (jīngyàn)",
             "ru": "经验 = опыт (jīngyàn)",
@@ -410,12 +410,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tí",
-            "fèn",
+            "yíqiè",
             "yǐwéi",
-            "yíqiè"
+            "fèn",
+            "tí"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "一切 — yíqiè",
             "ru": "一切 — yíqiè",
@@ -449,12 +449,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "份",
-            "提",
             "以为",
-            "按照"
+            "份",
+            "按照",
+            "提"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "bo'yicha, muvofiq = 按照 (ànzhào)",
             "ru": "согласно, по = 按照 (ànzhào)",
@@ -495,12 +495,12 @@
           "audio_text": "成功",
           "pinyin": "chénggōng",
           "options": [
-            "提",
             "以为",
+            "成功",
             "份",
-            "成功"
+            "提"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "成功 — muvaffaqiyatli (chénggōng)",
             "ru": "成功 — успешный (chénggōng)",
@@ -521,9 +521,9 @@
           },
           "options": [
             {
-              "uz": "tajriba",
-              "ru": "опыт",
-              "tj": "таҷриба"
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
             },
             {
               "uz": "deb o'ylamoq, yanglish hisoblamoq",
@@ -531,9 +531,9 @@
               "tj": "фикр кардан, ғалат пиндоштан"
             },
             {
-              "uz": "ish kabi narsalar uchun hisob so'zi",
-              "ru": "счётное слово для работы и др.",
-              "tj": "ҳисобвожа барои кор ва ғайра"
+              "uz": "tajriba",
+              "ru": "опыт",
+              "tj": "таҷриба"
             },
             {
               "uz": "tilga olmoq, aytmoq",
@@ -541,7 +541,7 @@
               "tj": "зикр кардан, гуфтан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "经验 = tajriba (jīngyàn)",
             "ru": "经验 = опыт (jīngyàn)",
@@ -638,12 +638,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "份",
-            "计划",
             "提",
-            "以为"
+            "以为",
+            "份",
+            "计划"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 计划 (jìhuà) — reja; rejalamoq",
             "ru": "Верно: 计划 (jìhuà) — план; планировать",
@@ -661,28 +661,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "经验",
-          "pinyin": "jīngyàn",
-          "options": [
-            "提",
-            "份",
-            "经验",
-            "以为"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "经验 — tajriba (jīngyàn)",
-            "ru": "经验 — опыт (jīngyàn)",
-            "tj": "经验 — таҷриба (jīngyàn)"
-          }
-        },
         {
           "type": "listening_choice",
           "title": {
@@ -706,90 +684,48 @@
           }
         },
         {
-          "type": "reverse_builder",
-          "zh": "我们今年的工作都已经按照计划完成了。",
-          "pinyin": "Wǒmen jīnnián de gōngzuò dōu yǐjīng ànzhào jìhuà wánchéng le.",
-          "translation": {
-            "uz": "Bu yilgi ishlarimizning hammasi reja bo'yicha yakunlandi.",
-            "ru": "Наша работа за этот год уже завершена согласно плану.",
-            "tj": "Корҳои имсолаи мо ҳама мувофиқи нақша анҷом ёфтанд."
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
-          "tokens": {
-            "uz": [
-              "reja",
-              "yilgi",
-              "yakunlandi",
-              "Hammamizning",
-              "Bu",
-              "ishlarimizning",
-              "mehnatimiz",
-              "bo'yicha",
-              "hammasi"
-            ],
-            "ru": [
-              "верю",
-              "работа",
-              "согласно",
-              "плану",
-              "уже",
-              "завершена",
-              "Наша",
-              "этот",
-              "год",
-              "за",
-              "Я"
-            ],
-            "tj": [
-              "ёфтанд",
-              "дорам",
-              "нақша",
-              "имсолаи",
-              "мувофиқи",
-              "Корҳои",
-              "Бовар",
-              "ҳама",
-              "мо",
-              "анҷом"
-            ]
-          },
-          "answer_tokens": {
-            "uz": [
-              "Bu",
-              "yilgi",
-              "ishlarimizning",
-              "hammasi",
-              "reja",
-              "bo'yicha",
-              "yakunlandi"
-            ],
-            "ru": [
-              "Наша",
-              "работа",
-              "за",
-              "этот",
-              "год",
-              "уже",
-              "завершена",
-              "согласно",
-              "плану"
-            ],
-            "tj": [
-              "Корҳои",
-              "имсолаи",
-              "мо",
-              "ҳама",
-              "мувофиқи",
-              "нақша",
-              "анҷом",
-              "ёфтанд"
-            ]
-          },
+          "audio_text": "经验",
+          "pinyin": "jīngyàn",
+          "options": [
+            "份",
+            "提",
+            "经验",
+            "以为"
+          ],
+          "correct_index": 2,
           "explanation": {
-            "uz": "我们今年的工作都已经按照计划完成了。 — Bu yilgi ishlarimizning hammasi reja bo'yicha yakunlandi.",
-            "ru": "我们今年的工作都已经按照计划完成了。 — Наша работа за этот год уже завершена согласно плану.",
-            "tj": "我们今年的工作都已经按照计划完成了。 — Корҳои имсолаи мо ҳама мувофиқи нақша анҷом ёфтанд."
+            "uz": "经验 — tajriba (jīngyàn)",
+            "ru": "经验 — опыт (jīngyàn)",
+            "tj": "经验 — таҷриба (jīngyàn)"
           }
         },
+        {
+          "type": "pronunciation",
+          "phrase": "成功",
+          "pinyin": "chénggōng",
+          "translation": {
+            "uz": "muvaffaqiyatli",
+            "ru": "успешный",
+            "tj": "муваффақ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
         {
           "type": "meaning_guess",
           "prompt": {
@@ -804,9 +740,9 @@
           },
           "options": [
             {
-              "uz": "deb o'ylamoq, yanglish hisoblamoq",
-              "ru": "думать, ошибочно полагать",
-              "tj": "фикр кардан, ғалат пиндоштан"
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
             },
             {
               "uz": "tilga olmoq, aytmoq",
@@ -814,9 +750,9 @@
               "tj": "зикр кардан, гуфтан"
             },
             {
-              "uz": "ish kabi narsalar uchun hisob so'zi",
-              "ru": "счётное слово для работы и др.",
-              "tj": "ҳисобвожа барои кор ва ғайра"
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
             },
             {
               "uz": "to'plamoq, yig'moq",
@@ -829,16 +765,53 @@
             "uz": "积累 = to'plamoq, yig'moq (jīlěi)",
             "ru": "积累 = накапливать (jīlěi)",
             "tj": "积累 = ҷамъ кардан (jīlěi)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "积累",
+            "pinyin": "jīlěi",
+            "meaning": {
+              "uz": "to'plamoq, yig'moq",
+              "ru": "накапливать",
+              "tj": "ҷамъ кардан"
+            }
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "成功",
-          "pinyin": "chénggōng",
-          "translation": {
-            "uz": "muvaffaqiyatli",
-            "ru": "успешный",
-            "tj": "муваффақ"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'muvaffaqiyatli' xitoycha qaysi?",
+            "ru": "'успешный' по-китайски?",
+            "tj": "'муваффақ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "提",
+            "成功",
+            "份",
+            "以为"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "muvaffaqiyatli = 成功 (chénggōng)",
+            "ru": "успешный = 成功 (chénggōng)",
+            "tj": "муваффақ = 成功 (chénggōng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "成功",
+            "pinyin": "chénggōng",
+            "meaning": {
+              "uz": "muvaffaqiyatli",
+              "ru": "успешный",
+              "tj": "муваффақ"
+            }
           }
         }
       ]

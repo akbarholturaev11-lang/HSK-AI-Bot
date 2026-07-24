@@ -415,9 +415,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "火",
-            "降落",
             "作者",
+            "降落",
+            "火",
             "收"
           ],
           "correct_index": 3,
@@ -464,12 +464,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "xìnfēng",
             "zuòzhě",
             "jiàngluò",
-            "xìnfēng",
             "huǒ"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "信封 — xìnfēng",
             "ru": "信封 — xìnfēng",
@@ -504,9 +504,9 @@
           },
           "options": [
             "网站",
-            "作者",
+            "降落",
             "火",
-            "降落"
+            "作者"
           ],
           "correct_index": 0,
           "explanation": {
@@ -540,8 +540,8 @@
           "pinyin": "xìnxī",
           "options": [
             "火",
-            "降落",
             "作者",
+            "降落",
             "信息"
           ],
           "correct_index": 3,
@@ -570,6 +570,11 @@
               "tj": "гирифтан"
             },
             {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            },
+            {
               "uz": "muallif",
               "ru": "автор",
               "tj": "муаллиф"
@@ -578,11 +583,6 @@
               "uz": "qo'nmoq",
               "ru": "приземляться",
               "tj": "фуруд омадан"
-            },
-            {
-              "uz": "mashhur, urf bo'lgan",
-              "ru": "популярный, горячий",
-              "tj": "машҳур, серхаридор"
             }
           ],
           "correct_index": 0,
@@ -655,12 +655,12 @@
           "audio_text": "信封",
           "pinyin": "xìnfēng",
           "options": [
-            "信封",
+            "作者",
             "降落",
-            "火",
-            "作者"
+            "信封",
+            "火"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "信封 — konvert (xìnfēng)",
             "ru": "信封 — конверт (xìnfēng)",
@@ -678,31 +678,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'bundan tashqari' xitoycha qaysi?",
-            "ru": "'кроме этого' по-китайски?",
-            "tj": "'ғайр аз ин' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "作者",
-            "降落",
-            "除此以外",
-            "火"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "bundan tashqari = 除此以外 (chúcǐ yǐwài)",
-            "ru": "кроме этого = 除此以外 (chúcǐ yǐwài)",
-            "tj": "ғайр аз ин = 除此以外 (chúcǐ yǐwài)"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "信息 so'zining ma'nosini tanlang:",
@@ -716,27 +691,27 @@
           },
           "options": [
             {
-              "uz": "ma'lumot, xabar",
-              "ru": "информация",
-              "tj": "маълумот, хабар"
-            },
-            {
-              "uz": "mashhur, urf bo'lgan",
-              "ru": "популярный, горячий",
-              "tj": "машҳур, серхаридор"
-            },
-            {
               "uz": "muallif",
               "ru": "автор",
               "tj": "муаллиф"
             },
             {
+              "uz": "ma'lumot, xabar",
+              "ru": "информация",
+              "tj": "маълумот, хабар"
+            },
+            {
               "uz": "qo'nmoq",
               "ru": "приземляться",
               "tj": "фуруд омадан"
+            },
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "信息 = ma'lumot, xabar (xìnxī)",
             "ru": "信息 = информация (xìnxī)",
@@ -751,6 +726,105 @@
             "uz": "konvert",
             "ru": "конверт",
             "tj": "лифофа"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "地点 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 地点:",
+            "tj": "Маънои калимаи 地点-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            },
+            {
+              "uz": "joy, manzil",
+              "ru": "место, пункт",
+              "tj": "ҷой, макон"
+            },
+            {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
+            },
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "地点 = joy, manzil (dìdiǎn)",
+            "ru": "地点 = место, пункт (dìdiǎn)",
+            "tj": "地点 = ҷой, макон (dìdiǎn)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "地点",
+            "pinyin": "dìdiǎn",
+            "meaning": {
+              "uz": "joy, manzil",
+              "ru": "место, пункт",
+              "tj": "ҷой, макон"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'konvert' xitoycha qaysi?",
+            "ru": "'конверт' по-китайски?",
+            "tj": "'лифофа' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "信封",
+            "火",
+            "降落",
+            "作者"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "konvert = 信封 (xìnfēng)",
+            "ru": "конверт = 信封 (xìnfēng)",
+            "tj": "лифофа = 信封 (xìnfēng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "信封",
+            "pinyin": "xìnfēng",
+            "meaning": {
+              "uz": "konvert",
+              "ru": "конверт",
+              "tj": "лифофа"
+            }
           }
         }
       ]

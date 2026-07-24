@@ -458,9 +458,9 @@
           },
           "options": [
             {
-              "uz": "past bo'yli",
-              "ru": "низкий, невысокий",
-              "tj": "пастқад"
+              "uz": "jismoniy tarbiya",
+              "ru": "физкультура, спорт",
+              "tj": "тарбияи ҷисмонӣ"
             },
             {
               "uz": "tarix",
@@ -468,17 +468,17 @@
               "tj": "таърих"
             },
             {
-              "uz": "jismoniy tarbiya",
-              "ru": "физкультура, спорт",
-              "tj": "тарбияи ҷисмонӣ"
-            },
-            {
               "uz": "bo'y, gavda balandligi",
               "ru": "рост",
               "tj": "қад"
+            },
+            {
+              "uz": "past bo'yli",
+              "ru": "низкий, невысокий",
+              "tj": "пастқад"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "矮 = past bo'yli (ǎi)",
             "ru": "矮 = низкий, невысокий (ǎi)",
@@ -512,12 +512,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "矮",
+            "个子",
             "体育",
-            "历史",
-            "个子"
+            "矮",
+            "历史"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "历史 = tarix (lìshǐ)",
             "ru": "历史 = история (lìshǐ)",
@@ -551,12 +551,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "gèzi",
+            "tǐyù",
             "ǎi",
             "lìshǐ",
-            "tǐyù"
+            "gèzi"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "体育 — tǐyù",
             "ru": "体育 — tǐyù",
@@ -577,11 +577,11 @@
           },
           "options": [
             "体育",
-            "矮",
             "历史",
-            "个子"
+            "个子",
+            "矮"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "bo'y, gavda balandligi = 个子 (gèzi)",
             "ru": "рост = 个子 (gèzi)",
@@ -686,14 +686,14 @@
             "tj": "Шумо аз ман хеле беҳтаред!"
           },
           "tokens": [
+            "多",
+            "了",
             "矮",
             "个子",
-            "多",
-            "比",
-            "你",
             "我",
             "好",
-            "了"
+            "比",
+            "你"
           ],
           "answer_tokens": [
             "你",
@@ -824,31 +824,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'yordam bermoq' xitoycha qaysi?",
-            "ru": "'помогать' по-китайски?",
-            "tj": "'ёрӣ додан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "矮",
-            "历史",
-            "帮忙",
-            "个子"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "yordam bermoq = 帮忙 (bāng máng)",
-            "ru": "помогать = 帮忙 (bāng máng)",
-            "tj": "ёрӣ додан = 帮忙 (bāng máng)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "矮",
           "pinyin": "ǎi",
@@ -856,6 +831,105 @@
             "uz": "past bo'yli",
             "ru": "низкий, невысокий",
             "tj": "пастқад"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "班 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 班:",
+            "tj": "Маънои калимаи 班-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "past bo'yli",
+              "ru": "низкий, невысокий",
+              "tj": "пастқад"
+            },
+            {
+              "uz": "bo'y, gavda balandligi",
+              "ru": "рост",
+              "tj": "қад"
+            },
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            },
+            {
+              "uz": "tarix",
+              "ru": "история",
+              "tj": "таърих"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "班 = sinf, guruh (bān)",
+            "ru": "班 = класс, группа (bān)",
+            "tj": "班 = синф, гурӯҳ (bān)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "班",
+            "pinyin": "bān",
+            "meaning": {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'past bo'yli' xitoycha qaysi?",
+            "ru": "'низкий, невысокий' по-китайски?",
+            "tj": "'пастқад' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "个子",
+            "矮",
+            "历史",
+            "体育"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "past bo'yli = 矮 (ǎi)",
+            "ru": "низкий, невысокий = 矮 (ǎi)",
+            "tj": "пастқад = 矮 (ǎi)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "矮",
+            "pinyin": "ǎi",
+            "meaning": {
+              "uz": "past bo'yli",
+              "ru": "низкий, невысокий",
+              "tj": "пастқад"
+            }
           }
         }
       ]

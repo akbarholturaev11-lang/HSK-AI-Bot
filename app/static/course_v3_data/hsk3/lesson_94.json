@@ -352,11 +352,11 @@
           },
           "options": [
             "嘴",
-            "万",
+            "向",
             "只",
-            "向"
+            "万"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "tomon, ga = 向 (xiàng)",
             "ru": "к, по направлению к = 向 (xiàng)",
@@ -397,12 +397,12 @@
           "audio_text": "万",
           "pinyin": "wàn",
           "options": [
-            "只",
-            "万",
             "嘴",
-            "向"
+            "向",
+            "万",
+            "只"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "万 — o'n ming (wàn)",
             "ru": "万 — десять тысяч (wàn)",
@@ -437,27 +437,27 @@
           },
           "options": [
             {
-              "uz": "ayrim hayvonlar uchun hisob so'zi",
-              "ru": "счетное слово для некоторых животных",
-              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
-            },
-            {
-              "uz": "o'n ming",
-              "ru": "десять тысяч",
-              "tj": "даҳ ҳазор"
-            },
-            {
               "uz": "og'iz",
               "ru": "рот",
               "tj": "даҳон"
             },
             {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            },
+            {
               "uz": "tomon, ga",
               "ru": "к, по направлению к",
               "tj": "ба сӯи, ба"
+            },
+            {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "只 = ayrim hayvonlar uchun hisob so'zi (zhī)",
             "ru": "只 = счетное слово для некоторых животных (zhī)",
@@ -491,12 +491,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "向",
             "嘴",
+            "万",
             "只",
-            "万"
+            "向"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "嘴 = og'iz (zuǐ)",
             "ru": "嘴 = рот (zuǐ)",
@@ -516,12 +516,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xiàng",
             "zuǐ",
-            "zhī",
-            "wàn"
+            "wàn",
+            "xiàng",
+            "zhī"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "向 — xiàng",
             "ru": "向 — xiàng",
@@ -701,6 +701,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。",
+          "pinyin": "Māma, nǐ kàn nà zhī gǒu duō kě'ài, yǎnjing dàdà de, zuǐ xiǎoxiǎo de, wǒmen mǎi huíqu ba.",
+          "options": [
+            "老周，我打算买房子了，想向你借点儿钱。",
+            "还差5万块钱。",
+            "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。",
+            "没问题，只要我有，就一定会借给你的。还差多少？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。 — Oyi, qarang anavi kuchuk naqadar shirin, ko'zlari katta-katta, og'zi kichkina, olib ketaylik.",
+            "ru": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。 — Мама, посмотри, какая милая собака: глаза большие, ротик маленький, давай купим ее.",
+            "tj": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。 — Оча, бинед он саг чӣ қадар ширин аст, чашмонаш калон-калон, даҳонаш хурд, биё харем."
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Yana 50 ming yuan yetmayapti.",
@@ -708,13 +730,13 @@
             "tj": "Боз 50 ҳазор юан камӣ дорад."
           },
           "tokens": [
-            "还",
-            "向",
-            "万",
             "只",
-            "块",
+            "向",
             "钱",
-            "差"
+            "万",
+            "还",
+            "差",
+            "块"
           ],
           "answer_tokens": [
             "还",
@@ -730,53 +752,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'pasport' xitoycha qaysi?",
-            "ru": "'паспорт' по-китайски?",
-            "tj": "'шиноснома' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "向",
-            "护照",
-            "万",
-            "只"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "pasport = 护照 (hùzhào)",
-            "ru": "паспорт = 护照 (hùzhào)",
-            "tj": "шиноснома = 护照 (hùzhào)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。",
-          "pinyin": "Māma, nǐ kàn nà zhī gǒu duō kě'ài, yǎnjing dàdà de, zuǐ xiǎoxiǎo de, wǒmen mǎi huíqu ba.",
-          "options": [
-            "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。",
-            "没问题，只要我有，就一定会借给你的。还差多少？",
-            "还差5万块钱。",
-            "老周，我打算买房子了，想向你借点儿钱。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。 — Oyi, qarang anavi kuchuk naqadar shirin, ko'zlari katta-katta, og'zi kichkina, olib ketaylik.",
-            "ru": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。 — Мама, посмотри, какая милая собака: глаза большие, ротик маленький, давай купим ее.",
-            "tj": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。 — Оча, бинед он саг чӣ қадар ширин аст, чашмонаш калон-калон, даҳонаш хурд, биё харем."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "万",
           "pinyin": "wàn",
@@ -784,6 +759,105 @@
             "uz": "o'n ming",
             "ru": "десять тысяч",
             "tj": "даҳ ҳазор"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "一共 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 一共:",
+            "tj": "Маънои калимаи 一共-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
+            },
+            {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            },
+            {
+              "uz": "jami, hammasi bo'lib",
+              "ru": "всего, в общей сложности",
+              "tj": "ҳамагӣ, ҷамъ"
+            },
+            {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "一共 = jami, hammasi bo'lib (yígòng)",
+            "ru": "一共 = всего, в общей сложности (yígòng)",
+            "tj": "一共 = ҳамагӣ, ҷамъ (yígòng)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "一共",
+            "pinyin": "yígòng",
+            "meaning": {
+              "uz": "jami, hammasi bo'lib",
+              "ru": "всего, в общей сложности",
+              "tj": "ҳамагӣ, ҷамъ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'o'n ming' xitoycha qaysi?",
+            "ru": "'десять тысяч' по-китайски?",
+            "tj": "'даҳ ҳазор' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "只",
+            "万",
+            "向",
+            "嘴"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "o'n ming = 万 (wàn)",
+            "ru": "десять тысяч = 万 (wàn)",
+            "tj": "даҳ ҳазор = 万 (wàn)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "万",
+            "pinyin": "wàn",
+            "meaning": {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            }
           }
         }
       ]

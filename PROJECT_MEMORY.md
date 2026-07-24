@@ -207,6 +207,40 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-07-24 — Dars oxirida "Aralash takror" + real haftalik streak kalendari
+
+Changed (Codex boshlagan ishning yakuni — dars formati + streak effektlari):
+- Har oddiy mini-dars (355 ta) endi yakuniy `retention_review` bo'limi bilan tugaydi:
+  2 karta — bittasi OLDINGI qism/dars so'zidan (mc_meaning), bittasi JORIY qism so'zidan
+  (mc_translation). Kartalarda `review_mix`/`review_origin` flaglari. Eski oqim-ichidagi
+  spaced-review kartasi mashqdan olib tashlandi (RNG legacy chaqiruv saqlangan, lekin fill
+  mantiqidagi hisob farqi tufayli mashq kartalari tarkibi baribir qisman o'zgardi — 425 JSON
+  atomik qayta generatsiya qilindi, testlar qamrov/gatingni tasdiqladi). 70 checkpoint
+  o'zi to'liq takror — ularga qo'shilmadi.
+- Frontend: `cardChoice` review kartalarni "kartalar dastasi" ko'rinishida chizadi
+  (`.mix-review` + `.mix-badge`, oldingi=oltin/"Oldingi darsdan", joriy=qizil/"Shu darsdan",
+  3 tilda). Dars varag'i bosqichlari endi 4 ta: so'zlar/mashq/talaffuz/aralash takror (`partSecs`).
+- Streak endi REAL haftalik faollikdan: `CourseGamificationService.snapshot()` `local_date`,
+  `week_start`, `week_activity_dates` (CourseXpEvent distinct activity_date), `longest_streak`,
+  `last_activity_date`, `streak_updated`, `streak_reset`, ko'rsatiladigan streak esa uzilgan
+  bo'lsa 0 qaytaradi; `/api/v3/map` progress payloadiga shu maydonlar qo'shildi.
+- Streak ekrani: bugungi kun "shtamp" animatsiyasi (`sk-day.just`), haftalik maqsad paneli
+  (`skWeekGoalHtml`, X/7 + progress bar), streak uzilib qayta boshlanganda alohida matn
+  (`streak_reset`); profil kalendari (`streakCalHtml`) ham real `week_activity_dates` dan
+  (eski javob uchun streak-oynali taxmin fallback qoladi). tj "keep" matni bagi tuzatildi.
+
+Files touched:
+- `scripts/gen_course_v3_from_seed.py` (`build_retention_review`, mc_* rng parametri),
+  `app/services/course_gamification_service.py`, `app/main.py`,
+  `app/static/course-v3.html`, `app/static/course_v3_data/**` (425 JSON regeneratsiya)
+
+Risk / follow-up:
+- To'lov/obuna/ruxsat logikasi tegilmadi; migratsiya yo'q (faqat qo'shimcha snapshot maydonlar).
+- Data + frontend bitta relizda chiqsin (JSON'lar atomik almashadi). Qurilma-lokal dars resume
+  indekslari kontent siljigani uchun eski saqlangan joyga mos kelmasligi mumkin — 7 kunda o'zi tozalanadi.
+- Testlar: 256 passed; 4 e2e smoke (course-v3 sheet/d1/support/checkout) AVVALDAN yiqiq (HEAD'da ham),
+  bu ishga aloqasiz. Real Telegram'da bitta dars + streak ekrani smoke-test tavsiya.
+
 ### 2026-07-22 — Chegirma obunachiga bormaydi + otziv oqimi 2 qadamli, obunachiga alohida
 
 Muammo:

@@ -502,11 +502,11 @@
           "pinyin": "yào",
           "options": [
             "课",
+            "药",
             "别",
-            "帮助",
-            "药"
+            "帮助"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "药 — dori-darmon (yào)",
             "ru": "药 — лекарство (yào)",
@@ -527,11 +527,11 @@
           },
           "options": [
             "早睡早起对身体好。",
-            "看电视对学汉语有帮助。",
-            "不要喝茶了，吃药吧。",
-            "别看电视了，去睡觉吧。"
+            "你在找什么？",
+            "别看电视了，去睡觉吧。",
+            "不要喝茶了，吃药吧。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba.",
             "ru": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba.",
@@ -594,14 +594,14 @@
           },
           "options": [
             {
-              "uz": "…qilma (taqiq)",
-              "ru": "не (запрет)",
-              "tj": "накун (манъ)"
-            },
-            {
               "uz": "yordam bermoq",
               "ru": "помогать",
               "tj": "кӯмак кардан"
+            },
+            {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
             },
             {
               "uz": "tayyorlanmoq, tayyorlamoq",
@@ -754,11 +754,11 @@
           },
           "options": [
             "gēge",
-            "bāngzhù",
+            "kè",
             "bié",
-            "kè"
+            "bāngzhù"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "课 — kè",
             "ru": "课 — kè",
@@ -787,11 +787,11 @@
           "pinyin": "Bié kàn diànshì le，míngtiān shàngwǔ hái yǒu Hànyǔ kè ne.",
           "options": [
             "明天的课你都准备好了吗？",
-            "看电视对学汉语有帮助。",
             "别看电视了，明天上午还有汉语课呢。",
-            "都准备好了。"
+            "都准备好了。",
+            "看电视对学汉语有帮助。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "别看电视了，明天上午还有汉语课呢。 — Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.",
             "ru": "别看电视了，明天上午还有汉语课呢。 — Хватит смотреть телевизор, завтра утром ещё есть урок китайского.",
@@ -807,10 +807,10 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "咖",
+            "鸡",
             "别",
-            "因",
-            "到"
+            "后",
+            "的"
           ],
           "correct_index": 1,
           "explanation": {
@@ -874,12 +874,12 @@
             }
           ],
           "options": [
-            "看电视对学汉语有帮助。",
             "明天的课你都准备好了吗？",
-            "都准备好了。",
-            "别看电视了，明天上午还有汉语课呢。"
+            "别看电视了，明天上午还有汉语课呢。",
+            "看电视对学汉语有帮助。",
+            "都准备好了。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 都准备好了。",
             "ru": "Правильный ответ: 都准备好了。",
@@ -899,12 +899,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
+            "看电视对学汉语有帮助。",
             "都准备好了。",
             "别看电视了，明天上午还有汉语课呢。",
-            "明天的课你都准备好了吗？",
-            "看电视对学汉语有帮助。"
+            "明天的课你都准备好了吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 别看电视了，明天上午还有汉语课呢。",
             "ru": "Правильный ответ: 别看电视了，明天上午还有汉语课呢。",

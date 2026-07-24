@@ -334,12 +334,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "受到",
-            "打折",
+            "沙发",
             "家具",
-            "沙发"
+            "打折",
+            "受到"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "qabul qilmoq, ta'sirga uchramoq = 受到 (shòudào)",
             "ru": "получать, подвергаться = 受到 (shòudào)",
@@ -380,12 +380,12 @@
           "audio_text": "任何",
           "pinyin": "rènhé",
           "options": [
-            "家具",
             "任何",
+            "家具",
             "打折",
             "沙发"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "任何 — har qanday (rènhé)",
             "ru": "任何 — любой, какой угодно (rènhé)",
@@ -420,16 +420,6 @@
           },
           "options": [
             {
-              "uz": "chegirma qilmoq",
-              "ru": "делать скидку",
-              "tj": "тахфиф кардан"
-            },
-            {
-              "uz": "mebel",
-              "ru": "мебель",
-              "tj": "мебел"
-            },
-            {
               "uz": "divan",
               "ru": "диван",
               "tj": "диван"
@@ -438,9 +428,19 @@
               "uz": "jo'natmoq",
               "ru": "отправлять",
               "tj": "фиристодан"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "寄 = jo'natmoq (jì)",
             "ru": "寄 = отправлять (jì)",
@@ -460,12 +460,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "受到",
             "打折",
             "家具",
-            "沙发"
+            "沙发",
+            "受到"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "受到 = qabul qilmoq, ta'sirga uchramoq (shòudào)",
             "ru": "受到 = получать, подвергаться (shòudào)",
@@ -524,35 +524,13 @@
             "ru": "Послушайте — какое слово?",
             "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "寄",
-          "pinyin": "jì",
-          "options": [
-            "寄",
-            "沙发",
-            "家具",
-            "打折"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "寄 — jo'natmoq (jì)",
-            "ru": "寄 — отправлять (jì)",
-            "tj": "寄 — фиристодан (jì)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
           "audio_text": "任何",
           "pinyin": "rènhé",
           "options": [
             "任何",
-            "打折",
+            "沙发",
             "家具",
-            "沙发"
+            "打折"
           ],
           "correct_index": 0,
           "explanation": {
@@ -562,44 +540,25 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "葡萄 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 葡萄:",
-            "tj": "Маънои калимаи 葡萄-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "寄",
+          "pinyin": "jì",
           "options": [
-            {
-              "uz": "chegirma qilmoq",
-              "ru": "делать скидку",
-              "tj": "тахфиф кардан"
-            },
-            {
-              "uz": "divan",
-              "ru": "диван",
-              "tj": "диван"
-            },
-            {
-              "uz": "uzum",
-              "ru": "виноград",
-              "tj": "ангур"
-            },
-            {
-              "uz": "mebel",
-              "ru": "мебель",
-              "tj": "мебел"
-            }
+            "沙发",
+            "寄",
+            "打折",
+            "家具"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "葡萄 = uzum (pútao)",
-            "ru": "葡萄 = виноград (pútao)",
-            "tj": "葡萄 = ангур (pútao)"
+            "uz": "寄 — jo'natmoq (jì)",
+            "ru": "寄 — отправлять (jì)",
+            "tj": "寄 — фиристодан (jì)"
           }
         },
         {
@@ -610,6 +569,105 @@
             "uz": "har qanday",
             "ru": "любой, какой угодно",
             "tj": "ҳар гуна"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "尤其 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 尤其:",
+            "tj": "Маънои калимаи 尤其-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            },
+            {
+              "uz": "ayniqsa",
+              "ru": "особенно",
+              "tj": "хусусан"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "尤其 = ayniqsa (yóuqí)",
+            "ru": "尤其 = особенно (yóuqí)",
+            "tj": "尤其 = хусусан (yóuqí)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "尤其",
+            "pinyin": "yóuqí",
+            "meaning": {
+              "uz": "ayniqsa",
+              "ru": "особенно",
+              "tj": "хусусан"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'har qanday' xitoycha qaysi?",
+            "ru": "'любой, какой угодно' по-китайски?",
+            "tj": "'ҳар гуна' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "任何",
+            "打折",
+            "沙发",
+            "家具"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "har qanday = 任何 (rènhé)",
+            "ru": "любой, какой угодно = 任何 (rènhé)",
+            "tj": "ҳар гуна = 任何 (rènhé)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "任何",
+            "pinyin": "rènhé",
+            "meaning": {
+              "uz": "har qanday",
+              "ru": "любой, какой угодно",
+              "tj": "ҳар гуна"
+            }
           }
         }
       ]

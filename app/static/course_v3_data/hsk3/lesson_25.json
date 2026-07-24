@@ -374,9 +374,9 @@
           "pinyin": "fāshāo",
           "options": [
             "发烧",
-            "照顾",
+            "为",
             "用",
-            "为"
+            "照顾"
           ],
           "correct_index": 0,
           "explanation": {
@@ -413,27 +413,27 @@
           },
           "options": [
             {
-              "uz": "kerak bo'lmoq, ishlatmoq",
-              "ru": "нужно; использовать",
-              "tj": "лозим шудан; истифода бурдан"
-            },
-            {
-              "uz": "uchun",
-              "ru": "для, ради",
-              "tj": "барои"
-            },
-            {
               "uz": "isitmasi chiqmoq",
               "ru": "температурить",
               "tj": "таб кардан"
             },
             {
+              "uz": "kerak bo'lmoq, ishlatmoq",
+              "ru": "нужно; использовать",
+              "tj": "лозим шудан; истифода бурдан"
+            },
+            {
               "uz": "qaramoq, parvarish qilmoq",
               "ru": "заботиться, ухаживать",
               "tj": "нигоҳубин кардан"
+            },
+            {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "为 = uchun (wèi)",
             "ru": "为 = для, ради (wèi)",
@@ -467,12 +467,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "发烧",
-            "为",
             "照顾",
-            "用"
+            "发烧",
+            "用",
+            "为"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "照顾 = qaramoq, parvarish qilmoq (zhàogù)",
             "ru": "照顾 = заботиться, ухаживать (zhàogù)",
@@ -506,12 +506,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yòng",
-            "wèi",
             "zhàogù",
-            "fāshāo"
+            "fāshāo",
+            "yòng",
+            "wèi"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "用 — yòng",
             "ru": "用 — yòng",
@@ -531,10 +531,10 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "为",
+            "用",
             "发烧",
-            "照顾",
-            "用"
+            "为",
+            "照顾"
           ],
           "correct_index": 1,
           "explanation": {
@@ -596,6 +596,50 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "为",
+          "pinyin": "wèi",
+          "options": [
+            "为",
+            "发烧",
+            "用",
+            "照顾"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "为 — uchun (wèi)",
+            "ru": "为 — для, ради (wèi)",
+            "tj": "为 — барои (wèi)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我儿子生病了，我要在家照顾他。",
+          "pinyin": "Wǒ érzi shēng bìng le, wǒ yào zài jiā zhàogù tā.",
+          "options": [
+            "前几天有点儿发烧，现在好多了。",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。",
+            "我听说你身体不舒服，怎么了？",
+            "我儿子生病了，我要在家照顾他。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我儿子生病了，我要在家照顾他。 — O'g'lim kasal bo'lib qoldi, uyda unga qarashim kerak.",
+            "ru": "我儿子生病了，我要在家照顾他。 — Мой сын заболел, мне нужно дома ухаживать за ним.",
+            "tj": "我儿子生病了，我要在家照顾他。 — Писарам бемор шуд, бояд дар хона ӯро нигоҳубин кунам."
+          }
+        },
         {
           "type": "reverse_builder",
           "zh": "我儿子生病了，我要在家照顾他。",
@@ -680,75 +724,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我儿子生病了，我要在家照顾他。",
-          "pinyin": "Wǒ érzi shēng bìng le, wǒ yào zài jiā zhàogù tā.",
-          "options": [
-            "前几天有点儿发烧，现在好多了。",
-            "我听说你身体不舒服，怎么了？",
-            "我儿子生病了，我要在家照顾他。",
-            "喝杯茶吧，这是我为你买的绿茶，很不错。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "我儿子生病了，我要在家照顾他。 — O'g'lim kasal bo'lib qoldi, uyda unga qarashim kerak.",
-            "ru": "我儿子生病了，我要在家照顾他。 — Мой сын заболел, мне нужно дома ухаживать за ним.",
-            "tj": "我儿子生病了，我要在家照顾他。 — Писарам бемор шуд, бояд дар хона ӯро нигоҳубин кунам."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "为",
-          "pinyin": "wèi",
-          "options": [
-            "用",
-            "照顾",
-            "为",
-            "发烧"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "为 — uchun (wèi)",
-            "ru": "为 — для, ради (wèi)",
-            "tj": "为 — барои (wèi)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "记得 talaffuzini tanlang:",
-            "ru": "Выберите произношение 记得:",
-            "tj": "Талаффузи 记得-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "fāshāo",
-            "wèi",
-            "zhàogù",
-            "jìde"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "记得 — jìde",
-            "ru": "记得 — jìde",
-            "tj": "记得 — jìde"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "发烧",
           "pinyin": "fāshāo",
@@ -756,6 +731,105 @@
             "uz": "isitmasi chiqmoq",
             "ru": "температурить",
             "tj": "таб кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "比赛 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 比赛:",
+            "tj": "Маънои калимаи 比赛-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            },
+            {
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            },
+            {
+              "uz": "qaramoq, parvarish qilmoq",
+              "ru": "заботиться, ухаживать",
+              "tj": "нигоҳубин кардан"
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "比赛 = musobaqa (bǐsài)",
+            "ru": "比赛 = соревнование (bǐsài)",
+            "tj": "比赛 = мусобиқа (bǐsài)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "比赛",
+            "pinyin": "bǐsài",
+            "meaning": {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'isitmasi chiqmoq' xitoycha qaysi?",
+            "ru": "'температурить' по-китайски?",
+            "tj": "'таб кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "为",
+            "用",
+            "照顾",
+            "发烧"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "isitmasi chiqmoq = 发烧 (fāshāo)",
+            "ru": "температурить = 发烧 (fāshāo)",
+            "tj": "таб кардан = 发烧 (fāshāo)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "发烧",
+            "pinyin": "fāshāo",
+            "meaning": {
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            }
           }
         }
       ]

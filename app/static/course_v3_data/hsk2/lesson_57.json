@@ -320,12 +320,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "少",
             "妻子",
-            "得",
-            "雪"
+            "少",
+            "雪",
+            "得"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "少 = oz, kam (shǎo)",
             "ru": "少 = мало, немного (shǎo)",
@@ -359,12 +359,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zǎo",
-            "de",
             "qīzi",
-            "xuě"
+            "zǎo",
+            "xuě",
+            "de"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "早 — zǎo",
             "ru": "早 — zǎo",
@@ -408,12 +408,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "雪",
             "得",
             "妻子",
-            "冷"
+            "冷",
+            "雪"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "sovuq = 冷 (lěng)",
             "ru": "холодный = 冷 (lěng)",
@@ -430,9 +430,9 @@
           "audio_text": "少",
           "pinyin": "shǎo",
           "options": [
+            "妻子",
             "雪",
             "得",
-            "妻子",
             "少"
           ],
           "correct_index": 3,
@@ -533,12 +533,12 @@
           },
           "tokens": [
             "得",
+            "妻子",
+            "弟弟",
+            "走",
             "她",
             "进",
             "了",
-            "弟弟",
-            "走",
-            "妻子",
             "来"
           ],
           "answer_tokens": [
@@ -577,9 +577,9 @@
           "pinyin": "Shì a, nǐ chuān de tài shǎo le, wǒmen jìn fángjiān ba.",
           "options": [
             "是啊，你穿得太少了，我们进房间吧。",
+            "六点多。",
             "你每天早上几点起床？",
-            "你比我早起一个小时。",
-            "六点多。"
+            "你比我早起一个小时。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -707,31 +707,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "进 talaffuzini tanlang:",
-            "ru": "Выберите произношение 进:",
-            "tj": "Талаффузи 进-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jìn",
-            "xuě",
-            "de",
-            "qīzi"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "进 — jìn",
-            "ru": "进 — jìn",
-            "tj": "进 — jìn"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "冷",
           "pinyin": "lěng",
@@ -739,6 +714,105 @@
             "uz": "sovuq",
             "ru": "холодный",
             "tj": "сард"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "身体 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 身体:",
+            "tj": "Маънои калимаи 身体-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            },
+            {
+              "uz": "xotin, turmush o'rtoq (ayol)",
+              "ru": "жена, супруга",
+              "tj": "зан, ҳамсар (зан)"
+            },
+            {
+              "uz": "tana, sog'liq",
+              "ru": "тело, здоровье",
+              "tj": "тан, саломатӣ"
+            },
+            {
+              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+              "ru": "частица дополнения состояния (после глагола)",
+              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "身体 = tana, sog'liq (shēntǐ)",
+            "ru": "身体 = тело, здоровье (shēntǐ)",
+            "tj": "身体 = тан, саломатӣ (shēntǐ)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "身体",
+            "pinyin": "shēntǐ",
+            "meaning": {
+              "uz": "tana, sog'liq",
+              "ru": "тело, здоровье",
+              "tj": "тан, саломатӣ"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sovuq' xitoycha qaysi?",
+            "ru": "'холодный' по-китайски?",
+            "tj": "'сард' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "冷",
+            "雪",
+            "妻子",
+            "得"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "sovuq = 冷 (lěng)",
+            "ru": "холодный = 冷 (lěng)",
+            "tj": "сард = 冷 (lěng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "冷",
+            "pinyin": "lěng",
+            "meaning": {
+              "uz": "sovuq",
+              "ru": "холодный",
+              "tj": "сард"
+            }
           }
         }
       ]

@@ -607,40 +607,6 @@
           }
         },
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "这些",
-              {
-                "uz": "bular, shu narsalar",
-                "ru": "эти, эти вещи",
-                "tj": "инҳо, ин чизҳо"
-              }
-            ],
-            [
-              "都",
-              {
-                "uz": "hammasi, barchasi",
-                "ru": "все, всё, оба",
-                "tj": "ҳама, тамом"
-              }
-            ],
-            [
-              "张",
-              {
-                "uz": "Zhang (familiya)",
-                "ru": "Чжан (фамилия)",
-                "tj": "Чжан (насаб)"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "reverse_builder",
           "zh": "你看见张先生了吗？",
           "pinyin": "Nǐ kànjiàn Zhāng xiānsheng le ma?",
@@ -700,50 +666,37 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'bir oz, biroz' xitoycha qaysi?",
-            "ru": "'немного, чуть-чуть' по-китайски?",
-            "tj": "'каме, андаке' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "苹果",
-            "看见",
-            "东西",
-            "一点儿"
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "这些",
+              {
+                "uz": "bular, shu narsalar",
+                "ru": "эти, эти вещи",
+                "tj": "инҳо, ин чизҳо"
+              }
+            ],
+            [
+              "都",
+              {
+                "uz": "hammasi, barchasi",
+                "ru": "все, всё, оба",
+                "tj": "ҳама, тамом"
+              }
+            ],
+            [
+              "张",
+              {
+                "uz": "Zhang (familiya)",
+                "ru": "Чжан (фамилия)",
+                "tj": "Чжан (насаб)"
+              }
+            ]
           ],
-          "correct_index": 3,
           "explanation": {
-            "uz": "bir oz, biroz = 一点儿 (yīdiǎnr)",
-            "ru": "немного, чуть-чуть = 一点儿 (yīdiǎnr)",
-            "tj": "каме, андаке = 一点儿 (yīdiǎnr)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你看见张先生了吗？",
-          "pinyin": "Nǐ kànjiàn Zhāng xiānsheng le ma?",
-          "options": [
-            "昨天上午你去哪儿了？",
-            "我去商店买东西了。",
-            "你看见张先生了吗？",
-            "你买什么了？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "你看见张先生了吗？ — Janob Jangni ko'rdingizmi?",
-            "ru": "你看见张先生了吗？ — Вы видели господина Чжана?",
-            "tj": "你看见张先生了吗？ — Шумо ҷаноби Чжанро дидед?"
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -754,6 +707,105 @@
             "uz": "bular, shu narsalar",
             "ru": "эти, эти вещи",
             "tj": "инҳо, ин чизҳо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 4,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "漂亮 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 漂亮:",
+            "tj": "Маънои калимаи 漂亮-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chiroyli, go'zal",
+              "ru": "красивый, симпатичный",
+              "tj": "зебо, хушрӯй"
+            },
+            {
+              "uz": "bir oz, biroz",
+              "ru": "немного, чуть-чуть",
+              "tj": "каме, андаке"
+            },
+            {
+              "uz": "narsa, buyum",
+              "ru": "вещь, предмет",
+              "tj": "чиз, асбоб"
+            },
+            {
+              "uz": "olma",
+              "ru": "яблоко",
+              "tj": "себ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "漂亮 = chiroyli, go'zal (piàoliang)",
+            "ru": "漂亮 = красивый, симпатичный (piàoliang)",
+            "tj": "漂亮 = зебо, хушрӯй (piàoliang)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "漂亮",
+            "pinyin": "piàoliang",
+            "meaning": {
+              "uz": "chiroyli, go'zal",
+              "ru": "красивый, симпатичный",
+              "tj": "зебо, хушрӯй"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bular, shu narsalar' xitoycha qaysi?",
+            "ru": "'эти, эти вещи' по-китайски?",
+            "tj": "'инҳо, ин чизҳо' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "苹果",
+            "这些",
+            "东西",
+            "一点儿"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "bular, shu narsalar = 这些 (zhèxiē)",
+            "ru": "эти, эти вещи = 这些 (zhèxiē)",
+            "tj": "инҳо, ин чизҳо = 这些 (zhèxiē)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "这些",
+            "pinyin": "zhèxiē",
+            "meaning": {
+              "uz": "bular, shu narsalar",
+              "ru": "эти, эти вещи",
+              "tj": "инҳо, ин чизҳо"
+            }
           }
         }
       ]

@@ -316,9 +316,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "提高",
-            "要求",
             "水平",
+            "要求",
+            "提高",
             "留学"
           ],
           "correct_index": 1,
@@ -353,9 +353,9 @@
           "pinyin": "zhù yì",
           "options": [
             "注意",
-            "水平",
             "留学",
-            "提高"
+            "提高",
+            "水平"
           ],
           "correct_index": 0,
           "explanation": {
@@ -402,14 +402,14 @@
           },
           "options": [
             {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            },
+            {
               "uz": "oshirmoq, yaxshilamoq",
               "ru": "повышать, улучшать",
               "tj": "баланд кардан, беҳтар кардан"
-            },
-            {
-              "uz": "chet elda o'qimoq",
-              "ru": "учиться за границей",
-              "tj": "дар хориҷ таҳсил кардан"
             },
             {
               "uz": "internetga kirmoq",
@@ -417,9 +417,9 @@
               "tj": "ба интернет даромадан"
             },
             {
-              "uz": "daraja, saviya",
-              "ru": "уровень, стандарт",
-              "tj": "сатҳ, дараҷа"
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
             }
           ],
           "correct_index": 2,
@@ -457,9 +457,9 @@
           },
           "options": [
             "除了",
-            "留学",
+            "提高",
             "水平",
-            "提高"
+            "留学"
           ],
           "correct_index": 0,
           "explanation": {
@@ -481,12 +481,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yāoqiú",
             "shuǐpíng",
+            "yāoqiú",
             "liú xué",
             "tí gāo"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "要求 — yāoqiú",
             "ru": "要求 — yāoqiú",
@@ -547,16 +547,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "除了",
-          "pinyin": "chúle",
-          "translation": {
-            "uz": "dan tashqari",
-            "ru": "кроме",
-            "tj": "ба ғайр аз"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Hozir kompyuterda internetga kirish juda qulay!",
@@ -564,15 +554,15 @@
             "tj": "Ҳоло бо компютер ба интернет даромадан хеле қулай аст!"
           },
           "tokens": [
-            "用",
-            "水平",
-            "方便",
-            "电脑",
             "留学",
-            "啊",
             "真",
+            "啊",
+            "电脑",
+            "水平",
             "上网",
-            "现在"
+            "方便",
+            "现在",
+            "用"
           ],
           "answer_tokens": [
             "现在",
@@ -587,28 +577,6 @@
             "uz": "现在用电脑上网真方便啊！ — Xiànzài yòng diànnǎo shàng wǎng zhēn fāngbiàn a!",
             "ru": "现在用电脑上网真方便啊！ — Xiànzài yòng diànnǎo shàng wǎng zhēn fāngbiàn a!",
             "tj": "现在用电脑上网真方便啊！ — Xiànzài yòng diànnǎo shàng wǎng zhēn fāngbiàn a!"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "现在用电脑上网真方便啊！",
-          "pinyin": "Xiànzài yòng diànnǎo shàng wǎng zhēn fāngbiàn a!",
-          "options": [
-            "你每天认真学习，做练习、完成作业，一直不错啊。",
-            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
-            "现在用电脑上网真方便啊！",
-            "这是我昨天的作业，您帮我看看对不对？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "现在用电脑上网真方便啊！ — Hozir kompyuterda internetga kirish juda qulay!",
-            "ru": "现在用电脑上网真方便啊！ — Сейчас пользоваться интернетом на компьютере очень удобно!",
-            "tj": "现在用电脑上网真方便啊！ — Ҳоло бо компютер ба интернет даромадан хеле қулай аст!"
           }
         },
         {
@@ -687,28 +655,13 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "qítā qaysi ieroglif?",
-            "ru": "Какой иероглиф читается qítā?",
-            "tj": "qítā кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "留学",
-            "其他",
-            "提高",
-            "水平"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "其他 = boshqalar, qolganlari (qítā)",
-            "ru": "其他 = остальное, другие (qítā)",
-            "tj": "其他 = дигарон, боқимонда (qítā)"
+          "type": "pronunciation",
+          "phrase": "除了",
+          "pinyin": "chúle",
+          "translation": {
+            "uz": "dan tashqari",
+            "ru": "кроме",
+            "tj": "ба ғайр аз"
           }
         },
         {
@@ -721,12 +674,12 @@
           "audio_text": "注意",
           "pinyin": "zhù yì",
           "options": [
-            "水平",
-            "注意",
+            "提高",
             "留学",
-            "提高"
+            "注意",
+            "水平"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "注意 — e'tibor bermoq (zhù yì)",
             "ru": "注意 — обращать внимание (zhù yì)",
@@ -741,6 +694,105 @@
             "uz": "internetga kirmoq",
             "ru": "выходить в интернет",
             "tj": "ба интернет даромадан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Aralash takror",
+        "ru": "Смешанное повторение",
+        "tj": "Такрори омехта"
+      },
+      "section_purpose": "retention_review",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "其他 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 其他:",
+            "tj": "Маънои калимаи 其他-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
+            },
+            {
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
+            },
+            {
+              "uz": "boshqalar, qolganlari",
+              "ru": "остальное, другие",
+              "tj": "дигарон, боқимонда"
+            },
+            {
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "其他 = boshqalar, qolganlari (qítā)",
+            "ru": "其他 = остальное, другие (qítā)",
+            "tj": "其他 = дигарон, боқимонда (qítā)"
+          },
+          "review_mix": true,
+          "review_origin": "previous",
+          "review_word": {
+            "zh": "其他",
+            "pinyin": "qítā",
+            "meaning": {
+              "uz": "boshqalar, qolganlari",
+              "ru": "остальное, другие",
+              "tj": "дигарон, боқимонда"
+            }
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'internetga kirmoq' xitoycha qaysi?",
+            "ru": "'выходить в интернет' по-китайски?",
+            "tj": "'ба интернет даромадан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "提高",
+            "留学",
+            "水平",
+            "上网"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "internetga kirmoq = 上网 (shàng wǎng)",
+            "ru": "выходить в интернет = 上网 (shàng wǎng)",
+            "tj": "ба интернет даромадан = 上网 (shàng wǎng)"
+          },
+          "review_mix": true,
+          "review_origin": "current",
+          "review_word": {
+            "zh": "上网",
+            "pinyin": "shàng wǎng",
+            "meaning": {
+              "uz": "internetga kirmoq",
+              "ru": "выходить в интернет",
+              "tj": "ба интернет даромадан"
+            }
           }
         }
       ]

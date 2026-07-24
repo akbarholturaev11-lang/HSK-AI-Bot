@@ -90,10 +90,18 @@ class CourseGamificationService:
             return await self.snapshot(user, profile=profile, awarded_xp=0, duplicate=True)
 
         day = self._local_day(profile.timezone_offset_minutes)
+        previous_streak = int(profile.current_streak or 0)
+        previous_activity_date = profile.last_activity_date
         streak, first_activity_today = self.next_streak(
-            profile.last_activity_date,
+            previous_activity_date,
             profile.current_streak,
             day,
+        )
+        streak_reset = bool(
+            first_activity_today
+            and previous_streak > 0
+            and previous_activity_date is not None
+            and previous_activity_date not in {day, day - timedelta(days=1)}
         )
         streak_bonus = 5 if first_activity_today else 0
         awarded_xp = max(1, min(200, int(base_xp or 0))) + streak_bonus
@@ -135,7 +143,16 @@ class CourseGamificationService:
                 payload={"streak": streak, "activity_date": day.isoformat()},
                 **shared,
             )
-        return await self.snapshot(user, profile=profile, awarded_xp=awarded_xp, duplicate=False)
+        return await self.snapshot(
+            user,
+            profile=profile,
+            awarded_xp=awarded_xp,
+            duplicate=False,
+            streak_updated=first_activity_today,
+            previous_streak=previous_streak,
+            streak_reset=streak_reset,
+            activity_date=day,
+        )
 
     async def snapshot(
         self,
@@ -144,6 +161,10 @@ class CourseGamificationService:
         profile: CourseMiniAppProfile | None = None,
         awarded_xp: int = 0,
         duplicate: bool = False,
+        streak_updated: bool = False,
+        previous_streak: int | None = None,
+        streak_reset: bool = False,
+        activity_date: date | None = None,
     ) -> dict:
         profile = profile or await self.profiles.get_or_create(user.id)
         day = self._local_day(profile.timezone_offset_minutes)
@@ -162,6 +183,24 @@ class CourseGamificationService:
             )
         )
         daily_xp = int(daily_result.scalar_one() or 0)
+        activity_days_result = await self.session.execute(
+            select(CourseXpEvent.activity_date)
+            .where(
+                CourseXpEvent.user_id == user.id,
+                CourseXpEvent.week_start == week_start,
+            )
+            .distinct()
+            .order_by(CourseXpEvent.activity_date)
+        )
+        week_activity_dates = [
+            value.isoformat()
+            for value in activity_days_result.scalars().all()
+            if isinstance(value, date)
+        ]
+        last_activity_date = profile.last_activity_date
+        display_streak = int(profile.current_streak or 0)
+        if last_activity_date not in {day, day - timedelta(days=1)}:
+            display_streak = 0
         chest_progress = int(profile.xp_total or 0) % 100
         energy_current = max(0, min(5, 3 + weekly_xp // 120))
         weekly_reset_at, weekly_reset_seconds = self._weekly_reset(profile.timezone_offset_minutes)
@@ -169,8 +208,18 @@ class CourseGamificationService:
             "xp": int(profile.xp_total or 0),
             "awarded_xp": int(awarded_xp or 0),
             "duplicate": bool(duplicate),
-            "streak": int(profile.current_streak or 0),
+            "streak": display_streak,
             "longest_streak": int(profile.longest_streak or 0),
+            "previous_streak": int(
+                (profile.current_streak if previous_streak is None else previous_streak) or 0
+            ),
+            "streak_updated": bool(streak_updated),
+            "streak_reset": bool(streak_reset),
+            "activity_date": activity_date.isoformat() if activity_date else None,
+            "last_activity_date": last_activity_date.isoformat() if last_activity_date else None,
+            "local_date": day.isoformat(),
+            "week_start": week_start.isoformat(),
+            "week_activity_dates": week_activity_dates,
             "league": self.league_for_xp(profile.xp_total),
             "weekly_xp": weekly_xp,
             "daily_xp": daily_xp,

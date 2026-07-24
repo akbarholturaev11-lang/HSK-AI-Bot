@@ -543,9 +543,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«U bankda uch yildan beri ishlaydi.» — xitoychada qaysi biri?",
-            "ru": "«Он работает в банке уже три года.» — какое предложение по-китайски?",
-            "tj": "«Вай се сол боз дар бонк кор мекунад.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Men musiqaga juda qiziqaman.» — xitoychada qaysi biri?",
+            "ru": "«Мне очень интересна музыка.» — какое предложение по-китайски?",
+            "tj": "«Ман ба мусиқӣ хеле шавқ дорам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -554,15 +554,15 @@
           },
           "options": [
             "现在差一刻八点。",
-            "他在银行工作三年了。",
             "她对历史特别感兴趣。",
-            "我对音乐很感兴趣。"
+            "我对音乐很感兴趣。",
+            "他在银行工作三年了。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "他在银行工作三年了。 — Tā zài yínháng gōngzuò sān nián le.",
-            "ru": "他在银行工作三年了。 — Tā zài yínháng gōngzuò sān nián le.",
-            "tj": "他在银行工作三年了。 — Tā zài yínháng gōngzuò sān nián le."
+            "uz": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù.",
+            "ru": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù.",
+            "tj": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù."
           }
         },
         {
@@ -576,11 +576,11 @@
           "pinyin": "jiǔ",
           "options": [
             "同事",
-            "久",
             "以前",
-            "银行"
+            "银行",
+            "久"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "久 — uzoq vaqt (jiǔ)",
             "ru": "久 — долго, длительный (jiǔ)",
@@ -699,12 +699,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "同事",
             "以前",
-            "银行",
-            "久"
+            "同事",
+            "久",
+            "银行"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "以前 = oldin, ilgari (yǐqián)",
             "ru": "以前 = раньше, прежде (yǐqián)",
@@ -725,27 +725,27 @@
           },
           "options": [
             {
-              "uz": "turmush qurmoq, uylanmoq",
-              "ru": "жениться, выходить замуж",
-              "tj": "оиладор шудан"
-            },
-            {
               "uz": "hamkasb",
               "ru": "коллега",
               "tj": "ҳамкор"
             },
             {
-              "uz": "oldin, ilgari",
-              "ru": "раньше, прежде",
-              "tj": "пештар, қаблан"
+              "uz": "turmush qurmoq, uylanmoq",
+              "ru": "жениться, выходить замуж",
+              "tj": "оиладор шудан"
             },
             {
               "uz": "bank",
               "ru": "банк",
               "tj": "бонк"
+            },
+            {
+              "uz": "oldin, ilgari",
+              "ru": "раньше, прежде",
+              "tj": "пештар, қаблан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "结婚 = turmush qurmoq, uylanmoq (jié hūn)",
             "ru": "结婚 = жениться, выходить замуж (jié hūn)",
@@ -816,11 +816,11 @@
           "pinyin": "Nà ge piàoliang de xīn tóngshì shì shéi?",
           "options": [
             "不，她在北京工作三年了。",
+            "她刚来北京吗？",
             "那个漂亮的新同事是谁？",
-            "那是小丽。",
-            "她刚来北京吗？"
+            "那是小丽。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "那个漂亮的新同事是谁？ — Anavi chiroyli yangi hamkasb kim?",
             "ru": "那个漂亮的新同事是谁？ — Кто эта красивая новая коллега?",
@@ -836,12 +836,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "结",
-            "到",
             "那",
-            "咖"
+            "树",
+            "衫",
+            "鸡"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 那 — 那个漂亮的新同事是谁？ (Anavi chiroyli yangi hamkasb kim?)",
             "ru": "Верно: 那 — 那个漂亮的新同事是谁？ (Кто эта красивая новая коллега?)",
@@ -862,11 +862,11 @@
           },
           "options": [
             "那个漂亮的新同事是谁？",
-            "她刚来北京吗？",
             "她在银行工作了两年以后来的我们公司。",
+            "她刚来北京吗？",
             "那是小丽。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
             "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
@@ -913,12 +913,12 @@
             }
           ],
           "options": [
-            "她在银行工作了两年以后来的我们公司。",
-            "那是小丽。",
             "那个漂亮的新同事是谁？",
-            "她刚来北京吗？"
+            "她刚来北京吗？",
+            "那是小丽。",
+            "她在银行工作了两年以后来的我们公司。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
             "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
@@ -938,9 +938,9 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "那是小丽。",
-            "那个漂亮的新同事是谁？",
             "不，她在北京工作三年了。",
+            "那个漂亮的新同事是谁？",
+            "那是小丽。",
             "她刚来北京吗？"
           ],
           "correct_index": 1,
