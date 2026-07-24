@@ -67,6 +67,13 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .tv-track{display:flex;gap:9px;width:max-content;padding:12px 14px;animation:marquee 28s linear infinite;will-change:transform}
 .tv-screen:active .tv-track{animation-play-state:paused}
 .perk{flex:0 0 auto;display:inline-flex;align-items:center;height:38px;padding:0 15px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:13px;font-weight:800;white-space:nowrap;color:var(--text)}
+.tv-focus{position:relative;z-index:2;display:none;gap:13px;align-items:center;padding:12px 15px 15px}
+.tv.focus .tv-screen{display:none}
+.tv.focus .tv-focus{display:flex}
+.tv-focus-ico{flex:0 0 auto;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:25px;background:rgba(52,227,164,.15);border:1px solid rgba(52,227,164,.3);box-shadow:0 8px 22px rgba(52,227,164,.16)}
+.tv-focus-body{flex:1;min-width:0}
+.tv-focus-body strong{display:block;font-size:16px;font-weight:900;line-height:1.22;letter-spacing:-.01em}
+.tv-focus-body span{display:block;margin-top:5px;color:#b9dccf;font-size:12.5px;line-height:1.42;font-weight:650}
 .discount{position:relative;display:flex;flex-direction:column;gap:11px;margin-top:14px;border:1px solid rgba(255,210,125,.34);border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,210,125,.13),rgba(52,227,164,.05));padding:14px;overflow:hidden;animation:fade .4s ease}
 .discount::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(115% 130% at 6% -25%,rgba(255,210,125,.2),transparent 55%)}
 .discount.used{border-color:var(--line);background:rgba(255,255,255,.04)}
@@ -247,6 +254,10 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
     <div class="tv">
       <div class="tv-head"><span class="tv-dot"></span><span class="tv-title" id="tvTitle"></span></div>
       <div class="tv-screen"><div class="tv-track" id="tvTrack"></div></div>
+      <div class="tv-focus" id="tvFocus">
+        <div class="tv-focus-ico" id="tvFocusIco"></div>
+        <div class="tv-focus-body"><strong id="tvFocusTitle"></strong><span id="tvFocusText"></span></div>
+      </div>
     </div>
 
     <section class="section">
@@ -414,7 +425,19 @@ const I18N={
       ["Xato tahlili","Quiz va javoblardagi xatolar tushuntiriladi."]
     ],
     tvTitle:"Obuna nima beradi",
+    tvFocusTitle:"Sizga aynan shu ochiladi",
     perks:["📚 HSK darslari bosqichma-bosqich","🤖 AI savol-javob kengayadi","🖼 Rasm va ieroglif tahlili","🎙 Voice savollar bilan practice","🧩 Quiz, test va xato tahlili","📈 Progress botda saqlanadi","⚡ Kunlik mashq tezroq yuradi","✅ Obuna davrida cheklovlar kamayadi"],
+    focus:{
+      qa:{ico:"🤖",t:"AI savol-javob cheklovsiz",d:"Kunlik limit tugamaydi — istagancha savol berib, tez javob olaverasiz."},
+      photo:{ico:"🖼",t:"Rasm va ieroglif tahlili",d:"Foto yuborib, ieroglif va matnni AI orqali cheklovsiz tahlil qilasiz."},
+      voice:{ico:"🎙",t:"Voice suhbat va talaffuz",d:"Ovozli savol-javob va roleplay cheklovsiz ochiladi."},
+      test:{ico:"🧩",t:"HSK testlari cheklovsiz",d:"Barcha darajadagi testlarni to'liq ishlaysiz, limit yo'q."},
+      mistakes:{ico:"🔁",t:"Xatolar takrori to'liq",d:"Barcha xatolaringiz tahlil qilinib, qayta mashq qilinadi."},
+      memorize:{ico:"📚",t:"So'z yodlash cheklovsiz",d:"Barcha so'zlarni yodlash mashqi limitsiz ochiladi."},
+      pronunciation:{ico:"🗣",t:"Talaffuz mashqi to'liq",d:"Har bir so'z talaffuzini cheklovsiz tekshirasiz."},
+      recognition:{ico:"👁",t:"Ieroglif tanish mashqi",d:"Ieroglif tanish mashqlari cheklovsiz ochiladi."},
+      lesson:{ico:"📖",t:"Barcha darslar ochiladi",d:"Kursning hamma darslari ketma-ket, progress saqlanib boradi."}
+    },
     discountActiveText:"Bu obunaga avtomatik qo'llanadi.",
     discountLockTitle:"20% chegirmani oching",
     discountInviteText:"3 do'stingiz botdan foydalansa, 20% chegirma ochiladi.",
@@ -521,7 +544,19 @@ const I18N={
       ["Разбор ошибок","Ошибки в quiz и ответах объясняются."]
     ],
     tvTitle:"Что дает подписка",
+    tvFocusTitle:"Именно это откроется",
     perks:["📚 HSK-уроки по шагам","🤖 Больше AI-вопросов и ответов","🖼 Разбор фото и иероглифов","🎙 Практика с voice-вопросами","🧩 Quiz, тесты и разбор ошибок","📈 Прогресс сохраняется в боте","⚡ Ежедневная практика быстрее","✅ На время подписки меньше ограничений"],
+    focus:{
+      qa:{ico:"🤖",t:"AI-вопросы без лимита",d:"Дневной лимит не заканчивается — задавайте вопросы и получайте быстрые ответы."},
+      photo:{ico:"🖼",t:"Разбор фото и иероглифов",d:"Отправляйте фото — AI без ограничений разбирает иероглифы и текст."},
+      voice:{ico:"🎙",t:"Голосовой диалог и произношение",d:"Voice-вопросы и roleplay открываются без ограничений."},
+      test:{ico:"🧩",t:"HSK-тесты без лимита",d:"Все тесты любого уровня полностью, без ограничений."},
+      mistakes:{ico:"🔁",t:"Полное повторение ошибок",d:"Все ваши ошибки разбираются и отрабатываются заново."},
+      memorize:{ico:"📚",t:"Заучивание слов без лимита",d:"Все упражнения на заучивание слов открываются без ограничений."},
+      pronunciation:{ico:"🗣",t:"Практика произношения",d:"Проверяйте произношение каждого слова без ограничений."},
+      recognition:{ico:"👁",t:"Распознавание иероглифов",d:"Упражнения на распознавание иероглифов без ограничений."},
+      lesson:{ico:"📖",t:"Открываются все уроки",d:"Все уроки курса по порядку, прогресс сохраняется."}
+    },
     discountActiveText:"Применится к этой подписке автоматически.",
     discountLockTitle:"Откройте скидку 20%",
     discountInviteText:"Пригласите 3 друзей — откроется скидка 20%.",
@@ -628,7 +663,19 @@ const I18N={
       ["Таҳлили хато","Хатоҳои quiz ва ҷавобҳо шарҳ дода мешаванд."]
     ],
     tvTitle:"Обуна чӣ медиҳад",
+    tvFocusTitle:"Маҳз ҳамин кушода мешавад",
     perks:["📚 Дарсҳои HSK қадам ба қадам","🤖 Саволу ҷавоби AI васеъ мешавад","🖼 Таҳлили расм ва иероглиф","🎙 Practice бо саволҳои voice","🧩 Quiz, тест ва таҳлили хато","📈 Progress дар bot нигоҳ дошта мешавад","⚡ Машқи ҳаррӯза тезтар меравад","✅ Дар вақти обуна маҳдудият кам мешавад"],
+    focus:{
+      qa:{ico:"🤖",t:"Саволу ҷавоби AI бе маҳдудият",d:"Лимити рӯзона тамом намешавад — савол диҳед ва ҷавоби зуд гиред."},
+      photo:{ico:"🖼",t:"Таҳлили расм ва иероглиф",d:"Расм фиристед — AI иероглиф ва матнро бе маҳдудият таҳлил мекунад."},
+      voice:{ico:"🎙",t:"Сӯҳбати овозӣ ва талаффуз",d:"Саволҳои voice ва roleplay бе маҳдудият кушода мешаванд."},
+      test:{ico:"🧩",t:"Тестҳои HSK бе маҳдудият",d:"Ҳамаи тестҳои ҳар сатҳ пурра, бе маҳдудият."},
+      mistakes:{ico:"🔁",t:"Такрори пурраи хатоҳо",d:"Ҳамаи хатоҳои шумо таҳлил ва аз нав машқ мешаванд."},
+      memorize:{ico:"📚",t:"Ёд гирифтани калимаҳо бе маҳдудият",d:"Ҳамаи машқҳои ёдгирии калима бе маҳдудият кушода мешаванд."},
+      pronunciation:{ico:"🗣",t:"Машқи талаффуз",d:"Талаффузи ҳар калимаро бе маҳдудият тафтиш кунед."},
+      recognition:{ico:"👁",t:"Шинохти иероглиф",d:"Машқҳои шинохти иероглиф бе маҳдудият кушода мешаванд."},
+      lesson:{ico:"📖",t:"Ҳамаи дарсҳо кушода мешаванд",d:"Ҳамаи дарсҳои курс пайдарпай, прогресс нигоҳ дошта мешавад."}
+    },
     discountActiveText:"Ба ин обуна худкор татбиқ мешавад.",
     discountLockTitle:"Тахфифи 20%-ро кушоед",
     discountInviteText:"3 дӯстро даъват кунед — тахфифи 20% кушода мешавад.",
@@ -821,6 +868,27 @@ function currentScreen(){return flow()[state.step]||"start"}
 function isLockedLessonSource(){
   const source=state.source.toLowerCase();
   return ["course_locked","locked_lesson","v3_locked_lesson"].some(alias=>source===alias||source.includes(alias));
+}
+function focusKey(){
+  const s=state.source.toLowerCase();
+  const exact={
+    daily_limit:"qa",qa_limit:"qa",qa_daily_limit:"qa",
+    photo_limit:"photo",
+    course_voice:"voice",voice_required:"voice",voice_transcribe:"voice",voice_translator:"voice",
+    v3_test_limit:"test",
+    v3_mistake_review:"mistakes",
+    v3_memorize_limit:"memorize",
+    v3_pronunciation_limit:"pronunciation",
+    v3_recognition_limit:"recognition"
+  };
+  if(exact[s])return exact[s];
+  if(isLockedLessonSource())return "lesson";
+  if(["course_expired","subscription_expired","trial_soft_paywall","v3_paywall"].some(a=>s===a||s.includes(a)))return "lesson";
+  return "";
+}
+function focusContent(text){
+  const key=focusKey();
+  return key&&text.focus?text.focus[key]||null:null;
 }
 function trackSubscriptionStage(stage){
   if(state.preview||!INIT_DATA)return Promise.resolve();
@@ -1074,11 +1142,30 @@ function nextCtaText(text,screen){
   return text.payWithTjCard||text.continueToPayment||text.next;
 }
 function renderStart(text){
-  $("#tvTitle").textContent=modeText(text,"modeTv");
-  const perks=text.perks||[];
-  $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
+  const focus=focusContent(text);
+  const tv=$("#tvFocus")?.closest(".tv");
+  if(focus){
+    if(tv)tv.classList.add("focus");
+    $("#tvTitle").textContent=text.tvFocusTitle||modeText(text,"modeTv");
+    $("#tvFocusIco").textContent=focus.ico||"✨";
+    $("#tvFocusTitle").textContent=focus.t||"";
+    $("#tvFocusText").textContent=focus.d||"";
+    $("#tvTrack").innerHTML="";
+  }else{
+    if(tv)tv.classList.remove("focus");
+    $("#tvTitle").textContent=modeText(text,"modeTv");
+    const perks=text.perks||[];
+    $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
+  }
   $("#plansTitle").textContent=modeText(text,"modePlans");
-  $("#valueText").textContent=(isLockedLessonSource()?text.lockedValueText:text.valueText)||text.valueText||"";
+  const valueEl=$("#valueText");
+  if(focus){
+    valueEl.textContent="";
+    valueEl.style.display="none";
+  }else{
+    valueEl.textContent=(isLockedLessonSource()?text.lockedValueText:text.valueText)||text.valueText||"";
+    valueEl.style.display="";
+  }
   renderDiscount(text);
   renderInviteSheet(text);
   const plans=availablePlans(state.method);
