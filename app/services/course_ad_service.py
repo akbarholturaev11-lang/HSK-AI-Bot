@@ -2,7 +2,7 @@ import contextlib
 import hashlib
 import os
 
-from sqlalchemy import distinct, select
+from sqlalchemy import distinct, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.course_ad import CourseAdCreative, CourseAdView
@@ -27,9 +27,15 @@ COURSE_AD_MEDIA_ROOT = os.path.join(MEDIA_ROOT_BASE, "course_ads")
 COURSE_AD_LANGUAGES = ("uz", "ru", "tj")
 COURSE_AD_ALL_LANGUAGES = "all"
 # Reklama turlari: odiy (oddiy), hamkorlik (reklama qabul qilish/hamkorlik),
-# bot (o'z botlarini reklama qilish). Odiy — hozirgi xatti-harakat.
-COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot")
+# bot (o'z botlarini reklama qilish), dars_yakuni (dars tugagach bepul userga
+# ko'rsatiladigan blok — ostida obuna knopkasi). Odiy — hozirgi xatti-harakat.
+COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot", "dars_yakuni")
 COURSE_AD_DEFAULT_TYPE = "odiy"
+# Dars yakuni reklamasi ALOHIDA slotda ishlaydi va boshqa reklamalarga
+# ARALASHMAYDI: mashq bo'limlarida u chiqmaydi, dars oxirida esa faqat u chiqadi.
+COURSE_AD_LESSON_END_TYPE = "dars_yakuni"
+COURSE_AD_SLOTS = ("practice", "lesson_end")
+COURSE_AD_DEFAULT_SLOT = "practice"
 
 
 class CourseAdService:
@@ -80,6 +86,12 @@ class CourseAdService:
     def normalize_ad_type(value) -> str:
         ad_type = str(value or "").strip().lower()
         return ad_type if ad_type in COURSE_AD_TYPES else COURSE_AD_DEFAULT_TYPE
+
+    @staticmethod
+    def normalize_slot(value) -> str:
+        """Reklama sloti: "lesson_end" (dars yakuni) yoki "practice" (qolgan hammasi)."""
+        slot = str(value or "").strip().lower()
+        return slot if slot in COURSE_AD_SLOTS else COURSE_AD_DEFAULT_SLOT
 
     @staticmethod
     def normalize_button_text(value) -> str | None:
@@ -269,6 +281,21 @@ class CourseAdService:
         return media_path
 
     @classmethod
+    def _slot_filter(cls, slot: str | None):
+        """Slot bo'yicha tur filtri — dars yakuni reklamasi boshqalariga aralashmasin.
+
+        `lesson_end` — FAQAT `dars_yakuni` turidagi reklamalar.
+        `practice` (default) — dars yakuni reklamasidan TASHQARI hammasi
+        (eski yozuvlarda `ad_type` NULL bo'lishi mumkin — ular ham kiradi).
+        """
+        if cls.normalize_slot(slot) == "lesson_end":
+            return CourseAdCreative.ad_type == COURSE_AD_LESSON_END_TYPE
+        return or_(
+            CourseAdCreative.ad_type.is_(None),
+            CourseAdCreative.ad_type != COURSE_AD_LESSON_END_TYPE,
+        )
+
+    @classmethod
     def _language_filter(cls, language: str | None):
         """Foydalanuvchi tili uchun mos reklamalarni filterlash sharti.
         Til berilsa: shu tildagi YOKI "all" (barcha tillar) reklamalar.
@@ -278,11 +305,14 @@ class CourseAdService:
         target = cls.normalize_language(language)
         return CourseAdCreative.language.in_((target, COURSE_AD_ALL_LANGUAGES))
 
-    async def get_active_ad(self, language: str | None = None) -> CourseAdCreative | None:
+    async def get_active_ad(
+        self, language: str | None = None, slot: str | None = None
+    ) -> CourseAdCreative | None:
         stmt = select(CourseAdCreative).where(CourseAdCreative.is_active.is_(True))
         lang_filter = self._language_filter(language)
         if lang_filter is not None:
             stmt = stmt.where(lang_filter)
+        stmt = stmt.where(self._slot_filter(slot))
         stmt = stmt.order_by(
             CourseAdCreative.created_at.desc(), CourseAdCreative.id.desc()
         )
@@ -294,17 +324,23 @@ class CourseAdService:
                 return ad
         return None
 
-    async def get_active_payload(self, language: str | None = None) -> dict | None:
-        ad = await self.get_active_ad(language=language)
+    async def get_active_payload(
+        self, language: str | None = None, slot: str | None = None
+    ) -> dict | None:
+        ad = await self.get_active_ad(language=language, slot=slot)
         return self.payload(ad) if ad else None
 
-    async def list_active(self, language: str | None = None) -> list[CourseAdCreative]:
+    async def list_active(
+        self, language: str | None = None, slot: str | None = None
+    ) -> list[CourseAdCreative]:
         """Aktiv reklamalar — ketma-ket ko'rsatish uchun (eskisidan yangisiga).
-        `language` berilsa, faqat shu til + "all" reklamalari qaytadi."""
+        `language` berilsa, faqat shu til + "all" reklamalari qaytadi.
+        `slot` — "lesson_end" faqat dars yakuni reklamalari, aks holda ularsiz."""
         stmt = select(CourseAdCreative).where(CourseAdCreative.is_active.is_(True))
         lang_filter = self._language_filter(language)
         if lang_filter is not None:
             stmt = stmt.where(lang_filter)
+        stmt = stmt.where(self._slot_filter(slot))
         stmt = stmt.order_by(CourseAdCreative.created_at.asc(), CourseAdCreative.id.asc())
         result = await self.session.execute(stmt)
         # Media fayli yo'q (ephemeral diskda o'chib ketgan) reklamalarni tashlab yuboramiz —
@@ -316,8 +352,13 @@ class CourseAdService:
                 ads.append(ad)
         return ads
 
-    async def list_active_payloads(self, language: str | None = None) -> list[dict]:
-        return [self.payload(ad) for ad in await self.list_active(language=language)]
+    async def list_active_payloads(
+        self, language: str | None = None, slot: str | None = None
+    ) -> list[dict]:
+        return [
+            self.payload(ad)
+            for ad in await self.list_active(language=language, slot=slot)
+        ]
 
     async def record_view(
         self,

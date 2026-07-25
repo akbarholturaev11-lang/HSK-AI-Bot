@@ -453,6 +453,38 @@ button{cursor:pointer}
 @keyframes luspin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 .lu-panda{width:92px;height:92px;position:absolute;top:56px;right:40px;z-index:2}
 .lu-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;position:relative;z-index:2}
+/* Parvoz sahnasi: yer, daraxtlar, bulutlar, osmon va shamol */
+.lu-sky{position:absolute;inset:0;overflow:hidden;z-index:4;display:none;opacity:0;pointer-events:none;transition:opacity .4s}
+.levelup.cine .lu-sky{display:block}
+.sky-world{position:absolute;left:0;right:0;top:0;height:300%;will-change:transform;
+  background:linear-gradient(180deg,#08122A 0%,#123A63 16%,#2E7BB5 40%,#74B9E0 64%,#B7DFF4 82%,#E9F5FC 91%,#F3FAFE 100%)}
+.sky-cloud{position:absolute;filter:drop-shadow(0 4px 6px rgba(30,70,110,.14))}
+.sky-cloud svg{width:100%;height:auto;display:block}
+.sky-ground{position:absolute;left:-4%;right:-4%;bottom:0;height:10%;
+  background:linear-gradient(180deg,#6FBF8D 0%,#4C9C6C 34%,#3B7F57 100%);border-radius:46% 54% 0 0/9% 9% 0 0}
+.sky-tree{position:absolute;bottom:100%;margin-bottom:-6px}
+.sky-tree svg{width:100%;height:auto;display:block;filter:drop-shadow(0 3px 3px rgba(30,60,40,.22))}
+.sky-shadow{position:absolute;left:50%;bottom:100%;width:96px;height:22px;margin:0 0 -12px -48px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(24,52,36,.5),rgba(24,52,36,0))}
+.sky-wind{position:absolute;inset:0;opacity:0}
+.sky-wind i{position:absolute;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.9),rgba(255,255,255,0));animation:windFall 1s linear infinite}
+@keyframes windFall{from{transform:translateY(-45vh)}to{transform:translateY(125vh)}}
+/* Kinematik kirish: yaqin kadrda faqat panda — boshqa hech narsa ko'rinmaydi */
+.lu-cine{position:absolute;left:50%;top:50%;width:300px;height:300px;margin:-150px 0 0 -150px;z-index:6;display:none}
+/* Parvozda panda ufq chizig'ida — yerda turgandek */
+.levelup.cine.flying .lu-cine{top:auto;bottom:30%;margin:0 0 -46px -150px}
+.lu-cine .cine-pd{position:relative;width:100%;height:100%;will-change:transform}
+.levelup.cine .lu-cine{display:block}
+.levelup.cine .lu-stage,.levelup.cine .lu-cta,.levelup.cine .lu-rays,.levelup.cine .lu-panda{opacity:0;pointer-events:none}
+.levelup .lu-stage,.levelup .lu-cta,.levelup .lu-rays,.levelup .lu-panda{transition:opacity .4s}
+/* Chang o'tirgach — sahna qismlari navbat bilan ochiladi */
+.lu-stage.rev>*{animation:luReveal .5s both}
+.lu-stage.rev>*:nth-child(2){animation-delay:.09s}
+.lu-stage.rev>*:nth-child(3){animation-delay:.17s}
+.lu-stage.rev>*:nth-child(4){animation-delay:.25s}
+.lu-stage.rev>*:nth-child(5){animation-delay:.32s}
+@keyframes luReveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .lu-emb{width:138px;height:138px;border-radius:34px;background:var(--cin);border:3px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:6px;transform:scale(0);transition:transform .5s cubic-bezier(.2,1.5,.4,1)}
 .lu-emb.in{transform:scale(1)}
 .lu-emb small{font-size:13px;color:rgba(255,255,255,.8)}.lu-emb b{font-size:50px;font-weight:600;line-height:1}.lu-emb .h2{font-size:58px}
@@ -525,7 +557,7 @@ button{cursor:pointer}
 @keyframes skStamp{0%{transform:scale(2.1) rotate(-12deg);opacity:0}58%{transform:scale(.88) rotate(3deg)}100%{transform:scale(1);opacity:1}}
 /* panda "supermen" parvozi: chang zarralari + qo'nish silkinishi */
 .sk-dust{position:absolute;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#D8CBB6,#A08F76);opacity:0;pointer-events:none;filter:blur(1px);z-index:3}
-.lu-stage.quake{animation:luQuake .42s cubic-bezier(.3,.1,.3,1)}
+.quake{animation:luQuake .42s cubic-bezier(.3,.1,.3,1)}
 @keyframes luQuake{0%{transform:translateY(0)}22%{transform:translateY(6px)}50%{transform:translateY(-3px)}76%{transform:translateY(2px)}100%{transform:translateY(0)}}
 .sk-weekgoal{width:min(310px,100%);margin:17px auto 0;padding:12px 14px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);text-align:left}
 .sk-weekhead{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.72)}
@@ -560,7 +592,7 @@ button{cursor:pointer}
 /* yo'lakcha bezaklari: daraxt, pagoda, buta, tosh, o't (dekorativ) */
 .decor{position:absolute;top:50%;margin-top:-26px;width:60px;height:60px;pointer-events:none;z-index:0;opacity:.95;filter:drop-shadow(0 3px 2px rgba(60,44,20,.14))}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
-@media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.lu-stage.quake{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
 </style>
 </head>
 <body>
@@ -619,7 +651,7 @@ button{cursor:pointer}
 
   <div class="writeov" id="writeov"><button class="writeov-x" onclick="App.closeWriter()" aria-label="Yopish"><i class="ti ti-chevron-down"></i></button><div class="writeov-loading" id="write-loading"><span class="wspin"></span><b id="write-loading-text">Yuklanmoqda...</b></div><iframe id="writeframe" title="Ieroglif yozilishi"></iframe></div>
 
-  <div class="levelup" id="levelup"><svg class="lu-rays" id="lu-rays" viewBox="0 0 200 200"></svg><div class="lu-panda" id="lu-panda"></div><div class="lu-stage" id="lu-stage"></div><button class="lu-cta" id="lu-cta" onclick="App.closeLevelUp()"></button></div>
+  <div class="levelup" id="levelup"><svg class="lu-rays" id="lu-rays" viewBox="0 0 200 200"></svg><div class="lu-panda" id="lu-panda"></div><div class="lu-sky" id="lu-sky" aria-hidden="true"></div><div class="lu-cine" id="lu-cine" aria-hidden="true"></div><div class="lu-stage" id="lu-stage"></div><button class="lu-cta" id="lu-cta" onclick="App.closeLevelUp()"></button></div>
 
   <div class="tour" id="tour"><div class="tour-spot" id="tour-spot"></div><button class="tour-skip" id="tour-skip" onclick="App.tourEnd()"></button><div class="tour-coach" id="tour-coach"></div></div>
   <div class="upov" id="upov"></div>
@@ -629,6 +661,8 @@ button{cursor:pointer}
 </div>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
+<script src="/course_v3_data/ads.js?v=20260725"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -828,15 +862,18 @@ var App={
       level:{emb:'<span class="h2 han">二</span>',h:levelCopy.h||lu.levelH,p:levelCopy.p||lu.levelP,rw:levelRows},
       xp:{emb:'<small>'+lu.lvl+'</small><b>5</b>',h:lu.xpH,p:lu.xpP,rw:xpRows}}[type||"lesson"];
     if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#FFC800" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
-    $("#lu-panda").innerHTML=pandaChar("celebrate");
     var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw"><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join("")+'</div>':"";
-    $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
     var t0=type||"lesson";
-    $("#lu-cta").setAttribute("onclick",(t0==="lesson"||t0==="checkpoint"||window._pendingStreak)?"App.showStreakScreen()":"App.closeLevelUp()");
-    $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+lu.cont;
-    $("#levelup").classList.add("on");setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
-    pandaFx($("#lu-panda"),"land");
-    luRain();beep([523,659,784,1046]);haptic("ok");
+    /* Avval yaqin kadrda panda osmondan changli qo'nadi — sahna keyin ochiladi */
+    cinePanda("land","celebrate",function(){
+      $("#lu-panda").innerHTML=pandaChar("celebrate");
+      $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
+      $("#lu-cta").setAttribute("onclick",(t0==="lesson"||t0==="checkpoint"||window._pendingStreak)?"App.showStreakScreen()":"App.closeLevelUp()");
+      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+lu.cont;
+      $("#levelup").classList.add("on");
+      setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
+      luRain();beep([523,659,784,1046]);haptic("ok");
+    });
   },
   /* Duolingo uslubidagi alanga ekrani — dars tugagach */
   showStreakScreen:function(){
@@ -848,20 +885,19 @@ var App={
       tj:{one:"рӯз пайдарпай!",few:"рӯз пайдарпай!",many:"рӯз пайдарпай!",cont:"Идома"}}[LANG];
     var lbl=LANG==="ru"?(n%10===1&&n%100!==11?W.one:(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?W.few:W.many)):W.one;
     var desc=streakCopy(n,!!ps.reset);
-    $("#lu-panda").innerHTML="";
-    $("#lu-stage").innerHTML='<div class="sk-flame '+(ps.extended?"lit":"dim")+'">'+flameSvg()
-      +'<div class="sk-panda">'+pandaChar("celebrate")+'</div></div>'
-      +'<div class="sk-num">'+n+'</div><h2>'+lbl+'</h2><p>'+desc+'</p>'
-      +'<div class="sk-days">'+skDaysHtml(n,true,ps)+'</div>'+skWeekGoalHtml(ps);
-    $("#lu-cta").setAttribute("onclick","App.showRankUp()");
-    $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+W.cont;
-    $("#levelup").classList.add("on");
-    if(ps.extended){setTimeout(function(){beep([392,523,659,784]);haptic("heavy")},350)}
-    /* Haftalik natija ko'ringach — panda "supermen" parvozi + changli qo'nish */
-    setTimeout(function(){
-      if(!$("#levelup").classList.contains("on"))return;
-      pandaFx(document.querySelector("#lu-stage .sk-panda"),"fly");
-    },1100);
+    /* Yaqin kadr: faqat panda supermen kabi osmonga uchadi va changda qo'nadi;
+       alanga, kunlar va haftalik natija shundan keyin ochiladi. */
+    cinePanda("fly","celebrate",function(){
+      $("#lu-panda").innerHTML="";
+      $("#lu-stage").innerHTML='<div class="sk-flame '+(ps.extended?"lit":"dim")+'">'+flameSvg()
+        +'<div class="sk-panda">'+pandaChar("celebrate")+'</div></div>'
+        +'<div class="sk-num">'+n+'</div><h2>'+lbl+'</h2><p>'+desc+'</p>'
+        +'<div class="sk-days">'+skDaysHtml(n,true,ps)+'</div>'+skWeekGoalHtml(ps);
+      $("#lu-cta").setAttribute("onclick","App.showRankUp()");
+      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+W.cont;
+      $("#levelup").classList.add("on");
+      if(ps.extended){setTimeout(function(){beep([392,523,659,784]);haptic("heavy")},350)}
+    });
   },
   showRankUp:function(){
     var beforeRank=pendingRankUp&&pendingRankUp.before;pendingRankUp=null;
@@ -899,20 +935,30 @@ var App={
 	    if(meU)rows.push({rk:meIdx+1,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
 	    if(belowU)rows.push({rk:meIdx+2,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
 	    if(!rows.length)rows=[{rk:1,a:PROF.avatar||"阿",n:T().you,xp:currentUserWeeklyXp().toLocaleString("ru"),me:1,from:0}];
-    $("#lu-panda").innerHTML=pandaChar("celebrate");
-    $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+r.title+'</h2><p>'+r.sub+'</p><div class="ru-board">'+rows.map(function(u){return '<div class="ru-row '+(u.me?"me":"")+'" data-from="'+(u.from||0)+'"><span class="ru-rk">'+u.rk+'</span><span class="ru-av'+(u.me?" han":"")+'">'+u.a+'</span><span class="ru-nm">'+esc(u.n)+'</span><span class="ru-xp">'+u.xp+'</span></div>'}).join("")+'</div></div>';
-    $("#levelup").classList.add("on");
-    pandaFx($("#lu-panda"),"zoom");
-    document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){var f=+row.dataset.from;if(f)row.style.transform="translateY("+(f*58)+"px)"});
-    setTimeout(function(){document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){row.style.transform="translateY(0)"});luRain();beep([784,988,1175,1318]);haptic("ok")},420);
-    $("#lu-cta").setAttribute("onclick","App.closeLevelUp('rating')");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
+    /* Yaqin kadr: panda uzoqdan otilib chiqadi — taxta shundan keyin ochiladi */
+    cinePanda("zoom","celebrate",function(){
+      $("#lu-panda").innerHTML=pandaChar("celebrate");
+      $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+r.title+'</h2><p>'+r.sub+'</p><div class="ru-board">'+rows.map(function(u){return '<div class="ru-row '+(u.me?"me":"")+'" data-from="'+(u.from||0)+'"><span class="ru-rk">'+u.rk+'</span><span class="ru-av'+(u.me?" han":"")+'">'+u.a+'</span><span class="ru-nm">'+esc(u.n)+'</span><span class="ru-xp">'+u.xp+'</span></div>'}).join("")+'</div></div>';
+      $("#levelup").classList.add("on");
+      document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){var f=+row.dataset.from;if(f)row.style.transform="translateY("+(f*58)+"px)"});
+      setTimeout(function(){document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){row.style.transform="translateY(0)"});luRain();beep([784,988,1175,1318]);haptic("ok")},420);
+      $("#lu-cta").setAttribute("onclick","App.closeLevelUp('rating')");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
+    });
   },
   /* Reytingda haqiqatan ko'tarilgan bo'lsa — reyting ekraniga, aks holda
      o'quvchi kurs xaritasiga qaytadi (bo'sh reyting oynasi ochilmaydi). */
   closeLevelUp:function(dest){
-    $("#levelup").classList.remove("on");App.exitFlow();
-    if(dest==="rating"){App.show("rating");renderRating();return}
-    App.show("course");renderAll();
+    var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");
+    var cine=$("#lu-cine");if(cine)cine.innerHTML="";
+    App.exitFlow();
+    var go=function(){
+      if(dest==="rating"){App.show("rating");renderRating();return}
+      App.show("course");renderAll();
+    };
+    /* Bepul userga dars yakuni reklamasi — bayram/streak/reyting ekranlaridan
+       KEYIN, xaritaga qaytishdan oldin. Reklama yo'q yoki yuklanmasa jim o'tadi. */
+    if(playLessonEndAd(go))return;
+    go();
   },
   /* Sovg'a sandig'i: yo'ldagi chest bosilganda */
   openChest:function(){
@@ -942,20 +988,22 @@ var App={
   },
   renderChestOverlay:function(val){
     var ct=chestT();
-    $("#lu-panda").innerHTML=pandaChar("celebrate");
-    $("#lu-stage").innerHTML='<div class="chest-fig shake" id="chestfig"><div class="chest-burst"></div>'+chestSvg()+'</div>'
-      +'<div class="chest-xp" id="chestxp">+'+val+' XP</div><h2>'+esc(ct.got)+'</h2>';
-    $("#lu-cta").setAttribute("onclick","App.closeChest()");
-    $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+ct.cont;
-    $("#levelup").classList.add("on");
-    pandaFx($("#lu-panda"),"roll");
-    setTimeout(function(){
-      var f=$("#chestfig");if(f){f.classList.remove("shake");f.classList.add("open")}
-      var x=$("#chestxp");if(x)x.classList.add("in");
-      luRain();beep([659,784,1046,1318]);haptic("heavy");
-    },900);
+    /* Yaqin kadr: panda dumalab kirib keladi — sandiq keyin ko'rinadi */
+    cinePanda("roll","celebrate",function(){
+      $("#lu-panda").innerHTML=pandaChar("celebrate");
+      $("#lu-stage").innerHTML='<div class="chest-fig shake" id="chestfig"><div class="chest-burst"></div>'+chestSvg()+'</div>'
+        +'<div class="chest-xp" id="chestxp">+'+val+' XP</div><h2>'+esc(ct.got)+'</h2>';
+      $("#lu-cta").setAttribute("onclick","App.closeChest()");
+      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+ct.cont;
+      $("#levelup").classList.add("on");
+      setTimeout(function(){
+        var f=$("#chestfig");if(f){f.classList.remove("shake");f.classList.add("open")}
+        var x=$("#chestxp");if(x)x.classList.add("in");
+        luRain();beep([659,784,1046,1318]);haptic("heavy");
+      },900);
+    });
   },
-  closeChest:function(){$("#levelup").classList.remove("on");renderAll()},
+  closeChest:function(){var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");var c=$("#lu-cine");if(c)c.innerHTML="";renderAll()},
   runTour:function(){var t={
     ru:{
       c:"Вот ваш курс! Каждый кружок — это урок. Нажми на узел и начни учиться.",
@@ -2509,6 +2557,9 @@ function applyLessonDone(cur,d){
   var al=allLessons();
   cur.status="done";cur.stars=3;cur.locked_premium=false;
   window._pendingStreak=null;window._pendingXpFly=0;
+  /* Dars yakuni reklamasi — bayram ekranlari tugagach (closeLevelUp) chiqadi.
+     Faqat bepul foydalanuvchiga; obunachi hech qachon ko'rmaydi. */
+  window._pendingLessonEndAd=(!isPaidUser()&&INIT_DATA)?(Number(cur.n)||0):0;
   if(d&&d.gamification&&MAP.progress){
     var g=d.gamification;
     var prevStreak=Number(MAP.progress.streak||0),newStreak=Number(g.streak||0);
@@ -2614,26 +2665,85 @@ function pandaDust(el,n,spread){
     setTimeout(function(){s.remove()},980);
   })(i)}
 }
-/* Qo'nish zarbi — sahna qisqa silkinadi */
+/* Qo'nish zarbi — kinematik kirishda kadr, aks holda sahna silkinadi */
 function stageQuake(){
-  var st=document.querySelector("#lu-stage");if(!st)return;
+  var ov=document.getElementById("levelup");
+  var st=(ov&&ov.classList.contains("cine"))?document.getElementById("lu-cine"):document.querySelector("#lu-stage");
+  if(!st)return;
   st.classList.remove("quake");void st.offsetWidth;st.classList.add("quake");
 }
+function cloudSvg(){
+  return '<svg viewBox="0 0 130 62"><g fill="#fff"><ellipse cx="40" cy="38" rx="27" ry="18"/>'
+    +'<ellipse cx="68" cy="28" rx="24" ry="21"/><ellipse cx="94" cy="39" rx="21" ry="16"/>'
+    +'<rect x="32" y="38" width="70" height="17" rx="8.5"/></g>'
+    +'<ellipse cx="66" cy="55" rx="40" ry="5" fill="#DCEDF8"/></svg>';
+}
+function windHtml(){
+  var s="";
+  for(var i=0;i<15;i++){
+    var l=(3+Math.random()*94).toFixed(1),h=Math.round(38+Math.random()*95);
+    s+='<i style="left:'+l+'%;height:'+h+'px;animation-delay:'+(Math.random()*1.1).toFixed(2)+'s;animation-duration:'+(.72+Math.random()*.55).toFixed(2)+'s"></i>';
+  }
+  return s;
+}
+/* Parvoz sahnasi: uch barobar baland "dunyo" (yer + daraxtlar + bulutlar +
+   osmon). Panda o'rnida qoladi, dunyo pastga siljiydi — kamera ko'tarilgandek. */
+function skyScene(){
+  var root=document.getElementById("lu-sky");
+  if(!root)return null;
+  if(!root.getAttribute("data-built")){
+    var C=[[6,14,.95,78],[62,21,.8,58],[16,30,.9,96],[68,38,.75,66],[8,47,.7,74],[56,55,.6,54],[30,62,.5,46]],clouds="";
+    C.forEach(function(c){clouds+='<div class="sky-cloud" style="left:'+c[0]+'%;top:'+c[1]+'%;width:'+c[3]+'px;opacity:'+c[2]+'">'+cloudSvg()+'</div>'});
+    var G=[[3,78,0],[17,54,3],[76,92,4],[64,62,1],[90,58,0],[28,40,5],[57,44,5]],trees="";
+    G.forEach(function(g){trees+='<div class="sky-tree" style="left:'+g[0]+'%;width:'+g[1]+'px">'+scenerySvg(g[2])+'</div>'});
+    root.innerHTML='<div class="sky-world" id="sky-world">'+clouds
+      +'<div class="sky-ground">'+trees+'<div class="sky-shadow" id="sky-shadow"></div></div></div>'
+      +'<div class="sky-wind" id="sky-wind">'+windHtml()+'</div>';
+    root.setAttribute("data-built","1");
+  }
+  root.style.opacity="1";
+  return {root:root,world:document.getElementById("sky-world"),wind:document.getElementById("sky-wind"),shadow:document.getElementById("sky-shadow")};
+}
 var PANDA_FX={
-  /* Supermen: yerdan otilib osmonga chiqadi, tepada muallaq turadi, keyin
-     tez pastga tushib changda qo'nadi. */
+  /* Supermen: yerdan otilib osmonga chiqadi, bulutlar orasidan o'tadi,
+     tepada muallaq turadi, keyin tushib changda qo'nadi. Panda deyarli
+     o'rnida qoladi — atrof (yer, daraxt, bulut) harakatlanadi. */
   fly:function(el){
-    var D=1950;el.style.zIndex="4";
+    var D=2600,sky=skyScene(),ov=document.getElementById("levelup");
+    el.style.zIndex="6";
+    if(ov)ov.classList.add("flying");
+    setTimeout(function(){if(ov)ov.classList.remove("flying")},D+200);
     el.animate([
-      {transform:"translateY(0) rotate(0deg) scale(1)",easing:"cubic-bezier(.5,0,.8,.4)"},
-      {transform:"translateY(8px) scaleY(.78) scaleX(1.16)",offset:.13,easing:"cubic-bezier(.15,.9,.3,1)"},
-      {transform:"translateY(-330px) scale(.9) rotate(-8deg)",offset:.36,easing:"ease-in-out"},
-      {transform:"translateY(-352px) scale(.87) rotate(6deg)",offset:.52,easing:"ease-in-out"},
-      {transform:"translateY(-340px) scale(.89) rotate(2deg)",offset:.62,easing:"cubic-bezier(.55,0,.85,.45)"},
-      {transform:"translateY(7px) scaleY(.7) scaleX(1.24)",offset:.87,easing:"cubic-bezier(.2,1.4,.4,1)"},
-      {transform:"translateY(0) rotate(0deg) scale(1)"}
+      {transform:"translateY(0) scale(1)",easing:"cubic-bezier(.4,0,.9,.5)"},
+      {transform:"translateY(16px) scaleY(.72) scaleX(1.22)",offset:.09,easing:"cubic-bezier(.1,.95,.3,1)"},
+      {transform:"translateY(-86px) scale(.95) rotate(-7deg)",offset:.28,easing:"ease-out"},
+      {transform:"translateY(-104px) scale(.93) rotate(5deg)",offset:.46,easing:"ease-in-out"},
+      {transform:"translateY(-96px) scale(.94) rotate(-3deg)",offset:.6,easing:"cubic-bezier(.45,0,.9,.5)"},
+      {transform:"translateY(14px) scaleY(.68) scaleX(1.28)",offset:.9,easing:"cubic-bezier(.2,1.4,.4,1)"},
+      {transform:"translateY(0) scale(1)"}
     ],{duration:D});
-    setTimeout(function(){pandaDust(el);stageQuake();haptic("heavy");beep([110,82])},Math.round(D*.85));
+    if(sky){
+      /* Dunyo pastga siljiydi = kamera osmonga ko'tariladi.
+         Foizlar dunyoning O'Z balandligiga nisbatan: -66.7% = yer ko'rinadi,
+         -14% = baland osmon (bulutlar orasida). */
+      sky.world.animate([
+        {transform:"translateY(-66.7%)",easing:"cubic-bezier(.35,0,.6,.35)"},
+        {transform:"translateY(-66%)",offset:.09},
+        {transform:"translateY(-15.5%)",offset:.44,easing:"ease-in-out"},
+        {transform:"translateY(-13.5%)",offset:.58,easing:"cubic-bezier(.4,0,.75,.45)"},
+        {transform:"translateY(-66.7%)",offset:.9},
+        {transform:"translateY(-66.7%)"}
+      ],{duration:D});
+      /* Shamol ko'tarilish va tushishda kuchayadi, tepada tinchiydi */
+      sky.wind.animate([{opacity:0},{opacity:.9,offset:.24},{opacity:.12,offset:.5},
+        {opacity:.95,offset:.8},{opacity:0,offset:.92},{opacity:0}],{duration:D});
+      /* Yerdagi soya: panda uzoqlashgani sari kichrayadi */
+      if(sky.shadow)sky.shadow.animate([{transform:"scale(1)",opacity:.55},
+        {transform:"scale(.3)",opacity:.15,offset:.45},{transform:"scale(.35)",opacity:.18,offset:.6},
+        {transform:"scale(1)",opacity:.55,offset:.9},{transform:"scale(1)",opacity:.55}],{duration:D});
+      setTimeout(function(){sky.root.style.opacity="0"},D-260);
+    }
+    setTimeout(function(){pandaDust(el,14,52);stageQuake();haptic("heavy");beep([110,82])},Math.round(D*.9));
   },
   /* Osmondan tushib changli qo'nish */
   land:function(el){
@@ -2676,9 +2786,35 @@ var PANDA_FX={
     ],{duration:620});
   }
 };
+/* Har effektning davomiyligi — kinematik kirish shu vaqtdan keyin ekranni ochadi */
+var PANDA_FX_DUR={fly:2600,land:980,zoom:760,roll:860,pop:620};
 function pandaFx(el,kind){
   if(!el||!el.animate||fxOff())return;
   (PANDA_FX[kind]||PANDA_FX.pop)(el);
+}
+/* Kinematik kirish: bayram oynasi ochilganda avval FAQAT panda ko'rinadi
+   (yaqin kadr, ekranning qolgan qismi hali yo'q). Effekt tugab, chang
+   o'tirgach — `build()` sahnani quradi va u navbat bilan ochiladi. */
+function cinePanda(kind,mood,build){
+  var ov=$("#levelup"),cine=$("#lu-cine"),stage=$("#lu-stage"),shown=false,tm=0;
+  function reveal(){
+    if(shown)return;shown=true;
+    clearTimeout(tm);ov.removeEventListener("click",reveal);
+    ov.classList.remove("cine");
+    if(cine)cine.innerHTML="";
+    build();
+    if(stage){stage.classList.remove("rev");void stage.offsetWidth;stage.classList.add("rev")}
+  }
+  if(!cine||!cine.animate||fxOff()){ov.classList.remove("cine");if(stage)stage.classList.remove("rev");build();return}
+  stage.innerHTML="";$("#lu-panda").innerHTML="";
+  /* Osmon sahnasi faqat parvozda ko'rinadi */
+  var sky=$("#lu-sky");if(sky&&kind!=="fly")sky.style.opacity="0";
+  cine.innerHTML='<div class="cine-pd">'+pandaChar(mood||"celebrate")+'</div>';
+  ov.classList.add("cine");ov.classList.add("on");
+  requestAnimationFrame(function(){pandaFx(cine.querySelector(".cine-pd"),kind)});
+  /* Kutmoqchi bo'lmaganlar uchun: ekranga tegish effektni o'tkazib yuboradi */
+  ov.addEventListener("click",reveal);
+  tm=setTimeout(reveal,(PANDA_FX_DUR[kind]||900)+300);
 }
 function pandaChar(mood,opts){
   /* Do'mboq, ifodali panda (Duolingo maskot uslubi). API o'zgarmagan:

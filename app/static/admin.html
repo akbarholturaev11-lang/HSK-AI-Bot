@@ -387,14 +387,14 @@
           <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
         </div>
         <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">🎬 Kurs reklama videolari</div><div class="sec-note">Bepul foydalanuvchi uchun ad-supported dars</div></div></div>
+          <div class="sec-head"><div><div class="sec-title">🎬 Kurs reklama videolari</div><div class="sec-note">Bepul foydalanuvchiga: mashq bo'limlarida + dars yakunida</div></div></div>
           <div class="mcard" style="margin-bottom:11px">
             <div class="frow two">
               <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
               <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7"></div>
             </div>
             <div class="frow two">
-              <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option></select></div>
+              <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">🎓 Dars yakuni reklamasi</option></select></div>
               <div><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64" placeholder="Oddiy reklamada shart emas" disabled></div>
             </div>
             <div class="frow two">
@@ -1229,7 +1229,7 @@
 
     /* ---------- course ads ---------- */
     const CA_LANGS={all:"Barcha tillar",uz:"O'zbekcha",ru:"Ruscha",tj:"Tojikcha"};
-    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Hamkorlik","amber"],bot:["🤖 Bot","green"]};
+    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Hamkorlik","amber"],bot:["🤖 Bot","green"],dars_yakuni:["🎓 Dars yakuni",""]};
     function caLangLabel(l){ return CA_LANGS[l]||CA_LANGS.all; }
     function caTypeMeta(t){ return CA_TYPES[t]||CA_TYPES.odiy; }
     let caItems=[], caFilter="all";
@@ -1241,9 +1241,12 @@
         : `<div class="danger-note">Video fayl serverda topilmadi. Railway Volume yoki MEDIA_ROOT sozlang va reklamani qayta yuklang.</div>`;
       const tmeta=caTypeMeta(i.ad_type||"odiy");
       const btnLine=(i.ad_type&&i.ad_type!=="odiy"&&i.button_text)?`<div class="ncnote">🔘 ${esc(i.button_text)}</div>`:"";
+      const slotLine=i.ad_type==="dars_yakuni"
+        ? `<div class="ncnote">🎓 Faqat dars tugagach chiqadi · ostida obuna knopkasi</div>`
+        : `<div class="ncnote">🎬 Mashq bo'limlarida chiqadi</div>`;
       return `<div class="ncard" data-ca="${i.id}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s majburiy ko'rish · ${esc(i.created_at||"—")}</div>
-          ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}${btnLine}</div>
+          ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}${btnLine}${slotLine}</div>
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${tag(tmeta[0],tmeta[1])}${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}${tag(mediaOk?"video bor":"video yo'q",mediaOk?"green":"red")}</div></div>
         <div class="ncmedia">${mediaHtml}</div>
         <div class="row"><button class="btn sec" data-catoggle="${i.id}" data-active="${i.is_active?"0":"1"}">${i.is_active?"Faolsizlantirish":"Faollashtirish"}</button>
@@ -1268,10 +1271,10 @@
       catch(e){ host.innerHTML="<p class='empty'>Kurs reklamalarni yuklab bo'lmadi.</p>"; }
     }
     function caTypeUI(){
-      const t=($("caType")&&$("caType").value)||"odiy", odiy=t==="odiy";
+      const t=($("caType")&&$("caType").value)||"odiy", noBtn=(t==="odiy"||t==="dars_yakuni");
       const bt=$("caBtnText"), lbl=$("caLinkLabel");
-      bt.disabled=odiy;
-      if(odiy){ bt.value=""; bt.placeholder="Oddiy reklamada shart emas"; }
+      bt.disabled=noBtn;
+      if(noBtn){ bt.value=""; bt.placeholder=t==="dars_yakuni"?"Obuna knopkasi avtomatik qo'shiladi":"Oddiy reklamada shart emas"; }
       else if(t==="hamkorlik"){ bt.placeholder="Masalan: Hamkorlik uchun yozing"; }
       else { bt.placeholder="Masalan: Botni sinab ko'r"; }
       if(lbl) lbl.textContent = t==="hamkorlik" ? "Havola / Instagram" : (t==="bot" ? "Bot havolasi" : "Havola (ixtiyoriy)");
@@ -1280,7 +1283,7 @@
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
       const adType=($("caType")&&$("caType").value)||"odiy";
-      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("button_text",adType==="odiy"?"":($("caBtnText").value||"")); fd.append("media",f);
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("button_text",(adType==="odiy"||adType==="dars_yakuni")?"":($("caBtnText").value||"")); fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
       catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
     }

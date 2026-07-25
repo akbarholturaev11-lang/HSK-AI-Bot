@@ -70,6 +70,7 @@ class SubscriptionEntryAnalyticsService:
         "v3_locked_lesson": "Course v3 — Qulflangan dars",
         "v3_level_up": "Course v3 — Daraja oshdi",
         "v3_ad": "Course v3 — Reklama",
+        "v3_lesson_end_ad": "Course v3 — Dars yakuni reklamasi",
         "v3_qa_limit": "Course v3 — QA limit",
         "v3_voice_trial_used": "Course v3 — Voice trial tugadi",
         "v3_pronunciation_limit": "Course v3 — Talaffuz limiti",

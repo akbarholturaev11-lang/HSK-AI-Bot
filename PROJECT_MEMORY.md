@@ -207,6 +207,40 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-07-25 — Kinematik kirish: yaqin kadr panda + real parvoz sahnasi (osmon/yer/bulut/shamol)
+
+Changed (foydalanuvchi: "effekt vaqtida yaqin kadrdan pandani olish kerak, hali hech bir ekran
+ko'rinmasin; effekt tugab chang o'tirgach qolganlari ochilsin. Uchayotgan mahal shamol, bulut,
+osmon, yer, daraxt ko'rinsin — realroq bo'lsin"):
+- **`cinePanda(kind,mood,build)`** — bayram oynasi endi kinematik kirish bilan boshlanadi:
+  overlay ochiladi, lekin `#lu-stage` BO'SH va `.cine` klassi sahna/CTA/nurlarni yashiradi;
+  ko'rinadigan yagona narsa — markazdagi 300px yaqin kadr panda (`#lu-cine > .cine-pd`).
+  Effekt tugab chang o'tirgach `build()` sahnani quradi va `.rev` bilan qismlar navbat
+  bilan ochiladi. Ekranga tegish effektni o'tkazib yuboradi (skip); `prefers-reduced-motion`
+  yoki WAAPI yo'q bo'lsa — effektsiz darhol quriladi.
+  Ulangan ekranlar: streak (fly), dars/checkpoint/level bayrami (land), rank-up (zoom), sandiq (roll).
+- **Parvoz sahnasi** (`skyScene()` + `#lu-sky`): balandligi 300% bo'lgan "dunyo" — pastida yer
+  (yashil tepalik + daraxt/bambuk/buta/pagoda/o't, `scenerySvg` bilan kurs xaritasi uslubida),
+  yuqorisiga qarab osmon gradienti (och zangori → to'q ko'k), orasida 7 bulut. Panda deyarli
+  o'rnida qoladi, DUNYO pastga siljiydi (`translateY -66.7% → -15.5% → -66.7%`, foizlar
+  elementning o'z balandligiga nisbatan) — kamera ko'tarilgandek. Ustiga shamol chiziqlari
+  (`.sky-wind i`, ko'tarilish/tushishda kuchayadi, tepada tinchiydi) va yerdagi soya
+  (uzoqlashgani sari kichrayadi). Qo'nishda 14 chang zarrasi + kadr silkinishi + past chastotali tovush.
+  `fly` davomiyligi 1950 → 2600ms; parvoz vaqtida overlay'ga `.flying` (panda ufq chizig'ida turadi).
+- Osmon sahnasi faqat `fly`da ko'rinadi (boshqa effektlarda `#lu-sky` opacity 0 ga qaytariladi);
+  `closeLevelUp`/`closeChest` `.cine` holatini tozalaydi.
+
+Files touched:
+- `app/static/course-v3.html`
+
+Risk / follow-up:
+- Faqat frontend animatsiya qatlami; dars/XP/to'lov/obuna mantig'i tegilmadi.
+- Bayram ketma-ketligi endi ~1.3s (dars) + ~2.9s (streak) — ikkalasi ham tegish bilan o'tkaziladi.
+- Testlar: 256 passed (o'sha 4 e2e smoke AVVALDAN yiqiq). Lokal preview'da yer sahnasi, ko'tarilish,
+  bulutlar orasidagi apeks, chang bilan qo'nish va skip vizual tekshirildi.
+- Real Telegram WebView'da (ayniqsa eski Android) parvoz kadr tezligi tekshirilsin — sekinlashsa
+  `PANDA_FX_DUR.fly` qisqartiriladi yoki bulutlar soni kamaytiriladi.
+
 ### 2026-07-24 — Motivatsion matnlar, panda effektlari kutubxonasi, alangali hafta kalendari
 
 Changed (foydalanuvchi: "motivatsion gaplar kuchsiz, effektlar kam, 'streak' so'zi tarjima

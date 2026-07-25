@@ -16,15 +16,22 @@
  * oqimida accessRef beriladi; server reklama ko'rilganini aynan shu sessiyaga
  * bog'laydi. Reklama yoki server yozuvi muvaffaqiyatsiz bo'lsa Promise reject. */
 (function(){
-  var CFG = {lang:"uz", initData:"", feature:"", level:"hsk1", onSubscribe:null};
+  /* slot: "" (mashq bo'limlari) yoki "lesson_end" (dars yakuni bloki —
+     server faqat `dars_yakuni` turidagi reklamani qaytaradi, oxirida esa
+     obuna knopkasi chiqadi). lessonOrder — dars yakunida qaysi qism edi. */
+  var CFG = {lang:"uz", initData:"", feature:"", level:"hsk1", slot:"", lessonOrder:0, onSubscribe:null};
+  function isLessonEnd(){return CFG.slot==="lesson_end"}
 
   /* Darsdagi T() ad-* kalitlaridan olingan matnlar (3 til). */
   var I18N = {
     uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"Obuna olish",adSubCont:"Reklama bilan davom etish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitHead:"To'xtama — eng zo'r qismi oldinda!",limitSub:"Obunani ochsang, barcha cheklovlar yo'qoladi: tez, oson va cheksiz o'rganasan. Xitoy tilini bir necha oyda o'zlashtir — bugun boshlaganing ertaga natijaga aylanadi.",limitSubscribe:"Obunani ochish",limitAd:"Yoki reklama ko'rib davom etish",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
+        leLabel:"Dars yakuni · reklama",leNote:"Qisqa rolik. Obuna bo'lsangiz reklama umuman chiqmaydi.",leSubTitle:"Darsni tugatdingiz — endi to'liq yo'lni oching",
         f_recognition:"Ieroglif tanish",f_pronunciation:"Talaffuz mashqi",f_memorize:"Yodlash",f_training_test:"Test markazi",f_placement:"Daraja aniqlash testi",f_mistake_review:"Xatolar ustida ishlash"},
     ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Оформить подписку",adSubCont:"Продолжить с рекламой",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitHead:"Не останавливайся — впереди самое интересное!",limitSub:"С подпиской исчезают все ограничения: учишься быстро, легко и без лимитов. Освой китайский за пару месяцев — то, что начнёшь сегодня, завтра станет результатом.",limitSubscribe:"Открыть подписку",limitAd:"Или продолжить с рекламой",limitWhy:"Бесплатная практика на сегодня закончилась: «{s}» в бесплатном режиме открывается 1 раз в день. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",limitWhyPlain:"Бесплатный лимит на сегодня исчерпан. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу",
+        leLabel:"Конец урока · реклама",leNote:"Короткий ролик. С подпиской рекламы не будет вообще.",leSubTitle:"Урок пройден — откройте весь путь",
         f_recognition:"Распознавание иероглифов",f_pronunciation:"Произношение",f_memorize:"Запоминание",f_training_test:"Тест-центр",f_placement:"Тест на уровень",f_mistake_review:"Работа над ошибками"},
     tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"Обуна шудан",adSubCont:"Идома бо реклама",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitHead:"Наист — беҳтарин қисмаш дар пеш аст!",limitSub:"Бо обуна ҳама маҳдудиятҳо нест мешаванд: зуд, осон ва бе лимит меомӯзӣ. Забони чиниро дар чанд моҳ аз худ кун — он чи имрӯз оғоз мекунӣ, фардо натиҷа мешавад.",limitSubscribe:"Кушодани обуна",limitAd:"Ё бо реклама идома додан",limitWhy:"Машқи ройгони имрӯза тамом шуд: «{s}» дар ҳолати ройгон рӯзе 1 маротиба кушода мешавад. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",limitWhyPlain:"Лимити ройгони имрӯза тамом шуд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст",
+        leLabel:"Анҷоми дарс · реклама",leNote:"Ролики кӯтоҳ. Бо обуна реклама тамоман намешавад.",leSubTitle:"Дарсро тамом кардед — тамоми роҳро кушоед",
         f_recognition:"Шинохти иероглиф",f_pronunciation:"Машқи талаффуз",f_memorize:"Азёдкунӣ",f_training_test:"Маркази тест",f_placement:"Тести муайянкунии сатҳ",f_mistake_review:"Кор бар хатоҳо"}
   };
   function T(){ return I18N[CFG.lang] || I18N.uz; }
@@ -169,8 +176,13 @@
 
   var STATE = {timer:null,loadTimer:null,resolve:null,reject:null,ad:null,placement:"start",accessRef:"",attemptToken:"",watched:0,ready:false,busy:false};
   function resetState(){STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,placement:"start",accessRef:"",attemptToken:"",watched:0,ready:false,busy:false}}
-  function placementTitle(p){var t=T();return p==="middle"?t.adMiddle:(p==="end"?t.adEnd:t.adStart)}
+  function placementTitle(p){var t=T();if(isLessonEnd())return t.leLabel||t.adEnd;return p==="middle"?t.adMiddle:(p==="end"?t.adEnd:t.adStart)}
   function adDuration(ad){return Math.max(5,Math.min(120,Number(ad&&ad.duration_seconds)||7))}
+  /* Dars yakuni blokining matnlari boshqacha: bu joyda "reklama bilan davom
+     etish" ma'nosiz (reklama allaqachon tugadi) — oddiy "Davom etish" bo'ladi. */
+  function noteText(){var t=T();return (isLessonEnd()&&t.leNote)||t.adNote}
+  function subTitleText(){var t=T();return (isLessonEnd()&&t.leSubTitle)||t.adSubTitle}
+  function contText(){var t=T();return isLessonEnd()?(t.adReady||t.adSubCont):t.adSubCont}
 
   /* Promo karusel (reklamalar tugagach). */
   var promoStop=null;
@@ -243,6 +255,8 @@
   function fetchAds(placement){
     var url="/api/v3/ad?placement="+encodeURIComponent(placement)
       +"&level="+encodeURIComponent(CFG.level||"hsk1")
+      +"&lesson="+encodeURIComponent(Number(CFG.lessonOrder)||0)
+      +"&slot="+encodeURIComponent(CFG.slot||"")
       +"&feature="+encodeURIComponent(CFG.feature||"")
       +"&lang="+encodeURIComponent(CFG.lang||"uz");
     return fetch(url,{headers:{"X-Telegram-Init-Data":CFG.initData||""}})
@@ -256,6 +270,8 @@
   function startAttempt(ad,placement,accessRef){
     accessRef=String(accessRef||"").trim().slice(0,48);
     if(!CFG.initData||!accessRef)return Promise.reject(new Error("ad_attempt_requires_auth"));
+    /* Attempt faqat mashq bo'limi gate'i uchun (dars yakuni bloki ruxsat
+       bermaydi) — shuning uchun lesson_order doim 0. */
     return fetch("/api/v3/ad/attempt",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},
       body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:0,feature:CFG.feature||"",access_ref:accessRef,placement:placement})})
       .then(function(r){return r.json().catch(function(){return {ok:false}})})
@@ -265,7 +281,7 @@
     accessRef=String(accessRef||"").trim().slice(0,48);
     if(!CFG.initData)return Promise.resolve({ok:!accessRef});
     return fetch("/api/v3/ad/view",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},
-      body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:0,feature:CFG.feature||"",access_ref:accessRef,attempt_token:String(attemptToken||""),placement:placement,watched_seconds:watched})})
+      body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:Number(CFG.lessonOrder)||0,feature:CFG.feature||"",access_ref:accessRef,attempt_token:String(attemptToken||""),placement:placement,watched_seconds:watched})})
       .then(function(r){return r.json()}).catch(function(){return {ok:false}});
   }
   function openAdLink(){
@@ -301,8 +317,8 @@
     return new Promise(function(resolve,reject){
       fetchAds(placement).then(function(ads){
         var t=T();
-        els.note.textContent=t.adNote;
-        els.subTitle.textContent=t.adSubTitle;
+        els.note.textContent=noteText();
+        els.subTitle.textContent=subTitleText();
         els.benefits.innerHTML=[t.b1,t.b2,t.b3].map(function(b){return '<div class="caa-ben"><i class="ti ti-circle-check"></i><span>'+esc(b)+'</span></div>'}).join("");
         els.pay.innerHTML='<i class="ti ti-lock-open"></i> '+esc(t.adSubPay);
         els.pay.onclick=subscribe;els.cont.onclick=done;
@@ -318,7 +334,7 @@
           STATE={timer:null,loadTimer:null,resolve:resolve,reject:reject,ad:ad,placement:placement,accessRef:accessRef,attemptToken:"",watched:0,ready:false,busy:false};
           els.label.textContent=placementTitle(placement)+(multi?" · "+(i+1)+"/"+ads.length:"");
           els.title.textContent=ad.title||placementTitle(placement);
-          els.note.textContent=t.adNote;
+          els.note.textContent=noteText();
           var hasLink=!!ad.link_url;
           var typed=(ad.ad_type==="hamkorlik"||ad.ad_type==="bot");
           /* Odiy reklamada havola bo'lsa — video ustidagi "Havolaga o'tish" chipi.
@@ -327,7 +343,7 @@
           renderAdButtons(ad);
           stopPromo();els.ov.classList.remove("caa-done");
           els.vwrap.style.display="";els.vwrap.style.cursor=hasLink?"pointer":"default";
-          els.cont.disabled=false;els.cont.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
+          els.cont.disabled=false;els.cont.innerHTML='<i class="ti ti-arrow-right"></i> '+contText();
           setSubVisible(false);els.cta0.style.display="none";els.cta0.disabled=true;
           els.count.textContent="...";setStatus(t.loading);
           var srcBase=ad.media_url,loadAttempt=0,left=duration,timer=null,started=false,failed=false,attemptStarting=false;

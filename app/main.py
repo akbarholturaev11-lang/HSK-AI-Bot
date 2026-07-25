@@ -1470,14 +1470,17 @@ async def v3_course_ad(
     lesson: int = 0,
     lang: str = "",
     feature: str = "",
+    slot: str = "",
 ):
     resolved_level = _course_v3_level(level)
     lesson_order = _positive_int(lesson) or 0
     section = str(feature or "").strip().lower()
+    ad_slot = CourseAdService.normalize_slot(slot)
+    lesson_end = ad_slot == "lesson_end"
     # Mashq bo'limlarida reklama darsga bog'lanmagan (lesson=0) — `feature`
     # (masalan "recognition") kontekst sifatida keladi. Faqat dars ham,
-    # bo'lim ham bo'lmasa xato.
-    if lesson_order <= 0 and section not in _COURSE_AD_GATE_FEATURES:
+    # bo'lim ham bo'lmasa xato. Dars yakuni sloti esa darsga bog'langan.
+    if lesson_order <= 0 and section not in _COURSE_AD_GATE_FEATURES and not lesson_end:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
     # Foydalanuvchining tiliga mos reklamalarni (shu til + "all") qaytaramiz.
@@ -1496,11 +1499,15 @@ async def v3_course_ad(
         ad_language = CourseAdService.normalize_language(ad_language)
 
         service = CourseAdService(session)
-        ads = await service.list_active_payloads(language=ad_language)
+        ads = await service.list_active_payloads(language=ad_language, slot=ad_slot)
         if service.media_backup_changed:
             await session.commit()
         if not ads:
             return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
+        if lesson_end and len(ads) > 1:
+            # Dars oxirida BITTA blok chiqadi — bir nechta reklama bo'lsa dars
+            # raqami bo'yicha navbatma-navbat aylanadi (har dars boshqasi).
+            ads = [ads[lesson_order % len(ads)]]
         return JSONResponse(
             content={
                 "ok": True,
@@ -1508,6 +1515,7 @@ async def v3_course_ad(
                 "ad": ads[0],
                 "ads": ads,
                 "placement": service.normalize_placement(placement),
+                "slot": ad_slot,
                 "level": resolved_level,
                 "lesson_order": lesson_order,
             }
