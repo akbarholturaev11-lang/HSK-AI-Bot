@@ -229,6 +229,11 @@ osmon, yer, daraxt ko'rinsin — realroq bo'lsin"):
   `fly` davomiyligi 1950 → 2600ms; parvoz vaqtida overlay'ga `.flying` (panda ufq chizig'ida turadi).
 - Osmon sahnasi faqat `fly`da ko'rinadi (boshqa effektlarda `#lu-sky` opacity 0 ga qaytariladi);
   `closeLevelUp`/`closeChest` `.cine` holatini tozalaydi.
+- **Panda pozalari effektga moslashdi** (`pandaChar` yangi moodlari): `fly` — ikkala qo'l tepaga
+  cho'zilgan (mushtlar bilan), orqada hilpiragan qizil plash, oyoqlar cho'zilgan; kadr shu poza
+  uchun kengaytiriladi (`viewBox "-22 -16 144 138"`), aks holda katta bosh qo'llarni yopib qoladi.
+  `land` — ko'z chirt yumilgan, qo'llar muvozanat uchun yon tomonda, oyoqlar keng. `roll` — qo'llar
+  qorinni quchoqlagan ixcham siluet. Animatsiyalar: `.pd-fly`, `.pd-cape`, `.pd-arms`.
 
 Files touched:
 - `app/static/course-v3.html`
