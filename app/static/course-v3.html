@@ -73,6 +73,13 @@ button{cursor:pointer}
 @keyframes pdTwinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
 .pd-mouth.pd-talk{animation:pdTalk .42s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 @keyframes pdTalk{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+/* Parvoz pozasi: tana shamolda biroz cho'ziladi, plash hilpiraydi */
+.pd-fly{animation:pdFly 1.15s ease-in-out infinite;transform-origin:50% 20%}
+@keyframes pdFly{0%,100%{transform:scaleY(1.02) scaleX(.99)}50%{transform:scaleY(1.05) scaleX(.97) translateY(-2px)}}
+.pd-cape{animation:pdCape .9s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 4%}
+@keyframes pdCape{0%,100%{transform:skewX(5deg) scaleY(1)}35%{transform:skewX(-6deg) scaleY(1.06)}70%{transform:skewX(3deg) scaleY(.96)}}
+.pd-arms{animation:pdArms 1.15s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes pdArms{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
 /* nav */
 .nav{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-b));padding-bottom:var(--safe-b);background:var(--card);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding-top:8px;max-width:480px;margin:0 auto;z-index:8}
 .nav button{flex:1;background:none;border:none;font-family:inherit;color:var(--ink3);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
@@ -592,7 +599,7 @@ button{cursor:pointer}
 /* yo'lakcha bezaklari: daraxt, pagoda, buta, tosh, o't (dekorativ) */
 .decor{position:absolute;top:50%;margin-top:-26px;width:60px;height:60px;pointer-events:none;z-index:0;opacity:.95;filter:drop-shadow(0 3px 2px rgba(60,44,20,.14))}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
-@media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i,.pd-fly,.pd-cape,.pd-arms{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
 </style>
 </head>
 <body>
@@ -865,7 +872,7 @@ var App={
     var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw"><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join("")+'</div>':"";
     var t0=type||"lesson";
     /* Avval yaqin kadrda panda osmondan changli qo'nadi — sahna keyin ochiladi */
-    cinePanda("land","celebrate",function(){
+    cinePanda("land","land",function(){
       $("#lu-panda").innerHTML=pandaChar("celebrate");
       $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
       $("#lu-cta").setAttribute("onclick",(t0==="lesson"||t0==="checkpoint"||window._pendingStreak)?"App.showStreakScreen()":"App.closeLevelUp()");
@@ -887,7 +894,7 @@ var App={
     var desc=streakCopy(n,!!ps.reset);
     /* Yaqin kadr: faqat panda supermen kabi osmonga uchadi va changda qo'nadi;
        alanga, kunlar va haftalik natija shundan keyin ochiladi. */
-    cinePanda("fly","celebrate",function(){
+    cinePanda("fly","fly",function(){
       $("#lu-panda").innerHTML="";
       $("#lu-stage").innerHTML='<div class="sk-flame '+(ps.extended?"lit":"dim")+'">'+flameSvg()
         +'<div class="sk-panda">'+pandaChar("celebrate")+'</div></div>'
@@ -989,7 +996,7 @@ var App={
   renderChestOverlay:function(val){
     var ct=chestT();
     /* Yaqin kadr: panda dumalab kirib keladi — sandiq keyin ko'rinadi */
-    cinePanda("roll","celebrate",function(){
+    cinePanda("roll","roll",function(){
       $("#lu-panda").innerHTML=pandaChar("celebrate");
       $("#lu-stage").innerHTML='<div class="chest-fig shake" id="chestfig"><div class="chest-burst"></div>'+chestSvg()+'</div>'
         +'<div class="chest-xp" id="chestxp">+'+val+' XP</div><h2>'+esc(ct.got)+'</h2>';
@@ -1170,6 +1177,26 @@ function prefetchNearbyLessons(){
 }
 function isPaidUser(){return !!(PROF&&PROF.is_paid||MAP&&MAP.user&&MAP.user.is_paid)}
 function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
+/* ---------- Dars yakuni reklamasi ----------
+   Bepul foydalanuvchi darsni tugatib, bayram/streak/reyting ekranlarini yopgach
+   BITTA reklama bloki ko'rsatiladi; oxirida obuna knopkasi (botdagi obuna yo'li)
+   chiqadi. Admin panelda bu reklama alohida tur — "dars yakuni reklamasi",
+   shuning uchun mashq bo'limlaridagi reklamalar bilan aralashmaydi.
+   true qaytarsa — reklama boshlandi, `next` reklamadan keyin chaqiriladi. */
+function playLessonEndAd(next){
+  var lessonN=Number(window._pendingLessonEndAd)||0;
+  window._pendingLessonEndAd=0;
+  if(!lessonN||isPaidUser()||!INIT_DATA)return false;
+  if(!window.CourseAds||typeof CourseAds.play!=="function")return false;
+  var resumed=false,go=function(){if(resumed)return;resumed=true;if(typeof next==="function")next()};
+  CourseAds.config({lang:LANG,initData:INIT_DATA,level:(MAP&&MAP.level)||"hsk1",
+    feature:"lesson_end",slot:"lesson_end",lessonOrder:lessonN,
+    onOffer:function(){trackCourseEvent("paywall_seen",{source:"v3_lesson_end_ad",
+      lesson_id:lessonN,dedupe_key:lessonEventKey("paywall_seen",lessonN,"v3_lesson_end_ad")})},
+    onSubscribe:function(){App.goPay("v3_lesson_end_ad")}});
+  try{CourseAds.play("end").then(go).catch(go)}catch(e){return false}
+  return true;
+}
 function serverSaveErrorText(code){
   var m={
     ru:{free_feature_limit_reached:"Этот урок доступен только Premium.",course_lesson_not_unlocked:"Сначала завершите предыдущий урок.",default:"Прогресс не сохранился. Попробуйте ещё раз."},
@@ -2818,10 +2845,15 @@ function cinePanda(kind,mood,build){
 }
 function pandaChar(mood,opts){
   /* Do'mboq, ifodali panda (Duolingo maskot uslubi). API o'zgarmagan:
-     mood = "happy" | "celebrate" | "talk"; opts.anim=false — animatsiyasiz. */
+     mood = "happy" | "celebrate" | "talk" | "fly" | "land" | "roll";
+     opts.anim=false — animatsiyasiz. Effekt pozalari:
+     fly  — supermen: qo'llar tepaga cho'zilgan, plash hilpiraydi, oyoq cho'zilgan;
+     land — qo'nish: tizza bukilgan, qo'llar muvozanat uchun yon tomonda;
+     roll — dumalash: qo'llar qorinni quchoqlagan, oyoqlar yig'ilgan. */
   opts=opts||{};var anim=opts.anim!==false;
-  var INK="#2B2620",MOUTH="#8E3A31",TONGUE="#E07B72",BLUSH="#F5B8C0",GOLD="#E8B84B";
-  var eyes,mouth,armL,armR,decor="",bodyCls;
+  var INK="#2B2620",MOUTH="#8E3A31",TONGUE="#E07B72",BLUSH="#F5B8C0",GOLD="#E8B84B",CAPE="#D9433C",CAPE2="#B4342E";
+  var eyes,mouth,armL,armR,decor="",bodyCls,back="",front="",box="0 0 100 106";
+  var feet='<ellipse cx="38" cy="97" rx="9.5" ry="6.5" fill="'+INK+'"/><ellipse cx="62" cy="97" rx="9.5" ry="6.5" fill="'+INK+'"/>';
   var eyesOpen='<circle cx="38" cy="34" r="4.8" fill="#fff"/><circle cx="62" cy="34" r="4.8" fill="#fff"/>'
     +'<circle cx="38.6" cy="34.8" r="2.7" fill="'+INK+'"/><circle cx="61.4" cy="34.8" r="2.7" fill="'+INK+'"/>'
     +'<circle cx="39.8" cy="33.2" r="1.1" fill="#fff"/><circle cx="62.6" cy="33.2" r="1.1" fill="#fff"/>'
@@ -2836,6 +2868,42 @@ function pandaChar(mood,opts){
     decor='<path class="pd-twinkle" style="animation-delay:0s" transform="translate(12,18)" d="M0 -5 L1.2 -1.2 L5 0 L1.2 1.2 L0 5 L-1.2 1.2 L-5 0 L-1.2 -1.2 Z" fill="'+GOLD+'"/>'
       +'<path class="pd-twinkle" style="animation-delay:.3s" transform="translate(88,12)" d="M0 -4 L1 -1 L4 0 L1 1 L0 4 L-1 1 L-4 0 L-1 -1 Z" fill="'+GOLD+'"/>'
       +'<path class="pd-twinkle" style="animation-delay:.6s" transform="translate(52,4)" d="M0 -3.4 L.9 -.9 L3.4 0 L.9 .9 L0 3.4 L-.9 .9 L-3.4 0 L-.9 -.9 Z" fill="'+GOLD+'"/>';
+  }else if(mood==="fly"){
+    /* Supermen: ikkala qo'l tepaga cho'zilgan (mushtlar boshdan yuqorida),
+       orqada hilpiragan plash, oyoqlar birlashib orqaga cho'zilgan. */
+    eyes=eyesOpen;
+    mouth='<path d="M42 52 q8 9 16 0 q-8 4 -16 0 z" fill="'+MOUTH+'"/><path d="M46 55.5 q4 3 8 0 q-4 2.5 -8 0 z" fill="'+TONGUE+'"/>';
+    armL="";armR="";
+    /* Kadr kengaytiriladi — ko'tarilgan qo'llar boshdan tashqarida joy oladi */
+    box="-22 -16 144 138";
+    back='<g class="pd-cape"><path d="M35 58 q-19 24 -13 46 q13 -11 28 -8 q15 -3 28 8 q6 -22 -13 -46 z" fill="'+CAPE+'"/>'
+      +'<path d="M42 60 q-13 20 -9 38 q10 -8 17 -7 q7 -1 17 7 q4 -18 -9 -38 z" fill="'+CAPE2+'" opacity=".55"/></g>';
+    /* Ikkala qo'l tepaga cho'zilgan, mushtlar bosh sathidan yuqorida */
+    front='<g class="pd-arms"><path d="M26 76 L-6 8 q6 -7 14 -4 L36 70 z" fill="'+INK+'"/>'
+      +'<circle cx="1" cy="4" r="8" fill="'+INK+'"/><circle cx="-1.6" cy="1.6" r="2.6" fill="#4A443C"/>'
+      +'<path d="M74 76 L106 8 q-6 -7 -14 -4 L64 70 z" fill="'+INK+'"/>'
+      +'<circle cx="99" cy="4" r="8" fill="'+INK+'"/><circle cx="101.6" cy="1.6" r="2.6" fill="#4A443C"/></g>';
+    feet='<ellipse cx="42" cy="100" rx="8" ry="6" fill="'+INK+'" transform="rotate(-16 42 100)"/>'
+      +'<ellipse cx="58" cy="100" rx="8" ry="6" fill="'+INK+'" transform="rotate(16 58 100)"/>';
+    bodyCls="pd-fly";
+  }else if(mood==="land"){
+    /* Qo'nish: ko'zlar chirt yumilgan, qo'llar muvozanat uchun yon tomonda */
+    eyes='<path d="M31 36 q6 6 12 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>'
+      +'<path d="M57 36 q6 6 12 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>';
+    mouth='<path d="M42 53 q8 8 16 0 q-8 4 -16 0 z" fill="'+MOUTH+'"/>';
+    armL='<path d="M29 63 q-19 3 -24 12 q4 8 11 6 q6 -8 15 -10 z" fill="'+INK+'"/>';
+    armR='<path d="M71 63 q19 3 24 12 q-4 8 -11 6 q-6 -8 -15 -10 z" fill="'+INK+'"/>';
+    feet='<ellipse cx="34" cy="99" rx="11" ry="6" fill="'+INK+'"/><ellipse cx="66" cy="99" rx="11" ry="6" fill="'+INK+'"/>';
+    bodyCls="pd-bounce";
+  }else if(mood==="roll"){
+    /* Dumalash: qo'llar qorinni quchoqlaydi, oyoqlar yig'ilgan */
+    eyes='<path d="M32 35 q6 -7 12 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>'
+      +'<path d="M56 35 q6 -7 12 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>';
+    mouth='<path d="M43 53 q7 6 14 0" stroke="'+INK+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+    armL='<path d="M31 66 q-6 14 6 19 q10 3 13 -6 q-11 -3 -19 -13 z" fill="'+INK+'"/>';
+    armR='<path d="M69 66 q6 14 -6 19 q-10 3 -13 -6 q11 -3 19 -13 z" fill="'+INK+'"/>';
+    feet='<ellipse cx="41" cy="95" rx="9" ry="7" fill="'+INK+'"/><ellipse cx="59" cy="95" rx="9" ry="7" fill="'+INK+'"/>';
+    bodyCls="";
   }else if(mood==="talk"){
     eyes=eyesOpen;
     mouth='<g class="pd-mouth pd-talk"><ellipse cx="50" cy="54" rx="6" ry="5.5" fill="'+MOUTH+'"/><ellipse cx="50" cy="56.5" rx="3.4" ry="2.4" fill="'+TONGUE+'"/></g>';
@@ -2850,8 +2918,9 @@ function pandaChar(mood,opts){
     bodyCls="pd-breathe";
   }
   if(!anim)bodyCls="";
-  return '<svg viewBox="0 0 100 106" width="100%" height="100%"><g class="'+bodyCls+'">'
-    +'<ellipse cx="38" cy="97" rx="9.5" ry="6.5" fill="'+INK+'"/><ellipse cx="62" cy="97" rx="9.5" ry="6.5" fill="'+INK+'"/>'
+  return '<svg viewBox="'+box+'" width="100%" height="100%"><g class="'+bodyCls+'">'
+    +back
+    +feet
     +armL+armR
     +'<path d="M28 94 q-5 -28 9 -36 h26 q14 8 9 36 q-22 7 -44 0 z" fill="#fff" stroke="'+INK+'" stroke-width="3"/>'
     +'<ellipse cx="50" cy="80" rx="13" ry="10" fill="#F6F1E6"/>'
@@ -2865,6 +2934,7 @@ function pandaChar(mood,opts){
     +'<path d="M50 50 v2.6" stroke="'+INK+'" stroke-width="2" stroke-linecap="round"/>'
     +mouth
     +'<ellipse cx="29" cy="46" rx="4.8" ry="3.2" fill="'+BLUSH+'" opacity=".85"/><ellipse cx="71" cy="46" rx="4.8" ry="3.2" fill="'+BLUSH+'" opacity=".85"/>'
+    +front
     +decor
     +'</g></svg>';
 }

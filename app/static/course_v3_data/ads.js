@@ -19,7 +19,7 @@
   /* slot: "" (mashq bo'limlari) yoki "lesson_end" (dars yakuni bloki —
      server faqat `dars_yakuni` turidagi reklamani qaytaradi, oxirida esa
      obuna knopkasi chiqadi). lessonOrder — dars yakunida qaysi qism edi. */
-  var CFG = {lang:"uz", initData:"", feature:"", level:"hsk1", slot:"", lessonOrder:0, onSubscribe:null};
+  var CFG = {lang:"uz", initData:"", feature:"", level:"hsk1", slot:"", lessonOrder:0, onSubscribe:null, onOffer:null};
   function isLessonEnd(){return CFG.slot==="lesson_end"}
 
   /* Darsdagi T() ad-* kalitlaridan olingan matnlar (3 til). */
@@ -378,6 +378,8 @@
               hidePs();
               els.vwrap.style.display="none";els.ov.classList.add("caa-done");startPromo();
               STATE.ready=true;els.cta0.style.display="none";els.cont.style.display="";setSubVisible(true);
+              /* Obuna taklifi ko'rindi — chaqiruvchi buni analitikaga yozishi mumkin. */
+              if(typeof CFG.onOffer==="function"){try{CFG.onOffer()}catch(e){}}
             }else{
               /* start / middle reklama — obuna taklifi limit ekranida allaqachon
                  bo'lgan, shuning uchun bu yerda YANA obunaga majburlamaymiz:
