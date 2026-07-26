@@ -1813,6 +1813,9 @@ function trackFlowCard(c){
     card_index:Flow.i+1,
     card_type:c.type||"",
     section_no:c._sNo||0,
+    section_purpose:c._sPurpose||"",
+    review_mix:!!c.review_mix,
+    review_origin:c.review_origin||"",
     dedupe_key:lessonEventKey("card_seen",lessonOrder,Flow.i+1)
   });
 }
@@ -1826,6 +1829,9 @@ function trackInteraction(ok){
     card_index:Flow.i+1,
     card_type:c.type||"",
     section_no:c._sNo||0,
+    section_purpose:c._sPurpose||"",
+    review_mix:!!c.review_mix,
+    review_origin:c.review_origin||"",
     correct:!!ok,
     dedupe_key:lessonEventKey("interaction_completed",lessonOrder,Flow.i+1)
   });
@@ -1906,7 +1912,7 @@ function buildQueue(d){
     }
     /* Dialog is now fully interactive (audio/cloze/char-gap) — no passive dump. */
     var sTitle=tr(sec.section_title)||(secNames()[(sec.section_no||1)-1]||"");
-    cards.forEach(function(c){c._sNo=sNo;c._sTitle=sTitle;q.push(c)});
+    cards.forEach(function(c){c._sNo=sNo;c._sTitle=sTitle;c._sPurpose=sec.section_purpose||"";q.push(c)});
   });
   return q;
 }
@@ -2325,11 +2331,16 @@ function cardChoice(c){
        kartalar dastasi ko'rinishida (mix-review). */
     if(c.review_mix){
       var isCur=c.review_origin==="current";
+      var rw=c.review_word||{};
       var MB={uz:{previous:"Oldingi darsdan",current:"Shu darsdan"},
         ru:{previous:"Из прошлого урока",current:"Из этого урока"},
         tj:{previous:"Аз дарси гузашта",current:"Аз ҳамин дарс"}}[LANG]||{previous:"",current:""};
       var badge='<div class="mix-badge"><i class="ti ti-'+(isCur?"sparkles":"history")+'"></i>'+esc(isCur?MB.current:MB.previous)+'</div>';
-      var body=c.type==="translation_choice"?'<div class="mix-meaning">'+esc(p)+'</div>':'<div class="qh qask han">'+esc(p)+'</div>';
+      /* Tarjimadan xitoychani topishda javobni ochmaymiz; xitoychadan ma'noni
+         topishda esa hanzi + pinyin birga ko'rinadi. */
+      var body=c.type==="translation_choice"
+        ?'<div class="mix-meaning">'+esc(tr(rw.meaning)||p)+'</div>'
+        :'<div class="qh han">'+esc(rw.zh||p)+'</div><div class="qpy">'+esc(rw.pinyin||"")+'</div>';
       head='<div class="qcard mix-review'+(isCur?" current":"")+'">'+badge+body+sent+'</div>';
     }
     else head='<div class="qcard"><div class="qh qask han">'+esc(p)+'</div>'+sent+'</div>'}
@@ -2589,16 +2600,17 @@ function applyLessonDone(cur,d){
   window._pendingLessonEndAd=(!isPaidUser()&&INIT_DATA)?(Number(cur.n)||0):0;
   if(d&&d.gamification&&MAP.progress){
     var g=d.gamification;
-    var prevStreak=Number(MAP.progress.streak||0),newStreak=Number(g.streak||0);
+    var prevStreak=Number(typeof g.previous_streak!=="undefined"?g.previous_streak:(MAP.progress.streak||0)),newStreak=Number(g.streak||0);
     /* Server aniq aytadi: bugun streak yangilandimi (streak_updated) va u
        uzilishdan keyin qayta boshlanganmi (streak_reset). Eski javob uchun
        taqqoslash fallback qoladi. */
-    var extended=typeof g.streak_updated!=="undefined"?(!!g.streak_updated&&!g.duplicate):(newStreak>prevStreak&&!g.duplicate);
+    var duplicate=!!(d.duplicate||g.duplicate);
+    var extended=typeof g.streak_updated!=="undefined"?(!!g.streak_updated&&!duplicate):(newStreak>prevStreak&&!duplicate);
     if(newStreak>0)window._pendingStreak={prev:prevStreak,now:newStreak,extended:extended,reset:!!g.streak_reset,
       local_date:g.local_date,week_start:g.week_start,week_activity_dates:g.week_activity_dates};
     window._pendingXpFly=Number(g.awarded_xp||0);
-    MAP.progress.xp=g.xp||MAP.progress.xp;
-    MAP.progress.streak=g.streak||MAP.progress.streak;
+    if(typeof g.xp!=="undefined")MAP.progress.xp=g.xp;
+    if(typeof g.streak!=="undefined")MAP.progress.streak=g.streak;
     ["longest_streak","last_activity_date","local_date","week_start","week_activity_dates"].forEach(function(k){
       if(typeof g[k]!=="undefined")MAP.progress[k]=g[k];
     });
@@ -3010,7 +3022,12 @@ function applyRatingPayload(d){
   };
 	  ratingUsers=(d.leaderboard||[]).map(normalizeSocialUser);
 	  ratingLoaded=true;
-	  if(MAP&&MAP.progress){MAP.progress.xp=d.xp||MAP.progress.xp;MAP.progress.weekly_xp=Number(d.weekly_xp||0);MAP.progress.streak=d.streak||MAP.progress.streak}
+	  if(MAP&&MAP.progress){
+      if(typeof d.xp!=="undefined")MAP.progress.xp=d.xp;
+      MAP.progress.weekly_xp=Number(d.weekly_xp||0);
+      if(typeof d.streak!=="undefined")MAP.progress.streak=d.streak;
+      ["longest_streak","last_activity_date","local_date","week_start","week_activity_dates"].forEach(function(k){if(typeof d[k]!=="undefined")MAP.progress[k]=d[k]});
+    }
 	}
 	function invitePayloadUrl(){return "/api/v3/invite?lang="+LANG+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())}
 	function loadLatestRating(){

@@ -1251,6 +1251,23 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
                 total -= 1
             i -= 1
 
+        # Intro ham talaffuz kartasini beradi. Kam uchraydigan holatda barcha
+        # boshqa kartalar 4x qamrov uchun zarur bo'lib, faqat practice oxiridagi
+        # aynan o'sha takroriy talaffuzni olib tashlash 18-card limitni saqlaydi.
+        if total > PART_CARD_BUDGET and practice_cards:
+            last = practice_cards[-1]
+            if last.get("type") == "pronunciation":
+                cand = practice_cards[:-1]
+                rest = intro_cards + grammar_cards + cand + review_cards
+                if all(_hits(w.get("zh", ""), rest) >= 4 for w in chunk):
+                    practice_cards = cand
+                    total -= 1
+
+        if total > PART_CARD_BUDGET:
+            raise ValueError(
+                f"{level} part {flat_n} exceeds {PART_CARD_BUDGET}-card budget: {total}"
+            )
+
         sections = [{
             "section_no": 1,
             "section_title": {"uz": "Yangi so'zlar", "ru": "Новые слова", "tj": "Калимаҳои нав"},
