@@ -1,9 +1,10 @@
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import json
 import logging
+from pathlib import Path
 
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import (
@@ -87,6 +88,8 @@ from datetime import datetime, time, timezone
 
 logger = logging.getLogger(__name__)
 
+COURSE_PROMO_ROOT = Path(__file__).resolve().parents[2] / "static" / "course_promo"
+
 
 class _MessageEditResponder:
     def __init__(self, message):
@@ -101,6 +104,15 @@ class _MessageEditResponder:
             except Exception:
                 logger.exception("Failed to edit workflow message; falling back to answer")
         return await self._message.answer(text, **kwargs)
+
+    async def answer_photo(self, photo, **kwargs):
+        if self._message and not self._used_edit:
+            self._used_edit = True
+            try:
+                await self._message.delete()
+            except Exception:
+                logger.exception("Failed to replace workflow message with course promo photo")
+        return await self._message.answer_photo(photo=photo, **kwargs)
 
 
 async def show_free_qa_level_choice(
@@ -222,6 +234,37 @@ def _course_entry_button_label(lang: str, lesson: int | None, level: str | None 
     return labels.get(lang, labels["ru"])
 
 
+def _course_promo_photo_path(lang: str) -> Path:
+    safe_lang = lang if lang in {"uz", "ru", "tj"} else "ru"
+    return COURSE_PROMO_ROOT / f"{safe_lang}.jpg"
+
+
+def _course_photo_responder(respond):
+    sender = getattr(respond, "answer_photo", None)
+    if callable(sender):
+        return sender
+    owner = getattr(respond, "__self__", None)
+    sender = getattr(owner, "answer_photo", None)
+    return sender if callable(sender) else None
+
+
+async def _send_course_miniapp_entry_block(*, respond, lang: str, text: str, keyboard) -> None:
+    photo_path = _course_promo_photo_path(lang)
+    photo_respond = _course_photo_responder(respond)
+    if photo_respond and photo_path.is_file():
+        try:
+            await photo_respond(
+                photo=FSInputFile(photo_path),
+                caption=text,
+                reply_markup=keyboard,
+                parse_mode="HTML",
+            )
+            return
+        except Exception:
+            logger.exception("Failed to send Course Mini App promo photo; falling back to text")
+    await respond(text, reply_markup=keyboard, parse_mode="HTML")
+
+
 async def send_course_miniapp_entry(
     *,
     session,
@@ -288,7 +331,12 @@ async def send_course_miniapp_entry(
         text = course_miniapp_entry_text(lang)
         keyboard = course_v3_miniapp_keyboard(lang)
 
-    await respond(text, reply_markup=keyboard, parse_mode="HTML")
+    await _send_course_miniapp_entry_block(
+        respond=respond,
+        lang=lang,
+        text=text,
+        keyboard=keyboard,
+    )
 
     if user:
         await ConversionFunnelService().record(

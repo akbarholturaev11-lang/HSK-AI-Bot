@@ -3,7 +3,11 @@ from datetime import datetime, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
-from app.bot.handlers.course import _show_required_channel_for_pending_action
+from app.bot.handlers.course import (
+    _MessageEditResponder as CourseMessageEditResponder,
+    _send_course_miniapp_entry_block,
+    _show_required_channel_for_pending_action,
+)
 from app.bot.handlers.required_channel import force_sub_check
 from app.bot.keyboards.onboarding import course_mode_entry_keyboard
 from app.bot.middlewares.required_channel import (
@@ -25,6 +29,78 @@ class CourseModeEntryKeyboardTests(unittest.TestCase):
         self.assertEqual(course_button.callback_data, "mode:course")
         self.assertIsNone(course_button.web_app)
         self.assertEqual(qa_button.callback_data, "mode:free_qa")
+
+
+class _CourseEntryMessage:
+    def __init__(self, *, photo_error: Exception | None = None):
+        self.answer_mock = AsyncMock()
+        self.answer_photo_mock = AsyncMock(side_effect=photo_error)
+        self.delete_mock = AsyncMock()
+        self.edit_text_mock = AsyncMock()
+
+    async def answer(self, text: str, **kwargs):
+        return await self.answer_mock(text, **kwargs)
+
+    async def answer_photo(self, photo, **kwargs):
+        return await self.answer_photo_mock(photo=photo, **kwargs)
+
+    async def delete(self):
+        return await self.delete_mock()
+
+    async def edit_text(self, text: str, **kwargs):
+        return await self.edit_text_mock(text, **kwargs)
+
+
+class CourseMiniAppEntryMediaTests(unittest.IsolatedAsyncioTestCase):
+    async def test_course_entry_uses_localized_photo_with_text_as_caption(self):
+        message = _CourseEntryMessage()
+
+        await _send_course_miniapp_entry_block(
+            respond=message.answer,
+            lang="uz",
+            text="<b>Kurs</b>",
+            keyboard="keyboard",
+        )
+
+        message.answer_photo_mock.assert_awaited_once()
+        kwargs = message.answer_photo_mock.await_args.kwargs
+        self.assertTrue(str(kwargs["photo"].path).endswith("course_promo/uz.jpg"))
+        self.assertEqual(kwargs["caption"], "<b>Kurs</b>")
+        self.assertEqual(kwargs["reply_markup"], "keyboard")
+        self.assertEqual(kwargs["parse_mode"], "HTML")
+        message.answer_mock.assert_not_awaited()
+
+    async def test_course_entry_falls_back_to_text_when_photo_send_fails(self):
+        message = _CourseEntryMessage(photo_error=RuntimeError("send failed"))
+
+        await _send_course_miniapp_entry_block(
+            respond=message.answer,
+            lang="ru",
+            text="<b>Курс</b>",
+            keyboard="keyboard",
+        )
+
+        message.answer_photo_mock.assert_awaited_once()
+        message.answer_mock.assert_awaited_once_with(
+            "<b>Курс</b>",
+            reply_markup="keyboard",
+            parse_mode="HTML",
+        )
+
+    async def test_edit_responder_replaces_old_text_block_with_photo(self):
+        message = _CourseEntryMessage()
+        respond = CourseMessageEditResponder(message)
+
+        await _send_course_miniapp_entry_block(
+            respond=respond,
+            lang="tj",
+            text="<b>Курс</b>",
+            keyboard="keyboard",
+        )
+
+        message.delete_mock.assert_awaited_once()
+        message.answer_photo_mock.assert_awaited_once()
+        message.edit_text_mock.assert_not_awaited()
 
 
 class _FakeForceSubState:

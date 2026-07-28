@@ -34,6 +34,15 @@ class _MessageEditResponder:
                 pass
         return await self._message.answer(text, **kwargs)
 
+    async def answer_photo(self, photo, **kwargs):
+        if self._message and not self._used_edit:
+            self._used_edit = True
+            try:
+                await self._message.delete()
+            except Exception:
+                pass
+        return await self._message.answer_photo(photo=photo, **kwargs)
+
 
 class _ForceSubTextProxy:
     def __init__(self, callback: CallbackQuery, text: str, message_id: int | None):
