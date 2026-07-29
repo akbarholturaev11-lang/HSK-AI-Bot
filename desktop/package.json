@@ -1,0 +1,16 @@
+{
+  "name": "pomp-hsk-ai-desktop",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Tauri desktop shell for Pomp HSK AI",
+  "type": "module",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "test:ui": "node --test ui/test-contract.mjs",
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}

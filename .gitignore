@@ -16,3 +16,32 @@ memory/
 .DS_Store
 app/static/audio/tts_cache/
 app/static/avatar_cache/
+
+# Pomp HSK AI desktop dependencies, generated files and release artifacts.
+desktop/node_modules/
+desktop/src-tauri/target/
+desktop/src-tauri/gen/schemas/
+desktop/dist/
+desktop/.tauri/
+desktop/models/
+desktop/model-cache/
+desktop/releases/
+desktop/src-tauri/icons/android/
+desktop/src-tauri/icons/ios/
+desktop/src-tauri/icons/Square*Logo.png
+desktop/src-tauri/icons/StoreLogo.png
+desktop/src-tauri/icons/64x64.png
+desktop/src-tauri/icons/icon.png
+*.gguf
+*.gguf.partial
+*.part
+
+# Signing credentials and local installer artifacts must never enter Git.
+*.key
+*.pem
+*.p12
+*.pfx
+*.dmg
+*.exe
+*.msi
+*.sig

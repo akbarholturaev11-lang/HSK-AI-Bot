@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="uz" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Pomp HSK AI</title>
+    <link rel="icon" href="./assets/hsk-ai-avatar.webp" type="image/webp">
+    <link rel="stylesheet" href="./css/app.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="titlebar" data-tauri-drag-region>
+        <div class="brand" data-tauri-drag-region>
+          <img
+            class="brand-mark"
+            src="./assets/hsk-ai-avatar.webp"
+            alt=""
+            aria-hidden="true"
+          >
+          <span>Pomp HSK AI</span>
+        </div>
+        <div class="titlebar-meta" data-tauri-drag-region>
+          <span class="status-pill" id="offline-pill" hidden>Offline</span>
+          <span id="app-version"></span>
+        </div>
+      </header>
+
+      <main class="boot-state" id="boot-state" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <p id="boot-message">Ilova tayyorlanmoqda…</p>
+      </main>
+
+      <main class="auth-screen" id="auth-screen" hidden>
+        <section class="auth-card" aria-labelledby="auth-title">
+          <img
+            class="panda-badge"
+            src="./assets/hsk-ai-avatar.webp"
+            alt=""
+            aria-hidden="true"
+          >
+          <p class="eyebrow">Pomp HSK AI Desktop</p>
+          <h1 id="auth-title">Telegram akkauntingizni ulang</h1>
+          <p class="muted" id="auth-description">
+            Obuna, daraja va progress bir xil akkauntdan olinadi.
+          </p>
+
+          <div class="auth-code-wrap" id="auth-code-wrap" hidden>
+            <span class="auth-code-label" id="auth-code-label">Tasdiqlash kodi</span>
+            <strong class="auth-code" id="auth-code"></strong>
+            <button class="icon-button" id="copy-code" type="button" aria-label="Kodni nusxalash">
+              ⧉
+            </button>
+          </div>
+          <p class="auth-expiry" id="auth-expiry"></p>
+
+          <ol class="auth-steps">
+            <li id="auth-step-1">Telegramni oching.</li>
+            <li id="auth-step-2">Kod va qurilmani tekshiring.</li>
+            <li id="auth-step-3">Tasdiqlash tugmasini bosing.</li>
+          </ol>
+
+          <div class="auth-actions">
+            <button class="primary-button" id="start-link" type="button">
+              Telegram bilan ulash
+            </button>
+            <button class="primary-button" id="open-telegram" type="button" hidden>
+              Telegramni ochish
+            </button>
+            <button class="secondary-button" id="retry-link" type="button" hidden>
+              Yangi kod olish
+            </button>
+          </div>
+          <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p>
+          <p class="form-error" id="auth-error" role="alert"></p>
+        </section>
+      </main>
+
+      <div class="workspace" id="workspace" hidden>
+        <div class="rail-scrim" id="rail-scrim" hidden></div>
+
+        <aside class="course-rail" id="course-rail" aria-label="Kurs navigatsiyasi">
+          <div class="rail-profile">
+            <div class="avatar" id="rail-avatar" aria-hidden="true">阿</div>
+            <div>
+              <strong id="rail-user-name">—</strong>
+              <small id="rail-plan">—</small>
+            </div>
+          </div>
+
+          <div class="rail-progress">
+            <span><b id="rail-xp">0</b> XP</span>
+            <span><b id="rail-streak">0</b> <span id="rail-days-label">kun</span></span>
+          </div>
+
+          <div class="rail-level">
+            <span id="rail-level-label">HSK</span>
+            <small id="rail-completed">0 / 0</small>
+          </div>
+
+          <nav class="course-navigation" id="course-navigation"></nav>
+
+          <div class="rail-footer">
+            <button class="rail-action" id="show-course" type="button" aria-current="page">
+              <span aria-hidden="true">课</span>
+              <span id="course-label">Kurs</span>
+            </button>
+            <button class="rail-action" id="show-profile" type="button">
+              <span aria-hidden="true">人</span>
+              <span id="profile-label">Profil</span>
+            </button>
+          </div>
+        </aside>
+
+        <section class="content-column">
+          <header class="content-header">
+            <button class="icon-button rail-toggle" id="rail-toggle" type="button" aria-label="Kurs menyusini ochish">
+              ☰
+            </button>
+            <div>
+              <h2 id="content-title" tabindex="-1">Kurs</h2>
+              <p id="content-subtitle"></p>
+            </div>
+            <button class="icon-button refresh-button" id="refresh-map" type="button" aria-label="Ma’lumotni yangilash">
+              ↻
+            </button>
+          </header>
+
+          <section
+            class="update-banner"
+            id="update-banner"
+            aria-labelledby="update-title"
+            hidden
+          >
+            <div class="update-mark" aria-hidden="true">新</div>
+            <div
+              class="update-copy"
+              id="update-status"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <strong id="update-title"></strong>
+              <p id="update-message"></p>
+              <small id="update-notes" hidden></small>
+            </div>
+            <button class="update-action" id="update-action" type="button"></button>
+          </section>
+
+          <div class="content-scroll">
+            <div class="content-inner" id="content-inner" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <aside class="ai-edge" aria-label="AI yordamchi">
+          <button
+            class="ai-launcher"
+            id="ai-launcher"
+            type="button"
+            aria-label="AI chatni ochish"
+            aria-controls="ai-drawer"
+            aria-expanded="false"
+          >
+            <img src="./assets/hsk-ai-avatar.webp" alt="" aria-hidden="true">
+          </button>
+          <kbd id="ai-shortcut">⌘K</kbd>
+        </aside>
+
+        <aside
+          class="ai-drawer"
+          id="ai-drawer"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="ai-title"
+          aria-hidden="true"
+        >
+          <header class="drawer-header">
+            <img
+              class="panda-mini"
+              src="./assets/hsk-ai-avatar.webp"
+              alt=""
+              aria-hidden="true"
+            >
+            <div>
+              <h2 id="ai-title">AI yordamchi</h2>
+              <p id="ai-subtitle">Dars bo‘yicha yordam</p>
+            </div>
+            <button class="icon-button" id="close-ai" type="button" aria-label="AI chatni yopish">×</button>
+          </header>
+          <div class="drawer-body" id="ai-body"></div>
+          <footer class="drawer-footer">
+            <label class="sr-only" for="ai-input">AI uchun savol</label>
+            <textarea id="ai-input" rows="2" disabled></textarea>
+            <button class="primary-button" id="ai-send" type="button" disabled>Yuborish</button>
+          </footer>
+        </aside>
+      </div>
+
+      <div class="lesson-layer" id="lesson-layer" hidden>
+        <section class="lesson-shell" role="dialog" aria-modal="true" aria-label="Dars">
+          <header class="lesson-header">
+            <button class="icon-button" id="close-lesson" type="button" aria-label="Darsni yopish">×</button>
+            <div
+              class="lesson-progress"
+              role="progressbar"
+              aria-label="Dars progressi"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+              <span class="progress-fill" id="lesson-progress-bar" data-progress="0"></span>
+            </div>
+            <strong id="lesson-score">0 / 0</strong>
+          </header>
+          <div class="lesson-content" id="lesson-content"></div>
+          <footer class="lesson-footer">
+            <div class="lesson-feedback" id="lesson-feedback" aria-live="polite"></div>
+            <button class="primary-button lesson-next" id="lesson-next" type="button" disabled>
+              Tekshirish
+            </button>
+          </footer>
+        </section>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
