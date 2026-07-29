@@ -1,0 +1,305 @@
+name: Desktop release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (must match desktop/package.json and tauri.conf.json)
+        required: true
+        default: "1.0.0"
+      release_notes:
+        description: Short update notes shown inside the desktop app
+        required: true
+        default: "Pomp HSK AI desktop release"
+      publish_to_r2:
+        description: Upload verified artifacts to Cloudflare R2
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-release-${{ inputs.version }}
+  cancel-in-progress: false
+
+env:
+  RELEASE_VERSION: ${{ inputs.version }}
+
+jobs:
+  macos:
+    name: Build universal macOS DMG
+    runs-on: macos-14
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri -> target
+
+      - name: Install desktop dependencies
+        working-directory: desktop
+        run: npm ci
+
+      - name: Verify release version
+        working-directory: desktop
+        shell: bash
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const pkg = require("./package.json");
+            const tauri = JSON.parse(fs.readFileSync("./src-tauri/tauri.conf.json", "utf8"));
+            const expected = process.env.RELEASE_VERSION;
+            if (!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(expected)) throw new Error("Version must be stable SemVer");
+            if (pkg.version !== expected || tauri.version !== expected) {
+              throw new Error(`Version mismatch: input=${expected}, package=${pkg.version}, tauri=${tauri.version}`);
+            }
+          '
+
+      - name: Test desktop UI
+        working-directory: desktop
+        run: npm run test:ui
+
+      - name: Build universal DMG and updater
+        working-directory: desktop
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri -- build --target universal-apple-darwin --bundles app,dmg
+
+      - name: Collect and checksum macOS artifacts
+        shell: bash
+        run: |
+          bundle_root="desktop/src-tauri/target/universal-apple-darwin/release/bundle"
+          dmg_path="$(find "$bundle_root/dmg" -type f -name '*.dmg' -print -quit)"
+          updater_path="$(find "$bundle_root/macos" -type f -name '*.app.tar.gz' -print -quit)"
+          test -n "$dmg_path"
+          test -n "$updater_path"
+          test -f "${updater_path}.sig"
+          mkdir -p desktop/releases/macos
+          cp "$dmg_path" "desktop/releases/macos/Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
+          cp "$updater_path" "desktop/releases/macos/Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
+          cp "${updater_path}.sig" "desktop/releases/macos/Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz.sig"
+          cd desktop/releases/macos
+          shasum -a 256 \
+            "Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg" \
+            "Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz" \
+            > SHA256SUMS-macos.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pomp-HSK-AI_${{ inputs.version }}_macos
+          path: desktop/releases/macos/
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    name: Build Windows x64 NSIS installer
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri -> target
+
+      - name: Install desktop dependencies
+        working-directory: desktop
+        run: npm ci
+
+      - name: Verify release version
+        working-directory: desktop
+        shell: bash
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const pkg = require("./package.json");
+            const tauri = JSON.parse(fs.readFileSync("./src-tauri/tauri.conf.json", "utf8"));
+            const expected = process.env.RELEASE_VERSION;
+            if (!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(expected)) throw new Error("Version must be stable SemVer");
+            if (pkg.version !== expected || tauri.version !== expected) {
+              throw new Error(`Version mismatch: input=${expected}, package=${pkg.version}, tauri=${tauri.version}`);
+            }
+          '
+
+      - name: Test desktop UI
+        working-directory: desktop
+        run: npm run test:ui
+
+      - name: Build NSIS installer and updater
+        working-directory: desktop
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri -- build --target x86_64-pc-windows-msvc --bundles nsis
+
+      - name: Collect and checksum Windows artifacts
+        shell: pwsh
+        run: |
+          $bundleRoot = "desktop/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis"
+          $installer = Get-ChildItem -Path $bundleRoot -Filter "*.exe" | Select-Object -First 1
+          if (-not $installer) { throw "NSIS installer was not produced" }
+          $signature = "$($installer.FullName).sig"
+          if (-not (Test-Path $signature)) { throw "Updater signature was not produced" }
+          $releaseDir = "desktop/releases/windows"
+          New-Item -ItemType Directory -Force -Path $releaseDir | Out-Null
+          $releaseName = "Pomp-HSK-AI_${env:RELEASE_VERSION}_x64-setup.exe"
+          Copy-Item $installer.FullName "$releaseDir/$releaseName"
+          Copy-Item $signature "$releaseDir/$releaseName.sig"
+          $hash = (Get-FileHash "$releaseDir/$releaseName" -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $releaseName" | Set-Content "$releaseDir/SHA256SUMS-windows.txt" -Encoding ascii
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pomp-HSK-AI_${{ inputs.version }}_windows
+          path: desktop/releases/windows/
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Publish to Cloudflare R2
+    if: ${{ inputs.publish_to_r2 }}
+    needs: [macos, windows]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
+      RELEASE_NOTES: ${{ inputs.release_notes }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Pomp-HSK-AI_${{ inputs.version }}_*
+          path: release
+          merge-multiple: true
+
+      - name: Validate R2 configuration
+        shell: bash
+        run: |
+          for value in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY R2_ACCOUNT_ID R2_BUCKET R2_PUBLIC_BASE_URL; do
+            test -n "${!value}" || { echo "::error::$value is required"; exit 1; }
+          done
+          case "$R2_PUBLIC_BASE_URL" in
+            https://*) ;;
+            *) echo "::error::R2_PUBLIC_BASE_URL must use HTTPS"; exit 1 ;;
+          esac
+
+      - name: Publish installers and updater artifacts
+        shell: bash
+        run: |
+          endpoint="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          prefix="desktop/v${RELEASE_VERSION}"
+          mac_dmg="Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
+          mac_update="Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
+          win_exe="Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe"
+
+          aws s3 cp "release/$mac_dmg" "s3://${R2_BUCKET}/${prefix}/$mac_dmg" \
+            --endpoint-url "$endpoint" \
+            --content-type "application/x-apple-diskimage" \
+            --content-disposition "attachment; filename=\"$mac_dmg\"" \
+            --cache-control "public,max-age=31536000,immutable"
+          aws s3 cp "release/$mac_update" "s3://${R2_BUCKET}/${prefix}/$mac_update" \
+            --endpoint-url "$endpoint" \
+            --content-type "application/gzip" \
+            --cache-control "public,max-age=31536000,immutable"
+          aws s3 cp "release/$mac_update.sig" "s3://${R2_BUCKET}/${prefix}/$mac_update.sig" \
+            --endpoint-url "$endpoint" \
+            --content-type "text/plain; charset=utf-8" \
+            --cache-control "public,max-age=31536000,immutable"
+          aws s3 cp "release/$win_exe" "s3://${R2_BUCKET}/${prefix}/$win_exe" \
+            --endpoint-url "$endpoint" \
+            --content-type "application/vnd.microsoft.portable-executable" \
+            --content-disposition "attachment; filename=\"$win_exe\"" \
+            --cache-control "public,max-age=31536000,immutable"
+          aws s3 cp "release/$win_exe.sig" "s3://${R2_BUCKET}/${prefix}/$win_exe.sig" \
+            --endpoint-url "$endpoint" \
+            --content-type "text/plain; charset=utf-8" \
+            --cache-control "public,max-age=31536000,immutable"
+
+      - name: Create and publish release metadata
+        shell: bash
+        run: |
+          base="${R2_PUBLIC_BASE_URL%/}/desktop/v${RELEASE_VERSION}"
+          mac_dmg="Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
+          mac_update="Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
+          win_exe="Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe"
+          mac_signature="$(tr -d '\r\n' < "release/$mac_update.sig")"
+          win_signature="$(tr -d '\r\n' < "release/$win_exe.sig")"
+          mac_sha="$(awk 'NR == 1 {print $1}' release/SHA256SUMS-macos.txt)"
+          win_sha="$(awk 'NR == 1 {print $1}' release/SHA256SUMS-windows.txt)"
+
+          jq -n \
+            --arg version "$RELEASE_VERSION" \
+            --arg notes "$RELEASE_NOTES" \
+            --arg mac_download "$base/$mac_dmg" \
+            --arg mac_update "$base/$mac_update" \
+            --arg mac_signature "$mac_signature" \
+            --arg mac_sha256 "$mac_sha" \
+            --arg windows_download "$base/$win_exe" \
+            --arg windows_update "$base/$win_exe" \
+            --arg windows_signature "$win_signature" \
+            --arg windows_sha256 "$win_sha" \
+            '{
+              version: $version,
+              notes: $notes,
+              macos: {
+                download_url: $mac_download,
+                update_url: $mac_update,
+                signature: $mac_signature,
+                sha256: $mac_sha256
+              },
+              windows: {
+                download_url: $windows_download,
+                update_url: $windows_update,
+                signature: $windows_signature,
+                sha256: $windows_sha256
+              }
+            }' > latest.json
+
+          endpoint="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp latest.json "s3://${R2_BUCKET}/desktop/latest.json" \
+            --endpoint-url "$endpoint" \
+            --content-type "application/json; charset=utf-8" \
+            --cache-control "no-store"
+
+          {
+            echo "### Desktop v${RELEASE_VERSION} published"
+            echo
+            echo "Release metadata: ${R2_PUBLIC_BASE_URL%/}/desktop/latest.json"
+            echo
+            echo "Keep DESKTOP_DOWNLOADS_ENABLED=false until clean-machine tests pass."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pomp-HSK-AI_${{ inputs.version }}_release-metadata
+          path: latest.json
+          if-no-files-found: error
+          retention-days: 30
