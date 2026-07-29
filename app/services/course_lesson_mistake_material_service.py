@@ -319,6 +319,73 @@ class CourseLessonMistakeMaterialService:
         }
 
     @classmethod
+    def _match_pairs_item(
+        cls,
+        raw: dict,
+        card: dict,
+        material: dict,
+        lang: str,
+    ) -> dict | None:
+        raw_pairs = card.get("pairs")
+        if not isinstance(raw_pairs, list):
+            return None
+        pairs: list[tuple[str, str]] = []
+        for raw_pair in raw_pairs:
+            if not isinstance(raw_pair, list) or len(raw_pair) < 2:
+                return None
+            left = cls._text(raw_pair[0], 200)
+            right = cls._localized(raw_pair[1], lang, 400)
+            if not left or not right:
+                return None
+            pairs.append((left, right))
+        if len(pairs) < 2:
+            return None
+
+        left_raw = raw.get("selected_left_index")
+        right_raw = raw.get("selected_right_index")
+        if isinstance(left_raw, bool) or isinstance(right_raw, bool):
+            return None
+        try:
+            left_index = int(left_raw)
+            right_index = int(right_raw)
+        except (TypeError, ValueError):
+            return None
+        if (
+            not 0 <= left_index < len(pairs)
+            or not 0 <= right_index < len(pairs)
+            or left_index == right_index
+        ):
+            return None
+
+        left_text = pairs[left_index][0]
+        selected_answer = f"{left_text} → {pairs[right_index][1]}"
+        correct_answer = f"{left_text} → {pairs[left_index][1]}"
+        material.update(
+            {
+                "pairs": [
+                    {"left": left, "right": right}
+                    for left, right in pairs
+                ],
+                "correct_answer": correct_answer,
+            }
+        )
+        return {
+            "question_id": material["material_ref"],
+            "question": f"{left_text} → ?",
+            "selected_answer": selected_answer,
+            "correct_answer": correct_answer,
+            "explanation": material["explanation"],
+            "category": material["category"],
+            "format": material["format"],
+            "language": material["language"],
+            "sentence": material["sentence"],
+            "audio_text": material["audio_text"],
+            "pinyin": material["pinyin"],
+            "material_ref": material["material_ref"],
+            "material": material,
+        }
+
+    @classmethod
     def canonicalize_items(
         cls,
         *,
@@ -371,6 +438,8 @@ class CourseLessonMistakeMaterialService:
             card_type = material["format"]
             if card_type in {"sentence_builder", "reverse_builder"}:
                 item = cls._builder_item(raw, card, material, lang)
+            elif card_type == "match_pairs":
+                item = cls._match_pairs_item(raw, card, material, lang)
             else:
                 item = cls._choice_item(raw, card, material, lang)
             if item:

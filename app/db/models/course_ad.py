@@ -21,9 +21,12 @@ class CourseAdCreative(Base):
     language: Mapped[str] = mapped_column(String(8), default="all", index=True, nullable=False)
     link_url: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
     # Reklama turi: "odiy" (oddiy reklama), "hamkorlik" (hamkorlik uchun),
-    # "bot" (boshqa botni reklama qilish). Turga qarab mini app'da knopka farq qiladi.
+    # "bot" (boshqa botni reklama qilish), "dars_yakuni" (dars tugagach bepul
+    # userga ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA,
+    # mashq bo'limlarida CHIQMAYDI). Turga qarab mini app'da knopka va slot farq qiladi.
     ad_type: Mapped[str] = mapped_column(String(16), default="odiy", nullable=False)
-    # Universal knopka nomi (hamkorlik/bot uchun). Bo'sh bo'lsa — turga mos default nom.
+    # Universal knopka nomi (hamkorlik/bot/dars_yakuni tashqi CTA uchun).
+    # Bo'sh bo'lsa — turga mos default nom.
     button_text: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     duration_seconds: Mapped[int] = mapped_column(Integer, default=7, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True, nullable=False)

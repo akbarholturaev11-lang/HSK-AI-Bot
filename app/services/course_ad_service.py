@@ -28,7 +28,8 @@ COURSE_AD_LANGUAGES = ("uz", "ru", "tj")
 COURSE_AD_ALL_LANGUAGES = "all"
 # Reklama turlari: odiy (oddiy), hamkorlik (reklama qabul qilish/hamkorlik),
 # bot (o'z botlarini reklama qilish), dars_yakuni (dars tugagach bepul userga
-# ko'rsatiladigan blok — ostida obuna knopkasi). Odiy — hozirgi xatti-harakat.
+# ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA).
+# Odiy — hozirgi xatti-harakat.
 COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot", "dars_yakuni")
 COURSE_AD_DEFAULT_TYPE = "odiy"
 # Dars yakuni reklamasi ALOHIDA slotda ishlaydi va boshqa reklamalarga

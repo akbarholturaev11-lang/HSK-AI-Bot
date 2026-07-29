@@ -126,6 +126,32 @@ class CourseLessonMistakeMaterialServiceTests(unittest.TestCase):
         self.assertEqual(material["pinyin"], "nī hǎo → nǐ hǎo")
         self.assertEqual(material["source"]["section"], 3)
 
+    def test_match_pairs_uses_canonical_pair_indexes(self):
+        items = CourseLessonMistakeMaterialService.canonicalize_items(
+            level="hsk1",
+            lesson_order=1,
+            lang="uz",
+            items=[
+                {
+                    "material_ref": "lesson:hsk1:1:section:1:card:9",
+                    "selected_left_index": 0,
+                    "selected_right_index": 1,
+                    "selected_answer": "FORGED",
+                }
+            ],
+        )
+
+        self.assertEqual(len(items), 1)
+        item = items[0]
+        self.assertEqual(item["question"], "你 → ?")
+        self.assertEqual(item["selected_answer"], "你 → yaxshi, ajoyib")
+        self.assertEqual(item["correct_answer"], "你 → sen (birlik)")
+        self.assertEqual(item["format"], "match_pairs")
+        self.assertEqual(
+            item["material"]["pairs"][0],
+            {"left": "你", "right": "sen (birlik)"},
+        )
+
     def test_missing_lesson_material_raises_a_bounded_error(self):
         with self.assertRaises(CourseLessonMistakeMaterialError):
             CourseLessonMistakeMaterialService.canonicalize_items(

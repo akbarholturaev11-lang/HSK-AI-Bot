@@ -494,6 +494,92 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(CourseAdService.normalize_language(None), "all")
         self.assertEqual(CourseAdService.normalize_language("en"), "all")
 
+    def test_course_ad_type_and_slot_are_normalized(self):
+        for value in ("odiy", "hamkorlik", "bot", "dars_yakuni"):
+            self.assertEqual(CourseAdService.normalize_ad_type(value), value)
+        self.assertEqual(CourseAdService.normalize_ad_type("DARS_YAKUNI"), "dars_yakuni")
+        # Noma'lum/bo'sh tur oddiy reklamaga tushadi.
+        self.assertEqual(CourseAdService.normalize_ad_type("xyz"), "odiy")
+        self.assertEqual(CourseAdService.normalize_ad_type(None), "odiy")
+        self.assertEqual(CourseAdService.normalize_slot("lesson_end"), "lesson_end")
+        self.assertEqual(CourseAdService.normalize_slot("practice"), "practice")
+        # Noma'lum/bo'sh slot mashq bo'limlari slotiga tushadi.
+        self.assertEqual(CourseAdService.normalize_slot(""), "practice")
+        self.assertEqual(CourseAdService.normalize_slot("lesson"), "practice")
+
+    async def test_lesson_end_ads_never_mix_with_other_placements(self):
+        """Dars yakuni reklamasi ALOHIDA slot: mashq bo'limlarida chiqmaydi,
+        dars oxirida esa faqat u chiqadi. Filtr haqiqiy SQL bilan tekshiriladi."""
+        import os
+        import tempfile
+
+        from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+        from app.db.base import Base
+        from app.db.models.course_ad import CourseAdCreative
+        from app.services import course_ad_service as svc
+
+        engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+        try:
+            async with engine.begin() as conn:
+                await conn.run_sync(
+                    Base.metadata.create_all, tables=[CourseAdCreative.__table__]
+                )
+            maker = async_sessionmaker(engine, expire_on_commit=False)
+            rows = {
+                "odiy": "ad_odiy.mp4",
+                "hamkorlik": "ad_hamkorlik.mp4",
+                "bot": "ad_bot.mp4",
+                "dars_yakuni": "ad_dars_yakuni.mp4",
+            }
+            with tempfile.TemporaryDirectory() as tmp:
+                for name in rows.values():
+                    with open(os.path.join(tmp, name), "wb") as fh:
+                        fh.write(b"mp4")
+                async with maker() as session:
+                    for ad_type, name in rows.items():
+                        session.add(
+                            CourseAdCreative(
+                                title=ad_type,
+                                media_path=name,
+                                media_type="video",
+                                ad_type=ad_type,
+                                language="all",
+                                duration_seconds=7,
+                                is_active=True,
+                            )
+                        )
+                    # Eski yozuv: `ad_type` NULL — mashq slotida qolishi kerak.
+                    session.add(
+                        CourseAdCreative(
+                            title="legacy",
+                            media_path=next(iter(rows.values())),
+                            media_type="video",
+                            ad_type=None,
+                            language="all",
+                            duration_seconds=7,
+                            is_active=True,
+                        )
+                    )
+                    await session.commit()
+
+                with mock.patch.object(svc, "COURSE_AD_MEDIA_ROOT", tmp):
+                    async with maker() as session:
+                        service = CourseAdService(session)
+                        practice = await service.list_active()
+                        lesson_end = await service.list_active(slot="lesson_end")
+                        one = await service.get_active_ad(slot="lesson_end")
+
+                    self.assertEqual(
+                        sorted(ad.title for ad in practice),
+                        ["bot", "hamkorlik", "legacy", "odiy"],
+                    )
+                    self.assertEqual([ad.title for ad in lesson_end], ["dars_yakuni"])
+                    self.assertIsNotNone(one)
+                    self.assertEqual(one.title, "dars_yakuni")
+        finally:
+            await engine.dispose()
+
     def test_course_ad_payload_exposes_language(self):
         from app.db.models.course_ad import CourseAdCreative
 
@@ -505,6 +591,26 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload["language"], "uz")
         self.assertFalse(payload["media_available"])
         self.assertFalse(payload["media_backed_up"])
+
+    def test_lesson_end_payload_keeps_optional_external_cta(self):
+        from app.db.models.course_ad import CourseAdCreative
+
+        ad = CourseAdCreative(
+            id=2,
+            title="lesson end",
+            media_path="lesson_end.mp4",
+            media_type="video",
+            language="uz",
+            ad_type="dars_yakuni",
+            link_url="https://example.uz/offer",
+            button_text="Batafsil ko'rish",
+            duration_seconds=7,
+            is_active=True,
+        )
+        payload = CourseAdService.payload(ad)
+        self.assertEqual(payload["ad_type"], "dars_yakuni")
+        self.assertEqual(payload["link_url"], "https://example.uz/offer")
+        self.assertEqual(payload["button_text"], "Batafsil ko'rish")
 
     def test_media_available_reflects_file_on_disk(self):
         """Fayli diskda yo'q reklama (ephemeral disk restartda o'chgan) media_available=False
