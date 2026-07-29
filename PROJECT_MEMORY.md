@@ -207,6 +207,78 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-07-26 — Dars yakuni reklamasiga ixtiyoriy tashqi CTA
+
+Changed:
+- `dars_yakuni` reklamasi bot obuna yo'lini asosiy CTA sifatida saqlaydi; admin
+  `link_url` kiritsa, uning ostida alohida tashqi-link knopkasi ham chiqadi.
+- Admin bu tur uchun mavjud `button_text` maydonida tashqi CTA nomini bera oladi;
+  nom bo'sh bo'lsa UZ/RU/TJ lokal default ishlaydi. Link bo'lmasa knopka yashiriladi.
+- Yangi DB ustuni/migratsiya yo'q: mavjud `link_url` + `button_text` ishlatildi.
+  `ads.js` cache versiyasi barcha uni yuklaydigan Course v3 sahifalarda yangilandi.
+
+Files touched:
+- `app/static/admin.html`, `app/static/course_v3_data/ads.js`,
+  `app/static/course-v3.html`, `app/static/course_v3_{recognition,pronunciation,memorize,test,mistakes}.html`,
+  `app/db/models/course_ad.py`, `app/services/course_ad_service.py`, tests.
+
+Risk / follow-up:
+- To'lov/obuna huquqi, dars progressi va reklama slot filtri o'zgarmadi.
+- Tekshiruv: 260 non-E2E test + 2 maxsus mobil Chromium flow o'tdi; umumiy E2E'dagi
+  4 eski baseline failure saqlandi (lesson sheet, D1 resume, HSK test copy, checkout copy).
+
+### 2026-07-25 — Dars yakuni reklamasi (alohida tur) + ostida obuna knopkasi
+
+Changed (foydalanuvchi: "bepul userlarga dars tugagach ham bitta reklama blok chiqsin, uni
+boshqalariga aralashtirmaslik kerak — odiy/hamkorlik/bot turlari yonida 'dars yakuni reklamasi'
+bo'lsin va u erga botdagi obuna yo'li knopkasi ulansin"):
+- **Yangi `ad_type` = `dars_yakuni`** (`COURSE_AD_TYPES`ga qo'shildi; MIGRATSIYA KERAK EMAS —
+  mavjud `String(16)` ustunidagi yangi qiymat). Ustun izohi `app/db/models/course_ad.py`da
+  yangilandi.
+- **ARALASHMASLIK server tomonda**: `CourseAdService._slot_filter(slot)` +
+  `normalize_slot` (`practice` | `lesson_end`). `list_active` / `list_active_payloads` /
+  `get_active_ad` / `get_active_payload` endi `slot` qabul qiladi:
+  `lesson_end` → FAQAT `ad_type == "dars_yakuni"`; `practice` (default) → `dars_yakuni`dan
+  tashqari hammasi (`ad_type IS NULL` legacy yozuvlar ham mashq slotida qoladi).
+  Ya'ni mashq bo'limlarida dars yakuni roliki chiqmaydi va aksincha.
+- **`GET /api/v3/ad`**: yangi `slot` query param. `slot=lesson_end` bo'lsa dars/feature
+  validatsiyasi shart emas (dars raqami bilan keladi), javobda `slot` qaytadi va bir nechta
+  aktiv reklama bo'lsa BITTASI tanlanadi — `ads[lesson_order % len(ads)]` (har dars navbat bilan
+  boshqasi). Obunachiga (`CourseMiniAppAccessService.is_paid_user`) `slot=lesson_end` uchun 404 —
+  klient xato hisoblasa ham obunachi reklama ko'rmaydi.
+- **`ads.js` (`window.CourseAds`)**: `CFG.slot` + `CFG.lessonOrder` + `CFG.onOffer`.
+  `fetchAds` `&slot=&lesson=` uzatadi; `recordView` `lesson_order`ni CFG'dan oladi
+  (`startAttempt` ataylab 0 — attempt faqat mashq gate'i uchun). Dars yakuni rejimida matnlar
+  boshqacha (3 tilda yangi kalitlar `leLabel`/`leNote`/`leSubTitle`) va ikkilamchi tugma
+  "Reklama bilan davom etish" emas, oddiy "Davom etish" (`adReady`).
+- **`course-v3.html`**: endi `ads.js`ni ham yuklaydi (`?v=20260725`). `applyLessonDone` bepul +
+  Telegram ichidagi userga `window._pendingLessonEndAd = cur.n` qo'yadi; `App.closeLevelUp(dest)`
+  esa navigatsiyadan OLDIN `playLessonEndAd(go)` chaqiradi — ya'ni reklama bayram → streak →
+  reyting ekranlaridan KEYIN, kurs xaritasiga qaytishdan oldin chiqadi (foydalanuvchi tanlovi).
+  Reklama yo'q / yuklanmasa jim o'tib xaritaga qaytadi. Obuna tugmasi → `App.goPay("v3_lesson_end_ad")`
+  (bot obuna yo'li = subscription.html). `onOffer` → `paywall_seen` (source `v3_lesson_end_ad`).
+- Admin (`admin.html`): "Reklama turi"ga 🎓 Dars yakuni reklamasi qo'shildi (knopka nomi
+  o'chirilgan — obuna knopkasi avtomatik), kartada slot qatori ko'rsatiladi.
+  `subscription_entry_analytics_service` SOURCE_LABELS'ga `v3_lesson_end_ad` yorlig'i.
+
+Files touched:
+- `app/services/course_ad_service.py`, `app/db/models/course_ad.py`, `app/main.py`,
+  `app/services/subscription_entry_analytics_service.py`, `app/static/course_v3_data/ads.js`,
+  `app/static/course-v3.html`, `app/static/admin.html`,
+  `tests/test_course_miniapp_foundation.py`, `tests/test_course_v3_static_data.py`
+
+Risk / follow-up:
+- Migratsiya YO'Q. To'lov/obuna huquqi, XP, progress, dars kontenti tegilmadi — reklama
+  gating ham qo'shilmadi (bu blok hech narsani qulflamaydi, faqat ko'rsatiladi).
+- Chastota: HAR mini-dars oxirida 1 blok (foydalanuvchi shunday tanladi). Agar bepul userlar
+  charchasa, birinchi sozlanadigan joy — `applyLessonDone`dagi `_pendingLessonEndAd`.
+- Admin dars yakuni reklamasini yuklamasa hech narsa o'zgarmaydi (404 → jim o'tadi).
+- Testlar: 253 passed (non-e2e) + yangi 3 test; 4 e2e smoke (course-v3 sheet/d1/support/checkout)
+  AVVALDAN yiqiq — `db07fd2e` worktree'da ham aynan shu 4 tasi yiqilishi tasdiqlandi.
+- Lokal preview'da 3 tilda tekshirildi: blok bayramdan keyin chiqadi, taymer → "Obuna olish"
+  (source `v3_lesson_end_ad`) + "Davom etish" (→ `/api/v3/ad/view` yozadi, xaritaga qaytadi),
+  obunachida umuman boshlanmaydi, reklama yo'q bo'lsa jim o'tadi.
+
 ### 2026-07-25 — Kinematik kirish: yaqin kadr panda + real parvoz sahnasi (osmon/yer/bulut/shamol)
 
 Changed (foydalanuvchi: "effekt vaqtida yaqin kadrdan pandani olish kerak, hali hech bir ekran
@@ -4020,6 +4092,138 @@ Risk:
 - Past. Ma'lumot mazmuni bayt-bayt bir xilligi tekshirildi; UI/flow o'zgarmadi.
 - MUHIM: mashq sahifalariga `hsk-data.js` script tegini qaytarib qo'ymang — bu regressiya bo'ladi. `WORDS` kerak bo'lsa `hsk-words.js` ishlating.
 - `hsk-data.js` yangilansa, `python3 scripts/split_hsk_data.py` ni qayta yuriting va HTML'lardagi `?v=` raqamini yangilang (fayllar `immutable` keshlanadi).
+
+---
+
+### 2026-07-28 — Pomp HSK AI Desktop original loyihaga birlashtirildi
+
+Architecture:
+- `HSK AI bot` yagona canonical repository. Tauri v2 source `desktop/` ichida;
+  Telegram bot, Mini App, backend, obuna, referral, progress va analytics bitta
+  product/account tizimi bo'lib qoladi.
+- Build artifactlar Git'ga kiritilmaydi; approved release storage/CDN'da
+  saqlanadi.
+
+Acquisition:
+- Mini App Mac/Windows bosilganda fresh Telegram `initData` bilan backenddan
+  tracked HTTPS `download_url` + safe `file_name` oladi.
+- Mini App `openLink` orqali branded `/desktop-download` sahifasini ochadi;
+  foydalanuvchi u yerdan `/downloads/macos` yoki `/downloads/windows` direct
+  redirect bilan faylni oladi. Link bot chatiga yuborilmaydi va Mini App
+  avtomatik yopilmaydi.
+- Profile, home prompt, lesson-end promo va barcha shared ad/practice
+  ekranlariga desktop CTA ulangan. Telefonda desktop fayl yuklanishi oldidan
+  confirmation bor.
+- Release fail-closed: repository default va `.env.example` signed real
+  artifact URL'lari tayyor bo'lmaguncha `DESKTOP_DOWNLOADS_ENABLED=false`.
+  Railway deployment env bu taskda tekshirilmadi yoki o'zgartirilmadi.
+
+Desktop auth/security:
+- Migration `0066_desktop_foundation` uch jadval qo'shadi:
+  `desktop_link_requests`, `desktop_devices`, `desktop_sessions`.
+- Bot deep-linkni ochishning o'zi accountni ulamaydi. User platform/version/code
+  ko'rsatilgan `Tasdiqlash / Bekor qilish` bosqichidan o'tadi.
+- Link code single-use; device accountga bound; access token qisqa muddatli;
+  refresh token rotate bo'ladi va OS credential store'da turadi.
+- Analytics xatosi yaratilgan desktop session/token transactionini rollback
+  qilmasligi uchun auth core avval commit qilinadi.
+- Desktop auth JSON body 2 KiB bilan cap qilinadi; validation secretni echo
+  qilmaydi va `no-store` qaytaradi.
+- Public link-startni production scale'da yoqishdan oldin atomik global
+  limiter, ingress body-size limiti, expired link/session cleanup va tracked
+  download token expiry/consumption policy kerak.
+- Online logout server session/device'ni revoke qiladi. Revoke paytida internet
+  bo'lmasa ham native client local access/refresh credentiallarni albatta
+  o'chiradi; serverdagi yetib bo'lmagan session normal TTL bilan tugaydi.
+
+Desktop Phase A application:
+- Dedicated frontend `desktop/ui`; Tauri oynasi `1180x780`, minimum
+  `720x560`, strict CSP (`connect-src` faqat Tauri IPC).
+- Variant A ishlaydi: chapda course navigation, markazda real dars, o'ng
+  pastki chetida dumaloq AI launcher/drawer, profile/til/obuna holati saqlangan.
+- Telegram link oqimi explicit:
+  `auth status -> link start -> user Telegramni ochadi -> bot approve/cancel ->
+  poll -> bootstrap`. Webview polling secret/deep-link/tokenlarni ko'rmaydi.
+- Bearer desktop course API:
+  `/api/v3/desktop/course/map`,
+  `/api/v3/desktop/course/lesson/{lesson_order}`,
+  `/api/v3/desktop/course/complete`,
+  `/api/v3/desktop/preferences/language`.
+  Level, premium access, progress, XP va completion server-authoritative;
+  completion event_id bilan idempotent.
+- Mini App'dagi access parity saqlandi: bepul user 2 mini-darsni tugatadi,
+  3-qismning yarmigacha `preview_half` ko'radi, keyin obuna yo'liga qaytadi;
+  preview hech qachon completion/XP yozmaydi. Tugagan premium dars obuna
+  tugagandan keyin review qilinsa ham duplicate sifatida ochiladi, yangi XP yo'q.
+- Renderer checked-in Course v3'dagi barcha card type'larni qoplaydi. Noto'g'ri
+  javob clientdan stable `material_ref` + selection sifatida keladi, trusted
+  review materiali server lesson JSON'dan qayta quriladi.
+- AI drawer hozir faqat real model-file statusini ko'rsatadi. Lokal inference
+  yo'q va soxta chat javobi berilmaydi. Chinese TTS native runtime bo'lmasa
+  webview/OS local speech fallbackni sinaydi.
+- Localhost preview faqat explicit `?mock=1`; production fake data'ga fallback
+  qilmaydi.
+- Kelajak Google/email loginlari alohida user emas, shu ichki userga ulangan
+  identity provider bo'lishi shart; aks holda obuna/progress bo'linadi.
+
+Analytics:
+- Direct funnel:
+  `desktop_download_requested -> desktop_download_started ->
+  desktop_download_link_clicked -> desktop_session_linked ->
+  desktop_first_open`.
+- Faqat authenticated `desktop_first_open` install hisoblanadi.
+- Admin Mini App va bot stats desktop funnel/DAU/WAU/MAU/platform/version
+  ko'rsatadi. Physical device hisobi session emas, server `device_id` bo'yicha.
+- App versiyasi oshganda authenticated bootstrap idempotent
+  `desktop_update_installed` eventini yozadi; admin stats o'rnatilgan update
+  user/event sonini ko'rsatadi.
+
+Release/update:
+- Tauri updater client, signed updater artifact va fail-closed backend endpoint
+  tayyor. `DESKTOP_UPDATES_ENABLED=false` real public artifactlar yuklanib,
+  clean-machine testdan o'tmaguncha o'zgarmaydi.
+- GitHub Actions manual workflow universal macOS DMG/updater va Windows x64
+  NSIS EXE/updater build, checksum va R2 upload uchun tayyor.
+- Lokal ARM64 test build mavjud:
+  `desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/`
+  ichidagi `Pomp HSK AI_1.0.0_aarch64.dmg`. U ad-hoc signed, notarized emas.
+- Updater private key repodan tashqarida va password macOS Keychain'da.
+  Secret qiymatlarni memory yoki Git'ga yozmang.
+
+Brand:
+- Canonical HSK AI panda assetlar:
+  `app/static/assets/hsk-ai-avatar.webp`,
+  `app/static/assets/hsk-ai-cover.webp` va desktop nusxalari.
+- Close-up panda kichik brand/AI/OS iconlarda; full composition katta desktop
+  promo visualda ishlatiladi. Real Telegram/user avatarlarini almashtirmang.
+- Tauri `bundle.icon` PNG/ICNS/ICO fayllariga explicit ulangan; configdan
+  olib tashlash Dock/installer icon regressiyasiga olib keladi.
+
+Important files:
+- `DESKTOP_IMPLEMENTATION_PLAN.md`
+- `DESKTOP_AUTH_CONTRACT.md`
+- `app/api/desktop_course.py`, `app/services/desktop_course_service.py`
+- `app/api/desktop_download.py`, `app/services/desktop_download_service.py`
+- `app/api/desktop_auth.py`, `app/services/desktop_auth_service.py`
+- `app/db/models/desktop.py`, `alembic/versions/0066_desktop_foundation.py`
+- `app/static/course_v3_data/desktop-download.js`
+- `app/static/desktop-download.html`
+- `app/services/desktop_update_service.py`, `app/api/desktop_update.py`
+- `app/services/desktop_analytics_service.py`
+- `.github/workflows/desktop-release.yml`
+- `desktop/`
+
+Not complete:
+- Universal Mac DMG va Windows EXE hali CI'da chiqarilmagan; GitHub auth/secrets
+  va R2 bucket/custom-domain config kerak.
+- Lokal ARM64 DMG clean Mac'da, universal DMG Intel Mac'da va EXE clean Windows
+  VM'da o'rnatish testidan o'tmagan.
+- Apple/Windows pullik signing yo'q; `$0` rejada macOS/SmartScreen warning
+  instruktsiyasi saqlanadi. `DESKTOP_DOWNLOADS_ENABLED=false` qoladi.
+- Offline course cache/sync va local AI inference/model installer keyingi
+  bosqich. Mini App floating AI chat ham hali implement qilinmagan.
+- Google OAuth/passwordless email va account-link/merge himoyasi keyingi
+  ixtiyoriy identity bosqichi.
 
 ---
 
