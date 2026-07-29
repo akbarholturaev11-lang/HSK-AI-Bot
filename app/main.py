@@ -17,6 +17,10 @@ from sqlalchemy import select
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import settings
+from app.api.desktop_auth import create_desktop_auth_router
+from app.api.desktop_course import create_desktop_course_router
+from app.api.desktop_download import create_desktop_download_router
+from app.api.desktop_update import create_desktop_update_router
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, init_db
 from app.db.models.user import User
@@ -52,6 +56,7 @@ from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonFlowService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
@@ -107,7 +112,10 @@ from app.bot.keyboards.promo_button import encode_promo_button_config
 from app.services.help_settings_service import HELP_LANGS, HELP_VIDEO_FIELDS, normalize_help_url
 from app.services.support_contact_service import ADMIN_CONTACT_KEY, admin_contact_url, normalize_admin_contact
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
-from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
+from app.services.telegram_webapp_auth import (
+    extract_fresh_verified_webapp_user_id,
+    extract_verified_webapp_user_id,
+)
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages as decode_ad_languages
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.ai_provider import (
@@ -401,6 +409,25 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=1024)
+app.include_router(
+    create_desktop_auth_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(
+    create_desktop_course_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(
+    create_desktop_download_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(create_desktop_update_router(settings_obj=settings))
 
 MINIAPP_HTML_HEADERS = {
     "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
@@ -456,9 +483,21 @@ def bot_username_value() -> str:
     return (settings.BOT_USERNAME or "darsi_chini_bot").strip().lstrip("@") or "darsi_chini_bot"
 
 
+def _desktop_latest_versions() -> dict[str, str]:
+    versions = {
+        "macos": str(getattr(settings, "DESKTOP_MAC_VERSION", "") or "").strip(),
+        "windows": str(getattr(settings, "DESKTOP_WINDOWS_VERSION", "") or "").strip(),
+    }
+    return {platform: version for platform, version in versions.items() if version}
+
+
 def _admin_miniapp_user_id(request: Request) -> int | None:
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    return extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN)
+    return extract_fresh_verified_webapp_user_id(
+        init_data,
+        settings.BOT_TOKEN,
+        max_age_seconds=settings.ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS,
+    )
 
 
 def _is_admin_id(telegram_id: int | None) -> bool:
@@ -1032,6 +1071,44 @@ async def course_v3_miniapp():
     return miniapp_file_response("app/static/course-v3.html")
 
 
+@app.get("/desktop-download.html")
+@app.get("/desktop-download")
+async def desktop_download_page():
+    return miniapp_file_response("app/static/desktop-download.html")
+
+
+@app.get("/desktop-download-page.css")
+async def desktop_download_page_styles():
+    return static_asset_response(
+        "app/static/desktop-download-page.css",
+        "text/css",
+    )
+
+
+@app.get("/desktop-download-page.js")
+async def desktop_download_page_script():
+    return static_asset_response(
+        "app/static/desktop-download-page.js",
+        "application/javascript",
+    )
+
+
+@app.get("/assets/hsk-ai-avatar.webp")
+async def hsk_ai_avatar():
+    return static_asset_response(
+        "app/static/assets/hsk-ai-avatar.webp",
+        "image/webp",
+    )
+
+
+@app.get("/assets/hsk-ai-cover.webp")
+async def hsk_ai_cover():
+    return static_asset_response(
+        "app/static/assets/hsk-ai-cover.webp",
+        "image/webp",
+    )
+
+
 @app.get("/course_v3_{page}.html")
 async def course_v3_sub_page(page: str):
     if page not in _COURSE_V3_PAGES:
@@ -1052,6 +1129,16 @@ async def course_v3_ads_script():
 @app.get("/course_v3_data/{filename}")
 async def course_v3_data_file(filename: str):
     import re
+    public_assets = {
+        "desktop-download.css": "text/css",
+        "desktop-download.js": "application/javascript",
+        "lesson_gate.js": "application/javascript",
+    }
+    if filename in public_assets:
+        return static_asset_response(
+            f"app/static/course_v3_data/{filename}",
+            public_assets[filename],
+        )
     if not re.fullmatch(r"[a-z0-9_\-]+\.json", filename):
         return JSONResponse(status_code=404, content={"error": "not_found"})
     return static_json_response(f"app/static/course_v3_data/{filename}")
@@ -1494,6 +1581,10 @@ async def v3_course_ad(
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
             if user and getattr(user, "language", None):
                 ad_language = user.language
+            # Dars yakuni reklamasi FAQAT bepul foydalanuvchiga. Obunachiga
+            # server ham bermaydi (klient xato hisoblasa ham reklama chiqmaydi).
+            if lesson_end and user and CourseMiniAppAccessService.is_paid_user(user):
+                return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
         if not ad_language and lang:
             ad_language = lang
         ad_language = CourseAdService.normalize_language(ad_language)
@@ -2312,6 +2403,43 @@ async def admin_miniapp_sub_entry_stats(request: Request):
             for r in rows
         ],
     })
+
+
+@app.post("/api/admin-miniapp/desktop-stats")
+async def admin_miniapp_desktop_stats(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    period = str(payload.get("period") or "all_time").strip().lower()
+    now = datetime.now(timezone.utc)
+    since_by_period = {
+        "all_time": None,
+        "weekly": now - timedelta(days=7),
+        "monthly": now - timedelta(days=30),
+    }
+    if period not in since_by_period:
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_desktop_stats_period"},
+        )
+    async with async_session_maker() as session:
+        snapshot = await DesktopAnalyticsService(session).snapshot(
+            now=now,
+            since=since_by_period[period],
+            latest_versions=_desktop_latest_versions(),
+        )
+    return JSONResponse(
+        content={
+            "ok": True,
+            "period": period,
+            "desktop": snapshot,
+        }
+    )
 
 
 @app.post("/api/admin-miniapp/management")

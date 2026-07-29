@@ -9,6 +9,7 @@ from aiogram.enums import ParseMode
 from app.db.session import init_db
 
 from app.bot.handlers.start import router as start_router
+from app.bot.handlers.desktop_auth import router as desktop_auth_router
 from app.bot.handlers.required_channel import router as required_channel_router
 from app.bot.handlers.commands import router as commands_router
 from app.bot.handlers.referral import router as referral_router
@@ -45,6 +46,8 @@ def create_bot(settings):
     dp.callback_query.middleware(RequiredChannelMiddleware(async_session_maker))
 
     dp.include_router(required_channel_router)
+    # Desktop deep links must be handled before the generic /start router.
+    dp.include_router(desktop_auth_router)
     dp.include_router(start_router)
     dp.include_router(commands_router)
     dp.include_router(admin_discount_router)

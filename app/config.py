@@ -31,6 +31,35 @@ class Settings(BaseSettings):
     BOT_USERNAME: str = ""
     MINI_APP_BASE_URL: str = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
 
+    # Desktop release controls. Downloads remain hidden unless the flag is on
+    # and at least one real, clean-machine-tested HTTPS artifact URL is set.
+    DESKTOP_DOWNLOADS_ENABLED: bool = False
+    DESKTOP_DOWNLOAD_BASE_URL: str = ""
+    DESKTOP_MAC_DOWNLOAD_URL: str = ""
+    DESKTOP_WINDOWS_DOWNLOAD_URL: str = ""
+    DESKTOP_MAC_VERSION: str = ""
+    DESKTOP_WINDOWS_VERSION: str = ""
+    # Tauri updater metadata is public but remains disabled until signed release
+    # archives and their detached signatures are published.
+    DESKTOP_UPDATES_ENABLED: bool = False
+    DESKTOP_MAC_UPDATER_URL: str = ""
+    DESKTOP_MAC_UPDATER_SIGNATURE: str = ""
+    DESKTOP_MAC_UPDATER_NOTES: str = ""
+    DESKTOP_WINDOWS_UPDATER_URL: str = ""
+    DESKTOP_WINDOWS_UPDATER_SIGNATURE: str = ""
+    DESKTOP_WINDOWS_UPDATER_NOTES: str = ""
+    DESKTOP_DOWNLOAD_RATE_LIMIT_COUNT: int = 3
+    DESKTOP_DOWNLOAD_RATE_LIMIT_WINDOW_SECONDS: int = 900
+    DESKTOP_DOWNLOAD_AUTH_MAX_AGE_SECONDS: int = 86400
+    # Native desktop auth fails closed without a private 32+ character secret.
+    DESKTOP_AUTH_SIGNING_SECRET: str = ""
+    DESKTOP_AUTH_LINK_TTL_SECONDS: int = 600
+    DESKTOP_AUTH_LINK_GLOBAL_RATE_LIMIT_COUNT: int = 120
+    DESKTOP_AUTH_LINK_GLOBAL_RATE_LIMIT_WINDOW_SECONDS: int = 60
+    DESKTOP_AUTH_ACCESS_TTL_SECONDS: int = 900
+    DESKTOP_AUTH_REFRESH_TTL_DAYS: int = 30
+    ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
+
     DEFAULT_LANGUAGE: str = "tj"
     LOG_LEVEL: str = "INFO"
     ENABLE_RICH_MESSAGES: bool = True

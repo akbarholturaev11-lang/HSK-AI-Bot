@@ -48,6 +48,23 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "d1_recovery_assigned",
     "d1_recovery_sent",
     "d1_recovery_send_failed",
+    "desktop_promo_seen",
+    "desktop_promo_dismissed",
+    "desktop_download_requested",
+    "desktop_download_started",
+    # Historical compatibility only; the direct-download flow does not emit it.
+    "desktop_download_message_sent",
+    "desktop_download_link_clicked",
+    "desktop_session_linked",
+    "desktop_first_open",
+    "desktop_app_opened",
+    "desktop_active_day",
+    "desktop_ai_pack_started",
+    "desktop_ai_pack_completed",
+    "desktop_offline_ai_used",
+    "desktop_progress_sync_succeeded",
+    "desktop_progress_sync_failed",
+    "desktop_update_installed",
 )
 
 CLIENT_COURSE_MINIAPP_EVENT_NAMES = (
@@ -66,6 +83,8 @@ CLIENT_COURSE_MINIAPP_EVENT_NAMES = (
     "mistake_review_started",
     "paywall_seen",
     "checkout_opened",
+    "desktop_promo_seen",
+    "desktop_promo_dismissed",
 )
 
 

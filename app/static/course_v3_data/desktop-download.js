@@ -1,0 +1,1174 @@
+(function () {
+  "use strict";
+
+  var params = new URLSearchParams(window.location.search || "");
+  var isDesktop =
+    params.get("desktop") === "1" ||
+    Boolean(window.__TAURI__ || window.__TAURI_INTERNALS__);
+  var promoRoot = document.getElementById("pomp-desktop-promo-root");
+  if (!promoRoot && document.body) {
+    promoRoot = document.createElement("div");
+    promoRoot.id = "pomp-desktop-promo-root";
+    promoRoot.hidden = true;
+    document.body.appendChild(promoRoot);
+  }
+  var REQUEST_TIMEOUT_MS = 18000;
+  var STATUS_ENDPOINT = "/api/v3/desktop-download/status";
+  var REQUEST_ENDPOINT = "/api/v3/desktop-download/request";
+  var STARTED_ENDPOINT = "/api/v3/desktop-download/started";
+  var PROMO_SOURCES = ["home_prompt", "lesson_end_promo", "ad_promo"];
+  var DEFAULT_PROMO_COOLDOWN_DAYS = 14;
+
+  var COPY = {
+    uz: {
+      eyebrow: "Pomp HSK AI · kompyuter",
+      cardTitle: "Kompyuterda qulayroq o‘rganing",
+      cardBody:
+        "Darslarni katta ekranda davom ettiring. Hisob, obuna va progress bir xil qoladi.",
+      promoTitle: "Darslarni kompyuterda davom ettiring",
+      promoBody:
+        "Mac yoki Windows ilovasida kurs katta ekranda, yangilanishlar esa avtomatik keladi.",
+      bigScreen: "Katta ekran",
+      autoUpdate: "Avtomatik update",
+      sharedProgress: "Yagona progress",
+      mac: "Mac uchun",
+      windows: "Windows uchun",
+      recommended: "Mos",
+      dismiss: "Keyinroq",
+      close: "Oynani yopish",
+      adEntry: "Kompyuter ilovasini olish",
+      sendingShort: "Tayyorlanmoqda…",
+      sending: "Yuklash sayti tayyorlanmoqda…",
+      telegramRequired: "Mini Appni bot ichidan qayta oching.",
+      releaseUnavailable: "Bu platforma uchun yuklash hozircha mavjud emas.",
+      rateLimited: "Ko‘p urinish bo‘ldi. Birozdan keyin qayta urinib ko‘ring.",
+      messageFailed: "Faylni ochib bo‘lmadi. Qayta urinib ko‘ring.",
+      requestTimeout: "Server vaqtida javob bermadi. Qayta urinib ko‘ring.",
+      networkError: "Server bilan aloqa bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.",
+      invalidDownload: "Server xavfsiz yuklash manzilini qaytarmadi.",
+      mobileWarning:
+        "Kompyuter ilovasining yuklash sayti ochiladi. Linkni Mac yoki Windows kompyuteringizga yuborishingiz mumkin. Davom etasizmi?",
+      successTitle: "Yuklash sayti ochildi",
+      successBody:
+        "Sayt operatsion tizimingizga mos DMG yoki EXE faylni va o‘rnatish qadamlarini ko‘rsatadi.",
+      successAction: "Tushunarli"
+    },
+    ru: {
+      eyebrow: "Pomp HSK AI · компьютер",
+      cardTitle: "Учитесь удобнее на компьютере",
+      cardBody:
+        "Продолжайте уроки на большом экране. Аккаунт, подписка и прогресс останутся общими.",
+      promoTitle: "Продолжайте уроки на компьютере",
+      promoBody:
+        "Курс удобнее на большом экране, а новые версии устанавливаются автоматически.",
+      bigScreen: "Большой экран",
+      autoUpdate: "Автообновление",
+      sharedProgress: "Общий прогресс",
+      mac: "Для Mac",
+      windows: "Для Windows",
+      recommended: "Подходит",
+      dismiss: "Позже",
+      close: "Закрыть окно",
+      adEntry: "Скачать приложение для компьютера",
+      sendingShort: "Готовим…",
+      sending: "Готовим страницу загрузки…",
+      telegramRequired: "Откройте Mini App заново из бота.",
+      releaseUnavailable: "Загрузка для этой платформы пока недоступна.",
+      rateLimited: "Слишком много попыток. Попробуйте немного позже.",
+      messageFailed: "Не удалось открыть файл. Попробуйте ещё раз.",
+      requestTimeout: "Сервер не ответил вовремя. Попробуйте ещё раз.",
+      networkError: "Нет связи с сервером. Проверьте интернет и попробуйте снова.",
+      invalidDownload: "Сервер не вернул безопасный адрес загрузки.",
+      mobileWarning:
+        "Откроется страница загрузки приложения. Ссылку можно отправить на Mac или Windows. Продолжить?",
+      successTitle: "Страница загрузки открыта",
+      successBody:
+        "На странице показан подходящий DMG или EXE и точные шаги установки.",
+      successAction: "Понятно"
+    },
+    tj: {
+      eyebrow: "Pomp HSK AI · компютер",
+      cardTitle: "Дар компютер қулайтар омӯзед",
+      cardBody:
+        "Дарсҳоро дар экрани калон идома диҳед. Ҳисоб, обуна ва пешрафт умумӣ мемонанд.",
+      promoTitle: "Дарсҳоро дар компютер идома диҳед",
+      promoBody:
+        "Курс дар экрани калон қулайтар аст ва версияҳои нав автоматӣ меоянд.",
+      bigScreen: "Экрани калон",
+      autoUpdate: "Навсозии автоматӣ",
+      sharedProgress: "Пешрафти умумӣ",
+      mac: "Барои Mac",
+      windows: "Барои Windows",
+      recommended: "Мувофиқ",
+      dismiss: "Баъдтар",
+      close: "Пӯшидани равзана",
+      adEntry: "Гирифтани барномаи компютерӣ",
+      sendingShort: "Омода мешавад…",
+      sending: "Саҳифаи боргирӣ омода мешавад…",
+      telegramRequired: "Mini App-ро аз дохили бот аз нав кушоед.",
+      releaseUnavailable: "Боргирӣ барои ин платформа ҳоло дастрас нест.",
+      rateLimited: "Кӯшишҳо зиёд шуданд. Каме баъд боз санҷед.",
+      messageFailed: "Файл кушода нашуд. Боз кӯшиш кунед.",
+      requestTimeout: "Сервер сари вақт ҷавоб надод. Боз кӯшиш кунед.",
+      networkError: "Бо сервер алоқа нест. Интернетро санҷида, боз кӯшиш кунед.",
+      invalidDownload: "Сервер суроғаи бехатари боргириро барнагардонд.",
+      mobileWarning:
+        "Саҳифаи боргирии барномаи компютерӣ кушода мешавад. Пайвандро ба Mac ё Windows фиристода метавонед. Идома медиҳед?",
+      successTitle: "Саҳифаи боргирӣ кушода шуд",
+      successBody:
+        "Саҳифа DMG ё EXE-и мувофиқ ва қадамҳои дақиқи насбро нишон медиҳад.",
+      successAction: "Фаҳмо"
+    }
+  };
+
+  var state = {
+    availabilityLoaded: false,
+    enabled: false,
+    platforms: { macos: false, windows: false },
+    runtimeUnavailable: { macos: false, windows: false },
+    promoEligible: false,
+    promoCooldownDays: 0,
+    promoPlacements: {
+      home_prompt: false,
+      lesson_end_promo: false,
+      ad_promo: false
+    },
+    pendingPlatform: "",
+    pendingEventIds: {},
+    errorCode: "",
+    promoOpen: false,
+    promoSeenInSession: false,
+    promoTimer: 0,
+    queuedPromo: null,
+    queuedPromoTimer: 0,
+    activePromoSource: "",
+    activePromoMeta: {},
+    previousFocus: null,
+    lastPlatform: "",
+    confirmOpen: false,
+    adPromoMounts: []
+  };
+
+  function language() {
+    var value =
+      (typeof window.LANG === "string" && window.LANG) ||
+      params.get("lang") ||
+      "ru";
+    return COPY[value] ? value : "ru";
+  }
+
+  function text() {
+    return COPY[language()];
+  }
+
+  function telegramInitData() {
+    if (typeof window.INIT_DATA === "string" && window.INIT_DATA) {
+      return window.INIT_DATA;
+    }
+    var app = telegramWebApp();
+    return app && typeof app.initData === "string" ? app.initData : "";
+  }
+
+  function telegramWebApp() {
+    return (
+      window.tg ||
+      (window.Telegram && window.Telegram.WebApp) ||
+      null
+    );
+  }
+
+  function element(tag, className, value) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (typeof value === "string") node.textContent = value;
+    return node;
+  }
+
+  function icon(name) {
+    return element("i", "ti ti-" + name);
+  }
+
+  function eventId(kind) {
+    return (
+      "pdd." +
+      String(kind || "event").replace(/[^A-Za-z0-9._:-]/g, "-") +
+      "." +
+      Date.now() +
+      "." +
+      Math.random().toString(36).slice(2, 10)
+    ).slice(0, 80);
+  }
+
+  function validEventId(value) {
+    return (
+      typeof value === "string" &&
+      value.length >= 16 &&
+      value.length <= 80 &&
+      /^[A-Za-z0-9._:-]+$/.test(value)
+    );
+  }
+
+  function pendingEventStorageKey(platform, source) {
+    return "hsk_pdd_pending_v1:" + platform + ":" + source;
+  }
+
+  function pendingEventId(platform, source) {
+    var key = pendingEventStorageKey(platform, source);
+    var value = state.pendingEventIds[key] || "";
+    try {
+      value = sessionStorage.getItem(key) || value;
+    } catch (error) {}
+    if (!validEventId(value)) {
+      value = eventId("download-request");
+      try {
+        sessionStorage.setItem(key, value);
+      } catch (error) {}
+    }
+    state.pendingEventIds[key] = value;
+    return value;
+  }
+
+  function clearPendingEventId(platform, source) {
+    var key = pendingEventStorageKey(platform, source);
+    delete state.pendingEventIds[key];
+    try {
+      sessionStorage.removeItem(key);
+    } catch (error) {}
+  }
+
+  function userStorageSuffix() {
+    try {
+      var app = telegramWebApp();
+      var user = app && app.initDataUnsafe && app.initDataUnsafe.user;
+      if (user && user.id) return String(user.id);
+    } catch (error) {}
+    return "current";
+  }
+
+  function storageKey(name) {
+    return "hsk_pdd_" + name + "_v1:" + userStorageSuffix();
+  }
+
+  function readStoredNumber(name) {
+    try {
+      return Number(localStorage.getItem(storageKey(name)) || 0);
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  function storeNumber(name, value) {
+    try {
+      localStorage.setItem(storageKey(name), String(value));
+    } catch (error) {}
+  }
+
+  function track(event, payload) {
+    var data = Object.assign({}, payload || {});
+    var id = data.event_id || eventId(event);
+    data.event_id = id;
+    data.dedupe_key = id;
+    if (typeof window.trackCourseEvent === "function") {
+      window.trackCourseEvent(event, data);
+      return;
+    }
+    if (!telegramInitData()) return;
+    data.event = event;
+    data.source = data.source || "desktop_promo";
+    fetch("/api/miniapp/event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": telegramInitData()
+      },
+      body: JSON.stringify(data),
+      keepalive: true
+    }).catch(function () {});
+  }
+
+  function detectPlatform() {
+    var value = "";
+    try {
+      value =
+        (navigator.userAgentData && navigator.userAgentData.platform) ||
+        navigator.platform ||
+        navigator.userAgent ||
+        "";
+    } catch (error) {}
+    value = String(value).toLowerCase();
+    if (value.indexOf("mac") >= 0) return "macos";
+    if (value.indexOf("win") >= 0) return "windows";
+    return "";
+  }
+
+  function isMobileClient() {
+    var app = telegramWebApp();
+    var telegramPlatform = String((app && app.platform) || "").toLowerCase();
+    if (["android", "android_x", "ios"].indexOf(telegramPlatform) >= 0) {
+      return true;
+    }
+    try {
+      var ua = String(navigator.userAgent || "");
+      return (
+        /Android|iPhone|iPod/i.test(ua) ||
+        (/iPad|Macintosh/i.test(ua) && Number(navigator.maxTouchPoints || 0) > 1)
+      );
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function confirmMobileDownload(next) {
+    if (!isMobileClient()) {
+      next(true);
+      return;
+    }
+    var app = telegramWebApp();
+    try {
+      if (app && typeof app.showConfirm === "function") {
+        app.showConfirm(text().mobileWarning, function (accepted) {
+          next(accepted === true);
+        });
+        return;
+      }
+    } catch (error) {}
+    var accepted = false;
+    try {
+      accepted = window.confirm(text().mobileWarning);
+    } catch (error) {}
+    next(accepted === true);
+  }
+
+  function isPlatformAvailable(platform) {
+    return Boolean(
+      state.enabled &&
+        state.platforms[platform] &&
+        !state.runtimeUnavailable[platform]
+    );
+  }
+
+  function hasAvailablePlatform() {
+    return (
+      isPlatformAvailable("macos") ||
+      isPlatformAvailable("windows")
+    );
+  }
+
+  function errorText(code) {
+    var copy = text();
+    return {
+      invalid_telegram_init_data: copy.telegramRequired,
+      desktop_release_unavailable: copy.releaseUnavailable,
+      desktop_download_rate_limited: copy.rateLimited,
+      desktop_download_delivery_pending: copy.requestTimeout,
+      desktop_download_message_failed: copy.messageFailed,
+      desktop_download_timeout: copy.requestTimeout,
+      invalid_success_response: copy.invalidDownload,
+      desktop_download_open_failed: copy.messageFailed,
+      network_error: copy.networkError
+    }[code] || copy.networkError;
+  }
+
+  function buildBenefit(iconName, label) {
+    var item = element("span", "pdd-benefit");
+    item.appendChild(icon(iconName));
+    item.appendChild(document.createTextNode(label));
+    return item;
+  }
+
+  function buildBenefits(includeProgress) {
+    var copy = text();
+    var row = element("div", "pdd-benefits");
+    row.appendChild(buildBenefit("device-desktop", copy.bigScreen));
+    row.appendChild(buildBenefit("refresh", copy.autoUpdate));
+    if (includeProgress) {
+      row.appendChild(buildBenefit("refresh", copy.sharedProgress));
+    }
+    return row;
+  }
+
+  function buildOsButton(platform, source) {
+    var copy = text();
+    var button = element("button", "pdd-os-button");
+    var recommended =
+      detectPlatform() === platform && isPlatformAvailable(platform);
+    button.type = "button";
+    button.dataset.pddPlatform = platform;
+    button.dataset.pddSource = source;
+    button.dataset.recommended = recommended ? "true" : "false";
+    button.dataset.recommendedLabel = copy.recommended;
+    button.appendChild(
+      icon(platform === "macos" ? "brand-apple" : "brand-windows")
+    );
+    button.appendChild(
+      element("span", "", platform === "macos" ? copy.mac : copy.windows)
+    );
+    button.addEventListener("click", function () {
+      requestDownload(platform, source);
+    });
+    return button;
+  }
+
+  function buildActions(source) {
+    var actions = element("div", "pdd-actions");
+    actions.appendChild(buildOsButton("macos", source));
+    actions.appendChild(buildOsButton("windows", source));
+    return actions;
+  }
+
+  function buildInlineStatus() {
+    var status = element("div", "pdd-inline-status");
+    status.dataset.pddStatus = "true";
+    status.dataset.visible = "false";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    status.appendChild(icon("alert-circle"));
+    status.appendChild(element("span", "", ""));
+    return status;
+  }
+
+  function renderProfile() {
+    var host = document.getElementById("pomp-desktop-profile-root");
+    if (!host) return;
+    host.replaceChildren();
+    if (
+      isDesktop ||
+      !state.availabilityLoaded ||
+      !state.enabled ||
+      (!state.platforms.macos && !state.platforms.windows)
+    ) {
+      return;
+    }
+
+    var copy = text();
+    var card = element("section", "pdd-card");
+    card.setAttribute("aria-labelledby", "pdd-profile-title");
+    var main = element("div", "pdd-card-main");
+    var head = element("div", "pdd-card-head");
+    var seal = element("img", "pdd-seal");
+    seal.src = "/assets/hsk-ai-avatar.webp";
+    seal.alt = "";
+    seal.setAttribute("aria-hidden", "true");
+    seal.width = 43;
+    seal.height = 43;
+    head.appendChild(seal);
+    var content = element("div", "pdd-card-copy");
+    content.appendChild(element("span", "pdd-eyebrow", copy.eyebrow));
+    var title = element("h3", "", copy.cardTitle);
+    title.id = "pdd-profile-title";
+    content.appendChild(title);
+    content.appendChild(element("p", "", copy.cardBody));
+    head.appendChild(content);
+    main.appendChild(head);
+    main.appendChild(buildBenefits(true));
+    main.appendChild(buildActions("profile"));
+    main.appendChild(buildInlineStatus());
+    card.appendChild(main);
+    host.appendChild(card);
+    syncControls();
+  }
+
+  function syncControls() {
+    var copy = text();
+    document.querySelectorAll("[data-pdd-platform]").forEach(function (button) {
+      var platform = button.dataset.pddPlatform;
+      var pending = state.pendingPlatform === platform;
+      var anyPending = Boolean(state.pendingPlatform);
+      button.disabled = anyPending || !isPlatformAvailable(platform);
+      button.dataset.pending = pending ? "true" : "false";
+      button.dataset.recommended =
+        detectPlatform() === platform && isPlatformAvailable(platform)
+          ? "true"
+          : "false";
+      button.setAttribute("aria-busy", pending ? "true" : "false");
+      button.dataset.recommendedLabel = copy.recommended;
+      var iconNode = button.querySelector("i");
+      if (iconNode) {
+        iconNode.className =
+          "ti ti-" +
+          (pending
+            ? "loader-2"
+            : platform === "macos"
+              ? "brand-apple"
+              : "brand-windows");
+      }
+      var label = button.querySelector("span");
+      if (label) {
+        label.textContent = pending
+          ? copy.sendingShort
+          : platform === "macos"
+            ? copy.mac
+            : copy.windows;
+      }
+    });
+
+    document.querySelectorAll("[data-pdd-status]").forEach(function (status) {
+      var visible = Boolean(state.pendingPlatform || state.errorCode);
+      status.dataset.visible = visible ? "true" : "false";
+      status.dataset.pending = state.pendingPlatform ? "true" : "false";
+      var iconNode = status.querySelector("i");
+      var label = status.querySelector("span");
+      if (iconNode) {
+        iconNode.className =
+          "ti ti-" + (state.pendingPlatform ? "loader-2" : "alert-circle");
+      }
+      if (label) {
+        label.textContent = state.pendingPlatform
+          ? copy.sending
+          : errorText(state.errorCode);
+      }
+    });
+  }
+
+  function responseErrorCode(response, data) {
+    if (data && typeof data.error === "string") return data.error;
+    if (
+      data &&
+      data.detail &&
+      typeof data.detail === "object" &&
+      typeof data.detail.error === "string"
+    ) {
+      return data.detail.error;
+    }
+    if (response.status === 401) return "invalid_telegram_init_data";
+    if (response.status === 429) return "desktop_download_rate_limited";
+    if (response.status === 502) return "desktop_download_message_failed";
+    if (response.status === 503) return "desktop_release_unavailable";
+    return "network_error";
+  }
+
+  function requestDownload(platform, source) {
+    if (
+      state.pendingPlatform ||
+      state.confirmOpen ||
+      !isPlatformAvailable(platform) ||
+      ["profile", "home_prompt", "lesson_end_promo", "ad_promo"].indexOf(
+        source
+      ) < 0
+    ) {
+      return;
+    }
+    if (!telegramInitData()) {
+      state.errorCode = "invalid_telegram_init_data";
+      syncControls();
+      return;
+    }
+
+    state.confirmOpen = true;
+    confirmMobileDownload(function (accepted) {
+      state.confirmOpen = false;
+      if (accepted) performDownloadRequest(platform, source);
+    });
+  }
+
+  function validDownloadResponse(data, platform) {
+    if (
+      !data ||
+      data.ok !== true ||
+      data.platform !== platform ||
+      typeof data.download_url !== "string" ||
+      typeof data.file_name !== "string"
+    ) {
+      return false;
+    }
+    try {
+      var url = new URL(data.download_url, window.location.href);
+      var expectedSuffix = platform === "macos" ? ".dmg" : ".exe";
+      return (
+        url.protocol === "https:" &&
+        !url.username &&
+        !url.password &&
+        /^[A-Za-z0-9][A-Za-z0-9._+-]{0,119}$/.test(data.file_name) &&
+        data.file_name.toLowerCase().slice(-expectedSuffix.length) ===
+          expectedSuffix
+      );
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function openTrackedLink(url) {
+    var app = telegramWebApp();
+    try {
+      if (app && typeof app.openLink === "function") {
+        app.openLink(url);
+        return true;
+      }
+    } catch (error) {}
+    try {
+      var opened = window.open(url, "_blank", "noopener,noreferrer");
+      if (opened) return true;
+    } catch (error) {}
+    try {
+      window.location.assign(url);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function launchTrackedDownload(data) {
+    return new Promise(function (resolve, reject) {
+      var pageUrl = data.download_page_url || data.download_url;
+      if (openTrackedLink(pageUrl)) {
+        resolve("open_link");
+      } else {
+        var error = new Error("desktop_download_open_failed");
+        error.code = "desktop_download_open_failed";
+        reject(error);
+      }
+    });
+  }
+
+  function markDownloadStarted(platform, source, id, transport) {
+    if (!telegramInitData()) return;
+    fetch(STARTED_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": telegramInitData()
+      },
+      body: JSON.stringify({
+        platform: platform,
+        source: source,
+        event_id: id,
+        transport: transport
+      }),
+      keepalive: true
+    }).catch(function () {});
+  }
+
+  function performDownloadRequest(platform, source) {
+    var id = pendingEventId(platform, source);
+    state.pendingPlatform = platform;
+    state.errorCode = "";
+    state.lastPlatform = platform;
+    syncControls();
+
+    var controller =
+      typeof window.AbortController === "function"
+        ? new window.AbortController()
+        : null;
+    var requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": telegramInitData()
+      },
+      body: JSON.stringify({
+        platform: platform,
+        source: source,
+        event_id: id,
+        language: language()
+      })
+    };
+    if (controller) requestOptions.signal = controller.signal;
+    var timeoutId = 0;
+    var timeoutPromise = new Promise(function (_, reject) {
+      timeoutId = window.setTimeout(function () {
+        if (controller) controller.abort();
+        var timeoutError = new Error("desktop_download_timeout");
+        timeoutError.code = "desktop_download_timeout";
+        reject(timeoutError);
+      }, REQUEST_TIMEOUT_MS);
+    });
+
+    Promise.race([fetch(REQUEST_ENDPOINT, requestOptions), timeoutPromise])
+      .then(function (response) {
+        return response
+          .json()
+          .catch(function () {
+            return {};
+          })
+          .then(function (data) {
+            if (!response.ok) {
+              var requestError = new Error("desktop_download_failed");
+              requestError.code = responseErrorCode(response, data);
+              throw requestError;
+            }
+            if (!validDownloadResponse(data, platform)) {
+              var invalidError = new Error("invalid_success_response");
+              invalidError.code = "invalid_success_response";
+              throw invalidError;
+            }
+            return data;
+          });
+      })
+      .then(function (data) {
+        window.clearTimeout(timeoutId);
+        return launchTrackedDownload(data);
+      })
+      .then(function (transport) {
+        state.pendingPlatform = "";
+        state.errorCode = "";
+        clearPendingEventId(platform, source);
+        storeNumber("download_requested", Date.now());
+        markDownloadStarted(platform, source, id, transport);
+        showSuccess(platform);
+        try {
+          var app = telegramWebApp();
+          if (app && app.HapticFeedback) {
+            app.HapticFeedback.notificationOccurred("success");
+          }
+        } catch (error) {}
+      })
+      .catch(function (error) {
+        window.clearTimeout(timeoutId);
+        state.pendingPlatform = "";
+        state.errorCode =
+          error && (error.code || error.name === "AbortError")
+            ? error.code || "desktop_download_timeout"
+            : "network_error";
+        if (state.errorCode === "desktop_release_unavailable") {
+          state.runtimeUnavailable[platform] = true;
+        }
+        syncControls();
+      });
+  }
+
+  function showSuccess(platform) {
+    if (!promoRoot) return;
+    var copy = text();
+    state.promoOpen = true;
+    promoRoot.replaceChildren();
+    promoRoot.hidden = false;
+
+    var backdrop = element("button", "pdd-promo-backdrop");
+    backdrop.type = "button";
+    backdrop.setAttribute("aria-label", copy.close);
+    backdrop.addEventListener("click", closePromo);
+    promoRoot.appendChild(backdrop);
+
+    var shell = element("section", "pdd-promo-shell");
+    shell.dataset.mode = "success";
+    shell.setAttribute("role", "dialog");
+    shell.setAttribute("aria-modal", "true");
+    shell.setAttribute("aria-labelledby", "pdd-success-title");
+    var close = element("button", "pdd-promo-close");
+    close.type = "button";
+    close.setAttribute("aria-label", copy.close);
+    close.appendChild(icon("x"));
+    close.addEventListener("click", closePromo);
+    shell.appendChild(close);
+
+    var body = element("div", "pdd-promo-body");
+    var successVisual = element("span", "pdd-success-visual");
+    successVisual.appendChild(icon("download"));
+    body.appendChild(successVisual);
+    var title = element("h2", "", copy.successTitle);
+    title.id = "pdd-success-title";
+    body.appendChild(title);
+    body.appendChild(element("p", "", copy.successBody));
+    var button = element("button", "pdd-return-button");
+    button.type = "button";
+    button.appendChild(icon("check"));
+    button.appendChild(document.createTextNode(" " + copy.successAction));
+    button.addEventListener("click", closePromo);
+    body.appendChild(button);
+    shell.appendChild(body);
+    promoRoot.appendChild(shell);
+    close.focus();
+  }
+
+  function promoMeta(meta) {
+    var source = meta && typeof meta === "object" ? meta : {};
+    var result = {};
+    Object.keys(source).forEach(function (key) {
+      var value = source[key];
+      if (
+        key !== "source" &&
+        key !== "event_id" &&
+        key !== "dedupe_key" &&
+        (typeof value === "string" ||
+          typeof value === "number" ||
+          typeof value === "boolean")
+      ) {
+        result[key] = value;
+      }
+    });
+    return result;
+  }
+
+  function promoPayload(source, meta) {
+    return Object.assign(promoMeta(meta), { source: source });
+  }
+
+  function promoCooldownMs() {
+    var days = Number(state.promoCooldownDays) || DEFAULT_PROMO_COOLDOWN_DAYS;
+    return Math.max(1, Math.min(90, days)) * 24 * 60 * 60 * 1000;
+  }
+
+  function hasLocalPromoCooldown() {
+    var cutoff = promoCooldownMs();
+    var now = Date.now();
+    return ["promo_seen", "download_requested"].some(function (name) {
+      var timestamp = readStoredNumber(name);
+      return timestamp > 0 && now - timestamp < cutoff;
+    });
+  }
+
+  function promoPlacementAllowed(source) {
+    return Boolean(
+      PROMO_SOURCES.indexOf(source) >= 0 &&
+        state.promoEligible &&
+        state.promoPlacements[source]
+    );
+  }
+
+  function shouldShowPromo(source) {
+    if (
+      isDesktop ||
+      !telegramInitData() ||
+      !state.availabilityLoaded ||
+      !hasAvailablePlatform() ||
+      !promoPlacementAllowed(source) ||
+      state.promoSeenInSession ||
+      state.promoOpen ||
+      hasLocalPromoCooldown()
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  function safeForPromo() {
+    if (document.visibilityState !== "visible") return false;
+    if (
+      typeof window.SCREEN === "string" &&
+      window.SCREEN !== "course"
+    ) {
+      return false;
+    }
+    if (!document.querySelector("#s-course.on")) return false;
+    if (
+      document.querySelector(
+        "#flow.on, #sheet.on, #paywall.on, #adov.on, #writeov.on, #levelup.on, #tour.on, #upov.on, #onboarding.on, .onboarding.on, [data-onboarding].on"
+      )
+    ) {
+      return false;
+    }
+    if (document.querySelector('#pomp-ai-root[data-open="true"]')) {
+      return false;
+    }
+    return true;
+  }
+
+  function schedulePromo() {
+    var source = "home_prompt";
+    if (state.promoTimer || state.queuedPromo || !shouldShowPromo(source)) return;
+    var attempts = 0;
+    function tryOpen() {
+      state.promoTimer = 0;
+      attempts += 1;
+      if (state.queuedPromo || !shouldShowPromo(source)) return;
+      if (safeForPromo()) {
+        showPromo(source, {}, false);
+        return;
+      }
+      if (attempts < 120) {
+        state.promoTimer = window.setTimeout(tryOpen, 2500);
+      }
+    }
+    state.promoTimer = window.setTimeout(tryOpen, 6500);
+  }
+
+  function drainQueuedPromo() {
+    var queued = state.queuedPromo;
+    if (!queued || !state.availabilityLoaded) return false;
+    if (!shouldShowPromo(queued.source)) {
+      state.queuedPromo = null;
+      return false;
+    }
+    if (!safeForPromo()) {
+      if (!state.queuedPromoTimer) {
+        state.queuedPromoTimer = window.setTimeout(function () {
+          state.queuedPromoTimer = 0;
+          drainQueuedPromo();
+        }, 350);
+      }
+      return false;
+    }
+    state.queuedPromo = null;
+    return showPromo(queued.source, queued.meta, false);
+  }
+
+  function queuePromo(source, meta) {
+    if (
+      PROMO_SOURCES.indexOf(source) < 0 ||
+      isDesktop ||
+      !telegramInitData()
+    ) {
+      return false;
+    }
+    state.queuedPromo = { source: source, meta: promoMeta(meta) };
+    if (state.promoTimer) {
+      window.clearTimeout(state.promoTimer);
+      state.promoTimer = 0;
+    }
+    if (!state.availabilityLoaded) return true;
+    return drainQueuedPromo();
+  }
+
+  function buildPromoVisual() {
+    var visual = element("div", "pdd-promo-visual");
+    visual.setAttribute("aria-hidden", "true");
+    var cover = element("img", "pdd-promo-cover");
+    cover.src = "/assets/hsk-ai-cover.webp";
+    cover.alt = "";
+    visual.appendChild(cover);
+    return visual;
+  }
+
+  function showPromo(source, meta, allowUnsafe) {
+    if (
+      !promoRoot ||
+      !shouldShowPromo(source) ||
+      (!allowUnsafe && !safeForPromo())
+    ) {
+      return false;
+    }
+    var copy = text();
+    if (state.promoTimer) window.clearTimeout(state.promoTimer);
+    if (state.queuedPromoTimer) window.clearTimeout(state.queuedPromoTimer);
+    state.promoTimer = 0;
+    state.queuedPromoTimer = 0;
+    state.queuedPromo = null;
+    state.promoOpen = true;
+    state.promoSeenInSession = true;
+    state.activePromoSource = source;
+    state.activePromoMeta = promoMeta(meta);
+    state.previousFocus = document.activeElement;
+    storeNumber("promo_seen", Date.now());
+    track("desktop_promo_seen", promoPayload(source, state.activePromoMeta));
+
+    promoRoot.replaceChildren();
+    promoRoot.dataset.source = source;
+    promoRoot.hidden = false;
+    var backdrop = element("button", "pdd-promo-backdrop");
+    backdrop.type = "button";
+    backdrop.setAttribute("aria-label", copy.dismiss);
+    backdrop.addEventListener("click", dismissPromo);
+    promoRoot.appendChild(backdrop);
+
+    var shell = element("section", "pdd-promo-shell");
+    shell.setAttribute("role", "dialog");
+    shell.setAttribute("aria-modal", "true");
+    shell.setAttribute("aria-labelledby", "pdd-promo-title");
+    var close = element("button", "pdd-promo-close");
+    close.type = "button";
+    close.setAttribute("aria-label", copy.close);
+    close.appendChild(icon("x"));
+    close.addEventListener("click", dismissPromo);
+    shell.appendChild(close);
+    shell.appendChild(buildPromoVisual());
+
+    var body = element("div", "pdd-promo-body");
+    body.appendChild(element("span", "pdd-eyebrow", copy.eyebrow));
+    var title = element("h2", "", copy.promoTitle);
+    title.id = "pdd-promo-title";
+    body.appendChild(title);
+    body.appendChild(element("p", "", copy.promoBody));
+    body.appendChild(buildBenefits(true));
+    body.appendChild(buildActions(source));
+    body.appendChild(buildInlineStatus());
+    var later = element("button", "pdd-promo-dismiss", copy.dismiss);
+    later.type = "button";
+    later.addEventListener("click", dismissPromo);
+    body.appendChild(later);
+    shell.appendChild(body);
+    promoRoot.appendChild(shell);
+    syncControls();
+    close.focus();
+    return true;
+  }
+
+  function closePromo() {
+    if (!promoRoot) return;
+    var previousFocus = state.previousFocus;
+    state.promoOpen = false;
+    state.errorCode = "";
+    state.activePromoSource = "";
+    state.activePromoMeta = {};
+    promoRoot.hidden = true;
+    delete promoRoot.dataset.source;
+    promoRoot.replaceChildren();
+    syncControls();
+    if (!previousFocus || !previousFocus.isConnected || previousFocus.hidden) {
+      previousFocus = document.querySelector(
+        "#ad-sub-cont:not(:disabled), #nav button.on, #pomp-ai-launcher"
+      );
+    }
+    if (previousFocus && typeof previousFocus.focus === "function") {
+      try {
+        previousFocus.focus();
+      } catch (error) {}
+    }
+    state.previousFocus = null;
+  }
+
+  function dismissPromo() {
+    if (!state.promoOpen) return;
+    track(
+      "desktop_promo_dismissed",
+      promoPayload(state.activePromoSource, state.activePromoMeta)
+    );
+    closePromo();
+  }
+
+  function dismissAdPromo() {
+    var host = document.getElementById("ad-desktop");
+    if (!host) return;
+    host.hidden = true;
+    host.replaceChildren();
+  }
+
+  function syncAdPromo(visible) {
+    var host = document.getElementById("ad-desktop");
+    if (!host) return;
+    if (!visible || !shouldShowPromo("ad_promo")) {
+      dismissAdPromo();
+      return;
+    }
+    if (host.firstChild && !host.hidden) return;
+
+    var copy = text();
+    var button = element("button", "pdd-ad-trigger");
+    button.type = "button";
+    button.appendChild(icon("device-desktop"));
+    button.appendChild(element("span", "", copy.adEntry));
+    button.appendChild(icon("chevron-right"));
+    button.addEventListener("click", function () {
+      if (
+        showPromo(
+          "ad_promo",
+          { placement: "course_ad_end" },
+          true
+        )
+      ) {
+        dismissAdPromo();
+      }
+    });
+    host.replaceChildren(button);
+    host.hidden = false;
+  }
+
+  function syncMountedAdPromos() {
+    state.adPromoMounts = state.adPromoMounts.filter(function (mount) {
+      if (!mount.button || !mount.button.isConnected) return false;
+      mount.button.hidden = !shouldShowPromo("ad_promo");
+      return true;
+    });
+  }
+
+  function mountAdPromoTrigger(button, meta) {
+    if (!button) return;
+    var mount = null;
+    state.adPromoMounts.forEach(function (candidate) {
+      if (candidate.button === button) mount = candidate;
+    });
+    if (!mount) {
+      mount = { button: button, meta: {} };
+      state.adPromoMounts.push(mount);
+      button.addEventListener("click", function () {
+        showPromo("ad_promo", mount.meta, true);
+      });
+    }
+    mount.meta = promoMeta(meta);
+    button.textContent = text().adEntry;
+    button.hidden = !shouldShowPromo("ad_promo");
+  }
+
+  function loadAvailability() {
+    if (isDesktop || !telegramInitData()) {
+      state.availabilityLoaded = true;
+      renderProfile();
+      return;
+    }
+    fetch(STATUS_ENDPOINT, {
+      headers: { "X-Telegram-Init-Data": telegramInitData() }
+    })
+      .then(function (response) {
+        return response
+          .json()
+          .catch(function () {
+            return {};
+          })
+          .then(function (data) {
+            if (!response.ok || !data || data.ok !== true) {
+              throw new Error("desktop_status_failed");
+            }
+            state.availabilityLoaded = true;
+            state.enabled = data.enabled === true;
+            state.platforms.macos = Boolean(
+              data.platforms && data.platforms.macos
+            );
+            state.platforms.windows = Boolean(
+              data.platforms && data.platforms.windows
+            );
+            var promo =
+              data.promo && typeof data.promo === "object" ? data.promo : {};
+            var placements =
+              promo.placements && typeof promo.placements === "object"
+                ? promo.placements
+                : {};
+            state.promoEligible = promo.eligible === true;
+            state.promoCooldownDays = Math.max(
+              1,
+              Math.min(
+                90,
+                Number(promo.cooldown_days) || DEFAULT_PROMO_COOLDOWN_DAYS
+              )
+            );
+            PROMO_SOURCES.forEach(function (source) {
+              state.promoPlacements[source] = placements[source] === true;
+            });
+          });
+      })
+      .catch(function () {
+        state.availabilityLoaded = true;
+        state.enabled = false;
+        state.platforms.macos = false;
+        state.platforms.windows = false;
+        state.promoEligible = false;
+        PROMO_SOURCES.forEach(function (source) {
+          state.promoPlacements[source] = false;
+        });
+      })
+      .then(function () {
+        renderProfile();
+        syncMountedAdPromos();
+        var adSubscribe = document.getElementById("ad-sub");
+        syncAdPromo(
+          Boolean(
+            adSubscribe &&
+              !adSubscribe.hidden &&
+              adSubscribe.style.display !== "none"
+          )
+        );
+        if (!drainQueuedPromo()) schedulePromo();
+      });
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && state.promoOpen) {
+      event.preventDefault();
+      if (promoRoot && promoRoot.querySelector('[data-mode="success"]')) {
+        closePromo();
+      } else {
+        dismissPromo();
+      }
+    }
+  });
+
+  window.PompDesktopDownload = {
+    dismissAdPromo: dismissAdPromo,
+    queuePromo: queuePromo,
+    renderProfile: renderProfile,
+    refreshAvailability: loadAvailability,
+    mountAdPromoTrigger: mountAdPromoTrigger,
+    syncAdPromo: syncAdPromo
+  };
+
+  renderProfile();
+  loadAvailability();
+})();

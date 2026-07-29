@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>HSK AI — Admin panel</title>
+  <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root{
@@ -51,7 +52,7 @@
     .topbar{position:sticky;top:0;z-index:20;background:var(--bg-soft);border-bottom:1px solid var(--line)}
     .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
     .brand{display:flex;align-items:center;gap:10px;min-width:0}
-    .brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1d4ed8,#0ea5e9 55%,#10b981);display:grid;place-items:center;color:#fff;font-weight:900;font-size:12px;flex:none}
+    .brand-mark{width:38px;height:38px;border:1px solid var(--line);border-radius:11px;background:#080808;display:block;object-fit:cover;object-position:center;box-shadow:0 8px 18px rgba(0,0,0,.28);flex:none}
     .brand h1{font-size:16px;font-weight:850;line-height:1.05}
     .brand p{margin-top:2px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .top-actions{display:flex;align-items:center;gap:8px}
@@ -239,7 +240,7 @@
     <aside class="topbar">
       <div class="topbar-inner">
         <div class="brand">
-          <div class="brand-mark">HSK</div>
+          <img class="brand-mark" src="/assets/hsk-ai-avatar.webp" alt="" aria-hidden="true">
           <div>
             <h1>Admin panel</h1>
             <p id="brandSub">Bot · foydalanuvchi · obuna · pul markazi</p>
@@ -304,6 +305,21 @@
             <div class="dtitle-sm">Feature adoption: paid / free</div>
             <div id="featureAdoption"></div>
           </div>
+        </div>
+
+        <!-- Connected desktop product -->
+        <div class="block">
+          <div class="block-head"><span class="bi">🖥</span><div><h3>Pomp HSK AI Desktop</h3><p>Yuklashdan haqiqiy first-open, faollik, AI Pack va syncgacha</p></div></div>
+          <div class="grid g2" id="desktopCards"></div>
+          <div style="margin-top:12px">
+            <div class="dtitle-sm">Desktop voronkasi</div>
+            <div id="desktopFunnel"></div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="dtitle-sm">Platforma va texnik holat</div>
+            <div id="desktopHealth"></div>
+          </div>
+          <div class="explain" id="desktopExplain"></div>
         </div>
 
         <!-- Finance -->
@@ -427,7 +443,8 @@
     const $ = (id) => document.getElementById(id);
     const state = {
       tab:"dashboard", filter:"all", search:"", statsPeriod:"all_time",
-      overview:null, finance:null, management:null, remoteUsers:null, activeModule:null
+      overview:null, finance:null, management:null, remoteUsers:null, activeModule:null,
+      desktopStats:{}, desktopStatsLoading:{}
     };
 
     /* ---------- Telegram full-screen ---------- */
@@ -495,11 +512,13 @@
     async function loadData(){
       $("loading").hidden = false;
       try{
-        const [ov, fin] = await Promise.all([
+        const [ov, fin, desktop] = await Promise.all([
           apiPost("/api/admin-miniapp/overview",{}),
-          apiPost("/api/admin-miniapp/finance-stats",{}).catch(()=>null)
+          apiPost("/api/admin-miniapp/finance-stats",{}).catch(()=>null),
+          apiPost("/api/admin-miniapp/desktop-stats",{period:"all_time"}).catch(()=>null)
         ]);
         state.overview = ov; state.finance = fin;
+        if(desktop&&desktop.desktop) state.desktopStats.all_time=desktop.desktop;
         $("loading").hidden = true; $("app").hidden = false;
         renderAll();
       }catch(e){
@@ -530,7 +549,17 @@
     function renderDashboard(){
       const ov = state.overview;
       $("generatedAt").textContent = "Oxirgi yangilanish: " + (ov.generated_at || "—");
-      $("summaryGrid").innerHTML = (ov.summary||[]).map(i=>`
+      const desktop=state.desktopStats.all_time;
+      const summary=(ov.summary||[]).slice();
+      if(desktop&&!desktop.error){
+        summary.push({
+          label:"Desktop WAU",
+          value:Number(desktop.active&&desktop.active.wau||0),
+          note:"Pomp HSK AI · 7 kun",
+          tone:"info"
+        });
+      }
+      $("summaryGrid").innerHTML = summary.map(i=>`
         <article class="stat ${i.tone||""}"><div class="lab">${esc(i.label)}</div>
           <div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`).join("");
       const c = ov.segments||{};
@@ -557,6 +586,82 @@
     function financePeriod(){ const f=state.finance; if(!f||!f.periods) return null; return f.periods.find(p=>p.key===state.statsPeriod)||f.periods[0]; }
     function overviewReport(){ const r=state.overview&&state.overview.statistics_reports; if(!Array.isArray(r)) return null; return r.find(x=>x.key===state.statsPeriod)||r[0]; }
     function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(i.label)}</div><div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`; }
+
+    async function loadDesktopStats(period){
+      period=["all_time","weekly","monthly"].includes(period)?period:"all_time";
+      if(state.desktopStats[period]||state.desktopStatsLoading[period]) return;
+      state.desktopStatsLoading[period]=true;
+      renderDesktopStats(null,true);
+      try{
+        const d=await apiPost("/api/admin-miniapp/desktop-stats",{period});
+        if(d&&d.desktop) state.desktopStats[period]=d.desktop;
+      }catch(e){
+        state.desktopStats[period]={error:true};
+      }finally{
+        state.desktopStatsLoading[period]=false;
+        if(state.statsPeriod===period) renderDesktopStats(state.desktopStats[period]||null,false);
+      }
+    }
+
+    function desktopUsers(funnel,key){
+      return Number(funnel&&funnel[key]&&funnel[key].users||0);
+    }
+
+    function renderDesktopStats(snapshot,loading){
+      if(!snapshot){
+        $("desktopCards").innerHTML=loading?"<p class='empty'>Yuklanmoqda…</p>":"<p class='empty'>Ma'lumot olinmoqda…</p>";
+        $("desktopFunnel").innerHTML="";
+        $("desktopHealth").innerHTML="";
+        $("desktopExplain").textContent="";
+        return;
+      }
+      if(snapshot.error){
+        $("desktopCards").innerHTML="<p class='empty'>Desktop statistikani yuklab bo'lmadi.</p>";
+        $("desktopFunnel").innerHTML="";
+        $("desktopHealth").innerHTML="";
+        $("desktopExplain").textContent="";
+        return;
+      }
+      const funnel=snapshot.funnel||{}, active=snapshot.active||{}, platforms=snapshot.platforms||{};
+      const ai=snapshot.ai_pack||{}, sync=snapshot.sync||{}, updates=snapshot.updates||{}, versions=snapshot.versions||{};
+      $("desktopCards").innerHTML=[
+        {label:"Tasdiqlangan first-open",value:desktopUsers(funnel,"verified_first_open"),note:"yuklash emas",tone:"good"},
+        {label:"Desktop DAU",value:Number(active.dau||0),note:"so'nggi 24 soat",tone:"info"},
+        {label:"Desktop WAU",value:Number(active.wau||0),note:"so'nggi 7 kun",tone:"info"},
+        {label:"Desktop MAU",value:Number(active.mau||0),note:"so'nggi 30 kun",tone:"good"}
+      ].map(cardHtml).join("");
+
+      const steps=[
+        ["So'rov",desktopUsers(funnel,"download_requested")],
+        ["Yuklash qabul qilindi",desktopUsers(funnel,"download_started")],
+        ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
+        ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
+        ["First open",desktopUsers(funnel,"verified_first_open")]
+      ];
+      const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
+      $("desktopFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
+
+      const activePlatforms=platforms.active_users_30d||{};
+      const aiStarted=Number(ai.started&&ai.started.users||0), aiCompleted=Number(ai.completed&&ai.completed.users||0);
+      const syncOk=Number(sync.succeeded&&sync.succeeded.events||0), syncFail=Number(sync.failed&&sync.failed.events||0);
+      const updateUsers=Number(updates.installed&&updates.installed.users||0), updateEvents=Number(updates.installed&&updates.installed.events||0);
+      const outdated=versions.outdated_devices_30d;
+      const comparable=Number(versions.comparable_devices_30d||0);
+      const outdatedLabel=outdated==null?"Release versiyasi kiritilmagan":`${Number(outdated||0)} / ${comparable}`;
+      const versionRows=["macos","windows"].flatMap(platform=>((versions.by_platform_30d&&versions.by_platform_30d[platform])||[]).map(row=>({
+        platform:platform==="macos"?"Mac":"Windows", version:row.version, devices:row.devices, users:row.users
+      })));
+      $("desktopHealth").innerHTML=`<table class="tbl"><thead><tr><th>Ko'rsatkich</th><th class="r">Mac</th><th class="r">Windows</th></tr></thead>
+        <tbody>
+          <tr><td><b>Aktiv user · 30 kun</b></td><td class="r">${Number(activePlatforms.macos||0)}</td><td class="r">${Number(activePlatforms.windows||0)}</td></tr>
+          <tr><td><b>AI Pack user</b></td><td class="r" colspan="2">${aiStarted} → ${aiCompleted} · ${Number(ai.completion_rate||0)}%</td></tr>
+          <tr><td><b>Progress sync event</b></td><td class="r" colspan="2">${syncOk} OK · ${syncFail} xato · ${Number(sync.success_rate||0)}%</td></tr>
+          <tr><td><b>Update o'rnatildi</b></td><td class="r" colspan="2">${updateUsers} user · ${updateEvents} marta</td></tr>
+          <tr><td><b>Eskirgan versiya</b></td><td class="r" colspan="2">${esc(outdatedLabel)}</td></tr>
+        </tbody></table>`+
+        (versionRows.length?`<table class="tbl" style="margin-top:10px"><thead><tr><th>Platforma</th><th>Versiya</th><th class="r">Qurilma</th><th class="r">User</th></tr></thead><tbody>${versionRows.map(row=>`<tr><td>${esc(row.platform)}</td><td><b>${esc(row.version)}</b></td><td class="r">${Number(row.devices||0)}</td><td class="r">${Number(row.users||0)}</td></tr>`).join("")}</tbody></table>`:"");
+      $("desktopExplain").textContent=(snapshot.notes&&snapshot.notes.install_definition)||"Download yoki link bosilishi o'rnatish emas; faqat tasdiqlangan first-open install hisoblanadi.";
+    }
 
     function renderAdvanced(fp){
       const adv = fp&&fp.advanced;
@@ -593,6 +698,9 @@
       const fp = financePeriod();
       const orep = overviewReport();
       renderAdvanced(orep);
+      const desktop=state.desktopStats[state.statsPeriod]||null;
+      renderDesktopStats(desktop,Boolean(state.desktopStatsLoading[state.statsPeriod]));
+      if(!desktop&&!state.desktopStatsLoading[state.statsPeriod]) loadDesktopStats(state.statsPeriod);
       if(!fp){ $("financeCards").innerHTML="<p class='empty'>Moliyaviy ma'lumot yo'q</p>"; }
       else{
         $("rangeLabel").textContent = "Davr: " + (fp.range_label||fp.note);
@@ -1242,7 +1350,7 @@
       const tmeta=caTypeMeta(i.ad_type||"odiy");
       const btnLine=(i.ad_type&&i.ad_type!=="odiy"&&i.button_text)?`<div class="ncnote">🔘 ${esc(i.button_text)}</div>`:"";
       const slotLine=i.ad_type==="dars_yakuni"
-        ? `<div class="ncnote">🎓 Faqat dars tugagach chiqadi · ostida obuna knopkasi</div>`
+        ? `<div class="ncnote">🎓 Faqat dars tugagach · obuna knopkasi + ixtiyoriy tashqi havola</div>`
         : `<div class="ncnote">🎬 Mashq bo'limlarida chiqadi</div>`;
       return `<div class="ncard" data-ca="${i.id}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s majburiy ko'rish · ${esc(i.created_at||"—")}</div>
@@ -1271,19 +1379,21 @@
       catch(e){ host.innerHTML="<p class='empty'>Kurs reklamalarni yuklab bo'lmadi.</p>"; }
     }
     function caTypeUI(){
-      const t=($("caType")&&$("caType").value)||"odiy", noBtn=(t==="odiy"||t==="dars_yakuni");
-      const bt=$("caBtnText"), lbl=$("caLinkLabel");
+      const t=($("caType")&&$("caType").value)||"odiy", noBtn=t==="odiy";
+      const bt=$("caBtnText"), lbl=$("caLinkLabel"), btnLbl=$("caBtnLabel");
       bt.disabled=noBtn;
-      if(noBtn){ bt.value=""; bt.placeholder=t==="dars_yakuni"?"Obuna knopkasi avtomatik qo'shiladi":"Oddiy reklamada shart emas"; }
+      if(noBtn){ bt.value=""; bt.placeholder="Oddiy reklamada shart emas"; }
+      else if(t==="dars_yakuni"){ bt.placeholder="Masalan: Batafsil ko'rish"; }
       else if(t==="hamkorlik"){ bt.placeholder="Masalan: Hamkorlik uchun yozing"; }
       else { bt.placeholder="Masalan: Botni sinab ko'r"; }
-      if(lbl) lbl.textContent = t==="hamkorlik" ? "Havola / Instagram" : (t==="bot" ? "Bot havolasi" : "Havola (ixtiyoriy)");
+      if(btnLbl) btnLbl.textContent=t==="dars_yakuni"?"Tashqi link knopkasi":"Knopka nomi";
+      if(lbl) lbl.textContent = t==="hamkorlik" ? "Havola / Instagram" : (t==="bot" ? "Bot havolasi" : (t==="dars_yakuni" ? "Tashqi havola (ixtiyoriy)" : "Havola (ixtiyoriy)"));
     }
     async function submitCourseAd(){
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
       const adType=($("caType")&&$("caType").value)||"odiy";
-      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("button_text",(adType==="odiy"||adType==="dars_yakuni")?"":($("caBtnText").value||"")); fd.append("media",f);
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("button_text",adType==="odiy"?"":($("caBtnText").value||"")); fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
       catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
     }

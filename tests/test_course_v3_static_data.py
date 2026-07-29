@@ -247,6 +247,86 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("Xatolarni takrorlang", html)
         self.assertNotIn("var ans=Number(q.answer_index||0)", html)
 
+    def test_lesson_end_ad_runs_after_celebration_only_for_free_users(self):
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+
+        # Reklama moduli darslar sahifasiga ham ulangan.
+        self.assertIn("/course_v3_data/ads.js", html)
+        # Dars tugagach belgilanadi, faqat bepul + Telegram ichida.
+        self.assertIn("window._pendingLessonEndAd=(!isPaidUser()&&INIT_DATA)", html)
+        # Bayram/streak/reyting ekranlaridan KEYIN — closeLevelUp ichida.
+        self.assertIn("if(playLessonEndAd(go))return;", html)
+        self.assertIn('slot:"lesson_end"', html)
+        self.assertIn('App.goPay("v3_lesson_end_ad")', html)
+        # Reklama bo'lmasa yoki yiqilsa — jim o'tib xaritaga qaytadi.
+        self.assertIn('CourseAds.play("end").then(go).catch(go)', html)
+        # Modul slotni serverga uzatadi va dars yakunida "Davom etish" chiqadi.
+        self.assertIn('"&slot="+encodeURIComponent(CFG.slot||"")', ads)
+        self.assertIn('function isLessonEnd(){return CFG.slot==="lesson_end"}', ads)
+        # Obuna asosiy CTA bo'lib qoladi; admin tashqi link bersa, uning alohida
+        # knopkasi ham yakuniy blokda ko'rinadi.
+        self.assertIn("function renderLessonEndExternal(ad)", ads)
+        self.assertIn("renderLessonEndExternal(ad);", ads)
+        self.assertIn('class="caa-cta ghost caa-ext"', ads)
+        self.assertIn("ad.button_text", ads)
+        for key in ("leLabel:", "leNote:", "leSubTitle:", "leExternal:"):
+            self.assertEqual(ads.count(key), 3, f"{key} 3 tilda bo'lishi kerak")
+
+    def test_admin_can_attach_external_cta_to_lesson_end_ad(self):
+        html = Path("app/static/admin.html").read_text(encoding="utf-8")
+
+        self.assertIn('value="dars_yakuni">🎓 Dars yakuni reklamasi', html)
+        self.assertIn('noBtn=t==="odiy"', html)
+        self.assertIn('t==="dars_yakuni"?"Tashqi link knopkasi"', html)
+        self.assertIn('t==="dars_yakuni" ? "Tashqi havola (ixtiyoriy)"', html)
+        self.assertIn('fd.append("button_text",adType==="odiy"?"":', html)
+
+    def test_desktop_installer_flow_is_direct_and_available_on_all_ad_surfaces(self):
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        download = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+        ads = (BASE / "ads.js").read_text(encoding="utf-8")
+        landing = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
+        landing_js = Path("app/static/desktop-download-page.js").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertNotIn("app.downloadFile(", download)
+        self.assertIn('app.openLink(url)', download)
+        self.assertIn("data.download_page_url || data.download_url", download)
+        self.assertIn('"/api/v3/desktop-download/started"', download)
+        self.assertIn('transport: transport', download)
+        self.assertIn('showConfirm(text().mobileWarning', download)
+        self.assertNotIn("message_sent", download)
+        self.assertNotIn("close_mini_app", download)
+        self.assertNotIn("app.close()", download)
+
+        self.assertIn('id="pomp-desktop-profile-root"', course)
+        self.assertIn('id="ad-desktop"', course)
+        self.assertIn('queuePromo("lesson_end_promo"', course)
+        self.assertIn("mountAdPromoTrigger", ads)
+        self.assertIn('href="/desktop-download-page.css', landing)
+        self.assertIn('src="/desktop-download-page.js', landing)
+        self.assertIn('src="/assets/hsk-ai-avatar.webp"', landing)
+        self.assertIn('seal.src = "/assets/hsk-ai-avatar.webp"', download)
+        self.assertIn('cover.src = "/assets/hsk-ai-cover.webp"', download)
+        self.assertNotIn('element("span", "pdd-seal", "桌")', download)
+        self.assertNotIn('element("span", "pdd-laptop-seal", "桌")', download)
+        self.assertNotIn("<script>", landing)
+        self.assertIn('"/api/v3/desktop-download/public-status"', landing_js)
+        self.assertIn('url.searchParams.set("request", token)', landing_js)
+
+        for page in (
+            "course_v3_memorize.html",
+            "course_v3_mistakes.html",
+            "course_v3_pronunciation.html",
+            "course_v3_recognition.html",
+            "course_v3_test.html",
+        ):
+            html = Path("app/static", page).read_text(encoding="utf-8")
+            self.assertIn("/course_v3_data/desktop-download.css", html, page)
+            self.assertIn("/course_v3_data/desktop-download.js", html, page)
+
 
 if __name__ == "__main__":
     unittest.main()

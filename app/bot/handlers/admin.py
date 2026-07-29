@@ -32,6 +32,7 @@ from app.services.referral_service import REFERRAL_TRIAL_ACCESS_DAYS
 from app.services.admin_stats_service import feature_usage_stats, top_referrers
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
+from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.portfolio_service import PortfolioService
 from app.services.payment_qr_code_service import (
@@ -2194,6 +2195,15 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     )).scalar() or 0
     subscription_sources_text = await SubscriptionEntryAnalyticsService(session).admin_text(week_ago=week_ago)
     course_miniapp_text = await CourseMiniAppAdminAnalyticsService(session).admin_text(week_ago=week_ago)
+    desktop_snapshot = await DesktopAnalyticsService(session).snapshot(
+        now=now,
+        since=week_ago,
+        latest_versions={
+            "macos": getattr(settings, "DESKTOP_MAC_VERSION", ""),
+            "windows": getattr(settings, "DESKTOP_WINDOWS_VERSION", ""),
+        },
+    )
+    desktop_text = DesktopAnalyticsService.admin_text(desktop_snapshot)
 
     conversion  = _pct(paid_user_cnt, total)
     qa_users    = (await session.execute(
@@ -2257,6 +2267,8 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"{subscription_sources_text}\n\n"
 
         f"{course_miniapp_text}\n\n"
+
+        f"{desktop_text}\n\n"
 
         f"<b>🎁 REFERALLAR</b>\n"
         f"  Jami: <b>{ref_total}</b>   Faollashgan: <b>{ref_activated}</b>   Bonus: <b>{ref_bonus}</b>\n"

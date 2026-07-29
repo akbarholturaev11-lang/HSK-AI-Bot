@@ -44,11 +44,20 @@ def route_static_files(page):
             ".js": "application/javascript",
             ".json": "application/json",
             ".html": "text/html",
+            ".webp": "image/webp",
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
         }
+        is_text = file_path.suffix in {".css", ".js", ".json", ".html"}
         route.fulfill(
             status=200,
             content_type=content_types.get(file_path.suffix, "application/octet-stream"),
-            body=file_path.read_text(encoding="utf-8"),
+            body=(
+                file_path.read_text(encoding="utf-8")
+                if is_text
+                else file_path.read_bytes()
+            ),
         )
 
     page.route(re.compile(r"^http://hsk-ai\.local/(?!api/).*"), handle_static)
@@ -67,6 +76,38 @@ def route_static_files(page):
     page.route(
         re.compile(r"^https://cdnjs\.cloudflare\.com/.*"),
         lambda route: route.fulfill(status=200, content_type="text/css", body=""),
+    )
+    page.route(
+        "**/api/v3/desktop-download/status",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "enabled": False,
+                "platforms": {"macos": False, "windows": False},
+                "versions": {"macos": None, "windows": None},
+                "promo": {"eligible": False, "placements": {}},
+            },
+        ),
+    )
+    page.route(
+        "**/api/admin-miniapp/desktop-stats",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "period": "all_time",
+                "desktop": {
+                    "funnel": {},
+                    "active": {"dau": 0, "wau": 0, "mau": 0},
+                    "platforms": {"active_users_30d": {}},
+                    "ai_pack": {},
+                    "sync": {},
+                    "versions": {},
+                    "notes": {},
+                },
+            },
+        ),
     )
 
 
@@ -108,6 +149,69 @@ def mock_telegram_ready(page, init_data="query_id=smoke"):
                 "openTelegramLink(){},openLink(){},showConfirm(){},"
                 "BackButton:{show(){},hide(){},onClick(){}}}};"
             ),
+        ),
+    )
+
+
+def mock_telegram_desktop_download(
+    page,
+    *,
+    platform="tdesktop",
+    native_download=True,
+    native_accept=True,
+    confirm=True,
+):
+    download_method = (
+        "downloadFile(params,cb){window.__downloadFileParams=params;cb("
+        + ("true" if native_accept else "false")
+        + ");},"
+        if native_download
+        else ""
+    )
+    confirm_value = "true" if confirm else "false"
+    page.route(
+        "https://telegram.org/js/telegram-web-app.js",
+        lambda route: route.fulfill(
+            status=200,
+            content_type="application/javascript",
+            body=(
+                "window.Telegram={WebApp:{initData:'query_id=desktop-smoke',"
+                "initDataUnsafe:{user:{id:42}},platform:'"
+                + platform
+                + "',ready(){},expand(){},close(){window.__closed=true;},"
+                "setHeaderColor(){},setBackgroundColor(){},"
+                "HapticFeedback:{impactOccurred(){},notificationOccurred(){},selectionChanged(){}},"
+                + download_method
+                + "openLink(url){window.__openedLink=url;},"
+                "showConfirm(message,cb){window.__confirmMessage=message;cb("
+                + confirm_value
+                + ");},BackButton:{show(){},hide(){},onClick(){}}}};"
+            ),
+        ),
+    )
+
+
+def mock_desktop_release_status(page):
+    page.route(
+        "**/api/v3/desktop-download/status",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "enabled": True,
+                "platforms": {"macos": True, "windows": True},
+                "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+                "promo": {
+                    "eligible": True,
+                    "cooldown_days": 14,
+                    "placements": {
+                        "profile": True,
+                        "home_prompt": True,
+                        "lesson_end_promo": True,
+                        "ad_promo": True,
+                    },
+                },
+            },
         ),
     )
 
@@ -805,3 +909,266 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     assert attempt_ids and len(set(attempt_ids)) == 1
     assert "payment_instructions_viewed" in event_stages
     assert "payment_receipt_selected" in event_stages
+
+
+def _open_course_profile_with_desktop_release(page):
+    mock_price_preview(page)
+    mock_course_map(page)
+    mock_desktop_release_status(page)
+    page.route(
+        "**/api/miniapp/event",
+        lambda route: json_response(route, {"ok": True}),
+    )
+    page.add_init_script(
+        """
+        localStorage.setItem("hsk_v3_onb", "1");
+        localStorage.setItem("hsk_v3_level", "hsk1");
+        """
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"),
+        wait_until="networkidle",
+    )
+    page.locator('#nav button[data-s="profile"]').click()
+    expect(page.locator("#pomp-desktop-profile-root .pdd-card")).to_be_visible()
+
+
+def test_desktop_download_opens_branded_site_without_closing_miniapp(page):
+    mock_telegram_desktop_download(page, platform="tdesktop", native_download=True)
+    requested = []
+    started = []
+
+    def request_download(route):
+        requested.append(route.request.post_data_json)
+        json_response(
+            route,
+            {
+                "ok": True,
+                "platform": "macos",
+                "download_url": "https://downloads.example/desktop-download?platform=macos&request=abc123",
+                "download_page_url": "https://downloads.example/desktop-download?platform=macos&request=abc123",
+                "file_name": "Pomp-HSK-AI-1.0.0.dmg",
+                "duplicate": False,
+            },
+        )
+
+    page.route("**/api/v3/desktop-download/request", request_download)
+    page.route(
+        "**/api/v3/desktop-download/started",
+        lambda route: (
+            started.append(route.request.post_data_json),
+            json_response(route, {"ok": True, "recorded": True, "duplicate": False}),
+        )[-1],
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    page.wait_for_function("Boolean(window.__openedLink)")
+    page.wait_for_function("document.querySelector('.pdd-promo-shell[data-mode=\"success\"]')")
+    page.wait_for_timeout(100)
+
+    assert page.evaluate("window.__downloadFileParams") is None
+    assert (
+        page.evaluate("window.__openedLink")
+        == "https://downloads.example/desktop-download?platform=macos&request=abc123"
+    )
+    assert requested and started
+    assert started[0]["event_id"] == requested[0]["event_id"]
+    assert started[0]["transport"] == "open_link"
+    assert not page.evaluate("Boolean(window.__closed)")
+    expect(page.locator(".pdd-promo-shell")).to_contain_text("Yuklash sayti ochildi")
+
+
+def test_desktop_download_falls_back_to_open_link(page):
+    mock_telegram_desktop_download(page, platform="tdesktop", native_download=False)
+    started = []
+    page.route(
+        "**/api/v3/desktop-download/request",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "platform": "windows",
+                "download_url": "https://downloads.example/desktop-download?platform=windows&request=def456",
+                "download_page_url": "https://downloads.example/desktop-download?platform=windows&request=def456",
+                "file_name": "Pomp-HSK-AI-1.0.0-setup.exe",
+                "duplicate": False,
+            },
+        ),
+    )
+    page.route(
+        "**/api/v3/desktop-download/started",
+        lambda route: (
+            started.append(route.request.post_data_json),
+            json_response(route, {"ok": True, "recorded": True, "duplicate": False}),
+        )[-1],
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="windows"][data-pdd-source="profile"]').click()
+    page.wait_for_function("Boolean(window.__openedLink)")
+    page.wait_for_timeout(100)
+
+    assert (
+        page.evaluate("window.__openedLink")
+        == "https://downloads.example/desktop-download?platform=windows&request=def456"
+    )
+    assert started and started[0]["transport"] == "open_link"
+    assert not page.evaluate("Boolean(window.__closed)")
+
+
+def test_download_site_does_not_use_native_download_dialog(page):
+    mock_telegram_desktop_download(
+        page,
+        platform="tdesktop",
+        native_download=True,
+        native_accept=False,
+    )
+    started = []
+    page.route(
+        "**/api/v3/desktop-download/request",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "platform": "macos",
+                "download_url": "https://downloads.example/desktop-download?platform=macos&request=cancel123",
+                "download_page_url": "https://downloads.example/desktop-download?platform=macos&request=cancel123",
+                "file_name": "Pomp-HSK-AI-1.0.0.dmg",
+                "duplicate": False,
+            },
+        ),
+    )
+    page.route(
+        "**/api/v3/desktop-download/started",
+        lambda route: (
+            started.append(route.request.post_data_json),
+            json_response(route, {"ok": True, "recorded": True, "duplicate": False}),
+        )[-1],
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    page.wait_for_function("Boolean(window.__openedLink)")
+    page.wait_for_timeout(200)
+
+    assert page.evaluate("window.__downloadFileParams") is None
+    assert started and started[0]["transport"] == "open_link"
+    assert page.locator(".pdd-promo-shell[data-mode='success']").count() == 1
+    assert not page.evaluate("Boolean(window.__closed)")
+
+
+def test_branded_download_page_exposes_direct_tracked_installers(page):
+    request_token = "a" * 32
+    page.set_viewport_size({"width": 1280, "height": 900})
+    page.route(
+        "**/api/v3/desktop-download/public-status",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "enabled": True,
+                "platforms": {"macos": True, "windows": True},
+                "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+                "downloads": {
+                    "macos": "/downloads/macos",
+                    "windows": "/downloads/windows",
+                },
+                "files": {
+                    "macos": "Pomp-HSK-AI_1.0.0_universal.dmg",
+                    "windows": "Pomp-HSK-AI_1.0.0_x64-setup.exe",
+                },
+            },
+        ),
+    )
+
+    page.goto(
+        app_url(
+            f"/desktop-download.html?platform=macos&lang=uz&request={request_token}"
+        ),
+        wait_until="networkidle",
+    )
+
+    expect(page.locator("#page-title")).to_contain_text(
+        "Xitoy tilini katta ekranda"
+    )
+    expect(page.locator(".brand-seal")).to_have_attribute(
+        "src",
+        "/assets/hsk-ai-avatar.webp",
+    )
+    expect(page.locator(".mini-seal")).to_have_attribute(
+        "src",
+        "/assets/hsk-ai-avatar.webp",
+    )
+    expect(page.locator("[data-download-button]")).to_have_attribute(
+        "href",
+        f"http://hsk-ai.local/downloads/macos?request={request_token}",
+    )
+    expect(page.locator("[data-version]")).to_have_text("Versiya 1.0.0")
+    expect(page.locator("[data-installer-stage]")).to_have_attribute(
+        "data-installer-stage",
+        "macos",
+    )
+
+    page.locator('[data-platform="windows"]').click()
+    expect(page.locator("[data-download-button]")).to_have_attribute(
+        "href",
+        f"http://hsk-ai.local/downloads/windows?request={request_token}",
+    )
+    expect(page.locator("[data-installer-stage]")).to_have_attribute(
+        "data-installer-stage",
+        "windows",
+    )
+    expect(page.locator("[data-security-copy]")).to_contain_text("SmartScreen")
+
+    page.locator('[data-language="ru"]').click()
+    expect(page.locator("#page-title")).to_contain_text(
+        "Продолжайте китайский"
+    )
+
+
+def test_mobile_desktop_download_warning_can_cancel_before_request(page):
+    mock_telegram_desktop_download(
+        page,
+        platform="android",
+        native_download=True,
+        confirm=False,
+    )
+    request_count = []
+    page.route(
+        "**/api/v3/desktop-download/request",
+        lambda route: (
+            request_count.append(1),
+            json_response(route, {"ok": False}, status=500),
+        )[-1],
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    page.wait_for_function("Boolean(window.__confirmMessage)")
+    page.wait_for_timeout(100)
+
+    assert "kompyuteringizga" in page.evaluate("window.__confirmMessage")
+    assert request_count == []
+    assert page.evaluate("window.__downloadFileParams") is None
+    assert page.evaluate("window.__openedLink") is None
+
+
+def test_desktop_promo_fits_short_360x640_viewport(page):
+    page.set_viewport_size({"width": 360, "height": 640})
+    mock_telegram_desktop_download(page, platform="tdesktop", native_download=True)
+    _open_course_profile_with_desktop_release(page)
+    page.locator('#nav button[data-s="course"]').click()
+
+    assert page.evaluate(
+        "PompDesktopDownload.queuePromo('lesson_end_promo',{lesson_id:1})"
+    )
+    expect(page.locator(".pdd-promo-shell")).to_be_visible()
+    page.wait_for_timeout(300)  # wait for the 220 ms entrance transform
+    box = page.locator(".pdd-promo-shell").bounding_box()
+    assert box is not None
+    assert box["x"] >= 0 and box["y"] >= 0
+    assert box["x"] + box["width"] <= 360.5
+    assert box["y"] + box["height"] <= 640.5
+    expect(page.locator('.pdd-promo-shell [data-pdd-platform="macos"]')).to_be_visible()
+    expect(page.locator('.pdd-promo-shell [data-pdd-platform="windows"]')).to_be_visible()

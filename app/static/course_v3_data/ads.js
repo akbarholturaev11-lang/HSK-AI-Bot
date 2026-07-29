@@ -18,20 +18,21 @@
 (function(){
   /* slot: "" (mashq bo'limlari) yoki "lesson_end" (dars yakuni bloki —
      server faqat `dars_yakuni` turidagi reklamani qaytaradi, oxirida esa
-     obuna knopkasi chiqadi). lessonOrder — dars yakunida qaysi qism edi. */
+     obuna knopkasi va sozlangan bo'lsa tashqi CTA chiqadi).
+     lessonOrder — dars yakunida qaysi qism edi. */
   var CFG = {lang:"uz", initData:"", feature:"", level:"hsk1", slot:"", lessonOrder:0, onSubscribe:null, onOffer:null};
   function isLessonEnd(){return CFG.slot==="lesson_end"}
 
   /* Darsdagi T() ad-* kalitlaridan olingan matnlar (3 til). */
   var I18N = {
     uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"Obuna olish",adSubCont:"Reklama bilan davom etish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitHead:"To'xtama — eng zo'r qismi oldinda!",limitSub:"Obunani ochsang, barcha cheklovlar yo'qoladi: tez, oson va cheksiz o'rganasan. Xitoy tilini bir necha oyda o'zlashtir — bugun boshlaganing ertaga natijaga aylanadi.",limitSubscribe:"Obunani ochish",limitAd:"Yoki reklama ko'rib davom etish",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
-        leLabel:"Dars yakuni · reklama",leNote:"Qisqa rolik. Obuna bo'lsangiz reklama umuman chiqmaydi.",leSubTitle:"Darsni tugatdingiz — endi to'liq yo'lni oching",
+        leLabel:"Dars yakuni · reklama",leNote:"Qisqa rolik. Obuna bo'lsangiz reklama umuman chiqmaydi.",leSubTitle:"Darsni tugatdingiz — endi to'liq yo'lni oching",leExternal:"Reklama havolasini ochish",
         f_recognition:"Ieroglif tanish",f_pronunciation:"Talaffuz mashqi",f_memorize:"Yodlash",f_training_test:"Test markazi",f_placement:"Daraja aniqlash testi",f_mistake_review:"Xatolar ustida ishlash"},
     ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Оформить подписку",adSubCont:"Продолжить с рекламой",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitHead:"Не останавливайся — впереди самое интересное!",limitSub:"С подпиской исчезают все ограничения: учишься быстро, легко и без лимитов. Освой китайский за пару месяцев — то, что начнёшь сегодня, завтра станет результатом.",limitSubscribe:"Открыть подписку",limitAd:"Или продолжить с рекламой",limitWhy:"Бесплатная практика на сегодня закончилась: «{s}» в бесплатном режиме открывается 1 раз в день. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",limitWhyPlain:"Бесплатный лимит на сегодня исчерпан. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу",
-        leLabel:"Конец урока · реклама",leNote:"Короткий ролик. С подпиской рекламы не будет вообще.",leSubTitle:"Урок пройден — откройте весь путь",
+        leLabel:"Конец урока · реклама",leNote:"Короткий ролик. С подпиской рекламы не будет вообще.",leSubTitle:"Урок пройден — откройте весь путь",leExternal:"Открыть ссылку рекламы",
         f_recognition:"Распознавание иероглифов",f_pronunciation:"Произношение",f_memorize:"Запоминание",f_training_test:"Тест-центр",f_placement:"Тест на уровень",f_mistake_review:"Работа над ошибками"},
     tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"Обуна шудан",adSubCont:"Идома бо реклама",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitHead:"Наист — беҳтарин қисмаш дар пеш аст!",limitSub:"Бо обуна ҳама маҳдудиятҳо нест мешаванд: зуд, осон ва бе лимит меомӯзӣ. Забони чиниро дар чанд моҳ аз худ кун — он чи имрӯз оғоз мекунӣ, фардо натиҷа мешавад.",limitSubscribe:"Кушодани обуна",limitAd:"Ё бо реклама идома додан",limitWhy:"Машқи ройгони имрӯза тамом шуд: «{s}» дар ҳолати ройгон рӯзе 1 маротиба кушода мешавад. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",limitWhyPlain:"Лимити ройгони имрӯза тамом шуд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст",
-        leLabel:"Анҷоми дарс · реклама",leNote:"Ролики кӯтоҳ. Бо обуна реклама тамоман намешавад.",leSubTitle:"Дарсро тамом кардед — тамоми роҳро кушоед",
+        leLabel:"Анҷоми дарс · реклама",leNote:"Ролики кӯтоҳ. Бо обуна реклама тамоман намешавад.",leSubTitle:"Дарсро тамом кардед — тамоми роҳро кушоед",leExternal:"Кушодани ҳаволаи реклама",
         f_recognition:"Шинохти иероглиф",f_pronunciation:"Машқи талаффуз",f_memorize:"Азёдкунӣ",f_training_test:"Маркази тест",f_placement:"Тести муайянкунии сатҳ",f_mistake_review:"Кор бар хатоҳо"}
   };
   function T(){ return I18N[CFG.lang] || I18N.uz; }
@@ -93,6 +94,8 @@
   +'.caa-ov.caa-done .caa-sub{gap:8px;padding:14px}'
   +'.caa-ov.caa-done .caa-sub-t{font-size:14px;margin:0 0 2px}'
   +'.caa-ov.caa-done .caa-pay,.caa-ov.caa-done .caa-cta.ghost{padding:12px;font-size:14px;border-radius:12px}'
+  +'.caa-ext[hidden]{display:none!important}'
+  +'.caa-ext{background:rgba(255,255,255,.13)!important;color:#fff!important}'
   +'.caa-promo{position:relative;height:100%;min-height:0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 20px;background:radial-gradient(120% 90% at 50% 0,rgba(194,64,58,.22),transparent 62%),rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.10);border-radius:18px;overflow:hidden}'
   +'.caa-ov.caa-done .caa-promo{display:flex}'
   +'.caa-promo-slide{display:flex;flex-direction:column;align-items:center;animation:caaPromoIn .5s ease}'
@@ -133,7 +136,9 @@
   +'.caa-ps-btn{flex:1;min-width:92px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:11px;padding:11px 8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}'
   +'.caa-ps-btn.primary{background:#fff;color:#211D17;border-color:#fff}'
   +'.caa-ps-btn:active{transform:translateY(1px)}'
-  +'.caa-ps-btn i{font-size:15px}';
+  +'.caa-ps-btn i{font-size:15px}'
+  +'.caa-desktop{display:none;width:100%;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;border-radius:12px;padding:11px 10px;font-family:inherit;font-size:13px;font-weight:650;cursor:pointer}'
+  +'.caa-desktop:not([hidden]){display:flex;align-items:center;justify-content:center}';
 
   var els = null;
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -153,7 +158,7 @@
       +'<button class="caa-cta caa-cta0" disabled></button>'
       +'<div class="caa-sub" hidden><div class="caa-why" hidden><i class="ti ti-info-circle"></i><span class="caa-why-t"></span></div>'
       +'<p class="caa-sub-t"></p><p class="caa-sub-desc" hidden></p><div class="caa-benefits"></div>'
-      +'<button class="caa-cta caa-pay"></button><button class="caa-cta ghost caa-cont"></button>'
+      +'<button class="caa-cta caa-pay"></button><button class="caa-cta ghost caa-ext" hidden></button><button class="caa-cta ghost caa-cont"></button><button class="caa-desktop" hidden></button>'
       +'<div class="caa-limit-foot" hidden><button class="caa-limit-link ad caa-lim-ad" hidden></button></div></div>'
       +'</div>'
       +'<button class="caa-x" aria-label="close"><i class="ti ti-x"></i></button>'
@@ -165,8 +170,8 @@
       promo:q(".caa-promo"), promoSlide:q(".caa-promo-slide"), dots:q(".caa-dots"),
       title:q(".caa-title"), note:q(".caa-note"), ps:q(".caa-ps"), cta0:q(".caa-cta0"), sub:q(".caa-sub"),
       subTitle:q(".caa-sub-t"), subDesc:q(".caa-sub-desc"), why:q(".caa-why"), whyT:q(".caa-why-t"),
-      benefits:q(".caa-benefits"), pay:q(".caa-pay"), cont:q(".caa-cont"),
-      limFoot:q(".caa-limit-foot"), limAd:q(".caa-lim-ad"), x:q(".caa-x")};
+      benefits:q(".caa-benefits"), pay:q(".caa-pay"), external:q(".caa-ext"), cont:q(".caa-cont"),
+      desktop:q(".caa-desktop"), limFoot:q(".caa-limit-foot"), limAd:q(".caa-lim-ad"), x:q(".caa-x")};
     els.vwrap.addEventListener("click", openAdLink);
     els.ps.addEventListener("click", onPsClick);
     return els;
@@ -208,6 +213,19 @@
     try{if(isTg&&tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
     try{if(tg&&tg.openLink){tg.openLink(url);return}}catch(e){}
     try{window.open(url,"_blank")}catch(e){}
+  }
+  function hideLessonEndExternal(){
+    if(!els||!els.external)return;
+    els.external.hidden=true;els.external.style.display="none";els.external.onclick=null;
+  }
+  function renderLessonEndExternal(ad){
+    hideLessonEndExternal();
+    if(!isLessonEnd()||!ad||!ad.link_url)return;
+    var label=(ad.button_text&&String(ad.button_text).trim())?String(ad.button_text).trim():(T().leExternal||T().adVisit);
+    var url=ad.link_url;
+    els.external.innerHTML='<i class="ti ti-external-link"></i> '+esc(label);
+    els.external.hidden=false;els.external.style.display="flex";
+    els.external.onclick=function(){openUrl(url)};
   }
   function copyUrl(url,btn){
     if(!url)return;haptic(true);
@@ -297,7 +315,7 @@
   function closeOverlay(){
     clearInterval(STATE.timer);clearTimeout(STATE.loadTimer);
     try{var v=els.video;resetVideo(v);v.pause();v.removeAttribute("src");v.load()}catch(e){}
-    stopPromo();hidePs();els.ov.classList.remove("caa-done");setStatus("");
+    stopPromo();hidePs();hideLessonEndExternal();els.desktop.hidden=true;els.ov.classList.remove("caa-done");setStatus("");
     els.ov.classList.remove("on");els.ov.setAttribute("aria-hidden","true");
   }
   function setSubVisible(vis){els.sub.hidden=!vis;els.sub.style.display=vis?"grid":"none"}
@@ -313,6 +331,7 @@
 
   function play(placement,accessRef){
     ensureDom();
+    hideLessonEndExternal();
     accessRef=String(accessRef||"").trim().slice(0,48);
     return new Promise(function(resolve,reject){
       fetchAds(placement).then(function(ads){
@@ -335,6 +354,7 @@
           els.label.textContent=placementTitle(placement)+(multi?" · "+(i+1)+"/"+ads.length:"");
           els.title.textContent=ad.title||placementTitle(placement);
           els.note.textContent=noteText();
+          hideLessonEndExternal();
           var hasLink=!!ad.link_url;
           var typed=(ad.ad_type==="hamkorlik"||ad.ad_type==="bot");
           /* Odiy reklamada havola bo'lsa — video ustidagi "Havolaga o'tish" chipi.
@@ -376,8 +396,12 @@
                  bloki chiqadi (davom bosilganda done() ko'rilganini yozib yakunlaydi). */
               try{video.pause()}catch(e){}
               hidePs();
+              renderLessonEndExternal(ad);
               els.vwrap.style.display="none";els.ov.classList.add("caa-done");startPromo();
               STATE.ready=true;els.cta0.style.display="none";els.cont.style.display="";setSubVisible(true);
+              if(window.PompDesktopDownload&&typeof window.PompDesktopDownload.mountAdPromoTrigger==="function"){
+                window.PompDesktopDownload.mountAdPromoTrigger(els.desktop,{placement:"practice_"+String(CFG.feature||"unknown")+"_end"});
+              }else{els.desktop.hidden=true}
               /* Obuna taklifi ko'rindi — chaqiruvchi buni analitikaga yozishi mumkin. */
               if(typeof CFG.onOffer==="function"){try{CFG.onOffer()}catch(e){}}
             }else{
@@ -431,7 +455,7 @@
   }
 
   function _closeLimit(){
-    stopPromo();hidePs();
+    stopPromo();hidePs();hideLessonEndExternal();els.desktop.hidden=true;
     els.ov.classList.remove("on","caa-done","limit");
     els.ov.setAttribute("aria-hidden","true");
     if(els.limFoot)els.limFoot.hidden=true;
@@ -446,7 +470,7 @@
   function showLimitPromo(opts){
     opts=opts||{};
     ensureDom();
-    hidePs();
+    hidePs();hideLessonEndExternal();els.desktop.hidden=true;
     var t=T();
     var why=opts.reason||limitWhyText(CFG.feature);
     if(why){els.whyT.textContent=why;els.why.hidden=false}else{els.why.hidden=true}

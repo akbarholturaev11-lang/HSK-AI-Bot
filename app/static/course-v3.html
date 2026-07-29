@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FDF9F0">
 <title>HSK AI</title>
+<link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{
@@ -601,6 +602,7 @@ button{cursor:pointer}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
 @media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i,.pd-fly,.pd-cape,.pd-arms{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
 </style>
+<link href="/course_v3_data/desktop-download.css?v=20260730-1" rel="stylesheet">
 </head>
 <body>
 <div class="wrap">
@@ -651,6 +653,7 @@ button{cursor:pointer}
           <div class="adsub-benefits" id="ad-sub-benefits"></div>
           <button class="adcta adsub-pay" id="ad-sub-pay" onclick="AdFlow.subscribe()"></button>
           <button class="adcta ghost" id="ad-sub-cont" onclick="AdFlow.done()"></button>
+          <div class="pdd-ad-entry" id="ad-desktop" hidden></div>
         </div>
       </div>
     </div>
@@ -665,11 +668,12 @@ button{cursor:pointer}
   <div id="edgeglow"></div>
   <div class="combo" id="combo"></div>
   <div class="toast" id="toast"></div>
+  <div id="pomp-desktop-promo-root" hidden></div>
 </div>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script src="/course_v3_data/ads.js?v=20260725"></script>
+<script src="/course_v3_data/ads.js?v=20260728-4"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -958,9 +962,14 @@ var App={
     var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");
     var cine=$("#lu-cine");if(cine)cine.innerHTML="";
     App.exitFlow();
+    var desktopLesson=Number(window._pendingDesktopLessonPromo)||0;
+    window._pendingDesktopLessonPromo=0;
     var go=function(){
-      if(dest==="rating"){App.show("rating");renderRating();return}
-      App.show("course");renderAll();
+      if(dest==="rating"){App.show("rating");renderRating()}
+      else{App.show("course");renderAll()}
+      if(desktopLesson&&window.PompDesktopDownload&&window.PompDesktopDownload.queuePromo){
+        window.PompDesktopDownload.queuePromo("lesson_end_promo",{lesson_id:desktopLesson});
+      }
     };
     /* Bepul userga dars yakuni reklamasi — bayram/streak/reyting ekranlaridan
        KEYIN, xaritaga qaytishdan oldin. Reklama yo'q yoki yuklanmasa jim o'tadi. */
@@ -1242,7 +1251,10 @@ function recordCourseAdView(ad,placement,l,watched){
 }
 /* Davomiylik adminda 5–120s oralig'ida boshqariladi (backend bilan bir xil clamp). */
 function adDuration(ad){return Math.max(5,Math.min(120,Number(ad&&ad.duration_seconds)||7))}
-function setAdSubscribeVisible(visible){var sub=$("#ad-sub");if(!sub)return;sub.hidden=!visible;sub.style.display=visible?"grid":"none"}
+function setAdSubscribeVisible(visible){
+  var sub=$("#ad-sub");if(!sub)return;sub.hidden=!visible;sub.style.display=visible?"grid":"none";
+  if(window.PompDesktopDownload&&window.PompDesktopDownload.syncAdPromo)window.PompDesktopDownload.syncAdPromo(visible);
+}
 function adUiText(key){
   var m={
     ru:{loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",retry:"Повторить загрузку",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC."},
@@ -1337,6 +1349,7 @@ var AdFlow={
      Yozuv saqlanmasa ham userni obunaga MAJBURLAMAYMIZ, shunchaki davom etadi. */
   done:function(){
     if(!AD_STATE.ready||AD_STATE.busy)return;
+    if(window.PompDesktopDownload&&window.PompDesktopDownload.dismissAdPromo)window.PompDesktopDownload.dismissAdPromo();
     AD_STATE.busy=true;
     var cont=$("#ad-sub-cont");if(cont){cont.disabled=true;cont.innerHTML='<i class="ti ti-loader-2"></i> …'}
     function finish(){
@@ -1349,6 +1362,7 @@ var AdFlow={
   },
   /* "Obuna olish" — istalgan reklama oxirida obuna sahifasiga olib boradi. */
   subscribe:function(){
+    if(window.PompDesktopDownload&&window.PompDesktopDownload.dismissAdPromo)window.PompDesktopDownload.dismissAdPromo();
     _closeAdOverlay();_resetAdState();
     App.goPay("v3_course_ad");
   },
@@ -2595,6 +2609,7 @@ function applyLessonDone(cur,d){
   var al=allLessons();
   cur.status="done";cur.stars=3;cur.locked_premium=false;
   window._pendingStreak=null;window._pendingXpFly=0;
+  window._pendingDesktopLessonPromo=Number(cur&&cur.n)||0;
   /* Dars yakuni reklamasi — bayram ekranlari tugagach (closeLevelUp) chiqadi.
      Faqat bepul foydalanuvchiga; obunachi hech qachon ko'rmaydi. */
   window._pendingLessonEndAd=(!isPaidUser()&&INIT_DATA)?(Number(cur.n)||0):0;
@@ -3440,6 +3455,7 @@ function renderProfile(){
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
     +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
     +(isPaidUser()?'':'<div class="pro" onclick="App.openPaywall(\'profile\')"><span class="gw han">会</span><h3>'+t.unlockTitle+'</h3><p>'+t.unlockSub+'</p><button>'+t.unlockBtn+' →</button></div>')
+    +'<div id="pomp-desktop-profile-root"></div>'
     +'<div class="sech">'+t.mistakes+' · '+t.friends+'</div>'
     +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()")
     +rowCard("t-jade",'<i class="ti ti-users"></i>',t.friends,"","App.openFriends()")
@@ -3450,6 +3466,7 @@ function renderProfile(){
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button></div>'
     +'<div style="height:14px"></div>';
+  if(window.PompDesktopDownload&&window.PompDesktopDownload.renderProfile)window.PompDesktopDownload.renderProfile();
 }
 
 /* ---------- Paywall ---------- */
@@ -3554,5 +3571,6 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
   });
 })();
 </script>
+<script src="/course_v3_data/desktop-download.js?v=20260730-1"></script>
 </body>
 </html>
