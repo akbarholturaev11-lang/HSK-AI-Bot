@@ -331,6 +331,36 @@ class CourseV3StaticMapTests(unittest.TestCase):
             self.assertIn("/course_v3_data/desktop-download.css", html, page)
             self.assertIn("/course_v3_data/desktop-download.js", html, page)
 
+    def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        download = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+
+        goal_position = course.index("+'<div class=\"pgoal\"")
+        desktop_position = course.index(
+            "+'<div id=\"pomp-desktop-profile-root\"></div>'"
+        )
+        calendar_position = course.index("p.calTitle", desktop_position)
+        self.assertLess(goal_position, desktop_position)
+        self.assertLess(desktop_position, calendar_position)
+
+        self.assertEqual(download.count("stepsTitle:"), 3)
+        self.assertEqual(download.count("stepChoose:"), 3)
+        self.assertEqual(download.count("stepTransfer:"), 3)
+        self.assertEqual(download.count("stepInstall:"), 3)
+        self.assertIn(
+            "[copy.stepChoose, copy.stepTransfer, copy.stepInstall]", download
+        )
+        self.assertIn("main.appendChild(buildInstallSteps())", download)
+        self.assertIn("copy.macUnavailable", download)
+        self.assertIn("copy.windowsUnavailable", download)
+        self.assertIn("if (isDesktop || !state.availabilityLoaded)", download)
+
+        self.assertIn(
+            'params.get("desktop_download") === "1"', download
+        )
+        self.assertIn('card.classList.add("pdd-card-focus")', download)
+        self.assertIn("card.scrollIntoView({", download)
+
 
 if __name__ == "__main__":
     unittest.main()

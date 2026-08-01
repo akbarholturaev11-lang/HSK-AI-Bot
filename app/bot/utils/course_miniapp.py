@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260628-challenge-v1"
+MINIAPP_ASSET_VERSION = "20260802-desktop-profile-v2"
 COURSE_V3_TABS = {"course", "mashq", "voice", "rating", "profile"}
 LEGACY_TAB_MAP = {
     "home": "course",
@@ -181,13 +181,19 @@ def subscription_miniapp_url(
 
 
 def course_v3_miniapp_url(
-    lang: str | None = None, *, resume: bool = False, tab: str | None = None
+    lang: str | None = None,
+    *,
+    resume: bool = False,
+    tab: str | None = None,
+    focus_desktop_download: bool = False,
 ) -> str:
     base_url = _miniapp_base_url_for_file("course-v3.html")
     separator = "&" if "?" in base_url else "?"
     params = {"lang": normalize_miniapp_lang(lang), "v": MINIAPP_ASSET_VERSION}
     if tab:
         params["tab"] = _course_v3_tab(tab)
+    if focus_desktop_download:
+        params["desktop_download"] = 1
     if resume:
         # Mini App server progresidan (/api/v3/map) foydalanuvchining JORIY
         # qismini topib, o'sha darsni darhol ochadi — bir bosishda davom.

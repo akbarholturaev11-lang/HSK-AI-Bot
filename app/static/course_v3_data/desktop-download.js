@@ -5,6 +5,7 @@
   var isDesktop =
     params.get("desktop") === "1" ||
     Boolean(window.__TAURI__ || window.__TAURI_INTERNALS__);
+  var focusProfileDownload = params.get("desktop_download") === "1";
   var promoRoot = document.getElementById("pomp-desktop-promo-root");
   if (!promoRoot && document.body) {
     promoRoot = document.createElement("div");
@@ -31,17 +32,26 @@
   var COPY = {
     uz: {
       eyebrow: "Pomp HSK AI · kompyuter",
-      cardTitle: "Kompyuterda qulayroq o‘rganing",
+      cardTitle: "Kompyuter ilovasi",
       cardBody:
-        "Darslarni katta ekranda davom ettiring. Hisob, obuna va progress bir xil qoladi.",
+        "Mac yoki Windowsni tanlang. Telefonda bo‘lsangiz, linkni kompyuterga yuborasiz.",
+      stepsTitle: "O‘rnatish juda oson",
+      stepChoose: "Mac yoki Windowsni tanlang.",
+      stepTransfer: "Telefonda bo‘lsangiz, AirDrop yoki link orqali yuboring.",
+      stepInstall:
+        "Mac: Applications’ga torting. Windows: Install tugmasini bosing.",
+      preparing:
+        "Yuklash fayllari tayyorlanmoqda. Tez orada tugmalar faollashadi.",
       promoTitle: "Darslarni kompyuterda davom ettiring",
       promoBody:
         "Mac yoki Windows ilovasida kurs katta ekranda, yangilanishlar esa avtomatik keladi.",
       bigScreen: "Katta ekran",
       autoUpdate: "Avtomatik update",
       sharedProgress: "Yagona progress",
-      mac: "Mac uchun",
-      windows: "Windows uchun",
+      mac: "Mac uchun olish",
+      windows: "Windows uchun olish",
+      macUnavailable: "Mac — tez orada",
+      windowsUnavailable: "Windows — tez orada",
       recommended: "Mos",
       dismiss: "Keyinroq",
       close: "Oynani yopish",
@@ -81,17 +91,26 @@
     },
     ru: {
       eyebrow: "Pomp HSK AI · компьютер",
-      cardTitle: "Учитесь удобнее на компьютере",
+      cardTitle: "Приложение для компьютера",
       cardBody:
-        "Продолжайте уроки на большом экране. Аккаунт, подписка и прогресс останутся общими.",
+        "Выберите Mac или Windows. Если вы на телефоне, отправьте ссылку на компьютер.",
+      stepsTitle: "Установка в три шага",
+      stepChoose: "Выберите Mac или Windows.",
+      stepTransfer: "С телефона отправьте ссылку через AirDrop или копирование.",
+      stepInstall:
+        "Mac: перетащите приложение в Applications. Windows: нажмите Install.",
+      preparing:
+        "Файлы загрузки готовятся. Кнопки станут активны в ближайшее время.",
       promoTitle: "Продолжайте уроки на компьютере",
       promoBody:
         "Курс удобнее на большом экране, а новые версии устанавливаются автоматически.",
       bigScreen: "Большой экран",
       autoUpdate: "Автообновление",
       sharedProgress: "Общий прогресс",
-      mac: "Для Mac",
-      windows: "Для Windows",
+      mac: "Скачать для Mac",
+      windows: "Скачать для Windows",
+      macUnavailable: "Mac — скоро",
+      windowsUnavailable: "Windows — скоро",
       recommended: "Подходит",
       dismiss: "Позже",
       close: "Закрыть окно",
@@ -131,17 +150,26 @@
     },
     tj: {
       eyebrow: "Pomp HSK AI · компютер",
-      cardTitle: "Дар компютер қулайтар омӯзед",
+      cardTitle: "Барномаи компютерӣ",
       cardBody:
-        "Дарсҳоро дар экрани калон идома диҳед. Ҳисоб, обуна ва пешрафт умумӣ мемонанд.",
+        "Mac ё Windows-ро интихоб кунед. Агар дар телефон бошед, пайвандро ба компютер фиристед.",
+      stepsTitle: "Насб дар се қадам",
+      stepChoose: "Mac ё Windows-ро интихоб кунед.",
+      stepTransfer: "Аз телефон бо AirDrop ё нусхаи пайванд фиристед.",
+      stepInstall:
+        "Mac: барномаро ба Applications кашед. Windows: Install-ро пахш кунед.",
+      preparing:
+        "Файлҳои боргирӣ омода мешаванд. Тугмаҳо ба наздикӣ фаъол мешаванд.",
       promoTitle: "Дарсҳоро дар компютер идома диҳед",
       promoBody:
         "Курс дар экрани калон қулайтар аст ва версияҳои нав автоматӣ меоянд.",
       bigScreen: "Экрани калон",
       autoUpdate: "Навсозии автоматӣ",
       sharedProgress: "Пешрафти умумӣ",
-      mac: "Барои Mac",
-      windows: "Барои Windows",
+      mac: "Гирифтан барои Mac",
+      windows: "Гирифтан барои Windows",
+      macUnavailable: "Mac — ба наздикӣ",
+      windowsUnavailable: "Windows — ба наздикӣ",
       recommended: "Мувофиқ",
       dismiss: "Баъдтар",
       close: "Пӯшидани равзана",
@@ -205,6 +233,7 @@
     activePromoSource: "",
     activePromoMeta: {},
     previousFocus: null,
+    profileFocusDone: false,
     lastPlatform: "",
     destinationOpen: false,
     destinationPlatform: "",
@@ -417,6 +446,38 @@
     return row;
   }
 
+  function buildInstallSteps() {
+    var copy = text();
+    var section = element("div", "pdd-install-guide");
+    section.appendChild(
+      element("strong", "pdd-install-guide-title", copy.stepsTitle)
+    );
+    var steps = element("ol", "pdd-install-steps");
+    [copy.stepChoose, copy.stepTransfer, copy.stepInstall].forEach(function (
+      label,
+      index
+    ) {
+      var step = element("li", "pdd-install-step");
+      step.appendChild(
+        element("span", "pdd-install-number", String(index + 1))
+      );
+      step.appendChild(element("span", "pdd-install-copy", label));
+      steps.appendChild(step);
+    });
+    section.appendChild(steps);
+    return section;
+  }
+
+  function platformButtonLabel(platform) {
+    var copy = text();
+    if (isPlatformAvailable(platform)) {
+      return platform === "macos" ? copy.mac : copy.windows;
+    }
+    return platform === "macos"
+      ? copy.macUnavailable
+      : copy.windowsUnavailable;
+  }
+
   function buildOsButton(platform, source) {
     var copy = text();
     var button = element("button", "pdd-os-button");
@@ -430,9 +491,7 @@
     button.appendChild(
       icon(platform === "macos" ? "brand-apple" : "brand-windows")
     );
-    button.appendChild(
-      element("span", "", platform === "macos" ? copy.mac : copy.windows)
-    );
+    button.appendChild(element("span", "", platformButtonLabel(platform)));
     button.addEventListener("click", function () {
       requestDownload(platform, source);
     });
@@ -461,12 +520,7 @@
     var host = document.getElementById("pomp-desktop-profile-root");
     if (!host) return;
     host.replaceChildren();
-    if (
-      isDesktop ||
-      !state.availabilityLoaded ||
-      !state.enabled ||
-      (!state.platforms.macos && !state.platforms.windows)
-    ) {
+    if (isDesktop || !state.availabilityLoaded) {
       return;
     }
 
@@ -490,12 +544,41 @@
     content.appendChild(element("p", "", copy.cardBody));
     head.appendChild(content);
     main.appendChild(head);
-    main.appendChild(buildBenefits(true));
+    main.appendChild(buildInstallSteps());
+    var trust = element("div", "pdd-profile-trust");
+    trust.appendChild(icon("refresh"));
+    trust.appendChild(element("span", "", copy.sharedProgress));
+    main.appendChild(trust);
     main.appendChild(buildActions("profile"));
+    if (!hasAvailablePlatform()) {
+      var availability = element("div", "pdd-availability-note");
+      availability.setAttribute("role", "status");
+      availability.appendChild(icon("clock"));
+      availability.appendChild(element("span", "", copy.preparing));
+      main.appendChild(availability);
+    }
     main.appendChild(buildInlineStatus());
     card.appendChild(main);
     host.appendChild(card);
     syncControls();
+    if (focusProfileDownload && !state.profileFocusDone) {
+      state.profileFocusDone = true;
+      window.setTimeout(function () {
+        if (!card.isConnected) return;
+        card.classList.add("pdd-card-focus");
+        card.scrollIntoView({
+          behavior:
+            window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth",
+          block: "center"
+        });
+        window.setTimeout(function () {
+          card.classList.remove("pdd-card-focus");
+        }, 1800);
+      }, 260);
+    }
   }
 
   function platformLabel(platform) {
@@ -700,9 +783,7 @@
       if (label) {
         label.textContent = pending
           ? copy.sendingShort
-          : platform === "macos"
-            ? copy.mac
-            : copy.windows;
+          : platformButtonLabel(platform);
       }
     });
 

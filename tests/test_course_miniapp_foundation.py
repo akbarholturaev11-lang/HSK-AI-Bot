@@ -13,6 +13,7 @@ from app.bot.utils.course_miniapp import (
     course_miniapp_url,
     course_stroke_order_url,
     course_study_miniapp_url,
+    course_v3_miniapp_url,
 )
 from app.services.course_miniapp_access_service import (
     COURSE_AI_PRACTICE_FEATURES,
@@ -114,6 +115,24 @@ class CourseMiniAppModelTests(unittest.TestCase):
 
 
 class CourseMiniAppUrlTests(unittest.TestCase):
+    def test_desktop_profile_focus_flag_is_explicit_and_keeps_existing_query(self):
+        with mock.patch(
+            "app.bot.utils.course_miniapp.settings.MINI_APP_BASE_URL",
+            "https://app.example.test/course-v3.html?channel=telegram",
+        ):
+            regular = course_v3_miniapp_url(lang="uz", tab="profile")
+            desktop = course_v3_miniapp_url(
+                lang="uz",
+                tab="profile",
+                focus_desktop_download=True,
+            )
+
+        self.assertIn("channel=telegram", regular)
+        self.assertIn("tab=profile", regular)
+        self.assertNotIn("desktop_download=", regular)
+        self.assertIn("channel=telegram", desktop)
+        self.assertIn("desktop_download=1", desktop)
+
     def test_legacy_course_links_point_to_existing_course_v3_surfaces(self):
         lesson = SimpleNamespace(level="hsk1", lesson_order=4)
 

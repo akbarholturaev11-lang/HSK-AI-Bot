@@ -380,16 +380,19 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
             "subscription": "💎 Обуна",
             "language": "🌐 Забон",
             "level": "📊 Дараҷа",
+            "desktop": "💻 Барномаи компютерӣ",
         },
         "uz": {
             "subscription": "💎 Obuna",
             "language": "🌐 Til",
             "level": "📊 Daraja",
+            "desktop": "💻 Kompyuter ilovasi",
         },
         "ru": {
             "subscription": "💎 Подписка",
             "language": "🌐 Язык",
             "level": "📊 Уровень",
+            "desktop": "💻 Приложение для компьютера",
         },
     }
     l = labels.get(lang, labels["ru"])
@@ -406,6 +409,18 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(text=l["level"], callback_data="profile_menu:level"),
             InlineKeyboardButton(text=t("menu_partner", lang), callback_data="partner:open"),
+        ],
+        [
+            InlineKeyboardButton(
+                text=l["desktop"],
+                web_app=WebAppInfo(
+                    url=course_v3_miniapp_url(
+                        lang=lang,
+                        tab="profile",
+                        focus_desktop_download=True,
+                    )
+                ),
+            ),
         ],
         [
             # Profil ostidagi tugma kursni BIR bosishda ochadi (oraliq xabar

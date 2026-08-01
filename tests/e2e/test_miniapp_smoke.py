@@ -191,32 +191,31 @@ def mock_telegram_desktop_download(
     )
 
 
-def mock_desktop_release_status(page):
-    page.route(
-        "**/api/v3/desktop-download/status",
-        lambda route: json_response(
-            route,
-            {
-                "ok": True,
-                "enabled": True,
-                "platforms": {"macos": True, "windows": True},
-                "versions": {"macos": "1.0.0", "windows": "1.0.0"},
-                "downloads": {
-                    "macos": "https://downloads.example/downloads/macos",
-                    "windows": "https://downloads.example/downloads/windows",
-                },
-                "promo": {
-                    "eligible": True,
-                    "cooldown_days": 14,
-                    "placements": {
-                        "profile": True,
-                        "home_prompt": True,
-                        "lesson_end_promo": True,
-                        "ad_promo": True,
-                    },
+def mock_desktop_release_status(page, payload=None):
+    if payload is None:
+        payload = {
+            "ok": True,
+            "enabled": True,
+            "platforms": {"macos": True, "windows": True},
+            "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+            "downloads": {
+                "macos": "https://downloads.example/downloads/macos",
+                "windows": "https://downloads.example/downloads/windows",
+            },
+            "promo": {
+                "eligible": True,
+                "cooldown_days": 14,
+                "placements": {
+                    "profile": True,
+                    "home_prompt": True,
+                    "lesson_end_promo": True,
+                    "ad_promo": True,
                 },
             },
-        ),
+        }
+    page.route(
+        "**/api/v3/desktop-download/status",
+        lambda route: json_response(route, payload),
     )
 
 
@@ -915,10 +914,16 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
     assert "payment_receipt_selected" in event_stages
 
 
-def _open_course_profile_with_desktop_release(page):
+def _open_course_profile_with_desktop_release(
+    page,
+    *,
+    status_payload=None,
+    path="/course-v3.html?lang=uz&level=hsk1&onboarded=1",
+    select_profile=True,
+):
     mock_price_preview(page)
     mock_course_map(page)
-    mock_desktop_release_status(page)
+    mock_desktop_release_status(page, status_payload)
     page.route(
         "**/api/miniapp/event",
         lambda route: json_response(route, {"ok": True}),
@@ -929,11 +934,129 @@ def _open_course_profile_with_desktop_release(page):
         localStorage.setItem("hsk_v3_level", "hsk1");
         """
     )
-    page.goto(
-        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"),
-        wait_until="networkidle",
+    page.goto(app_url(path), wait_until="networkidle")
+    if select_profile:
+        page.locator('#nav button[data-s="profile"]').click()
+    expect(page.locator("#pomp-desktop-profile-root .pdd-card")).to_be_visible()
+
+
+def test_desktop_profile_card_is_discoverable_and_explains_installation(page):
+    mock_telegram_desktop_download(page, platform="android")
+    _open_course_profile_with_desktop_release(page)
+
+    card = page.locator("#pomp-desktop-profile-root .pdd-card")
+    goal = page.locator("#s-profile .pgoal")
+    calendar = page.locator("#pomp-desktop-profile-root + .sech")
+    nav = page.locator("#nav")
+    mac = card.locator('[data-pdd-platform="macos"]')
+    windows = card.locator('[data-pdd-platform="windows"]')
+
+    expect(card).to_be_visible()
+    expect(mac).to_be_visible()
+    expect(windows).to_be_visible()
+    expect(card.locator(".pdd-install-step")).to_have_count(3)
+    expect(card.locator(".pdd-install-number")).to_have_text(["1", "2", "3"])
+    expect(card.locator(".pdd-install-steps")).to_contain_text(
+        "Mac yoki Windowsni tanlang."
     )
-    page.locator('#nav button[data-s="profile"]').click()
+    expect(card.locator(".pdd-install-steps")).to_contain_text(
+        "AirDrop yoki link orqali yuboring."
+    )
+    expect(card.locator(".pdd-install-steps")).to_contain_text(
+        "Mac: Applications’ga torting. Windows: Install tugmasini bosing."
+    )
+    expect(card.locator(".pdd-profile-trust")).to_contain_text("Yagona progress")
+
+    goal_box = goal.bounding_box()
+    card_box = card.bounding_box()
+    calendar_box = calendar.bounding_box()
+    nav_box = nav.bounding_box()
+    mac_box = mac.bounding_box()
+    windows_box = windows.bounding_box()
+
+    assert all(
+        box is not None
+        for box in (goal_box, card_box, calendar_box, nav_box, mac_box, windows_box)
+    )
+    assert goal_box["y"] + goal_box["height"] <= card_box["y"] + 1
+    assert card_box["y"] + card_box["height"] <= calendar_box["y"] + 1
+    assert card_box["y"] < 844 * 0.5
+    assert mac_box["y"] + mac_box["height"] <= nav_box["y"] + 1
+    assert windows_box["y"] + windows_box["height"] <= nav_box["y"] + 1
+
+
+def test_desktop_profile_unavailable_state_is_honest_and_sends_no_request(page):
+    mock_telegram_desktop_download(page, platform="android")
+    requests = []
+    page.route(
+        "**/api/v3/desktop-download/request",
+        lambda route: (
+            requests.append(route.request.post_data_json),
+            json_response(route, {"ok": False}, status=500),
+        )[-1],
+    )
+    unavailable = {
+        "ok": True,
+        "enabled": False,
+        "platforms": {"macos": False, "windows": False},
+        "versions": {"macos": None, "windows": None},
+        "promo": {"eligible": False, "placements": {}},
+    }
+    _open_course_profile_with_desktop_release(page, status_payload=unavailable)
+
+    card = page.locator("#pomp-desktop-profile-root .pdd-card")
+    mac = card.locator('[data-pdd-platform="macos"]')
+    windows = card.locator('[data-pdd-platform="windows"]')
+    expect(card).to_be_visible()
+    expect(mac).to_be_disabled()
+    expect(windows).to_be_disabled()
+    expect(mac).to_contain_text("Mac — tez orada")
+    expect(windows).to_contain_text("Windows — tez orada")
+    expect(card.locator(".pdd-availability-note")).to_contain_text(
+        "Yuklash fayllari tayyorlanmoqda"
+    )
+
+    page.evaluate(
+        """
+        document.querySelector('[data-pdd-platform="macos"][data-pdd-source="profile"]').click();
+        document.querySelector('[data-pdd-platform="windows"][data-pdd-source="profile"]').click();
+        """
+    )
+    page.wait_for_timeout(100)
+    assert requests == []
+    assert page.locator("#pomp-desktop-destination-root").is_hidden()
+
+
+def test_desktop_download_deep_link_opens_profile_and_focuses_card(page):
+    mock_telegram_desktop_download(page, platform="android")
+    page.add_init_script(
+        """
+        (() => {
+          const original = Element.prototype.scrollIntoView;
+          Element.prototype.scrollIntoView = function(options) {
+            if (this.matches && this.matches('.pdd-card')) {
+              window.__pddFocusScroll = options || true;
+            }
+            return original.apply(this, arguments);
+          };
+        })();
+        """
+    )
+    _open_course_profile_with_desktop_release(
+        page,
+        path=(
+            "/course-v3.html?lang=uz&level=hsk1&onboarded=1"
+            "&tab=profile&desktop_download=1"
+        ),
+        select_profile=False,
+    )
+
+    expect(page.locator("#s-profile")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator('#nav button[data-s="profile"]')).to_have_class(
+        re.compile(r"\bon\b")
+    )
+    page.wait_for_function("Boolean(window.__pddFocusScroll)")
+    assert page.evaluate("window.__pddFocusScroll.block") == "center"
     expect(page.locator("#pomp-desktop-profile-root .pdd-card")).to_be_visible()
 
 

@@ -4105,6 +4105,14 @@ Architecture:
   saqlanadi.
 
 Acquisition:
+- Botning barcha shared `Profil` kirishlarida full-width `Kompyuter ilovasi`
+  Web App CTA bor; u `tab=profile&desktop_download=1` bilan Mini App profilidagi
+  download kartasini ochib, kartaga fokuslaydi. Alohida callback/download oqimi
+  yaratilmagan — existing authenticated oqim qayta ishlatiladi.
+- Mini App profil download kartasi daily goal'dan keyin ko'rinadi va 3 aniq
+  o'rnatish qadamini UZ/RU/TJ ko'rsatadi. Release hali yo'q bo'lsa karta
+  yashirilmaydi: platforma tugmalari disabled va `tez orada` holati ko'rinadi;
+  profilni ochishning o'zi backend download request yaratmaydi.
 - Mini App Mac/Windows bosilganda avval destination chooser ko'rsatadi:
   shu qurilmada ochish, AirDrop/Web Share, public linkni nusxalash yoki bekor
   qilish. Bekor qilish backend request yaratmaydi.
