@@ -42,6 +42,10 @@
         "Mac: Applications’ga torting. Windows: Install tugmasini bosing.",
       preparing:
         "Yuklash fayllari tayyorlanmoqda. Tez orada tugmalar faollashadi.",
+      availabilityError:
+        "Yuklash holatini tekshirib bo‘lmadi. Internetni tekshirib, qayta urining.",
+      retryStatus: "Qayta tekshirish",
+      checkingStatus: "Tekshirilmoqda…",
       promoTitle: "Darslarni kompyuterda davom ettiring",
       promoBody:
         "Mac yoki Windows ilovasida kurs katta ekranda, yangilanishlar esa avtomatik keladi.",
@@ -101,6 +105,10 @@
         "Mac: перетащите приложение в Applications. Windows: нажмите Install.",
       preparing:
         "Файлы загрузки готовятся. Кнопки станут активны в ближайшее время.",
+      availabilityError:
+        "Не удалось проверить загрузку. Проверьте интернет и повторите.",
+      retryStatus: "Проверить снова",
+      checkingStatus: "Проверяем…",
       promoTitle: "Продолжайте уроки на компьютере",
       promoBody:
         "Курс удобнее на большом экране, а новые версии устанавливаются автоматически.",
@@ -160,6 +168,10 @@
         "Mac: барномаро ба Applications кашед. Windows: Install-ро пахш кунед.",
       preparing:
         "Файлҳои боргирӣ омода мешаванд. Тугмаҳо ба наздикӣ фаъол мешаванд.",
+      availabilityError:
+        "Ҳолати боргирӣ санҷида нашуд. Интернетро санҷида, боз кӯшиш кунед.",
+      retryStatus: "Боз санҷидан",
+      checkingStatus: "Санҷида мешавад…",
       promoTitle: "Дарсҳоро дар компютер идома диҳед",
       promoBody:
         "Курс дар экрани калон қулайтар аст ва версияҳои нав автоматӣ меоянд.",
@@ -211,6 +223,8 @@
 
   var state = {
     availabilityLoaded: false,
+    availabilityLoading: false,
+    availabilityError: false,
     enabled: false,
     platforms: { macos: false, windows: false },
     transferUrls: { macos: "", windows: "" },
@@ -551,10 +565,34 @@
     main.appendChild(trust);
     main.appendChild(buildActions("profile"));
     if (!hasAvailablePlatform()) {
-      var availability = element("div", "pdd-availability-note");
+      var availability = element(
+        "div",
+        "pdd-availability-note" +
+          (state.availabilityError ? " is-error" : "")
+      );
       availability.setAttribute("role", "status");
-      availability.appendChild(icon("clock"));
-      availability.appendChild(element("span", "", copy.preparing));
+      availability.appendChild(
+        icon(state.availabilityError ? "wifi-off" : "clock")
+      );
+      var availabilityCopy = element(
+        "span",
+        "",
+        state.availabilityError ? copy.availabilityError : copy.preparing
+      );
+      availability.appendChild(availabilityCopy);
+      if (state.availabilityError) {
+        var retry = element(
+          "button",
+          "pdd-availability-retry",
+          state.availabilityLoading ? copy.checkingStatus : copy.retryStatus
+        );
+        retry.type = "button";
+        retry.disabled = state.availabilityLoading;
+        retry.addEventListener("click", function () {
+          loadAvailability();
+        });
+        availability.appendChild(retry);
+      }
       main.appendChild(availability);
     }
     main.appendChild(buildInlineStatus());
@@ -563,9 +601,15 @@
     syncControls();
     if (focusProfileDownload && !state.profileFocusDone) {
       state.profileFocusDone = true;
+      card.tabIndex = -1;
       window.setTimeout(function () {
         if (!card.isConnected) return;
         card.classList.add("pdd-card-focus");
+        try {
+          card.focus({ preventScroll: true });
+        } catch (error) {
+          card.focus();
+        }
         card.scrollIntoView({
           behavior:
             window.matchMedia &&
@@ -1597,11 +1641,14 @@
   }
 
   function loadAvailability() {
+    if (state.availabilityLoading) return;
     if (isDesktop || !telegramInitData()) {
       state.availabilityLoaded = true;
       renderProfile();
       return;
     }
+    state.availabilityLoading = true;
+    renderProfile();
     fetch(STATUS_ENDPOINT, {
       headers: { "X-Telegram-Init-Data": telegramInitData() }
     })
@@ -1616,6 +1663,7 @@
               throw new Error("desktop_status_failed");
             }
             state.availabilityLoaded = true;
+            state.availabilityError = false;
             state.enabled = data.enabled === true;
             state.platforms.macos = Boolean(
               data.platforms && data.platforms.macos
@@ -1652,6 +1700,7 @@
       })
       .catch(function () {
         state.availabilityLoaded = true;
+        state.availabilityError = true;
         state.enabled = false;
         state.platforms.macos = false;
         state.platforms.windows = false;
@@ -1663,6 +1712,7 @@
         });
       })
       .then(function () {
+        state.availabilityLoading = false;
         renderProfile();
         syncMountedAdPromos();
         var adSubscribe = document.getElementById("ad-sub");

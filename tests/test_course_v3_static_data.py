@@ -328,8 +328,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
             "course_v3_test.html",
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
-            self.assertIn("/course_v3_data/desktop-download.css", html, page)
-            self.assertIn("/course_v3_data/desktop-download.js", html, page)
+            self.assertIn(
+                "/course_v3_data/desktop-download.css?v=20260802-2", html, page
+            )
+            self.assertIn(
+                "/course_v3_data/desktop-download.js?v=20260802-2", html, page
+            )
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -359,7 +363,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
             'params.get("desktop_download") === "1"', download
         )
         self.assertIn('card.classList.add("pdd-card-focus")', download)
+        self.assertIn("card.focus({ preventScroll: true })", download)
         self.assertIn("card.scrollIntoView({", download)
+        self.assertEqual(download.count("availabilityError:"), 4)
+        self.assertEqual(download.count("retryStatus:"), 3)
+        self.assertIn('state.availabilityError ? " is-error" : ""', download)
+        self.assertIn("loadAvailability();", download)
 
 
 if __name__ == "__main__":

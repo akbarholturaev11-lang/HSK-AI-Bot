@@ -219,7 +219,7 @@ def mock_desktop_release_status(page, payload=None):
     )
 
 
-def mock_course_map(page, *, level="hsk1"):
+def mock_course_map(page, *, level="hsk1", language="uz"):
     """Static rejimda ``/api/v3/map`` ni haqiqiy statik map fayli asosida
     (auth qilingan, bepul user) mock qiladi — real backend'siz sahifa render'i
     uchun."""
@@ -233,7 +233,7 @@ def mock_course_map(page, *, level="hsk1"):
     data["user"] = {
         "name": "Smoke Test",
         "avatar": "阿",
-        "language": "uz",
+        "language": language,
         "is_paid": False,
         "referral_code": "",
     }
@@ -918,12 +918,17 @@ def _open_course_profile_with_desktop_release(
     page,
     *,
     status_payload=None,
+    status_handler=None,
+    language="uz",
     path="/course-v3.html?lang=uz&level=hsk1&onboarded=1",
     select_profile=True,
 ):
     mock_price_preview(page)
-    mock_course_map(page)
-    mock_desktop_release_status(page, status_payload)
+    mock_course_map(page, language=language)
+    if status_handler is None:
+        mock_desktop_release_status(page, status_payload)
+    else:
+        page.route("**/api/v3/desktop-download/status", status_handler)
     page.route(
         "**/api/miniapp/event",
         lambda route: json_response(route, {"ok": True}),
@@ -1027,6 +1032,76 @@ def test_desktop_profile_unavailable_state_is_honest_and_sends_no_request(page):
     assert page.locator("#pomp-desktop-destination-root").is_hidden()
 
 
+def test_desktop_profile_status_error_can_be_retried(page):
+    mock_telegram_desktop_download(page, platform="android")
+    attempts = []
+
+    def status_handler(route):
+        attempts.append(route.request.url)
+        if len(attempts) == 1:
+            json_response(route, {"ok": False, "error": "temporary"}, status=503)
+            return
+        json_response(
+            route,
+            {
+                "ok": True,
+                "enabled": True,
+                "platforms": {"macos": True, "windows": True},
+                "versions": {"macos": "1.1.0", "windows": "1.1.0"},
+                "downloads": {
+                    "macos": "https://downloads.example/downloads/macos",
+                    "windows": "https://downloads.example/downloads/windows",
+                },
+                "promo": {"eligible": False, "placements": {}},
+            },
+        )
+
+    _open_course_profile_with_desktop_release(
+        page,
+        status_handler=status_handler,
+    )
+
+    card = page.locator("#pomp-desktop-profile-root .pdd-card")
+    note = card.locator(".pdd-availability-note")
+    retry = card.locator(".pdd-availability-retry")
+    mac = card.locator('[data-pdd-platform="macos"]')
+    windows = card.locator('[data-pdd-platform="windows"]')
+
+    expect(note).to_have_class(re.compile(r"\bis-error\b"))
+    expect(note).to_contain_text("Yuklash holatini tekshirib bo‘lmadi")
+    expect(note).not_to_contain_text("Yuklash fayllari tayyorlanmoqda")
+    expect(retry).to_have_text("Qayta tekshirish")
+    expect(mac).to_be_disabled()
+    expect(windows).to_be_disabled()
+
+    retry.click()
+    expect(mac).to_be_enabled()
+    expect(windows).to_be_enabled()
+    expect(card.locator(".pdd-availability-note")).to_have_count(0)
+    assert len(attempts) == 2
+
+
+@pytest.mark.parametrize(
+    ("lang", "expected"),
+    [
+        ("ru", "перетащите приложение в Applications"),
+        ("tj", "барномаро ба Applications кашед"),
+    ],
+)
+def test_desktop_profile_instructions_are_localized_and_fit(page, lang, expected):
+    mock_telegram_desktop_download(page, platform="android")
+    _open_course_profile_with_desktop_release(
+        page,
+        language=lang,
+        path=f"/course-v3.html?lang={lang}&level=hsk1&onboarded=1",
+    )
+
+    card = page.locator("#pomp-desktop-profile-root .pdd-card")
+    expect(card.locator(".pdd-install-step")).to_have_count(3)
+    expect(card.locator(".pdd-install-steps")).to_contain_text(expected)
+    assert card.evaluate("node => node.scrollWidth <= node.clientWidth + 1")
+
+
 def test_desktop_download_deep_link_opens_profile_and_focuses_card(page):
     mock_telegram_desktop_download(page, platform="android")
     page.add_init_script(
@@ -1057,7 +1132,9 @@ def test_desktop_download_deep_link_opens_profile_and_focuses_card(page):
     )
     page.wait_for_function("Boolean(window.__pddFocusScroll)")
     assert page.evaluate("window.__pddFocusScroll.block") == "center"
-    expect(page.locator("#pomp-desktop-profile-root .pdd-card")).to_be_visible()
+    card = page.locator("#pomp-desktop-profile-root .pdd-card")
+    expect(card).to_be_visible()
+    expect(card).to_be_focused()
 
 
 def test_desktop_download_opens_branded_site_without_closing_miniapp(page):
