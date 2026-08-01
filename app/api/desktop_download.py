@@ -41,7 +41,7 @@ class DesktopDownloadStartedRequest(BaseModel):
     platform: Literal["macos", "windows"]
     source: Literal["profile", "home_prompt", "lesson_end_promo", "ad_promo"]
     event_id: DesktopEventId
-    transport: Literal["download_file", "open_link"]
+    transport: Literal["download_file", "open_link", "web_share", "copy_link"]
 
 
 def _auth_user_id(request: Request, settings_obj: Any) -> int | None:

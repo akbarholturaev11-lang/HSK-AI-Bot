@@ -201,6 +201,10 @@ def mock_desktop_release_status(page):
                 "enabled": True,
                 "platforms": {"macos": True, "windows": True},
                 "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+                "downloads": {
+                    "macos": "https://downloads.example/downloads/macos",
+                    "windows": "https://downloads.example/downloads/windows",
+                },
                 "promo": {
                     "eligible": True,
                     "cooldown_days": 14,
@@ -947,6 +951,7 @@ def test_desktop_download_opens_branded_site_without_closing_miniapp(page):
                 "platform": "macos",
                 "download_url": "https://downloads.example/desktop-download?platform=macos&request=abc123",
                 "download_page_url": "https://downloads.example/desktop-download?platform=macos&request=abc123",
+                "transfer_url": "https://downloads.example/downloads/macos",
                 "file_name": "Pomp-HSK-AI-1.0.0.dmg",
                 "duplicate": False,
             },
@@ -963,6 +968,8 @@ def test_desktop_download_opens_branded_site_without_closing_miniapp(page):
     _open_course_profile_with_desktop_release(page)
 
     page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    expect(page.locator("#pomp-desktop-destination-root")).to_be_visible()
+    page.locator('[data-pdd-destination-action="direct"]').click()
     page.wait_for_function("Boolean(window.__openedLink)")
     page.wait_for_function("document.querySelector('.pdd-promo-shell[data-mode=\"success\"]')")
     page.wait_for_timeout(100)
@@ -991,6 +998,7 @@ def test_desktop_download_falls_back_to_open_link(page):
                 "platform": "windows",
                 "download_url": "https://downloads.example/desktop-download?platform=windows&request=def456",
                 "download_page_url": "https://downloads.example/desktop-download?platform=windows&request=def456",
+                "transfer_url": "https://downloads.example/downloads/windows",
                 "file_name": "Pomp-HSK-AI-1.0.0-setup.exe",
                 "duplicate": False,
             },
@@ -1006,6 +1014,7 @@ def test_desktop_download_falls_back_to_open_link(page):
     _open_course_profile_with_desktop_release(page)
 
     page.locator('[data-pdd-platform="windows"][data-pdd-source="profile"]').click()
+    page.locator('[data-pdd-destination-action="direct"]').click()
     page.wait_for_function("Boolean(window.__openedLink)")
     page.wait_for_timeout(100)
 
@@ -1034,6 +1043,7 @@ def test_download_site_does_not_use_native_download_dialog(page):
                 "platform": "macos",
                 "download_url": "https://downloads.example/desktop-download?platform=macos&request=cancel123",
                 "download_page_url": "https://downloads.example/desktop-download?platform=macos&request=cancel123",
+                "transfer_url": "https://downloads.example/downloads/macos",
                 "file_name": "Pomp-HSK-AI-1.0.0.dmg",
                 "duplicate": False,
             },
@@ -1049,6 +1059,7 @@ def test_download_site_does_not_use_native_download_dialog(page):
     _open_course_profile_with_desktop_release(page)
 
     page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    page.locator('[data-pdd-destination-action="direct"]').click()
     page.wait_for_function("Boolean(window.__openedLink)")
     page.wait_for_timeout(200)
 
@@ -1104,6 +1115,9 @@ def test_branded_download_page_exposes_direct_tracked_installers(page):
         "href",
         f"http://hsk-ai.local/downloads/macos?request={request_token}",
     )
+    expect(page.locator("[data-transfer-link]")).to_have_value(
+        "http://hsk-ai.local/downloads/macos"
+    )
     expect(page.locator("[data-version]")).to_have_text("Versiya 1.0.0")
     expect(page.locator("[data-installer-stage]")).to_have_attribute(
         "data-installer-stage",
@@ -1114,6 +1128,9 @@ def test_branded_download_page_exposes_direct_tracked_installers(page):
     expect(page.locator("[data-download-button]")).to_have_attribute(
         "href",
         f"http://hsk-ai.local/downloads/windows?request={request_token}",
+    )
+    expect(page.locator("[data-transfer-link]")).to_have_value(
+        "http://hsk-ai.local/downloads/windows"
     )
     expect(page.locator("[data-installer-stage]")).to_have_attribute(
         "data-installer-stage",
@@ -1127,7 +1144,61 @@ def test_branded_download_page_exposes_direct_tracked_installers(page):
     )
 
 
-def test_mobile_desktop_download_warning_can_cancel_before_request(page):
+def test_branded_download_page_manual_copy_fallback_keeps_url_token_free(page):
+    request_token = "b" * 32
+    page.add_init_script(
+        """
+        Object.defineProperty(Navigator.prototype, "userAgent", {
+          configurable: true,
+          get: function() { return "Mozilla/5.0 Android"; }
+        });
+        Object.defineProperty(Navigator.prototype, "clipboard", {
+          configurable: true,
+          get: function() { return undefined; }
+        });
+        Document.prototype.execCommand = function() { return false; };
+        """
+    )
+    page.route(
+        "**/api/v3/desktop-download/public-status",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "enabled": True,
+                "platforms": {"macos": True, "windows": True},
+                "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+                "downloads": {
+                    "macos": "/downloads/macos",
+                    "windows": "/downloads/windows",
+                },
+                "files": {
+                    "macos": "Pomp-HSK-AI_1.0.0_universal.dmg",
+                    "windows": "Pomp-HSK-AI_1.0.0_x64-setup.exe",
+                },
+            },
+        ),
+    )
+    page.goto(
+        app_url(
+            f"/desktop-download.html?platform=macos&lang=uz&request={request_token}"
+        ),
+        wait_until="networkidle",
+    )
+
+    expect(page.locator("[data-mobile-transfer]")).to_be_visible()
+    page.locator("[data-copy-link]").click()
+    expect(page.locator("[data-transfer-manual]")).to_be_visible()
+    expect(page.locator("[data-transfer-link]")).to_have_value(
+        "http://hsk-ai.local/downloads/macos"
+    )
+    expect(page.locator("[data-transfer-status]")).to_contain_text(
+        "Avtomatik nusxalanmadi"
+    )
+    assert request_token not in page.locator("[data-transfer-link]").input_value()
+
+
+def test_desktop_download_destination_can_cancel_before_request(page):
     mock_telegram_desktop_download(
         page,
         platform="android",
@@ -1145,13 +1216,148 @@ def test_mobile_desktop_download_warning_can_cancel_before_request(page):
     _open_course_profile_with_desktop_release(page)
 
     page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
-    page.wait_for_function("Boolean(window.__confirmMessage)")
+    expect(page.locator("#pomp-desktop-destination-root")).to_be_visible()
+    page.locator(".pdd-destination-cancel").click()
     page.wait_for_timeout(100)
 
-    assert "kompyuteringizga" in page.evaluate("window.__confirmMessage")
     assert request_count == []
+    assert page.locator("#pomp-desktop-destination-root").is_hidden()
     assert page.evaluate("window.__downloadFileParams") is None
     assert page.evaluate("window.__openedLink") is None
+
+
+def test_desktop_download_share_uses_clean_public_url_and_tracks_transport(page):
+    page.add_init_script(
+        """
+        Object.defineProperty(Navigator.prototype, "share", {
+          configurable: true,
+          value: async function(payload) { window.__sharedTransfer = payload; }
+        });
+        Object.defineProperty(Navigator.prototype, "canShare", {
+          configurable: true,
+          value: function() { return true; }
+        });
+        """
+    )
+    mock_telegram_desktop_download(page, platform="android")
+    requested = []
+    started = []
+
+    def request_download(route):
+        requested.append(route.request.post_data_json)
+        json_response(
+            route,
+            {
+                "ok": True,
+                "platform": "macos",
+                "download_url": "https://downloads.example/desktop-download?platform=macos&request=tracked-secret",
+                "download_page_url": "https://downloads.example/desktop-download?platform=macos&request=tracked-secret",
+                "transfer_url": "https://downloads.example/downloads/macos",
+                "file_name": "Pomp-HSK-AI-1.0.0.dmg",
+                "duplicate": False,
+            },
+        )
+
+    page.route("**/api/v3/desktop-download/request", request_download)
+    page.route(
+        "**/api/v3/desktop-download/started",
+        lambda route: (
+            started.append(route.request.post_data_json),
+            json_response(route, {"ok": True, "recorded": True, "duplicate": False}),
+        )[-1],
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    page.locator('[data-pdd-destination-action="share"]').click()
+    page.wait_for_function("Boolean(window.__sharedTransfer)")
+    page.wait_for_function("document.querySelector('.pdd-promo-shell[data-mode=\"success\"]')")
+    page.wait_for_timeout(100)
+
+    shared_url = page.evaluate("window.__sharedTransfer.url")
+    assert shared_url == "https://downloads.example/downloads/macos"
+    assert "request=" not in shared_url
+    assert requested and started
+    assert started[0]["event_id"] == requested[0]["event_id"]
+    assert started[0]["transport"] == "web_share"
+    assert page.evaluate("window.__openedLink") is None
+
+
+def test_desktop_download_copy_uses_clean_public_url_and_tracks_transport(page):
+    page.add_init_script(
+        """
+        Object.defineProperty(Navigator.prototype, "clipboard", {
+          configurable: true,
+          get: function() {
+            return {writeText: async function(value) { window.__copiedTransfer = value; }};
+          }
+        });
+        """
+    )
+    mock_telegram_desktop_download(page, platform="android")
+    requested = []
+    started = []
+
+    def request_download(route):
+        requested.append(route.request.post_data_json)
+        json_response(
+            route,
+            {
+                "ok": True,
+                "platform": "windows",
+                "download_url": "https://downloads.example/desktop-download?platform=windows&request=tracked-secret",
+                "download_page_url": "https://downloads.example/desktop-download?platform=windows&request=tracked-secret",
+                "transfer_url": "https://downloads.example/downloads/windows",
+                "file_name": "Pomp-HSK-AI-1.0.0-setup.exe",
+                "duplicate": False,
+            },
+        )
+
+    page.route("**/api/v3/desktop-download/request", request_download)
+    page.route(
+        "**/api/v3/desktop-download/started",
+        lambda route: (
+            started.append(route.request.post_data_json),
+            json_response(route, {"ok": True, "recorded": True, "duplicate": False}),
+        )[-1],
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="windows"][data-pdd-source="profile"]').click()
+    page.locator('[data-pdd-destination-action="copy"]').click()
+    page.wait_for_function("Boolean(window.__copiedTransfer)")
+    page.wait_for_function("document.querySelector('.pdd-promo-shell[data-mode=\"success\"]')")
+    page.wait_for_timeout(100)
+
+    copied_url = page.evaluate("window.__copiedTransfer")
+    assert copied_url == "https://downloads.example/downloads/windows"
+    assert "request=" not in copied_url
+    assert requested and started
+    assert started[0]["event_id"] == requested[0]["event_id"]
+    assert started[0]["transport"] == "copy_link"
+    assert page.evaluate("window.__openedLink") is None
+
+
+def test_desktop_download_destination_fits_short_safe_area_viewport(page):
+    page.set_viewport_size({"width": 360, "height": 640})
+    mock_telegram_desktop_download(page, platform="android")
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    dialog = page.locator(".pdd-destination-shell")
+    expect(dialog).to_be_visible()
+    expect(dialog).to_have_attribute("role", "dialog")
+    page.wait_for_timeout(220)
+    box = dialog.bounding_box()
+
+    assert box is not None
+    assert box["x"] >= 0 and box["y"] >= 0
+    assert box["x"] + box["width"] <= 360.5
+    assert box["y"] + box["height"] <= 640.5
+    for destination in ("direct", "share", "copy"):
+        expect(
+            page.locator(f'[data-pdd-destination-action="{destination}"]')
+        ).to_be_visible()
 
 
 def test_desktop_promo_fits_short_360x640_viewport(page):

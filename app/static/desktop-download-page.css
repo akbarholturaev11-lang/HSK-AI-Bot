@@ -29,6 +29,8 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
   background:
     linear-gradient(rgba(104, 78, 43, 0.045) 1px, transparent 1px),
     linear-gradient(90deg, rgba(104, 78, 43, 0.045) 1px, transparent 1px),
@@ -550,17 +552,88 @@ main {
   border-color: rgba(40, 123, 91, 0.24);
 }
 
-.mobile-transfer button {
+.mobile-transfer-controls {
+  display: grid;
+  min-width: min(100%, 330px);
+  gap: 8px;
+}
+
+.mobile-transfer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.mobile-transfer-actions button {
   min-height: 44px;
   padding: 0 16px;
   flex: 0 0 auto;
-  border: 0;
+  border: 1px solid transparent;
   border-radius: 12px;
-  background: var(--jade);
-  color: #fff;
   cursor: pointer;
   font-size: 12px;
   font-weight: 780;
+}
+
+.mobile-transfer-actions .share-link {
+  background: var(--jade);
+  color: #fff;
+}
+
+.mobile-transfer-actions .copy-link {
+  border-color: rgba(40, 123, 91, 0.28);
+  background: rgba(40, 123, 91, 0.08);
+  color: var(--jade);
+}
+
+.mobile-transfer-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.transfer-manual {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.transfer-manual[hidden] {
+  display: none;
+}
+
+.transfer-manual input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 11px;
+  border: 1px solid rgba(40, 123, 91, 0.3);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+}
+
+.transfer-status {
+  min-height: 17px;
+  margin: 0 !important;
+  color: var(--jade) !important;
+  font-size: 11px !important;
+  font-weight: 700;
+}
+
+.transfer-status[data-state="error"] {
+  color: var(--cinnabar-dark) !important;
+}
+
+.transfer-copy-helper {
+  position: fixed;
+  top: -1000px;
+  left: -1000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
 }
 
 footer {
@@ -577,7 +650,8 @@ footer {
 }
 
 button:focus-visible,
-a:focus-visible {
+a:focus-visible,
+input:focus-visible {
   outline: 3px solid rgba(217, 155, 23, 0.72);
   outline-offset: 3px;
 }
@@ -691,6 +765,17 @@ a:focus-visible {
 
   .mobile-transfer {
     flex-direction: column;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+
+  .mobile-transfer-controls,
+  .mobile-transfer-actions {
+    width: 100%;
+  }
+
+  .mobile-transfer-actions button {
+    min-width: 0;
+    flex: 1;
   }
 
   footer {
@@ -699,6 +784,12 @@ a:focus-visible {
     align-items: flex-start;
     justify-content: center;
     gap: 5px;
+  }
+}
+
+@media (max-width: 380px) {
+  .mobile-transfer-actions {
+    flex-direction: column;
   }
 }
 

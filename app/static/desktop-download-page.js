@@ -46,8 +46,12 @@
       mobileEyebrow: "Telefon orqali ochdingiz",
       mobileTitle: "Linkni kompyuteringizga yuboring",
       mobileBody: "Installer faqat Mac yoki Windows’da ishlaydi.",
+      shareLink: "AirDrop yoki ulashish",
       copyLink: "Linkni nusxalash",
       copied: "Nusxalandi",
+      shared: "Ulashish oynasi ochildi",
+      copyFailed: "Avtomatik nusxalanmadi. Quyidagi linkni qo‘lda nusxalang.",
+      manualLinkLabel: "Kompyuterda ochiladigan xavfsiz link",
       footer: "Kurs markazda. AI yordamchi sifatida."
     },
     ru: {
@@ -89,8 +93,12 @@
       mobileEyebrow: "Страница открыта на телефоне",
       mobileTitle: "Отправьте ссылку на компьютер",
       mobileBody: "Установщик работает только на Mac или Windows.",
+      shareLink: "AirDrop или поделиться",
       copyLink: "Скопировать ссылку",
       copied: "Скопировано",
+      shared: "Меню отправки открыто",
+      copyFailed: "Не удалось скопировать автоматически. Скопируйте ссылку ниже вручную.",
+      manualLinkLabel: "Безопасная ссылка для компьютера",
       footer: "Курс — в центре. AI — помощник."
     },
     tj: {
@@ -132,8 +140,12 @@
       mobileEyebrow: "Саҳифа дар телефон кушода шуд",
       mobileTitle: "Пайвандро ба компютер фиристед",
       mobileBody: "Насбкунанда танҳо дар Mac ё Windows кор мекунад.",
+      shareLink: "AirDrop ё фиристодан",
       copyLink: "Нусхаи пайванд",
       copied: "Нусха шуд",
+      shared: "Равзанаи фиристодан кушода шуд",
+      copyFailed: "Худкор нусха нашуд. Пайванди поёнро дастӣ нусха гиред.",
+      manualLinkLabel: "Пайванди бехатар барои компютер",
       footer: "Курс дар марказ. AI ҳамчун ёрдамчӣ."
     }
   };
@@ -223,9 +235,35 @@
     );
   }
 
-  function downloadUrl(platform) {
+  function transferUrl(platform) {
     if (!releaseAvailable(platform)) return "";
     var base = String(state.release.downloads[platform] || "");
+    try {
+      var url = new URL(base, window.location.origin);
+      var localHttp =
+        url.protocol === "http:" &&
+        (url.hostname === "localhost" ||
+          url.hostname === "127.0.0.1" ||
+          url.hostname === "hsk-ai.local");
+      if (
+        (url.protocol !== "https:" && !localHttp) ||
+        url.username ||
+        url.password ||
+        url.pathname !== "/downloads/" + platform
+      ) {
+        return "";
+      }
+      url.search = "";
+      url.hash = "";
+      return url.toString();
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function downloadUrl(platform) {
+    var base = transferUrl(platform);
+    if (!base) return "";
     var token = validRequestToken();
     if (!token) return base;
     var url = new URL(base, window.location.origin);
@@ -290,6 +328,20 @@
     renderRelease();
   }
 
+  function renderTransfer() {
+    var url = transferUrl(state.platform);
+    var shareButton = document.querySelector("[data-share-link]");
+    var copyButton = document.querySelector("[data-copy-link]");
+    var input = document.querySelector("[data-transfer-link]");
+    [shareButton, copyButton].forEach(function (button) {
+      if (button) button.disabled = !url;
+    });
+    if (input) {
+      input.value = url;
+      input.setAttribute("aria-label", copy().manualLinkLabel);
+    }
+  }
+
   function renderRelease() {
     var localized = copy();
     var button = document.querySelector("[data-download-button]");
@@ -298,6 +350,8 @@
       state.release &&
       state.release.versions &&
       state.release.versions[state.platform];
+
+    renderTransfer();
 
     setText(
       "[data-version]",
@@ -327,6 +381,7 @@
   function setPlatform(platform) {
     if (supportedPlatforms.indexOf(platform) < 0) return;
     state.platform = platform;
+    resetTransferFeedback();
     renderPlatform();
     var nextUrl = new URL(window.location.href);
     nextUrl.searchParams.set("platform", platform);
@@ -336,6 +391,7 @@
   function setLanguage(language) {
     if (supportedLanguages.indexOf(language) < 0) return;
     state.language = language;
+    resetTransferFeedback();
     applyLanguage();
     var nextUrl = new URL(window.location.href);
     nextUrl.searchParams.set("lang", language);
@@ -358,6 +414,104 @@
       .catch(function () {
         state.release = {};
         renderRelease();
+      });
+  }
+
+  function setTransferStatus(message, kind) {
+    var status = document.querySelector("[data-transfer-status]");
+    if (!status) return;
+    status.textContent = message || "";
+    status.dataset.state = kind || "";
+  }
+
+  function resetTransferFeedback() {
+    var manual = document.querySelector("[data-transfer-manual]");
+    if (manual) manual.hidden = true;
+    setTransferStatus("", "");
+  }
+
+  function showManualTransfer(url) {
+    var manual = document.querySelector("[data-transfer-manual]");
+    var input = document.querySelector("[data-transfer-link]");
+    if (input) input.value = url;
+    if (manual) manual.hidden = false;
+    setTransferStatus(copy().copyFailed, "error");
+    if (input) {
+      try {
+        input.focus();
+        input.select();
+      } catch (error) {}
+    }
+  }
+
+  function legacyCopy(value) {
+    return new Promise(function (resolve, reject) {
+      var helper = document.createElement("textarea");
+      helper.className = "transfer-copy-helper";
+      helper.value = value;
+      helper.readOnly = true;
+      helper.setAttribute("aria-hidden", "true");
+      document.body.appendChild(helper);
+      helper.select();
+      var copied = false;
+      try {
+        copied = Boolean(
+          document.execCommand && document.execCommand("copy")
+        );
+      } catch (error) {}
+      helper.remove();
+      if (copied) resolve();
+      else reject(new Error("clipboard_unavailable"));
+    });
+  }
+
+  function copyPublicTransfer(url) {
+    var operation = null;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        operation = navigator.clipboard.writeText(url);
+      }
+    } catch (error) {}
+    var copyOperation = operation
+      ? Promise.resolve(operation).catch(function () {
+          return legacyCopy(url);
+        })
+      : legacyCopy(url);
+    return copyOperation
+      .then(function () {
+        setTransferStatus(copy().copied, "success");
+      })
+      .catch(function () {
+        showManualTransfer(url);
+        throw new Error("clipboard_unavailable");
+      });
+  }
+
+  function sharePublicTransfer(url) {
+    if (!navigator.share) return copyPublicTransfer(url);
+    var payload = {
+      title: "Pomp HSK AI",
+      text: copy().mobileBody,
+      url: url
+    };
+    try {
+      if (navigator.canShare && !navigator.canShare(payload)) {
+        return copyPublicTransfer(url);
+      }
+    } catch (error) {}
+    var shareOperation = null;
+    try {
+      shareOperation = navigator.share(payload);
+    } catch (error) {
+      return copyPublicTransfer(url);
+    }
+    return Promise.resolve(shareOperation)
+      .then(function () {
+        setTransferStatus(copy().shared, "success");
+      })
+      .catch(function (error) {
+        if (error && error.name === "AbortError") return;
+        return copyPublicTransfer(url);
       });
   }
 
@@ -387,19 +541,16 @@
     var copyButton = document.querySelector("[data-copy-link]");
     if (copyButton) {
       copyButton.addEventListener("click", function () {
-        var cleanUrl = new URL(window.location.href);
-        cleanUrl.searchParams.delete("request");
-        var operation =
-          navigator.clipboard && navigator.clipboard.writeText
-            ? navigator.clipboard.writeText(cleanUrl.toString())
-            : Promise.reject(new Error("clipboard_unavailable"));
-        operation
-          .then(function () {
-            copyButton.textContent = copy().copied;
-          })
-          .catch(function () {
-            window.prompt("", cleanUrl.toString());
-          });
+        var url = transferUrl(state.platform);
+        if (url) copyPublicTransfer(url).catch(function () {});
+      });
+    }
+
+    var shareButton = document.querySelector("[data-share-link]");
+    if (shareButton) {
+      shareButton.addEventListener("click", function () {
+        var url = transferUrl(state.platform);
+        if (url) sharePublicTransfer(url).catch(function () {});
       });
     }
   }

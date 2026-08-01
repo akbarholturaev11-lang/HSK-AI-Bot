@@ -12,6 +12,15 @@
     promoRoot.hidden = true;
     document.body.appendChild(promoRoot);
   }
+  var destinationRoot = document.getElementById(
+    "pomp-desktop-destination-root"
+  );
+  if (!destinationRoot && document.body) {
+    destinationRoot = document.createElement("div");
+    destinationRoot.id = "pomp-desktop-destination-root";
+    destinationRoot.hidden = true;
+    document.body.appendChild(destinationRoot);
+  }
   var REQUEST_TIMEOUT_MS = 18000;
   var STATUS_ENDPOINT = "/api/v3/desktop-download/status";
   var REQUEST_ENDPOINT = "/api/v3/desktop-download/request";
@@ -46,11 +55,28 @@
       requestTimeout: "Server vaqtida javob bermadi. Qayta urinib ko‘ring.",
       networkError: "Server bilan aloqa bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.",
       invalidDownload: "Server xavfsiz yuklash manzilini qaytarmadi.",
-      mobileWarning:
-        "Kompyuter ilovasining yuklash sayti ochiladi. Linkni Mac yoki Windows kompyuteringizga yuborishingiz mumkin. Davom etasizmi?",
+      destinationTitle: "{platform} faylini qayerda ochamiz?",
+      destinationBody:
+        "Installer linkini shu qurilmada oching yoki kompyuteringizga xavfsiz yuboring.",
+      directTitle: "Shu qurilmada ochish",
+      directBody: "Yuklash sayti hozir ochiladi",
+      shareTitle: "AirDrop yoki ulashish",
+      shareBody: "Telefonning ulashish oynasini ochadi",
+      copyTitle: "Linkni nusxalash",
+      copyBody: "Kompyuter brauzeriga qo‘yib oching",
+      cancel: "Bekor qilish",
+      shareCancelled: "Ulashish bekor qilindi. Boshqa usulni tanlashingiz mumkin.",
+      copyFailed: "Avtomatik nusxalanmadi. Quyidagi linkni belgilang va nusxalang.",
+      manualLinkLabel: "Kompyuterda ochiladigan xavfsiz link",
       successTitle: "Yuklash sayti ochildi",
       successBody:
         "Sayt operatsion tizimingizga mos DMG yoki EXE faylni va o‘rnatish qadamlarini ko‘rsatadi.",
+      shareSuccessTitle: "Link ulashildi",
+      shareSuccessBody:
+        "Kompyuteringizda linkni oching va mos DMG yoki EXE faylni yuklang.",
+      copySuccessTitle: "Link nusxalandi",
+      copySuccessBody:
+        "Linkni kompyuter brauzeriga qo‘ying. Yuklash sahifasi darhol ochiladi.",
       successAction: "Tushunarli"
     },
     ru: {
@@ -79,11 +105,28 @@
       requestTimeout: "Сервер не ответил вовремя. Попробуйте ещё раз.",
       networkError: "Нет связи с сервером. Проверьте интернет и попробуйте снова.",
       invalidDownload: "Сервер не вернул безопасный адрес загрузки.",
-      mobileWarning:
-        "Откроется страница загрузки приложения. Ссылку можно отправить на Mac или Windows. Продолжить?",
+      destinationTitle: "Где открыть файл для {platform}?",
+      destinationBody:
+        "Откройте установщик на этом устройстве или безопасно отправьте ссылку на компьютер.",
+      directTitle: "Открыть на этом устройстве",
+      directBody: "Страница загрузки откроется сейчас",
+      shareTitle: "AirDrop или поделиться",
+      shareBody: "Откроется системное меню отправки",
+      copyTitle: "Скопировать ссылку",
+      copyBody: "Вставьте её в браузере компьютера",
+      cancel: "Отмена",
+      shareCancelled: "Отправка отменена. Можно выбрать другой способ.",
+      copyFailed: "Не удалось скопировать автоматически. Выделите ссылку ниже и скопируйте.",
+      manualLinkLabel: "Безопасная ссылка для компьютера",
       successTitle: "Страница загрузки открыта",
       successBody:
         "На странице показан подходящий DMG или EXE и точные шаги установки.",
+      shareSuccessTitle: "Ссылка отправлена",
+      shareSuccessBody:
+        "Откройте ссылку на компьютере и скачайте подходящий DMG или EXE.",
+      copySuccessTitle: "Ссылка скопирована",
+      copySuccessBody:
+        "Вставьте ссылку в браузер компьютера — страница загрузки откроется сразу.",
       successAction: "Понятно"
     },
     tj: {
@@ -112,11 +155,28 @@
       requestTimeout: "Сервер сари вақт ҷавоб надод. Боз кӯшиш кунед.",
       networkError: "Бо сервер алоқа нест. Интернетро санҷида, боз кӯшиш кунед.",
       invalidDownload: "Сервер суроғаи бехатари боргириро барнагардонд.",
-      mobileWarning:
-        "Саҳифаи боргирии барномаи компютерӣ кушода мешавад. Пайвандро ба Mac ё Windows фиристода метавонед. Идома медиҳед?",
+      destinationTitle: "Файли {platform}-ро дар куҷо мекушоем?",
+      destinationBody:
+        "Насбкунандаро дар ҳамин дастгоҳ кушоед ё пайвандро бехатар ба компютер фиристед.",
+      directTitle: "Дар ҳамин дастгоҳ кушодан",
+      directBody: "Саҳифаи боргирӣ ҳозир кушода мешавад",
+      shareTitle: "AirDrop ё фиристодан",
+      shareBody: "Равзанаи системавии фиристодан кушода мешавад",
+      copyTitle: "Нусхаи пайванд",
+      copyBody: "Дар браузери компютер гузошта кушоед",
+      cancel: "Бекор кардан",
+      shareCancelled: "Фиристодан бекор шуд. Роҳи дигарро интихоб карда метавонед.",
+      copyFailed: "Худкор нусха нашуд. Пайванди поёнро интихоб карда нусха гиред.",
+      manualLinkLabel: "Пайванди бехатар барои компютер",
       successTitle: "Саҳифаи боргирӣ кушода шуд",
       successBody:
         "Саҳифа DMG ё EXE-и мувофиқ ва қадамҳои дақиқи насбро нишон медиҳад.",
+      shareSuccessTitle: "Пайванд фиристода шуд",
+      shareSuccessBody:
+        "Пайвандро дар компютер кушоед ва DMG ё EXE-и мувофиқро бор кунед.",
+      copySuccessTitle: "Пайванд нусха шуд",
+      copySuccessBody:
+        "Пайвандро дар браузери компютер гузоред. Саҳифаи боргирӣ кушода мешавад.",
       successAction: "Фаҳмо"
     }
   };
@@ -125,6 +185,7 @@
     availabilityLoaded: false,
     enabled: false,
     platforms: { macos: false, windows: false },
+    transferUrls: { macos: "", windows: "" },
     runtimeUnavailable: { macos: false, windows: false },
     promoEligible: false,
     promoCooldownDays: 0,
@@ -145,7 +206,14 @@
     activePromoMeta: {},
     previousFocus: null,
     lastPlatform: "",
-    confirmOpen: false,
+    destinationOpen: false,
+    destinationPlatform: "",
+    destinationSource: "",
+    destinationPreviousFocus: null,
+    pendingDestination: "",
+    destinationMessage: "",
+    destinationMessageKind: "",
+    manualTransferUrl: "",
     adPromoMounts: []
   };
 
@@ -301,44 +369,6 @@
     return "";
   }
 
-  function isMobileClient() {
-    var app = telegramWebApp();
-    var telegramPlatform = String((app && app.platform) || "").toLowerCase();
-    if (["android", "android_x", "ios"].indexOf(telegramPlatform) >= 0) {
-      return true;
-    }
-    try {
-      var ua = String(navigator.userAgent || "");
-      return (
-        /Android|iPhone|iPod/i.test(ua) ||
-        (/iPad|Macintosh/i.test(ua) && Number(navigator.maxTouchPoints || 0) > 1)
-      );
-    } catch (error) {
-      return false;
-    }
-  }
-
-  function confirmMobileDownload(next) {
-    if (!isMobileClient()) {
-      next(true);
-      return;
-    }
-    var app = telegramWebApp();
-    try {
-      if (app && typeof app.showConfirm === "function") {
-        app.showConfirm(text().mobileWarning, function (accepted) {
-          next(accepted === true);
-        });
-        return;
-      }
-    } catch (error) {}
-    var accepted = false;
-    try {
-      accepted = window.confirm(text().mobileWarning);
-    } catch (error) {}
-    next(accepted === true);
-  }
-
   function isPlatformAvailable(platform) {
     return Boolean(
       state.enabled &&
@@ -468,6 +498,180 @@
     syncControls();
   }
 
+  function platformLabel(platform) {
+    return platform === "macos" ? "Mac" : "Windows";
+  }
+
+  function buildDestinationAction(destination, iconName, title, body) {
+    var button = element("button", "pdd-destination-action");
+    button.type = "button";
+    button.dataset.pddDestinationAction = destination;
+    button.appendChild(icon(iconName));
+    var copyBox = element("span", "pdd-destination-action-copy");
+    copyBox.appendChild(element("strong", "", title));
+    copyBox.appendChild(element("small", "", body));
+    button.appendChild(copyBox);
+    button.appendChild(icon("chevron-right"));
+    button.addEventListener("click", function () {
+      if (!state.pendingPlatform) {
+        performDownloadRequest(
+          state.destinationPlatform,
+          state.destinationSource,
+          destination
+        );
+      }
+    });
+    return button;
+  }
+
+  function showDestinationChooser(platform, source, trigger) {
+    if (!destinationRoot || state.destinationOpen || state.pendingPlatform) return;
+    var copy = text();
+    state.destinationOpen = true;
+    state.destinationPlatform = platform;
+    state.destinationSource = source;
+    state.destinationPreviousFocus = trigger || document.activeElement;
+    state.destinationMessage = "";
+    state.destinationMessageKind = "";
+    state.manualTransferUrl = "";
+    state.errorCode = "";
+
+    destinationRoot.replaceChildren();
+    destinationRoot.hidden = false;
+    var backdrop = element("button", "pdd-destination-backdrop");
+    backdrop.type = "button";
+    backdrop.tabIndex = -1;
+    backdrop.setAttribute("aria-label", copy.cancel);
+    backdrop.addEventListener("click", function () {
+      closeDestinationChooser(true);
+    });
+    destinationRoot.appendChild(backdrop);
+
+    var shell = element("section", "pdd-destination-shell");
+    shell.setAttribute("role", "dialog");
+    shell.setAttribute("aria-modal", "true");
+    shell.setAttribute("aria-labelledby", "pdd-destination-title");
+    shell.setAttribute("aria-describedby", "pdd-destination-description");
+
+    var close = element("button", "pdd-destination-close");
+    close.type = "button";
+    close.setAttribute("aria-label", copy.cancel);
+    close.appendChild(icon("x"));
+    close.addEventListener("click", function () {
+      closeDestinationChooser(true);
+    });
+    shell.appendChild(close);
+
+    var heading = element("div", "pdd-destination-heading");
+    var platformIcon = element("span", "pdd-destination-platform");
+    platformIcon.setAttribute("aria-hidden", "true");
+    platformIcon.appendChild(
+      icon(platform === "macos" ? "brand-apple" : "brand-windows")
+    );
+    heading.appendChild(platformIcon);
+    var title = element(
+      "h2",
+      "",
+      copy.destinationTitle.replace("{platform}", platformLabel(platform))
+    );
+    title.id = "pdd-destination-title";
+    heading.appendChild(title);
+    var description = element("p", "", copy.destinationBody);
+    description.id = "pdd-destination-description";
+    heading.appendChild(description);
+    shell.appendChild(heading);
+
+    var actions = element("div", "pdd-destination-actions");
+    actions.appendChild(
+      buildDestinationAction(
+        "direct",
+        "external-link",
+        copy.directTitle,
+        copy.directBody
+      )
+    );
+    actions.appendChild(
+      buildDestinationAction(
+        "share",
+        "share-3",
+        copy.shareTitle,
+        copy.shareBody
+      )
+    );
+    actions.appendChild(
+      buildDestinationAction(
+        "copy",
+        "copy",
+        copy.copyTitle,
+        copy.copyBody
+      )
+    );
+    shell.appendChild(actions);
+
+    var manual = element("label", "pdd-destination-manual");
+    manual.hidden = true;
+    manual.dataset.pddManualTransfer = "true";
+    manual.appendChild(element("span", "", copy.manualLinkLabel));
+    var manualInput = element("input", "");
+    manualInput.type = "text";
+    manualInput.readOnly = true;
+    manualInput.dataset.pddManualTransferInput = "true";
+    manual.appendChild(manualInput);
+    shell.appendChild(manual);
+
+    var status = element("p", "pdd-destination-status");
+    status.dataset.pddDestinationStatus = "true";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    shell.appendChild(status);
+
+    var cancel = element("button", "pdd-destination-cancel", copy.cancel);
+    cancel.type = "button";
+    cancel.addEventListener("click", function () {
+      closeDestinationChooser(true);
+    });
+    shell.appendChild(cancel);
+    destinationRoot.appendChild(shell);
+
+    if (promoRoot && state.promoOpen) {
+      promoRoot.inert = true;
+      promoRoot.setAttribute("aria-hidden", "true");
+    }
+    syncControls();
+    var firstAction = shell.querySelector("[data-pdd-destination-action]");
+    if (firstAction) firstAction.focus();
+  }
+
+  function closeDestinationChooser(restoreFocus) {
+    if (!destinationRoot || !state.destinationOpen || state.pendingPlatform) return;
+    var previousFocus = state.destinationPreviousFocus;
+    state.destinationOpen = false;
+    state.destinationPlatform = "";
+    state.destinationSource = "";
+    state.destinationPreviousFocus = null;
+    state.pendingDestination = "";
+    state.destinationMessage = "";
+    state.destinationMessageKind = "";
+    state.manualTransferUrl = "";
+    destinationRoot.hidden = true;
+    destinationRoot.replaceChildren();
+    if (promoRoot) {
+      promoRoot.inert = false;
+      promoRoot.removeAttribute("aria-hidden");
+    }
+    syncControls();
+    if (
+      restoreFocus &&
+      previousFocus &&
+      previousFocus.isConnected &&
+      typeof previousFocus.focus === "function"
+    ) {
+      try {
+        previousFocus.focus();
+      } catch (error) {}
+    }
+  }
+
   function syncControls() {
     var copy = text();
     document.querySelectorAll("[data-pdd-platform]").forEach(function (button) {
@@ -518,6 +722,45 @@
           : errorText(state.errorCode);
       }
     });
+
+    if (destinationRoot && state.destinationOpen) {
+      destinationRoot
+        .querySelectorAll("[data-pdd-destination-action]")
+        .forEach(function (button) {
+          var pending =
+            Boolean(state.pendingPlatform) &&
+            button.dataset.pddDestinationAction === state.pendingDestination;
+          button.disabled = Boolean(state.pendingPlatform);
+          button.dataset.pending = pending ? "true" : "false";
+          button.setAttribute("aria-busy", pending ? "true" : "false");
+        });
+      var closeButton = destinationRoot.querySelector(".pdd-destination-close");
+      var cancelButton = destinationRoot.querySelector(".pdd-destination-cancel");
+      if (closeButton) closeButton.disabled = Boolean(state.pendingPlatform);
+      if (cancelButton) cancelButton.disabled = Boolean(state.pendingPlatform);
+
+      var destinationStatus = destinationRoot.querySelector(
+        "[data-pdd-destination-status]"
+      );
+      if (destinationStatus) {
+        destinationStatus.dataset.visible =
+          state.pendingPlatform || state.destinationMessage || state.errorCode
+            ? "true"
+            : "false";
+        destinationStatus.dataset.kind = state.pendingPlatform
+          ? "pending"
+          : state.destinationMessageKind || (state.errorCode ? "error" : "");
+        destinationStatus.textContent = state.pendingPlatform
+          ? copy.sending
+          : state.destinationMessage || errorText(state.errorCode);
+      }
+      var manual = destinationRoot.querySelector("[data-pdd-manual-transfer]");
+      var manualInput = destinationRoot.querySelector(
+        "[data-pdd-manual-transfer-input]"
+      );
+      if (manual) manual.hidden = !state.manualTransferUrl;
+      if (manualInput) manualInput.value = state.manualTransferUrl;
+    }
   }
 
   function responseErrorCode(response, data) {
@@ -540,7 +783,7 @@
   function requestDownload(platform, source) {
     if (
       state.pendingPlatform ||
-      state.confirmOpen ||
+      state.destinationOpen ||
       !isPlatformAvailable(platform) ||
       ["profile", "home_prompt", "lesson_end_promo", "ad_promo"].indexOf(
         source
@@ -553,12 +796,27 @@
       syncControls();
       return;
     }
+    showDestinationChooser(platform, source, document.activeElement);
+  }
 
-    state.confirmOpen = true;
-    confirmMobileDownload(function (accepted) {
-      state.confirmOpen = false;
-      if (accepted) performDownloadRequest(platform, source);
-    });
+  function cleanTransferUrl(value, platform) {
+    if (typeof value !== "string") return "";
+    try {
+      var url = new URL(value, window.location.href);
+      if (
+        url.protocol !== "https:" ||
+        url.username ||
+        url.password ||
+        url.pathname !== "/downloads/" + platform
+      ) {
+        return "";
+      }
+      url.search = "";
+      url.hash = "";
+      return url.toString();
+    } catch (error) {
+      return "";
+    }
   }
 
   function validDownloadResponse(data, platform) {
@@ -567,17 +825,26 @@
       data.ok !== true ||
       data.platform !== platform ||
       typeof data.download_url !== "string" ||
+      typeof data.transfer_url !== "string" ||
       typeof data.file_name !== "string"
     ) {
       return false;
     }
     try {
       var url = new URL(data.download_url, window.location.href);
+      var pageUrl = new URL(
+        data.download_page_url || data.download_url,
+        window.location.href
+      );
       var expectedSuffix = platform === "macos" ? ".dmg" : ".exe";
       return (
         url.protocol === "https:" &&
         !url.username &&
         !url.password &&
+        pageUrl.protocol === "https:" &&
+        !pageUrl.username &&
+        !pageUrl.password &&
+        Boolean(cleanTransferUrl(data.transfer_url, platform)) &&
         /^[A-Za-z0-9][A-Za-z0-9._+-]{0,119}$/.test(data.file_name) &&
         data.file_name.toLowerCase().slice(-expectedSuffix.length) ===
           expectedSuffix
@@ -620,6 +887,114 @@
     });
   }
 
+  function showManualTransferUrl(url) {
+    state.manualTransferUrl = url;
+    state.destinationMessage = text().copyFailed;
+    state.destinationMessageKind = "error";
+    syncControls();
+    var input = destinationRoot && destinationRoot.querySelector(
+      "[data-pdd-manual-transfer-input]"
+    );
+    if (input) {
+      try {
+        input.focus();
+        input.select();
+      } catch (error) {}
+    }
+  }
+
+  function legacyCopyText(value) {
+    return new Promise(function (resolve, reject) {
+      var input = element("textarea", "pdd-copy-helper");
+      input.value = value;
+      input.readOnly = true;
+      input.setAttribute("aria-hidden", "true");
+      document.body.appendChild(input);
+      input.select();
+      var copied = false;
+      try {
+        copied = Boolean(
+          document.execCommand && document.execCommand("copy")
+        );
+      } catch (error) {}
+      input.remove();
+      if (copied) {
+        resolve();
+      } else {
+        reject(new Error("clipboard_unavailable"));
+      }
+    });
+  }
+
+  function copyTransferUrl(url) {
+    var operation = null;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        operation = navigator.clipboard.writeText(url);
+      }
+    } catch (error) {}
+    var copyOperation = operation
+      ? Promise.resolve(operation).catch(function () {
+          return legacyCopyText(url);
+        })
+      : legacyCopyText(url);
+    return copyOperation
+      .then(function () {
+        return "copy_link";
+      })
+      .catch(function () {
+        showManualTransferUrl(url);
+        var error = new Error("desktop_download_manual_copy_required");
+        error.code = "desktop_download_manual_copy_required";
+        throw error;
+      });
+  }
+
+  function shareTransferUrl(url, platform) {
+    if (!navigator.share) return copyTransferUrl(url);
+    var payload = {
+      title: "Pomp HSK AI · " + platformLabel(platform),
+      text: text().destinationBody,
+      url: url
+    };
+    try {
+      if (navigator.canShare && !navigator.canShare(payload)) {
+        return copyTransferUrl(url);
+      }
+    } catch (error) {}
+    var shareOperation = null;
+    try {
+      shareOperation = navigator.share(payload);
+    } catch (error) {
+      return copyTransferUrl(url);
+    }
+    return Promise.resolve(shareOperation)
+      .then(function () {
+        return "web_share";
+      })
+      .catch(function (error) {
+        if (error && error.name === "AbortError") {
+          var cancelled = new Error("desktop_download_share_cancelled");
+          cancelled.code = "desktop_download_share_cancelled";
+          throw cancelled;
+        }
+        return copyTransferUrl(url);
+      });
+  }
+
+  function prepareTransfer(destination, platform) {
+    if (destination === "direct") return Promise.resolve("");
+    var url = cleanTransferUrl(state.transferUrls[platform], platform);
+    if (!url) {
+      var error = new Error("invalid_success_response");
+      error.code = "invalid_success_response";
+      return Promise.reject(error);
+    }
+    return destination === "share"
+      ? shareTransferUrl(url, platform)
+      : copyTransferUrl(url);
+  }
+
   function markDownloadStarted(platform, source, id, transport) {
     if (!telegramInitData()) return;
     fetch(STARTED_ENDPOINT, {
@@ -638,42 +1013,74 @@
     }).catch(function () {});
   }
 
-  function performDownloadRequest(platform, source) {
+  function completeDownload(platform, source, id, transport, trackStarted) {
+    state.pendingPlatform = "";
+    state.pendingDestination = "";
+    state.errorCode = "";
+    clearPendingEventId(platform, source);
+    storeNumber("download_requested", Date.now());
+    if (trackStarted) {
+      markDownloadStarted(platform, source, id, transport);
+    }
+    closeDestinationChooser(false);
+    showSuccess(platform, transport);
+    try {
+      var app = telegramWebApp();
+      if (app && app.HapticFeedback) {
+        app.HapticFeedback.notificationOccurred("success");
+      }
+    } catch (error) {}
+  }
+
+  function performDownloadRequest(platform, source, destination) {
     var id = pendingEventId(platform, source);
     state.pendingPlatform = platform;
+    state.pendingDestination = destination;
     state.errorCode = "";
+    state.destinationMessage = "";
+    state.destinationMessageKind = "";
+    state.manualTransferUrl = "";
     state.lastPlatform = platform;
     syncControls();
 
-    var controller =
-      typeof window.AbortController === "function"
-        ? new window.AbortController()
-        : null;
-    var requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Telegram-Init-Data": telegramInitData()
-      },
-      body: JSON.stringify({
-        platform: platform,
-        source: source,
-        event_id: id,
-        language: language()
-      })
-    };
-    if (controller) requestOptions.signal = controller.signal;
+    var controller = null;
     var timeoutId = 0;
-    var timeoutPromise = new Promise(function (_, reject) {
-      timeoutId = window.setTimeout(function () {
-        if (controller) controller.abort();
-        var timeoutError = new Error("desktop_download_timeout");
-        timeoutError.code = "desktop_download_timeout";
-        reject(timeoutError);
-      }, REQUEST_TIMEOUT_MS);
-    });
+    var completedTransport = "";
 
-    Promise.race([fetch(REQUEST_ENDPOINT, requestOptions), timeoutPromise])
+    prepareTransfer(destination, platform)
+      .then(function (transport) {
+        completedTransport = transport;
+        controller =
+          typeof window.AbortController === "function"
+            ? new window.AbortController()
+            : null;
+        var requestOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": telegramInitData()
+          },
+          body: JSON.stringify({
+            platform: platform,
+            source: source,
+            event_id: id,
+            language: language()
+          })
+        };
+        if (controller) requestOptions.signal = controller.signal;
+        var timeoutPromise = new Promise(function (_, reject) {
+          timeoutId = window.setTimeout(function () {
+            if (controller) controller.abort();
+            var timeoutError = new Error("desktop_download_timeout");
+            timeoutError.code = "desktop_download_timeout";
+            reject(timeoutError);
+          }, REQUEST_TIMEOUT_MS);
+        });
+        return Promise.race([
+          fetch(REQUEST_ENDPOINT, requestOptions),
+          timeoutPromise
+        ]);
+      })
       .then(function (response) {
         return response
           .json()
@@ -696,25 +1103,37 @@
       })
       .then(function (data) {
         window.clearTimeout(timeoutId);
-        return launchTrackedDownload(data);
+        return completedTransport
+          ? completedTransport
+          : launchTrackedDownload(data);
       })
       .then(function (transport) {
-        state.pendingPlatform = "";
-        state.errorCode = "";
-        clearPendingEventId(platform, source);
-        storeNumber("download_requested", Date.now());
-        markDownloadStarted(platform, source, id, transport);
-        showSuccess(platform);
-        try {
-          var app = telegramWebApp();
-          if (app && app.HapticFeedback) {
-            app.HapticFeedback.notificationOccurred("success");
-          }
-        } catch (error) {}
+        completeDownload(platform, source, id, transport, true);
       })
       .catch(function (error) {
         window.clearTimeout(timeoutId);
         state.pendingPlatform = "";
+        state.pendingDestination = "";
+        if (completedTransport) {
+          completeDownload(
+            platform,
+            source,
+            id,
+            completedTransport,
+            false
+          );
+          return;
+        }
+        if (error && error.code === "desktop_download_share_cancelled") {
+          state.destinationMessage = text().shareCancelled;
+          state.destinationMessageKind = "neutral";
+          syncControls();
+          return;
+        }
+        if (error && error.code === "desktop_download_manual_copy_required") {
+          syncControls();
+          return;
+        }
         state.errorCode =
           error && (error.code || error.name === "AbortError")
             ? error.code || "desktop_download_timeout"
@@ -726,7 +1145,7 @@
       });
   }
 
-  function showSuccess(platform) {
+  function showSuccess(platform, transport) {
     if (!promoRoot) return;
     var copy = text();
     state.promoOpen = true;
@@ -753,12 +1172,30 @@
 
     var body = element("div", "pdd-promo-body");
     var successVisual = element("span", "pdd-success-visual");
-    successVisual.appendChild(icon("download"));
+    var successIcon =
+      transport === "web_share"
+        ? "share-3"
+        : transport === "copy_link"
+          ? "copy"
+          : "download";
+    successVisual.appendChild(icon(successIcon));
     body.appendChild(successVisual);
-    var title = element("h2", "", copy.successTitle);
+    var successTitle =
+      transport === "web_share"
+        ? copy.shareSuccessTitle
+        : transport === "copy_link"
+          ? copy.copySuccessTitle
+          : copy.successTitle;
+    var successBody =
+      transport === "web_share"
+        ? copy.shareSuccessBody
+        : transport === "copy_link"
+          ? copy.copySuccessBody
+          : copy.successBody;
+    var title = element("h2", "", successTitle);
     title.id = "pdd-success-title";
     body.appendChild(title);
-    body.appendChild(element("p", "", copy.successBody));
+    body.appendChild(element("p", "", successBody));
     var button = element("button", "pdd-return-button");
     button.type = "button";
     button.appendChild(icon("check"));
@@ -1105,6 +1542,14 @@
             state.platforms.windows = Boolean(
               data.platforms && data.platforms.windows
             );
+            state.transferUrls.macos = cleanTransferUrl(
+              data.downloads && data.downloads.macos,
+              "macos"
+            );
+            state.transferUrls.windows = cleanTransferUrl(
+              data.downloads && data.downloads.windows,
+              "windows"
+            );
             var promo =
               data.promo && typeof data.promo === "object" ? data.promo : {};
             var placements =
@@ -1129,6 +1574,8 @@
         state.enabled = false;
         state.platforms.macos = false;
         state.platforms.windows = false;
+        state.transferUrls.macos = "";
+        state.transferUrls.windows = "";
         state.promoEligible = false;
         PROMO_SOURCES.forEach(function (source) {
           state.promoPlacements[source] = false;
@@ -1149,7 +1596,37 @@
       });
   }
 
+  function trapDialogFocus(event, root) {
+    if (event.key !== "Tab" || !root) return;
+    var focusable = Array.prototype.slice.call(
+      root.querySelectorAll(
+        'button:not(:disabled), input:not(:disabled), [href], [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(function (node) {
+      return !node.hidden && node.getClientRects().length > 0;
+    });
+    if (!focusable.length) return;
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   document.addEventListener("keydown", function (event) {
+    if (state.destinationOpen) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeDestinationChooser(true);
+      } else {
+        trapDialogFocus(event, destinationRoot);
+      }
+      return;
+    }
     if (event.key === "Escape" && state.promoOpen) {
       event.preventDefault();
       if (promoRoot && promoRoot.querySelector('[data-mode="success"]')) {

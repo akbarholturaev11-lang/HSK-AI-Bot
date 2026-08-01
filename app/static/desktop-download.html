@@ -15,8 +15,8 @@
       content="Pomp HSK AI ilovasini macOS yoki Windows uchun yuklab oling."
     >
     <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-    <link rel="stylesheet" href="/desktop-download-page.css?v=20260730-1">
-    <script src="/desktop-download-page.js?v=20260729-1" defer></script>
+    <link rel="stylesheet" href="/desktop-download-page.css?v=20260802-1">
+    <script src="/desktop-download-page.js?v=20260802-1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#download-card" data-i18n="skip">Yuklashga o‘tish</a>
@@ -159,7 +159,17 @@
           <h2 data-i18n="mobileTitle">Linkni kompyuteringizga yuboring</h2>
           <p data-i18n="mobileBody">Installer faqat Mac yoki Windows’da ishlaydi.</p>
         </div>
-        <button type="button" data-copy-link data-i18n="copyLink">Linkni nusxalash</button>
+        <div class="mobile-transfer-controls">
+          <div class="mobile-transfer-actions">
+            <button type="button" class="share-link" data-share-link data-i18n="shareLink">AirDrop yoki ulashish</button>
+            <button type="button" class="copy-link" data-copy-link data-i18n="copyLink">Linkni nusxalash</button>
+          </div>
+          <label class="transfer-manual" hidden data-transfer-manual>
+            <span data-i18n="manualLinkLabel">Kompyuterda ochiladigan xavfsiz link</span>
+            <input type="text" readonly data-transfer-link aria-label="Kompyuterda ochiladigan xavfsiz link">
+          </label>
+          <p class="transfer-status" role="status" aria-live="polite" data-transfer-status></p>
+        </div>
       </section>
     </main>
 

@@ -124,6 +124,11 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result["download_url"], result["download_page_url"])
             token = parse_qs(urlsplit(result["download_url"]).query)["request"][0]
             self.assertRegex(token, r"^[0-9a-f]{32}$")
+            transfer = urlsplit(result["transfer_url"])
+            self.assertEqual(transfer.hostname, "app.example.test")
+            self.assertEqual(transfer.path, "/downloads/macos")
+            self.assertEqual(transfer.query, "")
+            self.assertNotIn(token, result["transfer_url"])
             self.assertNotIn("message_sent", result)
             self.assertNotIn("close_mini_app", result)
 
@@ -216,6 +221,40 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
                     transport="open_link",
                 )
             self.assertEqual(wrong_source.exception.code, "desktop_download_not_found")
+
+    async def test_share_and_copy_transports_are_persisted(self):
+        async with self.sessions() as session:
+            service = DesktopDownloadService(session, _settings())
+            for event_id, platform, transport in (
+                ("desktop-event-share-0008", "macos", "web_share"),
+                ("desktop-event-copy-0009", "windows", "copy_link"),
+            ):
+                await service.request_download(
+                    telegram_id=1001,
+                    platform=platform,
+                    source="profile",
+                    event_id=event_id,
+                    language="uz",
+                )
+                await service.mark_started(
+                    telegram_id=1001,
+                    platform=platform,
+                    source="profile",
+                    event_id=event_id,
+                    transport=transport,
+                )
+
+            events = (
+                await session.execute(
+                    select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.event_name == "desktop_download_started"
+                    )
+                )
+            ).scalars().all()
+            transports = {
+                json.loads(event.payload_json)["transport"] for event in events
+            }
+            self.assertEqual(transports, {"web_share", "copy_link"})
 
     async def test_redirect_is_request_bound_and_click_is_idempotent(self):
         async with self.sessions() as session:
@@ -318,13 +357,14 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
 
 class DesktopDownloadApiContractTests(unittest.TestCase):
     def test_started_transport_is_explicit_and_extra_fields_are_forbidden(self):
-        payload = DesktopDownloadStartedRequest(
-            platform="macos",
-            source="profile",
-            event_id="desktop-event-0007",
-            transport="open_link",
-        )
-        self.assertEqual(payload.transport, "open_link")
+        for transport in ("open_link", "download_file", "web_share", "copy_link"):
+            payload = DesktopDownloadStartedRequest(
+                platform="macos",
+                source="profile",
+                event_id="desktop-event-0007",
+                transport=transport,
+            )
+            self.assertEqual(payload.transport, transport)
         with self.assertRaises(Exception):
             DesktopDownloadStartedRequest(
                 platform="macos",
@@ -332,6 +372,16 @@ class DesktopDownloadApiContractTests(unittest.TestCase):
                 event_id="desktop-event-0007",
                 transport="browser",
             )
+
+    def test_public_transfer_url_is_stable_and_token_free(self):
+        releases = DesktopReleaseConfig.from_settings(_settings())
+        mac_url = urlsplit(releases.public_transfer_url("macos"))
+        windows_url = urlsplit(releases.public_transfer_url("windows"))
+
+        self.assertEqual(mac_url.path, "/downloads/macos")
+        self.assertEqual(windows_url.path, "/downloads/windows")
+        self.assertFalse(mac_url.query)
+        self.assertFalse(windows_url.query)
 
     def test_router_exposes_direct_download_contract_endpoints(self):
         class _Factory:

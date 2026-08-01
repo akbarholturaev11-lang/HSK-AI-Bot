@@ -180,24 +180,26 @@ class DesktopReleaseConfig:
             + urlencode({"platform": platform, "request": request_token})
         )
 
-    def tracked_url(self, platform: str, request_token: str | None = None) -> str:
+    def public_transfer_url(self, platform: str) -> str:
+        """Return the stable installer hand-off URL without analytics tokens."""
         if not self.target_for(platform) or not self.public_base_url:
             raise DesktopDownloadError(
                 "desktop_release_unavailable",
                 status_code=503,
                 platform=platform,
             )
+        return f"{self.public_base_url}/downloads/{platform}"
+
+    def tracked_url(self, platform: str, request_token: str | None = None) -> str:
+        base = self.public_transfer_url(platform)
         query = urlencode({"request": request_token}) if request_token else ""
-        return (
-            f"{self.public_base_url}/downloads/{platform}"
-            + (f"?{query}" if query else "")
-        )
+        return base + (f"?{query}" if query else "")
 
     def public_status_payload(self) -> dict[str, Any]:
         payload = self.status_payload()
         payload["downloads"] = {
             platform: (
-                self.tracked_url(platform)
+                self.public_transfer_url(platform)
                 if self.enabled and self.target_for(platform)
                 else None
             )
@@ -232,6 +234,14 @@ class DesktopDownloadService:
     async def status(self, telegram_id: int) -> dict[str, Any]:
         await self._user(telegram_id)
         payload = self.releases.status_payload()
+        payload["downloads"] = {
+            platform: (
+                self.releases.public_transfer_url(platform)
+                if self.releases.enabled and self.releases.target_for(platform)
+                else None
+            )
+            for platform in PLATFORMS
+        }
         payload["promo"] = await self._promo_status(telegram_id)
         return payload
 
@@ -419,6 +429,9 @@ class DesktopDownloadService:
                 platform,
                 request_token,
             ),
+            # This URL is intentionally stable and token-free. It is the only
+            # URL clients may place on the clipboard or in the system share UI.
+            "transfer_url": self.releases.public_transfer_url(platform),
             "file_name": file_name,
             "duplicate": duplicate,
         }
