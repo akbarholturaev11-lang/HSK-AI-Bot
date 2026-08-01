@@ -8,11 +8,130 @@ const previewState = {
   pollCount: 0,
   language: "uz",
   completed: 1,
+  subscription:
+    query.get("subscription") === "paid"
+      ? "paid"
+      : query.get("subscription") === "pending"
+        ? "pending"
+        : "free",
 };
 
 const localized = (uz, ru, tj) => ({ uz, ru, tj });
+const PREVIEW_QR =
+  "data:image/png;base64," +
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk" +
+  "+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+
+function subscriptionAccess() {
+  const paid = previewState.subscription === "paid";
+  return {
+    state: paid ? "paid" : "free",
+    is_paid: paid,
+    expires_at: paid ? "2026-12-31T23:59:59Z" : null,
+  };
+}
+
+function previewPrices() {
+  const plans = (currency, values) => ({
+    "10_days": {
+      final_amount: values[0],
+      currency,
+      discount_applied: false,
+      discount_percent: 0,
+    },
+    "1_month": {
+      final_amount: values[1],
+      currency,
+      discount_applied: false,
+      discount_percent: 0,
+    },
+    "3_months": {
+      final_amount: values[2],
+      currency,
+      discount_applied: true,
+      discount_percent: 10,
+    },
+  });
+  return {
+    visa: plans("TJS", [49, 129, 329]),
+    alipay: plans("¥", [28, 66, 168]),
+    wechat: plans("¥", [28, 66, 168]),
+  };
+}
+
+function subscriptionOverview() {
+  const access = subscriptionAccess();
+  const pending = previewState.subscription === "pending";
+  return {
+    ok: true,
+    source: "desktop_subscription",
+    mode: "subscription",
+    language: previewState.language,
+    access,
+    checkout_allowed: !access.is_paid && !pending,
+    read_only_reason: access.is_paid
+      ? "desktop_subscription_active"
+      : pending
+        ? "desktop_subscription_pending"
+        : null,
+    attempt_id: !access.is_paid && !pending ? "desktop-preview-checkout-0001" : null,
+    pending_payment: pending
+      ? {
+          id: 1001,
+          plan_type: "1_month",
+          payment_method: "alipay",
+          amount: 66,
+          currency: "¥",
+          submitted_at: "2026-08-02T08:00:00Z",
+        }
+      : null,
+    prices: access.is_paid || pending ? {} : previewPrices(),
+    payment_details: access.is_paid || pending ? "" : "Pomp HSK AI · 0000 0000 0000 0000",
+    payment_details_configured: !access.is_paid && !pending,
+    card_countries: ["tj", "uz", "ru", "other"],
+  };
+}
+
+function subscriptionQuote(args) {
+  const prices = previewPrices();
+  const plan = String(args.plan || "");
+  const method = String(args.method || "");
+  const price = prices[method]?.[plan];
+  if (!price || previewState.subscription !== "free") {
+    throw new Error("desktop_subscription_request_invalid");
+  }
+  const quote = {
+    plan_type: plan,
+    payment_method: method,
+    card_country: method === "visa" ? String(args.country || "tj") : null,
+    base_amount: price.final_amount,
+    base_currency: price.currency,
+    final_amount: price.final_amount,
+    final_currency: price.currency,
+    pay_amount: String(price.final_amount),
+    pay_currency: price.currency,
+    pay_base_amount: String(price.final_amount),
+    pay_base_currency: price.currency,
+    exchange_rate: "",
+    discount_applied: price.discount_applied,
+    discount_percent: price.discount_percent,
+    payment_details:
+      method === "visa" ? "Pomp HSK AI · 0000 0000 0000 0000" : "",
+  };
+  if (method !== "visa") {
+    quote.qr = { available: true, image_data_url: PREVIEW_QR };
+  }
+  return {
+    ok: true,
+    source: "desktop_subscription",
+    mode: "subscription",
+    access: subscriptionAccess(),
+    quote,
+  };
+}
 
 function bootstrap() {
+  const access = subscriptionAccess();
   return {
     ok: true,
     authenticated: true,
@@ -20,14 +139,14 @@ function bootstrap() {
     device: {
       id: "preview-device",
       platform: "preview",
-      app_version: "0.1.0-preview",
+      app_version: "1.1.0-preview",
     },
     user: {
       name: "Akbar",
       language: previewState.language,
       level: "hsk1",
-      access_state: "active",
-      is_paid: true,
+      access_state: access.state,
+      is_paid: access.is_paid,
     },
   };
 }
@@ -229,7 +348,7 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_app_info":
       return {
         productName: "Pomp HSK AI",
-        version: "0.1.0-preview",
+        version: "1.1.0-preview",
         platform: "preview",
       };
     case "desktop_auth_status":
@@ -241,7 +360,7 @@ export async function previewInvoke(command, args = {}) {
       previewState.pollCount = 0;
       return {
         status: "pending",
-        displayCode: "HSK4821X",
+        displayCode: "HSK4827X",
         expiresIn: 300,
       };
     case "desktop_link_open_telegram":
@@ -281,6 +400,24 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_set_language":
       previewState.language = String(args.language || "uz");
       return { ok: true, language: previewState.language };
+    case "desktop_subscription_overview":
+      return subscriptionOverview();
+    case "desktop_subscription_quote":
+      return subscriptionQuote(args);
+    case "desktop_subscription_submit":
+      if (previewState.subscription !== "free") {
+        throw new Error("desktop_subscription_pending");
+      }
+      previewState.subscription = "pending";
+      return {
+        ok: true,
+        status: "pending",
+        payment_id: 1001,
+        already_pending: false,
+        source: "desktop_subscription",
+        mode: "subscription",
+        access: subscriptionAccess(),
+      };
     case "desktop_tts_speak":
       return { ok: false, available: false, error: "desktop_tts_unavailable" };
     case "local_ai_model_status":
@@ -293,8 +430,8 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_update_check":
       return {
         available: query.get("update") === "1",
-        currentVersion: "0.1.0-preview",
-        version: query.get("update") === "1" ? "0.2.0-preview" : undefined,
+        currentVersion: "1.1.0-preview",
+        version: query.get("update") === "1" ? "1.2.0-preview" : undefined,
         notes:
           query.get("update") === "1"
             ? "Desktop kurs oqimi va barqarorlik yangilandi."

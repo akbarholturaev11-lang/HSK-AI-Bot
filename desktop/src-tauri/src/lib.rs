@@ -1,4 +1,7 @@
-use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
+use base64::{
+    engine::general_purpose::{STANDARD, URL_SAFE_NO_PAD},
+    Engine as _,
+};
 use rand::{rngs::OsRng, RngCore};
 use reqwest::{Client, StatusCode};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
@@ -16,6 +19,10 @@ const LOCAL_AI_MODEL_ID: &str = "qwen3-4b-q4-k-m";
 const LOCAL_AI_MODEL_FILE: &str = "qwen3-4b-q4_k_m.gguf";
 const MAX_LESSON_ORDER: i64 = 500;
 const MAX_COMPLETION_BODY_BYTES: usize = 64 * 1024;
+const MAX_SUBSCRIPTION_SCREENSHOT_BYTES: usize = 8 * 1024 * 1024;
+const MAX_SUBSCRIPTION_BASE64_CHARS: usize = MAX_SUBSCRIPTION_SCREENSHOT_BYTES.div_ceil(3) * 4;
+const MAX_SUBSCRIPTION_SUBMIT_BODY_BYTES: usize = MAX_SUBSCRIPTION_BASE64_CHARS + 40 + (16 * 1024);
+const MAX_SUBSCRIPTION_RESPONSE_BODY_BYTES: usize = 4 * 1024 * 1024;
 const MAX_MISTAKES: usize = 50;
 const MAX_TTS_CHARS: usize = 1_000;
 const MAX_TTS_BYTES: usize = 4_000;
@@ -154,7 +161,10 @@ fn api_url(path: &str) -> Result<String, String> {
         | "/api/v3/desktop/bootstrap"
         | "/api/v3/desktop/course/map"
         | "/api/v3/desktop/course/complete"
-        | "/api/v3/desktop/preferences/language" => Ok(format!("{API_ORIGIN}{path}")),
+        | "/api/v3/desktop/preferences/language"
+        | "/api/v3/desktop/subscription/overview"
+        | "/api/v3/desktop/subscription/quote"
+        | "/api/v3/desktop/subscription/submit" => Ok(format!("{API_ORIGIN}{path}")),
         _ => {
             if path
                 == format!(
@@ -232,6 +242,98 @@ fn validate_language(language: &str) -> Result<&'static str, String> {
     }
 }
 
+fn validate_subscription_plan(plan: &str) -> Result<&'static str, String> {
+    match plan.trim().to_ascii_lowercase().as_str() {
+        "10_days" => Ok("10_days"),
+        "1_month" => Ok("1_month"),
+        "3_months" => Ok("3_months"),
+        _ => Err("desktop_subscription_request_invalid".into()),
+    }
+}
+
+fn validate_subscription_method(method: &str) -> Result<&'static str, String> {
+    match method.trim().to_ascii_lowercase().as_str() {
+        "visa" => Ok("visa"),
+        "alipay" => Ok("alipay"),
+        "wechat" => Ok("wechat"),
+        _ => Err("desktop_subscription_request_invalid".into()),
+    }
+}
+
+fn validate_subscription_country(
+    method: &str,
+    country: Option<&str>,
+) -> Result<Option<&'static str>, String> {
+    if method != "visa" {
+        return if country.is_none() {
+            Ok(None)
+        } else {
+            Err("desktop_subscription_request_invalid".into())
+        };
+    }
+    match country
+        .map(str::trim)
+        .map(str::to_ascii_lowercase)
+        .as_deref()
+    {
+        Some("tj") => Ok(Some("tj")),
+        Some("uz") => Ok(Some("uz")),
+        Some("ru") => Ok(Some("ru")),
+        Some("other") => Ok(Some("other")),
+        _ => Err("desktop_subscription_request_invalid".into()),
+    }
+}
+
+fn validate_checkout_attempt_id(value: Option<&str>) -> Result<Option<&str>, String> {
+    let Some(value) = value.map(str::trim) else {
+        return Ok(None);
+    };
+    if (16..=80).contains(&value.len())
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-'))
+    {
+        Ok(Some(value))
+    } else {
+        Err("desktop_subscription_request_invalid".into())
+    }
+}
+
+fn validate_subscription_image_data_url(value: &str) -> Result<(), String> {
+    let (prefix, encoded) = value
+        .split_once(',')
+        .ok_or_else(|| "desktop_payment_file_type_invalid".to_string())?;
+    let image_kind = match prefix {
+        "data:image/jpeg;base64" | "data:image/jpg;base64" => "jpeg",
+        "data:image/png;base64" => "png",
+        "data:image/webp;base64" => "webp",
+        _ => return Err("desktop_payment_file_type_invalid".into()),
+    };
+    if encoded.is_empty() || encoded.len() > MAX_SUBSCRIPTION_BASE64_CHARS {
+        return Err("desktop_payment_file_too_large".into());
+    }
+    let decoded = STANDARD
+        .decode(encoded.as_bytes())
+        .map_err(|_| "desktop_payment_file_invalid".to_string())?;
+    if decoded.is_empty() || decoded.len() > MAX_SUBSCRIPTION_SCREENSHOT_BYTES {
+        return Err("desktop_payment_file_too_large".into());
+    }
+    let signature_matches = match image_kind {
+        "jpeg" => decoded.starts_with(&[0xff, 0xd8, 0xff]),
+        "png" => decoded.starts_with(b"\x89PNG\r\n\x1a\n"),
+        "webp" => {
+            decoded.len() >= 12
+                && decoded.starts_with(b"RIFF")
+                && decoded.get(8..12) == Some(b"WEBP")
+        }
+        _ => false,
+    };
+    if !signature_matches {
+        return Err("desktop_payment_file_invalid".into());
+    }
+    Ok(())
+}
+
 fn validate_bounded_json(value: &Value, depth: usize, nodes: &mut usize) -> Result<(), String> {
     *nodes += 1;
     if depth > 6 || *nodes > 2_000 {
@@ -284,38 +386,31 @@ fn validate_tts_text(text: &str) -> Result<(), String> {
     Ok(())
 }
 
-fn telegram_link_code(url: &str) -> Option<String> {
+fn is_allowed_telegram_link(url: &str) -> bool {
     let Ok(parsed) = reqwest::Url::parse(url) else {
-        return None;
+        return false;
     };
-    let path_ok = parsed
-        .path_segments()
-        .is_some_and(|segments| segments.filter(|part| !part.is_empty()).count() == 1);
-    let mut query = parsed.query_pairs();
-    let start_code = query.next().and_then(|(key, value)| {
-        if key != "start" {
-            return None;
-        }
-        let code = value.strip_prefix("desktop_")?;
-        if code.len() == 8 && code.bytes().all(|byte| byte.is_ascii_alphanumeric()) {
-            Some(code.to_string())
-        } else {
-            None
-        }
+    let path_ok = parsed.path_segments().is_some_and(|segments| {
+        let parts = segments.filter(|part| !part.is_empty()).collect::<Vec<_>>();
+        parts.len() == 1
+            && (5..=32).contains(&parts[0].len())
+            && parts[0]
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
     });
-    let allowed = parsed.scheme() == "https"
+    let mut query = parsed.query_pairs();
+    let start_is_manual = query
+        .next()
+        .is_some_and(|(key, value)| key == "start" && value == "desktop_link");
+    parsed.scheme() == "https"
         && parsed.host_str() == Some("t.me")
         && parsed.port().is_none()
         && parsed.username().is_empty()
         && parsed.password().is_none()
         && parsed.fragment().is_none()
         && path_ok
-        && query.next().is_none();
-    allowed.then_some(start_code).flatten()
-}
-
-fn is_allowed_telegram_link(url: &str) -> bool {
-    telegram_link_code(url).is_some()
+        && start_is_manual
+        && query.next().is_none()
 }
 
 fn keyring_entry(account: &'static str) -> Result<keyring::Entry, String> {
@@ -383,6 +478,238 @@ async fn decode_response<T: DeserializeOwned>(response: reqwest::Response) -> Re
         .json::<T>()
         .await
         .map_err(|_| "desktop_api_invalid_response".into())
+}
+
+async fn decode_bounded_json_response(
+    mut response: reqwest::Response,
+    max_body_bytes: usize,
+) -> Result<Value, String> {
+    let status = response.status();
+    let content_type_is_json = response
+        .headers()
+        .get(reqwest::header::CONTENT_TYPE)
+        .and_then(|value| value.to_str().ok())
+        .and_then(|value| value.split(';').next())
+        .is_some_and(|value| value.trim().eq_ignore_ascii_case("application/json"));
+    if !content_type_is_json {
+        return Err("desktop_api_invalid_response".into());
+    }
+    if response
+        .content_length()
+        .is_some_and(|length| length > max_body_bytes as u64)
+    {
+        return Err("desktop_api_invalid_response".into());
+    }
+    let mut body = Vec::new();
+    while let Some(chunk) = response
+        .chunk()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?
+    {
+        if body.len().saturating_add(chunk.len()) > max_body_bytes {
+            return Err("desktop_api_invalid_response".into());
+        }
+        body.extend_from_slice(&chunk);
+    }
+    let value: Value =
+        serde_json::from_slice(&body).map_err(|_| "desktop_api_invalid_response".to_string())?;
+    if !status.is_success() {
+        return Err(value
+            .get("error")
+            .and_then(Value::as_str)
+            .filter(|error| (2..=80).contains(&error.len()))
+            .unwrap_or("desktop_api_failed")
+            .to_string());
+    }
+    Ok(value)
+}
+
+fn contains_sensitive_subscription_field(value: &Value) -> bool {
+    match value {
+        Value::Array(items) => items.iter().any(contains_sensitive_subscription_field),
+        Value::Object(items) => items.iter().any(|(key, item)| {
+            matches!(
+                key.as_str(),
+                "access_token" | "refresh_token" | "polling_secret" | "installation_key"
+            ) || contains_sensitive_subscription_field(item)
+        }),
+        _ => false,
+    }
+}
+
+fn validate_subscription_envelope(value: &Value) -> Result<(), String> {
+    let payload = value
+        .as_object()
+        .ok_or_else(|| "desktop_subscription_payload_invalid".to_string())?;
+    if payload.get("ok").and_then(Value::as_bool) != Some(true)
+        || payload.get("source").and_then(Value::as_str) != Some("desktop_subscription")
+        || payload.get("mode").and_then(Value::as_str) != Some("subscription")
+        || contains_sensitive_subscription_field(value)
+    {
+        return Err("desktop_subscription_payload_invalid".into());
+    }
+    Ok(())
+}
+
+fn validate_subscription_access(value: Option<&Value>) -> Result<(), String> {
+    let access = value
+        .and_then(Value::as_object)
+        .ok_or_else(|| "desktop_subscription_payload_invalid".to_string())?;
+    let state = access
+        .get("state")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "desktop_subscription_payload_invalid".to_string())?;
+    let is_paid = access
+        .get("is_paid")
+        .and_then(Value::as_bool)
+        .ok_or_else(|| "desktop_subscription_payload_invalid".to_string())?;
+    if !matches!(state, "free" | "paid" | "blocked") || is_paid != (state == "paid") {
+        return Err("desktop_subscription_payload_invalid".into());
+    }
+    match access.get("expires_at") {
+        Some(Value::Null) => Ok(()),
+        Some(Value::String(value)) if !value.is_empty() && value.len() <= 64 => Ok(()),
+        _ => Err("desktop_subscription_payload_invalid".into()),
+    }
+}
+
+fn validate_subscription_prices(value: Option<&Value>) -> Result<(), String> {
+    let Some(methods) = value.and_then(Value::as_object) else {
+        return Err("desktop_subscription_payload_invalid".into());
+    };
+    for (method, plans) in methods {
+        if !matches!(method.as_str(), "visa" | "alipay" | "wechat") {
+            return Err("desktop_subscription_payload_invalid".into());
+        }
+        let Some(plans) = plans.as_object() else {
+            return Err("desktop_subscription_payload_invalid".into());
+        };
+        for (plan, price) in plans {
+            if !matches!(plan.as_str(), "10_days" | "1_month" | "3_months") || !price.is_object() {
+                return Err("desktop_subscription_payload_invalid".into());
+            }
+        }
+    }
+    Ok(())
+}
+
+fn validate_subscription_overview_response(value: &Value) -> Result<(), String> {
+    validate_subscription_envelope(value)?;
+    let payload = value
+        .as_object()
+        .ok_or_else(|| "desktop_subscription_payload_invalid".to_string())?;
+    validate_subscription_access(payload.get("access"))?;
+    validate_subscription_prices(payload.get("prices"))?;
+    if payload
+        .get("checkout_allowed")
+        .and_then(Value::as_bool)
+        .is_none()
+    {
+        return Err("desktop_subscription_payload_invalid".into());
+    }
+    if !matches!(
+        payload.get("pending_payment"),
+        Some(Value::Null) | Some(Value::Object(_))
+    ) || !matches!(
+        payload.get("read_only_reason"),
+        Some(Value::Null) | Some(Value::String(_))
+    ) {
+        return Err("desktop_subscription_payload_invalid".into());
+    }
+    match payload.get("attempt_id") {
+        Some(Value::Null) => Ok(()),
+        Some(Value::String(value))
+            if (16..=80).contains(&value.len())
+                && value
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-')) =>
+        {
+            Ok(())
+        }
+        _ => Err("desktop_subscription_payload_invalid".into()),
+    }
+}
+
+fn validate_subscription_quote_response(
+    value: &Value,
+    expected_plan: &str,
+    expected_method: &str,
+) -> Result<(), String> {
+    validate_subscription_envelope(value)
+        .map_err(|_| "desktop_subscription_quote_invalid".to_string())?;
+    let payload = value
+        .as_object()
+        .ok_or_else(|| "desktop_subscription_quote_invalid".to_string())?;
+    validate_subscription_access(payload.get("access"))
+        .map_err(|_| "desktop_subscription_quote_invalid".to_string())?;
+    let quote = payload
+        .get("quote")
+        .and_then(Value::as_object)
+        .ok_or_else(|| "desktop_subscription_quote_invalid".to_string())?;
+    if quote.get("plan_type").and_then(Value::as_str) != Some(expected_plan)
+        || quote.get("payment_method").and_then(Value::as_str) != Some(expected_method)
+        || quote.get("final_amount").and_then(Value::as_i64).is_none()
+        || quote
+            .get("final_currency")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty() && value.len() <= 16)
+            .is_none()
+        || quote
+            .get("pay_amount")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty() && value.len() <= 32)
+            .is_none()
+        || quote
+            .get("pay_currency")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty() && value.len() <= 16)
+            .is_none()
+    {
+        return Err("desktop_subscription_quote_invalid".into());
+    }
+    if expected_method == "visa" {
+        let details = quote
+            .get("payment_details")
+            .and_then(Value::as_str)
+            .unwrap_or("");
+        if details.is_empty() || details.len() > 32 * 1024 {
+            return Err("desktop_subscription_quote_invalid".into());
+        }
+    } else if let Some(qr) = quote.get("qr").and_then(Value::as_object) {
+        let available = qr.get("available").and_then(Value::as_bool);
+        if available.is_none() {
+            return Err("desktop_subscription_quote_invalid".into());
+        }
+        if available == Some(true) {
+            let image = qr
+                .get("image_data_url")
+                .and_then(Value::as_str)
+                .ok_or_else(|| "desktop_subscription_quote_invalid".to_string())?;
+            validate_subscription_image_data_url(image)
+                .map_err(|_| "desktop_subscription_quote_invalid".to_string())?;
+        }
+    }
+    Ok(())
+}
+
+fn validate_subscription_submit_response(value: &Value) -> Result<(), String> {
+    validate_subscription_envelope(value)
+        .map_err(|_| "desktop_subscription_submit_invalid".to_string())?;
+    let payload = value
+        .as_object()
+        .ok_or_else(|| "desktop_subscription_submit_invalid".to_string())?;
+    validate_subscription_access(payload.get("access"))
+        .map_err(|_| "desktop_subscription_submit_invalid".to_string())?;
+    if payload.get("status").and_then(Value::as_str) != Some("pending")
+        || payload
+            .get("payment_id")
+            .and_then(Value::as_i64)
+            .map_or(true, |payment_id| payment_id <= 0)
+        || !matches!(payload.get("already_pending"), None | Some(Value::Bool(_)))
+    {
+        return Err("desktop_subscription_submit_invalid".into());
+    }
+    Ok(())
 }
 
 fn current_access_token(state: &DesktopState) -> Result<Option<String>, String> {
@@ -569,6 +896,80 @@ async fn authenticated_post_json(
             .map_err(|_| "desktop_api_unavailable".to_string())?;
     }
     decode_response(response).await
+}
+
+async fn authenticated_subscription_get_json(
+    state: &DesktopState,
+    path: &str,
+) -> Result<Value, String> {
+    if path != "/api/v3/desktop/subscription/overview" {
+        return Err("desktop_api_operation_not_allowed".into());
+    }
+    let mut token = access_token(state).await?;
+    let mut response = state
+        .client
+        .get(api_url(path)?)
+        .bearer_auth(&token)
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        token = refresh_access(state, Some(&token)).await?;
+        response = state
+            .client
+            .get(api_url(path)?)
+            .bearer_auth(&token)
+            .send()
+            .await
+            .map_err(|_| "desktop_api_unavailable".to_string())?;
+    }
+    decode_bounded_json_response(response, MAX_SUBSCRIPTION_RESPONSE_BODY_BYTES).await
+}
+
+async fn authenticated_subscription_post_json(
+    state: &DesktopState,
+    path: &str,
+    payload: &Value,
+    max_body_bytes: usize,
+) -> Result<Value, String> {
+    if !matches!(
+        path,
+        "/api/v3/desktop/subscription/quote" | "/api/v3/desktop/subscription/submit"
+    ) {
+        return Err("desktop_api_operation_not_allowed".into());
+    }
+    let payload_size = serde_json::to_vec(payload)
+        .map_err(|_| "desktop_subscription_request_invalid".to_string())?
+        .len();
+    if payload_size > max_body_bytes {
+        return Err(if path == "/api/v3/desktop/subscription/submit" {
+            "desktop_payment_file_too_large".into()
+        } else {
+            "desktop_subscription_request_invalid".into()
+        });
+    }
+
+    let mut token = access_token(state).await?;
+    let mut response = state
+        .client
+        .post(api_url(path)?)
+        .bearer_auth(&token)
+        .json(payload)
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        token = refresh_access(state, Some(&token)).await?;
+        response = state
+            .client
+            .post(api_url(path)?)
+            .bearer_auth(&token)
+            .json(payload)
+            .send()
+            .await
+            .map_err(|_| "desktop_api_unavailable".to_string())?;
+    }
+    decode_bounded_json_response(response, MAX_SUBSCRIPTION_RESPONSE_BODY_BYTES).await
 }
 
 async fn authenticated_bootstrap(state: &DesktopState) -> Result<Value, String> {
@@ -792,8 +1193,7 @@ async fn desktop_link_start(
         || !request_id_valid
         || !(32..=512).contains(&started.polling_secret.len())
         || !(1..=3_600).contains(&started.expires_in)
-        || telegram_link_code(&started.bot_deep_link).as_deref()
-            != Some(started.display_code.as_str())
+        || !is_allowed_telegram_link(&started.bot_deep_link)
     {
         return Err("desktop_api_invalid_response".into());
     }
@@ -980,6 +1380,73 @@ async fn desktop_set_language(
 }
 
 #[tauri::command]
+async fn desktop_subscription_overview(
+    state: tauri::State<'_, DesktopState>,
+) -> Result<Value, String> {
+    let value =
+        authenticated_subscription_get_json(&state, "/api/v3/desktop/subscription/overview")
+            .await?;
+    validate_subscription_overview_response(&value)?;
+    Ok(value)
+}
+
+#[tauri::command]
+async fn desktop_subscription_quote(
+    state: tauri::State<'_, DesktopState>,
+    plan: String,
+    method: String,
+    country: Option<String>,
+) -> Result<Value, String> {
+    let plan = validate_subscription_plan(&plan)?;
+    let method = validate_subscription_method(&method)?;
+    let country = validate_subscription_country(method, country.as_deref())?;
+    let value = authenticated_subscription_post_json(
+        &state,
+        "/api/v3/desktop/subscription/quote",
+        &json!({
+            "plan_type": plan,
+            "payment_method": method,
+            "card_country": country,
+        }),
+        MAX_COMPLETION_BODY_BYTES,
+    )
+    .await?;
+    validate_subscription_quote_response(&value, plan, method)?;
+    Ok(value)
+}
+
+#[tauri::command]
+async fn desktop_subscription_submit(
+    state: tauri::State<'_, DesktopState>,
+    plan: String,
+    method: String,
+    country: Option<String>,
+    screenshot_data_url: String,
+    attempt_id: Option<String>,
+) -> Result<Value, String> {
+    let plan = validate_subscription_plan(&plan)?;
+    let method = validate_subscription_method(&method)?;
+    let country = validate_subscription_country(method, country.as_deref())?;
+    let attempt_id = validate_checkout_attempt_id(attempt_id.as_deref())?;
+    validate_subscription_image_data_url(&screenshot_data_url)?;
+    let value = authenticated_subscription_post_json(
+        &state,
+        "/api/v3/desktop/subscription/submit",
+        &json!({
+            "plan_type": plan,
+            "payment_method": method,
+            "card_country": country,
+            "screenshot_data_url": screenshot_data_url,
+            "attempt_id": attempt_id,
+        }),
+        MAX_SUBSCRIPTION_SUBMIT_BODY_BYTES,
+    )
+    .await?;
+    validate_subscription_submit_response(&value)?;
+    Ok(value)
+}
+
+#[tauri::command]
 fn desktop_tts_speak(text: String) -> Result<DesktopTtsStatus, String> {
     validate_tts_text(&text)?;
     Ok(DesktopTtsStatus {
@@ -1037,6 +1504,9 @@ pub fn run() {
             desktop_lesson_data,
             desktop_lesson_complete,
             desktop_set_language,
+            desktop_subscription_overview,
+            desktop_subscription_quote,
+            desktop_subscription_submit,
             desktop_tts_speak,
         ])
         .run(tauri::generate_context!())
@@ -1048,9 +1518,12 @@ mod tests {
     use super::{
         api_url, available_update_status, clear_local_auth_with, course_map_path,
         current_access_token, is_allowed_telegram_link, no_update_status, terminal_link_status,
-        validate_event_id, validate_language, validate_lesson_order, validate_mistakes,
-        validate_tts_text, DesktopLinkDisplay, DesktopState, PendingLink, MAX_MISTAKES,
-        MAX_UPDATE_NOTES_CHARS, MAX_UPDATE_VERSION_CHARS,
+        validate_checkout_attempt_id, validate_event_id, validate_language, validate_lesson_order,
+        validate_mistakes, validate_subscription_country, validate_subscription_image_data_url,
+        validate_subscription_method, validate_subscription_overview_response,
+        validate_subscription_plan, validate_subscription_quote_response,
+        validate_subscription_submit_response, validate_tts_text, DesktopLinkDisplay, DesktopState,
+        PendingLink, MAX_MISTAKES, MAX_UPDATE_NOTES_CHARS, MAX_UPDATE_VERSION_CHARS,
     };
     use serde_json::{json, to_value, Value};
 
@@ -1072,6 +1545,11 @@ mod tests {
         assert!(api_url("/api/v3/desktop/course/lesson/181").is_ok());
         assert!(api_url("/api/v3/desktop/course/complete").is_ok());
         assert!(api_url("/api/v3/desktop/preferences/language").is_ok());
+        assert!(api_url("/api/v3/desktop/subscription/overview").is_ok());
+        assert!(api_url("/api/v3/desktop/subscription/quote").is_ok());
+        assert!(api_url("/api/v3/desktop/subscription/submit").is_ok());
+        assert!(api_url("/api/v3/desktop/subscription/event").is_err());
+        assert!(api_url("/api/v3/desktop/subscription/overview?telegram_id=1").is_err());
         assert!(api_url("https://evil.example/").is_err());
         assert!(api_url("/api/v3/map").is_err());
         assert!(api_url("/api/v3/desktop/course/lesson/0").is_err());
@@ -1164,7 +1642,7 @@ mod tests {
             link_request_id: "00000000-0000-0000-0000-000000000000".into(),
             polling_secret: "p".repeat(32),
             display_code: "ABCD1234".into(),
-            bot_deep_link: "https://t.me/test_bot?start=desktop_ABCD1234".into(),
+            bot_deep_link: "https://t.me/test_bot?start=desktop_link".into(),
             expires_in: 300,
         });
 
@@ -1198,28 +1676,31 @@ mod tests {
     #[test]
     fn telegram_link_is_exactly_allowlisted() {
         assert!(is_allowed_telegram_link(
+            "https://t.me/darsi_chini_bot?start=desktop_link"
+        ));
+        assert!(!is_allowed_telegram_link(
+            "https://evil.example/darsi_chini_bot?start=desktop_link"
+        ));
+        assert!(!is_allowed_telegram_link(
+            "https://t.me/darsi_chini_bot?start=desktop_link&next=https://evil.example"
+        ));
+        assert!(!is_allowed_telegram_link(
+            "https://t.me/a/b?start=desktop_link"
+        ));
+        assert!(!is_allowed_telegram_link(
+            "http://t.me/darsi_chini_bot?start=desktop_link"
+        ));
+        assert!(!is_allowed_telegram_link(
             "https://t.me/darsi_chini_bot?start=desktop_ABCD1234"
-        ));
-        assert!(!is_allowed_telegram_link(
-            "https://evil.example/darsi_chini_bot?start=desktop_ABCD1234"
-        ));
-        assert!(!is_allowed_telegram_link(
-            "https://t.me/darsi_chini_bot?start=desktop_ABCD1234&next=https://evil.example"
-        ));
-        assert!(!is_allowed_telegram_link(
-            "https://t.me/a/b?start=desktop_ABCD1234"
-        ));
-        assert!(!is_allowed_telegram_link(
-            "http://t.me/darsi_chini_bot?start=desktop_ABCD1234"
         ));
         assert!(!is_allowed_telegram_link(
             "https://t.me/darsi_chini_bot?start=desktop_"
         ));
         assert!(!is_allowed_telegram_link(
-            "https://t.me/darsi_chini_bot?start=desktop_ABCD-1234"
+            "https://lookalike.example@t.me/darsi_chini_bot?start=desktop_link"
         ));
         assert!(!is_allowed_telegram_link(
-            "https://lookalike.example@t.me/darsi_chini_bot?start=desktop_ABCD1234"
+            "https://t.me/bot-name?start=desktop_link"
         ));
     }
 
@@ -1241,6 +1722,97 @@ mod tests {
         assert_eq!(validate_language("uz"), Ok("uz"));
         assert_eq!(validate_language(" RU "), Ok("ru"));
         assert!(validate_language("en").is_err());
+    }
+
+    #[test]
+    fn desktop_subscription_inputs_are_strictly_bounded() {
+        assert_eq!(validate_subscription_plan("1_month"), Ok("1_month"));
+        assert!(validate_subscription_plan("lifetime").is_err());
+        assert_eq!(validate_subscription_method("visa"), Ok("visa"));
+        assert!(validate_subscription_method("crypto").is_err());
+        assert_eq!(
+            validate_subscription_country("visa", Some("tj")),
+            Ok(Some("tj"))
+        );
+        assert_eq!(validate_subscription_country("alipay", None), Ok(None));
+        assert!(validate_subscription_country("visa", None).is_err());
+        assert!(validate_subscription_country("alipay", Some("tj")).is_err());
+        assert_eq!(
+            validate_checkout_attempt_id(Some("desktop-checkout_1234")),
+            Ok(Some("desktop-checkout_1234"))
+        );
+        assert_eq!(validate_checkout_attempt_id(None), Ok(None));
+        assert!(validate_checkout_attempt_id(Some("short")).is_err());
+        assert!(validate_checkout_attempt_id(Some("desktop checkout 1234")).is_err());
+
+        let png = concat!(
+            "data:image/png;base64,",
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk",
+            "+A8AAQUBAScY42YAAAAASUVORK5CYII="
+        );
+        assert!(validate_subscription_image_data_url(png).is_ok());
+        assert!(
+            validate_subscription_image_data_url("data:image/png;base64,/9j/not-a-real-png")
+                .is_err()
+        );
+        assert!(validate_subscription_image_data_url("data:text/plain;base64,SGVsbG8=").is_err());
+    }
+
+    #[test]
+    fn desktop_subscription_responses_are_validated_before_webview_delivery() {
+        let access = json!({
+            "state": "free",
+            "is_paid": false,
+            "expires_at": null,
+        });
+        let overview = json!({
+            "ok": true,
+            "source": "desktop_subscription",
+            "mode": "subscription",
+            "access": access,
+            "checkout_allowed": true,
+            "read_only_reason": null,
+            "attempt_id": "desktop-preview-checkout-0001",
+            "pending_payment": null,
+            "prices": {
+                "visa": {
+                    "1_month": {"final_amount": 129, "currency": "TJS"}
+                }
+            }
+        });
+        assert!(validate_subscription_overview_response(&overview).is_ok());
+
+        let quote = json!({
+            "ok": true,
+            "source": "desktop_subscription",
+            "mode": "subscription",
+            "access": access,
+            "quote": {
+                "plan_type": "1_month",
+                "payment_method": "visa",
+                "final_amount": 129,
+                "final_currency": "TJS",
+                "pay_amount": "129",
+                "pay_currency": "TJS",
+                "payment_details": "0000 0000 0000 0000"
+            }
+        });
+        assert!(validate_subscription_quote_response(&quote, "1_month", "visa").is_ok());
+        assert!(validate_subscription_quote_response(&quote, "3_months", "visa").is_err());
+
+        let submitted = json!({
+            "ok": true,
+            "source": "desktop_subscription",
+            "mode": "subscription",
+            "access": access,
+            "status": "pending",
+            "payment_id": 42
+        });
+        assert!(validate_subscription_submit_response(&submitted).is_ok());
+
+        let mut leaked = overview;
+        leaked["access_token"] = json!("must-never-reach-webview");
+        assert!(validate_subscription_overview_response(&leaked).is_err());
     }
 
     #[test]

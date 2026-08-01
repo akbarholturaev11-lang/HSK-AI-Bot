@@ -8,6 +8,7 @@ import {
   t,
 } from "./i18n.js";
 import { LessonController } from "./lesson.js";
+import { DesktopSubscriptionController } from "./subscription.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -45,13 +46,21 @@ const dom = {
   railLevelLabel: $("#rail-level-label"),
   railCompleted: $("#rail-completed"),
   navigation: $("#course-navigation"),
+  showToday: $("#show-today"),
   showCourse: $("#show-course"),
+  showSubscription: $("#show-subscription"),
   showProfile: $("#show-profile"),
+  todayLabel: $("#today-label"),
   courseLabel: $("#course-label"),
+  subscriptionLabel: $("#subscription-label"),
+  subscriptionBadge: $("#subscription-badge"),
   profileLabel: $("#profile-label"),
   contentTitle: $("#content-title"),
   contentSubtitle: $("#content-subtitle"),
   content: $("#content-inner"),
+  globalSearch: $("#global-search"),
+  headerStreak: $("#header-streak"),
+  headerXp: $("#header-xp"),
   refreshMap: $("#refresh-map"),
   updateBanner: $("#update-banner"),
   updateStatus: $("#update-status"),
@@ -75,12 +84,14 @@ const dom = {
 const state = {
   bootstrap: null,
   map: null,
-  view: "course",
+  view: "today",
+  searchQuery: "",
   authDeadline: 0,
   authCountdownTimer: null,
   authPollTimer: null,
   authPolling: false,
   authLinkedPending: false,
+  telegramOpened: false,
   pendingBootstrap: null,
   railOpen: false,
   aiOpen: false,
@@ -100,10 +111,30 @@ const lesson = new LessonController({
   },
   onSessionExpired: () => showAuth({ expired: true }),
   onAccessRequired: () => {
-    state.view = "profile";
+    state.view = "subscription";
     renderActiveView();
     showToast(t("manageSubscription"));
   },
+});
+
+const subscription = new DesktopSubscriptionController({
+  host: dom.content,
+  bridge: desktopBridge,
+  t,
+  language: getLanguage(),
+  onSessionExpired: (error) => {
+    if (!isSessionError(error)) return false;
+    showAuth({ expired: true });
+    return true;
+  },
+  onAccessChanged: async (access) => {
+    if (state.map?.user) {
+      state.map.user.is_paid = Boolean(access?.is_paid);
+      state.map.user.access_state = String(access?.state || "free");
+    }
+    await loadCourseMap({ keepView: true });
+  },
+  onToast: showToast,
 });
 
 function element(tag, className = "", text = "") {
@@ -145,7 +176,9 @@ function applyStaticText() {
   dom.openTelegram.textContent = t("authOpen");
   dom.retryLink.textContent = t("authRetry");
   dom.copyCode.setAttribute("aria-label", t("copyCode"));
+  dom.todayLabel.textContent = t("today");
   dom.courseLabel.textContent = t("course");
+  dom.subscriptionLabel.textContent = t("subscription");
   dom.profileLabel.textContent = t("profile");
   dom.railDaysLabel.textContent = t("days");
   dom.refreshMap.setAttribute("aria-label", t("refresh"));
@@ -155,7 +188,9 @@ function applyStaticText() {
   dom.closeAi.setAttribute("aria-label", t("closeAi"));
   dom.closeLesson.setAttribute("aria-label", t("lessonClose"));
   dom.aiInput.placeholder = t("aiInputPlaceholder");
+  dom.globalSearch.placeholder = t("searchLessons");
   dom.offlinePill.textContent = t("offline");
+  subscription.setLanguage(getLanguage());
   updateRailToggleLabel();
   renderUpdateBanner();
 }
@@ -379,6 +414,7 @@ function resetAuthForm() {
   clearAuthTimers();
   state.authDeadline = 0;
   state.authLinkedPending = false;
+  state.telegramOpened = false;
   state.pendingBootstrap = null;
   dom.authCodeWrap.hidden = true;
   dom.authCode.textContent = "";
@@ -401,6 +437,8 @@ function showAuth({ expired = false } = {}) {
   closeRail();
   state.bootstrap = null;
   state.map = null;
+  subscription.overview = null;
+  subscription.setUser(null);
   resetAuthForm();
   applyStaticText();
   if (expired) {
@@ -440,6 +478,7 @@ function expireLink(message) {
 
 async function startLink() {
   clearAuthTimers();
+  state.telegramOpened = false;
   dom.authError.textContent = "";
   dom.authStatus.textContent = t("authStarting");
   dom.startLink.disabled = true;
@@ -552,15 +591,19 @@ async function resumeLinkedBootstrap() {
 }
 
 async function openTelegram() {
+  if (state.telegramOpened) {
+    return;
+  }
   dom.openTelegram.disabled = true;
   try {
     await desktopBridge.linkOpenTelegram();
+    state.telegramOpened = true;
+    dom.openTelegram.hidden = true;
     dom.authError.textContent = "";
-    dom.authStatus.textContent = t("authWaiting");
+    dom.authStatus.textContent = t("authTelegramOpened");
   } catch (error) {
     dom.authStatus.textContent = "";
     dom.authError.textContent = errorMessage(error);
-  } finally {
     dom.openTelegram.disabled = false;
   }
 }
@@ -583,6 +626,7 @@ async function enterWorkspace(bootstrap) {
     throw new Error("desktop_bootstrap_invalid");
   }
   state.bootstrap = bootstrap;
+  subscription.setUser(bootstrap.user);
   const serverLanguage = normalizeLanguage(bootstrap.user.language);
   setUiLanguage(serverLanguage);
   saveLanguage(serverLanguage);
@@ -595,7 +639,7 @@ async function enterWorkspace(bootstrap) {
 
 async function loadCourseMap({ keepView = false } = {}) {
   if (!keepView) {
-    state.view = "course";
+    state.view = "today";
   }
   dom.refreshMap.disabled = true;
   setContentLoading();
@@ -611,6 +655,7 @@ async function loadCourseMap({ keepView = false } = {}) {
       throw new Error("desktop_course_map_invalid");
     }
     state.map = map;
+    subscription.setUser(map.user);
     const serverLanguage = normalizeLanguage(map.user.language);
     if (serverLanguage !== getLanguage()) {
       setUiLanguage(serverLanguage);
@@ -666,12 +711,13 @@ function renderRail() {
   const lessons = allLessons();
   const completed = Number(progress.completed || 0);
 
-  dom.railAvatar.textContent =
-    String(user.avatar || user.name || "阿").trim().slice(0, 2) || "阿";
   dom.railUserName.textContent = String(user.name || t("unknownUser"));
   dom.railPlan.textContent = user.is_paid ? t("planPaid") : t("planFree");
+  dom.subscriptionBadge.textContent = user.is_paid ? t("active") : "PLUS";
   dom.railXp.textContent = String(Number(progress.xp || 0));
   dom.railStreak.textContent = String(Number(progress.streak || 0));
+  dom.headerXp.textContent = String(Number(progress.xp || 0));
+  dom.headerStreak.textContent = String(Number(progress.streak || 0));
   dom.railLevelLabel.textContent =
     String(map.label || "") || levelLabel(map.level);
   dom.railCompleted.textContent = `${completed} / ${lessons.length}`;
@@ -736,7 +782,7 @@ function renderRailLesson(item) {
   } else if (item.preview_half || item.locked_premium) {
     button.title = t("manageSubscription");
     button.addEventListener("click", () => {
-      state.view = "profile";
+      state.view = "subscription";
       renderActiveView();
       closeRail();
       showToast(t("manageSubscription"));
@@ -749,63 +795,94 @@ function renderRailLesson(item) {
 }
 
 function renderActiveView() {
-  const courseActive = state.view === "course";
-  dom.showCourse.setAttribute(
-    "aria-current",
-    courseActive ? "page" : "false",
-  );
-  dom.showProfile.setAttribute(
-    "aria-current",
-    courseActive ? "false" : "page",
-  );
-  if (courseActive) {
-    renderCourseHome();
-  } else {
-    renderProfile();
-  }
+  const views = {
+    today: dom.showToday,
+    course: dom.showCourse,
+    subscription: dom.showSubscription,
+    profile: dom.showProfile,
+  };
+  Object.entries(views).forEach(([name, button]) => {
+    button.setAttribute("aria-current", state.view === name ? "page" : "false");
+  });
+  dom.content.dataset.view = state.view;
+
+  if (state.view === "today") renderToday();
+  else if (state.view === "course") renderCourseHome();
+  else if (state.view === "subscription") renderSubscription();
+  else renderProfile();
 }
 
-function renderCourseHome() {
+function viewHeading(title, subtitle, tag = "") {
+  const heading = element("header", "view-heading");
+  const copy = element("div");
+  copy.append(element("h2", "", title), element("p", "", subtitle));
+  heading.append(copy);
+  if (tag) heading.append(element("span", "view-tag", tag));
+  return heading;
+}
+
+function progressPercent(done, total) {
+  return Math.round(
+    (Math.max(0, Number(done) || 0) / Math.max(1, Number(total) || 1)) * 100,
+  );
+}
+
+function routeTo(view) {
+  state.view = view;
+  renderActiveView();
+  closeRail();
+}
+
+function renderToday() {
   const map = state.map;
-  if (!map) {
-    return;
-  }
+  if (!map) return;
   const progress = map.progress || {};
   const lessons = allLessons();
   const completed = Number(progress.completed || 0);
   const current = currentLesson();
+  const percent = progressPercent(completed, lessons.length);
+  const level = String(map.label || levelLabel(map.level));
 
-  dom.contentTitle.textContent = t("course");
-  dom.contentSubtitle.textContent = String(map.label || levelLabel(map.level));
-  dom.content.replaceChildren();
-
-  const summary = element("section", "course-summary");
-  const summaryRow = element("div", "summary-row");
-  summaryRow.append(
-    element("strong", "", t("courseProgress")),
-    element("span", "", t("lessons", { done: completed, total: lessons.length })),
+  dom.contentTitle.textContent = t("today");
+  dom.contentSubtitle.textContent = t("todaySubtitle");
+  dom.content.replaceChildren(
+    viewHeading(t("todayTitle"), t("todaySubtitle"), level),
   );
-  const progressTrack = element("div", "summary-progress");
-  progressTrack.setAttribute("role", "progressbar");
-  progressTrack.setAttribute("aria-valuemin", "0");
-  progressTrack.setAttribute("aria-valuemax", "100");
-  const fill = element("span", "progress-fill");
-  progressTrack.append(fill);
-  setProgress(fill, completed, lessons.length);
-  summary.append(summaryRow, progressTrack);
-  dom.content.append(summary);
+
+  const grid = element("div", "today-grid");
+  const main = element("div", "today-main");
+  const side = element("aside", "today-side");
 
   if (current) {
-    const resume = element("section", "resume-card");
-    const resumeGlyph =
+    const glyph =
       Array.from(String(current.zh || "课").replace(/[·\s]+/g, ""))[0] || "课";
-    resume.append(element("div", "resume-glyph", resumeGlyph));
-    const copy = element("div");
+    const resume = element("section", "resume-card");
+    resume.dataset.watermark = glyph;
+    const copy = element("div", "resume-copy");
     copy.append(
       element("p", "eyebrow", t("currentLesson")),
       element("h3", "", t("lessonNumber", { number: current.n })),
-      element("p", "", `${String(current.py || "")} · ${pick(current.tr)}`),
+      element("p", "resume-chinese", String(current.zh || glyph)),
+      element(
+        "p",
+        "",
+        [String(current.py || ""), pick(current.tr)].filter(Boolean).join(" · "),
+      ),
     );
+    const progressRow = element("div", "resume-progress");
+    progressRow.append(
+      element("span", "", t("courseProgress")),
+      element("strong", "", `${percent}%`),
+    );
+    const track = element("div", "summary-progress");
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    const fill = element("span", "progress-fill");
+    track.append(fill);
+    setProgress(fill, completed, lessons.length);
+    progressRow.append(track);
+    copy.append(progressRow);
     const action = element(
       "button",
       "primary-button",
@@ -814,46 +891,249 @@ function renderCourseHome() {
     action.type = "button";
     action.addEventListener("click", () => openLesson(Number(current.n)));
     resume.append(copy, action);
-    dom.content.append(resume);
+    main.append(resume);
   } else {
-    const empty = element("section", "empty-state");
+    const empty = element("section", "empty-state card-panel");
     empty.append(element("p", "", t("courseEmpty")));
-    dom.content.append(empty);
+    main.append(empty);
   }
 
-  const premiumBoundary = lessons.find(
-    (item) => item.preview_half || item.locked_premium,
+  const stats = element("section", "dashboard-stats");
+  [
+    [t("xpTotal"), Number(progress.xp || 0)],
+    [t("streakDays"), Number(progress.streak || 0)],
+    [t("completedLessons"), completed],
+  ].forEach(([label, value]) => {
+    const card = element("article", "dashboard-stat");
+    card.append(element("small", "", label), element("strong", "", value));
+    stats.append(card);
+  });
+  main.append(stats);
+
+  const progressCard = element("section", "today-progress-card card-panel");
+  progressCard.append(
+    element("p", "eyebrow", t("courseProgress")),
+    element("h3", "", level),
   );
-  if (premiumBoundary && !map.user?.is_paid) {
-    const access = element("section", "access-card");
-    access.append(
-      element("h3", "", t("freePlan")),
-      element("p", "", t("freeAccessDescription")),
-      element("small", "muted", t("manageSubscription")),
+  const ring = element("div", "progress-ring");
+  ring.dataset.progress = String(Math.round(percent / 5));
+  ring.setAttribute("role", "progressbar");
+  ring.setAttribute("aria-valuemin", "0");
+  ring.setAttribute("aria-valuemax", "100");
+  ring.setAttribute("aria-valuenow", String(percent));
+  const ringCopy = element("div");
+  ringCopy.append(
+    element("strong", "", `${percent}%`),
+    element("small", "", t("completed")),
+  );
+  ring.append(ringCopy);
+  progressCard.append(
+    ring,
+    element("p", "muted", t("lessons", { done: completed, total: lessons.length })),
+  );
+
+  const planCard = element("section", "today-plan-card card-panel");
+  planCard.append(
+    element("p", "eyebrow", t("accountAccess")),
+    element("h3", "", map.user?.is_paid ? t("paidPlan") : t("freePlan")),
+    element(
+      "p",
+      "muted",
+      map.user?.is_paid ? t("paidAccessDescription") : t("freeAccessDescription"),
+    ),
+  );
+  const planAction = element("button", "secondary-button", t("manageSubscription"));
+  planAction.type = "button";
+  planAction.addEventListener("click", () => routeTo("subscription"));
+  planCard.append(planAction);
+  side.append(progressCard, planCard);
+  grid.append(main, side);
+  dom.content.append(grid);
+}
+
+function lessonMatches(item, query) {
+  if (!query) return true;
+  return [item?.n, item?.zh, item?.py, pick(item?.tr)]
+    .join(" ")
+    .toLocaleLowerCase()
+    .includes(query);
+}
+
+function renderCourseHome() {
+  const map = state.map;
+  if (!map) return;
+  const progress = map.progress || {};
+  const lessons = allLessons();
+  const completed = Number(progress.completed || 0);
+  const percent = progressPercent(completed, lessons.length);
+  const query = state.searchQuery.trim().toLocaleLowerCase();
+  const level = String(map.label || levelLabel(map.level));
+
+  dom.contentTitle.textContent = t("course");
+  dom.contentSubtitle.textContent = level;
+  dom.content.replaceChildren(
+    viewHeading(
+      t("courseTitle"),
+      t("courseSubtitle"),
+      t("lessons", { done: completed, total: lessons.length }),
+    ),
+  );
+  const layout = element("div", "course-layout");
+  const units = element("div", "course-units");
+  let renderedLessons = 0;
+
+  map.units.forEach((unit, unitIndex) => {
+    const unitLessons = (Array.isArray(unit.lessons) ? unit.lessons : []).filter(
+      (item) => lessonMatches(item, query),
     );
-    dom.content.append(access);
+    if (!unitLessons.length) return;
+    renderedLessons += unitLessons.length;
+    const unitNumber = Number(unit.no ?? unit.n ?? unitIndex + 1);
+    const card = element("section", "course-unit-card");
+    const head = element("header", "course-unit-head");
+    const copy = element("div");
+    copy.append(
+      element("h3", "", pick(unit.title, t("unit", { number: unitNumber }))),
+      element("p", "", t("unitLessonCount", { count: unitLessons.length })),
+    );
+    head.append(element("span", "course-unit-number", unitNumber), copy);
+    const trail = element("div", "lesson-trail");
+    unitLessons.forEach((item) => trail.append(renderLessonNode(item)));
+    card.append(head, trail);
+    units.append(card);
+  });
+
+  if (!renderedLessons) {
+    const empty = element("section", "empty-state card-panel");
+    empty.append(element("p", "", t("searchEmpty")));
+    units.append(empty);
   }
+
+  const aside = element("aside", "course-aside card-panel");
+  aside.append(
+    element("p", "eyebrow", t("courseProgress")),
+    element("h3", "", level),
+    element("div", "course-percent", `${percent}%`),
+    element("p", "muted", t("lessons", { done: completed, total: lessons.length })),
+  );
+  [
+    [t("xpTotal"), Number(progress.xp || 0)],
+    [t("streakDays"), Number(progress.streak || 0)],
+    [t("accountAccess"), map.user?.is_paid ? t("paidPlan") : t("freePlan")],
+  ].forEach(([label, value]) => {
+    const row = element("div", "course-aside-stat");
+    row.append(element("span", "", label), element("b", "", value));
+    aside.append(row);
+  });
+  if (!map.user?.is_paid) {
+    const action = element("button", "primary-button", t("unlockCourse"));
+    action.type = "button";
+    action.addEventListener("click", () => routeTo("subscription"));
+    aside.append(action);
+  }
+  layout.append(units, aside);
+  dom.content.append(layout);
+}
+
+function renderLessonNode(item) {
+  const status = String(item?.status || "locked");
+  const accessible = lessonAccessible(item);
+  const button = element("button", `lesson-node is-${status}`);
+  button.type = "button";
+  button.append(
+    element(
+      "span",
+      "lesson-node-mark",
+      status === "done" ? "✓" : accessible ? "▶" : "⌁",
+    ),
+    element("strong", "", t("lessonNumber", { number: item.n })),
+    element("span", "lesson-node-zh", String(item.zh || "课")),
+    element(
+      "small",
+      "",
+      [String(item.py || ""), pick(item.tr)].filter(Boolean).join(" · "),
+    ),
+  );
+  if (accessible) {
+    button.addEventListener("click", () => openLesson(Number(item.n)));
+  } else if (item.preview_half || item.locked_premium) {
+    button.classList.add("is-locked");
+    button.addEventListener("click", () => routeTo("subscription"));
+  } else {
+    button.classList.add("is-locked");
+    button.disabled = true;
+  }
+  return button;
+}
+
+function renderSubscription() {
+  dom.contentTitle.textContent = t("subscription");
+  dom.contentSubtitle.textContent = t("subscriptionSubtitle");
+  const host = element("div", "subscription-host");
+  dom.content.replaceChildren(
+    viewHeading(
+      t("subscriptionTitle"),
+      t("subscriptionSubtitle"),
+      t("securePayment"),
+    ),
+    host,
+  );
+  subscription.host = host;
+  subscription.setUser(state.map?.user);
+  void subscription.open({ refresh: true });
 }
 
 function renderProfile() {
   const map = state.map;
-  if (!map) {
-    return;
-  }
+  if (!map) return;
   const user = map.user || {};
+  const progress = map.progress || {};
+  const completed = Number(progress.completed || 0);
   dom.contentTitle.textContent = t("profileTitle");
   dom.contentSubtitle.textContent = t("profileSubtitle");
-  dom.content.replaceChildren();
-
-  const grid = element("div", "profile-grid");
-  const profileCard = element("section", "profile-card");
-  profileCard.append(
-    element("p", "eyebrow", t("profile")),
-    element("strong", "", String(user.name || t("unknownUser"))),
-    element("p", "", `${String(map.label || levelLabel(map.level))} · ${user.is_paid ? t("paidPlan") : t("freePlan")}`),
-    element("h3", "", t("interfaceLanguage")),
+  dom.content.replaceChildren(
+    viewHeading(
+      t("profileTitle"),
+      t("profileSubtitle"),
+      String(map.label || levelLabel(map.level)),
+    ),
   );
 
+  const layout = element("div", "profile-layout");
+  const hero = element("section", "profile-hero card-panel");
+  const identity = element("div", "profile-identity");
+  const avatar = element("img");
+  avatar.src = "./assets/hsk-ai-avatar.webp";
+  avatar.alt = "";
+  const identityCopy = element("div");
+  identityCopy.append(
+    element("p", "eyebrow", t("singleAccount")),
+    element("h3", "", String(user.name || t("unknownUser"))),
+    element(
+      "p",
+      "",
+      `${String(map.label || levelLabel(map.level))} · ${user.is_paid ? t("paidPlan") : t("freePlan")}`,
+    ),
+  );
+  identity.append(avatar, identityCopy);
+  const stats = element("div", "profile-stats");
+  [
+    [Number(progress.xp || 0), t("xpTotal")],
+    [Number(progress.streak || 0), t("streakDays")],
+    [completed, t("completedLessons")],
+  ].forEach(([value, label]) => {
+    const card = element("div");
+    card.append(element("strong", "", value), element("small", "", label));
+    stats.append(card);
+  });
+  hero.append(identity, stats);
+
+  const profileSide = element("div", "profile-side");
+  const settings = element("section", "profile-settings card-panel");
+  settings.append(
+    element("p", "eyebrow", t("settings")),
+    element("h3", "", t("interfaceLanguage")),
+  );
   const languages = element("div", "language-list");
   languageOptions.forEach((option) => {
     const button = element("button", "language-button", option.label);
@@ -862,27 +1142,29 @@ function renderProfile() {
     button.addEventListener("click", () => changeLanguage(option.code));
     languages.append(button);
   });
-  profileCard.append(languages);
+  settings.append(languages);
 
-  const accessCard = element("section", "access-card");
-  accessCard.append(
+  const access = element("section", "profile-access card-panel");
+  access.append(
     element("p", "eyebrow", t("accountAccess")),
     element("h3", "", user.is_paid ? t("paidPlan") : t("freePlan")),
     element(
       "p",
-      "",
-      user.is_paid
-        ? t("paidAccessDescription")
-        : t("freeAccessDescription"),
+      "muted",
+      user.is_paid ? t("paidAccessDescription") : t("freeAccessDescription"),
     ),
-    element("p", "muted", t("manageSubscription")),
   );
-  grid.append(profileCard, accessCard);
+  const accessAction = element("button", "primary-button", t("manageSubscription"));
+  accessAction.type = "button";
+  accessAction.addEventListener("click", () => routeTo("subscription"));
+  access.append(accessAction);
 
   const logout = element("button", "secondary-button", t("logout"));
   logout.type = "button";
   logout.addEventListener("click", () => logoutDesktop(logout));
-  dom.content.append(grid, logout);
+  profileSide.append(settings, access, logout);
+  layout.append(hero, profileSide);
+  dom.content.append(layout);
 }
 
 async function changeLanguage(language) {
@@ -1077,15 +1359,14 @@ function bindEvents() {
     loadCourseMap({ keepView: true }),
   );
   dom.updateAction.addEventListener("click", handleUpdateAction);
-  dom.showCourse.addEventListener("click", () => {
-    state.view = "course";
-    renderActiveView();
-    closeRail();
-  });
-  dom.showProfile.addEventListener("click", () => {
-    state.view = "profile";
-    renderActiveView();
-    closeRail();
+  dom.showToday.addEventListener("click", () => routeTo("today"));
+  dom.showCourse.addEventListener("click", () => routeTo("course"));
+  dom.showSubscription.addEventListener("click", () => routeTo("subscription"));
+  dom.showProfile.addEventListener("click", () => routeTo("profile"));
+  dom.globalSearch.addEventListener("input", () => {
+    state.searchQuery = String(dom.globalSearch.value || "");
+    if (state.searchQuery && state.view !== "course") state.view = "course";
+    if (state.view === "course") renderActiveView();
   });
   dom.railToggle.addEventListener("click", toggleRail);
   dom.railScrim.addEventListener("click", closeRail);
@@ -1094,6 +1375,13 @@ function bindEvents() {
   window.addEventListener("online", updateNetworkState);
   window.addEventListener("offline", updateNetworkState);
   window.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f") {
+      if (!dom.workspace.hidden && !lesson.isOpen) {
+        event.preventDefault();
+        dom.globalSearch.focus();
+      }
+      return;
+    }
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
       if (!dom.workspace.hidden && !lesson.isOpen) {
         event.preventDefault();

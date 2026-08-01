@@ -29,6 +29,9 @@ const expectedCommands = [
   "desktop_lesson_data",
   "desktop_lesson_complete",
   "desktop_set_language",
+  "desktop_subscription_overview",
+  "desktop_subscription_quote",
+  "desktop_subscription_submit",
   "desktop_tts_speak",
   "local_ai_model_status",
   "desktop_update_check",
@@ -44,9 +47,14 @@ async function source(relativePath) {
 test("desktop entry is strict-CSP compatible", async () => {
   const html = await source("desktop/ui/index.html");
   const javascript = await Promise.all(
-    ["app.js", "bridge.js", "i18n.js", "lesson.js", "preview-mock.js"].map(
-      (file) => source(`desktop/ui/js/${file}`),
-    ),
+    [
+      "app.js",
+      "bridge.js",
+      "i18n.js",
+      "lesson.js",
+      "preview-mock.js",
+      "subscription.js",
+    ].map((file) => source(`desktop/ui/js/${file}`)),
   );
   assert.match(html, /<script type="module" src="\.\/js\/app\.js"><\/script>/);
   assert.doesNotMatch(html, /\son[a-z]+\s*=/i);
@@ -109,6 +117,32 @@ test("preview responses follow production response casing", async () => {
   const update = await previewInvoke("desktop_update_check");
   assert.equal(typeof update.available, "boolean");
   assert.equal(typeof update.currentVersion, "string");
+
+  const overview = await previewInvoke("desktop_subscription_overview");
+  assert.equal(overview.source, "desktop_subscription");
+  assert.equal(overview.mode, "subscription");
+  assert.equal(overview.access.state, "free");
+  assert.equal(typeof overview.prices.visa["1_month"].final_amount, "number");
+
+  const quote = await previewInvoke("desktop_subscription_quote", {
+    plan: "1_month",
+    method: "alipay",
+    country: null,
+  });
+  assert.equal(quote.quote.plan_type, "1_month");
+  assert.equal(quote.quote.payment_method, "alipay");
+  assert.match(quote.quote.qr.image_data_url, /^data:image\/png;base64,/);
+
+  const submitted = await previewInvoke("desktop_subscription_submit", {
+    plan: "1_month",
+    method: "alipay",
+    country: null,
+    screenshotDataUrl: quote.quote.qr.image_data_url,
+    attemptId: overview.attempt_id,
+  });
+  assert.equal(submitted.status, "pending");
+  const pending = await previewInvoke("desktop_subscription_overview");
+  assert.equal(pending.pending_payment.plan_type, "1_month");
 });
 
 test("updater stays explicit and lesson-aware", async () => {

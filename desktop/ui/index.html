@@ -1,12 +1,13 @@
 <!doctype html>
-<html lang="uz" data-theme="light">
+<html lang="uz" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light">
+    <meta name="color-scheme" content="dark">
     <title>Pomp HSK AI</title>
     <link rel="icon" href="./assets/hsk-ai-avatar.webp" type="image/webp">
     <link rel="stylesheet" href="./css/app.css">
+    <link rel="stylesheet" href="./css/workspace.css">
   </head>
   <body>
     <div class="app-shell">
@@ -56,8 +57,8 @@
 
           <ol class="auth-steps">
             <li id="auth-step-1">Telegramni oching.</li>
-            <li id="auth-step-2">Kod va qurilmani tekshiring.</li>
-            <li id="auth-step-3">Tasdiqlash tugmasini bosing.</li>
+            <li id="auth-step-2">Ekrandagi 8 belgili kodni bot chatiga qo‘lda yuboring.</li>
+            <li id="auth-step-3">Qurilmani tekshirib, tasdiqlash tugmasini bosing.</li>
           </ol>
 
           <div class="auth-actions">
@@ -79,14 +80,36 @@
       <div class="workspace" id="workspace" hidden>
         <div class="rail-scrim" id="rail-scrim" hidden></div>
 
-        <aside class="course-rail" id="course-rail" aria-label="Kurs navigatsiyasi">
-          <div class="rail-profile">
-            <div class="avatar" id="rail-avatar" aria-hidden="true">阿</div>
+        <aside class="course-rail" id="course-rail" aria-label="Asosiy navigatsiya">
+          <div class="rail-brand">
+            <img src="./assets/hsk-ai-avatar.webp" alt="" aria-hidden="true">
             <div>
-              <strong id="rail-user-name">—</strong>
-              <small id="rail-plan">—</small>
+              <strong>Pomp HSK AI</strong>
+              <small id="rail-brand-caption">Desktop</small>
             </div>
           </div>
+
+          <nav class="global-navigation" aria-label="Asosiy bo‘limlar">
+            <button class="rail-action" id="show-today" type="button" aria-current="page" data-testid="nav-today">
+              <span class="rail-icon" aria-hidden="true">今</span>
+              <span id="today-label">Bugun</span>
+            </button>
+            <button class="rail-action" id="show-course" type="button" data-testid="nav-course">
+              <span class="rail-icon" aria-hidden="true">课</span>
+              <span id="course-label">Kurs</span>
+            </button>
+            <button class="rail-action" id="show-subscription" type="button" data-testid="nav-subscription">
+              <span class="rail-icon" aria-hidden="true">会</span>
+              <span id="subscription-label">Obuna</span>
+              <span class="nav-badge" id="subscription-badge">PLUS</span>
+            </button>
+            <button class="rail-action" id="show-profile" type="button" data-testid="nav-profile">
+              <span class="rail-icon" aria-hidden="true">人</span>
+              <span id="profile-label">Profil</span>
+            </button>
+          </nav>
+
+          <div class="rail-spacer"></div>
 
           <div class="rail-progress">
             <span><b id="rail-xp">0</b> XP</span>
@@ -100,15 +123,14 @@
 
           <nav class="course-navigation" id="course-navigation"></nav>
 
-          <div class="rail-footer">
-            <button class="rail-action" id="show-course" type="button" aria-current="page">
-              <span aria-hidden="true">课</span>
-              <span id="course-label">Kurs</span>
-            </button>
-            <button class="rail-action" id="show-profile" type="button">
-              <span aria-hidden="true">人</span>
-              <span id="profile-label">Profil</span>
-            </button>
+          <div class="rail-profile">
+            <div class="avatar" id="rail-avatar" aria-hidden="true">
+              <img src="./assets/hsk-ai-avatar.webp" alt="">
+            </div>
+            <div>
+              <strong id="rail-user-name">—</strong>
+              <small id="rail-plan">—</small>
+            </div>
           </div>
         </aside>
 
@@ -118,9 +140,16 @@
               ☰
             </button>
             <div>
-              <h2 id="content-title" tabindex="-1">Kurs</h2>
+              <h2 id="content-title" tabindex="-1">Bugun</h2>
               <p id="content-subtitle"></p>
             </div>
+            <label class="toolbar-search" for="global-search">
+              <span aria-hidden="true">⌕</span>
+              <input id="global-search" type="search" autocomplete="off" placeholder="Darsni qidiring…">
+              <kbd>⌘F</kbd>
+            </label>
+            <span class="toolbar-metric"><span aria-hidden="true">火</span><b id="header-streak">0</b></span>
+            <span class="toolbar-metric is-secondary"><span aria-hidden="true">星</span><b id="header-xp">0</b> XP</span>
             <button class="icon-button refresh-button" id="refresh-map" type="button" aria-label="Ma’lumotni yangilash">
               ↻
             </button>
