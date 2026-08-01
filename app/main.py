@@ -20,6 +20,7 @@ from app.config import settings
 from app.api.desktop_auth import create_desktop_auth_router
 from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
+from app.api.desktop_subscription import create_desktop_subscription_router
 from app.api.desktop_update import create_desktop_update_router
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, init_db
@@ -425,6 +426,13 @@ app.include_router(
     create_desktop_download_router(
         session_factory=async_session_maker,
         settings_obj=settings,
+    )
+)
+app.include_router(
+    create_desktop_subscription_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+        bot=bot,
     )
 )
 app.include_router(create_desktop_update_router(settings_obj=settings))
