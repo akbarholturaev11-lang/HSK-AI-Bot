@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -19,6 +19,8 @@ from app.api.desktop_auth import (
     DesktopRefreshRequest,
     create_desktop_auth_router,
 )
+from app.bot.fsm.desktop_auth import DesktopLinkStates
+from app.bot.handlers import desktop_auth as desktop_auth_handler
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 
 
@@ -79,6 +81,16 @@ class DesktopAuthServiceTests(unittest.IsolatedAsyncioTestCase):
             app_version="0.1.0",
             installation_key=installation_key,
         )
+
+    async def test_link_start_uses_generic_manual_entry_deep_link(self):
+        async with self.sessions() as session:
+            started = await self._start(session)
+
+        self.assertEqual(
+            started["bot_deep_link"],
+            "https://t.me/pomp_test_bot?start=desktop_link",
+        )
+        self.assertNotIn(started["display_code"], started["bot_deep_link"])
 
     async def _link(self, session, telegram_id=1001, installation_key="i" * 48):
         service = DesktopAuthService(session, _settings())
@@ -158,6 +170,8 @@ class DesktopAuthServiceTests(unittest.IsolatedAsyncioTestCase):
             encoding="utf-8"
         )
         self.assertIn("link_preview(", handler)
+        self.assertIn("DesktopLinkStates.waiting_code", handler)
+        self.assertIn("MAX_INVALID_CODE_ATTEMPTS = 5", handler)
         self.assertIn("desktop_link:approve:", handler)
         self.assertIn("desktop_link:cancel:", handler)
 
@@ -434,3 +448,113 @@ class DesktopAuthServiceTests(unittest.IsolatedAsyncioTestCase):
             {"ok": False, "error": "desktop_request_too_large"},
         )
         self.assertEqual(response.headers.get("cache-control"), "no-store")
+
+
+class _FakeDesktopLinkState:
+    def __init__(self):
+        self.state = None
+        self.data = {}
+
+    async def get_state(self):
+        return self.state
+
+    async def get_data(self):
+        return dict(self.data)
+
+    async def set_state(self, state):
+        self.state = getattr(state, "state", state)
+
+    async def update_data(self, **kwargs):
+        self.data.update(kwargs)
+
+    async def clear(self):
+        self.state = None
+        self.data = {}
+
+
+class _FakeDesktopLinkMessage:
+    def __init__(self, text: str | None = None):
+        self.text = text
+        self.from_user = SimpleNamespace(id=1001)
+        self.answers = []
+
+    async def answer(self, text, **kwargs):
+        self.answers.append((text, kwargs))
+
+
+class DesktopAuthBotManualEntryTests(unittest.IsolatedAsyncioTestCase):
+    async def test_generic_and_legacy_deep_links_only_open_one_manual_prompt(self):
+        state = _FakeDesktopLinkState()
+        generic = _FakeDesktopLinkMessage("/start desktop_link")
+        legacy = _FakeDesktopLinkMessage("/start desktop_HSK4827X")
+
+        with patch.object(
+            desktop_auth_handler,
+            "_language",
+            new=AsyncMock(return_value="uz"),
+        ), patch.object(desktop_auth_handler, "DesktopAuthService") as service:
+            await desktop_auth_handler.begin_desktop_link(generic, state, object())
+            await desktop_auth_handler.begin_desktop_link(legacy, state, object())
+
+        self.assertEqual(state.state, DesktopLinkStates.waiting_code.state)
+        self.assertEqual(len(generic.answers), 1)
+        self.assertEqual(legacy.answers, [])
+        self.assertIn("qo‘lda yuboring", generic.answers[0][0])
+        service.assert_not_called()
+
+    async def test_five_invalid_codes_end_the_manual_entry_state(self):
+        state = _FakeDesktopLinkState()
+        start = _FakeDesktopLinkMessage("/start desktop_link")
+        invalid = _FakeDesktopLinkMessage("NOT-A-CODE")
+
+        with patch.object(
+            desktop_auth_handler,
+            "_language",
+            new=AsyncMock(return_value="uz"),
+        ):
+            await desktop_auth_handler.begin_desktop_link(start, state, object())
+            for _ in range(5):
+                await desktop_auth_handler.receive_desktop_link_code(
+                    invalid,
+                    state,
+                    object(),
+                )
+
+        self.assertIsNone(state.state)
+        self.assertEqual(state.data, {})
+        self.assertEqual(len(invalid.answers), 5)
+        self.assertIn("Juda ko‘p", invalid.answers[-1][0])
+
+    async def test_manually_typed_code_claims_then_shows_confirmation(self):
+        state = _FakeDesktopLinkState()
+        start = _FakeDesktopLinkMessage("/start desktop_link")
+        typed = _FakeDesktopLinkMessage("hsk4827x")
+        preview = AsyncMock(
+            return_value={
+                "platform": "macos",
+                "app_version": "1.0.0",
+                "display_code": "HSK4827X",
+            }
+        )
+
+        with patch.object(
+            desktop_auth_handler,
+            "_language",
+            new=AsyncMock(return_value="uz"),
+        ), patch.object(desktop_auth_handler, "DesktopAuthService") as service:
+            service.return_value.link_preview = preview
+            await desktop_auth_handler.begin_desktop_link(start, state, object())
+            await desktop_auth_handler.receive_desktop_link_code(
+                typed,
+                state,
+                object(),
+            )
+
+        preview.assert_awaited_once_with(
+            display_code="HSK4827X",
+            telegram_id=1001,
+        )
+        self.assertIsNone(state.state)
+        self.assertEqual(len(typed.answers), 1)
+        self.assertIn("Qurilma: <b>Mac</b>", typed.answers[0][0])
+        self.assertIsNotNone(typed.answers[0][1].get("reply_markup"))

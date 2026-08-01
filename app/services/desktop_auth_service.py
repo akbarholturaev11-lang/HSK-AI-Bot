@@ -7,7 +7,6 @@ import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Any
-from urllib.parse import quote
 from uuid import uuid4
 
 from sqlalchemy import func, or_, select
@@ -268,9 +267,9 @@ class DesktopAuthService:
             "link_request_id": link_request.id,
             "display_code": display_code,
             "polling_secret": polling_secret,
-            "bot_deep_link": (
-                f"https://t.me/{username}?start=desktop_{quote(display_code)}"
-            ),
+            # The display code must be typed manually in the private bot chat.
+            # Never place it in a Telegram deep-link, browser history or logs.
+            "bot_deep_link": f"https://t.me/{username}?start=desktop_link",
             "expires_in": self._link_ttl(),
         }
 
