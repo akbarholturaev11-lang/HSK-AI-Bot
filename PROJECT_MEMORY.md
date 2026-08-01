@@ -4105,15 +4105,21 @@ Architecture:
   saqlanadi.
 
 Acquisition:
-- Mini App Mac/Windows bosilganda fresh Telegram `initData` bilan backenddan
-  tracked HTTPS `download_url` + safe `file_name` oladi.
+- Mini App Mac/Windows bosilganda avval destination chooser ko'rsatadi:
+  shu qurilmada ochish, AirDrop/Web Share, public linkni nusxalash yoki bekor
+  qilish. Bekor qilish backend request yaratmaydi.
+- Direct oqim fresh Telegram `initData` bilan backenddan tracked HTTPS
+  `download_url` + safe `file_name` oladi. Share/copy faqat tokensiz,
+  barqaror `/downloads/macos` yoki `/downloads/windows` `transfer_url`ni
+  uzatadi; analytics `web_share`/`copy_link` transport bilan yoziladi.
 - Mini App `openLink` orqali branded `/desktop-download` sahifasini ochadi;
   foydalanuvchi u yerdan `/downloads/macos` yoki `/downloads/windows` direct
   redirect bilan faylni oladi. Link bot chatiga yuborilmaydi va Mini App
   avtomatik yopilmaydi.
 - Profile, home prompt, lesson-end promo va barcha shared ad/practice
-  ekranlariga desktop CTA ulangan. Telefonda desktop fayl yuklanishi oldidan
-  confirmation bor.
+  ekranlariga desktop CTA ulangan. Branded download landing telefonlarda ham
+  Web Share/AirDrop, copy va manual-copy fallback beradi; tracked request token
+  clipboard yoki share payloadga kirmaydi.
 - Release fail-closed: repository default va `.env.example` signed real
   artifact URL'lari tayyor bo'lmaguncha `DESKTOP_DOWNLOADS_ENABLED=false`.
   Railway deployment env bu taskda tekshirilmadi yoki o'zgartirilmadi.
@@ -4121,8 +4127,14 @@ Acquisition:
 Desktop auth/security:
 - Migration `0066_desktop_foundation` uch jadval qo'shadi:
   `desktop_link_requests`, `desktop_devices`, `desktop_sessions`.
-- Bot deep-linkni ochishning o'zi accountni ulamaydi. User platform/version/code
-  ko'rsatilgan `Tasdiqlash / Bekor qilish` bosqichidan o'tadi.
+- Desktop Telegram URL kodni oshkor qilmaydigan generic
+  `?start=desktop_link` payload ishlatadi. Legacy code-bearing URL ham kodni
+  avtomatik qabul qilmaydi: user desktop ekrandagi 8 belgili kodni bot chatiga
+  qo'lda yuboradi, keyin platform/version/code ko'rsatilgan
+  `Tasdiqlash / Bekor qilish` bosqichidan o'tadi.
+- Bot FSM bitta manual-entry prompt saqlaydi va 5 ta noto'g'ri urinishdan keyin
+  sessiyani yopadi. Desktop Telegram tugmasi ham bir link sessiyasida bir marta
+  ochiladi; retry/new code oqimi uni qayta yoqadi.
 - Link code single-use; device accountga bound; access token qisqa muddatli;
   refresh token rotate bo'ladi va OS credential store'da turadi.
 - Analytics xatosi yaratilgan desktop session/token transactionini rollback
@@ -4139,11 +4151,14 @@ Desktop auth/security:
 Desktop Phase A application:
 - Dedicated frontend `desktop/ui`; Tauri oynasi `1180x780`, minimum
   `720x560`, strict CSP (`connect-src` faqat Tauri IPC).
-- Variant A ishlaydi: chapda course navigation, markazda real dars, o'ng
-  pastki chetida dumaloq AI launcher/drawer, profile/til/obuna holati saqlangan.
+- Desktop source versiyasi `1.1.0`: demo reference asosidagi dark premium shell
+  `Bugun`, real course map, `Obuna`, `Profil` bo'limlariga ega; o'ng pastda AI
+  launcher/drawer. Dars/progress serverdan olinadi, fake AI yoki fake course
+  data productionda yo'q.
 - Telegram link oqimi explicit:
-  `auth status -> link start -> user Telegramni ochadi -> bot approve/cancel ->
-  poll -> bootstrap`. Webview polling secret/deep-link/tokenlarni ko'rmaydi.
+  `auth status -> link start -> generic Telegram link -> user kodni qo'lda
+  yuboradi -> bot approve/cancel -> poll -> bootstrap`. Webview polling
+  secret/deep-link/tokenlarni ko'rmaydi.
 - Bearer desktop course API:
   `/api/v3/desktop/course/map`,
   `/api/v3/desktop/course/lesson/{lesson_order}`,
@@ -4151,6 +4166,16 @@ Desktop Phase A application:
   `/api/v3/desktop/preferences/language`.
   Level, premium access, progress, XP va completion server-authoritative;
   completion event_id bilan idempotent.
+- Bearer desktop subscription API:
+  `/api/v3/desktop/subscription/overview`, `/quote`, `/submit`. Adapter canonical
+  `SubscriptionMiniAppService` narx, chegirma, QR, pending payment va admin
+  review logikasidan foydalanadi; user/amount/currency/mode clientdan olinmaydi.
+- Desktop receipt PNG/JPEG/WebP bo'lishi, magic bytes mosligi va 8 MB limiti
+  Python API hamda Rust IPC'da tekshiriladi. Access token webviewga berilmaydi;
+  checkout attempt ID analytics uchun submitga uzatiladi.
+- Faol paid user uchun renewal read-only: canonical activation qolgan muddatga
+  qo'shmay, yangi muddat boshlagani sabab active subscription qayta sotilmaydi.
+  Renewal semantics markaziy tuzatilmaguncha shu guardni ochmang.
 - Mini App'dagi access parity saqlandi: bepul user 2 mini-darsni tugatadi,
   3-qismning yarmigacha `preview_half` ko'radi, keyin obuna yo'liga qaytadi;
   preview hech qachon completion/XP yozmaydi. Tugagan premium dars obuna
@@ -4171,6 +4196,9 @@ Analytics:
   `desktop_download_requested -> desktop_download_started ->
   desktop_download_link_clicked -> desktop_session_linked ->
   desktop_first_open`.
+- Share/copy acquisition `desktop_download_requested ->
+  desktop_download_started(transport=web_share|copy_link)` sifatida kuzatiladi;
+  public transfer redirect token olmagani uchun fake install/click yozmaydi.
 - Faqat authenticated `desktop_first_open` install hisoblanadi.
 - Admin Mini App va bot stats desktop funnel/DAU/WAU/MAU/platform/version
   ko'rsatadi. Physical device hisobi session emas, server `device_id` bo'yicha.
@@ -4185,8 +4213,9 @@ Release/update:
 - GitHub Actions manual workflow universal macOS DMG/updater va Windows x64
   NSIS EXE/updater build, checksum va R2 upload uchun tayyor.
 - Lokal ARM64 test build mavjud:
-  `desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/`
-  ichidagi `Pomp HSK AI_1.0.0_aarch64.dmg`. U ad-hoc signed, notarized emas.
+  `desktop/src-tauri/target/release/bundle/dmg/` ichidagi
+  `Pomp HSK AI_1.1.0_aarch64.dmg`. U ad-hoc signed, notarized emas; lokal
+  buildda updater `.sig` private signing key env berilmagani uchun yaratilmaydi.
 - Updater private key repodan tashqarida va password macOS Keychain'da.
   Secret qiymatlarni memory yoki Git'ga yozmang.
 
