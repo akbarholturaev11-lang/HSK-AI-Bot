@@ -141,7 +141,8 @@ venv_311/bin/python -m pytest -q tests/e2e/test_desktop_ui_preview.py
 
 The source includes a signed-updater client/backend and a manual GitHub Actions
 pipeline for universal macOS DMG and Windows x64 NSIS artifacts. A local ARM64
-macOS test DMG can be built, but installers remain outside Git. Before public
+macOS `1.1.1` DMG and signed updater artifact can be built with the V3 updater
+trust root, but installers remain outside Git. Before public
 release the following still remain:
 
 - offline course cache, durable action queue and conflict-safe sync;
@@ -157,3 +158,10 @@ release the following still remain:
 Installer downloads and updates remain disabled until verified HTTPS artifacts
 and release metadata are configured. Built DMG, EXE, updater and GGUF files must
 stay outside Git on approved release storage/CDN.
+
+The release workflow intentionally reads only
+`TAURI_SIGNING_PRIVATE_KEY_V3` and
+`TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V3`. The corresponding private key stays
+outside the repository; never commit or print it. The same workflow requires
+the bucket-scoped `R2_*` secrets and `R2_PUBLIC_BASE_URL` Actions variable when
+`publish_to_r2=true`.

@@ -4159,7 +4159,7 @@ Desktop auth/security:
 Desktop Phase A application:
 - Dedicated frontend `desktop/ui`; Tauri oynasi `1180x780`, minimum
   `720x560`, strict CSP (`connect-src` faqat Tauri IPC).
-- Desktop source versiyasi `1.1.0`: demo reference asosidagi dark premium shell
+- Desktop source versiyasi `1.1.1`: demo reference asosidagi dark premium shell
   `Bugun`, real course map, `Obuna`, `Profil` bo'limlariga ega; o'ng pastda AI
   launcher/drawer. Dars/progress serverdan olinadi, fake AI yoki fake course
   data productionda yo'q.
@@ -4220,11 +4220,13 @@ Release/update:
   clean-machine testdan o'tmaguncha o'zgarmaydi.
 - GitHub Actions manual workflow universal macOS DMG/updater va Windows x64
   NSIS EXE/updater build, checksum va R2 upload uchun tayyor.
-- Lokal ARM64 test build mavjud:
+- Lokal ARM64 signed test build mavjud:
   `desktop/src-tauri/target/release/bundle/dmg/` ichidagi
-  `Pomp HSK AI_1.1.0_aarch64.dmg`. U ad-hoc signed, notarized emas; lokal
-  buildda updater `.sig` private signing key env berilmagani uchun yaratilmaydi.
-- Updater private key repodan tashqarida va password macOS Keychain'da.
+  `Pomp HSK AI_1.1.1_aarch64.dmg`. U ad-hoc signed, notarized emas; shu build
+  bilan `Pomp HSK AI.app.tar.gz.sig` V3 updater trust root orqali yaratiladi.
+- Updater V3 private key repodan tashqarida va password macOS Keychain'da.
+  Workflow faqat `TAURI_SIGNING_PRIVATE_KEY_V3` hamda
+  `TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V3` GitHub secretlarini ishlatadi.
   Secret qiymatlarni memory yoki Git'ga yozmang.
 
 Brand:
