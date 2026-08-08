@@ -4252,6 +4252,43 @@ Important files:
 - `.github/workflows/desktop-release.yml`
 - `desktop/`
 
+### 2026-08-08 — Desktop 1.2.0: content view CSS to'ldirildi, brend nomi "HSK AI"
+
+- Root sabab: avvalgi sessiya `desktop/ui/js/app.js`'ni sezilarli kengaytirgan
+  (Bugun/Kurs/Machq/AI Voice/Lug'at/Reyting/Profil uchun yangi markup), lekin
+  mos CSS'ni yozmagan/commit qilmagan holda qoldirgan edi. Natijada 79 ta CSS
+  klass umuman stilsiz edi — eng ko'zga tashlanadigani: avatar `<img>`
+  elementlarida class yo'qligi sabab mascot rasm original o'lchamida butun
+  ekranni bosib turardi (Machq, AI Voice, Reyting, Profil bo'limlarida bir xil
+  rasm). Bu 1.2.0 release'ga shu holda kirib ketgan edi.
+- Tuzatish: `desktop/ui/css/workspace.css`'ga mavjud dizayn tokenlaridan
+  (`--ink`, `--muted`, `--line`, `--cream`, `--jade`, `--red` va h.k.) hamda
+  mavjud `.card-panel`/`.avatar` naqshlaridan foydalanib to'liq CSS qo'shildi.
+  Yangi dizayn g'oyasi kiritilmadi — faqat mavjud tizim to'ldirildi.
+  Responsive breakpoint (`860px`)ga yangi grid/flex bo'limlar ham qo'shildi.
+- Barcha 237 ishlatiladigan CSS klass avtomatik skript bilan tekshirildi;
+  qasddan qoldirilgan 5 tasi (`lesson-node-pinyin`, `lesson-node-translation`,
+  `rail-toggle`, `refresh-button`, `today-lesson-hero`) mavjud generic
+  selectorlar orqali allaqachon qoplanadi.
+- Brend nomi "Pomp HSK AI" → "HSK AI" ga o'zgartirildi: desktop ilova UI
+  (`index.html`, `i18n.js` — uz/ru/tj, `tauri.conf.json` productName/title/
+  longDescription, `lib.rs` product_name), bot tasdiqlash xabarlari
+  (`desktop_auth.py`, 3 til), yuklab olish sahifasi va Mini App promo
+  matnlari (`desktop-download.html/js`, `admin.html`). Mos testlar
+  (`test-contract.mjs`, `lib.rs` ichidagi Rust test, `test_desktop_ui_preview.py`)
+  ham yangilandi.
+- Ataylab O'ZGARTIRILMAGAN (real risk sabab): Tauri `identifier`
+  (`com.pomp.hskai`) — allaqachon o'rnatilgan foydalanuvchilar uchun Keychain/
+  updater identity buziladi; Cargo/npm paket nomlari (`pomp-hsk-ai`,
+  `pomp-hsk-ai-desktop`); CI/R2 installer fayl nomlari
+  (`Pomp-HSK-AI_x.x.x_...`) va `DEFAULT_FILE_NAMES` backend fallback —
+  o'zgartirish yana Railway/R2 URL qayta sozlashni talab qiladi;
+  `window.PompDesktopDownload` JS global nomi — bir nechta static HTML
+  fayl shu nomga bog'liq.
+- Versiya 1.2.1 ga ko'tarildi (`package.json`, `Cargo.toml`, `tauri.conf.json`,
+  `Cargo.lock`). Yangi EXE/DMG qurish va qayta o'rnatish shart — bu server
+  tomonidan avtomatik yangilanmaydigan client-side o'zgarish.
+
 Not complete:
 - Universal Mac DMG va Windows EXE hali CI'da chiqarilmagan; GitHub auth/secrets
   va R2 bucket/custom-domain config kerak.

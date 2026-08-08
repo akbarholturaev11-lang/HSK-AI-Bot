@@ -1282,6 +1282,705 @@ button {
   box-shadow: 0 14px 36px rgb(0 0 0 / 38%);
 }
 
+/* --- Content view completions (Bugun/Kurs/Machq/AI Voice/Lug'at/Reyting/Profil) --- */
+
+.hanzi {
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 15px;
+}
+
+.pinyin {
+  display: block;
+  margin-top: 3px;
+  color: var(--blue);
+  font-size: 11px;
+}
+
+.translation {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.header-avatar-button {
+  display: block;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #3a3e47;
+  border-radius: 11px;
+  background: #090a0c;
+}
+
+.header-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Bugun */
+
+.today-hero-mascot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
+}
+
+.today-hero-mascot img {
+  width: 132px;
+  height: 132px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 26px rgb(0 0 0 / 35%));
+}
+
+.mascot-note {
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--cream-2);
+  background: rgb(232 220 195 / 10%);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.lesson-meta-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.lesson-meta-chip {
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.resume-pinyin {
+  display: block;
+  margin-top: 5px;
+  color: var(--blue);
+  font-size: 13px;
+}
+
+.resume-translation {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.activity-card,
+.today-xp-card {
+  padding: 19px;
+}
+
+.card-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.activity-count {
+  color: var(--cream);
+  font-size: 12px;
+}
+
+.today-xp-value {
+  display: block;
+  margin: 10px 0;
+  color: var(--cream);
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.stat-glyph {
+  display: block;
+  color: var(--cream-2);
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 20px;
+}
+
+.week-activity {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.week-activity.is-compact {
+  margin-top: 14px;
+}
+
+.week-day {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  border-radius: 12px;
+}
+
+.week-day small {
+  color: var(--muted);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.week-day-mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.week-day.is-active .week-day-mark {
+  border-color: transparent;
+  color: #fff;
+  background: var(--jade);
+}
+
+.week-day.is-today .week-day-mark {
+  border-color: var(--red);
+  color: var(--ink);
+}
+
+/* Kurs */
+
+.unit-progress-copy {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.unit-progress-copy strong {
+  color: var(--cream);
+  font-size: 15px;
+}
+
+.unit-progress-copy small {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.unit-progress-track {
+  margin-top: 12px;
+}
+
+.lesson-node-orb {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lesson-node-copy {
+  display: block;
+  margin-top: 6px;
+}
+
+.lesson-node-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkpoint-badge {
+  padding: 2px 6px;
+  border-radius: 999px;
+  color: var(--amber);
+  background: var(--amber-soft);
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.current-location {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: #f18b82;
+  background: var(--red-soft);
+  font-size: 8px;
+}
+
+/* Machq */
+
+.practice-intro {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  padding: 22px;
+  margin-bottom: 16px;
+}
+
+.practice-intro img {
+  width: 104px;
+  height: 104px;
+  flex-shrink: 0;
+  border: 1px solid #3c414a;
+  border-radius: 26px;
+  object-fit: cover;
+}
+
+.practice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.practice-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 19px;
+}
+
+.practice-card h3 {
+  margin: 2px 0 0;
+  font-size: 14px;
+}
+
+.practice-card .secondary-button {
+  margin-top: auto;
+}
+
+.practice-glyph {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: var(--cream);
+  background: #24272d;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 18px;
+}
+
+.practice-sample {
+  display: grid;
+  gap: 3px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #15171b;
+}
+
+/* AI Voice */
+
+.voice-shell {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+  padding: 24px;
+}
+
+.voice-stage {
+  display: flex;
+  flex: 1.4;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.voice-avatar-wrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+}
+
+.voice-avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #3c414a;
+  border-radius: 26px;
+  object-fit: cover;
+}
+
+.voice-status-dot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--card);
+  border-radius: 50%;
+  background: var(--jade);
+}
+
+.voice-stage-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.voice-context {
+  display: grid;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #15171b;
+}
+
+.voice-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.voice-microphone-state {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px;
+  border: 1px dashed #3a3e47;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.voice-mic-button {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: var(--muted);
+  background: #1a1d22;
+  border: 1px solid var(--line);
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 20px;
+  cursor: not-allowed;
+}
+
+/* Lug'at */
+
+.vocabulary-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) minmax(320px, 1.15fr);
+  gap: 16px;
+}
+
+.vocabulary-list {
+  padding: 18px;
+}
+
+.vocabulary-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.word-count {
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.vocabulary-rows {
+  display: grid;
+  gap: 6px;
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.vocabulary-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--ink);
+  background: transparent;
+  text-align: left;
+}
+
+.vocabulary-row:hover {
+  background: #1a1d22;
+}
+
+.vocabulary-row.is-active {
+  border-color: rgb(185 65 57 / 30%);
+  background: rgb(185 65 57 / 10%);
+}
+
+.vocabulary-row .translation {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.word-arrow {
+  color: var(--subtle);
+}
+
+.vocabulary-detail {
+  padding: 22px;
+}
+
+.vocabulary-detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.vocabulary-detail-zh {
+  display: block;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 42px;
+}
+
+.vocabulary-detail-pinyin {
+  display: block;
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.vocabulary-detail-translation {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.listen-button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  background: #1d2026;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.vocabulary-examples {
+  margin-top: 18px;
+}
+
+.vocabulary-examples h4 {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vocabulary-example {
+  margin-bottom: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #15171b;
+}
+
+.vocabulary-loading {
+  min-height: 240px;
+}
+
+/* Reyting */
+
+.rating-hero {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.league-emblem {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  color: #fff;
+  background: linear-gradient(145deg, var(--red), #aa342f);
+  box-shadow: 0 10px 24px rgb(185 65 57 / 24%);
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.rating-hero-copy {
+  flex: 1;
+}
+
+.rating-weekly-xp {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #15171b;
+  text-align: center;
+}
+
+.rating-weekly-xp strong {
+  color: var(--cream);
+  font-size: 20px;
+}
+
+.rating-weekly-xp small {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.rating-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(260px, 0.7fr);
+  gap: 16px;
+}
+
+.personal-ranking {
+  padding: 20px;
+}
+
+.personal-ranking-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #15171b;
+}
+
+.personal-ranking-row img {
+  width: 46px;
+  height: 46px;
+  border: 1px solid #3c414a;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.personal-ranking-row > div {
+  flex: 1;
+}
+
+.personal-xp {
+  color: var(--cream);
+  font-size: 15px;
+}
+
+.rating-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.rating-stats article {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #15171b;
+}
+
+.rating-stats strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--cream);
+  font-size: 16px;
+}
+
+.rating-stats small {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.rating-activity {
+  padding: 20px;
+}
+
+/* Profil */
+
+.profile-main {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.profile-hero-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.profile-plan-pill {
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: #1a1d22;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.profile-plan-pill.is-paid {
+  border-color: rgb(78 170 121 / 35%);
+  color: #7bd1a2;
+  background: var(--jade-soft);
+}
+
+.profile-progress-panel {
+  padding: 21px;
+}
+
+.profile-percent {
+  color: var(--cream);
+  font-size: 20px;
+}
+
+.profile-progress-track {
+  margin: 14px 0;
+}
+
+.profile-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.profile-week-title {
+  margin: 20px 0 10px;
+  color: var(--ink);
+  font-size: 12px;
+}
+
 @media (max-width: 1120px) {
   :root {
     --rail-width: 208px;
@@ -1336,8 +2035,23 @@ button {
 
   .today-grid,
   .course-layout,
-  .profile-layout {
+  .profile-layout,
+  .vocabulary-layout,
+  .rating-layout {
     grid-template-columns: 1fr;
+  }
+
+  .practice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .voice-shell {
+    flex-direction: column;
+  }
+
+  .practice-intro {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .course-aside {
