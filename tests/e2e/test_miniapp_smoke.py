@@ -945,7 +945,7 @@ def _open_course_profile_with_desktop_release(
     expect(page.locator("#pomp-desktop-profile-root .pdd-card")).to_be_visible()
 
 
-def test_desktop_profile_card_is_discoverable_and_explains_installation(page):
+def test_desktop_profile_card_is_discoverable_and_explains_transfer(page):
     mock_telegram_desktop_download(page, platform="android")
     _open_course_profile_with_desktop_release(page)
 
@@ -959,18 +959,13 @@ def test_desktop_profile_card_is_discoverable_and_explains_installation(page):
     expect(card).to_be_visible()
     expect(mac).to_be_visible()
     expect(windows).to_be_visible()
-    expect(card.locator(".pdd-install-step")).to_have_count(3)
-    expect(card.locator(".pdd-install-number")).to_have_text(["1", "2", "3"])
-    expect(card.locator(".pdd-install-steps")).to_contain_text(
-        "Mac yoki Windowsni tanlang."
+    expect(card.locator(".pdd-product-preview")).to_be_visible()
+    expect(card.locator(".pdd-preview-word")).to_contain_text("学习")
+    expect(card.locator(".pdd-preview-word")).to_contain_text("xuéxí · o‘rganmoq")
+    expect(card.locator(".pdd-benefit")).to_have_count(3)
+    expect(card.locator(".pdd-mobile-hint")).to_contain_text(
+        "AirDrop/ulashish"
     )
-    expect(card.locator(".pdd-install-steps")).to_contain_text(
-        "AirDrop yoki link orqali yuboring."
-    )
-    expect(card.locator(".pdd-install-steps")).to_contain_text(
-        "Mac: Applications’ga torting. Windows: Install tugmasini bosing."
-    )
-    expect(card.locator(".pdd-profile-trust")).to_contain_text("Yagona progress")
 
     goal_box = goal.bounding_box()
     card_box = card.bounding_box()
@@ -1084,11 +1079,11 @@ def test_desktop_profile_status_error_can_be_retried(page):
 @pytest.mark.parametrize(
     ("lang", "expected"),
     [
-        ("ru", "перетащите приложение в Applications"),
-        ("tj", "барномаро ба Applications кашед"),
+        ("ru", "xuéxí · учиться"),
+        ("tj", "xuéxí · омӯхтан"),
     ],
 )
-def test_desktop_profile_instructions_are_localized_and_fit(page, lang, expected):
+def test_desktop_profile_preview_is_localized_and_fits(page, lang, expected):
     mock_telegram_desktop_download(page, platform="android")
     _open_course_profile_with_desktop_release(
         page,
@@ -1097,8 +1092,8 @@ def test_desktop_profile_instructions_are_localized_and_fit(page, lang, expected
     )
 
     card = page.locator("#pomp-desktop-profile-root .pdd-card")
-    expect(card.locator(".pdd-install-step")).to_have_count(3)
-    expect(card.locator(".pdd-install-steps")).to_contain_text(expected)
+    expect(card.locator(".pdd-product-preview")).to_contain_text(expected)
+    expect(card.locator(".pdd-mobile-hint")).to_be_visible()
     assert card.evaluate("node => node.scrollWidth <= node.clientWidth + 1")
 
 
@@ -1396,6 +1391,61 @@ def test_branded_download_page_manual_copy_fallback_keeps_url_token_free(page):
         "Avtomatik nusxalanmadi"
     )
     assert request_token not in page.locator("[data-transfer-link]").input_value()
+
+
+def test_branded_download_page_unknown_mobile_requires_platform_choice(page):
+    page.add_init_script(
+        """
+        Object.defineProperty(Navigator.prototype, "userAgent", {
+          configurable: true,
+          get: function() { return "Mozilla/5.0 Android"; }
+        });
+        """
+    )
+    page.route(
+        "**/api/v3/desktop-download/public-status",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "enabled": True,
+                "platforms": {"macos": True, "windows": True},
+                "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+                "downloads": {
+                    "macos": "/downloads/macos",
+                    "windows": "/downloads/windows",
+                },
+            },
+        ),
+    )
+    page.goto(
+        app_url("/desktop-download.html?lang=uz"),
+        wait_until="networkidle",
+    )
+
+    expect(page.locator('[data-platform="macos"]')).to_have_attribute(
+        "aria-pressed", "false"
+    )
+    expect(page.locator('[data-platform="windows"]')).to_have_attribute(
+        "aria-pressed", "false"
+    )
+    expect(page.locator("[data-platform-prompt]")).to_be_visible()
+    expect(page.locator("[data-download-title]")).to_have_text(
+        "Mac yoki Windowsni tanlang"
+    )
+    expect(page.locator("[data-download-button]")).to_have_attribute(
+        "aria-disabled", "true"
+    )
+    expect(page.locator("[data-mobile-transfer]")).to_contain_text(
+        "Downloads yoki Fayllarga tushadi"
+    )
+
+    page.locator('[data-platform="windows"]').click()
+    expect(page.locator("[data-platform-prompt]")).to_be_hidden()
+    expect(page.locator("[data-download-button]")).to_have_attribute(
+        "href", "http://hsk-ai.local/downloads/windows"
+    )
+    expect(page.locator("[data-platform-guide]")).to_be_visible()
 
 
 def test_desktop_download_destination_can_cancel_before_request(page):

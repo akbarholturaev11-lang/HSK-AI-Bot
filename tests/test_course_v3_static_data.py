@@ -300,6 +300,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('button.dataset.pddDestinationAction = destination', download)
         self.assertIn('"share"', download)
         self.assertIn('"copy"', download)
+        self.assertIn('"desktop_download_entry_seen"', download)
+        self.assertIn('"desktop_download_chooser_opened"', download)
+        self.assertIn('"desktop_download_destination_selected"', download)
         self.assertIn("cleanTransferUrl", download)
         self.assertNotIn("message_sent", download)
         self.assertNotIn("close_mini_app", download)
@@ -313,7 +316,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('src="/desktop-download-page.js', landing)
         self.assertIn('src="/assets/hsk-ai-avatar.webp"', landing)
         self.assertIn('seal.src = "/assets/hsk-ai-avatar.webp"', download)
-        self.assertIn('cover.src = "/assets/hsk-ai-cover.webp"', download)
+        self.assertIn('logo.src = "/assets/hsk-ai-avatar.webp"', download)
+        self.assertIn('buildProductPreview("card")', download)
+        self.assertIn('buildProductPreview("modal")', download)
         self.assertNotIn('element("span", "pdd-seal", "桌")', download)
         self.assertNotIn('element("span", "pdd-laptop-seal", "桌")', download)
         self.assertNotIn("<script>", landing)
@@ -329,10 +334,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260802-2", html, page
+                "/course_v3_data/desktop-download.css?v=20260802-3", html, page
             )
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260802-2", html, page
+                "/course_v3_data/desktop-download.js?v=20260802-3", html, page
             )
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
@@ -347,14 +352,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertLess(goal_position, desktop_position)
         self.assertLess(desktop_position, calendar_position)
 
-        self.assertEqual(download.count("stepsTitle:"), 3)
-        self.assertEqual(download.count("stepChoose:"), 3)
-        self.assertEqual(download.count("stepTransfer:"), 3)
-        self.assertEqual(download.count("stepInstall:"), 3)
-        self.assertIn(
-            "[copy.stepChoose, copy.stepTransfer, copy.stepInstall]", download
-        )
-        self.assertIn("main.appendChild(buildInstallSteps())", download)
+        self.assertEqual(download.count("mobileCardHint:"), 3)
+        self.assertEqual(download.count("previewTranslation:"), 3)
+        self.assertIn('main.appendChild(buildProductPreview("card"))', download)
+        self.assertIn("main.appendChild(buildBenefits(true))", download)
         self.assertIn("copy.macUnavailable", download)
         self.assertIn("copy.windowsUnavailable", download)
         self.assertIn("if (isDesktop || !state.availabilityLoaded)", download)

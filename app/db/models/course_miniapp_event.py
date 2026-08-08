@@ -50,6 +50,9 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "d1_recovery_send_failed",
     "desktop_promo_seen",
     "desktop_promo_dismissed",
+    "desktop_download_entry_seen",
+    "desktop_download_chooser_opened",
+    "desktop_download_destination_selected",
     "desktop_download_requested",
     "desktop_download_started",
     # Historical compatibility only; the direct-download flow does not emit it.
@@ -85,6 +88,9 @@ CLIENT_COURSE_MINIAPP_EVENT_NAMES = (
     "checkout_opened",
     "desktop_promo_seen",
     "desktop_promo_dismissed",
+    "desktop_download_entry_seen",
+    "desktop_download_chooser_opened",
+    "desktop_download_destination_selected",
 )
 
 

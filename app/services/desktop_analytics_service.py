@@ -15,6 +15,9 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 DESKTOP_EVENT_NAMES = (
     "desktop_promo_seen",
     "desktop_promo_dismissed",
+    "desktop_download_entry_seen",
+    "desktop_download_chooser_opened",
+    "desktop_download_destination_selected",
     "desktop_download_requested",
     "desktop_download_started",
     # Historical compatibility only; new acquisition is direct download.
@@ -54,9 +57,22 @@ DESKTOP_PROMO_SOURCES = (
     "ad_promo",
 )
 
+DESKTOP_ENTRY_SOURCES = (
+    "profile",
+    *DESKTOP_PROMO_SOURCES,
+)
+
+DESKTOP_ENTRY_EVENTS = (
+    "desktop_download_entry_seen",
+    "desktop_download_chooser_opened",
+    "desktop_download_destination_selected",
+    "desktop_download_requested",
+)
+
 DESKTOP_COHORT_EVENTS = (
     "desktop_promo_seen",
     "desktop_promo_dismissed",
+    *DESKTOP_ENTRY_EVENTS,
     *DESKTOP_FUNNEL_EVENTS,
 )
 
@@ -328,6 +344,100 @@ class DesktopAnalyticsService:
         return funnel, rates
 
     @classmethod
+    def _entry_source_cohort(
+        cls,
+        *,
+        rows: Iterable[Any],
+    ) -> dict[str, Any]:
+        by_source_user: dict[tuple[str, int], list[Any]] = defaultdict(list)
+        for row in rows:
+            event_name = str(getattr(row, "event_name", "") or "")
+            if event_name not in DESKTOP_ENTRY_EVENTS:
+                continue
+            telegram_id = int(getattr(row, "telegram_id", 0) or 0)
+            payload = cls._payload(getattr(row, "payload_json", None))
+            source = cls._row_entry_source(row, payload)
+            if telegram_id and source in DESKTOP_ENTRY_SOURCES:
+                by_source_user[(source, telegram_id)].append(row)
+
+        stage_events = (
+            ("seen", "desktop_download_entry_seen"),
+            ("chooser_opened", "desktop_download_chooser_opened"),
+            ("destination_selected", "desktop_download_destination_selected"),
+            ("requested_after_seen", "desktop_download_requested"),
+        )
+        source_values: dict[str, dict[str, Any]] = {
+            source: {
+                stage: {"users": set(), "events": 0}
+                for stage, _ in stage_events
+            }
+            for source in DESKTOP_ENTRY_SOURCES
+        }
+
+        for (source, telegram_id), source_rows in by_source_user.items():
+            ordered = sorted(source_rows, key=cls._row_key)
+            seen_rows = [
+                row
+                for row in ordered
+                if str(getattr(row, "event_name", "") or "")
+                == "desktop_download_entry_seen"
+            ]
+            if not seen_rows:
+                continue
+            first_seen_key = cls._row_key(seen_rows[0])
+            values = source_values[source]
+            values["seen"]["users"].add(telegram_id)
+            values["seen"]["events"] += len(seen_rows)
+
+            for stage, event_name in stage_events[1:]:
+                matching = [
+                    row
+                    for row in ordered
+                    if (
+                        str(getattr(row, "event_name", "") or "") == event_name
+                        and cls._row_key(row) > first_seen_key
+                    )
+                ]
+                if matching:
+                    values[stage]["users"].add(telegram_id)
+                    values[stage]["events"] += len(matching)
+
+        by_source: dict[str, dict[str, Any]] = {}
+        for source, values in source_values.items():
+            seen_users = len(values["seen"]["users"])
+            chooser_users = len(values["chooser_opened"]["users"])
+            selected_users = len(values["destination_selected"]["users"])
+            requested_users = len(values["requested_after_seen"]["users"])
+            by_source[source] = {
+                stage: {
+                    "events": int(values[stage]["events"]),
+                    "users": len(values[stage]["users"]),
+                }
+                for stage, _ in stage_events
+            }
+            by_source[source].update(
+                {
+                    "chooser_per_seen": cls._bounded_pct(
+                        chooser_users,
+                        seen_users,
+                    ),
+                    "destination_per_chooser": cls._bounded_pct(
+                        selected_users,
+                        chooser_users,
+                    ),
+                    "request_per_seen": cls._bounded_pct(
+                        requested_users,
+                        seen_users,
+                    ),
+                }
+            )
+
+        return {
+            "eligible_sources": list(DESKTOP_ENTRY_SOURCES),
+            "by_source": by_source,
+        }
+
+    @classmethod
     def _promotion_cohort(
         cls,
         *,
@@ -452,7 +562,10 @@ class DesktopAnalyticsService:
                 len(converted_users),
                 len(seen_users),
             ),
+            "by_source": source_payload,
+            # Backwards compatibility for older admin clients.
             "sources": source_payload,
+            "entry_funnel": cls._entry_source_cohort(rows=rows),
         }
 
     @staticmethod

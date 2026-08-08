@@ -48,10 +48,18 @@ const dom = {
   navigation: $("#course-navigation"),
   showToday: $("#show-today"),
   showCourse: $("#show-course"),
+  showPractice: $("#show-practice"),
+  showVoice: $("#show-voice"),
+  showVocabulary: $("#show-vocabulary"),
+  showRating: $("#show-rating"),
   showSubscription: $("#show-subscription"),
   showProfile: $("#show-profile"),
   todayLabel: $("#today-label"),
   courseLabel: $("#course-label"),
+  practiceLabel: $("#practice-label"),
+  voiceLabel: $("#voice-label"),
+  vocabularyLabel: $("#vocabulary-label"),
+  ratingLabel: $("#rating-label"),
   subscriptionLabel: $("#subscription-label"),
   subscriptionBadge: $("#subscription-badge"),
   profileLabel: $("#profile-label"),
@@ -61,6 +69,8 @@ const dom = {
   globalSearch: $("#global-search"),
   headerStreak: $("#header-streak"),
   headerXp: $("#header-xp"),
+  headerProfile: $("#header-profile"),
+  railProfileButton: $("#rail-profile-button"),
   refreshMap: $("#refresh-map"),
   updateBanner: $("#update-banner"),
   updateStatus: $("#update-status"),
@@ -97,6 +107,9 @@ const state = {
   aiOpen: false,
   aiPreviousFocus: null,
   aiLoaded: false,
+  vocabularyRequest: 0,
+  vocabularyCache: new Map(),
+  vocabularySelected: null,
   updateStatus: "idle",
   updateInfo: null,
   updateErrorStage: "check",
@@ -178,10 +191,15 @@ function applyStaticText() {
   dom.copyCode.setAttribute("aria-label", t("copyCode"));
   dom.todayLabel.textContent = t("today");
   dom.courseLabel.textContent = t("course");
+  dom.practiceLabel.textContent = t("practice");
+  dom.voiceLabel.textContent = t("voice");
+  dom.vocabularyLabel.textContent = t("vocabulary");
+  dom.ratingLabel.textContent = t("rating");
   dom.subscriptionLabel.textContent = t("subscription");
   dom.profileLabel.textContent = t("profile");
   dom.railDaysLabel.textContent = t("days");
   dom.refreshMap.setAttribute("aria-label", t("refresh"));
+  dom.headerProfile.setAttribute("aria-label", t("openProfile"));
   dom.aiTitle.textContent = t("aiTitle");
   dom.aiSubtitle.textContent = t("aiSubtitle");
   dom.aiLauncher.setAttribute("aria-label", t("openAi"));
@@ -771,7 +789,11 @@ function renderRailLesson(item) {
   button.append(
     element("span", "lesson-dot", status === "done" ? "✓" : ""),
     element("span", "lesson-hanzi", String(item.zh || item.n || "—")),
-    element("span", "lesson-subtitle", pick(item.tr, String(item.py || ""))),
+    element(
+      "span",
+      "lesson-subtitle",
+      [String(item.py || ""), pick(item.tr)].filter(Boolean).join(" · "),
+    ),
   );
 
   if (accessible) {
@@ -798,6 +820,10 @@ function renderActiveView() {
   const views = {
     today: dom.showToday,
     course: dom.showCourse,
+    practice: dom.showPractice,
+    voice: dom.showVoice,
+    vocabulary: dom.showVocabulary,
+    rating: dom.showRating,
     subscription: dom.showSubscription,
     profile: dom.showProfile,
   };
@@ -808,6 +834,10 @@ function renderActiveView() {
 
   if (state.view === "today") renderToday();
   else if (state.view === "course") renderCourseHome();
+  else if (state.view === "practice") renderPractice();
+  else if (state.view === "voice") renderVoice();
+  else if (state.view === "vocabulary") void renderVocabulary();
+  else if (state.view === "rating") renderRating();
   else if (state.view === "subscription") renderSubscription();
   else renderProfile();
 }
@@ -829,8 +859,86 @@ function progressPercent(done, total) {
 
 function routeTo(view) {
   state.view = view;
+  if (view !== "vocabulary") {
+    state.vocabularySelected = null;
+  }
   renderActiveView();
   closeRail();
+}
+
+function languageLocale() {
+  return { uz: "uz-UZ", ru: "ru-RU", tj: "tg-TJ" }[getLanguage()] || "uz-UZ";
+}
+
+function parseIsoDay(value) {
+  const normalized = String(value || "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return null;
+  const date = new Date(`${normalized}T12:00:00Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function isoDay(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function weekSnapshot(progress = {}) {
+  let start = parseIsoDay(progress.week_start);
+  const today = parseIsoDay(progress.local_date) || new Date();
+  if (!start) {
+    start = new Date(today);
+    const weekday = (start.getUTCDay() + 6) % 7;
+    start.setUTCDate(start.getUTCDate() - weekday);
+  }
+  const active = new Set(
+    (Array.isArray(progress.week_activity_dates)
+      ? progress.week_activity_dates
+      : []
+    ).map(String),
+  );
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(start);
+    date.setUTCDate(start.getUTCDate() + index);
+    const value = isoDay(date);
+    return {
+      value,
+      label: new Intl.DateTimeFormat(languageLocale(), {
+        weekday: "short",
+        timeZone: "UTC",
+      })
+        .format(date)
+        .replace(".", ""),
+      day: date.getUTCDate(),
+      active: active.has(value),
+      today: value === String(progress.local_date || isoDay(today)),
+    };
+  });
+}
+
+function weekActivity(progress, compact = false) {
+  const wrap = element("div", `week-activity${compact ? " is-compact" : ""}`);
+  weekSnapshot(progress).forEach((day) => {
+    const item = element(
+      "div",
+      `week-day${day.active ? " is-active" : ""}${day.today ? " is-today" : ""}`,
+    );
+    item.setAttribute("aria-label", `${day.label} ${day.day}`);
+    item.append(
+      element("small", "", day.label),
+      element("span", "week-day-mark", day.active ? "✓" : String(day.day)),
+    );
+    wrap.append(item);
+  });
+  return wrap;
+}
+
+function formattedToday(progress = {}) {
+  const date = parseIsoDay(progress.local_date) || new Date();
+  return new Intl.DateTimeFormat(languageLocale(), {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: progress.local_date ? "UTC" : undefined,
+  }).format(date);
 }
 
 function renderToday() {
@@ -844,9 +952,9 @@ function renderToday() {
   const level = String(map.label || levelLabel(map.level));
 
   dom.contentTitle.textContent = t("today");
-  dom.contentSubtitle.textContent = t("todaySubtitle");
+  dom.contentSubtitle.textContent = formattedToday(progress);
   dom.content.replaceChildren(
-    viewHeading(t("todayTitle"), t("todaySubtitle"), level),
+    viewHeading(t("todayTitle"), formattedToday(progress), level),
   );
 
   const grid = element("div", "today-grid");
@@ -856,19 +964,39 @@ function renderToday() {
   if (current) {
     const glyph =
       Array.from(String(current.zh || "课").replace(/[·\s]+/g, ""))[0] || "课";
-    const resume = element("section", "resume-card");
+    const resume = element("section", "resume-card today-lesson-hero");
     resume.dataset.watermark = glyph;
     const copy = element("div", "resume-copy");
     copy.append(
-      element("p", "eyebrow", t("currentLesson")),
+      element("p", "eyebrow", t("nextStep")),
       element("h3", "", t("lessonNumber", { number: current.n })),
       element("p", "resume-chinese", String(current.zh || glyph)),
+      element("p", "resume-pinyin", String(current.py || "")),
+      element("p", "resume-translation", pick(current.tr)),
+    );
+    const lessonMeta = element("div", "lesson-meta-list");
+    lessonMeta.append(
+      element("span", "lesson-meta-chip", level),
       element(
-        "p",
-        "",
-        [String(current.py || ""), pick(current.tr)].filter(Boolean).join(" · "),
+        "span",
+        "lesson-meta-chip",
+        current.checkpoint ? t("checkpoint") : t("learningPart"),
       ),
     );
+    if (Number(current.part_count || 0) > 1) {
+      lessonMeta.append(
+        element(
+          "span",
+          "lesson-meta-chip",
+          t("partProgress", {
+            part: Number(current.part || 1),
+            total: Number(current.part_count),
+          }),
+        ),
+      );
+    }
+    copy.append(lessonMeta);
+
     const progressRow = element("div", "resume-progress");
     progressRow.append(
       element("span", "", t("courseProgress")),
@@ -883,6 +1011,8 @@ function renderToday() {
     setProgress(fill, completed, lessons.length);
     progressRow.append(track);
     copy.append(progressRow);
+
+    const actions = element("div", "hero-actions");
     const action = element(
       "button",
       "primary-button",
@@ -890,7 +1020,21 @@ function renderToday() {
     );
     action.type = "button";
     action.addEventListener("click", () => openLesson(Number(current.n)));
-    resume.append(copy, action);
+    const practice = element("button", "secondary-button", t("openPractice"));
+    practice.type = "button";
+    practice.addEventListener("click", () => routeTo("practice"));
+    actions.append(action, practice);
+    copy.append(actions);
+
+    const mascot = element("figure", "today-hero-mascot");
+    const mascotImage = element("img");
+    mascotImage.src = "./assets/hsk-ai-avatar.webp";
+    mascotImage.alt = "";
+    mascot.append(
+      element("figcaption", "mascot-note", t("mascotReady")),
+      mascotImage,
+    );
+    resume.append(copy, mascot);
     main.append(resume);
   } else {
     const empty = element("section", "empty-state card-panel");
@@ -900,15 +1044,39 @@ function renderToday() {
 
   const stats = element("section", "dashboard-stats");
   [
-    [t("xpTotal"), Number(progress.xp || 0)],
-    [t("streakDays"), Number(progress.streak || 0)],
-    [t("completedLessons"), completed],
-  ].forEach(([label, value]) => {
+    ["星", t("xpTotal"), Number(progress.xp || 0)],
+    ["火", t("streakDays"), Number(progress.streak || 0)],
+    ["周", t("weeklyXp"), Number(progress.weekly_xp || 0)],
+    ["课", t("completedLessons"), completed],
+  ].forEach(([glyph, label, value]) => {
     const card = element("article", "dashboard-stat");
-    card.append(element("small", "", label), element("strong", "", value));
+    card.append(
+      element("span", "stat-glyph", glyph),
+      element("small", "", label),
+      element("strong", "", value),
+    );
     stats.append(card);
   });
   main.append(stats);
+
+  const activityCard = element("section", "activity-card card-panel");
+  const activityHead = element("div", "card-heading-row");
+  activityHead.append(
+    element("div", "", ""),
+    element(
+      "strong",
+      "activity-count",
+      t("activeDays", {
+        count: weekSnapshot(progress).filter((day) => day.active).length,
+      }),
+    ),
+  );
+  activityHead.firstElementChild.append(
+    element("p", "eyebrow", t("weeklyActivity")),
+    element("h3", "", t("keepRhythm")),
+  );
+  activityCard.append(activityHead, weekActivity(progress));
+  main.append(activityCard);
 
   const progressCard = element("section", "today-progress-card card-panel");
   progressCard.append(
@@ -932,6 +1100,13 @@ function renderToday() {
     element("p", "muted", t("lessons", { done: completed, total: lessons.length })),
   );
 
+  const todayXpCard = element("section", "today-xp-card card-panel");
+  todayXpCard.append(
+    element("p", "eyebrow", t("todayResult")),
+    element("strong", "today-xp-value", `+${Number(progress.daily_xp || 0)} XP`),
+    element("p", "muted", t("todayXpDescription")),
+  );
+
   const planCard = element("section", "today-plan-card card-panel");
   planCard.append(
     element("p", "eyebrow", t("accountAccess")),
@@ -946,7 +1121,7 @@ function renderToday() {
   planAction.type = "button";
   planAction.addEventListener("click", () => routeTo("subscription"));
   planCard.append(planAction);
-  side.append(progressCard, planCard);
+  side.append(progressCard, todayXpCard, planCard);
   grid.append(main, side);
   dom.content.append(grid);
 }
@@ -983,23 +1158,47 @@ function renderCourseHome() {
   let renderedLessons = 0;
 
   map.units.forEach((unit, unitIndex) => {
-    const unitLessons = (Array.isArray(unit.lessons) ? unit.lessons : []).filter(
-      (item) => lessonMatches(item, query),
-    );
+    const allUnitLessons = Array.isArray(unit.lessons) ? unit.lessons : [];
+    const unitLessons = allUnitLessons.filter((item) => lessonMatches(item, query));
     if (!unitLessons.length) return;
     renderedLessons += unitLessons.length;
     const unitNumber = Number(unit.no ?? unit.n ?? unitIndex + 1);
-    const card = element("section", "course-unit-card");
+    const unitDone = allUnitLessons.filter((item) => item.status === "done").length;
+    const unitPercent = progressPercent(unitDone, allUnitLessons.length);
+    const hasCurrent = allUnitLessons.some((item) => item.status === "current");
+    const card = element(
+      "section",
+      `course-unit-card${hasCurrent ? " is-current-unit" : ""}`,
+    );
     const head = element("header", "course-unit-head");
     const copy = element("div");
     copy.append(
       element("h3", "", pick(unit.title, t("unit", { number: unitNumber }))),
-      element("p", "", t("unitLessonCount", { count: unitLessons.length })),
+      element(
+        "p",
+        "",
+        t("unitProgress", {
+          done: unitDone,
+          total: allUnitLessons.length,
+        }),
+      ),
     );
-    head.append(element("span", "course-unit-number", unitNumber), copy);
+    const unitProgress = element("div", "unit-progress-copy");
+    unitProgress.append(
+      element("strong", "", `${unitPercent}%`),
+      element("small", "", hasCurrent ? t("currentUnit") : t("unit" , { number: unitNumber })),
+    );
+    head.append(element("span", "course-unit-number", unitNumber), copy, unitProgress);
+    const unitTrack = element("div", "summary-progress unit-progress-track");
+    unitTrack.setAttribute("role", "progressbar");
+    unitTrack.setAttribute("aria-valuemin", "0");
+    unitTrack.setAttribute("aria-valuemax", "100");
+    const unitFill = element("span", "progress-fill");
+    unitTrack.append(unitFill);
+    setProgress(unitFill, unitDone, allUnitLessons.length);
     const trail = element("div", "lesson-trail");
     unitLessons.forEach((item) => trail.append(renderLessonNode(item)));
-    card.append(head, trail);
+    card.append(head, unitTrack, trail);
     units.append(card);
   });
 
@@ -1015,10 +1214,12 @@ function renderCourseHome() {
     element("h3", "", level),
     element("div", "course-percent", `${percent}%`),
     element("p", "muted", t("lessons", { done: completed, total: lessons.length })),
+    weekActivity(progress, true),
   );
   [
     [t("xpTotal"), Number(progress.xp || 0)],
     [t("streakDays"), Number(progress.streak || 0)],
+    [t("league"), String(progress.league || t("notAvailable"))],
     [t("accountAccess"), map.user?.is_paid ? t("paidPlan") : t("freePlan")],
   ].forEach(([label, value]) => {
     const row = element("div", "course-aside-stat");
@@ -1038,22 +1239,38 @@ function renderCourseHome() {
 function renderLessonNode(item) {
   const status = String(item?.status || "locked");
   const accessible = lessonAccessible(item);
-  const button = element("button", `lesson-node is-${status}`);
+  const button = element(
+    "button",
+    `lesson-node is-${status}${item?.checkpoint ? " is-checkpoint" : ""}`,
+  );
   button.type = "button";
-  button.append(
+  button.dataset.status = status;
+  const marker = element("span", "lesson-node-orb");
+  marker.append(
     element(
       "span",
       "lesson-node-mark",
-      status === "done" ? "✓" : accessible ? "▶" : "⌁",
-    ),
-    element("strong", "", t("lessonNumber", { number: item.n })),
-    element("span", "lesson-node-zh", String(item.zh || "课")),
-    element(
-      "small",
-      "",
-      [String(item.py || ""), pick(item.tr)].filter(Boolean).join(" · "),
+      status === "done" ? "✓" : accessible ? "▶" : "—",
     ),
   );
+  const copy = element("span", "lesson-node-copy");
+  const heading = element("span", "lesson-node-heading");
+  heading.append(
+    element("strong", "", t("lessonNumber", { number: item.n })),
+    item?.checkpoint
+      ? element("em", "checkpoint-badge", t("checkpoint"))
+      : element("span"),
+  );
+  copy.append(
+    heading,
+    element("span", "lesson-node-zh", String(item.zh || "课")),
+    element("span", "lesson-node-pinyin", String(item.py || "")),
+    element("small", "lesson-node-translation", pick(item.tr)),
+  );
+  if (status === "current") {
+    copy.append(element("span", "current-location", t("youAreHere")));
+  }
+  button.append(marker, copy);
   if (accessible) {
     button.addEventListener("click", () => openLesson(Number(item.n)));
   } else if (item.preview_half || item.locked_premium) {
@@ -1064,6 +1281,472 @@ function renderLessonNode(item) {
     button.disabled = true;
   }
   return button;
+}
+
+function practiceCard({ glyph, title, description, lessonItem, actionLabel, onAction }) {
+  const card = element("article", "practice-card card-panel");
+  card.append(
+    element("span", "practice-glyph", glyph),
+    element("h3", "", title),
+    element("p", "muted", description),
+  );
+  if (lessonItem) {
+    const sample = element("div", "practice-sample");
+    sample.append(
+      element("strong", "hanzi", String(lessonItem.zh || "课")),
+      element("span", "pinyin", String(lessonItem.py || "")),
+      element("small", "translation", pick(lessonItem.tr)),
+    );
+    card.append(sample);
+  }
+  const action = element("button", "secondary-button", actionLabel);
+  action.type = "button";
+  action.disabled = typeof onAction !== "function";
+  if (typeof onAction === "function") {
+    action.addEventListener("click", onAction);
+  }
+  card.append(action);
+  return card;
+}
+
+function renderPractice() {
+  const map = state.map;
+  if (!map) return;
+  const current = currentLesson();
+  const completed = [...allLessons()]
+    .reverse()
+    .find((item) => item.status === "done" && lessonAccessible(item));
+
+  dom.contentTitle.textContent = t("practice");
+  dom.contentSubtitle.textContent = t("practiceSubtitle");
+  dom.content.replaceChildren(
+    viewHeading(
+      t("practiceTitle"),
+      t("practiceSubtitle"),
+      String(map.label || levelLabel(map.level)),
+    ),
+  );
+
+  const intro = element("section", "practice-intro card-panel");
+  const introCopy = element("div");
+  introCopy.append(
+    element("p", "eyebrow", t("realCoursePractice")),
+    element("h3", "", t("practiceIntroTitle")),
+    element("p", "muted", t("practiceIntroBody")),
+  );
+  const panda = element("img");
+  panda.src = "./assets/hsk-ai-avatar.webp";
+  panda.alt = "";
+  intro.append(introCopy, panda);
+
+  const cards = element("section", "practice-grid");
+  cards.append(
+    practiceCard({
+      glyph: "练",
+      title: t("continueCurrentPractice"),
+      description: t("continueCurrentPracticeBody"),
+      lessonItem: current,
+      actionLabel: current ? t("continueLesson") : t("notAvailable"),
+      onAction: current ? () => openLesson(Number(current.n)) : null,
+    }),
+    practiceCard({
+      glyph: "复",
+      title: t("repeatCompleted"),
+      description: t("repeatCompletedBody"),
+      lessonItem: completed,
+      actionLabel: completed ? t("repeatLesson") : t("notAvailable"),
+      onAction: completed ? () => openLesson(Number(completed.n)) : null,
+    }),
+    practiceCard({
+      glyph: "听",
+      title: t("pronunciationPractice"),
+      description: t("pronunciationPracticeBody"),
+      lessonItem: current,
+      actionLabel: current ? t("openLesson") : t("notAvailable"),
+      onAction: current ? () => openLesson(Number(current.n)) : null,
+    }),
+    practiceCard({
+      glyph: "路",
+      title: t("chooseAnotherLesson"),
+      description: t("chooseAnotherLessonBody"),
+      lessonItem: null,
+      actionLabel: t("openCourseMap"),
+      onAction: () => routeTo("course"),
+    }),
+  );
+  dom.content.append(intro, cards);
+}
+
+function renderVoice() {
+  const map = state.map;
+  if (!map) return;
+  const current = currentLesson();
+  dom.contentTitle.textContent = t("voice");
+  dom.contentSubtitle.textContent = t("voiceSubtitle");
+  dom.content.replaceChildren(
+    viewHeading(
+      t("voiceTitle"),
+      t("voiceSubtitle"),
+      t("localAi"),
+    ),
+  );
+
+  const shell = element("section", "voice-shell card-panel");
+  const stage = element("div", "voice-stage");
+  const avatarWrap = element("div", "voice-avatar-wrap");
+  const avatar = element("img");
+  avatar.src = "./assets/hsk-ai-avatar.webp";
+  avatar.alt = "";
+  avatarWrap.append(avatar, element("span", "voice-status-dot"));
+  const stageCopy = element("div", "voice-stage-copy");
+  stageCopy.append(
+    element("p", "eyebrow", t("textRoleplay")),
+    element("h3", "", t("voiceReadyTitle")),
+    element("p", "muted", t("voiceReadyBody")),
+  );
+  if (current) {
+    const context = element("div", "voice-context");
+    context.append(
+      element("small", "", t("lessonContext")),
+      element("strong", "hanzi", String(current.zh || "课")),
+      element("span", "pinyin", String(current.py || "")),
+      element("p", "translation", pick(current.tr)),
+    );
+    stageCopy.append(context);
+  }
+  const actions = element("div", "voice-actions");
+  const textAction = element("button", "primary-button", t("openTextRoleplay"));
+  textAction.type = "button";
+  textAction.addEventListener("click", openAi);
+  const lessonAction = element("button", "secondary-button", t("practiceInLesson"));
+  lessonAction.type = "button";
+  lessonAction.disabled = !current;
+  if (current) {
+    lessonAction.addEventListener("click", () => openLesson(Number(current.n)));
+  }
+  actions.append(textAction, lessonAction);
+  stageCopy.append(actions);
+  stage.append(avatarWrap, stageCopy);
+
+  const microphone = element("aside", "voice-microphone-state");
+  const micButton = element("button", "voice-mic-button", "声");
+  micButton.type = "button";
+  micButton.disabled = true;
+  micButton.setAttribute("aria-describedby", "voice-mic-note");
+  const micCopy = element("div");
+  micCopy.append(
+    element("h3", "", t("microphoneComingTitle")),
+    element("p", "muted", t("microphoneComingBody")),
+  );
+  micCopy.lastElementChild.id = "voice-mic-note";
+  microphone.append(micButton, micCopy);
+  shell.append(stage, microphone);
+  dom.content.append(shell);
+}
+
+function vocabularyExamples(lessonPayload) {
+  const examples = [];
+  const add = (entry, translationKey = "translation") => {
+    if (!entry || typeof entry !== "object") return;
+    const zh = String(entry.zh || entry.phrase || "").trim();
+    const pinyin = String(entry.pinyin || "").trim();
+    const translation = pick(entry[translationKey] || entry.text);
+    if (zh && pinyin && translation) {
+      examples.push({ zh, pinyin, translation });
+    }
+  };
+
+  (Array.isArray(lessonPayload?.grammar) ? lessonPayload.grammar : []).forEach(
+    (grammar) =>
+      (Array.isArray(grammar?.examples) ? grammar.examples : []).forEach((entry) =>
+        add(entry),
+      ),
+  );
+  (Array.isArray(lessonPayload?.dialogues) ? lessonPayload.dialogues : []).forEach(
+    (dialogue) =>
+      (Array.isArray(dialogue?.dialogue) ? dialogue.dialogue : []).forEach((line) =>
+        add(line, "text"),
+      ),
+  );
+  (Array.isArray(lessonPayload?.sections) ? lessonPayload.sections : []).forEach(
+    (section) =>
+      (Array.isArray(section?.cards) ? section.cards : []).forEach((card) => {
+        if (card?.type === "pronunciation") add(card);
+        if (card?.g && Array.isArray(card.g.examples)) {
+          card.g.examples.forEach((entry) => add(entry));
+        }
+      }),
+  );
+  return examples;
+}
+
+function extractVocabulary(payload) {
+  const lessonPayload = payload?.lesson || {};
+  const source = Array.isArray(lessonPayload.active_words)
+    ? lessonPayload.active_words
+    : (Array.isArray(lessonPayload.sections) ? lessonPayload.sections : [])
+        .flatMap((section) => (Array.isArray(section?.cards) ? section.cards : []))
+        .filter((card) => card?.type === "active_word" && card.word)
+        .map((card) => card.word);
+  const examples = vocabularyExamples(lessonPayload);
+  const seen = new Set();
+  return source
+    .map((word, index) => {
+      const zh = String(word?.zh || "").trim();
+      const pinyin = String(word?.pinyin || word?.py || "").trim();
+      const translation = pick(word?.meaning || word?.translation);
+      const key = `${zh}\u0000${pinyin}`;
+      if (!zh || !pinyin || !translation || seen.has(key)) return null;
+      seen.add(key);
+      return {
+        id: `${Number(payload?.lesson_order || 0)}-${index}-${zh}`,
+        zh,
+        pinyin,
+        translation,
+        pos: String(word?.pos || ""),
+        examples: examples.filter((example) => example.zh.includes(zh)).slice(0, 3),
+      };
+    })
+    .filter(Boolean);
+}
+
+async function speakVocabulary(text, button) {
+  button.disabled = true;
+  try {
+    const result = await desktopBridge.ttsSpeak(text);
+    if (result?.ok !== true) showToast(t("audioUnavailable"));
+  } catch (error) {
+    if (isSessionError(error)) {
+      showAuth({ expired: true });
+      return;
+    }
+    showToast(t("audioUnavailable"));
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function renderVocabularyContent(words, lessonItem) {
+  if (state.view !== "vocabulary") return;
+  const heading = viewHeading(
+    t("vocabularyTitle"),
+    t("vocabularySubtitle"),
+    t("lessonNumber", { number: lessonItem.n }),
+  );
+  dom.content.replaceChildren(heading);
+
+  if (!words.length) {
+    const empty = element("section", "empty-state card-panel");
+    empty.append(
+      element("h3", "", t("vocabularyEmptyTitle")),
+      element("p", "muted", t("vocabularyEmptyBody")),
+    );
+    const action = element("button", "primary-button", t("openLesson"));
+    action.type = "button";
+    action.addEventListener("click", () => openLesson(Number(lessonItem.n)));
+    empty.append(action);
+    dom.content.append(empty);
+    return;
+  }
+
+  if (!words.some((word) => word.id === state.vocabularySelected)) {
+    state.vocabularySelected = words[0].id;
+  }
+  const selected = words.find((word) => word.id === state.vocabularySelected) || words[0];
+  const layout = element("div", "vocabulary-layout");
+  const list = element("section", "vocabulary-list card-panel");
+  const listHead = element("header", "vocabulary-list-head");
+  listHead.append(
+    element("div", "", ""),
+    element("span", "word-count", t("wordCount", { count: words.length })),
+  );
+  listHead.firstElementChild.append(
+    element("p", "eyebrow", t("currentLesson")),
+    element("h3", "", String(lessonItem.zh || t("vocabulary"))),
+  );
+  list.append(listHead);
+  const rows = element("div", "vocabulary-rows");
+  words.forEach((word) => {
+    const row = element(
+      "button",
+      `vocabulary-row${word.id === selected.id ? " is-active" : ""}`,
+    );
+    row.type = "button";
+    row.append(
+      element("strong", "hanzi", word.zh),
+      element("span", "pinyin", word.pinyin),
+      element("small", "translation", word.translation),
+      element("span", "word-arrow", "→"),
+    );
+    row.addEventListener("click", () => {
+      state.vocabularySelected = word.id;
+      renderVocabularyContent(words, lessonItem);
+    });
+    rows.append(row);
+  });
+  list.append(rows);
+
+  const detail = element("aside", "vocabulary-detail card-panel");
+  const detailTop = element("div", "vocabulary-detail-top");
+  const wordCopy = element("div");
+  wordCopy.append(
+    element("p", "eyebrow", selected.pos || t("newWord")),
+    element("strong", "vocabulary-detail-zh hanzi", selected.zh),
+    element("span", "vocabulary-detail-pinyin pinyin", selected.pinyin),
+    element("p", "vocabulary-detail-translation translation", selected.translation),
+  );
+  const listen = element("button", "listen-button", t("listen"));
+  listen.type = "button";
+  listen.addEventListener("click", () => speakVocabulary(selected.zh, listen));
+  detailTop.append(wordCopy, listen);
+  detail.append(detailTop);
+
+  const examples = element("div", "vocabulary-examples");
+  examples.append(element("h4", "", t("examples")));
+  if (selected.examples.length) {
+    selected.examples.forEach((example) => {
+      const item = element("article", "vocabulary-example");
+      item.append(
+        element("strong", "hanzi", example.zh),
+        element("span", "pinyin", example.pinyin),
+        element("p", "translation", example.translation),
+      );
+      examples.append(item);
+    });
+  } else {
+    examples.append(element("p", "muted", t("examplesNotAvailable")));
+  }
+  detail.append(examples);
+  layout.append(list, detail);
+  dom.content.append(layout);
+}
+
+async function renderVocabulary() {
+  const current = currentLesson();
+  dom.contentTitle.textContent = t("vocabulary");
+  dom.contentSubtitle.textContent = t("vocabularySubtitle");
+  dom.content.replaceChildren(
+    viewHeading(t("vocabularyTitle"), t("vocabularySubtitle"), "词"),
+  );
+  if (!current) {
+    const empty = element("section", "empty-state card-panel");
+    empty.append(element("p", "", t("courseEmpty")));
+    dom.content.append(empty);
+    return;
+  }
+
+  const lessonOrder = Number(current.n);
+  const cached = state.vocabularyCache.get(lessonOrder);
+  if (cached) {
+    renderVocabularyContent(cached, current);
+    return;
+  }
+
+  const loading = element("section", "loading-card vocabulary-loading");
+  loading.append(element("div", "spinner"), element("p", "", t("vocabularyLoading")));
+  dom.content.append(loading);
+  const request = ++state.vocabularyRequest;
+  try {
+    const payload = await desktopBridge.lessonData(lessonOrder);
+    if (request !== state.vocabularyRequest || state.view !== "vocabulary") return;
+    const words = extractVocabulary(payload);
+    state.vocabularyCache.set(lessonOrder, words);
+    renderVocabularyContent(words, current);
+  } catch (error) {
+    if (request !== state.vocabularyRequest || state.view !== "vocabulary") return;
+    if (isSessionError(error)) {
+      showAuth({ expired: true });
+      return;
+    }
+    const failed = element("section", "empty-state card-panel");
+    failed.append(
+      element("h3", "", t("vocabularyLoadFailed")),
+      element("p", "muted", errorMessage(error)),
+    );
+    const retry = element("button", "primary-button", t("retry"));
+    retry.type = "button";
+    retry.addEventListener("click", () => {
+      state.vocabularyCache.delete(lessonOrder);
+      void renderVocabulary();
+    });
+    failed.append(retry);
+    dom.content.replaceChildren(
+      viewHeading(t("vocabularyTitle"), t("vocabularySubtitle"), "词"),
+      failed,
+    );
+  }
+}
+
+function renderRating() {
+  const map = state.map;
+  if (!map) return;
+  const progress = map.progress || {};
+  const lessons = allLessons();
+  const completed = Number(progress.completed || 0);
+  const league = String(progress.league || t("notAvailable"));
+  const percent = progressPercent(completed, lessons.length);
+  dom.contentTitle.textContent = t("rating");
+  dom.contentSubtitle.textContent = t("ratingSubtitle");
+  dom.content.replaceChildren(
+    viewHeading(t("ratingTitle"), t("ratingSubtitle"), league),
+  );
+
+  const hero = element("section", "rating-hero card-panel");
+  const emblem = element("div", "league-emblem", "级");
+  const copy = element("div", "rating-hero-copy");
+  copy.append(
+    element("p", "eyebrow", t("yourLeague")),
+    element("h3", "", league),
+    element("p", "muted", t("ratingTruthfulBody")),
+  );
+  const weekly = element("div", "rating-weekly-xp");
+  weekly.append(
+    element("strong", "", Number(progress.weekly_xp || 0)),
+    element("small", "", t("weeklyXp")),
+  );
+  hero.append(emblem, copy, weekly);
+
+  const layout = element("div", "rating-layout");
+  const personal = element("section", "personal-ranking card-panel");
+  personal.append(element("p", "eyebrow", t("personalResult")));
+  const userRow = element("div", "personal-ranking-row");
+  const avatar = element("img");
+  avatar.src = "./assets/hsk-ai-avatar.webp";
+  avatar.alt = "";
+  const identity = element("div");
+  identity.append(
+    element("strong", "", String(map.user?.name || t("unknownUser"))),
+    element("small", "", `${String(map.label || levelLabel(map.level))} · ${league}`),
+  );
+  userRow.append(
+    avatar,
+    identity,
+    element("strong", "personal-xp", `${Number(progress.xp || 0)} XP`),
+  );
+  personal.append(userRow);
+
+  const realStats = element("div", "rating-stats");
+  [
+    [t("dailyXp"), Number(progress.daily_xp || 0)],
+    [t("streakDays"), Number(progress.streak || 0)],
+    [t("longestStreak"), Number(progress.longest_streak || 0)],
+    [t("courseProgress"), `${percent}%`],
+  ].forEach(([label, value]) => {
+    const card = element("article");
+    card.append(element("small", "", label), element("strong", "", value));
+    realStats.append(card);
+  });
+  personal.append(realStats);
+
+  const activity = element("aside", "rating-activity card-panel");
+  activity.append(
+    element("p", "eyebrow", t("weeklyActivity")),
+    element("h3", "", t("realServerActivity")),
+    element("p", "muted", t("realServerActivityBody")),
+    weekActivity(progress),
+  );
+  layout.append(personal, activity);
+  dom.content.append(hero, layout);
 }
 
 function renderSubscription() {
@@ -1089,6 +1772,9 @@ function renderProfile() {
   const user = map.user || {};
   const progress = map.progress || {};
   const completed = Number(progress.completed || 0);
+  const lessons = allLessons();
+  const percent = progressPercent(completed, lessons.length);
+  const league = String(progress.league || t("notAvailable"));
   dom.contentTitle.textContent = t("profileTitle");
   dom.contentSubtitle.textContent = t("profileSubtitle");
   dom.content.replaceChildren(
@@ -1100,6 +1786,7 @@ function renderProfile() {
   );
 
   const layout = element("div", "profile-layout");
+  const profileMain = element("div", "profile-main");
   const hero = element("section", "profile-hero card-panel");
   const identity = element("div", "profile-identity");
   const avatar = element("img");
@@ -1112,21 +1799,60 @@ function renderProfile() {
     element(
       "p",
       "",
-      `${String(map.label || levelLabel(map.level))} · ${user.is_paid ? t("paidPlan") : t("freePlan")}`,
+      `${String(map.label || levelLabel(map.level))} · ${league}`,
     ),
   );
   identity.append(avatar, identityCopy);
+  const accessPill = element(
+    "span",
+    `profile-plan-pill${user.is_paid ? " is-paid" : ""}`,
+    user.is_paid ? t("paidPlan") : t("freePlan"),
+  );
+  const heroHead = element("div", "profile-hero-head");
+  heroHead.append(identity, accessPill);
   const stats = element("div", "profile-stats");
   [
     [Number(progress.xp || 0), t("xpTotal")],
     [Number(progress.streak || 0), t("streakDays")],
+    [Number(progress.longest_streak || 0), t("longestStreak")],
+    [Number(progress.weekly_xp || 0), t("weeklyXp")],
+    [Number(progress.daily_xp || 0), t("dailyXp")],
     [completed, t("completedLessons")],
   ].forEach(([value, label]) => {
     const card = element("div");
     card.append(element("strong", "", value), element("small", "", label));
     stats.append(card);
   });
-  hero.append(identity, stats);
+  hero.append(heroHead, stats);
+
+  const progressPanel = element("section", "profile-progress-panel card-panel");
+  const progressHead = element("div", "card-heading-row");
+  const progressCopy = element("div");
+  progressCopy.append(
+    element("p", "eyebrow", t("learningProgress")),
+    element("h3", "", String(map.label || levelLabel(map.level))),
+  );
+  progressHead.append(progressCopy, element("strong", "profile-percent", `${percent}%`));
+  const track = element("div", "summary-progress profile-progress-track");
+  track.setAttribute("role", "progressbar");
+  track.setAttribute("aria-valuemin", "0");
+  track.setAttribute("aria-valuemax", "100");
+  const fill = element("span", "progress-fill");
+  track.append(fill);
+  setProgress(fill, completed, lessons.length);
+  const progressMeta = element("div", "profile-progress-meta");
+  progressMeta.append(
+    element("span", "", t("lessons", { done: completed, total: lessons.length })),
+    element("span", "", t("leagueValue", { league })),
+  );
+  progressPanel.append(
+    progressHead,
+    track,
+    progressMeta,
+    element("h4", "profile-week-title", t("weeklyActivity")),
+    weekActivity(progress),
+  );
+  profileMain.append(hero, progressPanel);
 
   const profileSide = element("div", "profile-side");
   const settings = element("section", "profile-settings card-panel");
@@ -1163,7 +1889,7 @@ function renderProfile() {
   logout.type = "button";
   logout.addEventListener("click", () => logoutDesktop(logout));
   profileSide.append(settings, access, logout);
-  layout.append(hero, profileSide);
+  layout.append(profileMain, profileSide);
   dom.content.append(layout);
 }
 
@@ -1361,8 +2087,14 @@ function bindEvents() {
   dom.updateAction.addEventListener("click", handleUpdateAction);
   dom.showToday.addEventListener("click", () => routeTo("today"));
   dom.showCourse.addEventListener("click", () => routeTo("course"));
+  dom.showPractice.addEventListener("click", () => routeTo("practice"));
+  dom.showVoice.addEventListener("click", () => routeTo("voice"));
+  dom.showVocabulary.addEventListener("click", () => routeTo("vocabulary"));
+  dom.showRating.addEventListener("click", () => routeTo("rating"));
   dom.showSubscription.addEventListener("click", () => routeTo("subscription"));
   dom.showProfile.addEventListener("click", () => routeTo("profile"));
+  dom.headerProfile.addEventListener("click", () => routeTo("profile"));
+  dom.railProfileButton.addEventListener("click", () => routeTo("profile"));
   dom.globalSearch.addEventListener("input", () => {
     state.searchQuery = String(dom.globalSearch.value || "");
     if (state.searchQuery && state.view !== "course") state.view = "course";
@@ -1375,6 +2107,33 @@ function bindEvents() {
   window.addEventListener("online", updateNetworkState);
   window.addEventListener("offline", updateNetworkState);
   window.addEventListener("keydown", (event) => {
+    const target = event.target;
+    const isTyping =
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLSelectElement ||
+      target?.isContentEditable;
+    if (
+      (event.metaKey || event.ctrlKey) &&
+      !isTyping &&
+      /^[1-8]$/.test(event.key) &&
+      !dom.workspace.hidden &&
+      !lesson.isOpen
+    ) {
+      const destinations = [
+        "today",
+        "course",
+        "practice",
+        "voice",
+        "vocabulary",
+        "rating",
+        "subscription",
+        "profile",
+      ];
+      event.preventDefault();
+      routeTo(destinations[Number(event.key) - 1]);
+      return;
+    }
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f") {
       if (!dom.workspace.hidden && !lesson.isOpen) {
         event.preventDefault();

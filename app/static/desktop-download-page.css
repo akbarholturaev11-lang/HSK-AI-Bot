@@ -264,6 +264,53 @@ main {
   color: var(--ink);
 }
 
+.platform-prompt {
+  display: grid;
+  min-height: 214px;
+  padding: 34px 28px;
+  place-items: center;
+  align-content: center;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 16px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 88% 10%, rgba(199, 70, 59, 0.13), transparent 34%),
+    linear-gradient(145deg, #fffdf8, #f3eadb);
+}
+
+.platform-prompt[hidden],
+.installer-stage[hidden],
+.install-guide[hidden],
+.security-note[hidden] {
+  display: none;
+}
+
+.platform-prompt-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.platform-prompt strong {
+  display: block;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.platform-prompt p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .installer-stage {
   position: relative;
   min-height: 214px;
@@ -441,6 +488,10 @@ main {
 
 .download-status[data-state="error"] .status-dot {
   background: var(--cinnabar);
+}
+
+.download-status[data-state="choose"] .status-dot {
+  background: var(--gold);
 }
 
 .install-guide {

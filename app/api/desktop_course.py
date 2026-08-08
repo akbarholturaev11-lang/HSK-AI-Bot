@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Annotated, Callable, TypeVar
+from typing import Annotated, Callable, Literal, TypeVar
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
@@ -86,6 +86,27 @@ class DesktopCourseLanguageRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     language: str = Field(pattern=r"^(uz|ru|tj)$")
+
+
+class DesktopNativeEventRequest(BaseModel):
+    """Small, allowlisted native telemetry payload; prompts never belong here."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    event_name: Literal[
+        "desktop_ai_pack_started",
+        "desktop_ai_pack_completed",
+        "desktop_offline_ai_used",
+    ]
+    event_id: DesktopCourseEventId
+    model_id: str = Field(
+        default="qwen3-4b-q4-k-m",
+        min_length=3,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9._:-]+$",
+    )
+    size_bytes: int | None = Field(default=None, ge=0, le=20_000_000_000)
+    duration_ms: int | None = Field(default=None, ge=0, le=86_400_000)
 
 
 def _access_token(request: Request) -> str:
@@ -282,6 +303,50 @@ def create_desktop_course_router(
             return _error_response(exc)
         except Exception:
             logger.exception("Desktop course language update failed")
+            return _error_response(
+                DesktopCourseError(
+                    "desktop_course_unavailable",
+                    status_code=503,
+                )
+            )
+
+    @router.post("/api/v3/desktop/events")
+    async def desktop_native_event(request: Request):
+        try:
+            payload = await _validated_payload(
+                request,
+                DesktopNativeEventRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(
+                    session,
+                    settings_obj,
+                ).record_native_event(
+                    _access_token(request),
+                    event_name=payload.event_name,
+                    event_id=payload.event_id,
+                    payload={
+                        "model_id": payload.model_id,
+                        **(
+                            {"size_bytes": payload.size_bytes}
+                            if payload.size_bytes is not None
+                            else {}
+                        ),
+                        **(
+                            {"duration_ms": payload.duration_ms}
+                            if payload.duration_ms is not None
+                            else {}
+                        ),
+                    },
+                )
+            return JSONResponse(
+                content=result,
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Desktop native event failed")
             return _error_response(
                 DesktopCourseError(
                     "desktop_course_unavailable",

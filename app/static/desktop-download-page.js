@@ -18,6 +18,10 @@
       featureUpdate: "Avtomatik yangilanish",
       readyLabel: "Tayyor installer",
       freeDownload: "Bepul yuklash",
+      selectTitle: "Mac yoki Windowsni tanlang",
+      selectBody:
+        "Kompyuteringizda qaysi tizim ishlashini tanlagach, mos DMG yoki EXE ko‘rsatiladi.",
+      selectDownload: "Avval platformani tanlang",
       loading: "Tayyorlanmoqda…",
       checking: "Mos versiya tekshirilmoqda.",
       unavailable: "Bu platforma uchun installer hali chiqarilmagan.",
@@ -45,7 +49,8 @@
       windowsSecurity: "Windows SmartScreen chiqsa, fayl nomi Pomp HSK AI ekanini tekshiring. Smart App Control bloklagan qurilmada himoyani o‘chirmang.",
       mobileEyebrow: "Telefon orqali ochdingiz",
       mobileTitle: "Linkni kompyuteringizga yuboring",
-      mobileBody: "Installer faqat Mac yoki Windows’da ishlaydi.",
+      mobileBody:
+        "Avval kompyuteringiz turini tanlang. Telefonda yuklangan DMG/EXE Downloads yoki Fayllarga tushadi, lekin faqat Mac yoki Windows’da ochiladi.",
       shareLink: "AirDrop yoki ulashish",
       copyLink: "Linkni nusxalash",
       copied: "Nusxalandi",
@@ -65,6 +70,10 @@
       featureUpdate: "Автоматические обновления",
       readyLabel: "Установщик готов",
       freeDownload: "Бесплатная загрузка",
+      selectTitle: "Выберите Mac или Windows",
+      selectBody:
+        "После выбора системы компьютера появится подходящий DMG или EXE.",
+      selectDownload: "Сначала выберите платформу",
       loading: "Подготавливаем…",
       checking: "Проверяем подходящую версию.",
       unavailable: "Установщик для этой платформы ещё не опубликован.",
@@ -92,7 +101,8 @@
       windowsSecurity: "Если появился SmartScreen, проверьте имя файла Pomp HSK AI. Не отключайте Smart App Control, если он заблокировал приложение.",
       mobileEyebrow: "Страница открыта на телефоне",
       mobileTitle: "Отправьте ссылку на компьютер",
-      mobileBody: "Установщик работает только на Mac или Windows.",
+      mobileBody:
+        "Сначала выберите систему компьютера. Скачанный на телефон DMG/EXE попадёт в Загрузки или Файлы, но откроется только на Mac или Windows.",
       shareLink: "AirDrop или поделиться",
       copyLink: "Скопировать ссылку",
       copied: "Скопировано",
@@ -112,6 +122,10 @@
       featureUpdate: "Навсозии автоматӣ",
       readyLabel: "Насбкунанда омода",
       freeDownload: "Боргирии ройгон",
+      selectTitle: "Mac ё Windows-ро интихоб кунед",
+      selectBody:
+        "Баъди интихоби системаи компютер DMG ё EXE-и мувофиқ нишон дода мешавад.",
+      selectDownload: "Аввал платформаро интихоб кунед",
       loading: "Омода мешавад…",
       checking: "Версияи мувофиқ санҷида мешавад.",
       unavailable: "Насбкунандаи ин платформа ҳоло нашр нашудааст.",
@@ -139,7 +153,8 @@
       windowsSecurity: "Агар SmartScreen барояд, номи Pomp HSK AI-ро санҷед. Агар Smart App Control барномаро баст, муҳофизатро хомӯш накунед.",
       mobileEyebrow: "Саҳифа дар телефон кушода шуд",
       mobileTitle: "Пайвандро ба компютер фиристед",
-      mobileBody: "Насбкунанда танҳо дар Mac ё Windows кор мекунад.",
+      mobileBody:
+        "Аввал системаи компютерро интихоб кунед. DMG/EXE-и дар телефон боршуда ба Downloads ё Files меафтад, вале танҳо дар Mac ё Windows кушода мешавад.",
       shareLink: "AirDrop ё фиристодан",
       copyLink: "Нусхаи пайванд",
       copied: "Нусха шуд",
@@ -167,6 +182,7 @@
   }
 
   function detectedPlatform() {
+    if (isMobile()) return "";
     var source = String(
       (navigator.userAgentData && navigator.userAgentData.platform) ||
         navigator.platform ||
@@ -175,7 +191,7 @@
     ).toLowerCase();
     if (source.indexOf("win") >= 0) return "windows";
     if (source.indexOf("mac") >= 0) return "macos";
-    return "macos";
+    return "";
   }
 
   function initialPlatform() {
@@ -272,6 +288,7 @@
   }
 
   function renderSteps() {
+    if (supportedPlatforms.indexOf(state.platform) < 0) return;
     var steps =
       state.platform === "macos" ? copy().macSteps : copy().windowsSteps;
     ["one", "two", "three"].forEach(function (key, index) {
@@ -283,6 +300,12 @@
   function renderInstallerStage() {
     var stage = document.querySelector("[data-installer-stage]");
     if (!stage) return;
+    if (supportedPlatforms.indexOf(state.platform) < 0) {
+      stage.hidden = true;
+      stage.dataset.installerStage = "unselected";
+      return;
+    }
+    stage.hidden = false;
     stage.dataset.installerStage = state.platform;
     if (state.platform === "windows") {
       stage.querySelector(".drag-arrow").textContent = "✓";
@@ -298,12 +321,31 @@
 
   function renderPlatform() {
     var localized = copy();
+    var selected = supportedPlatforms.indexOf(state.platform) >= 0;
+    document.documentElement.dataset.platformSelected = selected
+      ? "true"
+      : "false";
     document.querySelectorAll("[data-platform]").forEach(function (button) {
       button.setAttribute(
         "aria-pressed",
         button.dataset.platform === state.platform ? "true" : "false"
       );
     });
+
+    var prompt = document.querySelector("[data-platform-prompt]");
+    var guide = document.querySelector("[data-platform-guide]");
+    var security = document.querySelector("[data-platform-security]");
+    if (prompt) prompt.hidden = selected;
+    if (guide) guide.hidden = !selected;
+    if (security) security.hidden = !selected;
+
+    if (!selected) {
+      setText("[data-download-title]", localized.selectTitle);
+      setText("[data-download-label]", localized.selectDownload);
+      renderInstallerStage();
+      renderRelease();
+      return;
+    }
 
     setText(
       "[data-download-title]",
@@ -346,7 +388,9 @@
     var localized = copy();
     var button = document.querySelector("[data-download-button]");
     var status = document.querySelector("[data-download-status]");
+    var selected = supportedPlatforms.indexOf(state.platform) >= 0;
     var version =
+      selected &&
       state.release &&
       state.release.versions &&
       state.release.versions[state.platform];
@@ -355,11 +399,21 @@
 
     setText(
       "[data-version]",
-      version
+      !selected
+        ? localized.selectBody
+        : version
         ? localized.version.replace("{version}", String(version))
         : localized.checking
     );
     if (!button || !status) return;
+
+    if (!selected) {
+      button.href = "#";
+      button.setAttribute("aria-disabled", "true");
+      status.dataset.state = "choose";
+      status.lastElementChild.textContent = localized.selectBody;
+      return;
+    }
 
     var url = downloadUrl(state.platform);
     if (!url) {
