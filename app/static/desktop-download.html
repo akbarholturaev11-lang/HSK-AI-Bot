@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#f6f0e4">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'"
+      content="default-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'"
     >
     <title>HSK AI — kompyuter uchun</title>
     <meta
@@ -15,8 +15,8 @@
       content="HSK AI ilovasini macOS yoki Windows uchun yuklab oling."
     >
     <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-    <link rel="stylesheet" href="/desktop-download-page.css?v=20260802-2">
-    <script src="/desktop-download-page.js?v=20260802-2" defer></script>
+    <link rel="stylesheet" href="/desktop-download-page.css?v=20260809-1">
+    <script src="/desktop-download-page.js?v=20260809-1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#download-card" data-i18n="skip">Yuklashga o‘tish</a>
@@ -185,5 +185,141 @@
       <span>HSK AI</span>
       <span data-i18n="footer">Kurs markazda. AI yordamchi sifatida.</span>
     </footer>
+
+    <dialog
+      class="quick-guide-dialog"
+      data-quick-guide
+      aria-labelledby="quick-guide-title"
+      aria-describedby="quick-guide-lead"
+      tabindex="-1"
+    >
+      <div class="quick-guide-shell">
+        <button
+          type="button"
+          class="quick-guide-dismiss"
+          data-quick-guide-close
+          data-quick-guide-close-aria
+          aria-label="Yopish"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <header class="quick-guide-header">
+          <div class="quick-guide-topline">
+            <p class="quick-guide-kicker" data-i18n="quickGuideEyebrow">Yuklash boshlandi</p>
+            <span class="quick-guide-platform" data-quick-guide-platform>macOS</span>
+          </div>
+          <h2 id="quick-guide-title" data-i18n="quickGuideTitle">
+            Yuklab bo‘lgach, shunday oching
+          </h2>
+          <p id="quick-guide-lead" data-i18n="quickGuideLead">
+            Brauzerning yuqori o‘ngidagi yuklash belgisi tugashini kuting.
+          </p>
+          <div
+            class="quick-guide-progress"
+            role="progressbar"
+            aria-label="Fayl yuklanmoqda"
+            data-quick-guide-progress
+          ><span></span></div>
+        </header>
+
+        <ol class="quick-guide-steps">
+          <li>
+            <span class="quick-guide-number">01</span>
+            <div>
+              <h3 data-quick-step-title="one">DMG’ni oching</h3>
+              <p data-quick-step-body="one">Downloads ichidan yuklangan faylni bosing.</p>
+            </div>
+          </li>
+          <li>
+            <span class="quick-guide-number">02</span>
+            <div>
+              <h3 data-quick-step-title="two">Applications’ga o‘rnating</h3>
+              <p data-quick-step-body="two">Ilovani Applications papkasiga torting va shu yerdan oching.</p>
+
+              <div class="quick-step-visual quick-platform-macos quick-install-visual" aria-hidden="true">
+                <div class="quick-app-tile">
+                  <img src="/assets/hsk-ai-avatar.webp" alt="">
+                  <b>HSK AI</b>
+                </div>
+                <span class="quick-visual-arrow">→</span>
+                <div class="quick-folder-tile">
+                  <span>A</span>
+                  <b>Applications</b>
+                </div>
+              </div>
+
+              <div class="quick-step-visual quick-platform-windows quick-smartscreen-visual" aria-hidden="true">
+                <div class="quick-os-titlebar">
+                  <span class="quick-shield">✓</span>
+                  <b>Microsoft Defender SmartScreen</b>
+                </div>
+                <p data-i18n="visualWindowsBlocked">Windows kompyuteringizni himoya qildi</p>
+                <div class="quick-os-actions">
+                  <span data-i18n="visualMoreInfo">More info</span>
+                  <strong data-i18n="visualRunAnyway">Run anyway</strong>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="quick-guide-security-step">
+            <span class="quick-guide-number">!</span>
+            <div>
+              <h3 data-quick-step-title="three">macOS bloklasa</h3>
+              <p data-quick-step-body="three">Open Anyway orqali oching.</p>
+
+              <div class="quick-step-visual quick-platform-macos quick-mac-security-visual" aria-hidden="true">
+                <div class="quick-os-card">
+                  <div class="quick-os-titlebar">
+                    <span class="quick-window-dots">● ● ●</span>
+                    <b>Applications</b>
+                  </div>
+                  <div class="quick-os-app-row">
+                    <img src="/assets/hsk-ai-avatar.webp" alt="">
+                    <span>
+                      <small data-i18n="visualRightClick">O‘ng tugma</small>
+                      <b>HSK AI</b>
+                    </span>
+                    <strong data-i18n="visualMacOpen">Open</strong>
+                  </div>
+                </div>
+                <span class="quick-visual-or" data-i18n="visualOr">yoki</span>
+                <div class="quick-os-card">
+                  <div class="quick-os-titlebar">
+                    <span class="quick-settings-icon">⚙</span>
+                    <b data-i18n="visualSettings">Privacy &amp; Security</b>
+                  </div>
+                  <div class="quick-settings-row">
+                    <span>HSK AI</span>
+                    <strong data-i18n="visualOpenAnyway">Open Anyway</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="quick-step-visual quick-platform-windows quick-windows-install-visual" aria-hidden="true">
+                <div class="quick-exe-tile">
+                  <span>EXE</span>
+                  <b>HSK AI</b>
+                </div>
+                <span class="quick-visual-arrow">→</span>
+                <div class="quick-install-action">
+                  <span data-i18n="visualInstall">Install</span>
+                  <strong data-i18n="visualOpenApp">Open app</strong>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ol>
+
+        <div class="quick-guide-footer">
+          <p data-i18n="quickGuideFooter">
+            Ilova ochilgach, undagi kodni Telegram orqali tasdiqlang.
+          </p>
+          <button type="button" data-quick-guide-close data-i18n="quickGuideClose">
+            Tushundim
+          </button>
+        </div>
+      </div>
+    </dialog>
   </body>
 </html>

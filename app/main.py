@@ -460,6 +460,13 @@ MINIAPP_HTML_HEADERS = {
     "Pragma": "no-cache",
     "Expires": "0",
 }
+DESKTOP_DOWNLOAD_HTML_HEADERS = {
+    **MINIAPP_HTML_HEADERS,
+    # Browsers ignore frame-ancestors inside a meta CSP. It must be delivered
+    # as an HTTP response header for the download page to resist framing.
+    "Content-Security-Policy": "frame-ancestors 'none'",
+    "X-Frame-Options": "DENY",
+}
 # Heavy, version-busted static assets (loaded as `file.js?v=YYYYMMDD`) can be cached
 # long-term: a content change bumps the `?v=` query and busts the cache. Without this
 # the 2.9 MB dictionary re-downloads on every page/iframe open, making the Mini App slow.
@@ -1096,7 +1103,10 @@ async def course_v3_miniapp():
 @app.get("/desktop-download.html")
 @app.get("/desktop-download")
 async def desktop_download_page():
-    return miniapp_file_response("app/static/desktop-download.html")
+    return FileResponse(
+        "app/static/desktop-download.html",
+        headers=DESKTOP_DOWNLOAD_HTML_HEADERS,
+    )
 
 
 @app.get("/desktop-download-page.css")

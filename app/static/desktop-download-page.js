@@ -27,6 +27,7 @@
       unavailable: "Bu platforma uchun installer hali chiqarilmagan.",
       ready: "Fayl HSK AI rasmiy download serveridan yuklanadi.",
       opening: "Yuklash ochilmoqda…",
+      downloadAgain: "Qayta yuklash",
       macTitle: "Mac uchun HSK AI",
       windowsTitle: "Windows uchun HSK AI",
       macDownload: "Mac uchun DMG yuklash",
@@ -45,8 +46,35 @@
         ["Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."]
       ],
       securityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
-      macSecurity: "macOS’da avval ilovani ochishga urining, keyin System Settings → Privacy & Security → Open Anyway’ni bosing.",
-      windowsSecurity: "Windows SmartScreen chiqsa, fayl nomi HSK AI ekanini tekshiring. Smart App Control bloklagan qurilmada himoyani o‘chirmang.",
+      macSecurity: "macOS bloklasa: Applications ichida HSK AI ustida o‘ng tugma → Open → Open. Hali ham bloklansa, System Settings → Privacy & Security → Open Anyway’ni bosing.",
+      windowsSecurity: "Windows SmartScreen chiqsa: More info → Run anyway → Yes’ni bosing. Fayl nomi HSK AI ekanini tekshiring.",
+      quickGuideEyebrow: "Yuklash boshlandi",
+      quickGuideTitle: "Yuklab bo‘lgach, shunday oching",
+      quickGuideLead: "Brauzerning yuqori o‘ngidagi yuklash belgisi tugashini kuting. Bu oynani hozircha yopmang.",
+      quickGuideProgress: "Fayl yuklanmoqda",
+      quickGuideClose: "Tushundim",
+      quickGuideCloseAria: "Qo‘llanmani yopish",
+      quickGuideFooter: "Ilova ochilgach, undagi kodni Telegram orqali tasdiqlang.",
+      visualRightClick: "O‘ng tugma",
+      visualMacOpen: "Open",
+      visualOr: "yoki",
+      visualSettings: "Privacy & Security",
+      visualOpenAnyway: "Open Anyway",
+      visualWindowsBlocked: "Windows kompyuteringizni himoya qildi",
+      visualMoreInfo: "More info",
+      visualRunAnyway: "Run anyway",
+      visualInstall: "Install",
+      visualOpenApp: "Ilovani ochish",
+      macQuickSteps: [
+        ["DMG’ni oching", "Downloads (↓) ichidan yuklangan .dmg faylini bosing."],
+        ["Applications’ga o‘rnating", "Ikonkani rasmdagidek Applications papkasiga torting."],
+        ["macOS bloklasa", "Avval o‘ng tugma orqali Open qiling. Bo‘lmasa Open Anyway’ni bosing."]
+      ],
+      windowsQuickSteps: [
+        ["EXE’ni oching", "Downloads (↓) ichidan yuklangan .exe faylini bosing."],
+        ["SmartScreen bloklasa", "Rasmdagi More info, keyin Run anyway va Yes’ni bosing."],
+        ["O‘rnating va oching", "Install tugmasini bosing, so‘ng Start menyusidan ilovani oching."]
+      ],
       mobileEyebrow: "Telefon orqali ochdingiz",
       mobileTitle: "Linkni kompyuteringizga yuboring",
       mobileBody:
@@ -79,6 +107,7 @@
       unavailable: "Установщик для этой платформы ещё не опубликован.",
       ready: "Файл загружается с официального сервера HSK AI.",
       opening: "Открываем загрузку…",
+      downloadAgain: "Скачать ещё раз",
       macTitle: "HSK AI для Mac",
       windowsTitle: "HSK AI для Windows",
       macDownload: "Скачать DMG для Mac",
@@ -97,8 +126,35 @@
         ["Подключите Telegram", "Подтвердите код приложения в Telegram. Подписка и прогресс появятся автоматически."]
       ],
       securityTitle: "При первом запуске может появиться предупреждение",
-      macSecurity: "Сначала попробуйте открыть приложение, затем выберите System Settings → Privacy & Security → Open Anyway.",
-      windowsSecurity: "Если появился SmartScreen, проверьте имя файла HSK AI. Не отключайте Smart App Control, если он заблокировал приложение.",
+      macSecurity: "Если macOS блокирует запуск: в Applications нажмите правой кнопкой на HSK AI → Open → Open. Если не помогло: System Settings → Privacy & Security → Open Anyway.",
+      windowsSecurity: "Если появился SmartScreen: нажмите Подробнее → Выполнить в любом случае → Да. Проверьте, что файл называется HSK AI.",
+      quickGuideEyebrow: "Загрузка началась",
+      quickGuideTitle: "После загрузки откройте так",
+      quickGuideLead: "Дождитесь завершения загрузки у значка в правом верхнем углу браузера. Пока не закрывайте это окно.",
+      quickGuideProgress: "Файл загружается",
+      quickGuideClose: "Понятно",
+      quickGuideCloseAria: "Закрыть инструкцию",
+      quickGuideFooter: "Когда приложение откроется, подтвердите показанный код через Telegram.",
+      visualRightClick: "Правый клик",
+      visualMacOpen: "Открыть",
+      visualOr: "или",
+      visualSettings: "Конфиденциальность и безопасность",
+      visualOpenAnyway: "Всё равно открыть",
+      visualWindowsBlocked: "Windows защитила ваш компьютер",
+      visualMoreInfo: "Подробнее",
+      visualRunAnyway: "Выполнить в любом случае",
+      visualInstall: "Установить",
+      visualOpenApp: "Открыть приложение",
+      macQuickSteps: [
+        ["Откройте DMG", "Нажмите загруженный файл .dmg в Downloads (↓)."],
+        ["Установите в Applications", "Перетащите иконку в Applications, как показано ниже."],
+        ["Если macOS блокирует запуск", "Сначала откройте через правый клик. Если не вышло — нажмите «Всё равно открыть»." ]
+      ],
+      windowsQuickSteps: [
+        ["Откройте EXE", "Нажмите загруженный файл .exe в Downloads (↓)."],
+        ["Если появился SmartScreen", "Нажмите показанные ниже кнопки: «Подробнее», затем «Выполнить в любом случае»."],
+        ["Установите и откройте", "Нажмите «Установить», затем откройте HSK AI через меню Пуск."]
+      ],
       mobileEyebrow: "Страница открыта на телефоне",
       mobileTitle: "Отправьте ссылку на компьютер",
       mobileBody:
@@ -131,6 +187,7 @@
       unavailable: "Насбкунандаи ин платформа ҳоло нашр нашудааст.",
       ready: "Файл аз сервери расмии HSK AI бор мешавад.",
       opening: "Боргирӣ кушода мешавад…",
+      downloadAgain: "Аз нав бор кардан",
       macTitle: "HSK AI барои Mac",
       windowsTitle: "HSK AI барои Windows",
       macDownload: "DMG барои Mac",
@@ -149,8 +206,35 @@
         ["Telegram-ро пайваст кунед", "Рамзи барномаро дар Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."]
       ],
       securityTitle: "Ҳангоми кушодани аввал огоҳӣ баромада метавонад",
-      macSecurity: "Аввал барномаро кушоед, баъд System Settings → Privacy & Security → Open Anyway-ро пахш кунед.",
-      windowsSecurity: "Агар SmartScreen барояд, номи HSK AI-ро санҷед. Агар Smart App Control барномаро баст, муҳофизатро хомӯш накунед.",
+      macSecurity: "Агар macOS роҳ надиҳад: дар Applications рӯи HSK AI тугмаи рост → Open → Open. Агар ҳанӯз баста бошад: System Settings → Privacy & Security → Open Anyway.",
+      windowsSecurity: "Агар SmartScreen барояд: More info → Run anyway → Yes-ро пахш кунед. Номи файли HSK AI-ро санҷед.",
+      quickGuideEyebrow: "Боргирӣ оғоз шуд",
+      quickGuideTitle: "Пас аз боргирӣ ҳамин тавр кушоед",
+      quickGuideLead: "То анҷоми боргирӣ дар нишонаи болои рости браузер интизор шавед. Ҳоло ин равзанаро напӯшед.",
+      quickGuideProgress: "Файл бор шуда истодааст",
+      quickGuideClose: "Фаҳмо",
+      quickGuideCloseAria: "Пӯшидани дастур",
+      quickGuideFooter: "Пас аз кушодани барнома, рамзи онро тавассути Telegram тасдиқ кунед.",
+      visualRightClick: "Тугмаи рост",
+      visualMacOpen: "Кушодан",
+      visualOr: "ё",
+      visualSettings: "Махфият ва амният",
+      visualOpenAnyway: "Ба ҳар ҳол кушодан",
+      visualWindowsBlocked: "Windows компютери шуморо ҳифз кард",
+      visualMoreInfo: "Маълумоти бештар",
+      visualRunAnyway: "Ба ҳар ҳол иҷро кардан",
+      visualInstall: "Насб кардан",
+      visualOpenApp: "Кушодани барнома",
+      macQuickSteps: [
+        ["DMG-ро кушоед", "Дар Downloads (↓) файли .dmg-и боршударо пахш кунед."],
+        ["Ба Applications насб кунед", "Нишонаро мисли расми поён ба Applications кашед."],
+        ["Агар macOS роҳ надиҳад", "Аввал бо тугмаи рост кушоед. Агар нашуд, «Ба ҳар ҳол кушодан»-ро пахш кунед."]
+      ],
+      windowsQuickSteps: [
+        ["EXE-ро кушоед", "Дар Downloads (↓) файли .exe-и боршударо пахш кунед."],
+        ["Агар SmartScreen роҳ надиҳад", "Тугмаҳои расмро пахш кунед: «Маълумоти бештар», баъд «Ба ҳар ҳол иҷро кардан»."],
+        ["Насб ва кушоед", "«Насб кардан»-ро пахш кунед ва баъд HSK AI-ро аз Start кушоед."]
+      ],
       mobileEyebrow: "Саҳифа дар телефон кушода шуд",
       mobileTitle: "Пайвандро ба компютер фиристед",
       mobileBody:
@@ -297,6 +381,50 @@
     });
   }
 
+  function renderQuickGuide() {
+    var localized = copy();
+    var steps =
+      state.platform === "macos"
+        ? localized.macQuickSteps
+        : localized.windowsQuickSteps;
+    var guide = document.querySelector("[data-quick-guide]");
+    var platform = document.querySelector("[data-quick-guide-platform]");
+    var progress = document.querySelector("[data-quick-guide-progress]");
+    if (guide) guide.dataset.platform = state.platform;
+    if (platform) platform.textContent = state.platform === "macos" ? "macOS" : "Windows";
+    if (progress) progress.setAttribute("aria-label", localized.quickGuideProgress);
+    document.querySelectorAll("[data-quick-guide-close-aria]").forEach(function (button) {
+      button.setAttribute("aria-label", localized.quickGuideCloseAria);
+    });
+    ["one", "two", "three"].forEach(function (key, index) {
+      setText('[data-quick-step-title="' + key + '"]', steps[index][0]);
+      setText('[data-quick-step-body="' + key + '"]', steps[index][1]);
+    });
+  }
+
+  function openQuickGuide() {
+    var guide = document.querySelector("[data-quick-guide]");
+    if (!guide) return;
+    renderQuickGuide();
+    document.body.classList.add("quick-guide-open");
+    if (typeof guide.showModal === "function") {
+      if (!guide.open) guide.showModal();
+    } else {
+      guide.setAttribute("open", "");
+    }
+    try {
+      guide.focus();
+    } catch (error) {}
+  }
+
+  function closeQuickGuide() {
+    var guide = document.querySelector("[data-quick-guide]");
+    if (!guide) return;
+    if (typeof guide.close === "function" && guide.open) guide.close();
+    else guide.removeAttribute("open");
+    document.body.classList.remove("quick-guide-open");
+  }
+
   function renderInstallerStage() {
     var stage = document.querySelector("[data-installer-stage]");
     if (!stage) return;
@@ -367,6 +495,7 @@
     );
     renderSteps();
     renderInstallerStage();
+    renderQuickGuide();
     renderRelease();
   }
 
@@ -588,7 +717,24 @@
           event.preventDefault();
           return;
         }
+        var startedPlatform = state.platform;
         setText("[data-download-label]", copy().opening);
+        openQuickGuide();
+        window.setTimeout(function () {
+          if (state.platform === startedPlatform) {
+            setText("[data-download-label]", copy().downloadAgain);
+          }
+        }, 1200);
+      });
+    }
+
+    document.querySelectorAll("[data-quick-guide-close]").forEach(function (button) {
+      button.addEventListener("click", closeQuickGuide);
+    });
+    var quickGuide = document.querySelector("[data-quick-guide]");
+    if (quickGuide) {
+      quickGuide.addEventListener("close", function () {
+        document.body.classList.remove("quick-guide-open");
       });
     }
 

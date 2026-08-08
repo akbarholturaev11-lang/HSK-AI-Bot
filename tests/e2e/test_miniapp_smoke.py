@@ -1459,6 +1459,61 @@ def test_branded_download_page_exposes_direct_tracked_installers(page):
     )
 
 
+def test_branded_download_page_opens_platform_guide_on_download_click(page):
+    page.set_viewport_size({"width": 1280, "height": 900})
+    page.route(
+        "**/api/v3/desktop-download/public-status",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "enabled": True,
+                "platforms": {"macos": True, "windows": True},
+                "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+                "downloads": {
+                    "macos": "/downloads/macos",
+                    "windows": "/downloads/windows",
+                },
+            },
+        ),
+    )
+    page.goto(
+        app_url("/desktop-download.html?platform=macos&lang=uz"),
+        wait_until="networkidle",
+    )
+    page.evaluate(
+        """
+        document.addEventListener("click", function (event) {
+          if (event.target.closest("[data-download-button]")) event.preventDefault();
+        }, true);
+        """
+    )
+
+    page.locator("[data-download-button]").click()
+    guide = page.locator("[data-quick-guide]")
+    expect(guide).to_be_visible()
+    expect(guide).to_have_attribute("data-platform", "macos")
+    expect(guide).to_contain_text("Yuklash boshlandi")
+    expect(guide).to_contain_text("Open Anyway")
+    expect(guide.locator(".quick-install-visual")).to_be_visible()
+    expect(guide.locator(".quick-mac-security-visual")).to_be_visible()
+    expect(guide.locator(".quick-smartscreen-visual")).to_be_hidden()
+
+    page.locator("[data-quick-guide-close]").last.click()
+    expect(guide).to_be_hidden()
+
+    page.locator('[data-platform="windows"]').click()
+    page.locator('[data-language="ru"]').click()
+    page.locator("[data-download-button]").click()
+    expect(guide).to_be_visible()
+    expect(guide).to_have_attribute("data-platform", "windows")
+    expect(guide).to_contain_text("Загрузка началась")
+    expect(guide).to_contain_text("Выполнить в любом случае")
+    expect(guide.locator(".quick-smartscreen-visual")).to_be_visible()
+    expect(guide.locator(".quick-windows-install-visual")).to_be_visible()
+    expect(guide.locator(".quick-mac-security-visual")).to_be_hidden()
+
+
 def test_branded_download_page_manual_copy_fallback_keeps_url_token_free(page):
     request_token = "b" * 32
     page.add_init_script(
