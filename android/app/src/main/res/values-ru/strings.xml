@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_language_title">Выберите язык</string>
+    <string name="onboarding_language_subtitle">Курс, переводы и напоминания будут на этом языке.</string>
+    <string name="action_continue">Продолжить</string>
+
+    <string name="link_title">Подключите аккаунт Telegram</string>
+    <string name="link_subtitle">Ваш курс, подписка и прогресс синхронизируются сюда. Новый аккаунт не создаётся.</string>
+    <string name="link_step_1">Скопируйте код ниже</string>
+    <string name="link_step_2">Откройте Telegram и отправьте код боту</string>
+    <string name="link_step_3">Нажмите «Подтвердить» в боте</string>
+    <string name="link_code_label">Код подключения</string>
+    <string name="link_code_copied">Код скопирован</string>
+    <string name="link_open_telegram">Открыть Telegram</string>
+    <string name="link_waiting">Ожидаем подтверждения…</string>
+    <string name="link_expires_in">Код действителен: %1$s</string>
+    <string name="link_expired">Срок кода истёк. Получите новый код.</string>
+    <string name="link_new_code">Получить новый код</string>
+    <string name="link_success">Аккаунт подключён</string>
+    <string name="link_telegram_missing">Приложение Telegram не найдено. Код можно отправить через браузер.</string>
+    <string name="link_security_note">Код не добавляется в ссылку. Вы отправляете его боту сами.</string>
+
+    <string name="synced_title">Аккаунт подключён</string>
+    <string name="synced_level">Уровень</string>
+    <string name="synced_access_paid">Подписка активна</string>
+    <string name="synced_access_free">Бесплатный режим</string>
+
+    <string name="nav_today">Сегодня</string>
+    <string name="nav_course">Курс</string>
+    <string name="nav_practice">Практика</string>
+    <string name="nav_ai">AI</string>
+    <string name="nav_profile">Профиль</string>
+
+    <string name="profile_logout">Выйти</string>
+    <string name="profile_unlink_device">Отвязать это устройство</string>
+    <string name="profile_unlink_explain">Устройство будет отвязано, и в следующий раз нужно подключиться через Telegram заново.</string>
+
+    <string name="state_loading">Загрузка…</string>
+    <string name="action_retry">Повторить</string>
+    <string name="action_cancel">Отменить</string>
+    <string name="action_close">Закрыть</string>
+
+    <string name="error_offline">Нет подключения к интернету. Проверьте связь.</string>
+    <string name="error_timeout">Сервер не ответил. Попробуйте ещё раз.</string>
+    <string name="error_server">Временная ошибка сервера. Попробуйте немного позже.</string>
+    <string name="error_unknown">Произошла непредвиденная ошибка.</string>
+    <string name="error_session_expired">Сессия истекла. Нужно снова подключиться через Telegram.</string>
+    <string name="error_link_invalid">Код неверный, истёк или уже использован.</string>
+    <string name="error_link_rate_limited">Слишком много попыток. Попробуйте через несколько минут.</string>
+    <string name="error_device_bound">Это устройство привязано к другому аккаунту Telegram. Сначала отвяжите его.</string>
+    <string name="error_auth_unavailable">Сервис подключения временно недоступен.</string>
+
+    <string name="cd_app_logo">Логотип Pomp HSK AI</string>
+    <string name="cd_copy_code">Скопировать код подключения</string>
+</resources>

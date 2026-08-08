@@ -1,0 +1,19 @@
+*.iml
+.gradle/
+local.properties
+.idea/
+.DS_Store
+build/
+captures/
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+
+# Signing material must never reach Git.
+keystore.properties
+*.jks
+*.keystore
+
+# Google Play service-account credentials must never reach Git.
+play-service-account*.json

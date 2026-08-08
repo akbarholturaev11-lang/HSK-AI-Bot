@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Default locale: Uzbek (Latin).
+    Russian lives in values-ru, Tajik in values-tg.
+    NOTE: the backend language code for Tajik is "tj", while the Android
+    resource qualifier is "tg" (ISO 639-1). LanguageCodes owns that mapping;
+    never rename the folder and never send "tg" to the API.
+-->
+<resources>
+    <string name="app_name">Pomp HSK AI</string>
+
+    <!-- Onboarding: language -->
+    <string name="onboarding_language_title">Tilni tanlang</string>
+    <string name="onboarding_language_subtitle">Kurs, tarjimalar va eslatmalar shu tilda bo\'ladi.</string>
+    <string name="language_uz">O\'zbekcha</string>
+    <string name="language_ru">Русский</string>
+    <string name="language_tj">Тоҷикӣ</string>
+    <string name="action_continue">Davom etish</string>
+
+    <!-- Onboarding: Telegram linking -->
+    <string name="link_title">Telegram hisobingizni ulang</string>
+    <string name="link_subtitle">Mavjud kursingiz, obunangiz va progressingiz shu yerga sinxronlanadi. Yangi hisob yaratilmaydi.</string>
+    <string name="link_step_1">Quyidagi kodni nusxalang</string>
+    <string name="link_step_2">Telegramni oching va kodni botga yuboring</string>
+    <string name="link_step_3">Botda \"Tasdiqlash\" tugmasini bosing</string>
+    <string name="link_code_label">Ulash kodi</string>
+    <string name="link_code_copied">Kod nusxalandi</string>
+    <string name="link_open_telegram">Telegramni ochish</string>
+    <string name="link_waiting">Tasdiqlashni kutmoqdamiz…</string>
+    <string name="link_expires_in">Kod amal qilish muddati: %1$s</string>
+    <string name="link_expired">Kod muddati tugadi. Yangi kod oling.</string>
+    <string name="link_new_code">Yangi kod olish</string>
+    <string name="link_success">Hisob ulandi</string>
+    <string name="link_telegram_missing">Telegram ilovasi topilmadi. Kodni brauzer orqali yuborishingiz mumkin.</string>
+    <string name="link_security_note">Kod havolaga qo\'shilmaydi. Uni faqat o\'zingiz botga yuborasiz.</string>
+
+    <!-- Synced account summary -->
+    <string name="synced_title">Hisobingiz ulandi</string>
+    <string name="synced_level">Daraja</string>
+    <string name="synced_access_paid">Obuna faol</string>
+    <string name="synced_access_free">Bepul rejim</string>
+
+    <!-- Main navigation -->
+    <string name="nav_today">Bugun</string>
+    <string name="nav_course">Kurs</string>
+    <string name="nav_practice">Mashq</string>
+    <string name="nav_ai">AI</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Profile / session -->
+    <string name="profile_logout">Chiqish</string>
+    <string name="profile_unlink_device">Bu qurilmani uzish</string>
+    <string name="profile_unlink_explain">Qurilma uziladi va keyingi safar Telegram orqali qayta ulanasiz.</string>
+
+    <!-- Shared states -->
+    <string name="state_loading">Yuklanmoqda…</string>
+    <string name="action_retry">Qayta urinish</string>
+    <string name="action_cancel">Bekor qilish</string>
+    <string name="action_close">Yopish</string>
+
+    <!-- Error copy mapped from stable server error codes -->
+    <string name="error_offline">Internet aloqasi yo\'q. Ulanishni tekshiring.</string>
+    <string name="error_timeout">Server javob bermadi. Qayta urinib ko\'ring.</string>
+    <string name="error_server">Serverda vaqtinchalik nosozlik. Birozdan so\'ng urinib ko\'ring.</string>
+    <string name="error_unknown">Kutilmagan xatolik yuz berdi.</string>
+    <string name="error_session_expired">Sessiya muddati tugadi. Telegram orqali qayta ulanish kerak.</string>
+    <string name="error_link_invalid">Kod noto\'g\'ri, eskirgan yoki allaqachon ishlatilgan.</string>
+    <string name="error_link_rate_limited">Juda ko\'p urinish bo\'ldi. Bir necha daqiqadan so\'ng urinib ko\'ring.</string>
+    <string name="error_device_bound">Bu qurilma boshqa Telegram hisobiga ulangan. Avval uni uzish kerak.</string>
+    <string name="error_auth_unavailable">Ulash xizmati vaqtincha ishlamayapti.</string>
+
+    <!-- Accessibility -->
+    <string name="cd_app_logo">Pomp HSK AI logotipi</string>
+    <string name="cd_copy_code">Ulash kodini nusxalash</string>
+</resources>

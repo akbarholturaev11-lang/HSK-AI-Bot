@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tajik. Android qualifier is "tg"; the backend language code stays "tj". -->
+<resources>
+    <string name="onboarding_language_title">Забонро интихоб кунед</string>
+    <string name="onboarding_language_subtitle">Курс, тарҷумаҳо ва ёдоварӣ бо ҳамин забон мешаванд.</string>
+    <string name="action_continue">Идома додан</string>
+
+    <string name="link_title">Ҳисоби Telegram-ро пайваст кунед</string>
+    <string name="link_subtitle">Курс, обуна ва пешрафти шумо ба ин ҷо ҳамоҳанг мешавад. Ҳисоби нав сохта намешавад.</string>
+    <string name="link_step_1">Рамзи зеринро нусха бардоред</string>
+    <string name="link_step_2">Telegram-ро кушоед ва рамзро ба бот фиристед</string>
+    <string name="link_step_3">Дар бот тугмаи «Тасдиқ»-ро пахш кунед</string>
+    <string name="link_code_label">Рамзи пайвастшавӣ</string>
+    <string name="link_code_copied">Рамз нусха шуд</string>
+    <string name="link_open_telegram">Кушодани Telegram</string>
+    <string name="link_waiting">Тасдиқро интизорем…</string>
+    <string name="link_expires_in">Муҳлати рамз: %1$s</string>
+    <string name="link_expired">Муҳлати рамз гузашт. Рамзи нав гиред.</string>
+    <string name="link_new_code">Гирифтани рамзи нав</string>
+    <string name="link_success">Ҳисоб пайваст шуд</string>
+    <string name="link_telegram_missing">Барномаи Telegram ёфт нашуд. Рамзро тавассути браузер фиристода метавонед.</string>
+    <string name="link_security_note">Рамз ба истинод илова намешавад. Шумо онро худатон ба бот мефиристед.</string>
+
+    <string name="synced_title">Ҳисоб пайваст шуд</string>
+    <string name="synced_level">Сатҳ</string>
+    <string name="synced_access_paid">Обуна фаъол</string>
+    <string name="synced_access_free">Реҷаи ройгон</string>
+
+    <string name="nav_today">Имрӯз</string>
+    <string name="nav_course">Курс</string>
+    <string name="nav_practice">Машқ</string>
+    <string name="nav_ai">AI</string>
+    <string name="nav_profile">Профил</string>
+
+    <string name="profile_logout">Баромадан</string>
+    <string name="profile_unlink_device">Ҷудо кардани ин дастгоҳ</string>
+    <string name="profile_unlink_explain">Дастгоҳ ҷудо мешавад ва дафъаи оянда тавассути Telegram аз нав пайваст мешавед.</string>
+
+    <string name="state_loading">Боргирӣ…</string>
+    <string name="action_retry">Такрор кардан</string>
+    <string name="action_cancel">Бекор кардан</string>
+    <string name="action_close">Пӯшидан</string>
+
+    <string name="error_offline">Пайвасти интернет нест. Пайвастро санҷед.</string>
+    <string name="error_timeout">Сервер ҷавоб надод. Аз нав кӯшиш кунед.</string>
+    <string name="error_server">Хатогии муваққатии сервер. Каме дертар кӯшиш кунед.</string>
+    <string name="error_unknown">Хатогии ғайричашмдошт рух дод.</string>
+    <string name="error_session_expired">Муҳлати сессия гузашт. Тавассути Telegram аз нав пайваст шавед.</string>
+    <string name="error_link_invalid">Рамз нодуруст, муҳлаташ гузашта ё аллакай истифода шудааст.</string>
+    <string name="error_link_rate_limited">Кӯшишҳо аз ҳад зиёд шуданд. Пас аз чанд дақиқа кӯшиш кунед.</string>
+    <string name="error_device_bound">Ин дастгоҳ ба ҳисоби дигари Telegram пайваст аст. Аввал онро ҷудо кунед.</string>
+    <string name="error_auth_unavailable">Хидмати пайвастшавӣ муваққатан дастрас нест.</string>
+
+    <string name="cd_app_logo">Логотипи Pomp HSK AI</string>
+    <string name="cd_copy_code">Нусхабардории рамзи пайвастшавӣ</string>
+</resources>

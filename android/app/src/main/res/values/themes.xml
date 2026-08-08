@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Compose owns the real theme. This XML theme only covers the window
+        before the first frame, so it uses the cream paper background instead
+        of the default Material blue/white flash.
+    -->
+    <style name="Theme.PompHskAi" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/pomp_paper</item>
+        <item name="android:statusBarColor">@color/pomp_paper</item>
+        <item name="android:navigationBarColor">@color/pomp_paper</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
