@@ -44,6 +44,15 @@ Cover at least:
 
 ---
 
+## Desktop DMG/EXE Parity Rule
+
+- macOS DMG and Windows EXE desktop apps are a paired product and must stay functionally aligned.
+- If a feature, user-visible behavior, UI flow, backend/API contract, setting, security fix, or update behavior is added or changed in one desktop app, implement and test the corresponding change for the other app in the same task, adapted to that operating system.
+- Do not mark the task complete or commit a one-sided desktop change unless the user explicitly limits the request to one platform.
+- If exact parity is technically impossible because of an OS-specific limitation, document the reason, provide the closest safe equivalent for the other platform, and report the remaining difference clearly.
+
+---
+
 ## Release Feedback After Major Updates
 
 After every major user-visible update, Codex must prepare a release feedback draft for the admin in the final handoff. Do not finish a major visible update without this draft.
