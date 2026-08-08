@@ -65,6 +65,29 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "desktop_progress_sync_succeeded",
     "desktop_progress_sync_failed",
     "desktop_update_installed",
+    # Native Android client. Kept deliberately separate from the desktop names
+    # so admin statistics can distinguish Android from macOS/Windows instead of
+    # silently merging two different products into one funnel.
+    "android_link_started",
+    "android_session_linked",
+    "android_first_open",
+    "android_app_opened",
+    "android_active_day",
+    "android_update_installed",
+    "android_course_opened",
+    "android_lesson_started",
+    "android_lesson_completed",
+    "android_practice_started",
+    "android_practice_completed",
+    "android_voice_started",
+    "android_voice_completed",
+    "android_widget_onboarding_viewed",
+    "android_widget_pin_requested",
+    "android_widget_pinned",
+    "android_widget_opened",
+    "android_notification_opened",
+    "android_checkout_opened",
+    "android_play_purchase_verified",
 )
 
 CLIENT_COURSE_MINIAPP_EVENT_NAMES = (

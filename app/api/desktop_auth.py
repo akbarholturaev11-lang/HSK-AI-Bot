@@ -117,6 +117,14 @@ async def _validated_payload(
         raise DesktopAuthError("desktop_request_invalid", status_code=422) from exc
 
 
+# Shared with the Android bearer adapter (app/api/android_auth.py). The request
+# validation, bearer parsing and error contract are deliberately identical for
+# every native client, so they are exposed instead of being copied.
+bearer_access_token = _access_token
+auth_error_response = _error
+validated_auth_payload = _validated_payload
+
+
 def create_desktop_auth_router(
     *,
     session_factory,
