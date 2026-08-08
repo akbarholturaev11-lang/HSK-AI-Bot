@@ -253,17 +253,37 @@ Files touched:
   `android/**` (yangi), `.github/workflows/android-ci.yml` (yangi),
   `ANDROID_IMPLEMENTATION_PLAN.md` (yangi)
 
+Deep-link kontrakti (qaror):
+- `pomp-hsk-ai://lesson/{n}` QO'LLAB-QUVVATLANADI. Sabab: `motivation_reminder_service`
+  allaqachon `target_level` + `target_lesson` + `autostart` bilan aniq darsga
+  olib boradigan eslatma yuboradi (D1 recovery, tugallanmagan dars) — Phase H'da
+  bular Android bildirishnomasiga aylanadi. Chegara backend'dan: `1..500`
+  (`app/api/desktop_course.py`).
+- Lekin **resolve ≠ authorize**: `AppDestination.Lesson` faqat raqam olib yuradi;
+  navigatsiya server progress/entitlement'ini tekshirmasdan darsni ochmaydi.
+- Allowlist ANIQ-ARITY (desktop klientdagi `match path` kabi): ortiqcha segment
+  butun URI'ni bekor qiladi (`lesson/current/extra` → null).
+
+Verification (2026-08-08, lokal Mac):
+- `pytest tests/test_android_auth_api.py tests/test_desktop_auth_service.py
+  tests/test_desktop_course_api.py tests/test_desktop_subscription_api.py`
+  → **56 passed, 19 subtests passed**.
+- `./gradlew testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL** (26 executed).
+- `./gradlew lintDebug` → **BUILD SUCCESSFUL**.
+- `./gradlew assembleDebug` → **BUILD SUCCESSFUL**.
+- Gradle 8.14.5 + AGP 8.9.1 + JDK 17; wrapper (jar bilan) repoda commit qilingan.
+
 Risk:
 - To'lov/obuna/XP/progress/kurs kontenti/Mini App/macOS/Windows tegilmadi.
   Migratsiya yo'q, Alembic head hamon `0066_desktop_foundation`.
-- **TESTLAR HALI YUGURTILMAGAN** — `tests/test_android_auth_api.py` yozilgan va
-  sintaksis tekshirilgan, lekin ishga tushirilmagan. Deploydan oldin lokalda yoki
-  CI'da `pytest tests/test_android_auth_api.py tests/test_desktop_auth_service.py`
-  majburiy.
-- Android kodi ham hali kompilyatsiya qilinmagan; birinchi Gradle sync'da
-  versiya mosliklari tuzatilishi mumkin.
-- `gradle/wrapper/gradle-wrapper.jar` repoda yo'q (binary) — Android Studio yoki
-  CI `gradle wrapper` bilan yaratadi.
+- To'liq Playwright e2e to'plami bu ish doirasida yugurtilmadi (unda avvaldan
+  4 ta baseline failure bor).
+- Qurilmada real Telegram ulash oqimi hali sinalmagan (faqat unit/API darajasi).
+
+Qolgan warninglar (blocker emas, keyin tozalanadi):
+- `resourceConfigurations` AGP'da deprecated (`androidResources.localeFilters`).
+- `Locale(String, String)` konstruktori testda deprecated.
+- Gradle 9.0 deprecation ogohlantirishlari.
 
 Follow-up:
 - `DESKTOP_AUTH_CONTRACT.md` ning "Device-link flow" 4-bandi hamon eski
