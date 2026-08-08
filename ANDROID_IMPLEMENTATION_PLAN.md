@@ -96,10 +96,16 @@ emit a non-sensitive diagnostic event, and **never auto-grade as correct**.
 ### 3.4 Access policy — `desktop_course_service.apply_course_v3_access_policy`
 
 - `FREE_COURSE_LESSONS_PER_LEVEL = 2` — first two mini-lessons fully free.
-- Part `FREE_COURSE_LESSONS_PER_LEVEL + 1` when it is the current lesson:
-  `preview_half = true`, `completion_allowed = false`,
+- The half preview is bound to the **learner's position**, not to the level.
+  Part `FREE + 1` only gets `preview_half = true` while it is the learner's
+  *current* lesson, i.e. exactly when `completed == FREE`. Before that it is an
+  ordinary `locked_premium` node, so a fresh account never sees a preview.
+  When shown: `completion_allowed = false`,
   `completion_error = "free_feature_limit_reached"`.
 - Everything later: `locked_premium = true`, `completion_allowed = false`.
+- A lesson inside the free allowance that has not been reached yet is locked by
+  progress, not payment: `completion_error = "course_lesson_not_unlocked"` and
+  no `locked_premium` flag. The UI must not show a paywall for those.
 - Server decides. The client renders entitlement; it never invents unlocks.
   An offline cache may only ever be a **conservative** snapshot of the last
   known server entitlement.

@@ -111,6 +111,10 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         progress = await CourseProgressRepository(session).get_by_user_id(1)
         return int(progress.completed_lessons_count or 0)
 
+    @staticmethod
+    def _flatten(data):
+        return [lesson for unit in data["units"] for lesson in unit["lessons"]]
+
     async def test_map_returns_canonical_progress_and_server_access_state(self):
         async with self.sessions() as session:
             token = await self._token(session)
@@ -121,22 +125,68 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(0, data["progress"]["completed"])
         self.assertFalse(data["user"]["is_paid"])
 
-        lessons = [lesson for unit in data["units"] for lesson in unit["lessons"]]
+        lessons = self._flatten(data)
         # Course v3 is split into mini-parts; the client must never hardcode
         # this count, so the map is the only source of truth.
         self.assertEqual(63, len(lessons))
-
-        # Free policy is server-owned: two free lessons, then a half preview
-        # that cannot be completed, then hard locks.
         self.assertEqual(2, FREE_COURSE_LESSONS_PER_LEVEL)
+
+        # Lesson 1 is the current one and is fully free.
+        self.assertEqual("current", lessons[0]["status"])
         self.assertTrue(lessons[0]["completion_allowed"])
-        preview = lessons[FREE_COURSE_LESSONS_PER_LEVEL]
-        self.assertTrue(preview.get("preview_half"))
-        self.assertFalse(preview["completion_allowed"])
-        self.assertEqual("free_feature_limit_reached", preview["completion_error"])
-        locked = lessons[FREE_COURSE_LESSONS_PER_LEVEL + 1]
-        self.assertTrue(locked.get("locked_premium"))
-        self.assertFalse(locked["completion_allowed"])
+
+        # Lesson 2 is inside the free allowance but has not been reached yet,
+        # so it is locked by progress, not by payment.
+        self.assertEqual("locked", lessons[1]["status"])
+        self.assertFalse(lessons[1]["completion_allowed"])
+        self.assertEqual(
+            "course_lesson_not_unlocked",
+            lessons[1]["completion_error"],
+        )
+        self.assertNotIn("locked_premium", lessons[1])
+
+        # The first premium lesson is a hard lock while it is still out of
+        # reach. The half preview is NOT shown here.
+        third = lessons[FREE_COURSE_LESSONS_PER_LEVEL]
+        self.assertTrue(third["locked_premium"])
+        self.assertIsNone(third.get("preview_half"))
+        self.assertFalse(third["completion_allowed"])
+        self.assertEqual("free_feature_limit_reached", third["completion_error"])
+
+    async def test_half_preview_appears_only_once_the_learner_reaches_it(self):
+        """`preview_half` is bound to the learner's position, not to the level.
+
+        The server only offers it when the premium lesson is the learner's
+        *current* one, i.e. exactly after the free allowance is used up.
+        """
+
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            for order in range(1, FREE_COURSE_LESSONS_PER_LEVEL + 1):
+                await service.complete(
+                    token,
+                    lesson_order=order,
+                    event_id=f"android:reach{order:031d}",
+                )
+            lessons = self._flatten(await service.course_map(token))
+
+        for index in range(FREE_COURSE_LESSONS_PER_LEVEL):
+            self.assertEqual("done", lessons[index]["status"])
+
+        third = lessons[FREE_COURSE_LESSONS_PER_LEVEL]
+        self.assertEqual("current", third["status"])
+        self.assertTrue(third["preview_half"])
+        self.assertNotIn("locked_premium", third)
+        # Visible, but the preview still cannot finish the lesson.
+        self.assertFalse(third["completion_allowed"])
+        self.assertEqual("free_feature_limit_reached", third["completion_error"])
+
+        # Everything past the preview stays hard-locked.
+        fourth = lessons[FREE_COURSE_LESSONS_PER_LEVEL + 1]
+        self.assertTrue(fourth["locked_premium"])
+        self.assertIsNone(fourth.get("preview_half"))
+        self.assertFalse(fourth["completion_allowed"])
 
     async def test_utc_plus_zero_timezone_is_stored_not_swallowed(self):
         async with self.sessions() as session:
