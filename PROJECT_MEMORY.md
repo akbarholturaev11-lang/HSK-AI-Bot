@@ -207,6 +207,73 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-08 — Android native klient: auth adapteri + loyiha poydevori (Phase A-C)
+
+Changed:
+- **Android auth = mavjud yadro, dublikat YO'Q.** `DesktopAuthService` o'zgarmadi;
+  faqat `NATIVE_PLATFORMS = DESKTOP_PLATFORMS | {"android"}` qo'shildi va
+  `start_link` shunga qaraydi. `DESKTOP_PLATFORMS` eski ma'nosida qoldi
+  (downloads / release manifest / admin desktop statistikasi Android'ni sanab
+  yubormasligi uchun). **MIGRATSIYA YO'Q** — `platform` allaqachon `String(16)`.
+- Yangi yupqa transport: `app/api/android_auth.py` →
+  `/api/v3/android-auth/{link/start,link/status,refresh,revoke}` +
+  `/api/v3/android/bootstrap`. Validatsiya/bearer/xato konvertlari
+  `desktop_auth.py` dan qayta ishlatiladi (3 ta public alias qo'shildi).
+  Android `initData` ishlatmaydi, faqat `Authorization: Bearer`.
+- **Bot bagi tuzatildi**: `handlers/desktop_auth.py` da `"Mac" if macos else
+  "Windows"` yorlig'i Android telefonni "Windows" deb ko'rsatardi. Endi
+  `_PLATFORM_LABELS` map + `_copy_key()`; `_COPY` kalitlari `confirm_desktop`/
+  `confirm_mobile`/`ok_desktop`/`ok_mobile` ga bo'lindi, 3 tilda parallel.
+  `enter_code`/`invalid`/`attempts_exhausted` matnlari neytral qilindi (platform
+  hali noma'lum bo'lgan bosqich). `approve_link()` javobiga `platform` qo'shildi.
+- **Xavfsizlik xossalari saqlandi**: kod deep-link'ga QO'SHILMAYDI
+  (`?start=desktop_link`), qo'lda yuboriladi; single-use, expiry, polling secret,
+  row lock, constant-time compare, installation binding, refresh rotatsiya +
+  reuse detection — hammasi o'sha yadroda.
+- **Analitika ajratildi**: `analytics_prefix(platform)` — Android
+  `android_session_linked`/`android_first_open`/`android_app_opened`/
+  `android_update_installed` yozadi, dedupe key'lari ham `android-*`.
+  Desktop nomlari BAYT-BA-BAYT o'zgarmadi. Allowlist'ga 20 ta `android_*` nomi
+  qo'shildi (keyingi fazalar uchun ham).
+- **`android/` moduli** (yangi): Kotlin + Jetpack Compose, `compileSdk`/
+  `targetSdk` 36, `minSdk` 26, `com.pomp.hskai`. WebView YO'Q. Course v3 dizayn
+  tokenlari, UZ default + `values-ru` + `values-tg`, Keystore AES-GCM credential
+  store (refresh token hech qachon ochiq saqlanmaydi), single-flight refresh,
+  OkHttp origin guard (HTTPS + bitta host + redirect off), deep-link allowlist.
+- `.github/workflows/android-ci.yml` (yangi) — desktop-release.yml tegilmadi.
+
+Why:
+- Rasmiy Google Play ilovasi kerak, lekin u alohida mahsulot/akkaunt/kurs
+  bo'lmasligi shart: bitta Telegram hisobi, bitta obuna, bitta progress.
+
+Files touched:
+- `app/services/desktop_auth_service.py`, `app/api/android_auth.py` (yangi),
+  `app/api/desktop_auth.py`, `app/bot/handlers/desktop_auth.py`, `app/main.py`,
+  `app/db/models/course_miniapp_event.py`, `tests/test_android_auth_api.py` (yangi),
+  `android/**` (yangi), `.github/workflows/android-ci.yml` (yangi),
+  `ANDROID_IMPLEMENTATION_PLAN.md` (yangi)
+
+Risk:
+- To'lov/obuna/XP/progress/kurs kontenti/Mini App/macOS/Windows tegilmadi.
+  Migratsiya yo'q, Alembic head hamon `0066_desktop_foundation`.
+- **TESTLAR HALI YUGURTILMAGAN** — `tests/test_android_auth_api.py` yozilgan va
+  sintaksis tekshirilgan, lekin ishga tushirilmagan. Deploydan oldin lokalda yoki
+  CI'da `pytest tests/test_android_auth_api.py tests/test_desktop_auth_service.py`
+  majburiy.
+- Android kodi ham hali kompilyatsiya qilinmagan; birinchi Gradle sync'da
+  versiya mosliklari tuzatilishi mumkin.
+- `gradle/wrapper/gradle-wrapper.jar` repoda yo'q (binary) — Android Studio yoki
+  CI `gradle wrapper` bilan yaratadi.
+
+Follow-up:
+- `DESKTOP_AUTH_CONTRACT.md` ning "Device-link flow" 4-bandi hamon eski
+  `?start=desktop_<code>` oqimini yozadi — yangilash kerak.
+- Phase D-L qoldi: Bugun/Kurs, native dars renderer (14 karta turi), mashqlar,
+  AI Voice, Glance widget + bildirishnomalar, profil, Google Play Billing
+  (kodda umuman yo'q), offline, admin statistikasida Android ajratish.
+- Play Console product ID, service-account, signing keystore — tashqi bloker,
+  kod yo'li fail-closed holatda tayyor.
+
 ### 2026-07-26 — Dars yakuni reklamasiga ixtiyoriy tashqi CTA
 
 Changed:
