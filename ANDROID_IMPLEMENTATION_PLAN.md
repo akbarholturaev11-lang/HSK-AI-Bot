@@ -236,10 +236,21 @@ derives from local cached state plus the current time slot, so a delayed
 background refresh never makes it useless. Roughly hourly WorkManager refresh,
 plus immediate refresh after bootstrap, course sync, lesson completion,
 XP/streak change, language change and login/logout. No permanent foreground
-service, no exact-alarm abuse. Deep links are a fixed internal allowlist
-(`pomp-hsk-ai://lesson/current`, `…/practice/mistakes`, `…/practice/recognition`,
-`…/voice`, `…/course`) — never arbitrary URLs from a payload. Widget state is
-cleared on logout and never contains tokens.
+service, no exact-alarm abuse. Widget actions use the fixed subset
+`pomp-hsk-ai://lesson/current`, `…/practice/<tool>`, `…/voice`, `…/course` —
+never arbitrary URLs from a payload. Widget state is cleared on logout and
+never contains tokens.
+
+**Deep links.** The allowlist is exact-arity, mirroring the desktop client's
+exact path matching: a trailing segment invalidates the whole URI instead of
+resolving to its prefix. `pomp-hsk-ai://lesson/<n>` **is** addressable, because
+the existing reminder flows already target an exact lesson
+(`motivation_reminder_service` sends `target_level` + `target_lesson` with
+`autostart`) and those become Android notifications in Phase H. The number is
+bounded to the backend contract `1..500` (`app/api/desktop_course.py`).
+Resolving a URI is never authorisation: `AppDestination.Lesson` carries only an
+order, and navigation must confirm progress and entitlement against the server
+before showing anything.
 
 **Notifications.** At most ~1–2 useful reminders per day by default, respecting
 existing user notification settings and avoiding duplication with the Telegram
