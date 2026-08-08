@@ -33,6 +33,9 @@ from app.services.admin_stats_service import feature_usage_stats, top_referrers
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
+from app.services.desktop_release_manifest_service import (
+    resolve_desktop_latest_versions,
+)
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.portfolio_service import PortfolioService
 from app.services.payment_qr_code_service import (
@@ -2198,10 +2201,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     desktop_snapshot = await DesktopAnalyticsService(session).snapshot(
         now=now,
         since=week_ago,
-        latest_versions={
-            "macos": getattr(settings, "DESKTOP_MAC_VERSION", ""),
-            "windows": getattr(settings, "DESKTOP_WINDOWS_VERSION", ""),
-        },
+        latest_versions=await resolve_desktop_latest_versions(settings),
     )
     desktop_text = DesktopAnalyticsService.admin_text(desktop_snapshot)
 

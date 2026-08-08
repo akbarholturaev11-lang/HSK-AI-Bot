@@ -1238,9 +1238,9 @@
       });
   }
 
-  function prepareTransfer(destination, platform) {
+  function prepareTransfer(destination, platform, transferUrl) {
     if (destination === "direct") return Promise.resolve("");
-    var url = cleanTransferUrl(state.transferUrls[platform], platform);
+    var url = cleanTransferUrl(transferUrl, platform);
     if (!url) {
       var error = new Error("invalid_success_response");
       error.code = "invalid_success_response";
@@ -1279,7 +1279,9 @@
       markDownloadStarted(platform, source, id, transport);
     }
     closeDestinationChooser(false);
-    showSuccess(platform, transport);
+    syncMountedAdPromos();
+    dismissAdPromo();
+    showSuccess(platform, transport, source);
     try {
       var app = telegramWebApp();
       if (app && app.HapticFeedback) {
@@ -1301,42 +1303,34 @@
 
     var controller = null;
     var timeoutId = 0;
-    var completedTransport = "";
-
-    prepareTransfer(destination, platform)
-      .then(function (transport) {
-        completedTransport = transport;
-        controller =
-          typeof window.AbortController === "function"
-            ? new window.AbortController()
-            : null;
-        var requestOptions = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Telegram-Init-Data": telegramInitData()
-          },
-          body: JSON.stringify({
-            platform: platform,
-            source: source,
-            event_id: id,
-            language: language()
-          })
-        };
-        if (controller) requestOptions.signal = controller.signal;
-        var timeoutPromise = new Promise(function (_, reject) {
-          timeoutId = window.setTimeout(function () {
-            if (controller) controller.abort();
-            var timeoutError = new Error("desktop_download_timeout");
-            timeoutError.code = "desktop_download_timeout";
-            reject(timeoutError);
-          }, REQUEST_TIMEOUT_MS);
-        });
-        return Promise.race([
-          fetch(REQUEST_ENDPOINT, requestOptions),
-          timeoutPromise
-        ]);
+    controller =
+      typeof window.AbortController === "function"
+        ? new window.AbortController()
+        : null;
+    var requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": telegramInitData()
+      },
+      body: JSON.stringify({
+        platform: platform,
+        source: source,
+        event_id: id,
+        language: language()
       })
+    };
+    if (controller) requestOptions.signal = controller.signal;
+    var timeoutPromise = new Promise(function (_, reject) {
+      timeoutId = window.setTimeout(function () {
+        if (controller) controller.abort();
+        var timeoutError = new Error("desktop_download_timeout");
+        timeoutError.code = "desktop_download_timeout";
+        reject(timeoutError);
+      }, REQUEST_TIMEOUT_MS);
+    });
+
+    Promise.race([fetch(REQUEST_ENDPOINT, requestOptions), timeoutPromise])
       .then(function (response) {
         return response
           .json()
@@ -1359,9 +1353,9 @@
       })
       .then(function (data) {
         window.clearTimeout(timeoutId);
-        return completedTransport
-          ? completedTransport
-          : launchTrackedDownload(data);
+        return destination === "direct"
+          ? launchTrackedDownload(data)
+          : prepareTransfer(destination, platform, data.transfer_url);
       })
       .then(function (transport) {
         completeDownload(platform, source, id, transport, true);
@@ -1370,16 +1364,6 @@
         window.clearTimeout(timeoutId);
         state.pendingPlatform = "";
         state.pendingDestination = "";
-        if (completedTransport) {
-          completeDownload(
-            platform,
-            source,
-            id,
-            completedTransport,
-            false
-          );
-          return;
-        }
         if (error && error.code === "desktop_download_share_cancelled") {
           state.destinationMessage = text().shareCancelled;
           state.destinationMessageKind = "neutral";
@@ -1401,11 +1385,12 @@
       });
   }
 
-  function showSuccess(platform, transport) {
+  function showSuccess(platform, transport, source) {
     if (!promoRoot) return;
     var copy = text();
     state.promoOpen = true;
     promoRoot.replaceChildren();
+    promoRoot.dataset.source = source || "";
     promoRoot.hidden = false;
 
     var backdrop = element("button", "pdd-promo-backdrop");
@@ -1712,19 +1697,47 @@
     host.replaceChildren();
   }
 
-  function renderAdTrigger(button) {
-    if (!button) return;
+  function buildAdDownloadBlock() {
     var copy = text();
-    var badge = element("span", "pdd-ad-trigger-badge");
+    var block = element("section", "pdd-ad-download");
+    block.dataset.pddAdDownload = "true";
+
+    var heading = element("div", "pdd-ad-download-head");
+    var badge = element("span", "pdd-ad-download-badge");
     var avatar = element("img", "");
     avatar.src = "/assets/hsk-ai-avatar.webp";
     avatar.alt = "";
     avatar.setAttribute("aria-hidden", "true");
     badge.appendChild(avatar);
-    var labels = element("span", "pdd-ad-trigger-copy");
+    heading.appendChild(badge);
+    var labels = element("span", "pdd-ad-download-copy");
     labels.appendChild(element("strong", "", copy.adEntry));
     labels.appendChild(element("small", "", copy.adEntrySub));
-    button.replaceChildren(badge, labels, icon("chevron-right"));
+    heading.appendChild(labels);
+    block.appendChild(heading);
+
+    var actions = buildActions("ad_promo");
+    actions.classList.add("pdd-ad-download-actions");
+    block.appendChild(actions);
+    block.appendChild(buildInlineStatus());
+    return block;
+  }
+
+  function renderAdActions(host, meta) {
+    if (!host) return;
+    if (!host.querySelector("[data-pdd-ad-download]")) {
+      host.replaceChildren(buildAdDownloadBlock());
+    }
+    host.classList.add("pdd-ad-actions-host");
+    host.hidden = false;
+    trackEntrySeen("ad_promo", meta);
+    syncControls();
+  }
+
+  function hideAdActions(host) {
+    if (!host) return;
+    host.hidden = true;
+    host.replaceChildren();
   }
 
   function syncAdPromo(visible) {
@@ -1734,55 +1747,38 @@
       dismissAdPromo();
       return;
     }
-    if (host.firstChild && !host.hidden) return;
-
-    var button = element("button", "pdd-ad-trigger");
-    button.type = "button";
-    renderAdTrigger(button);
-    button.addEventListener("click", function () {
-      if (
-        showPromo(
-          "ad_promo",
-          { placement: "course_ad_end" },
-          true
-        )
-      ) {
-        dismissAdPromo();
-      }
-    });
-    host.replaceChildren(button);
-    host.hidden = false;
-    trackEntrySeen("ad_promo", { placement: "course_ad_end" });
+    renderAdActions(host, { placement: "course_ad_end" });
   }
 
   function syncMountedAdPromos() {
     state.adPromoMounts = state.adPromoMounts.filter(function (mount) {
-      if (!mount.button || !mount.button.isConnected) return false;
+      if (!mount.host || !mount.host.isConnected) return false;
       var visible = shouldShowPromo("ad_promo");
-      mount.button.hidden = !visible;
-      if (visible) trackEntrySeen("ad_promo", mount.meta);
+      if (visible) {
+        renderAdActions(mount.host, mount.meta);
+      } else {
+        hideAdActions(mount.host);
+      }
       return true;
     });
   }
 
-  function mountAdPromoTrigger(button, meta) {
-    if (!button) return;
+  function mountAdPromoTrigger(host, meta) {
+    if (!host) return;
     var mount = null;
     state.adPromoMounts.forEach(function (candidate) {
-      if (candidate.button === button) mount = candidate;
+      if (candidate.host === host) mount = candidate;
     });
     if (!mount) {
-      mount = { button: button, meta: {} };
+      mount = { host: host, meta: {} };
       state.adPromoMounts.push(mount);
-      button.classList.add("pdd-ad-trigger", "pdd-ad-trigger--embedded");
-      button.addEventListener("click", function () {
-        showPromo("ad_promo", mount.meta, true);
-      });
     }
     mount.meta = promoMeta(meta);
-    renderAdTrigger(button);
-    button.hidden = !shouldShowPromo("ad_promo");
-    if (!button.hidden) trackEntrySeen("ad_promo", mount.meta);
+    if (shouldShowPromo("ad_promo")) {
+      renderAdActions(host, mount.meta);
+    } else {
+      hideAdActions(host);
+    }
   }
 
   function loadAvailability() {

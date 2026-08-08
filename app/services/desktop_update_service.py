@@ -2,24 +2,24 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from functools import total_ordering
 from typing import Any
 from urllib.parse import urlsplit
+
+from app.services.desktop_release_manifest_service import (
+    DesktopReleaseManifestService,
+)
+from app.services.desktop_semver import parse_desktop_semver
 
 
 DESKTOP_UPDATE_TARGET_ARCHES = {
     "darwin": frozenset({"aarch64", "x86_64"}),
-    "windows": frozenset({"aarch64", "i686", "x86_64"}),
+    # Release CI currently produces one Windows x64 NSIS/updater artifact.
+    "windows": frozenset({"x86_64"}),
 }
 DESKTOP_UPDATE_SUFFIXES = {
     "darwin": ".app.tar.gz",
     "windows": ".exe",
 }
-_SEMVER_CORE_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
-    r"(?:-([^+]+))?(?:\+(.+))?$"
-)
-_SEMVER_IDENTIFIER_RE = re.compile(r"^[0-9A-Za-z-]+$")
 _SIGNATURE_RE = re.compile(r"^[A-Za-z0-9+/=_-]+$")
 
 
@@ -28,87 +28,6 @@ class DesktopUpdateError(ValueError):
         super().__init__(code)
         self.code = code
         self.status_code = status_code
-
-
-@total_ordering
-@dataclass(frozen=True)
-class DesktopSemVer:
-    major: int
-    minor: int
-    patch: int
-    prerelease: tuple[str, ...] = ()
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, DesktopSemVer):
-            return NotImplemented
-        return (
-            self.major,
-            self.minor,
-            self.patch,
-            self.prerelease,
-        ) == (
-            other.major,
-            other.minor,
-            other.patch,
-            other.prerelease,
-        )
-
-    def __lt__(self, other: object) -> bool:
-        if not isinstance(other, DesktopSemVer):
-            return NotImplemented
-        own_core = (self.major, self.minor, self.patch)
-        other_core = (other.major, other.minor, other.patch)
-        if own_core != other_core:
-            return own_core < other_core
-        if not self.prerelease:
-            return False
-        if not other.prerelease:
-            return True
-        for own_identifier, other_identifier in zip(
-            self.prerelease,
-            other.prerelease,
-        ):
-            if own_identifier == other_identifier:
-                continue
-            own_numeric = own_identifier.isdigit()
-            other_numeric = other_identifier.isdigit()
-            if own_numeric and other_numeric:
-                return int(own_identifier) < int(other_identifier)
-            if own_numeric != other_numeric:
-                return own_numeric
-            return own_identifier < other_identifier
-        return len(self.prerelease) < len(other.prerelease)
-
-
-def parse_desktop_semver(value: str) -> DesktopSemVer:
-    normalized = str(value or "").strip()
-    if not normalized or len(normalized) > 128:
-        raise ValueError("invalid_semver")
-    match = _SEMVER_CORE_RE.fullmatch(normalized)
-    if not match:
-        raise ValueError("invalid_semver")
-
-    prerelease_raw = match.group(4)
-    build_raw = match.group(5)
-    prerelease = tuple(prerelease_raw.split(".")) if prerelease_raw else ()
-    build = tuple(build_raw.split(".")) if build_raw else ()
-    for identifier in (*prerelease, *build):
-        if not identifier or not _SEMVER_IDENTIFIER_RE.fullmatch(identifier):
-            raise ValueError("invalid_semver")
-    if any(
-        identifier.isdigit()
-        and len(identifier) > 1
-        and identifier.startswith("0")
-        for identifier in prerelease
-    ):
-        raise ValueError("invalid_semver")
-
-    return DesktopSemVer(
-        major=int(match.group(1)),
-        minor=int(match.group(2)),
-        patch=int(match.group(3)),
-        prerelease=prerelease,
-    )
 
 
 @dataclass(frozen=True)
@@ -130,8 +49,17 @@ class DesktopUpdateRelease:
 class DesktopUpdateService:
     """Build a public Tauri manifest from fail-closed release settings."""
 
-    def __init__(self, settings_obj: Any):
+    def __init__(
+        self,
+        settings_obj: Any,
+        *,
+        release_manifest_service: DesktopReleaseManifestService | None = None,
+    ):
         self.settings = settings_obj
+        self.release_manifest_service = (
+            release_manifest_service
+            or DesktopReleaseManifestService(settings_obj)
+        )
 
     @staticmethod
     def _text(value: Any, *, max_length: int) -> str:
@@ -217,7 +145,21 @@ class DesktopUpdateService:
             notes=notes,
         )
 
-    def manifest(
+    async def _release(self, target: str) -> DesktopUpdateRelease | None:
+        if self.release_manifest_service.configured:
+            manifest = await self.release_manifest_service.resolve()
+            platform = manifest.platform(target) if manifest else None
+            if not manifest or not platform:
+                return None
+            return DesktopUpdateRelease(
+                version=manifest.version,
+                url=platform.update_url,
+                signature=platform.signature,
+                notes=manifest.notes,
+            )
+        return self._configured_release(target)
+
+    async def manifest(
         self,
         *,
         target: str,
@@ -246,7 +188,7 @@ class DesktopUpdateService:
 
         if not bool(getattr(self.settings, "DESKTOP_UPDATES_ENABLED", False)):
             return None
-        release = self._configured_release(target)
+        release = await self._release(target)
         if not release:
             return None
         latest = parse_desktop_semver(release.version)

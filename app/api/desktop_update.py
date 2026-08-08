@@ -7,6 +7,9 @@ from app.services.desktop_update_service import (
     DesktopUpdateError,
     DesktopUpdateService,
 )
+from app.services.desktop_release_manifest_service import (
+    DesktopReleaseManifestService,
+)
 
 
 _NO_STORE_HEADERS = {"Cache-Control": "no-store"}
@@ -20,9 +23,16 @@ def _error_response(error: DesktopUpdateError) -> JSONResponse:
     )
 
 
-def create_desktop_update_router(*, settings_obj) -> APIRouter:
+def create_desktop_update_router(
+    *,
+    settings_obj,
+    release_manifest_service: DesktopReleaseManifestService | None = None,
+) -> APIRouter:
     router = APIRouter(tags=["desktop-update"])
-    service = DesktopUpdateService(settings_obj)
+    service = DesktopUpdateService(
+        settings_obj,
+        release_manifest_service=release_manifest_service,
+    )
 
     @router.get(
         "/api/v3/desktop/update/{target}/{arch}/{current_version}",
@@ -34,7 +44,7 @@ def create_desktop_update_router(*, settings_obj) -> APIRouter:
         current_version: str,
     ):
         try:
-            manifest = service.manifest(
+            manifest = await service.manifest(
                 target=target,
                 arch=arch,
                 current_version=current_version,

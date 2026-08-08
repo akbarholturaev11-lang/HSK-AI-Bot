@@ -285,6 +285,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
     def test_desktop_installer_flow_is_direct_and_available_on_all_ad_surfaces(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         download = (BASE / "desktop-download.js").read_text(encoding="utf-8")
+        download_css = (BASE / "desktop-download.css").read_text(encoding="utf-8")
         ads = (BASE / "ads.js").read_text(encoding="utf-8")
         landing = Path("app/static/desktop-download.html").read_text(encoding="utf-8")
         landing_js = Path("app/static/desktop-download-page.js").read_text(
@@ -312,6 +313,26 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('id="ad-desktop"', course)
         self.assertIn('queuePromo("lesson_end_promo"', course)
         self.assertIn("mountAdPromoTrigger", ads)
+        self.assertIn('<div class="caa-desktop" hidden></div>', ads)
+        self.assertNotIn('<button class="caa-desktop"', ads)
+        self.assertLess(ads.index('caa-pay"></button>'), ads.index('caa-cont"></button>'))
+        self.assertLess(
+            ads.index('caa-cont"></button>'),
+            ads.index('<div class="caa-desktop" hidden></div>'),
+        )
+        self.assertIn('var block = element("section", "pdd-ad-download")', download)
+        self.assertIn('actions.classList.add("pdd-ad-download-actions")', download)
+        self.assertIn('buildOsButton("macos", source)', download)
+        self.assertIn('buildOsButton("windows", source)', download)
+        self.assertNotIn('element("button", "pdd-ad-trigger")', download)
+        self.assertIn('prepareTransfer(destination, platform, data.transfer_url)', download)
+        self.assertLess(
+            download.index("fetch(REQUEST_ENDPOINT, requestOptions)"),
+            download.index("prepareTransfer(destination, platform, data.transfer_url)"),
+        )
+        self.assertIn('z-index: 9101', download_css)
+        self.assertIn('z-index: 9102', download_css)
+        self.assertIn("z-index:9000", ads)
         self.assertIn('href="/desktop-download-page.css', landing)
         self.assertIn('src="/desktop-download-page.js', landing)
         self.assertIn('src="/assets/hsk-ai-avatar.webp"', landing)
@@ -334,11 +355,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260802-3", html, page
+                "/course_v3_data/desktop-download.css?v=20260809-1", html, page
             )
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260802-3", html, page
+                "/course_v3_data/desktop-download.js?v=20260809-1", html, page
             )
+            self.assertIn("/course_v3_data/ads.js?v=20260809-1", html, page)
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")

@@ -641,7 +641,7 @@
 
       const steps=[
         ["So'rov",desktopUsers(funnel,"download_requested")],
-        ["Yuklash qabul qilindi",desktopUsers(funnel,"download_started")],
+        ["Yuklash/ulashish ochildi",desktopUsers(funnel,"download_started")],
         ["Fayl URL ochildi",desktopUsers(funnel,"link_clicked")],
         ["Akkaunt ulandi",desktopUsers(funnel,"session_linked")],
         ["First open",desktopUsers(funnel,"verified_first_open")]
@@ -682,7 +682,7 @@
           <tr><td><b>Eskirgan versiya</b></td><td class="r" colspan="2">${esc(outdatedLabel)}</td></tr>
         </tbody></table>`+
         (versionRows.length?`<table class="tbl" style="margin-top:10px"><thead><tr><th>Platforma</th><th>Versiya</th><th class="r">Qurilma</th><th class="r">User</th></tr></thead><tbody>${versionRows.map(row=>`<tr><td>${esc(row.platform)}</td><td><b>${esc(row.version)}</b></td><td class="r">${Number(row.devices||0)}</td><td class="r">${Number(row.users||0)}</td></tr>`).join("")}</tbody></table>`:"");
-      $("desktopExplain").textContent=(snapshot.notes&&snapshot.notes.install_definition)||"Download yoki link bosilishi o'rnatish emas; faqat tasdiqlangan first-open install hisoblanadi.";
+      $("desktopExplain").textContent=(snapshot.notes&&snapshot.notes.install_definition)||"Yuklash sahifasi ochilishi, link ulashilishi yoki nusxalanishi o'rnatish emas; faqat tasdiqlangan first-open install hisoblanadi.";
     }
 
     function renderAdvanced(fp){

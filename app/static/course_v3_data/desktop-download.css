@@ -375,7 +375,6 @@
 .pdd-promo-dismiss,
 .pdd-promo-close,
 .pdd-return-button,
-.pdd-ad-trigger,
 .pdd-destination-action,
 .pdd-destination-close,
 .pdd-destination-cancel {
@@ -479,26 +478,26 @@
   margin-top: 2px;
 }
 
-.pdd-ad-trigger {
+.pdd-ad-download {
   display: grid;
   width: 100%;
-  min-height: 56px;
-  align-items: center;
-  grid-template-columns: 36px minmax(0, 1fr) 18px;
-  gap: 10px;
-  padding: 8px 10px;
+  gap: 9px;
+  padding: 10px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.065);
   color: rgba(255, 255, 255, 0.92);
-  text-align: left;
-  transition:
-    border-color 160ms ease,
-    background 160ms ease,
-    transform 160ms ease;
 }
 
-.pdd-ad-trigger-badge {
+.pdd-ad-download-head {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 10px;
+  text-align: left;
+}
+
+.pdd-ad-download-badge {
   display: grid;
   width: 36px;
   height: 36px;
@@ -510,7 +509,7 @@
   background: #080808;
 }
 
-.pdd-ad-trigger-badge img {
+.pdd-ad-download-badge img {
   display: block;
   width: 100%;
   height: 100%;
@@ -518,22 +517,22 @@
   object-fit: cover;
 }
 
-.pdd-ad-trigger-copy {
+.pdd-ad-download-copy {
   min-width: 0;
 }
 
-.pdd-ad-trigger-copy strong,
-.pdd-ad-trigger-copy small {
+.pdd-ad-download-copy strong,
+.pdd-ad-download-copy small {
   display: block;
 }
 
-.pdd-ad-trigger-copy strong {
+.pdd-ad-download-copy strong {
   font-size: 12px;
   font-weight: 750;
   line-height: 1.25;
 }
 
-.pdd-ad-trigger-copy small {
+.pdd-ad-download-copy small {
   margin-top: 3px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 9.5px;
@@ -541,22 +540,40 @@
   line-height: 1.25;
 }
 
-.pdd-ad-trigger > i:last-child {
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 16px;
+.pdd-ad-download-actions.pdd-actions {
+  gap: 7px;
+  margin-top: 0;
 }
 
-.caa-desktop.pdd-ad-trigger,
-.caa-desktop.pdd-ad-trigger:not([hidden]) {
-  display: grid;
-  justify-content: stretch;
-  padding: 8px 10px;
-  font-family: inherit;
-  text-align: left;
+.pdd-ad-download .pdd-os-button {
+  min-height: 44px;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 12px;
 }
 
-.pdd-ad-trigger:active {
-  transform: translateY(1px);
+.pdd-ad-download .pdd-os-button[data-recommended="true"] {
+  border-color: #f0c56a;
+  background: rgba(240, 197, 106, 0.13);
+  box-shadow: 0 0 0 1px rgba(240, 197, 106, 0.12);
+  color: #fff;
+}
+
+.pdd-ad-download .pdd-os-button:disabled {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(255, 255, 255, 0.46);
+}
+
+.pdd-ad-download .pdd-inline-status {
+  margin-top: 0;
+  background: rgba(214, 73, 60, 0.16);
+  color: #ffd8d3;
+}
+
+.caa-desktop.pdd-ad-actions-host:not([hidden]) {
+  display: block;
 }
 
 #pomp-desktop-promo-root {
@@ -570,12 +587,12 @@
 }
 
 #pomp-desktop-promo-root[data-source="ad_promo"] {
-  z-index: 90;
+  z-index: 9101;
 }
 
 #pomp-desktop-destination-root {
   position: fixed;
-  z-index: 120;
+  z-index: 9102;
   inset: 0;
   width: min(100%, 480px);
   margin: 0 auto;
@@ -1055,7 +1072,6 @@
 .pdd-promo-close:focus-visible,
 .pdd-promo-dismiss:focus-visible,
 .pdd-return-button:focus-visible,
-.pdd-ad-trigger:focus-visible,
 .pdd-destination-action:focus-visible,
 .pdd-destination-close:focus-visible,
 .pdd-destination-cancel:focus-visible,
@@ -1109,7 +1125,6 @@
   .pdd-promo-shell,
   .pdd-destination-shell,
   .pdd-os-button,
-  .pdd-ad-trigger,
   .pdd-os-button[data-pending="true"] i,
   .pdd-inline-status[data-pending="true"] i,
   .pdd-destination-action[data-pending="true"] > i:first-child {

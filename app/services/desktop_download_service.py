@@ -13,6 +13,9 @@ from sqlalchemy import func, select
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.desktop_release_manifest_service import (
+    DesktopReleaseManifestService,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -135,6 +138,44 @@ class DesktopReleaseConfig:
             ),
         )
 
+    @classmethod
+    async def resolve(
+        cls,
+        settings_obj: Any,
+        *,
+        release_manifest_service: DesktopReleaseManifestService | None = None,
+    ) -> "DesktopReleaseConfig":
+        static_config = cls.from_settings(settings_obj)
+        manifest_service = (
+            release_manifest_service
+            or DesktopReleaseManifestService(settings_obj)
+        )
+        if not manifest_service.configured:
+            return static_config
+
+        manifest = await manifest_service.resolve()
+        if manifest is None:
+            return cls(
+                enabled=False,
+                public_base_url=static_config.public_base_url,
+                macos_url=None,
+                windows_url=None,
+                macos_version=None,
+                windows_version=None,
+            )
+
+        enabled = bool(
+            getattr(settings_obj, "DESKTOP_DOWNLOADS_ENABLED", False)
+        ) and bool(static_config.public_base_url)
+        return cls(
+            enabled=enabled,
+            public_base_url=static_config.public_base_url,
+            macos_url=manifest.macos.download_url,
+            windows_url=manifest.windows.download_url,
+            macos_version=manifest.version,
+            windows_version=manifest.version,
+        )
+
     def target_for(self, platform: str) -> str | None:
         if not self.enabled:
             return None
@@ -215,10 +256,30 @@ class DesktopReleaseConfig:
 
 
 class DesktopDownloadService:
-    def __init__(self, session, settings_obj):
+    def __init__(
+        self,
+        session,
+        settings_obj,
+        *,
+        release_manifest_service: DesktopReleaseManifestService | None = None,
+    ):
         self.session = session
         self.settings = settings_obj
         self.releases = DesktopReleaseConfig.from_settings(settings_obj)
+        self.release_manifest_service = (
+            release_manifest_service
+            or DesktopReleaseManifestService(settings_obj)
+        )
+        self._releases_resolved = not self.release_manifest_service.configured
+
+    async def _resolve_releases(self) -> DesktopReleaseConfig:
+        if not self._releases_resolved:
+            self.releases = await DesktopReleaseConfig.resolve(
+                self.settings,
+                release_manifest_service=self.release_manifest_service,
+            )
+            self._releases_resolved = True
+        return self.releases
 
     async def _user(self, telegram_id: int, *, for_update: bool = False):
         repo = UserRepository(self.session)
@@ -233,6 +294,7 @@ class DesktopDownloadService:
 
     async def status(self, telegram_id: int) -> dict[str, Any]:
         await self._user(telegram_id)
+        await self._resolve_releases()
         payload = self.releases.status_payload()
         payload["downloads"] = {
             platform: (
@@ -445,6 +507,7 @@ class DesktopDownloadService:
         event_id: str,
         language: str | None,
     ) -> dict[str, Any]:
+        await self._resolve_releases()
         if platform not in PLATFORMS or not self.releases.target_for(platform):
             raise DesktopDownloadError(
                 "desktop_release_unavailable",
@@ -611,6 +674,7 @@ class DesktopDownloadService:
         platform: str,
         request_token: str | None,
     ) -> tuple[str, str]:
+        await self._resolve_releases()
         target = self.releases.target_for(platform)
         file_name = self.releases.file_name_for(platform)
         if not target or not file_name:

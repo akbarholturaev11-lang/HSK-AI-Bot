@@ -10,6 +10,9 @@ from app.services.desktop_download_service import (
     DesktopDownloadService,
     DesktopReleaseConfig,
 )
+from app.services.desktop_release_manifest_service import (
+    DesktopReleaseManifestService,
+)
 from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user_id
 
 
@@ -71,8 +74,22 @@ def create_desktop_download_router(
     session_factory,
     settings_obj,
     service_factory: Callable[..., DesktopDownloadService] = DesktopDownloadService,
+    release_manifest_service: DesktopReleaseManifestService | None = None,
 ) -> APIRouter:
     router = APIRouter(tags=["desktop-download"])
+    release_manifest_service = (
+        release_manifest_service
+        or DesktopReleaseManifestService(settings_obj)
+    )
+
+    def make_service(session) -> DesktopDownloadService:
+        if service_factory is DesktopDownloadService:
+            return service_factory(
+                session,
+                settings_obj,
+                release_manifest_service=release_manifest_service,
+            )
+        return service_factory(session, settings_obj)
 
     def unauthorized() -> JSONResponse:
         return JSONResponse(
@@ -88,7 +105,7 @@ def create_desktop_download_router(
             return unauthorized()
         try:
             async with session_factory() as session:
-                payload = await service_factory(session, settings_obj).status(telegram_id)
+                payload = await make_service(session).status(telegram_id)
             return JSONResponse(content=payload, headers={"Cache-Control": "no-store"})
         except DesktopDownloadError as exc:
             return _error_response(exc)
@@ -102,9 +119,11 @@ def create_desktop_download_router(
 
     @router.get("/api/v3/desktop-download/public-status")
     async def desktop_download_public_status():
-        payload = DesktopReleaseConfig.from_settings(
-            settings_obj
-        ).public_status_payload()
+        releases = await DesktopReleaseConfig.resolve(
+            settings_obj,
+            release_manifest_service=release_manifest_service,
+        )
+        payload = releases.public_status_payload()
         return JSONResponse(
             content=payload,
             headers={"Cache-Control": "public, max-age=60"},
@@ -120,7 +139,7 @@ def create_desktop_download_router(
             return unauthorized()
         try:
             async with session_factory() as session:
-                result = await service_factory(session, settings_obj).request_download(
+                result = await make_service(session).request_download(
                     telegram_id=telegram_id,
                     platform=payload.platform,
                     source=payload.source,
@@ -148,7 +167,7 @@ def create_desktop_download_router(
             return unauthorized()
         try:
             async with session_factory() as session:
-                result = await service_factory(session, settings_obj).mark_started(
+                result = await make_service(session).mark_started(
                     telegram_id=telegram_id,
                     platform=payload.platform,
                     source=payload.source,
@@ -169,9 +188,7 @@ def create_desktop_download_router(
     async def _redirect(platform: str, request_token: str | None):
         try:
             async with session_factory() as session:
-                target, file_name = await service_factory(
-                    session, settings_obj
-                ).resolve_redirect(
+                target, file_name = await make_service(session).resolve_redirect(
                     platform=platform,
                     request_token=request_token,
                 )

@@ -1,41 +1,113 @@
 name: Desktop release
 
 on:
+  push:
+    tags:
+      - "desktop-v*"
   workflow_dispatch:
     inputs:
-      version:
-        description: Release version (must match desktop/package.json and tauri.conf.json)
-        required: true
-        default: "1.1.1"
       release_notes:
         description: Short update notes shown inside the desktop app
         required: true
-        default: "Pomp HSK AI desktop release"
+        default: "HSK AI desktop release"
       publish_to_r2:
         description: Upload verified artifacts to Cloudflare R2
         required: true
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: read
 
 concurrency:
-  group: desktop-release-${{ inputs.version }}
+  group: desktop-release-${{ github.ref }}
   cancel-in-progress: false
 
 env:
-  RELEASE_VERSION: ${{ inputs.version }}
+  LLAMA_CPP_RELEASE: b10223
+  LLAMA_CPP_MACOS_ARM64_SHA256: 2c5e6dca00a3f09ba1030e309ff6fa4c2568a01864de258a4e7752b09e26430e
+  LLAMA_CPP_MACOS_X64_SHA256: d5488dd5759f7a086852af5a206c6cded875c716de6a9f9d8460ea6c2dc24138
+  LLAMA_CPP_WINDOWS_X64_SHA256: 74c1ded0512818d98b51940bf9150e16da8ed79cf0cbe8d85788e01cdd00ff67
 
 jobs:
+  prepare:
+    name: Validate release version
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      notes: ${{ steps.release.outputs.notes }}
+      publish: ${{ steps.release.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - id: release
+        name: Resolve immutable release inputs
+        shell: bash
+        env:
+          MANUAL_NOTES: ${{ inputs.release_notes }}
+          MANUAL_PUBLISH: ${{ inputs.publish_to_r2 }}
+        run: |
+          set -euo pipefail
+          package_version="$(node -p "require('./desktop/package.json').version")"
+          tauri_version="$(node -p "require('./desktop/src-tauri/tauri.conf.json').version")"
+          cargo_version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p' desktop/src-tauri/Cargo.toml | head -n 1)"
+          test "$package_version" = "$tauri_version"
+          test "$package_version" = "$cargo_version"
+          node -e '
+            const version = process.argv[1];
+            if (!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(version)) {
+              throw new Error(`Desktop version must be stable SemVer: ${version}`);
+            }
+          ' "$package_version"
+
+          if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            test "${GITHUB_REF_NAME}" = "desktop-v${package_version}" || {
+              echo "::error::Tag must be desktop-v${package_version}"
+              exit 1
+            }
+            git fetch --no-tags origin main:refs/remotes/origin/main
+            git merge-base --is-ancestor "$GITHUB_SHA" origin/main || {
+              echo "::error::Release tag must point to a commit contained in origin/main"
+              exit 1
+            }
+            release_notes="HSK AI desktop v${package_version}"
+            publish="true"
+          else
+            test "$GITHUB_REF" = "refs/heads/main" || {
+              echo "::error::Manual desktop releases must run from main"
+              exit 1
+            }
+            release_notes="$MANUAL_NOTES"
+            publish="${MANUAL_PUBLISH:-false}"
+          fi
+
+          test "${#release_notes}" -le 1000 || {
+            echo "::error::Release notes must be at most 1000 characters"
+            exit 1
+          }
+          delimiter="RELEASE_NOTES_$(openssl rand -hex 16)"
+
+          {
+            echo "version=$package_version"
+            echo "publish=$publish"
+            echo "notes<<$delimiter"
+            printf '%s\n' "$release_notes"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
+
   macos:
     name: Build universal macOS DMG
+    needs: prepare
     runs-on: macos-14
     timeout-minutes: 45
+    env:
+      RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "22"
           cache: npm
@@ -52,6 +124,75 @@ jobs:
       - name: Install desktop dependencies
         working-directory: desktop
         run: npm ci
+
+      - name: Stage pinned universal local AI runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          staging="$(mktemp -d)"
+          trap 'rm -rf "$staging"' EXIT
+          arm_archive="llama-${LLAMA_CPP_RELEASE}-bin-macos-arm64.tar.gz"
+          x64_archive="llama-${LLAMA_CPP_RELEASE}-bin-macos-x64.tar.gz"
+          release_base="https://github.com/ggml-org/llama.cpp/releases/download/${LLAMA_CPP_RELEASE}"
+
+          curl --fail --location --retry 3 --proto '=https' --tlsv1.2 \
+            "$release_base/$arm_archive" -o "$staging/$arm_archive"
+          curl --fail --location --retry 3 --proto '=https' --tlsv1.2 \
+            "$release_base/$x64_archive" -o "$staging/$x64_archive"
+          printf '%s  %s\n' "$LLAMA_CPP_MACOS_ARM64_SHA256" "$staging/$arm_archive" \
+            | shasum -a 256 -c -
+          printf '%s  %s\n' "$LLAMA_CPP_MACOS_X64_SHA256" "$staging/$x64_archive" \
+            | shasum -a 256 -c -
+
+          mkdir -p "$staging/arm64" "$staging/x64"
+          tar -xzf "$staging/$arm_archive" -C "$staging/arm64"
+          tar -xzf "$staging/$x64_archive" -C "$staging/x64"
+          arm_server="$(find "$staging/arm64" -type f -name llama-server -print -quit)"
+          x64_server="$(find "$staging/x64" -type f -name llama-server -print -quit)"
+          test -n "$arm_server"
+          test -n "$x64_server"
+          arm_root="$(dirname "$arm_server")"
+          x64_root="$(dirname "$x64_server")"
+          runtime="desktop/src-tauri/runtime/macos-universal"
+          rm -rf "$runtime"
+          mkdir -p "$runtime"
+
+          lipo -create "$arm_server" "$x64_server" -output "$runtime/llama-server"
+          while IFS= read -r -d '' arm_library; do
+            library="$(basename "$arm_library")"
+            x64_library="$x64_root/$library"
+            test -f "$x64_library"
+            lipo -create "$arm_library" "$x64_library" -output "$runtime/$library"
+          done < <(find "$arm_root" -maxdepth 1 -type f -name '*.dylib' -print0)
+          while IFS= read -r -d '' arm_link; do
+            link_name="$(basename "$arm_link")"
+            link_target="$(readlink "$arm_link")"
+            ln -s "$link_target" "$runtime/$link_name"
+          done < <(find "$arm_root" -maxdepth 1 -type l -name '*.dylib' -print0)
+          while IFS= read -r -d '' runtime_link; do
+            test -e "$runtime_link" || {
+              echo "::error::Broken runtime symlink: $runtime_link -> $(readlink "$runtime_link")"
+              exit 1
+            }
+          done < <(find "$runtime" -maxdepth 1 -type l -name '*.dylib' -print0)
+          find "$arm_root" -maxdepth 1 -type f \
+            \( -name '*.metal' -o -name '*.json' \) \
+            -exec cp {} "$runtime/" \;
+          {
+            echo "llama.cpp release: $LLAMA_CPP_RELEASE"
+            echo "macOS arm64 archive SHA-256: $LLAMA_CPP_MACOS_ARM64_SHA256"
+            echo "macOS x64 archive SHA-256: $LLAMA_CPP_MACOS_X64_SHA256"
+          } > "$runtime/RUNTIME-BUILD.txt"
+
+          chmod 0755 "$runtime/llama-server"
+          find "$runtime" -maxdepth 1 -type f \
+            \( -name llama-server -o -name '*.dylib' \) \
+            -exec codesign --force --sign - --timestamp=none {} \;
+          lipo -verify_arch arm64 x86_64 "$runtime/llama-server"
+          while IFS= read -r -d '' runtime_library; do
+            lipo -verify_arch arm64 x86_64 "$runtime_library"
+          done < <(find "$runtime" -maxdepth 1 -type f -name '*.dylib' -print0)
+          "$runtime/llama-server" --version
 
       - name: Verify release version
         working-directory: desktop
@@ -74,12 +215,30 @@ jobs:
         working-directory: desktop
         run: npm run test:ui
 
+      - name: Check native desktop code
+        working-directory: desktop/src-tauri
+        run: |
+          cargo fmt --check
+          cargo test --locked
+          cargo clippy --locked --all-targets --all-features -- -D warnings
+
       - name: Build universal DMG and updater
         working-directory: desktop
         env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_V3 }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V3 }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_V4 }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V4 }}
         run: npm run tauri -- build --target universal-apple-darwin --bundles app,dmg
+
+      - name: Verify universal app bundle and embedded AI runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          app_path="$(find desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos -maxdepth 1 -type d -name '*.app' -print -quit)"
+          test -n "$app_path"
+          codesign --verify --deep --strict "$app_path"
+          embedded_server="$(find "$app_path" -type f -name llama-server -print -quit)"
+          test -n "$embedded_server"
+          lipo -verify_arch arm64 x86_64 "$embedded_server"
 
       - name: Collect and checksum macOS artifacts
         shell: bash
@@ -100,21 +259,24 @@ jobs:
             "Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz" \
             > SHA256SUMS-macos.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
-          name: Pomp-HSK-AI_${{ inputs.version }}_macos
+          name: Pomp-HSK-AI_${{ needs.prepare.outputs.version }}_macos
           path: desktop/releases/macos/
           if-no-files-found: error
           retention-days: 14
 
   windows:
     name: Build Windows x64 NSIS installer
+    needs: prepare
     runs-on: windows-2022
     timeout-minutes: 45
+    env:
+      RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "22"
           cache: npm
@@ -131,6 +293,48 @@ jobs:
       - name: Install desktop dependencies
         working-directory: desktop
         run: npm ci
+
+      - name: Stage pinned Windows local AI runtime
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $ProgressPreference = "SilentlyContinue"
+          $archiveName = "llama-$env:LLAMA_CPP_RELEASE-bin-win-cpu-x64.zip"
+          $archive = Join-Path $env:RUNNER_TEMP $archiveName
+          $expanded = Join-Path $env:RUNNER_TEMP "llama-runtime-x64"
+          $url = "https://github.com/ggml-org/llama.cpp/releases/download/$env:LLAMA_CPP_RELEASE/$archiveName"
+          $downloaded = $false
+          for ($attempt = 1; $attempt -le 3; $attempt++) {
+            try {
+              Invoke-WebRequest -Uri $url -OutFile $archive -TimeoutSec 180
+              $downloaded = $true
+              break
+            } catch {
+              if ($attempt -eq 3) { throw }
+              Start-Sleep -Seconds (2 * $attempt)
+            }
+          }
+          if (-not $downloaded) { throw "Pinned llama.cpp Windows runtime download failed" }
+          $actualHash = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualHash -ne $env:LLAMA_CPP_WINDOWS_X64_SHA256) {
+            throw "Pinned llama.cpp Windows archive checksum mismatch"
+          }
+          Expand-Archive -Path $archive -DestinationPath $expanded -Force
+          $server = Get-ChildItem -Path $expanded -Recurse -File -Filter "llama-server.exe" |
+            Select-Object -First 1
+          if (-not $server) { throw "Pinned llama-server.exe was not found" }
+          $runtime = "desktop/src-tauri/runtime/windows-x64"
+          if (Test-Path $runtime) { Remove-Item -Recurse -Force $runtime }
+          New-Item -ItemType Directory -Force -Path $runtime | Out-Null
+          Copy-Item $server.FullName "$runtime/llama-server.exe"
+          Get-ChildItem -Path $server.Directory.FullName -File -Filter "*.dll" |
+            Copy-Item -Destination $runtime
+          @(
+            "llama.cpp release: $env:LLAMA_CPP_RELEASE"
+            "Windows x64 archive SHA-256: $env:LLAMA_CPP_WINDOWS_X64_SHA256"
+          ) | Set-Content "$runtime/RUNTIME-BUILD.txt" -Encoding ascii
+          & "$runtime/llama-server.exe" --version
+          if ($LASTEXITCODE -ne 0) { throw "Pinned llama-server.exe smoke test failed" }
 
       - name: Verify release version
         working-directory: desktop
@@ -153,12 +357,39 @@ jobs:
         working-directory: desktop
         run: npm run test:ui
 
+      - name: Check native desktop code
+        working-directory: desktop/src-tauri
+        run: |
+          cargo fmt --check
+          cargo test --locked
+          cargo clippy --locked --all-targets --all-features -- -D warnings
+
       - name: Build NSIS installer and updater
         working-directory: desktop
         env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_V3 }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V3 }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_V4 }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V4 }}
         run: npm run tauri -- build --target x86_64-pc-windows-msvc --bundles nsis
+
+      - name: Verify x64 application and embedded AI runtime
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          function Assert-PeX64([string]$Path) {
+            $bytes = [System.IO.File]::ReadAllBytes($Path)
+            if ($bytes.Length -lt 64 -or $bytes[0] -ne 0x4d -or $bytes[1] -ne 0x5a) {
+              throw "Invalid PE file: $Path"
+            }
+            $peOffset = [BitConverter]::ToInt32($bytes, 0x3c)
+            $machine = [BitConverter]::ToUInt16($bytes, $peOffset + 4)
+            if ($machine -ne 0x8664) { throw "Expected x64 PE file: $Path" }
+          }
+          $app = "desktop/src-tauri/target/x86_64-pc-windows-msvc/release/pomp-hsk-ai.exe"
+          $server = "desktop/src-tauri/runtime/windows-x64/llama-server.exe"
+          if (-not (Test-Path $app)) { throw "Desktop x64 executable was not produced" }
+          if (-not (Test-Path $server)) { throw "Embedded x64 llama-server was not staged" }
+          Assert-PeX64 $app
+          Assert-PeX64 $server
 
       - name: Collect and checksum Windows artifacts
         shell: pwsh
@@ -174,39 +405,58 @@ jobs:
           Copy-Item $installer.FullName "$releaseDir/$releaseName"
           Copy-Item $signature "$releaseDir/$releaseName.sig"
           $hash = (Get-FileHash "$releaseDir/$releaseName" -Algorithm SHA256).Hash.ToLowerInvariant()
-          "$hash  $releaseName" | Set-Content "$releaseDir/SHA256SUMS-windows.txt" -Encoding ascii
+          $checksumLine = "$hash  $releaseName`n"
+          $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+          [System.IO.File]::WriteAllText(
+            "$releaseDir/SHA256SUMS-windows.txt",
+            $checksumLine,
+            $utf8NoBom
+          )
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
-          name: Pomp-HSK-AI_${{ inputs.version }}_windows
+          name: Pomp-HSK-AI_${{ needs.prepare.outputs.version }}_windows
           path: desktop/releases/windows/
           if-no-files-found: error
           retention-days: 14
 
   publish:
     name: Publish to Cloudflare R2
-    if: ${{ inputs.publish_to_r2 }}
-    needs: [macos, windows]
+    if: ${{ needs.prepare.outputs.publish == 'true' }}
+    needs: [prepare, macos, windows]
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
+    concurrency:
+      group: desktop-release-publish
+      cancel-in-progress: false
     env:
+      RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
       AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: auto
       R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
       R2_BUCKET: ${{ secrets.R2_BUCKET }}
       R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
-      RELEASE_NOTES: ${{ inputs.release_notes }}
+      RELEASE_NOTES: ${{ needs.prepare.outputs.notes }}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v8
         with:
-          pattern: Pomp-HSK-AI_${{ inputs.version }}_*
+          pattern: Pomp-HSK-AI_${{ needs.prepare.outputs.version }}_*
           path: release
           merge-multiple: true
+
+      - name: Install release verification tools
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes minisign
 
       - name: Validate R2 configuration
         shell: bash
         run: |
+          set -euo pipefail
           for value in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY R2_ACCOUNT_ID R2_BUCKET R2_PUBLIC_BASE_URL; do
             test -n "${!value}" || { echo "::error::$value is required"; exit 1; }
           done
@@ -214,10 +464,232 @@ jobs:
             https://*) ;;
             *) echo "::error::R2_PUBLIC_BASE_URL must use HTTPS"; exit 1 ;;
           esac
+          case "$R2_PUBLIC_BASE_URL" in
+            *\?*|*\#*) echo "::error::R2_PUBLIC_BASE_URL cannot contain query or fragment"; exit 1 ;;
+          esac
+          node -e '
+            const raw = process.env.R2_PUBLIC_BASE_URL;
+            const parsed = new URL(raw);
+            if (
+              parsed.protocol !== "https:" || !parsed.hostname ||
+              parsed.username || parsed.password ||
+              parsed.search || parsed.hash
+            ) {
+              throw new Error("R2_PUBLIC_BASE_URL must be a public HTTPS origin or path");
+            }
+          '
+
+      - name: Verify checksums and updater signatures
+        shell: bash
+        run: |
+          set -euo pipefail
+          mac_dmg="Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
+          mac_update="Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
+          win_exe="Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe"
+          for artifact in \
+            "$mac_dmg" "$mac_update" "$mac_update.sig" \
+            "$win_exe" "$win_exe.sig" \
+            SHA256SUMS-macos.txt SHA256SUMS-windows.txt; do
+            test -s "release/$artifact" || {
+              echo "::error::Missing or empty release artifact: $artifact"
+              exit 1
+            }
+          done
+
+          (
+            cd release
+            shasum -a 256 --check SHA256SUMS-macos.txt
+            sha256sum --check SHA256SUMS-windows.txt
+          )
+
+          verify_dir="$(mktemp -d)"
+          trap 'rm -rf "$verify_dir"' EXIT
+          jq -er '.plugins.updater.pubkey' desktop/src-tauri/tauri.conf.json \
+            | base64 --decode > "$verify_dir/updater.pub"
+          base64 --decode < "release/$mac_update.sig" > "$verify_dir/macos.minisig"
+          base64 --decode < "release/$win_exe.sig" > "$verify_dir/windows.minisig"
+          test "$(wc -c < "$verify_dir/updater.pub")" -le 512
+          test "$(wc -c < "$verify_dir/macos.minisig")" -le 2048
+          test "$(wc -c < "$verify_dir/windows.minisig")" -le 2048
+          minisign -Vm "release/$mac_update" \
+            -x "$verify_dir/macos.minisig" -p "$verify_dir/updater.pub"
+          minisign -Vm "release/$win_exe" \
+            -x "$verify_dir/windows.minisig" -p "$verify_dir/updater.pub"
+
+      - name: Block downgrade and immutable-key overwrite
+        shell: bash
+        run: |
+          set -euo pipefail
+          endpoint="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          previous_manifest="$(mktemp)"
+          manifest_error="$(mktemp)"
+          if aws s3api head-object --bucket "$R2_BUCKET" --key "desktop/latest.json" \
+            --endpoint-url "$endpoint" >/dev/null 2>"$manifest_error"; then
+            aws s3 cp "s3://${R2_BUCKET}/desktop/latest.json" "$previous_manifest" \
+              --endpoint-url "$endpoint" --only-show-errors
+            previous_version="$(jq -er '.version' "$previous_manifest")"
+            node -e '
+              const parse = (value) => {
+                if (!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(value)) throw new Error(`Invalid SemVer: ${value}`);
+                return value.split(".").map(BigInt);
+              };
+              const [next, current] = process.argv.slice(1).map(parse);
+              const comparison = next.findIndex((value, index) => value !== current[index]);
+              if (comparison >= 0 && next[comparison] < current[comparison]) {
+                throw new Error(`Release ${process.argv[1]} must not be older than published ${process.argv[2]}`);
+              }
+            ' "$RELEASE_VERSION" "$previous_version"
+            if [ "$RELEASE_VERSION" = "$previous_version" ]; then
+              base="${R2_PUBLIC_BASE_URL%/}/desktop/v${RELEASE_VERSION}"
+              mac_dmg="Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
+              mac_update="Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
+              win_exe="Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe"
+              mac_signature="$(tr -d '\r\n' < "release/$mac_update.sig")"
+              win_signature="$(tr -d '\r\n' < "release/$win_exe.sig")"
+              mac_dmg_sha="$(awk '$2 ~ /\.dmg$/ {print $1}' release/SHA256SUMS-macos.txt)"
+              mac_update_sha="$(awk '$2 ~ /\.app\.tar\.gz$/ {print $1}' release/SHA256SUMS-macos.txt)"
+              win_sha="$(awk 'NR == 1 {print $1}' release/SHA256SUMS-windows.txt)"
+              jq -e \
+                --arg version "$RELEASE_VERSION" \
+                --arg mac_download "$base/$mac_dmg" \
+                --arg mac_update "$base/$mac_update" \
+                --arg mac_signature "$mac_signature" \
+                --arg mac_dmg_sha "$mac_dmg_sha" \
+                --arg mac_update_sha "$mac_update_sha" \
+                --arg win_download "$base/$win_exe" \
+                --arg win_signature "$win_signature" \
+                --arg win_sha "$win_sha" \
+                '.version == $version and
+                 .macos.download_url == $mac_download and
+                 .macos.update_url == $mac_update and
+                 .macos.signature == $mac_signature and
+                 .macos.download_sha256 == $mac_dmg_sha and
+                 .macos.update_sha256 == $mac_update_sha and
+                 .windows.download_url == $win_download and
+                 .windows.update_url == $win_download and
+                 .windows.signature == $win_signature and
+                 .windows.sha256 == $win_sha' \
+                "$previous_manifest" >/dev/null || {
+                  echo "::error::Published version has a different immutable artifact fingerprint"
+                  exit 1
+                }
+              echo "Retrying an already published release with the same artifact fingerprint"
+            fi
+          elif ! grep -Eq '404|Not Found|NoSuchKey' "$manifest_error"; then
+            echo "::error::Could not safely read the existing R2 release manifest"
+            cat "$manifest_error"
+            exit 1
+          fi
+
+          prefix="desktop/v${RELEASE_VERSION}"
+          keys=(
+            "$prefix/Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
+            "$prefix/Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
+            "$prefix/Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz.sig"
+            "$prefix/Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe"
+            "$prefix/Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe.sig"
+          )
+          local_files=(
+            "release/Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
+            "release/Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
+            "release/Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz.sig"
+            "release/Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe"
+            "release/Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe.sig"
+          )
+          for index in "${!keys[@]}"; do
+            key="${keys[$index]}"
+            error_file="$(mktemp)"
+            if aws s3api head-object --bucket "$R2_BUCKET" --key "$key" \
+              --endpoint-url "$endpoint" >/dev/null 2>"$error_file"; then
+              existing_file="$(mktemp)"
+              aws s3 cp "s3://${R2_BUCKET}/${key}" "$existing_file" \
+                --endpoint-url "$endpoint" --only-show-errors
+              if ! cmp --silent "${local_files[$index]}" "$existing_file"; then
+                echo "::error::Immutable release key exists with different content: $key"
+                exit 1
+              fi
+              echo "Immutable release key already contains identical content: $key"
+              continue
+            fi
+            if ! grep -Eq '404|Not Found|NoSuchKey' "$error_file"; then
+              echo "::error::Could not verify immutable release key: $key"
+              cat "$error_file"
+              exit 1
+            fi
+          done
+
+      - name: Create and validate release metadata locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${R2_PUBLIC_BASE_URL%/}/desktop/v${RELEASE_VERSION}"
+          mac_dmg="Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
+          mac_update="Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
+          win_exe="Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe"
+          mac_signature="$(tr -d '\r\n' < "release/$mac_update.sig")"
+          win_signature="$(tr -d '\r\n' < "release/$win_exe.sig")"
+          mac_dmg_sha="$(awk '$2 ~ /\.dmg$/ {print $1}' release/SHA256SUMS-macos.txt)"
+          mac_update_sha="$(awk '$2 ~ /\.app\.tar\.gz$/ {print $1}' release/SHA256SUMS-macos.txt)"
+          win_sha="$(awk 'NR == 1 {print $1}' release/SHA256SUMS-windows.txt)"
+          published_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+          jq -n \
+            --arg version "$RELEASE_VERSION" \
+            --arg notes "$RELEASE_NOTES" \
+            --arg published_at "$published_at" \
+            --arg mac_download "$base/$mac_dmg" \
+            --arg mac_update "$base/$mac_update" \
+            --arg mac_signature "$mac_signature" \
+            --arg mac_dmg_sha256 "$mac_dmg_sha" \
+            --arg mac_update_sha256 "$mac_update_sha" \
+            --arg windows_download "$base/$win_exe" \
+            --arg windows_update "$base/$win_exe" \
+            --arg windows_signature "$win_signature" \
+            --arg windows_sha256 "$win_sha" \
+            '{
+              schema_version: 1,
+              version: $version,
+              notes: $notes,
+              published_at: $published_at,
+              macos: {
+                download_url: $mac_download,
+                update_url: $mac_update,
+                signature: $mac_signature,
+                download_sha256: $mac_dmg_sha256,
+                update_sha256: $mac_update_sha256
+              },
+              windows: {
+                download_url: $windows_download,
+                update_url: $windows_update,
+                signature: $windows_signature,
+                sha256: $windows_sha256
+              }
+            }' > latest.json
+
+          jq -e --arg version "$RELEASE_VERSION" '
+            keys == ["macos", "notes", "published_at", "schema_version", "version", "windows"] and
+            .schema_version == 1 and .version == $version and
+            (.notes | type == "string" and length <= 1000) and
+            (.published_at | type == "string") and
+            (.macos | keys == ["download_sha256", "download_url", "signature", "update_sha256", "update_url"]) and
+            (.windows | keys == ["download_url", "sha256", "signature", "update_url"]) and
+            ([.macos.download_url, .macos.update_url, .windows.download_url, .windows.update_url]
+              | all(type == "string" and startswith("https://") and (contains("?") | not) and (contains("#") | not))) and
+            (.macos.download_url | endswith(".dmg")) and
+            (.macos.update_url | endswith(".app.tar.gz")) and
+            (.windows.download_url | endswith(".exe")) and
+            (.windows.update_url | endswith(".exe")) and
+            (.published_at | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$")) and
+            ([.macos.download_sha256, .macos.update_sha256, .windows.sha256]
+              | all(test("^[0-9a-f]{64}$"))) and
+            ([.macos.signature, .windows.signature]
+              | all(type == "string" and length >= 100 and length <= 4096 and test("^[A-Za-z0-9+/=_-]+$")))
+          ' latest.json >/dev/null
 
       - name: Publish installers and updater artifacts
         shell: bash
         run: |
+          set -euo pipefail
           endpoint="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
           prefix="desktop/v${RELEASE_VERSION}"
           mac_dmg="Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
@@ -247,45 +719,55 @@ jobs:
             --content-type "text/plain; charset=utf-8" \
             --cache-control "public,max-age=31536000,immutable"
 
-      - name: Create and publish release metadata
+          aws s3 cp "release/$mac_dmg" "s3://${R2_BUCKET}/desktop/latest/Pomp-HSK-AI-universal.dmg" \
+            --endpoint-url "$endpoint" \
+            --content-type "application/x-apple-diskimage" \
+            --content-disposition 'attachment; filename="Pomp-HSK-AI-universal.dmg"' \
+            --cache-control "public,max-age=300,must-revalidate"
+          aws s3 cp "release/$win_exe" "s3://${R2_BUCKET}/desktop/latest/Pomp-HSK-AI-x64-setup.exe" \
+            --endpoint-url "$endpoint" \
+            --content-type "application/vnd.microsoft.portable-executable" \
+            --content-disposition 'attachment; filename="Pomp-HSK-AI-x64-setup.exe"' \
+            --cache-control "public,max-age=300,must-revalidate"
+
+      - name: Verify public artifacts and publish manifest last
         shell: bash
         run: |
+          set -euo pipefail
           base="${R2_PUBLIC_BASE_URL%/}/desktop/v${RELEASE_VERSION}"
+          stable_base="${R2_PUBLIC_BASE_URL%/}/desktop/latest"
           mac_dmg="Pomp-HSK-AI_${RELEASE_VERSION}_universal.dmg"
           mac_update="Pomp-HSK-AI_${RELEASE_VERSION}_universal.app.tar.gz"
           win_exe="Pomp-HSK-AI_${RELEASE_VERSION}_x64-setup.exe"
-          mac_signature="$(tr -d '\r\n' < "release/$mac_update.sig")"
-          win_signature="$(tr -d '\r\n' < "release/$win_exe.sig")"
-          mac_sha="$(awk 'NR == 1 {print $1}' release/SHA256SUMS-macos.txt)"
-          win_sha="$(awk 'NR == 1 {print $1}' release/SHA256SUMS-windows.txt)"
+          for public_url in \
+            "$base/$mac_dmg" \
+            "$base/$mac_update" \
+            "$base/$mac_update.sig" \
+            "$base/$win_exe" \
+            "$base/$win_exe.sig" \
+            "$stable_base/Pomp-HSK-AI-universal.dmg" \
+            "$stable_base/Pomp-HSK-AI-x64-setup.exe"; do
+            curl --fail --silent --show-error --location --retry 5 \
+              --retry-all-errors --retry-delay 2 --connect-timeout 15 \
+              --proto '=https' --tlsv1.2 --head "$public_url" >/dev/null
+          done
 
-          jq -n \
-            --arg version "$RELEASE_VERSION" \
-            --arg notes "$RELEASE_NOTES" \
-            --arg mac_download "$base/$mac_dmg" \
-            --arg mac_update "$base/$mac_update" \
-            --arg mac_signature "$mac_signature" \
-            --arg mac_sha256 "$mac_sha" \
-            --arg windows_download "$base/$win_exe" \
-            --arg windows_update "$base/$win_exe" \
-            --arg windows_signature "$win_signature" \
-            --arg windows_sha256 "$win_sha" \
-            '{
-              version: $version,
-              notes: $notes,
-              macos: {
-                download_url: $mac_download,
-                update_url: $mac_update,
-                signature: $mac_signature,
-                sha256: $mac_sha256
-              },
-              windows: {
-                download_url: $windows_download,
-                update_url: $windows_update,
-                signature: $windows_signature,
-                sha256: $windows_sha256
-              }
-            }' > latest.json
+          public_check="$(mktemp -d)"
+          trap 'rm -rf "$public_check"' EXIT
+          for artifact in "$mac_dmg" "$mac_update" "$mac_update.sig" "$win_exe" "$win_exe.sig"; do
+            curl --fail --silent --show-error --location --retry 5 \
+              --retry-all-errors --retry-delay 2 --connect-timeout 15 \
+              --proto '=https' --tlsv1.2 "$base/$artifact" \
+              -o "$public_check/$artifact"
+          done
+          test "$(sha256sum "$public_check/$mac_dmg" | awk '{print $1}')" = \
+            "$(jq -r '.macos.download_sha256' latest.json)"
+          test "$(sha256sum "$public_check/$mac_update" | awk '{print $1}')" = \
+            "$(jq -r '.macos.update_sha256' latest.json)"
+          test "$(sha256sum "$public_check/$win_exe" | awk '{print $1}')" = \
+            "$(jq -r '.windows.sha256' latest.json)"
+          cmp "release/$mac_update.sig" "$public_check/$mac_update.sig"
+          cmp "release/$win_exe.sig" "$public_check/$win_exe.sig"
 
           endpoint="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
           aws s3 cp latest.json "s3://${R2_BUCKET}/desktop/latest.json" \
@@ -293,17 +775,34 @@ jobs:
             --content-type "application/json; charset=utf-8" \
             --cache-control "no-store"
 
+          public_manifest="${R2_PUBLIC_BASE_URL%/}/desktop/latest.json"
+          manifest_visible="false"
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent --show-error --location \
+              --proto '=https' --tlsv1.2 "$public_manifest" -o published-latest.json \
+              && cmp --silent latest.json published-latest.json; then
+              manifest_visible="true"
+              break
+            fi
+            sleep $((attempt * 2))
+          done
+          test "$manifest_visible" = "true" || {
+            echo "::error::Published desktop manifest did not become publicly visible"
+            exit 1
+          }
+
           {
             echo "### Desktop v${RELEASE_VERSION} published"
             echo
             echo "Release metadata: ${R2_PUBLIC_BASE_URL%/}/desktop/latest.json"
             echo
-            echo "Keep DESKTOP_DOWNLOADS_ENABLED=false until clean-machine tests pass."
+            echo "Mac and Windows stable download aliases were updated automatically."
+            echo "Railway only needs the stable manifest URL once; per-version variables are not changed."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
-          name: Pomp-HSK-AI_${{ inputs.version }}_release-metadata
+          name: Pomp-HSK-AI_${{ needs.prepare.outputs.version }}_release-metadata
           path: latest.json
           if-no-files-found: error
           retention-days: 30

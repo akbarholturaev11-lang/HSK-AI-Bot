@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     DESKTOP_WINDOWS_DOWNLOAD_URL: str = ""
     DESKTOP_MAC_VERSION: str = ""
     DESKTOP_WINDOWS_VERSION: str = ""
+    # Stable R2 latest.json URL. When set, one validated manifest supplies all
+    # installer/updater URLs, signatures, versions and notes automatically.
+    DESKTOP_RELEASE_MANIFEST_URL: str = ""
+    DESKTOP_RELEASE_MANIFEST_CACHE_TTL_SECONDS: int = 60
+    DESKTOP_RELEASE_MANIFEST_TIMEOUT_SECONDS: float = 5.0
+    DESKTOP_RELEASE_MANIFEST_MAX_BYTES: int = 65536
     # Tauri updater metadata is public but remains disabled until signed release
     # archives and their detached signatures are published.
     DESKTOP_UPDATES_ENABLED: bool = False

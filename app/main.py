@@ -60,6 +60,9 @@ from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
+from app.services.desktop_release_manifest_service import (
+    resolve_desktop_latest_versions,
+)
 from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonFlowService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
@@ -506,12 +509,8 @@ def bot_username_value() -> str:
     return (settings.BOT_USERNAME or "darsi_chini_bot").strip().lstrip("@") or "darsi_chini_bot"
 
 
-def _desktop_latest_versions() -> dict[str, str]:
-    versions = {
-        "macos": str(getattr(settings, "DESKTOP_MAC_VERSION", "") or "").strip(),
-        "windows": str(getattr(settings, "DESKTOP_WINDOWS_VERSION", "") or "").strip(),
-    }
-    return {platform: version for platform, version in versions.items() if version}
+async def _desktop_latest_versions() -> dict[str, str]:
+    return await resolve_desktop_latest_versions(settings)
 
 
 def _admin_miniapp_user_id(request: Request) -> int | None:
@@ -2454,7 +2453,7 @@ async def admin_miniapp_desktop_stats(request: Request):
         snapshot = await DesktopAnalyticsService(session).snapshot(
             now=now,
             since=since_by_period[period],
-            latest_versions=_desktop_latest_versions(),
+            latest_versions=await _desktop_latest_versions(),
         )
     return JSONResponse(
         content={

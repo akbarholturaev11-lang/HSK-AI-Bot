@@ -119,7 +119,7 @@ class DesktopUpdateApiTests(unittest.IsolatedAsyncioTestCase):
             ),
             (_settings(), "darwin/x86_64/1.2.0"),
             (_settings(), "darwin/x86_64/1.3.0"),
-            (_settings(), "windows/aarch64/2.0.0+build.9"),
+            (_settings(), "windows/x86_64/2.0.0+build.9"),
         ]
 
         for settings_obj, path in cases:
@@ -150,6 +150,16 @@ class DesktopUpdateApiTests(unittest.IsolatedAsyncioTestCase):
             ),
             (
                 "windows/armv7/1.0.0",
+                404,
+                "desktop_update_arch_unsupported",
+            ),
+            (
+                "windows/aarch64/1.0.0",
+                404,
+                "desktop_update_arch_unsupported",
+            ),
+            (
+                "windows/i686/1.0.0",
                 404,
                 "desktop_update_arch_unsupported",
             ),

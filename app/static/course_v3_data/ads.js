@@ -137,8 +137,8 @@
   +'.caa-ps-btn.primary{background:#fff;color:#211D17;border-color:#fff}'
   +'.caa-ps-btn:active{transform:translateY(1px)}'
   +'.caa-ps-btn i{font-size:15px}'
-  +'.caa-desktop{display:none;width:100%;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;border-radius:12px;padding:11px 10px;font-family:inherit;font-size:13px;font-weight:650;cursor:pointer}'
-  +'.caa-desktop:not([hidden]){display:flex;align-items:center;justify-content:center}';
+  +'.caa-desktop{display:none;width:100%}'
+  +'.caa-desktop:not([hidden]){display:block}';
 
   var els = null;
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -158,7 +158,7 @@
       +'<button class="caa-cta caa-cta0" disabled></button>'
       +'<div class="caa-sub" hidden><div class="caa-why" hidden><i class="ti ti-info-circle"></i><span class="caa-why-t"></span></div>'
       +'<p class="caa-sub-t"></p><p class="caa-sub-desc" hidden></p><div class="caa-benefits"></div>'
-      +'<button class="caa-cta caa-pay"></button><button class="caa-cta ghost caa-ext" hidden></button><button class="caa-cta ghost caa-cont"></button><button class="caa-desktop" hidden></button>'
+      +'<button class="caa-cta caa-pay"></button><button class="caa-cta ghost caa-ext" hidden></button><button class="caa-cta ghost caa-cont"></button><div class="caa-desktop" hidden></div>'
       +'<div class="caa-limit-foot" hidden><button class="caa-limit-link ad caa-lim-ad" hidden></button></div></div>'
       +'</div>'
       +'<button class="caa-x" aria-label="close"><i class="ti ti-x"></i></button>'

@@ -945,6 +945,124 @@ def _open_course_profile_with_desktop_release(
     expect(page.locator("#pomp-desktop-profile-root .pdd-card")).to_be_visible()
 
 
+def test_desktop_ad_block_exposes_both_os_actions_above_course_ad(page):
+    page.add_init_script(
+        """
+        Object.defineProperty(Navigator.prototype, "platform", {
+          configurable: true,
+          get: function() { return "MacIntel"; }
+        });
+        """
+    )
+    mock_telegram_desktop_download(page, platform="tdesktop")
+    page.route(
+        "**/api/v3/desktop-download/request",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "platform": "macos",
+                "download_url": "https://downloads.example/desktop-download?platform=macos&request=ad-secret",
+                "download_page_url": "https://downloads.example/desktop-download?platform=macos&request=ad-secret",
+                "transfer_url": "https://downloads.example/downloads/macos",
+                "file_name": "HSK-AI-1.0.0.dmg",
+                "duplicate": False,
+            },
+        ),
+    )
+    page.route(
+        "**/api/v3/desktop-download/started",
+        lambda route: json_response(
+            route, {"ok": True, "recorded": True, "duplicate": False}
+        ),
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.evaluate(
+        """
+        () => {
+          const overlay = document.createElement("div");
+          overlay.id = "test-course-ad-overlay";
+          overlay.className = "caa-ov on";
+          Object.assign(overlay.style, {
+            position: "fixed", inset: "0", zIndex: "9000", display: "block",
+            background: "#15120f", padding: "20px"
+          });
+          overlay.innerHTML = [
+            '<button class="caa-cta caa-pay">Obuna</button>',
+            '<button class="caa-cta caa-cont">Davom etish</button>',
+            '<div class="caa-desktop" hidden></div>'
+          ].join("");
+          document.body.appendChild(overlay);
+          window.PompDesktopDownload.mountAdPromoTrigger(
+            overlay.querySelector(".caa-desktop"),
+            {placement: "practice_test_end"}
+          );
+        }
+        """
+    )
+
+    overlay = page.locator("#test-course-ad-overlay")
+    host = overlay.locator(".caa-desktop")
+    mac = host.locator('[data-pdd-platform="macos"]')
+    windows = host.locator('[data-pdd-platform="windows"]')
+    expect(host).to_be_visible()
+    expect(mac).to_be_visible()
+    expect(windows).to_be_visible()
+    expect(mac).to_have_attribute("data-pdd-source", "ad_promo")
+    expect(windows).to_have_attribute("data-pdd-source", "ad_promo")
+    expect(mac).to_have_attribute("data-recommended", "true")
+    expect(windows).to_have_attribute("data-recommended", "false")
+    assert host.locator("button button").count() == 0
+    assert page.evaluate(
+        """
+        () => {
+          const ov = document.querySelector("#test-course-ad-overlay");
+          const pay = ov.querySelector(".caa-pay");
+          const cont = ov.querySelector(".caa-cont");
+          const desktop = ov.querySelector(".caa-desktop");
+          return Boolean(
+            pay.compareDocumentPosition(cont) & Node.DOCUMENT_POSITION_FOLLOWING
+          ) && Boolean(
+            cont.compareDocumentPosition(desktop) & Node.DOCUMENT_POSITION_FOLLOWING
+          );
+        }
+        """
+    )
+
+    mac.click()
+    destination = page.locator("#pomp-desktop-destination-root")
+    expect(destination).to_be_visible()
+    assert page.evaluate(
+        """
+        Number(getComputedStyle(document.querySelector("#pomp-desktop-destination-root")).zIndex) >
+        Number(getComputedStyle(document.querySelector("#test-course-ad-overlay")).zIndex)
+        """
+    )
+    assert page.evaluate(
+        """
+        () => {
+          const shell = document.querySelector(".pdd-destination-shell");
+          const box = shell.getBoundingClientRect();
+          return shell.contains(document.elementFromPoint(
+            box.left + box.width / 2,
+            box.top + Math.min(28, box.height / 2)
+          ));
+        }
+        """
+    )
+
+    page.locator('[data-pdd-destination-action="direct"]').click()
+    expect(page.locator('.pdd-promo-shell[data-mode="success"]')).to_be_visible()
+    expect(host).to_be_hidden()
+    assert page.evaluate(
+        """
+        Number(getComputedStyle(document.querySelector("#pomp-desktop-promo-root")).zIndex) >
+        Number(getComputedStyle(document.querySelector("#test-course-ad-overlay")).zIndex)
+        """
+    )
+
+
 def test_desktop_profile_card_is_discoverable_and_explains_transfer(page):
     mock_telegram_desktop_download(page, platform="android")
     _open_course_profile_with_desktop_release(page)
@@ -959,6 +1077,8 @@ def test_desktop_profile_card_is_discoverable_and_explains_transfer(page):
     expect(card).to_be_visible()
     expect(mac).to_be_visible()
     expect(windows).to_be_visible()
+    expect(mac).to_have_attribute("data-recommended", "false")
+    expect(windows).to_have_attribute("data-recommended", "false")
     expect(card.locator(".pdd-product-preview")).to_be_visible()
     expect(card.locator(".pdd-preview-word")).to_contain_text("学习")
     expect(card.locator(".pdd-preview-word")).to_contain_text("xuéxí · o‘rganmoq")
@@ -1531,6 +1651,43 @@ def test_desktop_download_share_uses_clean_public_url_and_tracks_transport(page)
     assert started[0]["event_id"] == requested[0]["event_id"]
     assert started[0]["transport"] == "web_share"
     assert page.evaluate("window.__openedLink") is None
+
+
+def test_desktop_download_does_not_share_before_request_is_accepted(page):
+    page.add_init_script(
+        """
+        Object.defineProperty(Navigator.prototype, "share", {
+          configurable: true,
+          value: async function(payload) {
+            window.__sharedBeforeRequest = payload;
+          }
+        });
+        Object.defineProperty(Navigator.prototype, "canShare", {
+          configurable: true,
+          value: function() { return true; }
+        });
+        """
+    )
+    mock_telegram_desktop_download(page, platform="android")
+    requests = []
+    page.route(
+        "**/api/v3/desktop-download/request",
+        lambda route: (
+            requests.append(route.request.post_data_json),
+            json_response(route, {"ok": False, "error": "network_error"}, status=500),
+        )[-1],
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    page.locator('[data-pdd-destination-action="share"]').click()
+    page.wait_for_function(
+        "document.querySelector('[data-pdd-destination-status]').dataset.visible === 'true'"
+    )
+
+    assert requests
+    assert page.evaluate("window.__sharedBeforeRequest") is None
+    expect(page.locator("#pomp-desktop-destination-root")).to_be_visible()
 
 
 def test_desktop_download_copy_uses_clean_public_url_and_tracks_transport(page):
