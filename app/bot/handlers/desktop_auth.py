@@ -27,14 +27,14 @@ _COPY = {
             "Qurilma: <b>{platform}</b>\n"
             "Versiya: <b>{version}</b>\n"
             "Kod: <code>{code}</code>\n\n"
-            "Bu kodni Pomp HSK AI ilovasida o‘zingiz ochgan bo‘lsangizgina "
+            "Bu kodni HSK AI ilovasida o‘zingiz ochgan bo‘lsangizgina "
             "tasdiqlang. Aks holda bekor qiling."
         ),
         "approve": "✅ Tasdiqlash",
         "cancel": "Bekor qilish",
         "enter_code": (
             "🔐 <b>Ulash kodini kiriting</b>\n\n"
-            "Pomp HSK AI kompyuter ilovasida ko‘rsatilgan 8 belgili kodni "
+            "HSK AI kompyuter ilovasida ko‘rsatilgan 8 belgili kodni "
             "shu chatga <b>qo‘lda yuboring</b>.\n\n"
             "Kodni boshqa odamga yubormang."
         ),
@@ -48,7 +48,7 @@ _COPY = {
         ),
         "ok": (
             "✅ <b>Kompyuter ilovasi ulandi</b>\n\n"
-            "Pomp Desktop’ga qayting — hisobingiz avtomatik ochiladi."
+            "HSK AI Desktop’ga qayting — hisobingiz avtomatik ochiladi."
         ),
         "cancelled": "Ulash bekor qilindi. Bu kod endi ishlamaydi.",
         "invalid": (
@@ -62,7 +62,7 @@ _COPY = {
             "Устройство: <b>{platform}</b>\n"
             "Версия: <b>{version}</b>\n"
             "Код: <code>{code}</code>\n\n"
-            "Подтверждайте, только если вы сами открыли этот код в Pomp HSK AI. "
+            "Подтверждайте, только если вы сами открыли этот код в HSK AI. "
             "Иначе отмените подключение."
         ),
         "approve": "✅ Подтвердить",
@@ -70,7 +70,7 @@ _COPY = {
         "enter_code": (
             "🔐 <b>Введите код подключения</b>\n\n"
             "Вручную отправьте в этот чат 8-символьный код, показанный в "
-            "приложении Pomp HSK AI на компьютере.\n\n"
+            "приложении HSK AI на компьютере.\n\n"
             "Никому не передавайте код."
         ),
         "invalid_code": (
@@ -83,7 +83,7 @@ _COPY = {
         ),
         "ok": (
             "✅ <b>Приложение на компьютере подключено</b>\n\n"
-            "Вернитесь в Pomp Desktop — аккаунт откроется автоматически."
+            "Вернитесь в HSK AI Desktop — аккаунт откроется автоматически."
         ),
         "cancelled": "Подключение отменено. Этот код больше не работает.",
         "invalid": (
@@ -97,14 +97,14 @@ _COPY = {
             "Дастгоҳ: <b>{platform}</b>\n"
             "Версия: <b>{version}</b>\n"
             "Рамз: <code>{code}</code>\n\n"
-            "Танҳо агар ин рамзро худатон дар Pomp HSK AI кушода бошед, "
+            "Танҳо агар ин рамзро худатон дар HSK AI кушода бошед, "
             "тасдиқ кунед. Дар акси ҳол бекор кунед."
         ),
         "approve": "✅ Тасдиқ",
         "cancel": "Бекор кардан",
         "enter_code": (
             "🔐 <b>Рамзи пайвастшавиро ворид кунед</b>\n\n"
-            "Рамзи 8-аломатии дар барномаи компютерии Pomp HSK AI "
+            "Рамзи 8-аломатии дар барномаи компютерии HSK AI "
             "нишондодашударо ба ин чат <b>дастӣ фиристед</b>.\n\n"
             "Рамзро ба каси дигар нафиристед."
         ),
@@ -118,7 +118,7 @@ _COPY = {
         ),
         "ok": (
             "✅ <b>Барномаи компютерӣ пайваст шуд</b>\n\n"
-            "Ба Pomp Desktop баргардед — ҳисоб худкор кушода мешавад."
+            "Ба HSK AI Desktop баргардед — ҳисоб худкор кушода мешавад."
         ),
         "cancelled": "Пайвастшавӣ бекор шуд. Ин рамз дигар кор намекунад.",
         "invalid": (

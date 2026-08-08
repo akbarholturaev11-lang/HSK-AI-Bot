@@ -32,7 +32,7 @@
 
   var COPY = {
     uz: {
-      eyebrow: "Pomp HSK AI · kompyuter",
+      eyebrow: "HSK AI · kompyuter",
       cardTitle: "Kompyuter ilovasi",
       cardBody:
         "Kurs, obuna va progress bir akkauntda. Mac yoki Windows versiyasini tanlang.",
@@ -102,7 +102,7 @@
       successAction: "Tushunarli"
     },
     ru: {
-      eyebrow: "Pomp HSK AI · компьютер",
+      eyebrow: "HSK AI · компьютер",
       cardTitle: "Приложение для компьютера",
       cardBody:
         "Курс, подписка и прогресс в одном аккаунте. Выберите версию для Mac или Windows.",
@@ -172,7 +172,7 @@
       successAction: "Понятно"
     },
     tj: {
-      eyebrow: "Pomp HSK AI · компютер",
+      eyebrow: "HSK AI · компютер",
       cardTitle: "Барномаи компютерӣ",
       cardBody:
         "Курс, обуна ва пешрафт дар як ҳисоб. Версияи Mac ё Windows-ро интихоб кунед.",
@@ -528,7 +528,7 @@
     dots.appendChild(element("i"));
     dots.appendChild(element("i"));
     chrome.appendChild(dots);
-    chrome.appendChild(element("strong", "", "Pomp HSK AI"));
+    chrome.appendChild(element("strong", "", "HSK AI"));
     chrome.appendChild(element("small", "", "HSK 2"));
     preview.appendChild(chrome);
 
@@ -1209,7 +1209,7 @@
   function shareTransferUrl(url, platform) {
     if (!navigator.share) return copyTransferUrl(url);
     var payload = {
-      title: "Pomp HSK AI · " + platformLabel(platform),
+      title: "HSK AI · " + platformLabel(platform),
       text: text().destinationBody,
       url: url
     };

@@ -1063,7 +1063,7 @@ fn take_pending_update(state: &DesktopState) -> Result<Option<Update>, String> {
 #[tauri::command]
 fn desktop_app_info() -> Result<DesktopAppInfo, String> {
     Ok(DesktopAppInfo {
-        product_name: "Pomp HSK AI",
+        product_name: "HSK AI",
         version: env!("CARGO_PKG_VERSION"),
         platform: platform()?,
     })
@@ -1510,7 +1510,7 @@ pub fn run() {
             desktop_tts_speak,
         ])
         .run(tauri::generate_context!())
-        .expect("failed to run Pomp HSK AI");
+        .expect("failed to run HSK AI");
 }
 
 #[cfg(test)]
@@ -1844,7 +1844,7 @@ mod tests {
     fn tauri_config_preserves_product_security_and_window_contract() {
         let config: Value = serde_json::from_str(include_str!("../tauri.conf.json"))
             .expect("tauri.conf.json must remain valid JSON");
-        assert_eq!(config["productName"], "Pomp HSK AI");
+        assert_eq!(config["productName"], "HSK AI");
         assert_eq!(config["identifier"], "com.pomp.hskai");
         assert_eq!(config["build"]["frontendDist"], "../ui");
         assert_eq!(config["app"]["withGlobalTauri"], true);

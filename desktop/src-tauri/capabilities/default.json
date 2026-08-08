@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Minimum permissions for the Pomp HSK AI main window.",
+  "description": "Minimum permissions for the HSK AI main window.",
   "windows": [
     "main"
   ],

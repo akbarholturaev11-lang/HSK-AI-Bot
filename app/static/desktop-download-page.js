@@ -25,10 +25,10 @@
       loading: "Tayyorlanmoqda…",
       checking: "Mos versiya tekshirilmoqda.",
       unavailable: "Bu platforma uchun installer hali chiqarilmagan.",
-      ready: "Fayl Pomp HSK AI rasmiy download serveridan yuklanadi.",
+      ready: "Fayl HSK AI rasmiy download serveridan yuklanadi.",
       opening: "Yuklash ochilmoqda…",
-      macTitle: "Mac uchun Pomp HSK AI",
-      windowsTitle: "Windows uchun Pomp HSK AI",
+      macTitle: "Mac uchun HSK AI",
+      windowsTitle: "Windows uchun HSK AI",
       macDownload: "Mac uchun DMG yuklash",
       windowsDownload: "Windows uchun EXE yuklash",
       version: "Versiya {version}",
@@ -36,7 +36,7 @@
       guideTitle: "Uch qadamda tayyor",
       macSteps: [
         ["DMG faylni yuklang", "Yuqoridagi tugma universal Mac installerini kompyuteringizga saqlaydi."],
-        ["Applications ichiga tashlang", "DMG’ni oching va Pomp HSK AI ikonkasini Applications ustiga suring."],
+        ["Applications ichiga tashlang", "DMG’ni oching va HSK AI ikonkasini Applications ustiga suring."],
         ["Telegram hisobingizni ulang", "Ilovadagi kodni Telegram orqali tasdiqlang. Obuna va progress avtomatik keladi."]
       ],
       windowsSteps: [
@@ -46,7 +46,7 @@
       ],
       securityTitle: "Birinchi ochishda ogohlantirish chiqishi mumkin",
       macSecurity: "macOS’da avval ilovani ochishga urining, keyin System Settings → Privacy & Security → Open Anyway’ni bosing.",
-      windowsSecurity: "Windows SmartScreen chiqsa, fayl nomi Pomp HSK AI ekanini tekshiring. Smart App Control bloklagan qurilmada himoyani o‘chirmang.",
+      windowsSecurity: "Windows SmartScreen chiqsa, fayl nomi HSK AI ekanini tekshiring. Smart App Control bloklagan qurilmada himoyani o‘chirmang.",
       mobileEyebrow: "Telefon orqali ochdingiz",
       mobileTitle: "Linkni kompyuteringizga yuboring",
       mobileBody:
@@ -77,10 +77,10 @@
       loading: "Подготавливаем…",
       checking: "Проверяем подходящую версию.",
       unavailable: "Установщик для этой платформы ещё не опубликован.",
-      ready: "Файл загружается с официального сервера Pomp HSK AI.",
+      ready: "Файл загружается с официального сервера HSK AI.",
       opening: "Открываем загрузку…",
-      macTitle: "Pomp HSK AI для Mac",
-      windowsTitle: "Pomp HSK AI для Windows",
+      macTitle: "HSK AI для Mac",
+      windowsTitle: "HSK AI для Windows",
       macDownload: "Скачать DMG для Mac",
       windowsDownload: "Скачать EXE для Windows",
       version: "Версия {version}",
@@ -88,7 +88,7 @@
       guideTitle: "Готово за три шага",
       macSteps: [
         ["Скачайте DMG", "Кнопка выше сохранит универсальный установщик для Mac."],
-        ["Перетащите в Applications", "Откройте DMG и перетащите Pomp HSK AI в папку Applications."],
+        ["Перетащите в Applications", "Откройте DMG и перетащите HSK AI в папку Applications."],
         ["Подключите Telegram", "Подтвердите код приложения в Telegram. Подписка и прогресс появятся автоматически."]
       ],
       windowsSteps: [
@@ -98,7 +98,7 @@
       ],
       securityTitle: "При первом запуске может появиться предупреждение",
       macSecurity: "Сначала попробуйте открыть приложение, затем выберите System Settings → Privacy & Security → Open Anyway.",
-      windowsSecurity: "Если появился SmartScreen, проверьте имя файла Pomp HSK AI. Не отключайте Smart App Control, если он заблокировал приложение.",
+      windowsSecurity: "Если появился SmartScreen, проверьте имя файла HSK AI. Не отключайте Smart App Control, если он заблокировал приложение.",
       mobileEyebrow: "Страница открыта на телефоне",
       mobileTitle: "Отправьте ссылку на компьютер",
       mobileBody:
@@ -129,10 +129,10 @@
       loading: "Омода мешавад…",
       checking: "Версияи мувофиқ санҷида мешавад.",
       unavailable: "Насбкунандаи ин платформа ҳоло нашр нашудааст.",
-      ready: "Файл аз сервери расмии Pomp HSK AI бор мешавад.",
+      ready: "Файл аз сервери расмии HSK AI бор мешавад.",
       opening: "Боргирӣ кушода мешавад…",
-      macTitle: "Pomp HSK AI барои Mac",
-      windowsTitle: "Pomp HSK AI барои Windows",
+      macTitle: "HSK AI барои Mac",
+      windowsTitle: "HSK AI барои Windows",
       macDownload: "DMG барои Mac",
       windowsDownload: "EXE барои Windows",
       version: "Версияи {version}",
@@ -140,7 +140,7 @@
       guideTitle: "Дар се қадам омода",
       macSteps: [
         ["DMG-ро бор кунед", "Тугмаи боло насбкунандаи универсалии Mac-ро нигоҳ медорад."],
-        ["Ба Applications гузаронед", "DMG-ро кушоед ва Pomp HSK AI-ро ба Applications кашед."],
+        ["Ба Applications гузаронед", "DMG-ро кушоед ва HSK AI-ро ба Applications кашед."],
         ["Telegram-ро пайваст кунед", "Рамзи барномаро дар Telegram тасдиқ кунед. Обуна ва пешрафт худкор меоянд."]
       ],
       windowsSteps: [
@@ -150,7 +150,7 @@
       ],
       securityTitle: "Ҳангоми кушодани аввал огоҳӣ баромада метавонад",
       macSecurity: "Аввал барномаро кушоед, баъд System Settings → Privacy & Security → Open Anyway-ро пахш кунед.",
-      windowsSecurity: "Агар SmartScreen барояд, номи Pomp HSK AI-ро санҷед. Агар Smart App Control барномаро баст, муҳофизатро хомӯш накунед.",
+      windowsSecurity: "Агар SmartScreen барояд, номи HSK AI-ро санҷед. Агар Smart App Control барномаро баст, муҳофизатро хомӯш накунед.",
       mobileEyebrow: "Саҳифа дар телефон кушода шуд",
       mobileTitle: "Пайвандро ба компютер фиристед",
       mobileBody:
@@ -544,7 +544,7 @@
   function sharePublicTransfer(url) {
     if (!navigator.share) return copyPublicTransfer(url);
     var payload = {
-      title: "Pomp HSK AI",
+      title: "HSK AI",
       text: copy().mobileBody,
       url: url
     };

@@ -1145,9 +1145,9 @@ fn validate_chat_request(request: &LocalAiChatRequest) -> Result<(), String> {
 
 fn system_prompt(language: &str) -> &'static str {
     match language.trim().to_ascii_lowercase().as_str() {
-        "ru" => "Ты офлайн-наставник Pomp HSK AI по китайскому языку. Отвечай кратко и точно на русском. Для учебных примеров показывай иероглифы, пиньинь и перевод. Не утверждай, что у тебя есть интернет, и не выдумывай актуальные данные.",
-        "tj" => "Ту мураббии офлайнии Pomp HSK AI барои забони чинӣ ҳастӣ. Ба тоҷикӣ кӯтоҳ ва дақиқ ҷавоб деҳ. Дар мисолҳои омӯзишӣ иероглиф, пинйин ва тарҷумаро нишон деҳ. Дастрасӣ ба интернетро даъво накун ва маълумоти ҷориро бофта набарор.",
-        _ => "Sen Pomp HSK AI ilovasidagi xitoy tili bo‘yicha offline ustozsan. O‘zbek tilida qisqa va aniq javob ber. O‘quv misollarida iyeroglif, pinyin va tarjimani ko‘rsat. Internet borligini da’vo qilma va dolzarb ma’lumotni uydirma.",
+        "ru" => "Ты офлайн-наставник HSK AI по китайскому языку. Отвечай кратко и точно на русском. Для учебных примеров показывай иероглифы, пиньинь и перевод. Не утверждай, что у тебя есть интернет, и не выдумывай актуальные данные.",
+        "tj" => "Ту мураббии офлайнии HSK AI барои забони чинӣ ҳастӣ. Ба тоҷикӣ кӯтоҳ ва дақиқ ҷавоб деҳ. Дар мисолҳои омӯзишӣ иероглиф, пинйин ва тарҷумаро нишон деҳ. Дастрасӣ ба интернетро даъво накун ва маълумоти ҷориро бофта набарор.",
+        _ => "Sen HSK AI ilovasidagi xitoy tili bo‘yicha offline ustozsan. O‘zbek tilida qisqa va aniq javob ber. O‘quv misollarida iyeroglif, pinyin va tarjimani ko‘rsat. Internet borligini da’vo qilma va dolzarb ma’lumotni uydirma.",
     }
 }
 

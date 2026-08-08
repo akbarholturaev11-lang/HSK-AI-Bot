@@ -86,7 +86,7 @@ function subscriptionOverview() {
         }
       : null,
     prices: access.is_paid || pending ? {} : previewPrices(),
-    payment_details: access.is_paid || pending ? "" : "Pomp HSK AI · 0000 0000 0000 0000",
+    payment_details: access.is_paid || pending ? "" : "HSK AI · 0000 0000 0000 0000",
     payment_details_configured: !access.is_paid && !pending,
     card_countries: ["tj", "uz", "ru", "other"],
   };
@@ -116,7 +116,7 @@ function subscriptionQuote(args) {
     discount_applied: price.discount_applied,
     discount_percent: price.discount_percent,
     payment_details:
-      method === "visa" ? "Pomp HSK AI · 0000 0000 0000 0000" : "",
+      method === "visa" ? "HSK AI · 0000 0000 0000 0000" : "",
   };
   if (method !== "visa") {
     quote.qr = { available: true, image_data_url: PREVIEW_QR };
@@ -347,7 +347,7 @@ export async function previewInvoke(command, args = {}) {
   switch (command) {
     case "desktop_app_info":
       return {
-        productName: "Pomp HSK AI",
+        productName: "HSK AI",
         version: "1.1.0-preview",
         platform: "preview",
       };

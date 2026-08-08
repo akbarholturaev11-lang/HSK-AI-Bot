@@ -1,4 +1,4 @@
-# Pomp HSK AI Desktop
+# HSK AI Desktop
 
 This directory is the canonical Tauri v2 desktop client inside the shared
 `HSK AI bot` repository. Telegram bot, Mini App, backend, subscription,
@@ -6,7 +6,7 @@ progress, referrals, analytics and desktop remain one product ecosystem.
 
 ## Phase A result
 
-- Product identity: `Pomp HSK AI` / `com.pomp.hskai`
+- Product identity: `HSK AI` / `com.pomp.hskai`
 - Main window: `1180x780`, minimum `720x560`
 - Dedicated frontend: `desktop/ui`
 - Adaptive course workspace with left lesson navigation

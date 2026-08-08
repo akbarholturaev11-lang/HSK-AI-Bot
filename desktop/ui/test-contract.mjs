@@ -72,7 +72,7 @@ test("Tauri loads the dedicated UI with IPC-only network CSP", async () => {
   const config = JSON.parse(
     await source("desktop/src-tauri/tauri.conf.json"),
   );
-  assert.equal(config.productName, "Pomp HSK AI");
+  assert.equal(config.productName, "HSK AI");
   assert.equal(config.identifier, "com.pomp.hskai");
   assert.equal(config.build.frontendDist, "../ui");
   assert.ok(config.bundle.icon.includes("icons/icon.icns"));

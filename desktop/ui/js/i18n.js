@@ -248,7 +248,7 @@ const messages = {
     serverReward: "Mukofot",
     noReward: "Server javobi",
     bridgeUnavailable:
-      "Bu sahifa faqat Pomp HSK AI desktop ilovasi ichida ishlaydi.",
+      "Bu sahifa faqat HSK AI desktop ilovasi ichida ishlaydi.",
     sessionExpired: "Sessiya tugadi. Telegram orqali qayta ulang.",
     requestFailed: "Amal bajarilmadi. Qayta urinib ko‘ring.",
     noConnection: "Server bilan aloqa yo‘q.",
@@ -263,7 +263,7 @@ const messages = {
     offline: "Offline",
     updateAvailableTitle: "Yangi versiya: {version}",
     updateAvailableBody:
-      "Pomp HSK AI yangilanishi tayyor. Darsni tugatib, ilovani yangilang.",
+      "HSK AI yangilanishi tayyor. Darsni tugatib, ilovani yangilang.",
     updateInstall: "O‘rnatish va qayta ochish",
     updateCheckingTitle: "Yangilanish tekshirilmoqda",
     updateCheckingBody: "Ilova versiyasi tekshirilmoqda…",
@@ -528,7 +528,7 @@ const messages = {
     serverReward: "Награда",
     noReward: "Ответ сервера",
     bridgeUnavailable:
-      "Эта страница работает только внутри desktop-приложения Pomp HSK AI.",
+      "Эта страница работает только внутри desktop-приложения HSK AI.",
     sessionExpired: "Сессия истекла. Подключите Telegram снова.",
     requestFailed: "Не удалось выполнить действие. Повторите.",
     noConnection: "Нет связи с сервером.",
@@ -543,7 +543,7 @@ const messages = {
     offline: "Офлайн",
     updateAvailableTitle: "Доступна версия {version}",
     updateAvailableBody:
-      "Обновление Pomp HSK AI готово. Завершите урок и обновите приложение.",
+      "Обновление HSK AI готово. Завершите урок и обновите приложение.",
     updateInstall: "Установить и перезапустить",
     updateCheckingTitle: "Проверяем обновление",
     updateCheckingBody: "Проверяем версию приложения…",
@@ -808,7 +808,7 @@ const messages = {
     serverReward: "Мукофот",
     noReward: "Ҷавоби сервер",
     bridgeUnavailable:
-      "Ин саҳифа танҳо дар дохили барномаи desktop-и Pomp HSK AI кор мекунад.",
+      "Ин саҳифа танҳо дар дохили барномаи desktop-и HSK AI кор мекунад.",
     sessionExpired: "Муҳлати сессия гузашт. Telegram-ро аз нав пайваст кунед.",
     requestFailed: "Амал иҷро нашуд. Боз кӯшиш кунед.",
     noConnection: "Бо сервер алоқа нест.",
@@ -823,7 +823,7 @@ const messages = {
     offline: "Офлайн",
     updateAvailableTitle: "Версияи {version} дастрас аст",
     updateAvailableBody:
-      "Навсозии Pomp HSK AI омода аст. Дарсро анҷом дода, барномаро нав кунед.",
+      "Навсозии HSK AI омода аст. Дарсро анҷом дода, барномаро нав кунед.",
     updateInstall: "Насб ва бозкушоӣ",
     updateCheckingTitle: "Навсозӣ санҷида мешавад",
     updateCheckingBody: "Версияи барнома санҷида мешавад…",

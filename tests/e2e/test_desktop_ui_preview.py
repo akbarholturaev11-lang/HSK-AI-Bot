@@ -101,7 +101,7 @@ def _install_native_fixture(
               invoke: async (command, args = {{}}) => {{
                 const fixture = window.__DESKTOP_FIXTURE__;
                 if (command === "desktop_app_info") {{
-                  return {{ productName: "Pomp HSK AI", version: "test", platform: "macos" }};
+                  return {{ productName: "HSK AI", version: "test", platform: "macos" }};
                 }}
                 if (command === "desktop_auth_status") {{
                   return {{
