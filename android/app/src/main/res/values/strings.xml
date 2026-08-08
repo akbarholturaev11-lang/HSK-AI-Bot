@@ -75,4 +75,23 @@
     <!-- Accessibility -->
     <string name="cd_app_logo">Pomp HSK AI logotipi</string>
     <string name="cd_copy_code">Ulash kodini nusxalash</string>
+
+    <!-- Bugun -->
+    <string name="today_next_lesson">Keyingi dars</string>
+    <string name="today_continue">Davom etish</string>
+    <string name="today_estimated_minutes">~5–7 daqiqa</string>
+    <string name="today_part_of">%1$d / %2$d qism</string>
+    <string name="today_streak">Ketma-ket kunlar</string>
+    <string name="today_xp">XP</string>
+    <string name="today_level">Daraja</string>
+    <string name="today_all_done">Bu darajadagi barcha qismlar tugadi</string>
+    <string name="today_stale">Oflayn ma\'lumot — internet tiklanganda yangilanadi</string>
+    <string name="today_reason_preview">Bu darsning yarmini bepul ko\'rishingiz mumkin</string>
+    <string name="today_reason_premium">Bu dars obuna bilan ochiladi</string>
+    <string name="today_reason_not_reached">Avval oldingi qismlarni tugating</string>
+
+    <!-- Kurs -->
+    <string name="course_progress">%1$d / %2$d qism</string>
+    <string name="course_checkpoint">Takrorlash</string>
+    <string name="course_part_label">%1$d-qism</string>
 </resources>

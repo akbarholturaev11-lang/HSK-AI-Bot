@@ -1,10 +1,14 @@
 package com.pomp.hskai
 
 import android.app.Application
+import androidx.room.Room
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.network.OriginGuardInterceptor
 import com.pomp.hskai.core.storage.SecureCredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
+import com.pomp.hskai.data.api.AndroidCourseApi
+import com.pomp.hskai.data.local.HskAiDatabase
+import com.pomp.hskai.data.repository.CourseRepository
 import java.util.concurrent.TimeUnit
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -58,6 +62,28 @@ class HskAiApplication : Application() {
             store = credentialStore,
             appVersion = BuildConfig.VERSION_NAME,
         )
+    }
+
+    private val database: HskAiDatabase by lazy {
+        Room.databaseBuilder(this, HskAiDatabase::class.java, HskAiDatabase.NAME)
+            // The cache is a disposable snapshot of server state, so a schema
+            // change may simply drop it rather than carry a migration.
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
+    }
+
+    val courseRepository: CourseRepository by lazy {
+        CourseRepository(
+            api = retrofit.create(AndroidCourseApi::class.java),
+            accessToken = authRepository::accessToken,
+            dao = database.courseMapDao(),
+            json = json,
+        )
+    }
+
+    /** Session end: credentials are cleared by auth, cached progress here. */
+    suspend fun clearLocalData() {
+        courseRepository.clearCache()
     }
 
     private companion object {

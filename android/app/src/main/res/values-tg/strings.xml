@@ -53,4 +53,21 @@
 
     <string name="cd_app_logo">Логотипи Pomp HSK AI</string>
     <string name="cd_copy_code">Нусхабардории рамзи пайвастшавӣ</string>
+
+    <string name="today_next_lesson">Дарси навбатӣ</string>
+    <string name="today_continue">Идома додан</string>
+    <string name="today_estimated_minutes">~5–7 дақиқа</string>
+    <string name="today_part_of">Қисми %1$d аз %2$d</string>
+    <string name="today_streak">Рӯзҳои пайдарпай</string>
+    <string name="today_xp">XP</string>
+    <string name="today_level">Сатҳ</string>
+    <string name="today_all_done">Ҳамаи қисмҳои ин сатҳ анҷом ёфтанд</string>
+    <string name="today_stale">Маълумоти офлайн — ҳангоми пайваст навсозӣ мешавад</string>
+    <string name="today_reason_preview">Нисфи ин дарсро ройгон дида метавонед</string>
+    <string name="today_reason_premium">Ин дарс бо обуна кушода мешавад</string>
+    <string name="today_reason_not_reached">Аввал қисмҳои пешинаро анҷом диҳед</string>
+
+    <string name="course_progress">%1$d / %2$d қисм</string>
+    <string name="course_checkpoint">Такрор</string>
+    <string name="course_part_label">Қисми %1$d</string>
 </resources>

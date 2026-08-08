@@ -7,18 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,8 +24,16 @@ import com.pomp.hskai.core.auth.AuthState
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.core.navigation.DeepLinkRouter
+import com.pomp.hskai.core.navigation.toTab
 import com.pomp.hskai.feature.auth.LinkScreen
 import com.pomp.hskai.feature.auth.LinkViewModel
+import com.pomp.hskai.core.navigation.MainScaffold
+import com.pomp.hskai.core.navigation.MainTab
+import com.pomp.hskai.feature.course.CourseScreen
+import com.pomp.hskai.feature.course.CourseViewModel
+import com.pomp.hskai.feature.profile.ProfileScreen
+import com.pomp.hskai.feature.today.TodayScreen
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -40,14 +44,11 @@ class MainActivity : ComponentActivity() {
         val app = application as HskAiApplication
         // Resolved but not acted on until the session and entitlement are
         // loaded: a URI must never open premium content on its own.
-        val pendingDestination = DeepLinkRouter.resolve(intent?.data?.toString())
+        val startTab = DeepLinkRouter.resolve(intent?.data?.toString())?.toTab()
 
         setContent {
             PompHskAiTheme {
-                AppRoot(
-                    authRepository = app.authRepository,
-                    hasPendingDeepLink = pendingDestination != null,
-                )
+                AppRoot(app = app, startTab = startTab)
             }
         }
     }
@@ -55,9 +56,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun AppRoot(
-    authRepository: AuthRepository,
-    hasPendingDeepLink: Boolean,
+    app: HskAiApplication,
+    startTab: MainTab?,
 ) {
+    val authRepository = app.authRepository
     val authState by authRepository.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -83,12 +85,46 @@ private fun AppRoot(
             )
         }
 
-        is AuthState.Authenticated -> LinkedPlaceholderScreen(
-            name = state.account.displayName,
-            level = state.account.level,
-            isPaid = state.account.isPaid,
-            hasPendingDeepLink = hasPendingDeepLink,
-        )
+        is AuthState.Authenticated -> {
+            val courseViewModel: CourseViewModel = viewModel(
+                factory = CourseViewModel.Factory(app.courseRepository),
+            )
+            val courseState by courseViewModel.state.collectAsStateWithLifecycle()
+            val scope = rememberCoroutineScope()
+
+            val signOut: (Boolean) -> Unit = { unlink ->
+                scope.launch {
+                    app.clearLocalData()
+                    authRepository.logout(unlinkDevice = unlink)
+                }
+            }
+
+            MainScaffold(initialTab = startTab ?: MainTab.TODAY) { tab, contentModifier ->
+                when (tab) {
+                    MainTab.TODAY -> TodayScreen(
+                        state = courseState,
+                        // Phase E opens the lesson renderer; until then the
+                        // action refreshes rather than pretending to navigate.
+                        onContinue = { courseViewModel.load() },
+                        onRetry = courseViewModel::load,
+                        modifier = contentModifier,
+                    )
+
+                    MainTab.COURSE -> CourseScreen(
+                        state = courseState,
+                        onLesson = { courseViewModel.load() },
+                        modifier = contentModifier,
+                    )
+
+                    MainTab.PROFILE -> ProfileScreen(
+                        account = state.account,
+                        onLogout = { signOut(false) },
+                        onUnlinkDevice = { signOut(true) },
+                        modifier = contentModifier,
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -101,62 +137,6 @@ private fun SplashScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CircularProgressIndicator(color = PompColors.Cinnabar)
-        }
-    }
-}
-
-/**
- * Phase C stopping point: proves the canonical account really arrived.
- * Phase D replaces this with the "Bugun" screen and bottom navigation.
- */
-@Composable
-private fun LinkedPlaceholderScreen(
-    name: String,
-    level: String,
-    isPaid: Boolean,
-    hasPendingDeepLink: Boolean,
-) {
-    Surface(color = PompColors.Paper, modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = stringResource(R.string.synced_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = PompColors.Ink,
-            )
-            Text(
-                text = name,
-                style = MaterialTheme.typography.titleLarge,
-                color = PompColors.InkSecondary,
-                modifier = Modifier.padding(top = 12.dp),
-            )
-            Text(
-                text = "${stringResource(R.string.synced_level)}: ${level.uppercase()}",
-                style = MaterialTheme.typography.bodyLarge,
-                color = PompColors.InkSecondary,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-            Text(
-                text = stringResource(
-                    if (isPaid) R.string.synced_access_paid else R.string.synced_access_free
-                ),
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (isPaid) PompColors.Jade else PompColors.InkSecondary,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-            if (hasPendingDeepLink) {
-                Text(
-                    text = stringResource(R.string.nav_today),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.InkSecondary,
-                    modifier = Modifier.padding(top = 16.dp),
-                )
-            }
         }
     }
 }
