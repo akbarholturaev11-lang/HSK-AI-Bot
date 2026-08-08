@@ -75,6 +75,8 @@
     <string name="lesson_grammar">Грамматика</string>
     <string name="lesson_repeat_after_teacher">Пас аз устод такрор кунед</string>
     <string name="lesson_cannot_speak_now">Ҳоло гап зада наметавонам</string>
+    <string name="lesson_play_audio">Шунидани овоз</string>
+    <string name="lesson_audio_loading">Овоз бор шуда истодааст</string>
     <string name="lesson_listen_and_choose">Он чи шунидед, интихоб кунед</string>
     <string name="lesson_build_sentence">Ҷумларо созед</string>
     <string name="lesson_build_translation">Тарҷумаро созед</string>

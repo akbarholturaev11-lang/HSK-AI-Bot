@@ -11,11 +11,17 @@ to look like ``android:<uuid>``, which already fits the shared pattern.
 
 from __future__ import annotations
 
+import asyncio
+import hashlib
 import logging
+import os
+from pathlib import Path
+import re
+import tempfile
 from typing import Callable
 
 from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from app.api.desktop_course import (
     DesktopCourseCompleteRequest,
@@ -25,7 +31,7 @@ from app.api.desktop_course import (
     validated_course_payload,
 )
 from app.services.android_course_service import AndroidCourseService
-from app.services.desktop_auth_service import DesktopAuthError
+from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.desktop_course_service import DesktopCourseError
 
 
@@ -35,6 +41,16 @@ MIN_LESSON_ORDER = 1
 MAX_LESSON_ORDER = 500
 MIN_TZ_OFFSET_MINUTES = -720
 MAX_TZ_OFFSET_MINUTES = 840
+ANDROID_TTS_VOICE = "zh-CN-XiaoxiaoNeural"
+ANDROID_TTS_RATE = "-10%"
+# Keep generated speech outside `app/static`: the only download path must be
+# the bearer-authenticated endpoint above, never a guessable public asset URL.
+ANDROID_TTS_CACHE_DIR = Path(tempfile.gettempdir()) / "pomp-hsk-ai-android-tts"
+ANDROID_TTS_HEADERS = {
+    "Cache-Control": "private, max-age=31536000, immutable",
+    "X-Content-Type-Options": "nosniff",
+}
+_ANDROID_TTS_GENERATION_LOCK = asyncio.Lock()
 
 
 def _unavailable() -> JSONResponse:
@@ -64,6 +80,51 @@ def _timezone_offset(request: Request) -> int | None:
             status_code=422,
         )
     return offset
+
+
+def _android_tts_text(value: str | None) -> str:
+    text = str(value or "").strip()
+    if not text or len(text) > 240 or not re.search(r"[\u4e00-\u9fff]", text):
+        raise DesktopCourseError("android_tts_bad_text", status_code=400)
+    return text
+
+
+async def _android_tts_file(text: str) -> Path:
+    """Create/reuse one deterministic MP3 without exposing arbitrary paths."""
+
+    key = hashlib.sha256(
+        f"{ANDROID_TTS_VOICE}|{ANDROID_TTS_RATE}|{text}".encode("utf-8")
+    ).hexdigest()
+    ANDROID_TTS_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    path = ANDROID_TTS_CACHE_DIR / f"android-{key}.mp3"
+    if path.is_file() and path.stat().st_size > 0:
+        return path
+
+    # A single generator lock bounds external TTS work even when an account
+    # taps several audio buttons quickly. Cached reads never take this lock.
+    async with _ANDROID_TTS_GENERATION_LOCK:
+        if path.is_file() and path.stat().st_size > 0:
+            return path
+        tmp = path.with_suffix(".mp3.tmp")
+        try:
+            import edge_tts
+
+            await edge_tts.Communicate(
+                text,
+                ANDROID_TTS_VOICE,
+                rate=ANDROID_TTS_RATE,
+            ).save(str(tmp))
+            if not tmp.is_file() or tmp.stat().st_size <= 0:
+                raise RuntimeError("empty Android TTS output")
+            os.replace(tmp, path)
+        except Exception as exc:
+            logger.warning("Android TTS generation failed: %s", exc)
+            try:
+                tmp.unlink(missing_ok=True)
+            except OSError:
+                pass
+            raise DesktopCourseError("android_tts_failed", status_code=502) from exc
+    return path
 
 
 def create_android_course_router(
@@ -105,6 +166,26 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android course lesson failed")
+            return _unavailable()
+
+    @router.get("/api/v3/android/tts")
+    async def android_tts(request: Request, text: str = ""):
+        try:
+            async with session_factory() as session:
+                await DesktopAuthService(session, settings_obj).authenticate(
+                    bearer_access_token(request)
+                )
+            phrase = _android_tts_text(text)
+            path = await _android_tts_file(phrase)
+            return FileResponse(
+                path,
+                media_type="audio/mpeg",
+                headers=ANDROID_TTS_HEADERS,
+            )
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android TTS failed")
             return _unavailable()
 
     @router.post("/api/v3/android/course/complete")

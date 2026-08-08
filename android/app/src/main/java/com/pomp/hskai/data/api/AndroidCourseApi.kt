@@ -1,5 +1,6 @@
 package com.pomp.hskai.data.api
 
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -24,7 +25,14 @@ interface AndroidCourseApi {
     suspend fun lesson(
         @Header("Authorization") authorization: String,
         @Path("lessonOrder") lessonOrder: Int,
-    ): Response<kotlinx.serialization.json.JsonObject>
+    ): Response<CourseLessonResponse>
+
+    @GET("api/v3/android/tts")
+    suspend fun tts(
+        @Header("Authorization") authorization: String,
+        @Query("text") text: String,
+        @Query("rate") rate: String = "-10%",
+    ): Response<ResponseBody>
 
     @POST("api/v3/android/course/complete")
     suspend fun complete(

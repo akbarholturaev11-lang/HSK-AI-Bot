@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.lesson
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,8 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -170,6 +174,8 @@ fun GrammarCardView(card: GrammarCard, pinyin: PinyinVisibility) {
 fun PronunciationCardView(
     card: PronunciationCard,
     pinyin: PinyinVisibility,
+    isAudioLoading: Boolean,
+    onPlayAudio: (String) -> Unit,
     onSkip: () -> Unit,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -194,6 +200,11 @@ fun PronunciationCardView(
             color = PompColors.InkSecondary,
             textAlign = TextAlign.Center,
         )
+        Spacer(Modifier.height(18.dp))
+        AudioAction(
+            isLoading = isAudioLoading,
+            onClick = { onPlayAudio(card.phrase) },
+        )
         Spacer(Modifier.height(24.dp))
         // Speaking must never soft-lock a learner who cannot speak right now.
         SecondaryAction(
@@ -211,6 +222,8 @@ fun ChoiceCardView(
     pinyin: PinyinVisibility,
     selectedIndex: Int?,
     isAnswered: Boolean,
+    isAudioLoading: Boolean,
+    onPlayAudio: (String) -> Unit,
     onSelect: (Int) -> Unit,
 ) {
     Column {
@@ -223,14 +236,20 @@ fun ChoiceCardView(
                     style = MaterialTheme.typography.titleLarge,
                     color = PompColors.Ink,
                 )
-                if (pinyin == PinyinVisibility.ALL && !card.audioPinyin.isNullOrBlank()) {
+                val audioPinyin = card.audioPinyin
+                if (pinyin == PinyinVisibility.ALL && !audioPinyin.isNullOrBlank()) {
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        text = card.audioPinyin,
+                        text = audioPinyin,
                         style = PompTextStyles.pinyin,
                         color = PompColors.InkSecondary,
                     )
                 }
+                Spacer(Modifier.height(12.dp))
+                AudioAction(
+                    isLoading = isAudioLoading,
+                    onClick = { onPlayAudio(card.audioText.orEmpty()) },
+                )
                 Spacer(Modifier.height(16.dp))
             }
 
@@ -284,6 +303,34 @@ fun ChoiceCardView(
                 onClick = { onSelect(index) },
             )
         }
+    }
+}
+
+@Composable
+private fun AudioAction(isLoading: Boolean, onClick: () -> Unit) {
+    OutlinedButton(
+        onClick = onClick,
+        enabled = !isLoading,
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 48.dp),
+        shape = RoundedCornerShape(14.dp),
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(18.dp),
+                strokeWidth = 2.dp,
+                color = PompColors.Cinnabar,
+            )
+            Spacer(Modifier.size(10.dp))
+        }
+        Text(
+            text = stringResource(
+                if (isLoading) R.string.lesson_audio_loading else R.string.lesson_play_audio
+            ),
+            style = MaterialTheme.typography.labelLarge,
+            color = PompColors.CinnabarDark,
+        )
     }
 }
 
@@ -418,6 +465,7 @@ fun ReverseBuilderCardView(
  * the answer row and tapping it there returns it, so the layout never
  * reshuffles under the learner's finger.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TokenBuilder(
     title: String,

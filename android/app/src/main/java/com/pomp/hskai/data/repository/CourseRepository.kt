@@ -14,10 +14,13 @@ import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.Lesson
+import java.io.ByteArrayOutputStream
 import java.util.TimeZone
 import java.util.UUID
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 
 /**
  * A course map plus how trustworthy it is right now.
@@ -32,6 +35,15 @@ data class CourseMapSnapshot(
     val refreshError: ApiError? = null,
 )
 
+/** A lesson plus the newer access decision returned by the lesson request. */
+data class LessonSnapshot(
+    val lesson: Lesson,
+    val isHalfPreview: Boolean,
+    val previewCardLimit: Int,
+    val completionAllowed: Boolean,
+    val completionError: String?,
+)
+
 class CourseRepository(
     private val api: AndroidCourseApi,
     /**
@@ -42,6 +54,8 @@ class CourseRepository(
     private val accessToken: suspend () -> ApiResult<String>,
     private val dao: CourseMapDao,
     private val json: Json,
+    private val onSessionExpired: suspend () -> Unit = {},
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val now: () -> Long = System::currentTimeMillis,
     private val timezoneOffsetMinutes: () -> Int = {
         // Not `!= 0`-style logic anywhere: UTC+0 is a real offset.
@@ -58,7 +72,13 @@ class CourseRepository(
      */
     suspend fun courseMap(): ApiResult<CourseMapSnapshot> {
         val token = when (val result = accessToken()) {
-            is ApiResult.Failure -> return cached(result.error)
+            is ApiResult.Failure -> {
+                // A revoked/reused session must leave the authenticated UI.
+                // Cached course data is only an offline transport fallback,
+                // never a substitute for valid credentials.
+                if (result.error is ApiError.SessionExpired) return result
+                return cached(result.error)
+            }
             is ApiResult.Success -> result.value
         }
 
@@ -66,7 +86,10 @@ class CourseRepository(
             api.courseMap("Bearer $token", timezoneOffsetMinutes())
         }
         return when (response) {
-            is ApiResult.Failure -> cached(response.error)
+            is ApiResult.Failure -> {
+                notifySessionExpired(response.error)
+                cached(response.error)
+            }
             is ApiResult.Success -> {
                 val dto = response.value
                 if (!dto.ok || dto.units.isEmpty()) {
@@ -102,29 +125,117 @@ class CourseRepository(
         level: String,
         lessonOrder: Int,
         language: AppLanguage,
-    ): ApiResult<Lesson> {
+    ): ApiResult<LessonSnapshot> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
         return when (val result = apiCall { api.lesson("Bearer $token", lessonOrder) }) {
-            is ApiResult.Failure -> result
+            is ApiResult.Failure -> {
+                notifySessionExpired(result.error)
+                result
+            }
             is ApiResult.Success -> {
-                val body = result.value["lesson"] as? JsonObject
-                    ?: return ApiResult.Failure(ApiError.Unknown)
+                val envelope = result.value
+                val requestedLevel = level.trim().lowercase()
+                val responseLevel = envelope.level.trim().lowercase()
+                if (
+                    !envelope.ok ||
+                    envelope.lessonOrder != lessonOrder ||
+                    responseLevel != requestedLevel ||
+                    envelope.previewHalf == envelope.completionAllowed
+                ) {
+                    return ApiResult.Failure(ApiError.Unknown)
+                }
                 val parsed = runCatching {
                     LessonParser.parse(
-                        payload = body,
-                        level = level,
+                        payload = envelope.lesson,
+                        level = responseLevel,
                         lessonOrder = lessonOrder,
                         language = language,
                     )
                 }.getOrNull()
-                if (parsed == null || parsed.cards.isEmpty()) {
+                val cardCount = parsed?.cards?.size ?: 0
+                if (
+                    parsed == null ||
+                    cardCount <= 0 ||
+                    envelope.totalCards != cardCount ||
+                    envelope.previewCardLimit !in 1..cardCount
+                ) {
                     ApiResult.Failure(ApiError.Unknown)
                 } else {
-                    ApiResult.Success(parsed)
+                    val limit = if (envelope.completionAllowed) {
+                        cardCount
+                    } else {
+                        envelope.previewCardLimit.coerceIn(1, cardCount)
+                    }
+                    ApiResult.Success(
+                        LessonSnapshot(
+                            lesson = parsed,
+                            isHalfPreview = envelope.previewHalf,
+                            previewCardLimit = limit,
+                            completionAllowed = envelope.completionAllowed,
+                            completionError = envelope.completionError,
+                        )
+                    )
                 }
+            }
+        }
+    }
+
+    /**
+     * Downloads one bounded Chinese TTS clip through the bearer-authenticated
+     * Android adapter. The response is capped while streaming so a malformed
+     * server cannot make the client allocate an unbounded body.
+     */
+    suspend fun ttsAudio(text: String): ApiResult<ByteArray> {
+        val phrase = text.trim()
+        if (phrase.isEmpty() || phrase.length > MAX_TTS_TEXT_LENGTH || !CJK.containsMatchIn(phrase)) {
+            return ApiResult.Failure(ApiError.Unknown)
+        }
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        return when (
+            val result = apiCall {
+                api.tts(
+                    authorization = "Bearer $token",
+                    text = phrase,
+                    rate = DEFAULT_TTS_RATE,
+                )
+            }
+        ) {
+            is ApiResult.Failure -> {
+                notifySessionExpired(result.error)
+                result
+            }
+            is ApiResult.Success -> withContext(ioDispatcher) {
+                val body = result.value
+                val declared = body.contentLength()
+                if (declared > MAX_TTS_AUDIO_BYTES) {
+                    body.close()
+                    return@withContext ApiResult.Failure(ApiError.Unknown)
+                }
+                runCatching {
+                    body.byteStream().use { input ->
+                        val output = ByteArrayOutputStream()
+                        val buffer = ByteArray(TTS_BUFFER_BYTES)
+                        while (true) {
+                            val read = input.read(buffer)
+                            if (read < 0) break
+                            if (output.size() + read > MAX_TTS_AUDIO_BYTES) {
+                                throw IllegalStateException("TTS response exceeds limit")
+                            }
+                            output.write(buffer, 0, read)
+                        }
+                        output.toByteArray().takeIf { it.isNotEmpty() }
+                            ?: throw IllegalStateException("Empty TTS response")
+                    }
+                }.fold(
+                    onSuccess = { ApiResult.Success(it) },
+                    onFailure = { ApiResult.Failure(ApiError.Unknown) },
+                )
             }
         }
     }
@@ -143,7 +254,7 @@ class CourseRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        return apiCall {
+        val result = apiCall {
             api.complete(
                 "Bearer $token",
                 CourseCompleteRequest(
@@ -153,12 +264,15 @@ class CourseRepository(
                 ),
             )
         }
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        return result
     }
 
     /** Cached progress must not outlive the session. */
     suspend fun clearCache() = dao.clear()
 
     private suspend fun cached(error: ApiError): ApiResult<CourseMapSnapshot> {
+        if (error is ApiError.SessionExpired) return ApiResult.Failure(error)
         val entity = dao.findMostRecent() ?: return ApiResult.Failure(error)
         val dto = runCatching {
             json.decodeFromString(CourseMapDto.serializer(), entity.payloadJson)
@@ -173,7 +287,17 @@ class CourseRepository(
         )
     }
 
+    private suspend fun notifySessionExpired(error: ApiError) {
+        if (error is ApiError.SessionExpired) onSessionExpired()
+    }
+
     companion object {
+        private const val MAX_TTS_TEXT_LENGTH = 240
+        private const val MAX_TTS_AUDIO_BYTES = 2 * 1024 * 1024
+        private const val TTS_BUFFER_BYTES = 8 * 1024
+        private const val DEFAULT_TTS_RATE = "-10%"
+        private val CJK = Regex("[\\u4E00-\\u9FFF]")
+
         /**
          * `android:<uuid>` — the Android completion namespace the backend
          * dedupes on, distinct from the desktop one.

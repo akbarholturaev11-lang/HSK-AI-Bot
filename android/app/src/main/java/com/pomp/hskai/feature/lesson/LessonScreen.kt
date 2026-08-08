@@ -41,6 +41,7 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.ChoiceCard
 import com.pomp.hskai.domain.model.GrammarCard
+import com.pomp.hskai.domain.model.LessonCard
 import com.pomp.hskai.domain.model.MatchPairsCard
 import com.pomp.hskai.domain.model.NewWordCard
 import com.pomp.hskai.domain.model.PronunciationCard
@@ -50,9 +51,11 @@ import com.pomp.hskai.domain.model.UnsupportedCard
 
 @Composable
 internal fun PrimaryAction(
+    // onClick is the second parameter, matching SecondaryAction, so a
+    // positional call cannot land on `enabled` by accident.
     text: String,
-    enabled: Boolean = true,
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
@@ -96,14 +99,16 @@ fun LessonScreen(
     state: LessonUiState,
     pinyin: PinyinVisibility,
     onAnswerChoice: (ChoiceCard, Int) -> Unit,
-    onAnswerBuilder: (com.pomp.hskai.domain.model.LessonCard, List<String>) -> Unit,
+    onAnswerBuilder: (LessonCard, List<String>) -> Unit,
     onAnswerPairs: (MatchPairsCard, List<Pair<Int, Int>>) -> Unit,
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
+    onPlayAudio: (String) -> Unit,
     onRetryCompletion: () -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val outcome = state.outcome
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         when {
             state.isLoading -> Centered { CircularProgressIndicator(color = PompColors.Cinnabar) }
@@ -119,13 +124,12 @@ fun LessonScreen(
                 SecondaryAction(stringResource(R.string.action_close), onExit)
             }
 
-            state.outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
+            outcome is LessonOutcome.PreviewExhausted -> PreviewEndBlock(onExit)
 
-            state.outcome is LessonOutcome.Completed ->
-                CompletedBlock(state.outcome, onExit)
+            outcome is LessonOutcome.Completed -> CompletedBlock(outcome, onExit)
 
-            state.outcome is LessonOutcome.Failed ->
-                FailedBlock(state.outcome, onRetryCompletion, onExit)
+            outcome is LessonOutcome.Failed ->
+                FailedBlock(outcome, onRetryCompletion, onExit)
 
             else -> LessonBody(
                 state = state,
@@ -135,6 +139,7 @@ fun LessonScreen(
                 onAnswerPairs = onAnswerPairs,
                 onAcknowledge = onAcknowledge,
                 onAdvance = onAdvance,
+                onPlayAudio = onPlayAudio,
                 onExit = onExit,
             )
         }
@@ -157,10 +162,11 @@ private fun LessonBody(
     state: LessonUiState,
     pinyin: PinyinVisibility,
     onAnswerChoice: (ChoiceCard, Int) -> Unit,
-    onAnswerBuilder: (com.pomp.hskai.domain.model.LessonCard, List<String>) -> Unit,
+    onAnswerBuilder: (LessonCard, List<String>) -> Unit,
     onAnswerPairs: (MatchPairsCard, List<Pair<Int, Int>>) -> Unit,
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
+    onPlayAudio: (String) -> Unit,
     onExit: () -> Unit,
 ) {
     val haptics = LocalHapticFeedback.current
@@ -218,12 +224,20 @@ private fun LessonBody(
             when (card) {
                 is NewWordCard -> NewWordCardView(card, pinyin)
                 is GrammarCard -> GrammarCardView(card, pinyin)
-                is PronunciationCard -> PronunciationCardView(card, pinyin, onAcknowledge)
+                is PronunciationCard -> PronunciationCardView(
+                    card = card,
+                    pinyin = pinyin,
+                    isAudioLoading = state.isAudioLoading,
+                    onPlayAudio = onPlayAudio,
+                    onSkip = onAcknowledge,
+                )
                 is ChoiceCard -> ChoiceCardView(
                     card = card,
                     pinyin = pinyin,
                     selectedIndex = selectedIndex,
                     isAnswered = state.isAnswered,
+                    isAudioLoading = state.isAudioLoading,
+                    onPlayAudio = onPlayAudio,
                     onSelect = { index ->
                         selectedIndex = index
                         onAnswerChoice(card, index)
@@ -251,6 +265,16 @@ private fun LessonBody(
 
                 is UnsupportedCard -> UnsupportedCardView(card, onAcknowledge)
             }
+            state.audioError?.let { error ->
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = stringResource(error.messageRes),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.CinnabarDark,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
             Spacer(Modifier.height(24.dp))
         }
 
@@ -266,7 +290,7 @@ private fun LessonBody(
 @Composable
 private fun FooterBar(
     state: LessonUiState,
-    card: com.pomp.hskai.domain.model.LessonCard,
+    card: LessonCard,
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
 ) {
@@ -374,7 +398,7 @@ private fun CompletedBlock(outcome: LessonOutcome.Completed, onExit: () -> Unit)
             )
         }
         Spacer(Modifier.height(24.dp))
-        PrimaryAction(stringResource(R.string.lesson_back_to_course), onExit)
+        PrimaryAction(stringResource(R.string.lesson_back_to_course), onClick = onExit)
     }
 }
 

@@ -6,9 +6,12 @@ namespace. So they check both that Android behaves like desktop where it must,
 and that the two namespaces cannot contaminate each other.
 """
 
+import tempfile
 import unittest
 from datetime import datetime, timezone
+from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -383,6 +386,7 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         cases = [
             ("get", "/api/v3/android/course/map", None),
             ("get", "/api/v3/android/course/lesson/1", None),
+            ("get", "/api/v3/android/tts?text=你好", None),
             (
                 "post",
                 "/api/v3/android/course/complete",
@@ -398,6 +402,49 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 )
                 self.assertEqual(401, response.status_code)
                 self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_tts_requires_bearer_before_validating_text(self):
+        response = await self.client.get("/api/v3/android/tts")
+
+        self.assertEqual(401, response.status_code)
+        self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_tts_rejects_non_chinese_or_oversized_text(self):
+        headers = await self._bearer()
+        for text in ("hello", "你" * 241):
+            with self.subTest(length=len(text)):
+                response = await self.client.get(
+                    "/api/v3/android/tts",
+                    params={"text": text},
+                    headers=headers,
+                )
+                self.assertEqual(400, response.status_code)
+                self.assertEqual("android_tts_bad_text", response.json()["error"])
+                self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_tts_serves_a_private_bearer_authenticated_audio_file(self):
+        headers = await self._bearer()
+        with tempfile.TemporaryDirectory() as directory:
+            audio = Path(directory) / "lesson.mp3"
+            audio.write_bytes(b"ID3-test-audio")
+            with patch(
+                "app.api.android_course._android_tts_file",
+                new=AsyncMock(return_value=audio),
+            ) as generator:
+                response = await self.client.get(
+                    "/api/v3/android/tts",
+                    params={"text": "你好"},
+                    headers=headers,
+                )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("audio/mpeg", response.headers["content-type"])
+        self.assertEqual(
+            "private, max-age=31536000, immutable",
+            response.headers["cache-control"],
+        )
+        self.assertEqual(b"ID3-test-audio", response.content)
+        generator.assert_awaited_once_with("你好")
 
     async def test_map_is_served_with_no_store(self):
         response = await self.client.get(

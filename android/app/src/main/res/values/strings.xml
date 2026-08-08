@@ -100,6 +100,8 @@
     <string name="lesson_grammar">Grammatika</string>
     <string name="lesson_repeat_after_teacher">Ustozdan keyin takrorlang</string>
     <string name="lesson_cannot_speak_now">Hozir gapira olmayman</string>
+    <string name="lesson_play_audio">Ovozni eshitish</string>
+    <string name="lesson_audio_loading">Ovoz yuklanmoqda</string>
     <string name="lesson_listen_and_choose">Eshitganingizni tanlang</string>
     <string name="lesson_build_sentence">Gapni tuzing</string>
     <string name="lesson_build_translation">Tarjimani tuzing</string>

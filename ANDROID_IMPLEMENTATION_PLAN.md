@@ -1,6 +1,7 @@
 # Pomp HSK AI Android — implementation plan
 
-Audited against `be71926f`. This document records the **verified** current
+Audited through `bac299c1` plus the verified Phase B–E working tree on
+2026-08-09. This document records the **verified** current
 backend behaviour, not assumptions. Where an older document disagrees with the
 source, the source wins and the disagreement is listed in
 "Corrected stale assumptions".
@@ -21,7 +22,7 @@ account system.
 |---|---|---|
 | `DESKTOP_AUTH_CONTRACT.md` §Device-link flow, step 4 | User opens `https://t.me/<bot>?start=desktop_<code>` | `desktop_auth_service.py:272` returns `?start=desktop_link`. The 8-char code is **never** in the URL; the user types it manually into the bot chat (commit `28ac3dc4`). Android preserves this. |
 | `PROJECT_MEMORY.md` §1–8 | Filled project profile | Still the unedited template ("Unknown / needs inspection"). Only §9–10 carry real history. |
-| `graphify-out/GRAPH_REPORT.md` | Current graph | Built from `d69e67af`; HEAD is `be71926f`. Run `graphify update .` after this work. |
+| `graphify-out/GRAPH_REPORT.md` | Current graph | Refreshed after the Phase B–E correctness pass on 2026-08-09. |
 | General assumption | Sections carry a `type` field | Lesson sections expose `section_no`, `section_title{uz,ru,tj}`, `section_purpose`. There is no `section.type`. |
 
 ## 3. Verified backend facts
@@ -134,11 +135,27 @@ GET  /api/v3/desktop/subscription/overview
 POST /api/v3/desktop/subscription/{discount-start,quote,event,submit}
 ```
 
-Still Telegram-`initData`-only, therefore needing Android bearer adapters:
+Android bearer adapters completed in Phases B–E:
 
 ```
-/api/v3/map  /api/v3/lesson/complete  /api/v3/lesson/unlock  /api/v3/language
-/api/v3/invite  /api/v3/notify  /api/v3/avatar/{telegram_id}  /api/v3/tts
+POST /api/v3/android-auth/link/start
+POST /api/v3/android-auth/link/status
+POST /api/v3/android-auth/refresh
+POST /api/v3/android-auth/revoke
+GET  /api/v3/android/bootstrap
+GET  /api/v3/android/course/map
+GET  /api/v3/android/course/lesson/{lesson_order}
+POST /api/v3/android/course/complete
+POST /api/v3/android/preferences/language
+GET  /api/v3/android/tts
+```
+
+Still Telegram-`initData`-only, therefore needing Android bearer adapters in
+later phases:
+
+```
+/api/v3/lesson/unlock  /api/v3/invite  /api/v3/notify
+/api/v3/avatar/{telegram_id}
 /api/v3/exams/start  /api/v3/exams/complete
 /api/v3/practice/daily-gate  /api/v3/practice/ad-gate  /api/v3/ad*
 /api/miniapp/profile  /api/miniapp/gamification  /api/miniapp/access
@@ -285,10 +302,10 @@ described as tone analysis anywhere in the UI or the Play listing.
 | Phase | Content | State |
 |---|---|---|
 | A | Audit + this document | done |
-| B | Gradle/Compose/theme/nav/network/storage foundation | in progress |
-| C | Telegram device auth, backend adapter + client + tests | in progress |
-| D | Today + Course map | planned |
-| E | Native lesson renderer (all 14 card types) | planned |
+| B | Gradle/Compose/theme/nav/network/storage foundation | done — unit/lint/assemble verified 2026-08-09 |
+| C | Telegram device auth, backend adapter + client + tests | done — revoked/reuse + cold-start retry covered |
+| D | Today + Course map | done — server entitlement + conservative offline cache covered |
+| E | Native lesson renderer (all 14 card types) | done — lesson envelope, fresh attempts, mistakes cap and bearer TTS covered |
 | F | Practice (mistakes, recognition, memorize, pronunciation, tests, gates) | planned |
 | G | AI Voice | planned |
 | H | Widget + notifications | planned |
@@ -305,8 +322,6 @@ These cannot be resolved from the repository and must be supplied later:
 - Google Play service-account credentials for server-side purchase verification.
 - Android release signing keystore (never committed).
 - Play store listing values and Data Safety declaration inputs.
-- `gradle/wrapper/gradle-wrapper.jar` — a binary that must be generated once by
-  `gradle wrapper` or Android Studio; it is not fabricated here.
 
 ## 10. Release gates
 

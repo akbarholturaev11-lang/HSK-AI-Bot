@@ -128,7 +128,11 @@ class AuthRepository(
                 return@withLock ApiResult.Success(it.value)
             }
             val stored = store.refreshToken()
-                ?: return@withLock ApiResult.Failure(ApiError.SessionExpired)
+            if (stored == null) {
+                accessToken = null
+                _state.value = AuthState.Unauthenticated
+                return@withLock ApiResult.Failure(ApiError.SessionExpired)
+            }
 
             when (val result = apiCall { api.refresh(RefreshRequest(stored)) }) {
                 is ApiResult.Failure -> {
@@ -171,6 +175,8 @@ class AuthRepository(
             is ApiResult.Failure -> {
                 if (result.error is ApiError.SessionExpired) {
                     _state.value = AuthState.Unauthenticated
+                } else {
+                    _state.value = AuthState.BootstrapFailed(result.error)
                 }
                 return result
             }
@@ -184,7 +190,8 @@ class AuthRepository(
             is ApiResult.Failure -> {
                 if (result.error is ApiError.SessionExpired) {
                     clearLocalSession()
-                    _state.value = AuthState.Unauthenticated
+                } else {
+                    _state.value = AuthState.BootstrapFailed(result.error)
                 }
                 result
             }
@@ -193,7 +200,6 @@ class AuthRepository(
                 val body = result.value
                 if (!body.authenticated) {
                     clearLocalSession()
-                    _state.value = AuthState.Unauthenticated
                     ApiResult.Failure(ApiError.SessionExpired)
                 } else {
                     val account = LinkedAccount(
@@ -235,8 +241,17 @@ class AuthRepository(
         _state.value = AuthState.Unauthenticated
     }
 
+    /**
+     * Called by bearer repositories when an otherwise valid access token is
+     * rejected as revoked/expired by a protected endpoint.
+     */
+    suspend fun invalidateSession() {
+        refreshMutex.withLock { clearLocalSession() }
+    }
+
     private suspend fun clearLocalSession() {
         accessToken = null
         store.clearSession()
+        _state.value = AuthState.Unauthenticated
     }
 }

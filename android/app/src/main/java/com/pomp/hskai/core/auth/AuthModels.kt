@@ -1,6 +1,7 @@
 package com.pomp.hskai.core.auth
 
 import com.pomp.hskai.core.i18n.AppLanguage
+import com.pomp.hskai.core.network.ApiError
 
 /** In-memory only. The access token is never persisted to disk. */
 data class AccessToken(
@@ -31,6 +32,13 @@ sealed interface AuthState {
 
     /** No usable refresh token; the user must link through Telegram. */
     data object Unauthenticated : AuthState
+
+    /**
+     * Credentials may still be valid, but the canonical account could not be
+     * refreshed. The UI shows a retry instead of staying on an endless splash
+     * or forcing an unnecessary Telegram relink.
+     */
+    data class BootstrapFailed(val error: ApiError) : AuthState
 
     data class Authenticated(val account: LinkedAccount) : AuthState
 }

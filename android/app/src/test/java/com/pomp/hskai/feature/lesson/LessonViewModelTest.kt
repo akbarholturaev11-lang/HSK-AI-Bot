@@ -1,11 +1,13 @@
 package com.pomp.hskai.feature.lesson
 
+import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
+import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.OkResponse
@@ -18,13 +20,17 @@ import com.pomp.hskai.domain.model.SentenceBuilderCard
 import com.pomp.hskai.domain.model.UnsupportedCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -64,9 +70,19 @@ private class NoopDao : CourseMapDao {
     override suspend fun clear() = Unit
 }
 
-private open class FakeLessonApi : AndroidCourseApi {
+private fun lessonPayload() = Json.parseToJsonElement(LESSON_BODY)
+    .jsonObject
+    .getValue("lesson")
+    .jsonObject
+
+private open class FakeLessonApi(
+    private val previewHalf: Boolean = false,
+    private val previewCardLimit: Int = if (previewHalf) 3 else 6,
+) : AndroidCourseApi {
     val completions = mutableListOf<CourseCompleteRequest>()
     var completeDuplicate = false
+    var lastTtsAuthorization: String? = null
+    var lastTtsText: String? = null
 
     override suspend fun courseMap(
         authorization: String,
@@ -76,9 +92,29 @@ private open class FakeLessonApi : AndroidCourseApi {
     override suspend fun lesson(
         authorization: String,
         lessonOrder: Int,
-    ): Response<JsonObject> = Response.success(
-        Json.parseToJsonElement(LESSON_BODY) as JsonObject
+    ): Response<CourseLessonResponse> = Response.success(
+        CourseLessonResponse(
+            ok = true,
+            level = "hsk1",
+            lessonOrder = lessonOrder,
+            previewHalf = previewHalf,
+            previewCardLimit = previewCardLimit,
+            totalCards = 6,
+            completionAllowed = !previewHalf,
+            completionError = if (previewHalf) "free_preview_completed" else null,
+            lesson = lessonPayload(),
+        )
     )
+
+    override suspend fun tts(
+        authorization: String,
+        text: String,
+        rate: String,
+    ): Response<ResponseBody> {
+        lastTtsAuthorization = authorization
+        lastTtsText = text
+        return Response.success("audio:$text".toResponseBody())
+    }
 
     override suspend fun complete(
         authorization: String,
@@ -101,6 +137,19 @@ private open class FakeLessonApi : AndroidCourseApi {
     ): Response<OkResponse> = Response.success(OkResponse(ok = true))
 }
 
+private class FakeLessonAudioPlayer : LessonAudioPlayer {
+    val clips = mutableListOf<ByteArray>()
+    var releaseCalls = 0
+
+    override suspend fun play(mp3: ByteArray) {
+        clips += mp3
+    }
+
+    override fun release() {
+        releaseCalls++
+    }
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class LessonViewModelTest {
 
@@ -117,19 +166,23 @@ class LessonViewModelTest {
         accessToken = { ApiResult.Success("access-1") },
         dao = NoopDao(),
         json = Json { ignoreUnknownKeys = true },
+        ioDispatcher = dispatcher,
     )
 
     private fun viewModel(
         api: AndroidCourseApi = FakeLessonApi(),
-        halfPreview: Boolean = false,
+        audioPlayer: LessonAudioPlayer = FakeLessonAudioPlayer(),
+        eventIdFactory: () -> String = {
+            "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6"
+        },
     ) = LessonViewModel(
         repository = repository(api),
+        audioPlayer = audioPlayer,
         level = "hsk1",
         lessonOrder = 1,
         language = AppLanguage.UZBEK,
-        isHalfPreview = halfPreview,
-        eventId = "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6",
-    )
+        eventIdFactory = eventIdFactory,
+    ).also { it.beginAttempt("attempt-1") }
 
     @Test
     fun `the whole deck is loaded, including the unknown card`() = runTest {
@@ -272,12 +325,108 @@ class LessonViewModelTest {
     }
 
     @Test
-    fun `a half preview stops midway and never reports a completion`() = runTest {
+    fun `reopening the same lesson starts a clean attempt with a new event id`() = runTest {
         val api = FakeLessonApi()
-        val model = viewModel(api, halfPreview = true)
+        var sequence = 0
+        val model = viewModel(api) {
+            sequence++
+            "android:" + sequence.toString().padStart(32, '0')
+        }
+        advanceUntilIdle()
+        repeat(6) { model.advanceThroughCard() }
+        advanceUntilIdle()
+        assertTrue(model.state.value.outcome is LessonOutcome.Completed)
+
+        model.beginAttempt("attempt-2")
         advanceUntilIdle()
 
-        // Course v3 stops at max(1, floor(cards / 2)) — 3 of 6 here.
+        assertEquals(LessonOutcome.InProgress, model.state.value.outcome)
+        assertEquals(0, model.state.value.cardIndex)
+        assertEquals(0, model.state.value.correctCount)
+        repeat(6) { model.advanceThroughCard() }
+        advanceUntilIdle()
+
+        assertEquals(2, api.completions.size)
+        assertEquals(2, api.completions.map { it.eventId }.distinct().size)
+    }
+
+    @Test
+    fun `completion sends at most fifty mistakes`() = runTest {
+        val api = FakeLessonApi()
+        val model = viewModel(api)
+        advanceUntilIdle()
+
+        model.acknowledge()
+        val choice = model.state.value.currentCard as ChoiceCard
+        model.answerChoice(choice, choice.correctIndex)
+        model.advance()
+        val builder = model.state.value.currentCard as SentenceBuilderCard
+        model.answerBuilder(builder, builder.answerTokens)
+        model.advance()
+        val pairs = model.state.value.currentCard as MatchPairsCard
+        model.answerMatchPairs(pairs, List(60) { it % 2 to (it + 1) % 2 })
+        model.advance()
+        model.acknowledge()
+        model.acknowledge()
+        advanceUntilIdle()
+
+        assertEquals(LessonViewModel.MAX_MISTAKES_PER_COMPLETION, api.completions.single().mistakes.size)
+    }
+
+    @Test
+    fun `audio uses bearer endpoint and is handed to the player`() = runTest {
+        val api = FakeLessonApi()
+        val player = FakeLessonAudioPlayer()
+        val model = viewModel(api, audioPlayer = player)
+        advanceUntilIdle()
+
+        model.playAudio("你好")
+        advanceUntilIdle()
+
+        assertEquals("Bearer access-1", api.lastTtsAuthorization)
+        assertEquals("你好", api.lastTtsText)
+        assertEquals("audio:你好", player.clips.single().decodeToString())
+        assertFalse(model.state.value.isAudioLoading)
+    }
+
+    @Test
+    fun `ending an attempt before TTS returns never plays stale audio`() = runTest {
+        val requestStarted = CompletableDeferred<Unit>()
+        val response = CompletableDeferred<Response<ResponseBody>>()
+        val api = object : FakeLessonApi() {
+            override suspend fun tts(
+                authorization: String,
+                text: String,
+                rate: String,
+            ): Response<ResponseBody> {
+                requestStarted.complete(Unit)
+                return response.await()
+            }
+        }
+        val player = FakeLessonAudioPlayer()
+        val model = viewModel(api, audioPlayer = player)
+        advanceUntilIdle()
+
+        model.playAudio("你好")
+        runCurrent()
+        assertTrue(requestStarted.isCompleted)
+
+        model.endAttempt("attempt-1")
+        response.complete(Response.success("stale-audio".toResponseBody()))
+        advanceUntilIdle()
+
+        assertTrue(player.clips.isEmpty())
+        assertFalse(model.state.value.isAudioLoading)
+        assertTrue(player.releaseCalls >= 2)
+    }
+
+    @Test
+    fun `a half preview stops midway and never reports a completion`() = runTest {
+        val api = FakeLessonApi(previewHalf = true, previewCardLimit = 3)
+        val model = viewModel(api)
+        advanceUntilIdle()
+
+        // The lesson endpoint, not the client, owns this limit.
         repeat(3) { model.advanceThroughCard() }
         advanceUntilIdle()
 
@@ -291,7 +440,7 @@ class LessonViewModelTest {
             override suspend fun lesson(
                 authorization: String,
                 lessonOrder: Int,
-            ): Response<JsonObject> = throw java.io.IOException("offline")
+            ): Response<CourseLessonResponse> = throw java.io.IOException("offline")
         }
         val model = viewModel(broken)
         advanceUntilIdle()

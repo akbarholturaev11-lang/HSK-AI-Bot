@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.lesson
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /** What the learner has done with the card currently on screen. */
@@ -50,6 +52,11 @@ data class LessonUiState(
     val correctCount: Int = 0,
     val gradedAnswered: Int = 0,
     val isSubmitting: Boolean = false,
+    val previewCardLimit: Int = 0,
+    val completionAllowed: Boolean = false,
+    val completionError: String? = null,
+    val isAudioLoading: Boolean = false,
+    val audioError: ApiError? = null,
     val outcome: LessonOutcome = LessonOutcome.InProgress,
     val error: ApiError? = null,
 ) {
@@ -74,60 +81,90 @@ data class LessonUiState(
  */
 class LessonViewModel(
     private val repository: CourseRepository,
+    private val audioPlayer: LessonAudioPlayer,
     private val level: String,
     private val lessonOrder: Int,
     private val language: AppLanguage,
-    private val isHalfPreview: Boolean,
     /**
-     * Stable for the whole attempt. A retry after a dropped connection reuses
-     * it, so the server recognises the completion instead of awarding twice.
+     * A new id is created only when [beginAttempt] receives a new launch key.
+     * Completion retries inside that attempt keep the same id.
      */
-    private val eventId: String = CourseRepository.newEventId(),
+    private val eventIdFactory: () -> String = CourseRepository::newEventId,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LessonUiState())
     val state: StateFlow<LessonUiState> = _state.asStateFlow()
 
     private val mistakes = mutableListOf<CourseMistakeDto>()
+    private var activeAttemptKey: String? = null
+    private var eventId: String = ""
+    private var loadGeneration: Long = 0
+    private var audioJob: Job? = null
 
-    init {
+    /**
+     * Starts exactly one clean attempt for a UI launch.
+     *
+     * The ViewModel can survive after the lesson composable leaves the screen;
+     * the opaque launch key prevents an old outcome/event id from resurfacing
+     * when the same lesson is opened again.
+     */
+    fun beginAttempt(attemptKey: String) {
+        if (attemptKey.isBlank() || activeAttemptKey == attemptKey) return
+        stopAudio()
+        activeAttemptKey = attemptKey
+        eventId = eventIdFactory()
+        mistakes.clear()
+        _state.value = LessonUiState()
         load()
     }
 
+    /** Invalidates pending work and playback when the lesson leaves the screen. */
+    fun endAttempt(attemptKey: String) {
+        if (activeAttemptKey != attemptKey) return
+        activeAttemptKey = null
+        loadGeneration++
+        stopAudio()
+        _state.update { it.copy(isAudioLoading = false, audioError = null) }
+    }
+
     fun load() {
+        if (activeAttemptKey == null) return
+        val generation = ++loadGeneration
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             when (val result = repository.lesson(level, lessonOrder, language)) {
-                is ApiResult.Success -> _state.value = LessonUiState(
-                    isLoading = false,
-                    lesson = result.value,
-                )
+                is ApiResult.Success -> if (generation == loadGeneration) {
+                    val snapshot = result.value
+                    _state.value = LessonUiState(
+                        isLoading = false,
+                        lesson = snapshot.lesson,
+                        previewCardLimit = snapshot.previewCardLimit,
+                        completionAllowed = snapshot.completionAllowed,
+                        completionError = snapshot.completionError,
+                    )
+                }
 
-                is ApiResult.Failure -> _state.update {
-                    it.copy(isLoading = false, error = result.error)
+                is ApiResult.Failure -> if (generation == loadGeneration) {
+                    _state.update {
+                        it.copy(isLoading = false, error = result.error)
+                    }
                 }
             }
         }
     }
 
-    /**
-     * The card index at which a free half preview stops.
-     *
-     * Mirrors Course v3 exactly: `max(1, floor(cards / 2))`.
-     */
-    private fun previewStopIndex(): Int {
-        val total = _state.value.totalCards
-        return maxOf(1, total / 2)
-    }
+    /** The server-owned card index at which a free preview stops. */
+    private fun previewStopIndex(): Int = _state.value.previewCardLimit
+        .coerceIn(1, _state.value.totalCards.coerceAtLeast(1))
 
     fun answerChoice(card: ChoiceCard, selectedIndex: Int) {
         if (_state.value.isAnswered) return
         val correct = card.isCorrect(selectedIndex)
         if (!correct) {
-            mistakes += CourseMistakeDto(
+            addMistake(CourseMistakeDto(
                 materialRef = card.materialRef,
                 selectedIndex = selectedIndex,
-            )
+            ))
         }
         record(correct, card.explanation)
     }
@@ -140,10 +177,10 @@ class LessonViewModel(
             else -> return
         }
         if (!correct) {
-            mistakes += CourseMistakeDto(
+            addMistake(CourseMistakeDto(
                 materialRef = card.materialRef,
                 selectedTokens = built,
-            )
+            ))
         }
         record(correct, explanation)
     }
@@ -151,11 +188,11 @@ class LessonViewModel(
     fun answerMatchPairs(card: MatchPairsCard, wrongAttempts: List<Pair<Int, Int>>) {
         if (_state.value.isAnswered) return
         wrongAttempts.forEach { (left, right) ->
-            mistakes += CourseMistakeDto(
+            addMistake(CourseMistakeDto(
                 materialRef = card.materialRef,
                 selectedLeftIndex = left,
                 selectedRightIndex = right,
-            )
+            ))
         }
         record(wrongAttempts.isEmpty(), card.explanation)
     }
@@ -181,7 +218,7 @@ class LessonViewModel(
         val current = _state.value
         val next = current.cardIndex + 1
 
-        if (isHalfPreview && next >= previewStopIndex() && next < current.totalCards) {
+        if (!current.completionAllowed && next >= previewStopIndex()) {
             // The preview stops mid-lesson and cannot complete it. The server
             // would reject the completion anyway; not sending it keeps the
             // attempt clean.
@@ -199,18 +236,31 @@ class LessonViewModel(
             return
         }
 
-        _state.update { it.copy(cardIndex = next, answer = AnswerState.Unanswered) }
+        _state.update {
+            it.copy(
+                cardIndex = next,
+                answer = AnswerState.Unanswered,
+                audioError = null,
+            )
+        }
     }
 
     private fun finish() {
         if (_state.value.isSubmitting) return
+        if (!_state.value.completionAllowed) {
+            _state.update { it.copy(outcome = LessonOutcome.PreviewExhausted) }
+            return
+        }
+        val attemptKey = activeAttemptKey ?: return
+        val stableEventId = eventId.takeIf { it.isNotBlank() } ?: return
         _state.update { it.copy(isSubmitting = true, error = null) }
         viewModelScope.launch {
             val result = repository.completeLesson(
                 lessonOrder = lessonOrder,
-                eventId = eventId,
+                eventId = stableEventId,
                 mistakes = mistakes.toList(),
             )
+            if (activeAttemptKey != attemptKey) return@launch
             _state.update { current ->
                 when (result) {
                     is ApiResult.Success -> current.copy(
@@ -238,20 +288,73 @@ class LessonViewModel(
         finish()
     }
 
+    fun playAudio(text: String) {
+        if (_state.value.isAudioLoading || text.isBlank()) return
+        val attemptKey = activeAttemptKey ?: return
+        _state.update { it.copy(isAudioLoading = true, audioError = null) }
+        audioJob = viewModelScope.launch {
+            when (val result = repository.ttsAudio(text)) {
+                is ApiResult.Failure -> if (activeAttemptKey == attemptKey) _state.update {
+                    it.copy(isAudioLoading = false, audioError = result.error)
+                }
+
+                is ApiResult.Success -> {
+                    if (activeAttemptKey != attemptKey) return@launch
+                    runCatching {
+                        audioPlayer.play(result.value)
+                    }.fold(
+                        onSuccess = {
+                            if (activeAttemptKey == attemptKey) _state.update {
+                                it.copy(isAudioLoading = false, audioError = null)
+                            }
+                        },
+                        onFailure = {
+                            if (activeAttemptKey == attemptKey) _state.update {
+                                it.copy(isAudioLoading = false, audioError = ApiError.Unknown)
+                            }
+                        },
+                    )
+                }
+            }
+        }
+    }
+
+    private fun stopAudio() {
+        audioJob?.cancel()
+        audioJob = null
+        audioPlayer.release()
+    }
+
+    private fun addMistake(mistake: CourseMistakeDto) {
+        if (mistakes.size < MAX_MISTAKES_PER_COMPLETION) mistakes += mistake
+    }
+
+    override fun onCleared() {
+        activeAttemptKey = null
+        loadGeneration++
+        stopAudio()
+        super.onCleared()
+    }
+
     class Factory(
         private val repository: CourseRepository,
+        private val audioPlayer: LessonAudioPlayer,
         private val level: String,
         private val lessonOrder: Int,
         private val language: AppLanguage,
-        private val isHalfPreview: Boolean,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = LessonViewModel(
             repository = repository,
+            audioPlayer = audioPlayer,
             level = level,
             lessonOrder = lessonOrder,
             language = language,
-            isHalfPreview = isHalfPreview,
         ) as T
+    }
+
+    companion object {
+        /** Matches DesktopCourseCompleteRequest.mistakes.max_length. */
+        const val MAX_MISTAKES_PER_COMPLETION = 50
     }
 }

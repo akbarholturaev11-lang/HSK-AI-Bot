@@ -2,6 +2,8 @@ package com.pomp.hskai
 
 import android.app.Application
 import androidx.room.Room
+import com.pomp.hskai.core.audio.AndroidLessonAudioPlayer
+import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.network.OriginGuardInterceptor
 import com.pomp.hskai.core.settings.AppSettings
@@ -59,6 +61,8 @@ class HskAiApplication : Application() {
 
     val appSettings: AppSettings by lazy { AppSettings(this) }
 
+    val lessonAudioPlayer: LessonAudioPlayer by lazy { AndroidLessonAudioPlayer(this) }
+
     val authRepository: AuthRepository by lazy {
         AuthRepository(
             api = retrofit.create(AndroidAuthApi::class.java),
@@ -81,6 +85,7 @@ class HskAiApplication : Application() {
             accessToken = authRepository::accessToken,
             dao = database.courseMapDao(),
             json = json,
+            onSessionExpired = authRepository::invalidateSession,
         )
     }
 

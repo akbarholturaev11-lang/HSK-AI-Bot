@@ -12,11 +12,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -71,11 +67,11 @@ fun AppDestination.toTab(): MainTab? = when (this) {
 
 @Composable
 fun MainScaffold(
-    initialTab: MainTab = MainTab.TODAY,
+    selectedTab: MainTab = MainTab.TODAY,
+    onTabSelected: (MainTab) -> Unit,
     content: @Composable (MainTab, Modifier) -> Unit,
 ) {
     val tabs = remember { MainTab.visible }
-    var selected by rememberSaveable { mutableStateOf(initialTab) }
 
     Scaffold(
         containerColor = PompColors.Paper,
@@ -84,8 +80,8 @@ fun MainScaffold(
                 tabs.forEach { tab ->
                     val label = stringResource(tab.labelRes)
                     NavigationBarItem(
-                        selected = selected == tab,
-                        onClick = { selected = tab },
+                        selected = selectedTab == tab,
+                        onClick = { onTabSelected(tab) },
                         icon = { Icon(tab.icon, contentDescription = label) },
                         label = { Text(label) },
                         colors = NavigationBarItemDefaults.colors(
@@ -100,6 +96,6 @@ fun MainScaffold(
             }
         },
     ) { insets ->
-        content(selected, Modifier.padding(insets))
+        content(selectedTab, Modifier.padding(insets))
     }
 }

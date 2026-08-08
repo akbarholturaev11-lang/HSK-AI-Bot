@@ -6,6 +6,7 @@ import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonDto
+import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.CourseUnitDto
 import com.pomp.hskai.data.api.CourseUserDto
@@ -18,7 +19,9 @@ import com.pomp.hskai.domain.model.LessonAccess
 import java.io.IOException
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -44,6 +47,10 @@ private class FakeCourseMapDao : CourseMapDao {
     }
 }
 
+private val lessonPayload = Json.parseToJsonElement(
+    """{"source_lesson":1,"part_no":1,"part_count":1,"checkpoint":false,"title":{"uz":"1-dars"},"subtitle":{"uz":"1-qism"},"sections":[{"section_no":1,"cards":[{"type":"pronunciation","phrase":"你好","pinyin":"nǐ hǎo","translation":{"uz":"salom"}},{"type":"tone_drill_v2"}]}]}"""
+).jsonObject
+
 private open class FakeCourseApi : AndroidCourseApi {
     var lastAuthorization: String? = null
     var lastTimezoneOffset: Int? = null
@@ -60,7 +67,13 @@ private open class FakeCourseApi : AndroidCourseApi {
     override suspend fun lesson(
         authorization: String,
         lessonOrder: Int,
-    ): Response<JsonObject> = throw NotImplementedError()
+    ): Response<CourseLessonResponse> = throw NotImplementedError()
+
+    override suspend fun tts(
+        authorization: String,
+        text: String,
+        rate: String,
+    ): Response<ResponseBody> = Response.success("audio".toResponseBody())
 
     override suspend fun complete(
         authorization: String,
@@ -101,11 +114,13 @@ class CourseRepositoryTest {
         dao: CourseMapDao,
         token: suspend () -> ApiResult<String> = { ApiResult.Success("access-1") },
         offsetMinutes: Int = 300,
+        onSessionExpired: suspend () -> Unit = {},
     ) = CourseRepository(
         api = api,
         accessToken = token,
         dao = dao,
         json = json,
+        onSessionExpired = onSessionExpired,
         now = { 1_700_000_000_000L },
         timezoneOffsetMinutes = { offsetMinutes },
     )
@@ -184,7 +199,7 @@ class CourseRepositoryTest {
     }
 
     @Test
-    fun `an expired session still shows the cache rather than an empty screen`() =
+    fun `an expired session never uses cached entitlement as authentication`() =
         runTest {
             val dao = FakeCourseMapDao()
             repository(FakeCourseApi(), dao).courseMap()
@@ -195,10 +210,96 @@ class CourseRepositoryTest {
                 token = { ApiResult.Failure(ApiError.SessionExpired) },
             ).courseMap()
 
-            val snapshot = (result as ApiResult.Success).value
-            assertTrue(snapshot.isStale)
-            assertEquals(ApiError.SessionExpired, snapshot.refreshError)
+            assertEquals(ApiError.SessionExpired, (result as ApiResult.Failure).error)
         }
+
+    @Test
+    fun `a runtime server revocation invalidates auth and never serves cached access`() = runTest {
+        val dao = FakeCourseMapDao()
+        repository(FakeCourseApi(), dao).courseMap()
+        var invalidations = 0
+        val revoked = object : FakeCourseApi() {
+            override suspend fun courseMap(
+                authorization: String,
+                timezoneOffsetMinutes: Int,
+            ): Response<CourseMapDto> = Response.error(
+                401,
+                """{"ok":false,"error":"desktop_session_revoked"}""".toResponseBody(),
+            )
+        }
+
+        val result = repository(
+            api = revoked,
+            dao = dao,
+            onSessionExpired = { invalidations++ },
+        ).courseMap()
+
+        assertEquals(ApiError.SessionExpired, (result as ApiResult.Failure).error)
+        assertEquals(1, invalidations)
+        assertEquals(1, dao.rows.size)
+    }
+
+    @Test
+    fun `lesson obeys the server preview limit instead of deriving half locally`() = runTest {
+        val api = object : FakeCourseApi() {
+            override suspend fun lesson(
+                authorization: String,
+                lessonOrder: Int,
+            ): Response<CourseLessonResponse> = Response.success(
+                CourseLessonResponse(
+                    ok = true,
+                    level = "hsk1",
+                    lessonOrder = lessonOrder,
+                    previewHalf = true,
+                    previewCardLimit = 1,
+                    totalCards = 2,
+                    completionAllowed = false,
+                    completionError = "free_preview_completed",
+                    lesson = lessonPayload,
+                )
+            )
+        }
+
+        val result = repository(api, FakeCourseMapDao()).lesson(
+            level = "hsk1",
+            lessonOrder = 1,
+            language = com.pomp.hskai.core.i18n.AppLanguage.UZBEK,
+        )
+
+        val snapshot = (result as ApiResult.Success).value
+        assertEquals(1, snapshot.previewCardLimit)
+        assertFalse(snapshot.completionAllowed)
+        assertEquals("free_preview_completed", snapshot.completionError)
+    }
+
+    @Test
+    fun `lesson rejects a mismatched server access envelope`() = runTest {
+        val api = object : FakeCourseApi() {
+            override suspend fun lesson(
+                authorization: String,
+                lessonOrder: Int,
+            ): Response<CourseLessonResponse> = Response.success(
+                CourseLessonResponse(
+                    ok = true,
+                    level = "hsk4",
+                    lessonOrder = lessonOrder,
+                    previewHalf = false,
+                    previewCardLimit = 2,
+                    totalCards = 2,
+                    completionAllowed = true,
+                    lesson = lessonPayload,
+                )
+            )
+        }
+
+        val result = repository(api, FakeCourseMapDao()).lesson(
+            level = "hsk1",
+            lessonOrder = 1,
+            language = com.pomp.hskai.core.i18n.AppLanguage.UZBEK,
+        )
+
+        assertEquals(ApiError.Unknown, (result as ApiResult.Failure).error)
+    }
 
     @Test
     fun `a malformed payload is not cached`() = runTest {

@@ -3,6 +3,7 @@ package com.pomp.hskai.data.api
 import com.pomp.hskai.core.i18n.AppLanguage
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 /**
  * Course v3 ships its user-facing strings as a `{uz, ru, tj}` object.
@@ -117,6 +118,26 @@ data class CourseCompleteResponse(
     @SerialName("next_lesson") val nextLesson: Int? = null,
     @SerialName("completed_lessons_count") val completedLessonsCount: Int = 0,
     @SerialName("duplicate") val duplicate: Boolean = false,
+)
+
+/**
+ * Server-authoritative lesson access envelope.
+ *
+ * These fields are intentionally kept beside the lesson payload. A course map
+ * can become stale between the tap and this request (subscription changes or
+ * progress from another client), so the renderer must obey this newer answer.
+ */
+@Serializable
+data class CourseLessonResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("level") val level: String = "hsk1",
+    @SerialName("lesson_order") val lessonOrder: Int = 0,
+    @SerialName("preview_half") val previewHalf: Boolean = false,
+    @SerialName("preview_card_limit") val previewCardLimit: Int = 0,
+    @SerialName("total_cards") val totalCards: Int = 0,
+    @SerialName("completion_allowed") val completionAllowed: Boolean = false,
+    @SerialName("completion_error") val completionError: String? = null,
+    @SerialName("lesson") val lesson: JsonObject = JsonObject(emptyMap()),
 )
 
 @Serializable

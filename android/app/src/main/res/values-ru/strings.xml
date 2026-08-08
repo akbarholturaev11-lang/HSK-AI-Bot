@@ -74,6 +74,8 @@
     <string name="lesson_grammar">Грамматика</string>
     <string name="lesson_repeat_after_teacher">Повторите за преподавателем</string>
     <string name="lesson_cannot_speak_now">Сейчас не могу говорить</string>
+    <string name="lesson_play_audio">Прослушать</string>
+    <string name="lesson_audio_loading">Загрузка аудио</string>
     <string name="lesson_listen_and_choose">Выберите, что вы услышали</string>
     <string name="lesson_build_sentence">Составьте предложение</string>
     <string name="lesson_build_translation">Составьте перевод</string>

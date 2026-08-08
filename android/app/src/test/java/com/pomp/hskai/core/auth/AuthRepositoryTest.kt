@@ -264,11 +264,13 @@ class AuthRepositoryTest {
                 )
         }
 
-        val result = repository(api, store).accessToken()
+        val repository = repository(api, store)
+        val result = repository.accessToken()
 
         assertEquals(ApiError.SessionExpired, result.failure())
         assertEquals(1, store.clearSessionCalls)
         assertNull(store.storedRefresh)
+        assertEquals(AuthState.Unauthenticated, repository.state.value)
     }
 
     @Test
@@ -279,6 +281,47 @@ class AuthRepositoryTest {
 
         assertEquals(ApiError.SessionExpired, result.failure())
         assertEquals(AuthState.Unauthenticated, repository.state.value)
+    }
+
+    @Test
+    fun `offline cold start keeps credentials and succeeds when retried`() = runTest {
+        val store = FakeCredentialStore(storedRefresh = "pomp_r1_first")
+        var offline = true
+        val api = object : FakeAuthApi() {
+            override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> {
+                if (offline) throw java.io.IOException("offline")
+                return Response.success(
+                    RefreshResponse(
+                        ok = true,
+                        accessToken = "access-1",
+                        accessExpiresIn = 900,
+                        refreshToken = "pomp_r1_second",
+                        refreshExpiresIn = 2_592_000,
+                    )
+                )
+            }
+
+            override suspend fun bootstrap(
+                authorization: String,
+                appVersion: String,
+            ): Response<BootstrapResponse> = Response.success(
+                BootstrapResponse(
+                    ok = true,
+                    authenticated = true,
+                    user = BootstrapUser(name = "Akbar", language = "uz", level = "hsk1"),
+                )
+            )
+        }
+        val repository = repository(api, store)
+
+        assertEquals(ApiError.Offline, repository.bootstrap().failure())
+        assertEquals(AuthState.BootstrapFailed(ApiError.Offline), repository.state.value)
+        assertEquals("pomp_r1_first", store.storedRefresh)
+
+        offline = false
+        val account = repository.bootstrap().success()
+        assertEquals("Akbar", account.displayName)
+        assertEquals(AuthState.Authenticated(account), repository.state.value)
     }
 
     @Test
@@ -325,6 +368,42 @@ class AuthRepositoryTest {
         assertTrue(account.isPaid)
         assertEquals("tj", account.language.backendCode)
         assertEquals(AuthState.Authenticated(account), repository.state.value)
+    }
+
+    @Test
+    fun `a protected endpoint revocation invalidates the authenticated state`() = runTest {
+        val store = FakeCredentialStore(storedRefresh = "pomp_r1_first")
+        val api = object : FakeAuthApi() {
+            override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> =
+                Response.success(
+                    RefreshResponse(
+                        ok = true,
+                        accessToken = "access-1",
+                        accessExpiresIn = 900,
+                        refreshToken = "pomp_r1_second",
+                        refreshExpiresIn = 2_592_000,
+                    )
+                )
+
+            override suspend fun bootstrap(
+                authorization: String,
+                appVersion: String,
+            ): Response<BootstrapResponse> = Response.success(
+                BootstrapResponse(
+                    ok = true,
+                    authenticated = true,
+                    user = BootstrapUser(name = "Akbar", language = "uz", level = "hsk1"),
+                )
+            )
+        }
+        val repository = repository(api, store)
+        repository.bootstrap().success()
+
+        repository.invalidateSession()
+
+        assertEquals(AuthState.Unauthenticated, repository.state.value)
+        assertNull(store.storedRefresh)
+        assertEquals(1, store.clearSessionCalls)
     }
 
     @Test
