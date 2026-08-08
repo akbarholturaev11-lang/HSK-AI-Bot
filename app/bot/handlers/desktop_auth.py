@@ -11,7 +11,11 @@ from aiogram.types import (
 from app.bot.fsm.desktop_auth import DesktopLinkStates
 from app.config import settings
 from app.repositories.user_repo import UserRepository
-from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.desktop_auth_service import (
+    MOBILE_PLATFORMS,
+    DesktopAuthError,
+    DesktopAuthService,
+)
 
 
 router = Router()
@@ -22,8 +26,16 @@ MAX_INVALID_CODE_ATTEMPTS = 5
 
 _COPY = {
     "uz": {
-        "confirm": (
+        "confirm_desktop": (
             "🖥 <b>Kompyuter ilovasini ulash</b>\n\n"
+            "Qurilma: <b>{platform}</b>\n"
+            "Versiya: <b>{version}</b>\n"
+            "Kod: <code>{code}</code>\n\n"
+            "Bu kodni HSK AI ilovasida o‘zingiz ochgan bo‘lsangizgina "
+            "tasdiqlang. Aks holda bekor qiling."
+        ),
+        "confirm_mobile": (
+            "📱 <b>Android ilovasini ulash</b>\n\n"
             "Qurilma: <b>{platform}</b>\n"
             "Versiya: <b>{version}</b>\n"
             "Kod: <code>{code}</code>\n\n"
@@ -34,7 +46,7 @@ _COPY = {
         "cancel": "Bekor qilish",
         "enter_code": (
             "🔐 <b>Ulash kodini kiriting</b>\n\n"
-            "HSK AI kompyuter ilovasida ko‘rsatilgan 8 belgili kodni "
+            "HSK AI ilovasida ko‘rsatilgan 8 belgili kodni "
             "shu chatga <b>qo‘lda yuboring</b>.\n\n"
             "Kodni boshqa odamga yubormang."
         ),
@@ -44,21 +56,33 @@ _COPY = {
         ),
         "attempts_exhausted": (
             "Juda ko‘p noto‘g‘ri urinish bo‘ldi. "
-            "Kompyuter ilovasida yangi kod oling va Telegramni qayta oching."
+            "Ilovada yangi kod oling va Telegramni qayta oching."
         ),
-        "ok": (
+        "ok_desktop": (
             "✅ <b>Kompyuter ilovasi ulandi</b>\n\n"
             "HSK AI Desktop’ga qayting — hisobingiz avtomatik ochiladi."
+        ),
+        "ok_mobile": (
+            "✅ <b>Android ilovasi ulandi</b>\n\n"
+            "HSK AI ilovasiga qayting — hisobingiz avtomatik ochiladi."
         ),
         "cancelled": "Ulash bekor qilindi. Bu kod endi ishlamaydi.",
         "invalid": (
             "Bu ulash kodi eskirgan yoki ishlatilgan. "
-            "Kompyuter ilovasida yangi kod yarating."
+            "Ilovada yangi kod yarating."
         ),
     },
     "ru": {
-        "confirm": (
+        "confirm_desktop": (
             "🖥 <b>Подключение приложения на компьютере</b>\n\n"
+            "Устройство: <b>{platform}</b>\n"
+            "Версия: <b>{version}</b>\n"
+            "Код: <code>{code}</code>\n\n"
+            "Подтверждайте, только если вы сами открыли этот код в HSK AI. "
+            "Иначе отмените подключение."
+        ),
+        "confirm_mobile": (
+            "📱 <b>Подключение приложения на Android</b>\n\n"
             "Устройство: <b>{platform}</b>\n"
             "Версия: <b>{version}</b>\n"
             "Код: <code>{code}</code>\n\n"
@@ -70,7 +94,7 @@ _COPY = {
         "enter_code": (
             "🔐 <b>Введите код подключения</b>\n\n"
             "Вручную отправьте в этот чат 8-символьный код, показанный в "
-            "приложении HSK AI на компьютере.\n\n"
+            "приложении HSK AI.\n\n"
             "Никому не передавайте код."
         ),
         "invalid_code": (
@@ -79,21 +103,33 @@ _COPY = {
         ),
         "attempts_exhausted": (
             "Слишком много неверных попыток. Получите новый код в приложении "
-            "на компьютере и снова откройте Telegram."
+            "и снова откройте Telegram."
         ),
-        "ok": (
+        "ok_desktop": (
             "✅ <b>Приложение на компьютере подключено</b>\n\n"
             "Вернитесь в HSK AI Desktop — аккаунт откроется автоматически."
+        ),
+        "ok_mobile": (
+            "✅ <b>Приложение на Android подключено</b>\n\n"
+            "Вернитесь в приложение HSK AI — аккаунт откроется автоматически."
         ),
         "cancelled": "Подключение отменено. Этот код больше не работает.",
         "invalid": (
             "Код подключения истёк или уже использован. "
-            "Создайте новый код в приложении на компьютере."
+            "Создайте новый код в приложении."
         ),
     },
     "tj": {
-        "confirm": (
+        "confirm_desktop": (
             "🖥 <b>Пайваст кардани барномаи компютерӣ</b>\n\n"
+            "Дастгоҳ: <b>{platform}</b>\n"
+            "Версия: <b>{version}</b>\n"
+            "Рамз: <code>{code}</code>\n\n"
+            "Танҳо агар ин рамзро худатон дар HSK AI кушода бошед, "
+            "тасдиқ кунед. Дар акси ҳол бекор кунед."
+        ),
+        "confirm_mobile": (
+            "📱 <b>Пайваст кардани барномаи Android</b>\n\n"
             "Дастгоҳ: <b>{platform}</b>\n"
             "Версия: <b>{version}</b>\n"
             "Рамз: <code>{code}</code>\n\n"
@@ -104,7 +140,7 @@ _COPY = {
         "cancel": "Бекор кардан",
         "enter_code": (
             "🔐 <b>Рамзи пайвастшавиро ворид кунед</b>\n\n"
-            "Рамзи 8-аломатии дар барномаи компютерии HSK AI "
+            "Рамзи 8-аломатии дар барномаи HSK AI "
             "нишондодашударо ба ин чат <b>дастӣ фиристед</b>.\n\n"
             "Рамзро ба каси дигар нафиристед."
         ),
@@ -113,20 +149,47 @@ _COPY = {
             "Рамзи 8-аломатиро аз барнома боз ворид кунед. Кӯшиши боқимонда: {remaining}."
         ),
         "attempts_exhausted": (
-            "Кӯшишҳои нодуруст зиёд шуданд. Дар барномаи компютерӣ рамзи нав "
+            "Кӯшишҳои нодуруст зиёд шуданд. Дар барнома рамзи нав "
             "гиред ва Telegram-ро аз нав кушоед."
         ),
-        "ok": (
+        "ok_desktop": (
             "✅ <b>Барномаи компютерӣ пайваст шуд</b>\n\n"
             "Ба HSK AI Desktop баргардед — ҳисоб худкор кушода мешавад."
+        ),
+        "ok_mobile": (
+            "✅ <b>Барномаи Android пайваст шуд</b>\n\n"
+            "Ба барномаи HSK AI баргардед — ҳисоб худкор кушода мешавад."
         ),
         "cancelled": "Пайвастшавӣ бекор шуд. Ин рамз дигар кор намекунад.",
         "invalid": (
             "Муҳлати рамзи пайвастшавӣ гузашт ё он истифода шудааст. "
-            "Дар барномаи компютерӣ рамзи нав созед."
+            "Дар барнома рамзи нав созед."
         ),
     },
 }
+
+# The Telegram confirmation must name the real device. The previous
+# "Mac or else Windows" shortcut would have shown an Android phone as Windows.
+_PLATFORM_LABELS = {
+    "macos": "Mac",
+    "windows": "Windows",
+    "android": "Android",
+}
+
+
+def _platform_label(platform: str | None) -> str:
+    return _PLATFORM_LABELS.get(
+        str(platform or "").strip().lower(),
+        "HSK AI",
+    )
+
+
+def _copy_key(base: str, platform: str | None) -> str:
+    """Pick the desktop or mobile wording for a platform-aware message."""
+
+    normalized = str(platform or "").strip().lower()
+    suffix = "mobile" if normalized in MOBILE_PLATFORMS else "desktop"
+    return f"{base}_{suffix}"
 
 
 async def _language(session, telegram_id: int) -> str:
@@ -251,10 +314,10 @@ async def receive_desktop_link_code(
         await _register_invalid_attempt(message, state, language)
         return
     await state.clear()
-    platform = "Mac" if preview["platform"] == "macos" else "Windows"
+    platform = preview["platform"]
     await message.answer(
-        _COPY[language]["confirm"].format(
-            platform=platform,
+        _COPY[language][_copy_key("confirm", platform)].format(
+            platform=_platform_label(platform),
             version=preview["app_version"],
             code=preview["display_code"],
         ),
@@ -278,7 +341,7 @@ async def confirm_desktop_link(callback: CallbackQuery, session) -> None:
     language = await _language(session, callback.from_user.id)
     display_code = str(callback.data or "").rsplit(":", 1)[-1]
     try:
-        await DesktopAuthService(session, settings).approve_link(
+        result = await DesktopAuthService(session, settings).approve_link(
             display_code=display_code,
             telegram_id=callback.from_user.id,
         )
@@ -286,7 +349,10 @@ async def confirm_desktop_link(callback: CallbackQuery, session) -> None:
         await callback.answer(_COPY[language]["invalid"], show_alert=True)
         return
     if callback.message:
-        await callback.message.edit_text(_COPY[language]["ok"], parse_mode="HTML")
+        await callback.message.edit_text(
+            _COPY[language][_copy_key("ok", result.get("platform"))],
+            parse_mode="HTML",
+        )
     await callback.answer()
 
 

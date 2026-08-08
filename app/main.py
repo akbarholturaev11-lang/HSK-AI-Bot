@@ -17,6 +17,8 @@ from sqlalchemy import select
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import settings
+from app.api.android_auth import create_android_auth_router
+from app.api.android_course import create_android_course_router
 from app.api.desktop_auth import create_desktop_auth_router
 from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
@@ -436,6 +438,19 @@ app.include_router(
     )
 )
 app.include_router(create_desktop_update_router(settings_obj=settings))
+# Android reuses the same DesktopAuthService core; only the transport differs.
+app.include_router(
+    create_android_auth_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(
+    create_android_course_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
 
 MINIAPP_HTML_HEADERS = {
     "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",

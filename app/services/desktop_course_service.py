@@ -141,6 +141,12 @@ def apply_course_v3_access_policy(
 class DesktopCourseService:
     """Bearer-authenticated Course v3 adapter for the native desktop client."""
 
+    # Analytics and dedupe namespace for this native client. Android subclasses
+    # it (see AndroidCourseService) so an Android completion never shares a
+    # dedupe key with a desktop one and never lands in the desktop funnel.
+    # Every other rule — access policy, XP, mistakes, idempotency — is shared.
+    CLIENT_NAMESPACE = "desktop"
+
     def __init__(self, session, settings_obj):
         self.session = session
         self.settings = settings_obj
@@ -417,7 +423,7 @@ class DesktopCourseService:
         user = await self._locked_context_user(context)
         lesson_order = int(lesson_order)
         event_id = str(event_id or "").strip()
-        event_dedupe_key = f"desktop-course-complete:{event_id}"
+        event_dedupe_key = f"{self.CLIENT_NAMESPACE}-course-complete:{event_id}"
         level = self._level(user)
 
         existing_result = await self.session.execute(
@@ -549,7 +555,7 @@ class DesktopCourseService:
             event_name="lesson_completed",
             telegram_id=user.telegram_id,
             user_id=user.id,
-            source="desktop_course",
+            source=f"{self.CLIENT_NAMESPACE}_course",
             level=level,
             lesson_id=legacy_lesson_id,
             lesson_order=lesson_order,

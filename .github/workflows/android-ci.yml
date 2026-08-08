@@ -1,0 +1,121 @@
+name: Android CI
+
+# Additive only: this does not touch the existing desktop-release workflow.
+on:
+  push:
+    branches: [main, "feat/android-**"]
+    paths:
+      - "android/**"
+      - ".github/workflows/android-ci.yml"
+  pull_request:
+    paths:
+      - "android/**"
+      - ".github/workflows/android-ci.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: android-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Build, test and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # The build must depend on the committed wrapper, never on whatever
+      # Gradle happens to be installed on the runner. Fail loudly and early
+      # if any wrapper file is missing.
+      - name: Require a complete committed Gradle wrapper
+        run: |
+          missing=0
+          for f in gradlew gradlew.bat gradle/wrapper/gradle-wrapper.jar \
+                   gradle/wrapper/gradle-wrapper.properties; do
+            if [ ! -f "$f" ]; then
+              echo "::error file=android/$f::Missing Gradle wrapper file: $f"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Generate it once with: cd android && gradle wrapper --gradle-version 8.14.5"
+            exit 1
+          fi
+          test -x gradlew || chmod +x gradlew
+
+      # Verifies gradle-wrapper.jar against Gradle's published checksums, so a
+      # committed binary cannot be silently swapped for a tampered one.
+      - name: Validate the wrapper checksum
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle caching
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Unit tests
+        run: ./gradlew --no-daemon testDebugUnitTest
+
+      - name: Android Lint
+        run: ./gradlew --no-daemon lintDebug
+
+      - name: Assemble debug
+        run: ./gradlew --no-daemon assembleDebug
+
+      # Release stays fail-closed: without signing secrets the bundle is built
+      # unsigned for validation only and is never published from CI.
+      - name: Validate release bundle (unsigned)
+        run: ./gradlew --no-daemon bundleRelease
+
+      - name: Upload test and lint reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-reports
+          path: |
+            android/app/build/reports/tests/**
+            android/app/build/reports/lint-results-*.html
+          if-no-files-found: ignore
+          retention-days: 7
+
+  backend:
+    name: Backend regression for the Android adapter
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      # Only the suites this work touches. The full Playwright file still has
+      # pre-existing baseline failures that are unrelated to Android.
+      - name: Android and desktop auth suites
+        run: |
+          python -m pytest -q \
+            tests/test_android_auth_api.py \
+            tests/test_android_course_api.py \
+            tests/test_course_card_contract.py \
+            tests/test_desktop_auth_service.py \
+            tests/test_desktop_course_api.py \
+            tests/test_desktop_subscription_api.py

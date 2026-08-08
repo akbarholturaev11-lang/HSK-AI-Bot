@@ -164,6 +164,14 @@ def _error_response(error: DesktopAuthError | DesktopCourseError) -> JSONRespons
     )
 
 
+# Shared with the Android course adapter (app/api/android_course.py). Request
+# validation, bearer parsing and the error envelope are identical for every
+# native client, so they are exposed instead of being copied.
+bearer_access_token = _access_token
+course_error_response = _error_response
+validated_course_payload = _validated_payload
+
+
 def create_desktop_course_router(
     *,
     session_factory,

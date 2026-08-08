@@ -207,6 +207,134 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-09 — Android auth-session va deep-link/audio lifecycle himoyasi
+
+Changed:
+- Link, course va lesson ViewModel'lari endi bitta auth branchga tegishli alohida
+  `ViewModelStore` ichida yashaydi; logout/relinkda store tozalanadi. Eski hisobning
+  link kodi, kurs xaritasi yoki dars holati boshqa sessionga o'tmaydi.
+- Har deep-link delivery noyob request ID oladi. Muvaffaqiyatsiz fresh-map
+  tekshiruvi bir request uchun loop qilmaydi, lekin aynan shu URI qayta ochilsa
+  yangi server authorization urinishini boshlaydi va pending intent yo'qolmaydi.
+- Darsdan chiqish pending TTS jobni bekor qiladi, urinishni invalid qiladi va
+  kech qaytgan audio eski dars/akkauntda o'ynamaydi.
+
+Files touched:
+- `android/.../MainActivity.kt`, `core/navigation/NavigationSession.kt`,
+  `feature/lesson/LessonViewModel.kt` va unit testlar.
+
+Risk / follow-up:
+- Backend, kurs access/XP, obuna va to'lov logikasi o'zgarmadi. JVM unit test,
+  Android lint va debug APK build o'tdi; real qurilmada logout → boshqa accountga
+  relink va sekin TTS paytida darsdan chiqish smoke-test qilinsin.
+
+### 2026-08-08 — Android native klient: auth adapteri + loyiha poydevori (Phase A-C)
+
+Changed:
+- **Android auth = mavjud yadro, dublikat YO'Q.** `DesktopAuthService` o'zgarmadi;
+  faqat `NATIVE_PLATFORMS = DESKTOP_PLATFORMS | {"android"}` qo'shildi va
+  `start_link` shunga qaraydi. `DESKTOP_PLATFORMS` eski ma'nosida qoldi
+  (downloads / release manifest / admin desktop statistikasi Android'ni sanab
+  yubormasligi uchun). **MIGRATSIYA YO'Q** — `platform` allaqachon `String(16)`.
+- Yangi yupqa transport: `app/api/android_auth.py` →
+  `/api/v3/android-auth/{link/start,link/status,refresh,revoke}` +
+  `/api/v3/android/bootstrap`. Validatsiya/bearer/xato konvertlari
+  `desktop_auth.py` dan qayta ishlatiladi (3 ta public alias qo'shildi).
+  Android `initData` ishlatmaydi, faqat `Authorization: Bearer`.
+- **Bot bagi tuzatildi**: `handlers/desktop_auth.py` da `"Mac" if macos else
+  "Windows"` yorlig'i Android telefonni "Windows" deb ko'rsatardi. Endi
+  `_PLATFORM_LABELS` map + `_copy_key()`; `_COPY` kalitlari `confirm_desktop`/
+  `confirm_mobile`/`ok_desktop`/`ok_mobile` ga bo'lindi, 3 tilda parallel.
+  `enter_code`/`invalid`/`attempts_exhausted` matnlari neytral qilindi (platform
+  hali noma'lum bo'lgan bosqich). `approve_link()` javobiga `platform` qo'shildi.
+- **Xavfsizlik xossalari saqlandi**: kod deep-link'ga QO'SHILMAYDI
+  (`?start=desktop_link`), qo'lda yuboriladi; single-use, expiry, polling secret,
+  row lock, constant-time compare, installation binding, refresh rotatsiya +
+  reuse detection — hammasi o'sha yadroda.
+- **Analitika ajratildi**: `analytics_prefix(platform)` — Android
+  `android_session_linked`/`android_first_open`/`android_app_opened`/
+  `android_update_installed` yozadi, dedupe key'lari ham `android-*`.
+  Desktop nomlari BAYT-BA-BAYT o'zgarmadi. Allowlist'ga 20 ta `android_*` nomi
+  qo'shildi (keyingi fazalar uchun ham).
+- **`android/` moduli** (yangi): Kotlin + Jetpack Compose, `compileSdk`/
+  `targetSdk` 36, `minSdk` 26, `com.pomp.hskai`. WebView YO'Q. Course v3 dizayn
+  tokenlari, UZ default + `values-ru` + `values-tg`, Keystore AES-GCM credential
+  store (refresh token hech qachon ochiq saqlanmaydi), single-flight refresh,
+  OkHttp origin guard (HTTPS + bitta host + redirect off), deep-link allowlist.
+- `.github/workflows/android-ci.yml` (yangi) — desktop-release.yml tegilmadi.
+
+Why:
+- Rasmiy Google Play ilovasi kerak, lekin u alohida mahsulot/akkaunt/kurs
+  bo'lmasligi shart: bitta Telegram hisobi, bitta obuna, bitta progress.
+
+Files touched:
+- `app/services/desktop_auth_service.py`, `app/api/android_auth.py` (yangi),
+  `app/api/desktop_auth.py`, `app/bot/handlers/desktop_auth.py`, `app/main.py`,
+  `app/db/models/course_miniapp_event.py`, `tests/test_android_auth_api.py` (yangi),
+  `android/**` (yangi), `.github/workflows/android-ci.yml` (yangi),
+  `ANDROID_IMPLEMENTATION_PLAN.md` (yangi)
+
+Phase D — Bugun + Kurs (qo'shildi):
+- `AndroidCourseService(DesktopCourseService)` — 600 qatorlik access policy / XP /
+  streak / mistakes / idempotency QAYTA YOZILMADI, meros olindi. Yagona farq:
+  `CLIENT_NAMESPACE`. Desktop uchun `desktop-course-complete:` va
+  `desktop_course` BAYT-BA-BAYT o'zgarmadi; Android `android-course-complete:` +
+  `android_course` ishlatadi, shuning uchun bir xil `event_id` ikkala klientdan
+  kelsa ham XP ikki marta berilmaydi.
+- Yangi route'lar: `/api/v3/android/course/{map,lesson/{n},complete}` +
+  `/api/v3/android/preferences/language`. Request modellari desktop'dan.
+  `tz` aniq `None` tekshiruvi bilan — UTC+0 yutilmaydi.
+- **MUHIM UI QOIDASI**: `preview_half` darajaning emas, O'QUVCHI JOYLASHUVINING
+  xususiyati — faqat `completed == FREE_COURSE_LESSONS_PER_LEVEL` bo'lganda
+  paydo bo'ladi. Bepul ruxsat ichidagi, lekin yetib borilmagan dars
+  `course_lesson_not_unlocked` beradi va unga **paywall ko'rsatilmaydi**.
+  Android'da bu `LessonAccess` tipida muhrlangan (`showsPaywall`).
+- Android: Room cache (xom payload snapshot, hech qachon ruxsatni kengaytirmaydi,
+  doim `isStale` bilan), Bugun ekrani (bitta ustun harakat), Kurs yo'lakchasi
+  (holat rang bilan emas, glif+matn bilan ham), 3 ta tab (Mashq/AI Phase F/G
+  gacha UMUMAN yo'q, Obuna hech qachon tab emas).
+
+Deep-link kontrakti (qaror):
+- `pomp-hsk-ai://lesson/{n}` QO'LLAB-QUVVATLANADI. Sabab: `motivation_reminder_service`
+  allaqachon `target_level` + `target_lesson` + `autostart` bilan aniq darsga
+  olib boradigan eslatma yuboradi (D1 recovery, tugallanmagan dars) — Phase H'da
+  bular Android bildirishnomasiga aylanadi. Chegara backend'dan: `1..500`
+  (`app/api/desktop_course.py`).
+- Lekin **resolve ≠ authorize**: `AppDestination.Lesson` faqat raqam olib yuradi;
+  navigatsiya server progress/entitlement'ini tekshirmasdan darsni ochmaydi.
+- Allowlist ANIQ-ARITY (desktop klientdagi `match path` kabi): ortiqcha segment
+  butun URI'ni bekor qiladi (`lesson/current/extra` → null).
+
+Verification (2026-08-08, lokal Mac):
+- `pytest tests/test_android_auth_api.py tests/test_desktop_auth_service.py
+  tests/test_desktop_course_api.py tests/test_desktop_subscription_api.py`
+  → **56 passed, 19 subtests passed**.
+- `./gradlew testDebugUnitTest --rerun-tasks` → **BUILD SUCCESSFUL** (26 executed).
+- `./gradlew lintDebug` → **BUILD SUCCESSFUL**.
+- `./gradlew assembleDebug` → **BUILD SUCCESSFUL**.
+- Gradle 8.14.5 + AGP 8.9.1 + JDK 17; wrapper (jar bilan) repoda commit qilingan.
+
+Risk:
+- To'lov/obuna/XP/progress/kurs kontenti/Mini App/macOS/Windows tegilmadi.
+  Migratsiya yo'q, Alembic head hamon `0066_desktop_foundation`.
+- To'liq Playwright e2e to'plami bu ish doirasida yugurtilmadi (unda avvaldan
+  4 ta baseline failure bor).
+- Qurilmada real Telegram ulash oqimi hali sinalmagan (faqat unit/API darajasi).
+
+Qolgan warninglar (blocker emas, keyin tozalanadi):
+- `resourceConfigurations` AGP'da deprecated (`androidResources.localeFilters`).
+- `Locale(String, String)` konstruktori testda deprecated.
+- Gradle 9.0 deprecation ogohlantirishlari.
+
+Follow-up:
+- `DESKTOP_AUTH_CONTRACT.md` ning "Device-link flow" 4-bandi hamon eski
+  `?start=desktop_<code>` oqimini yozadi — yangilash kerak.
+- Phase D-L qoldi: Bugun/Kurs, native dars renderer (14 karta turi), mashqlar,
+  AI Voice, Glance widget + bildirishnomalar, profil, Google Play Billing
+  (kodda umuman yo'q), offline, admin statistikasida Android ajratish.
+- Play Console product ID, service-account, signing keystore — tashqi bloker,
+  kod yo'li fail-closed holatda tayyor.
+
 ### 2026-07-26 — Dars yakuni reklamasiga ixtiyoriy tashqi CTA
 
 Changed:

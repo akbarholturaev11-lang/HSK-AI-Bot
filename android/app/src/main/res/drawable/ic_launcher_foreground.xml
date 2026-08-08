@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Placeholder launcher mark: the HSK AI cinnabar seal with 汉.
+    It is intentionally a simple brand mark, not a drawn panda — the final
+    adaptive icon must be exported from the project's own panda artwork
+    (app/static/assets/hsk-ai-avatar.webp) before the Play release.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:fillColor="#E04A40"
+        android:pathData="M30,30 h48 a6,6 0 0 1 6,6 v36 a6,6 0 0 1 -6,6 h-48 a6,6 0 0 1 -6,-6 v-36 a6,6 0 0 1 6,-6 z" />
+
+    <!-- 汉 -->
+    <path
+        android:fillColor="#FDF9F0"
+        android:pathData="M35,44 L38,41 L41,46 L38,48 Z" />
+    <path
+        android:fillColor="#FDF9F0"
+        android:pathData="M34,54 L37,52 L40,57 L37,59 Z" />
+    <path
+        android:fillColor="#FDF9F0"
+        android:pathData="M36,63 L39,62 L38,70 L35,70 Z" />
+    <path
+        android:fillColor="#FDF9F0"
+        android:pathData="M47,42 h24 v3.5 h-24 Z" />
+    <path
+        android:fillColor="#FDF9F0"
+        android:pathData="M57,45 h3.5 v8 h-3.5 Z" />
+    <path
+        android:fillColor="#FDF9F0"
+        android:pathData="M50,52 L53,50 L72,70 L68,72 Z" />
+    <path
+        android:fillColor="#FDF9F0"
+        android:pathData="M68,50 L72,52 L52,72 L49,69 Z" />
+</vector>

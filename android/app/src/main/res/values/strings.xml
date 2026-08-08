@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Default locale: Uzbek (Latin).
+    Russian lives in values-ru, Tajik in values-tg.
+    NOTE: the backend language code for Tajik is "tj", while the Android
+    resource qualifier is "tg" (ISO 639-1). LanguageCodes owns that mapping;
+    never rename the folder and never send "tg" to the API.
+-->
+<resources>
+    <!-- Brand name and language endonyms are shown identically in every
+         locale, so they are deliberately not translated. Without this, lint's
+         MissingTranslation check fails the build. -->
+    <string name="app_name" translatable="false">Pomp HSK AI</string>
+
+    <!-- Onboarding: language -->
+    <string name="onboarding_language_title">Tilni tanlang</string>
+    <string name="onboarding_language_subtitle">Kurs, tarjimalar va eslatmalar shu tilda bo\'ladi.</string>
+    <string name="language_uz" translatable="false">O\'zbekcha</string>
+    <string name="language_ru" translatable="false">Русский</string>
+    <string name="language_tj" translatable="false">Тоҷикӣ</string>
+    <string name="action_continue">Davom etish</string>
+
+    <!-- Onboarding: Telegram linking -->
+    <string name="link_title">Telegram hisobingizni ulang</string>
+    <string name="link_subtitle">Mavjud kursingiz, obunangiz va progressingiz shu yerga sinxronlanadi. Yangi hisob yaratilmaydi.</string>
+    <string name="link_step_1">Quyidagi kodni nusxalang</string>
+    <string name="link_step_2">Telegramni oching va kodni botga yuboring</string>
+    <string name="link_step_3">Botda \"Tasdiqlash\" tugmasini bosing</string>
+    <string name="link_code_label">Ulash kodi</string>
+    <string name="link_code_copied">Kod nusxalandi</string>
+    <string name="link_open_telegram">Telegramni ochish</string>
+    <string name="link_waiting">Tasdiqlashni kutmoqdamiz…</string>
+    <string name="link_expires_in">Kod amal qilish muddati: %1$s</string>
+    <string name="link_expired">Kod muddati tugadi. Yangi kod oling.</string>
+    <string name="link_new_code">Yangi kod olish</string>
+    <string name="link_success">Hisob ulandi</string>
+    <string name="link_telegram_missing">Telegram ilovasi topilmadi. Kodni brauzer orqali yuborishingiz mumkin.</string>
+    <string name="link_security_note">Kod havolaga qo\'shilmaydi. Uni faqat o\'zingiz botga yuborasiz.</string>
+
+    <!-- Synced account summary -->
+    <string name="synced_title">Hisobingiz ulandi</string>
+    <string name="synced_level">Daraja</string>
+    <string name="synced_access_paid">Obuna faol</string>
+    <string name="synced_access_free">Bepul rejim</string>
+
+    <!-- Main navigation -->
+    <string name="nav_today">Bugun</string>
+    <string name="nav_course">Kurs</string>
+    <string name="nav_practice">Mashq</string>
+    <string name="nav_ai">AI</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Profile / session -->
+    <string name="profile_logout">Chiqish</string>
+    <string name="profile_unlink_device">Bu qurilmani uzish</string>
+    <string name="profile_unlink_explain">Qurilma uziladi va keyingi safar Telegram orqali qayta ulanasiz.</string>
+
+    <!-- Shared states -->
+    <string name="state_loading">Yuklanmoqda…</string>
+    <string name="action_retry">Qayta urinish</string>
+    <string name="action_cancel">Bekor qilish</string>
+    <string name="action_close">Yopish</string>
+
+    <!-- Error copy mapped from stable server error codes -->
+    <string name="error_offline">Internet aloqasi yo\'q. Ulanishni tekshiring.</string>
+    <string name="error_timeout">Server javob bermadi. Qayta urinib ko\'ring.</string>
+    <string name="error_server">Serverda vaqtinchalik nosozlik. Birozdan so\'ng urinib ko\'ring.</string>
+    <string name="error_unknown">Kutilmagan xatolik yuz berdi.</string>
+    <string name="error_session_expired">Sessiya muddati tugadi. Telegram orqali qayta ulanish kerak.</string>
+    <string name="error_link_invalid">Kod noto\'g\'ri, eskirgan yoki allaqachon ishlatilgan.</string>
+    <string name="error_link_rate_limited">Juda ko\'p urinish bo\'ldi. Bir necha daqiqadan so\'ng urinib ko\'ring.</string>
+    <string name="error_device_bound">Bu qurilma boshqa Telegram hisobiga ulangan. Avval uni uzish kerak.</string>
+    <string name="error_auth_unavailable">Ulash xizmati vaqtincha ishlamayapti.</string>
+
+    <!-- Accessibility -->
+    <string name="cd_app_logo">Pomp HSK AI logotipi</string>
+    <string name="cd_copy_code">Ulash kodini nusxalash</string>
+
+    <!-- Bugun -->
+    <string name="today_next_lesson">Keyingi dars</string>
+    <string name="today_continue">Davom etish</string>
+    <string name="today_estimated_minutes">~5–7 daqiqa</string>
+    <string name="today_part_of">%1$d / %2$d qism</string>
+    <string name="today_streak">Ketma-ket kunlar</string>
+    <string name="today_xp">XP</string>
+    <string name="today_level">Daraja</string>
+    <string name="today_all_done">Bu darajadagi barcha qismlar tugadi</string>
+    <string name="today_stale">Oflayn ma\'lumot — internet tiklanganda yangilanadi</string>
+    <string name="today_reason_preview">Bu darsning yarmini bepul ko\'rishingiz mumkin</string>
+    <string name="today_reason_premium">Bu dars obuna bilan ochiladi</string>
+    <string name="today_reason_not_reached">Avval oldingi qismlarni tugating</string>
+
+    <!-- Kurs -->
+    <string name="course_progress">%1$d / %2$d qism</string>
+    <string name="course_checkpoint">Takrorlash</string>
+    <string name="course_part_label">%1$d-qism</string>
+
+    <!-- Dars oqimi -->
+    <string name="lesson_new_word">YANGI SO\'Z</string>
+    <string name="lesson_grammar">Grammatika</string>
+    <string name="lesson_repeat_after_teacher">Ustozdan keyin takrorlang</string>
+    <string name="lesson_cannot_speak_now">Hozir gapira olmayman</string>
+    <string name="lesson_play_audio">Ovozni eshitish</string>
+    <string name="lesson_audio_loading">Ovoz yuklanmoqda</string>
+    <string name="lesson_listen_and_choose">Eshitganingizni tanlang</string>
+    <string name="lesson_build_sentence">Gapni tuzing</string>
+    <string name="lesson_build_translation">Tarjimani tuzing</string>
+    <string name="lesson_match_pairs">Juftlarni moslang</string>
+    <string name="lesson_check">Tekshirish</string>
+    <string name="lesson_next">Davom etish</string>
+    <string name="lesson_correct">To\'g\'ri</string>
+    <string name="lesson_wrong">Noto\'g\'ri</string>
+    <string name="lesson_done_title">Dars tugadi</string>
+    <string name="lesson_done_accuracy">%1$d / %2$d to\'g\'ri</string>
+    <string name="lesson_back_to_course">Kursga qaytish</string>
+    <string name="lesson_save_failed">Natijani saqlab bo\'lmadi</string>
+    <string name="lesson_preview_over_title">Bepul qism tugadi</string>
+    <string name="lesson_preview_over_body">Bu darsning qolgan qismi obuna bilan ochiladi.</string>
+    <string name="lesson_card_unsupported">Bu karta turi hali qo\'llab-quvvatlanmaydi</string>
+    <string name="lesson_card_unsupported_hint">Ilovani yangilang. Bu karta baholanmaydi.</string>
+    <string name="lesson_skip_card">O\'tkazib yuborish</string>
+    <string name="cd_answer_correct">%1$s — to\'g\'ri javob</string>
+    <string name="cd_answer_wrong">%1$s — noto\'g\'ri javob</string>
+</resources>

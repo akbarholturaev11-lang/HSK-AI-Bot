@@ -1,0 +1,27 @@
+*.iml
+.gradle/
+.kotlin/
+local.properties
+.idea/
+.DS_Store
+build/
+captures/
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+
+# The Gradle wrapper is intentionally committed, including its jar, so that
+# builds never depend on a globally installed Gradle. Its checksum is verified
+# in CI by gradle/actions/wrapper-validation.
+!gradle/wrapper/gradle-wrapper.jar
+!gradlew
+!gradlew.bat
+
+# Signing material must never reach Git.
+keystore.properties
+*.jks
+*.keystore
+
+# Google Play service-account credentials must never reach Git.
+play-service-account*.json

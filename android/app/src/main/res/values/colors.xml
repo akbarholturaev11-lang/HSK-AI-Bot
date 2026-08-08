@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    HSK AI brand palette, taken from the Course v3 design tokens in
+    app/static/course-v3.html. Compose owns the runtime theme; these XML
+    values exist only for the launcher icon, splash background and any
+    platform surface that cannot read Compose tokens.
+-->
+<resources>
+    <color name="pomp_paper">#FDF9F0</color>
+    <color name="pomp_ink">#211D17</color>
+    <color name="pomp_ink_secondary">#665D50</color>
+    <color name="pomp_cinnabar">#E04A40</color>
+    <color name="pomp_cinnabar_dark">#B23530</color>
+    <color name="pomp_jade">#2FA06A</color>
+    <color name="pomp_gold">#E9A916</color>
+</resources>

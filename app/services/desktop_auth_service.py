@@ -23,6 +23,11 @@ from app.services.user_access_state_service import UserAccessStateService
 
 DISPLAY_CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"
 DESKTOP_PLATFORMS = {"macos", "windows"}
+MOBILE_PLATFORMS = {"android"}
+# Every native client allowed to open a Telegram device link. The desktop-only
+# set stays separate so desktop consumers (downloads, release manifest, admin
+# desktop statistics) keep their current meaning and are not silently widened.
+NATIVE_PLATFORMS = DESKTOP_PLATFORMS | MOBILE_PLATFORMS
 logger = logging.getLogger(__name__)
 
 
@@ -59,6 +64,18 @@ def _b64_encode(value: bytes) -> str:
 
 def _b64_decode(value: str) -> bytes:
     return base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+
+
+def analytics_prefix(platform: str | None) -> str:
+    """Analytics namespace for a native platform.
+
+    Android must never be counted as a desktop install, so its lifecycle
+    events, analytics source and dedupe keys use their own prefix. Desktop
+    platforms keep the exact names they already emit in production.
+    """
+
+    normalized = str(platform or "").strip().lower()
+    return "android" if normalized in MOBILE_PLATFORMS else "desktop"
 
 
 class DesktopAuthService:
@@ -190,7 +207,7 @@ class DesktopAuthService:
         installation_key: str,
     ) -> dict[str, Any]:
         self._signing_secret()
-        if platform not in DESKTOP_PLATFORMS:
+        if platform not in NATIVE_PLATFORMS:
             raise DesktopAuthError("desktop_platform_invalid", status_code=422)
         if not 32 <= len(installation_key) <= 200:
             raise DesktopAuthError(
@@ -301,7 +318,11 @@ class DesktopAuthService:
         if link_request.status == "approved":
             if int(link_request.approved_telegram_id or 0) == int(telegram_id):
                 await self.session.commit()
-                return {"ok": True, "duplicate": True}
+                return {
+                    "ok": True,
+                    "duplicate": True,
+                    "platform": link_request.platform,
+                }
             raise DesktopAuthError("desktop_link_already_approved", status_code=409)
         if link_request.status != "pending" or link_request.consumed_at is not None:
             raise DesktopAuthError("desktop_link_consumed", status_code=409)
@@ -321,7 +342,11 @@ class DesktopAuthService:
         link_request.approved_telegram_id = user.telegram_id
         link_request.approved_at = now
         await self.session.commit()
-        return {"ok": True, "duplicate": False}
+        return {
+            "ok": True,
+            "duplicate": False,
+            "platform": link_request.platform,
+        }
 
     async def link_preview(
         self,
@@ -505,14 +530,15 @@ class DesktopAuthService:
         # Course analytics is best-effort and must never roll back credentials
         # that have already been returned to the native client.
         await self.session.commit()
+        prefix = analytics_prefix(device.platform)
         try:
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
-                event_name="desktop_session_linked",
+                event_name=f"{prefix}_session_linked",
                 telegram_id=device.telegram_id,
                 user_id=device.user_id,
-                source="desktop_auth",
+                source=f"{prefix}_auth",
                 session_id=desktop_session.id,
-                dedupe_key=f"desktop-link:{link_request.id}",
+                dedupe_key=f"{prefix}-link:{link_request.id}",
                 payload={
                     "platform": device.platform,
                     "app_version": device.app_version,
@@ -667,6 +693,7 @@ class DesktopAuthService:
     ) -> dict[str, Any]:
         context = await self.authenticate(access_token)
         now = _utcnow()
+        prefix = analytics_prefix(context.device.platform)
         was_opened = context.device.first_open_at is not None
         previous_version = str(context.device.app_version or "").strip()
         reported_version = str(app_version or "").strip()
@@ -686,13 +713,13 @@ class DesktopAuthService:
                     await CourseMiniAppAnalyticsService(
                         self.session
                     ).record_server_event(
-                        event_name="desktop_update_installed",
+                        event_name=f"{prefix}_update_installed",
                         telegram_id=context.user.telegram_id,
                         user_id=context.user.id,
-                        source="desktop_app",
+                        source=f"{prefix}_app",
                         session_id=context.session.id,
                         dedupe_key=(
-                            f"desktop-update:{context.device.id}:"
+                            f"{prefix}-update:{context.device.id}:"
                             f"{reported_version}"
                         ),
                         payload={
@@ -707,12 +734,12 @@ class DesktopAuthService:
         if first_open:
             context.device.first_open_at = now
             await CourseMiniAppAnalyticsService(self.session).record_server_event(
-                event_name="desktop_first_open",
+                event_name=f"{prefix}_first_open",
                 telegram_id=context.user.telegram_id,
                 user_id=context.user.id,
-                source="desktop_app",
+                source=f"{prefix}_app",
                 session_id=context.session.id,
-                dedupe_key=f"desktop-first-open:{context.device.id}",
+                dedupe_key=f"{prefix}-first-open:{context.device.id}",
                 payload={
                     "platform": context.device.platform,
                     "app_version": context.device.app_version,
@@ -722,13 +749,13 @@ class DesktopAuthService:
         context.device.last_seen_at = now
         context.session.last_seen_at = now
         await CourseMiniAppAnalyticsService(self.session).record_server_event(
-            event_name="desktop_app_opened",
+            event_name=f"{prefix}_app_opened",
             telegram_id=context.user.telegram_id,
             user_id=context.user.id,
-            source="desktop_app",
+            source=f"{prefix}_app",
             session_id=context.session.id,
             dedupe_key=(
-                f"desktop-open:{context.device.id}:{now.date().isoformat()}"
+                f"{prefix}-open:{context.device.id}:{now.date().isoformat()}"
             ),
             payload={
                 "platform": context.device.platform,
