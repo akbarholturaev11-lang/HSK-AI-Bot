@@ -31,6 +31,7 @@ def _install_native_fixture(
     update_install_error=False,
     is_paid=True,
     pending_payment=None,
+    local_ai_ready=False,
 ):
     lesson_rows = []
     for lesson_order in sorted(lessons):
@@ -88,6 +89,7 @@ def _install_native_fixture(
             "pendingPayment": pending_payment,
             "submissions": 0,
         },
+        "localAiReady": local_ai_ready,
     }
     encoded = json.dumps(fixture, ensure_ascii=False)
     page.add_init_script(
@@ -96,6 +98,8 @@ def _install_native_fixture(
           window.__COMPLETIONS = [];
           window.__UPDATE_CHECKS = 0;
           window.__UPDATE_INSTALLS = 0;
+          window.__AI_CHATS = [];
+          window.__DESKTOP_EVENT_HANDLERS = {{}};
           window.__TAURI__ = {{
             core: {{
               invoke: async (command, args = {{}}) => {{
@@ -214,7 +218,64 @@ def _install_native_fixture(
                   return {{ ok: false, available: false, error: "desktop_tts_unavailable" }};
                 }}
                 if (command === "local_ai_model_status") {{
-                  return {{ installed: false, state: "missing" }};
+                  return {{
+                    modelId: "qwen3-4b-q4-k-m",
+                    installed: Boolean(fixture.localAiReady),
+                    sizeBytes: fixture.localAiReady ? 2497280256 : null,
+                    expectedSizeBytes: 2497280256,
+                    downloadedBytes: fixture.localAiReady ? 2497280256 : 0,
+                    state: fixture.localAiReady ? "ready" : "missing",
+                    runtimeAvailable: Boolean(fixture.localAiReady),
+                    runtimeState: "stopped"
+                  }};
+                }}
+                if (command === "local_ai_install_start") {{
+                  return {{
+                    modelId: "qwen3-4b-q4-k-m",
+                    installed: false,
+                    sizeBytes: null,
+                    expectedSizeBytes: 2497280256,
+                    downloadedBytes: 0,
+                    state: "starting",
+                    runtimeAvailable: Boolean(fixture.localAiReady),
+                    runtimeState: "stopped"
+                  }};
+                }}
+                if (command === "local_ai_install_cancel") {{
+                  return {{
+                    modelId: "qwen3-4b-q4-k-m",
+                    installed: false,
+                    sizeBytes: null,
+                    expectedSizeBytes: 2497280256,
+                    downloadedBytes: 0,
+                    state: "paused",
+                    runtimeAvailable: Boolean(fixture.localAiReady),
+                    runtimeState: "stopped"
+                  }};
+                }}
+                if (command === "local_ai_pack_remove") {{
+                  fixture.localAiReady = false;
+                  return {{
+                    modelId: "qwen3-4b-q4-k-m",
+                    installed: false,
+                    sizeBytes: null,
+                    expectedSizeBytes: 2497280256,
+                    downloadedBytes: 0,
+                    state: "missing",
+                    runtimeAvailable: false,
+                    runtimeState: "stopped"
+                  }};
+                }}
+                if (command === "local_ai_chat") {{
+                  window.__AI_CHATS.push(JSON.parse(JSON.stringify(args.request)));
+                  return {{
+                    requestId: args.request.requestId,
+                    text: "你好 — nǐ hǎo — salom",
+                    durationMs: 12
+                  }};
+                }}
+                if (command === "local_ai_chat_cancel") {{
+                  return null;
                 }}
                 if (command === "desktop_update_check") {{
                   window.__UPDATE_CHECKS += 1;
@@ -226,6 +287,15 @@ def _install_native_fixture(
                 }}
                 if (command === "desktop_update_install") {{
                   window.__UPDATE_INSTALLS += 1;
+                  const updateHandler = window.__DESKTOP_EVENT_HANDLERS["desktop-update://progress"];
+                  updateHandler?.({{
+                    payload: {{
+                      downloadedBytes: 5 * 1024 * 1024,
+                      totalBytes: 10 * 1024 * 1024,
+                      percent: 50,
+                      state: "downloading"
+                    }}
+                  }});
                   const delay = Number(fixture.updateInstallDelay || 0);
                   if (delay) await new Promise(resolve => setTimeout(resolve, delay));
                   if (fixture.updateInstallError) {{
@@ -235,6 +305,12 @@ def _install_native_fixture(
                 }}
                 if (command === "desktop_logout") return null;
                 throw new Error("desktop_operation_not_allowed");
+              }}
+            }},
+            event: {{
+              listen: async (eventName, handler) => {{
+                window.__DESKTOP_EVENT_HANDLERS[eventName] = handler;
+                return () => {{ delete window.__DESKTOP_EVENT_HANDLERS[eventName]; }};
               }}
             }}
           }};
@@ -374,6 +450,51 @@ def test_desktop_course_lesson_profile_and_ai_flow(
     assert errors == []
 
 
+def test_local_ai_ready_chat_uses_native_command_without_network(
+    desktop_ui_url,
+    browser_page,
+):
+    page, errors = browser_page
+    _install_native_fixture(
+        page,
+        {
+            1: _lesson_payload(
+                1,
+                [
+                    {
+                        "type": "active_word",
+                        "word": {
+                            "zh": "你",
+                            "pinyin": "nǐ",
+                            "meaning": {"uz": "sen"},
+                        },
+                    }
+                ],
+            )
+        },
+        local_ai_ready=True,
+    )
+    page.goto(desktop_ui_url, wait_until="networkidle")
+    page.locator("#workspace").wait_for(state="visible")
+    page.locator("#ai-launcher").click()
+    page.get_by_role("heading", name="你好！Men lokal HSK ustozingizman.").wait_for()
+
+    page.locator("#ai-input").fill("你好 nimani anglatadi?")
+    page.get_by_role("button", name="Yuborish", exact=True).click()
+    playwright.expect(page.locator(".ai-message.is-assistant")).to_contain_text(
+        "你好 — nǐ hǎo — salom"
+    )
+    requests = page.evaluate("window.__AI_CHATS")
+    assert len(requests) == 1
+    assert "Current course: HSK 1" in requests[0]["prompt"]
+    assert "Chinese: 课1" in requests[0]["prompt"]
+    assert requests[0]["prompt"].endswith("你好 nimani anglatadi?")
+    assert requests[0]["language"] == "uz"
+    assert requests[0]["history"] == []
+    assert page.locator("#ai-input").is_enabled()
+    assert errors == []
+
+
 def test_explicit_telegram_link_flow(desktop_ui_url, browser_page):
     page, errors = browser_page
     page.set_viewport_size({"width": 720, "height": 560})
@@ -451,28 +572,126 @@ def test_desktop_subscription_checkout_becomes_pending(
     assert errors == []
 
 
+def test_desktop_content_scroll_owns_vertical_overflow(
+    desktop_ui_url,
+    browser_page,
+):
+    page, errors = browser_page
+    page.set_viewport_size({"width": 1280, "height": 720})
+    page.goto(f"{desktop_ui_url}/?mock=1", wait_until="networkidle")
+    page.locator("#workspace").wait_for(state="visible")
+
+    header_box = page.locator(".content-header").bounding_box()
+    refresh_box = page.locator("#refresh-map").bounding_box()
+    avatar_box = page.locator("#header-profile").bounding_box()
+    assert header_box is not None
+    assert refresh_box is not None
+    assert avatar_box is not None
+    assert avatar_box["y"] == pytest.approx(refresh_box["y"], abs=1)
+    assert avatar_box["y"] + avatar_box["height"] <= (
+        header_box["y"] + header_box["height"] + 1
+    )
+
+    scroll_area = page.locator(".content-scroll")
+    scroll_area.locator(".content-inner").evaluate(
+        """
+        (node) => {
+          const spacer = document.createElement("div");
+          spacer.dataset.testid = "desktop-scroll-spacer";
+          spacer.style.height = "900px";
+          spacer.style.pointerEvents = "none";
+          node.appendChild(spacer);
+        }
+        """
+    )
+    before = scroll_area.evaluate(
+        """
+        (node) => ({
+          clientHeight: node.clientHeight,
+          scrollHeight: node.scrollHeight,
+          scrollTop: node.scrollTop,
+          overflowY: getComputedStyle(node).overflowY,
+          bodyScrollTop: document.body.scrollTop,
+          documentScrollTop: document.documentElement.scrollTop
+        })
+        """
+    )
+
+    assert before["overflowY"] in {"auto", "scroll"}
+    assert before["scrollHeight"] > before["clientHeight"]
+    assert before["scrollTop"] == 0
+    assert before["bodyScrollTop"] == 0
+    assert before["documentScrollTop"] == 0
+
+    scroll_area.evaluate("node => { node.scrollTop = node.scrollHeight; }")
+    after = scroll_area.evaluate(
+        """
+        (node) => ({
+          scrollTop: node.scrollTop,
+          bodyScrollTop: document.body.scrollTop,
+          documentScrollTop: document.documentElement.scrollTop
+        })
+        """
+    )
+
+    assert after["scrollTop"] > 0
+    assert after["bodyScrollTop"] == 0
+    assert after["documentScrollTop"] == 0
+    assert errors == []
+
+
 def test_minimum_window_uses_collapsible_rail_and_ai_sheet(
     desktop_ui_url,
     browser_page,
 ):
     page, errors = browser_page
-    page.set_viewport_size({"width": 720, "height": 560})
+    page.set_viewport_size({"width": 700, "height": 600})
     page.goto(f"{desktop_ui_url}/?mock=1", wait_until="networkidle")
     page.locator("#workspace").wait_for(state="visible")
 
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+    workspace_box = page.locator("#workspace").bounding_box()
+    content_box_before = page.locator(".content-column").bounding_box()
+    assert workspace_box is not None
+    assert content_box_before is not None
+
     page.locator("#rail-toggle").click()
+    playwright.expect(page.locator("#rail-scrim")).to_be_visible()
+    page.wait_for_function(
+        "Math.abs(document.querySelector('#course-rail').getBoundingClientRect().left) < 1"
+    )
     assert "is-open" in page.locator("#course-rail").get_attribute("class")
+
+    rail_box = page.locator("#course-rail").bounding_box()
+    scrim_box = page.locator("#rail-scrim").bounding_box()
+    content_box_open = page.locator(".content-column").bounding_box()
+    assert rail_box is not None
+    assert scrim_box is not None
+    assert content_box_open is not None
+    assert rail_box["x"] >= -1
+    assert rail_box["width"] == pytest.approx(280, abs=1)
+    assert rail_box["x"] + rail_box["width"] <= 700
+    assert content_box_open["x"] == pytest.approx(content_box_before["x"], abs=1)
+    assert content_box_open["width"] == pytest.approx(
+        content_box_before["width"], abs=1
+    )
+    assert scrim_box["x"] == pytest.approx(workspace_box["x"], abs=1)
+    assert scrim_box["y"] == pytest.approx(workspace_box["y"], abs=1)
+    assert scrim_box["width"] == pytest.approx(workspace_box["width"], abs=1)
+    assert scrim_box["height"] == pytest.approx(workspace_box["height"], abs=1)
+
     controlled_id = page.locator(".unit-button").first.get_attribute("aria-controls")
     assert controlled_id
     assert page.locator(f"#{controlled_id}").count() == 1
     page.locator("#rail-scrim").click()
+    playwright.expect(page.locator("#rail-scrim")).to_be_hidden()
     assert "is-open" not in page.locator("#course-rail").get_attribute("class")
+    assert page.locator("#rail-toggle").get_attribute("aria-expanded") == "false"
 
     launcher_box = page.locator("#ai-launcher").bounding_box()
     assert launcher_box is not None
-    assert launcher_box["x"] + launcher_box["width"] <= 720
-    assert launcher_box["y"] + launcher_box["height"] <= 560
+    assert launcher_box["x"] + launcher_box["width"] <= 700
+    assert launcher_box["y"] + launcher_box["height"] <= 600
     page.locator("#ai-launcher").click()
     assert page.locator("#ai-drawer").get_attribute("aria-hidden") == "false"
 
@@ -658,6 +877,8 @@ def test_update_banner_is_localized_and_install_is_explicit(
     assert page.locator("#update-action").is_disabled()
     assert page.locator("#update-status").get_attribute("aria-busy") == "true"
     assert page.evaluate("window.__UPDATE_INSTALLS") == 1
+    page.locator("#update-progress").wait_for(state="visible")
+    assert "50%" in page.locator("#update-progress-detail").inner_text()
     page.locator("#update-title").wait_for()
     page.wait_for_function(
         "document.querySelector('#update-title')?.textContent === "
@@ -731,4 +952,42 @@ def test_update_retry_and_lesson_restart_guard(
         "'Yangilanish tayyor'"
     )
     assert page.evaluate("window.__UPDATE_INSTALLS") == 2
+    assert errors == []
+
+
+def test_update_auto_installs_when_workspace_is_idle(
+    desktop_ui_url,
+    browser_page,
+):
+    page, errors = browser_page
+    _install_native_fixture(
+        page,
+        {
+            1: _lesson_payload(
+                1,
+                [
+                    {
+                        "type": "active_word",
+                        "word": {
+                            "zh": "更新",
+                            "pinyin": "gēngxīn",
+                            "meaning": {"uz": "yangilash"},
+                        },
+                    }
+                ],
+            )
+        },
+        update={
+            "available": True,
+            "currentVersion": "0.1.0",
+            "version": "0.2.0",
+        },
+    )
+    page.goto(desktop_ui_url, wait_until="networkidle")
+    page.locator("#workspace").wait_for(state="visible")
+    page.wait_for_function("window.__UPDATE_INSTALLS === 1", timeout=8_500)
+    page.wait_for_function(
+        "document.querySelector('#update-title')?.textContent === "
+        "'Yangilanish tayyor'"
+    )
     assert errors == []

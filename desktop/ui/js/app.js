@@ -1,4 +1,9 @@
-import { desktopBridge, isSessionError } from "./bridge.js";
+import {
+  desktopBridge,
+  isSessionError,
+  listenDesktopUpdate,
+  listenLocalAi,
+} from "./bridge.js";
 import {
   getLanguage,
   languageOptions,
@@ -77,6 +82,9 @@ const dom = {
   updateTitle: $("#update-title"),
   updateMessage: $("#update-message"),
   updateNotes: $("#update-notes"),
+  updateProgress: $("#update-progress"),
+  updateProgressBar: $("#update-progress-bar"),
+  updateProgressDetail: $("#update-progress-detail"),
   updateAction: $("#update-action"),
   aiLauncher: $("#ai-launcher"),
   aiDrawer: $("#ai-drawer"),
@@ -86,6 +94,7 @@ const dom = {
   aiBody: $("#ai-body"),
   aiInput: $("#ai-input"),
   aiSend: $("#ai-send"),
+  aiFooterStatus: $("#ai-footer-status"),
   aiShortcut: $("#ai-shortcut"),
   toast: $("#toast"),
   closeLesson: $("#close-lesson"),
@@ -94,6 +103,7 @@ const dom = {
 const state = {
   bootstrap: null,
   map: null,
+  appVersion: "",
   view: "today",
   searchQuery: "",
   authDeadline: 0,
@@ -107,6 +117,14 @@ const state = {
   aiOpen: false,
   aiPreviousFocus: null,
   aiLoaded: false,
+  aiStatus: null,
+  aiMessages: [],
+  aiBusy: false,
+  aiInstallBusy: false,
+  aiRequestId: null,
+  aiStreamText: "",
+  aiListenersReady: false,
+  aiUnlisten: [],
   vocabularyRequest: 0,
   vocabularyCache: new Map(),
   vocabularySelected: null,
@@ -114,8 +132,14 @@ const state = {
   updateInfo: null,
   updateErrorStage: "check",
   updateShowChecking: false,
+  updateProgress: null,
+  updateAutoTimer: null,
+  updateUnlisten: null,
   toastTimer: null,
 };
+
+const AUTO_UPDATE_DELAY_MS = 6_000;
+const AUTO_UPDATE_RETRY_MS = 15_000;
 
 const lesson = new LessonController({
   bridge: desktopBridge,
@@ -205,7 +229,7 @@ function applyStaticText() {
   dom.aiLauncher.setAttribute("aria-label", t("openAi"));
   dom.closeAi.setAttribute("aria-label", t("closeAi"));
   dom.closeLesson.setAttribute("aria-label", t("lessonClose"));
-  dom.aiInput.placeholder = t("aiInputPlaceholder");
+  updateAiComposer();
   dom.globalSearch.placeholder = t("searchLessons");
   dom.offlinePill.textContent = t("offline");
   subscription.setLanguage(getLanguage());
@@ -250,6 +274,10 @@ function showToast(message) {
 
 function updateNetworkState() {
   dom.offlinePill.hidden = navigator.onLine !== false;
+  if (state.aiOpen && state.aiStatus && !aiIsReady()) {
+    renderAiInstaller();
+    updateAiComposer();
+  }
 }
 
 function normalizedUpdateText(value, maxLength) {
@@ -271,6 +299,62 @@ function normalizeUpdatePayload(payload) {
     version,
     notes: normalizedUpdateText(payload.notes, 500),
   };
+}
+
+function normalizeUpdateProgress(payload) {
+  if (!payload || typeof payload !== "object") return null;
+  const downloadedBytes = Number(payload.downloadedBytes);
+  const totalBytes =
+    payload.totalBytes === undefined || payload.totalBytes === null
+      ? null
+      : Number(payload.totalBytes);
+  const percent =
+    payload.percent === undefined || payload.percent === null
+      ? null
+      : Number(payload.percent);
+  if (
+    !Number.isFinite(downloadedBytes) ||
+    downloadedBytes < 0 ||
+    downloadedBytes > 20_000_000_000 ||
+    (totalBytes !== null &&
+      (!Number.isFinite(totalBytes) ||
+        totalBytes <= 0 ||
+        totalBytes > 20_000_000_000)) ||
+    (percent !== null &&
+      (!Number.isFinite(percent) || percent < 0 || percent > 100))
+  ) {
+    return null;
+  }
+  return {
+    downloadedBytes,
+    totalBytes,
+    percent: percent === null ? null : Math.round(percent),
+    state: normalizedUpdateText(payload.state, 32),
+  };
+}
+
+function updateBytesLabel(value) {
+  const megabytes = Number(value || 0) / (1024 * 1024);
+  return `${megabytes >= 10 ? megabytes.toFixed(0) : megabytes.toFixed(1)} MB`;
+}
+
+function renderUpdateProgress() {
+  const progress = state.updateProgress;
+  const visible = state.updateStatus === "installing" && progress;
+  dom.updateProgress.hidden = !visible;
+  if (!visible) {
+    dom.updateProgressBar.removeAttribute("value");
+    dom.updateProgressDetail.textContent = "";
+    return;
+  }
+  if (progress.percent === null) {
+    dom.updateProgressBar.removeAttribute("value");
+  } else {
+    dom.updateProgressBar.value = progress.percent;
+  }
+  dom.updateProgressDetail.textContent = progress.totalBytes
+    ? `${updateBytesLabel(progress.downloadedBytes)} / ${updateBytesLabel(progress.totalBytes)} · ${progress.percent ?? 0}%`
+    : updateBytesLabel(progress.downloadedBytes);
 }
 
 function renderUpdateBanner() {
@@ -305,6 +389,7 @@ function renderUpdateBanner() {
   dom.updateNotes.textContent = "";
   dom.updateAction.hidden = false;
   dom.updateAction.disabled = false;
+  renderUpdateProgress();
 
   if (status === "checking") {
     dom.updateTitle.textContent = t("updateCheckingTitle");
@@ -356,6 +441,7 @@ async function checkForUpdates({ showProgress = false } = {}) {
   }
   state.updateStatus = "checking";
   state.updateInfo = null;
+  state.updateProgress = null;
   state.updateErrorStage = "check";
   state.updateShowChecking = showProgress;
   renderUpdateBanner();
@@ -372,21 +458,49 @@ async function checkForUpdates({ showProgress = false } = {}) {
   } finally {
     state.updateShowChecking = false;
     renderUpdateBanner();
+    if (state.updateStatus === "available") scheduleAutomaticUpdate();
   }
 }
 
-async function installUpdate() {
+function updateActivityInProgress() {
+  return (
+    lesson.isOpen ||
+    state.aiBusy ||
+    state.aiInstallBusy ||
+    state.view === "subscription"
+  );
+}
+
+function scheduleAutomaticUpdate(delay = AUTO_UPDATE_DELAY_MS) {
+  clearTimeout(state.updateAutoTimer);
+  if (state.updateStatus !== "available") return;
+  state.updateAutoTimer = setTimeout(() => {
+    state.updateAutoTimer = null;
+    void installUpdate({ automatic: true });
+  }, delay);
+}
+
+async function installUpdate({ automatic = false } = {}) {
   if (state.updateStatus !== "available" && !(
     state.updateStatus === "error" &&
     state.updateErrorStage === "install"
   )) {
     return;
   }
-  if (lesson.isOpen) {
-    showToast(t("updateLessonActive"));
+  if (updateActivityInProgress()) {
+    if (automatic) scheduleAutomaticUpdate(AUTO_UPDATE_RETRY_MS);
+    else showToast(t("updateLessonActive"));
     return;
   }
 
+  clearTimeout(state.updateAutoTimer);
+  state.updateAutoTimer = null;
+  state.updateProgress = {
+    downloadedBytes: 0,
+    totalBytes: null,
+    percent: null,
+    state: "starting",
+  };
   state.updateStatus = "installing";
   state.updateErrorStage = "install";
   renderUpdateBanner();
@@ -405,7 +519,7 @@ function handleUpdateAction() {
     checkForUpdates({ showProgress: true });
     return;
   }
-  installUpdate();
+  void installUpdate();
 }
 
 function openLesson(lessonOrder) {
@@ -447,11 +561,30 @@ function resetAuthForm() {
   dom.retryLink.disabled = false;
 }
 
+function resetAiSession() {
+  const requestId = state.aiRequestId;
+  state.aiLoaded = false;
+  state.aiStatus = null;
+  state.aiMessages = [];
+  state.aiBusy = false;
+  state.aiInstallBusy = false;
+  state.aiRequestId = null;
+  state.aiStreamText = "";
+  dom.aiInput.value = "";
+  dom.aiBody.replaceChildren();
+  dom.aiFooterStatus.textContent = "";
+  updateAiComposer();
+  if (requestId) {
+    void desktopBridge.localAiChatCancel(requestId).catch(() => {});
+  }
+}
+
 function showAuth({ expired = false } = {}) {
   if (lesson.isOpen) {
     lesson.close();
   }
   closeAi();
+  resetAiSession();
   closeRail();
   state.bootstrap = null;
   state.map = null;
@@ -1078,6 +1211,83 @@ function renderToday() {
   activityCard.append(activityHead, weekActivity(progress));
   main.append(activityCard);
 
+  const quickGrid = element("section", "today-quick-grid");
+  const completedLesson = [...lessons]
+    .reverse()
+    .find((item) => item.status === "done" && lessonAccessible(item));
+  const reviewCard = element("article", "today-quick-card card-panel");
+  reviewCard.append(
+    element("p", "eyebrow", t("todayReviewEyebrow")),
+    element(
+      "h3",
+      "",
+      completedLesson
+        ? t("reviewLessonTitle", { number: completedLesson.n })
+        : t("reviewCourseTitle"),
+    ),
+    element(
+      "p",
+      "muted",
+      completedLesson
+        ? `${String(completedLesson.zh || "课")} · ${String(completedLesson.py || "")} · ${pick(completedLesson.tr)}`
+        : t("reviewCourseBody"),
+    ),
+  );
+  const reviewAction = element(
+    "button",
+    "secondary-button",
+    completedLesson ? t("repeatLesson") : t("openCourseMap"),
+  );
+  reviewAction.type = "button";
+  reviewAction.addEventListener("click", () => {
+    if (completedLesson) openLesson(Number(completedLesson.n));
+    else routeTo("course");
+  });
+  reviewCard.append(reviewAction);
+
+  const aiCard = element("article", "today-quick-card today-ai-quick card-panel");
+  aiCard.append(
+    element("p", "eyebrow", t("todayAiEyebrow")),
+    element("h3", "", t("todayAiTitle")),
+    element("p", "muted", t("todayAiBody")),
+  );
+  const aiForm = element("form", "today-ai-form");
+  const aiInput = element("input");
+  aiInput.type = "text";
+  aiInput.maxLength = 1000;
+  aiInput.placeholder = t("todayAiPlaceholder");
+  aiInput.setAttribute("aria-label", t("todayAiPlaceholder"));
+  const aiAction = element("button", "primary-button", "↑");
+  aiAction.type = "submit";
+  aiAction.setAttribute("aria-label", t("openAi"));
+  aiForm.append(aiInput, aiAction);
+  aiForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const prompt = String(aiInput.value || "").trim();
+    if (prompt) dom.aiInput.value = prompt;
+    openAi();
+    updateAiComposer();
+    requestAnimationFrame(() => dom.aiInput.focus());
+  });
+  aiCard.append(aiForm);
+
+  const phraseCard = element("article", "today-quick-card today-phrase card-panel");
+  phraseCard.append(
+    element("p", "eyebrow", t("todayPhraseEyebrow")),
+    element("strong", "today-phrase-zh hanzi", String(current?.zh || "你好")),
+    element("span", "pinyin", String(current?.py || "nǐ hǎo")),
+    element("p", "translation", current ? pick(current.tr) : t("todayPhraseFallback")),
+  );
+  const phraseAction = element("button", "listen-button", t("listen"));
+  phraseAction.type = "button";
+  phraseAction.addEventListener("click", () =>
+    speakChinese(String(current?.zh || "你好"), phraseAction),
+  );
+  phraseCard.append(phraseAction);
+
+  quickGrid.append(reviewCard, aiCard, phraseCard);
+  main.append(quickGrid);
+
   const progressCard = element("section", "today-progress-card card-panel");
   progressCard.append(
     element("p", "eyebrow", t("courseProgress")),
@@ -1429,14 +1639,19 @@ function renderVoice() {
   stage.append(avatarWrap, stageCopy);
 
   const microphone = element("aside", "voice-microphone-state");
-  const micButton = element("button", "voice-mic-button", "声");
+  const micButton = element("button", "voice-mic-button", "▶");
   micButton.type = "button";
-  micButton.disabled = true;
   micButton.setAttribute("aria-describedby", "voice-mic-note");
+  micButton.disabled = !current;
+  if (current) {
+    micButton.addEventListener("click", () =>
+      speakChinese(String(current.zh || "课"), micButton),
+    );
+  }
   const micCopy = element("div");
   micCopy.append(
-    element("h3", "", t("microphoneComingTitle")),
-    element("p", "muted", t("microphoneComingBody")),
+    element("h3", "", t("lessonAudioTitle")),
+    element("p", "muted", t("lessonAudioBody")),
   );
   micCopy.lastElementChild.id = "voice-mic-note";
   microphone.append(micButton, micCopy);
@@ -1510,20 +1725,44 @@ function extractVocabulary(payload) {
     .filter(Boolean);
 }
 
-async function speakVocabulary(text, button) {
+function browserSpeakChinese(text) {
+  if (
+    typeof globalThis.SpeechSynthesisUtterance !== "function" ||
+    !globalThis.speechSynthesis
+  ) {
+    return Promise.resolve(false);
+  }
+  return new Promise((resolve) => {
+    const utterance = new SpeechSynthesisUtterance(String(text || "").trim());
+    utterance.lang = "zh-CN";
+    utterance.rate = 0.86;
+    utterance.onend = () => resolve(true);
+    utterance.onerror = () => resolve(false);
+    globalThis.speechSynthesis.cancel();
+    globalThis.speechSynthesis.speak(utterance);
+  });
+}
+
+async function speakChinese(text, button) {
   button.disabled = true;
   try {
     const result = await desktopBridge.ttsSpeak(text);
-    if (result?.ok !== true) showToast(t("audioUnavailable"));
+    if (result?.ok !== true && !(await browserSpeakChinese(text))) {
+      showToast(t("audioUnavailable"));
+    }
   } catch (error) {
     if (isSessionError(error)) {
       showAuth({ expired: true });
       return;
     }
-    showToast(t("audioUnavailable"));
+    if (!(await browserSpeakChinese(text))) showToast(t("audioUnavailable"));
   } finally {
     button.disabled = false;
   }
+}
+
+async function speakVocabulary(text, button) {
+  await speakChinese(text, button);
 }
 
 function renderVocabularyContent(words, lessonItem) {
@@ -1885,10 +2124,36 @@ function renderProfile() {
   accessAction.addEventListener("click", () => routeTo("subscription"));
   access.append(accessAction);
 
+  const updateCard = element("section", "profile-update card-panel");
+  updateCard.append(
+    element("p", "eyebrow", t("desktopApp")),
+    element(
+      "h3",
+      "",
+      state.appVersion
+        ? t("currentAppVersion", { version: state.appVersion })
+        : t("desktopApp"),
+    ),
+    element("p", "muted", t("automaticUpdatesBody")),
+  );
+  const updateCheck = element(
+    "button",
+    "secondary-button",
+    t("checkUpdatesNow"),
+  );
+  updateCheck.type = "button";
+  updateCheck.disabled = ["checking", "installing", "ready"].includes(
+    state.updateStatus,
+  );
+  updateCheck.addEventListener("click", () => {
+    void checkForUpdates({ showProgress: true });
+  });
+  updateCard.append(updateCheck);
+
   const logout = element("button", "secondary-button", t("logout"));
   logout.type = "button";
   logout.addEventListener("click", () => logoutDesktop(logout));
-  profileSide.append(settings, access, logout);
+  profileSide.append(settings, access, updateCard, logout);
   layout.append(profileMain, profileSide);
   dom.content.append(layout);
 }
@@ -2034,39 +2299,449 @@ function toggleAi() {
 
 async function loadAiStatus() {
   state.aiLoaded = true;
-  const panel = element("section", "ai-pack-state");
-  panel.append(element("p", "", t("aiChecking")));
-  dom.aiBody.replaceChildren(panel);
+  renderAiLoading();
   try {
     const result = await desktopBridge.localAiModelStatus();
-    panel.replaceChildren();
-    if (result?.installed === true) {
-      panel.append(
-        element("h3", "", t("aiModelFoundTitle")),
-        element("p", "", t("aiModelFoundBody")),
-        element("span", "pack-status", t("aiModelReady")),
-      );
-    } else if (result?.state === "missing") {
-      panel.append(
-        element("h3", "", t("aiMissingTitle")),
-        element("p", "", t("aiMissingBody")),
-        element("span", "pack-status", t("aiNotReady")),
-      );
-    } else {
-      state.aiLoaded = false;
-      panel.append(
-        element("h3", "", t("aiUnavailableTitle")),
-        element("p", "", t("aiUnavailableBody")),
-        element("span", "pack-status", t("aiNotReady")),
-      );
-    }
-  } catch {
+    state.aiStatus = normalizeAiStatus(result);
+    state.aiInstallBusy = aiInstallIsActive(state.aiStatus);
+    renderAiPanel();
+  } catch (error) {
     state.aiLoaded = false;
-    panel.replaceChildren(
-      element("h3", "", t("aiUnavailableTitle")),
-      element("p", "", t("aiUnavailableBody")),
-      element("span", "pack-status", t("aiNotReady")),
+    renderAiError(error?.code || "local_ai_state_unavailable");
+  }
+}
+
+function normalizeAiStatus(value) {
+  const status = value && typeof value === "object" ? value : {};
+  const expected = Math.max(0, Number(status.expectedSizeBytes) || 0);
+  return {
+    modelId: String(status.modelId || "qwen3-4b-q4-k-m"),
+    installed: status.installed === true,
+    sizeBytes: Math.max(0, Number(status.sizeBytes) || 0),
+    expectedSizeBytes: expected,
+    downloadedBytes: Math.min(
+      expected || Number.MAX_SAFE_INTEGER,
+      Math.max(0, Number(status.downloadedBytes) || 0),
+    ),
+    state: String(status.state || "unavailable"),
+    runtimeAvailable: status.runtimeAvailable === true,
+    runtimeState: String(status.runtimeState || "stopped"),
+  };
+}
+
+function aiInstallIsActive(status) {
+  return ["starting", "downloading", "verifying"].includes(status?.state);
+}
+
+function aiIsReady() {
+  return Boolean(
+    state.aiStatus?.installed && state.aiStatus?.runtimeAvailable,
+  );
+}
+
+function formatAiBytes(value) {
+  const bytes = Math.max(0, Number(value) || 0);
+  if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)} GB`;
+  if (bytes >= 1024 ** 2) return `${Math.round(bytes / 1024 ** 2)} MB`;
+  return `${Math.round(bytes / 1024)} KB`;
+}
+
+function renderAiLoading() {
+  const panel = element("section", "ai-pack-state");
+  panel.append(element("div", "spinner"), element("p", "", t("aiChecking")));
+  dom.aiBody.replaceChildren(panel);
+  dom.aiFooterStatus.textContent = t("aiChecking");
+  updateAiComposer();
+}
+
+function renderAiError(code) {
+  const panel = element("section", "ai-pack-state is-error");
+  panel.append(
+    element("h3", "", t("aiUnavailableTitle")),
+    element("p", "", t(code) === code ? t("aiUnavailableBody") : t(code)),
+  );
+  const retry = element("button", "secondary-button", t("retry"));
+  retry.type = "button";
+  retry.addEventListener("click", loadAiStatus);
+  panel.append(retry);
+  dom.aiBody.replaceChildren(panel);
+  dom.aiFooterStatus.textContent = t("aiUnavailableBody");
+  updateAiComposer();
+}
+
+function renderAiPanel() {
+  if (aiIsReady()) {
+    renderAiChat();
+  } else {
+    renderAiInstaller();
+  }
+  updateAiComposer();
+}
+
+function renderAiInstaller() {
+  const status = state.aiStatus || normalizeAiStatus(null);
+  const panel = element("section", "ai-pack-state");
+  const badge = element("span", "pack-status");
+  const title = status.installed
+    ? t("aiRuntimeMissingTitle")
+    : status.state === "paused"
+      ? t("aiPausedTitle")
+      : status.state === "invalid"
+        ? t("aiInvalidTitle")
+        : t("aiMissingTitle");
+  const body = status.installed
+    ? t("aiRuntimeMissingBody")
+    : status.state === "paused"
+      ? t("aiPausedBody")
+      : status.state === "invalid"
+        ? t("aiInvalidBody")
+        : t("aiMissingBody");
+  badge.textContent = aiInstallIsActive(status)
+    ? t(`aiState_${status.state}`)
+    : t("aiNotReady");
+  panel.append(
+    element("p", "eyebrow", t("aiPackEyebrow")),
+    element("h3", "", title),
+    element("p", "", body),
+    element("p", "ai-pack-meta", t("aiPackMeta")),
+  );
+
+  const expected = status.expectedSizeBytes || 2_497_280_256;
+  if (status.downloadedBytes > 0 || aiInstallIsActive(status)) {
+    const progress = element("progress", "ai-pack-progress");
+    progress.max = expected;
+    progress.value = Math.min(expected, status.downloadedBytes);
+    progress.setAttribute("aria-label", t("aiDownloadProgress"));
+    panel.append(
+      progress,
+      element(
+        "small",
+        "ai-progress-copy",
+        `${formatAiBytes(status.downloadedBytes)} / ${formatAiBytes(expected)}`,
+      ),
     );
+  }
+
+  const actions = element("div", "ai-pack-actions");
+  if (aiInstallIsActive(status)) {
+    const cancel = element("button", "secondary-button", t("aiCancelDownload"));
+    cancel.type = "button";
+    cancel.addEventListener("click", cancelAiInstall);
+    actions.append(cancel);
+  } else if (!status.installed) {
+    const install = element(
+      "button",
+      "primary-button",
+      status.state === "paused" ? t("aiResumeDownload") : t("aiInstall"),
+    );
+    install.type = "button";
+    install.disabled = !navigator.onLine;
+    install.addEventListener("click", startAiInstall);
+    actions.append(install);
+  }
+  if (status.installed || status.state === "invalid") {
+    const remove = element("button", "text-button danger-text", t("aiRemove"));
+    remove.type = "button";
+    remove.addEventListener("click", removeAiPack);
+    actions.append(remove);
+  }
+  panel.append(actions, badge);
+  dom.aiBody.replaceChildren(panel);
+  dom.aiFooterStatus.textContent = navigator.onLine
+    ? t("aiInstallNote")
+    : t("aiInstallNeedsInternet");
+}
+
+async function startAiInstall() {
+  if (state.aiInstallBusy || !navigator.onLine) return;
+  state.aiInstallBusy = true;
+  if (state.aiStatus) state.aiStatus.state = "starting";
+  renderAiInstaller();
+  try {
+    const result = await desktopBridge.localAiInstallStart();
+    state.aiStatus = normalizeAiStatus(result);
+    state.aiInstallBusy = true;
+    renderAiInstaller();
+  } catch (error) {
+    state.aiInstallBusy = false;
+    renderAiError(error?.code || "local_ai_install_failed");
+  }
+}
+
+async function cancelAiInstall() {
+  if (!state.aiInstallBusy) return;
+  try {
+    const result = await desktopBridge.localAiInstallCancel();
+    state.aiStatus = normalizeAiStatus(result);
+    state.aiStatus.state = "paused";
+    state.aiInstallBusy = false;
+    renderAiInstaller();
+  } catch (error) {
+    renderAiError(error?.code || "local_ai_install_cancelled");
+  }
+}
+
+async function removeAiPack() {
+  if (!globalThis.confirm(t("aiRemoveConfirm"))) return;
+  state.aiMessages = [];
+  state.aiBusy = false;
+  state.aiRequestId = null;
+  renderAiLoading();
+  try {
+    const result = await desktopBridge.localAiPackRemove();
+    state.aiStatus = normalizeAiStatus(result);
+    state.aiInstallBusy = false;
+    renderAiInstaller();
+  } catch (error) {
+    renderAiError(error?.code || "local_ai_remove_failed");
+  }
+}
+
+function renderAiChat() {
+  const wrap = element("div", "ai-chat-shell");
+  const ready = element("section", "ai-ready-card");
+  ready.append(
+    element("span", "ai-ready-dot"),
+    element("strong", "", t("aiReadyTitle")),
+    element("small", "", t("aiReadyBody")),
+  );
+  wrap.append(ready);
+
+  if (state.aiMessages.length === 0) {
+    const intro = element("section", "ai-chat-intro");
+    intro.append(
+      element("h3", "", t("aiWelcomeTitle")),
+      element("p", "", t("aiWelcomeBody")),
+    );
+    const suggestions = element("div", "ai-suggestions");
+    ["aiSuggestionExplain", "aiSuggestionExamples", "aiSuggestionQuiz"].forEach(
+      (key) => {
+        const button = element("button", "ai-suggestion", t(key));
+        button.type = "button";
+        button.addEventListener("click", () => {
+          dom.aiInput.value = t(`${key}Prompt`);
+          updateAiComposer();
+          dom.aiInput.focus();
+        });
+        suggestions.append(button);
+      },
+    );
+    intro.append(suggestions);
+    wrap.append(intro);
+  }
+
+  const messages = element("div", "ai-message-list");
+  messages.setAttribute("aria-live", "polite");
+  for (const message of state.aiMessages) {
+    const bubble = element("article", `ai-message is-${message.role}`);
+    bubble.append(
+      element(
+        "small",
+        "ai-message-author",
+        message.role === "user" ? t("aiYou") : t("aiTutor"),
+      ),
+      element(
+        "p",
+        message.pending ? "ai-message-text is-thinking" : "ai-message-text",
+        message.content || t("aiThinking"),
+      ),
+    );
+    messages.append(bubble);
+  }
+  wrap.append(messages);
+
+  const manage = element("details", "ai-pack-manage");
+  manage.append(element("summary", "", t("aiPackManage")));
+  const remove = element("button", "text-button danger-text", t("aiRemove"));
+  remove.type = "button";
+  remove.addEventListener("click", removeAiPack);
+  manage.append(
+    element("p", "", t("aiPrivacyNote")),
+    remove,
+  );
+  wrap.append(manage);
+  dom.aiBody.replaceChildren(wrap);
+  dom.aiFooterStatus.textContent = state.aiBusy
+    ? t("aiGenerating")
+    : t("aiOfflineReady");
+  requestAnimationFrame(() => {
+    dom.aiBody.scrollTop = dom.aiBody.scrollHeight;
+  });
+}
+
+function updateAiComposer() {
+  const ready = aiIsReady();
+  dom.aiInput.disabled = !ready || state.aiBusy;
+  dom.aiInput.placeholder = ready
+    ? t("aiInputPlaceholder")
+    : t("aiInputDisabledPlaceholder");
+  dom.aiSend.textContent = state.aiBusy ? t("aiStop") : t("aiSend");
+  dom.aiSend.classList.toggle("is-stop", state.aiBusy);
+  dom.aiSend.disabled = state.aiBusy
+    ? !state.aiRequestId
+    : !ready || !String(dom.aiInput.value || "").trim();
+}
+
+function newAiRequestId() {
+  if (typeof globalThis.crypto?.randomUUID === "function") {
+    return `desktop-ai-${globalThis.crypto.randomUUID()}`;
+  }
+  const bytes = new Uint8Array(16);
+  globalThis.crypto.getRandomValues(bytes);
+  return `desktop-ai-${[...bytes].map((value) => value.toString(16).padStart(2, "0")).join("")}`;
+}
+
+function localAiPromptWithLessonContext(question) {
+  const bounded = (value, limit = 240) =>
+    [...String(value || "").trim()].slice(0, limit).join("");
+  const current = currentLesson();
+  const level = bounded(state.map?.label || levelLabel(state.map?.level), 64);
+  const context = current
+    ? [
+        `Current course: ${level}`,
+        `Current lesson: ${Number(current.n)}.`,
+        `Chinese: ${bounded(current.zh)}`,
+        `Pinyin: ${bounded(current.py)}`,
+        `Translation: ${bounded(pick(current.tr))}`,
+      ].join("\n")
+    : `Current course: ${level}`;
+  return [
+    "Use this verified lesson context when it is relevant.",
+    context,
+    `Learner interface language: ${getLanguage()}.`,
+    "For Chinese examples, include hanzi, pinyin, and a translation.",
+    "Learner question:",
+    bounded(question, 2800),
+  ].join("\n");
+}
+
+async function sendAiMessage() {
+  if (state.aiBusy) {
+    if (state.aiRequestId) {
+      try {
+        await desktopBridge.localAiChatCancel(state.aiRequestId);
+        dom.aiFooterStatus.textContent = t("aiCancelling");
+      } catch (error) {
+        dom.aiFooterStatus.textContent = t(error?.code || "requestFailed");
+      }
+    }
+    return;
+  }
+  if (!aiIsReady()) return;
+  const prompt = String(dom.aiInput.value || "").trim();
+  if (!prompt) return;
+  const history = state.aiMessages
+    .filter((message) => !message.pending && !message.excludeHistory)
+    .slice(-12)
+    .map(({ role, content }) => ({ role, content }));
+  const requestId = newAiRequestId();
+  state.aiMessages.push(
+    { role: "user", content: prompt },
+    { role: "assistant", content: "", pending: true, requestId },
+  );
+  state.aiBusy = true;
+  state.aiRequestId = requestId;
+  state.aiStreamText = "";
+  dom.aiInput.value = "";
+  renderAiChat();
+  updateAiComposer();
+  try {
+    const result = await desktopBridge.localAiChat({
+      requestId,
+      prompt: localAiPromptWithLessonContext(prompt),
+      language: getLanguage(),
+      history,
+      maxTokens: 384,
+    });
+    const pending = state.aiMessages.find(
+      (message) => message.requestId === requestId,
+    );
+    if (pending) {
+      pending.content = String(result?.text || state.aiStreamText || "").trim();
+      pending.pending = false;
+    }
+  } catch (error) {
+    const pending = state.aiMessages.find(
+      (message) => message.requestId === requestId,
+    );
+    if (pending) {
+      pending.content =
+        error?.code === "local_ai_chat_cancelled"
+          ? t("aiCancelled")
+          : t(error?.code || "local_ai_generation_failed");
+      pending.pending = false;
+      pending.excludeHistory = true;
+    }
+  } finally {
+    if (state.aiRequestId === requestId) {
+      state.aiBusy = false;
+      state.aiRequestId = null;
+      state.aiStreamText = "";
+    }
+    renderAiChat();
+    updateAiComposer();
+    dom.aiInput.focus();
+  }
+}
+
+async function bindLocalAiEvents() {
+  if (state.aiListenersReady) return;
+  state.aiListenersReady = true;
+  const registrations = [
+    ["local-ai://pack-progress", (payload) => {
+      if (!payload || typeof payload !== "object") return;
+      const current = state.aiStatus || normalizeAiStatus(null);
+      state.aiStatus = normalizeAiStatus({ ...current, ...payload });
+      state.aiInstallBusy = aiInstallIsActive(state.aiStatus);
+      if (payload.state === "ready") {
+        void loadAiStatus();
+      } else if (state.aiOpen) {
+        renderAiInstaller();
+        updateAiComposer();
+      }
+    }],
+    ["local-ai://runtime-status", (payload) => {
+      if (!state.aiStatus || !payload?.state) return;
+      state.aiStatus.runtimeState = String(payload.state);
+      if (state.aiOpen && aiIsReady()) renderAiChat();
+    }],
+    ["local-ai://chat-delta", (payload) => {
+      if (!payload || payload.requestId !== state.aiRequestId) return;
+      state.aiStreamText += String(payload.delta || "");
+      const pending = state.aiMessages.find(
+        (message) => message.requestId === payload.requestId,
+      );
+      if (pending) pending.content = state.aiStreamText;
+      if (state.aiOpen) renderAiChat();
+    }],
+    ["local-ai://error", (payload) => {
+      if (!state.aiOpen || !payload?.error) return;
+      dom.aiFooterStatus.textContent = t(String(payload.error));
+    }],
+  ];
+  for (const [eventName, handler] of registrations) {
+    try {
+      state.aiUnlisten.push(await listenLocalAi(eventName, handler));
+    } catch {
+      // Native commands still return final state/result if event delivery fails.
+    }
+  }
+}
+
+async function bindDesktopUpdateEvents() {
+  if (state.updateUnlisten) return;
+  try {
+    state.updateUnlisten = await listenDesktopUpdate(
+      "desktop-update://progress",
+      (payload) => {
+        const progress = normalizeUpdateProgress(payload);
+        if (!progress || state.updateStatus !== "installing") return;
+        state.updateProgress = progress;
+        renderUpdateBanner();
+      },
+    );
+  } catch {
+    // Update install still returns a final success/error when event delivery is unavailable.
   }
 }
 
@@ -2104,8 +2779,37 @@ function bindEvents() {
   dom.railScrim.addEventListener("click", closeRail);
   dom.aiLauncher.addEventListener("click", toggleAi);
   dom.closeAi.addEventListener("click", closeAi);
+  dom.aiInput.addEventListener("input", updateAiComposer);
+  dom.aiInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      void sendAiMessage();
+    }
+  });
+  dom.aiSend.addEventListener("click", () => void sendAiMessage());
+  void bindLocalAiEvents();
+  void bindDesktopUpdateEvents();
   window.addEventListener("online", updateNetworkState);
   window.addEventListener("offline", updateNetworkState);
+  window.addEventListener("beforeunload", () => {
+    clearTimeout(state.updateAutoTimer);
+    state.updateAutoTimer = null;
+    if (state.updateUnlisten) {
+      try {
+        state.updateUnlisten();
+      } catch {
+        // The window is closing; listener cleanup is best effort.
+      }
+      state.updateUnlisten = null;
+    }
+    for (const unlisten of state.aiUnlisten.splice(0)) {
+      try {
+        unlisten();
+      } catch {
+        // The window is closing; listener cleanup is best effort.
+      }
+    }
+  });
   window.addEventListener("keydown", (event) => {
     const target = event.target;
     const isTyping =
@@ -2174,6 +2878,7 @@ async function boot() {
 
   try {
     const appInfo = await desktopBridge.appInfo();
+    state.appVersion = String(appInfo?.version || "");
     dom.appVersion.textContent = appInfo?.version
       ? `v${String(appInfo.version)}`
       : "";

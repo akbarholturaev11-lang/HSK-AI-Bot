@@ -17,6 +17,11 @@ const COMMANDS = Object.freeze({
   subscriptionSubmit: "desktop_subscription_submit",
   ttsSpeak: "desktop_tts_speak",
   localAiModelStatus: "local_ai_model_status",
+  localAiInstallStart: "local_ai_install_start",
+  localAiInstallCancel: "local_ai_install_cancel",
+  localAiPackRemove: "local_ai_pack_remove",
+  localAiChat: "local_ai_chat",
+  localAiChatCancel: "local_ai_chat_cancel",
   updateCheck: "desktop_update_check",
   updateInstall: "desktop_update_install",
 });
@@ -36,6 +41,17 @@ const MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024;
 const MAX_SCREENSHOT_BASE64_CHARS = Math.ceil(MAX_SCREENSHOT_BYTES / 3) * 4;
 const EVENT_ID_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._:-]{15,79}$/;
 const CHECKOUT_ATTEMPT_PATTERN = /^[A-Za-z0-9_-]{16,80}$/;
+const LOCAL_AI_EVENTS = new Set([
+  "local-ai://pack-progress",
+  "local-ai://runtime-status",
+  "local-ai://chat-delta",
+  "local-ai://chat-finished",
+  "local-ai://error",
+]);
+const DESKTOP_UPDATE_EVENTS = new Set(["desktop-update://progress"]);
+const LOCAL_AI_ROLES = new Set(["user", "assistant"]);
+const MAX_LOCAL_AI_PROMPT_CHARS = 4_000;
+const MAX_LOCAL_AI_HISTORY_MESSAGES = 12;
 
 function explicitPreviewEnabled() {
   const location = globalThis.location;
@@ -60,7 +76,7 @@ function stableErrorCode(error) {
         : "";
   const normalized = raw.toLowerCase();
   const stableMatch = normalized.match(
-    /\b(desktop|course|auth|link)_[a-z0-9_]{2,72}\b/,
+    /\b(desktop|course|auth|link|local_ai)_[a-z0-9_]{2,72}\b/,
   );
   if (stableMatch) {
     return stableMatch[0];
@@ -233,6 +249,93 @@ function assertCompletion(eventId, mistakes) {
   }
 }
 
+function assertLocalAiRequest(request) {
+  if (!request || typeof request !== "object" || Array.isArray(request)) {
+    throw new DesktopBridgeError("local_ai_request_invalid");
+  }
+  const requestId = String(request.requestId || "").trim();
+  const prompt = String(request.prompt || "").trim();
+  const language = assertLanguage(request.language);
+  const history = Array.isArray(request.history) ? request.history : [];
+  const maxTokens = Number(request.maxTokens ?? 384);
+  if (
+    !EVENT_ID_PATTERN.test(requestId) ||
+    prompt.length === 0 ||
+    [...prompt].length > MAX_LOCAL_AI_PROMPT_CHARS ||
+    new TextEncoder().encode(prompt).length > 16 * 1024 ||
+    history.length > MAX_LOCAL_AI_HISTORY_MESSAGES ||
+    !Number.isInteger(maxTokens) ||
+    maxTokens < 1 ||
+    maxTokens > 512
+  ) {
+    throw new DesktopBridgeError("local_ai_request_invalid");
+  }
+  let historyBytes = 0;
+  const normalizedHistory = history.map((message) => {
+    const role = String(message?.role || "");
+    const content = String(message?.content || "").trim();
+    const encodedLength = new TextEncoder().encode(content).length;
+    if (
+      !LOCAL_AI_ROLES.has(role) ||
+      content.length === 0 ||
+      [...content].length > 8_000 ||
+      encodedLength > 16 * 1024
+    ) {
+      throw new DesktopBridgeError("local_ai_request_invalid");
+    }
+    historyBytes += encodedLength;
+    return { role, content };
+  });
+  if (historyBytes > 64 * 1024) {
+    throw new DesktopBridgeError("local_ai_request_invalid");
+  }
+  return {
+    requestId,
+    prompt,
+    language,
+    history: normalizedHistory,
+    maxTokens,
+  };
+}
+
+function assertLocalAiRequestId(value) {
+  const requestId = String(value || "").trim();
+  if (!EVENT_ID_PATTERN.test(requestId)) {
+    throw new DesktopBridgeError("local_ai_request_invalid");
+  }
+  return requestId;
+}
+
+export async function listenLocalAi(eventName, handler) {
+  if (!LOCAL_AI_EVENTS.has(eventName) || typeof handler !== "function") {
+    throw new DesktopBridgeError("desktop_operation_not_allowed");
+  }
+  const listen = globalThis.__TAURI__?.event?.listen;
+  if (typeof listen !== "function") {
+    return () => {};
+  }
+  try {
+    return await listen(eventName, (event) => handler(event?.payload));
+  } catch {
+    throw new DesktopBridgeError("local_ai_event_unavailable");
+  }
+}
+
+export async function listenDesktopUpdate(eventName, handler) {
+  if (!DESKTOP_UPDATE_EVENTS.has(eventName) || typeof handler !== "function") {
+    throw new DesktopBridgeError("desktop_operation_not_allowed");
+  }
+  const listen = globalThis.__TAURI__?.event?.listen;
+  if (typeof listen !== "function") {
+    return () => {};
+  }
+  try {
+    return await listen(eventName, (event) => handler(event?.payload));
+  } catch {
+    throw new DesktopBridgeError("desktop_update_event_unavailable");
+  }
+}
+
 async function invokeCommand(command, args = {}) {
   if (!ALLOWED_COMMANDS.has(command)) {
     throw new DesktopBridgeError("desktop_operation_not_allowed");
@@ -384,6 +487,30 @@ export const desktopBridge = Object.freeze({
 
   localAiModelStatus() {
     return invokeCommand(COMMANDS.localAiModelStatus);
+  },
+
+  localAiInstallStart() {
+    return invokeCommand(COMMANDS.localAiInstallStart);
+  },
+
+  localAiInstallCancel() {
+    return invokeCommand(COMMANDS.localAiInstallCancel);
+  },
+
+  localAiPackRemove() {
+    return invokeCommand(COMMANDS.localAiPackRemove);
+  },
+
+  localAiChat(request) {
+    return invokeCommand(COMMANDS.localAiChat, {
+      request: assertLocalAiRequest(request),
+    });
+  },
+
+  localAiChatCancel(requestId) {
+    return invokeCommand(COMMANDS.localAiChatCancel, {
+      requestId: assertLocalAiRequestId(requestId),
+    });
   },
 
   updateCheck() {

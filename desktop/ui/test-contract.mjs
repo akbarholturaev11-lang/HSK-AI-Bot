@@ -34,6 +34,11 @@ const expectedCommands = [
   "desktop_subscription_submit",
   "desktop_tts_speak",
   "local_ai_model_status",
+  "local_ai_install_start",
+  "local_ai_install_cancel",
+  "local_ai_pack_remove",
+  "local_ai_chat",
+  "local_ai_chat_cancel",
   "desktop_update_check",
   "desktop_update_install",
 ];
@@ -46,6 +51,7 @@ async function source(relativePath) {
 
 test("desktop entry is strict-CSP compatible", async () => {
   const html = await source("desktop/ui/index.html");
+  const workspaceCss = await source("desktop/ui/css/workspace.css");
   const javascript = await Promise.all(
     [
       "app.js",
@@ -62,6 +68,7 @@ test("desktop entry is strict-CSP compatible", async () => {
   assert.doesNotMatch(html, /<script(?![^>]*\ssrc=)[^>]*>/i);
   assert.match(html, /src="\.\/assets\/hsk-ai-avatar\.webp"/);
   assert.doesNotMatch(html, /class="(?:brand-mark|panda-badge|panda-mini)"[^>]*>[汉阿]</);
+  assert.match(workspaceCss, /\.rail-action \.rail-icon[\s\S]*fill: none;[\s\S]*stroke: currentColor;/);
   for (const content of javascript) {
     assert.doesNotMatch(content, /\.style\./);
     assert.doesNotMatch(content, /\b(fetch|XMLHttpRequest|WebSocket)\b/);
@@ -145,12 +152,35 @@ test("preview responses follow production response casing", async () => {
   assert.equal(pending.pending_payment.plan_type, "1_month");
 });
 
-test("updater stays explicit and lesson-aware", async () => {
+test("updater auto-installs only while the learning workspace is idle", async () => {
   const app = await source("desktop/ui/js/app.js");
+  const bridge = await source("desktop/ui/js/bridge.js");
+  const rust = await source("desktop/src-tauri/src/lib.rs");
   assert.match(app, /void checkForUpdates\(\)/);
-  assert.match(app, /if \(lesson\.isOpen\)/);
+  assert.match(app, /scheduleAutomaticUpdate\(\)/);
+  assert.match(app, /lesson\.isOpen[\s\S]*state\.aiBusy[\s\S]*state\.aiInstallBusy/);
   assert.match(app, /desktopBridge\.updateInstall\(\)/);
+  assert.match(app, /desktop-update:\/\/progress/);
+  assert.match(bridge, /listenDesktopUpdate/);
+  assert.match(rust, /download_and_install[\s\S]*emit_update_progress/);
   assert.doesNotMatch(app, /setInterval\([^)]*installUpdate/);
+});
+
+test("local AI is explicit, bounded and never replaced with preview answers", async () => {
+  const bridge = await source("desktop/ui/js/bridge.js");
+  const app = await source("desktop/ui/js/app.js");
+  const preview = await source("desktop/ui/js/preview-mock.js");
+  assert.match(bridge, /MAX_LOCAL_AI_PROMPT_CHARS = 4_000/);
+  assert.match(bridge, /MAX_LOCAL_AI_HISTORY_MESSAGES = 12/);
+  assert.match(app, /desktopBridge\.localAiInstallStart\(\)/);
+  assert.match(app, /desktopBridge\.localAiChat\(/);
+  assert.match(app, /local-ai:\/\/chat-delta/);
+  assert.match(app, /function resetAiSession\(\)/);
+  assert.match(app, /state\.aiMessages = \[\];/);
+  assert.match(app, /function showAuth[\s\S]{0,350}resetAiSession\(\)/);
+  assert.match(preview, /case "local_ai_chat":/);
+  assert.match(preview, /throw new Error\("local_ai_runtime_missing"\)/);
+  assert.doesNotMatch(preview, /case "local_ai_chat":[\s\S]{0,300}text:/);
 });
 
 test("renderer covers every checked-in Course v3 card type", async () => {

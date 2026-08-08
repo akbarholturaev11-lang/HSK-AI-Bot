@@ -139,7 +139,7 @@ function bootstrap() {
     device: {
       id: "preview-device",
       platform: "preview",
-      app_version: "1.1.0-preview",
+      app_version: "1.3.0-preview",
     },
     user: {
       name: "Akbar",
@@ -348,7 +348,7 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_app_info":
       return {
         productName: "HSK AI",
-        version: "1.1.0-preview",
+        version: "1.3.0-preview",
         platform: "preview",
       };
     case "desktop_auth_status":
@@ -425,13 +425,53 @@ export async function previewInvoke(command, args = {}) {
         modelId: "qwen3-4b-q4-k-m",
         installed: false,
         sizeBytes: null,
+        expectedSizeBytes: 2_497_280_256,
+        downloadedBytes: 0,
         state: "missing",
+        runtimeAvailable: false,
+        runtimeState: "stopped",
       };
+    case "local_ai_install_start":
+      return {
+        modelId: "qwen3-4b-q4-k-m",
+        installed: false,
+        sizeBytes: null,
+        expectedSizeBytes: 2_497_280_256,
+        downloadedBytes: 0,
+        state: "starting",
+        runtimeAvailable: false,
+        runtimeState: "stopped",
+      };
+    case "local_ai_install_cancel":
+      return {
+        modelId: "qwen3-4b-q4-k-m",
+        installed: false,
+        sizeBytes: null,
+        expectedSizeBytes: 2_497_280_256,
+        downloadedBytes: 0,
+        state: "paused",
+        runtimeAvailable: false,
+        runtimeState: "stopped",
+      };
+    case "local_ai_pack_remove":
+      return {
+        modelId: "qwen3-4b-q4-k-m",
+        installed: false,
+        sizeBytes: null,
+        expectedSizeBytes: 2_497_280_256,
+        downloadedBytes: 0,
+        state: "missing",
+        runtimeAvailable: false,
+        runtimeState: "stopped",
+      };
+    case "local_ai_chat":
+    case "local_ai_chat_cancel":
+      throw new Error("local_ai_runtime_missing");
     case "desktop_update_check":
       return {
         available: query.get("update") === "1",
-        currentVersion: "1.1.0-preview",
-        version: query.get("update") === "1" ? "1.2.0-preview" : undefined,
+        currentVersion: "1.3.0-preview",
+        version: query.get("update") === "1" ? "1.3.1-preview" : undefined,
         notes:
           query.get("update") === "1"
             ? "Desktop kurs oqimi va barqarorlik yangilandi."

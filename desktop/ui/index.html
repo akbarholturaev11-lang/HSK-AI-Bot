@@ -198,6 +198,10 @@
               <strong id="update-title"></strong>
               <p id="update-message"></p>
               <small id="update-notes" hidden></small>
+              <div class="update-progress" id="update-progress" hidden>
+                <progress id="update-progress-bar" max="100"></progress>
+                <small id="update-progress-detail"></small>
+              </div>
             </div>
             <button class="update-action" id="update-action" type="button"></button>
           </section>
@@ -245,8 +249,9 @@
           <div class="drawer-body" id="ai-body"></div>
           <footer class="drawer-footer">
             <label class="sr-only" for="ai-input">AI uchun savol</label>
-            <textarea id="ai-input" rows="2" disabled></textarea>
+            <textarea id="ai-input" rows="2" maxlength="2800" disabled></textarea>
             <button class="primary-button" id="ai-send" type="button" disabled>Yuborish</button>
+            <p class="ai-footer-status" id="ai-footer-status" role="status" aria-live="polite"></p>
           </footer>
         </aside>
       </div>

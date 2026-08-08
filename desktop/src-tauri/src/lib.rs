@@ -1,3 +1,5 @@
+mod local_ai;
+
 use base64::{
     engine::general_purpose::{STANDARD, URL_SAFE_NO_PAD},
     Engine as _,
@@ -6,17 +8,25 @@ use rand::{rngs::OsRng, RngCore};
 use reqwest::{Client, StatusCode};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Value};
-use std::{fs, io::ErrorKind, sync::Mutex, time::Duration};
-use tauri::Manager;
+use std::{
+    sync::{
+        atomic::{AtomicBool, AtomicU64, Ordering},
+        Arc, Mutex,
+    },
+    time::Duration,
+};
+use tauri::{Emitter, Manager};
 use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_updater::{Update, UpdaterExt};
+
+use local_ai::{
+    LocalAiChatRequest, LocalAiChatResult, LocalAiManager, LocalAiPackStatus, MODEL_ID,
+};
 
 const API_ORIGIN: &str = "https://telegram-chinese-bot-production.up.railway.app";
 const KEYRING_SERVICE: &str = "com.pomp.hskai";
 const KEYRING_REFRESH_ACCOUNT: &str = "desktop-refresh-token";
 const KEYRING_INSTALLATION_ACCOUNT: &str = "desktop-installation-key";
-const LOCAL_AI_MODEL_ID: &str = "qwen3-4b-q4-k-m";
-const LOCAL_AI_MODEL_FILE: &str = "qwen3-4b-q4_k_m.gguf";
 const MAX_LESSON_ORDER: i64 = 500;
 const MAX_COMPLETION_BODY_BYTES: usize = 64 * 1024;
 const MAX_SUBSCRIPTION_SCREENSHOT_BYTES: usize = 8 * 1024 * 1024;
@@ -28,15 +38,12 @@ const MAX_TTS_CHARS: usize = 1_000;
 const MAX_TTS_BYTES: usize = 4_000;
 const MAX_UPDATE_VERSION_CHARS: usize = 64;
 const MAX_UPDATE_NOTES_CHARS: usize = 8_000;
+const MAX_NATIVE_EVENT_RESPONSE_BODY_BYTES: usize = 16 * 1024;
+const MAX_NATIVE_EVENT_SIZE_BYTES: u64 = 20_000_000_000;
+const MAX_NATIVE_EVENT_DURATION_MS: u64 = 86_400_000;
 
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct LocalAiModelStatus {
-    model_id: &'static str,
-    installed: bool,
-    size_bytes: Option<u64>,
-    state: &'static str,
-}
+static EXIT_STOPPING: AtomicBool = AtomicBool::new(false);
+static EXIT_READY: AtomicBool = AtomicBool::new(false);
 
 #[derive(Clone)]
 struct PendingLink {
@@ -152,6 +159,37 @@ struct DesktopUpdateStatus {
     notes: Option<String>,
 }
 
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DesktopUpdateProgress {
+    downloaded_bytes: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    total_bytes: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    percent: Option<u8>,
+    state: &'static str,
+}
+
+fn emit_update_progress(
+    app: &tauri::AppHandle,
+    downloaded_bytes: u64,
+    total_bytes: Option<u64>,
+    state: &'static str,
+) {
+    let percent = total_bytes
+        .filter(|total| *total > 0)
+        .map(|total| ((downloaded_bytes.saturating_mul(100) / total).min(100)) as u8);
+    let _ = app.emit(
+        "desktop-update://progress",
+        DesktopUpdateProgress {
+            downloaded_bytes,
+            total_bytes,
+            percent,
+            state,
+        },
+    );
+}
+
 fn api_url(path: &str) -> Result<String, String> {
     match path {
         "/api/v3/desktop-auth/link/start"
@@ -161,6 +199,7 @@ fn api_url(path: &str) -> Result<String, String> {
         | "/api/v3/desktop/bootstrap"
         | "/api/v3/desktop/course/map"
         | "/api/v3/desktop/course/complete"
+        | "/api/v3/desktop/events"
         | "/api/v3/desktop/preferences/language"
         | "/api/v3/desktop/subscription/overview"
         | "/api/v3/desktop/subscription/quote"
@@ -898,6 +937,72 @@ async fn authenticated_post_json(
     decode_response(response).await
 }
 
+fn local_ai_analytics_payload(
+    event_name: &'static str,
+    size_bytes: Option<u64>,
+    duration_ms: Option<u64>,
+) -> Option<Value> {
+    if !matches!(
+        event_name,
+        "desktop_ai_pack_started" | "desktop_ai_pack_completed" | "desktop_offline_ai_used"
+    ) || size_bytes.is_some_and(|value| value > MAX_NATIVE_EVENT_SIZE_BYTES)
+        || duration_ms.is_some_and(|value| value > MAX_NATIVE_EVENT_DURATION_MS)
+    {
+        return None;
+    }
+    let mut random = [0_u8; 18];
+    OsRng.fill_bytes(&mut random);
+    Some(json!({
+        "event_name": event_name,
+        "event_id": format!("desktop-ai:{}", URL_SAFE_NO_PAD.encode(random)),
+        "model_id": MODEL_ID,
+        "size_bytes": size_bytes,
+        "duration_ms": duration_ms,
+    }))
+}
+
+async fn authenticated_native_event(state: &DesktopState, payload: &Value) -> Result<(), String> {
+    let path = "/api/v3/desktop/events";
+    let mut token = access_token(state).await?;
+    let mut response = state
+        .client
+        .post(api_url(path)?)
+        .bearer_auth(&token)
+        .json(payload)
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        token = refresh_access(state, Some(&token)).await?;
+        response = state
+            .client
+            .post(api_url(path)?)
+            .bearer_auth(&token)
+            .json(payload)
+            .send()
+            .await
+            .map_err(|_| "desktop_api_unavailable".to_string())?;
+    }
+    let _: Value =
+        decode_bounded_json_response(response, MAX_NATIVE_EVENT_RESPONSE_BODY_BYTES).await?;
+    Ok(())
+}
+
+pub(crate) fn spawn_local_ai_analytics(
+    app: tauri::AppHandle,
+    event_name: &'static str,
+    size_bytes: Option<u64>,
+    duration_ms: Option<u64>,
+) {
+    let Some(payload) = local_ai_analytics_payload(event_name, size_bytes, duration_ms) else {
+        return;
+    };
+    tauri::async_runtime::spawn(async move {
+        let state = app.state::<DesktopState>();
+        let _ = authenticated_native_event(&state, &payload).await;
+    });
+}
+
 async fn authenticated_subscription_get_json(
     state: &DesktopState,
     path: &str,
@@ -999,15 +1104,6 @@ async fn revoke_with_token(state: &DesktopState, token: &str) -> Result<bool, St
     Ok(true)
 }
 
-fn status(installed: bool, size_bytes: Option<u64>, state: &'static str) -> LocalAiModelStatus {
-    LocalAiModelStatus {
-        model_id: LOCAL_AI_MODEL_ID,
-        installed,
-        size_bytes,
-        state,
-    }
-}
-
 fn bounded_update_text(value: &str, max_chars: usize) -> Option<String> {
     let value = value.trim();
     if value.is_empty() {
@@ -1070,21 +1166,51 @@ fn desktop_app_info() -> Result<DesktopAppInfo, String> {
 }
 
 #[tauri::command]
-fn local_ai_model_status(app: tauri::AppHandle) -> LocalAiModelStatus {
-    let Ok(app_data_dir) = app.path().app_local_data_dir() else {
-        return status(false, None, "unavailable");
-    };
+fn local_ai_model_status(
+    app: tauri::AppHandle,
+    manager: tauri::State<'_, LocalAiManager>,
+) -> LocalAiPackStatus {
+    manager.status(&app)
+}
 
-    let model_path = app_data_dir.join("models").join(LOCAL_AI_MODEL_FILE);
+#[tauri::command]
+fn local_ai_install_start(
+    app: tauri::AppHandle,
+    manager: tauri::State<'_, LocalAiManager>,
+) -> Result<LocalAiPackStatus, String> {
+    manager.start_install(app)
+}
 
-    match fs::metadata(model_path) {
-        Ok(metadata) if metadata.is_file() && metadata.len() > 0 => {
-            status(true, Some(metadata.len()), "ready")
-        }
-        Ok(_) => status(false, None, "invalid"),
-        Err(error) if error.kind() == ErrorKind::NotFound => status(false, None, "missing"),
-        Err(_) => status(false, None, "unavailable"),
-    }
+#[tauri::command]
+fn local_ai_install_cancel(
+    manager: tauri::State<'_, LocalAiManager>,
+) -> Result<LocalAiPackStatus, String> {
+    manager.cancel_install()
+}
+
+#[tauri::command]
+async fn local_ai_pack_remove(
+    app: tauri::AppHandle,
+    manager: tauri::State<'_, LocalAiManager>,
+) -> Result<LocalAiPackStatus, String> {
+    manager.remove(&app).await
+}
+
+#[tauri::command]
+async fn local_ai_chat(
+    app: tauri::AppHandle,
+    manager: tauri::State<'_, LocalAiManager>,
+    request: LocalAiChatRequest,
+) -> Result<LocalAiChatResult, String> {
+    manager.chat(&app, request).await
+}
+
+#[tauri::command]
+fn local_ai_chat_cancel(
+    manager: tauri::State<'_, LocalAiManager>,
+    request_id: String,
+) -> Result<(), String> {
+    manager.cancel_chat(&request_id)
 }
 
 #[tauri::command]
@@ -1109,6 +1235,7 @@ async fn desktop_update_check(
 async fn desktop_update_install(
     app: tauri::AppHandle,
     state: tauri::State<'_, DesktopState>,
+    local_ai: tauri::State<'_, LocalAiManager>,
 ) -> Result<(), String> {
     let _guard = state
         .update_guard
@@ -1121,13 +1248,45 @@ async fn desktop_update_install(
     let Some(update) = update else {
         return Err("desktop_update_not_available".into());
     };
-    if update.download_and_install(|_, _| {}, || {}).await.is_err() {
+    local_ai.stop_all(&app).await;
+    emit_update_progress(&app, 0, None, "starting");
+    let downloaded_bytes = Arc::new(AtomicU64::new(0));
+    let chunk_counter = downloaded_bytes.clone();
+    let finish_counter = downloaded_bytes.clone();
+    let progress_app = app.clone();
+    let finish_app = app.clone();
+    if update
+        .download_and_install(
+            move |chunk_length, total_bytes| {
+                let downloaded = chunk_counter
+                    .fetch_add(chunk_length as u64, Ordering::Relaxed)
+                    .saturating_add(chunk_length as u64);
+                emit_update_progress(&progress_app, downloaded, total_bytes, "downloading");
+            },
+            move || {
+                emit_update_progress(
+                    &finish_app,
+                    finish_counter.load(Ordering::Relaxed),
+                    None,
+                    "downloaded",
+                );
+            },
+        )
+        .await
+        .is_err()
+    {
         store_pending_update(&state, Some(update))?;
         return Err("desktop_update_install_failed".into());
     }
 
-    // The app restarts only after the user explicitly invokes this command and
-    // the signed updater package has been downloaded and installed successfully.
+    emit_update_progress(
+        &app,
+        downloaded_bytes.load(Ordering::Relaxed),
+        None,
+        "installed",
+    );
+    // The signed package is installed before the process restarts. The UI can
+    // invoke this automatically only while no lesson or local AI task is active.
     app.restart()
 }
 
@@ -1457,7 +1616,12 @@ fn desktop_tts_speak(text: String) -> Result<DesktopTtsStatus, String> {
 }
 
 #[tauri::command]
-async fn desktop_logout(state: tauri::State<'_, DesktopState>) -> Result<(), String> {
+async fn desktop_logout(
+    app: tauri::AppHandle,
+    state: tauri::State<'_, DesktopState>,
+    local_ai: tauri::State<'_, LocalAiManager>,
+) -> Result<(), String> {
+    local_ai.stop_all(&app).await;
     let revoke_result: Result<(), String> = async {
         let mut access_token = current_access_token(&state)?;
         if access_token.is_none() {
@@ -1485,13 +1649,19 @@ async fn desktop_logout(state: tauri::State<'_, DesktopState>) -> Result<(), Str
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let app = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(DesktopState::new())
+        .manage(LocalAiManager::new())
         .invoke_handler(tauri::generate_handler![
             desktop_app_info,
             local_ai_model_status,
+            local_ai_install_start,
+            local_ai_install_cancel,
+            local_ai_pack_remove,
+            local_ai_chat,
+            local_ai_chat_cancel,
             desktop_update_check,
             desktop_update_install,
             desktop_auth_status,
@@ -1509,21 +1679,42 @@ pub fn run() {
             desktop_subscription_submit,
             desktop_tts_speak,
         ])
-        .run(tauri::generate_context!())
-        .expect("failed to run HSK AI");
+        .build(tauri::generate_context!())
+        .expect("failed to build HSK AI");
+
+    app.run(|app_handle, event| {
+        if let tauri::RunEvent::ExitRequested { api, code, .. } = event {
+            if EXIT_READY.load(Ordering::SeqCst) {
+                return;
+            }
+            api.prevent_exit();
+            if EXIT_STOPPING.swap(true, Ordering::SeqCst) {
+                return;
+            }
+            let app = app_handle.clone();
+            let manager = app.state::<LocalAiManager>().inner().clone();
+            tauri::async_runtime::spawn(async move {
+                manager.stop_all(&app).await;
+                EXIT_READY.store(true, Ordering::SeqCst);
+                app.exit(code.unwrap_or(0));
+            });
+        }
+    });
 }
 
 #[cfg(test)]
 mod tests {
     use super::{
         api_url, available_update_status, clear_local_auth_with, course_map_path,
-        current_access_token, is_allowed_telegram_link, no_update_status, terminal_link_status,
-        validate_checkout_attempt_id, validate_event_id, validate_language, validate_lesson_order,
-        validate_mistakes, validate_subscription_country, validate_subscription_image_data_url,
-        validate_subscription_method, validate_subscription_overview_response,
-        validate_subscription_plan, validate_subscription_quote_response,
-        validate_subscription_submit_response, validate_tts_text, DesktopLinkDisplay, DesktopState,
-        PendingLink, MAX_MISTAKES, MAX_UPDATE_NOTES_CHARS, MAX_UPDATE_VERSION_CHARS,
+        current_access_token, is_allowed_telegram_link, local_ai_analytics_payload,
+        no_update_status, terminal_link_status, validate_checkout_attempt_id, validate_event_id,
+        validate_language, validate_lesson_order, validate_mistakes, validate_subscription_country,
+        validate_subscription_image_data_url, validate_subscription_method,
+        validate_subscription_overview_response, validate_subscription_plan,
+        validate_subscription_quote_response, validate_subscription_submit_response,
+        validate_tts_text, DesktopLinkDisplay, DesktopState, PendingLink, MAX_MISTAKES,
+        MAX_NATIVE_EVENT_DURATION_MS, MAX_NATIVE_EVENT_SIZE_BYTES, MAX_UPDATE_NOTES_CHARS,
+        MAX_UPDATE_VERSION_CHARS,
     };
     use serde_json::{json, to_value, Value};
 
@@ -1548,6 +1739,7 @@ mod tests {
         assert!(api_url("/api/v3/desktop/subscription/overview").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/quote").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/submit").is_ok());
+        assert!(api_url("/api/v3/desktop/events").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/event").is_err());
         assert!(api_url("/api/v3/desktop/subscription/overview?telegram_id=1").is_err());
         assert!(api_url("https://evil.example/").is_err());
@@ -1725,6 +1917,45 @@ mod tests {
     }
 
     #[test]
+    fn local_ai_analytics_is_allowlisted_bounded_and_content_free() {
+        let payload = local_ai_analytics_payload(
+            "desktop_offline_ai_used",
+            None,
+            Some(MAX_NATIVE_EVENT_DURATION_MS),
+        )
+        .expect("allowlisted event");
+        assert_eq!(payload["event_name"], "desktop_offline_ai_used");
+        assert_eq!(payload["model_id"], "qwen3-4b-q4-k-m");
+        assert!(payload["event_id"]
+            .as_str()
+            .is_some_and(|value| (16..=80).contains(&value.len())));
+        assert!(payload.get("prompt").is_none());
+        assert!(payload.get("history").is_none());
+        assert!(payload.get("text").is_none());
+
+        assert!(local_ai_analytics_payload("desktop_ai_pack_started", Some(0), None).is_some());
+        assert!(local_ai_analytics_payload(
+            "desktop_ai_pack_completed",
+            Some(MAX_NATIVE_EVENT_SIZE_BYTES),
+            None,
+        )
+        .is_some());
+        assert!(local_ai_analytics_payload("unexpected_event", None, None).is_none());
+        assert!(local_ai_analytics_payload(
+            "desktop_ai_pack_started",
+            Some(MAX_NATIVE_EVENT_SIZE_BYTES + 1),
+            None,
+        )
+        .is_none());
+        assert!(local_ai_analytics_payload(
+            "desktop_offline_ai_used",
+            None,
+            Some(MAX_NATIVE_EVENT_DURATION_MS + 1),
+        )
+        .is_none());
+    }
+
+    #[test]
     fn desktop_subscription_inputs_are_strictly_bounded() {
         assert_eq!(validate_subscription_plan("1_month"), Ok("1_month"));
         assert!(validate_subscription_plan("lifetime").is_err());
@@ -1855,6 +2086,7 @@ mod tests {
         assert_eq!(config["app"]["windows"][0]["minHeight"], 560);
         assert_eq!(config["bundle"]["macOS"]["minimumSystemVersion"], "11.0");
         assert_eq!(config["bundle"]["createUpdaterArtifacts"], true);
+        assert_eq!(config["bundle"]["resources"]["runtime/"], "runtime/");
 
         let csp = config["app"]["security"]["csp"]
             .as_str()

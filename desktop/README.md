@@ -4,7 +4,7 @@ This directory is the canonical Tauri v2 desktop client inside the shared
 `HSK AI bot` repository. Telegram bot, Mini App, backend, subscription,
 progress, referrals, analytics and desktop remain one product ecosystem.
 
-## Phase A result
+## Desktop 1.3 result
 
 - Product identity: `HSK AI` / `com.pomp.hskai`
 - Main window: `1180x780`, minimum `720x560`
@@ -18,10 +18,13 @@ progress, referrals, analytics and desktop remain one product ecosystem.
 - Renderers for every checked-in Course v3 card type
 - Retry-safe lesson completion with stable event IDs
 - Optional confirmed-local webview/OS Chinese speech fallback
-- Truthful AI Pack state: no fake chat or local inference
+- Explicit, resumable and checksum-verified optional AI Pack installation
+- Loopback-only llama.cpp chat runtime with bounded streaming and cancellation
 
-This phase is online-first. Offline course cache/sync and local AI inference are
-not implemented yet.
+Course and authentication remain online-first. The local AI runtime works
+without internet after the model has been verified, but a cold app start still
+requires online bootstrap until an expiry-bounded offline entitlement cache is
+implemented.
 
 ## Runtime boundary
 
@@ -49,7 +52,15 @@ desktop_lesson_data
 desktop_lesson_complete
 desktop_set_language
 desktop_tts_speak
+desktop_subscription_overview
+desktop_subscription_quote
+desktop_subscription_submit
 local_ai_model_status
+local_ai_install_start
+local_ai_install_cancel
+local_ai_pack_remove
+local_ai_chat
+local_ai_chat_cancel
 desktop_update_check
 desktop_update_install
 ```
@@ -67,6 +78,7 @@ GET  /api/v3/desktop/course/map
 GET  /api/v3/desktop/course/lesson/{lesson_order}
 POST /api/v3/desktop/course/complete
 POST /api/v3/desktop/preferences/language
+POST /api/v3/desktop/events
 ```
 
 Completion is server-authoritative and idempotent. Client mistakes contain
@@ -139,14 +151,14 @@ venv_311/bin/python -m pytest -q tests/e2e/test_desktop_ui_preview.py
 
 ## Release status
 
-The source includes a signed-updater client/backend and a manual GitHub Actions
-pipeline for universal macOS DMG and Windows x64 NSIS artifacts. A local ARM64
-macOS `1.1.1` DMG and signed updater artifact can be built with the V3 updater
-trust root, but installers remain outside Git. Before public
+Version `1.3.0` includes the signed-updater client/backend, native local-AI
+commands and a tag/manual GitHub Actions pipeline for universal macOS DMG and
+Windows x64 NSIS artifacts. Release CI fetches the pinned llama.cpp `b10223`
+runtime and fails closed unless every upstream archive matches its exact
+SHA-256. Runtime binaries and installers remain outside Git. Before public
 release the following still remain:
 
 - offline course cache, durable action queue and conflict-safe sync;
-- signed/checksummed AI Pack download and local inference runtime;
 - GitHub/R2 secrets, real public artifact URLs and updater metadata;
 - universal macOS and Windows builds from the release workflow;
 - clean-machine install/uninstall tests;
@@ -160,8 +172,8 @@ and release metadata are configured. Built DMG, EXE, updater and GGUF files must
 stay outside Git on approved release storage/CDN.
 
 The release workflow intentionally reads only
-`TAURI_SIGNING_PRIVATE_KEY_V3` and
-`TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V3`. The corresponding private key stays
+`TAURI_SIGNING_PRIVATE_KEY_V4` and
+`TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V4`. The corresponding private key stays
 outside the repository; never commit or print it. The same workflow requires
 the bucket-scoped `R2_*` secrets and `R2_PUBLIC_BASE_URL` Actions variable when
 `publish_to_r2=true`.

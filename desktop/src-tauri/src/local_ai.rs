@@ -280,10 +280,7 @@ impl LocalAiManager {
         status
     }
 
-    pub(crate) fn start_install(
-        &self,
-        app: tauri::AppHandle,
-    ) -> Result<LocalAiPackStatus, String> {
+    pub(crate) fn start_install(&self, app: tauri::AppHandle) -> Result<LocalAiPackStatus, String> {
         if self
             .inner
             .install_running
@@ -334,10 +331,7 @@ impl LocalAiManager {
             .map_err(|_| "local_ai_state_unavailable".to_string())
     }
 
-    pub(crate) async fn remove(
-        &self,
-        app: &tauri::AppHandle,
-    ) -> Result<LocalAiPackStatus, String> {
+    pub(crate) async fn remove(&self, app: &tauri::AppHandle) -> Result<LocalAiPackStatus, String> {
         if self.inner.install_running.load(Ordering::SeqCst) {
             return Err("local_ai_install_busy".into());
         }
@@ -408,12 +402,15 @@ impl LocalAiManager {
         }
         let _active_guard = ActiveChatGuard(self.inner.clone());
         let started = Instant::now();
-        let result = tokio::time::timeout(
+        let result = match tokio::time::timeout(
             CHAT_TIMEOUT,
             stream_chat(app, &connection, &request, cancelled),
         )
         .await
-        .map_err(|_| "local_ai_chat_timeout".to_string())?;
+        {
+            Ok(result) => result,
+            Err(_) => Err("local_ai_chat_timeout".to_string()),
+        };
 
         match result {
             Ok(text) => {
@@ -464,6 +461,16 @@ impl LocalAiManager {
             "local-ai://runtime-status",
             RuntimeStatusEvent { state: "stopped" },
         );
+    }
+
+    pub(crate) async fn stop_all(&self, app: &tauri::AppHandle) {
+        self.inner.install_cancelled.store(true, Ordering::SeqCst);
+        if let Ok(active) = self.inner.active_chat.lock() {
+            if let Some(active) = active.as_ref() {
+                active.cancelled.store(true, Ordering::SeqCst);
+            }
+        }
+        self.stop_runtime(app).await;
     }
 
     async fn run_install(&self, app: &tauri::AppHandle) -> Result<(), String> {
@@ -540,11 +547,7 @@ impl LocalAiManager {
             .map_err(|_| "local_ai_storage_unavailable".to_string())?;
         self.update_install_state(app, "downloading", Some(downloaded));
         let mut last_emit = Instant::now();
-        while let Some(chunk) = response
-            .chunk()
-            .await
-            .map_err(|_| "local_ai_download_unavailable".to_string())?
-        {
+        loop {
             if self.inner.install_cancelled.load(Ordering::SeqCst) {
                 output
                     .flush()
@@ -552,6 +555,14 @@ impl LocalAiManager {
                     .map_err(|_| "local_ai_storage_unavailable".to_string())?;
                 return Err("local_ai_install_cancelled".into());
             }
+            let chunk = tokio::select! {
+                chunk = response.chunk() => chunk
+                    .map_err(|_| "local_ai_download_unavailable".to_string())?,
+                _ = tokio::time::sleep(Duration::from_millis(100)) => continue,
+            };
+            let Some(chunk) = chunk else {
+                break;
+            };
             downloaded = downloaded
                 .checked_add(chunk.len() as u64)
                 .filter(|value| *value <= MODEL_SIZE_BYTES)
@@ -560,9 +571,7 @@ impl LocalAiManager {
                 .write_all(&chunk)
                 .await
                 .map_err(|_| "local_ai_storage_unavailable".to_string())?;
-            if last_emit.elapsed() >= Duration::from_millis(250)
-                || downloaded == MODEL_SIZE_BYTES
-            {
+            if last_emit.elapsed() >= Duration::from_millis(250) || downloaded == MODEL_SIZE_BYTES {
                 self.update_install_state(app, "downloading", Some(downloaded));
                 last_emit = Instant::now();
             }
@@ -625,10 +634,7 @@ impl LocalAiManager {
         Ok(())
     }
 
-    async fn ensure_runtime(
-        &self,
-        app: &tauri::AppHandle,
-    ) -> Result<RuntimeConnection, String> {
+    async fn ensure_runtime(&self, app: &tauri::AppHandle) -> Result<RuntimeConnection, String> {
         let mut runtime = self.inner.runtime.lock().await;
         if let Some(process) = runtime.as_mut() {
             match process.child.try_wait() {
@@ -728,12 +734,7 @@ impl LocalAiManager {
         }
     }
 
-    fn update_install_state(
-        &self,
-        app: &tauri::AppHandle,
-        state: &str,
-        downloaded: Option<u64>,
-    ) {
+    fn update_install_state(&self, app: &tauri::AppHandle, state: &str, downloaded: Option<u64>) {
         let status = {
             let Ok(mut snapshot) = self.inner.snapshot.lock() else {
                 return;
@@ -832,8 +833,9 @@ fn pinned_install_metadata(paths: &PackPaths) -> Result<Option<u64>, String> {
         return Err("local_ai_model_invalid".into());
     }
     let marker: VerificationMarker = match std_fs::read(&paths.marker) {
-        Ok(bytes) if bytes.len() <= 2_048 => serde_json::from_slice(&bytes)
-            .map_err(|_| "local_ai_model_invalid".to_string())?,
+        Ok(bytes) if bytes.len() <= 2_048 => {
+            serde_json::from_slice(&bytes).map_err(|_| "local_ai_model_invalid".to_string())?
+        }
         Ok(_) => return Err("local_ai_model_invalid".into()),
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
         Err(_) => return Err("local_ai_storage_unavailable".into()),
@@ -875,6 +877,7 @@ fn debug_model_override() -> Option<PathBuf> {
         .map(PathBuf::from)
 }
 
+#[cfg(debug_assertions)]
 fn runtime_binary_name() -> &'static str {
     #[cfg(target_os = "windows")]
     {
@@ -930,8 +933,7 @@ fn runtime_binary_path(app: &tauri::AppHandle) -> Result<PathBuf, String> {
 }
 
 fn is_executable_file(path: &Path) -> bool {
-    std_fs::metadata(path)
-        .is_ok_and(|metadata| metadata.is_file() && metadata.len() > 0)
+    std_fs::metadata(path).is_ok_and(|metadata| metadata.is_file() && metadata.len() > 0)
 }
 
 fn download_client() -> Result<Client, String> {
@@ -979,7 +981,10 @@ fn validate_content_range(headers: &header::HeaderMap, expected_start: u64) -> R
     let total = total
         .parse::<u64>()
         .map_err(|_| "local_ai_download_resume_failed".to_string())?;
-    if start != expected_start || end < start || end >= MODEL_SIZE_BYTES || total != MODEL_SIZE_BYTES
+    if start != expected_start
+        || end < start
+        || end >= MODEL_SIZE_BYTES
+        || total != MODEL_SIZE_BYTES
     {
         return Err("local_ai_download_resume_failed".into());
     }
@@ -1004,8 +1009,8 @@ async fn remove_if_exists(path: &Path) -> Result<(), String> {
 
 async fn verify_sha256(path: PathBuf) -> Result<bool, String> {
     tauri::async_runtime::spawn_blocking(move || {
-        let mut file = std_fs::File::open(path)
-            .map_err(|_| "local_ai_storage_unavailable".to_string())?;
+        let mut file =
+            std_fs::File::open(path).map_err(|_| "local_ai_storage_unavailable".to_string())?;
         let mut hasher = Sha256::new();
         let mut buffer = vec![0_u8; 1024 * 1024];
         loop {
@@ -1120,7 +1125,10 @@ fn valid_text(value: &str, max_chars: usize, max_bytes: usize) -> bool {
 fn validate_chat_request(request: &LocalAiChatRequest) -> Result<(), String> {
     validate_request_id(&request.request_id)?;
     if !valid_text(&request.prompt, MAX_PROMPT_CHARS, MAX_PROMPT_BYTES)
-        || !matches!(request.language.trim().to_ascii_lowercase().as_str(), "uz" | "ru" | "tj")
+        || !matches!(
+            request.language.trim().to_ascii_lowercase().as_str(),
+            "uz" | "ru" | "tj"
+        )
         || request.history.len() > MAX_HISTORY_MESSAGES
         || !(1..=MAX_OUTPUT_TOKENS).contains(&request.max_tokens)
     {
@@ -1255,8 +1263,8 @@ fn process_sse_event(
         if data == "[DONE]" {
             return Ok(true);
         }
-        let value: Value = serde_json::from_str(data)
-            .map_err(|_| "local_ai_generation_failed".to_string())?;
+        let value: Value =
+            serde_json::from_str(data).map_err(|_| "local_ai_generation_failed".to_string())?;
         if let Some(delta) = value
             .pointer("/choices/0/delta/content")
             .and_then(Value::as_str)
@@ -1280,19 +1288,18 @@ fn duration_ms(duration: Duration) -> u64 {
 }
 
 fn emit_error(app: &tauri::AppHandle, operation: &str, error: &str) {
-    let _ = app.emit(
-        "local-ai://error",
-        LocalAiErrorEvent { operation, error },
-    );
+    let _ = app.emit("local-ai://error", LocalAiErrorEvent { operation, error });
 }
 
 #[cfg(test)]
 mod tests {
     use super::{
-        find_sse_separator, validate_chat_request, validate_content_range, VerificationMarker,
-        LocalAiChatMessage, LocalAiChatRequest, MODEL_REVISION, MODEL_SHA256, MODEL_SIZE_BYTES,
+        find_sse_separator, unavailable_status, validate_chat_request, validate_content_range,
+        LocalAiChatMessage, LocalAiChatRequest, VerificationMarker, MODEL_REVISION, MODEL_SHA256,
+        MODEL_SIZE_BYTES,
     };
     use reqwest::header::{HeaderMap, HeaderValue, CONTENT_RANGE};
+    use serde_json::json;
 
     fn request() -> LocalAiChatRequest {
         LocalAiChatRequest {
@@ -1331,6 +1338,35 @@ mod tests {
     }
 
     #[test]
+    fn tauri_chat_and_status_contracts_use_camel_case() {
+        let parsed: LocalAiChatRequest = serde_json::from_value(json!({
+            "requestId": "desktop-ai-contract-0001",
+            "prompt": "你好",
+            "language": "uz",
+            "history": [{"role": "user", "content": "Salom"}],
+            "maxTokens": 128
+        }))
+        .expect("camelCase request must deserialize");
+        assert!(validate_chat_request(&parsed).is_ok());
+        assert!(serde_json::from_value::<LocalAiChatRequest>(json!({
+            "requestId": "desktop-ai-contract-0002",
+            "prompt": "你好",
+            "language": "uz",
+            "history": [],
+            "maxTokens": 128,
+            "promptBody": "must be rejected"
+        }))
+        .is_err());
+
+        let status = serde_json::to_value(unavailable_status()).expect("status must serialize");
+        assert_eq!(status["modelId"], "qwen3-4b-q4-k-m");
+        assert_eq!(status["expectedSizeBytes"], MODEL_SIZE_BYTES);
+        assert_eq!(status["runtimeAvailable"], false);
+        assert_eq!(status["runtimeState"], "unavailable");
+        assert!(status.get("expected_size_bytes").is_none());
+    }
+
+    #[test]
     fn resumable_download_requires_exact_content_range() {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -1351,5 +1387,25 @@ mod tests {
     fn sse_frames_support_lf_and_crlf() {
         assert_eq!(find_sse_separator(b"data: {}\n\nmore"), Some((8, 2)));
         assert_eq!(find_sse_separator(b"data: {}\r\n\r\nmore"), Some((8, 4)));
+    }
+
+    #[test]
+    fn release_workflow_pins_verified_llama_cpp_assets() {
+        let workflow = include_str!("../../../.github/workflows/desktop-release.yml");
+        for contract in [
+            "LLAMA_CPP_RELEASE: b10223",
+            "2c5e6dca00a3f09ba1030e309ff6fa4c2568a01864de258a4e7752b09e26430e",
+            "d5488dd5759f7a086852af5a206c6cded875c716de6a9f9d8460ea6c2dc24138",
+            "74c1ded0512818d98b51940bf9150e16da8ed79cf0cbe8d85788e01cdd00ff67",
+            "shasum -a 256 -c -",
+            "Get-FileHash $archive -Algorithm SHA256",
+            "runtime/macos-universal",
+            "runtime/windows-x64",
+        ] {
+            assert!(
+                workflow.contains(contract),
+                "missing workflow contract: {contract}"
+            );
+        }
     }
 }

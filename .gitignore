@@ -26,6 +26,10 @@ desktop/.tauri/
 desktop/models/
 desktop/model-cache/
 desktop/releases/
+desktop/src-tauri/runtime/macos-universal/*
+!desktop/src-tauri/runtime/macos-universal/.gitkeep
+desktop/src-tauri/runtime/windows-x64/*
+!desktop/src-tauri/runtime/windows-x64/.gitkeep
 desktop/src-tauri/icons/android/
 desktop/src-tauri/icons/ios/
 desktop/src-tauri/icons/Square*Logo.png
