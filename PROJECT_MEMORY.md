@@ -253,6 +253,26 @@ Files touched:
   `android/**` (yangi), `.github/workflows/android-ci.yml` (yangi),
   `ANDROID_IMPLEMENTATION_PLAN.md` (yangi)
 
+Phase D — Bugun + Kurs (qo'shildi):
+- `AndroidCourseService(DesktopCourseService)` — 600 qatorlik access policy / XP /
+  streak / mistakes / idempotency QAYTA YOZILMADI, meros olindi. Yagona farq:
+  `CLIENT_NAMESPACE`. Desktop uchun `desktop-course-complete:` va
+  `desktop_course` BAYT-BA-BAYT o'zgarmadi; Android `android-course-complete:` +
+  `android_course` ishlatadi, shuning uchun bir xil `event_id` ikkala klientdan
+  kelsa ham XP ikki marta berilmaydi.
+- Yangi route'lar: `/api/v3/android/course/{map,lesson/{n},complete}` +
+  `/api/v3/android/preferences/language`. Request modellari desktop'dan.
+  `tz` aniq `None` tekshiruvi bilan — UTC+0 yutilmaydi.
+- **MUHIM UI QOIDASI**: `preview_half` darajaning emas, O'QUVCHI JOYLASHUVINING
+  xususiyati — faqat `completed == FREE_COURSE_LESSONS_PER_LEVEL` bo'lganda
+  paydo bo'ladi. Bepul ruxsat ichidagi, lekin yetib borilmagan dars
+  `course_lesson_not_unlocked` beradi va unga **paywall ko'rsatilmaydi**.
+  Android'da bu `LessonAccess` tipida muhrlangan (`showsPaywall`).
+- Android: Room cache (xom payload snapshot, hech qachon ruxsatni kengaytirmaydi,
+  doim `isStale` bilan), Bugun ekrani (bitta ustun harakat), Kurs yo'lakchasi
+  (holat rang bilan emas, glif+matn bilan ham), 3 ta tab (Mashq/AI Phase F/G
+  gacha UMUMAN yo'q, Obuna hech qachon tab emas).
+
 Deep-link kontrakti (qaror):
 - `pomp-hsk-ai://lesson/{n}` QO'LLAB-QUVVATLANADI. Sabab: `motivation_reminder_service`
   allaqachon `target_level` + `target_lesson` + `autostart` bilan aniq darsga
