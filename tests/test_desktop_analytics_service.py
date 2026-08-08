@@ -57,9 +57,17 @@ def _row(
 
 
 class DesktopAnalyticsServiceTests(unittest.TestCase):
-    def test_only_promo_events_are_allowed_from_untrusted_miniapp_client(self):
-        self.assertIn("desktop_promo_seen", CLIENT_COURSE_MINIAPP_EVENT_NAMES)
-        self.assertIn("desktop_promo_dismissed", CLIENT_COURSE_MINIAPP_EVENT_NAMES)
+    def test_only_soft_acquisition_events_are_allowed_from_untrusted_miniapp_client(self):
+        safe_client_events = {
+            "desktop_promo_seen",
+            "desktop_promo_dismissed",
+            "desktop_download_entry_seen",
+            "desktop_download_chooser_opened",
+            "desktop_download_destination_selected",
+        }
+        self.assertTrue(
+            safe_client_events.issubset(set(CLIENT_COURSE_MINIAPP_EVENT_NAMES))
+        )
 
         server_only = {
             "desktop_download_requested",
@@ -298,8 +306,99 @@ class DesktopAnalyticsServiceTests(unittest.TestCase):
             1,
         )
         self.assertEqual(promotion["sources"]["ad_promo"]["request_per_seen"], 100.0)
+        self.assertEqual(promotion["by_source"], promotion["sources"])
         self.assertNotIn("profile", promotion["sources"])
         self.assertLessEqual(promotion["request_per_seen"], 100.0)
+
+    def test_entry_source_funnel_includes_profile_without_becoming_promo_seen(self):
+        rows = [
+            _row(
+                "desktop_download_entry_seen",
+                21,
+                age_hours=10,
+                source="profile",
+                row_id=1,
+            ),
+            _row(
+                "desktop_download_chooser_opened",
+                21,
+                age_hours=9,
+                source="profile",
+                platform="macos",
+                row_id=2,
+            ),
+            _row(
+                "desktop_download_destination_selected",
+                21,
+                age_hours=8,
+                source="profile",
+                platform="macos",
+                row_id=3,
+            ),
+            _row(
+                "desktop_download_requested",
+                21,
+                age_hours=7,
+                source="desktop_profile",
+                entry_source="profile",
+                platform="macos",
+                row_id=4,
+            ),
+            _row(
+                "desktop_download_entry_seen",
+                22,
+                age_hours=10,
+                source="home_prompt",
+                row_id=5,
+            ),
+            _row(
+                "desktop_download_chooser_opened",
+                22,
+                age_hours=9,
+                source="home_prompt",
+                platform="windows",
+                row_id=6,
+            ),
+            # A request before an impression cannot be attributed.
+            _row(
+                "desktop_download_requested",
+                23,
+                age_hours=10,
+                source="desktop_profile",
+                entry_source="profile",
+                row_id=7,
+            ),
+            _row(
+                "desktop_download_entry_seen",
+                23,
+                age_hours=9,
+                source="profile",
+                row_id=8,
+            ),
+        ]
+
+        snapshot = DesktopAnalyticsService.build_snapshot(
+            totals=_totals(
+                desktop_download_entry_seen=(3, 3),
+                desktop_download_chooser_opened=(2, 2),
+                desktop_download_destination_selected=(1, 1),
+                desktop_download_requested=(2, 2),
+            ),
+            detail_rows=[],
+            cohort_rows=rows,
+            now=NOW,
+        )
+
+        promotion = snapshot["promotion"]
+        profile = promotion["entry_funnel"]["by_source"]["profile"]
+        home = promotion["entry_funnel"]["by_source"]["home_prompt"]
+        self.assertEqual(profile["seen"]["users"], 2)
+        self.assertEqual(profile["chooser_opened"]["users"], 1)
+        self.assertEqual(profile["destination_selected"]["users"], 1)
+        self.assertEqual(profile["requested_after_seen"]["users"], 1)
+        self.assertEqual(profile["request_per_seen"], 50.0)
+        self.assertEqual(home["chooser_per_seen"], 100.0)
+        self.assertNotIn("profile", promotion["by_source"])
 
     def test_direct_download_click_may_arrive_before_started_callback(self):
         rows = [

@@ -27,6 +27,7 @@
   var REQUEST_ENDPOINT = "/api/v3/desktop-download/request";
   var STARTED_ENDPOINT = "/api/v3/desktop-download/started";
   var PROMO_SOURCES = ["home_prompt", "lesson_end_promo", "ad_promo"];
+  var ENTRY_SOURCES = ["profile"].concat(PROMO_SOURCES);
   var DEFAULT_PROMO_COOLDOWN_DAYS = 14;
 
   var COPY = {
@@ -34,12 +35,10 @@
       eyebrow: "Pomp HSK AI · kompyuter",
       cardTitle: "Kompyuter ilovasi",
       cardBody:
-        "Mac yoki Windowsni tanlang. Telefonda bo‘lsangiz, linkni kompyuterga yuborasiz.",
-      stepsTitle: "O‘rnatish juda oson",
-      stepChoose: "Mac yoki Windowsni tanlang.",
-      stepTransfer: "Telefonda bo‘lsangiz, AirDrop yoki link orqali yuboring.",
-      stepInstall:
-        "Mac: Applications’ga torting. Windows: Install tugmasini bosing.",
+        "Kurs, obuna va progress bir akkauntda. Mac yoki Windows versiyasini tanlang.",
+      mobileCardHint:
+        "Telefondasiz: eng qulay yo‘l — AirDrop/ulashish yoki linkni kompyuterga yuborish.",
+      previewTranslation: "o‘rganmoq",
       preparing:
         "Yuklash fayllari tayyorlanmoqda. Tez orada tugmalar faollashadi.",
       availabilityError:
@@ -60,6 +59,7 @@
       dismiss: "Keyinroq",
       close: "Oynani yopish",
       adEntry: "Kompyuter ilovasini olish",
+      adEntrySub: "Mac va Windows · progress saqlanadi",
       sendingShort: "Tayyorlanmoqda…",
       sending: "Yuklash sayti tayyorlanmoqda…",
       telegramRequired: "Mini Appni bot ichidan qayta oching.",
@@ -72,10 +72,18 @@
       destinationTitle: "{platform} faylini qayerda ochamiz?",
       destinationBody:
         "Installer linkini shu qurilmada oching yoki kompyuteringizga xavfsiz yuboring.",
+      destinationMobileIntro:
+        "Kompyuterda ochish uchun eng qulay usulni tanlang.",
+      destinationMobileBody:
+        "DMG/EXE’ni telefonda yuklasangiz, u Downloads yoki Fayllar ichiga tushadi. Kompyuterda ochish uchun ulashish yoki linkni tanlang.",
       directTitle: "Shu qurilmada ochish",
       directBody: "Yuklash sayti hozir ochiladi",
+      directMobileTitle: "Telefonda yuklash sahifasini ochish",
+      directMobileBody:
+        "Saytda yuklasangiz, fayl telefonning Downloads yoki Fayllar papkasiga saqlanadi",
       shareTitle: "AirDrop yoki ulashish",
       shareBody: "Telefonning ulashish oynasini ochadi",
+      shareRecommended: "Eng qulay",
       copyTitle: "Linkni nusxalash",
       copyBody: "Kompyuter brauzeriga qo‘yib oching",
       cancel: "Bekor qilish",
@@ -97,12 +105,10 @@
       eyebrow: "Pomp HSK AI · компьютер",
       cardTitle: "Приложение для компьютера",
       cardBody:
-        "Выберите Mac или Windows. Если вы на телефоне, отправьте ссылку на компьютер.",
-      stepsTitle: "Установка в три шага",
-      stepChoose: "Выберите Mac или Windows.",
-      stepTransfer: "С телефона отправьте ссылку через AirDrop или копирование.",
-      stepInstall:
-        "Mac: перетащите приложение в Applications. Windows: нажмите Install.",
+        "Курс, подписка и прогресс в одном аккаунте. Выберите версию для Mac или Windows.",
+      mobileCardHint:
+        "Вы на телефоне: удобнее отправить ссылку через AirDrop или системное меню.",
+      previewTranslation: "учиться",
       preparing:
         "Файлы загрузки готовятся. Кнопки станут активны в ближайшее время.",
       availabilityError:
@@ -123,6 +129,7 @@
       dismiss: "Позже",
       close: "Закрыть окно",
       adEntry: "Скачать приложение для компьютера",
+      adEntrySub: "Mac и Windows · единый прогресс",
       sendingShort: "Готовим…",
       sending: "Готовим страницу загрузки…",
       telegramRequired: "Откройте Mini App заново из бота.",
@@ -135,10 +142,18 @@
       destinationTitle: "Где открыть файл для {platform}?",
       destinationBody:
         "Откройте установщик на этом устройстве или безопасно отправьте ссылку на компьютер.",
+      destinationMobileIntro:
+        "Выберите удобный способ открыть установщик на компьютере.",
+      destinationMobileBody:
+        "Если скачать DMG/EXE на телефоне, файл попадёт в Загрузки или Файлы. Для компьютера выберите отправку или копирование ссылки.",
       directTitle: "Открыть на этом устройстве",
       directBody: "Страница загрузки откроется сейчас",
+      directMobileTitle: "Открыть загрузку на телефоне",
+      directMobileBody:
+        "После загрузки файл сохранится в папке Загрузки или Файлы телефона",
       shareTitle: "AirDrop или поделиться",
       shareBody: "Откроется системное меню отправки",
+      shareRecommended: "Удобнее всего",
       copyTitle: "Скопировать ссылку",
       copyBody: "Вставьте её в браузере компьютера",
       cancel: "Отмена",
@@ -160,12 +175,10 @@
       eyebrow: "Pomp HSK AI · компютер",
       cardTitle: "Барномаи компютерӣ",
       cardBody:
-        "Mac ё Windows-ро интихоб кунед. Агар дар телефон бошед, пайвандро ба компютер фиристед.",
-      stepsTitle: "Насб дар се қадам",
-      stepChoose: "Mac ё Windows-ро интихоб кунед.",
-      stepTransfer: "Аз телефон бо AirDrop ё нусхаи пайванд фиристед.",
-      stepInstall:
-        "Mac: барномаро ба Applications кашед. Windows: Install-ро пахш кунед.",
+        "Курс, обуна ва пешрафт дар як ҳисоб. Версияи Mac ё Windows-ро интихоб кунед.",
+      mobileCardHint:
+        "Шумо дар телефонед: бо AirDrop ё равзанаи фиристодан ба компютер гузарондан қулайтар аст.",
+      previewTranslation: "омӯхтан",
       preparing:
         "Файлҳои боргирӣ омода мешаванд. Тугмаҳо ба наздикӣ фаъол мешаванд.",
       availabilityError:
@@ -186,6 +199,7 @@
       dismiss: "Баъдтар",
       close: "Пӯшидани равзана",
       adEntry: "Гирифтани барномаи компютерӣ",
+      adEntrySub: "Mac ва Windows · пешрафти умумӣ",
       sendingShort: "Омода мешавад…",
       sending: "Саҳифаи боргирӣ омода мешавад…",
       telegramRequired: "Mini App-ро аз дохили бот аз нав кушоед.",
@@ -198,10 +212,18 @@
       destinationTitle: "Файли {platform}-ро дар куҷо мекушоем?",
       destinationBody:
         "Насбкунандаро дар ҳамин дастгоҳ кушоед ё пайвандро бехатар ба компютер фиристед.",
+      destinationMobileIntro:
+        "Роҳи қулайи кушодан дар компютерро интихоб кунед.",
+      destinationMobileBody:
+        "Агар DMG/EXE-ро дар телефон бор кунед, файл ба Downloads ё Files меафтад. Барои компютер фиристодан ё нусхаи пайвандро интихоб кунед.",
       directTitle: "Дар ҳамин дастгоҳ кушодан",
       directBody: "Саҳифаи боргирӣ ҳозир кушода мешавад",
+      directMobileTitle: "Боргириро дар телефон кушодан",
+      directMobileBody:
+        "Баъди боргирӣ файл дар Downloads ё Files-и телефон мемонад",
       shareTitle: "AirDrop ё фиристодан",
       shareBody: "Равзанаи системавии фиристодан кушода мешавад",
+      shareRecommended: "Қулайтарин",
       copyTitle: "Нусхаи пайванд",
       copyBody: "Дар браузери компютер гузошта кушоед",
       cancel: "Бекор кардан",
@@ -257,7 +279,8 @@
     destinationMessage: "",
     destinationMessageKind: "",
     manualTransferUrl: "",
-    adPromoMounts: []
+    adPromoMounts: [],
+    entrySeen: {}
   };
 
   function language() {
@@ -397,7 +420,40 @@
     }).catch(function () {});
   }
 
+  function trackEntrySeen(source, meta) {
+    if (
+      ENTRY_SOURCES.indexOf(source) < 0 ||
+      state.entrySeen[source] ||
+      !telegramInitData()
+    ) {
+      return;
+    }
+    state.entrySeen[source] = true;
+    track(
+      "desktop_download_entry_seen",
+      Object.assign(promoMeta(meta), { source: source })
+    );
+  }
+
+  function isMobileDevice() {
+    var app = telegramWebApp();
+    var telegramPlatform = String((app && app.platform) || "").toLowerCase();
+    if (telegramPlatform === "android" || telegramPlatform === "ios") {
+      return true;
+    }
+    var userAgent = "";
+    try {
+      userAgent = String(navigator.userAgent || "");
+    } catch (error) {}
+    return Boolean(
+      /Android|iPhone|iPod/i.test(userAgent) ||
+        (/iPad|Macintosh/i.test(userAgent) &&
+          Number(navigator.maxTouchPoints || 0) > 1)
+    );
+  }
+
   function detectPlatform() {
+    if (isMobileDevice()) return "";
     var value = "";
     try {
       value =
@@ -455,31 +511,59 @@
     row.appendChild(buildBenefit("device-desktop", copy.bigScreen));
     row.appendChild(buildBenefit("refresh", copy.autoUpdate));
     if (includeProgress) {
-      row.appendChild(buildBenefit("refresh", copy.sharedProgress));
+      row.appendChild(buildBenefit("arrows-exchange", copy.sharedProgress));
     }
     return row;
   }
 
-  function buildInstallSteps() {
+  function buildProductPreview(mode) {
     var copy = text();
-    var section = element("div", "pdd-install-guide");
-    section.appendChild(
-      element("strong", "pdd-install-guide-title", copy.stepsTitle)
-    );
-    var steps = element("ol", "pdd-install-steps");
-    [copy.stepChoose, copy.stepTransfer, copy.stepInstall].forEach(function (
-      label,
-      index
-    ) {
-      var step = element("li", "pdd-install-step");
-      step.appendChild(
-        element("span", "pdd-install-number", String(index + 1))
-      );
-      step.appendChild(element("span", "pdd-install-copy", label));
-      steps.appendChild(step);
+    var preview = element("div", "pdd-product-preview");
+    preview.dataset.mode = mode || "card";
+    preview.setAttribute("aria-hidden", "true");
+
+    var chrome = element("div", "pdd-preview-chrome");
+    var dots = element("span", "pdd-preview-dots");
+    dots.appendChild(element("i"));
+    dots.appendChild(element("i"));
+    dots.appendChild(element("i"));
+    chrome.appendChild(dots);
+    chrome.appendChild(element("strong", "", "Pomp HSK AI"));
+    chrome.appendChild(element("small", "", "HSK 2"));
+    preview.appendChild(chrome);
+
+    var workspace = element("div", "pdd-preview-workspace");
+    var rail = element("div", "pdd-preview-rail");
+    var logo = element("img", "pdd-preview-logo");
+    logo.src = "/assets/hsk-ai-avatar.webp";
+    logo.alt = "";
+    rail.appendChild(logo);
+    ["layout-dashboard", "book-2", "message-circle"].forEach(function (name) {
+      rail.appendChild(icon(name));
     });
-    section.appendChild(steps);
-    return section;
+    workspace.appendChild(rail);
+
+    var lesson = element("div", "pdd-preview-lesson");
+    var toolbar = element("div", "pdd-preview-toolbar");
+    toolbar.appendChild(element("span", "", "今日 · Today"));
+    toolbar.appendChild(element("b", "", "7 天"));
+    lesson.appendChild(toolbar);
+    var lessonCard = element("div", "pdd-preview-lesson-card");
+    var word = element("div", "pdd-preview-word");
+    word.appendChild(element("small", "", "今日课程 · jīnrì kèchéng"));
+    word.appendChild(element("strong", "", "学习"));
+    word.appendChild(
+      element("span", "", "xuéxí · " + copy.previewTranslation)
+    );
+    lessonCard.appendChild(word);
+    var progress = element("span", "pdd-preview-progress");
+    progress.appendChild(element("b", "", "68%"));
+    progress.appendChild(element("small", "", "HSK"));
+    lessonCard.appendChild(progress);
+    lesson.appendChild(lessonCard);
+    workspace.appendChild(lesson);
+    preview.appendChild(workspace);
+    return preview;
   }
 
   function platformButtonLabel(platform) {
@@ -558,11 +642,14 @@
     content.appendChild(element("p", "", copy.cardBody));
     head.appendChild(content);
     main.appendChild(head);
-    main.appendChild(buildInstallSteps());
-    var trust = element("div", "pdd-profile-trust");
-    trust.appendChild(icon("refresh"));
-    trust.appendChild(element("span", "", copy.sharedProgress));
-    main.appendChild(trust);
+    main.appendChild(buildProductPreview("card"));
+    main.appendChild(buildBenefits(true));
+    if (isMobileDevice()) {
+      var mobileHint = element("div", "pdd-mobile-hint");
+      mobileHint.appendChild(icon("devices-share"));
+      mobileHint.appendChild(element("span", "", copy.mobileCardHint));
+      main.appendChild(mobileHint);
+    }
     main.appendChild(buildActions("profile"));
     if (!hasAvailablePlatform()) {
       var availability = element(
@@ -598,6 +685,9 @@
     main.appendChild(buildInlineStatus());
     card.appendChild(main);
     host.appendChild(card);
+    if (hasAvailablePlatform()) {
+      trackEntrySeen("profile", { placement: "profile_card" });
+    }
     syncControls();
     if (focusProfileDownload && !state.profileFocusDone) {
       state.profileFocusDone = true;
@@ -629,10 +719,20 @@
     return platform === "macos" ? "Mac" : "Windows";
   }
 
-  function buildDestinationAction(destination, iconName, title, body) {
+  function buildDestinationAction(
+    destination,
+    iconName,
+    title,
+    body,
+    recommended
+  ) {
     var button = element("button", "pdd-destination-action");
     button.type = "button";
     button.dataset.pddDestinationAction = destination;
+    button.dataset.recommended = recommended ? "true" : "false";
+    if (recommended) {
+      button.dataset.recommendedLabel = text().shareRecommended;
+    }
     button.appendChild(icon(iconName));
     var copyBox = element("span", "pdd-destination-action-copy");
     copyBox.appendChild(element("strong", "", title));
@@ -641,6 +741,12 @@
     button.appendChild(icon("chevron-right"));
     button.addEventListener("click", function () {
       if (!state.pendingPlatform) {
+        track("desktop_download_destination_selected", {
+          source: state.destinationSource,
+          platform: state.destinationPlatform,
+          destination: destination,
+          mobile: isMobileDevice()
+        });
         performDownloadRequest(
           state.destinationPlatform,
           state.destinationSource,
@@ -654,6 +760,7 @@
   function showDestinationChooser(platform, source, trigger) {
     if (!destinationRoot || state.destinationOpen || state.pendingPlatform) return;
     var copy = text();
+    var mobile = isMobileDevice();
     state.destinationOpen = true;
     state.destinationPlatform = platform;
     state.destinationSource = source;
@@ -703,36 +810,55 @@
     );
     title.id = "pdd-destination-title";
     heading.appendChild(title);
-    var description = element("p", "", copy.destinationBody);
+    var description = element(
+      "p",
+      "",
+      mobile ? copy.destinationMobileIntro : copy.destinationBody
+    );
     description.id = "pdd-destination-description";
     heading.appendChild(description);
     shell.appendChild(heading);
 
+    if (mobile) {
+      var handoff = element("div", "pdd-mobile-handoff");
+      var handoffIcons = element("span", "pdd-mobile-handoff-icons");
+      handoffIcons.appendChild(icon("device-mobile"));
+      handoffIcons.appendChild(icon("arrow-right"));
+      handoffIcons.appendChild(icon("device-laptop"));
+      handoff.appendChild(handoffIcons);
+      handoff.appendChild(element("span", "", copy.destinationMobileBody));
+      shell.appendChild(handoff);
+    }
+
     var actions = element("div", "pdd-destination-actions");
-    actions.appendChild(
-      buildDestinationAction(
-        "direct",
-        "external-link",
-        copy.directTitle,
-        copy.directBody
-      )
-    );
-    actions.appendChild(
-      buildDestinationAction(
-        "share",
-        "share-3",
-        copy.shareTitle,
-        copy.shareBody
-      )
-    );
-    actions.appendChild(
-      buildDestinationAction(
-        "copy",
-        "copy",
-        copy.copyTitle,
-        copy.copyBody
-      )
-    );
+    var destinationActions = mobile
+      ? [
+          ["share", "share-3", copy.shareTitle, copy.shareBody, true],
+          ["copy", "copy", copy.copyTitle, copy.copyBody, false],
+          [
+            "direct",
+            "download",
+            copy.directMobileTitle,
+            copy.directMobileBody,
+            false
+          ]
+        ]
+      : [
+          ["direct", "external-link", copy.directTitle, copy.directBody, true],
+          ["share", "share-3", copy.shareTitle, copy.shareBody, false],
+          ["copy", "copy", copy.copyTitle, copy.copyBody, false]
+        ];
+    destinationActions.forEach(function (definition) {
+      actions.appendChild(
+        buildDestinationAction(
+          definition[0],
+          definition[1],
+          definition[2],
+          definition[3],
+          definition[4]
+        )
+      );
+    });
     shell.appendChild(actions);
 
     var manual = element("label", "pdd-destination-manual");
@@ -764,6 +890,11 @@
       promoRoot.inert = true;
       promoRoot.setAttribute("aria-hidden", "true");
     }
+    track("desktop_download_chooser_opened", {
+      source: source,
+      platform: platform,
+      mobile: mobile
+    });
     syncControls();
     var firstAction = shell.querySelector("[data-pdd-destination-action]");
     if (firstAction) firstAction.focus();
@@ -1473,11 +1604,7 @@
 
   function buildPromoVisual() {
     var visual = element("div", "pdd-promo-visual");
-    visual.setAttribute("aria-hidden", "true");
-    var cover = element("img", "pdd-promo-cover");
-    cover.src = "/assets/hsk-ai-cover.webp";
-    cover.alt = "";
-    visual.appendChild(cover);
+    visual.appendChild(buildProductPreview("modal"));
     return visual;
   }
 
@@ -1501,6 +1628,7 @@
     state.activePromoMeta = promoMeta(meta);
     state.previousFocus = document.activeElement;
     storeNumber("promo_seen", Date.now());
+    trackEntrySeen(source, state.activePromoMeta);
     track("desktop_promo_seen", promoPayload(source, state.activePromoMeta));
 
     promoRoot.replaceChildren();
@@ -1584,6 +1712,21 @@
     host.replaceChildren();
   }
 
+  function renderAdTrigger(button) {
+    if (!button) return;
+    var copy = text();
+    var badge = element("span", "pdd-ad-trigger-badge");
+    var avatar = element("img", "");
+    avatar.src = "/assets/hsk-ai-avatar.webp";
+    avatar.alt = "";
+    avatar.setAttribute("aria-hidden", "true");
+    badge.appendChild(avatar);
+    var labels = element("span", "pdd-ad-trigger-copy");
+    labels.appendChild(element("strong", "", copy.adEntry));
+    labels.appendChild(element("small", "", copy.adEntrySub));
+    button.replaceChildren(badge, labels, icon("chevron-right"));
+  }
+
   function syncAdPromo(visible) {
     var host = document.getElementById("ad-desktop");
     if (!host) return;
@@ -1593,12 +1736,9 @@
     }
     if (host.firstChild && !host.hidden) return;
 
-    var copy = text();
     var button = element("button", "pdd-ad-trigger");
     button.type = "button";
-    button.appendChild(icon("device-desktop"));
-    button.appendChild(element("span", "", copy.adEntry));
-    button.appendChild(icon("chevron-right"));
+    renderAdTrigger(button);
     button.addEventListener("click", function () {
       if (
         showPromo(
@@ -1612,12 +1752,15 @@
     });
     host.replaceChildren(button);
     host.hidden = false;
+    trackEntrySeen("ad_promo", { placement: "course_ad_end" });
   }
 
   function syncMountedAdPromos() {
     state.adPromoMounts = state.adPromoMounts.filter(function (mount) {
       if (!mount.button || !mount.button.isConnected) return false;
-      mount.button.hidden = !shouldShowPromo("ad_promo");
+      var visible = shouldShowPromo("ad_promo");
+      mount.button.hidden = !visible;
+      if (visible) trackEntrySeen("ad_promo", mount.meta);
       return true;
     });
   }
@@ -1631,13 +1774,15 @@
     if (!mount) {
       mount = { button: button, meta: {} };
       state.adPromoMounts.push(mount);
+      button.classList.add("pdd-ad-trigger", "pdd-ad-trigger--embedded");
       button.addEventListener("click", function () {
         showPromo("ad_promo", mount.meta, true);
       });
     }
     mount.meta = promoMeta(meta);
-    button.textContent = text().adEntry;
+    renderAdTrigger(button);
     button.hidden = !shouldShowPromo("ad_promo");
+    if (!button.hidden) trackEntrySeen("ad_promo", mount.meta);
   }
 
   function loadAvailability() {

@@ -12,6 +12,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.api.desktop_course import (
     DesktopCourseCompleteRequest,
+    DesktopNativeEventRequest,
     create_desktop_course_router,
 )
 from app.db.base import Base
@@ -551,6 +552,53 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             {"ok": False, "error": "desktop_access_invalid"},
         )
 
+    async def test_native_ai_event_is_authenticated_bounded_and_idempotent(self):
+        payload = {
+            "event_name": "desktop_offline_ai_used",
+            "event_id": "desktop-ai-chat-event-1001",
+            "model_id": "qwen3-4b-q4-k-m",
+            "duration_ms": 1234,
+        }
+        first = await self.client.post(
+            "/api/v3/desktop/events",
+            headers=self.auth_headers,
+            json=payload,
+        )
+        replay = await self.client.post(
+            "/api/v3/desktop/events",
+            headers=self.auth_headers,
+            json=payload,
+        )
+        invalid = await self.client.post(
+            "/api/v3/desktop/events",
+            headers=self.auth_headers,
+            json={**payload, "event_name": "desktop_prompt_body"},
+        )
+        unauthenticated = await self.client.post(
+            "/api/v3/desktop/events",
+            json=payload,
+        )
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(first.json(), {"ok": True, "recorded": True, "duplicate": False})
+        self.assertEqual(replay.status_code, 200)
+        self.assertEqual(replay.json(), {"ok": True, "recorded": False, "duplicate": True})
+        self.assertEqual(invalid.status_code, 422)
+        self.assertEqual(unauthenticated.status_code, 401)
+        async with self.sessions() as session:
+            events = (
+                await session.execute(
+                    select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.event_name == "desktop_offline_ai_used"
+                    )
+                )
+            ).scalars().all()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].source, "desktop_native")
+        stored = json.loads(events[0].payload_json or "{}")
+        self.assertNotIn("prompt", stored)
+        self.assertEqual(stored["model_id"], "qwen3-4b-q4-k-m")
+
     def test_model_and_router_contract(self):
         with self.assertRaises(ValueError):
             DesktopCourseCompleteRequest(
@@ -569,6 +617,11 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
                     }
                 ],
             )
+        with self.assertRaises(ValueError):
+            DesktopNativeEventRequest(
+                event_name="desktop_prompt_body",
+                event_id="desktop-ai-chat-event-model",
+            )
         paths = {
             route.path
             for route in create_desktop_course_router(
@@ -583,5 +636,6 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 "/api/v3/desktop/course/lesson/{lesson_order}",
                 "/api/v3/desktop/course/complete",
                 "/api/v3/desktop/preferences/language",
+                "/api/v3/desktop/events",
             },
         )

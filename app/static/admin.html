@@ -316,6 +316,10 @@
             <div id="desktopFunnel"></div>
           </div>
           <div style="margin-top:12px">
+            <div class="dtitle-sm">Download manbalari</div>
+            <div id="desktopPromotion"></div>
+          </div>
+          <div style="margin-top:12px">
             <div class="dtitle-sm">Platforma va texnik holat</div>
             <div id="desktopHealth"></div>
           </div>
@@ -611,6 +615,7 @@
       if(!snapshot){
         $("desktopCards").innerHTML=loading?"<p class='empty'>Yuklanmoqda…</p>":"<p class='empty'>Ma'lumot olinmoqda…</p>";
         $("desktopFunnel").innerHTML="";
+        $("desktopPromotion").innerHTML="";
         $("desktopHealth").innerHTML="";
         $("desktopExplain").textContent="";
         return;
@@ -618,11 +623,14 @@
       if(snapshot.error){
         $("desktopCards").innerHTML="<p class='empty'>Desktop statistikani yuklab bo'lmadi.</p>";
         $("desktopFunnel").innerHTML="";
+        $("desktopPromotion").innerHTML="";
         $("desktopHealth").innerHTML="";
         $("desktopExplain").textContent="";
         return;
       }
       const funnel=snapshot.funnel||{}, active=snapshot.active||{}, platforms=snapshot.platforms||{};
+      const promotion=snapshot.promotion||{}, promoSources=promotion.by_source||promotion.sources||{};
+      const entrySources=(promotion.entry_funnel&&promotion.entry_funnel.by_source)||{};
       const ai=snapshot.ai_pack||{}, sync=snapshot.sync||{}, updates=snapshot.updates||{}, versions=snapshot.versions||{};
       $("desktopCards").innerHTML=[
         {label:"Tasdiqlangan first-open",value:desktopUsers(funnel,"verified_first_open"),note:"yuklash emas",tone:"good"},
@@ -640,6 +648,20 @@
       ];
       const maxStep=Math.max.apply(null,steps.map(x=>x[1]).concat([1]));
       $("desktopFunnel").innerHTML=steps.map(x=>`<div class="bar"><span>${esc(x[0])}</span><div class="track"><span style="width:${Math.round(x[1]/maxStep*100)}%"></span></div><b>${x[1]}</b></div>`).join("");
+
+      const sourceLabels={profile:"Profil",home_prompt:"Bosh sahifa",lesson_end_promo:"Dars yakuni",ad_promo:"Reklama yakuni"};
+      const sourceRows=["profile","home_prompt","lesson_end_promo","ad_promo"].map(source=>{
+        const entry=entrySources[source]||{}, promo=promoSources[source]||{};
+        return {
+          source:sourceLabels[source]||source,
+          seen:Number(entry.seen&&entry.seen.users||0),
+          chooser:Number(entry.chooser_opened&&entry.chooser_opened.users||0),
+          requested:Number(entry.requested_after_seen&&entry.requested_after_seen.users||0),
+          entryRate:Number(entry.request_per_seen||0),
+          promoRate:source==="profile"?null:Number(promo.request_per_seen||0)
+        };
+      });
+      $("desktopPromotion").innerHTML=`<table class="tbl"><thead><tr><th>Manba</th><th class="r">Ko'rdi</th><th class="r">Tanlov</th><th class="r">So'rov</th><th class="r">Entry → so'rov</th><th class="r">Promo → so'rov</th></tr></thead><tbody>${sourceRows.map(row=>`<tr><td><b>${esc(row.source)}</b></td><td class="r">${row.seen}</td><td class="r">${row.chooser}</td><td class="r">${row.requested}</td><td class="r">${row.entryRate}%</td><td class="r">${row.promoRate==null?"—":row.promoRate+"%"}</td></tr>`).join("")}</tbody></table>`;
 
       const activePlatforms=platforms.active_users_30d||{};
       const aiStarted=Number(ai.started&&ai.started.users||0), aiCompleted=Number(ai.completed&&ai.completed.users||0);

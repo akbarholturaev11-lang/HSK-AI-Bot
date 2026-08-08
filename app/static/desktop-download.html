@@ -15,8 +15,8 @@
       content="Pomp HSK AI ilovasini macOS yoki Windows uchun yuklab oling."
     >
     <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
-    <link rel="stylesheet" href="/desktop-download-page.css?v=20260802-1">
-    <script src="/desktop-download-page.js?v=20260802-1" defer></script>
+    <link rel="stylesheet" href="/desktop-download-page.css?v=20260802-2">
+    <script src="/desktop-download-page.js?v=20260802-2" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#download-card" data-i18n="skip">Yuklashga o‘tish</a>
@@ -60,7 +60,7 @@
 
         <section class="download-card" id="download-card" aria-labelledby="download-title">
           <div class="platform-switch" role="group" aria-label="Operatsion tizim">
-            <button type="button" data-platform="macos" aria-pressed="true">
+            <button type="button" data-platform="macos" aria-pressed="false">
               <span aria-hidden="true">●</span>
               macOS
             </button>
@@ -68,6 +68,14 @@
               <span aria-hidden="true">⊞</span>
               Windows
             </button>
+          </div>
+
+          <div class="platform-prompt" data-platform-prompt>
+            <span class="platform-prompt-icon" aria-hidden="true">⌘</span>
+            <div>
+              <strong data-i18n="selectTitle">Mac yoki Windowsni tanlang</strong>
+              <p data-i18n="selectBody">Kompyuteringizdagi tizimni tanlagach, mos DMG yoki EXE ko‘rsatiladi.</p>
+            </div>
           </div>
 
           <div class="installer-stage" data-installer-stage="macos" aria-hidden="true">
@@ -112,7 +120,7 @@
         </section>
       </section>
 
-      <section class="install-guide" aria-labelledby="guide-title">
+      <section class="install-guide" aria-labelledby="guide-title" data-platform-guide>
         <div class="section-heading">
           <p class="eyebrow" data-i18n="guideEyebrow">O‘rnatish</p>
           <h2 id="guide-title" data-i18n="guideTitle">Uch qadamda tayyor</h2>
@@ -143,7 +151,7 @@
         </ol>
       </section>
 
-      <section class="security-note" aria-labelledby="security-title">
+      <section class="security-note" aria-labelledby="security-title" data-platform-security>
         <span class="security-mark" aria-hidden="true">!</span>
         <div>
           <h2 id="security-title" data-i18n="securityTitle">Birinchi ochishda ogohlantirish chiqishi mumkin</h2>
@@ -157,7 +165,7 @@
         <div>
           <p class="eyebrow" data-i18n="mobileEyebrow">Telefon orqali ochdingiz</p>
           <h2 data-i18n="mobileTitle">Linkni kompyuteringizga yuboring</h2>
-          <p data-i18n="mobileBody">Installer faqat Mac yoki Windows’da ishlaydi.</p>
+          <p data-i18n="mobileBody">Avval kompyuteringiz turini tanlang. Telefonda yuklangan DMG/EXE Downloads yoki Fayllarga tushadi, lekin faqat Mac yoki Windows’da ochiladi.</p>
         </div>
         <div class="mobile-transfer-controls">
           <div class="mobile-transfer-actions">

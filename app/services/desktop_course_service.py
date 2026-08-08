@@ -636,3 +636,56 @@ class DesktopCourseService:
         user.language = language
         await self.session.commit()
         return {"ok": True, "language": language}
+
+    async def record_native_event(
+        self,
+        access_token: str,
+        *,
+        event_name: str,
+        event_id: str,
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        context = await self._context(access_token)
+        user = context.user
+        allowed = {
+            "desktop_ai_pack_started",
+            "desktop_ai_pack_completed",
+            "desktop_offline_ai_used",
+        }
+        if event_name not in allowed:
+            raise DesktopCourseError(
+                "desktop_course_event_invalid",
+                status_code=422,
+            )
+        event_id = str(event_id or "").strip()
+        if not 16 <= len(event_id) <= 80:
+            raise DesktopCourseError(
+                "desktop_course_event_invalid",
+                status_code=422,
+            )
+        result = await CourseMiniAppAnalyticsService(
+            self.session
+        ).record_server_event(
+            event_name=event_name,
+            telegram_id=user.telegram_id,
+            user_id=user.id,
+            source="desktop_native",
+            level=self._level(user),
+            session_id=event_id,
+            dedupe_key=f"desktop-native:{event_id}",
+            payload={
+                "device_id": context.device.id,
+                **dict(payload or {}),
+            },
+        )
+        if not result.get("ok"):
+            raise DesktopCourseError(
+                "desktop_course_save_failed",
+                status_code=503,
+            )
+        await self.session.commit()
+        return {
+            "ok": True,
+            "recorded": bool(result.get("recorded")),
+            "duplicate": bool(result.get("duplicate")),
+        }
