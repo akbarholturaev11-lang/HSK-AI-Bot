@@ -16,7 +16,7 @@ If they are missing, generate them once and commit them:
 
 ```bash
 cd android
-gradle wrapper --gradle-version 8.11.1
+gradle wrapper --gradle-version 8.14.5
 git add gradlew gradlew.bat gradle/wrapper/gradle-wrapper.jar
 git commit -m "build(android): add the Gradle wrapper"
 ```
