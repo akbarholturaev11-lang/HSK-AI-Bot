@@ -7,14 +7,17 @@
     never rename the folder and never send "tg" to the API.
 -->
 <resources>
-    <string name="app_name">Pomp HSK AI</string>
+    <!-- Brand name and language endonyms are shown identically in every
+         locale, so they are deliberately not translated. Without this, lint's
+         MissingTranslation check fails the build. -->
+    <string name="app_name" translatable="false">Pomp HSK AI</string>
 
     <!-- Onboarding: language -->
     <string name="onboarding_language_title">Tilni tanlang</string>
     <string name="onboarding_language_subtitle">Kurs, tarjimalar va eslatmalar shu tilda bo\'ladi.</string>
-    <string name="language_uz">O\'zbekcha</string>
-    <string name="language_ru">Русский</string>
-    <string name="language_tj">Тоҷикӣ</string>
+    <string name="language_uz" translatable="false">O\'zbekcha</string>
+    <string name="language_ru" translatable="false">Русский</string>
+    <string name="language_tj" translatable="false">Тоҷикӣ</string>
     <string name="action_continue">Davom etish</string>
 
     <!-- Onboarding: Telegram linking -->

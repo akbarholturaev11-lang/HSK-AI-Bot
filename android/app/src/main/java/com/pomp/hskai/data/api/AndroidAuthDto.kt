@@ -61,6 +61,17 @@ data class RevokeRequest(
     @SerialName("revoke_device") val revokeDevice: Boolean = false,
 )
 
+/**
+ * Modelled explicitly rather than using `Response<Unit>`: the endpoint returns
+ * a JSON body, and kotlinx.serialization has no meaningful way to decode one
+ * into `Unit`.
+ */
+@Serializable
+data class RevokeResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("device_revoked") val deviceRevoked: Boolean = false,
+)
+
 @Serializable
 data class BootstrapResponse(
     @SerialName("ok") val ok: Boolean = false,

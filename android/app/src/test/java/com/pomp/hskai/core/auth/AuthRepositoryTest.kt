@@ -13,6 +13,7 @@ import com.pomp.hskai.data.api.LinkStatusResponse
 import com.pomp.hskai.data.api.RefreshRequest
 import com.pomp.hskai.data.api.RefreshResponse
 import com.pomp.hskai.data.api.RevokeRequest
+import com.pomp.hskai.data.api.RevokeResponse
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -70,13 +71,22 @@ private open class FakeAuthApi : AndroidAuthApi {
     override suspend fun revoke(
         authorization: String,
         body: RevokeRequest,
-    ): Response<Unit> = Response.success(Unit)
+    ): Response<RevokeResponse> = Response.success(RevokeResponse(ok = true))
 
     override suspend fun bootstrap(
         authorization: String,
         appVersion: String,
     ): Response<BootstrapResponse> = throw NotImplementedError()
 }
+
+/**
+ * `as ApiResult.Success` needs an explicit type argument, so these helpers keep
+ * the assertions readable without repeating it at every call site.
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <T> ApiResult<T>.success(): T = (this as ApiResult.Success<T>).value
+
+private fun ApiResult<*>.failure(): ApiError = (this as ApiResult.Failure).error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthRepositoryTest {
@@ -110,7 +120,7 @@ class AuthRepositoryTest {
 
             val result = repository(api, FakeCredentialStore()).startLink()
 
-            val pending = (result as ApiResult.Success).value
+            val pending = result.success()
             assertEquals("HSK4827X", pending.displayCode)
             // The security property the desktop flow established.
             assertTrue(pending.displayCode !in pending.botDeepLink)
@@ -130,7 +140,7 @@ class AuthRepositoryTest {
 
         val result = repository(api, store).pollLink(pendingLink())
 
-        assertEquals(false, (result as ApiResult.Success).value)
+        assertEquals(false, result.success())
         assertTrue(store.savedTokens.isEmpty())
         assertNull(store.storedRefresh)
     }
@@ -155,7 +165,7 @@ class AuthRepositoryTest {
 
         val result = repository(api, store).pollLink(pendingLink())
 
-        assertEquals(true, (result as ApiResult.Success).value)
+        assertEquals(true, result.success())
         assertEquals(listOf("pomp_r1_first"), store.savedTokens)
     }
 
@@ -179,8 +189,8 @@ class AuthRepositoryTest {
         }
         val repository = repository(api, store)
 
-        assertEquals("access-1", (repository.accessToken() as ApiResult.Success).value)
-        assertEquals("access-1", (repository.accessToken() as ApiResult.Success).value)
+        assertEquals("access-1", repository.accessToken().success())
+        assertEquals("access-1", repository.accessToken().success())
 
         assertEquals(1, refreshes.get())
         assertEquals(listOf("pomp_r1_second"), store.savedTokens)
@@ -204,10 +214,10 @@ class AuthRepositoryTest {
         }
         val repository = repository(api, store)
 
-        assertEquals("access-1", (repository.accessToken() as ApiResult.Success).value)
+        assertEquals("access-1", repository.accessToken().success())
         // Inside the 30s safety skew before expiry.
         clock += 880_000L
-        assertEquals("access-2", (repository.accessToken() as ApiResult.Success).value)
+        assertEquals("access-2", repository.accessToken().success())
         assertEquals(2, issued.get())
     }
 
@@ -236,7 +246,7 @@ class AuthRepositoryTest {
 
         assertEquals(1, refreshes.get())
         results.forEach {
-            assertEquals("access-1", (it as ApiResult.Success).value)
+            assertEquals("access-1", it.success())
         }
         // Reusing a rotated token would revoke the session server-side, so
         // exactly one rotation must have been persisted.
@@ -256,7 +266,7 @@ class AuthRepositoryTest {
 
         val result = repository(api, store).accessToken()
 
-        assertEquals(ApiError.SessionExpired, (result as ApiResult.Failure).error)
+        assertEquals(ApiError.SessionExpired, result.failure())
         assertEquals(1, store.clearSessionCalls)
         assertNull(store.storedRefresh)
     }
@@ -267,7 +277,7 @@ class AuthRepositoryTest {
 
         val result = repository.bootstrap()
 
-        assertEquals(ApiError.SessionExpired, (result as ApiResult.Failure).error)
+        assertEquals(ApiError.SessionExpired, result.failure())
         assertEquals(AuthState.Unauthenticated, repository.state.value)
     }
 
@@ -308,7 +318,7 @@ class AuthRepositoryTest {
         }
         val repository = repository(api, store)
 
-        val account = (repository.bootstrap() as ApiResult.Success).value
+        val account = repository.bootstrap().success()
 
         assertEquals("Akbar", account.displayName)
         assertEquals("hsk4", account.level)
@@ -335,7 +345,7 @@ class AuthRepositoryTest {
             override suspend fun revoke(
                 authorization: String,
                 body: RevokeRequest,
-            ): Response<Unit> = throw java.io.IOException("offline")
+            ): Response<RevokeResponse> = throw java.io.IOException("offline")
         }
         val repository = repository(api, store)
 

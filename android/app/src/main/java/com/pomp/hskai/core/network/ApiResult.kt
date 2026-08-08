@@ -23,13 +23,12 @@ private val errorJson = Json { ignoreUnknownKeys = true }
 suspend fun <T : Any> apiCall(block: suspend () -> Response<T>): ApiResult<T> = try {
     val response = block()
     val body = response.body()
-    if (response.isSuccessful && body != null) {
-        ApiResult.Success(body)
-    } else if (response.isSuccessful) {
-        @Suppress("UNCHECKED_CAST")
-        ApiResult.Success(Unit as T)
-    } else {
-        ApiResult.Failure(ApiError.fromCode(response.errorCode()))
+    when {
+        response.isSuccessful && body != null -> ApiResult.Success(body)
+        // A 2xx with no parsable body is not something the caller can use, and
+        // silently inventing one would hide a contract change.
+        response.isSuccessful -> ApiResult.Failure(ApiError.Unknown)
+        else -> ApiResult.Failure(ApiError.fromCode(response.errorCode()))
     }
 } catch (timeout: SocketTimeoutException) {
     ApiResult.Failure(ApiError.Timeout)

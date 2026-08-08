@@ -23,7 +23,6 @@ serialization = "1.8.0"
 
 okhttp = "4.12.0"
 retrofit = "2.11.0"
-retrofitSerialization = "1.0.0"
 
 room = "2.7.1"
 datastore = "1.1.4"
@@ -63,7 +62,12 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-kotlinx-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitSerialization" }
+# Square's first-party converter. It is Jake Wharton's library imported into the
+# Retrofit repository unchanged, so the package is still
+# retrofit2.converter.kotlinx.serialization, but it is published alongside
+# retrofit itself and shares its version instead of being a separate
+# third-party artifact on its own release cycle.
+retrofit-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }

@@ -29,7 +29,7 @@ interface AndroidAuthApi {
     suspend fun revoke(
         @Header("Authorization") authorization: String,
         @Body body: RevokeRequest,
-    ): Response<Unit>
+    ): Response<RevokeResponse>
 
     @GET("api/v3/android/bootstrap")
     suspend fun bootstrap(

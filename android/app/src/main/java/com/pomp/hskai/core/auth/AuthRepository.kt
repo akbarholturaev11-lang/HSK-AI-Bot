@@ -216,9 +216,15 @@ class AuthRepository(
      * after the user asked to leave.
      */
     suspend fun logout(unlinkDevice: Boolean = false) {
-        val token = (accessToken() as? ApiResult.Success)?.value
-        if (token != null) {
-            apiCall { api.revoke("Bearer $token", RevokeRequest(unlinkDevice)) }
+        when (val result = accessToken()) {
+            is ApiResult.Success -> {
+                apiCall {
+                    api.revoke("Bearer ${result.value}", RevokeRequest(unlinkDevice))
+                }
+            }
+            // No usable token (offline, or the session is already gone). The
+            // local wipe below still has to happen.
+            is ApiResult.Failure -> Unit
         }
         if (unlinkDevice) {
             store.clearEverything()
