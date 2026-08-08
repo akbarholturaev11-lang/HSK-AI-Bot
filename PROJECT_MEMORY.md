@@ -207,6 +207,27 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-09 — Android auth-session va deep-link/audio lifecycle himoyasi
+
+Changed:
+- Link, course va lesson ViewModel'lari endi bitta auth branchga tegishli alohida
+  `ViewModelStore` ichida yashaydi; logout/relinkda store tozalanadi. Eski hisobning
+  link kodi, kurs xaritasi yoki dars holati boshqa sessionga o'tmaydi.
+- Har deep-link delivery noyob request ID oladi. Muvaffaqiyatsiz fresh-map
+  tekshiruvi bir request uchun loop qilmaydi, lekin aynan shu URI qayta ochilsa
+  yangi server authorization urinishini boshlaydi va pending intent yo'qolmaydi.
+- Darsdan chiqish pending TTS jobni bekor qiladi, urinishni invalid qiladi va
+  kech qaytgan audio eski dars/akkauntda o'ynamaydi.
+
+Files touched:
+- `android/.../MainActivity.kt`, `core/navigation/NavigationSession.kt`,
+  `feature/lesson/LessonViewModel.kt` va unit testlar.
+
+Risk / follow-up:
+- Backend, kurs access/XP, obuna va to'lov logikasi o'zgarmadi. JVM unit test,
+  Android lint va debug APK build o'tdi; real qurilmada logout → boshqa accountga
+  relink va sekin TTS paytida darsdan chiqish smoke-test qilinsin.
+
 ### 2026-08-08 — Android native klient: auth adapteri + loyiha poydevori (Phase A-C)
 
 Changed:
