@@ -70,4 +70,28 @@
     <string name="course_progress">%1$d / %2$d қисм</string>
     <string name="course_checkpoint">Такрор</string>
     <string name="course_part_label">Қисми %1$d</string>
+
+    <string name="lesson_new_word">КАЛИМАИ НАВ</string>
+    <string name="lesson_grammar">Грамматика</string>
+    <string name="lesson_repeat_after_teacher">Пас аз устод такрор кунед</string>
+    <string name="lesson_cannot_speak_now">Ҳоло гап зада наметавонам</string>
+    <string name="lesson_listen_and_choose">Он чи шунидед, интихоб кунед</string>
+    <string name="lesson_build_sentence">Ҷумларо созед</string>
+    <string name="lesson_build_translation">Тарҷумаро созед</string>
+    <string name="lesson_match_pairs">Ҷуфтҳоро мувофиқ кунед</string>
+    <string name="lesson_check">Санҷидан</string>
+    <string name="lesson_next">Идома додан</string>
+    <string name="lesson_correct">Дуруст</string>
+    <string name="lesson_wrong">Нодуруст</string>
+    <string name="lesson_done_title">Дарс анҷом ёфт</string>
+    <string name="lesson_done_accuracy">%1$d / %2$d дуруст</string>
+    <string name="lesson_back_to_course">Бозгашт ба курс</string>
+    <string name="lesson_save_failed">Натиҷа сабт нашуд</string>
+    <string name="lesson_preview_over_title">Қисми ройгон анҷом ёфт</string>
+    <string name="lesson_preview_over_body">Қисми боқимондаи ин дарс бо обуна кушода мешавад.</string>
+    <string name="lesson_card_unsupported">Ин навъи корт ҳанӯз дастгирӣ намешавад</string>
+    <string name="lesson_card_unsupported_hint">Барномаро навсозӣ кунед. Ин корт баҳо дода намешавад.</string>
+    <string name="lesson_skip_card">Гузарондан</string>
+    <string name="cd_answer_correct">%1$s — ҷавоби дуруст</string>
+    <string name="cd_answer_wrong">%1$s — ҷавоби нодуруст</string>
 </resources>

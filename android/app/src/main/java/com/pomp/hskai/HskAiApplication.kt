@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.network.OriginGuardInterceptor
+import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.core.storage.SecureCredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
 import com.pomp.hskai.data.api.AndroidCourseApi
@@ -55,6 +56,8 @@ class HskAiApplication : Application() {
     }
 
     val credentialStore: SecureCredentialStore by lazy { SecureCredentialStore(this) }
+
+    val appSettings: AppSettings by lazy { AppSettings(this) }
 
     val authRepository: AuthRepository by lazy {
         AuthRepository(

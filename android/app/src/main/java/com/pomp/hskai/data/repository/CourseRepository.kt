@@ -1,5 +1,6 @@
 package com.pomp.hskai.data.repository
 
+import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
@@ -8,12 +9,15 @@ import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.CourseMistakeDto
+import com.pomp.hskai.data.lesson.LessonParser
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.domain.model.CourseMap
+import com.pomp.hskai.domain.model.Lesson
 import java.util.TimeZone
 import java.util.UUID
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 
 /**
  * A course map plus how trustworthy it is right now.
@@ -83,6 +87,43 @@ class CourseRepository(
                             fetchedAtMillis = fetchedAt,
                         )
                     )
+                }
+            }
+        }
+    }
+
+    /**
+     * Loads and parses one mini-lesson.
+     *
+     * Not cached yet: Phase K decides what may be studied offline. Until then
+     * a lesson always comes from the server, so its access decision is current.
+     */
+    suspend fun lesson(
+        level: String,
+        lessonOrder: Int,
+        language: AppLanguage,
+    ): ApiResult<Lesson> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        return when (val result = apiCall { api.lesson("Bearer $token", lessonOrder) }) {
+            is ApiResult.Failure -> result
+            is ApiResult.Success -> {
+                val body = result.value["lesson"] as? JsonObject
+                    ?: return ApiResult.Failure(ApiError.Unknown)
+                val parsed = runCatching {
+                    LessonParser.parse(
+                        payload = body,
+                        level = level,
+                        lessonOrder = lessonOrder,
+                        language = language,
+                    )
+                }.getOrNull()
+                if (parsed == null || parsed.cards.isEmpty()) {
+                    ApiResult.Failure(ApiError.Unknown)
+                } else {
+                    ApiResult.Success(parsed)
                 }
             }
         }

@@ -69,4 +69,28 @@
     <string name="course_progress">%1$d / %2$d частей</string>
     <string name="course_checkpoint">Повторение</string>
     <string name="course_part_label">Часть %1$d</string>
+
+    <string name="lesson_new_word">НОВОЕ СЛОВО</string>
+    <string name="lesson_grammar">Грамматика</string>
+    <string name="lesson_repeat_after_teacher">Повторите за преподавателем</string>
+    <string name="lesson_cannot_speak_now">Сейчас не могу говорить</string>
+    <string name="lesson_listen_and_choose">Выберите, что вы услышали</string>
+    <string name="lesson_build_sentence">Составьте предложение</string>
+    <string name="lesson_build_translation">Составьте перевод</string>
+    <string name="lesson_match_pairs">Соедините пары</string>
+    <string name="lesson_check">Проверить</string>
+    <string name="lesson_next">Продолжить</string>
+    <string name="lesson_correct">Верно</string>
+    <string name="lesson_wrong">Неверно</string>
+    <string name="lesson_done_title">Урок пройден</string>
+    <string name="lesson_done_accuracy">%1$d / %2$d верно</string>
+    <string name="lesson_back_to_course">Вернуться к курсу</string>
+    <string name="lesson_save_failed">Не удалось сохранить результат</string>
+    <string name="lesson_preview_over_title">Бесплатная часть закончилась</string>
+    <string name="lesson_preview_over_body">Остальная часть урока открывается по подписке.</string>
+    <string name="lesson_card_unsupported">Этот тип карточки пока не поддерживается</string>
+    <string name="lesson_card_unsupported_hint">Обновите приложение. Эта карточка не оценивается.</string>
+    <string name="lesson_skip_card">Пропустить</string>
+    <string name="cd_answer_correct">%1$s — правильный ответ</string>
+    <string name="cd_answer_wrong">%1$s — неправильный ответ</string>
 </resources>

@@ -14,7 +14,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,6 +35,11 @@ import com.pomp.hskai.core.navigation.MainTab
 import com.pomp.hskai.feature.course.CourseScreen
 import com.pomp.hskai.feature.course.CourseViewModel
 import com.pomp.hskai.feature.profile.ProfileScreen
+import com.pomp.hskai.core.settings.PinyinVisibility
+import com.pomp.hskai.domain.model.CourseLesson
+import com.pomp.hskai.domain.model.LessonAccess
+import com.pomp.hskai.feature.lesson.LessonScreen
+import com.pomp.hskai.feature.lesson.LessonViewModel
 import com.pomp.hskai.feature.today.TodayScreen
 import kotlinx.coroutines.launch
 
@@ -90,7 +98,10 @@ private fun AppRoot(
                 factory = CourseViewModel.Factory(app.courseRepository),
             )
             val courseState by courseViewModel.state.collectAsStateWithLifecycle()
+            val pinyin by app.appSettings.pinyinVisibility
+                .collectAsStateWithLifecycle(initialValue = PinyinVisibility.DEFAULT)
             val scope = rememberCoroutineScope()
+            var openLesson by remember { mutableStateOf<CourseLesson?>(null) }
 
             val signOut: (Boolean) -> Unit = { unlink ->
                 scope.launch {
@@ -99,20 +110,34 @@ private fun AppRoot(
                 }
             }
 
-            MainScaffold(initialTab = startTab ?: MainTab.TODAY) { tab, contentModifier ->
+            val lesson = openLesson
+            if (lesson != null) {
+                LessonHost(
+                    app = app,
+                    lesson = lesson,
+                    level = courseState.map?.level.orEmpty(),
+                    language = state.account.language,
+                    pinyin = pinyin,
+                    onExit = {
+                        openLesson = null
+                        // Progress, XP and streak all come back from the
+                        // server rather than being guessed locally.
+                        courseViewModel.load()
+                    },
+                )
+            } else {
+                MainScaffold(initialTab = startTab ?: MainTab.TODAY) { tab, contentModifier ->
                 when (tab) {
                     MainTab.TODAY -> TodayScreen(
                         state = courseState,
-                        // Phase E opens the lesson renderer; until then the
-                        // action refreshes rather than pretending to navigate.
-                        onContinue = { courseViewModel.load() },
+                        onContinue = { openLesson = it },
                         onRetry = courseViewModel::load,
                         modifier = contentModifier,
                     )
 
                     MainTab.COURSE -> CourseScreen(
                         state = courseState,
-                        onLesson = { courseViewModel.load() },
+                        onLesson = { openLesson = it },
                         modifier = contentModifier,
                     )
 
@@ -122,10 +147,51 @@ private fun AppRoot(
                         onUnlinkDevice = { signOut(true) },
                         modifier = contentModifier,
                     )
+                    }
                 }
             }
         }
     }
+}
+
+/**
+ * Hosts one lesson attempt.
+ *
+ * Keyed by lesson order so a new attempt gets a fresh state machine and a
+ * fresh completion event id, while a recomposition keeps the current one.
+ */
+@Composable
+private fun LessonHost(
+    app: HskAiApplication,
+    lesson: CourseLesson,
+    level: String,
+    language: com.pomp.hskai.core.i18n.AppLanguage,
+    pinyin: PinyinVisibility,
+    onExit: () -> Unit,
+) {
+    val model: LessonViewModel = viewModel(
+        key = "lesson-${lesson.order}",
+        factory = LessonViewModel.Factory(
+            repository = app.courseRepository,
+            level = level,
+            lessonOrder = lesson.order,
+            language = language,
+            isHalfPreview = lesson.access == LessonAccess.HalfPreview,
+        ),
+    )
+    val lessonState by model.state.collectAsStateWithLifecycle()
+
+    LessonScreen(
+        state = lessonState,
+        pinyin = pinyin,
+        onAnswerChoice = model::answerChoice,
+        onAnswerBuilder = model::answerBuilder,
+        onAnswerPairs = model::answerMatchPairs,
+        onAcknowledge = model::acknowledge,
+        onAdvance = model::advance,
+        onRetryCompletion = model::retryCompletion,
+        onExit = onExit,
+    )
 }
 
 @Composable
