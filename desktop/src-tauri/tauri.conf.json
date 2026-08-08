@@ -54,7 +54,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEIxNDgwNzA1NDczQUI1M0EKUldRNnRUcEhCUWRJc2JLalJRZWFTdW0zY2pzUlVWbCtYNlVFWTFpYTgxOXFzbHdwNm1XQ3Q4U0gK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI3NjI5QTdBMjYzREQxNzIKUldSeTBUMG1lcHBpdHpETU9PZ2ZkN2l3b1l0aVJHQk5tNURzNVkxdCtSV2tTV0N1N1B4WmxPZVcK",
       "endpoints": [
         "https://telegram-chinese-bot-production.up.railway.app/api/v3/desktop/update/{{target}}/{{arch}}/{{current_version}}"
       ],
