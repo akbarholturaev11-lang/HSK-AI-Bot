@@ -1290,7 +1290,12 @@
     } catch (error) {}
   }
 
-  function performDownloadRequest(platform, source, destination) {
+  function performDownloadRequest(
+    platform,
+    source,
+    destination,
+    retriedExpiredLink
+  ) {
     var id = pendingEventId(platform, source);
     state.pendingPlatform = platform;
     state.pendingDestination = destination;
@@ -1364,6 +1369,13 @@
         window.clearTimeout(timeoutId);
         state.pendingPlatform = "";
         state.pendingDestination = "";
+        if (error && error.code === "desktop_download_link_expired") {
+          clearPendingEventId(platform, source);
+          if (!retriedExpiredLink) {
+            performDownloadRequest(platform, source, destination, true);
+            return;
+          }
+        }
         if (error && error.code === "desktop_download_share_cancelled") {
           state.destinationMessage = text().shareCancelled;
           state.destinationMessageKind = "neutral";

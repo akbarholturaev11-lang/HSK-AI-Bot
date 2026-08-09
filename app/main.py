@@ -60,6 +60,7 @@ from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
+from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_release_manifest_service import (
     resolve_desktop_latest_versions,
 )
@@ -386,18 +387,41 @@ async def _background_scheduler(bot: Bot) -> None:
             print("Scheduler error:", e)
 
 
+async def _desktop_auth_retention_scheduler() -> None:
+    """Remove expired native-auth rows without blocking the bot scheduler."""
+
+    while True:
+        try:
+            async with async_session_maker() as session:
+                result = await DesktopAuthService(
+                    session,
+                    settings,
+                ).cleanup_expired_records()
+            if any(result.values()):
+                logger.info("Desktop auth retention cleanup: %s", result)
+        except Exception:
+            # Authentication remains fail-closed even if housekeeping is
+            # temporarily unavailable; retry independently on the next hour.
+            logger.exception("Desktop auth retention cleanup failed")
+        await asyncio.sleep(60 * 60)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()                                          # faqat jadval yaratish (tez)
     seed_task = asyncio.create_task(_seed_lessons())        # background seeding
     polling_task = asyncio.create_task(dp.start_polling(bot))
     scheduler_task = asyncio.create_task(_background_scheduler(bot))
+    desktop_auth_cleanup_task = asyncio.create_task(
+        _desktop_auth_retention_scheduler()
+    )
     try:
         yield                                                # /health darhol ishlaydi
     finally:
         seed_task.cancel()
         polling_task.cancel()
         scheduler_task.cancel()
+        desktop_auth_cleanup_task.cancel()
         study_ai_tasks = tuple(_study_ai_tasks)
         for task in study_ai_tasks:
             task.cancel()
@@ -407,6 +431,8 @@ async def lifespan(app: FastAPI):
             await polling_task
         with contextlib.suppress(asyncio.CancelledError):
             await scheduler_task
+        with contextlib.suppress(asyncio.CancelledError):
+            await desktop_auth_cleanup_task
         for task in study_ai_tasks:
             with contextlib.suppress(asyncio.CancelledError):
                 await task

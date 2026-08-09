@@ -427,6 +427,46 @@ class DesktopDownloadService:
         )
         return result.scalar_one_or_none()
 
+    def _request_token_ttl(self) -> timedelta:
+        seconds = max(
+            300,
+            min(
+                7 * 24 * 60 * 60,
+                int(
+                    getattr(
+                        self.settings,
+                        "DESKTOP_DOWNLOAD_REQUEST_TOKEN_TTL_SECONDS",
+                        24 * 60 * 60,
+                    )
+                ),
+            ),
+        )
+        return timedelta(seconds=seconds)
+
+    def _ensure_request_token_active(
+        self,
+        event: CourseMiniAppEvent,
+        *,
+        platform: str,
+    ) -> None:
+        created_at = event.created_at
+        if created_at is None:
+            raise DesktopDownloadError(
+                "desktop_download_link_expired",
+                status_code=410,
+                platform=platform,
+            )
+        if created_at.tzinfo is None:
+            created_at = created_at.replace(tzinfo=timezone.utc)
+        else:
+            created_at = created_at.astimezone(timezone.utc)
+        if created_at <= datetime.now(timezone.utc) - self._request_token_ttl():
+            raise DesktopDownloadError(
+                "desktop_download_link_expired",
+                status_code=410,
+                platform=platform,
+            )
+
     async def _recent_requested_count(self, telegram_id: int) -> tuple[int, int, int]:
         count = max(
             1,
@@ -523,6 +563,7 @@ class DesktopDownloadService:
             dedupe_key=request_dedupe,
         )
         if request_event:
+            self._ensure_request_token_active(request_event, platform=platform)
             request_token = str(request_event.session_id or "")
             if not REQUEST_TOKEN_RE.fullmatch(request_token):
                 raise DesktopDownloadError(
@@ -628,6 +669,7 @@ class DesktopDownloadService:
                 status_code=404,
                 platform=platform,
             )
+        self._ensure_request_token_active(request_event, platform=platform)
         request_token = str(request_event.session_id or "")
         payload = self._event_payload(request_event)
         if (
@@ -693,6 +735,7 @@ class DesktopDownloadService:
         request_event = await self._request_event_by_token(request_token)
         if not request_event:
             raise DesktopDownloadError("desktop_download_not_found", status_code=404)
+        self._ensure_request_token_active(request_event, platform=platform)
         payload = self._event_payload(request_event)
         if payload.get("platform") != platform:
             raise DesktopDownloadError("desktop_download_not_found", status_code=404)

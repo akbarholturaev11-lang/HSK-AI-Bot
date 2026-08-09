@@ -1,9 +1,9 @@
 import logging
-from typing import Annotated, Any, Callable, Literal
+from typing import Annotated, Any, Callable, Literal, TypeVar
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, RedirectResponse
-from pydantic import BaseModel, ConfigDict, StringConstraints
+from pydantic import BaseModel, ConfigDict, StringConstraints, ValidationError
 
 from app.services.desktop_download_service import (
     DesktopDownloadError,
@@ -17,6 +17,8 @@ from app.services.telegram_webapp_auth import extract_fresh_verified_webapp_user
 
 
 logger = logging.getLogger(__name__)
+MAX_DESKTOP_DOWNLOAD_BODY_BYTES = 2048
+PayloadModel = TypeVar("PayloadModel", bound=BaseModel)
 
 DesktopEventId = Annotated[
     str,
@@ -45,6 +47,50 @@ class DesktopDownloadStartedRequest(BaseModel):
     source: Literal["profile", "home_prompt", "lesson_end_promo", "ad_promo"]
     event_id: DesktopEventId
     transport: Literal["download_file", "open_link", "web_share", "copy_link"]
+
+
+async def _validated_payload(
+    request: Request,
+    model_type: type[PayloadModel],
+) -> PayloadModel:
+    """Read desktop download JSON through a strict application body bound."""
+
+    content_type = str(request.headers.get("Content-Type", "") or "")
+    if content_type.split(";", 1)[0].strip().lower() != "application/json":
+        raise DesktopDownloadError(
+            "desktop_download_request_invalid",
+            status_code=415,
+        )
+
+    content_length = str(request.headers.get("Content-Length", "") or "").strip()
+    if content_length:
+        try:
+            if int(content_length) > MAX_DESKTOP_DOWNLOAD_BODY_BYTES:
+                raise DesktopDownloadError(
+                    "desktop_download_request_too_large",
+                    status_code=413,
+                )
+        except ValueError as exc:
+            raise DesktopDownloadError(
+                "desktop_download_request_invalid",
+                status_code=400,
+            ) from exc
+
+    body = bytearray()
+    async for chunk in request.stream():
+        body.extend(chunk)
+        if len(body) > MAX_DESKTOP_DOWNLOAD_BODY_BYTES:
+            raise DesktopDownloadError(
+                "desktop_download_request_too_large",
+                status_code=413,
+            )
+    try:
+        return model_type.model_validate_json(bytes(body))
+    except (ValidationError, ValueError, TypeError) as exc:
+        raise DesktopDownloadError(
+            "desktop_download_request_invalid",
+            status_code=422,
+        ) from exc
 
 
 def _auth_user_id(request: Request, settings_obj: Any) -> int | None:
@@ -130,14 +176,12 @@ def create_desktop_download_router(
         )
 
     @router.post("/api/v3/desktop-download/request")
-    async def desktop_download_request(
-        request: Request,
-        payload: DesktopDownloadRequest,
-    ):
+    async def desktop_download_request(request: Request):
         telegram_id = _auth_user_id(request, settings_obj)
         if not telegram_id:
             return unauthorized()
         try:
+            payload = await _validated_payload(request, DesktopDownloadRequest)
             async with session_factory() as session:
                 result = await make_service(session).request_download(
                     telegram_id=telegram_id,
@@ -158,14 +202,15 @@ def create_desktop_download_router(
             )
 
     @router.post("/api/v3/desktop-download/started")
-    async def desktop_download_started(
-        request: Request,
-        payload: DesktopDownloadStartedRequest,
-    ):
+    async def desktop_download_started(request: Request):
         telegram_id = _auth_user_id(request, settings_obj)
         if not telegram_id:
             return unauthorized()
         try:
+            payload = await _validated_payload(
+                request,
+                DesktopDownloadStartedRequest,
+            )
             async with session_factory() as session:
                 result = await make_service(session).mark_started(
                     telegram_id=telegram_id,

@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 from uuid import uuid4
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, delete, func, or_, select, text
 
 from app.db.models.desktop import DesktopDevice, DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
@@ -29,6 +29,11 @@ MOBILE_PLATFORMS = {"android"}
 # desktop statistics) keep their current meaning and are not silently widened.
 NATIVE_PLATFORMS = DESKTOP_PLATFORMS | MOBILE_PLATFORMS
 logger = logging.getLogger(__name__)
+
+# A transaction-scoped PostgreSQL advisory lock makes the unauthenticated
+# link-start count-and-insert sequence atomic across workers and replicas. The
+# number is a fixed application namespace, not derived from user input.
+LINK_START_RATE_LIMIT_LOCK_KEY = 1_215_521_089
 
 
 class DesktopAuthError(RuntimeError):
@@ -129,6 +134,75 @@ class DesktopAuthService:
         )
         return timedelta(days=days)
 
+    def _record_retention(self) -> timedelta:
+        days = max(
+            1,
+            min(
+                365,
+                int(
+                    getattr(
+                        self.settings,
+                        "DESKTOP_AUTH_RECORD_RETENTION_DAYS",
+                        30,
+                    )
+                ),
+            ),
+        )
+        return timedelta(days=days)
+
+    async def _acquire_link_start_rate_limit_lock(self) -> None:
+        """Serialize public link-start admission on the production database.
+
+        Railway uses PostgreSQL. SQLite is kept as a lightweight local/test
+        backend and already serializes its writes; PostgreSQL needs an explicit
+        cross-process lock so concurrent replicas cannot all pass the same
+        count before inserting.
+        """
+
+        bind = self.session.get_bind()
+        dialect = str(getattr(getattr(bind, "dialect", None), "name", ""))
+        if dialect == "postgresql":
+            await self.session.execute(
+                text("SELECT pg_advisory_xact_lock(:lock_key)"),
+                {"lock_key": LINK_START_RATE_LIMIT_LOCK_KEY},
+            )
+
+    async def cleanup_expired_records(
+        self,
+        *,
+        now: datetime | None = None,
+    ) -> dict[str, int]:
+        """Delete native-auth records only after the configured retention.
+
+        Devices are intentionally retained because they hold installation
+        ownership and first-open analytics. Only already-expired link requests
+        and expired/revoked sessions are eligible.
+        """
+
+        cleanup_now = _as_utc(now) or _utcnow()
+        cutoff = cleanup_now - self._record_retention()
+        link_result = await self.session.execute(
+            delete(DesktopLinkRequest).where(
+                DesktopLinkRequest.expires_at <= cutoff,
+            )
+        )
+        session_result = await self.session.execute(
+            delete(DesktopSession).where(
+                or_(
+                    DesktopSession.expires_at <= cutoff,
+                    and_(
+                        DesktopSession.revoked_at.is_not(None),
+                        DesktopSession.revoked_at <= cutoff,
+                    ),
+                )
+            )
+        )
+        await self.session.commit()
+        return {
+            "link_requests_deleted": max(0, int(link_result.rowcount or 0)),
+            "sessions_deleted": max(0, int(session_result.rowcount or 0)),
+        }
+
     @staticmethod
     def _display_code() -> str:
         return "".join(secrets.choice(DISPLAY_CODE_ALPHABET) for _ in range(8))
@@ -214,6 +288,7 @@ class DesktopAuthService:
                 "desktop_installation_key_invalid", status_code=422
             )
 
+        await self._acquire_link_start_rate_limit_lock()
         now = _utcnow()
         installation_hash = self._hash("installation", installation_key)
         global_limit = max(

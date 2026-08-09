@@ -1,9 +1,12 @@
 import json
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
+from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
 
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
@@ -38,6 +41,7 @@ def _settings(**overrides):
         "DESKTOP_WINDOWS_VERSION": "1.0.0",
         "DESKTOP_DOWNLOAD_RATE_LIMIT_COUNT": 3,
         "DESKTOP_DOWNLOAD_RATE_LIMIT_WINDOW_SECONDS": 900,
+        "DESKTOP_DOWNLOAD_REQUEST_TOKEN_TTL_SECONDS": 86400,
         "DESKTOP_DOWNLOAD_AUTH_MAX_AGE_SECONDS": 300,
     }
     values.update(overrides)
@@ -296,6 +300,72 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(first, second)
             self.assertEqual(int(count or 0), 1)
 
+    async def test_tracked_token_expires_but_public_download_stays_available(self):
+        async with self.sessions() as session:
+            service = DesktopDownloadService(
+                session,
+                _settings(DESKTOP_DOWNLOAD_REQUEST_TOKEN_TTL_SECONDS=300),
+            )
+            result = await service.request_download(
+                telegram_id=1001,
+                platform="macos",
+                source="profile",
+                event_id="desktop-event-expiry-0010",
+                language="uz",
+            )
+            token = parse_qs(urlsplit(result["download_url"]).query)["request"][0]
+            request_event = (
+                await session.execute(
+                    select(CourseMiniAppEvent).where(
+                        CourseMiniAppEvent.event_name
+                        == "desktop_download_requested"
+                    )
+                )
+            ).scalar_one()
+            request_event.created_at = datetime.now(timezone.utc) - timedelta(
+                seconds=301
+            )
+            await session.commit()
+
+            for operation in (
+                service.resolve_redirect(
+                    platform="macos",
+                    request_token=token,
+                ),
+                service.mark_started(
+                    telegram_id=1001,
+                    platform="macos",
+                    source="profile",
+                    event_id="desktop-event-expiry-0010",
+                    transport="download_file",
+                ),
+                service.request_download(
+                    telegram_id=1001,
+                    platform="macos",
+                    source="profile",
+                    event_id="desktop-event-expiry-0010",
+                    language="uz",
+                ),
+            ):
+                with self.assertRaises(DesktopDownloadError) as caught:
+                    await operation
+                self.assertEqual(
+                    caught.exception.code,
+                    "desktop_download_link_expired",
+                )
+                self.assertEqual(caught.exception.status_code, 410)
+
+            self.assertEqual(
+                await service.resolve_redirect(
+                    platform="macos",
+                    request_token=None,
+                ),
+                (
+                    "https://releases.example.test/Pomp-HSK-AI-universal.dmg",
+                    "Pomp-HSK-AI-universal.dmg",
+                ),
+            )
+
     async def test_public_redirect_needs_no_user_token_and_records_no_fake_install(self):
         async with self.sessions() as session:
             service = DesktopDownloadService(session, _settings())
@@ -355,7 +425,42 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(caught.exception.code, "desktop_download_rate_limited")
 
 
-class DesktopDownloadApiContractTests(unittest.TestCase):
+class DesktopDownloadApiContractTests(unittest.IsolatedAsyncioTestCase):
+    async def test_oversized_download_body_is_rejected_before_service(self):
+        class _SessionFactory:
+            def __call__(self):
+                raise AssertionError("oversized payload must not reach the service")
+
+        app = FastAPI()
+        app.include_router(
+            create_desktop_download_router(
+                session_factory=_SessionFactory(),
+                settings_obj=_settings(),
+            )
+        )
+        with patch(
+            "app.api.desktop_download._auth_user_id",
+            return_value=1001,
+        ):
+            async with AsyncClient(
+                transport=ASGITransport(app=app),
+                base_url="https://desktop.test",
+            ) as client:
+                response = await client.post(
+                    "/api/v3/desktop-download/request",
+                    content=b'{"platform":"macos","padding":"'
+                    + (b"x" * 3000)
+                    + b'"}',
+                    headers={"Content-Type": "application/json"},
+                )
+
+        self.assertEqual(response.status_code, 413)
+        self.assertEqual(
+            response.json(),
+            {"ok": False, "error": "desktop_download_request_too_large"},
+        )
+        self.assertEqual(response.headers.get("cache-control"), "no-store")
+
     def test_started_transport_is_explicit_and_extra_fields_are_forbidden(self):
         for transport in ("open_link", "download_file", "web_share", "copy_link"):
             payload = DesktopDownloadStartedRequest(

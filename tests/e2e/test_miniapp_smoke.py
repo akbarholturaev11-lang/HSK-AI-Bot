@@ -1301,6 +1301,94 @@ def test_desktop_download_opens_branded_site_without_closing_miniapp(page):
     expect(page.locator(".pdd-promo-shell")).to_contain_text("Yuklash sayti ochildi")
 
 
+def test_desktop_download_refreshes_expired_pending_event_once(page):
+    mock_telegram_desktop_download(page, platform="tdesktop")
+    requests = []
+    started = []
+    stale_event_id = "pdd.download-request.stale-event-0001"
+    page.add_init_script(
+        """
+        sessionStorage.setItem(
+          "hsk_pdd_pending_v1:macos:profile",
+          "pdd.download-request.stale-event-0001"
+        );
+        """
+    )
+
+    def request_download(route):
+        requests.append(route.request.post_data_json)
+        if len(requests) == 1:
+            json_response(
+                route,
+                {"ok": False, "error": "desktop_download_link_expired"},
+                status=410,
+            )
+            return
+        json_response(
+            route,
+            {
+                "ok": True,
+                "platform": "macos",
+                "download_url": "https://downloads.example/desktop-download?platform=macos&request=fresh123",
+                "download_page_url": "https://downloads.example/desktop-download?platform=macos&request=fresh123",
+                "transfer_url": "https://downloads.example/downloads/macos",
+                "file_name": "Pomp-HSK-AI-1.3.0.dmg",
+                "duplicate": False,
+            },
+        )
+
+    page.route("**/api/v3/desktop-download/request", request_download)
+    page.route(
+        "**/api/v3/desktop-download/started",
+        lambda route: (
+            started.append(route.request.post_data_json),
+            json_response(route, {"ok": True, "recorded": True, "duplicate": False}),
+        )[-1],
+    )
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    page.locator('[data-pdd-destination-action="direct"]').click()
+    page.wait_for_function("Boolean(window.__openedLink)")
+    expect(page.locator(".pdd-promo-shell[data-mode='success']")).to_be_visible()
+
+    assert len(requests) == 2
+    assert requests[0]["event_id"] == stale_event_id
+    assert requests[1]["event_id"] != stale_event_id
+    assert started and started[0]["event_id"] == requests[1]["event_id"]
+    assert page.evaluate(
+        'sessionStorage.getItem("hsk_pdd_pending_v1:macos:profile")'
+    ) is None
+
+
+def test_desktop_download_expired_retry_does_not_loop(page):
+    mock_telegram_desktop_download(page, platform="tdesktop")
+    requests = []
+
+    def reject_expired(route):
+        requests.append(route.request.post_data_json)
+        json_response(
+            route,
+            {"ok": False, "error": "desktop_download_link_expired"},
+            status=410,
+        )
+
+    page.route("**/api/v3/desktop-download/request", reject_expired)
+    _open_course_profile_with_desktop_release(page)
+
+    page.locator('[data-pdd-platform="macos"][data-pdd-source="profile"]').click()
+    page.locator('[data-pdd-destination-action="direct"]').click()
+    status = page.locator("[data-pdd-destination-status]")
+    expect(status).to_have_attribute("data-visible", "true")
+    expect(status).to_have_attribute("data-kind", "error")
+
+    assert len(requests) == 2
+    assert requests[0]["event_id"] != requests[1]["event_id"]
+    assert page.evaluate(
+        'sessionStorage.getItem("hsk_pdd_pending_v1:macos:profile")'
+    ) is None
+
+
 def test_desktop_download_falls_back_to_open_link(page):
     mock_telegram_desktop_download(page, platform="tdesktop", native_download=False)
     started = []

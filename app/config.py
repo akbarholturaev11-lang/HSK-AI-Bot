@@ -56,6 +56,9 @@ class Settings(BaseSettings):
     DESKTOP_WINDOWS_UPDATER_NOTES: str = ""
     DESKTOP_DOWNLOAD_RATE_LIMIT_COUNT: int = 3
     DESKTOP_DOWNLOAD_RATE_LIMIT_WINDOW_SECONDS: int = 900
+    # Opaque request tokens only attribute the installer funnel. They remain
+    # reusable for normal browser retries, but stop resolving after this TTL.
+    DESKTOP_DOWNLOAD_REQUEST_TOKEN_TTL_SECONDS: int = 86400
     DESKTOP_DOWNLOAD_AUTH_MAX_AGE_SECONDS: int = 86400
     # Native desktop auth fails closed without a private 32+ character secret.
     DESKTOP_AUTH_SIGNING_SECRET: str = ""
@@ -64,6 +67,9 @@ class Settings(BaseSettings):
     DESKTOP_AUTH_LINK_GLOBAL_RATE_LIMIT_WINDOW_SECONDS: int = 60
     DESKTOP_AUTH_ACCESS_TTL_SECONDS: int = 900
     DESKTOP_AUTH_REFRESH_TTL_DAYS: int = 30
+    # Expired/revoked native auth rows are retained briefly for incident review,
+    # then removed by the background retention job.
+    DESKTOP_AUTH_RECORD_RETENTION_DAYS: int = 30
     ADMIN_MINIAPP_AUTH_MAX_AGE_SECONDS: int = 86400
 
     DEFAULT_LANGUAGE: str = "tj"

@@ -13,6 +13,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.db.base import Base
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.desktop import DesktopLinkRequest, DesktopSession
 from app.db.models.user import User
 from app.api.desktop_auth import (
     DesktopLinkStartRequest,
@@ -30,6 +31,7 @@ def _settings():
         DESKTOP_AUTH_LINK_TTL_SECONDS=600,
         DESKTOP_AUTH_ACCESS_TTL_SECONDS=900,
         DESKTOP_AUTH_REFRESH_TTL_DAYS=30,
+        DESKTOP_AUTH_RECORD_RETENTION_DAYS=30,
         BOT_USERNAME="pomp_test_bot",
     )
 
@@ -371,6 +373,65 @@ class DesktopAuthServiceTests(unittest.IsolatedAsyncioTestCase):
                     installation_key="b" * 48,
                 )
             self.assertEqual(caught.exception.code, "desktop_link_rate_limited")
+
+    async def test_postgres_link_start_limiter_uses_transaction_advisory_lock(self):
+        fake_session = SimpleNamespace(
+            get_bind=lambda: SimpleNamespace(
+                dialect=SimpleNamespace(name="postgresql")
+            ),
+            execute=AsyncMock(),
+        )
+
+        await DesktopAuthService(
+            fake_session,
+            _settings(),
+        )._acquire_link_start_rate_limit_lock()
+
+        fake_session.execute.assert_awaited_once()
+        statement, parameters = fake_session.execute.await_args.args
+        self.assertIn("pg_advisory_xact_lock", str(statement))
+        self.assertIsInstance(parameters["lock_key"], int)
+
+    async def test_expired_link_and_session_cleanup_honors_retention(self):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            service, consumed_link, _ = await self._link(
+                session,
+                installation_key="r" * 48,
+            )
+            fresh_link = await service.start_link(
+                platform="windows",
+                app_version="0.1.0",
+                installation_key="s" * 48,
+            )
+            old_link = await session.get(
+                DesktopLinkRequest,
+                consumed_link["link_request_id"],
+            )
+            old_session = (
+                await session.execute(select(DesktopSession))
+            ).scalar_one()
+            old_link.expires_at = now - timedelta(days=31)
+            old_session.expires_at = now - timedelta(days=31)
+            await session.commit()
+
+            result = await service.cleanup_expired_records(now=now)
+
+            self.assertEqual(result["link_requests_deleted"], 1)
+            self.assertEqual(result["sessions_deleted"], 1)
+            self.assertIsNone(
+                await session.get(
+                    DesktopLinkRequest,
+                    consumed_link["link_request_id"],
+                )
+            )
+            self.assertIsNotNone(
+                await session.get(
+                    DesktopLinkRequest,
+                    fresh_link["link_request_id"],
+                )
+            )
+            self.assertIsNone(await session.get(DesktopSession, old_session.id))
 
     def test_request_model_repr_does_not_expose_refresh_token(self):
         raw = "pomp_r1_" + "sensitive-token-value-" + "x" * 32
