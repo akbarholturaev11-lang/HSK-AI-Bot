@@ -1219,7 +1219,7 @@ async fn stream_chat(
             pending.drain(..separator_len);
             let done = process_sse_event(app, &request.request_id, &event, &mut output)?;
             if done {
-                return Ok(output);
+                return finish_generated_output(output);
             }
         }
         if pending.len() > 256 * 1024 {
@@ -1229,6 +1229,10 @@ async fn stream_chat(
     if !pending.is_empty() {
         let _ = process_sse_event(app, &request.request_id, &pending, &mut output)?;
     }
+    finish_generated_output(output)
+}
+
+fn finish_generated_output(output: String) -> Result<String, String> {
     if output.trim().is_empty() {
         return Err("local_ai_generation_empty".into());
     }
@@ -1294,9 +1298,9 @@ fn emit_error(app: &tauri::AppHandle, operation: &str, error: &str) {
 #[cfg(test)]
 mod tests {
     use super::{
-        find_sse_separator, unavailable_status, validate_chat_request, validate_content_range,
-        LocalAiChatMessage, LocalAiChatRequest, VerificationMarker, MODEL_REVISION, MODEL_SHA256,
-        MODEL_SIZE_BYTES,
+        find_sse_separator, finish_generated_output, unavailable_status, validate_chat_request,
+        validate_content_range, LocalAiChatMessage, LocalAiChatRequest, VerificationMarker,
+        MODEL_REVISION, MODEL_SHA256, MODEL_SIZE_BYTES,
     };
     use reqwest::header::{HeaderMap, HeaderValue, CONTENT_RANGE};
     use serde_json::json;
@@ -1387,6 +1391,18 @@ mod tests {
     fn sse_frames_support_lf_and_crlf() {
         assert_eq!(find_sse_separator(b"data: {}\n\nmore"), Some((8, 2)));
         assert_eq!(find_sse_separator(b"data: {}\r\n\r\nmore"), Some((8, 4)));
+    }
+
+    #[test]
+    fn completed_generation_rejects_blank_output() {
+        assert_eq!(
+            finish_generated_output(" \n\t".into()),
+            Err("local_ai_generation_empty".into())
+        );
+        assert_eq!(
+            finish_generated_output("你好 · nǐ hǎo · salom".into()),
+            Ok("你好 · nǐ hǎo · salom".into())
+        );
     }
 
     #[test]
