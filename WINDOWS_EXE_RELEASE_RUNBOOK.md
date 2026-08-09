@@ -1,4 +1,4 @@
-# Pomp HSK AI Desktop 1.3.x — production release runbook
+# HSK AI Desktop 1.3.x — production release runbook
 
 Maqsad: macOS DMG, Windows EXE va ikkala platforma updater fayllarini bitta
 release orqali avtomatik build qilish. Har versiyada R2 yoki Railway'dagi
@@ -81,7 +81,7 @@ Workflow versiyani tagdan emas, repodagi desktop fayllaridan o'qiydi va tagni
 aniq tekshiradi:
 
 ```bash
-git tag -a desktop-v1.3.0 -m "Pomp HSK AI desktop v1.3.0"
+git tag -a desktop-v1.3.0 -m "HSK AI desktop v1.3.0"
 git push origin desktop-v1.3.0
 ```
 

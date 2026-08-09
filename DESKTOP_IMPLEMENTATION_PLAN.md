@@ -1,9 +1,9 @@
-# Pomp HSK AI Desktop — canonical handoff
+# HSK AI Desktop — canonical handoff
 
 ## Goal
 
 `HSK AI bot` is the only canonical project. Telegram bot, Mini App, backend,
-subscription, referral, progress, analytics and the future macOS/Windows client
+subscription, referral, progress, analytics and the macOS/Windows client
 share one account and one backend.
 
 The desktop source lives in `desktop/`. Built DMG, EXE and GGUF files do not
@@ -35,10 +35,11 @@ environment was not verified or changed in this task.
 
 ### Telegram device approval — implemented on the backend/bot
 
-The bot is used only after installation. Opening a `desktop_CODE` deep link
-shows platform, app version and code, then requires an explicit
-`Tasdiqlash / Bekor qilish` action. Merely opening the link never connects the
-account.
+The bot is used only after installation. The app opens the generic
+`?start=desktop_link` bot link, then the user manually types the eight-character
+code shown by the desktop app. A second card shows platform, app version and
+code and requires `Tasdiqlash / Bekor qilish`; opening the link or sending the
+code alone never connects the account.
 
 The backend supports single-use link codes, device binding, rotating refresh
 tokens, access-token verification, revoke and bootstrap. The native Rust client
@@ -55,7 +56,7 @@ download dialog is not an install. Admin Mini App and bot statistics include
 funnel, DAU/WAU/MAU, platform, version, AI Pack and sync placeholders for future
 runtime events.
 
-### Desktop Phase A — implemented
+### Desktop 1.3 — implemented
 
 The Tauri v2 source and lock files are in `desktop/`. The dedicated
 `desktop/ui` application now implements:
@@ -66,31 +67,38 @@ The Tauri v2 source and lock files are in `desktop/`. The dedicated
 - renderers for every checked-in Course v3 card type;
 - profile and UZ/RU/TJ language switching;
 - right-edge circular AI launcher/drawer;
-- truthful local model state without fake inference;
+- optional verified Qwen3-4B local AI pack with a pinned llama.cpp runtime;
+- loopback-only authenticated streaming inference, offline after installation;
+- in-app subscription using the shared server entitlement;
+- signed automatic updater with idle-safe install and restart;
 - strict CSP and named native commands only.
 
 Rust owns tokens, secrets, allowlisted HTTP and credential storage. The
-webview has no direct network transport. Phase A is online-first; offline
-course cache/sync and real local AI inference are not implemented. The updater,
-release endpoint and build pipeline are implemented but remain fail-closed
-until real artifacts and clean-machine tests exist.
+webview has no direct network transport. Course, subscription and account
+bootstrap remain online-first; local AI itself works without internet after
+its verified model pack is installed. The updater, stable release manifest and
+Mac/Windows build pipeline are implemented but remain fail-closed until R2 is
+configured and clean-machine artifacts are verified.
 
 ## Release configuration
 
-`DESKTOP_AUTH_SIGNING_SECRET` is required for desktop auth. An artifact URL is
-required per enabled platform; version labels are optional but recommended.
-`DESKTOP_DOWNLOAD_BASE_URL` may fall back to the HTTPS origin of
+`DESKTOP_AUTH_SIGNING_SECRET` is required for desktop auth. Production uses one
+stable HTTPS R2 manifest, so per-version Railway artifact URLs are not changed
+by hand. `DESKTOP_DOWNLOAD_BASE_URL` may fall back to the HTTPS origin of
 `MINI_APP_BASE_URL`.
 
 ```text
 DESKTOP_DOWNLOADS_ENABLED=false
+DESKTOP_UPDATES_ENABLED=false
 DESKTOP_DOWNLOAD_BASE_URL=
-DESKTOP_MAC_DOWNLOAD_URL=
-DESKTOP_WINDOWS_DOWNLOAD_URL=
-DESKTOP_MAC_VERSION=
-DESKTOP_WINDOWS_VERSION=
+DESKTOP_RELEASE_MANIFEST_URL=https://<public-r2-domain>/desktop/latest.json
 DESKTOP_AUTH_SIGNING_SECRET=
 ```
+
+Legacy per-platform URL/version/signature variables remain a fail-closed
+fallback only. The manifest is HTTPS-only and validated for media type, schema,
+size, downgrade and same-version artifact mutation; a last-known-good snapshot
+keeps the previous valid release available during a temporary R2 failure.
 
 The signing secret must be private and at least 32 characters. The final CDN
 artifact response, after redirects, must include:
@@ -129,40 +137,40 @@ Decision: build Variant A.
 
 ## Next implementation phase
 
-1. Add local course cache, entitlement snapshot, offline progress queue and
+1. Configure R2 plus GitHub release secrets, then publish `desktop-v1.3.0`
+   from a commit already present in `origin/main`.
+2. Verify install and `1.3.0 → 1.3.1` automatic update on clean macOS and
+   Windows machines before enabling the public flags.
+3. Add local course cache, entitlement snapshot, offline progress queue and
    conflict-safe sync.
-2. Implement local AI runtime and signed/checksummed optional model download.
-3. Run the signed updater flow on clean macOS and Windows machines and document
-   recovery behavior.
-4. Make public link-start limiting atomic, enforce ingress request-body limits
-   and schedule expired link/session retention cleanup. Add an expiry or
-   deliberate one-time policy for tracked download tokens.
+4. Configure Railway/Cloudflare outer request-size and per-IP/WAF limits; the
+   application-level atomic limiter, 2 KiB body cap, retention cleanup and
+   tracked-token TTL are already active.
 5. Add optional Google OAuth and passwordless email login as identities linked
    to the same internal user; implement explicit account-link/merge protection
    so subscription and progress never split.
-6. Run the release workflow for macOS universal DMG and Windows x64 NSIS EXE.
-7. Test unsigned free-plan install/uninstall instructions on clean machines.
-8. Upload artifacts, verify final headers, set URLs/versions/signatures, then enable the
-   release flag.
 
 ## Acceptance gates before public download
 
 - Desktop login works only after explicit Telegram confirmation.
 - Same Telegram account, subscription and progress appear on both clients.
 - Logout revokes the server device/session.
-- Offline course works after first sync.
-- Offline actions sync exactly once after reconnect.
-- Local AI works without internet and never leaks prompts to the network.
+- Course/auth/subscription remain explicitly online-first and never invent
+  offline progress or entitlement.
+- Local AI pack checksum/signature is verified; after installation inference
+  works without internet and binds only to an authenticated loopback port.
 - No arbitrary URL, token, shell or filesystem control is exposed to webview
   JavaScript.
 - Free-plan Gatekeeper and SmartScreen instructions are verified.
 - Checksums, updater signatures and recovery path are tested.
-- Public link-start uses an atomic limiter; ingress body-size and expired-link
-  retention controls are active.
-- Tracked installer URLs have an explicit, tested expiry/consumption policy.
+- Public link-start uses a PostgreSQL transaction advisory lock; app JSON body
+  caps and expired auth-row retention cleanup are active. Edge/WAF limits are
+  verified in deployment.
+- Tracked installer URLs expire after the configured TTL (24 hours by default),
+  while token-free public installer aliases remain available.
 - Admin first-open and DAU/WAU/MAU receive real runtime events.
-- `DESKTOP_DOWNLOADS_ENABLED=true` is the final release action, not an early
-  development step.
+- `DESKTOP_DOWNLOADS_ENABLED=true` and `DESKTOP_UPDATES_ENABLED=true` are final
+  release actions, not early development steps.
 
 ## Verification already completed
 
@@ -173,15 +181,19 @@ Decision: build Variant A.
 - Final static desktop integration: `9 passed`, plus `4 subtests`.
 - Existing practice Playwright checks affected by the new shared module:
   `2 passed`.
-- Rust: `cargo fmt --check`, `cargo check --locked --offline`,
-  `cargo test --locked --offline`, `cargo clippy --locked --offline
-  --all-targets -- -D warnings` passed.
-- Desktop UI contract tests: `6 passed`.
+- Rust: `cargo fmt --check`, `cargo test --locked --offline` (21 tests), and
+  `cargo clippy --locked --offline --all-targets -- -D warnings` passed.
+- Desktop UI contract tests: `7 passed`.
 - Desktop Chromium preview flows: `8 passed`, covering link, course, lesson,
   profile, AI drawer, `720x560`, half-preview, dialog blank, unsupported cards
   and stale-request protection.
 - Desktop course/auth/download/static focused regression: `73 passed`, plus
   `4 subtests`.
+- Download-page Playwright: `4 passed`, covering real default DMG/EXE actions,
+  UZ/RU/TJ install guide, dialog accessibility and token-free mobile sharing.
+- Full non-E2E backend regression: `403 passed`, `13,431 subtests passed`.
+- Android: `74` JVM tests, lint/debug APK and minified release AAB passed; the
+  release R8 serializer back-reference rule is valid.
 - Alembic has one head: `0066_desktop_foundation`.
 
 The full pre-existing Playwright file still contains unrelated baseline

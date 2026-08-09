@@ -207,6 +207,43 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-09 — Desktop 1.3: real local AI + stable automatic release/update
+
+Changed:
+- Desktop AI drawer now uses an optional verified Qwen3-4B Q4 model and a
+  version-pinned llama.cpp runtime. Model/runtime integrity is checked before
+  execution; inference binds to a random authenticated loopback port and prompt
+  text is not sent to the backend. After the pack is installed, this chat can
+  work without internet. Course/auth/subscription bootstrap is still online-first.
+- Desktop updater checks at startup and installs automatically only when the
+  workspace is idle. It defers during a lesson, model install, AI generation or
+  subscription action, emits real progress, then restarts the application.
+- `DESKTOP_RELEASE_MANIFEST_URL` is the single Railway pointer to R2
+  `desktop/latest.json`. The backend strictly validates HTTPS/media type/schema/
+  size, keeps a last-known-good manifest and rejects downgrade or same-version
+  artifact mutation. Legacy per-platform env values are fallback only.
+- `.github/workflows/desktop-release.yml` builds universal macOS DMG/updater and
+  Windows x64 NSIS EXE/updater in parallel from `desktop-v*`, verifies pinned AI
+  runtime hashes and V4 updater signatures, uploads immutable versioned objects,
+  updates stable installer aliases, and publishes `latest.json` last.
+- The public download page preserves the browser's real DMG/EXE action, then
+  opens accessible UZ/RU/TJ install instructions. Anti-framing CSP is delivered
+  as an HTTP header, and mobile share/copy never includes the tracked token.
+- Native link-start admission is atomic across PostgreSQL workers via a
+  transaction advisory lock. Download POST JSON is capped at 2 KiB, tracked
+  download tokens expire after 24 hours by default, and an isolated hourly job
+  removes expired link/session rows after the retention window. Devices remain
+  intact. Railway/Cloudflare still need outer request-size and per-IP/WAF limits.
+
+Important boundaries:
+- App binaries, updater archives, signatures and GGUF models stay outside Git
+  in R2. Repository and Railway flags remain fail-closed until public artifacts
+  pass clean macOS/Windows install and real `1.3.0 → 1.3.1` updater tests.
+- Apple notarization and Windows Authenticode are intentionally absent in the
+  $0 signing plan, so Gatekeeper/SmartScreen guidance is part of the download UX.
+- Updater private key/password are external secrets; never write them here,
+  commit them or print them in CI logs.
+
 ### 2026-08-09 — Android auth-session va deep-link/audio lifecycle himoyasi
 
 Changed:
@@ -4284,10 +4321,10 @@ Desktop auth/security:
   bo'lmasa ham native client local access/refresh credentiallarni albatta
   o'chiradi; serverdagi yetib bo'lmagan session normal TTL bilan tugaydi.
 
-Desktop Phase A application:
+Desktop application:
 - Dedicated frontend `desktop/ui`; Tauri oynasi `1180x780`, minimum
   `720x560`, strict CSP (`connect-src` faqat Tauri IPC).
-- Desktop source versiyasi `1.1.1`: demo reference asosidagi dark premium shell
+- Desktop source versiyasi `1.3.0`: demo reference asosidagi premium shell
   `Bugun`, real course map, `Obuna`, `Profil` bo'limlariga ega; o'ng pastda AI
   launcher/drawer. Dars/progress serverdan olinadi, fake AI yoki fake course
   data productionda yo'q.
@@ -4319,9 +4356,10 @@ Desktop Phase A application:
 - Renderer checked-in Course v3'dagi barcha card type'larni qoplaydi. Noto'g'ri
   javob clientdan stable `material_ref` + selection sifatida keladi, trusted
   review materiali server lesson JSON'dan qayta quriladi.
-- AI drawer hozir faqat real model-file statusini ko'rsatadi. Lokal inference
-  yo'q va soxta chat javobi berilmaydi. Chinese TTS native runtime bo'lmasa
-  webview/OS local speech fallbackni sinaydi.
+- AI drawer optional verified local model packni yuklaydi va pinned llama.cpp
+  orqali loopback-only streaming inference qiladi. Pack o'rnatilgach AI chat
+  internetsiz ishlaydi; course/auth/subscription baribir online-first. Chinese
+  TTS native runtime bo'lmasa webview/OS local speech fallbackni sinaydi.
 - Localhost preview faqat explicit `?mock=1`; production fake data'ga fallback
   qilmaydi.
 - Kelajak Google/email loginlari alohida user emas, shu ichki userga ulangan
@@ -4343,19 +4381,18 @@ Analytics:
   user/event sonini ko'rsatadi.
 
 Release/update:
-- Tauri updater client, signed updater artifact va fail-closed backend endpoint
-  tayyor. `DESKTOP_UPDATES_ENABLED=false` real public artifactlar yuklanib,
-  clean-machine testdan o'tmaguncha o'zgarmaydi.
-- GitHub Actions manual workflow universal macOS DMG/updater va Windows x64
-  NSIS EXE/updater build, checksum va R2 upload uchun tayyor.
-- Lokal ARM64 signed test build mavjud:
-  `desktop/src-tauri/target/release/bundle/dmg/` ichidagi
-  `Pomp HSK AI_1.1.1_aarch64.dmg`. U ad-hoc signed, notarized emas; shu build
-  bilan `Pomp HSK AI.app.tar.gz.sig` V3 updater trust root orqali yaratiladi.
-- Updater V3 private key repodan tashqarida va password macOS Keychain'da.
-  Workflow faqat `TAURI_SIGNING_PRIVATE_KEY_V3` hamda
-  `TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V3` GitHub secretlarini ishlatadi.
-  Secret qiymatlarni memory yoki Git'ga yozmang.
+- Tauri updater bootda tekshiradi va faqat dars/AI/subscription ishlari bo'lmagan
+  idle holatda signed update'ni avtomatik o'rnatib restart qiladi.
+  `DESKTOP_UPDATES_ENABLED=false` public artifact va clean-machine updater testi
+  o'tmaguncha o'zgarmaydi.
+- GitHub Actions `desktop-v*` tag uchun universal macOS DMG/updater va Windows
+  x64 NSIS EXE/updaterni parallel build qiladi, checksum/V4 signature'ni
+  tekshiradi, immutable R2 objectlarni yozadi va `desktop/latest.json`ni oxirida
+  atomik nashr qiladi.
+- Updater V4 private key repodan tashqarida va password macOS Keychain'da.
+  Workflow `TAURI_SIGNING_PRIVATE_KEY_V4` hamda
+  `TAURI_SIGNING_PRIVATE_KEY_PASSWORD_V4` GitHub secretlarini ishlatadi. Secret
+  qiymatlarni memory yoki Git'ga yozmang.
 
 Brand:
 - Canonical HSK AI panda assetlar:
@@ -4420,12 +4457,12 @@ Important files:
 Not complete:
 - Universal Mac DMG va Windows EXE hali CI'da chiqarilmagan; GitHub auth/secrets
   va R2 bucket/custom-domain config kerak.
-- Lokal ARM64 DMG clean Mac'da, universal DMG Intel Mac'da va EXE clean Windows
-  VM'da o'rnatish testidan o'tmagan.
+- Universal DMG Intel/Apple Silicon Mac'da va EXE clean Windows VM'da o'rnatish,
+  keyin `1.3.0 → 1.3.1` real automatic-update testidan o'tmagan.
 - Apple/Windows pullik signing yo'q; `$0` rejada macOS/SmartScreen warning
-  instruktsiyasi saqlanadi. `DESKTOP_DOWNLOADS_ENABLED=false` qoladi.
-- Offline course cache/sync va local AI inference/model installer keyingi
-  bosqich. Mini App floating AI chat ham hali implement qilinmagan.
+  instruktsiyasi saqlanadi. `DESKTOP_DOWNLOADS_ENABLED=false` va
+  `DESKTOP_UPDATES_ENABLED=false` qoladi.
+- Offline course cache/sync va conflict-safe progress queue keyingi bosqich.
 - Google OAuth/passwordless email va account-link/merge himoyasi keyingi
   ixtiyoriy identity bosqichi.
 
@@ -4435,26 +4472,27 @@ Not complete:
 
 ### Problem 1
 Problem:
-- Unknown / needs inspection
+- Desktop public release tashqi R2/GitHub secret konfiguratsiyasiz fail-closed.
 
 Suspected cause:
-- Unknown / needs inspection
+- R2 bucket/public domain/API token va updater V4 password GitHub secreti hali
+  productionda to'liq tasdiqlanmagan.
 
 Status:
-- Open / Fixed / Needs testing
+- Open — kod tayyor; external credentials va clean-machine release test kerak.
 
 ---
 
 ## 12. Next Planned Work
 
 Priority 1:
-- Unknown / needs inspection
+- R2/GitHub release konfiguratsiyasini tugatish va `desktop-v1.3.0` chiqarish.
 
 Priority 2:
-- Unknown / needs inspection
+- Clean Mac/Windows install hamda real updater smoke-test.
 
 Priority 3:
-- Unknown / needs inspection
+- Public flaglarni faqat yuqoridagi tekshiruvlar o'tgach yoqish.
 
 ---
 
