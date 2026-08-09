@@ -146,6 +146,15 @@ def test_macos_download_keeps_default_action_and_opens_accessible_uz_guide(
     assert dialog.get_by_role("button", name="Qo‘llanmani yopish").count() == 1
     assert "Applications" in dialog.inner_text()
 
+    shots = dialog.locator(".quick-platform-macos .quick-step-shot img")
+    assert shots.count() == 6
+    for index in range(shots.count()):
+        shot = shots.nth(index)
+        assert shot.get_attribute("src").startswith("/assets/install/")
+        assert shot.get_attribute("loading") == "lazy"
+        assert (shot.get_attribute("alt") or "").strip() != ""
+        assert shot.evaluate("node => node.naturalWidth") > 0
+
     page.keyboard.press("Escape")
     playwright.expect(dialog).to_be_hidden()
     playwright.expect(page.locator("body")).not_to_have_class(
