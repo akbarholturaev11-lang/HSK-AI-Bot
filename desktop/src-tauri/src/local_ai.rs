@@ -881,7 +881,7 @@ fn debug_model_override() -> Option<PathBuf> {
 fn runtime_binary_name() -> &'static str {
     #[cfg(target_os = "windows")]
     {
-        return "llama-server.exe";
+        "llama-server.exe"
     }
     #[cfg(not(target_os = "windows"))]
     {
@@ -1417,6 +1417,9 @@ mod tests {
             "Get-FileHash $archive -Algorithm SHA256",
             "runtime/macos-universal",
             "runtime/windows-x64",
+            "libggml-metal.*.dylib",
+            "otool -L \"$x64_server\"",
+            "lipo \"$runtime/llama-server\" -verify_arch arm64 x86_64",
         ] {
             assert!(
                 workflow.contains(contract),

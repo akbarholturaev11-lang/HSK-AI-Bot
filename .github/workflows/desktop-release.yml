@@ -161,8 +161,23 @@ jobs:
           while IFS= read -r -d '' arm_library; do
             library="$(basename "$arm_library")"
             x64_library="$x64_root/$library"
-            test -f "$x64_library"
-            lipo -create "$arm_library" "$x64_library" -output "$runtime/$library"
+            if [ -f "$x64_library" ]; then
+              lipo -create "$arm_library" "$x64_library" -output "$runtime/$library"
+            else
+              case "$library" in
+                libggml-metal.*.dylib)
+                  # llama.cpp's Intel archive intentionally has no Metal
+                  # backend. Keep the arm64 Metal slice for Apple Silicon;
+                  # the x64 server slice does not reference this library.
+                  ! otool -L "$x64_server" | grep -q '@rpath/libggml-metal'
+                  cp "$arm_library" "$runtime/$library"
+                  ;;
+                *)
+                  echo "::error::Missing x64 runtime library: $library"
+                  exit 1
+                  ;;
+              esac
+            fi
           done < <(find "$arm_root" -maxdepth 1 -type f -name '*.dylib' -print0)
           while IFS= read -r -d '' arm_link; do
             link_name="$(basename "$arm_link")"
@@ -188,9 +203,16 @@ jobs:
           find "$runtime" -maxdepth 1 -type f \
             \( -name llama-server -o -name '*.dylib' \) \
             -exec codesign --force --sign - --timestamp=none {} \;
-          lipo -verify_arch arm64 x86_64 "$runtime/llama-server"
+          lipo "$runtime/llama-server" -verify_arch arm64 x86_64
           while IFS= read -r -d '' runtime_library; do
-            lipo -verify_arch arm64 x86_64 "$runtime_library"
+            case "$(basename "$runtime_library")" in
+              libggml-metal.*.dylib)
+                lipo "$runtime_library" -verify_arch arm64
+                ;;
+              *)
+                lipo "$runtime_library" -verify_arch arm64 x86_64
+                ;;
+            esac
           done < <(find "$runtime" -maxdepth 1 -type f -name '*.dylib' -print0)
           "$runtime/llama-server" --version
 
@@ -238,7 +260,7 @@ jobs:
           codesign --verify --deep --strict "$app_path"
           embedded_server="$(find "$app_path" -type f -name llama-server -print -quit)"
           test -n "$embedded_server"
-          lipo -verify_arch arm64 x86_64 "$embedded_server"
+          lipo "$embedded_server" -verify_arch arm64 x86_64
 
       - name: Collect and checksum macOS artifacts
         shell: bash
