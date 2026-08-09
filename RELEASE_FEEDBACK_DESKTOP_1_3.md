@@ -80,4 +80,3 @@ feedback` moduli orqali yuborish uchun tayyor.
 2. Railway download/update flaglari yoqilsin.
 3. Clean Mac/Windows smoke-test yashil bo‘lsin.
 4. Shundan keyin admin draftni ko‘rib `Release feedback` modulida tasdiqlaydi.
-
