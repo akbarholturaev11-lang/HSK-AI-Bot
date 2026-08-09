@@ -4503,8 +4503,8 @@ Risk:
   buzilmaydi, farq OS cheklovidan kelib chiqadi.
 
 Follow-up:
-- `desktop-v1.3.2` tagi bilan release qayta yugurtirilishi kerak; `1.3.1`
-  yarim chiqqan hisoblanadi.
+- `1.3.1` publishgacha yiqilgani uchun qayta chiqarilmaydi; tuzatish `1.3.2`
+  bilan ketadi va `desktop-v1.3.2` tagi bilan yugurtiriladi.
 - Download sahifasiga "macOS 13.3+" talabi hali qo'shilmagan; qo'shilsa
   RU/TJ/UZ uchtasida bo'lishi shart.
 
