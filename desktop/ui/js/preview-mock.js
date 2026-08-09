@@ -139,7 +139,7 @@ function bootstrap() {
     device: {
       id: "preview-device",
       platform: "preview",
-      app_version: "1.3.0-preview",
+      app_version: "1.3.1-preview",
     },
     user: {
       name: "Akbar",
@@ -348,7 +348,7 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_app_info":
       return {
         productName: "HSK AI",
-        version: "1.3.0-preview",
+        version: "1.3.1-preview",
         platform: "preview",
       };
     case "desktop_auth_status":
@@ -470,8 +470,8 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_update_check":
       return {
         available: query.get("update") === "1",
-        currentVersion: "1.3.0-preview",
-        version: query.get("update") === "1" ? "1.3.1-preview" : undefined,
+        currentVersion: "1.3.1-preview",
+        version: query.get("update") === "1" ? "1.3.2-preview" : undefined,
         notes:
           query.get("update") === "1"
             ? "Desktop kurs oqimi va barqarorlik yangilandi."
