@@ -15,7 +15,7 @@
     static **$* *;
 }
 -if @kotlinx.serialization.Serializable class **$*
--keepclassmembers class <2>$<3> {
+-keepclassmembers class <1>$<2> {
     kotlinx.serialization.KSerializer serializer(...);
 }
 
