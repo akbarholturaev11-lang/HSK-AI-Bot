@@ -48,7 +48,7 @@
     "shortDescription": "HSK learning desktop app",
     "longDescription": "HSK AI brings the HSK course to macOS and Windows with an optional local AI tutor.",
     "macOS": {
-      "minimumSystemVersion": "11.0",
+      "minimumSystemVersion": "13.3",
       "signingIdentity": "-"
     },
     "windows": {

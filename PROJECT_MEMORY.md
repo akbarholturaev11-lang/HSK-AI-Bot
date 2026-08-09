@@ -4466,6 +4466,48 @@ Not complete:
 - Google OAuth/passwordless email va account-link/merge himoyasi keyingi
   ixtiyoriy identity bosqichi.
 
+### 2026-08-09 — macOS AI runtime arm64 slice manbadan quriladi, minimum 13.3
+
+Changed:
+- `desktop-release.yml` macOS jobi endi llama.cpp'ning tayyor arm64 arxivini
+  ishlatmaydi. arm64 slice pinned commit `11924d4c` (tag `b10223`) dan
+  `-DCMAKE_OSX_DEPLOYMENT_TARGET=13.3` bilan quriladi; Intel slice avvalgidek
+  SHA-256 tekshirilgan tayyor arxivdan olinadi.
+- Runtime'dagi har bir binary uchun `minos <= 13.3` hard gate qo'shildi va
+  Intel arxividagi har bir dylib universal runtime'da borligi tekshiriladi.
+- `tauri.conf.json` `macOS.minimumSystemVersion`: `11.0` -> `13.3`.
+- macOS job timeout 45 -> 90 daqiqa.
+
+Why:
+- llama.cpp o'z arm64 release'ini `macos-26` runnerida deployment target'siz
+  quradi. Natijadagi binary `_posix_spawn_file_actions_addchdir` symbol'ini
+  so'raydi va macOS 26 dan past hamma tizimda `Abort trap: 6` beradi. Shu sabab
+  `desktop-v1.3.1` release'i `Stage pinned universal local AI runtime`
+  qadamida exit 134 bilan yiqildi. Upstream Intel build'i esa allaqachon
+  13.3 target'ida quriladi -- yangi minimum shundan olindi.
+- Avvalgi `minimumSystemVersion: 11.0` haqiqatga mos emas edi: Intel slice
+  allaqachon macOS 13.3 talab qilardi.
+
+Files touched:
+- `.github/workflows/desktop-release.yml`
+- `desktop/src-tauri/tauri.conf.json`
+
+Risk:
+- macOS 11 va 12 foydalanuvchilari qo'llab-quvvatlanmaydi. Bu ongli qaror.
+- Manbadan build macOS jobiga ~10-20 daqiqa qo'shadi va yangi yiqilish nuqtasi
+  (`LLAMA_BUILD_BORINGSSL=ON` Go talab qiladi, macos-14 runnerida mavjud).
+- arm64 uchun ta'minot zanjiri kafolati "SHA-256 pinned arxiv" o'rniga
+  "pinned tag + commit SHA assertion" ga o'zgardi.
+- Windows tomonida o'zgarish yo'q: Windows binary'larida deployment target
+  tushunchasi yo'q va o'sha job muvaffaqiyatli o'tgan. DMG/EXE parity qoidasi
+  buzilmaydi, farq OS cheklovidan kelib chiqadi.
+
+Follow-up:
+- `desktop-v1.3.2` tagi bilan release qayta yugurtirilishi kerak; `1.3.1`
+  yarim chiqqan hisoblanadi.
+- Download sahifasiga "macOS 13.3+" talabi hali qo'shilmagan; qo'shilsa
+  RU/TJ/UZ uchtasida bo'lishi shart.
+
 ---
 
 ## 11. Known Problems
