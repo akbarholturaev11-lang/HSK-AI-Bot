@@ -4477,6 +4477,8 @@ Changed:
   Intel arxividagi har bir dylib universal runtime'da borligi tekshiriladi.
 - `tauri.conf.json` `macOS.minimumSystemVersion`: `11.0` -> `13.3`.
 - macOS job timeout 45 -> 90 daqiqa.
+- Rust contract testlari yangi pinlarga moslandi: `local_ai.rs` dagi workflow
+  contract ro'yxati va `lib.rs` dagi `minimumSystemVersion` asserti.
 
 Why:
 - llama.cpp o'z arm64 release'ini `macos-26` runnerida deployment target'siz
@@ -4491,6 +4493,8 @@ Why:
 Files touched:
 - `.github/workflows/desktop-release.yml`
 - `desktop/src-tauri/tauri.conf.json`
+- `desktop/src-tauri/src/local_ai.rs`
+- `desktop/src-tauri/src/lib.rs`
 
 Risk:
 - macOS 11 va 12 foydalanuvchilari qo'llab-quvvatlanmaydi. Bu ongli qaror.
@@ -4503,8 +4507,8 @@ Risk:
   buzilmaydi, farq OS cheklovidan kelib chiqadi.
 
 Follow-up:
-- `1.3.1` publishgacha yiqilgani uchun qayta chiqarilmaydi; tuzatish `1.3.2`
-  bilan ketadi va `desktop-v1.3.2` tagi bilan yugurtiriladi.
+- `1.3.1` va `1.3.2` publishgacha yiqilgani uchun qayta chiqarilmaydi; tag
+  ko'chirilmaydi, tuzatish `1.3.3` bilan ketadi.
 - Download sahifasiga "macOS 13.3+" talabi hali qo'shilmagan; qo'shilsa
   RU/TJ/UZ uchtasida bo'lishi shart.
 

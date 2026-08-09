@@ -2084,7 +2084,7 @@ mod tests {
         assert_eq!(config["app"]["windows"][0]["height"], 780);
         assert_eq!(config["app"]["windows"][0]["minWidth"], 720);
         assert_eq!(config["app"]["windows"][0]["minHeight"], 560);
-        assert_eq!(config["bundle"]["macOS"]["minimumSystemVersion"], "11.0");
+        assert_eq!(config["bundle"]["macOS"]["minimumSystemVersion"], "13.3");
         assert_eq!(config["bundle"]["createUpdaterArtifacts"], true);
         assert_eq!(config["bundle"]["resources"]["runtime/"], "runtime/");
 

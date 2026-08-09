@@ -1410,7 +1410,11 @@ mod tests {
         let workflow = include_str!("../../../.github/workflows/desktop-release.yml");
         for contract in [
             "LLAMA_CPP_RELEASE: b10223",
-            "2c5e6dca00a3f09ba1030e309ff6fa4c2568a01864de258a4e7752b09e26430e",
+            "LLAMA_CPP_COMMIT: 11924d4c17abc27383376a1ac6a24fa3e36c1c0c",
+            "MACOS_DEPLOYMENT_TARGET: \"13.3\"",
+            "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"$MACOS_DEPLOYMENT_TARGET\"",
+            "-DLLAMA_BUILD_NUMBER=\"${LLAMA_CPP_RELEASE#b}\"",
+            "awk '/^ *minos / { print $2 }'",
             "d5488dd5759f7a086852af5a206c6cded875c716de6a9f9d8460ea6c2dc24138",
             "74c1ded0512818d98b51940bf9150e16da8ed79cf0cbe8d85788e01cdd00ff67",
             "shasum -a 256 -c -",
