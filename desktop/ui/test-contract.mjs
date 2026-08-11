@@ -243,6 +243,10 @@ test("local AI drawer renders polished answers without leaking reasoning", async
   assert.doesNotMatch(app, /innerHTML|insertAdjacentHTML|outerHTML/);
 
   assert.match(css, /\.ai-answer-section \{/);
+  assert.match(css, /\.ai-ready-card \{[\s\S]*background: transparent;/);
+  assert.match(css, /\.ai-chat-intro \{[\s\S]*background: transparent;/);
+  assert.match(css, /\.ai-message\.is-assistant \.ai-message-text \{[\s\S]*background: transparent;/);
+  assert.match(css, /\.ai-answer-section \{[\s\S]*border: 0;/);
   assert.match(css, /\.ai-answer-list \{/);
   assert.match(css, /\.ai-table-wrap \{/);
   assert.match(css, /\.ai-code-block \{/);
