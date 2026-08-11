@@ -250,6 +250,27 @@ test("local AI drawer renders polished answers without leaking reasoning", async
   assert.match(css, /--drawer-width: 500px;/);
 });
 
+test("local AI composer supports media controls without hidden network egress", async () => {
+  const html = await source("desktop/ui/index.html");
+  const app = await source("desktop/ui/js/app.js");
+  const css = await source("desktop/ui/css/workspace.css");
+
+  assert.match(html, /id="ai-file-input"[\s\S]*accept="image\/\*,audio\/\*"/);
+  assert.match(html, /id="ai-attach"/);
+  assert.match(html, /id="ai-record"/);
+  assert.match(html, /id="ai-emoji"/);
+  assert.match(app, /const AI_MAX_ATTACHMENTS = 4/);
+  assert.match(app, /function addAiFiles\(/);
+  assert.match(app, /function startAiRecording\(/);
+  assert.match(app, /new MediaRecorder/);
+  assert.match(app, /function handleAiMediaBlockedSend\(/);
+  assert.doesNotMatch(app, /desktopBridge\.desktopAiMedia|desktop_ai_media/);
+  assert.match(css, /\.ai-compose-field \{/);
+  assert.match(css, /\.ai-compose-button \{/);
+  assert.match(css, /\.ai-attachment-chip \{/);
+  assert.match(css, /\.ai-send-button \{/);
+});
+
 test("renderer covers every checked-in Course v3 card type", async () => {
   const levels = (await readdir(lessonRoot, { withFileTypes: true })).filter(
     (entry) => entry.isDirectory() && /^hsk[1-4]$/.test(entry.name),

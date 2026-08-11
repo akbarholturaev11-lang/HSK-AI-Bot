@@ -7676,45 +7676,282 @@ html.lesson-active .ai-drawer.is-open {
 }
 
 .drawer-footer {
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 9px 10px;
-  padding: 14px 18px 12px;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 46px;
+  align-items: end;
+  gap: 8px;
+  padding: 12px 18px 10px;
   background: rgb(247 241 228 / 96%);
   backdrop-filter: blur(10px);
+}
+
+.ai-compose-button {
+  display: inline-grid;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  place-items: center;
+  border: 1px solid #d9c8a7;
+  border-radius: 50%;
+  background: #fffaf0;
+  color: #6d6254;
+  box-shadow: 0 6px 16px rgb(31 28 24 / 7%);
+}
+
+.ai-compose-button[hidden] {
+  display: none;
+}
+
+.ai-compose-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.ai-compose-button:not(:disabled):hover {
+  border-color: #c49c40;
+  color: #b78916;
+}
+
+.ai-compose-button svg,
+.ai-emoji-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.ai-compose-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px;
+  gap: 4px;
+  align-items: end;
+  min-width: 0;
+  min-height: 46px;
+  padding: 3px 4px 3px 14px;
+  border: 1px solid #d8c7a8;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 58%);
+}
+
+.ai-compose-field:focus-within {
+  border-color: #b88912;
+  box-shadow:
+    0 0 0 3px rgb(166 122 8 / 13%),
+    0 8px 18px rgb(33 29 23 / 7%);
 }
 
 .drawer-footer textarea {
   width: 100%;
   min-width: 0;
-  min-height: 54px;
-  max-height: 150px;
-  padding: 14px 16px;
-  border-color: #dccba9;
-  border-radius: 18px;
-  background: #fff;
+  min-height: 38px;
+  max-height: 118px;
+  padding: 9px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   font-size: 13px;
   line-height: 1.45;
+  resize: none;
 }
 
 .drawer-footer textarea:focus {
-  border-color: var(--cream-2);
   outline: 0;
-  box-shadow:
-    0 0 0 3px rgb(166 122 8 / 12%),
-    0 8px 18px rgb(33 29 23 / 7%);
 }
 
-.drawer-footer .primary-button {
-  min-width: 108px;
-  min-height: 54px;
-  padding-right: 18px;
-  padding-left: 18px;
+.ai-emoji-button {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #827568;
+}
+
+.ai-emoji-button:disabled {
+  opacity: 0.42;
+}
+
+.ai-emoji-button:not(:disabled):hover {
+  background: #f5eddd;
+  color: #b78916;
+}
+
+.ai-send-button {
+  border-color: #e6433e;
+  background: #e6433e;
+  color: #fff;
+}
+
+.ai-send-button:not(:disabled):hover {
+  border-color: #cf312d;
+  background: #d93631;
+  color: #fff;
+}
+
+.ai-send-button.is-stop {
+  border-color: #24201c;
+  background: #24201c;
+}
+
+.ai-send-button.is-stop svg {
+  display: none;
+}
+
+.ai-send-button.is-stop::before {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: currentColor;
+  content: "";
+}
+
+.ai-compose-button.is-recording {
+  border-color: #e6433e;
+  background: #ffe8e4;
+  color: #d93631;
+  box-shadow: 0 0 0 4px rgb(230 67 62 / 12%);
+}
+
+.ai-attachments {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 6px;
+  max-height: 124px;
+  padding: 6px 2px 2px 0;
+  overflow: auto;
+}
+
+.ai-attachment-chip {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 28px;
+  gap: 9px;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid #eadfca;
   border-radius: 16px;
+  background: #fffaf2;
+}
+
+.ai-attachment-preview {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #efe4d1;
+  color: #8a6a1e;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.ai-attachment-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ai-attachment-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ai-attachment-copy b {
+  overflow: hidden;
+  color: #2e2a25;
+  font-size: 12px;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.ai-attachment-copy small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.ai-attachment-remove {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #827568;
+  font-size: 18px;
+}
+
+.ai-attachment-remove:hover {
+  background: #f0e4d2;
+  color: #d93631;
+}
+
+.ai-message-attachments {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.ai-message-attachment {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  max-width: 100%;
+  padding: 6px;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 16%);
+}
+
+.ai-message-attachment img,
+.ai-message-attachment-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+}
+
+.ai-message-attachment img {
+  object-fit: cover;
+}
+
+.ai-message-attachment-icon {
+  display: grid;
+  place-items: center;
+  background: rgb(255 255 255 / 22%);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.ai-message-attachment span:last-child {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ai-message-attachment b {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-message-attachment small {
+  opacity: 0.72;
+  font-size: 10px;
+}
+
 .ai-footer-status {
-  padding-left: 2px;
+  grid-column: 2 / 4;
+  min-height: 13px;
+  padding-left: 4px;
   color: var(--muted);
   font-size: 10px;
 }
@@ -7842,13 +8079,14 @@ html.lesson-active .ai-drawer.is-open {
   }
 
   .drawer-footer {
-    padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
   }
 
-  .drawer-footer .primary-button {
-    min-width: 96px;
-    padding-right: 14px;
-    padding-left: 14px;
+  .ai-compose-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
   }
 
   .ai-message.is-user {

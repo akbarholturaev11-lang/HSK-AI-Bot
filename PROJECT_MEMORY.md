@@ -5159,6 +5159,36 @@ Risk:
 
 ---
 
+### 2026-08-11 — Desktop 1.3.5 release bump
+
+Changed:
+- Desktop release version `1.3.5` ga ko'tarildi.
+
+Why:
+- AI drawer answer quality va composer polish Windows va macOS updaterlarga
+  alohida `desktop-v1.3.5` release sifatida yuboriladi.
+
+---
+
+### 2026-08-11 — Desktop AI media composer guardrail
+
+Changed:
+- Desktop AI drawer composer Telegram-like paperclip/input/mic/send UI oldi.
+- Image/audio files local preview chip sifatida tanlanadi; mic recording local
+  attachment yaratadi.
+- Media fayl serverga yuborilmaydi va local Qwen AI'ga berilmaydi.
+
+Decision:
+- Rasm/audio tahlili uchun server-side vision/STT kerak. Bu user media faylini
+  external AI providerlarga yuboradigan sensitive egress bo'lgani uchun explicit
+  approvalsiz backend endpoint qo'shilmadi.
+
+Files:
+- `desktop/ui/index.html`, `desktop/ui/js/app.js`, `desktop/ui/js/i18n.js`,
+  `desktop/ui/css/workspace.css`, `desktop/ui/test-contract.mjs`.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

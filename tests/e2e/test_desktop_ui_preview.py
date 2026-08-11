@@ -277,6 +277,12 @@ def _install_native_fixture(
                 if (command === "local_ai_chat_cancel") {{
                   return null;
                 }}
+                if (command === "desktop_goal_state") {{
+                  return {{ kind: "hsk", configured: true }};
+                }}
+                if (command === "desktop_goal_save") {{
+                  return {{ kind: args.kind, configured: true }};
+                }}
                 if (command === "desktop_update_check") {{
                   window.__UPDATE_CHECKS += 1;
                   if (fixture.updateCheckFailures > 0) {{

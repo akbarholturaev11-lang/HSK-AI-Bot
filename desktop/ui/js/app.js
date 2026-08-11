@@ -92,7 +92,12 @@ const dom = {
   aiTitle: $("#ai-title"),
   aiSubtitle: $("#ai-subtitle"),
   aiBody: $("#ai-body"),
+  aiFileInput: $("#ai-file-input"),
+  aiAttach: $("#ai-attach"),
+  aiAttachments: $("#ai-attachments"),
   aiInput: $("#ai-input"),
+  aiEmoji: $("#ai-emoji"),
+  aiRecord: $("#ai-record"),
   aiSend: $("#ai-send"),
   aiFooterStatus: $("#ai-footer-status"),
   aiShortcut: $("#ai-shortcut"),
@@ -135,7 +140,15 @@ const state = {
   aiLoaded: false,
   aiStatus: null,
   aiMessages: [],
+  aiAttachments: [],
   aiBusy: false,
+  aiRecording: false,
+  aiRecorder: null,
+  aiRecordStream: null,
+  aiRecordStartedAt: 0,
+  aiRecordType: null,
+  aiRecordDiscard: false,
+  aiRecordingTimer: null,
   aiInstallBusy: false,
   aiRequestId: null,
   aiStreamText: "",
@@ -169,6 +182,18 @@ const state = {
 };
 
 const LESSON_AI_DOCK_QUERY = "(min-width: 1100px)";
+const AI_MAX_ATTACHMENTS = 4;
+const AI_MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+const AI_MAX_AUDIO_BYTES = 5 * 1024 * 1024;
+const AI_MAX_RECORDING_MS = 30_000;
+const AI_MIN_RECORDING_MS = 700;
+const AI_RECORDER_TYPES = [
+  { mime: "audio/webm;codecs=opus", extension: "webm" },
+  { mime: "audio/webm", extension: "webm" },
+  { mime: "audio/mp4", extension: "mp4" },
+  { mime: "audio/ogg;codecs=opus", extension: "ogg" },
+  { mime: "audio/ogg", extension: "ogg" },
+];
 
 const lesson = new LessonController({
   bridge: desktopBridge,
@@ -294,6 +319,10 @@ function applyStaticText() {
   dom.aiSubtitle.textContent = t("aiSubtitle");
   dom.aiLauncher.setAttribute("aria-label", t("openAi"));
   dom.closeAi.setAttribute("aria-label", t("closeAi"));
+  dom.aiAttach.setAttribute("aria-label", t("aiAttachMedia"));
+  dom.aiEmoji.setAttribute("aria-label", t("aiEmoji"));
+  dom.aiRecord.setAttribute("aria-label", t("aiRecord"));
+  dom.aiSend.setAttribute("aria-label", t("aiSend"));
   dom.closeLesson.setAttribute("aria-label", t("lessonClose"));
   updateAiComposer();
   dom.globalSearch.placeholder = t("searchLessons");
@@ -677,8 +706,10 @@ function resetAiSession() {
   const requestId = state.aiRequestId;
   state.aiLoaded = false;
   state.aiStatus = null;
-  state.aiMessages = [];
   state.aiBusy = false;
+  cancelAiRecording();
+  clearAiAttachments({ includeMessages: true });
+  state.aiMessages = [];
   state.aiInstallBusy = false;
   state.aiRequestId = null;
   state.aiStreamText = "";
@@ -3848,6 +3879,7 @@ function closeAi({ restoreFocus = true } = {}) {
   if (lesson.isOpen) {
     state.aiOpenedByLesson = false;
   }
+  if (state.aiRecording) cancelAiRecording();
   state.aiOpen = false;
   dom.aiDrawer.classList.remove("is-open");
   dom.aiDrawer.setAttribute("aria-hidden", "true");
@@ -4533,6 +4565,7 @@ async function cancelAiInstall() {
 
 async function removeAiPack() {
   if (!globalThis.confirm(t("aiRemoveConfirm"))) return;
+  clearAiAttachments({ includeMessages: true });
   state.aiMessages = [];
   state.aiBusy = false;
   state.aiRequestId = null;
@@ -4545,6 +4578,320 @@ async function removeAiPack() {
   } catch (error) {
     renderAiError(error?.code || "local_ai_remove_failed");
   }
+}
+
+function supportedAiRecorder() {
+  if (typeof MediaRecorder !== "function") return null;
+  for (const candidate of AI_RECORDER_TYPES) {
+    try {
+      if (MediaRecorder.isTypeSupported(candidate.mime)) return candidate;
+    } catch {
+      // Older engines can throw while probing. Keep trying known containers.
+    }
+  }
+  return { mime: "", extension: "mp4" };
+}
+
+function newAiAttachmentId() {
+  if (typeof globalThis.crypto?.randomUUID === "function") {
+    return `ai-attachment-${globalThis.crypto.randomUUID()}`;
+  }
+  return `ai-attachment-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function aiAttachmentKind(file) {
+  const type = String(file?.type || "").toLowerCase();
+  if (type.startsWith("image/")) return "image";
+  if (type.startsWith("audio/")) return "audio";
+  return "";
+}
+
+function aiAttachmentLimit(kind) {
+  return kind === "image" ? AI_MAX_IMAGE_BYTES : AI_MAX_AUDIO_BYTES;
+}
+
+function formatAiAttachmentSize(bytes) {
+  const size = Math.max(0, Number(bytes || 0));
+  if (size >= 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  if (size >= 1024) return `${Math.ceil(size / 1024)} KB`;
+  return `${size} B`;
+}
+
+function aiAttachmentLabel(attachment) {
+  return attachment.kind === "image" ? t("aiImageAttachment") : t("aiAudioAttachment");
+}
+
+function revokeAiAttachment(attachment) {
+  const url = String(attachment?.url || "");
+  if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+}
+
+function clearAiAttachments({ includeMessages = false } = {}) {
+  state.aiAttachments.forEach(revokeAiAttachment);
+  state.aiAttachments = [];
+  if (includeMessages) {
+    for (const message of state.aiMessages) {
+      (message.attachments || []).forEach(revokeAiAttachment);
+    }
+  }
+  renderAiAttachments();
+}
+
+function renderAiAttachments() {
+  if (!dom.aiAttachments) return;
+  dom.aiAttachments.replaceChildren();
+  if (!state.aiAttachments.length) {
+    dom.aiAttachments.hidden = true;
+    return;
+  }
+  dom.aiAttachments.hidden = false;
+  for (const attachment of state.aiAttachments) {
+    const chip = element("article", `ai-attachment-chip is-${attachment.kind}`);
+    const preview = element("span", "ai-attachment-preview");
+    if (attachment.kind === "image") {
+      const image = document.createElement("img");
+      image.src = attachment.url;
+      image.alt = "";
+      image.decoding = "async";
+      preview.append(image);
+    } else {
+      preview.append(element("span", "", "AUD"));
+    }
+    const copy = element("span", "ai-attachment-copy");
+    copy.append(
+      element("b", "", attachment.name),
+      element(
+        "small",
+        "",
+        `${aiAttachmentLabel(attachment)} · ${formatAiAttachmentSize(attachment.size)}`,
+      ),
+    );
+    const remove = element("button", "ai-attachment-remove", "×");
+    remove.type = "button";
+    remove.setAttribute("aria-label", t("aiRemoveAttachment"));
+    remove.addEventListener("click", () => removeAiAttachment(attachment.id));
+    chip.append(preview, copy, remove);
+    dom.aiAttachments.append(chip);
+  }
+}
+
+function removeAiAttachment(id) {
+  const attachment = state.aiAttachments.find((item) => item.id === id);
+  if (attachment) revokeAiAttachment(attachment);
+  state.aiAttachments = state.aiAttachments.filter((item) => item.id !== id);
+  renderAiAttachments();
+  updateAiComposer();
+}
+
+function addAiAttachmentFromFile(file) {
+  const kind = aiAttachmentKind(file);
+  if (!kind) {
+    showToast(t("aiMediaUnsupported"));
+    return;
+  }
+  if (state.aiAttachments.length >= AI_MAX_ATTACHMENTS) {
+    showToast(t("aiMediaLimit", { count: AI_MAX_ATTACHMENTS }));
+    return;
+  }
+  if (Number(file.size || 0) > aiAttachmentLimit(kind)) {
+    showToast(t("aiMediaTooLarge"));
+    return;
+  }
+  state.aiAttachments.push({
+    id: newAiAttachmentId(),
+    kind,
+    name: String(file.name || aiAttachmentLabel({ kind })),
+    size: Number(file.size || 0),
+    type: String(file.type || ""),
+    url: URL.createObjectURL(file),
+  });
+}
+
+function addAiFiles(files) {
+  const list = Array.from(files || []);
+  for (const file of list) addAiAttachmentFromFile(file);
+  renderAiAttachments();
+  updateAiComposer();
+  if (state.aiAttachments.length) {
+    dom.aiFooterStatus.textContent = t("aiMediaAttached", {
+      count: state.aiAttachments.length,
+    });
+  }
+}
+
+function appendAiMessageAttachments(parent, attachments = []) {
+  if (!attachments.length) return;
+  const list = element("div", "ai-message-attachments");
+  for (const attachment of attachments) {
+    const item = element("div", `ai-message-attachment is-${attachment.kind}`);
+    if (attachment.kind === "image" && attachment.url) {
+      const image = document.createElement("img");
+      image.src = attachment.url;
+      image.alt = "";
+      image.decoding = "async";
+      item.append(image);
+    } else {
+      item.append(element("span", "ai-message-attachment-icon", "AUD"));
+    }
+    const copy = element("span", "");
+    copy.append(
+      element("b", "", attachment.name),
+      element(
+        "small",
+        "",
+        `${aiAttachmentLabel(attachment)} · ${formatAiAttachmentSize(attachment.size)}`,
+      ),
+    );
+    item.append(copy);
+    list.append(item);
+  }
+  parent.append(list);
+}
+
+function cancelAiRecording() {
+  clearTimeout(state.aiRecordingTimer);
+  state.aiRecordingTimer = null;
+  state.aiRecordDiscard = true;
+  if (state.aiRecorder && state.aiRecorder.state !== "inactive") {
+    try {
+      state.aiRecorder.stop();
+    } catch {
+      // Recorder may already be closing.
+    }
+  }
+  if (state.aiRecordStream) {
+    state.aiRecordStream.getTracks().forEach((track) => track.stop());
+  }
+  state.aiRecording = false;
+  state.aiRecorder = null;
+  state.aiRecordStream = null;
+  state.aiRecordStartedAt = 0;
+  state.aiRecordType = null;
+}
+
+function recordedAiAttachmentName(extension) {
+  const now = new Date();
+  const time = [
+    now.getHours(),
+    now.getMinutes(),
+    now.getSeconds(),
+  ]
+    .map((value) => String(value).padStart(2, "0"))
+    .join("-");
+  return `ai-voice-${time}.${extension || "webm"}`;
+}
+
+async function startAiRecording() {
+  if (!aiIsReady() || state.aiBusy || state.aiRecording) return;
+  if (state.aiAttachments.length >= AI_MAX_ATTACHMENTS) {
+    showToast(t("aiMediaLimit", { count: AI_MAX_ATTACHMENTS }));
+    return;
+  }
+  const recorderType = supportedAiRecorder();
+  if (!recorderType || !navigator.mediaDevices?.getUserMedia) {
+    showToast(t("desktop_voice_recorder_unavailable"));
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const chunks = [];
+    const options = recorderType.mime ? { mimeType: recorderType.mime } : {};
+    const recorder = new MediaRecorder(stream, options);
+    state.aiRecording = true;
+    state.aiRecorder = recorder;
+    state.aiRecordStream = stream;
+    state.aiRecordStartedAt = Date.now();
+    state.aiRecordType = recorderType;
+    state.aiRecordDiscard = false;
+    recorder.addEventListener("dataavailable", (event) => {
+      if (event.data?.size) chunks.push(event.data);
+    });
+    recorder.addEventListener("stop", () => {
+      clearTimeout(state.aiRecordingTimer);
+      state.aiRecordingTimer = null;
+      stream.getTracks().forEach((track) => track.stop());
+      const duration = Date.now() - state.aiRecordStartedAt;
+      const type = recorder.mimeType || recorderType.mime || "audio/mp4";
+      const discard = state.aiRecordDiscard;
+      state.aiRecording = false;
+      state.aiRecorder = null;
+      state.aiRecordStream = null;
+      state.aiRecordStartedAt = 0;
+      state.aiRecordType = null;
+      state.aiRecordDiscard = false;
+      if (discard) {
+        updateAiComposer();
+        return;
+      }
+      if (duration < AI_MIN_RECORDING_MS || !chunks.length) {
+        showToast(t("desktop_voice_too_short"));
+        updateAiComposer();
+        return;
+      }
+      const blob = new Blob(chunks, { type });
+      if (blob.size > AI_MAX_AUDIO_BYTES) {
+        showToast(t("desktop_voice_audio_too_large"));
+        updateAiComposer();
+        return;
+      }
+      state.aiAttachments.push({
+        id: newAiAttachmentId(),
+        kind: "audio",
+        name: recordedAiAttachmentName(recorderType.extension),
+        size: blob.size,
+        type,
+        url: URL.createObjectURL(blob),
+      });
+      renderAiAttachments();
+      updateAiComposer();
+      dom.aiFooterStatus.textContent = t("aiRecordingReady");
+    });
+    recorder.start();
+    state.aiRecordingTimer = setTimeout(() => {
+      if (state.aiRecording && state.aiRecorder?.state === "recording") {
+        state.aiRecorder.stop();
+      }
+    }, AI_MAX_RECORDING_MS);
+    dom.aiFooterStatus.textContent = t("aiRecording");
+    updateAiComposer();
+  } catch (error) {
+    cancelAiRecording();
+    const code =
+      error?.name === "NotAllowedError"
+        ? "desktop_voice_mic_denied"
+        : "desktop_voice_mic_unavailable";
+    showToast(t(code));
+    updateAiComposer();
+  }
+}
+
+function stopAiRecording() {
+  if (!state.aiRecording || !state.aiRecorder) return;
+  if (state.aiRecorder.state === "recording") {
+    state.aiRecorder.stop();
+  }
+}
+
+function handleAiMediaBlockedSend(prompt, attachments) {
+  const sentAttachments = attachments.map((attachment) => ({ ...attachment }));
+  state.aiAttachments = [];
+  state.aiMessages.push(
+    {
+      role: "user",
+      content: prompt || t("aiMediaUserFallback"),
+      attachments: sentAttachments,
+      excludeHistory: true,
+    },
+    {
+      role: "assistant",
+      content: t("aiMediaOnlineRequired"),
+      excludeHistory: true,
+    },
+  );
+  dom.aiInput.value = "";
+  renderAiAttachments();
+  renderAiChat();
+  updateAiComposer();
 }
 
 function renderAiChat() {
@@ -4577,6 +4924,9 @@ function renderAiChat() {
         "ai-message-author",
         message.role === "user" ? t("aiYou") : t("aiTutor"),
       ),
+    );
+    appendAiMessageAttachments(bubble, message.attachments);
+    bubble.append(
       renderAiFormattedAnswer(message.content, {
         pending: message.pending,
         plain: message.role === "user",
@@ -4608,17 +4958,37 @@ function renderAiChat() {
 
 function updateAiComposer() {
   const ready = aiIsReady();
-  const hasDraft = Boolean(String(dom.aiInput.value || "").trim());
+  const hasText = Boolean(String(dom.aiInput.value || "").trim());
+  const hasAttachments = state.aiAttachments.length > 0;
+  const hasDraft = hasText || hasAttachments || state.aiRecording;
   dom.aiDrawer.classList.toggle("has-ai-draft", hasDraft);
-  dom.aiInput.disabled = !ready || state.aiBusy;
+  const inputLocked = !ready || state.aiBusy || state.aiRecording;
+  dom.aiInput.disabled = inputLocked;
   dom.aiInput.placeholder = ready
     ? t("aiInputPlaceholder")
     : t("aiInputDisabledPlaceholder");
-  dom.aiSend.textContent = state.aiBusy ? t("aiStop") : t("aiSend");
+  dom.aiAttach.disabled = inputLocked;
+  dom.aiEmoji.disabled = inputLocked;
+  dom.aiRecord.disabled = !ready || state.aiBusy;
+  dom.aiRecord.hidden = !state.aiRecording && (state.aiBusy || hasText || hasAttachments);
+  dom.aiRecord.classList.toggle("is-recording", state.aiRecording);
+  dom.aiRecord.setAttribute(
+    "aria-label",
+    state.aiRecording ? t("aiStopRecord") : t("aiRecord"),
+  );
+  dom.aiSend.hidden = !state.aiBusy && !hasText && !hasAttachments;
+  dom.aiSend.setAttribute("aria-label", state.aiBusy ? t("aiStop") : t("aiSend"));
   dom.aiSend.classList.toggle("is-stop", state.aiBusy);
   dom.aiSend.disabled = state.aiBusy
     ? !state.aiRequestId
-    : !ready || !String(dom.aiInput.value || "").trim();
+    : !ready || (!hasText && !hasAttachments);
+  if (state.aiRecording) {
+    dom.aiFooterStatus.textContent = t("aiRecording");
+  } else if (hasAttachments && !state.aiBusy) {
+    dom.aiFooterStatus.textContent = t("aiMediaAttached", {
+      count: state.aiAttachments.length,
+    });
+  }
 }
 
 function newAiRequestId() {
@@ -4664,7 +5034,12 @@ async function sendAiMessage() {
   }
   if (!aiIsReady()) return;
   const prompt = String(dom.aiInput.value || "").trim();
-  if (!prompt) return;
+  const attachments = state.aiAttachments.map((attachment) => ({ ...attachment }));
+  if (!prompt && !attachments.length) return;
+  if (attachments.length) {
+    handleAiMediaBlockedSend(prompt, attachments);
+    return;
+  }
   const history = state.aiMessages
     .filter((message) => !message.pending && !message.excludeHistory)
     .slice(-12)
@@ -4820,6 +5195,25 @@ function bindEvents() {
   dom.railScrim.addEventListener("click", closeRail);
   dom.aiLauncher.addEventListener("click", toggleAi);
   dom.closeAi.addEventListener("click", closeAi);
+  dom.aiAttach.addEventListener("click", () => {
+    if (!aiIsReady() || state.aiBusy || state.aiRecording) return;
+    dom.aiFileInput.click();
+  });
+  dom.aiFileInput.addEventListener("change", () => {
+    addAiFiles(dom.aiFileInput.files);
+    dom.aiFileInput.value = "";
+  });
+  dom.aiEmoji.addEventListener("click", () => {
+    dom.aiInput.focus();
+    showToast(t("aiEmojiHint"));
+  });
+  dom.aiRecord.addEventListener("click", () => {
+    if (state.aiRecording) {
+      stopAiRecording();
+      return;
+    }
+    void startAiRecording();
+  });
   dom.aiInput.addEventListener("input", updateAiComposer);
   dom.aiInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
@@ -4833,6 +5227,8 @@ function bindEvents() {
   window.addEventListener("online", updateNetworkState);
   window.addEventListener("offline", updateNetworkState);
   window.addEventListener("beforeunload", () => {
+    cancelAiRecording();
+    clearAiAttachments({ includeMessages: true });
     if (state.updateUnlisten) {
       try {
         state.updateUnlisten();
