@@ -886,13 +886,6 @@ p {
   line-height: 1.6;
 }
 
-.language-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 13px;
-}
-
 .language-button {
   min-height: 36px;
   padding: 0 12px;

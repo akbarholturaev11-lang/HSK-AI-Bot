@@ -14,6 +14,14 @@ const previewState = {
       : query.get("subscription") === "pending"
         ? "pending"
         : "free",
+  practiceSession: "",
+  // Empty on purpose: the preview must reproduce the first run where
+  // onboarding opens itself because no goal has been picked yet.
+  goalKind: query.get("goal") || "",
+  vocabularySaved: [],
+  vocabularyReview: [],
+  voiceSessionId: "",
+  voiceTurns: 0,
 };
 
 const localized = (uz, ru, tj) => ({ uz, ru, tj });
@@ -21,6 +29,42 @@ const PREVIEW_QR =
   "data:image/png;base64," +
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk" +
   "+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+
+const PREVIEW_VOICE_MAX_DIALOGS = 7;
+
+// Deterministic replies so the preview and the Chromium flow tests stay
+// reproducible. Production never reaches this file: previewInvoke only runs on
+// localhost with an explicit ?mock=1.
+const PREVIEW_VOICE_REPLIES = [
+  {
+    transcription: "我今天没时间看电影了",
+    chinese_reply: "没关系，那我们明天去吧。",
+    pinyin: "Méi guānxi, nà wǒmen míngtiān qù ba.",
+    translation: localized(
+      "Zarari yo‘q, unda ertaga boramiz.",
+      "Ничего страшного, тогда пойдём завтра.",
+      "Ҳеҷ гап не, пас фардо меравем.",
+    ),
+    correction: "我今天没有时间看电影",
+  },
+  {
+    transcription: "好的，明天下午见",
+    chinese_reply: "太好了，明天下午三点见！",
+    pinyin: "Tài hǎo le, míngtiān xiàwǔ sān diǎn jiàn!",
+    translation: localized(
+      "Zo‘r, ertaga soat uchda ko‘rishamiz!",
+      "Отлично, завтра в три часа!",
+      "Хеле хуб, фардо соати се вомехӯрем!",
+    ),
+    correction: null,
+  },
+];
+
+/** The server sends one already-translated string, not a language map. */
+function previewText(value) {
+  if (!value || typeof value !== "object") return String(value || "");
+  return String(value[previewState.language] || value.uz || "");
+}
 
 function subscriptionAccess() {
   const paid = previewState.subscription === "paid";
@@ -418,6 +462,307 @@ export async function previewInvoke(command, args = {}) {
         mode: "subscription",
         access: subscriptionAccess(),
       };
+    case "desktop_vocabulary_state":
+      return {
+        saved: [...previewState.vocabularySaved],
+        review: [...previewState.vocabularyReview],
+      };
+    case "desktop_vocabulary_save":
+      previewState.vocabularySaved = Array.isArray(args.saved) ? [...args.saved] : [];
+      previewState.vocabularyReview = Array.isArray(args.review) ? [...args.review] : [];
+      return {
+        saved: [...previewState.vocabularySaved],
+        review: [...previewState.vocabularyReview],
+      };
+    case "desktop_referral_overview":
+      return {
+        code: "AKBAR7",
+        link: "https://t.me/darsi_chini_bot?start=ref_AKBAR7",
+        invited: 2,
+        activated: 1,
+        trial_progress: 1,
+        trial_required: 5,
+        items: [
+          {
+            name: "Malika",
+            status: "active",
+            joined_at: "2026-08-02T10:00:00Z",
+            activated_at: "2026-08-03T09:00:00Z",
+            course_level: "hsk1",
+            completed_lessons: 4,
+            is_paid: false,
+          },
+          {
+            name: "Aziz",
+            status: "pending",
+            joined_at: "2026-08-06T18:20:00Z",
+            activated_at: "",
+            course_level: "",
+            completed_lessons: 0,
+            is_paid: false,
+          },
+        ],
+      };
+    case "desktop_goal_state": {
+      const known = ["conversation", "hsk", "study"].includes(
+        previewState.goalKind,
+      );
+      return {
+        kind: known ? previewState.goalKind : "",
+        configured: known,
+      };
+    }
+    case "desktop_goal_save": {
+      const kind = String(args.kind || "");
+      if (!["conversation", "hsk", "study"].includes(kind)) {
+        throw new Error("desktop_goal_request_invalid");
+      }
+      previewState.goalKind = kind;
+      return { kind, configured: true };
+    }
+    case "desktop_practice_start": {
+      const skill = String(args.skill || "");
+      const mode = String(args.mode || "mock");
+      previewState.practiceSession =
+        `practice:1:course_${mode}:${mode}:${skill || "hsk1"}:v1`;
+      return {
+        ok: true,
+        session: {
+          id: previewState.practiceSession,
+          mode,
+          skill,
+          level: "hsk1",
+          questions: [
+            {
+              id: "hsk1:1:0",
+              level: "hsk1",
+              lesson: 1,
+              format: "word_choice",
+              category: "word",
+              type: "word",
+              subtype: skill || "meaning",
+              prompt: previewText(
+                localized(
+                  "«你好» nimani anglatadi?",
+                  "Что означает «你好»?",
+                  "«你好» чиро ифода мекунад?",
+                ),
+              ),
+              sentence: "你好",
+              audio_text: "你好",
+              pinyin: "nǐ hǎo",
+              options: ["Salom", "Xayr", "Rahmat", "Kechirasiz"],
+              answer_index: 0,
+              explanation: previewText(
+                localized(
+                  "你好 — eng keng tarqalgan salomlashish.",
+                  "你好 — самое распространённое приветствие.",
+                  "你好 — маъмултарин салом додан аст.",
+                ),
+              ),
+            },
+            {
+              id: "hsk1:1:1",
+              level: "hsk1",
+              lesson: 1,
+              format: "sentence_choice",
+              category: "grammar",
+              type: "grammar",
+              subtype: skill || "order",
+              prompt: previewText(
+                localized(
+                  "To‘g‘ri gapni tanlang.",
+                  "Выберите правильное предложение.",
+                  "Ҷумлаи дурустро интихоб кунед.",
+                ),
+              ),
+              sentence: "",
+              audio_text: "",
+              pinyin: "",
+              options: ["我是学生。", "我学生是。", "是我学生。", "学生我是。"],
+              answer_index: 0,
+              explanation: previewText(
+                localized(
+                  "Xitoy tilida tartib: ega + 是 + kesim.",
+                  "Порядок в китайском: подлежащее + 是 + сказуемое.",
+                  "Тартиб дар чинӣ: мубтадо + 是 + хабар.",
+                ),
+              ),
+            },
+          ],
+        },
+      };
+    }
+    case "desktop_practice_complete": {
+      if (previewState.practiceSession !== String(args.sessionId || "")) {
+        throw new Error("invalid_practice_session");
+      }
+      const answers = Array.isArray(args.answers) ? args.answers : [];
+      const score = answers.filter((item) => Number(item.selected) === 0).length;
+      const total = answers.length || 2;
+      previewState.practiceSession = "";
+      return {
+        ok: true,
+        score,
+        total,
+        percent: Math.round((score / total) * 100),
+        recommendation: "hsk1",
+        wrong_items: answers
+          .filter((item) => Number(item.selected) !== 0)
+          .map((item) => ({
+            question_id: String(item.question_id),
+            question: previewText(
+              localized("To‘g‘ri gapni tanlang.", "Выберите правильное предложение.", "Ҷумлаи дурустро интихоб кунед."),
+            ),
+            selected_answer: "我学生是。",
+            correct_answer: "我是学生。",
+            explanation: previewText(
+              localized("Tartib: ega + 是 + kesim.", "Порядок: подлежащее + 是 + сказуемое.", "Тартиб: мубтадо + 是 + хабар."),
+            ),
+            level: "hsk1",
+            type: "grammar",
+            subtype: "order",
+            format: "sentence_choice",
+            sentence: "",
+          })),
+        reward: { xp_awarded: 15 },
+      };
+    }
+    case "desktop_rating_leaderboard": {
+      const board = [
+        ["Akbar", "akbar", 420, true],
+        ["Li Wei", "liwei", 610, false],
+        ["Nодира", "nodira", 505, false],
+        ["Ҷамшед", "jamshed", 380, false],
+        ["Chen Yu", "chenyu", 260, false],
+      ]
+        .sort((a, b) => b[2] - a[2])
+        .map(([name, username, xp, self], index) => ({
+          rank: index + 1,
+          name,
+          username,
+          xp,
+          league_points: xp,
+          total_xp: xp * 4,
+          course_level: "HSK1",
+          completed_lessons: previewState.completed,
+          is_paid: previewState.subscription === "paid",
+          is_current_user: self,
+        }));
+      return {
+        rank: board.find((entry) => entry.is_current_user)?.rank || 1,
+        league: "朱雀",
+        league_size: board.length,
+        xp: 420,
+        weekly_xp: 420,
+        daily_xp: 40,
+        streak: 3,
+        longest_streak: 7,
+        week_start: "2026-08-03",
+        week_activity_dates: ["2026-08-07", "2026-08-08"],
+        weekly_reset_day: "monday",
+        weekly_reset_seconds: 172800,
+        leaderboard: board,
+      };
+    }
+    case "desktop_voice_status":
+      return {
+        is_paid: previewState.subscription === "paid",
+        plan: previewState.subscription === "paid" ? "premium" : "free",
+        remaining_voice_limit: previewState.subscription === "paid" ? -1 : 1,
+        level: "hsk2",
+        language: previewState.language,
+        completed_lessons: previewState.completed,
+      };
+    case "desktop_voice_session_start":
+      previewState.voiceSessionId = "preview-voice-0000-0001";
+      previewState.voiceTurns = 0;
+      return {
+        session_id: previewState.voiceSessionId,
+        user_status: {
+          is_paid: previewState.subscription === "paid",
+          plan: previewState.subscription === "paid" ? "premium" : "free",
+        },
+        remaining_limit: previewState.subscription === "paid" ? -1 : 0,
+        character: String(args.role || "lily"),
+        course_context: { lesson_order: 5, title: "", words: [], review_words: [] },
+        opening_message: {
+          chinese_reply: "你好！今天过得怎么样？",
+          pinyin: "Nǐ hǎo! Jīntiān guò de zěnmeyàng?",
+          translation: previewText(
+            localized(
+              "Salom! Bugun kuningiz qanday o‘tdi?",
+              "Привет! Как прошёл твой день?",
+              "Салом! Рӯзи шумо чӣ хел гузашт?",
+            ),
+          ),
+          correction: null,
+        },
+        max_dialogs: PREVIEW_VOICE_MAX_DIALOGS,
+      };
+    case "desktop_voice_message": {
+      if (previewState.voiceSessionId !== String(args.sessionId || "")) {
+        throw new Error("SESSION_NOT_FOUND");
+      }
+      const reply =
+        PREVIEW_VOICE_REPLIES[
+          Math.min(previewState.voiceTurns, PREVIEW_VOICE_REPLIES.length - 1)
+        ];
+      previewState.voiceTurns += 1;
+      return {
+        transcription: reply.transcription,
+        chinese_reply: reply.chinese_reply,
+        pinyin: reply.pinyin,
+        translation: previewText(reply.translation),
+        correction: reply.correction,
+        audio_reply_url: null,
+        audio_reply_base64: null,
+        remaining_limit: previewState.subscription === "paid" ? -1 : 0,
+        turn_count: previewState.voiceTurns,
+        max_dialogs: PREVIEW_VOICE_MAX_DIALOGS,
+        session_should_end: previewState.voiceTurns >= PREVIEW_VOICE_MAX_DIALOGS,
+        budget_notice: null,
+      };
+    }
+    case "desktop_voice_pronounce":
+      return {
+        ok: true,
+        score: 88,
+        passed: true,
+        heard: String(args.target || ""),
+        target: String(args.target || ""),
+        target_pinyin: String(args.targetPinyin || ""),
+        budget_notice: null,
+      };
+    case "desktop_voice_session_end": {
+      if (previewState.voiceSessionId !== String(args.sessionId || "")) {
+        throw new Error("SESSION_NOT_FOUND");
+      }
+      const turns = previewState.voiceTurns;
+      previewState.voiceSessionId = "";
+      previewState.voiceTurns = 0;
+      return {
+        ok: true,
+        duration_seconds: 96,
+        message_count: turns,
+        corrections: turns > 0 ? [PREVIEW_VOICE_REPLIES[0].correction] : [],
+        transcript: PREVIEW_VOICE_REPLIES.slice(0, turns).map((entry) => ({
+          user: entry.transcription,
+          assistant: entry.chinese_reply,
+          pinyin: entry.pinyin,
+          translation: previewText(entry.translation),
+          correction: entry.correction,
+          good: entry.correction === null,
+        })),
+        good_count: PREVIEW_VOICE_REPLIES.slice(0, turns).filter(
+          (entry) => entry.correction === null,
+        ).length,
+        mistake_count: PREVIEW_VOICE_REPLIES.slice(0, turns).filter(
+          (entry) => entry.correction !== null,
+        ).length,
+        reward: { xp_awarded: 10 },
+      };
+    }
     case "desktop_tts_speak":
       return { ok: false, available: false, error: "desktop_tts_unavailable" };
     case "local_ai_model_status":

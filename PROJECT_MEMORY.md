@@ -4514,6 +4514,258 @@ Follow-up:
 
 ---
 
+### 2026-08-09 — Desktop AI Voice real ovozli suhbatga ulandi
+
+Changed:
+- Desktop'dagi "AI Voice" ekrani statik karta edi: faqat AI chatga o'tish
+  tugmasi va joriy darsni TTS bilan o'qish. Endi u haqiqiy ovozli suhbat:
+  mikrofondan yozib olish, STT, AI javobi, ichki tuzatish, jonli transkript
+  va serverdan kelgan yakuniy natija.
+- Yangi Bearer adapter `app/api/desktop_voice.py` mavjud
+  `VoicePracticeService` ni chaqiradi. Yangi biznes-mantiq yozilmadi:
+  limit, byudjet, paid gating, tuzatish, xatolarni yozish va XP
+  o'zgarishsiz canonical servisda qoladi.
+- Endpointlar (Mini App'dagi `/api/voice-practice/*` bilan bir xil servis):
+  `GET  /api/v3/desktop/voice/status`,
+  `POST /api/v3/desktop/voice/session/start`,
+  `POST /api/v3/desktop/voice/message`,
+  `POST /api/v3/desktop/voice/pronounce`,
+  `POST /api/v3/desktop/voice/session/end`.
+- Rust'da 5 ta yangi named command: `desktop_voice_status`,
+  `desktop_voice_session_start`, `desktop_voice_message`,
+  `desktop_voice_pronounce`, `desktop_voice_session_end`. Path allowlist,
+  audio signature tekshiruvi va body limitlari subscription adapteridagi
+  naqsh bo'yicha.
+
+Why:
+- Voice Practice backend allaqachon Mini App uchun ishlab turardi; desktop
+  unga ulanmagani uchun mahsulot demo va'dasidan orqada edi. Ikkinchi STT
+  yo'li qurish "bitta akkaunt, bitta backend" tamoyilini buzardi.
+
+Files touched:
+- `app/api/desktop_voice.py` (yangi), `app/main.py`
+- `desktop/src-tauri/src/lib.rs`, `desktop/src-tauri/Info.plist` (yangi)
+- `desktop/ui/js/voice.js` (yangi), `app.js`, `bridge.js`, `i18n.js`,
+  `preview-mock.js`, `css/workspace.css`, `ui/test-contract.mjs`
+
+Risk:
+- Audio webview'dan Rust'ga IPC orqali base64 data URL sifatida o'tadi
+  (multipart emas), chunki webview'da tarmoq yo'q — CSP `connect-src ipc:`
+  o'zgarmadi. Chegara 5 MB, servisdagi `MAX_AUDIO_BYTES` bilan bir xil.
+- **Platforma farqi:** macOS WKWebView `audio/mp4`, Windows WebView2
+  `audio/webm` yozadi. Uchala qatlam (JS, Rust, Python) ikkalasini ham
+  qabul qiladi; bittasini olib tashlash bitta OS'da AI Voice'ni jimgina
+  buzadi. Contract test buni ushlab turadi.
+- macOS'da `NSMicrophoneUsageDescription` bo'lmasa OS ilovani birinchi
+  `getUserMedia` da o'ldiradi. Info.plist qo'shildi, lekin **haqiqiy Mac'da
+  hali sinalmagan**. Bu matn hozircha faqat inglizcha — OS dialogi bo'lgani
+  uchun RU/TJ/UZ lokalizatsiyasi `InfoPlist.strings` talab qiladi.
+- Bepul foydalanuvchi cheklovi (`FREE_TOTAL_SESSIONS = 1`) desktopda ham
+  paywall sifatida ko'rsatiladi; obuna mantig'iga tegilmadi.
+
+Follow-up:
+- Toza Mac va toza Windows VM'da mikrofon ruxsati oqimini sinash.
+- `desktop_voice_pronounce` backend va Rust'da tayyor, lekin UI'da hali
+  ishlatilmayapti — talaffuz baholash keyingi bosqichda ulanadi.
+- `⌘F` `desktop/ui/index.html` da hardcoded: Windows'da ham Mac belgisi
+  ko'rinadi. `⌘K` platformaga qarab tuzatilgan, `⌘F` yo'q — parity fix kerak.
+- Eski voice CSS (`.voice-shell`, `.voice-stage`, `.voice-avatar-wrap`,
+  `.voice-microphone-state`, `.voice-mic-button`) endi ishlatilmaydi;
+  alohida tozalash taskida olinadi.
+
+---
+
+### 2026-08-09 — Desktop Lug'at, Praktika va Reyting real backendga ulandi
+
+Changed:
+- **Reyting**: yangi `app/api/desktop_rating.py` mavjud
+  `CourseGamificationService.leaderboard()` ni chaqiradi.
+  `GET /api/v3/desktop/rating/leaderboard?tz=`. Endi desktopda haqiqiy
+  haftalik liga jadvali bor. `telegram_id` javobdan olib tashlanadi — UI uni
+  ishlatmaydi va bu yagona shaxsiy ma'lumot edi.
+- **Praktika**: yangi `app/api/desktop_practice.py` mavjud
+  `CourseMiniAppPracticeService` ni chaqiradi.
+  `POST /api/v3/desktop/practice/start` va `/complete`. 7 ta mashq turi:
+  placement, mock va training × (characters, listening, pronunciation,
+  pinyin, writing). Savol banki, bepul kunlik gate, baholash va xatolarni
+  yozish canonical servisda qoladi. `free_feature_limit_reached` 403 sifatida
+  qaytadi va UI'da paywall ko'rsatiladi — crash emas.
+- **Lug'at**: darslararo to'liq lug'at. 1247 so'z, 799 misol va 1055 ieroglif
+  uchun chiziq ma'lumoti `desktop/ui/data/` ga bundle qilindi. Qidiruv, filtr
+  (Hammasi/Saqlangan/Takrorlash), HSK daraja filtri, chiziqlar tartibi
+  animatsiyasi (Hanzi Writer 3.7.3, `desktop/ui/vendor/`).
+  **CDN ishlatilmaydi** — `charDataLoader` lokal `STROKES` dan o'qiydi,
+  shuning uchun CSP o'zgarmadi va internetsiz ishlaydi. `strokes.js` (2.5 MB)
+  faqat so'z detali ochilganda dynamic import bilan yuklanadi.
+- **EXAMPLES 3 tilga to'ldirildi**: `app/static/hsk-extra.js` dagi 799 ta misol
+  jumlasining `m.ru` va `m.tj` maydonlari bo'sh edi — hammasi xitoychadan
+  tarjima qilindi. `你` uchun ты/ту registri ishlatildi. `zh`, `uz`, `pos` va
+  `STROKES` tegilmadi. Bu umumiy fayl, shuning uchun **Mini App lug'ati ham**
+  rus va tojik tarjimalarini oladi.
+- `⌘F` parity xatosi tuzatildi: `index.html` da hardcoded edi, Windows'da
+  Mac belgisi ko'rinardi. Endi `⌘K` kabi platformaga qarab almashadi.
+
+Why:
+- Uchala servis ham Mini App uchun allaqachon ishlab turardi; desktop
+  ularga ulanmagani uchun ekranlar bo'sh yoki soxta edi. Ikkinchi
+  implementatsiya "bitta akkaunt, bitta backend" tamoyilini buzardi.
+
+Files touched:
+- `app/api/desktop_rating.py`, `app/api/desktop_practice.py` (yangi), `app/main.py`
+- `app/static/hsk-extra.js` (faqat EXAMPLES qatori)
+- `desktop/ui/js/vocabulary.js`, `practice.js` (yangi)
+- `desktop/ui/data/vocabulary.js`, `data/strokes.js`,
+  `vendor/hanzi-writer.js` (yangi, generatsiya qilingan)
+- `desktop/src-tauri/src/lib.rs`, `desktop/ui/js/{app,bridge,i18n,preview-mock}.js`
+- `desktop/ui/css/workspace.css`, `desktop/ui/index.html`
+- `desktop/THIRD_PARTY_NOTICES.md`, `desktop/licenses/LICENSE-HANZI-WRITER-MIT.txt`
+
+Risk:
+- **Saqlangan so'zlar DB'da emas**: `desktop_vocabulary_state/save` komandalari
+  ularni ilova ma'lumotlar papkasidagi `vocabulary.json` ga yozadi. Ya'ni
+  telefondagi Mini App bilan **sinxronlanmaydi**. Sinxronizatsiya kerak bo'lsa
+  yangi jadval va migratsiya kerak — bu ataylab qilinmadi. Yozish
+  temp-fayl + rename orqali, ya'ni crash ro'yxatni kesib qo'ymaydi.
+- Bundle hajmi ~2.9 MB oshdi (strokes 2.5 MB + words 370 KB). Bu lokal asset,
+  tarmoqqa ta'siri yo'q, lekin installer kattalashadi.
+- `EXAMPLES` tarjimalari AI tomonidan qilingan, professional tarjimon emas.
+  Jumlalar HSK1-3 darajasida sodda; xato topilsa `hsk-extra.js` dan tuzating.
+- Praktika savollarida `answer_index` clientga yuboriladi (Mini App'dagi kabi).
+  Bu mavjud xulq — o'zgartirilmadi, lekin ballni client hisoblay olishini
+  bilib qo'ying; yakuniy natijani baribir server qayta hisoblaydi.
+
+Follow-up:
+- Rust hali kompilyatsiya qilinmagan: `cargo fmt --check`, `cargo clippy
+  --locked --all-targets -- -D warnings` Mac'da ishlatilishi shart.
+- Python testlari ishlatilmagan (venv macOS binary).
+- Lug'atdagi "Takrorlash" navbati hozircha shunchaki ro'yxat — SRS
+  (intervalli takrorlash) algoritmi yo'q.
+- `desktop_voice_pronounce` backend/Rust/bridge tayyor, UI'ga ulanmagan.
+
+---
+
+### 2026-08-10 — Desktop profili demo tartibiga keltirildi, maqsad onboardingga ko'chdi
+
+Changed:
+- Profil ekrani `hsk-ai-mac-demo_4.html` ni **blok-bablok takrorlaydi**:
+  hero (avatar, ism, HSK·%·streak, chiplar, panda) + maqsad kartasi; taklif
+  morph tugmasi (TG/WA/⌘C/QR tray) + sinxronlash kartasi; progress bo'limi
+  (4 stat karta, haftalik bar chart, HSK darajalar, zaif joylar, aniqlik
+  trendi, insight chiplari); sozlamalarning ikki kartasi.
+- **`soonBlock()` naqshi:** ma'lumoti yo'q blok demo'dagi to'liq ko'rinishini
+  saqlaydi, ichidagi barcha boshqaruvlar `disabled` qilinadi va **ustiga
+  borilganda** (`:hover` / `:focus-within`) "Tez orada" pardasi chiqadi.
+  Raqam hech qachon o'ylab topilmaydi — o'rniga `NO_VALUE = "—"`.
+  Veyl ostidagilar: hero chiplari, maqsadning kunlik satri, sinxronlash,
+  TG/WA/QR ulashish, o'rganilgan so'z va daqiqa kartalari, HSK darajalar,
+  zaif joylar, aniqlik trendi, insight chiplari, butun bildirishnomalar
+  kartasi, kurs darajasi / audio avtoijro / pinyin qatorlari, onboardingning
+  2-bosqichi.
+- **Maqsad endi faqat onboardingda so'raladi.** Modal ikki bosqichli
+  (demo'dagidek): 1) maqsad turi — `conversation`, `hsk`, `study`;
+  2) Smart Widget tanishtiruvi (veyl ostida). `enterWorkspace` dan keyin
+  `goal.configured === false` bo'lsa modal o'zi ochiladi; sozlamalardagi
+  "Qayta sozlash" qatori uni qo'lda ochadi. Profil kartasi tanlovni faqat
+  ko'rsatadi.
+- Maqsad sxemasi `minutes: i64` dan `kind: String` ga o'tdi.
+  `MIN/MAX_GOAL_MINUTES` o'rniga `GOAL_KINDS` whitelisti (Rust'da ham,
+  `bridge.js` da ham). Fayl nomi `daily-goal.json` o'zgarmadi.
+- Til tanlash tugmalar ro'yxatidan demo'dagi `<select>` ga o'tdi.
+- **Demo'da yo'q, lekin desktopda kerak bo'lgan bloklar** ("Akkaunt va
+  ilova": obuna boshqaruvi, yangilanishni tekshirish, chiqish, versiya)
+  profil ekranining **eng pastiga**, alohida bo'lim sifatida ko'chirildi.
+  Hech qanday funksiya yo'qolmadi.
+- `.tag` uchun CSS umuman yo'q edi — profildagi har bir pill oddiy matn
+  bo'lib ko'rinardi. Demo'dagi pill uslubi (`.tag`, `.tag.green`, `.tag.red`)
+  qo'shildi.
+- ~80 ta yangi i18n kaliti RU/TJ/UZ uchtasida qo'shildi; ishlatilmay qolgan
+  `interfaceSection`, `inviteLink`, `insightsTitle`, `notificationsSettingsBody`
+  o'chirildi. Yangi contract test uchala tilning kalit to'plami aynan bir
+  xilligini tekshiradi.
+- O'lik CSS tozalandi: `.coming-soon*`, `.profile-activity`, `.language-list`,
+  `.profile-stat.is-soon`.
+
+Why:
+- Ikkita joyda (profil + onboarding) maqsad so'ralishi foydalanuvchini
+  chalkashtirardi va desktopda umuman onboarding yo'q edi — maqsad tanlanmasa
+  ilova hech narsa so'ramasdan ishlayverardi.
+- Demo'dagi bloklarni soxta raqam bilan to'ldirish "haqiqiy ma'lumot"
+  tamoyilini buzardi; uzuq ramka mavjud `coming-soon` naqshini qayta ishlatadi.
+
+Files touched:
+- `desktop/src-tauri/src/lib.rs` (`desktop_goal_state/save`, `GOAL_KINDS`)
+- `desktop/ui/index.html`, `js/app.js`, `js/bridge.js`, `js/i18n.js`,
+  `js/preview-mock.js`, `css/workspace.css`, `test-contract.mjs`
+
+Risk:
+- **Eski `daily-goal.json` migratsiya qilinmaydi.** Faylda faqat `minutes`
+  bo'lgani uchun `configured: false` qaytadi va onboarding hamma mavjud
+  foydalanuvchida bir marta qayta ochiladi. Bu ongli qaror — kunlik daqiqa
+  tushunchasi butunlay olib tashlandi.
+- To'lov, obuna va DB mantig'iga tegilmadi — faqat Akkaunt bloki DOM'da
+  pastroqqa ko'chdi.
+- Onboarding "Keyinroq" yoki Escape bilan yopilsa maqsad saqlanmaydi va
+  keyingi ishga tushishda modal qaytadi. Bu ataylab.
+- Haftalik bar chart balandliklari **daqiqa emas**: server faqat kun faol
+  bo'lgan-bo'lmaganini beradi, shuning uchun ustun to'la yoki bo'sh. Teg
+  "N / 7 kun" deb yozadi, "82 min" emas.
+- `soonBlock` ichidagi boshqaruvlar `disabled` + `tabIndex = -1` +
+  `aria-hidden`, ya'ni klaviatura bilan ham ularga tushib bo'lmaydi. Agar
+  keyinchalik blok jonlantirilsa, `soonBlock()` chaqiruvini olib tashlash
+  yetarli.
+- macOS/Windows farqi yo'q: barcha o'zgarish UI qatlamida. Widget bosqichi
+  matni ataylab platformaga bog'liq emas ("ish stoliga", "Mac'ga" emas).
+
+Follow-up:
+- 2026-08-11 tekshiruvlari o'tdi: `node --test desktop/ui/test-contract.mjs`
+  22/22, `cargo fmt --check`, `cargo clippy --locked --all-targets --
+  -D warnings`, va localhost mock preview bilan Playwright smoke.
+- Playwright screenshotlari `output/playwright/` ostida: onboarding 1/2,
+  profil top qismi, invite tray, progress, account, RU/TJ/UZ til holatlari.
+- Demo'dagi ishlamaydigan progress barlar real natijadek ko'rinmasligi uchun
+  no-data fill'lar `is-placeholder` stubga tushirildi.
+- Demo'ning 2-bosqichidagi `<details>` bloki (WidgetKit Swift yo'riqnomasi)
+  ko'chirilmadi — u ishlab chiquvchi uchun yozilgan izoh, mahsulot UI'si emas.
+- **Smart Widget hali ishlamaydi.** Haqiqiy WidgetKit extension pullik Apple
+  Developer akkaunti, App Group entitlement va notarization talab qiladi;
+  hozirgi `signingIdentity: "-"` (ad-hoc) bilan extension umuman yuklanmaydi,
+  Windows'da esa `nsis` bundle uchun ekvivalenti yo'q. Kelishilgan yo'l —
+  o'rniga menu bar / tray panelini qurish, **alohida vazifa sifatida**.
+
+---
+
+### 2026-08-11 — Qolgan desktop bo'limlari demo-parityga yaqinlashtirildi
+
+Changed:
+- Today, Course, Practice, AI Voice, Vocabulary, Rating va Subscription ekranlari
+  `hsk-ai-mac-demo_4.html` kompozitsiyasiga moslashtirildi.
+- Real API oqimlari saqlandi: kurs ochish, lesson progress, practice start,
+  voice persona/mic/session, vocabulary save/review/stroke, rating board va
+  subscription quote/upload logiciga tegilmadi.
+- Backendda ma'lumoti yo'q metrikalar soxta raqam bilan to'ldirilmadi:
+  study minutes, word count, rating promotion/history/missions va offline
+  course save bloklari `soonBlock()` / `NO_VALUE` orqali ajratildi.
+- Vocabulary detail endi alohida word-card ko'rinishiga ega: stroke tartibi,
+  darsdagi misol, save/review action va mavjud AI drawerga prompt yuborish bor.
+
+Files touched:
+- `desktop/ui/js/app.js`, `desktop/ui/js/practice.js`,
+  `desktop/ui/js/vocabulary.js`, `desktop/ui/js/voice.js`,
+  `desktop/ui/js/subscription.js`, `desktop/ui/js/i18n.js`,
+  `desktop/ui/css/workspace.css`.
+
+Risk:
+- O'zgarishlar user-facing layout qatlamida katta, shuning uchun desktop
+  responsive regressiya riski bor. Contractlar API/payment/voice/practice/vocab
+  oqimlarini himoya qiladi, lekin real device visual QA release oldidan kerak.
+
+Follow-up:
+- Agar demo'dagi hozir veyl ostida turgan bloklar jonlantirilsa, backend
+  endpointlar kerak: daily study minutes, learned word count, rating league
+  thresholds/history/missions, offline course package state.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

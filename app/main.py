@@ -23,7 +23,11 @@ from app.api.desktop_auth import create_desktop_auth_router
 from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
+from app.api.desktop_practice import create_desktop_practice_router
+from app.api.desktop_rating import create_desktop_rating_router
+from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
+from app.api.desktop_voice import create_desktop_voice_router
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, init_db
 from app.db.models.user import User
@@ -464,6 +468,30 @@ app.include_router(
         session_factory=async_session_maker,
         settings_obj=settings,
         bot=bot,
+    )
+)
+app.include_router(
+    create_desktop_voice_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(
+    create_desktop_rating_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(
+    create_desktop_practice_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+app.include_router(
+    create_desktop_referral_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
     )
 )
 app.include_router(create_desktop_update_router(settings_obj=settings))

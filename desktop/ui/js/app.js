@@ -1,5 +1,6 @@
 import {
   desktopBridge,
+  GOAL_KINDS,
   isSessionError,
   listenDesktopUpdate,
   listenLocalAi,
@@ -14,6 +15,9 @@ import {
 } from "./i18n.js";
 import { LessonController } from "./lesson.js";
 import { DesktopSubscriptionController } from "./subscription.js";
+import { DesktopPracticeController } from "./practice.js";
+import { DesktopVocabularyController } from "./vocabulary.js";
+import { DesktopVoiceController } from "./voice.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -37,7 +41,6 @@ const dom = {
   retryLink: $("#retry-link"),
   copyCode: $("#copy-code"),
   workspace: $("#workspace"),
-  appVersion: $("#app-version"),
   offlinePill: $("#offline-pill"),
   rail: $("#course-rail"),
   railScrim: $("#rail-scrim"),
@@ -74,7 +77,6 @@ const dom = {
   globalSearch: $("#global-search"),
   headerStreak: $("#header-streak"),
   headerXp: $("#header-xp"),
-  headerProfile: $("#header-profile"),
   railProfileButton: $("#rail-profile-button"),
   refreshMap: $("#refresh-map"),
   updateBanner: $("#update-banner"),
@@ -96,8 +98,24 @@ const dom = {
   aiSend: $("#ai-send"),
   aiFooterStatus: $("#ai-footer-status"),
   aiShortcut: $("#ai-shortcut"),
+  searchShortcut: $("#search-shortcut"),
+  railCollapse: $("#rail-collapse"),
+  railResizer: $("#rail-resizer"),
+  notificationsButton: $("#notifications-button"),
+  notificationsDot: $("#notifications-dot"),
+  notificationsPanel: $("#notifications-panel"),
+  notificationsBody: $("#notifications-body"),
+  closeNotifications: $("#close-notifications"),
   toast: $("#toast"),
   closeLesson: $("#close-lesson"),
+  onboardingLayer: $("#onboarding-layer"),
+  onboardingTitle: $("#onboarding-title"),
+  onboardingSubtitle: $("#onboarding-subtitle"),
+  onboardingSteps: $("#onboarding-steps"),
+  onboardingBody: $("#onboarding-body"),
+  onboardingBack: $("#onboarding-back"),
+  onboardingLater: $("#onboarding-later"),
+  onboardingStart: $("#onboarding-start"),
 };
 
 const state = {
@@ -125,9 +143,20 @@ const state = {
   aiStreamText: "",
   aiListenersReady: false,
   aiUnlisten: [],
-  vocabularyRequest: 0,
-  vocabularyCache: new Map(),
-  vocabularySelected: null,
+  reduceMotion: false,
+  referral: null,
+  referralError: "",
+  goal: null,
+  onboardingOpen: false,
+  onboardingStep: 0,
+  onboardingChoice: "",
+  onboardingPreviousFocus: null,
+  railCollapsed: false,
+  railWidth: 0,
+  notificationsOpen: false,
+  ratingRequest: 0,
+  ratingBoard: null,
+  ratingError: "",
   updateStatus: "idle",
   updateInfo: null,
   updateErrorStage: "check",
@@ -172,6 +201,39 @@ const subscription = new DesktopSubscriptionController({
     await loadCourseMap({ keepView: true });
   },
   onToast: showToast,
+});
+
+const voice = new DesktopVoiceController({
+  host: null,
+  bridge: desktopBridge,
+  t,
+  language: getLanguage(),
+  onSessionExpired: () => showAuth({ expired: true }),
+  onToast: showToast,
+  onOpenSubscription: () => routeTo("subscription"),
+  speak: (text, button) => void speakChinese(text, button),
+});
+
+const vocabulary = new DesktopVocabularyController({
+  host: null,
+  bridge: desktopBridge,
+  t,
+  language: getLanguage(),
+  onToast: showToast,
+  speak: (text, button) => void speakChinese(text, button),
+  onAskAi: (prompt) => openAiWithPrompt(prompt),
+});
+
+const practice = new DesktopPracticeController({
+  host: null,
+  bridge: desktopBridge,
+  t,
+  language: getLanguage(),
+  level: "hsk1",
+  onSessionExpired: () => showAuth({ expired: true }),
+  onToast: showToast,
+  onOpenSubscription: () => routeTo("subscription"),
+  speak: (text, button) => void speakChinese(text, button),
 });
 
 function element(tag, className = "", text = "") {
@@ -223,7 +285,6 @@ function applyStaticText() {
   dom.profileLabel.textContent = t("profile");
   dom.railDaysLabel.textContent = t("days");
   dom.refreshMap.setAttribute("aria-label", t("refresh"));
-  dom.headerProfile.setAttribute("aria-label", t("openProfile"));
   dom.aiTitle.textContent = t("aiTitle");
   dom.aiSubtitle.textContent = t("aiSubtitle");
   dom.aiLauncher.setAttribute("aria-label", t("openAi"));
@@ -583,11 +644,19 @@ function showAuth({ expired = false } = {}) {
   if (lesson.isOpen) {
     lesson.close();
   }
+  // A dropped session must never leave the goal dialog floating over the
+  // login screen.
+  closeOnboarding();
   closeAi();
   resetAiSession();
+  voice.dispose();
+  practice.dispose();
+  vocabulary.dispose();
   closeRail();
   state.bootstrap = null;
   state.map = null;
+  state.ratingBoard = null;
+  state.ratingError = "";
   subscription.overview = null;
   subscription.setUser(null);
   resetAuthForm();
@@ -786,12 +855,18 @@ async function enterWorkspace(bootstrap) {
   renderUpdateBanner();
   dom.contentTitle.focus();
   await loadCourseMap();
+  // Asked here and nowhere else: the profile only displays the result.
+  await maybeOpenOnboarding();
 }
 
 async function loadCourseMap({ keepView = false } = {}) {
   if (!keepView) {
     state.view = "today";
   }
+  // XP and the weekly league change after a lesson, so the cached board is
+  // dropped and refetched the next time the rating screen opens.
+  state.ratingBoard = null;
+  state.ratingError = "";
   dom.refreshMap.disabled = true;
   setContentLoading();
   try {
@@ -856,6 +931,7 @@ function currentLesson() {
 }
 
 function renderRail() {
+  renderNotifications();
   const map = state.map;
   const user = map.user || {};
   const progress = map.progress || {};
@@ -965,18 +1041,34 @@ function renderActiveView() {
   });
   dom.content.dataset.view = state.view;
 
+  // Several call sites set state.view directly instead of going through
+  // routeTo, so the microphone is released here: whenever the rendered view is
+  // not AI Voice, no capture may stay open on macOS or Windows.
+  if (state.view !== "voice") {
+    voice.dispose();
+  }
+  if (state.view !== "practice") {
+    practice.dispose();
+  }
+  if (state.view !== "vocabulary") {
+    vocabulary.dispose();
+  }
+
   if (state.view === "today") renderToday();
   else if (state.view === "course") renderCourseHome();
   else if (state.view === "practice") renderPractice();
   else if (state.view === "voice") renderVoice();
   else if (state.view === "vocabulary") void renderVocabulary();
-  else if (state.view === "rating") renderRating();
+  else if (state.view === "rating") void renderRating();
   else if (state.view === "subscription") renderSubscription();
-  else renderProfile();
+  else {
+    renderProfile();
+    if (!state.referral && !state.referralError) void loadProfileExtras();
+  }
 }
 
 function viewHeading(title, subtitle, tag = "") {
-  const heading = element("header", "view-heading");
+  const heading = element("header", "view-heading pageHead");
   const copy = element("div");
   copy.append(element("h2", "", title), element("p", "", subtitle));
   heading.append(copy);
@@ -990,11 +1082,143 @@ function progressPercent(done, total) {
   );
 }
 
+const RAIL_MIN_WIDTH = 190;
+const RAIL_MAX_WIDTH = 340;
+
+function applyRailWidth(width) {
+  // Width lives on a data attribute in 10px steps: the strict CSP forbids
+  // inline styles, so CSS carries one rule per step.
+  const clamped = Math.min(RAIL_MAX_WIDTH, Math.max(RAIL_MIN_WIDTH, Math.round(width)));
+  state.railWidth = clamped;
+  document.documentElement.dataset.railWidth = String(Math.round(clamped / 10) * 10);
+  try {
+    localStorage.setItem("pomp-hsk-rail-width", String(clamped));
+  } catch {
+    // A blocked storage quota must not break resizing.
+  }
+}
+
+function restoreRailWidth() {
+  let stored = 0;
+  try {
+    stored = Number(localStorage.getItem("pomp-hsk-rail-width") || 0);
+  } catch {
+    stored = 0;
+  }
+  if (stored >= RAIL_MIN_WIDTH && stored <= RAIL_MAX_WIDTH) applyRailWidth(stored);
+}
+
+function setRailCollapsed(collapsed) {
+  state.railCollapsed = Boolean(collapsed);
+  document.documentElement.dataset.railCollapsed = state.railCollapsed ? "1" : "0";
+  dom.railCollapse.setAttribute("aria-expanded", state.railCollapsed ? "false" : "true");
+  try {
+    localStorage.setItem("pomp-hsk-rail-collapsed", state.railCollapsed ? "1" : "0");
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function restoreRailCollapsed() {
+  try {
+    setRailCollapsed(localStorage.getItem("pomp-hsk-rail-collapsed") === "1");
+  } catch {
+    setRailCollapsed(false);
+  }
+}
+
+function startRailResize(event) {
+  event.preventDefault();
+  const move = (moveEvent) => applyRailWidth(moveEvent.clientX);
+  const stop = () => {
+    window.removeEventListener("pointermove", move);
+    window.removeEventListener("pointerup", stop);
+  };
+  window.addEventListener("pointermove", move);
+  window.addEventListener("pointerup", stop);
+}
+
+/**
+ * Only real, already-known items appear here. There is no notification feed on
+ * the server, and inventing one would put fake data in front of the learner.
+ */
+function notificationItems() {
+  const items = [];
+  const user = state.map?.user;
+  const progress = state.map?.progress || {};
+  if (state.updateStatus === "available" && state.updateInfo?.version) {
+    items.push({
+      glyph: "新",
+      title: t("updateAvailableTitle"),
+      body: `v${String(state.updateInfo.version)}`,
+      action: () => routeTo("today"),
+    });
+  }
+  if (user && user.is_paid !== true) {
+    items.push({
+      glyph: "会",
+      title: t("freePlan"),
+      body: t("freeAccessDescription"),
+      action: () => routeTo("subscription"),
+    });
+  }
+  const streak = Number(progress.streak || 0);
+  const activeToday = Array.isArray(progress.week_activity_dates)
+    && progress.week_activity_dates.includes(String(progress.local_date || ""));
+  if (streak > 0 && !activeToday) {
+    items.push({
+      glyph: "火",
+      title: t("keepRhythm"),
+      body: t("streakAtRisk", { days: streak }),
+      action: () => routeTo("course"),
+    });
+  }
+  return items;
+}
+
+function renderNotifications() {
+  const items = notificationItems();
+  dom.notificationsDot.hidden = items.length === 0;
+  dom.notificationsBody.replaceChildren();
+  if (!items.length) {
+    dom.notificationsBody.append(element("p", "muted", t("notificationsEmpty")));
+    return;
+  }
+  items.forEach((item) => {
+    const row = element("button", "notification-row");
+    row.type = "button";
+    row.append(element("span", "notification-mark", item.glyph));
+    const copy = element("div");
+    copy.append(element("strong", "", item.title), element("p", "muted", item.body));
+    row.append(copy);
+    row.addEventListener("click", () => {
+      closeNotifications();
+      item.action();
+    });
+    dom.notificationsBody.append(row);
+  });
+}
+
+function openNotifications() {
+  state.notificationsOpen = true;
+  renderNotifications();
+  dom.notificationsPanel.hidden = false;
+  dom.notificationsButton.setAttribute("aria-expanded", "true");
+}
+
+function closeNotifications() {
+  state.notificationsOpen = false;
+  dom.notificationsPanel.hidden = true;
+  dom.notificationsButton.setAttribute("aria-expanded", "false");
+}
+
+function toggleNotifications() {
+  if (state.notificationsOpen) closeNotifications();
+  else openNotifications();
+}
+
 function routeTo(view) {
   state.view = view;
-  if (view !== "vocabulary") {
-    state.vocabularySelected = null;
-  }
   renderActiveView();
   closeRail();
 }
@@ -1074,6 +1298,58 @@ function formattedToday(progress = {}) {
   }).format(date);
 }
 
+function progressTrack(numerator, denominator, className = "summary-progress") {
+  const track = element("div", className);
+  track.setAttribute("role", "progressbar");
+  track.setAttribute("aria-valuemin", "0");
+  track.setAttribute("aria-valuemax", "100");
+  const fill = element("span", "progress-fill");
+  track.append(fill);
+  setProgress(fill, numerator, denominator);
+  return track;
+}
+
+function lessonMetaPill(item) {
+  if (!item) return t("learningPart");
+  if (item.checkpoint) return t("checkpoint");
+  if (Number(item.part_count || 0) > 1) {
+    return t("partProgress", {
+      part: Number(item.part || 1),
+      total: Number(item.part_count),
+    });
+  }
+  return t("learningPart");
+}
+
+function todayReviewItems(lessons, current) {
+  const completed = [...lessons]
+    .reverse()
+    .filter((item) => item.status === "done" && lessonAccessible(item));
+  if (completed.length) return completed.slice(0, 5);
+  return current ? [current] : [];
+}
+
+function activeDaysThisWeek(progress) {
+  return weekSnapshot(progress).filter((day) => day.active).length;
+}
+
+function renderDemoWeek(progress) {
+  const wrap = element("div", "week");
+  weekSnapshot(progress).forEach((day) => {
+    const item = element(
+      "div",
+      `day${day.active ? " done" : ""}${day.today ? " today" : ""}`,
+    );
+    item.setAttribute("aria-label", `${day.label} ${day.day}`);
+    item.append(
+      element("i", "", day.active ? "✓" : day.today ? "•" : "·"),
+      element("span", "", day.label),
+    );
+    wrap.append(item);
+  });
+  return wrap;
+}
+
 function renderToday() {
   const map = state.map;
   if (!map) return;
@@ -1083,6 +1359,8 @@ function renderToday() {
   const current = currentLesson();
   const percent = progressPercent(completed, lessons.length);
   const level = String(map.label || levelLabel(map.level));
+  const activeDays = activeDaysThisWeek(progress);
+  const reviewItems = todayReviewItems(lessons, current);
 
   dom.contentTitle.textContent = t("today");
   dom.contentSubtitle.textContent = formattedToday(progress);
@@ -1090,73 +1368,62 @@ function renderToday() {
     viewHeading(t("todayTitle"), formattedToday(progress), level),
   );
 
-  const grid = element("div", "today-grid");
-  const main = element("div", "today-main");
-  const side = element("aside", "today-side");
+  const grid = element("div", "gridToday today-grid");
+  const main = element("div", "leftStack today-main");
+  const side = element("aside", "rightStack today-side");
 
   if (current) {
     const glyph =
       Array.from(String(current.zh || "课").replace(/[·\s]+/g, ""))[0] || "课";
-    const resume = element("section", "resume-card today-lesson-hero");
+    const resume = element("article", "card hero resume-card today-lesson-hero");
     resume.dataset.watermark = glyph;
+
+    const top = element("div", "heroTop");
+    const topCopy = element("div");
+    const meta = element("div", "meta");
+    meta.append(
+      element("span", "tag red", level),
+      element("span", "", t("lessonNumber", { number: current.n })),
+      element("span", "", "•"),
+      element("span", "", lessonMetaPill(current)),
+    );
+    topCopy.append(element("div", "eyebrow", t("nextStep")), meta);
+    top.append(
+      topCopy,
+      element("span", "tag", `${Number(progress.daily_xp || 0)} XP`),
+    );
+
     const copy = element("div", "resume-copy");
     copy.append(
-      element("p", "eyebrow", t("nextStep")),
-      element("h3", "", t("lessonNumber", { number: current.n })),
+      top,
+      element(
+        "h3",
+        "",
+        [t("lessonNumber", { number: current.n }), pick(current.tr)]
+          .filter(Boolean)
+          .join(" · "),
+      ),
       element("p", "resume-chinese", String(current.zh || glyph)),
       element("p", "resume-pinyin", String(current.py || "")),
-      element("p", "resume-translation", pick(current.tr)),
     );
-    const lessonMeta = element("div", "lesson-meta-list");
-    lessonMeta.append(
-      element("span", "lesson-meta-chip", level),
-      element(
-        "span",
-        "lesson-meta-chip",
-        current.checkpoint ? t("checkpoint") : t("learningPart"),
-      ),
-    );
-    if (Number(current.part_count || 0) > 1) {
-      lessonMeta.append(
-        element(
-          "span",
-          "lesson-meta-chip",
-          t("partProgress", {
-            part: Number(current.part || 1),
-            total: Number(current.part_count),
-          }),
-        ),
-      );
-    }
-    copy.append(lessonMeta);
 
-    const progressRow = element("div", "resume-progress");
+    const progressRow = element("div", "heroProgress resume-progress");
     progressRow.append(
       element("span", "", t("courseProgress")),
       element("strong", "", `${percent}%`),
     );
-    const track = element("div", "summary-progress");
-    track.setAttribute("role", "progressbar");
-    track.setAttribute("aria-valuemin", "0");
-    track.setAttribute("aria-valuemax", "100");
-    const fill = element("span", "progress-fill");
-    track.append(fill);
-    setProgress(fill, completed, lessons.length);
-    progressRow.append(track);
-    copy.append(progressRow);
+    progressRow.append(progressTrack(completed, lessons.length));
 
-    const actions = element("div", "hero-actions");
+    const actions = element("div", "heroFoot hero-actions");
+    actions.append(progressRow);
     const action = element(
       "button",
-      "primary-button",
+      "btn primary-button",
       current.status === "done" ? t("startLesson") : t("continueLesson"),
     );
     action.type = "button";
     action.addEventListener("click", () => openLesson(Number(current.n)));
-    const practice = element("button", "secondary-button", t("openPractice"));
-    practice.type = "button";
-    practice.addEventListener("click", () => routeTo("practice"));
-    actions.append(action, practice);
+    actions.append(action);
     copy.append(actions);
 
     const mascot = element("figure", "today-hero-mascot");
@@ -1170,94 +1437,69 @@ function renderToday() {
     resume.append(copy, mascot);
     main.append(resume);
   } else {
-    const empty = element("section", "empty-state card-panel");
+    const empty = element("section", "empty-state card-panel card cardPad");
     empty.append(element("p", "", t("courseEmpty")));
     main.append(empty);
   }
 
-  const stats = element("section", "dashboard-stats");
-  [
-    ["星", t("xpTotal"), Number(progress.xp || 0)],
-    ["火", t("streakDays"), Number(progress.streak || 0)],
-    ["周", t("weeklyXp"), Number(progress.weekly_xp || 0)],
-    ["课", t("completedLessons"), completed],
-  ].forEach(([glyph, label, value]) => {
-    const card = element("article", "dashboard-stat");
-    card.append(
-      element("span", "stat-glyph", glyph),
-      element("small", "", label),
-      element("strong", "", value),
-    );
-    stats.append(card);
-  });
-  main.append(stats);
-
-  const activityCard = element("section", "activity-card card-panel");
-  const activityHead = element("div", "card-heading-row");
-  activityHead.append(
-    element("div", "", ""),
-    element(
-      "strong",
-      "activity-count",
-      t("activeDays", {
-        count: weekSnapshot(progress).filter((day) => day.active).length,
-      }),
-    ),
-  );
-  activityHead.firstElementChild.append(
-    element("p", "eyebrow", t("weeklyActivity")),
-    element("h3", "", t("keepRhythm")),
-  );
-  activityCard.append(activityHead, weekActivity(progress));
-  main.append(activityCard);
-
-  const quickGrid = element("section", "today-quick-grid");
+  const quickGrid = element("section", "twoCols today-quick-grid");
   const completedLesson = [...lessons]
     .reverse()
     .find((item) => item.status === "done" && lessonAccessible(item));
-  const reviewCard = element("article", "today-quick-card card-panel");
+  const reviewCard = element("article", "card cardPad today-quick-card");
+  const reviewHead = element("div", "sectionTitle");
+  reviewHead.append(
+    element("h3", "", t("todayReviewEyebrow")),
+    element("span", "tag red", reviewItems.length ? String(reviewItems.length) : NO_VALUE),
+  );
   reviewCard.append(
-    element("p", "eyebrow", t("todayReviewEyebrow")),
-    element(
-      "h3",
-      "",
-      completedLesson
-        ? t("reviewLessonTitle", { number: completedLesson.n })
-        : t("reviewCourseTitle"),
-    ),
+    reviewHead,
     element(
       "p",
-      "muted",
-      completedLesson
-        ? `${String(completedLesson.zh || "课")} · ${String(completedLesson.py || "")} · ${pick(completedLesson.tr)}`
-        : t("reviewCourseBody"),
+      "muted small",
+      completedLesson ? t("reviewLessonTitle", { number: completedLesson.n }) : t("reviewCourseBody"),
     ),
   );
+  const reviewWords = element("div", "reviewWords");
+  reviewItems.forEach((item) => {
+    const chip = element("div", "wordChip");
+    chip.append(
+      element("b", "hanzi", String(item.zh || "课")),
+      element("span", "", String(item.py || "")),
+    );
+    reviewWords.append(chip);
+  });
+  if (!reviewItems.length) reviewWords.append(element("div", "wordChip", NO_VALUE));
+  reviewCard.append(reviewWords);
   const reviewAction = element(
     "button",
-    "secondary-button",
-    completedLesson ? t("repeatLesson") : t("openCourseMap"),
+    "btn secondary secondary-button",
+    completedLesson ? t("repeatLesson") : t("openPractice"),
   );
   reviewAction.type = "button";
   reviewAction.addEventListener("click", () => {
     if (completedLesson) openLesson(Number(completedLesson.n));
-    else routeTo("course");
+    else routeTo("practice");
   });
   reviewCard.append(reviewAction);
 
-  const aiCard = element("article", "today-quick-card today-ai-quick card-panel");
-  aiCard.append(
-    element("p", "eyebrow", t("todayAiEyebrow")),
+  const aiCard = element("article", "card cardPad today-quick-card today-ai-quick");
+  const aiHead = element("div", "sectionTitle");
+  aiHead.append(
     element("h3", "", t("todayAiTitle")),
+    element("span", "tag", level),
+  );
+  aiCard.append(
+    aiHead,
     element("p", "muted", t("todayAiBody")),
   );
-  const aiForm = element("form", "today-ai-form");
+  const aiForm = element("form", "quickInput today-ai-form");
   const aiInput = element("input");
   aiInput.type = "text";
   aiInput.maxLength = 1000;
   aiInput.placeholder = t("todayAiPlaceholder");
   aiInput.setAttribute("aria-label", t("todayAiPlaceholder"));
-  const aiAction = element("button", "primary-button", "↑");
+  const aiAction = element("button", "btn primary-button", "↑");
   aiAction.type = "submit";
   aiAction.setAttribute("aria-label", t("openAi"));
   aiForm.append(aiInput, aiAction);
@@ -1269,69 +1511,103 @@ function renderToday() {
     updateAiComposer();
     requestAnimationFrame(() => dom.aiInput.focus());
   });
-  aiCard.append(aiForm);
+  const chips = element("div", "chips");
+  [
+    ["todayAiChipGrammar", "先…再…"],
+    ["todayAiChipExamples", String(current?.zh || "")],
+    ["todayAiChipMistakes", ""],
+  ].forEach(([labelKey, seed]) => {
+    const chip = element("button", "promptChip", t(labelKey));
+    chip.type = "button";
+    chip.addEventListener("click", () => {
+      aiInput.value = [t(labelKey), seed].filter(Boolean).join(": ");
+      aiInput.focus();
+    });
+    chips.append(chip);
+  });
+  aiCard.append(aiForm, chips);
 
-  const phraseCard = element("article", "today-quick-card today-phrase card-panel");
-  phraseCard.append(
-    element("p", "eyebrow", t("todayPhraseEyebrow")),
-    element("strong", "today-phrase-zh hanzi", String(current?.zh || "你好")),
-    element("span", "pinyin", String(current?.py || "nǐ hǎo")),
-    element("p", "translation", current ? pick(current.tr) : t("todayPhraseFallback")),
-  );
-  const phraseAction = element("button", "listen-button", t("listen"));
-  phraseAction.type = "button";
-  phraseAction.addEventListener("click", () =>
-    speakChinese(String(current?.zh || "你好"), phraseAction),
-  );
-  phraseCard.append(phraseAction);
-
-  quickGrid.append(reviewCard, aiCard, phraseCard);
+  quickGrid.append(reviewCard, aiCard);
   main.append(quickGrid);
 
-  const progressCard = element("section", "today-progress-card card-panel");
-  progressCard.append(
-    element("p", "eyebrow", t("courseProgress")),
-    element("h3", "", level),
+  const dailyGoal = element("article", "card cardPad today-progress-card");
+  const dailyHead = element("div", "sectionTitle");
+  dailyHead.append(
+    element("h3", "", t("todayGoalTitle")),
+    element("span", "tag", `${NO_VALUE} / ${NO_VALUE}`),
   );
-  const ring = element("div", "progress-ring");
-  ring.dataset.progress = String(Math.round(percent / 5));
+  const dailyRow = element("div", "goalRow");
+  const ring = element("div", "progress-ring ring");
+  ring.dataset.progress = "0";
   ring.setAttribute("role", "progressbar");
   ring.setAttribute("aria-valuemin", "0");
   ring.setAttribute("aria-valuemax", "100");
-  ring.setAttribute("aria-valuenow", String(percent));
-  const ringCopy = element("div");
-  ringCopy.append(
-    element("strong", "", `${percent}%`),
-    element("small", "", t("completed")),
-  );
+  ring.setAttribute("aria-valuenow", "0");
+  const ringCopy = element("div", "ringText");
+  const ringText = element("div");
+  ringText.append(element("b", "", NO_VALUE), element("span", "", t("minutesShort")));
+  ringCopy.append(ringText);
   ring.append(ringCopy);
-  progressCard.append(
-    ring,
-    element("p", "muted", t("lessons", { done: completed, total: lessons.length })),
+  const dailyCopy = element("div");
+  dailyCopy.append(
+    element("b", "", t("todayGoalUnavailableTitle")),
+    element("p", "muted small", t("todayGoalUnavailableBody")),
   );
+  dailyRow.append(ring, dailyCopy);
+  dailyGoal.append(dailyHead, dailyRow);
+  side.append(soonBlock(dailyGoal));
 
-  const todayXpCard = element("section", "today-xp-card card-panel");
-  todayXpCard.append(
-    element("p", "eyebrow", t("todayResult")),
-    element("strong", "today-xp-value", `+${Number(progress.daily_xp || 0)} XP`),
-    element("p", "muted", t("todayXpDescription")),
+  const streakCard = element("article", "card cardPad");
+  const streakHead = element("div", "sectionTitle");
+  streakHead.append(
+    element("h3", "", t("todayStreakTitle")),
+    element("b", "today-streak-count", `${Number(progress.streak || 0)} ${t("days")}`),
   );
-
-  const planCard = element("section", "today-plan-card card-panel");
-  planCard.append(
-    element("p", "eyebrow", t("accountAccess")),
-    element("h3", "", map.user?.is_paid ? t("paidPlan") : t("freePlan")),
+  streakCard.append(streakHead, renderDemoWeek(progress));
+  streakCard.append(
     element(
       "p",
-      "muted",
-      map.user?.is_paid ? t("paidAccessDescription") : t("freeAccessDescription"),
+      "muted small",
+      t(activeDays ? "todayStreakActive" : "todayStreakInactive"),
     ),
   );
-  const planAction = element("button", "secondary-button", t("manageSubscription"));
-  planAction.type = "button";
-  planAction.addEventListener("click", () => routeTo("subscription"));
-  planCard.append(planAction);
-  side.append(progressCard, todayXpCard, planCard);
+  side.append(streakCard);
+
+  const phraseCard = element("article", "card cardPad wordToday today-phrase");
+  const phraseCopy = element("div");
+  phraseCopy.append(
+    element("div", "eyebrow", t("todayPhraseEyebrow")),
+    element("div", "zh hanzi today-phrase-zh", String(current?.zh || "你好")),
+    element("div", "py pinyin", String(current?.py || "nǐ hǎo")),
+    element(
+      "div",
+      "muted small translation",
+      current ? pick(current.tr) : t("todayPhraseFallback"),
+    ),
+  );
+  const phraseAction = element("button", "audioBtn listen-button", "▶");
+  phraseAction.type = "button";
+  phraseAction.setAttribute("aria-label", t("listen"));
+  phraseAction.addEventListener("click", () =>
+    speakChinese(String(current?.zh || "你好"), phraseAction),
+  );
+  const example = element("div", "example");
+  example.append(element("span", "hanzi", String(current?.zh || "你好")));
+  phraseCard.append(phraseCopy, phraseAction, example);
+  side.append(phraseCard);
+
+  const weekPlan = element("article", "card cardPad today-plan-card");
+  const weekHead = element("div", "sectionTitle");
+  weekHead.append(
+    element("h3", "", t("todayWeekPlanTitle")),
+    element("span", "tag green", `${activeDays} / 7`),
+  );
+  weekPlan.append(
+    weekHead,
+    progressTrack(activeDays, 7),
+    element("p", "muted small", t("todayWeekPlanBody", { count: activeDays })),
+  );
+  side.append(weekPlan);
   grid.append(main, side);
   dom.content.append(grid);
 }
@@ -1363,7 +1639,7 @@ function renderCourseHome() {
       t("lessons", { done: completed, total: lessons.length }),
     ),
   );
-  const layout = element("div", "course-layout");
+  const layout = element("div", "courseLayout course-layout");
   const units = element("div", "course-units");
   let renderedLessons = 0;
 
@@ -1378,12 +1654,16 @@ function renderCourseHome() {
     const hasCurrent = allUnitLessons.some((item) => item.status === "current");
     const card = element(
       "section",
-      `course-unit-card${hasCurrent ? " is-current-unit" : ""}`,
+      `coursePathUnit course-unit-card${hasCurrent ? " is-current-unit" : ""}`,
     );
-    const head = element("header", "course-unit-head");
+    const head = element("header", "pathHead course-unit-head");
     const copy = element("div");
     copy.append(
-      element("h3", "", pick(unit.title, t("unit", { number: unitNumber }))),
+      element(
+        "h3",
+        "",
+        `${t("unit", { number: unitNumber })} · ${pick(unit.title, t("unit", { number: unitNumber }))}`,
+      ),
       element(
         "p",
         "",
@@ -1396,19 +1676,17 @@ function renderCourseHome() {
     const unitProgress = element("div", "unit-progress-copy");
     unitProgress.append(
       element("strong", "", `${unitPercent}%`),
-      element("small", "", hasCurrent ? t("currentUnit") : t("unit" , { number: unitNumber })),
+      element("small", "", hasCurrent ? t("currentUnit") : t("unit", { number: unitNumber })),
     );
-    head.append(element("span", "course-unit-number", unitNumber), copy, unitProgress);
-    const unitTrack = element("div", "summary-progress unit-progress-track");
-    unitTrack.setAttribute("role", "progressbar");
-    unitTrack.setAttribute("aria-valuemin", "0");
-    unitTrack.setAttribute("aria-valuemax", "100");
-    const unitFill = element("span", "progress-fill");
-    unitTrack.append(unitFill);
-    setProgress(unitFill, unitDone, allUnitLessons.length);
-    const trail = element("div", "lesson-trail");
+    head.append(element("span", "unitNo course-unit-number", unitNumber), copy, unitProgress);
+    const trail = element("div", "lessonPath lesson-trail");
+    trail.dataset.progress = String(Math.round(unitPercent / 5));
+    trail.setAttribute("role", "progressbar");
+    trail.setAttribute("aria-valuemin", "0");
+    trail.setAttribute("aria-valuemax", "100");
+    trail.setAttribute("aria-valuenow", String(unitPercent));
     unitLessons.forEach((item) => trail.append(renderLessonNode(item)));
-    card.append(head, unitTrack, trail);
+    card.append(head, trail);
     units.append(card);
   });
 
@@ -1418,30 +1696,78 @@ function renderCourseHome() {
     units.append(empty);
   }
 
-  const aside = element("aside", "course-aside card-panel");
-  aside.append(
-    element("p", "eyebrow", t("courseProgress")),
-    element("h3", "", level),
-    element("div", "course-percent", `${percent}%`),
-    element("p", "muted", t("lessons", { done: completed, total: lessons.length })),
-    weekActivity(progress, true),
+  const aside = element("aside", "courseAside course-aside");
+  const summary = element("article", "card courseSummary card-panel");
+  const pandaWrap = element("div", "coursePandaWrap");
+  const panda = document.createElement("img");
+  panda.className = "coursePanda";
+  panda.src = "./assets/hsk-ai-avatar.webp";
+  panda.alt = "";
+  panda.setAttribute("aria-hidden", "true");
+  const pandaCopy = element("div");
+  pandaCopy.append(
+    element("b", "", t("courseSummaryTitle")),
+    element("small", "", t("courseSummaryBody")),
+  );
+  pandaWrap.append(panda, pandaCopy);
+  summary.append(
+    pandaWrap,
+    element("span", "tag red", level),
+    element("div", "big course-percent", `${percent}%`),
+    element("p", "muted small", t("courseProgress")),
+    progressTrack(completed, lessons.length),
   );
   [
+    [t("courseCompletedLabel"), completed],
     [t("xpTotal"), Number(progress.xp || 0)],
     [t("streakDays"), Number(progress.streak || 0)],
     [t("league"), String(progress.league || t("notAvailable"))],
     [t("accountAccess"), map.user?.is_paid ? t("paidPlan") : t("freePlan")],
   ].forEach(([label, value]) => {
-    const row = element("div", "course-aside-stat");
+    const row = element("div", "miniStat course-aside-stat");
     row.append(element("span", "", label), element("b", "", value));
-    aside.append(row);
+    summary.append(row);
   });
+  [
+    [t("courseWordsLabel"), NO_VALUE],
+    [t("courseTimeLabel"), NO_VALUE],
+  ].forEach(([label, value]) => {
+    const row = element("div", "miniStat course-aside-stat");
+    row.append(element("span", "", label), element("b", "", value));
+    summary.append(soonBlock(row));
+  });
+  const legend = element("div", "courseLegend");
+  [
+    `✓ ${t("courseLegendDone")}`,
+    `▶ ${t("courseLegendCurrent")}`,
+    `◇ ${t("courseLegendReview")}`,
+    `★ ${t("courseLegendMilestone")}`,
+  ].forEach((label) => legend.append(element("span", "", label)));
+  summary.append(legend);
+  if (currentLesson()) {
+    const continueButton = element("button", "btn primary-button", t("continueLesson"));
+    continueButton.type = "button";
+    continueButton.addEventListener("click", () => openLesson(Number(currentLesson().n)));
+    summary.append(continueButton);
+  }
+  const download = element("button", "downloadCourseBtn");
+  download.type = "button";
+  download.append(
+    element("span", "dlIcon", "↓"),
+    element("span", "dlLabel", t("courseOfflineSave")),
+    element("span", "dlMeta", NO_VALUE),
+  );
+  const downloadBar = element("span", "dlBar");
+  downloadBar.append(element("i", ""));
+  download.append(downloadBar);
+  summary.append(soonBlock(download));
   if (!map.user?.is_paid) {
-    const action = element("button", "primary-button", t("unlockCourse"));
+    const action = element("button", "btn primary-button", t("unlockCourse"));
     action.type = "button";
     action.addEventListener("click", () => routeTo("subscription"));
-    aside.append(action);
+    summary.append(action);
   }
+  aside.append(summary);
   layout.append(units, aside);
   dom.content.append(layout);
 }
@@ -1449,38 +1775,23 @@ function renderCourseHome() {
 function renderLessonNode(item) {
   const status = String(item?.status || "locked");
   const accessible = lessonAccessible(item);
+  const row = element(
+    "div",
+    `pathNodeRow${item?.checkpoint ? " milestone" : ""} lesson-node-row`,
+  );
   const button = element(
     "button",
-    `lesson-node is-${status}${item?.checkpoint ? " is-checkpoint" : ""}`,
+    `pathNode lesson-node ${status} is-${status}${item?.checkpoint ? " is-checkpoint" : ""}`,
   );
   button.type = "button";
   button.dataset.status = status;
-  const marker = element("span", "lesson-node-orb");
-  marker.append(
-    element(
-      "span",
-      "lesson-node-mark",
-      status === "done" ? "✓" : accessible ? "▶" : "—",
-    ),
-  );
-  const copy = element("span", "lesson-node-copy");
-  const heading = element("span", "lesson-node-heading");
-  heading.append(
-    element("strong", "", t("lessonNumber", { number: item.n })),
-    item?.checkpoint
-      ? element("em", "checkpoint-badge", t("checkpoint"))
-      : element("span"),
-  );
-  copy.append(
-    heading,
-    element("span", "lesson-node-zh", String(item.zh || "课")),
-    element("span", "lesson-node-pinyin", String(item.py || "")),
-    element("small", "lesson-node-translation", pick(item.tr)),
+  button.append(
+    element("span", "nodeNo", String(item.n || "")),
+    element("span", "nodeIcon", status === "done" ? "✓" : accessible ? "▶" : "⌁"),
   );
   if (status === "current") {
-    copy.append(element("span", "current-location", t("youAreHere")));
+    button.append(element("span", "currentBubble current-location", t("youAreHere")));
   }
-  button.append(marker, copy);
   if (accessible) {
     button.addEventListener("click", () => openLesson(Number(item.n)));
   } else if (item.preview_half || item.locked_premium) {
@@ -1490,239 +1801,75 @@ function renderLessonNode(item) {
     button.classList.add("is-locked");
     button.disabled = true;
   }
-  return button;
-}
-
-function practiceCard({ glyph, title, description, lessonItem, actionLabel, onAction }) {
-  const card = element("article", "practice-card card-panel");
-  card.append(
-    element("span", "practice-glyph", glyph),
-    element("h3", "", title),
-    element("p", "muted", description),
+  const label = element("div", "pathLabel lesson-node-copy");
+  label.append(
+    element("b", "", t("lessonNumber", { number: item.n })),
+    element(
+      "span",
+      "",
+      [
+        String(item.zh || "课"),
+        String(item.py || ""),
+        pick(item.tr),
+      ].filter(Boolean).join(" · "),
+    ),
   );
-  if (lessonItem) {
-    const sample = element("div", "practice-sample");
-    sample.append(
-      element("strong", "hanzi", String(lessonItem.zh || "课")),
-      element("span", "pinyin", String(lessonItem.py || "")),
-      element("small", "translation", pick(lessonItem.tr)),
-    );
-    card.append(sample);
-  }
-  const action = element("button", "secondary-button", actionLabel);
-  action.type = "button";
-  action.disabled = typeof onAction !== "function";
-  if (typeof onAction === "function") {
-    action.addEventListener("click", onAction);
-  }
-  card.append(action);
-  return card;
+  row.append(button, label);
+  return row;
 }
 
 function renderPractice() {
   const map = state.map;
   if (!map) return;
-  const current = currentLesson();
-  const completed = [...allLessons()]
-    .reverse()
-    .find((item) => item.status === "done" && lessonAccessible(item));
-
   dom.contentTitle.textContent = t("practice");
   dom.contentSubtitle.textContent = t("practiceSubtitle");
+  const host = element("div", "practice-view");
   dom.content.replaceChildren(
     viewHeading(
       t("practiceTitle"),
       t("practiceSubtitle"),
       String(map.label || levelLabel(map.level)),
     ),
+    host,
   );
-
-  const intro = element("section", "practice-intro card-panel");
-  const introCopy = element("div");
-  introCopy.append(
-    element("p", "eyebrow", t("realCoursePractice")),
-    element("h3", "", t("practiceIntroTitle")),
-    element("p", "muted", t("practiceIntroBody")),
-  );
-  const panda = element("img");
-  panda.src = "./assets/hsk-ai-avatar.webp";
-  panda.alt = "";
-  intro.append(introCopy, panda);
-
-  const cards = element("section", "practice-grid");
-  cards.append(
-    practiceCard({
-      glyph: "练",
-      title: t("continueCurrentPractice"),
-      description: t("continueCurrentPracticeBody"),
-      lessonItem: current,
-      actionLabel: current ? t("continueLesson") : t("notAvailable"),
-      onAction: current ? () => openLesson(Number(current.n)) : null,
-    }),
-    practiceCard({
-      glyph: "复",
-      title: t("repeatCompleted"),
-      description: t("repeatCompletedBody"),
-      lessonItem: completed,
-      actionLabel: completed ? t("repeatLesson") : t("notAvailable"),
-      onAction: completed ? () => openLesson(Number(completed.n)) : null,
-    }),
-    practiceCard({
-      glyph: "听",
-      title: t("pronunciationPractice"),
-      description: t("pronunciationPracticeBody"),
-      lessonItem: current,
-      actionLabel: current ? t("openLesson") : t("notAvailable"),
-      onAction: current ? () => openLesson(Number(current.n)) : null,
-    }),
-    practiceCard({
-      glyph: "路",
-      title: t("chooseAnotherLesson"),
-      description: t("chooseAnotherLessonBody"),
-      lessonItem: null,
-      actionLabel: t("openCourseMap"),
-      onAction: () => routeTo("course"),
-    }),
-  );
-  dom.content.append(intro, cards);
+  practice.host = host;
+  practice.setLanguage(getLanguage());
+  const level = String(map.level || "").toLowerCase();
+  if (level) practice.setLevel(level);
+  practice.render();
 }
 
 function renderVoice() {
   const map = state.map;
   if (!map) return;
-  const current = currentLesson();
   dom.contentTitle.textContent = t("voice");
   dom.contentSubtitle.textContent = t("voiceSubtitle");
+  const host = element("div", "voice-host voice-v3-root");
   dom.content.replaceChildren(
-    viewHeading(
-      t("voiceTitle"),
-      t("voiceSubtitle"),
-      t("localAi"),
-    ),
+    viewHeading(t("voiceTitle"), t("voiceSubtitle"), t("voiceLiveTag")),
+    host,
   );
-
-  const shell = element("section", "voice-shell card-panel");
-  const stage = element("div", "voice-stage");
-  const avatarWrap = element("div", "voice-avatar-wrap");
-  const avatar = element("img");
-  avatar.src = "./assets/hsk-ai-avatar.webp";
-  avatar.alt = "";
-  avatarWrap.append(avatar, element("span", "voice-status-dot"));
-  const stageCopy = element("div", "voice-stage-copy");
-  stageCopy.append(
-    element("p", "eyebrow", t("textRoleplay")),
-    element("h3", "", t("voiceReadyTitle")),
-    element("p", "muted", t("voiceReadyBody")),
-  );
-  if (current) {
-    const context = element("div", "voice-context");
-    context.append(
-      element("small", "", t("lessonContext")),
-      element("strong", "hanzi", String(current.zh || "课")),
-      element("span", "pinyin", String(current.py || "")),
-      element("p", "translation", pick(current.tr)),
-    );
-    stageCopy.append(context);
-  }
-  const actions = element("div", "voice-actions");
-  const textAction = element("button", "primary-button", t("openTextRoleplay"));
-  textAction.type = "button";
-  textAction.addEventListener("click", openAi);
-  const lessonAction = element("button", "secondary-button", t("practiceInLesson"));
-  lessonAction.type = "button";
-  lessonAction.disabled = !current;
-  if (current) {
-    lessonAction.addEventListener("click", () => openLesson(Number(current.n)));
-  }
-  actions.append(textAction, lessonAction);
-  stageCopy.append(actions);
-  stage.append(avatarWrap, stageCopy);
-
-  const microphone = element("aside", "voice-microphone-state");
-  const micButton = element("button", "voice-mic-button", "▶");
-  micButton.type = "button";
-  micButton.setAttribute("aria-describedby", "voice-mic-note");
-  micButton.disabled = !current;
-  if (current) {
-    micButton.addEventListener("click", () =>
-      speakChinese(String(current.zh || "课"), micButton),
-    );
-  }
-  const micCopy = element("div");
-  micCopy.append(
-    element("h3", "", t("lessonAudioTitle")),
-    element("p", "muted", t("lessonAudioBody")),
-  );
-  micCopy.lastElementChild.id = "voice-mic-note";
-  microphone.append(micButton, micCopy);
-  shell.append(stage, microphone);
-  dom.content.append(shell);
+  voice.host = host;
+  voice.setLanguage(getLanguage());
+  const level = String(map.level || "").toLowerCase();
+  if (level) voice.setLevel(level.startsWith("hsk4") ? "hsk4" : level);
+  // A course refresh or a language change re-renders the active view. During a
+  // live call that must repaint into the new host without asking the server for
+  // the quota again and without interrupting the recording.
+  void voice.open({ refresh: !voice.sessionId });
 }
 
-function vocabularyExamples(lessonPayload) {
-  const examples = [];
-  const add = (entry, translationKey = "translation") => {
-    if (!entry || typeof entry !== "object") return;
-    const zh = String(entry.zh || entry.phrase || "").trim();
-    const pinyin = String(entry.pinyin || "").trim();
-    const translation = pick(entry[translationKey] || entry.text);
-    if (zh && pinyin && translation) {
-      examples.push({ zh, pinyin, translation });
-    }
-  };
-
-  (Array.isArray(lessonPayload?.grammar) ? lessonPayload.grammar : []).forEach(
-    (grammar) =>
-      (Array.isArray(grammar?.examples) ? grammar.examples : []).forEach((entry) =>
-        add(entry),
-      ),
+async function renderVocabulary() {
+  dom.contentTitle.textContent = t("vocabulary");
+  dom.contentSubtitle.textContent = t("vocabularySubtitle");
+  const host = element("div", "vocabulary-host");
+  dom.content.replaceChildren(
+    viewHeading(t("vocabularyTitle"), t("vocabularySubtitle"), "词"),
+    host,
   );
-  (Array.isArray(lessonPayload?.dialogues) ? lessonPayload.dialogues : []).forEach(
-    (dialogue) =>
-      (Array.isArray(dialogue?.dialogue) ? dialogue.dialogue : []).forEach((line) =>
-        add(line, "text"),
-      ),
-  );
-  (Array.isArray(lessonPayload?.sections) ? lessonPayload.sections : []).forEach(
-    (section) =>
-      (Array.isArray(section?.cards) ? section.cards : []).forEach((card) => {
-        if (card?.type === "pronunciation") add(card);
-        if (card?.g && Array.isArray(card.g.examples)) {
-          card.g.examples.forEach((entry) => add(entry));
-        }
-      }),
-  );
-  return examples;
-}
-
-function extractVocabulary(payload) {
-  const lessonPayload = payload?.lesson || {};
-  const source = Array.isArray(lessonPayload.active_words)
-    ? lessonPayload.active_words
-    : (Array.isArray(lessonPayload.sections) ? lessonPayload.sections : [])
-        .flatMap((section) => (Array.isArray(section?.cards) ? section.cards : []))
-        .filter((card) => card?.type === "active_word" && card.word)
-        .map((card) => card.word);
-  const examples = vocabularyExamples(lessonPayload);
-  const seen = new Set();
-  return source
-    .map((word, index) => {
-      const zh = String(word?.zh || "").trim();
-      const pinyin = String(word?.pinyin || word?.py || "").trim();
-      const translation = pick(word?.meaning || word?.translation);
-      const key = `${zh}\u0000${pinyin}`;
-      if (!zh || !pinyin || !translation || seen.has(key)) return null;
-      seen.add(key);
-      return {
-        id: `${Number(payload?.lesson_order || 0)}-${index}-${zh}`,
-        zh,
-        pinyin,
-        translation,
-        pos: String(word?.pos || ""),
-        examples: examples.filter((example) => example.zh.includes(zh)).slice(0, 3),
-      };
-    })
-    .filter(Boolean);
+  vocabulary.host = host;
+  vocabulary.setLanguage(getLanguage());
+  await vocabulary.load();
 }
 
 function browserSpeakChinese(text) {
@@ -1744,7 +1891,8 @@ function browserSpeakChinese(text) {
 }
 
 async function speakChinese(text, button) {
-  button.disabled = true;
+  // AI Voice plays replies without a trigger button, so the button is optional.
+  if (button) button.disabled = true;
   try {
     const result = await desktopBridge.ttsSpeak(text);
     if (result?.ok !== true && !(await browserSpeakChinese(text))) {
@@ -1757,235 +1905,267 @@ async function speakChinese(text, button) {
     }
     if (!(await browserSpeakChinese(text))) showToast(t("audioUnavailable"));
   } finally {
-    button.disabled = false;
+    if (button) button.disabled = false;
   }
 }
 
-async function speakVocabulary(text, button) {
-  await speakChinese(text, button);
+function ratingHeading(league) {
+  return viewHeading(t("ratingTitle"), t("ratingSubtitle"), league);
 }
 
-function renderVocabularyContent(words, lessonItem) {
-  if (state.view !== "vocabulary") return;
-  const heading = viewHeading(
-    t("vocabularyTitle"),
-    t("vocabularySubtitle"),
-    t("lessonNumber", { number: lessonItem.n }),
+function renderLeaderboard(board) {
+  const rows = Array.isArray(board?.leaderboard) ? board.leaderboard : [];
+  const panel = element("section", "leaderboard card-panel");
+  const head = element("header", "leaderboard-head");
+  const copy = element("div");
+  copy.append(
+    element("p", "eyebrow", t("weeklyLeaderboard")),
+    element("h3", "", t("weeklyLeaderboardBody")),
   );
-  dom.content.replaceChildren(heading);
+  head.append(
+    copy,
+    element(
+      "span",
+      "leaderboard-size",
+      t("leagueSize", { count: Number(board?.league_size || rows.length) }),
+    ),
+  );
+  panel.append(head);
 
-  if (!words.length) {
-    const empty = element("section", "empty-state card-panel");
-    empty.append(
-      element("h3", "", t("vocabularyEmptyTitle")),
-      element("p", "muted", t("vocabularyEmptyBody")),
-    );
-    const action = element("button", "primary-button", t("openLesson"));
-    action.type = "button";
-    action.addEventListener("click", () => openLesson(Number(lessonItem.n)));
-    empty.append(action);
-    dom.content.append(empty);
-    return;
+  if (!rows.length) {
+    panel.append(element("p", "muted", t("leaderboardEmpty")));
+    return panel;
   }
 
-  if (!words.some((word) => word.id === state.vocabularySelected)) {
-    state.vocabularySelected = words[0].id;
-  }
-  const selected = words.find((word) => word.id === state.vocabularySelected) || words[0];
-  const layout = element("div", "vocabulary-layout");
-  const list = element("section", "vocabulary-list card-panel");
-  const listHead = element("header", "vocabulary-list-head");
-  listHead.append(
-    element("div", "", ""),
-    element("span", "word-count", t("wordCount", { count: words.length })),
-  );
-  listHead.firstElementChild.append(
-    element("p", "eyebrow", t("currentLesson")),
-    element("h3", "", String(lessonItem.zh || t("vocabulary"))),
-  );
-  list.append(listHead);
-  const rows = element("div", "vocabulary-rows");
-  words.forEach((word) => {
+  const list = element("ol", "leaderboard-rows");
+  rows.forEach((entry) => {
     const row = element(
-      "button",
-      `vocabulary-row${word.id === selected.id ? " is-active" : ""}`,
+      "li",
+      `leaderboard-row${entry.is_current_user ? " is-current" : ""}`,
     );
-    row.type = "button";
+    const identity = element("div", "leaderboard-identity");
+    identity.append(
+      element("strong", "", String(entry.name || t("unknownUser"))),
+      element(
+        "small",
+        "muted",
+        entry.username ? `@${entry.username}` : String(entry.course_level || ""),
+      ),
+    );
     row.append(
-      element("strong", "hanzi", word.zh),
-      element("span", "pinyin", word.pinyin),
-      element("small", "translation", word.translation),
-      element("span", "word-arrow", "→"),
+      element("span", "leaderboard-rank", `#${Number(entry.rank || 0)}`),
+      identity,
+      element("strong", "leaderboard-xp", `${Number(entry.league_points || 0)} XP`),
     );
-    row.addEventListener("click", () => {
-      state.vocabularySelected = word.id;
-      renderVocabularyContent(words, lessonItem);
-    });
-    rows.append(row);
+    list.append(row);
   });
-  list.append(rows);
-
-  const detail = element("aside", "vocabulary-detail card-panel");
-  const detailTop = element("div", "vocabulary-detail-top");
-  const wordCopy = element("div");
-  wordCopy.append(
-    element("p", "eyebrow", selected.pos || t("newWord")),
-    element("strong", "vocabulary-detail-zh hanzi", selected.zh),
-    element("span", "vocabulary-detail-pinyin pinyin", selected.pinyin),
-    element("p", "vocabulary-detail-translation translation", selected.translation),
-  );
-  const listen = element("button", "listen-button", t("listen"));
-  listen.type = "button";
-  listen.addEventListener("click", () => speakVocabulary(selected.zh, listen));
-  detailTop.append(wordCopy, listen);
-  detail.append(detailTop);
-
-  const examples = element("div", "vocabulary-examples");
-  examples.append(element("h4", "", t("examples")));
-  if (selected.examples.length) {
-    selected.examples.forEach((example) => {
-      const item = element("article", "vocabulary-example");
-      item.append(
-        element("strong", "hanzi", example.zh),
-        element("span", "pinyin", example.pinyin),
-        element("p", "translation", example.translation),
-      );
-      examples.append(item);
-    });
-  } else {
-    examples.append(element("p", "muted", t("examplesNotAvailable")));
-  }
-  detail.append(examples);
-  layout.append(list, detail);
-  dom.content.append(layout);
+  panel.append(list);
+  return panel;
 }
 
-async function renderVocabulary() {
-  const current = currentLesson();
-  dom.contentTitle.textContent = t("vocabulary");
-  dom.contentSubtitle.textContent = t("vocabularySubtitle");
-  dom.content.replaceChildren(
-    viewHeading(t("vocabularyTitle"), t("vocabularySubtitle"), "词"),
-  );
-  if (!current) {
-    const empty = element("section", "empty-state card-panel");
-    empty.append(element("p", "", t("courseEmpty")));
-    dom.content.append(empty);
-    return;
-  }
-
-  const lessonOrder = Number(current.n);
-  const cached = state.vocabularyCache.get(lessonOrder);
-  if (cached) {
-    renderVocabularyContent(cached, current);
-    return;
-  }
-
-  const loading = element("section", "loading-card vocabulary-loading");
-  loading.append(element("div", "spinner"), element("p", "", t("vocabularyLoading")));
-  dom.content.append(loading);
-  const request = ++state.vocabularyRequest;
-  try {
-    const payload = await desktopBridge.lessonData(lessonOrder);
-    if (request !== state.vocabularyRequest || state.view !== "vocabulary") return;
-    const words = extractVocabulary(payload);
-    state.vocabularyCache.set(lessonOrder, words);
-    renderVocabularyContent(words, current);
-  } catch (error) {
-    if (request !== state.vocabularyRequest || state.view !== "vocabulary") return;
-    if (isSessionError(error)) {
-      showAuth({ expired: true });
-      return;
-    }
-    const failed = element("section", "empty-state card-panel");
-    failed.append(
-      element("h3", "", t("vocabularyLoadFailed")),
-      element("p", "muted", errorMessage(error)),
-    );
-    const retry = element("button", "primary-button", t("retry"));
-    retry.type = "button";
-    retry.addEventListener("click", () => {
-      state.vocabularyCache.delete(lessonOrder);
-      void renderVocabulary();
-    });
-    failed.append(retry);
-    dom.content.replaceChildren(
-      viewHeading(t("vocabularyTitle"), t("vocabularySubtitle"), "词"),
-      failed,
-    );
-  }
-}
-
-function renderRating() {
+function renderRatingContent(board) {
+  if (state.view !== "rating") return;
   const map = state.map;
   if (!map) return;
   const progress = map.progress || {};
   const lessons = allLessons();
   const completed = Number(progress.completed || 0);
-  const league = String(progress.league || t("notAvailable"));
   const percent = progressPercent(completed, lessons.length);
+  const league = String(board?.league || progress.league || t("notAvailable"));
+  const rank = Number(board?.rank || 0);
+  const weeklyXp = Number(board?.weekly_xp ?? progress.weekly_xp ?? 0);
+  const rows = Array.isArray(board?.leaderboard) ? board.leaderboard : [];
+  const leagueSize = Number(board?.league_size || rows.length || 0);
+
+  dom.content.replaceChildren(ratingHeading(league));
+
+  const hero = element("section", "ratingHero rating-hero");
+  const leagueCard = element("article", "card ratingLeagueCard card-panel");
+  const leagueTop = element("div", "leagueTop");
+  const leagueIdentity = element("div", "leagueIdentity");
+  leagueIdentity.append(
+    element("div", "leagueEmblem league-emblem", "级"),
+    element("div", "", ""),
+  );
+  leagueIdentity.lastElementChild.append(
+    element("h3", "", league),
+    element(
+      "p",
+      "",
+      leagueSize ? t("ratingLeagueSub", { count: leagueSize }) : t("ratingTruthfulBody"),
+    ),
+  );
+  leagueTop.append(leagueIdentity, element("span", "seasonTag", t("ratingSeason")));
+  const leagueRank = element("div", "leagueRank");
+  leagueRank.append(
+    element("strong", "", rank > 0 ? `#${rank}` : NO_VALUE),
+    element("span", "", t("ratingCurrentPlace")),
+  );
+  const rankProgress = element("div", "rankProgress");
+  const rankHead = element("div", "rankProgressHead");
+  rankHead.append(
+    element("b", "", `${weeklyXp} XP`),
+    element("span", "", t("ratingNextUnavailable")),
+  );
+  const rankTrack = element("div", "summary-progress progress");
+  rankTrack.append(element("span", "progress-fill is-placeholder"));
+  rankProgress.append(rankHead, rankTrack);
+  leagueCard.append(leagueTop, leagueRank, soonBlock(rankProgress));
+
+  const pandaCard = element("article", "card ratingPandaCard card-panel");
+  const pandaTop = element("div", "ratingPandaTop");
+  const pandaCopy = element("div");
+  pandaCopy.append(
+    element("b", "", t("ratingPromotionTitle")),
+    element("small", "", t("ratingPromotionSub")),
+  );
+  pandaTop.append(pandaCopy, element("span", "tag", NO_VALUE));
+  const pandaStage = element("div", "ratingPanda");
+  const panda = document.createElement("img");
+  panda.className = "pandaMini";
+  panda.src = "./assets/hsk-ai-avatar.webp";
+  panda.alt = "";
+  panda.setAttribute("aria-hidden", "true");
+  pandaStage.append(panda);
+  const strip = element("div", "promotionStrip");
+  [
+    [NO_VALUE, t("ratingPromote")],
+    [NO_VALUE, t("ratingStay")],
+    [NO_VALUE, t("ratingDrop")],
+  ].forEach(([value, label]) => {
+    const cell = element("div", "promotionCell");
+    cell.append(element("b", "", value), element("span", "", label));
+    strip.append(cell);
+  });
+  pandaCard.append(pandaTop, pandaStage, strip);
+  hero.append(leagueCard, soonBlock(pandaCard));
+
+  const layout = element("div", "ratingLayout rating-layout");
+  const leaderboard = element("article", "card leaderboardCard card-panel");
+  const leaderHead = element("div", "leaderboardHead");
+  const leaderCopy = element("div");
+  leaderCopy.append(
+    element("h3", "", t("ratingWeeklyTitle")),
+    element("p", "muted small", t("ratingWeeklySub")),
+  );
+  const tabs = element("div", "leaderboardTabs");
+  tabs.append(element("button", "ratingTab active", t("ratingTabLeague")));
+  const friends = element("button", "ratingTab", t("ratingTabFriends"));
+  friends.type = "button";
+  friends.disabled = true;
+  friends.title = t("comingSoon");
+  tabs.append(friends);
+  leaderHead.append(leaderCopy, tabs);
+  const leaderRows = element("div", "leaderRows");
+  if (!rows.length) {
+    leaderRows.append(element("p", "muted", t("leaderboardEmpty")));
+  } else {
+    rows.forEach((entry, index) => {
+      const row = element("div", `leaderRow${entry.is_current_user ? " me" : ""}`);
+      const position = Number(entry.rank || index + 1);
+      row.append(
+        element("div", `leaderPos${position <= 3 ? " medal" : ""}`, position <= 3 ? ["🥇", "🥈", "🥉"][position - 1] : String(position)),
+        element("div", "leaderAvatar", String(entry.name || t("unknownUser")).slice(0, 1)),
+      );
+      const info = element("div", "leaderInfo");
+      info.append(
+        element("b", "", `${String(entry.name || t("unknownUser"))}${entry.is_current_user ? ` · ${t("voiceYou")}` : ""}`),
+        element("small", "", entry.username ? `@${entry.username}` : String(entry.course_level || "")),
+      );
+      const xp = element("div", "leaderXp");
+      xp.append(
+        element("b", "", `${Number(entry.league_points || 0)} XP`),
+        element("small", "", position <= 3 ? t("ratingTopPerformer") : ""),
+      );
+      row.append(info, xp);
+      leaderRows.append(row);
+    });
+  }
+  leaderboard.append(leaderHead, leaderRows);
+
+  const side = element("aside", "ratingSide");
+  const missions = element("article", "card card-panel");
+  const missionHead = element("div", "sectionTitle");
+  missionHead.append(
+    element("h3", "", t("ratingMissions")),
+    element("span", "tag", NO_VALUE),
+  );
+  missions.append(missionHead);
+  [
+    ["课", t("ratingMissionLesson"), t("courseProgress")],
+    ["音", t("ratingMissionVoice"), t("voice")],
+    ["字", t("ratingMissionVocab"), t("vocabulary")],
+  ].forEach(([glyph, title, sub]) => {
+    const mission = element("div", "xpMission");
+    mission.append(
+      element("div", "xpMissionIcon hanzi", glyph),
+      element("div", "", ""),
+      element("span", "xpReward", NO_VALUE),
+    );
+    mission.children[1].append(element("b", "", title), element("small", "", sub));
+    missions.append(mission);
+  });
+  const history = element("article", "card card-panel");
+  const historyHead = element("div", "sectionTitle");
+  historyHead.append(
+    element("h3", "", t("ratingHistory")),
+    element("span", "delta", NO_VALUE),
+  );
+  const historyBars = element("div", "leagueHistory");
+  for (let index = 0; index < 6; index += 1) {
+    historyBars.append(element("div", `historyBar${index === 5 ? " current" : ""}`));
+  }
+  history.append(historyHead, historyBars, element("p", "muted small", t("ratingHistoryUnavailable")));
+  side.append(soonBlock(missions), soonBlock(history));
+
+  layout.append(leaderboard, side);
+
+  dom.content.append(hero, layout);
+
+  if (state.ratingError) {
+    const note = element("p", "muted rating-note", state.ratingError);
+    dom.content.append(note);
+  }
+}
+
+async function renderRating() {
+  const map = state.map;
+  if (!map) return;
   dom.contentTitle.textContent = t("rating");
   dom.contentSubtitle.textContent = t("ratingSubtitle");
+
+  if (state.ratingBoard) {
+    renderRatingContent(state.ratingBoard);
+    return;
+  }
+
   dom.content.replaceChildren(
-    viewHeading(t("ratingTitle"), t("ratingSubtitle"), league),
+    ratingHeading(String(map.progress?.league || t("notAvailable"))),
   );
+  const loading = element("section", "loading-card");
+  loading.append(element("div", "spinner"), element("p", "", t("ratingLoading")));
+  dom.content.append(loading);
 
-  const hero = element("section", "rating-hero card-panel");
-  const emblem = element("div", "league-emblem", "级");
-  const copy = element("div", "rating-hero-copy");
-  copy.append(
-    element("p", "eyebrow", t("yourLeague")),
-    element("h3", "", league),
-    element("p", "muted", t("ratingTruthfulBody")),
-  );
-  const weekly = element("div", "rating-weekly-xp");
-  weekly.append(
-    element("strong", "", Number(progress.weekly_xp || 0)),
-    element("small", "", t("weeklyXp")),
-  );
-  hero.append(emblem, copy, weekly);
-
-  const layout = element("div", "rating-layout");
-  const personal = element("section", "personal-ranking card-panel");
-  personal.append(element("p", "eyebrow", t("personalResult")));
-  const userRow = element("div", "personal-ranking-row");
-  const avatar = element("img");
-  avatar.src = "./assets/hsk-ai-avatar.webp";
-  avatar.alt = "";
-  const identity = element("div");
-  identity.append(
-    element("strong", "", String(map.user?.name || t("unknownUser"))),
-    element("small", "", `${String(map.label || levelLabel(map.level))} · ${league}`),
-  );
-  userRow.append(
-    avatar,
-    identity,
-    element("strong", "personal-xp", `${Number(progress.xp || 0)} XP`),
-  );
-  personal.append(userRow);
-
-  const realStats = element("div", "rating-stats");
-  [
-    [t("dailyXp"), Number(progress.daily_xp || 0)],
-    [t("streakDays"), Number(progress.streak || 0)],
-    [t("longestStreak"), Number(progress.longest_streak || 0)],
-    [t("courseProgress"), `${percent}%`],
-  ].forEach(([label, value]) => {
-    const card = element("article");
-    card.append(element("small", "", label), element("strong", "", value));
-    realStats.append(card);
-  });
-  personal.append(realStats);
-
-  const activity = element("aside", "rating-activity card-panel");
-  activity.append(
-    element("p", "eyebrow", t("weeklyActivity")),
-    element("h3", "", t("realServerActivity")),
-    element("p", "muted", t("realServerActivityBody")),
-    weekActivity(progress),
-  );
-  layout.append(personal, activity);
-  dom.content.append(hero, layout);
+  const request = ++state.ratingRequest;
+  try {
+    const board = await desktopBridge.ratingLeaderboard(
+      -new Date().getTimezoneOffset(),
+    );
+    if (request !== state.ratingRequest || state.view !== "rating") return;
+    state.ratingBoard = board;
+    state.ratingError = "";
+    renderRatingContent(board);
+  } catch (error) {
+    if (request !== state.ratingRequest || state.view !== "rating") return;
+    if (isSessionError(error)) {
+      showAuth({ expired: true });
+      return;
+    }
+    // The league is a nice-to-have: personal progress still renders from the
+    // course map so the screen is never empty when the endpoint is down.
+    state.ratingError = t("leaderboardUnavailable");
+    renderRatingContent(null);
+  }
 }
 
 function renderSubscription() {
@@ -2005,6 +2185,623 @@ function renderSubscription() {
   void subscription.open({ refresh: true });
 }
 
+/**
+ * A demo block the backend does not serve yet.
+ *
+ * The block keeps the demo layout down to the buttons so the screen looks
+ * finished, but every control inside is inert and hovering (or reaching it
+ * with the keyboard) reveals a "coming soon" veil. Values are never invented:
+ * callers pass a dash where the demo shows a number. When the endpoint lands,
+ * only this wrapper has to go away.
+ */
+function soonBlock(node) {
+  const wrap = element("div", "soon-block");
+  node
+    .querySelectorAll("button, input, select, textarea, a[href]")
+    .forEach((control) => {
+      control.disabled = true;
+      control.tabIndex = -1;
+      control.setAttribute("aria-hidden", "true");
+    });
+  const veil = element("div", "soon-veil");
+  veil.append(element("span", "soon-badge", t("comingSoon")));
+  wrap.append(node, veil);
+  wrap.title = t("comingSoonHint");
+  return wrap;
+}
+
+/** The placeholder used wherever the demo prints a figure we do not have. */
+const NO_VALUE = "—";
+
+function userInitials(name) {
+  // The demo uses initials, not another copy of the app logo.
+  const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "HSK";
+  return parts
+    .slice(0, 2)
+    .map((part) => [...part][0].toUpperCase())
+    .join("");
+}
+
+function profileStatCard(value, label, delta = "") {
+  const card = element("article", "profile-stat card-panel");
+  card.append(
+    element("div", "eyebrow", label),
+    element("div", "profile-stat-value", value),
+  );
+  if (delta) card.append(element("div", "profile-stat-delta muted", delta));
+  return card;
+}
+
+/**
+ * A statistic the server does not report yet. It keeps the demo card shape and
+ * shows a dash where the figure would be, so nobody reads a placeholder as a
+ * measurement.
+ */
+function comingSoonStatCard(label) {
+  const card = element("article", "profile-stat card-panel");
+  card.append(
+    element("div", "eyebrow", label),
+    element("div", "profile-stat-value", NO_VALUE),
+    element("div", "profile-stat-delta muted", `${NO_VALUE} ${t("statThisWeek")}`),
+  );
+  return soonBlock(card);
+}
+
+/** The demo card head: a title on the left, a pill or note on the right. */
+function chartCard(title, badge) {
+  const card = element("article", "chart-card card-panel");
+  const head = element("div", "card-heading-row");
+  head.append(element("h3", "", title));
+  if (badge) head.append(badge);
+  card.append(head);
+  return card;
+}
+
+/**
+ * The demo draws study minutes per weekday. The server only records which days
+ * had activity, so a day is either a full bar or an empty stub — the shape is
+ * the demo's, the data is real, and no minute count is invented.
+ */
+function weekBarChart(progress) {
+  const chart = element("div", "bar-chart");
+  weekSnapshot(progress).forEach((day) => {
+    const column = element("div", `bar-column${day.active ? " is-active" : ""}`);
+    if (day.today) column.classList.add("is-today");
+    column.append(element("i", ""), element("span", "", day.label));
+    chart.append(column);
+  });
+  return chart;
+}
+
+/** HSK 1-4 completion. Only the active level is tracked, so all rows are dashed. */
+function levelProgressCard(levelLabelText) {
+  const card = chartCard(
+    t("levelProgressTitle"),
+    element("span", "muted small", levelLabelText),
+  );
+  [1, 2, 3, 4].forEach((level) => {
+    const line = element("div", "level-line");
+    const track = element("div", "summary-progress");
+    track.append(element("span", "progress-fill is-placeholder"));
+    line.append(
+      element("b", "", t("levelLabel", { level })),
+      track,
+      element("span", "muted", NO_VALUE),
+    );
+    card.append(line);
+  });
+  return soonBlock(card);
+}
+
+/** Mistake analytics are not aggregated anywhere yet. */
+function weakAreasCard() {
+  const card = chartCard(
+    t("weakAreasTitle"),
+    element("span", "tag red", NO_VALUE),
+  );
+  [t("weakArea1"), t("weakArea2"), t("weakArea3")].forEach((label) => {
+    const item = element("div", "weak-item");
+    const head = element("div", "weak-head");
+    head.append(element("b", "", label), element("span", "muted", NO_VALUE));
+    const track = element("div", "summary-progress");
+    track.append(element("span", "progress-fill is-placeholder"));
+    item.append(head, track);
+    card.append(item);
+  });
+  return soonBlock(card);
+}
+
+/** No accuracy history is stored, so the chart draws a flat baseline. */
+function accuracyTrendCard() {
+  const card = chartCard(
+    t("accuracyTrendTitle"),
+    element("span", "tag green", NO_VALUE),
+  );
+  const svgNs = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNs, "svg");
+  svg.setAttribute("viewBox", "0 0 360 140");
+  svg.setAttribute("width", "100%");
+  svg.setAttribute("height", "140");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("class", "trend-chart");
+  const baseline = document.createElementNS(svgNs, "path");
+  baseline.setAttribute("d", "M10 125 L350 125");
+  baseline.setAttribute("fill", "none");
+  baseline.setAttribute("stroke-width", "4");
+  baseline.setAttribute("stroke-linecap", "round");
+  svg.append(baseline);
+  card.append(svg);
+  return soonBlock(card);
+}
+
+/** The demo's three summary chips. Every figure behind them is missing. */
+function insightChips() {
+  const row = element("div", "progress-insight");
+  [t("insightListening"), t("insightRhythm"), t("insightGrammar")].forEach(
+    (label) => {
+      const chip = element("div", "insight-chip card-panel");
+      chip.append(element("b", "", NO_VALUE), element("span", "muted", label));
+      row.append(chip);
+    },
+  );
+  return soonBlock(row);
+}
+
+function settingRow(title, description, control) {
+  const row = element("div", "setting-row");
+  const copy = element("div");
+  copy.append(element("b", "", title), element("small", "", description));
+  row.append(copy, control);
+  return row;
+}
+
+/**
+ * One preference the demo shows but nothing implements yet. The real control
+ * is rendered so the row looks finished, then made inert behind the veil.
+ */
+function comingSoonSettingRow(title, description, control) {
+  const wrap = soonBlock(settingRow(title, description, control));
+  wrap.classList.add("is-row");
+  return wrap;
+}
+
+function selectControl(options, value, onChange) {
+  const select = document.createElement("select");
+  select.className = "setting-select";
+  options.forEach((option) => {
+    const node = document.createElement("option");
+    node.value = String(option.value);
+    node.textContent = option.label;
+    if (String(option.value) === String(value)) node.selected = true;
+    select.append(node);
+  });
+  if (onChange) {
+    select.addEventListener("change", () => onChange(select.value));
+  }
+  return select;
+}
+
+function timeControl(value) {
+  const input = document.createElement("input");
+  input.type = "time";
+  input.className = "setting-time";
+  input.value = value;
+  return input;
+}
+
+/**
+ * The demo's notification card. The server stores a single `notify.enabled`
+ * flag and exposes no desktop command for it, so every row here would be
+ * invented — the card is rendered in full and veiled as one.
+ */
+function renderNotificationsCard() {
+  const card = element("article", "profile-settings card-panel");
+  card.append(element("h3", "", t("notificationsTitle")));
+  card.append(
+    settingRow(
+      t("notifyReminderTime"),
+      t("notifyReminderTimeBody"),
+      timeControl("09:00"),
+    ),
+    settingRow(
+      t("notifyQuietHours"),
+      "22:00 — 08:00",
+      toggleButton(true, () => {}),
+    ),
+    settingRow(
+      t("notifyFrequency"),
+      t("notifyFrequencyBody"),
+      selectControl(
+        [
+          { value: "normal", label: t("notifyFrequencyNormal") },
+          { value: "low", label: t("notifyFrequencyLow") },
+        ],
+        "normal",
+      ),
+    ),
+    settingRow(
+      t("notifyTone"),
+      t("notifyToneBody"),
+      selectControl(
+        [
+          { value: "calm", label: t("notifyToneCalm") },
+          { value: "direct", label: t("notifyToneDirect") },
+        ],
+        "calm",
+      ),
+    ),
+    settingRow(
+      t("notifyStreakReminder"),
+      t("notifyStreakReminderBody"),
+      toggleButton(true, () => {}),
+    ),
+  );
+  return soonBlock(card);
+}
+
+function toggleButton(active, onChange) {
+  const button = element("button", `setting-switch${active ? " is-on" : ""}`);
+  button.type = "button";
+  button.setAttribute("role", "switch");
+  button.setAttribute("aria-checked", active ? "true" : "false");
+  button.append(element("i", ""));
+  button.addEventListener("click", () => onChange(!active));
+  return button;
+}
+
+/**
+ * The demo's morphing invite button: one pill that opens a four-slot tray.
+ * Copy is wired to the real referral link. Telegram, WhatsApp and QR have no
+ * capability behind them yet, so each keeps its slot behind a "coming soon"
+ * veil rather than being dropped or faked.
+ */
+function inviteMorph(link) {
+  const morph = element("div", "invite-morph");
+  const main = element("button", "invite-main", t("inviteAddFriend"));
+  main.type = "button";
+  main.addEventListener("click", () => {
+    morph.classList.add("is-open");
+    morph.querySelector(".invite-action")?.focus();
+  });
+
+  const tray = element("div", "invite-tray");
+  const copy = element("button", "invite-action", "⌘C");
+  copy.type = "button";
+  copy.setAttribute("aria-label", t("copy"));
+  copy.disabled = !link;
+  copy.addEventListener("click", () => {
+    void navigator.clipboard
+      ?.writeText(String(link || ""))
+      .then(() => {
+        copy.classList.add("is-sent");
+        showToast(t("inviteCopied"));
+      })
+      .catch(() => showToast(t("inviteCopyFailed")));
+  });
+  const share = (label, aria) => {
+    const button = element("button", "invite-action", label);
+    button.type = "button";
+    button.setAttribute("aria-label", aria);
+    return soonBlock(button);
+  };
+  tray.append(
+    share("TG", t("inviteShareTelegram")),
+    share("WA", t("inviteShareWhatsapp")),
+    copy,
+    share("QR", t("inviteShareQr")),
+  );
+
+  morph.append(main, tray);
+  return morph;
+}
+
+function renderInviteCard() {
+  const card = element("article", "invite-card card-panel");
+  const copy = element("div");
+  copy.append(
+    element("p", "eyebrow", t("inviteEyebrow")),
+    element("h3", "", t("inviteFriendsTitle")),
+    element("p", "muted", t("inviteFriendsBody")),
+  );
+  card.append(copy);
+
+  const referral = state.referral;
+  if (!referral) {
+    card.append(
+      element("p", "muted small", state.referralError || t("inviteLoading")),
+    );
+    return card;
+  }
+
+  card.append(inviteMorph(referral.link));
+
+  // The demo shows two invitee avatars beside the counters; ours are the real
+  // initials the referral service returns.
+  const status = element("div", "invite-status");
+  const people = Array.isArray(referral.items) ? referral.items.slice(0, 2) : [];
+  people.forEach((person) => {
+    status.append(
+      element("span", "mini-avatar", userInitials(person?.name).slice(0, 1)),
+    );
+  });
+  const counters = element("div", "invite-counters");
+  counters.append(
+    element("b", "", t("inviteSent", { count: Number(referral.invited || 0) })),
+    element(
+      "small",
+      "muted",
+      t("inviteJoined", { count: Number(referral.activated || 0) }),
+    ),
+  );
+  status.append(counters);
+  card.append(status);
+
+  const required = Number(referral.trial_required || 0);
+  if (required > 0) {
+    const track = element("div", "summary-progress");
+    const fill = element("span", "progress-fill");
+    track.append(fill);
+    setProgress(fill, Number(referral.trial_progress || 0), required);
+    card.append(
+      element(
+        "p",
+        "muted small",
+        t("inviteTrialProgress", {
+          done: Number(referral.trial_progress || 0),
+          total: required,
+        }),
+      ),
+      track,
+    );
+  }
+  return card;
+}
+
+/** The demo's sync card. No sync endpoint exists, so the whole card is veiled. */
+function renderSyncCard() {
+  const card = element("article", "sync-card card-panel");
+  card.append(element("div", "sync-icon", "☁"));
+  const copy = element("div");
+  copy.append(
+    element("h3", "", t("syncTitle")),
+    element("p", "muted", t("syncBody")),
+  );
+  const action = element("button", "secondary-button", t("syncNow"));
+  action.type = "button";
+  card.append(copy, action);
+  return soonBlock(card);
+}
+
+// The study goal is a single choice made once, in onboarding. Hanzi marks are
+// used instead of emoji so the cards match the rest of the desktop UI.
+const GOAL_KIND_META = {
+  conversation: {
+    glyph: "话",
+    titleKey: "goalKindConversation",
+    bodyKey: "goalKindConversationBody",
+  },
+  hsk: { glyph: "试", titleKey: "goalKindHsk", bodyKey: "goalKindHskBody" },
+  study: { glyph: "学", titleKey: "goalKindStudy", bodyKey: "goalKindStudyBody" },
+};
+
+function goalKindTitle(kind) {
+  const meta = GOAL_KIND_META[kind];
+  return meta ? t(meta.titleKey) : "";
+}
+
+function goalKindBody(kind) {
+  const meta = GOAL_KIND_META[kind];
+  return meta ? t(meta.bodyKey) : "";
+}
+
+async function ensureGoalState() {
+  if (state.goal) return state.goal;
+  try {
+    state.goal = await desktopBridge.goalState();
+  } catch {
+    // A goal that cannot be read counts as unset, so onboarding asks again
+    // instead of the profile showing an empty card with no way out.
+    state.goal = { kind: "", configured: false };
+  }
+  return state.goal;
+}
+
+async function maybeOpenOnboarding() {
+  if (state.onboardingOpen) return;
+  if (dom.workspace.hidden || lesson.isOpen) return;
+  const goal = await ensureGoalState();
+  if (goal?.configured) return;
+  openOnboarding();
+}
+
+const ONBOARDING_STEPS = 2;
+
+function openOnboarding() {
+  if (state.onboardingOpen) return;
+  state.onboardingOpen = true;
+  state.onboardingStep = 0;
+  state.onboardingChoice = String(state.goal?.kind || "");
+  state.onboardingPreviousFocus = document.activeElement;
+  dom.onboardingLayer.hidden = false;
+  renderOnboarding();
+  dom.onboardingBody.querySelector(".goal-choice")?.focus();
+}
+
+function closeOnboarding() {
+  if (!state.onboardingOpen) return;
+  state.onboardingOpen = false;
+  dom.onboardingLayer.hidden = true;
+  dom.onboardingBody.replaceChildren();
+  const previous = state.onboardingPreviousFocus;
+  state.onboardingPreviousFocus = null;
+  if (previous instanceof HTMLElement && document.contains(previous)) {
+    previous.focus();
+  } else {
+    dom.contentTitle.focus();
+  }
+}
+
+function onboardingGoalStep() {
+  const slide = element("div", "onboarding-slide");
+  const intro = element("div", "onboarding-intro");
+  intro.append(
+    element("p", "eyebrow", t("onboardingStepOne")),
+    element("h3", "", t("onboardingGoalTitle")),
+    element("p", "muted", t("onboardingGoalBody")),
+  );
+
+  const choices = element("div", "goal-choices");
+  GOAL_KINDS.forEach((kind) => {
+    const meta = GOAL_KIND_META[kind];
+    if (!meta) return;
+    const active = state.onboardingChoice === kind;
+    const card = element("button", `goal-choice${active ? " is-active" : ""}`);
+    card.type = "button";
+    card.setAttribute("aria-pressed", active ? "true" : "false");
+    card.append(
+      element("span", "goal-choice-mark hanzi", meta.glyph),
+      element("b", "", t(meta.titleKey)),
+      element("span", "muted", t(meta.bodyKey)),
+    );
+    card.addEventListener("click", () => {
+      state.onboardingChoice = kind;
+      renderOnboarding();
+      dom.onboardingBody.querySelector(".goal-choice.is-active")?.focus();
+    });
+    choices.append(card);
+  });
+
+  slide.append(intro, choices);
+  return slide;
+}
+
+/**
+ * The demo's second step introduces a macOS Smart Widget. No WidgetKit target
+ * exists in this project and the bundle is ad-hoc signed, so an extension
+ * would not load at all — and Windows ships an NSIS installer with no
+ * equivalent. The step keeps the demo layout and stays behind the veil.
+ */
+function onboardingWidgetStep() {
+  const slide = element("div", "onboarding-slide");
+  const intro = element("div", "onboarding-intro");
+  intro.append(
+    element("p", "eyebrow", t("onboardingStepTwo")),
+    element("h3", "", t("onboardingWidgetTitle")),
+    element("p", "muted", t("onboardingWidgetBody")),
+  );
+
+  const layout = element("div", "widget-intro");
+  const copy = element("div", "widget-copy");
+  copy.append(
+    element("h4", "", t("widgetOneButtonTitle")),
+    element("p", "muted", t("widgetOneButtonBody")),
+  );
+  const features = element("div", "widget-features");
+  [
+    ["☀", t("widgetFeatureMorning")],
+    ["字", t("widgetFeatureDay")],
+    ["🔥", t("widgetFeatureEvening")],
+    ["✓", t("widgetFeatureAfterLesson")],
+  ].forEach(([mark, label]) => {
+    const row = element("span", "");
+    row.append(element("i", "", mark), document.createTextNode(label));
+    features.append(row);
+  });
+  const install = element("button", "primary-button widget-install", t("widgetInstall"));
+  install.type = "button";
+  copy.append(features, install);
+
+  const preview = element("div", "widget-preview");
+  const card = element("div", "widget-preview-card");
+  const streak = Number(state.map?.progress?.streak || 0);
+  card.append(
+    element("strong", "", `${streak} 🔥`),
+    element("p", "", t("widgetPreviewNote")),
+    element("small", "muted", t("widgetPreviewCaption")),
+  );
+  preview.append(card);
+
+  layout.append(copy, preview);
+  slide.append(intro, layout);
+  return soonBlock(slide);
+}
+
+function renderOnboarding() {
+  const step = state.onboardingStep;
+  const chosen = GOAL_KINDS.includes(state.onboardingChoice);
+  dom.onboardingTitle.textContent = t("onboardingTitle");
+  dom.onboardingSubtitle.textContent = t("onboardingSubtitle");
+  dom.onboardingLater.textContent = t("onboardingLater");
+  dom.onboardingBack.textContent = t("onboardingBack");
+  dom.onboardingBack.hidden = step === 0;
+  dom.onboardingStart.textContent =
+    step === ONBOARDING_STEPS - 1 ? t("onboardingStart") : t("onboardingNext");
+  // The goal is what onboarding exists for, so the first step gates the rest.
+  dom.onboardingStart.disabled = !chosen;
+  [...dom.onboardingSteps.children].forEach((dot, index) => {
+    dot.classList.toggle("is-on", index <= step);
+  });
+
+  dom.onboardingBody.replaceChildren(
+    step === 0 ? onboardingGoalStep() : onboardingWidgetStep(),
+  );
+  dom.onboardingBody.scrollTop = 0;
+}
+
+function onboardingBack() {
+  if (state.onboardingStep === 0) return;
+  state.onboardingStep -= 1;
+  renderOnboarding();
+}
+
+async function confirmOnboarding() {
+  const kind = state.onboardingChoice;
+  if (!GOAL_KINDS.includes(kind)) return;
+  if (state.onboardingStep < ONBOARDING_STEPS - 1) {
+    state.onboardingStep += 1;
+    renderOnboarding();
+    return;
+  }
+  dom.onboardingStart.disabled = true;
+  const saved = await saveGoal(kind);
+  if (!saved) {
+    dom.onboardingStart.disabled = false;
+    return;
+  }
+  closeOnboarding();
+}
+
+async function saveGoal(kind) {
+  try {
+    state.goal = await desktopBridge.goalSave(kind);
+    showToast(t("goalSaved"));
+  } catch {
+    showToast(t("goalSaveFailed"));
+    return false;
+  }
+  if (state.view === "profile") renderProfile();
+  return true;
+}
+
+async function loadProfileExtras() {
+  await ensureGoalState();
+  try {
+    state.referral = await desktopBridge.referralOverview(
+      -new Date().getTimezoneOffset(),
+    );
+    state.referralError = "";
+  } catch (error) {
+    if (isSessionError(error)) {
+      showAuth({ expired: true });
+      return;
+    }
+    state.referral = null;
+    state.referralError = t("inviteUnavailable");
+  }
+  if (state.view === "profile") renderProfile();
+}
+
 function renderProfile() {
   const map = state.map;
   if (!map) return;
@@ -2014,133 +2811,206 @@ function renderProfile() {
   const lessons = allLessons();
   const percent = progressPercent(completed, lessons.length);
   const league = String(progress.league || t("notAvailable"));
+  const levelLabelText = String(map.label || levelLabel(map.level));
   dom.contentTitle.textContent = t("profileTitle");
   dom.contentSubtitle.textContent = t("profileSubtitle");
   dom.content.replaceChildren(
-    viewHeading(
-      t("profileTitle"),
-      t("profileSubtitle"),
-      String(map.label || levelLabel(map.level)),
-    ),
+    viewHeading(t("profileTitle"), t("profileSubtitle"), levelLabelText),
   );
 
-  const layout = element("div", "profile-layout");
-  const profileMain = element("div", "profile-main");
-  const hero = element("section", "profile-hero card-panel");
-  const identity = element("div", "profile-identity");
-  const avatar = element("img");
-  avatar.src = "./assets/hsk-ai-avatar.webp";
-  avatar.alt = "";
-  const identityCopy = element("div");
-  identityCopy.append(
-    element("p", "eyebrow", t("singleAccount")),
+  // --- row 1: identity + study goal ----------------------------------------
+  const topRow = element("div", "profile-two-cols");
+
+  const hero = element("article", "profile-hero card-panel");
+  const avatar = element("div", "profile-initials", userInitials(user.name));
+  const heroCopy = element("div");
+  heroCopy.append(
     element("h3", "", String(user.name || t("unknownUser"))),
     element(
       "p",
-      "",
-      `${String(map.label || levelLabel(map.level))} · ${league}`,
+      "muted",
+      `${levelLabelText} · ${percent}% · ${Number(progress.streak || 0)} 🔥`,
     ),
   );
-  identity.append(avatar, identityCopy);
-  const accessPill = element(
-    "span",
-    `profile-plan-pill${user.is_paid ? " is-paid" : ""}`,
-    user.is_paid ? t("paidPlan") : t("freePlan"),
+  // The demo shows learned words and study minutes here. Neither is reported
+  // by the server, so the pills keep their place with a dash inside them.
+  const chips = element("div", "profile-chips");
+  chips.append(
+    element("span", "tag", `${NO_VALUE} ${t("profileWordsUnit")}`),
+    element("span", "tag", `${NO_VALUE} ${t("profileMinutesUnit")}`),
   );
-  const heroHead = element("div", "profile-hero-head");
-  heroHead.append(identity, accessPill);
-  const stats = element("div", "profile-stats");
-  [
-    [Number(progress.xp || 0), t("xpTotal")],
-    [Number(progress.streak || 0), t("streakDays")],
-    [Number(progress.longest_streak || 0), t("longestStreak")],
-    [Number(progress.weekly_xp || 0), t("weeklyXp")],
-    [Number(progress.daily_xp || 0), t("dailyXp")],
-    [completed, t("completedLessons")],
-  ].forEach(([value, label]) => {
-    const card = element("div");
-    card.append(element("strong", "", value), element("small", "", label));
-    stats.append(card);
-  });
-  hero.append(heroHead, stats);
+  heroCopy.append(soonBlock(chips));
+  const panda = document.createElement("img");
+  panda.className = "profile-panda";
+  panda.src = "./assets/hsk-ai-avatar.webp";
+  panda.alt = "";
+  panda.setAttribute("aria-hidden", "true");
+  hero.append(avatar, heroCopy, panda);
 
-  const progressPanel = element("section", "profile-progress-panel card-panel");
-  const progressHead = element("div", "card-heading-row");
-  const progressCopy = element("div");
-  progressCopy.append(
-    element("p", "eyebrow", t("learningProgress")),
-    element("h3", "", String(map.label || levelLabel(map.level))),
-  );
-  progressHead.append(progressCopy, element("strong", "profile-percent", `${percent}%`));
+  // The goal itself is picked in onboarding; this card only reports it.
+  const goalKind = String(state.goal?.kind || "");
+  const goalSet = GOAL_KINDS.includes(goalKind);
+  const goal = element("article", "profile-goal card-panel");
+  const goalHead = element("div", "card-heading-row");
+  goalHead.append(element("h3", "", t("myGoalTitle")));
+  if (goalSet) goalHead.append(element("span", "tag green", t("goalActive")));
+  goal.append(goalHead);
+  if (goalSet) {
+    goal.append(
+      element("p", "", goalKindTitle(goalKind)),
+      element("p", "muted small", goalKindBody(goalKind)),
+    );
+  } else {
+    goal.append(element("p", "muted", t("goalNotSet")));
+  }
+  // Daily-goal completion needs study minutes, which nothing records yet, so
+  // the bar and the "N min / day" line keep their place behind the veil.
+  const dailyWrap = element("div", "profile-goal-daily");
   const track = element("div", "summary-progress profile-progress-track");
   track.setAttribute("role", "progressbar");
   track.setAttribute("aria-valuemin", "0");
   track.setAttribute("aria-valuemax", "100");
-  const fill = element("span", "progress-fill");
-  track.append(fill);
-  setProgress(fill, completed, lessons.length);
-  const progressMeta = element("div", "profile-progress-meta");
-  progressMeta.append(
-    element("span", "", t("lessons", { done: completed, total: lessons.length })),
-    element("span", "", t("leagueValue", { league })),
-  );
-  progressPanel.append(
-    progressHead,
+  track.append(element("span", "progress-fill is-placeholder"));
+  dailyWrap.append(
     track,
-    progressMeta,
-    element("h4", "profile-week-title", t("weeklyActivity")),
-    weekActivity(progress),
+    element("p", "muted small", t("goalPerDay", { minutes: NO_VALUE })),
   );
-  profileMain.append(hero, progressPanel);
+  goal.append(soonBlock(dailyWrap));
+  // The goal has no server column, so it stays a device-local preference.
+  goal.append(element("p", "muted small", t("goalLocalNote")));
+  if (!goalSet) {
+    const chooseGoal = element("button", "secondary-button", t("goalChoose"));
+    chooseGoal.type = "button";
+    chooseGoal.addEventListener("click", () => openOnboarding());
+    goal.append(chooseGoal);
+  }
+  topRow.append(hero, goal);
 
-  const profileSide = element("div", "profile-side");
-  const settings = element("section", "profile-settings card-panel");
-  settings.append(
-    element("p", "eyebrow", t("settings")),
-    element("h3", "", t("interfaceLanguage")),
+  // --- row 2: invites (real) + sync (no endpoint yet) -----------------------
+  const actionsRow = element("div", "profile-actions");
+  actionsRow.append(renderInviteCard(), renderSyncCard());
+
+  // --- row 3: progress ------------------------------------------------------
+  const statsHead = element("div", "profile-section-head");
+  const statsCopy = element("div");
+  statsCopy.append(
+    element("h3", "", t("learningProgress")),
+    element("p", "muted", t("realServerActivityBody")),
   );
-  const languages = element("div", "language-list");
-  languageOptions.forEach((option) => {
-    const button = element("button", "language-button", option.label);
-    button.type = "button";
-    button.classList.toggle("is-active", option.code === getLanguage());
-    button.addEventListener("click", () => changeLanguage(option.code));
-    languages.append(button);
-  });
-  settings.append(languages);
+  statsHead.append(statsCopy, element("span", "tag green", league));
 
-  const access = element("section", "profile-access card-panel");
-  access.append(
-    element("p", "eyebrow", t("accountAccess")),
-    element("h3", "", user.is_paid ? t("paidPlan") : t("freePlan")),
-    element(
-      "p",
-      "muted",
-      user.is_paid ? t("paidAccessDescription") : t("freeAccessDescription"),
+  const stats = element("div", "profile-stats-grid");
+  stats.append(
+    profileStatCard(
+      Number(progress.streak || 0),
+      t("streakDays"),
+      t("bestStreakDelta", { days: Number(progress.longest_streak || 0) }),
     ),
-  );
-  const accessAction = element("button", "primary-button", t("manageSubscription"));
-  accessAction.type = "button";
-  accessAction.addEventListener("click", () => routeTo("subscription"));
-  access.append(accessAction);
-
-  const updateCard = element("section", "profile-update card-panel");
-  updateCard.append(
-    element("p", "eyebrow", t("desktopApp")),
-    element(
-      "h3",
-      "",
-      state.appVersion
-        ? t("currentAppVersion", { version: state.appVersion })
-        : t("desktopApp"),
+    comingSoonStatCard(t("statWordsLearned")),
+    profileStatCard(
+      completed,
+      t("completedLessons"),
+      t("lessons", { done: completed, total: lessons.length }),
     ),
-    element("p", "muted", t("automaticUpdatesBody")),
+    comingSoonStatCard(t("statStudyMinutes")),
   );
-  const updateCheck = element(
-    "button",
-    "secondary-button",
-    t("checkUpdatesNow"),
+
+  const activeDays = weekSnapshot(progress).filter((day) => day.active).length;
+  const activity = chartCard(
+    t("weeklyActivity"),
+    element("span", "tag", t("activeDaysOfWeek", { done: activeDays })),
   );
+  activity.append(weekBarChart(progress));
+
+  const progressGrid = element("div", "profile-progress-grid");
+  const leftStack = element("div", "profile-stack");
+  leftStack.append(activity, levelProgressCard(levelLabelText));
+  const rightStack = element("div", "profile-stack");
+  rightStack.append(weakAreasCard(), accuracyTrendCard());
+  progressGrid.append(leftStack, rightStack);
+
+  const insights = insightChips();
+
+  // --- row 4: settings ------------------------------------------------------
+  const settingsHead = element("div", "profile-section-head");
+  const settingsCopy = element("div");
+  settingsCopy.append(
+    element("h3", "", t("settings")),
+    element("p", "muted", t("settingsSubtitle")),
+  );
+  settingsHead.append(settingsCopy);
+
+  const settingsRow = element("div", "profile-two-cols");
+
+  const studyCard = element("article", "profile-settings card-panel");
+  studyCard.append(element("h3", "", t("studyInterfaceSection")));
+  const languageSelect = selectControl(
+    languageOptions.map((option) => ({
+      value: option.code,
+      label: option.label,
+    })),
+    getLanguage(),
+    (code) => void changeLanguage(code),
+  );
+  languageSelect.dataset.role = "language";
+  const reopen = element("button", "secondary-button", t("onboardingReset"));
+  reopen.type = "button";
+  reopen.addEventListener("click", () => openOnboarding());
+  studyCard.append(
+    settingRow(
+      t("interfaceLanguage"),
+      t("interfaceLanguageBody"),
+      languageSelect,
+    ),
+    // The level is decided by the server, so the demo select is inert here.
+    comingSoonSettingRow(
+      t("courseLevelTitle"),
+      t("courseLevelBody"),
+      selectControl(
+        [1, 2, 3, 4].map((level) => ({
+          value: level,
+          label: t("levelLabel", { level }),
+        })),
+        map.level,
+      ),
+    ),
+    comingSoonSettingRow(
+      t("audioAutoplayTitle"),
+      t("audioAutoplayBody"),
+      toggleButton(false, () => {}),
+    ),
+    comingSoonSettingRow(
+      t("pinyinToggleTitle"),
+      t("pinyinToggleBody"),
+      toggleButton(true, () => {}),
+    ),
+    settingRow(
+      t("reduceMotionTitle"),
+      t("reduceMotionBody"),
+      toggleButton(state.reduceMotion, (next) => {
+        setReduceMotion(next);
+        renderProfile();
+      }),
+    ),
+    settingRow(t("onboardingReopen"), t("onboardingReopenBody"), reopen),
+  );
+
+  settingsRow.append(renderNotificationsCard(), studyCard);
+
+  // --- row 5: what the desktop needs and the demo has no place for ---------
+  const accountHead = element("div", "profile-section-head");
+  const accountCopy = element("div");
+  accountCopy.append(
+    element("h3", "", t("accountSectionTitle")),
+    element("p", "muted", t("accountSectionBody")),
+  );
+  accountHead.append(accountCopy);
+
+  const accountCard = element("article", "profile-account card-panel");
+  const manage = element("button", "secondary-button", t("manageSubscription"));
+  manage.type = "button";
+  manage.addEventListener("click", () => routeTo("subscription"));
+  const updateCheck = element("button", "secondary-button", t("checkUpdatesNow"));
   updateCheck.type = "button";
   updateCheck.disabled = ["checking", "installing", "ready"].includes(
     state.updateStatus,
@@ -2148,23 +3018,68 @@ function renderProfile() {
   updateCheck.addEventListener("click", () => {
     void checkForUpdates({ showProgress: true });
   });
-  updateCard.append(updateCheck);
-
-  const logout = element("button", "secondary-button", t("logout"));
+  const logout = element("button", "secondary-button is-danger", t("logout"));
   logout.type = "button";
   logout.addEventListener("click", () => logoutDesktop(logout));
-  profileSide.append(settings, access, updateCard, logout);
-  layout.append(profileMain, profileSide);
-  dom.content.append(layout);
+  accountCard.append(
+    settingRow(
+      user.is_paid ? t("paidPlan") : t("freePlan"),
+      user.is_paid ? t("paidAccessDescription") : t("freeAccessDescription"),
+      manage,
+    ),
+    settingRow(t("desktopApp"), t("automaticUpdatesBody"), updateCheck),
+    settingRow(t("logout"), t("logoutBody"), logout),
+  );
+  // The version sits quietly in the corner instead of the toolbar.
+  accountCard.append(
+    element(
+      "p",
+      "profile-version",
+      state.appVersion ? `v${state.appVersion}` : "",
+    ),
+  );
+
+  dom.content.append(
+    topRow,
+    actionsRow,
+    statsHead,
+    stats,
+    progressGrid,
+    insights,
+    settingsHead,
+    settingsRow,
+    accountHead,
+    accountCard,
+  );
+}
+
+function setReduceMotion(enabled) {
+  state.reduceMotion = Boolean(enabled);
+  document.documentElement.dataset.reduceMotion = state.reduceMotion ? "1" : "0";
+  try {
+    localStorage.setItem("pomp-hsk-reduce-motion", state.reduceMotion ? "1" : "0");
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function restoreReduceMotion() {
+  try {
+    setReduceMotion(localStorage.getItem("pomp-hsk-reduce-motion") === "1");
+  } catch {
+    setReduceMotion(false);
+  }
 }
 
 async function changeLanguage(language) {
   if (language === getLanguage()) {
     return;
   }
-  const buttons = dom.content.querySelectorAll(".language-button");
-  buttons.forEach((button) => {
-    button.disabled = true;
+  // The picker is a select now, like the demo. Only the language one is
+  // touched: the level select next to it is inert by design.
+  const pickers = dom.content.querySelectorAll('[data-role="language"]');
+  pickers.forEach((picker) => {
+    picker.disabled = true;
   });
   try {
     const result = await desktopBridge.setLanguage(language);
@@ -2185,8 +3100,8 @@ async function changeLanguage(language) {
       showAuth({ expired: true });
       return;
     }
-    buttons.forEach((button) => {
-      button.disabled = false;
+    pickers.forEach((picker) => {
+      picker.disabled = false;
     });
     showToast(errorMessage(error));
   }
@@ -2276,6 +3191,13 @@ function openAi() {
     loadAiStatus();
   }
   dom.closeAi.focus();
+}
+
+function openAiWithPrompt(prompt = "") {
+  const value = String(prompt || "").trim();
+  if (value) dom.aiInput.value = value;
+  openAi();
+  updateAiComposer();
 }
 
 function closeAi() {
@@ -2756,6 +3678,9 @@ function bindEvents() {
   });
   dom.openTelegram.addEventListener("click", openTelegram);
   dom.copyCode.addEventListener("click", copyAuthCode);
+  dom.onboardingLater.addEventListener("click", closeOnboarding);
+  dom.onboardingBack.addEventListener("click", onboardingBack);
+  dom.onboardingStart.addEventListener("click", () => void confirmOnboarding());
   dom.refreshMap.addEventListener("click", () =>
     loadCourseMap({ keepView: true }),
   );
@@ -2768,7 +3693,6 @@ function bindEvents() {
   dom.showRating.addEventListener("click", () => routeTo("rating"));
   dom.showSubscription.addEventListener("click", () => routeTo("subscription"));
   dom.showProfile.addEventListener("click", () => routeTo("profile"));
-  dom.headerProfile.addEventListener("click", () => routeTo("profile"));
   dom.railProfileButton.addEventListener("click", () => routeTo("profile"));
   dom.globalSearch.addEventListener("input", () => {
     state.searchQuery = String(dom.globalSearch.value || "");
@@ -2776,6 +3700,10 @@ function bindEvents() {
     if (state.view === "course") renderActiveView();
   });
   dom.railToggle.addEventListener("click", toggleRail);
+  dom.railCollapse.addEventListener("click", () => setRailCollapsed(!state.railCollapsed));
+  dom.railResizer.addEventListener("pointerdown", startRailResize);
+  dom.notificationsButton.addEventListener("click", toggleNotifications);
+  dom.closeNotifications.addEventListener("click", closeNotifications);
   dom.railScrim.addEventListener("click", closeRail);
   dom.aiLauncher.addEventListener("click", toggleAi);
   dom.closeAi.addEventListener("click", closeAi);
@@ -2859,7 +3787,11 @@ function bindEvents() {
     if (event.key !== "Escape") {
       return;
     }
-    if (lesson.isOpen) {
+    // Escape behaves like "Keyinroq": the goal stays unset, so onboarding
+    // comes back on the next start instead of being lost silently.
+    if (state.onboardingOpen) {
+      closeOnboarding();
+    } else if (lesson.isOpen) {
       lesson.close();
     } else if (state.aiOpen) {
       closeAi();
@@ -2873,19 +3805,22 @@ async function boot() {
   setUiLanguage(readSavedLanguage());
   applyStaticText();
   bindEvents();
+  restoreRailWidth();
+  restoreRailCollapsed();
+  restoreReduceMotion();
   updateNetworkState();
   showOnly("boot");
 
   try {
     const appInfo = await desktopBridge.appInfo();
+    // The version is no longer in the toolbar; the profile screen shows it.
     state.appVersion = String(appInfo?.version || "");
-    dom.appVersion.textContent = appInfo?.version
-      ? `v${String(appInfo.version)}`
-      : "";
     if (appInfo?.platform) {
       const platform = String(appInfo.platform).toLowerCase();
       document.documentElement.dataset.os = platform;
       dom.aiShortcut.textContent = platform === "windows" ? "Ctrl+K" : "⌘K";
+      // The search hint was hard-coded, so Windows showed the macOS glyph.
+      dom.searchShortcut.textContent = platform === "windows" ? "Ctrl+F" : "⌘F";
     }
     void checkForUpdates();
 

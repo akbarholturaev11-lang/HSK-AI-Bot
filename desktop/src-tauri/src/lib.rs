@@ -33,6 +33,35 @@ const MAX_SUBSCRIPTION_SCREENSHOT_BYTES: usize = 8 * 1024 * 1024;
 const MAX_SUBSCRIPTION_BASE64_CHARS: usize = MAX_SUBSCRIPTION_SCREENSHOT_BYTES.div_ceil(3) * 4;
 const MAX_SUBSCRIPTION_SUBMIT_BODY_BYTES: usize = MAX_SUBSCRIPTION_BASE64_CHARS + 40 + (16 * 1024);
 const MAX_SUBSCRIPTION_RESPONSE_BODY_BYTES: usize = 4 * 1024 * 1024;
+// Voice practice. The audio ceiling mirrors MAX_AUDIO_BYTES in
+// app/services/voice_practice_service.py; raising it here alone only wastes
+// upload bandwidth because the server rejects the request anyway.
+const MAX_VOICE_AUDIO_BYTES: usize = 5 * 1024 * 1024;
+const MAX_VOICE_AUDIO_BASE64_CHARS: usize = MAX_VOICE_AUDIO_BYTES.div_ceil(3) * 4;
+const MAX_VOICE_AUDIO_BODY_BYTES: usize = MAX_VOICE_AUDIO_BASE64_CHARS + 40 + (16 * 1024);
+const MAX_VOICE_BODY_BYTES: usize = 32 * 1024;
+const MAX_VOICE_RESPONSE_BODY_BYTES: usize = 512 * 1024;
+const MAX_VOICE_TARGET_CHARS: usize = 120;
+const MAX_VOICE_PINYIN_CHARS: usize = 240;
+const MAX_VOICE_SESSION_ID_CHARS: usize = 64;
+const MAX_RATING_RESPONSE_BODY_BYTES: usize = 256 * 1024;
+const MAX_PRACTICE_BODY_BYTES: usize = 16 * 1024;
+const MAX_PRACTICE_COMPLETE_BODY_BYTES: usize = 64 * 1024;
+const MAX_PRACTICE_RESPONSE_BODY_BYTES: usize = 2 * 1024 * 1024;
+const MAX_PRACTICE_ANSWERS: usize = 100;
+const MAX_PRACTICE_SESSION_ID_CHARS: usize = 160;
+// Saved words and the review queue live in a local file rather than the shared
+// database: they are a desktop-only convenience and must survive a webview
+// storage reset, which localStorage does not.
+const VOCABULARY_FILE: &str = "vocabulary.json";
+const MAX_VOCABULARY_ENTRIES: usize = 2_000;
+const MAX_VOCABULARY_WORD_CHARS: usize = 24;
+const MAX_REFERRAL_RESPONSE_BODY_BYTES: usize = 128 * 1024;
+// The study goal has no column on the server, so it is a device-local
+// preference kept beside the saved words. Onboarding is the only place that
+// writes it; a missing or unknown value is what makes onboarding reopen.
+const GOAL_FILE: &str = "daily-goal.json";
+const GOAL_KINDS: [&str; 3] = ["conversation", "hsk", "study"];
 const MAX_MISTAKES: usize = 50;
 const MAX_TTS_CHARS: usize = 1_000;
 const MAX_TTS_BYTES: usize = 4_000;
@@ -369,6 +398,209 @@ fn validate_subscription_image_data_url(value: &str) -> Result<(), String> {
     };
     if !signature_matches {
         return Err("desktop_payment_file_invalid".into());
+    }
+    Ok(())
+}
+
+/// Conversation roles allowed by ROLE_PROMPTS in the voice practice service.
+fn validate_voice_role(role: &str) -> Result<&'static str, String> {
+    match role.trim().to_ascii_lowercase().as_str() {
+        "lily" => Ok("lily"),
+        "chen" => Ok("chen"),
+        "xiao_mei" => Ok("xiao_mei"),
+        "teacher_li" => Ok("teacher_li"),
+        "manager_wang" => Ok("manager_wang"),
+        "friend" => Ok("friend"),
+        "roommate" => Ok("roommate"),
+        "seller" => Ok("seller"),
+        "classmate" => Ok("classmate"),
+        "social" => Ok("social"),
+        _ => Err("desktop_voice_role_invalid".into()),
+    }
+}
+
+fn validate_voice_level(level: &str) -> Result<&'static str, String> {
+    match level.trim().to_ascii_lowercase().as_str() {
+        "beginner" => Ok("beginner"),
+        "hsk1" => Ok("hsk1"),
+        "hsk2" => Ok("hsk2"),
+        "hsk3" => Ok("hsk3"),
+        // users.level stores "hsk4a"/"hsk4b" bands; both speak at HSK4.
+        "hsk4" | "hsk4a" | "hsk4b" => Ok("hsk4"),
+        "hsk1_2" => Ok("hsk1_2"),
+        "hsk3_4" => Ok("hsk3_4"),
+        _ => Err("desktop_voice_level_invalid".into()),
+    }
+}
+
+fn validate_voice_voice(voice: &str) -> Result<&'static str, String> {
+    match voice.trim().to_ascii_lowercase().as_str() {
+        "female" => Ok("female"),
+        "male" => Ok("male"),
+        _ => Err("desktop_voice_request_invalid".into()),
+    }
+}
+
+fn validate_voice_session_id(value: &str) -> Result<&str, String> {
+    let trimmed = value.trim();
+    if trimmed.len() < 8
+        || trimmed.len() > MAX_VOICE_SESSION_ID_CHARS
+        || !trimmed
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-')
+    {
+        return Err("desktop_voice_session_invalid".into());
+    }
+    Ok(trimmed)
+}
+
+fn validate_voice_target(value: &str) -> Result<&str, String> {
+    let trimmed = value.trim();
+    if trimmed.is_empty() || trimmed.chars().count() > MAX_VOICE_TARGET_CHARS {
+        return Err("desktop_voice_request_invalid".into());
+    }
+    Ok(trimmed)
+}
+
+fn validate_voice_pinyin(value: &str) -> Result<&str, String> {
+    let trimmed = value.trim();
+    if trimmed.chars().count() > MAX_VOICE_PINYIN_CHARS {
+        return Err("desktop_voice_request_invalid".into());
+    }
+    Ok(trimmed)
+}
+
+/// macOS WKWebView produces `audio/mp4`; Windows WebView2 produces
+/// `audio/webm`. Both must pass or the two desktop builds behave differently.
+fn validate_voice_audio_data_url(value: &str) -> Result<(), String> {
+    let (prefix, encoded) = value
+        .split_once(',')
+        .ok_or_else(|| "desktop_voice_audio_invalid".to_string())?;
+    let audio_kind = match prefix {
+        "data:audio/webm;base64" => "webm",
+        "data:audio/ogg;base64" => "ogg",
+        "data:audio/mp4;base64" => "mp4",
+        "data:audio/mpeg;base64" => "mp3",
+        "data:audio/wav;base64" => "wav",
+        _ => return Err("desktop_voice_audio_invalid".into()),
+    };
+    if encoded.is_empty() {
+        return Err("desktop_voice_audio_invalid".into());
+    }
+    if encoded.len() > MAX_VOICE_AUDIO_BASE64_CHARS {
+        return Err("desktop_voice_audio_too_large".into());
+    }
+    let decoded = STANDARD
+        .decode(encoded.as_bytes())
+        .map_err(|_| "desktop_voice_audio_invalid".to_string())?;
+    if decoded.is_empty() {
+        return Err("desktop_voice_audio_invalid".into());
+    }
+    if decoded.len() > MAX_VOICE_AUDIO_BYTES {
+        return Err("desktop_voice_audio_too_large".into());
+    }
+    let signature_matches = match audio_kind {
+        "webm" => decoded.starts_with(&[0x1a, 0x45, 0xdf, 0xa3]),
+        "ogg" => decoded.starts_with(b"OggS"),
+        "mp4" => decoded.len() >= 12 && decoded.get(4..8) == Some(b"ftyp"),
+        "mp3" => {
+            decoded.starts_with(b"ID3")
+                || decoded.starts_with(&[0xff, 0xfb])
+                || decoded.starts_with(&[0xff, 0xf3])
+                || decoded.starts_with(&[0xff, 0xf2])
+        }
+        "wav" => {
+            decoded.len() >= 12
+                && decoded.starts_with(b"RIFF")
+                && decoded.get(8..12) == Some(b"WAVE")
+        }
+        _ => false,
+    };
+    if !signature_matches {
+        return Err("desktop_voice_audio_invalid".into());
+    }
+    Ok(())
+}
+
+fn validate_practice_mode(mode: &str) -> Result<&'static str, String> {
+    match mode.trim().to_ascii_lowercase().as_str() {
+        "placement" => Ok("placement"),
+        "mock" => Ok("mock"),
+        "training" => Ok("training"),
+        _ => Err("desktop_practice_request_invalid".into()),
+    }
+}
+
+fn validate_practice_skill(mode: &str, skill: &str) -> Result<&'static str, String> {
+    let normalized = skill.trim().to_ascii_lowercase();
+    if mode != "training" {
+        return if normalized.is_empty() {
+            Ok("")
+        } else {
+            Err("desktop_practice_request_invalid".into())
+        };
+    }
+    match normalized.as_str() {
+        "listening" => Ok("listening"),
+        "writing" => Ok("writing"),
+        "characters" => Ok("characters"),
+        "pronunciation" => Ok("pronunciation"),
+        "pinyin" => Ok("pinyin"),
+        _ => Err("unknown_training_skill".into()),
+    }
+}
+
+fn validate_practice_level(level: &str) -> Result<&str, String> {
+    let trimmed = level.trim();
+    if trimmed.is_empty()
+        || trimmed.len() > 16
+        || !trimmed
+            .bytes()
+            .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'_')
+    {
+        return Err("desktop_practice_request_invalid".into());
+    }
+    Ok(trimmed)
+}
+
+fn validate_practice_session_id(value: &str) -> Result<&str, String> {
+    let trimmed = value.trim();
+    if trimmed.len() < 8 || trimmed.len() > MAX_PRACTICE_SESSION_ID_CHARS {
+        return Err("desktop_practice_request_invalid".into());
+    }
+    Ok(trimmed)
+}
+
+/// Answers are the only bulk payload the webview sends here, so the shape is
+/// checked before it reaches the network: a list of `{question_id, selected}`.
+fn validate_practice_answers(answers: &Value) -> Result<(), String> {
+    let items = answers
+        .as_array()
+        .ok_or_else(|| "desktop_practice_request_invalid".to_string())?;
+    if items.len() > MAX_PRACTICE_ANSWERS {
+        return Err("desktop_practice_request_too_large".into());
+    }
+    for item in items {
+        let entry = item
+            .as_object()
+            .ok_or_else(|| "desktop_practice_request_invalid".to_string())?;
+        if entry.len() != 2 {
+            return Err("desktop_practice_request_invalid".into());
+        }
+        let question_id = entry
+            .get("question_id")
+            .and_then(Value::as_str)
+            .ok_or_else(|| "desktop_practice_request_invalid".to_string())?;
+        if question_id.is_empty() || question_id.len() > 120 {
+            return Err("desktop_practice_request_invalid".into());
+        }
+        let selected = entry
+            .get("selected")
+            .and_then(Value::as_i64)
+            .ok_or_else(|| "desktop_practice_request_invalid".to_string())?;
+        if !(-1..=32).contains(&selected) {
+            return Err("desktop_practice_request_invalid".into());
+        }
     }
     Ok(())
 }
@@ -1077,6 +1309,171 @@ async fn authenticated_subscription_post_json(
     decode_bounded_json_response(response, MAX_SUBSCRIPTION_RESPONSE_BODY_BYTES).await
 }
 
+async fn authenticated_voice_get_json(state: &DesktopState, path: &str) -> Result<Value, String> {
+    if path != "/api/v3/desktop/voice/status" {
+        return Err("desktop_api_operation_not_allowed".into());
+    }
+    let mut token = access_token(state).await?;
+    let mut response = state
+        .client
+        .get(api_url(path)?)
+        .bearer_auth(&token)
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        token = refresh_access(state, Some(&token)).await?;
+        response = state
+            .client
+            .get(api_url(path)?)
+            .bearer_auth(&token)
+            .send()
+            .await
+            .map_err(|_| "desktop_api_unavailable".to_string())?;
+    }
+    decode_bounded_json_response(response, MAX_VOICE_RESPONSE_BODY_BYTES).await
+}
+
+async fn authenticated_voice_post_json(
+    state: &DesktopState,
+    path: &str,
+    payload: &Value,
+    max_body_bytes: usize,
+) -> Result<Value, String> {
+    if !matches!(
+        path,
+        "/api/v3/desktop/voice/session/start"
+            | "/api/v3/desktop/voice/message"
+            | "/api/v3/desktop/voice/pronounce"
+            | "/api/v3/desktop/voice/session/end"
+    ) {
+        return Err("desktop_api_operation_not_allowed".into());
+    }
+    let payload_size = serde_json::to_vec(payload)
+        .map_err(|_| "desktop_voice_request_invalid".to_string())?
+        .len();
+    if payload_size > max_body_bytes {
+        return Err("desktop_voice_audio_too_large".into());
+    }
+
+    let mut token = access_token(state).await?;
+    let mut response = state
+        .client
+        .post(api_url(path)?)
+        .bearer_auth(&token)
+        .json(payload)
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        token = refresh_access(state, Some(&token)).await?;
+        response = state
+            .client
+            .post(api_url(path)?)
+            .bearer_auth(&token)
+            .json(payload)
+            .send()
+            .await
+            .map_err(|_| "desktop_api_unavailable".to_string())?;
+    }
+    decode_bounded_json_response(response, MAX_VOICE_RESPONSE_BODY_BYTES).await
+}
+
+async fn authenticated_rating_get_json(state: &DesktopState, path: &str) -> Result<Value, String> {
+    if !path.starts_with("/api/v3/desktop/rating/leaderboard") {
+        return Err("desktop_api_operation_not_allowed".into());
+    }
+    let mut token = access_token(state).await?;
+    let mut response = state
+        .client
+        .get(api_url(path)?)
+        .bearer_auth(&token)
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        token = refresh_access(state, Some(&token)).await?;
+        response = state
+            .client
+            .get(api_url(path)?)
+            .bearer_auth(&token)
+            .send()
+            .await
+            .map_err(|_| "desktop_api_unavailable".to_string())?;
+    }
+    decode_bounded_json_response(response, MAX_RATING_RESPONSE_BODY_BYTES).await
+}
+
+async fn authenticated_practice_post_json(
+    state: &DesktopState,
+    path: &str,
+    payload: &Value,
+    max_body_bytes: usize,
+) -> Result<Value, String> {
+    if !matches!(
+        path,
+        "/api/v3/desktop/practice/start" | "/api/v3/desktop/practice/complete"
+    ) {
+        return Err("desktop_api_operation_not_allowed".into());
+    }
+    let payload_size = serde_json::to_vec(payload)
+        .map_err(|_| "desktop_practice_request_invalid".to_string())?
+        .len();
+    if payload_size > max_body_bytes {
+        return Err("desktop_practice_request_too_large".into());
+    }
+
+    let mut token = access_token(state).await?;
+    let mut response = state
+        .client
+        .post(api_url(path)?)
+        .bearer_auth(&token)
+        .json(payload)
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        token = refresh_access(state, Some(&token)).await?;
+        response = state
+            .client
+            .post(api_url(path)?)
+            .bearer_auth(&token)
+            .json(payload)
+            .send()
+            .await
+            .map_err(|_| "desktop_api_unavailable".to_string())?;
+    }
+    decode_bounded_json_response(response, MAX_PRACTICE_RESPONSE_BODY_BYTES).await
+}
+
+async fn authenticated_referral_get_json(
+    state: &DesktopState,
+    path: &str,
+) -> Result<Value, String> {
+    if !path.starts_with("/api/v3/desktop/referral/overview") {
+        return Err("desktop_api_operation_not_allowed".into());
+    }
+    let mut token = access_token(state).await?;
+    let mut response = state
+        .client
+        .get(api_url(path)?)
+        .bearer_auth(&token)
+        .send()
+        .await
+        .map_err(|_| "desktop_api_unavailable".to_string())?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        token = refresh_access(state, Some(&token)).await?;
+        response = state
+            .client
+            .get(api_url(path)?)
+            .bearer_auth(&token)
+            .send()
+            .await
+            .map_err(|_| "desktop_api_unavailable".to_string())?;
+    }
+    decode_bounded_json_response(response, MAX_REFERRAL_RESPONSE_BODY_BYTES).await
+}
+
 async fn authenticated_bootstrap(state: &DesktopState) -> Result<Value, String> {
     authenticated_get_json(
         state,
@@ -1605,6 +2002,315 @@ async fn desktop_subscription_submit(
     Ok(value)
 }
 
+#[derive(Debug, Default, Serialize, Deserialize)]
+struct VocabularyState {
+    #[serde(default)]
+    saved: Vec<String>,
+    #[serde(default)]
+    review: Vec<String>,
+}
+
+fn vocabulary_path(app: &tauri::AppHandle) -> Result<std::path::PathBuf, String> {
+    let directory = app
+        .path()
+        .app_local_data_dir()
+        .map_err(|_| "desktop_vocabulary_storage_unavailable".to_string())?;
+    std::fs::create_dir_all(&directory)
+        .map_err(|_| "desktop_vocabulary_storage_unavailable".to_string())?;
+    Ok(directory.join(VOCABULARY_FILE))
+}
+
+/// Keep only well-formed CJK headwords, de-duplicated and bounded.
+fn sanitize_vocabulary_list(value: Option<&Value>) -> Vec<String> {
+    let mut seen = std::collections::HashSet::new();
+    let mut out = Vec::new();
+    let Some(items) = value.and_then(Value::as_array) else {
+        return out;
+    };
+    for item in items {
+        let Some(word) = item.as_str() else { continue };
+        let trimmed = word.trim();
+        let length = trimmed.chars().count();
+        if trimmed.is_empty()
+            || length > MAX_VOCABULARY_WORD_CHARS
+            || !trimmed
+                .chars()
+                .all(|c| ('\u{4e00}'..='\u{9fff}').contains(&c))
+        {
+            continue;
+        }
+        if seen.insert(trimmed.to_string()) {
+            out.push(trimmed.to_string());
+        }
+        if out.len() >= MAX_VOCABULARY_ENTRIES {
+            break;
+        }
+    }
+    out
+}
+
+#[tauri::command]
+fn desktop_vocabulary_state(app: tauri::AppHandle) -> Result<Value, String> {
+    let path = vocabulary_path(&app)?;
+    let Ok(raw) = std::fs::read_to_string(&path) else {
+        return Ok(json!({ "saved": [], "review": [] }));
+    };
+    // A corrupted file must not brick the dictionary; it resets to empty.
+    let parsed: Value = serde_json::from_str(&raw).unwrap_or_else(|_| json!({}));
+    Ok(json!({
+        "saved": sanitize_vocabulary_list(parsed.get("saved")),
+        "review": sanitize_vocabulary_list(parsed.get("review")),
+    }))
+}
+
+#[tauri::command]
+fn desktop_vocabulary_save(
+    app: tauri::AppHandle,
+    saved: Value,
+    review: Value,
+) -> Result<Value, String> {
+    let state = VocabularyState {
+        saved: sanitize_vocabulary_list(Some(&saved)),
+        review: sanitize_vocabulary_list(Some(&review)),
+    };
+    let path = vocabulary_path(&app)?;
+    let encoded =
+        serde_json::to_vec(&state).map_err(|_| "desktop_vocabulary_save_failed".to_string())?;
+    // Write to a sibling temp file first so a crash cannot truncate the list.
+    let temporary = path.with_extension("json.tmp");
+    std::fs::write(&temporary, &encoded)
+        .map_err(|_| "desktop_vocabulary_save_failed".to_string())?;
+    std::fs::rename(&temporary, &path).map_err(|_| "desktop_vocabulary_save_failed".to_string())?;
+    Ok(json!({ "saved": state.saved, "review": state.review }))
+}
+
+#[tauri::command]
+async fn desktop_referral_overview(
+    state: tauri::State<'_, DesktopState>,
+    timezone_offset: i64,
+) -> Result<Value, String> {
+    if !(-720..=840).contains(&timezone_offset) {
+        return Err("desktop_referral_request_invalid".into());
+    }
+    authenticated_referral_get_json(
+        &state,
+        &format!("/api/v3/desktop/referral/overview?tz={timezone_offset}"),
+    )
+    .await
+}
+
+fn goal_path(app: &tauri::AppHandle) -> Result<std::path::PathBuf, String> {
+    let directory = app
+        .path()
+        .app_local_data_dir()
+        .map_err(|_| "desktop_goal_storage_unavailable".to_string())?;
+    std::fs::create_dir_all(&directory)
+        .map_err(|_| "desktop_goal_storage_unavailable".to_string())?;
+    Ok(directory.join(GOAL_FILE))
+}
+
+#[tauri::command]
+fn desktop_goal_state(app: tauri::AppHandle) -> Result<Value, String> {
+    let path = goal_path(&app)?;
+    let Ok(raw) = std::fs::read_to_string(&path) else {
+        return Ok(json!({ "kind": "", "configured": false }));
+    };
+    let parsed: Value = serde_json::from_str(&raw).unwrap_or_else(|_| json!({}));
+    let kind = parsed.get("kind").and_then(Value::as_str).unwrap_or("");
+    // A file written by an older build only carries `minutes`. It stays
+    // unreadable on purpose so onboarding asks for the goal once more.
+    let valid = GOAL_KINDS.contains(&kind);
+    Ok(json!({
+        "kind": if valid { kind } else { "" },
+        "configured": valid,
+    }))
+}
+
+#[tauri::command]
+fn desktop_goal_save(app: tauri::AppHandle, kind: String) -> Result<Value, String> {
+    let kind = kind.trim();
+    if !GOAL_KINDS.contains(&kind) {
+        return Err("desktop_goal_request_invalid".into());
+    }
+    let path = goal_path(&app)?;
+    let encoded = serde_json::to_vec(&json!({ "kind": kind }))
+        .map_err(|_| "desktop_goal_save_failed".to_string())?;
+    let temporary = path.with_extension("json.tmp");
+    std::fs::write(&temporary, &encoded).map_err(|_| "desktop_goal_save_failed".to_string())?;
+    std::fs::rename(&temporary, &path).map_err(|_| "desktop_goal_save_failed".to_string())?;
+    Ok(json!({ "kind": kind, "configured": true }))
+}
+
+#[tauri::command]
+async fn desktop_practice_start(
+    state: tauri::State<'_, DesktopState>,
+    mode: String,
+    level: String,
+    language: String,
+    skill: String,
+) -> Result<Value, String> {
+    let mode = validate_practice_mode(&mode)?;
+    let skill = validate_practice_skill(mode, &skill)?;
+    let level = validate_practice_level(&level)?;
+    let language = validate_language(&language)?;
+    authenticated_practice_post_json(
+        &state,
+        "/api/v3/desktop/practice/start",
+        &json!({
+            "mode": mode,
+            "level": level,
+            "language": language,
+            "skill": skill,
+        }),
+        MAX_PRACTICE_BODY_BYTES,
+    )
+    .await
+}
+
+#[tauri::command]
+async fn desktop_practice_complete(
+    state: tauri::State<'_, DesktopState>,
+    session_id: String,
+    mode: String,
+    level: String,
+    language: String,
+    skill: String,
+    answers: Value,
+) -> Result<Value, String> {
+    let mode = validate_practice_mode(&mode)?;
+    let skill = validate_practice_skill(mode, &skill)?;
+    let level = validate_practice_level(&level)?;
+    let language = validate_language(&language)?;
+    let session_id = validate_practice_session_id(&session_id)?;
+    validate_practice_answers(&answers)?;
+    authenticated_practice_post_json(
+        &state,
+        "/api/v3/desktop/practice/complete",
+        &json!({
+            "session_id": session_id,
+            "mode": mode,
+            "level": level,
+            "language": language,
+            "skill": skill,
+            "answers": answers,
+        }),
+        MAX_PRACTICE_COMPLETE_BODY_BYTES,
+    )
+    .await
+}
+
+#[tauri::command]
+async fn desktop_rating_leaderboard(
+    state: tauri::State<'_, DesktopState>,
+    timezone_offset: i64,
+) -> Result<Value, String> {
+    // The webview reports the local UTC offset so the weekly window matches
+    // what the learner sees in the Telegram Mini App.
+    if !(-720..=840).contains(&timezone_offset) {
+        return Err("desktop_rating_request_invalid".into());
+    }
+    authenticated_rating_get_json(
+        &state,
+        &format!("/api/v3/desktop/rating/leaderboard?tz={timezone_offset}"),
+    )
+    .await
+}
+
+#[tauri::command]
+async fn desktop_voice_status(state: tauri::State<'_, DesktopState>) -> Result<Value, String> {
+    authenticated_voice_get_json(&state, "/api/v3/desktop/voice/status").await
+}
+
+#[tauri::command]
+async fn desktop_voice_session_start(
+    state: tauri::State<'_, DesktopState>,
+    role: String,
+    level: String,
+    language: String,
+    voice: String,
+) -> Result<Value, String> {
+    let role = validate_voice_role(&role)?;
+    let level = validate_voice_level(&level)?;
+    let language = validate_language(&language)?;
+    let voice = validate_voice_voice(&voice)?;
+    authenticated_voice_post_json(
+        &state,
+        "/api/v3/desktop/voice/session/start",
+        &json!({
+            "role": role,
+            "level": level,
+            "language": language,
+            "voice": voice,
+        }),
+        MAX_VOICE_BODY_BYTES,
+    )
+    .await
+}
+
+#[tauri::command]
+async fn desktop_voice_message(
+    state: tauri::State<'_, DesktopState>,
+    session_id: String,
+    audio_data_url: String,
+) -> Result<Value, String> {
+    let session_id = validate_voice_session_id(&session_id)?;
+    validate_voice_audio_data_url(&audio_data_url)?;
+    authenticated_voice_post_json(
+        &state,
+        "/api/v3/desktop/voice/message",
+        &json!({
+            "session_id": session_id,
+            "audio_data_url": audio_data_url,
+        }),
+        MAX_VOICE_AUDIO_BODY_BYTES,
+    )
+    .await
+}
+
+#[tauri::command]
+async fn desktop_voice_pronounce(
+    state: tauri::State<'_, DesktopState>,
+    target: String,
+    target_pinyin: String,
+    language: String,
+    level: String,
+    audio_data_url: String,
+) -> Result<Value, String> {
+    let target = validate_voice_target(&target)?;
+    let target_pinyin = validate_voice_pinyin(&target_pinyin)?;
+    let language = validate_language(&language)?;
+    let level = validate_voice_level(&level)?;
+    validate_voice_audio_data_url(&audio_data_url)?;
+    authenticated_voice_post_json(
+        &state,
+        "/api/v3/desktop/voice/pronounce",
+        &json!({
+            "target": target,
+            "target_pinyin": target_pinyin,
+            "language": language,
+            "level": level,
+            "audio_data_url": audio_data_url,
+        }),
+        MAX_VOICE_AUDIO_BODY_BYTES,
+    )
+    .await
+}
+
+#[tauri::command]
+async fn desktop_voice_session_end(
+    state: tauri::State<'_, DesktopState>,
+    session_id: String,
+) -> Result<Value, String> {
+    let session_id = validate_voice_session_id(&session_id)?;
+    authenticated_voice_post_json(
+        &state,
+        "/api/v3/desktop/voice/session/end",
+        &json!({ "session_id": session_id }),
+        MAX_VOICE_BODY_BYTES,
+    )
+    .await
+}
+
 #[tauri::command]
 fn desktop_tts_speak(text: String) -> Result<DesktopTtsStatus, String> {
     validate_tts_text(&text)?;
@@ -1677,6 +2383,19 @@ pub fn run() {
             desktop_subscription_overview,
             desktop_subscription_quote,
             desktop_subscription_submit,
+            desktop_vocabulary_state,
+            desktop_vocabulary_save,
+            desktop_referral_overview,
+            desktop_goal_state,
+            desktop_goal_save,
+            desktop_practice_start,
+            desktop_practice_complete,
+            desktop_rating_leaderboard,
+            desktop_voice_status,
+            desktop_voice_session_start,
+            desktop_voice_message,
+            desktop_voice_pronounce,
+            desktop_voice_session_end,
             desktop_tts_speak,
         ])
         .build(tauri::generate_context!())

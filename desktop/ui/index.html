@@ -11,21 +11,6 @@
   </head>
   <body>
     <div class="app-shell">
-      <header class="titlebar" data-tauri-drag-region>
-        <div class="brand" data-tauri-drag-region>
-          <img
-            class="brand-mark"
-            src="./assets/hsk-ai-avatar.webp"
-            alt=""
-            aria-hidden="true"
-          >
-          <span>HSK AI</span>
-        </div>
-        <div class="titlebar-meta" data-tauri-drag-region>
-          <span class="status-pill" id="offline-pill" hidden>Offline</span>
-          <span id="app-version"></span>
-        </div>
-      </header>
 
       <main class="boot-state" id="boot-state" aria-live="polite">
         <div class="spinner" aria-hidden="true"></div>
@@ -120,10 +105,6 @@
               <span id="subscription-label">Obuna</span>
               <span class="nav-badge" id="subscription-badge">PLUS</span>
             </button>
-            <button class="rail-action" id="show-profile" type="button" data-testid="nav-profile">
-              <svg class="rail-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
-              <span id="profile-label">Profil</span>
-            </button>
           </nav>
 
           <div class="rail-spacer"></div>
@@ -140,6 +121,13 @@
 
           <nav class="course-navigation" id="course-navigation"></nav>
 
+          <nav class="global-navigation rail-bottom" aria-label="Profil">
+            <button class="rail-action" id="show-profile" type="button" data-testid="nav-profile">
+              <svg class="rail-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+              <span id="profile-label">Profil</span>
+            </button>
+          </nav>
+
           <button class="rail-profile" id="rail-profile-button" type="button">
             <div class="avatar" id="rail-avatar" aria-hidden="true">
               <img src="./assets/hsk-ai-avatar.webp" alt="">
@@ -149,7 +137,13 @@
               <small id="rail-plan">—</small>
             </div>
           </button>
+
+          <button class="rail-collapse" id="rail-collapse" type="button" aria-label="Panelni yig‘ish" aria-expanded="true">
+            <svg class="rail-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg>
+          </button>
         </aside>
+
+        <div class="rail-resizer" id="rail-resizer" role="separator" aria-orientation="vertical" aria-label="Panel kengligi"></div>
 
         <section class="content-column">
           <header class="content-header">
@@ -163,22 +157,18 @@
             <label class="toolbar-search" for="global-search">
               <span aria-hidden="true">⌕</span>
               <input id="global-search" type="search" autocomplete="off" placeholder="Darsni qidiring…">
-              <kbd>⌘F</kbd>
+              <kbd id="search-shortcut">⌘F</kbd>
             </label>
             <span class="toolbar-metric"><span aria-hidden="true">火</span><b id="header-streak">0</b></span>
             <span class="toolbar-metric is-secondary"><span aria-hidden="true">星</span><b id="header-xp">0</b> XP</span>
+            <button class="icon-button toolbar-bell" id="notifications-button" type="button" aria-label="Bildirishnomalar" aria-expanded="false" aria-controls="notifications-panel">
+              <svg class="rail-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 16.5h11l-1.2-1.8V10a4.3 4.3 0 0 0-8.6 0v4.7z"/><path d="M10 19a2.2 2.2 0 0 0 4 0"/></svg>
+              <span class="bell-dot" id="notifications-dot" hidden></span>
+            </button>
             <button class="icon-button refresh-button" id="refresh-map" type="button" aria-label="Ma’lumotni yangilash">
               ↻
             </button>
-            <button class="header-avatar-button" id="header-profile" type="button" aria-label="Profilni ochish">
-              <img
-                class="header-avatar"
-                id="header-avatar"
-                src="./assets/hsk-ai-avatar.webp"
-                alt=""
-                aria-hidden="true"
-              >
-            </button>
+            <span class="status-pill" id="offline-pill" hidden>Offline</span>
           </header>
 
           <section
@@ -254,6 +244,21 @@
             <p class="ai-footer-status" id="ai-footer-status" role="status" aria-live="polite"></p>
           </footer>
         </aside>
+
+        <aside
+          class="notifications-panel"
+          id="notifications-panel"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="notifications-title"
+          hidden
+        >
+          <header class="notifications-head">
+            <h2 id="notifications-title">Bildirishnomalar</h2>
+            <button class="icon-button" id="close-notifications" type="button" aria-label="Yopish">×</button>
+          </header>
+          <div class="notifications-body" id="notifications-body"></div>
+        </aside>
       </div>
 
       <div class="lesson-layer" id="lesson-layer" hidden>
@@ -277,6 +282,46 @@
             <div class="lesson-feedback" id="lesson-feedback" aria-live="polite"></div>
             <button class="primary-button lesson-next" id="lesson-next" type="button" disabled>
               Tekshirish
+            </button>
+          </footer>
+        </section>
+      </div>
+
+      <div class="onboarding-layer" id="onboarding-layer" hidden>
+        <section
+          class="onboarding-shell"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="onboarding-title"
+        >
+          <header class="onboarding-header">
+            <img
+              class="panda-mini"
+              src="./assets/hsk-ai-avatar.webp"
+              alt=""
+              aria-hidden="true"
+            >
+            <div>
+              <h2 id="onboarding-title">HSK AI’ni sozlash</h2>
+              <p class="muted" id="onboarding-subtitle">
+                Maqsad tanlang va Smart Widget bilan tanishing
+              </p>
+            </div>
+            <div class="onboarding-steps" id="onboarding-steps" aria-hidden="true">
+              <i></i><i></i>
+            </div>
+          </header>
+          <div class="onboarding-body" id="onboarding-body"></div>
+          <footer class="onboarding-footer">
+            <button class="secondary-button" id="onboarding-back" type="button">
+              Orqaga
+            </button>
+            <button class="secondary-button" id="onboarding-later" type="button">
+              Keyinroq
+            </button>
+            <span class="onboarding-spacer"></span>
+            <button class="primary-button" id="onboarding-start" type="button">
+              Davom etish
             </button>
           </footer>
         </section>
