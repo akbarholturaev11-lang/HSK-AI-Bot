@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { previewInvoke } from "./js/preview-mock.js";
 import { SUPPORTED_CARD_TYPES } from "./js/lesson.js";
@@ -64,6 +64,7 @@ async function source(relativePath) {
 
 test("desktop entry is strict-CSP compatible", async () => {
   const html = await source("desktop/ui/index.html");
+  const appCss = await source("desktop/ui/css/app.css");
   const workspaceCss = await source("desktop/ui/css/workspace.css");
   const javascript = await Promise.all(
     [
@@ -71,6 +72,7 @@ test("desktop entry is strict-CSP compatible", async () => {
       "bridge.js",
       "i18n.js",
       "lesson.js",
+      "mascot.js",
       "preview-mock.js",
       "subscription.js",
       "practice.js",
@@ -83,11 +85,15 @@ test("desktop entry is strict-CSP compatible", async () => {
   assert.doesNotMatch(html, /\sstyle\s*=/i);
   assert.doesNotMatch(html, /<script(?![^>]*\ssrc=)[^>]*>/i);
   assert.match(html, /src="\.\/assets\/hsk-ai-avatar\.webp"/);
+  assert.match(html, />老师 AI</);
+  assert.doesNotMatch(html, /panda-real\.webp/);
+  assert.match(appCss, /\.panda-mascot \{/);
   assert.doesNotMatch(html, /class="(?:brand-mark|panda-badge|panda-mini)"[^>]*>[汉阿]</);
   assert.match(workspaceCss, /\.rail-action \.rail-icon[\s\S]*fill: none;[\s\S]*stroke: currentColor;/);
   for (const content of javascript) {
     assert.doesNotMatch(content, /\.style\./);
     assert.doesNotMatch(content, /\b(fetch|XMLHttpRequest|WebSocket)\b/);
+    assert.doesNotMatch(content, /panda-real\.webp/);
   }
 });
 
@@ -100,6 +106,10 @@ test("Tauri loads the dedicated UI with IPC-only network CSP", async () => {
   assert.equal(config.build.frontendDist, "../ui");
   assert.ok(config.bundle.icon.includes("icons/icon.icns"));
   assert.ok(config.bundle.icon.includes("icons/icon.ico"));
+  assert.match(
+    config.app.security.csp,
+    /img-src 'self' data: https:\/\/telegram-chinese-bot-production\.up\.railway\.app/,
+  );
   assert.match(config.app.security.csp, /connect-src ipc: http:\/\/ipc\.localhost/);
   assert.doesNotMatch(config.app.security.csp, /unsafe-inline/);
 });
@@ -123,6 +133,8 @@ test("preview responses follow production response casing", async () => {
   assert.equal(map.level, "hsk1");
   assert.equal(typeof map.units[0].no, "number");
   assert.equal(typeof map.progress.completed, "number");
+  assert.ok(Array.isArray(map.notifications));
+  assert.equal(typeof map.notifications[0].title, "string");
 
   const lesson = await previewInvoke("desktop_lesson_data", {
     lessonOrder: 2,
@@ -168,28 +180,46 @@ test("preview responses follow production response casing", async () => {
   assert.equal(pending.pending_payment.plan_type, "1_month");
 });
 
-test("updater auto-installs only while the learning workspace is idle", async () => {
+test("updater checks automatically but installs only after a user action", async () => {
   const app = await source("desktop/ui/js/app.js");
   const bridge = await source("desktop/ui/js/bridge.js");
   const rust = await source("desktop/src-tauri/src/lib.rs");
   assert.match(app, /void checkForUpdates\(\)/);
-  assert.match(app, /scheduleAutomaticUpdate\(\)/);
   assert.match(app, /lesson\.isOpen[\s\S]*state\.aiBusy[\s\S]*state\.aiInstallBusy/);
+  assert.match(app, /dom\.updateAction\.addEventListener\("click", handleUpdateAction\)/);
   assert.match(app, /desktopBridge\.updateInstall\(\)/);
   assert.match(app, /desktop-update:\/\/progress/);
   assert.match(bridge, /listenDesktopUpdate/);
   assert.match(rust, /download_and_install[\s\S]*emit_update_progress/);
+  assert.doesNotMatch(app, /scheduleAutomaticUpdate/);
+  assert.doesNotMatch(app, /installUpdate\(\{ automatic: true \}\)/);
   assert.doesNotMatch(app, /setInterval\([^)]*installUpdate/);
 });
 
 test("local AI is explicit, bounded and never replaced with preview answers", async () => {
   const bridge = await source("desktop/ui/js/bridge.js");
   const app = await source("desktop/ui/js/app.js");
+  const lesson = await source("desktop/ui/js/lesson.js");
+  const practice = await source("desktop/ui/js/practice.js");
+  const vocabulary = await source("desktop/ui/js/vocabulary.js");
+  const voice = await source("desktop/ui/js/voice.js");
   const preview = await source("desktop/ui/js/preview-mock.js");
   assert.match(bridge, /MAX_LOCAL_AI_PROMPT_CHARS = 4_000/);
   assert.match(bridge, /MAX_LOCAL_AI_HISTORY_MESSAGES = 12/);
   assert.match(app, /desktopBridge\.localAiInstallStart\(\)/);
   assert.match(app, /desktopBridge\.localAiChat\(/);
+  assert.match(app, /function buildAiScreenContext\(\)/);
+  assert.match(app, /function renderAiContextCard\(context\)/);
+  assert.match(app, /function renderAiHintStrip\(context\)/);
+  assert.match(app, /localAiPromptWithScreenContext\(prompt\)/);
+  assert.match(app, /Do not claim access to anything outside this app window/);
+  assert.match(app, /Do not reveal lesson, quiz, or practice answer keys/);
+  assert.match(lesson, /aiContext\(\)/);
+  assert.doesNotMatch(lesson, /promptLines\.push\(`Correct/);
+  assert.match(practice, /aiContext\(\)/);
+  assert.doesNotMatch(practice, /promptLines\.push\([\s\S]{0,180}correct_answer/);
+  assert.match(vocabulary, /aiContext\(\)/);
+  assert.match(voice, /aiContext\(\)/);
   assert.match(app, /local-ai:\/\/chat-delta/);
   assert.match(app, /function resetAiSession\(\)/);
   assert.match(app, /state\.aiMessages = \[\];/);
@@ -428,6 +458,37 @@ test("practice drills are graded by the shared course service", async () => {
   assert.match(adapter, /free_feature_limit_reached/);
 });
 
+test("desktop bridge preserves practice error codes", async () => {
+  const previousLocation = globalThis.location;
+  globalThis.location = new URL("http://localhost/?mock=1");
+  try {
+    const moduleUrl = pathToFileURL(path.join(uiRoot, "js", "bridge.js"));
+    moduleUrl.search = `?practice-errors=${Date.now()}`;
+    const { desktopBridge } = await import(moduleUrl.href);
+    await assert.rejects(
+      () =>
+        desktopBridge.practiceComplete({
+          sessionId: "practice:gone:0000:mock:hsk1:v1",
+          mode: "mock",
+          level: "hsk1",
+          language: "uz",
+          skill: "",
+          answers: [],
+        }),
+      (error) => {
+        assert.equal(error.code, "invalid_practice_session");
+        return true;
+      },
+    );
+  } finally {
+    if (previousLocation === undefined) {
+      delete globalThis.location;
+    } else {
+      globalThis.location = previousLocation;
+    }
+  }
+});
+
 test("the dictionary is a full offline word bank", async () => {
   const vocabulary = await source("desktop/ui/js/vocabulary.js");
   const dataModule = await source("desktop/ui/data/vocabulary.js");
@@ -518,9 +579,11 @@ test("the shell follows the demo chrome", async () => {
   assert.match(css, /:root\[data-rail-collapsed="1"\]/);
   assert.match(css, /:root\[data-rail-width="230"\]/);
 
-  // Notifications must never be invented: only update, plan and streak facts
-  // the client already holds are listed.
+  // Notifications must never be invented: server-saved Telegram reminders plus
+  // update, plan and streak facts the client already holds are listed.
   assert.match(app, /function notificationItems\(\)/);
+  assert.match(app, /function serverNotificationItems\(\)/);
+  assert.match(app, /state\.map\?\.notifications/);
   assert.match(app, /state\.updateStatus === "available"/);
   assert.doesNotMatch(app, /notificationItems[\s\S]{0,800}Math\.random/);
 });
@@ -537,6 +600,7 @@ test("every id app.js resolves exists in the markup", async () => {
 
 test("invites are real and the study goal stays on the device", async () => {
   const app = await source("desktop/ui/js/app.js");
+  const css = await source("desktop/ui/css/workspace.css");
   const adapter = await source("app/api/desktop_referral.py");
   const rust = await source("desktop/src-tauri/src/lib.rs");
 
@@ -565,6 +629,20 @@ test("invites are real and the study goal stays on the device", async () => {
   assert.match(rust, /const GOAL_KINDS/);
   assert.doesNotMatch(rust, /MIN_GOAL_MINUTES/);
   assert.match(app, /t\("goalLocalNote"\)/);
+  assert.match(app, /function openReferralModal\(/);
+  assert.match(app, /function shareReferralToTelegram\(/);
+  assert.match(app, /function shareReferralToWhatsapp\(/);
+  assert.match(app, /function shareReferralWithSystem\(/);
+  assert.match(app, /function makeReferralQrDataUrl\(/);
+  assert.match(app, /function referralLinkFrom\(/);
+  assert.match(app, /state\.map\?\.user\?\.referral_code/);
+  assert.doesNotMatch(
+    app.slice(app.indexOf("function inviteMorph"), app.indexOf("function renderInviteCard")),
+    /soonBlock/,
+  );
+  assert.match(css, /\.referral-layer \{/);
+  assert.match(css, /\.referral-destination-grid \{/);
+  assert.match(css, /\.referral-qr-image \{/);
   const saved = await previewInvoke("desktop_goal_save", { kind: "hsk" });
   assert.equal(saved.kind, "hsk");
   assert.equal((await previewInvoke("desktop_goal_state")).configured, true);

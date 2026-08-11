@@ -10,6 +10,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.course_notification_service import CourseNotificationService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 
 D1_RECOVERY_EXPERIMENT = "d1_recovery_v1"
@@ -111,12 +112,22 @@ class CourseReminderService:
                     continue
 
             lang = user.language if user.language else "ru"
+            text = await self._build_reminder_text(progress, lang)
             try:
                 await bot.send_message(
                     chat_id=user.telegram_id,
-                    text=await self._build_reminder_text(progress, lang),
+                    text=text,
                     reply_markup=_reminder_keyboard(lang),
                     parse_mode="HTML",
+                )
+                await CourseNotificationService(self.session).record_from_text(
+                    user,
+                    key="lesson_time",
+                    lang=lang,
+                    text=text,
+                    action="course",
+                    source="course_reminder",
+                    dedupe_key=f"lesson_time:{local_now.date().isoformat()}",
                 )
                 progress.last_reminder_sent_at = now_utc
                 print(f"CourseReminderService: sent reminder to {user.telegram_id}")

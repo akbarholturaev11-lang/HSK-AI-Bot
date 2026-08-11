@@ -219,6 +219,12 @@ fn emit_update_progress(
     );
 }
 
+fn bounded_timezone_query(raw_timezone: &str) -> bool {
+    let timezone = raw_timezone.parse::<i32>().ok();
+    timezone.is_some_and(|value| (-720..=840).contains(&value))
+        && timezone.map(|value| value.to_string()) == Some(raw_timezone.to_string())
+}
+
 fn api_url(path: &str) -> Result<String, String> {
     match path {
         "/api/v3/desktop-auth/link/start"
@@ -232,7 +238,14 @@ fn api_url(path: &str) -> Result<String, String> {
         | "/api/v3/desktop/preferences/language"
         | "/api/v3/desktop/subscription/overview"
         | "/api/v3/desktop/subscription/quote"
-        | "/api/v3/desktop/subscription/submit" => Ok(format!("{API_ORIGIN}{path}")),
+        | "/api/v3/desktop/subscription/submit"
+        | "/api/v3/desktop/practice/start"
+        | "/api/v3/desktop/practice/complete"
+        | "/api/v3/desktop/voice/status"
+        | "/api/v3/desktop/voice/session/start"
+        | "/api/v3/desktop/voice/message"
+        | "/api/v3/desktop/voice/pronounce"
+        | "/api/v3/desktop/voice/session/end" => Ok(format!("{API_ORIGIN}{path}")),
         _ => {
             if path
                 == format!(
@@ -243,10 +256,18 @@ fn api_url(path: &str) -> Result<String, String> {
                 return Ok(format!("{API_ORIGIN}{path}"));
             }
             if let Some(raw_timezone) = path.strip_prefix("/api/v3/desktop/course/map?tz=") {
-                let timezone = raw_timezone.parse::<i32>().ok();
-                if timezone.is_some_and(|value| (-720..=840).contains(&value))
-                    && timezone.map(|value| value.to_string()) == Some(raw_timezone.to_string())
-                {
+                if bounded_timezone_query(raw_timezone) {
+                    return Ok(format!("{API_ORIGIN}{path}"));
+                }
+            }
+            if let Some(raw_timezone) = path.strip_prefix("/api/v3/desktop/rating/leaderboard?tz=")
+            {
+                if bounded_timezone_query(raw_timezone) {
+                    return Ok(format!("{API_ORIGIN}{path}"));
+                }
+            }
+            if let Some(raw_timezone) = path.strip_prefix("/api/v3/desktop/referral/overview?tz=") {
+                if bounded_timezone_query(raw_timezone) {
                     return Ok(format!("{API_ORIGIN}{path}"));
                 }
             }
@@ -2458,9 +2479,25 @@ mod tests {
         assert!(api_url("/api/v3/desktop/subscription/overview").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/quote").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/submit").is_ok());
+        assert!(api_url("/api/v3/desktop/practice/start").is_ok());
+        assert!(api_url("/api/v3/desktop/practice/complete").is_ok());
+        assert!(api_url("/api/v3/desktop/rating/leaderboard?tz=300").is_ok());
+        assert!(api_url("/api/v3/desktop/rating/leaderboard?tz=-720").is_ok());
+        assert!(api_url("/api/v3/desktop/rating/leaderboard?tz=841").is_err());
+        assert!(api_url("/api/v3/desktop/rating/leaderboard?tz=300&admin=true").is_err());
+        assert!(api_url("/api/v3/desktop/referral/overview?tz=300").is_ok());
+        assert!(api_url("/api/v3/desktop/referral/overview?tz=-720").is_ok());
+        assert!(api_url("/api/v3/desktop/referral/overview?tz=841").is_err());
+        assert!(api_url("/api/v3/desktop/referral/overview?tz=300&admin=true").is_err());
+        assert!(api_url("/api/v3/desktop/voice/status").is_ok());
+        assert!(api_url("/api/v3/desktop/voice/session/start").is_ok());
+        assert!(api_url("/api/v3/desktop/voice/message").is_ok());
+        assert!(api_url("/api/v3/desktop/voice/pronounce").is_ok());
+        assert!(api_url("/api/v3/desktop/voice/session/end").is_ok());
         assert!(api_url("/api/v3/desktop/events").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/event").is_err());
         assert!(api_url("/api/v3/desktop/subscription/overview?telegram_id=1").is_err());
+        assert!(api_url("/api/v3/desktop/voice/status?telegram_id=1").is_err());
         assert!(api_url("https://evil.example/").is_err());
         assert!(api_url("/api/v3/map").is_err());
         assert!(api_url("/api/v3/desktop/course/lesson/0").is_err());

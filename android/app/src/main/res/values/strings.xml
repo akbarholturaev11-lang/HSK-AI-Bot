@@ -54,6 +54,18 @@
     <string name="profile_logout">Chiqish</string>
     <string name="profile_unlink_device">Bu qurilmani uzish</string>
     <string name="profile_unlink_explain">Qurilma uziladi va keyingi safar Telegram orqali qayta ulanasiz.</string>
+    <string name="profile_refresh">Yangilash</string>
+    <string name="profile_xp">XP</string>
+    <string name="profile_streak">Streak</string>
+    <string name="profile_lessons">Darslar</string>
+    <string name="profile_mistakes">Xatolar</string>
+    <string name="profile_subscription_title">Obuna</string>
+    <string name="profile_subscription_active">Premium faol. Android ham shu hisobdagi ruxsatni ishlatyapti.</string>
+    <string name="profile_subscription_play_blocked">Google Play Billing sozlamalari repo tashqarisida. Hozir obuna holati ko‘rsatiladi, xarid keyin ulanadi.</string>
+    <string name="profile_referral_title">Do‘st taklif qilish</string>
+    <string name="profile_referral_progress">%1$d / %2$d aktiv do‘st</string>
+    <string name="profile_rating_title">Haftalik reyting</string>
+    <string name="profile_rating_empty">Reyting hali shakllanmagan.</string>
 
     <!-- Shared states -->
     <string name="state_loading">Yuklanmoqda…</string>
@@ -71,6 +83,9 @@
     <string name="error_link_rate_limited">Juda ko\'p urinish bo\'ldi. Bir necha daqiqadan so\'ng urinib ko\'ring.</string>
     <string name="error_device_bound">Bu qurilma boshqa Telegram hisobiga ulangan. Avval uni uzish kerak.</string>
     <string name="error_auth_unavailable">Ulash xizmati vaqtincha ishlamayapti.</string>
+    <string name="error_feature_limit">Bepul limit tugadi. Premium bilan davom eting.</string>
+    <string name="error_no_mistakes">Hozircha takrorlanadigan xato yo‘q.</string>
+    <string name="error_voice_unavailable">AI Voice hozircha ishlamayapti. Keyinroq urinib ko‘ring.</string>
 
     <!-- Accessibility -->
     <string name="cd_app_logo">Pomp HSK AI logotipi</string>
@@ -121,4 +136,62 @@
     <string name="lesson_skip_card">O\'tkazib yuborish</string>
     <string name="cd_answer_correct">%1$s — to\'g\'ri javob</string>
     <string name="cd_answer_wrong">%1$s — noto\'g\'ri javob</string>
+
+    <!-- Mashq -->
+    <string name="practice_title">Mashq</string>
+    <string name="practice_subtitle">%1$s bo‘yicha mustahkamlash va test</string>
+    <string name="practice_mistakes_title">Xatolarim</string>
+    <string name="practice_mistakes_body">%1$d ta zaif joy takrorlashga tayyor</string>
+    <string name="practice_review_mistakes">Xatolarni takrorlash</string>
+    <string name="practice_characters_title">Ieroglif tanish</string>
+    <string name="practice_characters_body">O‘xshash belgilar orasidan to‘g‘risini toping.</string>
+    <string name="practice_listening_title">Tinglash</string>
+    <string name="practice_listening_body">Xitoycha eshitib, to‘g‘ri javobni tanlang.</string>
+    <string name="practice_pinyin_title">Pinyin</string>
+    <string name="practice_pinyin_body">Ton va yozilishni tez tekshiring.</string>
+    <string name="practice_writing_title">Gap tuzish</string>
+    <string name="practice_writing_body">So‘z tartibi va grammatika ustida ishlang.</string>
+    <string name="practice_pronunciation_title">Talaffuz</string>
+    <string name="practice_pronunciation_body">Eshitish va pinyin orqali talaffuzni mustahkamlang.</string>
+    <string name="practice_test_title">HSK test</string>
+    <string name="practice_test_body">Joriy daraja bo‘yicha qisqa sinov.</string>
+    <string name="practice_placement_title">Daraja aniqlash</string>
+    <string name="practice_placement_body">HSK1–4 oralig‘ida hozirgi kuchingizni tekshiring.</string>
+    <string name="practice_start_short">Boshlash</string>
+    <string name="practice_progress">%1$d / %2$d savol</string>
+    <string name="practice_finish">Yakunlash</string>
+    <string name="practice_result_title">Mashq natijasi</string>
+    <string name="practice_result_body">%1$d / %2$d javob to‘g‘ri</string>
+    <string name="practice_review_result_title">Xatolar takrori tugadi</string>
+    <string name="practice_review_result_body">%1$d ta xato hali qolgan</string>
+    <string name="practice_back_to_tools">Mashqlarga qaytish</string>
+
+    <!-- AI Voice -->
+    <string name="voice_title">AI Voice</string>
+    <string name="voice_subtitle">%1$s darajasida jonli xitoycha suhbat</string>
+    <string name="voice_role_friend">Do‘st</string>
+    <string name="voice_role_friend_body">Yengil kundalik suhbat.</string>
+    <string name="voice_role_teacher">Ustoz Li</string>
+    <string name="voice_role_teacher_body">Aniqroq tuzatish va qisqa savollar.</string>
+    <string name="voice_role_seller">Do‘kondor</string>
+    <string name="voice_role_seller_body">Narx, son va xarid dialoglari.</string>
+    <string name="voice_role_classmate">Kursdosh</string>
+    <string name="voice_role_classmate_body">O‘qish, reja va uy vazifasi haqida.</string>
+    <string name="voice_role_manager">Menejer Wang</string>
+    <string name="voice_role_manager_body">Ish va biznes vaziyatlari.</string>
+    <string name="voice_start">Suhbatni boshlash</string>
+    <string name="voice_limit_premium">Premium: AI Voice limiti ochiq</string>
+    <string name="voice_limit_free">Bepul qolgan suhbat: %1$d</string>
+    <string name="voice_session_title">Suhbat</string>
+    <string name="voice_turn_progress">%1$d / %2$d dialog</string>
+    <string name="voice_end">Tugatish</string>
+    <string name="voice_sending">Yuborilmoqda…</string>
+    <string name="voice_stop_recording">To‘xtatish va yuborish</string>
+    <string name="voice_hold_to_speak">Gapirishni boshlash</string>
+    <string name="voice_you">Siz</string>
+    <string name="voice_ai">AI</string>
+    <string name="voice_correction">Tuzatish: %1$s</string>
+    <string name="voice_result_title">Suhbat yakuni</string>
+    <string name="voice_result_body">%1$d replika · %2$d yaxshi · %3$d tuzatish</string>
+    <string name="voice_again">Yangi suhbat</string>
 </resources>

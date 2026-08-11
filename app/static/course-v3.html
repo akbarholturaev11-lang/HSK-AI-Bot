@@ -602,7 +602,7 @@ button{cursor:pointer}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
 @media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i,.pd-fly,.pd-cape,.pd-arms{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
 </style>
-<link href="/course_v3_data/desktop-download.css?v=20260809-1" rel="stylesheet">
+<link href="/course_v3_data/desktop-download.css?v=20260811-1" rel="stylesheet">
 </head>
 <body>
 <div class="wrap">
@@ -673,7 +673,7 @@ button{cursor:pointer}
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script src="/course_v3_data/ads.js?v=20260809-1"></script>
+<script src="/course_v3_data/ads.js?v=20260811-1"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1186,6 +1186,45 @@ function prefetchNearbyLessons(){
 }
 function isPaidUser(){return !!(PROF&&PROF.is_paid||MAP&&MAP.user&&MAP.user.is_paid)}
 function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
+function lessonNeedsAd(l){return !!(l&&l.ad_required&&!isPaidUser())}
+function lessonAdKey(l){
+  return "hsk_v3_lesson_ad_ref:"+normalizeLevel((MAP&&MAP.level)||"hsk1")+":"+Number(l&&l.n||0);
+}
+function _validLessonAdRef(v){return /^[A-Za-z0-9._~-]{8,48}$/.test(String(v||""))}
+function lessonAdRef(l){
+  var key=lessonAdKey(l),v="";
+  try{v=sessionStorage.getItem(key)||""}catch(e){}
+  if(!_validLessonAdRef(v)){
+    v=("lesson-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)).slice(0,48);
+    try{sessionStorage.setItem(key,v)}catch(e){}
+  }
+  return v;
+}
+function clearLessonAdRef(l){try{sessionStorage.removeItem(lessonAdKey(l))}catch(e){}}
+function startLessonAdGate(idx){
+  var l=allLessons()[idx];if(!l)return;
+  if(!INIT_DATA||!window.CourseAds||typeof CourseAds.play!=="function"){
+    App.openPaywall({lessonIdx:idx,lesson:l});return;
+  }
+  var ref=lessonAdRef(l);
+  CourseAds.config({
+    lang:LANG,
+    initData:INIT_DATA,
+    feature:"lesson",
+    level:(MAP&&MAP.level)||"hsk1",
+    lessonOrder:Number(l.n)||0,
+    slot:"",
+    onOffer:null,
+    onSubscribe:function(){App.goPay("v3_lesson_ad")}
+  });
+  CourseAds.play("start",ref).then(function(){
+    l.ad_authorized_ref=ref;
+    startLesson(idx,{skipAdGate:true,accessRef:ref});
+  }).catch(function(){
+    clearLessonAdRef(l);
+    App.openPaywall({lessonIdx:idx,lesson:l});
+  });
+}
 /* ---------- Dars yakuni reklamasi ----------
    Bepul foydalanuvchi darsni tugatib, bayram/streak/reyting ekranlarini yopgach
    BITTA reklama bloki ko'rsatiladi; oxirida obuna knopkasi (botdagi obuna yo'li)
@@ -1658,8 +1697,14 @@ function openLessonSheet(idx){
   var secs=names.map(function(s,k){var cls=k<prog?"done":(k===prog&&l.status==="current"?"cur":"lock");var ic=cls==="done"?'<i class="ti ti-check"></i>':(cls==="cur"?'<i class="ti ti-player-play"></i>':'<i class="ti ti-lock"></i>');return '<div class="sec '+cls+'"><span class="si2">'+ic+'</span><b>'+(k+1)+'. '+s+'</b></div>'}).join("");
   var stars=l.status==="done"?'<div class="stars">'+"★★★☆☆☆".slice(3-(l.stars||0),6-(l.stars||0))+'</div>':'';
   var chip=partChip(l);
-  var cta=l.status==="current"?'<button class="scta" onclick="startLesson('+idx+')"><i class="ti ti-player-play"></i> '+T().cont+'</button>'
-    :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+T().repeat+'</button>';
+  var cta;
+  if(lessonNeedsAd(l)){
+    var adLabel=LANG==="ru"?"Смотреть рекламу и начать":LANG==="tj"?"Рекламаро дида оғоз кардан":"Reklama ko'rib boshlash";
+    cta='<button class="scta" onclick="startLessonAdGate('+idx+')"><i class="ti ti-player-play"></i> '+esc(adLabel)+'</button>';
+  }else{
+    cta=l.status==="current"?'<button class="scta" onclick="startLesson('+idx+')"><i class="ti ti-player-play"></i> '+T().cont+'</button>'
+      :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+T().repeat+'</button>';
+  }
   App.openSheet('<div class="shead">'+(chip?'<div class="py" style="margin-bottom:2px">'+esc(chip)+'</div>':'')
     +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+stars+'</div>'
     +'<div class="pmeta"><span>'+n+' '+T().stage+'</span><span>'+prog+' / '+n+' '+T().completeOf+'</span></div><div class="secs">'+secs+'</div>'+cta);
@@ -1868,10 +1913,16 @@ function startLesson(idx,opts){
   var l=allLessons()[idx];App.closeSheet();
   if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
+  if(lessonNeedsAd(l)&&!opts.skipAdGate){
+    var storedRef="";try{storedRef=sessionStorage.getItem(lessonAdKey(l))||""}catch(e){}
+    if(_validLessonAdRef(storedRef)){opts.accessRef=storedRef}
+    else{return startLessonAdGate(idx)}
+  }
   if(l.status==="locked")return;
   var lv=MAP.level||"hsk1";
   loadLessonData(lv,l.n).then(function(d){
     Flow.queue=buildQueue(d);Flow.i=loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
+    Flow.lessonAdRef=opts.accessRef||"";
     /* Yangi bepul user 3-qismni yarmigacha ko'radi (preview_half): o'rtaga
        yetganda obuna oynasi chiqadi. Backend ham 3-qismni yakunlatmaydi. */
     Flow.previewHalf=!!l.preview_half;
@@ -2606,6 +2657,7 @@ function loadLevel(lv){
 function applyLessonDone(cur,d){
   var rankBefore=currentRatingRank();
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
+  clearLessonAdRef(cur);
   var al=allLessons();
   cur.status="done";cur.stars=3;cur.locked_premium=false;
   window._pendingStreak=null;window._pendingXpFly=0;
@@ -2638,7 +2690,8 @@ function applyLessonDone(cur,d){
   var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
   /* Bepul user 2 mini-darsni tugatgach, 3-qism yarim-preview bo'ladi (server
      ham keyingi map'da shunday belgilaydi) — mahalliy holatni darhol moslaymiz. */
-  if(next&&!isPaidUser()&&next.n===3&&next.locked_premium){next.locked_premium=false;next.preview_half=true;next.status="current";}
+  if(next&&!isPaidUser()&&next.ad_required){next.locked_premium=false;next.preview_half=false;next.status="current";}
+  else if(next&&!isPaidUser()&&next.n===3&&next.locked_premium){next.locked_premium=false;next.preview_half=true;next.status="current";}
   if(next&&next.status==="locked"&&!isPremiumLocked(next))next.status="current";
   if(next&&isPremiumLocked(next))next.status="locked";
   renderAll();
@@ -2657,7 +2710,7 @@ function flowDone(){
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
-  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,mistakes:(Flow.mistakes||[]).slice(0,50)})
+  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,access_ref:Flow.lessonAdRef||"",mistakes:(Flow.mistakes||[]).slice(0,50)})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){
@@ -2665,6 +2718,12 @@ function flowDone(){
           App.exitFlow();
           /* Bepul trial tugadi (premium dars) — obuna oynasi. */
           openLockedLessonSheet(doneIdx||0);
+          return;
+        }
+        if(d.error==="ad_authorization_required"||d.error==="invalid_ad_authorization"){
+          App.exitFlow();
+          clearLessonAdRef(cur);
+          startLessonAdGate(doneIdx||0);
           return;
         }
         toast(serverSaveErrorText(d.error),2600);return;
@@ -3571,6 +3630,6 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
   });
 })();
 </script>
-<script src="/course_v3_data/desktop-download.js?v=20260809-1"></script>
+<script src="/course_v3_data/desktop-download.js?v=20260811-1"></script>
 </body>
 </html>

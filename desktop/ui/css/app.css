@@ -183,16 +183,57 @@ textarea:disabled {
   margin: auto 0;
 }
 
+.panda-mascot {
+  --panda-size: 44px;
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  width: var(--panda-size);
+  height: var(--panda-size);
+  flex: 0 0 var(--panda-size);
+  border: 1px solid #241d18;
+  border-radius: 45% 45% 47% 47%;
+  background:
+    radial-gradient(circle at 43% 45%, #fffdf8 0 3%, transparent 4%),
+    radial-gradient(circle at 57% 45%, #fffdf8 0 3%, transparent 4%),
+    radial-gradient(ellipse at 37% 46%, #1d1915 0 13%, transparent 14%),
+    radial-gradient(ellipse at 63% 46%, #1d1915 0 13%, transparent 14%),
+    radial-gradient(ellipse at 50% 60%, #1d1915 0 6%, transparent 7%),
+    radial-gradient(circle at 34% 64%, #efaaa2 0 5%, transparent 6%),
+    radial-gradient(circle at 66% 64%, #efaaa2 0 5%, transparent 6%),
+    linear-gradient(180deg, #fffaf0 0%, #f4e3c9 100%);
+  box-shadow: 0 10px 24px rgb(24 43 77 / 18%);
+}
+
+.panda-mascot::before,
+.panda-mascot::after {
+  position: absolute;
+  z-index: -1;
+  top: 2%;
+  width: 30%;
+  height: 30%;
+  border: 1px solid #241d18;
+  border-radius: 50%;
+  background: #1d1915;
+  content: "";
+}
+
+.panda-mascot::before {
+  left: 5%;
+}
+
+.panda-mascot::after {
+  right: 5%;
+}
+
 .panda-badge,
 .panda-mini {
   display: block;
-  border: 1px solid #d8e2f3;
-  box-shadow: 0 10px 24px rgb(24 43 77 / 18%);
-  object-fit: cover;
-  object-position: center;
+  border-color: #d8e2f3;
 }
 
 .panda-badge {
+  --panda-size: 76px;
   width: 76px;
   height: 76px;
   margin: 0 auto 18px;
@@ -200,6 +241,7 @@ textarea:disabled {
 }
 
 .panda-mini {
+  --panda-size: 38px;
   width: 38px;
   height: 38px;
   border-radius: 13px;
@@ -920,27 +962,34 @@ p {
 }
 
 .ai-launcher {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  padding: 2px;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 78px;
+  height: 50px;
+  padding: 5px 8px;
+  overflow: visible;
   border: 1px solid rgb(255 255 255 / 72%);
-  border-radius: 50%;
+  border-radius: 18px;
   background: #090909;
   box-shadow: 0 12px 28px rgb(36 107 253 / 30%);
   cursor: pointer;
   transition: transform 0.16s ease;
 }
 
-.ai-launcher img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  object-fit: cover;
-  object-position: center;
+.ai-launcher-panda {
+  --panda-size: 30px;
+  box-shadow: 0 5px 12px rgb(0 0 0 / 18%);
+}
+
+.ai-launcher-label {
+  color: #fff;
+  font-size: 10px;
+  font-weight: 820;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .ai-launcher:hover,
@@ -1523,7 +1572,7 @@ p {
     z-index: 18;
     right: 18px;
     bottom: 19px;
-    width: 52px;
+    width: 78px;
     height: 52px;
   }
 

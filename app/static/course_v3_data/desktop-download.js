@@ -252,6 +252,7 @@
     transferUrls: { macos: "", windows: "" },
     runtimeUnavailable: { macos: false, windows: false },
     promoEligible: false,
+    promoReason: "",
     promoCooldownDays: 0,
     promoPlacements: {
       home_prompt: false,
@@ -1497,6 +1498,11 @@
     });
   }
 
+  function hasLocalDownloadCooldown() {
+    var timestamp = readStoredNumber("download_requested");
+    return timestamp > 0 && Date.now() - timestamp < promoCooldownMs();
+  }
+
   function promoPlacementAllowed(source) {
     return Boolean(
       PROMO_SOURCES.indexOf(source) >= 0 &&
@@ -1515,6 +1521,24 @@
       state.promoSeenInSession ||
       state.promoOpen ||
       hasLocalPromoCooldown()
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  function shouldShowAdPromoEntry() {
+    if (
+      isDesktop ||
+      !telegramInitData() ||
+      !state.availabilityLoaded ||
+      !hasAvailablePlatform() ||
+      state.promoOpen ||
+      state.destinationOpen ||
+      state.promoReason === "already_installed" ||
+      state.promoReason === "disabled" ||
+      state.promoReason === "recent_request" ||
+      hasLocalDownloadCooldown()
     ) {
       return false;
     }
@@ -1755,7 +1779,7 @@
   function syncAdPromo(visible) {
     var host = document.getElementById("ad-desktop");
     if (!host) return;
-    if (!visible || !shouldShowPromo("ad_promo")) {
+    if (!visible || !shouldShowAdPromoEntry()) {
       dismissAdPromo();
       return;
     }
@@ -1765,7 +1789,7 @@
   function syncMountedAdPromos() {
     state.adPromoMounts = state.adPromoMounts.filter(function (mount) {
       if (!mount.host || !mount.host.isConnected) return false;
-      var visible = shouldShowPromo("ad_promo");
+      var visible = shouldShowAdPromoEntry();
       if (visible) {
         renderAdActions(mount.host, mount.meta);
       } else {
@@ -1786,7 +1810,7 @@
       state.adPromoMounts.push(mount);
     }
     mount.meta = promoMeta(meta);
-    if (shouldShowPromo("ad_promo")) {
+    if (shouldShowAdPromoEntry()) {
       renderAdActions(host, mount.meta);
     } else {
       hideAdActions(host);
@@ -1839,6 +1863,8 @@
                 ? promo.placements
                 : {};
             state.promoEligible = promo.eligible === true;
+            state.promoReason =
+              typeof promo.reason === "string" ? promo.reason : "";
             state.promoCooldownDays = Math.max(
               1,
               Math.min(
@@ -1860,6 +1886,7 @@
         state.transferUrls.macos = "";
         state.transferUrls.windows = "";
         state.promoEligible = false;
+        state.promoReason = "";
         PROMO_SOURCES.forEach(function (source) {
           state.promoPlacements[source] = false;
         });

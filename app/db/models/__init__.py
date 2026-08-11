@@ -28,6 +28,7 @@ from .course_miniapp_event import CourseMiniAppEvent
 from .course_mistake import CourseMistake
 from .course_xp_event import CourseXpEvent
 from .course_challenge import CourseChallenge
+from .course_user_notification import CourseUserNotification
 from .subscription_entry_event import SubscriptionEntryEvent
 from .course_ad import CourseAdCreative, CourseAdView
 from .desktop import DesktopDevice, DesktopLinkRequest, DesktopSession

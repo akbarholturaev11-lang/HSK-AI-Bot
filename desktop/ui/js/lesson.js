@@ -57,6 +57,10 @@ function safeInteger(value, fallback) {
   return Number.isInteger(parsed) ? parsed : fallback;
 }
 
+function briefText(value, limit = 220) {
+  return [...String(value ?? "").trim()].slice(0, limit).join("");
+}
+
 function completionEventId() {
   if (typeof globalThis.crypto?.randomUUID === "function") {
     return `desktop:${globalThis.crypto.randomUUID()}`;
@@ -78,11 +82,17 @@ export class LessonController {
     onCompleted,
     onSessionExpired,
     onAccessRequired,
+    onOpen,
+    onClose,
+    onContextChanged,
   }) {
     this.bridge = bridge;
     this.onCompleted = onCompleted;
     this.onSessionExpired = onSessionExpired;
     this.onAccessRequired = onAccessRequired;
+    this.onOpen = onOpen;
+    this.onClose = onClose;
+    this.onContextChanged = onContextChanged;
 
     this.layer = document.querySelector("#lesson-layer");
     this.dialog = this.layer.querySelector(".lesson-shell");
@@ -119,8 +129,118 @@ export class LessonController {
     return !this.layer.hidden;
   }
 
+  aiContext() {
+    if (!this.isOpen) return null;
+    const entry = this.cards[this.index];
+    const card = entry?.card || {};
+    const type = String(card.type || "unknown");
+    const title =
+      briefText(this.content.querySelector(".lesson-title")?.textContent) ||
+      pick(card.title) ||
+      pick(card.prompt) ||
+      t("lessonNumber", { number: this.lessonOrder || "—" });
+    const promptLines = [
+      `Lesson: ${this.lessonOrder || "—"}`,
+      `Level: ${this.level}`,
+      `Card: ${this.index + 1}/${this.cards.length || 1}`,
+      `Card type: ${type}`,
+      `Title: ${title}`,
+    ];
+    const details = [];
+    const add = (label, value, limit = 220) => {
+      const text = briefText(value, limit);
+      if (text) {
+        promptLines.push(`${label}: ${text}`);
+        details.push(text);
+      }
+    };
+
+    if (entry?.sectionTitle) {
+      promptLines.push(`Section: ${briefText(entry.sectionTitle, 120)}`);
+    }
+
+    if (type === "active_word") {
+      const word = card.word || {};
+      add("Chinese", word.zh, 80);
+      add("Pinyin", word.pinyin, 120);
+      add("Translation", pick(word.meaning), 160);
+    } else if (type === "_grammar") {
+      const grammar = card.g || {};
+      add("Grammar", grammar.title_zh || pick(grammar.title), 120);
+      add("Rule", pick(grammar.rule), 260);
+      const example = Array.isArray(grammar.examples) ? grammar.examples[0] : null;
+      if (example) {
+        add(
+          "Example",
+          [
+            example.zh,
+            example.pinyin,
+            pick(example.translation),
+          ].filter(Boolean).join(" · "),
+          260,
+        );
+      }
+    } else if (CHOICE_TYPES.has(type)) {
+      add("Prompt", pick(card.prompt), 220);
+      add("Sentence", pick(card.sentence) || card.audio_text, 220);
+      add("Pinyin", card.pinyin, 160);
+      const options = Array.isArray(card.options)
+        ? card.options.map((option, index) =>
+            `${String.fromCharCode(65 + index)}. ${pick(option, String(option ?? ""))}`,
+          )
+        : [];
+      if (options.length) {
+        promptLines.push(`Visible options: ${briefText(options.join(" | "), 420)}`);
+      }
+      if (Number.isInteger(this.interaction?.selectedIndex)) {
+        const selected = options[this.interaction.selectedIndex] || "";
+        if (selected) promptLines.push(`Learner selected: ${briefText(selected, 160)}`);
+      }
+    } else if (BUILDER_TYPES.has(type)) {
+      add("Prompt", pick(card.prompt) || pick(card.sentence) || pick(card.translation), 220);
+      add("Chinese", card.zh, 120);
+      add("Pinyin", card.pinyin, 160);
+      add("Translation", pick(card.translation), 180);
+      const tokens = localizedList(card.tokens);
+      if (tokens.length) {
+        promptLines.push(`Visible tokens: ${briefText(tokens.join(" / "), 360)}`);
+      }
+      if (Array.isArray(this.interaction?.selectedIndices)) {
+        const selected = this.interaction.selectedIndices
+          .map((tokenIndex) => tokens[tokenIndex])
+          .filter(Boolean);
+        if (selected.length) {
+          promptLines.push(`Learner selected tokens: ${briefText(selected.join(" / "), 260)}`);
+        }
+      }
+    } else if (type === "match_pairs") {
+      add("Task", title, 180);
+    } else if (type === "pronunciation") {
+      add("Phrase", card.phrase, 120);
+      add("Pinyin", card.pinyin, 160);
+      add("Translation", pick(card.translation), 180);
+    }
+
+    if (this.interaction?.checked) {
+      add("Visible feedback", this.feedback.textContent, 260);
+    }
+
+    return {
+      lessonOrder: this.lessonOrder,
+      level: this.level,
+      index: this.index + 1,
+      total: this.cards.length || 1,
+      sectionTitle: entry?.sectionTitle || "",
+      title,
+      summary: details.slice(0, 3).join(" · "),
+      isExercise: ASSESSED_TYPES.has(type),
+      promptLines,
+    };
+  }
+
   async open(lessonOrder) {
-    if (!this.isOpen) {
+    const wasOpen = this.isOpen;
+    if (!wasOpen) {
       this.previousFocus =
         document.activeElement instanceof HTMLElement
           ? document.activeElement
@@ -144,6 +264,9 @@ export class LessonController {
     this.previewLimit = 0;
 
     this.layer.hidden = false;
+    if (!wasOpen) {
+      this.onOpen?.();
+    }
     this.closeButton.focus();
     this.renderLoading();
 
@@ -205,6 +328,7 @@ export class LessonController {
     this.content.replaceChildren();
     this.setFeedback("");
     this.interaction = null;
+    this.onClose?.();
     if (this.previousFocus?.isConnected) {
       this.previousFocus.focus();
     } else {
@@ -302,6 +426,7 @@ export class LessonController {
     if (title) {
       this.setDialogLabel(title.textContent);
     }
+    this.onContextChanged?.();
   }
 
   renderActiveWord(entry) {
@@ -851,6 +976,7 @@ export class LessonController {
     }
     this.scoreLabel.textContent = `${this.score} / ${this.assessmentCount}`;
     this.setNext(this.isLastCard() ? t("finish") : t("continue"), false);
+    this.onContextChanged?.();
   }
 
   gradeBuilder() {
@@ -883,6 +1009,7 @@ export class LessonController {
     }
     this.scoreLabel.textContent = `${this.score} / ${this.assessmentCount}`;
     this.setNext(this.isLastCard() ? t("finish") : t("continue"), false);
+    this.onContextChanged?.();
   }
 
   materialRef(entry) {
@@ -1067,6 +1194,7 @@ export class LessonController {
     if (tone) {
       this.feedback.classList.add(`is-${tone}`);
     }
+    this.onContextChanged?.();
   }
 
   setNext(label, disabled) {

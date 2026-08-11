@@ -288,10 +288,10 @@
   function startAttempt(ad,placement,accessRef){
     accessRef=String(accessRef||"").trim().slice(0,48);
     if(!CFG.initData||!accessRef)return Promise.reject(new Error("ad_attempt_requires_auth"));
-    /* Attempt faqat mashq bo'limi gate'i uchun (dars yakuni bloki ruxsat
-       bermaydi) — shuning uchun lesson_order doim 0. */
+    /* Protected oqimda lesson_order mashqlar uchun 0, dars access reklamasida
+       esa aniq dars raqami bo'ladi. Dars yakuni bloki ruxsat bermaydi. */
     return fetch("/api/v3/ad/attempt",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},
-      body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:0,feature:CFG.feature||"",access_ref:accessRef,placement:placement})})
+      body:JSON.stringify({ad_id:ad.id,level:CFG.level||"hsk1",lesson_order:Number(CFG.lessonOrder)||0,feature:CFG.feature||"",access_ref:accessRef,placement:placement})})
       .then(function(r){return r.json().catch(function(){return {ok:false}})})
       .then(function(d){if(!d||!d.ok||!d.attempt_token)throw new Error("ad_attempt_failed");return d});
   }
@@ -400,7 +400,8 @@
               els.vwrap.style.display="none";els.ov.classList.add("caa-done");startPromo();
               STATE.ready=true;els.cta0.style.display="none";els.cont.style.display="";setSubVisible(true);
               if(window.PompDesktopDownload&&typeof window.PompDesktopDownload.mountAdPromoTrigger==="function"){
-                window.PompDesktopDownload.mountAdPromoTrigger(els.desktop,{placement:"practice_"+String(CFG.feature||"unknown")+"_end"});
+                var desktopPlacement=isLessonEnd()?"lesson_end_ad":"practice_"+String(CFG.feature||"unknown")+"_end";
+                window.PompDesktopDownload.mountAdPromoTrigger(els.desktop,{placement:desktopPlacement});
               }else{els.desktop.hidden=true}
               /* Obuna taklifi ko'rindi — chaqiruvchi buni analitikaga yozishi mumkin. */
               if(typeof CFG.onOffer==="function"){try{CFG.onOffer()}catch(e){}}

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="tg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Instagram Story</title>
+  <style>
+    :root {
+      --bg: #07090d;
+      --bg-alt: #0b0f14;
+      --surface: #12171e;
+      --surface-alt: #171d25;
+      --text: #f1efe8;
+      --muted: #a7adb6;
+      --champagne: #d2c09a;
+      --red: #b82222;
+      --border: #29313a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 1080px;
+      min-height: 1920px;
+      margin: 0;
+      background: var(--bg);
+      font-family: "Avenir Next", "Arial Unicode MS", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .story {
+      position: relative;
+      display: none;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      padding: 138px 72px 100px;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .story.cool { background: var(--bg-alt); }
+
+    .story.dark {
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .copy-block {
+      position: relative;
+      z-index: 3;
+      width: 936px;
+    }
+
+    h1 {
+      max-width: 930px;
+      margin: 0 0 24px;
+      font-size: 78px;
+      font-weight: 800;
+      letter-spacing: -.045em;
+      line-height: 1.03;
+    }
+
+    h1.compact { font-size: 72px; }
+    h1.long { font-size: 66px; line-height: 1.06; }
+
+    .accent-red { color: var(--red); }
+    .accent-champagne { color: var(--champagne); }
+
+    .subline {
+      max-width: 880px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 34px;
+      font-weight: 550;
+      letter-spacing: -.018em;
+      line-height: 1.35;
+    }
+
+    .screen-frame {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      top: 650px;
+      width: 852px;
+      height: 1130px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 36px;
+      background: var(--surface);
+      box-shadow: 0 28px 76px rgba(0, 0, 0, .44);
+      transform: translateX(-50%);
+    }
+
+    .dark .screen-frame {
+      border-color: var(--border);
+      box-shadow: 0 28px 76px rgba(0, 0, 0, .44);
+    }
+
+    .screen-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 0;
+    }
+
+    .screen-intro { top: 660px; height: 1120px; }
+    .screen-intro img { object-position: 50% 2%; }
+    .screen-course { top: 650px; height: 1130px; }
+    .screen-course img { object-position: 50% 24%; }
+    .screen-lesson { top: 650px; height: 1130px; }
+    .screen-lesson img { object-position: 50% 5%; }
+    .screen-voice { top: 680px; width: 820px; height: 620px; background: var(--surface-alt); }
+    .screen-voice img { object-position: 50% 50%; }
+    .screen-practice { top: 660px; height: 1120px; }
+    .screen-practice img { object-position: 50% 0; }
+    .screen-profile { top: 650px; height: 1030px; }
+    .screen-profile img { object-position: 50% 3%; }
+
+    .screen-subscription {
+      top: 650px;
+      width: 820px;
+      height: 1160px;
+      border-radius: 34px;
+      background: #05110d;
+    }
+
+    .screen-subscription img { object-position: 50% 0; }
+
+    .screen-payment img { object-position: 50% 0; }
+
+    .screen-done {
+      top: 660px;
+      width: 820px;
+      height: 1020px;
+      background: #05110d;
+    }
+
+    .screen-done img { object-position: 50% 0; }
+
+    .panda {
+      position: absolute;
+      z-index: 5;
+      top: 446px;
+      right: 78px;
+      width: 150px;
+      height: 160px;
+      filter: drop-shadow(0 16px 24px rgba(0, 0, 0, .42));
+    }
+
+    .panda.left {
+      right: auto;
+      left: 78px;
+    }
+
+    .panda img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <section class="story dark" data-card="1">
+    <div class="copy-block">
+      <h1 class="compact">Забони <span class="accent-red">чиниро</span> бо забони худ омӯзед</h1>
+      <p class="subline">Дарсҳо бо забонҳои тоҷикӣ, русӣ ва ӯзбекӣ дастрасанд.</p>
+    </div>
+    <div class="screen-frame screen-intro">
+      <img src="../assets/ui-tj-course.png" alt="Курс бо забони тоҷикӣ">
+    </div>
+  </section>
+
+  <section class="story" data-card="2">
+    <div class="copy-block">
+      <h1>Аз куҷо сар кардан маълум аст</h1>
+      <p class="subline">Курси HSK 1–4 қадами навбатии шуморо нишон медиҳад.</p>
+    </div>
+    <div class="screen-frame screen-course">
+      <img src="../assets/ui-tj-course.png" alt="Харитаи курси HSK 1–4">
+    </div>
+  </section>
+
+  <section class="story" data-card="3">
+    <div class="copy-block">
+      <h1><span class="accent-champagne">Калимаро</span> фаҳмида омӯзед</h1>
+      <p class="subline">Иероглиф, пинйин, тарҷума ва талаффуз дар як дарс.</p>
+    </div>
+    <div class="panda"><img src="../assets/panda-happy.png" alt=""></div>
+    <div class="screen-frame screen-lesson">
+      <img src="../assets/ui-tj-lesson.png" alt="Иероглиф, пинйин ва тарҷума">
+    </div>
+  </section>
+
+  <section class="story dark" data-card="4">
+    <div class="copy-block">
+      <h1>Бо <span class="accent-red">AI</span> чинӣ сӯҳбат кунед</h1>
+      <p class="subline">AI хатоҳоро нишон медиҳад, то дурусттар гап занед.</p>
+    </div>
+    <div class="screen-frame screen-voice">
+      <img src="../assets/ui-tj-voice.png" alt="Сӯҳбати чинӣ бо AI">
+    </div>
+  </section>
+
+  <section class="story" data-card="5">
+    <div class="copy-block">
+      <h1>Бо машқ беҳтар ёд мегиред</h1>
+      <p class="subline">Тестҳо ва такрори хатоҳо донишро мустаҳкам мекунанд.</p>
+    </div>
+    <div class="screen-frame screen-practice">
+      <img src="../assets/ui-tj-practice.png" alt="Тест ва машқи хатоҳо">
+    </div>
+  </section>
+
+  <section class="story cool" data-card="6">
+    <div class="copy-block">
+      <h1>Аз ҷои мондаатон идома диҳед</h1>
+      <p class="subline">Пешрафт ва рӯзҳои пайдарпайи шумо нигоҳ дошта мешаванд.</p>
+    </div>
+    <div class="panda left"><img src="../assets/panda-celebrate.png" alt=""></div>
+    <div class="screen-frame screen-profile">
+      <img src="../assets/ui-tj-profile.png" alt="Пешрафти омӯзиш">
+    </div>
+  </section>
+
+  <section class="story cool" data-card="7">
+    <div class="copy-block">
+      <h1 class="long"><span class="accent-champagne">Тариф</span> ва усули пардохтро интихоб кунед</h1>
+      <p class="subline">Дар бахши «Обуна» варианти мувофиқро пахш кунед.</p>
+    </div>
+    <div class="screen-frame screen-subscription">
+      <img src="../assets/ui-tj-subscription-start.png" alt="Интихоби тариф ва усули пардохт">
+    </div>
+  </section>
+
+  <section class="story cool" data-card="8">
+    <div class="copy-block">
+      <h1>Маблағро пардохт кунед</h1>
+      <p class="subline">Ба реквизити экран пардохт карда, акси чекро бор кунед.</p>
+    </div>
+    <div class="screen-frame screen-subscription screen-payment">
+      <img src="../assets/ui-tj-subscription-pay.png" alt="Пардохт ва бор кардани screenshot">
+    </div>
+  </section>
+
+  <section class="story dark" data-card="9">
+    <div class="copy-block">
+      <h1 class="long">Пас аз <span class="accent-champagne">тасдиқ</span> обуна фаъол мешавад</h1>
+      <p class="subline">Санҷиш 5–15 дақиқа мегирад. Бот ба шумо хабар медиҳад.</p>
+    </div>
+    <div class="panda"><img src="../assets/panda-celebrate.png" alt=""></div>
+    <div class="screen-frame screen-done">
+      <img src="../assets/ui-tj-subscription-done.png" alt="Дархости обуна фиристода шуд">
+    </div>
+  </section>
+
+  <script>
+    const card = new URLSearchParams(location.search).get("card") || "1";
+    const story = document.querySelector(`.story[data-card="${card}"]`);
+    if (story) story.style.display = "block";
+  </script>
+</body>
+</html>

@@ -689,6 +689,7 @@ def admin_payload():
         "modules": [
             {"key": "stats", "icon": "📊", "title": "Statistika", "note": "Umumiy hisobot", "section": "statistics", "callback": "adm:stats"},
             {"key": "give_access", "icon": "✅", "title": "Obuna berish", "note": "Istalgan muddatga paid active", "section": "settings", "callback": "adm:giveaccess_info"},
+            {"key": "course_access", "icon": "📚", "title": "Kurs access", "note": "Paywall yoki reklama rejimi", "section": "settings", "callback": "adm:course_access"},
         ],
         "monitor": {
             "ticker": [{"label": "24 soat aktiv", "value": 5, "tone": "up"}],
@@ -747,6 +748,7 @@ def admin_finance_payload():
 
 def test_admin_control_renders_real_api_payload_without_demo_data(page):
     grant_requests = []
+    course_access_requests = []
 
     def grant_access(route):
         grant_requests.append(json.loads(route.request.post_data or "{}"))
@@ -763,6 +765,23 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
             },
         )
 
+    def save_course_access(route):
+        course_access_requests.append(json.loads(route.request.post_data or "{}"))
+        json_response(
+            route,
+            {
+                "ok": True,
+                "course_access": {
+                    "mode": "ads",
+                    "effective_mode": "ads",
+                    "free_active": False,
+                    "free_until": None,
+                    "saved_at": "2026-06-28T11:35:00+00:00",
+                    "updated_by_telegram_id": 111,
+                },
+            },
+        )
+
     page.add_init_script(
         """
         window.Telegram={WebApp:{initData:"admin-e2e",ready(){},expand(){},close(){},
@@ -772,13 +791,30 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     page.route("**/api/admin-miniapp/overview", lambda route: json_response(route, admin_payload()))
     page.route("**/api/admin-miniapp/finance-stats", lambda route: json_response(route, admin_finance_payload()))
     page.route("**/api/admin-miniapp/sub-entry-stats", lambda route: json_response(route, {"ok": True, "rows": []}))
-    page.route("**/api/admin-miniapp/management", lambda route: json_response(route, {"ok": True}))
+    page.route(
+        "**/api/admin-miniapp/management",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "course_access": {
+                    "mode": "subscription",
+                    "effective_mode": "subscription",
+                    "free_active": False,
+                    "free_until": None,
+                    "saved_at": None,
+                    "updated_by_telegram_id": None,
+                },
+            },
+        ),
+    )
     page.route(
         "**/api/admin-miniapp/notifications",
         lambda route: json_response(route, {"ok": True, "items": []}),
     )
     page.route("**/api/admin-miniapp/course-ads", lambda route: json_response(route, {"ok": True, "items": []}))
     page.route("**/api/admin-miniapp/users/give-access", grant_access)
+    page.route("**/api/admin-miniapp/course-access/save", save_course_access)
 
     page.goto(app_url("/admin.html"), wait_until="networkidle")
 
@@ -809,6 +845,14 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     page.locator("[data-gasave]").click()
     expect(page.locator("#toast")).to_contain_text("25.08.2026 12:00")
     assert grant_requests == [{"telegram_id": 111, "duration_days": 45}]
+
+    page.locator("#drawer [data-act='close-drawer']").click()
+    page.locator('[data-module="course_access"]').click()
+    expect(page.locator("#courseAccessMode")).to_have_value("subscription")
+    page.locator("#courseAccessMode").select_option("ads")
+    page.locator("[data-casave]").click()
+    expect(page.locator("#toast")).to_contain_text("Kurs access saqlandi")
+    assert course_access_requests == [{"mode": "ads"}]
     assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
 
 
@@ -1061,6 +1105,57 @@ def test_desktop_ad_block_exposes_both_os_actions_above_course_ad(page):
         Number(getComputedStyle(document.querySelector("#test-course-ad-overlay")).zIndex)
         """
     )
+
+
+def test_desktop_ad_block_ignores_modal_promo_cooldown(page):
+    mock_telegram_desktop_download(page, platform="android")
+    cooldown_payload = {
+        "ok": True,
+        "enabled": True,
+        "platforms": {"macos": True, "windows": True},
+        "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+        "downloads": {
+            "macos": "https://downloads.example/downloads/macos",
+            "windows": "https://downloads.example/downloads/windows",
+        },
+        "promo": {
+            "eligible": False,
+            "reason": "cooldown",
+            "cooldown_days": 14,
+            "placements": {
+                "profile": True,
+                "home_prompt": False,
+                "lesson_end_promo": False,
+                "ad_promo": False,
+            },
+        },
+    }
+    _open_course_profile_with_desktop_release(page, status_payload=cooldown_payload)
+
+    page.evaluate(
+        """
+        () => {
+          const overlay = document.createElement("div");
+          overlay.id = "test-cooldown-ad-overlay";
+          overlay.className = "caa-ov on";
+          Object.assign(overlay.style, {
+            position: "fixed", inset: "0", zIndex: "9000", display: "block",
+            background: "#15120f", padding: "20px"
+          });
+          overlay.innerHTML = '<div class="caa-desktop" hidden></div>';
+          document.body.appendChild(overlay);
+          window.PompDesktopDownload.mountAdPromoTrigger(
+            overlay.querySelector(".caa-desktop"),
+            {placement: "practice_recognition_end"}
+          );
+        }
+        """
+    )
+
+    host = page.locator("#test-cooldown-ad-overlay .caa-desktop")
+    expect(host).to_be_visible()
+    expect(host.locator('[data-pdd-platform="macos"]')).to_be_visible()
+    expect(host.locator('[data-pdd-platform="windows"]')).to_be_visible()
 
 
 def test_desktop_profile_card_is_discoverable_and_explains_transfer(page):

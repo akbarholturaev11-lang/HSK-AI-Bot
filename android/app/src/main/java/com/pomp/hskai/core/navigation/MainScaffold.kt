@@ -3,6 +3,8 @@ package com.pomp.hskai.core.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material3.Icon
@@ -22,33 +24,27 @@ import com.pomp.hskai.core.design.PompColors
 /**
  * Primary navigation.
  *
- * Only tabs whose feature actually works are shown. Mashq and AI arrive with
- * Phases F and G; until then they are absent rather than present-but-dead.
  * Obuna is deliberately never a tab — it is a monetization flow, not a daily
  * learning destination.
  */
 enum class MainTab(val labelRes: Int, val icon: ImageVector) {
     TODAY(R.string.nav_today, Icons.Filled.Today),
     COURSE(R.string.nav_course, Icons.Filled.School),
+    PRACTICE(R.string.nav_practice, Icons.Filled.Quiz),
+    VOICE(R.string.nav_ai, Icons.Filled.Mic),
     PROFILE(R.string.nav_profile, Icons.Filled.Person),
     ;
 
     companion object {
-        /**
-         * Mashq and AI are absent rather than disabled: Phases F and G add
-         * their entries here together with the screens behind them.
-         */
-        val visible: List<MainTab> get() = listOf(TODAY, COURSE, PROFILE)
+        val visible: List<MainTab> get() = listOf(TODAY, COURSE, PRACTICE, VOICE, PROFILE)
     }
 }
 
 /**
  * Which tab a deep link should land on.
  *
- * A lesson destination lands on the path rather than opening the lesson: the
- * renderer arrives in Phase E, and entitlement is checked there, not here.
- * Destinations whose feature is not built yet return null so the app opens
- * normally instead of on a dead screen.
+ * A lesson destination lands on the path first; entitlement is checked by the
+ * lesson request before the renderer opens.
  */
 fun AppDestination.toTab(): MainTab? = when (this) {
     AppDestination.Today -> MainTab.TODAY
@@ -59,10 +55,8 @@ fun AppDestination.toTab(): MainTab? = when (this) {
 
     AppDestination.Profile, AppDestination.WidgetSetup -> MainTab.PROFILE
 
-    // Phases G and F. Until their tabs exist there is nowhere to land, so the
-    // app opens normally rather than on an empty screen.
-    AppDestination.Voice -> null
-    is AppDestination.Practice -> null
+    AppDestination.Voice -> MainTab.VOICE
+    is AppDestination.Practice -> MainTab.PRACTICE
 }
 
 @Composable

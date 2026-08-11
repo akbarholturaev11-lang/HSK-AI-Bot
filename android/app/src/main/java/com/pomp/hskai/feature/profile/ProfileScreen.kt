@@ -1,106 +1,364 @@
 package com.pomp.hskai.feature.profile
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.data.api.RatingEntryDto
 
-/**
- * Phase D scope: the account facts the server already gives us, plus the two
- * session actions that are genuinely implemented. Statistics, referral,
- * language and notification settings arrive with Phase I.
- */
 @Composable
 fun ProfileScreen(
     account: LinkedAccount,
+    state: ProfileUiState,
+    onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(20.dp),
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Text(
-                text = account.displayName,
-                style = MaterialTheme.typography.headlineMedium,
-                color = PompColors.Ink,
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = "${stringResource(R.string.synced_level)}: " +
-                    account.level.uppercase(),
-                style = MaterialTheme.typography.bodyLarge,
-                color = PompColors.InkSecondary,
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = stringResource(
-                    if (account.isPaid) {
-                        R.string.synced_access_paid
-                    } else {
-                        R.string.synced_access_free
-                    }
-                ),
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (account.isPaid) PompColors.Jade else PompColors.InkSecondary,
-            )
-
-            Spacer(Modifier.height(32.dp))
-            OutlinedButton(
-                onClick = onLogout,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 48.dp),
-                shape = RoundedCornerShape(14.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.profile_logout),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = PompColors.Ink,
-                )
+            item {
+                ProfileHero(account, state)
+                state.error?.let {
+                    Spacer(Modifier.height(10.dp))
+                    ErrorPill(stringResource(it.messageRes))
+                }
+                if (state.isLoading) {
+                    Spacer(Modifier.height(10.dp))
+                    CircularProgressIndicator(color = PompColors.Cinnabar)
+                }
             }
-
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.profile_unlink_explain),
-                style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.InkSecondary,
-            )
-            Spacer(Modifier.height(8.dp))
-            OutlinedButton(
-                onClick = onUnlinkDevice,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 48.dp),
-                shape = RoundedCornerShape(14.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.profile_unlink_device),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = PompColors.CinnabarDark,
+            item { StatsGrid(state) }
+            item { SubscriptionCard(state) }
+            item { ReferralCard(state) }
+            item { RatingCard(state.rating?.leaderboard.orEmpty()) }
+            item {
+                OutlinedButton(
+                    onClick = onRefresh,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                ) {
+                    Text(stringResource(R.string.profile_refresh))
+                }
+            }
+            item {
+                SessionActions(
+                    onLogout = onLogout,
+                    onUnlinkDevice = onUnlinkDevice,
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ProfileHero(account: LinkedAccount, state: ProfileUiState) {
+    val profile = state.profile
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Surface(
+                color = PompColors.Cinnabar,
+                shape = RoundedCornerShape(18.dp),
+            ) {
+                Text(
+                    text = profile?.user?.avatar?.ifBlank { "HSK" }
+                        ?: account.displayName.take(2).uppercase(),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = PompColors.Paper,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                )
+            }
+            Column(Modifier.padding(start = 14.dp)) {
+                Text(
+                    text = profile?.user?.name?.ifBlank { account.displayName }
+                        ?: account.displayName,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = PompColors.Ink,
+                )
+                Text(
+                    text = "${stringResource(R.string.synced_level)}: " +
+                        (profile?.user?.level ?: account.level).uppercase(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                )
+                Text(
+                    text = stringResource(
+                        if (profile?.subscription?.isPaid == true || account.isPaid) {
+                            R.string.synced_access_paid
+                        } else {
+                            R.string.synced_access_free
+                        }
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (profile?.subscription?.isPaid == true || account.isPaid) {
+                        PompColors.Jade
+                    } else {
+                        PompColors.InkSecondary
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatsGrid(state: ProfileUiState) {
+    val stats = state.profile?.stats
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            StatCard(
+                label = stringResource(R.string.profile_xp),
+                value = (stats?.xp ?: 0).toString(),
+                modifier = Modifier.weight(1f),
+            )
+            StatCard(
+                label = stringResource(R.string.profile_streak),
+                value = (stats?.streak ?: 0).toString(),
+                modifier = Modifier.weight(1f),
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            StatCard(
+                label = stringResource(R.string.profile_lessons),
+                value = (stats?.completedLessons ?: 0).toString(),
+                modifier = Modifier.weight(1f),
+            )
+            StatCard(
+                label = stringResource(R.string.profile_mistakes),
+                value = (stats?.mistakes ?: 0).toString(),
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatCard(label: String, value: String, modifier: Modifier = Modifier) {
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = modifier,
+    ) {
+        Column(Modifier.padding(14.dp)) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineSmall,
+                color = PompColors.Ink,
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SubscriptionCard(state: ProfileUiState) {
+    val subscription = state.subscription
+    val active = subscription?.access?.isPaid == true
+    Surface(
+        color = if (active) PompColors.JadeSoft else PompColors.GoldSoft,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, if (active) PompColors.Jade else PompColors.Gold),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(R.string.profile_subscription_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            Text(
+                text = if (active) {
+                    stringResource(R.string.profile_subscription_active)
+                } else {
+                    stringResource(R.string.profile_subscription_play_blocked)
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReferralCard(state: ProfileUiState) {
+    val referral = state.referral
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(R.string.profile_referral_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            Text(
+                text = stringResource(
+                    R.string.profile_referral_progress,
+                    referral?.activated ?: 0,
+                    referral?.trialRequired ?: 0,
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+            )
+            if (!referral?.link.isNullOrBlank()) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = referral?.link.orEmpty(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PompColors.CinnabarDark,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun RatingCard(rows: List<RatingEntryDto>) {
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(R.string.profile_rating_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            Spacer(Modifier.height(8.dp))
+            rows.take(5).forEach { row ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = "${row.rank}. ${row.name.ifBlank { "HSK" }}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (row.isCurrentUser) PompColors.CinnabarDark else PompColors.Ink,
+                    )
+                    Text(
+                        text = "${row.xp} XP",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = PompColors.InkSecondary,
+                    )
+                }
+            }
+            if (rows.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.profile_rating_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SessionActions(
+    onLogout: () -> Unit,
+    onUnlinkDevice: () -> Unit,
+) {
+    Column {
+        OutlinedButton(
+            onClick = onLogout,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp),
+            shape = RoundedCornerShape(14.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.profile_logout),
+                color = PompColors.Ink,
+            )
+        }
+
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = stringResource(R.string.profile_unlink_explain),
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.InkSecondary,
+        )
+        Spacer(Modifier.height(8.dp))
+        OutlinedButton(
+            onClick = onUnlinkDevice,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp),
+            shape = RoundedCornerShape(14.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.profile_unlink_device),
+                color = PompColors.CinnabarDark,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorPill(text: String) {
+    Surface(
+        color = PompColors.CinnabarSoft,
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.CinnabarDark,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+        )
     }
 }

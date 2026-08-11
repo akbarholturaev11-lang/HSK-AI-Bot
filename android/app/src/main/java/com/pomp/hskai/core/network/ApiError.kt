@@ -62,9 +62,26 @@ sealed interface ApiError {
                 "android_auth_unavailable",
                 -> R.string.error_auth_unavailable
 
+                "free_feature_limit_reached",
+                "LIMIT_EXCEEDED",
+                "PRONOUNCE_LIMIT_EXCEEDED",
+                -> R.string.error_feature_limit
+
+                "mistake_review_empty" -> R.string.error_no_mistakes
+
+                "AI_UNAVAILABLE",
+                "AI_FAILED",
+                "AI_TIMEOUT",
+                "ANDROID_VOICE_REQUEST_INVALID",
+                "DESKTOP_VOICE_REQUEST_INVALID",
+                "android_voice_unavailable",
+                -> R.string.error_voice_unavailable
+
                 "desktop_request_invalid",
                 "desktop_request_too_large",
                 "desktop_platform_invalid",
+                "android_request_invalid",
+                "android_request_too_large",
                 -> R.string.error_unknown
 
                 else -> return Unknown

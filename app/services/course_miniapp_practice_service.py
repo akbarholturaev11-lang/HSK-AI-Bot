@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.user_repo import UserRepository
@@ -13,6 +14,28 @@ from app.services.course_question_material import COURSE_QUESTION_MATERIAL_VERSI
 PRACTICE_VERSION = 1
 PRACTICE_MODES = {"placement", "mock", "training"}
 TRAINING_SKILLS = {"listening", "writing", "characters", "pronunciation", "pinyin"}
+COURSE_V3_DATA_ROOT = Path(__file__).resolve().parents[1] / "static" / "course_v3_data"
+STATIC_LOCALE_KEYS = {"uz", "ru", "tj"}
+STATIC_CHOICE_CARD_TYPES = {
+    "meaning_guess",
+    "pinyin_choice",
+    "hanzi_choice",
+    "listening_choice",
+    "translation_choice",
+    "quick_quiz",
+    "gap_fill",
+    "character_recognition",
+}
+STATIC_CARD_SUBTYPES = {
+    "meaning_guess": "hanzi_to_meaning",
+    "pinyin_choice": "hanzi_to_pinyin",
+    "hanzi_choice": "meaning_to_hanzi",
+    "listening_choice": "listening",
+    "translation_choice": "meaning_to_hanzi",
+    "quick_quiz": "hanzi_to_meaning",
+    "gap_fill": "fill_blank",
+    "character_recognition": "hanzi_to_meaning",
+}
 
 
 class CourseMiniAppPracticeService:
@@ -89,6 +112,157 @@ class CourseMiniAppPracticeService:
                 "question_no": index,
             },
         }
+
+    @classmethod
+    def _localized_static_value(cls, value, *, lang: str):
+        if isinstance(value, dict):
+            keys = set(value)
+            if keys and keys <= STATIC_LOCALE_KEYS:
+                return str(value.get(lang) or value.get("uz") or value.get("ru") or value.get("tj") or "")
+            return {
+                key: cls._localized_static_value(item, lang=lang)
+                for key, item in value.items()
+            }
+        if isinstance(value, list):
+            return [cls._localized_static_value(item, lang=lang) for item in value]
+        return value
+
+    @staticmethod
+    def _static_lesson_order(path: Path) -> int:
+        try:
+            return int(path.stem.rsplit("_", 1)[1])
+        except (IndexError, TypeError, ValueError):
+            return 0
+
+    @classmethod
+    def _static_card_question(
+        cls,
+        card: dict,
+        *,
+        level: str,
+        lesson_order: int,
+        section_no: int,
+        card_index: int,
+        question_index: int,
+    ) -> dict | None:
+        card_type = str(card.get("type") or "").strip()
+        if card_type not in STATIC_CHOICE_CARD_TYPES:
+            return None
+
+        options = card.get("options")
+        try:
+            answer_index = int(card.get("correct_index"))
+        except (TypeError, ValueError):
+            return None
+        if not isinstance(options, list) or len(options) < 2 or not 0 <= answer_index < len(options):
+            return None
+
+        normalized_options = [str(option) for option in options]
+        question_type = "fill_blank_choice" if card_type == "gap_fill" else card_type
+        subtype = STATIC_CARD_SUBTYPES.get(card_type, "")
+        audio_text = str(card.get("audio_text") or card.get("audioText") or "")
+        sentence = str(
+            card.get("sentence")
+            or card.get("zh")
+            or card.get("phrase")
+            or (audio_text if card_type == "listening_choice" else "")
+            or ""
+        )
+        material_format = (
+            "listening_choice"
+            if audio_text or question_type in {"listening_choice", "listen_and_fill"}
+            else "pinyin_choice"
+            if card_type == "pinyin_choice"
+            else "hanzi_choice"
+            if card_type in {"hanzi_choice", "translation_choice"}
+            else "sentence_choice"
+            if card_type == "gap_fill"
+            else "meaning_choice"
+        )
+
+        return {
+            "material_version": COURSE_QUESTION_MATERIAL_VERSION,
+            "id": f"{level}:{lesson_order}:v3:{section_no}:{card_index}:{question_index}",
+            "level": level,
+            "lesson": lesson_order,
+            "format": material_format,
+            "category": "grammar" if material_format == "sentence_choice" else "word",
+            "type": question_type,
+            "subtype": subtype,
+            "prompt": str(card.get("prompt") or card.get("title") or ""),
+            "sentence": sentence,
+            "audio_text": audio_text,
+            "pinyin": str(card.get("pinyin") or ""),
+            "options": normalized_options,
+            "option_materials": [
+                {"id": f"{level}:{lesson_order}:v3:{section_no}:{card_index}:option:{option_index + 1}", "text": value}
+                for option_index, value in enumerate(normalized_options)
+            ],
+            "answer_index": answer_index,
+            "explanation": str(card.get("explanation") or ""),
+            "source": {
+                "kind": "course_v3_static_card",
+                "level": level,
+                "lesson": lesson_order,
+                "section_no": section_no,
+                "card_no": card_index,
+            },
+        }
+
+    @classmethod
+    def _static_level_questions(
+        cls,
+        level: str,
+        lang: str,
+        limit: int,
+        skill: str = "",
+        max_lesson: int | None = None,
+    ) -> list[dict]:
+        level_dir = COURSE_V3_DATA_ROOT / level
+        if not level_dir.exists():
+            return []
+
+        questions: list[dict] = []
+        paths = sorted(level_dir.glob("lesson_*.json"), key=cls._static_lesson_order)
+        for path in paths:
+            lesson_order = cls._static_lesson_order(path)
+            if lesson_order <= 0:
+                continue
+            if max_lesson is not None and lesson_order > int(max_lesson):
+                continue
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if not isinstance(payload, dict):
+                continue
+            payload = cls._localized_static_value(payload, lang=lang)
+            for section_index, section in enumerate(payload.get("sections", []), 1):
+                if not isinstance(section, dict):
+                    continue
+                try:
+                    section_no = int(section.get("section_no") or section_index)
+                except (TypeError, ValueError):
+                    section_no = section_index
+                for card_index, card in enumerate(section.get("cards", []), 1):
+                    if not isinstance(card, dict):
+                        continue
+                    normalized = cls._static_card_question(
+                        card,
+                        level=level,
+                        lesson_order=lesson_order,
+                        section_no=section_no,
+                        card_index=card_index,
+                        question_index=len(questions) + 1,
+                    )
+                    if normalized:
+                        questions.append(normalized)
+
+            enough_pool = len(questions) >= max(limit * 4, 20)
+            enough_skill = not skill or sum(cls._skill_match(item, skill) for item in questions) >= limit
+            if enough_pool and enough_skill:
+                break
+        return questions
 
     @staticmethod
     def _skill_match(question: dict, skill: str) -> bool:
@@ -169,6 +343,14 @@ class CourseMiniAppPracticeService:
                 )
                 if normalized:
                     pool.append(normalized)
+        if not pool:
+            pool = self._static_level_questions(
+                level,
+                lang,
+                limit,
+                skill,
+                max_lesson=max_lesson,
+            )
         filtered = [item for item in pool if not skill or self._skill_match(item, skill)]
         if len(filtered) < limit:
             filtered.extend(item for item in pool if item not in filtered)

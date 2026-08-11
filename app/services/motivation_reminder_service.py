@@ -16,6 +16,11 @@ from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.course_notification_service import (
+    CourseNotificationService,
+    local_day_dedupe,
+    notification_copy,
+)
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.notification_template_service import (
     CAPTION_MAX,
@@ -512,7 +517,11 @@ class MotivationReminderService:
             user,
             resolved,
             lang,
-            {"lesson": self._lesson_label(started, lang)},
+            {
+                "lesson": self._lesson_label(started, lang),
+                "_notification_key": KEY_D1_RECOVERY,
+                "_dedupe_key": f"{D1_RECOVERY_EXPERIMENT}:sent:{int(user.telegram_id)}",
+            },
             target_level=started.level,
             target_lesson=started.lesson_order,
             source=D1_RECOVERY_EXPERIMENT,
@@ -693,6 +702,13 @@ class MotivationReminderService:
                     {
                         "lesson": self._lesson_label(unfinished_lesson, lang),
                         "minutes": minutes,
+                        "_notification_key": KEY_LESSON_UNFINISHED,
+                        "_local_day": local_day,
+                        "_dedupe_key": (
+                            f"{KEY_LESSON_UNFINISHED}:"
+                            f"{local_day.isoformat()}:"
+                            f"{unfinished_lesson.lesson_id or unfinished_lesson.lesson_order or 'lesson'}"
+                        ),
                     },
                     target_level=unfinished_lesson.level,
                     target_lesson=unfinished_lesson.lesson_order,
@@ -715,7 +731,15 @@ class MotivationReminderService:
                 if not resolved:
                     bump("skip_template_disabled_streak")
                 elif await self._send(
-                    bot, user, resolved, lang, {"streak": streak}
+                    bot,
+                    user,
+                    resolved,
+                    lang,
+                    {
+                        "streak": streak,
+                        "_notification_key": KEY_STREAK,
+                        "_local_day": local_day,
+                    },
                 ):
                     bump("sent_streak")
                     profile.motivation_streak_date = local_day
@@ -730,7 +754,15 @@ class MotivationReminderService:
                 if not resolved:
                     bump("skip_template_disabled_daily_goal")
                 elif await self._send(
-                    bot, user, resolved, lang, {"minutes": minutes}
+                    bot,
+                    user,
+                    resolved,
+                    lang,
+                    {
+                        "minutes": minutes,
+                        "_notification_key": KEY_DAILY_GOAL,
+                        "_local_day": local_day,
+                    },
                 ):
                     bump("sent_daily_goal")
                     profile.motivation_goal_date = local_day
@@ -886,7 +918,14 @@ class MotivationReminderService:
             user,
             resolved,
             lang,
-            {"name": name[:40], "league": league, "rank": current_rank, "xp_gap": xp_gap},
+            {
+                "name": name[:40],
+                "league": league,
+                "rank": current_rank,
+                "xp_gap": xp_gap,
+                "_notification_key": KEY_OVERTAKEN,
+                "_local_day": local_day,
+            },
         ):
             profile.motivation_overtaken_date = local_day
             return True
@@ -933,6 +972,27 @@ class MotivationReminderService:
             source=source,
             autostart=autostart,
         )
+
+        async def record_in_app() -> None:
+            key = str(fields.get("_notification_key") or "")
+            if not key:
+                return
+            local_day = fields.get("_local_day")
+            title, body = notification_copy(key, lang, text)
+            await CourseNotificationService(self.session).record(
+                user,
+                key=key,
+                lang=lang,
+                title=title,
+                body=body,
+                action=None,
+                source=source,
+                level=level,
+                lesson_order=lesson,
+                dedupe_key=str(fields.get("_dedupe_key") or "")
+                or local_day_dedupe(key, local_day if isinstance(local_day, date) else None),
+            )
+
         try:
             if media_type in ("photo", "video") and media_path:
                 import os
@@ -945,10 +1005,12 @@ class MotivationReminderService:
                         await bot.send_photo(user.telegram_id, media, caption=caption, reply_markup=markup, parse_mode="HTML")
                     else:
                         await bot.send_video(user.telegram_id, media, caption=caption, reply_markup=markup, parse_mode="HTML")
+                    await record_in_app()
                     return True
             await bot.send_message(
                 user.telegram_id, text, reply_markup=markup, parse_mode="HTML"
             )
+            await record_in_app()
             return True
         except Exception as exc:  # noqa: BLE001 - blocked/deleted users are expected
             print(f"MotivationReminderService: failed to notify {user.telegram_id}: {exc}")

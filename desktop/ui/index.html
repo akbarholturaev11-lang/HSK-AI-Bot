@@ -19,12 +19,7 @@
 
       <main class="auth-screen" id="auth-screen" hidden>
         <section class="auth-card" aria-labelledby="auth-title">
-          <img
-            class="panda-badge"
-            src="./assets/hsk-ai-avatar.webp"
-            alt=""
-            aria-hidden="true"
-          >
+          <span class="panda-mascot panda-badge" aria-hidden="true"></span>
           <p class="eyebrow">HSK AI Desktop</p>
           <h1 id="auth-title">Telegram akkauntingizni ulang</h1>
           <p class="muted" id="auth-description">
@@ -109,11 +104,6 @@
 
           <div class="rail-spacer"></div>
 
-          <div class="rail-progress">
-            <span><b id="rail-xp">0</b> XP</span>
-            <span><b id="rail-streak">0</b> <span id="rail-days-label">kun</span></span>
-          </div>
-
           <div class="rail-level">
             <span id="rail-level-label">HSK</span>
             <small id="rail-completed">0 / 0</small>
@@ -121,7 +111,7 @@
 
           <nav class="course-navigation" id="course-navigation"></nav>
 
-          <nav class="global-navigation rail-bottom" aria-label="Profil">
+          <nav class="global-navigation rail-bottom" aria-label="Profil" hidden>
             <button class="rail-action" id="show-profile" type="button" data-testid="nav-profile">
               <svg class="rail-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
               <span id="profile-label">Profil</span>
@@ -129,9 +119,7 @@
           </nav>
 
           <button class="rail-profile" id="rail-profile-button" type="button">
-            <div class="avatar" id="rail-avatar" aria-hidden="true">
-              <img src="./assets/hsk-ai-avatar.webp" alt="">
-            </div>
+            <div class="avatar" id="rail-avatar" aria-hidden="true">HSK</div>
             <div>
               <strong id="rail-user-name">—</strong>
               <small id="rail-plan">—</small>
@@ -147,7 +135,7 @@
 
         <section class="content-column">
           <header class="content-header">
-            <button class="icon-button rail-toggle" id="rail-toggle" type="button" aria-label="Kurs menyusini ochish">
+            <button class="icon-button rail-toggle" id="rail-toggle" type="button" aria-label="Kurs menyusini ochish" hidden>
               ☰
             </button>
             <div>
@@ -210,7 +198,8 @@
             aria-controls="ai-drawer"
             aria-expanded="false"
           >
-            <img src="./assets/hsk-ai-avatar.webp" alt="" aria-hidden="true">
+            <span class="panda-mascot ai-launcher-panda" aria-hidden="true"></span>
+            <span class="ai-launcher-label" aria-hidden="true">老师 AI</span>
           </button>
           <kbd id="ai-shortcut">⌘K</kbd>
         </aside>
@@ -224,12 +213,7 @@
           aria-hidden="true"
         >
           <header class="drawer-header">
-            <img
-              class="panda-mini"
-              src="./assets/hsk-ai-avatar.webp"
-              alt=""
-              aria-hidden="true"
-            >
+            <span class="panda-mascot panda-mini" aria-hidden="true"></span>
             <div>
               <h2 id="ai-title">AI yordamchi</h2>
               <p id="ai-subtitle">Dars bo‘yicha yordam</p>
@@ -262,7 +246,7 @@
       </div>
 
       <div class="lesson-layer" id="lesson-layer" hidden>
-        <section class="lesson-shell" role="dialog" aria-modal="true" aria-label="Dars">
+        <section class="lesson-shell" role="dialog" aria-modal="false" aria-label="Dars">
           <header class="lesson-header">
             <button class="icon-button" id="close-lesson" type="button" aria-label="Darsni yopish">×</button>
             <div
@@ -295,12 +279,7 @@
           aria-labelledby="onboarding-title"
         >
           <header class="onboarding-header">
-            <img
-              class="panda-mini"
-              src="./assets/hsk-ai-avatar.webp"
-              alt=""
-              aria-hidden="true"
-            >
+            <span class="panda-mascot panda-mini" aria-hidden="true"></span>
             <div>
               <h2 id="onboarding-title">HSK AI’ni sozlash</h2>
               <p class="muted" id="onboarding-subtitle">

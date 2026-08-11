@@ -10,6 +10,7 @@ from app.bot.keyboards.subscription import admin_discount_entry_keyboard
 from app.db.models.discount_campaign import DiscountCampaign
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.user_repo import UserRepository
+from app.services.course_notification_service import CourseNotificationService
 from app.services.user_access_state_service import UserAccessStateService
 
 
@@ -76,6 +77,15 @@ class DiscountNotificationService:
                         parse_mode="HTML",
                         disable_web_page_preview=True,
                     )
+                await CourseNotificationService(self.session).record_from_text(
+                    user,
+                    key="subscription_offer",
+                    lang=lang,
+                    text=text,
+                    action="subscription",
+                    source="discount_notification",
+                    dedupe_key=f"discount_campaign:{campaign.id}",
+                )
                 sent_count += 1
             except Exception:
                 failed_count += 1

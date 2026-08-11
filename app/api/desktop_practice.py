@@ -233,7 +233,10 @@ def create_desktop_practice_router(
                     lang=payload.language,
                     skill=payload.skill,
                     answers=[
-                        {"question_id": item.question_id, "selected": int(item.selected)}
+                        {
+                            "question_id": item.question_id,
+                            "selected_index": int(item.selected),
+                        }
                         for item in payload.answers
                     ],
                 )

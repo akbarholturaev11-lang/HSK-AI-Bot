@@ -40,4 +40,14 @@ CDN loader is never used.
 The complete MIT license text is bundled as
 `licenses/LICENSE-HANZI-WRITER-MIT.txt`.
 
+## Giant Panda Photo
+
+- Asset: `ui/assets/panda-real.webp`
+- Source: <https://commons.wikimedia.org/wiki/File:Giant_panda_(1).jpg>
+- Author: Stolz Gary M, U.S. Fish and Wildlife Service
+- License: Public domain
+
+The source photo was cropped, resized and compressed to WebP for desktop UI
+mascot use.
+
 The upstream projects are not affiliated with and do not endorse HSK AI.

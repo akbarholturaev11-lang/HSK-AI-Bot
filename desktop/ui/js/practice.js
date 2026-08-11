@@ -8,6 +8,8 @@
  * be graded. Nothing is invented locally.
  */
 
+import { createPandaMascot } from "./mascot.js";
+
 const DRILLS = [
   { id: "placement", mode: "placement", skill: "", glyph: "级" },
   { id: "mock", mode: "mock", skill: "", glyph: "考" },
@@ -25,6 +27,10 @@ function node(tag, className = "", text = "") {
   return value;
 }
 
+function briefText(value, limit = 220) {
+  return [...String(value ?? "").trim()].slice(0, limit).join("");
+}
+
 export class DesktopPracticeController {
   constructor({
     host,
@@ -36,6 +42,7 @@ export class DesktopPracticeController {
     onToast,
     onOpenSubscription,
     speak,
+    onContextChanged,
   }) {
     this.host = host;
     this.bridge = bridge;
@@ -46,6 +53,7 @@ export class DesktopPracticeController {
     this.onToast = onToast;
     this.onOpenSubscription = onOpenSubscription;
     this.speak = speak;
+    this.onContextChanged = onContextChanged;
 
     this.phase = "idle";
     this.drill = null;
@@ -111,13 +119,16 @@ export class DesktopPracticeController {
     this.host.replaceChildren();
     if (this.phase === "summary" && this.summary) {
       this.host.append(this.renderSummary());
+      this.onContextChanged?.();
       return;
     }
     if (this.phase === "running" && this.session) {
       this.host.append(this.renderQuestion());
+      this.onContextChanged?.();
       return;
     }
     this.host.append(this.renderIntro());
+    this.onContextChanged?.();
   }
 
   renderIntro() {
@@ -130,9 +141,7 @@ export class DesktopPracticeController {
       node("h3", "", this.t("practiceIntroTitle")),
       node("p", "muted", this.t("practiceIntroBody")),
     );
-    const panda = document.createElement("img");
-    panda.src = "./assets/hsk-ai-avatar.webp";
-    panda.alt = "";
+    const panda = createPandaMascot("practice-panda");
     intro.append(copy, panda);
     wrap.append(intro);
 
@@ -194,6 +203,91 @@ export class DesktopPracticeController {
   currentQuestion() {
     const questions = this.session?.questions || [];
     return questions[this.index] || null;
+  }
+
+  aiContext() {
+    const title = this.drill?.id
+      ? this.t(`drill_${this.drill.id}`)
+      : this.t("practiceTitle");
+    const total = this.session?.questions?.length || 0;
+    const question = this.currentQuestion();
+    const promptLines = [
+      `Practice phase: ${this.phase}`,
+      `Practice level: ${this.level}`,
+      `Drill: ${title}`,
+    ];
+    const details = [];
+
+    if (this.phase === "running" && question) {
+      const progress = this.t("practiceProgress", {
+        current: this.index + 1,
+        total: total || 1,
+      });
+      promptLines.push(`Progress: ${progress}`);
+      details.push(progress);
+      if (question.prompt) promptLines.push(`Question prompt: ${briefText(question.prompt)}`);
+      const sentence = briefText(question.sentence || question.audio_text, 220);
+      if (sentence) {
+        promptLines.push(`Visible sentence: ${sentence}`);
+        details.push(sentence);
+      }
+      if (question.pinyin) promptLines.push(`Pinyin: ${briefText(question.pinyin, 180)}`);
+      const options = Array.isArray(question.options)
+        ? question.options.map((option, index) =>
+            `${String.fromCharCode(65 + index)}. ${briefText(option, 120)}`,
+          )
+        : [];
+      if (options.length) {
+        promptLines.push(`Visible options: ${briefText(options.join(" | "), 420)}`);
+      }
+      if (this.selected >= 0) {
+        promptLines.push(`Learner selected: ${briefText(options[this.selected], 160)}`);
+      }
+      if (this.checked) {
+        promptLines.push("Learner already checked this answer.");
+        if (question.explanation) {
+          promptLines.push(`Visible explanation: ${briefText(question.explanation, 260)}`);
+        }
+      }
+      return {
+        title,
+        progress,
+        summary: details.slice(0, 2).join(" · "),
+        isRunning: true,
+        promptLines,
+      };
+    }
+
+    if (this.phase === "summary" && this.summary) {
+      const score = `${Number(this.summary.score || 0)} / ${Number(this.summary.total || 0)}`;
+      promptLines.push(`Score: ${score}`);
+      details.push(score);
+      const wrongItems = Array.isArray(this.summary.wrong_items)
+        ? this.summary.wrong_items.slice(0, 2)
+        : [];
+      wrongItems.forEach((item, index) => {
+        promptLines.push(
+          `Mistake ${index + 1}: ${briefText(item.question, 180)} | learner answer: ${briefText(item.selected_answer, 140)}`,
+        );
+      });
+      return {
+        title,
+        progress: score,
+        summary: wrongItems.length
+          ? this.t("practiceMistakes")
+          : this.t("practiceSummaryTitle"),
+        isRunning: false,
+        promptLines,
+      };
+    }
+
+    return {
+      title,
+      progress: this.t("practiceSubtitle"),
+      summary: this.limitReached ? this.t("practiceLimitTitle") : this.t("practiceIntroBody"),
+      isRunning: false,
+      promptLines,
+    };
   }
 
   renderQuestion() {

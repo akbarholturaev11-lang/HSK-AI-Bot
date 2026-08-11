@@ -53,6 +53,16 @@ Cover at least:
 
 ---
 
+## Desktop Coming Soon Activation Rule
+
+- Desktop UI blocks marked as `soonBlock`, "Soon", "Tez orada", or placeholders must stay in their current in-place location until the real feature is implemented.
+- When one of these placeholder blocks becomes functional, remove the disabled/soon wrapper from that same block and connect the existing in-block button, row, or primary action to the real flow.
+- Do not add a separate duplicate button, separate card, or extra CTA next to the placeholder unless the user explicitly asks for a redesign.
+- Do not show invented progress numbers while activating a block. Keep `NO_VALUE` or verified backend data only.
+- Preserve the current layout and parity across macOS and Windows desktop builds.
+
+---
+
 ## Release Feedback After Major Updates
 
 After every major user-visible update, Codex must prepare a release feedback draft for the admin in the final handoff. Do not finish a major visible update without this draft.

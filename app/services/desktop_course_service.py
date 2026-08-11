@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from sqlalchemy import select
 
@@ -23,6 +24,7 @@ from app.services.course_miniapp_access_service import (
 from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
+from app.services.course_notification_service import CourseNotificationService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_v3_parts import total_parts
@@ -193,6 +195,16 @@ class DesktopCourseService:
             "".join(part[:1].upper() for part in display_name.split()[:2]) or "阿"
         )[:2]
 
+    def _avatar_url(self, user) -> str:
+        telegram_id = int(getattr(user, "telegram_id", 0) or 0)
+        if telegram_id <= 0:
+            return ""
+        raw_base = str(getattr(self.settings, "MINI_APP_BASE_URL", "") or "").strip()
+        parsed = urlsplit(raw_base)
+        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            return ""
+        return f"{parsed.scheme}://{parsed.netloc}/api/v3/avatar/{telegram_id}"
+
     @staticmethod
     def _read_json(path: Path, *, error_code: str) -> dict[str, Any]:
         try:
@@ -310,6 +322,7 @@ class DesktopCourseService:
         data["user"] = {
             "name": display_name,
             "avatar": self._initials(display_name),
+            "avatar_url": self._avatar_url(user),
             "language": language,
             "is_paid": is_paid,
             "referral_code": getattr(user, "referral_code", None) or "",
@@ -317,6 +330,7 @@ class DesktopCourseService:
         data["notify"] = {
             "enabled": bool(getattr(profile, "notifications_enabled", True))
         }
+        data["notifications"] = await CourseNotificationService(self.session).list_for_user(user)
         data["admin_contact"] = await get_admin_contact_url(self.session)
         apply_course_v3_access_policy(
             data,

@@ -3,15 +3,19 @@ package com.pomp.hskai
 import android.app.Application
 import androidx.room.Room
 import com.pomp.hskai.core.audio.AndroidLessonAudioPlayer
+import com.pomp.hskai.core.audio.AndroidVoiceRecorder
 import com.pomp.hskai.core.audio.LessonAudioPlayer
+import com.pomp.hskai.core.audio.VoiceRecorder
 import com.pomp.hskai.core.auth.AuthRepository
 import com.pomp.hskai.core.network.OriginGuardInterceptor
 import com.pomp.hskai.core.settings.AppSettings
 import com.pomp.hskai.core.storage.SecureCredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
 import com.pomp.hskai.data.api.AndroidCourseApi
+import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.FeatureRepository
 import java.util.concurrent.TimeUnit
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -63,6 +67,8 @@ class HskAiApplication : Application() {
 
     val lessonAudioPlayer: LessonAudioPlayer by lazy { AndroidLessonAudioPlayer(this) }
 
+    val voiceRecorder: VoiceRecorder by lazy { AndroidVoiceRecorder(this) }
+
     val authRepository: AuthRepository by lazy {
         AuthRepository(
             api = retrofit.create(AndroidAuthApi::class.java),
@@ -89,9 +95,18 @@ class HskAiApplication : Application() {
         )
     }
 
+    val featureRepository: FeatureRepository by lazy {
+        FeatureRepository(
+            api = retrofit.create(AndroidFeatureApi::class.java),
+            accessToken = authRepository::accessToken,
+            onSessionExpired = authRepository::invalidateSession,
+        )
+    }
+
     /** Session end: credentials are cleared by auth, cached progress here. */
     suspend fun clearLocalData() {
         courseRepository.clearCache()
+        voiceRecorder.cancel()
     }
 
     private companion object {

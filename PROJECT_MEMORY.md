@@ -207,6 +207,272 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-11 — Course v3 lesson access policy is admin-controlled
+
+Changed:
+- Course v3 protected lessons now use a stored `course_lesson_access_policy`
+  bot setting instead of a hardcoded subscription-only gate.
+- Admin Mini App has a `Kurs access` management panel with three modes:
+  existing subscription paywall, ad-required access, and temporary free access
+  until a selected expiry.
+- Lesson ad authorization is bound to `feature=lesson`, server user level,
+  lesson order, and opaque `access_ref`; replaying a practice ad or another
+  lesson's ad authorization must not unlock the lesson.
+
+Why:
+- Admin needs to run paywall, ad-supported, or short free campaigns without
+  code changes while preserving the original subscription behavior as default.
+
+Files touched:
+- `app/services/course_access_policy_service.py`
+- `app/services/course_miniapp_access_service.py`
+- `app/main.py`
+- `app/static/course-v3.html`
+- `app/static/course_v3_data/ads.js`
+- `app/static/admin.html`
+- `app/services/admin_miniapp_service.py`
+
+Risk:
+- Ads mode requires at least one active Course v3 ad creative; otherwise free
+  users cannot complete protected lessons via the ad path.
+
+Follow-up:
+- After deploy, admin should switch modes once in the real Admin Mini App and
+  smoke-test protected lesson 3 as a free user in subscription, ads, and
+  temporary free modes.
+
+### 2026-08-11 — Desktop updater is manual-install only
+
+Changed:
+- Desktop app still checks for available updates and shows the update banner,
+  but it no longer downloads/installs automatically after a delay.
+- Installation starts only from the visible update action button.
+
+Why:
+- Local/dev and production users must not lose the current app window or have a
+  new version downloaded unless they explicitly choose to install it.
+
+Files touched:
+- `desktop/ui/js/app.js`
+- `desktop/ui/js/i18n.js`
+- `desktop/ui/test-contract.mjs`
+
+Risk:
+- Update availability still depends on the existing updater endpoint. Manual
+  install still restarts the app after the user clicks install.
+
+Follow-up:
+- In a real signed build, verify that an available update shows the banner and
+  does not start download progress until the install button is clicked.
+
+### 2026-08-11 — Mini App ad surfaces show desktop download CTA
+
+Changed:
+- Telegram Mini App course/ad completion surfaces now mount the existing
+  Mac/Windows desktop download CTA inline after ad completion, independent of
+  modal promo cooldown.
+- The inline CTA still respects download availability, recent download request,
+  and already-installed desktop state.
+
+Why:
+- Desktop app promotion must be visible exactly where free users already see
+  course/practice ads, without blocking lesson, quiz, or homework logic.
+
+Files touched:
+- `app/static/course_v3_data/desktop-download.js`
+- `app/static/course_v3_data/ads.js`
+- `app/static/course-v3.html`
+- `app/static/course_v3_*.html`
+- `tests/e2e/test_miniapp_smoke.py`
+- `tests/test_course_v3_static_data.py`
+
+Risk:
+- No subscription/payment/access rules changed. Risk is limited to Mini App
+  ad completion UI and desktop download CTA visibility.
+
+Follow-up:
+- After deploy, test one real Telegram Mini App lesson-end ad and one practice
+  ad on a phone with Mac/Windows downloads enabled.
+
+### 2026-08-11 — Desktop AI context-aware suggestions
+
+Changed:
+- Desktop local AI drawer now builds context from the active app screen and
+  shows matching prompt suggestions for Today, open lessons, Practice,
+  Vocabulary, AI Voice, Subscription, Profile, and Rating.
+- Local AI prompts now include bounded visible app context and explicitly avoid
+  claiming access outside the HSK AI window or revealing unchecked lesson,
+  quiz, or practice answer keys.
+
+Why:
+- AI should support the current course workflow instead of behaving like a
+  generic standalone chat.
+
+Files touched:
+- `desktop/ui/js/app.js`
+- `desktop/ui/js/lesson.js`
+- `desktop/ui/js/practice.js`
+- `desktop/ui/js/vocabulary.js`
+- `desktop/ui/js/voice.js`
+- `desktop/ui/js/i18n.js`
+- `desktop/ui/css/workspace.css`
+- `desktop/ui/test-contract.mjs`
+
+Risk:
+- No payment/subscription/access rule changed. Context is gathered from local
+  UI state only and is bounded before being sent to the local AI runtime.
+
+Follow-up:
+- After deploy, test the drawer inside a real desktop build with AI Pack
+  installed on one open lesson, one practice question, and one vocabulary card.
+
+### 2026-08-11 — Course notification feed for Telegram and Desktop
+
+Changed:
+- Added `course_user_notifications` storage for user-facing course/subscription
+  notices that were actually sent by the bot, with dedupe by
+  `telegram_id + key + dedupe_key`.
+- Subscription expiry, expired/discount offer, scheduled lesson-time, unfinished
+  lesson/day-end, daily goal, streak-risk, and rating-overtaken reminders now
+  write in-app notification rows after successful Telegram delivery.
+- Desktop course map payload now includes recent notifications, and Desktop
+  shows them both in the bell panel and on the Today/home screen.
+
+Why:
+- Telegram reminders must stay visible inside the product after delivery so the
+  user can reopen the app and see the same important action on desktop.
+
+Files touched:
+- `app/db/models/course_user_notification.py`
+- `alembic/versions/0067_course_user_notifications.py`
+- `app/services/course_notification_service.py`
+- `app/services/*reminder*_service.py`
+- `app/services/desktop_course_service.py`
+- `app/main.py`
+- `desktop/ui/js/app.js`
+- `desktop/ui/css/workspace.css`
+
+Risk:
+- Medium. New table/migration and write-after-send hooks touch reminder flows,
+  but no lesson order, grading, payment activation, referral attribution, or
+  access rules changed.
+
+Follow-up:
+- Run migration before deploy and smoke-test one real reminder plus desktop map
+  fetch with a real user.
+
+### 2026-08-11 — Desktop lesson full-stage with docked AI tutor
+
+Changed:
+- Desktop lesson dialog now opens as a full workspace study stage instead of a
+  narrow centered modal with blurred background.
+- On wide screens, the existing local AI drawer auto-opens as a right-side
+  tutor panel during a lesson; users can hide it with the existing close button
+  or toggle it with `Cmd/Ctrl+K`. When hidden, the lesson expands to full width.
+- Mobile keeps the lesson full-screen and moves the AI launcher above the footer
+  action so it does not cover the quiz button.
+
+Why:
+- Learners need to see the full lesson/question context while using AI help,
+  especially hanzi, pinyin, translation, and prompt text in one study flow.
+
+Files touched:
+- `desktop/ui/css/workspace.css`
+- `desktop/ui/js/app.js`
+- `desktop/ui/js/lesson.js`
+- `desktop/ui/index.html`
+
+Risk:
+- UI/state-only change. Lesson order, course data, quiz grading, homework,
+  payment/subscription/access logic, and backend result flow are unchanged.
+
+Follow-up:
+- Smoke-test inside the real Tauri desktop shell with a real lesson session
+  after the next build, especially `Esc`, `Cmd/Ctrl+K`, and AI Pack installed/not
+  installed states.
+
+### 2026-08-11 — Desktop Practice static v3 fallback
+
+Changed:
+- Desktop/shared Practice service now falls back to checked-in
+  `app/static/course_v3_data/<level>/lesson_*.json` cards when DB-backed
+  `CourseLesson` quiz data is empty, so placement/mock/training drills can open
+  even if course seeding is missing or delayed.
+- Desktop bridge now preserves `practice_*`, `invalid_practice_session`, and
+  `unknown_training_skill` error codes instead of collapsing them into a generic
+  failure.
+
+Why:
+- Desktop Course reads static v3 JSON, but Practice previously depended only on
+  DB lessons. That made Practice cards fail while the Course screen still worked.
+
+Files touched:
+- `app/services/course_miniapp_practice_service.py`
+- `desktop/ui/js/bridge.js`
+- `tests/test_course_miniapp_practice.py`
+- `desktop/ui/test-contract.mjs`
+
+Risk:
+- No payment/subscription/access rule changed. Practice still uses the shared
+  daily-use gate, server grading, mistake recording, and gamification; only the
+  question source fallback changed when DB quiz data is unavailable.
+
+Follow-up:
+- After deploy, smoke-test Desktop Practice against production auth/session once
+  with a real free user and a paid user.
+
+### 2026-08-11 — Desktop referral invite modal restored
+
+Changed:
+- Desktop Profile referral card now opens a real invite modal with Telegram,
+  WhatsApp, system share/Mac share, QR code, and copy-link actions. If the
+  referral overview endpoint fails, the desktop UI falls back to the referral
+  code already present in the course map user payload instead of leaving the
+  card as a dead error state.
+
+Why:
+- Inviting friends is part of the referral growth and premium bonus flow; a
+  failed extras request should not remove the user's invite action when the
+  local user payload still has enough data to build the deep link.
+
+Files touched:
+- `desktop/ui/js/app.js`
+- `desktop/ui/css/workspace.css`
+- `desktop/ui/js/i18n.js`
+- `desktop/ui/test-contract.mjs`
+
+Risk:
+- UI-only desktop change. Referral attribution format, backend referral service,
+  subscription/payment logic, lesson order, quiz flow, and course data are
+  unchanged.
+
+Follow-up:
+- Before desktop release, smoke-test the modal inside the packaged macOS and
+  Windows shells because external URL handling is OS/WebView dependent.
+
+### 2026-08-11 — Desktop course map Duolingo-style vertical path
+
+Changed:
+- Desktop Course screen lesson trail was changed from a horizontal row/grid into a
+  vertical zig-zag path with large lesson nodes, current-location bubble,
+  completed/current/locked states, and HSK lesson text below each node.
+
+Why:
+- The course screen should make the next lesson feel obvious and motivating while
+  keeping Chinese characters, pinyin, and translation visible.
+
+Files touched:
+- `desktop/ui/js/app.js`
+- `desktop/ui/css/workspace.css`
+
+Risk:
+- UI-only change. Lesson order, access checks, subscription/payment logic,
+  backend completion flow, and course data are unchanged.
+
+Follow-up:
+- Before desktop release, visually smoke-test the course map on desktop and
+  mobile-width preview with real user progress.
+
 ### 2026-08-09 — Desktop 1.3: real local AI + stable automatic release/update
 
 Changed:
@@ -4400,6 +4666,9 @@ Brand:
   `app/static/assets/hsk-ai-cover.webp` va desktop nusxalari.
 - Close-up panda kichik brand/AI/OS iconlarda; full composition katta desktop
   promo visualda ishlatiladi. Real Telegram/user avatarlarini almashtirmang.
+- Desktop UI ichida panda mascot kerak bo'lsa `desktop/ui/assets/panda-real.webp`
+  ishlatiladi; user avatar slotlarida brand panda emas, Telegram avatar/initials
+  ko'rsatiladi.
 - Tauri `bundle.icon` PNG/ICNS/ICO fayllariga explicit ulangan; configdan
   olib tashlash Dock/installer icon regressiyasiga olib keladi.
 
@@ -4763,6 +5032,73 @@ Follow-up:
 - Agar demo'dagi hozir veyl ostida turgan bloklar jonlantirilsa, backend
   endpointlar kerak: daily study minutes, learned word count, rating league
   thresholds/history/missions, offline course package state.
+
+---
+
+### 2026-08-11 — Desktop native API allowlist AI Voice'ni bloklamasligi tuzatildi
+
+Changed:
+- `desktop/src-tauri/src/lib.rs` dagi fail-closed `api_url()` allowlistiga
+  Desktop AI Voice endpointlari qo'shildi:
+  `/api/v3/desktop/voice/status`, `/session/start`, `/message`, `/pronounce`,
+  `/session/end`.
+- Shu omissiondan ta'sirlangan desktop practice (`/practice/start`,
+  `/practice/complete`), rating (`/rating/leaderboard?tz=`) va referral
+  (`/referral/overview?tz=`) pathlari ham allowlistga qo'shildi.
+- Transport unit testi yangi desktop endpointlarni va query-injection reject
+  holatlarini tekshiradi.
+
+Why:
+- Frontend va backend AI Voice tayyor edi, lekin native Rust transport
+  `api_url()` allowlistida voice pathlari yo'qligi uchun Tauri command backendga
+  chiqmasdan `desktop_api_operation_not_allowed` qaytarardi. UI buni umumiy
+  "Ma'lumot olinmadi" xatosi sifatida ko'rsatgan.
+
+Files touched:
+- `desktop/src-tauri/src/lib.rs`
+
+Risk:
+- Past. Network boundary hali fail-closed: faqat aniq endpointlar va bounded
+  timezone querylari ochildi; identity/admin querylari reject bo'lib qoladi.
+
+Follow-up:
+- Yangi DMG/EXE buildda AI Voice, Practice, Rating va Referral ekranlarini real
+  auth bilan smoke-test qilish.
+
+---
+
+### 2026-08-11 — Android 1.1 native Mini App parity foundation
+
+Changed:
+- Android version `1.1.0`ga ko'tarildi va native appga Mini Appdagi asosiy
+  yo'nalishlar qo'shildi: Mashq/training/test, Xatolarim review, AI Voice
+  recorder/session, Profil dashboard, Reyting, Referral va obuna statusi.
+- Yangi bearer adapter `app/api/android_features.py` mavjud canonical servislarni
+  chaqiradi: `CourseMiniAppPracticeService`, `CourseMistakeService`,
+  `VoicePracticeService`, `CourseGamificationService`, `ReferralService` va
+  `StudyMiniAppService`. Yangi progress/payment/account logic yozilmadi.
+- Desktop practice adapterdagi transport bug ham tuzatildi: canonical service
+  `selected_index` kutadi, adapter endi `selected`ni shu fieldga map qiladi.
+
+Why:
+- Android 1.0.0 faqat auth/kurs/lesson poydevor edi; user kursdan tashqari
+  mashq, xato takrori, AI Voice va account/gamification qiymatini ko'rmasdi.
+
+Files touched:
+- `app/api/android_features.py`, `app/main.py`, `app/api/desktop_practice.py`,
+  `android/app/src/main/java/com/pomp/hskai/**`,
+  `android/app/src/main/res/values*/strings.xml`,
+  `android/app/build.gradle.kts`.
+
+Risk:
+- Payment/subscription activation o'zgarmadi. Google Play Billing hali tashqi
+  blocker: Play product ID/service-account/release keystore yo'q, shuning uchun
+  Android hozir obuna statusini ko'rsatadi, lekin native purchase qilmaydi.
+
+Follow-up:
+- Real Android qurilmada Telegram link, practice complete, mistake review,
+  microphone permission + AI Voice message, logout/relink smoke-test.
+- Play Billing verify endpoint va client purchase flow alohida task.
 
 ---
 

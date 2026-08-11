@@ -5,6 +5,7 @@ from aiogram import Bot
 from app.repositories.user_repo import UserRepository
 from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.course_notification_service import CourseNotificationService
 
 
 class ExpiryReminderService:
@@ -30,6 +31,15 @@ class ExpiryReminderService:
                 await bot.send_message(
                     chat_id=user.telegram_id,
                     text=text,
+                )
+                await CourseNotificationService(self.session).record_from_text(
+                    user,
+                    key="subscription_expiring",
+                    lang=lang,
+                    text=text,
+                    action="subscription",
+                    source="expiry_reminder",
+                    dedupe_key=f"subscription_expiring:{tomorrow.isoformat()}",
                 )
                 user.expiry_reminder_sent_at = datetime.now(timezone.utc)
                 sent_count += 1

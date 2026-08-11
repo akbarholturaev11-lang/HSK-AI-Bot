@@ -22,6 +22,7 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.desktop import DesktopDevice
 from app.db.models.user import User
+from app.services.course_notification_service import CourseNotificationService
 from app.services.desktop_auth_service import DesktopAuthService
 
 
@@ -121,6 +122,21 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         )
 
     async def test_map_uses_server_level_and_auth_has_no_bootstrap_side_effect(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            await CourseNotificationService(session).record(
+                user,
+                key="lesson_time",
+                lang="uz",
+                title="Dars vaqti keldi",
+                body="Bugungi darsni davom ettiring.",
+                action="course",
+                level="hsk1",
+                lesson_order=1,
+                dedupe_key="lesson_time:2026-08-11",
+            )
+            await session.commit()
+
         response = await self.client.get(
             "/api/v3/desktop/course/map?level=hsk4&tz=300",
             headers=self.auth_headers,
@@ -132,6 +148,9 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(payload["authenticated"])
         self.assertEqual(payload["level"], "hsk1")
         self.assertEqual(payload["user"]["language"], "uz")
+        self.assertEqual(payload["notifications"][0]["key"], "lesson_time")
+        self.assertEqual(payload["notifications"][0]["action"], "course")
+        self.assertEqual(payload["notifications"][0]["lesson_order"], 1)
         self.assertEqual(payload["progress"]["completed"], 0)
         self.assertEqual(payload["units"][0]["lessons"][0]["status"], "current")
         self.assertTrue(

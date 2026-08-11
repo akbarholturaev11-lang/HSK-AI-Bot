@@ -1,0 +1,204 @@
+diff --git a/.github/workflows/desktop-release.yml b/.github/workflows/desktop-release.yml
+index db88a0ee..e82db663 100644
+--- a/.github/workflows/desktop-release.yml
++++ b/.github/workflows/desktop-release.yml
+@@ -25,9 +25,15 @@ concurrency:
+ 
+ env:
+   LLAMA_CPP_RELEASE: b10223
+-  LLAMA_CPP_MACOS_ARM64_SHA256: 2c5e6dca00a3f09ba1030e309ff6fa4c2568a01864de258a4e7752b09e26430e
++  # llama.cpp publishes its macOS arm64 archive from a macOS 26 runner with no
++  # deployment target, so that binary aborts on every older macOS. The arm64
++  # slice is therefore compiled from the pinned source below. The Intel archive
++  # is already built with -DCMAKE_OSX_DEPLOYMENT_TARGET=13.3 upstream, which is
++  # where MACOS_DEPLOYMENT_TARGET comes from.
++  LLAMA_CPP_COMMIT: 11924d4c17abc27383376a1ac6a24fa3e36c1c0c
+   LLAMA_CPP_MACOS_X64_SHA256: d5488dd5759f7a086852af5a206c6cded875c716de6a9f9d8460ea6c2dc24138
+   LLAMA_CPP_WINDOWS_X64_SHA256: 74c1ded0512818d98b51940bf9150e16da8ed79cf0cbe8d85788e01cdd00ff67
++  MACOS_DEPLOYMENT_TARGET: "13.3"
+ 
+ jobs:
+   prepare:
+@@ -101,7 +107,7 @@ jobs:
+     name: Build universal macOS DMG
+     needs: prepare
+     runs-on: macos-14
+-    timeout-minutes: 45
++    timeout-minutes: 90
+     env:
+       RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+     steps:
+@@ -131,28 +137,57 @@ jobs:
+           set -euo pipefail
+           staging="$(mktemp -d)"
+           trap 'rm -rf "$staging"' EXIT
+-          arm_archive="llama-${LLAMA_CPP_RELEASE}-bin-macos-arm64.tar.gz"
+           x64_archive="llama-${LLAMA_CPP_RELEASE}-bin-macos-x64.tar.gz"
+           release_base="https://github.com/ggml-org/llama.cpp/releases/download/${LLAMA_CPP_RELEASE}"
+ 
+-          curl --fail --location --retry 3 --proto '=https' --tlsv1.2 \
+-            "$release_base/$arm_archive" -o "$staging/$arm_archive"
+           curl --fail --location --retry 3 --proto '=https' --tlsv1.2 \
+             "$release_base/$x64_archive" -o "$staging/$x64_archive"
+-          printf '%s  %s\n' "$LLAMA_CPP_MACOS_ARM64_SHA256" "$staging/$arm_archive" \
+-            | shasum -a 256 -c -
+           printf '%s  %s\n' "$LLAMA_CPP_MACOS_X64_SHA256" "$staging/$x64_archive" \
+             | shasum -a 256 -c -
+ 
+-          mkdir -p "$staging/arm64" "$staging/x64"
+-          tar -xzf "$staging/$arm_archive" -C "$staging/arm64"
++          mkdir -p "$staging/x64"
+           tar -xzf "$staging/$x64_archive" -C "$staging/x64"
+-          arm_server="$(find "$staging/arm64" -type f -name llama-server -print -quit)"
+           x64_server="$(find "$staging/x64" -type f -name llama-server -print -quit)"
+-          test -n "$arm_server"
+           test -n "$x64_server"
+-          arm_root="$(dirname "$arm_server")"
+           x64_root="$(dirname "$x64_server")"
++
++          # Compile the arm64 slice from the pinned commit with the same options
++          # llama.cpp uses for its own arm64 release, plus an explicit
++          # deployment target so the result loads on macOS 13.3 and later.
++          # The full commit history is required: llama.cpp derives its library
++          # version from `git rev-list --count HEAD`, so a shallow clone would
++          # rename every dylib and break pairing with the Intel archive.
++          source_dir="$staging/llama.cpp"
++          git clone --quiet --filter=blob:none --no-checkout \
++            https://github.com/ggml-org/llama.cpp "$source_dir"
++          git -C "$source_dir" checkout --quiet --detach "$LLAMA_CPP_COMMIT"
++          test "$(git -C "$source_dir" rev-parse HEAD)" = "$LLAMA_CPP_COMMIT"
++          build_number="$(git -C "$source_dir" rev-list --count HEAD)"
++          if [ "$build_number" != "${LLAMA_CPP_RELEASE#b}" ]; then
++            echo "::error::Source build number $build_number does not match release $LLAMA_CPP_RELEASE; the arm64 dylib names would not match the Intel archive"
++            exit 1
++          fi
++
++          cmake -S "$source_dir" -B "$source_dir/build" \
++            -DCMAKE_BUILD_TYPE=Release \
++            -DLLAMA_BUILD_NUMBER="${LLAMA_CPP_RELEASE#b}" \
++            -DCMAKE_OSX_ARCHITECTURES=arm64 \
++            -DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOS_DEPLOYMENT_TARGET" \
++            -DCMAKE_INSTALL_RPATH='@loader_path' \
++            -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
++            -DGGML_METAL_USE_BF16=ON \
++            -DGGML_METAL_EMBED_LIBRARY=ON \
++            -DGGML_RPC=ON \
++            -DLLAMA_BUILD_BORINGSSL=ON \
++            -DLLAMA_BUILD_EXAMPLES=OFF \
++            -DLLAMA_BUILD_TESTS=OFF \
++            -DLLAMA_BUILD_TOOLS=ON \
++            -DLLAMA_BUILD_SERVER=ON
++          cmake --build "$source_dir/build" --config Release \
++            -j "$(sysctl -n hw.logicalcpu)"
++          arm_server="$(find "$source_dir/build/bin" -type f -name llama-server -print -quit)"
++          test -n "$arm_server"
++          arm_root="$(dirname "$arm_server")"
+           runtime="desktop/src-tauri/runtime/macos-universal"
+           rm -rf "$runtime"
+           mkdir -p "$runtime"
+@@ -190,12 +225,20 @@ jobs:
+               exit 1
+             }
+           done < <(find "$runtime" -maxdepth 1 -type l -name '*.dylib' -print0)
++          while IFS= read -r -d '' x64_library; do
++            library="$(basename "$x64_library")"
++            test -e "$runtime/$library" || {
++              echo "::error::Intel runtime library missing from the universal runtime: $library"
++              exit 1
++            }
++          done < <(find "$x64_root" -maxdepth 1 -type f -name '*.dylib' -print0)
+           find "$arm_root" -maxdepth 1 -type f \
+             \( -name '*.metal' -o -name '*.json' \) \
+             -exec cp {} "$runtime/" \;
+           {
+             echo "llama.cpp release: $LLAMA_CPP_RELEASE"
+-            echo "macOS arm64 archive SHA-256: $LLAMA_CPP_MACOS_ARM64_SHA256"
++            echo "llama.cpp commit: $LLAMA_CPP_COMMIT"
++            echo "macOS arm64: built from source, deployment target $MACOS_DEPLOYMENT_TARGET"
+             echo "macOS x64 archive SHA-256: $LLAMA_CPP_MACOS_X64_SHA256"
+           } > "$runtime/RUNTIME-BUILD.txt"
+ 
+@@ -214,6 +257,17 @@ jobs:
+                 ;;
+             esac
+           done < <(find "$runtime" -maxdepth 1 -type f -name '*.dylib' -print0)
++          while IFS= read -r -d '' runtime_binary; do
++            while IFS= read -r minimum; do
++              lowest="$(printf '%s\n%s\n' "$minimum" "$MACOS_DEPLOYMENT_TARGET" \
++                | sort -V | head -n 1)"
++              if [ "$lowest" != "$minimum" ]; then
++                echo "::error::$(basename "$runtime_binary") requires macOS $minimum, above the supported $MACOS_DEPLOYMENT_TARGET"
++                exit 1
++              fi
++            done < <(otool -l "$runtime_binary" | awk '/^ *minos / { print $2 }')
++          done < <(find "$runtime" -maxdepth 1 -type f \
++            \( -name llama-server -o -name '*.dylib' \) -print0)
+           "$runtime/llama-server" --version
+ 
+       - name: Verify release version
+diff --git a/PROJECT_MEMORY.md b/PROJECT_MEMORY.md
+index 3e50f5be..26d18749 100644
+--- a/PROJECT_MEMORY.md
++++ b/PROJECT_MEMORY.md
+@@ -4466,6 +4466,48 @@ Not complete:
+ - Google OAuth/passwordless email va account-link/merge himoyasi keyingi
+   ixtiyoriy identity bosqichi.
+ 
++### 2026-08-09 — macOS AI runtime arm64 slice manbadan quriladi, minimum 13.3
++
++Changed:
++- `desktop-release.yml` macOS jobi endi llama.cpp'ning tayyor arm64 arxivini
++  ishlatmaydi. arm64 slice pinned commit `11924d4c` (tag `b10223`) dan
++  `-DCMAKE_OSX_DEPLOYMENT_TARGET=13.3` bilan quriladi; Intel slice avvalgidek
++  SHA-256 tekshirilgan tayyor arxivdan olinadi.
++- Runtime'dagi har bir binary uchun `minos <= 13.3` hard gate qo'shildi va
++  Intel arxividagi har bir dylib universal runtime'da borligi tekshiriladi.
++- `tauri.conf.json` `macOS.minimumSystemVersion`: `11.0` -> `13.3`.
++- macOS job timeout 45 -> 90 daqiqa.
++
++Why:
++- llama.cpp o'z arm64 release'ini `macos-26` runnerida deployment target'siz
++  quradi. Natijadagi binary `_posix_spawn_file_actions_addchdir` symbol'ini
++  so'raydi va macOS 26 dan past hamma tizimda `Abort trap: 6` beradi. Shu sabab
++  `desktop-v1.3.1` release'i `Stage pinned universal local AI runtime`
++  qadamida exit 134 bilan yiqildi. Upstream Intel build'i esa allaqachon
++  13.3 target'ida quriladi -- yangi minimum shundan olindi.
++- Avvalgi `minimumSystemVersion: 11.0` haqiqatga mos emas edi: Intel slice
++  allaqachon macOS 13.3 talab qilardi.
++
++Files touched:
++- `.github/workflows/desktop-release.yml`
++- `desktop/src-tauri/tauri.conf.json`
++
++Risk:
++- macOS 11 va 12 foydalanuvchilari qo'llab-quvvatlanmaydi. Bu ongli qaror.
++- Manbadan build macOS jobiga ~10-20 daqiqa qo'shadi va yangi yiqilish nuqtasi
++  (`LLAMA_BUILD_BORINGSSL=ON` Go talab qiladi, macos-14 runnerida mavjud).
++- arm64 uchun ta'minot zanjiri kafolati "SHA-256 pinned arxiv" o'rniga
++  "pinned tag + commit SHA assertion" ga o'zgardi.
++- Windows tomonida o'zgarish yo'q: Windows binary'larida deployment target
++  tushunchasi yo'q va o'sha job muvaffaqiyatli o'tgan. DMG/EXE parity qoidasi
++  buzilmaydi, farq OS cheklovidan kelib chiqadi.
++
++Follow-up:
++- `desktop-v1.3.2` tagi bilan release qayta yugurtirilishi kerak; `1.3.1`
++  yarim chiqqan hisoblanadi.
++- Download sahifasiga "macOS 13.3+" talabi hali qo'shilmagan; qo'shilsa
++  RU/TJ/UZ uchtasida bo'lishi shart.
++
+ ---
+ 
+ ## 11. Known Problems
+diff --git a/desktop/src-tauri/tauri.conf.json b/desktop/src-tauri/tauri.conf.json
+index 847a184a..f0d34d5c 100644
+--- a/desktop/src-tauri/tauri.conf.json
++++ b/desktop/src-tauri/tauri.conf.json
+@@ -48,7 +48,7 @@
+     "shortDescription": "HSK learning desktop app",
+     "longDescription": "HSK AI brings the HSK course to macOS and Windows with an optional local AI tutor.",
+     "macOS": {
+-      "minimumSystemVersion": "11.0",
++      "minimumSystemVersion": "13.3",
+       "signingIdentity": "-"
+     },
+     "windows": {

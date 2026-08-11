@@ -65,8 +65,9 @@ desktop_update_check
 desktop_update_install
 ```
 
-The strict CSP permits local application assets and Tauri IPC only. Frontend
-code does not use direct `fetch`, `XMLHttpRequest` or `WebSocket`.
+The strict CSP permits local application assets, production avatar images and
+Tauri IPC only. Frontend code does not use direct `fetch`, `XMLHttpRequest` or
+`WebSocket`.
 
 ## Shared backend APIs
 

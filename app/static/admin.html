@@ -495,6 +495,7 @@
         invalid_channel_payload:"Kanal ma'lumoti noto'g'ri", delete_confirmation_required:"O'chirish uchun IDni tasdiq maydoniga yozing",
         cannot_block_admin:"Adminni bloklab bo'lmaydi", invalid_block_payload:"Blok ma'lumoti noto'g'ri",
         invalid_help_url:"Yordam linki noto'g'ri", invalid_contact:"Admin kontakt noto'g'ri",
+        invalid_course_access_policy:"Kurs access rejimi yoki muddat noto'g'ri",
         invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas",
         broadcast_text_too_long:"Matn juda uzun (media bilan max 1024)", media_too_large:"Fayl 25MB dan katta",
         unsupported_media:"Fayl turi qo'llab-quvvatlanmaydi", media_upload_failed:"Media yuklab bo'lmadi",
@@ -933,7 +934,7 @@
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
-      const map={prices:renderPrices,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount"),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      const map={prices:renderPrices,course_access:renderCourseAccess,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount"),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -953,6 +954,50 @@
       const discount = box&&box.dataset ? box.dataset.discountPrice : "";
       if(scope==="discount20") return `20% chegirma QR: ${discount} uchun to'lov QR rasmini yuklang.`;
       return `Asosiy QR: ${main} uchun to'lov QR rasmini yuklang.`;
+    }
+    function courseAccessLabel(mode){
+      return ({
+        subscription:"Hozirgi logika: 2 bepul qism, keyin obuna",
+        ads:"Obuna majburiy emas: reklama ko'rib darsni davom ettiradi",
+        free_until:"Vaqtincha ochiq: obuna ham, reklama ham so'ralmaydi"
+      })[mode]||"Hozirgi logika";
+    }
+    function courseAccessUntilText(value){
+      if(!value) return "—";
+      try{return new Date(value).toLocaleString("uz-UZ",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}catch(e){return value}
+    }
+    function renderCourseAccess(d){
+      const ca=d.course_access||{mode:"subscription",effective_mode:"subscription",free_until:null};
+      const mode=ca.mode||"subscription", eff=ca.effective_mode||mode;
+      openDrawer("📚 Kurs access","Darslarda obuna, reklama yoki vaqtinchalik free rejim",`<div class="panel">
+        <div class="mcard">
+          <h3>Joriy holat</h3>
+          <p>${esc(courseAccessLabel(eff))}</p>
+          <div class="tags">${tag(eff==="free_until"?"vaqtincha free":eff==="ads"?"reklama bilan":"obuna majburiy",eff==="free_until"?"green":eff==="ads"?"amber":"blue")}${ca.free_until?tag("gacha: "+courseAccessUntilText(ca.free_until),"violet"):""}</div>
+        </div>
+        <div class="mcard">
+          <h3>Rejimni tanlash</h3>
+          <div class="frow"><label>Access rejimi</label><select id="courseAccessMode" class="select" onchange="courseAccessModeUi()">
+            <option value="subscription"${mode==="subscription"?" selected":""}>1. Hozirgi logika — obuna majburiy</option>
+            <option value="ads"${mode==="ads"?" selected":""}>2. Reklama bilan davom — obuna majburiy emas</option>
+            <option value="free_until"${mode==="free_until"?" selected":""}>3. Vaqtincha free — obuna/reklama yo'q</option>
+          </select></div>
+          <div class="frow" id="courseAccessDaysBox"><label>Free rejim muddati (kun)</label><input id="courseAccessDays" class="input" type="number" min="1" max="36500" value="7">
+            <div class="duration-presets">
+              <button class="chip" data-duration-target="courseAccessDays" data-duration-days="1">1 kun</button>
+              <button class="chip" data-duration-target="courseAccessDays" data-duration-days="3">3 kun</button>
+              <button class="chip" data-duration-target="courseAccessDays" data-duration-days="7">7 kun</button>
+              <button class="chip" data-duration-target="courseAccessDays" data-duration-days="30">30 kun</button>
+            </div>
+          </div>
+          <button class="btn" data-casave>Saqlash</button>
+        </div>
+      </div>`);
+      courseAccessModeUi();
+    }
+    function courseAccessModeUi(){
+      const sel=$("courseAccessMode"), box=$("courseAccessDaysBox");
+      if(box&&sel) box.style.display=sel.value==="free_until"?"grid":"none";
     }
     function priceQrHtml(p){
       if(!p.qr_method) return "";
@@ -1447,6 +1492,7 @@
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pdsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$("payDetails").value}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-casave]"))){ const sel=$("courseAccessMode"), days=$("courseAccessDays"); const payload={mode:sel?sel.value:"subscription"}; if(payload.mode==="free_until") payload.duration_days=Number(days&&days.value||0); el.disabled=true; return apiPost("/api/admin-miniapp/course-access/save",payload).then(()=>afterModule("Kurs access saqlandi")).catch(x=>{toast(apiErr(x,"Kurs access saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-chmode]"))) return saveChannel({action:"mode",enabled:el.dataset.chmode==="1"},el);
       if((el=T("[data-chadd]"))) return saveChannel({action:"add",title:$("chTitle").value,chat_id:$("chId").value,invite_link:$("chInvite").value},el);
       if((el=T("[data-chtoggle]"))) return saveChannel({action:"toggle",channel_id:Number(el.dataset.chtoggle),active:el.dataset.active==="1"},el);

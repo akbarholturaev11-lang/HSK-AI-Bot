@@ -314,6 +314,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('queuePromo("lesson_end_promo"', course)
         self.assertIn("mountAdPromoTrigger", ads)
         self.assertIn('<div class="caa-desktop" hidden></div>', ads)
+        self.assertIn('var desktopPlacement=isLessonEnd()?"lesson_end_ad"', ads)
         self.assertNotIn('<button class="caa-desktop"', ads)
         self.assertLess(ads.index('caa-pay"></button>'), ads.index('caa-cont"></button>'))
         self.assertLess(
@@ -321,6 +322,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
             ads.index('<div class="caa-desktop" hidden></div>'),
         )
         self.assertIn('var block = element("section", "pdd-ad-download")', download)
+        self.assertIn("function shouldShowAdPromoEntry()", download)
+        self.assertIn('state.promoReason === "already_installed"', download)
         self.assertIn('actions.classList.add("pdd-ad-download-actions")', download)
         self.assertIn('buildOsButton("macos", source)', download)
         self.assertIn('buildOsButton("windows", source)', download)
@@ -355,12 +358,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260809-1", html, page
+                "/course_v3_data/desktop-download.css?v=20260811-1", html, page
             )
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260809-1", html, page
+                "/course_v3_data/desktop-download.js?v=20260811-1", html, page
             )
-            self.assertIn("/course_v3_data/ads.js?v=20260809-1", html, page)
+            self.assertIn("/course_v3_data/ads.js?v=20260811-1", html, page)
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")

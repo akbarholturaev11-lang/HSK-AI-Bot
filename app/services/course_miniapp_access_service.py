@@ -63,10 +63,11 @@ COURSE_AD_AUTH_TTL_SECONDS = 15 * 60
 COURSE_AD_ATTEMPT_EVENT_NAME = "course_ad_attempt_started"
 COURSE_AD_ATTEMPT_EVENT_SOURCE = "course_v3_ad_attempt"
 COURSE_AD_ATTEMPT_TTL_SECONDS = 15 * 60
-COURSE_AD_AUTH_FEATURES = frozenset((*COURSE_DAILY_BASE_FEATURES, "mistake_review"))
+COURSE_AD_AUTH_FEATURES = frozenset((*COURSE_DAILY_BASE_FEATURES, "mistake_review", "lesson"))
 COURSE_ACCESS_REF_PATTERN = re.compile(r"^[A-Za-z0-9._~-]{8,48}$")
 COURSE_AD_ATTEMPT_TOKEN_PATTERN = re.compile(r"^[A-Za-z0-9_-]{24,64}$")
 COURSE_AD_PLACEMENTS = frozenset(("start", "middle", "end"))
+COURSE_AD_LEVELS = frozenset(("hsk1", "hsk2", "hsk3", "hsk4"))
 COURSE_AD_MIN_SECONDS = 5
 COURSE_AD_MAX_SECONDS = 120
 
@@ -307,6 +308,25 @@ class CourseMiniAppAccessService:
             raise ValueError("invalid_ad_attempt_token")
         return normalized
 
+    @staticmethod
+    def _normalize_ad_level(level: str | None) -> str | None:
+        normalized = str(level or "").strip().lower()
+        if not normalized:
+            return None
+        if normalized not in COURSE_AD_LEVELS:
+            raise ValueError("invalid_ad_level")
+        return normalized
+
+    @staticmethod
+    def _normalize_ad_lesson_order(lesson_order: int | None) -> int:
+        try:
+            normalized = int(lesson_order or 0)
+        except (TypeError, ValueError):
+            normalized = 0
+        if normalized < 0 or normalized > 500:
+            raise ValueError("invalid_ad_lesson_order")
+        return normalized
+
     @classmethod
     def _ad_attempt_session_id(cls, attempt_token: str) -> str:
         token = cls._normalize_ad_attempt_token(attempt_token)
@@ -322,6 +342,8 @@ class CourseMiniAppAccessService:
         ad_id: int,
         placement: str,
         required_seconds: int,
+        level: str | None = None,
+        lesson_order: int | None = None,
     ) -> dict:
         """Issue a one-way-tokenized ad attempt anchored to server time.
 
@@ -335,11 +357,26 @@ class CourseMiniAppAccessService:
         normalized_ad_id = self._normalize_ad_id(ad_id)
         normalized_placement = self._normalize_ad_placement(placement)
         duration = self._normalize_ad_duration(required_seconds)
+        normalized_level = self._normalize_ad_level(level)
+        normalized_lesson_order = self._normalize_ad_lesson_order(lesson_order)
+        if feature == "lesson" and (not normalized_level or normalized_lesson_order <= 0):
+            raise ValueError("invalid_ad_lesson_binding")
         if not self.is_paid_user(user) and not self.is_free_user(user):
             return {"allowed": False, "error": "course_access_blocked"}
 
         attempt_token = secrets.token_urlsafe(24)
         session_id = self._ad_attempt_session_id(attempt_token)
+        payload = {
+            "feature": feature,
+            "access_ref": ref,
+            "ad_id": normalized_ad_id,
+            "placement": normalized_placement,
+            "required_seconds": duration,
+        }
+        if normalized_level:
+            payload["level"] = normalized_level
+        if normalized_lesson_order:
+            payload["lesson_order"] = normalized_lesson_order
         event = CourseMiniAppEvent(
             user_id=user.id,
             telegram_id=int(user.telegram_id),
@@ -347,17 +384,7 @@ class CourseMiniAppAccessService:
             source=COURSE_AD_ATTEMPT_EVENT_SOURCE,
             session_id=session_id,
             dedupe_key=session_id,
-            payload_json=json.dumps(
-                {
-                    "feature": feature,
-                    "access_ref": ref,
-                    "ad_id": normalized_ad_id,
-                    "placement": normalized_placement,
-                    "required_seconds": duration,
-                },
-                ensure_ascii=False,
-                separators=(",", ":"),
-            ),
+            payload_json=json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
         )
         try:
             async with self.session.begin_nested():
@@ -383,6 +410,8 @@ class CourseMiniAppAccessService:
         ad_id: int,
         placement: str,
         attempt_token: str,
+        level: str | None = None,
+        lesson_order: int | None = None,
     ) -> dict:
         """Validate exact binding and elapsed server time for an ad attempt."""
 
@@ -390,6 +419,10 @@ class CourseMiniAppAccessService:
         ref = self.normalize_access_ref(access_ref)
         normalized_ad_id = self._normalize_ad_id(ad_id)
         normalized_placement = self._normalize_ad_placement(placement)
+        normalized_level = self._normalize_ad_level(level)
+        normalized_lesson_order = self._normalize_ad_lesson_order(lesson_order)
+        if feature == "lesson" and (not normalized_level or normalized_lesson_order <= 0):
+            return {"allowed": False, "error": "invalid_ad_attempt"}
         try:
             attempt_session_id = self._ad_attempt_session_id(attempt_token)
         except ValueError:
@@ -424,8 +457,16 @@ class CourseMiniAppAccessService:
             "ad_id": payload.get("ad_id"),
             "placement": str(payload.get("placement") or ""),
         }
+        if normalized_level:
+            expected["level"] = normalized_level
+            actual["level"] = str(payload.get("level") or "")
+        if normalized_lesson_order:
+            expected["lesson_order"] = normalized_lesson_order
+            actual["lesson_order"] = payload.get("lesson_order")
         try:
             actual["ad_id"] = int(actual["ad_id"])
+            if normalized_lesson_order:
+                actual["lesson_order"] = int(actual["lesson_order"])
         except (TypeError, ValueError):
             return {"allowed": False, "error": "invalid_ad_attempt"}
         if actual != expected:
@@ -460,6 +501,8 @@ class CourseMiniAppAccessService:
         ad_id: int,
         placement: str,
         attempt_token: str = "",
+        level: str | None = None,
+        lesson_order: int | None = None,
     ) -> dict:
         """Record a completed start-ad as a bounded server authorization.
 
@@ -469,6 +512,10 @@ class CourseMiniAppAccessService:
 
         feature = self._normalize_ad_auth_feature(feature_key)
         ref = self.normalize_access_ref(access_ref)
+        normalized_level = self._normalize_ad_level(level)
+        normalized_lesson_order = self._normalize_ad_lesson_order(lesson_order)
+        if feature == "lesson" and (not normalized_level or normalized_lesson_order <= 0):
+            return {"allowed": False, "recorded": False, "error": "invalid_ad_lesson_binding"}
         if self.is_paid_user(user):
             return {
                 "allowed": True,
@@ -493,6 +540,8 @@ class CourseMiniAppAccessService:
             ad_id=normalized_ad_id,
             placement=normalized_placement,
             attempt_token=attempt_token,
+            level=normalized_level,
+            lesson_order=normalized_lesson_order,
         )
         if not attempt.get("allowed"):
             return {"recorded": False, **attempt}
@@ -525,6 +574,12 @@ class CourseMiniAppAccessService:
                         "ad_id": normalized_ad_id,
                         "placement": "start",
                         "attempt_id": attempt["attempt_id"],
+                        **({"level": normalized_level} if normalized_level else {}),
+                        **(
+                            {"lesson_order": normalized_lesson_order}
+                            if normalized_lesson_order
+                            else {}
+                        ),
                     },
                     ensure_ascii=False,
                     separators=(",", ":"),
@@ -560,6 +615,12 @@ class CourseMiniAppAccessService:
                     "ad_id": normalized_ad_id,
                     "placement": "start",
                     "attempt_id": attempt["attempt_id"],
+                    **({"level": normalized_level} if normalized_level else {}),
+                    **(
+                        {"lesson_order": normalized_lesson_order}
+                        if normalized_lesson_order
+                        else {}
+                    ),
                 },
                 ensure_ascii=False,
                 separators=(",", ":"),
@@ -603,19 +664,26 @@ class CourseMiniAppAccessService:
         feature_key: str,
         access_ref: str,
         max_age_seconds: int = COURSE_AD_AUTH_TTL_SECONDS,
+        level: str | None = None,
+        lesson_order: int | None = None,
     ) -> dict:
         """Verify a recent completed ad bound to this user, feature and ref."""
 
         feature = self._normalize_ad_auth_feature(feature_key)
         ref = self.normalize_access_ref(access_ref)
+        normalized_level = self._normalize_ad_level(level)
+        normalized_lesson_order = self._normalize_ad_lesson_order(lesson_order)
+        if feature == "lesson" and (not normalized_level or normalized_lesson_order <= 0):
+            return {"allowed": False, "is_paid": False, "error": "invalid_ad_authorization"}
         if self.is_paid_user(user):
             return {"allowed": True, "is_paid": True, "access_ref": ref}
         if not self.is_free_user(user):
             return {"allowed": False, "is_paid": False, "error": "course_access_blocked"}
-        ttl = max(30, min(3600, int(max_age_seconds or COURSE_AD_AUTH_TTL_SECONDS)))
+        ttl = max(30, min(7200, int(max_age_seconds or COURSE_AD_AUTH_TTL_SECONDS)))
+        select_target = CourseMiniAppEvent if (normalized_level or normalized_lesson_order) else CourseMiniAppEvent.id
         cutoff = datetime.now(timezone.utc) - timedelta(seconds=ttl)
         result = await self.session.execute(
-            select(CourseMiniAppEvent.id).where(
+            select(select_target).where(
                 CourseMiniAppEvent.user_id == user.id,
                 CourseMiniAppEvent.telegram_id == int(user.telegram_id),
                 CourseMiniAppEvent.event_name == COURSE_AD_AUTH_EVENT_NAME,
@@ -624,12 +692,31 @@ class CourseMiniAppAccessService:
                 CourseMiniAppEvent.created_at >= cutoff,
             )
         )
-        if not result.scalar_one_or_none():
+        event_or_id = result.scalar_one_or_none()
+        if not event_or_id:
             return {
                 "allowed": False,
                 "is_paid": False,
                 "error": "ad_authorization_required",
             }
+        if normalized_level or normalized_lesson_order:
+            try:
+                payload = json.loads(event_or_id.payload_json or "{}")
+            except (TypeError, ValueError, json.JSONDecodeError):
+                return {"allowed": False, "is_paid": False, "error": "invalid_ad_authorization"}
+            if normalized_level and str(payload.get("level") or "") != normalized_level:
+                return {"allowed": False, "is_paid": False, "error": "invalid_ad_authorization"}
+            if normalized_lesson_order:
+                try:
+                    stored_lesson_order = int(payload.get("lesson_order") or 0)
+                except (TypeError, ValueError):
+                    stored_lesson_order = 0
+                if stored_lesson_order != normalized_lesson_order:
+                    return {
+                        "allowed": False,
+                        "is_paid": False,
+                        "error": "invalid_ad_authorization",
+                    }
         return {"allowed": True, "is_paid": False, "access_ref": ref}
 
     async def _daily_used_today(self, telegram_id: int, feature_key: str, *, lifetime: bool = False) -> int:

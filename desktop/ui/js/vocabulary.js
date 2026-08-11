@@ -9,6 +9,7 @@
  */
 
 import { EXAMPLES, WORDS } from "../data/vocabulary.js";
+import { createPandaMascot } from "./mascot.js";
 
 const LEVELS = ["HSK1", "HSK2", "HSK3", "HSK4"];
 const FILTERS = ["all", "saved", "review"];
@@ -62,8 +63,21 @@ function normalized(value) {
   return String(value || "").trim().toLowerCase();
 }
 
+function briefText(value, limit = 220) {
+  return [...String(value ?? "").trim()].slice(0, limit).join("");
+}
+
 export class DesktopVocabularyController {
-  constructor({ host, bridge, t, language, onToast, speak, onAskAi }) {
+  constructor({
+    host,
+    bridge,
+    t,
+    language,
+    onToast,
+    speak,
+    onAskAi,
+    onContextChanged,
+  }) {
     this.host = host;
     this.bridge = bridge;
     this.t = t;
@@ -71,6 +85,7 @@ export class DesktopVocabularyController {
     this.onToast = onToast;
     this.speak = speak;
     this.onAskAi = onAskAi;
+    this.onContextChanged = onContextChanged;
 
     this.query = "";
     this.filter = "all";
@@ -107,6 +122,44 @@ export class DesktopVocabularyController {
       // Every sentence now carries all three languages; the fallback only
       // guards against a future entry that is added incompletely.
       translation: String(map[this.language] || map.uz || ""),
+    };
+  }
+
+  aiContext() {
+    const word = WORDS.find((item) => item.h === this.selected) || null;
+    const promptLines = [
+      `Vocabulary filter: ${this.filter}`,
+      `Vocabulary level: ${this.level || "all"}`,
+      this.query ? `Vocabulary search: ${briefText(this.query, 80)}` : "",
+    ].filter(Boolean);
+    if (!word) {
+      return {
+        title: this.t("vocabularyTitle"),
+        promptLines,
+      };
+    }
+    const example = this.example(word.h);
+    const translation = this.meaning(word);
+    const exampleLine = example?.zh
+      ? [example.zh, example.translation].filter(Boolean).join(" · ")
+      : "";
+    promptLines.push(
+      `Selected word: ${briefText(word.h, 80)}`,
+      `Pinyin: ${briefText(word.p, 120)}`,
+      `Translation: ${briefText(translation, 180)}`,
+      `Level: ${briefText(word.lv, 40)}`,
+    );
+    if (exampleLine) {
+      promptLines.push(`Example: ${briefText(exampleLine, 260)}`);
+    }
+    return {
+      word: word.h,
+      pinyin: word.p,
+      translation,
+      level: word.lv,
+      example: exampleLine,
+      detailOpen: this.detailOpen,
+      promptLines,
     };
   }
 
@@ -170,6 +223,7 @@ export class DesktopVocabularyController {
     }
     if (this.detailOpen) {
       this.host.append(this.renderDetailScreen());
+      this.onContextChanged?.();
       return;
     }
     this.host.append(this.renderControls(rows.length));
@@ -177,6 +231,7 @@ export class DesktopVocabularyController {
     const layout = node("div", "vocabulary-layout vocabLayout");
     layout.append(this.renderList(rows), this.renderSavedBox());
     this.host.append(layout);
+    this.onContextChanged?.();
   }
 
   renderControls(count) {
@@ -314,11 +369,7 @@ export class DesktopVocabularyController {
     );
     box.append(head);
     const note = node("div", "savedPandaNote");
-    const panda = document.createElement("img");
-    panda.className = "pandaMini";
-    panda.src = "./assets/hsk-ai-avatar.webp";
-    panda.alt = "";
-    panda.setAttribute("aria-hidden", "true");
+    const panda = createPandaMascot("pandaMini");
     note.append(panda, node("small", "", this.t("vocabularySavedHint")));
     box.append(note);
 
@@ -477,11 +528,7 @@ export class DesktopVocabularyController {
 
     const ai = node("article", "card detailAiCard card-panel");
     const aiTop = node("div", "aiTutorTop");
-    const aiAvatar = document.createElement("img");
-    aiAvatar.className = "detailAiPanda";
-    aiAvatar.src = "./assets/hsk-ai-avatar.webp";
-    aiAvatar.alt = "";
-    aiAvatar.setAttribute("aria-hidden", "true");
+    const aiAvatar = createPandaMascot("detailAiPanda");
     const aiCopy = node("div");
     aiCopy.append(
       node("h3", "", this.t("vocabularyAiTitle")),

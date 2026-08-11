@@ -208,6 +208,27 @@ function courseMap() {
       xp: 240,
       streak: 5,
     },
+    notifications: [
+      {
+        id: 1,
+        key: "lesson_time",
+        glyph: "时",
+        title: previewText(
+          localized("Dars vaqti keldi", "Время урока", "Вақти дарс расид"),
+        ),
+        body: previewText(
+          localized(
+            "Bugungi darsni davom ettiring.",
+            "Продолжите сегодняшний урок.",
+            "Дарси имрӯзаро идома диҳед.",
+          ),
+        ),
+        action: "course",
+        level: "hsk1",
+        lesson_order: 1,
+        created_at: "2026-08-11T10:00:00+00:00",
+      },
+    ],
     units: [
       {
         no: 1,

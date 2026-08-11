@@ -20,6 +20,15 @@ from app.services.course_miniapp_access_service import (
     COURSE_DAILY_FREE_LIMITS,
     CourseMiniAppAccessService,
 )
+from app.services.course_access_policy_service import (
+    COURSE_ACCESS_AD,
+    COURSE_ACCESS_MODE_ADS,
+    COURSE_ACCESS_MODE_FREE_UNTIL,
+    COURSE_ACCESS_MODE_SUBSCRIPTION,
+    COURSE_ACCESS_OPEN,
+    COURSE_ACCESS_SUBSCRIPTION,
+    CourseLessonAccessPolicy,
+)
 from app.services.course_ad_service import CourseAdService
 from app.services.course_miniapp_analytics_service import (
     MAX_EVENT_PAYLOAD_CHARS,
@@ -102,6 +111,7 @@ class CourseMiniAppModelTests(unittest.TestCase):
         self.assertIn("course_miniapp_events", table_names)
         self.assertIn("course_mistakes", table_names)
         self.assertIn("course_xp_events", table_names)
+        self.assertIn("course_user_notifications", table_names)
         self.assertIn("subscription_entry_events", table_names)
         self.assertIn("course_ad_creatives", table_names)
         self.assertIn("course_ad_views", table_names)
@@ -228,6 +238,55 @@ class CourseMiniAppAccessTests(unittest.TestCase):
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 4))
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 1))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk4", 4))
+
+
+class CourseLessonAccessPolicyTests(unittest.TestCase):
+    def test_subscription_policy_keeps_current_paid_gate(self):
+        policy = CourseLessonAccessPolicy(mode=COURSE_ACCESS_MODE_SUBSCRIPTION)
+
+        self.assertEqual(
+            policy.requirement_for(lesson_order=2, is_paid=False, free_lessons=2),
+            COURSE_ACCESS_OPEN,
+        )
+        self.assertEqual(
+            policy.requirement_for(lesson_order=3, is_paid=False, free_lessons=2),
+            COURSE_ACCESS_SUBSCRIPTION,
+        )
+        self.assertEqual(
+            policy.requirement_for(lesson_order=3, is_paid=True, free_lessons=2),
+            COURSE_ACCESS_OPEN,
+        )
+
+    def test_ads_policy_replaces_subscription_gate_with_ad_gate(self):
+        policy = CourseLessonAccessPolicy(mode=COURSE_ACCESS_MODE_ADS)
+
+        self.assertEqual(
+            policy.requirement_for(lesson_order=1, is_paid=False, free_lessons=2),
+            COURSE_ACCESS_OPEN,
+        )
+        self.assertEqual(
+            policy.requirement_for(lesson_order=3, is_paid=False, free_lessons=2),
+            COURSE_ACCESS_AD,
+        )
+
+    def test_free_until_policy_opens_lessons_only_until_expiry(self):
+        active = CourseLessonAccessPolicy(
+            mode=COURSE_ACCESS_MODE_FREE_UNTIL,
+            free_until=datetime.now(timezone.utc) + timedelta(days=1),
+        )
+        expired = CourseLessonAccessPolicy(
+            mode=COURSE_ACCESS_MODE_FREE_UNTIL,
+            free_until=datetime.now(timezone.utc) - timedelta(seconds=1),
+        )
+
+        self.assertEqual(
+            active.requirement_for(lesson_order=8, is_paid=False, free_lessons=2),
+            COURSE_ACCESS_OPEN,
+        )
+        self.assertEqual(
+            expired.requirement_for(lesson_order=8, is_paid=False, free_lessons=2),
+            COURSE_ACCESS_SUBSCRIPTION,
+        )
 
 
 class CourseMiniAppAdAuthorizationTests(unittest.IsolatedAsyncioTestCase):
@@ -441,6 +500,103 @@ class CourseMiniAppAdAuthorizationTests(unittest.IsolatedAsyncioTestCase):
             "training_test:attempt-12345678",
             query.compile().params.values(),
         )
+
+    async def test_lesson_ad_authorization_is_bound_to_level_and_lesson_order(self):
+        session = self._session()
+        result = await CourseMiniAppAccessService(session).start_ad_attempt(
+            self._user(),
+            feature_key="lesson",
+            access_ref="lesson-12345678",
+            ad_id=9,
+            placement="start",
+            required_seconds=7,
+            level="hsk1",
+            lesson_order=3,
+        )
+
+        self.assertTrue(result["allowed"])
+        payload = json.loads(session.added[0].payload_json)
+        self.assertEqual(payload["feature"], "lesson")
+        self.assertEqual(payload["level"], "hsk1")
+        self.assertEqual(payload["lesson_order"], 3)
+
+        wrong_attempt = self._session(
+            scalar=self._attempt_event(
+                feature="lesson",
+                access_ref="lesson-12345678",
+                level="hsk1",
+                lesson_order=3,
+            )
+        )
+        denied = await CourseMiniAppAccessService(wrong_attempt).validate_ad_attempt(
+            self._user(),
+            feature_key="lesson",
+            access_ref="lesson-12345678",
+            ad_id=9,
+            placement="start",
+            attempt_token=self.ATTEMPT_TOKEN,
+            level="hsk1",
+            lesson_order=4,
+        )
+        self.assertFalse(denied["allowed"])
+        self.assertEqual(denied["error"], "invalid_ad_attempt")
+
+        auth_session = self._session(
+            scalars=[
+                self._attempt_event(
+                    feature="lesson",
+                    access_ref="lesson-12345678",
+                    level="hsk1",
+                    lesson_order=3,
+                ),
+                None,
+            ]
+        )
+        recorded = await CourseMiniAppAccessService(auth_session).record_ad_authorization(
+            self._user(),
+            feature_key="lesson",
+            access_ref="lesson-12345678",
+            ad_id=9,
+            placement="start",
+            attempt_token=self.ATTEMPT_TOKEN,
+            level="hsk1",
+            lesson_order=3,
+        )
+        self.assertTrue(recorded["allowed"])
+        auth_payload = json.loads(auth_session.added[0].payload_json)
+        self.assertEqual(auth_session.added[0].session_id, "lesson:lesson-12345678")
+        self.assertEqual(auth_payload["level"], "hsk1")
+        self.assertEqual(auth_payload["lesson_order"], 3)
+
+        valid_event = SimpleNamespace(
+            created_at=datetime.now(timezone.utc),
+            payload_json=json.dumps(
+                {
+                    "feature": "lesson",
+                    "access_ref": "lesson-12345678",
+                    "level": "hsk1",
+                    "lesson_order": 3,
+                }
+            ),
+        )
+        verified = await CourseMiniAppAccessService(self._session(scalar=valid_event)).verify_ad_authorization(
+            self._user(),
+            feature_key="lesson",
+            access_ref="lesson-12345678",
+            level="hsk1",
+            lesson_order=3,
+        )
+        self.assertTrue(verified["allowed"])
+
+        invalid = await CourseMiniAppAccessService(self._session(scalar=valid_event)).verify_ad_authorization(
+            self._user(),
+            feature_key="lesson",
+            access_ref="lesson-12345678",
+            level="hsk1",
+            lesson_order=4,
+        )
+        self.assertFalse(invalid["allowed"])
+        self.assertEqual(invalid["error"], "invalid_ad_authorization")
 
 
 class CourseMiniAppEntitlementTests(unittest.IsolatedAsyncioTestCase):

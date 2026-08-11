@@ -19,6 +19,7 @@ from starlette.middleware.gzip import GZipMiddleware
 from app.config import settings
 from app.api.android_auth import create_android_auth_router
 from app.api.android_course import create_android_course_router
+from app.api.android_features import create_android_features_router
 from app.api.desktop_auth import create_desktop_auth_router
 from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
@@ -63,6 +64,7 @@ from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.course_notification_service import CourseNotificationService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_release_manifest_service import (
@@ -83,6 +85,12 @@ from app.services.course_miniapp_access_service import (
     COURSE_AI_PRACTICE_FEATURES,
     FREE_COURSE_LESSONS_PER_LEVEL,
     CourseMiniAppAccessService,
+)
+from app.services.course_access_policy_service import (
+    COURSE_ACCESS_AD,
+    COURSE_ACCESS_OPEN,
+    COURSE_ACCESS_SUBSCRIPTION,
+    CourseAccessPolicyService,
 )
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
@@ -274,6 +282,15 @@ async def _send_subscription_expired_offer(session, telegram_id: int) -> None:
             text=t("subscription_expired_soft_text", lang),
             reply_markup=subscription_expired_offer_keyboard(lang),
             parse_mode="HTML",
+        )
+        await CourseNotificationService(session).record_from_text(
+            user,
+            key="subscription_offer",
+            lang=lang,
+            text=t("subscription_expired_soft_text", lang),
+            action="subscription",
+            source="subscription_churn",
+            dedupe_key=f"subscription_expired_offer:{telegram_id}",
         )
         await SubscriptionChurnService(session).mark_expired_offer_sent(user)
         await session.commit()
@@ -508,6 +525,12 @@ app.include_router(
         settings_obj=settings,
     )
 )
+app.include_router(
+    create_android_features_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
 
 MINIAPP_HTML_HEADERS = {
     "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
@@ -539,6 +562,7 @@ ADMIN_MINIAPP_SECTIONS = {
     "user_search": ("🔎 Foydalanuvchi qidirish", "adm:user_search_info"),
     "portfolio": ("💼 Portfel", "adm:portfolio"),
     "prices": ("💳 Obuna narxlari", "adm:prices"),
+    "course_access": ("📚 Kurs access", "adm:course_access"),
     "channels": ("📣 Majburiy kanal obunasi", "adm:channels"),
     "delete_user": ("🗑 Foydalanuvchini o'chirish", "adm:deleteuser_info"),
     "broadcast": ("📢 Ommaviy xabar", "adm:broadcast_info"),
@@ -650,6 +674,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
     active_partners = await partner_service.repo.list_by_status("active", limit=30)
     blocked_partners = await partner_service.repo.list_by_status("blocked", limit=20)
     open_payouts = await partner_service.repo.list_open_payouts(limit=12)
+    course_access = await CourseAccessPolicyService(session).get_payload()
 
     active_partner_rows = []
     for item in active_partners:
@@ -775,6 +800,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
             "active_model": await get_active_gemini_model(),
             "options": GEMINI_MODEL_OPTIONS,
         },
+        "course_access": course_access,
         "channels": {
             "enabled": await channels_service.is_enabled(),
             "items": [
@@ -1107,7 +1133,14 @@ def _course_v3_user_lang(user) -> str:
     return normalize_miniapp_lang(getattr(user, "language", None))
 
 
-def _apply_course_v3_access_policy(data: dict, *, level: str, completed: int, is_paid: bool) -> None:
+def _apply_course_v3_access_policy(
+    data: dict,
+    *,
+    level: str,
+    completed: int,
+    is_paid: bool,
+    access_policy=None,
+) -> None:
     for unit in data.get("units", []):
         unit_unlocked = False
         for lesson in unit.get("lessons", []):
@@ -1122,8 +1155,23 @@ def _apply_course_v3_access_policy(data: dict, *, level: str, completed: int, is
                 lesson["status"] = "locked"
                 lesson.pop("stars", None)
 
-            requires_premium = CourseMiniAppAccessService.lesson_requires_premium(level, n)
-            if not is_paid and requires_premium and n > completed:
+            requirement = (
+                access_policy.requirement_for(
+                    lesson_order=n,
+                    is_paid=is_paid,
+                    free_lessons=FREE_COURSE_LESSONS_PER_LEVEL,
+                )
+                if access_policy
+                else (
+                    COURSE_ACCESS_SUBSCRIPTION
+                    if (
+                        not is_paid
+                        and CourseMiniAppAccessService.lesson_requires_premium(level, n)
+                    )
+                    else COURSE_ACCESS_OPEN
+                )
+            )
+            if requirement == COURSE_ACCESS_SUBSCRIPTION and n > completed:
                 if n == completed + 1 and n == FREE_COURSE_LESSONS_PER_LEVEL + 1:
                     # Birinchi pullik mini-dars: yangi bepul user uni ochib,
                     # ~yarmigacha ko'radi; frontend kartalar o'rtasida obuna
@@ -1131,15 +1179,27 @@ def _apply_course_v3_access_policy(data: dict, *, level: str, completed: int, is
                     lesson["status"] = "current"
                     lesson["preview_half"] = True
                     lesson.pop("locked_premium", None)
+                    lesson.pop("ad_required", None)
                 else:
                     lesson["status"] = "locked"
                     lesson["locked_premium"] = True
                     lesson.pop("preview_half", None)
+                    lesson.pop("ad_required", None)
+            elif requirement == COURSE_ACCESS_AD and n > completed:
+                lesson["ad_required"] = True
+                lesson.pop("locked_premium", None)
+                lesson.pop("preview_half", None)
+                if n == completed + 1:
+                    lesson["status"] = "current"
             else:
                 lesson.pop("locked_premium", None)
                 lesson.pop("preview_half", None)
+                lesson.pop("ad_required", None)
 
-            if lesson.get("status") in {"done", "current"} and not lesson.get("locked_premium"):
+            if (
+                lesson.get("status") in {"done", "current"}
+                and not lesson.get("locked_premium")
+            ):
                 unit_unlocked = True
 
         if not unit_unlocked:
@@ -1514,13 +1574,21 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         data["notify"] = {
             "enabled": bool(getattr(profile, "notifications_enabled", True)),
         }
+        data["notifications"] = await CourseNotificationService(session).list_for_user(user)
         data["admin_contact"] = admin_contact_url(await BotSettingRepository(session).get(ADMIN_CONTACT_KEY))
+        access_policy = await CourseAccessPolicyService(session).get_policy()
+        data["access_policy"] = access_policy.public_payload()
 
-        _apply_course_v3_access_policy(data, level=resolved_level, completed=completed, is_paid=is_paid)
+        _apply_course_v3_access_policy(
+            data,
+            level=resolved_level,
+            completed=completed,
+            is_paid=is_paid,
+            access_policy=access_policy,
+        )
 
-        # Darslarda endi reklama YO'Q — bepul trial (1-dars to'liq + 2-dars
-        # yarmi) va obuna paywall. Reklama oqimi mashq bo'limlariga ko'chirildi
-        # (har bo'limning o'z kunlik reklama-ruxsati bor, sub-sahifalar boshqaradi).
+        # Dars access oqimi admin policy orqali boshqariladi:
+        # subscription (eski paywall), ads (reklama bilan davom), yoki free_until.
 
         await CourseMiniAppAnalyticsService(session).record_server_event(
             event_name="miniapp_opened",
@@ -1716,13 +1784,9 @@ async def v3_course_ad_attempt(request: Request):
     section = str(payload.get("feature") or "").strip().lower()
     access_ref = str(payload.get("access_ref") or "").strip()
     placement = str(payload.get("placement") or "").strip().lower()
-    if (
-        ad_id <= 0
-        or lesson_order != 0
-        or section not in _COURSE_AD_GATE_FEATURES
-        or not access_ref
-        or placement != "start"
-    ):
+    practice_gate = section in (_COURSE_AD_GATE_FEATURES - {"lesson"}) and lesson_order == 0
+    lesson_gate = section == "lesson" and lesson_order > 0
+    if ad_id <= 0 or not (practice_gate or lesson_gate) or not access_ref or placement != "start":
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_attempt_payload"})
 
     async with async_session_maker() as session:
@@ -1746,6 +1810,8 @@ async def v3_course_ad_attempt(request: Request):
                 ad_id=ad_id,
                 placement=placement,
                 required_seconds=CourseAdService.normalize_duration(ad.duration_seconds),
+                level=_course_v3_user_level(user) if lesson_gate else None,
+                lesson_order=lesson_order if lesson_gate else None,
             )
         except ValueError:
             return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_attempt_payload"})
@@ -1795,7 +1861,15 @@ async def v3_course_ad_view(request: Request):
             placement=placement,
             watched_seconds=watched_seconds,
         )
-        if result.get("ok") and access_ref and lesson_order <= 0:
+        should_authorize = bool(
+            result.get("ok")
+            and access_ref
+            and (
+                (lesson_order <= 0 and section in (_COURSE_AD_GATE_FEATURES - {"lesson"}))
+                or (lesson_order > 0 and section == "lesson")
+            )
+        )
+        if should_authorize:
             try:
                 authorization = await CourseMiniAppAccessService(session).record_ad_authorization(
                     user,
@@ -1804,6 +1878,8 @@ async def v3_course_ad_view(request: Request):
                     ad_id=ad_id,
                     placement=placement,
                     attempt_token=attempt_token,
+                    level=resolved_level if section == "lesson" else None,
+                    lesson_order=lesson_order if section == "lesson" else None,
                 )
             except ValueError:
                 authorization = {"allowed": False, "error": "invalid_access_ref"}
@@ -1843,7 +1919,7 @@ _COURSE_DAILY_GATE_FEATURES = {
     "placement",
     "training_test",
 }
-_COURSE_AD_GATE_FEATURES = _COURSE_DAILY_GATE_FEATURES | {"mistake_review"}
+_COURSE_AD_GATE_FEATURES = _COURSE_DAILY_GATE_FEATURES | {"mistake_review", "lesson"}
 
 
 @app.post("/api/v3/practice/daily-gate")
@@ -2057,7 +2133,13 @@ async def v3_course_lesson_unlock(request: Request):
 
         access = CourseMiniAppAccessService(session)
         is_paid = access.is_paid_user(user)
-        if not is_paid and CourseMiniAppAccessService.lesson_requires_premium(resolved_level, lesson_order):
+        access_policy = await CourseAccessPolicyService(session).get_policy()
+        requirement = access_policy.requirement_for(
+            lesson_order=lesson_order,
+            is_paid=is_paid,
+            free_lessons=FREE_COURSE_LESSONS_PER_LEVEL,
+        )
+        if requirement == COURSE_ACCESS_SUBSCRIPTION:
             return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
 
         progress_repo = CourseProgressRepository(session)
@@ -2117,6 +2199,7 @@ async def v3_course_lesson_complete(request: Request):
         payload = await request.json()
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
         lesson_session_id = _checkout_text(payload.get("session_id"), 80) or None
+        access_ref = str(payload.get("access_ref") or "").strip()
         lesson_mistakes = payload.get("mistakes") if isinstance(payload.get("mistakes"), list) else []
         lesson_mistakes = [item for item in lesson_mistakes[:50] if isinstance(item, dict)]
     except (TypeError, ValueError):
@@ -2144,14 +2227,34 @@ async def v3_course_lesson_complete(request: Request):
 
         access = CourseMiniAppAccessService(session)
         is_paid = access.is_paid_user(user)
-        # Darslarda reklama YO'Q. Bepul user faqat bepul trial doirasidagi
-        # mini-darslarni (1-2) yakunlay oladi; premium qism (3+) — obuna majburiy.
-        # Bu serverdagi asosiy chegara: klient buzilgan bo'lsa ham aylanib
-        # o'tib bo'lmaydi (frontend 3-qismni yarmida paywall bilan to'xtatadi).
-        if not is_paid and CourseMiniAppAccessService.lesson_requires_premium(
-            resolved_level, lesson_order
-        ):
+        access_policy = await CourseAccessPolicyService(session).get_policy()
+        requirement = access_policy.requirement_for(
+            lesson_order=lesson_order,
+            is_paid=is_paid,
+            free_lessons=FREE_COURSE_LESSONS_PER_LEVEL,
+        )
+        if requirement == COURSE_ACCESS_SUBSCRIPTION:
             return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
+        if requirement == COURSE_ACCESS_AD:
+            try:
+                ad_access = await access.verify_ad_authorization(
+                    user,
+                    feature_key="lesson",
+                    access_ref=access_ref,
+                    max_age_seconds=3600,
+                    level=resolved_level,
+                    lesson_order=lesson_order,
+                )
+            except ValueError:
+                ad_access = {"allowed": False, "error": "ad_authorization_required"}
+            if not ad_access.get("allowed"):
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "ok": False,
+                        "error": ad_access.get("error") or "ad_authorization_required",
+                    },
+                )
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
@@ -2208,10 +2311,12 @@ async def v3_course_lesson_complete(request: Request):
             next_band = _COURSE_V3_NEXT_BAND.get(resolved_level)
             if next_band:
                 user.level = next_band
-        next_requires_premium = CourseMiniAppAccessService.lesson_requires_premium(
-            resolved_level, next_order
+        next_requirement = access_policy.requirement_for(
+            lesson_order=next_order,
+            is_paid=is_paid,
+            free_lessons=FREE_COURSE_LESSONS_PER_LEVEL,
         )
-        if has_next and (is_paid or not next_requires_premium):
+        if has_next and next_requirement != COURSE_ACCESS_SUBSCRIPTION:
             await progress_repo.set_current_lesson_and_step(
                 progress=progress,
                 lesson_id=getattr(lesson, "id", None),
@@ -2538,6 +2643,54 @@ async def admin_miniapp_management(request: Request):
         payload = await _admin_miniapp_management_payload(session)
         await session.commit()
     return JSONResponse(content=payload)
+
+
+@app.post("/api/admin-miniapp/course-access/save")
+async def admin_miniapp_course_access_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        mode = str(payload.get("mode") or "").strip().lower()
+        duration_days_raw = payload.get("duration_days")
+        duration_days = int(duration_days_raw or 0) if duration_days_raw not in (None, "") else None
+        free_until_raw = str(payload.get("free_until") or "").strip()
+    except (AttributeError, TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_course_access_policy"})
+
+    free_until = None
+    if free_until_raw:
+        try:
+            free_until = datetime.fromisoformat(free_until_raw.replace("Z", "+00:00"))
+            if free_until.tzinfo is None:
+                free_until = free_until.replace(tzinfo=timezone.utc)
+            else:
+                free_until = free_until.astimezone(timezone.utc)
+        except ValueError:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_course_access_policy"})
+
+    async with async_session_maker() as session:
+        try:
+            policy = await CourseAccessPolicyService(session).save_policy(
+                mode=mode,
+                duration_days=duration_days,
+                free_until=free_until,
+                updated_by_telegram_id=telegram_id,
+            )
+        except ValueError:
+            await session.rollback()
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_course_access_policy"})
+        await session.commit()
+    logger.info(
+        "admin_course_access_policy_saved admin_id=%s mode=%s effective_mode=%s free_until=%s",
+        telegram_id,
+        policy.mode,
+        policy.active_mode,
+        policy.free_until.isoformat() if policy.free_until else None,
+    )
+    return JSONResponse(content={"ok": True, "course_access": policy.public_payload()})
 
 
 @app.post("/api/admin-miniapp/users/search")

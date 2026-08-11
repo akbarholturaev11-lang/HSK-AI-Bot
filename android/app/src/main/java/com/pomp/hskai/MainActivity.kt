@@ -48,12 +48,17 @@ import com.pomp.hskai.core.navigation.MainTab
 import com.pomp.hskai.feature.course.CourseScreen
 import com.pomp.hskai.feature.course.CourseViewModel
 import com.pomp.hskai.feature.profile.ProfileScreen
+import com.pomp.hskai.feature.profile.ProfileViewModel
+import com.pomp.hskai.feature.practice.PracticeScreen
+import com.pomp.hskai.feature.practice.PracticeViewModel
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
 import com.pomp.hskai.feature.today.TodayScreen
+import com.pomp.hskai.feature.voice.VoiceScreen
+import com.pomp.hskai.feature.voice.VoiceViewModel
 import java.util.UUID
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -147,9 +152,29 @@ private fun AppRoot(
             val courseState by courseViewModel.state.collectAsStateWithLifecycle()
             val pinyin by app.appSettings.pinyinVisibility
                 .collectAsStateWithLifecycle(initialValue = PinyinVisibility.DEFAULT)
+            val practiceViewModel: PracticeViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = PracticeViewModel.Factory(app.featureRepository),
+            )
+            val practiceState by practiceViewModel.state.collectAsStateWithLifecycle()
+            val voiceViewModel: VoiceViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = VoiceViewModel.Factory(
+                    repository = app.featureRepository,
+                    recorder = app.voiceRecorder,
+                ),
+            )
+            val voiceState by voiceViewModel.state.collectAsStateWithLifecycle()
+            val profileViewModel: ProfileViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = ProfileViewModel.Factory(app.featureRepository),
+            )
+            val profileState by profileViewModel.state.collectAsStateWithLifecycle()
             var selectedTab by remember { mutableStateOf(MainTab.TODAY) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
+            val currentLevel = courseState.map?.level ?: state.account.level
+            val currentLanguage = state.account.language.backendCode
 
             fun launchLesson(lesson: CourseLesson) {
                 openLesson = LessonLaunch(
@@ -256,8 +281,37 @@ private fun AppRoot(
                         modifier = contentModifier,
                     )
 
+                    MainTab.PRACTICE -> PracticeScreen(
+                        state = practiceState,
+                        level = currentLevel,
+                        language = currentLanguage,
+                        onStartPractice = practiceViewModel::startPractice,
+                        onSelectPracticeOption = practiceViewModel::selectPracticeOption,
+                        onAdvancePractice = practiceViewModel::advancePractice,
+                        onResetPractice = practiceViewModel::resetPractice,
+                        onStartMistakeReview = practiceViewModel::startMistakeReview,
+                        onAnswerReview = practiceViewModel::answerReview,
+                        onAdvanceReview = practiceViewModel::advanceReview,
+                        onResetReview = practiceViewModel::resetReview,
+                        modifier = contentModifier,
+                    )
+
+                    MainTab.VOICE -> VoiceScreen(
+                        state = voiceState,
+                        level = currentLevel,
+                        language = currentLanguage,
+                        onSelectRole = voiceViewModel::selectRole,
+                        onStartSession = voiceViewModel::startSession,
+                        onToggleRecording = voiceViewModel::toggleRecording,
+                        onEndSession = voiceViewModel::endSession,
+                        onReset = voiceViewModel::reset,
+                        modifier = contentModifier,
+                    )
+
                     MainTab.PROFILE -> ProfileScreen(
                         account = state.account,
+                        state = profileState,
+                        onRefresh = profileViewModel::load,
                         onLogout = { signOut(false) },
                         onUnlinkDevice = { signOut(true) },
                         modifier = contentModifier,

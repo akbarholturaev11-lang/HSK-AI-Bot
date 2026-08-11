@@ -45,6 +45,10 @@ function node(tag, className = "", text = "") {
   return value;
 }
 
+function briefText(value, limit = 220) {
+  return [...String(value ?? "").trim()].slice(0, limit).join("");
+}
+
 function formatClock(totalSeconds) {
   const seconds = Math.max(0, Math.floor(totalSeconds));
   const minutes = Math.floor(seconds / 60);
@@ -97,6 +101,7 @@ export class DesktopVoiceController {
     onToast,
     onOpenSubscription,
     speak,
+    onContextChanged,
   }) {
     this.host = host;
     this.bridge = bridge;
@@ -106,6 +111,7 @@ export class DesktopVoiceController {
     this.onToast = onToast;
     this.onOpenSubscription = onOpenSubscription;
     this.speak = speak;
+    this.onContextChanged = onContextChanged;
 
     this.status = null;
     this.statusError = "";
@@ -218,14 +224,49 @@ export class DesktopVoiceController {
     this.host.replaceChildren();
     if (this.phase === "summary" && this.summary) {
       this.host.append(this.renderSummary());
+      this.onContextChanged?.();
       return;
     }
     if (this.sessionId) {
       this.host.append(this.renderCall());
       this.attachCanvas();
+      this.onContextChanged?.();
       return;
     }
     this.host.append(this.renderIntro());
+    this.onContextChanged?.();
+  }
+
+  aiContext() {
+    const role = this.t(`voiceRole_${this.role}`);
+    const phase = this.sessionId ? this.phaseLabel() : this.t("voiceIntroTitle");
+    const latest = this.turns.length ? this.turns[this.turns.length - 1] : null;
+    const promptLines = [
+      `Voice role: ${briefText(role, 80)}`,
+      `Voice level: ${briefText(this.level, 40)}`,
+      `Voice phase: ${briefText(phase, 80)}`,
+      `Voice turns: ${Number(this.turnCount || 0)}/${Number(this.maxDialogs || 0)}`,
+    ];
+    let latestTurn = "";
+    if (latest) {
+      const speaker =
+        latest.speaker === "user" ? this.t("voiceYou") : this.t(`voiceRole_${this.role}`);
+      latestTurn = `${speaker}: ${briefText(latest.text, 140)}`;
+      promptLines.push(`Latest visible turn: ${latestTurn}`);
+      if (latest.pinyin) promptLines.push(`Latest pinyin: ${briefText(latest.pinyin, 180)}`);
+      if (latest.translation) {
+        promptLines.push(`Latest translation: ${briefText(latest.translation, 180)}`);
+      }
+      if (latest.correction) {
+        promptLines.push(`Latest correction: ${briefText(latest.correction, 220)}`);
+      }
+    }
+    return {
+      title: role,
+      summary: `${String(this.level || "hsk1").toUpperCase()} · ${phase}`,
+      latestTurn,
+      promptLines,
+    };
   }
 
   renderIntro() {

@@ -18,6 +18,7 @@ import { DesktopSubscriptionController } from "./subscription.js";
 import { DesktopPracticeController } from "./practice.js";
 import { DesktopVocabularyController } from "./vocabulary.js";
 import { DesktopVoiceController } from "./voice.js";
+import { createPandaMascot } from "./mascot.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -48,9 +49,6 @@ const dom = {
   railAvatar: $("#rail-avatar"),
   railUserName: $("#rail-user-name"),
   railPlan: $("#rail-plan"),
-  railXp: $("#rail-xp"),
-  railStreak: $("#rail-streak"),
-  railDaysLabel: $("#rail-days-label"),
   railLevelLabel: $("#rail-level-label"),
   railCompleted: $("#rail-completed"),
   navigation: $("#course-navigation"),
@@ -143,9 +141,13 @@ const state = {
   aiStreamText: "",
   aiListenersReady: false,
   aiUnlisten: [],
+  aiOpenedByLesson: false,
   reduceMotion: false,
   referral: null,
   referralError: "",
+  referralModalOpen: false,
+  referralPreviousFocus: null,
+  referralCopied: false,
   goal: null,
   onboardingOpen: false,
   onboardingStep: 0,
@@ -162,13 +164,11 @@ const state = {
   updateErrorStage: "check",
   updateShowChecking: false,
   updateProgress: null,
-  updateAutoTimer: null,
   updateUnlisten: null,
   toastTimer: null,
 };
 
-const AUTO_UPDATE_DELAY_MS = 6_000;
-const AUTO_UPDATE_RETRY_MS = 15_000;
+const LESSON_AI_DOCK_QUERY = "(min-width: 1100px)";
 
 const lesson = new LessonController({
   bridge: desktopBridge,
@@ -181,6 +181,9 @@ const lesson = new LessonController({
     renderActiveView();
     showToast(t("manageSubscription"));
   },
+  onOpen: () => handleLessonOpened(),
+  onClose: () => handleLessonClosed(),
+  onContextChanged: () => refreshAiContextPanel(),
 });
 
 const subscription = new DesktopSubscriptionController({
@@ -212,6 +215,7 @@ const voice = new DesktopVoiceController({
   onToast: showToast,
   onOpenSubscription: () => routeTo("subscription"),
   speak: (text, button) => void speakChinese(text, button),
+  onContextChanged: () => refreshAiContextPanel(),
 });
 
 const vocabulary = new DesktopVocabularyController({
@@ -222,6 +226,7 @@ const vocabulary = new DesktopVocabularyController({
   onToast: showToast,
   speak: (text, button) => void speakChinese(text, button),
   onAskAi: (prompt) => openAiWithPrompt(prompt),
+  onContextChanged: () => refreshAiContextPanel(),
 });
 
 const practice = new DesktopPracticeController({
@@ -234,6 +239,7 @@ const practice = new DesktopPracticeController({
   onToast: showToast,
   onOpenSubscription: () => routeTo("subscription"),
   speak: (text, button) => void speakChinese(text, button),
+  onContextChanged: () => refreshAiContextPanel(),
 });
 
 function element(tag, className = "", text = "") {
@@ -283,7 +289,6 @@ function applyStaticText() {
   dom.ratingLabel.textContent = t("rating");
   dom.subscriptionLabel.textContent = t("subscription");
   dom.profileLabel.textContent = t("profile");
-  dom.railDaysLabel.textContent = t("days");
   dom.refreshMap.setAttribute("aria-label", t("refresh"));
   dom.aiTitle.textContent = t("aiTitle");
   dom.aiSubtitle.textContent = t("aiSubtitle");
@@ -331,6 +336,65 @@ function showToast(message) {
   state.toastTimer = setTimeout(() => {
     dom.toast.classList.remove("is-visible");
   }, 2800);
+}
+
+function lessonAiShouldAutoOpen() {
+  try {
+    return globalThis.matchMedia?.(LESSON_AI_DOCK_QUERY).matches === true;
+  } catch {
+    return globalThis.innerWidth >= 1100;
+  }
+}
+
+function syncLessonChrome() {
+  const lessonOpen = lesson.isOpen;
+  document.documentElement.classList.toggle("lesson-active", lessonOpen);
+  document.documentElement.classList.toggle(
+    "lesson-ai-open",
+    lessonOpen && state.aiOpen,
+  );
+}
+
+function trapFocusWithin(root, event) {
+  const focusable = [
+    ...root.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), summary, [tabindex]:not([tabindex="-1"])',
+    ),
+  ].filter((node) => node instanceof HTMLElement && node.offsetParent !== null);
+  if (focusable.length === 0) {
+    event.preventDefault();
+    return;
+  }
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (!focusable.includes(document.activeElement)) {
+    event.preventDefault();
+    (event.shiftKey ? last : first).focus();
+  } else if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+function handleLessonOpened() {
+  state.aiOpenedByLesson = false;
+  syncLessonChrome();
+  if (lessonAiShouldAutoOpen() && !state.aiOpen) {
+    state.aiOpenedByLesson = true;
+    openAi({ focus: false });
+  }
+}
+
+function handleLessonClosed() {
+  const shouldCloseAi = state.aiOpenedByLesson && state.aiOpen;
+  state.aiOpenedByLesson = false;
+  syncLessonChrome();
+  if (shouldCloseAi) {
+    closeAi({ restoreFocus: false });
+  }
 }
 
 function updateNetworkState() {
@@ -519,7 +583,6 @@ async function checkForUpdates({ showProgress = false } = {}) {
   } finally {
     state.updateShowChecking = false;
     renderUpdateBanner();
-    if (state.updateStatus === "available") scheduleAutomaticUpdate();
   }
 }
 
@@ -532,16 +595,7 @@ function updateActivityInProgress() {
   );
 }
 
-function scheduleAutomaticUpdate(delay = AUTO_UPDATE_DELAY_MS) {
-  clearTimeout(state.updateAutoTimer);
-  if (state.updateStatus !== "available") return;
-  state.updateAutoTimer = setTimeout(() => {
-    state.updateAutoTimer = null;
-    void installUpdate({ automatic: true });
-  }, delay);
-}
-
-async function installUpdate({ automatic = false } = {}) {
+async function installUpdate() {
   if (state.updateStatus !== "available" && !(
     state.updateStatus === "error" &&
     state.updateErrorStage === "install"
@@ -549,13 +603,10 @@ async function installUpdate({ automatic = false } = {}) {
     return;
   }
   if (updateActivityInProgress()) {
-    if (automatic) scheduleAutomaticUpdate(AUTO_UPDATE_RETRY_MS);
-    else showToast(t("updateLessonActive"));
+    showToast(t("updateLessonActive"));
     return;
   }
 
-  clearTimeout(state.updateAutoTimer);
-  state.updateAutoTimer = null;
   state.updateProgress = {
     downloadedBytes: 0,
     totalBytes: null,
@@ -647,6 +698,7 @@ function showAuth({ expired = false } = {}) {
   // A dropped session must never leave the goal dialog floating over the
   // login screen.
   closeOnboarding();
+  closeReferralModal({ restoreFocus: false });
   closeAi();
   resetAiSession();
   voice.dispose();
@@ -940,9 +992,8 @@ function renderRail() {
 
   dom.railUserName.textContent = String(user.name || t("unknownUser"));
   dom.railPlan.textContent = user.is_paid ? t("planPaid") : t("planFree");
+  renderUserAvatar(dom.railAvatar, user);
   dom.subscriptionBadge.textContent = user.is_paid ? t("active") : "PLUS";
-  dom.railXp.textContent = String(Number(progress.xp || 0));
-  dom.railStreak.textContent = String(Number(progress.streak || 0));
   dom.headerXp.textContent = String(Number(progress.xp || 0));
   dom.headerStreak.textContent = String(Number(progress.streak || 0));
   dom.railLevelLabel.textContent =
@@ -1065,6 +1116,7 @@ function renderActiveView() {
     renderProfile();
     if (!state.referral && !state.referralError) void loadProfileExtras();
   }
+  refreshAiContextPanel();
 }
 
 function viewHeading(title, subtitle, tag = "") {
@@ -1138,12 +1190,52 @@ function startRailResize(event) {
   window.addEventListener("pointerup", stop);
 }
 
+function runNotificationAction(item) {
+  const action = String(item?.action || "");
+  if (action === "subscription") {
+    routeTo("subscription");
+    return;
+  }
+  if (action === "rating") {
+    routeTo("rating");
+    return;
+  }
+  if (action === "profile") {
+    routeTo("profile");
+    return;
+  }
+  const lessonOrder = Number(item?.lesson_order || 0);
+  routeTo("course");
+  if (lessonOrder > 0) {
+    const lessonItem = allLessons().find((lesson) => Number(lesson.n) === lessonOrder);
+    if (lessonItem && lessonAccessible(lessonItem)) {
+      requestAnimationFrame(() => openLesson(lessonOrder));
+    }
+  }
+}
+
+function serverNotificationItems() {
+  const rows = Array.isArray(state.map?.notifications)
+    ? state.map.notifications
+    : [];
+  return rows
+    .filter((item) => item && typeof item === "object")
+    .slice(0, 8)
+    .map((item) => ({
+      glyph: String(item.glyph || "铃").slice(0, 2),
+      title: String(item.title || t("notificationsTitle")).slice(0, 160),
+      body: String(item.body || "").slice(0, 420),
+      action: () => runNotificationAction(item),
+      isServer: true,
+    }));
+}
+
 /**
- * Only real, already-known items appear here. There is no notification feed on
- * the server, and inventing one would put fake data in front of the learner.
+ * Only real, already-known items appear here: server-saved Telegram reminders
+ * plus current update/plan/streak facts the client already holds.
  */
 function notificationItems() {
-  const items = [];
+  const items = [...serverNotificationItems()];
   const user = state.map?.user;
   const progress = state.map?.progress || {};
   if (state.updateStatus === "available" && state.updateInfo?.version) {
@@ -1197,6 +1289,37 @@ function renderNotifications() {
     });
     dom.notificationsBody.append(row);
   });
+}
+
+function renderNotificationsHomeCard() {
+  const items = notificationItems().slice(0, 3);
+  const card = element("article", "card cardPad today-notifications-card");
+  const head = element("div", "sectionTitle");
+  head.append(
+    element("h3", "", t("notificationsTitle")),
+    element("span", "tag", items.length ? String(items.length) : NO_VALUE),
+  );
+  card.append(head);
+  if (!items.length) {
+    card.append(element("p", "muted small", t("notificationsEmpty")));
+    return card;
+  }
+  const list = element("div", "today-notifications-list");
+  items.forEach((item) => {
+    const row = element("button", "today-notification-row");
+    row.type = "button";
+    row.append(element("span", "notification-mark", item.glyph));
+    const copy = element("div");
+    copy.append(
+      element("b", "", item.title),
+      element("small", "muted", item.body || t("notificationsTitle")),
+    );
+    row.append(copy);
+    row.addEventListener("click", item.action);
+    list.append(row);
+  });
+  card.append(list);
+  return card;
 }
 
 function openNotifications() {
@@ -1427,12 +1550,9 @@ function renderToday() {
     copy.append(actions);
 
     const mascot = element("figure", "today-hero-mascot");
-    const mascotImage = element("img");
-    mascotImage.src = "./assets/hsk-ai-avatar.webp";
-    mascotImage.alt = "";
     mascot.append(
       element("figcaption", "mascot-note", t("mascotReady")),
-      mascotImage,
+      createPandaMascot("today-panda"),
     );
     resume.append(copy, mascot);
     main.append(resume);
@@ -1529,6 +1649,8 @@ function renderToday() {
 
   quickGrid.append(reviewCard, aiCard);
   main.append(quickGrid);
+
+  side.append(renderNotificationsHomeCard());
 
   const dailyGoal = element("article", "card cardPad today-progress-card");
   const dailyHead = element("div", "sectionTitle");
@@ -1699,11 +1821,7 @@ function renderCourseHome() {
   const aside = element("aside", "courseAside course-aside");
   const summary = element("article", "card courseSummary card-panel");
   const pandaWrap = element("div", "coursePandaWrap");
-  const panda = document.createElement("img");
-  panda.className = "coursePanda";
-  panda.src = "./assets/hsk-ai-avatar.webp";
-  panda.alt = "";
-  panda.setAttribute("aria-hidden", "true");
+  const panda = createPandaMascot("coursePanda");
   const pandaCopy = element("div");
   pandaCopy.append(
     element("b", "", t("courseSummaryTitle")),
@@ -1777,7 +1895,9 @@ function renderLessonNode(item) {
   const accessible = lessonAccessible(item);
   const row = element(
     "div",
-    `pathNodeRow${item?.checkpoint ? " milestone" : ""} lesson-node-row`,
+    `pathNodeRow is-${status}${accessible ? " is-accessible" : ""}${
+      item?.checkpoint ? " milestone" : ""
+    } lesson-node-row`,
   );
   const button = element(
     "button",
@@ -2021,11 +2141,7 @@ function renderRatingContent(board) {
   );
   pandaTop.append(pandaCopy, element("span", "tag", NO_VALUE));
   const pandaStage = element("div", "ratingPanda");
-  const panda = document.createElement("img");
-  panda.className = "pandaMini";
-  panda.src = "./assets/hsk-ai-avatar.webp";
-  panda.alt = "";
-  panda.setAttribute("aria-hidden", "true");
+  const panda = createPandaMascot("pandaMini");
   pandaStage.append(panda);
   const strip = element("div", "promotionStrip");
   [
@@ -2221,6 +2337,48 @@ function userInitials(name) {
     .slice(0, 2)
     .map((part) => [...part][0].toUpperCase())
     .join("");
+}
+
+function safeImageUrl(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  try {
+    const url = new URL(raw, globalThis.location?.href || "http://localhost/");
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function userAvatarSource(user) {
+  const direct = safeImageUrl(user?.avatar_url || user?.photo_url || "");
+  if (direct) return direct;
+  const telegramId = Number(user?.telegram_id || 0);
+  if (
+    Number.isInteger(telegramId) &&
+    telegramId > 0 &&
+    globalThis.location?.protocol?.startsWith("http")
+  ) {
+    return `/api/v3/avatar/${telegramId}`;
+  }
+  return "";
+}
+
+function renderUserAvatar(container, user) {
+  if (!container) return;
+  container.replaceChildren(
+    document.createTextNode(userInitials(user?.name || user?.avatar)),
+  );
+  const src = userAvatarSource(user);
+  if (!src) return;
+  const image = document.createElement("img");
+  image.alt = "";
+  image.loading = "lazy";
+  image.addEventListener("load", () => container.replaceChildren(image), {
+    once: true,
+  });
+  image.addEventListener("error", () => image.remove(), { once: true });
+  image.src = src;
 }
 
 function profileStatCard(value, label, delta = "") {
@@ -2450,49 +2608,575 @@ function toggleButton(active, onChange) {
   return button;
 }
 
-/**
- * The demo's morphing invite button: one pill that opens a four-slot tray.
- * Copy is wired to the real referral link. Telegram, WhatsApp and QR have no
- * capability behind them yet, so each keeps its slot behind a "coming soon"
- * veil rather than being dropped or faked.
- */
+function referralBotUsername() {
+  const handle = String(state.map?.bot_username || "darsi_chini_bot")
+    .trim()
+    .replace(/^@+/, "");
+  return /^[A-Za-z0-9_]{5,32}$/.test(handle) ? handle : "darsi_chini_bot";
+}
+
+function referralStartCode(code) {
+  const normalized = String(code || "").trim();
+  if (!normalized) return "";
+  return normalized.startsWith("ref_") ? normalized : `ref_${normalized}`;
+}
+
+function referralLinkFrom(value, code) {
+  const link = String(value || "").trim();
+  if (/^https:\/\/t\.me\/[A-Za-z0-9_]{5,32}\?start=ref_[A-Za-z0-9_-]+$/.test(link)) {
+    return link;
+  }
+  const start = referralStartCode(code);
+  if (!start) return "";
+  return `https://t.me/${referralBotUsername()}?start=${encodeURIComponent(start)}`;
+}
+
+function currentReferralData() {
+  const raw = state.referral && typeof state.referral === "object" ? state.referral : {};
+  const code = String(raw.code || state.map?.user?.referral_code || "").trim();
+  const link = referralLinkFrom(raw.link, code);
+  const required = Math.max(1, Number(raw.trial_required || 5) || 5);
+  const progress = Math.max(0, Math.min(required, Number(raw.trial_progress || 0) || 0));
+  return {
+    code,
+    link,
+    invited: Math.max(0, Number(raw.invited || 0) || 0),
+    activated: Math.max(0, Number(raw.activated || 0) || 0),
+    trial_progress: progress,
+    trial_required: required,
+    items: Array.isArray(raw.items) ? raw.items : [],
+  };
+}
+
+function referralShareText() {
+  return t("inviteShareText");
+}
+
+function openExternalUrl(url) {
+  const target = String(url || "");
+  if (!target) return;
+  try {
+    const opened = window.open(target, "_blank", "noopener,noreferrer");
+    if (opened) return;
+  } catch {
+    // Some desktop shells block popups; direct navigation is the fallback.
+  }
+  window.location.href = target;
+}
+
+async function writeClipboardText(value) {
+  const text = String(value || "");
+  if (!text) throw new Error("clipboard_empty");
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+  } catch {
+    // Fall back to the legacy command below.
+  }
+  const proxy = element("textarea", "clipboard-proxy");
+  proxy.value = text;
+  proxy.setAttribute("readonly", "true");
+  document.body.append(proxy);
+  proxy.select();
+  const copied = document.execCommand("copy");
+  proxy.remove();
+  if (!copied) throw new Error("clipboard_unavailable");
+}
+
+async function copyReferralLink(link, button = null) {
+  try {
+    await writeClipboardText(link);
+    state.referralCopied = true;
+    if (button) {
+      button.classList.add("is-copied");
+      button.textContent = t("inviteCopiedButton");
+    }
+    showToast(t("inviteCopied"));
+  } catch {
+    showToast(t("inviteCopyFailed"));
+  }
+}
+
+function shareReferralToTelegram(link) {
+  const url =
+    "https://t.me/share/url?url=" +
+    encodeURIComponent(link) +
+    "&text=" +
+    encodeURIComponent(referralShareText());
+  openExternalUrl(url);
+}
+
+function shareReferralToWhatsapp(link) {
+  const url =
+    "https://wa.me/?text=" +
+    encodeURIComponent(`${referralShareText()}\n${link}`);
+  openExternalUrl(url);
+}
+
+async function shareReferralWithSystem(link) {
+  const payload = {
+    title: "HSK AI",
+    text: referralShareText(),
+    url: link,
+  };
+  try {
+    if (navigator.share) {
+      await navigator.share(payload);
+      return;
+    }
+  } catch {
+    return;
+  }
+  await copyReferralLink(link);
+  showToast(t("inviteSystemShareCopied"));
+}
+
+function isMacDesktop() {
+  const devicePlatform = String(state.bootstrap?.device?.platform || "");
+  if (/mac/i.test(devicePlatform)) return true;
+  if (/win/i.test(devicePlatform)) return false;
+  return /mac/i.test(String(navigator.platform || ""));
+}
+
+function referralSystemShareTitle() {
+  return isMacDesktop() ? t("inviteShareMacTitle") : t("inviteShareComputerTitle");
+}
+
+function referralSystemShareBody() {
+  return isMacDesktop() ? t("inviteShareMacBody") : t("inviteShareComputerBody");
+}
+
+function referralDestination(iconText, title, body, onClick, extraClass = "") {
+  const button = element("button", `referral-destination ${extraClass}`.trim());
+  button.type = "button";
+  button.append(element("span", "referral-destination-icon", iconText));
+  const copy = element("span", "referral-destination-copy");
+  copy.append(element("b", "", title), element("small", "", body));
+  button.append(copy, element("span", "referral-destination-arrow", "↗"));
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function highlightReferralQr(qrCard) {
+  qrCard.scrollIntoView({ block: "center", behavior: state.reduceMotion ? "auto" : "smooth" });
+  qrCard.classList.add("is-highlighted");
+  qrCard.focus();
+  window.setTimeout(() => qrCard.classList.remove("is-highlighted"), 1300);
+}
+
+function closeReferralModal({ restoreFocus = true } = {}) {
+  document.querySelector(".referral-layer")?.remove();
+  const shouldRestore = state.referralModalOpen && restoreFocus;
+  state.referralModalOpen = false;
+  if (shouldRestore) {
+    const target = state.referralPreviousFocus?.isConnected
+      ? state.referralPreviousFocus
+      : dom.showProfile;
+    target.focus();
+  }
+  state.referralPreviousFocus = null;
+}
+
+function openReferralModal(referral = currentReferralData()) {
+  if (!referral.link) {
+    showToast(state.referralError || t("inviteUnavailable"));
+    return;
+  }
+  closeReferralModal({ restoreFocus: false });
+  state.referralPreviousFocus =
+    document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : dom.showProfile;
+  state.referralModalOpen = true;
+  state.referralCopied = false;
+
+  const layer = element("div", "referral-layer");
+  layer.addEventListener("click", (event) => {
+    if (event.target === layer) closeReferralModal();
+  });
+
+  const shell = element("section", "referral-shell");
+  shell.setAttribute("role", "dialog");
+  shell.setAttribute("aria-modal", "true");
+  shell.setAttribute("aria-label", t("inviteModalTitle"));
+
+  const close = element("button", "icon-button referral-close", "×");
+  close.type = "button";
+  close.setAttribute("aria-label", t("close"));
+  close.addEventListener("click", () => closeReferralModal());
+
+  const hero = element("header", "referral-hero");
+  const heroCopy = element("div");
+  heroCopy.append(
+    element("p", "eyebrow", t("inviteModalEyebrow")),
+    element("h2", "", t("inviteModalTitle")),
+    element("p", "muted", t("inviteModalSubtitle")),
+  );
+  hero.append(heroCopy, close);
+
+  const active = Number(referral.trial_progress || 0);
+  const required = Number(referral.trial_required || 5);
+  const remaining = Math.max(0, required - active);
+  const bonus = element("section", "referral-bonus");
+  const mascot = createPandaMascot("referral-mascot");
+  const bonusCopy = element("div", "referral-bonus-copy");
+  bonusCopy.append(
+    element("span", "referral-bonus-pill", t("inviteBonusLabel")),
+    element(
+      "h3",
+      "",
+      t("inviteBonusTitle", { count: required }),
+    ),
+    element("p", "muted", t("inviteBonusBody")),
+  );
+  const bonusProgress = element("div", "referral-progress");
+  bonusProgress.append(
+    element(
+      "b",
+      "",
+      t("inviteActiveCount", { done: active, total: required }),
+    ),
+    element("span", "", t("inviteRemaining", { count: remaining })),
+  );
+  const track = element("div", "summary-progress");
+  const fill = element("span", "progress-fill");
+  track.append(fill);
+  setProgress(fill, active, required);
+  bonusProgress.append(track);
+  bonusCopy.append(bonusProgress);
+  bonus.append(mascot, bonusCopy);
+
+  const destinations = element("section", "referral-section");
+  const destinationsHead = element("div", "referral-section-head");
+  destinationsHead.append(
+    element("h3", "", t("inviteDestinationTitle")),
+    element("span", "", t("inviteDestinationHint")),
+  );
+  const grid = element("div", "referral-destination-grid");
+  const qrCard = element("section", "referral-qr-card");
+  qrCard.tabIndex = -1;
+  grid.append(
+    referralDestination(
+      "TG",
+      t("inviteDestinationTelegram"),
+      t("inviteDestinationTelegramBody"),
+      () => shareReferralToTelegram(referral.link),
+    ),
+    referralDestination(
+      "WA",
+      t("inviteDestinationWhatsapp"),
+      t("inviteDestinationWhatsappBody"),
+      () => shareReferralToWhatsapp(referral.link),
+    ),
+    referralDestination(
+      "⌘",
+      referralSystemShareTitle(),
+      referralSystemShareBody(),
+      () => void shareReferralWithSystem(referral.link),
+    ),
+    referralDestination(
+      "▦",
+      t("inviteQrTitle"),
+      t("inviteQrBody"),
+      () => highlightReferralQr(qrCard),
+      "is-qr",
+    ),
+  );
+  destinations.append(destinationsHead, grid);
+
+  const linkBlock = element("section", "referral-section");
+  const linkHead = element("div", "referral-section-head");
+  linkHead.append(element("h3", "", t("invitePersonalLink")), element("span", "", t("invitePrivate")));
+  const linkRow = element("div", "referral-link-row");
+  linkRow.append(element("span", "referral-link-icon", "⌁"));
+  const linkText = element("p", "", referral.link);
+  const copyButton = element("button", "primary-button referral-copy-button", t("inviteCopyButton"));
+  copyButton.type = "button";
+  copyButton.addEventListener("click", () => void copyReferralLink(referral.link, copyButton));
+  linkRow.append(linkText, copyButton);
+  linkBlock.append(linkHead, linkRow);
+
+  const qrImage = element("img", "referral-qr-image");
+  qrImage.alt = t("inviteQrAlt");
+  qrImage.src = makeReferralQrDataUrl(referral.link);
+  const qrText = element("div", "referral-qr-copy");
+  qrText.append(
+    element("h3", "", t("inviteQrScanTitle")),
+    element("p", "muted", t("inviteQrScanBody")),
+  );
+  qrCard.append(qrImage, qrText);
+
+  const note = element("p", "referral-note");
+  note.append(element("span", "", "✓"), document.createTextNode(t("inviteBonusNote")));
+
+  shell.append(hero, bonus, destinations, linkBlock, qrCard, note);
+  layer.append(shell);
+  document.body.append(layer);
+  close.focus();
+}
+
+function makeReferralQrDataUrl(text) {
+  const matrix = referralQrMatrix(String(text || ""));
+  if (!matrix) return "";
+  const quiet = 4;
+  const size = matrix.length + quiet * 2;
+  const rects = [];
+  for (let row = 0; row < matrix.length; row += 1) {
+    for (let col = 0; col < matrix.length; col += 1) {
+      if (matrix[row][col]) {
+        rects.push(`<rect x="${col + quiet}" y="${row + quiet}" width="1" height="1"/>`);
+      }
+    }
+  }
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges">` +
+    `<rect width="${size}" height="${size}" fill="#fff"/>` +
+    `<g fill="#211d17">${rects.join("")}</g></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+function referralQrMatrix(text) {
+  const bytes = new TextEncoder().encode(text);
+  const dataCodewords = 80;
+  const errorCodewords = 20;
+  const totalBits = dataCodewords * 8;
+  const bits = [];
+  const pushBits = (value, count) => {
+    for (let i = count - 1; i >= 0; i -= 1) bits.push((value >>> i) & 1);
+  };
+  pushBits(4, 4);
+  pushBits(bytes.length, 8);
+  bytes.forEach((byte) => pushBits(byte, 8));
+  if (bits.length > totalBits) return null;
+  for (let i = 0; i < Math.min(4, totalBits - bits.length); i += 1) bits.push(0);
+  while (bits.length % 8) bits.push(0);
+  const codewords = [];
+  for (let i = 0; i < bits.length; i += 8) {
+    codewords.push(bits.slice(i, i + 8).reduce((value, bit) => (value << 1) | bit, 0));
+  }
+  for (let pad = 0; codewords.length < dataCodewords; pad += 1) {
+    codewords.push(pad % 2 === 0 ? 0xec : 0x11);
+  }
+  const payload = [...codewords, ...reedSolomonRemainder(codewords, errorCodewords)];
+  const payloadBits = [];
+  payload.forEach((byte) => pushCodewordBits(payloadBits, byte));
+
+  const base = referralQrBaseMatrix();
+  let best = null;
+  let bestPenalty = Number.POSITIVE_INFINITY;
+  for (let mask = 0; mask < 8; mask += 1) {
+    const matrix = base.matrix.map((row) => [...row]);
+    referralQrPlaceData(matrix, base.reserved, payloadBits, mask);
+    referralQrWriteFormat(matrix, mask);
+    const penalty = referralQrPenalty(matrix);
+    if (penalty < bestPenalty) {
+      bestPenalty = penalty;
+      best = matrix;
+    }
+  }
+  return best;
+}
+
+function pushCodewordBits(bits, byte) {
+  for (let i = 7; i >= 0; i -= 1) bits.push((byte >>> i) & 1);
+}
+
+function referralQrBaseMatrix() {
+  const size = 33;
+  const matrix = Array.from({ length: size }, () => Array(size).fill(false));
+  const reserved = Array.from({ length: size }, () => Array(size).fill(false));
+  const set = (row, col, value, reserve = true) => {
+    if (row < 0 || row >= size || col < 0 || col >= size) return;
+    matrix[row][col] = Boolean(value);
+    if (reserve) reserved[row][col] = true;
+  };
+  const finder = (row, col) => {
+    for (let y = -1; y <= 7; y += 1) {
+      for (let x = -1; x <= 7; x += 1) {
+        const inner = x >= 0 && x <= 6 && y >= 0 && y <= 6;
+        const dark =
+          inner &&
+          (x === 0 || x === 6 || y === 0 || y === 6 || (x >= 2 && x <= 4 && y >= 2 && y <= 4));
+        set(row + y, col + x, dark);
+      }
+    }
+  };
+  finder(0, 0);
+  finder(0, size - 7);
+  finder(size - 7, 0);
+  for (let y = -2; y <= 2; y += 1) {
+    for (let x = -2; x <= 2; x += 1) {
+      const distance = Math.max(Math.abs(x), Math.abs(y));
+      set(26 + y, 26 + x, distance !== 1);
+    }
+  }
+  for (let i = 0; i < size; i += 1) {
+    if (!reserved[6][i]) set(6, i, i % 2 === 0);
+    if (!reserved[i][6]) set(i, 6, i % 2 === 0);
+  }
+  for (let i = 0; i < 9; i += 1) {
+    if (i !== 6) {
+      set(8, i, false);
+      set(i, 8, false);
+    }
+  }
+  for (let i = size - 8; i < size; i += 1) set(8, i, false);
+  for (let i = size - 7; i < size; i += 1) set(i, 8, false);
+  set(size - 8, 8, true);
+  return { matrix, reserved };
+}
+
+function referralQrMask(mask, row, col) {
+  switch (mask) {
+    case 0:
+      return (row + col) % 2 === 0;
+    case 1:
+      return row % 2 === 0;
+    case 2:
+      return col % 3 === 0;
+    case 3:
+      return (row + col) % 3 === 0;
+    case 4:
+      return (Math.floor(row / 2) + Math.floor(col / 3)) % 2 === 0;
+    case 5:
+      return ((row * col) % 2) + ((row * col) % 3) === 0;
+    case 6:
+      return (((row * col) % 2) + ((row * col) % 3)) % 2 === 0;
+    default:
+      return (((row + col) % 2) + ((row * col) % 3)) % 2 === 0;
+  }
+}
+
+function referralQrPlaceData(matrix, reserved, bits, mask) {
+  let index = 0;
+  let upward = true;
+  for (let right = matrix.length - 1; right > 0; right -= 2) {
+    if (right === 6) right -= 1;
+    for (let offset = 0; offset < matrix.length; offset += 1) {
+      const row = upward ? matrix.length - 1 - offset : offset;
+      for (let col = right; col >= right - 1; col -= 1) {
+        if (reserved[row][col]) continue;
+        const bit = index < bits.length ? bits[index] : 0;
+        matrix[row][col] = Boolean(bit) !== referralQrMask(mask, row, col);
+        index += 1;
+      }
+    }
+    upward = !upward;
+  }
+}
+
+function referralQrWriteFormat(matrix, mask) {
+  const size = matrix.length;
+  const bits = referralQrFormatBits(mask);
+  const bit = (index) => Boolean((bits >>> index) & 1);
+  for (let i = 0; i <= 5; i += 1) matrix[8][i] = bit(i);
+  matrix[8][7] = bit(6);
+  matrix[8][8] = bit(7);
+  matrix[7][8] = bit(8);
+  for (let i = 9; i < 15; i += 1) matrix[14 - i][8] = bit(i);
+  for (let i = 0; i < 8; i += 1) matrix[size - 1 - i][8] = bit(i);
+  for (let i = 8; i < 15; i += 1) matrix[8][size - 15 + i] = bit(i);
+  matrix[size - 8][8] = true;
+}
+
+function referralQrFormatBits(mask) {
+  const data = (1 << 3) | mask;
+  let remainder = data;
+  for (let i = 0; i < 10; i += 1) {
+    remainder = (remainder << 1) ^ (((remainder >>> 9) & 1) ? 0x537 : 0);
+  }
+  return ((data << 10) | (remainder & 0x3ff)) ^ 0x5412;
+}
+
+function referralQrPenalty(matrix) {
+  let penalty = 0;
+  const size = matrix.length;
+  const runPenalty = (values) => {
+    let score = 0;
+    let runColor = values[0];
+    let runLength = 1;
+    for (let i = 1; i < values.length; i += 1) {
+      if (values[i] === runColor) {
+        runLength += 1;
+      } else {
+        if (runLength >= 5) score += runLength - 2;
+        runColor = values[i];
+        runLength = 1;
+      }
+    }
+    return score + (runLength >= 5 ? runLength - 2 : 0);
+  };
+  for (let row = 0; row < size; row += 1) penalty += runPenalty(matrix[row]);
+  for (let col = 0; col < size; col += 1) {
+    penalty += runPenalty(matrix.map((row) => row[col]));
+  }
+  for (let row = 0; row < size - 1; row += 1) {
+    for (let col = 0; col < size - 1; col += 1) {
+      const color = matrix[row][col];
+      if (
+        color === matrix[row][col + 1] &&
+        color === matrix[row + 1][col] &&
+        color === matrix[row + 1][col + 1]
+      ) {
+        penalty += 3;
+      }
+    }
+  }
+  const dark = matrix.flat().filter(Boolean).length;
+  const percent = (dark * 100) / (size * size);
+  penalty += Math.floor(Math.abs(percent - 50) / 5) * 10;
+  return penalty;
+}
+
+function reedSolomonRemainder(data, degree) {
+  const divisor = reedSolomonDivisor(degree);
+  const result = Array(degree).fill(0);
+  data.forEach((byte) => {
+    const factor = byte ^ result.shift();
+    result.push(0);
+    divisor.forEach((coefficient, index) => {
+      result[index] ^= reedSolomonMultiply(coefficient, factor);
+    });
+  });
+  return result;
+}
+
+function reedSolomonDivisor(degree) {
+  const result = Array(degree).fill(0);
+  result[degree - 1] = 1;
+  let root = 1;
+  for (let i = 0; i < degree; i += 1) {
+    for (let j = 0; j < result.length; j += 1) {
+      result[j] = reedSolomonMultiply(result[j], root);
+      if (j + 1 < result.length) result[j] ^= result[j + 1];
+    }
+    root = reedSolomonMultiply(root, 2);
+  }
+  return result;
+}
+
+function reedSolomonMultiply(a, b) {
+  if (a === 0 || b === 0) return 0;
+  let value = 0;
+  for (let i = 7; i >= 0; i -= 1) {
+    value = (value << 1) ^ ((value >>> 7) * 0x11d);
+    value ^= ((b >>> i) & 1) * a;
+  }
+  return value & 0xff;
+}
+
+/** The real invite button opens a native-feeling share modal with app routes. */
 function inviteMorph(link) {
+  const referral = currentReferralData();
+  const inviteLink = link || referral.link;
   const morph = element("div", "invite-morph");
   const main = element("button", "invite-main", t("inviteAddFriend"));
   main.type = "button";
-  main.addEventListener("click", () => {
-    morph.classList.add("is-open");
-    morph.querySelector(".invite-action")?.focus();
-  });
-
-  const tray = element("div", "invite-tray");
-  const copy = element("button", "invite-action", "⌘C");
-  copy.type = "button";
-  copy.setAttribute("aria-label", t("copy"));
-  copy.disabled = !link;
-  copy.addEventListener("click", () => {
-    void navigator.clipboard
-      ?.writeText(String(link || ""))
-      .then(() => {
-        copy.classList.add("is-sent");
-        showToast(t("inviteCopied"));
-      })
-      .catch(() => showToast(t("inviteCopyFailed")));
-  });
-  const share = (label, aria) => {
-    const button = element("button", "invite-action", label);
-    button.type = "button";
-    button.setAttribute("aria-label", aria);
-    return soonBlock(button);
-  };
-  tray.append(
-    share("TG", t("inviteShareTelegram")),
-    share("WA", t("inviteShareWhatsapp")),
-    copy,
-    share("QR", t("inviteShareQr")),
-  );
-
-  morph.append(main, tray);
+  main.disabled = !inviteLink;
+  main.addEventListener("click", () => openReferralModal({ ...referral, link: inviteLink }));
+  morph.append(main);
   return morph;
 }
 
@@ -2506,8 +3190,8 @@ function renderInviteCard() {
   );
   card.append(copy);
 
-  const referral = state.referral;
-  if (!referral) {
+  const referral = currentReferralData();
+  if (!referral.link) {
     card.append(
       element("p", "muted small", state.referralError || t("inviteLoading")),
     );
@@ -2515,6 +3199,9 @@ function renderInviteCard() {
   }
 
   card.append(inviteMorph(referral.link));
+  if (state.referralError) {
+    card.append(element("p", "muted small", state.referralError));
+  }
 
   // The demo shows two invitee avatars beside the counters; ours are the real
   // initials the referral service returns.
@@ -2822,7 +3509,8 @@ function renderProfile() {
   const topRow = element("div", "profile-two-cols");
 
   const hero = element("article", "profile-hero card-panel");
-  const avatar = element("div", "profile-initials", userInitials(user.name));
+  const avatar = element("div", "profile-initials");
+  renderUserAvatar(avatar, user);
   const heroCopy = element("div");
   heroCopy.append(
     element("h3", "", String(user.name || t("unknownUser"))),
@@ -2840,11 +3528,7 @@ function renderProfile() {
     element("span", "tag", `${NO_VALUE} ${t("profileMinutesUnit")}`),
   );
   heroCopy.append(soonBlock(chips));
-  const panda = document.createElement("img");
-  panda.className = "profile-panda";
-  panda.src = "./assets/hsk-ai-avatar.webp";
-  panda.alt = "";
-  panda.setAttribute("aria-hidden", "true");
+  const panda = createPandaMascot("profile-panda");
   hero.append(avatar, heroCopy, panda);
 
   // The goal itself is picked in onboarding; this card only reports it.
@@ -3176,7 +3860,7 @@ function toggleRail() {
   state.railOpen ? closeRail() : openRail();
 }
 
-function openAi() {
+function openAi({ focus = true } = {}) {
   if (!state.aiOpen) {
     state.aiPreviousFocus =
       document.activeElement instanceof HTMLElement
@@ -3190,7 +3874,10 @@ function openAi() {
   if (!state.aiLoaded) {
     loadAiStatus();
   }
-  dom.closeAi.focus();
+  syncLessonChrome();
+  if (focus) {
+    dom.closeAi.focus();
+  }
 }
 
 function openAiWithPrompt(prompt = "") {
@@ -3200,12 +3887,16 @@ function openAiWithPrompt(prompt = "") {
   updateAiComposer();
 }
 
-function closeAi() {
-  const shouldRestoreFocus = state.aiOpen;
+function closeAi({ restoreFocus = true } = {}) {
+  const shouldRestoreFocus = state.aiOpen && restoreFocus;
+  if (lesson.isOpen) {
+    state.aiOpenedByLesson = false;
+  }
   state.aiOpen = false;
   dom.aiDrawer.classList.remove("is-open");
   dom.aiDrawer.setAttribute("aria-hidden", "true");
   dom.aiLauncher.setAttribute("aria-expanded", "false");
+  syncLessonChrome();
   if (shouldRestoreFocus) {
     const target = state.aiPreviousFocus?.isConnected
       ? state.aiPreviousFocus
@@ -3216,6 +3907,9 @@ function closeAi() {
 }
 
 function toggleAi() {
+  if (lesson.isOpen && !state.aiOpen) {
+    state.aiOpenedByLesson = false;
+  }
   state.aiOpen ? closeAi() : openAi();
 }
 
@@ -3266,6 +3960,248 @@ function formatAiBytes(value) {
   if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)} GB`;
   if (bytes >= 1024 ** 2) return `${Math.round(bytes / 1024 ** 2)} MB`;
   return `${Math.round(bytes / 1024)} KB`;
+}
+
+function boundedAiText(value, limit = 240) {
+  return [...String(value ?? "").trim()].slice(0, limit).join("");
+}
+
+function aiPromptSuggestion(labelKey, promptKey, variables = {}) {
+  return {
+    label: t(labelKey, variables),
+    prompt: t(promptKey, variables),
+  };
+}
+
+function currentCourseAiContext() {
+  const current = currentLesson();
+  const level = boundedAiText(state.map?.label || levelLabel(state.map?.level), 64);
+  const lessonNumber = current ? Number(current.n) || 0 : 0;
+  const lessonLine = current
+    ? [
+        t("lessonNumber", { number: lessonNumber }),
+        boundedAiText(current.zh, 48),
+        boundedAiText(current.py, 80),
+        boundedAiText(pick(current.tr), 120),
+      ].filter(Boolean).join(" · ")
+    : "";
+  return {
+    level,
+    lessonNumber,
+    lessonLine,
+    promptLines: [
+      `Course level: ${level}`,
+      current
+        ? [
+            `Current course lesson: ${lessonNumber}`,
+            `Chinese: ${boundedAiText(current.zh)}`,
+            `Pinyin: ${boundedAiText(current.py)}`,
+            `Translation: ${boundedAiText(pick(current.tr))}`,
+          ].join("\n")
+        : "",
+    ].filter(Boolean),
+  };
+}
+
+function activeViewLabel() {
+  if (lesson.isOpen) {
+    const number = lesson.lessonOrder || currentLesson()?.n || "";
+    return t("lessonNumber", { number: number || "—" });
+  }
+  const labels = {
+    today: t("today"),
+    course: t("course"),
+    practice: t("practice"),
+    voice: t("voice"),
+    vocabulary: t("vocabulary"),
+    rating: t("rating"),
+    subscription: t("subscription"),
+    profile: t("profile"),
+  };
+  return labels[state.view] || t("course");
+}
+
+function defaultAiSuggestions() {
+  return [
+    aiPromptSuggestion("aiSuggestExplainVisible", "aiSuggestExplainVisiblePrompt"),
+    aiPromptSuggestion("aiSuggestExamplesForScreen", "aiSuggestExamplesForScreenPrompt"),
+    aiPromptSuggestion("aiSuggestContinueLesson", "aiSuggestContinueLessonPrompt"),
+  ];
+}
+
+function buildAiScreenContext() {
+  const course = currentCourseAiContext();
+  const context = {
+    screen: activeViewLabel(),
+    badge: course.level,
+    title: t("aiContextGenericTitle"),
+    details: course.lessonLine ? [course.lessonLine] : [t("aiContextNoDetail")],
+    promptLines: [
+      `Active HSK AI screen: ${activeViewLabel()}`,
+      ...course.promptLines,
+    ],
+    suggestions: defaultAiSuggestions(),
+  };
+
+  if (lesson.isOpen && typeof lesson.aiContext === "function") {
+    const visible = lesson.aiContext();
+    if (visible) {
+      context.screen = t("lessonNumber", { number: visible.lessonOrder || course.lessonNumber || "—" });
+      context.badge = `${Number(visible.index || 0)} / ${Number(visible.total || 0)}`;
+      context.title = boundedAiText(visible.title || context.screen, 80);
+      context.details = [
+        boundedAiText(visible.sectionTitle, 90),
+        boundedAiText(visible.summary, 140),
+      ].filter(Boolean);
+      context.promptLines.push("Visible lesson card:");
+      context.promptLines.push(...visible.promptLines);
+      context.suggestions = [
+        visible.isExercise
+          ? aiPromptSuggestion("aiSuggestPracticeHint", "aiSuggestPracticeHintPrompt")
+          : aiPromptSuggestion("aiSuggestExplainVisible", "aiSuggestExplainVisiblePrompt"),
+        aiPromptSuggestion("aiSuggestExamplesForScreen", "aiSuggestExamplesForScreenPrompt"),
+        aiPromptSuggestion("aiSuggestionQuiz", "aiSuggestionQuizPrompt"),
+      ];
+    }
+    return context;
+  }
+
+  if (state.view === "practice" && typeof practice.aiContext === "function") {
+    const visible = practice.aiContext();
+    context.title = boundedAiText(visible?.title || t("practiceTitle"), 80);
+    context.details = [
+      boundedAiText(visible?.progress, 90),
+      boundedAiText(visible?.summary, 140),
+    ].filter(Boolean);
+    context.promptLines.push("Visible practice screen:");
+    context.promptLines.push(...(visible?.promptLines || []));
+    context.suggestions = visible?.isRunning
+      ? [
+          aiPromptSuggestion("aiSuggestPracticeHint", "aiSuggestPracticeHintPrompt"),
+          aiPromptSuggestion("aiSuggestExplainVisible", "aiSuggestExplainVisiblePrompt"),
+          aiPromptSuggestion("aiSuggestExamplesForScreen", "aiSuggestExamplesForScreenPrompt"),
+        ]
+      : [
+          aiPromptSuggestion("aiSuggestionQuiz", "aiSuggestionQuizPrompt"),
+          aiPromptSuggestion("aiSuggestPracticeReview", "aiSuggestPracticeReviewPrompt"),
+          aiPromptSuggestion("aiSuggestContinueLesson", "aiSuggestContinueLessonPrompt"),
+        ];
+    return context;
+  }
+
+  if (state.view === "vocabulary" && typeof vocabulary.aiContext === "function") {
+    const visible = vocabulary.aiContext();
+    if (visible?.word) {
+      context.title = `${boundedAiText(visible.word, 32)} · ${boundedAiText(visible.pinyin, 64)}`;
+      context.badge = boundedAiText(visible.level || course.level, 24);
+      context.details = [
+        boundedAiText(visible.translation, 120),
+        boundedAiText(visible.example, 140),
+      ].filter(Boolean);
+      context.promptLines.push("Visible vocabulary word:");
+      context.promptLines.push(...visible.promptLines);
+      context.suggestions = [
+        aiPromptSuggestion("aiSuggestVocabMemory", "aiSuggestVocabMemoryPrompt", { word: visible.word }),
+        aiPromptSuggestion("aiSuggestExamplesForScreen", "aiSuggestExamplesForScreenPrompt"),
+        aiPromptSuggestion("aiSuggestVocabCompare", "aiSuggestVocabComparePrompt", { word: visible.word }),
+      ];
+    }
+    return context;
+  }
+
+  if (state.view === "voice" && typeof voice.aiContext === "function") {
+    const visible = voice.aiContext();
+    context.title = boundedAiText(visible?.title || t("voiceTitle"), 80);
+    context.details = [
+      boundedAiText(visible?.summary, 140),
+      boundedAiText(visible?.latestTurn, 140),
+    ].filter(Boolean);
+    context.promptLines.push("Visible AI Voice screen:");
+    context.promptLines.push(...(visible?.promptLines || []));
+    context.suggestions = [
+      aiPromptSuggestion("aiSuggestVoicePrep", "aiSuggestVoicePrepPrompt"),
+      aiPromptSuggestion("aiSuggestExplainVisible", "aiSuggestExplainVisiblePrompt"),
+      aiPromptSuggestion("aiSuggestExamplesForScreen", "aiSuggestExamplesForScreenPrompt"),
+    ];
+    return context;
+  }
+
+  if (state.view === "subscription") {
+    context.title = t("subscriptionTitle");
+    context.details = [t("subscriptionSubtitle")];
+    context.promptLines.push(`User access: ${state.map?.user?.is_paid ? "paid" : "free"}`);
+    context.suggestions = [
+      aiPromptSuggestion("aiSuggestSubscriptionPlan", "aiSuggestSubscriptionPlanPrompt"),
+      aiPromptSuggestion("aiSuggestContinueLesson", "aiSuggestContinueLessonPrompt"),
+      aiPromptSuggestion("aiSuggestExplainVisible", "aiSuggestExplainVisiblePrompt"),
+    ];
+    return context;
+  }
+
+  if (state.view === "profile" || state.view === "rating") {
+    const progress = state.map?.progress || {};
+    context.title = state.view === "rating" ? t("ratingTitle") : t("profile");
+    context.details = [
+      `${t("xpTotal")}: ${Number(progress.xp || 0)} XP`,
+      `${t("streakDays")}: ${Number(progress.streak || 0)}`,
+    ];
+    context.promptLines.push(
+      `Progress XP: ${Number(progress.xp || 0)}`,
+      `Progress streak: ${Number(progress.streak || 0)}`,
+    );
+    context.suggestions = [
+      aiPromptSuggestion("aiSuggestProfileReview", "aiSuggestProfileReviewPrompt"),
+      aiPromptSuggestion("aiSuggestContinueLesson", "aiSuggestContinueLessonPrompt"),
+      aiPromptSuggestion("aiSuggestionQuiz", "aiSuggestionQuizPrompt"),
+    ];
+  }
+
+  return context;
+}
+
+function refreshAiContextPanel() {
+  if (!state.aiOpen || !aiIsReady()) return;
+  renderAiChat();
+  updateAiComposer();
+}
+
+function fillAiPrompt(prompt) {
+  const value = boundedAiText(prompt, 1000);
+  if (!value) return;
+  dom.aiInput.value = value;
+  updateAiComposer();
+  dom.aiInput.focus();
+}
+
+function renderAiContextCard(context) {
+  const card = element("section", "ai-context-card");
+  const head = element("div", "ai-context-head");
+  const copy = element("div");
+  copy.append(
+    element("span", "eyebrow", t("aiContextEyebrow")),
+    element("h3", "", context.title || t("aiContextGenericTitle")),
+  );
+  head.append(copy, element("span", "tag", context.badge || context.screen));
+  card.append(head);
+
+  const meta = element("div", "ai-context-meta");
+  meta.append(element("span", "", t("aiContextScreen", { screen: context.screen })));
+  (context.details || []).slice(0, 3).forEach((detail) => {
+    meta.append(element("span", "", detail));
+  });
+  card.append(meta);
+  return card;
+}
+
+function renderAiHintStrip(context) {
+  const suggestions = element("div", "ai-hint-strip");
+  (context.suggestions || defaultAiSuggestions()).slice(0, 3).forEach((suggestion) => {
+    const button = element("button", "ai-hint-pill", suggestion.label);
+    button.type = "button";
+    button.addEventListener("click", () => fillAiPrompt(suggestion.prompt));
+    suggestions.append(button);
+  });
+  return suggestions;
 }
 
 function renderAiLoading() {
@@ -3421,13 +4357,14 @@ async function removeAiPack() {
 
 function renderAiChat() {
   const wrap = element("div", "ai-chat-shell");
+  const screenContext = buildAiScreenContext();
   const ready = element("section", "ai-ready-card");
   ready.append(
     element("span", "ai-ready-dot"),
     element("strong", "", t("aiReadyTitle")),
     element("small", "", t("aiReadyBody")),
   );
-  wrap.append(ready);
+  wrap.append(ready, renderAiContextCard(screenContext));
 
   if (state.aiMessages.length === 0) {
     const intro = element("section", "ai-chat-intro");
@@ -3435,20 +4372,6 @@ function renderAiChat() {
       element("h3", "", t("aiWelcomeTitle")),
       element("p", "", t("aiWelcomeBody")),
     );
-    const suggestions = element("div", "ai-suggestions");
-    ["aiSuggestionExplain", "aiSuggestionExamples", "aiSuggestionQuiz"].forEach(
-      (key) => {
-        const button = element("button", "ai-suggestion", t(key));
-        button.type = "button";
-        button.addEventListener("click", () => {
-          dom.aiInput.value = t(`${key}Prompt`);
-          updateAiComposer();
-          dom.aiInput.focus();
-        });
-        suggestions.append(button);
-      },
-    );
-    intro.append(suggestions);
     wrap.append(intro);
   }
 
@@ -3482,6 +4405,7 @@ function renderAiChat() {
     remove,
   );
   wrap.append(manage);
+  wrap.append(renderAiHintStrip(screenContext));
   dom.aiBody.replaceChildren(wrap);
   dom.aiFooterStatus.textContent = state.aiBusy
     ? t("aiGenerating")
@@ -3493,6 +4417,8 @@ function renderAiChat() {
 
 function updateAiComposer() {
   const ready = aiIsReady();
+  const hasDraft = Boolean(String(dom.aiInput.value || "").trim());
+  dom.aiDrawer.classList.toggle("has-ai-draft", hasDraft);
   dom.aiInput.disabled = !ready || state.aiBusy;
   dom.aiInput.placeholder = ready
     ? t("aiInputPlaceholder")
@@ -3513,27 +4439,21 @@ function newAiRequestId() {
   return `desktop-ai-${[...bytes].map((value) => value.toString(16).padStart(2, "0")).join("")}`;
 }
 
-function localAiPromptWithLessonContext(question) {
-  const bounded = (value, limit = 240) =>
-    [...String(value || "").trim()].slice(0, limit).join("");
-  const current = currentLesson();
-  const level = bounded(state.map?.label || levelLabel(state.map?.level), 64);
-  const context = current
-    ? [
-        `Current course: ${level}`,
-        `Current lesson: ${Number(current.n)}.`,
-        `Chinese: ${bounded(current.zh)}`,
-        `Pinyin: ${bounded(current.py)}`,
-        `Translation: ${bounded(pick(current.tr))}`,
-      ].join("\n")
-    : `Current course: ${level}`;
+function localAiPromptWithScreenContext(question) {
+  const context = buildAiScreenContext();
+  const contextText = boundedAiText(
+    context.promptLines.filter(Boolean).join("\n"),
+    1300,
+  );
   return [
-    "Use this verified lesson context when it is relevant.",
-    context,
+    "Use this verified HSK AI app context when it is relevant.",
+    "Do not claim access to anything outside this app window.",
+    "Do not reveal lesson, quiz, or practice answer keys before the learner has checked an answer.",
+    contextText,
     `Learner interface language: ${getLanguage()}.`,
     "For Chinese examples, include hanzi, pinyin, and a translation.",
     "Learner question:",
-    bounded(question, 2800),
+    boundedAiText(question, 2200),
   ].join("\n");
 }
 
@@ -3570,7 +4490,7 @@ async function sendAiMessage() {
   try {
     const result = await desktopBridge.localAiChat({
       requestId,
-      prompt: localAiPromptWithLessonContext(prompt),
+      prompt: localAiPromptWithScreenContext(prompt),
       language: getLanguage(),
       history,
       maxTokens: 384,
@@ -3720,8 +4640,6 @@ function bindEvents() {
   window.addEventListener("online", updateNetworkState);
   window.addEventListener("offline", updateNetworkState);
   window.addEventListener("beforeunload", () => {
-    clearTimeout(state.updateAutoTimer);
-    state.updateAutoTimer = null;
     if (state.updateUnlisten) {
       try {
         state.updateUnlisten();
@@ -3774,13 +4692,17 @@ function bindEvents() {
       return;
     }
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-      if (!dom.workspace.hidden && !lesson.isOpen) {
+      if (!dom.workspace.hidden) {
         event.preventDefault();
         toggleAi();
       }
       return;
     }
     if (event.key === "Tab" && lesson.isOpen) {
+      if (state.aiOpen && dom.aiDrawer.contains(document.activeElement)) {
+        trapFocusWithin(dom.aiDrawer, event);
+        return;
+      }
       lesson.trapFocus(event);
       return;
     }
@@ -3789,12 +4711,14 @@ function bindEvents() {
     }
     // Escape behaves like "Keyinroq": the goal stays unset, so onboarding
     // comes back on the next start instead of being lost silently.
-    if (state.onboardingOpen) {
+    if (state.referralModalOpen) {
+      closeReferralModal();
+    } else if (state.onboardingOpen) {
       closeOnboarding();
-    } else if (lesson.isOpen) {
-      lesson.close();
     } else if (state.aiOpen) {
       closeAi();
+    } else if (lesson.isOpen) {
+      lesson.close();
     } else if (state.railOpen) {
       closeRail();
     }

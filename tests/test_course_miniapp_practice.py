@@ -1,4 +1,6 @@
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
@@ -100,6 +102,72 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(result["ok"])
         self.assertEqual(result["session"]["skill"], "pinyin")
+
+    async def test_start_falls_back_to_static_v3_cards_when_db_lessons_are_missing(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            level_dir = root / "hsk1"
+            level_dir.mkdir(parents=True)
+            (level_dir / "lesson_01.json").write_text(
+                """
+                {
+                  "level": "hsk1",
+                  "lesson_id": 1,
+                  "sections": [
+                    {
+                      "section_no": 1,
+                      "cards": [
+                        {
+                          "type": "pinyin_choice",
+                          "prompt": {"uz": "ni pinyin qaysi?", "ru": "ni pinyin?", "tj": "ni pinyin?"},
+                          "options": ["ni", "wo", "hao"],
+                          "correct_index": 0,
+                          "pinyin": "ni",
+                          "explanation": {"uz": "ni", "ru": "ni", "tj": "ni"}
+                        },
+                        {
+                          "type": "meaning_guess",
+                          "prompt": {"uz": "hao meaning?", "ru": "hao meaning?", "tj": "hao meaning?"},
+                          "options": [{"uz": "good", "ru": "good", "tj": "good"}, {"uz": "me", "ru": "me", "tj": "me"}],
+                          "correct_index": 0,
+                          "explanation": {"uz": "hao = good", "ru": "hao = good", "tj": "hao = good"}
+                        }
+                      ]
+                    }
+                  ]
+                }
+                """,
+                encoding="utf-8",
+            )
+            self.service.lesson_repo = SimpleNamespace(
+                list_by_level=AsyncMock(return_value=[]),
+            )
+            delattr(self.service, "_questions")
+            analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+            with (
+                patch(
+                    "app.services.course_miniapp_practice_service.COURSE_V3_DATA_ROOT",
+                    root,
+                ),
+                patch(
+                    "app.services.course_miniapp_practice_service.CourseMiniAppAnalyticsService",
+                    return_value=analytics,
+                ),
+            ):
+                result = await self.service.start(
+                    123,
+                    mode="training",
+                    level="hsk1",
+                    lang="ru",
+                    skill="pinyin",
+                )
+
+        self.assertTrue(result["ok"])
+        questions = result["session"]["questions"]
+        self.assertGreaterEqual(len(questions), 1)
+        self.assertEqual(questions[0]["source"]["kind"], "course_v3_static_card")
+        self.assertIn("ni", questions[0]["options"])
+        self.service.lesson_repo.list_by_level.assert_awaited_once_with("hsk1")
 
     async def test_completion_is_server_graded_and_preserves_payment(self):
         self.service._questions = AsyncMock(
