@@ -183,7 +183,7 @@ function bootstrap() {
     device: {
       id: "preview-device",
       platform: "preview",
-      app_version: "1.3.3-preview",
+      app_version: "1.3.4-preview",
     },
     user: {
       name: "Akbar",
@@ -413,7 +413,7 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_app_info":
       return {
         productName: "HSK AI",
-        version: "1.3.3-preview",
+        version: "1.3.4-preview",
         platform: "preview",
       };
     case "desktop_auth_status":
@@ -836,7 +836,7 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_update_check":
       return {
         available: query.get("update") === "1",
-        currentVersion: "1.3.3-preview",
+        currentVersion: "1.3.4-preview",
         version: query.get("update") === "1" ? "1.3.4-preview" : undefined,
         notes:
           query.get("update") === "1"

@@ -67,9 +67,20 @@
       visualOpenApp: "Ilovani ochish",
       macQuickSteps: [
         ["DMG’ni oching", "Downloads (↓) ichidan yuklangan .dmg faylini bosing."],
-        ["Applications’ga o‘rnating", "Ikonkani rasmdagidek Applications papkasiga torting."],
-        ["macOS bloklasa", "Avval o‘ng tugma orqali Open qiling. Bo‘lmasa Open Anyway’ni bosing."]
+        ["Applications’ga torting", "Ochilgan oynada HSK AI ikonkasini Applications papkasiga suring."],
+        ["Birinchi ochishda ogohlantirish chiqadi", "«Файл «HSK AI» не был открыт» oynasida «Готово» ni bosing. «Переместить в Корзину» ni bosmang."],
+        ["System Settings’dan ruxsat bering", "Konfidensiallik va xavfsizlik bo‘limini oching, pastga tushing va «Все равно открыть» ni bosing."],
+        ["Tasdiqlang", "Chiqqan oynada yana «Все равно открыть», so‘ng Touch ID yoki admin parolini kiriting."],
+        ["Keychain’ga «Разрешать всегда» deng", "Ilova ochilganda parol so‘raladi. «Разрешать всегда» ni tanlang — shunda keyingi safar so‘ramaydi."]
       ],
+      quickShotAlts: {
+        m2: "DMG oynasi: HSK AI ikonkasi va Applications papkasi",
+        m3: "macOS ogohlantirishi: «Файл «HSK AI» не был открыт»",
+        m4: "System Settings, xavfsizlik bo‘limi: «Все равно открыть» tugmasi",
+        m5: "Tasdiqlash oynasi: «Все равно открыть»",
+        m5b: "Touch ID yoki admin paroli so‘rovi",
+        m6: "Keychain so‘rovi, «Разрешать всегда» tugmasi ajratilgan"
+      },
       windowsQuickSteps: [
         ["EXE’ni oching", "Downloads (↓) ichidan yuklangan .exe faylini bosing."],
         ["SmartScreen bloklasa", "Rasmdagi More info, keyin Run anyway va Yes’ni bosing."],
@@ -147,9 +158,20 @@
       visualOpenApp: "Открыть приложение",
       macQuickSteps: [
         ["Откройте DMG", "Нажмите загруженный файл .dmg в Downloads (↓)."],
-        ["Установите в Applications", "Перетащите иконку в Applications, как показано ниже."],
-        ["Если macOS блокирует запуск", "Сначала откройте через правый клик. Если не вышло — нажмите «Всё равно открыть»." ]
+        ["Перетащите в Applications", "В открывшемся окне перетащите иконку HSK AI в папку Applications."],
+        ["При первом запуске появится предупреждение", "В окне «Файл «HSK AI» не был открыт» нажмите «Готово». Не нажимайте «Переместить в Корзину»."],
+        ["Разрешите в System Settings", "Откройте «Конфиденциальность и безопасность», прокрутите вниз и нажмите «Все равно открыть»."],
+        ["Подтвердите", "В следующем окне снова нажмите «Все равно открыть», затем подтвердите через Touch ID или пароль администратора."],
+        ["В Keychain выберите «Разрешать всегда»", "При запуске приложение попросит пароль связки ключей. Нажмите «Разрешать всегда» — тогда больше спрашивать не будет."]
       ],
+      quickShotAlts: {
+        m2: "Окно DMG: иконка HSK AI и папка Applications",
+        m3: "Предупреждение macOS: «Файл «HSK AI» не был открыт»",
+        m4: "System Settings, раздел безопасности: кнопка «Все равно открыть»",
+        m5: "Окно подтверждения: «Все равно открыть»",
+        m5b: "Запрос Touch ID или пароля администратора",
+        m6: "Запрос Keychain, кнопка «Разрешать всегда» выделена"
+      },
       windowsQuickSteps: [
         ["Откройте EXE", "Нажмите загруженный файл .exe в Downloads (↓)."],
         ["Если появился SmartScreen", "Нажмите показанные ниже кнопки: «Подробнее», затем «Выполнить в любом случае»."],
@@ -227,9 +249,20 @@
       visualOpenApp: "Кушодани барнома",
       macQuickSteps: [
         ["DMG-ро кушоед", "Дар Downloads (↓) файли .dmg-и боршударо пахш кунед."],
-        ["Ба Applications насб кунед", "Нишонаро мисли расми поён ба Applications кашед."],
-        ["Агар macOS роҳ надиҳад", "Аввал бо тугмаи рост кушоед. Агар нашуд, «Ба ҳар ҳол кушодан»-ро пахш кунед."]
+        ["Ба Applications кашед", "Дар тирезаи кушодашуда нишонаи HSK AI-ро ба папкаи Applications кашед."],
+        ["Ҳангоми кушодани аввал огоҳӣ мебарояд", "Дар тирезаи «Файл «HSK AI» не был открыт» «Готово»-ро пахш кунед. «Переместить в Корзину»-ро пахш накунед."],
+        ["Дар System Settings иҷозат диҳед", "«Конфиденциальность и безопасность»-ро кушоед, поён равед ва «Все равно открыть»-ро пахш кунед."],
+        ["Тасдиқ кунед", "Дар тирезаи навбатӣ боз «Все равно открыть», сипас Touch ID ё пароли администраторро ворид кунед."],
+        ["Дар Keychain «Разрешать всегда»-ро интихоб кунед", "Ҳангоми оғоз барнома пароли Keychain мепурсад. «Разрешать всегда»-ро пахш кунед — дигар намепурсад."]
       ],
+      quickShotAlts: {
+        m2: "Тирезаи DMG: нишонаи HSK AI ва папкаи Applications",
+        m3: "Огоҳии macOS: «Файл «HSK AI» не был открыт»",
+        m4: "System Settings, бахши амният: тугмаи «Все равно открыть»",
+        m5: "Тирезаи тасдиқ: «Все равно открыть»",
+        m5b: "Дархости Touch ID ё пароли администратор",
+        m6: "Дархости Keychain, тугмаи «Разрешать всегда» ҷудо шудааст"
+      },
       windowsQuickSteps: [
         ["EXE-ро кушоед", "Дар Downloads (↓) файли .exe-и боршударо пахш кунед."],
         ["Агар SmartScreen роҳ надиҳад", "Тугмаҳои расмро пахш кунед: «Маълумоти бештар», баъд «Ба ҳар ҳол иҷро кардан»."],
@@ -396,9 +429,15 @@
     document.querySelectorAll("[data-quick-guide-close-aria]").forEach(function (button) {
       button.setAttribute("aria-label", localized.quickGuideCloseAria);
     });
-    ["one", "two", "three"].forEach(function (key, index) {
-      setText('[data-quick-step-title="' + key + '"]', steps[index][0]);
-      setText('[data-quick-step-body="' + key + '"]', steps[index][1]);
+    var prefix = state.platform === "macos" ? "m" : "w";
+    steps.forEach(function (step, index) {
+      var key = prefix + (index + 1);
+      setText('[data-quick-step-title="' + key + '"]', step[0]);
+      setText('[data-quick-step-body="' + key + '"]', step[1]);
+    });
+    var alts = localized.quickShotAlts || {};
+    document.querySelectorAll("[data-quick-shot-alt]").forEach(function (image) {
+      image.setAttribute("alt", alts[image.dataset.quickShotAlt] || "");
     });
   }
 

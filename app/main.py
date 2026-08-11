@@ -1255,6 +1255,17 @@ async def hsk_ai_cover():
     )
 
 
+@app.get("/assets/install/{filename}")
+async def desktop_install_screenshot(filename: str):
+    import re
+    if not re.fullmatch(r"(?:mac|win)-[0-9]{2}-[a-z0-9]+\.webp", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_asset_response(
+        f"app/static/assets/install/{filename}",
+        "image/webp",
+    )
+
+
 @app.get("/course_v3_{page}.html")
 async def course_v3_sub_page(page: str):
     if page not in _COURSE_V3_PAGES:
