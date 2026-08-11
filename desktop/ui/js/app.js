@@ -3978,6 +3978,7 @@ function currentCourseAiContext() {
     lessonNumber,
     lessonLine,
     promptLines: [
+      `Current course: ${level}`,
       `Course level: ${level}`,
       current
         ? [

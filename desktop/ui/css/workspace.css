@@ -1505,7 +1505,7 @@ button {
 }
 
 .ai-context-card {
-  display: grid;
+  display: none;
   gap: 7px;
   padding: 0 2px;
   border: 0;
@@ -1601,7 +1601,7 @@ button {
 }
 
 .ai-hint-strip {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   gap: 7px;
   align-items: center;
@@ -1615,10 +1615,6 @@ button {
 .ai-hint-strip:hover,
 .ai-hint-strip:focus-within {
   opacity: 0.86;
-}
-
-.ai-drawer.has-ai-draft .ai-hint-strip {
-  display: none;
 }
 
 .ai-hint-pill {
