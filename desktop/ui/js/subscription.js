@@ -346,31 +346,43 @@ export class DesktopSubscriptionController {
   }
 
   renderCheckout() {
-    const shell = node("div", "subscription-layout");
-    const chooser = node("section", "subscription-chooser card-panel");
+    const shell = node("div", "subscription-layout subWrap");
+    const chooser = node("section", "subscription-chooser subHead card-panel card");
     chooser.append(
       node("p", "eyebrow", this.t("subscriptionChoosePlan")),
       node("h3", "", this.t("subscriptionUnlockTitle")),
       node("p", "muted", this.t("subscriptionUnlockBody")),
     );
 
-    const plans = node("div", "subscription-plans");
+    const plans = node("div", "subscription-plans planGrid");
     availablePlans(this.overview, this.method).forEach((plan) => {
       const info = this.overview.prices?.[this.method]?.[plan] || {};
-      const button = node("button", "subscription-plan");
+      const button = node("button", `subscription-plan plan${plan === "3_months" ? " featured" : ""}`);
       button.type = "button";
       button.dataset.testid = "subscription-plan";
       button.dataset.plan = plan;
       button.classList.toggle("is-active", plan === this.plan);
-      button.append(
-        node("span", "subscription-plan-name", this.t(`plan_${plan}`)),
-        node("strong", "", `${info.final_amount ?? "—"} ${info.currency || ""}`),
+      button.classList.toggle("current", plan === this.plan);
+      const price = node("div", "planPrice");
+      price.append(
+        node("b", "", info.final_amount ?? "—"),
+        node("span", "", info.currency || ""),
       );
+      const meta = node("div", "planMeta");
+      meta.append(node("span", "subscription-plan-name planName", this.t(`plan_${plan}`)));
+      if (plan === "3_months") {
+        meta.append(node("span", "planTag", this.t("subscriptionBestValue")));
+      }
       if (info.discount_applied) {
-        button.append(
-          node("small", "subscription-discount", `−${Number(info.discount_percent || 0)}%`),
+        meta.append(
+          node("small", "subscription-discount planDiscount", `−${Number(info.discount_percent || 0)}%`),
         );
       }
+      button.append(
+        meta,
+        price,
+        node("div", "planNote", this.t("subscriptionPlanServerPrice")),
+      );
       button.addEventListener("click", () => this.choosePlan(plan));
       plans.append(button);
     });
@@ -427,7 +439,7 @@ export class DesktopSubscriptionController {
   }
 
   renderCheckoutIntro() {
-    const card = node("section", "subscription-preview card-panel");
+    const card = node("section", "subscription-preview card-panel card");
     card.append(
       node("div", "subscription-preview-glyph", "会"),
       node("p", "eyebrow", this.t("singleAccount")),

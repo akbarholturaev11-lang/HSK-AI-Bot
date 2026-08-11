@@ -26,4 +26,18 @@ The complete Apache License 2.0 text is bundled as
 The complete MIT license text is bundled as
 `licenses/LICENSE-LLAMA.CPP-MIT.txt`.
 
+## Hanzi Writer
+
+- Project: Hanzi Writer
+- Repository: <https://github.com/chanind/hanzi-writer>
+- Vendored version: `3.7.3`
+- License: MIT
+
+Vendored as `ui/vendor/hanzi-writer.js` so the dictionary can animate stroke
+order offline. Character data is bundled in `ui/data/strokes.js`; the upstream
+CDN loader is never used.
+
+The complete MIT license text is bundled as
+`licenses/LICENSE-HANZI-WRITER-MIT.txt`.
+
 The upstream projects are not affiliated with and do not endorse HSK AI.

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      AI Voice records the learner's speech and sends it to the shared
+      voice-practice backend for transcription and correction. Without this
+      key macOS terminates the app the moment getUserMedia is called.
+      Windows WebView2 needs no manifest entry; it prompts at runtime.
+    -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>HSK AI needs the microphone for AI Voice speaking practice.</string>
+</dict>
+</plist>

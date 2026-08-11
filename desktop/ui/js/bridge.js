@@ -15,6 +15,19 @@ const COMMANDS = Object.freeze({
   subscriptionOverview: "desktop_subscription_overview",
   subscriptionQuote: "desktop_subscription_quote",
   subscriptionSubmit: "desktop_subscription_submit",
+  vocabularyState: "desktop_vocabulary_state",
+  vocabularySave: "desktop_vocabulary_save",
+  referralOverview: "desktop_referral_overview",
+  goalState: "desktop_goal_state",
+  goalSave: "desktop_goal_save",
+  practiceStart: "desktop_practice_start",
+  practiceComplete: "desktop_practice_complete",
+  ratingLeaderboard: "desktop_rating_leaderboard",
+  voiceStatus: "desktop_voice_status",
+  voiceSessionStart: "desktop_voice_session_start",
+  voiceMessage: "desktop_voice_message",
+  voicePronounce: "desktop_voice_pronounce",
+  voiceSessionEnd: "desktop_voice_session_end",
   ttsSpeak: "desktop_tts_speak",
   localAiModelStatus: "local_ai_model_status",
   localAiInstallStart: "local_ai_install_start",
@@ -31,6 +44,8 @@ const SUPPORTED_LANGUAGES = new Set(["uz", "ru", "tj"]);
 const SUBSCRIPTION_PLANS = new Set(["10_days", "1_month", "3_months"]);
 const SUBSCRIPTION_METHODS = new Set(["visa", "alipay", "wechat"]);
 const CARD_COUNTRIES = new Set(["tj", "uz", "ru", "other"]);
+// Mirrors GOAL_KINDS in src-tauri/src/lib.rs. Onboarding is the only writer.
+export const GOAL_KINDS = Object.freeze(["conversation", "hsk", "study"]);
 const SCREENSHOT_PREFIXES = new Set([
   "data:image/jpeg;base64",
   "data:image/jpg;base64",
@@ -39,6 +54,41 @@ const SCREENSHOT_PREFIXES = new Set([
 ]);
 const MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024;
 const MAX_SCREENSHOT_BASE64_CHARS = Math.ceil(MAX_SCREENSHOT_BYTES / 3) * 4;
+const VOICE_ROLES = new Set([
+  "lily",
+  "chen",
+  "xiao_mei",
+  "teacher_li",
+  "manager_wang",
+  "friend",
+  "roommate",
+  "seller",
+  "classmate",
+  "social",
+]);
+const VOICE_LEVELS = new Set([
+  "beginner",
+  "hsk1",
+  "hsk2",
+  "hsk3",
+  "hsk4",
+  "hsk1_2",
+  "hsk3_4",
+]);
+const VOICE_VOICES = new Set(["female", "male"]);
+// macOS WKWebView records audio/mp4, Windows WebView2 records audio/webm.
+const AUDIO_PREFIXES = new Set([
+  "data:audio/webm;base64",
+  "data:audio/ogg;base64",
+  "data:audio/mp4;base64",
+  "data:audio/mpeg;base64",
+  "data:audio/wav;base64",
+]);
+const MAX_VOICE_AUDIO_BYTES = 5 * 1024 * 1024;
+const MAX_VOICE_AUDIO_BASE64_CHARS = Math.ceil(MAX_VOICE_AUDIO_BYTES / 3) * 4;
+const VOICE_SESSION_ID_PATTERN = /^[A-Za-z0-9-]{8,64}$/;
+const MAX_VOICE_TARGET_CHARS = 120;
+const MAX_VOICE_PINYIN_CHARS = 240;
 const EVENT_ID_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._:-]{15,79}$/;
 const CHECKOUT_ATTEMPT_PATTERN = /^[A-Za-z0-9_-]{16,80}$/;
 const LOCAL_AI_EVENTS = new Set([
@@ -229,6 +279,147 @@ function subscriptionPayload(value, kind) {
     throw new DesktopBridgeError("desktop_subscription_submit_invalid");
   }
   return value;
+}
+
+const PRACTICE_MODES = new Set(["placement", "mock", "training"]);
+const TRAINING_SKILLS = new Set([
+  "listening",
+  "writing",
+  "characters",
+  "pronunciation",
+  "pinyin",
+]);
+const MAX_PRACTICE_ANSWERS = 100;
+
+const MAX_VOCABULARY_ENTRIES = 2_000;
+const CJK_WORD_PATTERN = /^[\u4e00-\u9fff]{1,24}$/;
+
+function assertVocabularyList(value) {
+  if (!Array.isArray(value)) {
+    throw new DesktopBridgeError("desktop_vocabulary_request_invalid");
+  }
+  const out = [];
+  const seen = new Set();
+  for (const item of value) {
+    const word = String(item || "").trim();
+    if (!CJK_WORD_PATTERN.test(word) || seen.has(word)) continue;
+    seen.add(word);
+    out.push(word);
+    if (out.length >= MAX_VOCABULARY_ENTRIES) break;
+  }
+  return out;
+}
+
+function assertPracticeMode(value) {
+  const mode = String(value || "").trim().toLowerCase();
+  if (!PRACTICE_MODES.has(mode)) {
+    throw new DesktopBridgeError("desktop_practice_request_invalid");
+  }
+  return mode;
+}
+
+function assertPracticeSkill(mode, value) {
+  const skill = String(value || "").trim().toLowerCase();
+  if (String(mode || "").trim().toLowerCase() !== "training") {
+    if (skill) throw new DesktopBridgeError("desktop_practice_request_invalid");
+    return "";
+  }
+  if (!TRAINING_SKILLS.has(skill)) {
+    throw new DesktopBridgeError("unknown_training_skill");
+  }
+  return skill;
+}
+
+function assertPracticeLevel(value) {
+  const level = String(value || "").trim().toLowerCase();
+  if (!/^[a-z0-9_]{1,16}$/.test(level)) {
+    throw new DesktopBridgeError("desktop_practice_request_invalid");
+  }
+  return level;
+}
+
+function assertPracticeSessionId(value) {
+  const id = String(value || "").trim();
+  if (id.length < 8 || id.length > 160) {
+    throw new DesktopBridgeError("desktop_practice_request_invalid");
+  }
+  return id;
+}
+
+function assertPracticeAnswers(value) {
+  if (!Array.isArray(value) || value.length > MAX_PRACTICE_ANSWERS) {
+    throw new DesktopBridgeError("desktop_practice_request_invalid");
+  }
+  return value.map((item) => {
+    const questionId = String(item?.question_id || "").trim();
+    const selected = Number(item?.selected);
+    if (
+      !questionId ||
+      questionId.length > 120 ||
+      !Number.isInteger(selected) ||
+      selected < -1 ||
+      selected > 32
+    ) {
+      throw new DesktopBridgeError("desktop_practice_request_invalid");
+    }
+    return { question_id: questionId, selected };
+  });
+}
+
+function assertVoiceSelection(role, level, voice) {
+  if (!VOICE_ROLES.has(String(role || ""))) {
+    throw new DesktopBridgeError("desktop_voice_role_invalid");
+  }
+  if (!VOICE_LEVELS.has(String(level || ""))) {
+    throw new DesktopBridgeError("desktop_voice_level_invalid");
+  }
+  if (!VOICE_VOICES.has(String(voice || ""))) {
+    throw new DesktopBridgeError("desktop_voice_request_invalid");
+  }
+}
+
+function assertVoiceSessionId(value) {
+  const normalized = String(value || "").trim();
+  if (!VOICE_SESSION_ID_PATTERN.test(normalized)) {
+    throw new DesktopBridgeError("desktop_voice_session_invalid");
+  }
+  return normalized;
+}
+
+function assertVoiceAudioDataUrl(value) {
+  const source = String(value || "");
+  const separator = source.indexOf(",");
+  if (separator < 0) {
+    throw new DesktopBridgeError("desktop_voice_audio_invalid");
+  }
+  const prefix = source.slice(0, separator);
+  const encoded = source.slice(separator + 1);
+  if (!AUDIO_PREFIXES.has(prefix) || !encoded) {
+    throw new DesktopBridgeError("desktop_voice_audio_invalid");
+  }
+  if (encoded.length > MAX_VOICE_AUDIO_BASE64_CHARS) {
+    throw new DesktopBridgeError("desktop_voice_audio_too_large");
+  }
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)) {
+    throw new DesktopBridgeError("desktop_voice_audio_invalid");
+  }
+  return source;
+}
+
+function assertVoiceTarget(value) {
+  const normalized = String(value || "").trim();
+  if (!normalized || [...normalized].length > MAX_VOICE_TARGET_CHARS) {
+    throw new DesktopBridgeError("desktop_voice_request_invalid");
+  }
+  return normalized;
+}
+
+function assertVoicePinyin(value) {
+  const normalized = String(value || "").trim();
+  if ([...normalized].length > MAX_VOICE_PINYIN_CHARS) {
+    throw new DesktopBridgeError("desktop_voice_request_invalid");
+  }
+  return normalized;
 }
 
 function assertCompletion(eventId, mistakes) {
@@ -483,6 +674,106 @@ export const desktopBridge = Object.freeze({
       );
     }
     return invokeCommand(COMMANDS.ttsSpeak, { text: normalized });
+  },
+
+  vocabularyState() {
+    return invokeCommand(COMMANDS.vocabularyState);
+  },
+
+  vocabularySave({ saved, review }) {
+    return invokeCommand(COMMANDS.vocabularySave, {
+      saved: assertVocabularyList(saved),
+      review: assertVocabularyList(review),
+    });
+  },
+
+  referralOverview(timezoneOffset) {
+    const offset = Number(timezoneOffset);
+    if (!Number.isInteger(offset) || offset < -720 || offset > 840) {
+      throw new DesktopBridgeError("desktop_referral_request_invalid");
+    }
+    return invokeCommand(COMMANDS.referralOverview, { timezoneOffset: offset });
+  },
+
+  goalState() {
+    return invokeCommand(COMMANDS.goalState);
+  },
+
+  goalSave(kind) {
+    // The same whitelist lives in Rust; this copy only avoids a pointless IPC
+    // round trip when the caller passes something the backend would reject.
+    if (!GOAL_KINDS.includes(String(kind))) {
+      throw new DesktopBridgeError("desktop_goal_request_invalid");
+    }
+    return invokeCommand(COMMANDS.goalSave, { kind: String(kind) });
+  },
+
+  practiceStart({ mode, level, language, skill }) {
+    return invokeCommand(COMMANDS.practiceStart, {
+      mode: assertPracticeMode(mode),
+      level: assertPracticeLevel(level),
+      language: assertLanguage(language),
+      skill: assertPracticeSkill(mode, skill),
+    });
+  },
+
+  practiceComplete({ sessionId, mode, level, language, skill, answers }) {
+    return invokeCommand(COMMANDS.practiceComplete, {
+      sessionId: assertPracticeSessionId(sessionId),
+      mode: assertPracticeMode(mode),
+      level: assertPracticeLevel(level),
+      language: assertLanguage(language),
+      skill: assertPracticeSkill(mode, skill),
+      answers: assertPracticeAnswers(answers),
+    });
+  },
+
+  ratingLeaderboard(timezoneOffset) {
+    const offset = Number(timezoneOffset);
+    if (!Number.isInteger(offset) || offset < -720 || offset > 840) {
+      throw new DesktopBridgeError("desktop_rating_request_invalid");
+    }
+    return invokeCommand(COMMANDS.ratingLeaderboard, { timezoneOffset: offset });
+  },
+
+  voiceStatus() {
+    return invokeCommand(COMMANDS.voiceStatus);
+  },
+
+  voiceSessionStart({ role, level, language, voice }) {
+    assertVoiceSelection(role, level, voice);
+    return invokeCommand(COMMANDS.voiceSessionStart, {
+      role: String(role),
+      level: String(level),
+      language: assertLanguage(language),
+      voice: String(voice),
+    });
+  },
+
+  voiceMessage({ sessionId, audioDataUrl }) {
+    return invokeCommand(COMMANDS.voiceMessage, {
+      sessionId: assertVoiceSessionId(sessionId),
+      audioDataUrl: assertVoiceAudioDataUrl(audioDataUrl),
+    });
+  },
+
+  voicePronounce({ target, targetPinyin, language, level, audioDataUrl }) {
+    if (!VOICE_LEVELS.has(String(level || ""))) {
+      throw new DesktopBridgeError("desktop_voice_level_invalid");
+    }
+    return invokeCommand(COMMANDS.voicePronounce, {
+      target: assertVoiceTarget(target),
+      targetPinyin: assertVoicePinyin(targetPinyin),
+      language: assertLanguage(language),
+      level: String(level),
+      audioDataUrl: assertVoiceAudioDataUrl(audioDataUrl),
+    });
+  },
+
+  voiceSessionEnd(sessionId) {
+    return invokeCommand(COMMANDS.voiceSessionEnd, {
+      sessionId: assertVoiceSessionId(sessionId),
+    });
   },
 
   localAiModelStatus() {
