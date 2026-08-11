@@ -4766,6 +4766,18 @@ Follow-up:
 
 ---
 
+### 2026-08-11 — Desktop 1.3.4 release bump
+
+Changed:
+- Desktop release version `1.3.4` ga ko'tarildi: npm package/lock, Cargo,
+  Tauri config va preview mock versionlari bir xil qilindi.
+
+Why:
+- Demo-parity desktop UI update alohida `desktop-v1.3.4` tag orqali release
+  workflowga yuborilishi kerak.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
