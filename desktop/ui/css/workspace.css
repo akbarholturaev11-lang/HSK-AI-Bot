@@ -2991,7 +2991,7 @@ html.lesson-active .ai-drawer.is-open {
 
 .today-quick-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 
@@ -3019,38 +3019,9 @@ html.lesson-active .ai-drawer.is-open {
   -webkit-line-clamp: 3;
 }
 
-.today-quick-card > button,
-.today-ai-form {
+.today-quick-card > button {
   width: 100%;
   margin-top: auto;
-}
-
-.today-ai-form {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 42px;
-  gap: 7px;
-}
-
-.today-ai-form input {
-  min-width: 0;
-  height: 42px;
-  padding: 0 11px;
-  border: 1px solid var(--line);
-  border-radius: 11px;
-  color: var(--ink);
-  background: var(--surface-soft);
-  outline: 0;
-  font-size: 10px;
-}
-
-.today-ai-form input:focus {
-  border-color: var(--red);
-  background: var(--surface);
-}
-
-.today-ai-form .primary-button {
-  min-width: 0;
-  padding: 0;
 }
 
 .today-phrase {
@@ -3115,10 +3086,7 @@ html.lesson-active .ai-drawer.is-open {
   }
 
   .today-quick-grid {
-    grid-template-columns: repeat(3, minmax(180px, 1fr));
-    overflow-x: auto;
-    padding-bottom: 4px;
-    scrollbar-width: thin;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

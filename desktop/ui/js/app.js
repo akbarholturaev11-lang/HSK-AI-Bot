@@ -1562,7 +1562,7 @@ function renderToday() {
     main.append(empty);
   }
 
-  const quickGrid = element("section", "twoCols today-quick-grid");
+  const quickGrid = element("section", "today-quick-grid");
   const completedLesson = [...lessons]
     .reverse()
     .find((item) => item.status === "done" && lessonAccessible(item));
@@ -1603,51 +1603,7 @@ function renderToday() {
   });
   reviewCard.append(reviewAction);
 
-  const aiCard = element("article", "card cardPad today-quick-card today-ai-quick");
-  const aiHead = element("div", "sectionTitle");
-  aiHead.append(
-    element("h3", "", t("todayAiTitle")),
-    element("span", "tag", level),
-  );
-  aiCard.append(
-    aiHead,
-    element("p", "muted", t("todayAiBody")),
-  );
-  const aiForm = element("form", "quickInput today-ai-form");
-  const aiInput = element("input");
-  aiInput.type = "text";
-  aiInput.maxLength = 1000;
-  aiInput.placeholder = t("todayAiPlaceholder");
-  aiInput.setAttribute("aria-label", t("todayAiPlaceholder"));
-  const aiAction = element("button", "btn primary-button", "↑");
-  aiAction.type = "submit";
-  aiAction.setAttribute("aria-label", t("openAi"));
-  aiForm.append(aiInput, aiAction);
-  aiForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const prompt = String(aiInput.value || "").trim();
-    if (prompt) dom.aiInput.value = prompt;
-    openAi();
-    updateAiComposer();
-    requestAnimationFrame(() => dom.aiInput.focus());
-  });
-  const chips = element("div", "chips");
-  [
-    ["todayAiChipGrammar", "先…再…"],
-    ["todayAiChipExamples", String(current?.zh || "")],
-    ["todayAiChipMistakes", ""],
-  ].forEach(([labelKey, seed]) => {
-    const chip = element("button", "promptChip", t(labelKey));
-    chip.type = "button";
-    chip.addEventListener("click", () => {
-      aiInput.value = [t(labelKey), seed].filter(Boolean).join(": ");
-      aiInput.focus();
-    });
-    chips.append(chip);
-  });
-  aiCard.append(aiForm, chips);
-
-  quickGrid.append(reviewCard, aiCard);
+  quickGrid.append(reviewCard);
   main.append(quickGrid);
 
   side.append(renderNotificationsHomeCard());

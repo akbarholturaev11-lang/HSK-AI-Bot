@@ -5112,6 +5112,25 @@ Why:
 - Demo-parity desktop UI update alohida `desktop-v1.3.4` tag orqali release
   workflowga yuborilishi kerak.
 
+### 2026-08-12 — Desktop 1.3.6 Today AI quick card olib tashlandi
+
+Changed:
+- Today ekranidagi `Быстрый вопрос / AI Pack` quick card olib tashlandi.
+- Desktop release version `1.3.6` ga ko'tarildi: npm package/lock, Cargo,
+  Tauri config va preview mock versionlari bir xil qilindi.
+
+Why:
+- Today ekrani kurs va takrorlashga fokuslanishi kerak; lokal AI hali drawer
+  orqali mavjud, lekin home ekranida alohida katta prompt card ko'rsatilmaydi.
+
+Files touched:
+- `desktop/ui/js/app.js`, `desktop/ui/js/i18n.js`,
+  `desktop/ui/css/workspace.css`, desktop version files.
+
+Risk:
+- Past. AI Pack install/chat, lesson, quiz, homework, payment, subscription va
+  backend flow o'zgarmadi.
+
 ---
 
 ## 11. Known Problems
