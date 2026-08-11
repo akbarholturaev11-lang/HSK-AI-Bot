@@ -229,6 +229,27 @@ test("local AI is explicit, bounded and never replaced with preview answers", as
   assert.doesNotMatch(preview, /case "local_ai_chat":[\s\S]{0,300}text:/);
 });
 
+test("local AI drawer renders polished answers without leaking reasoning", async () => {
+  const app = await source("desktop/ui/js/app.js");
+  const css = await source("desktop/ui/css/workspace.css");
+
+  assert.match(app, /function cleanAiContent\(/);
+  assert.match(app, /<think>\[\\s\\S\]\*\?\(\?:<\\\/think>\|\$\)/);
+  assert.match(app, /function renderAiFormattedAnswer\(/);
+  assert.match(app, /function appendInlineAiText\(/);
+  assert.match(app, /function appendAiTable\(/);
+  assert.match(app, /renderAiFormattedAnswer\(message\.content/);
+  assert.match(app, /Do not include hidden reasoning, <think> tags/);
+  assert.doesNotMatch(app, /innerHTML|insertAdjacentHTML|outerHTML/);
+
+  assert.match(css, /\.ai-answer-section \{/);
+  assert.match(css, /\.ai-answer-list \{/);
+  assert.match(css, /\.ai-table-wrap \{/);
+  assert.match(css, /\.ai-code-block \{/);
+  assert.match(css, /\.ai-pack-manage summary::after/);
+  assert.match(css, /--drawer-width: 500px;/);
+});
+
 test("renderer covers every checked-in Course v3 card type", async () => {
   const levels = (await readdir(lessonRoot, { withFileTypes: true })).filter(
     (entry) => entry.isDirectory() && /^hsk[1-4]$/.test(entry.name),

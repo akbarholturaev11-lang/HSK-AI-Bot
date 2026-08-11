@@ -4160,6 +4160,242 @@ function renderAiHintStrip(context) {
   return suggestions;
 }
 
+function cleanAiContent(value) {
+  return String(value || "")
+    .replace(/\r\n?/g, "\n")
+    .replace(/<think>[\s\S]*?(?:<\/think>|$)/gi, "")
+    .replace(/<\/?think>/gi, "")
+    .trim();
+}
+
+function appendAiHanziText(parent, value) {
+  const parts = String(value || "").split(/([\u3400-\u9fff]+)/u);
+  for (const part of parts) {
+    if (!part) continue;
+    if (/^[\u3400-\u9fff]+$/u.test(part)) {
+      parent.append(element("span", "ai-hanzi", part));
+    } else {
+      parent.append(document.createTextNode(part));
+    }
+  }
+}
+
+function appendInlineAiText(parent, value) {
+  const tokens = String(value || "").split(/(`[^`\n]+`|\*\*[^*\n]+?\*\*)/g);
+  for (const token of tokens) {
+    if (!token) continue;
+    if (token.startsWith("`") && token.endsWith("`")) {
+      parent.append(element("code", "ai-inline-code", token.slice(1, -1)));
+    } else if (token.startsWith("**") && token.endsWith("**")) {
+      const strong = element("strong");
+      appendAiHanziText(strong, token.slice(2, -2));
+      parent.append(strong);
+    } else {
+      appendAiHanziText(parent, token);
+    }
+  }
+}
+
+function appendAiParagraph(parent, value) {
+  const paragraph = element("p", "ai-answer-paragraph");
+  appendInlineAiText(paragraph, value);
+  parent.append(paragraph);
+}
+
+function appendAiHeading(parent, value) {
+  const heading = element("h4", "ai-answer-heading");
+  appendInlineAiText(heading, value.replace(/[:：]\s*$/, ""));
+  parent.append(heading);
+}
+
+function appendAiSection(parent, title, body = "") {
+  const section = element("section", "ai-answer-section");
+  const heading = element("h4", "ai-answer-section-title");
+  appendInlineAiText(heading, title.replace(/[:：]\s*$/, ""));
+  section.append(heading);
+  if (body) appendAiParagraph(section, body);
+  parent.append(section);
+}
+
+function aiTableCells(line) {
+  return line
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim());
+}
+
+function isAiTableSeparator(line) {
+  return /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+}
+
+function appendAiTable(parent, lines, start) {
+  const tableLines = [];
+  let index = start;
+  while (
+    index < lines.length &&
+    lines[index].includes("|") &&
+    lines[index].trim()
+  ) {
+    tableLines.push(lines[index]);
+    index += 1;
+  }
+  const [headerLine, separatorLine, ...bodyLines] = tableLines;
+  if (!separatorLine || !isAiTableSeparator(separatorLine)) return start;
+
+  const tableWrap = element("div", "ai-table-wrap");
+  const table = element("table", "ai-table");
+  const thead = element("thead");
+  const headRow = element("tr");
+  for (const cellText of aiTableCells(headerLine)) {
+    const cell = element("th");
+    appendInlineAiText(cell, cellText);
+    headRow.append(cell);
+  }
+  thead.append(headRow);
+  table.append(thead);
+
+  const tbody = element("tbody");
+  for (const rowLine of bodyLines) {
+    const row = element("tr");
+    for (const cellText of aiTableCells(rowLine)) {
+      const cell = element("td");
+      appendInlineAiText(cell, cellText);
+      row.append(cell);
+    }
+    tbody.append(row);
+  }
+  table.append(tbody);
+  tableWrap.append(table);
+  parent.append(tableWrap);
+  return index;
+}
+
+function isAiSpecialLine(line, nextLine = "") {
+  const trimmed = line.trim();
+  return (
+    !trimmed ||
+    /^```/.test(trimmed) ||
+    /^#{1,4}\s+/.test(trimmed) ||
+    /^>\s?/.test(trimmed) ||
+    /^\s*[-*]\s+/.test(line) ||
+    /^\s*\d+[.)]\s+/.test(line) ||
+    (trimmed.includes("|") && isAiTableSeparator(nextLine))
+  );
+}
+
+function renderAiFormattedAnswer(content, { pending = false, plain = false } = {}) {
+  const formatted = element(
+    "div",
+    pending ? "ai-message-text is-thinking" : "ai-message-text",
+  );
+  const clean = plain ? String(content || "").trim() : cleanAiContent(content);
+  if (!clean) {
+    formatted.append(element("p", "ai-answer-paragraph", t("aiThinking")));
+    return formatted;
+  }
+  if (plain) {
+    appendAiParagraph(formatted, clean);
+    return formatted;
+  }
+
+  const lines = clean.split("\n");
+  let index = 0;
+  while (index < lines.length) {
+    const line = lines[index];
+    const trimmed = line.trim();
+    if (!trimmed) {
+      index += 1;
+      continue;
+    }
+
+    if (/^```/.test(trimmed)) {
+      const codeLines = [];
+      index += 1;
+      while (index < lines.length && !/^```/.test(lines[index].trim())) {
+        codeLines.push(lines[index]);
+        index += 1;
+      }
+      if (index < lines.length) index += 1;
+      const pre = element("pre", "ai-code-block");
+      pre.append(element("code", "", codeLines.join("\n").trimEnd()));
+      formatted.append(pre);
+      continue;
+    }
+
+    if (trimmed.includes("|") && isAiTableSeparator(lines[index + 1] || "")) {
+      const nextIndex = appendAiTable(formatted, lines, index);
+      if (nextIndex !== index) {
+        index = nextIndex;
+        continue;
+      }
+    }
+
+    const heading = trimmed.match(/^#{1,4}\s+(.+)$/);
+    if (heading) {
+      appendAiHeading(formatted, heading[1]);
+      index += 1;
+      continue;
+    }
+
+    const section = trimmed.match(/^\*\*([^*:\n]{1,56}[:：])\*\*\s*(.*)$/);
+    if (section) {
+      appendAiSection(formatted, section[1], section[2]);
+      index += 1;
+      continue;
+    }
+
+    if (/^>\s?/.test(trimmed)) {
+      const quote = element("blockquote", "ai-answer-quote");
+      const quoteLines = [];
+      while (index < lines.length && /^>\s?/.test(lines[index].trim())) {
+        quoteLines.push(lines[index].trim().replace(/^>\s?/, ""));
+        index += 1;
+      }
+      appendAiParagraph(quote, quoteLines.join(" "));
+      formatted.append(quote);
+      continue;
+    }
+
+    if (/^\s*[-*]\s+/.test(line) || /^\s*\d+[.)]\s+/.test(line)) {
+      const ordered = /^\s*\d+[.)]\s+/.test(line);
+      const list = element(ordered ? "ol" : "ul", "ai-answer-list");
+      const pattern = ordered ? /^\s*\d+[.)]\s+/ : /^\s*[-*]\s+/;
+      while (index < lines.length && pattern.test(lines[index])) {
+        const item = element("li");
+        appendInlineAiText(item, lines[index].replace(pattern, "").trim());
+        list.append(item);
+        index += 1;
+      }
+      formatted.append(list);
+      continue;
+    }
+
+    if (
+      trimmed.length <= 72 &&
+      /[:：]$/.test(trimmed) &&
+      !/^https?:\/\//.test(trimmed)
+    ) {
+      appendAiHeading(formatted, trimmed);
+      index += 1;
+      continue;
+    }
+
+    const paragraphLines = [trimmed];
+    index += 1;
+    while (
+      index < lines.length &&
+      !isAiSpecialLine(lines[index], lines[index + 1] || "")
+    ) {
+      paragraphLines.push(lines[index].trim());
+      index += 1;
+    }
+    appendAiParagraph(formatted, paragraphLines.join(" "));
+  }
+  return formatted;
+}
+
 function renderAiLoading() {
   const panel = element("section", "ai-pack-state");
   panel.append(element("div", "spinner"), element("p", "", t("aiChecking")));
@@ -4341,11 +4577,10 @@ function renderAiChat() {
         "ai-message-author",
         message.role === "user" ? t("aiYou") : t("aiTutor"),
       ),
-      element(
-        "p",
-        message.pending ? "ai-message-text is-thinking" : "ai-message-text",
-        message.content || t("aiThinking"),
-      ),
+      renderAiFormattedAnswer(message.content, {
+        pending: message.pending,
+        plain: message.role === "user",
+      }),
     );
     messages.append(bubble);
   }
@@ -4408,6 +4643,8 @@ function localAiPromptWithScreenContext(question) {
     contextText,
     `Learner interface language: ${getLanguage()}.`,
     "For Chinese examples, include hanzi, pinyin, and a translation.",
+    "Do not include hidden reasoning, <think> tags, or chain-of-thought.",
+    "Use short headings and bullet lists when comparison or steps make the answer easier to scan.",
     "Learner question:",
     boundedAiText(question, 2200),
   ].join("\n");

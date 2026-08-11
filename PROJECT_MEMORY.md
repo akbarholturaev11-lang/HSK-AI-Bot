@@ -5133,6 +5133,32 @@ Risk:
 
 ---
 
+### 2026-08-11 — Desktop AI drawer answer quality pass
+
+Changed:
+- Lokal AI drawer javoblari endi raw markdown sifatida bitta `<p>`ga chiqmaydi:
+  `<think>` reasoning bloklari yashiriladi, `**bold**`, headings, bullet/numbered
+  lists, quotes, code blocks, markdown tables va xitoycha iyerogliflar xavfsiz
+  DOM node'lar bilan formatlanadi.
+- Prompt contextiga modeldan hidden reasoning / `<think>` tag chiqarmaslik va
+  solishtirish/step javoblarda qisqa heading + list ishlatish talabi qo'shildi.
+- Ready status va AI Pack boshqaruvi chat oynasida compact ko'rinishga o'tdi;
+  tor oynalarda AI drawer full-screen ochiladi.
+
+Why:
+- AI oynasi mahsulot sifat signalining asosiy joyi. Raw `<think>` va markdown
+  ko'rinishi professional chat tajribasini buzardi.
+
+Files touched:
+- `desktop/ui/js/app.js`, `desktop/ui/css/workspace.css`,
+  `desktop/ui/test-contract.mjs`.
+
+Risk:
+- Backend va local AI runtime logiciga tegilmadi. Risk renderer formatida:
+  noodatiy markdown javoblar oddiy paragraph sifatida fallback bo'ladi.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
