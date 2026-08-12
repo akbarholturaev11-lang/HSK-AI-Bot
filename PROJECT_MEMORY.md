@@ -5493,6 +5493,54 @@ Risk / follow-up:
 
 ---
 
+### 2026-08-12 — STT prompt echo, desktop bildirishnoma va feed tili
+
+Changed:
+- `app/services/ai_service.py` — `_strip_prompt_echo()`. STT natijasidan
+  yuborilgan prompt qoldig'i kesib tashlanadi.
+- `desktop/src-tauri` — `tauri-plugin-notification` qo'shildi
+  (`Cargo.toml`, `lib.rs` plugin init, `capabilities/default.json` →
+  `notification:default`). `desktop/ui/js/app.js` bildirishnomani native
+  plugin orqali yuboradi, Web API brauzer preview uchun zaxira.
+- **DB:** `0070_course_notification_params` — `course_user_notifications` ga
+  nullable JSON `params`. `record()`/`record_from_text()` uni saqlaydi,
+  `list_for_user()` feed'ni o'quvchi tilida qayta renderlaydi.
+- Chaqiruvchilar: `course_reminder_service`, `expiry_reminder_service`,
+  `main.py` (`t()` shablonlari) va `motivation_reminder_service`
+  (admin shablonlari, `template_service` markeri bilan).
+
+Why:
+- **STT echo:** Gemini/OpenAI ovoz noaniq bo'lganda promptni transkript
+  sifatida qaytaradi. U o'quvchi gapi sifatida baholanardi ("xatosiz"),
+  AI uni takrorlardi va prompt inglizcha "do not translate" deganidan
+  tarjima maydoni ham inglizchaga o'tardi — mikrofon orqali prompt
+  injection.
+- **Bildirishnoma:** WKWebView Web Notification API'ni hech qachon
+  bermaydi — wry'da media capture delegate bor, notification yo'q
+  (binary'dan tekshirildi). Shuning uchun `requestPermission()` doim
+  `denied` qaytarardi va eslatmalar ilovadan chiqa olmasdi.
+- **Feed tili:** matn Telegram yuborilgan paytdagi tilda qotib qolardi;
+  ilova tili o'zgarsa tojik interfeysda o'zbekcha eslatma turardi.
+
+Risk / follow-up:
+- Eski qatorlarda `params` yo'q — ularning sarlavhasi tarjima bo'ladi,
+  matni eski tilda qoladi. Bu qasddan: eski matnni yo'qotmaymiz.
+- `discount_notification_service` `params` uzatmaydi va uzatmasligi kerak —
+  matn admin yozgan kampaniya matni, shablon emas, qayta renderlab bo'lmaydi.
+- Motivation shablonlari bazada, `payload()` sessiyasiz. Ular
+  `list_for_user._resolve_admin_templates()` da renderlanib
+  `params["_rendered"]` orqali uzatiladi — faqat xotirada, bazaga
+  yozilmaydi.
+- Native banner'da click callback yo'q: ilgari `runNotificationAction()`
+  kerakli ekranga o'tkazardi, endi harakat ilova ichidagi markazda qoladi.
+  Kerak bo'lsa `registerActionTypes` bilan tiklanadi.
+- **Arxitektura qarzi:** eslatma hodisasi hali Telegram yuborishning yon
+  ta'siri (`course_reminder_service` avval `bot.send_message`, keyin feed
+  yozuvi). "Klientlar teng, faqat akkaunt Telegram orqali" tamoyili uchun
+  hodisa markaziy bo'lishi kerak. Alohida task.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

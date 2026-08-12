@@ -67,14 +67,26 @@ class CourseReminderService:
         ).all()
         return {int(row.telegram_id) for row in rows if row.telegram_id}
 
-    async def _build_reminder_text(self, progress: CourseProgress, lang: str) -> str:
+    async def _build_reminder_text(
+        self, progress: CourseProgress, lang: str
+    ) -> tuple[str, dict[str, object]]:
+        """Return the rendered reminder and the arguments that produced it.
+
+        The arguments travel with the stored notification so the in-app feed can
+        be rebuilt if the learner later switches the app to another language.
+        """
         summary = await CourseProgressSummaryService(self.session).summarize_last_completed_lesson(progress)
+        params: dict[str, object] = {
+            "template": "course_reminder_text",
+            "vocab": summary["vocab"],
+            "dialogues": summary["dialogues"],
+        }
         return t(
             "course_reminder_text",
             lang,
             vocab=summary["vocab"],
             dialogues=summary["dialogues"],
-        )
+        ), params
 
     async def send_due_reminders(self, bot: Bot) -> None:
         now_utc = datetime.now(timezone.utc)
@@ -112,7 +124,7 @@ class CourseReminderService:
                     continue
 
             lang = user.language if user.language else "ru"
-            text = await self._build_reminder_text(progress, lang)
+            text, reminder_params = await self._build_reminder_text(progress, lang)
             try:
                 await bot.send_message(
                     chat_id=user.telegram_id,
@@ -128,6 +140,7 @@ class CourseReminderService:
                     action="course",
                     source="course_reminder",
                     dedupe_key=f"lesson_time:{local_now.date().isoformat()}",
+                    params=reminder_params,
                 )
                 progress.last_reminder_sent_at = now_utc
                 print(f"CourseReminderService: sent reminder to {user.telegram_id}")

@@ -991,6 +991,17 @@ class MotivationReminderService:
                 lesson_order=lesson,
                 dedupe_key=str(fields.get("_dedupe_key") or "")
                 or local_day_dedupe(key, local_day if isinstance(local_day, date) else None),
+                # Admin-editable templates are stored per language, so the feed
+                # can rebuild this item if the learner switches the app later.
+                # Underscore keys are internal routing, not format arguments.
+                params={
+                    "template_service": key,
+                    **{
+                        name: value
+                        for name, value in fields.items()
+                        if not name.startswith("_")
+                    },
+                },
             )
 
         try:

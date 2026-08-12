@@ -1,6 +1,6 @@
 [package]
 name = "pomp-hsk-ai"
-version = "1.4.1"
+version = "1.4.2"
 description = "HSK AI desktop application"
 authors = ["HSK AI"]
 edition = "2021"
@@ -21,6 +21,9 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"
 tauri = { version = "2", features = [] }
+# WKWebView never grants the Web Notification API, so the reminder feed has to
+# go through the OS notification centre instead of `new Notification(...)`.
+tauri-plugin-notification = "2"
 tauri-plugin-opener = "2"
 tauri-plugin-updater = "2"
 tokio = { version = "1", features = ["fs", "io-util", "macros", "process", "sync", "time"] }

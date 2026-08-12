@@ -383,9 +383,42 @@ function showToast(message) {
   }, 2800);
 }
 
+/**
+ * The OS notification bridge, when Tauri is hosting us.
+ *
+ * WKWebView never grants the Web Notification API — wry implements the media
+ * capture permission delegate but nothing for notifications — so on macOS
+ * `Notification.requestPermission()` answers "denied" forever and the reminder
+ * feed can never leave the app. The plugin talks to the real notification
+ * centre instead. The web API stays as the fallback for the browser preview.
+ */
+function notificationPlugin() {
+  return globalThis.__TAURI__?.notification || null;
+}
+
+/** Synchronous because render paths need it; the plugin answer is cached. */
 function desktopNotificationPermission() {
+  if (notificationPlugin()) return state.notificationPermission || "default";
   if (!("Notification" in globalThis)) return "unsupported";
   return globalThis.Notification.permission || "default";
+}
+
+async function refreshNotificationPermission() {
+  const plugin = notificationPlugin();
+  if (!plugin) {
+    state.notificationPermission = desktopNotificationPermission();
+    return state.notificationPermission;
+  }
+  try {
+    // The plugin only reports granted or not, so an untouched install and a
+    // refusal both read as "default". Asking again is harmless in both cases.
+    state.notificationPermission = (await plugin.isPermissionGranted())
+      ? "granted"
+      : "default";
+  } catch {
+    state.notificationPermission = "default";
+  }
+  return state.notificationPermission;
 }
 
 function readSeenNotificationIds() {
@@ -419,6 +452,8 @@ function saveSeenNotificationIds() {
 function restoreNotificationState() {
   state.notificationPermission = desktopNotificationPermission();
   state.seenNotificationIds = readSeenNotificationIds();
+  // The plugin answer arrives a tick later; the card re-renders when it does.
+  void refreshNotificationPermission().then(() => renderActiveView());
 }
 
 function notificationMasterEnabled() {
@@ -1405,6 +1440,17 @@ function renderNotifications() {
 function showDesktopNotification(item) {
   if (!notificationMasterEnabled()) return;
   if (desktopNotificationPermission() !== "granted") return;
+  const plugin = notificationPlugin();
+  if (plugin) {
+    try {
+      // The native banner has no click callback here, so the in-app centre
+      // stays the place where a reminder is acted on.
+      plugin.sendNotification({ title: item.title, body: item.body });
+    } catch {
+      // A failed banner must not interrupt the feed the app already rendered.
+    }
+    return;
+  }
   try {
     const notification = new globalThis.Notification(item.title, {
       body: item.body,
@@ -2790,7 +2836,9 @@ function insightChips() {
 function settingRow(title, description, control) {
   const row = element("div", "setting-row");
   const copy = element("div");
-  copy.append(element("b", "", title), element("small", "", description));
+  copy.append(element("b", "", title));
+  // An empty description would still reserve its line and push the title up.
+  if (description) copy.append(element("small", "", description));
   row.append(copy, control);
   return row;
 }
@@ -2837,6 +2885,21 @@ function notificationPermissionText(permission) {
 }
 
 async function requestDesktopNotificationPermission() {
+  const plugin = notificationPlugin();
+  if (plugin) {
+    try {
+      state.notificationPermission = await plugin.requestPermission();
+    } catch {
+      await refreshNotificationPermission();
+    }
+    showToast(
+      state.notificationPermission === "granted"
+        ? t("notifyDesktopEnabled")
+        : t("notifyDesktopBlocked"),
+    );
+    renderActiveView();
+    return;
+  }
   if (!("Notification" in globalThis)) {
     state.notificationPermission = "unsupported";
     showToast(t("notifyDesktopUnsupported"));
@@ -2915,7 +2978,9 @@ function renderNotificationsCard() {
   card.append(
     settingRow(
       t("notifyDesktopTitle"),
-      notificationPermissionText(permission),
+      // The control already spells the state out; repeating it as the body
+      // printed the same sentence twice in the same row.
+      permission === "default" ? t("notifyDesktopDefault") : "",
       permissionControl,
     ),
   );

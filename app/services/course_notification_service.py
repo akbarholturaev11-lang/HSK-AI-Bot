@@ -115,6 +115,42 @@ def notification_copy(key: str, lang: str, text: str) -> tuple[str, str]:
     return title, body
 
 
+def _localized_copy(
+    row: CourseUserNotification,
+    lang: str | None,
+) -> tuple[str, str]:
+    """Render a stored notification in the language the reader is using now.
+
+    The row keeps the text as it was sent, which is the wrong language as soon
+    as the learner switches the app. When `params` carries the template and its
+    arguments the whole item is rebuilt; otherwise only the title can be
+    recovered from `TITLE_BY_KEY`, and the body stays as written. Rows created
+    before `params` existed therefore keep working, just partly translated.
+    """
+    reader = lang if lang in ("uz", "ru", "tj") else None
+    if not reader or reader == row.language:
+        return row.title, row.body
+
+    params = row.params if isinstance(row.params, dict) else {}
+    if params.get("template_service"):
+        # Needs a database session, so `list_for_user` resolves these before
+        # calling here and passes the result in as `_rendered`.
+        rendered = params.get("_rendered")
+        if rendered:
+            return notification_copy(row.key, reader, str(rendered))
+        return notification_title(row.key, reader), row.body
+    template = str(params.get("template") or "").strip()
+    if template:
+        arguments = {k: v for k, v in params.items() if k != "template"}
+        try:
+            from app.bot.utils.i18n import t
+
+            return notification_copy(row.key, reader, t(template, reader, **arguments))
+        except Exception:  # noqa: BLE001 - a broken template must not empty the feed
+            pass
+    return notification_title(row.key, reader), row.body
+
+
 def local_day_dedupe(key: str, local_day: date | None) -> str:
     day = local_day or datetime.now(timezone.utc).date()
     return f"{key}:{day.isoformat()}"
@@ -125,16 +161,17 @@ class CourseNotificationService:
         self.session = session
 
     @staticmethod
-    def payload(row: CourseUserNotification) -> dict[str, Any]:
+    def payload(row: CourseUserNotification, lang: str | None = None) -> dict[str, Any]:
         created_at = row.created_at
         if created_at and created_at.tzinfo is None:
             created_at = created_at.replace(tzinfo=timezone.utc)
+        title, body = _localized_copy(row, lang)
         return {
             "id": int(row.id),
             "key": row.key,
             "glyph": GLYPH_BY_KEY.get(row.key, "铃"),
-            "title": row.title,
-            "body": row.body,
+            "title": title,
+            "body": body,
             "action": row.action if row.action in ALLOWED_ACTIONS else "course",
             "level": row.level,
             "lesson_order": row.lesson_order,
@@ -148,7 +185,56 @@ class CourseNotificationService:
             .order_by(CourseUserNotification.created_at.desc(), CourseUserNotification.id.desc())
             .limit(max(1, min(20, int(limit or MAX_FEED_ITEMS))))
         )
-        return [self.payload(row) for row in result.scalars().all()]
+        reader_language = getattr(user, "language", None)
+        rows = list(result.scalars().all())
+        await self._resolve_admin_templates(rows, reader_language)
+        return [self.payload(row, reader_language) for row in rows]
+
+    async def _resolve_admin_templates(
+        self,
+        rows: list[CourseUserNotification],
+        lang: str | None,
+    ) -> None:
+        """Re-render motivation reminders, whose templates live in the database.
+
+        These cannot be rebuilt inside `payload` because looking them up needs a
+        session. Rendering happens here, once per row, and the result rides
+        along in `params["_rendered"]` — an in-memory field only, never written
+        back, so the stored row keeps the text that was actually sent.
+        """
+        if lang not in ("uz", "ru", "tj"):
+            return
+        pending = [
+            row
+            for row in rows
+            if isinstance(row.params, dict)
+            and row.params.get("template_service")
+            and row.language != lang
+        ]
+        if not pending:
+            return
+        from app.services.notification_template_service import NotificationTemplateService
+
+        templates = NotificationTemplateService(self.session)
+        cache: dict[str, str] = {}
+        for row in pending:
+            key = str(row.params.get("template_service") or "")
+            try:
+                if key not in cache:
+                    resolved = await templates.resolve(key, lang)
+                    cache[key] = str((resolved or {}).get("text") or "")
+                text = cache[key]
+                if not text:
+                    continue
+                fields = {
+                    name: value
+                    for name, value in row.params.items()
+                    if name != "template_service" and not name.startswith("_")
+                }
+                # A missing placeholder must leave the row alone, not blank it.
+                row.params = {**row.params, "_rendered": text.format(**fields)}
+            except Exception:  # noqa: BLE001 - the stored copy is the fallback
+                continue
 
     async def record(
         self,
@@ -163,6 +249,7 @@ class CourseNotificationService:
         level: str | None = None,
         lesson_order: int | None = None,
         dedupe_key: str | None = None,
+        params: dict[str, Any] | None = None,
     ) -> bool:
         key = str(key or "").strip()[:64]
         if not key:
@@ -184,6 +271,7 @@ class CourseNotificationService:
             language=lang,
             title=normalized_title[:160],
             body=normalized_body,
+            params=params if isinstance(params, dict) and params.get("template") else None,
             action=action,
             level=str(level or "").strip().lower()[:32] or None,
             lesson_order=normalized_lesson,
@@ -210,6 +298,7 @@ class CourseNotificationService:
         level: str | None = None,
         lesson_order: int | None = None,
         dedupe_key: str | None = None,
+        params: dict[str, Any] | None = None,
     ) -> bool:
         title, body = notification_copy(key, lang, text)
         return await self.record(
@@ -223,4 +312,5 @@ class CourseNotificationService:
             level=level,
             lesson_order=lesson_order,
             dedupe_key=dedupe_key,
+            params=params,
         )

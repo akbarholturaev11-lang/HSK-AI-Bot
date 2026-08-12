@@ -1,7 +1,16 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import (
+    JSON,
+    BigInteger,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -30,6 +39,10 @@ class CourseUserNotification(Base):
     language: Mapped[str] = mapped_column(String(8), default="ru", nullable=False)
     title: Mapped[str] = mapped_column(String(160), nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
+    # Template name plus its arguments, so the feed can be re-rendered in the
+    # language the reader is using now instead of the one that was active when
+    # the reminder was sent. Null on rows written before this column existed.
+    params: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     action: Mapped[str] = mapped_column(String(32), default="course", nullable=False)
     level: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
     lesson_order: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)

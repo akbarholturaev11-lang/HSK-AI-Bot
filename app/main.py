@@ -335,6 +335,7 @@ async def _send_subscription_expired_offer(session, telegram_id: int) -> None:
             action="subscription",
             source="subscription_churn",
             dedupe_key=f"subscription_expired_offer:{telegram_id}",
+            params={"template": "subscription_expired_soft_text"},
         )
         await SubscriptionChurnService(session).mark_expired_offer_sent(user)
         await session.commit()
