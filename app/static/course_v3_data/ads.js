@@ -27,12 +27,15 @@
   var I18N = {
     uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"Obuna olish",adSubCont:"Reklama bilan davom etish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitSubscribe:"Obunani ochish",limitAd:"Yoki reklama ko'rib davom etish",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
         leLabel:"Dars yakuni · reklama",leNote:"Qisqa rolik. Obuna bo'lsangiz reklama umuman chiqmaydi.",leSubTitle:"Darsni tugatdingiz — endi to'liq yo'lni oching",leExternal:"Reklama havolasini ochish",
+        appCta:"Yuklab olish",appCloseIn:"Yopish {s}s",
         f_recognition:"Ieroglif tanish",f_pronunciation:"Talaffuz mashqi",f_memorize:"Yodlash",f_training_test:"Test markazi",f_placement:"Daraja aniqlash testi",f_mistake_review:"Xatolar ustida ishlash"},
     ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Оформить подписку",adSubCont:"Продолжить с рекламой",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitSubscribe:"Открыть подписку",limitAd:"Или продолжить с рекламой",limitWhy:"Бесплатная практика на сегодня закончилась: «{s}» в бесплатном режиме открывается 1 раз в день. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",limitWhyPlain:"Бесплатный лимит на сегодня исчерпан. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу",
         leLabel:"Конец урока · реклама",leNote:"Короткий ролик. С подпиской рекламы не будет вообще.",leSubTitle:"Урок пройден — откройте весь путь",leExternal:"Открыть ссылку рекламы",
+        appCta:"Скачать",appCloseIn:"Закрыть через {s}с",
         f_recognition:"Распознавание иероглифов",f_pronunciation:"Произношение",f_memorize:"Запоминание",f_training_test:"Тест-центр",f_placement:"Тест на уровень",f_mistake_review:"Работа над ошибками"},
     tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"Обуна шудан",adSubCont:"Идома бо реклама",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitSubscribe:"Кушодани обуна",limitAd:"Ё бо реклама идома додан",limitWhy:"Машқи ройгони имрӯза тамом шуд: «{s}» дар ҳолати ройгон рӯзе 1 маротиба кушода мешавад. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",limitWhyPlain:"Лимити ройгони имрӯза тамом шуд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст",
         leLabel:"Анҷоми дарс · реклама",leNote:"Ролики кӯтоҳ. Бо обуна реклама тамоман намешавад.",leSubTitle:"Дарсро тамом кардед — тамоми роҳро кушоед",leExternal:"Кушодани ҳаволаи реклама",
+        appCta:"Боргирӣ",appCloseIn:"Пӯшидан пас аз {s}с",
         f_recognition:"Шинохти иероглиф",f_pronunciation:"Машқи талаффуз",f_memorize:"Азёдкунӣ",f_training_test:"Маркази тест",f_placement:"Тести муайянкунии сатҳ",f_mistake_review:"Кор бар хатоҳо"}
   };
   function T(){ return I18N[CFG.lang] || I18N.uz; }
@@ -129,6 +132,20 @@
   /* Chiqish (X) — faqat limit-promoda, o\'ng yuqori burchakda */
   +'.caa-x{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;display:none;align-items:center;justify-content:center;font-size:18px;z-index:6;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}'
   +'.caa-ov.limit .caa-x{display:flex}'
+  /* App reklamasi — Mini App ochilganda MARKAZDA chiqadigan alohida modal.
+     Boshqa reklama oqimlariga tegmaydi, o\'z overlayida ishlaydi. */
+  +'.caa-app{position:fixed;inset:0;z-index:9100;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(10,8,6,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-family:inherit}'
+  +'.caa-app.on{display:flex}'
+  +'.caa-app-card{position:relative;width:100%;max-width:340px;background:#15120f;border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:14px;display:grid;gap:12px;box-shadow:0 18px 48px rgba(0,0,0,.5);color:#fff}'
+  +'.caa-app-media{position:relative;width:100%;aspect-ratio:9/16;max-height:52vh;border-radius:14px;overflow:hidden;background:#000}'
+  +'.caa-app-media video{width:100%;height:100%;object-fit:contain;display:block}'
+  +'.caa-app-t{font-size:15px;font-weight:700;line-height:1.35;text-align:center;margin:0}'
+  +'.caa-app-cta{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;background:#fff;color:#211D17;cursor:pointer}'
+  +'.caa-app-cta:active{transform:translateY(1px)}'
+  +'.caa-app-x{position:absolute;top:-10px;right:-10px;width:34px;height:34px;border-radius:50%;background:#15120f;border:1px solid rgba(255,255,255,.22);color:#fff;display:none;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:2}'
+  +'.caa-app-x.on{display:flex}'
+  +'.caa-app-wait{position:absolute;top:-10px;right:-10px;min-width:34px;height:34px;padding:0 10px;border-radius:20px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.82);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;white-space:nowrap;z-index:2}'
+  +'.caa-app-wait[hidden]{display:none!important}'
   /* Reklama turiga qarab video ostidagi knopka bloki (hamkorlik / bot) */
   +'.caa-ps{display:none;gap:8px;text-align:left}'
   +'.caa-ps.on{display:grid}'
@@ -503,9 +520,124 @@
     startPromo();
   }
 
+  /* ============================================================
+     App reklamasi — Mini App ochilganda markazda chiqadigan modal.
+
+     Boshqa reklama oqimlaridan MUSTAQIL: o'z overlayi, o'z holati.
+     Dars, mashq va dars-yakuni oqimlariga umuman tegmaydi.
+
+     Ketma-ketlik: video markazda o'ynaydi → `skip_after_seconds`
+     tugagach X paydo bo'ladi → foydalanuvchi O'ZI yopadi (avtomatik
+     yopilmaydi). `daily_limit` — kuniga necha marta (0 = cheklovsiz).
+     ============================================================ */
+  var appEls=null, appState={open:false,timer:null,shownInSession:false};
+
+  function appDayKey(){ var d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+  function appLimitStorageKey(adId){ return "caa_app_seen_"+String(adId||0); }
+  function appSeenToday(adId){
+    try{
+      var raw=JSON.parse(localStorage.getItem(appLimitStorageKey(adId))||"{}");
+      return raw&&raw.day===appDayKey()?(Number(raw.count)||0):0;
+    }catch(e){ return 0; }
+  }
+  function appMarkSeen(adId){
+    try{
+      localStorage.setItem(appLimitStorageKey(adId),JSON.stringify({day:appDayKey(),count:appSeenToday(adId)+1}));
+    }catch(e){}
+  }
+
+  function ensureAppDom(){
+    if(appEls) return appEls;
+    ensureDom();
+    var ov=document.createElement("div"); ov.className="caa-app"; ov.setAttribute("aria-hidden","true");
+    ov.innerHTML=''
+      +'<div class="caa-app-card">'
+      +'<button class="caa-app-x" aria-label="close"><i class="ti ti-x"></i></button>'
+      +'<span class="caa-app-wait" hidden></span>'
+      +'<div class="caa-app-media"><video muted playsinline webkit-playsinline preload="auto"></video></div>'
+      +'<p class="caa-app-t"></p>'
+      +'<button class="caa-app-cta"></button>'
+      +'</div>';
+    document.body.appendChild(ov);
+    var q=function(s){return ov.querySelector(s)};
+    appEls={ov:ov,card:q(".caa-app-card"),x:q(".caa-app-x"),wait:q(".caa-app-wait"),
+      video:q("video"),title:q(".caa-app-t"),cta:q(".caa-app-cta")};
+    return appEls;
+  }
+
+  function closeAppAd(){
+    if(!appEls) return;
+    if(appState.timer){ clearInterval(appState.timer); appState.timer=null; }
+    try{ appEls.video.pause(); appEls.video.removeAttribute("src"); appEls.video.load(); }catch(e){}
+    appEls.ov.classList.remove("on");
+    appEls.ov.setAttribute("aria-hidden","true");
+    appState.open=false;
+  }
+
+  function showAppAd(ad){
+    var e=ensureAppDom(), t=T();
+    var skip=Math.max(0,Math.min(60,Number(ad&&ad.skip_after_seconds)||0));
+    appState.open=true;
+    appState.shownInSession=true;
+    e.title.textContent=String(ad.title||"");
+    e.cta.textContent=String(ad.button_text||t.appCta);
+    e.cta.style.display=ad.link_url?"":"none";
+    e.cta.onclick=function(){
+      if(!ad.link_url) return;
+      try{
+        var tg=window.Telegram&&window.Telegram.WebApp;
+        if(tg&&typeof tg.openLink==="function") tg.openLink(ad.link_url);
+        else window.open(ad.link_url,"_blank","noopener");
+      }catch(err){}
+    };
+    e.x.classList.remove("on");
+    e.x.onclick=closeAppAd;
+    try{ e.video.src=ad.media_url; e.video.currentTime=0; e.video.play().catch(function(){}); }catch(err){}
+    e.ov.classList.add("on");
+    e.ov.setAttribute("aria-hidden","false");
+    appMarkSeen(ad.id);
+
+    /* X taymer: `skip` soniya kutiladi, keyin yopish tugmasi ochiladi. */
+    if(skip<=0){ e.wait.hidden=true; e.x.classList.add("on"); return; }
+    var left=skip;
+    e.wait.hidden=false;
+    e.wait.textContent=String(t.appCloseIn||"{s}").replace("{s}",left);
+    appState.timer=setInterval(function(){
+      left=Math.max(0,left-1);
+      if(left<=0){
+        clearInterval(appState.timer); appState.timer=null;
+        e.wait.hidden=true; e.x.classList.add("on");
+        return;
+      }
+      e.wait.textContent=String(t.appCloseIn||"{s}").replace("{s}",left);
+    },1000);
+  }
+
+  /* Mini App ochilganda chaqiriladi. Reklama bo'lmasa jimgina qaytadi. */
+  function playAppOpen(){
+    if(appState.open||appState.shownInSession) return Promise.resolve(false);
+    var url="/api/v3/ad?slot=app_open&placement=start&level="+encodeURIComponent(CFG.level||"hsk1")
+      +"&lesson=0&feature=&lang="+encodeURIComponent(CFG.lang||"uz");
+    return fetch(url,{headers:{"X-Telegram-Init-Data":CFG.initData||""}})
+      .then(function(r){return r.json().catch(function(){return {}})})
+      .then(function(d){
+        var ads=(d&&d.ads&&d.ads.length)?d.ads:(d&&d.ad?[d.ad]:[]);
+        if(!d||d.ok!==true||!ads.length) return false;
+        var ad=ads[0];
+        if(!ad||!ad.media_url||ad.media_available===false) return false;
+        var limit=Math.max(0,Number(ad.daily_limit)||0);
+        if(limit>0&&appSeenToday(ad.id)>=limit) return false;
+        showAppAd(ad);
+        return true;
+      })
+      .catch(function(){ return false; });
+  }
+
   window.CourseAds = {
     config:function(o){for(var k in o){if(Object.prototype.hasOwnProperty.call(o,k))CFG[k]=o[k]}},
     play:play,
+    playAppOpen:playAppOpen,
+    closeAppAd:closeAppAd,
     showLimitPromo:showLimitPromo,
     closeLimit:_closeLimit,
     available:function(){return !!els}

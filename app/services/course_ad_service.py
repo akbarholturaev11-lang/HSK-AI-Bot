@@ -28,15 +28,24 @@ COURSE_AD_LANGUAGES = ("uz", "ru", "tj")
 COURSE_AD_ALL_LANGUAGES = "all"
 # Reklama turlari: odiy (oddiy), hamkorlik (reklama qabul qilish/hamkorlik),
 # bot (o'z botlarini reklama qilish), dars_yakuni (dars tugagach bepul userga
-# ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA).
+# ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA),
+# app (desktop ilova reklamasi — Mini App ochilganda markazda chiqadi).
 # Odiy — hozirgi xatti-harakat.
-COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot", "dars_yakuni")
+COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot", "dars_yakuni", "app")
 COURSE_AD_DEFAULT_TYPE = "odiy"
-# Dars yakuni reklamasi ALOHIDA slotda ishlaydi va boshqa reklamalarga
-# ARALASHMAYDI: mashq bo'limlarida u chiqmaydi, dars oxirida esa faqat u chiqadi.
+# Dars yakuni va app reklamalari ALOHIDA slotlarda ishlaydi va mashq
+# bo'limlaridagi reklamalarga ARALASHMAYDI.
 COURSE_AD_LESSON_END_TYPE = "dars_yakuni"
-COURSE_AD_SLOTS = ("practice", "lesson_end")
+COURSE_AD_APP_TYPE = "app"
+# Mashq slotidan (practice) CHIQARIB TASHLANADIGAN turlar. Yangi eksklyuziv tur
+# qo'shilsa shu yerga ham qo'shilishi shart, aks holda u mashq bo'limlarida
+# ham chiqib ketadi.
+COURSE_AD_EXCLUSIVE_TYPES = (COURSE_AD_LESSON_END_TYPE, COURSE_AD_APP_TYPE)
+COURSE_AD_SLOTS = ("practice", "lesson_end", "app_open")
 COURSE_AD_DEFAULT_SLOT = "practice"
+# App reklamasi sozlamalari chegaralari.
+COURSE_AD_MAX_SKIP_SECONDS = 60
+COURSE_AD_MAX_DAILY_LIMIT = 50
 
 
 class CourseAdService:
@@ -90,9 +99,34 @@ class CourseAdService:
 
     @staticmethod
     def normalize_slot(value) -> str:
-        """Reklama sloti: "lesson_end" (dars yakuni) yoki "practice" (qolgan hammasi)."""
+        """Reklama sloti: "lesson_end" (dars yakuni), "app_open" (Mini App
+        ochilganda) yoki "practice" (qolgan hammasi)."""
         slot = str(value or "").strip().lower()
         return slot if slot in COURSE_AD_SLOTS else COURSE_AD_DEFAULT_SLOT
+
+    @classmethod
+    def normalize_skip_after(cls, value, duration_seconds=None) -> int:
+        """Yopish (X) tugmasi necha soniyadan keyin chiqishi.
+
+        0 — X darrov chiqadi. Reklama davomiyligidan oshib ketmaydi, aks holda
+        foydalanuvchi reklamani umuman yopa olmay qoladi."""
+        try:
+            seconds = int(value or 0)
+        except (TypeError, ValueError):
+            seconds = 0
+        seconds = min(max(seconds, 0), COURSE_AD_MAX_SKIP_SECONDS)
+        if duration_seconds is not None:
+            seconds = min(seconds, cls.normalize_duration(duration_seconds))
+        return seconds
+
+    @staticmethod
+    def normalize_daily_limit(value) -> int:
+        """Kuniga necha marta ko'rsatiladi. 0 — cheklovsiz."""
+        try:
+            limit = int(value or 0)
+        except (TypeError, ValueError):
+            limit = 0
+        return min(max(limit, 0), COURSE_AD_MAX_DAILY_LIMIT)
 
     @staticmethod
     def normalize_button_text(value) -> str | None:
@@ -209,6 +243,11 @@ class CourseAdService:
             "ad_type": cls.normalize_ad_type(getattr(ad, "ad_type", None)),
             "button_text": getattr(ad, "button_text", None) or None,
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
+            "skip_after_seconds": cls.normalize_skip_after(
+                getattr(ad, "skip_after_seconds", None),
+                ad.duration_seconds,
+            ),
+            "daily_limit": cls.normalize_daily_limit(getattr(ad, "daily_limit", None)),
             "is_active": bool(ad.is_active),
             "media_available": media_available,
             "media_restored": media_restored,
@@ -236,6 +275,8 @@ class CourseAdService:
         language: str = COURSE_AD_ALL_LANGUAGES,
         ad_type: str = COURSE_AD_DEFAULT_TYPE,
         button_text: str | None = None,
+        skip_after_seconds=None,
+        daily_limit=None,
         media_blob: bytes | None = None,
         created_by_telegram_id: int | None = None,
     ) -> CourseAdCreative:
@@ -248,6 +289,10 @@ class CourseAdService:
             ad_type=self.normalize_ad_type(ad_type),
             button_text=self.normalize_button_text(button_text),
             duration_seconds=self.normalize_duration(duration_seconds),
+            skip_after_seconds=self.normalize_skip_after(
+                skip_after_seconds, duration_seconds
+            ),
+            daily_limit=self.normalize_daily_limit(daily_limit),
             is_active=True,
             created_by_telegram_id=created_by_telegram_id,
         )
@@ -283,17 +328,22 @@ class CourseAdService:
 
     @classmethod
     def _slot_filter(cls, slot: str | None):
-        """Slot bo'yicha tur filtri — dars yakuni reklamasi boshqalariga aralashmasin.
+        """Slot bo'yicha tur filtri — eksklyuziv turlar boshqalariga aralashmasin.
 
         `lesson_end` — FAQAT `dars_yakuni` turidagi reklamalar.
-        `practice` (default) — dars yakuni reklamasidan TASHQARI hammasi
-        (eski yozuvlarda `ad_type` NULL bo'lishi mumkin — ular ham kiradi).
+        `app_open` — FAQAT `app` turidagi reklamalar.
+        `practice` (default) — eksklyuziv turlardan (`dars_yakuni`, `app`)
+        TASHQARI hammasi (eski yozuvlarda `ad_type` NULL bo'lishi mumkin —
+        ular ham kiradi).
         """
-        if cls.normalize_slot(slot) == "lesson_end":
+        normalized = cls.normalize_slot(slot)
+        if normalized == "lesson_end":
             return CourseAdCreative.ad_type == COURSE_AD_LESSON_END_TYPE
+        if normalized == "app_open":
+            return CourseAdCreative.ad_type == COURSE_AD_APP_TYPE
         return or_(
             CourseAdCreative.ad_type.is_(None),
-            CourseAdCreative.ad_type != COURSE_AD_LESSON_END_TYPE,
+            CourseAdCreative.ad_type.notin_(COURSE_AD_EXCLUSIVE_TYPES),
         )
 
     @classmethod

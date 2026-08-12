@@ -23,12 +23,20 @@ class CourseAdCreative(Base):
     # Reklama turi: "odiy" (oddiy reklama), "hamkorlik" (hamkorlik uchun),
     # "bot" (boshqa botni reklama qilish), "dars_yakuni" (dars tugagach bepul
     # userga ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA,
-    # mashq bo'limlarida CHIQMAYDI). Turga qarab mini app'da knopka va slot farq qiladi.
+    # mashq bo'limlarida CHIQMAYDI), "app" (desktop ilova reklamasi — Mini App
+    # ochilganda markazda chiqadi, mashq bo'limlarida CHIQMAYDI).
+    # Turga qarab mini app'da knopka va slot farq qiladi.
     ad_type: Mapped[str] = mapped_column(String(16), default="odiy", nullable=False)
     # Universal knopka nomi (hamkorlik/bot/dars_yakuni tashqi CTA uchun).
     # Bo'sh bo'lsa — turga mos default nom.
     button_text: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     duration_seconds: Mapped[int] = mapped_column(Integer, default=7, nullable=False)
+    # Faqat "app" turi uchun: yopish (X) tugmasi necha soniyadan keyin chiqadi.
+    # NULL/0 — X darrov chiqadi. Boshqa turlar bu maydonni ishlatmaydi.
+    skip_after_seconds: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    # Faqat "app" turi uchun: bir foydalanuvchiga kuniga necha marta ko'rsatiladi.
+    # NULL yoki 0 — cheklovsiz (har ochilganda).
+    daily_limit: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True, nullable=False)
     created_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

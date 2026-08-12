@@ -613,7 +613,7 @@ button{cursor:pointer}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
 @media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i,.pd-fly,.pd-cape,.pd-arms{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
 </style>
-<link href="/course_v3_data/desktop-download.css?v=20260812-1" rel="stylesheet">
+<link href="/course_v3_data/desktop-download.css?v=20260812-2" rel="stylesheet">
 </head>
 <body>
 <div class="wrap">
@@ -684,7 +684,7 @@ button{cursor:pointer}
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script src="/course_v3_data/ads.js?v=20260812-1"></script>
+<script src="/course_v3_data/ads.js?v=20260812-2"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -3679,9 +3679,21 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     var challengeId=Number(sp.get("challenge_id")||0);
     if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);
     if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
+    maybeShowAppOpenAd({lesson:initialLesson,challenge:challengeId,tour:sp.get("tour")==="1"});
   });
 })();
+
+/* App reklamasi — Mini App ochilganda markazda chiqadi.
+   Boshqa ekran (dars, chellenj, tur) darrov ochilayotgan bo'lsa chiqmaydi:
+   foydalanuvchi bosgan amal reklamadan ustun turadi. */
+function maybeShowAppOpenAd(ctx){
+  if(!INIT_DATA)return;
+  if(ctx&&(ctx.lesson>0||ctx.challenge>0||ctx.tour))return;
+  if(!window.CourseAds||typeof CourseAds.playAppOpen!=="function")return;
+  CourseAds.config({lang:LANG,initData:INIT_DATA,level:(MAP&&MAP.level)||"hsk1"});
+  setTimeout(function(){try{CourseAds.playAppOpen()}catch(e){}},600);
+}
 </script>
-<script src="/course_v3_data/desktop-download.js?v=20260812-1"></script>
+<script src="/course_v3_data/desktop-download.js?v=20260812-2"></script>
 </body>
 </html>

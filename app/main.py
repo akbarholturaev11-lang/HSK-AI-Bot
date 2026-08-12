@@ -1740,10 +1740,18 @@ async def v3_course_ad(
     section = str(feature or "").strip().lower()
     ad_slot = CourseAdService.normalize_slot(slot)
     lesson_end = ad_slot == "lesson_end"
+    # App reklamasi Mini App ochilganda chiqadi — u darsga ham, mashq bo'limiga
+    # ham bog'lanmagan, shuning uchun lesson/feature talab qilinmaydi.
+    app_open = ad_slot == "app_open"
     # Mashq bo'limlarida reklama darsga bog'lanmagan (lesson=0) — `feature`
     # (masalan "recognition") kontekst sifatida keladi. Faqat dars ham,
     # bo'lim ham bo'lmasa xato. Dars yakuni sloti esa darsga bog'langan.
-    if lesson_order <= 0 and section not in _COURSE_AD_GATE_FEATURES and not lesson_end:
+    if (
+        lesson_order <= 0
+        and section not in _COURSE_AD_GATE_FEATURES
+        and not lesson_end
+        and not app_open
+    ):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
     # Foydalanuvchining tiliga mos reklamalarni (shu til + "all") qaytaramiz.
@@ -3726,6 +3734,10 @@ async def admin_miniapp_course_ads_upload(request: Request):
     language = CourseAdService.normalize_language(form.get("language"))
     ad_type = CourseAdService.normalize_ad_type(form.get("ad_type"))
     button_text = CourseAdService.normalize_button_text(form.get("button_text"))
+    skip_after_seconds = CourseAdService.normalize_skip_after(
+        form.get("skip_after_seconds"), duration_seconds
+    )
+    daily_limit = CourseAdService.normalize_daily_limit(form.get("daily_limit"))
     async with async_session_maker() as session:
         ad = await CourseAdService(session).create_video(
             title=title,
@@ -3735,6 +3747,8 @@ async def admin_miniapp_course_ads_upload(request: Request):
             language=language,
             ad_type=ad_type,
             button_text=button_text,
+            skip_after_seconds=skip_after_seconds,
+            daily_limit=daily_limit,
             media_blob=media_backup,
             created_by_telegram_id=telegram_id,
         )
