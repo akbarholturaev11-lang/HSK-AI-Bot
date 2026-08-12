@@ -690,6 +690,7 @@ def admin_payload():
             {"key": "stats", "icon": "📊", "title": "Statistika", "note": "Umumiy hisobot", "section": "statistics", "callback": "adm:stats"},
             {"key": "give_access", "icon": "✅", "title": "Obuna berish", "note": "Istalgan muddatga paid active", "section": "settings", "callback": "adm:giveaccess_info"},
             {"key": "course_access", "icon": "📚", "title": "Kurs access", "note": "Paywall yoki reklama rejimi", "section": "settings", "callback": "adm:course_access"},
+            {"key": "app_promo", "icon": "💻", "title": "App reklamasi", "note": "Mini App app promosi", "section": "settings", "callback": "adm:app_promo"},
         ],
         "monitor": {
             "ticker": [{"label": "24 soat aktiv", "value": 5, "tone": "up"}],
@@ -749,6 +750,7 @@ def admin_finance_payload():
 def test_admin_control_renders_real_api_payload_without_demo_data(page):
     grant_requests = []
     course_access_requests = []
+    app_promo_requests = []
 
     def grant_access(route):
         grant_requests.append(json.loads(route.request.post_data or "{}"))
@@ -778,6 +780,34 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
                     "free_until": None,
                     "saved_at": "2026-06-28T11:35:00+00:00",
                     "updated_by_telegram_id": 111,
+                },
+            },
+        )
+
+    def save_app_promo(route):
+        app_promo_requests.append(json.loads(route.request.post_data or "{}"))
+        json_response(
+            route,
+            {
+                "ok": True,
+                "desktop_app_promo": {
+                    "enabled": True,
+                    "daily_limit": 2,
+                    "placements": {
+                        "home_prompt": True,
+                        "lesson_end_promo": True,
+                        "ad_promo": True,
+                    },
+                    "platforms": {
+                        "macos": True,
+                        "windows": True,
+                        "android": False,
+                        "ios": False,
+                    },
+                    "media_type": None,
+                    "media_url": None,
+                    "media_available": False,
+                    "require_learning_progress": False,
                 },
             },
         )
@@ -815,6 +845,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     page.route("**/api/admin-miniapp/course-ads", lambda route: json_response(route, {"ok": True, "items": []}))
     page.route("**/api/admin-miniapp/users/give-access", grant_access)
     page.route("**/api/admin-miniapp/course-access/save", save_course_access)
+    page.route("**/api/admin-miniapp/desktop-promo/save", save_app_promo)
 
     page.goto(app_url("/admin.html"), wait_until="networkidle")
 
@@ -853,6 +884,20 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     page.locator("[data-casave]").click()
     expect(page.locator("#toast")).to_contain_text("Kurs access saqlandi")
     assert course_access_requests == [{"mode": "ads"}]
+
+    page.locator("#drawer [data-act='close-drawer']").click()
+    page.locator('[data-module="app_promo"]').click()
+    expect(page.locator("#apDailyLimit")).to_be_visible()
+    page.locator("#apDailyLimit").select_option("2")
+    expect(page.locator('[data-ap-platform="android"]')).to_have_count(0)
+    expect(page.locator('[data-app-promo-media-upload]')).to_be_visible()
+    page.locator("[data-app-promo-save]").click()
+    expect(page.locator("#toast")).to_contain_text("App reklamasi saqlandi")
+    assert app_promo_requests[-1]["daily_limit"] == 2
+    assert app_promo_requests[-1]["platforms"]["macos"] is True
+    assert app_promo_requests[-1]["platforms"]["windows"] is True
+    assert app_promo_requests[-1]["platforms"]["android"] is False
+    assert app_promo_requests[-1]["platforms"]["ios"] is False
     assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
 
 
@@ -1126,7 +1171,7 @@ def test_desktop_ad_block_ignores_modal_promo_cooldown(page):
                 "profile": True,
                 "home_prompt": False,
                 "lesson_end_promo": False,
-                "ad_promo": False,
+                "ad_promo": True,
             },
         },
     }
@@ -1225,7 +1270,7 @@ def test_desktop_profile_unavailable_state_is_honest_and_sends_no_request(page):
     expect(card).to_be_visible()
     expect(mac).to_be_disabled()
     expect(windows).to_be_disabled()
-    expect(mac).to_contain_text("Mac — tez orada")
+    expect(mac).to_contain_text("MacBook — tez orada")
     expect(windows).to_contain_text("Windows — tez orada")
     expect(card.locator(".pdd-availability-note")).to_contain_text(
         "Yuklash fayllari tayyorlanmoqda"

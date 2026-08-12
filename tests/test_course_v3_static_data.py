@@ -273,6 +273,23 @@ class CourseV3StaticMapTests(unittest.TestCase):
         for key in ("leLabel:", "leNote:", "leSubTitle:", "leExternal:"):
             self.assertEqual(ads.count(key), 3, f"{key} 3 tilda bo'lishi kerak")
 
+    def test_limit_offer_keeps_reason_box_and_lesson_ad_context(self):
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+
+        self.assertIn(".caa-ov.limit .caa-sub-t{display:none!important}", ads)
+        self.assertIn(".caa-ov.limit .caa-sub-desc{display:none!important}", ads)
+        self.assertIn('els.subTitle.textContent=""', ads)
+        self.assertIn('els.subDesc.textContent=""', ads)
+        self.assertNotIn("els.subTitle.textContent=t.limitHead", ads)
+        self.assertNotIn("els.subDesc.textContent=t.limitSub", ads)
+
+        self.assertIn("function lessonAdWhyText(l)", html)
+        self.assertIn("Для этого урока подписка не обязательна", html)
+        self.assertIn("CourseAds.showLimitPromo({", html)
+        self.assertIn('source:"v3_lesson_ad_offer"', html)
+        self.assertIn('App.goPay("v3_lesson_ad_offer")', html)
+
     def test_admin_can_attach_external_cta_to_lesson_end_ad(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")
 
@@ -325,8 +342,16 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("function shouldShowAdPromoEntry()", download)
         self.assertIn('state.promoReason === "already_installed"', download)
         self.assertIn('actions.classList.add("pdd-ad-download-actions")', download)
-        self.assertIn('buildOsButton("macos", source)', download)
-        self.assertIn('buildOsButton("windows", source)', download)
+        self.assertIn('var APP_PROMO_PLATFORMS = ["macos", "windows"]', download)
+        self.assertIn("buildOsButton(platform, source)", download)
+        self.assertNotIn('buildOsButton("android", source)', download)
+        self.assertNotIn('buildOsButton("ios", source)', download)
+        self.assertIn("homePromptDailyLimitReached", download)
+        self.assertIn("incrementHomePromptDailyCount", download)
+        self.assertIn("platform_targets", download)
+        self.assertIn("safePromoMediaUrl", download)
+        self.assertIn("buildPromoMedia", download)
+        self.assertIn("pdd-ad-download-media", download)
         self.assertNotIn('element("button", "pdd-ad-trigger")', download)
         self.assertIn('prepareTransfer(destination, platform, data.transfer_url)', download)
         self.assertLess(
@@ -358,12 +383,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260811-1", html, page
+                "/course_v3_data/desktop-download.css?v=20260812-1", html, page
             )
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260811-1", html, page
+                "/course_v3_data/desktop-download.js?v=20260812-1", html, page
             )
-            self.assertIn("/course_v3_data/ads.js?v=20260811-1", html, page)
+            self.assertIn("/course_v3_data/ads.js?v=20260812-1", html, page)
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
@@ -395,6 +420,27 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertEqual(download.count("retryStatus:"), 3)
         self.assertIn('state.availabilityError ? " is-error" : ""', download)
         self.assertIn("loadAvailability();", download)
+
+    def test_admin_has_app_promo_controls(self):
+        html = Path("app/static/admin.html").read_text(encoding="utf-8")
+        main = Path("app/main.py").read_text(encoding="utf-8")
+        service = Path("app/services/desktop_app_promo_settings_service.py").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("App reklamasi", html)
+        self.assertIn('appPromoChipHtml("platform","macos","MacBook"', html)
+        self.assertIn('appPromoChipHtml("platform","windows","Windows"', html)
+        self.assertNotIn('appPromoChipHtml("platform","android","Android"', html)
+        self.assertNotIn('appPromoChipHtml("platform","ios","Apple"', html)
+        self.assertIn("data-app-promo-media-upload", html)
+        self.assertIn("/api/admin-miniapp/desktop-promo/media", html)
+        self.assertIn("/api/admin-miniapp/desktop-promo/save", html)
+        self.assertIn("/uploads/app_promo/", main)
+        self.assertIn("desktop_app_promo", main)
+        self.assertIn("daily_limit=3", service)
+        self.assertIn('"android": False', service)
+        self.assertIn('"ios": False', service)
 
 
 if __name__ == "__main__":

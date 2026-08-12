@@ -81,6 +81,17 @@ button{cursor:pointer}
 @keyframes pdCape{0%,100%{transform:skewX(5deg) scaleY(1)}35%{transform:skewX(-6deg) scaleY(1.06)}70%{transform:skewX(3deg) scaleY(.96)}}
 .pd-arms{animation:pdArms 1.15s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
 @keyframes pdArms{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.pd-char{overflow:visible;filter:drop-shadow(0 10px 14px rgba(33,29,23,.18))}
+.pd-ground{transform-origin:50% 50%;animation:pdGround 2.6s ease-in-out infinite}
+.pd-core{transform-box:fill-box;transform-origin:50% 96%;filter:drop-shadow(0 3px 0 rgba(33,29,23,.08))}
+.pd-limbs{filter:drop-shadow(0 2px 0 rgba(0,0,0,.16))}
+.pd-shell,.pd-face3d{filter:drop-shadow(0 2px 0 rgba(33,29,23,.12))}
+.pd-face-shine{opacity:.72}
+.pd-face-depth,.pd-body-depth{opacity:.34}
+.pd-mood-talk .pd-limbs{animation:pdCoachWave .9s ease-in-out infinite;transform-box:fill-box;transform-origin:60% 62%}
+.pd-mood-celebrate .pd-core{filter:drop-shadow(0 5px 0 rgba(33,29,23,.10)) drop-shadow(0 12px 16px rgba(233,169,22,.14))}
+@keyframes pdGround{0%,100%{transform:scaleX(1);opacity:.22}50%{transform:scaleX(.78);opacity:.12}}
+@keyframes pdCoachWave{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
 /* nav */
 .nav{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-b));padding-bottom:var(--safe-b);background:var(--card);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding-top:8px;max-width:480px;margin:0 auto;z-index:8}
 .nav button{flex:1;background:none;border:none;font-family:inherit;color:var(--ink3);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
@@ -602,7 +613,7 @@ button{cursor:pointer}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
 @media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i,.pd-fly,.pd-cape,.pd-arms{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
 </style>
-<link href="/course_v3_data/desktop-download.css?v=20260811-1" rel="stylesheet">
+<link href="/course_v3_data/desktop-download.css?v=20260812-1" rel="stylesheet">
 </head>
 <body>
 <div class="wrap">
@@ -673,7 +684,7 @@ button{cursor:pointer}
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script src="/course_v3_data/ads.js?v=20260811-1"></script>
+<script src="/course_v3_data/ads.js?v=20260812-1"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1201,12 +1212,40 @@ function lessonAdRef(l){
   return v;
 }
 function clearLessonAdRef(l){try{sessionStorage.removeItem(lessonAdKey(l))}catch(e){}}
+function lessonAdWhyText(l){
+  var n=Number(l&&l.n||0);
+  var m={
+    uz:"Bu dars uchun obuna majburiy emas: qisqa reklamani oxirigacha ko'ring, keyin dars ochiladi. Obuna bilan darslar reklamasisiz ochiladi.",
+    ru:"Для этого урока подписка не обязательна: посмотрите короткую рекламу до конца, затем урок откроется. С подпиской уроки открываются без рекламы.",
+    tj:"Барои ин дарс обуна ҳатмӣ нест: рекламаро то охир бинед, баъд дарс кушода мешавад. Бо обуна дарсҳо бе реклама кушода мешаванд."
+  }[LANG]||{};
+  return n?m.replace("{n}",n):m;
+}
 function startLessonAdGate(idx){
   var l=allLessons()[idx];if(!l)return;
   if(!INIT_DATA||!window.CourseAds||typeof CourseAds.play!=="function"){
     App.openPaywall({lessonIdx:idx,lesson:l});return;
   }
   var ref=lessonAdRef(l);
+  function playAd(){
+    CourseAds.config({
+      lang:LANG,
+      initData:INIT_DATA,
+      feature:"lesson",
+      level:(MAP&&MAP.level)||"hsk1",
+      lessonOrder:Number(l.n)||0,
+      slot:"",
+      onOffer:null,
+      onSubscribe:function(){App.goPay("v3_lesson_ad")}
+    });
+    CourseAds.play("start",ref).then(function(){
+      l.ad_authorized_ref=ref;
+      startLesson(idx,{skipAdGate:true,accessRef:ref});
+    }).catch(function(){
+      clearLessonAdRef(l);
+      App.openPaywall({lessonIdx:idx,lesson:l});
+    });
+  }
   CourseAds.config({
     lang:LANG,
     initData:INIT_DATA,
@@ -1217,13 +1256,18 @@ function startLessonAdGate(idx){
     onOffer:null,
     onSubscribe:function(){App.goPay("v3_lesson_ad")}
   });
-  CourseAds.play("start",ref).then(function(){
-    l.ad_authorized_ref=ref;
-    startLesson(idx,{skipAdGate:true,accessRef:ref});
-  }).catch(function(){
-    clearLessonAdRef(l);
-    App.openPaywall({lessonIdx:idx,lesson:l});
-  });
+  if(typeof CourseAds.showLimitPromo==="function"){
+    trackCourseEvent("paywall_seen",{source:"v3_lesson_ad_offer",lesson_order:Number(l.n)||0,dedupe_key:lessonEventKey("paywall_seen",Number(l.n)||0,"v3_lesson_ad_offer:"+Date.now())});
+    CourseAds.showLimitPromo({
+      adAvailable:true,
+      reason:lessonAdWhyText(l),
+      onSubscribe:function(){App.goPay("v3_lesson_ad_offer")},
+      onContinueAd:playAd,
+      onBack:function(){}
+    });
+    return;
+  }
+  playAd();
 }
 /* ---------- Dars yakuni reklamasi ----------
    Bepul foydalanuvchi darsni tugatib, bayram/streak/reyting ekranlarini yopgach
@@ -2937,8 +2981,9 @@ function pandaChar(mood,opts){
      land — qo'nish: tizza bukilgan, qo'llar muvozanat uchun yon tomonda;
      roll — dumalash: qo'llar qorinni quchoqlagan, oyoqlar yig'ilgan. */
   opts=opts||{};var anim=opts.anim!==false;
-  var INK="#2B2620",MOUTH="#8E3A31",TONGUE="#E07B72",BLUSH="#F5B8C0",GOLD="#E8B84B",CAPE="#D9433C",CAPE2="#B4342E";
+  var INK="#2B2620",MOUTH="#8E3A31",TONGUE="#E07B72",BLUSH="#F5B8C0",GOLD="#E8B84B",CAPE="#D9433C",CAPE2="#B4342E",FACE="#FFFDF7",CREAM="#FFF4DE",DEEP="#D4B27C";
   var eyes,mouth,armL,armR,decor="",bodyCls,back="",front="",box="0 0 100 106";
+  var moodCls=String(mood||"happy").replace(/[^a-z0-9_-]/gi,"");
   var feet='<ellipse cx="38" cy="97" rx="9.5" ry="6.5" fill="'+INK+'"/><ellipse cx="62" cy="97" rx="9.5" ry="6.5" fill="'+INK+'"/>';
   var eyesOpen='<circle cx="38" cy="34" r="4.8" fill="#fff"/><circle cx="62" cy="34" r="4.8" fill="#fff"/>'
     +'<circle cx="38.6" cy="34.8" r="2.7" fill="'+INK+'"/><circle cx="61.4" cy="34.8" r="2.7" fill="'+INK+'"/>'
@@ -3004,18 +3049,25 @@ function pandaChar(mood,opts){
     bodyCls="pd-breathe";
   }
   if(!anim)bodyCls="";
-  return '<svg viewBox="'+box+'" width="100%" height="100%"><g class="'+bodyCls+'">'
+  return '<svg class="pd-char pd-mood-'+moodCls+'" viewBox="'+box+'" width="100%" height="100%" aria-hidden="true">'
+    +'<ellipse class="pd-ground" cx="50" cy="102" rx="30" ry="6" fill="#211D17" opacity=".22"/>'
+    +'<g class="pd-core '+bodyCls+'">'
     +back
-    +feet
-    +armL+armR
-    +'<path d="M28 94 q-5 -28 9 -36 h26 q14 8 9 36 q-22 7 -44 0 z" fill="#fff" stroke="'+INK+'" stroke-width="3"/>'
-    +'<ellipse cx="50" cy="80" rx="13" ry="10" fill="#F6F1E6"/>'
+    +'<g class="pd-limbs">'+feet+armL+armR+'</g>'
+    +'<path class="pd-body-depth" d="M31 96 q-7 -29 9 -40 h23 q17 10 10 40 q-20 10 -42 0 z" fill="'+DEEP+'"/>'
+    +'<path class="pd-shell" d="M28 94 q-5 -28 9 -36 h26 q14 8 9 36 q-22 7 -44 0 z" fill="'+FACE+'" stroke="'+INK+'" stroke-width="3"/>'
+    +'<path class="pd-body-depth" d="M61 61 q13 10 9 31 q-8 4 -18 5 q10 -13 9 -36 z" fill="#B98442"/>'
+    +'<ellipse cx="50" cy="80" rx="14" ry="10.5" fill="'+CREAM+'"/>'
+    +'<ellipse class="pd-face-shine" cx="44" cy="73" rx="9" ry="5" fill="#fff"/>'
     +'<circle cx="27" cy="15" r="12" fill="'+INK+'"/><circle cx="73" cy="15" r="12" fill="'+INK+'"/>'
     +'<circle cx="27" cy="15" r="5" fill="#4A443C"/><circle cx="73" cy="15" r="5" fill="#4A443C"/>'
-    +'<circle cx="50" cy="38" r="30" fill="#fff" stroke="'+INK+'" stroke-width="3"/>'
+    +'<circle class="pd-face3d" cx="50" cy="38" r="30" fill="'+FACE+'" stroke="'+INK+'" stroke-width="3"/>'
+    +'<path class="pd-face-depth" d="M61 12 q18 12 17 28 q-1 19 -20 27 q13 -17 3 -55 z" fill="'+DEEP+'"/>'
+    +'<ellipse class="pd-face-shine" cx="40" cy="24" rx="13" ry="8" fill="#fff"/>'
     +'<ellipse cx="38" cy="35" rx="9" ry="12" fill="'+INK+'" transform="rotate(-12 38 35)"/>'
     +'<ellipse cx="62" cy="35" rx="9" ry="12" fill="'+INK+'" transform="rotate(12 62 35)"/>'
     +eyes
+    +'<ellipse cx="50" cy="51" rx="11" ry="8" fill="'+CREAM+'" opacity=".94"/>'
     +'<path d="M46 46.5 q4 -3 8 0 q-2 4 -4 4 q-2 0 -4 -4 z" fill="'+INK+'"/>'
     +'<path d="M50 50 v2.6" stroke="'+INK+'" stroke-width="2" stroke-linecap="round"/>'
     +mouth
@@ -3630,6 +3682,6 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
   });
 })();
 </script>
-<script src="/course_v3_data/desktop-download.js?v=20260811-1"></script>
+<script src="/course_v3_data/desktop-download.js?v=20260812-1"></script>
 </body>
 </html>
