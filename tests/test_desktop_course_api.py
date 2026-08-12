@@ -188,6 +188,27 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(int(first_open_events or 0), 0)
             self.assertEqual(progress.reminder_tz_offset, 5)
 
+    async def test_notifications_toggle_persists_to_course_map(self):
+        update = await self.client.post(
+            "/api/v3/desktop/preferences/notifications",
+            headers=self.auth_headers,
+            json={"enabled": False},
+        )
+
+        self.assertEqual(update.status_code, 200)
+        update_payload = update.json()
+        self.assertTrue(update_payload["ok"])
+        self.assertFalse(update_payload["notifications"])
+        self.assertFalse(update_payload["notify"]["enabled"])
+
+        response = await self.client.get(
+            "/api/v3/desktop/course/map",
+            headers=self.auth_headers,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json()["notify"]["enabled"])
+
     async def test_lesson_returns_canonical_json_and_enforces_unlock_and_premium(self):
         first = await self.client.get(
             "/api/v3/desktop/course/lesson/1",
@@ -655,6 +676,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 "/api/v3/desktop/course/lesson/{lesson_order}",
                 "/api/v3/desktop/course/complete",
                 "/api/v3/desktop/preferences/language",
+                "/api/v3/desktop/preferences/notifications",
                 "/api/v3/desktop/events",
             },
         )

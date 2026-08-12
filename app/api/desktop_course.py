@@ -88,6 +88,12 @@ class DesktopCourseLanguageRequest(BaseModel):
     language: str = Field(pattern=r"^(uz|ru|tj)$")
 
 
+class DesktopCourseNotificationsRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool
+
+
 class DesktopNativeEventRequest(BaseModel):
     """Small, allowlisted native telemetry payload; prompts never belong here."""
 
@@ -311,6 +317,36 @@ def create_desktop_course_router(
             return _error_response(exc)
         except Exception:
             logger.exception("Desktop course language update failed")
+            return _error_response(
+                DesktopCourseError(
+                    "desktop_course_unavailable",
+                    status_code=503,
+                )
+            )
+
+    @router.post("/api/v3/desktop/preferences/notifications")
+    async def desktop_course_notifications(request: Request):
+        try:
+            payload = await _validated_payload(
+                request,
+                DesktopCourseNotificationsRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(
+                    session,
+                    settings_obj,
+                ).set_notifications(
+                    _access_token(request),
+                    enabled=payload.enabled,
+                )
+            return JSONResponse(
+                content=result,
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Desktop course notifications update failed")
             return _error_response(
                 DesktopCourseError(
                     "desktop_course_unavailable",

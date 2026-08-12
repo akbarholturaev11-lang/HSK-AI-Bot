@@ -657,6 +657,25 @@ class DesktopCourseService:
         await self.session.commit()
         return {"ok": True, "language": language}
 
+    async def set_notifications(
+        self,
+        access_token: str,
+        *,
+        enabled: bool,
+    ) -> dict[str, Any]:
+        context = await self._context(access_token)
+        user = await self._locked_context_user(context)
+        profile = await CourseMiniAppProfileService(self.session).get_or_create(
+            user.id
+        )
+        profile.notifications_enabled = bool(enabled)
+        await self.session.commit()
+        return {
+            "ok": True,
+            "notifications": bool(profile.notifications_enabled),
+            "notify": {"enabled": bool(profile.notifications_enabled)},
+        }
+
     async def record_native_event(
         self,
         access_token: str,
