@@ -82,6 +82,7 @@ def _public_payload(result: dict[str, Any]) -> dict[str, Any]:
     entries = result.get("leaderboard")
     rows = [_public_entry(item) for item in entries if isinstance(item, dict)] if isinstance(entries, list) else []
     return {
+        "ok": True,
         "rank": int(result.get("rank") or 0),
         "league": str(result.get("league") or ""),
         "league_size": int(result.get("league_size") or 0),
