@@ -109,15 +109,15 @@ class CourseAdAppTypeNormalizationTests(unittest.TestCase):
         self.assertIn("IS NULL", clause)
         self.assertIn("NOT IN", clause.upper())
         self.assertIn("dars_yakuni", clause)
-        self.assertIn("app", clause)
 
     def test_app_type_and_slot_are_registered(self):
         self.assertIn("app", COURSE_AD_TYPES)
         self.assertEqual(COURSE_AD_APP_TYPE, "app")
         self.assertIn("app_open", COURSE_AD_SLOTS)
-        # Eksklyuziv turlar mashq slotidan chiqarib tashlanadi.
-        self.assertIn(COURSE_AD_APP_TYPE, COURSE_AD_EXCLUSIVE_TYPES)
-        self.assertIn(COURSE_AD_LESSON_END_TYPE, COURSE_AD_EXCLUSIVE_TYPES)
+        # Faqat dars yakuni bloki mashq slotidan chiqarib tashlanadi.
+        # App reklamasi esa markazda ham, mashq/darslarda ham chiqadi.
+        self.assertEqual(COURSE_AD_EXCLUSIVE_TYPES, (COURSE_AD_LESSON_END_TYPE,))
+        self.assertNotIn(COURSE_AD_APP_TYPE, COURSE_AD_EXCLUSIVE_TYPES)
 
     def test_ad_type_normalization_accepts_app_and_rejects_unknown(self):
         self.assertEqual(CourseAdService.normalize_ad_type("app"), "app")
@@ -192,21 +192,24 @@ class CourseAdSlotIsolationTests(unittest.IsolatedAsyncioTestCase):
             )
         await session.commit()
 
-    async def test_app_ad_never_leaks_into_practice_or_lesson_end(self):
+    async def test_lesson_end_block_never_leaks_into_other_slots(self):
+        """Dars yakuni bloki faqat o'z slotida qoladi.
+
+        App reklamasi esa ATAYIN mashq slotida ham chiqadi — u markazdagi
+        kartada ham, mashq bo'limlari va darslarda ham ko'rsatiladi."""
         async with self.session_maker() as session:
             await self._seed(session)
             service = CourseAdService(session)
 
             practice = await service.list_active(language="uz", slot="practice")
             practice_types = {ad.ad_type for ad in practice}
-            # Mashq bo'limlarida faqat aralashadigan turlar.
-            self.assertEqual(practice_types, {"odiy", "hamkorlik", "bot"})
-            self.assertNotIn("app", practice_types)
+            self.assertEqual(practice_types, {"odiy", "hamkorlik", "bot", "app"})
             self.assertNotIn("dars_yakuni", practice_types)
 
             lesson_end = await service.list_active(language="uz", slot="lesson_end")
             self.assertEqual({ad.ad_type for ad in lesson_end}, {"dars_yakuni"})
 
+            # Markazdagi karta sloti o'zgarmaydi: faqat app turi.
             app_open = await service.list_active(language="uz", slot="app_open")
             self.assertEqual({ad.ad_type for ad in app_open}, {"app"})
 
@@ -314,6 +317,28 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         self.assertIn("CourseAds.playAppOpen()", html)
         # Dars, chellenj yoki tur ochilayotgan bo'lsa reklama chiqmaydi.
         self.assertIn("if(ctx&&(ctx.lesson>0||ctx.challenge>0||ctx.tour))return;", html)
+
+    def test_big_player_renders_platform_buttons_for_app_ads(self):
+        """App reklamasi mashq/darsda katta pleyerda chiqadi — u yerda ham
+        yuklab olish tugmasi bo'lishi kerak, aks holda reklama ma'nosiz."""
+        ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+        self.assertIn('if(type==="app")return renderAppAdButtons(ad);', ads)
+        self.assertIn("function renderAppAdButtons(ad)", ads)
+        self.assertIn('data-psplat="', ads)
+        # Platforma ro'yxati bo'sh bo'lsa oddiy havola tugmasiga tushadi.
+        self.assertIn("if(!ad.link_url)return;", ads)
+
+    def test_app_buttons_are_not_tied_to_the_app_open_slot(self):
+        """Serverda platforma tugmalari slotga emas, TURGA bog'langan."""
+        main = Path("app/main.py").read_text(encoding="utf-8")
+        self.assertIn(
+            'app_ads = [ad for ad in ads if ad.get("ad_type") == "app"]', main
+        )
+        self.assertNotIn(
+            "        if app_open:\n"
+            "            # App reklamasidagi platforma tugmalari.",
+            main,
+        )
 
 
 if __name__ == "__main__":

@@ -39,18 +39,22 @@ COURSE_AD_ALL_LANGUAGES = "all"
 # Reklama turlari: odiy (oddiy), hamkorlik (reklama qabul qilish/hamkorlik),
 # bot (o'z botlarini reklama qilish), dars_yakuni (dars tugagach bepul userga
 # ko'rsatiladigan blok — ostida obuna knopkasi va ixtiyoriy tashqi CTA),
-# app (desktop ilova reklamasi — Mini App ochilganda markazda chiqadi).
+# app (desktop ilova reklamasi).
 # Odiy — hozirgi xatti-harakat.
 COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot", "dars_yakuni", "app")
 COURSE_AD_DEFAULT_TYPE = "odiy"
-# Dars yakuni va app reklamalari ALOHIDA slotlarda ishlaydi va mashq
-# bo'limlaridagi reklamalarga ARALASHMAYDI.
 COURSE_AD_LESSON_END_TYPE = "dars_yakuni"
 COURSE_AD_APP_TYPE = "app"
-# Mashq slotidan (practice) CHIQARIB TASHLANADIGAN turlar. Yangi eksklyuziv tur
-# qo'shilsa shu yerga ham qo'shilishi shart, aks holda u mashq bo'limlarida
-# ham chiqib ketadi.
-COURSE_AD_EXCLUSIVE_TYPES = (COURSE_AD_LESSON_END_TYPE, COURSE_AD_APP_TYPE)
+# Mashq slotidan (practice) CHIQARIB TASHLANADIGAN turlar.
+#
+# `dars_yakuni` shu yerda qoladi: u dars tugagach obuna taklifi bilan birga
+# chiqadigan alohida blok, mashq oqimida ma'nosi yo'q.
+#
+# `app` esa ATAYIN chiqarilmagan — desktop ilova reklamasi Mini App ochilganda
+# markazda ham, mashq bo'limlarida ham (boshi/o'rtasi/oxiri), "obuna majburiy
+# emas" rejimida esa darslarda ham chiqishi kerak. `app_open` sloti baribir
+# faqat `app` turini qaytaradi, shuning uchun markazdagi karta o'zgarmaydi.
+COURSE_AD_EXCLUSIVE_TYPES = (COURSE_AD_LESSON_END_TYPE,)
 COURSE_AD_SLOTS = ("practice", "lesson_end", "app_open")
 COURSE_AD_DEFAULT_SLOT = "practice"
 # App reklamasi sozlamalari chegaralari.

@@ -272,15 +272,49 @@
     while(node&&node!==els.ps){if(node.classList&&node.classList.contains("caa-ps-btn")){btn=node;break}node=node.parentNode}
     if(!btn||!psCurrent)return;
     var act=btn.getAttribute("data-psact"),sec=psCurrent;
+    var plat=btn.getAttribute("data-psplat");
+    if(plat){
+      var found=null,list=sec.platforms||[];
+      for(var i=0;i<list.length;i++){if(list[i].platform===plat)found=list[i]}
+      if(found)openUrl(found.url);
+      return;
+    }
     if(act==="open")openUrl(sec.link_url);
     else if(act==="copy")copyUrl(sec.link_url,btn);
     else if(act==="share")shareUrl(sec.link_url,sec.title);
   }
   function hidePs(){if(els&&els.ps){els.ps.classList.remove("on");els.ps.innerHTML=""}psCurrent=null}
+  /* App reklamasi katta pleyerda: platforma tugmalari (MacBook/Windows).
+     Server faqat havolasi BOR platformalarni yuboradi — o'lik tugma chiqmaydi.
+     Platforma ro'yxati bo'sh bo'lsa, oddiy havola tugmasiga tushamiz. */
+  function renderAppAdButtons(ad){
+    var list=(ad&&ad.app_buttons&&ad.app_buttons.length)?ad.app_buttons:[];
+    var t=T();
+    if(!list.length){
+      if(!ad.link_url)return;
+      var label=(ad.button_text&&String(ad.button_text).trim())?String(ad.button_text).trim():(t.appCta||t.psTry);
+      psCurrent={link_url:ad.link_url,title:ad.title||""};
+      els.ps.innerHTML='<div class="caa-ps-btns"><button class="caa-ps-btn primary" data-psact="open">'
+        +'<i class="ti ti-download"></i> '+esc(label)+'</button></div>';
+      els.ps.classList.add("on");
+      return;
+    }
+    els.ps.innerHTML='<div class="caa-ps-btns">'+list.map(function(b){
+      var meta=APP_PLATFORM_META[b.platform]||{icon:"ti-download",label:b.platform};
+      return '<button class="caa-ps-btn primary" data-psplat="'+esc(b.platform)+'">'
+        +'<i class="ti '+meta.icon+'"></i> '+esc(meta.label)+'</button>';
+    }).join("")+'</div>';
+    els.ps.classList.add("on");
+    psCurrent={link_url:ad.link_url||"",title:ad.title||"",platforms:list};
+  }
   function renderAdButtons(ad){
     hidePs();
     if(!ad)return;
     var type=ad.ad_type||"odiy";
+    /* App reklamasi mashq bo'limlarida va darslarda ham chiqadi. U yerda
+       markazdagi karta emas, katta pleyer ishlaydi — shuning uchun platforma
+       tugmalari shu mavjud tugma blokida ko'rsatiladi. */
+    if(type==="app")return renderAppAdButtons(ad);
     if((type!=="hamkorlik"&&type!=="bot")||!ad.link_url)return;
     var t=T(),bt=(ad.button_text&&String(ad.button_text).trim())?String(ad.button_text).trim():(type==="hamkorlik"?t.psWrite:t.psTry);
     psCurrent={link_url:ad.link_url,title:ad.title||""};

@@ -1847,11 +1847,16 @@ async def v3_course_ad(
             # Dars oxirida BITTA blok chiqadi — bir nechta reklama bo'lsa dars
             # raqami bo'yicha navbatma-navbat aylanadi (har dars boshqasi).
             ads = [ads[lesson_order % len(ads)]]
-        if app_open:
-            # App reklamasidagi platforma tugmalari. Havola adminning qo'lda
-            # kiritganidan, u bo'lmasa reliz tizimidan avtomatik olinadi.
+        # App reklamasidagi platforma tugmalari. Havola adminning qo'lda
+        # kiritganidan, u bo'lmasa reliz tizimidan avtomatik olinadi.
+        #
+        # Tugmalar `app_open` slotiga bog'lanmagan: app reklamasi mashq
+        # bo'limlarida va darslarda ham chiqadi, u yerda ham yuklab olish
+        # tugmasi bo'lishi kerak. Reliz so'rovi faqat app turi bo'lsa yuboriladi.
+        app_ads = [ad for ad in ads if ad.get("ad_type") == "app"]
+        if app_ads:
             auto_links = await _desktop_auto_download_links()
-            for ad in ads:
+            for ad in app_ads:
                 ad["app_buttons"] = CourseAdService.app_platform_buttons(ad, auto_links)
         return JSONResponse(
             content={

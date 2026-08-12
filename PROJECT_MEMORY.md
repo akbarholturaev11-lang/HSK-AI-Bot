@@ -207,6 +207,48 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-12 — App ads also run in practice sections and lessons
+
+Changed:
+- `app` ads are no longer exclusive to the app-open slot. `COURSE_AD_EXCLUSIVE_TYPES`
+  now holds only `dars_yakuni`, so an `app` ad appears in the centre card on Mini
+  App open **and** in the practice sections (start/middle/end) **and** in lessons
+  when the admin turns on the "subscription not required" (ads) course access
+  mode. That lesson path already used the practice slot, so no separate wiring.
+- `/api/v3/ad` now attaches `app_buttons` to any `app`-type ad instead of only in
+  the `app_open` slot; without that an app ad in a practice section would have no
+  download button. The desktop release lookup still runs only when an app ad is
+  actually present.
+- `ads.js`: the big player renders the platform buttons for `app` ads through the
+  existing `caa-ps` button block (`renderAppAdButtons`). If the server returns no
+  platform links it falls back to a single link button. The centre card is
+  untouched.
+- `app_open` still returns only `app` ads, so the centre card behaves as before.
+
+Why:
+- The desktop app ad only ever showed on Mini App open, which is the moment a
+  learner is least interested in leaving. It has to reach learners inside the
+  practice flow and in ad-supported lessons too.
+
+Files touched:
+- `app/services/course_ad_service.py`
+- `app/main.py`
+- `app/static/course_v3_data/ads.js`
+- `tests/test_course_ad_app_type.py`
+
+Risk:
+- Ad delivery reach. Existing `app` ads immediately start appearing in practice
+  sections after deploy — no new upload needed, but also no way to opt out per
+  ad. If an ad should stay centre-only, that needs a separate slot flag.
+- `dars_yakuni` isolation is unchanged and still covered by tests.
+- `ads.js` is served `immutable`; the `?v=` query in all six course pages was
+  bumped to `20260812-5` so the new player actually loads.
+
+Follow-up:
+- Verify a photo `app` ad shows in a practice section with working
+  MacBook/Windows buttons, and that lessons show it once course access is set to
+  the ads mode.
+
 ### 2026-08-12 — Course ads accept photos, not only video
 
 Changed:
