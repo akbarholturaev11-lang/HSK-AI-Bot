@@ -16,13 +16,85 @@ from sqlalchemy.pool import StaticPool
 
 from app.db.base import Base
 from app.services.course_ad_service import (
+    COURSE_AD_APP_PLATFORMS,
     COURSE_AD_APP_TYPE,
+    COURSE_AD_APP_VISIBLE_PLATFORMS,
     COURSE_AD_EXCLUSIVE_TYPES,
     COURSE_AD_LESSON_END_TYPE,
     COURSE_AD_SLOTS,
     COURSE_AD_TYPES,
     CourseAdService,
 )
+
+
+class CourseAdAppPlatformButtonTests(unittest.TestCase):
+    """Platforma tugmalari: MacBook/Windows ko'rinadi, iPhone/Android hozircha yo'q."""
+
+    def test_ios_and_android_are_supported_but_not_visible_yet(self):
+        # Kod ikkalasini ham biladi (keyin yoqish uchun).
+        self.assertEqual(
+            COURSE_AD_APP_PLATFORMS, ("macos", "windows", "ios", "android")
+        )
+        # Lekin hozir faqat ikkitasi ko'rsatiladi — iOS/Android uchun tayyor
+        # yuklab olish havolasi yo'q, o'lik tugma chiqmasligi kerak.
+        self.assertEqual(COURSE_AD_APP_VISIBLE_PLATFORMS, ("macos", "windows"))
+        self.assertNotIn("ios", COURSE_AD_APP_VISIBLE_PLATFORMS)
+        self.assertNotIn("android", COURSE_AD_APP_VISIBLE_PLATFORMS)
+
+    def test_buttons_use_release_links_when_admin_left_them_empty(self):
+        buttons = CourseAdService.app_platform_buttons(
+            {"platform_links": {}},
+            {"macos": "https://cdn.example/downloads/macos",
+             "windows": "https://cdn.example/downloads/windows"},
+        )
+        self.assertEqual([b["platform"] for b in buttons], ["macos", "windows"])
+        self.assertTrue(all(b["source"] == "auto" for b in buttons))
+
+    def test_manual_link_overrides_the_release_link(self):
+        buttons = CourseAdService.app_platform_buttons(
+            {"platform_links": {"macos": "https://qolda.example/mac.dmg"}},
+            {"macos": "https://cdn.example/downloads/macos",
+             "windows": "https://cdn.example/downloads/windows"},
+        )
+        by_platform = {b["platform"]: b for b in buttons}
+        self.assertEqual(by_platform["macos"]["url"], "https://qolda.example/mac.dmg")
+        self.assertEqual(by_platform["macos"]["source"], "manual")
+        # Qo'lda yozilmagani avtomatik qoladi.
+        self.assertEqual(by_platform["windows"]["source"], "auto")
+
+    def test_dead_button_is_never_rendered(self):
+        """Havola umuman bo'lmasa tugma chiqmaydi — bosilib hech qayerga
+        olib bormaydigan tugma foydalanuvchini chalg'itadi."""
+        self.assertEqual(CourseAdService.app_platform_buttons({}, {}), [])
+        buttons = CourseAdService.app_platform_buttons(
+            {}, {"macos": "https://cdn.example/downloads/macos"}
+        )
+        self.assertEqual([b["platform"] for b in buttons], ["macos"])
+
+    def test_hidden_platform_link_is_stored_but_not_rendered(self):
+        """iOS havolasi oldindan kiritilsa saqlanadi, lekin ko'rinmaydi."""
+        links = CourseAdService.normalize_platform_links(
+            {"ios": "https://apps.example/ios", "macos": "https://a.example/mac"}
+        )
+        self.assertIn("ios", links)
+        buttons = CourseAdService.app_platform_buttons({"platform_links": links}, {})
+        self.assertEqual([b["platform"] for b in buttons], ["macos"])
+
+    def test_platform_links_reject_junk_and_normalize_scheme(self):
+        links = CourseAdService.normalize_platform_links(
+            {"macos": "example.com/mac", "windows": "  ", "nomalum": "https://x.example"}
+        )
+        self.assertEqual(links, {"macos": "https://example.com/mac"})
+        self.assertEqual(CourseAdService.normalize_platform_links("buzuq-json"), {})
+        self.assertEqual(CourseAdService.normalize_platform_links(None), {})
+
+    def test_empty_links_are_stored_as_null(self):
+        self.assertIsNone(CourseAdService.platform_links_storage_value({}))
+        self.assertIsNone(CourseAdService.platform_links_storage_value(None))
+        stored = CourseAdService.platform_links_storage_value(
+            {"macos": "https://a.example/mac"}
+        )
+        self.assertEqual(stored, '{"macos":"https://a.example/mac"}')
 
 
 class CourseAdAppTypeNormalizationTests(unittest.TestCase):
@@ -186,6 +258,32 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         # Yuklashda ikkala qiymat ham yuboriladi.
         self.assertIn('fd.append("skip_after_seconds"', html)
         self.assertIn('fd.append("daily_limit"', html)
+        # Qo'lda havola maydonlari — bo'sh qolsa avtomatik ishlatiladi.
+        self.assertIn('id="caLinkMacos"', html)
+        self.assertIn('id="caLinkWindows"', html)
+        self.assertIn("Bo'sh — avtomatik", html)
+        self.assertIn('fd.append("link_macos"', html)
+        self.assertIn('fd.append("link_windows"', html)
+        # iPhone/Android uchun admin maydoni hozircha qo'shilmaydi.
+        self.assertNotIn('id="caLinkIos"', html)
+        self.assertNotIn('id="caLinkAndroid"', html)
+
+    def test_ad_endpoint_attaches_platform_buttons_only_for_app_open(self):
+        main = Path("app/main.py").read_text(encoding="utf-8")
+        self.assertIn("_desktop_auto_download_links", main)
+        self.assertIn("CourseAdService.app_platform_buttons(ad, auto_links)", main)
+        # Reliz tizimi ishlamasa ham endpoint yiqilmaydi.
+        self.assertIn("Desktop auto download links resolve failed", main)
+
+    def test_client_renders_platform_buttons_from_server_list(self):
+        ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
+        self.assertIn("renderAppPlatforms", ads)
+        self.assertIn("ad.app_buttons", ads)
+        # Ikonka/nom xaritasi to'rt platformani ham biladi (keyin yoqish uchun).
+        for platform in ("macos", "windows", "ios", "android"):
+            self.assertIn(platform + ":{icon:", ads)
+        # Tugmalar bo'lsa umumiy CTA takrorlanmaydi.
+        self.assertIn("hasPlatforms", ads)
 
     def test_upload_endpoint_normalizes_new_app_fields(self):
         main = Path("app/main.py").read_text(encoding="utf-8")

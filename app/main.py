@@ -67,6 +67,7 @@ from app.services.course_miniapp_analytics_service import CourseMiniAppAnalytics
 from app.services.course_notification_service import CourseNotificationService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.desktop_download_service import DesktopReleaseConfig
 from app.services.desktop_release_manifest_service import (
     resolve_desktop_latest_versions,
 )
@@ -134,6 +135,10 @@ from app.services.voice_practice_service import VoicePracticeError, VoicePractic
 from app.services.telegram_webapp_auth import (
     extract_fresh_verified_webapp_user_id,
     extract_verified_webapp_user_id,
+)
+from app.services.blocked_user_guard import (
+    BlockedUserApiMiddleware,
+    invalidate as invalidate_block_cache,
 )
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages as decode_ad_languages
 from app.repositories.bot_setting_repo import BotSettingRepository
@@ -471,6 +476,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=1024)
+# Bloklangan foydalanuvchi Mini App API'laridan foydalana olmasin.
+# Admin panel API'lari o'z `_admin_auth_error()` tekshiruvi bilan ishlaydi.
+app.add_middleware(
+    BlockedUserApiMiddleware,
+    session_maker=async_session_maker,
+    bot_token=settings.BOT_TOKEN,
+    admin_ids=settings.admin_id_list,
+)
 app.include_router(
     create_desktop_auth_router(
         session_factory=async_session_maker,
@@ -1725,6 +1738,26 @@ async def v3_set_language(request: Request):
         return JSONResponse(content={"ok": True, "language": resolved_lang})
 
 
+async def _desktop_auto_download_links() -> dict[str, str]:
+    """Reliz tizimidagi joriy yuklab olish havolalari (public, tokensiz).
+
+    App reklamasidagi platforma tugmalari uchun. Reliz sozlanmagan yoki
+    vaqtincha ishlamayotgan bo'lsa bo'sh lug'at qaytadi — bunday holda tugma
+    faqat admin qo'lda havola kiritgan bo'lsa chiqadi, o'lik tugma emas."""
+    try:
+        releases = await DesktopReleaseConfig.resolve(settings)
+    except Exception:
+        logger.exception("Desktop auto download links resolve failed")
+        return {}
+    links: dict[str, str] = {}
+    for platform in ("macos", "windows"):
+        try:
+            links[platform] = releases.public_transfer_url(platform)
+        except Exception:
+            continue
+    return links
+
+
 @app.get("/api/v3/ad")
 async def v3_course_ad(
     request: Request,
@@ -1783,6 +1816,12 @@ async def v3_course_ad(
             # Dars oxirida BITTA blok chiqadi — bir nechta reklama bo'lsa dars
             # raqami bo'yicha navbatma-navbat aylanadi (har dars boshqasi).
             ads = [ads[lesson_order % len(ads)]]
+        if app_open:
+            # App reklamasidagi platforma tugmalari. Havola adminning qo'lda
+            # kiritganidan, u bo'lmasa reliz tizimidan avtomatik olinadi.
+            auto_links = await _desktop_auto_download_links()
+            for ad in ads:
+                ad["app_buttons"] = CourseAdService.app_platform_buttons(ad, auto_links)
         return JSONResponse(
             content={
                 "ok": True,
@@ -3006,7 +3045,61 @@ async def admin_miniapp_user_block(request: Request):
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
         await session.commit()
         status = user.status
+    # Mini App guard cache'i eskirmasin: blok/blokdan chiqarish darhol ishlasin.
+    invalidate_block_cache(target_id)
     return JSONResponse(content={"ok": True, "status": status, "blocked": status == "blocked"})
+
+
+@app.post("/api/admin-miniapp/users/message")
+async def admin_miniapp_user_message(request: Request):
+    """Bitta foydalanuvchiga shaxsiy xabar yuboradi.
+
+    Yangi yuborish servisi yaratilmaydi — mavjud `AdminBroadcastService.deliver()`
+    bitta elementli ro'yxat bilan qayta ishlatiladi, shuning uchun tarjima,
+    knopka va bot-blok hisobi ommaviy xabar bilan bir xil ishlaydi.
+    """
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    try:
+        target_id = int(payload.get("telegram_id") or 0)
+    except (TypeError, ValueError):
+        target_id = 0
+    if target_id <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_user_payload"})
+    checked = _broadcast_validate_message(payload)
+    if isinstance(checked, JSONResponse):
+        return checked
+    text, content_type, media_file_id = checked
+    button_config = parse_button_config(payload.get("button"))
+    translate = bool(payload.get("translate"))
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(target_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+        if user.status == "blocked":
+            return JSONResponse(status_code=400, content={"ok": False, "error": "user_is_blocked"})
+        service = AdminBroadcastService(bot, session)
+        sent, failed, blocked = await service.deliver(
+            [user],
+            admin_ids=set(),
+            text=text,
+            content_type=content_type,
+            media_file_id=media_file_id,
+            button_config=button_config,
+            translate=translate,
+        )
+    if not sent:
+        return JSONResponse(
+            status_code=502,
+            content={"ok": False, "error": "bot_blocked_by_user" if blocked else "send_failed"},
+        )
+    return JSONResponse(content={"ok": True, "sent": sent, "failed": failed, "blocked": blocked})
 
 
 @app.post("/api/admin-miniapp/prices/save")
@@ -3738,6 +3831,14 @@ async def admin_miniapp_course_ads_upload(request: Request):
         form.get("skip_after_seconds"), duration_seconds
     )
     daily_limit = CourseAdService.normalize_daily_limit(form.get("daily_limit"))
+    # Platforma havolalari — QO'LDA kiritilgani (ixtiyoriy). Bo'sh qoldirilsa
+    # havola reliz tizimidan avtomatik olinadi.
+    platform_links = {
+        "macos": form.get("link_macos"),
+        "windows": form.get("link_windows"),
+        "ios": form.get("link_ios"),
+        "android": form.get("link_android"),
+    }
     async with async_session_maker() as session:
         ad = await CourseAdService(session).create_video(
             title=title,
@@ -3749,6 +3850,7 @@ async def admin_miniapp_course_ads_upload(request: Request):
             button_text=button_text,
             skip_after_seconds=skip_after_seconds,
             daily_limit=daily_limit,
+            platform_links=platform_links,
             media_blob=media_backup,
             created_by_telegram_id=telegram_id,
         )

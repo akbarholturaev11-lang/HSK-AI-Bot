@@ -207,6 +207,53 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-12 — Blocked users are fully denied across bot and Mini App
+
+Changed:
+- `status="blocked"` now stops every bot event, not only AI answers. New
+  `BlockedUserMiddleware` (message + callback_query) runs after `DBSessionMiddleware`
+  and before `RequiredChannelMiddleware`, so commands, menu buttons, and callbacks
+  never reach a handler. The user gets the localized `access_blocked` notice once
+  per 10 minutes, then the bot stays silent.
+- New `BlockedUserApiMiddleware` (pure ASGI, in `app/services/blocked_user_guard.py`)
+  returns `403 {"error":"user_blocked","support_url":...}` for any `/api/*` request
+  carrying a valid `X-Telegram-Init-Data` from a blocked user. `/api/admin-miniapp/*`
+  is exempt because it has its own admin auth. Blocked state is cached for 30s and
+  invalidated immediately by `/api/admin-miniapp/users/block`.
+- Course Mini App shows a dedicated blocked gate (UZ/RU/TJ) with a support link
+  instead of the generic auth gate.
+- New `/api/admin-miniapp/users/message` sends a personal message to one user by
+  reusing `AdminBroadcastService.deliver()` with a single-item list.
+- Admin panel user drawer: Telegram ID row with copy button, and a
+  `Qo'shimcha amallar` accordion (personal message, give access, discount,
+  broadcast, delete).
+
+Why:
+- Blocking was effectively decorative: a blocked user could still `/start`, browse
+  the menu, open the Mini App, and use the course. Only text/image AI was stopped.
+
+Files touched:
+- `app/bot/middlewares/blocked_user.py` (new)
+- `app/services/blocked_user_guard.py` (new)
+- `app/bot/create_bot.py`
+- `app/main.py`
+- `app/static/admin.html`
+- `app/static/course-v3.html`
+- `tests/test_blocked_user_guard.py` (new)
+
+Risk:
+- Access-control change. Admins are exempt in both middlewares (`is_admin_user`
+  and `settings.admin_id_list`); without that an admin could lock themselves out.
+- The API guard runs on every `/api/*` request. It short-circuits before any DB
+  work when there is no init data, and DB errors fall through to the endpoint so a
+  database problem cannot lock out working users.
+- Payment, subscription, and course logic were not modified. No DB migration:
+  `users.status` already supports `blocked`.
+
+Follow-up:
+- After deploy, block a test account and verify: bot ignores /start and menu,
+  Mini App shows the blocked gate, unblocking restores access within 30s.
+
 ### 2026-08-12 — Desktop notifications use real reminder data
 
 Changed:

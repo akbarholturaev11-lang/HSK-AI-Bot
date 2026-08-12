@@ -142,6 +142,11 @@
   +'.caa-app-t{font-size:15px;font-weight:700;line-height:1.35;text-align:center;margin:0}'
   +'.caa-app-cta{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;background:#fff;color:#211D17;cursor:pointer}'
   +'.caa-app-cta:active{transform:translateY(1px)}'
+  +'.caa-app-plats{display:flex;gap:8px}'
+  +'.caa-app-plats[hidden]{display:none!important}'
+  +'.caa-app-plat{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:12px;padding:12px 8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}'
+  +'.caa-app-plat:active{transform:translateY(1px)}'
+  +'.caa-app-plat i{font-size:17px}'
   +'.caa-app-x{position:absolute;top:-10px;right:-10px;width:34px;height:34px;border-radius:50%;background:#15120f;border:1px solid rgba(255,255,255,.22);color:#fff;display:none;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:2}'
   +'.caa-app-x.on{display:flex}'
   +'.caa-app-wait{position:absolute;top:-10px;right:-10px;min-width:34px;height:34px;padding:0 10px;border-radius:20px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.82);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;white-space:nowrap;z-index:2}'
@@ -556,12 +561,13 @@
       +'<span class="caa-app-wait" hidden></span>'
       +'<div class="caa-app-media"><video muted playsinline webkit-playsinline preload="auto"></video></div>'
       +'<p class="caa-app-t"></p>'
+      +'<div class="caa-app-plats" hidden></div>'
       +'<button class="caa-app-cta"></button>'
       +'</div>';
     document.body.appendChild(ov);
     var q=function(s){return ov.querySelector(s)};
     appEls={ov:ov,card:q(".caa-app-card"),x:q(".caa-app-x"),wait:q(".caa-app-wait"),
-      video:q("video"),title:q(".caa-app-t"),cta:q(".caa-app-cta")};
+      video:q("video"),title:q(".caa-app-t"),plats:q(".caa-app-plats"),cta:q(".caa-app-cta")};
     return appEls;
   }
 
@@ -574,22 +580,59 @@
     appState.open=false;
   }
 
+  /* Platforma tugmalari — serverdan tayyor ro'yxat keladi (`app_buttons`).
+     Server faqat KO'RINADIGAN va havolasi BOR platformalarni yuboradi:
+     hozircha MacBook va Windows. iPhone/Android reliz tayyor bo'lgach
+     serverdagi ro'yxatga qo'shiladi, bu yerda o'zgartirish kerak emas. */
+  var APP_PLATFORM_META={
+    macos:{icon:"ti-brand-apple",label:"MacBook"},
+    windows:{icon:"ti-brand-windows",label:"Windows"},
+    ios:{icon:"ti-device-mobile",label:"iPhone"},
+    android:{icon:"ti-brand-android",label:"Android"}
+  };
+
+  function openAppLink(url){
+    if(!url) return;
+    try{
+      var tg=window.Telegram&&window.Telegram.WebApp;
+      if(tg&&typeof tg.openLink==="function") tg.openLink(url);
+      else window.open(url,"_blank","noopener");
+    }catch(err){}
+  }
+
+  function renderAppPlatforms(e,ad){
+    var list=(ad&&ad.app_buttons&&ad.app_buttons.length)?ad.app_buttons:[];
+    if(!list.length){ e.plats.hidden=true; e.plats.innerHTML=""; return; }
+    e.plats.innerHTML=list.map(function(b){
+      var meta=APP_PLATFORM_META[b.platform]||{icon:"ti-download",label:b.platform};
+      return '<button class="caa-app-plat" data-plat="'+b.platform+'">'
+        +'<i class="ti '+meta.icon+'"></i> '+meta.label+'</button>';
+    }).join("");
+    e.plats.hidden=false;
+    var btns=e.plats.querySelectorAll(".caa-app-plat");
+    for(var i=0;i<btns.length;i++){
+      (function(btn){
+        btn.onclick=function(){
+          var found=null;
+          for(var j=0;j<list.length;j++){ if(list[j].platform===btn.dataset.plat) found=list[j]; }
+          openAppLink(found&&found.url);
+        };
+      })(btns[i]);
+    }
+  }
+
   function showAppAd(ad){
     var e=ensureAppDom(), t=T();
     var skip=Math.max(0,Math.min(60,Number(ad&&ad.skip_after_seconds)||0));
     appState.open=true;
     appState.shownInSession=true;
     e.title.textContent=String(ad.title||"");
+    renderAppPlatforms(e,ad);
     e.cta.textContent=String(ad.button_text||t.appCta);
-    e.cta.style.display=ad.link_url?"":"none";
-    e.cta.onclick=function(){
-      if(!ad.link_url) return;
-      try{
-        var tg=window.Telegram&&window.Telegram.WebApp;
-        if(tg&&typeof tg.openLink==="function") tg.openLink(ad.link_url);
-        else window.open(ad.link_url,"_blank","noopener");
-      }catch(err){}
-    };
+    /* Platforma tugmalari bo'lsa umumiy CTA ortiqcha — takror bo'lmasin. */
+    var hasPlatforms=!!(ad&&ad.app_buttons&&ad.app_buttons.length);
+    e.cta.style.display=(ad.link_url&&!hasPlatforms)?"":"none";
+    e.cta.onclick=function(){ openAppLink(ad.link_url); };
     e.x.classList.remove("on");
     e.x.onclick=closeAppAd;
     try{ e.video.src=ad.media_url; e.video.currentTime=0; e.video.play().catch(function(){}); }catch(err){}

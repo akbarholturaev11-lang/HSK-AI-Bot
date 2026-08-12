@@ -97,6 +97,7 @@ export class DesktopVocabularyController {
     this.stateLoaded = false;
     this.limit = PAGE_SIZE;
     this.error = "";
+    this.strokeViewer = null;
   }
 
   setLanguage(language) {
@@ -104,6 +105,7 @@ export class DesktopVocabularyController {
   }
 
   dispose() {
+    this.closeStrokeViewer({ restoreFocus: false });
     this.detailOpen = false;
   }
 
@@ -213,6 +215,9 @@ export class DesktopVocabularyController {
 
   render() {
     if (!this.host) return;
+    // A re-render replaces the screen underneath, so a stroke overlay left
+    // hanging on <body> would outlive the card that opened it.
+    this.closeStrokeViewer({ restoreFocus: false });
     this.host.replaceChildren();
     const rows = this.results();
     if (this.selected && !rows.some((word) => word.h === this.selected)) {
@@ -504,14 +509,17 @@ export class DesktopVocabularyController {
     const exampleList = node("div", "exampleList");
     if (example?.zh) {
       const item = node("article", "detailExample vocabulary-example");
-      item.append(node("div", "zh hanzi", example.zh));
+      // Text on one edge, audio on the other, mirroring the hero card — the
+      // button used to sit under the sentence and collided with it.
+      const exampleCopy = node("div", "detailExampleCopy");
+      exampleCopy.append(node("div", "zh hanzi", example.zh));
       if (example.translation) {
-        item.append(node("div", "tr translation", example.translation));
+        exampleCopy.append(node("div", "tr translation", example.translation));
       }
       const play = node("button", "listen-button", this.t("listen"));
       play.type = "button";
       play.addEventListener("click", () => this.speak?.(example.zh, play));
-      item.append(play);
+      item.append(exampleCopy, play);
       exampleList.append(item);
     } else {
       exampleList.append(node("p", "muted", this.t("examplesNotAvailable")));
@@ -655,18 +663,19 @@ export class DesktopVocabularyController {
     const [strokes, HanziWriter] = await Promise.all([loadStrokes(), loadWriter()]);
     if (!strokes || !HanziWriter || !stage.isConnected) return;
 
-    const missing = characters.filter((character) => !strokes[character]);
-    if (missing.length === characters.length) {
+    const drawable = characters.filter((character) => strokes[character]);
+    if (!drawable.length) {
       stage.append(node("p", "muted", this.t("vocabularyStrokesUnavailable")));
       return;
     }
 
-    characters.forEach((character) => {
+    drawable.forEach((character, index) => {
       const data = strokes[character];
-      if (!data) return;
-      const box = node("div", "stroke-box");
+      const box = node("button", "stroke-box");
+      box.type = "button";
+      box.setAttribute("aria-label", character);
       stage.append(box);
-      const writer = HanziWriter.create(box, character, {
+      HanziWriter.create(box, character, {
         width: 108,
         height: 108,
         padding: 6,
@@ -678,9 +687,172 @@ export class DesktopVocabularyController {
         radicalColor: "#e04a40",
         // No CDN: the character data is already in memory.
         charDataLoader: (_char, onLoad) => onLoad(data),
+      }).animateCharacter();
+      // Tapping a tile opens the full-size viewer instead of replaying in the
+      // thumbnail — the small tile is too cramped to follow a stroke order.
+      box.addEventListener("click", () => {
+        void this.openStrokeViewer(drawable, index);
       });
-      box.addEventListener("click", () => writer.animateCharacter());
-      writer.animateCharacter();
     });
+  }
+
+  // ------------------------------------------------------------ stroke viewer
+
+  closeStrokeViewer({ restoreFocus = true } = {}) {
+    const viewer = this.strokeViewer;
+    if (!viewer) return;
+    this.strokeViewer = null;
+    viewer.writer?.pauseAnimation?.();
+    viewer.writer = null;
+    viewer.layer.remove();
+    document.removeEventListener("keydown", viewer.onKeyDown, true);
+    if (restoreFocus && viewer.previousFocus?.isConnected) {
+      viewer.previousFocus.focus();
+    }
+  }
+
+  /** Full-screen stroke playback; drag sideways or use ← → to change character. */
+  async openStrokeViewer(characters, index) {
+    const [strokes, HanziWriter] = await Promise.all([loadStrokes(), loadWriter()]);
+    if (!strokes || !HanziWriter) return;
+    this.closeStrokeViewer({ restoreFocus: false });
+
+    const layer = node("div", "stroke-layer");
+    const shell = node("section", "stroke-shell");
+    shell.setAttribute("role", "dialog");
+    shell.setAttribute("aria-modal", "true");
+    shell.setAttribute("aria-label", this.t("vocabularyStrokeOrder"));
+
+    const head = node("header", "stroke-shell-head");
+    const headCopy = node("div", "stroke-shell-copy");
+    const headChar = node("b", "stroke-shell-char hanzi", "");
+    const headCount = node("span", "stroke-shell-count", "");
+    headCopy.append(headChar, headCount);
+    const close = node("button", "icon-button stroke-shell-close", "×");
+    close.type = "button";
+    close.setAttribute("aria-label", this.t("close"));
+    head.append(headCopy, close);
+
+    const stage = node("div", "stroke-shell-stage");
+    const canvas = node("div", "stroke-shell-canvas");
+    stage.append(canvas);
+
+    const foot = node("footer", "stroke-shell-foot");
+    const prev = node("button", "icon-button stroke-shell-nav", "‹");
+    prev.type = "button";
+    prev.setAttribute("aria-label", this.t("vocabularyStrokePrev"));
+    const next = node("button", "icon-button stroke-shell-nav", "›");
+    next.type = "button";
+    next.setAttribute("aria-label", this.t("vocabularyStrokeNext"));
+    const replay = node(
+      "button",
+      "btn secondary stroke-shell-replay",
+      this.t("vocabularyStrokeReplay"),
+    );
+    replay.type = "button";
+    const dots = node("div", "stroke-shell-dots");
+    foot.append(prev, dots, replay, next);
+
+    const hint = node("p", "stroke-shell-hint", this.t("vocabularyStrokeViewerHint"));
+    shell.append(head, stage, foot, hint);
+    layer.append(shell);
+
+    const viewer = {
+      layer,
+      writer: null,
+      index,
+      characters,
+      previousFocus:
+        document.activeElement instanceof HTMLElement ? document.activeElement : null,
+      onKeyDown: null,
+    };
+
+    const show = (nextIndex) => {
+      const total = viewer.characters.length;
+      viewer.index = ((nextIndex % total) + total) % total;
+      const character = viewer.characters[viewer.index];
+      const data = strokes[character];
+      if (!data) return;
+      headChar.textContent = character;
+      headCount.textContent = this.t("vocabularyStrokeCount", {
+        count: Array.isArray(data.strokes) ? data.strokes.length : 0,
+      });
+      viewer.writer?.pauseAnimation?.();
+      canvas.replaceChildren();
+      viewer.writer = HanziWriter.create(canvas, character, {
+        width: 320,
+        height: 320,
+        padding: 10,
+        showOutline: true,
+        strokeAnimationSpeed: 1,
+        delayBetweenStrokes: 260,
+        strokeColor: "#211d17",
+        outlineColor: "#e0d6c1",
+        radicalColor: "#e04a40",
+        charDataLoader: (_char, onLoad) => onLoad(data),
+      });
+      viewer.writer.animateCharacter();
+      dots.replaceChildren();
+      if (total > 1) {
+        viewer.characters.forEach((_item, dotIndex) => {
+          dots.append(
+            node("span", `stroke-shell-dot${dotIndex === viewer.index ? " is-active" : ""}`),
+          );
+        });
+      }
+      const single = total < 2;
+      prev.hidden = single;
+      next.hidden = single;
+      hint.hidden = single;
+    };
+
+    const step = (delta) => show(viewer.index + delta);
+    prev.addEventListener("click", () => step(-1));
+    next.addEventListener("click", () => step(1));
+    replay.addEventListener("click", () => viewer.writer?.animateCharacter());
+    close.addEventListener("click", () => this.closeStrokeViewer());
+    layer.addEventListener("click", (event) => {
+      if (event.target === layer) this.closeStrokeViewer();
+    });
+
+    // Trackpad/mouse drag stands in for a touch swipe on desktop.
+    let dragStart = null;
+    stage.addEventListener("pointerdown", (event) => {
+      dragStart = event.clientX;
+      stage.setPointerCapture?.(event.pointerId);
+    });
+    stage.addEventListener("pointerup", (event) => {
+      if (dragStart === null) return;
+      const distance = event.clientX - dragStart;
+      dragStart = null;
+      stage.releasePointerCapture?.(event.pointerId);
+      if (viewer.characters.length < 2 || Math.abs(distance) < 48) return;
+      step(distance < 0 ? 1 : -1);
+    });
+    stage.addEventListener("pointercancel", () => {
+      dragStart = null;
+    });
+
+    // Capture phase: the app-level Escape handler would otherwise close the AI
+    // drawer or the rail while this overlay is the thing on screen.
+    viewer.onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        this.closeStrokeViewer();
+        return;
+      }
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        event.stopPropagation();
+        if (viewer.characters.length > 1) step(event.key === "ArrowLeft" ? -1 : 1);
+      }
+    };
+    document.addEventListener("keydown", viewer.onKeyDown, true);
+
+    this.strokeViewer = viewer;
+    document.body.append(layer);
+    show(index);
+    close.focus();
   }
 }

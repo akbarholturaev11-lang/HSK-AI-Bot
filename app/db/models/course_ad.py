@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Index, Integer, LargeBinary, String
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Index, Integer, LargeBinary, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -37,6 +37,11 @@ class CourseAdCreative(Base):
     # Faqat "app" turi uchun: bir foydalanuvchiga kuniga necha marta ko'rsatiladi.
     # NULL yoki 0 — cheklovsiz (har ochilganda).
     daily_limit: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    # Faqat "app" turi uchun: platforma tugmalarining QO'LDA kiritilgan havolalari.
+    # JSON: {"macos": "https://...", "windows": "https://..."}.
+    # Bo'sh bo'lsa — havola reliz tizimidan avtomatik olinadi. Qiymat bo'lsa,
+    # u avtomatik havolani bosib o'tadi (reliz buzilganda zaxira yo'l).
+    platform_links: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True, nullable=False)
     created_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

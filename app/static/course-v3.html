@@ -613,7 +613,7 @@ button{cursor:pointer}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
 @media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i,.pd-fly,.pd-cape,.pd-arms{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
 </style>
-<link href="/course_v3_data/desktop-download.css?v=20260812-2" rel="stylesheet">
+<link href="/course_v3_data/desktop-download.css?v=20260812-3" rel="stylesheet">
 </head>
 <body>
 <div class="wrap">
@@ -684,7 +684,7 @@ button{cursor:pointer}
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script src="/course_v3_data/ads.js?v=20260812-2"></script>
+<script src="/course_v3_data/ads.js?v=20260812-3"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1723,6 +1723,30 @@ function openBotStart(){
   try{if(tg&&tg.close){tg.close();return}}catch(e){}
   try{location.href=url}catch(e){}
 }
+function blockedGateCopy(){
+  return {
+    ru:{title:"Ваш профиль заблокирован",body:"Доступ к курсу ограничен администратором. Для помощи напишите в поддержку.",btn:"Написать в поддержку"},
+    uz:{title:"Profilingiz bloklangan",body:"Kursga kirish admin tomonidan cheklangan. Yordam uchun qo'llab-quvvatlash xizmatiga yozing.",btn:"Supportga yozish"},
+    tj:{title:"Профили шумо баста шудааст",body:"Дастрасӣ ба курс аз ҷониби админ маҳдуд аст. Барои кӯмак ба дастгирӣ нависед.",btn:"Ба дастгирӣ навиштан"}
+  }[LANG]||{};
+}
+function openSupportLink(url){
+  if(!url)return;
+  try{if(tg&&tg.openTelegramLink&&url.indexOf("t.me/")>-1){tg.openTelegramLink(url);return}}catch(e){}
+  try{if(tg&&tg.openLink){tg.openLink(url);return}}catch(e){}
+  try{location.href=url}catch(e){}
+}
+function showBlockedGate(supportUrl){
+  var c=blockedGateCopy();
+  window._blockedSupportUrl=supportUrl||"";
+  MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
+  $("#s-course").innerHTML='<div class="htop"><span class="lvpill"><i class="ti ti-alert-circle"></i> HSK AI</span></div>'
+    +'<div class="rt-invite" style="margin-top:42px"><span class="han">停</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p>'
+    +(supportUrl?'<button onclick="openSupportLink(window._blockedSupportUrl)"><i class="ti ti-lifebuoy"></i> '+esc(c.btn)+'</button>':'')
+    +'</div>';
+  ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
+  App.show("course");
+}
 function showAuthGate(){
   var c=authGateCopy();
   MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
@@ -2677,6 +2701,7 @@ function _fetchCourseMap(lv){
 function loadCourseMap(lv,tries){
   tries=tries||0;
   return _fetchCourseMap(lv).then(function(d){
+    if(d&&d._status===403&&d.error==="user_blocked")return {blocked:true,support_url:d.support_url||""};
     if(d&&(d.authenticated===false||d._status===401))return {auth:false};
     if(!d||d._parseFail||(d._status&&d._status>=500)){
       if(tries<3)return _retryCourseMap(lv,tries);
@@ -2693,6 +2718,7 @@ function loadLevel(lv){
   lv=setSelectedLevel(lv);
   if(!INIT_DATA){showAuthGate();return;}
   loadCourseMap(lv).then(function(res){
+    if(res&&res.blocked){showBlockedGate(res.support_url);return;}
     if(!res.data){showAuthGate();return;}
     var d=res.data;
     hideAuthGate();MAP=d;adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");prefetchNearbyLessons();
@@ -3694,6 +3720,6 @@ function maybeShowAppOpenAd(ctx){
   setTimeout(function(){try{CourseAds.playAppOpen()}catch(e){}},600);
 }
 </script>
-<script src="/course_v3_data/desktop-download.js?v=20260812-2"></script>
+<script src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
 </body>
 </html>

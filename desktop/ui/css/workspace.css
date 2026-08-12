@@ -4199,10 +4199,15 @@ html.lesson-active .ai-drawer.is-open {
 .stroke-box {
   width: 108px;
   height: 108px;
+  padding: 0;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--surface-soft);
   cursor: pointer;
+}
+
+.stroke-box:hover {
+  border-color: var(--line-strong);
 }
 
 .vocabulary-strokes {
@@ -6898,6 +6903,10 @@ html.lesson-active .ai-drawer.is-open {
 }
 
 .detailExample {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
   padding: 13px 14px;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -6913,6 +6922,132 @@ html.lesson-active .ai-drawer.is-open {
   margin-top: 4px;
   color: var(--muted);
   font-size: 12px;
+}
+
+/* ---------------------------------------------------- stroke order viewer */
+
+.stroke-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:
+    max(18px, env(safe-area-inset-top))
+    max(18px, env(safe-area-inset-right))
+    max(18px, env(safe-area-inset-bottom))
+    max(18px, env(safe-area-inset-left));
+  background: rgb(33 29 23 / 44%);
+  backdrop-filter: blur(10px);
+}
+
+.stroke-shell {
+  display: flex;
+  width: min(460px, 100%);
+  max-height: calc(100vh - 36px);
+  flex-direction: column;
+  padding: 18px 20px 20px;
+  border: 1px solid #e4d4ba;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fffdfa 0%, #fff8ec 100%);
+  box-shadow: 0 28px 80px rgb(33 29 23 / 26%);
+}
+
+.stroke-shell-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stroke-shell-copy {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.stroke-shell-char {
+  color: var(--ink);
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.stroke-shell-count {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stroke-shell-close {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 12px;
+  font-size: 20px;
+}
+
+.stroke-shell-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-soft);
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.stroke-shell-stage:active {
+  cursor: grabbing;
+}
+
+.stroke-shell-canvas {
+  pointer-events: none;
+}
+
+.stroke-shell-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.stroke-shell-nav {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 12px;
+  font-size: 20px;
+}
+
+.stroke-shell-dots {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.stroke-shell-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.stroke-shell-dot.is-active {
+  background: var(--red);
+}
+
+.stroke-shell-hint {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
 }
 
 .detailAiCard {

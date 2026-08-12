@@ -383,12 +383,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
         ):
             html = Path("app/static", page).read_text(encoding="utf-8")
             self.assertIn(
-                "/course_v3_data/desktop-download.css?v=20260812-2", html, page
+                "/course_v3_data/desktop-download.css?v=20260812-3", html, page
             )
             self.assertIn(
-                "/course_v3_data/desktop-download.js?v=20260812-2", html, page
+                "/course_v3_data/desktop-download.js?v=20260812-3", html, page
             )
-            self.assertIn("/course_v3_data/ads.js?v=20260812-2", html, page)
+            self.assertIn("/course_v3_data/ads.js?v=20260812-3", html, page)
 
     def test_desktop_profile_card_is_early_clear_and_deep_linkable(self):
         course = Path("app/static/course-v3.html").read_text(encoding="utf-8")

@@ -1,4 +1,5 @@
 from app.db.session import async_session_maker
+from app.bot.middlewares.blocked_user import BlockedUserMiddleware
 from app.bot.middlewares.cleanup import CommandCleanupMiddleware
 from app.bot.middlewares.db import DBSessionMiddleware
 from app.bot.middlewares.required_channel import RequiredChannelMiddleware
@@ -42,6 +43,10 @@ def create_bot(settings):
     dp.message.outer_middleware(CommandCleanupMiddleware())
     dp.message.middleware(DBSessionMiddleware(async_session_maker))
     dp.callback_query.middleware(DBSessionMiddleware(async_session_maker))
+    # Bloklangan foydalanuvchi hech qaysi handlerga yetib bormasin —
+    # majburiy kanal tekshiruvidan ham oldin to'xtatiladi.
+    dp.message.middleware(BlockedUserMiddleware(async_session_maker))
+    dp.callback_query.middleware(BlockedUserMiddleware(async_session_maker))
     dp.message.middleware(RequiredChannelMiddleware(async_session_maker))
     dp.callback_query.middleware(RequiredChannelMiddleware(async_session_maker))
 

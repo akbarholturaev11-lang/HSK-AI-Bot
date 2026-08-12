@@ -1,5 +1,6 @@
 import contextlib
 import hashlib
+import json
 import os
 
 from sqlalchemy import distinct, or_, select
@@ -46,6 +47,16 @@ COURSE_AD_DEFAULT_SLOT = "practice"
 # App reklamasi sozlamalari chegaralari.
 COURSE_AD_MAX_SKIP_SECONDS = 60
 COURSE_AD_MAX_DAILY_LIMIT = 50
+# App reklamasidagi platforma tugmalari.
+# `COURSE_AD_APP_PLATFORMS` — kod qo'llab-quvvatlaydigan HAMMA platforma.
+# `COURSE_AD_APP_VISIBLE_PLATFORMS` — foydalanuvchiga HOZIR ko'rinadiganlari.
+#
+# iPhone va Android hozircha KO'RSATILMAYDI: ular uchun tayyor yuklab olish
+# havolasi yo'q (reliz tizimi faqat macOS va Windows'ni biladi), o'lik tugma
+# esa foydalanuvchini chalg'itadi. Reliz tayyor bo'lgach quyidagi ro'yxatga
+# platformani qo'shish yetarli — boshqa hech narsa o'zgartirilmaydi.
+COURSE_AD_APP_PLATFORMS = ("macos", "windows", "ios", "android")
+COURSE_AD_APP_VISIBLE_PLATFORMS = ("macos", "windows")
 
 
 class CourseAdService:
@@ -127,6 +138,63 @@ class CourseAdService:
         except (TypeError, ValueError):
             limit = 0
         return min(max(limit, 0), COURSE_AD_MAX_DAILY_LIMIT)
+
+    @classmethod
+    def normalize_platform_links(cls, value) -> dict[str, str]:
+        """Qo'lda kiritilgan platforma havolalari: {"macos": url, ...}.
+
+        Faqat tanilgan platformalar qoladi, havolalar `normalize_link` orqali
+        o'tadi (http/https majburiy). Bo'sh qiymatlar tashlab yuboriladi."""
+        data = value
+        if isinstance(data, (str, bytes)):
+            try:
+                data = json.loads(data or "{}")
+            except (TypeError, ValueError):
+                return {}
+        if not isinstance(data, dict):
+            return {}
+        links: dict[str, str] = {}
+        for platform in COURSE_AD_APP_PLATFORMS:
+            link = cls.normalize_link(data.get(platform))
+            if link:
+                links[platform] = link
+        return links
+
+    @classmethod
+    def platform_links_storage_value(cls, value) -> str | None:
+        links = cls.normalize_platform_links(value)
+        if not links:
+            return None
+        return json.dumps(links, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+    @classmethod
+    def app_platform_buttons(
+        cls,
+        ad_payload: dict,
+        auto_links: dict[str, str] | None = None,
+    ) -> list[dict]:
+        """App reklamasi uchun platforma tugmalari ro'yxati.
+
+        Havola manbai: adminning qo'lda kiritgani BIRINCHI, bo'lmasa reliz
+        tizimidan avtomatik olingani. Ikkalasi ham bo'lmasa — tugma umuman
+        chiqmaydi (o'lik tugma ko'rsatilmaydi).
+
+        Faqat `COURSE_AD_APP_VISIBLE_PLATFORMS` dagilar qaytadi."""
+        manual = cls.normalize_platform_links(ad_payload.get("platform_links"))
+        auto = auto_links or {}
+        buttons = []
+        for platform in COURSE_AD_APP_VISIBLE_PLATFORMS:
+            url = manual.get(platform) or cls.normalize_link(auto.get(platform))
+            if not url:
+                continue
+            buttons.append(
+                {
+                    "platform": platform,
+                    "url": url,
+                    "source": "manual" if manual.get(platform) else "auto",
+                }
+            )
+        return buttons
 
     @staticmethod
     def normalize_button_text(value) -> str | None:
@@ -248,6 +316,9 @@ class CourseAdService:
                 ad.duration_seconds,
             ),
             "daily_limit": cls.normalize_daily_limit(getattr(ad, "daily_limit", None)),
+            "platform_links": cls.normalize_platform_links(
+                getattr(ad, "platform_links", None)
+            ),
             "is_active": bool(ad.is_active),
             "media_available": media_available,
             "media_restored": media_restored,
@@ -277,6 +348,7 @@ class CourseAdService:
         button_text: str | None = None,
         skip_after_seconds=None,
         daily_limit=None,
+        platform_links=None,
         media_blob: bytes | None = None,
         created_by_telegram_id: int | None = None,
     ) -> CourseAdCreative:
@@ -293,6 +365,7 @@ class CourseAdService:
                 skip_after_seconds, duration_seconds
             ),
             daily_limit=self.normalize_daily_limit(daily_limit),
+            platform_links=self.platform_links_storage_value(platform_links),
             is_active=True,
             created_by_telegram_id=created_by_telegram_id,
         )
