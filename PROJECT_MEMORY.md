@@ -207,6 +207,49 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-12 — Desktop course trail road is measured, not guessed
+
+Changed:
+- The Course screen lesson trail no longer fakes its road with two unrelated
+  CSS pseudo-elements per row (a percentage-wide pill plus an elbow pinned at a
+  fixed `86px` from the node centre). Those two shapes could never meet, so the
+  trail rendered broken at every width. The road is now a single `.pathTrack`
+  SVG layer per unit, drawn in `app.js` from the measured node centres and
+  redrawn through a `ResizeObserver`. Node offsets became a four-step sine
+  (`0, +amp, 0, -amp`) instead of six hardcoded pixel values cycling on `% 6`.
+- Lesson captions moved off the node axis (`--label-shift`) because the road
+  leaves each node straight downwards and a centred caption always covered it.
+- Trail sizing switched from `vw` to container query units on `.lessonPath`;
+  the unit card loses width to the rail and the course aside, so viewport units
+  overflowed. Below a 470px card the trail becomes a left rail with captions
+  beside it.
+- Fixed the lesson nodes rendering as ovals: the legacy `.lesson-node` card
+  rules still match `.pathNode` and were applying `min-height: 116px` and
+  `padding: 14px`, which also pushed the status icon onto the lesson number.
+
+Why:
+- Pure CSS cannot position a connector from the measured positions of two other
+  elements, so every hand-tuned offset broke again at the next width. Measuring
+  the nodes is the only self-correcting fix.
+
+Files touched:
+- `desktop/ui/js/app.js`
+- `desktop/ui/css/workspace.css`
+
+Risk:
+- UI-only. Lesson order, access checks, subscription/payment logic, backend
+  completion flow, course data and the Mini App are unchanged. No new
+  user-facing text, so RU/TJ/UZ coverage is unaffected. macOS and Windows share
+  `desktop/ui`, so the change lands on both shells. Container queries need
+  WKWebView on macOS 13.3+/Safari 16 and WebView2; a `@supports` guard keeps
+  static px fallbacks if they are missing.
+
+Follow-up:
+- Do not reintroduce a CSS-only road. If the trail needs new shapes, extend
+  `drawCourseTrack()` in `app.js`.
+- Visually smoke-test the packaged macOS and Windows builds at both the minimum
+  `720x560` window and a maximized window.
+
 ### 2026-08-12 — Blocked users are fully denied across bot and Mini App
 
 Changed:
