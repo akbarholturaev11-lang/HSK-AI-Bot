@@ -29,6 +29,7 @@ from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.utils.course_miniapp import course_v3_miniapp_url
 from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
+from app.bot.utils.qa_entry import send_qa_entry
 from app.services.course_reminder_service import reminder_tz_label
 from app.services.help_settings_service import build_help_text
 from app.services.message_draft_service import (
@@ -1037,7 +1038,9 @@ async def profile_menu_qa(callback: CallbackQuery, state: FSMContext, session):
     await session.commit()
     lang = user.language if user.language else "ru"
     await callback.answer()
-    await callback.message.answer(
-        t("send_first_message", lang),
-        reply_markup=main_menu_keyboard(lang),
+    await send_qa_entry(
+        session=session,
+        user=user,
+        respond=callback.message.answer,
+        lang=lang,
     )

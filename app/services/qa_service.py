@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from aiogram import Bot
@@ -12,6 +13,9 @@ from app.services.access_service import AccessService
 
 QA_MODEL = "gpt-4o-mini"
 QA_MAX_COMPLETION_TOKENS = 900
+# Challenge faqat shu muddat ichida promptga qo'shiladi. Chegara bo'lmasa
+# hafta oldingi savol hali ham kontekstda turib, AI javobini chalg'itardi.
+ONBOARDING_CHALLENGE_MAX_AGE = timedelta(hours=24)
 ONBOARDING_OPTIONAL_CHALLENGE_RULE = (
     "IMPORTANT: This onboarding challenge is optional. Do not require the user "
     "to complete it. If the user's current message is not a clear attempt at "
@@ -31,6 +35,15 @@ class QAService:
         self.referral_service = ReferralService(session)
         self.access_service = AccessService(session)
         self.last_budget_record = None
+
+    @staticmethod
+    def _is_challenge_fresh(challenge) -> bool:
+        created = getattr(challenge, "created_at", None)
+        if not created:
+            return False
+        if not created.tzinfo:
+            created = created.replace(tzinfo=timezone.utc)
+        return datetime.now(timezone.utc) - created <= ONBOARDING_CHALLENGE_MAX_AGE
 
     async def handle_user_message(
         self,
@@ -82,7 +95,7 @@ class QAService:
             user_id=user.id,
             content_type="onboarding_challenge",
         )
-        if onboarding_challenge:
+        if onboarding_challenge and self._is_challenge_fresh(onboarding_challenge):
             history.insert(
                 0,
                 {

@@ -14,6 +14,7 @@ from app.services.course_engine_service import CourseEngineService
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.daily_practice_service import DailyPracticeService
 from app.bot.utils.i18n import t
+from app.bot.utils.qa_entry import send_qa_entry
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.onboarding import (
     course_mode_entry_keyboard,
@@ -309,9 +310,11 @@ async def cmd_start(
                 source="start_course_migration",
             )
         else:
-            await message.answer(
-                t("send_first_message", user.language),
-                reply_markup=main_menu_keyboard(user.language),
+            await send_qa_entry(
+                session=session,
+                user=user,
+                respond=message.answer,
+                lang=user.language,
             )
         return
 
@@ -593,9 +596,11 @@ async def process_level(callback: CallbackQuery, state: FSMContext, session):
                 t("free_mode_info", lang),
                 parse_mode="HTML",
             )
-        await callback.message.answer(
-            t("send_first_message", lang),
-            reply_markup=main_menu_keyboard(lang),
+        await send_qa_entry(
+            session=session,
+            user=user,
+            respond=callback.message.answer,
+            lang=lang,
         )
         return
 

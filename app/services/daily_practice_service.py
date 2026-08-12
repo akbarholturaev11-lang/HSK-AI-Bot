@@ -203,6 +203,58 @@ class DailyPracticeService:
         }
         return level_payloads.get(self._level_key(user), level_payloads["beginner"])
 
+    def _challenge_copy(self, lang: str) -> dict[str, str]:
+        copies = {
+            "uz": {
+                "title": "💬 <b>Keling, birinchi savoldan boshlaymiz</b>",
+                "question": "Bu so'z nima degani?",
+                "hint": "Javobingizni yozing — tekshirib beraman. Yoki o'z savolingizni bering.",
+            },
+            "ru": {
+                "title": "💬 <b>Давайте начнём с первого вопроса</b>",
+                "question": "Что означает это слово?",
+                "hint": "Напишите ответ — я проверю. Или задайте свой вопрос.",
+            },
+            "tj": {
+                "title": "💬 <b>Биёед аз саволи аввал сар мекунем</b>",
+                "question": "Ин калима чӣ маъно дорад?",
+                "hint": "Ҷавобатонро нависед — месанҷам. Ё саволи худро диҳед.",
+            },
+        }
+        return copies.get(lang, copies["ru"])
+
+    def _rotation_index(self, user, count: int) -> int:
+        if count <= 1:
+            return 0
+        seed = int(getattr(user, "id", 0) or 0) + self.today().toordinal()
+        return seed % count
+
+    def first_challenge(self, user, lang: str) -> dict[str, str]:
+        """QA rejimiga kirishda beriladigan ixtiyoriy mini-savol.
+
+        Yangi kontent yaratilmaydi — `_payload()` dagi mavjud daraja
+        so'zlari ishlatiladi. Qaytadi:
+        - `text`: userga ko'rinadigan savol
+        - `context`: `qa_service` AI promptiga qo'shiladigan challenge tavsifi
+        """
+        payload = self._payload(user, lang)
+        words = payload["words"]
+        word, pinyin, meaning = words[self._rotation_index(user, len(words))]
+
+        copy = self._challenge_copy(lang)
+        text = "\n".join([
+            copy["title"],
+            "",
+            f"<blockquote><b>{word}</b> <i>{pinyin}</i>\n{copy['question']}</blockquote>",
+            copy["hint"],
+        ])
+        context = (
+            f"Challenge word: {word} ({pinyin}). "
+            f"Correct meaning in the user's language: {meaning}. "
+            "The user was asked what this word means."
+        )
+        return {"text": text, "context": context}
+
     def entry_text(self, user, lang: str) -> str:
         copy = self._copy(lang)
         return f"{copy['entry_title']}\n\n{copy['entry_body']}"

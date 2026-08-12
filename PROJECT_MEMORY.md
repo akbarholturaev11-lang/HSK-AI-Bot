@@ -5630,6 +5630,49 @@ Follow-up:
 
 ---
 
+### 2026-08-13 — QA rejimiga kirishda AI suhbatni o'zi boshlaydi
+
+Changed:
+- QA rejimiga kirishda quruq `send_first_message` ("savolingizni yuboring")
+  o'rniga darajaga mos mini-savol beriladi. 6 ta kirish nuqtasi
+  `app/bot/utils/qa_entry.py` dagi `send_qa_entry()` ga o'tkazildi.
+- `DailyPracticeService.first_challenge()` — mavjud `_payload()` daraja
+  so'zlaridan savol yasaydi (yangi kontent yo'q). Rotatsiya `user.id + kun`
+  bo'yicha, ya'ni har kuni boshqa so'z.
+- Yuborilgan savol `content_type="onboarding_challenge"`, `role="system"`
+  sifatida `messages` ga yoziladi.
+- `qa_service.py` — `ONBOARDING_CHALLENGE_MAX_AGE = 24h` va
+  `_is_challenge_fresh()`.
+
+Why:
+- **AI prompt behavior:** `qa_service` allaqachon `onboarding_challenge`
+  content_type'ni o'qib `ONBOARDING_OPTIONAL_CHALLENGE_RULE` bilan promptga
+  qo'shardi ("challenge ixtiyoriy; user urinsa mehribon baholab, keyingi
+  mini-challenge taklif qil"), lekin bu content_type'ni **hech kim
+  yozmasdi** — qoida o'lik edi. Endi yozuvchi tomon ulandi.
+- Natijada suhbatni AI boshlaydi: user o'zi savol o'ylab topishi shart emas.
+
+Files touched:
+- `app/bot/utils/qa_entry.py` (yangi)
+- `app/services/daily_practice_service.py`, `app/services/qa_service.py`
+- `app/bot/handlers/`: `start.py`, `course.py`, `commands.py`, `messages.py`
+
+Risk:
+- Har QA kirishdan keyingi 24 soat ichida AI promptiga +1 kontekst bloki
+  qo'shiladi — kichik token o'sishi.
+- Migration yo'q (`content_type` String(32)). Payment/obuna/limit/Mini App
+  logikasiga tegilmagan. FSM state qo'yilmagan (matn oqimi to'silmaydi).
+- `role="system"` ataylab: `qa_service` oddiy history filtri faqat
+  `user/assistant` ni oladi, aks holda challenge promptga ikki marta tushardi.
+
+Follow-up:
+- `activate_free_qa_mode` (`course.py`) va `_send_daily_practice_entry_*`
+  (`start.py`) hech qayerdan chaqirilmaydi — o'lik kirish nuqtalari.
+  Birinchisiga izchillik uchun hook qo'shildi, lekin ikkalasi ham alohida
+  taskda ulanishi yoki o'chirilishi kerak.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

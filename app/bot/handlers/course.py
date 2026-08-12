@@ -29,6 +29,7 @@ from app.services.onboarding_tip_service import (
 )
 from app.services.required_channel_service import RequiredChannelService
 from app.bot.utils.i18n import t
+from app.bot.utils.qa_entry import send_qa_entry
 from app.bot.keyboards.course import (
     lesson_selection_keyboard, review_choice_keyboard,
     course_intro_keyboard, course_dialogue_keyboard,
@@ -988,7 +989,12 @@ async def mode_qa_handler(callback: CallbackQuery, state: FSMContext, session):
 
     await callback.answer()
     await callback.message.answer(t("trial_started_info", lang))
-    await callback.message.answer(t("send_first_message", lang), reply_markup=main_menu_keyboard(lang))
+    await send_qa_entry(
+        session=session,
+        user=user,
+        respond=callback.message.answer,
+        lang=lang,
+    )
 
 
 @router.callback_query(F.data == "mode:free_qa")
@@ -1072,6 +1078,12 @@ async def activate_free_qa_mode(
         t("free_mode_info", lang),
         reply_markup=main_menu_keyboard(lang),
         parse_mode="HTML",
+    )
+    await send_qa_entry(
+        session=session,
+        user=user,
+        respond=respond,
+        lang=lang,
     )
     return True
 
@@ -1344,7 +1356,12 @@ async def course_back_to_qa_handler(callback: CallbackQuery, state: FSMContext, 
     lang = user.language if user.language else "ru"
 
     await callback.answer()
-    await callback.message.answer(t("send_first_message", lang), reply_markup=main_menu_keyboard(lang))
+    await send_qa_entry(
+        session=session,
+        user=user,
+        respond=callback.message.answer,
+        lang=lang,
+    )
 
 
 

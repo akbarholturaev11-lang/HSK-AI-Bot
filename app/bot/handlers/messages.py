@@ -21,6 +21,7 @@ from app.bot.fsm.admin_discount import DiscountStates
 from app.bot.fsm.admin_management import AdminHelpStates, AdminPriceStates, AdminRequiredChannelStates, AdminUserStates
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
 from app.bot.utils.response_effect import ResponseEffect
+from app.bot.utils.qa_entry import send_qa_entry
 from app.bot.handlers.course import (
     get_course_keyboard_for_step,
     _keyboard_for_step,
@@ -1608,7 +1609,12 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             user.learning_mode = "qa"
             user.voice_mode = "none"
             await session.commit()
-            await message.answer(t("send_first_message", user_lang), reply_markup=main_menu_keyboard(user_lang))
+            await send_qa_entry(
+                session=session,
+                user=user,
+                respond=message.answer,
+                lang=user_lang,
+            )
             return
 
         if msg_text == t("course_reread_button", user_lang):
