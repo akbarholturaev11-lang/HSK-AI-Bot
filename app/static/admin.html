@@ -422,7 +422,7 @@
           <div class="mcard" style="margin-bottom:11px">
             <div class="frow two">
               <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
-              <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7"></div>
+              <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7" title="Videoda — ko'rish vaqti, suratda — ekranda turish vaqti"></div>
             </div>
             <div class="frow two">
               <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option><option value="dars_yakuni">🎓 Dars yakuni reklamasi</option><option value="app">📱 App reklamasi</option></select></div>
@@ -440,8 +440,8 @@
               <div><label id="caLinkLabel">Havola (ixtiyoriy)</label><input id="caLink" class="input" placeholder="https://..."></div>
               <div><label>Til</label><select id="caLang" class="select"><option value="all">Barcha tillar</option><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
             </div>
-            <button class="btn" data-act="upload-ca">📎 Video yuklash</button>
-            <input id="caFile" type="file" accept="video/*" hidden>
+            <button class="btn" data-act="upload-ca">📎 Video yoki surat yuklash</button>
+            <input id="caFile" type="file" accept="video/*,image/*" hidden>
           </div>
           <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
           <div class="grid" id="courseAds"><p class="empty">Yuklanmoqda…</p></div>
@@ -1536,9 +1536,13 @@
     function caCard(i){
       const lang=i.language||"all";
       const mediaOk=i.media_available!==false;
+      const isPhoto=i.media_type==="photo";
+      const mediaWord=isPhoto?"surat":"video";
       const mediaHtml=mediaOk&&i.media_url
-        ? `<video src="${esc(i.media_url)}" controls muted playsinline></video>`
-        : `<div class="danger-note">Video fayl serverda topilmadi. Railway Volume yoki MEDIA_ROOT sozlang va reklamani qayta yuklang.</div>`;
+        ? (isPhoto
+          ? `<img src="${esc(i.media_url)}" alt="">`
+          : `<video src="${esc(i.media_url)}" controls muted playsinline></video>`)
+        : `<div class="danger-note">${mediaWord==="surat"?"Surat":"Video"} fayl serverda topilmadi. Railway Volume yoki MEDIA_ROOT sozlang va reklamani qayta yuklang.</div>`;
       const tmeta=caTypeMeta(i.ad_type||"odiy");
       const btnLine=(i.ad_type&&i.ad_type!=="odiy"&&i.button_text)?`<div class="ncnote">🔘 ${esc(i.button_text)}</div>`:"";
       const slotLine=i.ad_type==="dars_yakuni"
@@ -1548,9 +1552,9 @@
            <div class="ncnote">💻 MacBook: ${(i.platform_links&&i.platform_links.macos)?"qo'lda":"avtomatik"} · Windows: ${(i.platform_links&&i.platform_links.windows)?"qo'lda":"avtomatik"}</div>`
           : `<div class="ncnote">🎬 Mashq bo'limlarida chiqadi</div>`);
       return `<div class="ncard" data-ca="${i.id}">
-        <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s majburiy ko'rish · ${esc(i.created_at||"—")}</div>
+        <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s ${isPhoto?"ekranda turadi":"majburiy ko'rish"} · ${esc(i.created_at||"—")}</div>
           ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}${btnLine}${slotLine}</div>
-          <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${tag(tmeta[0],tmeta[1])}${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}${tag(mediaOk?"video bor":"video yo'q",mediaOk?"green":"red")}</div></div>
+          <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${tag(tmeta[0],tmeta[1])}${tag(isPhoto?"🖼 surat":"🎬 video","violet")}${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}${tag(mediaOk?mediaWord+" bor":mediaWord+" yo'q",mediaOk?"green":"red")}</div></div>
         <div class="ncmedia">${mediaHtml}</div>
         <div class="row"><button class="btn sec" data-catoggle="${i.id}" data-active="${i.is_active?"0":"1"}">${i.is_active?"Faolsizlantirish":"Faollashtirish"}</button>
           <button class="btn danger" data-cadel="${i.id}">Butunlay o'chirish</button></div></div>`;

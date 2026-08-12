@@ -13,6 +13,15 @@ COURSE_AD_PLACEMENTS = ("start", "middle", "end")
 COURSE_AD_MIN_SECONDS = 5
 COURSE_AD_MAX_SECONDS = 120
 COURSE_AD_DEFAULT_SECONDS = 7
+# Reklama media turi. "video" — MP4 rolik (hozirgi asosiy holat), "photo" —
+# statik surat. Surat uchun `duration_seconds` ekranda turish vaqti bo'ladi
+# (videodagidek "oxirigacha ko'rish" emas, chunki suratda tugash hodisasi yo'q).
+COURSE_AD_MEDIA_TYPES = ("video", "photo")
+COURSE_AD_DEFAULT_MEDIA_TYPE = "video"
+# Yuklashda qabul qilinadigan kengaytmalar. Video WebView uchun xavfsiz MP4 ga
+# o'giriladi, surat esa o'z formatida qoladi.
+COURSE_AD_ALLOWED_VIDEO_EXTENSIONS = frozenset({".mp4", ".mov", ".webm", ".m4v"})
+COURSE_AD_ALLOWED_IMAGE_EXTENSIONS = frozenset({".jpg", ".jpeg", ".png", ".webp"})
 # Media doimiy diskda saqlanishi kerak. Railway'da runtime disk EPHEMERAL —
 # har deploy/restartda `app/static/uploads` tozalanadi va yuklangan reklama
 # fayllari yo'qoladi (DB yozuvi qoladi, fayl esa 404 → mini app'da qora ekran).
@@ -107,6 +116,32 @@ class CourseAdService:
     def normalize_ad_type(value) -> str:
         ad_type = str(value or "").strip().lower()
         return ad_type if ad_type in COURSE_AD_TYPES else COURSE_AD_DEFAULT_TYPE
+
+    @staticmethod
+    def normalize_media_type(value) -> str:
+        """Media turi: "video" yoki "photo". Eski yozuvlarda NULL/bo'sh — video."""
+        media_type = str(value or "").strip().lower()
+        return media_type if media_type in COURSE_AD_MEDIA_TYPES else COURSE_AD_DEFAULT_MEDIA_TYPE
+
+    @staticmethod
+    def classify_upload_media(filename, content_type) -> tuple[str, str] | None:
+        """Yuklangan faylni tur va kengaytmaga ajratadi.
+
+        `(media_type, ext)` qaytaradi: `("video", ".mp4")` yoki `("photo", ".jpg")`.
+        Tanilmagan fayl uchun `None` — chaqiruvchi uni rad etadi.
+
+        Tur avval `content_type` bo'yicha, u yo'q/noaniq bo'lsa kengaytma
+        bo'yicha aniqlanadi (Telegram WebView ba'zan content_type yubormaydi).
+        """
+        name = str(filename or "").strip().lower()
+        ctype = str(content_type or "").strip().lower()
+        ext = os.path.splitext(name)[1]
+
+        if ctype.startswith("video") or ext in COURSE_AD_ALLOWED_VIDEO_EXTENSIONS:
+            return "video", (ext if ext in COURSE_AD_ALLOWED_VIDEO_EXTENSIONS else ".mp4")
+        if ctype.startswith("image") or ext in COURSE_AD_ALLOWED_IMAGE_EXTENSIONS:
+            return "photo", (ext if ext in COURSE_AD_ALLOWED_IMAGE_EXTENSIONS else ".jpg")
+        return None
 
     @staticmethod
     def normalize_slot(value) -> str:
@@ -304,7 +339,7 @@ class CourseAdService:
         return {
             "id": int(ad.id),
             "title": ad.title,
-            "media_type": ad.media_type,
+            "media_type": cls.normalize_media_type(getattr(ad, "media_type", None)),
             "media_url": f"/uploads/course_ads/{ad.media_path}",
             "link_url": getattr(ad, "link_url", None) or None,
             "language": cls.normalize_language(getattr(ad, "language", None)),
@@ -349,13 +384,14 @@ class CourseAdService:
         skip_after_seconds=None,
         daily_limit=None,
         platform_links=None,
+        media_type: str = COURSE_AD_DEFAULT_MEDIA_TYPE,
         media_blob: bytes | None = None,
         created_by_telegram_id: int | None = None,
     ) -> CourseAdCreative:
         ad = CourseAdCreative(
             title=(title or "Course ad").strip()[:120],
             media_path=media_path,
-            media_type="video",
+            media_type=self.normalize_media_type(media_type),
             link_url=self.normalize_link(link_url),
             language=self.normalize_language(language),
             ad_type=self.normalize_ad_type(ad_type),

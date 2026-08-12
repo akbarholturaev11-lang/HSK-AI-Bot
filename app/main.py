@@ -93,7 +93,12 @@ from app.services.course_access_policy_service import (
     COURSE_ACCESS_SUBSCRIPTION,
     CourseAccessPolicyService,
 )
-from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
+from app.services.course_ad_service import (
+    COURSE_AD_ALLOWED_IMAGE_EXTENSIONS,
+    COURSE_AD_ALLOWED_VIDEO_EXTENSIONS,
+    COURSE_AD_MEDIA_ROOT,
+    CourseAdService,
+)
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.payment_notify_service import PaymentNotifyService
 from app.services.portfolio_service import PortfolioService
@@ -186,7 +191,6 @@ logger = logging.getLogger(__name__)
 bot, dp = create_bot(settings)
 _study_ai_tasks = set()
 COURSE_AD_MAX_UPLOAD_BYTES = 25 * 1024 * 1024
-COURSE_AD_ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".mov", ".webm", ".m4v"}
 
 
 class CourseAdVideoError(Exception):
@@ -279,6 +283,32 @@ def _prepare_course_ad_video_file(data: bytes, *, raw_ext: str, telegram_id: int
 
     if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
         raise CourseAdVideoError("video_transcode_failed")
+    return final_name
+
+
+def _prepare_course_ad_image_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
+    """Surat reklamasini diskka saqlaydi.
+
+    Videodan farqli o'laroq qayta kodlash yo'q: ffmpeg talab qilinmaydi va fayl
+    o'z formatida (jpg/png/webp) qoladi — `<img>` ularning hammasini Telegram
+    WebView'da muammosiz ko'rsatadi.
+    """
+    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
+    token = uuid.uuid4().hex[:10]
+    ext = raw_ext if raw_ext in COURSE_AD_ALLOWED_IMAGE_EXTENSIONS else ".jpg"
+    final_name = f"course_ad_{telegram_id}_{int(time.time())}_{token}{ext}"
+    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, final_name)
+    tmp_path = f"{final_path}.upload"
+    try:
+        with open(tmp_path, "wb") as handle:
+            handle.write(data)
+        os.replace(tmp_path, final_path)
+    except OSError:
+        with contextlib.suppress(OSError):
+            os.remove(tmp_path)
+        raise
+    if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
+        raise CourseAdVideoError("media_upload_failed")
     return final_name
 
 
@@ -3796,21 +3826,26 @@ async def admin_miniapp_course_ads_upload(request: Request):
     if media is None or not hasattr(media, "read"):
         return JSONResponse(status_code=400, content={"ok": False, "error": "empty_media"})
 
-    raw_name = str(getattr(media, "filename", "") or "").lower()
-    content_type = str(getattr(media, "content_type", "") or "").lower()
-    _, raw_ext = os.path.splitext(raw_name)
-    if raw_ext not in COURSE_AD_ALLOWED_VIDEO_EXTENSIONS:
-        raw_ext = ".mp4"
-    if not (content_type.startswith("video") or raw_name.endswith(tuple(COURSE_AD_ALLOWED_VIDEO_EXTENSIONS))):
+    # Media turi fayl turidan aniqlanadi: surat ham, video ham qabul qilinadi.
+    classified = CourseAdService.classify_upload_media(
+        getattr(media, "filename", ""), getattr(media, "content_type", "")
+    )
+    if not classified:
         return JSONResponse(status_code=400, content={"ok": False, "error": "unsupported_media"})
+    media_type, raw_ext = classified
 
     data = await media.read(COURSE_AD_MAX_UPLOAD_BYTES + 1)
     if len(data) > COURSE_AD_MAX_UPLOAD_BYTES:
         return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
 
     try:
+        # Surat qayta kodlanmaydi (ffmpeg kerak emas), video esa WebView uchun
+        # xavfsiz MP4 ga o'giriladi — eski xatti-harakat o'zgarmaydi.
+        prepare = (
+            _prepare_course_ad_image_file if media_type == "photo" else _prepare_course_ad_video_file
+        )
         filename = await asyncio.to_thread(
-            _prepare_course_ad_video_file,
+            prepare,
             data,
             raw_ext=raw_ext,
             telegram_id=telegram_id,
@@ -3851,6 +3886,7 @@ async def admin_miniapp_course_ads_upload(request: Request):
             skip_after_seconds=skip_after_seconds,
             daily_limit=daily_limit,
             platform_links=platform_links,
+            media_type=media_type,
             media_blob=media_backup,
             created_by_telegram_id=telegram_id,
         )
@@ -3934,6 +3970,10 @@ async def serve_course_ad_media(filename: str):
         ".m4v": "video/mp4",
         ".mov": "video/quicktime",
         ".webm": "video/webm",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".webp": "image/webp",
     }.get(ext, "application/octet-stream")
     return FileResponse(path, media_type=media_type, headers={"Accept-Ranges": "bytes"})
 

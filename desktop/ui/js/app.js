@@ -5708,6 +5708,9 @@ async function boot() {
     const appInfo = await desktopBridge.appInfo();
     // The version is no longer in the toolbar; the profile screen shows it.
     state.appVersion = String(appInfo?.version || "");
+    // macOS refuses the microphone to a translocated bundle without prompting,
+    // so AI Voice has to explain the move instead of the Privacy pane.
+    voice.setLaunchIssue(appInfo?.launchIssue);
     if (appInfo?.platform) {
       const platform = String(appInfo.platform).toLowerCase();
       document.documentElement.dataset.os = platform;

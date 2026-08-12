@@ -167,6 +167,8 @@ struct DesktopAppInfo {
     product_name: &'static str,
     version: &'static str,
     platform: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    launch_issue: Option<&'static str>,
 }
 
 #[derive(Serialize)]
@@ -863,6 +865,31 @@ fn platform() -> Result<&'static str, String> {
     }
     #[allow(unreachable_code)]
     Err("desktop_platform_not_supported".into())
+}
+
+/// Report why macOS will refuse to give this launch a microphone.
+///
+/// A quarantined bundle (the normal state after a DMG download) is run from a
+/// random read-only `/AppTranslocation/` copy. TCC cannot attribute a
+/// permission to that path, so `getUserMedia` is rejected with
+/// `NotAllowedError` and the system prompt never appears. Sending the learner
+/// to Privacy & Security is useless there — the app is not even listed. AI
+/// Voice needs the real reason so it can say "move me into /Applications".
+fn launch_issue() -> Option<&'static str> {
+    #[cfg(target_os = "macos")]
+    {
+        let executable = std::env::current_exe().ok()?;
+        let path = executable.to_string_lossy();
+        if path.contains("/AppTranslocation/") {
+            return Some("translocated");
+        }
+        // Opened straight from the mounted DMG: read-only and equally unknown
+        // to TCC, and the volume disappears on eject.
+        if path.starts_with("/Volumes/") {
+            return Some("read_only_volume");
+        }
+    }
+    None
 }
 
 async fn decode_response<T: DeserializeOwned>(response: reqwest::Response) -> Result<T, String> {
@@ -1690,6 +1717,7 @@ fn desktop_app_info() -> Result<DesktopAppInfo, String> {
         product_name: "HSK AI",
         version: env!("CARGO_PKG_VERSION"),
         platform: platform()?,
+        launch_issue: launch_issue(),
     })
 }
 

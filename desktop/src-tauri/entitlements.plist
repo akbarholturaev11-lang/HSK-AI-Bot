@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      Tauri signs the bundle with the hardened runtime even under the ad-hoc
+      identity (CodeDirectory flag 0x10000). The hardened runtime blocks audio
+      capture unless the binary carries this entitlement: macOS rejects
+      getUserMedia with NotAllowedError, never shows the system prompt, and
+      never lists the app under Privacy & Security -> Microphone.
+      NSMicrophoneUsageDescription in Info.plist only supplies the prompt text;
+      it cannot grant the capability on its own. AI Voice is dead on macOS
+      without this key.
+
+      Keep this list minimal. Every entitlement widens what a compromised
+      renderer could reach, and the bundled llama-server is signed separately
+      without the hardened runtime, so it needs nothing from here.
+    -->
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+</dict>
+</plist>

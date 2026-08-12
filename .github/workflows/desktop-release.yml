@@ -312,6 +312,15 @@ jobs:
           app_path="$(find desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos -maxdepth 1 -type d -name '*.app' -print -quit)"
           test -n "$app_path"
           codesign --verify --deep --strict "$app_path"
+          # Tauri signs with the hardened runtime even ad-hoc, and the hardened
+          # runtime denies audio capture without this entitlement: macOS then
+          # refuses the microphone silently, so AI Voice dies on every Mac
+          # without a single failing test. Guard it at build time.
+          codesign -d --entitlements :- "$app_path" 2>/dev/null \
+            | grep -q 'com.apple.security.device.audio-input' || {
+              echo "::error::Microphone entitlement missing from the signed bundle; AI Voice cannot record on macOS"
+              exit 1
+            }
           embedded_server="$(find "$app_path" -type f -name llama-server -print -quit)"
           test -n "$embedded_server"
           lipo "$embedded_server" -verify_arch arm64 x86_64

@@ -143,10 +143,16 @@ export class DesktopVoiceController {
     this.timer = null;
     this.recordingStartedAt = 0;
     this.recordingLimit = null;
+    this.launchIssue = "";
   }
 
   setLanguage(language) {
     this.language = language;
+  }
+
+  /** `launchIssue` from `desktop_app_info`: macOS blocks the mic before we ask. */
+  setLaunchIssue(issue) {
+    this.launchIssue = String(issue || "");
   }
 
   setLevel(level) {
@@ -699,12 +705,22 @@ export class DesktopVoiceController {
       this.attachCanvas();
     } catch (error) {
       // A denied microphone prompt reaches here on both macOS and Windows.
-      const code =
-        error?.name === "NotAllowedError" || error?.name === "SecurityError"
-          ? "desktop_voice_mic_denied"
-          : error?.name === "NotFoundError"
-            ? "desktop_voice_mic_unavailable"
-            : String(error?.message || "desktop_voice_mic_unavailable");
+      // On macOS the same rejection also arrives when the OS never asked at
+      // all, because a translocated bundle cannot hold a TCC permission. That
+      // learner must move the app, not open Privacy & Security, so the two
+      // cases need different instructions.
+      const denied =
+        error?.name === "NotAllowedError" || error?.name === "SecurityError";
+      const blockedByLaunch =
+        this.launchIssue === "translocated" ||
+        this.launchIssue === "read_only_volume";
+      const code = denied
+        ? blockedByLaunch
+          ? "desktop_voice_mic_translocated"
+          : "desktop_voice_mic_denied"
+        : error?.name === "NotFoundError"
+          ? "desktop_voice_mic_unavailable"
+          : String(error?.message || "desktop_voice_mic_unavailable");
       this.error = this.errorText({ code });
       this.phase = "listening";
       this.stopWave();

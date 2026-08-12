@@ -49,7 +49,8 @@
     "longDescription": "HSK AI brings the HSK course to macOS and Windows with an optional local AI tutor.",
     "macOS": {
       "minimumSystemVersion": "13.3",
-      "signingIdentity": "-"
+      "signingIdentity": "-",
+      "entitlements": "entitlements.plist"
     },
     "windows": {
       "nsis": {

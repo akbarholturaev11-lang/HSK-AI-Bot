@@ -544,6 +544,8 @@ const messages = {
     voiceBudgetNotice: "AI limiti tugab qolmoqda.",
     voiceGenericError: "Xatolik yuz berdi. Qaytadan urinib ko‘ring.",
     desktop_voice_mic_denied: "Mikrofonga ruxsat berilmadi. Tizim sozlamalaridan ruxsat bering.",
+    desktop_voice_mic_translocated:
+      "HSK AI ni Applications papkasiga ko‘chiring va qayta oching. DMG ichidan ochilganda macOS mikrofon ruxsatini so‘ramaydi.",
     desktop_voice_mic_unavailable: "Mikrofon topilmadi.",
     desktop_voice_recorder_unavailable: "Bu qurilmada ovoz yozish qo‘llab-quvvatlanmaydi.",
     desktop_voice_too_short: "Juda qisqa. Biroz uzunroq gapiring.",
@@ -1348,6 +1350,8 @@ const messages = {
     voiceBudgetNotice: "Лимит AI подходит к концу.",
     voiceGenericError: "Произошла ошибка. Попробуйте снова.",
     desktop_voice_mic_denied: "Доступ к микрофону запрещён. Разрешите его в настройках системы.",
+    desktop_voice_mic_translocated:
+      "Перенесите HSK AI в папку Applications и откройте заново. При запуске из DMG macOS не спрашивает разрешение на микрофон.",
     desktop_voice_mic_unavailable: "Микрофон не найден.",
     desktop_voice_recorder_unavailable: "Запись звука не поддерживается на этом устройстве.",
     desktop_voice_too_short: "Слишком коротко. Говорите чуть дольше.",
@@ -2153,6 +2157,8 @@ const messages = {
     voiceBudgetNotice: "Лимити AI ба охир мерасад.",
     voiceGenericError: "Хатогӣ рух дод. Бори дигар кӯшиш кунед.",
     desktop_voice_mic_denied: "Ба микрофон иҷозат дода нашуд. Аз танзимоти система иҷозат диҳед.",
+    desktop_voice_mic_translocated:
+      "HSK AI-ро ба ҷузвдони Applications кӯчонед ва аз нав кушоед. Ҳангоми кушодан аз DMG macOS иҷозати микрофонро намепурсад.",
     desktop_voice_mic_unavailable: "Микрофон ёфт нашуд.",
     desktop_voice_recorder_unavailable: "Сабти овоз дар ин дастгоҳ дастгирӣ намешавад.",
     desktop_voice_too_short: "Хеле кӯтоҳ. Каме дарозтар гап занед.",

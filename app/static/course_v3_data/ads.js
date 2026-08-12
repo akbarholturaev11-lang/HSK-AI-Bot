@@ -73,7 +73,8 @@
   +'.caa-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.78);font-weight:600}'
   +'.caa-count{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:7px 10px;white-space:nowrap}'
   +'.caa-vwrap{position:relative;min-height:0;height:100%;display:block}'
-  +'.caa-video{width:100%;height:100%;min-height:320px;max-height:none;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}'
+  +'.caa-video,.caa-photo{width:100%;height:100%;min-height:320px;max-height:none;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}'
+  +'.caa-video[hidden],.caa-photo[hidden]{display:none!important}'
   +'.caa-visit{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.24);color:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}'
   +'.caa-status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-radius:16px;background:rgba(0,0,0,.58);color:#fff;font-size:14px;font-weight:600;line-height:1.35}'
   +'.caa-status[hidden]{display:none!important}'
@@ -138,7 +139,8 @@
   +'.caa-app.on{display:flex}'
   +'.caa-app-card{position:relative;width:100%;max-width:340px;background:#15120f;border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:14px;display:grid;gap:12px;box-shadow:0 18px 48px rgba(0,0,0,.5);color:#fff}'
   +'.caa-app-media{position:relative;width:100%;aspect-ratio:9/16;max-height:52vh;border-radius:14px;overflow:hidden;background:#000}'
-  +'.caa-app-media video{width:100%;height:100%;object-fit:contain;display:block}'
+  +'.caa-app-media video,.caa-app-media img{width:100%;height:100%;object-fit:contain;display:block}'
+  +'.caa-app-media video[hidden],.caa-app-media img[hidden]{display:none!important}'
   +'.caa-app-t{font-size:15px;font-weight:700;line-height:1.35;text-align:center;margin:0}'
   +'.caa-app-cta{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;background:#fff;color:#211D17;cursor:pointer}'
   +'.caa-app-cta:active{transform:translateY(1px)}'
@@ -173,6 +175,7 @@
       +'<div class="caa-box">'
       +'<div class="caa-top"><span class="caa-label"></span><span class="caa-count"></span></div>'
       +'<div class="caa-vwrap"><video class="caa-video" muted playsinline webkit-playsinline preload="auto"></video>'
+      +'<img class="caa-photo" alt="" hidden>'
       +'<div class="caa-status" hidden></div>'
       +'<span class="caa-visit" hidden><i class="ti ti-external-link"></i> <span class="caa-visit-t"></span></span></div>'
       +'<div class="caa-promo"><div class="caa-promo-slide"></div><div class="caa-dots"></div></div>'
@@ -189,7 +192,7 @@
     document.body.appendChild(ov);
     var q = function(s){return ov.querySelector(s)};
     els = {ov:ov, box:q(".caa-box"), label:q(".caa-label"), count:q(".caa-count"), vwrap:q(".caa-vwrap"),
-      video:q(".caa-video"), status:q(".caa-status"), visit:q(".caa-visit"), visitT:q(".caa-visit-t"),
+      video:q(".caa-video"), photo:q(".caa-photo"), status:q(".caa-status"), visit:q(".caa-visit"), visitT:q(".caa-visit-t"),
       promo:q(".caa-promo"), promoSlide:q(".caa-promo-slide"), dots:q(".caa-dots"),
       title:q(".caa-title"), note:q(".caa-note"), ps:q(".caa-ps"), cta0:q(".caa-cta0"), sub:q(".caa-sub"),
       subTitle:q(".caa-sub-t"), subDesc:q(".caa-sub-desc"), why:q(".caa-why"), whyT:q(".caa-why-t"),
@@ -335,9 +338,14 @@
 
   function setStatus(text){els.status.hidden=!text;els.status.textContent=text||""}
   function resetVideo(v){if(!v)return;v.onloadedmetadata=v.onloadeddata=v.oncanplay=v.onplaying=v.ontimeupdate=v.onerror=v.onstalled=v.onwaiting=null}
+  function resetPhoto(p){if(!p)return;p.onload=p.onerror=null}
+  /* Surat reklamasi: `media_type==="photo"` bo'lsa <video> o'rniga <img> ishlaydi.
+     Eski yozuvlarda maydon bo'lmasligi mumkin — u holda video deb qaraladi. */
+  function isPhotoAd(ad){return !!(ad&&ad.media_type==="photo")}
   function closeOverlay(){
     clearInterval(STATE.timer);clearTimeout(STATE.loadTimer);
     try{var v=els.video;resetVideo(v);v.pause();v.removeAttribute("src");v.load()}catch(e){}
+    try{var p=els.photo;resetPhoto(p);p.removeAttribute("src");p.hidden=true;els.video.hidden=false}catch(e){}
     stopPromo();hidePs();hideLessonEndExternal();els.desktop.hidden=true;els.ov.classList.remove("caa-done");setStatus("");
     els.ov.classList.remove("on");els.ov.setAttribute("aria-hidden","true");
   }
@@ -372,7 +380,9 @@
         var video=els.video;
         function playAd(i){
           var ad=ads[i],duration=adDuration(ad),isLast=(i>=ads.length-1),multi=ads.length>1;
-          clearInterval(STATE.timer);clearTimeout(STATE.loadTimer);resetVideo(video);
+          var photoAd=isPhotoAd(ad),photo=els.photo;
+          clearInterval(STATE.timer);clearTimeout(STATE.loadTimer);resetVideo(video);resetPhoto(photo);
+          video.hidden=photoAd;photo.hidden=!photoAd;
           STATE={timer:null,loadTimer:null,resolve:resolve,reject:reject,ad:ad,placement:placement,accessRef:accessRef,attemptToken:"",watched:0,ready:false,busy:false};
           els.label.textContent=placementTitle(placement)+(multi?" · "+(i+1)+"/"+ads.length:"");
           els.title.textContent=ad.title||placementTitle(placement);
@@ -391,17 +401,24 @@
           els.count.textContent="...";setStatus(t.loading);
           var srcBase=ad.media_url,loadAttempt=0,left=duration,timer=null,started=false,failed=false,attemptStarting=false;
           var requiresAttempt=!!accessRef&&placement==="start"&&isLast;
+          function srcWith(bust){return bust?srcBase+(srcBase.indexOf("?")>=0?"&":"?")+"r="+Date.now():srcBase}
           function setSrc(bust){
+            if(photoAd){photo.removeAttribute("src");photo.src=srcWith(bust);return}
             try{video.pause()}catch(e){}
             video.removeAttribute("src");try{video.load()}catch(e){}
-            video.src=bust?srcBase+(srcBase.indexOf("?")>=0?"&":"?")+"r="+Date.now():srcBase;
+            video.src=srcWith(bust);
             video.loop=true;video.muted=true;try{video.load()}catch(e){}
           }
           function armGuard(ms){clearTimeout(STATE.loadTimer);STATE.loadTimer=setTimeout(onLoadTimeout,ms)}
-          function tryPlay(){var p;try{p=video.play()}catch(e){}if(p&&p.then)p.then(startCountdown).catch(function(){if(video.readyState>=2)startCountdown()})}
+          function mediaReady(){return photoAd?(photo.complete&&photo.naturalWidth>0):(video.readyState>=2)}
+          /* Suratda ijro yo'q — faqat yuklanishini kutamiz. */
+          function tryPlay(){
+            if(photoAd){if(mediaReady())startCountdown();return}
+            var p;try{p=video.play()}catch(e){}if(p&&p.then)p.then(startCountdown).catch(function(){if(video.readyState>=2)startCountdown()})
+          }
           function onLoadTimeout(){
             if(started||failed||STATE.ad!==ad)return;
-            if(video.readyState>=2){startCountdown();return}
+            if(mediaReady()){startCountdown();return}
             if(loadAttempt<2){loadAttempt++;setStatus(t.loading);setSrc(true);armGuard(loadAttempt>=2?16000:12000);tryPlay();return}
             mediaFailed();
           }
@@ -466,11 +483,15 @@
             els.cta0.onclick=function(ev){if(ev)ev.stopPropagation();failFlow()};
             setTimeout(failFlow,1600);
           }
-          video.onloadedmetadata=tryPlay;video.onloadeddata=startCountdown;video.oncanplay=startCountdown;
-          video.onplaying=startCountdown;video.ontimeupdate=startCountdown;video.onerror=onMediaError;
-          video.onstalled=video.onwaiting=function(){if(started||failed||STATE.ad!==ad)return;armGuard(12000)};
+          if(photoAd){
+            photo.onload=startCountdown;photo.onerror=onMediaError;
+          }else{
+            video.onloadedmetadata=tryPlay;video.onloadeddata=startCountdown;video.oncanplay=startCountdown;
+            video.onplaying=startCountdown;video.ontimeupdate=startCountdown;video.onerror=onMediaError;
+            video.onstalled=video.onwaiting=function(){if(started||failed||STATE.ad!==ad)return;armGuard(12000)};
+          }
           setSrc(false);armGuard(12000);
-          if(video.readyState>=2)startCountdown();
+          if(mediaReady())startCountdown();
           tryPlay();
         }
         playAd(0);
@@ -515,8 +536,9 @@
     }else{els.limAd.hidden=true}
     /* Chiqish — o'ng yuqori burchakdagi X (pastda "orqaga" tugma yo'q). */
     els.x.onclick=function(){var cb=opts.onBack;_closeLimit();if(typeof cb==="function")cb()};
-    /* Video yo'q — to'g'ridan promo (done) ko'rinishi. */
+    /* Media yo'q — to'g'ridan promo (done) ko'rinishi. */
     try{els.video.pause();els.video.removeAttribute("src");els.video.load()}catch(e){}
+    try{els.photo.removeAttribute("src");els.photo.hidden=true;els.video.hidden=false}catch(e){}
     els.vwrap.style.display="none";
     setStatus("");
     els.ov.classList.add("on","caa-done","limit");
@@ -559,7 +581,7 @@
       +'<div class="caa-app-card">'
       +'<button class="caa-app-x" aria-label="close"><i class="ti ti-x"></i></button>'
       +'<span class="caa-app-wait" hidden></span>'
-      +'<div class="caa-app-media"><video muted playsinline webkit-playsinline preload="auto"></video></div>'
+      +'<div class="caa-app-media"><video muted playsinline webkit-playsinline preload="auto"></video><img alt="" hidden></div>'
       +'<p class="caa-app-t"></p>'
       +'<div class="caa-app-plats" hidden></div>'
       +'<button class="caa-app-cta"></button>'
@@ -567,7 +589,7 @@
     document.body.appendChild(ov);
     var q=function(s){return ov.querySelector(s)};
     appEls={ov:ov,card:q(".caa-app-card"),x:q(".caa-app-x"),wait:q(".caa-app-wait"),
-      video:q("video"),title:q(".caa-app-t"),plats:q(".caa-app-plats"),cta:q(".caa-app-cta")};
+      video:q("video"),photo:q(".caa-app-media img"),title:q(".caa-app-t"),plats:q(".caa-app-plats"),cta:q(".caa-app-cta")};
     return appEls;
   }
 
@@ -575,6 +597,7 @@
     if(!appEls) return;
     if(appState.timer){ clearInterval(appState.timer); appState.timer=null; }
     try{ appEls.video.pause(); appEls.video.removeAttribute("src"); appEls.video.load(); }catch(e){}
+    try{ appEls.photo.removeAttribute("src"); appEls.photo.hidden=true; appEls.video.hidden=false; }catch(e){}
     appEls.ov.classList.remove("on");
     appEls.ov.setAttribute("aria-hidden","true");
     appState.open=false;
@@ -635,7 +658,16 @@
     e.cta.onclick=function(){ openAppLink(ad.link_url); };
     e.x.classList.remove("on");
     e.x.onclick=closeAppAd;
-    try{ e.video.src=ad.media_url; e.video.currentTime=0; e.video.play().catch(function(){}); }catch(err){}
+    /* Surat reklamasi bo'lsa <img>, aks holda avvalgidek <video>. */
+    if(isPhotoAd(ad)){
+      e.video.hidden=true;e.photo.hidden=false;
+      try{ e.video.pause(); e.video.removeAttribute("src"); }catch(err){}
+      try{ e.photo.src=ad.media_url; }catch(err){}
+    }else{
+      e.photo.hidden=true;e.video.hidden=false;
+      try{ e.photo.removeAttribute("src"); }catch(err){}
+      try{ e.video.src=ad.media_url; e.video.currentTime=0; e.video.play().catch(function(){}); }catch(err){}
+    }
     e.ov.classList.add("on");
     e.ov.setAttribute("aria-hidden","false");
     appMarkSeen(ad.id);

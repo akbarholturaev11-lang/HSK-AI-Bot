@@ -207,6 +207,50 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-12 — Course ads accept photos, not only video
+
+Changed:
+- The course ad section now accepts an image (`jpg/jpeg/png/webp`) as well as
+  video. `CourseAdCreative.media_type` already existed, so no migration was
+  needed; it is now actually written (`"video"` / `"photo"`).
+- New `CourseAdService.classify_upload_media()` is the single source of truth for
+  upload type detection. It prefers `content_type`, falls back to the file
+  extension (Telegram WebView sometimes sends no content type), and maps unknown
+  extensions to a safe `.jpg` / `.mp4`. Unsupported files are still rejected with
+  `unsupported_media`.
+- Photos are stored as-is by `_prepare_course_ad_image_file()` — no ffmpeg. Video
+  still goes through the existing MP4/H.264 transcode, unchanged.
+- `/uploads/course_ads/{file}` now serves image content types.
+- `ads.js` renders an `<img>` when `media_type === "photo"`, in both the
+  practice/lesson-end player and the app-open card. The countdown is driven by
+  the image `onload` instead of video events; layout, buttons, and timing are
+  identical to video.
+- Admin panel accepts `image/*`, shows a photo/video tag per ad, and previews
+  images in the list.
+
+Why:
+- Admins could only upload video, so a simple banner had to be turned into a
+  video first. The rejection looked like a bug rather than a design limit.
+
+Files touched:
+- `app/services/course_ad_service.py`
+- `app/main.py`
+- `app/static/course_v3_data/ads.js`
+- `app/static/admin.html`
+- `tests/test_course_ad_photo_media.py` (new)
+
+Risk:
+- Ad delivery path. Legacy rows with `media_type` NULL/unknown read as `"video"`,
+  so existing video ads behave exactly as before (covered by tests).
+- `duration_seconds` means "time on screen" for photos; `skip_after_seconds` is
+  still clamped to the duration so the X button can always be reached.
+- Photo ads bypass ffmpeg, so they still work on hosts where ffmpeg is missing
+  (video uploads there fail with `ffmpeg_not_available`, unchanged).
+
+Follow-up:
+- After deploy, upload one photo ad per type (`odiy`, `dars_yakuni`, `app`) and
+  confirm the countdown ends and the continue/subscribe block appears.
+
 ### 2026-08-12 — Desktop course trail road is measured, not guessed
 
 Changed:
@@ -5407,6 +5451,45 @@ Decision:
 Files:
 - `desktop/ui/index.html`, `desktop/ui/js/app.js`, `desktop/ui/js/i18n.js`,
   `desktop/ui/css/workspace.css`, `desktop/ui/test-contract.mjs`.
+
+---
+
+### 2026-08-12 — macOS AI Voice mikrofoni: hardened runtime entitlement
+
+Changed:
+- `desktop/src-tauri/entitlements.plist` (yangi) — faqat
+  `com.apple.security.device.audio-input`. `tauri.conf.json` →
+  `bundle.macOS.entitlements` orqali ulandi.
+- `desktop-release.yml` build guard: imzolangan bundle ichida shu entitlement
+  yo'q bo'lsa release fail bo'ladi.
+- `desktop/src-tauri/src/lib.rs` — `launch_issue()`; `desktop_app_info` endi
+  `launchIssue` qaytaradi (`/AppTranslocation/` yoki `/Volumes/`).
+- `desktop/ui/js/voice.js` + `app.js` + `i18n.js` — mikrofon rad javobi ikkiga
+  ajratildi, yangi `desktop_voice_mic_translocated` matni RU/TJ/UZ.
+
+Why:
+- macOS'da AI Voice hech qachon ishlamagan. Tauri bundler ad-hoc imzoda ham
+  **hardened runtime**'ni yoqadi (CodeDirectory flags `0x10002`), entitlements
+  esa umuman yo'q edi. Hardened runtime bu entitlementsiz audio capture'ni
+  bloklaydi: `getUserMedia` darhol `NotAllowedError` beradi, OS prompt
+  ko'rsatmaydi va ilova Privacy & Security → Microphone ro'yxatida umuman
+  paydo bo'lmaydi. `NSMicrophoneUsageDescription` faqat prompt matni uchun —
+  o'zi ruxsat bermaydi. 2026-08-09 yozuvidagi "haqiqiy Mac'da hali sinalmagan"
+  follow-up shu bilan yopiladi.
+- Ikkinchi, kamroq uchraydigan holat: DMG'dan to'g'ridan-to'g'ri ochilgan
+  bundle translocate bo'ladi va TCC uni tanimaydi. Eski xabar foydalanuvchini
+  Privacy panelga yuborardi, u yerda ilova ro'yxatda yo'q — endi "Applications
+  papkasiga ko'chiring" deyiladi.
+
+Risk / follow-up:
+- Entitlement faqat asosiy `.app` imzosiga qo'shiladi. `llama-server` va
+  dylib'lar alohida, hardened runtime'siz imzolanadi — Local AI'ga ta'sir yo'q.
+- Entitlements ro'yxati minimal qolsin. Har bir yangi kalit webview
+  buzilganda yetib boradigan sirtni kengaytiradi.
+- Eski o'rnatilgan ilovada TCC yozuvi allaqachon buzilgan bo'lishi mumkin;
+  yangi build'dan keyin ham so'ramasa `tccutil reset Microphone com.pomp.hskai`.
+- Notarization hali yo'q (Developer ID yo'q). Mikrofon uchun shart emas, lekin
+  Gatekeeper ogohlantirishi qolaveradi.
 
 ---
 
