@@ -23,6 +23,9 @@ from app.services.desktop_download_service import (
     DesktopDownloadService,
     DesktopReleaseConfig,
 )
+from app.services.desktop_app_promo_settings_service import (
+    save_desktop_app_promo_settings,
+)
 
 
 def _settings(**overrides):
@@ -109,6 +112,42 @@ class DesktopDownloadServiceTests(unittest.IsolatedAsyncioTestCase):
             ready.file_name_for("macos"),
             "Pomp-HSK-AI-universal.dmg",
         )
+
+    async def test_status_uses_admin_app_promo_settings(self):
+        async with self.sessions() as session:
+            await save_desktop_app_promo_settings(
+                session,
+                {
+                    "enabled": True,
+                    "daily_limit": 2,
+                    "placements": {
+                        "home_prompt": True,
+                        "lesson_end_promo": False,
+                        "ad_promo": True,
+                    },
+                    "platforms": {
+                        "macos": False,
+                        "windows": True,
+                        "android": True,
+                        "ios": False,
+                    },
+                },
+            )
+            await session.commit()
+
+        async with self.sessions() as session:
+            payload = await DesktopDownloadService(session, _settings()).status(1001)
+
+            self.assertTrue(payload["ok"])
+            self.assertFalse(payload["platforms"]["macos"])
+            self.assertTrue(payload["platforms"]["windows"])
+            self.assertIsNone(payload["downloads"]["macos"])
+            self.assertEqual(payload["promo"]["daily_limit"], 2)
+            self.assertTrue(payload["promo"]["placements"]["home_prompt"])
+            self.assertFalse(payload["promo"]["placements"]["lesson_end_promo"])
+            self.assertTrue(payload["promo"]["placements"]["ad_promo"])
+            self.assertFalse(payload["promo"]["platform_targets"]["android"])
+            self.assertFalse(payload["promo"]["platform_targets"]["ios"])
 
     async def test_request_returns_tracked_download_page_and_safe_filename(self):
         async with self.sessions() as session:

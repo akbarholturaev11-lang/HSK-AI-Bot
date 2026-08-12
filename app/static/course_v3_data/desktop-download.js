@@ -29,15 +29,17 @@
   var PROMO_SOURCES = ["home_prompt", "lesson_end_promo", "ad_promo"];
   var ENTRY_SOURCES = ["profile"].concat(PROMO_SOURCES);
   var DEFAULT_PROMO_COOLDOWN_DAYS = 14;
+  var DEFAULT_HOME_PROMPT_DAILY_LIMIT = 3;
+  var APP_PROMO_PLATFORMS = ["macos", "windows"];
 
   var COPY = {
     uz: {
       eyebrow: "HSK AI · kompyuter",
       cardTitle: "Kompyuter ilovasi",
       cardBody:
-        "Kurs, obuna va progress bir akkauntda. Mac yoki Windows versiyasini tanlang.",
+        "Kompyuterda qulayroq o‘qing. MacBook yoki Windowsni tanlang.",
       mobileCardHint:
-        "Telefondasiz: eng qulay yo‘l — AirDrop/ulashish yoki linkni kompyuterga yuborish.",
+        "Telefondasiz: AirDrop/ulashish yoki linkni kompyuterga yuboring.",
       previewTranslation: "o‘rganmoq",
       preparing:
         "Yuklash fayllari tayyorlanmoqda. Tez orada tugmalar faollashadi.",
@@ -47,14 +49,18 @@
       checkingStatus: "Tekshirilmoqda…",
       promoTitle: "Darslarni kompyuterda davom ettiring",
       promoBody:
-        "Mac yoki Windows ilovasida kurs katta ekranda, yangilanishlar esa avtomatik keladi.",
+        "MacBook yoki Windows ilovasini tanlang. Progress telefon bilan birga saqlanadi.",
       bigScreen: "Katta ekran",
-      autoUpdate: "Avtomatik update",
-      sharedProgress: "Yagona progress",
-      mac: "Mac uchun olish",
-      windows: "Windows uchun olish",
-      macUnavailable: "Mac — tez orada",
+      autoUpdate: "Auto update",
+      sharedProgress: "Progress saqlanadi",
+      mac: "MacBook",
+      windows: "Windows",
+      android: "Android",
+      ios: "Apple",
+      macUnavailable: "MacBook — tez orada",
       windowsUnavailable: "Windows — tez orada",
+      androidUnavailable: "Android — tez orada",
+      iosUnavailable: "Apple — tez orada",
       recommended: "Mos",
       dismiss: "Keyinroq",
       close: "Oynani yopish",
@@ -105,9 +111,9 @@
       eyebrow: "HSK AI · компьютер",
       cardTitle: "Приложение для компьютера",
       cardBody:
-        "Курс, подписка и прогресс в одном аккаунте. Выберите версию для Mac или Windows.",
+        "Учиться удобнее на компьютере. Выберите MacBook или Windows.",
       mobileCardHint:
-        "Вы на телефоне: удобнее отправить ссылку через AirDrop или системное меню.",
+        "Вы на телефоне: отправьте ссылку через AirDrop или системное меню.",
       previewTranslation: "учиться",
       preparing:
         "Файлы загрузки готовятся. Кнопки станут активны в ближайшее время.",
@@ -117,14 +123,18 @@
       checkingStatus: "Проверяем…",
       promoTitle: "Продолжайте уроки на компьютере",
       promoBody:
-        "Курс удобнее на большом экране, а новые версии устанавливаются автоматически.",
+        "Выберите приложение для MacBook или Windows. Прогресс сохранится вместе с телефоном.",
       bigScreen: "Большой экран",
       autoUpdate: "Автообновление",
       sharedProgress: "Общий прогресс",
-      mac: "Скачать для Mac",
-      windows: "Скачать для Windows",
-      macUnavailable: "Mac — скоро",
+      mac: "MacBook",
+      windows: "Windows",
+      android: "Android",
+      ios: "Apple",
+      macUnavailable: "MacBook — скоро",
       windowsUnavailable: "Windows — скоро",
+      androidUnavailable: "Android — скоро",
+      iosUnavailable: "Apple — скоро",
       recommended: "Подходит",
       dismiss: "Позже",
       close: "Закрыть окно",
@@ -175,9 +185,9 @@
       eyebrow: "HSK AI · компютер",
       cardTitle: "Барномаи компютерӣ",
       cardBody:
-        "Курс, обуна ва пешрафт дар як ҳисоб. Версияи Mac ё Windows-ро интихоб кунед.",
+        "Дар компютер хондан қулайтар аст. MacBook ё Windows-ро интихоб кунед.",
       mobileCardHint:
-        "Шумо дар телефонед: бо AirDrop ё равзанаи фиристодан ба компютер гузарондан қулайтар аст.",
+        "Шумо дар телефонед: бо AirDrop ё фиристодан пайвандро ба компютер гузаронед.",
       previewTranslation: "омӯхтан",
       preparing:
         "Файлҳои боргирӣ омода мешаванд. Тугмаҳо ба наздикӣ фаъол мешаванд.",
@@ -187,14 +197,18 @@
       checkingStatus: "Санҷида мешавад…",
       promoTitle: "Дарсҳоро дар компютер идома диҳед",
       promoBody:
-        "Курс дар экрани калон қулайтар аст ва версияҳои нав автоматӣ меоянд.",
+        "Барномаи MacBook ё Windows-ро интихоб кунед. Пешрафт бо телефон якҷо нигоҳ дошта мешавад.",
       bigScreen: "Экрани калон",
       autoUpdate: "Навсозии автоматӣ",
       sharedProgress: "Пешрафти умумӣ",
-      mac: "Гирифтан барои Mac",
-      windows: "Гирифтан барои Windows",
-      macUnavailable: "Mac — ба наздикӣ",
+      mac: "MacBook",
+      windows: "Windows",
+      android: "Android",
+      ios: "Apple",
+      macUnavailable: "MacBook — ба наздикӣ",
       windowsUnavailable: "Windows — ба наздикӣ",
+      androidUnavailable: "Android — ба наздикӣ",
+      iosUnavailable: "Apple — ба наздикӣ",
       recommended: "Мувофиқ",
       dismiss: "Баъдтар",
       close: "Пӯшидани равзана",
@@ -248,17 +262,20 @@
     availabilityLoading: false,
     availabilityError: false,
     enabled: false,
-    platforms: { macos: false, windows: false },
+    platforms: { macos: false, windows: false, android: false, ios: false },
+    platformTargets: { macos: true, windows: true, android: false, ios: false },
     transferUrls: { macos: "", windows: "" },
-    runtimeUnavailable: { macos: false, windows: false },
+    runtimeUnavailable: { macos: false, windows: false, android: true, ios: true },
     promoEligible: false,
     promoReason: "",
     promoCooldownDays: 0,
+    homePromptDailyLimit: DEFAULT_HOME_PROMPT_DAILY_LIMIT,
     promoPlacements: {
       home_prompt: false,
       lesson_end_promo: false,
       ad_promo: false
     },
+    promoMedia: { url: "", type: "" },
     pendingPlatform: "",
     pendingEventIds: {},
     errorCode: "",
@@ -317,6 +334,24 @@
     if (className) node.className = className;
     if (typeof value === "string") node.textContent = value;
     return node;
+  }
+
+  function safePromoMediaUrl(value) {
+    var raw = String(value || "").trim();
+    if (!/^\/uploads\/app_promo\/[A-Za-z0-9._+-]+$/.test(raw)) {
+      return "";
+    }
+    return raw;
+  }
+
+  function promoMediaType(value) {
+    var mediaType = String(value || "").trim().toLowerCase();
+    return mediaType === "video" || mediaType === "photo" ? mediaType : "";
+  }
+
+  function promoMedia() {
+    if (!state.promoMedia.url || !state.promoMedia.type) return null;
+    return state.promoMedia;
   }
 
   function icon(name) {
@@ -398,6 +433,46 @@
     } catch (error) {}
   }
 
+  function todayKey() {
+    var now = new Date();
+    return [
+      now.getFullYear(),
+      String(now.getMonth() + 1).padStart(2, "0"),
+      String(now.getDate()).padStart(2, "0")
+    ].join("-");
+  }
+
+  function homePromptDailyRecord() {
+    var fallback = { day: todayKey(), count: 0 };
+    try {
+      var parsed = JSON.parse(
+        localStorage.getItem(storageKey("home_prompt_daily")) || "{}"
+      );
+      if (!parsed || parsed.day !== fallback.day) return fallback;
+      return {
+        day: fallback.day,
+        count: Math.max(0, Number(parsed.count) || 0)
+      };
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function homePromptDailyLimitReached() {
+    return homePromptDailyRecord().count >= state.homePromptDailyLimit;
+  }
+
+  function incrementHomePromptDailyCount() {
+    var record = homePromptDailyRecord();
+    record.count += 1;
+    try {
+      localStorage.setItem(
+        storageKey("home_prompt_daily"),
+        JSON.stringify(record)
+      );
+    } catch (error) {}
+  }
+
   function track(event, payload) {
     var data = Object.assign({}, payload || {});
     var id = data.event_id || eventId(event);
@@ -473,6 +548,7 @@
     return Boolean(
       state.enabled &&
         state.platforms[platform] &&
+        (platform === "macos" || platform === "windows") &&
         !state.runtimeUnavailable[platform]
     );
   }
@@ -482,6 +558,16 @@
       isPlatformAvailable("macos") ||
       isPlatformAvailable("windows")
     );
+  }
+
+  function isPlatformTargeted(platform) {
+    return state.platformTargets[platform] !== false;
+  }
+
+  function platformIcon(platform) {
+    if (platform === "windows") return "brand-windows";
+    if (platform === "android") return "brand-android";
+    return "brand-apple";
   }
 
   function errorText(code) {
@@ -570,11 +656,15 @@
   function platformButtonLabel(platform) {
     var copy = text();
     if (isPlatformAvailable(platform)) {
-      return platform === "macos" ? copy.mac : copy.windows;
+      if (platform === "macos") return copy.mac;
+      if (platform === "windows") return copy.windows;
+      if (platform === "android") return copy.android;
+      return copy.ios;
     }
-    return platform === "macos"
-      ? copy.macUnavailable
-      : copy.windowsUnavailable;
+    if (platform === "macos") return copy.macUnavailable;
+    if (platform === "windows") return copy.windowsUnavailable;
+    if (platform === "android") return copy.androidUnavailable;
+    return copy.iosUnavailable;
   }
 
   function buildOsButton(platform, source) {
@@ -587,9 +677,7 @@
     button.dataset.pddSource = source;
     button.dataset.recommended = recommended ? "true" : "false";
     button.dataset.recommendedLabel = copy.recommended;
-    button.appendChild(
-      icon(platform === "macos" ? "brand-apple" : "brand-windows")
-    );
+    button.appendChild(icon(platformIcon(platform)));
     button.appendChild(element("span", "", platformButtonLabel(platform)));
     button.addEventListener("click", function () {
       requestDownload(platform, source);
@@ -599,8 +687,11 @@
 
   function buildActions(source) {
     var actions = element("div", "pdd-actions");
-    actions.appendChild(buildOsButton("macos", source));
-    actions.appendChild(buildOsButton("windows", source));
+    APP_PROMO_PLATFORMS.forEach(function (platform) {
+      if (isPlatformTargeted(platform)) {
+        actions.appendChild(buildOsButton(platform, source));
+      }
+    });
     return actions;
   }
 
@@ -949,11 +1040,7 @@
       if (iconNode) {
         iconNode.className =
           "ti ti-" +
-          (pending
-            ? "loader-2"
-            : platform === "macos"
-              ? "brand-apple"
-              : "brand-windows");
+          (pending ? "loader-2" : platformIcon(platform));
       }
       var label = button.querySelector("span");
       if (label) {
@@ -1520,7 +1607,9 @@
       !promoPlacementAllowed(source) ||
       state.promoSeenInSession ||
       state.promoOpen ||
-      hasLocalPromoCooldown()
+      (source === "home_prompt"
+        ? homePromptDailyLimitReached()
+        : hasLocalPromoCooldown())
     ) {
       return false;
     }
@@ -1535,6 +1624,7 @@
       !hasAvailablePlatform() ||
       state.promoOpen ||
       state.destinationOpen ||
+      !state.promoPlacements.ad_promo ||
       state.promoReason === "already_installed" ||
       state.promoReason === "disabled" ||
       state.promoReason === "recent_request" ||
@@ -1583,7 +1673,7 @@
         state.promoTimer = window.setTimeout(tryOpen, 2500);
       }
     }
-    state.promoTimer = window.setTimeout(tryOpen, 6500);
+    state.promoTimer = window.setTimeout(tryOpen, 1200);
   }
 
   function drainQueuedPromo() {
@@ -1623,9 +1713,36 @@
     return drainQueuedPromo();
   }
 
+  function buildPromoMedia(className) {
+    var media = promoMedia();
+    if (!media) return null;
+    var node = element(
+      media.type === "video" ? "video" : "img",
+      className || "pdd-promo-media"
+    );
+    node.src = media.url;
+    if (media.type === "video") {
+      node.muted = true;
+      node.autoplay = true;
+      node.loop = true;
+      node.playsInline = true;
+      node.setAttribute("playsinline", "true");
+    } else {
+      node.alt = "";
+    }
+    node.setAttribute("aria-hidden", "true");
+    return node;
+  }
+
   function buildPromoVisual() {
     var visual = element("div", "pdd-promo-visual");
-    visual.appendChild(buildProductPreview("modal"));
+    var media = buildPromoMedia("pdd-promo-media");
+    if (media) {
+      visual.dataset.media = "true";
+      visual.appendChild(media);
+    } else {
+      visual.appendChild(buildProductPreview("modal"));
+    }
     return visual;
   }
 
@@ -1648,6 +1765,7 @@
     state.activePromoSource = source;
     state.activePromoMeta = promoMeta(meta);
     state.previousFocus = document.activeElement;
+    if (source === "home_prompt") incrementHomePromptDailyCount();
     storeNumber("promo_seen", Date.now());
     trackEntrySeen(source, state.activePromoMeta);
     track("desktop_promo_seen", promoPayload(source, state.activePromoMeta));
@@ -1752,6 +1870,9 @@
     heading.appendChild(labels);
     block.appendChild(heading);
 
+    var media = buildPromoMedia("pdd-ad-download-media");
+    if (media) block.appendChild(media);
+
     var actions = buildActions("ad_promo");
     actions.classList.add("pdd-ad-download-actions");
     block.appendChild(actions);
@@ -1848,6 +1969,8 @@
             state.platforms.windows = Boolean(
               data.platforms && data.platforms.windows
             );
+            state.platforms.android = false;
+            state.platforms.ios = false;
             state.transferUrls.macos = cleanTransferUrl(
               data.downloads && data.downloads.macos,
               "macos"
@@ -1872,6 +1995,27 @@
                 Number(promo.cooldown_days) || DEFAULT_PROMO_COOLDOWN_DAYS
               )
             );
+            state.homePromptDailyLimit = Math.max(
+              1,
+              Math.min(
+                3,
+                Number(promo.daily_limit) || DEFAULT_HOME_PROMPT_DAILY_LIMIT
+              )
+            );
+            var targets =
+              promo.platform_targets && typeof promo.platform_targets === "object"
+                ? promo.platform_targets
+                : {};
+            APP_PROMO_PLATFORMS.forEach(function (platform) {
+              state.platformTargets[platform] = targets[platform] !== false;
+            });
+            state.platformTargets.android = false;
+            state.platformTargets.ios = false;
+            state.promoMedia.url = safePromoMediaUrl(promo.media_url);
+            state.promoMedia.type = state.promoMedia.url
+              ? promoMediaType(promo.media_type)
+              : "";
+            if (!state.promoMedia.type) state.promoMedia.url = "";
             PROMO_SOURCES.forEach(function (source) {
               state.promoPlacements[source] = placements[source] === true;
             });
@@ -1885,6 +2029,14 @@
         state.platforms.windows = false;
         state.transferUrls.macos = "";
         state.transferUrls.windows = "";
+        state.homePromptDailyLimit = DEFAULT_HOME_PROMPT_DAILY_LIMIT;
+        APP_PROMO_PLATFORMS.forEach(function (platform) {
+          state.platformTargets[platform] = true;
+        });
+        state.platformTargets.android = false;
+        state.platformTargets.ios = false;
+        state.promoMedia.url = "";
+        state.promoMedia.type = "";
         state.promoEligible = false;
         state.promoReason = "";
         PROMO_SOURCES.forEach(function (source) {

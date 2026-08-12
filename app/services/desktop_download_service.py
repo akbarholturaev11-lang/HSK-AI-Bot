@@ -12,6 +12,10 @@ from sqlalchemy import func, select
 
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.user_repo import UserRepository
+from app.services.desktop_app_promo_settings_service import (
+    DesktopAppPromoSettings,
+    get_desktop_app_promo_settings,
+)
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.desktop_release_manifest_service import (
     DesktopReleaseManifestService,
@@ -295,19 +299,40 @@ class DesktopDownloadService:
     async def status(self, telegram_id: int) -> dict[str, Any]:
         await self._user(telegram_id)
         await self._resolve_releases()
+        promo_settings = await get_desktop_app_promo_settings(self.session)
         payload = self.releases.status_payload()
+        for platform in PLATFORMS:
+            payload["platforms"][platform] = bool(
+                payload["platforms"].get(platform)
+                and promo_settings.platforms.get(platform, True)
+            )
         payload["downloads"] = {
             platform: (
                 self.releases.public_transfer_url(platform)
-                if self.releases.enabled and self.releases.target_for(platform)
+                if (
+                    self.releases.enabled
+                    and self.releases.target_for(platform)
+                    and promo_settings.platforms.get(platform, True)
+                )
                 else None
             )
             for platform in PLATFORMS
         }
-        payload["promo"] = await self._promo_status(telegram_id)
+        payload["promo"] = await self._promo_status(
+            telegram_id,
+            promo_settings=promo_settings,
+        )
         return payload
 
-    async def _promo_status(self, telegram_id: int) -> dict[str, Any]:
+    async def _promo_status(
+        self,
+        telegram_id: int,
+        *,
+        promo_settings: DesktopAppPromoSettings | None = None,
+    ) -> dict[str, Any]:
+        promo_settings = promo_settings or await get_desktop_app_promo_settings(
+            self.session
+        )
         completion_result = await self.session.execute(
             select(CourseMiniAppEvent.id)
             .where(
@@ -366,35 +391,74 @@ class DesktopDownloadService:
         )
         feature_enabled = bool(
             getattr(self.settings, "DESKTOP_DOWNLOADS_ENABLED", False)
+        ) and promo_settings.enabled
+        release_ready = self.releases.enabled and any(
+            bool(self.releases.target_for(platform))
+            and bool(promo_settings.platforms.get(platform))
+            for platform in PLATFORMS
         )
-        release_ready = self.releases.enabled and bool(
-            self.releases.macos_url or self.releases.windows_url
-        )
+        learning_ready = has_learning_progress or not promo_settings.require_learning_progress
 
         if not feature_enabled:
             reason = "disabled"
-        elif not release_ready or not has_learning_progress:
+        elif not release_ready or not learning_ready:
             reason = "not_ready"
         elif has_desktop_first_open:
             reason = "already_installed"
         elif request_cooldown_remaining > 0:
             reason = "recent_request"
-        elif promo_cooldown_remaining > 0:
+        elif (
+            promo_cooldown_remaining > 0
+            and not promo_settings.placements.get("home_prompt")
+            and not promo_settings.placements.get("ad_promo")
+        ):
             reason = "cooldown"
         else:
             reason = "eligible"
-        eligible = reason == "eligible"
+        base_eligible = (
+            reason == "eligible"
+            and feature_enabled
+            and release_ready
+            and learning_ready
+            and not has_desktop_first_open
+            and request_cooldown_remaining <= 0
+        )
+        home_prompt = base_eligible and promo_settings.placements.get("home_prompt", True)
+        lesson_end_promo = (
+            base_eligible
+            and promo_cooldown_remaining <= 0
+            and promo_settings.placements.get("lesson_end_promo", True)
+        )
+        ad_promo = base_eligible and promo_settings.placements.get("ad_promo", True)
+        eligible = bool(home_prompt or lesson_end_promo or ad_promo)
 
+        promo_payload = promo_settings.payload()
+        media_url = (
+            promo_payload.get("media_url")
+            if promo_payload.get("media_available")
+            else None
+        )
+        platform_targets = {
+            "macos": bool(promo_settings.platforms.get("macos")),
+            "windows": bool(promo_settings.platforms.get("windows")),
+            "android": False,
+            "ios": False,
+        }
         return {
             "eligible": eligible,
             "reason": reason,
             "cooldown_days": PROMO_COOLDOWN_DAYS,
+            "daily_limit": promo_settings.daily_limit,
             "cooldown_remaining_seconds": cooldown_remaining,
+            "platform_targets": platform_targets,
+            "media_type": promo_payload.get("media_type") if media_url else None,
+            "media_url": media_url,
+            "media_available": bool(media_url),
             "placements": {
                 "profile": release_ready,
-                "home_prompt": eligible,
-                "lesson_end_promo": eligible,
-                "ad_promo": eligible,
+                "home_prompt": bool(home_prompt),
+                "lesson_end_promo": bool(lesson_end_promo),
+                "ad_promo": bool(ad_promo),
             },
         }
 
