@@ -6212,6 +6212,20 @@ html.lesson-active .ai-drawer.is-open {
 }
 
 .lessonPath {
+  /* Sized against this card, not the window: the unit card loses width to the
+     rail and the course aside, so viewport units overflow the trail. */
+  container: lessonpath / inline-size;
+
+  /* Horizontal zig-zag amplitude. The road itself is measured from the real
+     node positions in app.js, so this only has to stay inside the card. */
+  --path-amp: 72px;
+
+  /* The road leaves every node straight downwards, so a caption centred under
+     the node would always cover the segment below it. Half a caption plus the
+     road edge is the smallest clearance that keeps the trail visible. */
+  --label-w: 190px;
+  --label-gap: calc(var(--label-w) / 2 + 34px);
+
   position: relative;
   display: flex;
   min-height: 430px;
@@ -6253,131 +6267,116 @@ html.lesson-active .ai-drawer.is-open {
   pointer-events: none;
 }
 
+/* The road used to be faked with two unrelated pseudo-elements per row: a
+   percentage-wide pill plus an elbow pinned at a fixed 86px from the node
+   centre. Those two never met, so the trail always looked broken. The road is
+   now one SVG layer drawn from the measured node centres in app.js. */
+.pathTrack {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pathTrack path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pathTrack .trackEdge {
+  stroke: #c9b592;
+  stroke-width: 50;
+}
+
+.pathTrack .trackBase {
+  stroke: #e3d2b3;
+  stroke-width: 44;
+}
+
+.pathTrack .trackDoneEdge {
+  stroke: #52915f;
+  stroke-width: 50;
+}
+
+.pathTrack .trackDone {
+  stroke: #9fcda2;
+  stroke-width: 44;
+}
+
+.pathTrack .trackCurrentEdge {
+  stroke: #c9382f;
+  stroke-width: 50;
+}
+
+.pathTrack .trackCurrent {
+  stroke: #f0ad9f;
+  stroke-width: 44;
+}
+
+.pathTrack .trackCentre {
+  stroke: rgb(255 255 255 / 88%);
+  stroke-width: 4;
+  stroke-dasharray: 14 18;
+}
+
 .pathNodeRow {
   --path-offset: 0px;
-  --road-width: clamp(260px, 58%, 470px);
-  --road-color: #e8dac1;
-  --road-edge: #d7c6aa;
-  --road-line: rgb(139 101 52 / 30%);
-  --road-shadow: rgb(73 52 26 / 9%);
+
+  /* Caption goes to the side the road is leaving from, so the trail stays
+     visible between every pair of nodes. */
+  --label-shift: calc(-1 * var(--label-gap));
 
   position: relative;
   z-index: 1;
   display: grid;
   width: 100%;
-  min-height: 154px;
+  min-height: 148px;
   min-width: 0;
   justify-items: center;
   gap: 12px;
 }
 
-.pathNodeRow::before {
-  position: absolute;
-  z-index: -2;
-  top: 19px;
-  left: 50%;
-  width: var(--road-width);
-  height: 82px;
-  border: 1px solid var(--road-edge);
-  border-radius: 999px;
-  background:
-    linear-gradient(90deg, transparent 0 47%, var(--road-line) 47% 53%, transparent 53% 100%),
-    linear-gradient(180deg, #f2e7d1, var(--road-color));
-  content: "";
-  transform: translateX(calc(-50% + var(--path-offset)));
-  box-shadow: inset 0 4px 0 rgb(255 255 255 / 54%), 0 12px 28px var(--road-shadow);
-}
-
-.pathNodeRow:not(:last-child)::after {
-  position: absolute;
-  z-index: -3;
-  top: 70px;
-  width: clamp(96px, 18vw, 188px);
-  height: 118px;
-  border-color: var(--road-edge);
-  border-style: solid;
-  content: "";
-  pointer-events: none;
-}
-
-.pathNodeRow.is-done::before {
-  --road-color: #bdddbd;
-  --road-edge: #86b98b;
-  --road-line: rgb(37 112 71 / 34%);
-  --road-shadow: rgb(47 160 106 / 14%);
-}
-
-.pathNodeRow.is-current::before {
-  --road-color: #f5c8bd;
-  --road-edge: #e6483f;
-  --road-line: rgb(178 53 48 / 34%);
-  --road-shadow: rgb(224 74 64 / 17%);
-}
-
-.pathNodeRow.milestone::before {
-  background:
-    radial-gradient(circle at 18% 50%, rgb(255 255 255 / 65%) 0 3px, transparent 4px),
-    radial-gradient(circle at 82% 50%, rgb(255 255 255 / 65%) 0 3px, transparent 4px),
-    linear-gradient(90deg, transparent 0 47%, var(--road-line) 47% 53%, transparent 53% 100%),
-    linear-gradient(180deg, #f4e8ce, var(--road-color));
-}
-
-.pathNodeRow[data-path-step="1"] {
-  --path-offset: -112px;
-}
-
+/* Four-step sine: 0 → +amp → 0 → -amp. Even steps sit on the centre line, so
+   every segment is the same length and the trail reads as one road. */
 .pathNodeRow[data-path-step="2"] {
-  --path-offset: 72px;
-}
-
-.pathNodeRow[data-path-step="3"] {
-  --path-offset: 128px;
+  --path-offset: var(--path-amp);
 }
 
 .pathNodeRow[data-path-step="4"] {
-  --path-offset: -44px;
+  --path-offset: calc(-1 * var(--path-amp));
 }
 
-.pathNodeRow[data-path-step="5"] {
-  --path-offset: -138px;
+/* Steps 2 and 3 head left towards the next node, so their captions go right. */
+.pathNodeRow[data-path-step="2"],
+.pathNodeRow[data-path-step="3"] {
+  --label-shift: var(--label-gap);
 }
 
-.pathNodeRow[data-path-step="6"] {
-  --path-offset: 44px;
-}
-
-.pathNodeRow:nth-child(odd)::after {
-  left: calc(50% + var(--path-offset) + 86px);
-  border-width: 0 22px 22px 0;
-  border-radius: 0 0 48px 0;
-}
-
-.pathNodeRow:nth-child(even)::after {
-  right: calc(50% - var(--path-offset) + 86px);
-  border-width: 0 0 22px 22px;
-  border-radius: 0 0 0 48px;
-}
-
-.pathNodeRow.is-done::after {
-  border-color: #86b98b;
-}
-
-.pathNodeRow.is-current::after {
-  border-color: #e6483f;
-}
 
 .pathNode {
   position: relative;
+  z-index: 1;
   display: grid;
+
+  /* The legacy `.lesson-node` card rules still match this button and were
+     stretching it into an oval (min-height: 116px) and offsetting the digit
+     (padding: 14px). Both are reset here so the node stays a true circle. */
   width: 82px;
   height: 82px;
+  min-height: 0;
   place-items: center;
   margin: 0 auto;
+  padding: 0;
   border: 7px solid rgb(255 255 255 / 88%);
   border-radius: 50%;
   background: #cdc5b8;
   color: #fff;
   font-weight: 800;
+  text-align: center;
   transform: translateX(var(--path-offset));
   box-shadow: 0 7px 0 #aba396, 0 16px 28px rgb(55 41 24 / 14%);
   cursor: pointer;
@@ -6409,6 +6408,13 @@ html.lesson-active .ai-drawer.is-open {
   opacity: 0.72;
 }
 
+/* Replaces the milestone road texture that the old pseudo-element road carried,
+   so checkpoints stay visually distinct on the new track. */
+.pathNode.is-checkpoint:not(.current) {
+  border-color: #fbf1dd;
+  box-shadow: 0 7px 0 #b98a2a, 0 0 0 4px rgb(199 143 24 / 26%), 0 16px 28px rgb(73 52 26 / 16%);
+}
+
 .pathNode .nodeNo,
 .pathNode .nodeIcon {
   display: block;
@@ -6416,13 +6422,16 @@ html.lesson-active .ai-drawer.is-open {
 }
 
 .pathNode .nodeNo {
-  font-size: 17px;
+  margin-bottom: 3px;
+  font-size: 19px;
 }
 
+/* Stacked under the number in the grid flow. It used to be absolutely pinned to
+   `bottom: 15px`, which only cleared the number because the legacy card padding
+   was inflating the button. */
 .pathNode .nodeIcon {
-  position: absolute;
-  bottom: 15px;
-  font-size: 17px;
+  font-size: 12px;
+  opacity: 0.92;
 }
 
 .currentBubble {
@@ -6455,15 +6464,21 @@ html.lesson-active .ai-drawer.is-open {
 }
 
 .pathLabel {
-  width: min(250px, calc(100% - 24px));
+  position: relative;
+
+  /* Sits above the road layer; the background has to be opaque now that a real
+     track runs behind it (`.lesson-node-copy` also adds a stray top margin). */
+  z-index: 1;
+  width: min(var(--label-w), calc(100% - 24px));
   min-height: 0;
+  margin-top: 0;
   padding: 8px 10px;
-  border: 1px solid rgb(231 220 200 / 78%);
+  border: 1px solid rgb(231 220 200 / 90%);
   border-radius: 14px;
-  background: rgb(255 253 248 / 82%);
+  background: #fffdf8;
   text-align: center;
-  transform: translateX(var(--path-offset));
-  box-shadow: 0 10px 20px rgb(73 52 26 / 5%);
+  transform: translateX(calc(var(--path-offset) + var(--label-shift)));
+  box-shadow: 0 8px 18px rgb(73 52 26 / 8%);
 }
 
 .pathLabel b {
@@ -6482,9 +6497,54 @@ html.lesson-active .ai-drawer.is-open {
   overflow-wrap: anywhere;
 }
 
+/* Kept after the base trail rules on purpose: `@supports` and `@container` add
+   no specificity, so an earlier position would lose to them. */
+@supports (container-type: inline-size) {
+  .lessonPath {
+    /* Caption plus amplitude has to stay inside half the card, with room for
+       the road edge: amp + label-w <= inner/2 - 40. */
+    --path-amp: clamp(26px, 9cqw, 88px);
+    --label-w: clamp(150px, 31cqw, 200px);
+  }
+}
+
+/* Under this width the zig-zag cannot clear the captions any more, so the trail
+   becomes a left rail with the captions beside it. */
+@container lessonpath (max-width: 470px) {
+  .pathNodeRow {
+    min-height: 116px;
+    align-items: center;
+    gap: 14px;
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .pathNode,
+  .pathNode:not(:disabled):hover,
+  .pathLabel {
+    transform: none;
+  }
+
+  .pathNode:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+
+  .pathLabel {
+    width: 100%;
+    justify-self: stretch;
+    text-align: left;
+  }
+}
+
 .courseAside {
   position: sticky;
   top: 0;
+
+  /* The legacy `.course-aside` rules still match this element and wrap the
+     summary in a second bordered box. On a 300px column that pushed the card
+     content 40px in from both sides, so the values sat on the card border. The
+     `.card` inside owns the frame; this stays a plain sticky wrapper. */
+  padding: 0;
+  border: 0;
 }
 
 .coursePandaWrap {
@@ -8235,23 +8295,8 @@ html.lesson-active .ai-drawer.is-open {
     padding: 44px 16px 48px;
   }
 
-  .pathNodeRow:nth-child(n) {
-    --path-offset: 0px;
-    --road-width: min(320px, 100%);
-  }
-
-  .pathNodeRow::before {
-    display: block;
-  }
-
-  .pathNodeRow::after {
-    display: none;
-  }
-
-  .pathNodeRow.is-current {
-    margin-top: 30px;
-  }
-
+  /* Trail width behaviour lives in the `lessonpath` container query, which
+     follows the real card width instead of the window. */
   .pathNode {
     width: 74px;
     height: 74px;
@@ -8260,10 +8305,6 @@ html.lesson-active .ai-drawer.is-open {
   .pathNode.current {
     width: 82px;
     height: 82px;
-  }
-
-  .pathLabel {
-    width: min(260px, calc(100% - 28px));
   }
 
   .heroFoot,

@@ -1195,6 +1195,9 @@ function renderActiveView() {
   if (state.view !== "vocabulary") {
     vocabulary.dispose();
   }
+  if (state.view !== "course") {
+    disposeCourseTrack();
+  }
 
   if (state.view === "today") renderToday();
   else if (state.view === "course") renderCourseHome();
@@ -1858,6 +1861,7 @@ function lessonMatches(item, query) {
 function renderCourseHome() {
   const map = state.map;
   if (!map) return;
+  disposeCourseTrack();
   const progress = map.progress || {};
   const lessons = allLessons();
   const completed = Number(progress.completed || 0);
@@ -1920,6 +1924,7 @@ function renderCourseHome() {
     trail.setAttribute("aria-valuemin", "0");
     trail.setAttribute("aria-valuemax", "100");
     trail.setAttribute("aria-valuenow", String(unitPercent));
+    trail.append(createCourseTrack(trail));
     unitLessons.forEach((item, lessonIndex) => {
       trail.append(renderLessonNode(item, lessonIndex));
     });
@@ -1934,7 +1939,7 @@ function renderCourseHome() {
   }
 
   const aside = element("aside", "courseAside course-aside");
-  const summary = element("article", "card courseSummary card-panel");
+  const summary = element("article", "card cardPad courseSummary card-panel");
   const pandaWrap = element("div", "coursePandaWrap");
   const panda = createPandaMascot("coursePanda");
   const pandaCopy = element("div");
@@ -2003,6 +2008,7 @@ function renderCourseHome() {
   aside.append(summary);
   layout.append(units, aside);
   dom.content.append(layout);
+  watchCourseTrack();
 }
 
 function renderLessonNode(item, lessonIndex = 0) {
@@ -2014,7 +2020,7 @@ function renderLessonNode(item, lessonIndex = 0) {
       item?.checkpoint ? " milestone" : ""
     } lesson-node-row`,
   );
-  row.dataset.pathStep = String((Number(lessonIndex) % 6) + 1);
+  row.dataset.pathStep = String((Number(lessonIndex) % 4) + 1);
   row.dataset.lessonNo = String(item?.n || "");
   const button = element(
     "button",
@@ -2054,6 +2060,119 @@ function renderLessonNode(item, lessonIndex = 0) {
   );
   row.append(button, label);
   return row;
+}
+
+// The lesson trail road is drawn from the measured node centres instead of
+// guessed CSS offsets, so the segments always meet whatever the card width,
+// zig-zag amplitude or label wrapping ends up being.
+const SVG_NS = "http://www.w3.org/2000/svg";
+const courseTrack = { observer: null, frame: 0, trails: [] };
+
+function disposeCourseTrack() {
+  if (courseTrack.observer) {
+    courseTrack.observer.disconnect();
+    courseTrack.observer = null;
+  }
+  if (courseTrack.frame) {
+    cancelAnimationFrame(courseTrack.frame);
+    courseTrack.frame = 0;
+  }
+  courseTrack.trails = [];
+}
+
+function createCourseTrack(trail) {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("class", "pathTrack");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+  courseTrack.trails.push({ trail, svg });
+  return svg;
+}
+
+function courseTrackShape(points) {
+  if (points.length < 2) return "";
+  const at = (value) => Math.round(value * 10) / 10;
+  const parts = [`M ${at(points[0].x)} ${at(points[0].y)}`];
+  for (let index = 1; index < points.length; index += 1) {
+    const from = points[index - 1];
+    const to = points[index];
+    // Vertical tangents at every node keep neighbouring segments joined
+    // smoothly and make sideways overshoot impossible.
+    const bend = (to.y - from.y) * 0.5;
+    parts.push(
+      `C ${at(from.x)} ${at(from.y + bend)} ${at(to.x)} ${at(to.y - bend)} ${at(to.x)} ${at(to.y)}`,
+    );
+  }
+  return parts.join(" ");
+}
+
+function courseTrackLine(shape, className) {
+  const path = document.createElementNS(SVG_NS, "path");
+  path.setAttribute("class", className);
+  path.setAttribute("d", shape);
+  return path;
+}
+
+function drawCourseTrack(entry) {
+  const { trail, svg } = entry;
+  if (!trail.isConnected) return;
+  const rows = Array.from(trail.querySelectorAll(".pathNodeRow"));
+  if (rows.length < 2) {
+    svg.replaceChildren();
+    return;
+  }
+  const base = trail.getBoundingClientRect();
+  const points = rows.map((row) => {
+    const box = (row.querySelector(".pathNode") || row).getBoundingClientRect();
+    return {
+      x: box.left - base.left + box.width / 2,
+      y: box.top - base.top + box.height / 2,
+      done: row.classList.contains("is-done"),
+      current: row.classList.contains("is-current"),
+    };
+  });
+
+  let lastDone = -1;
+  let current = -1;
+  points.forEach((point, index) => {
+    if (point.done) lastDone = index;
+    if (point.current && current < 0) current = index;
+  });
+
+  const layers = [];
+  const full = courseTrackShape(points);
+  layers.push(courseTrackLine(full, "trackEdge"), courseTrackLine(full, "trackBase"));
+  if (lastDone >= 1) {
+    const done = courseTrackShape(points.slice(0, lastDone + 1));
+    layers.push(courseTrackLine(done, "trackDoneEdge"), courseTrackLine(done, "trackDone"));
+  }
+  if (current >= 1) {
+    const step = courseTrackShape(points.slice(current - 1, current + 1));
+    layers.push(courseTrackLine(step, "trackCurrentEdge"), courseTrackLine(step, "trackCurrent"));
+  }
+  layers.push(courseTrackLine(full, "trackCentre"));
+  svg.replaceChildren(...layers);
+}
+
+function scheduleCourseTrackDraw() {
+  if (courseTrack.frame) return;
+  courseTrack.frame = requestAnimationFrame(() => {
+    courseTrack.frame = 0;
+    courseTrack.trails.forEach(drawCourseTrack);
+  });
+}
+
+function watchCourseTrack() {
+  if (!courseTrack.trails.length) return;
+  if (typeof ResizeObserver === "function") {
+    courseTrack.observer = new ResizeObserver(scheduleCourseTrackDraw);
+    courseTrack.trails.forEach((entry) => courseTrack.observer.observe(entry.trail));
+  }
+  scheduleCourseTrackDraw();
+  // Label wrapping shifts row heights once the Chinese webfont lands.
+  if (document.fonts?.ready) {
+    void document.fonts.ready.then(scheduleCourseTrackDraw).catch(() => {});
+  }
 }
 
 function renderPractice() {
