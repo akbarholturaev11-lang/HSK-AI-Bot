@@ -6,12 +6,14 @@ const COMMANDS = Object.freeze({
   linkStart: "desktop_link_start",
   linkPoll: "desktop_link_poll",
   linkOpenTelegram: "desktop_link_open_telegram",
+  openExternalUrl: "desktop_open_external_url",
   bootstrap: "desktop_bootstrap",
   logout: "desktop_logout",
   courseMap: "desktop_course_map",
   lessonData: "desktop_lesson_data",
   lessonComplete: "desktop_lesson_complete",
   setLanguage: "desktop_set_language",
+  setNotifications: "desktop_set_notifications",
   subscriptionOverview: "desktop_subscription_overview",
   subscriptionQuote: "desktop_subscription_quote",
   subscriptionSubmit: "desktop_subscription_submit",
@@ -126,7 +128,7 @@ function stableErrorCode(error) {
         : "";
   const normalized = raw.toLowerCase();
   const stableMatch = normalized.match(
-    /\b(desktop|course|auth|link|local_ai|practice)_[a-z0-9_]{2,72}\b/,
+    /\b(desktop|course|auth|link|local_ai|practice|rating|notifications)_[a-z0-9_]{2,72}\b/,
   );
   if (stableMatch) {
     return stableMatch[0];
@@ -160,6 +162,107 @@ export class DesktopBridgeError extends Error {
     this.name = "DesktopBridgeError";
     this.code = code;
   }
+}
+
+function hasOnlySearchKeys(parsed, allowed) {
+  return [...parsed.searchParams.keys()].every((key) => allowed.includes(key));
+}
+
+function singleSearchValue(parsed, key) {
+  const values = parsed.searchParams.getAll(key);
+  return values.length === 1 ? values[0] : "";
+}
+
+function isAllowedReferralShareLink(value) {
+  let parsed = null;
+  try {
+    parsed = new URL(value);
+  } catch {
+    return false;
+  }
+  const handle = parsed.pathname.replace(/^\/+|\/+$/g, "");
+  const start = parsed.searchParams.get("start") || "";
+  return (
+    parsed.protocol === "https:" &&
+    parsed.hostname === "t.me" &&
+    !parsed.username &&
+    !parsed.password &&
+    !parsed.port &&
+    !parsed.hash &&
+    /^[A-Za-z0-9_]{5,32}$/.test(handle) &&
+    /^ref_[A-Za-z0-9_-]{1,124}$/.test(start) &&
+    parsed.searchParams.getAll("start").length === 1 &&
+    [...parsed.searchParams.keys()].length === 1
+  );
+}
+
+function isAllowedShareText(value) {
+  const text = String(value || "");
+  return (
+    [...text].length <= 1000 &&
+    !/[\u0000-\u0008\u000b-\u000c\u000e-\u001f\u007f]/.test(text) &&
+    text.split(/\s+/).some(isAllowedReferralShareLink)
+  );
+}
+
+function assertExternalUrl(value) {
+  const url = String(value || "").trim();
+  if (!url || url.length > 4096 || /[\u0000-\u001f\u007f]/.test(url)) {
+    throw new DesktopBridgeError("desktop_external_url_invalid");
+  }
+  let parsed = null;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new DesktopBridgeError("desktop_external_url_invalid");
+  }
+  if (parsed.username || parsed.password || parsed.port || parsed.hash) {
+    throw new DesktopBridgeError("desktop_external_url_invalid");
+  }
+  const host = parsed.hostname;
+  if (parsed.protocol === "tg:") {
+    if (
+      host === "msg_url" &&
+      hasOnlySearchKeys(parsed, ["url", "text"]) &&
+      isAllowedReferralShareLink(singleSearchValue(parsed, "url"))
+    ) {
+      return url;
+    }
+  } else if (parsed.protocol === "whatsapp:") {
+    if (
+      host === "send" &&
+      hasOnlySearchKeys(parsed, ["text"]) &&
+      isAllowedShareText(singleSearchValue(parsed, "text"))
+    ) {
+      return url;
+    }
+  } else if (parsed.protocol === "https:") {
+    if (
+      (host === "t.me" || host === "telegram.me") &&
+      parsed.pathname === "/share/url" &&
+      hasOnlySearchKeys(parsed, ["url", "text"]) &&
+      isAllowedReferralShareLink(singleSearchValue(parsed, "url"))
+    ) {
+      return url;
+    }
+    if (
+      host === "wa.me" &&
+      (parsed.pathname === "" || parsed.pathname === "/") &&
+      hasOnlySearchKeys(parsed, ["text"]) &&
+      isAllowedShareText(singleSearchValue(parsed, "text"))
+    ) {
+      return url;
+    }
+    if (
+      host === "api.whatsapp.com" &&
+      parsed.pathname === "/send" &&
+      hasOnlySearchKeys(parsed, ["text"]) &&
+      isAllowedShareText(singleSearchValue(parsed, "text"))
+    ) {
+      return url;
+    }
+  }
+  throw new DesktopBridgeError("desktop_external_url_invalid");
 }
 
 function assertLessonOrder(value) {
@@ -572,6 +675,12 @@ export const desktopBridge = Object.freeze({
     return invokeCommand(COMMANDS.linkOpenTelegram);
   },
 
+  openExternalUrl(url) {
+    return invokeCommand(COMMANDS.openExternalUrl, {
+      url: assertExternalUrl(url),
+    });
+  },
+
   bootstrap() {
     return invokeCommand(COMMANDS.bootstrap);
   },
@@ -614,6 +723,15 @@ export const desktopBridge = Object.freeze({
     return invokeCommand(COMMANDS.setLanguage, {
       language: assertLanguage(language),
     });
+  },
+
+  setNotifications(enabled) {
+    if (typeof enabled !== "boolean") {
+      return Promise.reject(
+        new DesktopBridgeError("desktop_notifications_request_invalid"),
+      );
+    }
+    return invokeCommand(COMMANDS.setNotifications, { enabled });
   },
 
   async subscriptionOverview() {

@@ -236,6 +236,7 @@ fn api_url(path: &str) -> Result<String, String> {
         | "/api/v3/desktop/course/complete"
         | "/api/v3/desktop/events"
         | "/api/v3/desktop/preferences/language"
+        | "/api/v3/desktop/preferences/notifications"
         | "/api/v3/desktop/subscription/overview"
         | "/api/v3/desktop/subscription/quote"
         | "/api/v3/desktop/subscription/submit"
@@ -703,6 +704,115 @@ fn is_allowed_telegram_link(url: &str) -> bool {
         && path_ok
         && start_is_manual
         && query.next().is_none()
+}
+
+fn has_only_query_keys(parsed: &reqwest::Url, allowed: &[&str]) -> bool {
+    parsed
+        .query_pairs()
+        .all(|(key, _)| allowed.iter().any(|allowed_key| key == *allowed_key))
+}
+
+fn single_query_value(parsed: &reqwest::Url, key: &str) -> Option<String> {
+    let mut found = None;
+    for (pair_key, value) in parsed.query_pairs() {
+        if pair_key == key {
+            if found.is_some() {
+                return None;
+            }
+            found = Some(value.into_owned());
+        }
+    }
+    found
+}
+
+fn is_allowed_referral_share_link(url: &str) -> bool {
+    let Ok(parsed) = reqwest::Url::parse(url) else {
+        return false;
+    };
+    let path_ok = parsed.path_segments().is_some_and(|segments| {
+        let parts = segments.filter(|part| !part.is_empty()).collect::<Vec<_>>();
+        parts.len() == 1
+            && (5..=32).contains(&parts[0].len())
+            && parts[0]
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+    });
+    let mut query = parsed.query_pairs();
+    let start_ok = query.next().is_some_and(|(key, value)| {
+        key == "start"
+            && value.starts_with("ref_")
+            && (5..=128).contains(&value.len())
+            && value[4..]
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'-')
+    });
+    parsed.scheme() == "https"
+        && parsed.host_str() == Some("t.me")
+        && parsed.port().is_none()
+        && parsed.username().is_empty()
+        && parsed.password().is_none()
+        && parsed.fragment().is_none()
+        && path_ok
+        && start_ok
+        && query.next().is_none()
+}
+
+fn is_allowed_share_text(text: &str) -> bool {
+    text.chars().count() <= 1_000
+        && text
+            .chars()
+            .all(|char| !char.is_control() || matches!(char, '\n' | '\r' | '\t'))
+        && text.split_whitespace().any(is_allowed_referral_share_link)
+}
+
+fn is_allowed_external_url(url: &str) -> bool {
+    if url.trim() != url || url.is_empty() || url.len() > 4_096 {
+        return false;
+    }
+    let Ok(parsed) = reqwest::Url::parse(url) else {
+        return false;
+    };
+    if !parsed.username().is_empty()
+        || parsed.password().is_some()
+        || parsed.port().is_some()
+        || parsed.fragment().is_some()
+    {
+        return false;
+    }
+    let host = parsed.host_str();
+    match parsed.scheme() {
+        "tg" => {
+            host == Some("msg_url")
+                && has_only_query_keys(&parsed, &["url", "text"])
+                && single_query_value(&parsed, "url")
+                    .is_some_and(|value| is_allowed_referral_share_link(&value))
+        }
+        "whatsapp" => {
+            host == Some("send")
+                && has_only_query_keys(&parsed, &["text"])
+                && single_query_value(&parsed, "text")
+                    .is_some_and(|value| is_allowed_share_text(&value))
+        }
+        "https" if matches!(host, Some("t.me" | "telegram.me")) => {
+            parsed.path() == "/share/url"
+                && has_only_query_keys(&parsed, &["url", "text"])
+                && single_query_value(&parsed, "url")
+                    .is_some_and(|value| is_allowed_referral_share_link(&value))
+        }
+        "https" if host == Some("wa.me") => {
+            matches!(parsed.path(), "" | "/")
+                && has_only_query_keys(&parsed, &["text"])
+                && single_query_value(&parsed, "text")
+                    .is_some_and(|value| is_allowed_share_text(&value))
+        }
+        "https" if host == Some("api.whatsapp.com") => {
+            parsed.path() == "/send"
+                && has_only_query_keys(&parsed, &["text"])
+                && single_query_value(&parsed, "text")
+                    .is_some_and(|value| is_allowed_share_text(&value))
+        }
+        _ => false,
+    }
 }
 
 fn keyring_entry(account: &'static str) -> Result<keyring::Entry, String> {
@@ -1893,6 +2003,17 @@ fn desktop_link_open_telegram(
 }
 
 #[tauri::command]
+fn desktop_open_external_url(app: tauri::AppHandle, url: String) -> Result<(), String> {
+    let target = url.trim();
+    if !is_allowed_external_url(target) {
+        return Err("desktop_external_url_invalid".into());
+    }
+    app.opener()
+        .open_url(target.to_string(), None::<&str>)
+        .map_err(|_| "desktop_external_open_failed".into())
+}
+
+#[tauri::command]
 async fn desktop_bootstrap(state: tauri::State<'_, DesktopState>) -> Result<Value, String> {
     authenticated_bootstrap(&state).await
 }
@@ -1952,6 +2073,19 @@ async fn desktop_set_language(
         &state,
         "/api/v3/desktop/preferences/language",
         &json!({"language": language}),
+    )
+    .await
+}
+
+#[tauri::command]
+async fn desktop_set_notifications(
+    state: tauri::State<'_, DesktopState>,
+    enabled: bool,
+) -> Result<Value, String> {
+    authenticated_post_json(
+        &state,
+        "/api/v3/desktop/preferences/notifications",
+        &json!({"enabled": enabled}),
     )
     .await
 }
@@ -2395,12 +2529,14 @@ pub fn run() {
             desktop_link_start,
             desktop_link_poll,
             desktop_link_open_telegram,
+            desktop_open_external_url,
             desktop_bootstrap,
             desktop_logout,
             desktop_course_map,
             desktop_lesson_data,
             desktop_lesson_complete,
             desktop_set_language,
+            desktop_set_notifications,
             desktop_subscription_overview,
             desktop_subscription_quote,
             desktop_subscription_submit,
@@ -2446,15 +2582,15 @@ pub fn run() {
 mod tests {
     use super::{
         api_url, available_update_status, clear_local_auth_with, course_map_path,
-        current_access_token, is_allowed_telegram_link, local_ai_analytics_payload,
-        no_update_status, terminal_link_status, validate_checkout_attempt_id, validate_event_id,
-        validate_language, validate_lesson_order, validate_mistakes, validate_subscription_country,
-        validate_subscription_image_data_url, validate_subscription_method,
-        validate_subscription_overview_response, validate_subscription_plan,
-        validate_subscription_quote_response, validate_subscription_submit_response,
-        validate_tts_text, DesktopLinkDisplay, DesktopState, PendingLink, MAX_MISTAKES,
-        MAX_NATIVE_EVENT_DURATION_MS, MAX_NATIVE_EVENT_SIZE_BYTES, MAX_UPDATE_NOTES_CHARS,
-        MAX_UPDATE_VERSION_CHARS,
+        current_access_token, is_allowed_external_url, is_allowed_telegram_link,
+        local_ai_analytics_payload, no_update_status, terminal_link_status,
+        validate_checkout_attempt_id, validate_event_id, validate_language, validate_lesson_order,
+        validate_mistakes, validate_subscription_country, validate_subscription_image_data_url,
+        validate_subscription_method, validate_subscription_overview_response,
+        validate_subscription_plan, validate_subscription_quote_response,
+        validate_subscription_submit_response, validate_tts_text, DesktopLinkDisplay, DesktopState,
+        PendingLink, MAX_MISTAKES, MAX_NATIVE_EVENT_DURATION_MS, MAX_NATIVE_EVENT_SIZE_BYTES,
+        MAX_UPDATE_NOTES_CHARS, MAX_UPDATE_VERSION_CHARS,
     };
     use serde_json::{json, to_value, Value};
 
@@ -2476,6 +2612,7 @@ mod tests {
         assert!(api_url("/api/v3/desktop/course/lesson/181").is_ok());
         assert!(api_url("/api/v3/desktop/course/complete").is_ok());
         assert!(api_url("/api/v3/desktop/preferences/language").is_ok());
+        assert!(api_url("/api/v3/desktop/preferences/notifications").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/overview").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/quote").is_ok());
         assert!(api_url("/api/v3/desktop/subscription/submit").is_ok());
@@ -2649,6 +2786,36 @@ mod tests {
         ));
         assert!(!is_allowed_telegram_link(
             "https://t.me/bot-name?start=desktop_link"
+        ));
+    }
+
+    #[test]
+    fn desktop_external_open_urls_are_share_only() {
+        assert!(is_allowed_external_url(
+            "tg://msg_url?url=https%3A%2F%2Ft.me%2Fdarsi_chini_bot%3Fstart%3Dref_abc&text=HSK%20AI"
+        ));
+        assert!(is_allowed_external_url(
+            "whatsapp://send?text=HSK%20AI%0Ahttps%3A%2F%2Ft.me%2Fdarsi_chini_bot%3Fstart%3Dref_abc"
+        ));
+        assert!(is_allowed_external_url(
+            "https://t.me/share/url?url=https%3A%2F%2Ft.me%2Fdarsi_chini_bot%3Fstart%3Dref_abc&text=HSK%20AI"
+        ));
+        assert!(is_allowed_external_url(
+            "https://wa.me/?text=HSK%20AI%0Ahttps%3A%2F%2Ft.me%2Fdarsi_chini_bot%3Fstart%3Dref_abc"
+        ));
+        assert!(!is_allowed_external_url("https://evil.example/share"));
+        assert!(!is_allowed_external_url("file:///etc/passwd"));
+        assert!(!is_allowed_external_url(
+            "https://lookalike.example@t.me/share/url?url=https%3A%2F%2Fevil.example"
+        ));
+        assert!(!is_allowed_external_url(
+            "https://t.me/share/url?url=https%3A%2F%2Fevil.example&text=HSK%20AI"
+        ));
+        assert!(!is_allowed_external_url(
+            "whatsapp://send?text=HSK%20AI%0Ahttps%3A%2F%2Fevil.example"
+        ));
+        assert!(!is_allowed_external_url(
+            "tg://resolve?domain=darsi_chini_bot"
         ));
     }
 

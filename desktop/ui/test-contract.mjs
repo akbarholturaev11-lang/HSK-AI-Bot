@@ -23,6 +23,7 @@ const expectedCommands = [
   "desktop_link_start",
   "desktop_link_poll",
   "desktop_link_open_telegram",
+  "desktop_open_external_url",
   "desktop_bootstrap",
   "desktop_logout",
   "desktop_course_map",
@@ -133,6 +134,7 @@ test("preview responses follow production response casing", async () => {
   assert.equal(map.level, "hsk1");
   assert.equal(typeof map.units[0].no, "number");
   assert.equal(typeof map.progress.completed, "number");
+  assert.equal(typeof map.notify.enabled, "boolean");
   assert.ok(Array.isArray(map.notifications));
   assert.equal(typeof map.notifications[0].title, "string");
 
@@ -632,6 +634,9 @@ test("invites are real and the study goal stays on the device", async () => {
   assert.match(app, /function openReferralModal\(/);
   assert.match(app, /function shareReferralToTelegram\(/);
   assert.match(app, /function shareReferralToWhatsapp\(/);
+  assert.match(app, /whatsapp:\/\/send\?text=/);
+  assert.match(app, /tg:\/\/msg_url\?url=/);
+  assert.doesNotMatch(app, /https:\/\/wa\.me\/\?text=/);
   assert.match(app, /function shareReferralWithSystem\(/);
   assert.match(app, /function makeReferralQrDataUrl\(/);
   assert.match(app, /function referralLinkFrom\(/);
@@ -693,8 +698,10 @@ test("the study goal is asked in onboarding and only reported in the profile", a
     "levelProgressTitle",
     "weakAreasTitle",
     "accuracyTrendTitle",
-    "notifyReminderTime",
   ]) {
+    assert.match(app, new RegExp(`t\\("${key}"\\)`), `${key} is not rendered`);
+  }
+  for (const key of ["notifyMaster", "notifyDesktopTitle", "notifyRecentTitle"]) {
     assert.match(app, new RegExp(`t\\("${key}"\\)`), `${key} is not rendered`);
   }
 });

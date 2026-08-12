@@ -22,6 +22,7 @@ const previewState = {
   vocabularyReview: [],
   voiceSessionId: "",
   voiceTurns: 0,
+  notificationsEnabled: true,
 };
 
 const localized = (uz, ru, tj) => ({ uz, ru, tj });
@@ -207,6 +208,9 @@ function courseMap() {
       total: 4,
       xp: 240,
       streak: 5,
+    },
+    notify: {
+      enabled: previewState.notificationsEnabled,
     },
     notifications: [
       {
@@ -430,6 +434,8 @@ export async function previewInvoke(command, args = {}) {
       };
     case "desktop_link_open_telegram":
       return { ok: true };
+    case "desktop_open_external_url":
+      return { ok: true };
     case "desktop_link_poll":
       previewState.pollCount += 1;
       if (previewState.pollCount < 2) {
@@ -465,6 +471,13 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_set_language":
       previewState.language = String(args.language || "uz");
       return { ok: true, language: previewState.language };
+    case "desktop_set_notifications":
+      previewState.notificationsEnabled = Boolean(args.enabled);
+      return {
+        ok: true,
+        notifications: previewState.notificationsEnabled,
+        notify: { enabled: previewState.notificationsEnabled },
+      };
     case "desktop_subscription_overview":
       return subscriptionOverview();
     case "desktop_subscription_quote":

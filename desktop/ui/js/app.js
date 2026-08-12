@@ -18,7 +18,7 @@ import { DesktopSubscriptionController } from "./subscription.js";
 import { DesktopPracticeController } from "./practice.js";
 import { DesktopVocabularyController } from "./vocabulary.js";
 import { DesktopVoiceController } from "./voice.js";
-import { createPandaMascot } from "./mascot.js";
+import { createPandaMascot, hydratePandaMascot } from "./mascot.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -156,6 +156,11 @@ const state = {
   railCollapsed: false,
   railWidth: 0,
   notificationsOpen: false,
+  notificationsSaving: false,
+  notificationInitialized: false,
+  notificationRefreshTimer: null,
+  seenNotificationIds: new Set(),
+  notificationPermission: "unsupported",
   ratingRequest: 0,
   ratingBoard: null,
   ratingError: "",
@@ -169,6 +174,9 @@ const state = {
 };
 
 const LESSON_AI_DOCK_QUERY = "(min-width: 1100px)";
+const NOTIFICATION_REFRESH_MS = 60_000;
+const SEEN_NOTIFICATIONS_STORAGE_KEY = "pomp-hsk-seen-notifications";
+const MAX_SEEN_NOTIFICATION_IDS = 80;
 
 const lesson = new LessonController({
   bridge: desktopBridge,
@@ -303,6 +311,12 @@ function applyStaticText() {
   renderUpdateBanner();
 }
 
+function hydrateStaticMascots() {
+  document
+    .querySelectorAll(".panda-mascot")
+    .forEach((mascot) => hydratePandaMascot(mascot));
+}
+
 function showOnly(section) {
   dom.boot.hidden = section !== "boot";
   dom.auth.hidden = section !== "auth";
@@ -336,6 +350,48 @@ function showToast(message) {
   state.toastTimer = setTimeout(() => {
     dom.toast.classList.remove("is-visible");
   }, 2800);
+}
+
+function desktopNotificationPermission() {
+  if (!("Notification" in globalThis)) return "unsupported";
+  return globalThis.Notification.permission || "default";
+}
+
+function readSeenNotificationIds() {
+  try {
+    const raw = JSON.parse(
+      localStorage.getItem(SEEN_NOTIFICATIONS_STORAGE_KEY) || "[]",
+    );
+    if (!Array.isArray(raw)) return new Set();
+    return new Set(
+      raw
+        .map((item) => String(item || "").trim())
+        .filter((item) => item.length > 0 && item.length <= 120)
+        .slice(0, MAX_SEEN_NOTIFICATION_IDS),
+    );
+  } catch {
+    return new Set();
+  }
+}
+
+function saveSeenNotificationIds() {
+  try {
+    localStorage.setItem(
+      SEEN_NOTIFICATIONS_STORAGE_KEY,
+      JSON.stringify([...state.seenNotificationIds].slice(-MAX_SEEN_NOTIFICATION_IDS)),
+    );
+  } catch {
+    // Notification dedupe is a convenience; the real feed still comes from the server.
+  }
+}
+
+function restoreNotificationState() {
+  state.notificationPermission = desktopNotificationPermission();
+  state.seenNotificationIds = readSeenNotificationIds();
+}
+
+function notificationMasterEnabled() {
+  return state.map?.notify?.enabled !== false;
 }
 
 function lessonAiShouldAutoOpen() {
@@ -700,6 +756,7 @@ function showAuth({ expired = false } = {}) {
   closeOnboarding();
   closeReferralModal({ restoreFocus: false });
   closeAi();
+  stopNotificationRefresh();
   resetAiSession();
   voice.dispose();
   practice.dispose();
@@ -709,6 +766,7 @@ function showAuth({ expired = false } = {}) {
   state.map = null;
   state.ratingBoard = null;
   state.ratingError = "";
+  state.notificationInitialized = false;
   subscription.overview = null;
   subscription.setUser(null);
   resetAuthForm();
@@ -907,6 +965,7 @@ async function enterWorkspace(bootstrap) {
   renderUpdateBanner();
   dom.contentTitle.focus();
   await loadCourseMap();
+  startNotificationRefresh();
   // Asked here and nowhere else: the profile only displays the result.
   await maybeOpenOnboarding();
 }
@@ -934,6 +993,7 @@ async function loadCourseMap({ keepView = false } = {}) {
     }
     state.map = map;
     subscription.setUser(map.user);
+    syncServerNotifications({ initial: !state.notificationInitialized });
     const serverLanguage = normalizeLanguage(map.user.language);
     if (serverLanguage !== getLanguage()) {
       setUiLanguage(serverLanguage);
@@ -1191,7 +1251,7 @@ function startRailResize(event) {
 }
 
 function runNotificationAction(item) {
-  const action = String(item?.action || "");
+  const action = String(item?.actionName || item?.action || "");
   if (action === "subscription") {
     routeTo("subscription");
     return;
@@ -1204,7 +1264,7 @@ function runNotificationAction(item) {
     routeTo("profile");
     return;
   }
-  const lessonOrder = Number(item?.lesson_order || 0);
+  const lessonOrder = Number(item?.lessonOrder || item?.lesson_order || 0);
   routeTo("course");
   if (lessonOrder > 0) {
     const lessonItem = allLessons().find((lesson) => Number(lesson.n) === lessonOrder);
@@ -1214,20 +1274,35 @@ function runNotificationAction(item) {
   }
 }
 
-function serverNotificationItems() {
+function serverNotificationRows() {
   const rows = Array.isArray(state.map?.notifications)
     ? state.map.notifications
     : [];
   return rows
     .filter((item) => item && typeof item === "object")
     .slice(0, 8)
-    .map((item) => ({
+    .map((item, index) => ({
+      id: String(
+        item.id ?? `${item.key || "notification"}:${item.created_at || index}`,
+      ).slice(0, 120),
+      key: String(item.key || ""),
       glyph: String(item.glyph || "铃").slice(0, 2),
       title: String(item.title || t("notificationsTitle")).slice(0, 160),
       body: String(item.body || "").slice(0, 420),
-      action: () => runNotificationAction(item),
-      isServer: true,
+      actionName: String(item.action || "course"),
+      level: String(item.level || ""),
+      lessonOrder: Number(item.lesson_order || 0),
+      createdAt: String(item.created_at || ""),
+      raw: item,
     }));
+}
+
+function serverNotificationItems() {
+  return serverNotificationRows().map((item) => ({
+    ...item,
+    action: () => runNotificationAction(item),
+    isServer: true,
+  }));
 }
 
 /**
@@ -1257,7 +1332,7 @@ function notificationItems() {
   const streak = Number(progress.streak || 0);
   const activeToday = Array.isArray(progress.week_activity_dates)
     && progress.week_activity_dates.includes(String(progress.local_date || ""));
-  if (streak > 0 && !activeToday) {
+  if (notificationMasterEnabled() && streak > 0 && !activeToday) {
     items.push({
       glyph: "火",
       title: t("keepRhythm"),
@@ -1291,35 +1366,88 @@ function renderNotifications() {
   });
 }
 
-function renderNotificationsHomeCard() {
-  const items = notificationItems().slice(0, 3);
-  const card = element("article", "card cardPad today-notifications-card");
-  const head = element("div", "sectionTitle");
-  head.append(
-    element("h3", "", t("notificationsTitle")),
-    element("span", "tag", items.length ? String(items.length) : NO_VALUE),
-  );
-  card.append(head);
-  if (!items.length) {
-    card.append(element("p", "muted small", t("notificationsEmpty")));
-    return card;
+function showDesktopNotification(item) {
+  if (!notificationMasterEnabled()) return;
+  if (desktopNotificationPermission() !== "granted") return;
+  try {
+    const notification = new globalThis.Notification(item.title, {
+      body: item.body,
+      tag: `hsk-ai-${item.id}`,
+    });
+    notification.onclick = () => {
+      try {
+        globalThis.focus();
+      } catch {
+        // Focus is best effort; the in-app action still runs.
+      }
+      runNotificationAction(item);
+      notification.close();
+    };
+  } catch {
+    // Some desktop webviews expose Notification but reject construction.
   }
-  const list = element("div", "today-notifications-list");
-  items.forEach((item) => {
-    const row = element("button", "today-notification-row");
-    row.type = "button";
-    row.append(element("span", "notification-mark", item.glyph));
-    const copy = element("div");
-    copy.append(
-      element("b", "", item.title),
-      element("small", "muted", item.body || t("notificationsTitle")),
-    );
-    row.append(copy);
-    row.addEventListener("click", item.action);
-    list.append(row);
+}
+
+function syncServerNotifications({ initial = false } = {}) {
+  const rows = serverNotificationRows();
+  if (!rows.length) {
+    state.notificationInitialized = true;
+    return;
+  }
+  const newRows = rows.filter((item) => item.id && !state.seenNotificationIds.has(item.id));
+  rows.forEach((item) => {
+    if (item.id) state.seenNotificationIds.add(item.id);
   });
-  card.append(list);
-  return card;
+  if (state.seenNotificationIds.size > MAX_SEEN_NOTIFICATION_IDS) {
+    state.seenNotificationIds = new Set(
+      [...state.seenNotificationIds].slice(-MAX_SEEN_NOTIFICATION_IDS),
+    );
+  }
+  saveSeenNotificationIds();
+  if (initial || !state.notificationInitialized) {
+    state.notificationInitialized = true;
+    return;
+  }
+  state.notificationInitialized = true;
+  newRows.reverse().forEach(showDesktopNotification);
+}
+
+function startNotificationRefresh() {
+  stopNotificationRefresh();
+  state.notificationRefreshTimer = setInterval(() => {
+    if (dom.workspace.hidden || lesson.isOpen) return;
+    void refreshCourseMapSilently();
+  }, NOTIFICATION_REFRESH_MS);
+}
+
+function stopNotificationRefresh() {
+  if (!state.notificationRefreshTimer) return;
+  clearInterval(state.notificationRefreshTimer);
+  state.notificationRefreshTimer = null;
+}
+
+async function refreshCourseMapSilently() {
+  try {
+    const map = await desktopBridge.courseMap();
+    if (
+      !map ||
+      map.ok !== true ||
+      !Array.isArray(map.units) ||
+      !map.user ||
+      !map.progress
+    ) {
+      return;
+    }
+    state.map = map;
+    subscription.setUser(map.user);
+    syncServerNotifications();
+    renderRail();
+    if (["today", "course", "profile"].includes(state.view)) {
+      renderActiveView();
+    }
+  } catch (error) {
+    if (isSessionError(error)) showAuth({ expired: true });
+  }
 }
 
 function openNotifications() {
@@ -1562,7 +1690,7 @@ function renderToday() {
     main.append(empty);
   }
 
-  const quickGrid = element("section", "twoCols today-quick-grid");
+  const quickGrid = element("section", "today-quick-grid");
   const completedLesson = [...lessons]
     .reverse()
     .find((item) => item.status === "done" && lessonAccessible(item));
@@ -1603,54 +1731,8 @@ function renderToday() {
   });
   reviewCard.append(reviewAction);
 
-  const aiCard = element("article", "card cardPad today-quick-card today-ai-quick");
-  const aiHead = element("div", "sectionTitle");
-  aiHead.append(
-    element("h3", "", t("todayAiTitle")),
-    element("span", "tag", level),
-  );
-  aiCard.append(
-    aiHead,
-    element("p", "muted", t("todayAiBody")),
-  );
-  const aiForm = element("form", "quickInput today-ai-form");
-  const aiInput = element("input");
-  aiInput.type = "text";
-  aiInput.maxLength = 1000;
-  aiInput.placeholder = t("todayAiPlaceholder");
-  aiInput.setAttribute("aria-label", t("todayAiPlaceholder"));
-  const aiAction = element("button", "btn primary-button", "↑");
-  aiAction.type = "submit";
-  aiAction.setAttribute("aria-label", t("openAi"));
-  aiForm.append(aiInput, aiAction);
-  aiForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const prompt = String(aiInput.value || "").trim();
-    if (prompt) dom.aiInput.value = prompt;
-    openAi();
-    updateAiComposer();
-    requestAnimationFrame(() => dom.aiInput.focus());
-  });
-  const chips = element("div", "chips");
-  [
-    ["todayAiChipGrammar", "先…再…"],
-    ["todayAiChipExamples", String(current?.zh || "")],
-    ["todayAiChipMistakes", ""],
-  ].forEach(([labelKey, seed]) => {
-    const chip = element("button", "promptChip", t(labelKey));
-    chip.type = "button";
-    chip.addEventListener("click", () => {
-      aiInput.value = [t(labelKey), seed].filter(Boolean).join(": ");
-      aiInput.focus();
-    });
-    chips.append(chip);
-  });
-  aiCard.append(aiForm, chips);
-
-  quickGrid.append(reviewCard, aiCard);
+  quickGrid.append(reviewCard);
   main.append(quickGrid);
-
-  side.append(renderNotificationsHomeCard());
 
   const dailyGoal = element("article", "card cardPad today-progress-card");
   const dailyHead = element("div", "sectionTitle");
@@ -1807,7 +1889,9 @@ function renderCourseHome() {
     trail.setAttribute("aria-valuemin", "0");
     trail.setAttribute("aria-valuemax", "100");
     trail.setAttribute("aria-valuenow", String(unitPercent));
-    unitLessons.forEach((item) => trail.append(renderLessonNode(item)));
+    unitLessons.forEach((item, lessonIndex) => {
+      trail.append(renderLessonNode(item, lessonIndex));
+    });
     card.append(head, trail);
     units.append(card);
   });
@@ -1890,7 +1974,7 @@ function renderCourseHome() {
   dom.content.append(layout);
 }
 
-function renderLessonNode(item) {
+function renderLessonNode(item, lessonIndex = 0) {
   const status = String(item?.status || "locked");
   const accessible = lessonAccessible(item);
   const row = element(
@@ -1899,15 +1983,18 @@ function renderLessonNode(item) {
       item?.checkpoint ? " milestone" : ""
     } lesson-node-row`,
   );
+  row.dataset.pathStep = String((Number(lessonIndex) % 6) + 1);
+  row.dataset.lessonNo = String(item?.n || "");
   const button = element(
     "button",
     `pathNode lesson-node ${status} is-${status}${item?.checkpoint ? " is-checkpoint" : ""}`,
   );
   button.type = "button";
   button.dataset.status = status;
+  const nodeIcon = status === "done" ? "✓" : item?.checkpoint ? "★" : accessible ? "▶" : "⌁";
   button.append(
     element("span", "nodeNo", String(item.n || "")),
-    element("span", "nodeIcon", status === "done" ? "✓" : accessible ? "▶" : "⌁"),
+    element("span", "nodeIcon", nodeIcon),
   );
   if (status === "current") {
     button.append(element("span", "currentBubble current-location", t("youAreHere")));
@@ -2244,6 +2331,46 @@ function renderRatingContent(board) {
   }
 }
 
+function ratingFallbackBoard() {
+  const map = state.map || {};
+  const progress = map.progress || {};
+  const user = map.user || {};
+  const weeklyXp = Number(progress.weekly_xp ?? progress.xp ?? 0);
+  const totalXp = Number(progress.xp ?? weeklyXp);
+  const completed = Number(progress.completed || 0);
+  return {
+    ok: true,
+    rank: 1,
+    league: String(progress.league || t("notAvailable")),
+    league_size: 1,
+    xp: totalXp,
+    weekly_xp: weeklyXp,
+    daily_xp: Number(progress.daily_xp || 0),
+    streak: Number(progress.streak || 0),
+    longest_streak: Number(progress.longest_streak || 0),
+    week_start: String(progress.week_start || ""),
+    week_activity_dates: Array.isArray(progress.week_activity_dates)
+      ? progress.week_activity_dates
+      : [],
+    weekly_reset_day: "monday",
+    weekly_reset_seconds: 0,
+    leaderboard: [
+      {
+        rank: 1,
+        name: String(user.name || t("unknownUser")),
+        username: "",
+        xp: weeklyXp,
+        league_points: weeklyXp,
+        total_xp: totalXp,
+        course_level: String(map.level || ""),
+        completed_lessons: completed,
+        is_paid: Boolean(user.is_paid),
+        is_current_user: true,
+      },
+    ],
+  };
+}
+
 async function renderRating() {
   const map = state.map;
   if (!map) return;
@@ -2279,8 +2406,10 @@ async function renderRating() {
     }
     // The league is a nice-to-have: personal progress still renders from the
     // course map so the screen is never empty when the endpoint is down.
-    state.ratingError = t("leaderboardUnavailable");
-    renderRatingContent(null);
+    const code = error?.code;
+    const detail = code && t(code) !== code ? t(code) : t("leaderboardUnavailable");
+    state.ratingError = detail;
+    renderRatingContent(ratingFallbackBoard());
   }
 }
 
@@ -2548,54 +2677,110 @@ function timeControl(value) {
   return input;
 }
 
-/**
- * The demo's notification card. The server stores a single `notify.enabled`
- * flag and exposes no desktop command for it, so every row here would be
- * invented — the card is rendered in full and veiled as one.
- */
+function notificationPermissionText(permission) {
+  if (permission === "granted") return t("notifyDesktopGranted");
+  if (permission === "denied") return t("notifyDesktopDenied");
+  if (permission === "default") return t("notifyDesktopDefault");
+  return t("notifyDesktopUnsupported");
+}
+
+async function requestDesktopNotificationPermission() {
+  if (!("Notification" in globalThis)) {
+    state.notificationPermission = "unsupported";
+    showToast(t("notifyDesktopUnsupported"));
+    renderActiveView();
+    return;
+  }
+  try {
+    state.notificationPermission = await globalThis.Notification.requestPermission();
+  } catch {
+    state.notificationPermission = desktopNotificationPermission();
+  }
+  showToast(
+    state.notificationPermission === "granted"
+      ? t("notifyDesktopEnabled")
+      : t("notifyDesktopBlocked"),
+  );
+  renderActiveView();
+}
+
+async function setNotificationEnabled(enabled) {
+  if (state.notificationsSaving) return;
+  state.notificationsSaving = true;
+  renderActiveView();
+  try {
+    const result = await desktopBridge.setNotifications(Boolean(enabled));
+    const nextEnabled = Boolean(
+      result?.notify?.enabled ?? result?.notifications ?? enabled,
+    );
+    state.map = {
+      ...(state.map || {}),
+      notify: {
+        ...(state.map?.notify || {}),
+        enabled: nextEnabled,
+      },
+    };
+    showToast(t("notifySaved"));
+  } catch {
+    showToast(t("notifySaveFailed"));
+  } finally {
+    state.notificationsSaving = false;
+    renderRail();
+    renderActiveView();
+  }
+}
+
 function renderNotificationsCard() {
   const card = element("article", "profile-settings card-panel");
+  const rows = serverNotificationRows();
+  const latest = rows[0] || null;
+  const enabled = notificationMasterEnabled();
+  const permission = desktopNotificationPermission();
+  state.notificationPermission = permission;
   card.append(element("h3", "", t("notificationsTitle")));
+  const masterSwitch = toggleButton(enabled, (nextEnabled) => {
+    void setNotificationEnabled(nextEnabled);
+  });
+  masterSwitch.disabled = state.notificationsSaving;
   card.append(
     settingRow(
-      t("notifyReminderTime"),
-      t("notifyReminderTimeBody"),
-      timeControl("09:00"),
-    ),
-    settingRow(
-      t("notifyQuietHours"),
-      "22:00 — 08:00",
-      toggleButton(true, () => {}),
-    ),
-    settingRow(
-      t("notifyFrequency"),
-      t("notifyFrequencyBody"),
-      selectControl(
-        [
-          { value: "normal", label: t("notifyFrequencyNormal") },
-          { value: "low", label: t("notifyFrequencyLow") },
-        ],
-        "normal",
-      ),
-    ),
-    settingRow(
-      t("notifyTone"),
-      t("notifyToneBody"),
-      selectControl(
-        [
-          { value: "calm", label: t("notifyToneCalm") },
-          { value: "direct", label: t("notifyToneDirect") },
-        ],
-        "calm",
-      ),
-    ),
-    settingRow(
-      t("notifyStreakReminder"),
-      t("notifyStreakReminderBody"),
-      toggleButton(true, () => {}),
+      t("notifyMaster"),
+      enabled ? t("notifyMasterOnBody") : t("notifyMasterOffBody"),
+      masterSwitch,
     ),
   );
-  return soonBlock(card);
+
+  const permissionControl =
+    permission === "default"
+      ? element("button", "secondary-button compact-button", t("notifyDesktopAllow"))
+      : element("strong", "setting-value", notificationPermissionText(permission));
+  if (permission === "default") {
+    permissionControl.type = "button";
+    permissionControl.addEventListener("click", () => {
+      void requestDesktopNotificationPermission();
+    });
+  }
+  card.append(
+    settingRow(
+      t("notifyDesktopTitle"),
+      notificationPermissionText(permission),
+      permissionControl,
+    ),
+  );
+
+  card.append(
+    settingRow(
+      t("notifyRecentTitle"),
+      latest ? latest.body || latest.title : t("notificationsEmpty"),
+      element("strong", "setting-value", t("notifyRecentCount", { count: rows.length })),
+    ),
+  );
+
+  const openButton = element("button", "secondary-button", t("notifyOpenCenter"));
+  openButton.type = "button";
+  openButton.addEventListener("click", openNotifications);
+  card.append(openButton);
+  return card;
 }
 
 function toggleButton(active, onChange) {
@@ -2652,16 +2837,31 @@ function referralShareText() {
   return t("inviteShareText");
 }
 
-function openExternalUrl(url) {
-  const target = String(url || "");
-  if (!target) return;
-  try {
-    const opened = window.open(target, "_blank", "noopener,noreferrer");
-    if (opened) return;
-  } catch {
-    // Some desktop shells block popups; direct navigation is the fallback.
+function referralShareMessage(link) {
+  return `${referralShareText()}\n${link}`;
+}
+
+async function openExternalUrl(url, { fallbackUrl = "", copyText = "", copyToast = "" } = {}) {
+  const targets = [url, fallbackUrl]
+    .map((target) => String(target || "").trim())
+    .filter((target, index, list) => target && list.indexOf(target) === index);
+  for (const target of targets) {
+    try {
+      await desktopBridge.openExternalUrl(target);
+      return true;
+    } catch {
+      // Try the next target, then copy the prepared share message if needed.
+    }
   }
-  window.location.href = target;
+  if (copyText) {
+    try {
+      await writeClipboardText(copyText);
+      showToast(copyToast || t("inviteAppShareCopied"));
+    } catch {
+      showToast(t("inviteCopyFailed"));
+    }
+  }
+  return false;
 }
 
 async function writeClipboardText(value) {
@@ -2699,20 +2899,34 @@ async function copyReferralLink(link, button = null) {
   }
 }
 
-function shareReferralToTelegram(link) {
-  const url =
+async function shareReferralToTelegram(link) {
+  const message = referralShareMessage(link);
+  const fallbackUrl =
     "https://t.me/share/url?url=" +
     encodeURIComponent(link) +
     "&text=" +
     encodeURIComponent(referralShareText());
-  openExternalUrl(url);
+  const url =
+    "tg://msg_url?url=" +
+    encodeURIComponent(link) +
+    "&text=" +
+    encodeURIComponent(referralShareText());
+  await openExternalUrl(url, {
+    fallbackUrl,
+    copyText: message,
+    copyToast: t("inviteAppShareCopied"),
+  });
 }
 
-function shareReferralToWhatsapp(link) {
+async function shareReferralToWhatsapp(link) {
+  const message = referralShareMessage(link);
   const url =
-    "https://wa.me/?text=" +
-    encodeURIComponent(`${referralShareText()}\n${link}`);
-  openExternalUrl(url);
+    "whatsapp://send?text=" +
+    encodeURIComponent(message);
+  await openExternalUrl(url, {
+    copyText: message,
+    copyToast: t("inviteAppShareCopied"),
+  });
 }
 
 async function shareReferralWithSystem(link) {
@@ -2862,13 +3076,13 @@ function openReferralModal(referral = currentReferralData()) {
       "TG",
       t("inviteDestinationTelegram"),
       t("inviteDestinationTelegramBody"),
-      () => shareReferralToTelegram(referral.link),
+      () => void shareReferralToTelegram(referral.link),
     ),
     referralDestination(
       "WA",
       t("inviteDestinationWhatsapp"),
       t("inviteDestinationWhatsappBody"),
-      () => shareReferralToWhatsapp(referral.link),
+      () => void shareReferralToWhatsapp(referral.link),
     ),
     referralDestination(
       "⌘",
@@ -4727,11 +4941,13 @@ function bindEvents() {
 
 async function boot() {
   setUiLanguage(readSavedLanguage());
+  hydrateStaticMascots();
   applyStaticText();
   bindEvents();
   restoreRailWidth();
   restoreRailCollapsed();
   restoreReduceMotion();
+  restoreNotificationState();
   updateNetworkState();
   showOnly("boot");
 

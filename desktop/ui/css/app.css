@@ -185,45 +185,477 @@ textarea:disabled {
 
 .panda-mascot {
   --panda-size: 44px;
+  --panda-line: #211915;
+  --panda-ink: #18130f;
+  --panda-face: #fff9ec;
+  --panda-fur: #f4dfbc;
+  --panda-blush: #f3aaa0;
+  --panda-depth: #e3c69a;
   position: relative;
   isolation: isolate;
   display: inline-block;
   width: var(--panda-size);
   height: var(--panda-size);
   flex: 0 0 var(--panda-size);
-  border: 1px solid #241d18;
-  border-radius: 45% 45% 47% 47%;
-  background:
-    radial-gradient(circle at 43% 45%, #fffdf8 0 3%, transparent 4%),
-    radial-gradient(circle at 57% 45%, #fffdf8 0 3%, transparent 4%),
-    radial-gradient(ellipse at 37% 46%, #1d1915 0 13%, transparent 14%),
-    radial-gradient(ellipse at 63% 46%, #1d1915 0 13%, transparent 14%),
-    radial-gradient(ellipse at 50% 60%, #1d1915 0 6%, transparent 7%),
-    radial-gradient(circle at 34% 64%, #efaaa2 0 5%, transparent 6%),
-    radial-gradient(circle at 66% 64%, #efaaa2 0 5%, transparent 6%),
-    linear-gradient(180deg, #fffaf0 0%, #f4e3c9 100%);
-  box-shadow: 0 10px 24px rgb(24 43 77 / 18%);
+  overflow: visible;
+  perspective: calc(var(--panda-size) * 4.5);
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 10px 24px rgb(24 43 77 / 18%));
 }
 
-.panda-mascot::before,
 .panda-mascot::after {
   position: absolute;
   z-index: -1;
-  top: 2%;
-  width: 30%;
-  height: 30%;
-  border: 1px solid #241d18;
+  right: 14%;
+  bottom: -10%;
+  left: 14%;
+  height: 17%;
   border-radius: 50%;
-  background: #1d1915;
+  background: radial-gradient(closest-side, rgb(33 29 23 / 22%), rgb(33 29 23 / 0%));
   content: "";
+  transform: rotateX(72deg);
+  transform-origin: 50% 50%;
+  animation: panda-shadow 4.8s ease-in-out infinite;
 }
 
-.panda-mascot::before {
+.panda-stage,
+.panda-stage > span {
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+}
+
+.panda-stage {
+  inset: 0;
+  transform-style: preserve-3d;
+  transform-origin: 50% 78%;
+  will-change: transform;
+  animation: panda-breathe 4.8s ease-in-out infinite;
+}
+
+.panda-body {
+  z-index: 1;
+  left: 19%;
+  right: 19%;
+  bottom: -2%;
+  height: 48%;
+  border: 1px solid var(--panda-line);
+  border-radius: 48% 48% 42% 42%;
+  background:
+    radial-gradient(circle at 47% 16%, rgb(255 255 255 / 82%), rgb(255 255 255 / 0%) 34%),
+    linear-gradient(145deg, #fffaf0 0%, var(--panda-face) 36%, var(--panda-fur) 78%, var(--panda-depth) 100%);
+  box-shadow:
+    inset -6px -7px 0 rgb(141 91 42 / 13%),
+    inset 5px 6px 0 rgb(255 255 255 / 48%);
+  transform-origin: 50% 100%;
+  animation: panda-body-squish 4.8s ease-in-out infinite;
+}
+
+.panda-belly {
+  z-index: 2;
+  left: 32%;
+  bottom: 7%;
+  width: 36%;
+  height: 25%;
+  border-radius: 50% 50% 46% 46%;
+  background:
+    radial-gradient(circle at 50% 20%, rgb(255 255 255 / 78%), rgb(255 255 255 / 0%) 38%),
+    linear-gradient(180deg, #fffdfa, #f1dfc1);
+  opacity: 0.94;
+  transform: translateZ(5px);
+}
+
+.panda-leg {
+  z-index: 0;
+  bottom: -4%;
+  width: 24%;
+  height: 36%;
+  border-radius: 999px 999px 40% 40%;
+  background:
+    radial-gradient(circle at 50% 28%, #3e352d 0 20%, rgb(255 255 255 / 0%) 21%),
+    linear-gradient(180deg, #27211b, var(--panda-ink));
+  box-shadow: inset -2px -3px 0 rgb(0 0 0 / 18%);
+}
+
+.panda-leg.left {
+  left: 22%;
+  transform: translateZ(-2px) rotate(8deg);
+}
+
+.panda-leg.right {
+  right: 22%;
+  transform: translateZ(-2px) rotate(-8deg);
+}
+
+.panda-arm {
+  z-index: 2;
+  top: 51%;
+  width: 18%;
+  height: 36%;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 18%, #4b4239 0 18%, rgb(255 255 255 / 0%) 19%),
+    linear-gradient(180deg, #2b241f, var(--panda-ink));
+  box-shadow: inset -2px -3px 0 rgb(0 0 0 / 18%);
+  transform-origin: 50% 8%;
+}
+
+.panda-arm.left {
+  left: 11%;
+  transform: translateZ(3px) rotate(24deg);
+}
+
+.panda-arm.right {
+  right: 11%;
+  transform: translateZ(3px) rotate(-24deg);
+}
+
+.panda-paw {
+  z-index: 6;
+  top: 70%;
+  width: 17%;
+  height: 15%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 40% 34%, #5f574f 0 17%, rgb(255 255 255 / 0%) 18%),
+    var(--panda-ink);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 14%) inset;
+}
+
+.panda-paw.left {
+  left: 17%;
+  transform: translateZ(12px) rotate(18deg);
+}
+
+.panda-paw.right {
+  right: 17%;
+  transform: translateZ(12px) rotate(-18deg);
+}
+
+.panda-ear {
+  z-index: 2;
+  top: 5%;
+  width: 31%;
+  height: 31%;
+  border: 1px solid var(--panda-line);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 30%, #4a4138 0 18%, rgb(255 255 255 / 0%) 19%),
+    radial-gradient(circle at 48% 48%, #28211b 0 44%, var(--panda-ink) 45%);
+  box-shadow: inset -2px -3px 0 rgb(0 0 0 / 22%);
+  transform-origin: 50% 85%;
+}
+
+.panda-ear.left {
   left: 5%;
+  animation: panda-ear-left 5.6s ease-in-out infinite;
 }
 
-.panda-mascot::after {
+.panda-ear.right {
   right: 5%;
+  animation: panda-ear-right 5.6s ease-in-out infinite;
+}
+
+.panda-face {
+  z-index: 3;
+  top: 14%;
+  left: 8%;
+  width: 84%;
+  height: 73%;
+  border: 1px solid var(--panda-line);
+  border-radius: 45% 45% 48% 48%;
+  background:
+    radial-gradient(circle at 38% 18%, rgb(255 255 255 / 92%), rgb(255 255 255 / 0%) 28%),
+    radial-gradient(circle at 64% 75%, rgb(197 143 82 / 20%), rgb(197 143 82 / 0%) 34%),
+    linear-gradient(145deg, var(--panda-face), #fff0d7 54%, var(--panda-fur));
+  box-shadow:
+    inset -5px -7px 0 rgb(133 83 42 / 12%),
+    inset 4px 5px 0 rgb(255 255 255 / 55%);
+  transform: translateZ(10px) rotateX(3deg);
+}
+
+.panda-muzzle {
+  z-index: 6;
+  top: 56%;
+  left: 37%;
+  width: 26%;
+  height: 22%;
+  border-radius: 50% 50% 54% 54%;
+  background: linear-gradient(180deg, #fffaf0, #efd9b8);
+  opacity: 0.96;
+  transform: translateZ(15px);
+}
+
+.panda-eye {
+  z-index: 5;
+  top: 45%;
+  width: 18%;
+  height: 23%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 52% 42%, #3c342d 0 32%, var(--panda-ink) 33%);
+  box-shadow: inset -1px -2px 0 rgb(0 0 0 / 22%);
+  transform-origin: 50% 50%;
+  animation: panda-blink 5.2s ease-in-out infinite;
+}
+
+.panda-eye.left {
+  left: 30%;
+}
+
+.panda-eye.right {
+  right: 30%;
+}
+
+.panda-shine {
+  z-index: 6;
+  top: 49%;
+  width: 6%;
+  height: 6%;
+  border-radius: 50%;
+  background: #fffdf7;
+  pointer-events: none;
+}
+
+.panda-shine.left {
+  left: 40%;
+}
+
+.panda-shine.right {
+  right: 40%;
+}
+
+.panda-brow {
+  z-index: 7;
+  top: 34%;
+  width: 14%;
+  height: 5%;
+  border-radius: 999px;
+  background: var(--panda-ink);
+  opacity: 0.96;
+}
+
+.panda-brow.left {
+  left: 34%;
+  transform: rotate(-10deg);
+  animation: panda-brow-left 4.8s ease-in-out infinite;
+}
+
+.panda-brow.right {
+  right: 34%;
+  transform: rotate(10deg);
+  animation: panda-brow-right 4.8s ease-in-out infinite;
+}
+
+.panda-nose {
+  z-index: 8;
+  top: 58%;
+  left: 46%;
+  width: 8%;
+  height: 11%;
+  border-radius: 50% 50% 55% 55%;
+  background:
+    radial-gradient(circle at 40% 30%, #554d45 0 22%, rgb(255 255 255 / 0%) 23%),
+    var(--panda-ink);
+  transform: translateZ(18px);
+}
+
+.panda-mouth {
+  z-index: 8;
+  top: 70%;
+  left: 47.5%;
+  width: 5%;
+  height: 3%;
+  border-radius: 0 0 999px 999px;
+  border-bottom: 1px solid var(--panda-ink);
+  transform: translateZ(18px);
+}
+
+.panda-cheek {
+  z-index: 7;
+  top: 63%;
+  width: 11%;
+  height: 11%;
+  border-radius: 50%;
+  background: var(--panda-blush);
+  opacity: 0.82;
+  transform: translateZ(16px);
+}
+
+.panda-cheek.left {
+  left: 27%;
+}
+
+.panda-cheek.right {
+  right: 27%;
+}
+
+@keyframes panda-breathe {
+  0%,
+  100% {
+    transform: translateY(0) rotateX(2deg) rotateY(0deg) rotateZ(0deg);
+  }
+  45% {
+    transform: translateY(-4%) rotateX(5deg) rotateY(-5deg) rotateZ(-1.5deg);
+  }
+  70% {
+    transform: translateY(-2%) rotateX(3deg) rotateY(4deg) rotateZ(1deg);
+  }
+}
+
+@keyframes panda-body-squish {
+  0%,
+  100% {
+    transform: translateZ(2px) scaleX(1) scaleY(1);
+  }
+  45% {
+    transform: translateZ(4px) scaleX(1.04) scaleY(0.97);
+  }
+}
+
+@keyframes panda-ear-left {
+  0%,
+  100% {
+    transform: translateZ(2px) rotate(-3deg);
+  }
+  48% {
+    transform: translateZ(3px) rotate(-9deg) translateY(-2%);
+  }
+}
+
+@keyframes panda-ear-right {
+  0%,
+  100% {
+    transform: translateZ(2px) rotate(3deg);
+  }
+  48% {
+    transform: translateZ(3px) rotate(9deg) translateY(-2%);
+  }
+}
+
+@keyframes panda-brow-left {
+  0%,
+  100% {
+    transform: translateZ(18px) rotate(-10deg) translateY(0);
+  }
+  46% {
+    transform: translateZ(18px) rotate(-18deg) translateY(-32%);
+  }
+}
+
+@keyframes panda-brow-right {
+  0%,
+  100% {
+    transform: translateZ(18px) rotate(10deg) translateY(0);
+  }
+  46% {
+    transform: translateZ(18px) rotate(18deg) translateY(-32%);
+  }
+}
+
+@keyframes panda-blink {
+  0%,
+  88%,
+  100% {
+    transform: translateZ(18px) scaleY(1);
+  }
+  92% {
+    transform: translateZ(18px) scaleY(0.12);
+  }
+}
+
+@keyframes panda-shadow {
+  0%,
+  100% {
+    transform: rotateX(72deg) scaleX(1);
+    opacity: 0.78;
+  }
+  45% {
+    transform: rotateX(72deg) scaleX(0.78);
+    opacity: 0.5;
+  }
+}
+
+@keyframes panda-curious {
+  0% {
+    transform: translateY(0) rotateX(2deg) rotateY(0deg) rotateZ(0deg);
+  }
+  45% {
+    transform: translateY(-8%) rotateX(8deg) rotateY(-14deg) rotateZ(-3deg);
+  }
+  100% {
+    transform: translateY(-2%) rotateX(4deg) rotateY(-7deg) rotateZ(-1deg);
+  }
+}
+
+@keyframes panda-hop {
+  0%,
+  100% {
+    transform: translateY(0) rotateX(2deg) scale(1);
+  }
+  45% {
+    transform: translateY(-15%) rotateX(7deg) scale(1.05);
+  }
+}
+
+@keyframes panda-wave-right {
+  0%,
+  100% {
+    transform: translateZ(12px) rotate(-24deg);
+  }
+  45% {
+    transform: translateZ(16px) rotate(-62deg) translateY(-16%);
+  }
+}
+
+@keyframes panda-paw-wave-right {
+  0%,
+  100% {
+    transform: translateZ(18px) rotate(-18deg);
+  }
+  45% {
+    transform: translateZ(20px) translate(-4%, -20%) rotate(-48deg);
+  }
+}
+
+.panda-mascot[data-panda-reaction="curious"] .panda-stage {
+  animation: panda-curious 0.72s cubic-bezier(0.2, 0.9, 0.24, 1) both;
+}
+
+.panda-mascot[data-panda-reaction="happy"] .panda-stage {
+  animation: panda-hop 0.52s cubic-bezier(0.2, 1.5, 0.32, 1) both;
+}
+
+.panda-mascot[data-panda-reaction="happy"] .panda-mouth {
+  top: 68%;
+  left: 44%;
+  width: 12%;
+  height: 8%;
+  border: 0;
+  border-radius: 0 0 999px 999px;
+  background: #8e3a31;
+}
+
+.panda-mascot[data-panda-reaction="curious"] .panda-arm.right,
+.panda-mascot[data-panda-reaction="happy"] .panda-arm.right,
+.ai-launcher:hover .panda-arm.right,
+.coursePandaWrap:hover .panda-arm.right,
+.today-hero-mascot:hover .panda-arm.right {
+  animation: panda-wave-right 0.72s ease-in-out both;
+}
+
+.panda-mascot[data-panda-reaction="curious"] .panda-paw.right,
+.panda-mascot[data-panda-reaction="happy"] .panda-paw.right,
+.ai-launcher:hover .panda-paw.right,
+.coursePandaWrap:hover .panda-paw.right,
+.today-hero-mascot:hover .panda-paw.right {
+  animation: panda-paw-wave-right 0.72s ease-in-out both;
+}
+
+.ai-launcher:hover .panda-stage,
+.coursePandaWrap:hover .panda-stage,
+.today-hero-mascot:hover .panda-stage {
+  animation: panda-curious 0.72s cubic-bezier(0.2, 0.9, 0.24, 1) both;
 }
 
 .panda-badge,
