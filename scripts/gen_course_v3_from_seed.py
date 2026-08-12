@@ -57,6 +57,141 @@ PART_CARD_BUDGET = 18
 # Deterministic shuffling so re-runs produce identical files.
 RNG = random.Random(20240629)
 
+# --------------------------------------------------------------------------
+# Absolute-beginner intro (hsk1 / 1-qism only)
+# --------------------------------------------------------------------------
+# Noldan boshlagan o'quvchi birinchi ko'radigan narsa 你 ieroglifi bo'lmasligi
+# kerak: u hali ieroglif nima, pinyin nima, ton nima ekanini bilmaydi. Shu
+# sababli hsk1 birinchi qismining intro bo'limi oldiga ikkita "ustoz" kartasi
+# qo'yiladi (matn + ona tilidagi ovoz + xitoycha misol audiosi).
+#
+# Bu kartalar drill EMAS — javob so'ramaydi, faqat tushuntiradi. Shuning uchun
+# ular PART_CARD_BUDGET hisobiga va 4x qamrov kafolatiga kirmaydi: byudjet
+# hisoblangandan KEYIN sectionsga qo'shiladi.
+#
+# `narrate` — app/static/audio/tour/<lang>/<key>.mp3 kaliti
+# (scripts/gen_tour_audio.py bilan generatsiya qilinadi).
+BASICS_CARDS = [
+    {
+        "type": "_basics",
+        "narrate": "b1",
+        "title": {
+            "uz": "Xitoy tili qanday ishlaydi",
+            "ru": "Как устроен китайский язык",
+            "tj": "Забони чинӣ чӣ гуна кор мекунад",
+        },
+        "title_zh": "汉字",
+        "lead": {
+            "uz": "Xitoy tilida alifbo yo'q. Har bir belgi — ieroglif — butun so'zni bildiradi.",
+            "ru": "В китайском языке нет алфавита. Каждый знак — иероглиф — это целое слово.",
+            "tj": "Дар забони чинӣ алифбо нест. Ҳар аломат — иероглиф — як калимаи пурра аст.",
+        },
+        "steps": [
+            {
+                "text": {
+                    "uz": "Ieroglif — bu harf emas, so'z-rasm. Mana bitta ieroglif, ma'nosi «sen»:",
+                    "ru": "Иероглиф — это не буква, а слово-рисунок. Вот один иероглиф, он значит «ты»:",
+                    "tj": "Иероглиф ҳарф нест, балки калима-расм аст. Ин як иероглиф аст, маънояш «ту»:",
+                },
+                "zh": "你",
+                "pinyin": "nǐ",
+                "translation": {"uz": "sen", "ru": "ты", "tj": "ту"},
+            },
+            {
+                "text": {
+                    "uz": "Ierogliflar qanday o'qilishini bilish uchun pinyin ishlatiladi — lotin harflaridagi talaffuz. Pinyin faqat sizga yordam beradi, xitoyliklar uni yozmaydi.",
+                    "ru": "Чтобы понять, как читается иероглиф, используется пиньинь — произношение латинскими буквами. Пиньинь нужен только вам, китайцы его не пишут.",
+                    "tj": "Барои донистани тарзи хондани иероглиф пинйин истифода мешавад — талаффуз бо ҳарфҳои лотинӣ. Пинйин танҳо ба шумо кӯмак мекунад, чинӣ онро наменависад.",
+                },
+                "zh": "好",
+                "pinyin": "hǎo",
+                "translation": {"uz": "yaxshi", "ru": "хорошо", "tj": "хуб"},
+            },
+            {
+                "text": {
+                    "uz": "Ikki ieroglif birga kelib yangi ma'no beradi. 你 (sen) + 好 (yaxshi) = «Salom»:",
+                    "ru": "Два иероглифа вместе дают новое значение. 你 (ты) + 好 (хорошо) = «Привет»:",
+                    "tj": "Ду иероглиф якҷоя маънои нав медиҳанд. 你 (ту) + 好 (хуб) = «Салом»:",
+                },
+                "zh": "你好",
+                "pinyin": "Nǐ hǎo",
+                "translation": {"uz": "Salom", "ru": "Привет", "tj": "Салом"},
+            },
+        ],
+    },
+    {
+        "type": "_basics",
+        "narrate": "b2",
+        "title": {
+            "uz": "Ohang ma'noni o'zgartiradi",
+            "ru": "Тон меняет смысл",
+            "tj": "Оҳанг маъноро тағйир медиҳад",
+        },
+        "title_zh": "四声",
+        "lead": {
+            "uz": "Xitoy tilida bir xil bo'g'in 4 xil ohangda aytiladi — va har safar boshqa so'z bo'ladi. Tinglang:",
+            "ru": "В китайском один и тот же слог произносится 4 разными тонами — и каждый раз это другое слово. Послушайте:",
+            "tj": "Дар чинӣ як ҳиҷо бо 4 оҳанги гуногун гуфта мешавад — ва ҳар бор калимаи дигар мешавад. Гӯш кунед:",
+        },
+        "steps": [
+            {
+                "text": {
+                    "uz": "1-ton: baland va tekis, o'zgarmaydi.",
+                    "ru": "1-й тон: высокий и ровный, не меняется.",
+                    "tj": "Оҳанги 1: баланд ва ҳамвор, тағйир намеёбад.",
+                },
+                "zh": "妈",
+                "pinyin": "mā",
+                "translation": {"uz": "ona", "ru": "мама", "tj": "модар"},
+            },
+            {
+                "text": {
+                    "uz": "2-ton: pastdan yuqoriga ko'tariladi — savol berayotgandek.",
+                    "ru": "2-й тон: поднимается снизу вверх — будто вы спрашиваете.",
+                    "tj": "Оҳанги 2: аз поён ба боло мебарояд — гӯё савол медиҳед.",
+                },
+                "zh": "麻",
+                "pinyin": "má",
+                "translation": {"uz": "kanop", "ru": "конопля", "tj": "канаб"},
+            },
+            {
+                "text": {
+                    "uz": "3-ton: avval pastga tushadi, keyin ko'tariladi.",
+                    "ru": "3-й тон: сначала опускается, потом поднимается.",
+                    "tj": "Оҳанги 3: аввал поён меравад, баъд боло мебарояд.",
+                },
+                "zh": "马",
+                "pinyin": "mǎ",
+                "translation": {"uz": "ot", "ru": "лошадь", "tj": "асп"},
+            },
+            {
+                "text": {
+                    "uz": "4-ton: keskin pastga tushadi — buyruq bergandek.",
+                    "ru": "4-й тон: резко падает вниз — будто вы отдаёте приказ.",
+                    "tj": "Оҳанги 4: якбора поён меафтад — гӯё фармон медиҳед.",
+                },
+                "zh": "骂",
+                "pinyin": "mà",
+                "translation": {"uz": "so'kmoq", "ru": "ругать", "tj": "дашном додан"},
+            },
+            {
+                "text": {
+                    "uz": "Shuning uchun har bir yangi so'zni ovoz bilan eshitib o'rganamiz. Endi birinchi so'zdan boshlaymiz.",
+                    "ru": "Поэтому каждое новое слово мы учим со звуком. Теперь начнём с первого слова.",
+                    "tj": "Барои ҳамин ҳар калимаи навро бо овоз меомӯзем. Акнун аз калимаи аввал оғоз мекунем.",
+                },
+            },
+        ],
+    },
+]
+
+
+def build_basics_cards(level: str, flat_n: int) -> list[dict]:
+    """Faqat hsk1 ning eng birinchi qismi uchun tanishtiruv kartalari."""
+    if level != "hsk1" or int(flat_n) != 1:
+        return []
+    return json.loads(json.dumps(BASICS_CARDS, ensure_ascii=False))
+
 
 # --------------------------------------------------------------------------
 # Seed content loading
@@ -1310,7 +1445,8 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
         "tj": goal.get("tj", goal.get("uz", "")),
     }
     zh_title, _ = parse_title(seed)
-    return {
+    basics = build_basics_cards(level, flat_n)
+    out = {
         "schema_version": 2,
         "level": level,
         "lesson_id": flat_n,
@@ -1334,6 +1470,15 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
         "dialogues": build_dialogues(dialogue_raw),
         "sections": sections,
     }
+    # Tanishtiruv kartalari ATAYLAB `sections` dan TASHQARIDA turadi:
+    # `material_ref` (lesson:<lvl>:<n>:section:<s>:card:<k>) bo'lim ichidagi
+    # karta POZITSIYASIdan hisoblanadi, shuning uchun bo'lim ichiga karta
+    # qo'shilsa saqlangan xato-materiallari boshqa kartaga ko'chib ketardi.
+    # Alohida kalit sifatida: mavjud reflar tegilmaydi, `sections` ni o'qiydigan
+    # desktop/Android parserlar bu kartalarni umuman ko'rmaydi.
+    if basics:
+        out["basics"] = basics
+    return out
 
 
 def build_word_pinyin_index() -> dict:

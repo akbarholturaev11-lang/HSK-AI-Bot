@@ -5583,6 +5583,53 @@ Risk / follow-up:
 
 ---
 
+### 2026-08-12 — Noldan boshlovchi uchun tanishtiruv kartalari (hsk1 1-qism)
+
+Changed:
+- Yangi `_basics` karta turi: xitoy tili haqida umuman tushunchasi yo'q user
+  birinchi ieroglifni ko'rishdan OLDIN ikkita "Li ustoz" kartasini oladi —
+  `b1` (alifbo yo'q; ieroglif = so'z; pinyin = o'qish yordamchisi; 你+好=你好)
+  va `b2` (to'rt ton: 妈/麻/马/骂, har biri audio bilan). Tushuntirish ona
+  tilida MATN + OVOZ, xitoycha misollar `speak()` (zh TTS) bilan.
+- Kartalar dars JSONida `sections` dan TASHQARIDA, top-level `basics` kalitida.
+  Sabab: `material_ref` = `lesson:<lvl>:<n>:section:<s>:card:<k>` bo'lim
+  ichidagi karta POZITSIYASIdan hisoblanadi (`CourseLessonMistakeMaterialService.
+  _card_lookup`, `LessonParser`, `buildQueue`). Bo'lim ichiga karta qo'shilsa
+  saqlangan xato-materiallari boshqa kartaga ko'chib ketardi.
+- Ovoz mavjud tour mexanizmini qayta ishlatadi: `/audio/tour/<lang>/<key>.mp3`
+  (`gen_tour_audio.py`, edge-tts). Yangi `narrate(key,text)` + `NARV`
+  o'chirgichi (localStorage `hsk_v3_narrate`). MP3 bo'lmasa native TTS
+  fallback, u ham bo'lmasa karta faqat matn sifatida to'liq ishlaydi.
+
+Why:
+- Onboarding darajani so'rab darhol 1-darsni ochardi va user birinchi ko'rgan
+  narsa 你 bo'lardi; 4 ton esa faqat 2-bo'limda tushuntirilardi. Noldan
+  boshlagan uchun tartib teskari edi.
+
+Files touched:
+- `scripts/gen_course_v3_from_seed.py` (`BASICS_CARDS`, `build_basics_cards`,
+  `out["basics"]`), `app/static/course-v3.html` (`cardBasics`, `BST`,
+  `narrate`/`setNarrate`, `buildQueue`, `cardAudioTexts`, `.teach-bub .au` CSS),
+  `scripts/gen_tour_audio.py` (`BASICS_DISPLAY` + uz/tj AUDIO_TEXT + argv key
+  filtri), `app/static/course_v3_data/hsk1/lesson_01.json`,
+  `tests/test_course_v3_static_data.py`
+
+Risk:
+- To'lov/obuna/paywall/DB/XP tegilmadi. `sections` bayt-bay o'zgarmadi —
+  mavjud `material_ref` lar barqaror (test bilan qo'riqlanadi).
+- Desktop/Android `sections` ni o'qiydi, `basics` ni ko'rmaydi — xatti-harakati
+  o'zgarmaydi (parity buzilmaydi). Kerak bo'lsa alohida taskda qo'shiladi.
+- Dars 1 ning kartalar soni +2 → o'sha darsda yarim yo'lda qolgan `resume`
+  indeksi 2 kartaga suriladi (bir marta, o'zi tiklanadi).
+- **Deploy oldidan majburiy:** `python3 scripts/gen_tour_audio.py b1 b2` —
+  aks holda ovoz o'rniga fallback ishlaydi.
+
+Follow-up:
+- Onboardingda `beginner` darajasi backendda bor (`COURSE_ONBOARDING_LEVELS`),
+  lekin UI'da ko'rsatilmagan — alohida qaror kerak.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

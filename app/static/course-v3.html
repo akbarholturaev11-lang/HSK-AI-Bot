@@ -258,6 +258,9 @@ button{cursor:pointer}
 .say-bub .t4{font-size:13px;color:var(--ink2);margin-top:2px}
 .say-bub .au{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:17px;align-items:center;justify-content:center;margin-bottom:6px}
 .pron-skip{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink3);font-family:inherit;font-size:13px;font-weight:700;letter-spacing:1px}
+/* Tanishtiruv kartasidagi ovoz tugmasi o'chirilgan holati */
+.teach-bub .au{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#D6E6F3;color:#2F6F9E;border:none;font-size:16px}
+.teach-bub .au.off{background:var(--line);color:var(--ink3)}
 /* Xatodan keyin dalda ekrani (panda) */
 .cheer{display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 10px 10px}
 .cheer .cpd{width:110px;height:110px;position:relative}
@@ -797,6 +800,7 @@ function cardAudioTexts(c){
   if(c.phrase)out.push(c.phrase);
   if(c.audio_text)out.push(c.audio_text);
   if(c.type==="reverse_builder"&&c.zh)out.push(c.zh);
+  if(c.type==="_basics"&&c.steps)c.steps.forEach(function(s){if(s.zh)out.push(s.zh)});
   if(c.type==="_grammar"&&c.g&&c.g.examples)c.g.examples.slice(0,2).forEach(function(e){if(e.zh)out.push(e.zh)});
   if(c.type==="_dialogue"&&c.d&&c.d.dialogue)c.d.dialogue.slice(0,3).forEach(function(l){if(l.zh)out.push(l.zh)});
   return out;
@@ -2015,6 +2019,12 @@ function lessonMaterialRef(d,sectionNo,cardNo){
 }
 function buildQueue(d){
   var q=[];
+  /* Noldan boshlovchi uchun tanishtiruv kartalari (hsk1, 1-qism). `sections`
+     dan tashqarida turadi — material_ref pozitsiyalari surilmasin. Javob
+     so'ramaydi, shuning uchun _materialRef ham berilmaydi. */
+  (d.basics||[]).forEach(function(c){
+    if(c&&typeof c==="object")q.push(c);
+  });
   (d.sections||[]).forEach(function(sec){
     var sNo=sec.section_no||0;
     var cards=(sec.cards||[]).slice();
@@ -2307,6 +2317,7 @@ function renderFlowCard(){
   if(t==="_word_listen")return cardWordListen(c);
   if(t==="_word_pick_meaning")return cardWordMeaning(c);
   if(t==="_word_pick_hanzi")return cardWordHanzi(c);
+  if(t==="_basics")return cardBasics(c);
   if(t==="_grammar")return cardGrammar(c.g);
   if(t==="_dialogue")return cardDialogue(c.d);
   if(t==="sentence_builder")return cardBuilder(c);
@@ -2401,6 +2412,48 @@ function parseRule(t){
     R.notes.push(ln);
   });
   return R;
+}
+function BST(){return ({
+  uz:{kicker:"Tanishuv",voiceOn:"Ovoz yoniq",voiceOff:"Ovoz o'chiq",replay:"Qayta eshitish"},
+  ru:{kicker:"Знакомство",voiceOn:"Звук включён",voiceOff:"Звук выключен",replay:"Прослушать снова"},
+  tj:{kicker:"Шиносоӣ",voiceOn:"Овоз фаъол",voiceOff:"Овоз хомӯш",replay:"Аз нав гӯш кардан"}
+})[LANG]||({kicker:"Tanishuv",voiceOn:"Ovoz yoniq",voiceOff:"Ovoz o'chiq",replay:"Qayta eshitish"})}
+/* Noldan boshlovchi uchun tanishtiruv kartasi (drill emas — javob so'ramaydi).
+   cardGrammar bilan bir xil "Li ustoz" oqimi: panda + qadam-baqadam ochilish.
+   Tushuntirish ona tilida (matn + ovoz), xitoycha misollar zh TTS bilan. */
+function cardBasics(c){
+  $("#f-cta").style.display="none";
+  var bt=BST(),gt=GRT(),lead=tr(c.lead)||"";
+  window._basNarr=function(){narrate(c.narrate,lead)};
+  window._basVoice=function(){setNarrate(!NARV);if(!NARV)stopTourAudio();else window._basNarr();var b=$("#basvoice");if(b){b.className="au"+(NARV?"":" off");b.innerHTML='<i class="ti ti-'+(NARV?"volume":"volume-off")+'"></i>'}};
+  var steps=(c.steps||[]).map(function(s){
+    var html='<div class="gnote">'+esc(tr(s.text)||"")+'</div>';
+    if(s.zh){
+      html+='<div class="exrow"><div class="z2 han">'+esc(s.zh)+'</div><div><div class="p2">'+esc(s.pinyin||"")+'</div><div class="t2">'+esc(tr(s.translation)||"")+'</div></div><button class="au" onclick="speak(\''+esc(s.zh)+'\')"><i class="ti ti-volume"></i></button></div>';
+    }
+    return html;
+  });
+  $("#f-body").innerHTML='<span class="kicker k-gram"><i class="ti ti-flag-2"></i> '+esc(bt.kicker)+'</span>'
+    +'<div class="gtitle"><span class="han zh">'+esc(c.title_zh||"")+'</span> '+esc(tr(c.title)||"")+'</div>'
+    +'<div class="teach"><div class="teach-pd">'+pandaChar("talk")+'</div><div class="teach-bub"><b>'+esc(gt.teacher)+'</b><div class="teach-say">'+esc(lead)+'</div>'
+      +'<div style="display:flex;gap:8px;margin-top:9px"><button class="au" title="'+esc(bt.replay)+'" onclick="window._basNarr()"><i class="ti ti-refresh"></i></button>'
+      +'<button class="au'+(NARV?"":" off")+'" id="basvoice" title="'+esc(NARV?bt.voiceOn:bt.voiceOff)+'" onclick="window._basVoice()"><i class="ti ti-'+(NARV?"volume":"volume-off")+'"></i></button></div>'
+    +'</div></div>'
+    +'<div class="gsteps" id="gsteps"></div>'
+    +'<button class="gnext" id="gnext" onclick="window._basNext()">'+esc(gt.next)+' <i class="ti ti-arrow-right"></i></button>';
+  narrate(c.narrate,lead);
+  var bi=0;
+  window._basNext=function(){
+    if(bi<steps.length){
+      var it=document.createElement("div");it.className="gsteps-item";it.innerHTML=steps[bi];$("#gsteps").appendChild(it);
+      var z=it.querySelector(".z2");if(z)speak(z.textContent);
+      bi++;
+    }
+    var b=$("#gnext");
+    if(bi>=steps.length){ if(b)b.style.display="none"; teachContinue(); }
+    else if(bi===steps.length-1 && b){ b.innerHTML=esc(gt.done)+' <i class="ti ti-check"></i>'; }
+  };
+  window._basNext();
 }
 function cardGrammar(g){
   $("#f-cta").style.display="none";
@@ -2662,6 +2715,21 @@ function tourSpeak(text,key){if(!TOURV)return;stopTourAudio();
     a.onerror=function(){if(_tourAudio===a){_tourAudio=null;_tourTTS(text)}};
     a.play().catch(function(){if(_tourAudio===a){_tourAudio=null;_tourTTS(text)}});
   }catch(e){_tourTTS(text)}
+}
+/* Tanishtiruv kartalari uchun ona tilidagi ovoz. Tour bilan bir xil mexanizm
+   (oldindan tayyorlangan MP3 -> native TTS fallback -> jimlik), lekin alohida
+   o'chirgich: user ovozni o'chirsa, keyingi kartalarda ham o'chiq qoladi.
+   Audio bo'lmasa karta MATN sifatida to'liq ishlaydi. */
+var NARV=(function(){try{return localStorage.getItem("hsk_v3_narrate")!=="0"}catch(e){return true}})();
+function setNarrate(on){NARV=!!on;try{localStorage.setItem("hsk_v3_narrate",NARV?"1":"0")}catch(e){}}
+function narrate(key,text){
+  if(!NARV||!key)return;
+  stopTourAudio();
+  try{
+    var a=new Audio("/audio/tour/"+LANG+"/"+key+".mp3?v="+TOUR_AUDIO_VER);_tourAudio=a;
+    a.onerror=function(){if(_tourAudio===a){_tourAudio=null;_tourTTS(text||"")}};
+    a.play().catch(function(){if(_tourAudio===a){_tourAudio=null;_tourTTS(text||"")}});
+  }catch(e){_tourTTS(text||"")}
 }
 function tourRender(noSpeak){var st=TOUR.steps[TOUR.i];App.show(st.s);
   var t=TOUR.t,dots=TOUR.steps.map(function(_,k){return '<i class="'+(k===TOUR.i?"on":"")+'"></i>'}).join("");

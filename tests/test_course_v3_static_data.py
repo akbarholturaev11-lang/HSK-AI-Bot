@@ -191,6 +191,70 @@ class CourseV3StaticMapTests(unittest.TestCase):
                 self.assertIn("listening_choice", group_types, where)
                 self.assertIn("dialog_cloze", group_types, where)
 
+    def test_beginner_basics_cards_open_first_lesson_in_all_languages(self):
+        """Noldan boshlovchi 你 ieroglifidan OLDIN ieroglif/pinyin va ton
+        tushunchasini oladi. Kartalar `sections` dan TASHQARIDA — aks holda
+        `material_ref` (bo'lim ichidagi karta pozitsiyasi) surilib, saqlangan
+        xato-materiallari boshqa kartaga ko'chib ketadi."""
+        data = json.loads((BASE / "hsk1" / "lesson_01.json").read_text(encoding="utf-8"))
+        basics = data.get("basics")
+        self.assertTrue(isinstance(basics, list) and len(basics) == 2, "hsk1/lesson_01 basics")
+
+        narrate_keys = []
+        for card in basics:
+            self.assertEqual(card["type"], "_basics")
+            narrate_keys.append(card["narrate"])
+            for lang in ("uz", "ru", "tj"):
+                self.assertTrue(card["title"].get(lang), f"title/{lang}")
+                self.assertTrue(card["lead"].get(lang), f"lead/{lang}")
+            self.assertTrue(card["steps"], "steps")
+            for step in card["steps"]:
+                for lang in ("uz", "ru", "tj"):
+                    self.assertTrue(step["text"].get(lang), f"step text/{lang}")
+                if step.get("zh"):
+                    self.assertTrue(step.get("pinyin"), "pinyin")
+                    for lang in ("uz", "ru", "tj"):
+                        self.assertTrue(step["translation"].get(lang), f"step tr/{lang}")
+        self.assertEqual(narrate_keys, ["b1", "b2"])
+
+        # Tanishtiruv kartalari bo'limlarga TUSHMASLIGI shart (ref barqarorligi).
+        section_types = {c["type"] for sec in data["sections"] for c in sec["cards"]}
+        self.assertNotIn("_basics", section_types)
+
+        # Faqat birinchi qismda; qolgan darslar tegilmagan.
+        for level, count in EXPECTED_LESSON_COUNTS.items():
+            for n in range(1, count + 1):
+                if level == "hsk1" and n == 1:
+                    continue
+                other = json.loads(
+                    (BASE / level / f"lesson_{n:02d}.json").read_text(encoding="utf-8")
+                )
+                self.assertNotIn("basics", other, f"{level}/lesson_{n:02d}")
+
+        # Frontend kartani taniydi va `basics` ni navbatga qo'shadi.
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+        self.assertIn('if(t==="_basics")return cardBasics(c)', html)
+        self.assertIn("(d.basics||[])", html)
+
+        # Ovoz matni ekrandagi matn bilan bir xil kalitlarda bo'lsin (uz/ru/tj),
+        # aks holda karta jim qoladi yoki boshqa narsani o'qiydi.
+        import ast
+
+        tour_src = Path("scripts/gen_tour_audio.py").read_text(encoding="utf-8")
+        basics_display = None
+        for node in ast.parse(tour_src).body:
+            targets = getattr(node, "targets", [])
+            if targets and getattr(targets[0], "id", "") == "BASICS_DISPLAY":
+                basics_display = ast.literal_eval(node.value)
+        self.assertIsNotNone(basics_display, "gen_tour_audio.py BASICS_DISPLAY")
+        for lang in ("uz", "ru", "tj"):
+            for key in narrate_keys:
+                self.assertTrue(basics_display[lang].get(key), f"narration {lang}/{key}")
+        # uz/tj uchun talaffuzga moslangan alohida AUDIO_TEXT ham bo'lishi kerak
+        # (ru AUDIO_TEXT display'dan meros oladi).
+        for key in narrate_keys:
+            self.assertGreaterEqual(tour_src.count(f'"{key}":'), 5, f"AUDIO_TEXT {key}")
+
     def test_hsk_exam_uses_server_material_and_server_grading(self):
         html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")

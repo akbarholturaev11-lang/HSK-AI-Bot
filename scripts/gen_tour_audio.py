@@ -17,6 +17,7 @@ AUDIO_TEXT esa talaffuz uchun alohida yoziladi va UI'da ko'rinmaydi.
 import asyncio
 import os
 import re
+import sys
 
 import edge_tts
 
@@ -70,8 +71,28 @@ DISPLAY_TEXT = {
     },
 }
 
+# Noldan boshlovchi uchun tanishtiruv kartalari (hsk1, 1-qism). Matn
+# scripts/gen_course_v3_from_seed.py dagi BASICS_CARDS "lead" bilan bir xil
+# bo'lishi shart — ekranда ko'rinadigan matn va ovoz bir-biriga mos kelsin.
+BASICS_DISPLAY = {
+    "ru": {
+        "b1": "В китайском языке нет алфавита. Каждый знак — иероглиф — это целое слово.",
+        "b2": "В китайском один и тот же слог произносится 4 разными тонами — и каждый раз это другое слово. Послушайте:",
+    },
+    "uz": {
+        "b1": "Xitoy tilida alifbo yo'q. Har bir belgi — ieroglif — butun so'zni bildiradi.",
+        "b2": "Xitoy tilida bir xil bo'g'in 4 xil ohangda aytiladi — va har safar boshqa so'z bo'ladi. Tinglang:",
+    },
+    "tj": {
+        "b1": "Дар забони чинӣ алифбо нест. Ҳар аломат — иероглиф — як калимаи пурра аст.",
+        "b2": "Дар чинӣ як ҳиҷо бо 4 оҳанги гуногун гуфта мешавад — ва ҳар бор калимаи дигар мешавад. Гӯш кунед:",
+    },
+}
+for _lang, _steps in BASICS_DISPLAY.items():
+    DISPLAY_TEXT[_lang].update(_steps)
+
 AUDIO_TEXT = {
-    "ru": DISPLAY_TEXT["ru"],
+    "ru": dict(DISPLAY_TEXT["ru"]),
     "uz": {
         "c": "Mana kursingiz. Har bir doira bitta dars. Tugmachani bosing va o'qishni boshlang.",
         "cNode": "Bu hozirgi darsingiz. Bosing va boshlang. Dars ichida qalam tugmasi paydo bo'ladi. Ieroglif yozilishini ko'rish uchun bosing.",
@@ -84,6 +105,8 @@ AUDIO_TEXT = {
         "v": "Sun'iy intellekt ovozli suhbat. Panda bilan jonli xitoycha gaplashing. Gapiring va darhol tuzatish oling.",
         "r": "Liga. O'quvchilar orasidagi o'rningiz. Har kuni tajriba balli to'plang va yuqoriga chiqing.",
         "p": "Profil. Ketma-ketlik, kunlik maqsad, kuboklar va yutuqlar. Til, bildirishnoma va tajriba maqsadini sozlang.",
+        "b1": "Xitoy tilida alifbo yo'q. Har bir belgi, ya'ni ieroglif, butun so'zni bildiradi.",
+        "b2": "Xitoy tilida bir xil bo'g'in to'rt xil ohangda aytiladi va har safar boshqa so'z bo'ladi. Tinglang.",
     },
     "tj": {
         "c": "Ин джо курси шумо. Хар доира як дарс. Тугмачаро пахш кунед ва омузишро огоз кунед.",
@@ -97,6 +120,8 @@ AUDIO_TEXT = {
         "v": "Эй ай войс. Сухбати зиндаи чини бо панда. Гуед ва ислохи фаври гиред.",
         "r": "Лига. Джойгохи шумо миёни донишчуён. Хар руз тачриба балл чамъ кунед ва боло равед.",
         "p": "Профил. Пайдарпайи, хадафи рузона, джомхо ва дастовардхо. Забон, огохихо ва хадафи тачрибаро танзим кунед.",
+        "b1": "Дар забони чини алифбо нест. Хар аломат, яъне иероглиф, як калимаи пурра аст.",
+        "b2": "Дар чини як хиджо бо чор оханги гуногун гуфта мешавад ва хар бор калимаи дигар мешавад. Гуш кунед.",
     },
 }
 
@@ -112,16 +137,26 @@ def clean(text: str) -> str:
 
 
 async def main():
+    # Ixtiyoriy: faqat berilgan kalitlarni qayta yaratish, masalan
+    #   python3 scripts/gen_tour_audio.py b1 b2
+    # Argumentsiz ishga tushirilsa — hammasi (avvalgi xatti-harakat).
+    only = {k for k in sys.argv[1:] if not k.startswith("-")}
     total = 0
     for lang, steps in AUDIO_TEXT.items():
         if set(steps) != set(DISPLAY_TEXT[lang]):
             missing = sorted(set(DISPLAY_TEXT[lang]) - set(steps))
             extra = sorted(set(steps) - set(DISPLAY_TEXT[lang]))
             raise RuntimeError(f"{lang} audio keys mismatch; missing={missing}, extra={extra}")
+        if only:
+            unknown = sorted(only - set(steps))
+            if unknown:
+                raise RuntimeError(f"{lang} unknown keys: {unknown}")
         voice = VOICES[lang]
         d = os.path.join(OUT_DIR, lang)
         os.makedirs(d, exist_ok=True)
         for key, raw in steps.items():
+            if only and key not in only:
+                continue
             text = clean(raw)
             out = os.path.join(d, f"{key}.mp3")
             comm = edge_tts.Communicate(text, voice, rate="-4%")
