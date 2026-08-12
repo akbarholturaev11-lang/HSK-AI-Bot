@@ -207,6 +207,79 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-12 — Desktop notifications use real reminder data
+
+Changed:
+- Desktop notification settings now use the real `course_miniapp_profiles.notifications_enabled`
+  flag through a new bearer endpoint instead of showing veiled demo-only rows.
+- Desktop polls the real course map notification feed every 60 seconds while the app is open,
+  updates the bell panel from `course_user_notifications`, and shows desktop Web Notifications
+  for newly-seen server rows when OS/browser permission is granted.
+- The Profile notification card now shows the real master switch, desktop notification permission
+  state, recent feed count, and latest server reminder copy.
+
+Why:
+- The new desktop version still looked fake because notification controls were not connected to
+  server data and the bell feed only refreshed on app open/manual refresh.
+
+Files touched:
+- `app/api/desktop_course.py`
+- `app/services/desktop_course_service.py`
+- `desktop/src-tauri/src/lib.rs`
+- `desktop/ui/js/app.js`
+- `desktop/ui/js/bridge.js`
+- `desktop/ui/js/i18n.js`
+- `desktop/ui/js/preview-mock.js`
+- `desktop/ui/css/workspace.css`
+- `desktop/ui/test-contract.mjs`
+- `tests/test_desktop_course_api.py`
+
+Risk:
+- Low-medium. Reminder opt-in state is shared with Mini App motivational reminders. Course order,
+  payment/subscription activation, lesson grading, XP, and referral logic are unchanged.
+
+Follow-up:
+- Real packaged macOS/Windows smoke-test should grant desktop notification permission and wait for
+  one real server-saved reminder. App-closed scheduled OS notifications still require a native
+  notification/background component, not just the open desktop UI.
+
+### 2026-08-12 — Mini App app promotion is admin-controlled
+
+Changed:
+- Telegram Mini App desktop/app promo can now be managed from Admin Mini App
+  via the `App reklamasi` module backed by `bot_settings`.
+- The Mini App opening prompt uses a per-user daily counter with an admin
+  daily limit up to 3 times, while download requests still keep the existing
+  cooldown.
+- Promo platform targets include MacBook, Windows, Android, and Apple. MacBook
+  and Windows use real desktop download endpoints; Android/Apple keys remain
+  reserved in settings but are hidden from the admin/user UI until real mobile
+  download endpoints exist.
+- App reklamasi supports admin-uploaded image/video media stored under
+  `/uploads/app_promo/...`; Mini App popup and ad-placement promo blocks render
+  that media when available and fall back to the built-in product preview.
+
+Why:
+- Admin needs to promote app installs at Mini App open and existing course/ad
+  surfaces without code changes.
+
+Files touched:
+- `app/services/desktop_app_promo_settings_service.py`
+- `app/services/desktop_download_service.py`
+- `app/main.py`
+- `app/services/admin_miniapp_service.py`
+- `app/static/admin.html`
+- `app/static/course_v3_data/desktop-download.js`
+- `app/static/course_v3_data/desktop-download.css`
+
+Risk:
+- More frequent opening prompts can reduce lesson entry comfort if daily limit
+  is set too high. Default is 3 per day and one modal per session.
+
+Follow-up:
+- After deploy, set `App reklamasi` in Admin Mini App once and test one real
+  Telegram Mini App open plus one course ad surface on a phone.
+
 ### 2026-08-11 — Course v3 lesson access policy is admin-controlled
 
 Changed:
@@ -574,8 +647,7 @@ Files touched:
 - `app/services/desktop_auth_service.py`, `app/api/android_auth.py` (yangi),
   `app/api/desktop_auth.py`, `app/bot/handlers/desktop_auth.py`, `app/main.py`,
   `app/db/models/course_miniapp_event.py`, `tests/test_android_auth_api.py` (yangi),
-  `android/**` (yangi), `.github/workflows/android-ci.yml` (yangi),
-  `ANDROID_IMPLEMENTATION_PLAN.md` (yangi)
+  `android/**` (yangi), `.github/workflows/android-ci.yml` (yangi)
 
 Phase D — Bugun + Kurs (qo'shildi):
 - `AndroidCourseService(DesktopCourseService)` — 600 qatorlik access policy / XP /
@@ -4673,7 +4745,6 @@ Brand:
   olib tashlash Dock/installer icon regressiyasiga olib keladi.
 
 Important files:
-- `DESKTOP_IMPLEMENTATION_PLAN.md`
 - `DESKTOP_AUTH_CONTRACT.md`
 - `app/api/desktop_course.py`, `app/services/desktop_course_service.py`
 - `app/api/desktop_download.py`, `app/services/desktop_download_service.py`
@@ -5111,6 +5182,66 @@ Changed:
 Why:
 - Demo-parity desktop UI update alohida `desktop-v1.3.4` tag orqali release
   workflowga yuborilishi kerak.
+
+### 2026-08-11 — Desktop rating fallback and API envelope
+
+Changed:
+- Desktop rating API now returns the same explicit success envelope shape as
+  other desktop endpoints (`ok: true`), with regression coverage for the
+  authenticated leaderboard adapter.
+- Desktop Rating UI no longer becomes an empty table when the leaderboard
+  request fails; it renders the learner's server-saved personal progress from
+  the course map and shows the specific rating error when available.
+
+Why:
+- The Rating screen should stay useful even if the league table endpoint is
+  temporarily unavailable, and API contract drift should be caught before
+  release.
+
+Files touched:
+- `app/api/desktop_rating.py`
+- `desktop/ui/js/app.js`
+- `desktop/ui/js/bridge.js`
+- `tests/test_desktop_rating_api.py`
+
+Risk:
+- Low. No lesson order, quiz/homework, payment, subscription, referral, or XP
+  award rules changed.
+
+Follow-up:
+- After deploy/build, smoke-test the real desktop app with a linked account on
+  the Rating tab and verify the full league table loads from production.
+
+---
+
+### 2026-08-12 — Course ad/limit offer copy cleanup
+
+Changed:
+- Shared CourseAds limit overlay now keeps only the top reason/info box plus
+  CTAs; the duplicate motivational heading/body under it was removed across
+  practice limit windows.
+- Course lesson `ads` access mode now shows a short pre-ad explanation that
+  subscription is not mandatory and the lesson opens after watching the ad.
+- Desktop app promo copy was shortened and OS choice buttons now read
+  `MacBook` / `Windows`; static script cache versions were bumped.
+
+Why:
+- Limit/ad windows should explain the immediate access rule without pushing
+  extra subscription copy or moving the actual action buttons lower.
+
+Files touched:
+- `app/static/course_v3_data/ads.js`
+- `app/static/course-v3.html`
+- `app/static/course_v3_data/desktop-download.js`
+- `app/static/course_v3_*.html`
+
+Risk:
+- Low. Subscription/payment/access authorization logic was not changed; this is
+  UI copy and pre-ad offer presentation only.
+
+Follow-up:
+- After deploy, smoke-test one protected lesson in admin `ads` mode and one
+  practice limit screen inside Telegram.
 
 ---
 

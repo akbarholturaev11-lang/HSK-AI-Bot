@@ -2,8 +2,8 @@
 
 Native Kotlin/Compose client of the existing HSK AI backend. Same Telegram
 account, same subscription, same course progress as the bot, Mini App, macOS
-and Windows clients. See `../ANDROID_IMPLEMENTATION_PLAN.md` for the
-architecture and the audited backend contracts.
+and Windows clients. The Android client reuses the shared backend auth and
+course contracts.
 
 ## One-time bootstrap: the Gradle wrapper
 
