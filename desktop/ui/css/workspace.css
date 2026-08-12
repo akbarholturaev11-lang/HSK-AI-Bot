@@ -3474,6 +3474,71 @@ html.lesson-active .ai-drawer.is-open {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  align-items: center;
+}
+
+/* --------------------------------------------------- call partner avatar */
+
+/*
+ * The partner sits in the middle of the stage so a session reads as a call.
+ * The ring is the only animated element and it always mirrors real state:
+ * the reply that is playing, or the microphone that is open. Nothing here
+ * loops on its own.
+ */
+.voice-call-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 168px;
+  height: 168px;
+  border-radius: 50%;
+}
+
+.voice-call-avatar::before {
+  position: absolute;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  content: "";
+  inset: 0;
+}
+
+.voice-call-panda {
+  --panda-size: 132px;
+}
+
+.voice-call-avatar.is-speaking::before {
+  border-color: rgb(255 255 255 / 34%);
+  animation: voice-call-ring 1.9s ease-out infinite;
+}
+
+.voice-call-avatar.is-recording::before {
+  border-color: var(--cinnabar);
+  box-shadow: 0 0 0 6px rgb(224 74 64 / 16%);
+}
+
+@keyframes voice-call-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(255 255 255 / 22%);
+  }
+
+  100% {
+    box-shadow: 0 0 0 18px rgb(255 255 255 / 0%);
+  }
+}
+
+.voice-call-presence {
+  text-align: center;
+}
+
+.voice-call-presence strong {
+  display: block;
+  font-size: 17px;
+}
+
+.voice-call-presence small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
 }
 
 .voice-wave {
@@ -3484,10 +3549,17 @@ html.lesson-active .ai-drawer.is-open {
   background: var(--surface-soft);
 }
 
+/* The avatar carries the stage now, so the meter reads as a level, not a panel. */
+.voice-stage-live .voice-wave {
+  height: 64px;
+}
+
 .voice-mic-row {
   display: flex;
   gap: 16px;
   align-items: center;
+  justify-content: center;
+  text-align: left;
 }
 
 .voice-mic {
@@ -3717,6 +3789,11 @@ html.lesson-active .ai-drawer.is-open {
   .voice-role-card,
   .voice-choice {
     transition: none;
+  }
+
+  /* The border still marks who is speaking; only the pulse goes away. */
+  .voice-call-avatar.is-speaking::before {
+    animation: none;
   }
 }
 

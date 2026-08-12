@@ -1,9 +1,44 @@
 import base64
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Optional
 
 from app.services.ai_provider import AIProviderChain
+
+# Both transcription providers hand the prompt back as if it were speech when
+# the audio is short, quiet or unclear, usually wrapped in a context marker of
+# their own. Nothing in this codebase ever sends "###", so any such block in a
+# transcript is the model talking to itself, not the learner.
+_PROMPT_ECHO_BLOCKS = (
+    re.compile(r"context\s*:\s*#{2,}.*?#{2,}", re.IGNORECASE | re.DOTALL),
+    re.compile(r"#{2,}\s*transcribe only.*?#{2,}", re.IGNORECASE | re.DOTALL),
+)
+
+_MIN_ECHO_CHUNK = 24
+
+
+def _strip_prompt_echo(text: str, prompt: str) -> str:
+    """Remove the STT prompt from a transcript that echoed it back.
+
+    The echo can land before or after the real speech, so the prompt is cut out
+    wherever it sits and the remainder is kept. Matching is literal — the
+    provider's marker, then the prompt's own sentences — because a heuristic
+    here would eventually delete something the learner actually said.
+
+    An empty result is correct and expected: callers already treat it as
+    "no speech detected" rather than feeding the garbage to the tutor.
+    """
+    cleaned = text or ""
+    for pattern in _PROMPT_ECHO_BLOCKS:
+        cleaned = pattern.sub(" ", cleaned)
+    # The same echo also arrives bare, without the provider's marker. Take the
+    # full stop with each sentence, otherwise the separators survive as a trail
+    # of stray dots in front of the real speech.
+    for sentence in (part.strip() for part in (prompt or "").split(".")):
+        if len(sentence) >= _MIN_ECHO_CHUNK:
+            cleaned = cleaned.replace(f"{sentence}.", " ").replace(sentence, " ")
+    return re.sub(r"\s+", " ", cleaned).strip()
 
 
 @dataclass(frozen=True)
@@ -235,6 +270,9 @@ class AIService:
             prompt=prompt,
             gemini_model=gemini_model,
         )
+        # Untrusted output: an echoed prompt reaches the tutor as if the learner
+        # had said it, which both scores as real speech and steers the reply.
+        text = _strip_prompt_echo(text, prompt)
         total_tokens = usage.get("total_tokens", 0) or (
             usage.get("prompt_tokens", 0) + usage.get("completion_tokens", 0)
         )

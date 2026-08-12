@@ -12,6 +12,8 @@
  * accepted by the Rust validator and the Python adapter.
  */
 
+import { createPandaMascot } from "./mascot.js";
+
 const ROLES = [
   { id: "lily", glyph: "友" },
   { id: "chen", glyph: "旅" },
@@ -144,6 +146,29 @@ export class DesktopVoiceController {
     this.recordingStartedAt = 0;
     this.recordingLimit = null;
     this.launchIssue = "";
+    this.aiSpeaking = false;
+  }
+
+  /**
+   * Play a reply and keep the avatar in sync with it.
+   *
+   * The call only feels like a call when the partner visibly holds the floor,
+   * so the speaking ring has to last exactly as long as the audio does. `speak`
+   * resolves when playback finishes, which is why app.js returns its promise
+   * instead of discarding it.
+   */
+  async speakAsPartner(text) {
+    const line = String(text || "");
+    if (!line || !this.speak) return;
+    this.aiSpeaking = true;
+    this.render();
+    try {
+      await this.speak(line);
+    } finally {
+      this.aiSpeaking = false;
+      // A finished session already swapped the call out for the summary.
+      if (this.sessionId) this.render();
+    }
   }
 
   setLanguage(language) {
@@ -425,6 +450,28 @@ export class DesktopVoiceController {
     wrap.append(head);
 
     const stage = node("section", "voice-panel voice-stage-live voice-v3-stage");
+
+    // The partner holds the centre of the stage so the session reads as a call
+    // rather than a form. The ring is the only moving part and it is driven by
+    // real state: the reply that is playing, or the microphone that is open.
+    const avatar = node(
+      "div",
+      `voice-call-avatar${
+        this.aiSpeaking
+          ? " is-speaking"
+          : this.phase === "recording"
+            ? " is-recording"
+            : ""
+      }`,
+    );
+    avatar.append(createPandaMascot("voice-call-panda"));
+    const presence = node("div", "voice-call-presence");
+    presence.append(
+      node("strong", "", this.t(`voiceRole_${this.role}`)),
+      node("small", "muted", this.presenceLabel()),
+    );
+    stage.append(avatar, presence);
+
     this.canvas = document.createElement("canvas");
     this.canvas.className = "voice-wave";
     this.canvas.width = 960;
@@ -608,6 +655,12 @@ export class DesktopVoiceController {
     return this.t("voicePhaseReady");
   }
 
+  /** What the partner is doing, which is not always what the learner is doing. */
+  presenceLabel() {
+    if (this.aiSpeaking) return this.t("voicePhaseSpeaking");
+    return this.phaseLabel();
+  }
+
   micTitle() {
     if (this.phase === "recording") return this.t("voiceStopRecording");
     if (this.phase === "processing") return this.t("voicePhaseProcessing");
@@ -652,7 +705,7 @@ export class DesktopVoiceController {
       this.startTimer();
       this.render();
       if (opening?.chinese_reply) {
-        this.speak?.(String(opening.chinese_reply));
+        void this.speakAsPartner(opening.chinese_reply);
       }
     } catch (error) {
       if (this.isSessionError(error)) {
@@ -793,7 +846,7 @@ export class DesktopVoiceController {
       this.busy = false;
       this.render();
       if (result?.chinese_reply) {
-        this.speak?.(String(result.chinese_reply));
+        void this.speakAsPartner(result.chinese_reply);
       }
       if (result?.session_should_end === true) {
         await this.endSession();

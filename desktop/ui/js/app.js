@@ -247,7 +247,9 @@ const voice = new DesktopVoiceController({
   onSessionExpired: () => showAuth({ expired: true }),
   onToast: showToast,
   onOpenSubscription: () => routeTo("subscription"),
-  speak: (text, button) => void speakChinese(text, button),
+  // Returned, not discarded: AI Voice awaits it so the speaking ring lasts
+  // exactly as long as the reply plays.
+  speak: (text, button) => speakChinese(text, button),
   onContextChanged: () => refreshAiContextPanel(),
 });
 
