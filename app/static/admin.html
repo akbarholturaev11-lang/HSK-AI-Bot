@@ -934,7 +934,7 @@
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
-      const map={prices:renderPrices,course_access:renderCourseAccess,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount"),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      const map={prices:renderPrices,course_access:renderCourseAccess,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount"),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -998,6 +998,93 @@
     function courseAccessModeUi(){
       const sel=$("courseAccessMode"), box=$("courseAccessDaysBox");
       if(box&&sel) box.style.display=sel.value==="free_until"?"grid":"none";
+    }
+    function appPromoChipHtml(kind,key,label,active){
+      return `<button type="button" class="chip ${active?"active":""}" data-ap-${kind}="${key}">${esc(label)}</button>`;
+    }
+    function appPromoMediaHtml(ap){
+      if(!ap.media_url) return "<span class='empty'>Media biriktirilmagan</span>";
+      if(ap.media_available===false) return "<div class='danger-note'>Media fayl serverda topilmadi. Qayta yuklang.</div>";
+      const src=esc(ap.media_url);
+      return ap.media_type==="video"
+        ? `<video src="${src}" controls muted playsinline></video>`
+        : `<img src="${src}" alt="App reklamasi media">`;
+    }
+    function renderAppPromo(d){
+      const ap=d.desktop_app_promo||{};
+      const placements=ap.placements||{};
+      const platforms=ap.platforms||{};
+      const daily=Number(ap.daily_limit||3);
+      const enabled=ap.enabled!==false;
+      openDrawer("💻 App reklamasi","Mini App ochilganda va reklama joylarida ilova promosi",`<div class="panel">
+        <div class="mcard">
+          <h3>Joriy holat</h3>
+          <p>Ochilishi: ${enabled?"yoqilgan":"o'chirilgan"} · Kunlik limit: ${daily} marta</p>
+          <div class="tags">${tag(enabled?"faol":"o'chirilgan",enabled?"green":"red")}${tag((placements.home_prompt!==false)?"ochilganda":"ochilganda yo'q",(placements.home_prompt!==false)?"blue":"")}${tag((placements.ad_promo!==false)?"reklama joyida":"reklama joyida yo'q",(placements.ad_promo!==false)?"amber":"")}${tag(ap.media_url?"media bor":"media yo'q",ap.media_url?"green":"")}</div>
+        </div>
+        <div class="mcard">
+          <h3>Ko'rsatish sozlamasi</h3>
+          <label class="ncsw"><input type="checkbox" id="apEnabled" ${enabled?"checked":""}> App reklamasi yoqilsin</label>
+          <div class="frow"><label>Mini App ochilganda kuniga necha marta chiqsin</label>
+            <select id="apDailyLimit" class="select">
+              <option value="1"${daily===1?" selected":""}>1 marta</option>
+              <option value="2"${daily===2?" selected":""}>2 marta</option>
+              <option value="3"${daily===3?" selected":""}>3 marta</option>
+            </select>
+          </div>
+          <div class="frow"><label>Qayerda chiqsin</label><div class="chips">
+            ${appPromoChipHtml("placement","home_prompt","Mini App ochilganda",placements.home_prompt!==false)}
+            ${appPromoChipHtml("placement","lesson_end_promo","Dars yakunida",placements.lesson_end_promo!==false)}
+            ${appPromoChipHtml("placement","ad_promo","Mashq/reklama joyida",placements.ad_promo!==false)}
+          </div></div>
+        </div>
+        <div class="mcard">
+          <h3>Media</h3>
+          <div class="ncmedia" id="apMediaPreview">${appPromoMediaHtml(ap)}</div>
+          <div class="row"><button class="btn sec" data-app-promo-media-upload>📎 Media yuklash</button>
+            <button class="btn sec" data-app-promo-media-clear ${ap.media_url?"":"hidden"}>Mediani o'chirish</button>
+            <input type="file" id="apMediaFile" accept="image/*,video/*" hidden></div>
+          <p class="empty" style="text-align:left">Rasm yoki video yuklang. Markaziy popup va reklama joyidagi App reklamasi shu mediani ko'rsatadi.</p>
+        </div>
+        <div class="mcard">
+          <h3>Platforma tugmalari</h3>
+          <p>Hozircha faqat MacBook va Windows ko'rinadi. Android va Apple keyin ochiladi.</p>
+          <div class="chips">
+            ${appPromoChipHtml("platform","macos","MacBook",platforms.macos!==false)}
+            ${appPromoChipHtml("platform","windows","Windows",platforms.windows!==false)}
+          </div>
+        </div>
+        <button class="btn" data-app-promo-save>Saqlash</button>
+      </div>`);
+      const mediaInput=$("apMediaFile");
+      if(mediaInput) mediaInput.onchange=()=>uploadAppPromoMedia(mediaInput);
+    }
+    function appPromoToggleChip(el){
+      el.classList.toggle("active");
+    }
+    function collectAppPromo(){
+      const pick=(kind)=>{ const result={}; document.querySelectorAll(`[data-ap-${kind}]`).forEach(el=>{ result[el.dataset["ap"+kind.charAt(0).toUpperCase()+kind.slice(1)]]=el.classList.contains("active"); }); return result; };
+      const platforms=pick("platform");
+      platforms.android=false;
+      platforms.ios=false;
+      return {
+        enabled:Boolean($("apEnabled")&&$("apEnabled").checked),
+        daily_limit:Number($("apDailyLimit")&&$("apDailyLimit").value||3),
+        placements:pick("placement"),
+        platforms
+      };
+    }
+    async function uploadAppPromoMedia(input){
+      const f=input&&input.files&&input.files[0]; if(!f) return;
+      if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
+      const fd=new FormData(); fd.append("media",f);
+      try{ await apiUpload("/api/admin-miniapp/desktop-promo/media",fd); await afterModule("App reklamasi media yuklandi"); }
+      catch(e){ toast(apiErr(e,"Media yuklashda xato")); }
+      finally{ input.value=""; }
+    }
+    async function clearAppPromoMedia(){
+      try{ await apiPost("/api/admin-miniapp/desktop-promo/media/clear",{}); await afterModule("App reklamasi media o'chirildi"); }
+      catch(e){ toast(apiErr(e,"Media o'chirishda xato")); }
     }
     function priceQrHtml(p){
       if(!p.qr_method) return "";
@@ -1493,6 +1580,10 @@
       if((el=T("[data-pdsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$("payDetails").value}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-casave]"))){ const sel=$("courseAccessMode"), days=$("courseAccessDays"); const payload={mode:sel?sel.value:"subscription"}; if(payload.mode==="free_until") payload.duration_days=Number(days&&days.value||0); el.disabled=true; return apiPost("/api/admin-miniapp/course-access/save",payload).then(()=>afterModule("Kurs access saqlandi")).catch(x=>{toast(apiErr(x,"Kurs access saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-ap-placement],[data-ap-platform]"))) return appPromoToggleChip(el);
+      if((el=T("[data-app-promo-media-upload]"))){ const input=$("apMediaFile"); if(input) input.click(); return; }
+      if((el=T("[data-app-promo-media-clear]"))){ el.disabled=true; return clearAppPromoMedia().finally(()=>{if(el.isConnected)el.disabled=false;}); }
+      if((el=T("[data-app-promo-save]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/desktop-promo/save",collectAppPromo()).then(()=>afterModule("App reklamasi saqlandi")).catch(x=>{toast(apiErr(x,"App reklamasi saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-chmode]"))) return saveChannel({action:"mode",enabled:el.dataset.chmode==="1"},el);
       if((el=T("[data-chadd]"))) return saveChannel({action:"add",title:$("chTitle").value,chat_id:$("chId").value,invite_link:$("chInvite").value},el);
       if((el=T("[data-chtoggle]"))) return saveChannel({action:"toggle",channel_id:Number(el.dataset.chtoggle),active:el.dataset.active==="1"},el);

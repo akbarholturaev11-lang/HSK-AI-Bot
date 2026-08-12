@@ -137,6 +137,15 @@ from app.services.telegram_webapp_auth import (
 )
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages as decode_ad_languages
 from app.repositories.bot_setting_repo import BotSettingRepository
+from app.services.desktop_app_promo_settings_service import (
+    DESKTOP_APP_PROMO_ALLOWED_IMAGE_EXTENSIONS,
+    DESKTOP_APP_PROMO_ALLOWED_VIDEO_EXTENSIONS,
+    DESKTOP_APP_PROMO_MAX_UPLOAD_BYTES,
+    DESKTOP_APP_PROMO_MEDIA_ROOT,
+    desktop_app_promo_media_full_path,
+    get_desktop_app_promo_settings,
+    save_desktop_app_promo_settings,
+)
 from app.services.ai_provider import (
     ACTIVE_GEMINI_MODEL_KEY,
     GEMINI_MODEL_OPTIONS,
@@ -675,6 +684,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
     blocked_partners = await partner_service.repo.list_by_status("blocked", limit=20)
     open_payouts = await partner_service.repo.list_open_payouts(limit=12)
     course_access = await CourseAccessPolicyService(session).get_payload()
+    desktop_app_promo = await get_desktop_app_promo_settings(session)
 
     active_partner_rows = []
     for item in active_partners:
@@ -801,6 +811,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
             "options": GEMINI_MODEL_OPTIONS,
         },
         "course_access": course_access,
+        "desktop_app_promo": desktop_app_promo.payload(),
         "channels": {
             "enabled": await channels_service.is_enabled(),
             "items": [
@@ -2702,6 +2713,131 @@ async def admin_miniapp_course_access_save(request: Request):
         policy.free_until.isoformat() if policy.free_until else None,
     )
     return JSONResponse(content={"ok": True, "course_access": policy.public_payload()})
+
+
+@app.post("/api/admin-miniapp/desktop-promo/save")
+async def admin_miniapp_desktop_promo_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    async with async_session_maker() as session:
+        promo = await save_desktop_app_promo_settings(session, payload)
+        await session.commit()
+    logger.info(
+        "admin_desktop_app_promo_saved admin_id=%s enabled=%s daily_limit=%s",
+        telegram_id,
+        promo.enabled,
+        promo.daily_limit,
+    )
+    return JSONResponse(content={"ok": True, "desktop_app_promo": promo.payload()})
+
+
+@app.post("/api/admin-miniapp/desktop-promo/media")
+async def admin_miniapp_desktop_promo_media_upload(request: Request):
+    form = await request.form()
+    telegram_id = extract_verified_webapp_user_id(
+        str(form.get("initData") or ""), settings.BOT_TOKEN
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+
+    media = form.get("media")
+    if media is None or not hasattr(media, "read"):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "empty_media"})
+
+    raw_name = str(getattr(media, "filename", "") or "").lower()
+    content_type = str(getattr(media, "content_type", "") or "").lower()
+    _, raw_ext = os.path.splitext(raw_name)
+    if content_type.startswith("video") or raw_ext in DESKTOP_APP_PROMO_ALLOWED_VIDEO_EXTENSIONS:
+        media_type = "video"
+        ext = raw_ext if raw_ext in DESKTOP_APP_PROMO_ALLOWED_VIDEO_EXTENSIONS else ".mp4"
+    elif content_type.startswith("image") or raw_ext in DESKTOP_APP_PROMO_ALLOWED_IMAGE_EXTENSIONS:
+        media_type = "photo"
+        ext = raw_ext if raw_ext in DESKTOP_APP_PROMO_ALLOWED_IMAGE_EXTENSIONS else ".jpg"
+    else:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "unsupported_media"})
+
+    data = await media.read(DESKTOP_APP_PROMO_MAX_UPLOAD_BYTES + 1)
+    if len(data) > DESKTOP_APP_PROMO_MAX_UPLOAD_BYTES:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
+
+    os.makedirs(DESKTOP_APP_PROMO_MEDIA_ROOT, exist_ok=True)
+    filename = f"desktop_app_promo_{telegram_id}_{int(time.time())}_{uuid.uuid4().hex[:10]}{ext}"
+    file_path = os.path.join(DESKTOP_APP_PROMO_MEDIA_ROOT, filename)
+    try:
+        with open(file_path, "wb") as handle:
+            handle.write(data)
+    except OSError:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "media_upload_failed"})
+
+    async with async_session_maker() as session:
+        old = await get_desktop_app_promo_settings(session)
+        old_path = desktop_app_promo_media_full_path(old.media_path)
+        promo = await save_desktop_app_promo_settings(
+            session,
+            {"media_type": media_type, "media_path": filename},
+        )
+        await session.commit()
+    if old_path and old_path != file_path:
+        with contextlib.suppress(OSError):
+            os.remove(old_path)
+    promo_payload = promo.payload()
+    return JSONResponse(
+        content={
+            "ok": True,
+            "desktop_app_promo": promo_payload,
+            "media_type": media_type,
+            "media_url": promo_payload.get("media_url"),
+        }
+    )
+
+
+@app.post("/api/admin-miniapp/desktop-promo/media/clear")
+async def admin_miniapp_desktop_promo_media_clear(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    async with async_session_maker() as session:
+        old = await get_desktop_app_promo_settings(session)
+        old_path = desktop_app_promo_media_full_path(old.media_path)
+        promo = await save_desktop_app_promo_settings(
+            session,
+            {"media_type": None, "media_path": None},
+        )
+        await session.commit()
+    if old_path:
+        with contextlib.suppress(OSError):
+            os.remove(old_path)
+    return JSONResponse(content={"ok": True, "desktop_app_promo": promo.payload()})
+
+
+@app.get("/uploads/app_promo/{filename}")
+async def serve_desktop_app_promo_media(filename: str):
+    safe = os.path.basename(filename)
+    path = os.path.join(DESKTOP_APP_PROMO_MEDIA_ROOT, safe)
+    if not safe or not os.path.exists(path):
+        return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
+    ext = os.path.splitext(safe.lower())[1]
+    media_type = {
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".webp": "image/webp",
+        ".mp4": "video/mp4",
+        ".m4v": "video/mp4",
+        ".mov": "video/quicktime",
+        ".webm": "video/webm",
+    }.get(ext, "application/octet-stream")
+    headers = {"Accept-Ranges": "bytes"} if media_type.startswith("video/") else None
+    return FileResponse(path, media_type=media_type, headers=headers)
 
 
 @app.post("/api/admin-miniapp/users/search")
