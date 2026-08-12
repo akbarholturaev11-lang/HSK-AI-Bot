@@ -5243,6 +5243,81 @@ Follow-up:
 - After deploy, smoke-test one protected lesson in admin `ads` mode and one
   practice limit screen inside Telegram.
 
+### 2026-08-12 — Desktop 1.3.6 Today AI quick card olib tashlandi
+
+Changed:
+- Today ekranidagi `Быстрый вопрос / AI Pack` quick card olib tashlandi.
+- Desktop release version `1.3.6` ga ko'tarildi: npm package/lock, Cargo,
+  Tauri config va preview mock versionlari bir xil qilindi.
+
+Why:
+- Today ekrani kurs va takrorlashga fokuslanishi kerak; lokal AI hali drawer
+  orqali mavjud, lekin home ekranida alohida katta prompt card ko'rsatilmaydi.
+
+Files touched:
+- `desktop/ui/js/app.js`, `desktop/ui/js/i18n.js`,
+  `desktop/ui/css/workspace.css`, desktop version files.
+
+Risk:
+- Past. AI Pack install/chat, lesson, quiz, homework, payment, subscription va
+  backend flow o'zgarmadi.
+
+---
+
+### 2026-08-11 — Desktop AI drawer answer quality pass
+
+Changed:
+- Lokal AI drawer javoblari endi raw markdown sifatida bitta `<p>`ga chiqmaydi:
+  `<think>` reasoning bloklari yashiriladi, `**bold**`, headings, bullet/numbered
+  lists, quotes, code blocks, markdown tables va xitoycha iyerogliflar xavfsiz
+  DOM node'lar bilan formatlanadi.
+- Prompt contextiga modeldan hidden reasoning / `<think>` tag chiqarmaslik va
+  solishtirish/step javoblarda qisqa heading + list ishlatish talabi qo'shildi.
+- Ready status va AI Pack boshqaruvi chat oynasida compact ko'rinishga o'tdi;
+  tor oynalarda AI drawer full-screen ochiladi.
+
+Why:
+- AI oynasi mahsulot sifat signalining asosiy joyi. Raw `<think>` va markdown
+  ko'rinishi professional chat tajribasini buzardi.
+
+Files touched:
+- `desktop/ui/js/app.js`, `desktop/ui/css/workspace.css`,
+  `desktop/ui/test-contract.mjs`.
+
+Risk:
+- Backend va local AI runtime logiciga tegilmadi. Risk renderer formatida:
+  noodatiy markdown javoblar oddiy paragraph sifatida fallback bo'ladi.
+
+---
+
+### 2026-08-11 — Desktop 1.3.5 release bump
+
+Changed:
+- Desktop release version `1.3.5` ga ko'tarildi.
+
+Why:
+- AI drawer answer quality va composer polish Windows va macOS updaterlarga
+  alohida `desktop-v1.3.5` release sifatida yuboriladi.
+
+---
+
+### 2026-08-11 — Desktop AI media composer guardrail
+
+Changed:
+- Desktop AI drawer composer Telegram-like paperclip/input/mic/send UI oldi.
+- Image/audio files local preview chip sifatida tanlanadi; mic recording local
+  attachment yaratadi.
+- Media fayl serverga yuborilmaydi va local Qwen AI'ga berilmaydi.
+
+Decision:
+- Rasm/audio tahlili uchun server-side vision/STT kerak. Bu user media faylini
+  external AI providerlarga yuboradigan sensitive egress bo'lgani uchun explicit
+  approvalsiz backend endpoint qo'shilmadi.
+
+Files:
+- `desktop/ui/index.html`, `desktop/ui/js/app.js`, `desktop/ui/js/i18n.js`,
+  `desktop/ui/css/workspace.css`, `desktop/ui/test-contract.mjs`.
+
 ---
 
 ## 11. Known Problems

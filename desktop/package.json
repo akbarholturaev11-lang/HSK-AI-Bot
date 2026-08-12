@@ -1,7 +1,7 @@
 {
   "name": "pomp-hsk-ai-desktop",
   "private": true,
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "Tauri desktop shell for HSK AI",
   "type": "module",
   "scripts": {
