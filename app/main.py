@@ -3679,18 +3679,33 @@ async def admin_miniapp_campaign_create(request: Request):
             percent = max(1, min(int(payload.get("percent") or 20), 90))
             languages = filters.get("languages") or []
             quota_raw = int(payload.get("quota_total") or 0)
+            try:
+                target_id = int(payload.get("target_telegram_id") or 0) or None
+            except (TypeError, ValueError):
+                target_id = None
+            if target_id:
+                target_user = await UserRepository(session).get_by_telegram_id(target_id)
+                if not target_user:
+                    return JSONResponse(
+                        status_code=404,
+                        content={"ok": False, "error": "target_user_not_found"},
+                    )
+            # Bitta foydalanuvchiga chegirmada segment filtrlari tozalanadi —
+            # `admin_discount.py` dagi bot admin oqimi ham shunday qiladi.
             await DiscountCampaignRepository(session).create(
                 title=title,
                 reason=text[:500],
                 percent=percent,
                 starts_at=now,
                 ends_at=now + timedelta(hours=hours),
-                audience_status=filters.get("status"),
-                audience_language=languages[0] if languages else None,
-                audience_level=filters.get("level"),
-                payment_method=filters.get("payment_method"),
-                plan_type=filters.get("plan"),
-                quota_total=quota_raw if quota_raw > 0 else None,
+                audience_status=None if target_id else filters.get("status"),
+                audience_language=None if target_id else (languages[0] if languages else None),
+                audience_level=None if target_id else filters.get("level"),
+                target_telegram_id=target_id,
+                payment_method=None if target_id else filters.get("payment_method"),
+                plan_type=None if target_id else filters.get("plan"),
+                quota_total=None if target_id else (quota_raw if quota_raw > 0 else None),
+                notify_enabled=bool(payload.get("notify_enabled")) if target_id else False,
                 created_by_telegram_id=telegram_id,
             )
         else:

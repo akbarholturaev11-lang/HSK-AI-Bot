@@ -163,7 +163,8 @@
     .scrim.open{opacity:1;pointer-events:auto}
     .drawer{position:fixed;inset:auto 0 0 0;z-index:50;background:var(--bg-soft);border-top:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:var(--shadow);transform:translateY(106%);transition:transform .24s ease;max-height:92dvh;display:grid;grid-template-rows:auto 1fr}
     .drawer.open{transform:translateY(0)}
-    .dhead{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+    .dhead{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+    .dhead>.close[hidden]{display:none}
     .dtitle{font-size:17px;font-weight:900}
     .dsub{margin-top:3px;color:var(--muted);font-size:12px}
     .close{width:38px;height:38px;border-radius:11px;background:var(--surface-2);font-size:18px;font-weight:900}
@@ -453,6 +454,7 @@
   <div id="scrim" class="scrim" data-act="close-drawer"></div>
   <aside id="drawer" class="drawer" aria-hidden="true">
     <div class="dhead">
+      <button class="close" id="drawerBack" data-act="drawer-back" title="Orqaga" hidden>←</button>
       <div><div class="dtitle" id="drawerTitle">—</div><div class="dsub" id="drawerSub"></div></div>
       <button class="close" data-act="close-drawer">✕</button>
     </div>
@@ -467,7 +469,9 @@
     const state = {
       tab:"dashboard", filter:"all", search:"", statsPeriod:"all_time",
       overview:null, finance:null, management:null, remoteUsers:null, activeModule:null,
-      desktopStats:{}, desktopStatsLoading:{}
+      desktopStats:{}, desktopStatsLoading:{},
+      // Profildan ochilgan bo'lim uchun: kimga tegishli va qayerga qaytish.
+      drawerBack:null, activeUser:null
     };
 
     /* ---------- Telegram full-screen ---------- */
@@ -888,8 +892,11 @@
     async function reloadAll(msg){ state.management=null; await loadData(); if(msg) toast(msg); }
 
     /* ---------- USER DETAIL ---------- */
-    function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); }
-    function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; }
+    /* Drawer ichi almashadi, shuning uchun profildan bo'lim ochilganda qaytish
+       yo'li kerak. `state.drawerBack` — bir pog'onali orqaga qaytarish. */
+    function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); $("drawerBack").hidden=!state.drawerBack; }
+    function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; state.drawerBack=null; $("drawerBack").hidden=true; }
+    function drawerBack(){ const back=state.drawerBack; state.drawerBack=null; if(back) back(); else closeDrawer(); }
 
     function durationControlHtml(inputId){
       return `<div class="frow"><label for="${inputId}">Muddat (kun)</label>
@@ -907,6 +914,7 @@
       let detail=null;
       try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ toast(apiErr(e,"Tafsilot yuklanmadi")); }
       const f=(detail&&detail.user)||u, pays=(detail&&detail.payments)||[];
+      state.activeUser={id:f.id,name:f.name,username:f.username||u.username||""};
       $("drawerBody").innerHTML = `
         <section class="dsec"><div class="dtitle-sm">Ruxsat va obuna</div>
           <div class="idrow"><span style="color:var(--muted);font-size:13px">Telegram ID</span><b>${esc(f.id)}</b>
@@ -936,11 +944,13 @@
             : `<button class="btn sec" data-ublock="${f.id}" data-blocked="1">🚫 Bloklash</button>`}
           <details class="acc"><summary>Qo'shimcha amallar</summary>
             <div class="accbody">
+              ${f.username
+                ? `<button class="btn sec" data-uchat="${esc(f.username)}">💬 Telegram chatini ochish</button>`
+                : `<div class="ncnote">Telegram chatini to'g'ridan-to'g'ri ochish uchun foydalanuvchida username bo'lishi kerak. Bu foydalanuvchida yo'q — quyidagi shaxsiy xabardan foydalaning.</div>`}
               <button class="btn sec" data-umsg="${f.id}" data-uname="${esc(f.name)}">✉️ Shaxsiy xabar yuborish</button>
-              <button class="btn sec" data-module="give_access" data-prefill="${f.id}">✅ Obuna bo'limida ochish</button>
-              <button class="btn sec" data-module="discount">🎁 Chegirma boshqaruvi</button>
-              <button class="btn sec" data-module="broadcast">📢 Ommaviy xabar</button>
-              <button class="btn danger" data-module="delete_user" data-prefill="${f.id}">🗑 Foydalanuvchini o'chirish</button>
+              <button class="btn sec" data-module="give_access" data-prefill="${f.id}" data-uback="${f.id}">✅ Obuna berish</button>
+              <button class="btn sec" data-module="discount" data-prefill="${f.id}" data-uback="${f.id}">🎁 Shu foydalanuvchiga chegirma</button>
+              <button class="btn danger" data-module="delete_user" data-prefill="${f.id}" data-uback="${f.id}">🗑 Foydalanuvchini o'chirish</button>
             </div></details>
         </div></section>`;
     }
@@ -959,6 +969,24 @@
     }
     function moduleTitle(key){ const m=(state.overview.modules||[]).find(x=>x.key===key); return m?`${m.icon} ${m.title}`:"Boshqaruv"; }
 
+    /* Profil kontekstida ochilgan bo'lim sarlavhasi: kim uchun ishlayotganimiz
+       ko'rinib tursin. Kontekst bo'lmasa oddiy izoh qoladi. */
+    function moduleSub(fallback){
+      const u=state.drawerBack&&state.activeUser;
+      return u ? `${u.name} · ${u.id}` : (fallback||"");
+    }
+
+    /* Telegram chatini ochish faqat username bo'lsa ishlaydi: Mini App ichidan
+       `tg://user?id=` ishonchli emas, shuning uchun tugma username bo'lmasa
+       umuman ko'rsatilmaydi. */
+    function openUserChat(username){
+      const clean=String(username||"").replace(/^@/,"").trim();
+      if(!clean) return toast("Bu foydalanuvchida username yo'q");
+      const url="https://t.me/"+clean;
+      try{ if(tg&&tg.openTelegramLink){ tg.openTelegramLink(url); return; } }catch(e){}
+      try{ window.open(url,"_blank"); }catch(e){ toast("Chatni ochib bo'lmadi"); }
+    }
+
     async function openModule(key,prefill){
       state.activeModule=key;
       if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
@@ -966,7 +994,7 @@
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
-      const map={prices:renderPrices,course_access:renderCourseAccess,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount"),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      const map={prices:renderPrices,course_access:renderCourseAccess,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -1343,8 +1371,13 @@
         <div class="kv"><span>Yuborildi</span><b>${esc(i.sent||0)}</b><span>Xato</span><b>${esc(i.failed||0)}</b><span>Vaqt</span><b>${esc(i.send_at||"—")}</b></div>
         <p>${esc(i.text||"")}</p></div>`;
     }
-    function renderCampaign(d,kind){
+    function renderCampaign(d,kind,prefill){
       state.cm={content_type:"text",media_file_id:null};
+      // Profildan ochilgan chegirma bitta foydalanuvchiga tegishli bo'ladi.
+      // Backend `target_telegram_id` ni allaqachon qo'llab-quvvatlaydi
+      // (discount_service, discount_notification_service), shuning uchun
+      // segment tanlash o'rniga aniq target ko'rsatiladi.
+      const targetId = kind==="discount" ? (prefill||"") : "";
       const cfg={ad:["📣 Reklama kampaniyasi","ads","Segment + media + knopka bilan reklama."],release_feedback:["🆕 Yangilik fikri","release_feedback","Yangilik fikri baholash oqimi bilan."],discount:["🎁 Chegirma","discounts","Segment auditoriyaga chegirma."]}[kind];
       const rows=((d.campaigns||{})[cfg[1]]||[]);
       const sel=(id,label,opts)=>`<div class="frow"><label>${label}</label><select id="${id}" class="select">${opts.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>`;
@@ -1365,24 +1398,29 @@
           <div class="frow two"><div><label>Necha marta (rounds)</label><input id="cmRounds" class="input" type="number" min="1" max="10" value="1"></div>
             <div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div></div>`;
       } else if(kind==="discount"){
+        const audience = targetId
+          ? `<input type="hidden" id="cmTarget" value="${esc(targetId)}">
+             <div class="ncnote">Bu chegirma faqat <b>${esc((state.activeUser&&state.activeUser.name)||targetId)}</b> · ${esc(targetId)} uchun amal qiladi. Segment tanlash kerak emas.</div>
+             <label class="ncsw"><input type="checkbox" id="cmNotify" checked> Foydalanuvchiga chegirma haqida xabar yuborilsin</label>`
+          : `${sel("cm_status","👤 Auditoriya status",[["","Hammasi"],["free","Bepul"],["trial","Sinov"],["active","Faol"],["expired","Tugagan"]])}
+             ${sel("cm_language","🌐 Til",[["","Hammasi"],["tj","TJ"],["uz","UZ"],["ru","RU"]])}
+             ${sel("cm_level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"]])}
+             ${sel("cm_payment_method","🏦 To'lov usuli",[["","Hammasi"],["visa","Visa"],["alipay","Alipay"],["wechat","WeChat"]])}
+             ${sel("cm_plan","📦 Tarif",[["","Hammasi"],["10_days","10 kun"],["1_month","1 oy"]])}
+             <div class="frow"><label>Kvota (0 = cheksiz)</label><input id="cmQuota" class="input" type="number" min="0" value="0"></div>`;
         form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
           <div class="frow"><label>Sabab / matn</label><textarea id="cmText" class="textarea" maxlength="500"></textarea></div>
           <div class="frow two"><div><label>Chegirma %</label><input id="cmPercent" class="input" type="number" min="1" max="90" value="20"></div>
             <div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div></div>
-          ${sel("cm_status","👤 Auditoriya status",[["","Hammasi"],["free","Bepul"],["trial","Sinov"],["active","Faol"],["expired","Tugagan"]])}
-          ${sel("cm_language","🌐 Til",[["","Hammasi"],["tj","TJ"],["uz","UZ"],["ru","RU"]])}
-          ${sel("cm_level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"]])}
-          ${sel("cm_payment_method","🏦 To'lov usuli",[["","Hammasi"],["visa","Visa"],["alipay","Alipay"],["wechat","WeChat"]])}
-          ${sel("cm_plan","📦 Tarif",[["","Hammasi"],["10_days","10 kun"],["1_month","1 oy"]])}
-          <div class="frow"><label>Kvota (0 = cheksiz)</label><input id="cmQuota" class="input" type="number" min="0" value="0"></div>`;
+          ${audience}`;
       } else {
         form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
           <div class="frow"><label>Matn</label><textarea id="cmText" class="textarea" maxlength="3500"></textarea></div>
           <div class="frow two"><div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div>
             <div><label>Xususiyat kaliti</label><input id="cmFeature" class="input" value="general"></div></div>`;
       }
-      openDrawer(cfg[0],cfg[2],`<div class="panel">
-        <div class="mcard"><h3>➕ Yangi ${kind==="discount"?"chegirma":kind==="ad"?"reklama":"kampaniya"}</h3>${form}
+      openDrawer(cfg[0],targetId?moduleSub(cfg[2]):cfg[2],`<div class="panel">
+        <div class="mcard"><h3>➕ ${targetId?"Shu foydalanuvchiga chegirma":"Yangi "+(kind==="discount"?"chegirma":kind==="ad"?"reklama":"kampaniya")}</h3>${form}
           <button class="btn" data-cmcreate="${kind}">Yaratish</button></div>
         ${rows.map(i=>campaignCard(i,kind)).join("")||"<p class='empty'>Hali yozuv yo'q.</p>"}</div>`);
       bindCampaign(kind);
@@ -1417,9 +1455,17 @@
         p.rounds=$("cmRounds").value;
       } else if(kind==="discount"){
         p.percent=$("cmPercent").value;
-        p.status=$("cm_status").value; const lng=$("cm_language").value; p.languages=lng?[lng]:[];
-        p.level=$("cm_level").value; p.payment_method=$("cm_payment_method").value; p.plan=$("cm_plan").value;
-        p.quota_total=$("cmQuota").value;
+        const target=$("cmTarget");
+        if(target && target.value){
+          // Bitta foydalanuvchiga chegirma: segment maydonlari yuborilmaydi —
+          // Telegram bot admin oqimidagi bilan bir xil xatti-harakat.
+          p.target_telegram_id=target.value;
+          p.notify_enabled=$("cmNotify") ? $("cmNotify").checked : false;
+        } else {
+          p.status=$("cm_status").value; const lng=$("cm_language").value; p.languages=lng?[lng]:[];
+          p.level=$("cm_level").value; p.payment_method=$("cm_payment_method").value; p.plan=$("cm_plan").value;
+          p.quota_total=$("cmQuota").value;
+        }
       } else { p.feature_key=$("cmFeature").value; }
       return apiPost("/api/admin-miniapp/campaigns/create",p);
     }
@@ -1459,7 +1505,7 @@
       </div>`);
     }
     function renderGiveAccess(prefill){
-      openDrawer("✅ Obuna berish","Foydalanuvchi ID va istalgan muddatni kiriting",`<div class="panel"><div class="mcard">
+      openDrawer("✅ Obuna berish",moduleSub("Foydalanuvchi ID va istalgan muddatni kiriting"),`<div class="panel"><div class="mcard">
         <div class="frow"><label>Telegram ID</label><input id="gaId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
         ${durationControlHtml("gaDays")}
         <button class="btn" data-gasave>Paid active qilish</button></div></div>`);
@@ -1472,7 +1518,7 @@
         <button class="btn" data-umsend="${esc(id)}">Yuborish</button></div></div>`);
     }
     function renderDeleteUser(prefill){
-      openDrawer("🗑 Foydalanuvchini o'chirish","Xavfli amal: ID bilan tasdiqlanadi",`<div class="panel">
+      openDrawer("🗑 Foydalanuvchini o'chirish",moduleSub("Xavfli amal: ID bilan tasdiqlanadi"),`<div class="panel">
         <div class="danger-note">Bu foydalanuvchi va unga bog'liq BARCHA ma'lumotni (to'lov, kurs, xabar, fikr, referal, AI limit) o'chiradi. Qaytarib bo'lmaydi.</div>
         <div class="mcard"><div class="frow"><label>Telegram ID</label><input id="delId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
           <div class="frow"><label>Tasdiq uchun shu IDni qayta yozing</label><input id="delConfirm" class="input" inputmode="numeric"></div>
@@ -1667,9 +1713,16 @@
       if((el=T("[data-pay]"))) return reviewPayment(el);
       if((el=T("[data-duration-target]"))){ const input=$(el.dataset.durationTarget); if(input) input.value=el.dataset.durationDays; return; }
       if((el=T("[data-copy]"))) return copyText(el.dataset.copy,"Telegram ID nusxalandi");
-      if((el=T("[data-umsg]"))) return renderUserMessage(el.dataset.umsg,el.dataset.uname);
+      if((el=T("[data-umsg]"))){ state.drawerBack=(()=>openUser(el.dataset.umsg)); return renderUserMessage(el.dataset.umsg,el.dataset.uname); }
       if((el=T("[data-umsend]"))){ const text=($("umText").value||"").trim(); if(text.length<2){ toast("Matn juda qisqa"); return; } el.disabled=true; return apiPost("/api/admin-miniapp/users/message",{telegram_id:Number(el.dataset.umsend),text,translate:$("umTranslate").checked}).then(()=>{closeDrawer();toast("Xabar yuborildi");}).catch(x=>{toast(apiErr(x,"Xabar yuborilmadi"));el.disabled=false;}); }
-      if((el=T("[data-module]"))) return openModule(el.dataset.module,el.dataset.prefill);
+      if((el=T("[data-uchat]"))) return openUserChat(el.dataset.uchat);
+      if((el=T("[data-module]"))){
+        // `data-uback` bo'lsa bo'lim profil kontekstida ochiladi va orqaga
+        // qaytish tugmasi o'sha profilga olib boradi.
+        const back=el.dataset.uback;
+        state.drawerBack = back ? (()=>openUser(back)) : null;
+        return openModule(el.dataset.module,el.dataset.prefill);
+      }
       if((el=T("[data-uaccess]"))){ el.disabled=true; return grantAccess(el.dataset.uaccess,$("qaDays").value,{name:el.dataset.uname,currentEnd:el.dataset.currentEnd,refreshUser:true}).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
       if((el=T("[data-user]"))) return openUser(el.dataset.user);
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
@@ -1708,6 +1761,7 @@
         if(n==="copy-report") return copyReport();
         if(n==="upload-ca"){ $("caFile").click(); return; }
         if(n==="close-drawer") return closeDrawer();
+        if(n==="drawer-back") return drawerBack();
       }
     });
 

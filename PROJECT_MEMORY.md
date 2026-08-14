@@ -5849,6 +5849,44 @@ Risk:
 
 ---
 
+### 2026-08-14 — Admin Mini App: profil konteksti va bitta userga chegirma
+
+Changed:
+- `admin.html` — drawer sarlavhasiga `←` tugmasi (`state.drawerBack`).
+  Profildan ochilgan bo'lim endi o'sha profilga qaytadi; sarlavhada
+  `moduleSub()` orqali "kim uchun" ko'rinadi.
+- Profil amallari: `💬 Telegram chatini ochish` (faqat username bo'lsa),
+  `🎁 Shu foydalanuvchiga chegirma`. `📢 Ommaviy xabar` profildan olib
+  tashlandi — u segmentga yuboradi, userga emas (global ro'yxatda qoldi).
+- `renderCampaign(d, kind, prefill)` — chegirma profildan ochilsa segment
+  tanlash o'rniga aniq target va "xabar yuborilsin" belgisi chiqadi.
+- `main.py` `/api/admin-miniapp/campaigns/create` — `target_telegram_id` va
+  `notify_enabled` qabul qiladi; target bo'lsa segment filtrlari `None`.
+
+Why:
+- Bo'lim profil ustiga ochilib, profil yo'qolardi va qaytish yo'li yo'q edi.
+- Bitta foydalanuvchiga chegirma **backendda allaqachon bor edi**
+  (`DiscountCampaign.target_telegram_id`, `discount_service.py:202`,
+  `discount_notification_service.py:107`, bot admin oqimi
+  `admin_discount.py:501`) — faqat Mini App uni ochmagan. Yangi biznes-mantiq
+  yozilmadi.
+
+Files touched:
+- `app/static/admin.html`, `app/main.py` (+100 / −31)
+
+Risk:
+- **To'lov/chegirma logikasi:** target bo'lganda segment filtrlari tozalanadi —
+  bot admin oqimidagi bilan bir xil. Mavjud segment chegirmalari oqimi
+  o'zgarmadi (simulyatsiya bilan tekshirildi).
+- `notify_enabled=True` bo'lsa xabar mavjud fon vazifasi orqali ketadi
+  (`main.py:440` → `send_due_notifications`). Yangi yuborish yo'li yo'q.
+- Mini App'dan Telegram chatini ochish faqat username bo'lsa ishlaydi —
+  `tg://user?id=` ishonchsiz. Usernamesiz userlarda tugma o'rniga izoh va
+  mavjud "Shaxsiy xabar" tugmasi qoladi.
+- Migration yo'q — `target_telegram_id` ustuni bazada bor.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
