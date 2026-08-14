@@ -178,6 +178,16 @@ button{cursor:pointer}
 .spromo-dots{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:5px}
 .spromo-dots i{width:5px;height:5px;border-radius:50%;background:var(--line);transition:width .3s,background .3s}
 .spromo-dots i.on{width:16px;border-radius:6px;background:var(--cin)}
+/* sales_value_v1: treatment paywall is a single outcome card, not a carousel */
+.sales-offer{display:grid;gap:11px}
+.sales-offer-head{text-align:center;padding:2px 8px 0}.sales-offer-mark{width:54px;height:54px;border-radius:16px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:27px;margin:0 auto 10px}
+.sales-offer-head h2{font-size:21px;line-height:1.28;margin:0;color:var(--ink)}.sales-offer-head p{font-size:13px;line-height:1.5;color:var(--ink2);margin:7px 0 0}
+.sales-proof,.sales-next{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px}
+.sales-proof-label,.sales-next-label{display:block;color:var(--cin2);font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+.sales-outcomes{display:grid;gap:7px}.sales-outcome-row{display:grid;grid-template-columns:minmax(70px,auto) 1fr;align-items:center;gap:10px;text-align:left;padding:8px 9px;border-radius:11px;background:var(--paper)}
+.sales-zh{font-size:22px;color:var(--ink);white-space:nowrap}.sales-outcome-copy{min-width:0}.sales-py{display:block;font-size:12px;color:var(--cin2);font-weight:700;line-height:1.3}.sales-tr{display:block;font-size:12px;color:var(--ink2);line-height:1.35;margin-top:1px}
+.sales-next{background:var(--cinbg);border-color:rgba(194,64,58,.22)}.sales-next h3{font-size:14px;line-height:1.4;margin:0 0 8px;color:var(--ink)}.sales-next-example{display:flex;align-items:center;gap:11px;text-align:left}.sales-next-example .sales-zh{font-size:25px}
+.sales-benefits{display:grid;gap:7px}.sales-benefit{display:flex;align-items:center;gap:9px;font-size:13px;line-height:1.4;color:var(--ink2);padding:3px 2px}.sales-benefit i{font-size:18px;color:var(--jade);flex-shrink:0}
 .ftop{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
 .fx{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
 .fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
@@ -483,6 +493,15 @@ button{cursor:pointer}
 @keyframes wspin{to{transform:rotate(360deg)}}
 .levelup{position:fixed;inset:0;background:var(--ink);z-index:50;display:none;flex-direction:column;max-width:480px;margin:0 auto;color:#fff;overflow:hidden;padding-top:var(--safe-t)}
 .levelup.on{display:flex}
+.levelup.sales-bridge{background:radial-gradient(120% 80% at 50% 0,rgba(224,74,64,.3),transparent 58%),var(--ink)}
+.levelup.sales-bridge .lu-rays{opacity:.13}.levelup.sales-bridge .lu-panda{display:none}.levelup.sales-bridge .lu-stage{justify-content:flex-start;overflow-y:auto;padding:22px 16px 14px}
+.sales-bridge-wrap{width:100%;max-width:390px;display:grid;gap:11px;margin:auto 0;text-align:left}
+.sales-bridge-kicker{justify-self:center;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);border-radius:999px;padding:6px 11px;color:var(--gold);font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.levelup .sales-bridge-wrap h2{text-align:center;font-size:24px;line-height:1.25;margin:0;color:#fff}.levelup .sales-bridge-sub{text-align:center;font-size:13px;line-height:1.45;color:rgba(255,255,255,.72);max-width:330px;margin:0 auto 2px}
+.levelup .sales-proof{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}.levelup .sales-proof-label,.levelup .sales-next-label{color:var(--gold)}
+.levelup .sales-outcome-row{background:rgba(255,255,255,.055)}.levelup .sales-zh{color:#fff}.levelup .sales-py{color:#F6C75B}.levelup .sales-tr{color:rgba(255,255,255,.7)}
+.levelup .sales-next{background:rgba(224,74,64,.16);border-color:rgba(255,255,255,.14)}.levelup .sales-next h3{color:#fff}.levelup .sales-secondary{width:100%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff;border-radius:13px;padding:13px;font-family:inherit;font-size:14px;font-weight:650}
+.levelup.sales-bridge .lu-cta{font-weight:700}
 .lu-rays{position:absolute;top:130px;left:50%;width:520px;height:520px;transform:translate(-50%,-50%);opacity:.5;animation:luspin 28s linear infinite}
 @keyframes luspin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 .lu-panda{width:92px;height:92px;position:absolute;top:56px;right:40px;z-index:2}
@@ -627,6 +646,7 @@ button{cursor:pointer}
 .decor{position:absolute;top:50%;margin-top:-26px;width:60px;height:60px;pointer-events:none;z-index:0;opacity:.95;filter:drop-shadow(0 3px 2px rgba(60,44,20,.14))}
 .decor.sm{width:44px;height:44px;margin-top:-16px}
 @media (prefers-reduced-motion:reduce){.mix-review,.sk-day.just .c,.sk-weekbar i,.sk-num,.sk-day.on .fmini,.quake,.lu-stage.rev>*,.sky-wind i,.pd-fly,.pd-cape,.pd-arms{animation:none!important}.sk-flame.lit svg,.sk-flame.lit:after,.sk-flick{animation:none!important}}
+@media (max-height:700px){.levelup.sales-bridge .lu-stage{padding-top:12px}.sales-bridge-wrap{gap:8px}.levelup .sales-bridge-wrap h2{font-size:21px}.sales-outcome-row{padding:6px 8px}.sales-zh{font-size:20px}}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20260812-3" rel="stylesheet">
 </head>
@@ -728,6 +748,11 @@ function botLinkUrl(suffix){return "https://t.me/"+BOT_USERNAME+(suffix||"")}
 function adoptBotUsername(d){if(d&&d.bot_username){BOT_USERNAME=String(d.bot_username).replace(/^@/,"")}}
 var PAY_SOURCE="v3_paywall";
 var CHECKOUT_NAVIGATING=false;
+var SALES_VALUE_V1_ID="sales_value_v1";
+var SALES_VALUE_SOURCE="v3_hsk1_checkpoint_outcome";
+var SALES_VALUE_STATE={outcome:null,nextOutcome:null,nextIdx:-1,bridgeAction:""};
+var SALES_PAYWALL_ACTIVE=false,SALES_PAYWALL_IMPRESSION="";
+var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 function _apiGet(url){return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}})}
 function _apiPost(url,body,opts){var init={method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)};if(opts&&opts.keepalive)init.keepalive=true;return fetch(url,init)}
@@ -744,6 +769,45 @@ function trackCourseEvent(event,payload,opts){
   body.level=body.level||((MAP&&MAP.level)||getSelectedLevel());
   body.session_id=body.session_id||COURSE_SESSION_ID;
   return _apiPost("/api/miniapp/event",body,opts).then(function(r){return r.json()}).catch(function(){return{ok:false}});
+}
+function salesValueOffer(){
+  var o=MAP&&MAP.sales_offer;
+  if(!o||o.experiment_id!==SALES_VALUE_V1_ID||o.arm!=="treatment"||o.trigger!=="hsk1_first_checkpoint")return null;
+  return o;
+}
+function salesValueTreatment(){return !!(salesValueOffer()&&!isPaidUser()&&normalizeLevel((MAP&&MAP.level)||"")==="hsk1")}
+function salesValueEventPayload(extra){
+  var o=salesValueOffer(),out={experiment_id:SALES_VALUE_V1_ID,trigger:(o&&o.trigger)||"hsk1_first_checkpoint",source:SALES_VALUE_SOURCE};
+  extra=extra||{};for(var k in extra)out[k]=extra[k];return out;
+}
+function salesValueExampleValid(x){
+  return !!(x&&x.zh&&x.pinyin&&x.translation&&["uz","ru","tj"].every(function(l){return !!x.translation[l]}));
+}
+function salesValueContentValid(outcome,nextOutcome){
+  return !!(outcome&&outcome.title&&["uz","ru","tj"].every(function(l){return !!outcome.title[l]})
+    &&Array.isArray(outcome.can_do)&&outcome.can_do.length===3&&outcome.can_do.every(salesValueExampleValid)
+    &&nextOutcome&&nextOutcome.title&&["uz","ru","tj"].every(function(l){return !!nextOutcome.title[l]})
+    &&salesValueExampleValid(nextOutcome.example));
+}
+function rememberSalesValueContent(data){
+  if(!data||!salesValueContentValid(data.outcome,data.next_outcome_preview))return false;
+  SALES_VALUE_STATE.outcome=data.outcome;SALES_VALUE_STATE.nextOutcome=data.next_outcome_preview;SALES_VALUE_PRIME_DONE=true;return true;
+}
+function salesValueCourseContext(ctx){return ctx==="lockedLesson"||!!(ctx&&typeof ctx==="object"&&(ctx.lesson||ctx.salesOffer))}
+function salesValueCoursePaywall(ctx){
+  return !!(salesValueTreatment()&&salesValueCourseContext(ctx)&&salesValueContentValid(SALES_VALUE_STATE.outcome,SALES_VALUE_STATE.nextOutcome));
+}
+function primeSalesValueContent(){
+  if(!salesValueTreatment())return Promise.resolve(false);
+  if(salesValueContentValid(SALES_VALUE_STATE.outcome,SALES_VALUE_STATE.nextOutcome)){SALES_VALUE_PRIME_DONE=true;return Promise.resolve(true)}
+  if(SALES_VALUE_PRIME_PROMISE)return SALES_VALUE_PRIME_PROMISE;
+  SALES_VALUE_PRIME_PROMISE=loadLessonData("hsk1",3).then(function(d){return rememberSalesValueContent(d)}).catch(function(){return false}).then(function(ok){SALES_VALUE_PRIME_DONE=true;SALES_VALUE_PRIME_PROMISE=null;return ok});
+  return SALES_VALUE_PRIME_PROMISE;
+}
+function hideSalesBridgeOverlay(){
+  var ov=$("#levelup");if(ov){ov.classList.remove("on");ov.classList.remove("cine");ov.classList.remove("sales-bridge")}
+  var cine=$("#lu-cine");if(cine)cine.innerHTML="";
+  App.exitFlow();App.show("course");renderAll();
 }
 function checkoutSourceContext(source){
   var s=String(source||"").toLowerCase();
@@ -843,20 +907,32 @@ var App={
   openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on");startSheetPromo("#sheet")},
   closeSheet:function(){$("#sheet").classList.remove("on");stopSheetPromo()},
   openPaywall:function(ctx){
-    if(typeof ctx==="object" && ctx.lesson){
+    if(salesValueTreatment()&&salesValueCourseContext(ctx)&&!salesValueContentValid(SALES_VALUE_STATE.outcome,SALES_VALUE_STATE.nextOutcome)&&!SALES_VALUE_PRIME_DONE){
+      primeSalesValueContent().then(function(){App.openPaywall(ctx)});return;
+    }
+    var sales=salesValueCoursePaywall(ctx);
+    if(sales){
+      PAY_SOURCE=SALES_VALUE_SOURCE;
+    }else if(typeof ctx==="object" && ctx.lesson){
       PAY_SOURCE="v3_locked_lesson";
     }else{
       PAY_SOURCE=ctx==="lockedLesson"?"v3_locked_lesson":(ctx==="profile"?"v3_profile":(ctx==="pronLimit"?"v3_pronunciation_limit":"v3_paywall"));
     }
     trackCourseEvent("paywall_seen",{source:PAY_SOURCE,dedupe_key:lessonEventKey("paywall_seen",PAY_SOURCE,Date.now())});
+    SALES_PAYWALL_ACTIVE=sales;SALES_PAYWALL_IMPRESSION=sales?["sales_offer",COURSE_SESSION_ID,Date.now()].join(":"):"";
+    if(sales)trackCourseEvent("sales_offer_seen",salesValueEventPayload({dedupe_key:SALES_PAYWALL_IMPRESSION}));
     $("#paywall-body").innerHTML=paywallHtml(ctx);
     $("#paywall").classList.add("on");startSheetPromo("#paywall");
   },
-  closePaywall:function(){$("#paywall").classList.remove("on");stopSheetPromo()},
+  closePaywall:function(){
+    if(SALES_PAYWALL_ACTIVE)trackCourseEvent("sales_offer_dismissed",salesValueEventPayload({dedupe_key:SALES_PAYWALL_IMPRESSION+":dismissed"}));
+    SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";$("#paywall").classList.remove("on");stopSheetPromo();
+  },
   goPay:function(src){
     if(CHECKOUT_NAVIGATING)return;
     CHECKOUT_NAVIGATING=true;
     var source=src||PAY_SOURCE||"v3_paywall";
+    SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";
     var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription";
     var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
     trackCheckoutOpenedForRedirect(source,clickId);
@@ -882,6 +958,7 @@ var App={
   },
   closeWriter:function(){var ov=$("#writeov"),fr=$("#writeframe");ov.classList.remove("on");ov.classList.remove("loading");try{fr.onload=null;fr.src="about:blank"}catch(e){}},
   showLevelUp:function(type,data,extra){
+    $("#levelup").classList.remove("sales-bridge");
     var lu={ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",cpH:"Урок {n} полностью пройден!",cpP:"Весь урок ваш: слова, диалог и грамматика. Теперь вы можете использовать их в речи.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
       uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",cpH:"{n}-dars to'liq yakunlandi!",cpP:"Butun dars sizniki: so'zlar, dialog va grammatika. Endi ularni gapda ishlata olasiz.",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
       tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",cpH:"Дарси {n} пурра анҷом ёфт!",cpP:"Тамоми дарс аз они шумост: калимаҳо, гуфтугӯ ва грамматика. Акнун онҳоро дар нутқ истифода бурда метавонед.",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}}[LANG];
@@ -999,9 +1076,41 @@ var App={
   },
   /* Reytingda haqiqatan ko'tarilgan bo'lsa — reyting ekraniga, aks holda
      o'quvchi kurs xaritasiga qaytadi (bo'sh reyting oynasi ochilmaydi). */
-  openCheckpointNext:function(){window._pendingStreak=null;pendingRankUp=null;App.closeLevelUp("checkpoint_next")},
+  openCheckpointNext:function(){
+    if(App.showSalesBridge())return;
+    window._pendingStreak=null;pendingRankUp=null;App.closeLevelUp("checkpoint_next");
+  },
+  showSalesBridge:function(){
+    var rawIdx=window._pendingCheckpointNextIdx,nextIdx=typeof rawIdx==="number"?rawIdx:-1;
+    rememberSalesValueContent({outcome:Flow.salesOutcome,next_outcome_preview:Flow.salesNextOutcome});
+    if(!salesValueTreatment()||nextIdx<0||!allLessons()[nextIdx]
+      ||!salesValueContentValid(SALES_VALUE_STATE.outcome,SALES_VALUE_STATE.nextOutcome)){
+      if(salesValueTreatment())clog("sales_offer_missing_outcome","",{next_idx:nextIdx});
+      return false;
+    }
+    SALES_VALUE_STATE.nextIdx=nextIdx;SALES_VALUE_STATE.bridgeAction="";
+    window._pendingCheckpointNextIdx=null;window._pendingLessonEndAd=0;window._pendingDesktopLessonPromo=0;
+    window._pendingStreak=null;pendingRankUp=null;App.exitFlow();
+    var ov=$("#levelup");ov.classList.remove("cine");ov.classList.add("sales-bridge");ov.classList.add("on");
+    $("#lu-panda").innerHTML="";$("#lu-stage").innerHTML=salesBridgeHtml();
+    $("#lu-cta").setAttribute("onclick","App.openSalesOfferPaywall()");
+    $("#lu-cta").innerHTML='<i class="ti ti-lock-open"></i> '+esc(salesValueCopy().unlock);
+    trackCourseEvent("sales_bridge_seen",salesValueEventPayload({lesson_order:3,dedupe_key:lessonEventKey("sales_bridge_seen",3,SALES_VALUE_V1_ID)}));
+    return true;
+  },
+  openSalesOfferPaywall:function(){
+    if(SALES_VALUE_STATE.bridgeAction)return;SALES_VALUE_STATE.bridgeAction="unlock_path";
+    trackCourseEvent("sales_bridge_cta",salesValueEventPayload({action:"unlock_path",lesson_order:3,dedupe_key:lessonEventKey("sales_bridge_cta",3,"unlock_path")}));
+    hideSalesBridgeOverlay();App.openPaywall({salesOffer:true});
+  },
+  openSalesPreview:function(){
+    if(SALES_VALUE_STATE.bridgeAction)return;SALES_VALUE_STATE.bridgeAction="free_preview";
+    trackCourseEvent("sales_bridge_cta",salesValueEventPayload({action:"free_preview",lesson_order:3,dedupe_key:lessonEventKey("sales_bridge_cta",3,"free_preview")}));
+    var idx=SALES_VALUE_STATE.nextIdx;SALES_VALUE_STATE.nextIdx=-1;hideSalesBridgeOverlay();
+    if(idx>=0&&allLessons()[idx])setTimeout(function(){openLessonSheet(idx)},80);
+  },
   closeLevelUp:function(dest){
-    var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");
+    var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");ov.classList.remove("sales-bridge");
     var cine=$("#lu-cine");if(cine)cine.innerHTML="";
     App.exitFlow();
     var desktopLesson=Number(window._pendingDesktopLessonPromo)||0;
@@ -1961,7 +2070,7 @@ function showSkipResult(pct,idx){
 }
 
 /* ---------- Lesson flow engine ---------- */
-var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],exitRequired:[]};
+var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],exitRequired:[],salesOutcome:null,salesNextOutcome:null};
 var Foundation={active:false,data:null,queue:[],i:0,answered:false,mastery:{},attempts:{},completed:false,speakingBonus:false,required:false,afterComplete:null,finishing:false,_micSession:null,_audioTimer:null,_renderToken:0};
 Foundation.stopAudio=function(){Foundation._renderToken++;if(Foundation._audioTimer)clearTimeout(Foundation._audioTimer);Foundation._audioTimer=null;stopTourAudio();stopSpeak()};
 Foundation.scheduleAudio=function(text,delay){var token=Foundation._renderToken;Foundation._audioTimer=setTimeout(function(){Foundation._audioTimer=null;if(Foundation.active&&token===Foundation._renderToken)foundationSpeak(text)},delay)};
@@ -2308,6 +2417,7 @@ function startLesson(idx,opts){
   var lv=MAP.level||"hsk1";
   loadLessonData(lv,l.n).then(function(d){
     Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
+    Flow.salesOutcome=d.outcome||null;Flow.salesNextOutcome=d.next_outcome_preview||null;rememberSalesValueContent(d);
     Flow.lessonAdRef=opts.accessRef||"";
     setLessonFlowControls();
     /* Eski levelardagi preview_half serverdan kelsa saqlanadi. HSK1 checkpoint
@@ -4146,6 +4256,39 @@ function renderProfile(){
   if(window.PompDesktopDownload&&window.PompDesktopDownload.renderProfile)window.PompDesktopDownload.renderProfile();
 }
 
+/* ---------- sales_value_v1 outcome bridge + paywall ---------- */
+function salesValueCopy(){
+  return ({
+    uz:{kicker:"HSK 1 · 1-dars natijasi",bridgeSub:"Siz bu iboralarni tanidingiz va mini-dialogni to'g'ri tuzdingiz.",proof:"Siz allaqachon uddaladingiz",next:"Keyingi HSK natijasi",unlock:"HSK yo'lini to'liq ochish",preview:"Keyingi darsdan bepul namuna",payTitle:"HSK maqsadingizgacha aniq yo'l",payIntro:"Birinchi natijani oldingiz. Endi HSK yo'lini uzmasdan davom ettiring.",sampleEnded:"Bepul namuna yakunlandi. HSK yo'lingizni davom ettirish uchun to'liq kursni oching.",benefits:["Bosqichma-bosqich HSK kursi","Gapirishda aniq tuzatish","Xatolarni o'zlashtirguncha qayta mashq"],checkoutHint:"«HSK yo'lini to'liq ochish» to'lov sahifasini ochadi. To'lov tasdiqlangach, barcha darslar shu yerda ochiladi."},
+    ru:{kicker:"HSK 1 · результат урока 1",bridgeSub:"Вы узнали эти фразы и правильно собрали мини-диалог.",proof:"Вы уже умеете",next:"Следующий результат HSK",unlock:"Открыть весь путь HSK",preview:"Бесплатный фрагмент следующего урока",payTitle:"Понятный путь к вашей цели HSK",payIntro:"Первый результат уже получен. Продолжайте путь HSK без паузы.",sampleEnded:"Бесплатный фрагмент закончился. Откройте полный курс, чтобы продолжить путь HSK.",benefits:["Пошаговый курс HSK","Точные исправления речи","Повторение ошибок до усвоения"],checkoutHint:"«Открыть весь путь HSK» откроет страницу оплаты. После подтверждения все уроки откроются прямо здесь."},
+    tj:{kicker:"HSK 1 · натиҷаи дарси 1",bridgeSub:"Шумо ин ибораҳоро шинохтед ва гуфтугӯи кӯтоҳро дуруст сохтед.",proof:"Шумо аллакай метавонед",next:"Натиҷаи навбатии HSK",unlock:"Кушодани пурраи роҳи HSK",preview:"Намунаи ройгони дарси оянда",payTitle:"Роҳи равшан то ҳадафи HSK-и шумо",payIntro:"Натиҷаи аввалро гирифтед. Роҳи HSK-ро бе таваққуф идома диҳед.",sampleEnded:"Намунаи ройгон анҷом ёфт. Барои идомаи роҳи HSK курси пурраро кушоед.",benefits:["Курси қадам ба қадами HSK","Ислоҳи дақиқи нутқ","Такрори хатоҳо то азхудкунӣ"],checkoutHint:"«Кушодани пурраи роҳи HSK» саҳифаи пардохтро мекушояд. Пас аз тасдиқ ҳамаи дарсҳо ҳамин ҷо кушода мешаванд."}
+  })[LANG]||{};
+}
+function salesOutcomeRowsHtml(outcome){
+  return '<div class="sales-outcomes">'+(outcome.can_do||[]).map(function(x){return '<div class="sales-outcome-row"><span class="sales-zh han">'+esc(x.zh)+'</span><span class="sales-outcome-copy"><b class="sales-py">'+esc(x.pinyin)+'</b><small class="sales-tr">'+esc(tr(x.translation))+'</small></span></div>'}).join("")+'</div>';
+}
+function salesNextHtml(next,c){
+  var ex=next.example;
+  return '<div class="sales-next"><span class="sales-next-label">'+esc(c.next)+'</span><h3>'+esc(tr(next.title))+'</h3><div class="sales-next-example"><span class="sales-zh han">'+esc(ex.zh)+'</span><span class="sales-outcome-copy"><b class="sales-py">'+esc(ex.pinyin)+'</b><small class="sales-tr">'+esc(tr(ex.translation))+'</small></span></div></div>';
+}
+function salesBridgeHtml(){
+  var c=salesValueCopy(),outcome=SALES_VALUE_STATE.outcome,next=SALES_VALUE_STATE.nextOutcome;
+  return '<div class="sales-bridge-wrap"><span class="sales-bridge-kicker">'+esc(c.kicker)+'</span><h2>'+esc(tr(outcome.title))+'</h2><p class="sales-bridge-sub">'+esc(c.bridgeSub)+'</p>'
+    +'<div class="sales-proof"><span class="sales-proof-label">'+esc(c.proof)+'</span>'+salesOutcomeRowsHtml(outcome)+'</div>'
+    +salesNextHtml(next,c)
+    +'<button class="sales-secondary" onclick="App.openSalesPreview()"><i class="ti ti-player-play"></i> '+esc(c.preview)+'</button></div>';
+}
+function salesOutcomePaywallHtml(ctx){
+  var c=salesValueCopy(),outcome=SALES_VALUE_STATE.outcome,next=SALES_VALUE_STATE.nextOutcome;
+  var cutoff=ctx==="lockedLesson"||!!(ctx&&typeof ctx==="object"&&ctx.lesson);
+  return '<div class="sales-offer"><div class="sales-offer-head"><div class="sales-offer-mark han">会</div><h2>'+esc(c.payTitle)+'</h2><p>'+esc(cutoff?c.sampleEnded:c.payIntro)+'</p></div>'
+    +'<div class="sales-proof"><span class="sales-proof-label">'+esc(c.proof)+'</span>'+salesOutcomeRowsHtml(outcome)+'</div>'
+    +salesNextHtml(next,c)
+    +'<div class="sales-benefits">'+c.benefits.map(function(x){return '<div class="sales-benefit"><i class="ti ti-circle-check-filled"></i><span>'+esc(x)+'</span></div>'}).join("")+'</div>'
+    +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+esc(c.unlock)+'</button>'
+    +'<div class="tr" style="margin:0 6px;text-align:center;color:var(--ink2);line-height:1.5;font-size:12px">'+esc(c.checkoutHint)+'</div></div>';
+}
+
 /* ---------- Paywall ---------- */
 function payHintHtml(){
   var s={ru:"«Оформить подписку» откроет страницу оплаты. После подтверждения все уроки откроются прямо здесь.",
@@ -4192,6 +4335,7 @@ function payWhyHtml(ctx){
   return '<div class="paywhy"><i class="ti ti-info-circle"></i><span>'+esc(why)+'</span></div>';
 }
 function paywallHtml(ctx){
+  if(salesValueCoursePaywall(ctx))return salesOutcomePaywallHtml(ctx);
   var t=T();var ctxTitle=getPaywallTitle(ctx);
   var showSubtitle=typeof ctx!=="object" || !ctx.lesson;
   return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:14px;color:var(--ink)">'+esc(ctxTitle)+'</div>'+(showSubtitle?'<div class="tr">'+t.paySub+'</div>':'')+'</div>'

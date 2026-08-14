@@ -219,7 +219,7 @@ def mock_desktop_release_status(page, payload=None):
     )
 
 
-def mock_course_map(page, *, level="hsk1", language="uz"):
+def mock_course_map(page, *, level="hsk1", language="uz", sales_offer=None):
     """Static rejimda ``/api/v3/map`` ni haqiqiy statik map fayli asosida
     (auth qilingan, bepul user) mock qiladi — real backend'siz sahifa render'i
     uchun."""
@@ -238,6 +238,8 @@ def mock_course_map(page, *, level="hsk1", language="uz"):
         "referral_code": "",
     }
     data["notify"] = {"enabled": True}
+    if sales_offer is not None:
+        data["sales_offer"] = sales_offer
     page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
 
 
@@ -577,6 +579,173 @@ def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
     expect(page.locator("#paywall")).to_have_class(re.compile(r"\bon\b"))
     expect(page.locator("#paywall")).to_contain_text("Bepul darslaring tugadi")
     expect(page.locator("#paywall")).to_contain_text("Obuna bo'lish")
+
+
+def test_course_v3_sales_treatment_bridge_preview_and_cutoff_paywall(page):
+    events = []
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_learning_audio(page)
+    mock_course_map(
+        page,
+        sales_offer={
+            "experiment_id": "sales_value_v1",
+            "arm": "treatment",
+            "trigger": "hsk1_first_checkpoint",
+        },
+    )
+
+    def capture_event(route):
+        events.append(route.request.post_data_json)
+        json_response(route, {"ok": True})
+
+    page.route("**/api/miniapp/event", capture_event)
+    page.route(
+        "**/api/v3/lesson/complete",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "completed_lessons_count": 3,
+                "gamification": {
+                    "awarded_xp": 0,
+                    "streak": 1,
+                    "previous_streak": 1,
+                    "streak_updated": False,
+                },
+            },
+        ),
+    )
+    page.add_init_script("localStorage.clear(); localStorage.setItem('hsk_v3_onb', '1');")
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&lesson=3&onboarded=1"),
+        wait_until="networkidle",
+    )
+
+    page.evaluate(
+        """async () => {
+          const d = await loadLessonData('hsk1', 3);
+          Flow.lessonIdx = 2;
+          Flow.salesOutcome = d.outcome;
+          Flow.salesNextOutcome = d.next_outcome_preview;
+          applyLessonDone(allLessons()[2], {
+            completed_lessons_count: 3,
+            gamification: {
+              awarded_xp: 0,
+              streak: 1,
+              previous_streak: 1,
+              streak_updated: false
+            }
+          });
+        }"""
+    )
+    expect(page.locator("#lu-cta")).to_contain_text("Keyingi darsni ochish", timeout=6_000)
+    page.locator("#lu-cta").click()
+
+    bridge = page.locator("#levelup.sales-bridge")
+    expect(bridge).to_be_visible()
+    expect(bridge).to_contain_text("Birinchi xitoycha dialogingiz tayyor.")
+    expect(bridge).to_contain_text("你好")
+    expect(bridge).to_contain_text("nǐ hǎo")
+    expect(bridge).to_contain_text("Salom")
+    expect(bridge).to_contain_text("谢谢你！")
+    expect(bridge).to_contain_text("Xièxie nǐ!")
+    expect(bridge).to_contain_text("Senga rahmat!")
+    expect(bridge.locator(".sales-outcome-row")).to_have_count(3)
+    expect(bridge.locator(".sales-secondary")).to_contain_text(
+        "Keyingi darsdan bepul namuna"
+    )
+    assert page.evaluate("window._pendingLessonEndAd") == 0
+    assert page.evaluate("window._pendingDesktopLessonPromo") == 0
+
+    bridge.locator(".sales-secondary").click()
+    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#sheet")).to_contain_text("2-dars · 1-qism")
+    page.locator("#sheet .scta").click()
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+    page.wait_for_function("Flow.previewHalf === true && Flow.previewHalfAt > 0")
+    page.evaluate("Flow.i = Flow.previewHalfAt - 1; Flow.next()")
+
+    paywall = page.locator("#paywall")
+    expect(paywall).to_have_class(re.compile(r"\bon\b"))
+    expect(paywall).to_contain_text(
+        "Bepul namuna yakunlandi. HSK yo'lingizni davom ettirish uchun to'liq kursni oching."
+    )
+    expect(paywall).to_contain_text("HSK maqsadingizgacha aniq yo'l")
+    expect(paywall).to_contain_text("谢谢你！")
+    expect(paywall.locator(".spromo")).to_have_count(0)
+    expect(paywall.locator(".sales-offer .scta")).to_contain_text(
+        "HSK yo'lini to'liq ochish"
+    )
+    page.locator("#paywall .sx").click()
+    page.wait_for_timeout(100)
+
+    sales_events = [event for event in events if event["event"].startswith("sales_")]
+    assert {event["event"] for event in sales_events} >= {
+        "sales_bridge_seen",
+        "sales_bridge_cta",
+        "sales_offer_seen",
+        "sales_offer_dismissed",
+    }
+    cta = next(event for event in sales_events if event["event"] == "sales_bridge_cta")
+    assert cta["action"] == "free_preview"
+    assert all("arm" not in event for event in sales_events)
+
+
+def test_course_v3_sales_treatment_primary_opens_outcome_checkout(page):
+    events = []
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_learning_audio(page)
+    mock_course_map(
+        page,
+        sales_offer={
+            "experiment_id": "sales_value_v1",
+            "arm": "treatment",
+            "trigger": "hsk1_first_checkpoint",
+        },
+    )
+    def capture_event(route):
+        events.append(route.request.post_data_json)
+        json_response(route, {"ok": True})
+
+    page.route("**/api/miniapp/event", capture_event)
+    page.add_init_script("localStorage.clear(); localStorage.setItem('hsk_v3_onb', '1');")
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&lesson=3&onboarded=1"),
+        wait_until="networkidle",
+    )
+
+    shown = page.evaluate(
+        """async () => {
+          const d = await loadLessonData('hsk1', 3);
+          Flow.salesOutcome = d.outcome;
+          Flow.salesNextOutcome = d.next_outcome_preview;
+          const next = allLessons()[3];
+          next.status = 'current';
+          next.locked_premium = false;
+          next.preview_half = true;
+          window._pendingCheckpointNextIdx = 3;
+          window._pendingLessonEndAd = 3;
+          return App.showSalesBridge();
+        }"""
+    )
+    assert shown is True
+    page.locator("#lu-cta").click()
+
+    paywall = page.locator("#paywall")
+    expect(paywall).to_have_class(re.compile(r"\bon\b"))
+    expect(paywall).to_contain_text("HSK maqsadingizgacha aniq yo'l")
+    expect(paywall).to_contain_text("Birinchi natijani oldingiz")
+    expect(paywall.locator(".spromo")).to_have_count(0)
+    page.locator("#paywall .sales-offer .scta").click()
+    expect(page).to_have_url(
+        re.compile(r"/subscription\.html\?.*source=v3_hsk1_checkpoint_outcome")
+    )
+
+    cta = next(event for event in events if event.get("event") == "sales_bridge_cta")
+    assert cta["action"] == "unlock_path"
+    assert "arm" not in cta
 
 
 def test_course_v3_checkpoint_repair_resume_restores_exact_semantic_card(page):

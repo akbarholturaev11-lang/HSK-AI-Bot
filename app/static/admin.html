@@ -517,6 +517,7 @@
         bot_blocked_by_user:"Foydalanuvchi botni bloklagan", send_failed:"Xabar yuborilmadi",
         invalid_help_url:"Yordam linki noto'g'ri", invalid_contact:"Admin kontakt noto'g'ri",
         invalid_course_access_policy:"Kurs access rejimi yoki muddat noto'g'ri",
+        invalid_course_sales_experiment:"Sotuv tajribasi rejimi yoki foizi noto'g'ri",
         invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas",
         broadcast_text_too_long:"Matn juda uzun (media bilan max 1024)", media_too_large:"Fayl 25MB dan katta",
         unsupported_media:"Fayl turi qo'llab-quvvatlanmaydi", media_upload_failed:"Media yuklab bo'lmadi",
@@ -965,7 +966,7 @@
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
-      const map={prices:renderPrices,course_access:renderCourseAccess,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount"),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      const map={prices:renderPrices,course_access:renderCourseAccess,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount"),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -1029,6 +1030,37 @@
     function courseAccessModeUi(){
       const sel=$("courseAccessMode"), box=$("courseAccessDaysBox");
       if(box&&sel) box.style.display=sel.value==="free_until"?"grid":"none";
+    }
+    function salesExperimentStartedText(value){
+      if(!value) return "hali boshlanmagan";
+      try{return new Date(value).toLocaleString("uz-UZ",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}catch(e){return value}
+    }
+    function renderCourseSalesExperiment(d){
+      const se=d.sales_experiment||{experiment_id:"sales_value_v1",mode:"off",treatment_percent:50,started_at:null};
+      const mode=se.mode||"off", pct=Number(se.treatment_percent==null?50:se.treatment_percent);
+      const effectivePct=Number(se.effective_treatment_percent==null?pct:se.effective_treatment_percent);
+      openDrawer("🧭 HSK sotuv tajribasi","sales_value_v1 A/B assignment va xavfsiz rollout",`<div class="panel">
+        <div class="mcard">
+          <h3>Joriy holat</h3>
+          <p><b>${esc(se.experiment_id||"sales_value_v1")}</b> · ${esc(mode)} · treatment ${esc(effectivePct)}%</p>
+          <div class="tags">${tag(mode==="off"?"o‘chiq":mode==="shadow"?"shadow":mode==="treatment"?"100% treatment":"A/B faol",mode==="off"?"amber":mode==="shadow"?"blue":"green")}${tag("start: "+salesExperimentStartedText(se.started_at),"violet")}</div>
+        </div>
+        <div class="mcard">
+          <h3>Rollout</h3>
+          <p>Yangi, obunasiz HSK1 foydalanuvchilari serverda sticky SHA256 assignment oladi. <b>off</b> — kill switch; <b>shadow</b> — UI o‘zgarmaydi; <b>ab</b> — tanlangan foiz; <b>treatment</b> — to‘liq rollout.</p>
+          <div class="frow"><label>Rejim</label><select id="salesExperimentMode" class="select">
+            <option value="off"${mode==="off"?" selected":""}>off — darhol yashirish</option>
+            <option value="shadow"${mode==="shadow"?" selected":""}>shadow — faqat tekshiruv</option>
+            <option value="ab"${mode==="ab"?" selected":""}>ab — control/treatment</option>
+            <option value="treatment"${mode==="treatment"?" selected":""}>treatment — 100% rollout</option>
+          </select></div>
+          <div class="frow"><label>Treatment foizi</label><select id="salesExperimentPercent" class="select">
+            ${[0,50,90,100].map(v=>`<option value="${v}"${v===pct?" selected":""}>${v}%</option>`).join("")}
+          </select></div>
+          <div class="danger-note">Bir cohortni qayta boshlash uchun eski experiment ID ishlatilmaydi. Yangi testga yangi ID kerak.</div>
+          <button class="btn" data-sales-experiment-save>Saqlash</button>
+        </div>
+      </div>`);
     }
     function appPromoChipHtml(kind,key,label,active){
       return `<button type="button" class="chip ${active?"active":""}" data-ap-${kind}="${key}">${esc(label)}</button>`;
@@ -1644,6 +1676,7 @@
       if((el=T("[data-pdsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$("payDetails").value}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-casave]"))){ const sel=$("courseAccessMode"), days=$("courseAccessDays"); const payload={mode:sel?sel.value:"subscription"}; if(payload.mode==="free_until") payload.duration_days=Number(days&&days.value||0); el.disabled=true; return apiPost("/api/admin-miniapp/course-access/save",payload).then(()=>afterModule("Kurs access saqlandi")).catch(x=>{toast(apiErr(x,"Kurs access saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-sales-experiment-save]"))){ const mode=$("salesExperimentMode"), pct=$("salesExperimentPercent"); el.disabled=true; return apiPost("/api/admin-miniapp/course-sales-experiment/save",{mode:mode?mode.value:"off",treatment_percent:Number(pct&&pct.value||0)}).then(()=>afterModule("Sotuv tajribasi saqlandi")).catch(x=>{toast(apiErr(x,"Sotuv tajribasi saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-ap-placement],[data-ap-platform]"))) return appPromoToggleChip(el);
       if((el=T("[data-app-promo-media-upload]"))){ const input=$("apMediaFile"); if(input) input.click(); return; }
       if((el=T("[data-app-promo-media-clear]"))){ el.disabled=true; return clearAppPromoMedia().finally(()=>{if(el.isConnected)el.disabled=false;}); }

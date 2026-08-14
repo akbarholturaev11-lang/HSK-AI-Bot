@@ -93,6 +93,10 @@ from app.services.course_access_policy_service import (
     COURSE_ACCESS_SUBSCRIPTION,
     CourseAccessPolicyService,
 )
+from app.services.course_sales_experiment_service import (
+    SALES_EXPERIMENT_CLIENT_EVENTS,
+    CourseSalesExperimentService,
+)
 from app.services.course_ad_service import (
     COURSE_AD_ALLOWED_IMAGE_EXTENSIONS,
     COURSE_AD_ALLOWED_VIDEO_EXTENSIONS,
@@ -728,6 +732,9 @@ async def _admin_miniapp_management_payload(session) -> dict:
     blocked_partners = await partner_service.repo.list_by_status("blocked", limit=20)
     open_payouts = await partner_service.repo.list_open_payouts(limit=12)
     course_access = await CourseAccessPolicyService(session).get_payload()
+    sales_experiment = (
+        await CourseSalesExperimentService(session).get_settings()
+    ).public_payload()
     desktop_app_promo = await get_desktop_app_promo_settings(session)
 
     active_partner_rows = []
@@ -855,6 +862,7 @@ async def _admin_miniapp_management_payload(session) -> dict:
             "options": GEMINI_MODEL_OPTIONS,
         },
         "course_access": course_access,
+        "sales_experiment": sales_experiment,
         "desktop_app_promo": desktop_app_promo.payload(),
         "channels": {
             "enabled": await channels_service.is_enabled(),
@@ -1657,6 +1665,12 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             access_policy=access_policy,
         )
 
+        entry_source = _checkout_text(
+            request.query_params.get("source") or "course_v3",
+            40,
+        )
+        course_session_id = _checkout_text(request.query_params.get("sid"), 80) or None
+
         # Dars access oqimi admin policy orqali boshqariladi:
         # subscription (eski paywall), ads (reklama bilan davom), yoki free_until.
 
@@ -1664,14 +1678,24 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             event_name="miniapp_opened",
             telegram_id=telegram_id,
             user_id=getattr(user, "id", None),
-            source=_checkout_text(request.query_params.get("source") or "course_v3", 40),
+            source=entry_source,
             level=resolved_level,
-            session_id=_checkout_text(request.query_params.get("sid"), 80) or None,
+            session_id=course_session_id,
             dedupe_key=(
-                f"course-v3:miniapp-opened:{_checkout_text(request.query_params.get('sid'), 80)}"
-                if _checkout_text(request.query_params.get("sid"), 80)
+                f"course-v3:miniapp-opened:{course_session_id}"
+                if course_session_id
                 else f"course-v3:miniapp-opened:{resolved_level}:{datetime.now(timezone.utc).date().isoformat()}"
             ),
+        )
+        # Assignment analytics yozuvidan keyin reserve qilinadi. Aks holda
+        # umumiy analytics write rollback'i treatment contractini klientga
+        # qaytarib, uning server assignmentini yo'qotishi mumkin.
+        data["sales_offer"] = await CourseSalesExperimentService(session).resolve_offer(
+            user=user,
+            level=resolved_level,
+            access_policy=access_policy,
+            entry_source=entry_source,
+            session_id=course_session_id,
         )
         await session.commit()
         return JSONResponse(content=data)
@@ -2800,6 +2824,45 @@ async def admin_miniapp_course_access_save(request: Request):
         policy.free_until.isoformat() if policy.free_until else None,
     )
     return JSONResponse(content={"ok": True, "course_access": policy.public_payload()})
+
+
+@app.post("/api/admin-miniapp/course-sales-experiment/save")
+async def admin_miniapp_course_sales_experiment_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except (AttributeError, TypeError, ValueError):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_course_sales_experiment"},
+        )
+
+    async with async_session_maker() as session:
+        try:
+            experiment = await CourseSalesExperimentService(session).save_settings(
+                payload,
+                updated_by_telegram_id=telegram_id,
+            )
+        except ValueError:
+            await session.rollback()
+            return JSONResponse(
+                status_code=400,
+                content={"ok": False, "error": "invalid_course_sales_experiment"},
+            )
+        await session.commit()
+    logger.info(
+        "admin_course_sales_experiment_saved admin_id=%s mode=%s treatment_percent=%s started_at=%s",
+        telegram_id,
+        experiment.mode,
+        experiment.treatment_percent,
+        experiment.started_at.isoformat() if experiment.started_at else None,
+    )
+    return JSONResponse(
+        content={"ok": True, "sales_experiment": experiment.public_payload()}
+    )
 
 
 @app.post("/api/admin-miniapp/desktop-promo/save")
@@ -4758,16 +4821,41 @@ async def miniapp_event(request: Request):
 
         if event in analytics_service.CLIENT_EVENT_NAMES:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
-            trusted_payload = analytics_service.trusted_client_payload(payload, user)
+            if event in SALES_EXPERIMENT_CLIENT_EVENTS:
+                context = await CourseSalesExperimentService(
+                    session
+                ).trusted_event_context(
+                    user=user,
+                    event_name=event,
+                    payload=payload,
+                )
+                if not context.get("ok"):
+                    return context
+                trusted_payload = context["payload"]
+                source = context["source"]
+                level = context["level"]
+                lesson_order = context["lesson_order"]
+                dedupe_key = context["dedupe_key"]
+            else:
+                trusted_payload = analytics_service.trusted_client_payload(payload, user)
+                source = str(payload.get("source") or "course_miniapp")
+                level = str(payload.get("level") or "") or None
+                lesson_order = _positive_int(
+                    payload.get("lesson_order") or payload.get("lesson_id")
+                )
+                dedupe_key = (
+                    str(payload.get("event_id") or payload.get("dedupe_key") or "")
+                    or None
+                )
             result = await analytics_service.record_client_event(
                 event_name=event,
                 telegram_id=telegram_id,
                 user_id=getattr(user, "id", None),
-                source=str(payload.get("source") or "course_miniapp"),
-                level=str(payload.get("level") or "") or None,
-                lesson_order=_positive_int(payload.get("lesson_order") or payload.get("lesson_id")),
+                source=source,
+                level=level,
+                lesson_order=lesson_order,
                 session_id=str(payload.get("session_id") or "") or None,
-                dedupe_key=str(payload.get("event_id") or payload.get("dedupe_key") or "") or None,
+                dedupe_key=dedupe_key,
                 payload=trusted_payload,
             )
             if result.get("ok"):

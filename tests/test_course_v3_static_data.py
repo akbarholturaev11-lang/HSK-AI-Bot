@@ -328,6 +328,55 @@ class CourseV3StaticMapTests(unittest.TestCase):
                 )
                 self.assertNotIn("exit_ticket", lesson, f"{level}/lesson_{n:02d}")
 
+    def test_hsk1_first_checkpoint_has_source_backed_sales_outcomes(self):
+        checkpoint = json.loads(
+            (BASE / "hsk1" / "lesson_03.json").read_text(encoding="utf-8")
+        )
+        outcome = checkpoint["outcome"]
+        next_outcome = checkpoint["next_outcome_preview"]
+
+        self.assertEqual(outcome["id"], "hsk1_l1_first_dialogue")
+        self.assertEqual(
+            [(row["zh"], row["pinyin"]) for row in outcome["can_do"]],
+            [("你好", "nǐ hǎo"), ("对不起", "duìbuqǐ"), ("没关系", "méi guānxi")],
+        )
+        self.assertEqual(outcome["title"]["tj"], "Гуфтугӯи аввалини чинии шумо омода аст.")
+        self.assertEqual(outcome["can_do"][-1]["translation"]["tj"], "Мушкиле нест")
+
+        lesson_four = json.loads(
+            (BASE / "hsk1" / "lesson_04.json").read_text(encoding="utf-8")
+        )
+        real_next_line = next(
+            line
+            for block in lesson_four["dialogues"]
+            for line in block["dialogue"]
+            if line["zh"].rstrip("！!。 ") == "谢谢你"
+        )
+        self.assertEqual(next_outcome["example"], {
+            "zh": real_next_line["zh"],
+            "pinyin": real_next_line["pinyin"],
+            "translation": real_next_line["text"],
+        })
+        self.assertEqual(next_outcome["title"], lesson_four["subtitle"])
+
+        for localized in [outcome["title"], next_outcome["title"]]:
+            self.assertTrue(all(localized.get(lang) for lang in ("uz", "ru", "tj")))
+        for example in [*outcome["can_do"], next_outcome["example"]]:
+            self.assertTrue(example["zh"])
+            self.assertTrue(example["pinyin"])
+            self.assertTrue(
+                all(example["translation"].get(lang) for lang in ("uz", "ru", "tj"))
+            )
+
+        for lesson_no in (1, 2, 4):
+            other = json.loads(
+                (BASE / "hsk1" / f"lesson_{lesson_no:02d}.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertNotIn("outcome", other)
+            self.assertNotIn("next_outcome_preview", other)
+
     def test_hsk1_first_three_parts_do_not_assess_future_vocabulary(self):
         """Visible examples/options only use material introduced by that point."""
         import re

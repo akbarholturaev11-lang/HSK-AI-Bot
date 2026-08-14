@@ -310,6 +310,24 @@ EXIT_TICKET_CARDS = [
 ]
 
 
+# Verified first HSK result shown after the canonical HSK1 lesson-1 checkpoint.
+# This stays outside ``sections`` so adding sales presentation metadata never
+# changes lesson queue indexes, material_ref values, quiz order, or mastery.
+HSK1_FIRST_CHECKPOINT_OUTCOME = {
+    "id": "hsk1_l1_first_dialogue",
+    "title": {
+        "uz": "Birinchi xitoycha dialogingiz tayyor.",
+        "ru": "Ваш первый диалог на китайском готов.",
+        "tj": "Гуфтугӯи аввалини чинии шумо омода аст.",
+    },
+    "can_do": [
+        _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+        _example("对不起", "duìbuqǐ", "Kechirasiz", "Извините", "Бубахшед"),
+        _example("没关系", "méi guānxi", "Hech gap emas", "Ничего страшного", "Мушкиле нест"),
+    ],
+}
+
+
 def build_foundation(level: str, flat_n: int) -> dict | None:
     if level != "hsk1" or int(flat_n) != 1:
         return None
@@ -366,6 +384,53 @@ def t3(d: dict) -> dict:
     """Build {uz,ru,tj} from direct uz/ru/tj keys (grammar examples, dialogue lines)."""
     uz = d.get("uz", "")
     return {"uz": uz, "ru": d.get("ru") or uz, "tj": d.get("tj") or uz}
+
+
+def build_sales_outcome(level: str, src: int, checkpoint: bool) -> tuple[dict, dict] | None:
+    """Return UI-only, source-backed outcome metadata for sales_value_v1.
+
+    The next result is deliberately read from the canonical source lesson 2
+    dialogue. If that real content disappears or loses one of its required
+    fields, generation fails instead of publishing invented sales copy.
+    """
+    if level != "hsk1" or int(src) != 1 or not checkpoint:
+        return None
+
+    next_seed = load_seed_lesson("hsk1", 2)
+    next_goal = loadjson(next_seed.get("goal"), {})
+    next_dialogues = loadjson(next_seed.get("dialogue_json"), [])
+    next_line = None
+    for block in next_dialogues:
+        for line in block.get("dialogue", []):
+            if str(line.get("zh", "")).rstrip("！!。 ") == "谢谢你":
+                next_line = line
+                break
+        if next_line:
+            break
+
+    if not next_line or not next_line.get("pinyin"):
+        raise ValueError("HSK1 lesson 2 must contain the verified 谢谢你 dialogue line")
+    translations = t3(next_line)
+    if not all(translations.get(lang) for lang in ("uz", "ru", "tj")):
+        raise ValueError("HSK1 lesson 2 谢谢你 requires uz/ru/tj translations")
+
+    outcome = json.loads(json.dumps(HSK1_FIRST_CHECKPOINT_OUTCOME, ensure_ascii=False))
+    next_outcome = {
+        "id": "hsk1_l2_thank_you",
+        "title": {
+            "uz": next_goal.get("uz", ""),
+            "ru": next_goal.get("ru", ""),
+            "tj": next_goal.get("tj", ""),
+        },
+        "example": {
+            "zh": next_line["zh"],
+            "pinyin": next_line["pinyin"],
+            "translation": translations,
+        },
+    }
+    if not all(next_outcome["title"].get(lang) for lang in ("uz", "ru", "tj")):
+        raise ValueError("HSK1 lesson 2 goal requires uz/ru/tj translations")
+    return outcome, next_outcome
 
 
 def word_meaning(w: dict) -> dict:
@@ -1610,6 +1675,7 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
     zh_title, _ = parse_title(seed)
     foundation = build_foundation(level, flat_n)
     exit_ticket = build_exit_ticket(level, src, checkpoint)
+    sales_outcome = build_sales_outcome(level, src, checkpoint)
     reference_dialogues = dialogue_raw if checkpoint else gate_dialogue_blocks(
         dialogue_raw,
         {w.get("zh", "") for w in (taught + list(known_prior)) if w.get("zh")},
@@ -1646,6 +1712,8 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
         out["foundation"] = foundation
     if exit_ticket:
         out["exit_ticket"] = exit_ticket
+    if sales_outcome:
+        out["outcome"], out["next_outcome_preview"] = sales_outcome
     return out
 
 

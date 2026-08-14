@@ -207,6 +207,41 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-14 — `sales_value_v1` HSK path sales experiment
+
+Changed:
+- Added server-owned sticky A/B assignment for `sales_value_v1` using
+  `CourseMiniAppEvent`, no DB migration. Eligible users are new unpaid HSK1
+  users in subscription mode; paid, pending-payment, pre-start paywall,
+  discount/campaign and non-subscription access cases are excluded.
+- HSK1 first checkpoint treatment now shows an outcome bridge with verified
+  hanzi+pinyin+translation and an outcome-based course paywall. The next result
+  preview is sourced from real HSK1 lesson content, not hardcoded marketing copy.
+- Admin Mini App has a kill switch/rollout control and analytics card for
+  seven-day matured approved-payment lift, revenue, SRM and learning/payment
+  guardrails.
+
+Why:
+- Premium is now positioned around an HSK learning path and verified first
+  result instead of a generic feature list, while control behavior remains
+  available for measurement.
+
+Files touched:
+- `app/services/course_sales_experiment_service.py`, `app/main.py`
+- `app/static/course-v3.html`, `app/static/admin.html`
+- `scripts/gen_course_v3_from_seed.py`, `app/static/course_v3_data/hsk1/lesson_03.json`
+- `app/services/admin_miniapp_service.py`, `app/db/models/course_miniapp_event.py`
+
+Risk:
+- Payment, subscription, pricing, screenshot checkout, approval/activation,
+  referral and access semantics were intentionally not changed. Experiment is
+  default-off and should be enabled from admin after deploy.
+
+Follow-up:
+- Run the experiment for at least 14 days with 200 matured users per arm and
+  20 approved payments before rollout decisions. Keep Telegram Stars compliance
+  risk tracked separately because current checkout remains manual by request.
+
 ### 2026-08-14 — Beginner Starter 0 and HSK1 free checkpoint
 
 Changed:

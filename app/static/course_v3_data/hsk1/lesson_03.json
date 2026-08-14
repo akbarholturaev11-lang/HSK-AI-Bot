@@ -714,5 +714,59 @@
         }
       }
     ]
+  },
+  "outcome": {
+    "id": "hsk1_l1_first_dialogue",
+    "title": {
+      "uz": "Birinchi xitoycha dialogingiz tayyor.",
+      "ru": "Ваш первый диалог на китайском готов.",
+      "tj": "Гуфтугӯи аввалини чинии шумо омода аст."
+    },
+    "can_do": [
+      {
+        "zh": "你好",
+        "pinyin": "nǐ hǎo",
+        "translation": {
+          "uz": "Salom",
+          "ru": "Привет",
+          "tj": "Салом"
+        }
+      },
+      {
+        "zh": "对不起",
+        "pinyin": "duìbuqǐ",
+        "translation": {
+          "uz": "Kechirasiz",
+          "ru": "Извините",
+          "tj": "Бубахшед"
+        }
+      },
+      {
+        "zh": "没关系",
+        "pinyin": "méi guānxi",
+        "translation": {
+          "uz": "Hech gap emas",
+          "ru": "Ничего страшного",
+          "tj": "Мушкиле нест"
+        }
+      }
+    ]
+  },
+  "next_outcome_preview": {
+    "id": "hsk1_l2_thank_you",
+    "title": {
+      "uz": "Xitoycha minnatdorchilik bildirish va xayrlashishni o'rganing",
+      "ru": "Научитесь выражать благодарность и прощаться по-китайски",
+      "tj": "Омӯзед, ки чӣ тавр ба забони чинӣ сипосгузорӣ кунед ва хайр гӯед"
+    },
+    "example": {
+      "zh": "谢谢你！",
+      "pinyin": "Xièxie nǐ!",
+      "translation": {
+        "uz": "Senga rahmat!",
+        "ru": "Спасибо тебе!",
+        "tj": "Аз ту ташаккур!"
+      }
+    }
   }
 }

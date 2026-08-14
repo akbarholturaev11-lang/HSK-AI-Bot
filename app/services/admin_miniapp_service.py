@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
@@ -38,6 +39,20 @@ ADMIN_MINIAPP_TZ = ZoneInfo("Asia/Shanghai")
 HOT_LEAD_ACTIVITY_WINDOW = timedelta(days=2)
 HOT_LEAD_STATUSES = ("free", "trial", "expired")
 HOT_LEAD_PAYMENT_STATUSES = ("none", "draft", "rejected")
+SALES_VALUE_EXPERIMENT = "sales_value_v1"
+SALES_VALUE_OUTCOME_WINDOW = timedelta(days=7)
+SALES_VALUE_D1_START = timedelta(hours=24)
+SALES_VALUE_D1_END = timedelta(hours=48)
+SALES_VALUE_MEANINGFUL_EVENTS = frozenset(
+    {
+        "section_completed",
+        "lesson_completed",
+        "book_lesson_completed",
+        "test_completed",
+        "training_completed",
+        "mistake_review_completed",
+    }
+)
 
 
 def _pct(part: int, total: int) -> float:
@@ -386,6 +401,576 @@ def _d1_recovery_experiment(
         "collecting": collecting,
         "directional_only": min(treatment["matured"], control["matured"]) < 30,
         "explain": "D1 recovery ITT = assignmentdan keyingi 48 soatda treatment/control Mini App return va ayni dars completion; faqat oynasi tugagan cohort denominatorga kiradi.",
+    }
+
+
+def _sales_payload(raw) -> dict:
+    try:
+        value = json.loads(raw or "{}")
+    except (TypeError, json.JSONDecodeError):
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+def _wilson_interval(successes: int, total: int) -> tuple[float | None, float | None]:
+    """95% Wilson score interval as proportions (0..1)."""
+
+    successes = max(0, min(int(successes or 0), int(total or 0)))
+    total = int(total or 0)
+    if total <= 0:
+        return None, None
+    z = 1.959963984540054
+    z2 = z * z
+    proportion = successes / total
+    denominator = 1 + z2 / total
+    center = (proportion + z2 / (2 * total)) / denominator
+    margin = z * math.sqrt(
+        proportion * (1 - proportion) / total + z2 / (4 * total * total)
+    ) / denominator
+    return max(0.0, center - margin), min(1.0, center + margin)
+
+
+def _newcombe_difference_ci(
+    treatment_successes: int,
+    treatment_total: int,
+    control_successes: int,
+    control_total: int,
+) -> dict[str, float | None]:
+    """Newcombe/Wilson 95% CI for treatment-control proportion difference."""
+
+    treatment_low, treatment_high = _wilson_interval(treatment_successes, treatment_total)
+    control_low, control_high = _wilson_interval(control_successes, control_total)
+    if None in (treatment_low, treatment_high, control_low, control_high):
+        return {"low_pp": None, "high_pp": None}
+    treatment_rate = treatment_successes / treatment_total
+    control_rate = control_successes / control_total
+    difference = treatment_rate - control_rate
+    lower = difference - math.sqrt(
+        (treatment_rate - treatment_low) ** 2
+        + (control_high - control_rate) ** 2
+    )
+    upper = difference + math.sqrt(
+        (treatment_high - treatment_rate) ** 2
+        + (control_rate - control_low) ** 2
+    )
+    return {
+        "low_pp": round(lower * 100, 2),
+        "high_pp": round(upper * 100, 2),
+    }
+
+
+def _sales_srm(
+    *,
+    treatment_assigned: int,
+    control_assigned: int,
+    expected_treatment: float,
+    expected_control: float,
+) -> dict:
+    """Two-arm Pearson chi-square SRM check (df=1, p<0.01 warning)."""
+
+    checked = expected_treatment >= 5 and expected_control >= 5
+    if not checked:
+        return {
+            "checked": False,
+            "mismatch": False,
+            "p_value": None,
+            "chi_square": None,
+            "expected": {
+                "treatment": round(expected_treatment, 2),
+                "control": round(expected_control, 2),
+            },
+        }
+    chi_square = (
+        (treatment_assigned - expected_treatment) ** 2 / expected_treatment
+        + (control_assigned - expected_control) ** 2 / expected_control
+    )
+    p_value = math.erfc(math.sqrt(chi_square / 2))
+    return {
+        "checked": True,
+        "mismatch": p_value < 0.01,
+        "p_value": round(p_value, 6),
+        "chi_square": round(chi_square, 4),
+        "expected": {
+            "treatment": round(expected_treatment, 2),
+            "control": round(expected_control, 2),
+        },
+    }
+
+
+def _sales_value_experiment(
+    course_rows: list[tuple],
+    funnel_rows: list[tuple],
+    payment_rows: list[tuple],
+    *,
+    now: datetime,
+    error_rows: list[tuple] | None = None,
+) -> dict:
+    """Evaluate sales_value_v1 as a global, seven-day matured ITT cohort.
+
+    Course row shape: ``(event_name, telegram_id, source, level, lesson_id,
+    lesson_order, payload_json, created_at)``. Funnel row shape:
+    ``(event_name, telegram_id, payment_id, payload_json, created_at)``.
+    Payment row shape: ``(id, telegram_id, status, amount, currency,
+    base_amount, reviewed_at, submitted_at)``. Error row shape:
+    ``(telegram_id, created_at)``.
+
+    The server-side assignment event is the only arm authority. Approved and
+    rejected payments require ``reviewed_at``; a submission timestamp is never
+    substituted for approval time.
+    """
+
+    now_utc = _as_utc(now) or datetime.now(timezone.utc)
+    normalized_course: list[dict] = []
+    for row in course_rows:
+        if len(row) < 8:
+            continue
+        created_at = _as_utc(row[7])
+        try:
+            telegram_id = int(row[1])
+        except (TypeError, ValueError):
+            continue
+        if not created_at or created_at > now_utc:
+            continue
+        normalized_course.append(
+            {
+                "name": str(row[0] or ""),
+                "telegram_id": telegram_id,
+                "source": str(row[2] or ""),
+                "level": row[3],
+                "lesson_id": row[4],
+                "lesson_order": row[5],
+                "payload": _sales_payload(row[6]),
+                "at": created_at,
+            }
+        )
+    normalized_course.sort(key=lambda item: item["at"])
+
+    assignments: dict[int, dict] = {}
+    excluded_assignments = 0
+    for event in normalized_course:
+        if event["name"] != "sales_offer_assigned" or event["source"] != SALES_VALUE_EXPERIMENT:
+            continue
+        data = event["payload"]
+        mode = str(
+            data.get("assigned_mode")
+            or data.get("mode")
+            or data.get("experiment_mode")
+            or "ab"
+        ).strip().lower()
+        if mode in {"off", "shadow", "treatment"} or data.get("analysis_eligible") is False:
+            excluded_assignments += 1
+            continue
+        arm = str(data.get("arm") or "").strip().lower()
+        if arm not in {"treatment", "control"}:
+            excluded_assignments += 1
+            continue
+        try:
+            candidate_pct = int(data.get("treatment_percent", data.get("candidate_pct", 50)))
+        except (TypeError, ValueError):
+            candidate_pct = 50
+        candidate_pct = max(0, min(candidate_pct, 100))
+        assignments.setdefault(
+            event["telegram_id"],
+            {
+                "arm": arm,
+                "at": event["at"],
+                "deadline": event["at"] + SALES_VALUE_OUTCOME_WINDOW,
+                "candidate_pct": candidate_pct,
+                "trigger": str(data.get("trigger") or ""),
+            },
+        )
+
+    def blank_arm() -> dict:
+        return {
+            "assigned": 0,
+            "matured": 0,
+            "bridge_seen": 0,
+            "bridge_cta": 0,
+            "offer_seen": 0,
+            "offer_dismissed": 0,
+            "paywall_seen": 0,
+            "checkout_opened": 0,
+            "payment_submitted": 0,
+            "approved_after_submit": 0,
+            "approved_users": 0,
+            "approved_payments": 0,
+            "rejected_users": 0,
+            "pending_users": 0,
+            "frontend_error_users": 0,
+            "foundation_completed": 0,
+            "first_checkpoint_completed": 0,
+            "d1_meaningful_return": 0,
+            "revenue_by_currency": {},
+        }
+
+    arms = {"treatment": blank_arm(), "control": blank_arm()}
+    for assignment in assignments.values():
+        arms[assignment["arm"]]["assigned"] += 1
+
+    course_by_user: dict[int, list[dict]] = defaultdict(list)
+    for event in normalized_course:
+        if event["telegram_id"] in assignments:
+            course_by_user[event["telegram_id"]].append(event)
+
+    funnel_by_user: dict[int, list[dict]] = defaultdict(list)
+    for row in funnel_rows:
+        if len(row) < 5:
+            continue
+        created_at = _as_utc(row[4])
+        try:
+            telegram_id = int(row[1])
+        except (TypeError, ValueError):
+            continue
+        if telegram_id not in assignments or not created_at or created_at > now_utc:
+            continue
+        funnel_by_user[telegram_id].append(
+            {
+                "name": str(row[0] or ""),
+                "payment_id": int(row[2]) if row[2] else None,
+                "payload": _sales_payload(row[3]),
+                "at": created_at,
+            }
+        )
+    for events in funnel_by_user.values():
+        events.sort(key=lambda item: item["at"])
+
+    payments_by_user: dict[int, list[dict]] = defaultdict(list)
+    for row in payment_rows:
+        if len(row) < 8:
+            continue
+        try:
+            payment_id = int(row[0])
+            telegram_id = int(row[1])
+        except (TypeError, ValueError):
+            continue
+        if telegram_id not in assignments:
+            continue
+        try:
+            amount = int(row[3] or 0)
+        except (TypeError, ValueError):
+            amount = 0
+        payments_by_user[telegram_id].append(
+            {
+                "id": payment_id,
+                "status": str(row[2] or "").strip().lower(),
+                "amount": amount,
+                "currency": str(row[4] or "unknown").strip().upper() or "UNKNOWN",
+                "base_amount": row[5],
+                "reviewed_at": _as_utc(row[6]),
+                "submitted_at": _as_utc(row[7]),
+            }
+        )
+
+    errors_by_user: dict[int, list[datetime]] = defaultdict(list)
+    for row in error_rows or ():
+        if len(row) < 2:
+            continue
+        try:
+            telegram_id = int(row[0])
+        except (TypeError, ValueError):
+            continue
+        created_at = _as_utc(row[1])
+        if telegram_id in assignments and created_at and created_at <= now_utc:
+            errors_by_user[telegram_id].append(created_at)
+
+    for telegram_id, assignment in assignments.items():
+        start = assignment["at"]
+        deadline = assignment["deadline"]
+        if deadline > now_utc:
+            continue
+        stats = arms[assignment["arm"]]
+        stats["matured"] += 1
+
+        in_window = [
+            event
+            for event in course_by_user.get(telegram_id, ())
+            if start <= event["at"] < deadline
+        ]
+        if any(event["name"] == "sales_bridge_seen" for event in in_window):
+            stats["bridge_seen"] += 1
+        if any(event["name"] == "sales_bridge_cta" for event in in_window):
+            stats["bridge_cta"] += 1
+        if any(event["name"] == "sales_offer_seen" for event in in_window):
+            stats["offer_seen"] += 1
+        if any(event["name"] == "sales_offer_dismissed" for event in in_window):
+            stats["offer_dismissed"] += 1
+        if any(event["name"] == "paywall_seen" for event in in_window):
+            stats["paywall_seen"] += 1
+        if any(event["name"] == "foundation_completed" for event in in_window):
+            stats["foundation_completed"] += 1
+        if any(
+            str(event["level"] or "").strip().lower() == "hsk1"
+            and (
+                (
+                    event["name"] in {"lesson_completed", "book_lesson_completed"}
+                    and int(event["lesson_order"] or 0) == 3
+                )
+                or (
+                    event["name"] == "section_completed"
+                    and int(event["lesson_order"] or 0) == 1
+                    and int(event["payload"].get("section_no") or 0) == 3
+                )
+            )
+            for event in in_window
+        ):
+            stats["first_checkpoint_completed"] += 1
+        if any(
+            event["name"] in SALES_VALUE_MEANINGFUL_EVENTS
+            and start + SALES_VALUE_D1_START <= event["at"] < start + SALES_VALUE_D1_END
+            for event in in_window
+        ):
+            stats["d1_meaningful_return"] += 1
+
+        attempts: dict[str, datetime] = {}
+        submitted_payment_ids: set[int] = set()
+        for event in funnel_by_user.get(telegram_id, ()):
+            if not start <= event["at"] < deadline:
+                continue
+            attempt_id = str(event["payload"].get("attempt_id") or "").strip()
+            if event["name"] == "checkout_opened":
+                stage = str(event["payload"].get("stage") or "").strip()
+                if attempt_id and not stage:
+                    attempts.setdefault(attempt_id, event["at"])
+            elif event["name"] == "payment_screenshot_submitted" and attempt_id in attempts:
+                if event["at"] >= attempts[attempt_id] and event["payment_id"]:
+                    submitted_payment_ids.add(event["payment_id"])
+        if attempts:
+            stats["checkout_opened"] += 1
+        if submitted_payment_ids:
+            stats["payment_submitted"] += 1
+
+        approved: list[dict] = []
+        rejected = False
+        pending = False
+        for payment in payments_by_user.get(telegram_id, ()):
+            if payment["status"] == "approved":
+                reviewed_at = payment["reviewed_at"]
+                if reviewed_at and start <= reviewed_at < deadline:
+                    approved.append(payment)
+            elif payment["status"] == "rejected":
+                reviewed_at = payment["reviewed_at"]
+                if reviewed_at and start <= reviewed_at < deadline:
+                    rejected = True
+            elif payment["status"] == "pending":
+                submitted_at = payment["submitted_at"]
+                if submitted_at and start <= submitted_at < deadline:
+                    pending = True
+
+        if approved:
+            stats["approved_users"] += 1
+            stats["approved_payments"] += len(approved)
+            if any(payment["id"] in submitted_payment_ids for payment in approved):
+                stats["approved_after_submit"] += 1
+            for payment in approved:
+                currency = payment["currency"]
+                stats["revenue_by_currency"][currency] = (
+                    int(stats["revenue_by_currency"].get(currency, 0)) + payment["amount"]
+                )
+        if rejected:
+            stats["rejected_users"] += 1
+        if pending:
+            stats["pending_users"] += 1
+        if any(start <= created_at < deadline for created_at in errors_by_user.get(telegram_id, ())):
+            stats["frontend_error_users"] += 1
+
+    for stats in arms.values():
+        matured = stats["matured"]
+        stats["approval_rate"] = _pct(stats["approved_users"], matured)
+        stats["bridge_seen_rate"] = _pct(stats["bridge_seen"], matured)
+        stats["paywall_rate"] = _pct(stats["paywall_seen"], matured)
+        stats["checkout_rate"] = _pct(stats["checkout_opened"], matured)
+        stats["submitted_rate"] = _pct(stats["payment_submitted"], matured)
+        stats["submitted_to_approved_rate"] = _pct(
+            stats["approved_after_submit"], stats["payment_submitted"]
+        )
+        stats["d1_meaningful_return_rate"] = _pct(stats["d1_meaningful_return"], matured)
+        stats["foundation_completion_rate"] = _pct(stats["foundation_completed"], matured)
+        stats["first_checkpoint_completion_rate"] = _pct(
+            stats["first_checkpoint_completed"], matured
+        )
+        stats["rejected_rate"] = _pct(stats["rejected_users"], matured)
+        stats["pending_rate"] = _pct(stats["pending_users"], matured)
+        stats["frontend_error_rate"] = _pct(stats["frontend_error_users"], matured)
+        stats["revenue_by_currency"] = dict(sorted(stats["revenue_by_currency"].items()))
+        stats["revenue_per_matured_by_currency"] = {
+            currency: round(amount / matured, 2) if matured else 0.0
+            for currency, amount in stats["revenue_by_currency"].items()
+        }
+
+    treatment = arms["treatment"]
+    control = arms["control"]
+    uplift_pp = round(treatment["approval_rate"] - control["approval_rate"], 1)
+    relative_lift_pct = (
+        round((treatment["approval_rate"] / control["approval_rate"] - 1) * 100, 1)
+        if control["approval_rate"] > 0
+        else None
+    )
+    ci_95_pp = _newcombe_difference_ci(
+        treatment["approved_users"],
+        treatment["matured"],
+        control["approved_users"],
+        control["matured"],
+    )
+    expected_treatment = sum(item["candidate_pct"] / 100 for item in assignments.values())
+    expected_control = len(assignments) - expected_treatment
+    srm = _sales_srm(
+        treatment_assigned=treatment["assigned"],
+        control_assigned=control["assigned"],
+        expected_treatment=expected_treatment,
+        expected_control=expected_control,
+    )
+
+    learning_delta_pp = round(
+        treatment["d1_meaningful_return_rate"] - control["d1_meaningful_return_rate"], 1
+    )
+    foundation_delta_pp = round(
+        treatment["foundation_completion_rate"] - control["foundation_completion_rate"], 1
+    )
+    checkpoint_delta_pp = round(
+        treatment["first_checkpoint_completion_rate"]
+        - control["first_checkpoint_completion_rate"],
+        1,
+    )
+    rejection_delta_pp = round(treatment["rejected_rate"] - control["rejected_rate"], 1)
+    pending_delta_pp = round(treatment["pending_rate"] - control["pending_rate"], 1)
+    frontend_error_delta_pp = round(
+        treatment["frontend_error_rate"] - control["frontend_error_rate"], 1
+    )
+    guardrails = {
+        "foundation": {"delta_pp": foundation_delta_pp, "pass": foundation_delta_pp >= -5.0},
+        "first_checkpoint": {
+            "delta_pp": checkpoint_delta_pp,
+            "pass": checkpoint_delta_pp >= -5.0,
+        },
+        "learning": {"delta_pp": learning_delta_pp, "pass": learning_delta_pp >= -5.0},
+        "rejection": {"delta_pp": rejection_delta_pp, "pass": rejection_delta_pp <= 5.0},
+        "pending": {"delta_pp": pending_delta_pp, "pass": pending_delta_pp <= 5.0},
+        "frontend_error": {
+            "delta_pp": frontend_error_delta_pp,
+            "pass": frontend_error_delta_pp <= 5.0,
+            "available": error_rows is not None,
+        },
+    }
+    guardrails_pass = all(item["pass"] for item in guardrails.values())
+    guardrails["pass"] = guardrails_pass
+
+    first_assignment_at = min(
+        (item["at"] for item in assignments.values()),
+        default=None,
+    )
+    age_days = (
+        round((now_utc - first_assignment_at).total_seconds() / 86400, 1)
+        if first_assignment_at
+        else 0.0
+    )
+    total_approved = treatment["approved_users"] + control["approved_users"]
+    decision_ready = (
+        age_days >= 14
+        and treatment["matured"] >= 200
+        and control["matured"] >= 200
+        and total_approved >= 20
+    )
+    lift_requirement_met = uplift_pp >= 2.0 or (
+        relative_lift_pct is not None and relative_lift_pct >= 20.0
+    )
+    ci_positive = ci_95_pp["low_pp"] is not None and ci_95_pp["low_pp"] > 0
+    winner = bool(decision_ready and lift_requirement_met and ci_positive and guardrails_pass)
+
+    if not assignments or treatment["matured"] == 0 or control["matured"] == 0:
+        status = "collecting"
+        decision = "keep_testing"
+    elif srm["mismatch"]:
+        status = "srm_warning"
+        decision = "investigate"
+    elif not decision_ready:
+        status = "inconclusive" if age_days >= 42 else "early_signal"
+        decision = "keep_control" if age_days >= 42 else "keep_testing"
+    elif not guardrails_pass:
+        status = "guardrail_failed"
+        decision = "rollback"
+    elif winner:
+        status = "winner"
+        decision = "promote"
+    elif age_days >= 42:
+        status = "inconclusive"
+        decision = "keep_control"
+    else:
+        status = "keep_testing"
+        decision = "keep_testing"
+
+    return {
+        "experiment_id": SALES_VALUE_EXPERIMENT,
+        "outcome_window_days": 7,
+        "first_assignment_at": first_assignment_at.isoformat() if first_assignment_at else None,
+        "age_days": age_days,
+        "assigned": len(assignments),
+        "matured": treatment["matured"] + control["matured"],
+        "excluded_assignments": excluded_assignments,
+        "arms": arms,
+        "uplift_pp": uplift_pp,
+        "relative_lift_pct": relative_lift_pct,
+        "ci_95_pp": ci_95_pp,
+        "srm": srm,
+        "guardrails": guardrails,
+        "decision_ready": decision_ready,
+        "directional_only": not decision_ready,
+        "status": status,
+        "decision": decision,
+        "thresholds": {
+            "min_days": 14,
+            "max_days": 42,
+            "matured_per_arm": 200,
+            "approved_total": 20,
+            "absolute_lift_pp": 2.0,
+            "relative_lift_pct": 20.0,
+            "learning_decline_pp": 5.0,
+            "error_increase_pp": 5.0,
+        },
+        "explain": (
+            "Sales ITT = server assignmentdan keyingi 7 kun oynasi to'liq tugagan userlar. "
+            "Approved/rejected faqat Payment.reviewed_at bilan; checkout va screenshot bir xil "
+            "attempt_id/payment_id zanjiri bilan. Shadow va 100% treatment rollout decision cohortiga kirmaydi."
+        ),
+    }
+
+
+def _sales_value_card(result: dict) -> dict:
+    status = str(result.get("status") or "collecting")
+    labels = {
+        "collecting": "Yig'ilmoqda",
+        "early_signal": "Erta signal",
+        "srm_warning": "SRM xato",
+        "guardrail_failed": "Guardrail xato",
+        "winner": f"{float(result.get('uplift_pp') or 0):+.1f} pp",
+        "keep_testing": f"{float(result.get('uplift_pp') or 0):+.1f} pp",
+        "inconclusive": "Control saqlansin",
+    }
+    tones = {
+        "winner": "good",
+        "srm_warning": "danger",
+        "guardrail_failed": "danger",
+        "inconclusive": "warn",
+        "early_signal": "info",
+        "collecting": "info",
+        "keep_testing": "info",
+    }
+    arms = result.get("arms") or {}
+    treatment = arms.get("treatment") or {}
+    control = arms.get("control") or {}
+    ci = result.get("ci_95_pp") or {}
+    ci_text = (
+        f"CI {float(ci['low_pp']):+.1f}…{float(ci['high_pp']):+.1f} pp"
+        if ci.get("low_pp") is not None and ci.get("high_pp") is not None
+        else "CI yig'ilmoqda"
+    )
+    return {
+        "label": "Sales A/B · 7d approved",
+        "value": labels.get(status, status),
+        "note": (
+            f"T {treatment.get('approved_users', 0)}/{treatment.get('matured', 0)} · "
+            f"C {control.get('approved_users', 0)}/{control.get('matured', 0)} · {ci_text}"
+        ),
+        "tone": tones.get(status, "info"),
     }
 
 
@@ -961,6 +1546,11 @@ class AdminMiniAppService:
         month_ago: datetime,
         all_course_stats,
     ) -> list[dict]:
+        # Sales A/B is a global experiment cohort. Reusing one snapshot across
+        # period tabs avoids truncating a user's seven-day outcome window at a
+        # weekly/monthly report boundary and avoids running the same queries
+        # three times for one overview response.
+        sales_value = await self._sales_value_stats(now=now)
         return [
             await self._period_report(
                 key="weekly",
@@ -968,6 +1558,7 @@ class AdminMiniAppService:
                 note="Охирги 7 кун",
                 since=week_ago,
                 now=now,
+                sales_value=sales_value,
             ),
             await self._period_report(
                 key="monthly",
@@ -975,6 +1566,7 @@ class AdminMiniAppService:
                 note="Охирги 30 кун",
                 since=month_ago,
                 now=now,
+                sales_value=sales_value,
             ),
             await self._period_report(
                 key="all_time",
@@ -983,6 +1575,7 @@ class AdminMiniAppService:
                 since=None,
                 now=now,
                 course_stats=all_course_stats,
+                sales_value=sales_value,
             ),
         ]
 
@@ -995,6 +1588,7 @@ class AdminMiniAppService:
         since: datetime | None,
         now: datetime,
         course_stats=None,
+        sales_value: dict | None = None,
     ) -> dict:
         if since is None:
             user_count = await self._count_users()
@@ -1013,7 +1607,7 @@ class AdminMiniAppService:
         approved_users = await self._approved_payment_user_count(since)
         plan_counts = await self._payment_plan_counts(since)
         course = course_stats or await miniapp_course_stats(self.session, since=since)
-        advanced = await self._advanced_stats(since=since, now=now)
+        advanced = await self._advanced_stats(since=since, now=now, sales_value=sales_value)
 
         metrics = {
             "user_count": user_count,
@@ -1060,7 +1654,13 @@ class AdminMiniAppService:
         report["text"] = self._period_report_text(report)
         return report
 
-    async def _advanced_stats(self, *, since: datetime | None, now: datetime) -> dict:
+    async def _advanced_stats(
+        self,
+        *,
+        since: datetime | None,
+        now: datetime,
+        sales_value: dict | None = None,
+    ) -> dict:
         retention = await self._retention_stats(since=since, now=now)
         activation = await self._activation_stats(since=since, now=now)
         primary_activation = (activation.get("variants") or {}).get("direct_start_v1") or activation
@@ -1090,8 +1690,8 @@ class AdminMiniAppService:
             "explain": (
                 "Bu blok product health metrikalarini ko'rsatadi: retention, Mini App vaqt, dars vaqti, "
                 "Starter 0 mastery, QA/Voice ishlatilishi, payment funnel, LTV/CAC, paid/free feature adoption "
-                "va notification open proxy. "
-                "Hamma raqamlar tanlangan davr ichida qayta hisoblanadi."
+                "va notification open proxy. Sales A/B esa report davridan mustaqil global 7 kunlik matured cohort. "
+                "Qolgan raqamlar tanlangan davr ichida qayta hisoblanadi."
             ),
             "cards": [
                 {
@@ -1121,6 +1721,7 @@ class AdminMiniAppService:
                     ),
                     "tone": d1_tone,
                 },
+                *([_sales_value_card(sales_value)] if sales_value else []),
                 {
                     "label": "Direct start → dars ≤2m" if primary_activation is not activation else "Onb → dars ≤2m",
                     "value": f"{primary_activation['lesson_started_rate']}%",
@@ -1217,6 +1818,7 @@ class AdminMiniAppService:
             "retention": retention,
             "activation": activation,
             "d1_recovery": d1_recovery,
+            "sales_value": sales_value,
             "session_time": session_time,
             "lesson_time": lesson_time,
             "qa": qa,
@@ -1226,6 +1828,133 @@ class AdminMiniAppService:
             "feature_adoption": feature_adoption,
             "notifications": notifications,
         }
+
+    async def _sales_value_stats(self, *, now: datetime) -> dict:
+        assignment_rows = (
+            await self.session.execute(
+                select(
+                    CourseMiniAppEvent.event_name,
+                    CourseMiniAppEvent.telegram_id,
+                    CourseMiniAppEvent.source,
+                    CourseMiniAppEvent.level,
+                    CourseMiniAppEvent.lesson_id,
+                    CourseMiniAppEvent.lesson_order,
+                    CourseMiniAppEvent.payload_json,
+                    CourseMiniAppEvent.created_at,
+                ).where(
+                    CourseMiniAppEvent.event_name == "sales_offer_assigned",
+                    CourseMiniAppEvent.source == SALES_VALUE_EXPERIMENT,
+                    CourseMiniAppEvent.created_at <= now,
+                )
+            )
+        ).all()
+        if not assignment_rows:
+            return _sales_value_experiment([], [], [], now=now)
+
+        assigned_ids = tuple(
+            {
+                int(row.telegram_id)
+                for row in assignment_rows
+                if getattr(row, "telegram_id", None)
+            }
+        )
+        assignment_times = [
+            _as_utc(row.created_at)
+            for row in assignment_rows
+            if _as_utc(getattr(row, "created_at", None))
+        ]
+        if not assigned_ids or not assignment_times:
+            return _sales_value_experiment(
+                [tuple(row) for row in assignment_rows],
+                [],
+                [],
+                now=now,
+            )
+        earliest_assignment = min(assignment_times)
+
+        outcome_names = (
+            "sales_bridge_seen",
+            "sales_bridge_cta",
+            "sales_offer_seen",
+            "sales_offer_dismissed",
+            "paywall_seen",
+            "foundation_completed",
+            *tuple(SALES_VALUE_MEANINGFUL_EVENTS),
+        )
+        outcome_rows = (
+            await self.session.execute(
+                select(
+                    CourseMiniAppEvent.event_name,
+                    CourseMiniAppEvent.telegram_id,
+                    CourseMiniAppEvent.source,
+                    CourseMiniAppEvent.level,
+                    CourseMiniAppEvent.lesson_id,
+                    CourseMiniAppEvent.lesson_order,
+                    CourseMiniAppEvent.payload_json,
+                    CourseMiniAppEvent.created_at,
+                ).where(
+                    CourseMiniAppEvent.telegram_id.in_(assigned_ids),
+                    CourseMiniAppEvent.event_name.in_(outcome_names),
+                    CourseMiniAppEvent.created_at >= earliest_assignment,
+                    CourseMiniAppEvent.created_at <= now,
+                )
+            )
+        ).all()
+        funnel_rows = (
+            await self.session.execute(
+                select(
+                    ConversionFunnelEvent.event_name,
+                    ConversionFunnelEvent.telegram_id,
+                    ConversionFunnelEvent.payment_id,
+                    ConversionFunnelEvent.payload_json,
+                    ConversionFunnelEvent.created_at,
+                ).where(
+                    ConversionFunnelEvent.telegram_id.in_(assigned_ids),
+                    ConversionFunnelEvent.event_name.in_(
+                        ("checkout_opened", "payment_screenshot_submitted", "payment_approved")
+                    ),
+                    ConversionFunnelEvent.created_at >= earliest_assignment,
+                    ConversionFunnelEvent.created_at <= now,
+                )
+            )
+        ).all()
+        payment_rows = (
+            await self.session.execute(
+                select(
+                    Payment.id,
+                    Payment.user_telegram_id,
+                    Payment.payment_status,
+                    Payment.amount,
+                    Payment.currency,
+                    Payment.base_amount,
+                    Payment.reviewed_at,
+                    Payment.submitted_at,
+                ).where(
+                    Payment.user_telegram_id.in_(assigned_ids),
+                    Payment.payment_status.in_(("pending", "approved", "rejected")),
+                )
+            )
+        ).all()
+        error_rows = (
+            await self.session.execute(
+                select(User.telegram_id, Message.created_at)
+                .select_from(Message)
+                .join(User, User.id == Message.user_id)
+                .where(
+                    User.telegram_id.in_(assigned_ids),
+                    Message.content_type == "app_error_context",
+                    Message.created_at >= earliest_assignment,
+                    Message.created_at <= now,
+                )
+            )
+        ).all()
+        return _sales_value_experiment(
+            [tuple(row) for row in assignment_rows] + [tuple(row) for row in outcome_rows],
+            [tuple(row) for row in funnel_rows],
+            [tuple(row) for row in payment_rows],
+            now=now,
+            error_rows=[tuple(row) for row in error_rows],
+        )
 
     async def _d1_recovery_stats(self, *, since: datetime | None, now: datetime) -> dict:
         event_names = (
@@ -2024,6 +2753,7 @@ class AdminMiniAppService:
             {"key": "portfolio", "icon": "💼", "title": "Портфель", "note": "Тушум, харажат ва соф фойдани бошқариш", "section": "settings", "callback": "adm:portfolio"},
             {"key": "prices", "icon": "💳", "title": "Обуна нархлари", "note": "Visa/карта, Alipay, WeChat нархларини таҳрирлаш", "section": "settings", "callback": "adm:prices"},
             {"key": "course_access", "icon": "📚", "title": "Курс access", "note": "Дарс paywall, реклама ёки вақтинча free режими", "section": "settings", "callback": "adm:course_access"},
+            {"key": "course_sales_experiment", "icon": "🧭", "title": "HSK сотув A/B", "note": "sales_value_v1 kill switch ва rollout фоизи", "section": "settings", "callback": "adm:course_sales_experiment"},
             {"key": "app_promo", "icon": "💻", "title": "App рекламаси", "note": "Mini App очилганда ва реклама жойларида илова промоси", "section": "settings", "callback": "adm:app_promo"},
             {"key": "channels", "icon": "📣", "title": "Мажбурий канал обунаси", "note": "Канал линки, ёқиш/ўчириш ва рўйхат", "section": "settings", "callback": "adm:channels"},
             {"key": "delete_user", "icon": "🗑", "title": "Фойдаланувчини ўчириш", "note": "Хавфли амал, ID билан тасдиқланади", "section": "users", "callback": "adm:deleteuser_info"},
@@ -2122,6 +2852,10 @@ class AdminMiniAppService:
         d1_arms = d1_recovery.get("arms") or {}
         d1_treatment = d1_arms.get("treatment") or {}
         d1_control = d1_arms.get("control") or {}
+        sales_value = advanced.get("sales_value") or {}
+        sales_arms = sales_value.get("arms") or {}
+        sales_treatment = sales_arms.get("treatment") or {}
+        sales_control = sales_arms.get("control") or {}
         session_time = advanced.get("session_time") or {}
         lesson_time = advanced.get("lesson_time") or {}
         qa = advanced.get("qa") or {}
@@ -2182,6 +2916,51 @@ class AdminMiniAppService:
                 f"({d1_control.get('opened_any_48h', 0)}/{d1_control.get('matured', 0)}) · "
                 f"lift {((d1_recovery.get('uplift_pp') or {}).get('open', 0)):+.1f} pp\n"
             )
+        if sales_value:
+            sales_status_labels = {
+                "collecting": "yig'ilmoqda",
+                "early_signal": "erta signal",
+                "srm_warning": "SRM xato",
+                "guardrail_failed": "guardrail xato",
+                "winner": "winner",
+                "keep_testing": "test davom etsin",
+                "inconclusive": "inconclusive/control",
+            }
+            sales_ci = sales_value.get("ci_95_pp") or {}
+            sales_ci_text = (
+                f"{float(sales_ci['low_pp']):+.1f}…{float(sales_ci['high_pp']):+.1f} pp"
+                if sales_ci.get("low_pp") is not None and sales_ci.get("high_pp") is not None
+                else "yig'ilmoqda"
+            )
+            sales_guardrails = sales_value.get("guardrails") or {}
+            sales_srm = sales_value.get("srm") or {}
+            sales_srm_text = (
+                f"p={sales_srm.get('p_value')}"
+                if sales_srm.get("checked")
+                else "hali tekshirilmadi"
+            )
+            sales_error_guardrail = sales_guardrails.get("frontend_error") or {}
+            sales_error_text = (
+                f"{float(sales_error_guardrail.get('delta_pp') or 0):+.1f} pp"
+                if sales_error_guardrail.get("available")
+                else "mavjud emas"
+            )
+            sales_value_line = (
+                f"Sales A/B 7d ({sales_status_labels.get(sales_value.get('status'), sales_value.get('status', '—'))}): "
+                f"T {sales_treatment.get('approval_rate', 0)}% "
+                f"({sales_treatment.get('approved_users', 0)}/{sales_treatment.get('matured', 0)}) · "
+                f"C {sales_control.get('approval_rate', 0)}% "
+                f"({sales_control.get('approved_users', 0)}/{sales_control.get('matured', 0)}) · "
+                f"lift {float(sales_value.get('uplift_pp') or 0):+.1f} pp · CI {sales_ci_text} · "
+                f"Starter {((sales_guardrails.get('foundation') or {}).get('delta_pp', 0)):+.1f} pp · "
+                f"checkpoint {((sales_guardrails.get('first_checkpoint') or {}).get('delta_pp', 0)):+.1f} pp · "
+                f"D1 {((sales_guardrails.get('learning') or {}).get('delta_pp', 0)):+.1f} pp · "
+                f"reject {((sales_guardrails.get('rejection') or {}).get('delta_pp', 0)):+.1f} pp · "
+                f"pending {((sales_guardrails.get('pending') or {}).get('delta_pp', 0)):+.1f} pp · "
+                f"frontend error {sales_error_text} · SRM {sales_srm_text}\n"
+            )
+        else:
+            sales_value_line = ""
         return (
             "\n\n"
             "📌 ҚЎШИМЧА PRODUCT МЕТРИКАЛАР\n"
@@ -2189,6 +2968,7 @@ class AdminMiniAppService:
             f"Signup → Mini App D1: {d1.get('rate', 0)}% ({d1.get('retained', 0)}/{d1.get('eligible', 0)})\n"
             f"Signup → Mini App D7: {d7.get('rate', 0)}% ({d7.get('retained', 0)}/{d7.get('eligible', 0)})\n"
             f"{d1_recovery_line}"
+            f"{sales_value_line}"
             f"Onboarding → dars ≤2m: {activation.get('lesson_started_rate', 0)}% ({activation.get('lesson_started_2m', 0)}/{activation.get('lesson_started_eligible', 0)})\n"
             f"{direct_line}"
             f"{foundation_lines}"
