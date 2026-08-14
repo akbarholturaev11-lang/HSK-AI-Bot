@@ -32,6 +32,22 @@ class CourseMiniAppOnboardingService:
             return "hsk4b" if int(lesson_order or 0) > 10 else "hsk4a"
         return "hsk1" if level == "beginner" else level
 
+    @staticmethod
+    def requires_foundation(
+        *,
+        level: str,
+        start_mode: str,
+        onboarding_completed: bool,
+        review_only: bool,
+    ) -> bool:
+        """Starter 0 is mandatory only on a beginner's first lesson start."""
+        return bool(
+            level == "beginner"
+            and start_mode == "lesson_1"
+            and not onboarding_completed
+            and not review_only
+        )
+
     async def complete(
         self,
         telegram_id: int,
@@ -57,6 +73,7 @@ class CourseMiniAppOnboardingService:
             return {"ok": False, "error": "access_start_first"}
 
         profile = await self.profile_service.get_or_create(user.id)
+        onboarding_was_completed = profile.onboarding_completed_at is not None
         progress = await self.engine.progress_repo.get_by_user_id(user.id, for_update=True)
         current_lesson = None
         if progress and progress.current_lesson_id:
@@ -97,6 +114,12 @@ class CourseMiniAppOnboardingService:
             launch_lesson = int(first_lesson.lesson_order)
             if current_lesson:
                 review_only = int(current_lesson.id) != int(first_lesson.id)
+                # A fresh zero-knowledge selection must survive as the
+                # server-owned learner entry level even though its content is
+                # the existing HSK1 first lesson. Review-only launches keep the
+                # user's established level unchanged.
+                if level == "beginner" and not onboarding_was_completed and not review_only:
+                    user.level = level
             else:
                 user.level = level
                 if not progress:
@@ -186,4 +209,10 @@ class CourseMiniAppOnboardingService:
             "tab": launch_tab,
             "placement": start_mode == "placement",
             "review_only": review_only,
+            "foundation_required": self.requires_foundation(
+                level=level,
+                start_mode=start_mode,
+                onboarding_completed=onboarding_was_completed,
+                review_only=review_only,
+            ),
         }

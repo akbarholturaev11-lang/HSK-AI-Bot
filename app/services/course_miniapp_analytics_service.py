@@ -25,6 +25,14 @@ class CourseMiniAppAnalyticsService:
         self.session = session
 
     @staticmethod
+    def trusted_client_payload(payload: dict[str, Any] | None, user) -> dict[str, Any]:
+        """Copy client telemetry and replace spoofable learner-entry metadata."""
+        trusted = dict(payload or {})
+        entry_level = str(getattr(user, "level", "") or "").strip().lower()
+        trusted["entry_level"] = entry_level or None
+        return trusted
+
+    @staticmethod
     def _payload_json(payload: dict[str, Any] | None) -> str | None:
         if not payload:
             return None

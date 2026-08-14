@@ -230,6 +230,41 @@ class CourseMiniAppOnboardingValidationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             CourseMiniAppOnboardingService.normalize_level("hsk5")
 
+    def test_foundation_is_required_only_for_beginner_first_start(self):
+        requires = CourseMiniAppOnboardingService.requires_foundation
+        self.assertTrue(
+            requires(
+                level="beginner",
+                start_mode="lesson_1",
+                onboarding_completed=False,
+                review_only=False,
+            )
+        )
+        self.assertFalse(
+            requires(
+                level="hsk1",
+                start_mode="lesson_1",
+                onboarding_completed=False,
+                review_only=False,
+            )
+        )
+        self.assertFalse(
+            requires(
+                level="beginner",
+                start_mode="lesson_1",
+                onboarding_completed=True,
+                review_only=False,
+            )
+        )
+        self.assertFalse(
+            requires(
+                level="beginner",
+                start_mode="placement",
+                onboarding_completed=False,
+                review_only=False,
+            )
+        )
+
 
 class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
     @staticmethod
@@ -313,6 +348,7 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(result["ok"])
         self.assertEqual(result["level"], "hsk1")
         self.assertEqual(result["lesson"], 1)
+        self.assertTrue(result["foundation_required"])
         self.assertEqual(user.learning_mode, "course")
         self.assertEqual(user.payment_status, "none")
         service.engine.progress_repo.set_current_lesson_and_step.assert_awaited_once()
@@ -355,6 +391,52 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(result, {"ok": False, "error": "course_level_change_requires_placement"})
         session.commit.assert_not_awaited()
+
+    async def test_beginner_entry_level_is_saved_when_hsk1_first_lesson_already_exists(self):
+        session = SimpleNamespace(commit=AsyncMock())
+        service = CourseMiniAppOnboardingService(session)
+        user = SimpleNamespace(
+            id=4,
+            telegram_id=123,
+            level="hsk1",
+            learning_mode="qa",
+            voice_mode="none",
+        )
+        profile = self._profile()
+        lesson = SimpleNamespace(id=10, lesson_order=1, level="hsk1")
+        progress = SimpleNamespace(level="hsk1", current_lesson_id=lesson.id)
+
+        service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user))
+        service.profile_service = SimpleNamespace(
+            validate_preferences=CourseMiniAppProfileService.validate_preferences,
+            get_or_create=AsyncMock(return_value=profile),
+            save_preferences=AsyncMock(side_effect=self._save_profile),
+        )
+        service.engine = SimpleNamespace(
+            progress_repo=SimpleNamespace(get_by_user_id=AsyncMock(return_value=progress)),
+            lesson_repo=SimpleNamespace(
+                get_by_id=AsyncMock(return_value=lesson),
+                get_first_by_level=AsyncMock(return_value=lesson),
+            ),
+        )
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+
+        with patch(
+            "app.services.course_miniapp_onboarding_service.CourseMiniAppAnalyticsService",
+            return_value=analytics,
+        ):
+            result = await service.complete(
+                123,
+                level="beginner",
+                goal="hsk_exam",
+                daily_minutes=10,
+                start_mode="lesson_1",
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["foundation_required"])
+        self.assertFalse(result["review_only"])
+        self.assertEqual(user.level, "beginner")
 
 
 if __name__ == "__main__":

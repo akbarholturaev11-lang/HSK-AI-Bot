@@ -53,9 +53,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{boot:"HSK 1 с нуля — учите китайский каждый день по несколько минут с пандой 阿宝.",ask:"С какого уровня начнём? Не знаешь — начни с HSK 1.",placement:"Не знаете уровень? Короткий тест",start:"Начать",cont:"Продолжить",ready:"Готово!",readySub:"Начнём с первого урока.",first:"Начать первый урок",retry:"Не удалось сохранить. Попробовать снова",rec:"Рекомендуем"},
-  uz:{boot:"HSK 1 noldan — har kuni bir necha daqiqada panda 阿宝 bilan xitoy tilini o'rganing.",ask:"Qaysi darajadan boshlaymiz? Bilmasang — HSK 1 dan ket.",placement:"Darajangni bilmaysanmi? Qisqa test",start:"Boshlash",cont:"Davom etish",ready:"Tayyor!",readySub:"Birinchi darsdan boshlaymiz.",first:"Birinchi darsni boshlash",retry:"Saqlanmadi. Qayta urinib ko'rish",rec:"Tavsiya"},
-  tj:{boot:"HSK 1 аз сифр — ҳар рӯз чанд дақиқа бо панда 阿宝 хитоиро омӯзед.",ask:"Аз кадом сатҳ оғоз кунем? Намедонӣ — аз HSK 1.",placement:"Сатҳро намедонед? Тести кӯтоҳ",start:"Оғоз",cont:"Идома",ready:"Тайёр!",readySub:"Аз дарси аввал оғоз мекунем.",first:"Оғози дарси аввал",retry:"Сабт нашуд. Боз кӯшиш кунед",rec:"Тавсия"}}[LANG];
+var L={ru:{boot:"Начните с нуля и уже в первом занятии поймите свою первую китайскую фразу.",ask:"Сколько китайского вы уже знаете? HSK — это уровни знания китайского языка.",start:"Начать",cont:"Продолжить",ready:"Готово!",readySub:"Начнём с первого понятного результата.",first:"Начать первый урок",retry:"Не удалось сохранить. Попробовать снова",rec:"Рекомендуем"},
+  uz:{boot:"Noldan boshlang va birinchi mashg'ulotdayoq ilk xitoycha iborangizni tushuning.",ask:"Xitoy tilini qanchalik bilasiz? HSK — xitoy tilini bilish darajalari.",start:"Boshlash",cont:"Davom etish",ready:"Tayyor!",readySub:"Birinchi aniq natijadan boshlaymiz.",first:"Birinchi darsni boshlash",retry:"Saqlanmadi. Qayta urinib ko'rish",rec:"Tavsiya"},
+  tj:{boot:"Аз сифр оғоз кунед ва дар машғулияти аввал ибораи нахустини чиниро фаҳмед.",ask:"Забони чиниро то чӣ андоза медонед? HSK — сатҳҳои дониши забони чинӣ аст.",start:"Оғоз",cont:"Идома",ready:"Тайёр!",readySub:"Аз натиҷаи аввалини равшан оғоз мекунем.",first:"Оғози дарси аввал",retry:"Сабт нашуд. Боз кӯшиш кунед",rec:"Тавсия"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function panda(m){
   var eyes='<circle cx="36" cy="37" r="3.3" fill="#fff"/><circle cx="54" cy="37" r="3.3" fill="#fff"/><circle cx="36" cy="37" r="1.8" fill="#211D17"/><circle cx="54" cy="37" r="1.8" fill="#211D17"/><rect class="pd-blink" x="32" y="31" width="8" height="9" rx="3" fill="#211D17"/><rect class="pd-blink" x="50" y="31" width="8" height="9" rx="3" fill="#211D17"/>';
@@ -80,11 +80,12 @@ function panda(m){
     +eyes+'<ellipse cx="45" cy="44" rx="3.4" ry="2.4" fill="#211D17"/>'+mouth+decor
     +'</g></svg>';
 }
-var LV=[{k:"hsk1",g:"你好",hd:"HSK 1",s:{ru:"С нуля · самый лёгкий",uz:"Noldan · eng oson",tj:"Аз сифр · осонтарин"},rec:1},
+var LV=[{k:"beginner",g:"零",hd:{ru:"Я совсем с нуля",uz:"Xitoy tilini umuman bilmayman",tj:"Забони чиниро тамоман намедонам"},s:{ru:"Сначала разберём ханцзы, пиньинь и тоны",uz:"Avval hanzi, pinyin va tonlarni tushunamiz",tj:"Аввал ханзӣ, пинйин ва оҳангҳоро мефаҳмем"},rec:1},
+  {k:"hsk1",g:"你好",hd:"HSK 1",s:{ru:"Уже немного знаю китайский",uz:"Biroz xitoycha bilaman",tj:"Каме забони чинӣ медонам"}},
   {k:"hsk2",g:"谢谢",hd:"HSK 2",s:{ru:"Базовое общение",uz:"Asosiy suhbat",tj:"Муоширати асосӣ"}},
   {k:"hsk3",g:"明白",hd:"HSK 3",s:{ru:"Повседневное общение",uz:"Kundalik muloqot",tj:"Муоширати ҳаррӯза"}},
   {k:"hsk4",g:"流利",hd:"HSK 4",s:{ru:"Свободное общение",uz:"Erkin muloqot",tj:"Муоширати озод"}}];
-var step=0,sel="hsk1",submitting=false;
+var step=0,sel="beginner",submitting=false;
 var INIT_DATA=(tg&&tg.initData)||"";
 var ONB_SESSION_ID=(function(){try{var k="hsk_v3_onb_session_id",v=sessionStorage.getItem(k);if(!v){v="onb-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v}catch(e){return"onb-"+Date.now()}})();
 function apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
@@ -103,7 +104,9 @@ function onboardingPayload(){
   var dailyMinutes=10,startMode="lesson_1",goal="hsk_exam";
   try{
     dailyMinutes=Number(localStorage.getItem("hsk_v3_daily_minutes")||dailyMinutes)||dailyMinutes;
-    startMode=localStorage.getItem("hsk_v3_start_mode")||startMode;
+    /* V1 da placement/continue tanlovi yo'q. Eski cache beginner Starter'ni
+       chetlab o'tkazmasligi uchun boshlanish nuqtasi qat'iy lesson_1. */
+    localStorage.removeItem("hsk_v3_start_mode");
     goal=localStorage.getItem("hsk_v3_goal")||goal;
   }catch(e){}
   return {
@@ -124,11 +127,11 @@ function render(){
   document.getElementById("top").style.display=step===0?"none":"flex";
   if(step===0){st.innerHTML='<div class="welcome"><div class="big">'+panda("cheer")+'</div><h1 class="han">HSK AI</h1><p>'+L.boot+'</p></div>';cta.textContent=L.start;return;}
   if(step===1){document.getElementById("prog").style.width="50%";
-    var rows=LV.map(function(l){return '<button class="lv'+(sel===l.k?" sel":"")+'" onclick="pick(\''+l.k+'\')"><span class="glyph han">'+l.g+'</span><span class="ot"><span class="hd">'+l.hd+(l.rec?' <span class="tag">'+L.rec+'</span>':"")+'</span><small>'+trv(l.s)+'</small></span><span class="chk"><i class="ti ti-check"></i></span></button>'}).join("");
-    st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub">'+L.ask+'</div></div><div class="body">'+rows+'<div class="hint"><a>'+L.placement+'</a></div></div>';cta.textContent=L.cont;return;}
+    var rows=LV.map(function(l){return '<button class="lv'+(sel===l.k?" sel":"")+'" onclick="pick(\''+l.k+'\')"><span class="glyph han">'+l.g+'</span><span class="ot"><span class="hd">'+trv(l.hd)+(l.rec?' <span class="tag">'+L.rec+'</span>':"")+'</span><small>'+trv(l.s)+'</small></span><span class="chk"><i class="ti ti-check"></i></span></button>'}).join("");
+    st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub">'+L.ask+'</div></div><div class="body">'+rows+'</div>';cta.textContent=L.cont;return;}
   document.getElementById("prog").style.width="100%";
   var Lvl=LV.filter(function(x){return x.k===sel})[0];
-  st.innerHTML='<div class="welcome"><div class="big">'+panda("cheer")+'</div><h1>'+L.ready+'</h1><p>'+L.readySub+'</p><div class="recap"><span class="glyph han">'+Lvl.g+'</span><div><b>'+Lvl.hd+'</b><small>'+trv(Lvl.s)+'</small></div></div></div>';
+  st.innerHTML='<div class="welcome"><div class="big">'+panda("cheer")+'</div><h1>'+L.ready+'</h1><p>'+L.readySub+'</p><div class="recap"><span class="glyph han">'+Lvl.g+'</span><div><b>'+trv(Lvl.hd)+'</b><small>'+trv(Lvl.s)+'</small></div></div></div>';
   cta.innerHTML='<i class="ti ti-player-play"></i> '+L.first;
 }
 function pick(k){sel=k;render()}
@@ -141,20 +144,16 @@ function finish(){
   function go(result){
     if(moved)return;moved=true;
     var launch=result&&result.ok?result:{};
-    try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_level",String(launch.level||sel))}catch(e){}
-    var query=new URLSearchParams({
-      lang:LANG,
-      level:String(launch.level||sel),
-      tab:String(launch.tab||"course"),
-      onboarded:"1"
-    });
-    if(params.get("source"))query.set("source",String(params.get("source")).slice(0,40));
+    try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_learner_level",sel);localStorage.setItem("hsk_v3_level",String(launch.level||(sel==="beginner"?"hsk1":sel)))}catch(e){}
+    var query=new URLSearchParams(params.toString());
+    query.set("lang",LANG);query.set("level",String(launch.level||(sel==="beginner"?"hsk1":sel)));query.set("tab",String(launch.tab||"course"));query.set("onboarded","1");
+    if(launch.foundation_required)query.set("foundation","1");else query.delete("foundation");
     var lesson=Number(launch.lesson||1);
     if(lesson>0&&!launch.placement){query.set("lesson",String(lesson));query.set("autostart","1")}
     location.href="/course-v3.html?"+query.toString();
   }
   function fail(){submitting=false;cta.disabled=false;cta.textContent=L.retry}
-  if(!INIT_DATA){go({ok:true,level:sel,lesson:1,tab:"course"});return}
+  if(!INIT_DATA){go({ok:true,level:sel==="beginner"?"hsk1":sel,lesson:1,tab:"course",foundation_required:sel==="beginner"});return}
   postJson("/api/miniapp/onboarding",onboardingPayload())
     .then(function(response){return response.json().then(function(data){if(!response.ok||!data.ok)throw new Error(data.error||"onboarding_failed");return data})})
     .then(go)

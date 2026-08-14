@@ -15,11 +15,29 @@ from app.services.user_access_state_service import UserAccessStateService
 
 
 FREE_FEATURE_LIMITS = {feature_key: 1 for feature_key in COURSE_FEATURE_KEYS}
-# Darslar mini-qismlarga bo'lingan (3-4 yangi so'z, ~5-7 daqiqa). Yangi bepul
-# user 2 ta mini-darsni to'liq bepul o'tadi. 3-mini-dars — obuna oynasi
-# (frontend darsning ~yarmida paywall ko'rsatadi), 4-chi va keyingilar — qulf.
-# Reklama endi darslarda EMAS, mashq bo'limlarida ishlaydi (pastdagi *_ad limitlar).
+# Legacy/default value kept for native clients and older imports that do not pass
+# a level. Course v3 access decisions must use ``free_course_parts_for_level``.
 FREE_COURSE_LESSONS_PER_LEVEL = 2
+FREE_COURSE_PARTS_BY_LEVEL = {
+    "beginner": 3,
+    "hsk1": 3,
+    "hsk2": 2,
+    "hsk3": 2,
+    "hsk4": 2,
+    "hsk4a": 2,
+    "hsk4b": 2,
+}
+
+
+def free_course_parts_for_level(level: str | None) -> int:
+    """Return the free Course v3 mini-parts for one learner level.
+
+    HSK1 includes its third-part beginner checkpoint. Other levels keep the
+    existing two-part preview. Unknown/legacy levels retain the historical
+    two-part default instead of becoming more permissive.
+    """
+    normalized = str(level or "").strip().lower()
+    return FREE_COURSE_PARTS_BY_LEVEL.get(normalized, FREE_COURSE_LESSONS_PER_LEVEL)
 
 # Course Mini App "Mashq" bo'limlari — YANGI model:
 #   • Har bo'lim UMRDA 1 marta bepul (reklamasiz). Kunlik yangilanish YO'Q
@@ -104,7 +122,7 @@ class CourseMiniAppAccessService:
             order = int(lesson_order or 0)
         except (TypeError, ValueError):
             order = 0
-        return order > FREE_COURSE_LESSONS_PER_LEVEL
+        return order > free_course_parts_for_level(level)
 
     @staticmethod
     def _normalize_feature_key(feature_key: str) -> str:

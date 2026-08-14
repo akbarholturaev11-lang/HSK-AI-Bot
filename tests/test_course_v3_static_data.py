@@ -118,6 +118,21 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("clearLessonResume((MAP&&MAP.level)||\"hsk1\",cur&&cur.n)", html)
         self.assertIn('lang:LANG,session_id:COURSE_SESSION_ID', html)
 
+    def test_beginner_onboarding_is_default_server_backed_and_cache_safe(self):
+        onboarding = Path("app/static/course_v3_onboarding.html").read_text(encoding="utf-8")
+        course = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+        self.assertIn('var step=0,sel="beginner"', onboarding)
+        self.assertLess(onboarding.index('{k:"beginner"'), onboarding.index('{k:"hsk1"'))
+        self.assertIn('localStorage.removeItem("hsk_v3_start_mode")', onboarding)
+        self.assertNotIn('startMode=localStorage.getItem("hsk_v3_start_mode")', onboarding)
+        self.assertIn('var query=new URLSearchParams(params.toString())', onboarding)
+        self.assertIn('d.user&&d.user.onboarding_completed===false', course)
+        self.assertIn('typeof d.user.onboarding_completed!=="boolean"', course)
+        self.assertIn('authoritative.completed===false', course)
+        self.assertIn('if(required){', course)
+        self.assertIn('if(typeof afterComplete==="function")afterComplete()', course)
+
     def test_interactive_cards_present_and_level_gated(self):
         """New Duolingo-style cards (sentence_builder, listening_choice,
         dialog_cloze) appear and only use already-learned vocabulary.
@@ -191,69 +206,180 @@ class CourseV3StaticMapTests(unittest.TestCase):
                 self.assertIn("listening_choice", group_types, where)
                 self.assertIn("dialog_cloze", group_types, where)
 
-    def test_beginner_basics_cards_open_first_lesson_in_all_languages(self):
-        """Noldan boshlovchi 你 ieroglifidan OLDIN ieroglif/pinyin va ton
-        tushunchasini oladi. Kartalar `sections` dan TASHQARIDA — aks holda
-        `material_ref` (bo'lim ichidagi karta pozitsiyasi) surilib, saqlangan
-        xato-materiallari boshqa kartaga ko'chib ketadi."""
+    def test_beginner_foundation_has_ten_versioned_mastery_cards(self):
+        """Starter 0 is top-level so existing section material refs stay stable."""
         data = json.loads((BASE / "hsk1" / "lesson_01.json").read_text(encoding="utf-8"))
-        basics = data.get("basics")
-        self.assertTrue(isinstance(basics, list) and len(basics) == 2, "hsk1/lesson_01 basics")
+        foundation = data.get("foundation")
+        self.assertEqual(foundation["id"], "starter0_hsk1")
+        self.assertEqual(foundation["version"], 1)
+        self.assertEqual(foundation["required_objectives"], ["meaning", "build", "listen"])
+        cards = foundation["cards"]
+        self.assertEqual(
+            [card["type"] for card in cards],
+            ["intro", "choice", "explain", "parts", "builder", "tones",
+             "sandhi", "listen_choice", "speak", "result"],
+        )
+        self.assertEqual(len({card["card_id"] for card in cards}), 10)
 
         narrate_keys = []
-        for card in basics:
-            self.assertEqual(card["type"], "_basics")
+        for card in cards:
+            self.assertTrue(card["card_id"])
             narrate_keys.append(card["narrate"])
-            for lang in ("uz", "ru", "tj"):
-                self.assertTrue(card["title"].get(lang), f"title/{lang}")
-                self.assertTrue(card["lead"].get(lang), f"lead/{lang}")
-            self.assertTrue(card["steps"], "steps")
-            for step in card["steps"]:
+            for field in ("title", "text", "prompt", "explanation"):
+                if field not in card:
+                    continue
                 for lang in ("uz", "ru", "tj"):
-                    self.assertTrue(step["text"].get(lang), f"step text/{lang}")
-                if step.get("zh"):
-                    self.assertTrue(step.get("pinyin"), "pinyin")
-                    for lang in ("uz", "ru", "tj"):
-                        self.assertTrue(step["translation"].get(lang), f"step tr/{lang}")
-        self.assertEqual(narrate_keys, ["b1", "b2"])
+                    self.assertTrue(card[field].get(lang), f"{card['card_id']} {field}/{lang}")
+            examples = card.get("examples") or ([card["example"]] if card.get("example") else [])
+            self.assertTrue(examples, f"{card['card_id']} Chinese example")
+            for example in examples:
+                self.assertTrue(example.get("zh"), f"{card['card_id']} zh")
+                self.assertTrue(example.get("pinyin"), f"{card['card_id']} pinyin")
+                for lang in ("uz", "ru", "tj"):
+                    self.assertTrue(
+                        example["translation"].get(lang),
+                        f"{card['card_id']} translation/{lang}",
+                    )
 
-        # Tanishtiruv kartalari bo'limlarga TUSHMASLIGI shart (ref barqarorligi).
+        objectives = {c.get("objective_id") for c in cards if c.get("objective_id")}
+        self.assertEqual(objectives, {"meaning", "build", "listen", "speak_bonus"})
+        self.assertTrue(next(c for c in cards if c["type"] == "speak")["optional"])
+        sandhi = next(c for c in cards if c["type"] == "sandhi")
+        self.assertEqual(sandhi["example"]["pinyin"], "nǐ hǎo")
+        self.assertEqual(sandhi["natural_pinyin"], "ní hǎo")
+
+        # Foundation kartalari bo'limlarga TUSHMASLIGI shart (ref barqarorligi).
         section_types = {c["type"] for sec in data["sections"] for c in sec["cards"]}
-        self.assertNotIn("_basics", section_types)
+        self.assertFalse(set(card["type"] for card in cards) & section_types - {"builder", "listen_choice"})
 
-        # Faqat birinchi qismda; qolgan darslar tegilmagan.
+        # Faqat HSK1 birinchi qismida; passive `basics` butunlay almashtirilgan.
         for level, count in EXPECTED_LESSON_COUNTS.items():
             for n in range(1, count + 1):
-                if level == "hsk1" and n == 1:
-                    continue
-                other = json.loads(
+                lesson = json.loads(
                     (BASE / level / f"lesson_{n:02d}.json").read_text(encoding="utf-8")
                 )
-                self.assertNotIn("basics", other, f"{level}/lesson_{n:02d}")
+                self.assertNotIn("basics", lesson, f"{level}/lesson_{n:02d}")
+                if level == "hsk1" and n == 1:
+                    continue
+                self.assertNotIn("foundation", lesson, f"{level}/lesson_{n:02d}")
 
-        # Frontend kartani taniydi va `basics` ni navbatga qo'shadi.
-        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
-        self.assertIn('if(t==="_basics")return cardBasics(c)', html)
-        self.assertIn("(d.basics||[])", html)
-
-        # Ovoz matni ekrandagi matn bilan bir xil kalitlarda bo'lsin (uz/ru/tj),
-        # aks holda karta jim qoladi yoki boshqa narsani o'qiydi.
+        # Ovoz matni ekrandagi `narrate` kalitlari bilan bir xil bo'lsin.
         import ast
 
         tour_src = Path("scripts/gen_tour_audio.py").read_text(encoding="utf-8")
-        basics_display = None
+        foundation_display = None
         for node in ast.parse(tour_src).body:
             targets = getattr(node, "targets", [])
-            if targets and getattr(targets[0], "id", "") == "BASICS_DISPLAY":
-                basics_display = ast.literal_eval(node.value)
-        self.assertIsNotNone(basics_display, "gen_tour_audio.py BASICS_DISPLAY")
+            if targets and getattr(targets[0], "id", "") == "FOUNDATION_DISPLAY":
+                foundation_display = ast.literal_eval(node.value)
+        self.assertIsNotNone(foundation_display, "gen_tour_audio.py FOUNDATION_DISPLAY")
+        self.assertEqual(narrate_keys, [f"f{i:02d}" for i in range(1, 11)])
         for lang in ("uz", "ru", "tj"):
+            self.assertEqual(set(foundation_display[lang]), set(narrate_keys))
             for key in narrate_keys:
-                self.assertTrue(basics_display[lang].get(key), f"narration {lang}/{key}")
-        # uz/tj uchun talaffuzga moslangan alohida AUDIO_TEXT ham bo'lishi kerak
-        # (ru AUDIO_TEXT display'dan meros oladi).
+                self.assertTrue(foundation_display[lang][key], f"narration {lang}/{key}")
+        # ru AUDIO_TEXT display'dan meros oladi; uz/tj talaffuzga moslangan.
         for key in narrate_keys:
             self.assertGreaterEqual(tour_src.count(f'"{key}":'), 5, f"AUDIO_TEXT {key}")
+
+        # Bundled UZ/RU/TJ narration must be real audio, not empty placeholders.
+        import wave
+
+        for lang in ("uz", "ru", "tj"):
+            for key in narrate_keys:
+                audio = Path("app/static/audio/tour") / lang / f"{key}.wav"
+                self.assertTrue(audio.exists(), str(audio))
+                with wave.open(str(audio), "rb") as stream:
+                    self.assertGreater(stream.getnframes(), 0, str(audio))
+
+    def test_hsk1_first_checkpoint_has_three_versioned_exit_checks(self):
+        data = json.loads((BASE / "hsk1" / "lesson_03.json").read_text(encoding="utf-8"))
+        ticket = data.get("exit_ticket")
+        self.assertEqual(ticket["id"], "hsk1_l1_checkpoint")
+        self.assertEqual(ticket["version"], 1)
+        self.assertEqual(
+            ticket["required_objectives"],
+            ["meaning", "listen_dialog", "build_dialog"],
+        )
+        self.assertEqual([c["type"] for c in ticket["cards"]], ["choice", "listen_choice", "builder"])
+        self.assertEqual(
+            [c["objective_id"] for c in ticket["cards"]],
+            ticket["required_objectives"],
+        )
+        self.assertEqual(len({c["card_id"] for c in ticket["cards"]}), 3)
+        builder = ticket["cards"][-1]
+        self.assertEqual(builder["answer_tokens"], ["对不起", "没关系"])
+        for card in ticket["cards"]:
+            for lang in ("uz", "ru", "tj"):
+                self.assertTrue(card["title"][lang], f"{card['card_id']} title/{lang}")
+                self.assertTrue(card["prompt"][lang], f"{card['card_id']} prompt/{lang}")
+                self.assertTrue(card["explanation"][lang], f"{card['card_id']} explanation/{lang}")
+                self.assertTrue(card["example"]["translation"][lang], f"{card['card_id']} tr/{lang}")
+            self.assertTrue(card["example"]["zh"])
+            self.assertTrue(card["example"]["pinyin"])
+
+        # Exit ticket faqat checkpointda va sections material refsiga kirmaydi.
+        for level, count in EXPECTED_LESSON_COUNTS.items():
+            for n in range(1, count + 1):
+                if level == "hsk1" and n == 3:
+                    continue
+                lesson = json.loads(
+                    (BASE / level / f"lesson_{n:02d}.json").read_text(encoding="utf-8")
+                )
+                self.assertNotIn("exit_ticket", lesson, f"{level}/lesson_{n:02d}")
+
+    def test_hsk1_first_three_parts_do_not_assess_future_vocabulary(self):
+        """Visible examples/options only use material introduced by that point."""
+        import re
+
+        known_chars: set[str] = set()
+        graded_types = {
+            "meaning_guess", "pinyin_choice", "translation_choice", "hanzi_choice",
+            "quick_quiz", "sentence_builder", "reverse_builder", "listening_choice",
+            "dialog_cloze", "gap_fill", "pronunciation", "match_pairs",
+        }
+
+        def han_chars(value) -> set[str]:
+            text = json.dumps(value, ensure_ascii=False)
+            return set(re.findall(r"[一-鿿]", text))
+
+        for n in (1, 2, 3):
+            data = json.loads((BASE / "hsk1" / f"lesson_{n:02d}.json").read_text(encoding="utf-8"))
+            where = f"hsk1/lesson_{n:02d}"
+            known_chars |= {ch for w in data["active_words"] for ch in w["zh"]}
+            # Grammar examples are explicitly taught before their check cards.
+            known_chars |= {
+                ch
+                for grammar in data.get("grammar", [])
+                for example in grammar.get("examples", [])
+                for ch in example.get("zh", "")
+            }
+            for block in data.get("dialogues", []):
+                for line in block.get("dialogue", []):
+                    self.assertFalse(han_chars(line) - known_chars, f"future dialogue example in {where}: {line['zh']}")
+            for section in data["sections"]:
+                for card in section["cards"]:
+                    if card.get("type") not in graded_types:
+                        continue
+                    self.assertFalse(
+                        han_chars(card) - known_chars,
+                        f"future assessed content in {where}: {card.get('type')}",
+                    )
+
+        checked = "\n".join(
+            [
+                Path("scripts/seed_hsk1_lesson_01.py").read_text(encoding="utf-8"),
+                Path("scripts/gen_course_v3_from_seed.py").read_text(encoding="utf-8"),
+            ]
+            + [
+                (BASE / "hsk1" / f"lesson_{n:02d}.json").read_text(encoding="utf-8")
+                for n in (1, 2, 3)
+            ]
+        )
+        self.assertNotIn("nī hǎo", checked)
+        self.assertNotIn("可以", checked)
+        self.assertIn("nǐ hǎo", checked)
+        self.assertIn("ní hǎo", checked)
 
     def test_hsk_exam_uses_server_material_and_server_grading(self):
         html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")

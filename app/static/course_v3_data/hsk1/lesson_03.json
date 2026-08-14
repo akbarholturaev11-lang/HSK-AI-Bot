@@ -135,27 +135,18 @@
       },
       "title_zh": "变调 (3+3)",
       "rule": {
-        "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: 你(nǐ) + 好(hǎo) → nī hǎo (lekin yoziladi: nǐ hǎo)",
-        "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: 你(nǐ) + 好(hǎo) → nī hǎo (но пишется: nǐ hǎo)",
-        "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: 你(nǐ) + 好(hǎo) → nī hǎo (аммо навишта мешавад: nǐ hǎo)"
+        "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: yozilishi nǐ hǎo, tabiiy talaffuzi ní hǎo.",
+        "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: пишется nǐ hǎo, естественно произносится ní hǎo.",
+        "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: nǐ hǎo навишта мешавад, ní hǎo табиӣ талаффуз мешавад."
       },
       "examples": [
         {
           "zh": "你好",
-          "pinyin": "nī hǎo → nǐ hǎo",
+          "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
           "translation": {
             "uz": "salom (nǐ hǎo deb yoziladi)",
             "ru": "привет (пишется nǐ hǎo)",
             "tj": "салом (навишта мешавад nǐ hǎo)"
-          }
-        },
-        {
-          "zh": "可以",
-          "pinyin": "ké yǐ → kě yǐ",
-          "translation": {
-            "uz": "mumkin, bo'ladi",
-            "ru": "можно, разрешено",
-            "tj": "мумкин, иҷозат"
           }
         }
       ]
@@ -273,12 +264,12 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "可以",
             "你好",
-            "马",
-            "骂"
+            "妈",
+            "骂",
+            "马"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "马 — mǎ",
             "ru": "马 — mǎ",
@@ -349,11 +340,11 @@
           "pinyin": "duìbuqǐ",
           "options": [
             "你",
-            "好",
             "对不起",
+            "好",
             "您"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "对不起 — kechirasiz, uzr (duìbuqǐ)",
             "ru": "对不起 — извините, прости (duìbuqǐ)",
@@ -415,10 +406,10 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "你",
-            "您",
             "好",
-            "你们"
+            "您",
+            "你们",
+            "你"
           ],
           "correct_index": 1,
           "explanation": {
@@ -451,17 +442,17 @@
               "tj": "шумо (расмӣ/ҳурматнок)"
             },
             {
-              "uz": "sizlar (ko'plik)",
-              "ru": "вы (множественное число)",
-              "tj": "шумоён (ҷамъ)"
-            },
-            {
               "uz": "sen (birlik)",
               "ru": "ты (единственное число)",
               "tj": "ту (якка)"
+            },
+            {
+              "uz": "sizlar (ko'plik)",
+              "ru": "вы (множественное число)",
+              "tj": "шумоён (ҷамъ)"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "你 = sen (birlik) (nǐ)",
             "ru": "你 = ты (единственное число) (nǐ)",
@@ -489,12 +480,12 @@
           "audio_text": "你好！",
           "pinyin": "Nǐ hǎo!",
           "options": [
-            "你好！",
+            "您好！",
             "你们好！",
-            "对不起！",
-            "您好！"
+            "你好！",
+            "对不起！"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "你好！ — Salom!",
             "ru": "你好！ — Привет!",
@@ -521,12 +512,12 @@
             }
           ],
           "options": [
+            "对不起！",
             "你们好！",
             "你好！",
-            "对不起！",
             "您好！"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 你好！",
             "ru": "Правильный ответ: 你好！",
@@ -542,12 +533,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "关",
-            "好",
             "你",
-            "起"
+            "们",
+            "关",
+            "不"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 你 — 你好！ (Salom!)",
             "ru": "Верно: 你 — 你好！ (Привет!)",
@@ -567,12 +558,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "对不起！",
-            "您好！",
+            "你们好！",
             "你好！",
-            "你们好！"
+            "对不起！",
+            "您好！"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 你好！",
             "ru": "Правильный ответ: 你好！",
@@ -591,5 +582,137 @@
         }
       ]
     }
-  ]
+  ],
+  "exit_ticket": {
+    "id": "hsk1_l1_checkpoint",
+    "version": 1,
+    "required_objectives": [
+      "meaning",
+      "listen_dialog",
+      "build_dialog"
+    ],
+    "cards": [
+      {
+        "type": "choice",
+        "card_id": "hsk1_l1_exit_meaning",
+        "objective_id": "meaning",
+        "title": {
+          "uz": "Natija tekshiruvi",
+          "ru": "Проверка результата",
+          "tj": "Санҷиши натиҷа"
+        },
+        "prompt": {
+          "uz": "你好 nimani anglatadi?",
+          "ru": "Что означает 你好?",
+          "tj": "你好 чӣ маъно дорад?"
+        },
+        "example": {
+          "zh": "你好",
+          "pinyin": "nǐ hǎo",
+          "translation": {
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
+          }
+        },
+        "options": [
+          {
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
+          },
+          {
+            "uz": "Rahmat",
+            "ru": "Спасибо",
+            "tj": "Раҳмат"
+          },
+          {
+            "uz": "Kechirasiz",
+            "ru": "Извините",
+            "tj": "Бубахшед"
+          }
+        ],
+        "correct_index": 0,
+        "explanation": {
+          "uz": "你好 — salom.",
+          "ru": "你好 — привет.",
+          "tj": "你好 — салом."
+        }
+      },
+      {
+        "type": "listen_choice",
+        "card_id": "hsk1_l1_exit_listen_dialog",
+        "objective_id": "listen_dialog",
+        "title": {
+          "uz": "Dialogni tinglang",
+          "ru": "Послушайте реплику",
+          "tj": "Ҷумларо гӯш кунед"
+        },
+        "prompt": {
+          "uz": "Qaysi iborani eshitdingiz?",
+          "ru": "Какую фразу вы услышали?",
+          "tj": "Кадом ибораро шунидед?"
+        },
+        "audio_text": "对不起",
+        "example": {
+          "zh": "对不起",
+          "pinyin": "duìbuqǐ",
+          "translation": {
+            "uz": "Kechirasiz",
+            "ru": "Извините",
+            "tj": "Бубахшед"
+          }
+        },
+        "options": [
+          "没关系",
+          "你好",
+          "对不起"
+        ],
+        "correct_index": 2,
+        "explanation": {
+          "uz": "对不起 — kechirasiz.",
+          "ru": "对不起 — извините.",
+          "tj": "对不起 — бубахшед."
+        }
+      },
+      {
+        "type": "builder",
+        "card_id": "hsk1_l1_exit_build_dialog",
+        "objective_id": "build_dialog",
+        "title": {
+          "uz": "Mini-dialog tuzing",
+          "ru": "Соберите мини-диалог",
+          "tj": "Гуфтугӯи кӯтоҳ созед"
+        },
+        "prompt": {
+          "uz": "Uzr va javobni to'g'ri tartibda tuzing:",
+          "ru": "Расставьте извинение и ответ по порядку:",
+          "tj": "Узр ва ҷавобро бо тартиби дуруст созед:"
+        },
+        "example": {
+          "zh": "对不起 → 没关系",
+          "pinyin": "duìbuqǐ → méi guānxi",
+          "translation": {
+            "uz": "Kechirasiz → Hech gap emas",
+            "ru": "Извините → Ничего страшного",
+            "tj": "Бубахшед → Майлаш"
+          }
+        },
+        "tokens": [
+          "没关系",
+          "你好",
+          "对不起"
+        ],
+        "answer_tokens": [
+          "对不起",
+          "没关系"
+        ],
+        "explanation": {
+          "uz": "对不起 ga tabiiy javob: 没关系.",
+          "ru": "Естественный ответ на 对不起: 没关系.",
+          "tj": "Ҷавоби табиӣ ба 对不起: 没关系."
+        }
+      }
+    ]
+  }
 }

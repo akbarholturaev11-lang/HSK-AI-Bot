@@ -18,8 +18,8 @@ from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialService,
 )
 from app.services.course_miniapp_access_service import (
-    FREE_COURSE_LESSONS_PER_LEVEL,
     CourseMiniAppAccessService,
+    free_course_parts_for_level,
 )
 from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
@@ -76,6 +76,7 @@ def apply_course_v3_access_policy(
 ) -> None:
     """Apply the same server-owned progress and premium rules as Course v3."""
 
+    free_parts = free_course_parts_for_level(level)
     for unit in data.get("units", []):
         if not isinstance(unit, dict):
             continue
@@ -105,7 +106,7 @@ def apply_course_v3_access_policy(
             if not is_paid and requires_premium and lesson_order > completed:
                 if (
                     lesson_order == completed + 1
-                    and lesson_order == FREE_COURSE_LESSONS_PER_LEVEL + 1
+                    and lesson_order == free_parts + 1
                 ):
                     lesson["status"] = "current"
                     lesson["preview_half"] = True
@@ -379,7 +380,7 @@ class DesktopCourseService:
             not is_paid
             and requires_premium
             and lesson_order == completed + 1
-            and lesson_order == FREE_COURSE_LESSONS_PER_LEVEL + 1
+            and lesson_order == free_course_parts_for_level(level) + 1
         )
         if lesson_order > completed and not is_paid and requires_premium and not preview_half:
             raise DesktopCourseError(

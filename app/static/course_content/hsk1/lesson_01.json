@@ -132,14 +132,14 @@
       },
       "title_zh": "变调 (3+3)",
       "rule": {
-        "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: 你(nǐ) + 好(hǎo) → nī hǎo (lekin yoziladi: nǐ hǎo)",
-        "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: 你(nǐ) + 好(hǎo) → nī hǎo (но пишется: nǐ hǎo)",
-        "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: 你(nǐ) + 好(hǎo) → nī hǎo (аммо навишта мешавад: nǐ hǎo)"
+        "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: yozilishi nǐ hǎo, tabiiy talaffuzi ní hǎo.",
+        "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: пишется nǐ hǎo, естественно произносится ní hǎo.",
+        "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: nǐ hǎo навишта мешавад, ní hǎo табиӣ талаффуз мешавад."
       },
       "examples": [
         {
           "zh": "你好",
-          "pinyin": "nī hǎo → nǐ hǎo",
+          "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
           "translation": {
             "uz": "salom (nǐ hǎo deb yoziladi)",
             "ru": "привет (пишется nǐ hǎo)",

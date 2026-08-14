@@ -19,6 +19,7 @@ from app.services.course_miniapp_access_service import (
     COURSE_AI_PRACTICE_FEATURES,
     COURSE_DAILY_FREE_LIMITS,
     CourseMiniAppAccessService,
+    free_course_parts_for_level,
 )
 from app.services.course_access_policy_service import (
     COURSE_ACCESS_AD,
@@ -229,14 +230,23 @@ class CourseMiniAppAccessTests(unittest.TestCase):
         # Bepul asosiy bo'limlar hali 1 (umrbod, lifetime=True bilan ishlatiladi).
         self.assertEqual(COURSE_DAILY_FREE_LIMITS.get("recognition"), 1)
 
-    def test_unpaid_course_lesson_policy_keeps_only_first_lesson_free(self):
-        # Bepul trial (mini-qismlar): 1-2-qism to'liq bepul; 3-qism (yarim
-        # preview) va keyingilari premium. Reklama mashq bo'limlarida.
+    def test_free_course_parts_are_level_aware(self):
+        self.assertEqual(free_course_parts_for_level("beginner"), 3)
+        self.assertEqual(free_course_parts_for_level("hsk1"), 3)
+        for level in ("hsk2", "hsk3", "hsk4", "hsk4a", "hsk4b"):
+            self.assertEqual(free_course_parts_for_level(level), 2)
+        self.assertEqual(free_course_parts_for_level("unknown"), 2)
+
+    def test_unpaid_course_lesson_policy_includes_hsk1_checkpoint(self):
+        # HSK1 mini-parts 1-3 are fully free; part 4 is the first premium
+        # preview. HSK2-HSK4 retain the existing two-part allowance.
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 1))
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 2))
-        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 3))
+        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 3))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 4))
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 1))
+        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 2))
+        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 3))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk4", 4))
 
 
@@ -929,6 +939,90 @@ class CourseMiniAppProfileTests(unittest.TestCase):
             )
 
 
+class CourseMiniAppFoundationStatusTests(unittest.IsolatedAsyncioTestCase):
+    @staticmethod
+    def _session(*payloads):
+        return SimpleNamespace(
+            execute=mock.AsyncMock(
+                return_value=_ScalarListResult(payloads)
+            )
+        )
+
+    async def test_beginner_foundation_is_required_until_completed_event_exists(self):
+        user = SimpleNamespace(level="beginner", telegram_id=123)
+
+        pending = await CourseMiniAppProfileService(self._session()).foundation_status(user)
+        completed = await CourseMiniAppProfileService(
+            self._session(json.dumps({"foundation_version": 1}))
+        ).foundation_status(user)
+
+        self.assertEqual(
+            pending,
+            {
+                "id": "starter0_hsk1",
+                "version": 1,
+                "required": True,
+                "completed": False,
+                "status": "required",
+            },
+        )
+        self.assertEqual(
+            completed,
+            {
+                "id": "starter0_hsk1",
+                "version": 1,
+                "required": True,
+                "completed": True,
+                "status": "completed",
+            },
+        )
+
+    async def test_hsk1_foundation_is_optional(self):
+        user = SimpleNamespace(level="hsk1", telegram_id=123)
+
+        status = await CourseMiniAppProfileService(self._session()).foundation_status(user)
+
+        self.assertEqual(
+            status,
+            {
+                "id": "starter0_hsk1",
+                "version": 1,
+                "required": False,
+                "completed": False,
+                "status": "optional",
+            },
+        )
+
+    async def test_other_foundation_version_does_not_complete_current_version(self):
+        user = SimpleNamespace(level="beginner", telegram_id=123)
+
+        status = await CourseMiniAppProfileService(
+            self._session(
+                json.dumps({"foundation_version": 2}),
+                "not-json",
+            )
+        ).foundation_status(user)
+
+        self.assertFalse(status["completed"])
+        self.assertEqual(status["status"], "required")
+
+    async def test_other_foundation_id_does_not_complete_starter_zero(self):
+        user = SimpleNamespace(level="beginner", telegram_id=123)
+
+        status = await CourseMiniAppProfileService(
+            self._session(
+                json.dumps(
+                    {
+                        "foundation_id": "some_future_foundation",
+                        "foundation_version": 1,
+                    }
+                )
+            )
+        ).foundation_status(user)
+
+        self.assertFalse(status["completed"])
+
+
 class CourseMiniAppAnalyticsTests(unittest.IsolatedAsyncioTestCase):
     def test_server_lesson_jump_events_are_allowlisted(self):
         from app.db.models.course_miniapp_event import COURSE_MINIAPP_EVENT_NAMES
@@ -975,6 +1069,18 @@ class CourseMiniAppAnalyticsTests(unittest.IsolatedAsyncioTestCase):
         parsed = json.loads(payload_json)
         self.assertTrue(parsed["truncated"])
         self.assertLessEqual(len(payload_json), MAX_EVENT_PAYLOAD_CHARS)
+
+    def test_client_entry_level_is_replaced_with_server_user_level(self):
+        payload = {"entry_level": "hsk4", "card_id": "foundation-meaning-1"}
+
+        trusted = CourseMiniAppAnalyticsService.trusted_client_payload(
+            payload,
+            SimpleNamespace(level="beginner"),
+        )
+
+        self.assertEqual(trusted["entry_level"], "beginner")
+        self.assertEqual(trusted["card_id"], "foundation-meaning-1")
+        self.assertEqual(payload["entry_level"], "hsk4")
 
 
 if __name__ == "__main__":

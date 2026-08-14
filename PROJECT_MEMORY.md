@@ -207,6 +207,36 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-14 — Beginner Starter 0 and HSK1 free checkpoint
+
+Changed:
+- `beginner` is now a persistent onboarding entry level. It maps to HSK1 course
+  content but requires the versioned `starter0_hsk1` Foundation before any
+  lesson flow; server onboarding/foundation status is authoritative and
+  user-scoped localStorage is only resume/cache.
+- HSK1 lesson 1 keeps Foundation outside `sections` in `lesson_01.json`, and its
+  three-objective exit ticket outside `sections` in `lesson_03.json`. This keeps
+  existing `material_ref`, mistake history, lesson order and resume indexes
+  stable. Wrong graded cards are corrected and retried; completion is recorded
+  only after the server confirms the `foundation_completed` event.
+- The canonical free boundary is level-aware:
+  `free_course_parts_for_level("hsk1"|"beginner") == 3`; HSK2–HSK4 remain at
+  two. Map, unlock, completion, next-lesson, Desktop and Android use the same
+  helper. HSK1 part 4 continues through the existing access-policy semantics.
+- Existing event storage now powers Foundation start/completion, first-attempt
+  accuracy, Starter→checkpoint, checkpoint→paywall and D1 meaningful-return
+  analytics. No DB migration was added.
+
+Key files:
+- `app/static/course-v3.html`, `app/static/course_v3_onboarding.html`
+- `app/services/course_miniapp_{onboarding,profile,access,analytics,admin_analytics}_service.py`
+- `scripts/gen_course_v3_from_seed.py`, `scripts/seed_hsk1_lesson_01.py`
+
+Risk / follow-up:
+- Deploy should monitor new-beginner Foundation and checkpoint completion plus
+  D1 return. Payment approval, prices, referral and admin access modes were not
+  changed.
+
 ### 2026-08-12 — App ads also run in practice sections and lessons
 
 Changed:

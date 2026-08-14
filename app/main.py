@@ -84,8 +84,8 @@ from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import (
     COURSE_AI_PRACTICE_FEATURES,
-    FREE_COURSE_LESSONS_PER_LEVEL,
     CourseMiniAppAccessService,
+    free_course_parts_for_level,
 )
 from app.services.course_access_policy_service import (
     COURSE_ACCESS_AD,
@@ -1196,6 +1196,7 @@ def _apply_course_v3_access_policy(
     is_paid: bool,
     access_policy=None,
 ) -> None:
+    free_parts = free_course_parts_for_level(level)
     for unit in data.get("units", []):
         unit_unlocked = False
         for lesson in unit.get("lessons", []):
@@ -1214,7 +1215,7 @@ def _apply_course_v3_access_policy(
                 access_policy.requirement_for(
                     lesson_order=n,
                     is_paid=is_paid,
-                    free_lessons=FREE_COURSE_LESSONS_PER_LEVEL,
+                    free_lessons=free_parts,
                 )
                 if access_policy
                 else (
@@ -1227,7 +1228,7 @@ def _apply_course_v3_access_policy(
                 )
             )
             if requirement == COURSE_ACCESS_SUBSCRIPTION and n > completed:
-                if n == completed + 1 and n == FREE_COURSE_LESSONS_PER_LEVEL + 1:
+                if n == completed + 1 and n == free_parts + 1:
                     # Birinchi pullik mini-dars: yangi bepul user uni ochib,
                     # ~yarmigacha ko'radi; frontend kartalar o'rtasida obuna
                     # oynasini chiqaradi.
@@ -1635,6 +1636,9 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             "language": resolved_lang,
             "is_paid": is_paid,
             "referral_code": getattr(user, "referral_code", None) or "",
+            "learner_level": str(getattr(user, "level", "") or "").strip().lower(),
+            "onboarding_completed": profile.onboarding_completed_at is not None,
+            "foundation": await profile_svc.foundation_status(user),
         }
         # Motivational reminders are ON by default until the user turns them off.
         data["notify"] = {
@@ -2242,7 +2246,7 @@ async def v3_course_lesson_unlock(request: Request):
         requirement = access_policy.requirement_for(
             lesson_order=lesson_order,
             is_paid=is_paid,
-            free_lessons=FREE_COURSE_LESSONS_PER_LEVEL,
+            free_lessons=free_course_parts_for_level(resolved_level),
         )
         if requirement == COURSE_ACCESS_SUBSCRIPTION:
             return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
@@ -2336,7 +2340,7 @@ async def v3_course_lesson_complete(request: Request):
         requirement = access_policy.requirement_for(
             lesson_order=lesson_order,
             is_paid=is_paid,
-            free_lessons=FREE_COURSE_LESSONS_PER_LEVEL,
+            free_lessons=free_course_parts_for_level(resolved_level),
         )
         if requirement == COURSE_ACCESS_SUBSCRIPTION:
             return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
@@ -2419,7 +2423,7 @@ async def v3_course_lesson_complete(request: Request):
         next_requirement = access_policy.requirement_for(
             lesson_order=next_order,
             is_paid=is_paid,
-            free_lessons=FREE_COURSE_LESSONS_PER_LEVEL,
+            free_lessons=free_course_parts_for_level(resolved_level),
         )
         if has_next and next_requirement != COURSE_ACCESS_SUBSCRIPTION:
             await progress_repo.set_current_lesson_and_step(
@@ -4754,6 +4758,7 @@ async def miniapp_event(request: Request):
 
         if event in analytics_service.CLIENT_EVENT_NAMES:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            trusted_payload = analytics_service.trusted_client_payload(payload, user)
             result = await analytics_service.record_client_event(
                 event_name=event,
                 telegram_id=telegram_id,
@@ -4763,7 +4768,7 @@ async def miniapp_event(request: Request):
                 lesson_order=_positive_int(payload.get("lesson_order") or payload.get("lesson_id")),
                 session_id=str(payload.get("session_id") or "") or None,
                 dedupe_key=str(payload.get("event_id") or payload.get("dedupe_key") or "") or None,
-                payload=payload,
+                payload=trusted_payload,
             )
             if result.get("ok"):
                 await session.commit()

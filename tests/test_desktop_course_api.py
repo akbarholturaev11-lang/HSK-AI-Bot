@@ -156,14 +156,19 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(
             payload["units"][0]["lessons"][0]["completion_allowed"]
         )
-        self.assertTrue(
-            payload["units"][0]["lessons"][2]["locked_premium"]
-        )
+        self.assertNotIn("locked_premium", payload["units"][0]["lessons"][2])
         self.assertFalse(
             payload["units"][0]["lessons"][2]["completion_allowed"]
         )
         self.assertEqual(
             payload["units"][0]["lessons"][2]["completion_error"],
+            "course_lesson_not_unlocked",
+        )
+        self.assertTrue(
+            payload["units"][1]["lessons"][0]["locked_premium"]
+        )
+        self.assertEqual(
+            payload["units"][1]["lessons"][0]["completion_error"],
             "free_feature_limit_reached",
         )
         self.assertEqual(response.headers.get("cache-control"), "no-store")
@@ -245,11 +250,15 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             (await self._complete(2, "desktop-course-event-0002")).status_code,
             200,
         )
+        self.assertEqual(
+            (await self._complete(3, "desktop-course-event-0003")).status_code,
+            200,
+        )
         preview_map = await self.client.get(
             "/api/v3/desktop/course/map",
             headers=self.auth_headers,
         )
-        preview_map_lesson = preview_map.json()["units"][0]["lessons"][2]
+        preview_map_lesson = preview_map.json()["units"][1]["lessons"][0]
         self.assertEqual(preview_map_lesson["status"], "current")
         self.assertTrue(preview_map_lesson["preview_half"])
         self.assertFalse(preview_map_lesson["completion_allowed"])
@@ -258,7 +267,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             "free_feature_limit_reached",
         )
         premium = await self.client.get(
-            "/api/v3/desktop/course/lesson/3",
+            "/api/v3/desktop/course/lesson/4",
             headers=self.auth_headers,
         )
         self.assertEqual(premium.status_code, 200)
@@ -274,7 +283,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             max(1, preview_payload["total_cards"] // 2),
         )
         premium_completion = await self._complete(
-            3,
+            4,
             "desktop-course-event-preview",
         )
         self.assertEqual(premium_completion.status_code, 403)
@@ -290,7 +299,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             user.end_date = datetime.now(timezone.utc) + timedelta(days=7)
             await session.commit()
         paid_lesson = await self.client.get(
-            "/api/v3/desktop/course/lesson/3",
+            "/api/v3/desktop/course/lesson/4",
             headers=self.auth_headers,
         )
         self.assertEqual(paid_lesson.status_code, 200)
@@ -300,7 +309,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             paid_lesson.json()["preview_card_limit"],
             paid_lesson.json()["total_cards"],
         )
-        self.assertEqual(paid_lesson.json()["lesson"]["lesson_id"], 3)
+        self.assertEqual(paid_lesson.json()["lesson"]["lesson_id"], 4)
 
     async def test_completed_premium_review_stays_available_after_expiry(self):
         async with self.sessions() as session:
@@ -311,7 +320,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
 
         event_ids = {}
-        for lesson_order in (1, 2, 3):
+        for lesson_order in (1, 2, 3, 4):
             event_ids[lesson_order] = f"desktop-course-paid-review-{lesson_order}"
             response = await self._complete(
                 lesson_order,
@@ -327,20 +336,20 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
 
         lesson_response = await self.client.get(
-            "/api/v3/desktop/course/lesson/3",
-            headers=self.auth_headers,
-        )
-        replay = await self._complete(
-            3,
-            "desktop-course-expired-review",
-        )
-        original_event_replay = await self._complete(3, event_ids[3])
-        next_premium = await self.client.get(
             "/api/v3/desktop/course/lesson/4",
             headers=self.auth_headers,
         )
-        next_premium_completion = await self._complete(
+        replay = await self._complete(
             4,
+            "desktop-course-expired-review",
+        )
+        original_event_replay = await self._complete(4, event_ids[4])
+        next_premium = await self.client.get(
+            "/api/v3/desktop/course/lesson/5",
+            headers=self.auth_headers,
+        )
+        next_premium_completion = await self._complete(
+            5,
             "desktop-course-expired-new-progress",
         )
 

@@ -58,139 +58,278 @@ PART_CARD_BUDGET = 18
 RNG = random.Random(20240629)
 
 # --------------------------------------------------------------------------
-# Absolute-beginner intro (hsk1 / 1-qism only)
+# Absolute-beginner foundation (hsk1 / 1-qism only)
 # --------------------------------------------------------------------------
-# Noldan boshlagan o'quvchi birinchi ko'radigan narsa 你 ieroglifi bo'lmasligi
-# kerak: u hali ieroglif nima, pinyin nima, ton nima ekanini bilmaydi. Shu
-# sababli hsk1 birinchi qismining intro bo'limi oldiga ikkita "ustoz" kartasi
-# qo'yiladi (matn + ona tilidagi ovoz + xitoycha misol audiosi).
-#
-# Bu kartalar drill EMAS — javob so'ramaydi, faqat tushuntiradi. Shuning uchun
-# ular PART_CARD_BUDGET hisobiga va 4x qamrov kafolatiga kirmaydi: byudjet
-# hisoblangandan KEYIN sectionsga qo'shiladi.
-#
-# `narrate` — app/static/audio/tour/<lang>/<key>.mp3 kaliti
-# (scripts/gen_tour_audio.py bilan generatsiya qilinadi).
-BASICS_CARDS = [
+# `foundation` sectionsdan tashqarida turadi: lesson queue/material_ref indekslari
+# o'zgarmaydi. Har karta stable ID oladi; graded kartalar objective ID bilan
+# mastery/repair oqimiga ulanadi. `narrate` kalitlari gen_tour_audio.py da turadi.
+FOUNDATION_VERSION = 1
+
+
+def _example(zh: str, pinyin: str, uz: str, ru: str, tj: str) -> dict:
+    return {
+        "zh": zh,
+        "pinyin": pinyin,
+        "translation": {"uz": uz, "ru": ru, "tj": tj},
+    }
+
+
+FOUNDATION_CARDS = [
     {
-        "type": "_basics",
-        "narrate": "b1",
+        "type": "intro",
+        "card_id": "starter0_intro",
+        "narrate": "f01",
         "title": {
-            "uz": "Xitoy tili qanday ishlaydi",
-            "ru": "Как устроен китайский язык",
-            "tj": "Забони чинӣ чӣ гуна кор мекунад",
+            "uz": "3 daqiqada birinchi xitoycha iborangiz",
+            "ru": "Ваша первая китайская фраза за 3 минуты",
+            "tj": "Аввалин ибораи чинии шумо дар 3 дақиқа",
         },
-        "title_zh": "汉字",
-        "lead": {
-            "uz": "Xitoy tilida alifbo yo'q. Har bir belgi — ieroglif — butun so'zni bildiradi.",
-            "ru": "В китайском языке нет алфавита. Каждый знак — иероглиф — это целое слово.",
-            "tj": "Дар забони чинӣ алифбо нест. Ҳар аломат — иероглиф — як калимаи пурра аст.",
+        "text": {
+            "uz": "Avval tinglang. Hozir bu iborani tushunib, o'zingiz tuzasiz.",
+            "ru": "Сначала послушайте. Сейчас вы поймёте и сами соберёте эту фразу.",
+            "tj": "Аввал гӯш кунед. Ҳоло ин ибораро мефаҳмед ва худатон месозед.",
         },
-        "steps": [
-            {
-                "text": {
-                    "uz": "Ieroglif — bu harf emas, so'z-rasm. Mana bitta ieroglif, ma'nosi «sen»:",
-                    "ru": "Иероглиф — это не буква, а слово-рисунок. Вот один иероглиф, он значит «ты»:",
-                    "tj": "Иероглиф ҳарф нест, балки калима-расм аст. Ин як иероглиф аст, маънояш «ту»:",
-                },
-                "zh": "你",
-                "pinyin": "nǐ",
-                "translation": {"uz": "sen", "ru": "ты", "tj": "ту"},
-            },
-            {
-                "text": {
-                    "uz": "Ierogliflar qanday o'qilishini bilish uchun pinyin ishlatiladi — lotin harflaridagi talaffuz. Pinyin faqat sizga yordam beradi, xitoyliklar uni yozmaydi.",
-                    "ru": "Чтобы понять, как читается иероглиф, используется пиньинь — произношение латинскими буквами. Пиньинь нужен только вам, китайцы его не пишут.",
-                    "tj": "Барои донистани тарзи хондани иероглиф пинйин истифода мешавад — талаффуз бо ҳарфҳои лотинӣ. Пинйин танҳо ба шумо кӯмак мекунад, чинӣ онро наменависад.",
-                },
-                "zh": "好",
-                "pinyin": "hǎo",
-                "translation": {"uz": "yaxshi", "ru": "хорошо", "tj": "хуб"},
-            },
-            {
-                "text": {
-                    "uz": "Ikki ieroglif birga kelib yangi ma'no beradi. 你 (sen) + 好 (yaxshi) = «Salom»:",
-                    "ru": "Два иероглифа вместе дают новое значение. 你 (ты) + 好 (хорошо) = «Привет»:",
-                    "tj": "Ду иероглиф якҷоя маънои нав медиҳанд. 你 (ту) + 好 (хуб) = «Салом»:",
-                },
-                "zh": "你好",
-                "pinyin": "Nǐ hǎo",
-                "translation": {"uz": "Salom", "ru": "Привет", "tj": "Салом"},
-            },
+        "audio_text": "你好",
+        "example": _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+    },
+    {
+        "type": "choice",
+        "card_id": "starter0_meaning",
+        "objective_id": "meaning",
+        "narrate": "f02",
+        "title": {"uz": "Birinchi ma'no", "ru": "Первое значение", "tj": "Маънои аввал"},
+        "prompt": {
+            "uz": "你好 nimani anglatadi?",
+            "ru": "Что означает 你好?",
+            "tj": "你好 чӣ маъно дорад?",
+        },
+        "example": _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+        "options": [
+            {"uz": "Salom", "ru": "Привет", "tj": "Салом"},
+            {"uz": "Rahmat", "ru": "Спасибо", "tj": "Раҳмат"},
+            {"uz": "Xayr", "ru": "До свидания", "tj": "Хайр"},
+        ],
+        "correct_index": 0,
+        "explanation": {
+            "uz": "To'g'ri: 你好 — salom.",
+            "ru": "Верно: 你好 — привет.",
+            "tj": "Дуруст: 你好 — салом.",
+        },
+    },
+    {
+        "type": "explain",
+        "card_id": "starter0_hanzi_pinyin",
+        "narrate": "f03",
+        "title": {
+            "uz": "Hanzi va pinyin nima?",
+            "ru": "Что такое ханцзы и пиньинь?",
+            "tj": "Ханзӣ ва пинйин чист?",
+        },
+        "text": {
+            "uz": "Xitoycha so'z bir yoki bir nechta hanzi — yozuv belgilaridan tuzilishi mumkin. Pinyin esa lotin harflari bilan talaffuz va tonni ko'rsatadi.",
+            "ru": "Китайское слово может состоять из одного или нескольких ханцзы — письменных знаков. Пиньинь показывает произношение и тон латинскими буквами.",
+            "tj": "Калимаи чинӣ метавонад аз як ё якчанд ханзӣ — аломати хаттӣ таркиб ёбад. Пинйин талаффуз ва оҳангро бо ҳарфҳои лотинӣ нишон медиҳад.",
+        },
+        "examples": [_example("你好", "nǐ hǎo", "Salom", "Привет", "Салом")],
+    },
+    {
+        "type": "parts",
+        "card_id": "starter0_parts",
+        "narrate": "f04",
+        "title": {
+            "uz": "Ikki qismni tanib oling",
+            "ru": "Познакомьтесь с двумя частями",
+            "tj": "Ду қисмро шиносед",
+        },
+        "text": {
+            "uz": "你 — «sen», 好 — «yaxshi». Birga 你好 kundalik salomlashuv bo'ladi.",
+            "ru": "你 — «ты», 好 — «хорошо». Вместе 你好 — обычное приветствие.",
+            "tj": "你 — «ту», 好 — «хуб». Якҷоя 你好 саломи ҳаррӯза мешавад.",
+        },
+        "examples": [
+            _example("你", "nǐ", "sen", "ты", "ту"),
+            _example("好", "hǎo", "yaxshi", "хорошо", "хуб"),
         ],
     },
     {
-        "type": "_basics",
-        "narrate": "b2",
-        "title": {
-            "uz": "Ohang ma'noni o'zgartiradi",
-            "ru": "Тон меняет смысл",
-            "tj": "Оҳанг маъноро тағйир медиҳад",
+        "type": "builder",
+        "card_id": "starter0_build",
+        "objective_id": "build",
+        "narrate": "f05",
+        "title": {"uz": "O'zingiz tuzing", "ru": "Соберите сами", "tj": "Худатон созед"},
+        "prompt": {
+            "uz": "«Salom» iborasini to'g'ri tartibda tuzing:",
+            "ru": "Соберите «Привет» в правильном порядке:",
+            "tj": "Ибораи «Салом»-ро бо тартиби дуруст созед:",
         },
-        "title_zh": "四声",
-        "lead": {
-            "uz": "Xitoy tilida bir xil bo'g'in 4 xil ohangda aytiladi — va har safar boshqa so'z bo'ladi. Tinglang:",
-            "ru": "В китайском один и тот же слог произносится 4 разными тонами — и каждый раз это другое слово. Послушайте:",
-            "tj": "Дар чинӣ як ҳиҷо бо 4 оҳанги гуногун гуфта мешавад — ва ҳар бор калимаи дигар мешавад. Гӯш кунед:",
+        "example": _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+        "tokens": ["好", "你"],
+        "answer_tokens": ["你", "好"],
+        "explanation": {
+            "uz": "你 + 好 = 你好 — salom.",
+            "ru": "你 + 好 = 你好 — привет.",
+            "tj": "你 + 好 = 你好 — салом.",
         },
-        "steps": [
-            {
-                "text": {
-                    "uz": "1-ton: baland va tekis, o'zgarmaydi.",
-                    "ru": "1-й тон: высокий и ровный, не меняется.",
-                    "tj": "Оҳанги 1: баланд ва ҳамвор, тағйир намеёбад.",
-                },
-                "zh": "妈",
-                "pinyin": "mā",
-                "translation": {"uz": "ona", "ru": "мама", "tj": "модар"},
-            },
-            {
-                "text": {
-                    "uz": "2-ton: pastdan yuqoriga ko'tariladi — savol berayotgandek.",
-                    "ru": "2-й тон: поднимается снизу вверх — будто вы спрашиваете.",
-                    "tj": "Оҳанги 2: аз поён ба боло мебарояд — гӯё савол медиҳед.",
-                },
-                "zh": "麻",
-                "pinyin": "má",
-                "translation": {"uz": "kanop", "ru": "конопля", "tj": "канаб"},
-            },
-            {
-                "text": {
-                    "uz": "3-ton: avval pastga tushadi, keyin ko'tariladi.",
-                    "ru": "3-й тон: сначала опускается, потом поднимается.",
-                    "tj": "Оҳанги 3: аввал поён меравад, баъд боло мебарояд.",
-                },
-                "zh": "马",
-                "pinyin": "mǎ",
-                "translation": {"uz": "ot", "ru": "лошадь", "tj": "асп"},
-            },
-            {
-                "text": {
-                    "uz": "4-ton: keskin pastga tushadi — buyruq bergandek.",
-                    "ru": "4-й тон: резко падает вниз — будто вы отдаёте приказ.",
-                    "tj": "Оҳанги 4: якбора поён меафтад — гӯё фармон медиҳед.",
-                },
-                "zh": "骂",
-                "pinyin": "mà",
-                "translation": {"uz": "so'kmoq", "ru": "ругать", "tj": "дашном додан"},
-            },
-            {
-                "text": {
-                    "uz": "Shuning uchun har bir yangi so'zni ovoz bilan eshitib o'rganamiz. Endi birinchi so'zdan boshlaymiz.",
-                    "ru": "Поэтому каждое новое слово мы учим со звуком. Теперь начнём с первого слова.",
-                    "tj": "Барои ҳамин ҳар калимаи навро бо овоз меомӯзем. Акнун аз калимаи аввал оғоз мекунем.",
-                },
-            },
+    },
+    {
+        "type": "tones",
+        "card_id": "starter0_tones",
+        "narrate": "f06",
+        "title": {"uz": "To'rt tonni eshiting", "ru": "Послушайте четыре тона", "tj": "Чор оҳангро гӯш кунед"},
+        "text": {
+            "uz": "Pinyindagi belgi ovoz yo'nalishini ko'rsatadi; ton o'zgarsa, ma'no ham o'zgarishi mumkin.",
+            "ru": "Знак в пиньине показывает движение голоса; смена тона может изменить значение.",
+            "tj": "Аломати пинйин самти овозро нишон медиҳад; бо иваз шудани оҳанг маъно ҳам метавонад дигар шавад.",
+        },
+        "examples": [
+            _example("妈", "mā", "ona", "мама", "модар"),
+            _example("麻", "má", "kanop", "конопля", "канаб"),
+            _example("马", "mǎ", "ot", "лошадь", "асп"),
+            _example("骂", "mà", "so'kmoq", "ругать", "дашном додан"),
+        ],
+    },
+    {
+        "type": "sandhi",
+        "card_id": "starter0_sandhi",
+        "narrate": "f07",
+        "title": {"uz": "Yozilishi va tabiiy talaffuz", "ru": "Написание и естественное произношение", "tj": "Навишт ва талаффузи табиӣ"},
+        "text": {
+            "uz": "Yozilishi: nǐ hǎo. Ikki 3-ton yonma-yon kelganda birinchisi tabiiy nutqda 2-tondek aytiladi: ní hǎo.",
+            "ru": "Пишется: nǐ hǎo. Когда рядом стоят два 3-х тона, первый в естественной речи звучит как 2-й: ní hǎo.",
+            "tj": "Навишта мешавад: nǐ hǎo. Вақте ду оҳанги 3 паи ҳам меоянд, аввалӣ дар гуфтори табиӣ мисли оҳанги 2 садо медиҳад: ní hǎo.",
+        },
+        "audio_text": "你好",
+        "natural_pinyin": "ní hǎo",
+        "example": _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+    },
+    {
+        "type": "listen_choice",
+        "card_id": "starter0_listen",
+        "objective_id": "listen",
+        "narrate": "f08",
+        "title": {"uz": "Eshitib taning", "ru": "Узнайте на слух", "tj": "Бо шунидан шиносед"},
+        "prompt": {
+            "uz": "Qaysi yozuvni eshitdingiz?",
+            "ru": "Какую запись вы услышали?",
+            "tj": "Кадом навиштро шунидед?",
+        },
+        "audio_text": "你好",
+        "example": _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+        "options": ["你", "你好", "好"],
+        "correct_index": 1,
+        "explanation": {
+            "uz": "Siz 你好 — ní hǎo iborasini eshitdingiz.",
+            "ru": "Вы услышали 你好 — ní hǎo.",
+            "tj": "Шумо ибораи 你好 — ní hǎo-ро шунидед.",
+        },
+    },
+    {
+        "type": "speak",
+        "card_id": "starter0_speak",
+        "objective_id": "speak_bonus",
+        "optional": True,
+        "narrate": "f09",
+        "title": {"uz": "Ixtiyoriy: takrorlang", "ru": "По желанию: повторите", "tj": "Ихтиёрӣ: такрор кунед"},
+        "text": {
+            "uz": "Namunani eshitib, 你好 deb ayting. Mikrofon ishlamasa yoki hozir gapira olmasangiz, dars davom etadi.",
+            "ru": "Послушайте образец и скажите 你好. Если микрофон не работает или сейчас нельзя говорить, урок продолжится.",
+            "tj": "Намунаро гӯш карда, 你好 гӯед. Агар микрофон кор накунад ё ҳоло гуфта натавонед, дарс идома меёбад.",
+        },
+        "audio_text": "你好",
+        "example": _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+    },
+    {
+        "type": "result",
+        "card_id": "starter0_result",
+        "narrate": "f10",
+        "title": {"uz": "Birinchi natijangiz tayyor", "ru": "Ваш первый результат готов", "tj": "Натиҷаи аввалини шумо омода аст"},
+        "text": {
+            "uz": "Endi siz 你好 ni tushunasiz, eshitib taniysiz va o'zingiz tuza olasiz.",
+            "ru": "Теперь вы понимаете 你好, узнаёте его на слух и можете собрать сами.",
+            "tj": "Акнун шумо 你好-ро мефаҳмед, бо шунидан мешиносед ва худатон сохта метавонед.",
+        },
+        "example": _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+        "objectives": [
+            {"objective_id": "meaning", "label": {"uz": "Ma'nosini tushundim", "ru": "Понимаю значение", "tj": "Маънояшро мефаҳмам"}},
+            {"objective_id": "listen", "label": {"uz": "Eshitib taniyman", "ru": "Узнаю на слух", "tj": "Бо шунидан мешиносам"}},
+            {"objective_id": "build", "label": {"uz": "Iborani tuza olaman", "ru": "Могу собрать фразу", "tj": "Ибораро сохта метавонам"}},
         ],
     },
 ]
 
 
-def build_basics_cards(level: str, flat_n: int) -> list[dict]:
-    """Faqat hsk1 ning eng birinchi qismi uchun tanishtiruv kartalari."""
+EXIT_TICKET_CARDS = [
+    {
+        "type": "choice",
+        "card_id": "hsk1_l1_exit_meaning",
+        "objective_id": "meaning",
+        "title": {"uz": "Natija tekshiruvi", "ru": "Проверка результата", "tj": "Санҷиши натиҷа"},
+        "prompt": {"uz": "你好 nimani anglatadi?", "ru": "Что означает 你好?", "tj": "你好 чӣ маъно дорад?"},
+        "example": _example("你好", "nǐ hǎo", "Salom", "Привет", "Салом"),
+        "options": [
+            {"uz": "Salom", "ru": "Привет", "tj": "Салом"},
+            {"uz": "Rahmat", "ru": "Спасибо", "tj": "Раҳмат"},
+            {"uz": "Kechirasiz", "ru": "Извините", "tj": "Бубахшед"},
+        ],
+        "correct_index": 0,
+        "explanation": {"uz": "你好 — salom.", "ru": "你好 — привет.", "tj": "你好 — салом."},
+    },
+    {
+        "type": "listen_choice",
+        "card_id": "hsk1_l1_exit_listen_dialog",
+        "objective_id": "listen_dialog",
+        "title": {"uz": "Dialogni tinglang", "ru": "Послушайте реплику", "tj": "Ҷумларо гӯш кунед"},
+        "prompt": {"uz": "Qaysi iborani eshitdingiz?", "ru": "Какую фразу вы услышали?", "tj": "Кадом ибораро шунидед?"},
+        "audio_text": "对不起",
+        "example": _example("对不起", "duìbuqǐ", "Kechirasiz", "Извините", "Бубахшед"),
+        "options": ["没关系", "你好", "对不起"],
+        "correct_index": 2,
+        "explanation": {"uz": "对不起 — kechirasiz.", "ru": "对不起 — извините.", "tj": "对不起 — бубахшед."},
+    },
+    {
+        "type": "builder",
+        "card_id": "hsk1_l1_exit_build_dialog",
+        "objective_id": "build_dialog",
+        "title": {"uz": "Mini-dialog tuzing", "ru": "Соберите мини-диалог", "tj": "Гуфтугӯи кӯтоҳ созед"},
+        "prompt": {"uz": "Uzr va javobni to'g'ri tartibda tuzing:", "ru": "Расставьте извинение и ответ по порядку:", "tj": "Узр ва ҷавобро бо тартиби дуруст созед:"},
+        "example": _example(
+            "对不起 → 没关系",
+            "duìbuqǐ → méi guānxi",
+            "Kechirasiz → Hech gap emas",
+            "Извините → Ничего страшного",
+            "Бубахшед → Майлаш",
+        ),
+        "tokens": ["没关系", "你好", "对不起"],
+        "answer_tokens": ["对不起", "没关系"],
+        "explanation": {
+            "uz": "对不起 ga tabiiy javob: 没关系.",
+            "ru": "Естественный ответ на 对不起: 没关系.",
+            "tj": "Ҷавоби табиӣ ба 对不起: 没关系.",
+        },
+    },
+]
+
+
+def build_foundation(level: str, flat_n: int) -> dict | None:
     if level != "hsk1" or int(flat_n) != 1:
-        return []
-    return json.loads(json.dumps(BASICS_CARDS, ensure_ascii=False))
+        return None
+    return {
+        "id": "starter0_hsk1",
+        "version": FOUNDATION_VERSION,
+        "required_objectives": ["meaning", "build", "listen"],
+        "cards": json.loads(json.dumps(FOUNDATION_CARDS, ensure_ascii=False)),
+    }
+
+
+def build_exit_ticket(level: str, src: int, checkpoint: bool) -> dict | None:
+    if level != "hsk1" or int(src) != 1 or not checkpoint:
+        return None
+    return {
+        "id": "hsk1_l1_checkpoint",
+        "version": 1,
+        "required_objectives": ["meaning", "listen_dialog", "build_dialog"],
+        "cards": json.loads(json.dumps(EXIT_TICKET_CARDS, ensure_ascii=False)),
+    }
 
 
 # --------------------------------------------------------------------------
@@ -360,6 +499,26 @@ def segment_zh(sentence: str, known_words: set[str]) -> list[str] | None:
         else:
             return None  # an un-learned character -> not gated, skip this sentence
     return toks or None
+
+
+def gate_dialogue_blocks(blocks: list[dict], known_words: set[str]) -> list[dict]:
+    """Keep only dialogue lines fully covered by words taught in this part.
+
+    The full dialogue remains available in the checkpoint. Earlier parts must
+    not preview future vocabulary through reference examples or distractors.
+    """
+    gated: list[dict] = []
+    for block in blocks:
+        lines = [
+            line
+            for line in block.get("dialogue", [])
+            if line.get("zh") and segment_zh(line["zh"], known_words)
+        ]
+        if lines:
+            copy = dict(block)
+            copy["dialogue"] = lines
+            gated.append(copy)
+    return gated
 
 
 def make_builder_card(zh, pinyin, translation, known_words, pool) -> dict | None:
@@ -534,7 +693,9 @@ def make_char_gap_card(line, known_chars) -> dict | None:
     once = [ch for ch in han if zh.count(ch) == 1]
     target = (once or han)[0]
     opts = [target]
-    for ch in known_chars:
+    # Sets have process-random iteration order; sorting keeps generated JSON
+    # byte-identical across separate generator runs.
+    for ch in sorted(known_chars):
         if len(opts) >= 4:
             break
         if ch != target and ch not in opts:
@@ -931,7 +1092,9 @@ def build_part_practice(chunk, taught, known_prior, grammar_all, dialogue_raw,
     #    gate saqlanadi); bo'lmasa — qism so'zining o'zi.
     lc = None
     if ctx_dialog:
-        lc = make_listen_card(ctx_dialog[flat_n % len(ctx_dialog)], all_lines)
+        # Distractors must be gated too. Passing every lesson line here leaked
+        # future words (e.g. 对不起) into the very first listening check.
+        lc = make_listen_card(ctx_dialog[flat_n % len(ctx_dialog)], ctx_dialog)
     if not lc:
         lc = make_word_listen_card(chunk[(flat_n - 1) % len(chunk)], pool)
     if lc:
@@ -1445,7 +1608,12 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
         "tj": goal.get("tj", goal.get("uz", "")),
     }
     zh_title, _ = parse_title(seed)
-    basics = build_basics_cards(level, flat_n)
+    foundation = build_foundation(level, flat_n)
+    exit_ticket = build_exit_ticket(level, src, checkpoint)
+    reference_dialogues = dialogue_raw if checkpoint else gate_dialogue_blocks(
+        dialogue_raw,
+        {w.get("zh", "") for w in (taught + list(known_prior)) if w.get("zh")},
+    )
     out = {
         "schema_version": 2,
         "level": level,
@@ -1465,19 +1633,19 @@ def build_v3_part(level: str, flat_n: int, src: int, lesson: dict,
         "grammar_prebuilt": True,
         "active_words": active,
         "grammar": grammar_shaped,
-        # Dialoglar har qism JSONida to'liq turadi (frontend ma'lumotnoma uchun
-        # ishlatishi mumkin); dialog KARTALARI faqat checkpoint qismida.
-        "dialogues": build_dialogues(dialogue_raw),
+        # Oddiy qism faqat shu paytgacha o'rgatilgan dialog misollarini beradi;
+        # checkpointda esa darsning to'liq dialogi ochiladi.
+        "dialogues": build_dialogues(reference_dialogues),
         "sections": sections,
     }
-    # Tanishtiruv kartalari ATAYLAB `sections` dan TASHQARIDA turadi:
+    # Foundation va exit ticket ATAYLAB `sections` dan TASHQARIDA turadi:
     # `material_ref` (lesson:<lvl>:<n>:section:<s>:card:<k>) bo'lim ichidagi
     # karta POZITSIYASIdan hisoblanadi, shuning uchun bo'lim ichiga karta
     # qo'shilsa saqlangan xato-materiallari boshqa kartaga ko'chib ketardi.
-    # Alohida kalit sifatida: mavjud reflar tegilmaydi, `sections` ni o'qiydigan
-    # desktop/Android parserlar bu kartalarni umuman ko'rmaydi.
-    if basics:
-        out["basics"] = basics
+    if foundation:
+        out["foundation"] = foundation
+    if exit_ticket:
+        out["exit_ticket"] = exit_ticket
     return out
 
 

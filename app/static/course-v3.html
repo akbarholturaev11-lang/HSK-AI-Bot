@@ -316,6 +316,18 @@ button{cursor:pointer}
 .fdone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
 .fdone .st{width:88px;height:88px;border-radius:24px;background:var(--jade);border:3px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:16px}
 .fdone h3{font-size:22px;font-weight:500;margin:0 0 4px}.fdone p{font-size:14px;color:var(--ink2);margin:0 0 20px}
+.foundation-entry{margin:8px 16px 18px;padding:16px;border:1px solid rgba(194,64,58,.25);border-radius:18px;background:linear-gradient(145deg,#FFF8F1,var(--card));box-shadow:0 8px 24px rgba(91,56,32,.07);display:flex;align-items:center;gap:13px}
+.foundation-entry .fi{width:50px;height:50px;border-radius:15px;background:var(--cin);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;flex-shrink:0}
+.foundation-entry .ft{flex:1;min-width:0}.foundation-entry b{display:block;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:3px}.foundation-entry small{display:block;font-size:12px;line-height:1.4;color:var(--ink2)}
+.foundation-entry button{border:0;border-radius:12px;background:var(--cin);color:#fff;padding:10px 12px;font-family:inherit;font-size:12px;font-weight:700;white-space:nowrap}
+.foundation-step{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--cinbg);color:var(--cin2);padding:6px 10px;font-size:11px;font-weight:700;margin-bottom:14px}
+.foundation-hero{text-align:center;padding:8px 0 4px}.foundation-hero .zh{font-size:72px;line-height:1.05;color:var(--ink)}.foundation-hero .py{font-size:21px;color:var(--cin2);font-weight:600;margin-top:6px}.foundation-hero h2{font-size:22px;line-height:1.25;margin:16px 0 7px}.foundation-hero p{font-size:14px;line-height:1.55;color:var(--ink2);margin:0 auto;max-width:330px}
+.foundation-audio{width:64px;height:64px;border:0;border-radius:50%;background:var(--cin);color:#fff;font-size:27px;margin:18px auto 2px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(194,64,58,.28)}
+.foundation-note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin:12px 0;font-size:14px;line-height:1.55;color:var(--ink2)}.foundation-note b{color:var(--ink)}
+.foundation-parts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.foundation-part{background:var(--card);border:1px solid var(--line);border-radius:16px;text-align:center;padding:17px 10px}.foundation-part .zh{font-size:42px}.foundation-part .py{font-size:14px;color:var(--cin2);font-weight:600}.foundation-part small{display:block;color:var(--ink2);margin-top:4px}
+.tone-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:18px}.tone-btn{border:1px solid var(--line);background:var(--card);border-radius:13px;padding:13px 4px;color:var(--ink);font-family:inherit}.tone-btn b{display:block;font-size:20px;color:var(--cin2)}.tone-btn small{font-size:10px;color:var(--ink2)}
+.foundation-win{display:grid;gap:9px;margin:18px 0}.foundation-win div{display:flex;align-items:center;gap:10px;padding:12px 13px;background:var(--jadebg);border:1px solid rgba(47,125,94,.2);border-radius:13px;color:var(--jade);font-size:13px;font-weight:600}.foundation-win i{font-size:18px}
+.guided-card{border:1px solid rgba(185,132,13,.28);background:var(--goldbg);border-radius:17px;padding:16px;margin-top:12px}.guided-card b{display:block;color:var(--ink);margin-bottom:6px}.guided-card p{font-size:13px;line-height:1.5;color:var(--ink2);margin:0 0 13px}.guided-card button{width:100%;border:0;border-radius:12px;background:var(--jade);color:#fff;padding:14px;font-family:inherit;font-size:15px;font-weight:700}
 /* generic screens */
 .phead{padding:4px 16px 0}
 .phead h1{font-size:24px;margin:6px 0 2px}.phead .sub{font-size:13px;color:var(--ink2);margin:0 0 12px}
@@ -698,6 +710,7 @@ var I18N={
 var LANG=(new URLSearchParams(location.search).get("lang")||"ru");if(!I18N[LANG])LANG="ru";
 var LEVELS=["hsk1","hsk2","hsk3","hsk4"];
 function normalizeLevel(v){v=String(v||"").toLowerCase();return LEVELS.indexOf(v)>=0?v:"hsk1"}
+function freeCoursePartsForLevel(v){return normalizeLevel(v)==="hsk1"?3:2}
 function getStoredLevel(){try{return normalizeLevel(localStorage.getItem("hsk_v3_level"))}catch(e){return"hsk1"}}
 function getSelectedLevel(){var p=new URLSearchParams(location.search);return normalizeLevel(p.get("level")||getStoredLevel())}
 function setSelectedLevel(lv){
@@ -717,11 +730,11 @@ var PAY_SOURCE="v3_paywall";
 var CHECKOUT_NAVIGATING=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 function _apiGet(url){return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}})}
-function _apiPost(url,body){return fetch(url,{method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)})}
+function _apiPost(url,body,opts){var init={method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)};if(opts&&opts.keepalive)init.keepalive=true;return fetch(url,init)}
 /* Har bir Course sahifa ochilishi alohida analytics session. sessionStorage'da
    saqlash qayta ochilgan Mini Appni eski sessionga qo'shib yuborardi. */
 var COURSE_SESSION_ID="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
-function trackCourseEvent(event,payload){
+function trackCourseEvent(event,payload,opts){
   if(!INIT_DATA)return Promise.resolve({ok:false,skipped:true});
   payload=payload||{};
   var body={};
@@ -730,7 +743,7 @@ function trackCourseEvent(event,payload){
   body.source=body.source||"course_v3";
   body.level=body.level||((MAP&&MAP.level)||getSelectedLevel());
   body.session_id=body.session_id||COURSE_SESSION_ID;
-  return _apiPost("/api/miniapp/event",body).then(function(r){return r.json()}).catch(function(){return{ok:false}});
+  return _apiPost("/api/miniapp/event",body,opts).then(function(r){return r.json()}).catch(function(){return{ok:false}});
 }
 function checkoutSourceContext(source){
   var s=String(source||"").toLowerCase();
@@ -851,7 +864,11 @@ var App={
        NOT tg.openLink (which kicks the user out to the external browser). */
     setTimeout(function(){location.href=url},40);
   },
-  exitFlow:function(){$("#flow").classList.remove("on");edgeGlow(0)},
+  exitFlow:function(){
+    if(window.Foundation&&Foundation.active)Foundation.pause();
+    stopTourAudio();
+    $("#flow").classList.remove("on");edgeGlow(0)
+  },
   openWriter:function(ch){
     if(!ch)return;
     var url="/hsk-lugat.html?theme=light&fast=1&char="+encodeURIComponent(ch)+"&lang="+LANG;
@@ -879,6 +896,14 @@ var App={
     var xpRows=awardedXp>0?[["+"+awardedXp,"XP"]]:[];
     var levelRows=[[nextLabel||curLabel,lu.opened]].concat(xpRows);
     var cpSrc=(extra&&extra.src)||"";
+    var firstCp=(type==="checkpoint"&&normalizeLevel(curLv)==="hsk1"&&Number(cpSrc)===1);
+    if(firstCp){
+      lu.cpP={
+        uz:"Natija: 你好 ni tushunasiz, dialogni eshitib taniysiz va 对不起 → 没关系 javobini tuza olasiz.",
+        ru:"Результат: вы понимаете 你好, узнаёте диалог на слух и можете собрать ответ 对不起 → 没关系.",
+        tj:"Натиҷа: 你好-ро мефаҳмед, гуфтугӯро аз шунидан мешиносед ва ҷавоби 对不起 → 没关系-ро месозед."
+      }[LANG]+(Foundation&&Foundation.speakingBonus?({uz:" Talaffuz bonusini ham bajardingiz.",ru:" Бонус произношения тоже выполнен.",tj:" Бонуси талаффузро ҳам иҷро кардед."}[LANG]):"");
+    }
     /* Bayram matni shu darsdagi haqiqiy natijaga bog'lanadi (umumiy maqtov emas) */
     var acc=(Flow&&Flow.graded)?Math.round((Flow.correct||0)/Flow.graded*100):0;
     var doneCount=Number((MAP&&MAP.progress&&MAP.progress.completed)||0);
@@ -894,8 +919,9 @@ var App={
     cinePanda("land","land",function(){
       $("#lu-panda").innerHTML=pandaChar("celebrate");
       $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
-      $("#lu-cta").setAttribute("onclick",(t0==="lesson"||t0==="checkpoint"||window._pendingStreak)?"App.showStreakScreen()":"App.closeLevelUp()");
-      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+lu.cont;
+      $("#lu-cta").setAttribute("onclick",firstCp?"App.openCheckpointNext()":((t0==="lesson"||t0==="checkpoint"||window._pendingStreak)?"App.showStreakScreen()":"App.closeLevelUp()"));
+      var nextLabel=LANG==="ru"?"Открыть следующий урок":LANG==="tj"?"Кушодани дарси оянда":"Keyingi darsni ochish";
+      $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+(firstCp?nextLabel:lu.cont);
       $("#levelup").classList.add("on");
       setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
       luRain();beep([523,659,784,1046]);haptic("ok");
@@ -973,15 +999,19 @@ var App={
   },
   /* Reytingda haqiqatan ko'tarilgan bo'lsa — reyting ekraniga, aks holda
      o'quvchi kurs xaritasiga qaytadi (bo'sh reyting oynasi ochilmaydi). */
+  openCheckpointNext:function(){window._pendingStreak=null;pendingRankUp=null;App.closeLevelUp("checkpoint_next")},
   closeLevelUp:function(dest){
     var ov=$("#levelup");ov.classList.remove("on");ov.classList.remove("cine");
     var cine=$("#lu-cine");if(cine)cine.innerHTML="";
     App.exitFlow();
     var desktopLesson=Number(window._pendingDesktopLessonPromo)||0;
     window._pendingDesktopLessonPromo=0;
+    var checkpointNext=Number(window._pendingCheckpointNextIdx);
+    window._pendingCheckpointNextIdx=null;
     var go=function(){
       if(dest==="rating"){App.show("rating");renderRating()}
       else{App.show("course");renderAll()}
+      if(dest==="checkpoint_next"&&checkpointNext>=0&&allLessons()[checkpointNext])setTimeout(function(){openLessonSheet(checkpointNext)},80);
       if(desktopLesson&&window.PompDesktopDownload&&window.PompDesktopDownload.queuePromo){
         window.PompDesktopDownload.queuePromo("lesson_end_promo",{lesson_id:desktopLesson});
       }
@@ -1226,6 +1256,7 @@ function lessonAdWhyText(l){
   return n?m.replace("{n}",n):m;
 }
 function startLessonAdGate(idx){
+  if(requireFoundationBefore(function(){startLessonAdGate(idx)}))return;
   var l=allLessons()[idx];if(!l)return;
   if(!INIT_DATA||!window.CourseAds||typeof CourseAds.play!=="function"){
     App.openPaywall({lessonIdx:idx,lesson:l});return;
@@ -1307,8 +1338,8 @@ function adPlacementTitle(placement){
   if(placement==="end")return t.adEnd;
   return t.adStart;
 }
-/* Qulflangan (premium) qism — endi reklama YO'Q: faqat obuna oynasi.
-   Bepul trial: 2 mini-dars to'liq + 3-qism yarmi; keyin obuna majburiy. */
+/* Qulflangan (premium) qism — access rejimi server mapidan keladi.
+   HSK1 da checkpointgacha 3 qism, boshqa darajalarda 2 qism bepul. */
 function openLockedLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
   App.openPaywall({lessonIdx:idx,lesson:l});
@@ -1631,6 +1662,33 @@ function drawTrails(){
   });
 }
 window.addEventListener("resize",function(){clearTimeout(window._trailT);window._trailT=setTimeout(function(){if(SCREEN==="course")drawTrails()},200)});
+function foundationMapState(){
+  var s=(MAP&&MAP.foundation)||(PROF&&PROF.foundation)||{};
+  return s&&typeof s==="object"?s:{};
+}
+function localUserScope(){try{var u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;if(u&&u.id)return String(u.id)}catch(e){}return INIT_DATA?"auth":"preview"}
+function foundationCacheKey(id,version){return"hsk_v3_foundation:"+localUserScope()+":"+String(id||"starter0_hsk1")+":v"+Number(version||1)}
+function foundationCachedState(id,version){try{return JSON.parse(localStorage.getItem(foundationCacheKey(id,version))||"null")||{}}catch(e){return{}}}
+function foundationIsComplete(){
+  var s=foundationMapState();
+  /* Server field mavjud bo'lsa u source of truth. Cache faqat eski backend
+     bu fieldni umuman bermagan holatda ishlatiladi. */
+  if(typeof s.completed==="boolean")return s.completed;
+  if(s.status==="completed")return true;
+  if(s.status==="required"||s.status==="optional")return false;
+  var cached=foundationCachedState(s.id||"starter0_hsk1",s.version||1);
+  return cached.completed===true;
+}
+function foundationEntryHtml(){
+  if(!MAP||normalizeLevel(MAP.level)!=="hsk1")return"";
+  var done=foundationIsComplete();
+  var m={
+    uz:{h:"0 dan asoslar",p:"你好 ni eshiting, tushuning va o'zingiz tuzing",go:done?"Qaytarish":"Boshlash"},
+    ru:{h:"Основы с нуля",p:"Услышьте, поймите и соберите 你好",go:done?"Повторить":"Начать"},
+    tj:{h:"Асосҳо аз сифр",p:"你好-ро шунавед, фаҳмед ва худатон созед",go:done?"Такрор":"Оғоз"}
+  }[LANG];
+  return '<div class="foundation-entry"><span class="fi han">零</span><span class="ft"><b>'+esc(m.h)+(done?' <i class="ti ti-circle-check" style="color:var(--jade)"></i>':'')+'</b><small>'+esc(m.p)+'</small></span><button onclick="startFoundationFromMap(true)">'+esc(m.go)+'</button></div>';
+}
 function renderCourse(){
   var done=allLessons().filter(function(l){return l.status==="done"}).length;
   var total=allLessons().length;
@@ -1641,7 +1699,8 @@ function renderCourse(){
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
     +goalRingHtml()+'</div>'
-    +'<div class="pwrap"><div class="pbar"><i style="width:'+pct+'%"></i></div><small>'+done+' / '+total+' '+T().lessons+'</small></div>';
+    +'<div class="pwrap"><div class="pbar"><i style="width:'+pct+'%"></i></div><small>'+done+' / '+total+' '+T().lessons+'</small></div>'
+    +foundationEntryHtml();
   var mascP={ru:["Продолжаем!","Так держать!","Ещё урок!","У тебя получится!"],
     uz:["Davom etamiz!","Zo'r ketyapsan!","Yana bir dars!","Sen uddalaysan!"],
     tj:["Идома медиҳем!","Офарин!","Боз як дарс!","Ту метавонӣ!"]}[LANG]||["Davom etamiz!"];
@@ -1778,7 +1837,7 @@ function openLessonSheet(idx){
       :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+T().repeat+'</button>';
   }
   App.openSheet('<div class="shead">'+(chip?'<div class="py" style="margin-bottom:2px">'+esc(chip)+'</div>':'')
-    +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+stars+'</div>'
+    +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+(Number(l.src)===1?'<div class="tr" style="margin-top:5px;color:var(--cin2)">你好 · nǐ hǎo · '+esc(LANG==="ru"?"привет":LANG==="tj"?"салом":"salom")+'</div>':'')+stars+'</div>'
     +'<div class="pmeta"><span>'+n+' '+T().stage+'</span><span>'+prog+' / '+n+' '+T().completeOf+'</span></div><div class="secs">'+secs+'</div>'+cta);
 }
 
@@ -1825,12 +1884,13 @@ function buildTestQueue(d){
   return pool;
 }
 function startSkipTest(idx){
+  if(requireFoundationBefore(function(){startSkipTest(idx)}))return;
   var l=allLessons()[idx];App.closeSheet();if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
   loadLessonData(MAP.level||"hsk1",l.n).then(function(d){
     var q=buildTestQueue(d);
     if(!q.length){completeSkipUnlock(100,idx);return}
-    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test={idx:idx};Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;HP=5;$("#f-hp").textContent=HP;
+    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test={idx:idx};Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;setLessonFlowControls();HP=5;$("#f-hp").textContent=HP;
     trackCourseEvent("test_started",{source:"course_v3_skip_test",lesson_order:l.n,dedupe_key:lessonEventKey("skip_test_started",l.n)});
     $("#flow").classList.add("on");renderFlowCard();
   }).catch(function(){toast(skipI18n().notReady,2500)});
@@ -1901,8 +1961,154 @@ function showSkipResult(pct,idx){
 }
 
 /* ---------- Lesson flow engine ---------- */
-var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null};
+var Flow={queue:[],i:0,answered:false,correct:0,graded:0,mistakes:[],test:null,challenge:null,lessonIdx:null,ad:null,objectiveMastery:{},objectiveAttempts:{},pendingRepairs:[],exitRequired:[]};
+var Foundation={active:false,data:null,queue:[],i:0,answered:false,mastery:{},attempts:{},completed:false,speakingBonus:false,required:false,afterComplete:null,finishing:false,_micSession:null,_audioTimer:null,_renderToken:0};
+Foundation.stopAudio=function(){Foundation._renderToken++;if(Foundation._audioTimer)clearTimeout(Foundation._audioTimer);Foundation._audioTimer=null;stopTourAudio();stopSpeak()};
+Foundation.scheduleAudio=function(text,delay){var token=Foundation._renderToken;Foundation._audioTimer=setTimeout(function(){Foundation._audioTimer=null;if(Foundation.active&&token===Foundation._renderToken)foundationSpeak(text)},delay)};
+function foundationCardMap(data){var out={};((data&&data.cards)||[]).forEach(function(c){if(c&&c.card_id)out[c.card_id]=c});return out}
+function foundationQueueState(){return(Foundation.queue||[]).map(function(c){return{card_id:c.card_id||"",repair:!!c._repair,guided:!!c._guided,attempt:Number(c._attempt||1),spacer:!!c._repairSpacer,source_card_id:(c._sourceCard&&c._sourceCard.card_id)||""}})}
+Foundation.save=function(){
+  if(!Foundation.data)return;
+  try{localStorage.setItem(foundationCacheKey(Foundation.data.id,Foundation.data.version),JSON.stringify({
+    version:Number(Foundation.data.version||1),i:Foundation.answered?Foundation.i+1:Foundation.i,mastery:Foundation.mastery||{},attempts:Foundation.attempts||{},completed:!!Foundation.completed,speaking_bonus:!!Foundation.speakingBonus,queue:foundationQueueState(),at:Date.now()
+  }))}catch(e){}
+};
+Foundation.restoreQueue=function(saved){
+  var base=((Foundation.data&&Foundation.data.cards)||[]).slice(),byId=foundationCardMap(Foundation.data);
+  if(!saved||!Array.isArray(saved.queue)||!saved.queue.length)return base;
+  var restored=[];
+  saved.queue.forEach(function(q){
+    var src=byId[q.source_card_id]||byId[q.card_id];
+    if(q.spacer&&src){restored.push({type:"_foundation_repair_spacer",_repairSpacer:true,_sourceCard:src,card_id:"spacer:"+q.source_card_id+":"+restored.length});return}
+    var c=byId[q.card_id];if(!c)return;
+    var clone={};for(var k in c)clone[k]=c[k];clone._repair=!!q.repair;clone._guided=!!q.guided;clone._attempt=Number(q.attempt||1);restored.push(clone);
+  });
+  return restored.length?restored:base;
+};
+Foundation.cancelMic=function(){
+  var s=Foundation._micSession;Foundation._micSession=null;if(!s)return;
+  s.cancelled=true;if(s.timer)clearTimeout(s.timer);try{if(s.controller)s.controller.abort()}catch(e){}
+  try{if(s.rec){s.rec.ondataavailable=null;s.rec.onstop=null;if(s.rec.state!=="inactive")s.rec.stop()}}catch(e){}
+  try{if(s.stream)s.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}
+};
+Foundation.pause=function(){if(!Foundation.active)return;Foundation.cancelMic();Foundation.stopAudio();Foundation.save();Foundation.active=false};
+Foundation.start=function(data,opts){
+  opts=opts||{};if(!data||!Array.isArray(data.cards)||!data.cards.length)throw new Error("foundation_missing");
+  Foundation.cancelMic();Foundation.stopAudio();
+  Foundation.data=data;Foundation.required=!!opts.required;Foundation.afterComplete=opts.afterComplete||null;
+  var saved=foundationCachedState(data.id,data.version);
+  /* Server incomplete bo'lsa local mastery resume qoladi, lekin stale local
+     `completed` hech qachon mandatory Starter'ni yopmaydi. */
+  var authoritative=foundationMapState();if(Foundation.required&&authoritative.completed===false)saved.completed=false;
+  var restart=!!opts.restart&&saved.completed===true;
+  if(restart)saved={completed:true};
+  Foundation.mastery=saved.mastery||{};Foundation.attempts=saved.attempts||{};Foundation.completed=!!saved.completed;Foundation.speakingBonus=!!saved.speaking_bonus;
+  Foundation.queue=restart?(data.cards||[]).slice():Foundation.restoreQueue(saved);
+  Foundation.i=restart?0:Math.max(0,Math.min(Number(saved.i||0),Math.max(0,Foundation.queue.length-1)));
+  Foundation.active=true;Foundation.answered=false;Foundation.finishing=false;
+  var heart=document.querySelector("#flow .fheart"),gear=document.querySelector("#flow .fgear"),close=document.querySelector("#flow .fx");
+  if(heart)heart.style.display="none";if(gear)gear.style.display="none";if(close)close.style.visibility=Foundation.required?"hidden":"visible";
+  var cta=$("#f-cta"),bar=$("#f-barbtn");if(cta)cta.onclick=Foundation.next;if(bar)bar.onclick=Foundation.next;
+  setWriteBtn("");hideBar();$("#flow").classList.add("on");
+  trackCourseEvent("foundation_started",{foundation_version:Number(data.version||1),foundation_id:data.id||"starter0_hsk1",dedupe_key:["foundation_started",COURSE_SESSION_ID,data.id,data.version].join(":")});
+  Foundation.save();Foundation.render();
+};
+function startFoundationFromMap(restart,afterComplete){
+  var s=foundationMapState(),required=!!((s.required||s.foundation_required)&&!foundationIsComplete());
+  return loadLessonData("hsk1",1).then(function(d){Foundation.start(d.foundation,{restart:!!restart,required:required,afterComplete:afterComplete})}).catch(function(){
+    var unavailable=LANG==="ru"?"Основы пока недоступны":LANG==="tj"?"Асосҳо ҳоло дастрас нестанд":"Asoslar hozircha ochilmadi";
+    toast(unavailable,2600);
+    if(required){
+      Foundation.active=true;Foundation.required=true;Foundation.afterComplete=afterComplete||null;
+      var close=document.querySelector("#flow .fx"),heart=document.querySelector("#flow .fheart"),gear=document.querySelector("#flow .fgear");
+      if(close)close.style.visibility="hidden";if(heart)heart.style.display="none";if(gear)gear.style.display="none";
+      $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wifi-off"></i> 0 dan asoslar</div><div class="foundation-hero"><h2>'+esc(unavailable)+'</h2><p>'+esc(LANG==="ru"?"Проверьте интернет и повторите загрузку.":LANG==="tj"?"Интернетро санҷед ва аз нав бор кунед.":"Internetni tekshiring va qayta yuklang.")+'</p></div>';
+      var cta=$("#f-cta");cta.style.display="flex";cta.disabled=false;cta.innerHTML='<i class="ti ti-refresh"></i> '+esc(LANG==="ru"?"Повторить":LANG==="tj"?"Аз нав":"Qayta urinish");
+      cta.onclick=function(){Foundation.active=false;startFoundationFromMap(false,afterComplete)};$("#flow").classList.add("on");return;
+    }
+    if(typeof afterComplete==="function")afterComplete();
+  });
+}
+function foundationBlocksCourse(){var s=foundationMapState();return normalizeLevel((MAP&&MAP.level)||"hsk1")==="hsk1"&&!foundationIsComplete()&&(s.required===true||s.foundation_required===true)}
+function requireFoundationBefore(next){
+  if(!foundationBlocksCourse())return false;
+  App.closeSheet();startFoundationFromMap(false,next);return true;
+}
+function foundationRequiredMastered(){return((Foundation.data&&Foundation.data.required_objectives)||[]).every(function(id){return Foundation.mastery[id]===true})}
+function foundationAnswerText(c){
+  if(Array.isArray(c.answer_tokens))return c.answer_tokens.join(" ");
+  if(Array.isArray(c.options)&&typeof c.correct_index!=="undefined")return optText(c.options[c.correct_index]);
+  var ex=c.example||{};return ex.zh||c.audio_text||"";
+}
+function foundationMoveResultLast(){
+  for(var i=Foundation.i+1;i<Foundation.queue.length;i++)if(Foundation.queue[i]&&Foundation.queue[i].type==="result"){var r=Foundation.queue.splice(i,1)[0];Foundation.queue.push(r);return}
+}
+Foundation.scheduleRepair=function(c,guided,attempt){
+  var result=null;
+  for(var r=Foundation.i+1;r<Foundation.queue.length;r++)if(Foundation.queue[r]&&Foundation.queue[r].type==="result"){result=Foundation.queue.splice(r,1)[0];break}
+  var desired=Foundation.i+3,spacers=Math.max(0,desired-Foundation.queue.length);
+  for(var s=0;s<spacers;s++)Foundation.queue.push({type:"_foundation_repair_spacer",_repairSpacer:true,_sourceCard:c,card_id:"spacer:"+c.card_id+":"+attempt+":"+s});
+  var clone={};for(var k in c)clone[k]=c[k];clone._repair=true;clone._guided=!!guided;clone._attempt=Number(attempt||2);
+  Foundation.queue.splice(Math.min(desired,Foundation.queue.length),0,clone);if(result)Foundation.queue.push(result);else foundationMoveResultLast();
+};
+Foundation.grade=function(ok){
+  var c=Foundation.queue[Foundation.i];if(!c||!c.objective_id)return;
+  var id=String(c.objective_id),attempt=Number(c._attempt||((Foundation.attempts[id]||0)+1));c._attempt=attempt;Foundation.attempts[id]=Math.max(Number(Foundation.attempts[id]||0),attempt);
+  if(ok)Foundation.mastery[id]=true;else{delete Foundation.mastery[id];Foundation.scheduleRepair(c,attempt>=2,attempt+1)}
+  trackCourseEvent("interaction_completed",{card_id:c.card_id,objective_id:id,attempt:attempt,guided:!!c._guided,correct:!!ok,foundation_version:Number(Foundation.data.version||1),card_type:c.type||"",dedupe_key:["foundation_interaction",COURSE_SESSION_ID,c.card_id,attempt].join(":")});
+  Foundation.save();
+};
+Foundation.feedback=function(ok,sub){
+  var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");$("#f-msg").innerHTML='<i class="ti ti-'+(ok?"check":"x")+'"></i><span>'+(ok?T().correct:T().wrong)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next;
+  beep(ok?[523,659,784]:[220,180]);haptic(ok?"ok":"no");
+};
+Foundation.pick=function(el,k){
+  if(Foundation.answered)return;Foundation.answered=true;var c=Foundation.queue[Foundation.i],ok=k===Number(c.correct_index);
+  document.querySelectorAll("#f-body .opt").forEach(function(o){o.style.pointerEvents="none";if(+o.dataset.k===Number(c.correct_index))o.classList.add("sel")});if(!ok)el.classList.add("bad");
+  Foundation.grade(ok);Foundation.feedback(ok,ok?tr(c.explanation):foundationAnswerText(c));
+};
+Foundation.guidedCorrect=function(){
+  if(Foundation.answered)return;Foundation.answered=true;Foundation.grade(true);Foundation.feedback(true,foundationAnswerText(Foundation.queue[Foundation.i]));
+};
+Foundation.next=function(){
+  hideBar();if(!Foundation.active)return;
+  var c=Foundation.queue[Foundation.i];
+  Foundation.cancelMic();
+  if(c&&c.type==="result"&&foundationRequiredMastered())return Foundation.finish();
+  Foundation.i++;
+  if(Foundation.i>=Foundation.queue.length){
+    if(!foundationRequiredMastered()){
+      ((Foundation.data&&Foundation.data.required_objectives)||[]).filter(function(id){return !Foundation.mastery[id]}).forEach(function(id){var base=(Foundation.data.cards||[]).filter(function(x){return x.objective_id===id})[0];if(base)Foundation.scheduleRepair(base,true,(Foundation.attempts[id]||0)+1)});
+      Foundation.i=Math.max(0,Foundation.i-1);
+    }else return Foundation.finish();
+  }
+  Foundation.save();Foundation.render();
+};
+Foundation.finish=function(){
+  if(!foundationRequiredMastered()||Foundation.finishing)return;
+  Foundation.finishing=true;Foundation.cancelMic();Foundation.stopAudio();
+  var cta=$("#f-cta"),waiting=LANG==="ru"?"Сохраняем…":LANG==="tj"?"Сабт мешавад…":"Saqlanmoqda…";
+  if(cta){cta.disabled=true;cta.innerHTML='<i class="ti ti-loader-2"></i> '+waiting}
+  var payload={foundation_version:Number(Foundation.data.version||1),foundation_id:Foundation.data.id||"starter0_hsk1",speaking_bonus:!!Foundation.speakingBonus,dedupe_key:["foundation_completed",COURSE_SESSION_ID,Foundation.data.id,Foundation.data.version].join(":")};
+  var write=INIT_DATA?trackCourseEvent("foundation_completed",payload,{keepalive:true}):Promise.resolve({ok:true,preview:true});
+  var timeout=new Promise(function(resolve){setTimeout(function(){resolve({ok:false,timeout:true})},12000)});
+  Promise.race([write,timeout]).then(function(result){
+    if(!result||result.ok!==true){
+      Foundation.finishing=false;
+      var retry=LANG==="ru"?"Повторить сохранение":LANG==="tj"?"Аз нав сабт кардан":"Qayta saqlash";
+      if(cta){cta.disabled=false;cta.innerHTML='<i class="ti ti-refresh"></i> '+retry}
+      toast(LANG==="ru"?"Не удалось сохранить результат. Попробуйте ещё раз.":LANG==="tj"?"Натиҷа сабт нашуд. Боз кӯшиш кунед.":"Natija saqlanmadi. Qayta urinib ko'ring.",2800);return;
+    }
+    Foundation.completed=true;Foundation.save();
+    var serverState=foundationMapState();serverState.id=Foundation.data.id||"starter0_hsk1";serverState.version=Number(Foundation.data.version||1);serverState.completed=true;serverState.required=false;serverState.status="completed";
+    var cb=Foundation.afterComplete;Foundation.afterComplete=null;Foundation.active=false;Foundation.finishing=false;$("#flow").classList.remove("on");
+    var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";if(cta)cta.disabled=false;renderCourse();
+    try{var u=new URL(location.href);u.searchParams.delete("foundation");history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString())}catch(e){}
+    if(typeof cb==="function")setTimeout(cb,80);
+  });
+};
 var LESSON_RESUME_TTL_MS=7*24*60*60*1000;
+var MASTERY_VERSION=1;
 /* "v2" — darslar mini-qismlarga bo'linib raqamlash o'zgardi; eski kalitlardagi
    pozitsiya yangi qismga adashib ulanmasligi uchun prefiks yangilandi. */
 function lessonResumeKey(level,lessonOrder){return"hsk_v3_lesson_resume:v2:"+normalizeLevel(level||"hsk1")+":"+Number(lessonOrder||0)}
@@ -1910,15 +2116,111 @@ function loadLessonResume(level,lessonOrder,queueLength){
   try{
     var saved=JSON.parse(localStorage.getItem(lessonResumeKey(level,lessonOrder))||"null");
     if(!saved||Date.now()-Number(saved.at||0)>LESSON_RESUME_TTL_MS)return 0;
-    return Math.max(0,Math.min(Number(saved.i||0),Math.max(0,Number(queueLength||0)-1)));
+    /* queue.length — oxirgi graded kartaning feedbackidan keyingi haqiqiy
+       sentinel. Uni saqlasak app qayta ochilganda mastered karta takrorlanmaydi,
+       renderFlowCard esa normal flowDone yo'liga o'tadi. */
+    return Math.max(0,Math.min(Number(saved.i||0),Math.max(0,Number(queueLength||0))));
   }catch(e){return 0}
 }
-function saveLessonResume(){
+function saveLessonResume(nextIndex){
   if(Flow.test||Flow.challenge||Flow.lessonIdx===null)return;
   var lesson=flowLesson();if(!lesson)return;
-  try{localStorage.setItem(lessonResumeKey((MAP&&MAP.level)||"hsk1",lesson.n),JSON.stringify({i:Flow.i,at:Date.now()}))}catch(e){}
+  var index=typeof nextIndex==="number"?nextIndex:Flow.i;
+  try{localStorage.setItem(lessonResumeKey((MAP&&MAP.level)||"hsk1",lesson.n),JSON.stringify({i:index,at:Date.now()}))}catch(e){}
 }
 function clearLessonResume(level,lessonOrder){try{localStorage.removeItem(lessonResumeKey(level,lessonOrder))}catch(e){}}
+function lessonMasteryKey(level,lessonOrder){return"hsk_v3_mastery:v"+MASTERY_VERSION+":"+localUserScope()+":"+normalizeLevel(level||"hsk1")+":"+Number(lessonOrder||0)}
+function clearLessonMastery(level,lessonOrder){try{localStorage.removeItem(lessonMasteryKey(level,lessonOrder))}catch(e){}}
+function lessonExitQueueState(){
+  var start=(Flow.queue||[]).findIndex(function(c){return c&&(c._exitTicket||c._repair||c._repairSpacer)});
+  if(start<0)return null;
+  var cards=(Flow.queue||[]).slice(start).map(function(c){
+    if(c&&c._repairSpacer)return{kind:"spacer",source_card_id:(c._sourceCard&&c._sourceCard.card_id)||"",step:Number(c._repairStep||1)};
+    if(c&&c._repair)return{kind:"repair",card_id:c.card_id||"",guided:!!c._guided,attempt:Number(c._attempt||2)};
+    return{kind:"base",card_id:(c&&c.card_id)||""};
+  });
+  var next=Flow.i+(Flow.answered?1:0);
+  return{cards:cards,cursor:Math.max(0,next-start)};
+}
+function saveLessonMastery(){
+  if(Flow.test||Flow.challenge||Flow.lessonIdx===null)return;
+  var lesson=flowLesson();if(!lesson)return;
+  var exitQueue=lessonExitQueueState();
+  try{localStorage.setItem(lessonMasteryKey((MAP&&MAP.level)||"hsk1",lesson.n),JSON.stringify({
+    version:MASTERY_VERSION,mastery:Flow.objectiveMastery||{},attempts:Flow.objectiveAttempts||{},pending:(Flow.pendingRepairs||[]).slice(0,20),exit_queue:exitQueue,at:Date.now()
+  }))}catch(e){}
+}
+function restoreLessonMastery(level,lessonOrder,queue){
+  Flow.objectiveMastery={};Flow.objectiveAttempts={};Flow.pendingRepairs=[];Flow._restoredResumeIndex=null;
+  var saved=null;try{saved=JSON.parse(localStorage.getItem(lessonMasteryKey(level,lessonOrder))||"null")}catch(e){}
+  if(!saved||Number(saved.version)!==MASTERY_VERSION||Date.now()-Number(saved.at||0)>LESSON_RESUME_TTL_MS)return queue;
+  Flow.objectiveMastery=saved.mastery||{};Flow.objectiveAttempts=saved.attempts||{};Flow.pendingRepairs=Array.isArray(saved.pending)?saved.pending:[];
+  var exitState=saved.exit_queue;
+  if(exitState&&Array.isArray(exitState.cards)){
+    var start=(queue||[]).findIndex(function(c){return c&&c._exitTicket});
+    if(start>=0){
+      var prefix=queue.slice(0,start),base={};queue.slice(start).forEach(function(c){if(c&&c.card_id)base[c.card_id]=c});
+      var segment=[];
+      exitState.cards.forEach(function(item){
+        var src=base[item&&item.card_id]||base[item&&item.source_card_id];if(!src)return;
+        if(item.kind==="spacer"){segment.push({type:"_repair_spacer",_repairSpacer:true,_repairStep:Number(item.step||1),_sourceCard:src});return}
+        if(item.kind==="repair"){
+          var clone={};for(var k in src)clone[k]=src[k];clone._repair=true;clone._guided=!!item.guided;clone._attempt=Number(item.attempt||2);segment.push(clone);return;
+        }
+        segment.push(src);
+      });
+      if(segment.length){
+        queue=prefix.concat(segment);
+        Flow._restoredResumeIndex=prefix.length+Math.max(0,Math.min(Number(exitState.cursor||0),segment.length));
+        return queue;
+      }
+    }
+  }
+  (Flow.pendingRepairs||[]).forEach(function(p){
+    var base=(queue||[]).filter(function(c){return c&&c.card_id===p.card_id})[0];
+    if(!base||Flow.objectiveMastery[base.objective_id])return;
+    for(var s=0;s<Number(p.spacer_count||0);s++)queue.push({type:"_repair_spacer",_repairSpacer:true,_repairStep:s+1,_sourceCard:base});
+    var clone={};for(var k in base)clone[k]=base[k];
+    clone._repair=true;clone._guided=!!p.guided;clone._attempt=Number(p.attempt||2);
+    queue.push(clone);
+  });
+  return queue;
+}
+function repairPendingIndex(cardId){
+  for(var i=0;i<(Flow.pendingRepairs||[]).length;i++)if(Flow.pendingRepairs[i].card_id===cardId)return i;
+  return-1;
+}
+function removePendingRepair(cardId){var i=repairPendingIndex(cardId);if(i>=0)Flow.pendingRepairs.splice(i,1)}
+function scheduleObjectiveRepair(c,guided,attempt){
+  if(!c||!c.card_id||!c.objective_id)return;
+  removePendingRepair(c.card_id);
+  var desired=Flow.i+3,spacerCount=Math.max(0,desired-Flow.queue.length);
+  var pending={card_id:c.card_id,objective_id:c.objective_id,guided:!!guided,attempt:Number(attempt||2),spacer_count:spacerCount};
+  Flow.pendingRepairs.push(pending);
+  for(var s=0;s<spacerCount;s++)Flow.queue.push({type:"_repair_spacer",_repairSpacer:true,_repairStep:s+1,_sourceCard:c});
+  var clone={};for(var k in c)clone[k]=c[k];
+  clone._repair=true;clone._guided=!!guided;clone._attempt=pending.attempt;
+  Flow.queue.splice(Math.min(Flow.queue.length,desired),0,clone); /* 2 karta o'tgach qayta tekshirish */
+}
+function recordObjectiveResult(c,ok){
+  if(!c||!c.objective_id||Flow.challenge||Flow.test)return;
+  var id=String(c.objective_id),attempt=Number(c._attempt||((Flow.objectiveAttempts[id]||0)+1));
+  c._attempt=attempt;Flow.objectiveAttempts[id]=Math.max(Number(Flow.objectiveAttempts[id]||0),attempt);
+  if(ok){Flow.objectiveMastery[id]=true;removePendingRepair(c.card_id)}
+  else{delete Flow.objectiveMastery[id];if(attempt<=1)scheduleObjectiveRepair(c,false,2);else scheduleObjectiveRepair(c,true,attempt+1)}
+  saveLessonMastery();
+}
+function exitTicketMastered(){return(Flow.exitRequired||[]).every(function(id){return Flow.objectiveMastery&&Flow.objectiveMastery[id]===true})}
+function ensureExitTicketMastery(){
+  if(exitTicketMastered())return true;
+  var missing=(Flow.exitRequired||[]).filter(function(id){return !Flow.objectiveMastery[id]});
+  missing.forEach(function(id){
+    var base=(Flow.queue||[]).filter(function(c){return c&&c.objective_id===id})[0];
+    if(base&&repairPendingIndex(base.card_id)<0)scheduleObjectiveRepair(base,true,(Flow.objectiveAttempts[id]||0)+1);
+  });
+  if(Flow.i>=Flow.queue.length)Flow.i=Math.max(0,Flow.queue.length-missing.length);
+  saveLessonMastery();renderFlowCard();return false;
+}
 function flowLesson(){
   if(Flow.lessonIdx===null||typeof Flow.lessonIdx==="undefined")return null;
   return allLessons()[Flow.lessonIdx]||null;
@@ -1958,13 +2260,18 @@ function trackInteraction(ok){
   trackCourseEvent("interaction_completed",{
     lesson_order:lessonOrder,
     card_index:Flow.i+1,
+    card_id:c.card_id||"",
+    objective_id:c.objective_id||"",
+    attempt:Number(c._attempt||1),
+    guided:!!c._guided,
+    foundation_version:Number(c._foundationVersion||0),
     card_type:c.type||"",
     section_no:c._sNo||0,
     section_purpose:c._sPurpose||"",
     review_mix:!!c.review_mix,
     review_origin:c.review_origin||"",
     correct:!!ok,
-    dedupe_key:lessonEventKey("interaction_completed",lessonOrder,Flow.i+1)
+    dedupe_key:lessonEventKey("interaction_completed",lessonOrder,(Flow.i+1)+":"+Number(c._attempt||1))
   });
 }
 function trackSectionCompleted(c,nextIndex){
@@ -1980,8 +2287,15 @@ function trackSectionCompleted(c,nextIndex){
     dedupe_key:lessonEventKey("section_completed",lessonOrder,c._sNo)
   });
 }
+function setLessonFlowControls(){
+  var heart=document.querySelector("#flow .fheart"),gear=document.querySelector("#flow .fgear");
+  if(heart)heart.style.display="flex";if(gear)gear.style.display="";
+  var cta=$("#f-cta"),bar=$("#f-barbtn");if(cta)cta.onclick=Flow.next;if(bar)bar.onclick=Flow.next;
+  var close=document.querySelector("#flow .fx");if(close)close.style.visibility="visible";
+}
 function startLesson(idx,opts){
   opts=opts||{};
+  if(!opts.foundationCleared&&requireFoundationBefore(function(){var nextOpts={};for(var ok in opts)nextOpts[ok]=opts[ok];nextOpts.foundationCleared=true;startLesson(idx,nextOpts)}))return;
   var l=allLessons()[idx];App.closeSheet();
   if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
@@ -1993,10 +2307,11 @@ function startLesson(idx,opts){
   if(l.status==="locked")return;
   var lv=MAP.level||"hsk1";
   loadLessonData(lv,l.n).then(function(d){
-    Flow.queue=buildQueue(d);Flow.i=loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
+    Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
     Flow.lessonAdRef=opts.accessRef||"";
-    /* Yangi bepul user 3-qismni yarmigacha ko'radi (preview_half): o'rtaga
-       yetganda obuna oynasi chiqadi. Backend ham 3-qismni yakunlatmaydi. */
+    setLessonFlowControls();
+    /* Eski levelardagi preview_half serverdan kelsa saqlanadi. HSK1 checkpoint
+       (3-qism) yangi access helper sabab bu rejimga tushmaydi. */
     Flow.previewHalf=!!l.preview_half;
     Flow.previewHalfAt=Flow.previewHalf?Math.max(1,Math.floor(Flow.queue.length/2)):0;
     if(Flow.previewHalf)Flow.i=Math.min(Flow.i,Math.max(0,Flow.previewHalfAt-1));
@@ -2057,6 +2372,17 @@ function buildQueue(d){
     var sTitle=tr(sec.section_title)||(secNames()[(sec.section_no||1)-1]||"");
     cards.forEach(function(c){c._sNo=sNo;c._sTitle=sTitle;c._sPurpose=sec.section_purpose||"";q.push(c)});
   });
+  /* Versionlangan exit-ticket `sections` tashqarisida: eski material_ref va
+     resume indekslari surilmaydi. U faqat checkpoint oxirida enqueue qilinadi. */
+  if(d.exit_ticket&&Array.isArray(d.exit_ticket.cards)){
+    var et=d.exit_ticket,etTitle=LANG==="ru"?"Итоговая проверка":LANG==="tj"?"Санҷиши натиҷа":"Natija tekshiruvi";
+    et.cards.forEach(function(raw){
+      if(!raw||typeof raw!=="object")return;
+      var c={};for(var k in raw)c[k]=raw[k];
+      c._exitTicket=true;c._foundationVersion=Number(et.version||1);c._sTitle=etTitle;c._sPurpose="exit_ticket";
+      q.push(c);
+    });
+  }
   return q;
 }
 function flowProg(){$("#f-prog").style.width=Math.round(Flow.i/Flow.queue.length*100)+"%"}
@@ -2066,6 +2392,8 @@ function showBar(ok,msg,sub){var b=$("#f-bar");b.className="fbar show "+(ok?"ok"
   edgeGlow(ok?Flow.streak:0);
   if(ok){if(Flow.streak>=5)haptic("heavy");else if(Flow.streak>=3)haptic("med")}
   if(!ok)Flow._wrongPending=true; /* keyingi qadamda panda dalda ekrani (darsda 1 marta) */
+  recordObjectiveResult(Flow.queue&&Flow.queue[Flow.i],ok);
+  if(Flow.queue&&Flow.queue[Flow.i]&&Flow.queue[Flow.i].objective_id)saveLessonResume(Flow.i+1);
   trackInteraction(ok);
   if(ok&&Flow.streak>=5&&Flow.streak%5===0)comboPop(Flow.streak);
 }
@@ -2305,13 +2633,15 @@ function renderFlowCard(){
     writeInfo={pinyin:(w&&w.pinyin)||"",meaning:w?tr(w.meaning):""};
   }else if(t==="pronunciation"){
     writeTarget=c.phrase;writeInfo={pinyin:c.pinyin||"",meaning:""};
-  }else if(t==="listening_choice"){
+  }else if(t==="listening_choice"||t==="listen_choice"){
     writeTarget=c.audio_text;writeInfo={pinyin:c.pinyin||"",meaning:tr(c.translation||c.meaning||"")};
   }else if(c.source_words&&c.source_words.length){
     writeTarget=c.source_words[0];writeInfo={pinyin:"",meaning:""};
   }
   setWriteBtn(writeTarget,writeInfo);
   var stEl=$("#f-stage");if(stEl)stEl.innerHTML=c._sNo?'<span>'+(Flow.i+1)+' / '+Flow.queue.length+'</span><b>'+esc(c._sTitle||"")+'</b>':'';
+  if(c._repairSpacer)return cardRepairSpacer(c);
+  if(c._guided)return cardGuidedRepair(c);
   if(t==="active_word")return cardWord(c);
   if(t==="_word_flash")return cardWordFlash(c);
   if(t==="_word_listen")return cardWordListen(c);
@@ -2320,11 +2650,35 @@ function renderFlowCard(){
   if(t==="_basics")return cardBasics(c);
   if(t==="_grammar")return cardGrammar(c.g);
   if(t==="_dialogue")return cardDialogue(c.d);
-  if(t==="sentence_builder")return cardBuilder(c);
+  if(t==="sentence_builder"||t==="builder")return cardBuilder(c);
   if(t==="reverse_builder")return cardReverse(c);
   if(t==="match_pairs")return cardMatch(c);
   if(t==="pronunciation")return cardPron(c);
   return cardChoice(c); /* meaning_guess, pinyin_choice, hanzi_choice, translation_choice, quick_quiz, gap_fill, listening_choice, dialog_context */
+}
+function repairAnswerText(c){
+  if(Array.isArray(c.answer_tokens)&&c.answer_tokens.length)return c.answer_tokens.join(" → ");
+  if(Array.isArray(c.options)&&typeof c.correct_index!=="undefined")return optText(c.options[c.correct_index]);
+  var ex=c.example||{};return ex.zh||c.audio_text||"";
+}
+function cardRepairSpacer(c){
+  var src=c._sourceCard||{},ex=src.example||{},msg=tr(src.explanation)||tr(src.text)||"";
+  var h=c._repairStep===1?(LANG==="ru"?"Разберём ответ":LANG==="tj"?"Ҷавобро мефаҳмем":"Javobni tushunamiz"):(LANG==="ru"?"Запомните подсказку":LANG==="tj"?"Ишораро дар хотир гиред":"Ishorani eslab qoling");
+  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-refresh"></i> '+esc(h)+'</div>'
+    +'<div class="foundation-note"><b>'+esc(repairAnswerText(src))+'</b>'+(ex.pinyin?'<div style="color:var(--cin2);margin-top:4px">'+esc(ex.pinyin)+'</div>':'')+(msg?'<div style="margin-top:8px">'+esc(msg)+'</div>':'')+'</div>';
+  $("#f-cta").style.display="flex";
+}
+function cardGuidedRepair(c){
+  var answer=repairAnswerText(c),ex=c.example||{};
+  var M={uz:{h:"Birga to'g'rilaymiz",p:"To'g'ri javobni ko'ring va uni o'zingiz tasdiqlang.",go:"Shu javobni tanlayman"},ru:{h:"Исправим вместе",p:"Посмотрите на правильный ответ и подтвердите его сами.",go:"Выбрать этот ответ"},tj:{h:"Якҷоя ислоҳ мекунем",p:"Ҷавоби дурустро бинед ва худатон тасдиқ кунед.",go:"Ҳамин ҷавобро интихоб мекунам"}}[LANG];
+  $("#f-cta").style.display="none";
+  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-route"></i> '+esc(M.h)+'</div>'
+    +(ex.zh?'<div class="qcard"><div class="qh qask han">'+esc(ex.zh)+'</div><div class="qpy">'+esc(ex.pinyin||"")+'</div></div>':'')
+    +'<div class="guided-card"><b>'+esc(answer)+'</b><p>'+esc(tr(c.explanation)||M.p)+'</p><button onclick="window._guidedCorrect()"><i class="ti ti-check"></i> '+esc(M.go)+'</button></div>';
+  window._guidedCorrect=function(){
+    if(Flow.answered)return;Flow.answered=true;Flow.graded=(Flow.graded||0)+1;Flow.correct=(Flow.correct||0)+1;
+    beep([523,659,784]);haptic("ok");showBar(true,T().correct,answer);
+  };
 }
 function teachContinue(){var cta=$("#f-cta");cta.style.display="flex"}
 function renderCheer(){
@@ -2455,6 +2809,113 @@ function cardBasics(c){
   };
   window._basNext();
 }
+function foundationExampleHtml(ex,big){
+  ex=ex||{};if(!ex.zh&&!ex.pinyin)return"";
+  return '<div class="foundation-hero"><div class="zh han"'+(big?'':' style="font-size:52px"')+'>'+esc(ex.zh||"")+'</div><div class="py">'+esc(ex.pinyin||"")+'</div>'+(tr(ex.translation)?'<p style="margin-top:6px">'+esc(tr(ex.translation))+'</p>':'')+'</div>';
+}
+function foundationTitle(c){return tr(c.title)||tr(c.prompt)||""}
+function foundationStepLabel(c){
+  if(c._repair)return LANG==="ru"?"Повторная проверка":LANG==="tj"?"Санҷиши такрорӣ":"Qayta tekshiruv";
+  return LANG==="ru"?"Основы с нуля":LANG==="tj"?"Асосҳо аз сифр":"0 dan asoslar";
+}
+function foundationGuidedCard(c){
+  var M={uz:{h:"Birga to'g'rilaymiz",p:"To'g'ri javobni ko'ring va o'zingiz tasdiqlang.",go:"Shu javobni tanlayman"},ru:{h:"Исправим вместе",p:"Посмотрите на правильный ответ и подтвердите его.",go:"Выбрать этот ответ"},tj:{h:"Якҷоя ислоҳ мекунем",p:"Ҷавоби дурустро бинед ва тасдиқ кунед.",go:"Ҳамин ҷавобро интихоб мекунам"}}[LANG];
+  $("#f-cta").style.display="none";$("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-route"></i> '+esc(M.h)+'</div>'+foundationExampleHtml(c.example,false)
+    +'<div class="guided-card"><b>'+esc(foundationAnswerText(c))+'</b><p>'+esc(tr(c.explanation)||M.p)+'</p><button onclick="Foundation.guidedCorrect()"><i class="ti ti-check"></i> '+esc(M.go)+'</button></div>';
+}
+function foundationRepairSpacer(c){
+  var src=c._sourceCard||{},M={uz:"Javobni yana bir bor ko'ring — birozdan keyin o'zingiz topasiz.",ru:"Посмотрите на ответ ещё раз — скоро вы найдёте его сами.",tj:"Ҷавобро боз як бор бинед — каме пас худатон меёбед."}[LANG];
+  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-bulb"></i> '+esc(foundationStepLabel(src))+'</div>'+foundationExampleHtml(src.example,false)
+    +'<div class="foundation-note"><b>'+esc(foundationAnswerText(src))+'</b><div style="margin-top:7px">'+esc(tr(src.explanation)||M)+'</div></div>';
+}
+function foundationChoiceCard(c){
+  $("#f-cta").style.display="none";
+  /* Retrieval oldidan javob/translation ochilmaydi. Tinglashda faqat audio,
+     meaning kartada hanzi+pinyin ko'rsatiladi. */
+  var ex=c.example||{};
+  var audio=c.type==="listen_choice"?'<div class="qcard"><button class="audio" onclick="foundationSpeak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button></div>'
+    :'<div class="qcard"><div class="qh qask han">'+esc(ex.zh||"")+'</div><div class="qpy">'+esc(ex.pinyin||"")+'</div></div>';
+  var opts=(c.options||[]).map(function(o,k){return '<button class="opt" data-k="'+k+'" onclick="Foundation.pick(this,'+k+')"><span class="k">'+"ABCD"[k]+'</span>'+esc(optText(o))+'</button>'}).join("");
+  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-'+(c.type==="listen_choice"?'headphones':'brain')+'"></i> '+esc(foundationStepLabel(c))+'</div><div class="qq">'+esc(tr(c.prompt)||foundationTitle(c))+'</div>'+audio+opts;
+  if(c.type==="listen_choice")Foundation.scheduleAudio(c.audio_text||"",280);
+}
+function foundationBuilderCard(c){
+  $("#f-cta").style.display="none";var bank=(c.tokens||[]).slice(),line=[];
+  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-puzzle"></i> '+esc(foundationStepLabel(c))+'</div><div class="qq">'+esc(tr(c.prompt)||foundationTitle(c))+'</div><div class="tokens" id="foundation-line"></div><div class="bank" id="foundation-bank"></div>';
+  function draw(){
+    $("#foundation-line").innerHTML=line.map(function(i,pos){return '<button class="tok han" onclick="Foundation.builderRemove('+pos+')">'+esc(bank[i])+'</button>'}).join("");
+    $("#foundation-bank").innerHTML=bank.map(function(x,i){return line.indexOf(i)>=0?'<span class="tok han ghost">'+esc(x)+'</span>':'<button class="tok han" onclick="Foundation.builderAdd('+i+')">'+esc(x)+'</button>'}).join("");
+  }
+  Foundation.builderAdd=function(i){if(Foundation.answered||line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===(c.answer_tokens||[]).length){Foundation.answered=true;var built=line.map(function(n){return bank[n]}),ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens||[]);Foundation.grade(ok);Foundation.feedback(ok,foundationAnswerText(c))}};
+  Foundation.builderRemove=function(pos){if(Foundation.answered)return;line.splice(pos,1);draw()};draw();
+}
+function foundationSpeakCard(c){
+  var M={uz:{h:"Li ustozdan keyin takrorlang",go:"Talaffuzni tekshirish",skip:"Mikrofonsiz davom etish"},ru:{h:"Повторите за учителем Ли",go:"Проверить произношение",skip:"Продолжить без микрофона"},tj:{h:"Аз паси устод Ли такрор кунед",go:"Санҷидани талаффуз",skip:"Бе микрофон идома"}}[LANG];
+  $("#f-cta").style.display="none";$("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-microphone"></i> '+esc(foundationStepLabel(c))+'</div><div class="qq">'+esc(M.h)+'</div>'+foundationExampleHtml(c.example,true)
+    +'<button class="foundation-audio" onclick="foundationSpeak(\''+esc(c.audio_text||((c.example||{}).zh)||"")+'\')"><i class="ti ti-volume"></i></button>'
+    +'<button class="scta" id="foundation-mic" onclick="Foundation.tryMic()"><i class="ti ti-microphone"></i> '+esc(M.go)+'</button><div id="foundation-mic-hint" style="text-align:center;color:var(--ink2);font-size:13px;line-height:1.45;margin-top:9px;min-height:19px"></div>'
+    +'<button class="pron-skip" onclick="Foundation.skipSpeak()">'+esc(M.skip)+'</button>';
+  Foundation.scheduleAudio(c.audio_text||((c.example||{}).zh)||"",300);
+}
+Foundation.skipSpeak=function(){Foundation.cancelMic();Foundation.next()};
+Foundation.tryMic=function(){
+  var c=Foundation.queue[Foundation.i],hint=$("#foundation-mic-hint"),btn=$("#foundation-mic");
+  function say(t){if(hint)hint.textContent=t||""}function ready(){if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-microphone"></i> '+T().say}}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){say(_prL().noSupport);return}
+  Foundation.cancelMic();var session={cancelled:false,stream:null,rec:null,timer:null,controller:null};Foundation._micSession=session;
+  if(btn)btn.disabled=true;say(_prL().listening);
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    if(session.cancelled||Foundation._micSession!==session){stream.getTracks().forEach(function(t){t.stop()});return}
+    session.stream=stream;
+    var chunks=[],rec,mimes=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"],mime="";
+    for(var mi=0;mi<mimes.length;mi++)if(window.MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(mimes[mi])){mime=mimes[mi];break}
+    try{rec=mime?new MediaRecorder(stream,{mimeType:mime,audioBitsPerSecond:32000}):new MediaRecorder(stream)}catch(e){try{rec=new MediaRecorder(stream)}catch(_){stream.getTracks().forEach(function(t){t.stop()});Foundation._micSession=null;ready();say(_prL().noSupport);return}}
+    session.rec=rec;
+    rec.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+    rec.onstop=function(){
+      stream.getTracks().forEach(function(t){t.stop()});if(session.cancelled||Foundation._micSession!==session)return;
+      var blob=new Blob(chunks,{type:rec.mimeType||"audio/webm"});if(blob.size<500){Foundation._micSession=null;ready();say(_prL().retry);return}
+      say(_prL().analyzing);var fd=new FormData(),target=c.audio_text||((c.example||{}).zh)||"你好",mt=(blob.type||rec.mimeType||mime||"audio/webm").toLowerCase(),ext=/mp4|m4a|aac/.test(mt)?"mp4":(/ogg/.test(mt)?"ogg":(/mpeg|mp3/.test(mt)?"mp3":(/wav/.test(mt)?"wav":"webm")));fd.append("initData",initData());fd.append("target",target);fd.append("target_pinyin",((c.example||{}).pinyin)||"");fd.append("language",LANG);fd.append("level","hsk1");fd.append("audio",blob,"voice."+ext);
+      session.controller=window.AbortController?new AbortController():null;
+      fetch("/api/voice-practice/pronounce",{method:"POST",body:fd,signal:session.controller?session.controller.signal:undefined}).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(o){
+        if(session.cancelled||Foundation._micSession!==session)return;Foundation._micSession=null;ready();var score=Number(o.j&&o.j.score||0);if(o.ok&&o.j&&o.j.ok===true&&score>=60){Foundation.speakingBonus=true;Foundation.save();say(T().correct+" "+score+"%");beep([523,659,784]);haptic("ok")}else say((o.j&&o.j.message)||_prL().retry);
+      }).catch(function(err){if(session.cancelled||err&&err.name==="AbortError")return;Foundation._micSession=null;ready();say(_prL().netErr)});
+    };rec.start();session.timer=setTimeout(function(){try{if(!session.cancelled&&rec.state!=="inactive")rec.stop()}catch(e){}},2600);
+  }).catch(function(){if(session.cancelled)return;Foundation._micSession=null;ready();say(_prL().micDeny)});
+};
+Foundation.render=function(){
+  if(!Foundation.active)return;Foundation.cancelMic();Foundation.stopAudio();Foundation.answered=false;hideBar();setWriteBtn("");
+  var c=Foundation.queue[Foundation.i];if(!c)return Foundation.finish();
+  $("#f-prog").style.width=Math.round(Foundation.i/Math.max(Foundation.queue.length,1)*100)+"%";
+  var st=$("#f-stage");if(st)st.innerHTML='<span>'+(Foundation.i+1)+' / '+Foundation.queue.length+'</span><b>'+esc(foundationStepLabel(c))+'</b>';
+  var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(c.type==="result"?T().check:T().cont);
+  if(c._repairSpacer)return foundationRepairSpacer(c);
+  if(c._guided)return foundationGuidedCard(c);
+  if(c.type==="choice"||c.type==="listen_choice")return foundationChoiceCard(c);
+  if(c.type==="builder")return foundationBuilderCard(c);
+  if(c.type==="speak")return foundationSpeakCard(c);
+  var title=foundationTitle(c),text=tr(c.text)||tr(c.explanation)||"",ex=c.example||{};
+  /* Chinese auto-audio bilan ona-til narration ustma-ust tushmasin. */
+  if(c.narrate&&c.type!=="intro"&&c.type!=="listen_choice"&&c.type!=="speak")narrate(c.narrate,text||title);
+  if(c.type==="intro"){
+    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-rocket"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,true)+'<button class="foundation-audio" onclick="foundationSpeak(\''+esc(c.audio_text||ex.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>';
+    Foundation.scheduleAudio(c.audio_text||ex.zh||"",350);return;
+  }
+  if(c.type==="parts"){
+    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-components"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p></div><div class="foundation-parts">'+(c.examples||[]).map(function(x){return '<button class="foundation-part" onclick="foundationSpeak(\''+esc(x.zh||"")+'\')"><div class="zh han">'+esc(x.zh||"")+'</div><div class="py">'+esc(x.pinyin||"")+'</div><small>'+esc(tr(x.translation)||"")+'</small></button>'}).join("")+'</div>';return;
+  }
+  if(c.type==="tones"){
+    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wave-sine"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p></div><div class="tone-row">'+(c.examples||[]).map(function(x,i){return '<button class="tone-btn" onclick="foundationSpeak(\''+esc(x.zh||x.audio_text||"")+'\')"><b>'+esc(x.pinyin||x.zh||"")+'</b><small>'+(i+1)+'</small></button>'}).join("")+'</div>';return;
+  }
+  if(c.type==="sandhi"){
+    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-wave-saw-tool"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,true)+'<div class="foundation-note"><b>'+esc(ex.pinyin||"nǐ hǎo")+'</b> — '+esc(LANG==="ru"?"на письме":LANG==="tj"?"навишт":"yozilishi")+'<br><b>'+esc(c.natural_pinyin||"ní hǎo")+'</b> — '+esc(LANG==="ru"?"естественное произношение":LANG==="tj"?"талаффузи табиӣ":"tabiiy talaffuzi")+'</div><button class="foundation-audio" onclick="foundationSpeak(\''+esc(c.audio_text||ex.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>';return;
+  }
+  if(c.type==="result"){
+    var objs=c.objectives||((Foundation.data.required_objectives||[]).map(function(id){return{objective_id:id,label:id}}));
+    $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-trophy"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><div style="font-size:54px">🎉</div><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,false)+'</div><div class="foundation-win">'+objs.map(function(o){var ok=Foundation.mastery[o.objective_id]===true;return '<div'+(ok?'':' style="opacity:.55"')+'><i class="ti ti-'+(ok?'circle-check':'clock')+'"></i>'+esc(tr(o.label)||o.objective_id)+'</div>'}).join("")+'</div>';return;
+  }
+  $("#f-body").innerHTML='<div class="foundation-step"><i class="ti ti-info-circle"></i> '+esc(foundationStepLabel(c))+'</div><div class="foundation-hero"><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+foundationExampleHtml(ex,false)+'</div>'+(c.examples||[]).map(function(x){return '<div class="foundation-note">'+foundationExampleHtml(x,false)+'</div>'}).join("");
+};
 function cardGrammar(g){
   $("#f-cta").style.display="none";
   var gt=GRT(),R=parseRule(tr(g.rule));
@@ -2508,7 +2969,7 @@ function cardChoice(c){
   /* Server (challenge/mashq) savollarida gap alohida `sentence` maydonida
      keladi — uni ko'rsatmasak "Gapdagi so'zni tanlang" gapisiz chiqadi. */
   var sent=c.sentence?'<div class="gap han" style="margin-top:10px">'+esc(c.sentence).replace("____","<u>?</u>")+'</div>':"";
-  if(t==="listening_choice"){audio='<div class="qcard"><button class="audio" onclick="speak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button>'+sent+'</div>';head='';setTimeout(function(){speak(c.audio_text)},250)}
+  if(t==="listening_choice"||t==="listen_choice"){audio='<div class="qcard"><button class="audio" onclick="speak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button>'+sent+'</div>';head='';setTimeout(function(){speak(c.audio_text)},250)}
   else if(t==="gap_fill"){head='<div class="qcard"><div class="gap han">'+esc(c.sentence||"").replace("____","<u>?</u>")+'</div></div>'}
   else if(t==="dialog_context"){var dl=(c.dialog||[]).map(function(l){return '<div class="line '+l.speaker+'"><div class="ava">'+l.speaker+'</div><div class="bub"><div class="z3 han">'+esc(l.text)+'</div></div></div>'}).join("");head='<div class="dia">'+dl+'</div>'}
   else if(t==="dialog_cloze"){var dl2=(c.lines||[]).map(function(l){var body=l.blank?'<div class="z3 han cloze-gap">？</div>':'<div class="z3 han">'+esc(l.zh)+'</div>';return '<div class="line '+esc(l.speaker)+'"><div class="ava">'+esc(l.speaker)+'</div><div class="bub">'+body+'</div></div>'}).join("");head='<div class="dia">'+dl2+'</div>'}
@@ -2560,7 +3021,8 @@ Flow.pick=function(el,k){
 function cardBuilder(c){
   $("#f-cta").style.display="none";
   var bank=(c.tokens||[]).slice();
-  $("#f-body").innerHTML='<div class="qq">'+T().buildSent+' — '+esc(tr(c.sentence))+'</div><div class="tokens" id="bld-line"></div><div class="bank" id="bld-bank"></div>';
+  var prompt=tr(c.prompt)||tr(c.sentence)||T().buildSent;
+  $("#f-body").innerHTML='<div class="qq">'+esc(prompt)+'</div><div class="tokens" id="bld-line"></div><div class="bank" id="bld-bank"></div>';
   var line=[]; /* chosen bank indices, in order — index-based so duplicate tiles work */
   function draw(){
     $("#bld-line").innerHTML=line.map(function(bi,pos){return '<button class="tok han" onclick="window._bldUn('+pos+')">'+esc(bank[bi])+'</button>'}).join("");
@@ -2684,12 +3146,16 @@ Flow.next=function(){
   Flow._wrongPending=false;
   var nextI=Flow.i+1;
   trackSectionCompleted(Flow.queue&&Flow.queue[Flow.i],nextI);
-  /* 2-dars (preview_half): yarmiga yetganda darsni to'xtatib, obuna oynasini
-     ochamiz. Bepul user faqat yarmini ko'radi. */
+  /* Server belgilagan birinchi pullik preview yarmiga yetganda obuna oynasini
+     ochamiz. HSK1 checkpoint bundan oldin to'liq yakunlanadi. */
   if(Flow.previewHalf&&nextI>=Flow.previewHalfAt&&nextI<Flow.queue.length){
     Flow.previewHalf=false;App.exitFlow();App.openPaywall("lockedLesson");return;
   }
-  Flow.i=nextI;if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}
+  Flow.i=nextI;
+  /* Repair queue indekslari dinamik. Har bir spacer/base o'tilganda semantic
+     cursorni ham yangilaymiz — reload bir kartani takrorlamaydi yoki tashlamaydi. */
+  Flow.answered=false;saveLessonMastery();
+  if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}
 };
 function luRain(){var cols=['#FF5A4E','#FFC800','#58CC02','#49C0F8','#fff'],el=$("#levelup");for(var n=0;n<24;n++){(function(){var c=document.createElement('span');c.className='lu-conf';c.style.left=(4+Math.random()*92)+'%';c.style.background=cols[n%5];el.appendChild(c);var dx=Math.random()*70-35,rot=Math.random()*720-360;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,760px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1750)})()}}
 var TOUR={i:0,steps:[],t:{}},TOURV=true,_tourAudio=null,TOUR_AUDIO_VER="20260628b";
@@ -2722,15 +3188,17 @@ function tourSpeak(text,key){if(!TOURV)return;stopTourAudio();
    Audio bo'lmasa karta MATN sifatida to'liq ishlaydi. */
 var NARV=(function(){try{return localStorage.getItem("hsk_v3_narrate")!=="0"}catch(e){return true}})();
 function setNarrate(on){NARV=!!on;try{localStorage.setItem("hsk_v3_narrate",NARV?"1":"0")}catch(e){}}
+function narrationAudioUrl(key){return"/audio/tour/"+LANG+"/"+key+(String(key||"").indexOf("f")===0?".wav":".mp3")+"?v="+TOUR_AUDIO_VER}
 function narrate(key,text){
   if(!NARV||!key)return;
   stopTourAudio();
   try{
-    var a=new Audio("/audio/tour/"+LANG+"/"+key+".mp3?v="+TOUR_AUDIO_VER);_tourAudio=a;
+    var a=new Audio(narrationAudioUrl(key));_tourAudio=a;
     a.onerror=function(){if(_tourAudio===a){_tourAudio=null;_tourTTS(text||"")}};
     a.play().catch(function(){if(_tourAudio===a){_tourAudio=null;_tourTTS(text||"")}});
   }catch(e){_tourTTS(text||"")}
 }
+function foundationSpeak(text){if(window.Foundation&&Foundation._audioTimer){clearTimeout(Foundation._audioTimer);Foundation._audioTimer=null}stopTourAudio();speak(text)}
 function tourRender(noSpeak){var st=TOUR.steps[TOUR.i];App.show(st.s);
   var t=TOUR.t,dots=TOUR.steps.map(function(_,k){return '<i class="'+(k===TOUR.i?"on":"")+'"></i>'}).join("");
   $("#tour-coach").innerHTML='<div class="ch"><div class="pd">'+pandaChar("happy")+'</div><div class="ct"><b>'+T().nav[st.s]+'</b><small>'+(TOUR.i+1)+" / "+TOUR.steps.length+'</small></div><button class="vt '+(TOURV?"on":"")+'" onclick="App.toggleTourVoice()"><i class="ti ti-'+(TOURV?"volume":"volume-off")+'"></i> '+t.voice+'</button></div><div class="desc">'+st.d+'</div><div class="row"><div class="dots">'+dots+'</div><button class="nx" onclick="App.tourNext()">'+(TOUR.i<TOUR.steps.length-1?t.next:t.done)+'</button></div>';
@@ -2795,6 +3263,7 @@ function loadLevel(lv){
 function applyLessonDone(cur,d){
   var rankBefore=currentRatingRank();
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
+  clearLessonMastery((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   clearLessonAdRef(cur);
   var al=allLessons();
   cur.status="done";cur.stars=3;cur.locked_premium=false;
@@ -2826,12 +3295,13 @@ function applyLessonDone(cur,d){
   }
   pendingRankUp=(d&&d.gamification&&!d.duplicate)?{before:rankBefore}:null;
   var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
-  /* Bepul user 2 mini-darsni tugatgach, 3-qism yarim-preview bo'ladi (server
-     ham keyingi map'da shunday belgilaydi) — mahalliy holatni darhol moslaymiz. */
+  /* Birinchi pullik qismni serverdagi level-aware chegara bilan moslaymiz:
+     HSK1 uchun 4-qism, HSK2–4 uchun 3-qism. */
   if(next&&!isPaidUser()&&next.ad_required){next.locked_premium=false;next.preview_half=false;next.status="current";}
-  else if(next&&!isPaidUser()&&next.n===3&&next.locked_premium){next.locked_premium=false;next.preview_half=true;next.status="current";}
+  else if(next&&!isPaidUser()&&next.n===freeCoursePartsForLevel((MAP&&MAP.level)||"hsk1")+1&&next.locked_premium){next.locked_premium=false;next.preview_half=true;next.status="current";}
   if(next&&next.status==="locked"&&!isPremiumLocked(next))next.status="current";
   if(next&&isPremiumLocked(next))next.status="locked";
+  window._pendingCheckpointNextIdx=(cur&&cur.checkpoint&&normalizeLevel((MAP&&MAP.level)||"hsk1")==="hsk1"&&Number(cur.src)===1&&next)?al.indexOf(next):null;
   renderAll();
   if(al.every(function(l){return l.status==="done"})){
     var nxt=_NEXT_LEVEL[MAP.level||"hsk1"];
@@ -2843,6 +3313,7 @@ function applyLessonDone(cur,d){
 function flowDone(){
   if(Flow.challenge){return finishChallengeRound()}
   if(Flow.test){return finishSkipTest()}
+  if((Flow.exitRequired||[]).length&&!ensureExitTicketMastery())return;
   flowProg();$("#f-cta").style.display="none";hideBar();setWriteBtn("");
   var cur=typeof Flow.lessonIdx==="number"?allLessons()[Flow.lessonIdx]:allLessons().find(function(l){return l.status==="current"});
   if(!cur){App.showLevelUp("lesson");return}
@@ -3474,13 +3945,14 @@ function challengeCard(q){
 }
 function startChallengeRound(id){
   var c=chL();
+  if(requireFoundationBefore(function(){startChallengeRound(id)}))return;
   if(!INIT_DATA){toast(c.needTg,2400);return}
   App.closeSheet();
   _apiPost("/api/miniapp/challenges/"+Number(id)+"/start",{}).then(function(r){return r.json()}).then(function(d){
     if(!d||!d.ok){openChallengeById(id);return}
     var q=(d.session&&d.session.questions||[]).map(challengeCard).filter(Boolean);
     if(!q.length){toast(c.err,2400);return}
-    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge={id:Number(id),answers:[]};Flow.lessonIdx=null;Flow.ad=null;HP=5;$("#f-hp").textContent=HP;
+    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge={id:Number(id),answers:[]};Flow.lessonIdx=null;Flow.ad=null;setLessonFlowControls();HP=5;$("#f-hp").textContent=HP;
     $("#flow").classList.add("on");renderFlowCard();
   }).catch(function(){toast(c.err,2400)});
 }
@@ -3734,7 +4206,6 @@ function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=T().nav[s.dataset.i]});
   if(MAP){renderCourse();renderMashq();renderRating();renderProfile();if(SCREEN==="voice")renderVoice()}
 }
-(function(){var p=new URLSearchParams(location.search);var onb=false;try{onb=!!localStorage.getItem("hsk_v3_onb")}catch(e){}if(INIT_DATA&&!onb&&!p.get("onboarded")){location.replace("/course_v3_onboarding.html?lang="+LANG);}})();
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
 $("#paywall").onclick=function(){App.closePaywall()};
@@ -3746,9 +4217,24 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     if(!res.data){showAuthGate();return;}
     var d=res.data;
     hideAuthGate();MAP=d;adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
+    var bootParams=new URLSearchParams(location.search);
+    /* Server onboarding source of truth. localStorage faqat tez cache: boshqa
+       qurilma yoki cache tozalanganda server holati noto'g'ri redirectni to'xtatadi. */
+    if(d.user&&d.user.onboarding_completed===false){
+      var onbQuery=new URLSearchParams(bootParams.toString());onbQuery.set("lang",LANG);
+      location.replace("/course_v3_onboarding.html?"+onbQuery.toString());return;
+    }
+    if(d.user&&typeof d.user.onboarding_completed!=="boolean"){
+      var cachedOnboarding=false;try{cachedOnboarding=!!localStorage.getItem("hsk_v3_onb")}catch(e){}
+      if(!cachedOnboarding&&!bootParams.get("onboarded")){
+        var fallbackQuery=new URLSearchParams(bootParams.toString());fallbackQuery.set("lang",LANG);
+        location.replace("/course_v3_onboarding.html?"+fallbackQuery.toString());return;
+      }
+    }
+    if(d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}
     renderAll();
     prefetchNearbyLessons();
-    var sp=new URLSearchParams(location.search);
+    var sp=bootParams;
     App.show(sp.get("tab")||"course");
     var initialLesson=Number(sp.get("lesson")||0);
     // resume=1: aniq lesson berilmagan bo'lsa, server progresidan JORIY qismni
@@ -3760,7 +4246,8 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
       if(ci<0)all.forEach(function(l,i){if(ci<0&&l.status!=="done")ci=i});
       if(ci>=0)initialLesson=Number(all[ci].n)||0;
     }
-    if(initialLesson>0){
+    function openInitialLesson(){
+      if(initialLesson<=0)return;
       var idx=-1;allLessons().forEach(function(l,i){if(Number(l.n)===initialLesson)idx=i});
       if(idx>=0)setTimeout(function(){
         App.show("course");
@@ -3771,9 +4258,18 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
       },80);
     }
     var challengeId=Number(sp.get("challenge_id")||0);
-    if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);
-    if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
-    maybeShowAppOpenAd({lesson:initialLesson,challenge:challengeId,tour:sp.get("tour")==="1"});
+    function launchBootIntents(skipAppOpenAd){
+      openInitialLesson();
+      if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);
+      if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
+      if(!skipAppOpenAd)maybeShowAppOpenAd({lesson:initialLesson,challenge:challengeId,tour:sp.get("tour")==="1"});
+    }
+    var fs=foundationMapState();
+    var foundationRequired=normalizeLevel(MAP.level)==="hsk1"&&!foundationIsComplete()&&(sp.get("foundation")==="1"||fs.required===true||fs.foundation_required===true);
+    /* Starter majburiy bo'lsa deep-link, tour va app-open reklama uning ustiga
+       chiqmaydi. Foundation tugagach asl intent davom etadi; reklama esa bu
+       birinchi natija sessiyasida butunlay o'tkazib yuboriladi. */
+    if(foundationRequired){startFoundationFromMap(false,function(){launchBootIntents(true)})}else launchBootIntents(false);
   });
 })();
 

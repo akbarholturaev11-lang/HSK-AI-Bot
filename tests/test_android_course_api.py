@@ -25,7 +25,10 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.android_course_service import AndroidCourseService
-from app.services.course_miniapp_access_service import FREE_COURSE_LESSONS_PER_LEVEL
+from app.services.course_miniapp_access_service import (
+    FREE_COURSE_LESSONS_PER_LEVEL,
+    free_course_parts_for_level,
+)
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_course_service import (
@@ -132,7 +135,11 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         # Course v3 is split into mini-parts; the client must never hardcode
         # this count, so the map is the only source of truth.
         self.assertEqual(63, len(lessons))
+        # Legacy constant stays two for compatibility; HSK1 uses the canonical
+        # level-aware allowance.
         self.assertEqual(2, FREE_COURSE_LESSONS_PER_LEVEL)
+        hsk1_free_parts = free_course_parts_for_level("hsk1")
+        self.assertEqual(3, hsk1_free_parts)
 
         # Lesson 1 is the current one and is fully free.
         self.assertEqual("current", lessons[0]["status"])
@@ -148,13 +155,18 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertNotIn("locked_premium", lessons[1])
 
+        # Part 3 is the free HSK1 checkpoint, still locked only by progress.
+        checkpoint = lessons[hsk1_free_parts - 1]
+        self.assertNotIn("locked_premium", checkpoint)
+        self.assertEqual("course_lesson_not_unlocked", checkpoint["completion_error"])
+
         # The first premium lesson is a hard lock while it is still out of
         # reach. The half preview is NOT shown here.
-        third = lessons[FREE_COURSE_LESSONS_PER_LEVEL]
-        self.assertTrue(third["locked_premium"])
-        self.assertIsNone(third.get("preview_half"))
-        self.assertFalse(third["completion_allowed"])
-        self.assertEqual("free_feature_limit_reached", third["completion_error"])
+        first_premium = lessons[hsk1_free_parts]
+        self.assertTrue(first_premium["locked_premium"])
+        self.assertIsNone(first_premium.get("preview_half"))
+        self.assertFalse(first_premium["completion_allowed"])
+        self.assertEqual("free_feature_limit_reached", first_premium["completion_error"])
 
     async def test_half_preview_appears_only_once_the_learner_reaches_it(self):
         """`preview_half` is bound to the learner's position, not to the level.
@@ -166,7 +178,8 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
-            for order in range(1, FREE_COURSE_LESSONS_PER_LEVEL + 1):
+            hsk1_free_parts = free_course_parts_for_level("hsk1")
+            for order in range(1, hsk1_free_parts + 1):
                 await service.complete(
                     token,
                     lesson_order=order,
@@ -174,22 +187,22 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
                 )
             lessons = self._flatten(await service.course_map(token))
 
-        for index in range(FREE_COURSE_LESSONS_PER_LEVEL):
+        for index in range(hsk1_free_parts):
             self.assertEqual("done", lessons[index]["status"])
 
-        third = lessons[FREE_COURSE_LESSONS_PER_LEVEL]
-        self.assertEqual("current", third["status"])
-        self.assertTrue(third["preview_half"])
-        self.assertNotIn("locked_premium", third)
+        first_premium = lessons[hsk1_free_parts]
+        self.assertEqual("current", first_premium["status"])
+        self.assertTrue(first_premium["preview_half"])
+        self.assertNotIn("locked_premium", first_premium)
         # Visible, but the preview still cannot finish the lesson.
-        self.assertFalse(third["completion_allowed"])
-        self.assertEqual("free_feature_limit_reached", third["completion_error"])
+        self.assertFalse(first_premium["completion_allowed"])
+        self.assertEqual("free_feature_limit_reached", first_premium["completion_error"])
 
         # Everything past the preview stays hard-locked.
-        fourth = lessons[FREE_COURSE_LESSONS_PER_LEVEL + 1]
-        self.assertTrue(fourth["locked_premium"])
-        self.assertIsNone(fourth.get("preview_half"))
-        self.assertFalse(fourth["completion_allowed"])
+        next_premium = lessons[hsk1_free_parts + 1]
+        self.assertTrue(next_premium["locked_premium"])
+        self.assertIsNone(next_premium.get("preview_half"))
+        self.assertFalse(next_premium["completion_allowed"])
 
     async def test_utc_plus_zero_timezone_is_stored_not_swallowed(self):
         async with self.sessions() as session:
@@ -297,7 +310,8 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
-            for order in range(1, FREE_COURSE_LESSONS_PER_LEVEL + 1):
+            hsk1_free_parts = free_course_parts_for_level("hsk1")
+            for order in range(1, hsk1_free_parts + 1):
                 await service.complete(
                     token,
                     lesson_order=order,
@@ -308,12 +322,12 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(DesktopCourseError) as blocked:
                 await service.complete(
                     token,
-                    lesson_order=FREE_COURSE_LESSONS_PER_LEVEL + 1,
+                    lesson_order=hsk1_free_parts + 1,
                     event_id="android:preview" + "0" * 25,
                 )
             self.assertEqual(403, blocked.exception.status_code)
             self.assertEqual(
-                FREE_COURSE_LESSONS_PER_LEVEL,
+                hsk1_free_parts,
                 await self._completed_count(session),
             )
 

@@ -11,15 +11,16 @@ Ovozlar:
         fonetik kirillga moslangan)
 
 Ishga tushirish:  .venv/bin/python3.14 scripts/gen_tour_audio.py
+Tashqi servissiz macOS fallback: python scripts/gen_tour_audio.py --local f01 ... f10
 DISPLAY_TEXT course-v3.html dagi runTour() bilan bir xil bo'lishi shart.
 AUDIO_TEXT esa talaffuz uchun alohida yoziladi va UI'da ko'rinmaydi.
 """
 import asyncio
 import os
 import re
+import subprocess
 import sys
-
-import edge_tts
+import tempfile
 
 OUT_DIR = "app/static/audio/tour"
 
@@ -28,6 +29,10 @@ VOICES = {
     "ru": "ru-RU-SvetlanaNeural",
     "tj": "ru-RU-SvetlanaNeural",
 }
+
+# Tashqi TTS xizmatiga matn yubormaydigan macOS fallback. UZ uchun turk ovozi
+# lotin yozuvini, TJ uchun esa rus ovozi fonetik kirill matnini o'qiydi.
+LOCAL_VOICES = {"uz": "Yelda", "ru": "Milena", "tj": "Milena"}
 
 DISPLAY_TEXT = {
     "ru": {
@@ -71,24 +76,47 @@ DISPLAY_TEXT = {
     },
 }
 
-# Noldan boshlovchi uchun tanishtiruv kartalari (hsk1, 1-qism). Matn
-# scripts/gen_course_v3_from_seed.py dagi BASICS_CARDS "lead" bilan bir xil
-# bo'lishi shart — ekranда ko'rinadigan matn va ovoz bir-biriga mos kelsin.
-BASICS_DISPLAY = {
+# Starter 0 kartalari. Kalitlar scripts/gen_course_v3_from_seed.py dagi
+# FOUNDATION_CARDS `narrate` qiymatlari bilan bir xil bo'lishi shart.
+FOUNDATION_DISPLAY = {
     "ru": {
-        "b1": "В китайском языке нет алфавита. Каждый знак — иероглиф — это целое слово.",
-        "b2": "В китайском один и тот же слог произносится 4 разными тонами — и каждый раз это другое слово. Послушайте:",
+        "f01": "Сначала послушайте. Сейчас вы поймёте и сами соберёте эту фразу.",
+        "f02": "Что означает 你好?",
+        "f03": "Китайское слово может состоять из одного или нескольких ханцзы — письменных знаков. Пиньинь показывает произношение и тон латинскими буквами.",
+        "f04": "你 — ты, 好 — хорошо. Вместе 你好 — обычное приветствие.",
+        "f05": "Соберите приветствие в правильном порядке.",
+        "f06": "Знак в пиньине показывает движение голоса; смена тона может изменить значение.",
+        "f07": "Пишется nǐ hǎo. Когда рядом стоят два третьих тона, первый в естественной речи звучит как второй: ní hǎo.",
+        "f08": "Какую запись вы услышали?",
+        "f09": "Послушайте образец и повторите. Если микрофон не работает, урок продолжится.",
+        "f10": "Теперь вы понимаете приветствие, узнаёте его на слух и можете собрать сами.",
     },
     "uz": {
-        "b1": "Xitoy tilida alifbo yo'q. Har bir belgi — ieroglif — butun so'zni bildiradi.",
-        "b2": "Xitoy tilida bir xil bo'g'in 4 xil ohangda aytiladi — va har safar boshqa so'z bo'ladi. Tinglang:",
+        "f01": "Avval tinglang. Hozir bu iborani tushunib, o'zingiz tuzasiz.",
+        "f02": "Ni hao nimani anglatadi?",
+        "f03": "Xitoycha so'z bir yoki bir nechta hanzi, ya'ni yozuv belgilaridan tuzilishi mumkin. Pin-yin esa lotin harflari bilan talaffuz va ohangni ko'rsatadi.",
+        "f04": "Ni, sen degani. Hao, yaxshi degani. Birga ni hao kundalik salomlashuv bo'ladi.",
+        "f05": "Salom iborasini to'g'ri tartibda tuzing.",
+        "f06": "Pin-yindagi belgi ovoz yo'nalishini ko'rsatadi. Ohang o'zgarsa, ma'no ham o'zgarishi mumkin.",
+        "f07": "Yozilishi ni hao. Ikki uchinchi ohang yonma-yon kelganda birinchisi tabiiy nutqda ikkinchi ohangdek aytiladi: ni hao.",
+        "f08": "Qaysi yozuvni eshitdingiz?",
+        "f09": "Namunani eshitib takrorlang. Mikrofon ishlamasa, dars davom etadi.",
+        "f10": "Endi siz salomlashuvni tushunasiz, eshitib taniysiz va o'zingiz tuza olasiz.",
     },
     "tj": {
-        "b1": "Дар забони чинӣ алифбо нест. Ҳар аломат — иероглиф — як калимаи пурра аст.",
-        "b2": "Дар чинӣ як ҳиҷо бо 4 оҳанги гуногун гуфта мешавад — ва ҳар бор калимаи дигар мешавад. Гӯш кунед:",
+        "f01": "Аввал гӯш кунед. Ҳоло ин ибораро мефаҳмед ва худатон месозед.",
+        "f02": "你好 чӣ маъно дорад?",
+        "f03": "Калимаи чинӣ метавонад аз як ё якчанд ханзӣ, яъне аломати хаттӣ таркиб ёбад. Пинйин талаффуз ва оҳангро бо ҳарфҳои лотинӣ нишон медиҳад.",
+        "f04": "你 — ту, 好 — хуб. Якҷоя 你好 саломи ҳаррӯза мешавад.",
+        "f05": "Ибораи саломро бо тартиби дуруст созед.",
+        "f06": "Аломати пинйин самти овозро нишон медиҳад. Бо иваз шудани оҳанг маъно ҳам метавонад дигар шавад.",
+        "f07": "nǐ hǎo навишта мешавад. Вақте ду оҳанги сеюм паи ҳам меоянд, аввалӣ дар гуфтори табиӣ мисли оҳанги дуюм садо медиҳад: ní hǎo.",
+        "f08": "Кадом навиштро шунидед?",
+        "f09": "Намунаро гӯш карда такрор кунед. Агар микрофон кор накунад, дарс идома меёбад.",
+        "f10": "Акнун шумо саломро мефаҳмед, бо шунидан мешиносед ва худатон сохта метавонед.",
     },
 }
-for _lang, _steps in BASICS_DISPLAY.items():
+for _lang, _steps in FOUNDATION_DISPLAY.items():
     DISPLAY_TEXT[_lang].update(_steps)
 
 AUDIO_TEXT = {
@@ -105,8 +133,16 @@ AUDIO_TEXT = {
         "v": "Sun'iy intellekt ovozli suhbat. Panda bilan jonli xitoycha gaplashing. Gapiring va darhol tuzatish oling.",
         "r": "Liga. O'quvchilar orasidagi o'rningiz. Har kuni tajriba balli to'plang va yuqoriga chiqing.",
         "p": "Profil. Ketma-ketlik, kunlik maqsad, kuboklar va yutuqlar. Til, bildirishnoma va tajriba maqsadini sozlang.",
-        "b1": "Xitoy tilida alifbo yo'q. Har bir belgi, ya'ni ieroglif, butun so'zni bildiradi.",
-        "b2": "Xitoy tilida bir xil bo'g'in to'rt xil ohangda aytiladi va har safar boshqa so'z bo'ladi. Tinglang.",
+        "f01": "Avval tinglang. Hozir bu iborani tushunib, o'zingiz tuzasiz.",
+        "f02": "Ni hao nimani anglatadi?",
+        "f03": "Xitoycha so'z bir yoki bir nechta hanzi, ya'ni yozuv belgilaridan tuzilishi mumkin. Pin-yin esa lotin harflari bilan talaffuz va ohangni ko'rsatadi.",
+        "f04": "Ni, sen degani. Hao, yaxshi degani. Birga ni hao kundalik salomlashuv bo'ladi.",
+        "f05": "Salom iborasini to'g'ri tartibda tuzing.",
+        "f06": "Pin-yindagi belgi ovoz yo'nalishini ko'rsatadi. Ohang o'zgarsa, ma'no ham o'zgarishi mumkin.",
+        "f07": "Yozilishi ni hao. Ikki uchinchi ohang yonma-yon kelganda birinchisi tabiiy nutqda ikkinchi ohangdek aytiladi: ni hao.",
+        "f08": "Qaysi yozuvni eshitdingiz?",
+        "f09": "Namunani eshitib takrorlang. Mikrofon ishlamasa, dars davom etadi.",
+        "f10": "Endi siz salomlashuvni tushunasiz, eshitib taniysiz va o'zingiz tuza olasiz.",
     },
     "tj": {
         "c": "Ин джо курси шумо. Хар доира як дарс. Тугмачаро пахш кунед ва омузишро огоз кунед.",
@@ -120,8 +156,16 @@ AUDIO_TEXT = {
         "v": "Эй ай войс. Сухбати зиндаи чини бо панда. Гуед ва ислохи фаври гиред.",
         "r": "Лига. Джойгохи шумо миёни донишчуён. Хар руз тачриба балл чамъ кунед ва боло равед.",
         "p": "Профил. Пайдарпайи, хадафи рузона, джомхо ва дастовардхо. Забон, огохихо ва хадафи тачрибаро танзим кунед.",
-        "b1": "Дар забони чини алифбо нест. Хар аломат, яъне иероглиф, як калимаи пурра аст.",
-        "b2": "Дар чини як хиджо бо чор оханги гуногун гуфта мешавад ва хар бор калимаи дигар мешавад. Гуш кунед.",
+        "f01": "Аввал гуш кунед. Холо ин ибораро мефахмед ва худатон месозед.",
+        "f02": "Ни хао чи маъно дорад?",
+        "f03": "Калимаи чини метавонад аз як ё якчанд ханзи, яъне аломати хатти таркиб ёбад. Пинйин талаффуз ва охангро бо харфхои лотини нишон медихад.",
+        "f04": "Ни, ту. Хао, хуб. Якчоя ни хао саломи харруза мешавад.",
+        "f05": "Ибораи саломро бо тартиби дуруст созед.",
+        "f06": "Аломати пинйин самти овозро нишон медихад. Бо иваз шудани оханг маъно хам метавонад дигар шавад.",
+        "f07": "Ни хао навишта мешавад. Вакте ду оханги сеюм пайи хам меоянд, аввали дар гуфтори табии мисли оханги дуюм садо медихад: ни хао.",
+        "f08": "Кадом навиштро шунидед?",
+        "f09": "Намунаро гуш карда такрор кунед. Агар микрофон кор накунад, дарс идома меёбад.",
+        "f10": "Акнун шумо саломро мефахмед, бо шунидан мешиносед ва худатон сохта метавонед.",
     },
 }
 
@@ -138,9 +182,15 @@ def clean(text: str) -> str:
 
 async def main():
     # Ixtiyoriy: faqat berilgan kalitlarni qayta yaratish, masalan
-    #   python3 scripts/gen_tour_audio.py b1 b2
+    #   python3 scripts/gen_tour_audio.py f01 f02
     # Argumentsiz ishga tushirilsa — hammasi (avvalgi xatti-harakat).
     only = {k for k in sys.argv[1:] if not k.startswith("-")}
+    local = "--local" in sys.argv
+    edge_tts = None
+    if not local:
+        import edge_tts as edge_tts_module
+
+        edge_tts = edge_tts_module
     total = 0
     for lang, steps in AUDIO_TEXT.items():
         if set(steps) != set(DISPLAY_TEXT[lang]):
@@ -151,18 +201,34 @@ async def main():
             unknown = sorted(only - set(steps))
             if unknown:
                 raise RuntimeError(f"{lang} unknown keys: {unknown}")
-        voice = VOICES[lang]
+        voice = LOCAL_VOICES[lang] if local else VOICES[lang]
         d = os.path.join(OUT_DIR, lang)
         os.makedirs(d, exist_ok=True)
         for key, raw in steps.items():
             if only and key not in only:
                 continue
             text = clean(raw)
-            out = os.path.join(d, f"{key}.mp3")
-            comm = edge_tts.Communicate(text, voice, rate="-4%")
-            await comm.save(out)
+            ext = "wav" if local else "mp3"
+            out = os.path.join(d, f"{key}.{ext}")
+            if local:
+                with tempfile.TemporaryDirectory(prefix="hsk-starter-audio-") as tmp:
+                    aiff = os.path.join(tmp, f"{key}.aiff")
+                    subprocess.run(
+                        ["say", "-v", voice, "-r", "172", "-o", aiff, text],
+                        check=True,
+                    )
+                    subprocess.run(
+                        [
+                            "afconvert", aiff, "-o", out, "-f", "WAVE",
+                            "-d", "LEI16@22050", "-c", "1",
+                        ],
+                        check=True,
+                    )
+            else:
+                comm = edge_tts.Communicate(text, voice, rate="-4%")
+                await comm.save(out)
             total += 1
-            print(f"  {lang}/{key}.mp3  ({voice})")
+            print(f"  {lang}/{key}.{ext}  ({voice})")
     print(f"Tayyor: {total} ta audio fayl -> {OUT_DIR}")
 
 

@@ -59,27 +59,18 @@
       },
       "title_zh": "变调 (3+3)",
       "rule": {
-        "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: 你(nǐ) + 好(hǎo) → nī hǎo (lekin yoziladi: nǐ hǎo)",
-        "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: 你(nǐ) + 好(hǎo) → nī hǎo (но пишется: nǐ hǎo)",
-        "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: 你(nǐ) + 好(hǎo) → nī hǎo (аммо навишта мешавад: nǐ hǎo)"
+        "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: yozilishi nǐ hǎo, tabiiy talaffuzi ní hǎo.",
+        "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: пишется nǐ hǎo, естественно произносится ní hǎo.",
+        "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: nǐ hǎo навишта мешавад, ní hǎo табиӣ талаффуз мешавад."
       },
       "examples": [
         {
           "zh": "你好",
-          "pinyin": "nī hǎo → nǐ hǎo",
+          "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
           "translation": {
             "uz": "salom (nǐ hǎo deb yoziladi)",
             "ru": "привет (пишется nǐ hǎo)",
             "tj": "салом (навишта мешавад nǐ hǎo)"
-          }
-        },
-        {
-          "zh": "可以",
-          "pinyin": "ké yǐ → kě yǐ",
-          "translation": {
-            "uz": "mumkin, bo'ladi",
-            "ru": "можно, разрешено",
-            "tj": "мумкин, иҷозат"
           }
         }
       ]
@@ -211,8 +202,8 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "你",
             "您",
+            "你",
             "你们",
             "好"
           ],
@@ -260,12 +251,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "duìbuqǐ",
-            "hǎo",
             "nín",
+            "hǎo",
+            "duìbuqǐ",
             "nǐ"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "对不起 — duìbuqǐ",
             "ru": "对不起 — duìbuqǐ",
@@ -299,12 +290,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "你",
-            "您",
             "没关系",
-            "好"
+            "好",
+            "你",
+            "您"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "hech gap emas, muammo yo'q = 没关系 (méi guānxi)",
             "ru": "ничего страшного, всё в порядке = 没关系 (méi guānxi)",
@@ -321,12 +312,12 @@
           "audio_text": "你们",
           "pinyin": "nǐmen",
           "options": [
+            "您",
             "你们",
-            "你",
             "好",
-            "您"
+            "你"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "你们 — sizlar (ko'plik) (nǐmen)",
             "ru": "你们 — вы (множественное число) (nǐmen)",
@@ -389,27 +380,18 @@
             },
             "title_zh": "变调 (3+3)",
             "rule": {
-              "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: 你(nǐ) + 好(hǎo) → nī hǎo (lekin yoziladi: nǐ hǎo)",
-              "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: 你(nǐ) + 好(hǎo) → nī hǎo (но пишется: nǐ hǎo)",
-              "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: 你(nǐ) + 好(hǎo) → nī hǎo (аммо навишта мешавад: nǐ hǎo)"
+              "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: yozilishi nǐ hǎo, tabiiy talaffuzi ní hǎo.",
+              "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: пишется nǐ hǎo, естественно произносится ní hǎo.",
+              "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: nǐ hǎo навишта мешавад, ní hǎo табиӣ талаффуз мешавад."
             },
             "examples": [
               {
                 "zh": "你好",
-                "pinyin": "nī hǎo → nǐ hǎo",
+                "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
                 "translation": {
                   "uz": "salom (nǐ hǎo deb yoziladi)",
                   "ru": "привет (пишется nǐ hǎo)",
                   "tj": "салом (навишта мешавад nǐ hǎo)"
-                }
-              },
-              {
-                "zh": "可以",
-                "pinyin": "ké yǐ → kě yǐ",
-                "translation": {
-                  "uz": "mumkin, bo'ladi",
-                  "ru": "можно, разрешено",
-                  "tj": "мумкин, иҷозат"
                 }
               }
             ]
@@ -423,19 +405,19 @@
             "tj": "салом (навишта мешавад nǐ hǎo)"
           },
           "tokens": [
-            "您",
-            "你",
+            "你们",
             "好",
-            "你们"
+            "您",
+            "你"
           ],
           "answer_tokens": [
             "你",
             "好"
           ],
           "explanation": {
-            "uz": "你好 — nī hǎo → nǐ hǎo",
-            "ru": "你好 — nī hǎo → nǐ hǎo",
-            "tj": "你好 — nī hǎo → nǐ hǎo"
+            "uz": "你好 — nǐ hǎo (tabiiy: ní hǎo)",
+            "ru": "你好 — nǐ hǎo (tabiiy: ní hǎo)",
+            "tj": "你好 — nǐ hǎo (tabiiy: ní hǎo)"
           }
         }
       ]
@@ -512,12 +494,11 @@
           "audio_text": "没关系！",
           "pinyin": "Méi guānxi!",
           "options": [
-            "你们好！",
-            "您好！",
-            "你好！",
-            "没关系！"
+            "没关系！",
+            "对不起！",
+            "你们好！"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "没关系！ — Hech gap emas!",
             "ru": "没关系！ — Ничего страшного!",

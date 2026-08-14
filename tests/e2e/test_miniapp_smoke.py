@@ -241,10 +241,33 @@ def mock_course_map(page, *, level="hsk1", language="uz"):
     page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
 
 
+def mock_learning_audio(page):
+    sample_audio = (STATIC_ROOT / "audio/tour/uz/f01.wav").read_bytes()
+    page.route(
+        re.compile(r".*/api/v3/tts(\?.*)?$"),
+        lambda route: route.fulfill(status=200, content_type="audio/wav", body=sample_audio),
+    )
+    page.route(
+        re.compile(r".*/api/v3/clientlog$"),
+        lambda route: route.fulfill(status=204, body=""),
+    )
+    page.route(
+        re.compile(r".*/audio/tour/.*"),
+        lambda route: route.fulfill(status=200, content_type="audio/wav", body=sample_audio),
+    )
+    # CSS @font-face declarations can still resolve CDN asset URLs even when
+    # the stylesheet itself is mocked. Keep offline browser smoke deterministic.
+    page.route(
+        re.compile(r"^https://cdnjs\.cloudflare\.com/.*"),
+        lambda route: route.fulfill(status=200, content_type="text/css", body=""),
+    )
+
+
 def test_course_v3_opens_static_map_and_query_lesson_sheet(page):
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_course_map(page)
+    mock_learning_audio(page)
     page.add_init_script(
         """
         localStorage.setItem("hsk_v3_onb", "1");
@@ -282,6 +305,458 @@ def test_course_v3_onboarding_autostart_opens_first_lesson_flow(page):
     expect(page.locator("#flow")).to_contain_text("你")
 
 
+def test_course_v3_starter_repair_mic_denied_and_completion(page):
+    runtime_errors = []
+    events = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_learning_audio(page)
+
+    data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data.setdefault("progress", {}).update({"xp": 0, "streak": 0, "completed": 0})
+    data["user"] = {
+        "name": "Starter Smoke",
+        "avatar": "零",
+        "language": "uz",
+        "is_paid": False,
+        "learner_level": "beginner",
+        "onboarding_completed": True,
+        "foundation": {
+            "id": "starter0_hsk1",
+            "version": 1,
+            "required": True,
+            "completed": False,
+            "status": "required",
+        },
+    }
+    data["notify"] = {"enabled": True}
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+
+    def capture_event(route):
+        payload = route.request.post_data_json
+        events.append(payload)
+        completion_attempts = sum(
+            1 for item in events if item.get("event") == "foundation_completed"
+        )
+        # The first completion write fails: the result screen must remain and
+        # let the next CTA press retry instead of trusting local state.
+        if payload.get("event") == "foundation_completed" and completion_attempts == 1:
+            json_response(route, {"ok": False, "error": "course_event_write_failed"})
+        else:
+            json_response(route, {"ok": True})
+
+    page.route("**/api/miniapp/event", capture_event)
+    page.add_init_script(
+        """
+        localStorage.clear();
+        Object.defineProperty(navigator, "mediaDevices", {
+          configurable: true,
+          value: {getUserMedia: () => Promise.reject(new DOMException("denied", "NotAllowedError"))}
+        });
+        """
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1&foundation=1"),
+        wait_until="networkidle",
+    )
+
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#f-body")).to_contain_text("3 daqiqada")
+    page.locator("#f-cta").click()
+    expect(page.locator("#f-body")).to_contain_text("你好 nimani")
+    assert "Salom" not in page.locator("#f-body .qcard").inner_text()
+
+    # First wrong schedules correction and retry; answer is not marked mastered.
+    page.locator("#f-body .opt").nth(1).click()
+    page.locator("#f-barbtn").click()
+    assert page.evaluate("Foundation.mastery.meaning === true") is False
+    assert page.evaluate("Foundation.queue.length > Foundation.data.cards.length") is True
+
+    # Complete every remaining graded card; the scheduled repair is answered right.
+    for _ in range(40):
+        card_type = page.evaluate("Foundation.active && Foundation.queue[Foundation.i] && Foundation.queue[Foundation.i].type")
+        if not card_type:
+            break
+        if card_type in {"choice", "listen_choice"}:
+            correct = page.evaluate("Foundation.queue[Foundation.i].correct_index")
+            page.locator("#f-body .opt").nth(correct).click()
+            page.locator("#f-barbtn").click()
+        elif card_type == "builder":
+            tokens = page.evaluate("Foundation.queue[Foundation.i].tokens")
+            answers = page.evaluate("Foundation.queue[Foundation.i].answer_tokens")
+            for answer in answers:
+                page.locator("#foundation-bank .tok", has_text=answer).click()
+            page.locator("#f-barbtn").click()
+        elif card_type == "speak":
+            page.locator("#foundation-mic").click()
+            expect(page.locator("#foundation-mic-hint")).to_contain_text("Mikrofonga")
+            page.locator("#f-body .pron-skip").click()
+        elif card_type == "result":
+            page.locator("#f-cta").click()
+            expect(page.locator("#f-cta")).to_be_enabled()
+            expect(page.locator("#f-cta")).to_contain_text("Qayta saqlash")
+            assert page.evaluate("Foundation.active === true && Foundation.completed === false")
+            page.locator("#f-cta").click()
+            break
+        else:
+            page.locator("#f-cta").click()
+
+    expect(page.locator("#flow")).not_to_have_class(re.compile(r"\bon\b"))
+    assert sum(item.get("event") == "foundation_completed" for item in events) == 2
+    assert page.evaluate("foundationMapState().completed") is True
+    assert runtime_errors == []
+
+
+def test_course_v3_starter_mic_skip_stops_recording_and_late_upload(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    mock_learning_audio(page)
+    voice_requests = []
+    page.route(
+        "**/api/voice-practice/pronounce",
+        lambda route: voice_requests.append(route.request.url)
+        or json_response(route, {"ok": True, "score": 90}),
+    )
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.add_init_script(
+        """
+        localStorage.clear(); localStorage.setItem('hsk_v3_onb', '1');
+        window.__foundationTrackStops = 0;
+        window.__foundationRecorderState = 'idle';
+        class FakeMediaRecorder {
+          constructor(stream, options) {
+            this.stream = stream; this.state = 'inactive';
+            this.mimeType = (options && options.mimeType) || 'audio/webm';
+          }
+          static isTypeSupported() { return true; }
+          start() { this.state = 'recording'; window.__foundationRecorderState = 'recording'; }
+          stop() {
+            if (this.state === 'inactive') return;
+            this.state = 'inactive'; window.__foundationRecorderState = 'stopped';
+            if (this.onstop) setTimeout(() => this.onstop(), 0);
+          }
+        }
+        window.MediaRecorder = FakeMediaRecorder;
+        Object.defineProperty(navigator, 'mediaDevices', {
+          configurable: true,
+          value: {getUserMedia: () => Promise.resolve({
+            getTracks: () => [{stop: () => { window.__foundationTrackStops += 1; }}]
+          })}
+        });
+        """
+    )
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1&foundation=1"),
+        wait_until="networkidle",
+    )
+    page.wait_for_function("Foundation.active && Foundation.queue.length > 0")
+    page.evaluate(
+        """() => {
+          Foundation.i = Foundation.queue.findIndex(card => card.type === 'speak');
+          if (Foundation.i < 0) throw new Error('foundation_speak_card_missing');
+          Foundation.render();
+        }"""
+    )
+    expect(page.locator("#foundation-mic")).to_be_visible()
+    page.locator("#foundation-mic").click()
+    page.wait_for_function("window.__foundationRecorderState === 'recording'")
+    page.locator("#f-body .pron-skip").click()
+
+    assert page.evaluate("window.__foundationTrackStops") == 1
+    assert page.evaluate("window.__foundationRecorderState") == "stopped"
+    assert page.evaluate("Foundation.queue[Foundation.i].type") == "result"
+    page.wait_for_timeout(2_800)
+    assert voice_requests == []
+
+
+def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_learning_audio(page)
+    mock_course_map(page)
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.route(
+        "**/api/v3/lesson/complete",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "completed_lessons_count": 3,
+                "gamification": {
+                    "awarded_xp": 0,
+                    "streak": 1,
+                    "previous_streak": 1,
+                    "streak_updated": False,
+                },
+            },
+        ),
+    )
+    page.add_init_script("localStorage.clear(); localStorage.setItem('hsk_v3_onb', '1');")
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    lesson = page.evaluate(
+        """async () => {
+          const d = await loadLessonData('hsk1', 3);
+          Flow.queue = buildQueue(d);
+          Flow.exitRequired = d.exit_ticket.required_objectives.slice();
+          Flow.objectiveMastery = {};
+          Flow.objectiveAttempts = {};
+          Flow.pendingRepairs = [];
+          Flow.test = null; Flow.challenge = null; Flow.lessonIdx = 2;
+          Flow.i = Flow.queue.findIndex(c => c.card_id === 'hsk1_l1_exit_meaning');
+          setLessonFlowControls();
+          document.querySelector('#flow').classList.add('on');
+          renderFlowCard();
+          return {index: Flow.i, total: Flow.queue.length};
+        }"""
+    )
+    assert lesson["index"] >= 0
+    expect(page.locator("#f-body")).to_contain_text("你好 nimani")
+
+    # One wrong answer must reappear before completion; second wrong becomes guided.
+    page.locator("#f-body .opt").nth(1).click()
+    page.locator("#f-barbtn").click()
+    expect(page.locator("#f-body .cheer")).to_be_visible()
+    page.locator("#f-cta").click()
+    for _ in range(8):
+        card = page.evaluate("Flow.queue[Flow.i]")
+        if card.get("card_id") == "hsk1_l1_exit_meaning" and card.get("_repair"):
+            break
+        if card.get("_repairSpacer"):
+            page.locator("#f-cta").click()
+        elif card.get("type") in {"choice", "listen_choice"}:
+            page.locator("#f-body .opt").nth(card["correct_index"]).click()
+            page.locator("#f-barbtn").click()
+        elif card.get("type") == "builder":
+            for answer in card["answer_tokens"]:
+                page.locator("#bld-bank .tok", has_text=answer).click()
+            page.locator("#f-barbtn").click()
+        else:
+            page.locator("#f-cta").click()
+    assert page.evaluate("Flow.queue[Flow.i]._repair === true") is True
+    page.locator("#f-body .opt").nth(1).click()
+    page.locator("#f-barbtn").click()
+    for _ in range(8):
+        if page.evaluate("Flow.queue[Flow.i]._guided === true"):
+            break
+        page.locator("#f-cta").click()
+    expect(page.locator("#f-body")).to_contain_text("Birga to'g'rilaymiz")
+
+    # Guided confirmation is a real mastery action. Only after all three exit
+    # objectives are mastered may the checkpoint result be shown.
+    page.locator("#f-body .guided-card button").click()
+    page.locator("#f-barbtn").click()
+    expect(page.locator("#levelup")).to_have_class(re.compile(r"\bon\b"), timeout=6_000)
+    expect(page.locator("#levelup")).to_contain_text("Natija: 你好 ni tushunasiz")
+    expect(page.locator("#lu-cta")).to_contain_text("Keyingi darsni ochish")
+    assert page.evaluate("exitTicketMastered()") is True
+
+    # The result stays first. Only this explicit CTA opens part 4 through its
+    # existing preview/subscription policy.
+    page.evaluate("window._pendingLessonEndAd = 0")
+    page.locator("#lu-cta").click()
+    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#sheet")).to_contain_text("2-dars · 1-qism")
+
+    # Server map contract: checkpoint free, part 4 is first protected part.
+    assert page.evaluate("freeCoursePartsForLevel('hsk1')") == 3
+    assert page.evaluate("freeCoursePartsForLevel('hsk2')") == 2
+    page.evaluate(
+        """() => {
+          App.closeSheet();
+          document.querySelector('#flow').classList.remove('on');
+          const next = allLessons()[3];
+          next.status = 'locked'; next.locked_premium = true;
+          openLessonSheet(3);
+        }"""
+    )
+    expect(page.locator("#paywall")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#paywall")).to_contain_text("Bepul darslaring tugadi")
+    expect(page.locator("#paywall")).to_contain_text("Obuna bo'lish")
+
+
+def test_course_v3_checkpoint_repair_resume_restores_exact_semantic_card(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_learning_audio(page)
+    data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data.setdefault("progress", {}).update({"xp": 0, "streak": 0, "completed": 2})
+    lessons = [lesson for unit in data["units"] for lesson in unit["lessons"]]
+    lessons[0]["status"] = "done"
+    lessons[1]["status"] = "done"
+    lessons[2]["status"] = "current"
+    lessons[2]["locked_premium"] = False
+    data["user"] = {
+        "name": "Resume Smoke",
+        "avatar": "复",
+        "language": "uz",
+        "is_paid": False,
+        "onboarding_completed": True,
+        "foundation": {"id": "starter0_hsk1", "version": 1, "completed": True},
+    }
+    data["notify"] = {"enabled": True}
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.add_init_script(
+        """
+        if (!sessionStorage.getItem('checkpoint-resume-smoke')) {
+          localStorage.clear();
+          localStorage.setItem('hsk_v3_onb', '1');
+          sessionStorage.setItem('checkpoint-resume-smoke', '1');
+        }
+        """
+    )
+    url = app_url("/course-v3.html?lang=uz&level=hsk1&lesson=3&autostart=1&onboarded=1")
+    page.goto(url, wait_until="networkidle")
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+
+    before = page.evaluate(
+        """() => {
+          Flow.i = Flow.queue.findIndex(c => c.card_id === 'hsk1_l1_exit_build_dialog');
+          Flow._cheered = true;
+          renderFlowCard();
+          const card = Flow.queue[Flow.i];
+          Flow.answered = true;
+          recordObjectiveResult(card, false);
+          Flow.next(); // first corrective spacer
+          Flow.next(); // second corrective spacer
+          const now = Flow.queue[Flow.i];
+          return {card_id: now._sourceCard.card_id, step: now._repairStep, index: Flow.i};
+        }"""
+    )
+    assert before["card_id"] == "hsk1_l1_exit_build_dialog"
+    assert before["step"] == 2
+
+    # A full navigation rebuilds the base lesson queue. The versioned mastery
+    # state must restore the exact dynamic spacer/cursor, not a numeric index.
+    page.goto(url, wait_until="networkidle")
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+    after = page.evaluate(
+        """() => ({
+          card_id: Flow.queue[Flow.i]._sourceCard && Flow.queue[Flow.i]._sourceCard.card_id,
+          step: Flow.queue[Flow.i]._repairStep,
+          spacer: Flow.queue[Flow.i]._repairSpacer === true
+        })"""
+    )
+    assert after == {"card_id": before["card_id"], "step": 2, "spacer": True}
+    expect(page.locator("#f-body")).to_contain_text("Ishorani eslab qoling")
+
+
+def test_course_v3_required_foundation_defers_challenge_deep_link(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_learning_audio(page)
+    data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data.setdefault("progress", {}).update({"xp": 0, "streak": 0, "completed": 0})
+    data["user"] = {
+        "name": "Starter Deep Link",
+        "avatar": "零",
+        "language": "uz",
+        "is_paid": False,
+        "learner_level": "beginner",
+        "onboarding_completed": True,
+        "foundation": {
+            "id": "starter0_hsk1",
+            "version": 1,
+            "required": True,
+            "completed": False,
+            "status": "required",
+        },
+    }
+    data["notify"] = {"enabled": True}
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+    challenge_requests = []
+    page.on(
+        "request",
+        lambda request: challenge_requests.append(request.url)
+        if "/api/v3/challenge/" in request.url
+        else None,
+    )
+    page.add_init_script("localStorage.clear();")
+    page.goto(
+        app_url(
+            "/course-v3.html?lang=uz&level=hsk1&foundation=1&challenge_id=7&onboarded=1"
+        ),
+        wait_until="networkidle",
+    )
+    page.wait_for_timeout(750)
+
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#f-body")).to_contain_text("3 daqiqada")
+    assert page.evaluate("Foundation.active === true && Flow.challenge === null") is True
+    assert challenge_requests == []
+
+
+def test_course_v3_required_foundation_load_error_blocks_and_retries(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_learning_audio(page)
+    data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data.setdefault("progress", {}).update({"xp": 0, "streak": 0, "completed": 0})
+    data["user"] = {
+        "name": "Starter Retry",
+        "avatar": "零",
+        "language": "uz",
+        "is_paid": False,
+        "learner_level": "beginner",
+        "onboarding_completed": True,
+        "foundation": {
+            "id": "starter0_hsk1",
+            "version": 1,
+            "required": True,
+            "completed": False,
+            "status": "required",
+        },
+    }
+    data["notify"] = {"enabled": True}
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+    allow_lesson = {"value": False}
+
+    def foundation_file(route):
+        if allow_lesson["value"]:
+            route.fallback()
+        else:
+            route.fulfill(status=503, content_type="application/json", body="{}")
+
+    page.route("**/course_v3_data/hsk1/lesson_01.json", foundation_file)
+    challenge_requests = []
+    page.on(
+        "request",
+        lambda request: challenge_requests.append(request.url)
+        if "/api/miniapp/challenges" in request.url
+        else None,
+    )
+    page.add_init_script("localStorage.clear();")
+    page.goto(
+        app_url(
+            "/course-v3.html?lang=uz&level=hsk1&foundation=1&challenge_id=7&onboarded=1"
+        ),
+        wait_until="networkidle",
+    )
+
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#f-body")).to_contain_text("Asoslar hozircha ochilmadi")
+    expect(page.locator("#f-cta")).to_contain_text("Qayta urinish")
+    assert page.evaluate("getComputedStyle(document.querySelector('#flow .fx')).visibility") == "hidden"
+    assert challenge_requests == []
+
+    allow_lesson["value"] = True
+    page.locator("#f-cta").click()
+    expect(page.locator("#f-body")).to_contain_text("3 daqiqada")
+    assert page.evaluate("Foundation.active === true && Foundation.required === true") is True
+    assert challenge_requests == []
+
+
 def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
     runtime_errors = []
     page.on("pageerror", lambda error: runtime_errors.append(str(error)))
@@ -292,12 +767,21 @@ def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_course_map(page)
+    mock_learning_audio(page)
+    page.route(
+        "**/api/miniapp/gamification*",
+        lambda route: json_response(route, {"ok": True, "week_activity_dates": []}),
+    )
+    page.route(
+        "**/api/miniapp/event",
+        lambda route: json_response(route, {"ok": True}),
+    )
     page.add_init_script(
         """
         localStorage.setItem("hsk_v3_onb", "1");
         localStorage.setItem("hsk_v3_level", "hsk1");
         localStorage.setItem(
-          "hsk_v3_lesson_resume:hsk1:1",
+          "hsk_v3_lesson_resume:v2:hsk1:1",
           JSON.stringify({i: 3, at: Date.now()})
         );
         """
@@ -340,7 +824,7 @@ def test_course_v3_support_pages_render_real_static_data(page):
         ),
         (
             "/course_v3_test.html?lang=uz&level=hsk1&theme=light",
-            ["Test markazi", "HSK imtihonlari", "14 savol"],
+            ["Test markazi", "HSK testlari", "14 savol"],
         ),
     ]
 
@@ -981,7 +1465,8 @@ def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
         wait_until="networkidle",
     )
 
-    expect(page.locator("#valueText")).to_contain_text("Boshlagan darsingizni davom ettiring")
+    expect(page.locator("#tvFocusTitle")).to_contain_text("Barcha darslar ochiladi")
+    expect(page.locator("#tvFocusText")).to_contain_text("progress saqlanib boradi")
     page.locator("#nextBtn").click()
     expect(page.locator("#paymentBox")).to_contain_text("0000 0000 0000 0000")
     page.locator("#receiptInput").set_input_files(
@@ -1029,6 +1514,9 @@ def _open_course_profile_with_desktop_release(
         """
     )
     page.goto(app_url(path), wait_until="networkidle")
+    promo_close = page.locator(".pdd-promo-close")
+    if promo_close.count() and promo_close.is_visible():
+        promo_close.click()
     if select_profile:
         page.locator('#nav button[data-s="profile"]').click()
     expect(page.locator("#pomp-desktop-profile-root .pdd-card")).to_be_visible()
@@ -1722,9 +2210,9 @@ def test_branded_download_page_opens_platform_guide_on_download_click(page):
     expect(guide).to_be_visible()
     expect(guide).to_have_attribute("data-platform", "macos")
     expect(guide).to_contain_text("Yuklash boshlandi")
-    expect(guide).to_contain_text("Open Anyway")
-    expect(guide.locator(".quick-install-visual")).to_be_visible()
-    expect(guide.locator(".quick-mac-security-visual")).to_be_visible()
+    expect(guide).to_contain_text("Все равно открыть")
+    expect(guide.locator(".quick-platform-macos .quick-step-shot").first).to_be_visible()
+    expect(guide.locator(".quick-platform-macos")).to_be_visible()
     expect(guide.locator(".quick-smartscreen-visual")).to_be_hidden()
 
     page.locator("[data-quick-guide-close]").last.click()
@@ -1739,7 +2227,7 @@ def test_branded_download_page_opens_platform_guide_on_download_click(page):
     expect(guide).to_contain_text("Выполнить в любом случае")
     expect(guide.locator(".quick-smartscreen-visual")).to_be_visible()
     expect(guide.locator(".quick-windows-install-visual")).to_be_visible()
-    expect(guide.locator(".quick-mac-security-visual")).to_be_hidden()
+    expect(guide.locator(".quick-platform-macos")).to_be_hidden()
 
 
 def test_branded_download_page_manual_copy_fallback_keeps_url_token_free(page):
@@ -2053,7 +2541,29 @@ def test_desktop_download_destination_fits_short_safe_area_viewport(page):
 def test_desktop_promo_fits_short_360x640_viewport(page):
     page.set_viewport_size({"width": 360, "height": 640})
     mock_telegram_desktop_download(page, platform="tdesktop", native_download=True)
-    _open_course_profile_with_desktop_release(page)
+    _open_course_profile_with_desktop_release(
+        page,
+        status_payload={
+            "ok": True,
+            "enabled": True,
+            "platforms": {"macos": True, "windows": True},
+            "versions": {"macos": "1.0.0", "windows": "1.0.0"},
+            "downloads": {
+                "macos": "https://downloads.example/downloads/macos",
+                "windows": "https://downloads.example/downloads/windows",
+            },
+            "promo": {
+                "eligible": True,
+                "cooldown_days": 14,
+                "placements": {
+                    "profile": True,
+                    "home_prompt": False,
+                    "lesson_end_promo": True,
+                    "ad_promo": True,
+                },
+            },
+        },
+    )
     page.locator('#nav button[data-s="course"]').click()
 
     assert page.evaluate(

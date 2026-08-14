@@ -153,23 +153,23 @@ LESSON = {
             "rule_uz": (
                 "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n"
                 "3+3 → 2+3\n"
-                "Misol: 你(nǐ) + 好(hǎo) → nī hǎo (lekin yoziladi: nǐ hǎo)"
+                "Misol: yozilishi nǐ hǎo, tabiiy talaffuzi ní hǎo."
             ),
             "rule_ru": (
                 "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n"
                 "3+3 → 2+3\n"
-                "Пример: 你(nǐ) + 好(hǎo) → nī hǎo (но пишется: nǐ hǎo)"
+                "Пример: пишется nǐ hǎo, естественно произносится ní hǎo."
             ),
             "rule_tj": (
                 "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n"
                 "3+3 → 2+3\n"
-                "Мисол: 你(nǐ) + 好(hǎo) → nī hǎo (аммо навишта мешавад: nǐ hǎo)"
+                "Мисол: nǐ hǎo навишта мешавад, ní hǎo табиӣ талаффуз мешавад."
             ),
             "examples": [
-                {"zh": "你好", "pinyin": "nī hǎo → nǐ hǎo",
-                 "uz": "salom (nǐ hǎo deb yoziladi)", "ru": "привет (пишется nǐ hǎo)", "tj": "салом (навишта мешавад nǐ hǎo)"},
-                {"zh": "可以", "pinyin": "ké yǐ → kě yǐ",
-                 "uz": "mumkin, bo'ladi", "ru": "можно, разрешено", "tj": "мумкин, иҷозат"},
+                {"zh": "你好", "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
+                 "uz": "salom (nǐ hǎo deb yoziladi)",
+                 "ru": "привет (пишется nǐ hǎo)",
+                 "tj": "салом (навишта мешавад nǐ hǎo)"},
             ]
         },
     ], ensure_ascii=False),

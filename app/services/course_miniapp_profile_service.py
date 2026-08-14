@@ -1,7 +1,9 @@
+import json
 from datetime import datetime, timezone
 
 from sqlalchemy import select
 
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
 
@@ -9,6 +11,8 @@ from app.db.models.user import User
 COURSE_GOALS = {"hsk_exam", "study_china", "work_china", "daily_communication", "travel"}
 COURSE_DAILY_MINUTES = {5, 10, 15, 20, 30}
 COURSE_START_MODES = {"lesson_1", "continue", "placement"}
+COURSE_FOUNDATION_ID = "starter0_hsk1"
+COURSE_FOUNDATION_VERSION = 1
 
 
 class CourseMiniAppProfileService:
@@ -33,6 +37,49 @@ class CourseMiniAppProfileService:
         self.session.add(profile)
         await self.session.flush()
         return profile
+
+    async def foundation_status(self, user) -> dict:
+        """Return server-backed Starter 0 state without adding a new table."""
+        learner_level = str(getattr(user, "level", "") or "").strip().lower()
+        telegram_id = getattr(user, "telegram_id", None)
+        completed = False
+        if telegram_id:
+            result = await self.session.execute(
+                select(CourseMiniAppEvent.payload_json)
+                .where(
+                    CourseMiniAppEvent.telegram_id == int(telegram_id),
+                    CourseMiniAppEvent.event_name == "foundation_completed",
+                )
+            )
+            for raw_payload in result.scalars().all():
+                try:
+                    event_payload = json.loads(raw_payload or "{}")
+                    event_foundation_id = str(
+                        event_payload.get("foundation_id") or COURSE_FOUNDATION_ID
+                    ).strip()
+                    raw_version = event_payload.get("foundation_version")
+                    event_version = (
+                        COURSE_FOUNDATION_VERSION
+                        if str(raw_version or "").strip().lower() == "starter-0-v1"
+                        else int(raw_version or 0)
+                    )
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    continue
+                if (
+                    event_foundation_id == COURSE_FOUNDATION_ID
+                    and event_version == COURSE_FOUNDATION_VERSION
+                ):
+                    completed = True
+                    break
+
+        required = learner_level == "beginner"
+        return {
+            "id": COURSE_FOUNDATION_ID,
+            "version": COURSE_FOUNDATION_VERSION,
+            "required": required,
+            "completed": completed,
+            "status": "completed" if completed else "required" if required else "optional",
+        }
 
     @staticmethod
     def validate_preferences(*, goal: str, daily_minutes: int, start_mode: str) -> tuple[str, int, str]:

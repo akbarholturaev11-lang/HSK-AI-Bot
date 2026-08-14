@@ -24,6 +24,7 @@ from app.db.models.voice_practice_session import VoicePracticeSession
 from app.services.admin_stats_service import miniapp_course_stats
 from app.services.required_channel_service import RequiredChannelService
 from app.services.bot_block_status_service import BotBlockStatusService
+from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.subscription_price_service import SubscriptionPriceService
 from app.services.subscription_currency_service import (
@@ -1076,11 +1077,20 @@ class AdminMiniAppService:
         payment = await self._payment_advanced_stats(since=since)
         feature_adoption = await self._feature_adoption(since=since, now=now)
         notifications = await self._notification_open_proxy(since=since)
+        foundation = await CourseMiniAppAdminAnalyticsService(self.session).foundation_metrics(
+            since=since,
+            now=now,
+        )
+        foundation_parts = {int(item["part"]): item for item in foundation["parts"]}
+        foundation_first = foundation["first_attempt"]
+        checkpoint_paywall = foundation["checkpoint_to_paywall"]
+        foundation_d1 = foundation["d1_meaningful_return"]
 
         return {
             "explain": (
                 "Bu blok product health metrikalarini ko'rsatadi: retention, Mini App vaqt, dars vaqti, "
-                "QA/Voice ishlatilishi, payment funnel, LTV/CAC, paid/free feature adoption va notification open proxy. "
+                "Starter 0 mastery, QA/Voice ishlatilishi, payment funnel, LTV/CAC, paid/free feature adoption "
+                "va notification open proxy. "
                 "Hamma raqamlar tanlangan davr ichida qayta hisoblanadi."
             ),
             "cards": [
@@ -1116,6 +1126,44 @@ class AdminMiniAppService:
                     "value": f"{primary_activation['lesson_started_rate']}%",
                     "note": f"{primary_activation['lesson_started_2m']}/{primary_activation['lesson_started_eligible']} user",
                     "tone": "good",
+                },
+                {
+                    "label": "Starter start → complete",
+                    "value": f"{foundation['completion_rate']}%",
+                    "note": f"{foundation['completed_users']}/{foundation['started_users']} unikal user",
+                    "tone": "good" if foundation["started_users"] else "info",
+                },
+                {
+                    "label": "Starter first-attempt",
+                    "value": f"{foundation_first['accuracy']}%",
+                    "note": f"{foundation_first['correct']}/{foundation_first['objectives']} objective",
+                    "tone": "good" if foundation_first["objectives"] else "info",
+                },
+                {
+                    "label": "Starter → HSK1 P1/P2/P3",
+                    "value": (
+                        f"{foundation_parts[1]['rate_from_foundation']}% / "
+                        f"{foundation_parts[2]['rate_from_foundation']}% / "
+                        f"{foundation_parts[3]['rate_from_foundation']}%"
+                    ),
+                    "note": (
+                        f"{foundation_parts[1]['completed_users']} / "
+                        f"{foundation_parts[2]['completed_users']} / "
+                        f"{foundation_parts[3]['completed_users']} user"
+                    ),
+                    "tone": "good" if foundation["completed_users"] else "info",
+                },
+                {
+                    "label": "Checkpoint → paywall",
+                    "value": f"{checkpoint_paywall['rate']}%",
+                    "note": f"{checkpoint_paywall['paywall_users']}/{checkpoint_paywall['checkpoint_users']} user · 24h",
+                    "tone": "info",
+                },
+                {
+                    "label": "Starter D1 learning",
+                    "value": f"{foundation_d1['rate']}%" if foundation_d1["eligible"] else "Yig'ilmoqda",
+                    "note": f"{foundation_d1['returned']}/{foundation_d1['eligible']} mature user",
+                    "tone": "good" if foundation_d1["eligible"] else "info",
                 },
                 {
                     "label": "Avg session",
@@ -1173,6 +1221,7 @@ class AdminMiniAppService:
             "lesson_time": lesson_time,
             "qa": qa,
             "voice": voice,
+            "foundation": foundation,
             "payment": payment,
             "feature_adoption": feature_adoption,
             "notifications": notifications,
@@ -2077,6 +2126,7 @@ class AdminMiniAppService:
         lesson_time = advanced.get("lesson_time") or {}
         qa = advanced.get("qa") or {}
         voice = advanced.get("voice") or {}
+        foundation = advanced.get("foundation") or {}
         payment = advanced.get("payment") or {}
         funnel = payment.get("funnel") or {}
         notifications = advanced.get("notifications") or {}
@@ -2086,6 +2136,37 @@ class AdminMiniAppService:
             if direct_activation
             else ""
         )
+        if foundation:
+            foundation_first = foundation.get("first_attempt") or {}
+            foundation_parts = {
+                int(item.get("part") or 0): item
+                for item in foundation.get("parts") or []
+                if isinstance(item, dict)
+            }
+            p1 = foundation_parts.get(1, {})
+            p2 = foundation_parts.get(2, {})
+            p3 = foundation_parts.get(3, {})
+            checkpoint_paywall = foundation.get("checkpoint_to_paywall") or {}
+            foundation_d1 = foundation.get("d1_meaningful_return") or {}
+            foundation_d1_value = (
+                f"{foundation_d1.get('rate', 0)}%"
+                if foundation_d1.get("eligible")
+                else "yig'ilmoqda"
+            )
+            foundation_lines = (
+                f"Starter start → complete: {foundation.get('completion_rate', 0)}% "
+                f"({foundation.get('completed_users', 0)}/{foundation.get('started_users', 0)} unikal user)\n"
+                f"Starter first-attempt: {foundation_first.get('accuracy', 0)}% "
+                f"({foundation_first.get('correct', 0)}/{foundation_first.get('objectives', 0)} objective)\n"
+                f"Starter → HSK1 P1/P2/P3: {p1.get('rate_from_foundation', 0)}% / "
+                f"{p2.get('rate_from_foundation', 0)}% / {p3.get('rate_from_foundation', 0)}%\n"
+                f"Checkpoint → paywall ≤24h: {checkpoint_paywall.get('rate', 0)}% "
+                f"({checkpoint_paywall.get('paywall_users', 0)}/{checkpoint_paywall.get('checkpoint_users', 0)})\n"
+                f"Starter D1 meaningful learning: {foundation_d1_value} "
+                f"({foundation_d1.get('returned', 0)}/{foundation_d1.get('eligible', 0)})\n"
+            )
+        else:
+            foundation_lines = ""
         if d1_recovery.get("collecting"):
             d1_recovery_line = "D1 recovery: 48h natija yig'ilmoqda\n"
         else:
@@ -2110,6 +2191,7 @@ class AdminMiniAppService:
             f"{d1_recovery_line}"
             f"Onboarding → dars ≤2m: {activation.get('lesson_started_rate', 0)}% ({activation.get('lesson_started_2m', 0)}/{activation.get('lesson_started_eligible', 0)})\n"
             f"{direct_line}"
+            f"{foundation_lines}"
             f"Avg Mini App session: {session_time.get('avg_text', '—')} · measured/session: {session_time.get('measured_sessions', 0)}/{session_time.get('sessions', 0)}\n"
             f"Lesson time: {lesson_time.get('avg_text', '—')} · tugagan dars: {lesson_time.get('completed_lessons', 0)}\n"
             f"AI chat message/user: {qa.get('avg_per_user', 0)} · xabar: {qa.get('messages', 0)} · user: {qa.get('users', 0)}\n"

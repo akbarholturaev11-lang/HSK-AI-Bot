@@ -140,45 +140,6 @@
             "ru": "Здравствуйте!",
             "tj": "Салом (расмӣ)!"
           }
-        },
-        {
-          "speaker": "B",
-          "zh": "你们好！",
-          "pinyin": "Nǐmen hǎo!",
-          "text": {
-            "uz": "Hammangizga salom!",
-            "ru": "Здравствуйте все!",
-            "tj": "Ба ҳамаи шумо салом!"
-          }
-        }
-      ]
-    },
-    {
-      "scene": {
-        "uz": "Kechirim so'rash",
-        "ru": "Извинение",
-        "tj": "Узрпурсӣ"
-      },
-      "dialogue": [
-        {
-          "speaker": "A",
-          "zh": "对不起！",
-          "pinyin": "Duìbuqǐ!",
-          "text": {
-            "uz": "Kechirasiz!",
-            "ru": "Извините!",
-            "tj": "Бубахшед!"
-          }
-        },
-        {
-          "speaker": "B",
-          "zh": "没关系！",
-          "pinyin": "Méi guānxi!",
-          "text": {
-            "uz": "Hech gap emas!",
-            "ru": "Ничего страшного!",
-            "tj": "Майлаш!"
-          }
         }
       ]
     }
@@ -514,7 +475,7 @@
         {
           "type": "reverse_builder",
           "zh": "你好",
-          "pinyin": "nī hǎo → nǐ hǎo",
+          "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
           "translation": {
             "uz": "salom (nǐ hǎo deb yoziladi)",
             "ru": "привет (пишется nǐ hǎo)",
@@ -579,23 +540,22 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
-          "audio_text": "你好！",
-          "pinyin": "Nǐ hǎo!",
+          "audio_text": "你",
+          "pinyin": "nǐ",
           "options": [
-            "您好！",
-            "你们好！",
-            "你好！",
-            "对不起！"
+            "您",
+            "你",
+            "好"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "你好！ — Salom!",
-            "ru": "你好！ — Привет!",
-            "tj": "你好！ — Салом!"
+            "uz": "你 — sen (birlik) (nǐ)",
+            "ru": "你 — ты (единственное число) (nǐ)",
+            "tj": "你 — ту (якка) (nǐ)"
           }
         },
         {
@@ -704,145 +664,380 @@
       ]
     }
   ],
-  "basics": [
-    {
-      "type": "_basics",
-      "narrate": "b1",
-      "title": {
-        "uz": "Xitoy tili qanday ishlaydi",
-        "ru": "Как устроен китайский язык",
-        "tj": "Забони чинӣ чӣ гуна кор мекунад"
-      },
-      "title_zh": "汉字",
-      "lead": {
-        "uz": "Xitoy tilida alifbo yo'q. Har bir belgi — ieroglif — butun so'zni bildiradi.",
-        "ru": "В китайском языке нет алфавита. Каждый знак — иероглиф — это целое слово.",
-        "tj": "Дар забони чинӣ алифбо нест. Ҳар аломат — иероглиф — як калимаи пурра аст."
-      },
-      "steps": [
-        {
-          "text": {
-            "uz": "Ieroglif — bu harf emas, so'z-rasm. Mana bitta ieroglif, ma'nosi «sen»:",
-            "ru": "Иероглиф — это не буква, а слово-рисунок. Вот один иероглиф, он значит «ты»:",
-            "tj": "Иероглиф ҳарф нест, балки калима-расм аст. Ин як иероглиф аст, маънояш «ту»:"
-          },
-          "zh": "你",
-          "pinyin": "nǐ",
-          "translation": {
-            "uz": "sen",
-            "ru": "ты",
-            "tj": "ту"
-          }
+  "foundation": {
+    "id": "starter0_hsk1",
+    "version": 1,
+    "required_objectives": [
+      "meaning",
+      "build",
+      "listen"
+    ],
+    "cards": [
+      {
+        "type": "intro",
+        "card_id": "starter0_intro",
+        "narrate": "f01",
+        "title": {
+          "uz": "3 daqiqada birinchi xitoycha iborangiz",
+          "ru": "Ваша первая китайская фраза за 3 минуты",
+          "tj": "Аввалин ибораи чинии шумо дар 3 дақиқа"
         },
-        {
-          "text": {
-            "uz": "Ierogliflar qanday o'qilishini bilish uchun pinyin ishlatiladi — lotin harflaridagi talaffuz. Pinyin faqat sizga yordam beradi, xitoyliklar uni yozmaydi.",
-            "ru": "Чтобы понять, как читается иероглиф, используется пиньинь — произношение латинскими буквами. Пиньинь нужен только вам, китайцы его не пишут.",
-            "tj": "Барои донистани тарзи хондани иероглиф пинйин истифода мешавад — талаффуз бо ҳарфҳои лотинӣ. Пинйин танҳо ба шумо кӯмак мекунад, чинӣ онро наменависад."
-          },
-          "zh": "好",
-          "pinyin": "hǎo",
-          "translation": {
-            "uz": "yaxshi",
-            "ru": "хорошо",
-            "tj": "хуб"
-          }
+        "text": {
+          "uz": "Avval tinglang. Hozir bu iborani tushunib, o'zingiz tuzasiz.",
+          "ru": "Сначала послушайте. Сейчас вы поймёте и сами соберёте эту фразу.",
+          "tj": "Аввал гӯш кунед. Ҳоло ин ибораро мефаҳмед ва худатон месозед."
         },
-        {
-          "text": {
-            "uz": "Ikki ieroglif birga kelib yangi ma'no beradi. 你 (sen) + 好 (yaxshi) = «Salom»:",
-            "ru": "Два иероглифа вместе дают новое значение. 你 (ты) + 好 (хорошо) = «Привет»:",
-            "tj": "Ду иероглиф якҷоя маънои нав медиҳанд. 你 (ту) + 好 (хуб) = «Салом»:"
-          },
+        "audio_text": "你好",
+        "example": {
           "zh": "你好",
-          "pinyin": "Nǐ hǎo",
+          "pinyin": "nǐ hǎo",
           "translation": {
             "uz": "Salom",
             "ru": "Привет",
             "tj": "Салом"
           }
         }
-      ]
-    },
-    {
-      "type": "_basics",
-      "narrate": "b2",
-      "title": {
-        "uz": "Ohang ma'noni o'zgartiradi",
-        "ru": "Тон меняет смысл",
-        "tj": "Оҳанг маъноро тағйир медиҳад"
       },
-      "title_zh": "四声",
-      "lead": {
-        "uz": "Xitoy tilida bir xil bo'g'in 4 xil ohangda aytiladi — va har safar boshqa so'z bo'ladi. Tinglang:",
-        "ru": "В китайском один и тот же слог произносится 4 разными тонами — и каждый раз это другое слово. Послушайте:",
-        "tj": "Дар чинӣ як ҳиҷо бо 4 оҳанги гуногун гуфта мешавад — ва ҳар бор калимаи дигар мешавад. Гӯш кунед:"
+      {
+        "type": "choice",
+        "card_id": "starter0_meaning",
+        "objective_id": "meaning",
+        "narrate": "f02",
+        "title": {
+          "uz": "Birinchi ma'no",
+          "ru": "Первое значение",
+          "tj": "Маънои аввал"
+        },
+        "prompt": {
+          "uz": "你好 nimani anglatadi?",
+          "ru": "Что означает 你好?",
+          "tj": "你好 чӣ маъно дорад?"
+        },
+        "example": {
+          "zh": "你好",
+          "pinyin": "nǐ hǎo",
+          "translation": {
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
+          }
+        },
+        "options": [
+          {
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
+          },
+          {
+            "uz": "Rahmat",
+            "ru": "Спасибо",
+            "tj": "Раҳмат"
+          },
+          {
+            "uz": "Xayr",
+            "ru": "До свидания",
+            "tj": "Хайр"
+          }
+        ],
+        "correct_index": 0,
+        "explanation": {
+          "uz": "To'g'ri: 你好 — salom.",
+          "ru": "Верно: 你好 — привет.",
+          "tj": "Дуруст: 你好 — салом."
+        }
       },
-      "steps": [
-        {
-          "text": {
-            "uz": "1-ton: baland va tekis, o'zgarmaydi.",
-            "ru": "1-й тон: высокий и ровный, не меняется.",
-            "tj": "Оҳанги 1: баланд ва ҳамвор, тағйир намеёбад."
+      {
+        "type": "explain",
+        "card_id": "starter0_hanzi_pinyin",
+        "narrate": "f03",
+        "title": {
+          "uz": "Hanzi va pinyin nima?",
+          "ru": "Что такое ханцзы и пиньинь?",
+          "tj": "Ханзӣ ва пинйин чист?"
+        },
+        "text": {
+          "uz": "Xitoycha so'z bir yoki bir nechta hanzi — yozuv belgilaridan tuzilishi mumkin. Pinyin esa lotin harflari bilan talaffuz va tonni ko'rsatadi.",
+          "ru": "Китайское слово может состоять из одного или нескольких ханцзы — письменных знаков. Пиньинь показывает произношение и тон латинскими буквами.",
+          "tj": "Калимаи чинӣ метавонад аз як ё якчанд ханзӣ — аломати хаттӣ таркиб ёбад. Пинйин талаффуз ва оҳангро бо ҳарфҳои лотинӣ нишон медиҳад."
+        },
+        "examples": [
+          {
+            "zh": "你好",
+            "pinyin": "nǐ hǎo",
+            "translation": {
+              "uz": "Salom",
+              "ru": "Привет",
+              "tj": "Салом"
+            }
+          }
+        ]
+      },
+      {
+        "type": "parts",
+        "card_id": "starter0_parts",
+        "narrate": "f04",
+        "title": {
+          "uz": "Ikki qismni tanib oling",
+          "ru": "Познакомьтесь с двумя частями",
+          "tj": "Ду қисмро шиносед"
+        },
+        "text": {
+          "uz": "你 — «sen», 好 — «yaxshi». Birga 你好 kundalik salomlashuv bo'ladi.",
+          "ru": "你 — «ты», 好 — «хорошо». Вместе 你好 — обычное приветствие.",
+          "tj": "你 — «ту», 好 — «хуб». Якҷоя 你好 саломи ҳаррӯза мешавад."
+        },
+        "examples": [
+          {
+            "zh": "你",
+            "pinyin": "nǐ",
+            "translation": {
+              "uz": "sen",
+              "ru": "ты",
+              "tj": "ту"
+            }
           },
-          "zh": "妈",
-          "pinyin": "mā",
+          {
+            "zh": "好",
+            "pinyin": "hǎo",
+            "translation": {
+              "uz": "yaxshi",
+              "ru": "хорошо",
+              "tj": "хуб"
+            }
+          }
+        ]
+      },
+      {
+        "type": "builder",
+        "card_id": "starter0_build",
+        "objective_id": "build",
+        "narrate": "f05",
+        "title": {
+          "uz": "O'zingiz tuzing",
+          "ru": "Соберите сами",
+          "tj": "Худатон созед"
+        },
+        "prompt": {
+          "uz": "«Salom» iborasini to'g'ri tartibda tuzing:",
+          "ru": "Соберите «Привет» в правильном порядке:",
+          "tj": "Ибораи «Салом»-ро бо тартиби дуруст созед:"
+        },
+        "example": {
+          "zh": "你好",
+          "pinyin": "nǐ hǎo",
           "translation": {
-            "uz": "ona",
-            "ru": "мама",
-            "tj": "модар"
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
           }
         },
-        {
-          "text": {
-            "uz": "2-ton: pastdan yuqoriga ko'tariladi — savol berayotgandek.",
-            "ru": "2-й тон: поднимается снизу вверх — будто вы спрашиваете.",
-            "tj": "Оҳанги 2: аз поён ба боло мебарояд — гӯё савол медиҳед."
-          },
-          "zh": "麻",
-          "pinyin": "má",
-          "translation": {
-            "uz": "kanop",
-            "ru": "конопля",
-            "tj": "канаб"
-          }
+        "tokens": [
+          "好",
+          "你"
+        ],
+        "answer_tokens": [
+          "你",
+          "好"
+        ],
+        "explanation": {
+          "uz": "你 + 好 = 你好 — salom.",
+          "ru": "你 + 好 = 你好 — привет.",
+          "tj": "你 + 好 = 你好 — салом."
+        }
+      },
+      {
+        "type": "tones",
+        "card_id": "starter0_tones",
+        "narrate": "f06",
+        "title": {
+          "uz": "To'rt tonni eshiting",
+          "ru": "Послушайте четыре тона",
+          "tj": "Чор оҳангро гӯш кунед"
         },
-        {
-          "text": {
-            "uz": "3-ton: avval pastga tushadi, keyin ko'tariladi.",
-            "ru": "3-й тон: сначала опускается, потом поднимается.",
-            "tj": "Оҳанги 3: аввал поён меравад, баъд боло мебарояд."
-          },
-          "zh": "马",
-          "pinyin": "mǎ",
-          "translation": {
-            "uz": "ot",
-            "ru": "лошадь",
-            "tj": "асп"
-          }
+        "text": {
+          "uz": "Pinyindagi belgi ovoz yo'nalishini ko'rsatadi; ton o'zgarsa, ma'no ham o'zgarishi mumkin.",
+          "ru": "Знак в пиньине показывает движение голоса; смена тона может изменить значение.",
+          "tj": "Аломати пинйин самти овозро нишон медиҳад; бо иваз шудани оҳанг маъно ҳам метавонад дигар шавад."
         },
-        {
-          "text": {
-            "uz": "4-ton: keskin pastga tushadi — buyruq bergandek.",
-            "ru": "4-й тон: резко падает вниз — будто вы отдаёте приказ.",
-            "tj": "Оҳанги 4: якбора поён меафтад — гӯё фармон медиҳед."
+        "examples": [
+          {
+            "zh": "妈",
+            "pinyin": "mā",
+            "translation": {
+              "uz": "ona",
+              "ru": "мама",
+              "tj": "модар"
+            }
           },
-          "zh": "骂",
-          "pinyin": "mà",
-          "translation": {
-            "uz": "so'kmoq",
-            "ru": "ругать",
-            "tj": "дашном додан"
+          {
+            "zh": "麻",
+            "pinyin": "má",
+            "translation": {
+              "uz": "kanop",
+              "ru": "конопля",
+              "tj": "канаб"
+            }
+          },
+          {
+            "zh": "马",
+            "pinyin": "mǎ",
+            "translation": {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            }
+          },
+          {
+            "zh": "骂",
+            "pinyin": "mà",
+            "translation": {
+              "uz": "so'kmoq",
+              "ru": "ругать",
+              "tj": "дашном додан"
+            }
           }
+        ]
+      },
+      {
+        "type": "sandhi",
+        "card_id": "starter0_sandhi",
+        "narrate": "f07",
+        "title": {
+          "uz": "Yozilishi va tabiiy talaffuz",
+          "ru": "Написание и естественное произношение",
+          "tj": "Навишт ва талаффузи табиӣ"
         },
-        {
-          "text": {
-            "uz": "Shuning uchun har bir yangi so'zni ovoz bilan eshitib o'rganamiz. Endi birinchi so'zdan boshlaymiz.",
-            "ru": "Поэтому каждое новое слово мы учим со звуком. Теперь начнём с первого слова.",
-            "tj": "Барои ҳамин ҳар калимаи навро бо овоз меомӯзем. Акнун аз калимаи аввал оғоз мекунем."
+        "text": {
+          "uz": "Yozilishi: nǐ hǎo. Ikki 3-ton yonma-yon kelganda birinchisi tabiiy nutqda 2-tondek aytiladi: ní hǎo.",
+          "ru": "Пишется: nǐ hǎo. Когда рядом стоят два 3-х тона, первый в естественной речи звучит как 2-й: ní hǎo.",
+          "tj": "Навишта мешавад: nǐ hǎo. Вақте ду оҳанги 3 паи ҳам меоянд, аввалӣ дар гуфтори табиӣ мисли оҳанги 2 садо медиҳад: ní hǎo."
+        },
+        "audio_text": "你好",
+        "natural_pinyin": "ní hǎo",
+        "example": {
+          "zh": "你好",
+          "pinyin": "nǐ hǎo",
+          "translation": {
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
           }
         }
-      ]
-    }
-  ]
+      },
+      {
+        "type": "listen_choice",
+        "card_id": "starter0_listen",
+        "objective_id": "listen",
+        "narrate": "f08",
+        "title": {
+          "uz": "Eshitib taning",
+          "ru": "Узнайте на слух",
+          "tj": "Бо шунидан шиносед"
+        },
+        "prompt": {
+          "uz": "Qaysi yozuvni eshitdingiz?",
+          "ru": "Какую запись вы услышали?",
+          "tj": "Кадом навиштро шунидед?"
+        },
+        "audio_text": "你好",
+        "example": {
+          "zh": "你好",
+          "pinyin": "nǐ hǎo",
+          "translation": {
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
+          }
+        },
+        "options": [
+          "你",
+          "你好",
+          "好"
+        ],
+        "correct_index": 1,
+        "explanation": {
+          "uz": "Siz 你好 — ní hǎo iborasini eshitdingiz.",
+          "ru": "Вы услышали 你好 — ní hǎo.",
+          "tj": "Шумо ибораи 你好 — ní hǎo-ро шунидед."
+        }
+      },
+      {
+        "type": "speak",
+        "card_id": "starter0_speak",
+        "objective_id": "speak_bonus",
+        "optional": true,
+        "narrate": "f09",
+        "title": {
+          "uz": "Ixtiyoriy: takrorlang",
+          "ru": "По желанию: повторите",
+          "tj": "Ихтиёрӣ: такрор кунед"
+        },
+        "text": {
+          "uz": "Namunani eshitib, 你好 deb ayting. Mikrofon ishlamasa yoki hozir gapira olmasangiz, dars davom etadi.",
+          "ru": "Послушайте образец и скажите 你好. Если микрофон не работает или сейчас нельзя говорить, урок продолжится.",
+          "tj": "Намунаро гӯш карда, 你好 гӯед. Агар микрофон кор накунад ё ҳоло гуфта натавонед, дарс идома меёбад."
+        },
+        "audio_text": "你好",
+        "example": {
+          "zh": "你好",
+          "pinyin": "nǐ hǎo",
+          "translation": {
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
+          }
+        }
+      },
+      {
+        "type": "result",
+        "card_id": "starter0_result",
+        "narrate": "f10",
+        "title": {
+          "uz": "Birinchi natijangiz tayyor",
+          "ru": "Ваш первый результат готов",
+          "tj": "Натиҷаи аввалини шумо омода аст"
+        },
+        "text": {
+          "uz": "Endi siz 你好 ni tushunasiz, eshitib taniysiz va o'zingiz tuza olasiz.",
+          "ru": "Теперь вы понимаете 你好, узнаёте его на слух и можете собрать сами.",
+          "tj": "Акнун шумо 你好-ро мефаҳмед, бо шунидан мешиносед ва худатон сохта метавонед."
+        },
+        "example": {
+          "zh": "你好",
+          "pinyin": "nǐ hǎo",
+          "translation": {
+            "uz": "Salom",
+            "ru": "Привет",
+            "tj": "Салом"
+          }
+        },
+        "objectives": [
+          {
+            "objective_id": "meaning",
+            "label": {
+              "uz": "Ma'nosini tushundim",
+              "ru": "Понимаю значение",
+              "tj": "Маънояшро мефаҳмам"
+            }
+          },
+          {
+            "objective_id": "listen",
+            "label": {
+              "uz": "Eshitib taniyman",
+              "ru": "Узнаю на слух",
+              "tj": "Бо шунидан мешиносам"
+            }
+          },
+          {
+            "objective_id": "build",
+            "label": {
+              "uz": "Iborani tuza olaman",
+              "ru": "Могу собрать фразу",
+              "tj": "Ибораро сохта метавонам"
+            }
+          }
+        ]
+      }
+    ]
+  }
 }
