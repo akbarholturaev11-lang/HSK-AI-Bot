@@ -1,5 +1,7 @@
 from datetime import date, datetime, timedelta, timezone
 
+from app.services.course_v3_vocab import words_for_level
+
 
 class DailyPracticeService:
     def __init__(self, session):
@@ -206,53 +208,112 @@ class DailyPracticeService:
     def _challenge_copy(self, lang: str) -> dict[str, str]:
         copies = {
             "uz": {
-                "title": "💬 <b>Keling, birinchi savoldan boshlaymiz</b>",
-                "question": "Bu so'z nima degani?",
+                "title_meaning": "💬 <b>Keling, birinchi savoldan boshlaymiz</b>",
+                "title_pinyin": "🔊 <b>Talaffuzdan boshlaymiz</b>",
+                "title_sentence": "🎮 <b>Kichik mashq</b>",
+                "q_meaning": "Bu so'z nima degani?",
+                "q_pinyin": "Bu so'z qanday o'qiladi?",
+                "q_sentence": "Shu so'zlardan bitta gap tuzing.",
                 "hint": "Javobingizni yozing — tekshirib beraman. Yoki o'z savolingizni bering.",
             },
             "ru": {
-                "title": "💬 <b>Давайте начнём с первого вопроса</b>",
-                "question": "Что означает это слово?",
+                "title_meaning": "💬 <b>Давайте начнём с первого вопроса</b>",
+                "title_pinyin": "🔊 <b>Начнём с произношения</b>",
+                "title_sentence": "🎮 <b>Небольшое упражнение</b>",
+                "q_meaning": "Что означает это слово?",
+                "q_pinyin": "Как читается это слово?",
+                "q_sentence": "Составьте одно предложение из этих слов.",
                 "hint": "Напишите ответ — я проверю. Или задайте свой вопрос.",
             },
             "tj": {
-                "title": "💬 <b>Биёед аз саволи аввал сар мекунем</b>",
-                "question": "Ин калима чӣ маъно дорад?",
+                "title_meaning": "💬 <b>Биёед аз саволи аввал сар мекунем</b>",
+                "title_pinyin": "🔊 <b>Аз талаффуз сар мекунем</b>",
+                "title_sentence": "🎮 <b>Машқи хурд</b>",
+                "q_meaning": "Ин калима чӣ маъно дорад?",
+                "q_pinyin": "Ин калима чӣ тавр хонда мешавад?",
+                "q_sentence": "Аз ин калимаҳо як ҷумла созед.",
                 "hint": "Ҷавобатонро нависед — месанҷам. Ё саволи худро диҳед.",
             },
         }
         return copies.get(lang, copies["ru"])
 
-    def _rotation_index(self, user, count: int) -> int:
-        if count <= 1:
-            return 0
-        seed = int(getattr(user, "id", 0) or 0) + self.today().toordinal()
-        return seed % count
+    _CHALLENGE_KINDS = ("meaning", "sentence", "pinyin")
 
-    def first_challenge(self, user, lang: str) -> dict[str, str]:
+    def first_challenge(self, user, lang: str, seed: int = 0) -> dict[str, str] | None:
         """QA rejimiga kirishda beriladigan ixtiyoriy mini-savol.
 
-        Yangi kontent yaratilmaydi — `_payload()` dagi mavjud daraja
-        so'zlari ishlatiladi. Qaytadi:
+        Manba — kurs darslaridagi tayyor `active_words` lug'ati
+        (`course_v3_vocab`), ya'ni yangi kontent yozilmaydi.
+
+        `seed` har kirishda o'zgaradi (chaqiruvchi uzatadi), shuning uchun
+        bir kunda bir necha marta kirgan user har safar boshqa savol oladi.
+
+        Qaytadi yoki `None` (lug'at topilmasa — chaqiruvchi eski matnga tushadi):
         - `text`: userga ko'rinadigan savol
         - `context`: `qa_service` AI promptiga qo'shiladigan challenge tavsifi
         """
-        payload = self._payload(user, lang)
-        words = payload["words"]
-        word, pinyin, meaning = words[self._rotation_index(user, len(words))]
+        words = words_for_level(getattr(user, "level", None))
+        if not words:
+            return None
 
+        base = int(getattr(user, "id", 0) or 0) + int(seed or 0)
+        kinds = self._CHALLENGE_KINDS
+        total = len(words)
+        # So'z har kirishda 7 qadam siljiydi — 7 lug'at hajmi bilan deyarli
+        # doim o'zaro tub, shuning uchun butun lug'at aylanadi va ketma-ket
+        # kirishlarda bir so'z takrorlanmaydi.
+        start = (base * 7) % total
+        # Vazifa turi aylanish raqami + so'z o'rnidan hisoblanadi: qo'shni
+        # kirishlarda o'rin 7 ga siljigani uchun tur ham har safar o'zgaradi,
+        # bir so'z esa har aylanishda boshqa formatda qaytadi. Davr = 3 x hajm.
+        kind = kinds[(base // total + start) % len(kinds)]
         copy = self._challenge_copy(lang)
-        text = "\n".join([
-            copy["title"],
-            "",
-            f"<blockquote><b>{word}</b> <i>{pinyin}</i>\n{copy['question']}</blockquote>",
-            copy["hint"],
-        ])
-        context = (
-            f"Challenge word: {word} ({pinyin}). "
-            f"Correct meaning in the user's language: {meaning}. "
-            "The user was asked what this word means."
-        )
+        meaning_lang = lang if lang in ("uz", "ru", "tj") else "ru"
+
+        def pick(offset: int) -> dict:
+            return words[(start + offset) % len(words)]
+
+        if kind == "sentence" and len(words) >= 3:
+            chosen = [pick(i) for i in range(3)]
+            shown = " · ".join(f"<b>{w['zh']}</b>" for w in chosen)
+            gloss = "\n".join(
+                f"{w['zh']} <i>{w['pinyin']}</i> — {w['meaning'][meaning_lang]}"
+                for w in chosen
+            )
+            text = "\n".join([
+                copy["title_sentence"],
+                "",
+                f"<blockquote>{shown}\n\n{gloss}\n\n{copy['q_sentence']}</blockquote>",
+                copy["hint"],
+            ])
+            listed = ", ".join(
+                f"{w['zh']} ({w['pinyin']}) = {w['meaning'][meaning_lang]}" for w in chosen
+            )
+            context = (
+                f"Challenge words: {listed}. "
+                "The user was asked to build one sentence using these words."
+            )
+            return {"text": text, "context": context}
+
+        word = pick(0)
+        if kind == "pinyin":
+            body = f"<b>{word['zh']}</b>\n{copy['q_pinyin']}"
+            title = copy["title_pinyin"]
+            context = (
+                f"Challenge word: {word['zh']} = {word['meaning'][meaning_lang]}. "
+                f"Correct pinyin: {word['pinyin']}. "
+                "The user was asked how this word is pronounced."
+            )
+        else:
+            body = f"<b>{word['zh']}</b> <i>{word['pinyin']}</i>\n{copy['q_meaning']}"
+            title = copy["title_meaning"]
+            context = (
+                f"Challenge word: {word['zh']} ({word['pinyin']}). "
+                f"Correct meaning in the user's language: {word['meaning'][meaning_lang]}. "
+                "The user was asked what this word means."
+            )
+
+        text = "\n".join([title, "", f"<blockquote>{body}</blockquote>", copy["hint"]])
         return {"text": text, "context": context}
 
     def entry_text(self, user, lang: str) -> str:

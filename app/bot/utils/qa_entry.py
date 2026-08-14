@@ -37,8 +37,18 @@ async def send_qa_entry(
 
     challenge = None
     if user is not None:
+        # Rotatsiya urug'i: ilgari yuborilgan challenge'lar soni. Kun bo'yicha
+        # aylantirsak, bir kunda bir necha marta kirgan user bir xil savolni
+        # qayta ko'rardi.
         try:
-            challenge = DailyPracticeService(session).first_challenge(user, lang)
+            seed = await MessageRepository(session).count_by_content_type(
+                user_id=user.id,
+                content_type=QA_CHALLENGE_CONTENT_TYPE,
+            )
+        except Exception:
+            seed = 0
+        try:
+            challenge = DailyPracticeService(session).first_challenge(user, lang, seed=seed)
         except Exception:
             challenge = None
 

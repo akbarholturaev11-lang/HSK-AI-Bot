@@ -5815,6 +5815,40 @@ Follow-up:
 
 ---
 
+### 2026-08-14 — QA kirish savoli kurs lug'atiga o'tdi (takror 3 → 1842)
+
+Changed:
+- `app/services/course_v3_vocab.py` (yangi) — `course_v3_data/<level>/lesson_*.json`
+  ichidagi `active_words` ni bir marta o'qib keshlaydi (`course_v3_parts.py`
+  uslubida). Dialog personajlari (`王方`, `花花`) `pos` va ma'no izohi bo'yicha
+  filtrlanadi; `中国`, `名字` kabi haqiqiy so'zlar qoladi.
+- `DailyPracticeService.first_challenge()` endi shu lug'atdan o'qiydi va uch xil
+  vazifa beradi: ma'nosi / gap tuzish / pinyin. `seed` argumenti qo'shildi.
+- `MessageRepository.count_by_content_type()` (yangi) — rotatsiya urug'i.
+- `qa_entry.send_qa_entry()` urug' sifatida yuborilgan challenge'lar sonini
+  uzatadi (ilgari kun bo'yicha aylanardi).
+
+Why:
+- Ilgari `_payload()` da daraja boshiga atigi 3 ta so'z bor edi va hsk1/hsk2
+  bir xil so'zlarni ishlatardi. Rotatsiya kun bo'yicha bo'lgani uchun bir kunda
+  bir necha marta kirgan user aynan bir xil savolni ko'raverardi:
+  hsk1 useri 14 kunda 3 ta noyob savol.
+
+Files touched:
+- `app/services/course_v3_vocab.py` (yangi), `app/services/daily_practice_service.py`,
+  `app/repositories/message_repo.py`, `app/bot/utils/qa_entry.py`
+
+Risk:
+- `first_challenge()` endi `None` qaytarishi mumkin (lug'at topilmasa) —
+  `send_qa_entry` eski `send_first_message` matniga tushadi.
+- Rotatsiya formulasi: so'z 7 qadam siljiydi, vazifa turi
+  `(aylanish + o'rin) % 3`. O'lchandi: hsk1 495, hsk2 549, hsk3 930, hsk4 1842
+  noyob savol; yonma-yon takror 0. `_payload()` daily practice oqimida qoladi.
+- Migration yo'q. Payment/obuna/limit/Mini App UI'ga tegilmagan.
+  `qa_service` va `onboarding_challenge` mexanizmi o'zgarmagan.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

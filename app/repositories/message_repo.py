@@ -70,6 +70,14 @@ class MessageRepository:
         )
         return int(result.scalar() or 0)
 
+    async def count_by_content_type(self, user_id: int, content_type: str) -> int:
+        result = await self.session.execute(
+            select(func.count(Message.id))
+            .where(Message.user_id == user_id)
+            .where(Message.content_type == content_type)
+        )
+        return int(result.scalar() or 0)
+
     async def get_latest_image_context_by_user(
         self,
         user_id: int,
