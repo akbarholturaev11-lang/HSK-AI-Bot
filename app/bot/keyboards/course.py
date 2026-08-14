@@ -3,7 +3,6 @@ import json
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course_miniapp import course_study_miniapp_button
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 HSK4_UPPER_MAX_ORDER = 10
@@ -75,16 +74,6 @@ def course_intro_keyboard(lang: str) -> InlineKeyboardMarkup:
     )
 
 
-def course_vocab_keyboard(lang: str) -> InlineKeyboardMarkup:
-    next_labels = {
-        "uz": "💬 Dialogni o'rganamiz",
-        "tj": "💬 Муколамаро меомӯзем",
-        "ru": "💬 Изучаем диалог",
-    }
-    return _with_miniapp(
-        [[InlineKeyboardButton(text=next_labels.get(lang, next_labels["ru"]), callback_data="course:go_dialogue")]],
-        lang,
-    )
 
 
 def course_dialogue_keyboard(lang: str) -> InlineKeyboardMarkup:
@@ -117,16 +106,6 @@ def course_grammar_keyboard(lang: str) -> InlineKeyboardMarkup:
     )
 
 
-def course_exercise_keyboard(lang: str) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": "📝 Quizga o‘tamiz",
-        "tj": "📝 Ба quiz мегузарем",
-        "ru": "📝 Переходим к quiz",
-    }
-    return _with_miniapp(
-        [[InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_quiz")]],
-        lang,
-    )
 
 
 def course_homework_keyboard(lang: str) -> InlineKeyboardMarkup:
@@ -174,22 +153,6 @@ def course_next_step_keyboard(lang: str) -> InlineKeyboardMarkup:
     )
 
 
-def course_vocab_v2_keyboard(lang: str) -> InlineKeyboardMarkup:
-    """V2 vocab_1 / vocab_2 step: [▶️ Davom etamiz]."""
-    next_labels = {
-        "uz": "▶️ Davom etamiz",
-        "tj": "▶️ Идома медиҳем",
-        "ru": "▶️ Продолжаем",
-    }
-    return _with_miniapp(
-        [[
-            InlineKeyboardButton(
-                text=next_labels.get(lang, next_labels["ru"]),
-                callback_data="course:go_next_step",
-            ),
-        ]],
-        lang,
-    )
 
 
 def course_dialogue_n_keyboard(lang: str, n: int) -> InlineKeyboardMarkup:
@@ -271,40 +234,6 @@ def lesson_selection_keyboard(
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def course_reminder_notification_keyboard(lang: str) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": "📖 Darsni davom ettirish",
-        "ru": "📖 Продолжить урок",
-        "tj": "📖 Идома додани дарс",
-    }
-    builder = InlineKeyboardBuilder()
-    builder.button(text=labels.get(lang, labels["ru"]), callback_data="course:continue")
-    return builder.as_markup()
-
-
-def next_study_time_inline_keyboard(lang: str) -> InlineKeyboardMarkup:
-    """Keyingi o'qish vaqtini tanlash — inline tugmalar (ReplyKeyboard o'rniga)."""
-    skip_labels = {
-        "uz": "⏩ O'tkazib yuborish",
-        "ru": "⏩ Пропустить",
-        "tj": "⏩ Гузаронидан",
-    }
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(text="09:00", callback_data="course:study_time:09:00"),
-            InlineKeyboardButton(text="14:00", callback_data="course:study_time:14:00"),
-        ],
-        [
-            InlineKeyboardButton(text="19:00", callback_data="course:study_time:19:00"),
-            InlineKeyboardButton(text="21:00", callback_data="course:study_time:21:00"),
-        ],
-        [
-            InlineKeyboardButton(
-                text=skip_labels.get(lang, skip_labels["ru"]),
-                callback_data="course:skip_next_study_time",
-            ),
-        ],
-    ])
 
 
 def reminder_time_keyboard(lang: str) -> InlineKeyboardMarkup:

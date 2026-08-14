@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 
 from aiogram import Bot
-from aiogram.types import BufferedInputFile, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import BufferedInputFile
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy import select
@@ -705,14 +705,6 @@ def _mini_usd(value) -> str:
         return "$0.00"
 
 
-def _admin_miniapp_section_keyboard(section: str) -> InlineKeyboardMarkup:
-    title, callback_data = ADMIN_MINIAPP_SECTIONS.get(section, ADMIN_MINIAPP_SECTIONS["stats"])
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=title, callback_data=callback_data)],
-            [InlineKeyboardButton(text="🛠 Admin panel", callback_data="adm:menu")],
-        ]
-    )
 
 
 async def _admin_miniapp_management_payload(session) -> dict:

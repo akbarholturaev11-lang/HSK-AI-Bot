@@ -500,46 +500,6 @@ def format_dialogue(lesson, lang: str, lesson_total_steps: int = 6) -> str:
     return "\n".join(lines).rstrip()
 
 
-def format_grammar(lesson, lang: str, lesson_total_steps: int = 6) -> str:
-    grammar = _parse(lesson.grammar_json, [])
-    title = _parse_title(lesson.title or "")
-
-    step_label = {"uz": "Grammatika 📐", "tj": "Грамматика 📐", "ru": "Грамматика 📐"}
-    lines = [f"【3/{lesson_total_steps}】 {title} · {step_label.get(lang, step_label['ru'])}", ""]
-
-    for i, g in enumerate(grammar, 1):
-        if not isinstance(g, dict):
-            continue
-
-        g_title = g.get(f"title_{lang}") or _uz_fallback(lang, g.get("title_uz")) or g.get("title_zh") or ""
-        rule = (
-            g.get(f"rule_{lang}") or
-            _uz_fallback(lang, g.get("rule_uz")) or
-            g.get("explanation") or
-            g.get("rule") or ""
-        )
-
-        lines.append("━━━━━━━━━━━━━━")
-        lines.append(f"📌 {i}. {g_title}")
-        lines.append("")
-        if rule:
-            for rule_line in rule.split("\n"):
-                lines.append(f"   {rule_line}")
-        lines.append("")
-
-        examples = g.get("examples", [])
-        if examples:
-            eg_label = {"uz": "Misollar:", "tj": "Мисолҳо:", "ru": "Примеры:"}
-            lines.append(f"   {eg_label.get(lang, eg_label['ru'])}")
-            for ex in examples:
-                zh = ex.get("zh", "")
-                pinyin = ex.get("pinyin", "")
-                meaning = ex.get(lang) or _uz_fallback(lang, ex.get("uz")) or ex.get("meaning") or ""
-                lines.append(f"   • {zh} ({pinyin}) — {meaning}")
-        lines.append("")
-
-    lines.append("━━━━━━━━━━━━━━")
-    return "\n".join(lines)
 
 
 def format_exercise(lesson, lang: str, lesson_total_steps: int = 6) -> str:

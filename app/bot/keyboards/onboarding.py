@@ -52,34 +52,6 @@ def level_keyboard(lang: str) -> InlineKeyboardMarkup:
     )
 
 
-def trial_lesson_choice_keyboard(lang: str) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": ("🚀 Tavsiya: 1-darsdan boshlash", "📚 Boshqa dars tanlash"),
-        "ru": ("🚀 Рекомендация: начать с 1-го урока", "📚 Выбрать другой урок"),
-        "tj": ("🚀 Тавсия: аз дарси 1 оғоз кардан", "📚 Интихоби дарси дигар"),
-    }
-    first_label, choose_label = labels.get(lang, labels["ru"])
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=first_label, callback_data="trial_lesson:first")],
-            [InlineKeyboardButton(text=choose_label, callback_data="trial_lesson:choose")],
-        ]
-    )
-
-
-def daily_practice_entry_keyboard(lang: str) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": ("🚀 Bugungi 3 daqiqalik mashq", "📚 Kursni boshlash"),
-        "ru": ("🚀 Сегодняшняя практика на 3 минуты", "📚 Начать курс"),
-        "tj": ("🚀 Машқи 3-дақиқаи имрӯз", "📚 Оғози курс"),
-    }
-    practice_label, course_label = labels.get(lang, labels["ru"])
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=practice_label, callback_data="daily_practice:start")],
-            [InlineKeyboardButton(text=course_label, callback_data="daily_practice:course")],
-        ]
-    )
 
 
 def daily_practice_finish_keyboard(lang: str) -> InlineKeyboardMarkup:

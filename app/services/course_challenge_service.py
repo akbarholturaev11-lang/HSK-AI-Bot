@@ -17,7 +17,6 @@ from app.services.course_question_material import shuffle_question_options
 from app.services.course_v3_parts import source_lesson_for_part
 
 
-CHALLENGE_STATUSES = {"pending", "accepted", "rejected", "completed"}
 CHALLENGE_QUESTION_COUNT = 10
 CHALLENGE_COMPLETE_XP = 6
 CHALLENGE_WIN_XP = 24

@@ -50,7 +50,6 @@ FREE_TOTAL_SESSIONS = 1
 # faqat XARAJAT himoyasi: bitta sessiya (≈10 so'z + qayta urinishlar) bemalol
 # sig'adi, lekin cheksiz qayta urinish OpenAI STT xarajatini cheklaydi.
 FREE_PRONOUNCE_DAILY = 25
-PAID_DAILY_SESSIONS = 5
 MAX_DIALOGS_PER_SESSION = 7
 MAX_AUDIO_BYTES = 5 * 1024 * 1024
 VOICE_REPLY_MAX_TOKENS = 220

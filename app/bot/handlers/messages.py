@@ -27,7 +27,6 @@ from app.bot.handlers.course import (
     _keyboard_for_step,
     _ensure_active_course_access,
     _resolve_lessons_for_user_level,
-    filter_unlocked_lessons,
     send_course_completion_prompt,
     _send_trial_completed_offer,
     _ensure_trial_lesson_access,
@@ -50,7 +49,7 @@ from app.bot.keyboards.course_miniapp import (
     course_study_miniapp_button,
 )
 from app.bot.keyboards.checkout import checkout_keyboard
-from app.bot.keyboards.main_menu import main_menu_keyboard, course_menu_keyboard
+from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.keyboards.referral import referral_daily_limit_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_button, subscription_miniapp_keyboard

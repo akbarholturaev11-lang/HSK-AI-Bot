@@ -1226,13 +1226,6 @@ def is_admin_course_hot_user(user, profile, hot_start_date) -> bool:
     return bool(last_day and last_day >= hot_start_date)
 
 
-def _hot_lead_filter(hot_since: datetime):
-    return (
-        User.status.in_(HOT_LEAD_STATUSES),
-        User.payment_status.in_(HOT_LEAD_PAYMENT_STATUSES),
-        User.last_active_at >= hot_since,
-        _bot_not_blocked_filter(),
-    )
 
 
 def _plan_label(value: str | None) -> str:

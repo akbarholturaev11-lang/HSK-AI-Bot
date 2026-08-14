@@ -25,7 +25,6 @@ from app.services.desktop_release_manifest_service import (
 logger = logging.getLogger(__name__)
 
 PLATFORMS = ("macos", "windows")
-SOURCES = ("profile", "home_prompt", "lesson_end_promo", "ad_promo")
 REQUEST_TOKEN_RE = re.compile(r"^[0-9a-f]{32}$")
 SAFE_FILE_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]{0,119}$")
 PROMO_COOLDOWN_DAYS = 14

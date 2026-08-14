@@ -159,30 +159,6 @@ def _discuss_mistakes_row(lang: str) -> list[InlineKeyboardButton]:
     ]
 
 
-def course_miniapp_understood_keyboard(
-    lang: str,
-    *,
-    discuss_mistakes: bool = False,
-) -> InlineKeyboardMarkup:
-    rows = []
-    if discuss_mistakes:
-        rows.append(_discuss_mistakes_row(lang))
-    rows.append(
-        [
-            InlineKeyboardButton(
-                text=t("course_miniapp_yes_button", lang),
-                callback_data="course:satisfied_yes",
-            ),
-            InlineKeyboardButton(
-                text=t("course_miniapp_no_button", lang),
-                callback_data="course:satisfied_no",
-            ),
-        ]
-    )
-    rows.append(_main_miniapp_row(lang))
-    return InlineKeyboardMarkup(
-        inline_keyboard=rows
-    )
 
 
 def course_miniapp_continue_keyboard(

@@ -38,8 +38,6 @@ COURSE_STEP_ORDER_V2_BASE = [
     "completed",
 ]
 
-# Backward compat alias
-COURSE_STEP_ORDER = COURSE_STEP_ORDER_V1
 
 COURSE_LEVEL_ORDER = ("hsk1", "hsk2", "hsk3", "hsk4")
 
@@ -168,11 +166,6 @@ def is_block_grammar_step(step: str) -> bool:
     return (step or "").startswith("block_grammar_")
 
 
-def get_block_by_no(lesson, block_no: int) -> Optional[dict]:
-    for block in get_lesson_blocks(lesson):
-        if int(block.get("block_no") or 0) == block_no:
-            return block
-    return None
 
 
 def get_step_order(lesson) -> list:

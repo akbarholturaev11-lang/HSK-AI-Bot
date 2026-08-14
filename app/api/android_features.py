@@ -75,10 +75,6 @@ AndroidQuestionId = Annotated[
     str,
     StringConstraints(strip_whitespace=True, min_length=1, max_length=160),
 ]
-AndroidMistakeCategory = Annotated[
-    str,
-    StringConstraints(strip_whitespace=True, max_length=24),
-]
 
 
 class AndroidFeatureError(RuntimeError):
@@ -88,8 +84,6 @@ class AndroidFeatureError(RuntimeError):
         self.status_code = status_code
 
 
-class AndroidEmptyRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid")
 
 
 class AndroidMistakeReviewStartRequest(BaseModel):

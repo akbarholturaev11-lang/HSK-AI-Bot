@@ -21,7 +21,6 @@ from app.services.referral_service import ReferralService
 from app.bot.handlers.subscription import build_subscription_main_text_for_user
 from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.subscription import (
-    subscription_main_keyboard,
     subscription_miniapp_button,
     subscription_miniapp_keyboard,
 )
@@ -57,13 +56,6 @@ async def _clear_voice_mode(user, session, state: FSMContext | None = None) -> N
         await session.commit()
 
 
-def _fmt_date(dt) -> str:
-    if not dt:
-        return "-"
-    try:
-        return dt.strftime("%Y-%m-%d")
-    except Exception:
-        return str(dt)
 
 
 def _pct(part: int, total: int) -> float:
@@ -144,12 +136,6 @@ def _level_label(value: str, lang: str) -> str:
     return beginner.get(lang, beginner["ru"]) if value == "beginner" else value
 
 
-def _days_label(days: int, lang: str) -> str:
-    if lang == "tj":
-        return f"{days} рӯз"
-    if lang == "ru":
-        return f"{days} дн."
-    return f"{days} kun"
 
 
 def _remaining_days(value) -> int | None:

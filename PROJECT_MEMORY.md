@@ -5778,6 +5778,43 @@ Risk:
 
 ---
 
+### 2026-08-14 — O'lik kod tozalandi (78 ta'rif, 5 modul, 128 i18n kaliti)
+
+Changed:
+- 5 ta modul o'chirildi: `bot/keyboards/mode.py`, `bot/middlewares/db_session.py`,
+  `db/init_db.py`, `services/airtable_sync_service.py`,
+  `services/background_tasks.py` — hech qayerdan import qilinmasdi.
+- 78 ta funksiya/klass o'chirildi. Eng kattasi `handlers/subscription.py`
+  (~589 qator) — obuna oqimi Mini App'ga ko'chgach eski Telegram view
+  builderlari qolib ketgan edi.
+- 8 ta yetim konstanta va o'chirish tufayli ortiqcha qolgan importlar.
+- `utils/i18n.py`: 128 kalit × 3 til = 378 yozuv. `TEXTS` 327 → 199 kalit.
+
+Why:
+- Kod bazasi kattalashib, ishlatilmaydigan kod yangi ishlarni sekinlashtirardi
+  va o'lik funksiyalar tirik deb o'ylanib nusxa ko'chirilardi.
+
+Files touched:
+- 23 fayl, +29 / −2224 qator.
+
+Risk:
+- Tekshiruv: `pyflakes` da aniqlanmagan nom **0**; `@router` handlerlari
+  327 → 327 (o'zgarmadi); FastAPI endpointlari 114 → 114; `TEXTS`/`COURSE_I18N`
+  uch tilda ham teng; o'chirilgan nomlarga qolgan havola **0**;
+  HTML ichidagi JS `node --check` dan o'tdi.
+- Dinamik yasaladigan i18n prefikslari **saqlab qolindi**:
+  `feedback_*`, `subscription_churn_reason_*`, `onboarding_tip_*` —
+  ular `t(f"...")` orqali ishlatiladi, statik qidiruvda ko'rinmaydi.
+- Payment/obuna/limit/DB logikasi va Mini App UI'ga tegilmadi.
+
+Follow-up:
+- To'liq ro'yxat: `DEAD_CODE_REPORT.md`.
+- Tayyor, lekin ulanmagan holda o'chirilganlar: `_get_demo_lesson`
+  (3 tilda o'yin-challenge matnlari), `daily_practice_entry_keyboard` va
+  hamrohlari. Kerak bo'lsa git tarixidan tiklanadi.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

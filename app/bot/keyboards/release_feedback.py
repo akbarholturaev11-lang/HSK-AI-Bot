@@ -32,13 +32,6 @@ def release_feedback_test_rating_keyboard() -> InlineKeyboardMarkup:
     )
 
 
-def release_feedback_optional_comment_keyboard(campaign_id: int) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="✍️ Izoh yozish", callback_data=f"relfb:{campaign_id}:comment")],
-            [InlineKeyboardButton(text="➡️ O'tkazib yuborish", callback_data=f"relfb:{campaign_id}:skip")],
-        ]
-    )
 
 
 def release_feedback_discount_keyboard(campaign_id: int, lang: str) -> InlineKeyboardMarkup:
