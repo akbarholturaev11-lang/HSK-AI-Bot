@@ -430,6 +430,52 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("nǐ hǎo", checked)
         self.assertIn("ní hǎo", checked)
 
+    def test_edge_swipe_back_shares_one_navigation_path_and_skips_gates(self):
+        """Chap chetdan swipe, Telegram BackButton va Android back — uchalasi
+        ham bitta `NavBack.goBack()` ni chaqiradi. To'lov, reklama va mukofot
+        oynalari gesture bilan aylanib o'tilmasligi shart."""
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+        # Uchala kirish nuqtasi ham AYNAN bitta mantiqni chaqiradi.
+        self.assertIn("tg.BackButton.onClick(function(){NavBack.goBack()", html)
+        self.assertIn('window.addEventListener("popstate",NavBack.onPop)', html)
+        self.assertIn("start:function(ev){", html)
+        import re as _re
+
+        code = _re.sub(r"/\*.*?\*/", "", html, flags=_re.S)  # izohlar hisobga olinmasin
+        self.assertEqual(
+            code.count("NavBack.goBack()"), 3,
+            "goBack faqat 3 kirish nuqtasidan: BackButton, popstate, swipe",
+        )
+
+        # Access/monetizatsiya gate'lari hech qachon swipe bilan yopilmasin.
+        block = html.split("BLOCK:[", 1)[1].split("]", 1)[0]
+        for gate in ('"paywall"', '"adov"', '"levelup"'):
+            self.assertIn(gate, block, f"{gate} BLOCK ro'yxatida bo'lishi shart")
+        layers = html.split("LAYERS:[", 1)[1].split("\n  ],", 1)[0]
+        for gate in ("paywall", "adov", "levelup"):
+            self.assertNotIn(f'id:"{gate}"', layers, f"{gate} yopiladigan qatlam BO'LMASIN")
+
+        # Qatlamlar mavjud yopish funksiyalarini ishlatadi (yangi mantiq yo'q).
+        for existing in ("App.tourEnd()", "App.closeSheet()", "closeUserProfile()",
+                         "App.closeWriter()", "App.exitFlow()"):
+            self.assertIn(existing, layers, existing)
+
+        # Chet zonasi va threshold talab qilingan oraliqda.
+        edge = int(html.split("EDGE:", 1)[1].split(",", 1)[0])
+        min_px = int(html.split("MIN:", 1)[1].split(",", 1)[0])
+        self.assertTrue(8 <= edge <= 32, f"edge zone {edge}px")
+        self.assertTrue(70 <= min_px <= 100, f"threshold {min_px}px talab: 70-100")
+
+        # touchmove passiv BO'LMASLIGI kerak — aks holda Telegram'ning o'z
+        # gorizontal gesture'ini bostirib bo'lmaydi.
+        self.assertIn('"touchmove",NavBack.move,{passive:false}', html)
+        self.assertIn('"touchstart",NavBack.start,{passive:true}', html)
+
+        # Mavjud navigatsiya buzilmagan: eski yopish tugmalari joyida.
+        self.assertIn('onclick="App.exitFlow()"', html)
+        self.assertIn('onclick="closeUserProfile()"', html)
+
     def test_hsk_exam_uses_server_material_and_server_grading(self):
         html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")

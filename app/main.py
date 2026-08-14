@@ -180,6 +180,7 @@ from app.bot.keyboards.course import homework_retry_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.bot.utils.trial_value_flow import send_trial_quiz_value_teaser
+from app.bot.utils.menu_bar import send_menu_bar
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
     course_miniapp_quiz_result_keyboard,
@@ -1772,6 +1773,41 @@ async def v3_notify_toggle(request: Request):
         await session.commit()
 
         return JSONResponse(content={"ok": True, "notifications": enabled})
+
+
+@app.post("/api/v3/exit")
+async def v3_miniapp_exit(request: Request):
+    """Mini App yopilayotganda chaqiriladi — chatdagi menyu barni tiklaydi.
+
+    Kursga inline WebApp tugmasi orqali kirgan userga reply keyboard hech
+    qachon yuborilmagan bo'ladi (bitta xabarda inline + reply birga ketmaydi).
+    Telegram Mini App yopilishi haqida botga xabar bermaydi, shuning uchun
+    signal Mini App tomondan keladi.
+
+    Menyu bir marta o'rnatilsa chatda doimiy qoladi — `once=True` takrorni
+    to'sadi. User Mini App ichida turganda reply keyboard ko'rinmaydi, chatga
+    qaytganda joyida bo'ladi.
+    """
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False})
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False})
+
+        async def respond(text, **kwargs):
+            await bot.send_message(chat_id=telegram_id, text=text, **kwargs)
+
+        sent = await send_menu_bar(
+            session=session,
+            user=user,
+            respond=respond,
+            once=True,
+        )
+        return JSONResponse(content={"ok": True, "menu_sent": sent})
 
 
 @app.post("/api/v3/language")
@@ -4909,6 +4945,16 @@ async def miniapp_event(request: Request):
                 telegram_id=telegram_id,
                 result=result,
                 respond=respond,
+            )
+            # Zaxira ilgak: `/api/v3/exit` beaconi Telegram WebView'da (ayniqsa
+            # iOS) yetib bormasligi mumkin. Limit/quiz natijasi Mini App'dan
+            # botga keladigan tabiiy nuqta — menyu shu yerda ham tiklanadi.
+            await send_menu_bar(
+                session=session,
+                user=user,
+                respond=respond,
+                lang=lang,
+                once=True,
             )
             return {"ok": True}
 

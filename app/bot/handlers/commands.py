@@ -144,16 +144,6 @@ def _level_label(value: str, lang: str) -> str:
     return beginner.get(lang, beginner["ru"]) if value == "beginner" else value
 
 
-def _learning_mode_label(value: str, lang: str) -> str:
-    labels = {
-        "tj": {"qa": "Реҷаи одӣ", "course": "Курс"},
-        "uz": {"qa": "Oddiy rejim", "course": "Kurs"},
-        "ru": {"qa": "Обычный режим", "course": "Курс"},
-    }
-    unknown = {"tj": "Номаълум", "uz": "Noma'lum", "ru": "Неизвестно"}
-    return labels.get(lang, labels["ru"]).get(value, unknown.get(lang, unknown["ru"]))
-
-
 def _days_label(days: int, lang: str) -> str:
     if lang == "tj":
         return f"{days} рӯз"
@@ -235,7 +225,6 @@ def _profile_text(
     language = escape(_language_label(str(getattr(user, "language", "") or ""), lang))
     level = escape(_level_label(str(getattr(user, "level", "") or ""), lang))
     status_raw = str(getattr(user, "status", "—") or "—")
-    learning_mode = escape(_learning_mode_label(str(getattr(user, "learning_mode", "") or ""), lang))
 
     started = (
         getattr(user, "start_date", None)
@@ -304,7 +293,6 @@ def _profile_text(
             f"🙍 <b>Ном:</b> {full_name}",
             f"🈯 <b>Забон:</b> {language}",
             f"📖 <b>Дараҷа:</b> {level}",
-            f"🎯 <b>Режими ҷорӣ:</b> {learning_mode}",
             f"⭐ <b>Ҳолат:</b> {status}",
             referral_count,
         ]
@@ -327,7 +315,6 @@ def _profile_text(
             f"🙍 <b>Ism:</b> {full_name}",
             f"🈯 <b>Til:</b> {language}",
             f"📖 <b>Daraja:</b> {level}",
-            f"🎯 <b>Joriy rejim:</b> {learning_mode}",
             f"⭐ <b>Holat:</b> {status}",
             referral_count,
         ]
@@ -349,7 +336,6 @@ def _profile_text(
         f"🙍 <b>Имя:</b> {full_name}",
         f"🈯 <b>Язык:</b> {language}",
         f"📖 <b>Уровень:</b> {level}",
-        f"🎯 <b>Текущий режим:</b> {learning_mode}",
         f"⭐ <b>Статус:</b> {status}",
         referral_count,
     ]

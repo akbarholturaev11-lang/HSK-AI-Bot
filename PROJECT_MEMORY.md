@@ -5738,6 +5738,46 @@ Follow-up:
 
 ---
 
+### 2026-08-13 — Mini App: chap chetdan orqaga swipe + yagona goBack
+
+Changed:
+- `course-v3.html` da `NavBack` qo'shildi. Ilgari Mini App'da orqaga qaytish
+  mantig'i UMUMAN yo'q edi: `pushState`/`popstate` ishlatilmagan, Telegram
+  `BackButton` ulanmagan, gesture kodi 0 ta.
+- Bitta `NavBack.goBack()` ni uchta kirish nuqtasi chaqiradi: chap chetdan
+  swipe, Telegram `BackButton`, Android hardware back (`popstate` + zaxira
+  history yozuvi).
+- Qatlam ustuvorligi (ustkisidan): `tour` → `sheet` → `upov` → `writeov` →
+  `flow` → tab (`course` ga). Har biri MAVJUD yopish funksiyasini chaqiradi,
+  yangi navigatsiya mantig'i yozilmadi.
+- `paywall`, `adov`, `levelup` ATAYLAB ro'yxatdan tashqarida va ochiq bo'lsa
+  `goBack()` umuman ishlamaydi — to'lov/reklama gate'i va mukofot ketma-ketligi
+  gesture bilan aylanib o'tilmasin.
+- Ochilish/yopilishni kuzatish `MutationObserver` orqali (mavjud `open/close`
+  funksiyalariga tegilmadi).
+
+Why:
+- iOS foydalanuvchilari uchun orqaga qaytish yo'li yo'q edi; har bir overlay
+  faqat o'z `×` tugmasi bilan yopilardi.
+
+Files touched:
+- `app/static/course-v3.html`, `tests/test_course_v3_static_data.py`
+
+Risk:
+- **Telegram iOS o'zining chap-chet gesture'iga ega.** Biz `touchmove` da
+  `preventDefault()` qilamiz, lekin birinchi ~10px yo'nalishni aniqlashga
+  ketadi va o'sha oraliqda native gesture ustun kelishi mumkin. Real qurilmada
+  sinash SHART — sandboxda tekshirib bo'lmadi.
+- `writeov` ichida iframe bor; iframe ichidagi touch parentga yetmaydi, u
+  yerda swipe ishlamaydi (BackButton ishlaydi).
+- Tab almashishda jonli "peek" yo'q (ekranlar `display` bilan almashadi;
+  ikkalasini bir vaqtda ko'rsatish document scroll holatini buzardi) —
+  `App.show("course")` dan keyin qisqa kirish animatsiyasi beriladi.
+- `AI_RULES.md` talab qiladigan Playwright E2E smoke test bajarilmadi
+  (sandboxda brauzer yo'q). Deploydan oldin kerak.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

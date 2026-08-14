@@ -268,6 +268,12 @@ button{cursor:pointer}
 .say-bub .t4{font-size:13px;color:var(--ink2);margin-top:2px}
 .say-bub .au{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:17px;align-items:center;justify-content:center;margin-bottom:6px}
 .pron-skip{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink3);font-family:inherit;font-size:13px;font-weight:700;letter-spacing:1px}
+/* iOS uslubidagi chap chetdan orqaga swipe. Barmoq ostidagi qatlam
+   `transform` bilan suriladi (reflow yo'q), ostidagi sahifa tabiiy ko'rinadi. */
+.nb-drag{transition:none!important;will-change:transform;box-shadow:-12px 0 28px rgba(20,17,13,.16)}
+.nb-snap{transition:transform .22s cubic-bezier(.32,.72,0,1)!important}
+.nb-scrim{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:1}
+@media (prefers-reduced-motion:reduce){.nb-snap{transition:none!important}}
 /* Tanishtiruv kartasidagi ovoz tugmasi o'chirilgan holati */
 .teach-bub .au{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#D6E6F3;color:#2F6F9E;border:none;font-size:16px}
 .teach-bub .au.off{background:var(--line);color:var(--ink3)}
@@ -756,6 +762,22 @@ var SALES_VALUE_PRIME_PROMISE=null,SALES_VALUE_PRIME_DONE=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 function _apiGet(url){return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}})}
 function _apiPost(url,body,opts){var init={method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)};if(opts&&opts.keepalive)init.keepalive=true;return fetch(url,init)}
+/* Mini App yopilganda botga signal: chatdagi menyu bar tiklanadi. Telegram
+   yopilish haqida botga xabar bermaydi, shuning uchun signal shu yerdan ketadi.
+   sendBeacon custom header qo'ya olmaydi (init-data kerak) — keepalive'li
+   fetch ishlatiladi. Backend takrorni o'zi to'sadi, bu yerda ham bir marta. */
+var EXIT_PINGED=false;
+function pingMiniAppExit(){
+  if(EXIT_PINGED||!INIT_DATA)return;
+  EXIT_PINGED=true;
+  try{_apiPost("/api/v3/exit",{},{keepalive:true}).catch(function(){})}catch(e){}
+}
+try{
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="hidden")pingMiniAppExit();
+  });
+  window.addEventListener("pagehide",pingMiniAppExit);
+}catch(e){}
 /* Har bir Course sahifa ochilishi alohida analytics session. sessionStorage'da
    saqlash qayta ochilgan Mini Appni eski sessionga qo'shib yuborardi. */
 var COURSE_SESSION_ID="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
@@ -1891,6 +1913,7 @@ function authGateCopy(){
 }
 function openBotStart(){
   var url=botLinkUrl("?start=start");
+  pingMiniAppExit();
   try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
   try{if(tg&&tg.close){tg.close();return}}catch(e){}
   try{location.href=url}catch(e){}
@@ -4427,6 +4450,162 @@ function maybeShowAppOpenAd(ctx){
   CourseAds.config({lang:LANG,initData:INIT_DATA,level:(MAP&&MAP.level)||"hsk1"});
   setTimeout(function(){try{CourseAds.playAppOpen()}catch(e){}},600);
 }
+
+/* ---------- Orqaga qaytish ----------------------------------------------
+   Chap chetdan swipe, Telegram BackButton va Android hardware back —
+   uchalasi ham AYNAN bitta `NavBack.goBack()` ni chaqiradi. Yangi navigatsiya
+   mantig'i yaratilmaydi: har bir qatlam o'zining MAVJUD yopish funksiyasini
+   ishlatadi, shuning uchun `×` tugmasi bilan swipe bir xil natija beradi. */
+var NavBack={
+  EDGE:24,   /* faqat ekran chap chetidagi shu zonadan boshlangan swipe */
+  MIN:88,    /* shu masofadan keyin qaytish bajariladi (70-100px talabi) */
+  /* Qatlamlar ustkisidan boshlab tekshiriladi. */
+  LAYERS:[
+    {id:"tour",    close:function(){App.tourEnd()}},
+    {id:"sheet",   close:function(){App.closeSheet()}},
+    {id:"upov",    close:function(){closeUserProfile()}},
+    {id:"writeov", close:function(){App.closeWriter()}},
+    {id:"flow",    close:function(){App.exitFlow()}}
+  ],
+  /* Bular ochiq bo'lsa orqaga qaytish UMUMAN ishlamaydi: to'lov va reklama
+     gate'i hamda mukofot ketma-ketligi aylanib o'tilmasligi shart. */
+  BLOCK:["paywall","adov","levelup"],
+  _guarded:false,_g:null,
+  _on:function(id){var e=document.getElementById(id);return !!(e&&e.classList.contains("on"))},
+  blocked:function(){for(var i=0;i<NavBack.BLOCK.length;i++)if(NavBack._on(NavBack.BLOCK[i]))return true;return false},
+  top:function(){
+    if(NavBack.blocked())return null;
+    for(var i=0;i<NavBack.LAYERS.length;i++)if(NavBack._on(NavBack.LAYERS[i].id))return NavBack.LAYERS[i];
+    return null;
+  },
+  /* "history bo'lmasa hech narsa qilmasin" — qaytadigan joy bo'lmasa false. */
+  canGoBack:function(){
+    if(NavBack.blocked())return false;
+    return !!NavBack.top()||SCREEN!=="course";
+  },
+  goBack:function(){
+    if(NavBack.blocked())return false;
+    var l=NavBack.top();
+    if(l){try{l.close()}catch(e){}return true}
+    if(SCREEN!=="course"){
+      try{App.show("course")}catch(e){return false}
+      /* Oldingi sahifa chapdan yengil kirib keladi (jonli peek emas —
+         tab ekranlari `display` bilan almashadi, ularni gesture paytida
+         bir vaqtda ko'rsatish document scroll holatini buzardi). */
+      var c=$("#s-course");
+      if(c&&!NavBack._reduced()){
+        c.classList.add("nb-drag");c.style.transform="translateX(-22%)";c.style.opacity=".6";
+        requestAnimationFrame(function(){requestAnimationFrame(function(){
+          c.classList.remove("nb-drag");c.classList.add("nb-snap");
+          c.style.transform="";c.style.opacity="";
+          setTimeout(function(){c.classList.remove("nb-snap")},240);
+        })});
+      }
+      return true;
+    }
+    return false;
+  },
+  _reduced:function(){try{return window.matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return false}},
+
+  /* --- Telegram BackButton + Android hardware back --- */
+  sync:function(){
+    var can=NavBack.canGoBack();
+    try{if(tg&&tg.BackButton){can?tg.BackButton.show():tg.BackButton.hide()}}catch(e){}
+    /* Android "back" ni ushlash uchun bitta zaxira history yozuvi kerak.
+       U popstate'da iste'mol qilinadi va qaytish bo'lsa qayta qo'yiladi. */
+    if(can&&!NavBack._guarded){
+      try{history.pushState({hskNavBack:1},"");NavBack._guarded=true}catch(e){}
+    }
+  },
+  onPop:function(){
+    NavBack._guarded=false;
+    if(NavBack.goBack()){
+      try{history.pushState({hskNavBack:1},"");NavBack._guarded=true}catch(e){}
+      NavBack.sync();
+    }
+    /* Qaytadigan joy bo'lmasa hech narsa qilinmaydi — Telegram o'zi yopadi. */
+  },
+
+  /* --- Chap chetdan swipe --- */
+  _s:null,
+  target:function(){
+    var l=NavBack.top();
+    if(l)return document.getElementById(l.id);
+    if(SCREEN!=="course"){var e=$("#s-"+SCREEN);if(e&&e.classList.contains("on"))return e}
+    return null;
+  },
+  start:function(ev){
+    if(NavBack._s||ev.touches.length!==1)return;
+    var t=ev.touches[0];
+    if(t.clientX>NavBack.EDGE)return;              /* faqat chap chet */
+    if(!NavBack.canGoBack())return;
+    var el=NavBack.target();if(!el)return;
+    NavBack._s={x:t.clientX,y:t.clientY,el:el,live:false,dead:false,w:window.innerWidth||360};
+  },
+  move:function(ev){
+    var s=NavBack._s;if(!s||s.dead)return;
+    if(ev.touches.length!==1){NavBack.cancel();return}
+    var t=ev.touches[0],dx=t.clientX-s.x,dy=t.clientY-s.y;
+    if(!s.live){
+      /* Yo'nalish hal bo'lguncha kutamiz: vertikal harakat bo'lsa gesture
+         bekor qilinadi va sahifa odatdagidek scroll bo'ladi. */
+      if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){s.dead=true;return}
+      if(dx<10)return;
+      s.live=true;s.el.classList.add("nb-drag");
+      s.scrim=document.createElement("div");s.scrim.className="nb-scrim";
+      s.el.parentNode.insertBefore(s.scrim,s.el);
+    }
+    if(dx<0)dx=0;
+    /* Telegram/brauzerning o'z gorizontal gesture'ini bostiramiz. */
+    if(ev.cancelable)ev.preventDefault();
+    s.dx=dx;
+    s.el.style.transform="translateX("+dx+"px)";
+    if(s.scrim)s.scrim.style.opacity=String(Math.max(0,.18-(dx/s.w)*.18));
+  },
+  end:function(){
+    var s=NavBack._s;if(!s)return;
+    if(!s.live||s.dead){NavBack._s=null;return}
+    var done=(s.dx||0)>=NavBack.MIN;
+    var el=s.el,scrim=s.scrim;
+    el.classList.remove("nb-drag");el.classList.add("nb-snap");
+    el.style.transform=done?"translateX("+s.w+"px)":"";
+    if(scrim)scrim.style.opacity="0";
+    NavBack._s=null;
+    setTimeout(function(){
+      el.classList.remove("nb-snap");el.style.transform="";
+      if(scrim&&scrim.parentNode)scrim.parentNode.removeChild(scrim);
+      if(done){NavBack.goBack();NavBack.sync()}
+    },done?200:220);
+    if(done)haptic("light");
+  },
+  cancel:function(){
+    var s=NavBack._s;if(!s)return;
+    NavBack._s=null;
+    if(!s.live)return;
+    s.el.classList.remove("nb-drag");s.el.classList.add("nb-snap");s.el.style.transform="";
+    if(s.scrim&&s.scrim.parentNode)s.scrim.parentNode.removeChild(s.scrim);
+    setTimeout(function(){s.el.classList.remove("nb-snap")},220);
+  },
+
+  init:function(){
+    try{if(tg&&tg.BackButton&&tg.BackButton.onClick)tg.BackButton.onClick(function(){NavBack.goBack();NavBack.sync()})}catch(e){}
+    window.addEventListener("popstate",NavBack.onPop);
+    document.addEventListener("touchstart",NavBack.start,{passive:true});
+    document.addEventListener("touchmove",NavBack.move,{passive:false});
+    document.addEventListener("touchend",NavBack.end,{passive:true});
+    document.addEventListener("touchcancel",NavBack.cancel,{passive:true});
+    /* Qatlam ochilishi/yopilishini kuzatamiz — mavjud `open/close`
+       funksiyalariga tegmaslik uchun MutationObserver ishlatiladi. */
+    try{
+      var ids=NavBack.LAYERS.map(function(l){return l.id}).concat(NavBack.BLOCK)
+        .concat(["s-course","s-mashq","s-voice","s-rating","s-profile"]);
+      var ob=new MutationObserver(function(){NavBack.sync()});
+      ids.forEach(function(id){var e=document.getElementById(id);if(e)ob.observe(e,{attributes:true,attributeFilter:["class"]})});
+    }catch(e){}
+    NavBack.sync();
+  }
+};
+NavBack.init();
 </script>
 <script src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
 </body>

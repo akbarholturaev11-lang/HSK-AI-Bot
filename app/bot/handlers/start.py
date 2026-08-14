@@ -15,6 +15,7 @@ from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.daily_practice_service import DailyPracticeService
 from app.bot.utils.i18n import t
 from app.bot.utils.qa_entry import send_qa_entry
+from app.bot.utils.menu_bar import send_menu_bar
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.onboarding import (
     course_mode_entry_keyboard,
@@ -302,6 +303,15 @@ async def cmd_start(
         if getattr(user, "learning_mode", "qa") == "course":
             from app.bot.handlers.course import send_course_miniapp_entry
 
+            # Kurs kartasi rasm + inline tugma bilan ketadi, unga reply
+            # keyboard biriktirib bo'lmaydi. `/start` — userning ochiq
+            # harakati, shuning uchun menyu har safar tiklanadi (once=False).
+            await send_menu_bar(
+                session=session,
+                user=user,
+                respond=message.answer,
+                lang=user.language,
+            )
             await send_course_miniapp_entry(
                 session=session,
                 telegram_id=message.from_user.id,
