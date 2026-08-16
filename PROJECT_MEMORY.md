@@ -207,6 +207,31 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-16 — Mashq bo'limlari asosiy Mini App ichiga ko'chirila boshladi (pilot: Ieroglif tanish)
+
+Changed:
+- `course-v3.html` ga umumiy `#secov` overlay + `openSection()`/`closeSection()` qobig'i qo'shildi. Bo'lim endi alohida sahifaga o'tmaydi — shu hujjat ichida ochiladi.
+- "Ieroglif tanish" `course_v3_recognition.html` dan `RECOG` IIFE moduli sifatida ko'chirildi. CSS klasslari `rc-` prefiksi bilan, inline `onclick` lar `RECOG.*` orqali — global va CSS to'qnashuvlari yo'q.
+- `App.openRecog()` endi `RECOG.open()`. `NavBack.LAYERS` ga `secov` qatlami qo'shildi — chapdan swipe va Telegram BackButton bo'lim ichida ham ishlaydi.
+- Modul daraja/dars sonini `MAP.level` va `MAP.progress.completed` dan oladi — `/api/voice-practice/me` so'rovi butunlay olib tashlandi (bo'lim ochilishida bitta tarmoq so'rovi kam).
+- `loadJsOnce()` qo'shildi; `hsk-words.js` va `lesson_gate.js` kurs ekrani chizilgach fonda HAQIQATAN yuklanadi (ilgari faqat keshga tushirilardi).
+- Takroriy helperlar (`speak`, `beep`, `haptic`, `esc`, `tr`, `clog`, `initData`) ko'chirilmadi — asosiy ilovanikidan foydalaniladi.
+
+Why:
+- Har bo'lim alohida HTML sahifa bo'lgani uchun kirish va qaytish har safar to'liq sahifa yuklash edi. `defer`/kesh optimizatsiyalari (2026-08-16 oldingi yozuv) buni yengillashtirdi, lekin sababni yo'qotmadi.
+
+Files touched:
+- `app/static/course-v3.html`
+
+Risk:
+- `course_v3_recognition.html` fayli JOYIDA QOLDI (eski kesh/URL uchun), lekin ilovadan endi ochilmaydi. Kelajakda o'chirilsa, `_COURSE_V3_PAGES` dan ham chiqarilsin.
+- Bepul limit `sessionStorage` dagi `hsk_gate_recognition` ref'i bilan ishlaydi: bo'limni yopib-ochish yangi slot yemaydi. Bu xatti-harakat SAQLANDI — o'zgartirilsa bepul urinishlar noto'g'ri sarflanadi.
+- Boshqa bo'limlar ko'chirilganda shu naqsh takrorlansin: IIFE + o'z CSS prefiksi + `onclick` modul nomi orqali.
+
+Follow-up:
+- Qolgan bo'limlar: talaffuz, yodlash, test markazi, xatolar, AI Voice.
+- `hsk-lugat.html` alohida sahifa bo'lib qoladi (bot deep-link + dars ichidagi ✏️ iframe).
+
 ### 2026-08-16 — Course Mini App bo'lim ochilishi tezlashtirildi (render-blocking assetlar)
 
 Changed:
