@@ -725,7 +725,7 @@ button{cursor:pointer}
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <!-- Reklama moduli: dars yakuni bloki uchun (mashq bo'limlari ham shu moduldan foydalanadi) -->
-<script src="/course_v3_data/ads.js?v=20260812-5"></script>
+<script defer src="/course_v3_data/ads.js?v=20260812-5"></script>
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
@@ -1342,8 +1342,12 @@ function prefetchPracticeAssets(){
   if(PRACTICE_PREFETCHED)return;
   PRACTICE_PREFETCHED=true;
   idleRun(function(){
-    ["hsk-words.js?v=20260720","course_v3_data/memo.js?v=20260628"].forEach(function(href){
-      try{var l=document.createElement("link");l.rel="prefetch";l.as="script";l.href=href;document.head.appendChild(l)}catch(e){}
+    /* `rel=prefetch` iOS WKWebView'da (Telegram iPhone) qo'llab-quvvatlanmaydi —
+       ilgari bu optimizatsiya faqat Android'da ishlagan. Oddiy `fetch` esa ikkala
+       platformada ham faylni HTTP keshga joylaydi; fayllar `immutable` sarlavha
+       bilan beriladi, shuning uchun mashq bo'limi ochilganda tarmoqqa chiqmaydi. */
+    ["hsk-words.js?v=20260720","course_v3_data/memo.js?v=20260628","course_v3_data/lesson_gate.js?v=20260719"].forEach(function(href){
+      try{fetch(href,{cache:"force-cache"}).then(function(r){return r.ok?r.arrayBuffer():null}).catch(function(){})}catch(e){}
     });
   });
 }

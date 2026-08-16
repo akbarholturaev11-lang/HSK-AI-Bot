@@ -207,6 +207,30 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-16 — Course Mini App bo'lim ochilishi tezlashtirildi (render-blocking assetlar)
+
+Changed:
+- 6 ta sub-sahifada (`recognition`, `pronunciation`, `memorize`, `test`, `mistakes`, `voice`) cdnjs tabler-icons stylesheet `<head>` dan body oxiriga ko'chirildi — `course-v3.html` dagi kabi.
+- Og'ir skriptlarga `defer`: sub-sahifalarda `hsk-words.js` / `memo.js` / `lesson_gate.js` / `ads.js` / `desktop-download.js` (307–565 KB), `course-v3.html` da `ads.js`.
+- Sub-sahifalarga `SCRIPTS_READY` promise (DOMContentLoaded) qo'shildi: `daily-gate` va `voice-practice/me` so'rovlari endi parse paytida DARHOL ketadi, render esa `Promise.all([LV_READY,SCRIPTS_READY])` ni kutadi. `CourseAds.config` va `showLimit` ham `SCRIPTS_READY` ga bog'landi.
+- `course-v3.html` `prefetchPracticeAssets()`: `<link rel="prefetch">` o'rniga `fetch(href,{cache:"force-cache"})`; ro'yxatga `lesson_gate.js` qo'shildi.
+
+Why:
+- Mashq bo'limlari alohida HTML sahifa — har kirish to'liq sahifa yuklash. Ustiga 307–565 KB JS va tashqi cdnjs CSS render'ni to'sardi, server so'rovlari esa faqat shundan keyin boshlanardi.
+- `rel=prefetch` iOS WKWebView (Telegram iPhone) da qo'llab-quvvatlanmaydi — bu optimizatsiya faqat Android'da ishlagan.
+
+Files touched:
+- `app/static/course-v3.html`
+- `app/static/course_v3_recognition.html`, `course_v3_pronunciation.html`, `course_v3_memorize.html`, `course_v3_test.html`, `course_v3_mistakes.html`, `course_v3_voice.html`
+
+Risk:
+- Faqat frontend yuklash tartibi. Kurs tartibi, quiz/homework baholash, `daily-gate`/`ad-gate` server limitlari, obuna/to'lov/access logikasi o'zgarmadi.
+- `defer` tufayli `window.CourseAds` parse paytida MAVJUD EMAS. Sub-sahifalarga unga bog'liq yangi kod qo'shilsa, u `SCRIPTS_READY.then(...)` ichida bo'lishi shart.
+
+Follow-up:
+- Real Telegram WebView'da (iPhone + Android) smoke test.
+- Keyingi bosqich: sub-sahifalarni `course-v3.html` ichiga SPA qilib yig'ish, inline JS'ni versiyalangan `app.js` ga chiqarib `immutable` keshga o'tkazish, HTML uchun `no-store` → `no-cache` + ETag.
+
 ### 2026-08-14 — `sales_value_v1` HSK path sales experiment
 
 Changed:

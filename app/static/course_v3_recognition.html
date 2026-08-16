@@ -6,7 +6,6 @@
 <title>Ieroglif tanish</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <style>
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--jade:#2FA06A;--jadebg:#E3F4EA;--redbg:#FBEDEA;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -44,11 +43,18 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="top"><button class="ix" onclick="goBack()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pbar"><i id="prog"></i></div><span class="pill" id="score">0 ✓</span></div>
   <div class="body" id="body"><div class="loading">…</div></div>
 </div>
-<script src="hsk-words.js?v=20260720"></script>
-<script src="/course_v3_data/lesson_gate.js?v=20260719"></script>
-<script src="/course_v3_data/ads.js?v=20260812-5"></script>
-<script src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
+<script defer src="hsk-words.js?v=20260720"></script>
+<script defer src="/course_v3_data/lesson_gate.js?v=20260719"></script>
+<script defer src="/course_v3_data/ads.js?v=20260812-5"></script>
+<script defer src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
 <script>
+/* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
+   so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
+   so'rovi PARALLEL boradi, ketma-ket emas. */
+var SCRIPTS_READY=new Promise(function(res){
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){res()});
+  else res();
+});
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
 var L={ru:{listen:"Послушать",lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
@@ -70,7 +76,7 @@ function wordGate(h){return (window.HSK_WORD_GATE||{})[h]}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_recognition_limit&mode=subscription"}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
-if(window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium});
+SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
 var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
 /* Reklama-ruxsatidan bitta slot band qilish (server tomonda hisoblanadi). */
 function runAdGate(){
@@ -93,7 +99,8 @@ function runGate(ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"recognition",ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
-function showLimit(adAvailable){
+function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
+function showLimitNow(adAvailable){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:adAvailable,onSubscribe:goPremium,onContinueAd:startAdSupported,onBack:goBack});return}
   var adBtn=adAvailable?'<button onclick="startAdSupported()" style="width:100%;max-width:300px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:500"><i class="ti ti-player-play"></i> '+L.adCont+'</button>':'';
   var sub=adAvailable?L.adLimitSub:L.limitSub;
@@ -191,8 +198,9 @@ function finish(){
   document.getElementById("body").innerHTML='<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><p>'+L.doneSub+'</p><button onclick="replay()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';
   beep([523,659,784,1046]);haptic(true);
 }
-function start(){LV_READY.then(function(){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}makeQuiz();qi=0;score=0;document.getElementById("score").textContent="0 ✓";render()})}
+function start(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}makeQuiz();qi=0;score=0;document.getElementById("score").textContent="0 ✓";render()})}
 gateStart();
 </script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 </body>
 </html>

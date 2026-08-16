@@ -6,7 +6,6 @@
 <title>Тест-центр</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <style>
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--goldbg:#FAF0D3;--jade:#2FA06A;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -84,9 +83,16 @@ h1{font-size:23px}
   <div class="pl" id="placement"></div>
   <div class="pl" id="exam"></div>
 </div>
-<script src="/course_v3_data/ads.js?v=20260812-5"></script>
-<script src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
+<script defer src="/course_v3_data/ads.js?v=20260812-5"></script>
+<script defer src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
 <script>
+/* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
+   so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
+   so'rovi PARALLEL boradi, ketma-ket emas. */
+var SCRIPTS_READY=new Promise(function(res){
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){res()});
+  else res();
+});
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
 var L={ru:{title:"Тест-центр",sub:"Короткие тесты по разделам HSK: аудирование, чтение и письмо",pTitle:"Не знаете свой уровень?",pSub:"Пройдите короткий тест — мы определим подходящий уровень HSK.",pBtn:"Тест на уровень · ~5 мин",exHead:"Тесты HSK",eTitle:"Тест не загрузился",eSub:"Проверьте интернет и попробуйте открыть тест ещё раз.",eBack:"К списку",listen:"听力 Аудир.",read:"阅读 Чтение",write:"书写 Письмо",q:"вопросов",min:"мин",start:"Начать",limTitle:"Бесплатная попытка использована",limSub:"Одна попытка доступна бесплатно. Продолжите с рекламой или откройте Premium без ограничений.",limPay:"Открыть Premium",limBack:"Назад",adCont:"Продолжить с рекламой",adLimSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
@@ -118,7 +124,7 @@ var LV_READY=(function(){var idt=initData();if(!idt)return Promise.resolve();
 LV_READY.then(function(){try{renderHub()}catch(e){}});
 function lvNum(){return parseInt((LV||"").slice(3),10)||0}
 /* Bir martalik bepul urinish tugagach, AI bo'lmagan test reklama bilan davom etadi. */
-if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"training_test",level:(params.get("level")||"hsk1"),onSubscribe:goPremium});
+SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"training_test",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
 var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false,PENDING=null;
 /* "Reklama bilan davom etish" — PENDING'da qaysi imtihon/feature ekani saqlangan. */
 function startAdSupported(){
@@ -139,7 +145,8 @@ function runGate(feature,ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:feature,ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
-function showLimit(adAvailable){
+function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
+function showLimitNow(adAvailable){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:!!(adAvailable&&PENDING),onSubscribe:goPremium,onContinueAd:startAdSupported,onBack:showHub});return}
   $("hub").style.display="none";$("placement").classList.remove("on");$("exam").classList.remove("on");
   var e=$("empty");
@@ -311,5 +318,6 @@ function startLevel(){location.href="/course-v3.html?lang="+LANG+"&tab=course"}
 
 renderHub();
 </script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 </body>
 </html>

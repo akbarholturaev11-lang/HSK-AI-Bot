@@ -6,7 +6,6 @@
 <title>Talaffuz mashqi</title>
 <link rel="icon" href="/assets/hsk-ai-avatar.webp" type="image/webp">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 <style>
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--jade:#2FA06A;--jadebg:#E3F4EA;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -66,11 +65,18 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   </div>
   <div class="done" id="done"><div class="st han">音</div><h3 id="dh"></h3><p id="dp"></p><button onclick="replay()"><i class="ti ti-refresh"></i> <span id="db"></span></button></div>
 </div>
-<script src="hsk-words.js?v=20260720"></script>
-<script src="/course_v3_data/lesson_gate.js?v=20260719"></script>
-<script src="/course_v3_data/ads.js?v=20260812-5"></script>
-<script src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
+<script defer src="hsk-words.js?v=20260720"></script>
+<script defer src="/course_v3_data/lesson_gate.js?v=20260719"></script>
+<script defer src="/course_v3_data/ads.js?v=20260812-5"></script>
+<script defer src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
 <script>
+/* Og'ir skriptlar (`defer`) HTML parse tugagach ishga tushadi. Server
+   so'rovlari esa darhol ketadi — shu bilan JS yuklanishi va tarmoq
+   so'rovi PARALLEL boradi, ketma-ket emas. */
+var SCRIPTS_READY=new Promise(function(res){
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){res()});
+  else res();
+});
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
 var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",heard:"Я услышал:",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"Реклама на сегодня тоже закончилась. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",skip:"Пропустить",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
@@ -91,7 +97,7 @@ function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").sli
 function wordGate(h){return (window.HSK_WORD_GATE||{})[h]}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
-if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"pronunciation",level:(params.get("level")||"hsk1"),onSubscribe:goPremium});
+SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"pronunciation",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
 var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
 function runAdGate(){
   return fetch("/api/v3/practice/ad-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"pronunciation",ref:"ad:"+Date.now()})})
@@ -110,7 +116,8 @@ function runGate(ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"pronunciation",ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
-function showLimit(adAvailable){
+function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
+function showLimitNow(adAvailable){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:adAvailable,onSubscribe:goPremium,onContinueAd:startAdSupported,onBack:goBack});return}
   var d=document.getElementById('done');
   var adBtn=adAvailable?'<button onclick="startAdSupported()"><i class="ti ti-player-play"></i> '+L.adCont+'</button>':'';
@@ -209,7 +216,7 @@ function finish(){
   document.getElementById('ctrl').style.display='none';document.getElementById('prog').style.width='100%';
   document.getElementById('dh').textContent=okCount+' / '+list.length+' '+L.done;document.getElementById('dp').textContent=L.doneSub;document.getElementById('db').textContent=L.again;
   document.getElementById('done').classList.add('on');beep([523,659,784,1046]);haptic(true);}
-function start(){LV_READY.then(function(){
+function start(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
   // Pool tartibi: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR);
   // 2) yetmasa quyi levellar; 3) HSK1 boshida yaqin keyingi darslar; 4) fallback.
   var all=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length<=3});
@@ -238,5 +245,6 @@ function start(){LV_READY.then(function(){
 })}
 gateStart();
 </script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
 </body>
 </html>
