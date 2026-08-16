@@ -229,7 +229,8 @@ Risk:
 - Boshqa bo'limlar ko'chirilganda shu naqsh takrorlansin: IIFE + o'z CSS prefiksi + `onclick` modul nomi orqali.
 
 Follow-up:
-- Qolgan bo'limlar: talaffuz, yodlash, test markazi, xatolar, AI Voice.
+- Ko'chirilganlar: Ieroglif tanish (RECOG), Talaffuz (PRON).
+- Qolgan bo'limlar: yodlash, test markazi, xatolar, AI Voice.
 - `hsk-lugat.html` alohida sahifa bo'lib qoladi (bot deep-link + dars ichidagi ✏️ iframe).
 
 ### 2026-08-16 — Course Mini App bo'lim ochilishi tezlashtirildi (render-blocking assetlar)
