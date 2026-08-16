@@ -56,6 +56,7 @@ from app.services.subscription_churn_service import SubscriptionChurnService
 from app.services.ad_campaign_service import AdCampaignService
 from app.services.release_feedback_service import ReleaseFeedbackService
 from app.services.discount_notification_service import DiscountNotificationService
+from app.services.discount_translation_service import DiscountTranslationService
 from app.services.partner_service import PartnerService
 from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
@@ -3112,6 +3113,21 @@ async def admin_miniapp_user_give_access(request: Request):
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
         user, extended = grant
         await session.commit()
+        # Qo'lda obuna berilganini user bilmasa, ochilgan narsadan
+        # foydalanmaydi. Xabar yuborilmasa ham amal bajarilgan bo'ladi.
+        try:
+            await bot.send_message(
+                chat_id=target_id,
+                text=t(
+                    "admin_access_granted_notice",
+                    user.language or "ru",
+                    days=duration_days,
+                    end_date=user.end_date.strftime("%d.%m.%Y") if user.end_date else "—",
+                ),
+                parse_mode="HTML",
+            )
+        except Exception:
+            logger.exception("Manual subscription notice not delivered to %s", target_id)
     logger.info(
         "admin_manual_subscription_granted admin_id=%s target_id=%s duration_days=%s extended=%s end_date=%s",
         telegram_id,
@@ -3176,6 +3192,18 @@ async def admin_miniapp_user_block(request: Request):
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
         await session.commit()
         status = user.status
+        # Bloklashda xabar yuborilmaydi: blok odatda suiiste'mol uchun qo'yiladi
+        # va ogohlantirish bahs hamda yangi akkaunt ochishga turtki beradi.
+        # Blokdan chiqarish esa yaxshi xabar — user qaytib kelishi kerak.
+        if not blocked:
+            try:
+                await bot.send_message(
+                    chat_id=target_id,
+                    text=t("admin_unblocked_notice", user.language or "ru"),
+                    parse_mode="HTML",
+                )
+            except Exception:
+                logger.exception("Unblock notice not delivered to %s", target_id)
     # Mini App guard cache'i eskirmasin: blok/blokdan chiqarish darhol ishlasin.
     invalidate_block_cache(target_id)
     return JSONResponse(content={"ok": True, "status": status, "blocked": status == "blocked"})
@@ -3690,11 +3718,29 @@ async def admin_miniapp_campaign_create(request: Request):
                         status_code=404,
                         content={"ok": False, "error": "target_user_not_found"},
                     )
+            # Sarlavha va sabab uch tilga o'giriladi — aks holda tojik/rus
+            # foydalanuvchiga admin yozgan xom matn borardi. Bot admin oqimi
+            # ham shunday qiladi (`admin_discount.py:161`). AI o'chiq bo'lsa
+            # servisning o'zi asl matnni qaytaradi.
+            reason_text = text[:500]
+            try:
+                i18n = await DiscountTranslationService().translate_campaign_texts(
+                    title, reason_text
+                )
+            except Exception:
+                logger.exception("Discount campaign translation failed; keeping raw text")
+                i18n = {}
             # Bitta foydalanuvchiga chegirmada segment filtrlari tozalanadi —
             # `admin_discount.py` dagi bot admin oqimi ham shunday qiladi.
             await DiscountCampaignRepository(session).create(
                 title=title,
-                reason=text[:500],
+                title_tj=i18n.get("title_tj") or title,
+                title_ru=i18n.get("title_ru") or title,
+                title_uz=i18n.get("title_uz") or title,
+                reason=reason_text,
+                reason_tj=i18n.get("reason_tj") or reason_text,
+                reason_ru=i18n.get("reason_ru") or reason_text,
+                reason_uz=i18n.get("reason_uz") or reason_text,
                 percent=percent,
                 starts_at=now,
                 ends_at=now + timedelta(hours=hours),

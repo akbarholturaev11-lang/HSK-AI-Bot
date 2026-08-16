@@ -5887,6 +5887,36 @@ Risk:
 
 ---
 
+### 2026-08-14 — Chegirma tarjimasi va admin amallari xabarlari
+
+Changed:
+- `main.py` `campaigns/create` — chegirma sarlavhasi va sababi
+  `DiscountTranslationService.translate_campaign_texts()` orqali tj/ru/uz ga
+  o'giriladi va `title_*`/`reason_*` ustunlariga yoziladi.
+- `users/give-access` — obuna berilgach userga qisqa xabar (muddat + tugash
+  sanasi), uning tilida.
+- `users/block` — **blokda xabar yo'q**, faqat blokdan chiqarishda yuboriladi.
+- `i18n.py` — `admin_access_granted_notice`, `admin_unblocked_notice` (3 til).
+
+Why:
+- Mini App'dan yaratilgan chegirmada `title_tj/ru/uz` bo'sh qolardi va
+  `discount_notification_service._notification_text()` `campaign.title` ga
+  tushib, tojik/rus foydalanuvchiga admin yozgan o'zbekcha matn borardi.
+  Bot admin oqimi (`admin_discount.py:161`) sarlavhani ilgari ham tarjima
+  qilardi — Mini App yo'li orqada qolgan edi.
+- Qo'lda obuna berilgani haqida user hech qanday xabar olmasdi.
+
+Risk:
+- Chegirma yaratishda +1 AI chaqiruv (token va kechikish). AI o'chiq bo'lsa
+  servis asl matnni qaytaradi; xato bo'lsa `except` asl matnga tushadi —
+  `title_*` hech qachon `None` bo'lib qolmaydi.
+- Bloklashda ataylab xabar yuborilmaydi: ogohlantirish bahsga va yangi akkaunt
+  ochishga turtki beradi.
+- Xabar yuborilmasa ham asosiy amal (obuna/blok) bajarilgan bo'ladi —
+  `send_message` alohida `try` ichida.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

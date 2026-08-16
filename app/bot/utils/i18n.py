@@ -16,6 +16,8 @@ TEXTS = {
         "trial_24h_info_gemini": "🎁 <b>Дастрасии ройгон кушода шуд!</b>\n\n<blockquote>Як дарси интихобшудаи курсро пурра месанҷед.\n\nМатн бе лимит, сурат ва овоз рӯзе 5-тогӣ.</blockquote>",
         "send_first_message": "Акнун калима, ҷумла ё саволи хитоии худро фиристед — дарсро аз ҳамон ҷо оғоз мекунем.",
         "menu_bar_hint": "⌨️ Аз менюи поён профил, обуна ва реҷаи курсро мекушоед.",
+        "admin_access_granted_notice": "✅ <b>Обунаи шумо фаъол шуд</b>\n\n<blockquote>Мӯҳлат: {days} рӯз\nСанаи анҷом: {end_date}</blockquote>",
+        "admin_unblocked_notice": "🔓 <b>Ҳисоби шумо аз нав кушода шуд</b>\n\n<blockquote>Шумо метавонед боз аз бот истифода баред.</blockquote>",
         "level_beginner": "Аз 0",
 
         "menu_start_lesson": "📘 Оғози дарс",
@@ -109,6 +111,8 @@ TEXTS = {
         "trial_24h_info_gemini": "🎁 <b>Бесплатный доступ открыт!</b>\n\n<blockquote>Вы полностью попробуете один выбранный урок курса.\n\nТекст без лимита, фото и голосовые — по 5 в день.</blockquote>",
         "send_first_message": "Теперь отправьте китайское слово, фразу или свой вопрос — и начнём урок с этого.",
         "menu_bar_hint": "⌨️ Через меню снизу открываются профиль, подписка и режим курса.",
+        "admin_access_granted_notice": "✅ <b>Ваша подписка активирована</b>\n\n<blockquote>Срок: {days} дн.\nДата окончания: {end_date}</blockquote>",
+        "admin_unblocked_notice": "🔓 <b>Ваш аккаунт снова открыт</b>\n\n<blockquote>Вы снова можете пользоваться ботом.</blockquote>",
         "level_beginner": "С нуля",
 
         "menu_start_lesson": "📘 Начать урок",
@@ -201,6 +205,8 @@ TEXTS = {
         "trial_24h_info_gemini": "🎁 <b>Bepul kirish ochildi!</b>\n\n<blockquote>Bitta tanlangan kurs darsini to‘liq sinab ko‘rasiz.\n\nMatn cheksiz, rasm va ovoz kuniga 5 tadan.</blockquote>",
         "send_first_message": "Endi xitoycha so’z, gap yoki savolingizni yuboring — darsni o’sha yerdan boshlaymiz.",
         "menu_bar_hint": "⌨️ Pastdagi menyudan profil, obuna va kurs rejimini ochasiz.",
+        "admin_access_granted_notice": "✅ <b>Obunangiz faollashtirildi</b>\n\n<blockquote>Muddat: {days} kun\nTugash sanasi: {end_date}</blockquote>",
+        "admin_unblocked_notice": "🔓 <b>Hisobingiz qayta ochildi</b>\n\n<blockquote>Botdan yana foydalanishingiz mumkin.</blockquote>",
         "level_beginner": "0 dan",
 
         "menu_start_lesson": "📘 Darsni boshlash",
