@@ -817,6 +817,77 @@ button{cursor:pointer}
 #mk-root .lim .sh p{font-size:14px;color:var(--ink2);line-height:1.5;margin-bottom:18px}
 #mk-root .lim .sh .go{width:100%;background:var(--cin);color:#fff;border:none;border-radius:13px;padding:15px;font-family:inherit;font-size:15px;font-weight:500;margin-bottom:9px}
 #mk-root .lim .sh .lt{width:100%;background:none;border:none;color:var(--ink2);font-family:inherit;font-size:14px;padding:9px}
+/* --- Test markazi (#tc-root ichida scope'langan) --- */
+#tc-root{flex:1;min-height:0;overflow-y:auto;max-width:480px;margin:0 auto;width:100%;position:relative;padding:calc(14px + var(--safe-t)) 16px calc(20px + var(--safe-b))}
+#tc-root .han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
+#tc-root .top{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+#tc-root .ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
+#tc-root h1{font-size:23px}
+#tc-root .sub{font-size:13px;color:var(--ink2);margin:2px 0 14px}
+#tc-root .place{background:var(--ink);color:#fff;border-radius:18px;padding:17px;position:relative;overflow:hidden;margin-bottom:16px}
+#tc-root .place .gw{position:absolute;right:-8px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
+#tc-root .place b{font-size:16px;font-weight:500;display:flex;align-items:center;gap:8px}
+#tc-root .place p{margin:6px 0 13px;font-size:13px;color:rgba(255,255,255,.72);line-height:1.45}
+#tc-root .place button{background:var(--gold);color:#3a2c08;border:none;border-radius:12px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px}
+#tc-root .sech{font-size:13px;color:var(--ink2);font-weight:500;margin:8px 2px 9px}
+#tc-root .ex{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:11px;font-family:inherit;color:var(--ink)}
+#tc-root .ex .lvl{width:52px;height:52px;border-radius:14px;background:var(--cin);border:2px solid var(--cin2);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
+#tc-root .ex .lvl b{font-size:11px;opacity:.85}
+#tc-root .ex .lvl span{font-size:20px;font-weight:600}
+#tc-root .ex .et{flex:1}
+#tc-root .ex .et b{font-size:15px;font-weight:500}
+#tc-root .ex .et small{font-size:12px;color:var(--ink2);display:block;margin-top:2px}
+#tc-root .ex .et .tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+#tc-root .ex .et .tags span{font-size:10px;background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:2px 7px;color:var(--ink2)}
+#tc-root .ex .go{background:var(--cinbg);color:var(--cin2);border:none;border-radius:11px;padding:9px 13px;font-family:inherit;font-size:13px;font-weight:500;flex-shrink:0}
+#tc-root .empty{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:70px 24px;min-height:60vh}
+#tc-root .empty.on{display:flex}
+#tc-root .empty .ic{width:84px;height:84px;border-radius:22px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:16px}
+#tc-root .empty h3{font-size:19px;font-weight:500;margin:0 0 6px}
+#tc-root .empty p{font-size:14px;color:var(--ink2);margin:0 0 22px;line-height:1.5}
+#tc-root .empty button{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:13px;padding:12px 22px;font-family:inherit;font-size:14px;font-weight:500}
+#tc-root .pl{display:none}
+#tc-root .pl.on{display:block}
+#tc-root .pl .ptop{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+#tc-root .pl .ix2{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
+#tc-root .pl .pbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
+#tc-root .pl .pbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .35s}
+#tc-root .pl .lvtag{font-size:11px;font-weight:500;color:var(--cin2);background:var(--cinbg);border-radius:12px;padding:5px 10px}
+#tc-root .pl .qlead{font-size:13px;color:var(--ink2);font-weight:500;margin:4px 2px 12px}
+#tc-root .pl .qcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 18px;text-align:center;margin-bottom:16px}
+#tc-root .pl .qcard .h{font-size:46px;line-height:1}
+#tc-root .pl .qcard .py{font-size:16px;color:var(--cin2);font-weight:500;margin-top:6px}
+#tc-root .pl .opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:13px;padding:14px 15px;margin-bottom:10px;font-family:inherit;font-size:15px;color:var(--ink)}
+#tc-root .pl .opt .k{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink3)}
+#tc-root .pl .opt.sel{border-color:var(--cin);background:var(--cinbg)}
+#tc-root .pl .res{text-align:center;padding:14px 6px 0}
+#tc-root .pl .res .lvl{width:108px;height:108px;border-radius:28px;background:var(--cin);border:3px solid var(--gold);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px}
+#tc-root .pl .res .lvl small{font-size:13px;opacity:.85}
+#tc-root .pl .res .lvl b{font-size:34px;font-weight:600;line-height:1}
+#tc-root .pl .res h3{font-size:20px;font-weight:500;margin:0 0 4px}
+#tc-root .pl .res p{font-size:13px;color:var(--ink2);margin:0 0 16px;line-height:1.5}
+#tc-root .pl .meter{margin-bottom:18px}
+#tc-root .pl .mrow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#tc-root .pl .mrow .ml{width:54px;font-size:12px;color:var(--ink2);text-align:left}
+#tc-root .pl .mrow .mb{flex:1;height:8px;background:var(--line);border-radius:5px;overflow:hidden}
+#tc-root .pl .mrow .mb>i{display:block;height:100%;border-radius:5px;background:var(--jade)}
+#tc-root .pl .mrow .mv{width:36px;font-size:12px;color:var(--ink2);text-align:right}
+#tc-root .pl .mrow.rec .ml{color:var(--cin2);font-weight:500}
+#tc-root .pl .xp-line{display:inline-block;color:#8A6300;background:var(--goldbg);border-radius:10px;padding:5px 11px;font-weight:600;margin-bottom:14px}
+#tc-root .pl .review-list{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;margin:0 0 16px}
+#tc-root .pl .review-list>b{display:block;font-size:13px;margin-bottom:8px}
+#tc-root .pl .review-list>div{padding:8px 0;border-top:1px solid var(--line);font-size:12px;line-height:1.4}
+#tc-root .pl .review-list>div span,#tc-root .pl .review-list>div strong,#tc-root .pl .review-list>div small{display:block}
+#tc-root .pl .review-list>div strong{color:var(--jade);margin-top:3px}
+#tc-root .pl .review-list>div small{color:var(--cin2);margin-top:2px}
+#tc-root .pl .cta{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+#tc-root .pl .ghost{width:100%;background:none;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:13px;font-family:inherit;font-size:14px;font-weight:500}
+#tc-root .pl .abtn{width:84px;height:84px;border-radius:50%;background:var(--cin);border:none;color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+#tc-root .pl .ahint{font-size:13px;color:var(--ink2);margin-top:2px}
+#tc-root .pl .qzh{font-size:26px;line-height:1.3;margin-top:8px}
+#tc-root .pl .opt small{display:block;font-size:12px;color:var(--ink2);font-weight:400;margin-top:2px}
+#tc-root .pl .opt .py{font-size:12px;color:var(--cin2);font-weight:400;margin-left:4px}
+
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20260812-3" rel="stylesheet">
 </head>
@@ -1425,7 +1496,7 @@ var App={
   openDict:function(){location.href="/hsk-lugat.html?theme=light&lang="+LANG},
   openRecog:function(){RECOG.open()},
   openPron:function(){PRON.open()},
-  openTest:function(){location.href="/course_v3_test.html?lang="+LANG+"&level="+((MAP&&MAP.level)||"hsk1")},
+  openTest:function(){TEST.open()},
   openMistakes:function(){MIST.open()},
   openHelp:function(){var t=T();var c=(MAP&&MAP.admin_contact)||"";
     var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(t.helpBtn)+'</button>'
@@ -5183,6 +5254,269 @@ var MIST=(function(){
   return API;
 })();
 window.MIST=MIST;
+
+
+/* ---------- Test markazi ---------- */
+var TEST=(function(){
+  var LD={ru:{title:"Тест-центр",sub:"Короткие тесты по разделам HSK: аудирование, чтение и письмо",pTitle:"Не знаете свой уровень?",pSub:"Пройдите короткий тест — мы определим подходящий уровень HSK.",pBtn:"Тест на уровень · ~5 мин",exHead:"Тесты HSK",eTitle:"Тест не загрузился",eSub:"Проверьте интернет и попробуйте открыть тест ещё раз.",eBack:"К списку",listen:"听力 Аудир.",read:"阅读 Чтение",write:"书写 Письмо",q:"вопросов",min:"мин",start:"Начать",limTitle:"Бесплатная попытка использована",limSub:"Одна попытка доступна бесплатно. Продолжите с рекламой или откройте Premium без ограничений.",limPay:"Открыть Premium",limBack:"Назад",adCont:"Продолжить с рекламой",adLimSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
+  uz:{title:"Test markazi",sub:"HSK bo'limlari bo'yicha qisqa sinov: tinglash, o'qish va yozish",pTitle:"Darajangizni bilmaysizmi?",pSub:"Qisqa testdan o'ting — sizga mos HSK darajasini aytamiz.",pBtn:"Daraja aniqlash testi · ~5 daq",exHead:"HSK testlari",eTitle:"Test yuklanmadi",eSub:"Internetni tekshirib, testni yana ochib ko'ring.",eBack:"Ro'yxatga",listen:"听力 Tinglash",read:"阅读 O'qish",write:"书写 Yozish",q:"savol",min:"daq",start:"Boshlash",limTitle:"Bepul urinish ishlatildi",limSub:"Bitta urinish bepul. Reklama bilan davom eting yoki Premium orqali cheklovsiz ishlang.",limPay:"Premium ochish",limBack:"Orqaga",adCont:"Reklama bilan davom etish",adLimSub:"Bepul urinish ishlatildi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
+  tj:{title:"Маркази тест",sub:"Санҷиши кӯтоҳ аз бахшҳои HSK: шунидан, хондан ва навиштан",pTitle:"Сатҳи худро намедонед?",pSub:"Тести кӯтоҳро гузаред — сатҳи мувофиқи HSK-ро муайян мекунем.",pBtn:"Тести муайянкунии сатҳ · ~5 дақ",exHead:"Тестҳои HSK",eTitle:"Тест бор нашуд",eSub:"Интернетро санҷида, тестро боз кушоед.",eBack:"Ба рӯйхат",listen:"听力 Шунидан",read:"阅读 Хондан",write:"书写 Навиштан",q:"савол",min:"дақ",start:"Оғоз",limTitle:"Кӯшиши ройгон истифода шуд",limSub:"Як кӯшиш ройгон аст. Бо реклама идома диҳед ё Premium кушоед.",limPay:"Кушодани Premium",limBack:"Бозгашт",adCont:"Идома бо реклама",adLimSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}, EMD={ru:{tfTrue:"Верно",tfFalse:"Неверно",listen:"Прослушать",q:"Вопрос",of:"из",result:"Результат",passed:"Тест пройден!",failed:"Пока не пройден",passSub:"Вы готовы к уровню HSK ",failSub:"Продолжайте подготовку к HSK ",again:"Пройти заново",toList:"К списку тестов",saving:"Проверяем на сервере…",saveErr:"Результат не сохранился. Повторите отправку.",retry:"Отправить ещё раз",mistakes:"Повторите эти ответы",xp:"XP получено",sec:{listening:"Аудирование",reading:"Чтение",writing:"Письмо"}},
+  uz:{tfTrue:"To'g'ri",tfFalse:"Noto'g'ri",listen:"Tinglash",q:"Savol",of:"/",result:"Natija",passed:"Test topshirildi!",failed:"Hozircha o'tilmadi",passSub:"Siz HSK darajasiga tayyorsiz: HSK ",failSub:"Tayyorgarlikni davom ettiring: HSK ",again:"Qayta topshirish",toList:"Testlar ro'yxatiga",saving:"Server tekshiryapti…",saveErr:"Natija saqlanmadi. Yana yuboring.",retry:"Qayta yuborish",mistakes:"Shu javoblarni takrorlang",xp:"XP olindi",sec:{listening:"Tinglash",reading:"O'qish",writing:"Yozish"}},
+  tj:{tfTrue:"Дуруст",tfFalse:"Нодуруст",listen:"Шунидан",q:"Савол",of:"аз",result:"Натиҷа",passed:"Тест супорида шуд!",failed:"Ҳоло гузаронида нашуд",passSub:"Шумо ба сатҳи HSK тайёред: HSK ",failSub:"Омодагиро давом диҳед: HSK ",again:"Аз нав супоридан",toList:"Ба рӯйхати тестҳо",saving:"Сервер месанҷад…",saveErr:"Натиҷа сабт нашуд. Боз фиристед.",retry:"Боз фиристодан",mistakes:"Ин ҷавобҳоро такрор кунед",xp:"XP гирифта шуд",sec:{listening:"Шунидан",reading:"Хондан",writing:"Навиштан"}}}, PTD={ru:{lead:"Выберите значение",rec:"Рекомендуем",recSub:"По результату вам подходит уровень HSK ",back:"Вернуться к курсу",retake:"Пройти заново",lvl:"HSK"},
+  uz:{lead:"Ma'noni tanlang",rec:"Tavsiya",recSub:"Natijangiz bo'yicha sizga mos daraja — HSK ",back:"Kursga qaytish",retake:"Qayta test",lvl:"HSK"},
+  tj:{lead:"Маъноро интихоб кунед",rec:"Тавсия",recSub:"Аз рӯи натиҷа сатҳи мувофиқ барои шумо — HSK ",back:"Ба курс баргаштан",retake:"Аз нав",lvl:"HSK"}};
+  var QP=[
+  {lvl:1,h:"谢谢",py:"xièxie",o:[{ru:"спасибо",uz:"rahmat",tj:"ташаккур",ok:1},{ru:"привет",uz:"salom",tj:"салом"},{ru:"пока",uz:"xayr",tj:"хайр"}]},
+  {lvl:1,h:"再见",py:"zàijiàn",o:[{ru:"до свидания",uz:"xayr",tj:"хайр",ok:1},{ru:"спасибо",uz:"rahmat",tj:"ташаккур"},{ru:"да",uz:"ha",tj:"ҳа"}]},
+  {lvl:2,h:"已经",py:"yǐjīng",o:[{ru:"уже",uz:"allaqachon",tj:"аллакай",ok:1},{ru:"ещё",uz:"hali",tj:"ҳоло"},{ru:"снова",uz:"yana",tj:"боз"}]},
+  {lvl:2,h:"因为",py:"yīnwèi",o:[{ru:"потому что",uz:"chunki",tj:"зеро",ok:1},{ru:"но",uz:"lekin",tj:"аммо"},{ru:"поэтому",uz:"shuning uchun",tj:"барои ҳамин"}]},
+  {lvl:3,h:"虽然",py:"suīrán",o:[{ru:"хотя",uz:"garchi",tj:"ҳарчанд",ok:1},{ru:"если",uz:"agar",tj:"агар"},{ru:"потому что",uz:"chunki",tj:"зеро"}]},
+  {lvl:4,h:"表示",py:"biǎoshì",o:[{ru:"выражать",uz:"ifodalamoq",tj:"ифода кардан",ok:1},{ru:"заканчивать",uz:"tugatmoq",tj:"тамом кардан"},{ru:"начинать",uz:"boshlamoq",tj:"оғоз кардан"}]}
+];
+  function L(){return LD[LANG]||LD.ru}
+  function EM(){return EMD[LANG]||EMD.ru}
+  function PT(){return PTD[LANG]||PTD.ru}
+  function el(id){return document.getElementById(id)}
+  function live(){return SECTION===API}
+  var MINE_T={ru:"Ваш уровень",uz:"Sizning darajangiz",tj:"Дараҷаи шумо"};
+  var EXAMS=[{lvl:"1",q:14,min:25,tags:["listen","read"]},{lvl:"2",q:12,min:30,tags:["listen","read"]},
+             {lvl:"3",q:12,min:35,tags:["listen","read","write"]},{lvl:"4",q:12,min:40,tags:["listen","read","write"]}];
+  var AD_SESSION=false,AD_MID=false,AD_END=false,PENDING=null,GATE_REFS={};
+  var EXD=null,EQ=[],ei=0,eans=[],EX_SUBMITTING=false;
+  var pi=0,pans=[],PQ=[];
+
+  /* Daraja MAP dan — /api/voice-practice/me so'rovi kerak emas. */
+  function lvNum(){var m=String((MAP&&MAP.level)||"").match(/hsk([1-4])/);return m?Number(m[1]):0}
+  function jsq(s){return String(s==null?"":s).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/[\r\n]/g," ").replace(/</g,"\\u003c")}
+  function examLabel(o){return typeof o==="string"?o:(o&&o.text)||""}
+  function examStem(q){return typeof q.prompt==="string"?q.prompt:(q.prompt&&(q.prompt[LANG]||q.prompt.ru||q.prompt.uz||q.prompt.tj))||""}
+  function olang(o){return o[LANG]||o.ru}
+  function shuffled(a){var out=a.slice();for(var i=out.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=out[i];out[i]=out[j];out[j]=x}return out}
+  function premium(){App.goPay("v3_test_limit")}
+
+  function shell(){
+    return '<div id="tc-root">'
+      +'<div id="tc-hub"><div class="top"><button class="ix" onclick="TEST.close()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1 id="tc-title"></h1></div>'
+      +'<div class="sub" id="tc-sub"></div>'
+      +'<div class="place"><span class="gw han">级</span><b><i class="ti ti-target"></i> <span id="tc-ptitle"></span></b><p id="tc-psub"></p><button onclick="TEST.open2(\'placement\')"><i class="ti ti-player-play"></i> <span id="tc-pbtn"></span></button></div>'
+      +'<div class="sech" id="tc-exhead"></div><div id="tc-exlist"></div></div>'
+      +'<div class="empty" id="tc-empty"></div>'
+      +'<div class="pl" id="tc-placement"></div><div class="pl" id="tc-exam"></div></div>';
+  }
+
+  /* ---- gate ---- */
+  function newRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
+  function gateRef(key,create){var k="hsk_gate_"+key,v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=GATE_REFS[k]||""}if(!v&&create){v=newRef();GATE_REFS[k]=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
+  function clearGateRef(key){var k="hsk_gate_"+key;delete GATE_REFS[k];try{sessionStorage.removeItem(k)}catch(e){}}
+  function runGate(feature,ref){
+    return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,feature:feature,ref:ref})})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
+  }
+
+  /* ---- hub ---- */
+  function renderHub(){
+    if(!el("tc-title"))return;
+    var t=L();
+    el("tc-title").textContent=t.title;el("tc-sub").textContent=t.sub;
+    el("tc-ptitle").textContent=t.pTitle;el("tc-psub").textContent=t.pSub;el("tc-pbtn").textContent=t.pBtn;
+    el("tc-exhead").textContent=t.exHead;
+    var myN=lvNum(),mine_t=MINE_T[LANG]||MINE_T.uz;
+    var list=EXAMS.slice().sort(function(a,b){return (Number(b.lvl)===myN)-(Number(a.lvl)===myN)});
+    el("tc-exlist").innerHTML=list.map(function(e){
+      var mine=Number(e.lvl)===myN;
+      var tags=e.tags.map(function(x){return '<span>'+esc(t[x])+'</span>'}).join("");
+      if(mine)tags='<span style="background:var(--cinbg);color:var(--cin2);font-weight:600"><i class="ti ti-target-arrow"></i> '+esc(mine_t)+'</span>'+tags;
+      return '<div class="ex"'+(mine?' style="border-color:var(--cin)"':'')+' onclick="TEST.open2(\'hsk'+e.lvl+'\')"><div class="lvl"><b>HSK</b><span>'+e.lvl+'</span></div><div class="et"><b>HSK '+e.lvl+'</b><small>'+e.q+' '+esc(t.q)+' · '+e.min+' '+esc(t.min)+'</small><div class="tags">'+tags+'</div></div><span class="go">'+esc(t.start)+'</span></div>';
+    }).join("");
+  }
+  function showHub(){try{stopSpeak()}catch(e){}
+    el("tc-hub").style.display="block";el("tc-empty").classList.remove("on");
+    el("tc-placement").classList.remove("on");el("tc-exam").classList.remove("on");}
+  function showEmpty(){
+    var t=L();
+    el("tc-hub").style.display="none";el("tc-placement").classList.remove("on");el("tc-exam").classList.remove("on");
+    el("tc-empty").innerHTML='<div class="ic"><i class="ti ti-wifi-off"></i></div><h3>'+esc(t.eTitle)+'</h3><p>'+esc(t.eSub)+'</p><button onclick="TEST.showHub()"><i class="ti ti-arrow-left"></i> '+esc(t.eBack)+'</button>';
+    el("tc-empty").classList.add("on");
+  }
+  function showLimit(adAvailable){
+    var t=L();
+    if(window.CourseAds&&CourseAds.showLimitPromo){
+      CourseAds.showLimitPromo({adAvailable:!!(adAvailable&&PENDING),onSubscribe:premium,onContinueAd:adStart,onBack:showHub});return;
+    }
+    el("tc-hub").style.display="none";el("tc-placement").classList.remove("on");el("tc-exam").classList.remove("on");
+    var e=el("tc-empty");
+    var adBtn=(adAvailable&&PENDING)?'<button onclick="TEST.adStart()"><i class="ti ti-player-play"></i> '+esc(t.adCont)+'</button>':'';
+    e.innerHTML='<div class="ic"><i class="ti ti-lock"></i></div><h3>'+esc(t.limTitle)+'</h3><p>'+esc((adAvailable&&PENDING)?t.adLimSub:t.limSub)+'</p>'+adBtn
+      +'<button onclick="TEST.premium()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--cin2)"><i class="ti ti-crown"></i> '+esc(t.limPay)+'</button>'
+      +'<button onclick="TEST.close()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--ink2)">'+esc(t.limBack)+'</button>';
+    e.classList.add("on");
+  }
+  function adStart(){
+    if(!PENDING)return;
+    var feature=PENDING.feature,which=PENDING.which,ref=PENDING.accessRef;
+    if(!window.CourseAds){showEmpty();return}
+    CourseAds.config({feature:feature});
+    CourseAds.play("start",ref).then(function(){
+      AD_SESSION=true;AD_MID=false;AD_END=false;
+      if(which==="placement")runPlacement();else openExam2(which,true);
+    }).catch(function(){AD_SESSION=false;showEmpty()});
+  }
+  function open2(which){
+    var feature=which==="placement"?"placement":"training_test";
+    var ref=gateRef(feature+":"+which,true);
+    PENDING={which:which,feature:feature,accessRef:ref};
+    if(which!=="placement"){AD_SESSION=false;AD_MID=false;AD_END=false;openExam2(which,false);return}
+    runGate(feature,ref).then(function(o){
+      if(!live())return;
+      if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
+      if(!o.ok||!o.j||!o.j.ok){showEmpty();return}
+      AD_SESSION=false;openExam2(which);
+    }).catch(function(){if(live()){AD_SESSION=false;showEmpty()}});
+  }
+  function openExam2(which,adSupported){
+    if(which==="placement")return runPlacement();
+    var ref=(PENDING&&PENDING.accessRef)||gateRef("training_test:"+which,true);
+    fetch("/api/v3/exams/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({level:which,lang:LANG,access_ref:ref,ad_supported:!!adSupported})})
+      .then(function(r){return r.json().then(function(d){return {ok:r.ok,status:r.status,d:d}})})
+      .then(function(o){
+        if(!live())return;
+        var data=o.d&&o.d.session;
+        if(!o.ok||!o.d||!o.d.ok){
+          var err=(o.d&&o.d.error)||"";
+          if(o.status===403||err==="free_feature_limit_reached"||err==="ad_authorization_required"){showLimit(!(o.d&&o.d.ad&&o.d.ad.available===false));return}
+          throw new Error("exam_start");
+        }
+        if(!data||!data.questions||!data.questions.length)throw new Error("exam_start");
+        runExam(data);
+      }).catch(function(){if(live())showEmpty()});
+  }
+  function replayExam(){var level=(EXD&&EXD.level)||"hsk1";clearGateRef("training_test:"+level);open2(level)}
+  function replayPlacement(){clearGateRef("placement:placement");open2("placement")}
+
+  /* ---- imtihon ---- */
+  function runExam(data){
+    EXD=data;EQ=(data.questions||[]).map(function(q){return {q:q,key:q.section||((q.source||{}).section)||"reading"}});
+    ei=0;eans=[];EX_SUBMITTING=false;
+    if(!EQ.length)return showEmpty();
+    el("tc-hub").style.display="none";el("tc-empty").classList.remove("on");el("tc-placement").classList.remove("on");el("tc-exam").classList.add("on");
+    exRender();
+  }
+  function exRender(){
+    if(!live())return;
+    if(AD_SESSION&&!AD_MID&&EQ.length>=4&&ei===Math.floor(EQ.length/2)){AD_MID=true;if(window.CourseAds){CourseAds.play("middle").then(exRender).catch(exRender);return}}
+    var t=L(),m=EM(),item=EQ[ei],q=item.q;
+    var lv=String(EXD.level||"").replace("hsk","").toUpperCase();
+    var lead=m.sec[item.key]||item.key,card="";
+    if(q.audio_text){
+      card='<div class="qcard"><button class="abtn" onclick="TEST.say(\''+jsq(q.audio_text)+'\')"><i class="ti ti-volume"></i></button>'+(q.sentence?'<div class="qzh han">'+esc(q.sentence)+'</div>':'')+'<div class="ahint">'+esc(m.listen)+'</div></div>';
+      setTimeout(function(){if(live())speak(q.audio_text)},300);
+    }else{
+      card='<div class="qcard"><div class="qzh han">'+esc(q.sentence||"")+'</div></div>';
+    }
+    var opts=(q.options||[]).map(function(o,k){return '<button class="opt" onclick="TEST.exPick('+k+',this)"><span class="k">'+("ABCD"[k]||(k+1))+'</span><span>'+esc(examLabel(o))+'</span></button>'}).join("");
+    var stem=examStem(q);
+    el("tc-exam").innerHTML='<div class="ptop"><button class="ix2" onclick="TEST.exitExam()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(ei/EQ.length*100)+'%"></i></div><span class="lvtag">HSK '+lv+' · '+Number(EXD.duration_min||0)+' '+esc(t.min)+'</span></div>'
+      +'<div class="qlead">'+esc(lead)+' · '+esc(m.q)+' '+(ei+1)+' '+esc(m.of)+' '+EQ.length+'</div>'+card
+      +(stem?'<div class="qlead" style="text-align:center;margin-top:-6px">'+esc(stem)+'</div>':'')+opts;
+  }
+  function exPick(k,node){
+    var q=EQ[ei].q;
+    Array.prototype.forEach.call(document.querySelectorAll("#tc-exam .opt"),function(o){o.style.pointerEvents="none"});
+    node.classList.add("sel");
+    eans[ei]={question_id:String(q.id||""),selected_index:k};
+    try{stopSpeak()}catch(e){}
+    setTimeout(function(){if(!live())return;ei++;if(ei>=EQ.length){exResult()}else{exRender()}},280);
+  }
+  function exitExam(){try{stopSpeak()}catch(e){}showHub()}
+  function exResult(){
+    if(AD_SESSION&&!AD_END){AD_END=true;if(window.CourseAds){CourseAds.play("end").then(exResult).catch(exResult);return}}
+    submitExam();
+  }
+  function submitExam(){
+    if(EX_SUBMITTING)return;EX_SUBMITTING=true;
+    var m=EM();
+    el("tc-exam").innerHTML='<div class="res"><div class="lvl"><small>'+esc(m.result)+'</small><b><i class="ti ti-loader-2"></i></b></div><h3>'+esc(m.saving)+'</h3></div>';
+    fetch("/api/v3/exams/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({session_id:EXD.id,answers:eans})})
+      .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})})
+      .then(function(o){
+        if(!live())return;
+        if(!o.ok||!o.d||!o.d.ok)throw new Error("exam_complete");
+        EX_SUBMITTING=false;clearGateRef("training_test:"+EXD.level);renderExamResult(o.d);
+      })
+      .catch(function(){
+        if(!live())return;
+        EX_SUBMITTING=false;
+        el("tc-exam").innerHTML='<div class="res"><div class="lvl"><small>'+esc(m.result)+'</small><b>!</b></div><h3>'+esc(m.saveErr)+'</h3><button class="cta" onclick="TEST.submit()"><i class="ti ti-refresh"></i> '+esc(m.retry)+'</button><button class="ghost" onclick="TEST.showHub()">'+esc(m.toList)+'</button></div>';
+      });
+  }
+  function renderExamResult(d){
+    var m=EM();
+    var pct=Number(d.percent||0),pass=!!d.passed,lv=String(EXD.level||"").replace("hsk","").toUpperCase();
+    var sections=d.section_scores||{},order=["listening","reading","writing"].filter(function(k){return sections[k]&&Number(sections[k].total||0)>0});
+    var meter=order.map(function(key){var p=Number(sections[key].percent||0);return '<div class="mrow"><span class="ml">'+esc(m.sec[key]||key)+'</span><span class="mb"><i style="width:'+p+'%"></i></span><span class="mv">'+p+'%</span></div>'}).join("");
+    var wrong=(d.wrong_items||[]).slice(0,4);
+    var review=wrong.length?'<div class="review-list"><b>'+esc(m.mistakes)+'</b>'+wrong.map(function(w){var detail=[w.pinyin,w.translation].filter(function(v,i,a){return v&&a.indexOf(v)===i}).map(function(v){return '<small>'+esc(v)+'</small>'}).join('');return '<div><span>'+esc(w.question||"")+'</span><strong>✓ '+esc(w.correct_answer||"")+'</strong>'+detail+'</div>'}).join('')+'</div>':'';
+    var xp=Number(d.reward&&d.reward.awarded_xp||0),xpHtml=xp?'<p class="xp-line">+'+xp+' XP · '+esc(m.xp)+'</p>':'';
+    el("tc-exam").innerHTML='<div class="res"><div class="lvl"><small>'+esc(m.result)+'</small><b>'+pct+'%</b></div>'
+      +'<h3>'+esc(pass?m.passed:m.failed)+'</h3><p>'+esc(pass?m.passSub:m.failSub)+lv+'.</p>'+xpHtml
+      +'<div class="meter">'+meter+'</div>'+review
+      +'<button class="cta" onclick="TEST.replayExam()"><i class="ti ti-refresh"></i> '+esc(m.again)+'</button>'
+      +'<button class="ghost" onclick="TEST.showHub()">'+esc(m.toList)+'</button></div>';
+  }
+
+  /* ---- daraja aniqlash ---- */
+  function runPlacement(){
+    pi=0;pans=[];PQ=QP.map(function(q){return {lvl:q.lvl,h:q.h,py:q.py,o:shuffled(q.o)}});
+    el("tc-hub").style.display="none";el("tc-empty").classList.remove("on");el("tc-placement").classList.add("on");
+    pRender();
+  }
+  function pRender(){
+    if(!live())return;
+    if(AD_SESSION&&!AD_MID&&PQ.length>=4&&pi===Math.floor(PQ.length/2)){AD_MID=true;if(window.CourseAds){CourseAds.play("middle").then(pRender).catch(pRender);return}}
+    var p=PT(),q=PQ[pi];
+    el("tc-placement").innerHTML='<div class="ptop"><button class="ix2" onclick="TEST.showHub()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(pi/QP.length*100)+'%"></i></div><span class="lvtag">'+esc(p.lvl)+" "+q.lvl+'</span></div>'
+      +'<div class="qlead">'+esc(p.lead)+'</div><div class="qcard"><div class="h han">'+esc(q.h)+'</div><div class="py">'+esc(q.py)+'</div></div>'
+      +q.o.map(function(o,k){return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="TEST.pPick('+k+',this)"><span class="k">'+"ABC"[k]+'</span>'+esc(olang(o))+'</button>'}).join("");
+  }
+  function pPick(k,node){
+    Array.prototype.forEach.call(document.querySelectorAll("#tc-placement .opt"),function(o){o.style.pointerEvents="none"});
+    node.classList.add("sel");
+    pans[pi]=node.getAttribute("data-ok")==="1";
+    setTimeout(function(){if(!live())return;pi++;if(pi>=PQ.length){pResult()}else{pRender()}},380);
+  }
+  function pResult(){
+    if(AD_SESSION&&!AD_END){AD_END=true;if(window.CourseAds){CourseAds.play("end").then(pResult).catch(pResult);return}}
+    var p=PT(),per={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
+    PQ.forEach(function(q,k){per[q.lvl][1]++;if(pans[k])per[q.lvl][0]++});
+    var rec=1;for(var Lv=1;Lv<=4;Lv++){var v=per[Lv][1]?per[Lv][0]/per[Lv][1]:0;if(v>=0.5)rec=Lv;else break}
+    var meter="";[1,2,3,4].forEach(function(Lv){var v=per[Lv][1]?Math.round(per[Lv][0]/per[Lv][1]*100):0;meter+='<div class="mrow '+(Lv===rec?"rec":"")+'"><span class="ml">'+esc(p.lvl)+" "+Lv+'</span><span class="mb"><i style="width:'+v+'%"></i></span><span class="mv">'+v+'%</span></div>'});
+    clearGateRef("placement:placement");
+    el("tc-placement").innerHTML='<div class="res"><div class="lvl"><small>'+esc(p.rec)+'</small><b>'+esc(p.lvl)+" "+rec+'</b></div><h3>'+esc(p.rec)+": "+esc(p.lvl)+" "+rec+'</h3><p>'+esc(p.recSub)+rec+'.</p><div class="meter">'+meter+'</div><button class="cta" onclick="TEST.toCourse()"><i class="ti ti-arrow-left"></i> '+esc(p.back)+'</button><button class="ghost" onclick="TEST.replayPlacement()"><i class="ti ti-refresh"></i> '+esc(p.retake)+'</button></div>';
+  }
+
+  function toCourse(){closeSection();App.show("course")}
+  /* Orqaga: imtihon/daraja testi ochiq bo'lsa avval hub'ga, keyin bo'lim yopiladi. */
+  function inner(){var p=el("tc-placement"),e=el("tc-exam"),m=el("tc-empty");
+    return !!((p&&p.classList.contains("on"))||(e&&e.classList.contains("on"))||(m&&m.classList.contains("on")))}
+  function close(){
+    if(inner()){showHub();return}
+    try{stopSpeak()}catch(e){}
+    closeSection();App.show("mashq");
+  }
+  function open(){
+    $("#secov").innerHTML=shell();
+    openSection(API);
+    AD_SESSION=false;AD_MID=false;AD_END=false;PENDING=null;EXD=null;EQ=[];EX_SUBMITTING=false;
+    if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"training_test",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
+    renderHub();showHub();
+  }
+
+  var API={open:open,close:close,showHub:showHub,open2:open2,exPick:exPick,pPick:pPick,exitExam:exitExam,
+    submit:submitExam,replayExam:replayExam,replayPlacement:replayPlacement,premium:premium,adStart:adStart,
+    toCourse:toCourse,say:function(z){speak(z)}};
+  return API;
+})();
+window.TEST=TEST;
 
 function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=T().nav[s.dataset.i]});
