@@ -774,6 +774,7 @@ button{cursor:pointer}
 #mk-root .state i{font-size:30px;color:var(--cin)}
 #mk-root .state button{background:var(--cin);color:#fff;border:0;border-radius:12px;padding:12px 20px;font:600 14px inherit}
 #mk-root .more{width:100%;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:13px;padding:13px;font:600 14px inherit;margin:2px 0 12px}
+#mk-root .rv{position:fixed;inset:0;background:var(--paper);z-index:50;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
 #mk-root .rv[hidden]{display:none}
 #mk-root .rv-top{display:flex;align-items:center;gap:12px;padding:calc(12px + var(--safe-t)) 16px 8px}
 #mk-root .rv-bar{flex:1;height:7px;border-radius:4px;background:var(--line);overflow:hidden}
@@ -801,11 +802,13 @@ button{cursor:pointer}
 #mk-root .rv-foot{padding:10px 16px calc(16px + var(--safe-b))}
 #mk-root .rv-foot button{width:100%;background:var(--ink);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
 #mk-root .rv-foot button[disabled]{opacity:.4}
+#mk-root .rv-res{display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px}
 #mk-root .rv-res .ic{width:88px;height:88px;border-radius:24px;background:var(--jadebg);color:var(--jade);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:18px}
 #mk-root .rv-res h3{font-size:22px;font-weight:600;margin-bottom:8px}
 #mk-root .rv-res .sc{font-size:40px;font-weight:700;color:var(--cin);margin:4px 0}
 #mk-root .rv-res .xp{font-size:14px;font-weight:600;color:var(--gold);background:#FBF3DF;border-radius:10px;padding:5px 12px;margin:8px 0}
 #mk-root .rv-res .rm{font-size:14px;color:var(--ink2);margin-top:6px}
+#mk-root .lim{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center}
 #mk-root .lim[hidden]{display:none}
 #mk-root .lim .bd{position:absolute;inset:0;background:rgba(33,29,23,.45)}
 #mk-root .lim .sh{position:relative;background:var(--card);width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:26px 20px calc(22px + var(--safe-b));text-align:center}
@@ -814,7 +817,6 @@ button{cursor:pointer}
 #mk-root .lim .sh p{font-size:14px;color:var(--ink2);line-height:1.5;margin-bottom:18px}
 #mk-root .lim .sh .go{width:100%;background:var(--cin);color:#fff;border:none;border-radius:13px;padding:15px;font-family:inherit;font-size:15px;font-weight:500;margin-bottom:9px}
 #mk-root .lim .sh .lt{width:100%;background:none;border:none;color:var(--ink2);font-family:inherit;font-size:14px;padding:9px}
-
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20260812-3" rel="stylesheet">
 </head>
