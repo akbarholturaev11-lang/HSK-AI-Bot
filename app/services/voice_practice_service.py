@@ -52,6 +52,8 @@ FREE_TOTAL_SESSIONS = 1
 FREE_PRONOUNCE_DAILY = 25
 MAX_DIALOGS_PER_SESSION = 7
 MAX_AUDIO_BYTES = 5 * 1024 * 1024
+# Klaviatura orqali yuborilgan xabar uzunligi (Mini App'da ham 200 belgi cheklovi bor).
+MAX_TEXT_CHARS = 200
 VOICE_REPLY_MAX_TOKENS = 220
 
 ROLE_PROMPTS = {
@@ -541,13 +543,18 @@ class VoicePracticeService:
         session_id: str,
         audio_bytes: bytes,
         filename: str,
+        text: str = "",
     ) -> dict:
         if not settings.ai_enabled:
             raise VoicePracticeError("AI_UNAVAILABLE", "Voice AI sozlanmagan.", 503)
-        if not audio_bytes:
-            raise VoicePracticeError("EMPTY_AUDIO", "Audio bo'sh.")
-        if len(audio_bytes) > MAX_AUDIO_BYTES:
-            raise VoicePracticeError("AUDIO_TOO_LARGE", "Audio hajmi juda katta.", 413)
+        # Klaviatura orqali yozilgan matn bo'lsa STT bosqichi kerak emas.
+        # Dialog limiti, budget gate va javob oqimi ovoz bilan bir xil qoladi.
+        typed_text = str(text or "").strip()[:MAX_TEXT_CHARS]
+        if not typed_text:
+            if not audio_bytes:
+                raise VoicePracticeError("EMPTY_AUDIO", "Audio bo'sh.")
+            if len(audio_bytes) > MAX_AUDIO_BYTES:
+                raise VoicePracticeError("AUDIO_TOO_LARGE", "Audio hajmi juda katta.", 413)
 
         item = await self._get_active_session(telegram_id, session_id)
         if item.turn_count >= MAX_DIALOGS_PER_SESSION:
@@ -559,25 +566,28 @@ class VoicePracticeService:
         transcribe_record = None
         reply_record = None
         try:
-            ai = AIService()
-            transcription_result = await asyncio.wait_for(
-                ai.transcribe_voice_with_usage(
-                    audio_bytes=audio_bytes,
-                    filename=filename,
-                    user_language=item.language,
-                    user_level=item.level,
-                    gemini_model=GEMINI_FAST_MODEL,
-                ),
-                timeout=35,
-            )
-            transcription = transcription_result.content.strip()
-            if not transcription:
-                raise VoicePracticeError("TRANSCRIPTION_EMPTY", "No speech was detected.")
-            transcribe_record = await AIUsageBudgetService(self.session).record_usage(
-                telegram_id=telegram_id,
-                result=transcription_result,
-                source="voice_practice_transcribe",
-            )
+            if typed_text:
+                transcription = typed_text
+            else:
+                ai = AIService()
+                transcription_result = await asyncio.wait_for(
+                    ai.transcribe_voice_with_usage(
+                        audio_bytes=audio_bytes,
+                        filename=filename,
+                        user_language=item.language,
+                        user_level=item.level,
+                        gemini_model=GEMINI_FAST_MODEL,
+                    ),
+                    timeout=35,
+                )
+                transcription = transcription_result.content.strip()
+                if not transcription:
+                    raise VoicePracticeError("TRANSCRIPTION_EMPTY", "No speech was detected.")
+                transcribe_record = await AIUsageBudgetService(self.session).record_usage(
+                    telegram_id=telegram_id,
+                    result=transcription_result,
+                    source="voice_practice_transcribe",
+                )
             reply, reply_usage = await asyncio.wait_for(self._generate_reply(item, transcription), timeout=30)
             reply_record = await AIUsageBudgetService(self.session).record_usage(
                 telegram_id=telegram_id,

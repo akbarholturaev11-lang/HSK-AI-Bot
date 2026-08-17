@@ -9,16 +9,22 @@
 :root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--jade:#2FA06A;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif;color:var(--ink)}
+button{font-family:inherit;border:none;background:none;color:inherit}
 .han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600;letter-spacing:1px}
-.wrap{max-width:480px;margin:0 auto;height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column;padding-top:var(--safe-t)}
+.wrap{max-width:480px;margin:0 auto;height:100vh;height:100dvh;position:relative;overflow:hidden;display:flex;flex-direction:column;padding-top:var(--safe-t)}
 .bg{position:absolute;inset:0;z-index:0}
 .bg svg{width:100%;height:100%}
-.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 4px}
-.ic{width:36px;height:36px;border-radius:50%;background:rgba(251,247,239,.82);border:1px solid rgba(120,95,60,.3);color:#5b4a33;display:flex;align-items:center;justify-content:center;font-size:18px}
-.nosub .sub{visibility:hidden}
-.cnt{font-size:13px;color:#4a3c28;font-weight:500;background:rgba(251,247,239,.74);padding:5px 12px;border-radius:14px}
-.stage{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;padding:0 24px 4px}
-.charwrap{width:214px;height:214px;display:flex;align-items:center;justify-content:center}
+
+/* ---- top bar ---- */
+.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px 6px;flex:0 0 auto}
+.ic{width:36px;height:36px;border-radius:50%;background:rgba(251,247,239,.82);border:1px solid rgba(120,95,60,.3);color:#5b4a33;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+.tinfo{flex:1;min-width:0;text-align:center}
+.tinfo .tn{font-size:15px;font-weight:600;color:#3c2f1d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tinfo .tc{font-size:12px;color:#5b4a33;margin-top:1px}
+
+/* ---- panda stage: ~1/3 of screen ---- */
+.stage{position:relative;z-index:2;flex:0 0 auto;height:clamp(170px,33vh,258px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px}
+.charwrap{height:100%;aspect-ratio:1/1;max-width:100%;display:flex;align-items:center;justify-content:center}
 .charwrap svg{width:100%;height:100%;filter:drop-shadow(0 6px 10px rgba(60,44,20,.25))}
 .mouth{transform-box:fill-box;transform-origin:center}
 .speaking .mouth{animation:talk .34s ease-in-out infinite}
@@ -27,43 +33,84 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 @keyframes pdBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02) translateY(-2px)}}
 .pd-blink{animation:pdBlink 4.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 @keyframes pdBlink{0%,90%,100%{transform:scaleY(0)}94%{transform:scaleY(1)}}
-.nm{font-size:16px;font-weight:500;color:#3c2f1d;text-shadow:0 1px 0 rgba(255,250,240,.5)}
-.st{font-size:13px;color:#5b4a33;height:18px}
-.sub{position:relative;z-index:2;margin:8px 16px 0;background:rgba(251,247,239,.88);backdrop-filter:blur(8px);border:1px solid rgba(120,95,60,.22);border-radius:18px;padding:14px 16px;text-align:center;min-height:104px}
-.sub .zh{font-size:23px;line-height:1.35;color:var(--ink)}
-.sub .py{font-size:15px;color:var(--cin2);font-weight:500;margin:6px 0 5px}
-.sub .tr{font-size:14px;color:var(--ink2)}
-.sub .usr{font-size:12px;color:var(--ink2);background:rgba(194,64,58,.08);border:1px solid rgba(194,64,58,.14);border-radius:11px;padding:6px 8px;margin-bottom:8px;line-height:1.35;text-align:left}
-.sub .usr:empty{display:none}
-.dots{display:flex;justify-content:center;gap:5px;height:13px;margin-top:6px}
-.dots i{width:7px;height:7px;border-radius:50%;background:#b3a382;opacity:.4}
-.dots.rec i{background:var(--cin);animation:bl .9s ease-in-out infinite}
-.dots.rec i:nth-child(2){animation-delay:.15s}.dots.rec i:nth-child(3){animation-delay:.3s}
+.st{position:relative;z-index:2;flex:0 0 auto;min-height:18px;text-align:center;font-size:13px;line-height:1.35;padding:0 18px;color:#4a3c28;text-shadow:0 1px 0 rgba(255,250,240,.55)}
+
+/* ---- chat ---- */
+.chat{position:relative;z-index:2;flex:1 1 auto;min-height:96px;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:6px 12px 0;padding:12px 12px 4px;background:rgba(251,247,239,.88);backdrop-filter:blur(8px);border:1px solid rgba(120,95,60,.22);border-radius:18px 18px 0 0;display:flex;flex-direction:column;gap:9px}
+.hint0{text-align:center;font-size:13px;color:var(--ink2);padding:14px 8px}
+.msg{display:flex;max-width:100%}
+.msg.me{justify-content:flex-end}
+.bub{max-width:84%;border-radius:15px;padding:9px 12px;line-height:1.4}
+.msg.ai .bub{background:var(--card);border:1px solid var(--line);border-top-left-radius:6px}
+.msg.me .bub{background:var(--cin);color:#fff;border-top-right-radius:6px}
+.bub .zh{font-size:19px;color:var(--ink)}
+.bub .py{font-size:13px;color:var(--cin2);font-weight:500;margin-top:3px}
+.bub .tr{font-size:13px;color:var(--ink2);margin-top:2px}
+.nosub .bub .py,.nosub .bub .tr{display:none}
+.bub .ut{font-size:15px}
+.bub .fx{font-size:12.5px;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.32);color:#FFE7E4}
+.bub .fx b{font-weight:600}
+.rep{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:12px;color:var(--ink3);padding:2px 0}
+.typing{display:flex;gap:4px;padding:4px 2px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#b3a382;animation:bl .9s ease-in-out infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes bl{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
-.ctrl{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;padding:14px 0 calc(28px + var(--safe-b))}
-.ctrlw{position:relative;width:100%;display:flex;justify-content:center}
-.mic{width:80px;height:80px;border-radius:50%;background:var(--cin);color:#fff;border:3px solid rgba(251,247,239,.7);font-size:32px;display:flex;align-items:center;justify-content:center}
-.mic.rec{background:var(--cin2)}
-.mic.rec:after{content:"";position:absolute;width:80px;height:80px;border-radius:50%;border:3px solid var(--cin);animation:pr 1.2s ease-out infinite}
+
+/* ---- bottom dock ---- */
+.dock{position:relative;z-index:3;flex:0 0 auto;margin:0 12px;padding:10px 12px calc(12px + var(--safe-b));background:rgba(251,247,239,.94);backdrop-filter:blur(8px);border:1px solid rgba(120,95,60,.22);border-top:none;border-radius:0 0 18px 18px}
+.tipbar{display:flex;justify-content:center;margin-bottom:9px}
+.tip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--cin2);background:var(--cinbg);border:1px solid rgba(194,64,58,.2);border-radius:999px;padding:7px 14px}
+.tip[hidden]{display:none}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sq{width:48px;height:48px;border-radius:16px;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:21px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.micwrap{flex:1;display:flex;justify-content:center}
+.mic{position:relative;width:78px;height:78px;border-radius:50%;background:var(--cin);color:#fff;border:3px solid rgba(251,247,239,.7);font-size:31px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
+.mic.rec{background:var(--cin2);transform:scale(1.06)}
+.mic.rec:after{content:"";position:absolute;inset:-3px;border-radius:50%;border:3px solid var(--cin);animation:pr 1.2s ease-out infinite}
 @keyframes pr{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
-.end{position:absolute;right:40px;top:14px;width:52px;height:52px;border-radius:50%;background:rgba(251,247,239,.85);border:1px solid rgba(120,95,60,.3);color:var(--cin);font-size:23px}
-.sct{position:absolute;left:40px;top:14px;width:52px;height:52px;border-radius:50%;background:rgba(251,247,239,.85);border:1px solid rgba(120,95,60,.3);color:var(--cin);font-size:23px}
-.sct.off{color:var(--ink3)}
-.done{position:absolute;inset:0;background:rgba(33,25,15,.55);backdrop-filter:blur(3px);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;z-index:10}
+.mic[disabled]{opacity:.45}
+.holdhint{text-align:center;font-size:11.5px;color:var(--ink3);margin-top:7px;height:14px}
+
+/* ---- keyboard panel ---- */
+.kb{display:none;gap:8px;align-items:flex-end}
+.kb.on{display:flex}
+.row.off{display:none}
+.kb textarea{flex:1;min-height:46px;max-height:96px;resize:none;font-family:inherit;font-size:16px;line-height:1.35;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px}
+.kb textarea:focus{outline:none;border-color:rgba(194,64,58,.5)}
+.kbsend{width:46px;height:46px;border-radius:14px;background:var(--cin);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.kbsend[disabled]{opacity:.4}
+.kbclose{width:46px;height:46px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:20px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+
+/* ---- bottom sheet (settings / hints) ---- */
+.sheet{position:absolute;inset:0;z-index:20;display:none}
+.sheet.on{display:block}
+.sheet .ov{position:absolute;inset:0;background:rgba(33,25,15,.5)}
+.sheet .pane{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-radius:20px 20px 0 0;padding:16px 16px calc(18px + var(--safe-b));max-height:76%;overflow-y:auto}
+.sheet h4{font-size:16px;font-weight:600;margin-bottom:12px}
+.sgrip{width:38px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px}
+.srow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin-bottom:8px;font-size:15px;color:var(--ink)}
+.srow i:first-child{font-size:19px;color:var(--ink2);flex:0 0 auto}
+.srow .sv{margin-left:auto;font-size:13px;color:var(--ink2);font-weight:500}
+.hitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:8px}
+.hitem .hz{font-size:19px;color:var(--ink)}
+.hitem .hp{font-size:12.5px;color:var(--cin2);font-weight:500;margin-top:2px}
+.hitem .hm{font-size:12.5px;color:var(--ink2);margin-top:1px}
+.hitem .hb{margin-left:auto;font-size:19px;color:var(--ink3);flex:0 0 auto;padding:4px}
+.hgrp{font-size:12px;font-weight:600;color:var(--ink3);margin:12px 0 7px}
+.hgrp:first-child{margin-top:0}
+
+/* ---- done / paywall (unchanged logic) ---- */
+.done{position:absolute;inset:0;background:rgba(33,25,15,.55);backdrop-filter:blur(3px);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;z-index:30}
 .done.on{display:flex}
 .dcard{background:var(--paper);border-radius:22px;padding:26px 22px;width:100%}
-.done .b{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;margin-top:18px}
-.done .b2{width:100%;background:none;border:none;color:var(--ink2);font-family:inherit;font-size:14px;padding:12px 0 2px}
+.done .b{width:100%;background:var(--cin);color:#fff;border-radius:14px;padding:15px;font-size:16px;font-weight:500;margin-top:18px}
+.done .b2{width:100%;color:var(--ink2);font-size:14px;padding:12px 0 2px}
 .done p{font-size:14px;color:var(--ink2);margin:6px 0 0}
 .done h3{font-size:21px;font-weight:500;margin:6px 0 0}
 .dchar{width:130px;height:130px;margin:0 auto}
-/* "nega bu oyna chiqdi" sabab qatori (paywall ichida) */
 .pwwhy{display:flex;align-items:flex-start;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-top:14px;font-size:12.5px;line-height:1.5;color:var(--ink2);text-align:left}
 .pwwhy i{color:var(--gold);font-size:17px;flex-shrink:0;margin-top:1px}
 .pwwhy[hidden]{display:none}
-.corr{text-align:left;margin-top:14px;max-height:148px;overflow-y:auto}
-.corr .ct{font-size:12px;font-weight:600;color:var(--cin2);margin-bottom:6px}
-.corr .ci{font-size:13px;color:var(--ink);background:var(--cinbg);border:1px solid rgba(194,64,58,.18);border-radius:10px;padding:8px 10px;margin-bottom:6px;line-height:1.4}
 .badge{display:inline-flex;align-items:center;gap:6px;margin:12px auto 0;padding:8px 14px;border-radius:999px;background:rgba(47,125,94,.12);border:1px solid rgba(47,125,94,.26);color:var(--jade);font-size:14px;font-weight:600}
 .stats{display:flex;gap:10px;margin-top:14px}
 .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center}
@@ -71,11 +118,9 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 .stat .l{font-size:11px;color:var(--ink2);margin-top:2px}
 .stat.g .n{color:var(--jade)}
 .stat.m .n{color:var(--cin2)}
-.dtoggle{width:100%;background:none;border:1px solid var(--line);border-radius:13px;color:var(--ink2);font-family:inherit;font-size:14px;font-weight:500;padding:12px;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px}
+.dtoggle{width:100%;border:1px solid var(--line);border-radius:13px;color:var(--ink2);font-size:14px;font-weight:500;padding:12px;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px}
 .tx{display:none;text-align:left;margin-top:12px;max-height:230px;overflow-y:auto}
 .tx.on{display:block}
-.tx .grp{font-size:12px;font-weight:600;margin:10px 0 6px;display:flex;align-items:center;gap:5px}
-.tx .grp.g{color:var(--jade)}.tx .grp.m{color:var(--cin2)}
 .txr{border-radius:12px;padding:9px 11px;margin-bottom:7px;line-height:1.4}
 .txr.g{background:rgba(47,125,94,.08);border:1px solid rgba(47,125,94,.2)}
 .txr.m{background:var(--cinbg);border:1px solid rgba(194,64,58,.2)}
@@ -89,33 +134,53 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 .txr .ai .apy{font-size:12.5px;color:var(--cin2);font-weight:500;margin-top:1px}
 .txr .ai .atr{font-size:12.5px;color:var(--ink2);margin-top:1px}
 .savednote{font-size:12px;color:var(--ink2);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
+@media (max-height:640px){.stage{height:clamp(140px,26vh,190px)}.mic{width:66px;height:66px;font-size:27px}.sq{width:44px;height:44px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="bg" id="bg"></div>
+
   <div class="top">
-    <button class="ic" onclick="swap()" aria-label="personaj"><i class="ti ti-refresh"></i></button>
-    <span class="cnt" id="cnt">对话 1 / 7</span>
-    <button class="ic" onclick="goBack()" aria-label="yopish"><i class="ti ti-chevron-down"></i></button>
+    <button class="ic" onclick="endCall()" aria-label="yopish"><i class="ti ti-x"></i></button>
+    <div class="tinfo"><div class="tn" id="nm">阿宝 · Aobao</div><div class="tc" id="cnt">对话 1 / 7</div></div>
+    <button class="ic" onclick="openSettings()" aria-label="sozlamalar"><i class="ti ti-settings"></i></button>
   </div>
-  <div class="stage">
-    <div class="charwrap speaking" id="char"></div>
-    <div class="nm" id="nm">阿宝 · Aobao</div>
-    <div class="st" id="status"></div>
+
+  <div class="stage"><div class="charwrap speaking" id="char"></div></div>
+  <div class="st" id="status"></div>
+
+  <div class="chat" id="chat"><div class="hint0" id="chat0"></div></div>
+
+  <div class="dock">
+    <div class="tipbar"><button class="tip" id="tip" onclick="openHints()"><i class="ti ti-bulb"></i> <span id="tipt"></span></button></div>
+    <div class="row" id="ctrlRow">
+      <button class="sq" onclick="openKb()" aria-label="klaviatura"><i class="ti ti-keyboard"></i></button>
+      <div class="micwrap"><button class="mic" id="mic" aria-label="gapirish"><i class="ti ti-microphone"></i></button></div>
+      <div class="sq" style="visibility:hidden"></div>
+    </div>
+    <div class="kb" id="kbPanel">
+      <button class="kbclose" onclick="closeKb()" aria-label="yopish"><i class="ti ti-microphone"></i></button>
+      <textarea id="kbText" rows="1" maxlength="200"></textarea>
+      <button class="kbsend" id="kbSend" onclick="sendText()" aria-label="yuborish"><i class="ti ti-send"></i></button>
+    </div>
+    <div class="holdhint" id="holdhint"></div>
   </div>
-  <div class="sub">
-    <div class="usr" id="usr"></div>
-    <div class="zh han" id="zh"></div>
-    <div class="py" id="py"></div>
-    <div class="tr" id="tr"></div>
-    <div class="dots" id="dots"><i></i><i></i><i></i></div>
-  </div>
-  <div class="ctrl"><div class="ctrlw">
-    <button class="sct" id="subToggle" onclick="toggleSub()" aria-label="subtitr"><i class="ti ti-badge-cc"></i></button>
-    <button class="mic" id="mic" onclick="talk()" aria-label="gapirish"><i class="ti ti-microphone"></i></button>
-    <button class="end" onclick="endCall()" aria-label="tugatish"><i class="ti ti-phone-off"></i></button>
+
+  <div class="sheet" id="setSheet"><div class="ov" onclick="closeSettings()"></div><div class="pane">
+    <div class="sgrip"></div>
+    <h4 id="setTitle"></h4>
+    <button class="srow" onclick="swap()"><i class="ti ti-repeat"></i><span id="setPersona"></span><span class="sv" id="setPersonaV"></span></button>
+    <button class="srow" onclick="toggleSub()"><i class="ti ti-badge-cc"></i><span id="setSub"></span><span class="sv" id="setSubV"></span></button>
+    <button class="srow" onclick="toggleRate()"><i class="ti ti-player-play"></i><span id="setRate"></span><span class="sv" id="setRateV"></span></button>
   </div></div>
+
+  <div class="sheet" id="hintSheet"><div class="ov" onclick="closeHints()"></div><div class="pane">
+    <div class="sgrip"></div>
+    <h4 id="hintTitle"></h4>
+    <div id="hintBody"></div>
+  </div></div>
+
   <div class="done" id="done"><div class="dcard">
     <div class="dchar" id="dchar"></div>
     <h3 id="dh"></h3><p id="dp"></p>
@@ -127,6 +192,7 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
     <button class="b" onclick="reset()"><i class="ti ti-refresh"></i> <span id="db"></span></button>
     <button class="b2" onclick="goBack()" id="db2"></button>
   </div></div>
+
   <div class="done" id="paywall"><div class="dcard">
     <div class="dchar" id="pwchar"></div>
     <h3 id="pwh"></h3><p id="pwp"></p>
@@ -138,24 +204,37 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analyzing:"Анализирую…",connecting:"Соединение…",tapStart:"Нажмите микрофон и говорите",heard:"Вы:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",replWord:"реплик",corrTitle:"Что подправить",again:"Ещё разговор",exit:"Выйти",micDeny:"Разрешите доступ к микрофону в настройках Telegram.",sendErr:"Ошибка. Попробуйте ещё раз.",tooShort:"Слишком коротко. Скажите ещё раз.",noSupport:"Запись голоса недоступна на этом устройстве.",startBot:"Сначала откройте бота и нажмите /start.",limitTitle:"Пробный разговор завершён",limitSub:"С Premium говорите с 阿宝 каждый день — без лимита.",limitWhy:"В бесплатном режиме AI Voice даётся 1 пробный разговор — вы его уже использовали. С подпиской говорите с 阿宝 хоть каждый день: живая речь — самый быстрый способ заговорить по-китайски.",premiumBtn:"Открыть Premium",learnBadge:"Ух ты, я уже говорю по-китайски!",showDialog:"Посмотреть весь диалог",hideDialog:"Скрыть диалог",goodTitle:"Где вы говорили отлично",mistakeTitle:"Что подправить",statGood:"удачных реплик",statMistake:"на доработку",savedToMistakes:"Ошибки добавлены в раздел «Мои ошибки»",noMistakes:"Без ошибок — отличная работа!",fixLabel:"Правильно:"},
-  uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",tapStart:"Mikrofonni bosing va gapiring",heard:"Siz:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Sinov suhbati tugadi",limitSub:"Premium bilan 阿宝 bilan har kuni gaplashasiz — cheksiz.",limitWhy:"Bepul rejimda AI Voice 1 marta sinab ko'riladi — sinov suhbatingdan foydalanding. Obuna bilan 阿宝 bilan har kuni gaplashasan: jonli gapirish — xitoychada tez tili chiqishning eng qisqa yo'li.",premiumBtn:"Premium ochish",learnBadge:"Voy, men xitoycha gapiryapman!",showDialog:"To'liq dialogni ko'rish",hideDialog:"Dialogni yashirish",goodTitle:"Qayerda zo'r gapirdingiz",mistakeTitle:"Nimani tuzatamiz",statGood:"zo'r javob",statMistake:"tuzatish",savedToMistakes:"Xatolar «Xatolarim» bo'limiga qo'shildi",noMistakes:"Xatosiz — ajoyib!",fixLabel:"To'g'ri:"},
-  tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",tapStart:"Микрофонро пахш карда гап занед",heard:"Шумо:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Сӯҳбати озмоишӣ анҷом ёфт",limitSub:"Бо Premium ҳар рӯз бо 阿宝 гап мезанед — бе лимит.",limitWhy:"Дар ҳолати ройгон AI Voice 1 маротиба санҷида мешавад — сӯҳбати озмоишиатро истифода кардӣ. Бо обуна ҳар рӯз бо 阿宝 гап мезанӣ: сухани зинда — роҳи кӯтоҳтарини ба забон омадан бо чинӣ.",premiumBtn:"Кушодани Premium",learnBadge:"Оҳ, ман чинӣ гап зада истодаам!",showDialog:"Дидани гуфтугӯи пурра",hideDialog:"Пинҳон кардани гуфтугӯ",goodTitle:"Дар куҷо хуб гап задед",mistakeTitle:"Чиро ислоҳ кунем",statGood:"ҷавоби хуб",statMistake:"ислоҳ",savedToMistakes:"Хатоҳо ба бахши «Хатоҳои ман» илова шуданд",noMistakes:"Бе хато — офарин!",fixLabel:"Дуруст:"}}[LANG];
+var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analyzing:"Анализирую…",connecting:"Соединение…",heard:"Вы:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",replWord:"реплик",corrTitle:"Что подправить",again:"Ещё разговор",exit:"Выйти",micDeny:"Разрешите доступ к микрофону в настройках Telegram.",sendErr:"Ошибка. Попробуйте ещё раз.",tooShort:"Слишком коротко. Скажите ещё раз.",noSupport:"Запись голоса недоступна на этом устройстве.",startBot:"Сначала откройте бота и нажмите /start.",limitTitle:"Пробный разговор завершён",limitSub:"С Premium говорите с 阿宝 каждый день — без лимита.",limitWhy:"В бесплатном режиме AI Voice даётся 1 пробный разговор — вы его уже использовали. С подпиской говорите с 阿宝 хоть каждый день: живая речь — самый быстрый способ заговорить по-китайски.",premiumBtn:"Открыть Premium",learnBadge:"Ух ты, я уже говорю по-китайски!",showDialog:"Посмотреть весь диалог",hideDialog:"Скрыть диалог",statGood:"удачных реплик",statMistake:"на доработку",savedToMistakes:"Ошибки добавлены в раздел «Мои ошибки»",noMistakes:"Без ошибок — отличная работа!",fixLabel:"Правильно:",
+    holdMic:"Держите микрофон, чтобы говорить",releaseMic:"Отпустите, чтобы отправить",holdLonger:"Держите чуть дольше",whatToSay:"Что сказать?",hintTitle:"Что можно сказать",hintWords:"Слова этого урока",hintPhrases:"Полезные фразы",kbPlaceholder:"Напишите…",settings:"Настройки",optPersona:"Собеседник",optSub:"Пиньинь и перевод",optRate:"Скорость речи",on:"вкл",off:"выкл",rateSlow:"медленно",rateNormal:"обычная",emptyChat:"Здесь появится ваш диалог",replay:"Ещё раз"},
+  uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",heard:"Siz:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Sinov suhbati tugadi",limitSub:"Premium bilan 阿宝 bilan har kuni gaplashasiz — cheksiz.",limitWhy:"Bepul rejimda AI Voice 1 marta sinab ko'riladi — sinov suhbatingdan foydalanding. Obuna bilan 阿宝 bilan har kuni gaplashasan: jonli gapirish — xitoychada tez tili chiqishning eng qisqa yo'li.",premiumBtn:"Premium ochish",learnBadge:"Voy, men xitoycha gapiryapman!",showDialog:"To'liq dialogni ko'rish",hideDialog:"Dialogni yashirish",statGood:"zo'r javob",statMistake:"tuzatish",savedToMistakes:"Xatolar «Xatolarim» bo'limiga qo'shildi",noMistakes:"Xatosiz — ajoyib!",fixLabel:"To'g'ri:",
+    holdMic:"Gapirish uchun mikrofonni bosib turing",releaseMic:"Yuborish uchun qo'yib yuboring",holdLonger:"Sal uzoqroq bosib turing",whatToSay:"Nima deyish?",hintTitle:"Nima deyish mumkin",hintWords:"Shu darsning so'zlari",hintPhrases:"Foydali iboralar",kbPlaceholder:"Yozing…",settings:"Sozlamalar",optPersona:"Suhbatdosh",optSub:"Pinyin va tarjima",optRate:"Nutq tezligi",on:"yoqilgan",off:"o'chirilgan",rateSlow:"sekin",rateNormal:"oddiy",emptyChat:"Suhbatingiz shu yerda ko'rinadi",replay:"Yana eshitish"},
+  tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",heard:"Шумо:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Сӯҳбати озмоишӣ анҷом ёфт",limitSub:"Бо Premium ҳар рӯз бо 阿宝 гап мезанед — бе лимит.",limitWhy:"Дар ҳолати ройгон AI Voice 1 маротиба санҷида мешавад — сӯҳбати озмоишиатро истифода кардӣ. Бо обуна ҳар рӯз бо 阿宝 гап мезанӣ: сухани зинда — роҳи кӯтоҳтарини ба забон омадан бо чинӣ.",premiumBtn:"Кушодани Premium",learnBadge:"Оҳ, ман чинӣ гап зада истодаам!",showDialog:"Дидани гуфтугӯи пурра",hideDialog:"Пинҳон кардани гуфтугӯ",statGood:"ҷавоби хуб",statMistake:"ислоҳ",savedToMistakes:"Хатоҳо ба бахши «Хатоҳои ман» илова шуданд",noMistakes:"Бе хато — офарин!",fixLabel:"Дуруст:",
+    holdMic:"Барои гап задан микрофонро пахш карда нигоҳ доред",releaseMic:"Барои фиристодан сар диҳед",holdLonger:"Каме дарозтар нигоҳ доред",whatToSay:"Чӣ гӯям?",hintTitle:"Чӣ гуфтан мумкин",hintWords:"Калимаҳои ин дарс",hintPhrases:"Ибораҳои муфид",kbPlaceholder:"Нависед…",settings:"Танзимот",optPersona:"Ҳамсӯҳбат",optSub:"Пинйин ва тарҷума",optRate:"Суръати нутқ",on:"фаъол",off:"хомӯш",rateSlow:"оҳиста",rateNormal:"муқаррарӣ",emptyChat:"Гуфтугӯи шумо дар ин ҷо пайдо мешавад",replay:"Боз шунидан"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
-/* ---- subtitle (hanzi/pinyin/translation) visibility toggle ---- */
-var SUB_KEY="hsk_voice_sub";
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
+function jr(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}})}
+
+/* ---- subtitle (pinyin/translation) visibility ---- */
+var SUB_KEY="hsk_voice_sub",RATE_KEY="hsk_voice_rate";
 function subOn(){try{return localStorage.getItem(SUB_KEY)!=="0"}catch(e){return true}}
-function applySub(){var on=subOn();document.body.classList.toggle("nosub",!on);var b=document.getElementById("subToggle");if(b)b.classList.toggle("off",!on);}
-function toggleSub(){try{localStorage.setItem(SUB_KEY,subOn()?"0":"1")}catch(e){}applySub();}
+function applySub(){document.body.classList.toggle("nosub",!subOn());$("setSubV").textContent=subOn()?L.on:L.off}
+function toggleSub(){try{localStorage.setItem(SUB_KEY,subOn()?"0":"1")}catch(e){}applySub()}
+function slowOn(){try{return localStorage.getItem(RATE_KEY)==="slow"}catch(e){return false}}
+function applyRate(){$("setRateV").textContent=slowOn()?L.rateSlow:L.rateNormal}
+function toggleRate(){try{localStorage.setItem(RATE_KEY,slowOn()?"normal":"slow")}catch(e){}applyRate()}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=voice"}
-function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
-var _ttsAudio=null;
-function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
-function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.85;window.speechSynthesis.speak(u)}catch(e){}}
+
+/* ---- TTS ---- */
+var _ttsAudio=null,_ttsCache={},_ttsPend={};
+function clog(ev,msg,ex){try{var tgw=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tgw&&tgw.platform)||"",tgver:(tgw&&tgw.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
+function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=slowOn()?.68:.85;window.speechSynthesis.speak(u)}catch(e){}}
 function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
-var _ttsCache={},_ttsPend={};
 function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||_ttsCache[x]||_ttsPend[x]||!/[一-鿿]/.test(x))return;_ttsPend[x]=fetch("/api/v3/tts?text="+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPend[x];if(b&&b.size)_ttsCache[x]=URL.createObjectURL(b)}).catch(function(){delete _ttsPend[x]})}
-function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)));if(!_ttsCache[t])_ttsPrefetch(t);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
+function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)));if(!_ttsCache[t])_ttsPrefetch(t);
+  try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}
+  a.playbackRate=slowOn()?.75:1;
+  _ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
 var ac;function ring(s){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;s.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);var st=t+k*0.08;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(0.1,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+0.15);o.start(st);o.stop(st+0.17)})}catch(e){}}
 
 /* ---- sepia bamboo forest background ---- */
@@ -168,7 +247,7 @@ function forest(){
   s+='<rect width="'+W+'" height="150" y="'+(H-150)+'" fill="#CDB792" opacity="0.45"/><rect width="'+W+'" height="'+H+'" fill="#E9DcC0" opacity="0.12"/></svg>';
   return s;
 }
-document.getElementById("bg").innerHTML=forest();
+$("bg").innerHTML=forest();
 
 /* ---- panda persona ---- */
 function chr(mood,p){
@@ -185,115 +264,230 @@ function chr(mood,p){
     +'<path d="M52 205 q-6 -60 18 -84 h60 q24 24 18 84 z" fill="#fff" stroke="#211D17" stroke-width="2.5"/><circle cx="64" cy="58" r="22" fill="#211D17"/><circle cx="136" cy="58" r="22" fill="#211D17"/><circle cx="64" cy="58" r="10" fill="#3a352f"/><circle cx="136" cy="58" r="10" fill="#3a352f"/><circle cx="100" cy="86" r="54" fill="#fff" stroke="#211D17" stroke-width="2.5"/><path d="M60 132 q40 20 80 0 l-6 20 q-34 16 -68 0 z" fill="'+scarf+'"/><path d="M128 150 l14 26 -16 -4 -4 -16 z" fill="'+scarf2+'"/><ellipse cx="79" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(-12 79 92)"/><ellipse cx="121" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(12 121 92)"/>'+eyes+glass+blink+'<ellipse cx="100" cy="110" rx="8" ry="5.5" fill="#211D17"/>'+mouth
     +'</g></svg>';
 }
-/* ---- real backend wiring (STT + AI reply via /api/voice-practice) ---- */
-var $=function(id){return document.getElementById(id)};
+
+/* ---- backend wiring (STT + AI reply via /api/voice-practice) ---- */
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 var PERS={bao:{role:"friend",voice:"female",name:L.baoName},li:{role:"teacher_li",voice:"male",name:L.liName}};
 var persona="bao";
 var ME={level:"hsk1",language:LANG,is_paid:false};
-var sess=null,turn=0,maxDialogs=7,corrections=[],busy=false,started=false;
+var sess=null,turn=0,maxDialogs=7,busy=false,started=false;
+var lessonWords=[],reviewWords=[];
 var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null;
-var MAX_REC_MS=20000,MIN_BYTES=1200;
+var MAX_REC_MS=20000,MIN_BYTES=1200,MIN_HOLD_MS=400;
+var holdAt=0,holdOk=false,recAt=0;
+/* Always-safe HSK1 phrases (grammatically correct, no AI cost) */
+var SAFE=[{zh:"请再说一遍",pinyin:"qǐng zài shuō yí biàn",meaning:{ru:"Повторите, пожалуйста",uz:"Iltimos, yana bir bor ayting",tj:"Лутфан, боз як бор гӯед"}},
+          {zh:"我不知道",pinyin:"wǒ bù zhīdào",meaning:{ru:"Я не знаю",uz:"Bilmayman",tj:"Намедонам"}},
+          {zh:"我明白了",pinyin:"wǒ míngbai le",meaning:{ru:"Я понял",uz:"Tushundim",tj:"Фаҳмидам"}},
+          {zh:"你说得对",pinyin:"nǐ shuō de duì",meaning:{ru:"Вы правы",uz:"To'g'ri aytdingiz",tj:"Дуруст гуфтед"}}];
+function mtr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 
 function setChar(m){$("char").innerHTML=chr(m,persona);$("char").className="charwrap"+(m==="talk"?" speaking":"")}
 function setStatus(t){$("status").textContent=t||""}
-function setDots(c){$("dots").className=c}
-function setMicRec(on){if(on)$("mic").classList.add("rec");else $("mic").classList.remove("rec")}
 function setCnt(){$("cnt").textContent="对话 "+Math.min(turn+1,maxDialogs)+" / "+maxDialogs}
-function showLine(zh,py,trx){$("zh").textContent=zh||"";$("py").textContent=py||"";$("tr").textContent=trx||""}
-function showUserLine(text){$("usr").textContent=text?(L.heard+" "+text):""}
-function setName(){$("nm").textContent=PERS[persona].name}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
-function jr(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}})}
+function setName(){$("nm").textContent=PERS[persona].name;$("setPersonaV").textContent=PERS[persona].name}
+function setHold(t){$("holdhint").textContent=t||""}
+function micBusy(on){$("mic").disabled=!!on}
 
+/* ---- chat ---- */
+function chatEl(){return $("chat")}
+function chatScroll(){var c=chatEl();c.scrollTop=c.scrollHeight}
+function chatClear(){chatEl().innerHTML='<div class="hint0" id="chat0">'+esc(L.emptyChat)+'</div>'}
+function dropEmpty(){var e=$("chat0");if(e)e.remove()}
+function addAi(zh,py,trx){
+  dropEmpty();var d=document.createElement("div");d.className="msg ai";
+  var h='<div class="bub">';
+  if(zh)h+='<div class="zh han">'+esc(zh)+'</div>';
+  if(py)h+='<div class="py">'+esc(py)+'</div>';
+  if(trx)h+='<div class="tr">'+esc(trx)+'</div>';
+  if(zh)h+='<button class="rep" data-zh="'+esc(zh)+'"><i class="ti ti-volume"></i> '+esc(L.replay)+'</button>';
+  d.innerHTML=h+'</div>';chatEl().appendChild(d);chatScroll();
+}
+function addMe(text,fix){
+  dropEmpty();var d=document.createElement("div");d.className="msg me";
+  var h='<div class="bub"><div class="ut han">'+esc(text||"")+'</div>';
+  if(fix)h+='<div class="fx"><b>'+esc(L.fixLabel)+'</b> '+esc(fix)+'</div>';
+  d.innerHTML=h+'</div>';chatEl().appendChild(d);chatScroll();
+}
+function addTyping(){dropEmpty();var d=document.createElement("div");d.className="msg ai";d.id="typing";d.innerHTML='<div class="bub"><div class="typing"><i></i><i></i><i></i></div></div>';chatEl().appendChild(d);chatScroll()}
+function dropTyping(){var e=$("typing");if(e)e.remove()}
+chatEl().addEventListener("click",function(e){var b=e.target.closest&&e.target.closest(".rep");if(b)speak(b.getAttribute("data-zh"))});
+
+/* ---- settings sheet ---- */
+function openSettings(){applySub();applyRate();setName();$("setSheet").classList.add("on")}
+function closeSettings(){$("setSheet").classList.remove("on")}
+
+/* ---- hint sheet ---- */
+function hintRow(zh,py,mean){
+  return '<button class="hitem" data-zh="'+esc(zh)+'"><div><div class="hz han">'+esc(zh)+'</div>'
+    +(py?'<div class="hp">'+esc(py)+'</div>':"")
+    +(mean?'<div class="hm">'+esc(mean)+'</div>':"")
+    +'</div><i class="ti ti-arrow-up-right hb"></i></button>';
+}
+function buildHints(){
+  var h="";
+  var words=(lessonWords||[]).concat(reviewWords||[]).slice(0,6);
+  if(words.length){h+='<div class="hgrp">'+esc(L.hintWords)+'</div>';
+    words.forEach(function(w){h+=hintRow(w.zh||"",w.pinyin||"",w.meaning||"")})}
+  h+='<div class="hgrp">'+esc(L.hintPhrases)+'</div>';
+  SAFE.forEach(function(w){h+=hintRow(w.zh,w.pinyin,mtr(w.meaning))});
+  $("hintBody").innerHTML=h;
+}
+function openHints(){$("hintTitle").textContent=L.hintTitle;buildHints();$("hintSheet").classList.add("on")}
+function closeHints(){$("hintSheet").classList.remove("on")}
+$("hintBody").addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest(".hitem");if(!b)return;
+  var zh=b.getAttribute("data-zh")||"";speak(zh);
+  openKb();var t=$("kbText");t.value=(t.value?t.value+zh:zh);syncSend();closeHints();
+});
+
+/* ---- keyboard panel ---- */
+function openKb(){$("ctrlRow").classList.add("off");$("kbPanel").classList.add("on");setHold("");$("kbText").focus()}
+function closeKb(){$("kbPanel").classList.remove("on");$("ctrlRow").classList.remove("off");setHold(started?L.holdMic:"")}
+function syncSend(){$("kbSend").disabled=!$("kbText").value.trim()}
+$("kbText").addEventListener("input",function(){var t=$("kbText");t.style.height="auto";t.style.height=Math.min(t.scrollHeight,96)+"px";syncSend()});
+$("kbText").addEventListener("focus",function(){setTimeout(chatScroll,250)});
+
+/* ---- session ---- */
 function init(){
-  applySub();
-  setName();setChar("talk");setStatus(L.connecting);setCnt();showUserLine("");showLine("","",L.tapStart);
+  applySub();applyRate();setName();setChar("talk");setStatus(L.connecting);setCnt();chatClear();
+  $("tipt").textContent=L.whatToSay;$("setTitle").textContent=L.settings;
+  $("setPersona").textContent=L.optPersona;$("setSub").textContent=L.optSub;$("setRate").textContent=L.optRate;
+  $("kbText").placeholder=L.kbPlaceholder;syncSend();
   fetch("/api/voice-practice/me?initData="+encodeURIComponent(initData())).then(jr)
     .then(function(o){if(o.ok&&o.j){ME.level=o.j.level||"hsk1";ME.language=o.j.language||LANG;ME.is_paid=!!o.j.is_paid}
-      setChar("happy");setStatus(L.tapStart);})
-    .catch(function(){setChar("happy");setStatus(L.tapStart)});
-}
-
-function talk(){
-  if(busy)return;
-  if(!started){startSession();return;}
-  if(mediaRecorder&&mediaRecorder.state!=="inactive"){stopRecording();return;}
-  startRecording();
+      setChar("happy");setStatus("");setHold(L.holdMic)})
+    .catch(function(){setChar("happy");setStatus("");setHold(L.holdMic)});
 }
 
 function startSession(){
-  busy=true;setStatus(L.connecting);setChar("talk");setDots("dots");
-  fetch("/api/voice-practice/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
+  busy=true;micBusy(true);setStatus(L.connecting);setChar("talk");
+  return fetch("/api/voice-practice/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice})}).then(jr)
-   .then(function(o){busy=false;
-      if(!o.ok){onStartError(o);return;}
-      sess=o.j.session_id;maxDialogs=Number(o.j.max_dialogs)||7;turn=0;corrections=[];started=true;setCnt();
+   .then(function(o){busy=false;micBusy(false);
+      if(!o.ok){onStartError(o);return false;}
+      sess=o.j.session_id;maxDialogs=Number(o.j.max_dialogs)||7;turn=0;started=true;setCnt();
+      var cc=o.j.course_context||{};lessonWords=cc.words||[];reviewWords=cc.review_words||[];
       var op=o.j.opening_message||{};
-      showLine(op.chinese_reply||"",op.pinyin||"",op.translation||"");
+      chatClear();dropEmpty();
+      addAi(op.chinese_reply||"",op.pinyin||"",op.translation||"");
       setChar("talk");setStatus(L.speaking);speak(op.chinese_reply||"");ring([587,740]);
-      setTimeout(function(){if(started){setChar("happy");setStatus(L.tapStart);setDots("dots")}},1100);
-   }).catch(function(){busy=false;setChar("happy");setStatus(L.sendErr)});
+      setTimeout(function(){if(started){setChar("happy");setStatus("");setHold(L.holdMic)}},1100);
+      return true;
+   }).catch(function(){busy=false;micBusy(false);setChar("happy");setStatus(L.sendErr);return false});
 }
 function onStartError(o){
-  setChar("happy");setDots("dots");
+  setChar("happy");
   var code=o.j&&o.j.code;
   if(code==="LIMIT_EXCEEDED"||o.status===403){showPaywall();return;}
   if(code==="USER_NOT_FOUND"){setStatus(L.startBot);return;}
   setStatus(L.sendErr);
 }
 
+/* ---- hold-to-talk mic ---- */
+var mic=$("mic");
+mic.addEventListener("contextmenu",function(e){e.preventDefault()});
+mic.addEventListener("pointerdown",function(e){
+  e.preventDefault();
+  if(busy)return;
+  try{mic.setPointerCapture(e.pointerId)}catch(_){}
+  holdAt=Date.now();holdOk=false;
+  if(!started){startSession().then(function(ok){if(ok&&holdAt)beginHold()});return;}
+  beginHold();
+});
+function endHoldEvent(e){
+  if(e)e.preventDefault();
+  if(!holdAt)return;
+  holdAt=0;
+  if(!holdOk){setHold(started?L.holdMic:"");return;}
+  /* Yozuv uzunligi mikrofon ochilgan paytdan hisoblanadi — sessiya ulanish
+     kechikishi "juda qisqa" xatosiga sabab bo'lmasligi uchun. */
+  if(!recAt||Date.now()-recAt<MIN_HOLD_MS){cancelRecording();setStatus(L.holdLonger);setHold(L.holdMic);return;}
+  stopRecording();
+}
+mic.addEventListener("pointerup",endHoldEvent);
+mic.addEventListener("pointercancel",endHoldEvent);
+mic.addEventListener("pointerleave",function(e){if(holdAt&&holdOk)endHoldEvent(e)});
+function beginHold(){holdOk=true;recAt=0;startRecording()}
+
 function pickMime(){var c=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/aac","audio/ogg;codecs=opus"];
   if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return"";
   for(var i=0;i<c.length;i++){if(MediaRecorder.isTypeSupported(c[i]))return c[i]}return""}
 function startRecording(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});setStatus(L.noSupport);return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});setStatus(L.noSupport);holdOk=false;return;}
   navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    if(!holdOk){try{stream.getTracks().forEach(function(t){t.stop()})}catch(e){}return;}
     mediaStream=stream;var mime=pickMime();chunks=[];
     var opts={audioBitsPerSecond:32000};if(mime)opts.mimeType=mime;
     try{mediaRecorder=new MediaRecorder(stream,opts)}catch(_){mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream)}
     mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size>0)chunks.push(e.data)};
-    mediaRecorder.onstop=onStopped;mediaRecorder.start(250);
+    mediaRecorder.onstop=onStopped;mediaRecorder.start(250);recAt=Date.now();
     try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
-    setChar("listen");setStatus(L.listening);setMicRec(true);setDots("dots rec");
-    clearTimeout(autoStop);autoStop=setTimeout(stopRecording,MAX_REC_MS);
-  }).catch(function(err){clog("mic_deny",(err&&err.name)||"",{});setStatus(L.micDeny)});
+    mic.classList.add("rec");setChar("listen");setStatus(L.listening);setHold(L.releaseMic);
+    clearTimeout(autoStop);autoStop=setTimeout(function(){holdAt=0;stopRecording()},MAX_REC_MS);
+  }).catch(function(err){clog("mic_deny",(err&&err.name)||"",{});holdOk=false;mic.classList.remove("rec");setStatus(L.micDeny)});
 }
-function stopRecording(){clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){setMicRec(false);setDots("dots");setChar("talk");setStatus(L.analyzing);mediaRecorder.stop();}}
-function stopHard(){clearTimeout(autoStop);try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;}
-function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm";}
+function stopRecording(){
+  clearTimeout(autoStop);mic.classList.remove("rec");holdOk=false;recAt=0;
+  if(mediaRecorder&&mediaRecorder.state!=="inactive"){setChar("talk");setStatus(L.analyzing);setHold("");mediaRecorder.stop()}
+}
+function cancelRecording(){
+  clearTimeout(autoStop);mic.classList.remove("rec");holdOk=false;recAt=0;chunks=[];
+  try{if(mediaRecorder&&mediaRecorder.state!=="inactive"){mediaRecorder.onstop=null;mediaRecorder.stop()}}catch(e){}
+  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}
+  mediaStream=null;mediaRecorder=null;setChar("happy");
+}
+function stopHard(){clearTimeout(autoStop);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
+function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm"}
 function onStopped(){
   var mt=(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm";
   var blob=new Blob(chunks,{type:mt});
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
-  if(blob.size<MIN_BYTES){setChar("happy");setStatus(L.tooShort);setDots("dots");return;}
-  busy=true;setChar("talk");setStatus(L.analyzing);setDots("dots");
+  if(blob.size<MIN_BYTES){setChar("happy");setStatus(L.tooShort);setHold(L.holdMic);return;}
+  busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);addTyping();
   var _ext=extFromMime(blob.type||mt);
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice."+_ext);
   fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
-    .then(function(o){busy=false;var heard=(o&&o.j&&o.j.heard)||"";clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:(""+heard).slice(0,24)});if(!o.ok){onMsgError(o);return;}renderReply(o.j)})
-    .catch(function(){busy=false;clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setChar("happy");setStatus(L.sendErr)});
+    .then(function(o){busy=false;micBusy(false);dropTyping();var heard=(o&&o.j&&o.j.heard)||"";clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:(""+heard).slice(0,24)});if(!o.ok){onMsgError(o);return}renderReply(o.j)})
+    .catch(function(){busy=false;micBusy(false);dropTyping();clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setChar("happy");setStatus(L.sendErr);setHold(L.holdMic)});
 }
+
+/* ---- typed message ---- */
+function sendText(){
+  var t=$("kbText"),txt=(t.value||"").trim();
+  if(busy||!txt)return;
+  if(!started){startSession().then(function(ok){if(ok)sendText()});return;}
+  t.value="";t.style.height="auto";syncSend();
+  busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);
+  addMe(txt,"");addTyping();
+  var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("text",txt);
+  fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
+    .then(function(o){busy=false;micBusy(false);dropTyping();if(!o.ok){onMsgError(o);return}renderReply(o.j,true)})
+    .catch(function(){busy=false;micBusy(false);dropTyping();setChar("happy");setStatus(L.sendErr)});
+}
+
 function onMsgError(o){
-  setChar("happy");setDots("dots");
+  setChar("happy");setHold(L.holdMic);
   var code=o.j&&o.j.code;
   if(code==="LIMIT_EXCEEDED"){showPaywall();return;}
   if(code==="SESSION_NOT_FOUND"){started=false;sess=null;setStatus(L.sendErr);return;}
   setStatus(L.sendErr);
 }
-function renderReply(res){
+function renderReply(res,skipUser){
   if(!res){setStatus("");return;}
-  if(res.correction)corrections.push(res.correction);
   turn=Number(res.turn_count)||turn+1;if(res.max_dialogs)maxDialogs=Number(res.max_dialogs);setCnt();
-  showUserLine(res.transcription||"");
-  showLine(res.chinese_reply||"",res.pinyin||"",res.translation||"");
+  if(!skipUser&&res.transcription)addMe(res.transcription,res.correction||"");
+  else if(skipUser&&res.correction){var last=chatEl().querySelector(".msg.me:last-child .bub");
+    if(last&&!last.querySelector(".fx")){var f=document.createElement("div");f.className="fx";f.innerHTML='<b>'+esc(L.fixLabel)+'</b> '+esc(res.correction);last.appendChild(f)}}
+  addAi(res.chinese_reply||"",res.pinyin||"",res.translation||"");
   setChar("talk");setStatus(L.speaking);speak(res.chinese_reply||"");ring(persona==="li"?[523,659]:[587,740]);
   if(res.session_should_end){setTimeout(endCall,1300);return;}
-  setTimeout(function(){if(started){setChar("happy");setStatus(L.tapStart);setDots("dots")}},1100);
+  setTimeout(function(){if(started){setChar("happy");setStatus("");setHold(L.holdMic)}},1100);
 }
 function endCall(){
+  closeSettings();closeHints();
   if(!started||!sess){showDoneResult({message_count:turn});return;}
-  stopHard();var sid=sess;started=false;sess=null;
+  stopHard();stopSpeak();var sid=sess;started=false;sess=null;
   fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
    .then(function(j){showDoneResult(j||{})})
@@ -325,9 +519,8 @@ function showDoneResult(j){
   $("dbadget").textContent=L.learnBadge;
   $("dstats").innerHTML='<div class="stat g"><div class="n">'+good+'</div><div class="l">'+L.statGood+'</div></div>'
     +'<div class="stat m"><div class="n">'+bad+'</div><div class="l">'+L.statMistake+'</div></div>';
-  // To'liq dialog: xronologik, yashil = zo'r, qizil = xato (tuzatish bilan)
   var body="";
-  if(tx.length){tx.forEach(function(t){body+=txRow(t)});}
+  if(tx.length){tx.forEach(function(t){body+=txRow(t)})}
   $("dtx").innerHTML=body;$("dtx").classList.remove("on");
   var hasTx=tx.length>0;
   $("dtoggle").style.display=hasTx?"flex":"none";
@@ -346,22 +539,21 @@ function toggleDialog(){
 function showPaywall(){
   $("pwchar").innerHTML=chr("happy",persona);
   $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
-  /* Sabab qatori — user "nega bu oyna chiqdi" deb hayron bo'lmasligi uchun. */
   if(L.limitWhy){$("pwwhyt").textContent=L.limitWhy;$("pwwhy").hidden=false}else{$("pwwhy").hidden=true}
   $("pwb").textContent=L.premiumBtn;$("pwb2").textContent=L.exit;
   $("paywall").classList.add("on");
 }
 function goPremium(){location.href="/subscription.html?lang="+LANG}
-function reset(){
-  $("done").classList.remove("on");started=false;sess=null;turn=0;corrections=[];
-  setName();setChar("happy");setStatus(L.tapStart);setDots("dots");showUserLine("");showLine("","",L.tapStart);setCnt();
+function softReset(){
+  started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];
+  closeKb();setName();setChar("happy");setStatus("");setHold(L.holdMic);chatClear();setCnt();
 }
+function reset(){$("done").classList.remove("on");softReset()}
 function swap(){
   if(busy)return;
-  stopHard();
+  stopHard();stopSpeak();closeSettings();
   if(sess){fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),session_id:sess})}).catch(function(){})}
-  persona=(persona==="bao"?"li":"bao");started=false;sess=null;turn=0;corrections=[];
-  setName();setChar("happy");setStatus(L.tapStart);setDots("dots");showUserLine("");showLine("","",L.tapStart);setCnt();
+  persona=(persona==="bao"?"li":"bao");softReset();
 }
 init();
 </script>

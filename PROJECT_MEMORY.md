@@ -207,6 +207,32 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-17 — AI Voice: chat ko'rinishi, hold-to-talk mikrofon va klaviatura (matnli xabar)
+
+Changed:
+- `course_v3_voice.html` layouti qayta qurildi: tepada panda (~33% balandlik), ostida scroll qilinadigan chat (AI javobi hanzi/pinyin/tarjima bilan chapda, user javobi va correction o'ngda), pastda dock: "Nima deyish?" chipi, klaviatura tugmasi, katta mikrofon.
+- Mikrofon endi faqat bosib turish rejimida (`pointerdown`/`pointerup`). Yozuv 400 ms dan qisqa bo'lsa yuborilmaydi, 20 s auto-stop saqlandi.
+- Yangi: klaviatura orqali matnli xabar. `POST /api/voice-practice/message` endi `audio` YOKI `text` qabul qiladi; matn bo'lsa STT bosqichi o'tkazib yuboriladi (`VoicePracticeService.process_message(text=...)`, `MAX_TEXT_CHARS=200`). Dialog limiti, paid budget gate, correction, history, `session_should_end` va javob sxemasi o'zgarmagan.
+- Suhbatni tugatish tepadagi ✕ ga ko'chdi. Personaj almashtirish, subtitr on/off va nutq tezligi (`playbackRate`, `hsk_voice_rate`) ⚙️ bottom sheet ichida.
+- "Nima deyish?" ro'yxati `session/start` javobidagi `course_context.words` / `review_words` dan tuziladi + 4 ta doimiy HSK1 iborasi. Qo'shimcha AI so'rovi yo'q.
+
+Why:
+- Ovozli suhbatning matnli versiyasi yo'q edi: user o'zi nima aytganini va AI nima javob berganini keyin ko'ra olmasdi. Tap/tap mikrofon esa tasodifiy bo'sh yozuvlarni ko'paytirardi.
+
+Files touched:
+- `app/static/course_v3_voice.html`
+- `app/main.py` (`voice_practice_message`)
+- `app/services/voice_practice_service.py` (`process_message`, `MAX_TEXT_CHARS`)
+
+Risk:
+- O'rta: `/api/voice-practice/message` kontrakti kengaydi (audio yoki text). Matnli xabar ham 1 dialog hisoblanadi va bepul trialdan yeydi — ovoz bilan bir xil. Payment/obuna/paywall logikasi, `session/start` va `session/end` tegilmagan.
+- Matnli xabarda STT bo'lmagani uchun `ai_usage_events` ga faqat `voice_practice_reply` yoziladi, `voice_practice_transcribe` yozilmaydi.
+
+Follow-up:
+- Real Telegram WebView'da (iOS + Android) hold-to-talk va klaviatura ochilgandagi layout smoke-test qilinsin.
+
+---
+
 ### 2026-08-16 — Mashq bo'limlari asosiy Mini App ichiga ko'chirila boshladi (pilot: Ieroglif tanish)
 
 Changed:

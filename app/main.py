@@ -2616,13 +2616,17 @@ async def voice_practice_message(request: Request):
             status_code=401,
             content={"ok": False, "code": "INVALID_INIT_DATA", "message": "Invalid Telegram init data."},
         )
+    # Mini App AI Voice ikki xil kirish beradi: mikrofon (audio) yoki klaviatura (text).
+    # Ikkalasi ham bo'lmasa — eski xatolik kodi saqlanadi.
     audio = form.get("audio")
-    if audio is None or not hasattr(audio, "read"):
+    typed_text = str(form.get("text") or "").strip()
+    has_audio = audio is not None and hasattr(audio, "read")
+    if not has_audio and not typed_text:
         return JSONResponse(
             status_code=400,
             content={"ok": False, "code": "EMPTY_AUDIO", "message": "Audio is required."},
         )
-    audio_bytes = await audio.read(5 * 1024 * 1024 + 1)
+    audio_bytes = await audio.read(5 * 1024 * 1024 + 1) if has_audio else b""
     try:
         async with async_session_maker() as session:
             return await VoicePracticeService(session).process_message(
@@ -2630,6 +2634,7 @@ async def voice_practice_message(request: Request):
                 session_id=str(form.get("session_id") or ""),
                 audio_bytes=audio_bytes,
                 filename=str(getattr(audio, "filename", None) or "voice.webm"),
+                text=typed_text,
             )
     except VoicePracticeError as error:
         return _voice_practice_error(error)
