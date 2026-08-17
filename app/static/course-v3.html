@@ -889,9 +889,15 @@ button{cursor:pointer}
 #tc-root .pl .opt .py{font-size:12px;color:var(--cin2);font-weight:400;margin-left:4px}
 
 /* --- AI Voice (#vc-root ichida scope'langan) --- */
+/* Asl AI Voice sahifasida `html,body{background:#CDB792}` edi — ya'ni bambuk
+   fon BUTUN ekranni to'ldirardi, 480px'lik `.wrap` esa uning ustida turardi.
+   Bu yerda `#secov` ham 480px, shuning uchun yon tomonlarda oq chiziq qolib,
+   ekran tor ko'rinardi. Katta `box-shadow` spread'i layoutga tegmasdan fonni
+   ekran chetlarigacha cho'zadi. */
+#secov.vc-open{background:#CDB792;box-shadow:0 0 0 100vmax #CDB792}
 #vc-root button{font-family:inherit;border:none;background:none;color:inherit}
 #vc-root .han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600;letter-spacing:1px}
-#vc-root{max-width:480px;margin:0 auto;height:100vh;height:100dvh;position:relative;overflow:hidden;display:flex;flex-direction:column;padding-top:var(--safe-t)}
+#vc-root{max-width:480px;margin:0 auto;height:100vh;height:100dvh;position:relative;overflow:hidden;display:flex;flex-direction:column;padding-top:var(--safe-t);width:100%;flex:1;min-height:0}
 #vc-root .bg{position:absolute;inset:0;z-index:0}
 #vc-root .bg svg{width:100%;height:100%}
 #vc-root .top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px 6px;flex:0 0 auto}
@@ -4779,7 +4785,7 @@ function openSection(mod){
 }
 function closeSection(){
   SECTION=null;stopSpeak();
-  var ov=$("#secov");ov.classList.remove("on");ov.innerHTML="";
+  var ov=$("#secov");ov.classList.remove("on");ov.classList.remove("vc-open");ov.innerHTML="";
   try{NavBack.sync()}catch(e){}
 }
 
@@ -6037,7 +6043,8 @@ function open(){
   L=LD[LANG]||LD.ru;
   /* DIQQAT: modul ichida `$` = getElementById("vc-"+id) deb qayta ta'riflangan,
      shuning uchun bu yerda tashqi `$` (querySelector) ISHLATIB BO'LMAYDI. */
-  document.getElementById("secov").innerHTML=VOICE_HTML;
+  var ov=document.getElementById("secov");
+  ov.innerHTML=VOICE_HTML;ov.classList.add("vc-open");
   openSection(API);
   sess=null;turn=0;started=false;busy=false;
   wire();init();
