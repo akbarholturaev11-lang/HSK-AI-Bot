@@ -18,26 +18,65 @@ FREE_FEATURE_LIMITS = {feature_key: 1 for feature_key in COURSE_FEATURE_KEYS}
 # Legacy/default value kept for native clients and older imports that do not pass
 # a level. Course v3 access decisions must use ``free_course_parts_for_level``.
 FREE_COURSE_LESSONS_PER_LEVEL = 2
+
+# Bepul chegara HSK DARSLIGI DARSI chegarasiga tushishi kerak: user yarim
+# darsda emas, to'liq bir darsni tugatgach limitga urilsin. Har darslik darsi
+# bir nechta mini-qismga bo'lingan (`parts_manifest.json`), shuning uchun
+# chegara qism SONI emas — birinchi darsning oxirgi qismi (checkpoint).
+#
+# hsk1/hsk2 shu qoidaga o'tkazildi. hsk3/hsk4 ataylab eski 2 qismlik
+# ko'rinishda qoladi: u yerda birinchi dars 6-9 qismdan iborat va to'liq
+# ochish bepul kontentni bir necha barobar oshirib yuborardi.
 FREE_COURSE_PARTS_BY_LEVEL = {
-    "beginner": 3,
-    "hsk1": 3,
-    "hsk2": 2,
+    "beginner": None,  # None = manifestdan (1-darsning barcha qismlari)
+    "hsk1": None,
+    "hsk2": None,
     "hsk3": 2,
     "hsk4": 2,
     "hsk4a": 2,
     "hsk4b": 2,
 }
+_MANIFEST_PATH = "app/static/course_v3_data/parts_manifest.json"
+_FIRST_LESSON_PARTS_CACHE: dict[str, int] = {}
+
+
+def _first_lesson_part_count(level: str) -> int | None:
+    """Darajaning BIRINCHI darslik darsi nechta qismdan iboratligi.
+
+    Manifest o'qib bo'lmasa None qaytaradi — chaqiruvchi eski qiymatga
+    qaytadi, ya'ni xato holatda bepul kontent KENGAYMAYDI.
+    """
+    manifest_level = "hsk1" if level == "beginner" else level
+    if manifest_level in _FIRST_LESSON_PARTS_CACHE:
+        return _FIRST_LESSON_PARTS_CACHE[manifest_level]
+    try:
+        with open(_MANIFEST_PATH, encoding="utf-8") as handle:
+            manifest = json.load(handle)
+        lessons = manifest[manifest_level]["lessons"]
+        parts = lessons[0]["parts"]
+        count = int(max(int(part) for part in parts))
+    except (OSError, KeyError, IndexError, TypeError, ValueError):
+        return None
+    if count <= 0:
+        return None
+    _FIRST_LESSON_PARTS_CACHE[manifest_level] = count
+    return count
 
 
 def free_course_parts_for_level(level: str | None) -> int:
     """Return the free Course v3 mini-parts for one learner level.
 
-    HSK1 includes its third-part beginner checkpoint. Other levels keep the
-    existing two-part preview. Unknown/legacy levels retain the historical
-    two-part default instead of becoming more permissive.
+    hsk1/hsk2 (va `beginner`) uchun chegara birinchi HSK darslik darsining
+    oxirgi qismi — user to'liq bitta darsni tugatgach limitga tushadi.
+    hsk3/hsk4 va noma'lum darajalar eski ikki qismlik ko'rinishda qoladi.
     """
     normalized = str(level or "").strip().lower()
-    return FREE_COURSE_PARTS_BY_LEVEL.get(normalized, FREE_COURSE_LESSONS_PER_LEVEL)
+    if normalized not in FREE_COURSE_PARTS_BY_LEVEL:
+        return FREE_COURSE_LESSONS_PER_LEVEL
+    configured = FREE_COURSE_PARTS_BY_LEVEL[normalized]
+    if configured is not None:
+        return int(configured)
+    return _first_lesson_part_count(normalized) or FREE_COURSE_LESSONS_PER_LEVEL
 
 # Course Mini App "Mashq" bo'limlari — YANGI model:
 #   • Har bo'lim UMRDA 1 marta bepul (reklamasiz). Kunlik yangilanish YO'Q
@@ -107,6 +146,16 @@ class CourseMiniAppAccessService:
     @classmethod
     def is_paid_user(cls, user) -> bool:
         return UserAccessStateService.is_paid(user)
+
+    @classmethod
+    def has_unlimited_course_access(cls, user) -> bool:
+        """Kurs darslari uchun limitsizlik: obunachi YOKI vaqtinchalik bonus.
+
+        Otziv uchun beriladigan 30 daqiqa `status="active"` qo'yadi, lekin
+        `payment_status` ni o'zgartirmaydi — `is_paid_user()` unga `False`
+        qaytaradi. Dars gate'i shu sababli bonusni ko'rmasdi.
+        """
+        return UserAccessStateService.has_unlimited_course_access(user)
 
     @classmethod
     def is_free_user(cls, user) -> bool:

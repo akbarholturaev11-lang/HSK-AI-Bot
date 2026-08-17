@@ -476,6 +476,66 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('onclick="App.exitFlow()"', html)
         self.assertIn('onclick="closeUserProfile()"', html)
 
+    def test_free_parts_end_on_a_whole_hsk_lesson_for_hsk1_and_hsk2(self):
+        """Bepul chegara yarim darsda emas, to'liq HSK darsligi darsi oxirida.
+
+        hsk1/hsk2 manifestdan hisoblanadi (1-darsning oxirgi qismi), hsk3/hsk4
+        ataylab eski 2 qismlik ko'rinishda qoladi — u yerda 1-dars 6-9 qismdan
+        iborat va to'liq ochish bepul kontentni bir necha barobar oshirardi.
+        """
+        import ast
+
+        src = Path("app/services/course_miniapp_access_service.py").read_text(encoding="utf-8")
+        table = None
+        for node in ast.parse(src).body:
+            targets = getattr(node, "targets", [])
+            if targets and getattr(targets[0], "id", "") == "FREE_COURSE_PARTS_BY_LEVEL":
+                table = ast.literal_eval(node.value)
+        self.assertIsNotNone(table, "FREE_COURSE_PARTS_BY_LEVEL")
+
+        # None = manifestdan olinadi.
+        for level in ("beginner", "hsk1", "hsk2"):
+            self.assertIsNone(table[level], f"{level} manifestga bog'lanishi kerak")
+        for level in ("hsk3", "hsk4", "hsk4a", "hsk4b"):
+            self.assertEqual(table[level], 2, f"{level} o'zgarmasligi kerak")
+
+        manifest = json.loads((BASE / "parts_manifest.json").read_text(encoding="utf-8"))
+        for level in ("hsk1", "hsk2"):
+            first = manifest[level]["lessons"][0]
+            # Chegara aynan 1-darsning checkpoint qismi bo'lsin: user darsni
+            # to'liq tugatadi, keyin limitga uriladi.
+            self.assertEqual(
+                max(first["parts"]), first["checkpoint"],
+                f"{level}: 1-dars oxirgi qismi checkpoint bo'lishi kerak",
+            )
+
+    def test_segment_discount_campaign_can_notify_users(self):
+        """Admin Mini App'da yaratilgan SEGMENT chegirmasi haqida ham userlar
+        xabar oladi.
+
+        `list_due_notifications` `notify_enabled IS TRUE` bo'yicha filtrlaydi.
+        Ilgari Mini App yo'lida bu maydon segment kampaniyasi uchun qat'iy
+        `False` edi — chegirma yaratilardi, lekin hech kimga xabar bormasdi.
+        """
+        main_src = Path("app/main.py").read_text(encoding="utf-8")
+        self.assertNotIn(
+            'notify_enabled=bool(payload.get("notify_enabled")) if target_id else False',
+            main_src,
+            "segment kampaniyasida xabar qayta o'chirib qo'yilgan",
+        )
+        self.assertIn('notify_enabled=bool(payload.get("notify_enabled"))', main_src)
+
+        # Formada ham segment uchun tanlov bo'lsin, aks holda backend hech
+        # qachon True qiymat olmaydi.
+        admin_src = Path("app/static/admin.html").read_text(encoding="utf-8")
+        self.assertIn('id="cmNotifySegment"', admin_src)
+        self.assertIn('p.notify_enabled=$("cmNotifySegment")', admin_src)
+
+        # Xabar 3 tilda quriladi (til bo'yicha maydon + fallback).
+        notify_src = Path("app/services/discount_notification_service.py").read_text(encoding="utf-8")
+        self.assertIn('getattr(campaign, f"title_{lang}", None)', notify_src)
+        self.assertIn('getattr(campaign, f"reason_{lang}", None)', notify_src)
+
     def test_hsk_exam_uses_server_material_and_server_grading(self):
         html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")

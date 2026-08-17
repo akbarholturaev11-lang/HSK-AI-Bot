@@ -57,6 +57,10 @@ class StudyMiniAppService:
     def is_paid_user(cls, user) -> bool:
         return CourseMiniAppAccessService.is_paid_user(user)
 
+    @classmethod
+    def has_unlimited_course_access(cls, user) -> bool:
+        return CourseMiniAppAccessService.has_unlimited_course_access(user)
+
     async def _resolve_level(self, user) -> str:
         level = str(getattr(user, "level", "") or "").strip().lower()
         lesson_order = 0

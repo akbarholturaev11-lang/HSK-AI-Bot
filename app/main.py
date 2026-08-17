@@ -8,6 +8,7 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
+from html import escape as html_escape
 
 from aiogram import Bot
 from aiogram.types import BufferedInputFile
@@ -1602,7 +1603,10 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
                 # vaqt zonasini so'ramaymiz, telefon aytganini olamiz.
                 progress.reminder_tz_offset = round(offset_minutes / 60)
         gamification = await CourseGamificationService(session).snapshot(user, profile=profile)
-        is_paid = StudyMiniAppService.is_paid_user(user)
+        # Dars gate'i uchun vaqtinchalik bonus ham (otziv 30 daqiqasi, release
+        # feedback "Sinab ko'rish", referral triali) obunachi kabi hisoblanadi —
+        # aks holda userga "limitsiz kirish ochildi" deyilib, darslar yopiq qolardi.
+        is_paid = StudyMiniAppService.has_unlimited_course_access(user)
 
         resolved_level = target_band
 
@@ -1893,7 +1897,9 @@ async def v3_course_ad(
                 ad_language = user.language
             # Dars yakuni reklamasi FAQAT bepul foydalanuvchiga. Obunachiga
             # server ham bermaydi (klient xato hisoblasa ham reklama chiqmaydi).
-            if lesson_end and user and CourseMiniAppAccessService.is_paid_user(user):
+            # Vaqtinchalik "limitsiz" bonus ham reklamasiz bo'lishi kerak —
+            # userga aynan shu va'da qilingan.
+            if lesson_end and user and CourseMiniAppAccessService.has_unlimited_course_access(user):
                 return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
         if not ad_language and lang:
             ad_language = lang
@@ -2116,6 +2122,21 @@ async def v3_practice_daily_gate(request: Request):
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
         access = CourseMiniAppAccessService(session)
+        # Admin "vaqtincha free" rejimini yoqqan bo'lsa Mashq bo'limlari ham
+        # ochiq bo'lishi kerak — ilgari policy faqat kurs darslariga ta'sir
+        # qilardi va user baribir "obuna kerak" devoriga urilardi.
+        # Umrlik bepul foydalanish SARFLANMAYDI: rejim tugagach user o'z
+        # bepul urinishini yo'qotmasin.
+        if (await CourseAccessPolicyService(session).get_policy()).free_active:
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "allowed": True,
+                    "is_paid": access.is_paid_user(user),
+                    "remaining": None,
+                    "policy_free": True,
+                }
+            )
         # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
         result = await access.consume_daily_use(user, feature_key=feature, ref=ref, lifetime=True)
         if not result.get("allowed"):
@@ -2182,6 +2203,17 @@ async def v3_practice_ad_gate(request: Request):
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
         access = CourseMiniAppAccessService(session)
+        # "Vaqtincha free" rejimida reklama ham talab qilinmaydi.
+        if (await CourseAccessPolicyService(session).get_policy()).free_active:
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "allowed": True,
+                    "is_paid": access.is_paid_user(user),
+                    "remaining": None,
+                    "policy_free": True,
+                }
+            )
         # AI bo'lim emas — reklama cheksiz, slot band qilinmaydi.
         if feature not in COURSE_AI_PRACTICE_FEATURES:
             is_paid = access.is_paid_user(user)
@@ -2299,7 +2331,8 @@ async def v3_course_lesson_unlock(request: Request):
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
 
         access = CourseMiniAppAccessService(session)
-        is_paid = access.is_paid_user(user)
+        # Vaqtinchalik bonus (otziv 30 daqiqasi va h.k.) ham limitsiz hisoblanadi.
+        is_paid = access.has_unlimited_course_access(user)
         access_policy = await CourseAccessPolicyService(session).get_policy()
         requirement = access_policy.requirement_for(
             lesson_order=lesson_order,
@@ -2393,7 +2426,8 @@ async def v3_course_lesson_complete(request: Request):
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
 
         access = CourseMiniAppAccessService(session)
-        is_paid = access.is_paid_user(user)
+        # Vaqtinchalik bonus (otziv 30 daqiqasi va h.k.) ham limitsiz hisoblanadi.
+        is_paid = access.has_unlimited_course_access(user)
         access_policy = await CourseAccessPolicyService(session).get_policy()
         requirement = access_policy.requirement_for(
             lesson_order=lesson_order,
@@ -2829,6 +2863,10 @@ async def admin_miniapp_course_access_save(request: Request):
         duration_days_raw = payload.get("duration_days")
         duration_days = int(duration_days_raw or 0) if duration_days_raw not in (None, "") else None
         free_until_raw = str(payload.get("free_until") or "").strip()
+        # Free rejim e'loni: admin sababni bitta tilda yozadi, mavjud broadcast
+        # tarjimoni uni uz/ru/tj ga o'giradi. Bo'sh bo'lsa e'lon yuborilmaydi.
+        announce_reason = str(payload.get("announce_reason") or "").strip()[:300]
+        announce = bool(payload.get("announce")) and bool(announce_reason)
     except (AttributeError, TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_course_access_policy"})
 
@@ -2862,7 +2900,59 @@ async def admin_miniapp_course_access_save(request: Request):
         policy.active_mode,
         policy.free_until.isoformat() if policy.free_until else None,
     )
-    return JSONResponse(content={"ok": True, "course_access": policy.public_payload()})
+
+    announced = None
+    if announce and policy.free_active:
+        announced = await _announce_free_access_policy(policy, announce_reason)
+
+    return JSONResponse(
+        content={"ok": True, "course_access": policy.public_payload(), "announced": announced}
+    )
+
+
+async def _announce_free_access_policy(policy, reason: str) -> dict:
+    """Vaqtincha free rejim yoqilganini userlarga e'lon qiladi.
+
+    Matn: qancha kun ochiqligi + admin yozgan sabab. Admin bitta tilda yozadi,
+    mavjud broadcast tarjimoni uz/ru/tj ga o'giradi — bitta tilda ko'rinadigan
+    matn chiqib qolmasin. Yuborish mavjud `AdminBroadcastService.deliver`
+    orqali (blok bo'lgan userlar va adminlar avtomatik chetlab o'tiladi).
+    """
+    remaining = policy.free_until - datetime.now(timezone.utc)
+    days = max(1, -(-int(remaining.total_seconds()) // 86400))  # yuqoriga yaxlitlash
+    header = {
+        "uz": f"🎁 <b>{days} kun barcha darslar bepul</b>",
+        "ru": f"🎁 <b>{days} дней все уроки бесплатно</b>",
+        "tj": f"🎁 <b>{days} рӯз ҳамаи дарсҳо ройгон</b>",
+    }
+    body_prefix = {
+        "uz": "Sabab: ",
+        "ru": "Причина: ",
+        "tj": "Сабаб: ",
+    }
+    async with async_session_maker() as session:
+        service = AdminBroadcastService(bot, session)
+        users = await service.target_users({})
+        # Tayanch matn tojikcha quriladi — mavjud broadcast tarjimoni
+        # `translate_from_tajik` shu tilni kutadi (admin panelida ham shunday).
+        text = (
+            f"{header['tj']}\n\n"
+            f"<blockquote>{body_prefix['tj']}{html_escape(reason)}</blockquote>"
+        )
+        sent, failed, blocked = await service.deliver(
+            users,
+            admin_ids=set(settings.admin_id_list),
+            text=text,
+            content_type="text",
+            media_file_id=None,
+            button_config={"action": "course"},
+            translate=True,
+        )
+    logger.info(
+        "course_access_free_announced days=%s sent=%s failed=%s blocked=%s",
+        days, sent, failed, blocked,
+    )
+    return {"days": days, "sent": sent, "failed": failed, "blocked": blocked}
 
 
 @app.post("/api/admin-miniapp/course-sales-experiment/save")
@@ -3761,7 +3851,13 @@ async def admin_miniapp_campaign_create(request: Request):
                 payment_method=None if target_id else filters.get("payment_method"),
                 plan_type=None if target_id else filters.get("plan"),
                 quota_total=None if target_id else (quota_raw if quota_raw > 0 else None),
-                notify_enabled=bool(payload.get("notify_enabled")) if target_id else False,
+                # Segment kampaniyasida ham xabar yuborish mumkin. Ilgari bu
+                # yerda qat'iy `False` turardi, shuning uchun admin Mini App'da
+                # yaratilgan segment chegirmasi haqida userlar HECH QACHON
+                # xabar olmasdi (`list_due_notifications` `notify_enabled`
+                # bo'yicha filtrlaydi). Telegram bot admin oqimida esa xabar
+                # yuborilardi — ikki oqim orasidagi farq shu edi.
+                notify_enabled=bool(payload.get("notify_enabled")),
                 created_by_telegram_id=telegram_id,
             )
         else:

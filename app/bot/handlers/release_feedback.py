@@ -501,6 +501,11 @@ async def _complete_response(
         response=response,
         user=user,
     )
+    # Otziv qoldirgan userga chegirmadan TASHQARI vaqtinchalik limitsiz kirish
+    # ham beriladi. Ilgari bu faqat "Sinab ko'rish" tugmasida ishlardi, baho/izoh
+    # yo'lida esa yo'q edi. `grant_trial_access` o'zi idempotent: obunachiga va
+    # muddati uzunroq userga tegmaydi.
+    await service.grant_trial_access(campaign=campaign, user=user)
     return response, discount_campaign_id
 
 

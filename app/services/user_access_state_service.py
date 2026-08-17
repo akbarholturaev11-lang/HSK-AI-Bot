@@ -79,6 +79,23 @@ class UserAccessStateService:
         return cls.classify(user, now=now) == UserAccessState.TEMPORARY_TRIAL
 
     @classmethod
+    def has_unlimited_course_access(cls, user, *, now: datetime | None = None) -> bool:
+        """Kurs darslari uchun "limit yo'q" holati.
+
+        `is_paid` faqat `payment_status == "approved"` bo'lgan HAQIQIY
+        obunachini bildiradi va to'lov/obuna UI'sida shu ma'noda ishlatiladi —
+        uni kengaytirib bo'lmaydi.
+
+        Ammo vaqtinchalik bonus (otziv uchun 30 daqiqa, release feedback
+        "Sinab ko'rish", referral triali) `status="active" + end_date` qo'yadi,
+        `payment_status` ga TEGMAYDI — natijada holat TEMPORARY_TRIAL bo'ladi.
+        Ilgari kurs gate'i `is_paid` ga qaragani uchun bunday userga
+        "limitsiz kirish ochildi" deyilar, lekin darslar yopiq qolardi.
+        """
+        state = cls.classify(user, now=now)
+        return state in {UserAccessState.PAID, UserAccessState.TEMPORARY_TRIAL}
+
+    @classmethod
     def can_use_free_tier(cls, user, *, now: datetime | None = None) -> bool:
         return cls.classify(user, now=now) in cls.FREE_TIER_STATES
 

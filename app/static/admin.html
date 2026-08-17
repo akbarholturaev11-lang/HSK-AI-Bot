@@ -1050,14 +1050,22 @@
               <button class="chip" data-duration-target="courseAccessDays" data-duration-days="30">30 kun</button>
             </div>
           </div>
+          <div class="frow" id="courseAccessAnnounceBox">
+            <label><input type="checkbox" id="courseAccessAnnounce"> Userlarga e'lon yuborilsin</label>
+            <input id="courseAccessReason" class="input" maxlength="300" placeholder="Sabab (tojikcha yozing — uz/ru ga tarjima qilinadi)">
+            <div class="hint">Xabarda muddat avtomatik qo'shiladi: "N kun barcha darslar bepul" + sabab.</div>
+          </div>
           <button class="btn" data-casave>Saqlash</button>
         </div>
       </div>`);
       courseAccessModeUi();
     }
     function courseAccessModeUi(){
-      const sel=$("courseAccessMode"), box=$("courseAccessDaysBox");
-      if(box&&sel) box.style.display=sel.value==="free_until"?"grid":"none";
+      const sel=$("courseAccessMode"), box=$("courseAccessDaysBox"), ann=$("courseAccessAnnounceBox");
+      const isFree=sel&&sel.value==="free_until";
+      if(box&&sel) box.style.display=isFree?"grid":"none";
+      /* E'lon faqat vaqtincha free rejimida ma'noga ega. */
+      if(ann) ann.style.display=isFree?"grid":"none";
     }
     function salesExperimentStartedText(value){
       if(!value) return "hali boshlanmagan";
@@ -1407,7 +1415,8 @@
              ${sel("cm_level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"]])}
              ${sel("cm_payment_method","🏦 To'lov usuli",[["","Hammasi"],["visa","Visa"],["alipay","Alipay"],["wechat","WeChat"]])}
              ${sel("cm_plan","📦 Tarif",[["","Hammasi"],["10_days","10 kun"],["1_month","1 oy"]])}
-             <div class="frow"><label>Kvota (0 = cheksiz)</label><input id="cmQuota" class="input" type="number" min="0" value="0"></div>`;
+             <div class="frow"><label>Kvota (0 = cheksiz)</label><input id="cmQuota" class="input" type="number" min="0" value="0"></div>
+             <label class="ncsw"><input type="checkbox" id="cmNotifySegment" checked> Segment userlariga chegirma haqida xabar yuborilsin</label>`;
         form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
           <div class="frow"><label>Sabab / matn</label><textarea id="cmText" class="textarea" maxlength="500"></textarea></div>
           <div class="frow two"><div><label>Chegirma %</label><input id="cmPercent" class="input" type="number" min="1" max="90" value="20"></div>
@@ -1465,6 +1474,7 @@
           p.status=$("cm_status").value; const lng=$("cm_language").value; p.languages=lng?[lng]:[];
           p.level=$("cm_level").value; p.payment_method=$("cm_payment_method").value; p.plan=$("cm_plan").value;
           p.quota_total=$("cmQuota").value;
+          p.notify_enabled=$("cmNotifySegment") ? $("cmNotifySegment").checked : false;
         }
       } else { p.feature_key=$("cmFeature").value; }
       return apiPost("/api/admin-miniapp/campaigns/create",p);
@@ -1728,7 +1738,7 @@
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pdsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$("payDetails").value}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
-      if((el=T("[data-casave]"))){ const sel=$("courseAccessMode"), days=$("courseAccessDays"); const payload={mode:sel?sel.value:"subscription"}; if(payload.mode==="free_until") payload.duration_days=Number(days&&days.value||0); el.disabled=true; return apiPost("/api/admin-miniapp/course-access/save",payload).then(()=>afterModule("Kurs access saqlandi")).catch(x=>{toast(apiErr(x,"Kurs access saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-casave]"))){ const sel=$("courseAccessMode"), days=$("courseAccessDays"), ann=$("courseAccessAnnounce"), reason=$("courseAccessReason"); const payload={mode:sel?sel.value:"subscription"}; if(payload.mode==="free_until"){ payload.duration_days=Number(days&&days.value||0); const rtext=(reason&&reason.value||"").trim(); if(ann&&ann.checked){ if(!rtext){ toast("E'lon uchun sabab yozing"); return; } if(!confirm("Barcha userlarga e'lon yuboriladi. Davom etasizmi?")) return; payload.announce=true; payload.announce_reason=rtext; } } el.disabled=true; return apiPost("/api/admin-miniapp/course-access/save",payload).then(d=>afterModule(d&&d.announced?("Saqlandi. E'lon yuborildi: "+d.announced.sent):"Kurs access saqlandi")).catch(x=>{toast(apiErr(x,"Kurs access saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-sales-experiment-save]"))){ const mode=$("salesExperimentMode"), pct=$("salesExperimentPercent"); el.disabled=true; return apiPost("/api/admin-miniapp/course-sales-experiment/save",{mode:mode?mode.value:"off",treatment_percent:Number(pct&&pct.value||0)}).then(()=>afterModule("Sotuv tajribasi saqlandi")).catch(x=>{toast(apiErr(x,"Sotuv tajribasi saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-ap-placement],[data-ap-platform]"))) return appPromoToggleChip(el);
       if((el=T("[data-app-promo-media-upload]"))){ const input=$("apMediaFile"); if(input) input.click(); return; }

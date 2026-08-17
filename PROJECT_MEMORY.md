@@ -6012,6 +6012,61 @@ Risk:
 
 ---
 
+### 2026-08-13 — Access: vaqtinchalik bonus, free rejim qamrovi, bepul chegara, chegirma xabari
+
+Changed:
+- **`UserAccessStateService.has_unlimited_course_access()`** qo'shildi
+  (`PAID` yoki `TEMPORARY_TRIAL`). Kurs dars gate'i (`main.py` — xarita,
+  dars ochish, dars yakuni, keyingi dars) va dars-yakuni reklamasi shunga
+  o'tkazildi. `is_paid_user()` ATAYLAB o'zgarmadi — u to'lov/obuna UI'sida
+  "haqiqiy obunachi" ma'nosini saqlaydi.
+- **Release feedback**: baho/izoh yo'liga (`_complete_response`) ham
+  `grant_trial_access` qo'shildi; ilgari 30 daqiqa faqat "Sinab ko'rish"
+  tugmasida berilardi, chegirma esa alohida ketardi.
+- **Free/ads policy Mashq bo'limlariga tarqaldi**: `/api/v3/practice/daily-gate`
+  va `/api/v3/practice/ad-gate` `free_active` bo'lsa darhol ruxsat beradi va
+  umrlik bepul urinishni SARFLAMAYDI. AI Voice ataylab tegilmadi (token narxi).
+- **Bepul chegara HSK darsligi darsiga tenglandi**: `FREE_COURSE_PARTS_BY_LEVEL`
+  da `None` = `parts_manifest.json` dan 1-darsning oxirgi qismi.
+  beginner/hsk1 = 3 (o'zgarmadi), hsk2 = 2 → 5. hsk3/hsk4 ataylab 2 bo'lib
+  qoldi (u yerda 1-dars 6-9 qismdan iborat).
+- **Free rejim e'loni**: `/api/admin-miniapp/course-access/save` ga
+  `announce` + `announce_reason` qo'shildi; matn mavjud `AdminBroadcastService`
+  orqali uz/ru/tj ga tarjima qilinib yuboriladi. Admin panelga checkbox +
+  sabab maydoni.
+
+Fixed:
+- **Otziv uchun 30 daqiqa darslarda ishlamasdi.** `grant_feedback_reward` /
+  `grant_trial_access` `status="active"` qo'yadi, `payment_status` ga
+  tegmaydi → `classify()` = `TEMPORARY_TRIAL`, `is_paid()` = False. Kurs
+  gate'i `is_paid` ga qaragani uchun userga "limitsiz kirish ochildi"
+  deyilardi-yu, darslar yopiq qolardi.
+- **Segment chegirmasi haqida xabar ketmasdi.** `main.py` da
+  `notify_enabled=... if target_id else False` — segment kampaniyasida qat'iy
+  `False`. `list_due_notifications` esa `notify_enabled IS TRUE` bo'yicha
+  filtrlaydi, shuning uchun admin Mini App'da yaratilgan chegirma navbatga
+  umuman tushmasdi. Telegram bot oqimida ishlardi — farq shu edi.
+
+Files touched:
+- `app/services/user_access_state_service.py`, `app/services/course_miniapp_access_service.py`,
+  `app/services/study_miniapp_service.py`, `app/bot/handlers/release_feedback.py`,
+  `app/main.py`, `app/static/admin.html`, `tests/test_course_v3_static_data.py`
+
+Risk:
+- **Access va to'lov mantig'i.** `has_unlimited_course_access` faqat kurs
+  gate'ida ishlatiladi; to'lov, obuna narxi, QR va admin hisobotlari
+  `is_paid_user()` da qoldi.
+- hsk2 bepul kontenti 2 → 5 qism (konversiyaga ta'sir qilishi mumkin,
+  ataylab qabul qilingan qaror). hsk3/hsk4 tegilmadi.
+- Free rejim e'loni BARCHA userlarga ketadi; admin panelda tasdiq so'raladi.
+- Chegirma xabari fon rejalashtiruvchisi orqali ~60 soniyada ketadi (bot
+  oqimidagidek darhol emas). Eski kampaniyalar `notify_enabled=False` bilan
+  yozilgan — ular uchun xabar baribir ketmaydi.
+- Sandboxda `sqlalchemy` yo'q → servis unit testlari ishga tushirilmadi,
+  faqat statik testlar va sintaksis. Deploy oldidan to'liq `pytest` shart.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
