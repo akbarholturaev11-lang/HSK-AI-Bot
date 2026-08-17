@@ -271,8 +271,9 @@ Risk:
 - Boshqa bo'limlar ko'chirilganda shu naqsh takrorlansin: IIFE + o'z CSS prefiksi + `onclick` modul nomi orqali.
 
 Follow-up:
-- Ko'chirilganlar: Ieroglif tanish (RECOG), Talaffuz (PRON), Xatolar (MIST), Test markazi (TEST).
-- Qolgan bo'lim: AI Voice.
+- Ko'chirildi: Ieroglif tanish (RECOG), Talaffuz (PRON), Xatolar (MIST), Test markazi (TEST), AI Voice (VOICE). BARCHA bo'limlar tugadi.
+- VOICE modulida `$` = `getElementById("vc-"+id)` deb QAYTA TA'RIFLANGAN (barcha `$("x")` chaqiruvlari o'zgarmasligi uchun). Shu modul ichida tashqi `$` (querySelector) ishlatib bo'lmaydi — `document.getElementById` ishlatilsin.
+- Alohida sahifa bo'lib qoladiganlar: `hsk-lugat.html` (bot deep-link + dars ichidagi ✏️ iframe), `subscription.html`, `admin.html`, `course_v3_memorize.html` (faqat lug'at ichidan).
 - CSS'ni skript bilan scope'laganda selektor izohlari AVVAL olib tashlanishi shart — aks holda izohdan keyingi qoida tushib qoladi (2026-08-16 da `.rv`/`.lim` shunday yo'qolgan).
 - Yodlash (`course_v3_memorize.html`) KO'CHIRILMAYDI: u Mashq ekranida yo'q, faqat `hsk-lugat.html` ichidan ochiladi, lug'at esa alohida sahifa bo'lib qoladi.
 - `hsk-lugat.html` alohida sahifa bo'lib qoladi (bot deep-link + dars ichidagi ✏️ iframe).
