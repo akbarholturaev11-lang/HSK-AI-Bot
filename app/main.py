@@ -591,10 +591,15 @@ app.include_router(
     )
 )
 
+# `no-store` brauzerning bfcache'ini (back-forward cache) BUTUNLAY o'chiradi:
+# obuna/lug'at sahifasidan orqaga qaytganda Mini App har safar noldan
+# yuklanardi (~470 KB). `no-cache` bilan HTML baribir HAR SAFAR ETag orqali
+# tekshiriladi — ya'ni eskirgan sahifa ko'rsatilmaydi — lekin o'zgarmagan
+# bo'lsa 304 qaytadi va bfcache ishlaydi. course-v3.html'dagi `pageshow`
+# handleri bfcache'dan tiklanganda map'ni qayta so'raydi, shuning uchun
+# access/XP holati eskirib qolmaydi.
 MINIAPP_HTML_HEADERS = {
-    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
-    "Pragma": "no-cache",
-    "Expires": "0",
+    "Cache-Control": "no-cache, must-revalidate",
 }
 DESKTOP_DOWNLOAD_HTML_HEADERS = {
     **MINIAPP_HTML_HEADERS,

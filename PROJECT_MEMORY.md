@@ -207,6 +207,22 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-17 — Mini App HTML `no-store` -> `no-cache` (bfcache yoqildi)
+
+Changed:
+- `MINIAPP_HTML_HEADERS`: `no-store, no-cache, must-revalidate, max-age=0` + `Pragma`/`Expires` o'rniga faqat `no-cache, must-revalidate`.
+- `course-v3.html` ga `pageshow` handleri: `event.persisted` bo'lsa `/api/v3/map` qayta so'raladi va MAP/PROF yangilanadi.
+
+Why:
+- `no-store` brauzer bfcache'ini butunlay o'chiradi. Obuna, lug'at yoki AI Voice sahifasidan orqaga qaytganda Mini App (~470 KB) har safar noldan yuklanardi. `no-cache` bilan HTML baribir har safar ETag orqali tekshiriladi (eskirgan sahifa ko'rsatilmaydi), lekin o'zgarmagan bo'lsa 304 qaytadi va bfcache ishlaydi.
+
+Files touched:
+- `app/main.py`, `app/static/course-v3.html`
+
+Risk:
+- bfcache'dan tiklangan sahifa muzlagan holatda bo'ladi. Eng xavflisi ACCESS: to'lovdan keyin qaytganda darslar ochilmay qolishi mumkin edi. Shuning uchun `pageshow` handleri map'ni qayta so'raydi — bu handler OLIB TASHLANMASIN.
+- `pagehide` dagi exit-ping bfcache muzlashida ham ishlaydi (analitikada bir marta).
+
 ### 2026-08-17 — AI Voice: chat ko'rinishi, hold-to-talk mikrofon va klaviatura (matnli xabar)
 
 Changed:

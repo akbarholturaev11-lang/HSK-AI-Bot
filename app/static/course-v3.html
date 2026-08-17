@@ -1014,6 +1014,20 @@ try{
     if(document.visibilityState==="hidden")pingMiniAppExit();
   });
   window.addEventListener("pagehide",pingMiniAppExit);
+  /* bfcache: sahifa xotiradan tiklanganda (obuna, lug'at yoki AI Voice
+     sahifasidan qaytish) holat eskirgan bo'lishi mumkin. Eng muhimi ACCESS:
+     to'lov tasdiqlangach darslar shu yerda ochilishi kerak. Shuning uchun
+     tiklanishda map qayta so'raladi. `persisted` bo'lmasa — bu oddiy
+     yuklanish, hech narsa qilinmaydi. */
+  window.addEventListener("pageshow",function(e){
+    if(!e||!e.persisted)return;
+    EXIT_PINGED=false;
+    if(!INIT_DATA||!MAP)return;
+    _fetchCourseMap(MAP.level||getSelectedLevel()).then(function(d){
+      if(!d||d._parseFail||d.authenticated===false||!d.units)return;
+      MAP=d;if(d.user)PROF=d.user;syncNotify();renderAll();
+    }).catch(function(){});
+  });
 }catch(e){}
 /* Har bir Course sahifa ochilishi alohida analytics session. sessionStorage'da
    saqlash qayta ochilgan Mini Appni eski sessionga qo'shib yuborardi. */
