@@ -207,6 +207,29 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-17 — Eski xatolar uchun material backfill skripti
+
+Changed:
+- Yangi `scripts/backfill_mistake_material.py`: `material_version < 2` bo'lgan (ya'ni kontentsiz) `course_mistakes` yozuvlarini dars JSON'idagi kartaga qaytadan bog'lab, `material_json` ni tiklaydi.
+- Bog'lash `(prompt, correct_answer)` juftligi bo'yicha, uz/ru/tj tillarida sinab ko'riladi.
+
+Why:
+- `_review_question` endi kontentsiz savolni review'ga chiqarmaydi (2026-08-17 oldingi yozuv). Backfill'siz eski xatolar ro'yxatda turaveradi, lekin hech qachon mashqqa tushmaydi.
+
+Files touched:
+- `scripts/backfill_mistake_material.py` (yangi)
+
+Risk:
+- Skript bazaga YOZADI. Standart rejim — DRY RUN; yozish uchun `--apply` kerak.
+- Faqat materiali yo'q/eski yozuvlarga tegadi, yaxshi material ustidan yozilmaydi -> qayta ishlatsa bo'ladi (idempotent).
+- `mistake_key` TEGILMAYDI: u dedup uchun, o'zgartirilsa yozuvlar ikkilanib ketishi mumkin.
+- Faqat `source = 'lesson'` yozuvlar tiklanadi. Test/challenge/voice xatolarini dars JSON'idan topib bo'lmaydi.
+- Builder/match_pairs turlari qayta bog'lanmaydi (javobi tokenlardan yig'iladi, (prompt, javob) bo'yicha ishonchli emas).
+
+Verification:
+- 40 ta tasodifiy dars, uchala til, 360 ta simulyatsiya qilingan eski yozuv -> 100% karta topildi va kontent tiklandi.
+- Bir dars ichida bir xil (prompt, javob) 516 marta takrorlanadi; hammasida turi/gapi/audiosi AYNAN bir xil ekani tekshirilgan, shuning uchun birinchisini olish xavfsiz.
+
 ### 2026-08-17 — Xatolar review'ida javobsiz savollar tuzatildi
 
 Changed:
