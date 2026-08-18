@@ -207,6 +207,28 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-17 — Xatolar review'ida javobsiz savollar tuzatildi
+
+Changed:
+- `CourseLessonMistakeMaterialService`: `dialog_cloze` kartasi uchun `sentence` endi `lines[]` dan yig'iladi (`A: 你好！ B: ____`). Ilgari faqat `card["sentence"]` o'qilardi, `dialog_cloze` da esa u yo'q — 70 ta karta gapsiz qolardi.
+- `CourseMistakeService._review_question`: ko'rsatma-matnli savol (tinglash / bo'sh joyni to'ldirish / dialog) uchun audio ham, gap ham bo'lmasa savol `None` qaytaradi — review'ga chiqmaydi.
+- `listening_choice` savolida `pinyin` review'da BERILMAYDI (javobni ochib berardi).
+- `start_review` endi 30 ta nomzod oladi va yaroqlilaridan 10 tasini oladi (`MISTAKE_REVIEW_CANDIDATES` / `MISTAKE_REVIEW_QUESTIONS`), chunki eskilari tashlanadi.
+
+Why:
+- `CourseMistake` modelida `sentence`/`audio_text`/`pinyin` ustunlari YO'Q — yagona manba `material_json`. `_stored_material()` esa `material_version < 2` bo'lgan eski yozuvlarni butunlay tashlaydi. Natijada eski xatolarda faqat ko'rsatma matni qolardi: "Tinglang — qaysi so'z?" audiosiz, "Bo'sh joyga mos ieroglifni tanlang" gapsiz.
+
+Files touched:
+- `app/services/course_lesson_mistake_material_service.py`
+- `app/services/course_mistake_service.py`
+
+Risk:
+- Eski (kontentsiz) xatolar review'ga chiqmaydi, lekin ro'yxatda ko'rinadi va bazadan O'CHIRILMAYDI.
+- Ko'rsatma kalit so'zlari faqat BUYRUQ shakllari ("tinglang", "eshitganingizni", "to'ldiring", "послушайте", "дополните", "гӯш кунед" ...). "tinglamoq/eshitmoq" kabi infinitivlar ataylab kiritilmagan — aks holda "'eshitmoq, tinglamoq' xitoycha qaysi?" kabi MUSTAQIL savol ham tashlanib ketardi. Ro'yxatga yangi kalit qo'shishdan oldin dars JSON'lari bo'yicha tekshirilsin.
+
+Follow-up:
+- Eski yozuvlarni material bilan to'ldiruvchi backfill (material_ref bo'yicha) keyinroq ko'rib chiqilsin.
+
 ### 2026-08-17 — Mini App HTML `no-store` -> `no-cache` (bfcache yoqildi)
 
 Changed:

@@ -162,6 +162,30 @@ class CourseLessonMistakeMaterialService:
         }
 
     @classmethod
+    def _dialog_sentence(cls, card: dict) -> str:
+        """`dialog_cloze` qatorlarini o'qiladigan matnga aylantiradi.
+
+        Bo'sh (`blank: true`) qator `____` bilan belgilanadi, shunda xatolar
+        bo'limida foydalanuvchi qaysi joyni to'ldirayotganini ko'radi.
+        """
+
+        lines = card.get("lines")
+        if not isinstance(lines, list):
+            return ""
+        parts: list[str] = []
+        for line in lines[:8]:
+            if not isinstance(line, dict):
+                continue
+            speaker = cls._text(line.get("speaker"), 8)
+            text = cls._text(line.get("zh"), 200)
+            if not text and line.get("blank"):
+                text = "____"
+            if not text:
+                continue
+            parts.append(f"{speaker}: {text}" if speaker else text)
+        return cls._text("\n".join(parts), 600)
+
+    @classmethod
     def _base_material(
         cls,
         *,
@@ -176,6 +200,12 @@ class CourseLessonMistakeMaterialService:
         source_schema_version: int,
     ) -> dict:
         card_type = cls._text(card.get("type"), 64).lower()
+        # `dialog_cloze` kartasida gap `sentence` da emas, `lines[]` da turadi.
+        # Buni o'qimasak, xatolar bo'limida "Dialogni to'ldiring" yozuvi
+        # chiqadi-yu, to'ldiriladigan dialogning o'zi ko'rinmaydi.
+        sentence = cls._localized(card.get("sentence"), lang)
+        if not sentence and card_type == "dialog_cloze":
+            sentence = cls._dialog_sentence(card)
         return {
             "material_version": LESSON_MISTAKE_MATERIAL_VERSION,
             "material_ref": material_ref,
@@ -184,7 +214,7 @@ class CourseLessonMistakeMaterialService:
             "language": lang,
             "prompt": cls._localized(card.get("prompt"), lang)
             or cls._localized(card.get("title"), lang),
-            "sentence": cls._localized(card.get("sentence"), lang),
+            "sentence": sentence,
             "audio_text": cls._text(card.get("audio_text")),
             "pinyin": cls._text(card.get("pinyin")),
             "explanation": cls._localized(card.get("explanation"), lang),

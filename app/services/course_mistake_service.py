@@ -26,6 +26,25 @@ MISTAKE_REVIEW_FORMATS = {
     "pronunciation": "pronunciation_correction",
 }
 MISTAKE_MATERIAL_LANGUAGES = {"uz", "ru", "tj"}
+# Ko'rsatma-matnli savollar: "Tinglang — qaysi so'z?", "Bo'sh joyga mos
+# ieroglifni tanlang", "Dialogni to'ldiring". Bunday savol o'z-o'zicha
+# javob berib bo'lmaydigan — unga audio yoki gap KERAK. Eski (material'siz)
+# xatolarda o'sha kontent yo'q, shuning uchun ular review'ga chiqarilmaydi.
+# Faqat BUYRUQ shakllari: "tinglamoq/eshitmoq" kabi infinitivlar mustaqil
+# savolning matni bo'lishi mumkin, ular bu ro'yxatga kirmaydi.
+MISTAKE_REVIEW_QUESTIONS = 10
+MISTAKE_REVIEW_CANDIDATES = 30
+MISTAKE_LISTEN_PROMPTS = (
+    "tinglang", "eshitganingizni",
+    "послушайте", "что вы услышали",
+    "гӯш кунед", "шунидед",
+)
+MISTAKE_FILL_PROMPTS = (
+    "to'ldiring", "bo'sh joyga", "dialogni",
+    "дополните", "заполните", "подходящий иероглиф", "пропуск",
+    "пурра кунед", "мувофиқро интихоб", "ҷойи холӣ",
+)
+
 TRUSTED_MISTAKE_REWARD_SOURCES = {"test", "challenge", "voice", "training"}
 
 
@@ -438,25 +457,47 @@ class CourseMistakeService:
             "level": cls._text(getattr(item, "level", None), 32) or source.get("level") or None,
             "lesson": lesson_order if lesson_order is not None else source.get("lesson"),
         }
+        prompt_text = cls._text(material.get("prompt")) or item.prompt or ""
+        material_format = cls._text(material.get("format"), 64) or MISTAKE_REVIEW_FORMATS.get(
+            category, "word_choice"
+        )
+        sentence = cls._text(material.get("sentence"))
+        audio_text = cls._text(material.get("audio_text"))
+        pinyin = cls._text(material.get("pinyin"), 500)
+
+        low_prompt = prompt_text.casefold()
+        needs_listen = material_format == "listening_choice" or any(
+            key in low_prompt for key in MISTAKE_LISTEN_PROMPTS
+        )
+        needs_fill = material_format in {"gap_fill", "dialog_cloze", "dialog_context"} or any(
+            key in low_prompt for key in MISTAKE_FILL_PROMPTS
+        )
+        if (needs_listen or needs_fill) and not sentence and not audio_text:
+            # Ko'rsatma bor, kontent yo'q — bunday savolga javob berib
+            # bo'lmaydi. Uni chiqarmaymiz; o'rniga boshqa xato olinadi.
+            return None
+        if needs_listen:
+            # Tinglash savolida pinyin javobni ochib beradi — tinglashning
+            # ma'nosi qolmaydi. Pinyin javobdan keyingi izohda ko'rinadi.
+            pinyin = ""
+
         return {
             "id": f"mistake:{item.id}",
             "category": category,
-            "prompt": cls._text(material.get("prompt")) or item.prompt,
+            "prompt": prompt_text,
             "options": options,
             "answer_index": options.index(correct_answer),
             "explanation": item.explanation or item.correct_answer,
             "material_version": MISTAKE_REVIEW_MATERIAL_VERSION,
             "material_ref": cls._text(material.get("material_ref"), 160),
-            "format": cls._text(material.get("format"), 64)
-            or MISTAKE_REVIEW_FORMATS.get(category, "word_choice"),
+            "format": material_format,
             "language": cls._language(material.get("language")),
             "source": source,
-            "sentence": cls._text(material.get("sentence"))
-            or cls._text(getattr(item, "sentence", None)),
-            "audio_text": cls._text(material.get("audio_text"))
-            or cls._text(getattr(item, "audio_text", None)),
-            "pinyin": cls._text(material.get("pinyin"), 500)
-            or cls._text(getattr(item, "pinyin", None), 500),
+            # DIQQAT: `CourseMistake` modelida sentence/audio_text/pinyin
+            # ustunlari YO'Q — yagona manba `material_json`.
+            "sentence": sentence,
+            "audio_text": audio_text,
+            "pinyin": pinyin,
         }
 
     @classmethod
@@ -593,10 +634,13 @@ class CourseMistakeService:
         existing = await self._existing_review_session(user, session_id)
         if existing:
             return existing
-        items = await self._items(user.id, limit=10)
+        # Nomzodlarni keragidan ko'proq olamiz: eski (kontentsiz) xatolar
+        # `_review_question` da tashlanadi, shuning uchun 10 tasini olsak
+        # sessiya kamayib qolardi. Yaroqlilaridan birinchi 10 tasi olinadi.
+        items = await self._items(user.id, limit=MISTAKE_REVIEW_CANDIDATES)
         if not items:
             return {"ok": False, "error": "mistake_review_empty"}
-        review_items = self._review_questions(items)
+        review_items = self._review_questions(items)[:MISTAKE_REVIEW_QUESTIONS]
         if not review_items:
             return {"ok": False, "error": "mistake_review_empty"}
         usage_ref = f"mistake-review:v{MISTAKE_REVIEW_VERSION}"
