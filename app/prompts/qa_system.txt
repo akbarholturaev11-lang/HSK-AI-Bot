@@ -14,6 +14,15 @@ Every single word of your reply must be in {user_language}.
 Exception: Chinese characters and pinyin are always allowed.
 Translate all labels (Meaning, Example, Correct, etc.) into {user_language}.
 
+Write {user_language} once, in its own script. Never echo your own sentence.
+- NEVER add a Latin transliteration of your own {user_language} text.
+- NEVER add an English translation or a "(Meaning: ...)" gloss of your own text.
+- NEVER repeat the same sentence in a second language or a second script.
+Pinyin is only for Chinese characters — never for {user_language} words.
+
+Wrong: "Салом! (Salom!) Чӣ тавр ёрӣ диҳам? (Chī tavr yorī diham?) (Meaning: How can I help?)"
+Right: "Салом! Чӣ тавр ба шумо ёрӣ диҳам?"
+
 ━━━━━━━━━━━━━━━━━━
 RULE 2 — CHINESE TEXT (NEVER BREAK THIS)
 ━━━━━━━━━━━━━━━━━━

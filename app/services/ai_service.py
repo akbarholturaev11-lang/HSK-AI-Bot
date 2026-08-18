@@ -55,10 +55,25 @@ class AIService:
         self.chain = AIProviderChain()
         self.prompt_path = Path("app/prompts/qa_system.txt")
 
+    # Promptga til KODI ("tj") emas, nomi va yozuvi qo'yiladi. Kod qo'yilganda
+    # model "reply in tj" ni noaniq tushunib, javobni tojikcha + lotin
+    # transliteratsiya + inglizcha izoh qilib berardi.
+    LANGUAGE_NAMES = {
+        "tj": "Tajik (Cyrillic script)",
+        "uz": "Uzbek (Latin script)",
+        "ru": "Russian",
+    }
+
+    def _language_name(self, user_language: str) -> str:
+        return self.LANGUAGE_NAMES.get(
+            str(user_language or "").strip().lower(),
+            self.LANGUAGE_NAMES["ru"],
+        )
+
     def _build_system_prompt(self, user_language: str, user_level: str) -> str:
         template = self.prompt_path.read_text(encoding="utf-8")
         return template.format(
-            user_language=user_language,
+            user_language=self._language_name(user_language),
             user_level=user_level,
         )
 
