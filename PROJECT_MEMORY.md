@@ -207,6 +207,44 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-22 — Admin Mini App statistikasi formula va attribution auditi
+
+Changed:
+- Kurs completion endi `section_completed`ni to'liq dars deb sanamaydi;
+  `book_lesson_completed` + `lesson_completed` aliaslari `(user, level,
+  lesson_id, lesson_order)` bo'yicha bitta logical user-darsga dedupe qilinadi.
+- Payment period statuslari approved/rejected uchun `reviewed_at` (legacy
+  fallback `submitted_at`), pending uchun `submitted_at` ishlatadi. Source →
+  revenue har payment yuborilgan paytdan oldingi eng yaqin subscription entryga
+  bog'lanadi; keyingi source tarixni qayta yozmaydi.
+- Reminder open proxy faqat 48 soati tugagan send cohortini oladi va bitta openni
+  eng yaqin reminderga bir marta beradi. D1/D7 mature denominator bo'lmasa UI
+  `Yig'ilmoqda` ko'rsatadi.
+- `LTV`, `churn`, all-time `Faol`, weekly ARPU va finance `Sof foyda`dagi
+  noto'g'ri ta'riflar tuzatildi/halol nomlandi. Finance manual profitni qo'shadi;
+  AI cost va USD FX historical invoice/rate emasligi UI'da ochiq yoziladi.
+- Pending segment distinct pending-payment user bilan, hot lead esa faqat yaqinda
+  faol, to'lamagan, pending paymentsiz va botni bloklamagan user bilan bir xil
+  predicate ishlatadi. Desktop AI Pack same-user ordered cohort, promo/download
+  attribution esa 7 kunlik window bo'yicha sanaladi.
+- Statistics sahifasida har DB manbasining oxirgi yozuv vaqti ko'rinadi; optional
+  finance/desktop fetch xatosida eski cached raqam realdek qolmaydi.
+
+Files touched:
+- `app/services/admin_stats_service.py`, `admin_miniapp_service.py`,
+  `admin_finance_stats_service.py`, `desktop_analytics_service.py`
+- `app/main.py`, `app/static/admin.html`
+- `tests/test_admin_stats_integrity.py` va tegishli regression/E2E testlar
+
+Risk / follow-up:
+- Migration va payment/subscription/access mutation yo'q; o'zgarishlar read-only
+  analytics va admin UI semanticsida.
+- Historical FX snapshot va provider invoice DB'da saqlanmaydi; shu sabab USD va
+  AI model cost estimate sifatida qoladi. To'liq accounting net uchun kelajakda
+  payment approval vaqtida immutable USD/FX va billing reconciliation saqlash kerak.
+- Audit paytida sozlangan DBda `users/payments/course_events = 0`; deploydan keyin
+  productionda read-only freshness/duplicate/reconciliation SQL audit qilish kerak.
+
 ### 2026-08-17 — Eski xatolar uchun material backfill skripti
 
 Changed:

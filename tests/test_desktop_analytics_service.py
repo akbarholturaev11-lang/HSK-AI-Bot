@@ -639,6 +639,61 @@ class DesktopAnalyticsServiceTests(unittest.TestCase):
             {"events": 7, "users": 5},
         )
 
+    def test_ai_pack_completion_requires_same_user_start_before_completion(self):
+        rows = [
+            _row("desktop_ai_pack_completed", 1, age_hours=1, row_id=1),
+            _row("desktop_ai_pack_started", 2, age_hours=3, row_id=2),
+            _row("desktop_ai_pack_completed", 2, age_hours=2, row_id=3),
+            _row("desktop_ai_pack_completed", 3, age_hours=4, row_id=4),
+            _row("desktop_ai_pack_started", 3, age_hours=3, row_id=5),
+        ]
+        snapshot = DesktopAnalyticsService.build_snapshot(
+            totals=_totals(
+                desktop_ai_pack_started=(2, 2),
+                desktop_ai_pack_completed=(3, 3),
+            ),
+            detail_rows=[],
+            cohort_rows=rows,
+            now=NOW,
+        )
+
+        self.assertTrue(snapshot["ai_pack"]["cohort_available"])
+        self.assertEqual(snapshot["ai_pack"]["started"]["users"], 2)
+        self.assertEqual(snapshot["ai_pack"]["completed"]["users"], 1)
+        self.assertEqual(snapshot["ai_pack"]["completion_rate"], 50.0)
+
+    def test_promo_request_outside_seven_days_is_not_attributed(self):
+        rows = [
+            _row(
+                "desktop_promo_seen",
+                41,
+                age_hours=260,
+                source="home_prompt",
+                row_id=1,
+            ),
+            _row(
+                "desktop_download_requested",
+                41,
+                age_hours=1,
+                source="desktop_home_prompt",
+                session_id="late-request",
+                entry_source="home_prompt",
+                row_id=2,
+            ),
+        ]
+        snapshot = DesktopAnalyticsService.build_snapshot(
+            totals=_totals(
+                desktop_promo_seen=(1, 1),
+                desktop_download_requested=(1, 1),
+            ),
+            detail_rows=[],
+            cohort_rows=rows,
+            now=NOW,
+        )
+
+        self.assertEqual(snapshot["promotion"]["seen"]["users"], 1)
+        self.assertEqual(snapshot["promotion"]["requested_after_seen"]["users"], 0)
+
     def test_outdated_is_unknown_without_release_version(self):
         snapshot = DesktopAnalyticsService.build_snapshot(
             totals={},

@@ -286,7 +286,7 @@
           <div class="chips" id="segmentChips"></div>
         </div>
         <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">Tezkor moliya</div><div class="sec-note">To'liq davr bo'yicha sof foyda</div></div><button class="link-btn" data-tab-jump="statistics">Batafsil →</button></div>
+          <div class="sec-head"><div><div class="sec-title">Tezkor moliya</div><div class="sec-note">To'liq davr bo'yicha kuzatilgan net</div></div><button class="link-btn" data-tab-jump="statistics">Batafsil →</button></div>
           <div class="grid g2" id="financeQuick"></div>
         </div>
         <div class="sec">
@@ -299,14 +299,15 @@
       <section id="statistics" class="view">
         <div class="sec-head" style="margin-bottom:8px">
           <div><div class="sec-title">Chuqur statistika</div><div class="sec-note">Har bo'lim oddiy o'zbek tilida izohlangan</div></div>
-          <button class="link-btn" data-act="copy-report">Nusxa olish</button>
+          <button class="link-btn" data-act="copy-report">Umumiy hisobotni nusxalash</button>
         </div>
         <div class="periods" id="periodTabs"></div>
         <div class="range-lab" id="rangeLabel"></div>
+        <div class="explain" id="dataQuality" style="margin-bottom:12px"></div>
 
         <!-- Advanced product metrics -->
         <div class="block">
-          <div class="block-head"><span class="bi">📌</span><div><h3>Qo'shimcha product metrikalar</h3><p>Retention, vaqt, QA/Voice, payment abandon, LTV/CAC va paid/free adoption</p></div></div>
+          <div class="block-head"><span class="bi">📌</span><div><h3>Qo'shimcha product metrikalar</h3><p>Retention, vaqt, QA/Voice, payment abandon, revenue/payer va paid/free adoption</p></div></div>
           <div class="explain" id="advancedExplain"></div>
           <div class="grid g2" id="advancedCards" style="margin-top:12px"></div>
           <div style="margin-top:12px">
@@ -321,7 +322,7 @@
 
         <!-- Connected desktop product -->
         <div class="block">
-          <div class="block-head"><span class="bi">🖥</span><div><h3>HSK AI Desktop</h3><p>Yuklashdan haqiqiy first-open, faollik, AI Pack va syncgacha</p></div></div>
+          <div class="block-head"><span class="bi">🖥</span><div><h3>HSK AI Desktop</h3><p>Funnel: tanlangan davr · health/platforma: oxirgi 30 kun</p></div></div>
           <div class="grid g2" id="desktopCards"></div>
           <div style="margin-top:12px">
             <div class="dtitle-sm">Desktop voronkasi</div>
@@ -340,7 +341,7 @@
 
         <!-- Finance -->
         <div class="block">
-          <div class="block-head"><span class="bi">💰</span><div><h3>Sof foyda va xarajat</h3><p>Daromad − AI xarajat − portfel rasxod</p></div></div>
+          <div class="block-head"><span class="bi">💰</span><div><h3>Kuzatilgan net va xarajat</h3><p>Obuna tushumi + qo'lda foyda − AI model estimate − rasxod</p></div></div>
           <div class="grid g2" id="financeCards"></div>
           <div class="explain" id="financeExplain"></div>
         </div>
@@ -354,7 +355,7 @@
 
         <!-- Retention -->
         <div class="block">
-          <div class="block-head"><span class="bi">🔁</span><div><h3>Obuna yangilash va churn</h3><p>Qayta to'lov va yo'qotish darajasi</p></div></div>
+          <div class="block-head"><span class="bi">🔁</span><div><h3>Obuna yangilash va hozirgi holat</h3><p>Qayta to'lov ulushi; all-time uchun payer snapshot</p></div></div>
           <div class="grid g2" id="retentionCards"></div>
           <div class="explain" id="retentionExplain"></div>
         </div>
@@ -363,7 +364,7 @@
         <div class="block">
           <div class="block-head"><span class="bi">🧲</span><div><h3>Manba → pul</h3><p>Qaysi manba real pul olib keladi</p></div></div>
           <div id="sourcesPaid"></div>
-          <div class="explain">Bu jadval — har bir kirish manbasidan kelgan foydalanuvchilarning <b>real to'lovi</b>. Bu yerda faqat traffik emas, balki haqiqiy pul ko'rsatiladi: shu manbadan necha kishi to'lagan va qancha USD daromad bergan. Eng tepadagi manba — eng foydali kanal.</div>
+          <div class="explain" id="sourceAttributionExplain">Har to'lov paymentdan oldingi eng yaqin obuna-kirish manbasiga bog'lanadi.</div>
         </div>
 
         <!-- General overview report -->
@@ -371,14 +372,14 @@
           <div class="block-head"><span class="bi">📋</span><div><h3>Umumiy ko'rsatkichlar</h3><p>Foydalanuvchi, to'lov va kurs faolligi</p></div></div>
           <div class="grid g2" id="overviewCards"></div>
           <div style="margin-top:12px">
-            <div class="dtitle-sm">Konversiya voronkasi</div>
+            <div class="dtitle-sm">Davrdagi mustaqil kurs ko'rsatkichlari</div>
             <div id="conversionBars"></div>
           </div>
         </div>
 
         <!-- Source traffic (entry events) -->
         <div class="block">
-          <div class="block-head"><span class="bi">🚪</span><div><h3>Obuna oynasiga kirish manbalari</h3><p>Traffik: kim obuna oynasini ochgan</p></div></div>
+          <div class="block-head"><span class="bi">🚪</span><div><h3>Obuna oynasiga kirish manbalari</h3><p>Alohida rolling 7 kun + all-time; yuqoridagi period tabiga bog'liq emas</p></div></div>
           <div id="subEntryStats"><p class="empty">Yuklanmoqda…</p></div>
           <div class="explain">Bu — obuna sahifasini <b>ochgan</b> odamlar (hali to'lamagan bo'lishi mumkin). Yuqoridagi "Manba → pul" esa real to'lovni ko'rsatadi. Ikkalasini solishtirsangiz: ko'p kirgan, lekin kam to'lagan manba — kuchsiz; kam kirgan, ko'p to'lagan manba — kuchli.</div>
         </div>
@@ -468,7 +469,7 @@
     const $ = (id) => document.getElementById(id);
     const state = {
       tab:"dashboard", filter:"all", search:"", statsPeriod:"all_time",
-      overview:null, finance:null, management:null, remoteUsers:null, activeModule:null,
+      overview:null, finance:null, financeError:false, management:null, remoteUsers:null, activeModule:null,
       desktopStats:{}, desktopStatsLoading:{},
       // Profildan ochilgan bo'lim uchun: kimga tegishli va qayerga qaytish.
       drawerBack:null, activeUser:null
@@ -534,7 +535,7 @@
 
     const segmentLabels = {
       all:["Hammasi","butun baza"], active_today:["Bugun aktiv","bugun botga kirgan"],
-      paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","to'lov kutyapti"],
+      paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","unikal to'lovchi"],
       wants_pay:["Issiq mijoz","48 soat ichida aktiv"], trial:["Sinov","trial"], free:["Bepul","free"],
       expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Bot blok","botni bloklagan"]
     };
@@ -542,14 +543,20 @@
     /* ---------- load ---------- */
     async function loadData(){
       $("loading").hidden = false;
+      state.finance=null;
+      state.financeError=false;
+      state.desktopStats={};
+      state.desktopStatsLoading={};
       try{
         const [ov, fin, desktop] = await Promise.all([
           apiPost("/api/admin-miniapp/overview",{}),
           apiPost("/api/admin-miniapp/finance-stats",{}).catch(()=>null),
           apiPost("/api/admin-miniapp/desktop-stats",{period:"all_time"}).catch(()=>null)
         ]);
-        state.overview = ov; state.finance = fin;
-        if(desktop&&desktop.desktop) state.desktopStats.all_time=desktop.desktop;
+        state.overview = ov;
+        state.finance = fin;
+        state.financeError = !fin;
+        state.desktopStats.all_time=(desktop&&desktop.desktop)?desktop.desktop:{error:true};
         $("loading").hidden = true; $("app").hidden = false;
         renderAll();
       }catch(e){
@@ -601,11 +608,11 @@
         const f=fa.finance, u=fa.unit;
         $("financeQuick").innerHTML = [
           {l:"Daromad",v:f.revenue_text,s:fa.unit.approved_count+" ta to'lov",t:"info"},
-          {l:"AI xarajat",v:f.ai_cost_text,s:"daromadning "+f.ai_share_pct+"%",t:"warn"},
-          {l:"Sof foyda",v:f.net_text,s:"marja "+f.margin_pct+"%",t:f.net_positive?"good":"danger"},
+          {l:"AI model estimate",v:f.ai_cost_text,s:"invoice emas · "+f.ai_share_pct+"%",t:"warn"},
+          {l:"Kuzatilgan net",v:f.net_text,s:"tracked marja "+f.margin_pct+"%",t:f.net_positive?"good":"danger"},
           {l:"ARPPU",v:u.arppu_text,s:"har pullik",t:"good"}
         ].map(i=>`<article class="stat ${i.t}"><div class="lab">${i.l}</div><div><div class="val">${esc(i.v)}</div><div class="sub">${esc(i.s)}</div></div></article>`).join("");
-      }
+      } else $("financeQuick").innerHTML="<p class='empty'>Moliyaviy statistika yuklanmadi.</p>";
       $("queueList").innerHTML = (ov.queue||[]).map((i,idx)=>`
         <button class="srow" data-tab-jump="${i.section==="payments"?"payments":i.section==="ads"?"settings":"users"}">
           <div><h3>${idx+1}. ${esc(i.title)}</h3><p>${esc(i.note)}</p></div>
@@ -742,38 +749,66 @@
 
     function renderStatistics(){
       const fin = state.finance;
-      const periods = (fin&&fin.periods)||[];
+      const overviewPeriods=(state.overview&&state.overview.statistics_reports)||[];
+      const financePeriods=(fin&&fin.periods)||[];
+      const periods = financePeriods.length
+        ? financePeriods
+        : overviewPeriods.length
+        ? overviewPeriods
+        : [
+            {key:"weekly",title:"Haftalik",note:"Oxirgi 7 kun"},
+            {key:"monthly",title:"Oylik",note:"Oxirgi 30 kun"},
+            {key:"all_time",title:"To'liq",note:"Butun davr"}
+          ];
       $("periodTabs").innerHTML = periods.map(p=>`<button class="period ${p.key===state.statsPeriod?"active":""}" data-period="${esc(p.key)}">${esc(p.title)} · ${esc(p.note)}</button>`).join("");
       const fp = financePeriod();
       const orep = overviewReport();
+      const quality=(state.overview&&state.overview.data_quality)||{};
+      const qualityRows=quality.rows||[];
+      $("dataQuality").textContent=qualityRows.length
+        ? "Oxirgi DB yozuvi · "+qualityRows.map(row=>`${row.label}: ${row.status==="no_data"?"no data":row.last_at}`).join(" · ")
+        : "Data freshness ma'lumoti kelmadi.";
       renderAdvanced(orep);
       const desktop=state.desktopStats[state.statsPeriod]||null;
       renderDesktopStats(desktop,Boolean(state.desktopStatsLoading[state.statsPeriod]));
       if(!desktop&&!state.desktopStatsLoading[state.statsPeriod]) loadDesktopStats(state.statsPeriod);
-      if(!fp){ $("financeCards").innerHTML="<p class='empty'>Moliyaviy ma'lumot yo'q</p>"; }
+      if(!fp){
+        $("rangeLabel").textContent="Davr: "+((orep&&orep.note)||"—");
+        $("financeCards").innerHTML="<p class='empty'>Moliyaviy statistikani yuklab bo'lmadi.</p>";
+        $("financeExplain").textContent="";
+        $("unitCards").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>";
+        $("unitExplain").textContent="";
+        $("retentionCards").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>";
+        $("retentionExplain").textContent="";
+        $("sourcesPaid").innerHTML="<p class='empty'>Manba attribution yuklanmadi.</p>";
+        $("sourceAttributionExplain").textContent="";
+      }
       else{
         $("rangeLabel").textContent = "Davr: " + (fp.range_label||fp.note);
         $("financeCards").innerHTML = [
           {label:"Daromad",value:fp.finance.revenue_text,note:fp.unit.approved_count+" ta to'lov",tone:"info"},
-          {label:"AI xarajat",value:fp.finance.ai_cost_text,note:"daromadning "+fp.finance.ai_share_pct+"%",tone:"warn"},
+          {label:"AI model estimate",value:fp.finance.ai_cost_text,note:"invoice emas · "+fp.finance.ai_share_pct+"%",tone:"warn"},
+          {label:"Qo'lda foyda",value:fp.finance.manual_profit_text||"$0.00",note:"portfel",tone:"good"},
           {label:"Portfel rasxod",value:fp.finance.expense_text,note:"qo'lda kiritilgan",tone:"warn"},
-          {label:"Sof foyda",value:fp.finance.net_text,note:"marja "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
+          {label:"Kuzatilgan net",value:fp.finance.net_text,note:"tracked marja "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
         ].map(cardHtml).join("");
         $("financeExplain").innerHTML = esc(fp.finance.explain);
         $("unitCards").innerHTML = [
-          {label:"ARPU",value:fp.unit.arpu_text,note:"har foydalanuvchi",tone:"info"},
+          {label:"ARPU",value:fp.unit.arpu_text,note:(fp.unit.arpu_users||0)+(fp.key==="all_time"?" jami":" faol user"),tone:"info"},
           {label:"ARPPU",value:fp.unit.arppu_text,note:"har pullik",tone:"good"},
           {label:"O'rtacha chek",value:fp.unit.avg_check_text,note:"har to'lov",tone:"info"},
-          {label:"Pullik",value:fp.unit.paying_users,note:fp.unit.total_users+" jami baza",tone:"good"}
+          {label:"Pullik",value:fp.unit.paying_users,note:"shu davrdagi payer",tone:"good"}
         ].map(cardHtml).join("");
         $("unitExplain").innerHTML = esc(fp.unit.explain);
         const r=fp.retention;
         $("retentionCards").innerHTML = [
           {label:"Yangi to'lov",value:r.new_paying,note:"birinchi marta",tone:"info"},
           {label:"Yangilash",value:r.renewals,note:"qayta to'lov",tone:"good"},
-          {label:"Yangilash ulushi",value:r.renewal_share_pct+"%",note:"shu davr",tone:"good"},
-          (r.churn_rate_pct!=null
-            ? {label:"Churn",value:r.churn_rate_pct+"%",note:"yo'qolgan obunachi",tone:"danger"}
+          (fp.key==="all_time"
+            ? {label:"Ever yangilagan",value:(r.ever_renewed_share_pct==null?"—":r.ever_renewed_share_pct+"%"),note:"ever payer ichida",tone:"good"}
+            : {label:"Yangilash ulushi",value:r.renewal_share_pct+"%",note:"payment ulushi",tone:"good"}),
+          (fp.key==="all_time"
+            ? {label:"Hozir inactive payer",value:(r.inactive_paid_share_pct==null?"—":r.inactive_paid_share_pct+"%"),note:"cohort churn emas",tone:"danger"}
             : {label:"Faol obuna",value:r.active_paid_now,note:"hozir to'lovli",tone:"good"})
         ].map(cardHtml).join("");
         $("retentionExplain").innerHTML = esc(r.explain);
@@ -782,20 +817,21 @@
             <th>Manba</th><th class="r">Pullik</th><th class="r">To'lov</th><th class="r">Daromad</th></tr></thead>
           <tbody>${sp.map(x=>`<tr><td><b>${esc(x.label)}</b></td><td class="r">${x.paying_users}</td><td class="r">${x.payments}</td><td class="r"><b>${esc(x.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
           : "<p class='empty'>Bu davrda manbadan kelgan to'lov yo'q.</p>";
+        $("sourceAttributionExplain").textContent=fp.source_attribution_explain||"";
       }
       // overview report cards + bars + text
       $("overviewCards").innerHTML = ((orep&&orep.cards)||(state.overview.summary)||[]).map(cardHtml).join("");
       $("reportText").textContent = (orep&&orep.text) || state.overview.report_text || "";
       const course = (orep&&orep.course)||state.overview.course||{};
-      const metrics = (orep&&orep.metrics)||state.overview.counts||{};
-      const opened = Math.max(Number(course.opened_users||0),1);
+      const values=[Number(course.opened_users||0),Number(course.lesson_users||0),Number(course.completed_users||0)];
+      const maxValue=Math.max.apply(null,values.concat([1]));
       const bars = [
-        ["Ochildi",course.opened_users||0,100],
-        ["Dars",course.lesson_users||0,Math.round((course.lesson_users||0)/opened*100)],
-        ["Tugatdi",course.completed_users||0,Math.round((course.completed_users||0)/opened*100)],
-        ["To'lovli",metrics.approved_payment_users||metrics.paid_users||0,Math.round((metrics.approved_payment_users||metrics.paid_users||0)/opened*100)]
+        ["Ochildi",values[0],Math.round(values[0]/maxValue*100)],
+        ["Dars boshladi",values[1],Math.round(values[1]/maxValue*100)],
+        ["To'liq dars tugatdi",values[2],Math.round(values[2]/maxValue*100)]
       ];
-      $("conversionBars").innerHTML = bars.map(b=>`<div class="bar"><span>${b[0]}</span><div class="track"><span style="width:${Math.min(b[2],100)}%"></span></div><b>${b[1]}</b></div>`).join("");
+      $("conversionBars").innerHTML = bars.map(b=>`<div class="bar"><span>${b[0]}</span><div class="track"><span style="width:${Math.min(b[2],100)}%"></span></div><b>${b[1]}</b></div>`).join("")+
+        `<div class="explain">${esc(course.counting_note||"Bu sonlar mustaqil unikal user countlari; ordered cohort conversion emas.")}</div>`;
     }
 
     async function loadSubEntry(){
@@ -810,7 +846,7 @@
     /* ---------- USERS ---------- */
     function statusTone(u){
       if(u.payment_status==="approved"&&u.status==="active") return ["Obunachi","green"];
-      if(u.payment_status==="pending") return ["To'lov tekshiruvda","amber"];
+      if(u.has_pending_payment||u.payment_status==="pending") return ["To'lov tekshiruvda","amber"];
       if(u.bot_blocked) return ["Bot bloklangan","red"];
       if(u.status==="expired") return ["Muddati tugagan","red"];
       if(u.status==="blocked") return ["Bloklangan","red"];
@@ -823,7 +859,7 @@
         const f = state.filter==="all"
           || (state.filter==="paid"&&u.payment_status==="approved"&&u.status==="active")
           || (state.filter==="active_today"&&u.active_today===true)
-          || (state.filter==="pending"&&u.payment_status==="pending")
+          || (state.filter==="pending"&&(u.has_pending_payment===true||u.payment_status==="pending"))
           || (state.filter==="wants_pay"&&u.hot_lead===true)
           || (state.filter==="trial"&&u.status==="trial")
           || (state.filter==="free"&&u.status==="free")
@@ -922,7 +958,7 @@
           <div class="kv" style="margin-top:9px">
           <span>Holat</span><b>${esc(f.status_label||f.status)}</b>
           <span>Telegram blok</span><b>${f.bot_blocked?"ha":"yo'q"}</b>
-          <span>To'lov</span><b>${esc(f.payment_label||f.payment_status)}</b>
+          <span>To'lov</span><b>${esc(f.has_pending_payment?"tekshiruvda":(f.payment_label||f.payment_status))}</b>
           <span>Tarif</span><b>${esc(f.plan||f.selected_plan_type||"—")}</b>
           <span>Usul</span><b>${esc(f.method||f.payment_method||"—")}</b>
           <span>Boshlangan</span><b>${esc(f.start_date||"—")}</b>
@@ -1252,13 +1288,13 @@
     }
     function renderPortfolio(d){
       const p=d.portfolio||{}, s=p.summary||{};
-      openDrawer("💼 Portfel","Tushum, xarajat va sof foyda",`<div class="panel">
+      openDrawer("💼 Portfel","Tushum va qo'lda kiritilgan operatsiyalar (AI xarajatsiz)",`<div class="panel">
         <div class="mcard"><h3>Joriy holat</h3><div class="kv">
           <span>Tasdiqlangan to'lov</span><b>${esc(s.approved_payments||0)}</b>
           <span>Yalpi tushum</span><b>${esc(s.gross_revenue_usd||"$0.00")}</b>
           <span>Qo'lda foyda</span><b>${esc(s.manual_profit_usd||"$0.00")}</b>
           <span>Qo'lda rasxod</span><b>${esc(s.manual_expense_usd||"$0.00")}</b>
-          <span>Sof foyda</span><b>${esc(s.net_usd||"$0.00")}</b></div></div>
+          <span>Portfel balansi (AI xarajatsiz)</span><b>${esc(s.net_usd||"$0.00")}</b></div></div>
         <div class="mcard"><h3>Amaliyot qo'shish</h3>
           <div class="frow two"><div><label>Tur</label><select id="pfType" class="select"><option value="profit">Foyda</option><option value="expense">Rasxod</option></select></div>
             <div><label>Valyuta</label><select id="pfCurrency" class="select"><option value="usd">USD</option><option value="tjs">TJS</option><option value="¥">CNY/¥</option></select></div></div>
@@ -1367,11 +1403,11 @@
     function campaignCard(i,kind){
       if(kind==="ad") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"faol":"tugagan",i.active?"green":"")}</h3>
         <div class="kv"><span>Yuborilgan rounds</span><b>${esc(i.rounds_sent||0)}/${esc(i.send_count_total||1)}</b>
-          <span>Jami yuborilgan</span><b>${esc(i.send_count_total||0)}</b><span>Tillar</span><b>${esc((i.languages||[]).join(", ")||"hammasi")}</b>
+          <span>Rejalashtirilgan raund</span><b>${esc(i.send_count_total||0)}</b><span>Tillar</span><b>${esc((i.languages||[]).join(", ")||"hammasi")}</b>
           <span>Boshlanish</span><b>${esc(i.starts_at||"—")}</b><span>Tugash</span><b>${esc(i.ends_at||"—")}</b></div>
         <p>${esc(i.text||"")}</p></div>`;
       if(kind==="discount") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"faol":"tugagan",i.active?"green":"")}</h3>
-        <div class="kv"><span>Chegirma</span><b>${esc(i.percent)}%</b><span>Ishlatilgan</span><b>${esc(i.used||0)}</b>
+        <div class="kv"><span>Chegirma</span><b>${esc(i.percent)}%</b><span>Band/ishlatilgan</span><b>${esc(i.used||0)}</b>
           <span>Status</span><b>${esc(i.audience_status||"barcha")}</b><span>Til</span><b>${esc(i.language||"barcha")}</b>
           <span>To'lov usuli</span><b>${esc(i.payment_method||"barcha")}</b><span>Tarif</span><b>${esc(i.plan_type||"barcha")}</b>
           <span>Boshlanish</span><b>${esc(i.starts_at||"—")}</b><span>Tugash</span><b>${esc(i.ends_at||"—")}</b></div></div>`;
@@ -1488,9 +1524,9 @@
           <span>Kutilmoqda</span><b>${stat("pending",0)}</b><span>Faol</span><b>${stat("active",0)}</b>
           <span>Bloklangan</span><b>${stat("blocked",0)}</b><span>Jami referal</span><b>${stat("referrals",0)}</b>
           <span>To'lagan referal</span><b>${stat("paid_referrals",0)}</b><span>Savol ishlatgan</span><b>${stat("question_users",0)}</b>
-          <span>Kurs rejimida</span><b>${stat("course_users",0)}</b><span>Sinovda</span><b>${stat("trial_users",0)}</b>
-          <span>Hisoblangan</span><b>$${stat("credited_usd",0)}</b><span>Rezervda</span><b>$${stat("reserved_usd",0)}</b>
-          <span>To'langan</span><b>$${stat("withdrawn_usd",0)}</b></div></div>
+          <span>Kurs rejimida</span><b>${stat("course_users",0)}</b><span>Hali to'lamagan</span><b>${stat("trial_users",0)}</b>
+          <span>Hisoblangan</span><b>${stat("credited_usd","$0.00")}</b><span>Rezervda</span><b>${stat("reserved_usd","$0.00")}</b>
+          <span>To'langan</span><b>${stat("withdrawn_usd","$0.00")}</b></div></div>
         ${head("⏳ Yangi arizalar")}
         ${(p.pending||[]).map(i=>`<div class="mcard"><h3>Ariza #${i.id} · @${esc(i.contact_username||"—")}</h3>
           <div class="kv"><span>Telegram ID</span><b>${esc(i.telegram_id)}</b><span>Kanal</span><b>${esc(i.promotion_channel)}</b>
@@ -1500,8 +1536,8 @@
         ${head("✅ Faol hamkorlar")}
         ${(p.active||[]).map(i=>`<div class="mcard"><h3>#${i.id} · @${esc(i.contact_username||"—")}</h3>
           <div class="kv"><span>Telegram ID</span><b>${esc(i.telegram_id)}</b><span>Referal</span><b>${esc(i.referrals)}</b>
-            <span>To'lagan referal</span><b>${esc(i.paid_referrals)}</b><span>Balans</span><b>$${esc(i.balance_usd)}</b>
-            <span>Rezervda</span><b>$${esc(i.in_progress_usd)}</b><span>Yechilgan</span><b>$${esc(i.withdrawn_usd)}</b>
+            <span>To'lagan referal</span><b>${esc(i.paid_referrals)}</b><span>Balans</span><b>${esc(i.balance_usd)}</b>
+            <span>Rezervda</span><b>${esc(i.in_progress_usd)}</b><span>Yechilgan</span><b>${esc(i.withdrawn_usd)}</b>
             <span>Kanal</span><b>${esc(i.promotion_channel)}</b><span>Tasdiq</span><b>${esc(i.approved_at||"—")}</b></div>
           <button class="btn danger" data-partner="block" data-pid="${i.id}">Bloklash</button></div>`).join("")||"<p class='empty'>Faol hamkor yo'q.</p>"}
         ${head("🚫 Bloklanganlar")}
@@ -1509,7 +1545,7 @@
           <div class="kv"><span>Telegram ID</span><b>${esc(i.telegram_id)}</b><span>Bloklangan</span><b>${esc(i.blocked_at||"—")}</b></div>
           <button class="btn sec" data-partner="unblock" data-pid="${i.id}">Blokdan chiqarish</button></div>`).join("")||"<p class='empty'>Bloklangan yo'q.</p>"}
         ${head("💸 To'lov so'rovlari (faqat ko'rish)")}
-        ${(p.payouts||[]).map(i=>`<div class="mcard"><h3>To'lov #${i.id} · $${esc(i.amount_usd)}</h3>
+        ${(p.payouts||[]).map(i=>`<div class="mcard"><h3>To'lov #${i.id} · ${esc(i.amount_usd)}</h3>
           <div class="kv"><span>Holat</span><b>${esc(i.status)}</b><span>Mahalliy</span><b>${esc(i.local_amount)}</b>
             <span>Usul</span><b>${esc(i.method)}</b><span>Hisob</span><b>${esc(i.account)}</b><span>Sana</span><b>${esc(i.created_at)}</b></div></div>`).join("")||"<p class='empty'>Ochiq to'lov so'rovi yo'q.</p>"}
       </div>`);

@@ -14,7 +14,7 @@ from aiogram import Bot
 from aiogram.types import BufferedInputFile
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
-from sqlalchemy import select
+from sqlalchemy import func, select
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import settings
@@ -947,6 +947,18 @@ async def _admin_miniapp_management_payload(session) -> dict:
 
 async def _admin_user_payload(session, user) -> dict:
     payments = await PaymentRepository(session).list_by_user(user.telegram_id, limit=10)
+    has_pending_payment = bool(
+        (
+            await session.execute(
+                select(Payment.id)
+                .where(
+                    Payment.user_telegram_id == user.telegram_id,
+                    Payment.payment_status == "pending",
+                )
+                .limit(1)
+            )
+        ).scalar()
+    )
     now = datetime.now(timezone.utc)
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
@@ -966,6 +978,7 @@ async def _admin_user_payload(session, user) -> dict:
             "bot_unblocked_at": _mini_dt(user.bot_unblocked_at),
             "last_bot_block_check_at": _mini_dt(user.last_bot_block_check_at),
             "payment_status": user.payment_status,
+            "has_pending_payment": has_pending_payment,
             "payment_method": user.payment_method,
             "selected_plan_type": user.selected_plan_type,
             "start_date": _mini_dt(user.start_date),
@@ -976,7 +989,10 @@ async def _admin_user_payload(session, user) -> dict:
             "created_at": _mini_dt(user.created_at),
             "last_active_at": _mini_dt(user.last_active_at),
             "active_today": is_admin_active_today(user, today_start),
-            "hot_lead": is_admin_hot_lead(user, hot_since),
+            "hot_lead": (
+                is_admin_hot_lead(user, hot_since)
+                and not has_pending_payment
+            ),
             "referral_code": user.referral_code or "",
             "referred_by_telegram_id": user.referred_by_telegram_id,
         },
@@ -996,7 +1012,12 @@ async def _admin_user_payload(session, user) -> dict:
     }
 
 
-def _admin_user_card_payload(user, *, now: datetime | None = None) -> dict:
+def _admin_user_card_payload(
+    user,
+    *,
+    now: datetime | None = None,
+    has_pending_payment: bool = False,
+) -> dict:
     now = now or datetime.now(timezone.utc)
     today_start = admin_miniapp_today_start(now)
     hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
@@ -1016,12 +1037,16 @@ def _admin_user_card_payload(user, *, now: datetime | None = None) -> dict:
         "last_bot_block_check_at": _mini_dt(user.last_bot_block_check_at),
         "payment_status": user.payment_status,
         "payment_label": user.payment_status or "—",
+        "has_pending_payment": bool(has_pending_payment),
         "plan": _mini_plan_label(user.selected_plan_type),
         "method": _mini_method_label(user.payment_method),
         "end_date": _mini_dt(user.end_date) if user.end_date else "",
         "last_active": _mini_dt(user.last_active_at),
         "active_today": is_admin_active_today(user, today_start),
-        "hot_lead": is_admin_hot_lead(user, hot_since),
+        "hot_lead": (
+            is_admin_hot_lead(user, hot_since)
+            and not has_pending_payment
+        ),
         "questions": f"{user.questions_used}/{user.question_limit}",
         "bonus_left": bonus_left,
         "streak": user.daily_practice_streak or 0,
@@ -3138,8 +3163,31 @@ async def admin_miniapp_users_search(request: Request):
             users = (await session.execute(
                 select(User).order_by(User.last_active_at.desc()).limit(30)
             )).scalars().all()
+        user_ids = [int(user.telegram_id) for user in users]
+        pending_ids = {
+            int(value)
+            for value in (
+                await session.execute(
+                    select(func.distinct(Payment.user_telegram_id)).where(
+                        Payment.payment_status == "pending",
+                        Payment.user_telegram_id.in_(user_ids),
+                    )
+                )
+            ).scalars().all()
+            if value
+        } if user_ids else set()
     now = datetime.now(timezone.utc)
-    return JSONResponse(content={"ok": True, "users": [_admin_user_card_payload(user, now=now) for user in users]})
+    return JSONResponse(content={
+        "ok": True,
+        "users": [
+            _admin_user_card_payload(
+                user,
+                now=now,
+                has_pending_payment=user.telegram_id in pending_ids,
+            )
+            for user in users
+        ],
+    })
 
 
 @app.post("/api/admin-miniapp/users/detail")

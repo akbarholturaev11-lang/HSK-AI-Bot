@@ -121,6 +121,37 @@ async def _count_events(session, event_names: str | tuple[str, ...], since: date
     ).scalar() or 0
 
 
+async def _count_completed_book_lessons(session, since: datetime | None = None) -> int:
+    """Count logical user+lesson completions, not compatibility aliases.
+
+    The book flow deliberately emits both ``book_lesson_completed`` and
+    ``lesson_completed`` for one completion.  Counting raw rows therefore
+    doubles the visible admin metric.  The lesson identity columns are shared
+    by both aliases and by the legacy/native completion writers.
+    """
+    logical_completions = (
+        select(
+            CourseMiniAppEvent.telegram_id,
+            CourseMiniAppEvent.level,
+            CourseMiniAppEvent.lesson_id,
+            CourseMiniAppEvent.lesson_order,
+        )
+        .where(
+            *_event_conditions(
+                ("book_lesson_completed", "lesson_completed"),
+                since,
+            )
+        )
+        .distinct()
+        .subquery()
+    )
+    return (
+        await session.execute(
+            select(func.count()).select_from(logical_completions)
+        )
+    ).scalar() or 0
+
+
 async def _count_distinct(session, column, *conditions) -> int:
     stmt = select(func.count(func.distinct(column)))
     if conditions:
@@ -200,9 +231,9 @@ async def miniapp_course_stats(session, since: datetime | None = None) -> MiniAp
         lesson_users=await _count_unique_users(session, ("lesson_started", "section_started"), since),
         completed_users=await _count_unique_users(
             session,
-            ("section_completed", "book_lesson_completed", "lesson_completed"),
+            ("book_lesson_completed", "lesson_completed"),
             since,
         ),
         completed_sections=await _count_events(session, "section_completed", since),
-        completed_book_lessons=await _count_events(session, ("book_lesson_completed", "lesson_completed"), since),
+        completed_book_lessons=await _count_completed_book_lessons(session, since),
     )

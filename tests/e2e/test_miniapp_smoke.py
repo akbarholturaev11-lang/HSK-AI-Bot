@@ -1253,6 +1253,11 @@ def admin_payload():
     return {
         "ok": True,
         "generated_at": "28.06.2026 11:30",
+        "data_quality": {
+            "rows": [
+                {"key": "course", "label": "Course event", "last_at": "28.06.2026 11:29", "status": "ok"}
+            ]
+        },
         "report_text": "Real hisobot: 12 foydalanuvchi, 3 aktiv obuna.",
         "statistics_reports": [
             {"key": "weekly", "title": "Haftalik", "note": "Oxirgi 7 kun", "cards": [], "course": {}, "metrics": {}, "text": "Weekly hisobot", "advanced": advanced},
@@ -1361,24 +1366,27 @@ def admin_finance_payload():
         return {
             "key": key, "title": title, "note": note, "range_label": "01.01.2026 — 28.06.2026",
             "finance": {
-                "revenue_text": "$120.00", "ai_cost_text": "$10.00", "expense_text": "$5.00",
+                "revenue_text": "$120.00", "ai_cost_text": "$10.00", "manual_profit_text": "$0.00", "expense_text": "$5.00",
                 "net_text": "$105.00", "net_positive": True, "ai_share_pct": 8.3, "margin_pct": 87.5,
-                "explain": "Sof foyda = daromad - AI xarajat - portfel rasxod.",
+                "explain": "Kuzatilgan net = tushum + manual profit - AI estimate - rasxod.",
             },
             "unit": {
                 "arpu_text": "$1.00", "arppu_text": "$12.00", "avg_check_text": "$12.00",
-                "paying_users": 10, "total_users": 12, "approved_count": 10,
+                "paying_users": 10, "total_users": 12, "arpu_users": 12, "approved_count": 10,
                 "explain": "ARPU va ARPPU izohi.",
             },
             "retention": {
-                "new_paying": 8, "renewals": 2, "renewal_share_pct": 20.0, "renewal_rate_pct": 20.0,
-                "churn_rate_pct": (15.0 if key == "all_time" else None),
+                "new_paying": 8, "renewals": 2, "renewal_share_pct": 20.0,
+                "ever_renewed_share_pct": (20.0 if key == "all_time" else None),
+                "inactive_paid_share_pct": (15.0 if key == "all_time" else None),
+                "churn_rate_pct": None,
                 "active_paid_now": 9, "paid_ever": 12, "renewed_ever": 2,
-                "explain": "Yangilash va churn izohi.",
+                "explain": "Yangilash va current paid snapshot izohi.",
             },
             "sources_paid": [
                 {"source": "v3_paywall", "label": "Course v3 - Paywall", "paying_users": 6, "payments": 7, "revenue_text": "$80.00"}
             ],
+            "source_attribution_explain": "Paymentdan oldingi eng yaqin source.",
             "cards": [
                 {"label": "Daromad", "value": "$120.00", "note": "10 ta to'lov", "tone": "info"},
                 {"label": "AI xarajat", "value": "$10.00", "note": "daromadning 8.3%", "tone": "warn"},
@@ -1404,6 +1412,25 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     grant_requests = []
     course_access_requests = []
     app_promo_requests = []
+    runtime_errors = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    page.on(
+        "console",
+        lambda message: runtime_errors.append(message.text)
+        if message.type == "error"
+        else None,
+    )
+    # Admin JS must remain safe in a normal browser where Telegram.WebApp is
+    # absent; API routes below are mocked independently of Telegram auth.
+    page.unroute("https://telegram.org/js/telegram-web-app.js")
+    page.route(
+        "https://telegram.org/js/telegram-web-app.js",
+        lambda route: route.fulfill(
+            status=200,
+            content_type="application/javascript",
+            body="",
+        ),
+    )
 
     def grant_access(route):
         grant_requests.append(json.loads(route.request.post_data or "{}"))
@@ -1465,12 +1492,6 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
             },
         )
 
-    page.add_init_script(
-        """
-        window.Telegram={WebApp:{initData:"admin-e2e",ready(){},expand(){},close(){},
-        setHeaderColor(){},setBackgroundColor(){}}};
-        """
-    )
     page.route("**/api/admin-miniapp/overview", lambda route: json_response(route, admin_payload()))
     page.route("**/api/admin-miniapp/finance-stats", lambda route: json_response(route, admin_finance_payload()))
     page.route("**/api/admin-miniapp/sub-entry-stats", lambda route: json_response(route, {"ok": True, "rows": []}))
@@ -1506,9 +1527,10 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     expect(page.locator("#summaryGrid")).to_contain_text("Foydalanuvchilar")
     expect(page.locator("#summaryGrid")).to_contain_text("12")
     expect(page.locator("#reportText")).to_contain_text("Real hisobot")
+    expect(page.locator("#dataQuality")).to_contain_text("Course event")
     expect(page.locator("#userList")).to_contain_text("Ali")
     expect(page.locator("#paymentBoard")).to_contain_text("99 TJS")
-    expect(page.locator("#financeCards")).to_contain_text("Sof foyda")
+    expect(page.locator("#financeCards")).to_contain_text("Kuzatilgan net")
     expect(page.locator("#advancedCards")).to_contain_text("D1 retention")
     expect(page.locator("#featureAdoption")).to_contain_text("Darslar")
 
@@ -1552,6 +1574,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     assert app_promo_requests[-1]["platforms"]["android"] is False
     assert app_promo_requests[-1]["platforms"]["ios"] is False
     assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
+    assert runtime_errors == []
 
 
 def test_subscription_page_smoke(page):

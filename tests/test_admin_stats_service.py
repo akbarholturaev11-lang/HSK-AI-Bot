@@ -64,6 +64,50 @@ class AdminStatsServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(top.today_users, 8)
         self.assertEqual(top.week_users, 80)
 
+    async def test_all_time_report_uses_30_day_activity_not_total_users(self):
+        class _ReportService(AdminMiniAppService):
+            def __init__(self):
+                self.session = None
+                self.user_counts = iter((100, 30, 4))
+
+            async def _count_users(self, *_conditions):
+                return next(self.user_counts)
+
+            async def _payment_status_counts(self, _since=None):
+                return {}
+
+            async def _approved_currency_totals(self, _since=None):
+                return []
+
+            async def _approved_payment_user_count(self, _since=None):
+                return 0
+
+            async def _payment_plan_counts(self, _since=None):
+                return {}
+
+            async def _advanced_stats(self, **_kwargs):
+                return {}
+
+        course = SimpleNamespace(
+            opened_users=0,
+            lesson_users=0,
+            completed_users=0,
+            completed_sections=0,
+            completed_book_lessons=0,
+        )
+        report = await _ReportService()._period_report(
+            key="all_time",
+            title="To'liq",
+            note="Butun baza",
+            since=None,
+            now=datetime(2026, 8, 22, tzinfo=timezone.utc),
+            course_stats=course,
+        )
+
+        self.assertEqual(report["metrics"]["user_count"], 100)
+        self.assertEqual(report["metrics"]["active_users"], 30)
+        self.assertEqual(report["cards"][1]["label"], "30 кун фаол")
+
 
 class _FetchResult:
     def __init__(self, rows):
@@ -231,7 +275,7 @@ class AdminMiniAppServiceTests(unittest.TestCase):
         self.assertIn("Янги/жами: 14", text)
         self.assertIn("Тасдиқланган user: 3", text)
         self.assertIn("Тушум: 267 TJS", text)
-        self.assertIn("Курс тугатиш: 55.6%", text)
+        self.assertIn("cohort conversion эмас", text)
 
 
 if __name__ == "__main__":

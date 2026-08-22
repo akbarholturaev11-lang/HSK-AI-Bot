@@ -74,6 +74,8 @@ DESKTOP_COHORT_EVENTS = (
     "desktop_promo_dismissed",
     *DESKTOP_ENTRY_EVENTS,
     *DESKTOP_FUNNEL_EVENTS,
+    "desktop_ai_pack_started",
+    "desktop_ai_pack_completed",
 )
 
 DESKTOP_ACTIVITY_PROOF_EVENTS = (
@@ -91,6 +93,7 @@ DESKTOP_DETAIL_EVENTS = (
 
 DESKTOP_PLATFORMS = ("macos", "windows")
 DESKTOP_DETAIL_WINDOW_DAYS = 30
+DESKTOP_ATTRIBUTION_WINDOW = timedelta(days=7)
 
 
 class DesktopAnalyticsService:
@@ -246,6 +249,11 @@ class DesktopAnalyticsService:
                 request_payload = cls._payload(getattr(request, "payload_json", None))
                 request_source = cls._row_entry_source(request, request_payload)
                 request_token = cls._row_session_id(request)
+                request_at = cls._row_key(request)[0]
+
+                def within_request_window(candidate: Any) -> bool:
+                    candidate_at = cls._row_key(candidate)[0]
+                    return candidate_at <= request_at + DESKTOP_ATTRIBUTION_WINDOW
 
                 if not request_token or not request_source:
                     deepest_stage = max(deepest_stage, deepest_for_request)
@@ -257,6 +265,7 @@ class DesktopAnalyticsService:
                         cls._row_session_id(candidate) == request_token
                         and cls._row_entry_source(candidate, payload) == request_source
                         and cls._same_platform(request, candidate)
+                        and within_request_window(candidate)
                     )
 
                 started = first_after(
@@ -286,7 +295,10 @@ class DesktopAnalyticsService:
                 linked = first_after(
                     "desktop_session_linked",
                     download_anchor,
-                    lambda candidate: cls._same_platform(request, candidate),
+                    lambda candidate: (
+                        cls._same_platform(request, candidate)
+                        and within_request_window(candidate)
+                    ),
                 )
                 if linked is None:
                     deepest_stage = max(deepest_stage, deepest_for_request)
@@ -299,6 +311,7 @@ class DesktopAnalyticsService:
                     linked,
                     lambda candidate: (
                         cls._same_platform(linked, candidate)
+                        and within_request_window(candidate)
                         and (
                             not linked_session_id
                             or not cls._row_session_id(candidate)
@@ -384,7 +397,7 @@ class DesktopAnalyticsService:
             ]
             if not seen_rows:
                 continue
-            first_seen_key = cls._row_key(seen_rows[0])
+            seen_keys = [cls._row_key(row) for row in seen_rows]
             values = source_values[source]
             values["seen"]["users"].add(telegram_id)
             values["seen"]["events"] += len(seen_rows)
@@ -395,7 +408,12 @@ class DesktopAnalyticsService:
                     for row in ordered
                     if (
                         str(getattr(row, "event_name", "") or "") == event_name
-                        and cls._row_key(row) > first_seen_key
+                        and any(
+                            seen_key < cls._row_key(row)
+                            and cls._row_key(row)[0]
+                            <= seen_key[0] + DESKTOP_ATTRIBUTION_WINDOW
+                            for seen_key in seen_keys
+                        )
                     )
                 ]
                 if matching:
@@ -489,7 +507,7 @@ class DesktopAnalyticsService:
             source_values[source]["seen_users"].add(telegram_id)
             seen_events += len(seen)
             source_values[source]["seen_events"] += len(seen)
-            first_seen_key = cls._row_key(seen[0])
+            seen_keys = [cls._row_key(row) for row in seen]
 
             valid_dismissals = [
                 row
@@ -497,7 +515,12 @@ class DesktopAnalyticsService:
                 if (
                     str(getattr(row, "event_name", "") or "")
                     == "desktop_promo_dismissed"
-                    and cls._row_key(row) > first_seen_key
+                    and any(
+                        seen_key < cls._row_key(row)
+                        and cls._row_key(row)[0]
+                        <= seen_key[0] + DESKTOP_ATTRIBUTION_WINDOW
+                        for seen_key in seen_keys
+                    )
                 )
             ]
             if valid_dismissals:
@@ -510,7 +533,12 @@ class DesktopAnalyticsService:
                 if (
                     str(getattr(row, "event_name", "") or "")
                     == "desktop_download_requested"
-                    and cls._row_key(row) > first_seen_key
+                    and any(
+                        seen_key < cls._row_key(row)
+                        and cls._row_key(row)[0]
+                        <= seen_key[0] + DESKTOP_ATTRIBUTION_WINDOW
+                        for seen_key in seen_keys
+                    )
                 )
             ]
             if valid_requests:
@@ -566,6 +594,86 @@ class DesktopAnalyticsService:
             # Backwards compatibility for older admin clients.
             "sources": source_payload,
             "entry_funnel": cls._entry_source_cohort(rows=rows),
+        }
+
+    @classmethod
+    def _ai_pack_cohort(
+        cls,
+        *,
+        rows: Iterable[Any],
+        totals: Mapping[str, Mapping[str, int]],
+    ) -> dict[str, Any]:
+        relevant = [
+            row
+            for row in rows
+            if str(getattr(row, "event_name", "") or "")
+            in {"desktop_ai_pack_started", "desktop_ai_pack_completed"}
+        ]
+        raw_started = dict(
+            totals.get("desktop_ai_pack_started") or {"events": 0, "users": 0}
+        )
+        raw_completed = dict(
+            totals.get("desktop_ai_pack_completed") or {"events": 0, "users": 0}
+        )
+        # Pure callers built before cohort telemetry was added may only supply
+        # aggregate totals. Production snapshot() always supplies relevant rows.
+        if not relevant:
+            started_users = int(raw_started.get("users", 0) or 0)
+            completed_users = min(
+                int(raw_completed.get("users", 0) or 0),
+                started_users,
+            )
+            return {
+                "started": raw_started,
+                "completed": raw_completed,
+                "completion_rate": cls._pct(completed_users, started_users),
+                "cohort_available": False,
+            }
+
+        by_user: dict[int, list[Any]] = defaultdict(list)
+        for row in relevant:
+            telegram_id = int(getattr(row, "telegram_id", 0) or 0)
+            if telegram_id:
+                by_user[telegram_id].append(row)
+
+        started_users: set[int] = set()
+        completed_users: set[int] = set()
+        for telegram_id, user_rows in by_user.items():
+            ordered = sorted(user_rows, key=cls._row_key)
+            starts = [
+                row
+                for row in ordered
+                if str(getattr(row, "event_name", "") or "")
+                == "desktop_ai_pack_started"
+            ]
+            if not starts:
+                continue
+            started_users.add(telegram_id)
+            first_start = cls._row_key(starts[0])
+            if any(
+                str(getattr(row, "event_name", "") or "")
+                == "desktop_ai_pack_completed"
+                and cls._row_key(row) > first_start
+                for row in ordered
+            ):
+                completed_users.add(telegram_id)
+
+        return {
+            "started": {
+                "events": int(raw_started.get("events", 0) or 0),
+                "users": len(started_users),
+                "raw_users": int(raw_started.get("users", 0) or 0),
+            },
+            "completed": {
+                "events": int(raw_completed.get("events", 0) or 0),
+                "users": len(completed_users),
+                "raw_users": int(raw_completed.get("users", 0) or 0),
+            },
+            "completion_rate": cls._pct(
+                len(completed_users),
+                len(started_users),
+            ),
+            "cohort_available": True,
         }
 
     @staticmethod
@@ -708,6 +816,10 @@ class DesktopAnalyticsService:
             rows=cohort_rows,
             totals=totals,
         )
+        ai_pack = cls._ai_pack_cohort(
+            rows=cohort_rows,
+            totals=totals,
+        )
 
         activity_users = {
             "dau": set(),
@@ -818,8 +930,6 @@ class DesktopAnalyticsService:
             rows.sort(key=lambda item: (item["devices"], item["users"], item["version"]), reverse=True)
             versions_payload[platform] = rows
 
-        ai_started_users = count("desktop_ai_pack_started", "users")
-        ai_completed_users = count("desktop_ai_pack_completed", "users")
         sync_success_events = count("desktop_progress_sync_succeeded", "events")
         sync_failed_events = count("desktop_progress_sync_failed", "events")
 
@@ -863,9 +973,7 @@ class DesktopAnalyticsService:
                 ),
             },
             "ai_pack": {
-                "started": dict(totals.get("desktop_ai_pack_started") or {"events": 0, "users": 0}),
-                "completed": dict(totals.get("desktop_ai_pack_completed") or {"events": 0, "users": 0}),
-                "completion_rate": cls._pct(ai_completed_users, ai_started_users),
+                **ai_pack,
                 "offline_ai_used": dict(totals.get("desktop_offline_ai_used") or {"events": 0, "users": 0}),
             },
             "sync": {
@@ -890,6 +998,10 @@ class DesktopAnalyticsService:
                 "active_definition": (
                     "DAU/WAU/MAU server-authenticated desktop_first_open, "
                     "desktop_app_opened yoki desktop_active_day eventidan hisoblanadi."
+                ),
+                "attribution_definition": (
+                    "Download/promo attribution bir xil user/source bo'yicha 7 kunlik "
+                    "ordered oynada; AI Pack completion startdan keyingi same-user cohort."
                 ),
             },
         }

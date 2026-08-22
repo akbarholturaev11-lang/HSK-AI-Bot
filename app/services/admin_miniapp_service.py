@@ -6,7 +6,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, case, func, or_, select
 
 from app.db.models.ad_campaign import AdCampaign, AdCampaignDelivery
 from app.db.models.ai_usage import AIUsageEvent
@@ -20,6 +20,7 @@ from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.referral import Referral
 from app.db.models.required_channel import RequiredChannel
+from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 from app.db.models.user import User
 from app.db.models.voice_practice_session import VoicePracticeSession
 from app.services.admin_stats_service import miniapp_course_stats
@@ -77,6 +78,61 @@ def _cohort_retention(
         if any(window_start <= opened < window_end for opened in opens_by_user.get(telegram_id, ())):
             retained += 1
     return {"eligible": eligible, "retained": retained, "rate": _pct(retained, eligible)}
+
+
+def _matured_notification_open_proxy(
+    sent_rows: list[tuple],
+    open_rows: list[tuple],
+    *,
+    now: datetime,
+) -> dict:
+    """Attribute reminder opens one-to-one after the full 48h window matures."""
+    now = _as_utc(now) or datetime.now(timezone.utc)
+    maturity_cutoff = now - timedelta(hours=48)
+    matured: list[tuple[int, int, datetime]] = []
+    all_sends: list[tuple[int, int, datetime]] = []
+    immature = 0
+    for index, (telegram_id, sent_at) in enumerate(sent_rows):
+        sent = _as_utc(sent_at)
+        if not telegram_id or not sent or sent > now:
+            continue
+        all_sends.append((index, int(telegram_id), sent))
+        if sent > maturity_cutoff:
+            immature += 1
+            continue
+        matured.append((index, int(telegram_id), sent))
+
+    opens_by_user: dict[int, list[datetime]] = defaultdict(list)
+    for telegram_id, opened_at in open_rows:
+        opened = _as_utc(opened_at)
+        if telegram_id and opened and opened <= now:
+            opens_by_user[int(telegram_id)].append(opened)
+    for opens in opens_by_user.values():
+        opens.sort()
+
+    credited: set[int] = set()
+    for telegram_id, opens in opens_by_user.items():
+        user_sends = [row for row in all_sends if row[1] == telegram_id]
+        for opened in opens:
+            candidates = [
+                row
+                for row in user_sends
+                if row[0] not in credited
+                and row[2] <= opened <= row[2] + timedelta(hours=48)
+            ]
+            if candidates:
+                # One CTA open belongs to the nearest preceding reminder only.
+                credited.add(max(candidates, key=lambda row: row[2])[0])
+
+    sent = len(matured)
+    matured_ids = {row[0] for row in matured}
+    opened_after = len(credited & matured_ids)
+    return {
+        "sent": sent,
+        "immature_sent": immature,
+        "opened_after": opened_after,
+        "open_rate": _pct(opened_after, sent),
+    }
 
 
 def _payment_attempt_funnel(rows: list[tuple]) -> dict:
@@ -981,7 +1037,7 @@ def _usd(value: float) -> str:
         return "$0.00"
 
 
-def _amount_to_usd(amount, currency: str | None, *, base_amount=None) -> float:
+def _amount_to_usd(amount, currency: str | None, *, base_amount=None) -> float | None:
     key = (currency or "").strip().lower()
     try:
         value = float(amount or 0)
@@ -995,7 +1051,7 @@ def _amount_to_usd(amount, currency: str | None, *, base_amount=None) -> float:
         return value / float(DEFAULT_USD_CNY_RATE)
     if base_amount:
         return _amount_to_usd(base_amount, "TJS")
-    return 0.0
+    return None
 
 
 def _duration_seconds(start: datetime | None, end: datetime | None, *, cap_seconds: int = 8 * 60 * 60) -> int:
@@ -1184,6 +1240,13 @@ def _bot_not_blocked_filter():
     )
 
 
+def _no_pending_payment_filter():
+    return ~select(Payment.id).where(
+        Payment.user_telegram_id == User.telegram_id,
+        Payment.payment_status == "pending",
+    ).exists()
+
+
 def admin_miniapp_today_start(now: datetime) -> datetime:
     return now.astimezone(ADMIN_MINIAPP_TZ).replace(
         hour=0,
@@ -1280,7 +1343,8 @@ class AdminMiniAppService:
         approved_payments = int(pay_by_status.get("approved", {}).get("count", 0))
         rejected_payments = int(pay_by_status.get("rejected", {}).get("count", 0))
         paid_users = await self._paid_user_count(now)
-        historical_approved_users = await self._count_users(User.payment_status == "approved")
+        historical_approved_users = await self._approved_payment_user_count()
+        pending_payment_users = await self._pending_payment_user_count()
         bot_blocked_users = await self._count_users(*_bot_block_filter())
 
         miniapp_course = await miniapp_course_stats(self.session)
@@ -1292,7 +1356,7 @@ class AdminMiniAppService:
 
         channels_enabled = await RequiredChannelService(self.session).is_enabled()
         channel_rows = await self._required_channels()
-        active_channels = len([item for item in channel_rows if item["enabled"]])
+        active_channels = await self._count_active_required_channels()
         ad_summary = await self._ad_summary()
         feedback_summary = await self._feedback_summary()
         source_rows = await self._subscription_sources(week_ago)
@@ -1306,9 +1370,10 @@ class AdminMiniAppService:
         latest_users = await self._latest_users(
             now,
             today_start=today_start,
-            two_day_start_date=two_day_start_date,
+            hot_since=hot_since,
         )
         latest_payments = await self._latest_payments()
+        data_quality = await self._data_quality(now)
 
         expired_hot = await self._count_users(
             User.status == "expired",
@@ -1320,9 +1385,15 @@ class AdminMiniAppService:
             User.end_date > now,
             User.end_date <= now + timedelta(days=3),
         )
-        hot_leads = int(course_hot.get("last_2_days_users", 0))
-        qa_users = await self._count_users(User.questions_used > 0)
-        conversion = _pct(paid_users, total)
+        hot_leads = await self._count_users(
+            User.status.in_(HOT_LEAD_STATUSES),
+            User.payment_status.in_(HOT_LEAD_PAYMENT_STATUSES),
+            User.last_active_at >= hot_since,
+            _bot_not_blocked_filter(),
+            _no_pending_payment_filter(),
+        )
+        qa_users = await self._qa_user_count()
+        conversion = _pct(historical_approved_users, total)
         engagement = _pct(qa_users, total)
 
         report_text = self._report_text(
@@ -1367,6 +1438,7 @@ class AdminMiniAppService:
         return {
             "ok": True,
             "generated_at": _dt(now),
+            "data_quality": data_quality,
             "report_text": report_text,
             "statistics_reports": period_reports,
             "summary": [
@@ -1374,9 +1446,12 @@ class AdminMiniAppService:
                 {"label": "Фаол обуна", "value": paid_users, "note": "ҳозир тўловли", "tone": "good"},
                 {"label": "Тўлов текширувда", "value": pending_payments, "note": "админ кўриши керак", "tone": "warn"},
                 {
-                    "label": "Course иссиқ user",
+                    "label": "Иссиқ мижоз",
                     "value": hot_leads,
-                    "note": f"бугун {course_hot.get('today_users', 0)} user · 3+ streak {course_hot.get('streak_3_users', 0)}",
+                    "note": (
+                        f"48 соатда фаол, тўламаган · course фаол "
+                        f"{course_hot.get('last_2_days_users', 0)}"
+                    ),
                     "tone": "danger",
                 },
             ],
@@ -1384,6 +1459,7 @@ class AdminMiniAppService:
                 "users_total": total,
                 "paid_users": paid_users,
                 "pending_payments": pending_payments,
+                "pending_payment_users": pending_payment_users,
                 "approved_payments": approved_payments,
                 "rejected_payments": rejected_payments,
                 "new_today": new_today,
@@ -1407,7 +1483,7 @@ class AdminMiniAppService:
                 "all": total,
                 "active_today": active_today,
                 "paid": paid_users,
-                "pending": pending_payments,
+                "pending": pending_payment_users,
                 "wants_pay": hot_leads,
                 "trial": int(status_counts.get("trial", 0)),
                 "free": int(status_counts.get("free", 0)),
@@ -1474,13 +1550,20 @@ class AdminMiniAppService:
         return {str(row[0] or "—"): int(row.cnt or 0) for row in rows}
 
     async def _payment_status_counts(self, since: datetime | None = None) -> dict[str, dict[str, int]]:
+        effective_at = case(
+            (
+                Payment.payment_status.in_(("approved", "rejected")),
+                func.coalesce(Payment.reviewed_at, Payment.submitted_at),
+            ),
+            else_=Payment.submitted_at,
+        )
         stmt = select(
             Payment.payment_status,
             func.count().label("cnt"),
             func.coalesce(func.sum(Payment.amount), 0).label("total_sum"),
         ).group_by(Payment.payment_status)
         if since is not None:
-            stmt = stmt.where(Payment.submitted_at >= since)
+            stmt = stmt.where(effective_at >= since)
         rows = (await self.session.execute(stmt)).fetchall()
         return {
             str(row.payment_status or "—"): {
@@ -1530,6 +1613,100 @@ class AdminMiniAppService:
         conditions = [Payment.payment_status == "approved", *self._approved_payment_period_conditions(since)]
         stmt = select(func.count(func.distinct(Payment.user_telegram_id))).select_from(Payment).where(*conditions)
         return (await self.session.execute(stmt)).scalar() or 0
+
+    async def _pending_payment_user_count(self) -> int:
+        stmt = (
+            select(func.count(func.distinct(Payment.user_telegram_id)))
+            .select_from(Payment)
+            .where(Payment.payment_status == "pending")
+        )
+        return (await self.session.execute(stmt)).scalar() or 0
+
+    async def _qa_user_count(self) -> int:
+        stmt = (
+            select(func.count(func.distinct(AIUsageEvent.user_telegram_id)))
+            .select_from(AIUsageEvent)
+            .where(AIUsageEvent.source == "qa")
+        )
+        return (await self.session.execute(stmt)).scalar() or 0
+
+    async def _data_quality(self, now: datetime) -> dict:
+        sources = {
+            "users": (
+                "User activity",
+                (
+                    await self.session.execute(select(func.max(User.last_active_at)))
+                ).scalar(),
+            ),
+            "payments": (
+                "Payment",
+                (
+                    await self.session.execute(
+                        select(
+                            func.max(
+                                func.coalesce(Payment.reviewed_at, Payment.submitted_at)
+                            )
+                        )
+                    )
+                ).scalar(),
+            ),
+            "course": (
+                "Course event",
+                (
+                    await self.session.execute(
+                        select(func.max(CourseMiniAppEvent.created_at))
+                    )
+                ).scalar(),
+            ),
+            "ai": (
+                "AI usage",
+                (
+                    await self.session.execute(select(func.max(AIUsageEvent.created_at)))
+                ).scalar(),
+            ),
+            "subscription_sources": (
+                "Subscription source",
+                (
+                    await self.session.execute(
+                        select(func.max(SubscriptionEntryEvent.created_at))
+                    )
+                ).scalar(),
+            ),
+            "desktop": (
+                "Desktop event",
+                (
+                    await self.session.execute(
+                        select(func.max(CourseMiniAppEvent.created_at)).where(
+                            CourseMiniAppEvent.event_name.like("desktop_%")
+                        )
+                    )
+                ).scalar(),
+            ),
+        }
+        rows = []
+        for key, (label, raw_at) in sources.items():
+            at = _as_utc(raw_at)
+            age_hours = (
+                round(max((now - at).total_seconds(), 0) / 3600, 1)
+                if at
+                else None
+            )
+            rows.append(
+                {
+                    "key": key,
+                    "label": label,
+                    "last_at": _dt(at) if at else "—",
+                    "age_hours": age_hours,
+                    "status": "ok" if at else "no_data",
+                }
+            )
+        return {
+            "rows": rows,
+            "explain": (
+                "Bu vaqtlar har manbadagi oxirgi DB yozuvini ko'rsatadi. "
+                "No data yoki kutilmaganda eski vaqt telemetry uzilganini 0 natijadan ajratishga yordam beradi."
+            ),
+        }
 
     async def _period_reports(
         self,
@@ -1585,12 +1762,18 @@ class AdminMiniAppService:
     ) -> dict:
         if since is None:
             user_count = await self._count_users()
-            active_users = user_count
+            active_users = await self._count_users(
+                User.last_active_at >= now - timedelta(days=30)
+            )
             bot_blocked = await self._count_users(*_bot_block_filter())
+            active_label = "30 кун фаол"
+            active_note = "охирги 30 кун"
         else:
             user_count = await self._count_users(User.created_at >= since)
             active_users = await self._count_users(User.last_active_at >= since)
             bot_blocked = await self._count_users(User.bot_blocked_at >= since)
+            active_label = "Фаол"
+            active_note = "шу даврда"
 
         payment_status = await self._payment_status_counts(since)
         pending_payments = int(payment_status.get("pending", {}).get("count", 0))
@@ -1612,6 +1795,7 @@ class AdminMiniAppService:
             "approved_total_text": approved_total_text,
             "bot_blocked": bot_blocked,
             "course_completion": _pct(course.completed_users, course.opened_users),
+            "active_label": active_label,
         }
         report = {
             "key": key,
@@ -1621,11 +1805,11 @@ class AdminMiniAppService:
             "metrics": metrics,
             "cards": [
                 {"label": "Фойдаланувчи", "value": user_count, "note": "янги" if since else "жами база", "tone": "info"},
-                {"label": "Фаол", "value": active_users, "note": "шу даврда" if since else "жами база", "tone": "good"},
+                {"label": active_label, "value": active_users, "note": active_note, "tone": "good"},
                 {"label": "Тасдиқланган тўлов", "value": approved_users, "note": approved_total_text, "tone": "good"},
-                {"label": "Тўлов текширувда", "value": pending_payments, "note": "шу даврда юборилган", "tone": "warn"},
-                {"label": "Курс очилди", "value": course.opened_users, "note": f"тугатиш {metrics['course_completion']}%", "tone": "info"},
-                {"label": "Дарс тугади", "value": course.completed_users, "note": f"{course.completed_book_lessons} та дарс", "tone": "good"},
+                {"label": "Тўлов текширувда", "value": pending_payments, "note": "шу даврда", "tone": "warn"},
+                {"label": "Курс очилди", "value": course.opened_users, "note": "мустақил уникал user", "tone": "info"},
+                {"label": "Тўлиқ дарс тугади", "value": course.completed_users, "note": f"{course.completed_book_lessons} уникал user-dars", "tone": "good"},
                 {"label": "Бот блок", "value": bot_blocked, "note": "шу даврда" if since else "ҳозир блок", "tone": "danger"},
                 {"label": "Рад тўлов", "value": rejected_payments, "note": "қайта сотиш сигнали", "tone": "danger"},
             ],
@@ -1641,6 +1825,10 @@ class AdminMiniAppService:
                 "completed_sections": course.completed_sections,
                 "completed_book_lessons": course.completed_book_lessons,
                 "completion": metrics["course_completion"],
+                "counting_note": (
+                    "Opened, lesson va completion mustaqil period user countlari; "
+                    "ordered cohort conversion emas."
+                ),
             },
             "advanced": advanced,
         }
@@ -1669,7 +1857,7 @@ class AdminMiniAppService:
         voice = await self._voice_minutes(since=since)
         payment = await self._payment_advanced_stats(since=since)
         feature_adoption = await self._feature_adoption(since=since, now=now)
-        notifications = await self._notification_open_proxy(since=since)
+        notifications = await self._notification_open_proxy(since=since, now=now)
         foundation = await CourseMiniAppAdminAnalyticsService(self.session).foundation_metrics(
             since=since,
             now=now,
@@ -1682,22 +1870,22 @@ class AdminMiniAppService:
         return {
             "explain": (
                 "Bu blok product health metrikalarini ko'rsatadi: retention, Mini App vaqt, dars vaqti, "
-                "Starter 0 mastery, QA/Voice ishlatilishi, payment funnel, LTV/CAC, paid/free feature adoption "
+                "Starter 0 mastery, QA/Voice ishlatilishi, payment funnel, revenue/payer, taglangan CAC, paid/free feature adoption "
                 "va notification open proxy. Sales A/B esa report davridan mustaqil global 7 kunlik matured cohort. "
                 "Qolgan raqamlar tanlangan davr ichida qayta hisoblanadi."
             ),
             "cards": [
                 {
                     "label": "Signup → App D1",
-                    "value": f"{retention['d1']['rate']}%",
-                    "note": f"{retention['d1']['retained']}/{retention['d1']['eligible']} user",
-                    "tone": "good",
+                    "value": f"{retention['d1']['rate']}%" if retention["d1"]["eligible"] else "Yig'ilmoqda",
+                    "note": f"{retention['d1']['retained']}/{retention['d1']['eligible']} mature user",
+                    "tone": "good" if retention["d1"]["eligible"] else "info",
                 },
                 {
                     "label": "Signup → App D7",
-                    "value": f"{retention['d7']['rate']}%",
-                    "note": f"{retention['d7']['retained']}/{retention['d7']['eligible']} user",
-                    "tone": "good",
+                    "value": f"{retention['d7']['rate']}%" if retention["d7"]["eligible"] else "Yig'ilmoqda",
+                    "note": f"{retention['d7']['retained']}/{retention['d7']['eligible']} mature user",
+                    "tone": "good" if retention["d7"]["eligible"] else "info",
                 },
                 {
                     "label": "D1 recovery lift",
@@ -1790,22 +1978,28 @@ class AdminMiniAppService:
                     "tone": "good",
                 },
                 {
-                    "label": "LTV",
-                    "value": payment["ltv_text"],
-                    "note": f"{payment['paying_users']} pullik user",
+                    "label": "Davr revenue / payer",
+                    "value": payment["revenue_per_payer_text"],
+                    "note": (
+                        f"{payment['paying_users']} payer · LTV emas · "
+                        f"{payment['unpriced_payments']} unpriced"
+                    ),
                     "tone": "good",
                 },
                 {
-                    "label": "CAC",
+                    "label": "Taglangan CAC",
                     "value": payment["cac_text"],
                     "note": payment["cac_note"],
                     "tone": "warn" if payment["marketing_expense_usd"] else "info",
                 },
                 {
                     "label": "Unfinished notif",
-                    "value": f"{notifications['open_rate']}%",
-                    "note": f"{notifications['opened_after']} / {notifications['sent']} proxy",
-                    "tone": "info",
+                    "value": f"{notifications['open_rate']}%" if notifications["sent"] else "Yig'ilmoqda",
+                    "note": (
+                        f"{notifications['opened_after']} / {notifications['sent']} mature · "
+                        f"{notifications['immature_sent']} kutilmoqda"
+                    ),
+                    "tone": "good" if notifications["sent"] else "info",
                 },
             ],
             "retention": retention,
@@ -2194,17 +2388,20 @@ class AdminMiniAppService:
             at = _as_utc(reviewed_at or submitted_at)
             if not at:
                 continue
+            usd = _amount_to_usd(amount, currency, base_amount=base_amount)
             approved.append(
                 {
                     "user_id": int(user_id),
                     "at": at,
-                    "usd": _amount_to_usd(amount, currency, base_amount=base_amount),
+                    "usd": float(usd or 0.0),
+                    "priced": usd is not None,
                 }
             )
         in_period = [item for item in approved if since is None or item["at"] >= since]
-        revenue_usd = sum(item["usd"] for item in in_period)
+        revenue_usd = sum(item["usd"] for item in in_period if item["priced"])
+        unpriced_payments = len([item for item in in_period if not item["priced"]])
         paying_users = len({item["user_id"] for item in in_period})
-        ltv = revenue_usd / paying_users if paying_users else 0.0
+        revenue_per_payer = revenue_usd / paying_users if paying_users else 0.0
 
         first_by_user: dict[int, dict] = {}
         for item in sorted(approved, key=lambda value: value["at"]):
@@ -2231,8 +2428,13 @@ class AdminMiniAppService:
             "revenue_usd": round(revenue_usd, 2),
             "revenue_text": _usd(revenue_usd),
             "paying_users": paying_users,
-            "ltv_usd": round(ltv, 2),
-            "ltv_text": _usd(ltv),
+            "unpriced_payments": unpriced_payments,
+            "revenue_per_payer_usd": round(revenue_per_payer, 2),
+            "revenue_per_payer_text": _usd(revenue_per_payer),
+            # Deprecated aliases retained for older clients; this is ARPPU,
+            # not cohort lifetime value.
+            "ltv_usd": round(revenue_per_payer, 2),
+            "ltv_text": _usd(revenue_per_payer),
             "first_payment_users": new_paying_users,
             "first_payment_time_seconds": avg_first_seconds,
             "first_payment_time_text": _duration_text(avg_first_seconds),
@@ -2241,9 +2443,14 @@ class AdminMiniAppService:
             "cac_usd": round(cac, 2),
             "cac_text": _usd(cac) if marketing_expense_usd else "—",
             "cac_note": (
-                f"{new_paying_users} yangi pullik user"
+                f"{new_paying_users} yangi payer · note/source bo'yicha taglangan expense"
                 if marketing_expense_usd
                 else "marketing xarajat kiritilmagan"
+            ),
+            "explain": (
+                "Revenue/payer = tanlangan davrdagi priced approved revenue ÷ shu davrdagi unikal payer; bu LTV emas. "
+                f"Narxi aniqlanmagan payment: {unpriced_payments}. "
+                "Taglangan CAC faqat portfolio note/source ichida marketing/reklama deb topilgan xarajatlardan hisoblanadi."
             ),
             "funnel": funnel,
         }
@@ -2425,7 +2632,7 @@ class AdminMiniAppService:
             "free_rate": _pct(free, free_denominator),
         }
 
-    async def _notification_open_proxy(self, *, since: datetime | None) -> dict:
+    async def _notification_open_proxy(self, *, since: datetime | None, now: datetime) -> dict:
         sent_conditions = [CourseMiniAppEvent.event_name == "motivation_lesson_unfinished_sent"]
         open_conditions = [
             CourseMiniAppEvent.event_name == "miniapp_opened",
@@ -2444,26 +2651,16 @@ class AdminMiniAppService:
                 select(CourseMiniAppEvent.telegram_id, CourseMiniAppEvent.created_at).where(*open_conditions)
             )
         ).all()
-        opens_by_user: dict[int, list[datetime]] = defaultdict(list)
-        for telegram_id, created_at in open_rows:
-            opens_by_user[int(telegram_id)].append(_as_utc(created_at))
-        for values in opens_by_user.values():
-            values.sort()
-        opened_after = 0
-        for telegram_id, sent_at in sent_rows:
-            sent = _as_utc(sent_at)
-            if not sent:
-                continue
-            deadline = sent + timedelta(hours=48)
-            if any(sent <= opened <= deadline for opened in opens_by_user.get(int(telegram_id), []) if opened):
-                opened_after += 1
-        sent_count = len(sent_rows)
-        return {
-            "sent": sent_count,
-            "opened_after": opened_after,
-            "open_rate": _pct(opened_after, sent_count),
-            "explain": "Faqat yakunlanmagan dars reminderi: CTA orqali kelgan source=motivation_reminder Mini App open 48 soat ichida sanaladi.",
-        }
+        result = _matured_notification_open_proxy(
+            [tuple(row) for row in sent_rows],
+            [tuple(row) for row in open_rows],
+            now=now,
+        )
+        result["explain"] = (
+            "Faqat 48 soatlik oynasi to'liq tugagan unfinished-lesson reminderlar denominatorga kiradi. "
+            "source=motivation_reminder open eng yaqin oldingi reminderga bir marta bog'lanadi."
+        )
+        return result
 
     async def _required_channels(self) -> list[dict]:
         rows = (await self.session.execute(
@@ -2479,6 +2676,16 @@ class AdminMiniAppService:
             }
             for item in rows
         ]
+
+    async def _count_active_required_channels(self) -> int:
+        value = (
+            await self.session.execute(
+                select(func.count()).select_from(RequiredChannel).where(
+                    RequiredChannel.is_active.is_(True)
+                )
+            )
+        ).scalar()
+        return int(value or 0)
 
     async def _ad_summary(self) -> dict:
         now = datetime.now(timezone.utc)
@@ -2500,7 +2707,7 @@ class AdminMiniAppService:
         return {
             "total": int(total),
             "active": int(active),
-            "delivered": int(by_status.get("delivered", 0) or by_status.get("sent", 0) or 0),
+            "delivered": int(by_status.get("delivered", 0) + by_status.get("sent", 0)),
             "failed": int(by_status.get("failed", 0) or 0),
             "by_status": by_status,
             "latest": [
@@ -2586,7 +2793,7 @@ class AdminMiniAppService:
             "streak_3_users": streak_3,
             "streak_7_users": streak_7,
             "explain": (
-                "Course issiq userlar CourseXpEvent.created_at va CourseMiniAppProfile.last_activity_date "
+                "Course faol userlar CourseXpEvent.created_at va CourseMiniAppProfile.last_activity_date "
                 "unionidan olinadi; streak CourseMiniAppProfile.current_streak bo'yicha sanaladi."
             ),
         }
@@ -2643,8 +2850,19 @@ class AdminMiniAppService:
         now: datetime,
         *,
         today_start: datetime,
-        two_day_start_date,
+        hot_since: datetime,
     ) -> list[dict]:
+        pending_user_ids = {
+            int(value)
+            for value in (
+                await self.session.execute(
+                    select(func.distinct(Payment.user_telegram_id)).where(
+                        Payment.payment_status == "pending"
+                    )
+                )
+            ).scalars().all()
+            if value
+        }
         rows = (await self.session.execute(
             select(User, CourseMiniAppProfile)
             .outerjoin(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
@@ -2667,12 +2885,16 @@ class AdminMiniAppService:
                 "last_bot_block_check_at": _dt(item.last_bot_block_check_at),
                 "payment_status": item.payment_status,
                 "payment_label": _payment_label(item.payment_status),
+                "has_pending_payment": item.telegram_id in pending_user_ids,
                 "plan": _plan_label(item.selected_plan_type),
                 "method": _method_label(item.payment_method),
                 "end_date": _dt(item.end_date),
                 "last_active": _ago(item.last_active_at, now=now),
                 "active_today": is_admin_active_today(item, today_start),
-                "hot_lead": is_admin_course_hot_user(item, profile, two_day_start_date),
+                "hot_lead": (
+                    is_admin_hot_lead(item, hot_since)
+                    and item.telegram_id not in pending_user_ids
+                ),
                 "questions": f"{item.questions_used}/{item.question_limit}",
                 "bonus_left": max((item.bonus_questions or 0) - (item.bonus_questions_used or 0), 0),
                 "streak": int(getattr(profile, "current_streak", 0) or 0),
@@ -2682,12 +2904,24 @@ class AdminMiniAppService:
         ]
 
     async def _latest_payments(self) -> list[dict]:
-        rows = (await self.session.execute(
-            select(Payment, User)
-            .outerjoin(User, User.telegram_id == Payment.user_telegram_id)
-            .order_by(Payment.submitted_at.desc())
-            .limit(60)
-        )).all()
+        pending_rows = (
+            await self.session.execute(
+                select(Payment, User)
+                .outerjoin(User, User.telegram_id == Payment.user_telegram_id)
+                .where(Payment.payment_status == "pending")
+                .order_by(Payment.submitted_at.desc())
+            )
+        ).all()
+        recent_rows = (
+            await self.session.execute(
+                select(Payment, User)
+                .outerjoin(User, User.telegram_id == Payment.user_telegram_id)
+                .where(Payment.payment_status.in_(("approved", "rejected")))
+                .order_by(func.coalesce(Payment.reviewed_at, Payment.submitted_at).desc())
+                .limit(60)
+            )
+        ).all()
+        rows = [*pending_rows, *recent_rows]
         result = []
         for payment, user in rows:
             result.append(
@@ -2816,7 +3050,7 @@ class AdminMiniAppService:
             "────────────────────────────────\n\n"
             "👥 ФОЙДАЛАНУВЧИЛАР\n"
             f"Янги/жами: {metrics.get('user_count', 0)}\n"
-            f"Фаол: {metrics.get('active_users', 0)}\n"
+            f"{metrics.get('active_label', 'Фаол')}: {metrics.get('active_users', 0)}\n"
             f"Ботни блоклаган: {metrics.get('bot_blocked', 0)}\n\n"
             "💳 ТЎЛОВЛАР\n"
             f"Тасдиқланган user: {metrics.get('approved_payment_users', 0)}\n"
@@ -2829,7 +3063,7 @@ class AdminMiniAppService:
             f"Дарс тугатган: {course.get('completed_users', 0)}\n"
             f"Тугатилган қисм: {course.get('completed_sections', 0)}\n"
             f"Тугатилган дарс: {course.get('completed_book_lessons', 0)}\n"
-            f"Курс тугатиш: {metrics.get('course_completion', 0)}%"
+            "Изоҳ: очган/бошлаган/тугатган — мустақил уникал user count; cohort conversion эмас."
         ) + AdminMiniAppService._advanced_report_text(report.get("advanced") or {})
 
     @staticmethod
@@ -2857,6 +3091,13 @@ class AdminMiniAppService:
         payment = advanced.get("payment") or {}
         funnel = payment.get("funnel") or {}
         notifications = advanced.get("notifications") or {}
+        d1_value = f"{d1.get('rate', 0)}%" if d1.get("eligible") else "yig'ilmoqda"
+        d7_value = f"{d7.get('rate', 0)}%" if d7.get("eligible") else "yig'ilmoqda"
+        notification_value = (
+            f"{notifications.get('open_rate', 0)}%"
+            if notifications.get("sent")
+            else "yig'ilmoqda"
+        )
         direct_line = (
             f"Direct-start → dars ≤2m: {direct_activation.get('lesson_started_rate', 0)}% "
             f"({direct_activation.get('lesson_started_2m', 0)}/{direct_activation.get('lesson_started_eligible', 0)})\n"
@@ -2957,9 +3198,9 @@ class AdminMiniAppService:
         return (
             "\n\n"
             "📌 ҚЎШИМЧА PRODUCT МЕТРИКАЛАР\n"
-            "Бу блок retention, вақт, QA/Voice, payment abandon, LTV/CAC ва feature adoption'ни кўрсатади.\n"
-            f"Signup → Mini App D1: {d1.get('rate', 0)}% ({d1.get('retained', 0)}/{d1.get('eligible', 0)})\n"
-            f"Signup → Mini App D7: {d7.get('rate', 0)}% ({d7.get('retained', 0)}/{d7.get('eligible', 0)})\n"
+            "Бу блок retention, вақт, QA/Voice, payment abandon, revenue/payer, taglangan CAC ва feature adoption'ни кўрсатади.\n"
+            f"Signup → Mini App D1: {d1_value} ({d1.get('retained', 0)}/{d1.get('eligible', 0)} mature)\n"
+            f"Signup → Mini App D7: {d7_value} ({d7.get('retained', 0)}/{d7.get('eligible', 0)} mature)\n"
             f"{d1_recovery_line}"
             f"{sales_value_line}"
             f"Onboarding → dars ≤2m: {activation.get('lesson_started_rate', 0)}% ({activation.get('lesson_started_2m', 0)}/{activation.get('lesson_started_eligible', 0)})\n"
@@ -2971,8 +3212,10 @@ class AdminMiniAppService:
             f"Voice minutes: {voice.get('minutes_text', '0 min')} · avg: {voice.get('avg_text', '—')}\n"
             f"Payment abandon: {funnel.get('abandon_step', '—')} · yo'qotish: {funnel.get('abandon_count', 0)} ({funnel.get('abandon_rate', 0)}%)\n"
             f"First payment time: {payment.get('first_payment_time_text', '—')} · first pay user: {payment.get('first_payment_users', 0)}\n"
-            f"LTV: {payment.get('ltv_text', '—')} · CAC: {payment.get('cac_text', '—')}\n"
-            f"Unfinished lesson notification open: {notifications.get('open_rate', 0)}% ({notifications.get('opened_after', 0)}/{notifications.get('sent', 0)})"
+            f"Davr revenue/payer: {payment.get('revenue_per_payer_text', payment.get('ltv_text', '—'))} · Taglangan CAC: {payment.get('cac_text', '—')}\n"
+            f"Unfinished lesson notification open: {notification_value} "
+            f"({notifications.get('opened_after', 0)}/{notifications.get('sent', 0)} mature; "
+            f"{notifications.get('immature_sent', 0)} kutilmoqda)"
         )
 
     @staticmethod
@@ -3051,6 +3294,6 @@ class AdminMiniAppService:
             f"Етказилди: {ad_summary.get('delivered', 0)} · Хато: {ad_summary.get('failed', 0)}\n"
             f"Мажбурий канал: {channel_status} · Фаол канал: {active_channels}\n\n"
             "📈 КОНВЕРСИЯ\n"
-            f"Фойдаланувчи → тўловли: {conversion}%\n"
-            f"Лимит ҳисобида савол ишлатган user: {qa_users} ({engagement}%)"
+            f"Фойдаланувчи → approved payer: {conversion}%\n"
+            f"AI chat ишлатган уникал user: {qa_users} ({engagement}%)"
         )

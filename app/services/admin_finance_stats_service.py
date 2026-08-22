@@ -3,9 +3,9 @@
 Bu xizmat yangi admin panel (admin.html) uchun 3 ta davr (7 kun / 30 kun / to'liq)
 bo'yicha bir xil tuzilishdagi hisobotlarni quradi:
 
-- Sof foyda = daromad (USD) − real AI xarajat (ai_usage_events) − portfel rasxod
+- Kuzatilgan net = obuna tushumi + qo'lda foyda − model-cost estimate − qo'lda rasxod
 - ARPU / ARPPU
-- Obuna yangilash (renewal) va churn foizi
+- Obuna yangilash va hozirgi paid holati
 - Manba → pullik (qaysi manba real pul olib keladi)
 
 Mavjud xizmatlar (PortfolioService, AdminMiniAppService) o'zgartirilmaydi —
@@ -79,6 +79,8 @@ class _ApprovedPayment:
     user_id: int
     usd: float
     at: datetime
+    submitted_at: datetime
+    priced: bool
     is_renewal: bool
 
 
@@ -92,11 +94,14 @@ class AdminFinanceStatsService:
         month_ago = now - timedelta(days=30)
 
         approved = await self._load_approved_payments()
-        source_by_user = await self._source_by_user()
+        source_events_by_user = await self._source_events_by_user()
 
         total_users = await self._count_users()
-        active_paid_now = await self._active_paid_now(now)
         paid_ever = len({p.user_id for p in approved})
+        active_paid_now = await self._active_paid_now(
+            now,
+            telegram_ids={p.user_id for p in approved},
+        )
         renewed_ever = await self._renewed_ever_count()
 
         periods = []
@@ -113,7 +118,7 @@ class AdminFinanceStatsService:
                     since=since,
                     now=now,
                     approved=approved,
-                    source_by_user=source_by_user,
+                    source_events_by_user=source_events_by_user,
                     total_users=total_users,
                     active_paid_now=active_paid_now,
                     paid_ever=paid_ever,
@@ -149,14 +154,26 @@ class AdminFinanceStatsService:
             usd = _amount_to_usd(amount, currency)
             if usd is None and base_amount:
                 usd = _amount_to_usd(base_amount, "TJS")
-            if usd is None:
+            priced = usd is not None
+            if not priced:
                 usd = 0.0
             at = reviewed_at or submitted_at
-            if at is None:
+            if at is None or submitted_at is None:
                 continue
             if at.tzinfo is None:
                 at = at.replace(tzinfo=timezone.utc)
-            items.append(_ApprovedPayment(user_id=int(user_id), usd=float(usd), at=at, is_renewal=False))
+            if submitted_at.tzinfo is None:
+                submitted_at = submitted_at.replace(tzinfo=timezone.utc)
+            items.append(
+                _ApprovedPayment(
+                    user_id=int(user_id),
+                    usd=float(usd),
+                    at=at,
+                    submitted_at=submitted_at,
+                    priced=priced,
+                    is_renewal=False,
+                )
+            )
 
         # Vaqt bo'yicha tartiblab, har bir foydalanuvchining 2-chi+ to'lovini
         # "yangilash" (renewal) deb belgilaymiz.
@@ -168,8 +185,8 @@ class AdminFinanceStatsService:
             seen.add(p.user_id)
         return items
 
-    async def _source_by_user(self) -> dict[int, str]:
-        """Har bir foydalanuvchi uchun eng so'nggi obuna-kirish manbasi."""
+    async def _source_events_by_user(self) -> dict[int, list[tuple[datetime, str]]]:
+        """Return each user's subscription entries in chronological order."""
         rows = (
             await self.session.execute(
                 select(
@@ -179,9 +196,15 @@ class AdminFinanceStatsService:
                 ).order_by(SubscriptionEntryEvent.created_at.asc())
             )
         ).all()
-        result: dict[int, str] = {}
-        for telegram_id, source, _created in rows:
-            result[int(telegram_id)] = source or "unknown"
+        result: dict[int, list[tuple[datetime, str]]] = {}
+        for telegram_id, source, created in rows:
+            if not created:
+                continue
+            if created.tzinfo is None:
+                created = created.replace(tzinfo=timezone.utc)
+            result.setdefault(int(telegram_id), []).append(
+                (created, source or "unknown")
+            )
         return result
 
     async def _count_users(self, *conditions) -> int:
@@ -190,8 +213,11 @@ class AdminFinanceStatsService:
             stmt = stmt.where(*conditions)
         return (await self.session.execute(stmt)).scalar() or 0
 
-    async def _active_paid_now(self, now: datetime) -> int:
+    async def _active_paid_now(self, now: datetime, *, telegram_ids: set[int]) -> int:
+        if not telegram_ids:
+            return 0
         return await self._count_users(
+            User.telegram_id.in_(telegram_ids),
             User.payment_status == "approved",
             User.status == "active",
             User.end_date.is_not(None),
@@ -222,6 +248,15 @@ class AdminFinanceStatsService:
             stmt = stmt.where(PortfolioTransaction.created_at >= since)
         return float((await self.session.execute(stmt)).scalar() or 0.0)
 
+    async def _manual_profit_usd(self, since: datetime | None) -> float:
+        stmt = select(func.coalesce(func.sum(PortfolioTransaction.amount_usd), 0.0)).where(
+            PortfolioTransaction.transaction_type == "profit",
+            PortfolioTransaction.source == "manual_profit",
+        )
+        if since is not None:
+            stmt = stmt.where(PortfolioTransaction.created_at >= since)
+        return float((await self.session.execute(stmt)).scalar() or 0.0)
+
     # ---- davr hisoboti ----------------------------------------------------
 
     async def _period(
@@ -233,7 +268,7 @@ class AdminFinanceStatsService:
         since: datetime | None,
         now: datetime,
         approved: list[_ApprovedPayment],
-        source_by_user: dict[int, str],
+        source_events_by_user: dict[int, list[tuple[datetime, str]]],
         total_users: int,
         active_paid_now: int,
         paid_ever: int,
@@ -241,10 +276,12 @@ class AdminFinanceStatsService:
     ) -> dict:
         in_period = [p for p in approved if since is None or p.at >= since]
 
-        revenue_usd = sum(p.usd for p in in_period)
+        revenue_usd = sum(p.usd for p in in_period if p.priced)
+        unpriced_payments = len([p for p in in_period if not p.priced])
         ai_cost_usd = await self._ai_cost_usd(since)
         expense_usd = await self._expense_usd(since)
-        net_usd = revenue_usd - ai_cost_usd - expense_usd
+        manual_profit_usd = await self._manual_profit_usd(since)
+        net_usd = revenue_usd + manual_profit_usd - ai_cost_usd - expense_usd
 
         approved_count = len(in_period)
         paying_users = len({p.user_id for p in in_period})
@@ -258,22 +295,26 @@ class AdminFinanceStatsService:
         )
 
         # Birlik iqtisodi
-        denom_users = total_users if since is None else new_users
+        denom_users = (
+            total_users
+            if since is None
+            else await self._count_users(User.last_active_at >= since)
+        )
         arpu = revenue_usd / denom_users if denom_users else 0.0
         arppu = revenue_usd / paying_users if paying_users else 0.0
         avg_check = revenue_usd / approved_count if approved_count else 0.0
 
-        # Renewal / churn
+        # Renewal payment share and current state of users who actually paid.
         renewal_share = _pct(renewals, approved_count)
         if since is None:
-            churn_rate = _pct(max(paid_ever - active_paid_now, 0), paid_ever)
-            renewal_rate = _pct(renewed_ever, paid_ever)
+            inactive_paid_share = _pct(max(paid_ever - active_paid_now, 0), paid_ever)
+            ever_renewed_share = _pct(renewed_ever, paid_ever)
         else:
-            churn_rate = None
-            renewal_rate = renewal_share
+            inactive_paid_share = None
+            ever_renewed_share = None
 
         # Manba -> pul
-        sources_paid = self._sources_paid(in_period, source_by_user)
+        sources_paid = self._sources_paid(in_period, source_events_by_user)
 
         ai_share = _pct(ai_cost_usd, revenue_usd)
         margin = _pct(net_usd, revenue_usd)
@@ -283,6 +324,8 @@ class AdminFinanceStatsService:
             "revenue_text": _usd(revenue_usd),
             "ai_cost_usd": round(ai_cost_usd, 2),
             "ai_cost_text": _usd(ai_cost_usd),
+            "manual_profit_usd": round(manual_profit_usd, 2),
+            "manual_profit_text": _usd(manual_profit_usd),
             "expense_usd": round(expense_usd, 2),
             "expense_text": _usd(expense_usd),
             "net_usd": round(net_usd, 2),
@@ -290,19 +333,21 @@ class AdminFinanceStatsService:
             "net_positive": net_usd >= 0,
             "ai_share_pct": ai_share,
             "margin_pct": margin,
+            "unpriced_payments": unpriced_payments,
             "explain": (
-                "Sof foyda = daromad − real AI xarajat − portfel rasxod. "
-                f"Daromad {_usd(revenue_usd)} (barcha valyutalar joriy kurs bo'yicha USDga aylandi), "
-                f"AI xarajat {_usd(ai_cost_usd)} (ai_usage_events bo'yicha real token narxi), "
-                f"qo'lda kiritilgan rasxod {_usd(expense_usd)}. "
-                f"Demak sof foyda {_usd(net_usd)}. "
-                f"AI xarajat daromadning {ai_share}% ini, sof foyda esa {margin}% ni tashkil etadi."
+                "Kuzatilgan net = obuna tushumi + qo'lda foyda − AI model-cost estimate − qo'lda rasxod. "
+                f"Obuna tushumi {_usd(revenue_usd)}, qo'lda foyda {_usd(manual_profit_usd)}, "
+                f"AI estimate {_usd(ai_cost_usd)}, rasxod {_usd(expense_usd)}, net {_usd(net_usd)}. "
+                "USD qiymatlar koddagi reference kurs bilan hisoblangan; historical FX snapshot, soliq, "
+                "payment fee va boshqa infra xarajatlari saqlanmagani uchun bu accounting sof foyda emas. "
+                f"Narxi aniqlanmagan to'lov: {unpriced_payments}."
             ),
         }
 
         unit = {
             "total_users": total_users,
             "new_users": new_users,
+            "arpu_users": denom_users,
             "paying_users": paying_users,
             "approved_count": approved_count,
             "arpu_usd": round(arpu, 3),
@@ -311,7 +356,7 @@ class AdminFinanceStatsService:
             "arppu_text": _usd(arppu),
             "avg_check_text": _usd(avg_check),
             "explain": (
-                f"ARPU = daromad ÷ {'jami' if since is None else 'shu davrdagi yangi'} foydalanuvchi "
+                f"ARPU = daromad ÷ {'jami' if since is None else 'shu davrda faol'} foydalanuvchi "
                 f"({_usd(revenue_usd)} ÷ {denom_users}) = {_usd(arpu)} — o'rtacha har bir foydalanuvchi qancha pul keltiradi. "
                 f"ARPPU = daromad ÷ pul to'laganlar ({_usd(revenue_usd)} ÷ {paying_users}) = {_usd(arppu)} — "
                 f"o'rtacha har bir pullik foydalanuvchidan tushum. "
@@ -323,8 +368,10 @@ class AdminFinanceStatsService:
             "new_paying": new_paying,
             "renewals": renewals,
             "renewal_share_pct": renewal_share,
-            "renewal_rate_pct": renewal_rate,
-            "churn_rate_pct": churn_rate,
+            "ever_renewed_share_pct": ever_renewed_share,
+            "inactive_paid_share_pct": inactive_paid_share,
+            # Backward-compatible field; the old value was not cohort churn.
+            "churn_rate_pct": None,
             "paid_ever": paid_ever,
             "active_paid_now": active_paid_now,
             "renewed_ever": renewed_ever,
@@ -337,8 +384,8 @@ class AdminFinanceStatsService:
                 paid_ever=paid_ever,
                 active_paid_now=active_paid_now,
                 renewed_ever=renewed_ever,
-                renewal_rate=renewal_rate,
-                churn_rate=churn_rate,
+                ever_renewed_share=ever_renewed_share,
+                inactive_paid_share=inactive_paid_share,
             ),
         }
 
@@ -351,18 +398,23 @@ class AdminFinanceStatsService:
             "unit": unit,
             "retention": retention,
             "sources_paid": sources_paid,
+            "source_attribution_explain": (
+                "Har to'lov payment yuborilgan paytdan oldingi eng yaqin obuna-kirish manbasiga bog'landi. "
+                "Oldingi to'lovlar keyinroq ochilgan manbaga ko'chirilmaydi."
+            ),
             "cards": [
                 {"label": "Daromad", "value": _usd(revenue_usd), "note": f"{approved_count} ta to'lov", "tone": "info"},
-                {"label": "AI xarajat", "value": _usd(ai_cost_usd), "note": f"daromadning {ai_share}%", "tone": "warn"},
+                {"label": "AI model estimate", "value": _usd(ai_cost_usd), "note": f"daromadning {ai_share}%", "tone": "warn"},
+                {"label": "Qo'lda foyda", "value": _usd(manual_profit_usd), "note": "portfel", "tone": "good"},
                 {"label": "Portfel rasxod", "value": _usd(expense_usd), "note": "qo'lda kiritilgan", "tone": "warn"},
-                {"label": "Sof foyda", "value": _usd(net_usd), "note": f"marja {margin}%", "tone": "good" if net_usd >= 0 else "danger"},
+                {"label": "Kuzatilgan net", "value": _usd(net_usd), "note": f"marja {margin}%", "tone": "good" if net_usd >= 0 else "danger"},
                 {"label": "ARPU", "value": _usd(arpu), "note": "har foydalanuvchi", "tone": "info"},
                 {"label": "ARPPU", "value": _usd(arppu), "note": "har pullik", "tone": "good"},
                 {"label": "Pullik foydalanuvchi", "value": paying_users, "note": f"yangi {new_paying} · yangilash {renewals}", "tone": "good"},
                 {
-                    "label": "Yangilash" if since is not None else "Churn",
-                    "value": f"{renewal_share}%" if since is not None else f"{churn_rate}%",
-                    "note": "qayta to'lov ulushi" if since is not None else "yo'qolgan obunachi",
+                    "label": "Yangilash" if since is not None else "Hozir inactive payer",
+                    "value": f"{renewal_share}%" if since is not None else f"{inactive_paid_share}%",
+                    "note": "qayta to'lov ulushi" if since is not None else "ever payer ichida",
                     "tone": "good" if since is not None else "danger",
                 },
             ],
@@ -371,11 +423,16 @@ class AdminFinanceStatsService:
     def _sources_paid(
         self,
         in_period: list[_ApprovedPayment],
-        source_by_user: dict[int, str],
+        source_events_by_user: dict[int, list[tuple[datetime, str]]],
     ) -> list[dict]:
         agg: dict[str, dict] = {}
         for p in in_period:
-            source = SubscriptionEntryAnalyticsService.source_group_key(source_by_user.get(p.user_id, "unknown"))
+            source = SubscriptionEntryAnalyticsService.source_group_key(
+                self._source_for_payment(
+                    p,
+                    source_events_by_user.get(p.user_id, []),
+                )
+            )
             bucket = agg.setdefault(source, {"revenue": 0.0, "users": set(), "payments": 0})
             bucket["revenue"] += p.usd
             bucket["users"].add(p.user_id)
@@ -395,6 +452,18 @@ class AdminFinanceStatsService:
         return rows[:12]
 
     @staticmethod
+    def _source_for_payment(
+        payment: _ApprovedPayment,
+        source_events: list[tuple[datetime, str]],
+    ) -> str:
+        source = "unknown"
+        for created_at, candidate in source_events:
+            if created_at > payment.submitted_at:
+                break
+            source = candidate or "unknown"
+        return source
+
+    @staticmethod
     def _retention_explain(
         *,
         since,
@@ -405,8 +474,8 @@ class AdminFinanceStatsService:
         paid_ever,
         active_paid_now,
         renewed_ever,
-        renewal_rate,
-        churn_rate,
+        ever_renewed_share,
+        inactive_paid_share,
     ) -> str:
         if since is not None:
             return (
@@ -416,9 +485,9 @@ class AdminFinanceStatsService:
             )
         return (
             f"Hozirgacha {paid_ever} foydalanuvchi kamida bir marta to'lagan, ulardan {renewed_ever} tasi "
-            f"obunani kamida bir marta yangilagan (yangilash darajasi {renewal_rate}%). "
-            f"Hozir faol obunada {active_paid_now} kishi bor; demak {max(paid_ever - active_paid_now, 0)} kishi "
-            f"obunadan chiqib ketgan — churn (yo'qotish) darajasi {churn_rate}%. Churn past bo'lsa biznes barqaror."
+            f"obunani kamida bir marta yangilagan (ever payer ichida {ever_renewed_share}%). "
+            f"Hozir shu payerlardan {active_paid_now} kishi faol; {max(paid_ever - active_paid_now, 0)} kishi "
+            f"hozir inactive ({inactive_paid_share}%). Bu snapshot, cohort churn emas."
         )
 
     @staticmethod
