@@ -207,6 +207,28 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-08-31 — Duel chaqiruvi uchun 15 daqiqalik anti-spam limit
+
+Changed:
+- Har bir user yangi duel chaqiruvini 15 daqiqada faqat bir marta yubora oladi; limit backendda tekshiriladi va parallel so'rovlar challenger user row lock bilan ketma-ketlashtiriladi.
+- Mini App qolgan cooldown vaqtini lokal tilda ko'rsatadi.
+- Reyting profilidagi chat tugmasi generic share/template oqimiga tushmaydi: Telegram username bo'lsa aynan shu user chatini ichki Telegram navigatsiyasi bilan ochadi; username bo'lmasa tushunarli xabar ko'rsatadi.
+
+Why:
+- Bitta user ketma-ket duel xabarlarini yuborib raqibni spam qila olardi; username bo'lmagan userlarda chat tugmasi esa boshqa odamni tanlash share oynasiga olib borardi.
+
+Files touched:
+- `app/services/course_challenge_service.py`
+- `app/static/course-v3.html`
+- `tests/test_course_challenge_service.py`, `tests/test_course_v3_static_data.py`, `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- DB migration yo'q. Cooldown barcha raqiblarga nisbatan challenger bo'yicha global; mavjud so'nggi duel ham 15 daqiqalik oynada hisoblanadi.
+- Telegram Mini App rasmiy API'si numeric user ID bilan private chat ochishni kafolatlamaydi; bevosita chat uchun target userda public username bo'lishi kerak.
+
+Follow-up:
+- Deploydan keyin real Telegram WebView'da ketma-ket ikki duel yuborib cooldown matnini va username'li raqib chat tugmasini smoke-test qilish kerak.
+
 ### 2026-08-22 — Admin Mini App statistikasi formula va attribution auditi
 
 Changed:

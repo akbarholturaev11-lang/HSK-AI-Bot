@@ -4352,20 +4352,24 @@ function toast(msg,dur){
 }
 	function openUserChat(i,src){
 	  var u=socialUsers(src)[i]||{};
-  /* Open the ranked user's direct Telegram chat inside the app (not the browser). */
-  if(u.username){
-    var url="https://t.me/"+String(u.username).replace(/^@/,"");
-    try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
-    try{if(tg&&tg.openLink){tg.openLink(url);return}}catch(e){}
-    window.open(url,"_blank");return;
+  var username=String(u.username||"").trim().replace(/^@/,"");
+  if(!username){
+    toast(LANG==="ru"?"У пользователя нет Telegram username":LANG==="tj"?"Корбар username-и Telegram надорад":"Foydalanuvchida Telegram username yo'q",2400);
+    return;
   }
-  if(u.tgId){
-    try{if(tg&&tg.openTelegramLink){tg.openTelegramLink("tg://user?id="+u.tgId);return}}catch(e){}
-  }
-	  /* No public username: fall back to the ready-text chat picker. */
-	  openWriteTemplates(i,src);
+  /* `openTelegramLink` keeps navigation inside Telegram and opens this exact chat. */
+  var url="https://t.me/"+username;
+  try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
+  window.open(url,"_blank");
 	}
 	function closeUserProfile(){$("#upov").classList.remove("on")}
+	var challengeSending=false;
+	function challengeCooldownText(seconds){
+	  var minutes=Math.max(1,Math.ceil(Number(seconds||0)/60));
+	  if(LANG==="ru")return "Дуэль можно отправлять раз в 15 минут. Попробуйте через "+minutes+" мин.";
+	  if(LANG==="tj")return "Рақобатро дар 15 дақиқа як бор фиристодан мумкин. Пас аз "+minutes+" дақиқа кӯшиш кунед.";
+	  return "Bellashuvni 15 daqiqada bir marta yuborish mumkin. "+minutes+" daqiqadan keyin urinib ko'ring.";
+	}
 	function friendChallenge(i,src){
 	  var r=rl();
 	  var u=(typeof i==="number")?socialUsers(src)[i]:null;
@@ -4374,11 +4378,15 @@ function toast(msg,dur){
     return;
   }
   if(!INIT_DATA){toast(r.chDone);return}
+	  if(challengeSending)return;
+	  challengeSending=true;
   _apiPost("/api/miniapp/challenges",{opponent_telegram_id:u.tgId,level:MAP&&MAP.level||"hsk1",lang:LANG})
     .then(function(rs){return rs.json()}).then(function(d){
-      if(d&&d.ok){toast(r.chDone);return}
+	      challengeSending=false;
+	      if(d&&d.ok){toast(r.chDone);return}
+	      if(d&&d.error==="challenge_cooldown"){toast(challengeCooldownText(d.retry_after_seconds),3200);return}
       toast(LANG==="ru"?"Не удалось отправить вызов":LANG==="tj"?"Даъват фиристода нашуд":"Chaqiruv yuborilmadi",2400);
-    }).catch(function(){toast(LANG==="ru"?"Не удалось отправить вызов":LANG==="tj"?"Даъват фиристода нашуд":"Chaqiruv yuborilmadi",2400)});
+	    }).catch(function(){challengeSending=false;toast(LANG==="ru"?"Не удалось отправить вызов":LANG==="tj"?"Даъват фиристода нашуд":"Chaqiruv yuborilmadi",2400)});
 }
 function chL(){return {
   ru:{title:"HSK-дуэль",load:"Загружаем дуэль…",same:"Каждому — 10 вопросов своего уровня",mix:"Только уже изученные слова, пиньинь и грамматика",accept:"Принять",reject:"Отклонить",start:"Начать раунд",wait:"Ожидаем соперника",waitSub:"Ваш результат сохранён. Когда соперник завершит раунд, бот пришлёт итог.",pending:"Соперник ещё не принял дуэль.",done:"Раунд завершён",youWon:"Вы победили",youLost:"Победил соперник",tie:"Ничья",score:"Счёт",xp:"XP получено",rating:"Открыть рейтинг",needTg:"Откройте в Telegram",err:"Дуэль не загрузилась",sent:"Результат сохранён",answerSaved:"Ответ принят",answerSavedSub:"Результат проверит сервер в конце раунда",review:"Разберите ошибки",correct:"Правильный ответ"},
@@ -4600,7 +4608,7 @@ function openInviteSheet(){
 	  var acts=u.me?""
 	    :'<div class="upacts">'
 	    +'<button class="b-ch" onclick="friendChallenge('+i+',\''+src+'\')"><i class="ti ti-swords"></i> '+r.ch+'</button>'
-	    +'<button class="b-tg" onclick="openUserChat('+i+',\''+src+'\')"><i class="ti ti-brand-telegram"></i></button>'
+	    +'<button class="b-tg" aria-label="'+esc(r.msg)+'" title="'+esc(r.msg)+'" onclick="openUserChat('+i+',\''+src+'\')"><i class="ti ti-message-circle"></i></button>'
 	    +'</div>';
 
   $("#upov").innerHTML=

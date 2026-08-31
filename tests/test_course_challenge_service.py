@@ -1,11 +1,12 @@
 import json
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock, patch
 
 from app.db.models.course_challenge import CourseChallenge
 from app.services.course_challenge_service import (
+    CHALLENGE_COOLDOWN_SECONDS,
     CHALLENGE_QUESTION_COUNT,
     CHALLENGE_TIE_XP,
     CHALLENGE_WIN_XP,
@@ -28,6 +29,25 @@ def challenge_questions(count: int) -> list[dict]:
 
 
 class CourseChallengeServiceTests(unittest.TestCase):
+    def test_challenge_cooldown_is_fifteen_minutes(self):
+        now = datetime(2026, 8, 31, 12, 0, tzinfo=timezone.utc)
+
+        self.assertEqual(CHALLENGE_COOLDOWN_SECONDS, 15 * 60)
+        self.assertEqual(
+            CourseChallengeService._remaining_cooldown_seconds(
+                now - timedelta(minutes=5),
+                now=now,
+            ),
+            10 * 60,
+        )
+        self.assertEqual(
+            CourseChallengeService._remaining_cooldown_seconds(
+                now - timedelta(minutes=15),
+                now=now,
+            ),
+            0,
+        )
+
     def test_winner_by_percent(self):
         # Players answer different sets at their own level, so the winner is
         # decided by percentage even when raw scores differ in the other way.
@@ -245,6 +265,7 @@ class CourseChallengeRewardTests(unittest.IsolatedAsyncioTestCase):
         service.user_repo = SimpleNamespace(
             get_by_telegram_id=AsyncMock(side_effect=[challenger, opponent])
         )
+        service._challenge_cooldown_remaining = AsyncMock(return_value=0)
         service._generate_questions_for = AsyncMock(
             return_value=challenge_questions(CHALLENGE_QUESTION_COUNT - 1)
         )
@@ -257,6 +278,35 @@ class CourseChallengeRewardTests(unittest.IsolatedAsyncioTestCase):
         )
 
         self.assertEqual(result, {"ok": False, "error": "practice_questions_not_found"})
+        session.add.assert_not_called()
+
+    async def test_create_rejects_challenge_during_cooldown_before_question_generation(self):
+        session = SimpleNamespace(add=Mock(), flush=AsyncMock())
+        service = CourseChallengeService(session)
+        challenger = SimpleNamespace(id=1, telegram_id=1001, level="hsk1", language="uz")
+        opponent = SimpleNamespace(id=2, telegram_id=1002)
+        service.user_repo = SimpleNamespace(
+            get_by_telegram_id=AsyncMock(side_effect=[challenger, opponent])
+        )
+        service._challenge_cooldown_remaining = AsyncMock(return_value=421)
+        service._generate_questions_for = AsyncMock()
+
+        result = await service.create(
+            1001,
+            opponent_telegram_id=1002,
+            level="hsk1",
+            lang="uz",
+        )
+
+        self.assertEqual(
+            result,
+            {
+                "ok": False,
+                "error": "challenge_cooldown",
+                "retry_after_seconds": 421,
+            },
+        )
+        service._generate_questions_for.assert_not_awaited()
         session.add.assert_not_called()
 
     async def test_generator_rejects_question_bank_smaller_than_round_contract(self):

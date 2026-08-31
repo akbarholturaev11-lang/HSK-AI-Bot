@@ -1,6 +1,7 @@
 import json
 import uuid
 from datetime import datetime, timezone
+from math import ceil
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from sqlalchemy import or_, select
@@ -21,6 +22,7 @@ CHALLENGE_QUESTION_COUNT = 10
 CHALLENGE_COMPLETE_XP = 6
 CHALLENGE_WIN_XP = 24
 CHALLENGE_TIE_XP = 12
+CHALLENGE_COOLDOWN_SECONDS = 15 * 60
 
 
 class CourseChallengeService:
@@ -181,6 +183,38 @@ class CourseChallengeService:
         result = await self.session.execute(select(User).where(User.id.in_(ids)))
         return {int(user.id): user for user in result.scalars().all()}
 
+    @staticmethod
+    def _remaining_cooldown_seconds(
+        last_created_at: datetime | None,
+        *,
+        now: datetime | None = None,
+    ) -> int:
+        if not last_created_at:
+            return 0
+        if last_created_at.tzinfo is None:
+            last_created_at = last_created_at.replace(tzinfo=timezone.utc)
+        current = now or datetime.now(timezone.utc)
+        if current.tzinfo is None:
+            current = current.replace(tzinfo=timezone.utc)
+        remaining = CHALLENGE_COOLDOWN_SECONDS - (current - last_created_at).total_seconds()
+        return min(CHALLENGE_COOLDOWN_SECONDS, max(0, ceil(remaining)))
+
+    async def _challenge_cooldown_remaining(self, challenger_user_id: int) -> int:
+        # Lock the challenger row so parallel taps/requests cannot both pass the
+        # cooldown check before either challenge is committed.
+        await self.session.execute(
+            select(User.id)
+            .where(User.id == int(challenger_user_id))
+            .with_for_update()
+        )
+        result = await self.session.execute(
+            select(CourseChallenge.created_at)
+            .where(CourseChallenge.challenger_user_id == int(challenger_user_id))
+            .order_by(CourseChallenge.created_at.desc())
+            .limit(1)
+        )
+        return self._remaining_cooldown_seconds(result.scalar_one_or_none())
+
     async def list_for_user(self, telegram_id: int) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
@@ -222,6 +256,14 @@ class CourseChallengeService:
             return {"ok": False, "error": "challenge_user_not_found"}
         if int(challenger.id) == int(opponent.id):
             return {"ok": False, "error": "challenge_self_not_allowed"}
+
+        retry_after_seconds = await self._challenge_cooldown_remaining(int(challenger.id))
+        if retry_after_seconds:
+            return {
+                "ok": False,
+                "error": "challenge_cooldown",
+                "retry_after_seconds": retry_after_seconds,
+            }
 
         # Challenge ham Course/QA bilan bir xil manbadan yuradi: botdagi user.level
         # va user.language. Client payload faqat eski URLlar uchun kelishi mumkin.

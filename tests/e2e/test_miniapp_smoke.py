@@ -1218,6 +1218,70 @@ def test_challenge_question_is_blind_until_server_submit(page):
     assert runtime_errors == []
 
 
+def test_rating_profile_opens_exact_user_chat_and_shows_challenge_cooldown(page):
+    runtime_errors = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    page.on(
+        "console",
+        lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
+    )
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    page.route(
+        "**/api/miniapp/challenges",
+        lambda route: json_response(
+            route,
+            {
+                "ok": False,
+                "error": "challenge_cooldown",
+                "retry_after_seconds": 421,
+            },
+        ),
+    )
+    page.route(
+        "**/api/v3/avatar/22",
+        lambda route: route.fulfill(
+            status=200,
+            content_type="image/webp",
+            body=(STATIC_ROOT / "assets/hsk-ai-avatar.webp").read_bytes(),
+        ),
+    )
+    page.add_init_script(
+        "localStorage.setItem('hsk_v3_onb','1'); localStorage.setItem('hsk_v3_level','hsk1');"
+    )
+
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"),
+        wait_until="networkidle",
+    )
+    page.evaluate(
+        """() => {
+          window.__openedTelegramUrl = '';
+          window.__externalUrl = '';
+          tg.openTelegramLink = url => { window.__openedTelegramUrl = url; };
+          window.open = url => { window.__externalUrl = url; };
+          ratingUsers = [{
+            rank: 2, me: false, a: 'A', n: 'Abush', xp: 100,
+            totalXp: 100, weeklyXp: 100, p: 0, username: 'abush',
+            tgId: 22, level: 'hsk1', completedLessons: 1, refStatus: 'active'
+          }];
+          openRatingUser(0, 'rating');
+        }"""
+    )
+
+    chat_button = page.locator("#upov .upacts .b-tg")
+    expect(chat_button).to_have_attribute("aria-label", "Yozish")
+    chat_button.click()
+    assert page.evaluate("window.__openedTelegramUrl") == "https://t.me/abush"
+    assert page.evaluate("window.__externalUrl") == ""
+
+    page.locator("#upov .upacts .b-ch").click()
+    expect(page.locator("#toast")).to_contain_text("15 daqiqada bir marta")
+    expect(page.locator("#toast")).to_contain_text("8 daqiqadan keyin")
+    assert runtime_errors == []
+
+
 def admin_payload():
     advanced = {
         "explain": "Product health metrikalari tanlangan davr bo'yicha.",
