@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,10 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -30,12 +28,15 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
-import com.pomp.hskai.data.api.RatingEntryDto
+import com.pomp.hskai.feature.course.GoalRing
 
 @Composable
 fun ProfileScreen(
     account: LinkedAccount,
     state: ProfileUiState,
+    dailyXp: Int,
+    dailyGoal: Int,
+    onOpenGoal: () -> Unit,
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -58,10 +59,17 @@ fun ProfileScreen(
                     CircularProgressIndicator(color = PompColors.Cinnabar)
                 }
             }
+            item {
+                DailyGoalCard(
+                    dailyXp = dailyXp,
+                    dailyGoal = dailyGoal,
+                    streak = state.profile?.stats?.streak ?: 0,
+                    onOpenGoal = onOpenGoal,
+                )
+            }
             item { StatsGrid(state) }
             item { SubscriptionCard(state) }
             item { ReferralCard(state) }
-            item { RatingCard(state.rating?.leaderboard.orEmpty()) }
             item {
                 OutlinedButton(
                     onClick = onRefresh,
@@ -115,11 +123,10 @@ private fun ProfileHero(account: LinkedAccount, state: ProfileUiState) {
                     style = MaterialTheme.typography.headlineSmall,
                     color = PompColors.Ink,
                 )
-                Text(
-                    text = "${stringResource(R.string.synced_level)}: " +
-                        (profile?.user?.level ?: account.level).uppercase(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.InkSecondary,
+                Spacer(Modifier.height(4.dp))
+                LevelLeaguePill(
+                    level = (profile?.user?.level ?: account.level).uppercase(),
+                    league = profile?.stats?.league.orEmpty(),
                 )
                 Text(
                     text = stringResource(
@@ -262,51 +269,6 @@ private fun ReferralCard(state: ProfileUiState) {
 }
 
 @Composable
-private fun RatingCard(rows: List<RatingEntryDto>) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                text = stringResource(R.string.profile_rating_title),
-                style = MaterialTheme.typography.titleMedium,
-                color = PompColors.Ink,
-            )
-            Spacer(Modifier.height(8.dp))
-            rows.take(5).forEach { row ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = "${row.rank}. ${row.name.ifBlank { "HSK" }}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = if (row.isCurrentUser) PompColors.CinnabarDark else PompColors.Ink,
-                    )
-                    Text(
-                        text = "${row.xp} XP",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.InkSecondary,
-                    )
-                }
-            }
-            if (rows.isEmpty()) {
-                Text(
-                    text = stringResource(R.string.profile_rating_empty),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.InkSecondary,
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun SessionActions(
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -344,6 +306,96 @@ private fun SessionActions(
                 color = PompColors.CinnabarDark,
             )
         }
+    }
+}
+
+/**
+ * Today's XP against the learner's personal target, mirroring the Mini App's
+ * "Kunlik maqsad" card. Tapping it opens the target picker.
+ */
+@Composable
+private fun DailyGoalCard(
+    dailyXp: Int,
+    dailyGoal: Int,
+    streak: Int,
+    onOpenGoal: () -> Unit,
+) {
+    val remaining = (dailyGoal - dailyXp).coerceAtLeast(0)
+    val percent = if (dailyGoal > 0) {
+        ((dailyXp.toFloat() / dailyGoal) * 100).toInt().coerceIn(0, 100)
+    } else {
+        0
+    }
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                GoalRing(
+                    dailyXp = dailyXp,
+                    dailyGoal = dailyGoal,
+                    onClick = onOpenGoal,
+                    size = 58.dp,
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 14.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.profile_goal_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = PompColors.Ink,
+                )
+                Text(
+                    text = stringResource(
+                        R.string.profile_goal_body,
+                        dailyXp,
+                        dailyGoal,
+                        remaining,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                )
+                Text(
+                    text = stringResource(R.string.profile_goal_percent, percent),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = PompColors.InkSecondary,
+                )
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = streak.toString(),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = PompColors.Cinnabar,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = stringResource(R.string.profile_streak),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = PompColors.InkSecondary,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LevelLeaguePill(level: String, league: String) {
+    Surface(color = PompColors.CinnabarSoft, shape = RoundedCornerShape(999.dp)) {
+        Text(
+            text = if (league.isBlank()) level else "$level · $league",
+            style = MaterialTheme.typography.labelLarge,
+            color = PompColors.CinnabarDark,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+        )
     }
 }
 

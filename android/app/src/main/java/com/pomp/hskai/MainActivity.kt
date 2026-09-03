@@ -5,14 +5,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -51,12 +57,14 @@ import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileViewModel
 import com.pomp.hskai.feature.practice.PracticeScreen
 import com.pomp.hskai.feature.practice.PracticeViewModel
+import com.pomp.hskai.core.settings.DailyGoal
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
-import com.pomp.hskai.feature.today.TodayScreen
+import com.pomp.hskai.feature.rating.RatingScreen
+import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
 import com.pomp.hskai.feature.voice.VoiceViewModel
 import java.util.UUID
@@ -170,7 +178,15 @@ private fun AppRoot(
                 factory = ProfileViewModel.Factory(app.featureRepository),
             )
             val profileState by profileViewModel.state.collectAsStateWithLifecycle()
-            var selectedTab by remember { mutableStateOf(MainTab.TODAY) }
+            val ratingViewModel: RatingViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = RatingViewModel.Factory(app.featureRepository),
+            )
+            val ratingState by ratingViewModel.state.collectAsStateWithLifecycle()
+            val dailyGoal by app.appSettings.dailyGoal
+                .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
+            var goalPickerOpen by remember { mutableStateOf(false) }
+            var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
@@ -268,16 +284,12 @@ private fun AppRoot(
                     onTabSelected = { selectedTab = it },
                 ) { tab, contentModifier ->
                 when (tab) {
-                    MainTab.TODAY -> TodayScreen(
-                        state = courseState,
-                        onContinue = ::launchLesson,
-                        onRetry = courseViewModel::load,
-                        modifier = contentModifier,
-                    )
-
                     MainTab.COURSE -> CourseScreen(
                         state = courseState,
+                        dailyGoal = dailyGoal,
                         onLesson = ::launchLesson,
+                        onOpenGoal = { goalPickerOpen = true },
+                        onRetry = courseViewModel::load,
                         modifier = contentModifier,
                     )
 
@@ -308,15 +320,36 @@ private fun AppRoot(
                         modifier = contentModifier,
                     )
 
+                    MainTab.RATING -> RatingScreen(
+                        state = ratingState,
+                        onSelectTab = ratingViewModel::selectTab,
+                        onRetry = ratingViewModel::load,
+                        modifier = contentModifier,
+                    )
+
                     MainTab.PROFILE -> ProfileScreen(
                         account = state.account,
                         state = profileState,
+                        dailyXp = courseState.map?.progress?.dailyXp ?: 0,
+                        dailyGoal = dailyGoal,
+                        onOpenGoal = { goalPickerOpen = true },
                         onRefresh = profileViewModel::load,
                         onLogout = { signOut(false) },
                         onUnlinkDevice = { signOut(true) },
                         modifier = contentModifier,
                     )
                     }
+                }
+
+                if (goalPickerOpen) {
+                    DailyGoalPicker(
+                        current = dailyGoal,
+                        onPick = { value ->
+                            goalPickerOpen = false
+                            scope.launch { app.appSettings.setDailyGoal(value) }
+                        },
+                        onDismiss = { goalPickerOpen = false },
+                    )
                 }
             }
         }
@@ -377,6 +410,56 @@ private fun LessonHost(
             onExit()
         },
     )
+}
+
+/**
+ * The daily XP target picker, offering the same four choices as the Mini App.
+ *
+ * The target is a personal display setting: it changes what the ring shows,
+ * never what the learner is allowed to open.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DailyGoalPicker(
+    current: Int,
+    onPick: (Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.PaperRaised,
+    ) {
+        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+            Text(
+                text = stringResource(R.string.profile_goal_picker_title),
+                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
+            DailyGoal.CHOICES.forEach { value ->
+                val selected = value == current
+                Surface(
+                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 52.dp)
+                        .padding(vertical = 4.dp)
+                        .clickable { onPick(value) },
+                ) {
+                    Text(
+                        text = stringResource(R.string.profile_goal_option, value),
+                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                    )
+                }
+            }
+            androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
+        }
+    }
 }
 
 private data class LessonLaunch(

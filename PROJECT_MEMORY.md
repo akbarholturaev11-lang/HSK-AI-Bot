@@ -207,6 +207,53 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Android navigatsiyasi Mini App bilan tenglashtirildi (parity Faza 1)
+
+Changed:
+- Android pastki navigatsiyasi endi Mini App bilan bir xil: Kurs · Mashq ·
+  [AI Voice markaziy tugma] · Reyting · Profil. "Bugun" tab olib tashlandi —
+  keyingi harakat Mini App'dagi kabi kurs yo'lakchasining tepasida turadi.
+- Kurs ekrani: HSK pill + streak + XP + kunlik maqsad halqasi header'i, va
+  darslar ro'yxati o'rniga Mini App'dagidek ilon-yo'lakcha (node'lar,
+  `DAVOM ETISH` ko'rsatkichi, yopiq dars uchun keng karta).
+- Reyting alohida tab bo'ldi (`feature/rating/`): Liga/Do'stlar almashtirgichi,
+  liga kartasi (a'zolar soni + haftalik reset countdown), 4 pog'onali liga
+  narvoni, top-5 zonasi, o'z qatori ajratilgan ro'yxat. Ilgari bu Profil
+  ichidagi kichik blok edi — u olib tashlandi (dublikat).
+- Mashq ekrani Mini App tartibiga keltirildi: "Grammatika · Talaffuz" va
+  "Test markazi" guruhlari, chevron'li qatorlar.
+- Profil: "Bugungi maqsad" halqali kartasi + daraja/liga pill'i.
+- Kunlik maqsad (10/20/30/50 XP, default 50) DataStore'da saqlanadi —
+  Mini App'dagi `dailyGoal` kabi bu faqat ko'rsatish sozlamasi.
+
+Why:
+- Android klienti Mini App bilan bir xil mahsulot bo'lishi kerak: user
+  Telegram'dan ilovaga o'tganda interfeys va tugmalar joyi o'zgarmasin.
+
+Files touched:
+- `android/app/src/main/java/com/pomp/hskai/**` (navigation, course, practice,
+  profile, rating, settings, MainActivity), `res/values*/strings.xml`,
+  `app/src/test/**` (deep link, rating format, daily goal testlari).
+
+Risk:
+- Backend, to'lov, obuna, XP/progress va access logikasi TEGILMADI. Yangi
+  endpoint yo'q; `RatingResponse` DTO'siga backend allaqachon yuborayotgan
+  `league_size` va `weekly_reset_seconds` maydonlari qo'shildi, xolos.
+- Liga narvoni Mini App'da qattiq kodlangan (doim 朱 yonadi); Android'da esa
+  server bergan liga nomiga bog'landi, shuning uchun ko'rsatilgan pog'ona
+  haqiqiy. Bu ataylab qilingan farq.
+- **Android SDK/AGP bu muhitda yuklab bo'lmadi (`dl.google.com` 403), shuning
+  uchun `./gradlew testDebugUnitTest`, `lintDebug` va `assembleDebug`
+  YUGURTILMADI.** Faqat Compose'ga bog'liq bo'lmagan mantiq (DeepLinkRouter,
+  RatingFormat, DailyGoal) alohida kotlinc bilan kompilyatsiya qilinib,
+  15 ta unit test o'tkazildi. To'liq build birinchi imkoniyatda yugurtilsin.
+
+Follow-up (parity Faza 2):
+- Ieroglif lug'ati (`/api/v3/android/dictionary` + Room cache), mikrofonli
+  talaffuz baholash (`voice-practice/pronounce` bearer adapteri), HSK imtihon
+  UI (`exams/start|complete`), daily/ad gate, onboarding, reklama moduli,
+  duel/challenge, reward chest va Play Billing.
+
 ### 2026-08-31 — Duel chaqiruvi uchun 15 daqiqalik anti-spam limit
 
 Changed:

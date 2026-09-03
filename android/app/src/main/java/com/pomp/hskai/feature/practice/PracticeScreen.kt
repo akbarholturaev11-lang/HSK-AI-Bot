@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -98,7 +101,7 @@ private fun PracticeHome(
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
 ) {
-    val tools = remember {
+    val skillTools = remember {
         listOf(
             PracticeToolSpec(
                 mode = "training",
@@ -135,6 +138,10 @@ private fun PracticeHome(
                 bodyRes = R.string.practice_pronunciation_body,
                 glyph = "声",
             ),
+        )
+    }
+    val testTools = remember {
+        listOf(
             PracticeToolSpec(
                 mode = "mock",
                 skill = "",
@@ -153,17 +160,21 @@ private fun PracticeHome(
     }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         item {
+            Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(999.dp)) {
+                Text(
+                    text = stringResource(R.string.practice_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = PompColors.Paper,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                )
+            }
+            Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.practice_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = PompColors.Ink,
-            )
-            Text(
-                text = stringResource(R.string.practice_subtitle, level.uppercase()),
+                text = stringResource(R.string.practice_subtitle_short),
                 style = MaterialTheme.typography.bodyMedium,
                 color = PompColors.InkSecondary,
             )
@@ -172,101 +183,91 @@ private fun PracticeHome(
                 ErrorPill(stringResource(it.messageRes))
             }
         }
-        item {
-            MistakesCard(
-                state = state,
-                onStartMistakeReview = onStartMistakeReview,
-            )
-        }
-        items(tools) { tool ->
-            ToolCard(
-                tool = tool,
-                busy = state.isStarting,
+
+        item { GroupLabel(stringResource(R.string.practice_group_skills)) }
+        items(skillTools) { tool ->
+            ToolRow(
+                glyph = tool.glyph,
+                title = stringResource(tool.titleRes),
+                body = stringResource(tool.bodyRes),
+                enabled = !state.isStarting,
                 onClick = { onStartPractice(tool, level, language) },
             )
         }
-    }
-}
 
-@Composable
-private fun MistakesCard(
-    state: PracticeUiState,
-    onStartMistakeReview: () -> Unit,
-) {
-    val total = state.mistakes?.summary?.total ?: 0
-    Surface(
-        color = PompColors.CinnabarSoft,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Cinnabar),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.practice_mistakes_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = PompColors.Ink,
-                    )
-                    Text(
-                        text = stringResource(R.string.practice_mistakes_body, total),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.InkSecondary,
-                    )
-                }
-                if (state.isLoadingMistakes) {
-                    CircularProgressIndicator(color = PompColors.Cinnabar)
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-            Button(
-                onClick = onStartMistakeReview,
+        item { GroupLabel(stringResource(R.string.practice_group_tests)) }
+        items(testTools) { tool ->
+            ToolRow(
+                glyph = tool.glyph,
+                title = stringResource(tool.titleRes),
+                body = stringResource(tool.bodyRes),
+                enabled = !state.isStarting,
+                onClick = { onStartPractice(tool, level, language) },
+            )
+        }
+        item {
+            val total = state.mistakes?.summary?.total ?: 0
+            ToolRow(
+                glyph = "错",
+                title = stringResource(R.string.practice_mistakes_title),
+                body = stringResource(R.string.practice_mistakes_body, total),
                 enabled = total > 0 && !state.isStarting,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 48.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Cinnabar,
-                    contentColor = PompColors.Paper,
-                ),
-            ) {
-                Text(stringResource(R.string.practice_review_mistakes))
-            }
+                accent = true,
+                busy = state.isLoadingMistakes,
+                onClick = onStartMistakeReview,
+            )
         }
     }
 }
 
 @Composable
-private fun ToolCard(
-    tool: PracticeToolSpec,
-    busy: Boolean,
+private fun GroupLabel(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleSmall,
+        color = PompColors.InkSecondary,
+        modifier = Modifier.padding(top = 10.dp, bottom = 2.dp),
+    )
+}
+
+/**
+ * One practice entry, styled like the Mini App's list rows: glyph tile, title,
+ * one-line explanation, and a chevron that says the row opens something.
+ *
+ * A row that cannot do its job is disabled rather than hidden, so the learner
+ * sees why (for example: no mistakes to review yet).
+ */
+@Composable
+private fun ToolRow(
+    glyph: String,
+    title: String,
+    body: String,
+    enabled: Boolean,
     onClick: () -> Unit,
+    accent: Boolean = false,
+    busy: Boolean = false,
 ) {
     Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
+        color = if (accent) PompColors.CinnabarSoft else PompColors.PaperRaised,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, if (accent) PompColors.Cinnabar else PompColors.Divider),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(enabled = !busy, onClick = onClick),
+            .heightIn(min = 68.dp)
+            .clickable(enabled = enabled, onClick = onClick),
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Surface(
-                color = PompColors.GoldSoft,
-                shape = RoundedCornerShape(14.dp),
+                color = if (accent) PompColors.Paper else PompColors.GoldSoft,
+                shape = RoundedCornerShape(12.dp),
             ) {
                 Text(
-                    text = tool.glyph,
+                    text = glyph,
                     style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Ink,
+                    color = if (enabled) PompColors.Ink else PompColors.InkDisabled,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
                 )
             }
@@ -276,21 +277,28 @@ private fun ToolCard(
                     .padding(start = 14.dp),
             ) {
                 Text(
-                    text = stringResource(tool.titleRes),
+                    text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Ink,
+                    color = if (enabled) PompColors.Ink else PompColors.InkDisabled,
                 )
                 Text(
-                    text = stringResource(tool.bodyRes),
+                    text = body,
                     style = MaterialTheme.typography.bodyMedium,
                     color = PompColors.InkSecondary,
                 )
             }
-            Text(
-                text = stringResource(R.string.practice_start_short),
-                style = MaterialTheme.typography.labelLarge,
-                color = PompColors.CinnabarDark,
-            )
+            if (busy) {
+                CircularProgressIndicator(
+                    color = PompColors.Cinnabar,
+                    modifier = Modifier.height(18.dp),
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = if (enabled) PompColors.InkSecondary else PompColors.InkDisabled,
+                )
+            }
         }
     }
 }

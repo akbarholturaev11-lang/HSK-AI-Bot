@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -39,6 +40,20 @@ enum class PinyinVisibility(val wireValue: String) {
     }
 }
 
+/**
+ * The learner's daily XP target, mirroring the Mini App's `dailyGoal`.
+ *
+ * It is a personal display preference, not an entitlement: the server neither
+ * stores nor enforces it, exactly as in the Mini App, so it lives on the
+ * device and is clamped to the same four choices the Mini App offers.
+ */
+object DailyGoal {
+    const val DEFAULT = 50
+    val CHOICES = listOf(10, 20, 30, 50)
+
+    fun sanitize(value: Int?): Int = value?.takeIf { it in CHOICES } ?: DEFAULT
+}
+
 class AppSettings(context: Context) {
 
     private val appContext = context.applicationContext
@@ -46,11 +61,19 @@ class AppSettings(context: Context) {
     val pinyinVisibility: Flow<PinyinVisibility> = appContext.settingsDataStore.data
         .map { PinyinVisibility.fromWireValue(it[PINYIN_KEY]) }
 
+    val dailyGoal: Flow<Int> = appContext.settingsDataStore.data
+        .map { DailyGoal.sanitize(it[DAILY_GOAL_KEY]) }
+
     suspend fun setPinyinVisibility(value: PinyinVisibility) {
         appContext.settingsDataStore.edit { it[PINYIN_KEY] = value.wireValue }
     }
 
+    suspend fun setDailyGoal(value: Int) {
+        appContext.settingsDataStore.edit { it[DAILY_GOAL_KEY] = DailyGoal.sanitize(value) }
+    }
+
     private companion object {
         val PINYIN_KEY = stringPreferencesKey("pinyin_visibility")
+        val DAILY_GOAL_KEY = intPreferencesKey("daily_goal_xp")
     }
 }

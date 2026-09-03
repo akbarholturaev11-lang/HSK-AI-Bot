@@ -21,11 +21,9 @@
     <string name="link_security_note">Код не добавляется в ссылку. Вы отправляете его боту сами.</string>
 
     <string name="synced_title">Аккаунт подключён</string>
-    <string name="synced_level">Уровень</string>
     <string name="synced_access_paid">Подписка активна</string>
     <string name="synced_access_free">Бесплатный режим</string>
 
-    <string name="nav_today">Сегодня</string>
     <string name="nav_course">Курс</string>
     <string name="nav_practice">Практика</string>
     <string name="nav_ai">AI</string>
@@ -44,8 +42,6 @@
     <string name="profile_subscription_play_blocked">Google Play Billing настраивается вне репозитория. Сейчас показываем статус подписки, покупка подключается позже.</string>
     <string name="profile_referral_title">Пригласить друга</string>
     <string name="profile_referral_progress">%1$d / %2$d активных друзей</string>
-    <string name="profile_rating_title">Недельный рейтинг</string>
-    <string name="profile_rating_empty">Рейтинг ещё не сформирован.</string>
 
     <string name="state_loading">Загрузка…</string>
     <string name="action_retry">Повторить</string>
@@ -68,20 +64,14 @@
     <string name="cd_app_logo">Логотип Pomp HSK AI</string>
     <string name="cd_copy_code">Скопировать код подключения</string>
 
-    <string name="today_next_lesson">Следующий урок</string>
     <string name="today_continue">Продолжить</string>
-    <string name="today_estimated_minutes">~5–7 минут</string>
-    <string name="today_part_of">Часть %1$d из %2$d</string>
     <string name="today_streak">Серия дней</string>
     <string name="today_xp">XP</string>
-    <string name="today_level">Уровень</string>
-    <string name="today_all_done">Все части этого уровня пройдены</string>
     <string name="today_stale">Офлайн-данные — обновятся при подключении</string>
     <string name="today_reason_preview">Половину этого урока можно посмотреть бесплатно</string>
     <string name="today_reason_premium">Этот урок открывается по подписке</string>
     <string name="today_reason_not_reached">Сначала пройдите предыдущие части</string>
 
-    <string name="course_progress">%1$d / %2$d частей</string>
     <string name="course_checkpoint">Повторение</string>
     <string name="course_part_label">Часть %1$d</string>
 
@@ -112,10 +102,8 @@
     <string name="cd_answer_wrong">%1$s — неправильный ответ</string>
 
     <string name="practice_title">Практика</string>
-    <string name="practice_subtitle">Закрепление и тест по %1$s</string>
     <string name="practice_mistakes_title">Мои ошибки</string>
     <string name="practice_mistakes_body">%1$d слабых мест готовы к повторению</string>
-    <string name="practice_review_mistakes">Повторить ошибки</string>
     <string name="practice_characters_title">Иероглифы</string>
     <string name="practice_characters_body">Найдите правильный знак среди похожих.</string>
     <string name="practice_listening_title">Аудирование</string>
@@ -130,7 +118,6 @@
     <string name="practice_test_body">Короткая проверка текущего уровня.</string>
     <string name="practice_placement_title">Определить уровень</string>
     <string name="practice_placement_body">Проверьте силу между HSK1–4.</string>
-    <string name="practice_start_short">Начать</string>
     <string name="practice_progress">%1$d / %2$d вопрос</string>
     <string name="practice_finish">Завершить</string>
     <string name="practice_result_title">Результат практики</string>
@@ -166,4 +153,27 @@
     <string name="voice_result_title">Итог разговора</string>
     <string name="voice_result_body">%1$d реплик · %2$d хорошо · %3$d исправлений</string>
     <string name="voice_again">Новый разговор</string>
+    <string name="nav_rating">Рейтинг</string>
+    <string name="rating_tab_league">Лига</string>
+    <string name="rating_tab_friends">Друзья</string>
+    <string name="rating_league_name">Лига %1$s</string>
+    <string name="rating_members">%1$d учеников</string>
+    <string name="rating_time_left">осталось</string>
+    <string name="rating_promote">Топ %1$d поднимаются выше</string>
+    <string name="rating_empty">Рейтинг ещё не сформирован.</string>
+    <string name="rating_friends_empty">Пока нет приглашённых друзей.</string>
+    <string name="rating_friend_active">Активен</string>
+    <string name="rating_friend_pending">Ожидание</string>
+    <string name="rating_unnamed">Ученик</string>
+    <string name="rating_premium">Premium</string>
+    <string name="course_goal_progress">Дневная цель: %1$d / %2$d XP</string>
+    <string name="course_lesson_label">Урок %1$d</string>
+    <string name="practice_subtitle_short">Закрепление и проверка</string>
+    <string name="practice_group_skills">Грамматика · Произношение</string>
+    <string name="practice_group_tests">Тест-центр</string>
+    <string name="profile_goal_title">Цель на сегодня</string>
+    <string name="profile_goal_body">%1$d / %2$d XP · осталось %3$d</string>
+    <string name="profile_goal_percent">%1$d%% выполнено</string>
+    <string name="profile_goal_picker_title">Выберите дневную цель</string>
+    <string name="profile_goal_option">%1$d XP</string>
 </resources>

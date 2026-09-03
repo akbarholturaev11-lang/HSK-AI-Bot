@@ -39,12 +39,10 @@
 
     <!-- Synced account summary -->
     <string name="synced_title">Hisobingiz ulandi</string>
-    <string name="synced_level">Daraja</string>
     <string name="synced_access_paid">Obuna faol</string>
     <string name="synced_access_free">Bepul rejim</string>
 
     <!-- Main navigation -->
-    <string name="nav_today">Bugun</string>
     <string name="nav_course">Kurs</string>
     <string name="nav_practice">Mashq</string>
     <string name="nav_ai">AI</string>
@@ -64,8 +62,6 @@
     <string name="profile_subscription_play_blocked">Google Play Billing sozlamalari repo tashqarisida. Hozir obuna holati ko‘rsatiladi, xarid keyin ulanadi.</string>
     <string name="profile_referral_title">Do‘st taklif qilish</string>
     <string name="profile_referral_progress">%1$d / %2$d aktiv do‘st</string>
-    <string name="profile_rating_title">Haftalik reyting</string>
-    <string name="profile_rating_empty">Reyting hali shakllanmagan.</string>
 
     <!-- Shared states -->
     <string name="state_loading">Yuklanmoqda…</string>
@@ -92,21 +88,15 @@
     <string name="cd_copy_code">Ulash kodini nusxalash</string>
 
     <!-- Bugun -->
-    <string name="today_next_lesson">Keyingi dars</string>
     <string name="today_continue">Davom etish</string>
-    <string name="today_estimated_minutes">~5–7 daqiqa</string>
-    <string name="today_part_of">%1$d / %2$d qism</string>
     <string name="today_streak">Ketma-ket kunlar</string>
     <string name="today_xp">XP</string>
-    <string name="today_level">Daraja</string>
-    <string name="today_all_done">Bu darajadagi barcha qismlar tugadi</string>
     <string name="today_stale">Oflayn ma\'lumot — internet tiklanganda yangilanadi</string>
     <string name="today_reason_preview">Bu darsning yarmini bepul ko\'rishingiz mumkin</string>
     <string name="today_reason_premium">Bu dars obuna bilan ochiladi</string>
     <string name="today_reason_not_reached">Avval oldingi qismlarni tugating</string>
 
     <!-- Kurs -->
-    <string name="course_progress">%1$d / %2$d qism</string>
     <string name="course_checkpoint">Takrorlash</string>
     <string name="course_part_label">%1$d-qism</string>
 
@@ -139,10 +129,8 @@
 
     <!-- Mashq -->
     <string name="practice_title">Mashq</string>
-    <string name="practice_subtitle">%1$s bo‘yicha mustahkamlash va test</string>
     <string name="practice_mistakes_title">Xatolarim</string>
     <string name="practice_mistakes_body">%1$d ta zaif joy takrorlashga tayyor</string>
-    <string name="practice_review_mistakes">Xatolarni takrorlash</string>
     <string name="practice_characters_title">Ieroglif tanish</string>
     <string name="practice_characters_body">O‘xshash belgilar orasidan to‘g‘risini toping.</string>
     <string name="practice_listening_title">Tinglash</string>
@@ -157,7 +145,6 @@
     <string name="practice_test_body">Joriy daraja bo‘yicha qisqa sinov.</string>
     <string name="practice_placement_title">Daraja aniqlash</string>
     <string name="practice_placement_body">HSK1–4 oralig‘ida hozirgi kuchingizni tekshiring.</string>
-    <string name="practice_start_short">Boshlash</string>
     <string name="practice_progress">%1$d / %2$d savol</string>
     <string name="practice_finish">Yakunlash</string>
     <string name="practice_result_title">Mashq natijasi</string>
@@ -194,4 +181,27 @@
     <string name="voice_result_title">Suhbat yakuni</string>
     <string name="voice_result_body">%1$d replika · %2$d yaxshi · %3$d tuzatish</string>
     <string name="voice_again">Yangi suhbat</string>
+    <string name="nav_rating">Reyting</string>
+    <string name="rating_tab_league">Liga</string>
+    <string name="rating_tab_friends">Do‘stlar</string>
+    <string name="rating_league_name">%1$s ligasi</string>
+    <string name="rating_members">%1$d o‘quvchi</string>
+    <string name="rating_time_left">qoldi</string>
+    <string name="rating_promote">Top %1$d yuqoriga chiqadi</string>
+    <string name="rating_empty">Reyting hali shakllanmagan.</string>
+    <string name="rating_friends_empty">Hozircha taklif qilingan do‘st yo‘q.</string>
+    <string name="rating_friend_active">Faol</string>
+    <string name="rating_friend_pending">Kutilmoqda</string>
+    <string name="rating_unnamed">O‘quvchi</string>
+    <string name="rating_premium">Premium</string>
+    <string name="course_goal_progress">Kunlik maqsad: %1$d / %2$d XP</string>
+    <string name="course_lesson_label">%1$d-dars</string>
+    <string name="practice_subtitle_short">Mustahkamlash va sinash</string>
+    <string name="practice_group_skills">Grammatika · Talaffuz</string>
+    <string name="practice_group_tests">Test markazi</string>
+    <string name="profile_goal_title">Bugungi maqsad</string>
+    <string name="profile_goal_body">%1$d / %2$d XP · %3$d qoldi</string>
+    <string name="profile_goal_percent">%1$d%% bajarildi</string>
+    <string name="profile_goal_picker_title">Kunlik maqsadni tanlang</string>
+    <string name="profile_goal_option">%1$d XP</string>
 </resources>

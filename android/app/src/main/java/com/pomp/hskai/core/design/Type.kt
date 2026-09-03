@@ -70,6 +70,13 @@ object PompTextStyles {
         fontSize = 32.sp,
         lineHeight = 44.sp,
     )
+    /** Node glyphs and league badges, where the character is an icon. */
+    val hanziSmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        lineHeight = 26.sp,
+    )
     val pinyin = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,

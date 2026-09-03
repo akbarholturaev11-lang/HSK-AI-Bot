@@ -242,9 +242,12 @@ data class RatingResponse(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("rank") val rank: Int = 0,
     @SerialName("league") val league: String = "",
+    @SerialName("league_size") val leagueSize: Int = 0,
     @SerialName("weekly_xp") val weeklyXp: Int = 0,
     @SerialName("daily_xp") val dailyXp: Int = 0,
     @SerialName("streak") val streak: Int = 0,
+    /** Seconds until the weekly league reset. 0 when the server did not send one. */
+    @SerialName("weekly_reset_seconds") val weeklyResetSeconds: Long = 0,
     @SerialName("leaderboard") val leaderboard: List<RatingEntryDto> = emptyList(),
 )
 
@@ -252,7 +255,10 @@ data class RatingResponse(
 data class RatingEntryDto(
     @SerialName("rank") val rank: Int = 0,
     @SerialName("name") val name: String = "",
+    @SerialName("username") val username: String = "",
     @SerialName("xp") val xp: Int = 0,
+    @SerialName("course_level") val courseLevel: String = "",
+    @SerialName("is_paid") val isPaid: Boolean = false,
     @SerialName("is_current_user") val isCurrentUser: Boolean = false,
 )
 

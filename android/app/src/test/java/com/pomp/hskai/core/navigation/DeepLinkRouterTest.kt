@@ -11,6 +11,7 @@ class DeepLinkRouterTest {
         assertEquals(AppDestination.Today, DeepLinkRouter.resolve("pomp-hsk-ai://today"))
         assertEquals(AppDestination.Course, DeepLinkRouter.resolve("pomp-hsk-ai://course"))
         assertEquals(AppDestination.Voice, DeepLinkRouter.resolve("pomp-hsk-ai://voice"))
+        assertEquals(AppDestination.Rating, DeepLinkRouter.resolve("pomp-hsk-ai://rating"))
         assertEquals(AppDestination.Profile, DeepLinkRouter.resolve("pomp-hsk-ai://profile"))
         assertEquals(
             AppDestination.WidgetSetup,
@@ -97,6 +98,7 @@ class DeepLinkRouterTest {
         assertNull(DeepLinkRouter.resolve("https://evil.example.com/today"))
         assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://admin"))
         assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://practice/unknown-tool"))
+        assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://rating/weekly"))
         assertNull(DeepLinkRouter.resolve("pomp-hsk-ai://profile/billing"))
         assertNull(DeepLinkRouter.resolve("javascript:alert(1)"))
     }
@@ -130,6 +132,7 @@ class DeepLinkRouterTest {
             AppDestination.Lesson(1),
             AppDestination.Lesson(425),
             AppDestination.Voice,
+            AppDestination.Rating,
             AppDestination.Profile,
             AppDestination.WidgetSetup,
         ) + PracticeTool.entries.map { AppDestination.Practice(it) }

@@ -9,6 +9,11 @@ package com.pomp.hskai.core.navigation
  * before showing anything. A URI alone never unlocks content.
  */
 sealed interface AppDestination {
+    /**
+     * Kept for reminder links already in the wild. The app no longer has a
+     * Bugun tab — the next action lives at the top of the path — so this
+     * resolves onto Kurs instead of a screen of its own.
+     */
     data object Today : AppDestination
     data object Course : AppDestination
 
@@ -24,6 +29,7 @@ sealed interface AppDestination {
     data class Lesson(val order: Int) : AppDestination
 
     data object Voice : AppDestination
+    data object Rating : AppDestination
     data object Profile : AppDestination
     data object WidgetSetup : AppDestination
     data class Practice(val tool: PracticeTool) : AppDestination
@@ -86,6 +92,7 @@ object DeepLinkRouter {
             "today" -> AppDestination.Today.takeIf { tail.isEmpty() }
             "course" -> AppDestination.Course.takeIf { tail.isEmpty() }
             "voice" -> AppDestination.Voice.takeIf { tail.isEmpty() }
+            "rating" -> AppDestination.Rating.takeIf { tail.isEmpty() }
 
             "profile" -> when {
                 tail.isEmpty() -> AppDestination.Profile
@@ -114,6 +121,7 @@ object DeepLinkRouter {
         AppDestination.Course -> "$SCHEME://course"
         AppDestination.CurrentLesson -> "$SCHEME://lesson/current"
         AppDestination.Voice -> "$SCHEME://voice"
+        AppDestination.Rating -> "$SCHEME://rating"
         AppDestination.Profile -> "$SCHEME://profile"
         AppDestination.WidgetSetup -> "$SCHEME://profile/widget"
         is AppDestination.Lesson -> "$SCHEME://lesson/${destination.order}"
