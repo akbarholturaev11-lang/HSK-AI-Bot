@@ -75,10 +75,13 @@ android {
         create("play") {
             dimension = "distribution"
             buildConfigField("boolean", "EXTERNAL_CHECKOUT_ENABLED", "false")
+            // The server decides which ad types this channel may receive.
+            buildConfigField("String", "DISTRIBUTION_CHANNEL", "\"play\"")
         }
         create("direct") {
             dimension = "distribution"
             buildConfigField("boolean", "EXTERNAL_CHECKOUT_ENABLED", "true")
+            buildConfigField("String", "DISTRIBUTION_CHANNEL", "\"direct\"")
         }
     }
 

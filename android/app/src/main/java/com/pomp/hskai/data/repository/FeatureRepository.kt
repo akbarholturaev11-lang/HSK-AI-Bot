@@ -1,8 +1,14 @@
 package com.pomp.hskai.data.repository
 
+import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
+import com.pomp.hskai.data.api.AndroidAdAttemptRequest
+import com.pomp.hskai.data.api.AndroidAdAttemptResponse
+import com.pomp.hskai.data.api.AndroidAdListResponse
+import com.pomp.hskai.data.api.AndroidAdViewRequest
+import com.pomp.hskai.data.api.AndroidAdViewResponse
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
@@ -179,6 +185,63 @@ class FeatureRepository(
 
     suspend fun voiceEnd(sessionId: String): ApiResult<VoiceEndResponse> =
         authorized { api.voiceEnd(it, VoiceEndRequest(sessionId)) }
+
+    /**
+     * The ads this build's channel is allowed to show.
+     *
+     * The channel is compiled in, and the server — not the client — decides
+     * what each channel may receive. A 404 here means "no ad to show", which
+     * is an ordinary outcome, not a failure of the screen.
+     */
+    suspend fun ads(slot: String): ApiResult<AndroidAdListResponse> = authorized {
+        api.ads(it, slot = slot, channel = BuildConfig.DISTRIBUTION_CHANNEL)
+    }
+
+    /**
+     * Opens an ad attempt. The returned token is what makes a later view
+     * count: without it the server unlocks nothing.
+     */
+    suspend fun startAdAttempt(
+        adId: Int,
+        feature: String,
+        accessRef: String,
+        lessonOrder: Int = 0,
+    ): ApiResult<AndroidAdAttemptResponse> = authorized {
+        api.adAttempt(
+            it,
+            AndroidAdAttemptRequest(
+                adId = adId,
+                feature = feature,
+                lessonOrder = lessonOrder,
+                accessRef = accessRef,
+            ),
+        )
+    }
+
+    /**
+     * Reports a watched ad. The server measures the real elapsed time since
+     * the attempt was opened, so this cannot be hurried.
+     */
+    suspend fun recordAdView(
+        adId: Int,
+        watchedSeconds: Int,
+        feature: String,
+        accessRef: String,
+        attemptToken: String,
+        lessonOrder: Int = 0,
+    ): ApiResult<AndroidAdViewResponse> = authorized {
+        api.adView(
+            it,
+            AndroidAdViewRequest(
+                adId = adId,
+                watchedSeconds = watchedSeconds,
+                feature = feature,
+                lessonOrder = lessonOrder,
+                accessRef = accessRef,
+                attemptToken = attemptToken,
+            ),
+        )
+    }
 
     private suspend fun <T : Any> authorized(
         call: suspend (authorization: String) -> retrofit2.Response<T>,

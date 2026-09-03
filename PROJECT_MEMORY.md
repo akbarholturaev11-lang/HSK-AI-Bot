@@ -207,6 +207,49 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Reklama: ikki bosqichli oqim va Android klient qatlami
+
+**Tuzatilgan xato (muhim):** Mini App reklama oqimi IKKI bosqichli —
+`POST /ad/attempt` server tomonda bog'lanish yozadi va token beradi,
+`POST /ad/view` esa ko'rilganini yozadi va bo'limni ochadi. Server
+`attempt` va `view` orasidagi HAQIQIY vaqtni o'lchaydi: shuning uchun
+soxta `watched_seconds` hech narsa ochmaydi. Birinchi urinishda men buni
+bitta marshrutga siqib, token bosqichini tashlab ketgandim — bu Android
+yo'lini Mini App'dan zaifroq qilardi. Endi ikkalasi bir xil.
+
+Changed:
+- `POST /api/v3/android/ad/attempt` (token beradi) va
+  `POST /api/v3/android/ad/view` (yozadi va ochadi).
+- `record_view` "ok" ni ikki xil sababdan bermasligi mumkin: reklama yo'q
+  (xato, 404) yoki yetarli ko'rilmagan (xato EMAS, 200 + `ok:false`).
+  Ular endi aralashtirilmaydi — avval ikkalasi ham 404 bo'lardi.
+- `CourseAdService.get_active_by_id()` qo'shildi va Mini App ham shu
+  yagona so'rovga o'tkazildi (ikki nusxa qolmadi).
+- Android klient qatlami: `ads/adAttempt/adView` API, DTO'lar,
+  `FeatureRepository` metodlari va `BuildConfig.DISTRIBUTION_CHANNEL`
+  (`play`/`direct`) — kanalni server tekshiradi.
+- `AdWatch`: kutish vaqti mantiqi. Chegaralar SERVERDAGI bilan bir xil
+  (5..120, default 7) — klient serverdan KAM talab qilsa, o'quvchi
+  "davom etish" ni bosadi, server esa hisobga olmaydi va bo'lim yopiq
+  qolaveradi. 8 ta test kotlinc bilan lokal ishlatildi.
+
+Files touched:
+- `app/api/android_features.py`, `app/services/course_ad_service.py`,
+  `app/main.py`, `tests/test_android_features_api.py`
+- `android/.../data/api/AndroidFeatureApi.kt`, `AndroidFeatureDto.kt`
+- `android/.../data/repository/FeatureRepository.kt`
+- `android/.../feature/ad/AdWatch.kt` (+ test)
+- `android/app/build.gradle.kts`, testDirect fake
+
+Tests: `pytest tests/ -q --ignore=tests/e2e` -> **620 passed, 13584 subtests**
+(3 ta yiqilish avvaldan bor).
+
+Follow-up (HAL QILINMAGAN):
+- Reklama EKRANI hali yo'q. Video uchun Media3/ExoPlayer, rasm uchun Coil
+  kerak — APK hajmiga ta'sir qiladi va bu admin qarori. Shu muhitda yangi
+  bog'liqlikni tekshirib bo'lmaydi (dl.google.com yopiq), shuning uchun
+  ataylab alohida qadamga qoldirildi.
+
 ### 2026-09-03 — Reklama: Android backend adapteri (kanal bo'yicha filtr)
 
 Changed:

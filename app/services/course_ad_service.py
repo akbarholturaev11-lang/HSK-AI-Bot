@@ -488,6 +488,26 @@ class CourseAdService:
                 return ad
         return None
 
+    async def get_active_by_id(self, ad_id) -> CourseAdCreative | None:
+        """Bitta aktiv reklama, id bo'yicha.
+
+        Media fayli tekshirilmaydi: bu chaqiruv reklamani KO'RSATISH uchun
+        emas, klient aytgan id haqiqatan aktiv ekanini tasdiqlash uchun.
+        """
+        try:
+            normalized = int(ad_id or 0)
+        except (TypeError, ValueError):
+            return None
+        if normalized <= 0:
+            return None
+        result = await self.session.execute(
+            select(CourseAdCreative).where(
+                CourseAdCreative.id == normalized,
+                CourseAdCreative.is_active.is_(True),
+            )
+        )
+        return result.scalar_one_or_none()
+
     async def get_active_payload(
         self, language: str | None = None, slot: str | None = None
     ) -> dict | None:

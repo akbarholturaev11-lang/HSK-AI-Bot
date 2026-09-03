@@ -96,4 +96,27 @@ interface AndroidFeatureApi {
         @Header("Authorization") authorization: String,
         @Body body: VoiceEndRequest,
     ): Response<VoiceEndResponse>
+
+    /**
+     * The ads this distribution channel is allowed to show. The server, not
+     * the client, decides which types the channel may receive.
+     */
+    @GET("api/v3/android/ad")
+    suspend fun ads(
+        @Header("Authorization") authorization: String,
+        @Query("slot") slot: String,
+        @Query("channel") channel: String,
+    ): Response<AndroidAdListResponse>
+
+    @POST("api/v3/android/ad/attempt")
+    suspend fun adAttempt(
+        @Header("Authorization") authorization: String,
+        @Body body: AndroidAdAttemptRequest,
+    ): Response<AndroidAdAttemptResponse>
+
+    @POST("api/v3/android/ad/view")
+    suspend fun adView(
+        @Header("Authorization") authorization: String,
+        @Body body: AndroidAdViewRequest,
+    ): Response<AndroidAdViewResponse>
 }

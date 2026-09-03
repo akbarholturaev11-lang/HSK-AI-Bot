@@ -75,6 +75,83 @@ data class AndroidBillingDto(
 )
 
 @Serializable
+data class AndroidAdListResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("ads") val ads: List<AndroidAdDto> = emptyList(),
+    @SerialName("slot") val slot: String = "",
+    /** Echoed back so a mismatch with the build is visible, not silent. */
+    @SerialName("channel") val channel: String = "",
+)
+
+@Serializable
+data class AndroidAdDto(
+    @SerialName("id") val id: Int = 0,
+    @SerialName("title") val title: String = "",
+    /** "video" or "photo". */
+    @SerialName("media_type") val mediaType: String = "video",
+    /** Server-relative path; the client joins it to the API origin. */
+    @SerialName("media_url") val mediaUrl: String = "",
+    @SerialName("link_url") val linkUrl: String? = null,
+    @SerialName("ad_type") val adType: String = "",
+    @SerialName("button_text") val buttonText: String? = null,
+    /** How long the learner must watch before the section opens. */
+    @SerialName("duration_seconds") val durationSeconds: Int = 0,
+)
+
+/**
+ * Step one of watching an ad: the server binds what this view may unlock and
+ * hands back a token. Without it a reported view opens nothing, so the client
+ * cannot claim to have watched an ad it never started.
+ */
+@Serializable
+data class AndroidAdAttemptRequest(
+    @SerialName("ad_id") val adId: Int,
+    @SerialName("feature") val feature: String,
+    @SerialName("lesson_order") val lessonOrder: Int = 0,
+    /** Ties the attempt to the session it will unlock. */
+    @SerialName("access_ref") val accessRef: String,
+)
+
+@Serializable
+data class AndroidAdAttemptResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("attempt_token") val attemptToken: String = "",
+    /** How long the ad must actually play before the view counts. */
+    @SerialName("required_seconds") val requiredSeconds: Int = 0,
+    @SerialName("expires_in") val expiresIn: Int = 0,
+)
+
+/** Step two: the ad has played and the view is reported. */
+@Serializable
+data class AndroidAdViewRequest(
+    @SerialName("ad_id") val adId: Int,
+    @SerialName("watched_seconds") val watchedSeconds: Int,
+    @SerialName("feature") val feature: String = "",
+    @SerialName("lesson_order") val lessonOrder: Int = 0,
+    @SerialName("placement") val placement: String = "start",
+    @SerialName("access_ref") val accessRef: String = "",
+    @SerialName("attempt_token") val attemptToken: String = "",
+)
+
+@Serializable
+data class AndroidAdViewResponse(
+    /**
+     * True only when the ad was watched long enough. False is not an error:
+     * the view is recorded either way, but nothing is unlocked.
+     */
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("required_seconds") val requiredSeconds: Int = 0,
+    @SerialName("watched_seconds") val watchedSeconds: Int = 0,
+    @SerialName("authorization") val authorization: AndroidAdAuthorizationDto? = null,
+)
+
+@Serializable
+data class AndroidAdAuthorizationDto(
+    @SerialName("recorded") val recorded: Boolean = false,
+    @SerialName("idempotent") val idempotent: Boolean = false,
+)
+
+@Serializable
 data class PracticeStartRequest(
     @SerialName("mode") val mode: String,
     @SerialName("level") val level: String,

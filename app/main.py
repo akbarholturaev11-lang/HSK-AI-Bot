@@ -1995,13 +1995,7 @@ async def v3_course_ad_attempt(request: Request):
         user = await UserRepository(session).get_by_telegram_id(telegram_id)
         if not user:
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
-        ad_result = await session.execute(
-            select(CourseAdCreative).where(
-                CourseAdCreative.id == ad_id,
-                CourseAdCreative.is_active.is_(True),
-            )
-        )
-        ad = ad_result.scalar_one_or_none()
+        ad = await CourseAdService(session).get_active_by_id(ad_id)
         if not ad:
             return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
         try:
