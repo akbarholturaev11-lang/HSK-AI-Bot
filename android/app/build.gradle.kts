@@ -62,6 +62,26 @@ android {
         resourceConfigurations += listOf("uz", "ru", "tg")
     }
 
+    // The two distribution channels differ in exactly one thing: whether the
+    // app may point the learner at a checkout outside the app. Google Play
+    // forbids that, so the `play` build must not even CONTAIN the wording —
+    // hence a source set per flavour rather than a runtime `if`.
+    //
+    // `play`   -> Google Play. Reads limit/subscription status only.
+    // `direct` -> APK, website and Telegram channels. Keeps the existing flow.
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        create("play") {
+            dimension = "distribution"
+            buildConfigField("boolean", "EXTERNAL_CHECKOUT_ENABLED", "false")
+        }
+        create("direct") {
+            dimension = "distribution"
+            buildConfigField("boolean", "EXTERNAL_CHECKOUT_ENABLED", "true")
+        }
+    }
+
     if (hasReleaseSigning) {
         signingConfigs {
             create("release") {

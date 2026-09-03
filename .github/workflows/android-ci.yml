@@ -108,19 +108,21 @@ jobs:
       - name: Check test fakes match their interfaces
         run: python3 tools/check_interface_fakes.py
 
+      # Both distribution flavours are verified. The Play build is the one
+      # with policy constraints, so it must never be the untested one.
       - name: Unit tests
-        run: ./gradlew --no-daemon testDebugUnitTest
+        run: ./gradlew --no-daemon testPlayDebugUnitTest testDirectDebugUnitTest
 
       - name: Android Lint
-        run: ./gradlew --no-daemon lintDebug
+        run: ./gradlew --no-daemon lintPlayDebug lintDirectDebug
 
       - name: Assemble debug
-        run: ./gradlew --no-daemon assembleDebug
+        run: ./gradlew --no-daemon assemblePlayDebug assembleDirectDebug
 
       # Release stays fail-closed: without signing secrets the bundle is built
       # unsigned for validation only and is never published from CI.
-      - name: Validate release bundle (unsigned)
-        run: ./gradlew --no-daemon bundleRelease
+      - name: Validate release bundles (unsigned)
+        run: ./gradlew --no-daemon bundlePlayRelease bundleDirectRelease
 
       - name: Upload test and lint reports
         if: always()

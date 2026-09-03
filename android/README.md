@@ -32,13 +32,33 @@ checksums so a committed binary cannot be swapped for a tampered one.
 ## Build and test
 
 ```bash
-./gradlew testDebugUnitTest   # JVM unit tests
-./gradlew lintDebug           # Android Lint
-./gradlew assembleDebug       # debug APK
-./gradlew bundleRelease       # unsigned AAB unless signing is configured
+./gradlew testPlayDebugUnitTest   # JVM unit tests (Play build)
+./gradlew lintPlayDebug           # Android Lint
+./gradlew assemblePlayDebug       # debug APK
+./gradlew bundlePlayRelease       # unsigned AAB unless signing is configured
 ```
 
 Requires JDK 17 and `compileSdk 36` installed through the Android SDK Manager.
+
+## Distribution flavours
+
+Two flavours ship the same product through different channels, and differ in
+exactly one thing — whether the app may point the learner at a checkout
+outside the app.
+
+| Flavour  | Channel                    | External checkout |
+|----------|----------------------------|-------------------|
+| `play`   | Google Play                | no                |
+| `direct` | APK, website, Telegram     | yes               |
+
+Google Play forbids sending users out of the app to pay, so the `play` build
+must not even contain the wording. That is why the difference is a source set
+(`src/play`, `src/direct`) rather than a runtime flag: the strings and the
+screens simply are not compiled into the build that must not have them. The
+`play` build only ever *reads* limit and subscription status from the server.
+
+Both flavours keep the same `applicationId`, so a learner who installed the
+APK can be updated from Play later without reinstalling.
 
 ## Configuration
 
