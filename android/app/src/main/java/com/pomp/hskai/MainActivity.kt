@@ -60,9 +60,12 @@ import com.pomp.hskai.core.navigation.MainTab
 import com.pomp.hskai.feature.course.CourseScreen
 import com.pomp.hskai.feature.course.CourseViewModel
 import com.pomp.hskai.feature.profile.ProfileScreen
+import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
 import com.pomp.hskai.feature.profile.ProfileViewModel
+import com.pomp.hskai.feature.profile.labelRes
 import com.pomp.hskai.feature.practice.PracticeScreen
 import com.pomp.hskai.feature.practice.PracticeViewModel
+import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.settings.DailyGoal
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.CourseLesson
@@ -190,6 +193,26 @@ private fun AppRoot(
                 factory = RatingViewModel.Factory(app.featureRepository),
             )
             val ratingState by ratingViewModel.state.collectAsStateWithLifecycle()
+            val settingsViewModel: ProfileSettingsViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = ProfileSettingsViewModel.Factory(
+                    courseRepository = app.courseRepository,
+                    authRepository = authRepository,
+                ),
+            )
+            val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
+            val settingsReload by settingsViewModel.reload.collectAsStateWithLifecycle()
+            var languagePickerOpen by remember { mutableStateOf(false) }
+
+            // A preference the server accepted changes what every screen shows,
+            // so they are re-read rather than patched locally.
+            LaunchedEffect(settingsReload) {
+                if (settingsReload > 0) {
+                    courseViewModel.load()
+                    profileViewModel.load()
+                }
+            }
+
             val handoffViewModel: SubscriptionHandoffViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
                 factory = SubscriptionHandoffViewModel.Factory(app.featureRepository),
@@ -375,15 +398,31 @@ private fun AppRoot(
                     MainTab.PROFILE -> ProfileScreen(
                         account = state.account,
                         state = profileState,
+                        settings = settingsState,
                         dailyXp = courseState.map?.progress?.dailyXp ?: 0,
                         dailyGoal = dailyGoal,
+                        notificationsEnabled = courseState.map?.notificationsEnabled ?: true,
                         onOpenGoal = { goalPickerOpen = true },
+                        onOpenLanguage = { languagePickerOpen = true },
+                        onToggleNotifications = settingsViewModel::setNotifications,
+                        onOpenSupport = { url -> openExternal(context, url) },
                         onRefresh = profileViewModel::load,
                         onLogout = { signOut(false) },
                         onUnlinkDevice = { signOut(true) },
                         modifier = contentModifier,
                     )
                     }
+                }
+
+                if (languagePickerOpen) {
+                    LanguagePicker(
+                        current = state.account.language,
+                        onPick = { language ->
+                            languagePickerOpen = false
+                            settingsViewModel.setLanguage(language)
+                        },
+                        onDismiss = { languagePickerOpen = false },
+                    )
                 }
 
                 if (goalPickerOpen) {
@@ -458,6 +497,56 @@ private fun LessonHost(
 }
 
 /**
+ * The learning language, offering the three the backend supports.
+ *
+ * The choice is stored on the server, so it follows the learner to the bot,
+ * the Mini App and desktop rather than living on this device.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LanguagePicker(
+    current: AppLanguage,
+    onPick: (AppLanguage) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.PaperRaised,
+    ) {
+        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+            Text(
+                text = stringResource(R.string.profile_language_picker_title),
+                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
+            AppLanguage.entries.forEach { language ->
+                val selected = language == current
+                Surface(
+                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 52.dp)
+                        .padding(vertical = 4.dp)
+                        .clickable { onPick(language) },
+                ) {
+                    Text(
+                        text = stringResource(language.labelRes()),
+                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                    )
+                }
+            }
+            androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
+        }
+    }
+}
+
+/**
  * The daily XP target picker, offering the same four choices as the Mini App.
  *
  * The target is a personal display setting: it changes what the ring shows,
@@ -527,6 +616,21 @@ private fun openTelegram(context: android.content.Context, url: String): Boolean
         } catch (_: ActivityNotFoundException) {
             false
         }
+    }
+}
+
+/** Opens an https link in whatever the device uses for the web. */
+private fun openExternal(context: android.content.Context, url: String): Boolean {
+    if (url.isBlank()) return false
+    return try {
+        context.startActivity(
+            Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
+        true
+    } catch (_: ActivityNotFoundException) {
+        false
     }
 }
 

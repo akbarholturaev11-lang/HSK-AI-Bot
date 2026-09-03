@@ -557,6 +557,65 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
             retry.json()["completed_lessons_count"],
         )
 
+    async def test_notifications_toggle_persists_and_shows_in_the_map(self):
+        headers = await self._bearer()
+        # The course map is the single source of truth the clients read back.
+        before = await self.client.get("/api/v3/android/course/map", headers=headers)
+        self.assertTrue(before.json()["notify"]["enabled"])
+
+        off = await self.client.post(
+            "/api/v3/android/preferences/notifications",
+            headers=headers,
+            json={"enabled": False},
+        )
+        self.assertEqual(200, off.status_code)
+        self.assertTrue(off.json()["ok"])
+
+        after = await self.client.get("/api/v3/android/course/map", headers=headers)
+        self.assertFalse(after.json()["notify"]["enabled"])
+
+        on = await self.client.post(
+            "/api/v3/android/preferences/notifications",
+            headers=headers,
+            json={"enabled": True},
+        )
+        self.assertEqual(200, on.status_code)
+        again = await self.client.get("/api/v3/android/course/map", headers=headers)
+        self.assertTrue(again.json()["notify"]["enabled"])
+
+    async def test_notifications_toggle_requires_a_bearer_token(self):
+        anonymous = await self.client.post(
+            "/api/v3/android/preferences/notifications",
+            json={"enabled": False},
+        )
+        self.assertEqual(401, anonymous.status_code)
+        self.assertFalse(anonymous.json()["ok"])
+
+    async def test_notifications_toggle_rejects_a_value_that_is_not_a_flag(self):
+        headers = await self._bearer()
+        for value in ("maybe", 7, [], None):
+            with self.subTest(enabled=value):
+                bad = await self.client.post(
+                    "/api/v3/android/preferences/notifications",
+                    headers=headers,
+                    json={"enabled": value},
+                )
+                self.assertEqual(422, bad.status_code)
+
+    async def test_notifications_toggle_shares_the_desktop_request_model(self):
+        # The model is reused from desktop, so boolean-like strings coerce the
+        # same way on both clients. Pinned here so a future strictness change
+        # is a deliberate, cross-client decision rather than a surprise.
+        headers = await self._bearer()
+        coerced = await self.client.post(
+            "/api/v3/android/preferences/notifications",
+            headers=headers,
+            json={"enabled": "false"},
+        )
+        self.assertEqual(200, coerced.status_code)
+        after = await self.client.get("/api/v3/android/course/map", headers=headers)
+        self.assertFalse(after.json()["notify"]["enabled"])
+
 
 if __name__ == "__main__":
     unittest.main()

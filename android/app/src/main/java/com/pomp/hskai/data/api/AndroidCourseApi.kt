@@ -45,4 +45,10 @@ interface AndroidCourseApi {
         @Header("Authorization") authorization: String,
         @Body body: LanguageRequest,
     ): Response<OkResponse>
+
+    @POST("api/v3/android/preferences/notifications")
+    suspend fun setNotifications(
+        @Header("Authorization") authorization: String,
+        @Body body: NotificationsRequest,
+    ): Response<OkResponse>
 }

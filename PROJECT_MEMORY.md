@@ -207,6 +207,44 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Android profilida til, bildirishnoma va yordam (parity Faza 2.1)
+
+Changed:
+- Profilga Mini App tartibidagi sozlamalar bo'limi qo'shildi: **Til**,
+  **Bildirishnomalar**, **Yordam**.
+- Til: `POST /api/v3/android/preferences/language` KODDA ALLAQACHON BOR EDI,
+  lekin hech qayerda ishlatilmasdi. Endi ulandi; til o'zgargach linked account
+  `bootstrap()` bilan qayta o'qiladi va kurs keshi tozalanadi (aks holda eski
+  tildagi matn ko'rinib turardi).
+- Bildirishnoma: yangi yupqa adapter
+  `POST /api/v3/android/preferences/notifications` — desktop'dagi endpoint bor
+  edi, Android'da yo'q edi. `AndroidCourseService` meros olgan
+  `set_notifications()` chaqiriladi, yangi logika yozilmadi. Bayroq bot, Mini
+  App, desktop va Android uchun BITTA — birida o'chirilsa hammasida o'chadi.
+- Yordam: `support_url` profil payload'ida allaqachon kelardi, lekin
+  ko'rsatilmasdi. Endi qator ochadi; URL bo'sh bo'lsa qator o'chirilgan
+  holatda qoladi (hech nima ochmaydigan tirik qator emas).
+
+Why:
+- Uchala ma'lumot ham serverda tayyor edi, faqat UI'ga ulanmagan edi.
+
+Files touched:
+- `app/api/android_course.py`, `tests/test_android_course_api.py`,
+  `android/.../feature/profile/**`, `MainActivity.kt`,
+  `data/api/AndroidCourseApi.kt`, `data/api/CourseDto.kt`,
+  `data/repository/CourseRepository.kt`, `res/values*/strings.xml`.
+
+Risk:
+- To'lov/obuna/XP/progress tegilmadi, migratsiya yo'q.
+- `DesktopCourseNotificationsRequest` desktop bilan BO'LISHILGAN, shuning uchun
+  `"false"` kabi boolean-simon satrlar Pydantic'da coerce bo'ladi. Bu mavjud
+  xatti-harakat; o'zgartirilmadi, testda qadaldi — kelajakda qat'iylashtirish
+  ikkala klient uchun ataylab qilinadigan qaror bo'lsin.
+
+Follow-up:
+- Til o'zgarishi lesson keshini tozalaydi; offline rejim qo'shilganda bu
+  qoida qayta ko'rilsin (kesh tozalanmasdan tilni almashtirish kerak bo'ladi).
+
 ### 2026-09-03 — Android'da obuna SOTILMAYDI: limit bloki Telegram'ga uzatadi
 
 Changed:

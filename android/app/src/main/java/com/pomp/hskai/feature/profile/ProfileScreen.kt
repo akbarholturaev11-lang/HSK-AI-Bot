@@ -1,6 +1,8 @@
 package com.pomp.hskai.feature.profile
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,9 +14,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -28,15 +39,21 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.feature.course.GoalRing
 
 @Composable
 fun ProfileScreen(
     account: LinkedAccount,
     state: ProfileUiState,
+    settings: ProfileSettingsState,
     dailyXp: Int,
     dailyGoal: Int,
+    notificationsEnabled: Boolean,
     onOpenGoal: () -> Unit,
+    onOpenLanguage: () -> Unit,
+    onToggleNotifications: (Boolean) -> Unit,
+    onOpenSupport: (String) -> Unit,
     onRefresh: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
@@ -68,6 +85,17 @@ fun ProfileScreen(
                 )
             }
             item { StatsGrid(state) }
+            item {
+                SettingsSection(
+                    account = account,
+                    state = state,
+                    settings = settings,
+                    notificationsEnabled = notificationsEnabled,
+                    onOpenLanguage = onOpenLanguage,
+                    onToggleNotifications = onToggleNotifications,
+                    onOpenSupport = onOpenSupport,
+                )
+            }
             item { SubscriptionCard(state) }
             item { ReferralCard(state) }
             item {
@@ -399,6 +427,144 @@ private fun LevelLeaguePill(level: String, league: String) {
     }
 }
 
+/**
+ * Account preferences, in the Mini App's order: Til, Bildirishnomalar, Yordam.
+ *
+ * Every row here writes to the server, so the same choice applies in the bot,
+ * the Mini App and on desktop. A row whose data has not arrived is disabled
+ * rather than hidden, so the section never silently loses an entry.
+ */
+@Composable
+private fun SettingsSection(
+    account: LinkedAccount,
+    state: ProfileUiState,
+    settings: ProfileSettingsState,
+    notificationsEnabled: Boolean,
+    onOpenLanguage: () -> Unit,
+    onToggleNotifications: (Boolean) -> Unit,
+    onOpenSupport: (String) -> Unit,
+) {
+    val supportUrl = state.profile?.supportUrl.orEmpty()
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(vertical = 4.dp)) {
+            SettingsRow(
+                icon = Icons.Filled.Language,
+                label = stringResource(R.string.profile_language),
+                enabled = !settings.isBusy,
+                onClick = onOpenLanguage,
+            ) {
+                Text(
+                    text = stringResource(account.language.labelRes()),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                )
+            }
+
+            SettingsDivider()
+
+            SettingsRow(
+                icon = Icons.Filled.Notifications,
+                label = stringResource(R.string.profile_notifications),
+                enabled = !settings.isBusy,
+                onClick = { onToggleNotifications(!notificationsEnabled) },
+            ) {
+                Switch(
+                    checked = notificationsEnabled,
+                    onCheckedChange = onToggleNotifications,
+                    enabled = !settings.isBusy,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = PompColors.Paper,
+                        checkedTrackColor = PompColors.Cinnabar,
+                    ),
+                )
+            }
+
+            SettingsDivider()
+
+            SettingsRow(
+                icon = Icons.Filled.Info,
+                label = stringResource(R.string.profile_help),
+                // No admin contact means nowhere to go; a live-looking row
+                // that opens nothing is worse than a disabled one.
+                enabled = supportUrl.isNotBlank(),
+                onClick = { onOpenSupport(supportUrl) },
+            ) {
+                Text(
+                    text = stringResource(
+                        if (supportUrl.isBlank()) {
+                            R.string.profile_help_unavailable
+                        } else {
+                            R.string.profile_help_action
+                        }
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (supportUrl.isBlank()) {
+                        PompColors.InkDisabled
+                    } else {
+                        PompColors.CinnabarDark
+                    },
+                )
+            }
+
+            settings.error?.let {
+                Spacer(Modifier.height(6.dp))
+                Box(Modifier.padding(horizontal = 14.dp, vertical = 4.dp)) {
+                    ErrorPill(stringResource(it.messageRes))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingsRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    trailing: @Composable () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 56.dp)
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = if (enabled) PompColors.InkSecondary else PompColors.InkDisabled,
+            modifier = Modifier.size(20.dp),
+        )
+        Spacer(Modifier.width(14.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (enabled) PompColors.Ink else PompColors.InkDisabled,
+            modifier = Modifier.weight(1f),
+        )
+        trailing()
+    }
+}
+
+@Composable
+private fun SettingsDivider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 50.dp)
+            .height(1.dp)
+            .background(PompColors.Divider),
+    )
+}
+
 @Composable
 private fun ErrorPill(text: String) {
     Surface(
@@ -413,4 +579,11 @@ private fun ErrorPill(text: String) {
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
         )
     }
+}
+
+/** The name each supported language is shown under. */
+internal fun AppLanguage.labelRes(): Int = when (this) {
+    AppLanguage.UZBEK -> R.string.language_uz
+    AppLanguage.RUSSIAN -> R.string.language_ru
+    AppLanguage.TAJIK -> R.string.language_tj
 }

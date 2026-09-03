@@ -26,6 +26,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from app.api.desktop_course import (
     DesktopCourseCompleteRequest,
     DesktopCourseLanguageRequest,
+    DesktopCourseNotificationsRequest,
     bearer_access_token,
     course_error_response,
     validated_course_payload,
@@ -229,6 +230,31 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android course language update failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/preferences/notifications")
+    async def android_course_notifications(request: Request):
+        """
+        Reminder opt-in, sharing the canonical course preference.
+
+        The bot, the Mini App, desktop and Android all read and write the same
+        flag, so turning reminders off on one client turns them off everywhere.
+        """
+        try:
+            payload = await validated_course_payload(
+                request,
+                DesktopCourseNotificationsRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).set_notifications(
+                    bearer_access_token(request),
+                    enabled=payload.enabled,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android course notifications update failed")
             return _unavailable()
 
     return router

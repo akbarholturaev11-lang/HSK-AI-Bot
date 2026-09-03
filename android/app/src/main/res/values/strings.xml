@@ -209,4 +209,10 @@
     <string name="limit_unlock_hint">Tugma Telegram botni ochadi. Obuna o‘sha yerda rasmiylashtiriladi, keyin bu yerda hammasi ochiladi.</string>
     <string name="limit_unlock_unavailable">Telegram botni ochib bo‘lmadi. Botga o‘zingiz kiring yoki keyinroq urinib ko‘ring.</string>
     <string name="limit_voice_reason">Bugungi bepul AI Voice suhbatlaringiz tugadi.</string>
+    <string name="profile_language">Til</string>
+    <string name="profile_language_picker_title">Tilni tanlang</string>
+    <string name="profile_notifications">Bildirishnomalar</string>
+    <string name="profile_help">Yordam</string>
+    <string name="profile_help_action">Adminga yozish</string>
+    <string name="profile_help_unavailable">Hozircha mavjud emas</string>
 </resources>

@@ -182,4 +182,10 @@
     <string name="limit_unlock_hint">Тугма Telegram-ботро мекушояд. Обуна дар ҳамон ҷо ба расмият дароварда мешавад, баъд ин ҷо ҳама чиз кушода мешавад.</string>
     <string name="limit_unlock_unavailable">Telegram-ботро кушода натавонистем. Худатон ба бот ворид шавед ё баъдтар кӯшиш кунед.</string>
     <string name="limit_voice_reason">Сӯҳбатҳои ройгони AI Voice барои имрӯз тамом шуданд.</string>
+    <string name="profile_language">Забон</string>
+    <string name="profile_language_picker_title">Забонро интихоб кунед</string>
+    <string name="profile_notifications">Огоҳиҳо</string>
+    <string name="profile_help">Кӯмак</string>
+    <string name="profile_help_action">Ба админ навиштан</string>
+    <string name="profile_help_unavailable">Ҳоло дастрас нест</string>
 </resources>

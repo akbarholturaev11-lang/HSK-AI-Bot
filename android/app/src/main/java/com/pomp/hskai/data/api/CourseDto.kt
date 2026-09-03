@@ -146,6 +146,11 @@ data class LanguageRequest(
 )
 
 @Serializable
+data class NotificationsRequest(
+    @SerialName("enabled") val enabled: Boolean,
+)
+
+@Serializable
 data class OkResponse(
     @SerialName("ok") val ok: Boolean = false,
 )

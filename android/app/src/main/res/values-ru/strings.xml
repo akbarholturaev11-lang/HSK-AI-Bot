@@ -181,4 +181,10 @@
     <string name="limit_unlock_hint">Кнопка откроет Telegram-бот. Подписка оформляется там, после этого здесь откроется всё.</string>
     <string name="limit_unlock_unavailable">Не удалось открыть Telegram-бот. Зайдите в бот вручную или попробуйте позже.</string>
     <string name="limit_voice_reason">Бесплатные разговоры с AI Voice на сегодня закончились.</string>
+    <string name="profile_language">Язык</string>
+    <string name="profile_language_picker_title">Выберите язык</string>
+    <string name="profile_notifications">Уведомления</string>
+    <string name="profile_help">Помощь</string>
+    <string name="profile_help_action">Написать админу</string>
+    <string name="profile_help_unavailable">Пока недоступно</string>
 </resources>

@@ -9,6 +9,9 @@ import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.CourseMistakeDto
+import com.pomp.hskai.data.api.LanguageRequest
+import com.pomp.hskai.data.api.NotificationsRequest
+import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.lesson.LessonParser
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
@@ -263,6 +266,38 @@ class CourseRepository(
                     mistakes = mistakes,
                 ),
             )
+        }
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        return result
+    }
+
+    /**
+     * Changes the learning language on the server.
+     *
+     * The cached map still holds the previous language's text, so it is
+     * dropped here rather than shown until the next refresh happens to land.
+     */
+    suspend fun setLanguage(language: AppLanguage): ApiResult<OkResponse> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        val result = apiCall {
+            api.setLanguage("Bearer $token", LanguageRequest(language.backendCode))
+        }
+        if (result is ApiResult.Success) dao.clear()
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        return result
+    }
+
+    /** Reminder opt-in. The same flag the bot and the Mini App read. */
+    suspend fun setNotifications(enabled: Boolean): ApiResult<OkResponse> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        val result = apiCall {
+            api.setNotifications("Bearer $token", NotificationsRequest(enabled))
         }
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
         return result
