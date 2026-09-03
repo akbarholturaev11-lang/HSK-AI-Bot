@@ -9,6 +9,7 @@ import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
+import com.pomp.hskai.data.api.DictionaryResponse
 import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.OkResponse
@@ -141,6 +142,11 @@ private open class FakeLessonApi(
         authorization: String,
         body: NotificationsRequest,
     ): Response<OkResponse> = Response.success(OkResponse(ok = true))
+
+    override suspend fun dictionary(
+        authorization: String,
+        ifNoneMatch: String?,
+    ): Response<DictionaryResponse> = Response.success(DictionaryResponse(ok = true))
 }
 
 private class FakeLessonAudioPlayer : LessonAudioPlayer {

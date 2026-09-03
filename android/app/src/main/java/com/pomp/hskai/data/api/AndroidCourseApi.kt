@@ -40,6 +40,12 @@ interface AndroidCourseApi {
         @Body body: CourseCompleteRequest,
     ): Response<CourseCompleteResponse>
 
+    @GET("api/v3/android/dictionary")
+    suspend fun dictionary(
+        @Header("Authorization") authorization: String,
+        @Header("If-None-Match") ifNoneMatch: String? = null,
+    ): Response<DictionaryResponse>
+
     @POST("api/v3/android/preferences/language")
     suspend fun setLanguage(
         @Header("Authorization") authorization: String,

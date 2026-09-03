@@ -221,4 +221,11 @@
     <string name="notify_streak_body">Bugun hali bitta ham dars qilmadingiz. Bir qism yetadi — seriya saqlanadi.</string>
     <string name="notify_goal_title">Kunlik maqsad hali tugamadi</string>
     <string name="notify_goal_body">Bugungi maqsadingizgacha ozgina qoldi. Bir qismni tugating.</string>
+    <string name="practice_dictionary_title">Ieroglif lug‘ati</string>
+    <string name="practice_dictionary_body">HSK 1–4 · yozilishi, pinyin, ma’no</string>
+    <string name="dictionary_search_hint">Ieroglif, pinyin yoki ma’no</string>
+    <string name="dictionary_no_match">«%1$s» bo‘yicha hech nima topilmadi</string>
+    <string name="dictionary_unavailable">Lug‘atni yuklab bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
+    <string name="action_back">Orqaga</string>
+    <string name="action_clear">Tozalash</string>
 </resources>

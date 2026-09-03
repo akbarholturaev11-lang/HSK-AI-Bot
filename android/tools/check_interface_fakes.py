@@ -67,15 +67,29 @@ def main() -> int:
     for path in test_files:
         text = path.read_text(encoding="utf-8")
         for name, required in interfaces.items():
-            # `class Foo : Bar {` and `object : Bar {` both count. A subclass of
-            # another fake inherits the members, so only direct implementors of
-            # the interface itself are checked.
-            for match in re.finditer(
-                r"(?:class\s+[A-Za-z0-9_]*\s*(?:\([^)]*\)\s*)?|object\s*)"
-                r":\s*" + re.escape(name) + r"\s*\{",
-                text,
-            ):
-                body = _balanced_block(text, match.end() - 1)
+            # Find the supertype position, then confirm a class/object header
+            # precedes it. Matching the whole header with one regex is not
+            # reliable: a default argument such as `if (x) 3 else 6` puts a
+            # closing paren inside the constructor list and cuts the match
+            # short, which silently skipped a real fake.
+            for match in re.finditer(r":\s*" + re.escape(name) + r"\s*(?:\{|,)", text):
+                head = text[max(0, match.start() - 600) : match.start()]
+                # A class header runs `class Foo(...) : Bar {` — no brace between
+                # the keyword and the supertype. A `{` there means the colon is
+                # inside the body instead, which is how a parameter type such as
+                # `fun repository(api: SomeApi, ...)` was being misread as an
+                # implementor. A `}` means the keyword's declaration is already
+                # closed.
+                keyword = max(head.rfind("class "), head.rfind("object "))
+                if keyword == -1:
+                    continue
+                between = head[keyword:]
+                if "{" in between or "}" in between:
+                    continue
+                brace = text.find("{", match.start())
+                if brace == -1:
+                    continue
+                body = _balanced_block(text, brace)
                 if not body:
                     continue
                 implemented = set(

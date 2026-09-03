@@ -146,6 +146,24 @@ data class LanguageRequest(
 )
 
 @Serializable
+data class DictionaryResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    /** Fingerprint of the server's word list; unchanged means no re-download. */
+    @SerialName("version") val version: String = "",
+    @SerialName("language") val language: String = "",
+    @SerialName("words") val words: List<DictionaryWordDto> = emptyList(),
+)
+
+@Serializable
+data class DictionaryWordDto(
+    @SerialName("h") val hanzi: String = "",
+    @SerialName("p") val pinyin: String = "",
+    /** Already localized by the server: one language per response. */
+    @SerialName("m") val meaning: String = "",
+    @SerialName("lv") val level: String = "",
+)
+
+@Serializable
 data class NotificationsRequest(
     @SerialName("enabled") val enabled: Boolean,
 )

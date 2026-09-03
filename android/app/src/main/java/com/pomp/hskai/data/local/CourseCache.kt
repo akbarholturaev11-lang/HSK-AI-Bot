@@ -42,12 +42,18 @@ interface CourseMapDao {
 }
 
 @Database(
-    entities = [CourseMapCacheEntity::class],
-    version = 1,
+    entities = [
+        CourseMapCacheEntity::class,
+        DictionaryWordEntity::class,
+        DictionaryMetaEntity::class,
+    ],
+    version = 2,
     exportSchema = false,
 )
 abstract class HskAiDatabase : RoomDatabase() {
     abstract fun courseMapDao(): CourseMapDao
+
+    abstract fun dictionaryDao(): DictionaryDao
 
     companion object {
         const val NAME = "pomp_hskai.db"

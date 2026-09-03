@@ -194,4 +194,11 @@
     <string name="notify_streak_body">Имрӯз ҳанӯз машқ накардед. Як қисм кифоя аст, то силсила нашиканад.</string>
     <string name="notify_goal_title">Ҳадафи рӯзона ҳанӯз иҷро нашуд</string>
     <string name="notify_goal_body">То ҳадафи имрӯза каме мондааст. Як қисмро анҷом диҳед.</string>
+    <string name="practice_dictionary_title">Луғати иероглиф</string>
+    <string name="practice_dictionary_body">HSK 1–4 · навишт, пинйин, маъно</string>
+    <string name="dictionary_search_hint">Иероглиф, пинйин ё маъно</string>
+    <string name="dictionary_no_match">Аз рӯи «%1$s» чизе ёфт нашуд</string>
+    <string name="dictionary_unavailable">Луғатро бор кардан нашуд. Интернетро санҷед ва бори дигар кӯшиш кунед.</string>
+    <string name="action_back">Бозгашт</string>
+    <string name="action_clear">Тоза кардан</string>
 </resources>

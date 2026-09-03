@@ -193,4 +193,11 @@
     <string name="notify_streak_body">Сегодня вы ещё не занимались. Одной части хватит, чтобы сохранить серию.</string>
     <string name="notify_goal_title">Дневная цель ещё не выполнена</string>
     <string name="notify_goal_body">До сегодняшней цели осталось немного. Завершите одну часть.</string>
+    <string name="practice_dictionary_title">Словарь иероглифов</string>
+    <string name="practice_dictionary_body">HSK 1–4 · написание, пиньинь, значение</string>
+    <string name="dictionary_search_hint">Иероглиф, пиньинь или значение</string>
+    <string name="dictionary_no_match">По запросу «%1$s» ничего не найдено</string>
+    <string name="dictionary_unavailable">Не удалось загрузить словарь. Проверьте интернет и попробуйте снова.</string>
+    <string name="action_back">Назад</string>
+    <string name="action_clear">Очистить</string>
 </resources>

@@ -45,6 +45,7 @@ fun PracticeScreen(
     state: PracticeUiState,
     level: String,
     language: String,
+    onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onSelectPracticeOption: (Int) -> Unit,
     onAdvancePractice: (String) -> Unit,
@@ -86,6 +87,7 @@ fun PracticeScreen(
                 state = state,
                 level = level,
                 language = language,
+                onOpenDictionary = onOpenDictionary,
                 onStartPractice = onStartPractice,
                 onStartMistakeReview = onStartMistakeReview,
             )
@@ -98,6 +100,7 @@ private fun PracticeHome(
     state: PracticeUiState,
     level: String,
     language: String,
+    onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
 ) {
@@ -185,6 +188,15 @@ private fun PracticeHome(
         }
 
         item { GroupLabel(stringResource(R.string.practice_group_skills)) }
+        item {
+            ToolRow(
+                glyph = "字",
+                title = stringResource(R.string.practice_dictionary_title),
+                body = stringResource(R.string.practice_dictionary_body),
+                enabled = true,
+                onClick = onOpenDictionary,
+            )
+        }
         items(skillTools) { tool ->
             ToolRow(
                 glyph = tool.glyph,

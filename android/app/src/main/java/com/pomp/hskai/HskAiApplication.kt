@@ -15,6 +15,7 @@ import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.DictionaryRepository
 import com.pomp.hskai.data.repository.FeatureRepository
 import java.util.concurrent.TimeUnit
 import kotlinx.serialization.json.Json
@@ -95,6 +96,15 @@ class HskAiApplication : Application() {
         )
     }
 
+    val dictionaryRepository: DictionaryRepository by lazy {
+        DictionaryRepository(
+            api = retrofit.create(AndroidCourseApi::class.java),
+            accessToken = authRepository::accessToken,
+            dao = database.dictionaryDao(),
+            onSessionExpired = authRepository::invalidateSession,
+        )
+    }
+
     val featureRepository: FeatureRepository by lazy {
         FeatureRepository(
             api = retrofit.create(AndroidFeatureApi::class.java),
@@ -106,6 +116,7 @@ class HskAiApplication : Application() {
     /** Session end: credentials are cleared by auth, cached progress here. */
     suspend fun clearLocalData() {
         courseRepository.clearCache()
+        dictionaryRepository.clearCache()
         voiceRecorder.cancel()
     }
 

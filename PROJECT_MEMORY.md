@@ -207,6 +207,44 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Android'da lug'at ekrani (parity Faza 2b)
+
+Changed:
+- Mashq bo'limining birinchi qatori — **Ieroglif lug'ati** — endi ishlaydi.
+  1247 ta so'z: ieroglif, pinyin, ma'no, HSK darajasi.
+- Room'da alohida kesh (`dictionary_word` + `dictionary_meta`), DB versiyasi
+  2 ga ko'tarildi (`fallbackToDestructiveMigration` yoqilgan, migratsiya
+  yozilmadi — kesh baribir tashlab yuboriladigan snapshot).
+- Ro'yxat BIR MARTA yuklanadi: saqlangan `version` ETag sifatida yuboriladi,
+  server 304 qaytarsa qayta yuklanmaydi. Til o'zgarsa kesh yaroqsiz bo'ladi
+  (saqlangan ma'nolar eski tilda).
+- **Tonsiz qidiruv**: `pinyinPlain` ustuni (ton belgilari olib tashlangan,
+  `ü` -> `v`). "ni hao" ham, "nǐ hǎo" ham topadi; "lv" -> 绿. Bu sof mantiq
+  (`core/text/PinyinSearch`), shuning uchun SDK'siz muhitda test qilinadi.
+- Tarmoq yo'q bo'lsa yoki server xato bersa, kesh bo'sh bo'lmasa lug'at
+  ko'rsatilaveradi — xato ekrani chiqmaydi.
+- HanziWriter chiziq animatsiyasi bu bosqichda YO'Q (alohida ish).
+
+Files touched:
+- `android/.../data/local/DictionaryCache.kt` (yangi),
+  `data/repository/DictionaryRepository.kt` (yangi),
+  `feature/dictionary/**` (yangi), `core/text/PinyinSearch.kt` (yangi),
+  `data/local/CourseCache.kt`, `data/api/**`, `HskAiApplication.kt`,
+  `MainActivity.kt`, `feature/practice/PracticeScreen.kt`,
+  `core/network/ApiResult.kt` (`errorCode()` `internal` qilindi —
+  ikkinchi, kuchsizroq xato parseri yozilmasin), `res/values*/strings.xml`.
+
+Risk:
+- Backend TEGILMADI (endpoint oldingi commitda). Migratsiya yo'q.
+- Retrofit 304'ni `isSuccessful` demaydi, shuning uchun `apiCall` emas,
+  repozitoriyda alohida ishlanadi — bu joy o'zgartirilsa 304 xato deb
+  hisoblanib ketishi mumkin.
+
+Follow-up:
+- `tools/check_interface_fakes.py` ikki marta tuzatildi: konstruktordagi
+  `if (x) 3 else 6` qavsi va parametr tipidagi `: Api,` uni chalg'itardi.
+  Endi sinf sarlavhasini qavsdan mustaqil aniqlaydi.
+
 ### 2026-09-03 — Ieroglif lug'ati backend adapteri (parity Faza 2a)
 
 Changed:

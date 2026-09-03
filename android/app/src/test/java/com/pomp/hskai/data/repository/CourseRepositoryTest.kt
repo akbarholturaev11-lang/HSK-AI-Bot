@@ -8,6 +8,7 @@ import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonDto
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
+import com.pomp.hskai.data.api.DictionaryResponse
 import com.pomp.hskai.data.api.CourseUnitDto
 import com.pomp.hskai.data.api.CourseUserDto
 import com.pomp.hskai.data.api.LanguageRequest
@@ -90,6 +91,11 @@ private open class FakeCourseApi : AndroidCourseApi {
         authorization: String,
         body: NotificationsRequest,
     ): Response<OkResponse> = Response.success(OkResponse(ok = true))
+
+    override suspend fun dictionary(
+        authorization: String,
+        ifNoneMatch: String?,
+    ): Response<DictionaryResponse> = Response.success(DictionaryResponse(ok = true))
 }
 
 private fun sampleMap(completed: Int = 2) = CourseMapDto(

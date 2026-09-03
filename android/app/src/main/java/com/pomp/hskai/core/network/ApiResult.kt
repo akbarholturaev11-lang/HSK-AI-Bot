@@ -38,7 +38,12 @@ suspend fun <T : Any> apiCall(block: suspend () -> Response<T>): ApiResult<T> = 
     ApiResult.Failure(ApiError.Unknown)
 }
 
-private fun Response<*>.errorCode(): String? = runCatching {
+/**
+ * The server's stable error code, or null. Shared so every caller maps a
+ * failure the same way — a second, weaker parser would classify the same
+ * response differently.
+ */
+internal fun Response<*>.errorCode(): String? = runCatching {
     val raw = errorBody()?.string().orEmpty()
     if (raw.isBlank()) null else errorJson.decodeFromString<ApiErrorBody>(raw).error
 }.getOrNull() ?: when (code()) {

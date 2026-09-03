@@ -62,6 +62,8 @@ import com.pomp.hskai.feature.auth.LinkViewModel
 import com.pomp.hskai.core.navigation.MainScaffold
 import com.pomp.hskai.core.navigation.MainTab
 import com.pomp.hskai.feature.course.CourseScreen
+import com.pomp.hskai.feature.dictionary.DictionaryScreen
+import com.pomp.hskai.feature.dictionary.DictionaryViewModel
 import com.pomp.hskai.feature.course.CourseViewModel
 import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
@@ -207,6 +209,7 @@ private fun AppRoot(
             val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
             val settingsReload by settingsViewModel.reload.collectAsStateWithLifecycle()
             var languagePickerOpen by remember { mutableStateOf(false) }
+            var dictionaryOpen by remember { mutableStateOf(false) }
 
             // A preference the server accepted changes what every screen shows,
             // so they are re-read rather than patched locally.
@@ -356,7 +359,25 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            if (launch != null) {
+            if (dictionaryOpen) {
+                // Keyed by language: the stored meanings belong to one
+                // language, so switching it must not reuse the old model.
+                val dictionaryViewModel: DictionaryViewModel = viewModel(
+                    key = "dictionary-${state.account.language.backendCode}",
+                    viewModelStoreOwner = sessionOwner,
+                    factory = DictionaryViewModel.Factory(
+                        repository = app.dictionaryRepository,
+                        language = state.account.language,
+                    ),
+                )
+                val dictionaryState by dictionaryViewModel.state.collectAsStateWithLifecycle()
+                DictionaryScreen(
+                    state = dictionaryState,
+                    onQueryChange = dictionaryViewModel::onQueryChange,
+                    onRetry = dictionaryViewModel::load,
+                    onBack = { dictionaryOpen = false },
+                )
+            } else if (launch != null) {
                 LessonHost(
                     app = app,
                     viewModelStoreOwner = sessionOwner,
@@ -392,6 +413,7 @@ private fun AppRoot(
                         state = practiceState,
                         level = currentLevel,
                         language = currentLanguage,
+                        onOpenDictionary = { dictionaryOpen = true },
                         onStartPractice = practiceViewModel::startPractice,
                         onSelectPracticeOption = practiceViewModel::selectPracticeOption,
                         onAdvancePractice = practiceViewModel::advancePractice,
