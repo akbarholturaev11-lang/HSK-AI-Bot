@@ -160,6 +160,12 @@ def top_level_pieces(block: str) -> str:
     return "".join(out)
 
 
+def is_test_source(path: Path) -> bool:
+    """True for any test source set: `test`, `testPlay`, `androidTest`, ..."""
+    source_set = path.relative_to(ROOT).parts[0]
+    return source_set.startswith(("test", "androidTest"))
+
+
 def declarations(files: list[Path]) -> dict[str, set[str]]:
     """Maps each declared callable name to every parameter name it accepts."""
     found: dict[str, set[str]] = {}
@@ -187,8 +193,8 @@ def main() -> int:
     # `viewModel(factory = ...)` in the app would be checked against the test
     # helper's parameters and reported. Tests may call app code, not the
     # other way round.
-    main_files = [f for f in files if "/test/" not in f.as_posix()]
-    test_files = [f for f in files if "/test/" in f.as_posix()]
+    main_files = [f for f in files if not is_test_source(f)]
+    test_files = [f for f in files if is_test_source(f)]
     app_declared = declarations(main_files)
     test_declared = declarations(test_files)
     for name, params in app_declared.items():
@@ -196,7 +202,7 @@ def main() -> int:
 
     problems = 0
     for path in files:
-        declared = test_declared if "/test/" in path.as_posix() else app_declared
+        declared = test_declared if is_test_source(path) else app_declared
         text = strip_comments(path.read_text(encoding="utf-8"))
         for match in CALL.finditer(text):
             name = match.group(1)

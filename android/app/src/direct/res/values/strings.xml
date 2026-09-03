@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default locale: Uzbek (Latin). -->
+<!--
+    Wording only the `direct` channel (APK, website, Telegram) may show.
+    It is a source set rather than a runtime flag on purpose: the Google
+    Play build must not CONTAIN an external checkout, not merely hide it.
+-->
+<resources>
+    <string name="limit_unlock_headline">Limitsiz oching 👇🏽</string>
+    <string name="limit_unlock_button">Limitsiz o‘qish</string>
+    <string name="limit_unlock_hint">Tugma Telegram botni ochadi. Obuna o‘sha yerda rasmiylashtiriladi, keyin bu yerda hammasi ochiladi.</string>
+    <string name="limit_unlock_unavailable">Telegram botni ochib bo‘lmadi. Botga o‘zingiz kiring yoki keyinroq urinib ko‘ring.</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Wording only the `direct` channel (APK, website, Telegram) may show.
+    It is a source set rather than a runtime flag on purpose: the Google
+    Play build must not CONTAIN an external checkout, not merely hide it.
+-->
+<resources>
+    <string name="limit_unlock_headline">Откройте без лимита 👇🏽</string>
+    <string name="limit_unlock_button">Учиться без лимита</string>
+    <string name="limit_unlock_hint">Кнопка откроет Telegram-бот. Подписка оформляется там, после этого здесь откроется всё.</string>
+    <string name="limit_unlock_unavailable">Не удалось открыть Telegram-бот. Зайдите в бот вручную или попробуйте позже.</string>
+</resources>

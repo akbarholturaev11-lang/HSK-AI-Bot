@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tajik. Android qualifier is "tg"; the backend language code stays "tj". -->
+<!--
+    Wording only the `direct` channel (APK, website, Telegram) may show.
+    It is a source set rather than a runtime flag on purpose: the Google
+    Play build must not CONTAIN an external checkout, not merely hide it.
+-->
+<resources>
+    <string name="limit_unlock_headline">Бе маҳдудият кушоед 👇🏽</string>
+    <string name="limit_unlock_button">Бе маҳдудият омӯхтан</string>
+    <string name="limit_unlock_hint">Тугма Telegram-ботро мекушояд. Обуна дар ҳамон ҷо ба расмият дароварда мешавад, баъд ин ҷо ҳама чиз кушода мешавад.</string>
+    <string name="limit_unlock_unavailable">Telegram-ботро кушода натавонистем. Худатон ба бот ворид шавед ё баъдтар кӯшиш кунед.</string>
+</resources>

@@ -114,6 +114,15 @@ jobs:
       - name: Check named arguments match their declarations
         run: python3 tools/check_named_arguments.py
 
+      # The shared sources call into whichever flavour is being built, so the
+      # two must offer the same signatures — and the Play build must not
+      # reference wording only the direct channel has.
+      - name: Check the distribution flavours have not drifted
+        run: python3 tools/check_flavor_parity.py
+
+      - name: Check every string exists in uz, ru and tg
+        run: python3 tools/check_strings_translated.py
+
       # Both distribution flavours are verified. The Play build is the one
       # with policy constraints, so it must never be the untested one.
       - name: Unit tests

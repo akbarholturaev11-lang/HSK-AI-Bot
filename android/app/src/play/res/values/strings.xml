@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Default locale: Uzbek (Latin).
+
+    Wording only the `play` channel shows. Nothing here sends the learner out
+    of the app to pay: the app reads limit and subscription status, and that
+    is all it does.
+-->
+<resources>
+    <string name="limit_daily_headline">🔒 Kunlik limit tugadi. Limit %1$s da qayta ochiladi.</string>
+    <string name="limit_locked_headline">🔒 Bepul qism tugadi.</string>
+    <string name="limit_status_hint">Agar sizda aktiv obuna bo‘lsa, akkaunt holatini yangilang.</string>
+    <string name="limit_check_account">Akkauntni tekshirish</string>
+    <string name="limit_support">Qo‘llab-quvvatlash</string>
+</resources>

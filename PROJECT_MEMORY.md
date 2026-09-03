@@ -207,6 +207,70 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Android: Google Play uchun xavfsiz limit bloki
+
+Changed:
+- Android ikkita **distribution flavor**ga ajratildi (`app/build.gradle.kts`):
+  - `play`   -> Google Play. Ilova ichida tashqi checkout YO'Q.
+  - `direct` -> APK, sayt, Telegram. Hozirgi obuna oqimi o'zgarmadi.
+  Farq runtime flag emas, **source set** orqali: Play build'da o'sha matn va
+  o'sha kod umuman YIG'ILMAYDI (`src/play`, `src/direct`).
+- `LimitBlock` sof ko'rinishga aylandi — matnni o'zi bilmaydi, hammasi
+  chaqiruvchidan keladi. Kanalga qarab nima ko'rsatilishini
+  `SectionLimitBlock` hal qiladi va u har flavor'da o'zinikini beradi.
+- `rememberLimitGate(...)` — har ikkala flavor'da AYNAN bir xil imzo, shuning
+  uchun `MainActivity` va ekranlar qaysi build'da ishlayotganini bilmaydi.
+  `direct` versiyasi Telegram handoff'ni o'z ichiga oladi; `play` versiyasida
+  u umuman yo'q.
+- Play bloki matni (3 tilda: uz/ru/tg):
+  "🔒 Kunlik limit tugadi. Limit {vaqt} da qayta ochiladi."
+  Tugmalar: "Akkauntni tekshirish" (faqat serverdan holatni qayta o'qiydi) va
+  "Qo'llab-quvvatlash" (yordam kontakti; to'lov sahifasi EMAS).
+  Reset vaqti hech qayerda qattiq yozilmagan: server instant qaytaradi,
+  `ResetTime` uni o'quvchining o'z soatida ko'rsatadi. Parse bo'lmasa yoki
+  reset yo'q bo'lsa soat umuman ko'rsatilmaydi ("Bepul qism tugadi").
+- `SubscriptionHandoffViewModel` va uning testi `direct` source set'iga
+  ko'chdi. `openTelegram` MainActivity'dan olib tashlandi.
+- Yordam kontakti YANGI sozlama emas: mavjud `admin_contact` bot setting'i va
+  `support_url` (profil javobida allaqachon bor) ishlatiladi. Bu ish davomida
+  qo'shilgan ortiqcha `SUPPORT_CONTACT_URL` env'i shu sababli olib tashlandi.
+
+SDK'siz muhitda Kotlin kompilyatori ishlamaydi, shuning uchun CI'dan oldin
+ishlaydigan 4 ta statik tekshiruv bor (`android/tools/`). Har biri ataylab
+buzib sinaldi:
+- `check_interface_fakes.py` — endi barcha test source set'larni ko'radi.
+- `check_named_arguments.py` (yangi) — nomlangan argument e'lon qilinmagan
+  parametrga tushsa topadi.
+- `check_flavor_parity.py` (yangi) — ikkala flavor imzosi ajralib ketsa va
+  Play build faqat `direct`da bor matnga murojaat qilsa topadi.
+- `check_strings_translated.py` (yangi) — uz/ru/tg to'liqligini tekshiradi
+  (`translatable="false"` hisobga olinadi).
+
+Files touched:
+- `android/app/build.gradle.kts`, `.github/workflows/android-ci.yml`,
+  `android/README.md`
+- `android/app/src/main/.../feature/limit/{LimitBlock,LimitGate}.kt`
+- `android/app/src/{play,direct}/java/.../feature/limit/*`
+- `android/app/src/{play,direct}/res/values{,-ru,-tg}/strings.xml`
+- `android/app/src/main/.../core/text/ResetTime.kt` (+ test)
+- `android/app/src/main/.../MainActivity.kt`, `CourseScreen.kt`, `VoiceScreen.kt`
+- `android/app/src/main/.../data/api/AndroidFeatureDto.kt` (`reset_at`)
+- `app/api/android_features.py` (`reset_at`/`lifetime` passthrough)
+
+Risk:
+- Compose bu muhitda kompilyatsiya qilinmaydi; yakuniy tasdiq CI'da.
+- `MissingTranslation` Android Lint uchun ERROR: har flavor'ning uchala tili
+  ham to'ldirilgan, statik tekshiruv shuni qadaydi.
+- `FeatureRepository.subscriptionOpen()` hali `main`da turadi (Retrofit
+  interfeysini flavor'ga bo'lish juda invaziv bo'lardi), lekin Play build'da
+  unga OLIB BORADIGAN birorta UI yo'li yo'q.
+
+Follow-up:
+- Mashq bo'limlari va Test markazida limit bloki hali chiqmaydi (hozir oddiy
+  qizil xato) — keyingi qadam.
+- Bot: limit 90% va 0% bo'lganda avtomatik xabar.
+- Reklama moduli Android'ga.
+
 ### 2026-09-03 — Limit user vaqt mintaqasida + AI Voice kunlik
 
 Changed:

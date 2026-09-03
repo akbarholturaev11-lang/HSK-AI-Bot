@@ -204,10 +204,7 @@
     <string name="profile_goal_percent">%1$d%% bajarildi</string>
     <string name="profile_goal_picker_title">Kunlik maqsadni tanlang</string>
     <string name="profile_goal_option">%1$d XP</string>
-    <string name="limit_unlock_headline">Limitsiz oching 👇🏽</string>
-    <string name="limit_unlock_button">Limitsiz o‘qish</string>
-    <string name="limit_unlock_hint">Tugma Telegram botni ochadi. Obuna o‘sha yerda rasmiylashtiriladi, keyin bu yerda hammasi ochiladi.</string>
-    <string name="limit_unlock_unavailable">Telegram botni ochib bo‘lmadi. Botga o‘zingiz kiring yoki keyinroq urinib ko‘ring.</string>
+    <string name="limit_unlock_unavailable">Amalni bajarib bo‘lmadi. Keyinroq urinib ko‘ring.</string>
     <string name="limit_voice_reason">Bugungi bepul AI Voice suhbatlaringiz tugadi.</string>
     <string name="profile_language">Til</string>
     <string name="profile_language_picker_title">Tilni tanlang</string>

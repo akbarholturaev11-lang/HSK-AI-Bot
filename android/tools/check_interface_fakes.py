@@ -22,8 +22,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent / "app" / "src"
-MAIN = ROOT / "main"
-TEST = ROOT / "test"
+# The app sources are `main` plus the distribution flavours; the fakes live in
+# `test` and in any flavour-specific test source set such as `testDirect`.
+MAIN_SETS = ("main", "play", "direct")
 
 
 def _balanced_block(text: str, open_at: int) -> str:
@@ -56,8 +57,17 @@ def interface_members(sources: list[Path]) -> dict[str, set[str]]:
 
 
 def main() -> int:
-    main_files = sorted(MAIN.rglob("*.kt"))
-    test_files = sorted(TEST.rglob("*.kt"))
+    main_files = sorted(
+        path
+        for source_set in MAIN_SETS
+        for path in (ROOT / source_set).rglob("*.kt")
+    )
+    test_files = sorted(
+        path
+        for directory in ROOT.glob("test*")
+        if directory.is_dir()
+        for path in directory.rglob("*.kt")
+    )
     interfaces = interface_members(main_files)
     if not interfaces:
         print("no all-suspend interfaces found; nothing to check")

@@ -40,6 +40,17 @@ checksums so a committed binary cannot be swapped for a tampered one.
 
 Requires JDK 17 and `compileSdk 36` installed through the Android SDK Manager.
 
+Four static checks run before Gradle in CI and take about a second each. They
+exist because the Kotlin compiler needs the Android SDK, which is not always
+available where these sources are edited:
+
+```bash
+python3 tools/check_interface_fakes.py     # a fake fell behind its interface
+python3 tools/check_named_arguments.py     # a call passes a name that is gone
+python3 tools/check_flavor_parity.py       # the flavours can no longer swap
+python3 tools/check_strings_translated.py  # a string is missing uz, ru or tg
+```
+
 ## Distribution flavours
 
 Two flavours ship the same product through different channels, and differ in

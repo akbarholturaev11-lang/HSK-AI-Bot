@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="limit_daily_headline">🔒 Дневной лимит исчерпан. Лимит откроется в %1$s.</string>
+    <string name="limit_locked_headline">🔒 Бесплатная часть закончилась.</string>
+    <string name="limit_status_hint">Если у вас активная подписка, обновите статус аккаунта.</string>
+    <string name="limit_check_account">Проверить аккаунт</string>
+    <string name="limit_support">Поддержка</string>
+</resources>

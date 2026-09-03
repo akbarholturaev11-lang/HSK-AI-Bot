@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tajik. Android qualifier is "tg"; the backend language code stays "tj". -->
+<resources>
+    <string name="limit_daily_headline">🔒 Лимити рӯзона тамом шуд. Лимит соати %1$s дубора кушода мешавад.</string>
+    <string name="limit_locked_headline">🔒 Қисми ройгон тамом шуд.</string>
+    <string name="limit_status_hint">Агар обунаи фаъол дошта бошед, ҳолати ҳисобро нав кунед.</string>
+    <string name="limit_check_account">Ҳисобро тафтиш кардан</string>
+    <string name="limit_support">Дастгирӣ</string>
+</resources>
