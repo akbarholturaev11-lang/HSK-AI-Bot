@@ -193,11 +193,32 @@ def _service_response(result: dict[str, Any]) -> JSONResponse:
         if code in {"mistake_review_empty"}
         else 409
     )
+    content: dict[str, Any] = {"ok": False, "error": code}
+    if "ad" in result:
+        content["ad"] = result["ad"]
+    # Kunlik limit qachon ochilishi (UTC ISO) va u umuman ochiladimi. Klient
+    # buni o'z vaqt mintaqasida ko'rsatadi; server formatlangan soat bermaydi.
+    for key in ("reset_at", "lifetime"):
+        if key in result:
+            content[key] = result[key]
     return JSONResponse(
         status_code=status,
-        content={"ok": False, "error": code, **({"ad": result["ad"]} if "ad" in result else {})},
+        content=content,
         headers={"Cache-Control": "no-store"},
     )
+
+
+def _support_url(settings_obj) -> str:
+    """Where a learner goes for help. Empty unless an admin configured it.
+
+    The Play build has no checkout, so support is the only outward link it
+    offers — and it must never be a payment page. Fail-closed on purpose: an
+    unset value hides the button rather than opening something unintended.
+    """
+
+    raw = str(getattr(settings_obj, "SUPPORT_CONTACT_URL", "") or "").strip()
+    allowed = ("https://", "tg://", "mailto:")
+    return raw if raw.startswith(allowed) else ""
 
 
 def _bot_url(settings_obj) -> str:
@@ -220,6 +241,7 @@ def _subscription_payload(user, profile_payload: dict[str, Any], settings_obj) -
     state = UserAccessStateService.classify(user)
     subscription = profile_payload.get("subscription") if isinstance(profile_payload, dict) else {}
     bot_url = _bot_url(settings_obj)
+    support_url = _support_url(settings_obj)
     return {
         "ok": True,
         "source": "android_subscription",
@@ -231,6 +253,12 @@ def _subscription_payload(user, profile_payload: dict[str, Any], settings_obj) -
         },
         "checkout_allowed": False,
         "read_only_reason": "android_checkout_is_in_telegram",
+        # Play kanalidagi build'da tashqi checkout yo'q, shuning uchun yagona
+        # tashqi havola — yordam. Sozlanmagan bo'lsa tugma ko'rsatilmaydi.
+        "support": {
+            "url": support_url,
+            "configured": bool(support_url),
+        },
         "billing": {
             "provider": "telegram_bot",
             "configured": bool(bot_url),

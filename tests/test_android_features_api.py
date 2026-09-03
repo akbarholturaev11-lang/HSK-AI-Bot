@@ -10,6 +10,7 @@ the two things that *are* the adapter's responsibility:
    adapter never grants access by itself.
 """
 
+import json
 import unittest
 from datetime import datetime, timezone
 from types import SimpleNamespace
@@ -22,7 +23,9 @@ from sqlalchemy.pool import StaticPool
 
 from app.api.android_features import (
     _bot_url,
+    _service_response,
     _subscription_payload,
+    _support_url,
     create_android_features_router,
 )
 from app.db.base import Base
@@ -30,13 +33,14 @@ from app.db.models.user import User
 from app.services.desktop_auth_service import DesktopAuthService
 
 
-def _settings(bot_username="pomp_test_bot"):
+def _settings(bot_username="pomp_test_bot", support_url=""):
     return SimpleNamespace(
         DESKTOP_AUTH_SIGNING_SECRET="android-features-test-secret-" + "x" * 40,
         DESKTOP_AUTH_LINK_TTL_SECONDS=600,
         DESKTOP_AUTH_ACCESS_TTL_SECONDS=900,
         DESKTOP_AUTH_REFRESH_TTL_DAYS=30,
         BOT_USERNAME=bot_username,
+        SUPPORT_CONTACT_URL=support_url,
     )
 
 
@@ -79,7 +83,86 @@ class AndroidBotUrlTests(unittest.TestCase):
         self.assertEqual("", _bot_url(SimpleNamespace()))
 
 
+class AndroidSupportUrlTests(unittest.TestCase):
+    """Support is the only outward link the Play build has, so it is fenced."""
+
+    def test_the_configured_contact_is_passed_through(self):
+        self.assertEqual(
+            "https://t.me/pomp_support",
+            _support_url(_settings(support_url="https://t.me/pomp_support")),
+        )
+        self.assertEqual(
+            "mailto:help@example.com",
+            _support_url(_settings(support_url="mailto:help@example.com")),
+        )
+        self.assertEqual(
+            "tg://resolve?domain=pomp_support",
+            _support_url(_settings(support_url="tg://resolve?domain=pomp_support")),
+        )
+
+    def test_anything_else_is_dropped_rather_than_opened(self):
+        # An unset or odd value must hide the button, never send the learner
+        # somewhere unintended — a payment page above all.
+        for value in ("", "   ", None, "http://insecure.example", "javascript:alert(1)"):
+            with self.subTest(value=value):
+                self.assertEqual("", _support_url(_settings(support_url=value)))
+        self.assertEqual("", _support_url(SimpleNamespace()))
+
+
+class AndroidLimitPassthroughTests(unittest.TestCase):
+    """The client shows WHEN the limit reopens, so the instant must survive."""
+
+    @staticmethod
+    def _body(response):
+        return json.loads(bytes(response.body).decode("utf-8"))
+
+    def test_the_reset_instant_reaches_the_client(self):
+        response = _service_response(
+            {
+                "ok": False,
+                "error": "free_feature_limit_reached",
+                "reset_at": "2026-09-16T00:00:00+00:00",
+                "lifetime": False,
+            }
+        )
+        self.assertEqual(403, response.status_code)
+        body = self._body(response)
+        self.assertEqual("2026-09-16T00:00:00+00:00", body["reset_at"])
+        self.assertFalse(body["lifetime"])
+
+    def test_a_lifetime_limit_reports_no_reset_instead_of_a_wrong_one(self):
+        response = _service_response(
+            {"ok": False, "error": "free_feature_limit_reached", "reset_at": None, "lifetime": True}
+        )
+        body = self._body(response)
+        self.assertIsNone(body["reset_at"])
+        self.assertTrue(body["lifetime"])
+
+    def test_other_failures_are_unchanged(self):
+        response = _service_response({"ok": False, "error": "mistake_review_empty"})
+        self.assertEqual(404, response.status_code)
+        self.assertEqual({"ok": False, "error": "mistake_review_empty"}, self._body(response))
+
+
 class AndroidSubscriptionPayloadTests(unittest.TestCase):
+    def test_support_is_offered_when_an_admin_configured_it(self):
+        payload = _subscription_payload(
+            _user(1, 1001, "Account A"),
+            {"subscription": {}},
+            _settings(support_url="https://t.me/pomp_support"),
+        )
+        self.assertTrue(payload["support"]["configured"])
+        self.assertEqual("https://t.me/pomp_support", payload["support"]["url"])
+
+    def test_support_is_reported_unconfigured_by_default(self):
+        payload = _subscription_payload(
+            _user(1, 1001, "Account A"),
+            {"subscription": {}},
+            _settings(),
+        )
+        self.assertFalse(payload["support"]["configured"])
+        self.assertEqual("", payload["support"]["url"])
+
     def test_checkout_is_never_offered_inside_the_app(self):
         payload = _subscription_payload(
             _user(1, 1001, "Account A"),
