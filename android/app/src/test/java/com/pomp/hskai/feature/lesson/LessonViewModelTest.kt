@@ -10,6 +10,7 @@ import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.LanguageRequest
+import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
@@ -134,6 +135,11 @@ private open class FakeLessonApi(
     override suspend fun setLanguage(
         authorization: String,
         body: LanguageRequest,
+    ): Response<OkResponse> = Response.success(OkResponse(ok = true))
+
+    override suspend fun setNotifications(
+        authorization: String,
+        body: NotificationsRequest,
     ): Response<OkResponse> = Response.success(OkResponse(ok = true))
 }
 

@@ -11,6 +11,7 @@ import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.CourseUnitDto
 import com.pomp.hskai.data.api.CourseUserDto
 import com.pomp.hskai.data.api.LanguageRequest
+import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.LocalizedText
 import com.pomp.hskai.data.api.OkResponse
 import com.pomp.hskai.data.local.CourseMapCacheEntity
@@ -83,6 +84,11 @@ private open class FakeCourseApi : AndroidCourseApi {
     override suspend fun setLanguage(
         authorization: String,
         body: LanguageRequest,
+    ): Response<OkResponse> = Response.success(OkResponse(ok = true))
+
+    override suspend fun setNotifications(
+        authorization: String,
+        body: NotificationsRequest,
     ): Response<OkResponse> = Response.success(OkResponse(ok = true))
 }
 

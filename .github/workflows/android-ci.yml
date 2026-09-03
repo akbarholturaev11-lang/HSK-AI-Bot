@@ -101,6 +101,13 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
+      # Adding a member to an API interface compiles the main sources and then
+      # breaks the unit-test sources, because every hand-written fake has to
+      # implement it. Catching that here costs a second instead of a full
+      # Gradle run.
+      - name: Check test fakes match their interfaces
+        run: python3 tools/check_interface_fakes.py
+
       - name: Unit tests
         run: ./gradlew --no-daemon testDebugUnitTest
 
