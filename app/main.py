@@ -67,6 +67,7 @@ from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_notification_service import CourseNotificationService
+from app.services.limit_notification_service import LimitNotificationService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_download_service import DesktopReleaseConfig
@@ -532,6 +533,7 @@ app.include_router(
     create_desktop_course_router(
         session_factory=async_session_maker,
         settings_obj=settings,
+        bot=bot,
     )
 )
 app.include_router(
@@ -583,6 +585,7 @@ app.include_router(
     create_android_course_router(
         session_factory=async_session_maker,
         settings_obj=settings,
+        bot=bot,
     )
 )
 app.include_router(
@@ -2164,7 +2167,9 @@ async def v3_practice_daily_gate(request: Request):
                 }
             )
         # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
-        result = await access.consume_daily_use(user, feature_key=feature, ref=ref, lifetime=True)
+        result = await access.consume_daily_use(
+            user, feature_key=feature, ref=ref, lifetime=True, notify_bot=bot
+        )
         if not result.get("allowed"):
             # Bepul tugadi. Endi reklama yoki obuna. AI token sarflaydigan
             # bo'limda (masalan talaffuz) reklama ham kuniga 2 marta cheklangan;
@@ -2245,7 +2250,9 @@ async def v3_practice_ad_gate(request: Request):
             is_paid = access.is_paid_user(user)
             return JSONResponse(content={"ok": True, "allowed": True, "is_paid": is_paid, "remaining": None})
         # AI bo'lim — reklama ham kuniga 2 marta.
-        result = await access.consume_daily_use(user, feature_key=f"{feature}_ad", ref=ref)
+        result = await access.consume_daily_use(
+            user, feature_key=f"{feature}_ad", ref=ref, notify_bot=bot
+        )
         await session.commit()
         if not result.get("allowed"):
             # Reklama-ruxsati ham tugadi — endi faqat obuna (ertaga yana ochiladi).
@@ -2538,6 +2545,20 @@ async def v3_course_lesson_complete(request: Request):
             next_band = _COURSE_V3_NEXT_BAND.get(resolved_level)
             if next_band:
                 user.level = next_band
+        # Bepul darslar tugayotgani (yoki tugagani) haqida xabar. Obunachida
+        # limit yo'q, shuning uchun unga hech narsa yuborilmaydi.
+        if not is_paid:
+            try:
+                await LimitNotificationService(session).lesson_progress(
+                    user,
+                    level=resolved_level,
+                    completed_parts=int(progress.completed_lessons_count or 0),
+                    free_parts=free_course_parts_for_level(resolved_level),
+                    bot=bot,
+                )
+            except Exception:  # noqa: BLE001 — xabar darsni yiqitmasin
+                logger.info("Lesson limit notice failed", exc_info=True)
+
         next_requirement = access_policy.requirement_for(
             lesson_order=next_order,
             is_paid=is_paid,

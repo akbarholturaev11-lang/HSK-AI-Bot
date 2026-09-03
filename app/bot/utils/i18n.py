@@ -61,6 +61,10 @@ TEXTS = {
         "payment_back": "⬅️ Бозгашт",        
         "payment_method_visa_button": "💳 Корти бонкӣ / VISA",
         
+        "limit_lesson_warning_notice": "📘 <b>Дарсҳои ройгон ба охир мерасанд</b>\n\n<blockquote>Ҳамагӣ {remaining} қисми ройгон мондааст. Идомаи курс бо обуна кушода мешавад.</blockquote>",
+        "limit_lesson_spent_notice": "🔒 <b>Дарсҳои ройгон тамом шуданд</b>\n\n<blockquote>Идомаи курс бо обуна кушода мешавад.</blockquote>",
+        "limit_daily_spent_notice": "🔒 <b>Лимити рӯзона тамом шуд</b>\n\n<blockquote>Лимит соати {reset_time} дубора кушода мешавад. Бо обуна интизор шудан лозим нест.</blockquote>",
+        "limit_daily_spent_notice_no_time": "🔒 <b>Лимити ройгон тамом шуд</b>\n\n<blockquote>Ин бахш бо обуна кушода мешавад.</blockquote>",
         "subscription_miniapp_entry_text": "💎 Обуна ва пардохт дар Mini App кушода мешавад.",
         "subscription_miniapp_open_button": "💎 Обунаро кушодан",
         "subscription_free_mode_button": "💬 Ба реҷаи ройгон гузаштан",
@@ -157,6 +161,10 @@ TEXTS = {
 
         "payment_back": "⬅️ Назад",
         "payment_method_visa_button": "💳 Банковская карта / VISA",
+        "limit_lesson_warning_notice": "📘 <b>Бесплатные уроки заканчиваются</b>\n\n<blockquote>Осталось бесплатных частей: {remaining}. Продолжение курса открывается по подписке.</blockquote>",
+        "limit_lesson_spent_notice": "🔒 <b>Бесплатные уроки закончились</b>\n\n<blockquote>Продолжение курса открывается по подписке.</blockquote>",
+        "limit_daily_spent_notice": "🔒 <b>Дневной лимит исчерпан</b>\n\n<blockquote>Лимит откроется в {reset_time}. С подпиской ждать не нужно.</blockquote>",
+        "limit_daily_spent_notice_no_time": "🔒 <b>Бесплатная попытка использована</b>\n\n<blockquote>Этот раздел открывается по подписке.</blockquote>",
         "subscription_miniapp_entry_text": "💎 Подписка и оплата открываются в Mini App.",
         "subscription_miniapp_open_button": "💎 Открыть подписку",
         "subscription_free_mode_button": "💬 Перейти в бесплатный режим",
@@ -248,6 +256,10 @@ TEXTS = {
 
         "payment_back": "⬅️ Orqaga",
         "payment_method_visa_button": "💳 Bank kartasi / VISA",
+        "limit_lesson_warning_notice": "📘 <b>Bepul darslar tugayapti</b>\n\n<blockquote>Bepul qismlardan {remaining} ta qoldi. Kursning davomi obuna bilan ochiladi.</blockquote>",
+        "limit_lesson_spent_notice": "🔒 <b>Bepul darslar tugadi</b>\n\n<blockquote>Kursning davomi obuna bilan ochiladi.</blockquote>",
+        "limit_daily_spent_notice": "🔒 <b>Kunlik limit tugadi</b>\n\n<blockquote>Limit {reset_time} da qayta ochiladi. Obuna bilan kutish shart emas.</blockquote>",
+        "limit_daily_spent_notice_no_time": "🔒 <b>Bepul urinish ishlatildi</b>\n\n<blockquote>Bu bo‘lim obuna bilan ochiladi.</blockquote>",
         "subscription_miniapp_entry_text": "💎 Obuna va to'lov Mini App ichida ochiladi.",
         "subscription_miniapp_open_button": "💎 Obunani ochish",
         "subscription_free_mode_button": "💬 Bepul rejimga o‘tish",

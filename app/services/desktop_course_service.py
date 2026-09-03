@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
@@ -25,12 +26,14 @@ from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
 from app.services.course_notification_service import CourseNotificationService
+from app.services.limit_notification_service import LimitNotificationService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_v3_parts import total_parts
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.support_contact_service import get_admin_contact_url
 
+logger = logging.getLogger(__name__)
 
 COURSE_V3_LEVELS = frozenset({"hsk1", "hsk2", "hsk3", "hsk4"})
 COURSE_V3_LANGUAGES = frozenset({"uz", "ru", "tj"})
@@ -150,9 +153,12 @@ class DesktopCourseService:
     # Every other rule — access policy, XP, mistakes, idempotency — is shared.
     CLIENT_NAMESPACE = "desktop"
 
-    def __init__(self, session, settings_obj):
+    def __init__(self, session, settings_obj, bot=None):
         self.session = session
         self.settings = settings_obj
+        # Ixtiyoriy: bo'lsa limit haqidagi xabar Telegram'ga ham ketadi.
+        # Bo'lmasa xabar faqat ilova ichidagi lentaga yoziladi.
+        self.bot = bot
 
     async def _context(self, access_token: str):
         # `authenticate` validates token/session/device/user without bootstrap's
@@ -557,6 +563,20 @@ class DesktopCourseService:
                 step="completed",
                 waiting_for="none",
             )
+
+        # Bepul darslar tugayotgani (yoki tugagani) haqida xabar. Obunachida
+        # limit yo'q, shuning uchun unga hech narsa yuborilmaydi.
+        if not is_paid:
+            try:
+                await LimitNotificationService(self.session).lesson_progress(
+                    user,
+                    level=level,
+                    completed_parts=int(progress.completed_lessons_count or 0),
+                    free_parts=free_course_parts_for_level(level),
+                    bot=self.bot,
+                )
+            except Exception:  # noqa: BLE001 — xabar darsni yiqitmasin
+                logger.info("Lesson limit notice failed", exc_info=True)
 
         completion_result = self._completion_payload(
             lesson_order=lesson_order,

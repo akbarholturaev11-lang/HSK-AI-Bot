@@ -378,7 +378,13 @@ def create_android_features_router(
             _validate_practice_selection(payload)
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
-                result = await practice_service_factory(session).start(
+                # Bot berilmagan bo'lsa chaqiruv shakli eskisicha qoladi.
+                practice = (
+                    practice_service_factory(session, bot=bot)
+                    if bot is not None
+                    else practice_service_factory(session)
+                )
+                result = await practice.start(
                     telegram_id,
                     mode=payload.mode,
                     level=payload.level,
@@ -409,7 +415,13 @@ def create_android_features_router(
             _validate_practice_selection(payload)
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
-                result = await practice_service_factory(session).complete(
+                # Bot berilmagan bo'lsa chaqiruv shakli eskisicha qoladi.
+                practice = (
+                    practice_service_factory(session, bot=bot)
+                    if bot is not None
+                    else practice_service_factory(session)
+                )
+                result = await practice.complete(
                     telegram_id,
                     session_id=payload.session_id,
                     mode=payload.mode,

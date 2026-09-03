@@ -66,6 +66,21 @@ TITLE_BY_KEY: dict[str, dict[str, str]] = {
         "ru": "Серия под угрозой",
         "tj": "Силсила дар хатар аст",
     },
+    "limit_lesson_warning": {
+        "uz": "Bepul darslar tugayapti",
+        "ru": "Бесплатные уроки заканчиваются",
+        "tj": "Дарсҳои ройгон ба охир мерасанд",
+    },
+    "limit_lesson_spent": {
+        "uz": "Bepul darslar tugadi",
+        "ru": "Бесплатные уроки закончились",
+        "tj": "Дарсҳои ройгон тамом шуданд",
+    },
+    "limit_daily_spent": {
+        "uz": "Kunlik limit tugadi",
+        "ru": "Дневной лимит исчерпан",
+        "tj": "Лимити рӯзона тамом шуд",
+    },
 }
 
 ACTION_BY_KEY = {
@@ -77,6 +92,9 @@ ACTION_BY_KEY = {
     KEY_DAILY_GOAL: "course",
     KEY_STREAK: "course",
     "lesson_time": "course",
+    "limit_lesson_warning": "subscription",
+    "limit_lesson_spent": "subscription",
+    "limit_daily_spent": "subscription",
 }
 GLYPH_BY_KEY = {
     "subscription_expiring": "会",
@@ -87,6 +105,9 @@ GLYPH_BY_KEY = {
     KEY_DAILY_GOAL: "今",
     KEY_STREAK: "火",
     "lesson_time": "时",
+    "limit_lesson_warning": "限",
+    "limit_lesson_spent": "限",
+    "limit_daily_spent": "限",
 }
 ALLOWED_ACTIONS = {"course", "rating", "subscription", "profile"}
 

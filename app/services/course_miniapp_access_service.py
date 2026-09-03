@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 import re
 import secrets
 from datetime import datetime, timedelta, timezone
@@ -13,8 +14,11 @@ from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
 from app.db.models.voice_practice_session import VoicePracticeSession
 from app.services import course_daily_window
+from app.services.limit_notification_service import LimitNotificationService
 from app.services.user_access_state_service import UserAccessStateService
 
+
+logger = logging.getLogger(__name__)
 
 FREE_FEATURE_LIMITS = {feature_key: 1 for feature_key in COURSE_FEATURE_KEYS}
 # Legacy/default value kept for native clients and older imports that do not pass
@@ -880,7 +884,13 @@ class CourseMiniAppAccessService:
         }
 
     async def consume_daily_use(
-        self, user, *, feature_key: str, ref: str | None = None, lifetime: bool = False
+        self,
+        user,
+        *,
+        feature_key: str,
+        ref: str | None = None,
+        lifetime: bool = False,
+        notify_bot=None,
     ) -> dict:
         """Limitdan bitta foydalanishni band qiladi. Limit tugagan bo'lsa
         ``allowed=False`` qaytaradi (paywall ko'rsatish uchun).
@@ -939,19 +949,30 @@ class CourseMiniAppAccessService:
                 }
 
         if used >= limit:
+            # Umrbod hisobda "ertaga ochiladi" degan narsa YO'Q, shuning
+            # uchun reset vaqti faqat kunlik limitda beriladi. Klient
+            # bo'sh qiymatda "ertaga" deb yozmasligi kerak.
+            reset_at = (
+                None if lifetime else self.next_daily_reset(offset_minutes=offset).isoformat()
+            )
+            # O'quvchi limitga endi urildi. Xabar kuniga bir marta ketadi va
+            # yuborilmasa ham limit javobi o'zgarmaydi.
+            try:
+                await LimitNotificationService(self.session).daily_limit_spent(
+                    locked_user,
+                    feature_key=feature_key,
+                    reset_at=reset_at,
+                    lifetime=bool(lifetime),
+                    bot=notify_bot,
+                )
+            except Exception:  # noqa: BLE001 — bildirishnoma limitni buzmasin
+                logger.info("Daily limit notice failed", exc_info=True)
             return {
                 "allowed": False,
                 "recorded": False,
                 "is_paid": False,
                 "error": "free_feature_limit_reached",
-                # Umrbod hisobda "ertaga ochiladi" degan narsa YO'Q, shuning
-                # uchun reset vaqti faqat kunlik limitda beriladi. Klient
-                # bo'sh qiymatda "ertaga" deb yozmasligi kerak.
-                "reset_at": (
-                    None
-                    if lifetime
-                    else self.next_daily_reset(offset_minutes=offset).isoformat()
-                ),
+                "reset_at": reset_at,
                 "lifetime": bool(lifetime),
             }
 

@@ -39,8 +39,11 @@ STATIC_CARD_SUBTYPES = {
 
 
 class CourseMiniAppPracticeService:
-    def __init__(self, session):
+    def __init__(self, session, bot=None):
         self.session = session
+        # Ixtiyoriy: bo'lsa limit tugagani haqida Telegram xabari ham ketadi.
+        # Bo'lmasa xabar faqat ilova ichidagi lentaga yoziladi.
+        self.bot = bot
         self.user_repo = UserRepository(session)
         self.lesson_repo = CourseLessonRepository(session)
         self.lesson_service = CourseMiniAppLessonService(session)
@@ -398,6 +401,7 @@ class CourseMiniAppPracticeService:
             user,
             feature_key=feature,
             ref=f"{mode}:{session_scope}",
+            notify_bot=self.bot,
         )
         if not access.get("allowed"):
             # `reset_at` — klient "qachon ochiladi" deb ayta olishi uchun.
@@ -467,6 +471,7 @@ class CourseMiniAppPracticeService:
             user,
             feature_key=feature,
             ref=f"{mode}:{session_scope}",
+            notify_bot=self.bot,
         )
         if not access.get("allowed"):
             return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}

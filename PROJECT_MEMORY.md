@@ -207,6 +207,59 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Limit haqida bot xabari (90% va 0%)
+
+Changed:
+- Yangi `app/services/limit_notification_service.py`. Ikki xil limit ikki xil
+  ishlaydi va shu farq kodda aniq yozilgan:
+  - **Darslar limiti** qaytib ochilmaydi -> oxiriga yaqinlashganda
+    OGOHLANTIRISH + tugaganda xabar.
+  - **Kunlik limit** ertaga o'zi ochiladi -> faqat TUGAGANDA xabar
+    (admin aynan shuni so'radi).
+- 90% chegarasi: `min(ceil(free * 0.9), free - 1)`. Sabab — 6 ta bepul
+  qismning 90% i 6 ga yaxlitlanadi, ya'ni "tugadi" bilan bir joyga tushib
+  ogohlantirish ma'nosini yo'qotadi. Bepul qism 2 tadan kam bo'lsa
+  ogohlantirish UMUMAN yo'q (bitta qismda "yaqinlashdi" degan payt yo'q).
+- Takror yubormaslik: xabar avval bildirishnoma lentasiga yoziladi
+  (`CourseUserNotification`, `UniqueConstraint(telegram_id, key, dedupe_key)`).
+  Qator yozilmasa — allaqachon aytilgan, demak Telegram xabari ham ketmaydi.
+  Dars xabari har daraja uchun har bosqichda bir marta; kunlik xabar har
+  bo'lim uchun kuniga bir marta (mahalliy sana bo'yicha).
+- Xabar matni uchala tilda (uz/ru/tj) `i18n.TEXTS` da. Ostida mavjud
+  "Obuna olish" tugmasi (`subscription_miniapp_keyboard`).
+- Kunlik limit vaqti xabarda o'quvchining O'Z soatida ko'rsatiladi
+  (profildagi `timezone_offset_minutes`). O'qib bo'lmasa vaqt umuman
+  yozilmaydi — noto'g'ri soat aytgandan ko'ra aytmagan yaxshi.
+- Bot ixtiyoriy: `notify_bot`/`bot=None`. Bo'lmasa xabar faqat lentaga
+  tushadi va limit javobi o'zgarmaydi. Xabar yuborilmasa (user botni
+  bloklagan bo'lsa ham) dars ham, limit ham buzilmaydi.
+
+Files touched:
+- `app/services/limit_notification_service.py` (yangi)
+- `app/services/course_miniapp_access_service.py` (`consume_daily_use(notify_bot=)`)
+- `app/services/course_miniapp_practice_service.py` (`__init__(bot=None)`)
+- `app/services/desktop_course_service.py` (`__init__(bot=None)`, dars xabari)
+- `app/services/course_notification_service.py` (3 ta yangi kalit: sarlavha,
+  amal, glif)
+- `app/bot/utils/i18n.py` (4 ta matn x 3 til)
+- `app/api/android_course.py`, `app/api/desktop_course.py`,
+  `app/api/android_features.py`, `app/main.py` (bot uzatish)
+- `tests/test_limit_notification_service.py` (yangi),
+  `tests/test_course_miniapp_practice.py` (chaqiruv shakli yangilandi)
+
+Tests:
+- `pytest tests/ -q --ignore=tests/e2e` -> **605 passed, 13575 subtests**.
+- 3 ta yiqilish AVVALDAN bor va bu ishga aloqasi yo'q
+  (`test_course_miniapp_foundation.py` 2 ta, `test_course_mistake_service.py` 1 ta).
+
+Risk:
+- Desktop practice router'da bot yo'q, shuning uchun u yerdagi kunlik limit
+  xabari faqat lentaga tushadi (Telegram'ga emas). Mini App, Android va
+  dars tugatish yo'llari to'liq qamrab olingan.
+- Xabar ko'p yuborilmasligi lentadagi unique constraint'ga tayanadi. Agar
+  kelajakda dedupe kaliti o'zgarsa, o'quvchi bir xil xabarni ikki marta
+  oladi.
+
 ### 2026-09-03 — Android: Google Play uchun xavfsiz limit bloki
 
 Changed:

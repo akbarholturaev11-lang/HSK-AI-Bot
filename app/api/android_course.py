@@ -138,6 +138,7 @@ def create_android_course_router(
     session_factory,
     settings_obj,
     service_factory: Callable[..., AndroidCourseService] = AndroidCourseService,
+    bot=None,
 ) -> APIRouter:
     router = APIRouter(tags=["android-course"])
 
@@ -202,7 +203,14 @@ def create_android_course_router(
                 DesktopCourseCompleteRequest,
             )
             async with session_factory() as session:
-                result = await service_factory(session, settings_obj).complete(
+                # Bot berilmagan bo'lsa chaqiruv shakli aynan eskisicha
+                # qoladi — mavjud testlar va fabrikalar buzilmaydi.
+                service = (
+                    service_factory(session, settings_obj, bot=bot)
+                    if bot is not None
+                    else service_factory(session, settings_obj)
+                )
+                result = await service.complete(
                     bearer_access_token(request),
                     lesson_order=payload.lesson_order,
                     event_id=payload.event_id,

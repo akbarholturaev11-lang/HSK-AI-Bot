@@ -66,6 +66,7 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
             self.user,
             feature_key="training_test",
             ref="mock:hsk2",
+            notify_bot=None,
         )
 
     async def test_daily_feature_limit_blocks_new_session(self):
@@ -94,6 +95,7 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
             self.user,
             feature_key="training_test",
             ref="training:listening",
+            notify_bot=None,
         )
 
     async def test_v3_pinyin_training_skill_is_supported(self):
@@ -209,6 +211,7 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
             self.user,
             feature_key="placement",
             ref="placement:hsk1",
+            notify_bot=None,
         )
         analytics.record_server_event.assert_awaited_once()
         self.service.mistakes.record_items.assert_awaited_once()
