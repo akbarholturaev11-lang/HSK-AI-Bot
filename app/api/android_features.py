@@ -41,7 +41,10 @@ from app.api.desktop_voice import (
     _validated_payload as _validated_voice_payload,
 )
 from app.repositories.user_repo import UserRepository
+from app.services.course_ad_service import CourseAdService
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
@@ -66,6 +69,33 @@ MIN_TIMEZONE_OFFSET = -720
 MAX_TIMEZONE_OFFSET = 840
 MAX_ANDROID_JSON_BODY_BYTES = 16 * 1024
 
+# Reklama turlaridan Android nimani ko'rsatishi mumkin.
+#
+# `app` turi HECH QAYSI kanalda berilmaydi: u desktop ilovani yuklab olishga
+# chaqiradigan promo, telefonda ma'nosi yo'q va platforma tugmalari Mini App
+# maketiga qurilgan.
+#
+# `dars_yakuni` turi ostida OBUNA tugmasi bilan chiqadi, shuning uchun u faqat
+# `direct` kanalda (APK / sayt / Telegram). Google Play build'i ilova ichida
+# tashqi to'lovga chaqira olmaydi.
+ANDROID_AD_TYPES_BY_CHANNEL = {
+    "play": ("odiy", "hamkorlik", "bot"),
+    "direct": ("odiy", "hamkorlik", "bot", "dars_yakuni"),
+}
+# Noma'lum qiymat kelsa cheklangan to'plam ishlaydi — xato tomonga emas.
+ANDROID_DEFAULT_AD_CHANNEL = "play"
+ANDROID_AD_SLOTS = ("practice", "lesson_end")
+# Reklama qaysi bo'limni ochishi mumkin. Mini App bilan bir xil ro'yxat.
+ANDROID_AD_GATE_FEATURES = {
+    "recognition",
+    "memorize",
+    "pronunciation",
+    "placement",
+    "training_test",
+    "mistake_review",
+    "lesson",
+}
+
 
 AndroidSessionId = Annotated[
     str,
@@ -84,6 +114,18 @@ class AndroidFeatureError(RuntimeError):
         self.status_code = status_code
 
 
+
+
+class AndroidAdAttemptRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    ad_id: int = Field(ge=1)
+    watched_seconds: int = Field(default=0, ge=0, le=3600)
+    feature: str = Field(default="", max_length=40)
+    lesson_order: int = Field(default=0, ge=0, le=10_000)
+    placement: str = Field(default="start", max_length=24)
+    access_ref: str = Field(default="", max_length=160)
+    attempt_token: str = Field(default="", max_length=120)
 
 
 class AndroidMistakeReviewStartRequest(BaseModel):
@@ -278,6 +320,143 @@ def create_android_features_router(
     async def _telegram_id(session, request: Request) -> int:
         context = await _context(session, request)
         return int(context.user.telegram_id)
+
+    def _ad_channel(request: Request) -> str:
+        raw = str(request.query_params.get("channel") or "").strip().lower()
+        return raw if raw in ANDROID_AD_TYPES_BY_CHANNEL else ANDROID_DEFAULT_AD_CHANNEL
+
+    @router.get("/api/v3/android/ad")
+    async def android_ad(request: Request):
+        """Reklama ro'yxati, o'rnatilgan kanalga ruxsat etilgan turlar bilan.
+
+        Til hisobdan olinadi, so'rovdan emas — klient o'zini boshqa tilda
+        ko'rsatib boshqa reklamalarni ola olmaydi.
+        """
+        try:
+            slot = str(request.query_params.get("slot") or "").strip().lower()
+            if slot not in ANDROID_AD_SLOTS:
+                slot = ANDROID_AD_SLOTS[0]
+            channel = _ad_channel(request)
+            allowed_types = ANDROID_AD_TYPES_BY_CHANNEL[channel]
+            async with session_factory() as session:
+                user = await _user(session, request)
+                # Dars yakuni bloki FAQAT bepul o'quvchiga. Obunachiga server
+                # ham bermaydi, klient xato hisoblasa ham reklama chiqmaydi.
+                if slot == "lesson_end" and CourseMiniAppAccessService.has_unlimited_course_access(
+                    user
+                ):
+                    raise AndroidFeatureError("course_ad_not_found", status_code=404)
+                service = CourseAdService(session)
+                language = CourseAdService.normalize_language(
+                    getattr(user, "language", None)
+                )
+                ads = await service.list_active_payloads(language=language, slot=slot)
+                if service.media_backup_changed:
+                    await session.commit()
+            ads = [ad for ad in ads if ad.get("ad_type") in allowed_types]
+            if not ads:
+                raise AndroidFeatureError("course_ad_not_found", status_code=404)
+            return JSONResponse(
+                content={"ok": True, "ads": ads, "slot": slot, "channel": channel},
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android ad listing failed")
+            return _error_response(
+                AndroidFeatureError("android_ad_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/ad/attempt")
+    async def android_ad_attempt(request: Request):
+        """Ko'rilgan reklamani yozadi va kerak bo'lsa bo'limni ochadi.
+
+        Ochish qarorini server beradi: klient "ko'rdim" deyishi yetarli emas,
+        `CourseAdService.record_view` reklama davomiyligini tekshiradi.
+        """
+        try:
+            payload = await _validated_payload(request, AndroidAdAttemptRequest)
+            feature = payload.feature.strip().lower()
+            if payload.lesson_order <= 0 and feature not in ANDROID_AD_GATE_FEATURES:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            placement = CourseAdService.normalize_placement(payload.placement)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                level = str(getattr(user, "level", None) or "hsk1").strip().lower()
+                service = CourseAdService(session)
+                result = await service.record_view(
+                    user=user,
+                    ad_id=payload.ad_id,
+                    level=level,
+                    lesson_order=payload.lesson_order,
+                    placement=placement,
+                    watched_seconds=payload.watched_seconds,
+                )
+                if not result.get("ok"):
+                    raise AndroidFeatureError(
+                        str(result.get("error") or "course_ad_not_found"),
+                        status_code=404,
+                    )
+                access_ref = payload.access_ref.strip()
+                should_authorize = bool(
+                    access_ref
+                    and (
+                        (payload.lesson_order <= 0 and feature in (ANDROID_AD_GATE_FEATURES - {"lesson"}))
+                        or (payload.lesson_order > 0 and feature == "lesson")
+                    )
+                )
+                if should_authorize:
+                    try:
+                        authorization = await CourseMiniAppAccessService(
+                            session
+                        ).record_ad_authorization(
+                            user,
+                            feature_key=feature,
+                            access_ref=access_ref,
+                            ad_id=payload.ad_id,
+                            placement=placement,
+                            attempt_token=payload.attempt_token.strip(),
+                            level=level if feature == "lesson" else None,
+                            lesson_order=payload.lesson_order if feature == "lesson" else None,
+                        )
+                    except ValueError:
+                        authorization = {"allowed": False, "error": "invalid_access_ref"}
+                    if not authorization.get("allowed"):
+                        await session.rollback()
+                        code = str(authorization.get("error") or "invalid_ad_authorization")
+                        raise AndroidFeatureError(
+                            code,
+                            status_code=403 if code == "course_access_blocked" else 400,
+                        )
+                    result["authorization"] = {
+                        "recorded": bool(authorization.get("recorded")),
+                        "idempotent": bool(authorization.get("idempotent")),
+                    }
+                await CourseMiniAppAnalyticsService(session).record_server_event(
+                    event_name="course_ad_viewed",
+                    telegram_id=int(user.telegram_id),
+                    user_id=getattr(user, "id", None),
+                    source="android_ad",
+                    level=level,
+                    lesson_order=payload.lesson_order,
+                    payload={
+                        "ad_id": payload.ad_id,
+                        "placement": placement,
+                        "watched_seconds": payload.watched_seconds,
+                        "feature": feature or None,
+                        "access_ref": access_ref or None,
+                    },
+                )
+                await session.commit()
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android ad attempt failed")
+            return _error_response(
+                AndroidFeatureError("android_ad_unavailable", status_code=503)
+            )
 
     @router.get("/api/v3/android/profile")
     async def android_profile(request: Request):

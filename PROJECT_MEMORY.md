@@ -207,6 +207,45 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Reklama: Android backend adapteri (kanal bo'yicha filtr)
+
+Changed:
+- `GET /api/v3/android/ad` va `POST /api/v3/android/ad/attempt` qo'shildi.
+  Ikkalasi ham bearer bilan; til HISOBDAN olinadi, so'rovdan emas.
+- **Kanal bo'yicha filtr** (admin qarori bo'yicha):
+  - `play`   -> `odiy`, `hamkorlik`, `bot`
+  - `direct` -> yuqoridagilar + `dars_yakuni`
+  - `app` turi HECH QAYSI kanalda berilmaydi: u desktop ilovani yuklab
+    olishga chaqiradigan promo, telefonda ma'nosi yo'q va uning platforma
+    tugmalari Mini App maketiga qurilgan.
+  Noma'lum yoki bo'sh `channel` -> `play` (cheklangan to'plam). Xato tomonga
+  kengaymaydi.
+- `dars_yakuni` ostida OBUNA tugmasi bilan chiqadi, shuning uchun Play
+  kanalida u umuman berilmaydi: `slot=lesson_end` so'ralsa Play build 404
+  oladi (o'sha slotda boshqa tur yo'q).
+- Reklama ko'rilgani `CourseAdService.record_view` orqali yoziladi va
+  kerak bo'lsa `record_ad_authorization` bo'limni ochadi. Ochish qarorini
+  SERVER beradi: klientning "ko'rdim" deyishi yetarli emas, davomiylik
+  tekshiriladi. Mini App bilan bir xil xizmatlar ishlatiladi.
+
+Files touched:
+- `app/api/android_features.py` (2 ta marshrut, kanal jadvali, so'rov modeli)
+- `tests/test_android_features_api.py` (kanal chegarasi bo'yicha yangi sinf,
+  marshrutlar ro'yxati yangilandi)
+
+Tests:
+- `pytest tests/ -q --ignore=tests/e2e` -> **612 passed, 13583 subtests**.
+- 3 ta yiqilish AVVALDAN bor va bu ishga aloqasi yo'q.
+- Play testi ataylab `slot=lesson_end` ni so'raydi: `practice` slotini
+  so'raganda filtr ishlamasa ham test o'tib ketardi.
+
+Risk:
+- `channel` klientdan keladi va soxtalashtirilishi mumkin. Bu xavf emas:
+  soxtalashtirish faqat KO'PROQ reklama ko'rsatadi, Play qoidasi esa
+  ilova ICHIDA nima borligi bilan bog'liq — Play build'da o'sha turni
+  ko'rsatadigan UI yo'q.
+- Android UI hali yo'q: bu qadam faqat backend adapteri.
+
 ### 2026-09-03 — Limit haqida bot xabari (90% va 0%)
 
 Changed:

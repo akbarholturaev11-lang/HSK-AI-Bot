@@ -28,7 +28,9 @@ from app.api.android_features import (
     create_android_features_router,
 )
 from app.db.base import Base
+from app.db.models.course_ad import CourseAdCreative
 from app.db.models.user import User
+from app.services.course_ad_service import CourseAdService
 from app.services.desktop_auth_service import DesktopAuthService
 
 
@@ -299,6 +301,144 @@ class AndroidSubscriptionHandoffApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(body["access"]["is_paid"])
 
 
+class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
+    """Which ads each distribution channel is allowed to receive.
+
+    This is a policy boundary, not a preference: the Google Play build may not
+    send a learner out of the app to pay, so the ad type that carries a
+    subscription button must never reach it. The desktop-download promo never
+    reaches Android at all — it is built for the Mini App layout and means
+    nothing on a phone.
+    """
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        async with self.sessions() as session:
+            session.add(_user(1, 1001, "Account A"))
+            for index, ad_type in enumerate(
+                ("odiy", "hamkorlik", "bot", "dars_yakuni", "app")
+            ):
+                session.add(
+                    CourseAdCreative(
+                        title=f"{ad_type} creative",
+                        media_path=f"{ad_type}.mp4",
+                        media_type="video",
+                        language="all",
+                        ad_type=ad_type,
+                        duration_seconds=7,
+                        is_active=True,
+                        created_at=datetime(2026, 9, 1, 12, index, tzinfo=timezone.utc),
+                    )
+                )
+            await session.commit()
+
+        # The creatives have no file on disk; this test is about which types
+        # are handed out, not about media storage.
+        self.media = patch.object(
+            CourseAdService,
+            "ensure_media_available",
+            classmethod(lambda cls, ad: (True, False)),
+        )
+        self.media.start()
+        self.addCleanup(self.media.stop)
+
+        app = FastAPI()
+        app.include_router(
+            create_android_features_router(
+                session_factory=self.sessions,
+                settings_obj=_settings(),
+            )
+        )
+        self.client = AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://android.test",
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.engine.dispose()
+
+    async def _token(self, installation="a" * 48):
+        async with self.sessions() as session:
+            auth = DesktopAuthService(session, _settings())
+            started = await auth.start_link(
+                platform="android",
+                app_version="1.1.0",
+                installation_key=installation,
+            )
+            await auth.approve_link(
+                display_code=started["display_code"],
+                telegram_id=1001,
+            )
+            linked = await auth.poll_link(
+                link_request_id=started["link_request_id"],
+                polling_secret=started["polling_secret"],
+            )
+            return linked["access_token"]
+
+    async def _ask(self, query=""):
+        token = await self._token()
+        response = await self.client.get(
+            f"/api/v3/android/ad{query}",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        return response
+
+    async def _types(self, query=""):
+        response = await self._ask(query)
+        self.assertEqual(200, response.status_code, response.text)
+        body = response.json()
+        return {ad["ad_type"] for ad in body["ads"]}, body
+
+    async def test_the_play_channel_never_gets_a_subscription_ad(self):
+        # The lesson-end slot holds nothing BUT the subscription block, so a
+        # Play build asking for it must come away empty rather than served.
+        # Asking for the practice slot would pass even with no channel filter.
+        response = await self._ask("?channel=play&slot=lesson_end")
+        self.assertEqual(404, response.status_code, response.text)
+        self.assertEqual("course_ad_not_found", response.json()["error"])
+
+    async def test_the_play_channel_still_gets_the_ordinary_ads(self):
+        # Excluding the unsafe type must not leave the Play build with nothing.
+        types, _ = await self._types("?channel=play")
+        self.assertEqual({"odiy", "hamkorlik", "bot"}, types)
+
+    async def test_the_direct_channel_may_show_the_lesson_end_block(self):
+        types, body = await self._types("?channel=direct&slot=lesson_end")
+        self.assertIn("dars_yakuni", types)
+        self.assertEqual("direct", body["channel"])
+
+    async def test_the_desktop_promo_never_reaches_android(self):
+        for query in ("?channel=play", "?channel=direct"):
+            with self.subTest(query=query):
+                types, _ = await self._types(query)
+                self.assertNotIn("app", types)
+
+    async def test_an_unknown_channel_falls_back_to_the_restricted_set(self):
+        # A missing or odd value must not accidentally widen what is shown:
+        # only an explicit "direct" unlocks the lesson-end block.
+        for suffix in ("", "&channel=", "&channel=web"):
+            with self.subTest(channel=suffix):
+                response = await self._ask(f"?slot=lesson_end{suffix}")
+                self.assertEqual(404, response.status_code, response.text)
+
+    async def test_the_channel_name_is_read_case_insensitively(self):
+        types, body = await self._types("?channel=PLAY")
+        self.assertEqual("play", body["channel"])
+        self.assertNotIn("app", types)
+
+    async def test_an_anonymous_caller_gets_no_ads(self):
+        response = await self.client.get("/api/v3/android/ad")
+        self.assertEqual(401, response.status_code)
+        self.assertFalse(response.json()["ok"])
+
+
 class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
     """Every feature route is bearer-only; none of them accept an anonymous call."""
 
@@ -318,6 +458,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/voice/session/start"),
         ("POST", "/api/v3/android/voice/message"),
         ("POST", "/api/v3/android/voice/session/end"),
+        ("GET", "/api/v3/android/ad"),
+        ("POST", "/api/v3/android/ad/attempt"),
     )
 
     async def asyncSetUp(self):
@@ -369,6 +511,7 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("GET", "/api/v3/android/rating/leaderboard"),
         ("GET", "/api/v3/android/referral/overview"),
         ("GET", "/api/v3/android/voice/status"),
+        ("GET", "/api/v3/android/ad"),
     )
 
     async def test_no_route_does_any_work_without_a_bearer_token(self):
