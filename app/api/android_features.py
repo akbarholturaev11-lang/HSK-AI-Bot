@@ -208,19 +208,6 @@ def _service_response(result: dict[str, Any]) -> JSONResponse:
     )
 
 
-def _support_url(settings_obj) -> str:
-    """Where a learner goes for help. Empty unless an admin configured it.
-
-    The Play build has no checkout, so support is the only outward link it
-    offers — and it must never be a payment page. Fail-closed on purpose: an
-    unset value hides the button rather than opening something unintended.
-    """
-
-    raw = str(getattr(settings_obj, "SUPPORT_CONTACT_URL", "") or "").strip()
-    allowed = ("https://", "tg://", "mailto:")
-    return raw if raw.startswith(allowed) else ""
-
-
 def _bot_url(settings_obj) -> str:
     """Deep link to the bot chat where the subscription Mini App is offered."""
 
@@ -241,7 +228,6 @@ def _subscription_payload(user, profile_payload: dict[str, Any], settings_obj) -
     state = UserAccessStateService.classify(user)
     subscription = profile_payload.get("subscription") if isinstance(profile_payload, dict) else {}
     bot_url = _bot_url(settings_obj)
-    support_url = _support_url(settings_obj)
     return {
         "ok": True,
         "source": "android_subscription",
@@ -253,12 +239,6 @@ def _subscription_payload(user, profile_payload: dict[str, Any], settings_obj) -
         },
         "checkout_allowed": False,
         "read_only_reason": "android_checkout_is_in_telegram",
-        # Play kanalidagi build'da tashqi checkout yo'q, shuning uchun yagona
-        # tashqi havola — yordam. Sozlanmagan bo'lsa tugma ko'rsatilmaydi.
-        "support": {
-            "url": support_url,
-            "configured": bool(support_url),
-        },
         "billing": {
             "provider": "telegram_bot",
             "configured": bool(bot_url),

@@ -50,8 +50,8 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
-import com.pomp.hskai.feature.limit.LimitBlock
-import com.pomp.hskai.feature.limit.SubscriptionHandoffState
+import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitBlock
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.LessonAccess
@@ -69,10 +69,9 @@ import com.pomp.hskai.domain.model.LessonStatus
 fun CourseScreen(
     state: CourseUiState,
     dailyGoal: Int,
-    handoff: SubscriptionHandoffState,
+    limit: LimitGate,
     onLesson: (CourseLesson) -> Unit,
     onOpenGoal: () -> Unit,
-    onUnlock: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -135,8 +134,7 @@ fun CourseScreen(
 
                                 is CourseRow.LockedLesson -> LockedLessonCard(
                                     lesson = row.lesson,
-                                    handoff = handoff,
-                                    onUnlock = onUnlock,
+                                    limit = limit,
                                 )
                             }
                         }
@@ -473,16 +471,17 @@ private enum class NodeContent { Done, Locked, Premium, Checkpoint, Glyph }
 @Composable
 private fun LockedLessonCard(
     lesson: CourseLesson,
-    handoff: SubscriptionHandoffState,
-    onUnlock: () -> Unit,
+    limit: LimitGate,
 ) {
-    LimitBlock(
+    SectionLimitBlock(
         sectionTitle = stringResource(R.string.course_lesson_label, lesson.sourceLesson) +
             lesson.hanziPreview.takeIf { it.isNotBlank() }?.let { " · $it" }.orEmpty(),
-        reason = lesson.stateLabel(),
-        state = handoff,
-        onUnlock = onUnlock,
+        limit = limit,
         modifier = Modifier.padding(vertical = 10.dp),
+        reason = lesson.stateLabel(),
+        // A closed textbook lesson is not a daily allowance: nothing reopens
+        // tomorrow, so no reset time is promised.
+        resetAt = null,
     )
 }
 

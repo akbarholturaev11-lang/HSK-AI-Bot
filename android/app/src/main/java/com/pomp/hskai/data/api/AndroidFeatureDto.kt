@@ -302,6 +302,11 @@ data class VoiceStatusResponse(
     @SerialName("level") val level: String = "hsk1",
     @SerialName("language") val language: String = "uz",
     @SerialName("completed_lessons") val completedLessons: Int = 0,
+    /**
+     * When the daily free limit reopens, as a server instant. Null for a
+     * subscriber (no limit) and whenever the server did not say.
+     */
+    @SerialName("reset_at") val resetAt: String? = null,
 )
 
 @Serializable

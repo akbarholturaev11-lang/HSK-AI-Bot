@@ -32,10 +32,6 @@ class Settings(BaseSettings):
     # Kunlik bepul limit o'quvchining MAHALLIY vaqti bilan qaysi soatda
     # yangilanadi. Default 0 — mahalliy yarim tun.
     COURSE_DAILY_RESET_HOUR_LOCAL: int = 0
-    # Yordam kanali (https:// , tg:// yoki mailto:). Bo'sh bo'lsa klientda
-    # yordam tugmasi ko'rsatilmaydi — noto'g'ri joyga olib borgandan ko'ra
-    # ko'rsatmagan yaxshi.
-    SUPPORT_CONTACT_URL: str = ""
     MINI_APP_BASE_URL: str = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
 
     # Desktop release controls. Downloads remain hidden unless the flag is on

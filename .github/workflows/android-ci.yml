@@ -108,6 +108,12 @@ jobs:
       - name: Check test fakes match their interfaces
         run: python3 tools/check_interface_fakes.py
 
+      # Compose is almost all named arguments, so renaming a parameter breaks
+      # every call site. Catching that here costs a second instead of a full
+      # Gradle run.
+      - name: Check named arguments match their declarations
+        run: python3 tools/check_named_arguments.py
+
       # Both distribution flavours are verified. The Play build is the one
       # with policy constraints, so it must never be the untested one.
       - name: Unit tests

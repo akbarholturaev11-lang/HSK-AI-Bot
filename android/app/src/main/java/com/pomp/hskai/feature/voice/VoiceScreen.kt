@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
-import com.pomp.hskai.feature.limit.LimitBlock
-import com.pomp.hskai.feature.limit.SubscriptionHandoffState
+import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitBlock
 import com.pomp.hskai.core.design.PompTextStyles
 
 @Composable
@@ -45,8 +45,7 @@ fun VoiceScreen(
     state: VoiceUiState,
     level: String,
     language: String,
-    handoff: SubscriptionHandoffState,
-    onUnlock: () -> Unit,
+    limit: LimitGate,
     onSelectRole: (String) -> Unit,
     onStartSession: (String, String) -> Unit,
     onToggleRecording: () -> Unit,
@@ -66,10 +65,9 @@ fun VoiceScreen(
                 state = state,
                 level = level,
                 language = language,
-                handoff = handoff,
+                limit = limit,
                 onSelectRole = onSelectRole,
                 onStartSession = onStartSession,
-                onUnlock = onUnlock,
             )
         }
     }
@@ -80,10 +78,9 @@ private fun VoiceHome(
     state: VoiceUiState,
     level: String,
     language: String,
-    handoff: SubscriptionHandoffState,
+    limit: LimitGate,
     onSelectRole: (String) -> Unit,
     onStartSession: (String, String) -> Unit,
-    onUnlock: () -> Unit,
 ) {
     val roles = remember {
         listOf(
@@ -128,11 +125,13 @@ private fun VoiceHome(
             // A spent free allowance is not a disabled button: it is the one
             // place where the learner is shown how to open the section.
             if (state.status != null && !canStartVoice(state)) {
-                LimitBlock(
+                SectionLimitBlock(
                     sectionTitle = stringResource(R.string.nav_ai),
+                    limit = limit,
                     reason = stringResource(R.string.limit_voice_reason),
-                    state = handoff,
-                    onUnlock = onUnlock,
+                    // The server says when the daily allowance reopens; the
+                    // hour is never assumed on the client.
+                    resetAt = state.status?.resetAt,
                 )
             } else {
                 Button(

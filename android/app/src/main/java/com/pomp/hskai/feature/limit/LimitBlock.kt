@@ -13,42 +13,49 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 
 /**
- * What the learner sees when a section is out of free allowance.
+ * The card a learner sees when a section is out of free allowance.
  *
- * Subscription is never sold inside this app: the button hands the learner to
- * the Telegram bot, which opens the existing subscription Mini App. Access
- * then lifts on the next server refresh. Until it is paid, this block keeps
- * appearing — nothing here unlocks anything on the client.
+ * It is deliberately text-free: every word comes from the caller, because the
+ * two distribution channels say different things here and the Google Play
+ * build must not even contain the other channel's wording. Nothing on this
+ * card unlocks anything — access is re-read from the server.
  *
- * @param sectionTitle the blocked section, named so the learner knows what
- *   they are unlocking rather than seeing a bare paywall.
+ * @param sectionTitle the blocked section, named so the learner knows what is
+ *   closed rather than seeing a bare paywall.
+ * @param headline the one line that explains the block.
+ * @param hint optional smaller line under the buttons.
+ * @param secondaryLabel when null, only the primary button is shown.
  */
 @Composable
 fun LimitBlock(
     sectionTitle: String,
-    state: SubscriptionHandoffState,
-    onUnlock: () -> Unit,
+    headline: String,
+    primaryLabel: String,
+    onPrimary: () -> Unit,
     modifier: Modifier = Modifier,
     reason: String? = null,
+    hint: String? = null,
+    secondaryLabel: String? = null,
+    onSecondary: (() -> Unit)? = null,
+    isBusy: Boolean = false,
+    errorText: String? = null,
 ) {
     Surface(
         color = PompColors.PaperRaised,
@@ -83,7 +90,7 @@ fun LimitBlock(
 
             Spacer(Modifier.height(12.dp))
             Text(
-                text = stringResource(R.string.limit_unlock_headline),
+                text = headline,
                 style = MaterialTheme.typography.titleMedium,
                 color = PompColors.CinnabarDark,
                 fontWeight = FontWeight.Bold,
@@ -91,8 +98,8 @@ fun LimitBlock(
 
             Spacer(Modifier.height(10.dp))
             Button(
-                onClick = onUnlock,
-                enabled = !state.isOpening,
+                onClick = onPrimary,
+                enabled = !isBusy,
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 52.dp),
@@ -104,7 +111,7 @@ fun LimitBlock(
                     disabledContentColor = PompColors.Paper,
                 ),
             ) {
-                if (state.isOpening) {
+                if (isBusy) {
                     CircularProgressIndicator(
                         color = PompColors.Paper,
                         strokeWidth = 2.dp,
@@ -112,26 +119,40 @@ fun LimitBlock(
                     )
                 } else {
                     Text(
-                        text = stringResource(R.string.limit_unlock_button),
+                        text = primaryLabel,
                         style = MaterialTheme.typography.labelLarge,
-                    )
-                    Spacer(Modifier.width(6.dp))
-                    Icon(
-                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
                     )
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.limit_unlock_hint),
-                style = MaterialTheme.typography.bodySmall,
-                color = PompColors.InkSecondary,
-            )
+            if (secondaryLabel != null && onSecondary != null) {
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = onSecondary,
+                    enabled = !isBusy,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                ) {
+                    Text(
+                        text = secondaryLabel,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = PompColors.CinnabarDark,
+                    )
+                }
+            }
 
-            state.error?.let { error ->
+            if (!hint.isNullOrBlank()) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = hint,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PompColors.InkSecondary,
+                )
+            }
+
+            if (!errorText.isNullOrBlank()) {
                 Spacer(Modifier.height(10.dp))
                 Surface(
                     color = PompColors.CinnabarSoft,
@@ -143,7 +164,7 @@ fun LimitBlock(
                         verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
                         Text(
-                            text = stringResource(error.messageRes),
+                            text = errorText,
                             style = MaterialTheme.typography.bodyMedium,
                             color = PompColors.CinnabarDark,
                         )

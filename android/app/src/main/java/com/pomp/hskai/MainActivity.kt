@@ -78,6 +78,9 @@ import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
+import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.LimitGateActions
+import com.pomp.hskai.feature.limit.LimitGateState
 import com.pomp.hskai.feature.limit.SubscriptionHandoffViewModel
 import com.pomp.hskai.feature.rating.RatingScreen
 import com.pomp.hskai.feature.rating.RatingViewModel
@@ -279,6 +282,31 @@ private fun AppRoot(
                 onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
             }
 
+            // Everything a limit block is able to do, assembled once. WHICH of
+            // these a learner is actually offered is decided by the
+            // distribution channel's own block, not by the screens — so no
+            // screen has to know which build it is running in.
+            val supportUrl = profileState.profile?.supportUrl.orEmpty()
+            val limitGate = LimitGate(
+                state = LimitGateState(
+                    isBusy = handoffState.isOpening,
+                    error = handoffState.error,
+                    supportUrl = supportUrl,
+                ),
+                actions = LimitGateActions(
+                    onUnlock = handoffViewModel::openSubscription,
+                    // Access is re-read from the server; nothing is unlocked
+                    // locally, so an active subscription bought anywhere shows
+                    // up here on the next read.
+                    onRecheck = {
+                        courseViewModel.load()
+                        profileViewModel.load()
+                        voiceViewModel.loadStatus()
+                    },
+                    onSupport = { openExternal(context, supportUrl) },
+                ),
+            )
+
             val dailyGoal by app.appSettings.dailyGoal
                 .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
             var goalPickerOpen by remember { mutableStateOf(false) }
@@ -401,10 +429,9 @@ private fun AppRoot(
                     MainTab.COURSE -> CourseScreen(
                         state = courseState,
                         dailyGoal = dailyGoal,
-                        handoff = handoffState,
+                        limit = limitGate,
                         onLesson = ::launchLesson,
                         onOpenGoal = { goalPickerOpen = true },
-                        onUnlock = handoffViewModel::openSubscription,
                         onRetry = courseViewModel::load,
                         modifier = contentModifier,
                     )
@@ -429,8 +456,7 @@ private fun AppRoot(
                         state = voiceState,
                         level = currentLevel,
                         language = currentLanguage,
-                        handoff = handoffState,
-                        onUnlock = handoffViewModel::openSubscription,
+                        limit = limitGate,
                         onSelectRole = voiceViewModel::selectRole,
                         onStartSession = voiceViewModel::startSession,
                         onToggleRecording = voiceViewModel::toggleRecording,
