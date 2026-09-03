@@ -207,6 +207,52 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Android telefon ekranida lokal bildirishnoma (Faza H, A varianti)
+
+Changed:
+- Endi eslatma **telefon ekranida** ilova nomidan chiqadi. Ilgari faqat bot
+  Telegram'ga xabar yozardi; Android'da bildirishnoma kodi UMUMAN yo'q edi
+  (`POST_NOTIFICATIONS` manifestda e'lon qilingan, lekin ishlatilmagan).
+- **Firebase/FCM ISHLATILMADI.** WorkManager (dependency allaqachon bor edi)
+  kuniga bir marta, mahalliy soat 20:00 atrofida tekshiradi.
+- Ikkita eslatma turi: seriya uzilish arafasida (streak > 0 va bugun 0 XP) va
+  kunlik maqsad bajarilmagan. Maqsad bajarilgan bo'lsa — jim.
+- **Qaror mantig'i Android'dan ajratildi**: `ReminderDecision` va
+  `ReminderSchedule` sof Kotlin, shuning uchun SDK'siz muhitda ham
+  kompilyatsiya qilinib test yugurtiriladi (13 ta test).
+- Bosish `pomp-hsk-ai://lesson/current` ni ochadi — resolve ≠ authorize,
+  dars baribir serverdan tekshiriladi.
+
+Rules baked in:
+- Kuniga BITTA eslatma; sana serverning `local_date`i bo'yicha, qurilmaniki
+  emas — bot bilan bir xil kun hisoblansin.
+- `isStale` kesh bilan HECH QACHON bildirishnoma chiqarilmaydi: "bugungi XP"
+  aynan eskirganda noto'g'ri bo'ladi, shuning uchun `Result.retry()`.
+- Faqat HAQIQATAN yuborilgan eslatma kunni "sarflaydi" (ruxsat bekor qilingan
+  bo'lsa kun yonmaydi).
+- Server bayrog'i o'chirilsa (boshqa klientda ham) work bekor qilinadi.
+- `POST_NOTIFICATIONS` faqat Android 13+ da bor; 8-12 da
+  `areNotificationsEnabled()` so'raladi. Aks holda eski qurilmalarda eslatma
+  butunlay o'chib qolardi.
+
+Files touched:
+- `android/.../core/notify/**` (yangi: ReminderDecision, ReminderSchedule,
+  StudyNotifications, StudyReminderWorker), `core/settings/AppSettings.kt`,
+  `MainActivity.kt`, `res/drawable/ic_notification.xml` (yangi),
+  `res/values*/strings.xml`, testlar.
+
+Risk:
+- Backend TEGILMADI: yangi endpoint, jadval, migratsiya yo'q. Qurilma token
+  saqlanmaydi, hech narsa serverga yuborilmaydi.
+- WorkManager kafolatlangan aniq vaqt bermaydi — batareya optimizatsiyasi
+  kechiktirishi mumkin. Real vaqtli hodisa (masalan "ligada o'zib ketishdi")
+  bu yo'l bilan berilmaydi; u FCM talab qiladi.
+- Real qurilmada sinalmagan (bu muhitda emulyator yo'q).
+
+Follow-up:
+- FCM (B varianti) alohida bosqich: Firebase loyihasi + `google-services.json`
+  admin tarafidan kerak, backend'da qurilma token jadvali = migratsiya.
+
 ### 2026-09-03 — Android profilida til, bildirishnoma va yordam (parity Faza 2.1)
 
 Changed:

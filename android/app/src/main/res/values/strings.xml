@@ -215,4 +215,10 @@
     <string name="profile_help">Yordam</string>
     <string name="profile_help_action">Adminga yozish</string>
     <string name="profile_help_unavailable">Hozircha mavjud emas</string>
+    <string name="notify_channel_name">Mashq eslatmalari</string>
+    <string name="notify_channel_body">Ketma-ket kunlar uzilmasligi va kunlik maqsad uchun eslatma</string>
+    <string name="notify_streak_title">Seriyangiz uzilish arafasida</string>
+    <string name="notify_streak_body">Bugun hali bitta ham dars qilmadingiz. Bir qism yetadi — seriya saqlanadi.</string>
+    <string name="notify_goal_title">Kunlik maqsad hali tugamadi</string>
+    <string name="notify_goal_body">Bugungi maqsadingizgacha ozgina qoldi. Bir qismni tugating.</string>
 </resources>

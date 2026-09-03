@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Status bar icons are drawn as a mask: only the alpha channel survives, so
+    this is a single flat white glyph rather than the coloured launcher art.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFFFF">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,2C8.13,2 5,5.13 5,9v5.59l-1.7,1.7A1,1 0,0 0,4 18h16a1,1 0,0 0,0.7,-1.71L19,14.59V9c0,-3.87 -3.13,-7 -7,-7zM12,22a2.5,2.5 0,0 0,2.45 -2h-4.9A2.5,2.5 0,0 0,12 22z" />
+</vector>

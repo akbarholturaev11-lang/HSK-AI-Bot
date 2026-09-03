@@ -187,4 +187,10 @@
     <string name="profile_help">Помощь</string>
     <string name="profile_help_action">Написать админу</string>
     <string name="profile_help_unavailable">Пока недоступно</string>
+    <string name="notify_channel_name">Напоминания о занятиях</string>
+    <string name="notify_channel_body">Напоминание про серию дней и дневную цель</string>
+    <string name="notify_streak_title">Серия под угрозой</string>
+    <string name="notify_streak_body">Сегодня вы ещё не занимались. Одной части хватит, чтобы сохранить серию.</string>
+    <string name="notify_goal_title">Дневная цель ещё не выполнена</string>
+    <string name="notify_goal_body">До сегодняшней цели осталось немного. Завершите одну часть.</string>
 </resources>

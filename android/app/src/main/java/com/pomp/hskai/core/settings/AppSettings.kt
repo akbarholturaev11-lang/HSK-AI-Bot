@@ -64,6 +64,15 @@ class AppSettings(context: Context) {
     val dailyGoal: Flow<Int> = appContext.settingsDataStore.data
         .map { DailyGoal.sanitize(it[DAILY_GOAL_KEY]) }
 
+    /**
+     * The server-local date this device last posted a study reminder on.
+     *
+     * It is the server's date, not the device's, so the "one reminder a day"
+     * rule agrees with the day the backend counts progress in.
+     */
+    val lastReminderDate: Flow<String?> = appContext.settingsDataStore.data
+        .map { it[LAST_REMINDER_DATE_KEY] }
+
     suspend fun setPinyinVisibility(value: PinyinVisibility) {
         appContext.settingsDataStore.edit { it[PINYIN_KEY] = value.wireValue }
     }
@@ -72,8 +81,13 @@ class AppSettings(context: Context) {
         appContext.settingsDataStore.edit { it[DAILY_GOAL_KEY] = DailyGoal.sanitize(value) }
     }
 
+    suspend fun setLastReminderDate(value: String) {
+        appContext.settingsDataStore.edit { it[LAST_REMINDER_DATE_KEY] = value }
+    }
+
     private companion object {
         val PINYIN_KEY = stringPreferencesKey("pinyin_visibility")
         val DAILY_GOAL_KEY = intPreferencesKey("daily_goal_xp")
+        val LAST_REMINDER_DATE_KEY = stringPreferencesKey("last_reminder_date")
     }
 }

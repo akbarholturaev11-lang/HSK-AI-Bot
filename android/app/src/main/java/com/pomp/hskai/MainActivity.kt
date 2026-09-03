@@ -5,7 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +50,8 @@ import com.pomp.hskai.core.auth.AuthState
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompHskAiTheme
 import com.pomp.hskai.core.navigation.DeepLinkRouter
+import com.pomp.hskai.core.notify.StudyNotifications
+import com.pomp.hskai.core.notify.StudyReminderScheduler
 import com.pomp.hskai.core.navigation.AppDestination
 import com.pomp.hskai.core.navigation.DeepLinkRefreshGate
 import com.pomp.hskai.core.navigation.DestinationRequest
@@ -232,6 +236,31 @@ private fun AppRoot(
                 )
             }
 
+            // Reminders are only useful once the system has actually allowed
+            // them, so the runtime permission is asked for at the moment the
+            // learner turns them on — never on a cold start.
+            val notificationPermission = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { granted ->
+                if (granted) StudyReminderScheduler.schedule(context)
+            }
+
+            val notificationsOn = courseState.map?.notificationsEnabled
+            LaunchedEffect(notificationsOn) {
+                when (notificationsOn) {
+                    true -> if (StudyNotifications.canPost(context)) {
+                        StudyReminderScheduler.schedule(context)
+                    }
+
+                    false -> {
+                        StudyReminderScheduler.cancel(context)
+                        StudyNotifications.cancelReminder(context)
+                    }
+
+                    null -> Unit
+                }
+            }
+
             // Entitlement is re-read from the server when the learner comes
             // back from Telegram. The client never decides it locally.
             DisposableEffect(lifecycleOwner, handoffState.awaitingReturn) {
@@ -404,7 +433,18 @@ private fun AppRoot(
                         notificationsEnabled = courseState.map?.notificationsEnabled ?: true,
                         onOpenGoal = { goalPickerOpen = true },
                         onOpenLanguage = { languagePickerOpen = true },
-                        onToggleNotifications = settingsViewModel::setNotifications,
+                        onToggleNotifications = { enabled ->
+                            if (enabled &&
+                                android.os.Build.VERSION.SDK_INT >=
+                                android.os.Build.VERSION_CODES.TIRAMISU &&
+                                !StudyNotifications.canPost(context)
+                            ) {
+                                notificationPermission.launch(
+                                    android.Manifest.permission.POST_NOTIFICATIONS,
+                                )
+                            }
+                            settingsViewModel.setNotifications(enabled)
+                        },
                         onOpenSupport = { url -> openExternal(context, url) },
                         onRefresh = profileViewModel::load,
                         onLogout = { signOut(false) },
