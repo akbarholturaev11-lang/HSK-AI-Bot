@@ -66,8 +66,10 @@ fun VoiceScreen(
                 state = state,
                 level = level,
                 language = language,
+                handoff = handoff,
                 onSelectRole = onSelectRole,
                 onStartSession = onStartSession,
+                onUnlock = onUnlock,
             )
         }
     }
@@ -78,8 +80,10 @@ private fun VoiceHome(
     state: VoiceUiState,
     level: String,
     language: String,
+    handoff: SubscriptionHandoffState,
     onSelectRole: (String) -> Unit,
     onStartSession: (String, String) -> Unit,
+    onUnlock: () -> Unit,
 ) {
     val roles = remember {
         listOf(
