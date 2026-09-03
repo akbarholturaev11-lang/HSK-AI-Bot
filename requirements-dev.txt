@@ -1,3 +1,6 @@
 -r requirements.txt
 pytest
 playwright
+# Async SQLite driver used by the test suites ("sqlite+aiosqlite://").
+# Production runs on asyncpg/Postgres, so this stays a test-only dependency.
+aiosqlite
