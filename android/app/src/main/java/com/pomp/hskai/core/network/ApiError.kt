@@ -69,6 +69,9 @@ sealed interface ApiError {
 
                 "mistake_review_empty" -> R.string.error_no_mistakes
 
+                "android_subscription_handoff_unavailable",
+                -> R.string.limit_unlock_unavailable
+
                 "AI_UNAVAILABLE",
                 "AI_FAILED",
                 "AI_TIMEOUT",

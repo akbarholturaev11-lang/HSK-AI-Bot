@@ -589,6 +589,7 @@ app.include_router(
     create_android_features_router(
         session_factory=async_session_maker,
         settings_obj=settings,
+        bot=bot,
     )
 )
 

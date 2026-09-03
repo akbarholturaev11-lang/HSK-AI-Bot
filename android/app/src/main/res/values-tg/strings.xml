@@ -177,4 +177,9 @@
     <string name="profile_goal_percent">%1$d%% иҷро шуд</string>
     <string name="profile_goal_picker_title">Ҳадафи рӯзонаро интихоб кунед</string>
     <string name="profile_goal_option">%1$d XP</string>
+    <string name="limit_unlock_headline">Бе маҳдудият кушоед 👇🏽</string>
+    <string name="limit_unlock_button">Бе маҳдудият омӯхтан</string>
+    <string name="limit_unlock_hint">Тугма Telegram-ботро мекушояд. Обуна дар ҳамон ҷо ба расмият дароварда мешавад, баъд ин ҷо ҳама чиз кушода мешавад.</string>
+    <string name="limit_unlock_unavailable">Telegram-ботро кушода натавонистем. Худатон ба бот ворид шавед ё баъдтар кӯшиш кунед.</string>
+    <string name="limit_voice_reason">Сӯҳбатҳои ройгони AI Voice барои имрӯз тамом шуданд.</string>
 </resources>

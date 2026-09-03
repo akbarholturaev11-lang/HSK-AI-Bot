@@ -207,6 +207,57 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Android'da obuna SOTILMAYDI: limit bloki Telegram'ga uzatadi
+
+Changed:
+- **Qaror: Android ichida obuna oqimi YO'Q.** Play Billing ham yozilmaydi.
+  Limitga tushgan user "obuna ol" o'rniga bo'lim nomi + "Limitsiz oching 👇🏽"
+  + `Limitsiz o'qish` tugmasini ko'radi; tugma Telegram botni ochadi, obuna
+  o'sha yerdagi mavjud subscription Mini App orqali rasmiylashtiriladi.
+- Yangi yupqa adapter: `POST /api/v3/android/subscription/open` — mavjud
+  `StudyMiniAppService.send_subscription_menu()` ni chaqiradi (Mini App'dagi
+  `subscribe_clicked` bilan bir xil yo'l). Yangi to'lov/narx/faollashtirish
+  logikasi YOZILMADI.
+- `_subscription_payload` qayta yozildi: `provider` endi `google_play` emas,
+  `telegram_bot`; `bot_url` qo'shildi; `read_only_reason` →
+  `android_checkout_is_in_telegram`.
+- Android: `feature/limit/` (LimitBlock + SubscriptionHandoffViewModel).
+  Yopiq dars kartasi va AI Voice limiti endi shu blokni ko'rsatadi (ilgari
+  yopiq darsda umuman tugma yo'q edi — user uchun boshi berk ko'cha).
+- Telegram intent: avval `org.telegram.messenger`, bo'lmasa brauzer; ikkalasi
+  ham bo'lmasa xato ko'rsatiladi, jim qolmaydi.
+- Qaytgach `ON_RESUME` da kurs/profil/voice status serverdan qayta o'qiladi —
+  ruxsat mijozda HECH QACHON hal qilinmaydi.
+- `tests/test_android_features_api.py` (yangi) — adapter uchun birinchi test:
+  15 ta test, 22 subtest. 14 route'ning hech biri bearer'siz ishlamasligi ham
+  shu yerda qadaldi.
+
+Why:
+- Obuna, narx va faollashtirish bitta kanonik joyda (Telegram) qolishi kerak;
+  ikkinchi to'lov oqimi = ikkinchi haqiqat manbai.
+
+Files touched:
+- `app/api/android_features.py`, `app/main.py`,
+  `tests/test_android_features_api.py` (yangi),
+  `android/.../feature/limit/**` (yangi), `feature/course/CourseScreen.kt`,
+  `feature/voice/VoiceScreen.kt`, `MainActivity.kt`, `core/network/ApiError.kt`,
+  `data/api/**`, `data/repository/FeatureRepository.kt`,
+  `res/values*/strings.xml`, `.github/workflows/android-ci.yml`.
+
+Risk:
+- **Google Play siyosati:** raqamli obuna uchun ilovadan tashqariga to'lovga
+  olib chiqish Play Billing qoidalariga tegadi. Oxirgi yillarda yumshadi
+  (AQSh sud qarori, EI DMA), lekin mintaqaga qarab farq qiladi. Play'ga
+  chiqarishdan oldin jorii siyosat tekshirilsin. Bu admin qarori bilan
+  qilindi.
+- Backend'da narx/to'lov/ruxsat logikasi o'zgarmadi, migratsiya yo'q.
+- `BOT_USERNAME` bo'sh bo'lsa endpoint 503 qaytaradi (fail-closed) — bo'sh
+  `https://t.me/` havolasi hech qachon ochilmaydi.
+
+Follow-up:
+- Mashq bo'limlaridagi daily/ad gate hali Android'da yo'q; u qo'shilganda
+  ham xuddi shu LimitBlock ishlatilsin, yangi paywall yasalmasin.
+
 ### 2026-09-03 — Android navigatsiyasi Mini App bilan tenglashtirildi (parity Faza 1)
 
 Changed:

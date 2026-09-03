@@ -50,6 +50,8 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.feature.limit.LimitBlock
+import com.pomp.hskai.feature.limit.SubscriptionHandoffState
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.LessonAccess
@@ -67,8 +69,10 @@ import com.pomp.hskai.domain.model.LessonStatus
 fun CourseScreen(
     state: CourseUiState,
     dailyGoal: Int,
+    handoff: SubscriptionHandoffState,
     onLesson: (CourseLesson) -> Unit,
     onOpenGoal: () -> Unit,
+    onUnlock: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -129,7 +133,11 @@ fun CourseScreen(
                                     onLesson = onLesson,
                                 )
 
-                                is CourseRow.LockedLesson -> LockedLessonCard(row.lesson)
+                                is CourseRow.LockedLesson -> LockedLessonCard(
+                                    lesson = row.lesson,
+                                    handoff = handoff,
+                                    onUnlock = onUnlock,
+                                )
                             }
                         }
                     }
@@ -456,49 +464,26 @@ private enum class NodeContent { Done, Locked, Premium, Checkpoint, Glyph }
 
 /**
  * The wide card the Mini App shows for the next textbook lesson that is still
- * closed. It states the lock; it never offers a purchase, because the Android
- * subscription flow does not exist yet.
+ * closed.
+ *
+ * It names the section and offers the one way to open it: the Telegram
+ * subscription flow. Nothing is bought here, and the card keeps appearing
+ * until the server says the learner is paid.
  */
 @Composable
-private fun LockedLessonCard(lesson: CourseLesson) {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp)
-            .heightIn(min = 60.dp),
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(
-                        R.string.course_lesson_label,
-                        lesson.sourceLesson,
-                    ) + lesson.hanziPreview.takeIf { it.isNotBlank() }
-                        ?.let { " · $it" }.orEmpty(),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Ink,
-                    maxLines = 1,
-                )
-                Text(
-                    text = lesson.stateLabel(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.InkSecondary,
-                )
-            }
-            Icon(
-                Icons.Filled.Lock,
-                contentDescription = null,
-                tint = PompColors.InkDisabled,
-                modifier = Modifier.size(20.dp),
-            )
-        }
-    }
+private fun LockedLessonCard(
+    lesson: CourseLesson,
+    handoff: SubscriptionHandoffState,
+    onUnlock: () -> Unit,
+) {
+    LimitBlock(
+        sectionTitle = stringResource(R.string.course_lesson_label, lesson.sourceLesson) +
+            lesson.hanziPreview.takeIf { it.isNotBlank() }?.let { " · $it" }.orEmpty(),
+        reason = lesson.stateLabel(),
+        state = handoff,
+        onUnlock = onUnlock,
+        modifier = Modifier.padding(vertical = 10.dp),
+    )
 }
 
 @Composable

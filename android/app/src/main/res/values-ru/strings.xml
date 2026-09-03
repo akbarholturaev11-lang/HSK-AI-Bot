@@ -176,4 +176,9 @@
     <string name="profile_goal_percent">%1$d%% выполнено</string>
     <string name="profile_goal_picker_title">Выберите дневную цель</string>
     <string name="profile_goal_option">%1$d XP</string>
+    <string name="limit_unlock_headline">Откройте без лимита 👇🏽</string>
+    <string name="limit_unlock_button">Учиться без лимита</string>
+    <string name="limit_unlock_hint">Кнопка откроет Telegram-бот. Подписка оформляется там, после этого здесь откроется всё.</string>
+    <string name="limit_unlock_unavailable">Не удалось открыть Telegram-бот. Зайдите в бот вручную или попробуйте позже.</string>
+    <string name="limit_voice_reason">Бесплатные разговоры с AI Voice на сегодня закончились.</string>
 </resources>

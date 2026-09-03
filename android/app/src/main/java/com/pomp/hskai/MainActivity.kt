@@ -1,6 +1,8 @@
 package com.pomp.hskai
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +38,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pomp.hskai.core.auth.AuthRepository
@@ -63,6 +69,7 @@ import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
+import com.pomp.hskai.feature.limit.SubscriptionHandoffViewModel
 import com.pomp.hskai.feature.rating.RatingScreen
 import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
@@ -183,6 +190,40 @@ private fun AppRoot(
                 factory = RatingViewModel.Factory(app.featureRepository),
             )
             val ratingState by ratingViewModel.state.collectAsStateWithLifecycle()
+            val handoffViewModel: SubscriptionHandoffViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = SubscriptionHandoffViewModel.Factory(app.featureRepository),
+            )
+            val handoffState by handoffViewModel.state.collectAsStateWithLifecycle()
+            val pendingHandoff by handoffViewModel.handoff.collectAsStateWithLifecycle()
+            val context = LocalContext.current
+            val lifecycleOwner = LocalLifecycleOwner.current
+
+            // Opening Telegram is a one-shot effect: the request carries an id
+            // so a recomposition cannot launch the same intent twice.
+            LaunchedEffect(pendingHandoff?.id) {
+                val request = pendingHandoff ?: return@LaunchedEffect
+                handoffViewModel.onHandoffDelivered(
+                    id = request.id,
+                    opened = openTelegram(context, request.url),
+                )
+            }
+
+            // Entitlement is re-read from the server when the learner comes
+            // back from Telegram. The client never decides it locally.
+            DisposableEffect(lifecycleOwner, handoffState.awaitingReturn) {
+                val observer = LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME && handoffState.awaitingReturn) {
+                        courseViewModel.load()
+                        profileViewModel.load()
+                        voiceViewModel.loadStatus()
+                        handoffViewModel.onReturnHandled()
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+            }
+
             val dailyGoal by app.appSettings.dailyGoal
                 .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
             var goalPickerOpen by remember { mutableStateOf(false) }
@@ -287,8 +328,10 @@ private fun AppRoot(
                     MainTab.COURSE -> CourseScreen(
                         state = courseState,
                         dailyGoal = dailyGoal,
+                        handoff = handoffState,
                         onLesson = ::launchLesson,
                         onOpenGoal = { goalPickerOpen = true },
+                        onUnlock = handoffViewModel::openSubscription,
                         onRetry = courseViewModel::load,
                         modifier = contentModifier,
                     )
@@ -312,6 +355,8 @@ private fun AppRoot(
                         state = voiceState,
                         level = currentLevel,
                         language = currentLanguage,
+                        handoff = handoffState,
+                        onUnlock = handoffViewModel::openSubscription,
                         onSelectRole = voiceViewModel::selectRole,
                         onStartSession = voiceViewModel::startSession,
                         onToggleRecording = voiceViewModel::toggleRecording,
@@ -458,6 +503,29 @@ private fun DailyGoalPicker(
                 }
             }
             androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
+        }
+    }
+}
+
+/**
+ * Opens the bot chat in Telegram, falling back to the browser when Telegram is
+ * not installed. Returns false when nothing could handle the link, so the
+ * caller can keep the learner informed instead of appearing to do nothing.
+ */
+private fun openTelegram(context: android.content.Context, url: String): Boolean {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    val telegramFirst = Intent(intent).setPackage("org.telegram.messenger")
+    return try {
+        context.startActivity(telegramFirst)
+        true
+    } catch (_: ActivityNotFoundException) {
+        try {
+            context.startActivity(intent)
+            true
+        } catch (_: ActivityNotFoundException) {
+            false
         }
     }
 }

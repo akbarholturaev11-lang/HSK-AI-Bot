@@ -19,6 +19,11 @@ interface AndroidFeatureApi {
         @Header("Authorization") authorization: String,
     ): Response<AndroidSubscriptionOverviewResponse>
 
+    @POST("api/v3/android/subscription/open")
+    suspend fun subscriptionOpen(
+        @Header("Authorization") authorization: String,
+    ): Response<AndroidSubscriptionOpenResponse>
+
     @POST("api/v3/android/practice/start")
     suspend fun practiceStart(
         @Header("Authorization") authorization: String,

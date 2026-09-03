@@ -5,6 +5,7 @@ import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidProfileResponse
+import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
 import com.pomp.hskai.data.api.MistakeReviewAnswerRequest
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
@@ -45,6 +46,13 @@ class FeatureRepository(
 
     suspend fun subscriptionOverview(): ApiResult<AndroidSubscriptionOverviewResponse> =
         authorized { api.subscriptionOverview(it) }
+
+    /**
+     * Asks the bot to post the subscription menu into the learner's Telegram
+     * chat and returns where to open it. Buying never happens in this app.
+     */
+    suspend fun subscriptionOpen(): ApiResult<AndroidSubscriptionOpenResponse> =
+        authorized { api.subscriptionOpen(it) }
 
     suspend fun rating(): ApiResult<RatingResponse> = authorized {
         api.rating(it, timezoneOffsetMinutes())

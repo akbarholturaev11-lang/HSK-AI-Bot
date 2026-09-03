@@ -149,6 +149,7 @@ jobs:
           python -m pytest -q \
             tests/test_android_auth_api.py \
             tests/test_android_course_api.py \
+            tests/test_android_features_api.py \
             tests/test_course_card_contract.py \
             tests/test_desktop_auth_service.py \
             tests/test_desktop_course_api.py \

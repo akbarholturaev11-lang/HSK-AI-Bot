@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.feature.limit.LimitBlock
+import com.pomp.hskai.feature.limit.SubscriptionHandoffState
 import com.pomp.hskai.core.design.PompTextStyles
 
 @Composable
@@ -43,6 +45,8 @@ fun VoiceScreen(
     state: VoiceUiState,
     level: String,
     language: String,
+    handoff: SubscriptionHandoffState,
+    onUnlock: () -> Unit,
     onSelectRole: (String) -> Unit,
     onStartSession: (String, String) -> Unit,
     onToggleRecording: () -> Unit,
@@ -117,22 +121,33 @@ private fun VoiceHome(
             )
         }
         item {
-            Button(
-                onClick = { onStartSession(level, language) },
-                enabled = !state.isStarting && canStartVoice(state),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 52.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PompColors.Cinnabar,
-                    contentColor = PompColors.Paper,
-                ),
-            ) {
-                if (state.isStarting) {
-                    CircularProgressIndicator(color = PompColors.Paper)
-                } else {
-                    Text(stringResource(R.string.voice_start))
+            // A spent free allowance is not a disabled button: it is the one
+            // place where the learner is shown how to open the section.
+            if (state.status != null && !canStartVoice(state)) {
+                LimitBlock(
+                    sectionTitle = stringResource(R.string.nav_ai),
+                    reason = stringResource(R.string.limit_voice_reason),
+                    state = handoff,
+                    onUnlock = onUnlock,
+                )
+            } else {
+                Button(
+                    onClick = { onStartSession(level, language) },
+                    enabled = !state.isStarting && canStartVoice(state),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PompColors.Cinnabar,
+                        contentColor = PompColors.Paper,
+                    ),
+                ) {
+                    if (state.isStarting) {
+                        CircularProgressIndicator(color = PompColors.Paper)
+                    } else {
+                        Text(stringResource(R.string.voice_start))
+                    }
                 }
             }
         }

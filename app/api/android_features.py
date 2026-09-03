@@ -200,9 +200,26 @@ def _service_response(result: dict[str, Any]) -> JSONResponse:
     )
 
 
-def _subscription_payload(user, profile_payload: dict[str, Any]) -> dict[str, Any]:
+def _bot_url(settings_obj) -> str:
+    """Deep link to the bot chat where the subscription Mini App is offered."""
+
+    username = str(getattr(settings_obj, "BOT_USERNAME", "") or "").strip().lstrip("@")
+    return f"https://t.me/{username}" if username else ""
+
+
+def _subscription_payload(user, profile_payload: dict[str, Any], settings_obj) -> dict[str, Any]:
+    """
+    Subscription is never sold inside the Android app.
+
+    The learner is handed off to the Telegram bot, which offers the existing
+    subscription Mini App; payment, pricing and activation stay in that one
+    canonical flow. The client therefore gets a handoff target, never a
+    checkout of its own.
+    """
+
     state = UserAccessStateService.classify(user)
     subscription = profile_payload.get("subscription") if isinstance(profile_payload, dict) else {}
+    bot_url = _bot_url(settings_obj)
     return {
         "ok": True,
         "source": "android_subscription",
@@ -213,15 +230,12 @@ def _subscription_payload(user, profile_payload: dict[str, Any]) -> dict[str, An
             "expires_at": subscription.get("until") if isinstance(subscription, dict) else None,
         },
         "checkout_allowed": False,
-        "read_only_reason": "android_billing_not_configured",
+        "read_only_reason": "android_checkout_is_in_telegram",
         "billing": {
-            "provider": "google_play",
-            "configured": False,
-            "required_external_config": [
-                "Play Console product IDs",
-                "Google Play service-account credentials",
-                "release signing keystore",
-            ],
+            "provider": "telegram_bot",
+            "configured": bool(bot_url),
+            "bot_url": bot_url,
+            "required_external_config": [] if bot_url else ["BOT_USERNAME"],
         },
     }
 
@@ -230,6 +244,7 @@ def create_android_features_router(
     *,
     session_factory,
     settings_obj,
+    bot=None,
     practice_service_factory: Callable[..., CourseMiniAppPracticeService] = CourseMiniAppPracticeService,
     mistake_service_factory: Callable[..., CourseMistakeService] = CourseMistakeService,
     voice_service_factory: Callable[..., VoicePracticeService] = VoicePracticeService,
@@ -288,7 +303,7 @@ def create_android_features_router(
                 )
                 await session.commit()
             return JSONResponse(
-                content=_subscription_payload(user, profile),
+                content=_subscription_payload(user, profile, settings_obj),
                 headers={"Cache-Control": "no-store"},
             )
         except (DesktopAuthError, AndroidFeatureError) as exc:
@@ -297,6 +312,52 @@ def create_android_features_router(
             logger.exception("Android subscription overview failed")
             return _error_response(
                 AndroidFeatureError("android_subscription_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/subscription/open")
+    async def android_subscription_open(request: Request):
+        """
+        Hand the learner off to the Telegram subscription flow.
+
+        The bot posts the existing subscription Mini App button into the user's
+        chat, so pricing, payment methods and activation all stay in the one
+        canonical place. Nothing here grants access: the app only learns where
+        to send the learner, and the limits lift on the next server refresh
+        once the payment is approved.
+        """
+        try:
+            if request.query_params:
+                raise AndroidFeatureError("android_request_invalid", status_code=422)
+            bot_url = _bot_url(settings_obj)
+            if not bot_url:
+                raise AndroidFeatureError(
+                    "android_subscription_handoff_unavailable", status_code=503
+                )
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                delivered = False
+                if bot is not None:
+                    delivered = bool(
+                        await StudyMiniAppService(session).send_subscription_menu(
+                            bot, telegram_id
+                        )
+                    )
+                await session.commit()
+            # A failed delivery is not a failed handoff: the learner can still
+            # open the bot and reach the same subscription menu there, so the
+            # button must not dead-end on a messaging hiccup.
+            return JSONResponse(
+                content={"ok": True, "bot_url": bot_url, "message_sent": delivered},
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android subscription handoff failed")
+            return _error_response(
+                AndroidFeatureError(
+                    "android_subscription_handoff_unavailable", status_code=503
+                )
             )
 
     @router.post("/api/v3/android/practice/start")

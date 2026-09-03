@@ -57,9 +57,19 @@ data class AndroidSubscriptionAccessDto(
 )
 
 @Serializable
+data class AndroidSubscriptionOpenResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    /** Where to send the learner. Empty when the server has no bot username. */
+    @SerialName("bot_url") val botUrl: String = "",
+    /** Whether the bot managed to post the subscription menu into the chat. */
+    @SerialName("message_sent") val messageSent: Boolean = false,
+)
+
+@Serializable
 data class AndroidBillingDto(
     @SerialName("provider") val provider: String = "",
     @SerialName("configured") val configured: Boolean = false,
+    @SerialName("bot_url") val botUrl: String = "",
     @SerialName("required_external_config") val requiredExternalConfig: List<String> =
         emptyList(),
 )
