@@ -28,6 +28,18 @@ sealed interface ApiError {
 
     data class Server(val code: String, override val messageRes: Int) : ApiError
 
+    /**
+     * The free allowance for a section is spent.
+     *
+     * [resetAt] is the server instant when it reopens, or null when nothing
+     * reopens. The hour is never assumed on the client: it is shown in the
+     * learner's own timezone, or not at all.
+     */
+    data class LimitReached(
+        val resetAt: String?,
+        override val messageRes: Int,
+    ) : ApiError
+
     data object Unknown : ApiError {
         override val messageRes = R.string.error_unknown
     }

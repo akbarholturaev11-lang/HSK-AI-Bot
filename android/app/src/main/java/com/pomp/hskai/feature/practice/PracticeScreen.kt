@@ -27,7 +27,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,15 +39,19 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
+import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewQuestionDto
 import com.pomp.hskai.data.api.PracticeQuestionDto
+import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitBlock
 
 @Composable
 fun PracticeScreen(
     state: PracticeUiState,
     level: String,
     language: String,
+    limit: LimitGate,
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onSelectPracticeOption: (Int) -> Unit,
@@ -87,6 +94,7 @@ fun PracticeScreen(
                 state = state,
                 level = level,
                 language = language,
+                limit = limit,
                 onOpenDictionary = onOpenDictionary,
                 onStartPractice = onStartPractice,
                 onStartMistakeReview = onStartMistakeReview,
@@ -100,6 +108,7 @@ private fun PracticeHome(
     state: PracticeUiState,
     level: String,
     language: String,
+    limit: LimitGate,
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
@@ -161,6 +170,10 @@ private fun PracticeHome(
             ),
         )
     }
+    // Which section the learner last tried to open. A spent allowance has to
+    // name the section, and only the screen knows which row was tapped.
+    var attempted by remember { mutableStateOf<PracticeToolSpec?>(null) }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),
@@ -181,9 +194,24 @@ private fun PracticeHome(
                 style = MaterialTheme.typography.bodyMedium,
                 color = PompColors.InkSecondary,
             )
-            state.error?.let {
+            val error = state.error
+            if (error is ApiError.LimitReached) {
+                // A spent allowance is not a dead end: this is the one place
+                // that says what is closed and when it comes back.
                 Spacer(Modifier.height(12.dp))
-                ErrorPill(stringResource(it.messageRes))
+                val section = attempted
+                SectionLimitBlock(
+                    sectionTitle = if (section != null) {
+                        stringResource(section.titleRes)
+                    } else {
+                        stringResource(R.string.practice_title)
+                    },
+                    limit = limit,
+                    resetAt = error.resetAt,
+                )
+            } else if (error != null) {
+                Spacer(Modifier.height(12.dp))
+                ErrorPill(stringResource(error.messageRes))
             }
         }
 
@@ -203,7 +231,10 @@ private fun PracticeHome(
                 title = stringResource(tool.titleRes),
                 body = stringResource(tool.bodyRes),
                 enabled = !state.isStarting,
-                onClick = { onStartPractice(tool, level, language) },
+                onClick = {
+                    attempted = tool
+                    onStartPractice(tool, level, language)
+                },
             )
         }
 
@@ -214,7 +245,10 @@ private fun PracticeHome(
                 title = stringResource(tool.titleRes),
                 body = stringResource(tool.bodyRes),
                 enabled = !state.isStarting,
-                onClick = { onStartPractice(tool, level, language) },
+                onClick = {
+                    attempted = tool
+                    onStartPractice(tool, level, language)
+                },
             )
         }
         item {

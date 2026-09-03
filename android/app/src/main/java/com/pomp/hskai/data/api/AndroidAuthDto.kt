@@ -103,4 +103,11 @@ data class BootstrapUser(
 data class ApiErrorBody(
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("error") val error: String = "",
+    /**
+     * When a spent daily allowance reopens, as a server instant. Null when
+     * nothing reopens, so the client must not promise a time.
+     */
+    @SerialName("reset_at") val resetAt: String? = null,
+    /** True when the allowance is once ever, not once a day. */
+    @SerialName("lifetime") val lifetime: Boolean = false,
 )

@@ -3,7 +3,7 @@ package com.pomp.hskai.data.repository
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
-import com.pomp.hskai.core.network.errorCode
+import com.pomp.hskai.core.network.toApiError
 import com.pomp.hskai.core.text.PinyinSearch
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.local.DictionaryDao
@@ -71,7 +71,7 @@ class DictionaryRepository(
 
         val body = response.body()
         if (!response.isSuccessful || body == null || !body.ok) {
-            val error = ApiError.fromCode(response.errorCode())
+            val error = response.toApiError()
             if (error is ApiError.SessionExpired) onSessionExpired()
             return keepOrFail(error, cachedCount)
         }

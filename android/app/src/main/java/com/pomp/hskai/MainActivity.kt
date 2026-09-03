@@ -397,6 +397,7 @@ private fun AppRoot(
                         state = practiceState,
                         level = currentLevel,
                         language = currentLanguage,
+                        limit = limitGate,
                         onOpenDictionary = { dictionaryOpen = true },
                         onStartPractice = practiceViewModel::startPractice,
                         onSelectPracticeOption = practiceViewModel::selectPracticeOption,
