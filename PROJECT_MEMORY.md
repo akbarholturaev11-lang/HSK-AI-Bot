@@ -207,6 +207,44 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Kunlik limit: sozlanadigan reset soati va `reset_at`
+
+Changed:
+- `COURSE_DAILY_RESET_HOUR_UTC` (env, **default 0**) — kunlik bepul limit
+  qaysi UTC soatda yangilanishi. Default hozirgi xatti-harakat (UTC yarim
+  tun), ya'ni sozlama qo'shilishi bilan HECH KIMNING limiti siljimadi.
+- `_day_start()` endi shu soatga tayanadi va `next_daily_reset()` qo'shildi.
+  Server FORMATLANGAN soat qaytarmaydi — faqat UTC ISO instant; qaysi vaqt
+  mintaqasida ko'rsatish klientning ishi.
+- Limit tugaganda javobda `reset_at` va `lifetime` keladi
+  (`consume_daily_use` -> `CourseMiniAppPracticeService.start`).
+  **Umrbod limitda `reset_at` = None**, chunki u hech qachon ochilmaydi va
+  klient "ertaga" deb yozmasligi kerak.
+
+**MUHIM TOPILMA (hal qilinmagan):** bir xil mashq bo'limiga ikki xil qoida
+qo'llanadi. Mini App `/api/v3/practice/daily-gate` ni `lifetime=True` bilan
+chaqiradi (UMRDA 1 marta), `CourseMiniAppPracticeService.start()` esa
+`lifetime`siz (KUNIGA 1 marta). Desktop va Android ikkinchi yo'ldan yuradi.
+Ya'ni bitta user Mini App'da umrda bir marta, Android'da har kuni oladi.
+Qaysi biri to'g'ri ekani biznes qarori — admin hal qilishi kerak.
+
+Files touched:
+- `app/config.py`, `app/services/course_miniapp_access_service.py`,
+  `app/services/course_miniapp_practice_service.py`,
+  `tests/test_course_daily_reset_window.py` (yangi),
+  `tests/test_course_miniapp_practice.py` (javob shakli yangilandi).
+
+Risk:
+- Reset chegarasi hamma klient uchun umumiy. Default 0 bo'lgani uchun hozir
+  hech nima o'zgarmadi; admin soatni o'zgartirsa BARCHA klientda siljiydi.
+- `test_course_miniapp_foundation.py` dagi 2 ta yiqilish AVVALDAN bor
+  (bu o'zgarishsiz ham yiqiladi) — bu ish bilan bog'liq emas.
+
+Follow-up:
+- Google Play build uchun app ichida Telegram/to'lovga yo'naltirish
+  BO'LMASLIGI kerak; hozirgi limit bloki Telegram'ni ochadi va u faqat
+  APK/Web build'da qolishi lozim (keyingi bosqich: build ajratish).
+
 ### 2026-09-03 — Android'da lug'at ekrani (parity Faza 2b)
 
 Changed:

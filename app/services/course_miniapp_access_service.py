@@ -307,8 +307,40 @@ class CourseMiniAppAccessService:
     # ----- Kunlik limitlar (Mashq bo'limlari + reklama darslari) ---------------
 
     @staticmethod
-    def _day_start() -> datetime:
-        return datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    def daily_reset_hour_utc() -> int:
+        """Kunlik limit qaysi UTC soatda yangilanadi (env orqali)."""
+
+        try:
+            from app.config import settings as _settings
+
+            hour = int(getattr(_settings, "COURSE_DAILY_RESET_HOUR_UTC", 0) or 0)
+        except Exception:  # noqa: BLE001 — sozlama o'qilmasa eski xatti-harakat
+            hour = 0
+        # Noto'g'ri sozlama limitni butunlay buzmasin.
+        return hour if 0 <= hour <= 23 else 0
+
+    @classmethod
+    def _day_start(cls, now: datetime | None = None) -> datetime:
+        """Joriy 'limit kuni'ning boshlanishi.
+
+        Reset soati 0 bo'lganda bu aynan UTC yarim tun — ya'ni sozlama
+        qo'shilishi bilan hech kimning limiti siljimaydi.
+        """
+        moment = now or datetime.now(timezone.utc)
+        hour = cls.daily_reset_hour_utc()
+        start = moment.replace(hour=hour, minute=0, second=0, microsecond=0)
+        if moment < start:
+            start -= timedelta(days=1)
+        return start
+
+    @classmethod
+    def next_daily_reset(cls, now: datetime | None = None) -> datetime:
+        """Kunlik limit keyingi marta qachon ochilishi (UTC).
+
+        Klient buni o'z vaqt mintaqasida ko'rsatadi; server hech qachon
+        formatlangan soat qaytarmaydi.
+        """
+        return cls._day_start(now) + timedelta(days=1)
 
     @classmethod
     def _normalize_daily_feature(cls, feature_key: str) -> str:
@@ -878,6 +910,11 @@ class CourseMiniAppAccessService:
                 "recorded": False,
                 "is_paid": False,
                 "error": "free_feature_limit_reached",
+                # Umrbod hisobda "ertaga ochiladi" degan narsa YO'Q, shuning
+                # uchun reset vaqti faqat kunlik limitda beriladi. Klient
+                # bo'sh qiymatda "ertaga" deb yozmasligi kerak.
+                "reset_at": None if lifetime else self.next_daily_reset().isoformat(),
+                "lifetime": bool(lifetime),
             }
 
         if dedupe_key is None:

@@ -79,7 +79,17 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
             lang="ru",
             skill="listening",
         )
-        self.assertEqual(result, {"ok": False, "error": "free_feature_limit_reached"})
+        # Exact shape on purpose: a denial must not leak anything beyond the
+        # error and what the client needs to say when it reopens.
+        self.assertEqual(
+            result,
+            {
+                "ok": False,
+                "error": "free_feature_limit_reached",
+                "reset_at": None,
+                "lifetime": False,
+            },
+        )
         self.service.access.consume_daily_use.assert_awaited_once_with(
             self.user,
             feature_key="training_test",

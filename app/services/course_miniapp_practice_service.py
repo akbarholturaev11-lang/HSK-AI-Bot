@@ -400,7 +400,14 @@ class CourseMiniAppPracticeService:
             ref=f"{mode}:{session_scope}",
         )
         if not access.get("allowed"):
-            return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}
+            # `reset_at` — klient "qachon ochiladi" deb ayta olishi uchun.
+            # Umrbod limitda u None bo'ladi va klient vaqt ko'rsatmaydi.
+            return {
+                "ok": False,
+                "error": access.get("error") or "free_feature_limit_reached",
+                "reset_at": access.get("reset_at"),
+                "lifetime": bool(access.get("lifetime")),
+            }
 
         questions = await self._questions(mode, level, lang, skill)
         if not questions:
