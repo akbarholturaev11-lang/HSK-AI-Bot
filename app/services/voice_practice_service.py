@@ -7,16 +7,19 @@ import re
 import unicodedata
 import uuid
 from collections import Counter
-from datetime import datetime, time, timezone
+from datetime import datetime, timezone
 
 from sqlalchemy import func, select
 
 from app.config import settings
 from app.db.models.voice_practice_session import VoicePracticeSession
 from app.db.models.ai_usage import AIUsageEvent
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
+from app.services import course_daily_window
 from app.services.ai_service import AIService, AIUsageResult
 from app.services.ai_provider import GEMINI_FAST_MODEL
 from app.services.ai_usage_budget_service import AIUsageBudgetService, BudgetRecordResult
@@ -43,6 +46,8 @@ PINYIN_UMLAUT_TRANSLATION = str.maketrans(
     }
 )
 
+# Bepul (obunasiz) user KUNIGA shuncha AI Voice sessiya ochadi. Ilgari bu
+# umrbod hisoblanardi — bir marta ishlatgan user boshqa hech qachon ocholmasdi.
 FREE_TOTAL_SESSIONS = 1
 # Bepul (obunasiz) userlar uchun talaffuz baholash kunlik STT kvotasi.
 # ASOSIY kirish nazorati — Course Mini App "pronunciation" kunlik gate'i
@@ -192,6 +197,8 @@ class VoicePracticeService:
         self.user_repo = UserRepository(session)
         self.progress_repo = CourseProgressRepository(session)
         self.lesson_repo = CourseLessonRepository(session)
+        # Mintaqa bitta so'rov ichida o'zgarmaydi.
+        self._offset_cache: dict[int, int] = {}
 
     @staticmethod
     def _extract_words(payload: dict | None, limit: int) -> list[dict]:
@@ -260,9 +267,31 @@ class VoicePracticeService:
         }
 
     @staticmethod
-    def _day_start() -> datetime:
-        now = datetime.now(timezone.utc)
-        return datetime.combine(now.date(), time.min, tzinfo=timezone.utc)
+    def _day_start(offset_minutes: int = 0) -> datetime:
+        """Joriy limit kunining boshlanishi, o'quvchining mintaqasida.
+
+        Oyna Course limitlari bilan bir xil joydan hisoblanadi, shuning uchun
+        AI Voice va Mashq limitlari bir vaqtda yangilanadi.
+        """
+        return course_daily_window.day_start(offset_minutes)
+
+    async def _offset_minutes(self, telegram_id: int) -> int:
+        """O'quvchining vaqt mintaqasi (daqiqada), Mini App profilidan.
+
+        Profil bo'lmasa 0 — eski UTC oynasi.
+        """
+        key = int(telegram_id)
+        cached = self._offset_cache.get(key)
+        if cached is not None:
+            return cached
+        result = await self.session.execute(
+            select(CourseMiniAppProfile.timezone_offset_minutes)
+            .join(User, User.id == CourseMiniAppProfile.user_id)
+            .where(User.telegram_id == key)
+        )
+        offset = course_daily_window.normalize_offset_minutes(result.scalar_one_or_none() or 0)
+        self._offset_cache[key] = offset
+        return offset
 
     @staticmethod
     def _is_paid(user) -> bool:
@@ -303,16 +332,18 @@ class VoicePracticeService:
             VoicePracticeSession.user_telegram_id == telegram_id
         )
         if today_only:
-            query = query.where(VoicePracticeSession.started_at >= self._day_start())
+            offset = await self._offset_minutes(telegram_id)
+            query = query.where(VoicePracticeSession.started_at >= self._day_start(offset))
         result = await self.session.execute(query)
         return int(result.scalar_one() or 0)
 
     async def _pronounce_count_today(self, telegram_id: int) -> int:
         """Bugun shu user nechta talaffuz (STT) urinishi qilganini sanaydi."""
+        offset = await self._offset_minutes(telegram_id)
         query = select(func.count(AIUsageEvent.id)).where(
             AIUsageEvent.user_telegram_id == telegram_id,
             AIUsageEvent.source == "voice_practice_pronounce",
-            AIUsageEvent.created_at >= self._day_start(),
+            AIUsageEvent.created_at >= self._day_start(offset),
         )
         result = await self.session.execute(query)
         return int(result.scalar_one() or 0)
@@ -323,7 +354,9 @@ class VoicePracticeService:
             raise VoicePracticeError("USER_NOT_FOUND", "Voice Practice'ni ochishdan oldin botni /start qiling.", 404)
 
         paid = self._is_paid(user)
-        used = await self._session_count(telegram_id, today_only=paid)
+        # Bepul limit ham KUNLIK sanaladi: bir marta ishlatgan user ertaga
+        # yana ochadi. Ilgari bu bepul userlar uchun umrbod hisob edi.
+        used = await self._session_count(telegram_id, today_only=True)
         limit = None if paid else FREE_TOTAL_SESSIONS
 
         # Kurs progressi: user o'z HSK bandida nechta darsni tugatgan. Mashq
@@ -347,6 +380,15 @@ class VoicePracticeService:
             "is_paid": paid,
             "plan": "premium" if paid else "free",
             "remaining_voice_limit": -1 if paid else max(0, limit - used),
+            # Limit qachon ochilishi — UTC ISO. Klient buni o'z mintaqasida
+            # ko'rsatadi; server formatlangan soat qaytarmaydi.
+            "reset_at": (
+                None
+                if paid
+                else course_daily_window.next_day_reset(
+                    await self._offset_minutes(telegram_id)
+                ).isoformat()
+            ),
             "level": getattr(user, "level", None) or "hsk1",
             "language": getattr(user, "language", None) or "ru",
             "completed_lessons": completed_lessons,

@@ -29,10 +29,9 @@ class Settings(BaseSettings):
     FEEDBACK_NOTIFY_CHAT_IDS: str = "-1004311413349"
     PAYMENT_DETAILS: str = ""
     BOT_USERNAME: str = ""
-    # Kunlik bepul limit qaysi UTC soatda yangilanadi. Default 0 — hozirgi
-    # xatti-harakat (UTC yarim tun), ya'ni bu sozlama qo'shilishi bilan hech
-    # kimning limiti siljimaydi. Faqat admin ataylab o'zgartirsa siljiydi.
-    COURSE_DAILY_RESET_HOUR_UTC: int = 0
+    # Kunlik bepul limit o'quvchining MAHALLIY vaqti bilan qaysi soatda
+    # yangilanadi. Default 0 — mahalliy yarim tun.
+    COURSE_DAILY_RESET_HOUR_LOCAL: int = 0
     MINI_APP_BASE_URL: str = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
 
     # Desktop release controls. Downloads remain hidden unless the flag is on

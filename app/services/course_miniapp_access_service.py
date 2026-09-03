@@ -9,8 +9,10 @@ from sqlalchemy.exc import IntegrityError
 
 from app.db.models.course_feature_usage import COURSE_FEATURE_KEYS, CourseFeatureUsage
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
 from app.db.models.voice_practice_session import VoicePracticeSession
+from app.services import course_daily_window
 from app.services.user_access_state_service import UserAccessStateService
 
 
@@ -134,6 +136,9 @@ class CourseMiniAppAccessService:
 
     def __init__(self, session):
         self.session = session
+        # Bitta so'rov ichida bir xil o'quvchining mintaqasi bir necha marta
+        # kerak bo'ladi (status + consume), lekin u o'zgarmaydi.
+        self._offset_cache: dict[int, int] = {}
 
     @staticmethod
     def _as_utc(value):
@@ -307,40 +312,51 @@ class CourseMiniAppAccessService:
     # ----- Kunlik limitlar (Mashq bo'limlari + reklama darslari) ---------------
 
     @staticmethod
-    def daily_reset_hour_utc() -> int:
-        """Kunlik limit qaysi UTC soatda yangilanadi (env orqali)."""
+    def daily_reset_hour_local() -> int:
+        """Kunlik limit MAHALLIY vaqt bilan qaysi soatda yangilanadi."""
 
-        try:
-            from app.config import settings as _settings
+        return course_daily_window.reset_hour_local()
 
-            hour = int(getattr(_settings, "COURSE_DAILY_RESET_HOUR_UTC", 0) or 0)
-        except Exception:  # noqa: BLE001 — sozlama o'qilmasa eski xatti-harakat
-            hour = 0
-        # Noto'g'ri sozlama limitni butunlay buzmasin.
-        return hour if 0 <= hour <= 23 else 0
+    async def _learner_offset_minutes(self, user) -> int:
+        """O'quvchining vaqt mintaqasi (daqiqada), Mini App profilidan.
 
-    @classmethod
-    def _day_start(cls, now: datetime | None = None) -> datetime:
-        """Joriy 'limit kuni'ning boshlanishi.
-
-        Reset soati 0 bo'lganda bu aynan UTC yarim tun — ya'ni sozlama
-        qo'shilishi bilan hech kimning limiti siljimaydi.
+        Profil bo'lmasa 0 qaytadi — ya'ni eski UTC oynasi. Mintaqa noma'lum
+        bo'lgani uchun hech kimning limiti kutilmaganda siljimaydi.
         """
-        moment = now or datetime.now(timezone.utc)
-        hour = cls.daily_reset_hour_utc()
-        start = moment.replace(hour=hour, minute=0, second=0, microsecond=0)
-        if moment < start:
-            start -= timedelta(days=1)
-        return start
+        user_id = getattr(user, "id", None)
+        if user_id is None:
+            return 0
+        user_id = int(user_id)
+        cached = self._offset_cache.get(user_id)
+        if cached is not None:
+            return cached
+        result = await self.session.execute(
+            select(CourseMiniAppProfile.timezone_offset_minutes).where(
+                CourseMiniAppProfile.user_id == user_id
+            )
+        )
+        offset = course_daily_window.normalize_offset_minutes(result.scalar_one_or_none() or 0)
+        self._offset_cache[user_id] = offset
+        return offset
 
     @classmethod
-    def next_daily_reset(cls, now: datetime | None = None) -> datetime:
+    def _day_start(cls, now: datetime | None = None, *, offset_minutes: int = 0) -> datetime:
+        """Joriy 'limit kuni'ning boshlanishi, UTC da.
+
+        Mintaqa 0 va reset soati 0 bo'lganda bu aynan UTC yarim tun — sozlama
+        va mintaqa qo'shilishi bilan mintaqasi noma'lum o'quvchi uchun hech
+        narsa o'zgarmaydi.
+        """
+        return course_daily_window.day_start(offset_minutes, now)
+
+    @classmethod
+    def next_daily_reset(cls, now: datetime | None = None, *, offset_minutes: int = 0) -> datetime:
         """Kunlik limit keyingi marta qachon ochilishi (UTC).
 
         Klient buni o'z vaqt mintaqasida ko'rsatadi; server hech qachon
         formatlangan soat qaytarmaydi.
         """
-        return cls._day_start(now) + timedelta(days=1)
+        return course_daily_window.next_day_reset(offset_minutes, now)
 
     @classmethod
     def _normalize_daily_feature(cls, feature_key: str) -> str:
@@ -818,7 +834,14 @@ class CourseMiniAppAccessService:
                     }
         return {"allowed": True, "is_paid": False, "access_ref": ref}
 
-    async def _daily_used_today(self, telegram_id: int, feature_key: str, *, lifetime: bool = False) -> int:
+    async def _daily_used_today(
+        self,
+        telegram_id: int,
+        feature_key: str,
+        *,
+        lifetime: bool = False,
+        offset_minutes: int = 0,
+    ) -> int:
         conditions = [
             CourseMiniAppEvent.telegram_id == int(telegram_id),
             CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
@@ -826,7 +849,10 @@ class CourseMiniAppAccessService:
         ]
         # lifetime=True — kunlik filtr yo'q: umrbod hisob (bir marta bepul uchun).
         if not lifetime:
-            conditions.append(CourseMiniAppEvent.created_at >= self._day_start())
+            conditions.append(
+                CourseMiniAppEvent.created_at
+                >= self._day_start(offset_minutes=offset_minutes)
+            )
         result = await self.session.execute(
             select(func.count(CourseMiniAppEvent.id)).where(*conditions)
         )
@@ -841,7 +867,10 @@ class CourseMiniAppAccessService:
             return {"allowed": True, "is_paid": True, "limit": limit, "used": 0, "remaining": None}
         if not self.is_free_user(user):
             return {"allowed": False, "is_paid": False, "limit": limit, "used": limit, "remaining": 0}
-        used = await self._daily_used_today(user.telegram_id, feature_key, lifetime=lifetime)
+        offset = await self._learner_offset_minutes(user)
+        used = await self._daily_used_today(
+            user.telegram_id, feature_key, lifetime=lifetime, offset_minutes=offset
+        )
         return {
             "allowed": used < limit,
             "is_paid": False,
@@ -875,7 +904,10 @@ class CourseMiniAppAccessService:
         if not locked_user:
             return {"allowed": False, "recorded": False, "error": "user_not_found"}
 
-        day_key = "lifetime" if lifetime else self._day_start().date().isoformat()
+        # Kun kaliti o'quvchining MAHALLIY sanasi: bitta mahalliy kun ichida
+        # o'zgarmaydi, aks holda idempotent takror ikkinchi slotni yeb qo'yardi.
+        offset = await self._learner_offset_minutes(locked_user)
+        day_key = "lifetime" if lifetime else course_daily_window.local_day_key(offset)
         clean_ref = str(ref).strip()[:48] if ref is not None else None
         dedupe_key = (
             f"daily:{feature_key}:{day_key}:ref:{clean_ref}"
@@ -883,7 +915,9 @@ class CourseMiniAppAccessService:
             else None
         )
 
-        used = await self._daily_used_today(locked_user.telegram_id, feature_key, lifetime=lifetime)
+        used = await self._daily_used_today(
+            locked_user.telegram_id, feature_key, lifetime=lifetime, offset_minutes=offset
+        )
 
         # Idempotent ref: shu foydalanish bugun allaqachon hisobga olingan bo'lsa,
         # qo'shimcha slot egallamasdan ruxsat beramiz.
@@ -913,7 +947,11 @@ class CourseMiniAppAccessService:
                 # Umrbod hisobda "ertaga ochiladi" degan narsa YO'Q, shuning
                 # uchun reset vaqti faqat kunlik limitda beriladi. Klient
                 # bo'sh qiymatda "ertaga" deb yozmasligi kerak.
-                "reset_at": None if lifetime else self.next_daily_reset().isoformat(),
+                "reset_at": (
+                    None
+                    if lifetime
+                    else self.next_daily_reset(offset_minutes=offset).isoformat()
+                ),
                 "lifetime": bool(lifetime),
             }
 

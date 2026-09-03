@@ -207,11 +207,74 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Limit user vaqt mintaqasida + AI Voice kunlik
+
+Changed:
+- Yangi `app/services/course_daily_window.py` — kunlik limit oynasi endi
+  BITTA joyda hisoblanadi. Ilgari har servis o'zining `_day_start()` ini
+  yozardi va ikkalasi ham UTC yarim tunga tayanardi.
+- Oyna endi o'quvchining vaqt mintaqasida: UTC+5 da yashovchi user limiti
+  mahalliy 00:00 da ochiladi (avval mahalliy 05:00 da ochilardi). Mintaqa
+  `course_miniapp_profiles.timezone_offset_minutes` dan olinadi; profil
+  bo'lmasa 0 — ya'ni eski UTC oynasi, hech kimniki kutilmaganda siljimaydi.
+- Idempotentlik kaliti (`dedupe_key`) endi o'quvchining MAHALLIY sanasi
+  bilan tuziladi. Shuning uchun bitta mahalliy kun ichida takroriy so'rov
+  ikkinchi slotni yemaydi (UniqueConstraint buzilmaydi).
+- `COURSE_DAILY_RESET_HOUR_UTC` -> `COURSE_DAILY_RESET_HOUR_LOCAL` (default
+  0 = mahalliy yarim tun). Nomi endi haqiqatda nima qilishini bildiradi.
+- **AI Voice bepul limiti UMRBOD emas, KUNLIK bo'ldi** (hamma klientda:
+  Mini App `/api/voice-practice/me`, Desktop, Android — hammasi bitta
+  `VoicePracticeService.user_status()` dan o'qiydi). Ilgari
+  `today_only=paid` edi: bepul user bir marta ochsa, boshqa hech qachon
+  ocholmasdi. Endi `today_only=True`.
+- `voice/status` javobiga `reset_at` qo'shildi (UTC ISO). Obunachida `None`.
+
+**Bu ataylab qilingan xatti-harakat o'zgarishi:** bepul AI Voice
+kengaytirildi (umrda 1 -> kuniga 1). Buni admin aniq so'radi.
+
+**MUHIM TOPILMA (hali hal qilinmagan):** bir xil mashq bo'limiga ikki xil
+qoida qo'llanadi. Mini App `/api/v3/practice/daily-gate` ni `lifetime=True`
+bilan chaqiradi (UMRDA 1 marta), `CourseMiniAppPracticeService.start()` esa
+`lifetime`siz (KUNIGA 1 marta). Desktop va Android ikkinchi yo'ldan yuradi.
+Qaysi biri to'g'ri ekani biznes qarori — admin hal qilishi kerak.
+
+Files touched:
+- `app/services/course_daily_window.py` (yangi)
+- `app/services/course_miniapp_access_service.py` (oynani shu moduldan oladi,
+  mintaqani profildan o'qiydi)
+- `app/services/voice_practice_service.py` (kunlik bepul limit + `reset_at`)
+- `app/config.py` (sozlama nomi)
+- `tests/test_course_daily_window.py` (yangi, sof matematik),
+  `tests/test_voice_practice_daily_limit.py` (yangi),
+  `tests/test_course_daily_reset_window.py` (servis yuzasi bo'yicha qayta yozildi)
+
+Tests:
+- `python3 -m pytest tests/ -q` -> 586 passed, 13513 subtests, 42 skipped.
+- 3 ta yiqilish AVVALDAN bor (`git stash` bilan tekshirildi, o'zgarishsiz ham
+  yiqiladi): `test_course_miniapp_foundation.py` (2 ta),
+  `test_course_mistake_service.py` (1 ta).
+- `tests/e2e/*` xatolari — muhit muammosi (Playwright headless-shell yo'q),
+  kod bilan bog'liq emas.
+
+Risk:
+- Mintaqasi noto'g'ri yuborilgan user limiti o'z kunidan siljib ketishi
+  mumkin; qiymat -720..+840 oralig'iga qisiladi va parse bo'lmasa 0 bo'ladi.
+- AI Voice xarajati oshadi: ilgari bepul user umrda 1 sessiya olardi, endi
+  har kuni 1. STT kvotasi (`FREE_PRONOUNCE_DAILY = 25`) o'zgarmadi.
+- Mintaqasini hech qachon yubormagan (profilsiz) user eski UTC oynasida
+  qoladi — bu ataylab, chunki taxmin qilish undan yomonroq.
+
+Follow-up:
+- Google Play build uchun app ichida Telegram/to'lovga yo'naltirish
+  BO'LMASLIGI kerak (keyingi qadam).
+- Android/Desktop klientlari `reset_at` ni o'z mintaqasida ko'rsatishi kerak.
+
 ### 2026-09-03 — Kunlik limit: sozlanadigan reset soati va `reset_at`
 
 Changed:
 - `COURSE_DAILY_RESET_HOUR_UTC` (env, **default 0**) — kunlik bepul limit
-  qaysi UTC soatda yangilanishi. Default hozirgi xatti-harakat (UTC yarim
+  qaysi UTC soatda yangilanishi. (Keyinroq `COURSE_DAILY_RESET_HOUR_LOCAL`
+  deb qayta nomlandi — yuqoridagi yozuvga qarang.) Default hozirgi xatti-harakat (UTC yarim
   tun), ya'ni sozlama qo'shilishi bilan HECH KIMNING limiti siljimadi.
 - `_day_start()` endi shu soatga tayanadi va `next_daily_reset()` qo'shildi.
   Server FORMATLANGAN soat qaytarmaydi — faqat UTC ISO instant; qaysi vaqt
