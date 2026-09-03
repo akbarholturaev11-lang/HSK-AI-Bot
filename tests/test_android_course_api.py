@@ -21,6 +21,10 @@ from sqlalchemy.pool import StaticPool
 
 from app.api.android_course import create_android_course_router
 from app.db.base import Base
+from app.services.course_v3_dictionary import (
+    dictionary_for_language,
+    dictionary_version,
+)
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
@@ -615,6 +619,92 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(200, coerced.status_code)
         after = await self.client.get("/api/v3/android/course/map", headers=headers)
         self.assertFalse(after.json()["notify"]["enabled"])
+
+    async def test_dictionary_is_served_in_the_learner_language(self):
+        headers = await self._bearer()
+        response = await self.client.get("/api/v3/android/dictionary", headers=headers)
+
+        self.assertEqual(200, response.status_code)
+        body = response.json()
+        self.assertTrue(body["ok"])
+        # The seeded account is Uzbek, and the language is taken from the
+        # account rather than from anything the client sends.
+        self.assertEqual("uz", body["language"])
+        self.assertTrue(body["words"])
+
+        first = body["words"][0]
+        self.assertEqual({"h", "p", "m", "lv"}, set(first))
+        # One language per response: a nested per-language object would triple
+        # the payload for no reader.
+        self.assertIsInstance(first["m"], str)
+        self.assertTrue(first["m"])
+
+    async def test_dictionary_repeats_are_answered_from_the_client_cache(self):
+        headers = await self._bearer()
+        first = await self.client.get("/api/v3/android/dictionary", headers=headers)
+        etag = first.headers["ETag"]
+        self.assertTrue(etag)
+
+        again = await self.client.get(
+            "/api/v3/android/dictionary",
+            headers={**headers, "If-None-Match": etag},
+        )
+        self.assertEqual(304, again.status_code)
+        self.assertEqual(etag, again.headers["ETag"])
+        self.assertEqual(b"", again.content)
+
+    async def test_dictionary_requires_a_bearer_token(self):
+        anonymous = await self.client.get("/api/v3/android/dictionary")
+        self.assertEqual(401, anonymous.status_code)
+        self.assertFalse(anonymous.json()["ok"])
+
+    async def test_dictionary_identity_is_never_taken_from_the_query(self):
+        headers = await self._bearer()
+        response = await self.client.get(
+            "/api/v3/android/dictionary?language=ru",
+            headers=headers,
+        )
+        self.assertEqual(422, response.status_code)
+
+
+class AndroidDictionarySourceTests(unittest.TestCase):
+    """The dictionary is read from the Mini App's own word list, not a copy."""
+
+    def test_every_entry_has_the_four_fields_in_one_language(self):
+        words = dictionary_for_language("uz")
+        self.assertTrue(words)
+        for word in words:
+            self.assertTrue(word["h"])
+            self.assertTrue(word["p"])
+            self.assertTrue(word["m"])
+            self.assertIsInstance(word["m"], str)
+
+    def test_each_language_returns_the_same_entries(self):
+        uz = dictionary_for_language("uz")
+        ru = dictionary_for_language("ru")
+        tj = dictionary_for_language("tj")
+        self.assertEqual(len(uz), len(ru))
+        self.assertEqual(len(uz), len(tj))
+        self.assertEqual(
+            [w["h"] for w in uz],
+            [w["h"] for w in ru],
+        )
+        # Same word, different reading language.
+        self.assertNotEqual(uz[0]["m"], ru[0]["m"])
+
+    def test_an_unknown_language_falls_back_the_way_the_backend_does(self):
+        self.assertEqual(
+            [w["m"] for w in dictionary_for_language("ru")],
+            [w["m"] for w in dictionary_for_language("de")],
+        )
+        self.assertEqual(
+            [w["m"] for w in dictionary_for_language("ru")],
+            [w["m"] for w in dictionary_for_language(None)],
+        )
+
+    def test_the_version_is_stable_between_reads(self):
+        self.assertTrue(dictionary_version())
+        self.assertEqual(dictionary_version(), dictionary_version())
 
 
 if __name__ == "__main__":

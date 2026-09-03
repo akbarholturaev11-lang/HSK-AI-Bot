@@ -207,6 +207,39 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Ieroglif lug'ati backend adapteri (parity Faza 2a)
+
+Changed:
+- `app/services/course_v3_dictionary.py` (yangi) — Mini App lug'ati
+  (`hsk-lugat.html`) ishlatadigan AYNAN o'sha `app/static/hsk-words.js` dagi
+  `WORDS` ro'yxatini o'qiydi. Ma'lumot NUSXALANMADI: bir mahsulotda ikki xil
+  lug'at bo'lib qolmasin. 1247 ta so'z, uchala tilda to'liq.
+- `GET /api/v3/android/dictionary` — bearer. Til foydalanuvchi hisobidan
+  olinadi, so'rovdan emas; javobda `m` bitta satr (bitta til), shuning uchun
+  ~90 KB, uch tilli 175 KB emas.
+- ETag: manba fayl sha256'sining qisqa qismi. Mos kelsa 304 qaytadi — ro'yxat
+  faqat deploy bilan o'zgargani uchun klient uni bir marta yuklaydi.
+
+Why:
+- Android'da lug'at umuman yo'q edi. Ma'lumotni APK ichiga solish eng oson
+  yo'l edi, lekin u AI_RULES'dagi "dublikat qilma" qoidasini buzardi va
+  kontent yangilanganda ilova eskirib qolardi.
+
+Files touched:
+- `app/services/course_v3_dictionary.py` (yangi), `app/api/android_course.py`,
+  `tests/test_android_course_api.py`.
+
+Risk:
+- Manba JavaScript fayl; `const WORDS=[...]` prefiksi regex bilan olinadi.
+  Fayl formati o'zgarsa lug'at BO'SH qoladi (server yiqilmaydi), shuning
+  uchun `scripts/split_hsk_data.py` chiqishi o'zgarsa shu servis tekshirilsin.
+- Kesh bir marta yuklanadi (`course_v3_vocab.py` kabi); faylni deploydan
+  keyin almashtirish qayta ishga tushirishni talab qiladi.
+
+Follow-up:
+- Faza 2b: Android tomonida Room kesh + qidiruv ekrani. HanziWriter'dagi
+  chiziq animatsiyasi bu bosqichda YO'Q — u alohida "ieroglif yozish" ishi.
+
 ### 2026-09-03 — Android telefon ekranida lokal bildirishnoma (Faza H, A varianti)
 
 Changed:

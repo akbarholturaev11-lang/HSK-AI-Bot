@@ -20,7 +20,7 @@ import re
 import tempfile
 from typing import Callable
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
 
 from app.api.desktop_course import (
@@ -31,7 +31,12 @@ from app.api.desktop_course import (
     course_error_response,
     validated_course_payload,
 )
+from app.repositories.user_repo import UserRepository
 from app.services.android_course_service import AndroidCourseService
+from app.services.course_v3_dictionary import (
+    dictionary_for_language,
+    dictionary_version,
+)
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.desktop_course_service import DesktopCourseError
 
@@ -230,6 +235,57 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android course language update failed")
+            return _unavailable()
+
+    @router.get("/api/v3/android/dictionary")
+    async def android_dictionary(request: Request):
+        """
+        The character dictionary, in the learner's own language.
+
+        It is the same word list the Mini App's Lug'at shows — read from the
+        one source rather than copied into the app, so the two can never drift
+        apart. The payload carries a version; an unchanged version answers 304
+        so the ~90 KB list is downloaded once, not on every open.
+        """
+        try:
+            if request.query_params:
+                raise DesktopCourseError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                context = await DesktopAuthService(session, settings_obj).authenticate(
+                    bearer_access_token(request),
+                )
+                user = await UserRepository(session).get_by_telegram_id(
+                    int(context.user.telegram_id),
+                )
+                language = getattr(user, "language", None)
+
+            version = dictionary_version()
+            etag = f'W/"dictionary-{version}"'
+            # The list only changes with a deploy, so a matching ETag means the
+            # client's copy is still correct.
+            if version and request.headers.get("If-None-Match") == etag:
+                return Response(
+                    status_code=304,
+                    headers={"ETag": etag, "Cache-Control": "private, max-age=0"},
+                )
+
+            words = dictionary_for_language(language)
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "version": version,
+                    "language": str(language or "ru"),
+                    "words": words,
+                },
+                headers={
+                    "ETag": etag,
+                    "Cache-Control": "private, max-age=0",
+                },
+            )
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android dictionary failed")
             return _unavailable()
 
     @router.post("/api/v3/android/preferences/notifications")
