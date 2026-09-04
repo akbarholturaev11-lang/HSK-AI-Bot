@@ -189,6 +189,24 @@ function buildDeck(){
 
 /* ---- per-char state ---- */
 var H,D,STEPS,SI,GATE;
+/* Test qadamlarida xato bo'lgan ieroglifllar. Sahifa yopilganda yoki belgi
+   tugaganda serverga yuboriladi, shunda ular "Xatolarim" bo'limiga va kunlik
+   rejaga tushadi. Server FAQAT ieroglifni qabul qiladi — savol va to'g'ri
+   javobni o'z lug'atidan quradi, ya'ni soxta xato yozib bo'lmaydi. */
+var WRONG=[],WRONG_SEEN={};
+function noteWrong(h){if(!h||WRONG_SEEN[h])return;WRONG_SEEN[h]=1;WRONG.push({hanzi:h})}
+function reportWrong(){
+  if(!WRONG.length)return;
+  var body={feature:"memorize",level:LV||"hsk1",language:LANG,mistakes:WRONG.slice(0,20),initData:initData()};
+  WRONG=[];
+  try{
+    fetch("/api/v3/practice/report",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body),keepalive:true}).catch(function(){});
+  }catch(e){}
+}
+/* Mashqni yarmida tashlab ketsa ham xatolar yo'qolmasin. */
+try{window.addEventListener("pagehide",reportWrong);
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")reportWrong()})}catch(e){}
 function startChar(){
   /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
   if(AD_SESSION&&!AD_MID_SHOWN&&deck.length>=4&&DI===Math.floor(deck.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(startChar).catch(startChar);return}}
@@ -334,7 +352,7 @@ function sTest(s){
     for(var j=0;j<bs.length;j++){if(opts[j]===answer)bs[j].classList.add("ok")}
     if(!ok)bs[i].classList.add("bad");
     if(ok){if(k==="meaning")GATE.meaning=true;bump(H,1);haptic(true);setFB(t(UI.fbOk),"ok")}
-    else{bump(H,-1,errType);haptic(false);setFB(t(UI.fbErr[errType]||UI.fbErr.meaning),"bad")}
+    else{bump(H,-1,errType);noteWrong(H);haptic(false);setFB(t(UI.fbErr[errType]||UI.fbErr.meaning),"bad")}
     // meaning gating: agar xato bo'lsa, qayta urinish kerak
     if(k==="meaning"&&!ok){setTimeout(function(){sTest(s)},900);return}
     showCont();
@@ -356,6 +374,7 @@ function showCont(label){var e=document.getElementById("ct");if(e){e.innerHTML='
 function finishChar(){
   /* Reklama bilan kirilgan sessiya: oxirgi belgi tugagach yakuniy reklama. */
   if(AD_SESSION&&!AD_END_SHOWN&&DI>=deck.length-1&&GATE.meaning&&GATE.reco&&GATE.prod){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finishChar).catch(finishChar);return}}
+  reportWrong();
   setProg(1);
   if(!(GATE.meaning&&GATE.reco&&GATE.prod)){
     // gating bloklar to'g'ri javobsiz o'tmaydi, lekin himoya uchun
