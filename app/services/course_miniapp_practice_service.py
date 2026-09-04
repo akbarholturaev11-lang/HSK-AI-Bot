@@ -516,6 +516,7 @@ class CourseMiniAppPracticeService:
         skill: str = "",
         access_ref: str = "",
         ad_supported: bool = False,
+        gate_checked: bool = False,
     ) -> dict:
         mode = str(mode or "").strip().lower()
         skill = str(skill or "").strip().lower()
@@ -532,22 +533,31 @@ class CourseMiniAppPracticeService:
         session_scope = skill or level
         # Bepul userga KUNIGA 1 ta test/training sessiya (har kuni qayta ochiladi).
         # ref orqali bir xil sessiyaning qayta yuklanishi qo'shimcha slot egallamaydi.
-        access = await self._gate(
-            user,
-            feature=feature,
-            ref=f"{mode}:{session_scope}",
-            access_ref=access_ref,
-            ad_supported=ad_supported,
-        )
-        if not access.get("allowed"):
-            # `reset_at` — klient "qachon ochiladi" deb ayta olishi uchun.
-            # Umrbod limitda u None bo'ladi va klient vaqt ko'rsatmaydi.
-            return {
-                "ok": False,
-                "error": access.get("error") or "free_feature_limit_reached",
-                "reset_at": access.get("reset_at"),
-                "lifetime": bool(access.get("lifetime")),
-            }
+        #
+        # `gate_checked=True` — ruxsat CHAQIRUVCHIDA tekshirilgan. Mini App
+        # o'zining `daily-gate`/`ad-gate` yo'lidan yuradi (u yerda limit umrbod
+        # va feature kaliti boshqa: recognition/memorize/pronunciation). Agar
+        # bu yerda qayta gate qilsak, Mini App drilllari `training_test`
+        # slotini yeb qo'yardi va o'quvchining Xatolar bo'limi hamda Test
+        # markazi jimgina yopilib qolardi. Qarang ARCHITECTURE_DECISION.md,
+        # "Qaror A".
+        if not gate_checked:
+            access = await self._gate(
+                user,
+                feature=feature,
+                ref=f"{mode}:{session_scope}",
+                access_ref=access_ref,
+                ad_supported=ad_supported,
+            )
+            if not access.get("allowed"):
+                # `reset_at` — klient "qachon ochiladi" deb ayta olishi uchun.
+                # Umrbod limitda u None bo'ladi va klient vaqt ko'rsatmaydi.
+                return {
+                    "ok": False,
+                    "error": access.get("error") or "free_feature_limit_reached",
+                    "reset_at": access.get("reset_at"),
+                    "lifetime": bool(access.get("lifetime")),
+                }
 
         max_part = await self._current_part(user, level)
         questions = await self._questions(mode, level, lang, skill, max_part=max_part)
@@ -597,6 +607,7 @@ class CourseMiniAppPracticeService:
         answers: list,
         access_ref: str = "",
         ad_supported: bool = False,
+        gate_checked: bool = False,
     ) -> dict:
         mode = str(mode or "").strip().lower()
         skill = str(skill or "").strip().lower()
@@ -618,15 +629,20 @@ class CourseMiniAppPracticeService:
         # ochilgan bo'lsa yakunlash ham reklama yo'lidan borishi SHART: aks
         # holda o'quvchi mashqni tugatib, natijasini "limit tugadi" deb
         # yo'qotib qo'yardi.
-        access = await self._gate(
-            user,
-            feature=feature,
-            ref=f"{mode}:{session_scope}",
-            access_ref=access_ref,
-            ad_supported=ad_supported,
-        )
-        if not access.get("allowed"):
-            return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}
+        #
+        # `gate_checked=True` (Mini App yo'li) — ruxsat allaqachon sessiya
+        # boshida tekshirilgan. Yakunlashda qayta gate qilinsa, o'quvchi
+        # mashqni tugatib natijasini yo'qotishi mumkin edi.
+        if not gate_checked:
+            access = await self._gate(
+                user,
+                feature=feature,
+                ref=f"{mode}:{session_scope}",
+                access_ref=access_ref,
+                ad_supported=ad_supported,
+            )
+            if not access.get("allowed"):
+                return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}
 
         max_part = await self._started_max_part(user, expected_session, mode)
         if max_part is None:
