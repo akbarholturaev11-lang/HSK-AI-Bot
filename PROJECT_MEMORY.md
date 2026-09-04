@@ -2,20 +2,30 @@
 
 ## 0. DAVOM ETISH — keyingi sessiya shu yerdan boshlaydi
 
-> Bu bo'lim 2026-09-04 da yozildi. Ish yarim yo'lda to'xtadi va boshqa chatda
-> davom etadi. Kod bo'yicha hech narsa osilib qolmagan — hammasi
-> `origin/main` da va CI yashil. Osilib qolgani — BITTA QAROR (pastda).
+> Bu bo'lim 2026-09-04 da yozildi va o'sha kuni yangilandi.
 
-### Kod holati
+### Kod holati (2026-09-04, oxirgi yangilanish)
 
-- `origin/main` = `989ebd1`. Ishchi shox: `claude/android-app-status-review-tv9840`
-  (u ham shu commitda). Yig'ilmagan o'zgarish yo'q.
-- **CI to'liq yashil** (run 48, `989ebd1`): 4 ta statik tekshiruv, unit testlar,
-  lint, assemble debug va release bundle — ikkala flavor uchun ham.
-- Backend testlari: **624 passed, 13584 subtests**.
-  **3 ta yiqilish AVVALDAN bor va bu ishlarga aloqasi yo'q**
-  (`git stash` bilan tasdiqlangan): `test_course_miniapp_foundation.py` da 2 ta,
+- `origin/main` = `codex/local-ai` = `codex/cloud-ai` = `b433728`
+  (uch branchli workflow o'rnatilgan, qarang AGENTS.md / AI_RULES.md).
+- `codex/local-ai` da **ikkita yangi commit lokal test qilingan, hali push
+  qilinmagan**: `f7cbd4f` (reklama mediasi RAM) va `20af351` (admin hisobot
+  detali 30 kun). Batafsili "10. Recent Important Changes" da.
+- Backend testlari (lokal, `.venv/bin/python3.14 -m pytest tests/ -q`):
+  **628 passed, 3 skipped, 13584 subtests**.
+  **3 ta yiqilish AVVALDAN bor va bu ishlarga aloqasi yo'q**:
+  `test_course_miniapp_foundation.py` da 2 ta (`CourseMiniAppAccessTests`),
   `test_course_mistake_service.py` da 1 ta. Ularni "men buzdim" deb o'ylamang.
+- Lokal `main` branchi eski (`b14cc70`) va alohida worktree'da — `origin/main`
+  bilan aralashtirmang.
+- Diskda kuzatilmagan (untracked) qoldiq bor:
+  `android/.../feature/today/TodayScreen.kt` — bu fayl `e64abc7` da ATAYLAB
+  o'chirilgan ("Bugun" tab olib tashlangan). Diskdagi nusxa eski qoldiq;
+  hech qayerdan chaqirilmaydi, lokal Gradle build'ga aralashishi mumkin.
+  O'chirish uchun foydalanuvchidan tasdiq kutilmoqda.
+- `branch-backups/2026-09-04/` — eski branchlar tozalanishidan oldingi to'liq
+  backup (bundle + patchlar). Uch branchli workflow barqaror bo'lgunicha
+  o'chirilmasin.
 
 ### Shu sessiyada bajarilgan 12 ta commit (6f08078 → 989ebd1)
 
@@ -330,6 +340,46 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 ---
 
 ## 10. Recent Important Changes
+
+### 2026-09-04 — Railway RAM: reklama mediasi va admin hisobot detali
+
+Changed:
+- `CourseAdCreative.media_blob` `deferred=True` bo'ldi; `CourseAdService` ning barcha
+  so'rovlari `defer(media_blob)` bilan yuradi, ya'ni ustun faqat ataylab so'ralganda yuklanadi.
+- DB media zaxirasi endi FAQAT surat va faqat 1 MB gacha (`COURSE_AD_IMAGE_BACKUP_MAX_BYTES`).
+  Video hech qachon bazaga yozilmaydi; eski video zaxiralari avtomatik tiklanmaydi.
+- `media_available()` faqat diskni tekshiradi. Tiklash `ensure_media_available()` da —
+  u endi async instance metod, blobni alohida `select` bilan oladi.
+- `payload()` blobga tegmaydi; `media_backed_up` `media_size`/`media_checksum` metadatasidan.
+- Admin overview'ning all-time tabida "product health" detali (`_advanced_stats`,
+  `_sales_value_stats`) oxirgi 30 kun bilan cheklandi (`ADMIN_ADVANCED_DETAIL_WINDOW`).
+  Asosiy user/payment/course raqamlari butun baza bo'yicha qoladi. Chegarasi javobda
+  `advanced.scope` va `advanced.explain` orqali ochiq yoziladi.
+
+Why:
+- Har bir reklama so'rovi video baytlarini butunlay xotiraga o'qirdi, ustiga
+  `ensure_media_backup` har ko'rsatishda faylni diskdan o'qib bazaga yozishga urinardi.
+  All-time admin report esa butun baza hodisalarini xotiraga yig'ardi. Ikkalasi ham
+  Railway'da RAM spike berardi.
+
+Files touched:
+- `app/db/models/course_ad.py`
+- `app/services/course_ad_service.py`
+- `app/services/admin_miniapp_service.py`
+- `app/main.py`
+- `tests/test_course_ad_photo_media.py`, `tests/test_course_miniapp_foundation.py`,
+  `tests/test_android_features_api.py`
+
+Risk:
+- Media fayllari diskda turadi. Disk yo'qolsa video reklama endi umuman tanlanmaydi
+  (avval blobdan tiklanardi). Bu ataylab: video blobni RAMga olish Railway'ni yiqitardi.
+- All-time "product health" raqamlari endi 30 kunlik — admin eski raqam bilan
+  taqqoslasa farq ko'radi, shuning uchun `scope` izohi qo'shildi.
+
+Follow-up:
+- Video reklama uchun diskdan mustaqil doimiy saqlash (masalan obyekt-storage) kerakmi —
+  hal qilinmagan.
+
 
 ### 2026-09-04 — Uch branchli AI workflow
 
