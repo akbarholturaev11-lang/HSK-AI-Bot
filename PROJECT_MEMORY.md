@@ -40,9 +40,11 @@ chiqdim (haqiqiy manbadan: `app/static/course-v3.html` va
 
 Foydalanuvchiga berilgan savol: **qaysi biridan boshlaymiz?**
 
-**(a) Ranglar — qisqa ish.** 19 ta tokendan faqat 7 tasi aniq mos.
-6 tasi bir-ikki birlikka farq qiladi, 6 tasi Android'da umuman yo'q.
-Fayl: `android/app/src/main/java/com/pomp/hskai/core/design/Color.kt`.
+**(a) Ranglar — BAJARILDI (2026-09-04, `codex/cloud-ai`).** 19 ta token ham
+Mini App bilan aynan bir xil. `android/tools/check_palette_matches_miniapp.py`
+ikkala faylni o'qib solishtiradi va CI'da Gradle'dan oldin ishlaydi, shuning
+uchun kelajakda biror token siljisa build yiqiladi. Quyidagi jadval
+tuzatilgunga qadar bo'lgan holatni ko'rsatadi (tarix uchun qoldirildi).
 
 | Mini App (course-v3.html) | Android (Color.kt) |
 |---|---|
@@ -62,7 +64,7 @@ Fayl: `android/app/src/main/java/com/pomp/hskai/core/design/Color.kt`.
 Aniq mos bo'lganlari: `paper #FDF9F0`, `ink #211D17`, `ink2 #665D50`,
 `cin #E04A40`, `cin2 #B23530`, `gold #E9A916`, `jade #2FA06A`.
 
-**(b) Mashq bo'limi tuzilishi — kattaroq ish.**
+**(b) Mashq bo'limi tuzilishi — QOLGAN ISH, keyingi qadam shu.**
 Mini App'da **5 qator**, Android'da **9 qator**.
 
 - Mini App (`renderMashq()`, course-v3.html:3871): Ieroglif lug'ati (amber) ·
@@ -81,6 +83,12 @@ Mini App'da **5 qator**, Android'da **9 qator**.
 - **Ikona plitkalari:** Mini App'da har qator o'z rangida
   (`.t-amber #F8EFD9/#B07A1E`, `.t-blue #E7F0F8/#2F6F9E`, `.t-jade`, `.t-cin`);
   Android'da HAMMASI bir xil `GoldSoft`. Ekranda eng ko'zga tashlanadigan farq.
+  DIQQAT: `.t-amber` va `.t-blue` qiymatlari Mini App'da token EMAS, o'sha
+  komponentga qattiq yozilgan — palitraga qo'shishdan oldin shuni bilib qo'ying.
+- **Locked node:** Mini App qulflangan darsni `--line` (#EAE0CC) bilan
+  bo'yaydi; Android'da `Locked #D8CFBE`. `Locked` bir vaqtning o'zida
+  o'chirilgan tugmalar rangi ham, shuning uchun uni ko'r-ko'rona
+  o'zgartirmadim — kurs ekrani ishi bilan birga hal qilinsin.
 - **Kurs:** Mini App'dagi "12 / 28 dars" progress chizig'i (`.pwrap`/`.pbar`)
   Android'da yo'q. Qolgani (daraja pill, seriya/XP chiplari, maqsad halqasi) mos.
 - **AI Voice:** Mini App — bitta qora karta (`.voicebox`), panda, bitta tugma;
@@ -113,6 +121,37 @@ Mini App'da **5 qator**, Android'da **9 qator**.
 - UI ishi uchun skill: `/mnt/skills/public/frontend-design/SKILL.md`
   (oddiy fayl, `Skill` tool ro'yxatida emas — o'qib, amal qilish mumkin).
   Ko'p artboard'li dizayn kanvasi uchun esa `design` skill'i.
+
+### `codex/cloud-ai` da turgan, `main` ga chiqarilmagan ish
+
+Uch branchli qoidaga ko'ra (`AGENTS.md`) cloud AI test qila olmagan ishni
+`codex/cloud-ai` da qoldiradi. Shu yerda turgani:
+
+**Rang palitrasini Mini App bilan tenglashtirish.**
+- `android/.../core/design/Color.kt` — 6 ta token tuzatildi
+  (`PaperRaised`, `Divider`, `InkDisabled`, `CinnabarSoft`, `GoldSoft`,
+  `JadeSoft`), 6 tasi qo'shildi (`Flame`, `FlameSoft`, `Blue`, `BlueSoft`,
+  `Overlay`, `Shadow`). Har qatorda qaysi CSS tokenga mos kelishi yozilgan.
+- `android/tools/check_palette_matches_miniapp.py` (yangi) — ikkala faylni
+  o'qib solishtiradi. Ataylab buzib sinaldi: `Divider` ni eski qiymatga
+  qaytarganda topdi.
+- CI'ga va `android/README.md` ga qo'shildi (endi 5 ta statik tekshiruv).
+
+**Lokal Codex nima qilishi kerak:**
+1. `python3 android/tools/check_palette_matches_miniapp.py` — o'tishi shart.
+2. Qolgan 4 ta tekshiruv ham: `check_interface_fakes`, `check_named_arguments`,
+   `check_flavor_parity`, `check_strings_translated`.
+3. `cd android && ./gradlew testPlayDebugUnitTest testDirectDebugUnitTest
+   lintPlayDebug lintDirectDebug assemblePlayDebug` — bu muhitda Android SDK
+   yo'q (`dl.google.com` yopiq), shuning uchun Gradle FAQAT lokalda yoki CI'da
+   ishlaydi.
+4. Backend testlariga tegmaydi (faqat Android resurs qiymatlari o'zgardi),
+   lekin xohlasangiz: `python3 -m pytest tests -q --ignore=tests/e2e`.
+5. O'tsa `main` ga chiqaring va uchala branchni tenglashtiring.
+
+**Ko'z bilan tekshirish arziydigan joy:** `PaperRaised` endi sof oq
+(#FFFFFF), avval #FFFDF8 edi. Kartalar biroz oqroq ko'rinadi — Mini App'da
+aynan shunday.
 
 ### Hal qilinmagan biznes qarori (admindan javob kutilmoqda)
 
@@ -330,6 +369,45 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 ---
 
 ## 10. Recent Important Changes
+
+### 2026-09-04 — Rang palitrasi Mini App bilan aynan tenglashtirildi
+
+Changed:
+- Android palitrasidagi 19 ta token endi `course-v3.html` dagi CSS custom
+  property'lar bilan AYNAN bir xil. Har qatorda qaysi tokenga mos kelishi
+  izohda yozilgan.
+- Tuzatilgani (avval bir-ikki birlikka farq qilardi va shuning uchun ko'z
+  bilan sezilmasdi):
+  `PaperRaised` #FFFDF8 -> **#FFFFFF** (`--card`),
+  `Divider` #E9E0CE -> **#EAE0CC** (`--line`),
+  `InkDisabled` #A79C8C -> **#A89E8E** (`--ink3`),
+  `CinnabarSoft` #FBE6E3 -> **#FDEBE7** (`--cinbg`),
+  `GoldSoft` #FBF0D6 -> **#FAF0D3** (`--goldbg`),
+  `JadeSoft` #E2F3EA -> **#E3F4EA** (`--jadebg`).
+- Qo'shilgani (Android'da umuman yo'q edi): `Flame` #FF9600,
+  `FlameSoft` #FFEFD6, `Blue` #2E86C1, `BlueSoft` #E8F2FA,
+  `Overlay` #171310, `Shadow` #E4D9C4.
+- `Locked` ATAYLAB tegilmadi: u Mini App tokeni emas va o'chirilgan tugmalar
+  rangi ham. Mini App qulflangan darsni `--line` bilan bo'yaydi — buni kurs
+  ekrani ishida hal qilish kerak.
+
+Why:
+- Admin talabi: interfeys va ranglar Mini App bilan aynan bir xil bo'lsin.
+  Farqlar screenshot'dan ko'rinmasdi — kanal-ma-kanal bir-ikki birlik edi.
+
+Files touched:
+- `android/app/src/main/java/com/pomp/hskai/core/design/Color.kt`
+- `android/tools/check_palette_matches_miniapp.py` (yangi)
+- `.github/workflows/android-ci.yml`, `android/README.md`
+
+Tests:
+- 5 ta statik tekshiruv ham o'tdi. Palitra tekshiruvi ataylab buzib sinaldi
+  (`Divider` ni eski qiymatga qaytarganda topdi).
+- Compose kompilyatsiyasi bu muhitda mumkin emas — CI qiladi.
+
+Risk:
+- `PaperRaised` endi sof oq. Kartalar biroz oqroq ko'rinadi; Mini App'da
+  aynan shunday, lekin ko'z bilan bir marta ko'rib chiqish arziydi.
 
 ### 2026-09-04 — Uch branchli AI workflow
 
