@@ -44,6 +44,7 @@ SALES_VALUE_EXPERIMENT = "sales_value_v1"
 SALES_VALUE_OUTCOME_WINDOW = timedelta(days=7)
 SALES_VALUE_D1_START = timedelta(hours=24)
 SALES_VALUE_D1_END = timedelta(hours=48)
+ADMIN_ADVANCED_DETAIL_WINDOW = timedelta(days=30)
 SALES_VALUE_MEANINGFUL_EVENTS = frozenset(
     {
         "section_completed",
@@ -1720,7 +1721,7 @@ class AdminMiniAppService:
         # period tabs avoids truncating a user's seven-day outcome window at a
         # weekly/monthly report boundary and avoids running the same queries
         # three times for one overview response.
-        sales_value = await self._sales_value_stats(now=now)
+        sales_value = await self._sales_value_stats(now=now, since=month_ago)
         return [
             await self._period_report(
                 key="weekly",
@@ -1760,6 +1761,8 @@ class AdminMiniAppService:
         course_stats=None,
         sales_value: dict | None = None,
     ) -> dict:
+        advanced_since = since
+        advanced_scope_note = None
         if since is None:
             user_count = await self._count_users()
             active_users = await self._count_users(
@@ -1768,6 +1771,11 @@ class AdminMiniAppService:
             bot_blocked = await self._count_users(*_bot_block_filter())
             active_label = "30 кун фаол"
             active_note = "охирги 30 кун"
+            advanced_since = now - ADMIN_ADVANCED_DETAIL_WINDOW
+            advanced_scope_note = (
+                "All-time reportdagi asosiy user/payment/course raqamlari butun baza; "
+                "product health detail esa Railway RAM spike oldini olish uchun oxirgi 30 kun."
+            )
         else:
             user_count = await self._count_users(User.created_at >= since)
             active_users = await self._count_users(User.last_active_at >= since)
@@ -1783,7 +1791,18 @@ class AdminMiniAppService:
         approved_users = await self._approved_payment_user_count(since)
         plan_counts = await self._payment_plan_counts(since)
         course = course_stats or await miniapp_course_stats(self.session, since=since)
-        advanced = await self._advanced_stats(since=since, now=now, sales_value=sales_value)
+        advanced = await self._advanced_stats(
+            since=advanced_since,
+            now=now,
+            sales_value=sales_value,
+        )
+        if advanced_scope_note:
+            advanced["scope"] = {
+                "key": "rolling_30_days",
+                "since": _dt(advanced_since),
+                "note": advanced_scope_note,
+            }
+            advanced["explain"] = f"{advanced.get('explain', '')} {advanced_scope_note}".strip()
 
         metrics = {
             "user_count": user_count,
@@ -1842,6 +1861,8 @@ class AdminMiniAppService:
         now: datetime,
         sales_value: dict | None = None,
     ) -> dict:
+        if since is None:
+            since = now - ADMIN_ADVANCED_DETAIL_WINDOW
         retention = await self._retention_stats(since=since, now=now)
         activation = await self._activation_stats(since=since, now=now)
         primary_activation = (activation.get("variants") or {}).get("direct_start_v1") or activation
@@ -2016,7 +2037,19 @@ class AdminMiniAppService:
             "notifications": notifications,
         }
 
-    async def _sales_value_stats(self, *, now: datetime) -> dict:
+    async def _sales_value_stats(
+        self,
+        *,
+        now: datetime,
+        since: datetime | None = None,
+    ) -> dict:
+        assignment_conditions = [
+            CourseMiniAppEvent.event_name == "sales_offer_assigned",
+            CourseMiniAppEvent.source == SALES_VALUE_EXPERIMENT,
+            CourseMiniAppEvent.created_at <= now,
+        ]
+        if since is not None:
+            assignment_conditions.append(CourseMiniAppEvent.created_at >= since)
         assignment_rows = (
             await self.session.execute(
                 select(
@@ -2028,15 +2061,18 @@ class AdminMiniAppService:
                     CourseMiniAppEvent.lesson_order,
                     CourseMiniAppEvent.payload_json,
                     CourseMiniAppEvent.created_at,
-                ).where(
-                    CourseMiniAppEvent.event_name == "sales_offer_assigned",
-                    CourseMiniAppEvent.source == SALES_VALUE_EXPERIMENT,
-                    CourseMiniAppEvent.created_at <= now,
-                )
+                ).where(*assignment_conditions)
             )
         ).all()
         if not assignment_rows:
-            return _sales_value_experiment([], [], [], now=now)
+            result = _sales_value_experiment([], [], [], now=now)
+            if since is not None:
+                result["scope"] = {
+                    "key": "rolling_window",
+                    "since": _dt(since),
+                    "note": "Sales A/B overview snapshot oxirgi 30 kun assignmentlari bo'yicha.",
+                }
+            return result
 
         assigned_ids = tuple(
             {
@@ -2051,12 +2087,19 @@ class AdminMiniAppService:
             if _as_utc(getattr(row, "created_at", None))
         ]
         if not assigned_ids or not assignment_times:
-            return _sales_value_experiment(
+            result = _sales_value_experiment(
                 [tuple(row) for row in assignment_rows],
                 [],
                 [],
                 now=now,
             )
+            if since is not None:
+                result["scope"] = {
+                    "key": "rolling_window",
+                    "since": _dt(since),
+                    "note": "Sales A/B overview snapshot oxirgi 30 kun assignmentlari bo'yicha.",
+                }
+            return result
         earliest_assignment = min(assignment_times)
 
         outcome_names = (
@@ -2135,13 +2178,20 @@ class AdminMiniAppService:
                 )
             )
         ).all()
-        return _sales_value_experiment(
+        result = _sales_value_experiment(
             [tuple(row) for row in assignment_rows] + [tuple(row) for row in outcome_rows],
             [tuple(row) for row in funnel_rows],
             [tuple(row) for row in payment_rows],
             now=now,
             error_rows=[tuple(row) for row in error_rows],
         )
+        if since is not None:
+            result["scope"] = {
+                "key": "rolling_window",
+                "since": _dt(since),
+                "note": "Sales A/B overview snapshot oxirgi 30 kun assignmentlari bo'yicha.",
+            }
+        return result
 
     async def _d1_recovery_stats(self, *, since: datetime | None, now: datetime) -> dict:
         event_names = (
