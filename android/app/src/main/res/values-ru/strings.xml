@@ -197,4 +197,11 @@
     <string name="dictionary_unavailable">Не удалось загрузить словарь. Проверьте интернет и попробуйте снова.</string>
     <string name="action_back">Назад</string>
     <string name="action_clear">Очистить</string>
+    <string name="ad_title">Реклама</string>
+    <string name="ad_continue">Продолжить</string>
+    <string name="ad_wait_seconds">%1$d с</string>
+    <string name="ad_ready">Готово</string>
+    <string name="ad_learn_more">Подробнее</string>
+    <string name="ad_unavailable">Сейчас рекламы нет. Попробуйте позже.</string>
+    <string name="limit_watch_ad">Продолжить с рекламой</string>
 </resources>

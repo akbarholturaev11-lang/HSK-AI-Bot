@@ -198,4 +198,11 @@
     <string name="dictionary_unavailable">Луғатро бор кардан нашуд. Интернетро санҷед ва бори дигар кӯшиш кунед.</string>
     <string name="action_back">Бозгашт</string>
     <string name="action_clear">Тоза кардан</string>
+    <string name="ad_title">Реклама</string>
+    <string name="ad_continue">Идома додан</string>
+    <string name="ad_wait_seconds">%1$d с</string>
+    <string name="ad_ready">Тайёр</string>
+    <string name="ad_learn_more">Муфассал</string>
+    <string name="ad_unavailable">Ҳоло реклама нест. Баъдтар кӯшиш кунед.</string>
+    <string name="limit_watch_ad">Бо реклама идома додан</string>
 </resources>

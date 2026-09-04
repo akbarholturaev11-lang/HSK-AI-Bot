@@ -225,4 +225,11 @@
     <string name="dictionary_unavailable">Lug‘atni yuklab bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.</string>
     <string name="action_back">Orqaga</string>
     <string name="action_clear">Tozalash</string>
+    <string name="ad_title">Reklama</string>
+    <string name="ad_continue">Davom etish</string>
+    <string name="ad_wait_seconds">%1$d s</string>
+    <string name="ad_ready">Tayyor</string>
+    <string name="ad_learn_more">Batafsil</string>
+    <string name="ad_unavailable">Hozircha reklama yo‘q. Keyinroq urinib ko‘ring.</string>
+    <string name="limit_watch_ad">Reklama bilan davom etish</string>
 </resources>

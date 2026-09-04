@@ -207,6 +207,41 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Android reklama ekrani (Coil + Media3)
+
+Changed:
+- Yangi bog'liqliklar: `io.coil-kt:coil-compose:2.7.0` (rasm) va
+  `androidx.media3:media3-exoplayer` + `media3-ui:1.5.1` (video).
+  Admin tanlovi: ikkalasi ham, chunki reklamalarning default turi video.
+- `MediaUrl` — reklama medias URL'ini tekshiradi. Coil va ExoPlayer
+  Retrofit qatoridan O'TMAYDI, ya'ni `OriginGuardInterceptor` ularni
+  qo'riqlamaydi. Shuning uchun boshqa xostga (yoki `file:`, `javascript:`
+  kabi sxemaga) ishora qilgan qiymat umuman yuklanmaydi. 8 ta test.
+- `AdWatch` — kutish vaqti; chegaralar serverdagi bilan bir xil. 8 ta test.
+- `AdViewModel` — reklama ro'yxati -> attempt (token) -> sanoq -> view.
+  Bo'lim ochilishini SERVER hal qiladi; ekran hech narsa bermaydi.
+  Attempt tokeni token olingan zahoti saqlanadi, sanoq tugashini kutmaydi.
+- `AdScreen` — rasm Coil bilan, video Media3 bilan (qisqa reklama
+  muzlab qolmasligi uchun takrorlanadi). Matnlar uchala tilda.
+
+Files touched:
+- `android/gradle/libs.versions.toml`, `android/app/build.gradle.kts`
+- `android/.../core/network/MediaUrl.kt` (+ test)
+- `android/.../feature/ad/{AdWatch,AdViewModel,AdScreen}.kt` (+ AdWatch test)
+- `android/app/src/main/res/values{,-ru,-tg}/strings.xml`
+
+Risk:
+- Bu muhitda `dl.google.com` yopiq, shuning uchun yangi bog'liqliklar
+  faqat CI'da yechiladi. Sof mantiq (MediaUrl, AdWatch) lokal kotlinc
+  bilan ishlatildi; Compose qismini faqat CI tekshiradi.
+- APK ~3 MB kattalashadi (ExoPlayer).
+
+Follow-up:
+- Ekran hali limit blokiga ULANMAGAN ("Reklama bilan davom etish" tugmasi).
+- `CourseMiniAppPracticeService.start()` hali `access_ref` qabul qilmaydi,
+  ya'ni Mashq bo'limlarini reklama bilan ochish yo'li serverda yo'q.
+  Mistake review va imtihonlarda bor.
+
 ### 2026-09-03 — Reklama: ikki bosqichli oqim va Android klient qatlami
 
 **Tuzatilgan xato (muhim):** Mini App reklama oqimi IKKI bosqichli —

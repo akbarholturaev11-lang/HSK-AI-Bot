@@ -181,6 +181,14 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.datastore.preferences)
+
+    // Ad creatives: photos through Coil, videos through Media3. Both fetch
+    // outside the Retrofit stack, so `MediaUrl` is what keeps them on our
+    // own origin. `media3-ui` carries PlayerView, which handles the video's
+    // aspect ratio; drawing onto a bare SurfaceView would stretch it.
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.androidx.glance.appwidget)
