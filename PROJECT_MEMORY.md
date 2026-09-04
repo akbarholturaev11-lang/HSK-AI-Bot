@@ -2,158 +2,199 @@
 
 ## 0. DAVOM ETISH — keyingi sessiya shu yerdan boshlaydi
 
-> Bu bo'lim 2026-09-04 da yozildi. Ish yarim yo'lda to'xtadi va boshqa chatda
-> davom etadi. Kod bo'yicha hech narsa osilib qolmagan — hammasi
-> `origin/main` da va CI yashil. Osilib qolgani — BITTA QAROR (pastda).
+> 2026-09-04 da yozildi. Ish boshqa chatda davom etadi.
+> Kod bo'yicha hech narsa yo'qolmagan va osilib qolmagan.
+> Qolgani: (1) lokal AI `codex/cloud-ai` dagi ishni tortib olib test qilishi,
+> (2) Mashq bo'limi tuzilishini Mini App'ga keltirish.
 
-### Kod holati
+---
 
-- `origin/main` = `989ebd1`. Ishchi shox: `claude/android-app-status-review-tv9840`
-  (u ham shu commitda). Yig'ilmagan o'zgarish yo'q.
-- **CI to'liq yashil** (run 48, `989ebd1`): 4 ta statik tekshiruv, unit testlar,
-  lint, assemble debug va release bundle — ikkala flavor uchun ham.
-- Backend testlari: **624 passed, 13584 subtests**.
-  **3 ta yiqilish AVVALDAN bor va bu ishlarga aloqasi yo'q**
-  (`git stash` bilan tasdiqlangan): `test_course_miniapp_foundation.py` da 2 ta,
-  `test_course_mistake_service.py` da 1 ta. Ularni "men buzdim" deb o'ylamang.
+### A. LOKAL AI (Codex) UCHUN: cloud ishini tortib olish
 
-### Shu sessiyada bajarilgan 12 ta commit (6f08078 → 989ebd1)
+Cloud AI (bu sessiya) `codex/cloud-ai` da ishladi. Bu muhitda Android SDK
+yo'q (`dl.google.com` yopiq), shuning uchun Gradle ishlamaydi va uch branchli
+qoidaga ko'ra ish `main` ga chiqarilmadi — lokal Codex test qilib chiqarishi
+kerak.
 
-Batafsili pastdagi "10. Recent Important Changes" da, har biri alohida yozuv.
-Qisqacha:
+**Tortib olish** (`codex/local-ai` hali ajralib ketmagan bo'lsa — fast-forward):
+
+```bash
+git fetch origin
+git checkout codex/local-ai
+git merge --ff-only origin/codex/cloud-ai
+```
+
+Agar `codex/local-ai` da o'z commitlaringiz bo'lsa va ff bo'lmasa — oddiy
+merge qiling (reset/force ISHLATMANG, `AGENTS.md` taqiqlaydi):
+
+```bash
+git merge origin/codex/cloud-ai
+```
+
+**Test qilish** (hammasi o'tishi shart):
+
+```bash
+cd android
+python3 tools/check_interface_fakes.py
+python3 tools/check_named_arguments.py
+python3 tools/check_flavor_parity.py
+python3 tools/check_strings_translated.py
+python3 tools/check_palette_matches_miniapp.py      # yangi
+
+./gradlew testPlayDebugUnitTest testDirectDebugUnitTest
+./gradlew lintPlayDebug lintDirectDebug
+./gradlew assemblePlayDebug assembleDirectDebug
+```
+
+Backend testlari bu o'zgarishga aloqador emas (faqat Android rang qiymatlari),
+lekin xohlasangiz: `python3 -m pytest tests -q --ignore=tests/e2e`.
+**Kutiladigan natija: 624 passed, 3 failed** — o'sha 3 ta yiqilish
+AVVALDAN bor (pastda "Eski test yiqilishlari" ga qarang).
+
+**Ko'z bilan bir marta ko'ring:** `PaperRaised` endi sof oq (#FFFFFF), avval
+#FFFDF8 edi — kartalar biroz oqroq. Mini App'da aynan shunday, lekin
+qurilmada bir ko'rib chiqing.
+
+**O'tsa — `main` ga chiqarish va uchala branchni tenglashtirish:**
+
+```bash
+git checkout main && git merge --ff-only codex/local-ai && git push origin main
+git push origin main:codex/cloud-ai
+git push origin main:codex/local-ai
+```
+
+---
+
+### B. HOZIRGI BRANCH HOLATI
+
+| Branch | Commit | Nima bor |
+|---|---|---|
+| `origin/main` | `b433728` | 13 ta commit (Android limit/reklama ishi) + uch branchli qoida |
+| `origin/codex/cloud-ai` | `fc95e38` | main + **rang palitrasi tenglashtirildi** (test qilinmagan) |
+| `origin/codex/local-ai` | `b433728` | main bilan bir xil |
+
+Eski `claude/android-app-status-review-tv9840` shoxi ham `989ebd1` da turibdi —
+uning ichidagi hamma narsa `main` ga tushgan, kerak bo'lmasa o'chirsa bo'ladi
+(lekin `AGENTS.md` ga ko'ra avval backup bundle).
+
+---
+
+### C. BAJARILGAN ISH
+
+**`main` da (13 commit, CI to'liq yashil):**
 
 1. Kunlik limit oynasi o'quvchining vaqt mintaqasiga o'tdi
-   (`app/services/course_daily_window.py`).
-2. AI Voice bepul limiti umrbod hisobdan KUNLIK hisobga o'tdi (hamma klientda).
-3. Android `play` / `direct` flavor'lari — Play build'da Telegram/to'lovga
-   yo'naltirish source set darajasida YO'Q.
-4. Limit bloki Mashq va Test markazida ham chiqadi.
+   (`app/services/course_daily_window.py`). UTC+5 dagi user limiti endi
+   mahalliy yarim tunda ochiladi, avval mahalliy 05:00 da ochilardi.
+2. AI Voice bepul limiti umrbod hisobdan KUNLIK hisobga o'tdi — hamma
+   klientda (Mini App, Desktop, Android bitta servisdan o'qiydi).
+3. Android `play` / `direct` flavor'lari. Play build'da Telegram/to'lovga
+   yo'naltirish **source set darajasida yo'q** — runtime flag emas.
+4. Limit bloki Mashq va Test markazida ham chiqadi (avval qizil chiziq edi).
 5. Bot xabari: darslarda 90% va 0%, kunlik limitda faqat "tugadi".
 6. Reklama: backend adapteri (kanal filtri), Coil+Media3 bilan ekran,
    "Reklama bilan davom etish" oqimi to'liq ulandi.
 
-### OSILIB QOLGAN QAROR — foydalanuvchidan so'ralgan, javob kelmagan
+Har birining batafsil yozuvi pastda, "10. Recent Important Changes" da.
 
-Sessiya oxirida Mini App bilan Android interfeysini yonma-yon taqqoslab
-chiqdim (haqiqiy manbadan: `app/static/course-v3.html` va
-`android/app/src/main` — screenshot'dan emas). **Javob: hali 1:1 emas.**
+**`codex/cloud-ai` da (test qilinmagan):**
 
-Foydalanuvchiga berilgan savol: **qaysi biridan boshlaymiz?**
+7. **Rang palitrasi Mini App bilan aynan tenglashtirildi.** 19 tadan 19 tasi
+   mos. 6 tasi tuzatildi, 6 tasi qo'shildi. Batafsili "10." da.
 
-**(a) Ranglar — BAJARILDI (2026-09-04, `codex/cloud-ai`).** 19 ta token ham
-Mini App bilan aynan bir xil. `android/tools/check_palette_matches_miniapp.py`
-ikkala faylni o'qib solishtiradi va CI'da Gradle'dan oldin ishlaydi, shuning
-uchun kelajakda biror token siljisa build yiqiladi. Quyidagi jadval
-tuzatilgunga qadar bo'lgan holatni ko'rsatadi (tarix uchun qoldirildi).
+---
 
-| Mini App (course-v3.html) | Android (Color.kt) |
-|---|---|
-| `--card #FFFFFF` | `PaperRaised #FFFDF8` |
-| `--line #EAE0CC` | `Divider #E9E0CE` |
-| `--ink3 #A89E8E` | `InkDisabled #A79C8C` |
-| `--cinbg #FDEBE7` | `CinnabarSoft #FBE6E3` |
-| `--goldbg #FAF0D3` | `GoldSoft #FBF0D6` |
-| `--jadebg #E3F4EA` | `JadeSoft #E2F3EA` |
-| `--flame #FF9600` | yo'q |
-| `--flamebg #FFEFD6` | yo'q |
-| `--blue #2E86C1` | yo'q |
-| `--bluebg #E8F2FA` | yo'q |
-| `--overlay #171310` | yo'q |
-| `--shadow #E4D9C4` | yo'q |
+### D. QOLGAN ISH — keyingi qadam
 
-Aniq mos bo'lganlari: `paper #FDF9F0`, `ink #211D17`, `ink2 #665D50`,
-`cin #E04A40`, `cin2 #B23530`, `gold #E9A916`, `jade #2FA06A`.
+**Mashq bo'limi tuzilishi.** Mini App'da **5 qator**, Android'da **9 qator**.
 
-**(b) Mashq bo'limi tuzilishi — QOLGAN ISH, keyingi qadam shu.**
-Mini App'da **5 qator**, Android'da **9 qator**.
+- Mini App (`renderMashq()`, `app/static/course-v3.html:3871`):
+  | # | Qator | Plitka rangi |
+  |---|---|---|
+  | 1 | Ieroglif lug'ati | amber `#F8EFD9` / `#B07A1E` |
+  | 2 | Ieroglif tanish | ko'k `#E7F0F8` / `#2F6F9E` |
+  | 3 | Talaffuz mashqi | nefrit `--jadebg` / `--jade` |
+  | 4 | Test markazi | kinovar `--cinbg` / `--cin` |
+  | 5 | Xatolar | kinovar `--cinbg` / `--cin` |
 
-- Mini App (`renderMashq()`, course-v3.html:3871): Ieroglif lug'ati (amber) ·
-  Ieroglif tanish (ko'k) · Talaffuz mashqi (nefrit) | Test markazi (kinovar) ·
-  Xatolar (kinovar).
 - Android (`PracticeScreen.kt`): lug'at + 5 ta xom mashq turi (characters,
   listening, pinyin, writing, pronunciation) + HSK test + Daraja aniqlash +
-  Xatolarim.
+  Xatolarim = 9 qator, va **hammasining plitkasi bir xil `GoldSoft`**.
+
 - Ya'ni Android xom "skill"larni ro'yxatga chiqargan; Mini App ularni
   "Ieroglif tanish" va "Talaffuz mashqi" EKRANLARI ichiga yashirgan
   (`course_v3_recognition.html`, `course_v3_pronunciation.html`) — bu ikki
   ekran Android'da hali YO'Q.
 
-### Boshqa aniqlangan UI farqlari (hali tuzatilmagan)
+- **DIQQAT:** `.t-amber` va `.t-blue` qiymatlari Mini App'da CSS token EMAS,
+  o'sha komponentga qattiq yozilgan. Palitraga token qilib qo'shishdan oldin
+  shuni hisobga oling.
 
-- **Ikona plitkalari:** Mini App'da har qator o'z rangida
-  (`.t-amber #F8EFD9/#B07A1E`, `.t-blue #E7F0F8/#2F6F9E`, `.t-jade`, `.t-cin`);
-  Android'da HAMMASI bir xil `GoldSoft`. Ekranda eng ko'zga tashlanadigan farq.
-  DIQQAT: `.t-amber` va `.t-blue` qiymatlari Mini App'da token EMAS, o'sha
-  komponentga qattiq yozilgan — palitraga qo'shishdan oldin shuni bilib qo'ying.
-- **Locked node:** Mini App qulflangan darsni `--line` (#EAE0CC) bilan
-  bo'yaydi; Android'da `Locked #D8CFBE`. `Locked` bir vaqtning o'zida
-  o'chirilgan tugmalar rangi ham, shuning uchun uni ko'r-ko'rona
-  o'zgartirmadim — kurs ekrani ishi bilan birga hal qilinsin.
+---
+
+### E. BOSHQA ANIQLANGAN UI FARQLARI (hali tuzatilmagan)
+
 - **Kurs:** Mini App'dagi "12 / 28 dars" progress chizig'i (`.pwrap`/`.pbar`)
   Android'da yo'q. Qolgani (daraja pill, seriya/XP chiplari, maqsad halqasi) mos.
-- **AI Voice:** Mini App — bitta qora karta (`.voicebox`), panda, bitta tugma;
-  rol suhbat ichida so'raladi. Android — 5 ta rol kartasi ro'yxati. Boshqa oqim.
-- **Profil:** Mini App'da hero + maqsad halqasi + seriya kalendari + 3 ta yutuq +
-  sozlamalar (til, bildirishnoma). Android'da 4 ta raqamli plitka + obuna +
-  referal + chiqish. Kalendar, yutuqlar va sozlamalar YO'Q.
+- **Locked node:** Mini App qulflangan darsni `--line` (#EAE0CC) bilan
+  bo'yaydi; Android'da `Locked #D8CFBE`. `Locked` bir vaqtda o'chirilgan
+  tugmalar rangi ham, shuning uchun ataylab tegilmadi — kurs ekrani ishi
+  bilan birga hal qilinsin.
+- **AI Voice:** Mini App — bitta qora karta (`.voicebox`), panda, bitta
+  tugma; rol suhbat ichida so'raladi. Android — 5 ta rol kartasi ro'yxati.
+  Butunlay boshqa oqim.
+- **Profil:** Mini App'da hero + maqsad halqasi + seriya kalendari + 3 ta
+  yutuq + sozlamalar (til, bildirishnoma). Android'da 4 ta raqamli plitka +
+  obuna + referal + chiqish. Kalendar, yutuqlar va sozlamalar YO'Q.
 - **Shrift:** Mini App ieroglifni SERIF bilan chizadi
   (`"Songti SC","STSong","Noto Serif SC"`); Android `Type.kt` da hammasi
   `FontFamily.Default` (Roboto). Har bir ierogifda ko'rinadigan farq.
 - **Onboarding:** `course_v3_onboarding.html` Android'da yo'q.
 
-### Foydali havolalar va vositalar
+Yonma-yon taqqoslash kanvasi (9 ta artboard, farqlar belgilangan):
+https://claude.ai/code/artifact/715d762e-ca6d-4629-88e1-aa2951d1e03e
 
-- Taqqoslash kanvasi (9 ta artboard, farqlar belgilangan):
-  https://claude.ai/code/artifact/715d762e-ca6d-4629-88e1-aa2951d1e03e
-  (bu sessiya undagi izohlarni ko'ra olmaydi — obuna rad etilgan.)
-- **Muhit cheklovi:** `dl.google.com` yopiq -> Android SDK yo'q -> Gradle
-  lokal ishlamaydi. Compose kodini FAQAT CI kompilyatsiya qiladi.
-  Shuning uchun `android/tools/` da 4 ta statik tekshiruv bor va CI'da
-  Gradle'dan OLDIN ishlaydi. Har birini ataylab buzib sinaganman:
-  - `check_interface_fakes.py` — test fake interfeysdan orqada qolsa
-  - `check_named_arguments.py` — nomlangan argument e'lon qilinmagan parametrga tushsa
-  - `check_flavor_parity.py` — ikkala flavor imzosi ajralib ketsa
-  - `check_strings_translated.py` — uz/ru/tg to'liqligi
-  Har o'zgarishdan keyin to'rttasini ham ishlating.
-- Sof (Android'siz) Kotlin mantiqni lokal sinash uchun scratchpad'da
-  standalone `kotlinc` bor edi; sessiya tugagach yo'qoladi — kerak bo'lsa
-  GitHub releases'dan qayta yuklab olinadi.
-- UI ishi uchun skill: `/mnt/skills/public/frontend-design/SKILL.md`
-  (oddiy fayl, `Skill` tool ro'yxatida emas — o'qib, amal qilish mumkin).
-  Ko'p artboard'li dizayn kanvasi uchun esa `design` skill'i.
+---
 
-### `codex/cloud-ai` da turgan, `main` ga chiqarilmagan ish
+### F. ESKI TEST YIQILISHLARI — bularni "men buzdim" deb o'ylamang
 
-Uch branchli qoidaga ko'ra (`AGENTS.md`) cloud AI test qila olmagan ishni
-`codex/cloud-ai` da qoldiradi. Shu yerda turgani:
+`pytest tests -q` da **3 ta yiqilish AVVALDAN bor** (`git stash` bilan
+tasdiqlangan; lokal Codex ham mustaqil shu xulosaga keldi):
 
-**Rang palitrasini Mini App bilan tenglashtirish.**
-- `android/.../core/design/Color.kt` — 6 ta token tuzatildi
-  (`PaperRaised`, `Divider`, `InkDisabled`, `CinnabarSoft`, `GoldSoft`,
-  `JadeSoft`), 6 tasi qo'shildi (`Flame`, `FlameSoft`, `Blue`, `BlueSoft`,
-  `Overlay`, `Shadow`). Har qatorda qaysi CSS tokenga mos kelishi yozilgan.
-- `android/tools/check_palette_matches_miniapp.py` (yangi) — ikkala faylni
-  o'qib solishtiradi. Ataylab buzib sinaldi: `Divider` ni eski qiymatga
-  qaytarganda topdi.
-- CI'ga va `android/README.md` ga qo'shildi (endi 5 ta statik tekshiruv).
+- `test_free_course_parts_are_level_aware` — hsk2 bepul qismlar 2 -> 5 ga
+  o'zgargan, test eskicha qolgan.
+- `test_unpaid_course_lesson_policy_includes_hsk1_checkpoint` — shu bilan bog'liq.
+- `test_review_questions_use_only_same_category_answers_and_v2_material` —
+  `sentence` bo'sh qaytmoqda.
 
-**Lokal Codex nima qilishi kerak:**
-1. `python3 android/tools/check_palette_matches_miniapp.py` — o'tishi shart.
-2. Qolgan 4 ta tekshiruv ham: `check_interface_fakes`, `check_named_arguments`,
-   `check_flavor_parity`, `check_strings_translated`.
-3. `cd android && ./gradlew testPlayDebugUnitTest testDirectDebugUnitTest
-   lintPlayDebug lintDirectDebug assemblePlayDebug` — bu muhitda Android SDK
-   yo'q (`dl.google.com` yopiq), shuning uchun Gradle FAQAT lokalda yoki CI'da
-   ishlaydi.
-4. Backend testlariga tegmaydi (faqat Android resurs qiymatlari o'zgardi),
-   lekin xohlasangiz: `python3 -m pytest tests -q --ignore=tests/e2e`.
-5. O'tsa `main` ga chiqaring va uchala branchni tenglashtiring.
+Bular alohida ish, reklama/limit ishiga aloqasi yo'q.
 
-**Ko'z bilan tekshirish arziydigan joy:** `PaperRaised` endi sof oq
-(#FFFFFF), avval #FFFDF8 edi. Kartalar biroz oqroq ko'rinadi — Mini App'da
-aynan shunday.
+---
 
-### Hal qilinmagan biznes qarori (admindan javob kutilmoqda)
+### G. MUHIT CHEKLOVI VA VOSITALAR
+
+**Cloud muhitda `dl.google.com` yopiq** -> Android SDK yo'q -> **Gradle
+ishlamaydi**. Compose kodini faqat CI (yoki lokal Codex) kompilyatsiya
+qiladi. Shuning uchun `android/tools/` da **5 ta statik tekshiruv** bor va
+CI'da Gradle'dan OLDIN ishlaydi. Har biri ataylab buzib sinalgan:
+
+| Tekshiruv | Nimani topadi |
+|---|---|
+| `check_interface_fakes.py` | test fake interfeysdan orqada qolsa |
+| `check_named_arguments.py` | nomlangan argument e'lon qilinmagan parametrga tushsa |
+| `check_flavor_parity.py` | ikkala flavor imzosi ajralib ketsa; Play build direct matniga murojaat qilsa |
+| `check_strings_translated.py` | uz/ru/tg to'liq emasligi |
+| `check_palette_matches_miniapp.py` | rang tokeni Mini App'dan siljisa |
+
+**Har Android o'zgarishidan keyin beshtasini ham ishlating.**
+
+UI ishi uchun skill: `/mnt/skills/public/frontend-design/SKILL.md` (oddiy
+fayl, `Skill` tool ro'yxatida emas — o'qib amal qilinadi). Ko'p artboard'li
+dizayn kanvasi uchun `design` skill'i.
+
+---
+
+### H. HAL QILINMAGAN BIZNES QARORI (admindan javob kutilmoqda)
 
 Bir xil mashq bo'limiga IKKI XIL qoida qo'llanadi:
 Mini App `/api/v3/practice/daily-gate` ni `lifetime=True` bilan chaqiradi
