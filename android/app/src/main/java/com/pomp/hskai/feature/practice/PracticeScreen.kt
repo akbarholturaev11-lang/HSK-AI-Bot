@@ -27,10 +27,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -52,6 +49,7 @@ fun PracticeScreen(
     level: String,
     language: String,
     limit: LimitGate,
+    onWatchAd: (feature: String) -> Unit,
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onSelectPracticeOption: (Int) -> Unit,
@@ -95,6 +93,7 @@ fun PracticeScreen(
                 level = level,
                 language = language,
                 limit = limit,
+                onWatchAd = onWatchAd,
                 onOpenDictionary = onOpenDictionary,
                 onStartPractice = onStartPractice,
                 onStartMistakeReview = onStartMistakeReview,
@@ -109,6 +108,7 @@ private fun PracticeHome(
     level: String,
     language: String,
     limit: LimitGate,
+    onWatchAd: (feature: String) -> Unit,
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
@@ -170,10 +170,6 @@ private fun PracticeHome(
             ),
         )
     }
-    // Which section the learner last tried to open. A spent allowance has to
-    // name the section, and only the screen knows which row was tapped.
-    var attempted by remember { mutableStateOf<PracticeToolSpec?>(null) }
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),
@@ -195,11 +191,12 @@ private fun PracticeHome(
                 color = PompColors.InkSecondary,
             )
             val error = state.error
+            val section = state.pendingTool
             if (error is ApiError.LimitReached) {
                 // A spent allowance is not a dead end: this is the one place
-                // that says what is closed and when it comes back.
+                // that says what is closed, when it comes back, and how to
+                // open it now.
                 Spacer(Modifier.height(12.dp))
-                val section = attempted
                 SectionLimitBlock(
                     sectionTitle = if (section != null) {
                         stringResource(section.titleRes)
@@ -208,6 +205,9 @@ private fun PracticeHome(
                     },
                     limit = limit,
                     resetAt = error.resetAt,
+                    // Watching an ad opens the section without spending the
+                    // daily allowance. Only offered for a section we know.
+                    onWatchAd = section?.let { tool -> { onWatchAd(tool.adFeature) } },
                 )
             } else if (error != null) {
                 Spacer(Modifier.height(12.dp))
@@ -231,10 +231,7 @@ private fun PracticeHome(
                 title = stringResource(tool.titleRes),
                 body = stringResource(tool.bodyRes),
                 enabled = !state.isStarting,
-                onClick = {
-                    attempted = tool
-                    onStartPractice(tool, level, language)
-                },
+                onClick = { onStartPractice(tool, level, language) },
             )
         }
 
@@ -245,10 +242,7 @@ private fun PracticeHome(
                 title = stringResource(tool.titleRes),
                 body = stringResource(tool.bodyRes),
                 enabled = !state.isStarting,
-                onClick = {
-                    attempted = tool
-                    onStartPractice(tool, level, language)
-                },
+                onClick = { onStartPractice(tool, level, language) },
             )
         }
         item {

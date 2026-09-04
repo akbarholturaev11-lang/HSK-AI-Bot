@@ -26,6 +26,15 @@ data class PracticeToolSpec(
     val glyph: String,
 )
 
+/**
+ * The allowance this tool draws from, named as the server names it.
+ *
+ * Mirrors `CourseMiniAppPracticeService._feature`: an ad opened against the
+ * wrong name would unlock nothing, so the two must not drift.
+ */
+val PracticeToolSpec.adFeature: String
+    get() = if (mode == "placement") "placement" else "training_test"
+
 data class PracticeUiState(
     val mistakes: MistakesOverviewResponse? = null,
     val isLoadingMistakes: Boolean = false,
@@ -43,6 +52,16 @@ data class PracticeUiState(
     val reviewAnswers: Map<String, Int> = emptyMap(),
     val reviewResult: MistakeReviewCompleteResponse? = null,
     val error: ApiError? = null,
+    /**
+     * The section the learner last tried to open. A spent allowance has to
+     * name it, and an ad has to know which section it is opening.
+     */
+    val pendingTool: PracticeToolSpec? = null,
+    /**
+     * Ties the running session to the ad that opened it. Empty when the
+     * session came out of the daily allowance instead.
+     */
+    val adAccessRef: String = "",
 ) {
     val isPracticeRunning: Boolean get() = session != null && result == null
     val isReviewRunning: Boolean get() = reviewSession != null && reviewResult == null
@@ -74,12 +93,27 @@ class PracticeViewModel(
         }
     }
 
+    /**
+     * The attempt to repeat if an ad opens the section. Held outside the UI
+     * state because it is bookkeeping, not something the screen draws.
+     */
+    private data class Attempt(
+        val tool: PracticeToolSpec,
+        val level: String,
+        val language: String,
+    )
+
+    private var lastAttempt: Attempt? = null
+
     fun startPractice(
         tool: PracticeToolSpec,
         level: String,
         language: String,
+        accessRef: String = "",
+        adSupported: Boolean = false,
     ) {
         if (_state.value.isStarting) return
+        lastAttempt = Attempt(tool, level, language)
         _state.update {
             it.copy(
                 isStarting = true,
@@ -88,6 +122,8 @@ class PracticeViewModel(
                 result = null,
                 selectedIndex = null,
                 answers = emptyMap(),
+                pendingTool = tool,
+                adAccessRef = if (adSupported) accessRef else "",
             )
         }
         viewModelScope.launch {
@@ -97,6 +133,8 @@ class PracticeViewModel(
                     level = level,
                     language = language,
                     skill = tool.skill,
+                    accessRef = accessRef,
+                    adSupported = adSupported,
                 )
             ) {
                 is ApiResult.Success -> _state.update {
@@ -112,6 +150,22 @@ class PracticeViewModel(
                 }
             }
         }
+    }
+
+    /**
+     * Re-opens the section the learner was refused, now that an ad has been
+     * watched. The server still decides: it checks its own record of the
+     * watch against [accessRef].
+     */
+    fun startWithAd(accessRef: String) {
+        val attempt = lastAttempt ?: return
+        startPractice(
+            tool = attempt.tool,
+            level = attempt.level,
+            language = attempt.language,
+            accessRef = accessRef,
+            adSupported = true,
+        )
     }
 
     fun selectPracticeOption(index: Int) {
@@ -146,6 +200,11 @@ class PracticeViewModel(
                     language = language,
                     skill = session.skill,
                     answers = nextAnswers,
+                    // A session an ad opened must be finished the same way,
+                    // or the server judges it against the daily limit and the
+                    // learner loses a practice they already completed.
+                    accessRef = current.adAccessRef,
+                    adSupported = current.adAccessRef.isNotBlank(),
                 )
             ) {
                 is ApiResult.Success -> _state.update {

@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,9 @@ import com.pomp.hskai.core.design.PompColors
  *   closed rather than seeing a bare paywall.
  * @param headline the one line that explains the block.
  * @param hint optional smaller line under the buttons.
- * @param secondaryLabel when null, only the primary button is shown.
+ * @param secondaryLabel when null, that button is not shown.
+ * @param tertiaryLabel the quietest option, shown as plain text. Used when a
+ *   channel has three things to offer and only one of them should shout.
  */
 @Composable
 fun LimitBlock(
@@ -54,6 +57,8 @@ fun LimitBlock(
     hint: String? = null,
     secondaryLabel: String? = null,
     onSecondary: (() -> Unit)? = null,
+    tertiaryLabel: String? = null,
+    onTertiary: (() -> Unit)? = null,
     isBusy: Boolean = false,
     errorText: String? = null,
 ) {
@@ -139,6 +144,23 @@ fun LimitBlock(
                         text = secondaryLabel,
                         style = MaterialTheme.typography.labelLarge,
                         color = PompColors.CinnabarDark,
+                    )
+                }
+            }
+
+            if (tertiaryLabel != null && onTertiary != null) {
+                Spacer(Modifier.height(4.dp))
+                TextButton(
+                    onClick = onTertiary,
+                    enabled = !isBusy,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 44.dp),
+                ) {
+                    Text(
+                        text = tertiaryLabel,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = PompColors.InkSecondary,
                     )
                 }
             }

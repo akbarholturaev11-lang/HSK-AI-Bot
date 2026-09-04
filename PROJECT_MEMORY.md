@@ -207,6 +207,45 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — "Reklama bilan davom etish" — oqim yopildi
+
+Changed:
+- Limit bloki endi UCHTA yo'l ko'rsatishi mumkin. Reklama BOR bo'lsa u
+  BIRINCHI tugma bo'ladi: u bo'limni HOZIR ochadi va o'quvchiga hech narsa
+  turmaydi. Obuna/akkaunt tekshiruvi ikkinchi, yordam uchinchi bo'ladi.
+  - `play`:   Reklama -> Akkauntni tekshirish -> Qo'llab-quvvatlash
+  - `direct`: Reklama -> Limitsiz o'qish
+- `LimitBlock` uchinchi (eng tinch) tugma slotini oldi.
+- `PracticeUiState.pendingTool` — qaysi bo'lim urinilgani endi ViewModel'da.
+  Ilgari ekranda `remember` bilan turardi va reklama qaytganda takrorlash
+  uchun kerak bo'lmasdi.
+- `PracticeViewModel.startWithAd(accessRef)` — reklama ko'rilgach o'sha
+  bo'lim aynan o'sha `access_ref` bilan qayta ochiladi.
+- `accessRef` bir urinishga bitta (UUID) va U BILAN ZANJIR bog'lanadi:
+  reklama -> attempt -> view -> practice start -> practice complete.
+  Yakunlashda ham uzatiladi, aks holda server uni kunlik limitga solib
+  o'lchaydi va tugatilgan mashq natijasi yo'qoladi.
+- `MainActivity` reklama ekranini xuddi lug'at kabi alohida sahifa qilib
+  ochadi; `accessRef` bo'yicha kalitlanadi, ya'ni yangi reklama yangi sanoq.
+
+Files touched:
+- `android/.../feature/limit/LimitBlock.kt`
+- `android/app/src/{play,direct}/.../SectionLimitBlock.kt`
+- `android/.../feature/practice/{PracticeViewModel,PracticeScreen}.kt`
+- `android/.../data/api/AndroidFeatureDto.kt`,
+  `android/.../data/repository/FeatureRepository.kt`
+- `android/.../MainActivity.kt`
+
+Tekshirildi:
+- CI `0024a41` da: unit testlar va lint YASHIL — ya'ni Coil 2.7.0 va
+  Media3 1.5.1 yechildi va Compose kodi kompilyatsiya bo'ldi.
+- 4 ta statik tekshiruv lokal o'tdi.
+
+Risk:
+- Reklama tugmasi HOZIRCHA faqat Mashq/Test bo'limlarida. Yopiq darsda va
+  AI Voice'da yo'q: dars uchun reklama `level`+`lesson_order` ga bog'lanadi
+  va bu alohida ish; AI Voice reklama bilan ochilmaydi.
+
 ### 2026-09-03 — Mashq bo'limini reklama bilan ochish (server)
 
 Changed:

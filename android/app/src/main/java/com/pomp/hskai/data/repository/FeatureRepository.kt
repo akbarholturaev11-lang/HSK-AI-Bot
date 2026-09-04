@@ -114,6 +114,8 @@ class FeatureRepository(
         level: String,
         language: String,
         skill: String,
+        accessRef: String = "",
+        adSupported: Boolean = false,
     ): ApiResult<PracticeStartResponse> = authorized {
         api.practiceStart(
             it,
@@ -122,6 +124,8 @@ class FeatureRepository(
                 level = level,
                 language = language,
                 skill = skill,
+                accessRef = accessRef,
+                adSupported = adSupported,
             ),
         )
     }
@@ -133,6 +137,8 @@ class FeatureRepository(
         language: String,
         skill: String,
         answers: Map<String, Int>,
+        accessRef: String = "",
+        adSupported: Boolean = false,
     ): ApiResult<PracticeCompleteResponse> = authorized {
         api.practiceComplete(
             it,
@@ -145,6 +151,8 @@ class FeatureRepository(
                 answers = answers.map { (questionId, selected) ->
                     PracticeAnswerDto(questionId, selected)
                 },
+                accessRef = accessRef,
+                adSupported = adSupported,
             ),
         )
     }

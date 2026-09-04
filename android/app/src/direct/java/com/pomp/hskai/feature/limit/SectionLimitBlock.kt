@@ -23,16 +23,26 @@ fun SectionLimitBlock(
     modifier: Modifier = Modifier,
     reason: String? = null,
     resetAt: String? = null,
+    onWatchAd: (() -> Unit)? = null,
 ) {
     val error = limit.state.error
+    // An ad opens the section now and costs nothing, so it leads when it is
+    // available; the subscription becomes the second, unlimited option.
+    val unlockLabel = stringResource(R.string.limit_unlock_button)
     LimitBlock(
         sectionTitle = sectionTitle,
         headline = stringResource(R.string.limit_unlock_headline),
-        primaryLabel = stringResource(R.string.limit_unlock_button),
-        onPrimary = limit.actions.onUnlock,
+        primaryLabel = if (onWatchAd != null) {
+            stringResource(R.string.limit_watch_ad)
+        } else {
+            unlockLabel
+        },
+        onPrimary = onWatchAd ?: limit.actions.onUnlock,
         modifier = modifier,
         reason = reason,
         hint = stringResource(R.string.limit_unlock_hint),
+        secondaryLabel = if (onWatchAd != null) unlockLabel else null,
+        onSecondary = if (onWatchAd != null) limit.actions.onUnlock else null,
         isBusy = limit.state.isBusy,
         errorText = if (error != null) stringResource(error.messageRes) else null,
     )

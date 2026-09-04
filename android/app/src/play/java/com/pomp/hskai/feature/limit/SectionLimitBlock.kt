@@ -24,10 +24,15 @@ fun SectionLimitBlock(
     modifier: Modifier = Modifier,
     reason: String? = null,
     resetAt: String? = null,
+    onWatchAd: (() -> Unit)? = null,
 ) {
     val reopensAt = ResetTime.localClock(resetAt)
     val hasSupport = limit.state.supportUrl.isNotBlank()
     val error = limit.state.error
+    // An ad opens the section now and costs the learner nothing, so it leads
+    // when it is available; re-checking the account then becomes the quieter
+    // second option.
+    val checkLabel = stringResource(R.string.limit_check_account)
     LimitBlock(
         sectionTitle = sectionTitle,
         headline = if (reopensAt != null) {
@@ -35,13 +40,19 @@ fun SectionLimitBlock(
         } else {
             stringResource(R.string.limit_locked_headline)
         },
-        primaryLabel = stringResource(R.string.limit_check_account),
-        onPrimary = limit.actions.onRecheck,
+        primaryLabel = if (onWatchAd != null) {
+            stringResource(R.string.limit_watch_ad)
+        } else {
+            checkLabel
+        },
+        onPrimary = onWatchAd ?: limit.actions.onRecheck,
         modifier = modifier,
         reason = reason,
         hint = stringResource(R.string.limit_status_hint),
-        secondaryLabel = if (hasSupport) stringResource(R.string.limit_support) else null,
-        onSecondary = if (hasSupport) limit.actions.onSupport else null,
+        secondaryLabel = if (onWatchAd != null) checkLabel else null,
+        onSecondary = if (onWatchAd != null) limit.actions.onRecheck else null,
+        tertiaryLabel = if (hasSupport) stringResource(R.string.limit_support) else null,
+        onTertiary = if (hasSupport) limit.actions.onSupport else null,
         isBusy = limit.state.isBusy,
         errorText = if (error != null) stringResource(error.messageRes) else null,
     )

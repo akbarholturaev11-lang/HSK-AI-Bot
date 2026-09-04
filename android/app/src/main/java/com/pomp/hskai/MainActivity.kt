@@ -75,6 +75,8 @@ import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
+import com.pomp.hskai.feature.ad.AdScreen
+import com.pomp.hskai.feature.ad.AdViewModel
 import com.pomp.hskai.feature.limit.rememberLimitGate
 import com.pomp.hskai.feature.rating.RatingScreen
 import com.pomp.hskai.feature.rating.RatingViewModel
@@ -207,6 +209,8 @@ private fun AppRoot(
             val settingsReload by settingsViewModel.reload.collectAsStateWithLifecycle()
             var languagePickerOpen by remember { mutableStateOf(false) }
             var dictionaryOpen by remember { mutableStateOf(false) }
+            // The ad a learner is watching to open a closed section, if any.
+            var adRequest by remember { mutableStateOf<AdRequest?>(null) }
 
             // A preference the server accepted changes what every screen shows,
             // so they are re-read rather than patched locally.
@@ -344,7 +348,37 @@ private fun AppRoot(
             }
 
             val launch = openLesson
-            if (dictionaryOpen) {
+            val ad = adRequest
+            if (ad != null) {
+                // Keyed by the access ref: a new ad is a new attempt, and
+                // reusing the previous model would keep the old countdown.
+                val adViewModel: AdViewModel = viewModel(
+                    key = "ad-${ad.accessRef}",
+                    viewModelStoreOwner = sessionOwner,
+                    factory = AdViewModel.Factory(
+                        repository = app.featureRepository,
+                        feature = ad.feature,
+                        accessRef = ad.accessRef,
+                    ),
+                )
+                val adState by adViewModel.state.collectAsStateWithLifecycle()
+
+                // The server, not this screen, decided the section may open.
+                // Retrying the practice with the same ref is what redeems it.
+                LaunchedEffect(adState.unlocked) {
+                    if (adState.unlocked) {
+                        adRequest = null
+                        practiceViewModel.startWithAd(ad.accessRef)
+                    }
+                }
+
+                AdScreen(
+                    state = adState,
+                    onContinue = adViewModel::onContinue,
+                    onClose = { adRequest = null },
+                    onOpenLink = { url -> openExternal(context, url) },
+                )
+            } else if (dictionaryOpen) {
                 // Keyed by language: the stored meanings belong to one
                 // language, so switching it must not reuse the old model.
                 val dictionaryViewModel: DictionaryViewModel = viewModel(
@@ -398,8 +432,16 @@ private fun AppRoot(
                         level = currentLevel,
                         language = currentLanguage,
                         limit = limitGate,
+                        onWatchAd = { feature ->
+                            adRequest = AdRequest(
+                                feature = feature,
+                                accessRef = UUID.randomUUID().toString(),
+                            )
+                        },
                         onOpenDictionary = { dictionaryOpen = true },
-                        onStartPractice = practiceViewModel::startPractice,
+                        onStartPractice = { tool, level, language ->
+                            practiceViewModel.startPractice(tool, level, language)
+                        },
                         onSelectPracticeOption = practiceViewModel::selectPracticeOption,
                         onAdvancePractice = practiceViewModel::advancePractice,
                         onResetPractice = practiceViewModel::resetPractice,
@@ -656,6 +698,17 @@ private fun openExternal(context: android.content.Context, url: String): Boolean
         false
     }
 }
+
+/**
+ * The ad a learner is watching to open one closed section.
+ *
+ * [accessRef] is generated once per attempt and is what ties the watch to the
+ * session it opens: the same value goes to the ad and then to the practice.
+ */
+private data class AdRequest(
+    val feature: String,
+    val accessRef: String,
+)
 
 private data class LessonLaunch(
     val lesson: CourseLesson,

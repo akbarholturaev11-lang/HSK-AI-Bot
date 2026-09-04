@@ -157,6 +157,13 @@ data class PracticeStartRequest(
     @SerialName("level") val level: String,
     @SerialName("language") val language: String,
     @SerialName("skill") val skill: String = "",
+    /** Ties this session to the ad that opened it. Empty when none did. */
+    @SerialName("access_ref") val accessRef: String = "",
+    /**
+     * Asks the server to open this section on the strength of a watched ad.
+     * It is only a request: the server checks its own record of the watch.
+     */
+    @SerialName("ad_supported") val adSupported: Boolean = false,
 )
 
 @Serializable
@@ -167,6 +174,13 @@ data class PracticeCompleteRequest(
     @SerialName("skill") val skill: String = "",
     @SerialName("session_id") val sessionId: String,
     @SerialName("answers") val answers: List<PracticeAnswerDto>,
+    /**
+     * The same values the session was started with. Finishing an ad-opened
+     * session without them would be judged against the daily limit, and the
+     * learner would lose a practice they had already completed.
+     */
+    @SerialName("access_ref") val accessRef: String = "",
+    @SerialName("ad_supported") val adSupported: Boolean = false,
 )
 
 @Serializable
