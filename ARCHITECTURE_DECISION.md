@@ -237,6 +237,47 @@ Faqat shular sanaladi: `lesson`, `test`, `training`, `mistake_review`, `voice`, 
 
 ## 6. Implementatsiya ketma-ketligi
 
+### Joriy holat (2026-09-05)
+
+| Bosqich | Holat | Commit |
+|---|---|---|
+| 0 — Muzlatish | ✅ | `f606866a` |
+| 1 — DB poydevori | ✅ | `374daa8d` |
+| 2a — Progress oynasi nuqsoni | ✅ | `892ef184` |
+| 2b — Mini App mashq endpointlari | ✅ | `4c9dcf3c` |
+| 2c — Signal ulanishi (talaffuz/tanish/yodlash) | ✅ | `a66c9b1d`, `b55e1aff`, `a4c727a8` |
+| 3 — Onboarding + XP maqsadi | ⏸ UI ruxsati kutilmoqda | — |
+| 4 — LearningSignals + DailyPlanService | ⏳ | — |
+| 5 — `today` bloki | ⏳ | — |
+| 6 — Mini App "Bugungi reja" | ⏳ UI ruxsati | — |
+| 7 — Responsive | ⏳ UI ruxsati | — |
+| 8 — Yakunlash | ⏳ | — |
+
+Test: **707 passed** (baseline 632), ma'lum 3 ta failure o'zgarmagan.
+E2E: **41 passed**, 1 oldindan yiqilgan.
+
+### 2c dagi rejadan chekinish (sabab bilan)
+
+Dastlabki reja "recognition/memorize savollarni serverdan olsin" edi. Kod
+tekshirilgach bu **mumkin emasligi** aniqlandi:
+
+- `recognition` — pinyin+ma'no ko'rsatib 4 ta ieroglif plitkasidan tanlatadi;
+  serverning umumiy savoli esa oddiy matn variantlari beradi (plitkada pinyin
+  yo'q). Ulash ekranni butunlay almashtirishni talab qilardi.
+- `memorize` — umuman MCQ emas: `memo.js` dagi chiziq tartibi/radikal modeli.
+
+Shuning uchun ikkala ekran **o'z oqimida qoldi**, natija esa darslar uchun
+allaqachon ishlatiladigan qoida bilan yoziladi: mijoz faqat xato ieroglifni
+aytadi, server uni o'z lug'atidan qayta quradi
+(`CourseDrillSignalService` + `POST /api/v3/practice/report`).
+
+Lug'at qoplami o'lchandi: `hsk-words.js` dagi 341 bir belgili so'zdan **340
+tasi** serverda mavjud, ya'ni deyarli hamma xato tekshiriladi.
+
+`/api/v3/practice/start|complete` (2b) esa **6-bosqichdagi `skill_drill`
+task uchun** backend bo'lib qoladi — o'sha yerda yangi umumiy drill ekrani
+kerak bo'ladi.
+
 Har bosqich oxirida: `pytest tests -q --ignore=tests/e2e` → **3 ta ma'lum
 failure'dan boshqa hammasi yashil** bo'lishi shart. Har bosqich alohida commit,
 har bosqich oxirida ilova ishlaydigan holatda.
