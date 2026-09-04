@@ -36,6 +36,14 @@ Cover at least:
 
 ## Git Push And Main Branch Rule
 
+- Keep exactly three active collaboration branches:
+  - `main` — canonical production branch; only tested work is allowed here.
+  - `codex/local-ai` — local Codex/local AI work branch; local tests run here before promotion.
+  - `codex/cloud-ai` — cloud AI work branch; changes stay here until tested and promoted.
+- Cloud AI agents work on `codex/cloud-ai`. They must run the relevant tests before pushing to `main`. If their environment cannot run tests, they must leave a clear context/instructions file that explains what changed, what must be tested locally, and the exact safe promotion path for local Codex.
+- Local Codex/local AI agents work on `codex/local-ai`, run the relevant tests, then promote tested commits to `main`.
+- After tested work reaches `main`, sync both `codex/local-ai` and `codex/cloud-ai` back to `main` so future agents do not build on stale code.
+- Before deleting or pruning old branches, create or verify a recoverable backup bundle/ref list. Never use force-push, reset, or branch deletion in a way that can lose code.
 - When the user says `push`, asks to publish to GitHub, or requests a deploy push without naming a separate branch or PR workflow, treat `origin/main` as the final target.
 - A feature-branch push is not completion. Do not report success until the intended commit is confirmed on the remote `origin/main` ref.
 - Fetch the current remote state before pushing and inspect the intended commit against `origin/main` history.

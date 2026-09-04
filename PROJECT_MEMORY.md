@@ -331,6 +331,27 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-04 — Uch branchli AI workflow
+
+Changed:
+- Canonical branch tartibi belgilandi: `main` production/glavniy, `codex/local-ai` lokal Codex/local AI ishlari uchun, `codex/cloud-ai` cloud/oblaka AI ishlari uchun.
+- Cloud AI `codex/cloud-ai`da ishlaydi; test qila olsa o'zi test qilib `main`ga chiqaradi. Test qila olmasa context/yuriqnoma qoldiradi, lokal Codex esa `codex/local-ai`da test qilib `main`ga push qiladi.
+- `main`ga tested commit chiqqach, `codex/local-ai` va `codex/cloud-ai` `main` bilan tenglashtirilishi kerak.
+
+Why:
+- AI agentlar eski branchlarda ishlab yangi kodni buzmasligi va test qilinmagan o'zgarishlar `main`ga tushmasligi uchun.
+
+Files touched:
+- `AGENTS.md`
+- `AI_RULES.md`
+- `PROJECT_MEMORY.md`
+
+Risk:
+- Branch cleanup destructive bo'lishi mumkin; eski branchlarni o'chirishdan oldin backup bundle/ref list saqlanishi shart.
+
+Follow-up:
+- Eski local/remote branchlarni backupdan keyin tozalab, faqat `main`, `codex/local-ai`, `codex/cloud-ai`ni active qoldirish.
+
 ### 2026-09-03 — "Reklama bilan davom etish" — oqim yopildi
 
 Changed:
@@ -7010,3 +7031,6 @@ Any AI coding assistant working on this project must:
 8. If changing database/payment/subscription logic, explain the risk.
 9. If unsure, inspect the code before guessing.
 10. Do not rewrite this file completely unless explicitly requested.
+11. Use only the three active collaboration branches: `main`, `codex/local-ai`, and `codex/cloud-ai`.
+12. Cloud AI must keep untested work on `codex/cloud-ai`; if tests cannot run in cloud, leave a context/instructions file for local Codex to test and promote.
+13. Local Codex must test on `codex/local-ai`, promote only tested commits to `main`, then sync both AI branches back to `main`.

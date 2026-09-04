@@ -137,6 +137,14 @@ Agar git ishlatilsa:
 - kichik commitlar qil
 - working state saqla
 - commit message aniq bo‘lsin
+- Repositoryda 3 ta asosiy branch bo'ladi:
+  - `main` — glavniy/production branch. Faqat testdan o'tgan ish shu yerga chiqadi.
+  - `codex/local-ai` — lokal Codex/local AI ish branchi. Lokal testlar shu branchda bajariladi.
+  - `codex/cloud-ai` — cloud/oblaka AI agentlari ish branchi. Test qilinmaguncha o'zgarish shu branchda turadi.
+- Cloud AI ishni tugatsa, avval testlarni o'tkazsin. Agar cloud muhitida test o'tkazish imkoni bo'lmasa, context/yuriqnoma faylida nima o'zgargani, qanday test qilish va `main`ga qanday chiqarish kerakligini aniq qoldirsin; keyin lokal Codex `codex/local-ai`da test qilib push qiladi.
+- Lokal AI/Codex ishni `codex/local-ai`da qiladi, testlarni o'tkazadi, keyin `main`ga push qiladi.
+- `main`ga push qilingandan keyin `codex/local-ai` va `codex/cloud-ai` `main` bilan tenglashtiriladi, shunda keyingi AI eski kod ustidan ishlamaydi.
+- Eski branchlarni o'chirishdan oldin backup bundle yoki aniq recover yo'li bo'lishi shart; kod yo'qolishi mumkin bo'lgan force/reset/delete ishlarini tasdiqsiz qilma.
 - User `push qil`, `GitHubga chiqar` yoki deploy uchun push qilishni so‘rasa, alohida branch yoki PR aytilmagan bo‘lsa yakuniy target `origin/main` bo‘lsin.
 - Feature branchga push qilish ish tugadi degani emas. Kerakli commit `origin/main` ga yetib borganini remote ref orqali tekshirmaguncha push muvaffaqiyatli deb xabar berma.
 - Pushdan oldin remote holatini yangila va intended commit bilan `origin/main` history holatini tekshir.
