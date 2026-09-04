@@ -189,6 +189,77 @@ data class PracticeAnswerDto(
     @SerialName("selected") val selected: Int,
 )
 
+/**
+ * The HSK exam the test centre opens. This is the Mini App's exam, served by
+ * `CourseHskExamService` — not the ten-question level drill behind
+ * `PracticeStartRequest`, which is a different thing under a similar name.
+ */
+@Serializable
+data class ExamStartRequest(
+    @SerialName("level") val level: String,
+    @SerialName("language") val language: String,
+    @SerialName("access_ref") val accessRef: String = "",
+    @SerialName("ad_supported") val adSupported: Boolean = false,
+)
+
+@Serializable
+data class ExamAnswerDto(
+    @SerialName("question_id") val questionId: String,
+    @SerialName("selected_index") val selectedIndex: Int,
+)
+
+@Serializable
+data class ExamCompleteRequest(
+    @SerialName("session_id") val sessionId: String,
+    @SerialName("level") val level: String = "",
+    @SerialName("language") val language: String = "",
+    @SerialName("answers") val answers: List<ExamAnswerDto> = emptyList(),
+)
+
+@Serializable
+data class ExamStartResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("session") val session: ExamSessionDto? = null,
+)
+
+@Serializable
+data class ExamSessionDto(
+    @SerialName("id") val id: String = "",
+    @SerialName("level") val level: String = "",
+    @SerialName("duration_min") val durationMin: Int = 0,
+    @SerialName("pass_score") val passScore: Int = 0,
+    @SerialName("questions") val questions: List<ExamQuestionDto> = emptyList(),
+)
+
+@Serializable
+data class ExamQuestionDto(
+    @SerialName("id") val id: String = "",
+    @SerialName("format") val format: String = "",
+    @SerialName("section") val section: String = "",
+    @SerialName("prompt") val prompt: String = "",
+    @SerialName("sentence") val sentence: String = "",
+    @SerialName("audio_text") val audioText: String = "",
+    @SerialName("options") val options: List<String> = emptyList(),
+)
+
+@Serializable
+data class ExamCompleteResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("score") val score: Int = 0,
+    @SerialName("total") val total: Int = 0,
+    @SerialName("percent") val percent: Int = 0,
+    @SerialName("pass_score") val passScore: Int = 0,
+    @SerialName("passed") val passed: Boolean = false,
+    @SerialName("section_scores") val sectionScores: Map<String, ExamSectionScoreDto> = emptyMap(),
+)
+
+@Serializable
+data class ExamSectionScoreDto(
+    @SerialName("score") val score: Int = 0,
+    @SerialName("total") val total: Int = 0,
+    @SerialName("percent") val percent: Int = 0,
+)
+
 @Serializable
 data class PracticeStartResponse(
     @SerialName("ok") val ok: Boolean = false,

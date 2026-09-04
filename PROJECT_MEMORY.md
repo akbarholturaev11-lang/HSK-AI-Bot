@@ -227,6 +227,56 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-04 — Android Test markazi Mini App bilan tenglashtirildi (dvigatel + ko'rinish)
+
+Changed:
+- **Backend:** `POST /api/v3/android/exams/start` va `/complete` qo'shildi. Ular
+  Mini App ishlatadigan `CourseHskExamService` ga uzatadi. `create_android_features_router`
+  ga `exam_service_factory` parametri qo'shildi.
+- **Android:** `ExamStartRequest/Response`, `ExamSessionDto`, `ExamQuestionDto`,
+  `ExamCompleteRequest/Response`, `ExamSectionScoreDto`; `FeatureRepository.examStart/examComplete`;
+  `PracticeViewModel` da imtihon holati (`examSession`, `examIndex`, `examAnswers`,
+  `examResult`) va `startExam/selectExamOption/advanceExam/resetExam`.
+  `startWithAd` endi imtihonni ham reklama bilan qayta ochadi.
+- **UI:** "Test markazi" eshigi endi Mini App hub'i: qora karta (级 vodiy belgisi,
+  oltin tugma) — daraja aniqlash; keyin "HSK testlari" va HSK 1-4 qatorlari
+  (52dp kinovar plitka, savol/daqiqa, bo'lim teglari, "Boshlash").
+  O'quvchining o'z darajasi tepaga chiqadi va kinovar hoshiya + "Sizning darajangiz"
+  tegini oladi — Mini App'dagidek.
+- Imtihon savollari ekranida javob DARHOL ko'rsatilmaydi (server oxirida baholaydi),
+  natijada esa bo'limlar kesimida ball chiqadi.
+
+Why:
+- Farq faqat ko'rinishda emas edi: Mini App `/api/v3/exams/*` orqali HAQIQIY HSK
+  imtihonini ochardi, Android esa `practice/start` mode=mock bilan 10 savollik
+  daraja mashqini. Bir xil nom ostida ikki xil test berilardi.
+
+Files touched:
+- `app/api/android_features.py`, `tests/test_android_features_api.py`
+- `android/.../data/api/AndroidFeatureApi.kt`, `AndroidFeatureDto.kt`
+- `android/.../data/repository/FeatureRepository.kt`
+- `android/.../feature/practice/PracticeViewModel.kt`, `PracticeScreen.kt`
+- `android/.../MainActivity.kt`
+- `android/app/src/main/res/values{,-ru,-tg}/strings.xml`
+- `android/app/src/androidTest/.../TestCentreLayoutTest.kt` (yangi)
+- `android/app/src/testDirect/.../SubscriptionHandoffViewModelTest.kt` (fake yangilandi)
+
+Tests:
+- Backend: 632 passed (3 ta avvaldan bor yiqilish bu ishga aloqasiz).
+  Yangi `AndroidExamRouteTests` — daraja/til/javoblar servisga qanday yetib
+  borishini va limit 403 ni tekshiradi.
+- Android: 5 ta statik tekshiruv, unit testlar, assemble, lint — ikkala flavor.
+- **Instrumental test** (`connectedDirectDebugAndroidTest`, Pixel_8): teglar
+  haqiqatan ekranda ko'rinishini tekshiradi. Bu bejiz emas — birinchi urinishda
+  teglar oddiy `Row` da edi, kartadan chiqib ketib nol enga siqilgandi va karta
+  cho'zilib ketgandi. `FlowRow` bilan tuzatildi.
+
+Risk:
+- Imtihon limiti `training_test` va `lifetime=True` — Mini App bilan bir xil.
+  Ya'ni bepul o'quvchi umrda bir marta oladi (reklama bilan qayta ochiladi).
+- Android'ning eski 10 savollik mock testi endi Mashq ro'yxatida yo'q; daraja
+  aniqlash esa Test markazi ichida qoldi.
+
 ### 2026-09-04 — Android Mashq bo'limi Mini App tuzilishiga keltirildi
 
 Changed:

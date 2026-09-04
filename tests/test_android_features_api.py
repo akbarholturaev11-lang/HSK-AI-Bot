@@ -598,6 +598,167 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("ad_not_found", response.json()["error"])
 
 
+class AndroidExamRouteTests(unittest.IsolatedAsyncioTestCase):
+    """Android must sit the SAME HSK exam as the Mini App.
+
+    The two clients used to disagree here: the Mini App opened
+    `CourseHskExamService`, Android opened a ten-question level drill. These
+    routes only exist to hand Android the same service, so what is worth
+    pinning is that the call reaches it with the level, language and answers
+    the client sent.
+    """
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        self.calls = []
+
+        outer = self
+
+        class FakeExamService:
+            def __init__(self, session):
+                self.session = session
+
+            async def start(self, telegram_id, *, level, lang, access_ref, ad_supported=False):
+                outer.calls.append(
+                    ("start", telegram_id, level, lang, access_ref, ad_supported)
+                )
+                return {
+                    "ok": True,
+                    "session": {
+                        "id": "hsk-exam:1:hsk2:seed",
+                        "level": level,
+                        "duration_min": 30,
+                        "pass_score": 60,
+                        "questions": [],
+                    },
+                }
+
+            async def complete(self, telegram_id, *, session_id, answers, level=None, lang=None):
+                outer.calls.append(("complete", telegram_id, session_id, answers, level, lang))
+                return {"ok": True, "result": {"percent": 75, "passed": True}}
+
+        app = FastAPI()
+        app.include_router(
+            create_android_features_router(
+                session_factory=self.sessions,
+                settings_obj=_settings(),
+                exam_service_factory=FakeExamService,
+            )
+        )
+        self.auth = patch.object(
+            DesktopAuthService,
+            "authenticate",
+            AsyncMock(
+                return_value=SimpleNamespace(user=SimpleNamespace(telegram_id=4242))
+            ),
+        )
+        self.auth.start()
+        self.addCleanup(self.auth.stop)
+        self.client = AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://android.test",
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.engine.dispose()
+
+    def _headers(self):
+        return {"Authorization": "Bearer token", "Content-Type": "application/json"}
+
+    async def test_start_hands_the_level_and_language_to_the_exam_service(self):
+        response = await self.client.post(
+            "/api/v3/android/exams/start",
+            headers=self._headers(),
+            json={
+                "level": "hsk2",
+                "language": "uz",
+                "access_ref": "ref-1",
+                "ad_supported": True,
+            },
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.json()["ok"])
+        self.assertEqual(
+            ("start", 4242, "hsk2", "uz", "ref-1", True),
+            self.calls[0],
+        )
+
+    async def test_complete_forwards_the_answers_in_the_service_shape(self):
+        response = await self.client.post(
+            "/api/v3/android/exams/complete",
+            headers=self._headers(),
+            json={
+                "session_id": "hsk-exam:1:hsk2:seed",
+                "level": "hsk2",
+                "language": "uz",
+                "answers": [{"question_id": "q1", "selected_index": 2}],
+            },
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            (
+                "complete",
+                4242,
+                "hsk-exam:1:hsk2:seed",
+                [{"question_id": "q1", "selected_index": 2}],
+                "hsk2",
+                "uz",
+            ),
+            self.calls[0],
+        )
+
+    async def test_complete_without_a_level_lets_the_session_decide(self):
+        # An empty level means "whatever the exam was started with"; passing
+        # the empty string through would read as a level that changed mid-exam.
+        await self.client.post(
+            "/api/v3/android/exams/complete",
+            headers=self._headers(),
+            json={"session_id": "hsk-exam:1:hsk2:seed", "answers": []},
+        )
+        self.assertIsNone(self.calls[0][4])
+        self.assertIsNone(self.calls[0][5])
+
+    async def test_a_spent_allowance_is_refused_with_403(self):
+        outer = self
+
+        class LimitedExamService:
+            def __init__(self, session):
+                pass
+
+            async def start(self, telegram_id, **kwargs):
+                return {
+                    "ok": False,
+                    "error": "free_feature_limit_reached",
+                    "ad": {"available": True, "limited": False},
+                }
+
+        app = FastAPI()
+        app.include_router(
+            create_android_features_router(
+                session_factory=outer.sessions,
+                settings_obj=_settings(),
+                exam_service_factory=LimitedExamService,
+            )
+        )
+        async with AsyncClient(
+            transport=ASGITransport(app=app), base_url="http://android.test"
+        ) as client:
+            response = await client.post(
+                "/api/v3/android/exams/start",
+                headers=self._headers(),
+                json={"level": "hsk1", "language": "uz"},
+            )
+        self.assertEqual(403, response.status_code)
+        self.assertEqual("free_feature_limit_reached", response.json()["error"])
+
+
 class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
     """Every feature route is bearer-only; none of them accept an anonymous call."""
 
@@ -607,6 +768,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/subscription/open"),
         ("POST", "/api/v3/android/practice/start"),
         ("POST", "/api/v3/android/practice/complete"),
+        ("POST", "/api/v3/android/exams/start"),
+        ("POST", "/api/v3/android/exams/complete"),
         ("GET", "/api/v3/android/mistakes"),
         ("POST", "/api/v3/android/mistakes/review/start"),
         ("POST", "/api/v3/android/mistakes/review/answer"),

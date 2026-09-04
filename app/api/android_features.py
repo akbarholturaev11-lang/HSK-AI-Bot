@@ -43,6 +43,7 @@ from app.api.desktop_voice import (
 from app.repositories.user_repo import UserRepository
 from app.services.course_ad_service import CourseAdService
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_hsk_exam_service import CourseHskExamService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
@@ -139,6 +140,33 @@ class AndroidAdViewRequest(BaseModel):
     placement: str = Field(default="start", max_length=24)
     access_ref: str = Field(default="", max_length=160)
     attempt_token: str = Field(default="", max_length=120)
+
+
+class AndroidExamStartRequest(BaseModel):
+    """Opens one HSK exam — the same exam the Mini App's test centre opens."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    level: str = Field(min_length=1, max_length=16)
+    language: str = Field(default="", max_length=8)
+    access_ref: str = Field(default="", max_length=160)
+    ad_supported: bool = False
+
+
+class AndroidExamAnswer(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    question_id: AndroidQuestionId
+    selected_index: int = Field(ge=0, le=32)
+
+
+class AndroidExamCompleteRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    session_id: AndroidSessionId
+    level: str = Field(default="", max_length=16)
+    language: str = Field(default="", max_length=8)
+    answers: list[AndroidExamAnswer] = Field(default_factory=list)
 
 
 class AndroidMistakeReviewStartRequest(BaseModel):
@@ -313,6 +341,7 @@ def create_android_features_router(
     mistake_service_factory: Callable[..., CourseMistakeService] = CourseMistakeService,
     voice_service_factory: Callable[..., VoicePracticeService] = VoicePracticeService,
     gamification_service_factory: Callable[..., CourseGamificationService] = CourseGamificationService,
+    exam_service_factory: Callable[..., CourseHskExamService] = CourseHskExamService,
     referral_service_factory: Callable[..., ReferralService] = ReferralService,
 ) -> APIRouter:
     router = APIRouter(tags=["android-features"])
@@ -707,6 +736,78 @@ def create_android_features_router(
             logger.exception("Android practice complete failed")
             return _error_response(
                 AndroidFeatureError("android_practice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/exams/start")
+    async def android_exam_start(request: Request):
+        """One HSK exam, from the same service the Mini App's test centre uses.
+
+        Android had only the ten-question level drill here, so the two clients
+        handed out different tests under the same name. This delegates to
+        `CourseHskExamService`, which owns the exam material, the shuffle seed
+        and the daily allowance, so both clients sit the same exam.
+        """
+        try:
+            payload = await _validated_payload(request, AndroidExamStartRequest)
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await exam_service_factory(session).start(
+                    telegram_id,
+                    level=payload.level,
+                    lang=payload.language,
+                    access_ref=payload.access_ref,
+                    ad_supported=payload.ad_supported,
+                )
+            return _service_response(result)
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except ValueError:
+            return _error_response(
+                AndroidFeatureError("android_exam_request_invalid", status_code=422)
+            )
+        except Exception:
+            logger.exception("Android exam start failed")
+            return _error_response(
+                AndroidFeatureError("android_exam_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/exams/complete")
+    async def android_exam_complete(request: Request):
+        try:
+            payload = await _validated_payload(
+                request,
+                AndroidExamCompleteRequest,
+                max_body_bytes=MAX_DESKTOP_PRACTICE_COMPLETE_BODY_BYTES,
+            )
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await exam_service_factory(session).complete(
+                    telegram_id,
+                    session_id=payload.session_id,
+                    answers=[
+                        {
+                            "question_id": item.question_id,
+                            "selected_index": int(item.selected_index),
+                        }
+                        for item in payload.answers
+                    ],
+                    # Empty means "whatever the session was started with": the
+                    # service only uses these to catch a level or language that
+                    # changed mid-exam.
+                    level=payload.level or None,
+                    lang=payload.language or None,
+                )
+            return _service_response(result)
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except ValueError:
+            return _error_response(
+                AndroidFeatureError("android_exam_request_invalid", status_code=422)
+            )
+        except Exception:
+            logger.exception("Android exam complete failed")
+            return _error_response(
+                AndroidFeatureError("android_exam_unavailable", status_code=503)
             )
 
     @router.get("/api/v3/android/mistakes")

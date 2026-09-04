@@ -36,6 +36,18 @@ interface AndroidFeatureApi {
         @Body body: PracticeCompleteRequest,
     ): Response<PracticeCompleteResponse>
 
+    @POST("api/v3/android/exams/start")
+    suspend fun examStart(
+        @Header("Authorization") authorization: String,
+        @Body body: ExamStartRequest,
+    ): Response<ExamStartResponse>
+
+    @POST("api/v3/android/exams/complete")
+    suspend fun examComplete(
+        @Header("Authorization") authorization: String,
+        @Body body: ExamCompleteRequest,
+    ): Response<ExamCompleteResponse>
+
     @GET("api/v3/android/mistakes")
     suspend fun mistakes(
         @Header("Authorization") authorization: String,

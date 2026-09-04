@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,19 +19,22 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -47,6 +52,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
@@ -73,6 +79,10 @@ fun PracticeScreen(
     onAnswerReview: (Int) -> Unit,
     onAdvanceReview: () -> Unit,
     onResetReview: () -> Unit,
+    onStartExam: (String) -> Unit,
+    onSelectExamOption: (Int) -> Unit,
+    onAdvanceExam: (String) -> Unit,
+    onResetExam: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
@@ -85,6 +95,19 @@ fun PracticeScreen(
             state.reviewResult != null -> ReviewSummary(
                 state = state,
                 onDone = onResetReview,
+            )
+
+            state.examResult != null -> ExamSummary(
+                state = state,
+                onDone = onResetExam,
+            )
+
+            state.isExamRunning -> ExamRun(
+                state = state,
+                language = language,
+                onSelect = onSelectExamOption,
+                onAdvance = onAdvanceExam,
+                onCancel = onResetExam,
             )
 
             state.isPracticeRunning -> PracticeRun(
@@ -111,6 +134,7 @@ fun PracticeScreen(
                 onOpenDictionary = onOpenDictionary,
                 onStartPractice = onStartPractice,
                 onStartMistakeReview = onStartMistakeReview,
+                onStartExam = onStartExam,
             )
         }
     }
@@ -142,6 +166,7 @@ private fun PracticeHome(
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
+    onStartExam: (String) -> Unit,
 ) {
     // Which door is open, if any. Kept here rather than in the ViewModel: it
     // is where the learner is looking, not something the session depends on.
@@ -192,22 +217,13 @@ private fun PracticeHome(
     }
     // The Mini App keeps the placement test inside the test centre rather than
     // on the practice list ("HSK imtihonlari va daraja aniqlash").
-    val testTools = remember {
-        listOf(
-            PracticeToolSpec(
-                mode = "mock",
-                skill = "",
-                titleRes = R.string.practice_test_title,
-                bodyRes = R.string.practice_test_body,
-                glyph = "HSK",
-            ),
-            PracticeToolSpec(
-                mode = "placement",
-                skill = "",
-                titleRes = R.string.practice_placement_title,
-                bodyRes = R.string.practice_placement_body,
-                glyph = "测",
-            ),
+    val placementTool = remember {
+        PracticeToolSpec(
+            mode = "placement",
+            skill = "",
+            titleRes = R.string.practice_placement_title,
+            bodyRes = R.string.practice_placement_body,
+            glyph = "测",
         )
     }
 
@@ -302,17 +318,272 @@ private fun PracticeHome(
                 )
             }
 
-            PracticeGroup.TEST -> items(testTools) { tool ->
-                ToolRow(
-                    glyph = tool.glyph,
-                    tint = TintCinnabar,
-                    title = stringResource(tool.titleRes),
-                    body = stringResource(tool.bodyRes),
-                    enabled = !state.isStarting,
-                    onClick = { onStartPractice(tool, level, language) },
+            PracticeGroup.TEST -> testCentre(
+                level = level,
+                enabled = !state.isStarting,
+                onPlacement = { onStartPractice(placementTool, level, language) },
+                onExam = onStartExam,
+            )
+        }
+    }
+}
+
+/** One HSK exam as the test centre advertises it, before it is opened. */
+private data class ExamEntry(
+    val level: Int,
+    val questions: Int,
+    val minutes: Int,
+    val sections: List<Int>,
+)
+
+/**
+ * What each exam holds. These numbers are the checked-in exam material's own
+ * (`app/static/course_v3_data/exams/hsk*.json`) and the Mini App's test centre
+ * prints the same ones, so a learner is told the same thing on both clients.
+ */
+private val EXAM_ENTRIES = listOf(
+    ExamEntry(
+        1, 14, 25,
+        listOf(R.string.test_center_section_listening, R.string.test_center_section_reading),
+    ),
+    ExamEntry(
+        2, 12, 30,
+        listOf(R.string.test_center_section_listening, R.string.test_center_section_reading),
+    ),
+    ExamEntry(
+        3, 12, 35,
+        listOf(
+            R.string.test_center_section_listening,
+            R.string.test_center_section_reading,
+            R.string.test_center_section_writing,
+        ),
+    ),
+    ExamEntry(
+        4, 12, 40,
+        listOf(
+            R.string.test_center_section_listening,
+            R.string.test_center_section_reading,
+            R.string.test_center_section_writing,
+        ),
+    ),
+)
+
+private fun levelNumber(level: String): Int =
+    Regex("hsk([1-4])").find(level.lowercase())?.groupValues?.get(1)?.toIntOrNull() ?: 0
+
+/**
+ * The test centre, laid out as the Mini App lays it out: the placement offer
+ * on a dark card first — a learner who does not know their level cannot choose
+ * an exam — then the four HSK exams, the learner's own level lifted to the top
+ * and marked, so the row they most likely want is the first one they see.
+ */
+private fun LazyListScope.testCentre(
+    level: String,
+    enabled: Boolean,
+    onPlacement: () -> Unit,
+    onExam: (String) -> Unit,
+) {
+    item { PlacementCard(enabled = enabled, onClick = onPlacement) }
+    item { GroupLabel(stringResource(R.string.test_center_exams_head)) }
+    val mine = levelNumber(level)
+    val entries = EXAM_ENTRIES.sortedByDescending { it.level == mine }
+    items(entries, key = { it.level }) { entry ->
+        ExamRow(
+            entry = entry,
+            isMine = entry.level == mine,
+            enabled = enabled,
+            onClick = { onExam("hsk${entry.level}") },
+        )
+    }
+}
+
+@Composable
+private fun PlacementCard(enabled: Boolean, onClick: () -> Unit) {
+    Surface(
+        color = PompColors.Ink,
+        shape = RoundedCornerShape(18.dp),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Box {
+            // The Mini App sets a huge 级 behind this card at 6% white. It is
+            // decoration, so it is not announced to a screen reader.
+            Text(
+                text = "级",
+                style = PompTextStyles.hanziMedium,
+                fontSize = 84.sp,
+                color = PompColors.Paper.copy(alpha = 0.06f),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(end = 4.dp),
+            )
+            Column(Modifier.padding(17.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Filled.TrackChanges,
+                        contentDescription = null,
+                        tint = PompColors.Paper,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(Modifier.size(8.dp))
+                    Text(
+                        text = stringResource(R.string.test_center_placement_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = PompColors.Paper,
+                    )
+                }
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = stringResource(R.string.test_center_placement_body),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.Paper.copy(alpha = 0.72f),
+                )
+                Spacer(Modifier.height(13.dp))
+                Button(
+                    onClick = onClick,
+                    enabled = enabled,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PompColors.Gold,
+                        contentColor = PompColors.Ink,
+                    ),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(Modifier.size(7.dp))
+                    Text(stringResource(R.string.test_center_placement_button))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ExamRow(
+    entry: ExamEntry,
+    isMine: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, if (isMine) PompColors.Cinnabar else PompColors.Divider),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = enabled, onClick = onClick),
+    ) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
+            Surface(
+                color = PompColors.Cinnabar,
+                shape = RoundedCornerShape(14.dp),
+                border = BorderStroke(2.dp, PompColors.CinnabarDark),
+                modifier = Modifier.size(52.dp),
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "HSK",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = PompColors.Paper.copy(alpha = 0.85f),
+                    )
+                    Text(
+                        text = entry.level.toString(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = PompColors.Paper,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 13.dp),
+            ) {
+                Text(
+                    text = "HSK ${entry.level}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = PompColors.Ink,
+                )
+                Text(
+                    text = stringResource(
+                        R.string.test_center_exam_meta,
+                        entry.questions,
+                        entry.minutes,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PompColors.InkSecondary,
+                )
+                // The Mini App wraps these (`flex-wrap`). Without that, HSK 3
+                // and 4 carry four tags, the last ones fall off the row's
+                // edge, and the row stretches to hide it.
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.padding(top = 7.dp),
+                ) {
+                    if (isMine) {
+                        ExamTag(
+                            text = stringResource(R.string.test_center_your_level),
+                            background = PompColors.CinnabarSoft,
+                            border = PompColors.CinnabarSoft,
+                            content = PompColors.CinnabarDark,
+                        )
+                    }
+                    entry.sections.forEach { section ->
+                        ExamTag(
+                            text = stringResource(section),
+                            background = PompColors.Paper,
+                            border = PompColors.Divider,
+                            content = PompColors.InkSecondary,
+                        )
+                    }
+                }
+            }
+            Surface(
+                color = PompColors.CinnabarSoft,
+                shape = RoundedCornerShape(11.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.test_center_start),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = PompColors.CinnabarDark,
+                    modifier = Modifier.padding(horizontal = 13.dp, vertical = 9.dp),
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ExamTag(
+    text: String,
+    background: Color,
+    border: Color,
+    content: Color,
+) {
+    Surface(
+        color = background,
+        shape = RoundedCornerShape(7.dp),
+        border = BorderStroke(1.dp, border),
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = content,
+            // A tag is a label, not a sentence: it wraps to the next tag row
+            // rather than breaking across two lines inside its own pill.
+            maxLines = 1,
+            modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
+        )
     }
 }
 
@@ -572,6 +843,133 @@ private fun ReviewRun(
             onClick = onAdvance,
         )
     }
+}
+
+/**
+ * One HSK exam question at a time. The exam grades on the server, so nothing
+ * is revealed here — the learner picks, moves on, and sees the whole result at
+ * the end. That is what makes it an exam rather than a drill.
+ */
+@Composable
+private fun ExamRun(
+    state: PracticeUiState,
+    language: String,
+    onSelect: (Int) -> Unit,
+    onAdvance: (String) -> Unit,
+    onCancel: () -> Unit,
+) {
+    val session = state.examSession ?: return
+    val question = session.questions.getOrNull(state.examIndex) ?: return
+    QuestionShell(
+        title = stringResource(
+            R.string.practice_progress,
+            state.examIndex + 1,
+            session.questions.size,
+        ),
+        onCancel = onCancel,
+    ) {
+        Surface(
+            color = PompColors.PaperRaised,
+            shape = RoundedCornerShape(18.dp),
+            border = BorderStroke(1.dp, PompColors.Divider),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(Modifier.padding(18.dp)) {
+                QuestionText(
+                    prompt = question.prompt,
+                    sentence = question.sentence.ifBlank { question.audioText },
+                    pinyin = "",
+                )
+                Spacer(Modifier.height(14.dp))
+                question.options.forEachIndexed { index, option ->
+                    OptionRow(
+                        text = option,
+                        selected = state.examSelectedIndex == index,
+                        correct = false,
+                        wrong = false,
+                        enabled = state.examSelectedIndex == null,
+                        onClick = { onSelect(index) },
+                    )
+                }
+            }
+        }
+        PrimaryAction(
+            text = if (state.examIndex == session.questions.lastIndex) {
+                stringResource(R.string.practice_finish)
+            } else {
+                stringResource(R.string.lesson_next)
+            },
+            enabled = state.examSelectedIndex != null && !state.isCompleting,
+            onClick = { onAdvance(language) },
+        )
+    }
+}
+
+@Composable
+private fun ExamSummary(
+    state: PracticeUiState,
+    onDone: () -> Unit,
+) {
+    val result = state.examResult ?: return
+    val level = state.examLevel.removePrefix("hsk").ifBlank { "1" }
+    SummaryShell(
+        title = stringResource(
+            if (result.passed) R.string.exam_result_passed else R.string.exam_result_failed
+        ),
+        score = "${result.percent}%",
+        body = stringResource(
+            if (result.passed) {
+                R.string.exam_result_passed_body
+            } else {
+                R.string.exam_result_failed_body
+            },
+            level,
+        ),
+        onDone = onDone,
+    ) {
+        Text(
+            text = stringResource(R.string.exam_result_score, result.score, result.total),
+            style = MaterialTheme.typography.titleMedium,
+            color = PompColors.Ink,
+        )
+        Spacer(Modifier.height(10.dp))
+        // Per-section scores are what tell a learner where to go next, and the
+        // server already breaks the exam down that way.
+        result.sectionScores.forEach { (section, score) ->
+            if (score.total > 0) {
+                Surface(
+                    color = PompColors.PaperRaised,
+                    shape = RoundedCornerShape(14.dp),
+                    border = BorderStroke(1.dp, PompColors.Divider),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = stringResource(examSectionLabel(section)),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = PompColors.InkSecondary,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Text(
+                            text = "${score.score}/${score.total}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = PompColors.Ink,
+                        )
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+        }
+    }
+}
+
+private fun examSectionLabel(section: String): Int = when (section) {
+    "listening" -> R.string.test_center_section_listening
+    "writing" -> R.string.test_center_section_writing
+    else -> R.string.test_center_section_reading
 }
 
 @Composable

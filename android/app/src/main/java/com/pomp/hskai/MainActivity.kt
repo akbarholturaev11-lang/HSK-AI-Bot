@@ -449,6 +449,12 @@ private fun AppRoot(
                         onAnswerReview = practiceViewModel::answerReview,
                         onAdvanceReview = practiceViewModel::advanceReview,
                         onResetReview = practiceViewModel::resetReview,
+                        onStartExam = { examLevel ->
+                            practiceViewModel.startExam(examLevel, currentLanguage)
+                        },
+                        onSelectExamOption = practiceViewModel::selectExamOption,
+                        onAdvanceExam = practiceViewModel::advanceExam,
+                        onResetExam = practiceViewModel::resetExam,
                         modifier = contentModifier,
                     )
 

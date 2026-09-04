@@ -13,6 +13,11 @@ import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
+import com.pomp.hskai.data.api.ExamAnswerDto
+import com.pomp.hskai.data.api.ExamCompleteRequest
+import com.pomp.hskai.data.api.ExamCompleteResponse
+import com.pomp.hskai.data.api.ExamStartRequest
+import com.pomp.hskai.data.api.ExamStartResponse
 import com.pomp.hskai.data.api.MistakeReviewAnswerRequest
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewCompleteAnswerDto
@@ -104,6 +109,42 @@ class FeatureRepository(
                 sessionId = sessionId,
                 answers = answers.map { (questionId, selectedIndex) ->
                     MistakeReviewCompleteAnswerDto(questionId, selectedIndex)
+                },
+            ),
+        )
+    }
+
+    suspend fun examStart(
+        level: String,
+        language: String,
+        accessRef: String = "",
+        adSupported: Boolean = false,
+    ): ApiResult<ExamStartResponse> = authorized {
+        api.examStart(
+            it,
+            ExamStartRequest(
+                level = level,
+                language = language,
+                accessRef = accessRef,
+                adSupported = adSupported,
+            ),
+        )
+    }
+
+    suspend fun examComplete(
+        sessionId: String,
+        level: String,
+        language: String,
+        answers: Map<String, Int>,
+    ): ApiResult<ExamCompleteResponse> = authorized {
+        api.examComplete(
+            it,
+            ExamCompleteRequest(
+                sessionId = sessionId,
+                level = level,
+                language = language,
+                answers = answers.map { (questionId, selectedIndex) ->
+                    ExamAnswerDto(questionId, selectedIndex)
                 },
             ),
         )

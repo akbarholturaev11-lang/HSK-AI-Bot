@@ -3,8 +3,11 @@ package com.pomp.hskai.feature.practice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.pomp.hskai.R
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.data.api.ExamCompleteResponse
+import com.pomp.hskai.data.api.ExamSessionDto
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewCompleteResponse
 import com.pomp.hskai.data.api.MistakeReviewSessionDto
@@ -35,6 +38,19 @@ data class PracticeToolSpec(
 val PracticeToolSpec.adFeature: String
     get() = if (mode == "placement") "placement" else "training_test"
 
+/**
+ * Names the test centre in the limit block when an exam is refused. It is not
+ * started through [PracticeToolSpec]; only the section's name and the ad
+ * feature it opens are needed there.
+ */
+internal val EXAM_TOOL = PracticeToolSpec(
+    mode = "mock",
+    skill = "",
+    titleRes = R.string.practice_group_tests,
+    bodyRes = R.string.practice_test_center_body,
+    glyph = "HSK",
+)
+
 data class PracticeUiState(
     val mistakes: MistakesOverviewResponse? = null,
     val isLoadingMistakes: Boolean = false,
@@ -51,6 +67,17 @@ data class PracticeUiState(
     val reviewFeedback: MistakeReviewAnswerResponse? = null,
     val reviewAnswers: Map<String, Int> = emptyMap(),
     val reviewResult: MistakeReviewCompleteResponse? = null,
+    /**
+     * The HSK exam the test centre opens — the Mini App's exam, kept apart
+     * from [session] because it is a different service with its own material,
+     * its own grading and its own once-per-lifetime allowance.
+     */
+    val examSession: ExamSessionDto? = null,
+    val examIndex: Int = 0,
+    val examSelectedIndex: Int? = null,
+    val examAnswers: Map<String, Int> = emptyMap(),
+    val examResult: ExamCompleteResponse? = null,
+    val examLevel: String = "",
     val error: ApiError? = null,
     /**
      * The section the learner last tried to open. A spent allowance has to
@@ -65,6 +92,7 @@ data class PracticeUiState(
 ) {
     val isPracticeRunning: Boolean get() = session != null && result == null
     val isReviewRunning: Boolean get() = reviewSession != null && reviewResult == null
+    val isExamRunning: Boolean get() = examSession != null && examResult == null
 }
 
 class PracticeViewModel(
@@ -105,6 +133,15 @@ class PracticeViewModel(
 
     private var lastAttempt: Attempt? = null
 
+    private data class ExamAttempt(val level: String, val language: String)
+
+    /**
+     * Set when an exam is opened, cleared when anything else is. An ad that
+     * follows a refusal must re-open what was refused, so only one of the two
+     * attempts may be live at a time.
+     */
+    private var lastExamAttempt: ExamAttempt? = null
+
     fun startPractice(
         tool: PracticeToolSpec,
         level: String,
@@ -114,6 +151,7 @@ class PracticeViewModel(
     ) {
         if (_state.value.isStarting) return
         lastAttempt = Attempt(tool, level, language)
+        lastExamAttempt = null
         _state.update {
             it.copy(
                 isStarting = true,
@@ -158,6 +196,15 @@ class PracticeViewModel(
      * watch against [accessRef].
      */
     fun startWithAd(accessRef: String) {
+        lastExamAttempt?.let { exam ->
+            startExam(
+                level = exam.level,
+                language = exam.language,
+                accessRef = accessRef,
+                adSupported = true,
+            )
+            return
+        }
         val attempt = lastAttempt ?: return
         startPractice(
             tool = attempt.tool,
@@ -166,6 +213,117 @@ class PracticeViewModel(
             accessRef = accessRef,
             adSupported = true,
         )
+    }
+
+    /**
+     * Opens one HSK exam. This is not [startPractice] with another mode: the
+     * exam has its own endpoint, its own questions and its own allowance, and
+     * mixing the two is exactly what made Android and the Mini App hand out
+     * different tests under the same name.
+     */
+    fun startExam(
+        level: String,
+        language: String,
+        accessRef: String = "",
+        adSupported: Boolean = false,
+    ) {
+        if (_state.value.isStarting) return
+        lastExamAttempt = ExamAttempt(level, language)
+        _state.update {
+            it.copy(
+                isStarting = true,
+                error = null,
+                examSession = null,
+                examResult = null,
+                examSelectedIndex = null,
+                examAnswers = emptyMap(),
+                examIndex = 0,
+                examLevel = level,
+                // The limit block names the section that was refused, and for
+                // an exam that section is the test centre.
+                pendingTool = EXAM_TOOL,
+                adAccessRef = if (adSupported) accessRef else "",
+            )
+        }
+        viewModelScope.launch {
+            when (
+                val result = repository.examStart(
+                    level = level,
+                    language = language,
+                    accessRef = accessRef,
+                    adSupported = adSupported,
+                )
+            ) {
+                is ApiResult.Success -> _state.update {
+                    it.copy(
+                        isStarting = false,
+                        examSession = result.value.session,
+                        examIndex = 0,
+                    )
+                }
+
+                is ApiResult.Failure -> _state.update {
+                    it.copy(isStarting = false, error = result.error)
+                }
+            }
+        }
+    }
+
+    fun selectExamOption(index: Int) {
+        if (_state.value.examSelectedIndex != null) return
+        _state.update { it.copy(examSelectedIndex = index) }
+    }
+
+    fun advanceExam(language: String) {
+        val current = _state.value
+        val session = current.examSession ?: return
+        val question = session.questions.getOrNull(current.examIndex) ?: return
+        val selected = current.examSelectedIndex ?: return
+        val nextAnswers = current.examAnswers + (question.id to selected)
+        if (current.examIndex < session.questions.lastIndex) {
+            _state.update {
+                it.copy(
+                    examIndex = current.examIndex + 1,
+                    examSelectedIndex = null,
+                    examAnswers = nextAnswers,
+                )
+            }
+            return
+        }
+        _state.update { it.copy(isCompleting = true, examAnswers = nextAnswers, error = null) }
+        viewModelScope.launch {
+            when (
+                val result = repository.examComplete(
+                    sessionId = session.id,
+                    level = session.level,
+                    language = language,
+                    answers = nextAnswers,
+                )
+            ) {
+                is ApiResult.Success -> _state.update {
+                    it.copy(isCompleting = false, examResult = result.value)
+                }
+
+                is ApiResult.Failure -> _state.update {
+                    it.copy(isCompleting = false, error = result.error)
+                }
+            }
+        }
+    }
+
+    fun resetExam() {
+        _state.update {
+            it.copy(
+                examSession = null,
+                examIndex = 0,
+                examSelectedIndex = null,
+                examAnswers = emptyMap(),
+                examResult = null,
+                examLevel = "",
+                error = null,
+            )
+        }
+        loadMistakes()
     }
 
     fun selectPracticeOption(index: Int) {
