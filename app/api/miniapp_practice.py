@@ -30,6 +30,8 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError
 
+from app.repositories.user_repo import UserRepository
+from app.services.course_drill_signal_service import CourseDrillSignalService
 from app.services.course_miniapp_practice_service import (
     PRACTICE_MODES,
     TRAINING_SKILLS,
@@ -99,11 +101,30 @@ class PracticeCompleteRequest(PracticeStartRequest):
     answers: list[PracticeAnswer]
 
 
-def _init_data(request: Request, payload: PracticeStartRequest) -> str:
+class DrillMistakeEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    # Mijoz FAQAT xato bo'lgan ieroglifni va nima tanlaganini aytadi. Savol
+    # matni ham, to'g'ri javob ham server lug'atidan quriladi.
+    hanzi: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=16)]
+    selected: Annotated[str, StringConstraints(strip_whitespace=True, max_length=64)] = ""
+
+
+class DrillReportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    feature: Literal["recognition", "memorize"]
+    level: PracticeLevel
+    language: PracticeLanguage
+    mistakes: list[DrillMistakeEntry]
+    initData: str = Field(default="", max_length=MAX_INIT_DATA_CHARS)
+
+
+def _init_data(request: Request, payload: BaseModel) -> str:
     header = str(request.headers.get("X-Telegram-Init-Data", "") or "")
     if header:
         return header[:MAX_INIT_DATA_CHARS]
-    return str(payload.initData or "")[:MAX_INIT_DATA_CHARS]
+    return str(getattr(payload, "initData", "") or "")[:MAX_INIT_DATA_CHARS]
 
 
 async def _validated_payload(
@@ -186,10 +207,13 @@ def create_miniapp_practice_router(
     service_factory: Callable[..., CourseMiniAppPracticeService] = (
         CourseMiniAppPracticeService
     ),
+    drill_service_factory: Callable[..., CourseDrillSignalService] = (
+        CourseDrillSignalService
+    ),
 ) -> APIRouter:
     router = APIRouter(tags=["miniapp-practice"])
 
-    def _telegram_id(request: Request, payload: PracticeStartRequest) -> int:
+    def _telegram_id(request: Request, payload: BaseModel) -> int:
         init_data = _init_data(request, payload)
         telegram_id = (
             extract_verified_webapp_user_id(init_data, settings_obj.BOT_TOKEN)
@@ -266,6 +290,49 @@ def create_miniapp_practice_router(
             )
         except Exception:
             logger.exception("Mini App practice complete failed")
+            return _error_response(
+                MiniAppPracticeError("practice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/practice/report")
+    async def miniapp_drill_report(request: Request):
+        """Mijoz boshqaradigan mashqlarning (Ieroglif tanish, Yodlash) xatolari.
+
+        Bu ikki bo'lim o'z savollarini o'zi quradi va o'z ekran dizayniga ega,
+        shuning uchun umumiy MCQ dvigatelidan foydalanmaydi. Lekin natijasi
+        yo'qolmasligi kerak — aks holda `character` zaifligi faqat darslardan
+        to'planardi.
+
+        Mijoz FAQAT xato bo'lgan ieroglifni aytadi; savol va to'g'ri javob
+        server lug'atidan quriladi, ya'ni soxta xato yozib bo'lmaydi.
+        """
+        try:
+            payload = await _validated_payload(request, DrillReportRequest)
+            telegram_id = _telegram_id(request, payload)
+            async with session_factory() as session:
+                user = await UserRepository(session).get_by_telegram_id(telegram_id)
+                if not user:
+                    return _service_response({"ok": False, "error": "access_start_first"})
+                recorded = await drill_service_factory(session).record(
+                    user,
+                    feature=payload.feature,
+                    level=payload.level,
+                    language=payload.language,
+                    entries=[
+                        {"hanzi": entry.hanzi, "selected": entry.selected}
+                        for entry in payload.mistakes
+                    ],
+                )
+                await session.commit()
+            return _service_response({"ok": True, "recorded": recorded})
+        except MiniAppPracticeError as exc:
+            return _error_response(exc)
+        except ValueError:
+            return _error_response(
+                MiniAppPracticeError("practice_request_invalid", status_code=422)
+            )
+        except Exception:
+            logger.exception("Mini App drill report failed")
             return _error_response(
                 MiniAppPracticeError("practice_unavailable", status_code=503)
             )

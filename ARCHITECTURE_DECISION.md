@@ -2,7 +2,20 @@
 
 Holat: **MUZLATILGAN** (2026-09-05)
 Branch: `codex/local-ai`
-Baseline test: `3 failed, 632 passed` (uchtasi PROJECT_MEMORY "Problem 2" dagi ma'lum failure — yangi ish ularni buzgan deb o'ylamang)
+## Baseline (ish boshlanishidan OLDINGI holat)
+
+Yangi ish bularni buzgan deb o'ylamang — hammasi oldindan mavjud:
+
+| Test | Holat |
+|---|---|
+| `pytest tests -q --ignore=tests/e2e` | **3 failed, 632 passed** |
+| `test_free_course_parts_are_level_aware` | PROJECT_MEMORY "Problem 2" |
+| `test_unpaid_course_lesson_policy_includes_hsk1_checkpoint` | PROJECT_MEMORY "Problem 2" |
+| `test_review_questions_use_only_same_category_answers_and_v2_material` | PROJECT_MEMORY "Problem 2" |
+| `tests/e2e` → `test_course_v3_support_pages_render_real_static_data` | **oldindan yiqilgan** — `course_v3_memorize.html` da "1/8" deck qurilmayapti (`hsk_memo_pref=radical`, `char=你`). Bu ishga aloqasi yo'q: na commitlar, na o'zgarishlar `course_v3_memorize.html` yoki `memo.js` ga tegmagan. **Alohida tekshirilsin.** |
+
+E2E faqat `venv_311/bin/python` da ishlaydi (`.venv` da playwright yo'q):
+`venv_311/bin/python -m pytest tests/e2e -q`
 
 Bu fayl — implementatsiya kontrakti. Kod yozishdan oldin o'qiladi, ish davomida
 o'zgartirilmaydi. O'zgartirish kerak bo'lsa avval shu fayl yangilanadi.

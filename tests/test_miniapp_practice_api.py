@@ -27,20 +27,22 @@ VALID_INIT_DATA = "query_id=AAA&user=%7B%22id%22%3A123%7D&hash=deadbeef"
 
 @asynccontextmanager
 async def _session():
-    yield SimpleNamespace()
+    yield SimpleNamespace(commit=AsyncMock(), rollback=AsyncMock())
 
 
 def _session_factory():
     return _session()
 
 
-def build_client(service, *, telegram_id=123):
+def build_client(service, *, telegram_id=123, drill_service=None):
     app = FastAPI()
     app.include_router(
         create_miniapp_practice_router(
             session_factory=_session_factory,
             settings_obj=SimpleNamespace(BOT_TOKEN="123:test"),
             service_factory=lambda session, bot=None: service,
+            drill_service_factory=lambda session: drill_service
+            or SimpleNamespace(record=AsyncMock(return_value=0)),
         )
     )
     transport = ASGITransport(app=app)
@@ -307,6 +309,112 @@ class ServiceRefusalTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(response.status_code, 503)
         self.assertEqual(response.json()["error"], "practice_unavailable")
+
+
+class DrillReportTests(unittest.IsolatedAsyncioTestCase):
+    @staticmethod
+    def _user_repo(user=SimpleNamespace(id=3, telegram_id=123)):
+        return patch(
+            "app.api.miniapp_practice.UserRepository",
+            return_value=SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user)),
+        )
+
+    async def _report(self, drill, payload, *, user=SimpleNamespace(id=3, telegram_id=123)):
+        client, verifier = build_client(practice_service(), drill_service=drill)
+        async with client:
+            with verifier, self._user_repo(user):
+                return await client.post("/api/v3/practice/report", json=payload)
+
+    async def test_wrong_characters_reach_the_drill_signal_service(self):
+        drill = SimpleNamespace(record=AsyncMock(return_value=2))
+        response = await self._report(
+            drill,
+            {
+                "feature": "recognition",
+                "level": "hsk1",
+                "language": "uz",
+                "mistakes": [{"hanzi": "你", "selected": "好"}, {"hanzi": "好"}],
+                "initData": VALID_INIT_DATA,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["recorded"], 2)
+        self.assertEqual(
+            drill.record.await_args.kwargs["entries"],
+            [{"hanzi": "你", "selected": "好"}, {"hanzi": "好", "selected": ""}],
+        )
+
+    async def test_client_cannot_send_a_prompt_or_a_correct_answer(self):
+        # Savol va to'g'ri javob faqat server lug'atidan quriladi, shuning
+        # uchun adapter qo'shimcha maydonlarni umuman qabul qilmaydi.
+        drill = SimpleNamespace(record=AsyncMock(return_value=0))
+        response = await self._report(
+            drill,
+            {
+                "feature": "recognition",
+                "level": "hsk1",
+                "language": "uz",
+                "mistakes": [{"hanzi": "你", "correct_answer": "好", "question": "soxta"}],
+                "initData": VALID_INIT_DATA,
+            },
+        )
+
+        self.assertEqual(response.status_code, 422)
+        drill.record.assert_not_awaited()
+
+    async def test_unknown_feature_is_rejected(self):
+        drill = SimpleNamespace(record=AsyncMock())
+        response = await self._report(
+            drill,
+            {
+                "feature": "voice",
+                "level": "hsk1",
+                "language": "uz",
+                "mistakes": [{"hanzi": "你"}],
+                "initData": VALID_INIT_DATA,
+            },
+        )
+
+        self.assertEqual(response.status_code, 422)
+        drill.record.assert_not_awaited()
+
+    async def test_unknown_user_is_refused_without_touching_the_service(self):
+        drill = SimpleNamespace(record=AsyncMock())
+        response = await self._report(
+            drill,
+            {
+                "feature": "recognition",
+                "level": "hsk1",
+                "language": "uz",
+                "mistakes": [{"hanzi": "你"}],
+                "initData": VALID_INIT_DATA,
+            },
+            user=None,
+        )
+
+        self.assertEqual(response.status_code, 403)
+        drill.record.assert_not_awaited()
+
+    async def test_report_without_init_data_is_rejected(self):
+        drill = SimpleNamespace(record=AsyncMock())
+        client, verifier = build_client(
+            practice_service(), telegram_id=None, drill_service=drill
+        )
+        async with client:
+            with verifier, self._user_repo():
+                response = await client.post(
+                    "/api/v3/practice/report",
+                    json={
+                        "feature": "recognition",
+                        "level": "hsk1",
+                        "language": "uz",
+                        "mistakes": [{"hanzi": "你"}],
+                    },
+                )
+
+        self.assertEqual(response.status_code, 401)
+        drill.record.assert_not_awaited()
 
 
 if __name__ == "__main__":

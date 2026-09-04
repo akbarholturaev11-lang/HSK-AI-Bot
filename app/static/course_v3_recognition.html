@@ -133,6 +133,22 @@ function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
 var TOTAL=10,pool=[],quiz=[],qi=0,score=0,answered=false;
+/* Sessiyadagi xato ieroglifllar. Sessiya oxirida serverga yuboriladi, shunda
+   ular "Xatolarim" bo'limiga va kunlik rejaga tushadi. Server FAQAT ieroglifni
+   qabul qiladi — savol va to'g'ri javobni o'z lug'atidan quradi. */
+var WRONG=[];
+function reportWrong(){
+  if(!WRONG.length)return;
+  var body={feature:"recognition",level:LV||"hsk1",language:LANG,mistakes:WRONG.slice(0,20),initData:initData()};
+  WRONG=[];
+  try{
+    fetch("/api/v3/practice/report",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body),keepalive:true}).catch(function(){});
+  }catch(e){}
+}
+/* Mashqni yarmida tashlab ketsa ham xatolar yo'qolmasin. */
+try{window.addEventListener("pagehide",reportWrong);
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")reportWrong()})}catch(e){}
 function buildPool(){
   // single-character words make the cleanest "similar character" tiles.
   // Pool tartibi: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR);
@@ -187,6 +203,7 @@ function pick(k){
   var tiles=document.querySelectorAll(".tile");
   tiles.forEach(function(t){t.classList.add("reveal");t.style.pointerEvents="none";if(q.opts[+t.dataset.k].ok)t.classList.add("ok")});
   var ok=q.opts[k].ok;if(!ok)tiles[k].classList.add("bad");
+  if(!ok)WRONG.push({hanzi:q.zh,selected:String(q.opts[k].h||"").slice(0,64)});
   if(ok){score++;document.getElementById("score").textContent=score+" ✓"}
   beep(ok?[660,880]:[200,150]);haptic(ok);
   setTimeout(function(){qi++;render()},1050);
@@ -194,6 +211,7 @@ function pick(k){
 function finish(){
   /* Reklama bilan kirilgan sessiya: oxirida majburiy yakuniy reklama. */
   if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finish).catch(finish);return}}
+  reportWrong();
   document.getElementById("prog").style.width="100%";
   document.getElementById("body").innerHTML='<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><p>'+L.doneSub+'</p><button onclick="replay()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';
   beep([523,659,784,1046]);haptic(true);
