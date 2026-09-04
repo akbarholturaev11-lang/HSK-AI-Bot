@@ -123,6 +123,11 @@ jobs:
       - name: Check every string exists in uz, ru and tg
         run: python3 tools/check_strings_translated.py
 
+      # The two clients are one product: a token that drifts by a shade is
+      # invisible in a screenshot and makes them stop looking alike.
+      - name: Check the palette still matches the Mini App
+        run: python3 tools/check_palette_matches_miniapp.py
+
       # Both distribution flavours are verified. The Play build is the one
       # with policy constraints, so it must never be the untested one.
       - name: Unit tests
