@@ -1,8 +1,13 @@
 import json
 from pathlib import Path
 
+from sqlalchemy import select
+
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.course_lesson_repo import CourseLessonRepository
+from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
+from app.services.course_v3_parts import source_lesson_for_part
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
@@ -358,13 +363,26 @@ class CourseMiniAppPracticeService:
         return selected
 
     async def _level_questions(
-        self, level: str, lang: str, limit: int, skill: str = "", max_lesson: int | None = None
+        self, level: str, lang: str, limit: int, skill: str = "", max_part: int | None = None
     ) -> list[dict]:
+        # `max_part` — o'quvchining JORIY mini-qismi (flat raqam). Ikki savol
+        # banki ikki xil raqamlash ishlatadi, shuning uchun konvertatsiya SHU
+        # YERDA, bir joyda bo'ladi:
+        #   • DB banki (course_lessons) — DARSLIK darsi tartibida;
+        #   • statik bank (course_v3_data/<level>/lesson_NN.json) — flat QISM.
+        # Ilgari chaqiruvchilar bitta raqamni ikkala yo'lga uzatardi va biri
+        # doim noto'g'ri chiqardi.
+        max_db_lesson = None
+        if max_part is not None:
+            max_part = max(1, int(max_part))
+            src = source_lesson_for_part(level, max_part)
+            max_db_lesson = src if src else max_part
+
         lessons = await self.lesson_repo.list_by_level(level)
-        # Dars progressi gate: savollar faqat userning o'rganilgan darslaridan
-        # (max_lesson = tugatilgan + 1). None = butun level (eski xatti-harakat).
-        if max_lesson is not None:
-            lessons = [item for item in lessons if int(item.lesson_order) <= int(max_lesson)]
+        # Dars progressi gate: savollar faqat o'rganilgan darslardan kelsin.
+        # None = butun level (eski xatti-harakat).
+        if max_db_lesson is not None:
+            lessons = [item for item in lessons if int(item.lesson_order) <= int(max_db_lesson)]
         pool = []
         for lesson in lessons:
             payload = await self.lesson_service.get_payload(
@@ -387,8 +405,13 @@ class CourseMiniAppPracticeService:
                 lang,
                 limit,
                 skill,
-                max_lesson=max_lesson,
+                max_lesson=max_part,
             )
+        if not pool and max_part is not None:
+            # Progress oynasi bo'sh bank bergan bo'lsa (masalan kontent hali
+            # to'liq emas) mashqni butunlay yiqitgandan ko'ra cheklovsiz bankka
+            # qaytamiz — bu eski xatti-harakat, ya'ni hech narsa yomonlashmaydi.
+            pool = await self._level_questions_unrestricted(level, lang, limit, skill)
         filtered = [item for item in pool if not skill or self._skill_match(item, skill)]
         if len(filtered) < limit:
             filtered.extend(item for item in pool if item not in filtered)
@@ -396,17 +419,92 @@ class CourseMiniAppPracticeService:
             return []
         return self._balanced_questions(filtered, limit)
 
+    async def _level_questions_unrestricted(
+        self, level: str, lang: str, limit: int, skill: str
+    ) -> list[dict]:
+        pool = []
+        for lesson in await self.lesson_repo.list_by_level(level):
+            payload = await self.lesson_service.get_payload(
+                lesson_order=int(lesson.lesson_order),
+                lang=lang,
+                level=level,
+            )
+            for index, item in enumerate((payload or {}).get("quiz_questions", []), 1):
+                normalized = self._choice_question(
+                    item,
+                    level=level,
+                    lesson_order=int(lesson.lesson_order),
+                    index=index,
+                )
+                if normalized:
+                    pool.append(normalized)
+        if not pool:
+            pool = self._static_level_questions(level, lang, limit, skill)
+        return pool
+
     async def _questions(
-        self, mode: str, level: str, lang: str, skill: str, max_lesson: int | None = None
+        self, mode: str, level: str, lang: str, skill: str, max_part: int | None = None
     ) -> list[dict]:
         if mode == "placement":
+            # Daraja aniqlash ataylab progressdan qat'i nazar butun bank bo'ylab
+            # boradi — maqsadi o'quvchi qayerda turganini topish.
             questions = []
             for item_level, count in (("hsk1", 3), ("hsk2", 3), ("hsk3", 2), ("hsk4", 2)):
                 questions.extend(await self._level_questions(item_level, lang, count))
             return questions
         return await self._level_questions(
-            level, lang, 10, skill if mode == "training" else "", max_lesson=max_lesson
+            level, lang, 10, skill if mode == "training" else "", max_part=max_part
         )
+
+    async def _started_max_part(self, user, session_id: str, mode: str) -> int | None:
+        """Sessiya boshlanganda yozilgan `max_part` — savol to'plami aynan
+        o'sha oynadan qayta qurilsin. Topilmasa None (eski sessiyalar)."""
+        event_name = "training_started" if mode == "training" else "test_started"
+        try:
+            result = await self.session.execute(
+                select(CourseMiniAppEvent.payload_json).where(
+                    CourseMiniAppEvent.user_id == user.id,
+                    CourseMiniAppEvent.event_name == event_name,
+                    CourseMiniAppEvent.session_id == session_id,
+                )
+            )
+            raw = result.scalars().first()
+        except Exception:  # noqa: BLE001 — analitika o'qilmasa yakunlash yiqilmasin
+            return None
+        if not raw:
+            return None
+        try:
+            payload = json.loads(raw)
+            max_part = payload.get("max_part")
+        except (TypeError, ValueError, json.JSONDecodeError):
+            return None
+        if max_part is None:
+            return None
+        try:
+            return max(1, int(max_part))
+        except (TypeError, ValueError):
+            return None
+
+    async def _current_part(self, user, level: str) -> int | None:
+        """O'quvchining shu darajadagi JORIY mini-qismi (flat raqam).
+
+        None = progress boshqa darajada yoki umuman yo'q; u holda savol banki
+        cheklanmaydi (eski xatti-harakat).
+        """
+        try:
+            progress = await CourseProgressRepository(self.session).get_by_user_id(int(user.id))
+        except Exception:  # noqa: BLE001 — progress o'qilmasa mashq yiqilmasin
+            return None
+        if not progress:
+            return None
+        try:
+            progress_level = self._level(getattr(progress, "level", "") or "")
+        except ValueError:
+            return None
+        if progress_level != level:
+            return None
+        completed_parts = int(getattr(progress, "completed_lessons_count", 0) or 0)
+        return max(1, completed_parts + 1)
 
     async def start(
         self,
@@ -451,7 +549,8 @@ class CourseMiniAppPracticeService:
                 "lifetime": bool(access.get("lifetime")),
             }
 
-        questions = await self._questions(mode, level, lang, skill)
+        max_part = await self._current_part(user, level)
+        questions = await self._questions(mode, level, lang, skill, max_part=max_part)
         if not questions:
             return {"ok": False, "error": "practice_questions_not_found"}
         session_id = f"practice:{user.id}:{feature}:{mode}:{session_scope}:v{PRACTICE_VERSION}"
@@ -463,7 +562,16 @@ class CourseMiniAppPracticeService:
             level=level,
             session_id=session_id,
             dedupe_key=f"{session_id}:started",
-            payload={"mode": mode, "skill": skill, "question_count": len(questions)},
+            # `max_part` yozib qo'yiladi: yakunlashda AYNAN shu savol to'plami
+            # qayta qurilishi kerak. Aks holda o'quvchi mashq ochiq turganda
+            # yangi qism tugatsa, complete() boshqa savollar qurib "javoblar
+            # to'liq emas" deb rad etardi.
+            payload={
+                "mode": mode,
+                "skill": skill,
+                "question_count": len(questions),
+                "max_part": max_part,
+            },
         )
         await self.session.commit()
         return {
@@ -520,7 +628,10 @@ class CourseMiniAppPracticeService:
         if not access.get("allowed"):
             return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}
 
-        questions = await self._questions(mode, level, lang, skill)
+        max_part = await self._started_max_part(user, expected_session, mode)
+        if max_part is None:
+            max_part = await self._current_part(user, level)
+        questions = await self._questions(mode, level, lang, skill, max_part=max_part)
         submitted = {
             str(item.get("question_id") or ""): item
             for item in answers if isinstance(item, dict) and item.get("question_id")

@@ -153,6 +153,23 @@ decay(n) = max(0, 1 - n / 10)      # n = shu kategoriyadagi natijalar soni
 | `work_china` | `manager_wang` (Mini App'da hali yopiq) | voice ↑, course ↑ | HA |
 | `study_china` | `classmate` (Mini App'da hali yopiq) | course ↑↑, vocabulary ↑ | QISMAN — hozircha segmentatsiya |
 
+### ⚠️ Skill drill cheklovi (2026-09-05 da o'lchandi)
+
+Savol banki kichik bo'lganda skill filtri to'lmaydi va kod umumiy bankka
+kengayadi. HSK1 uchun o'lchangan mos savollar ulushi:
+
+| Joriy qism | listening | characters | pinyin |
+|---|---|---|---|
+| 1 | 1/8 | 6/8 | 1/8 |
+| 5 | 4/10 | 10/10 | 3/10 |
+| 30 | 10/10 | 10/10 | 10/10 |
+
+Ya'ni yangi boshlovchiga "tinglash mashqi" deb va'da berib bo'lmaydi —
+savollarning ko'pi tinglash bo'lmaydi. **4-bosqich qoidasi:** `skill_drill`
+aniq skill bilan faqat bank uni qoplay olganda beriladi (mos ulush >= 70%),
+aks holda umumiy `skill_drill` (skillsiz) beriladi. Bank o'lchovi
+`_skill_match` bilan oldindan tekshiriladi — taxmin qilinmaydi.
+
 ⚠️ Mini App'da hozir atigi 2 persona ochiq: `friend` (bao) va `teacher_li` (li).
 Qolgan 8 rolni ochish — UI o'zgarishi, alohida ruxsat kerak. Shu bo'lguncha
 goal'ning asosiy ta'siri **task vazni** orqali.
@@ -314,10 +331,19 @@ har bosqich oxirida ilova ishlaydigan holatda.
 
 - `pytest tests -q` — to'liq
 - Playwright e2e smoke
+- Real tekshiruv: ilova haqiqatan ishlayotganini ko'rsatish
 - `graphify update .`
 - `PROJECT_MEMORY.md` yangilash (AI_RULES formatida)
 - Release feedback draft (AGENTS.md qoidasi — user ko'radigan katta update)
-- `codex/local-ai` → `origin/main` promote, commit hash bilan tasdiqlash
+- **Faqat shundan keyin** `main` haqida gap boradi
+
+### PUSH QOIDASI (2026-09-05, foydalanuvchi ko'rsatmasi)
+
+**Ish tugamaguncha `main` ga push YO'Q.** Barcha bosqichlar `codex/local-ai`
+branchida, faqat lokal commitlar bilan. `main` ga chiqarish — butun ish
+tugab, real testlar o'tkazilib, ishlayotganiga to'liq ishonch hosil
+qilingandan keyin va faqat foydalanuvchi aytganda. Oraliq bosqichda push
+qilinmaydi.
 
 ---
 

@@ -15,7 +15,6 @@ from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_question_material import shuffle_question_options
-from app.services.course_v3_parts import source_lesson_for_part
 
 
 CHALLENGE_QUESTION_COUNT = 10
@@ -110,20 +109,20 @@ class CourseChallengeService:
         practice_level = self._practice_level(level)
         svc = CourseMiniAppPracticeService(self.session)
 
-        max_lesson = 1
+        max_part = 1
         try:
             progress = await CourseProgressRepository(self.session).get_by_user_id(int(user.id))
             if progress and self._practice_level(self._level(progress.level)) == practice_level:
                 completed_parts = int(getattr(progress, "completed_lessons_count", 0) or 0)
-                # completed_lessons_count endi MINI-QISMLARNI sanaydi; savol banki
-                # esa darslik darslari tartibida — qismni asl darsga aylantiramiz.
-                src = source_lesson_for_part(practice_level, completed_parts + 1)
-                max_lesson = max(1, src if src else completed_parts + 1)
+                max_part = max(1, completed_parts + 1)
         except Exception:  # noqa: BLE001
-            max_lesson = 1
+            max_part = 1
 
+        # Qism -> darslik darsi konvertatsiyasi endi savol bankining o'zida
+        # (CourseMiniAppPracticeService._level_questions), chunki DB banki va
+        # statik bank turlicha raqamlanadi. Bu yerdan JORIY QISM uzatiladi.
         questions = await svc._questions(
-            "mock", practice_level, lang, "", max_lesson=max_lesson
+            "mock", practice_level, lang, "", max_part=max_part
         )
         if len(questions) < CHALLENGE_QUESTION_COUNT:
             return []
