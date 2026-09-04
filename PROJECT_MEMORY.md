@@ -122,11 +122,14 @@ Important note:
 Android klienti:
 - `android/app/src/main/java/com/pomp/hskai/core/design/Color.kt` — palitra;
   qiymatlari `app/static/course-v3.html` dagi CSS custom property'lardan olinadi.
-- `android/tools/` — 5 ta statik tekshiruv. Ba'zi muhitlarda `dl.google.com`
-  yopiq bo'lgani uchun Android SDK yo'q va Gradle ishlamaydi; Compose kodini
-  faqat CI kompilyatsiya qiladi. Shuning uchun bu tekshiruvlar CI'da Gradle'dan
-  OLDIN ishlaydi va **har Android o'zgarishidan keyin beshtasi ham ishlatilishi
-  kerak**:
+- `android/tools/` — 5 ta statik tekshiruv. Cloud muhitlarda `dl.google.com`
+  yopiq bo'lgani uchun Android SDK yo'q va Gradle ishlamaydi; u yerda Compose
+  kodini faqat CI kompilyatsiya qiladi. **Foydalanuvchining Mac'ida esa SDK bor**
+  (`~/Library/Android/sdk`) va Gradle to'liq ishlaydi — build, unit test, lint,
+  hamda `Pixel_8` emulyatorida ekranni haqiqatan ko'rish mumkin
+  (`emulator -avd Pixel_8`, `adb install`, `adb exec-out screencap`).
+  Statik tekshiruvlar CI'da Gradle'dan OLDIN ishlaydi va **har Android
+  o'zgarishidan keyin beshtasi ham ishlatilishi kerak**:
 
   | Tekshiruv | Nimani topadi |
   |---|---|
@@ -223,6 +226,47 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 ---
 
 ## 10. Recent Important Changes
+
+### 2026-09-04 — Android Mashq bo'limi Mini App tuzilishiga keltirildi
+
+Changed:
+- Bosh ro'yxat 9 qatordan 5 qatorga tushdi va Mini App'dagi `renderMashq()` bilan
+  bir xil bo'ldi: Ieroglif lug'ati (amber) · Ieroglif tanish (ko'k) ·
+  Talaffuz mashqi (nefrit) | Test markazi (kinovar) · Xatolarim (kinovar).
+- Xom mashq turlari endi ro'yxatda emas, ESHIK ortida: "Ieroglif tanish" ichida
+  4 tasi (Ieroglif tanish, Pinyin, Gap tuzish, Tinglash), "Test markazi" ichida
+  2 tasi (HSK test, Daraja aniqlash). Mini App ham daraja aniqlashni Test markazi
+  ichida saqlaydi ("HSK imtihonlari va daraja aniqlash").
+- Hech qanday mashq olib tashlanmadi va backend chaqiruvlari o'zgarmadi —
+  faqat ro'yxat tuzilishi va ranglar.
+- Plitka ranglari endi qatorga qarab boshqacha (avval hammasi `GoldSoft` edi).
+  `TileAmberSoft/TileAmberInk` va `TileBlueSoft/TileBlueInk` qo'shildi: bu ikki
+  juft Mini App'da CSS token EMAS, `.t-amber`/`.t-blue` qoidalariga qattiq
+  yozilgan, shuning uchun palitra tekshiruvi ularni ataylab solishtirmaydi.
+- Eshik ichida sarlavha pill'i eshik nomini ko'rsatadi, orqaga tugmasi va
+  tizim "orqaga" tugmasi (`BackHandler`) ikkalasi ham ro'yxatga qaytaradi.
+- Yangi matnlar uch tilda: `practice_group_test_short`,
+  `practice_test_center_body`, `practice_recognition_group_body`,
+  `practice_pronunciation_row_title`, `practice_pronunciation_row_body`.
+
+Why:
+- Ikkala klient bitta mahsulotdek ko'rinishi kerak. Android xom "skill"larni
+  ro'yxatga chiqarib qo'ygandi; Mini App ularni ekranlar ichiga yashirgan.
+
+Files touched:
+- `android/app/src/main/java/com/pomp/hskai/feature/practice/PracticeScreen.kt`
+- `android/app/src/main/java/com/pomp/hskai/core/design/Color.kt`
+- `android/app/src/main/res/values{,-ru,-tg}/strings.xml`
+
+Tests:
+- 5 ta statik tekshiruv, `testPlayDebugUnitTest`, `testDirectDebugUnitTest`,
+  `assemble{Play,Direct}Debug`, `lint{Play,Direct}Debug` — hammasi o'tdi.
+- Pixel_8 emulyatorida ochib ko'rildi: 5 qator, ranglar, ikkala eshik va
+  orqaga qaytish tekshirildi.
+
+Risk:
+- Tinglash / Pinyin / Gap tuzish endi bir bosish uzoqroqda. Ular yo'qolmagan,
+  "Ieroglif tanish" ichida.
 
 ### 2026-09-04 — Railway RAM: reklama mediasi va admin hisobot detali
 
@@ -6999,9 +7043,12 @@ Priority 3:
 
 ### Android klientini Mini App bilan tenglashtirish
 
-Rang palitrasi TUGALLANDI (19/19 token mos, CI tekshiradi). Qolgani:
+Rang palitrasi TUGALLANDI (19/19 token mos, CI tekshiradi).
+Mashq bo'limi tuzilishi ham TUGALLANDI (9 qator -> 5 qator, "10." dagi yozuvga
+qarang). Qolgani:
 
-1. **Mashq bo'limi tuzilishi.** Mini App'da 5 qator, Android'da 9 qator.
+1. ~~**Mashq bo'limi tuzilishi.**~~ BAJARILDI. (Tarixiy tavsif quyida qoldirildi.)
+   Mini App'da 5 qator, Android'da 9 qator edi.
 
    Mini App (`renderMashq()`, `app/static/course-v3.html`):
 

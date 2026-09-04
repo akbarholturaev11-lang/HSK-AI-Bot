@@ -172,6 +172,11 @@
     <string name="practice_subtitle_short">Мустаҳкам ва санҷиш</string>
     <string name="practice_group_skills">Грамматика · Талаффуз</string>
     <string name="practice_group_tests">Маркази тест</string>
+    <string name="practice_pronunciation_row_title">Машқи талаффуз</string>
+    <string name="practice_pronunciation_row_body">Гӯш кун, такрор кун, санҷиши оҳанг</string>
+    <string name="practice_recognition_group_body">Дурусташро аз байни монандҳо ёбед</string>
+    <string name="practice_test_center_body">Имтиҳонҳои HSK ва муайяни сатҳ</string>
+    <string name="practice_group_test_short">Тест</string>
     <string name="profile_goal_title">Ҳадафи имрӯз</string>
     <string name="profile_goal_body">%1$d / %2$d XP · %3$d монд</string>
     <string name="profile_goal_percent">%1$d%% иҷро шуд</string>

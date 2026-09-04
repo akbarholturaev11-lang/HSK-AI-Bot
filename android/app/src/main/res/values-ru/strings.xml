@@ -171,6 +171,11 @@
     <string name="practice_subtitle_short">Закрепление и проверка</string>
     <string name="practice_group_skills">Грамматика · Произношение</string>
     <string name="practice_group_tests">Тест-центр</string>
+    <string name="practice_pronunciation_row_title">Практика произношения</string>
+    <string name="practice_pronunciation_row_body">Слушай, повторяй, проверка тона</string>
+    <string name="practice_recognition_group_body">Найдите верный среди похожих</string>
+    <string name="practice_test_center_body">Экзамены HSK и определение уровня</string>
+    <string name="practice_group_test_short">Тест</string>
     <string name="profile_goal_title">Цель на сегодня</string>
     <string name="profile_goal_body">%1$d / %2$d XP · осталось %3$d</string>
     <string name="profile_goal_percent">%1$d%% выполнено</string>

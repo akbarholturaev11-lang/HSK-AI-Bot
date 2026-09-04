@@ -47,6 +47,19 @@ object PompColors {
     val Divider = Color(0xFFEAE0CC)      // --line
 
     /**
+     * Practice-row tiles. The Mini App writes these two pairs straight into
+     * the `.t-amber` / `.t-blue` rules instead of declaring them as custom
+     * properties, so they are copied by value here and are deliberately not
+     * part of the palette check — there is no token for it to compare against.
+     * The jade and cinnabar tiles do use tokens (`--jadebg`/`--jade`,
+     * `--cinbg`/`--cin`) and are read from the palette above.
+     */
+    val TileAmberSoft = Color(0xFFF8EFD9) // .t-amber background
+    val TileAmberInk = Color(0xFFB07A1E)  // .t-amber foreground
+    val TileBlueSoft = Color(0xFFE7F0F8)  // .t-blue background
+    val TileBlueInk = Color(0xFF2F6F9E)   // .t-blue foreground
+
+    /**
      * Disabled controls. Android-only: the Mini App has no single token for
      * this, so it is deliberately not part of the palette check. Locked
      * course nodes are a separate case — the Mini App paints those with

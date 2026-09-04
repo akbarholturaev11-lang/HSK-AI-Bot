@@ -199,6 +199,11 @@
     <string name="practice_subtitle_short">Mustahkamlash va sinash</string>
     <string name="practice_group_skills">Grammatika · Talaffuz</string>
     <string name="practice_group_tests">Test markazi</string>
+    <string name="practice_pronunciation_row_title">Talaffuz mashqi</string>
+    <string name="practice_pronunciation_row_body">Eshit, takrorla, ton tekshiruvi</string>
+    <string name="practice_recognition_group_body">O‘xshashlardan to‘g‘risini toping</string>
+    <string name="practice_test_center_body">HSK imtihonlari va daraja aniqlash</string>
+    <string name="practice_group_test_short">Test</string>
     <string name="profile_goal_title">Bugungi maqsad</string>
     <string name="profile_goal_body">%1$d / %2$d XP · %3$d qoldi</string>
     <string name="profile_goal_percent">%1$d%% bajarildi</string>

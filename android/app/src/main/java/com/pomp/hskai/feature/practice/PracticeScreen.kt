@@ -1,8 +1,10 @@
 package com.pomp.hskai.feature.practice
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,11 +15,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -27,9 +35,15 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -102,6 +116,22 @@ fun PracticeScreen(
     }
 }
 
+/**
+ * The Mini App shows five rows here, not nine. It does not list the raw
+ * practice skills the server offers: "Ieroglif tanish" and "Test markazi" are
+ * doors, and the individual drills live behind them. This screen follows that
+ * shape so a learner who moves between the two clients sees one product.
+ */
+private enum class PracticeGroup { RECOGNITION, TEST }
+
+/** The tile colours the Mini App gives each row. */
+private data class RowTint(val background: Color, val foreground: Color)
+
+private val TintAmber = RowTint(PompColors.TileAmberSoft, PompColors.TileAmberInk)
+private val TintBlue = RowTint(PompColors.TileBlueSoft, PompColors.TileBlueInk)
+private val TintJade = RowTint(PompColors.JadeSoft, PompColors.Jade)
+private val TintCinnabar = RowTint(PompColors.CinnabarSoft, PompColors.Cinnabar)
+
 @Composable
 private fun PracticeHome(
     state: PracticeUiState,
@@ -113,7 +143,13 @@ private fun PracticeHome(
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
 ) {
-    val skillTools = remember {
+    // Which door is open, if any. Kept here rather than in the ViewModel: it
+    // is where the learner is looking, not something the session depends on.
+    var openGroup by rememberSaveable { mutableStateOf<PracticeGroup?>(null) }
+
+    // The drills behind "Ieroglif tanish". Reading and writing practice both
+    // come down to picking the right characters, so they share one door.
+    val recognitionTools = remember {
         listOf(
             PracticeToolSpec(
                 mode = "training",
@@ -121,13 +157,6 @@ private fun PracticeHome(
                 titleRes = R.string.practice_characters_title,
                 bodyRes = R.string.practice_characters_body,
                 glyph = "字",
-            ),
-            PracticeToolSpec(
-                mode = "training",
-                skill = "listening",
-                titleRes = R.string.practice_listening_title,
-                bodyRes = R.string.practice_listening_body,
-                glyph = "听",
             ),
             PracticeToolSpec(
                 mode = "training",
@@ -145,13 +174,24 @@ private fun PracticeHome(
             ),
             PracticeToolSpec(
                 mode = "training",
-                skill = "pronunciation",
-                titleRes = R.string.practice_pronunciation_title,
-                bodyRes = R.string.practice_pronunciation_body,
-                glyph = "声",
+                skill = "listening",
+                titleRes = R.string.practice_listening_title,
+                bodyRes = R.string.practice_listening_body,
+                glyph = "听",
             ),
         )
     }
+    val pronunciationTool = remember {
+        PracticeToolSpec(
+            mode = "training",
+            skill = "pronunciation",
+            titleRes = R.string.practice_pronunciation_title,
+            bodyRes = R.string.practice_pronunciation_body,
+            glyph = "声",
+        )
+    }
+    // The Mini App keeps the placement test inside the test centre rather than
+    // on the practice list ("HSK imtihonlari va daraja aniqlash").
     val testTools = remember {
         listOf(
             PracticeToolSpec(
@@ -170,93 +210,197 @@ private fun PracticeHome(
             ),
         )
     }
+
+    BackHandler(enabled = openGroup != null) { openGroup = null }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(11.dp),
     ) {
         item {
-            Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(999.dp)) {
-                Text(
-                    text = stringResource(R.string.practice_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = PompColors.Paper,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+            PracticeHeader(
+                group = openGroup,
+                onBack = { openGroup = null },
+            )
+            // A spent allowance has to stay visible wherever the learner set
+            // it off, so it is drawn on the home list and behind a door alike.
+            PracticeNotice(
+                state = state,
+                limit = limit,
+                onWatchAd = onWatchAd,
+            )
+        }
+
+        when (openGroup) {
+            null -> {
+                item { GroupLabel(stringResource(R.string.practice_group_skills)) }
+                item {
+                    ToolRow(
+                        glyph = "字",
+                        tint = TintAmber,
+                        title = stringResource(R.string.practice_dictionary_title),
+                        body = stringResource(R.string.practice_dictionary_body),
+                        enabled = true,
+                        onClick = onOpenDictionary,
+                    )
+                }
+                item {
+                    ToolRow(
+                        icon = Icons.Filled.Visibility,
+                        tint = TintBlue,
+                        title = stringResource(R.string.practice_characters_title),
+                        body = stringResource(R.string.practice_recognition_group_body),
+                        enabled = !state.isStarting,
+                        onClick = { openGroup = PracticeGroup.RECOGNITION },
+                    )
+                }
+                item {
+                    ToolRow(
+                        icon = Icons.Filled.Mic,
+                        tint = TintJade,
+                        title = stringResource(R.string.practice_pronunciation_row_title),
+                        body = stringResource(R.string.practice_pronunciation_row_body),
+                        enabled = !state.isStarting,
+                        onClick = { onStartPractice(pronunciationTool, level, language) },
+                    )
+                }
+
+                item { GroupLabel(stringResource(R.string.practice_group_test_short)) }
+                item {
+                    ToolRow(
+                        icon = Icons.Filled.WorkspacePremium,
+                        tint = TintCinnabar,
+                        title = stringResource(R.string.practice_group_tests),
+                        body = stringResource(R.string.practice_test_center_body),
+                        enabled = !state.isStarting,
+                        onClick = { openGroup = PracticeGroup.TEST },
+                    )
+                }
+                item {
+                    val total = state.mistakes?.summary?.total ?: 0
+                    ToolRow(
+                        icon = Icons.Filled.WarningAmber,
+                        tint = TintCinnabar,
+                        title = stringResource(R.string.practice_mistakes_title),
+                        body = stringResource(R.string.practice_mistakes_body, total),
+                        enabled = total > 0 && !state.isStarting,
+                        busy = state.isLoadingMistakes,
+                        onClick = onStartMistakeReview,
+                    )
+                }
+            }
+
+            PracticeGroup.RECOGNITION -> items(recognitionTools) { tool ->
+                ToolRow(
+                    glyph = tool.glyph,
+                    tint = TintBlue,
+                    title = stringResource(tool.titleRes),
+                    body = stringResource(tool.bodyRes),
+                    enabled = !state.isStarting,
+                    onClick = { onStartPractice(tool, level, language) },
                 )
             }
-            Spacer(Modifier.height(8.dp))
+
+            PracticeGroup.TEST -> items(testTools) { tool ->
+                ToolRow(
+                    glyph = tool.glyph,
+                    tint = TintCinnabar,
+                    title = stringResource(tool.titleRes),
+                    body = stringResource(tool.bodyRes),
+                    enabled = !state.isStarting,
+                    onClick = { onStartPractice(tool, level, language) },
+                )
+            }
+        }
+    }
+}
+
+/**
+ * The pill and the one-line subtitle at the top. Behind a door the pill names
+ * the door and grows a way back, so the learner is never left guessing which
+ * list they are looking at.
+ */
+@Composable
+private fun PracticeHeader(
+    group: PracticeGroup?,
+    onBack: () -> Unit,
+) {
+    val titleRes = when (group) {
+        null -> R.string.practice_title
+        PracticeGroup.RECOGNITION -> R.string.practice_characters_title
+        PracticeGroup.TEST -> R.string.practice_group_tests
+    }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        if (group != null) {
+            Surface(
+                color = PompColors.PaperRaised,
+                shape = RoundedCornerShape(999.dp),
+                border = BorderStroke(1.dp, PompColors.Divider),
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .clickable(onClick = onBack),
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = stringResource(R.string.practice_back_to_tools),
+                    tint = PompColors.InkSecondary,
+                    modifier = Modifier.padding(8.dp),
+                )
+            }
+        }
+        Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(999.dp)) {
             Text(
-                text = stringResource(R.string.practice_subtitle_short),
-                style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.InkSecondary,
+                text = stringResource(titleRes),
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Paper,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
             )
-            val error = state.error
-            val section = state.pendingTool
-            if (error is ApiError.LimitReached) {
-                // A spent allowance is not a dead end: this is the one place
-                // that says what is closed, when it comes back, and how to
-                // open it now.
-                Spacer(Modifier.height(12.dp))
-                SectionLimitBlock(
-                    sectionTitle = if (section != null) {
-                        stringResource(section.titleRes)
-                    } else {
-                        stringResource(R.string.practice_title)
-                    },
-                    limit = limit,
-                    resetAt = error.resetAt,
-                    // Watching an ad opens the section without spending the
-                    // daily allowance. Only offered for a section we know.
-                    onWatchAd = section?.let { tool -> { onWatchAd(tool.adFeature) } },
-                )
-            } else if (error != null) {
-                Spacer(Modifier.height(12.dp))
-                ErrorPill(stringResource(error.messageRes))
-            }
         }
+    }
+    // The subtitle describes the practice section as a whole, so it belongs
+    // on the section's own list and nowhere else.
+    if (group == null) {
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = stringResource(R.string.practice_subtitle_short),
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.InkSecondary,
+        )
+    }
+}
 
-        item { GroupLabel(stringResource(R.string.practice_group_skills)) }
-        item {
-            ToolRow(
-                glyph = "字",
-                title = stringResource(R.string.practice_dictionary_title),
-                body = stringResource(R.string.practice_dictionary_body),
-                enabled = true,
-                onClick = onOpenDictionary,
-            )
-        }
-        items(skillTools) { tool ->
-            ToolRow(
-                glyph = tool.glyph,
-                title = stringResource(tool.titleRes),
-                body = stringResource(tool.bodyRes),
-                enabled = !state.isStarting,
-                onClick = { onStartPractice(tool, level, language) },
-            )
-        }
-
-        item { GroupLabel(stringResource(R.string.practice_group_tests)) }
-        items(testTools) { tool ->
-            ToolRow(
-                glyph = tool.glyph,
-                title = stringResource(tool.titleRes),
-                body = stringResource(tool.bodyRes),
-                enabled = !state.isStarting,
-                onClick = { onStartPractice(tool, level, language) },
-            )
-        }
-        item {
-            val total = state.mistakes?.summary?.total ?: 0
-            ToolRow(
-                glyph = "错",
-                title = stringResource(R.string.practice_mistakes_title),
-                body = stringResource(R.string.practice_mistakes_body, total),
-                enabled = total > 0 && !state.isStarting,
-                accent = true,
-                busy = state.isLoadingMistakes,
-                onClick = onStartMistakeReview,
-            )
-        }
+/**
+ * Whatever the last attempt left behind: a spent allowance with a way to open
+ * it again, or a plain error. Nothing at all when the last attempt went fine.
+ */
+@Composable
+private fun PracticeNotice(
+    state: PracticeUiState,
+    limit: LimitGate,
+    onWatchAd: (feature: String) -> Unit,
+) {
+    val error = state.error
+    val section = state.pendingTool
+    if (error is ApiError.LimitReached) {
+        // A spent allowance is not a dead end: this is the one place that says
+        // what is closed, when it comes back, and how to open it now.
+        Spacer(Modifier.height(12.dp))
+        SectionLimitBlock(
+            sectionTitle = if (section != null) {
+                stringResource(section.titleRes)
+            } else {
+                stringResource(R.string.practice_title)
+            },
+            limit = limit,
+            resetAt = error.resetAt,
+            // Watching an ad opens the section without spending the daily
+            // allowance. Only offered for a section we know.
+            onWatchAd = section?.let { tool -> { onWatchAd(tool.adFeature) } },
+        )
+    } else if (error != null) {
+        Spacer(Modifier.height(12.dp))
+        ErrorPill(stringResource(error.messageRes))
     }
 }
 
@@ -266,55 +410,70 @@ private fun GroupLabel(text: String) {
         text = text,
         style = MaterialTheme.typography.titleSmall,
         color = PompColors.InkSecondary,
-        modifier = Modifier.padding(top = 10.dp, bottom = 2.dp),
+        modifier = Modifier.padding(top = 7.dp, bottom = 2.dp),
     )
 }
 
 /**
- * One practice entry, styled like the Mini App's list rows: glyph tile, title,
- * one-line explanation, and a chevron that says the row opens something.
+ * One practice entry, styled like the Mini App's `.row-card`: a 46dp tinted
+ * tile, title, one-line explanation, and a chevron that says the row opens
+ * something. The tile carries the row's own colour — in the Mini App every
+ * row has its own, and painting them all one shade was the difference that
+ * stood out most between the two clients.
  *
  * A row that cannot do its job is disabled rather than hidden, so the learner
  * sees why (for example: no mistakes to review yet).
  */
 @Composable
 private fun ToolRow(
-    glyph: String,
+    tint: RowTint,
     title: String,
     body: String,
     enabled: Boolean,
     onClick: () -> Unit,
-    accent: Boolean = false,
+    glyph: String? = null,
+    icon: ImageVector? = null,
     busy: Boolean = false,
 ) {
     Surface(
-        color = if (accent) PompColors.CinnabarSoft else PompColors.PaperRaised,
+        color = PompColors.PaperRaised,
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, if (accent) PompColors.Cinnabar else PompColors.Divider),
+        border = BorderStroke(1.dp, PompColors.Divider),
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 68.dp)
             .clickable(enabled = enabled, onClick = onClick),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Surface(
-                color = if (accent) PompColors.Paper else PompColors.GoldSoft,
-                shape = RoundedCornerShape(12.dp),
+                color = tint.background,
+                shape = RoundedCornerShape(13.dp),
+                modifier = Modifier.size(46.dp),
             ) {
-                Text(
-                    text = glyph,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = if (enabled) PompColors.Ink else PompColors.InkDisabled,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    if (icon != null) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = tint.foreground,
+                            modifier = Modifier.size(22.dp),
+                        )
+                    } else {
+                        Text(
+                            text = glyph.orEmpty(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = tint.foreground,
+                        )
+                    }
+                }
             }
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 14.dp),
+                    .padding(start = 13.dp),
             ) {
                 Text(
                     text = title,
@@ -333,10 +492,12 @@ private fun ToolRow(
                     modifier = Modifier.height(18.dp),
                 )
             } else {
+                // The Mini App draws this chevron in `--ink3` whatever the
+                // row's state, so it never competes with the title.
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
-                    tint = if (enabled) PompColors.InkSecondary else PompColors.InkDisabled,
+                    tint = PompColors.InkDisabled,
                 )
             }
         }
