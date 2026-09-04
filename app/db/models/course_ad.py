@@ -14,7 +14,7 @@ class CourseAdCreative(Base):
     title: Mapped[str] = mapped_column(String(120), nullable=False)
     media_path: Mapped[str] = mapped_column(String(512), nullable=False)
     media_type: Mapped[str] = mapped_column(String(16), default="video", nullable=False)
-    media_blob: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    media_blob: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True, deferred=True)
     media_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     media_checksum: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     # Reklama tili: "all" (barcha tillar), "uz", "ru", "tj".

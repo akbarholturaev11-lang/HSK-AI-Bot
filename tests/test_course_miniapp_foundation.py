@@ -830,7 +830,7 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
                     )
                 )
 
-    def test_media_available_restores_missing_file_from_db_backup(self):
+    def test_media_available_does_not_restore_video_db_backup(self):
         import os
         import tempfile
 
@@ -849,11 +849,35 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
         )
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(svc, "COURSE_AD_MEDIA_ROOT", tmp):
-                self.assertTrue(CourseAdService.media_available(ad))
+                self.assertFalse(CourseAdService.media_available(ad))
+                self.assertFalse(os.path.exists(os.path.join(tmp, name)))
+
+    async def test_ensure_media_available_restores_small_photo_db_backup(self):
+        import os
+        import tempfile
+
+        from app.db.models.course_ad import CourseAdCreative
+        from app.services import course_ad_service as svc
+
+        data = b"safe-image"
+        name = "restore_ad.jpg"
+        ad = CourseAdCreative(
+            title="x",
+            media_path=name,
+            media_type="photo",
+            media_blob=data,
+            media_size=len(data),
+            media_checksum=CourseAdService.media_checksum(data),
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(svc, "COURSE_AD_MEDIA_ROOT", tmp):
+                available, restored = await CourseAdService(_FakeSession()).ensure_media_available(ad)
+                self.assertTrue(available)
+                self.assertTrue(restored)
                 with open(os.path.join(tmp, name), "rb") as fh:
                     self.assertEqual(fh.read(), data)
 
-    async def test_list_active_backfills_existing_media_backup(self):
+    async def test_list_active_does_not_backfill_existing_video_media_backup(self):
         import os
         import tempfile
 
@@ -878,10 +902,10 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
                 service = CourseAdService(session)
                 ads = await service.list_active()
                 self.assertEqual(ads, [ad])
-                self.assertTrue(service.media_backup_changed)
-                self.assertEqual(ad.media_blob, data)
-                self.assertEqual(ad.media_size, len(data))
-                self.assertEqual(ad.media_checksum, CourseAdService.media_checksum(data))
+                self.assertFalse(service.media_backup_changed)
+                self.assertNotIn("media_blob", ad.__dict__)
+                self.assertIsNone(ad.media_size)
+                self.assertIsNone(ad.media_checksum)
 
     async def test_delete_removes_ad_and_returns_media_path(self):
         from app.db.models.course_ad import CourseAdCreative

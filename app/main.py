@@ -15,6 +15,7 @@ from aiogram.types import BufferedInputFile
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy import func, select
+from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import settings
@@ -4182,7 +4183,9 @@ async def admin_miniapp_course_ads_upload(request: Request):
             raw_ext=raw_ext,
             telegram_id=telegram_id,
         )
-        media_backup = await asyncio.to_thread(CourseAdService.read_media_file, filename)
+        media_backup = (
+            data if CourseAdService.should_backup_media(media_type, data) else None
+        )
     except CourseAdVideoError as exc:
         return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
     except OSError:
@@ -4291,10 +4294,14 @@ async def serve_course_ad_media(filename: str):
     if not os.path.exists(path):
         async with async_session_maker() as session:
             result = await session.execute(
-                select(CourseAdCreative).where(CourseAdCreative.media_path == safe)
+                select(CourseAdCreative)
+                .options(defer(CourseAdCreative.media_blob))
+                .where(CourseAdCreative.media_path == safe)
             )
             ad = result.scalar_one_or_none()
-            if not ad or not CourseAdService.media_available(ad):
+            if not ad or not (
+                await CourseAdService(session).ensure_media_available(ad)
+            )[0]:
                 return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
     ext = os.path.splitext(safe.lower())[1]
     media_type = {

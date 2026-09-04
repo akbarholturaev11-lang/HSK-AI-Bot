@@ -10,14 +10,17 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 from app.db.base import Base
+from app.db.models.course_ad import CourseAdCreative
 from app.services.course_ad_service import (
     COURSE_AD_ALLOWED_IMAGE_EXTENSIONS,
     COURSE_AD_ALLOWED_VIDEO_EXTENSIONS,
     COURSE_AD_DEFAULT_MEDIA_TYPE,
+    COURSE_AD_IMAGE_BACKUP_MAX_BYTES,
     COURSE_AD_MEDIA_TYPES,
     CourseAdService,
 )
@@ -126,6 +129,60 @@ class CourseAdPhotoStorageTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(len(ads), 1)
             self.assertEqual(ads[0]["media_type"], "photo")
             self.assertEqual(ads[0]["ad_type"], "app")
+
+    async def test_media_blob_is_deferred_from_default_queries_and_payload(self):
+        data = b"small-photo-backup"
+        async with self.session_maker() as session:
+            service = CourseAdService(session)
+            ad = await service.create_video(
+                title="deferred",
+                media_path=self._write_media("deferred.jpg"),
+                media_type="photo",
+                media_blob=data,
+            )
+            ad_id = ad.id
+            await session.commit()
+            session.expunge_all()
+
+            result = await session.execute(
+                select(CourseAdCreative).where(CourseAdCreative.id == ad_id)
+            )
+            loaded = result.scalar_one()
+            self.assertNotIn("media_blob", loaded.__dict__)
+
+            payload = CourseAdService.payload(loaded)
+            self.assertTrue(payload["media_available"])
+            self.assertTrue(payload["media_backed_up"])
+            self.assertNotIn("media_blob", loaded.__dict__)
+
+    async def test_video_media_blob_is_not_stored_as_db_backup(self):
+        async with self.session_maker() as session:
+            service = CourseAdService(session)
+            ad = await service.create_video(
+                title="video",
+                media_path=self._write_media("no-backup.mp4"),
+                media_type="video",
+                media_blob=b"video-bytes",
+            )
+            await session.commit()
+            self.assertIsNone(ad.media_blob)
+            self.assertIsNone(ad.media_size)
+            self.assertIsNone(ad.media_checksum)
+
+    async def test_large_photo_media_blob_is_not_stored_as_db_backup(self):
+        data = b"x" * (COURSE_AD_IMAGE_BACKUP_MAX_BYTES + 1)
+        async with self.session_maker() as session:
+            service = CourseAdService(session)
+            ad = await service.create_video(
+                title="large photo",
+                media_path=self._write_media("large.jpg"),
+                media_type="photo",
+                media_blob=data,
+            )
+            await session.commit()
+            self.assertIsNone(ad.media_blob)
+            self.assertIsNone(ad.media_size)
+            self.assertIsNone(ad.media_checksum)
 
     async def test_legacy_null_media_type_reads_as_video(self):
         """Ustun keyin qo'shilgan; qiymati yo'q yozuv payloadda "video" bo'ladi.

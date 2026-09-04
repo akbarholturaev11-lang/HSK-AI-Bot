@@ -343,10 +343,13 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
 
         # The creatives have no file on disk; this test is about which types
         # are handed out, not about media storage.
+        async def _always_available(self, ad):
+            return True, False
+
         self.media = patch.object(
             CourseAdService,
             "ensure_media_available",
-            classmethod(lambda cls, ad: (True, False)),
+            _always_available,
         )
         self.media.start()
         self.addCleanup(self.media.stop)
