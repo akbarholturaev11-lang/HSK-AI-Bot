@@ -242,6 +242,7 @@ def _service_response(result: dict[str, Any]) -> JSONResponse:
             "free_feature_limit_reached",
             "access_start_first",
             "ad_authorization_required",
+            "invalid_ad_authorization",
             "course_access_blocked",
         }
         else 404
@@ -645,6 +646,8 @@ def create_android_features_router(
                     level=payload.level,
                     lang=payload.language,
                     skill=payload.skill,
+                    access_ref=payload.access_ref,
+                    ad_supported=payload.ad_supported,
                 )
             return _service_response(result)
         except (DesktopAuthError, DesktopPracticeError) as exc:
@@ -690,6 +693,8 @@ def create_android_features_router(
                         }
                         for item in payload.answers
                     ],
+                    access_ref=payload.access_ref,
+                    ad_supported=payload.ad_supported,
                 )
             return _service_response(result)
         except (DesktopAuthError, DesktopPracticeError) as exc:

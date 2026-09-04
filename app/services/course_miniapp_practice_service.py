@@ -64,6 +64,41 @@ class CourseMiniAppPracticeService:
     def _feature(mode: str) -> str:
         return "placement" if mode == "placement" else "training_test"
 
+    async def _gate(
+        self,
+        user,
+        *,
+        feature: str,
+        ref: str,
+        access_ref: str = "",
+        ad_supported: bool = False,
+    ) -> dict:
+        """Bo'limni ochish qarori: reklama bilan yoki kunlik bepul slot bilan.
+
+        ``ad_supported`` klientning so'zi emas — u faqat SO'RAYDI. Server
+        reklama ko'rilganini o'z yozuvidan tekshiradi
+        (``verify_ad_authorization``), shuning uchun bayroqni yoqib qo'yish
+        bilan hech narsa ochilmaydi.
+
+        Reklama yo'li kunlik slotni SARFLAMAYDI: o'quvchi reklama ko'rgan
+        bo'lsa, bepul urinishi ertaga ham joyida qoladi.
+        """
+        if ad_supported:
+            try:
+                return await self.access.verify_ad_authorization(
+                    user,
+                    feature_key=feature,
+                    access_ref=access_ref,
+                )
+            except ValueError:
+                return {"allowed": False, "error": "invalid_access_ref"}
+        return await self.access.consume_daily_use(
+            user,
+            feature_key=feature,
+            ref=ref,
+            notify_bot=self.bot,
+        )
+
     @staticmethod
     def _choice_question(question: dict, *, level: str, lesson_order: int, index: int) -> dict | None:
         options = question.get("opts") or question.get("options")
@@ -381,6 +416,8 @@ class CourseMiniAppPracticeService:
         level: str,
         lang: str,
         skill: str = "",
+        access_ref: str = "",
+        ad_supported: bool = False,
     ) -> dict:
         mode = str(mode or "").strip().lower()
         skill = str(skill or "").strip().lower()
@@ -397,11 +434,12 @@ class CourseMiniAppPracticeService:
         session_scope = skill or level
         # Bepul userga KUNIGA 1 ta test/training sessiya (har kuni qayta ochiladi).
         # ref orqali bir xil sessiyaning qayta yuklanishi qo'shimcha slot egallamaydi.
-        access = await self.access.consume_daily_use(
+        access = await self._gate(
             user,
-            feature_key=feature,
+            feature=feature,
             ref=f"{mode}:{session_scope}",
-            notify_bot=self.bot,
+            access_ref=access_ref,
+            ad_supported=ad_supported,
         )
         if not access.get("allowed"):
             # `reset_at` — klient "qachon ochiladi" deb ayta olishi uchun.
@@ -449,6 +487,8 @@ class CourseMiniAppPracticeService:
         lang: str,
         skill: str,
         answers: list,
+        access_ref: str = "",
+        ad_supported: bool = False,
     ) -> dict:
         mode = str(mode or "").strip().lower()
         skill = str(skill or "").strip().lower()
@@ -466,12 +506,16 @@ class CourseMiniAppPracticeService:
         if str(session_id or "") != expected_session:
             return {"ok": False, "error": "invalid_practice_session"}
         # Start'da band qilingan kunlik sessiya bilan bir xil ref — idempotent,
-        # ya'ni yakunlash qo'shimcha slot egallamaydi.
-        access = await self.access.consume_daily_use(
+        # ya'ni yakunlash qo'shimcha slot egallamaydi. Sessiya reklama bilan
+        # ochilgan bo'lsa yakunlash ham reklama yo'lidan borishi SHART: aks
+        # holda o'quvchi mashqni tugatib, natijasini "limit tugadi" deb
+        # yo'qotib qo'yardi.
+        access = await self._gate(
             user,
-            feature_key=feature,
+            feature=feature,
             ref=f"{mode}:{session_scope}",
-            notify_bot=self.bot,
+            access_ref=access_ref,
+            ad_supported=ad_supported,
         )
         if not access.get("allowed"):
             return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}

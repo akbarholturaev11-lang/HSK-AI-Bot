@@ -207,6 +207,36 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-03 — Mashq bo'limini reklama bilan ochish (server)
+
+Changed:
+- `CourseMiniAppPracticeService` endi `access_ref` va `ad_supported` qabul
+  qiladi. Yangi `_gate()` bitta joyda qaror qiladi: reklama yo'li
+  (`verify_ad_authorization`) yoki kunlik slot (`consume_daily_use`).
+  Namuna imtihon xizmatidan olindi — yangi qoida o'ylab topilmadi.
+- **Reklama yo'li kunlik slotni SARFLAMAYDI.** O'quvchi reklama ko'rgan
+  bo'lsa, bepul urinishi ertaga ham joyida qoladi.
+- **`complete()` ham shu yo'ldan boradi.** Ilgari u har doim
+  `consume_daily_use` chaqirardi: reklama bilan ochilgan sessiyani
+  yakunlaganda "limit tugadi" chiqib, o'quvchi allaqachon bajargan
+  mashqning natijasini yo'qotardi. Test aynan shuni qadaydi.
+- `ad_supported` klientning SO'ZI emas, faqat so'rovi: reklama ko'rilganini
+  server o'z yozuvidan tekshiradi. Bayroqni qo'lda yoqish hech narsa
+  ochmaydi (test bor).
+- Noto'g'ri `access_ref` endi `ValueError` bo'lib chiqib ketmaydi (500
+  bo'lardi) — oddiy rad javobi qaytadi.
+- `ad_authorization_required` / `invalid_ad_authorization` endi 403
+  (avval desktop adapterida 409 "konflikt" edi).
+
+Files touched:
+- `app/services/course_miniapp_practice_service.py`
+- `app/api/desktop_practice.py` (so'rov modeli + 403 ro'yxati)
+- `app/api/android_features.py` (start/complete ga uzatish)
+- `tests/test_course_miniapp_practice.py` (4 ta yangi test)
+
+Tests: `pytest tests/ -q --ignore=tests/e2e` -> **624 passed, 13584 subtests**
+(3 ta yiqilish avvaldan bor).
+
 ### 2026-09-03 — Android reklama ekrani (Coil + Media3)
 
 Changed:

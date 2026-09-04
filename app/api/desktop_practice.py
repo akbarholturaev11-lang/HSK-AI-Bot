@@ -13,7 +13,7 @@ from typing import Annotated, Callable, Literal, TypeVar
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, StringConstraints, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError
 
 from app.services.course_miniapp_practice_service import (
     PRACTICE_MODES,
@@ -72,6 +72,11 @@ class DesktopPracticeStartRequest(BaseModel):
     level: DesktopPracticeLevel
     language: DesktopPracticeLanguage
     skill: DesktopPracticeSkill = ""
+    # Reklama bilan ochilgan sessiya. `ad_supported` faqat SO'RAYDI —
+    # reklama ko'rilganini server o'z yozuvidan tekshiradi, shuning uchun
+    # bu bayroqni yoqib qo'yish bilan hech narsa ochilmaydi.
+    access_ref: str = Field(default="", max_length=48)
+    ad_supported: bool = False
 
 
 class DesktopPracticeCompleteRequest(DesktopPracticeStartRequest):
@@ -154,7 +159,20 @@ def _service_response(result: dict) -> JSONResponse:
 
     if result.get("ok") is not True:
         code = str(result.get("error") or "desktop_practice_unavailable")
-        status = 403 if code in {"free_feature_limit_reached", "access_start_first"} else 409
+        # Reklama bilan ochish rad etilgani ham kirish rad etilgani — 409
+        # ("konflikt") emas, 403. Klient bularni bir xil ko'rsatadi.
+        status = (
+            403
+            if code
+            in {
+                "free_feature_limit_reached",
+                "access_start_first",
+                "ad_authorization_required",
+                "invalid_ad_authorization",
+                "course_access_blocked",
+            }
+            else 409
+        )
         return JSONResponse(
             status_code=status,
             content={"ok": False, "error": code},
@@ -192,6 +210,8 @@ def create_desktop_practice_router(
                     level=payload.level,
                     lang=payload.language,
                     skill=payload.skill,
+                    access_ref=payload.access_ref,
+                    ad_supported=payload.ad_supported,
                 )
             return _service_response(result)
         except (DesktopAuthError, DesktopPracticeError) as exc:
@@ -239,6 +259,8 @@ def create_desktop_practice_router(
                         }
                         for item in payload.answers
                     ],
+                    access_ref=payload.access_ref,
+                    ad_supported=payload.ad_supported,
                 )
             return _service_response(result)
         except (DesktopAuthError, DesktopPracticeError) as exc:
