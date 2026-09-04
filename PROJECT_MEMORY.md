@@ -1,5 +1,129 @@
 # PROJECT_MEMORY.md
 
+## 0. DAVOM ETISH — keyingi sessiya shu yerdan boshlaydi
+
+> Bu bo'lim 2026-09-04 da yozildi. Ish yarim yo'lda to'xtadi va boshqa chatda
+> davom etadi. Kod bo'yicha hech narsa osilib qolmagan — hammasi
+> `origin/main` da va CI yashil. Osilib qolgani — BITTA QAROR (pastda).
+
+### Kod holati
+
+- `origin/main` = `989ebd1`. Ishchi shox: `claude/android-app-status-review-tv9840`
+  (u ham shu commitda). Yig'ilmagan o'zgarish yo'q.
+- **CI to'liq yashil** (run 48, `989ebd1`): 4 ta statik tekshiruv, unit testlar,
+  lint, assemble debug va release bundle — ikkala flavor uchun ham.
+- Backend testlari: **624 passed, 13584 subtests**.
+  **3 ta yiqilish AVVALDAN bor va bu ishlarga aloqasi yo'q**
+  (`git stash` bilan tasdiqlangan): `test_course_miniapp_foundation.py` da 2 ta,
+  `test_course_mistake_service.py` da 1 ta. Ularni "men buzdim" deb o'ylamang.
+
+### Shu sessiyada bajarilgan 12 ta commit (6f08078 → 989ebd1)
+
+Batafsili pastdagi "10. Recent Important Changes" da, har biri alohida yozuv.
+Qisqacha:
+
+1. Kunlik limit oynasi o'quvchining vaqt mintaqasiga o'tdi
+   (`app/services/course_daily_window.py`).
+2. AI Voice bepul limiti umrbod hisobdan KUNLIK hisobga o'tdi (hamma klientda).
+3. Android `play` / `direct` flavor'lari — Play build'da Telegram/to'lovga
+   yo'naltirish source set darajasida YO'Q.
+4. Limit bloki Mashq va Test markazida ham chiqadi.
+5. Bot xabari: darslarda 90% va 0%, kunlik limitda faqat "tugadi".
+6. Reklama: backend adapteri (kanal filtri), Coil+Media3 bilan ekran,
+   "Reklama bilan davom etish" oqimi to'liq ulandi.
+
+### OSILIB QOLGAN QAROR — foydalanuvchidan so'ralgan, javob kelmagan
+
+Sessiya oxirida Mini App bilan Android interfeysini yonma-yon taqqoslab
+chiqdim (haqiqiy manbadan: `app/static/course-v3.html` va
+`android/app/src/main` — screenshot'dan emas). **Javob: hali 1:1 emas.**
+
+Foydalanuvchiga berilgan savol: **qaysi biridan boshlaymiz?**
+
+**(a) Ranglar — qisqa ish.** 19 ta tokendan faqat 7 tasi aniq mos.
+6 tasi bir-ikki birlikka farq qiladi, 6 tasi Android'da umuman yo'q.
+Fayl: `android/app/src/main/java/com/pomp/hskai/core/design/Color.kt`.
+
+| Mini App (course-v3.html) | Android (Color.kt) |
+|---|---|
+| `--card #FFFFFF` | `PaperRaised #FFFDF8` |
+| `--line #EAE0CC` | `Divider #E9E0CE` |
+| `--ink3 #A89E8E` | `InkDisabled #A79C8C` |
+| `--cinbg #FDEBE7` | `CinnabarSoft #FBE6E3` |
+| `--goldbg #FAF0D3` | `GoldSoft #FBF0D6` |
+| `--jadebg #E3F4EA` | `JadeSoft #E2F3EA` |
+| `--flame #FF9600` | yo'q |
+| `--flamebg #FFEFD6` | yo'q |
+| `--blue #2E86C1` | yo'q |
+| `--bluebg #E8F2FA` | yo'q |
+| `--overlay #171310` | yo'q |
+| `--shadow #E4D9C4` | yo'q |
+
+Aniq mos bo'lganlari: `paper #FDF9F0`, `ink #211D17`, `ink2 #665D50`,
+`cin #E04A40`, `cin2 #B23530`, `gold #E9A916`, `jade #2FA06A`.
+
+**(b) Mashq bo'limi tuzilishi — kattaroq ish.**
+Mini App'da **5 qator**, Android'da **9 qator**.
+
+- Mini App (`renderMashq()`, course-v3.html:3871): Ieroglif lug'ati (amber) ·
+  Ieroglif tanish (ko'k) · Talaffuz mashqi (nefrit) | Test markazi (kinovar) ·
+  Xatolar (kinovar).
+- Android (`PracticeScreen.kt`): lug'at + 5 ta xom mashq turi (characters,
+  listening, pinyin, writing, pronunciation) + HSK test + Daraja aniqlash +
+  Xatolarim.
+- Ya'ni Android xom "skill"larni ro'yxatga chiqargan; Mini App ularni
+  "Ieroglif tanish" va "Talaffuz mashqi" EKRANLARI ichiga yashirgan
+  (`course_v3_recognition.html`, `course_v3_pronunciation.html`) — bu ikki
+  ekran Android'da hali YO'Q.
+
+### Boshqa aniqlangan UI farqlari (hali tuzatilmagan)
+
+- **Ikona plitkalari:** Mini App'da har qator o'z rangida
+  (`.t-amber #F8EFD9/#B07A1E`, `.t-blue #E7F0F8/#2F6F9E`, `.t-jade`, `.t-cin`);
+  Android'da HAMMASI bir xil `GoldSoft`. Ekranda eng ko'zga tashlanadigan farq.
+- **Kurs:** Mini App'dagi "12 / 28 dars" progress chizig'i (`.pwrap`/`.pbar`)
+  Android'da yo'q. Qolgani (daraja pill, seriya/XP chiplari, maqsad halqasi) mos.
+- **AI Voice:** Mini App — bitta qora karta (`.voicebox`), panda, bitta tugma;
+  rol suhbat ichida so'raladi. Android — 5 ta rol kartasi ro'yxati. Boshqa oqim.
+- **Profil:** Mini App'da hero + maqsad halqasi + seriya kalendari + 3 ta yutuq +
+  sozlamalar (til, bildirishnoma). Android'da 4 ta raqamli plitka + obuna +
+  referal + chiqish. Kalendar, yutuqlar va sozlamalar YO'Q.
+- **Shrift:** Mini App ieroglifni SERIF bilan chizadi
+  (`"Songti SC","STSong","Noto Serif SC"`); Android `Type.kt` da hammasi
+  `FontFamily.Default` (Roboto). Har bir ierogifda ko'rinadigan farq.
+- **Onboarding:** `course_v3_onboarding.html` Android'da yo'q.
+
+### Foydali havolalar va vositalar
+
+- Taqqoslash kanvasi (9 ta artboard, farqlar belgilangan):
+  https://claude.ai/code/artifact/715d762e-ca6d-4629-88e1-aa2951d1e03e
+  (bu sessiya undagi izohlarni ko'ra olmaydi — obuna rad etilgan.)
+- **Muhit cheklovi:** `dl.google.com` yopiq -> Android SDK yo'q -> Gradle
+  lokal ishlamaydi. Compose kodini FAQAT CI kompilyatsiya qiladi.
+  Shuning uchun `android/tools/` da 4 ta statik tekshiruv bor va CI'da
+  Gradle'dan OLDIN ishlaydi. Har birini ataylab buzib sinaganman:
+  - `check_interface_fakes.py` — test fake interfeysdan orqada qolsa
+  - `check_named_arguments.py` — nomlangan argument e'lon qilinmagan parametrga tushsa
+  - `check_flavor_parity.py` — ikkala flavor imzosi ajralib ketsa
+  - `check_strings_translated.py` — uz/ru/tg to'liqligi
+  Har o'zgarishdan keyin to'rttasini ham ishlating.
+- Sof (Android'siz) Kotlin mantiqni lokal sinash uchun scratchpad'da
+  standalone `kotlinc` bor edi; sessiya tugagach yo'qoladi — kerak bo'lsa
+  GitHub releases'dan qayta yuklab olinadi.
+- UI ishi uchun skill: `/mnt/skills/public/frontend-design/SKILL.md`
+  (oddiy fayl, `Skill` tool ro'yxatida emas — o'qib, amal qilish mumkin).
+  Ko'p artboard'li dizayn kanvasi uchun esa `design` skill'i.
+
+### Hal qilinmagan biznes qarori (admindan javob kutilmoqda)
+
+Bir xil mashq bo'limiga IKKI XIL qoida qo'llanadi:
+Mini App `/api/v3/practice/daily-gate` ni `lifetime=True` bilan chaqiradi
+(UMRDA 1 marta), `CourseMiniAppPracticeService.start()` esa `lifetime`siz
+(KUNIGA 1 marta) — Desktop va Android shu ikkinchi yo'ldan yuradi.
+Ya'ni bitta o'quvchi Mini App'da umrda bir marta, Android'da har kuni oladi.
+
+---
+
 ## 1. Project Identity
 
 Project name: Unknown / needs inspection  
