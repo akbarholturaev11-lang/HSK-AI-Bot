@@ -426,7 +426,9 @@ private fun UnitHeader(unit: CourseUnit) {
         color = background,
         shape = RoundedCornerShape(14.dp),
         border = if (unit.isLocked) BorderStroke(1.dp, PompColors.Divider) else null,
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, top = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
@@ -473,6 +475,7 @@ private fun PathRow(
     val previousX = row.previousNodeIndex?.let { pathOffset(row.unitIndex, it) }
     val pandaPrompts = stringArrayResource(R.array.course_panda_prompts)
     val pandaPrompt = row.pandaPromptIndex?.let { pandaPrompts[it % pandaPrompts.size] }
+    val chestDescription = stringResource(R.string.course_chest_cd)
 
     Box(
         modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT),
@@ -505,12 +508,13 @@ private fun PathRow(
                         val lesson = item.lesson
                         val clickable = lesson.access == LessonAccess.Open ||
                             lesson.access == LessonAccess.HalfPreview
+                        val lessonDescription = lesson.stateLabel()
                         if (lesson.isCurrent && clickable) CurrentBubble()
                         Box(
                             modifier = Modifier
                                 .size(CURRENT_RING_SIZE)
                                 .then(if (clickable) Modifier.clickable { onLesson(lesson) } else Modifier)
-                                .semantics { contentDescription = lesson.stateLabel() },
+                                .semantics { contentDescription = lessonDescription },
                             contentAlignment = Alignment.Center,
                         ) {
                             LessonNodeFace(lesson)
@@ -523,7 +527,7 @@ private fun PathRow(
                             modifier = Modifier
                                 .size(CURRENT_RING_SIZE)
                                 .then(if (clickable) Modifier.clickable(onClick = onOpenChest) else Modifier)
-                                .semantics { contentDescription = stringResource(R.string.course_chest_cd) },
+                                .semantics { contentDescription = chestDescription },
                             contentAlignment = Alignment.Center,
                         ) {
                             ChestNodeFace(isOpeningChest)
@@ -975,7 +979,9 @@ private fun CourseMap.toRows(): List<CourseRow> = buildList {
     var mascotCount = 0
     units.forEachIndexed { unitIndex, unit ->
         add(CourseRow.Unit(unit))
-        val nodes = unit.lessons.map<PathItem> { PathItem.Lesson(it) }.toMutableList()
+        val nodes = unit.lessons
+            .map { lesson -> PathItem.Lesson(lesson) as PathItem }
+            .toMutableList()
         if (!unit.isLocked && unit.milestone != null) {
             nodes.add(minOf(3, nodes.size), PathItem.Chest)
             nodes.add(PathItem.Boss(unit.milestone))
@@ -986,7 +992,7 @@ private fun CourseMap.toRows(): List<CourseRow> = buildList {
                 !item.lesson.isCurrent &&
                 nodeIndex % 5 == 2
             ) {
-                (mascotCount++ % 4)
+                mascotCount++ % 4
             } else {
                 null
             }
