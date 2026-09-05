@@ -3,6 +3,7 @@ package com.pomp.hskai.data.repository
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.data.api.CourseLessonDto
 import com.pomp.hskai.data.api.CourseMapDto
+import com.pomp.hskai.domain.model.CourseFoundation
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.CourseMilestone
@@ -88,6 +89,15 @@ object CourseMapper {
                     },
                     level = today.level,
                     localDay = today.localDay,
+                )
+            },
+            foundation = dto.foundation?.let { foundation ->
+                CourseFoundation(
+                    id = foundation.id,
+                    version = foundation.version,
+                    required = foundation.required,
+                    completed = foundation.completed,
+                    status = foundation.status,
                 )
             },
         )
