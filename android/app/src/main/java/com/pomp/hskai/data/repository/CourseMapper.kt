@@ -8,6 +8,7 @@ import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.CourseMilestone
 import com.pomp.hskai.domain.model.CourseProgress
+import com.pomp.hskai.domain.model.CourseStudySetup
 import com.pomp.hskai.domain.model.CourseToday
 import com.pomp.hskai.domain.model.CourseUnit
 import com.pomp.hskai.domain.model.CourseUser
@@ -64,6 +65,19 @@ object CourseMapper {
                 referralCode = dto.user.referralCode,
             ),
             notificationsEnabled = dto.notify.enabled,
+            studySetup = dto.studySetup?.let { setup ->
+                CourseStudySetup(
+                    goal = setup.goal,
+                    goalChosen = setup.goalChosen,
+                    dailyMinutes = setup.dailyMinutes,
+                    preferredFocus = setup.preferredFocus,
+                    dailyGoalXp = setup.dailyGoalXp,
+                    dailyGoalIsCustom = setup.dailyGoalIsCustom,
+                    planSize = setup.planSize,
+                    pendingGoal = setup.pendingGoal,
+                    pending = setup.pending,
+                )
+            },
             today = dto.today?.let { today ->
                 CourseToday(
                     goalXp = today.goalXp,
