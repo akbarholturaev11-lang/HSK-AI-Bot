@@ -43,9 +43,9 @@ data class CourseMilestone(
 data class CourseUnit(
     val number: Int,
     val title: String,
-    val isLocked: Boolean,
-    val milestone: CourseMilestone?,
     val lessons: List<CourseLesson>,
+    val isLocked: Boolean = false,
+    val milestone: CourseMilestone? = null,
 )
 
 /** Exact server snapshot for the course reward chest. */
