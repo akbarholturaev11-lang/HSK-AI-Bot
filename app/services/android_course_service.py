@@ -12,6 +12,7 @@ the desktop funnel.
 from __future__ import annotations
 
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.desktop_course_service import (
     DesktopCourseError,
     DesktopCourseService,
@@ -27,6 +28,24 @@ AndroidCourseError = DesktopCourseError
 
 class AndroidCourseService(DesktopCourseService):
     CLIENT_NAMESPACE = "android"
+
+    async def course_map(
+        self,
+        access_token: str,
+        *,
+        timezone_offset_minutes: int | None = None,
+    ) -> dict:
+        """Return Course v3 plus the same server-owned Starter 0 state as Mini App."""
+        result = await super().course_map(
+            access_token,
+            timezone_offset_minutes=timezone_offset_minutes,
+        )
+        context = await self._context(access_token)
+        result["foundation"] = await CourseMiniAppProfileService(
+            self.session
+        ).foundation_status(context.user)
+        await self.session.commit()
+        return result
 
     async def open_reward_chest(self, access_token: str) -> dict:
         """Open the exact same server-owned chest the Mini App opens."""
