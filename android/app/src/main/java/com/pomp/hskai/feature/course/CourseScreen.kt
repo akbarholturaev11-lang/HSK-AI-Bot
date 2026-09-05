@@ -544,7 +544,7 @@ private fun PathRow(
             )
         } else if (row.nodeIndex % 2 == 1) {
             val onLeft = offsetX.value >= 0f
-            PathScenery(
+            MiniAppScenery(
                 seed = row.unitIndex * 5 + row.nodeIndex,
                 small = ((row.unitIndex * 3 + row.nodeIndex) % 3 == 0),
                 modifier = Modifier
@@ -959,29 +959,6 @@ private fun PathPanda(
                     strokeWidth = 1.dp.toPx(),
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun PathScenery(
-    seed: Int,
-    small: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Canvas(modifier = modifier.size(if (small) 42.dp else 52.dp)) {
-        val ink = PompColors.Jade.copy(alpha = 0.38f)
-        val stone = PompColors.Shadow.copy(alpha = 0.70f)
-        if (seed % 2 == 0) {
-            val x = size.width * 0.50f
-            drawLine(ink, Offset(x, size.height * 0.16f), Offset(x, size.height * 0.84f), 3.dp.toPx())
-            drawLine(ink, Offset(x, size.height * 0.36f), Offset(size.width * 0.28f, size.height * 0.22f), 2.dp.toPx())
-            drawLine(ink, Offset(x, size.height * 0.54f), Offset(size.width * 0.72f, size.height * 0.40f), 2.dp.toPx())
-            drawOval(ink, Offset(size.width * 0.14f, size.height * 0.14f), Size(size.width * 0.28f, size.height * 0.14f))
-            drawOval(ink, Offset(size.width * 0.58f, size.height * 0.34f), Size(size.width * 0.28f, size.height * 0.14f))
-        } else {
-            drawOval(stone, Offset(size.width * 0.10f, size.height * 0.54f), Size(size.width * 0.80f, size.height * 0.30f))
-            drawOval(PompColors.Paper.copy(alpha = 0.35f), Offset(size.width * 0.30f, size.height * 0.58f), Size(size.width * 0.26f, size.height * 0.08f))
         }
     }
 }
