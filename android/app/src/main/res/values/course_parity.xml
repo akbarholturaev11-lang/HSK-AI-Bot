@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="course_chest_ready">Sovg‘a tayyor</string>
+    <string name="course_chest_progress">Sovg‘agacha %1$d XP</string>
+    <string name="course_chest_reward">+%1$d XP olindi</string>
+    <string name="course_chest_opening">Ochilmoqda…</string>
+    <string name="course_chest_cd">Sovg‘a sandig‘i</string>
+</resources>
