@@ -98,9 +98,12 @@ data class CourseProgressDto(
     @SerialName("reward_chest") val rewardChest: RewardChestDto? = null,
 )
 
+/** Exact CourseGamificationService reward-chest snapshot used by Mini App. */
 @Serializable
 data class RewardChestDto(
-    @SerialName("available") val available: Boolean = false,
+    @SerialName("ready") val ready: Boolean = false,
+    @SerialName("progress") val progress: Int = 0,
+    @SerialName("next_xp") val nextXp: Int = 0,
 )
 
 @Serializable
