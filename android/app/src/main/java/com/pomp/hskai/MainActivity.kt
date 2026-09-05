@@ -62,6 +62,8 @@ import com.pomp.hskai.feature.course.CourseScreen
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
 import com.pomp.hskai.feature.course.CourseViewModel
+import com.pomp.hskai.feature.onboarding.OnboardingScreen
+import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
 import com.pomp.hskai.feature.profile.ProfileViewModel
@@ -168,6 +170,14 @@ private fun AppRoot(
 
         is AuthState.Authenticated -> {
             val sessionOwner = rememberSessionViewModelStoreOwner()
+            val onboardingViewModel: OnboardingViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = OnboardingViewModel.Factory(
+                    repository = app.onboardingRepository,
+                    language = state.account.language.backendCode,
+                ),
+            )
+            val onboardingState by onboardingViewModel.state.collectAsStateWithLifecycle()
             val courseViewModel: CourseViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
                 factory = CourseViewModel.Factory(app.courseRepository),
@@ -210,6 +220,13 @@ private fun AppRoot(
             var languagePickerOpen by remember { mutableStateOf(false) }
             var dictionaryOpen by remember { mutableStateOf(false) }
             var adRequest by remember { mutableStateOf<AdRequest?>(null) }
+
+            LaunchedEffect(onboardingState.completed) {
+                if (onboardingState.completed) {
+                    courseViewModel.load()
+                    profileViewModel.load()
+                }
+            }
 
             LaunchedEffect(settingsReload) {
                 if (settingsReload > 0) {
@@ -269,9 +286,11 @@ private fun AppRoot(
 
             LaunchedEffect(
                 requestedDestination,
+                onboardingState.completed,
                 courseState.snapshot,
                 courseState.isRefreshing,
             ) {
+                if (!onboardingState.completed) return@LaunchedEffect
                 val request = requestedDestination ?: return@LaunchedEffect
                 val destination = request.destination
                 selectedTab = destination.toTab() ?: selectedTab
@@ -325,7 +344,18 @@ private fun AppRoot(
 
             val launch = openLesson
             val ad = adRequest
-            if (ad != null) {
+            if (onboardingState.loading) {
+                SplashScreen()
+            } else if (!onboardingState.completed) {
+                OnboardingScreen(
+                    language = currentLanguage,
+                    state = onboardingState.ui,
+                    onLevelSelected = onboardingViewModel::selectLevel,
+                    onGoalSelected = onboardingViewModel::selectGoal,
+                    onBack = onboardingViewModel::back,
+                    onNext = onboardingViewModel::next,
+                )
+            } else if (ad != null) {
                 val adViewModel: AdViewModel = viewModel(
                     key = "ad-${ad.accessRef}",
                     viewModelStoreOwner = sessionOwner,
