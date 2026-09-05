@@ -181,6 +181,7 @@ from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.course_pilot_event_repo import CoursePilotEventRepository
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.course_today_service import CourseTodayService
 from app.bot.keyboards.subscription_churn import subscription_expired_offer_keyboard
 from app.bot.keyboards.course import homework_retry_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
@@ -1714,6 +1715,21 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         data["admin_contact"] = admin_contact_url(await BotSettingRepository(session).get(ADMIN_CONTACT_KEY))
         access_policy = await CourseAccessPolicyService(session).get_policy()
         data["access_policy"] = access_policy.public_payload()
+
+        # Bugungi reja. Mantiq CourseTodayService da — bu yerda faqat chaqiruv,
+        # shunda Desktop/Android map javobi ayni blokni kod o'zgartirmasdan
+        # oladi. Reja qurilmasa (xato) blok umuman qo'shilmaydi va ekran
+        # bugungidek qoladi.
+        today = await CourseTodayService(session).payload(
+            user,
+            profile=profile,
+            progress=progress,
+            level=resolved_level,
+            is_paid=is_paid,
+            access_policy=access_policy,
+        )
+        if today:
+            data["today"] = today
 
         _apply_course_v3_access_policy(
             data,

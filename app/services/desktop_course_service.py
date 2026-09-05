@@ -25,10 +25,12 @@ from app.services.course_miniapp_access_service import (
 from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
+from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_notification_service import CourseNotificationService
 from app.services.limit_notification_service import LimitNotificationService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_today_service import CourseTodayService
 from app.services.course_v3_parts import total_parts
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.support_contact_service import get_admin_contact_url
@@ -337,6 +339,23 @@ class DesktopCourseService:
         data["notify"] = {
             "enabled": bool(getattr(profile, "notifications_enabled", True))
         }
+        data["study_setup"] = CourseMiniAppProfileService.study_setup(
+            profile,
+            completed_parts=completed,
+        )
+        # Mini App bilan AYNI blok. Native klientlar uni hozircha chizmaydi,
+        # lekin ma'lumot bir joydan kelgani uchun ikkinchi personalizatsiya
+        # tizimi qurilmaydi (ARCHITECTURE_DECISION.md).
+        today = await CourseTodayService(self.session).payload(
+            user,
+            profile=profile,
+            progress=progress,
+            level=level,
+            is_paid=is_paid,
+            access_policy=await CourseAccessPolicyService(self.session).get_policy(),
+        )
+        if today:
+            data["today"] = today
         data["notifications"] = await CourseNotificationService(self.session).list_for_user(user)
         data["admin_contact"] = await get_admin_contact_url(self.session)
         apply_course_v3_access_policy(

@@ -351,6 +351,17 @@ class VoicePracticeService:
         result = await self.session.execute(query)
         return int(result.scalar_one() or 0)
 
+    async def remaining_free_sessions(self, user) -> int | None:
+        """Bugun yana nechta bepul voice sessiya qolgan. None = limitsiz.
+
+        Kunlik reja "hozir boshlab bo'lmaydigan" vazifani bermasligi kerak,
+        shuning uchun u shu hisobga tayanadi. Limit KUNLIK (umrbod emas).
+        """
+        if self._is_paid(user):
+            return None
+        used = await self._session_count(int(getattr(user, "telegram_id", 0) or 0), today_only=True)
+        return max(0, FREE_TOTAL_SESSIONS - used)
+
     async def user_status(self, telegram_id: int) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
