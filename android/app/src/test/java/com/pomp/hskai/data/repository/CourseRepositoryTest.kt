@@ -377,12 +377,12 @@ class CourseRepositoryTest {
 
     @Test
     fun `reward chest uses bearer transport and returns server reward`() = runTest {
-        var authorization: String? = null
+        var sentAuthorization: String? = null
         val api = object : FakeCourseApi() {
             override suspend fun openRewardChest(
                 authorization: String,
             ): Response<RewardChestOpenResponse> {
-                this@object
+                sentAuthorization = authorization
                 return Response.success(
                     RewardChestOpenResponse(ok = true, rewardType = "xp", rewardValue = 20)
                 )
@@ -391,6 +391,7 @@ class CourseRepositoryTest {
 
         val result = repository(api, FakeCourseMapDao()).openRewardChest()
 
+        assertEquals("Bearer access-1", sentAuthorization)
         assertEquals(20, (result as ApiResult.Success).value.rewardValue)
     }
 
