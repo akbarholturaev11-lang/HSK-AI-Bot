@@ -787,22 +787,17 @@ private fun LessonNodeFace(lesson: CourseLesson) {
         ) {
             Box(contentAlignment = Alignment.Center) {
                 when (content) {
-                    NodeContent.Done -> Icon(
-                        Icons.Filled.Check,
-                        contentDescription = null,
+                    NodeContent.Done -> MiniAppLessonNodeIcon(
+                        kind = CourseNodeIconKind.Check,
                         tint = contentColor,
-                        modifier = Modifier.size(28.dp),
                     )
-                    NodeContent.Locked -> Icon(
-                        Icons.Filled.Lock,
-                        contentDescription = null,
+                    NodeContent.Locked -> MiniAppLessonNodeIcon(
+                        kind = CourseNodeIconKind.Lock,
                         tint = contentColor,
-                        modifier = Modifier.size(22.dp),
                     )
-                    NodeContent.Checkpoint -> Text(
-                        text = "⚑",
-                        style = PompTextStyles.hanziSmall,
-                        color = contentColor,
+                    NodeContent.Checkpoint -> MiniAppLessonNodeIcon(
+                        kind = CourseNodeIconKind.Flag,
+                        tint = contentColor,
                     )
                     NodeContent.Glyph -> Text(
                         text = "学",
@@ -838,7 +833,10 @@ private fun ChestNodeFace(opening: Boolean) {
                         modifier = Modifier.size(26.dp),
                     )
                 } else {
-                    ChestGlyph(Modifier.size(30.dp))
+                    MiniAppLessonNodeIcon(
+                        kind = CourseNodeIconKind.Gift,
+                        tint = PompColors.Gold,
+                    )
                 }
             }
         }
@@ -861,7 +859,10 @@ private fun BossNodeFace() {
             modifier = Modifier.size(NODE_SIZE),
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Text("★", style = MaterialTheme.typography.headlineSmall, color = PompColors.Cinnabar)
+                MiniAppLessonNodeIcon(
+                    kind = CourseNodeIconKind.Star,
+                    tint = PompColors.Cinnabar,
+                )
             }
         }
     }
