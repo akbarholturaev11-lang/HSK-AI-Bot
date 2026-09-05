@@ -50,20 +50,17 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
-import com.pomp.hskai.feature.limit.LimitGate
-import com.pomp.hskai.feature.limit.SectionLimitBlock
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.LessonStatus
+import com.pomp.hskai.feature.limit.LimitGate
+import com.pomp.hskai.feature.limit.SectionLimitBlock
 
 /**
- * The learning path, laid out like the Mini App: a status header, then a
- * winding column of nodes with the current one calling for the next action.
- *
- * Node state is never carried by colour alone: every node also has a glyph and
- * a content description, so the screen still reads correctly without colour
- * vision.
+ * Native rendering of the Mini App course shell. The Mini App is the visual
+ * source of truth: same warm paper, compact top row, dark unit banner and
+ * 64dp path nodes with a 4dp coloured depth layer.
  */
 @Composable
 fun CourseScreen(
@@ -94,7 +91,6 @@ fun CourseScreen(
                 val rows = remember(map) { map.toRows() }
                 val listState = rememberLazyListState()
 
-                // Bring the current node into a useful position on first composition.
                 LaunchedEffect(map.currentLesson?.order) {
                     val index = rows.indexOfFirst {
                         it is CourseRow.Lesson && it.lesson.isCurrent
@@ -119,8 +115,8 @@ fun CourseScreen(
                             .fillMaxWidth()
                             .weight(1f),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                            horizontal = 20.dp,
-                            vertical = 12.dp,
+                            horizontal = 16.dp,
+                            vertical = 8.dp,
                         ),
                     ) {
                         itemsIndexed(rows) { _, row ->
@@ -145,9 +141,7 @@ fun CourseScreen(
     }
 }
 
-/**
- * Level, streak, XP and the daily-goal ring — the Mini App's course header.
- */
+/** Mini App `.htop`: compact level pill + streak + XP + daily goal. */
 @Composable
 private fun CourseHeader(
     map: CourseMap,
@@ -157,24 +151,24 @@ private fun CourseHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(999.dp)) {
+        Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(20.dp)) {
             Row(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     Icons.Filled.Bolt,
                     contentDescription = null,
                     tint = PompColors.Paper,
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(15.dp),
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
                     text = map.level.uppercase(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.labelLarge,
                     color = PompColors.Paper,
                 )
             }
@@ -184,7 +178,7 @@ private fun CourseHeader(
 
         StatChip(
             icon = Icons.Filled.LocalFireDepartment,
-            tint = PompColors.Cinnabar,
+            tint = PompColors.Flame,
             value = map.progress.streak.toString(),
             label = stringResource(R.string.today_streak),
         )
@@ -213,12 +207,12 @@ private fun StatChip(
 ) {
     Surface(
         color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(999.dp),
+        shape = RoundedCornerShape(20.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 7.dp)
+                .padding(horizontal = 12.dp, vertical = 6.dp)
                 .semantics { contentDescription = "$label: $value" },
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -226,17 +220,13 @@ private fun StatChip(
             Spacer(Modifier.width(5.dp))
             Text(
                 text = value,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.labelLarge,
                 color = PompColors.Ink,
             )
         }
     }
 }
 
-/**
- * Progress towards today's XP target. The goal is a personal display setting,
- * so a full ring is encouragement, never an entitlement.
- */
 @Composable
 fun GoalRing(
     dailyXp: Int,
@@ -301,7 +291,7 @@ private fun StaleBanner() {
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 16.dp),
     ) {
         Text(
             text = stringResource(R.string.today_stale),
@@ -312,23 +302,31 @@ private fun StaleBanner() {
     }
 }
 
+/** Mini App `.uban`: dark rounded unit banner, not a floating red title. */
 @Composable
 private fun UnitHeader(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium,
-        color = PompColors.CinnabarDark,
+    Surface(
+        color = PompColors.Ink,
+        shape = RoundedCornerShape(14.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 20.dp, bottom = 4.dp),
-        textAlign = TextAlign.Center,
-    )
+            .padding(top = 8.dp, bottom = 8.dp),
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = PompColors.Paper,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
+            maxLines = 2,
+        )
+    }
 }
 
-/** Horizontal offsets of the winding path, in units of [PATH_SWING]. */
+/** Horizontal offsets mirror the Mini App's alternating path positions. */
 private val PATH_SLOTS = listOf(0f, 0.55f, 0.85f, 0.55f, 0f, -0.55f, -0.85f, -0.55f)
 private val PATH_SWING = 84.dp
-private val NODE_SIZE = 74.dp
+private val NODE_SIZE = 64.dp
+private val CURRENT_RING_SIZE = 76.dp
 
 @Composable
 private fun PathNode(
@@ -348,8 +346,8 @@ private fun PathNode(
         if (lesson.isCurrent && clickable) {
             Surface(
                 color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(999.dp),
-                border = BorderStroke(2.dp, PompColors.Cinnabar),
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(1.dp, PompColors.Cinnabar),
                 modifier = Modifier.offset(x = offsetX),
             ) {
                 Text(
@@ -357,7 +355,7 @@ private fun PathNode(
                     style = MaterialTheme.typography.labelLarge,
                     color = PompColors.CinnabarDark,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
                 )
             }
             Spacer(Modifier.height(6.dp))
@@ -366,8 +364,7 @@ private fun PathNode(
         Box(
             modifier = Modifier
                 .offset(x = offsetX)
-                .size(NODE_SIZE)
-                .clip(CircleShape)
+                .size(CURRENT_RING_SIZE)
                 .then(if (clickable) Modifier.clickable { onLesson(lesson) } else Modifier)
                 .semantics { contentDescription = label },
             contentAlignment = Alignment.Center,
@@ -382,92 +379,125 @@ private fun PathNode(
                 else -> stringResource(R.string.course_part_label, lesson.part)
             },
             style = MaterialTheme.typography.bodyMedium,
-            color = if (clickable) PompColors.Ink else PompColors.InkDisabled,
+            color = if (clickable) PompColors.InkSecondary else PompColors.InkDisabled,
             maxLines = 1,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .offset(x = offsetX)
-                .padding(top = 6.dp),
+                .padding(top = 4.dp),
         )
         Text(
             text = lesson.subtitle,
             style = MaterialTheme.typography.labelSmall,
-            color = PompColors.InkSecondary,
+            color = if (clickable) PompColors.InkSecondary else PompColors.InkDisabled,
             maxLines = 1,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .offset(x = offsetX)
-                .padding(bottom = 10.dp),
+                .padding(bottom = 8.dp),
         )
     }
 }
 
 @Composable
 private fun NodeFace(lesson: CourseLesson) {
-    val ring = if (lesson.isCurrent) PompColors.Cinnabar else null
-    val (background, content) = when {
-        lesson.status == LessonStatus.DONE -> PompColors.Jade to NodeContent.Done
-        lesson.access == LessonAccess.PremiumLocked -> PompColors.Locked to NodeContent.Premium
-        lesson.access == LessonAccess.NotReached -> PompColors.Locked to NodeContent.Locked
-        lesson.isCheckpoint -> PompColors.Gold to NodeContent.Checkpoint
-        else -> PompColors.Cinnabar to NodeContent.Glyph
+    val current = lesson.isCurrent
+    val (background, depth, content, contentColor) = when {
+        lesson.status == LessonStatus.DONE -> Quad(
+            PompColors.Jade,
+            PompColors.NodeDoneDepth,
+            NodeContent.Done,
+            PompColors.Paper,
+        )
+        lesson.access == LessonAccess.PremiumLocked -> Quad(
+            PompColors.Divider,
+            PompColors.NodeLockedDepth,
+            NodeContent.Premium,
+            PompColors.InkDisabled,
+        )
+        lesson.access == LessonAccess.NotReached -> Quad(
+            PompColors.Divider,
+            PompColors.NodeLockedDepth,
+            NodeContent.Locked,
+            PompColors.InkDisabled,
+        )
+        lesson.isCheckpoint -> Quad(
+            PompColors.CinnabarSoft,
+            PompColors.NodeBossDepth,
+            NodeContent.Checkpoint,
+            PompColors.Cinnabar,
+        )
+        else -> Quad(
+            PompColors.Cinnabar,
+            PompColors.CinnabarDark,
+            NodeContent.Glyph,
+            PompColors.Paper,
+        )
     }
 
-    Box(contentAlignment = Alignment.Center) {
-        if (ring != null) {
-            Box(
-                modifier = Modifier
-                    .size(NODE_SIZE)
-                    .background(PompColors.CinnabarSoft, CircleShape),
-            )
+    Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
+        if (current) {
+            Surface(
+                color = androidx.compose.ui.graphics.Color.Transparent,
+                shape = CircleShape,
+                border = BorderStroke(3.dp, PompColors.Cinnabar),
+                modifier = Modifier.size(CURRENT_RING_SIZE),
+            ) {}
         }
+
         Box(
             modifier = Modifier
-                .size(NODE_SIZE - 10.dp)
-                .background(background, CircleShape),
+                .size(NODE_SIZE)
+                .offset(y = 4.dp)
+                .background(depth, CircleShape),
+        )
+        Box(
+            modifier = Modifier
+                .size(NODE_SIZE)
+                .clip(CircleShape)
+                .background(background),
             contentAlignment = Alignment.Center,
         ) {
             when (content) {
                 NodeContent.Done -> Icon(
                     Icons.Filled.Check,
                     contentDescription = null,
-                    tint = PompColors.Paper,
+                    tint = contentColor,
                     modifier = Modifier.size(28.dp),
                 )
 
                 NodeContent.Locked, NodeContent.Premium -> Icon(
                     Icons.Filled.Lock,
                     contentDescription = null,
-                    tint = PompColors.Paper,
+                    tint = contentColor,
                     modifier = Modifier.size(22.dp),
                 )
 
                 NodeContent.Checkpoint -> Text(
                     text = "⚑",
                     style = PompTextStyles.hanziSmall,
-                    color = PompColors.Paper,
+                    color = contentColor,
                 )
 
                 NodeContent.Glyph -> Text(
                     text = lesson.hanziPreview.take(1).ifBlank { lesson.order.toString() },
                     style = PompTextStyles.hanziSmall,
-                    color = PompColors.Paper,
+                    color = contentColor,
                 )
             }
         }
     }
 }
 
+private data class Quad(
+    val background: androidx.compose.ui.graphics.Color,
+    val depth: androidx.compose.ui.graphics.Color,
+    val content: NodeContent,
+    val contentColor: androidx.compose.ui.graphics.Color,
+)
+
 private enum class NodeContent { Done, Locked, Premium, Checkpoint, Glyph }
 
-/**
- * The wide card the Mini App shows for the next textbook lesson that is still
- * closed.
- *
- * It names the section and offers the one way to open it: the Telegram
- * subscription flow. Nothing is bought here, and the card keeps appearing
- * until the server says the learner is paid.
- */
 @Composable
 private fun LockedLessonCard(
     lesson: CourseLesson,
@@ -479,8 +509,6 @@ private fun LockedLessonCard(
         limit = limit,
         modifier = Modifier.padding(vertical = 10.dp),
         reason = lesson.stateLabel(),
-        // A closed textbook lesson is not a daily allowance: nothing reopens
-        // tomorrow, so no reset time is promised.
         resetAt = null,
     )
 }
@@ -525,20 +553,10 @@ private fun CourseLesson.stateLabel(): String = when (access) {
 
 private sealed interface CourseRow {
     data class Unit(val title: String) : CourseRow
-
-    /** [slot] positions the node on the winding path. */
     data class Lesson(val lesson: CourseLesson, val slot: Int) : CourseRow
-
     data class LockedLesson(val lesson: CourseLesson) : CourseRow
 }
 
-/**
- * Flattens the map into path rows.
- *
- * A premium-locked node keeps its place on the path and additionally gets the
- * wide card the Mini App shows, so the learner sees both the shape of the path
- * and a readable reason.
- */
 private fun CourseMap.toRows(): List<CourseRow> = buildList {
     var slot = 0
     units.forEach { unit ->
