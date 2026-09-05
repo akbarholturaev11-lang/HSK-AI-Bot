@@ -43,8 +43,8 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="top"><button class="ix" onclick="goBack()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pbar"><i id="prog"></i></div><span class="pill" id="score">0 ✓</span></div>
   <div class="body" id="body"><div class="loading">…</div></div>
 </div>
-<script defer src="hsk-words.js?v=20260720"></script>
-<script defer src="/course_v3_data/lesson_gate.js?v=20260719"></script>
+<script defer src="hsk-words.js?v=20260905"></script>
+<script defer src="/course_v3_data/lesson_gate.js?v=20260905"></script>
 <script defer src="/course_v3_data/ads.js?v=20260812-5"></script>
 <script defer src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
 <script>
@@ -57,9 +57,9 @@ var SCRIPTS_READY=new Promise(function(res){
 });
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{listen:"Послушать",lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
-  uz:{listen:"Tinglash",lead:"O'xshashlardan to'g'risini toping",done:"to'g'ri",doneSub:"O'xshash ieroglyflarni yaxshi farqlaysiz!",again:"Yana mashq",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga",adCont:"Reklama bilan davom etish",adLimitSub:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
-  tj:{listen:"Гӯш кардан",lead:"Аз байни монандҳо дурустро ёбед",done:"дуруст",doneSub:"Шумо иероглифҳои монандро хуб фарқ мекунед!",again:"Боз",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт",adCont:"Идома бо реклама",adLimitSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
+var L={ru:{review:"повтор",listen:"Послушать",lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
+  uz:{review:"takror",listen:"Tinglash",lead:"O'xshashlardan to'g'risini toping",done:"to'g'ri",doneSub:"O'xshash ieroglyflarni yaxshi farqlaysiz!",again:"Yana mashq",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga",adCont:"Reklama bilan davom etish",adLimitSub:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
+  tj:{review:"такрор",listen:"Гӯш кардан",lead:"Аз байни монандҳо дурустро ёбед",done:"дуруст",doneSub:"Шумо иероглифҳои монандро хуб фарқ мекунед!",again:"Боз",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт",adCont:"Идома бо реклама",adLimitSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function initData(){return (tg&&tg.initData)?tg.initData:""}
@@ -86,6 +86,7 @@ function runAdGate(){
 /* "Reklama bilan davom etish" bosilganda: slot band qilib, boshlang'ich
    reklamani ko'rsatib, sessiyani ochamiz (reklama xato bersa ham davom). */
 function startAdSupported(){
+  resetPlan();
   runAdGate().then(function(o){
     if(o.status===403){showLimit(false);return}
     AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
@@ -115,6 +116,7 @@ function gateStart(){
 }
 /* "Yana mashq" — bu yangi sessiya, yangi slot so'raydi (bepulga 1/kun). */
 function replay(){
+  resetPlan();
   runGate("replay:"+Date.now()).then(function(o){
     if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
     AD_SESSION=false;start();
@@ -133,22 +135,55 @@ function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
 var TOTAL=10,pool=[],quiz=[],qi=0,score=0,answered=false;
-/* Sessiyadagi xato ieroglifllar. Sessiya oxirida serverga yuboriladi, shunda
-   ular "Xatolarim" bo'limiga va kunlik rejaga tushadi. Server FAQAT ieroglifni
-   qabul qiladi — savol va to'g'ri javobni o'z lug'atidan quradi. */
-var WRONG=[];
+/* Sessiya natijalari. Xatolar "Xatolarim" bo'limiga, natijalar esa interval
+   takroriga yoziladi (to'g'ri javob so'zni siyraklashtiradi, xato uni bugunga
+   qaytaradi). Server FAQAT ieroglifni qabul qiladi — savol va to'g'ri javobni
+   o'z lug'atidan quradi, ya'ni soxta natija yozib bo'lmaydi. */
+var WRONG=[],RESULTS=[];
 function reportWrong(){
-  if(!WRONG.length)return;
-  var body={feature:"recognition",level:LV||"hsk1",language:LANG,mistakes:WRONG.slice(0,20),initData:initData()};
-  WRONG=[];
+  if(!WRONG.length&&!RESULTS.length)return;
+  var body={feature:"recognition",level:LV||"hsk1",language:LANG,initData:initData()};
+  if(WRONG.length)body.mistakes=WRONG.slice(0,20);
+  if(RESULTS.length)body.results=RESULTS.slice(0,30);
+  WRONG=[];RESULTS=[];
   try{
     fetch("/api/v3/practice/report",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify(body),keepalive:true}).catch(function(){});
   }catch(e){}
 }
-/* Mashqni yarmida tashlab ketsa ham xatolar yo'qolmasin. */
+/* Mashqni yarmida tashlab ketsa ham natijalar yo'qolmasin. */
 try{window.addEventListener("pagehide",reportWrong);
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")reportWrong()})}catch(e){}
+
+/* ---------- Moslashuvchi so'z tanlash ----------
+   Server takrorga tayyor va yangi so'zlarni tartib bilan beradi. U
+   MASLAHATCHI: javob kelmasa yoki bo'sh bo'lsa mashq bugungidek, o'z
+   poolidan ishlaydi. */
+var PLAN=null;
+function fetchPlan(){
+  var idt=initData();
+  if(!idt)return Promise.resolve(null);
+  var body={feature:"recognition",limit:TOTAL,initData:idt};
+  var call=fetch("/api/v3/practice/words",{method:"POST",
+    headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(j){return (j&&j.ok&&j.words&&j.words.length)?j.words:null})
+    .catch(function(){return null});
+  /* Sekin javob mashqni ushlab turmasin. */
+  var timeout=new Promise(function(res){setTimeout(function(){res(null)},2500)});
+  return Promise.race([call,timeout]);
+}
+function planReady(){if(!PLAN)PLAN=fetchPlan();return PLAN}
+function resetPlan(){PLAN=null}
+/* `WORDS` — top-level `const`, `window` da emas. */
+var BY_H=null;
+function wordByHanzi(h){
+  if(!BY_H){
+    BY_H={};
+    (typeof WORDS!=="undefined"?WORDS:[]).forEach(function(w){if(!BY_H[w.h])BY_H[w.h]=w});
+  }
+  return BY_H[h];
+}
 function buildPool(){
   // single-character words make the cleanest "similar character" tiles.
   // Pool tartibi: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR);
@@ -171,18 +206,43 @@ function buildPool(){
   if(pool.length<8)pool=all;
   if(pool.length<8)pool=(typeof WORDS!=="undefined"?WORDS:[]);
 }
-function makeQuiz(){
-  quiz=[];var used={};var tries=0;
-  while(quiz.length<Math.min(TOTAL,pool.length)&&tries<400){
-    tries++;
-    var t=pool[Math.floor(Math.random()*pool.length)];
-    if(used[t.h])continue;used[t.h]=1;
+/* Server bergan ro'yxatni mashq nishonlariga aylantiradi.
+   Nishon lokal lug'atda bo'lishi va BIR BELGILI bo'lishi shart, aks holda
+   plitkalar buziladi. Nishon poolda bo'lmasa — POOLGA QO'SHILADI, aks holda
+   `same` qisqarib nishonning o'zi tushib qolardi. */
+function planTargets(plan){
+  if(!plan||!plan.length)return [];
+  var out=[],seen={};
+  plan.forEach(function(item){
+    var h=String((item&&item.zh)||"");
+    if(!h||seen[h]||Array.from(h).length!==1)return;
+    var w=wordByHanzi(h);
+    if(!w)return;
+    seen[h]=1;
+    if(!pool.some(function(p){return p.h===h}))pool.push(w);
+    out.push({word:w,review:item.kind==="review"});
+  });
+  return out;
+}
+function makeQuiz(targets){
+  quiz=[];var used={};
+  /* Server ro'yxati bo'lmasa (yoki qisqa bo'lsa) qolgani tasodifiy
+     to'ldiriladi — mashq bugungidek ishlayveradi. */
+  var picks=(targets||[]).slice(0,TOTAL);
+  picks.forEach(function(p){used[p.word.h]=1});
+  var rest=shuffle(pool.filter(function(w){return !used[w.h]}));
+  while(picks.length<Math.min(TOTAL,pool.length)&&rest.length){
+    var w=rest.shift();used[w.h]=1;picks.push({word:w,review:false});
+  }
+  picks.forEach(function(p){
+    var t=p.word;
     var same=pool.filter(function(w){return w.h!==t.h});
     var distr=shuffle(same.slice()).slice(0,3);
-    if(distr.length<3)continue;
+    /* Chalg'ituvchi yetmasa faqat SHU nishon tashlanadi, butun mashq emas. */
+    if(distr.length<3)return;
     var opts=shuffle([t].concat(distr)).map(function(w){return {h:w.h,p:w.p,ok:w.h===t.h}});
-    quiz.push({py:t.p,mn:tr(t.m),zh:t.h,opts:opts});
-  }
+    quiz.push({py:t.p,mn:tr(t.m),zh:t.h,opts:opts,review:!!p.review});
+  });
 }
 function render(){
   answered=false;
@@ -194,7 +254,10 @@ function render(){
   }
   document.getElementById("prog").style.width=Math.round(qi/quiz.length*100)+"%";
   var q=quiz[qi];
-  document.getElementById("body").innerHTML='<div class="lead">'+L.lead+'</div>'
+  /* Takror so'zda kichik belgi — o'quvchi moslashuvni KO'RSIN. Yangi
+     so'zda hech narsa ko'rsatilmaydi. */
+  var mark=q.review?' <span class="pill" style="margin-left:6px">'+L.review+'</span>':'';
+  document.getElementById("body").innerHTML='<div class="lead">'+L.lead+mark+'</div>'
     +'<div class="target"><div class="py">'+q.py+'</div><div class="mn">'+q.mn+'</div><button class="au" onclick="speak(\''+q.zh+'\')"><i class="ti ti-volume"></i>'+L.listen+'</button></div>'
     +'<div class="grid">'+q.opts.map(function(o,k){return '<button class="tile" data-k="'+k+'" onclick="pick('+k+')"><span class="h han">'+o.h+'</span><span class="p">'+o.p+'</span></button>'}).join("")+'</div>';
 }
@@ -204,6 +267,7 @@ function pick(k){
   tiles.forEach(function(t){t.classList.add("reveal");t.style.pointerEvents="none";if(q.opts[+t.dataset.k].ok)t.classList.add("ok")});
   var ok=q.opts[k].ok;if(!ok)tiles[k].classList.add("bad");
   if(!ok)WRONG.push({hanzi:q.zh,selected:String(q.opts[k].h||"").slice(0,64)});
+  RESULTS.push({hanzi:q.zh,correct:!!ok});
   if(ok){score++;document.getElementById("score").textContent=score+" ✓"}
   beep(ok?[660,880]:[200,150]);haptic(ok);
   setTimeout(function(){qi++;render()},1050);
@@ -216,7 +280,8 @@ function finish(){
   document.getElementById("body").innerHTML='<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><p>'+L.doneSub+'</p><button onclick="replay()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';
   beep([523,659,784,1046]);haptic(true);
 }
-function start(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}makeQuiz();qi=0;score=0;document.getElementById("score").textContent="0 ✓";render()})}
+function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}/* Server ro'yxati faqat pool yetarli bo'lganda ishlatiladi: 4 tadan kam bo'lsa chalg'ituvchi topilmaydi. */
+var targets=pool.length>=4?planTargets(res&&res[2]):[];makeQuiz(targets);qi=0;score=0;document.getElementById("score").textContent="0 ✓";render()})}
 gateStart();
 </script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">

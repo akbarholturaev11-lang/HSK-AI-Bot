@@ -1312,6 +1312,121 @@ def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
     assert runtime_errors == []
 
 
+def _mock_drill_environment(page, *, plan=None, plan_status=200, level="hsk1", completed=40):
+    """Mashq sahifasi uchun umumiy stublar: daraja, gate, TTS va reja."""
+    posted = {"words": [], "report": []}
+
+    # initData bo'sh bo'lsa sahifa serverdan so'z SO'RAMAYDI (Telegram'dan
+    # tashqarida ochilish yo'li), shuning uchun stub majburiy.
+    mock_telegram_ready(page)
+    page.route(
+        re.compile(r".*/api/voice-practice/me.*"),
+        lambda route: json_response(route, {"level": level, "completed_lessons": completed}),
+    )
+    page.route(
+        re.compile(r".*/api/v3/practice/(daily|ad)-gate$"),
+        lambda route: json_response(route, {"ok": True, "allowed": True}),
+    )
+    page.route(
+        re.compile(r".*/api/v3/tts.*"),
+        lambda route: route.fulfill(status=204, body=""),
+    )
+
+    def words(route):
+        posted["words"].append(json.loads(route.request.post_data))
+        if plan_status != 200:
+            route.fulfill(status=plan_status, content_type="application/json", body="{}")
+            return
+        json_response(
+            route,
+            {"ok": True, "skill": "recognition", "day": "2026-09-05", "words": plan or []},
+        )
+
+    def report(route):
+        posted["report"].append(json.loads(route.request.post_data))
+        json_response(route, {"ok": True, "recorded": 0, "scheduled": 0})
+
+    page.route(re.compile(r".*/api/v3/practice/words$"), words)
+    page.route(re.compile(r".*/api/v3/practice/report$"), report)
+    return posted
+
+
+def test_recognition_drill_uses_the_words_the_server_selected(page):
+    """Mashq endi tasodifiy emas: server takrorga tayyor so'zlarni beradi.
+
+    Ilgari `pool[Math.floor(Math.random()*pool.length)]` edi, ya'ni o'quvchi
+    bir ieroglifni o'nlab marta xato qilsa ham u qaytmasdi.
+    """
+    plan = [
+        {"zh": "你", "kind": "review", "box": 0},
+        {"zh": "好", "kind": "new", "box": 0},
+        {"zh": "我", "kind": "review", "box": 1},
+    ]
+    posted = _mock_drill_environment(page, plan=plan)
+
+    page.goto(
+        app_url("/course_v3_recognition.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+
+    assert posted["words"], "reja so'ralmadi"
+    assert posted["words"][0]["feature"] == "recognition"
+
+    state = page.evaluate(
+        "() => ({order: quiz.slice(0,3).map(q => q.zh), reviews: quiz.filter(q => q.review).length})"
+    )
+    assert state["order"] == ["你", "好", "我"], state
+    assert state["reviews"] == 2
+
+    # Takror so'zda belgi ko'rinadi — o'quvchi moslashuvni KO'RADI.
+    expect(page.locator(".lead .pill")).to_contain_text("takror")
+
+
+def test_recognition_drill_falls_back_when_the_server_cannot_choose(page):
+    """Server yiqilsa mashq baribir to'liq ishlaydi."""
+    _mock_drill_environment(page, plan_status=500)
+
+    page.goto(
+        app_url("/course_v3_recognition.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+
+    assert page.evaluate("() => quiz.length") == 10
+    expect(page.locator(".tile")).to_have_count(4)
+    expect(page.locator(".lead .pill")).to_have_count(0)
+
+
+def test_recognition_drill_reports_every_answer_not_only_mistakes(page):
+    """Interval takrori TO'G'RI javoblarni ham biladi — ular so'zni
+    siyraklashtiradi. Ilgari faqat xatolar yuborilardi."""
+    plan = [{"zh": "你", "kind": "new", "box": 0}, {"zh": "好", "kind": "new", "box": 0}]
+    posted = _mock_drill_environment(page, plan=plan)
+
+    page.goto(
+        app_url("/course_v3_recognition.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+
+    # Har savolda to'g'ri variantni bosamiz.
+    for _ in range(10):
+        page.evaluate(
+            """() => {
+                const q = quiz[qi];
+                if (!q) return;
+                pick(q.opts.findIndex(o => o.ok));
+            }"""
+        )
+        page.wait_for_timeout(1100)
+
+    page.wait_for_timeout(300)
+    assert posted["report"], "natija yuborilmadi"
+    body = posted["report"][-1]
+    assert body["feature"] == "recognition"
+    assert len(body["results"]) == 10
+    assert all(item["correct"] for item in body["results"])
+    assert "mistakes" not in body
+
+
 def test_course_v3_support_pages_render_real_static_data(page):
     # Yodlash bo'limi usul tanlanmagan bo'lsa avval "Qaysi usul?" so'raydi va
     # o'sha qadamda belgi ko'rinmaydi. Tanlov saqlangan (qaytgan) user'ni taqlid
