@@ -35,9 +35,16 @@ data class CourseLesson(
     val isCurrent: Boolean get() = status == LessonStatus.CURRENT
 }
 
+data class CourseMilestone(
+    val title: String,
+    val status: String,
+)
+
 data class CourseUnit(
     val number: Int,
     val title: String,
+    val isLocked: Boolean,
+    val milestone: CourseMilestone?,
     val lessons: List<CourseLesson>,
 )
 
