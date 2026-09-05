@@ -39,14 +39,15 @@ class StudySetupViewModel(
             _state.update { it.copy(visible = false, setup = server, error = null) }
             return
         }
-        if (dismissedForSession || _state.value.saving) {
+        val current = _state.value
+        if (dismissedForSession || current.saving) {
             _state.update { it.copy(setup = server) }
             return
         }
-        val stage = if (server.pendingGoal || !server.goalChosen) {
-            StudySetupStage.GOAL
-        } else {
-            StudySetupStage.TIME
+        val stage = when {
+            server.pendingGoal || !server.goalChosen -> StudySetupStage.GOAL
+            current.visible && current.stage == StudySetupStage.FOCUS -> StudySetupStage.FOCUS
+            else -> StudySetupStage.TIME
         }
         _state.update {
             it.copy(
