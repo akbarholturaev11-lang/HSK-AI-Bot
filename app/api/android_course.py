@@ -22,7 +22,7 @@ from typing import Callable, Literal
 
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.api.desktop_course import (
     DesktopCourseCompleteRequest,
@@ -82,6 +82,34 @@ class AndroidOnboardingRequest(BaseModel):
         le=MAX_TZ_OFFSET_MINUTES,
     )
     activation_variant: str | None = Field(default="direct_start_v1", max_length=32)
+
+
+class AndroidStudyPreferencesRequest(BaseModel):
+    """One progressive-personalization answer, matching Mini App preferences."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    goal: Literal[
+        "hsk_exam",
+        "study_china",
+        "work_china",
+        "daily_communication",
+        "travel",
+    ] | None = None
+    daily_minutes: Literal[5, 10, 15, 20, 30] | None = None
+    preferred_focus: Literal[
+        "speaking",
+        "listening",
+        "vocabulary",
+        "grammar",
+        "none",
+    ] | None = None
+
+    @model_validator(mode="after")
+    def _at_least_one_change(self):
+        if self.goal is None and self.daily_minutes is None and self.preferred_focus is None:
+            raise ValueError("at least one study preference is required")
+        return self
 
 
 def _unavailable() -> JSONResponse:
@@ -304,6 +332,24 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android reward chest failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/preferences/study")
+    async def android_study_preferences(request: Request):
+        try:
+            payload = await validated_course_payload(request, AndroidStudyPreferencesRequest)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).set_study_preferences(
+                    bearer_access_token(request),
+                    goal=payload.goal,
+                    daily_minutes=payload.daily_minutes,
+                    preferred_focus=payload.preferred_focus,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android study preferences update failed")
             return _unavailable()
 
     @router.post("/api/v3/android/preferences/language")
