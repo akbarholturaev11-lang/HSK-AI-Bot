@@ -84,7 +84,10 @@ var P=new URLSearchParams(location.search||"");
 var LANG=(P.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
 var FOCUS=P.get("char")||"";
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
-var DATA=window.MEMO_DATA||{},BASE=window.MEMO_BASE||{},UI=window.MEMO_UI||{};
+/* memo.js `defer` bilan yuklanadi — bu inline skript undan OLDIN ishlaydi,
+   shuning uchun global data bu yerda hali bo'sh. To'ldirish boot() da,
+   SCRIPTS_READY hal bo'lgach (pastda `loadData()`). */
+var DATA={},BASE={},UI={};
 
 function t(o){return !o?"":(typeof o==="string"?o:(o[LANG]||o.ru||o.uz||""))}
 function goBack(){
@@ -150,7 +153,8 @@ function getPref(){try{return localStorage.getItem("hsk_memo_pref")||""}catch(e)
 function setPref(v){try{localStorage.setItem("hsk_memo_pref",v)}catch(e){}}
 
 /* ---- deck ---- */
-var KEYS=Object.keys(DATA),deck=[],DI=0;
+var KEYS=[],deck=[],DI=0;
+function loadData(){DATA=window.MEMO_DATA||{};BASE=window.MEMO_BASE||{};UI=window.MEMO_UI||{};KEYS=Object.keys(DATA)}
 function buildDeck(){
   /* Tartib: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR); 2) yetmasa
      quyi levellar (to'liq o'rganilgan); 3) HSK1 boshida yaqin keyingi darslar;
@@ -378,6 +382,7 @@ function nextChar(){DI++;startChar()}
 
 /* boot */
 function boot(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
+  loadData();
   if(!KEYS.length){B.innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
   buildDeck();DI=0;startChar();
 })}

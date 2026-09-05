@@ -726,6 +726,31 @@ Follow-up:
 - Grammatika drilli TAKLIF QILINMAYDI: savol banki uni qoplay olmaydi
   (HSK1, 30-qism: 4/10). Grammatika `mistake_review` orqali ishlanadi.
 - Android/Desktop `today` blokini oladi, lekin hali chizmaydi.
+### 2026-09-05 — Yodlash bo'limi tuzatildi (`defer` + parse paytida ushlangan data)
+
+Changed:
+- `course_v3_memorize.html`: `DATA` / `BASE` / `UI` / `KEYS` endi parse paytida emas,
+  `boot()` ichida `SCRIPTS_READY` hal bo'lgandan keyin `loadData()` orqali to'ldiriladi.
+
+Why:
+- 2026-08-16 dagi render-blocking optimizatsiyada `memo.js` `defer` bo'ldi, lekin inline
+  skript hamon `var DATA=window.MEMO_DATA||{}` ni parse paytida o'qirdi. `defer` skript
+  esa parse tugagach ishlaydi — natijada `DATA={}`, `KEYS.length===0` va bo'lim har doim
+  "Ma'lumot yuklanmadi" ko'rsatardi. Ya'ni Yodlash bo'limi 08-16 dan beri butunlay ochilmagan.
+
+Files touched:
+- `app/static/course_v3_memorize.html`
+
+Risk:
+- Faqat frontend yuklash tartibi. Deck tuzilishi, mastery (`hsk_memo`), `daily-gate`/`ad-gate`
+  server limitlari, obuna/to'lov/access logikasi tegilmadi.
+
+Prevention:
+- Bu sahifalarda `defer` skript bergan global (`MEMO_*`, `HSK_CHAR_GATE`, `CourseAds`,
+  `HSK_WORDS`) parse paytida MAVJUD EMAS — uni faqat funksiya ichida yoki
+  `SCRIPTS_READY.then(...)` dan keyin o'qing, top-level `var X=window.Y` bilan emas.
+- Regressiya qopqoni: `tests/e2e/test_miniapp_smoke.py::test_course_v3_support_pages_render_real_static_data`
+  ("1/8" — deck 8 kartadan qurilgani).
 
 ### 2026-09-04 — Android Test markazi Mini App bilan tenglashtirildi (dvigatel + ko'rinish)
 
