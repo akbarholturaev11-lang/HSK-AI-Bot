@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +29,6 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseFoundation
-import androidx.compose.ui.res.stringResource
 
 /** Mini App `.foundation-entry`, rendered from the same server-owned foundation state. */
 @Composable
@@ -39,7 +40,7 @@ internal fun FoundationEntry(
     Surface(
         color = PompColors.PaperRaised,
         shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Cinnabar.copy(alpha = 0.25f)),
+        border = BorderStroke(1.dp, Color(0xFFC2403A).copy(alpha = 0.25f)),
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 18.dp),
@@ -48,7 +49,7 @@ internal fun FoundationEntry(
             modifier = Modifier.background(
                 Brush.linearGradient(
                     listOf(
-                        PompColors.CinnabarSoft.copy(alpha = 0.34f),
+                        Color(0xFFFFF8F1),
                         PompColors.PaperRaised,
                     ),
                 ),
