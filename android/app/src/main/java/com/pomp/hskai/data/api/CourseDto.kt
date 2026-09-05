@@ -63,7 +63,15 @@ data class CourseTodayTaskDto(
 data class CourseUnitDto(
     @SerialName("no") val number: Int = 0,
     @SerialName("title") val title: LocalizedText = LocalizedText(),
+    @SerialName("status") val status: String? = null,
+    @SerialName("milestone") val milestone: CourseMilestoneDto? = null,
     @SerialName("lessons") val lessons: List<CourseLessonDto> = emptyList(),
+)
+
+@Serializable
+data class CourseMilestoneDto(
+    @SerialName("title") val title: LocalizedText = LocalizedText(),
+    @SerialName("status") val status: String = "locked",
 )
 
 @Serializable
