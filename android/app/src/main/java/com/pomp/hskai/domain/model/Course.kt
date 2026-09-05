@@ -41,6 +41,13 @@ data class CourseUnit(
     val lessons: List<CourseLesson>,
 )
 
+/** Exact server snapshot for the course reward chest. */
+data class RewardChest(
+    val ready: Boolean,
+    val progress: Int,
+    val nextXp: Int,
+)
+
 data class CourseProgress(
     val completedLessons: Int,
     val xp: Int,
@@ -52,8 +59,10 @@ data class CourseProgress(
     val weekActivityDates: List<String>,
     val localDate: String?,
     val weekStart: String?,
-    val hasRewardChest: Boolean,
-)
+    val rewardChest: RewardChest?,
+) {
+    val hasRewardChest: Boolean get() = rewardChest?.ready == true
+}
 
 data class CourseUser(
     val name: String,
