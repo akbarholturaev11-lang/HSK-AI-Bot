@@ -89,6 +89,22 @@ data class CourseFoundation(
     val mustComeFirst: Boolean get() = required && !completed
 }
 
+/**
+ * Server-owned progressive-personalization state.
+ * `pending` becomes true only after the learner has completed at least one part.
+ */
+data class CourseStudySetup(
+    val goal: String,
+    val goalChosen: Boolean,
+    val dailyMinutes: Int,
+    val preferredFocus: String?,
+    val dailyGoalXp: Int,
+    val dailyGoalIsCustom: Boolean,
+    val planSize: Int,
+    val pendingGoal: Boolean,
+    val pending: Boolean,
+)
+
 /** Server-owned daily-plan access state. Android only renders it. */
 enum class TodayTaskAccess { OPEN, AD, LOCKED }
 
@@ -120,6 +136,7 @@ data class CourseMap(
     val progress: CourseProgress,
     val user: CourseUser,
     val notificationsEnabled: Boolean,
+    val studySetup: CourseStudySetup? = null,
     val today: CourseToday? = null,
     val foundation: CourseFoundation? = null,
 ) {
