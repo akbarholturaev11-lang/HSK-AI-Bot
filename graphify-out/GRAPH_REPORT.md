@@ -1,16 +1,16 @@
 # Graph Report - HSK AI bot  (2026-09-06)
 
 ## Corpus Check
-- 1118 files · ~5,647,983 words
+- 1118 files · ~5,646,882 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8806 nodes · 26909 edges · 368 communities (302 shown, 66 thin omitted)
+- 8806 nodes · 26909 edges · 363 communities (297 shown, 66 thin omitted)
 - Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 3071 edges (avg confidence: 0.63)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1644f13c`
+- Built from commit: `37ad1f4f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -99,7 +99,6 @@
 - [[_COMMUNITY_Community 91|Community 91]]
 - [[_COMMUNITY_Community 92|Community 92]]
 - [[_COMMUNITY_Community 93|Community 93]]
-- [[_COMMUNITY_Community 94|Community 94]]
 - [[_COMMUNITY_Community 95|Community 95]]
 - [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 97|Community 97]]
@@ -191,7 +190,6 @@
 - [[_COMMUNITY_Community 236|Community 236]]
 - [[_COMMUNITY_Community 237|Community 237]]
 - [[_COMMUNITY_Community 238|Community 238]]
-- [[_COMMUNITY_Community 239|Community 239]]
 - [[_COMMUNITY_Community 240|Community 240]]
 - [[_COMMUNITY_Community 241|Community 241]]
 - [[_COMMUNITY_Community 242|Community 242]]
@@ -248,7 +246,6 @@
 - [[_COMMUNITY_Community 296|Community 296]]
 - [[_COMMUNITY_Community 297|Community 297]]
 - [[_COMMUNITY_Community 298|Community 298]]
-- [[_COMMUNITY_Community 300|Community 300]]
 - [[_COMMUNITY_Community 301|Community 301]]
 - [[_COMMUNITY_Community 302|Community 302]]
 - [[_COMMUNITY_Community 303|Community 303]]
@@ -258,7 +255,6 @@
 - [[_COMMUNITY_Community 311|Community 311]]
 - [[_COMMUNITY_Community 312|Community 312]]
 - [[_COMMUNITY_Community 313|Community 313]]
-- [[_COMMUNITY_Community 314|Community 314]]
 - [[_COMMUNITY_Community 315|Community 315]]
 - [[_COMMUNITY_Community 317|Community 317]]
 - [[_COMMUNITY_Community 318|Community 318]]
@@ -273,7 +269,6 @@
 - [[_COMMUNITY_Community 327|Community 327]]
 - [[_COMMUNITY_Community 328|Community 328]]
 - [[_COMMUNITY_Community 329|Community 329]]
-- [[_COMMUNITY_Community 330|Community 330]]
 - [[_COMMUNITY_Community 331|Community 331]]
 - [[_COMMUNITY_Community 332|Community 332]]
 - [[_COMMUNITY_Community 333|Community 333]]
@@ -337,7 +332,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (368 total, 66 thin omitted)
+## Communities (363 total, 66 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.01
@@ -361,7 +356,7 @@ Nodes (37): Json, CourseLesson, apply_hsk3_pdf_materials(), _context_grammar_not
 
 ### Community 6 - "Community 6"
 Cohesion: 0.08
-Nodes (88): Entry, F, state, Result, access_token(), api_url(), authenticated_bootstrap(), authenticated_get_json() (+80 more)
+Nodes (90): Entry, F, state, Result, access_token(), api_url(), authenticated_bootstrap(), authenticated_get_json() (+82 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.05
@@ -372,8 +367,8 @@ Cohesion: 0.13
 Nodes (47): _append_basic_grammar_item(), _append_hsk4_grammar_item(), _append_text_line(), _block_by_no(), _block_grammar_items(), _block_label(), _block_words(), _detail_label() (+39 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.10
-Nodes (53): _admin_access_left(), admin_back_keyboard(), admin_broadcast_handler(), admin_broadcast_info(), admin_channel_add_callback(), admin_deleteuser_handler(), admin_deleteuser_info(), admin_deleteuser_waiting_id_handler() (+45 more)
+Cohesion: 0.09
+Nodes (58): _admin_access_left(), admin_back_keyboard(), admin_broadcast_handler(), admin_broadcast_info(), admin_channel_add_callback(), admin_deleteuser_handler(), admin_deleteuser_info(), admin_deleteuser_waiting_id_handler() (+50 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.13
@@ -388,8 +383,8 @@ Cohesion: 0.13
 Nodes (53): _actual_user_languages(), _ad_button_prompt_text(), admin_ads_panel(), _admin_ids(), ads_active_policy(), ads_button_none(), ads_button_text_default(), ads_cancel() (+45 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.04
-Nodes (48): CommandObject, OnboardingStates, profile_menu_qa(), _course_photo_responder(), _course_promo_photo_path(), mode_qa_handler(), _send_course_miniapp_entry_block(), show_free_qa_level_choice() (+40 more)
+Cohesion: 0.05
+Nodes (43): CommandObject, OnboardingStates, profile_menu_qa(), _course_photo_responder(), _course_promo_photo_path(), mode_qa_handler(), _send_course_miniapp_entry_block(), cmd_start() (+35 more)
 
 ### Community 15 - "Community 15"
 Cohesion: 0.12
@@ -428,8 +423,8 @@ Cohesion: 0.07
 Nodes (20): create_desktop_rating_router(), DesktopRatingError, _error_response(), _public_entry(), Bearer-authenticated desktop adapter for the weekly league leaderboard.  ``Cours, Strip personal identifiers the desktop UI does not render., _timezone_offset(), date (+12 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.14
-Nodes (12): CourseMistakeDto, AnswerState, Checked, Completed, Failed, InProgress, LessonOutcome, LessonUiState (+4 more)
+Cohesion: 0.09
+Nodes (16): CourseMistakeDto, AnswerState, Checked, Completed, Failed, InProgress, LessonOutcome, LessonUiState (+8 more)
 
 ### Community 25 - "Community 25"
 Cohesion: 0.07
@@ -457,7 +452,7 @@ Nodes (21): AndroidAuthApi, ApiErrorBody, BootstrapDevice, BootstrapResponse, Bo
 
 ### Community 45 - "Community 45"
 Cohesion: 0.05
-Nodes (93): admin_price_qr_only_handler(), wrong_file_type(), bc_receive_target(), admin_commission_mode_keyboard(), admin_deadline_keyboard(), admin_partner_approve(), admin_partner_back_keyboard(), admin_partner_block() (+85 more)
+Nodes (94): admin_price_qr_only_handler(), wrong_file_type(), bc_receive_target(), admin_partner_bonus_value(), admin_partner_cny_rate_value(), admin_partner_commission_fixed_value(), admin_partner_commission_percent_value(), admin_partner_minimum_value() (+86 more)
 
 ### Community 56 - "Community 56"
 Cohesion: 0.06
@@ -476,12 +471,12 @@ Cohesion: 0.08
 Nodes (23): apply_hsk1_block_metadata(), _grammar_by_no(), _meaning(), _mini_homework(), _mini_quiz(), _options(), _parse(), _word_by_no() (+15 more)
 
 ### Community 60 - "Community 60"
-Cohesion: 0.11
-Nodes (9): _MessageEditResponder, ConversionFunnelService, get_block_no_from_step(), CourseMiniAppResultService, CourseTrialService, CourseTrialValueService, course_miniapp_lesson_id(), normalize_result_items() (+1 more)
+Cohesion: 0.07
+Nodes (21): admin_giveaccess_handler(), admin_payment_approve_handler(), admin_payment_reject_handler(), admin_payment_reject_reason_select_handler(), admin_payment_reject_with_reason_handler(), _is_admin(), _MessageEditResponder, admin_reject_reason_keyboard() (+13 more)
 
 ### Community 61 - "Community 61"
-Cohesion: 0.10
-Nodes (41): admin_stats_handler(), _clear_voice_mode(), command_language_callback_handler(), command_language_keyboard(), command_level_callback_handler(), command_level_keyboard(), help_command_handler(), invite_command_handler() (+33 more)
+Cohesion: 0.47
+Nodes (5): _level_data(), _manifest(), part_meta(), parts_manifest.json o'quvchisi — Course v3 darslari mini-qismlarga bo'lingan.  H, Flat qism raqami -> {src, part, part_count, checkpoint}.      src — asl HSK dars
 
 ### Community 62 - "Community 62"
 Cohesion: 0.10
@@ -489,7 +484,7 @@ Nodes (7): Any, Copy client telemetry and replace spoofable learner-entry metada
 
 ### Community 63 - "Community 63"
 Cohesion: 0.09
-Nodes (17): level_number(), normalize_level(), So'z qaysi bandda va qaysi qismda o'rgatilgan. Topilmasa None., O'quvchi KO'RGAN so'zlar: `(zh, part)`, yangisi birinchi.      Joriy banddagi `p, taught_words(), word_position(), So'z darajasidagi interval takrori: mashq nimani berishini hal qiladi.  Ilgari m, Mastery yozuvi paydo bo'lishidan OLDINGI xato tarixi.          Shu uchta manbada (+9 more)
+Nodes (23): Darajadagi jami mini-darslar (qismlar) soni; manifest bo'lmasa 0., total_parts(), _index(), index_size(), level_number(), normalize_level(), So'z -> qaysi bandda va qaysi qismda O'RGATILGAN degan indeks.  Manba ataylab `l, Diagnostika uchun: indeksdagi so'zlar soni. (+15 more)
 
 ### Community 64 - "Community 64"
 Cohesion: 0.09
@@ -504,8 +499,8 @@ Cohesion: 0.09
 Nodes (17): _auth_user_id(), create_desktop_download_router(), DesktopDownloadRequest, DesktopDownloadStartedRequest, _error_response(), Read desktop download JSON through a strict application body bound., _validated_payload(), DesktopDownloadError (+9 more)
 
 ### Community 67 - "Community 67"
-Cohesion: 0.06
-Nodes (20): AndroidCourseApi, CourseLessonDto, CourseLessonResponse, CourseMapDto, CourseNotifyDto, CourseProgressDto, CourseUnitDto, CourseUserDto (+12 more)
+Cohesion: 0.05
+Nodes (23): AndroidCourseApi, CourseCompleteRequest, CourseCompleteResponse, CourseLessonDto, CourseLessonResponse, CourseMapDto, CourseNotifyDto, CourseProgressDto (+15 more)
 
 ### Community 68 - "Community 68"
 Cohesion: 0.06
@@ -544,8 +539,8 @@ Cohesion: 0.12
 Nodes (5): Bot, _uploaded_qr_file_id(), PaymentQrCodeService, ReferralNotifyService, SubscriptionMiniAppService
 
 ### Community 77 - "Community 77"
-Cohesion: 0.04
-Nodes (36): Factory, errorResponse(), Class, CourseUiState, CourseViewModel, Factory, DictionaryMessage(), DictionaryScreen() (+28 more)
+Cohesion: 0.05
+Nodes (30): Factory, errorResponse(), Class, CourseUiState, CourseViewModel, Factory, Factory, Factory (+22 more)
 
 ### Community 78 - "Community 78"
 Cohesion: 0.09
@@ -556,8 +551,8 @@ Cohesion: 0.15
 Nodes (14): _answers_json(), build_lesson(), _dialogue_json(), _exercise_json(), _flatten_dialogue_lines(), _grammar_json(), _homework_json(), _localized_title() (+6 more)
 
 ### Community 80 - "Community 80"
-Cohesion: 0.10
-Nodes (44): Boolean, AppLanguage, JsonObject, Lesson, AudioAction(), CardPrompt(), CardTitle(), ChoiceCardView() (+36 more)
+Cohesion: 0.08
+Nodes (47): Boolean, HttpUrl, AppLanguage, Interceptor, JsonObject, Lesson, AudioAction(), CardPrompt() (+39 more)
 
 ### Community 81 - "Community 81"
 Cohesion: 0.06
@@ -607,10 +602,6 @@ Nodes (25): 11. Known Problems, 12. Next Planned Work, 13. Required Environment 
 Cohesion: 0.05
 Nodes (52): _android_tts_file(), _android_tts_text(), create_android_course_router(), Bearer-authenticated Course v3 transport for the native Android client.  Like th, Device timezone offset in minutes, bounded. Absent means 'unchanged'., Create/reuse one deterministic MP3 without exposing arbitrary paths., _timezone_offset(), _unavailable() (+44 more)
 
-### Community 94 - "Community 94"
-Cohesion: 0.07
-Nodes (16): MessageRepository, AccessService, Bugun (UTC) yuborilgan ovozli xabarlar soni (QA ovoz + tarjimon ovoz)., Gemini yoqilganda bepul (obunasiz) foydalanuvchi uchun kunlik ovoz limiti., ensure_admin_active(), is_admin_user(), Adminlarni doim cheksiz 'active' obuna holatida ushlab turish yordamchisi.  Admi, Admin foydalanuvchini cheksiz 'active' holatga keltiradi.      O'zgarish bo'lsa (+8 more)
-
 ### Community 96 - "Community 96"
 Cohesion: 0.04
 Nodes (91): $(), AI_RECORDER_TYPES, applyRailWidth(), closeAi(), closeNotifications(), closeRail(), closeReferralModal(), courseTrack (+83 more)
@@ -641,7 +632,7 @@ Nodes (10): availableMethods(), availablePlans(), DesktopSubscriptionController,
 
 ### Community 104 - "Community 104"
 Cohesion: 0.03
-Nodes (66): AndroidAdAttemptRequest, AndroidAdViewRequest, AndroidFeatureApi, AndroidAdAttemptRequest, AndroidAdAttemptResponse, AndroidAdAuthorizationDto, AndroidAdDto, AndroidAdListResponse (+58 more)
+Nodes (63): AndroidAdAttemptRequest, AndroidAdViewRequest, AndroidFeatureApi, AndroidAdAttemptRequest, AndroidAdAttemptResponse, AndroidAdAuthorizationDto, AndroidAdDto, AndroidAdListResponse (+55 more)
 
 ### Community 105 - "Community 105"
 Cohesion: 0.08
@@ -656,8 +647,8 @@ Cohesion: 0.24
 Nodes (4): _as_utc(), _iso(), _parse_dt(), _utcnow()
 
 ### Community 109 - "Community 109"
-Cohesion: 0.07
-Nodes (90): CallbackQuery, FSMContext, profile_menu_course(), course_cancel_reminder_setup_handler(), course_set_reminder_time_handler(), mode_free_qa_handler(), _show_required_channel_for_pending_action(), admin_feedback_reply_cancel() (+82 more)
+Cohesion: 0.05
+Nodes (131): CallbackQuery, FSMContext, admin_commission_mode_keyboard(), admin_deadline_keyboard(), admin_partner_approve(), admin_partner_back_keyboard(), admin_partner_block(), admin_partner_commission_mode() (+123 more)
 
 ### Community 110 - "Community 110"
 Cohesion: 0.08
@@ -708,8 +699,8 @@ Cohesion: 0.67
 Nodes (5): downgrade(), _find_duplicate_open_payout(), _has_column(), _has_index(), upgrade()
 
 ### Community 123 - "Community 123"
-Cohesion: 0.11
-Nodes (17): BaseMiddleware, create_bot(), main(), AdminPartnerStates, PartnerApplicationStates, PartnerPayoutStates, BlockedUserMiddleware, Bloklangan foydalanuvchi uchun global to'siq.  Admin panelda `status="blocked"` (+9 more)
+Cohesion: 0.08
+Nodes (28): BaseMiddleware, create_bot(), main(), AdminPartnerStates, PartnerApplicationStates, PartnerPayoutStates, draft_test_handler(), BlockedUserMiddleware (+20 more)
 
 ### Community 124 - "Community 124"
 Cohesion: 0.70
@@ -741,7 +732,7 @@ Nodes (22): _ad_button_text_prompt(), ads_button_action(), ads_button_text_messa
 
 ### Community 131 - "Community 131"
 Cohesion: 0.09
-Nodes (44): _send_subscription_expired_offer(), _delete_answer(), _edit_callback_block(), _edit_state_block(), _fmt_usd(), _lang(), partner_application_audience(), partner_application_channel() (+36 more)
+Nodes (43): _send_subscription_expired_offer(), _delete_answer(), _edit_callback_block(), _edit_state_block(), _fmt_usd(), _lang(), partner_application_audience(), partner_application_channel() (+35 more)
 
 ### Community 132 - "Community 132"
 Cohesion: 0.13
@@ -760,8 +751,8 @@ Cohesion: 0.83
 Nodes (3): downgrade(), _has_table(), upgrade()
 
 ### Community 140 - "Community 140"
-Cohesion: 0.09
-Nodes (29): FeedbackStates, _combine_liked(), _edit_message(), _edit_stored_message(), _extract_dislike_detail(), feedback_callback_handler(), feedback_dislike_detail_handler(), feedback_other_non_text_handler() (+21 more)
+Cohesion: 0.10
+Nodes (28): _combine_liked(), _edit_message(), _edit_stored_message(), _extract_dislike_detail(), feedback_callback_handler(), feedback_dislike_detail_handler(), feedback_other_non_text_handler(), feedback_other_text_handler() (+20 more)
 
 ### Community 141 - "Community 141"
 Cohesion: 0.83
@@ -784,8 +775,8 @@ Cohesion: 0.14
 Nodes (5): SubscriptionEntryAnalyticsService, _RecordSession, _RowsResult, _StatsSession, SubscriptionEntryAnalyticsServiceTests
 
 ### Community 188 - "Community 188"
-Cohesion: 0.07
-Nodes (45): handle_invite_button(), _is_night(), payment_screenshot_handler(), _waiting_message(), _build_referral_invite_text(), referral_invite_handler(), build_subscription_main_text_for_user(), _card_main_plan_line() (+37 more)
+Cohesion: 0.06
+Nodes (49): show_free_qa_level_choice(), handle_invite_button(), _is_night(), payment_screenshot_handler(), _waiting_message(), _build_referral_invite_text(), referral_invite_handler(), force_sub_check() (+41 more)
 
 ### Community 189 - "Community 189"
 Cohesion: 0.07
@@ -804,16 +795,16 @@ Cohesion: 0.19
 Nodes (22): _newcombe_difference_ci(), 95% Wilson score interval as proportions (0..1)., Newcombe/Wilson 95% CI for treatment-control proportion difference., Two-arm Pearson chi-square SRM check (df=1, p<0.01 warning)., Evaluate sales_value_v1 as a global, seven-day matured ITT cohort.      Course r, _sales_payload(), _sales_srm(), _sales_value_card() (+14 more)
 
 ### Community 193 - "Community 193"
-Cohesion: 0.11
-Nodes (3): Partner, PartnerBalance, PartnerService
+Cohesion: 0.12
+Nodes (4): Decimal, Partner, PartnerBalance, PartnerService
 
 ### Community 197 - "Community 197"
 Cohesion: 0.14
 Nodes (6): hydrateStaticMascots(), hydratePandaMascot(), briefText(), DesktopPracticeController, DRILLS, node()
 
 ### Community 198 - "Community 198"
-Cohesion: 0.09
-Nodes (24): android, Application, com, ComponentActivity, PompHskAiTheme(), HskAiApplication, AdRequest, AppRoot() (+16 more)
+Cohesion: 0.06
+Nodes (32): android, Application, com, ComponentActivity, PompHskAiTheme(), DictionaryMessage(), DictionaryScreen(), WordRow() (+24 more)
 
 ### Community 200 - "Community 200"
 Cohesion: 0.50
@@ -888,8 +879,8 @@ Cohesion: 0.04
 Nodes (37): bindDesktopUpdateEvents(), bindEvents(), bindLocalAiEvents(), ALLOWED_COMMANDS, assertExternalUrl(), assertLanguage(), assertLocalAiRequest(), assertSubscriptionSelection() (+29 more)
 
 ### Community 230 - "Community 230"
-Cohesion: 0.13
-Nodes (20): CenteredProgress(), ErrorBlock(), NextActionCard(), reasonRes(), StaleBanner(), StatusItem(), StatusRow(), TodayScreen() (+12 more)
+Cohesion: 0.07
+Nodes (28): AdUiState, AdViewModel, AdWatch, Float, Flow, Int, CenteredProgress(), ErrorBlock() (+20 more)
 
 ### Community 231 - "Community 231"
 Cohesion: 0.10
@@ -915,10 +906,6 @@ Nodes (18): _DownloadPageHandler, _page(), test_macos_download_keeps_default_act
 Cohesion: 0.15
 Nodes (7): CourseLessonMistakeMaterialError, CourseLessonMistakeMaterialService, Server-authoritative material for Course v3 lesson mistakes.  The lesson UI repo, `dialog_cloze` qatorlarini o'qiladigan matnga aylantiradi.          Bo'sh (`blan, Raised when the canonical lesson source itself cannot be loaded., Return only verified wrong answers from the canonical lesson JSON.          Inva, CourseLessonMistakeMaterialServiceTests
 
-### Community 239 - "Community 239"
-Cohesion: 0.06
-Nodes (17): AdUiState, AdViewModel, AdWatch, MistakesOverviewResponse, RatingResponse, ReferralOverviewResponse, Float, Flow (+9 more)
-
 ### Community 240 - "Community 240"
 Cohesion: 0.09
 Nodes (43): applyStaticText(), boot(), browserSpeakChinese(), changeLanguage(), checkForUpdates(), clearAuthTimers(), enterWorkspace(), errorMessage() (+35 more)
@@ -940,24 +927,24 @@ Cohesion: 0.22
 Nodes (5): Remove the STT prompt from a transcript that echoed it back.      The echo can l, _strip_prompt_echo(), The STT prompt must never reach the tutor as if the learner had said it.  Both t, StripPromptEchoTests, TranscribeVoiceTests
 
 ### Community 245 - "Community 245"
-Cohesion: 0.24
-Nodes (3): Decimal, CardCurrencyQuote, SubscriptionCurrencyService
+Cohesion: 0.22
+Nodes (3): admin_visa_rate_set_callback(), CardCurrencyQuote, SubscriptionCurrencyService
 
 ### Community 246 - "Community 246"
 Cohesion: 0.05
 Nodes (30): datetime, Base, DeclarativeBase, AdCampaignDelivery, AIUsageEvent, CourseAdView, CourseFeatureUsage, CoursePilotEvent (+22 more)
 
 ### Community 252 - "Community 252"
-Cohesion: 0.14
-Nodes (22): admin_portfolio_callback(), admin_portfolio_cancel(), admin_portfolio_edit_callback(), admin_portfolio_edit_type_callback(), admin_portfolio_expense_info(), admin_portfolio_history_callback(), admin_portfolio_profit_info(), admin_portfolio_reason_handler() (+14 more)
+Cohesion: 0.11
+Nodes (27): admin_portfolio_amount_handler(), admin_portfolio_callback(), admin_portfolio_cancel(), admin_portfolio_edit_callback(), admin_portfolio_edit_type_callback(), admin_portfolio_expense_handler(), admin_portfolio_expense_info(), admin_portfolio_history_callback() (+19 more)
 
 ### Community 253 - "Community 253"
 Cohesion: 0.25
 Nodes (4): l(), N, O(), u()
 
 ### Community 254 - "Community 254"
-Cohesion: 0.08
-Nodes (34): Option, ApiError, available_update_status(), bounded_update_text(), check_for_update(), course_map_path(), desktop_app_info(), desktop_update_check() (+26 more)
+Cohesion: 0.10
+Nodes (29): Option, ApiError, available_update_status(), bounded_update_text(), check_for_update(), course_map_path(), desktop_app_info(), desktop_update_check() (+21 more)
 
 ### Community 255 - "Community 255"
 Cohesion: 0.16
@@ -989,7 +976,7 @@ Nodes (8): d(), dt, it(), lt, M(), mount(), rt(), st()
 
 ### Community 263 - "Community 263"
 Cohesion: 0.08
-Nodes (21): signingValue(), MediaUrl, Preferences, desktop_goal_save(), desktop_goal_state(), desktop_practice_complete(), desktop_practice_start(), desktop_tts_speak() (+13 more)
+Nodes (24): signingValue(), MediaUrl, Preferences, desktop_goal_save(), desktop_goal_state(), desktop_practice_complete(), desktop_practice_start(), desktop_tts_speak() (+16 more)
 
 ### Community 264 - "Community 264"
 Cohesion: 0.15
@@ -1083,10 +1070,6 @@ Nodes (8): _content_preview(), AdminBroadcastService, broadcast_languages_or_all
 Cohesion: 0.44
 Nodes (8): ApiError, fromCode(), LimitReached, Offline, Server, SessionExpired, Timeout, Unknown
 
-### Community 300 - "Community 300"
-Cohesion: 0.16
-Nodes (14): _is_proper_name(), level_word_counts(), _load(), _normalize_level(), Course v3 dars fayllaridagi `active_words` o'quvchisi.  `app/static/course_v3_da, Darajaga mos so'zlar. Fayl topilmasa quyi darajaga tushadi., Diagnostika uchun: daraja bo'yicha so'zlar soni., level -> [{"zh", "pinyin", "meaning": {"uz","ru","tj"}}] (+6 more)
-
 ### Community 301 - "Community 301"
 Cohesion: 0.16
 Nodes (4): Attempt, ExamAttempt, PracticeToolSpec, PracticeViewModel
@@ -1104,8 +1087,8 @@ Cohesion: 0.16
 Nodes (4): _Result, _Scalars, _Session, SubscriptionChurnServiceTests
 
 ### Community 306 - "Community 306"
-Cohesion: 0.05
-Nodes (71): AdCampaignStates, BroadcastStates, DiscountStates, AdminHelpStates, AdminPriceStates, AdminRequiredChannelStates, AdminUserStates, AdminPortfolioStates (+63 more)
+Cohesion: 0.03
+Nodes (77): AdCampaignStates, BroadcastStates, DiscountStates, AdminHelpStates, AdminPriceStates, AdminRequiredChannelStates, AdminUserStates, AdminPortfolioStates (+69 more)
 
 ### Community 307 - "Community 307"
 Cohesion: 0.23
@@ -1123,13 +1106,9 @@ Nodes (7): PreferencesError, PreferencesRequest, _profile_payload(), Mini App o'
 Cohesion: 0.83
 Nodes (3): downgrade(), _has_table(), upgrade()
 
-### Community 314 - "Community 314"
-Cohesion: 0.18
-Nodes (11): admin_giveaccess_handler(), admin_payment_approve_handler(), admin_payment_reject_handler(), admin_payment_reject_reason_select_handler(), admin_payment_reject_with_reason_handler(), _is_admin(), admin_reject_reason_keyboard(), PaymentNotifyService (+3 more)
-
 ### Community 315 - "Community 315"
-Cohesion: 0.22
-Nodes (3): Mijoz aytgan ieroglifllarni server lug'atidan qayta quradi.          Serverda to, BuildItemsTests, Mijoz boshqaradigan mashqlarning xatosi server lug'atidan qayta quriladi.  "Iero
+Cohesion: 0.11
+Nodes (12): Mijoz aytgan ieroglifllarni server lug'atidan qayta quradi.          Serverda to, _is_proper_name(), level_word_counts(), _load(), _normalize_level(), Course v3 dars fayllaridagi `active_words` o'quvchisi.  `app/static/course_v3_da, Darajaga mos so'zlar. Fayl topilmasa quyi darajaga tushadi., Diagnostika uchun: daraja bo'yicha so'zlar soni. (+4 more)
 
 ### Community 318 - "Community 318"
 Cohesion: 0.16
@@ -1140,8 +1119,8 @@ Cohesion: 0.32
 Nodes (11): discount_edit_field(), discount_duration_keyboard(), discount_edit_back_keyboard(), discount_language_keyboard(), discount_list_keyboard(), discount_notify_keyboard(), discount_payment_method_keyboard(), discount_plan_keyboard() (+3 more)
 
 ### Community 320 - "Community 320"
-Cohesion: 0.12
-Nodes (16): local_day_key(), Idempotentlik uchun kun kaliti: o'quvchining mahalliy sanasi., current_part(), _level_data(), _manifest(), part_meta(), parts_manifest.json o'quvchisi — Course v3 darslari mini-qismlarga bo'lingan.  H, Darajadagi jami mini-darslar (qismlar) soni; manifest bo'lmasa 0. (+8 more)
+Cohesion: 0.17
+Nodes (9): local_day_key(), Idempotentlik uchun kun kaliti: o'quvchining mahalliy sanasi., current_part(), Foydalanuvchining JORIY qismi = tugatilgan qismlar + 1, darajadagi jami     qism, LearningSignalsService, Kunlik reja uchun O'QUV SIGNALLARI — faqat o'qish, qaror yo'q.  Bu qatlam hech n, Xato qaysi zaiflik o'lchoviga tegishli.          `category` yagona manba, faqat, Bugun (MAHALLIY kun) bajarilgan ishlar: XP, ref'lar va turlar. (+1 more)
 
 ### Community 321 - "Community 321"
 Cohesion: 0.24
@@ -1171,10 +1150,6 @@ Nodes (17): day_start(), next_day_reset(), normalize_offset_minutes(), Kunlik be
 Cohesion: 0.20
 Nodes (7): mistake_service_patch(), PronunciationMasteryTests, PronunciationMistakeTests, PronunciationTrustTests, Yiqilgan talaffuz urinishi Xatolarim bo'limiga tushishi.  Talaffuz mashqi ilgari, Talaffuz natijasi interval takroriga ham yoziladi.      Ball SERVERDA hisoblanad, service()
 
-### Community 330 - "Community 330"
-Cohesion: 0.20
-Nodes (11): admin_entry_callback(), admin_entry_keyboard(), admin_menu_callback(), admin_menu_handler(), admin_menu_keyboard(), admin_stats_callback(), admin_stats_keyboard(), _pct() (+3 more)
-
 ### Community 333 - "Community 333"
 Cohesion: 0.31
 Nodes (11): aiTableCells(), appendAiHanziText(), appendAiHeading(), appendAiParagraph(), appendAiSection(), appendAiTable(), appendInlineAiText(), cleanAiContent() (+3 more)
@@ -1188,8 +1163,8 @@ Cohesion: 0.20
 Nodes (9): 1–5 baholash matni, Kuzatiladigan metrikalar, Nima yangilandi, Qayerda va qanday sinash, Qisqa e'lon, Release feedback draft — HSK AI bilan ilk qadam, Release nomi, Reward tasdig'i (+1 more)
 
 ### Community 336 - "Community 336"
-Cohesion: 0.25
-Nodes (5): normalize_skill(), Shu ko'nikma bo'yicha barcha yozuvlar. Lug'at hajmi bilan         chegaralangan, Mashq natijasini yozadi. Yozilgan so'zlar sonini qaytaradi.          Bu HECH QAC, Mashq uchun so'zlar + kontekst. Xato bo'lsa bo'sh ro'yxat.          Bo'sh ro'yxa, Natijalarni yozadi, mintaqani o'zi aniqlab.
+Cohesion: 0.22
+Nodes (6): normalize_skill(), Shu ko'nikma bo'yicha barcha yozuvlar. Lug'at hajmi bilan         chegaralangan, Mashq natijasini yozadi. Yozilgan so'zlar sonini qaytaradi.          Bu HECH QAC, Mashq uchun so'zlar + kontekst. Xato bo'lsa bo'sh ro'yxat.          Bo'sh ro'yxa, Natijalarni yozadi, mintaqani o'zi aniqlab., `(band, joriy qism, mintaqa siljishi)` — endpointlar uchun.          Router yupq
 
 ### Community 338 - "Community 338"
 Cohesion: 0.33
@@ -1263,7 +1238,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.113) - this node is a cross-community bridge._
 - **Why does `state` connect `Community 6` to `Community 96`, `Community 254`?**
   _High betweenness centrality (0.107) - this node is a cross-community bridge._
-- **Why does `HskAiApplication` connect `Community 198` to `Community 4`, `Community 261`, `Community 263`, `Community 233`, `Community 74`, `Community 239`?**
+- **Why does `HskAiApplication` connect `Community 198` to `Community 4`, `Community 261`, `Community 230`, `Community 263`, `Community 233`, `Community 74`?**
   _High betweenness centrality (0.101) - this node is a cross-community bridge._
 - **Are the 104 inferred relationships involving `UserRepository` (e.g. with `AndroidAdAttemptRequest` and `AndroidAdViewRequest`) actually correct?**
   _`UserRepository` has 104 INFERRED edges - model-reasoned connections that need verification._
