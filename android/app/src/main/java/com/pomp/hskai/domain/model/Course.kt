@@ -11,16 +11,9 @@ enum class LessonStatus { DONE, CURRENT, LOCKED }
  * show a paywall. Only [showsPaywall] destinations may offer a subscription.
  */
 sealed interface LessonAccess {
-    /** Completable now. */
     data object Open : LessonAccess
-
-    /** Visible as a half preview, but the preview cannot finish the lesson. */
     data object HalfPreview : LessonAccess
-
-    /** Premium content the learner has not paid for. */
     data object PremiumLocked : LessonAccess
-
-    /** Free content that is simply further down the path. */
     data object NotReached : LessonAccess
 
     val showsPaywall: Boolean
@@ -28,16 +21,13 @@ sealed interface LessonAccess {
 }
 
 data class CourseLesson(
-    /** Flat mini-part number within the level. Never derived on the client. */
     val order: Int,
-    /** The HSK textbook lesson this part belongs to. */
     val sourceLesson: Int,
     val part: Int,
     val partCount: Int,
     val isCheckpoint: Boolean,
     val status: LessonStatus,
     val access: LessonAccess,
-    /** Preview of the new words, e.g. "你 · 好 · 您". */
     val hanziPreview: String,
     val pinyinPreview: String,
     val subtitle: String,
@@ -45,10 +35,24 @@ data class CourseLesson(
     val isCurrent: Boolean get() = status == LessonStatus.CURRENT
 }
 
+data class CourseMilestone(
+    val title: String,
+    val status: String,
+)
+
 data class CourseUnit(
     val number: Int,
     val title: String,
     val lessons: List<CourseLesson>,
+    val isLocked: Boolean = false,
+    val milestone: CourseMilestone? = null,
+)
+
+/** Exact server snapshot for the course reward chest. */
+data class RewardChest(
+    val ready: Boolean,
+    val progress: Int,
+    val nextXp: Int,
 )
 
 data class CourseProgress(
@@ -62,8 +66,10 @@ data class CourseProgress(
     val weekActivityDates: List<String>,
     val localDate: String?,
     val weekStart: String?,
-    val hasRewardChest: Boolean,
-)
+    val rewardChest: RewardChest?,
+) {
+    val hasRewardChest: Boolean get() = rewardChest?.ready == true
+}
 
 data class CourseUser(
     val name: String,
@@ -72,12 +78,50 @@ data class CourseUser(
     val referralCode: String,
 )
 
+/** Mini App Starter 0 state; the server remains the only authority. */
+data class CourseFoundation(
+    val id: String,
+    val version: Int,
+    val required: Boolean,
+    val completed: Boolean,
+    val status: String,
+) {
+    val mustComeFirst: Boolean get() = required && !completed
+}
+
+/** Server-owned daily-plan access state. Android only renders it. */
+enum class TodayTaskAccess { OPEN, AD, LOCKED }
+
+data class TodayTask(
+    val type: String,
+    val ref: String?,
+    val skill: String?,
+    val role: String?,
+    val done: Boolean,
+    val access: TodayTaskAccess,
+    val available: Boolean,
+)
+
+data class CourseToday(
+    val goalXp: Int,
+    val doneXp: Int,
+    val streak: Int,
+    val total: Int,
+    val done: Int,
+    val complete: Boolean,
+    val tasks: List<TodayTask>,
+    val level: String,
+    val localDay: String,
+)
+
 data class CourseMap(
     val level: String,
     val units: List<CourseUnit>,
     val progress: CourseProgress,
     val user: CourseUser,
     val notificationsEnabled: Boolean,
+    val today: CourseToday? = null,
+    val foundation: CourseFoundation? = null,
 ) {
     val lessons: List<CourseLesson> get() = units.flatMap { it.lessons }
 

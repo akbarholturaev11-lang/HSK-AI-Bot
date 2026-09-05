@@ -209,11 +209,8 @@ private fun AppRoot(
             val settingsReload by settingsViewModel.reload.collectAsStateWithLifecycle()
             var languagePickerOpen by remember { mutableStateOf(false) }
             var dictionaryOpen by remember { mutableStateOf(false) }
-            // The ad a learner is watching to open a closed section, if any.
             var adRequest by remember { mutableStateOf<AdRequest?>(null) }
 
-            // A preference the server accepted changes what every screen shows,
-            // so they are re-read rather than patched locally.
             LaunchedEffect(settingsReload) {
                 if (settingsReload > 0) {
                     courseViewModel.load()
@@ -222,10 +219,6 @@ private fun AppRoot(
             }
 
             val context = LocalContext.current
-
-            // Reminders are only useful once the system has actually allowed
-            // them, so the runtime permission is asked for at the moment the
-            // learner turns them on — never on a cold start.
             val notificationPermission = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { granted ->
@@ -238,24 +231,14 @@ private fun AppRoot(
                     true -> if (StudyNotifications.canPost(context)) {
                         StudyReminderScheduler.schedule(context)
                     }
-
                     false -> {
                         StudyReminderScheduler.cancel(context)
                         StudyNotifications.cancelReminder(context)
                     }
-
                     null -> Unit
                 }
             }
 
-            // What a limit block may do is decided by the distribution
-            // channel, not by the screens: the `play` and `direct` source sets
-            // each provide their own `rememberLimitGate` with this signature,
-            // so nothing below has to know which build it is running in.
-            //
-            // Access is only ever the server's answer. Nothing here unlocks
-            // anything locally, so a subscription bought through any channel
-            // shows up on the next read.
             val limitGate = rememberLimitGate(
                 repository = app.featureRepository,
                 viewModelStoreOwner = sessionOwner,
@@ -303,17 +286,11 @@ private fun AppRoot(
                             }
                             return@LaunchedEffect
                         }
-                        // A stale map may guide the learner, but it never
-                        // authorizes a deep link. Wait for a fresh server map;
-                        // the lesson endpoint then checks access once more.
                         if (courseState.isStale) {
                             if (courseState.isRefreshing) return@LaunchedEffect
                             if (deepLinkRefreshGate.claim(request.id)) {
                                 courseViewModel.load()
                             }
-                            // Keep the request pending after a failed refresh.
-                            // A repeated identical URI has a new request id and
-                            // may safely trigger another server authorization.
                             return@LaunchedEffect
                         }
                         deepLinkRefreshGate.reset()
@@ -332,7 +309,6 @@ private fun AppRoot(
                         }
                         onDestinationConsumed()
                     }
-
                     else -> {
                         deepLinkRefreshGate.reset()
                         onDestinationConsumed()
@@ -350,8 +326,6 @@ private fun AppRoot(
             val launch = openLesson
             val ad = adRequest
             if (ad != null) {
-                // Keyed by the access ref: a new ad is a new attempt, and
-                // reusing the previous model would keep the old countdown.
                 val adViewModel: AdViewModel = viewModel(
                     key = "ad-${ad.accessRef}",
                     viewModelStoreOwner = sessionOwner,
@@ -362,16 +336,12 @@ private fun AppRoot(
                     ),
                 )
                 val adState by adViewModel.state.collectAsStateWithLifecycle()
-
-                // The server, not this screen, decided the section may open.
-                // Retrying the practice with the same ref is what redeems it.
                 LaunchedEffect(adState.unlocked) {
                     if (adState.unlocked) {
                         adRequest = null
                         practiceViewModel.startWithAd(ad.accessRef)
                     }
                 }
-
                 AdScreen(
                     state = adState,
                     onContinue = adViewModel::onContinue,
@@ -379,8 +349,6 @@ private fun AppRoot(
                     onOpenLink = { url -> openExternal(context, url) },
                 )
             } else if (dictionaryOpen) {
-                // Keyed by language: the stored meanings belong to one
-                // language, so switching it must not reuse the old model.
                 val dictionaryViewModel: DictionaryViewModel = viewModel(
                     key = "dictionary-${state.account.language.backendCode}",
                     viewModelStoreOwner = sessionOwner,
@@ -406,8 +374,6 @@ private fun AppRoot(
                     pinyin = pinyin,
                     onExit = {
                         openLesson = null
-                        // Progress, XP and streak all come back from the
-                        // server rather than being guessed locally.
                         courseViewModel.load()
                     },
                 )
@@ -416,95 +382,97 @@ private fun AppRoot(
                     selectedTab = selectedTab,
                     onTabSelected = { selectedTab = it },
                 ) { tab, contentModifier ->
-                when (tab) {
-                    MainTab.COURSE -> CourseScreen(
-                        state = courseState,
-                        dailyGoal = dailyGoal,
-                        limit = limitGate,
-                        onLesson = ::launchLesson,
-                        onOpenGoal = { goalPickerOpen = true },
-                        onRetry = courseViewModel::load,
-                        modifier = contentModifier,
-                    )
+                    when (tab) {
+                        MainTab.COURSE -> CourseScreen(
+                            state = courseState,
+                            dailyGoal = dailyGoal,
+                            limit = limitGate,
+                            onLesson = ::launchLesson,
+                            onOpenGoal = { goalPickerOpen = true },
+                            onOpenChest = courseViewModel::openRewardChest,
+                            onChestRewardConsumed = courseViewModel::consumeChestReward,
+                            onRetry = courseViewModel::load,
+                            modifier = contentModifier,
+                        )
 
-                    MainTab.PRACTICE -> PracticeScreen(
-                        state = practiceState,
-                        level = currentLevel,
-                        language = currentLanguage,
-                        limit = limitGate,
-                        onWatchAd = { feature ->
-                            adRequest = AdRequest(
-                                feature = feature,
-                                accessRef = UUID.randomUUID().toString(),
-                            )
-                        },
-                        onOpenDictionary = { dictionaryOpen = true },
-                        onStartPractice = { tool, level, language ->
-                            practiceViewModel.startPractice(tool, level, language)
-                        },
-                        onSelectPracticeOption = practiceViewModel::selectPracticeOption,
-                        onAdvancePractice = practiceViewModel::advancePractice,
-                        onResetPractice = practiceViewModel::resetPractice,
-                        onStartMistakeReview = practiceViewModel::startMistakeReview,
-                        onAnswerReview = practiceViewModel::answerReview,
-                        onAdvanceReview = practiceViewModel::advanceReview,
-                        onResetReview = practiceViewModel::resetReview,
-                        onStartExam = { examLevel ->
-                            practiceViewModel.startExam(examLevel, currentLanguage)
-                        },
-                        onSelectExamOption = practiceViewModel::selectExamOption,
-                        onAdvanceExam = practiceViewModel::advanceExam,
-                        onResetExam = practiceViewModel::resetExam,
-                        modifier = contentModifier,
-                    )
-
-                    MainTab.VOICE -> VoiceScreen(
-                        state = voiceState,
-                        level = currentLevel,
-                        language = currentLanguage,
-                        limit = limitGate,
-                        onSelectRole = voiceViewModel::selectRole,
-                        onStartSession = voiceViewModel::startSession,
-                        onToggleRecording = voiceViewModel::toggleRecording,
-                        onEndSession = voiceViewModel::endSession,
-                        onReset = voiceViewModel::reset,
-                        modifier = contentModifier,
-                    )
-
-                    MainTab.RATING -> RatingScreen(
-                        state = ratingState,
-                        onSelectTab = ratingViewModel::selectTab,
-                        onRetry = ratingViewModel::load,
-                        modifier = contentModifier,
-                    )
-
-                    MainTab.PROFILE -> ProfileScreen(
-                        account = state.account,
-                        state = profileState,
-                        settings = settingsState,
-                        dailyXp = courseState.map?.progress?.dailyXp ?: 0,
-                        dailyGoal = dailyGoal,
-                        notificationsEnabled = courseState.map?.notificationsEnabled ?: true,
-                        onOpenGoal = { goalPickerOpen = true },
-                        onOpenLanguage = { languagePickerOpen = true },
-                        onToggleNotifications = { enabled ->
-                            if (enabled &&
-                                android.os.Build.VERSION.SDK_INT >=
-                                android.os.Build.VERSION_CODES.TIRAMISU &&
-                                !StudyNotifications.canPost(context)
-                            ) {
-                                notificationPermission.launch(
-                                    android.Manifest.permission.POST_NOTIFICATIONS,
+                        MainTab.PRACTICE -> PracticeScreen(
+                            state = practiceState,
+                            level = currentLevel,
+                            language = currentLanguage,
+                            limit = limitGate,
+                            onWatchAd = { feature ->
+                                adRequest = AdRequest(
+                                    feature = feature,
+                                    accessRef = UUID.randomUUID().toString(),
                                 )
-                            }
-                            settingsViewModel.setNotifications(enabled)
-                        },
-                        onOpenSupport = { url -> openExternal(context, url) },
-                        onRefresh = profileViewModel::load,
-                        onLogout = { signOut(false) },
-                        onUnlinkDevice = { signOut(true) },
-                        modifier = contentModifier,
-                    )
+                            },
+                            onOpenDictionary = { dictionaryOpen = true },
+                            onStartPractice = { tool, level, language ->
+                                practiceViewModel.startPractice(tool, level, language)
+                            },
+                            onSelectPracticeOption = practiceViewModel::selectPracticeOption,
+                            onAdvancePractice = practiceViewModel::advancePractice,
+                            onResetPractice = practiceViewModel::resetPractice,
+                            onStartMistakeReview = practiceViewModel::startMistakeReview,
+                            onAnswerReview = practiceViewModel::answerReview,
+                            onAdvanceReview = practiceViewModel::advanceReview,
+                            onResetReview = practiceViewModel::resetReview,
+                            onStartExam = { examLevel ->
+                                practiceViewModel.startExam(examLevel, currentLanguage)
+                            },
+                            onSelectExamOption = practiceViewModel::selectExamOption,
+                            onAdvanceExam = practiceViewModel::advanceExam,
+                            onResetExam = practiceViewModel::resetExam,
+                            modifier = contentModifier,
+                        )
+
+                        MainTab.VOICE -> VoiceScreen(
+                            state = voiceState,
+                            level = currentLevel,
+                            language = currentLanguage,
+                            limit = limitGate,
+                            onSelectRole = voiceViewModel::selectRole,
+                            onStartSession = voiceViewModel::startSession,
+                            onToggleRecording = voiceViewModel::toggleRecording,
+                            onEndSession = voiceViewModel::endSession,
+                            onReset = voiceViewModel::reset,
+                            modifier = contentModifier,
+                        )
+
+                        MainTab.RATING -> RatingScreen(
+                            state = ratingState,
+                            onSelectTab = ratingViewModel::selectTab,
+                            onRetry = ratingViewModel::load,
+                            modifier = contentModifier,
+                        )
+
+                        MainTab.PROFILE -> ProfileScreen(
+                            account = state.account,
+                            state = profileState,
+                            settings = settingsState,
+                            dailyXp = courseState.map?.progress?.dailyXp ?: 0,
+                            dailyGoal = dailyGoal,
+                            notificationsEnabled = courseState.map?.notificationsEnabled ?: true,
+                            onOpenGoal = { goalPickerOpen = true },
+                            onOpenLanguage = { languagePickerOpen = true },
+                            onToggleNotifications = { enabled ->
+                                if (enabled &&
+                                    android.os.Build.VERSION.SDK_INT >=
+                                    android.os.Build.VERSION_CODES.TIRAMISU &&
+                                    !StudyNotifications.canPost(context)
+                                ) {
+                                    notificationPermission.launch(
+                                        android.Manifest.permission.POST_NOTIFICATIONS,
+                                    )
+                                }
+                                settingsViewModel.setNotifications(enabled)
+                            },
+                            onOpenSupport = { url -> openExternal(context, url) },
+                            onRefresh = profileViewModel::load,
+                            onLogout = { signOut(false) },
+                            onUnlinkDevice = { signOut(true) },
+                            modifier = contentModifier,
+                        )
                     }
                 }
 
@@ -534,14 +502,6 @@ private fun AppRoot(
     }
 }
 
-/**
- * Hosts one lesson attempt.
- *
- * The ViewModel is reused per level/order inside one authenticated session,
- * while [LessonViewModel.beginAttempt] resets it from an opaque launch key.
- * This avoids retaining hundreds of attempts and still guarantees a fresh
- * completion event without sharing lesson state between accounts.
- */
 @Composable
 private fun LessonHost(
     app: HskAiApplication,
@@ -590,12 +550,6 @@ private fun LessonHost(
     )
 }
 
-/**
- * The learning language, offering the three the backend supports.
- *
- * The choice is stored on the server, so it follows the learner to the bot,
- * the Mini App and desktop rather than living on this device.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LanguagePicker(
@@ -640,12 +594,6 @@ private fun LanguagePicker(
     }
 }
 
-/**
- * The daily XP target picker, offering the same four choices as the Mini App.
- *
- * The target is a personal display setting: it changes what the ring shows,
- * never what the learner is allowed to open.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DailyGoalPicker(
@@ -690,7 +638,6 @@ private fun DailyGoalPicker(
     }
 }
 
-/** Opens an https link in whatever the device uses for the web. */
 private fun openExternal(context: android.content.Context, url: String): Boolean {
     if (url.isBlank()) return false
     return try {
@@ -705,12 +652,6 @@ private fun openExternal(context: android.content.Context, url: String): Boolean
     }
 }
 
-/**
- * The ad a learner is watching to open one closed section.
- *
- * [accessRef] is generated once per attempt and is what ties the watch to the
- * session it opens: the same value goes to the ad and then to the practice.
- */
 private data class AdRequest(
     val feature: String,
     val accessRef: String,

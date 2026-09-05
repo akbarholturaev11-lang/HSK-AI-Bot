@@ -15,6 +15,7 @@ import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.LocalizedText
 import com.pomp.hskai.data.api.OkResponse
+import com.pomp.hskai.data.api.RewardChestOpenResponse
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.domain.model.LessonAccess
@@ -81,6 +82,12 @@ private open class FakeCourseApi : AndroidCourseApi {
         authorization: String,
         body: CourseCompleteRequest,
     ): Response<CourseCompleteResponse> = throw NotImplementedError()
+
+    override suspend fun openRewardChest(
+        authorization: String,
+    ): Response<RewardChestOpenResponse> = Response.success(
+        RewardChestOpenResponse(ok = true, rewardType = "xp", rewardValue = 10)
+    )
 
     override suspend fun setLanguage(
         authorization: String,
@@ -157,8 +164,6 @@ class CourseRepositoryTest {
     fun `utc plus zero is sent as a real offset`() = runTest {
         val api = FakeCourseApi()
         repository(api, FakeCourseMapDao(), offsetMinutes = 0).courseMap()
-        // A falsy check would have dropped this and silently shifted the
-        // learner's streak day boundary.
         assertEquals(0, api.lastTimezoneOffset)
     }
 
@@ -180,7 +185,6 @@ class CourseRepositoryTest {
         val snapshot = (result as ApiResult.Success).value
         assertTrue(snapshot.isStale)
         assertEquals(ApiError.Offline, snapshot.refreshError)
-        // The cache repeats the last server decision; it cannot widen access.
         assertEquals(LessonAccess.HalfPreview, snapshot.map.lessons[2].access)
         assertEquals(LessonAccess.PremiumLocked, snapshot.map.lessons[3].access)
     }
@@ -211,19 +215,18 @@ class CourseRepositoryTest {
     }
 
     @Test
-    fun `an expired session never uses cached entitlement as authentication`() =
-        runTest {
-            val dao = FakeCourseMapDao()
-            repository(FakeCourseApi(), dao).courseMap()
+    fun `an expired session never uses cached entitlement as authentication`() = runTest {
+        val dao = FakeCourseMapDao()
+        repository(FakeCourseApi(), dao).courseMap()
 
-            val result = repository(
-                FakeCourseApi(),
-                dao,
-                token = { ApiResult.Failure(ApiError.SessionExpired) },
-            ).courseMap()
+        val result = repository(
+            FakeCourseApi(),
+            dao,
+            token = { ApiResult.Failure(ApiError.SessionExpired) },
+        ).courseMap()
 
-            assertEquals(ApiError.SessionExpired, (result as ApiResult.Failure).error)
-        }
+        assertEquals(ApiError.SessionExpired, (result as ApiResult.Failure).error)
+    }
 
     @Test
     fun `a runtime server revocation invalidates auth and never serves cached access`() = runTest {
@@ -337,43 +340,60 @@ class CourseRepositoryTest {
         val second = CourseRepository.newEventId()
 
         assertTrue(first.startsWith("android:"))
-        // The backend bounds event_id to 16..80 characters.
         assertTrue(first.length in 16..80)
         assertTrue(first != second)
-        // Must not look like a desktop completion.
         assertFalse(first.contains("desktop"))
     }
 
     @Test
-    fun `completion sends the supplied event id unchanged so retries dedupe`() =
-        runTest {
-            val sent = mutableListOf<CourseCompleteRequest>()
-            val api = object : FakeCourseApi() {
-                override suspend fun complete(
-                    authorization: String,
-                    body: CourseCompleteRequest,
-                ): Response<CourseCompleteResponse> {
-                    sent += body
-                    return Response.success(
-                        CourseCompleteResponse(
-                            ok = true,
-                            completedLesson = body.lessonOrder,
-                            completedLessonsCount = body.lessonOrder,
-                            duplicate = sent.size > 1,
-                        )
+    fun `completion sends the supplied event id unchanged so retries dedupe`() = runTest {
+        val sent = mutableListOf<CourseCompleteRequest>()
+        val api = object : FakeCourseApi() {
+            override suspend fun complete(
+                authorization: String,
+                body: CourseCompleteRequest,
+            ): Response<CourseCompleteResponse> {
+                sent += body
+                return Response.success(
+                    CourseCompleteResponse(
+                        ok = true,
+                        completedLesson = body.lessonOrder,
+                        completedLessonsCount = body.lessonOrder,
+                        duplicate = sent.size > 1,
                     )
-                }
+                )
             }
-            val repository = repository(api, FakeCourseMapDao())
-            val eventId = "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6"
-
-            repository.completeLesson(lessonOrder = 1, eventId = eventId)
-            val retry = repository.completeLesson(lessonOrder = 1, eventId = eventId)
-
-            assertEquals(2, sent.size)
-            assertEquals(listOf(eventId, eventId), sent.map { it.eventId })
-            assertTrue((retry as ApiResult.Success).value.duplicate)
         }
+        val repository = repository(api, FakeCourseMapDao())
+        val eventId = "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6"
+
+        repository.completeLesson(lessonOrder = 1, eventId = eventId)
+        val retry = repository.completeLesson(lessonOrder = 1, eventId = eventId)
+
+        assertEquals(2, sent.size)
+        assertEquals(listOf(eventId, eventId), sent.map { it.eventId })
+        assertTrue((retry as ApiResult.Success).value.duplicate)
+    }
+
+    @Test
+    fun `reward chest uses bearer transport and returns server reward`() = runTest {
+        var sentAuthorization: String? = null
+        val api = object : FakeCourseApi() {
+            override suspend fun openRewardChest(
+                authorization: String,
+            ): Response<RewardChestOpenResponse> {
+                sentAuthorization = authorization
+                return Response.success(
+                    RewardChestOpenResponse(ok = true, rewardType = "xp", rewardValue = 20)
+                )
+            }
+        }
+
+        val result = repository(api, FakeCourseMapDao()).openRewardChest()
+
+        assertEquals("Bearer access-1", sentAuthorization)
+        assertEquals(20, (result as ApiResult.Success).value.rewardValue)
+    }
 
     @Test
     fun `clearing the cache wipes cached progress`() = runTest {

@@ -1,14 +1,14 @@
 package com.pomp.hskai.core.navigation
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
@@ -37,14 +37,6 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 
-/**
- * Primary navigation, laid out exactly like the Mini App's bottom bar:
- * Kurs · Mashq · [AI Voice] · Reyting · Profil, with AI Voice raised into the
- * centre as the single accent action.
- *
- * Obuna is deliberately never a tab — it is a monetization flow, not a daily
- * learning destination.
- */
 enum class MainTab(val labelRes: Int, val icon: ImageVector) {
     COURSE(R.string.nav_course, Icons.Filled.Map),
     PRACTICE(R.string.nav_practice, Icons.Filled.Style),
@@ -53,7 +45,6 @@ enum class MainTab(val labelRes: Int, val icon: ImageVector) {
     PROFILE(R.string.nav_profile, Icons.Filled.Person),
     ;
 
-    /** Raised centre action, mirroring the Mini App's floating microphone. */
     val isCentre: Boolean get() = this == VOICE
 
     companion object {
@@ -61,14 +52,6 @@ enum class MainTab(val labelRes: Int, val icon: ImageVector) {
     }
 }
 
-/**
- * Which tab a deep link should land on.
- *
- * A lesson destination lands on the path first; entitlement is checked by the
- * lesson request before the renderer opens. `Today` no longer has a tab of its
- * own — like the Mini App, the next action lives at the top of the path — so
- * an existing `today` reminder link still resolves and lands on Kurs.
- */
 fun AppDestination.toTab(): MainTab? = when (this) {
     AppDestination.Today,
     AppDestination.Course,
@@ -77,7 +60,6 @@ fun AppDestination.toTab(): MainTab? = when (this) {
     -> MainTab.COURSE
 
     AppDestination.Profile, AppDestination.WidgetSetup -> MainTab.PROFILE
-
     AppDestination.Rating -> MainTab.RATING
     AppDestination.Voice -> MainTab.VOICE
     is AppDestination.Practice -> MainTab.PRACTICE
@@ -94,13 +76,17 @@ fun MainScaffold(
     Scaffold(
         containerColor = PompColors.Paper,
         bottomBar = {
-            Surface(color = PompColors.PaperRaised) {
+            Surface(
+                color = PompColors.PaperRaised,
+                border = BorderStroke(1.dp, PompColors.Divider),
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .navigationBarsPadding()
-                        .padding(horizontal = 4.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                        .height(70.dp)
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
                     tabs.forEach { tab ->
@@ -127,7 +113,7 @@ private fun NavItem(
     modifier: Modifier = Modifier,
 ) {
     val label = stringResource(tab.labelRes)
-    val tint = if (selected) PompColors.Cinnabar else PompColors.InkSecondary
+    val tint = if (selected) PompColors.Cinnabar else PompColors.InkDisabled
 
     Column(
         modifier = modifier
@@ -136,25 +122,35 @@ private fun NavItem(
                 role = Role.Tab,
                 onClick = onClick,
             )
-            .heightIn(min = 56.dp)
-            .padding(vertical = 4.dp),
+            .then(if (tab.isCentre) Modifier.offset(y = (-20).dp) else Modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
     ) {
         if (tab.isCentre) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .background(PompColors.Cinnabar, CircleShape),
-                contentAlignment = Alignment.Center,
+            Surface(
+                modifier = Modifier.size(58.dp),
+                shape = CircleShape,
+                color = PompColors.Cinnabar,
+                border = BorderStroke(4.dp, PompColors.PaperRaised),
             ) {
-                Icon(
-                    imageVector = tab.icon,
-                    contentDescription = null,
-                    tint = PompColors.Paper,
-                    modifier = Modifier.size(22.dp),
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = tab.icon,
+                        contentDescription = null,
+                        tint = PompColors.Paper,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
             }
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                fontSize = 11.sp,
+                color = PompColors.Cinnabar,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp),
+            )
         } else {
             Icon(
                 imageVector = tab.icon,
@@ -162,15 +158,15 @@ private fun NavItem(
                 tint = tint,
                 modifier = Modifier.size(22.dp),
             )
-            Box(Modifier.height(2.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                fontSize = 11.sp,
+                color = tint,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 3.dp),
+            )
         }
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            fontSize = 11.sp,
-            color = tint,
-            maxLines = 1,
-            textAlign = TextAlign.Center,
-        )
     }
 }

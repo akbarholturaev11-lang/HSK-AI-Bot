@@ -226,6 +226,23 @@ def create_android_course_router(
             logger.exception("Android course completion failed")
             return _unavailable()
 
+    @router.post("/api/v3/android/course/reward-chest/open")
+    async def android_reward_chest_open(request: Request):
+        """Open the same server-owned XP chest exposed by the Mini App."""
+        try:
+            if await request.body():
+                raise DesktopCourseError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).open_reward_chest(
+                    bearer_access_token(request)
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android reward chest failed")
+            return _unavailable()
+
     @router.post("/api/v3/android/preferences/language")
     async def android_course_language(request: Request):
         try:
