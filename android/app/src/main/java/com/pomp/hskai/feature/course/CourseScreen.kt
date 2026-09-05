@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -106,6 +107,7 @@ fun CourseScreen(
                 }
 
                 Column(Modifier.fillMaxSize()) {
+                    // Mini App `.ctop`: level row + goal + today's plan behave as one block.
                     CourseHeader(map = map, dailyGoal = dailyGoal, onOpenGoal = onOpenGoal)
                     map.today?.takeIf { it.tasks.isNotEmpty() }?.let { TodayPlanStrip(it) }
                     if (state.isStale) StaleBanner()
@@ -119,7 +121,7 @@ fun CourseScreen(
                     ) {
                         itemsIndexed(rows) { _, row ->
                             when (row) {
-                                is CourseRow.Unit -> UnitHeader(row.title)
+                                is CourseRow.Unit -> UnitHeader(row.number, row.title)
                                 is CourseRow.Lesson -> PathNode(
                                     lesson = row.lesson,
                                     slot = row.slot,
@@ -136,7 +138,7 @@ fun CourseScreen(
     }
 }
 
-/** Mini App top row: compact level pill + streak + XP + daily goal. */
+/** Mini App `.htop`: compact level pill + streak + XP + daily goal. */
 @Composable
 private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit) {
     Row(
@@ -197,7 +199,7 @@ fun GoalRing(
         contentAlignment = Alignment.Center,
     ) {
         Canvas(Modifier.fillMaxSize()) {
-            val stroke = 4.dp.toPx()
+            val stroke = 5.dp.toPx()
             val inset = stroke / 2
             val arcSize = androidx.compose.ui.geometry.Size(this.size.width - stroke, this.size.height - stroke)
             drawArc(PompColors.Divider, 0f, 360f, false, androidx.compose.ui.geometry.Offset(inset, inset), arcSize, style = Stroke(stroke))
@@ -217,31 +219,48 @@ fun GoalRing(
     }
 }
 
-/** Mini App `today` task strip. Access remains server-owned; this only renders it. */
+/** Mini App `.today`: fixed XP summary at left, horizontally scrolling task chips. */
 @Composable
 private fun TodayPlanStrip(today: CourseToday) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
-            .padding(start = 16.dp, end = 16.dp, bottom = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        today.tasks.forEach { task -> TodayTaskChip(task) }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Filled.TrackChanges, null, tint = PompColors.Cinnabar, modifier = Modifier.size(14.dp))
+            Spacer(Modifier.width(4.dp))
+            Text(
+                text = "${today.doneXp}/${today.goalXp} XP",
+                style = MaterialTheme.typography.labelSmall,
+                color = PompColors.InkSecondary,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+        Spacer(Modifier.width(8.dp))
+        Row(
+            modifier = Modifier.weight(1f).horizontalScroll(rememberScrollState()).padding(end = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            today.tasks.forEach { task -> TodayTaskChip(task) }
+        }
     }
 }
 
 @Composable
 private fun TodayTaskChip(task: TodayTask) {
-    val (background, foreground) = when {
-        task.done -> PompColors.JadeSoft to PompColors.Jade
-        task.access == TodayTaskAccess.LOCKED -> PompColors.Divider to PompColors.InkDisabled
-        task.access == TodayTaskAccess.AD -> PompColors.GoldSoft to PompColors.Gold
-        else -> PompColors.CinnabarSoft to PompColors.CinnabarDark
+    val locked = task.access == TodayTaskAccess.LOCKED || !task.available
+    val foreground = when {
+        task.done -> PompColors.InkDisabled
+        locked -> PompColors.InkDisabled
+        else -> PompColors.Ink
+    }
+    val iconTint = when {
+        task.done -> PompColors.Jade
+        else -> PompColors.InkDisabled
     }
     val icon = when {
         task.done -> Icons.Filled.Check
-        task.access == TodayTaskAccess.LOCKED -> Icons.Filled.Lock
+        locked -> Icons.Filled.Lock
         task.type == "voice_dialog" -> Icons.Filled.Mic
         task.type == "continue_lesson" -> Icons.Filled.School
         else -> Icons.Filled.Bolt
@@ -254,13 +273,18 @@ private fun TodayTaskChip(task: TodayTask) {
         "voice_dialog" -> stringResource(R.string.voice_title)
         else -> stringResource(R.string.practice_title)
     }
-    Surface(color = background, shape = RoundedCornerShape(18.dp), border = BorderStroke(1.dp, foreground.copy(alpha = 0.22f))) {
+    Surface(
+        color = if (task.done) PompColors.Paper else PompColors.PaperRaised,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = Modifier.graphicsLayer { alpha = if (locked) 0.55f else 1f },
+    ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(icon, null, tint = foreground, modifier = Modifier.size(16.dp))
-            Spacer(Modifier.width(6.dp))
+            Icon(icon, null, tint = iconTint, modifier = Modifier.size(14.dp))
+            Spacer(Modifier.width(4.dp))
             Text(text, style = MaterialTheme.typography.labelMedium, color = foreground, maxLines = 1)
         }
     }
@@ -277,15 +301,26 @@ private fun StaleBanner() {
     }
 }
 
-/** Mini App dark rounded unit banner. */
+/** Mini App `.uban`: dark rounded unit banner with small unit number. */
 @Composable
-private fun UnitHeader(title: String) {
+private fun UnitHeader(number: Int, title: String) {
     Surface(
         color = PompColors.Ink,
         shape = RoundedCornerShape(14.dp),
         modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp),
     ) {
-        Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Paper, modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp), maxLines = 2)
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = number.toString().padStart(2, '0'),
+                style = MaterialTheme.typography.labelSmall,
+                color = PompColors.Paper.copy(alpha = 0.70f),
+            )
+            Spacer(Modifier.width(10.dp))
+            Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Paper, maxLines = 2)
+        }
     }
 }
 
@@ -293,7 +328,7 @@ private val PATH_SLOTS = listOf(0f, 0.55f, 0.85f, 0.55f, 0f, -0.55f, -0.85f, -0.
 private val PATH_SWING = 84.dp
 private val NODE_SIZE = 64.dp
 private val CURRENT_RING_SIZE = 76.dp
-private val PATH_ROW_HEIGHT = 92.dp
+private val PATH_ROW_HEIGHT = 84.dp
 
 @Composable
 private fun PathNode(
@@ -321,6 +356,11 @@ private fun PathNode(
 
         Box(modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT), contentAlignment = Alignment.Center) {
             if (previousSlot != null) PathConnector(previousSlot, slot)
+            if (lesson.isCurrent) {
+                CoursePandaMascot(
+                    modifier = Modifier.offset(x = if (offsetX.value >= 0f) -118.dp else 118.dp),
+                )
+            }
             Box(
                 modifier = Modifier.offset(x = offsetX).size(CURRENT_RING_SIZE)
                     .then(if (clickable) Modifier.clickable { onLesson(lesson) } else Modifier)
@@ -345,7 +385,7 @@ private fun PathNode(
     }
 }
 
-/** Native cubic Bezier segment behind each node, equivalent to the Mini App SVG trail. */
+/** Mini App SVG trail: 34px warm rail plus 4px white dotted highlight. */
 @Composable
 private fun PathConnector(previousSlot: Int, slot: Int) {
     Canvas(modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT)) {
@@ -353,11 +393,21 @@ private fun PathConnector(previousSlot: Int, slot: Int) {
         val swingPx = PATH_SWING.toPx()
         val startX = center + swingPx * PATH_SLOTS[previousSlot % PATH_SLOTS.size]
         val endX = center + swingPx * PATH_SLOTS[slot % PATH_SLOTS.size]
+        val middleY = size.height / 2f
         val path = Path().apply {
             moveTo(startX, 0f)
-            cubicTo(startX, size.height * 0.38f, endX, size.height * 0.62f, endX, size.height)
+            cubicTo(startX, middleY, endX, middleY, endX, size.height)
         }
-        drawPath(path, color = PompColors.Divider, style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round))
+        drawPath(path, color = PompColors.CourseTrail, style = Stroke(width = 34.dp.toPx(), cap = StrokeCap.Round))
+        drawPath(
+            path,
+            color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.80f),
+            style = Stroke(
+                width = 4.dp.toPx(),
+                cap = StrokeCap.Round,
+                pathEffect = PathEffect.dashPathEffect(floatArrayOf(0.5.dp.toPx(), 16.dp.toPx())),
+            ),
+        )
     }
 }
 
@@ -371,15 +421,20 @@ private fun NodeFace(lesson: CourseLesson) {
         lesson.isCheckpoint -> Quad(PompColors.CinnabarSoft, PompColors.BossDepth, NodeContent.Checkpoint, PompColors.Cinnabar)
         else -> Quad(PompColors.Cinnabar, PompColors.CinnabarDark, NodeContent.Glyph, PompColors.Paper)
     }
-    val pulse = if (current) {
-        val transition = rememberInfiniteTransition(label = "course-current-node")
-        transition.animateFloat(
-            initialValue = 0.96f,
-            targetValue = 1.08f,
-            animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
-            label = "course-current-ring-pulse",
-        ).value
-    } else 1f
+
+    val transition = if (current) rememberInfiniteTransition(label = "course-current-node") else null
+    val ringScale = transition?.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.25f,
+        animationSpec = infiniteRepeatable(tween(1600), RepeatMode.Restart),
+        label = "course-current-ring-scale",
+    )?.value ?: 1f
+    val ringAlpha = transition?.animateFloat(
+        initialValue = 0.70f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(tween(1600), RepeatMode.Restart),
+        label = "course-current-ring-alpha",
+    )?.value ?: 0f
 
     Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
         if (current) {
@@ -387,10 +442,10 @@ private fun NodeFace(lesson: CourseLesson) {
                 color = androidx.compose.ui.graphics.Color.Transparent,
                 shape = CircleShape,
                 border = BorderStroke(3.dp, PompColors.Cinnabar),
-                modifier = Modifier.size(CURRENT_RING_SIZE).graphicsLayer {
-                    scaleX = pulse
-                    scaleY = pulse
-                    alpha = 1f - ((pulse - 0.96f) * 1.8f).coerceIn(0f, 0.35f)
+                modifier = Modifier.size(NODE_SIZE + 12.dp).graphicsLayer {
+                    scaleX = ringScale
+                    scaleY = ringScale
+                    alpha = ringAlpha
                 },
             ) {}
         }
@@ -450,7 +505,7 @@ private fun CourseLesson.stateLabel(): String = when (access) {
 }
 
 private sealed interface CourseRow {
-    data class Unit(val title: String) : CourseRow
+    data class Unit(val number: Int, val title: String) : CourseRow
     data class Lesson(val lesson: CourseLesson, val slot: Int, val previousSlot: Int?) : CourseRow
     data class LockedLesson(val lesson: CourseLesson) : CourseRow
 }
@@ -459,7 +514,7 @@ private fun CourseMap.toRows(): List<CourseRow> = buildList {
     var slot = 0
     var previousSlot: Int? = null
     units.forEach { unit ->
-        add(CourseRow.Unit(unit.title))
+        add(CourseRow.Unit(unit.number, unit.title))
         unit.lessons.forEach { lesson ->
             add(CourseRow.Lesson(lesson, slot, previousSlot))
             previousSlot = slot
