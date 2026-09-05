@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.TrackChanges
@@ -131,7 +132,6 @@ fun CourseScreen(
                                 (it.item as? PathItem.Lesson)?.lesson?.isCurrent == true
                         }
                         if (rowIndex >= 0 && viewportHeight > 0) {
-                            // Mini App places the current node at ~42% of the visible viewport.
                             listState.scrollToItem(
                                 index = rowIndex + if (foundationVisible) 1 else 0,
                                 scrollOffset = -(viewportHeight * 0.42f).roundToInt(),
@@ -197,7 +197,6 @@ private fun courseLevelLabel(level: String): String {
     return if (number != null) "HSK $number" else level.uppercase()
 }
 
-/** Mini App `.htop`: compact level pill + streak + XP + daily goal. */
 @Composable
 private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit) {
     Row(
@@ -334,7 +333,6 @@ fun GoalRing(
     }
 }
 
-/** Mini App `.pwrap`: overall course progress immediately under `.htop`. */
 @Composable
 private fun CourseProgressBar(map: CourseMap) {
     val done = map.progress.completedLessons.coerceIn(0, map.totalLessons.coerceAtLeast(0))
@@ -360,7 +358,7 @@ private fun CourseProgressBar(map: CourseMap) {
         }
         Spacer(Modifier.width(10.dp))
         Text(
-            text = "$done / ${map.totalLessons}",
+            text = "$done / ${map.totalLessons} ${stringResource(R.string.course_progress_lessons)}",
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
             color = PompColors.InkSecondary,
             fontWeight = FontWeight.Medium,
@@ -368,7 +366,6 @@ private fun CourseProgressBar(map: CourseMap) {
     }
 }
 
-/** Mini App `.today`: fixed XP summary at left, horizontally scrolling task chips. */
 @Composable
 private fun TodayPlanStrip(today: CourseToday) {
     Row(
@@ -465,7 +462,6 @@ private fun StaleBanner() {
     }
 }
 
-/** Mini App `.uban`: unlocked dark banner, locked white outlined banner. */
 @Composable
 private fun UnitHeader(unit: CourseUnit) {
     val background = if (unit.isLocked) PompColors.PaperRaised else PompColors.Ink
@@ -494,7 +490,7 @@ private fun UnitHeader(unit: CourseUnit) {
                 maxLines = 2,
             )
             Icon(
-                imageVector = if (unit.isLocked) Icons.Filled.Lock else Icons.Filled.School,
+                imageVector = if (unit.isLocked) Icons.Filled.Lock else Icons.Filled.MenuBook,
                 contentDescription = null,
                 tint = foreground.copy(alpha = 0.85f),
                 modifier = Modifier.size(18.dp),
@@ -512,6 +508,9 @@ private fun pathOffset(unitIndex: Int, nodeIndex: Int): Dp {
     val pxLike = (sin((unitIndex * 3 + nodeIndex) * 0.9) * PATH_SWING.value).roundToInt()
     return pxLike.dp
 }
+
+private fun courseNodeLabel(value: String): String =
+    if (value.length > 10) value.take(9) + "…" else value
 
 @Composable
 private fun PathRow(
@@ -598,7 +597,7 @@ private fun PathRow(
                 is PathItem.Lesson -> {
                     val lesson = item.lesson
                     Text(
-                        text = lesson.hanziPreview.take(10),
+                        text = courseNodeLabel(lesson.hanziPreview),
                         style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
                         color = if (lesson.status == LessonStatus.LOCKED) {
                             PompColors.InkDisabled
@@ -682,10 +681,14 @@ private fun CurrentBubble() {
     }
 }
 
-/** Mini App SVG trail: 34px warm rail plus 4px white dotted highlight. */
 @Composable
 private fun PathConnector(previousX: Dp, currentX: Dp) {
-    Canvas(modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT)) {
+    Canvas(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(PATH_ROW_HEIGHT)
+            .offset(y = (-42).dp),
+    ) {
         val center = size.width / 2f
         val startX = center + previousX.toPx()
         val endX = center + currentX.toPx()
@@ -904,25 +907,58 @@ private fun PathPanda(
 ) {
     Box(modifier = modifier.size(72.dp), contentAlignment = Alignment.Center) {
         CoursePandaMascot(modifier = Modifier.size(72.dp))
-        Surface(
-            color = PompColors.PaperRaised,
-            shape = RoundedCornerShape(14.dp),
-            border = BorderStroke(1.dp, PompColors.Divider),
+        Box(
             modifier = Modifier
                 .align(if (leftBubble) Alignment.TopStart else Alignment.TopEnd)
                 .offset(y = (-28).dp),
         ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 11.sp,
-                    lineHeight = 11.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
-                color = PompColors.Ink,
-                modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
-                maxLines = 1,
-            )
+            Surface(
+                color = PompColors.PaperRaised,
+                shape = RoundedCornerShape(14.dp),
+                border = BorderStroke(1.dp, PompColors.Divider),
+            ) {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 11.sp,
+                        lineHeight = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                    ),
+                    color = PompColors.Ink,
+                    modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
+                    maxLines = 1,
+                )
+            }
+            Canvas(
+                modifier = Modifier
+                    .size(8.dp)
+                    .align(if (leftBubble) Alignment.BottomStart else Alignment.BottomEnd)
+                    .offset(
+                        x = if (leftBubble) 20.dp else (-20).dp,
+                        y = 4.dp,
+                    ),
+            ) {
+                val path = Path().apply {
+                    moveTo(size.width / 2f, size.height)
+                    lineTo(0f, size.height / 2f)
+                    lineTo(size.width / 2f, 0f)
+                    lineTo(size.width, size.height / 2f)
+                    close()
+                }
+                drawPath(path, color = PompColors.PaperRaised)
+                drawLine(
+                    PompColors.Divider,
+                    Offset(size.width / 2f, size.height),
+                    Offset(size.width, size.height / 2f),
+                    strokeWidth = 1.dp.toPx(),
+                )
+                drawLine(
+                    PompColors.Divider,
+                    Offset(size.width, size.height / 2f),
+                    Offset(size.width / 2f, 0f),
+                    strokeWidth = 1.dp.toPx(),
+                )
+            }
         }
     }
 }
@@ -1063,13 +1099,6 @@ private sealed interface CourseRow {
     ) : CourseRow
 }
 
-/**
- * Mini App path algorithm, value for value:
- * - offset = sin((unitIndex*3 + nodeIndex)*0.9) * 76
- * - unlocked milestone unit inserts a chest after at most three lessons
- * - milestone boss is the final node
- * - a panda appears on every fifth-ish non-current lesson (`k % 5 == 2`)
- */
 private fun CourseMap.toRows(): List<CourseRow> = buildList {
     var mascotCount = 0
     units.forEachIndexed { unitIndex, unit ->
