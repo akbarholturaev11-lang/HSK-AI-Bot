@@ -46,12 +46,9 @@ button:disabled{cursor:default}
 .level-bars{display:flex;align-items:flex-end;gap:3px;height:30px}
 .level-bars i{display:block;width:5px;border-radius:3px;background:var(--line)}
 .level-bars i.on{background:var(--cin)}
-.goal-icon{width:36px;height:36px;display:grid;place-items:center;background:var(--goldbg);border-radius:12px;color:#986B12}
-.goal-icon .icon{width:22px;height:22px}
-.goal-icon.daily_communication{background:#E4F2EA;color:#257B54}
-.goal-icon.travel{background:#E7EFF6;color:#3D729B}
-.goal-icon.work_china{background:var(--cinbg);color:var(--cin2)}
-.goal-icon.study_china{background:#EDEAF6;color:#776099}
+.goal-icon{width:36px;height:36px;display:grid;place-items:center;color:var(--ink2);transition:color .18s}
+.goal-icon .icon{width:25px;height:25px;stroke-width:1.6}
+.lv.sel .goal-icon{color:var(--cin2)}
 .chosen{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);margin:0 0 17px;line-height:1.5}
 .chosen .icon{width:16px;height:16px;color:var(--jade)}
 .chosen b{font-weight:600;color:var(--ink)}
@@ -133,11 +130,11 @@ function icon(name){
     back:'<path d="M19 12H5m6-6-6 6 6 6"/>',
     arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
     check:'<path d="m5 12 4 4L19 6"/>',
-    hsk_exam:'<rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6m-6 4h3m-3 4 2 2 4-4"/>',
-    daily_communication:'<path d="M9 18H5l-3 3V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v2"/><path d="M13 11h6a3 3 0 0 1 3 3v7l-3-2h-6a3 3 0 0 1-3-3v-2a3 3 0 0 1 3-3Z"/>',
-    travel:'<path d="m3 10 7 2 6-8c2-2 5-2 4 1l-6 9 1 7-3 1-3-6-5-2Z"/>',
-    work_china:'<rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12c5 3 13 3 18 0m-9 0v4"/>',
-    study_china:'<path d="m2 9 10-5 10 5-10 5L2 9Zm4 3v6c4 3 8 3 12 0v-6m4-3v8"/>'
+    hsk_exam:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6m-6 4h4m-4 5 2 2 4-4"/>',
+    daily_communication:'<path d="M7 18H4V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-6l-4 3v-3Z"/><path d="M8 9h8m-8 4h5"/>',
+    travel:'<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/>',
+    work_china:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18m-11 0v3h4v-3"/>',
+    study_china:'<path d="M12 5C9 3 6 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/>'
   };
   return '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.check)+'</svg>';
 }

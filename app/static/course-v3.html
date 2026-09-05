@@ -1209,6 +1209,7 @@ function pingMiniAppExit(){
 try{
   document.addEventListener("visibilitychange",function(){
     if(document.visibilityState==="hidden")pingMiniAppExit();
+    else{EXIT_PINGED=false;refreshCourseProgress()}
   });
   window.addEventListener("pagehide",pingMiniAppExit);
   /* bfcache: sahifa xotiradan tiklanganda (obuna, lug'at yoki AI Voice
@@ -1381,13 +1382,39 @@ function savePreferences(body){
     }).catch(function(){return null});
 }
 function syncNotify(){if(MAP&&MAP.notify&&typeof MAP.notify.enabled==="boolean")notifOn=MAP.notify.enabled}
+/* Refresh server-confirmed daily progress without replacing active lesson/section
+   objects. A completion arriving during a refresh queues one newer read. */
+var PROGRESS_REFRESH=null,PROGRESS_REFRESH_QUEUED=false;
+function refreshCourseProgress(afterWrite){
+  if(!INIT_DATA||!MAP||!Array.isArray(MAP.units))return Promise.resolve(false);
+  if(PROGRESS_REFRESH){if(afterWrite)PROGRESS_REFRESH_QUEUED=true;return PROGRESS_REFRESH}
+  var snapshot=MAP,level=MAP.level||getSelectedLevel();
+  var controller=window.AbortController?new AbortController():null,timer;
+  var deadline=new Promise(function(resolve){timer=setTimeout(function(){if(controller)controller.abort();resolve(null)},10000)});
+  PROGRESS_REFRESH=Promise.race([_fetchCourseMap(level,controller?controller.signal:undefined),deadline])
+    .then(function(d){
+      if(PROGRESS_REFRESH_QUEUED||MAP!==snapshot||!d||d._parseFail||d._status>=400||d.authenticated===false||!d.units||d.level!==level)return false;
+      if(Object.prototype.hasOwnProperty.call(d,"today"))MAP.today=d.today;
+      if(d.progress)MAP.progress=d.progress;
+      if(d.study_setup)adoptStudySetup(d);
+      ratingLoaded=false;
+      renderCourse();renderProfile();
+      return true;
+    }).catch(function(){return false}).then(function(updated){
+      clearTimeout(timer);PROGRESS_REFRESH=null;
+      if(PROGRESS_REFRESH_QUEUED){PROGRESS_REFRESH_QUEUED=false;return refreshCourseProgress()}
+      return updated;
+    });
+  return PROGRESS_REFRESH;
+}
 function notifTimesHtml(){var c={uz:{head:"Bot quyidagi holatlarda xabar yuboradi:",items:["Reytingda kimdir sizdan o'zib ketsa","Kun tugayotganda darsni hali bajarmagan bo'lsangiz","Ketma-ket kunlar seriyangiz uzilish xavfida bo'lsa"]},ru:{head:"Бот пришлёт уведомление, когда:",items:["кто-то обгоняет вас в рейтинге","день заканчивается, а урок ещё не пройден","ваша серия дней под угрозой"]},tj:{head:"Бот вақте огоҳӣ мефиристад, ки:",items:["касе дар рейтинг аз шумо пеш меравад","рӯз ба охир мерасаду дарс иҷро нашудааст","силсилаи рӯзҳои пайдарпайи шумо дар хатар аст"]}}[LANG]||{head:"",items:[]};return '<b style="color:var(--ink);font-weight:500">'+esc(c.head)+'</b>'+c.items.map(function(x){return '<div style="margin-top:3px">• '+esc(x)+'</div>'}).join("");}
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;renderAll()},
-  show:function(s){SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
+  show:function(s){var previous=SCREEN;SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
     document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.s===s)});
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
+    if(s==="course"&&previous!=="course")refreshCourseProgress();
     if(s==="voice")renderVoice();
     if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
   openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on");startSheetPromo("#sheet")},
@@ -4014,11 +4041,11 @@ function adoptServerLang(d){
 /* Map yuklash — cold-start / tranzient server xatolarida ("birinchi ochkanda
    API yiqildi") darrov "ulanmagan" gate ko'rsatilmaydi, bir necha marta qayta
    uriniladi. Faqat haqiqiy 401 (auth) yoki initData yo'qligida gate chiqadi. */
-function _fetchCourseMap(lv){
+function _fetchCourseMap(lv,signal){
   var entrySource="";try{entrySource=new URLSearchParams(location.search||"").get("source")||""}catch(e){}
   var url="/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())
     +"&sid="+encodeURIComponent(COURSE_SESSION_ID)+"&source="+encodeURIComponent(entrySource);
-  return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){
+  return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA},cache:"no-store",signal:signal}).then(function(r){
     return r.json().then(function(d){d._status=r.status;return d}).catch(function(){return {_status:r.status,_parseFail:true}});
   });
 }
@@ -4091,6 +4118,7 @@ function applyLessonDone(cur,d){
   if(next&&isPremiumLocked(next))next.status="locked";
   window._pendingCheckpointNextIdx=(cur&&cur.checkpoint&&normalizeLevel((MAP&&MAP.level)||"hsk1")==="hsk1"&&Number(cur.src)===1&&next)?al.indexOf(next):null;
   renderAll();
+  if(d&&d.ok)refreshCourseProgress(true);
   if(al.every(function(l){return l.status==="done"})){
     var nxt=_NEXT_LEVEL[MAP.level||"hsk1"];
     if(nxt){App.showLevelUp("level",d);setTimeout(function(){loadLevel(nxt)},2200);return;}
@@ -5058,6 +5086,7 @@ function closeSection(){
   SECTION=null;stopSpeak();
   var ov=$("#secov");ov.classList.remove("on");ov.classList.remove("vc-open");ov.innerHTML="";
   try{NavBack.sync()}catch(e){}
+  refreshCourseProgress();
 }
 
 /* ---------- Ieroglif tanish ---------- */
@@ -5624,6 +5653,7 @@ var MIST=(function(){
     fetch("/api/miniapp/mistakes/review/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},
       body:JSON.stringify({session_id:RV.session,answers:RV.answers})})
     .then(function(r){return r.json()}).then(function(d){
+      if(d&&d.ok)refreshCourseProgress(true);
       if(!live())return;
       if(!d||!d.ok){toast(L().err,2200);closeReview();load(false);return}
       clearRef();renderResult(d);
@@ -5857,8 +5887,9 @@ var TEST=(function(){
     fetch("/api/v3/exams/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({session_id:EXD.id,answers:eans})})
       .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})})
       .then(function(o){
-        if(!live())return;
         if(!o.ok||!o.d||!o.d.ok)throw new Error("exam_complete");
+        refreshCourseProgress(true);
+        if(!live())return;
         EX_SUBMITTING=false;clearGateRef("training_test:"+EXD.level);renderExamResult(o.d);
       })
       .catch(function(){
@@ -6210,7 +6241,7 @@ function endCall(){
   stopHard();stopSpeak();var sid=sess;started=false;sess=null;
   fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
-   .then(function(j){showDoneResult(j||{})})
+   .then(function(j){if(j&&j.ok)refreshCourseProgress(true);showDoneResult(j||{})})
    .catch(function(){showDoneResult({message_count:turn})});
 }
 function txRow(t){
@@ -6272,7 +6303,7 @@ function reset(){$("done").classList.remove("on");softReset()}
 function swap(){
   if(busy)return;
   stopHard();stopSpeak();closeSettings();
-  if(sess){fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),session_id:sess})}).catch(function(){})}
+  if(sess){fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),session_id:sess})}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}
   persona=(persona==="bao"?"li":"bao");softReset();
 }
 
@@ -6306,7 +6337,7 @@ mic.addEventListener("pointerleave",function(e){if(holdAt&&holdOk)endHoldEvent(e
 function leave(){
   try{stopHard()}catch(e){}try{stopSpeak()}catch(e){}
   try{closeSettings();closeHints();closeKb()}catch(e){}
-  if(sess){try{fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,session_id:sess})}).catch(function(){})}catch(e){}}
+  if(sess){try{fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,session_id:sess})}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}catch(e){}}
   started=false;sess=null;
   closeSection();App.show("voice");
 }

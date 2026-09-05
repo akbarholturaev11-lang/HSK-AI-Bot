@@ -229,6 +229,13 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ### 2026-09-05 — Kunlik reja (Daily Plan) va o'quv signallari
 
+Live holat (2026-09-06): `course-v3.html` ichidagi `refreshCourseProgress`
+dars/test/xatolar/voice natijasi saqlangach va kursga qaytilganda serverdan
+`today`/`progress`ni qayta oladi. Vazifa bajarildi belgisi faqat serverdan
+keladi; parallel yozuv yangi o'qishni navbatga qo'yadi, eski level javobi
+e'tiborsiz qoladi. Aktiv dars obyektlarini almashtirmang. E2E regressiyalar
+`tests/e2e/test_miniapp_smoke.py`dagi `daily_plan` testlarida.
+
 Changed:
 - Yangi DB ustunlari (`0071_course_daily_plan`): `course_miniapp_profiles` ga
   `preferred_focus`, `daily_goal_xp`, `daily_plan_key`, `daily_plan_json`.

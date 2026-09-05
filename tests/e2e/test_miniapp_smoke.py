@@ -521,6 +521,145 @@ def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
     expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
 
 
+@pytest.mark.parametrize('width', [390, 1280])
+def test_daily_plan_updates_after_inline_exam_without_reload(page, width):
+    page.set_viewport_size({'width': width, 'height': 844})
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    errors = []
+    page.on('pageerror', lambda error: errors.append(str(error)))
+    saved = []
+    reads = []
+    task = {'type': 'mock_exam', 'done': False, 'access': 'open', 'available': True}
+
+    def map_reply(route):
+        reads.append(route.request.url)
+        data = _map_with_today([{**task, 'done': bool(saved)}])
+        data['today']['done_xp'] = 45 if saved else 25
+        data['progress']['daily_xp'] = data['today']['done_xp']
+        json_response(route, data)
+
+    page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
+    page.route('**/api/v3/exams/start', lambda route: json_response(route, {
+        'ok': True, 'session': {
+            'id': 'daily-plan-exam', 'level': 'hsk1', 'duration_min': 5, 'pass_score': 60,
+            'questions': [{'id': 'q1', 'format': 'text_choice', 'section': 'reading',
+                           'prompt': 'Tarjimani tanlang', 'sentence': '你好', 'options': ['Salom', 'Xayr']}],
+        },
+    }))
+    pending = []
+    page.route('**/api/v3/exams/complete', lambda route: pending.append(route))
+    page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
+    page.evaluate('window.__sameDocument = true')
+    selector = '.today .tchip' if width == 390 else '.crail .rl-task'
+    page.locator(selector, has_text='Test').click()
+    page.locator('#tc-exlist .ex').first.click()
+    with page.expect_request('**/api/v3/exams/complete'):
+        page.locator('#tc-exam .opt').first.click()
+    assert len(reads) == 1
+    expect(page.locator(selector)).not_to_have_class(re.compile(r'\bdone\b'))
+    saved.append(True)
+    json_response(pending.pop(), {
+        'ok': True, 'score': 1, 'total': 1, 'percent': 100, 'passed': True,
+        'pass_score': 60, 'section_scores': {}, 'wrong_items': [], 'reward': {'awarded_xp': 20},
+    })
+    expect(page.locator('#tc-exam')).to_contain_text('100%')
+    # The course behind the result overlay refreshes immediately, before closing it.
+    expect(page.locator(selector)).to_have_class(re.compile(r'\bdone\b'))
+    expect(page.locator(selector + ' i')).to_have_class(re.compile(r'\bti-check\b'))
+    assert page.evaluate('MAP.today.done_xp') == 45
+    assert page.evaluate('window.__sameDocument') is True
+    expect(page.locator('#secov')).to_have_class(re.compile(r'\bon\b'))
+    assert len(reads) >= 2
+    assert errors == []
+
+
+def test_daily_plan_refresh_keeps_last_state_on_error_and_retries_on_return(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    task = {'type': 'mock_exam', 'done': False, 'access': 'open', 'available': True}
+    reads = []
+
+    def map_reply(route):
+        reads.append(route.request.url)
+        if len(reads) == 2:
+            json_response(route, {'error': 'temporary_failure'}, status=503)
+        else:
+            json_response(route, _map_with_today([{**task, 'done': len(reads) >= 3}]))
+
+    page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
+    page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
+    expect(page.locator('.today .tchip')).to_be_visible()
+    assert page.evaluate('refreshCourseProgress(true)') is False
+    expect(page.locator('.today .tchip')).not_to_have_class(re.compile(r'\bdone\b'))
+    page.locator('#nav button[data-s="mashq"]').click()
+    page.locator('#nav button[data-s="course"]').click()
+    expect(page.locator('.today .tchip')).to_have_class(re.compile(r'\bdone\b'))
+    assert len(reads) == 3
+
+
+def test_daily_plan_refresh_queues_a_new_read_after_save_and_ignores_old_level(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    task = {'type': 'mock_exam', 'done': False, 'access': 'open', 'available': True}
+    reads = []
+    pending = []
+
+    def map_reply(route):
+        reads.append(route.request.url)
+        if len(reads) == 1:
+            json_response(route, _map_with_today([task]))
+        else:
+            pending.append(route)
+
+    page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
+    page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
+    expect(page.locator('.today .tchip')).to_be_visible()
+    with page.expect_request(re.compile(r'.*/api/v3/map\?.*')):
+        page.evaluate('void refreshCourseProgress()')
+    page.evaluate('void refreshCourseProgress(true)')
+    page.wait_for_timeout(50)
+    assert len(reads) == 2
+    with page.expect_request(re.compile(r'.*/api/v3/map\?.*')):
+        page.wait_for_timeout(50)
+        json_response(pending.pop(0), _map_with_today([task]))
+    page.wait_for_timeout(50)
+    json_response(pending.pop(0), _map_with_today([{**task, 'done': True}]))
+    expect(page.locator('.today .tchip')).to_have_class(re.compile(r'\bdone\b'))
+    with page.expect_request(re.compile(r'.*/api/v3/map\?.*')):
+        page.evaluate('void refreshCourseProgress()')
+    page.evaluate('MAP = {...MAP, level:"hsk2", today:{...MAP.today, level:"hsk2"}}')
+    page.wait_for_timeout(50)
+    json_response(pending.pop(0), _map_with_today([task]))
+    page.wait_for_function('PROGRESS_REFRESH === null')
+    assert page.evaluate('MAP.level') == 'hsk2'
+    assert page.evaluate('MAP.today.level') == 'hsk2'
+    assert page.evaluate('MAP.today.tasks[0].done') is True
+
+
+def test_daily_plan_lesson_completion_refreshes_server_plan(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    completed = []
+    task = {'type': 'continue_lesson', 'ref': 'hsk1:1', 'done': False, 'access': 'open', 'available': True}
+
+    def map_reply(route):
+        json_response(route, _map_with_today([{**task, 'done': bool(completed)}]))
+
+    def complete_reply(route):
+        completed.append(json.loads(route.request.post_data))
+        json_response(route, {'ok': True, 'completed_lessons_count': 1})
+
+    page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
+    page.route('**/api/v3/lesson/complete', complete_reply)
+    page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
+    expect(page.locator('.today .tchip')).to_be_visible()
+    # Enter the real final submit path without replaying unrelated lesson cards.
+    page.evaluate('Flow.lessonIdx=0; Flow.exitRequired=[]; flowDone()')
+    expect(page.locator('.today .tchip')).to_have_class(re.compile(r'\bdone\b'))
+    assert completed[0]['lesson_id'] == 1
+
+
 def test_course_v3_wide_screen_uses_a_side_rail_instead_of_stretching(page):
     """Telegram Desktop: bo'sh joy yon ustunga ketadi, kartalar cho'zilmaydi.
 
