@@ -61,4 +61,11 @@ object PompColors {
     val LockedDepth = Color(0xFFD8D2C4)
     val ChestDepth = Color(0xFFD8C79A)
     val BossDepth = Color(0xFFE8CFC9)
+
+    // Course composables use explicit node-prefixed aliases so their role is
+    // obvious at the call site and future token refactors stay mechanical.
+    val NodeDoneDepth = DoneDepth
+    val NodeLockedDepth = LockedDepth
+    val NodeChestDepth = ChestDepth
+    val NodeBossDepth = BossDepth
 }
