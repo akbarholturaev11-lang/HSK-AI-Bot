@@ -107,6 +107,17 @@ data class RewardChestDto(
 )
 
 @Serializable
+data class RewardChestOpenResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("error") val error: String? = null,
+    @SerialName("reward_type") val rewardType: String? = null,
+    @SerialName("reward_value") val rewardValue: Int = 0,
+    @SerialName("xp") val xp: Int = 0,
+    @SerialName("daily_xp") val dailyXp: Int = 0,
+    @SerialName("reward_chest") val rewardChest: RewardChestDto? = null,
+)
+
+@Serializable
 data class CourseUserDto(
     @SerialName("name") val name: String = "",
     @SerialName("avatar") val avatar: String = "",
