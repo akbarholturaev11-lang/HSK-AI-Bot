@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="course_progress_lessons">dars</string>
     <string name="course_chest_ready">Sovg‘a tayyor</string>
     <string name="course_chest_progress">Sovg‘agacha %1$d XP</string>
     <string name="course_chest_reward">+%1$d XP olindi</string>
