@@ -21,7 +21,8 @@ HSK AI bilan ilk qadam — yangi onboarding
 - Daftar va qalam ushlagan HSK AI pandasi, suhbat pufagi va botning qizil/krem ranglari.
 - Panda salomlashuvi, tanlovda tabassum va bosh qimirlatish, ekran almashuvi,
   tugma bosilishi va tanlangan belgi effektlari. Reduced-motion sozlamasi hurmat qilinadi.
-- Daraja va maqsad uchun katta tanlov kartalari, bosqich ko'rsatkichi.
+- Daraja va maqsad uchun yengil shriftli, 1px chegarali tanlov kartalari;
+  qalin soyalar va takroriy izohlar qisqartirilgan, progress ixchamlashtirilgan.
 - Telefonning xavfsiz chetlarini hisobga oladigan, doim ko'rinadigan CTA.
 - Saqlash paytida takror bosish himoyasi, xato/12 soniyalik timeoutdan keyin retry.
 - O'zbek, rus va tojik tillari. Mavjud 3 ekran va Starter 0 yo'nalishi saqlangan.
