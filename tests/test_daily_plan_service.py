@@ -180,11 +180,27 @@ class PreferredFocusTests(unittest.TestCase):
     def test_stated_focus_wins_while_there_is_no_evidence(self):
         flat = {"word": 0, "grammar": 0, "character": 0, "pronunciation": 0, "listening": 0}
         tasks = DailyPlanService.build(
-            signals(weakness=flat, evidence_count=0, preferred_focus="listening"),
+            signals(weakness=flat, evidence_count=0, preferred_focus="speaking"),
             seed="u1",
         )
         drill = next(task for task in tasks if task["t"] == TASK_SKILL_DRILL)
-        self.assertEqual(drill["skill"], "listening")
+        self.assertEqual(drill["skill"], "pronunciation")
+
+    def test_a_skill_without_a_screen_is_never_offered(self):
+        # Server tinglash savollarini bera oladi, lekin Mini App'da uni
+        # ochadigan ekran YO'Q. Ochib bo'lmaydigan vazifa rejaga tushmaydi.
+        tasks = DailyPlanService.build(
+            signals(
+                preferred_focus="listening",
+                evidence_count=0,
+                current_part=30,
+                weakness={"word": 0, "grammar": 0, "character": 0, "pronunciation": 0, "listening": 90},
+                plan_size=4,
+            ),
+            seed="u1",
+        )
+        drills = [task for task in tasks if task["t"] == TASK_SKILL_DRILL]
+        self.assertTrue(all(task["skill"] != "listening" for task in drills))
 
     def test_evidence_overrides_the_stated_focus_over_time(self):
         # O'quvchi "tinglash" degan, lekin real xatolar ieroglifda va u

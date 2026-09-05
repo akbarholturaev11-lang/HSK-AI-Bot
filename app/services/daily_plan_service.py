@@ -71,6 +71,14 @@ SKILL_FOR_WEAKNESS = {
 # ochilgan mashqda tinglash savoli deyarli bo'lmasdi.
 SKILL_MIN_PART = {"listening": 8, "characters": 3, "pronunciation": 5}
 
+# Skill klientda ochiladigan EKRANI borsagina taklif qilinadi. Bugun Mini
+# App'da ikkita mashq ekrani bor: "Ieroglif tanish" (characters) va
+# "Talaffuz mashqi" (pronunciation). TINGLASH uchun ekran YO'Q — server
+# savol bera oladi, lekin ochadigan joy yo'q, shuning uchun u rejaga
+# tushmaydi (qat'iy qoida: hozir boshlab bo'lmaydigan vazifa berilmaydi).
+# Umumiy drill ekrani qo'shilganda bu ro'yxat kengayadi.
+SKILL_WITH_CLIENT_SCREEN = frozenset({"characters", "pronunciation"})
+
 # Aytilgan fokus qaysi zaiflikka ishora qiladi (prior).
 FOCUS_TO_WEAKNESS = {
     "listening": "listening",
@@ -167,6 +175,8 @@ class DailyPlanService:
         scores = cls._weakness_scores(signals)
         best_skill, best_score = None, 0.0
         for weakness_key, skill in SKILL_FOR_WEAKNESS.items():
+            if skill not in SKILL_WITH_CLIENT_SCREEN:
+                continue
             if signals.current_part < SKILL_MIN_PART.get(skill, 1):
                 continue
             score = scores.get(weakness_key, 0.0)

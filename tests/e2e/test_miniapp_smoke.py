@@ -336,6 +336,129 @@ def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
     assert sent[0]["goal"] == "travel"
 
 
+def _map_with_today(tasks, *, language="uz", foundation=None):
+    data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data.setdefault("progress", {}).update({"xp": 340, "streak": 4, "completed": 12})
+    data["user"] = {
+        "name": "Smoke",
+        "avatar": "阿",
+        "language": language,
+        "is_paid": True,
+        "referral_code": "",
+        "onboarding_completed": True,
+    }
+    if foundation is not None:
+        data["user"]["foundation"] = foundation
+    data["notify"] = {"enabled": True}
+    data["today"] = {
+        "goal_xp": 40,
+        "done_xp": 25,
+        "streak": 4,
+        "total": len(tasks),
+        "done": sum(1 for task in tasks if task["done"]),
+        "complete": all(task["done"] for task in tasks),
+        "tasks": tasks,
+        "level": "hsk1",
+        "local_day": "2026-09-05",
+    }
+    return data
+
+
+def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
+    """«Bugungi reja» tasmasi — mavjud progress qatoriga ixcham qator.
+
+    Har chip MAVJUD bo'limga olib boradi: ochib bo'lmaydigan vazifa
+    serverda ham berilmaydi, shuning uchun tasma "o'lik" tugma ko'rsatmaydi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    tasks = [
+        {"type": "continue_lesson", "ref": "hsk1:13", "done": True, "access": "open", "available": True},
+        {"type": "mistake_review", "done": False, "access": "open", "available": True},
+        {"type": "skill_drill", "skill": "characters", "done": False, "access": "ad", "available": True},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(route, _map_with_today(tasks)),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    strip = page.locator(".today")
+    expect(strip).to_be_visible()
+    expect(strip).to_contain_text("Bugun")
+    expect(strip).to_contain_text("25")
+    expect(page.locator(".today .tchip")).to_have_count(3)
+    # Bajarilgan vazifa bosilmaydi (takroriy ish taklif qilinmaydi).
+    expect(page.locator(".today .tchip").first).to_have_class(re.compile(r"\bdone\b"))
+
+    page.locator(".today .tchip", has_text="Xatolar").click()
+    expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
+
+
+def test_course_v3_today_strip_marks_a_locked_task_instead_of_hiding_it(page):
+    """Kun ichida qulflangan vazifa ro'yxatda QOLADI va almashtirilmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    tasks = [
+        {"type": "continue_lesson", "ref": "hsk1:13", "done": False, "access": "open", "available": True},
+        {"type": "voice_dialog", "role": "friend", "done": False, "access": "locked", "available": False},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(route, _map_with_today(tasks)),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    chips = page.locator(".today .tchip")
+    expect(chips).to_have_count(2)
+    expect(chips.nth(1)).to_have_class(re.compile(r"\block\b"))
+
+
+def test_course_v3_without_a_server_plan_the_screen_is_unchanged(page):
+    """Server `today` yubormasa tasma UMUMAN chizilmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    expect(page.locator("#s-course .today")).to_have_count(0)
+
+
+def test_course_v3_starter_still_blocks_the_plan_for_a_true_beginner(page):
+    """Starter 0 majburiy bo'lsa ikkita raqobatchi chaqiriq bo'lmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    tasks = [
+        {"type": "continue_lesson", "ref": "hsk1:1", "done": False, "access": "open", "available": True},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(
+            route,
+            _map_with_today(
+                tasks,
+                foundation={
+                    "id": "starter0_hsk1",
+                    "version": 1,
+                    "required": True,
+                    "completed": False,
+                    "status": "required",
+                },
+            ),
+        ),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    expect(page.locator("#s-course .foundation-entry")).to_be_visible()
+    expect(page.locator("#s-course .today")).to_have_count(0)
+
+
 def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
     """Kunlik vaqt va fokus onboardingda EMAS, birinchi darsdan keyin so'raladi.
 

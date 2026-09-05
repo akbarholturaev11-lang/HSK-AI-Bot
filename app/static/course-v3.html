@@ -32,6 +32,22 @@ button{cursor:pointer}
 .pbar{flex:1;height:8px;background:var(--line);border-radius:6px;overflow:hidden}
 .pbar>i{display:block;height:100%;background:var(--cin);border-radius:6px;transition:width .4s}
 .pwrap small{font-size:12px;color:var(--ink2);font-weight:500}
+/* ---------- Bugungi reja tasmasi ----------
+   Ataylab YANGI QAVAT emas, bitta ixcham qator: yo'lakcha (asosiy mahsulot)
+   pastga siljimasin. Chapda kunlik XP, o'ngda 1-4 vazifa chipi. Chiplar
+   gorizontal suriladi, ya'ni ekran kengligi cheklamaydi. */
+.today{display:flex;align-items:center;gap:8px;padding:2px 0 8px 16px}
+.today-l{display:flex;align-items:center;gap:4px;flex-shrink:0;font-size:12px;color:var(--ink2);font-weight:500}
+.today-l i{font-size:14px;color:var(--cin)}
+.today-l b{color:var(--ink);font-weight:600}
+.today-c{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-right:16px}
+.today-c::-webkit-scrollbar{display:none}
+.tchip{display:flex;align-items:center;gap:4px;flex-shrink:0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:6px 10px;font-size:12.5px;font-weight:500;font-family:inherit;color:var(--ink)}
+.tchip i{font-size:14px;color:var(--ink3)}
+.tchip.done{background:var(--paper);border-style:dashed;color:var(--ink3)}
+.tchip.done i{color:var(--jade)}
+.tchip.lock{opacity:.55}
+.tchip.lock i{color:var(--ink3)}
 /* unit + path */
 .uban{display:flex;align-items:center;gap:10px;margin:8px 16px 0;background:var(--ink);color:#fff;border-radius:14px;padding:11px 14px}
 .uban.lock{background:var(--card);border:1px solid var(--line);color:var(--ink2)}
@@ -2277,6 +2293,13 @@ function foundationIsComplete(){
   var cached=foundationCachedState(s.id||"starter0_hsk1",s.version||1);
   return cached.completed===true;
 }
+/* Starter 0 hali navbatda turibdimi: MAJBURIY va tugatilmagan.
+   Tugagach karta "Qaytarish" bo'lib qolaveradi, lekin u endi yo'lni
+   to'smaydi — shuning uchun bu holat alohida tekshiriladi. */
+function foundationMustComeFirst(){
+  if(!MAP||normalizeLevel(MAP.level)!=="hsk1")return false;
+  return foundationMapState().status==="required"&&!foundationIsComplete();
+}
 function foundationEntryHtml(){
   if(!MAP||normalizeLevel(MAP.level)!=="hsk1")return"";
   var done=foundationIsComplete();
@@ -2298,6 +2321,11 @@ function renderCourse(){
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
     +goalRingHtml()+'</div>'
     +'<div class="pwrap"><div class="pbar"><i style="width:'+pct+'%"></i></div><small>'+done+' / '+total+' '+T().lessons+'</small></div>'
+    /* Starter 0 hali MAJBURIY va tugatilmagan bo'lsa reja ko'rsatilmaydi:
+       boshlovchida ikkita raqobatchi chaqiriq bo'lmasin. Starter tugagach
+       (yoki u majburiy bo'lmaganda) reja ko'rinadi — o'sha kartaning o'zi
+       "Qaytarish" bo'lib qolaveradi. */
+    +(foundationMustComeFirst()?"":todayStripHtml())
     +foundationEntryHtml();
   var mascP={ru:["Продолжаем!","Так держать!","Ещё урок!","У тебя получится!"],
     uz:["Davom etamiz!","Zo'r ketyapsan!","Yana bir dars!","Sen uddalaysan!"],
@@ -3184,6 +3212,60 @@ function chestSvg(){
     +'<circle cx="60" cy="60" r="7" fill="#FFC800" stroke="#B8860B" stroke-width="2"/></g></svg>';
 }
 function dailyXpVal(){var p=(MAP&&MAP.progress)||{};return Number(typeof p.daily_xp!=="undefined"?p.daily_xp:(p.xp||0)%50)||0}
+/* ---------- Bugungi reja ----------
+   Server `today` yubormasa tasma UMUMAN chizilmaydi va ekran bugungidek
+   qoladi. Har bir vazifa MAVJUD bo'limga olib boradi — ochib bo'lmaydigan
+   vazifa serverda ham berilmaydi. */
+function todayT(){return {
+  ru:{today:"Сегодня",part:"Часть",mistakes:"Ошибки",test:"Тест",talk:"Диалог",
+    chars:"Иероглифы",pron:"Произношение",done:"План выполнен"},
+  uz:{today:"Bugun",part:"Qism",mistakes:"Xatolar",test:"Test",talk:"Suhbat",
+    chars:"Ieroglif",pron:"Talaffuz",done:"Reja bajarildi"},
+  tj:{today:"Имрӯз",part:"Қисм",mistakes:"Хатоҳо",test:"Тест",talk:"Гуфтугӯ",
+    chars:"Ҳарфҳо",pron:"Талаффуз",done:"Нақша иҷро шуд"}
+}[LANG]||{}}
+var TODAY_TASK_ACTION={
+  continue_lesson:"App.goCurrentLesson()",
+  mistake_review:"App.openMistakes()",
+  mock_exam:"App.openTest()",
+  voice_dialog:"App.openVoiceCall()"
+};
+var TODAY_SKILL_ACTION={characters:"App.openRecog()",pronunciation:"App.openPron()"};
+function todayTaskLabel(task){
+  var t=todayT();
+  if(task.type==="continue_lesson"){
+    var part=String(task.ref||"").split(":")[1]||"";
+    return part?(t.part+" "+part):t.part;
+  }
+  if(task.type==="mistake_review")return t.mistakes;
+  if(task.type==="mock_exam")return t.test;
+  if(task.type==="voice_dialog")return t.talk;
+  if(task.type==="skill_drill")return task.skill==="pronunciation"?t.pron:t.chars;
+  return "";
+}
+function todayTaskIcon(task){
+  if(task.done)return "check";
+  if(!task.available)return "lock";
+  if(task.access==="ad")return "player-play";
+  return {continue_lesson:"book-2",mistake_review:"alert-triangle",mock_exam:"certificate",
+    voice_dialog:"microphone",skill_drill:"cards"}[task.type]||"circle";
+}
+function todayStripHtml(){
+  var plan=MAP&&MAP.today;
+  if(!plan||!plan.tasks||!plan.tasks.length)return "";
+  var t=todayT();
+  var chips=plan.tasks.map(function(task){
+    var action=task.type==="skill_drill"?TODAY_SKILL_ACTION[task.skill]:TODAY_TASK_ACTION[task.type];
+    var cls="tchip"+(task.done?" done":"")+(task.available?"":" lock");
+    var click=(task.done||!task.available||!action)?"":' onclick="'+action+'"';
+    return '<button class="'+cls+'"'+click+'><i class="ti ti-'+todayTaskIcon(task)+'"></i>'+esc(todayTaskLabel(task))+'</button>';
+  }).join("");
+  /* XP matni BITTA flex elementi bo'lishi kerak, aks holda "25 /40" kabi
+     ortiqcha bo'shliq chiqadi. */
+  return '<div class="today"><span class="today-l"><i class="ti ti-'+(plan.complete?"circle-check":"target-arrow")+'"></i>'
+    +'<span>'+esc(t.today)+' <b>'+(plan.done_xp||0)+'</b>/'+(plan.goal_xp||0)+'</span></span>'
+    +'<div class="today-c">'+chips+'</div></div>';
+}
 function goalRingHtml(){
   var dx=dailyXpVal(),r=Math.min(dx/dailyGoal,1),off=(100.5-100.5*r).toFixed(1);
   return '<span class="goalring'+(r>=1?" full":"")+'" id="goalring" onclick="App.show(\'profile\');renderProfile()">'
