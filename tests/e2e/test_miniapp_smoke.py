@@ -394,6 +394,22 @@ def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
     # Bajarilgan vazifa bosilmaydi (takroriy ish taklif qilinmaydi).
     expect(page.locator(".today .tchip").first).to_have_class(re.compile(r"\bdone\b"))
 
+    # Tasma YOPISHQOQ: pastga surilganda yo'lakcha ostida yo'qolib ketmaydi.
+    # Ilgari u qisqa o'ram ichida edi va sarlavha ostiga kirib ketardi.
+    before = page.evaluate(
+        "() => Math.round(document.querySelector('#s-course .today').getBoundingClientRect().top)"
+    )
+    page.mouse.wheel(0, 1400)
+    page.wait_for_timeout(300)
+    after = page.evaluate(
+        """() => {
+            const r = document.querySelector('#s-course .today').getBoundingClientRect();
+            return {top: Math.round(r.top), visible: r.top >= 0 && r.bottom <= innerHeight};
+        }"""
+    )
+    assert after["visible"], "surilgandan keyin tasma ko'rinib turishi kerak"
+    assert abs(after["top"] - before) <= 2, "tasma tepada qotib turishi kerak"
+
     page.locator(".today .tchip", has_text="Xatolar").click()
     expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
 
