@@ -32,8 +32,22 @@ data class CourseMapDto(
     @SerialName("progress") val progress: CourseProgressDto = CourseProgressDto(),
     @SerialName("user") val user: CourseUserDto = CourseUserDto(),
     @SerialName("notify") val notify: CourseNotifyDto = CourseNotifyDto(),
+    @SerialName("study_setup") val studySetup: CourseStudySetupDto? = null,
     @SerialName("today") val today: CourseTodayDto? = null,
     @SerialName("foundation") val foundation: CourseFoundationDto? = null,
+)
+
+@Serializable
+data class CourseStudySetupDto(
+    @SerialName("goal") val goal: String = "hsk_exam",
+    @SerialName("goal_chosen") val goalChosen: Boolean = false,
+    @SerialName("daily_minutes") val dailyMinutes: Int = 10,
+    @SerialName("preferred_focus") val preferredFocus: String? = null,
+    @SerialName("daily_goal_xp") val dailyGoalXp: Int = 30,
+    @SerialName("daily_goal_is_custom") val dailyGoalIsCustom: Boolean = false,
+    @SerialName("plan_size") val planSize: Int = 2,
+    @SerialName("pending_goal") val pendingGoal: Boolean = false,
+    @SerialName("pending") val pending: Boolean = false,
 )
 
 @Serializable
