@@ -3,7 +3,7 @@ package com.pomp.hskai.data.repository
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
-import com.pomp.hskai.data.api.AndroidCourseApi
+import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidOnboardingCompleteDto
 import com.pomp.hskai.data.api.AndroidOnboardingRequestDto
 import com.pomp.hskai.data.api.AndroidOnboardingStatusDto
@@ -14,7 +14,7 @@ import java.util.TimeZone
  * All course decisions remain server-owned; Android only sends the choices.
  */
 class OnboardingRepository(
-    private val api: AndroidCourseApi,
+    private val api: AndroidOnboardingApi,
     private val accessToken: suspend () -> ApiResult<String>,
     private val onSessionExpired: suspend () -> Unit = {},
     private val timezoneOffsetMinutes: () -> Int = {
@@ -26,7 +26,7 @@ class OnboardingRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall { api.onboardingStatus("Bearer $token") }
+        val result = apiCall { api.status("Bearer $token") }
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
         return result
     }
@@ -43,7 +43,7 @@ class OnboardingRepository(
             is ApiResult.Success -> result.value
         }
         val result = apiCall {
-            api.completeOnboarding(
+            api.complete(
                 authorization = "Bearer $token",
                 body = AndroidOnboardingRequestDto(
                     level = level,
