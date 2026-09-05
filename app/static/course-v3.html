@@ -1762,6 +1762,12 @@ var App={
     savePreferences({daily_goal_xp:v}).then(function(){renderProfile()})},
   /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
      birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
+  pickStudyGoal:function(k){App.closeSheet();
+    savePreferences({goal:k}).then(function(){
+      /* Maqsaddan keyin qolgan savollar; hammasi javoblangan bo'lsa to'xtaydi. */
+      if(STUDY_SETUP&&!STUDY_SETUP.preferred_focus)setTimeout(askStudyTime,220);
+      else renderAll();
+    })},
   pickStudyTime:function(v){App.closeSheet();
     savePreferences({daily_minutes:v}).then(function(){setTimeout(askStudyFocus,220)})},
   pickStudyFocus:function(k){App.closeSheet();
@@ -1947,15 +1953,18 @@ function playLessonEndAd(next){
    mavjud pastki varaq va `.opt-row` uslubi ishlatiladi, bir vaqtda bitta
    savol ko'rsatiladi. */
 function studySetupT(){return {
-  ru:{timeQ:"Сколько минут в день у вас есть?",timeSub:"От этого зависит длина плана на день.",
+  ru:{goalQ:"Зачем вам китайский?",goalSub:"От этого зависит, что будет в плане на день.",goals:{hsk_exam:"Сдать HSK",daily_communication:"Общаться в жизни",travel:"Путешествия",work_china:"Работа с Китаем",study_china:"Учёба в Китае"},
+    timeQ:"Сколько минут в день у вас есть?",timeSub:"От этого зависит длина плана на день.",
     focusQ:"На чём сделать упор?",focusSub:"Это подсказка для плана. Ошибки система найдёт сама.",
     min:"мин",skip:"Пропустить",
     focus:{speaking:"Разговор",listening:"Аудирование",vocabulary:"Слова и иероглифы",grammar:"Грамматика",none:"Без разницы"}},
-  uz:{timeQ:"Kuniga necha daqiqa vaqtingiz bor?",timeSub:"Kunlik reja uzunligi shunga bog'liq.",
+  uz:{goalQ:"Xitoy tili sizga nima uchun kerak?",goalSub:"Kunlik rejangiz shunga qarab tuziladi.",goals:{hsk_exam:"HSK imtihonini topshirish",daily_communication:"Kundalik muloqot",travel:"Sayohat",work_china:"Ish uchun xitoy tili",study_china:"Xitoyda o'qish"},
+    timeQ:"Kuniga necha daqiqa vaqtingiz bor?",timeSub:"Kunlik reja uzunligi shunga bog'liq.",
     focusQ:"Nimaga ko'proq urg'u beraylik?",focusSub:"Bu — reja uchun ishora. Xatolarni tizim o'zi topadi.",
     min:"daq",skip:"O'tkazib yuborish",
     focus:{speaking:"Gapirish",listening:"Tinglash",vocabulary:"So'z va ieroglif",grammar:"Grammatika",none:"Farqi yo'q"}},
-  tj:{timeQ:"Дар як рӯз чанд дақиқа вақт доред?",timeSub:"Дарозии нақшаи рӯзона аз ин вобаста аст.",
+  tj:{goalQ:"Забони чинӣ ба шумо барои чӣ лозим аст?",goalSub:"Нақшаи рӯзонаи шумо аз ин вобаста аст.",goals:{hsk_exam:"Супоридани HSK",daily_communication:"Муоширати ҳаррӯза",travel:"Сафар",work_china:"Кор бо Чин",study_china:"Таҳсил дар Чин"},
+    timeQ:"Дар як рӯз чанд дақиқа вақт доред?",timeSub:"Дарозии нақшаи рӯзона аз ин вобаста аст.",
     focusQ:"Ба чӣ бештар таъкид кунем?",focusSub:"Ин ишора барои нақша аст. Хатоҳоро система худаш меёбад.",
     min:"дақ",skip:"Гузарондан",
     focus:{speaking:"Гуфтугӯ",listening:"Шунидан",vocabulary:"Калима ва ҳарф",grammar:"Грамматика",none:"Фарқ надорад"}}
@@ -1965,7 +1974,12 @@ function studySetupT(){return {
    sessiyada tugatgan o'quvchi uchun false bo'ladi, shuning uchun dars
    tugagandagi chaqiruv unga tayanmaydi. */
 var SETUP_ASK_GAP_MS=24*60*60*1000;
-function studySetupAnswered(){return !!(STUDY_SETUP&&STUDY_SETUP.preferred_focus)}
+function studySetupAnswered(){
+  if(!STUDY_SETUP)return false;
+  /* Maqsad savoli onboardingga KEYIN qo'shildi, shuning uchun eski
+     o'quvchida u ham so'ralishi kerak. */
+  return !!(STUDY_SETUP.preferred_focus&&STUDY_SETUP.goal_chosen);
+}
 function studySetupPending(){
   if(!INIT_DATA||!STUDY_SETUP||studySetupAnswered())return false;
   /* Varaqni yopib yuborgan o'quvchini har ochilishda qayta bezovta qilmaymiz. */
@@ -1974,6 +1988,15 @@ function studySetupPending(){
   return true;
 }
 function markStudySetupAsked(){try{localStorage.setItem("hsk_v3_setup_asked",String(Date.now()))}catch(e){}}
+function askStudyGoal(){
+  var s=studySetupT();var cur=String((STUDY_SETUP&&STUDY_SETUP.goal)||"hsk_exam");
+  var keys=["hsk_exam","daily_communication","travel","work_china","study_china"];
+  var icons={hsk_exam:"certificate",daily_communication:"message-circle",travel:"plane",
+    work_china:"briefcase",study_china:"school"};
+  markStudySetupAsked();
+  App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(s.goalQ)+'</div><div class="tr">'+esc(s.goalSub)+'</div></div>'
+    +keys.map(function(k){return '<button class="opt-row'+(k===cur?" on":"")+'" onclick="App.pickStudyGoal(\''+k+'\')"><i class="ti ti-'+icons[k]+'"></i> '+esc(s.goals[k])+(k===cur?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
+}
 function askStudyTime(){
   var s=studySetupT();var cur=Number(STUDY_SETUP&&STUDY_SETUP.daily_minutes)||10;
   markStudySetupAsked();
@@ -6339,7 +6362,8 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     /* Avvalgi kunlarda dars qilgan, lekin savolga hali javob bermagan
        o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
        so'raymiz. Yopib yuborsa 24 soat qayta so'ralmaydi. */
-    if(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())setTimeout(askStudyTime,1200);
+    if(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())
+      setTimeout(STUDY_SETUP.pending_goal?askStudyGoal:askStudyTime,1200);
     prefetchNearbyLessons();
     var sp=bootParams;
     App.show(sp.get("tab")||"course");

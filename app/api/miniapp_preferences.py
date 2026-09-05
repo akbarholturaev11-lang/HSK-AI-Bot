@@ -16,6 +16,7 @@ o'quvchining o'z sozlamasini yozadi.
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timezone
 from typing import Annotated, Callable, Literal, Optional
 
 from fastapi import APIRouter, Request
@@ -36,6 +37,9 @@ MAX_PREFERENCES_BODY_BYTES = 4 * 1024
 MAX_INIT_DATA_CHARS = 4096
 
 PreferredFocus = Literal["speaking", "listening", "vocabulary", "grammar", "none"]
+CourseGoal = Literal[
+    "hsk_exam", "study_china", "work_china", "daily_communication", "travel"
+]
 
 
 class PreferencesError(RuntimeError):
@@ -48,6 +52,9 @@ class PreferencesError(RuntimeError):
 class PreferencesRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    # Maqsad savoli onboardingga keyin qo'shilgani uchun eski o'quvchilardan
+    # u birinchi darsdan keyin so'raladi.
+    goal: Optional[CourseGoal] = None
     daily_minutes: Optional[int] = None
     preferred_focus: Optional[PreferredFocus] = None
     # `None` yuborish "avto rejimga qaytar" degani emas — maydonni umuman
@@ -59,7 +66,8 @@ class PreferencesRequest(BaseModel):
     @model_validator(mode="after")
     def _at_least_one_change(self):
         if (
-            self.daily_minutes is None
+            self.goal is None
+            and self.daily_minutes is None
             and self.preferred_focus is None
             and self.daily_goal_xp is None
             and not self.daily_goal_auto
@@ -91,6 +99,7 @@ async def _validated_payload(request: Request) -> PreferencesRequest:
 def _profile_payload(profile) -> dict:
     return {
         "goal": profile.goal,
+        "goal_chosen": getattr(profile, "goal_chosen_at", None) is not None,
         "daily_minutes": profile.daily_minutes,
         "preferred_focus": profile.preferred_focus,
         "daily_goal_xp": CourseMiniAppProfileService.resolve_daily_goal_xp(profile),
@@ -138,6 +147,11 @@ def create_miniapp_preferences_router(
                     )
                 service = profile_service_factory(session)
                 profile = await service.get_or_create(user.id)
+                if payload.goal is not None:
+                    profile.goal = payload.goal
+                    # O'quvchi maqsadni O'ZI tanladi — endi qayta so'ralmaydi.
+                    if getattr(profile, "goal_chosen_at", None) is None:
+                        profile.goal_chosen_at = datetime.now(timezone.utc)
                 if payload.daily_minutes is not None:
                     profile.daily_minutes = int(payload.daily_minutes)
                 if payload.preferred_focus is not None:
@@ -149,7 +163,11 @@ def create_miniapp_preferences_router(
                 # Sozlama o'zgarsa bugungi reja qayta qurilishi kerak: aks
                 # holda o'quvchi kunlik vaqtni qisqartirib ham eski, uzun
                 # rejani ko'rib turaverardi.
-                if payload.daily_minutes is not None or payload.preferred_focus is not None:
+                if (
+                    payload.goal is not None
+                    or payload.daily_minutes is not None
+                    or payload.preferred_focus is not None
+                ):
                     profile.daily_plan_key = None
                     profile.daily_plan_json = None
                 await session.commit()

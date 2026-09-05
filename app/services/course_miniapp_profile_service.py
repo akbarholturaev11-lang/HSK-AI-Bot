@@ -8,6 +8,7 @@ from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
 
 
+DEFAULT_GOAL = "hsk_exam"
 COURSE_GOALS = {"hsk_exam", "study_china", "work_china", "daily_communication", "travel"}
 COURSE_DAILY_MINUTES = {5, 10, 15, 20, 30}
 COURSE_START_MODES = {"lesson_1", "continue", "placement"}
@@ -169,13 +170,22 @@ class CourseMiniAppProfileService:
         except (TypeError, ValueError):
             completed = 0
         focus = getattr(profile, "preferred_focus", None)
+        # Maqsad savoli onboardingga KEYIN qo'shildi. Undan oldin kelgan
+        # o'quvchilarda `goal` bor, lekin u jadval defaulti — tanlov emas.
+        # `goal_chosen_at` shu farqni beradi.
+        goal_chosen = getattr(profile, "goal_chosen_at", None) is not None
+        pending_goal = not goal_chosen and completed >= 1
+        pending_focus = focus is None and completed >= 1
         return {
+            "goal": getattr(profile, "goal", DEFAULT_GOAL),
+            "goal_chosen": goal_chosen,
             "daily_minutes": getattr(profile, "daily_minutes", _DEFAULT_DAILY_MINUTES),
             "preferred_focus": focus,
             "daily_goal_xp": cls.resolve_daily_goal_xp(profile),
             "daily_goal_is_custom": getattr(profile, "daily_goal_xp", None) is not None,
             "plan_size": cls.daily_plan_size(getattr(profile, "daily_minutes", None)),
-            "pending": focus is None and completed >= 1,
+            "pending_goal": pending_goal,
+            "pending": pending_goal or pending_focus,
         }
 
     @staticmethod
@@ -219,6 +229,7 @@ class CourseMiniAppProfileService:
         timezone_offset_minutes: int = 0,
         complete_onboarding: bool = False,
         preferred_focus=None,
+        goal_explicit: bool = False,
     ) -> CourseMiniAppProfile:
         goal, daily_minutes, start_mode = self.validate_preferences(
             goal=goal,
@@ -236,6 +247,10 @@ class CourseMiniAppProfileService:
         profile.timezone_offset_minutes = timezone_offset_minutes
         if focus is not None:
             profile.preferred_focus = focus
+        # Faqat o'quvchi O'ZI tanlaganda belgilanadi. Bot oqimi default
+        # maqsad bilan chaqirsa belgi qo'yilmaydi va savol keyin so'raladi.
+        if goal_explicit and profile.goal_chosen_at is None:
+            profile.goal_chosen_at = datetime.now(timezone.utc)
         if complete_onboarding and profile.onboarding_completed_at is None:
             profile.onboarding_completed_at = datetime.now(timezone.utc)
         await self.session.flush()
