@@ -13,6 +13,7 @@ import com.pomp.hskai.data.api.DictionaryResponse
 import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.OkResponse
+import com.pomp.hskai.data.api.RewardChestOpenResponse
 import com.pomp.hskai.data.local.CourseMapCacheEntity
 import com.pomp.hskai.data.local.CourseMapDao
 import com.pomp.hskai.data.repository.CourseRepository
@@ -133,6 +134,12 @@ private open class FakeLessonApi(
         )
     }
 
+    override suspend fun openRewardChest(
+        authorization: String,
+    ): Response<RewardChestOpenResponse> = Response.success(
+        RewardChestOpenResponse(ok = true, rewardType = "xp", rewardValue = 10)
+    )
+
     override suspend fun setLanguage(
         authorization: String,
         body: LanguageRequest,
@@ -204,7 +211,6 @@ class LessonViewModelTest {
         val state = model.state.value
         assertFalse(state.isLoading)
         assertEquals(6, state.totalCards)
-        // Unknown cards are kept and are not graded.
         assertTrue(state.cards[4] is UnsupportedCard)
         assertEquals(3, state.lesson?.gradedCards?.size)
     }
@@ -213,7 +219,7 @@ class LessonViewModelTest {
     fun `a correct choice is counted and explained`() = runTest {
         val model = viewModel()
         advanceUntilIdle()
-        model.acknowledge() // new word
+        model.acknowledge()
 
         val card = model.state.value.currentCard as ChoiceCard
         model.answerChoice(card, 0)
@@ -226,46 +232,43 @@ class LessonViewModelTest {
     }
 
     @Test
-    fun `a wrong answer is reported with only the selection, never the answer`() =
-        runTest {
-            val api = FakeLessonApi()
-            val model = viewModel(api)
-            advanceUntilIdle()
+    fun `a wrong answer is reported with only the selection, never the answer`() = runTest {
+        val api = FakeLessonApi()
+        val model = viewModel(api)
+        advanceUntilIdle()
 
-            model.acknowledge()
-            val choice = model.state.value.currentCard as ChoiceCard
-            model.answerChoice(choice, 1)
-            assertFalse((model.state.value.answer as AnswerState.Checked).isCorrect)
-            model.advance()
+        model.acknowledge()
+        val choice = model.state.value.currentCard as ChoiceCard
+        model.answerChoice(choice, 1)
+        assertFalse((model.state.value.answer as AnswerState.Checked).isCorrect)
+        model.advance()
 
-            val builder = model.state.value.currentCard as SentenceBuilderCard
-            model.answerBuilder(builder, listOf("好", "你"))
-            model.advance()
+        val builder = model.state.value.currentCard as SentenceBuilderCard
+        model.answerBuilder(builder, listOf("好", "你"))
+        model.advance()
 
-            val pairs = model.state.value.currentCard as MatchPairsCard
-            model.answerMatchPairs(pairs, listOf(0 to 1))
-            model.advance()
-            model.acknowledge() // unsupported
-            model.acknowledge() // pronunciation
-            advanceUntilIdle()
+        val pairs = model.state.value.currentCard as MatchPairsCard
+        model.answerMatchPairs(pairs, listOf(0 to 1))
+        model.advance()
+        model.acknowledge()
+        model.acknowledge()
+        advanceUntilIdle()
 
-            val sent = api.completions.single()
-            assertEquals(3, sent.mistakes.size)
-            assertEquals(
-                listOf(
-                    "lesson:hsk1:1:section:1:card:2",
-                    "lesson:hsk1:1:section:1:card:3",
-                    "lesson:hsk1:1:section:1:card:4",
-                ),
-                sent.mistakes.map { it.materialRef },
-            )
-            // Only the learner's raw selection travels; the server rebuilds
-            // the question and decides what was wrong.
-            assertEquals(1, sent.mistakes[0].selectedIndex)
-            assertEquals(listOf("好", "你"), sent.mistakes[1].selectedTokens)
-            assertEquals(0, sent.mistakes[2].selectedLeftIndex)
-            assertEquals(1, sent.mistakes[2].selectedRightIndex)
-        }
+        val sent = api.completions.single()
+        assertEquals(3, sent.mistakes.size)
+        assertEquals(
+            listOf(
+                "lesson:hsk1:1:section:1:card:2",
+                "lesson:hsk1:1:section:1:card:3",
+                "lesson:hsk1:1:section:1:card:4",
+            ),
+            sent.mistakes.map { it.materialRef },
+        )
+        assertEquals(1, sent.mistakes[0].selectedIndex)
+        assertEquals(listOf("好", "你"), sent.mistakes[1].selectedTokens)
+        assertEquals(0, sent.mistakes[2].selectedLeftIndex)
+        assertEquals(1, sent.mistakes[2].selectedRightIndex)
+    }
 
     @Test
     fun `answering twice on the same card is ignored`() = runTest {
@@ -277,7 +280,6 @@ class LessonViewModelTest {
         model.answerChoice(card, 1)
         model.answerChoice(card, 0)
 
-        // The first answer stands; accuracy cannot be farmed by re-tapping.
         assertFalse((model.state.value.answer as AnswerState.Checked).isCorrect)
         assertEquals(0, model.state.value.correctCount)
         assertEquals(1, model.state.value.gradedAnswered)
@@ -331,8 +333,6 @@ class LessonViewModelTest {
         advanceUntilIdle()
 
         assertTrue(model.state.value.outcome is LessonOutcome.Completed)
-        // Same id both times, so the server treats the retry as the same
-        // attempt instead of awarding XP twice.
         assertEquals(1, failing.completions.map { it.eventId }.distinct().size)
     }
 
@@ -438,7 +438,6 @@ class LessonViewModelTest {
         val model = viewModel(api)
         advanceUntilIdle()
 
-        // The lesson endpoint, not the client, owns this limit.
         repeat(3) { model.advanceThroughCard() }
         advanceUntilIdle()
 
