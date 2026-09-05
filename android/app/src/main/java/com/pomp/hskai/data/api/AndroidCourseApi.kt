@@ -40,6 +40,11 @@ interface AndroidCourseApi {
         @Body body: CourseCompleteRequest,
     ): Response<CourseCompleteResponse>
 
+    @POST("api/v3/android/course/reward-chest/open")
+    suspend fun openRewardChest(
+        @Header("Authorization") authorization: String,
+    ): Response<RewardChestOpenResponse>
+
     @GET("api/v3/android/dictionary")
     suspend fun dictionary(
         @Header("Authorization") authorization: String,
