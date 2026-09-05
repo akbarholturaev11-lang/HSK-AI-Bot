@@ -3,7 +3,7 @@ import os
 import re
 import base64
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -334,6 +334,113 @@ def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
     assert sent, "onboarding payload serverga yuborilmadi"
     assert sent[0]["level"] == "hsk2"
     assert sent[0]["goal"] == "travel"
+
+
+def test_course_v3_onboarding_save_locks_choices_and_retries_server_error(page):
+    mock_telegram_ready(page)
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.route(
+        "**/course-v3.html?*",
+        lambda route: route.fulfill(status=200, content_type="text/html", body="<p>Course</p>"),
+    )
+    pending = []
+    sent = []
+
+    def capture_onboarding(route):
+        sent.append(json.loads(route.request.post_data))
+        pending.append(route)
+
+    page.route("**/api/miniapp/onboarding", capture_onboarding)
+    page.add_init_script("localStorage.setItem('hsk_v3_start_mode', 'placement')")
+    page.goto(
+        app_url("/course_v3_onboarding.html?lang=uz&source=onboarding_smoke&challenge_id=7&foundation=1"),
+        wait_until="networkidle",
+    )
+    page.get_by_role("button", name="Boshlash").click()
+    page.locator(".lv", has_text="HSK 2").click()
+    page.get_by_role("button", name="Davom etish").click()
+    travel = page.locator(".lv", has_text="Sayohat")
+    travel.click()
+    with page.expect_request("**/api/miniapp/onboarding"):
+        page.get_by_role("button", name="Birinchi darsni boshlash").click()
+
+    expect(page.locator("#cta")).to_be_disabled()
+    expect(page.locator("#back")).to_be_disabled()
+    expect(page.locator("#stage")).to_have_attribute("aria-busy", "true")
+    for option in page.locator(".lv").all():
+        expect(option).to_be_disabled()
+    # Queued clicks must not change the selection or create a second save.
+    page.locator("#cta").dispatch_event("click")
+    page.locator("#back").dispatch_event("click")
+    page.locator(".lv", has_text="Kundalik muloqot").dispatch_event("click")
+    expect(travel).to_have_attribute("aria-pressed", "true")
+    expect(page.locator(".chosen")).to_contain_text("HSK 2")
+    assert len(sent) == 1
+    assert page.evaluate("localStorage.getItem('hsk_v3_start_mode')") is None
+
+    json_response(pending.pop(0), {"ok": False, "error": "course_level_change_requires_placement"}, status=409)
+    expect(page.locator("#error")).to_be_visible()
+    expect(page.locator("#cta")).to_be_enabled()
+    expect(page.locator("#back")).to_be_enabled()
+    expect(page.locator("#stage")).to_have_attribute("aria-busy", "false")
+    for option in page.locator(".lv").all():
+        expect(option).to_be_enabled()
+    assert page.evaluate("localStorage.getItem('hsk_v3_onb')") is None
+
+    with page.expect_request("**/api/miniapp/onboarding"):
+        page.get_by_role("button", name="Qayta urinib ko'rish").click()
+    expect(page.locator("#error")).to_be_hidden()
+    expect(page.locator("#cta")).to_be_disabled()
+    assert len(sent) == 2
+    assert sent[1] == sent[0]
+    assert {key: sent[0][key] for key in (
+        "level", "goal", "daily_minutes", "daily_time", "start_mode", "start_point", "activation_variant", "language"
+    )} == {
+        "level": "hsk2", "goal": "travel", "daily_minutes": 10, "daily_time": 10,
+        "start_mode": "lesson_1", "start_point": "lesson_1", "activation_variant": "direct_start_v1", "language": "uz",
+    }
+    json_response(pending.pop(0), {"ok": True, "level": "hsk2", "lesson": 4, "tab": "course"})
+    page.wait_for_url(re.compile(r"course-v3\.html"))
+    assert parse_qs(urlparse(page.url).query) == {
+        "lang": ["uz"], "source": ["onboarding_smoke"], "challenge_id": ["7"],
+        "level": ["hsk2"], "tab": ["course"], "onboarded": ["1"], "lesson": ["4"], "autostart": ["1"],
+    }
+    assert page.evaluate("localStorage.getItem('hsk_v3_learner_level')") == "hsk2"
+
+
+def test_course_v3_onboarding_timeout_restores_controls_and_ignores_late_success(page):
+    mock_telegram_ready(page)
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    pending = []
+    page.route("**/api/miniapp/onboarding", lambda route: pending.append(route))
+    # Older WebViews cannot abort fetch; a late success must still be ignored.
+    page.add_init_script("window.AbortController = undefined")
+    page.clock.install()
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+    page.get_by_role("button", name="Boshlash").click()
+    page.get_by_role("button", name="Davom etish").click()
+    with page.expect_request("**/api/miniapp/onboarding"):
+        page.get_by_role("button", name="Birinchi darsni boshlash").click()
+    expect(page.locator("#cta")).to_be_disabled()
+    page.clock.fast_forward(12001)
+
+    expect(page.locator("#error")).to_be_visible()
+    expect(page.locator("#cta")).to_be_enabled()
+    expect(page.locator("#back")).to_be_enabled()
+    expect(page.locator("#stage")).to_have_attribute("aria-busy", "false")
+    for option in page.locator(".lv").all():
+        expect(option).to_be_enabled()
+
+    with page.expect_response("**/api/miniapp/onboarding") as response:
+        json_response(pending.pop(0), {
+            "ok": True, "level": "hsk1", "lesson": 1, "tab": "course", "foundation_required": True,
+        })
+    response.value.finished()
+    page.clock.run_for(1)
+    expect(page).to_have_url(app_url("/course_v3_onboarding.html?lang=uz"))
+    expect(page.locator("#error")).to_be_visible()
+    assert page.evaluate("localStorage.getItem('hsk_v3_onb')") is None
+    assert page.evaluate("localStorage.getItem('hsk_v3_learner_level')") is None
 
 
 def _map_with_today(tasks, *, language="uz", foundation=None):
