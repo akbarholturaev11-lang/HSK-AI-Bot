@@ -32,6 +32,31 @@ data class CourseMapDto(
     @SerialName("progress") val progress: CourseProgressDto = CourseProgressDto(),
     @SerialName("user") val user: CourseUserDto = CourseUserDto(),
     @SerialName("notify") val notify: CourseNotifyDto = CourseNotifyDto(),
+    @SerialName("today") val today: CourseTodayDto? = null,
+)
+
+@Serializable
+data class CourseTodayDto(
+    @SerialName("goal_xp") val goalXp: Int = 0,
+    @SerialName("done_xp") val doneXp: Int = 0,
+    @SerialName("streak") val streak: Int = 0,
+    @SerialName("total") val total: Int = 0,
+    @SerialName("done") val done: Int = 0,
+    @SerialName("complete") val complete: Boolean = false,
+    @SerialName("tasks") val tasks: List<CourseTodayTaskDto> = emptyList(),
+    @SerialName("level") val level: String = "",
+    @SerialName("local_day") val localDay: String = "",
+)
+
+@Serializable
+data class CourseTodayTaskDto(
+    @SerialName("type") val type: String = "",
+    @SerialName("ref") val ref: String? = null,
+    @SerialName("skill") val skill: String? = null,
+    @SerialName("role") val role: String? = null,
+    @SerialName("done") val done: Boolean = false,
+    @SerialName("access") val access: String = "open",
+    @SerialName("available") val available: Boolean = true,
 )
 
 @Serializable
@@ -52,7 +77,6 @@ data class CourseLessonDto(
     @SerialName("zh") val hanzi: String = "",
     @SerialName("py") val pinyin: String = "",
     @SerialName("tr") val subtitle: LocalizedText = LocalizedText(),
-    // Server-owned access decision. The client renders it and never invents it.
     @SerialName("completion_allowed") val completionAllowed: Boolean = false,
     @SerialName("completion_error") val completionError: String? = null,
     @SerialName("preview_half") val previewHalf: Boolean = false,
@@ -96,7 +120,6 @@ data class CourseNotifyDto(
 @Serializable
 data class CourseCompleteRequest(
     @SerialName("lesson_order") val lessonOrder: Int,
-    /** Stable per-attempt id, `android:<uuid>`, so retries stay idempotent. */
     @SerialName("event_id") val eventId: String,
     @SerialName("mistakes") val mistakes: List<CourseMistakeDto> = emptyList(),
 )
@@ -120,13 +143,6 @@ data class CourseCompleteResponse(
     @SerialName("duplicate") val duplicate: Boolean = false,
 )
 
-/**
- * Server-authoritative lesson access envelope.
- *
- * These fields are intentionally kept beside the lesson payload. A course map
- * can become stale between the tap and this request (subscription changes or
- * progress from another client), so the renderer must obey this newer answer.
- */
 @Serializable
 data class CourseLessonResponse(
     @SerialName("ok") val ok: Boolean = false,
@@ -148,7 +164,6 @@ data class LanguageRequest(
 @Serializable
 data class DictionaryResponse(
     @SerialName("ok") val ok: Boolean = false,
-    /** Fingerprint of the server's word list; unchanged means no re-download. */
     @SerialName("version") val version: String = "",
     @SerialName("language") val language: String = "",
     @SerialName("words") val words: List<DictionaryWordDto> = emptyList(),
@@ -158,7 +173,6 @@ data class DictionaryResponse(
 data class DictionaryWordDto(
     @SerialName("h") val hanzi: String = "",
     @SerialName("p") val pinyin: String = "",
-    /** Already localized by the server: one language per response. */
     @SerialName("m") val meaning: String = "",
     @SerialName("lv") val level: String = "",
 )
