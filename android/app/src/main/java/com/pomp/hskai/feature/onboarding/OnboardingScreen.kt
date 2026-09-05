@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -351,7 +352,7 @@ private fun WelcomeStep(copy: OnboardingCopy) {
 }
 
 @Composable
-private fun ChoiceStep(question: String, helper: String, choices: @Composable Column.() -> Unit) {
+private fun ChoiceStep(question: String, helper: String, choices: @Composable ColumnScope.() -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
     ) {
