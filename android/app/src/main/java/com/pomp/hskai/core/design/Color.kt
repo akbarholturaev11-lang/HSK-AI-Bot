@@ -37,33 +37,24 @@ object PompColors {
     val Blue = Color(0xFF2E86C1)         // --blue
     val BlueSoft = Color(0xFFE8F2FA)     // --bluebg
 
-    /** Backdrop behind a sheet or a full-screen flow. */
     val Overlay = Color(0xFF171310)      // --overlay
-    /** The warm cast the Mini App uses under raised cards. */
     val Shadow = Color(0xFFE4D9C4)       // --shadow
-
     val Divider = Color(0xFFEAE0CC)      // --line
 
-    /** Practice-row literals from the Mini App stylesheet. */
+    /** Literal used by the Mini App SVG learning trail (not a CSS token). */
+    val CourseTrail = Color(0xFFEBE2CC)
+
     val TileAmberSoft = Color(0xFFF8EFD9)
     val TileAmberInk = Color(0xFFB07A1E)
     val TileBlueSoft = Color(0xFFE7F0F8)
     val TileBlueInk = Color(0xFF2F6F9E)
 
-    /**
-     * Course-path state colours. These are the exact literals used by
-     * `.node.done`, `.node.locked`, `.node.chest` and `.node.boss` in the
-     * Mini App. Keeping them named here lets the native path reproduce the
-     * same depth instead of falling back to flat Material surfaces.
-     */
     val Locked = Divider
     val DoneDepth = Color(0xFF245F47)
     val LockedDepth = Color(0xFFD8D2C4)
     val ChestDepth = Color(0xFFD8C79A)
     val BossDepth = Color(0xFFE8CFC9)
 
-    // Course composables use explicit node-prefixed aliases so their role is
-    // obvious at the call site and future token refactors stay mechanical.
     val NodeDoneDepth = DoneDepth
     val NodeLockedDepth = LockedDepth
     val NodeChestDepth = ChestDepth
