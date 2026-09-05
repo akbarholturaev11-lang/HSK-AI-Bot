@@ -92,6 +92,51 @@ class AndroidCourseService(DesktopCourseService):
             activation_variant=activation_variant,
         )
 
+    async def set_study_preferences(
+        self,
+        access_token: str,
+        *,
+        goal: str | None = None,
+        daily_minutes: int | None = None,
+        preferred_focus: str | None = None,
+    ) -> dict:
+        """Persist the same progressive-personalization answers as Mini App."""
+        if goal is None and daily_minutes is None and preferred_focus is None:
+            raise DesktopCourseError("android_request_invalid", status_code=422)
+
+        context = await self._context(access_token)
+        progress = await self._progress(context.user, for_update=True)
+        service = CourseMiniAppProfileService(self.session)
+        profile = await service.get_or_create(context.user.id)
+
+        next_goal = str(goal or profile.goal)
+        next_minutes = int(daily_minutes if daily_minutes is not None else profile.daily_minutes)
+        try:
+            await service.save_preferences(
+                profile,
+                goal=next_goal,
+                daily_minutes=next_minutes,
+                start_mode=profile.start_mode,
+                timezone_offset_minutes=profile.timezone_offset_minutes,
+                preferred_focus=preferred_focus,
+                goal_explicit=goal is not None,
+            )
+        except (TypeError, ValueError) as exc:
+            raise DesktopCourseError("android_request_invalid", status_code=422) from exc
+
+        # Goal/time/focus all affect today's plan. Rebuild on the next map fetch
+        # so Android and Mini App cannot show stale task identities after a choice.
+        profile.daily_plan_key = None
+        profile.daily_plan_json = None
+        await self.session.commit()
+        return {
+            "ok": True,
+            "study_setup": service.study_setup(
+                profile,
+                completed_parts=int(progress.completed_lessons_count or 0),
+            ),
+        }
+
     async def open_reward_chest(self, access_token: str) -> dict:
         """Open the exact same server-owned chest the Mini App opens."""
         context = await self._context(access_token)
