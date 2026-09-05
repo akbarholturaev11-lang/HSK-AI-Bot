@@ -6,17 +6,15 @@ import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.CourseProgress
+import com.pomp.hskai.domain.model.CourseToday
 import com.pomp.hskai.domain.model.CourseUnit
 import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.LessonStatus
+import com.pomp.hskai.domain.model.TodayTask
+import com.pomp.hskai.domain.model.TodayTaskAccess
 
-/**
- * Translates the server payload into domain models.
- *
- * The access decision is *read*, never recomputed: the client has no rule of
- * its own about who may open what.
- */
+/** Translates the server payload into domain models without re-deciding access. */
 object CourseMapper {
 
     fun toDomain(dto: CourseMapDto): CourseMap {
@@ -50,6 +48,33 @@ object CourseMapper {
                 referralCode = dto.user.referralCode,
             ),
             notificationsEnabled = dto.notify.enabled,
+            today = dto.today?.let { today ->
+                CourseToday(
+                    goalXp = today.goalXp,
+                    doneXp = today.doneXp,
+                    streak = today.streak,
+                    total = today.total,
+                    done = today.done,
+                    complete = today.complete,
+                    tasks = today.tasks.map { task ->
+                        TodayTask(
+                            type = task.type,
+                            ref = task.ref,
+                            skill = task.skill,
+                            role = task.role,
+                            done = task.done,
+                            access = when (task.access.trim().lowercase()) {
+                                "ad" -> TodayTaskAccess.AD
+                                "locked" -> TodayTaskAccess.LOCKED
+                                else -> TodayTaskAccess.OPEN
+                            },
+                            available = task.available,
+                        )
+                    },
+                    level = today.level,
+                    localDay = today.localDay,
+                )
+            },
         )
     }
 
@@ -70,10 +95,6 @@ object CourseMapper {
         subtitle = subtitle.forLanguage(language),
     )
 
-    /**
-     * Order matters. `completion_allowed` is the server's yes; everything else
-     * is a specific kind of no, and only two of those justify a paywall.
-     */
     private fun CourseLessonDto.access(): LessonAccess = when {
         completionAllowed -> LessonAccess.Open
         previewHalf -> LessonAccess.HalfPreview
