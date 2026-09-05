@@ -113,16 +113,27 @@ fun CourseScreen(
                     val rows = remember(map) { map.toRows() }
                     val listState = rememberLazyListState()
                     val viewportHeight = listState.layoutInfo.viewportSize.height
+                    val foundationVisible = map.level.equals("hsk1", ignoreCase = true) && map.foundation != null
+                    val foundationMustComeFirst = foundationVisible && map.foundation?.mustComeFirst == true
 
-                    LaunchedEffect(map.currentLesson?.order, viewportHeight) {
-                        val index = rows.indexOfFirst {
+                    LaunchedEffect(
+                        map.currentLesson?.order,
+                        viewportHeight,
+                        foundationVisible,
+                        foundationMustComeFirst,
+                    ) {
+                        if (foundationMustComeFirst) {
+                            listState.scrollToItem(0)
+                            return@LaunchedEffect
+                        }
+                        val rowIndex = rows.indexOfFirst {
                             it is CourseRow.Path &&
                                 (it.item as? PathItem.Lesson)?.lesson?.isCurrent == true
                         }
-                        if (index >= 0 && viewportHeight > 0) {
+                        if (rowIndex >= 0 && viewportHeight > 0) {
                             // Mini App places the current node at ~42% of the visible viewport.
                             listState.scrollToItem(
-                                index = index,
+                                index = rowIndex + if (foundationVisible) 1 else 0,
                                 scrollOffset = -(viewportHeight * 0.42f).roundToInt(),
                             )
                         }
@@ -135,7 +146,9 @@ fun CourseScreen(
                             onOpenGoal = onOpenGoal,
                         )
                         CourseProgressBar(map)
-                        map.today?.takeIf { it.tasks.isNotEmpty() }?.let { TodayPlanStrip(it) }
+                        if (!foundationMustComeFirst) {
+                            map.today?.takeIf { it.tasks.isNotEmpty() }?.let { TodayPlanStrip(it) }
+                        }
                         if (state.isStale) StaleBanner()
 
                         LazyColumn(
@@ -145,6 +158,11 @@ fun CourseScreen(
                                 vertical = 8.dp,
                             ),
                         ) {
+                            if (foundationVisible) {
+                                item {
+                                    map.foundation?.let { FoundationEntry(it) }
+                                }
+                            }
                             items(rows) { row ->
                                 when (row) {
                                     is CourseRow.Unit -> UnitHeader(row.unit)
@@ -784,7 +802,6 @@ private fun LessonNodeFace(lesson: CourseLesson) {
                         color = contentColor,
                     )
                     NodeContent.Glyph -> Text(
-                        // Mini App deliberately uses the fixed learning glyph, not lesson text.
                         text = "学",
                         style = PompTextStyles.hanziSmall.copy(fontSize = 19.sp),
                         color = contentColor,
