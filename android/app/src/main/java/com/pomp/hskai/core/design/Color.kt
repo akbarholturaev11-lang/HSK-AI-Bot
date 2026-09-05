@@ -6,12 +6,10 @@ import androidx.compose.ui.graphics.Color
  * HSK AI brand tokens, taken from the Course v3 palette so the Android client
  * looks like the same product as the Mini App and the desktop app.
  *
- * Every value below is the Mini App's own, copied verbatim from the custom
- * properties at the top of `app/static/course-v3.html`. The comment on each
- * line names the property it mirrors, and
+ * Every mapped value below is the Mini App's own, copied verbatim from the
+ * custom properties at the top of `app/static/course-v3.html`.
  * `android/tools/check_palette_matches_miniapp.py` re-reads both files and
- * fails the build if one drifts — a shade of difference is invisible in a
- * screenshot but makes the two clients stop looking like one product.
+ * fails the build if one drifts.
  *
  * Material 3 is only the technical base here — the default Material blue is
  * never used.
@@ -46,24 +44,21 @@ object PompColors {
 
     val Divider = Color(0xFFEAE0CC)      // --line
 
-    /**
-     * Practice-row tiles. The Mini App writes these two pairs straight into
-     * the `.t-amber` / `.t-blue` rules instead of declaring them as custom
-     * properties, so they are copied by value here and are deliberately not
-     * part of the palette check — there is no token for it to compare against.
-     * The jade and cinnabar tiles do use tokens (`--jadebg`/`--jade`,
-     * `--cinbg`/`--cin`) and are read from the palette above.
-     */
-    val TileAmberSoft = Color(0xFFF8EFD9) // .t-amber background
-    val TileAmberInk = Color(0xFFB07A1E)  // .t-amber foreground
-    val TileBlueSoft = Color(0xFFE7F0F8)  // .t-blue background
-    val TileBlueInk = Color(0xFF2F6F9E)   // .t-blue foreground
+    /** Practice-row literals from the Mini App stylesheet. */
+    val TileAmberSoft = Color(0xFFF8EFD9)
+    val TileAmberInk = Color(0xFFB07A1E)
+    val TileBlueSoft = Color(0xFFE7F0F8)
+    val TileBlueInk = Color(0xFF2F6F9E)
 
     /**
-     * Disabled controls. Android-only: the Mini App has no single token for
-     * this, so it is deliberately not part of the palette check. Locked
-     * course nodes are a separate case — the Mini App paints those with
-     * `--line`, and aligning them belongs with the course-screen work.
+     * Course-path state colours. These are the exact literals used by
+     * `.node.done`, `.node.locked`, `.node.chest` and `.node.boss` in the
+     * Mini App. Keeping them named here lets the native path reproduce the
+     * same depth instead of falling back to flat Material surfaces.
      */
-    val Locked = Color(0xFFD8CFBE)
+    val Locked = Divider
+    val DoneDepth = Color(0xFF245F47)
+    val LockedDepth = Color(0xFFD8D2C4)
+    val ChestDepth = Color(0xFFD8C79A)
+    val BossDepth = Color(0xFFE8CFC9)
 }
