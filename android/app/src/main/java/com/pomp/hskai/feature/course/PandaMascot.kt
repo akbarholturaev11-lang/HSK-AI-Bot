@@ -19,23 +19,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.core.design.PompColors
 
-/**
- * Native course-path mascot ported from the Mini App `pandaChar()` proportions.
- *
- * Motion deliberately mirrors the web mascot rather than using a generic
- * Material animation: slow bob/nod, breathing, periodic blink and a tighter
- * bounce when the learner is celebrating. It stays native Compose (no GIF or
- * WebView), so it can later react to lesson state without replacing the asset.
- */
+/** Native course-path mascot ported from the Mini App `pandaChar()` proportions. */
 @Composable
 fun CoursePandaMascot(
     modifier: Modifier = Modifier,
     celebrate: Boolean = false,
 ) {
     val transition = rememberInfiniteTransition(label = "course-panda")
-    val bob = transition.animateFloat(
+    val bobDp = transition.animateFloat(
         initialValue = 0f,
-        targetValue = if (celebrate) -7f else -5f,
+        targetValue = if (celebrate) -7f else -8f,
         animationSpec = infiniteRepeatable(
             animation = tween(if (celebrate) 700 else 1700),
             repeatMode = RepeatMode.Reverse,
@@ -43,8 +36,8 @@ fun CoursePandaMascot(
         label = "course-panda-bob",
     ).value
     val nod = transition.animateFloat(
-        initialValue = -3f,
-        targetValue = 3f,
+        initialValue = -4f,
+        targetValue = 4f,
         animationSpec = infiniteRepeatable(tween(2300), RepeatMode.Reverse),
         label = "course-panda-nod",
     ).value
@@ -97,8 +90,11 @@ fun CoursePandaMascot(
             Modifier
                 .size(72.dp)
                 .graphicsLayer {
-                    translationY = bob
+                    // Web `.pmasc`: 0 → -8px over 1.7s and back; use dp so
+                    // physical motion does not shrink on high-density Android screens.
+                    translationY = bobDp.dp.toPx() - ((breathe - 1f) / 0.02f).coerceIn(0f, 1f) * 1.dp.toPx()
                     scaleY = breathe
+                    alpha = 0.80f
                     transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 1f)
                 },
         ) {
@@ -113,7 +109,6 @@ fun CoursePandaMascot(
                 val scarf = PompColors.Cinnabar
                 val scarfDark = PompColors.CinnabarDark
 
-                // Body — the same rounded white shell used by the Mini App mascot.
                 drawOval(
                     color = white,
                     topLeft = androidx.compose.ui.geometry.Offset(x(51f), y(119f)),
@@ -126,13 +121,11 @@ fun CoursePandaMascot(
                     style = Stroke(width = x(2.5f)),
                 )
 
-                // Ears.
                 drawCircle(ink, radius = x(22f), center = androidx.compose.ui.geometry.Offset(x(64f), y(58f)))
                 drawCircle(ink, radius = x(22f), center = androidx.compose.ui.geometry.Offset(x(136f), y(58f)))
                 drawCircle(Color(0xFF3A352F), radius = x(10f), center = androidx.compose.ui.geometry.Offset(x(64f), y(58f)))
                 drawCircle(Color(0xFF3A352F), radius = x(10f), center = androidx.compose.ui.geometry.Offset(x(136f), y(58f)))
 
-                // Face.
                 drawCircle(white, radius = x(54f), center = androidx.compose.ui.geometry.Offset(x(100f), y(86f)))
                 drawCircle(
                     ink,
@@ -141,7 +134,6 @@ fun CoursePandaMascot(
                     style = Stroke(width = x(2.5f)),
                 )
 
-                // Eye patches and blinkable eyes.
                 drawOval(ink, androidx.compose.ui.geometry.Offset(x(64f), y(72f)), androidx.compose.ui.geometry.Size(x(30f), y(40f)))
                 drawOval(ink, androidx.compose.ui.geometry.Offset(x(106f), y(72f)), androidx.compose.ui.geometry.Size(x(30f), y(40f)))
                 val eyeHeight = y(16f) * blink.coerceAtLeast(0.10f)
@@ -169,7 +161,6 @@ fun CoursePandaMascot(
                     androidx.compose.ui.geometry.Size(x(8.4f), pupilHeight),
                 )
 
-                // Nose and happy mouth.
                 drawOval(ink, androidx.compose.ui.geometry.Offset(x(92f), y(105f)), androidx.compose.ui.geometry.Size(x(16f), y(11f)))
                 drawArc(
                     color = Color(0xFF9A2F2B),
@@ -180,11 +171,9 @@ fun CoursePandaMascot(
                     size = androidx.compose.ui.geometry.Size(x(28f), y(20f)),
                 )
 
-                // Arms/paws.
                 drawOval(ink, androidx.compose.ui.geometry.Offset(x(26f), y(137f)), androidx.compose.ui.geometry.Size(x(28f), y(42f)))
                 drawOval(ink, androidx.compose.ui.geometry.Offset(x(146f), y(137f)), androidx.compose.ui.geometry.Size(x(28f), y(42f)))
 
-                // Red HSK AI scarf from the Mini App panda.
                 val scarfPath = androidx.compose.ui.graphics.Path().apply {
                     moveTo(x(60f), y(132f))
                     quadraticBezierTo(x(100f), y(152f), x(140f), y(132f))
