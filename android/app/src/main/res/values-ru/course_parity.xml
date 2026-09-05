@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="course_progress_lessons">уроков</string>
     <string name="course_chest_ready">Подарок готов</string>
     <string name="course_chest_progress">До подарка %1$d XP</string>
     <string name="course_chest_reward">Получено +%1$d XP</string>
