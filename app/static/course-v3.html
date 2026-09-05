@@ -1300,6 +1300,22 @@ var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudio
 
 /* ---------- App ---------- */
 var MAP=null,SCREEN="course",HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
+/* Kunlik reja sozlamalari serverdan (map javobidagi `study_setup`).
+   Ilgari `dailyGoal` faqat shu yerdagi o'zgaruvchi edi va ilova qayta
+   ochilganda foydalanuvchi tanlovi yo'qolardi. */
+var STUDY_SETUP=null;
+function adoptStudySetup(d){
+  STUDY_SETUP=(d&&d.study_setup)||null;
+  if(STUDY_SETUP&&Number(STUDY_SETUP.daily_goal_xp)>0)dailyGoal=Number(STUDY_SETUP.daily_goal_xp);
+}
+function savePreferences(body){
+  if(!INIT_DATA)return Promise.resolve(null);
+  return fetch("/api/v3/preferences",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
+    body:JSON.stringify(body)}).then(function(r){return r.json()}).then(function(j){
+      if(j&&j.ok&&j.profile){STUDY_SETUP=j.profile;if(Number(j.profile.daily_goal_xp)>0)dailyGoal=Number(j.profile.daily_goal_xp)}
+      return j;
+    }).catch(function(){return null});
+}
 function syncNotify(){if(MAP&&MAP.notify&&typeof MAP.notify.enabled==="boolean")notifOn=MAP.notify.enabled}
 function notifTimesHtml(){var c={uz:{head:"Bot quyidagi holatlarda xabar yuboradi:",items:["Reytingda kimdir sizdan o'zib ketsa","Kun tugayotganda darsni hali bajarmagan bo'lsangiz","Ketma-ket kunlar seriyangiz uzilish xavfida bo'lsa"]},ru:{head:"Бот пришлёт уведомление, когда:",items:["кто-то обгоняет вас в рейтинге","день заканчивается, а урок ещё не пройден","ваша серия дней под угрозой"]},tj:{head:"Бот вақте огоҳӣ мефиристад, ки:",items:["касе дар рейтинг аз шумо пеш меравад","рӯз ба охир мерасаду дарс иҷро нашудааст","силсилаи рӯзҳои пайдарпайи шумо дар хатар аст"]}}[LANG]||{head:"",items:[]};return '<b style="color:var(--ink);font-weight:500">'+esc(c.head)+'</b>'+c.items.map(function(x){return '<div style="margin-top:3px">• '+esc(x)+'</div>'}).join("");}
 var App={
@@ -1530,6 +1546,10 @@ var App={
       if(desktopLesson&&window.PompDesktopDownload&&window.PompDesktopDownload.queuePromo){
         window.PompDesktopDownload.queuePromo("lesson_end_promo",{lesson_id:desktopLesson});
       }
+      /* Birinchi dars tugagach kunlik vaqt va fokus so'raladi — bayram,
+         reklama va desktop promo'dan KEYIN, ya'ni hech biri bilan
+         to'qnashmaydi. Server javob bermaguncha so'ralmaydi. */
+      if(studySetupPending())setTimeout(askStudyTime,700);
     };
     /* Bepul userga dars yakuni reklamasi — bayram/streak/reyting ekranlaridan
        KEYIN, xaritaga qaytishdan oldin. Reklama yo'q yoki yuklanmasa jim o'tadi. */
@@ -1669,10 +1689,19 @@ var App={
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(t.h)+'</div></div>'+row("all",t.all)+row("new",t.nw)+row("off",t.off));
   },
   setPinyin:function(v){try{localStorage.setItem("hsk_v3_pinyin",v)}catch(e){}App.closeSheet();applyPinyinMode()},
-  goalPicker:function(){var p=pl();var opts=[10,20,30,50];
+  goalPicker:function(){var p=pl();var opts=[20,30,40,50,80];
+    if(opts.indexOf(dailyGoal)<0)opts=opts.concat([dailyGoal]).sort(function(a,b){return a-b});
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+p.goalSet+'</div></div>'
       +opts.map(function(v){return '<button class="opt-row'+(v===dailyGoal?" on":"")+'" onclick="App.pickGoal('+v+')"><i class="ti ti-target"></i> '+v+' XP'+(v===dailyGoal?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""))},
-  pickGoal:function(v){dailyGoal=v;App.closeSheet();renderProfile()},
+  /* Tanlov endi SERVERDA saqlanadi — ilgari u faqat shu sessiyada yashardi. */
+  pickGoal:function(v){dailyGoal=v;App.closeSheet();renderProfile();
+    savePreferences({daily_goal_xp:v}).then(function(){renderProfile()})},
+  /* Birinchi darsdan keyingi ikki savol: vaqt -> fokus. Ikkinchi savol
+     birinchisi saqlangach ochiladi, shunda bir vaqtda bitta savol turadi. */
+  pickStudyTime:function(v){App.closeSheet();
+    savePreferences({daily_minutes:v}).then(function(){setTimeout(askStudyFocus,220)})},
+  pickStudyFocus:function(k){App.closeSheet();
+    savePreferences({preferred_focus:k}).then(function(){renderAll()})},
   levelPicker:function(){
     var names={hsk1:["你好","HSK 1"],hsk2:["谢谢","HSK 2"],hsk3:["明白","HSK 3"],hsk4:["流利","HSK 4"]};
     var sub={
@@ -1846,6 +1875,52 @@ function playLessonEndAd(next){
     onSubscribe:function(){App.goPay("v3_lesson_end_ad")}});
   try{CourseAds.play("end").then(go).catch(go)}catch(e){return false}
   return true;
+}
+/* ---------- Kunlik reja sozlamasi (birinchi darsdan KEYIN) ----------
+   Onboarding faqat daraja va maqsadni so'raydi. Kunlik vaqt va "nimaga urg'u
+   beraylik" hali bir dars ham ko'rmagan o'quvchi uchun ma'nosiz savol, shuning
+   uchun ular birinchi qism tugagach so'raladi. Yangi ekran qurilmaydi —
+   mavjud pastki varaq va `.opt-row` uslubi ishlatiladi, bir vaqtda bitta
+   savol ko'rsatiladi. */
+function studySetupT(){return {
+  ru:{timeQ:"Сколько минут в день у вас есть?",timeSub:"От этого зависит длина плана на день.",
+    focusQ:"На чём сделать упор?",focusSub:"Это подсказка для плана. Ошибки система найдёт сама.",
+    min:"мин",skip:"Пропустить",
+    focus:{speaking:"Разговор",listening:"Аудирование",vocabulary:"Слова и иероглифы",grammar:"Грамматика",none:"Без разницы"}},
+  uz:{timeQ:"Kuniga necha daqiqa vaqtingiz bor?",timeSub:"Kunlik reja uzunligi shunga bog'liq.",
+    focusQ:"Nimaga ko'proq urg'u beraylik?",focusSub:"Bu — reja uchun ishora. Xatolarni tizim o'zi topadi.",
+    min:"daq",skip:"O'tkazib yuborish",
+    focus:{speaking:"Gapirish",listening:"Tinglash",vocabulary:"So'z va ieroglif",grammar:"Grammatika",none:"Farqi yo'q"}},
+  tj:{timeQ:"Дар як рӯз чанд дақиқа вақт доред?",timeSub:"Дарозии нақшаи рӯзона аз ин вобаста аст.",
+    focusQ:"Ба чӣ бештар таъкид кунем?",focusSub:"Ин ишора барои нақша аст. Хатоҳоро система худаш меёбад.",
+    min:"дақ",skip:"Гузарондан",
+    focus:{speaking:"Гуфтугӯ",listening:"Шунидан",vocabulary:"Калима ва ҳарф",grammar:"Грамматика",none:"Фарқ надорад"}}
+}[LANG]||{}}
+/* Savol BERILDIMI degan yagona manba — serverdagi `preferred_focus`.
+   `pending` esa boot paytida hisoblangan holat: u birinchi darsni SHU
+   sessiyada tugatgan o'quvchi uchun false bo'ladi, shuning uchun dars
+   tugagandagi chaqiruv unga tayanmaydi. */
+var SETUP_ASK_GAP_MS=24*60*60*1000;
+function studySetupAnswered(){return !!(STUDY_SETUP&&STUDY_SETUP.preferred_focus)}
+function studySetupPending(){
+  if(!INIT_DATA||!STUDY_SETUP||studySetupAnswered())return false;
+  /* Varaqni yopib yuborgan o'quvchini har ochilishda qayta bezovta qilmaymiz. */
+  try{var last=Number(localStorage.getItem("hsk_v3_setup_asked")||0);
+    if(last&&Date.now()-last<SETUP_ASK_GAP_MS)return false}catch(e){}
+  return true;
+}
+function markStudySetupAsked(){try{localStorage.setItem("hsk_v3_setup_asked",String(Date.now()))}catch(e){}}
+function askStudyTime(){
+  var s=studySetupT();var cur=Number(STUDY_SETUP&&STUDY_SETUP.daily_minutes)||10;
+  markStudySetupAsked();
+  App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(s.timeQ)+'</div><div class="tr">'+esc(s.timeSub)+'</div></div>'
+    +[5,10,15,20,30].map(function(v){return '<button class="opt-row'+(v===cur?" on":"")+'" onclick="App.pickStudyTime('+v+')"><i class="ti ti-clock"></i> '+v+' '+esc(s.min)+(v===cur?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
+}
+function askStudyFocus(){
+  var s=studySetupT();var keys=["speaking","listening","vocabulary","grammar","none"];
+  var icons={speaking:"microphone",listening:"headphones",vocabulary:"language-hiragana",grammar:"list-check",none:"circle-dashed"};
+  App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(s.focusQ)+'</div><div class="tr">'+esc(s.focusSub)+'</div></div>'
+    +keys.map(function(k){return '<button class="opt-row" onclick="App.pickStudyFocus(\''+k+'\')"><i class="ti ti-'+icons[k]+'"></i> '+esc(s.focus[k])+'</button>'}).join(""));
 }
 function serverSaveErrorText(code){
   var m={
@@ -6079,7 +6154,7 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
   loadCourseMap(bootLevel).then(function(res){
     if(!res.data){showAuthGate();return;}
     var d=res.data;
-    hideAuthGate();MAP=d;adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
+    hideAuthGate();MAP=d;adoptServerLang(d);adoptBotUsername(d);adoptStudySetup(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
     var bootParams=new URLSearchParams(location.search);
     /* Server onboarding source of truth. localStorage faqat tez cache: boshqa
        qurilma yoki cache tozalanganda server holati noto'g'ri redirectni to'xtatadi. */
@@ -6096,6 +6171,10 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     }
     if(d.user&&d.user.onboarding_completed===true){try{localStorage.setItem("hsk_v3_onb","1")}catch(e){}}
     renderAll();
+    /* Avvalgi kunlarda dars qilgan, lekin savolga hali javob bermagan
+       o'quvchi (masalan boshqa qurilmada tugatgan) — xarita chizilgach
+       so'raymiz. Yopib yuborsa 24 soat qayta so'ralmaydi. */
+    if(STUDY_SETUP&&STUDY_SETUP.pending&&studySetupPending())setTimeout(askStudyTime,1200);
     prefetchNearbyLessons();
     var sp=bootParams;
     App.show(sp.get("tab")||"course");

@@ -28,6 +28,7 @@ from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
 from app.api.desktop_practice import create_desktop_practice_router
 from app.api.miniapp_practice import create_miniapp_practice_router
+from app.api.miniapp_preferences import create_miniapp_preferences_router
 from app.api.desktop_rating import create_desktop_rating_router
 from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
@@ -577,6 +578,12 @@ app.include_router(
         session_factory=async_session_maker,
         settings_obj=settings,
         bot=bot,
+    )
+)
+app.include_router(
+    create_miniapp_preferences_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
     )
 )
 app.include_router(
@@ -1692,6 +1699,13 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             "onboarding_completed": profile.onboarding_completed_at is not None,
             "foundation": await profile_svc.foundation_status(user),
         }
+        # Kunlik reja sozlamalari: XP maqsadi endi serverda saqlanadi (ilgari
+        # klientdagi `dailyGoal=50` o'zgaruvchi edi va har ochilganda
+        # yo'qolardi). `pending` — kunlik vaqt/fokus savoli hali so'ralmagan.
+        data["study_setup"] = CourseMiniAppProfileService.study_setup(
+            profile,
+            completed_parts=completed,
+        )
         # Motivational reminders are ON by default until the user turns them off.
         data["notify"] = {
             "enabled": bool(getattr(profile, "notifications_enabled", True)),

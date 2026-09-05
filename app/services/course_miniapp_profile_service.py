@@ -156,6 +156,28 @@ class CourseMiniAppProfileService:
         )
         return goal_xp
 
+    @classmethod
+    def study_setup(cls, profile, *, completed_parts: int = 0) -> dict:
+        """Kunlik reja sozlamalari va "hali so'ralmagan savol bormi" bayrog'i.
+
+        Kunlik vaqt va fokus onboardingda ATAYLAB so'ralmaydi: hali bir dars
+        ham ko'rmagan o'quvchi ularga ma'noli javob bera olmaydi. Birinchi
+        qism tugagach so'raladi.
+        """
+        try:
+            completed = int(completed_parts or 0)
+        except (TypeError, ValueError):
+            completed = 0
+        focus = getattr(profile, "preferred_focus", None)
+        return {
+            "daily_minutes": getattr(profile, "daily_minutes", _DEFAULT_DAILY_MINUTES),
+            "preferred_focus": focus,
+            "daily_goal_xp": cls.resolve_daily_goal_xp(profile),
+            "daily_goal_is_custom": getattr(profile, "daily_goal_xp", None) is not None,
+            "plan_size": cls.daily_plan_size(getattr(profile, "daily_minutes", None)),
+            "pending": focus is None and completed >= 1,
+        }
+
     @staticmethod
     def clamp_daily_goal_xp(value) -> int:
         goal_xp = int(value)

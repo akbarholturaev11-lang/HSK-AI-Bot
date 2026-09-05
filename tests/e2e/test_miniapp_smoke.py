@@ -336,6 +336,116 @@ def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
     assert sent[0]["goal"] == "travel"
 
 
+def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
+    """Kunlik vaqt va fokus onboardingda EMAS, birinchi darsdan keyin so'raladi.
+
+    Sabab: hali bir dars ham ko'rmagan o'quvchi bu savollarga ma'noli javob
+    bera olmaydi. Ikkala javob ham serverga yetib borishi va bir vaqtda
+    bitta savol turishi shu yerda qotiriladi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+
+    saved = []
+    page.route(
+        "**/api/v3/preferences",
+        lambda route: (
+            saved.append(json.loads(route.request.post_data)),
+            json_response(
+                route,
+                {
+                    "ok": True,
+                    "profile": {
+                        "goal": "hsk_exam",
+                        "daily_minutes": 20,
+                        "preferred_focus": saved[-1].get("preferred_focus"),
+                        "daily_goal_xp": 40,
+                        "daily_goal_is_custom": False,
+                        "plan_size": 3,
+                    },
+                },
+            ),
+        )[-1],
+    )
+
+    data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data.setdefault("progress", {}).update({"xp": 120, "streak": 2, "completed": 3})
+    data["user"] = {
+        "name": "Smoke",
+        "avatar": "阿",
+        "language": "uz",
+        "is_paid": True,
+        "referral_code": "",
+        "onboarding_completed": True,
+    }
+    data["notify"] = {"enabled": True}
+    data["study_setup"] = {
+        "daily_minutes": 10,
+        "preferred_focus": None,
+        "daily_goal_xp": 30,
+        "daily_goal_is_custom": False,
+        "plan_size": 2,
+        "pending": True,
+    }
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    # 1-savol: kunlik vaqt
+    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#sheet-body")).to_contain_text("Kuniga necha daqiqa")
+    page.locator("#sheet-body .opt-row", has_text="20 daq").click()
+
+    # 2-savol: fokus. Birinchi javob saqlangach ochiladi, ya'ni ekranda
+    # bir vaqtda bitta savol turadi.
+    expect(page.locator("#sheet-body")).to_contain_text("Nimaga ko'proq urg'u")
+    page.locator("#sheet-body .opt-row", has_text="Tinglash").click()
+    expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+
+    assert [item.get("daily_minutes") for item in saved if "daily_minutes" in item] == [20]
+    assert [item.get("preferred_focus") for item in saved if "preferred_focus" in item] == [
+        "listening"
+    ]
+
+
+def test_course_v3_daily_goal_choice_is_saved_on_the_server(page):
+    """Profildagi kunlik XP maqsadi ilgari faqat sessiyada yashardi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+
+    saved = []
+    page.route(
+        "**/api/v3/preferences",
+        lambda route: (
+            saved.append(json.loads(route.request.post_data)),
+            json_response(
+                route,
+                {
+                    "ok": True,
+                    "profile": {
+                        "goal": "hsk_exam",
+                        "daily_minutes": 10,
+                        "preferred_focus": "none",
+                        "daily_goal_xp": 40,
+                        "daily_goal_is_custom": True,
+                        "plan_size": 2,
+                    },
+                },
+            ),
+        )[-1],
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&tab=profile&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.show('profile');renderProfile()")
+    page.evaluate("App.goalPicker()")
+    page.locator("#sheet-body .opt-row", has_text="40 XP").click()
+
+    assert saved == [{"daily_goal_xp": 40}]
+
+
 def test_course_v3_onboarding_autostart_opens_first_lesson_flow(page):
     mock_price_preview(page)
     mock_telegram_ready(page)
