@@ -51,6 +51,13 @@ class CourseMiniAppProfile(Base):
     # taxmin (prior) bo'lib, real natijalar to'plangach ta'siri so'nadi.
     # NULL = hali so'ralmagan; "none" = "farqi yo'q" deb javob bergan.
     preferred_focus: Mapped[Optional[str]] = mapped_column(String(24), nullable=True)
+    # Maqsad ATAYLAB tanlanganmi. NULL = hali so'ralmagan (maqsad savoli
+    # onboardingga keyin qo'shilgani uchun eski o'quvchilarda `goal` faqat
+    # jadval defaulti bo'lib qolgan). Birinchi darsdan keyin so'raladi.
+    goal_chosen_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
     # Kunlik XP maqsadi. NULL bo'lsa daily_minutes dan chiqariladi
     # (CourseMiniAppProfileService.resolve_daily_goal_xp).
     daily_goal_xp: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
