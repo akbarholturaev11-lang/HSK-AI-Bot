@@ -13,6 +13,7 @@ import com.pomp.hskai.core.storage.SecureCredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
+import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.DictionaryRepository
@@ -83,6 +84,10 @@ class HskAiApplication : Application() {
         retrofit.create(AndroidCourseApi::class.java)
     }
 
+    private val onboardingApi: AndroidOnboardingApi by lazy {
+        retrofit.create(AndroidOnboardingApi::class.java)
+    }
+
     private val database: HskAiDatabase by lazy {
         Room.databaseBuilder(this, HskAiDatabase::class.java, HskAiDatabase.NAME)
             // The cache is a disposable snapshot of server state, so a schema
@@ -103,7 +108,7 @@ class HskAiApplication : Application() {
 
     val onboardingRepository: OnboardingRepository by lazy {
         OnboardingRepository(
-            api = courseApi,
+            api = onboardingApi,
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
         )
