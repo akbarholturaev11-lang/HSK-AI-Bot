@@ -11,6 +11,7 @@ import com.pomp.hskai.domain.model.CourseUnit
 import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.LessonStatus
+import com.pomp.hskai.domain.model.RewardChest
 import com.pomp.hskai.domain.model.TodayTask
 import com.pomp.hskai.domain.model.TodayTaskAccess
 
@@ -39,7 +40,13 @@ object CourseMapper {
                 weekActivityDates = dto.progress.weekActivityDates,
                 localDate = dto.progress.localDate,
                 weekStart = dto.progress.weekStart,
-                hasRewardChest = dto.progress.rewardChest?.available == true,
+                rewardChest = dto.progress.rewardChest?.let { chest ->
+                    RewardChest(
+                        ready = chest.ready,
+                        progress = chest.progress.coerceIn(0, 100),
+                        nextXp = chest.nextXp.coerceAtLeast(0),
+                    )
+                },
             ),
             user = CourseUser(
                 name = dto.user.name,
