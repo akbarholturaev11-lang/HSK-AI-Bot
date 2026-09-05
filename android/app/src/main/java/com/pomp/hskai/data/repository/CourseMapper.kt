@@ -5,6 +5,7 @@ import com.pomp.hskai.data.api.CourseLessonDto
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
+import com.pomp.hskai.domain.model.CourseMilestone
 import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.domain.model.CourseToday
 import com.pomp.hskai.domain.model.CourseUnit
@@ -26,6 +27,13 @@ object CourseMapper {
                 CourseUnit(
                     number = unit.number,
                     title = unit.title.forLanguage(language),
+                    isLocked = unit.status?.trim()?.lowercase() == "locked",
+                    milestone = unit.milestone?.let { milestone ->
+                        CourseMilestone(
+                            title = milestone.title.forLanguage(language),
+                            status = milestone.status,
+                        )
+                    },
                     lessons = unit.lessons.map { it.toDomain(language) },
                 )
             },
