@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -49,29 +49,37 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
+import com.pomp.hskai.domain.model.CourseMilestone
 import com.pomp.hskai.domain.model.CourseToday
+import com.pomp.hskai.domain.model.CourseUnit
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.LessonStatus
 import com.pomp.hskai.domain.model.TodayTask
 import com.pomp.hskai.domain.model.TodayTaskAccess
 import com.pomp.hskai.feature.limit.LimitGate
-import com.pomp.hskai.feature.limit.SectionLimitBlock
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 /** Native rendering of the Mini App course shell. Mini App is source of truth. */
 @Composable
@@ -81,59 +89,79 @@ fun CourseScreen(
     limit: LimitGate,
     onLesson: (CourseLesson) -> Unit,
     onOpenGoal: () -> Unit,
+    onOpenChest: () -> Unit,
+    onChestRewardConsumed: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val map = state.map
-    Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
-        when {
-            state.isLoading && map == null -> Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) { CircularProgressIndicator(color = PompColors.Cinnabar) }
+    Box(modifier = modifier.fillMaxSize()) {
+        Surface(modifier = Modifier.fillMaxSize(), color = PompColors.Paper) {
+            when {
+                state.isLoading && map == null -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) { CircularProgressIndicator(color = PompColors.Cinnabar) }
 
-            map == null -> CourseErrorBlock(
-                messageRes = state.error?.messageRes ?: R.string.error_unknown,
-                onRetry = onRetry,
-            )
+                map == null -> CourseErrorBlock(
+                    messageRes = state.error?.messageRes ?: R.string.error_unknown,
+                    onRetry = onRetry,
+                )
 
-            else -> {
-                val rows = remember(map) { map.toRows() }
-                val listState = rememberLazyListState()
+                else -> {
+                    val rows = remember(map) { map.toRows() }
+                    val listState = rememberLazyListState()
 
-                LaunchedEffect(map.currentLesson?.order) {
-                    val index = rows.indexOfFirst { it is CourseRow.Lesson && it.lesson.isCurrent }
-                    if (index >= 0) listState.scrollToItem(index = index, scrollOffset = -160)
-                }
+                    LaunchedEffect(map.currentLesson?.order) {
+                        val index = rows.indexOfFirst {
+                            it is CourseRow.Path &&
+                                (it.item as? PathItem.Lesson)?.lesson?.isCurrent == true
+                        }
+                        if (index >= 0) listState.scrollToItem(index = index, scrollOffset = -160)
+                    }
 
-                Column(Modifier.fillMaxSize()) {
-                    // Mini App `.ctop`: level row + goal + today's plan behave as one block.
-                    CourseHeader(map = map, dailyGoal = dailyGoal, onOpenGoal = onOpenGoal)
-                    map.today?.takeIf { it.tasks.isNotEmpty() }?.let { TodayPlanStrip(it) }
-                    if (state.isStale) StaleBanner()
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier.fillMaxWidth().weight(1f),
-                        contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                            horizontal = 16.dp,
-                            vertical = 8.dp,
-                        ),
-                    ) {
-                        itemsIndexed(rows) { _, row ->
-                            when (row) {
-                                is CourseRow.Unit -> UnitHeader(row.number, row.title)
-                                is CourseRow.Lesson -> PathNode(
-                                    lesson = row.lesson,
-                                    slot = row.slot,
-                                    previousSlot = row.previousSlot,
-                                    onLesson = onLesson,
-                                )
-                                is CourseRow.LockedLesson -> LockedLessonCard(row.lesson, limit)
+                    Column(Modifier.fillMaxSize()) {
+                        CourseHeader(
+                            map = map,
+                            dailyGoal = dailyGoal,
+                            onOpenGoal = onOpenGoal,
+                        )
+                        CourseProgressBar(map)
+                        map.today?.takeIf { it.tasks.isNotEmpty() }?.let { TodayPlanStrip(it) }
+                        if (state.isStale) StaleBanner()
+
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxWidth().weight(1f),
+                            contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                vertical = 8.dp,
+                            ),
+                        ) {
+                            items(rows) { row ->
+                                when (row) {
+                                    is CourseRow.Unit -> UnitHeader(row.unit)
+                                    is CourseRow.Path -> PathRow(
+                                        row = row,
+                                        chestReady = map.progress.rewardChest?.ready == true,
+                                        isOpeningChest = state.isOpeningChest,
+                                        isStale = state.isStale,
+                                        onLesson = onLesson,
+                                        onOpenChest = onOpenChest,
+                                    )
+                                }
                             }
+                            item { Spacer(Modifier.height(14.dp)) }
                         }
                     }
                 }
             }
+        }
+
+        state.chestRewardXp?.let { reward ->
+            RewardChestOverlay(
+                rewardXp = reward,
+                onContinue = onChestRewardConsumed,
+            )
         }
     }
 }
@@ -142,7 +170,9 @@ fun CourseScreen(
 @Composable
 private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Surface(color = PompColors.Cinnabar, shape = RoundedCornerShape(20.dp)) {
@@ -150,15 +180,34 @@ private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit)
                 modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(Icons.Filled.Bolt, null, tint = PompColors.Paper, modifier = Modifier.size(15.dp))
+                Icon(
+                    Icons.Filled.Bolt,
+                    contentDescription = null,
+                    tint = PompColors.Paper,
+                    modifier = Modifier.size(15.dp),
+                )
                 Spacer(Modifier.width(6.dp))
-                Text(map.level.uppercase(), style = MaterialTheme.typography.labelLarge, color = PompColors.Paper)
+                Text(
+                    text = map.level.uppercase(),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = PompColors.Paper,
+                )
             }
         }
         Spacer(Modifier.weight(1f))
-        StatChip(Icons.Filled.LocalFireDepartment, PompColors.Flame, map.progress.streak.toString(), stringResource(R.string.today_streak))
+        StatChip(
+            Icons.Filled.LocalFireDepartment,
+            PompColors.Flame,
+            map.progress.streak.toString(),
+            stringResource(R.string.today_streak),
+        )
         Spacer(Modifier.width(8.dp))
-        StatChip(Icons.Filled.Diamond, PompColors.Gold, map.progress.xp.toString(), stringResource(R.string.today_xp))
+        StatChip(
+            Icons.Filled.Diamond,
+            PompColors.Gold,
+            map.progress.xp.toString(),
+            stringResource(R.string.today_xp),
+        )
         Spacer(Modifier.width(8.dp))
         GoalRing(map.progress.dailyXp, dailyGoal, onOpenGoal)
     }
@@ -167,16 +216,22 @@ private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit)
 @Composable
 private fun StatChip(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
-    tint: androidx.compose.ui.graphics.Color,
+    tint: Color,
     value: String,
     label: String,
 ) {
-    Surface(color = PompColors.PaperRaised, shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, PompColors.Divider)) {
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+    ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp).semantics { contentDescription = "$label: $value" },
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .semantics { contentDescription = "$label: $value" },
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(icon, null, tint = tint, modifier = Modifier.size(16.dp))
+            Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(5.dp))
             Text(value, style = MaterialTheme.typography.labelLarge, color = PompColors.Ink)
         }
@@ -188,34 +243,85 @@ fun GoalRing(
     dailyXp: Int,
     dailyGoal: Int,
     onClick: () -> Unit,
-    size: androidx.compose.ui.unit.Dp = 38.dp,
+    size: Dp = 38.dp,
 ) {
     val goal = dailyGoal.coerceAtLeast(1)
     val fraction = (dailyXp.toFloat() / goal).coerceIn(0f, 1f)
     val complete = fraction >= 1f
     val description = stringResource(R.string.course_goal_progress, dailyXp, goal)
     Box(
-        modifier = Modifier.size(size).clip(CircleShape).clickable(onClick = onClick).semantics { contentDescription = description },
+        modifier = Modifier
+            .size(size)
+            .clip(CircleShape)
+            .clickable(onClick = onClick)
+            .semantics { contentDescription = description },
         contentAlignment = Alignment.Center,
     ) {
         Canvas(Modifier.fillMaxSize()) {
             val stroke = 5.dp.toPx()
             val inset = stroke / 2
-            val arcSize = androidx.compose.ui.geometry.Size(this.size.width - stroke, this.size.height - stroke)
-            drawArc(PompColors.Divider, 0f, 360f, false, androidx.compose.ui.geometry.Offset(inset, inset), arcSize, style = Stroke(stroke))
+            val arcSize = Size(this.size.width - stroke, this.size.height - stroke)
+            drawArc(
+                PompColors.Divider,
+                0f,
+                360f,
+                false,
+                Offset(inset, inset),
+                arcSize,
+                style = Stroke(stroke),
+            )
             if (fraction > 0f) {
                 drawArc(
                     if (complete) PompColors.Gold else PompColors.Cinnabar,
                     -90f,
                     360f * fraction,
                     false,
-                    androidx.compose.ui.geometry.Offset(inset, inset),
+                    Offset(inset, inset),
                     arcSize,
                     style = Stroke(stroke, cap = StrokeCap.Round),
                 )
             }
         }
-        Icon(if (complete) Icons.Filled.Check else Icons.Filled.TrackChanges, null, tint = if (complete) PompColors.Gold else PompColors.Cinnabar, modifier = Modifier.size(size * 0.42f))
+        Icon(
+            if (complete) Icons.Filled.Check else Icons.Filled.TrackChanges,
+            contentDescription = null,
+            tint = if (complete) PompColors.Gold else PompColors.Cinnabar,
+            modifier = Modifier.size(size * 0.42f),
+        )
+    }
+}
+
+/** Mini App `.pwrap`: overall course progress immediately under `.htop`. */
+@Composable
+private fun CourseProgressBar(map: CourseMap) {
+    val done = map.progress.completedLessons.coerceIn(0, map.totalLessons.coerceAtLeast(0))
+    val total = map.totalLessons.coerceAtLeast(1)
+    val fraction = (done.toFloat() / total).coerceIn(0f, 1f)
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(8.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(PompColors.Divider),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(fraction)
+                    .height(8.dp)
+                    .background(PompColors.Cinnabar),
+            )
+        }
+        Spacer(Modifier.width(10.dp))
+        Text(
+            text = "$done / ${map.totalLessons}",
+            style = MaterialTheme.typography.labelSmall,
+            color = PompColors.InkSecondary,
+            fontWeight = FontWeight.Medium,
+        )
     }
 }
 
@@ -223,11 +329,16 @@ fun GoalRing(
 @Composable
 private fun TodayPlanStrip(today: CourseToday) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, bottom = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 2.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.TrackChanges, null, tint = PompColors.Cinnabar, modifier = Modifier.size(14.dp))
+            Icon(
+                Icons.Filled.TrackChanges,
+                contentDescription = null,
+                tint = PompColors.Cinnabar,
+                modifier = Modifier.size(14.dp),
+            )
             Spacer(Modifier.width(4.dp))
             Text(
                 text = "${today.doneXp}/${today.goalXp} XP",
@@ -238,7 +349,10 @@ private fun TodayPlanStrip(today: CourseToday) {
         }
         Spacer(Modifier.width(8.dp))
         Row(
-            modifier = Modifier.weight(1f).horizontalScroll(rememberScrollState()).padding(end = 16.dp),
+            modifier = Modifier
+                .weight(1f)
+                .horizontalScroll(rememberScrollState())
+                .padding(end = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             today.tasks.forEach { task -> TodayTaskChip(task) }
@@ -249,15 +363,8 @@ private fun TodayPlanStrip(today: CourseToday) {
 @Composable
 private fun TodayTaskChip(task: TodayTask) {
     val locked = task.access == TodayTaskAccess.LOCKED || !task.available
-    val foreground = when {
-        task.done -> PompColors.InkDisabled
-        locked -> PompColors.InkDisabled
-        else -> PompColors.Ink
-    }
-    val iconTint = when {
-        task.done -> PompColors.Jade
-        else -> PompColors.InkDisabled
-    }
+    val foreground = if (task.done || locked) PompColors.InkDisabled else PompColors.Ink
+    val iconTint = if (task.done) PompColors.Jade else PompColors.InkDisabled
     val icon = when {
         task.done -> Icons.Filled.Check
         locked -> Icons.Filled.Lock
@@ -268,7 +375,11 @@ private fun TodayTaskChip(task: TodayTask) {
     val text = when (task.type) {
         "continue_lesson" -> stringResource(R.string.today_continue)
         "mistake_review" -> stringResource(R.string.practice_mistakes_title)
-        "skill_drill" -> if (task.skill == "pronunciation") stringResource(R.string.practice_pronunciation_title) else stringResource(R.string.practice_characters_title)
+        "skill_drill" -> if (task.skill == "pronunciation") {
+            stringResource(R.string.practice_pronunciation_title)
+        } else {
+            stringResource(R.string.practice_characters_title)
+        }
         "mock_exam" -> stringResource(R.string.practice_test_title)
         "voice_dialog" -> stringResource(R.string.voice_title)
         else -> stringResource(R.string.practice_title)
@@ -283,7 +394,7 @@ private fun TodayTaskChip(task: TodayTask) {
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(icon, null, tint = iconTint, modifier = Modifier.size(14.dp))
+            Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(14.dp))
             Spacer(Modifier.width(4.dp))
             Text(text, style = MaterialTheme.typography.labelMedium, color = foreground, maxLines = 1)
         }
@@ -297,129 +408,252 @@ private fun StaleBanner() {
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
     ) {
-        Text(stringResource(R.string.today_stale), style = MaterialTheme.typography.bodyMedium, color = PompColors.Ink, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
+        Text(
+            stringResource(R.string.today_stale),
+            style = MaterialTheme.typography.bodyMedium,
+            color = PompColors.Ink,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+        )
     }
 }
 
-/** Mini App `.uban`: dark rounded unit banner with small unit number. */
+/** Mini App `.uban`: unlocked dark banner, locked white outlined banner. */
 @Composable
-private fun UnitHeader(number: Int, title: String) {
+private fun UnitHeader(unit: CourseUnit) {
+    val background = if (unit.isLocked) PompColors.PaperRaised else PompColors.Ink
+    val foreground = if (unit.isLocked) PompColors.InkSecondary else PompColors.Paper
     Surface(
-        color = PompColors.Ink,
+        color = background,
         shape = RoundedCornerShape(14.dp),
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp),
+        border = if (unit.isLocked) BorderStroke(1.dp, PompColors.Divider) else null,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, top = 8.dp),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = number.toString().padStart(2, '0'),
-                style = MaterialTheme.typography.labelSmall,
-                color = PompColors.Paper.copy(alpha = 0.70f),
+                text = unit.title.ifBlank { unit.number.toString() },
+                style = MaterialTheme.typography.titleMedium,
+                color = foreground,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.weight(1f),
+                maxLines = 2,
             )
-            Spacer(Modifier.width(10.dp))
-            Text(title, style = MaterialTheme.typography.titleMedium, color = PompColors.Paper, maxLines = 2)
+            Icon(
+                imageVector = if (unit.isLocked) Icons.Filled.Lock else Icons.Filled.School,
+                contentDescription = null,
+                tint = foreground.copy(alpha = 0.85f),
+                modifier = Modifier.size(18.dp),
+            )
         }
     }
 }
 
-private val PATH_SLOTS = listOf(0f, 0.55f, 0.85f, 0.55f, 0f, -0.55f, -0.85f, -0.55f)
-private val PATH_SWING = 84.dp
 private val NODE_SIZE = 64.dp
 private val CURRENT_RING_SIZE = 76.dp
 private val PATH_ROW_HEIGHT = 84.dp
+private val PATH_SWING = 76.dp
+
+private fun pathOffset(unitIndex: Int, nodeIndex: Int): Dp {
+    val pxLike = (sin((unitIndex * 3 + nodeIndex) * 0.9) * PATH_SWING.value).roundToInt()
+    return pxLike.dp
+}
 
 @Composable
-private fun PathNode(
-    lesson: CourseLesson,
-    slot: Int,
-    previousSlot: Int?,
+private fun PathRow(
+    row: CourseRow.Path,
+    chestReady: Boolean,
+    isOpeningChest: Boolean,
+    isStale: Boolean,
     onLesson: (CourseLesson) -> Unit,
+    onOpenChest: () -> Unit,
 ) {
-    val clickable = lesson.access == LessonAccess.Open || lesson.access == LessonAccess.HalfPreview
-    val label = lesson.stateLabel()
-    val offsetX = PATH_SWING * PATH_SLOTS[slot % PATH_SLOTS.size]
+    val offsetX = pathOffset(row.unitIndex, row.nodeIndex)
+    val previousX = row.previousNodeIndex?.let { pathOffset(row.unitIndex, it) }
+    val pandaPrompts = stringArrayResource(R.array.course_panda_prompts)
+    val pandaPrompt = row.pandaPromptIndex?.let { pandaPrompts[it % pandaPrompts.size] }
 
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        if (lesson.isCurrent && clickable) {
-            Surface(
-                color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(20.dp),
-                border = BorderStroke(1.dp, PompColors.Cinnabar),
-                modifier = Modifier.offset(x = offsetX),
-            ) {
-                Text(stringResource(R.string.today_continue).uppercase(), style = MaterialTheme.typography.labelLarge, color = PompColors.CinnabarDark, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp))
-            }
-            Spacer(Modifier.height(6.dp))
+    Box(
+        modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (previousX != null) PathConnector(previousX, offsetX)
+
+        if (pandaPrompt != null) {
+            val pandaX = if (offsetX.value >= 0f) -150.dp else 150.dp
+            PathPanda(
+                text = pandaPrompt,
+                leftBubble = offsetX.value >= 0f,
+                modifier = Modifier.offset(x = pandaX),
+            )
+        } else if (row.nodeIndex % 2 == 1) {
+            val sceneryX = if (offsetX.value >= 0f) -150.dp else 150.dp
+            PathScenery(
+                seed = row.unitIndex * 5 + row.nodeIndex,
+                modifier = Modifier.offset(x = sceneryX),
+            )
         }
 
-        Box(modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT), contentAlignment = Alignment.Center) {
-            if (previousSlot != null) PathConnector(previousSlot, slot)
-            if (lesson.isCurrent) {
-                CoursePandaMascot(
-                    modifier = Modifier.offset(x = if (offsetX.value >= 0f) -118.dp else 118.dp),
+        Column(
+            modifier = Modifier.offset(x = offsetX),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
+                when (val item = row.item) {
+                    is PathItem.Lesson -> {
+                        val lesson = item.lesson
+                        val clickable = lesson.access == LessonAccess.Open ||
+                            lesson.access == LessonAccess.HalfPreview
+                        if (lesson.isCurrent && clickable) CurrentBubble()
+                        Box(
+                            modifier = Modifier
+                                .size(CURRENT_RING_SIZE)
+                                .then(if (clickable) Modifier.clickable { onLesson(lesson) } else Modifier)
+                                .semantics { contentDescription = lesson.stateLabel() },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            LessonNodeFace(lesson)
+                        }
+                    }
+
+                    PathItem.Chest -> {
+                        val clickable = chestReady && !isStale && !isOpeningChest
+                        Box(
+                            modifier = Modifier
+                                .size(CURRENT_RING_SIZE)
+                                .then(if (clickable) Modifier.clickable(onClick = onOpenChest) else Modifier)
+                                .semantics { contentDescription = stringResource(R.string.course_chest_cd) },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ChestNodeFace(isOpeningChest)
+                        }
+                    }
+
+                    is PathItem.Boss -> BossNodeFace()
+                }
+            }
+
+            when (val item = row.item) {
+                is PathItem.Lesson -> {
+                    val lesson = item.lesson
+                    Text(
+                        text = lesson.hanziPreview.take(10),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if (lesson.status == LessonStatus.LOCKED) {
+                            PompColors.InkDisabled
+                        } else {
+                            PompColors.InkSecondary
+                        },
+                        maxLines = 1,
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        text = if (lesson.isCheckpoint) {
+                            stringResource(R.string.course_checkpoint)
+                        } else {
+                            stringResource(R.string.course_part_label, lesson.part)
+                        },
+                        style = MaterialTheme.typography.labelSmall,
+                        color = PompColors.InkDisabled,
+                        maxLines = 1,
+                    )
+                }
+
+                PathItem.Chest -> Unit
+                is PathItem.Boss -> Text(
+                    text = item.milestone.title.substringBefore(' ').ifBlank { item.milestone.title },
+                    style = MaterialTheme.typography.labelMedium,
+                    color = PompColors.InkDisabled,
+                    maxLines = 1,
                 )
             }
-            Box(
-                modifier = Modifier.offset(x = offsetX).size(CURRENT_RING_SIZE)
-                    .then(if (clickable) Modifier.clickable { onLesson(lesson) } else Modifier)
-                    .semantics { contentDescription = label },
-                contentAlignment = Alignment.Center,
-            ) { NodeFace(lesson) }
         }
+    }
+}
 
+@Composable
+private fun CurrentBubble() {
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, PompColors.Cinnabar),
+        modifier = Modifier.offset(y = (-43).dp),
+    ) {
         Text(
-            when {
-                lesson.isCheckpoint -> stringResource(R.string.course_checkpoint)
-                lesson.hanziPreview.isNotBlank() -> lesson.hanziPreview
-                else -> stringResource(R.string.course_part_label, lesson.part)
-            },
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (clickable) PompColors.InkSecondary else PompColors.InkDisabled,
-            maxLines = 1,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.offset(x = offsetX).padding(top = 2.dp),
+            text = stringResource(R.string.today_continue).uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            color = PompColors.CinnabarDark,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
         )
-        Text(lesson.subtitle, style = MaterialTheme.typography.labelSmall, color = if (clickable) PompColors.InkSecondary else PompColors.InkDisabled, maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.offset(x = offsetX).padding(bottom = 8.dp))
     }
 }
 
 /** Mini App SVG trail: 34px warm rail plus 4px white dotted highlight. */
 @Composable
-private fun PathConnector(previousSlot: Int, slot: Int) {
+private fun PathConnector(previousX: Dp, currentX: Dp) {
     Canvas(modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT)) {
         val center = size.width / 2f
-        val swingPx = PATH_SWING.toPx()
-        val startX = center + swingPx * PATH_SLOTS[previousSlot % PATH_SLOTS.size]
-        val endX = center + swingPx * PATH_SLOTS[slot % PATH_SLOTS.size]
+        val startX = center + previousX.toPx()
+        val endX = center + currentX.toPx()
         val middleY = size.height / 2f
         val path = Path().apply {
             moveTo(startX, 0f)
             cubicTo(startX, middleY, endX, middleY, endX, size.height)
         }
-        drawPath(path, color = PompColors.CourseTrail, style = Stroke(width = 34.dp.toPx(), cap = StrokeCap.Round))
         drawPath(
             path,
-            color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.80f),
+            color = PompColors.CourseTrail,
+            style = Stroke(width = 34.dp.toPx(), cap = StrokeCap.Round),
+        )
+        drawPath(
+            path,
+            color = Color.White.copy(alpha = 0.80f),
             style = Stroke(
                 width = 4.dp.toPx(),
                 cap = StrokeCap.Round,
-                pathEffect = PathEffect.dashPathEffect(floatArrayOf(0.5.dp.toPx(), 16.dp.toPx())),
+                pathEffect = PathEffect.dashPathEffect(
+                    floatArrayOf(0.5.dp.toPx(), 16.dp.toPx()),
+                ),
             ),
         )
     }
 }
 
 @Composable
-private fun NodeFace(lesson: CourseLesson) {
+private fun LessonNodeFace(lesson: CourseLesson) {
     val current = lesson.isCurrent
-    val (background, depth, content, contentColor) = when {
-        lesson.status == LessonStatus.DONE -> Quad(PompColors.Jade, PompColors.DoneDepth, NodeContent.Done, PompColors.Paper)
-        lesson.access == LessonAccess.PremiumLocked -> Quad(PompColors.Divider, PompColors.LockedDepth, NodeContent.Premium, PompColors.InkDisabled)
-        lesson.access == LessonAccess.NotReached -> Quad(PompColors.Divider, PompColors.LockedDepth, NodeContent.Locked, PompColors.InkDisabled)
-        lesson.isCheckpoint -> Quad(PompColors.CinnabarSoft, PompColors.BossDepth, NodeContent.Checkpoint, PompColors.Cinnabar)
-        else -> Quad(PompColors.Cinnabar, PompColors.CinnabarDark, NodeContent.Glyph, PompColors.Paper)
+    val checkpoint = lesson.isCheckpoint
+    val (background, depth, content, contentColor, border) = when {
+        lesson.status == LessonStatus.DONE -> NodeStyle(
+            PompColors.Jade,
+            PompColors.DoneDepth,
+            NodeContent.Done,
+            PompColors.Paper,
+            null,
+        )
+        lesson.access == LessonAccess.PremiumLocked || lesson.access == LessonAccess.NotReached -> NodeStyle(
+            PompColors.Divider,
+            PompColors.LockedDepth,
+            if (checkpoint) NodeContent.Checkpoint else NodeContent.Locked,
+            PompColors.InkDisabled,
+            null,
+        )
+        checkpoint -> NodeStyle(
+            PompColors.CinnabarSoft,
+            PompColors.BossDepth,
+            NodeContent.Checkpoint,
+            PompColors.Cinnabar,
+            BorderStroke(2.dp, PompColors.Cinnabar),
+        )
+        else -> NodeStyle(
+            PompColors.Cinnabar,
+            PompColors.CinnabarDark,
+            NodeContent.Glyph,
+            PompColors.Paper,
+            null,
+        )
     }
 
     val transition = if (current) rememberInfiniteTransition(label = "course-current-node") else null
@@ -439,7 +673,7 @@ private fun NodeFace(lesson: CourseLesson) {
     Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
         if (current) {
             Surface(
-                color = androidx.compose.ui.graphics.Color.Transparent,
+                color = Color.Transparent,
                 shape = CircleShape,
                 border = BorderStroke(3.dp, PompColors.Cinnabar),
                 modifier = Modifier.size(NODE_SIZE + 12.dp).graphicsLayer {
@@ -450,35 +684,221 @@ private fun NodeFace(lesson: CourseLesson) {
             ) {}
         }
         Box(Modifier.size(NODE_SIZE).offset(y = 4.dp).background(depth, CircleShape))
-        Box(Modifier.size(NODE_SIZE).clip(CircleShape).background(background), contentAlignment = Alignment.Center) {
-            when (content) {
-                NodeContent.Done -> Icon(Icons.Filled.Check, null, tint = contentColor, modifier = Modifier.size(28.dp))
-                NodeContent.Locked, NodeContent.Premium -> Icon(Icons.Filled.Lock, null, tint = contentColor, modifier = Modifier.size(22.dp))
-                NodeContent.Checkpoint -> Text("⚑", style = PompTextStyles.hanziSmall, color = contentColor)
-                NodeContent.Glyph -> Text(lesson.hanziPreview.take(1).ifBlank { lesson.order.toString() }, style = PompTextStyles.hanziSmall, color = contentColor)
+        Surface(
+            color = background,
+            shape = CircleShape,
+            border = border,
+            modifier = Modifier.size(NODE_SIZE),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                when (content) {
+                    NodeContent.Done -> Icon(
+                        Icons.Filled.Check,
+                        contentDescription = null,
+                        tint = contentColor,
+                        modifier = Modifier.size(28.dp),
+                    )
+                    NodeContent.Locked -> Icon(
+                        Icons.Filled.Lock,
+                        contentDescription = null,
+                        tint = contentColor,
+                        modifier = Modifier.size(22.dp),
+                    )
+                    NodeContent.Checkpoint -> Text(
+                        text = "⚑",
+                        style = PompTextStyles.hanziSmall,
+                        color = contentColor,
+                    )
+                    NodeContent.Glyph -> Text(
+                        text = lesson.hanziPreview.take(1).ifBlank { "学" },
+                        style = PompTextStyles.hanziSmall,
+                        color = contentColor,
+                    )
+                }
             }
         }
     }
 }
 
-private data class Quad(
-    val background: androidx.compose.ui.graphics.Color,
-    val depth: androidx.compose.ui.graphics.Color,
-    val content: NodeContent,
-    val contentColor: androidx.compose.ui.graphics.Color,
-)
-
-private enum class NodeContent { Done, Locked, Premium, Checkpoint, Glyph }
+@Composable
+private fun ChestNodeFace(opening: Boolean) {
+    Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier
+                .size(NODE_SIZE)
+                .offset(y = 4.dp)
+                .background(PompColors.ChestDepth, CircleShape),
+        )
+        Surface(
+            color = PompColors.GoldSoft,
+            shape = CircleShape,
+            border = BorderStroke(2.dp, PompColors.Gold),
+            modifier = Modifier.size(NODE_SIZE),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                if (opening) {
+                    CircularProgressIndicator(
+                        color = PompColors.Gold,
+                        strokeWidth = 3.dp,
+                        modifier = Modifier.size(26.dp),
+                    )
+                } else {
+                    ChestGlyph(Modifier.size(30.dp))
+                }
+            }
+        }
+    }
+}
 
 @Composable
-private fun LockedLessonCard(lesson: CourseLesson, limit: LimitGate) {
-    SectionLimitBlock(
-        sectionTitle = stringResource(R.string.course_lesson_label, lesson.sourceLesson) + lesson.hanziPreview.takeIf { it.isNotBlank() }?.let { " · $it" }.orEmpty(),
-        limit = limit,
-        modifier = Modifier.padding(vertical = 10.dp),
-        reason = lesson.stateLabel(),
-        resetAt = null,
-    )
+private fun BossNodeFace() {
+    Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier
+                .size(NODE_SIZE)
+                .offset(y = 4.dp)
+                .background(PompColors.BossDepth, CircleShape),
+        )
+        Surface(
+            color = PompColors.CinnabarSoft,
+            shape = CircleShape,
+            border = BorderStroke(2.dp, PompColors.Cinnabar),
+            modifier = Modifier.size(NODE_SIZE),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text("★", style = MaterialTheme.typography.headlineSmall, color = PompColors.Cinnabar)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChestGlyph(modifier: Modifier = Modifier) {
+    Canvas(modifier) {
+        val stroke = 2.dp.toPx()
+        drawRoundRect(
+            color = PompColors.Gold,
+            topLeft = Offset(size.width * 0.08f, size.height * 0.30f),
+            size = Size(size.width * 0.84f, size.height * 0.58f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(5.dp.toPx()),
+            style = Stroke(stroke),
+        )
+        drawRoundRect(
+            color = PompColors.Gold,
+            topLeft = Offset(size.width * 0.12f, size.height * 0.18f),
+            size = Size(size.width * 0.76f, size.height * 0.28f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(5.dp.toPx()),
+            style = Stroke(stroke),
+        )
+        drawLine(
+            color = PompColors.Gold,
+            start = Offset(size.width * 0.50f, size.height * 0.32f),
+            end = Offset(size.width * 0.50f, size.height * 0.84f),
+            strokeWidth = stroke,
+        )
+        drawCircle(
+            color = PompColors.Gold,
+            radius = 2.5.dp.toPx(),
+            center = Offset(size.width * 0.50f, size.height * 0.58f),
+        )
+    }
+}
+
+@Composable
+private fun PathPanda(
+    text: String,
+    leftBubble: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier.size(96.dp), contentAlignment = Alignment.Center) {
+        CoursePandaMascot(modifier = Modifier.size(72.dp))
+        Surface(
+            color = PompColors.PaperRaised,
+            shape = RoundedCornerShape(14.dp),
+            border = BorderStroke(1.dp, PompColors.Divider),
+            modifier = Modifier.offset(
+                x = if (leftBubble) (-4).dp else 4.dp,
+                y = (-44).dp,
+            ),
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelSmall,
+                color = PompColors.Ink,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                maxLines = 1,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PathScenery(seed: Int, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier.size(if (seed % 3 == 0) 42.dp else 52.dp)) {
+        val ink = PompColors.Jade.copy(alpha = 0.38f)
+        val stone = PompColors.Shadow.copy(alpha = 0.70f)
+        if (seed % 2 == 0) {
+            val x = size.width * 0.50f
+            drawLine(ink, Offset(x, size.height * 0.16f), Offset(x, size.height * 0.84f), 3.dp.toPx())
+            drawLine(ink, Offset(x, size.height * 0.36f), Offset(size.width * 0.28f, size.height * 0.22f), 2.dp.toPx())
+            drawLine(ink, Offset(x, size.height * 0.54f), Offset(size.width * 0.72f, size.height * 0.40f), 2.dp.toPx())
+            drawOval(ink, Offset(size.width * 0.14f, size.height * 0.14f), Size(size.width * 0.28f, size.height * 0.14f))
+            drawOval(ink, Offset(size.width * 0.58f, size.height * 0.34f), Size(size.width * 0.28f, size.height * 0.14f))
+        } else {
+            drawOval(stone, Offset(size.width * 0.10f, size.height * 0.54f), Size(size.width * 0.80f, size.height * 0.30f))
+            drawOval(PompColors.Paper.copy(alpha = 0.35f), Offset(size.width * 0.30f, size.height * 0.58f), Size(size.width * 0.26f, size.height * 0.08f))
+        }
+    }
+}
+
+@Composable
+private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
+    Surface(
+        color = PompColors.Overlay.copy(alpha = 0.56f),
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Surface(
+                color = PompColors.Paper,
+                shape = RoundedCornerShape(22.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 28.dp),
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 22.dp, vertical = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    CoursePandaMascot(celebrate = true, modifier = Modifier.size(104.dp))
+                    Spacer(Modifier.height(6.dp))
+                    ChestGlyph(Modifier.size(58.dp))
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.course_chest_reward, rewardXp),
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = PompColors.Gold,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Spacer(Modifier.height(18.dp))
+                    Surface(
+                        color = PompColors.Cinnabar,
+                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 50.dp)
+                            .clickable(onClick = onContinue),
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                text = stringResource(R.string.action_continue),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = PompColors.Paper,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -488,10 +908,23 @@ private fun CourseErrorBlock(messageRes: Int, onRetry: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(stringResource(messageRes), style = MaterialTheme.typography.bodyLarge, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
+        Text(
+            stringResource(messageRes),
+            style = MaterialTheme.typography.bodyLarge,
+            color = PompColors.InkSecondary,
+            textAlign = TextAlign.Center,
+        )
         Spacer(Modifier.height(16.dp))
-        androidx.compose.material3.OutlinedButton(onClick = onRetry, modifier = Modifier.heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) {
-            Text(stringResource(R.string.action_retry), style = MaterialTheme.typography.labelLarge, color = PompColors.CinnabarDark)
+        androidx.compose.material3.OutlinedButton(
+            onClick = onRetry,
+            modifier = Modifier.heightIn(min = 48.dp),
+            shape = RoundedCornerShape(14.dp),
+        ) {
+            Text(
+                stringResource(R.string.action_retry),
+                style = MaterialTheme.typography.labelLarge,
+                color = PompColors.CinnabarDark,
+            )
         }
     }
 }
@@ -504,23 +937,68 @@ private fun CourseLesson.stateLabel(): String = when (access) {
     LessonAccess.NotReached -> stringResource(R.string.today_reason_not_reached)
 }
 
-private sealed interface CourseRow {
-    data class Unit(val number: Int, val title: String) : CourseRow
-    data class Lesson(val lesson: CourseLesson, val slot: Int, val previousSlot: Int?) : CourseRow
-    data class LockedLesson(val lesson: CourseLesson) : CourseRow
+private data class NodeStyle(
+    val background: Color,
+    val depth: Color,
+    val content: NodeContent,
+    val contentColor: Color,
+    val border: BorderStroke?,
+)
+
+private enum class NodeContent { Done, Locked, Checkpoint, Glyph }
+
+private sealed interface PathItem {
+    data class Lesson(val lesson: CourseLesson) : PathItem
+    data object Chest : PathItem
+    data class Boss(val milestone: CourseMilestone) : PathItem
 }
 
+private sealed interface CourseRow {
+    data class Unit(val unit: CourseUnit) : CourseRow
+    data class Path(
+        val item: PathItem,
+        val unitIndex: Int,
+        val nodeIndex: Int,
+        val previousNodeIndex: Int?,
+        val pandaPromptIndex: Int?,
+    ) : CourseRow
+}
+
+/**
+ * Mini App path algorithm, value for value:
+ * - offset = sin((unitIndex*3 + nodeIndex)*0.9) * 76
+ * - unlocked milestone unit inserts a chest after at most three lessons
+ * - milestone boss is the final node
+ * - a panda appears on every fifth-ish non-current lesson (`k % 5 == 2`)
+ */
 private fun CourseMap.toRows(): List<CourseRow> = buildList {
-    var slot = 0
-    var previousSlot: Int? = null
-    units.forEach { unit ->
-        add(CourseRow.Unit(unit.number, unit.title))
-        unit.lessons.forEach { lesson ->
-            add(CourseRow.Lesson(lesson, slot, previousSlot))
-            previousSlot = slot
-            slot += 1
-            if (lesson.access == LessonAccess.PremiumLocked && lesson.part == 1) add(CourseRow.LockedLesson(lesson))
+    var mascotCount = 0
+    units.forEachIndexed { unitIndex, unit ->
+        add(CourseRow.Unit(unit))
+        val nodes = unit.lessons.map<PathItem> { PathItem.Lesson(it) }.toMutableList()
+        if (!unit.isLocked && unit.milestone != null) {
+            nodes.add(minOf(3, nodes.size), PathItem.Chest)
+            nodes.add(PathItem.Boss(unit.milestone))
         }
-        previousSlot = null
+        nodes.forEachIndexed { nodeIndex, item ->
+            val pandaPrompt = if (
+                item is PathItem.Lesson &&
+                !item.lesson.isCurrent &&
+                nodeIndex % 5 == 2
+            ) {
+                (mascotCount++ % 4)
+            } else {
+                null
+            }
+            add(
+                CourseRow.Path(
+                    item = item,
+                    unitIndex = unitIndex,
+                    nodeIndex = nodeIndex,
+                    previousNodeIndex = if (nodeIndex > 0) nodeIndex - 1 else null,
+                    pandaPromptIndex = pandaPrompt,
+                )
+            )
+        }
     }
 }
