@@ -65,6 +65,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
@@ -111,13 +112,20 @@ fun CourseScreen(
                 else -> {
                     val rows = remember(map) { map.toRows() }
                     val listState = rememberLazyListState()
+                    val viewportHeight = listState.layoutInfo.viewportSize.height
 
-                    LaunchedEffect(map.currentLesson?.order) {
+                    LaunchedEffect(map.currentLesson?.order, viewportHeight) {
                         val index = rows.indexOfFirst {
                             it is CourseRow.Path &&
                                 (it.item as? PathItem.Lesson)?.lesson?.isCurrent == true
                         }
-                        if (index >= 0) listState.scrollToItem(index = index, scrollOffset = -160)
+                        if (index >= 0 && viewportHeight > 0) {
+                            // Mini App places the current node at ~42% of the visible viewport.
+                            listState.scrollToItem(
+                                index = index,
+                                scrollOffset = -(viewportHeight * 0.42f).roundToInt(),
+                            )
+                        }
                     }
 
                     Column(Modifier.fillMaxSize()) {
@@ -166,6 +174,11 @@ fun CourseScreen(
     }
 }
 
+private fun courseLevelLabel(level: String): String {
+    val number = level.lowercase().removePrefix("hsk").trim().toIntOrNull()
+    return if (number != null) "HSK $number" else level.uppercase()
+}
+
 /** Mini App `.htop`: compact level pill + streak + XP + daily goal. */
 @Composable
 private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit) {
@@ -188,8 +201,12 @@ private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit)
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = map.level.uppercase(),
-                    style = MaterialTheme.typography.labelLarge,
+                    text = courseLevelLabel(map.level),
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        letterSpacing = 0.sp,
+                    ),
                     color = PompColors.Paper,
                 )
             }
@@ -197,7 +214,7 @@ private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit)
         Spacer(Modifier.weight(1f))
         StatChip(
             Icons.Filled.LocalFireDepartment,
-            PompColors.Flame,
+            PompColors.Cinnabar,
             map.progress.streak.toString(),
             stringResource(R.string.today_streak),
         )
@@ -233,7 +250,15 @@ private fun StatChip(
         ) {
             Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(5.dp))
-            Text(value, style = MaterialTheme.typography.labelLarge, color = PompColors.Ink)
+            Text(
+                value,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    letterSpacing = 0.sp,
+                ),
+                color = tint,
+            )
         }
     }
 }
@@ -243,7 +268,7 @@ fun GoalRing(
     dailyXp: Int,
     dailyGoal: Int,
     onClick: () -> Unit,
-    size: Dp = 38.dp,
+    size: Dp = 40.dp,
 ) {
     val goal = dailyGoal.coerceAtLeast(1)
     val fraction = (dailyXp.toFloat() / goal).coerceIn(0f, 1f)
@@ -318,7 +343,7 @@ private fun CourseProgressBar(map: CourseMap) {
         Spacer(Modifier.width(10.dp))
         Text(
             text = "$done / ${map.totalLessons}",
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
             color = PompColors.InkSecondary,
             fontWeight = FontWeight.Medium,
         )
@@ -334,7 +359,7 @@ private fun TodayPlanStrip(today: CourseToday) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                Icons.Filled.TrackChanges,
+                if (today.complete) Icons.Filled.Check else Icons.Filled.TrackChanges,
                 contentDescription = null,
                 tint = PompColors.Cinnabar,
                 modifier = Modifier.size(14.dp),
@@ -342,7 +367,7 @@ private fun TodayPlanStrip(today: CourseToday) {
             Spacer(Modifier.width(4.dp))
             Text(
                 text = "${today.doneXp}/${today.goalXp} XP",
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
                 color = PompColors.InkSecondary,
                 fontWeight = FontWeight.Medium,
             )
@@ -396,7 +421,12 @@ private fun TodayTaskChip(task: TodayTask) {
         ) {
             Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(14.dp))
             Spacer(Modifier.width(4.dp))
-            Text(text, style = MaterialTheme.typography.labelMedium, color = foreground, maxLines = 1)
+            Text(
+                text,
+                style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.5.sp),
+                color = foreground,
+                maxLines = 1,
+            )
         }
     }
 }
@@ -436,9 +466,12 @@ private fun UnitHeader(unit: CourseUnit) {
         ) {
             Text(
                 text = unit.title.ifBlank { unit.number.toString() },
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontSize = 15.sp,
+                    lineHeight = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                ),
                 color = foreground,
-                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.weight(1f),
                 maxLines = 2,
             )
@@ -484,17 +517,22 @@ private fun PathRow(
         if (previousX != null) PathConnector(previousX, offsetX)
 
         if (pandaPrompt != null) {
-            val pandaX = if (offsetX.value >= 0f) -150.dp else 150.dp
+            val onLeft = offsetX.value >= 0f
             PathPanda(
                 text = pandaPrompt,
-                leftBubble = offsetX.value >= 0f,
-                modifier = Modifier.offset(x = pandaX),
+                leftBubble = onLeft,
+                modifier = Modifier
+                    .align(if (onLeft) Alignment.CenterStart else Alignment.CenterEnd)
+                    .padding(start = if (onLeft) 8.dp else 0.dp, end = if (onLeft) 0.dp else 8.dp),
             )
         } else if (row.nodeIndex % 2 == 1) {
-            val sceneryX = if (offsetX.value >= 0f) -150.dp else 150.dp
+            val onLeft = offsetX.value >= 0f
             PathScenery(
                 seed = row.unitIndex * 5 + row.nodeIndex,
-                modifier = Modifier.offset(x = sceneryX),
+                small = ((row.unitIndex * 3 + row.nodeIndex) % 3 == 0),
+                modifier = Modifier
+                    .align(if (onLeft) Alignment.CenterStart else Alignment.CenterEnd)
+                    .padding(start = if (onLeft) 16.dp else 0.dp, end = if (onLeft) 0.dp else 16.dp),
             )
         }
 
@@ -543,12 +581,13 @@ private fun PathRow(
                     val lesson = item.lesson
                     Text(
                         text = lesson.hanziPreview.take(10),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
                         color = if (lesson.status == LessonStatus.LOCKED) {
                             PompColors.InkDisabled
                         } else {
                             PompColors.InkSecondary
                         },
+                        fontWeight = FontWeight.Medium,
                         maxLines = 1,
                         textAlign = TextAlign.Center,
                     )
@@ -558,8 +597,9 @@ private fun PathRow(
                         } else {
                             stringResource(R.string.course_part_label, lesson.part)
                         },
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
                         color = PompColors.InkDisabled,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                     )
                 }
@@ -567,8 +607,9 @@ private fun PathRow(
                 PathItem.Chest -> Unit
                 is PathItem.Boss -> Text(
                     text = item.milestone.title.substringBefore(' ').ifBlank { item.milestone.title },
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
                     color = PompColors.InkDisabled,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 1,
                 )
             }
@@ -578,19 +619,48 @@ private fun PathRow(
 
 @Composable
 private fun CurrentBubble() {
-    Surface(
-        color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, PompColors.Cinnabar),
+    Box(
         modifier = Modifier.offset(y = (-43).dp),
+        contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = stringResource(R.string.today_continue).uppercase(),
-            style = MaterialTheme.typography.labelSmall,
-            color = PompColors.CinnabarDark,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
-        )
+        Surface(
+            color = PompColors.PaperRaised,
+            shape = RoundedCornerShape(20.dp),
+            border = BorderStroke(1.dp, PompColors.Cinnabar),
+        ) {
+            Text(
+                text = stringResource(R.string.today_continue).uppercase(),
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
+                color = PompColors.CinnabarDark,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
+            )
+        }
+        Canvas(
+            modifier = Modifier
+                .size(10.dp)
+                .offset(y = 17.dp),
+        ) {
+            val path = Path().apply {
+                moveTo(size.width / 2f, size.height)
+                lineTo(0f, 0f)
+                lineTo(size.width, 0f)
+                close()
+            }
+            drawPath(path, color = PompColors.PaperRaised)
+            drawLine(
+                color = PompColors.Cinnabar,
+                start = Offset(0f, 0f),
+                end = Offset(size.width / 2f, size.height),
+                strokeWidth = 1.dp.toPx(),
+            )
+            drawLine(
+                color = PompColors.Cinnabar,
+                start = Offset(size.width, 0f),
+                end = Offset(size.width / 2f, size.height),
+                strokeWidth = 1.dp.toPx(),
+            )
+        }
     }
 }
 
@@ -714,8 +784,9 @@ private fun LessonNodeFace(lesson: CourseLesson) {
                         color = contentColor,
                     )
                     NodeContent.Glyph -> Text(
-                        text = lesson.hanziPreview.take(1).ifBlank { "学" },
-                        style = PompTextStyles.hanziSmall,
+                        // Mini App deliberately uses the fixed learning glyph, not lesson text.
+                        text = "学",
+                        style = PompTextStyles.hanziSmall.copy(fontSize = 19.sp),
                         color = contentColor,
                     )
                 }
@@ -814,22 +885,25 @@ private fun PathPanda(
     leftBubble: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.size(96.dp), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier.size(72.dp), contentAlignment = Alignment.Center) {
         CoursePandaMascot(modifier = Modifier.size(72.dp))
         Surface(
             color = PompColors.PaperRaised,
             shape = RoundedCornerShape(14.dp),
             border = BorderStroke(1.dp, PompColors.Divider),
-            modifier = Modifier.offset(
-                x = if (leftBubble) (-4).dp else 4.dp,
-                y = (-44).dp,
-            ),
+            modifier = Modifier
+                .align(if (leftBubble) Alignment.TopStart else Alignment.TopEnd)
+                .offset(y = (-28).dp),
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 11.sp,
+                    lineHeight = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
                 color = PompColors.Ink,
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
                 maxLines = 1,
             )
         }
@@ -837,8 +911,12 @@ private fun PathPanda(
 }
 
 @Composable
-private fun PathScenery(seed: Int, modifier: Modifier = Modifier) {
-    Canvas(modifier = modifier.size(if (seed % 3 == 0) 42.dp else 52.dp)) {
+private fun PathScenery(
+    seed: Int,
+    small: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Canvas(modifier = modifier.size(if (small) 42.dp else 52.dp)) {
         val ink = PompColors.Jade.copy(alpha = 0.38f)
         val stone = PompColors.Shadow.copy(alpha = 0.70f)
         if (seed % 2 == 0) {
