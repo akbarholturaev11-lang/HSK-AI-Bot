@@ -94,7 +94,10 @@ fun CoursePandaMascot(
                     // physical motion does not shrink on high-density Android screens.
                     translationY = bobDp.dp.toPx() - ((breathe - 1f) / 0.02f).coerceIn(0f, 1f) * 1.dp.toPx()
                     scaleY = breathe
-                    alpha = 0.80f
+                    // Mini App path panda applies .pmasc opacity .95 and nested SVG
+                    // opacity .8. Preserve celebrate rendering while matching the
+                    // effective path-panda opacity: .95 * .8 = .76.
+                    alpha = if (celebrate) 0.80f else 0.76f
                     transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 1f)
                 },
         ) {
