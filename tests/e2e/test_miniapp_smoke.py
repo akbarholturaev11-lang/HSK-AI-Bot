@@ -1427,6 +1427,96 @@ def test_recognition_drill_reports_every_answer_not_only_mistakes(page):
     assert "mistakes" not in body
 
 
+def _mock_pronounce(page, score):
+    """Talaffuz baholashini stub qiladi (mikrofon e2e da yo'q)."""
+    page.route(
+        re.compile(r".*/api/voice-practice/pronounce$"),
+        lambda route: json_response(
+            route,
+            {"ok": True, "score": score, "passed": score >= 60, "heard": "谢谢", "target": "谢谢"},
+        ),
+    )
+
+
+def test_pronunciation_drill_uses_the_words_the_server_selected(page):
+    plan = [
+        {"zh": "谢谢", "kind": "review", "box": 0},
+        {"zh": "再见", "kind": "new", "box": 0},
+    ]
+    posted = _mock_drill_environment(page, plan=plan)
+    _mock_pronounce(page, 90)
+
+    page.goto(
+        app_url("/course_v3_pronunciation.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+
+    assert posted["words"][0]["feature"] == "pronunciation"
+    state = page.evaluate(
+        "() => ({first: list.slice(0,2).map(w => w.h), review: !!list[0].review, n: list.length})"
+    )
+    assert state["first"] == ["谢谢", "再见"], state
+    assert state["review"] is True
+    assert state["n"] == 10
+    expect(page.locator("#cnt .pill")).to_contain_text("takror")
+
+
+def test_pronunciation_moves_on_after_three_failed_attempts(page):
+    """Ilgari xato bo'lsa kursor SILJIMASDI — o'quvchi so'zda tiqilib qolardi.
+
+    Uch urinishdan keyin to'g'ri talaffuz eshittirilib, keyingisiga o'tiladi
+    va so'z zaif deb belgilanadi (ertaga qaytadi).
+    """
+    posted = _mock_drill_environment(page, plan=[{"zh": "谢谢", "kind": "new", "box": 0}])
+    _mock_pronounce(page, 10)
+
+    page.goto(
+        app_url("/course_v3_pronunciation.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+    expect(page.locator("#cnt")).to_contain_text("1 / 10")
+
+    for _ in range(3):
+        page.evaluate("() => applyScore(10, '')")
+        page.wait_for_timeout(120)
+
+    # Uchinchi urinishdan keyin to'g'ri javob ko'rsatiladi va siljish boshlanadi.
+    expect(page.locator("#fb")).to_contain_text("谢谢")
+    page.wait_for_timeout(2000)
+    expect(page.locator("#cnt")).to_contain_text("2 / 10")
+
+    # Muvaffaqiyat hisoblagichi tegilmaydi — bu so'z o'tmagan.
+    assert page.evaluate("() => okCount") == 0
+
+    page.evaluate("() => reportResults()")
+    page.wait_for_timeout(200)
+    assert posted["report"], "natija yuborilmadi"
+    body = posted["report"][-1]
+    assert body["feature"] == "pronunciation"
+    assert body["results"] == [{"hanzi": "谢谢", "correct": False}]
+    assert "mistakes" not in body
+
+
+def test_pronunciation_skip_during_the_success_animation_advances_once(page):
+    """Mavjud nuqson: muvaffaqiyat animatsiyasi paytida "o'tkazib yuborish"
+    bosilsa `i` IKKI marta oshib ketardi — reklama oralig'i indeksi
+    o'tkazib yuborilar va oxirgi savol chizilmasdi."""
+    _mock_drill_environment(page, plan=[])
+    _mock_pronounce(page, 95)
+
+    page.goto(
+        app_url("/course_v3_pronunciation.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+
+    page.evaluate("() => applyScore(95, '')")
+    page.evaluate("() => skipWord()")
+    page.wait_for_timeout(1600)
+
+    expect(page.locator("#cnt")).to_contain_text("2 / 10")
+    assert page.evaluate("() => i") == 1
+
+
 def test_course_v3_support_pages_render_real_static_data(page):
     # Yodlash bo'limi usul tanlanmagan bo'lsa avval "Qaysi usul?" so'raydi va
     # o'sha qadamda belgi ko'rinmaydi. Tanlov saqlangan (qaytgan) user'ni taqlid
