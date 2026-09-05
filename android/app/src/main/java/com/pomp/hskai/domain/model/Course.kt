@@ -78,6 +78,17 @@ data class CourseUser(
     val referralCode: String,
 )
 
+/** Mini App Starter 0 state; the server remains the only authority. */
+data class CourseFoundation(
+    val id: String,
+    val version: Int,
+    val required: Boolean,
+    val completed: Boolean,
+    val status: String,
+) {
+    val mustComeFirst: Boolean get() = required && !completed
+}
+
 /** Server-owned daily-plan access state. Android only renders it. */
 enum class TodayTaskAccess { OPEN, AD, LOCKED }
 
@@ -110,6 +121,7 @@ data class CourseMap(
     val user: CourseUser,
     val notificationsEnabled: Boolean,
     val today: CourseToday? = null,
+    val foundation: CourseFoundation? = null,
 ) {
     val lessons: List<CourseLesson> get() = units.flatMap { it.lessons }
 
