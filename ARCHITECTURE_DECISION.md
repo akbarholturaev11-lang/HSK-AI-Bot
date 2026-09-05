@@ -12,7 +12,9 @@ Yangi ish bularni buzgan deb o'ylamang — hammasi oldindan mavjud:
 | `test_free_course_parts_are_level_aware` | PROJECT_MEMORY "Problem 2" |
 | `test_unpaid_course_lesson_policy_includes_hsk1_checkpoint` | PROJECT_MEMORY "Problem 2" |
 | `test_review_questions_use_only_same_category_answers_and_v2_material` | PROJECT_MEMORY "Problem 2" |
-| `tests/e2e` → `test_course_v3_support_pages_render_real_static_data` | **oldindan yiqilgan** — `course_v3_memorize.html` da "1/8" deck qurilmayapti (`hsk_memo_pref=radical`, `char=你`). Bu ishga aloqasi yo'q: na commitlar, na o'zgarishlar `course_v3_memorize.html` yoki `memo.js` ga tegmagan. **Alohida tekshirilsin.** |
+| `tests/e2e` (to'liq) | **6 failed, 51 passed** — hammasi oldindan |
+| `test_miniapp_smoke::test_course_v3_support_pages_render_real_static_data` | `course_v3_memorize.html` da "1/8" deck qurilmayapti (`hsk_memo_pref=radical`, `char=你`). **Alohida task ochildi.** |
+| `test_desktop_ui_preview.py` — 5 ta test | Desktop (Tauri) UI testlari. `desktop/` katalogiga bu ishda **umuman tegilmagan** (0 fayl), ya'ni aloqasi yo'q. |
 
 E2E faqat `venv_311/bin/python` da ishlaydi (`.venv` da playwright yo'q):
 `venv_311/bin/python -m pytest tests/e2e -q`

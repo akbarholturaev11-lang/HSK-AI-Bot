@@ -34,6 +34,12 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 .recap{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px;width:100%;margin-top:12px;display:flex;align-items:center;gap:12px}
 .recap .glyph{width:46px;height:46px;border-radius:12px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:22px}
 .recap b{font-size:16px;font-weight:500;display:block}.recap small{font-size:12px;color:var(--ink2)}
+/* Tanlangan daraja xulosasi — karta EMAS, ingichka satr: variantlar bilan
+   chalkashmasligi uchun. */
+.chosen{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);margin:0 2px 12px}
+.chosen i{color:var(--jade);font-size:15px}
+.chosen .han{font-size:16px;color:var(--ink)}
+.chosen b{font-weight:500;color:var(--ink)}
 .pd-breathe{animation:pdBreathe 2.6s ease-in-out infinite;transform-origin:50% 100%}
 .pd-bounce{animation:pdBounce .7s ease-in-out infinite;transform-origin:50% 100%}
 @keyframes pdBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02) translateY(-1px)}}
@@ -53,9 +59,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{boot:"Начните с нуля и уже в первом занятии поймите свою первую китайскую фразу.",ask:"Сколько китайского вы уже знаете? HSK — это уровни знания китайского языка.",start:"Начать",cont:"Продолжить",ready:"Готово!",readySub:"Начнём с первого понятного результата.",first:"Начать первый урок",retry:"Не удалось сохранить. Попробовать снова",rec:"Рекомендуем"},
-  uz:{boot:"Noldan boshlang va birinchi mashg'ulotdayoq ilk xitoycha iborangizni tushuning.",ask:"Xitoy tilini qanchalik bilasiz? HSK — xitoy tilini bilish darajalari.",start:"Boshlash",cont:"Davom etish",ready:"Tayyor!",readySub:"Birinchi aniq natijadan boshlaymiz.",first:"Birinchi darsni boshlash",retry:"Saqlanmadi. Qayta urinib ko'rish",rec:"Tavsiya"},
-  tj:{boot:"Аз сифр оғоз кунед ва дар машғулияти аввал ибораи нахустини чиниро фаҳмед.",ask:"Забони чиниро то чӣ андоза медонед? HSK — сатҳҳои дониши забони чинӣ аст.",start:"Оғоз",cont:"Идома",ready:"Тайёр!",readySub:"Аз натиҷаи аввалини равшан оғоз мекунем.",first:"Оғози дарси аввал",retry:"Сабт нашуд. Боз кӯшиш кунед",rec:"Тавсия"}}[LANG];
+var L={ru:{boot:"Начните с нуля и уже в первом занятии поймите свою первую китайскую фразу.",ask:"Сколько китайского вы уже знаете? HSK — это уровни знания китайского языка.",start:"Начать",cont:"Продолжить",ready:"Готово!",readySub:"Начнём с первого понятного результата.",first:"Начать первый урок",retry:"Не удалось сохранить. Попробовать снова",askGoal:"Зачем вам китайский? От этого зависит, что будет в вашем плане на день.",rec:"Рекомендуем"},
+  uz:{boot:"Noldan boshlang va birinchi mashg'ulotdayoq ilk xitoycha iborangizni tushuning.",ask:"Xitoy tilini qanchalik bilasiz? HSK — xitoy tilini bilish darajalari.",start:"Boshlash",cont:"Davom etish",ready:"Tayyor!",readySub:"Birinchi aniq natijadan boshlaymiz.",first:"Birinchi darsni boshlash",retry:"Saqlanmadi. Qayta urinib ko'rish",askGoal:"Xitoy tili sizga nima uchun kerak? Kunlik rejangiz shunga qarab tuziladi.",rec:"Tavsiya"},
+  tj:{boot:"Аз сифр оғоз кунед ва дар машғулияти аввал ибораи нахустини чиниро фаҳмед.",ask:"Забони чиниро то чӣ андоза медонед? HSK — сатҳҳои дониши забони чинӣ аст.",start:"Оғоз",cont:"Идома",ready:"Тайёр!",readySub:"Аз натиҷаи аввалини равшан оғоз мекунем.",first:"Оғози дарси аввал",retry:"Сабт нашуд. Боз кӯшиш кунед",askGoal:"Забони чинӣ ба шумо барои чӣ лозим аст? Нақшаи рӯзонаи шумо аз ин вобаста аст.",rec:"Тавсия"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function panda(m){
   var eyes='<circle cx="36" cy="37" r="3.3" fill="#fff"/><circle cx="54" cy="37" r="3.3" fill="#fff"/><circle cx="36" cy="37" r="1.8" fill="#211D17"/><circle cx="54" cy="37" r="1.8" fill="#211D17"/><rect class="pd-blink" x="32" y="31" width="8" height="9" rx="3" fill="#211D17"/><rect class="pd-blink" x="50" y="31" width="8" height="9" rx="3" fill="#211D17"/>';
@@ -85,7 +91,22 @@ var LV=[{k:"beginner",g:"零",hd:{ru:"Я совсем с нуля",uz:"Xitoy til
   {k:"hsk2",g:"谢谢",hd:"HSK 2",s:{ru:"Базовое общение",uz:"Asosiy suhbat",tj:"Муоширати асосӣ"}},
   {k:"hsk3",g:"明白",hd:"HSK 3",s:{ru:"Повседневное общение",uz:"Kundalik muloqot",tj:"Муоширати ҳаррӯза"}},
   {k:"hsk4",g:"流利",hd:"HSK 4",s:{ru:"Свободное общение",uz:"Erkin muloqot",tj:"Муоширати озод"}}];
-var step=0,sel="beginner",submitting=false;
+/* Maqsad — kunlik rejaning vaznini o'zgartiradi (test/voice/takrorlash
+   nisbati) va AI suhbat rolini tanlaydi. Faqat serverda MAVJUD imkoniyatlar
+   ishlatiladi; yo'q kontent va'da qilinmaydi. */
+var GOALS=[
+  {k:"hsk_exam",g:"证",hd:{ru:"Сдать HSK",uz:"HSK imtihonini topshirish",tj:"Супоридани HSK"},
+    s:{ru:"Больше тестов и разбора ошибок",uz:"Ko'proq test va xatolar ustida ish",tj:"Бештар тест ва кор бар хатоҳо"},rec:1},
+  {k:"daily_communication",g:"聊",hd:{ru:"Общаться в жизни",uz:"Kundalik muloqot",tj:"Муоширати ҳаррӯза"},
+    s:{ru:"Больше речи и произношения",uz:"Ko'proq gapirish va talaffuz",tj:"Бештар сухан ва талаффуз"}},
+  {k:"travel",g:"游",hd:{ru:"Путешествия",uz:"Sayohat",tj:"Сафар"},
+    s:{ru:"Живые ситуации и слова в дороге",uz:"Yo'ldagi holatlar va so'zlar",tj:"Ҳолатҳо ва калимаҳои роҳ"}},
+  {k:"work_china",g:"工",hd:{ru:"Работа с Китаем",uz:"Ish uchun xitoy tili",tj:"Забони чинӣ барои кор"},
+    s:{ru:"Вежливая рабочая речь",uz:"Ishchan, hurmatli nutq",tj:"Сухани кории боэҳтиром"}},
+  {k:"study_china",g:"学",hd:{ru:"Учёба в Китае",uz:"Xitoyda o'qish",tj:"Таҳсил дар Чин"},
+    s:{ru:"Упор на курс и словарный запас",uz:"Kursga va so'z boyligiga urg'u",tj:"Таъкид ба курс ва луғат"}}
+];
+var step=0,sel="beginner",goalSel="hsk_exam",submitting=false;
 var INIT_DATA=(tg&&tg.initData)||"";
 var ONB_SESSION_ID=(function(){try{var k="hsk_v3_onb_session_id",v=sessionStorage.getItem(k);if(!v){v="onb-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v}catch(e){return"onb-"+Date.now()}})();
 function apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
@@ -101,17 +122,16 @@ function trackOnboardingEvent(event,payload){
   return postJson("/api/miniapp/event",payload).then(function(r){return r.json()}).catch(function(){return{ok:false}});
 }
 function onboardingPayload(){
-  var dailyMinutes=10,startMode="lesson_1",goal="hsk_exam";
-  try{
-    dailyMinutes=Number(localStorage.getItem("hsk_v3_daily_minutes")||dailyMinutes)||dailyMinutes;
-    /* V1 da placement/continue tanlovi yo'q. Eski cache beginner Starter'ni
-       chetlab o'tkazmasligi uchun boshlanish nuqtasi qat'iy lesson_1. */
-    localStorage.removeItem("hsk_v3_start_mode");
-    goal=localStorage.getItem("hsk_v3_goal")||goal;
-  }catch(e){}
+  /* Kunlik vaqt va "nimaga urg'u beraylik" onboardingda SO'RALMAYDI — ular
+     birinchi darsdan keyin so'raladi, o'shanda javob ma'noli bo'ladi.
+     Shu sababli bu yerda default qiymat ketadi va keyin yangilanadi. */
+  var dailyMinutes=10,startMode="lesson_1";
+  /* V1 da placement/continue tanlovi yo'q. Eski cache beginner Starter'ni
+     chetlab o'tkazmasligi uchun boshlanish nuqtasi qat'iy lesson_1. */
+  try{localStorage.removeItem("hsk_v3_start_mode")}catch(e){}
   return {
     level:sel,
-    goal:goal,
+    goal:goalSel,
     daily_minutes:dailyMinutes,
     daily_time:dailyMinutes,
     start_mode:startMode,
@@ -129,12 +149,20 @@ function render(){
   if(step===1){document.getElementById("prog").style.width="50%";
     var rows=LV.map(function(l){return '<button class="lv'+(sel===l.k?" sel":"")+'" onclick="pick(\''+l.k+'\')"><span class="glyph han">'+l.g+'</span><span class="ot"><span class="hd">'+trv(l.hd)+(l.rec?' <span class="tag">'+L.rec+'</span>':"")+'</span><small>'+trv(l.s)+'</small></span><span class="chk"><i class="ti ti-check"></i></span></button>'}).join("");
     st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub">'+L.ask+'</div></div><div class="body">'+rows+'</div>';cta.textContent=L.cont;return;}
+  /* Oxirgi ekran: tanlangan daraja recap sifatida qoladi va ustiga MAQSAD
+     so'raladi. Ekran soni oshmaydi — avvalgi "Tayyor!" ekrani shu. */
   document.getElementById("prog").style.width="100%";
   var Lvl=LV.filter(function(x){return x.k===sel})[0];
-  st.innerHTML='<div class="welcome"><div class="big">'+panda("cheer")+'</div><h1>'+L.ready+'</h1><p>'+L.readySub+'</p><div class="recap"><span class="glyph han">'+Lvl.g+'</span><div><b>'+trv(Lvl.hd)+'</b><small>'+trv(Lvl.s)+'</small></div></div></div>';
+  var rows=GOALS.map(function(o){return '<button class="lv'+(goalSel===o.k?" sel":"")+'" onclick="pickGoal(\''+o.k+'\')"><span class="glyph han">'+o.g+'</span><span class="ot"><span class="hd">'+trv(o.hd)+(o.rec?' <span class="tag">'+L.rec+'</span>':"")+'</span><small>'+trv(o.s)+'</small></span><span class="chk"><i class="ti ti-check"></i></span></button>'}).join("");
+  st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub">'+L.askGoal+'</div></div>'
+    /* Daraja XULOSASI tanlanadigan variantga o'xshamasligi kerak, aks holda
+       o'quvchi uni ham bosiladigan deb o'ylaydi: karta emas, ingichka satr. */
+    +'<div class="body"><div class="chosen"><i class="ti ti-check"></i><span class="han">'+Lvl.g+'</span><b>'+trv(Lvl.hd)+'</b></div>'
+    +rows+'</div>';
   cta.innerHTML='<i class="ti ti-player-play"></i> '+L.first;
 }
 function pick(k){sel=k;render()}
+function pickGoal(k){goalSel=k;render()}
 function nextBtn(){if(step<2){step++;render()}else{finish()}}
 function back(){if(step>0){step--;render()}}
 function finish(){

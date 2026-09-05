@@ -286,6 +286,56 @@ def test_course_v3_opens_static_map_and_query_lesson_sheet(page):
     expect(page.locator("#sheet")).to_contain_text("Yangi so'zlar")
 
 
+def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
+    """Onboarding ikkita savol so'raydi: daraja va MAQSAD.
+
+    Maqsad ilgari `hsk_exam` konstantasi edi (localStorage kalitini hech kim
+    yozmasdi), ya'ni o'quvchi tanlovi umuman yo'q edi. Endi u kunlik rejaning
+    vaznini o'zgartiradi, shuning uchun serverga haqiqatan yetib borishi
+    testda qotiriladi.
+    """
+    mock_telegram_ready(page)
+    sent = []
+    page.route(
+        "**/api/miniapp/event",
+        lambda route: json_response(route, {"ok": True}),
+    )
+
+    def capture_onboarding(route):
+        sent.append(json.loads(route.request.post_data))
+        json_response(
+            route,
+            {"ok": True, "level": "hsk2", "lesson": 1, "tab": "course"},
+        )
+
+    page.route("**/api/miniapp/onboarding", capture_onboarding)
+
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+
+    # 1-ekran: xush kelibsiz
+    page.get_by_role("button", name="Boshlash").click()
+
+    # 2-ekran: daraja
+    expect(page.locator("#stage")).to_contain_text("Xitoy tilini qanchalik bilasiz")
+    page.locator(".lv", has_text="HSK 2").click()
+    page.get_by_role("button", name="Davom etish").click()
+
+    # 3-ekran: maqsad. Tanlangan daraja bosiladigan variant EMAS, ingichka
+    # xulosa satri bo'lib ko'rinadi — aks holda o'quvchi uni ham variant deb
+    # o'ylardi.
+    expect(page.locator("#stage")).to_contain_text("Xitoy tili sizga nima uchun kerak")
+    expect(page.locator(".chosen")).to_contain_text("HSK 2")
+    assert page.locator("#stage .lv").count() == 5
+
+    page.locator(".lv", has_text="Sayohat").click()
+    page.get_by_role("button", name="Birinchi darsni boshlash").click()
+
+    page.wait_for_url(re.compile(r"course-v3\.html"))
+    assert sent, "onboarding payload serverga yuborilmadi"
+    assert sent[0]["level"] == "hsk2"
+    assert sent[0]["goal"] == "travel"
+
+
 def test_course_v3_onboarding_autostart_opens_first_lesson_flow(page):
     mock_price_preview(page)
     mock_telegram_ready(page)
