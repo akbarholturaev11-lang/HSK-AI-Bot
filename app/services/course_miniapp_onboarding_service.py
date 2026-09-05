@@ -150,6 +150,8 @@ class CourseMiniAppOnboardingService:
             start_mode=start_mode,
             timezone_offset_minutes=timezone_offset_minutes,
             complete_onboarding=True,
+            # Maqsadni o'quvchi onboardingda O'ZI tanladi.
+            goal_explicit=True,
         )
         await self.session.commit()
 

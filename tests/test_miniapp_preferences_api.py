@@ -6,6 +6,7 @@ o'zgaruvchi edi va har ochilganda yo'qolardi — endi serverda saqlanadi.
 """
 
 import unittest
+from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
@@ -23,6 +24,7 @@ VALID_INIT_DATA = "query_id=AAA&user=%7B%22id%22%3A123%7D&hash=deadbeef"
 def profile(**kwargs):
     base = {
         "goal": "hsk_exam",
+        "goal_chosen_at": None,
         "daily_minutes": 10,
         "preferred_focus": None,
         "daily_goal_xp": None,
@@ -116,7 +118,7 @@ class PreferredFocusTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_no_preference_answer_is_a_real_answer(self):
         # "Farqi yo'q" javobi ham javob: savol qayta so'ralmasligi kerak.
-        item = profile()
+        item = profile(goal_chosen_at=datetime.now(timezone.utc))
         await post(item, {"preferred_focus": "none", "initData": VALID_INIT_DATA})
 
         self.assertEqual(item.preferred_focus, "none")
@@ -202,11 +204,30 @@ class GuardTests(unittest.IsolatedAsyncioTestCase):
     async def test_unexpected_fields_are_rejected(self):
         item = profile()
         response, _ = await post(
-            item, {"daily_minutes": 15, "goal": "travel", "initData": VALID_INIT_DATA}
+            item, {"daily_minutes": 15, "nickname": "x", "initData": VALID_INIT_DATA}
         )
 
-        # `goal` onboardingda beriladi; bu endpoint uni o'zgartira olmaydi.
         self.assertEqual(response.status_code, 422)
+
+    async def test_goal_can_be_answered_after_onboarding(self):
+        # Maqsad savoli onboardingga KEYIN qo'shildi, shuning uchun eski
+        # o'quvchilardan u birinchi darsdan keyin so'raladi.
+        item = profile()
+        response, _ = await post(item, {"goal": "travel", "initData": VALID_INIT_DATA})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(item.goal, "travel")
+        self.assertIsNotNone(item.goal_chosen_at)
+        self.assertFalse(
+            CourseMiniAppProfileService.study_setup(item, completed_parts=9)["pending_goal"]
+        )
+
+    async def test_answering_the_goal_rebuilds_todays_plan(self):
+        # Aks holda o'quvchi maqsadni o'zgartirib ham eski rejani ko'raverardi.
+        item = profile()
+        await post(item, {"goal": "daily_communication", "initData": VALID_INIT_DATA})
+
+        self.assertIsNone(item.daily_plan_key)
 
 
 class StudySetupPendingTests(unittest.TestCase):
@@ -220,10 +241,22 @@ class StudySetupPendingTests(unittest.TestCase):
         )
 
     def test_question_is_not_repeated_once_answered(self):
-        item = profile(preferred_focus="grammar")
+        item = profile(
+            preferred_focus="grammar", goal_chosen_at=datetime.now(timezone.utc)
+        )
         self.assertFalse(
             CourseMiniAppProfileService.study_setup(item, completed_parts=40)["pending"]
         )
+
+    def test_an_existing_learner_is_asked_for_a_goal(self):
+        # Maqsad savoli onboardingga keyin qo'shildi: eski o'quvchida `goal`
+        # bor, lekin u jadval defaulti — tanlov emas.
+        item = profile(preferred_focus="grammar")
+        setup = CourseMiniAppProfileService.study_setup(item, completed_parts=40)
+
+        self.assertTrue(setup["pending_goal"])
+        self.assertTrue(setup["pending"])
+        self.assertFalse(setup["goal_chosen"])
 
 
 if __name__ == "__main__":
