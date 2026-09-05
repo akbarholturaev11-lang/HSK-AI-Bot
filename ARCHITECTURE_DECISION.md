@@ -248,15 +248,29 @@ Faqat shular sanaladi: `lesson`, `test`, `training`, `mistake_review`, `voice`, 
 | 2a — Progress oynasi nuqsoni | ✅ | `892ef184` |
 | 2b — Mini App mashq endpointlari | ✅ | `4c9dcf3c` |
 | 2c — Signal ulanishi (talaffuz/tanish/yodlash) | ✅ | `a66c9b1d`, `b55e1aff`, `a4c727a8` |
-| 3 — Onboarding + XP maqsadi | ⏸ UI ruxsati kutilmoqda | — |
-| 4 — LearningSignals + DailyPlanService | ⏳ | — |
-| 5 — `today` bloki | ⏳ | — |
-| 6 — Mini App "Bugungi reja" | ⏳ UI ruxsati | — |
-| 7 — Responsive | ⏳ UI ruxsati | — |
-| 8 — Yakunlash | ⏳ | — |
+| 3 — Onboarding + XP maqsadi | ✅ | `53f66270`, `86a0128d` |
+| 4 — LearningSignals + DailyPlanService | ✅ | `6f12e051` |
+| 5 — `today` bloki map javobida | ✅ | `64b70b6c` |
+| 6 — Mini App "Bugungi reja" tasmasi | ✅ | `43348c1b` |
+| 7 — Responsive (`--read` / `--shell`) | ✅ | `11164898` |
+| 8 — Yakunlash | 🔄 | — |
 
-Test: **707 passed** (baseline 632), ma'lum 3 ta failure o'zgarmagan.
-E2E: **41 passed**, 1 oldindan yiqilgan.
+Test: **773 passed** (baseline 632), ma'lum 3 ta failure o'zgarmagan.
+E2E: **59 passed**, 6 oldindan yiqilgan (5 desktop UI + 1 memorize).
+
+### Keyingi ish uchun ochiq qolgan narsalar
+
+- **Umumiy drill ekrani yo'q.** `/api/v3/practice/start|complete` tayyor va
+  testlangan, lekin Mini App'da uni ochadigan ekran qurilmagan. Shu sababli
+  `skill_drill` faqat mavjud ekranlarga (Ieroglif tanish, Talaffuz)
+  yo'naltiriladi va TINGLASH drilli rejaga tushmaydi
+  (`SKILL_WITH_CLIENT_SCREEN`). Ekran qo'shilsa ro'yxat kengayadi.
+- **Grammatika drilli yo'q va bo'lmaydi** — savol banki qoplay olmaydi
+  (o'lchandi). Grammatika `mistake_review` orqali ishlanadi.
+- **Android/Desktop** `today` va `study_setup` bloklarini oladi, lekin
+  hali chizmaydi. Bu ataylab: ikkinchi personalizatsiya tizimi qurilmaydi.
+- **Kuzatiladigan metrika:** bepul foydalanuvchida reja `0/N` bilan tugagan
+  kunlar ulushi (Qaror B xavfi).
 
 ### 2c dagi rejadan chekinish (sabab bilan)
 

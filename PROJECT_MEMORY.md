@@ -227,6 +227,60 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-05 — Kunlik reja (Daily Plan) va o'quv signallari
+
+Changed:
+- Yangi DB ustunlari (`0071_course_daily_plan`): `course_miniapp_profiles` ga
+  `preferred_focus`, `daily_goal_xp`, `daily_plan_key`, `daily_plan_json`.
+  Yangi jadval YO'Q.
+- Yangi servislar: `LearningSignalsService` (faqat o'qish, gating yo'q),
+  `DailyPlanService` (sof funksiya), `CourseTodayService` (orkestrator),
+  `CourseDrillSignalService` (mijoz mashqlari uchun server-tekshiruvli xato).
+- Yangi routerlar: `app/api/miniapp_practice.py`
+  (`/api/v3/practice/start|complete|report`), `app/api/miniapp_preferences.py`
+  (`/api/v3/preferences`).
+- `/api/v3/map` va desktop map javobiga `today` va `study_setup` bloklari.
+  Android ularni merosxo'r sifatida kod o'zgartirmasdan oladi.
+- Mini App: onboarding maqsadni so'raydi; kunlik vaqt va fokus birinchi
+  darsdan keyin varaqda so'raladi; kurs ekranida «Bugungi reja» tasmasi;
+  >=900px da ikki ustunli layout (`--read` / `--shell`).
+- Signal ulandi: talaffuz, ieroglif tanish va yodlash natijalari endi
+  `course_mistakes` ga tushadi (ilgari hech qayerga yozilmasdi).
+
+Why:
+- `CourseMiniAppProfile.goal` o'lik ma'lumot edi — hech qayerda o'qilmasdi.
+- Kunlik XP maqsadi mijozdagi o'zgaruvchi edi va har ochilganda yo'qolardi.
+- Mashq bo'limlari signal bermasdi, ya'ni zaiflik faqat darslardan
+  to'planardi.
+- Reja kun davomida o'zgarmasligi kerak: `course_mistakes` upsert jadvali,
+  zaiflikning kun boshidagi holatini qayta tiklab bo'lmaydi — shuning uchun
+  task identity muzlatiladi, holati esa qayta hisoblanadi.
+
+Files touched:
+- `alembic/versions/0071_course_daily_plan.py`, `app/db/models/course_miniapp_profile.py`
+- `app/services/{learning_signals,daily_plan_service,course_today_service,course_drill_signal_service}.py`
+- `app/services/{course_miniapp_profile_service,course_miniapp_practice_service,course_mistake_service,voice_practice_service,course_challenge_service,desktop_course_service}.py`
+- `app/api/{miniapp_practice,miniapp_preferences}.py`, `app/main.py`
+- `app/static/{course-v3,course_v3_onboarding,course_v3_recognition,course_v3_memorize}.html`
+
+Risk:
+- Kirish/limit qoidalari O'ZGARMADI. Mini App mashqlari serverga ulanganda
+  `gate_checked=True` ishlatiladi, ya'ni servisning o'z gate'i chaqirilmaydi
+  va `training_test` sloti yeyilmaydi. Sabab va muqobillar
+  `ARCHITECTURE_DECISION.md` "Qaror A" da.
+- Bepul foydalanuvchi rejasida reklamali vazifalar cheklanmagan ("Qaror B").
+  Kuzatilsin: bepul userda reja `0/N` bilan tugagan kunlar ulushi.
+- `CourseMiniAppPracticeService` savollari endi o'rganilgan qismlar bilan
+  chegaralangan (Android/Desktop uchun ko'rinadigan o'zgarish) — bu mavjud
+  nuqsonning tuzatilishi.
+
+Follow-up:
+- Umumiy drill ekrani yo'q, shuning uchun `skill_drill(listening)` rejaga
+  tushmaydi (`SKILL_WITH_CLIENT_SCREEN`). Ekran qo'shilsa ro'yxat kengayadi.
+- Grammatika drilli TAKLIF QILINMAYDI: savol banki uni qoplay olmaydi
+  (HSK1, 30-qism: 4/10). Grammatika `mistake_review` orqali ishlanadi.
+- Android/Desktop `today` blokini oladi, lekin hali chizmaydi.
+
 ### 2026-09-04 — Android Test markazi Mini App bilan tenglashtirildi (dvigatel + ko'rinish)
 
 Changed:
