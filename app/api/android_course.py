@@ -18,10 +18,11 @@ import os
 from pathlib import Path
 import re
 import tempfile
-from typing import Callable
+from typing import Callable, Literal
 
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.api.desktop_course import (
     DesktopCourseCompleteRequest,
@@ -57,6 +58,30 @@ ANDROID_TTS_HEADERS = {
     "X-Content-Type-Options": "nosniff",
 }
 _ANDROID_TTS_GENERATION_LOCK = asyncio.Lock()
+
+
+class AndroidOnboardingRequest(BaseModel):
+    """Native equivalent of the Mini App onboarding payload."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    level: Literal["beginner", "hsk1", "hsk2", "hsk3", "hsk4"]
+    goal: Literal[
+        "hsk_exam",
+        "study_china",
+        "work_china",
+        "daily_communication",
+        "travel",
+    ]
+    daily_minutes: Literal[5, 10, 15, 20, 30] = 10
+    start_mode: Literal["lesson_1", "continue", "placement"] = "lesson_1"
+    language: Literal["uz", "ru", "tj"] | None = None
+    timezone_offset_minutes: int = Field(
+        default=0,
+        ge=MIN_TZ_OFFSET_MINUTES,
+        le=MAX_TZ_OFFSET_MINUTES,
+    )
+    activation_variant: str | None = Field(default="direct_start_v1", max_length=32)
 
 
 def _unavailable() -> JSONResponse:
@@ -156,6 +181,44 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android course map failed")
+            return _unavailable()
+
+    @router.get("/api/v3/android/course/onboarding")
+    async def android_onboarding_status(request: Request):
+        try:
+            if request.query_params:
+                raise DesktopCourseError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).onboarding_status(
+                    bearer_access_token(request)
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android onboarding status failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/course/onboarding")
+    async def android_onboarding_complete(request: Request):
+        try:
+            payload = await validated_course_payload(request, AndroidOnboardingRequest)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).complete_onboarding(
+                    bearer_access_token(request),
+                    level=payload.level,
+                    goal=payload.goal,
+                    daily_minutes=payload.daily_minutes,
+                    start_mode=payload.start_mode,
+                    language=payload.language,
+                    timezone_offset_minutes=payload.timezone_offset_minutes,
+                    activation_variant=payload.activation_variant,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android onboarding completion failed")
             return _unavailable()
 
     @router.get("/api/v3/android/course/lesson/{lesson_order}")
