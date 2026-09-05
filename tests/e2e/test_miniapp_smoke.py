@@ -398,6 +398,49 @@ def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
     expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
 
 
+def test_course_v3_wide_screen_uses_a_side_rail_instead_of_stretching(page):
+    """Telegram Desktop: bo'sh joy yon ustunga ketadi, kartalar cho'zilmaydi.
+
+    Yo'lakcha va butun o'qish oqimi o'z kengligida qoladi — matn ustuni
+    kengayib ketmasligi kerak.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    tasks = [
+        {"type": "continue_lesson", "ref": "hsk1:13", "done": False, "access": "open", "available": True},
+        {"type": "mistake_review", "done": False, "access": "open", "available": True},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(route, _map_with_today(tasks)),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    # Telefon: yon ustun yo'q, tasma bor.
+    expect(page.locator("#s-course .crail")).to_be_hidden()
+    expect(page.locator("#s-course .today")).to_be_visible()
+
+    page.set_viewport_size({"width": 1280, "height": 900})
+    page.wait_for_timeout(200)
+
+    # Keng ekran: yon ustun ochiladi, tasma takrorlanmaydi.
+    expect(page.locator("#s-course .crail")).to_be_visible()
+    expect(page.locator("#s-course .today")).to_be_hidden()
+    expect(page.locator(".crail .rl-task")).to_have_count(2)
+
+    widths = page.evaluate(
+        """() => ({
+            path: document.querySelector('#s-course .cmain').getBoundingClientRect().width,
+            flow: parseInt(getComputedStyle(document.querySelector('#flow')).maxWidth, 10),
+            shell: document.querySelector('.wrap').getBoundingClientRect().width,
+        })"""
+    )
+    assert widths["shell"] > 480, "keng ekranda qobiq kengayishi kerak"
+    assert widths["path"] <= 480, "yo'lakcha cho'zilmasligi kerak"
+    assert widths["flow"] == 480, "dars oqimi hech qachon kengaymaydi"
+
+
 def test_course_v3_today_strip_marks_a_locked_task_instead_of_hiding_it(page):
     """Kun ichida qulflangan vazifa ro'yxatda QOLADI va almashtirilmaydi."""
     mock_price_preview(page)

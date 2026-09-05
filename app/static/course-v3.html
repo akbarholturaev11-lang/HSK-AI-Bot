@@ -13,11 +13,17 @@
   --cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--goldbg:#FAF0D3;--jade:#2FA06A;--jadebg:#E3F4EA;
   --flame:#FF9600;--flamebg:#FFEFD6;--blue:#2E86C1;--bluebg:#E8F2FA;--overlay:#171310;--shadow:#E4D9C4;
   --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
+  /* --read — O'QISH kengligi: dars oqimi, varaqlar, mashq ekranlari va
+     pastki menyu doim shu kenglikda qoladi. Telegram Desktop'da ham matn
+     ustuni cho'zilmasligi kerak.
+     --shell — ilova QOBIG'I: keng ekranda kengayadi va bo'sh joyni yon
+     ustunga beradi (mobil kartalarni cho'zib emas). */
+  --read:480px;--shell:480px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
 .han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600;letter-spacing:1px}
-.wrap{max-width:480px;margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
+.wrap{max-width:var(--shell);margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
 button{cursor:pointer}
@@ -109,7 +115,7 @@ button{cursor:pointer}
 @keyframes pdGround{0%,100%{transform:scaleX(1);opacity:.22}50%{transform:scaleX(.78);opacity:.12}}
 @keyframes pdCoachWave{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
 /* nav */
-.nav{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-b));padding-bottom:var(--safe-b);background:var(--card);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding-top:8px;max-width:480px;margin:0 auto;z-index:8}
+.nav{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-b));padding-bottom:var(--safe-b);background:var(--card);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding-top:8px;max-width:var(--read);margin:0 auto;z-index:8}
 .nav button{flex:1;background:none;border:none;font-family:inherit;color:var(--ink3);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
 .nav button.on{color:var(--cin)}
 .nav button i{font-size:21px}
@@ -117,7 +123,7 @@ button{cursor:pointer}
 .nav .center .fab{width:58px;height:58px;border-radius:50%;background:var(--cin);border:4px solid var(--card);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px}
 .nav .center .lbl{margin-top:4px;color:var(--cin);font-weight:500}
 /* sheet */
-.sheet{position:fixed;inset:0;background:rgba(20,17,13,.5);display:none;align-items:flex-end;z-index:50;max-width:480px;margin:0 auto}
+.sheet{position:fixed;inset:0;background:rgba(20,17,13,.5);display:none;align-items:flex-end;z-index:50;max-width:var(--read);margin:0 auto}
 .sheet.on{display:flex}
 .si{background:var(--paper);border-radius:24px 24px 0 0;padding:8px 18px calc(22px + var(--safe-b));width:100%;position:relative;max-height:88vh;overflow-y:auto}
 .grip{width:40px;height:4px;border-radius:3px;background:var(--line);margin:8px auto 14px}
@@ -138,9 +144,9 @@ button{cursor:pointer}
 .scta{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
 .scta.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
 /* lesson overlay flow */
-.flow{position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:480px;margin:0 auto}
+.flow{position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:var(--read);margin:0 auto}
 .flow.on{display:flex}
-.adov{position:fixed;inset:0;z-index:82;background:#15120f;display:none;max-width:480px;margin:0 auto;color:#fff}
+.adov{position:fixed;inset:0;z-index:82;background:#15120f;display:none;max-width:var(--read);margin:0 auto;color:#fff}
 .adov.on{display:flex;flex-direction:column}
 .adbox{min-height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:calc(14px + var(--safe-t)) 14px calc(16px + var(--safe-b));gap:12px}
 .adtop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.78);font-weight:600}
@@ -447,7 +453,7 @@ button{cursor:pointer}
 .sact{display:flex;gap:10px}
 .sact button{flex:1;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px}
 .sact .b-ch{background:var(--cin);color:#fff}.sact .b-tg{background:var(--card);border:1px solid var(--line);color:var(--ink)}
-.upov{position:fixed;inset:0;background:var(--paper);z-index:42;display:none;max-width:480px;margin:0 auto;overflow-y:auto;padding-top:var(--safe-t)}
+.upov{position:fixed;inset:0;background:var(--paper);z-index:42;display:none;max-width:var(--read);margin:0 auto;overflow-y:auto;padding-top:var(--safe-t)}
 .upov.on{display:block}
 .uptop{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 4px}
 .upx{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
@@ -478,7 +484,7 @@ button{cursor:pointer}
 .linkbox button{background:var(--cin);color:#fff;border:none;border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:500;flex-shrink:0}
 .toast{position:fixed;bottom:calc(86px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 16px;border-radius:20px;opacity:0;transition:all .25s;z-index:60;pointer-events:none;max-width:90%}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-.combo{position:fixed;inset:0;z-index:47;display:flex;align-items:center;justify-content:center;pointer-events:none;max-width:480px;margin:0 auto;opacity:0;transition:opacity .2s}
+.combo{position:fixed;inset:0;z-index:47;display:flex;align-items:center;justify-content:center;pointer-events:none;max-width:var(--read);margin:0 auto;opacity:0;transition:opacity .2s}
 .combo.on{opacity:1}
 .combo-card{display:flex;flex-direction:column;align-items:center;text-align:center;transform:scale(.5);transition:transform .4s cubic-bezier(.2,1.6,.4,1)}
 .combo.on .combo-card{transform:scale(1)}
@@ -504,7 +510,7 @@ button{cursor:pointer}
 @keyframes penwrite{0%,100%{transform:translate(0,0) rotate(0)}20%{transform:translate(2px,-2px) rotate(-13deg)}45%{transform:translate(-2px,1px) rotate(9deg)}70%{transform:translate(2px,0) rotate(-6deg)}}
 .writebtn:before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--gold);animation:wpulse 1.9s ease-out infinite}
 @keyframes wpulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.45);opacity:0}}
-.writeov{position:fixed;inset:0;background:var(--paper);z-index:45;display:none;max-width:480px;margin:0 auto}
+.writeov{position:fixed;inset:0;background:var(--paper);z-index:45;display:none;max-width:var(--read);margin:0 auto}
 .writeov.on{display:block}
 .writeov iframe{width:100%;height:100%;border:none;display:block}
 .writeov-x{position:absolute;top:calc(10px + var(--safe-t));right:12px;z-index:2;width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:20px;display:flex;align-items:center;justify-content:center}
@@ -513,7 +519,7 @@ button{cursor:pointer}
 .writeov.loading iframe{opacity:0}
 .wspin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--cin);animation:wspin .8s linear infinite}
 @keyframes wspin{to{transform:rotate(360deg)}}
-.levelup{position:fixed;inset:0;background:var(--ink);z-index:50;display:none;flex-direction:column;max-width:480px;margin:0 auto;color:#fff;overflow:hidden;padding-top:var(--safe-t)}
+.levelup{position:fixed;inset:0;background:var(--ink);z-index:50;display:none;flex-direction:column;max-width:var(--read);margin:0 auto;color:#fff;overflow:hidden;padding-top:var(--safe-t)}
 .levelup.on{display:flex}
 .levelup.sales-bridge{background:radial-gradient(120% 80% at 50% 0,rgba(224,74,64,.3),transparent 58%),var(--ink)}
 .levelup.sales-bridge .lu-rays{opacity:.13}.levelup.sales-bridge .lu-panda{display:none}.levelup.sales-bridge .lu-stage{justify-content:flex-start;overflow-y:auto;padding:22px 16px 14px}
@@ -580,7 +586,7 @@ button{cursor:pointer}
 .ru-av{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#fff}
 .ru-row.me .ru-av{background:#fff;color:var(--cin2)}
 .ru-nm{flex:1;font-size:14px;color:#fff}.ru-xp{font-size:13px;color:rgba(255,255,255,.78);font-weight:500}
-.tour{position:fixed;inset:0;z-index:55;display:none;max-width:480px;margin:0 auto}
+.tour{position:fixed;inset:0;z-index:55;display:none;max-width:var(--read);margin:0 auto}
 .tour.on{display:block}
 .tour-spot{position:absolute;border:2px solid var(--gold);border-radius:16px;box-shadow:0 0 0 2000px rgba(20,17,13,.6);transition:all .35s ease;pointer-events:none}
 .tour-skip{position:absolute;top:calc(14px + var(--safe-t));right:14px;background:rgba(255,255,255,.92);border:none;border-radius:20px;padding:6px 13px;font-family:inherit;font-size:12px;color:var(--ink2)}
@@ -599,7 +605,7 @@ button{cursor:pointer}
 .uban{background:linear-gradient(135deg,var(--cin),var(--cin2));color:#fff}
 .uban.lock{background:var(--card);color:var(--ink2)}
 /* edge glow (combo) */
-#edgeglow{position:fixed;inset:0;pointer-events:none;z-index:46;opacity:0;transition:opacity .4s;max-width:480px;margin:0 auto}
+#edgeglow{position:fixed;inset:0;pointer-events:none;z-index:46;opacity:0;transition:opacity .4s;max-width:var(--read);margin:0 auto}
 #edgeglow.g1{opacity:1;box-shadow:inset 0 0 40px 4px rgba(233,169,22,.22)}
 #edgeglow.g2{opacity:1;box-shadow:inset 0 0 60px 10px rgba(233,169,22,.32)}
 #edgeglow.g3{opacity:1;box-shadow:inset 0 0 90px 18px rgba(224,74,64,.42);animation:egPulse 1.1s ease-in-out infinite}
@@ -677,7 +683,7 @@ button{cursor:pointer}
    `NavBack` (chapdan swipe / BackButton) avtomatik ishlaydi.
    Har bo'limning CSS klasslari o'z prefiksi bilan (rc- = recognition),
    shuning uchun asosiy ilovaning klasslari bilan to'qnashmaydi. */
-.secov{--redbg:#FBEDEA;position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:480px;margin:0 auto}
+.secov{--redbg:#FBEDEA;position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:var(--read);margin:0 auto}
 .secov.on{display:flex}
 .rc-top{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
 .rc-ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
@@ -753,7 +759,7 @@ button{cursor:pointer}
 
 
 /* --- Xatolar ustida ishlash (#mk-root ichida scope'langan) --- */
-#mk-root{flex:1;min-height:0;overflow-y:auto;max-width:480px;margin:0 auto;width:100%;padding:calc(14px + var(--safe-t)) 16px calc(20px + var(--safe-b))}
+#mk-root{flex:1;min-height:0;overflow-y:auto;max-width:var(--read);margin:0 auto;width:100%;padding:calc(14px + var(--safe-t)) 16px calc(20px + var(--safe-b))}
 #mk-root .han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
 #mk-root .top{display:flex;align-items:center;gap:11px;margin-bottom:6px}
 #mk-root .ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
@@ -790,7 +796,7 @@ button{cursor:pointer}
 #mk-root .state i{font-size:30px;color:var(--cin)}
 #mk-root .state button{background:var(--cin);color:#fff;border:0;border-radius:12px;padding:12px 20px;font:600 14px inherit}
 #mk-root .more{width:100%;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:13px;padding:13px;font:600 14px inherit;margin:2px 0 12px}
-#mk-root .rv{position:fixed;inset:0;background:var(--paper);z-index:50;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
+#mk-root .rv{position:fixed;inset:0;background:var(--paper);z-index:50;display:flex;flex-direction:column;max-width:var(--read);margin:0 auto}
 #mk-root .rv[hidden]{display:none}
 #mk-root .rv-top{display:flex;align-items:center;gap:12px;padding:calc(12px + var(--safe-t)) 16px 8px}
 #mk-root .rv-bar{flex:1;height:7px;border-radius:4px;background:var(--line);overflow:hidden}
@@ -827,14 +833,14 @@ button{cursor:pointer}
 #mk-root .lim{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center}
 #mk-root .lim[hidden]{display:none}
 #mk-root .lim .bd{position:absolute;inset:0;background:rgba(33,29,23,.45)}
-#mk-root .lim .sh{position:relative;background:var(--card);width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:26px 20px calc(22px + var(--safe-b));text-align:center}
+#mk-root .lim .sh{position:relative;background:var(--card);width:100%;max-width:var(--read);border-radius:22px 22px 0 0;padding:26px 20px calc(22px + var(--safe-b));text-align:center}
 #mk-root .lim .sh .ic{width:64px;height:64px;border-radius:18px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px}
 #mk-root .lim .sh h3{font-size:19px;font-weight:600;margin-bottom:7px}
 #mk-root .lim .sh p{font-size:14px;color:var(--ink2);line-height:1.5;margin-bottom:18px}
 #mk-root .lim .sh .go{width:100%;background:var(--cin);color:#fff;border:none;border-radius:13px;padding:15px;font-family:inherit;font-size:15px;font-weight:500;margin-bottom:9px}
 #mk-root .lim .sh .lt{width:100%;background:none;border:none;color:var(--ink2);font-family:inherit;font-size:14px;padding:9px}
 /* --- Test markazi (#tc-root ichida scope'langan) --- */
-#tc-root{flex:1;min-height:0;overflow-y:auto;max-width:480px;margin:0 auto;width:100%;position:relative;padding:calc(14px + var(--safe-t)) 16px calc(20px + var(--safe-b))}
+#tc-root{flex:1;min-height:0;overflow-y:auto;max-width:var(--read);margin:0 auto;width:100%;position:relative;padding:calc(14px + var(--safe-t)) 16px calc(20px + var(--safe-b))}
 #tc-root .han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
 #tc-root .top{display:flex;align-items:center;gap:11px;margin-bottom:6px}
 #tc-root .ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
@@ -913,7 +919,7 @@ button{cursor:pointer}
 #secov.vc-open{background:#CDB792;box-shadow:0 0 0 100vmax #CDB792}
 #vc-root button{font-family:inherit;border:none;background:none;color:inherit}
 #vc-root .han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600;letter-spacing:1px}
-#vc-root{max-width:480px;margin:0 auto;height:100vh;height:100dvh;position:relative;overflow:hidden;display:flex;flex-direction:column;padding-top:var(--safe-t);width:100%;flex:1;min-height:0}
+#vc-root{max-width:var(--read);margin:0 auto;height:100vh;height:100dvh;position:relative;overflow:hidden;display:flex;flex-direction:column;padding-top:var(--safe-t);width:100%;flex:1;min-height:0}
 #vc-root .bg{position:absolute;inset:0;z-index:0}
 #vc-root .bg svg{width:100%;height:100%}
 #vc-root .top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px 6px;flex:0 0 auto}
@@ -1037,6 +1043,40 @@ button{cursor:pointer}
 @keyframes bl{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
 @keyframes pr{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
 
+/* ---------- Keng ekran (Telegram Desktop / brauzer) ----------
+   Bo'sh joy mobil kartalarni CHO'ZISH bilan emas, yon ustun bilan
+   to'ldiriladi. Yo'lakcha va butun o'qish oqimi o'z kengligida qoladi. */
+.crail{display:none}
+@media (min-width:900px){
+  :root{--shell:940px}
+  /* Sarlavha ham CHAP ustunda qoladi: 940px ga cho'zilgan sarlavha o'rtasi
+     bo'sh ko'rinardi. Yon ustun ikkala qatorni egallaydi. */
+  #s-course{display:grid;grid-template-columns:minmax(0,var(--read)) minmax(0,1fr);
+    grid-template-areas:"head rail" "main rail";column-gap:26px;align-items:start}
+  #s-course .chead{grid-area:head}
+  #s-course .cmain{grid-area:main;min-width:0}
+  #s-course .crail{grid-area:rail;display:block;position:sticky;top:calc(var(--safe-t) + 14px);
+    padding:0 16px 0 0;display:flex;flex-direction:column;gap:12px}
+  /* Reja yon ustunda to'liq ko'ringani uchun tasma takrorlanmaydi. */
+  #s-course .today{display:none}
+  /* Pastki menyu chap ustun ostida turadi — ekran o'rtasida emas, aks holda
+     u yo'lakcha bilan tekislanmay qolardi. */
+  .nav{left:calc(50% - var(--shell) / 2);right:auto;margin:0;width:var(--read)}
+  /* Kurs xaritasidan boshqa ekranlar keng ekranda cho'zilmaydi. */
+  #s-mashq,#s-rating,#s-profile,#s-voice{max-width:var(--read);margin:0 auto;width:100%}
+  .rl-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+  .rl-h{display:flex;align-items:center;justify-content:space-between;font-size:13px;
+    font-weight:600;color:var(--ink2);margin-bottom:10px}
+  .rl-h b{color:var(--ink);font-size:13px}
+  .rl-task{display:flex;align-items:center;gap:9px;width:100%;text-align:left;font-family:inherit;
+    background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+    margin-bottom:7px;font-size:13.5px;color:var(--ink)}
+  .rl-task i{font-size:16px;color:var(--ink3);flex-shrink:0}
+  .rl-task.done{border-style:dashed;color:var(--ink3)}
+  .rl-task.done i{color:var(--jade)}
+  .rl-task.lock{opacity:.55}
+  .rl-done{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--jade);font-weight:500}
+}
 </style>
 <link href="/course_v3_data/desktop-download.css?v=20260812-3" rel="stylesheet">
 </head>
@@ -2316,7 +2356,10 @@ function renderCourse(){
   var pct=Math.round(done/Math.max(total,1)*100);
   /* Daraja yagona manbadan (botdagi user.level) keladi — mini app ichida daraja
      tanlash ko'rsatilmaydi, shuning uchun bu statik yorliq (tugma emas). */
-  var h='<div class="htop"><span class="lvpill"><i class="ti ti-bolt"></i> '+esc(MAP.label)+'</span>'
+  /* Ekran uch qismga bo'linadi: sarlavha, yo'lakcha va yon ustun. Telefonda
+     ular ustma-ust joylashadi (bugungi ko'rinish o'zgarmaydi); keng ekranda
+     yo'lakcha o'z kengligida qoladi va bo'sh joyni yon ustun oladi. */
+  var h='<div class="chead"><div class="htop"><span class="lvpill"><i class="ti ti-bolt"></i> '+esc(MAP.label)+'</span>'
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
     +goalRingHtml()+'</div>'
@@ -2326,7 +2369,8 @@ function renderCourse(){
        (yoki u majburiy bo'lmaganda) reja ko'rinadi — o'sha kartaning o'zi
        "Qaytarish" bo'lib qolaveradi. */
     +(foundationMustComeFirst()?"":todayStripHtml())
-    +foundationEntryHtml();
+    +foundationEntryHtml()
+    +'</div><div class="cmain">';
   var mascP={ru:["Продолжаем!","Так держать!","Ещё урок!","У тебя получится!"],
     uz:["Davom etamiz!","Zo'r ketyapsan!","Yana bir dars!","Sen uddalaysan!"],
     tj:["Идома медиҳем!","Офарин!","Боз як дарс!","Ту метавонӣ!"]}[LANG]||["Davom etamiz!"];
@@ -2374,7 +2418,7 @@ function renderCourse(){
     });
     h+='</div>';
   });
-  h+='<div style="height:14px"></div>';
+  h+='<div style="height:14px"></div></div>'+courseRailHtml();
   $("#s-course").innerHTML=h;
   if(SCREEN==="course")requestAnimationFrame(drawTrails);
 }
@@ -3265,6 +3309,34 @@ function todayStripHtml(){
   return '<div class="today"><span class="today-l"><i class="ti ti-'+(plan.complete?"circle-check":"target-arrow")+'"></i>'
     +'<span>'+esc(t.today)+' <b>'+(plan.done_xp||0)+'</b>/'+(plan.goal_xp||0)+'</span></span>'
     +'<div class="today-c">'+chips+'</div></div>';
+}
+/* Keng ekrandagi yon ustun. Telefonda CSS bilan yashiriladi, shuning uchun
+   bu yerda MAVJUD ma'lumot va MAVJUD renderer'lar qayta ishlatiladi —
+   yangi ma'lumot ham, yangi dizayn ham ixtiro qilinmaydi. */
+function courseRailHtml(){
+  var plan=MAP&&MAP.today,t=todayT();
+  var blocks="";
+  if(plan&&plan.tasks&&plan.tasks.length&&!foundationMustComeFirst()){
+    var rows=plan.tasks.map(function(task){
+      var action=task.type==="skill_drill"?TODAY_SKILL_ACTION[task.skill]:TODAY_TASK_ACTION[task.type];
+      var cls="rl-task"+(task.done?" done":"")+(task.available?"":" lock");
+      var click=(task.done||!task.available||!action)?"":' onclick="'+action+'"';
+      return '<button class="'+cls+'"'+click+'><i class="ti ti-'+todayTaskIcon(task)+'"></i>'
+        +'<span>'+esc(todayTaskLabel(task))+'</span></button>';
+    }).join("");
+    blocks+='<div class="rl-card"><div class="rl-h">'+esc(t.today)
+      +'<b>'+(plan.done_xp||0)+'/'+(plan.goal_xp||0)+' XP</b></div>'+rows
+      +(plan.complete?'<div class="rl-done"><i class="ti ti-circle-check"></i> '+esc(t.done)+'</div>':'')
+      +'</div>';
+  }
+  /* Kalendar CSS'i `.cal` o'rovini talab qiladi (profil ekranidagidek),
+     aks holda qatorlar tik yotib qoladi. */
+  var p=pl();
+  blocks+='<div class="rl-card"><div class="rl-h">'+esc(p.calTitle)
+    +'<b><i class="ti ti-flame" style="font-size:12px;color:var(--cin)"></i> '
+    +Number((MAP&&MAP.progress&&MAP.progress.streak)||0)+'</b></div>'
+    +'<div class="cal">'+streakCalHtml()+'</div></div>';
+  return '<div class="crail">'+blocks+'</div>';
 }
 function goalRingHtml(){
   var dx=dailyXpVal(),r=Math.min(dx/dailyGoal,1),off=(100.5-100.5*r).toFixed(1);
