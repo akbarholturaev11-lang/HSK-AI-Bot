@@ -42,6 +42,14 @@ button{cursor:pointer}
    Ataylab YANGI QAVAT emas, bitta ixcham qator: yo'lakcha (asosiy mahsulot)
    pastga siljimasin. Chapda kunlik XP, o'ngda 1-4 vazifa chipi. Chiplar
    gorizontal suriladi, ya'ni ekran kengligi cheklamaydi. */
+/* Daraja qatori + progress + bugungi reja — bitta YOPISHQOQ blok.
+   Ilgari faqat `.htop` yopishqoq edi va reja tasmasi pastga suriganda
+   uning ostiga kirib ko'rinmay ketardi. */
+.ctop{position:sticky;top:var(--safe-t);z-index:5;background:var(--paper);
+  /* Ostidan o'tayotgan yo'lakcha bilan chegara bilinsin — deyarli
+     ko'rinmas soya, bezak emas. */
+  box-shadow:0 8px 10px -10px rgba(33,29,23,.16)}
+.ctop .htop{position:static;z-index:auto}
 .today{display:flex;align-items:center;gap:8px;padding:2px 0 8px 16px}
 .today-l{display:flex;align-items:center;gap:4px;flex-shrink:0;font-size:12px;color:var(--ink2);font-weight:500}
 .today-l i{font-size:14px;color:var(--cin)}
@@ -1049,13 +1057,13 @@ button{cursor:pointer}
 .crail{display:none}
 @media (min-width:900px){
   :root{--shell:940px}
-  /* Sarlavha ham CHAP ustunda qoladi: 940px ga cho'zilgan sarlavha o'rtasi
-     bo'sh ko'rinardi. Yon ustun ikkala qatorni egallaydi. */
+  /* Ikki ustun: chapda sarlavha va yo'lakcha, o'ngda yon ustun. Chap ustun
+     BITTA element (`.cleft`) — shu tufayli undagi yopishqoq sarlavha butun
+     sahifa bo'ylab tepada qoladi. */
   #s-course{display:grid;grid-template-columns:minmax(0,var(--read)) minmax(0,1fr);
-    grid-template-areas:"head rail" "main rail";column-gap:26px;align-items:start}
-  #s-course .chead{grid-area:head}
-  #s-course .cmain{grid-area:main;min-width:0}
-  #s-course .crail{grid-area:rail;display:block;position:sticky;top:calc(var(--safe-t) + 14px);
+    column-gap:26px;align-items:start}
+  #s-course .cleft{min-width:0}
+  #s-course .crail{position:sticky;top:calc(var(--safe-t) + 14px);
     padding:0 16px 0 0;display:flex;flex-direction:column;gap:12px}
   /* Reja yon ustunda to'liq ko'ringani uchun tasma takrorlanmaydi. */
   #s-course .today{display:none}
@@ -2359,7 +2367,10 @@ function renderCourse(){
   /* Ekran uch qismga bo'linadi: sarlavha, yo'lakcha va yon ustun. Telefonda
      ular ustma-ust joylashadi (bugungi ko'rinish o'zgarmaydi); keng ekranda
      yo'lakcha o'z kengligida qoladi va bo'sh joyni yon ustun oladi. */
-  var h='<div class="chead"><div class="htop"><span class="lvpill"><i class="ti ti-bolt"></i> '+esc(MAP.label)+'</span>'
+  /* `.ctop` — YOPISHQOQ blok: daraja qatori, progress chizig'i va bugungi
+     reja birga tepada qoladi. Ilgari faqat `.htop` yopishqoq edi va reja
+     tasmasi pastga suriganda uning ostiga kirib ko'rinmay ketardi. */
+  var h='<div class="cleft"><div class="ctop"><div class="htop"><span class="lvpill"><i class="ti ti-bolt"></i> '+esc(MAP.label)+'</span>'
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
     +goalRingHtml()+'</div>'
@@ -2369,8 +2380,8 @@ function renderCourse(){
        (yoki u majburiy bo'lmaganda) reja ko'rinadi — o'sha kartaning o'zi
        "Qaytarish" bo'lib qolaveradi. */
     +(foundationMustComeFirst()?"":todayStripHtml())
-    +foundationEntryHtml()
-    +'</div><div class="cmain">';
+    +'</div><div class="cmain">'
+    +foundationEntryHtml();
   var mascP={ru:["Продолжаем!","Так держать!","Ещё урок!","У тебя получится!"],
     uz:["Davom etamiz!","Zo'r ketyapsan!","Yana bir dars!","Sen uddalaysan!"],
     tj:["Идома медиҳем!","Офарин!","Боз як дарс!","Ту метавонӣ!"]}[LANG]||["Davom etamiz!"];
@@ -2418,7 +2429,7 @@ function renderCourse(){
     });
     h+='</div>';
   });
-  h+='<div style="height:14px"></div></div>'+courseRailHtml();
+  h+='<div style="height:14px"></div></div></div>'+courseRailHtml();
   $("#s-course").innerHTML=h;
   if(SCREEN==="course")requestAnimationFrame(drawTrails);
 }
