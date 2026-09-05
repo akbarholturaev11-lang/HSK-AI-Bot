@@ -5,4 +5,10 @@
     <string name="course_chest_reward">+%1$d XP olindi</string>
     <string name="course_chest_opening">Ochilmoqda…</string>
     <string name="course_chest_cd">Sovg‘a sandig‘i</string>
+    <string-array name="course_panda_prompts">
+        <item>Davom etamiz!</item>
+        <item>Zo‘r ketyapsan!</item>
+        <item>Yana bir dars!</item>
+        <item>Sen uddalaysan!</item>
+    </string-array>
 </resources>
