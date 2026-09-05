@@ -12,6 +12,7 @@ the desktop funnel.
 from __future__ import annotations
 
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.desktop_course_service import (
     DesktopCourseError,
@@ -46,6 +47,50 @@ class AndroidCourseService(DesktopCourseService):
         ).foundation_status(context.user)
         await self.session.commit()
         return result
+
+    async def onboarding_status(self, access_token: str) -> dict:
+        """Return the canonical onboarding state for the authenticated learner."""
+        context = await self._context(access_token)
+        profile = await CourseMiniAppProfileService(self.session).get_or_create(
+            context.user.id
+        )
+        await self.session.commit()
+        return {
+            "ok": True,
+            "completed": profile.onboarding_completed_at is not None,
+            "level": str(getattr(context.user, "level", "") or ""),
+            "profile": {
+                "goal": profile.goal,
+                "daily_minutes": profile.daily_minutes,
+                "start_mode": profile.start_mode,
+                "timezone_offset_minutes": profile.timezone_offset_minutes,
+            },
+        }
+
+    async def complete_onboarding(
+        self,
+        access_token: str,
+        *,
+        level: str,
+        goal: str,
+        daily_minutes: int,
+        start_mode: str,
+        language: str | None = None,
+        timezone_offset_minutes: int = 0,
+        activation_variant: str | None = None,
+    ) -> dict:
+        """Complete onboarding through the exact service used by the Mini App."""
+        context = await self._context(access_token)
+        return await CourseMiniAppOnboardingService(self.session).complete(
+            int(context.user.telegram_id),
+            level=level,
+            goal=goal,
+            daily_minutes=daily_minutes,
+            start_mode=start_mode,
+            language=language,
+            timezone_offset_minutes=timezone_offset_minutes,
+            activation_variant=activation_variant,
+        )
 
     async def open_reward_chest(self, access_token: str) -> dict:
         """Open the exact same server-owned chest the Mini App opens."""
