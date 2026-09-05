@@ -14,11 +14,13 @@ import com.pomp.hskai.data.api.AndroidAuthApi
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
 import com.pomp.hskai.data.api.AndroidOnboardingApi
+import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.DictionaryRepository
 import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.data.repository.OnboardingRepository
+import com.pomp.hskai.data.repository.StudyPreferencesRepository
 import java.util.concurrent.TimeUnit
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -88,6 +90,10 @@ class HskAiApplication : Application() {
         retrofit.create(AndroidOnboardingApi::class.java)
     }
 
+    private val studyPreferencesApi: AndroidStudyPreferencesApi by lazy {
+        retrofit.create(AndroidStudyPreferencesApi::class.java)
+    }
+
     private val database: HskAiDatabase by lazy {
         Room.databaseBuilder(this, HskAiDatabase::class.java, HskAiDatabase.NAME)
             // The cache is a disposable snapshot of server state, so a schema
@@ -109,6 +115,14 @@ class HskAiApplication : Application() {
     val onboardingRepository: OnboardingRepository by lazy {
         OnboardingRepository(
             api = onboardingApi,
+            accessToken = authRepository::accessToken,
+            onSessionExpired = authRepository::invalidateSession,
+        )
+    }
+
+    val studyPreferencesRepository: StudyPreferencesRepository by lazy {
+        StudyPreferencesRepository(
+            api = studyPreferencesApi,
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
         )
