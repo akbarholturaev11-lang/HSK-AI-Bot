@@ -33,6 +33,16 @@ data class CourseMapDto(
     @SerialName("user") val user: CourseUserDto = CourseUserDto(),
     @SerialName("notify") val notify: CourseNotifyDto = CourseNotifyDto(),
     @SerialName("today") val today: CourseTodayDto? = null,
+    @SerialName("foundation") val foundation: CourseFoundationDto? = null,
+)
+
+@Serializable
+data class CourseFoundationDto(
+    @SerialName("id") val id: String = "starter0_hsk1",
+    @SerialName("version") val version: Int = 1,
+    @SerialName("required") val required: Boolean = false,
+    @SerialName("completed") val completed: Boolean = false,
+    @SerialName("status") val status: String = "optional",
 )
 
 @Serializable
