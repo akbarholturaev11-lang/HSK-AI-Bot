@@ -45,7 +45,17 @@ MISTAKE_FILL_PROMPTS = (
     "пурра кунед", "мувофиқро интихоб", "ҷойи холӣ",
 )
 
-TRUSTED_MISTAKE_REWARD_SOURCES = {"test", "challenge", "voice", "training"}
+# "Ishonchli" = xato SERVERDA aniqlangan, mijozning so'zi bilan emas. Faqat
+# shu manbalardagi xatoni tuzatish takrorlash sessiyasiga XP beradi (5 XP,
+# sessiyaga bir marta). `pronunciation` — talaffuz balli serverda hisoblanadi
+# (VoicePracticeService.score_pronunciation), shuning uchun u ham ishonchli.
+TRUSTED_MISTAKE_REWARD_SOURCES = {
+    "test",
+    "challenge",
+    "voice",
+    "training",
+    "pronunciation",
+}
 
 
 class CourseMistakeService:

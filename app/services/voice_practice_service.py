@@ -55,6 +55,9 @@ FREE_TOTAL_SESSIONS = 1
 # faqat XARAJAT himoyasi: bitta sessiya (≈10 so'z + qayta urinishlar) bemalol
 # sig'adi, lekin cheksiz qayta urinish OpenAI STT xarajatini cheklaydi.
 FREE_PRONOUNCE_DAILY = 25
+# Talaffuz "o'tdi" chegarasi. Klient ham shu qiymatni ko'rsatadi
+# (course_v3_pronunciation.html: score>=60), shuning uchun bitta joyda.
+PRONOUNCE_PASS_SCORE = 60
 MAX_DIALOGS_PER_SESSION = 7
 MAX_AUDIO_BYTES = 5 * 1024 * 1024
 # Klaviatura orqali yuborilgan xabar uzunligi (Mini App'da ham 200 belgi cheklovi bor).
@@ -347,6 +350,17 @@ class VoicePracticeService:
         )
         result = await self.session.execute(query)
         return int(result.scalar_one() or 0)
+
+    async def remaining_free_sessions(self, user) -> int | None:
+        """Bugun yana nechta bepul voice sessiya qolgan. None = limitsiz.
+
+        Kunlik reja "hozir boshlab bo'lmaydigan" vazifani bermasligi kerak,
+        shuning uchun u shu hisobga tayanadi. Limit KUNLIK (umrbod emas).
+        """
+        if self._is_paid(user):
+            return None
+        used = await self._session_count(int(getattr(user, "telegram_id", 0) or 0), today_only=True)
+        return max(0, FREE_TOTAL_SESSIONS - used)
 
     async def user_status(self, telegram_id: int) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
@@ -777,15 +791,71 @@ class VoicePracticeService:
 
         heard = (transcription_result.content or "").strip()
         score = self._pronunciation_score(target, heard, target_pinyin)
+        passed = score >= PRONOUNCE_PASS_SCORE
+        if not passed:
+            # Talaffuz mashqi ilgari serverda BAHOLANARDI, lekin natija hech
+            # qayerga yozilmasdi: o'quvchi bir so'zni o'nlab marta noto'g'ri
+            # aytsa ham "Xatolarim" bo'sh qolardi va reja uni ko'rmasdi.
+            # Ball serverda hisoblangani uchun bu yozuvga ishonch bor —
+            # mijozning so'ziga emas.
+            await self._record_pronunciation_mistake(
+                telegram_id,
+                target=target,
+                target_pinyin=target_pinyin,
+                heard=heard,
+                score=score,
+                level=level,
+            )
         return {
             "ok": True,
             "score": score,
-            "passed": score >= 60,
+            "passed": passed,
             "heard": heard,
             "target": target,
             "target_pinyin": target_pinyin,
             "budget_notice": self._budget_notice_payload(record),
         }
+
+    async def _record_pronunciation_mistake(
+        self,
+        telegram_id: int,
+        *,
+        target: str,
+        target_pinyin: str,
+        heard: str,
+        score: int,
+        level: str,
+    ) -> None:
+        """Yiqilgan talaffuz urinishini Xatolarim bo'limiga yozadi.
+
+        Baholash tugagach chaqiriladi va HECH QACHON mashqni yiqitmaydi:
+        yozuv muvaffaqiyatsiz bo'lsa o'quvchi baribir o'z ballini ko'radi.
+        """
+        try:
+            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            if not user:
+                return
+            prompt = f"{target} ({target_pinyin})".strip() if target_pinyin else target
+            await CourseMistakeService(self.session).record_items(
+                user,
+                [
+                    {
+                        "question": prompt,
+                        "selected_answer": heard or None,
+                        "correct_answer": target,
+                        "explanation": target_pinyin or None,
+                        "category": "pronunciation",
+                        "pinyin": target_pinyin,
+                        "audio_text": target,
+                    }
+                ],
+                source="pronunciation",
+                level=(level or "").strip().lower() or None,
+            )
+            await self.session.commit()
+        except Exception:  # noqa: BLE001 — signal yozuvi mashqni yiqitmasin
+            logger.exception("Pronunciation mistake write failed for user %s", telegram_id)
+            await self.session.rollback()
 
     async def end_session(self, telegram_id: int, session_id: str) -> dict:
         item = await self._get_active_session(telegram_id, session_id)

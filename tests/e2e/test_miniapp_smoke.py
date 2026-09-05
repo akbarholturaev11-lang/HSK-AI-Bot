@@ -286,6 +286,332 @@ def test_course_v3_opens_static_map_and_query_lesson_sheet(page):
     expect(page.locator("#sheet")).to_contain_text("Yangi so'zlar")
 
 
+def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
+    """Onboarding ikkita savol so'raydi: daraja va MAQSAD.
+
+    Maqsad ilgari `hsk_exam` konstantasi edi (localStorage kalitini hech kim
+    yozmasdi), ya'ni o'quvchi tanlovi umuman yo'q edi. Endi u kunlik rejaning
+    vaznini o'zgartiradi, shuning uchun serverga haqiqatan yetib borishi
+    testda qotiriladi.
+    """
+    mock_telegram_ready(page)
+    sent = []
+    page.route(
+        "**/api/miniapp/event",
+        lambda route: json_response(route, {"ok": True}),
+    )
+
+    def capture_onboarding(route):
+        sent.append(json.loads(route.request.post_data))
+        json_response(
+            route,
+            {"ok": True, "level": "hsk2", "lesson": 1, "tab": "course"},
+        )
+
+    page.route("**/api/miniapp/onboarding", capture_onboarding)
+
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+
+    # 1-ekran: xush kelibsiz
+    page.get_by_role("button", name="Boshlash").click()
+
+    # 2-ekran: daraja
+    expect(page.locator("#stage")).to_contain_text("Xitoy tilini qanchalik bilasiz")
+    page.locator(".lv", has_text="HSK 2").click()
+    page.get_by_role("button", name="Davom etish").click()
+
+    # 3-ekran: maqsad. Tanlangan daraja bosiladigan variant EMAS, ingichka
+    # xulosa satri bo'lib ko'rinadi — aks holda o'quvchi uni ham variant deb
+    # o'ylardi.
+    expect(page.locator("#stage")).to_contain_text("Xitoy tili sizga nima uchun kerak")
+    expect(page.locator(".chosen")).to_contain_text("HSK 2")
+    assert page.locator("#stage .lv").count() == 5
+
+    page.locator(".lv", has_text="Sayohat").click()
+    page.get_by_role("button", name="Birinchi darsni boshlash").click()
+
+    page.wait_for_url(re.compile(r"course-v3\.html"))
+    assert sent, "onboarding payload serverga yuborilmadi"
+    assert sent[0]["level"] == "hsk2"
+    assert sent[0]["goal"] == "travel"
+
+
+def _map_with_today(tasks, *, language="uz", foundation=None):
+    data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data.setdefault("progress", {}).update({"xp": 340, "streak": 4, "completed": 12})
+    data["user"] = {
+        "name": "Smoke",
+        "avatar": "阿",
+        "language": language,
+        "is_paid": True,
+        "referral_code": "",
+        "onboarding_completed": True,
+    }
+    if foundation is not None:
+        data["user"]["foundation"] = foundation
+    data["notify"] = {"enabled": True}
+    data["today"] = {
+        "goal_xp": 40,
+        "done_xp": 25,
+        "streak": 4,
+        "total": len(tasks),
+        "done": sum(1 for task in tasks if task["done"]),
+        "complete": all(task["done"] for task in tasks),
+        "tasks": tasks,
+        "level": "hsk1",
+        "local_day": "2026-09-05",
+    }
+    return data
+
+
+def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
+    """«Bugungi reja» tasmasi — mavjud progress qatoriga ixcham qator.
+
+    Har chip MAVJUD bo'limga olib boradi: ochib bo'lmaydigan vazifa
+    serverda ham berilmaydi, shuning uchun tasma "o'lik" tugma ko'rsatmaydi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    tasks = [
+        {"type": "continue_lesson", "ref": "hsk1:13", "done": True, "access": "open", "available": True},
+        {"type": "mistake_review", "done": False, "access": "open", "available": True},
+        {"type": "skill_drill", "skill": "characters", "done": False, "access": "ad", "available": True},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(route, _map_with_today(tasks)),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    strip = page.locator(".today")
+    expect(strip).to_be_visible()
+    expect(strip).to_contain_text("Bugun")
+    expect(strip).to_contain_text("25")
+    expect(page.locator(".today .tchip")).to_have_count(3)
+    # Bajarilgan vazifa bosilmaydi (takroriy ish taklif qilinmaydi).
+    expect(page.locator(".today .tchip").first).to_have_class(re.compile(r"\bdone\b"))
+
+    page.locator(".today .tchip", has_text="Xatolar").click()
+    expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
+
+
+def test_course_v3_wide_screen_uses_a_side_rail_instead_of_stretching(page):
+    """Telegram Desktop: bo'sh joy yon ustunga ketadi, kartalar cho'zilmaydi.
+
+    Yo'lakcha va butun o'qish oqimi o'z kengligida qoladi — matn ustuni
+    kengayib ketmasligi kerak.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    tasks = [
+        {"type": "continue_lesson", "ref": "hsk1:13", "done": False, "access": "open", "available": True},
+        {"type": "mistake_review", "done": False, "access": "open", "available": True},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(route, _map_with_today(tasks)),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    # Telefon: yon ustun yo'q, tasma bor.
+    expect(page.locator("#s-course .crail")).to_be_hidden()
+    expect(page.locator("#s-course .today")).to_be_visible()
+
+    page.set_viewport_size({"width": 1280, "height": 900})
+    page.wait_for_timeout(200)
+
+    # Keng ekran: yon ustun ochiladi, tasma takrorlanmaydi.
+    expect(page.locator("#s-course .crail")).to_be_visible()
+    expect(page.locator("#s-course .today")).to_be_hidden()
+    expect(page.locator(".crail .rl-task")).to_have_count(2)
+
+    widths = page.evaluate(
+        """() => ({
+            path: document.querySelector('#s-course .cmain').getBoundingClientRect().width,
+            flow: parseInt(getComputedStyle(document.querySelector('#flow')).maxWidth, 10),
+            shell: document.querySelector('.wrap').getBoundingClientRect().width,
+        })"""
+    )
+    assert widths["shell"] > 480, "keng ekranda qobiq kengayishi kerak"
+    assert widths["path"] <= 480, "yo'lakcha cho'zilmasligi kerak"
+    assert widths["flow"] == 480, "dars oqimi hech qachon kengaymaydi"
+
+
+def test_course_v3_today_strip_marks_a_locked_task_instead_of_hiding_it(page):
+    """Kun ichida qulflangan vazifa ro'yxatda QOLADI va almashtirilmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    tasks = [
+        {"type": "continue_lesson", "ref": "hsk1:13", "done": False, "access": "open", "available": True},
+        {"type": "voice_dialog", "role": "friend", "done": False, "access": "locked", "available": False},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(route, _map_with_today(tasks)),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    chips = page.locator(".today .tchip")
+    expect(chips).to_have_count(2)
+    expect(chips.nth(1)).to_have_class(re.compile(r"\block\b"))
+
+
+def test_course_v3_without_a_server_plan_the_screen_is_unchanged(page):
+    """Server `today` yubormasa tasma UMUMAN chizilmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    expect(page.locator("#s-course .today")).to_have_count(0)
+
+
+def test_course_v3_starter_still_blocks_the_plan_for_a_true_beginner(page):
+    """Starter 0 majburiy bo'lsa ikkita raqobatchi chaqiriq bo'lmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    tasks = [
+        {"type": "continue_lesson", "ref": "hsk1:1", "done": False, "access": "open", "available": True},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(
+            route,
+            _map_with_today(
+                tasks,
+                foundation={
+                    "id": "starter0_hsk1",
+                    "version": 1,
+                    "required": True,
+                    "completed": False,
+                    "status": "required",
+                },
+            ),
+        ),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    expect(page.locator("#s-course .foundation-entry")).to_be_visible()
+    expect(page.locator("#s-course .today")).to_have_count(0)
+
+
+def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
+    """Kunlik vaqt va fokus onboardingda EMAS, birinchi darsdan keyin so'raladi.
+
+    Sabab: hali bir dars ham ko'rmagan o'quvchi bu savollarga ma'noli javob
+    bera olmaydi. Ikkala javob ham serverga yetib borishi va bir vaqtda
+    bitta savol turishi shu yerda qotiriladi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+
+    saved = []
+    page.route(
+        "**/api/v3/preferences",
+        lambda route: (
+            saved.append(json.loads(route.request.post_data)),
+            json_response(
+                route,
+                {
+                    "ok": True,
+                    "profile": {
+                        "goal": "hsk_exam",
+                        "daily_minutes": 20,
+                        "preferred_focus": saved[-1].get("preferred_focus"),
+                        "daily_goal_xp": 40,
+                        "daily_goal_is_custom": False,
+                        "plan_size": 3,
+                    },
+                },
+            ),
+        )[-1],
+    )
+
+    data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = "hsk1"
+    data.setdefault("progress", {}).update({"xp": 120, "streak": 2, "completed": 3})
+    data["user"] = {
+        "name": "Smoke",
+        "avatar": "阿",
+        "language": "uz",
+        "is_paid": True,
+        "referral_code": "",
+        "onboarding_completed": True,
+    }
+    data["notify"] = {"enabled": True}
+    data["study_setup"] = {
+        "daily_minutes": 10,
+        "preferred_focus": None,
+        "daily_goal_xp": 30,
+        "daily_goal_is_custom": False,
+        "plan_size": 2,
+        "pending": True,
+    }
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+
+    # 1-savol: kunlik vaqt
+    expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#sheet-body")).to_contain_text("Kuniga necha daqiqa")
+    page.locator("#sheet-body .opt-row", has_text="20 daq").click()
+
+    # 2-savol: fokus. Birinchi javob saqlangach ochiladi, ya'ni ekranda
+    # bir vaqtda bitta savol turadi.
+    expect(page.locator("#sheet-body")).to_contain_text("Nimaga ko'proq urg'u")
+    page.locator("#sheet-body .opt-row", has_text="Tinglash").click()
+    expect(page.locator("#sheet")).not_to_have_class(re.compile(r"\bon\b"))
+
+    assert [item.get("daily_minutes") for item in saved if "daily_minutes" in item] == [20]
+    assert [item.get("preferred_focus") for item in saved if "preferred_focus" in item] == [
+        "listening"
+    ]
+
+
+def test_course_v3_daily_goal_choice_is_saved_on_the_server(page):
+    """Profildagi kunlik XP maqsadi ilgari faqat sessiyada yashardi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+
+    saved = []
+    page.route(
+        "**/api/v3/preferences",
+        lambda route: (
+            saved.append(json.loads(route.request.post_data)),
+            json_response(
+                route,
+                {
+                    "ok": True,
+                    "profile": {
+                        "goal": "hsk_exam",
+                        "daily_minutes": 10,
+                        "preferred_focus": "none",
+                        "daily_goal_xp": 40,
+                        "daily_goal_is_custom": True,
+                        "plan_size": 2,
+                    },
+                },
+            ),
+        )[-1],
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&tab=profile&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.show('profile');renderProfile()")
+    page.evaluate("App.goalPicker()")
+    page.locator("#sheet-body .opt-row", has_text="40 XP").click()
+
+    assert saved == [{"daily_goal_xp": 40}]
+
+
 def test_course_v3_onboarding_autostart_opens_first_lesson_flow(page):
     mock_price_preview(page)
     mock_telegram_ready(page)

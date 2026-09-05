@@ -27,6 +27,8 @@ from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
 from app.api.desktop_practice import create_desktop_practice_router
+from app.api.miniapp_practice import create_miniapp_practice_router
+from app.api.miniapp_preferences import create_miniapp_preferences_router
 from app.api.desktop_rating import create_desktop_rating_router
 from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
@@ -179,6 +181,7 @@ from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.course_pilot_event_repo import CoursePilotEventRepository
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.course_today_service import CourseTodayService
 from app.bot.keyboards.subscription_churn import subscription_expired_offer_keyboard
 from app.bot.keyboards.course import homework_retry_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
@@ -564,6 +567,22 @@ app.include_router(
 )
 app.include_router(
     create_desktop_practice_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+    )
+)
+# Mini App ayni mashq dvigatelidan foydalanadi; farqi — auth Telegram
+# initData orqali va ruxsat allaqachon daily-gate/ad-gate da tekshirilgan
+# (gate_checked=True). Qarang app/api/miniapp_practice.py.
+app.include_router(
+    create_miniapp_practice_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+        bot=bot,
+    )
+)
+app.include_router(
+    create_miniapp_preferences_router(
         session_factory=async_session_maker,
         settings_obj=settings,
     )
@@ -1681,6 +1700,13 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             "onboarding_completed": profile.onboarding_completed_at is not None,
             "foundation": await profile_svc.foundation_status(user),
         }
+        # Kunlik reja sozlamalari: XP maqsadi endi serverda saqlanadi (ilgari
+        # klientdagi `dailyGoal=50` o'zgaruvchi edi va har ochilganda
+        # yo'qolardi). `pending` — kunlik vaqt/fokus savoli hali so'ralmagan.
+        data["study_setup"] = CourseMiniAppProfileService.study_setup(
+            profile,
+            completed_parts=completed,
+        )
         # Motivational reminders are ON by default until the user turns them off.
         data["notify"] = {
             "enabled": bool(getattr(profile, "notifications_enabled", True)),
@@ -1689,6 +1715,21 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         data["admin_contact"] = admin_contact_url(await BotSettingRepository(session).get(ADMIN_CONTACT_KEY))
         access_policy = await CourseAccessPolicyService(session).get_policy()
         data["access_policy"] = access_policy.public_payload()
+
+        # Bugungi reja. Mantiq CourseTodayService da — bu yerda faqat chaqiruv,
+        # shunda Desktop/Android map javobi ayni blokni kod o'zgartirmasdan
+        # oladi. Reja qurilmasa (xato) blok umuman qo'shilmaydi va ekran
+        # bugungidek qoladi.
+        today = await CourseTodayService(session).payload(
+            user,
+            profile=profile,
+            progress=progress,
+            level=resolved_level,
+            is_paid=is_paid,
+            access_policy=access_policy,
+        )
+        if today:
+            data["today"] = today
 
         _apply_course_v3_access_policy(
             data,
