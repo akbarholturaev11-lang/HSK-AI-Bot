@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.course
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -12,16 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.core.design.PompColors
 
 /**
  * Native course-path mascot ported from the Mini App `pandaChar()` proportions.
- * It intentionally uses Canvas primitives instead of a GIF/WebView so motion,
- * scale and accessibility remain native Compose behavior.
+ *
+ * Motion deliberately mirrors the web mascot rather than using a generic
+ * Material animation: slow bob/nod, breathing, periodic blink and a tighter
+ * bounce when the learner is celebrating. It stays native Compose (no GIF or
+ * WebView), so it can later react to lesson state without replacing the asset.
  */
 @Composable
 fun CoursePandaMascot(
@@ -44,28 +48,59 @@ fun CoursePandaMascot(
         animationSpec = infiniteRepeatable(tween(2300), RepeatMode.Reverse),
         label = "course-panda-nod",
     ).value
+    val breathe = transition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.02f,
+        animationSpec = infiniteRepeatable(tween(1300), RepeatMode.Reverse),
+        label = "course-panda-breathe",
+    ).value
     val shadowScale = transition.animateFloat(
         initialValue = 1f,
         targetValue = 0.78f,
         animationSpec = infiniteRepeatable(tween(1700), RepeatMode.Reverse),
         label = "course-panda-shadow",
     ).value
+    val blink = transition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 4200
+                1f at 0
+                1f at 3780
+                0.10f at 3940
+                1f at 4050
+                1f at 4200
+            },
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "course-panda-blink",
+    ).value
 
     Box(
         modifier = modifier.size(72.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Canvas(Modifier.size(44.dp, 10.dp).graphicsLayer {
-            translationY = 28.dp.toPx()
-            scaleX = shadowScale
-        }) {
+        Canvas(
+            Modifier
+                .size(44.dp, 10.dp)
+                .graphicsLayer {
+                    translationY = 28.dp.toPx()
+                    scaleX = shadowScale
+                    alpha = if (celebrate) 0.10f else 0.16f
+                },
+        ) {
             drawOval(Color(0x29211D17))
         }
 
         Canvas(
             Modifier
                 .size(72.dp)
-                .graphicsLayer { translationY = bob }
+                .graphicsLayer {
+                    translationY = bob
+                    scaleY = breathe
+                    transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 1f)
+                },
         ) {
             rotate(nod, pivot = center) {
                 val sx = size.width / 200f
@@ -78,7 +113,7 @@ fun CoursePandaMascot(
                 val scarf = PompColors.Cinnabar
                 val scarfDark = PompColors.CinnabarDark
 
-                // Body — same rounded white shell used by the Mini App mascot.
+                // Body — the same rounded white shell used by the Mini App mascot.
                 drawOval(
                     color = white,
                     topLeft = androidx.compose.ui.geometry.Offset(x(51f), y(119f)),
@@ -106,13 +141,33 @@ fun CoursePandaMascot(
                     style = Stroke(width = x(2.5f)),
                 )
 
-                // Eye patches and eyes.
+                // Eye patches and blinkable eyes.
                 drawOval(ink, androidx.compose.ui.geometry.Offset(x(64f), y(72f)), androidx.compose.ui.geometry.Size(x(30f), y(40f)))
                 drawOval(ink, androidx.compose.ui.geometry.Offset(x(106f), y(72f)), androidx.compose.ui.geometry.Size(x(30f), y(40f)))
-                drawCircle(white, radius = x(8f), center = androidx.compose.ui.geometry.Offset(x(79f), y(93f)))
-                drawCircle(white, radius = x(8f), center = androidx.compose.ui.geometry.Offset(x(121f), y(93f)))
-                drawCircle(ink, radius = x(4.2f), center = androidx.compose.ui.geometry.Offset(x(79f), y(94f)))
-                drawCircle(ink, radius = x(4.2f), center = androidx.compose.ui.geometry.Offset(x(121f), y(94f)))
+                val eyeHeight = y(16f) * blink.coerceAtLeast(0.10f)
+                val eyeTop = y(93f) - eyeHeight / 2f
+                drawOval(
+                    white,
+                    androidx.compose.ui.geometry.Offset(x(71f), eyeTop),
+                    androidx.compose.ui.geometry.Size(x(16f), eyeHeight),
+                )
+                drawOval(
+                    white,
+                    androidx.compose.ui.geometry.Offset(x(113f), eyeTop),
+                    androidx.compose.ui.geometry.Size(x(16f), eyeHeight),
+                )
+                val pupilHeight = y(8.4f) * blink.coerceAtLeast(0.10f)
+                val pupilTop = y(94f) - pupilHeight / 2f
+                drawOval(
+                    ink,
+                    androidx.compose.ui.geometry.Offset(x(74.8f), pupilTop),
+                    androidx.compose.ui.geometry.Size(x(8.4f), pupilHeight),
+                )
+                drawOval(
+                    ink,
+                    androidx.compose.ui.geometry.Offset(x(116.8f), pupilTop),
+                    androidx.compose.ui.geometry.Size(x(8.4f), pupilHeight),
+                )
 
                 // Nose and happy mouth.
                 drawOval(ink, androidx.compose.ui.geometry.Offset(x(92f), y(105f)), androidx.compose.ui.geometry.Size(x(16f), y(11f)))
@@ -146,6 +201,12 @@ fun CoursePandaMascot(
                     close()
                 }
                 drawPath(tailPath, scarfDark)
+
+                if (celebrate) {
+                    drawCircle(PompColors.Gold, x(3.5f), androidx.compose.ui.geometry.Offset(x(29f), y(83f)))
+                    drawCircle(PompColors.Gold, x(2.8f), androidx.compose.ui.geometry.Offset(x(170f), y(73f)))
+                    drawCircle(PompColors.Cinnabar, x(2.2f), androidx.compose.ui.geometry.Offset(x(166f), y(117f)))
+                }
             }
         }
     }
