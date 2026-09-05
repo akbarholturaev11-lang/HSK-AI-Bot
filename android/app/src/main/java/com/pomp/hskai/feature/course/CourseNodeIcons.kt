@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,23 @@ import androidx.compose.ui.unit.dp
  * were still visible on the Android course path.
  */
 internal enum class CourseNodeIconKind { Check, Lock, Flag, Gift, Star }
+
+/** Mini App node-specific sizing so CourseScreen does not re-invent glyph metrics. */
+@Composable
+internal fun MiniAppLessonNodeIcon(
+    kind: CourseNodeIconKind,
+    tint: Color,
+    modifier: Modifier = Modifier,
+) {
+    val iconSize = when (kind) {
+        CourseNodeIconKind.Check -> 28.dp
+        CourseNodeIconKind.Lock -> 22.dp
+        CourseNodeIconKind.Flag -> 25.dp
+        CourseNodeIconKind.Gift -> 30.dp
+        CourseNodeIconKind.Star -> 27.dp
+    }
+    MiniAppNodeIcon(kind = kind, tint = tint, modifier = modifier, size = iconSize)
+}
 
 @Composable
 internal fun MiniAppNodeIcon(
@@ -54,7 +72,7 @@ internal fun MiniAppNodeIcon(
                     color = tint,
                     topLeft = Offset(x(5f), y(11f)),
                     size = Size(x(14f), y(10f)),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(x(2f), y(2f)),
+                    cornerRadius = CornerRadius(x(2f), y(2f)),
                     style = stroke,
                 )
                 val shackle = Path().apply {
@@ -89,14 +107,14 @@ internal fun MiniAppNodeIcon(
                     color = tint,
                     topLeft = Offset(x(3f), y(8f)),
                     size = Size(x(18f), y(4f)),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(x(1f), y(1f)),
+                    cornerRadius = CornerRadius(x(1f), y(1f)),
                     style = stroke,
                 )
                 drawRoundRect(
                     color = tint,
                     topLeft = Offset(x(5f), y(12f)),
                     size = Size(x(14f), y(9f)),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(x(1f), y(1f)),
+                    cornerRadius = CornerRadius(x(1f), y(1f)),
                     style = stroke,
                 )
                 drawLine(tint, Offset(x(12f), y(8f)), Offset(x(12f), y(21f)), strokeWidth, StrokeCap.Round)
