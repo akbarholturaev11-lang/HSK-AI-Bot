@@ -59,9 +59,11 @@ import com.pomp.hskai.feature.auth.LinkViewModel
 import com.pomp.hskai.core.navigation.MainScaffold
 import com.pomp.hskai.core.navigation.MainTab
 import com.pomp.hskai.feature.course.CourseScreen
+import com.pomp.hskai.feature.course.CourseViewModel
+import com.pomp.hskai.feature.course.StudySetupSheet
+import com.pomp.hskai.feature.course.StudySetupViewModel
 import com.pomp.hskai.feature.dictionary.DictionaryScreen
 import com.pomp.hskai.feature.dictionary.DictionaryViewModel
-import com.pomp.hskai.feature.course.CourseViewModel
 import com.pomp.hskai.feature.onboarding.OnboardingScreen
 import com.pomp.hskai.feature.onboarding.OnboardingViewModel
 import com.pomp.hskai.feature.profile.ProfileScreen
@@ -183,6 +185,11 @@ private fun AppRoot(
                 factory = CourseViewModel.Factory(app.courseRepository),
             )
             val courseState by courseViewModel.state.collectAsStateWithLifecycle()
+            val studySetupViewModel: StudySetupViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = StudySetupViewModel.Factory(app.studyPreferencesRepository),
+            )
+            val studySetupState by studySetupViewModel.state.collectAsStateWithLifecycle()
             val pinyin by app.appSettings.pinyinVisibility
                 .collectAsStateWithLifecycle(initialValue = PinyinVisibility.DEFAULT)
             val practiceViewModel: PracticeViewModel = viewModel(
@@ -223,6 +230,17 @@ private fun AppRoot(
 
             LaunchedEffect(onboardingState.completed) {
                 if (onboardingState.completed) {
+                    courseViewModel.load()
+                    profileViewModel.load()
+                }
+            }
+
+            LaunchedEffect(courseState.map?.studySetup) {
+                studySetupViewModel.sync(courseState.map?.studySetup)
+            }
+
+            LaunchedEffect(studySetupState.refreshVersion) {
+                if (studySetupState.refreshVersion > 0) {
                     courseViewModel.load()
                     profileViewModel.load()
                 }
@@ -506,26 +524,37 @@ private fun AppRoot(
                     }
                 }
 
-                if (languagePickerOpen) {
-                    LanguagePicker(
-                        current = state.account.language,
-                        onPick = { language ->
-                            languagePickerOpen = false
-                            settingsViewModel.setLanguage(language)
-                        },
-                        onDismiss = { languagePickerOpen = false },
+                if (studySetupState.visible) {
+                    StudySetupSheet(
+                        language = currentLanguage,
+                        state = studySetupState,
+                        onDismiss = studySetupViewModel::dismiss,
+                        onGoal = studySetupViewModel::chooseGoal,
+                        onTime = studySetupViewModel::chooseTime,
+                        onFocus = studySetupViewModel::chooseFocus,
                     )
-                }
+                } else {
+                    if (languagePickerOpen) {
+                        LanguagePicker(
+                            current = state.account.language,
+                            onPick = { language ->
+                                languagePickerOpen = false
+                                settingsViewModel.setLanguage(language)
+                            },
+                            onDismiss = { languagePickerOpen = false },
+                        )
+                    }
 
-                if (goalPickerOpen) {
-                    DailyGoalPicker(
-                        current = dailyGoal,
-                        onPick = { value ->
-                            goalPickerOpen = false
-                            scope.launch { app.appSettings.setDailyGoal(value) }
-                        },
-                        onDismiss = { goalPickerOpen = false },
-                    )
+                    if (goalPickerOpen) {
+                        DailyGoalPicker(
+                            current = dailyGoal,
+                            onPick = { value ->
+                                goalPickerOpen = false
+                                scope.launch { app.appSettings.setDailyGoal(value) }
+                            },
+                            onDismiss = { goalPickerOpen = false },
+                        )
+                    }
                 }
             }
         }
