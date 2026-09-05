@@ -22,6 +22,7 @@ from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy import func, select as sa_select
 
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_mistake import CourseMistake
 from app.db.models.course_word_mastery import (
     WORD_MASTERY_INTERVALS,
@@ -29,8 +30,13 @@ from app.db.models.course_word_mastery import (
     WORD_MASTERY_SKILLS,
     CourseWordMastery,
 )
+from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.course_daily_window import local_day_key
-from app.services.course_v3_word_index import taught_words, word_position
+from app.services.course_v3_word_index import (
+    normalize_level,
+    taught_words,
+    word_position,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -75,6 +81,42 @@ def local_today(timezone_offset_minutes: int = 0) -> date:
 class CourseWordMasteryService:
     def __init__(self, session):
         self.session = session
+
+    # ---------- kontekst ----------
+
+    async def context(self, user) -> tuple[str, int, int]:
+        """`(band, joriy qism, mintaqa siljishi)` — endpointlar uchun.
+
+        Router yupqa qolishi uchun shu yerda: band `users.level` dan, qism
+        `course_progress` dan (band mos kelsagina), mintaqa profildan.
+        Profil YARATILMAYDI — bu o'qish yo'li.
+        """
+        level = normalize_level(getattr(user, "level", None))
+        user_id = int(getattr(user, "id", 0) or 0)
+        current_part = 1
+        offset = 0
+        if not user_id:
+            return level, current_part, offset
+
+        try:
+            progress = await CourseProgressRepository(self.session).get_by_user_id(user_id)
+            if progress and normalize_level(getattr(progress, "level", None)) == level:
+                completed = int(getattr(progress, "completed_lessons_count", 0) or 0)
+                current_part = max(1, completed + 1)
+        except Exception:  # noqa: BLE001 — progress o'qilmasa mashq yiqilmasin
+            logger.exception("Progress lookup failed for user %s", user_id)
+
+        try:
+            result = await self.session.execute(
+                sa_select(CourseMiniAppProfile.timezone_offset_minutes).where(
+                    CourseMiniAppProfile.user_id == user_id
+                )
+            )
+            offset = int(result.scalar_one_or_none() or 0)
+        except Exception:  # noqa: BLE001
+            logger.exception("Profile lookup failed for user %s", user_id)
+
+        return level, current_part, offset
 
     # ---------- o'qish ----------
 
@@ -295,3 +337,40 @@ class CourseWordMasteryService:
             logger.exception("Word mastery write failed for user %s", user_id)
             return 0
         return len(merged)
+
+    # ---------- endpointlar uchun ----------
+
+    async def drill_words(self, user, *, skill: str, limit: int = 10) -> dict:
+        """Mashq uchun so'zlar + kontekst. Xato bo'lsa bo'sh ro'yxat.
+
+        Bo'sh ro'yxat — nosozlik emas: klient o'z pooliga qaytadi va mashq
+        bugungidek ishlayveradi.
+        """
+        skill = normalize_skill(skill)
+        try:
+            level, current_part, offset = await self.context(user)
+            words = await self.select(
+                user,
+                skill=skill,
+                level=level,
+                current_part=current_part,
+                limit=limit,
+                timezone_offset_minutes=offset,
+            )
+            day = local_today(offset).isoformat()
+        except Exception:  # noqa: BLE001 — tanlov mashqni yiqitmasin
+            logger.exception("Word selection failed for user %s", getattr(user, "id", None))
+            return {"skill": skill, "day": local_today(0).isoformat(), "words": []}
+        return {"skill": skill, "day": day, "words": words}
+
+    async def record_drill(self, user, *, skill: str, results: list) -> int:
+        """Natijalarni yozadi, mintaqani o'zi aniqlab."""
+        skill = normalize_skill(skill)
+        try:
+            _, _, offset = await self.context(user)
+        except Exception:  # noqa: BLE001
+            logger.exception("Context lookup failed for user %s", getattr(user, "id", None))
+            offset = 0
+        return await self.apply_results(
+            user, skill=skill, results=results, timezone_offset_minutes=offset
+        )

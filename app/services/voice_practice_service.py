@@ -25,6 +25,7 @@ from app.services.ai_provider import GEMINI_FAST_MODEL
 from app.services.ai_usage_budget_service import AIUsageBudgetService, BudgetRecordResult
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_word_mastery_service import CourseWordMasteryService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 
@@ -792,6 +793,10 @@ class VoicePracticeService:
         heard = (transcription_result.content or "").strip()
         score = self._pronunciation_score(target, heard, target_pinyin)
         passed = score >= PRONOUNCE_PASS_SCORE
+        # Interval takrori: to'g'ri talaffuz so'zni siyraklashtiradi, xato
+        # uni bugunga qaytaradi. Ball SERVERDA hisoblangani uchun bu yozuvga
+        # ishonch bor va klientdan hech narsa so'ralmaydi.
+        await self._record_pronunciation_mastery(telegram_id, target=target, correct=passed)
         if not passed:
             # Talaffuz mashqi ilgari serverda BAHOLANARDI, lekin natija hech
             # qayerga yozilmasdi: o'quvchi bir so'zni o'nlab marta noto'g'ri
@@ -815,6 +820,46 @@ class VoicePracticeService:
             "target_pinyin": target_pinyin,
             "budget_notice": self._budget_notice_payload(record),
         }
+
+    async def _safe_rollback(self) -> None:
+        """Tozalashning o'zi ham mashqni yiqitmasligi kerak.
+
+        Signal yozuvlari "hech qachon yiqitmaydi" deb va'da qiladi, lekin
+        `rollback` ning o'zi ham xato berishi mumkin (sessiya allaqachon
+        yopilgan bo'lsa). U holda va'da buzilardi.
+        """
+        try:
+            await self.session.rollback()
+        except Exception:  # noqa: BLE001
+            logger.exception("Rollback after a signal write failed")
+
+    async def _record_pronunciation_mastery(
+        self,
+        telegram_id: int,
+        *,
+        target: str,
+        correct: bool,
+    ) -> None:
+        """Talaffuz natijasini interval takroriga yozadi.
+
+        `target` mijozdan keladi va gap ham bo'lishi mumkin (kurs ichidagi
+        talaffuz kartasi butun iborani yuboradi). Mastery servisi kurs
+        lug'atida yo'q narsani jimgina tashlaydi, shuning uchun bu yerda
+        qo'shimcha tekshiruv kerak emas.
+        """
+        try:
+            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            if not user:
+                return
+            await CourseWordMasteryService(self.session).record_drill(
+                user,
+                skill="pronunciation",
+                results=[{"hanzi": target, "correct": bool(correct)}],
+            )
+            await self.session.commit()
+        except Exception:  # noqa: BLE001 — jadval yozuvi mashqni yiqitmasin
+            logger.exception("Pronunciation mastery write failed for user %s", telegram_id)
+            await self._safe_rollback()
 
     async def _record_pronunciation_mistake(
         self,
@@ -855,7 +900,7 @@ class VoicePracticeService:
             await self.session.commit()
         except Exception:  # noqa: BLE001 — signal yozuvi mashqni yiqitmasin
             logger.exception("Pronunciation mistake write failed for user %s", telegram_id)
-            await self.session.rollback()
+            await self._safe_rollback()
 
     async def end_session(self, telegram_id: int, session_id: str) -> dict:
         item = await self._get_active_session(telegram_id, session_id)

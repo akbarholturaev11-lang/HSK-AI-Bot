@@ -34,7 +34,7 @@ def _session_factory():
     return _session()
 
 
-def build_client(service, *, telegram_id=123, drill_service=None):
+def build_client(service, *, telegram_id=123, drill_service=None, mastery_service=None):
     app = FastAPI()
     app.include_router(
         create_miniapp_practice_router(
@@ -43,6 +43,13 @@ def build_client(service, *, telegram_id=123, drill_service=None):
             service_factory=lambda session, bot=None: service,
             drill_service_factory=lambda session: drill_service
             or SimpleNamespace(record=AsyncMock(return_value=0)),
+            mastery_service_factory=lambda session: mastery_service
+            or SimpleNamespace(
+                record_drill=AsyncMock(return_value=0),
+                drill_words=AsyncMock(
+                    return_value={"skill": "recognition", "day": "2026-09-05", "words": []}
+                ),
+            ),
         )
     )
     transport = ASGITransport(app=app)
@@ -415,6 +422,230 @@ class DrillReportTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(response.status_code, 401)
         drill.record.assert_not_awaited()
+
+
+class DrillWordsTests(unittest.IsolatedAsyncioTestCase):
+    @staticmethod
+    def _user_repo(user=SimpleNamespace(id=3, telegram_id=123)):
+        return patch(
+            "app.api.miniapp_practice.UserRepository",
+            return_value=SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user)),
+        )
+
+    async def _words(self, mastery, payload, *, user=SimpleNamespace(id=3, telegram_id=123)):
+        client, verifier = build_client(practice_service(), mastery_service=mastery)
+        async with client:
+            with verifier, self._user_repo(user):
+                return await client.post("/api/v3/practice/words", json=payload)
+
+    async def test_the_selected_words_reach_the_client(self):
+        mastery = SimpleNamespace(
+            drill_words=AsyncMock(
+                return_value={
+                    "skill": "recognition",
+                    "day": "2026-09-05",
+                    "words": [
+                        {"zh": "你", "kind": "review", "box": 1},
+                        {"zh": "好", "kind": "new", "box": 0},
+                    ],
+                }
+            )
+        )
+        response = await self._words(
+            mastery,
+            {"feature": "recognition", "limit": 10, "initData": VALID_INIT_DATA},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual([item["zh"] for item in body["words"]], ["你", "好"])
+        self.assertEqual(mastery.drill_words.await_args.kwargs["skill"], "recognition")
+        self.assertEqual(mastery.drill_words.await_args.kwargs["limit"], 10)
+
+    async def test_the_response_carries_no_user_facing_text(self):
+        # Ko'rinadigan matn klientda qoladi, shuning uchun til almashganda
+        # server javobi o'zgarmaydi.
+        mastery = SimpleNamespace(
+            drill_words=AsyncMock(
+                return_value={
+                    "skill": "recognition",
+                    "day": "2026-09-05",
+                    "words": [{"zh": "你", "kind": "review", "box": 1}],
+                }
+            )
+        )
+        response = await self._words(
+            mastery, {"feature": "recognition", "initData": VALID_INIT_DATA}
+        )
+
+        self.assertEqual(set(response.json()["words"][0]), {"zh", "kind", "box"})
+
+    async def test_an_empty_selection_is_not_an_error(self):
+        # Bo'sh ro'yxat nosozlik emas — klient o'z pooliga qaytadi.
+        mastery = SimpleNamespace(
+            drill_words=AsyncMock(
+                return_value={"skill": "recognition", "day": "2026-09-05", "words": []}
+            )
+        )
+        response = await self._words(
+            mastery, {"feature": "recognition", "initData": VALID_INIT_DATA}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["words"], [])
+
+    async def test_only_the_two_wired_drills_are_accepted(self):
+        mastery = SimpleNamespace(drill_words=AsyncMock())
+        response = await self._words(
+            mastery, {"feature": "memorize", "initData": VALID_INIT_DATA}
+        )
+
+        self.assertEqual(response.status_code, 422)
+        mastery.drill_words.assert_not_awaited()
+
+    async def test_an_unsigned_request_selects_nothing(self):
+        mastery = SimpleNamespace(drill_words=AsyncMock())
+        client, verifier = build_client(
+            practice_service(), telegram_id=None, mastery_service=mastery
+        )
+        async with client:
+            with verifier, self._user_repo():
+                response = await client.post(
+                    "/api/v3/practice/words", json={"feature": "recognition"}
+                )
+
+        self.assertEqual(response.status_code, 401)
+        mastery.drill_words.assert_not_awaited()
+
+    async def test_an_unknown_user_is_refused(self):
+        mastery = SimpleNamespace(drill_words=AsyncMock())
+        response = await self._words(
+            mastery, {"feature": "recognition", "initData": VALID_INIT_DATA}, user=None
+        )
+
+        self.assertEqual(response.status_code, 403)
+        mastery.drill_words.assert_not_awaited()
+
+    async def test_an_absurd_limit_is_rejected(self):
+        mastery = SimpleNamespace(drill_words=AsyncMock())
+        response = await self._words(
+            mastery,
+            {"feature": "recognition", "limit": 500, "initData": VALID_INIT_DATA},
+        )
+
+        self.assertEqual(response.status_code, 422)
+
+
+class DrillResultsTests(unittest.IsolatedAsyncioTestCase):
+    @staticmethod
+    def _user_repo(user=SimpleNamespace(id=3, telegram_id=123)):
+        return patch(
+            "app.api.miniapp_practice.UserRepository",
+            return_value=SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user)),
+        )
+
+    async def _report(self, payload, *, drill=None, mastery=None):
+        drill = drill or SimpleNamespace(record=AsyncMock(return_value=0))
+        mastery = mastery or SimpleNamespace(record_drill=AsyncMock(return_value=0))
+        client, verifier = build_client(
+            practice_service(), drill_service=drill, mastery_service=mastery
+        )
+        async with client:
+            with verifier, self._user_repo():
+                response = await client.post("/api/v3/practice/report", json=payload)
+        return response, drill, mastery
+
+    async def test_results_are_scheduled_for_interval_review(self):
+        response, _, mastery = await self._report(
+            {
+                "feature": "recognition",
+                "level": "hsk1",
+                "language": "uz",
+                "results": [{"hanzi": "你", "correct": True}, {"hanzi": "好", "correct": False}],
+                "initData": VALID_INIT_DATA,
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            mastery.record_drill.await_args.kwargs["results"],
+            [{"hanzi": "你", "correct": True}, {"hanzi": "好", "correct": False}],
+        )
+
+    async def test_a_legacy_mistakes_only_body_still_works(self):
+        # Yodlash bo'limi hali shu yo'ldan yuradi.
+        response, drill, mastery = await self._report(
+            {
+                "feature": "memorize",
+                "level": "hsk1",
+                "language": "uz",
+                "mistakes": [{"hanzi": "你"}],
+                "initData": VALID_INIT_DATA,
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        drill.record.assert_awaited_once()
+        mastery.record_drill.assert_not_awaited()
+
+    async def test_pronunciation_may_not_write_mistakes(self):
+        # Uning xatosini server `score_pronunciation` ichida yozadi —
+        # bu yerda qabul qilinsa dublikat qator paydo bo'lardi.
+        response, drill, _ = await self._report(
+            {
+                "feature": "pronunciation",
+                "level": "hsk1",
+                "language": "uz",
+                "mistakes": [{"hanzi": "你"}],
+                "initData": VALID_INIT_DATA,
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        drill.record.assert_not_awaited()
+
+    async def test_pronunciation_may_not_claim_a_success(self):
+        # To'g'ri talaffuzni faqat server baholay oladi.
+        response, _, mastery = await self._report(
+            {
+                "feature": "pronunciation",
+                "level": "hsk1",
+                "language": "uz",
+                "results": [{"hanzi": "你", "correct": True}],
+                "initData": VALID_INIT_DATA,
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        mastery.record_drill.assert_not_awaited()
+
+    async def test_pronunciation_may_report_a_skip_or_a_third_failure(self):
+        response, _, mastery = await self._report(
+            {
+                "feature": "pronunciation",
+                "level": "hsk1",
+                "language": "uz",
+                "results": [{"hanzi": "你", "correct": False}],
+                "initData": VALID_INIT_DATA,
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        mastery.record_drill.assert_awaited_once()
+
+    async def test_an_empty_report_is_rejected(self):
+        response, drill, mastery = await self._report(
+            {
+                "feature": "recognition",
+                "level": "hsk1",
+                "language": "uz",
+                "initData": VALID_INIT_DATA,
+            }
+        )
+
+        self.assertEqual(response.status_code, 422)
+        drill.record.assert_not_awaited()
+        mastery.record_drill.assert_not_awaited()
 
 
 if __name__ == "__main__":

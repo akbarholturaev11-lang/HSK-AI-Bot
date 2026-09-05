@@ -26,6 +26,8 @@ from sqlalchemy.pool import StaticPool
 from app.api.miniapp_practice import create_miniapp_practice_router
 from app.db.base import Base
 from app.db.models.course_mistake import CourseMistake
+from app.db.models.course_progress import CourseProgress
+from app.db.models.course_word_mastery import CourseWordMastery
 from app.db.models.user import User
 
 
@@ -181,6 +183,136 @@ class DrillReportIntegrationTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(await self._mistakes(), [])
+
+
+class IntervalReviewIntegrationTests(DrillReportIntegrationTests):
+    """Mashq -> natija -> keyingi mashq halqasi, haqiqiy baza ustida."""
+
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
+        # O'quvchi kursning o'rtasida — lug'ati yetarli. Aks holda u
+        # 1-qismda qoladi va atigi 8 ta so'zi bo'ladi.
+        async with self.session_factory() as session:
+            session.add(
+                CourseProgress(
+                    user_id=1,
+                    level="hsk1",
+                    current_step="intro",
+                    waiting_for="none",
+                    completed_lessons_count=40,
+                )
+            )
+            await session.commit()
+
+    async def _mastery(self, skill="recognition"):
+        async with self.session_factory() as session:
+            result = await session.execute(
+                select(CourseWordMastery).where(CourseWordMastery.skill == skill)
+            )
+            return {row.zh: row for row in result.scalars().all()}
+
+    async def _words(self, feature="recognition", limit=10):
+        return await self.client.post(
+            "/api/v3/practice/words",
+            json={"feature": feature, "limit": limit, "initData": signed_init_data()},
+        )
+
+    async def _results(self, results, feature="recognition"):
+        return await self.client.post(
+            "/api/v3/practice/report",
+            json={
+                "feature": feature,
+                "level": "hsk1",
+                "language": "uz",
+                "results": results,
+                "initData": signed_init_data(),
+            },
+        )
+
+    async def test_a_drill_returns_words_the_learner_has_been_taught(self):
+        response = await self._words()
+
+        self.assertEqual(response.status_code, 200)
+        words = response.json()["words"]
+        self.assertTrue(words)
+        # Yangi o'quvchida hali takror yo'q.
+        self.assertTrue(all(item["kind"] == "new" for item in words))
+        self.assertTrue(all(len(item["zh"]) == 1 for item in words))
+
+    async def test_a_wrong_answer_brings_the_word_back_and_marks_it_review(self):
+        first = (await self._words()).json()["words"]
+        target = first[0]["zh"]
+        await self._results([{"hanzi": target, "correct": False}])
+
+        row = (await self._mastery())[target]
+        self.assertEqual(row.box, 0)
+        self.assertEqual(row.wrong_count, 1)
+
+        second = (await self._words()).json()["words"]
+        review = [item for item in second if item["kind"] == "review"]
+        self.assertEqual([item["zh"] for item in review], [target])
+
+    async def test_a_correct_answer_pushes_the_word_out_of_the_next_drill(self):
+        first = (await self._words()).json()["words"]
+        await self._results([{"hanzi": item["zh"], "correct": True} for item in first])
+
+        second = (await self._words()).json()["words"]
+        self.assertEqual(
+            set(item["zh"] for item in first) & set(item["zh"] for item in second),
+            set(),
+        )
+
+    async def test_results_do_not_pollute_the_mistakes_screen(self):
+        # To'g'ri javob "Xatolarim" ga tushmasligi kerak — aks holda
+        # kunlik reja zaiflik vektori buzilardi.
+        first = (await self._words()).json()["words"]
+        await self._results([{"hanzi": item["zh"], "correct": True} for item in first])
+
+        self.assertEqual(await self._mistakes(), [])
+        self.assertEqual(len(await self._mastery()), len(first))
+
+    async def test_pronunciation_results_never_write_mistakes(self):
+        response = await self._results(
+            [{"hanzi": "你", "correct": False}], feature="pronunciation"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(await self._mistakes(), [])
+        self.assertEqual((await self._mastery("pronunciation"))["你"].wrong_count, 1)
+
+    async def test_recognition_wrong_answers_still_reach_the_mistakes_screen(self):
+        # Eski yo'l saqlanadi: `mistakes` xatolar bo'limini to'ldiradi,
+        # `results` esa takror jadvalini.
+        await self.client.post(
+            "/api/v3/practice/report",
+            json={
+                "feature": "recognition",
+                "level": "hsk1",
+                "language": "uz",
+                "mistakes": [{"hanzi": "你", "selected": "好"}],
+                "results": [{"hanzi": "你", "correct": False}],
+                "initData": signed_init_data(),
+            },
+        )
+
+        stored = await self._mistakes()
+        self.assertEqual(len(stored), 1)
+        self.assertEqual(stored[0].correct_answer, "你")
+        self.assertEqual((await self._mastery())["你"].box, 0)
+
+    async def test_a_forged_word_is_scheduled_nowhere(self):
+        response = await self._results([{"hanzi": "ZZZ", "correct": False}])
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(await self._mastery(), {})
+
+    async def test_an_unsigned_request_selects_nothing(self):
+        response = await self.client.post(
+            "/api/v3/practice/words",
+            json={"feature": "recognition", "initData": signed_init_data()[:-4] + "0000"},
+        )
+
+        self.assertEqual(response.status_code, 401)
 
 
 if __name__ == "__main__":

@@ -28,10 +28,18 @@ from typing import Annotated, Callable, Literal, TypeVar
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    ValidationError,
+    model_validator,
+)
 
 from app.repositories.user_repo import UserRepository
 from app.services.course_drill_signal_service import CourseDrillSignalService
+from app.services.course_word_mastery_service import CourseWordMasteryService
 from app.services.course_miniapp_practice_service import (
     PRACTICE_MODES,
     TRAINING_SKILLS,
@@ -47,6 +55,10 @@ MAX_PRACTICE_COMPLETE_BODY_BYTES = 64 * 1024
 MAX_ANSWERS = 100
 # initData Telegram tomonidan imzolanadi; uzunligi odatda ~1 KB dan kam.
 MAX_INIT_DATA_CHARS = 4096
+# Interval takrori bor bo'limlar. `memorize` hozircha faqat xato yozadi:
+# uning ekrani chiziq tartibi modeli bo'yicha ishlaydi, so'z tanlash
+# oqimi boshqa. U keyingi ishda ulanadi.
+MASTERY_FEATURES = ("recognition", "pronunciation")
 
 PayloadModel = TypeVar("PayloadModel", bound=BaseModel)
 
@@ -110,13 +122,44 @@ class DrillMistakeEntry(BaseModel):
     selected: Annotated[str, StringConstraints(strip_whitespace=True, max_length=64)] = ""
 
 
+class DrillResultEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    hanzi: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=16)]
+    correct: bool
+
+
 class DrillReportRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    feature: Literal["recognition", "memorize"]
+    # `pronunciation` faqat NATIJA yubora oladi: uning xatosini server
+    # `score_pronunciation` ichida allaqachon yozadi, shuning uchun bu yerda
+    # `mistakes` qabul qilinsa dublikat qator paydo bo'lardi.
+    feature: Literal["recognition", "memorize", "pronunciation"]
     level: PracticeLevel
     language: PracticeLanguage
-    mistakes: list[DrillMistakeEntry]
+    mistakes: list[DrillMistakeEntry] = Field(default_factory=list)
+    results: list[DrillResultEntry] = Field(default_factory=list)
+    initData: str = Field(default="", max_length=MAX_INIT_DATA_CHARS)
+
+    @model_validator(mode="after")
+    def _feature_rules(self):
+        if not self.mistakes and not self.results:
+            raise ValueError("nothing to report")
+        if self.feature == "pronunciation":
+            if self.mistakes:
+                raise ValueError("pronunciation mistakes are written by the voice service")
+            if any(item.correct for item in self.results):
+                # To'g'ri talaffuzni faqat server baholay oladi.
+                raise ValueError("pronunciation success is scored server-side")
+        return self
+
+
+class DrillWordsRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    feature: Literal["recognition", "pronunciation"]
+    limit: Annotated[int, Field(ge=1, le=30)] = 10
     initData: str = Field(default="", max_length=MAX_INIT_DATA_CHARS)
 
 
@@ -209,6 +252,9 @@ def create_miniapp_practice_router(
     ),
     drill_service_factory: Callable[..., CourseDrillSignalService] = (
         CourseDrillSignalService
+    ),
+    mastery_service_factory: Callable[..., CourseWordMasteryService] = (
+        CourseWordMasteryService
     ),
 ) -> APIRouter:
     router = APIRouter(tags=["miniapp-practice"])
@@ -313,18 +359,36 @@ def create_miniapp_practice_router(
                 user = await UserRepository(session).get_by_telegram_id(telegram_id)
                 if not user:
                     return _service_response({"ok": False, "error": "access_start_first"})
-                recorded = await drill_service_factory(session).record(
-                    user,
-                    feature=payload.feature,
-                    level=payload.level,
-                    language=payload.language,
-                    entries=[
-                        {"hanzi": entry.hanzi, "selected": entry.selected}
-                        for entry in payload.mistakes
-                    ],
-                )
+                recorded = 0
+                if payload.mistakes:
+                    # Xatolar yo'li o'zgarmadi: server ularni o'z lug'atidan
+                    # qayta quradi va "Xatolarim" bo'limiga yozadi.
+                    recorded = await drill_service_factory(session).record(
+                        user,
+                        feature=payload.feature,
+                        level=payload.level,
+                        language=payload.language,
+                        entries=[
+                            {"hanzi": entry.hanzi, "selected": entry.selected}
+                            for entry in payload.mistakes
+                        ],
+                    )
+                scheduled = 0
+                if payload.results and payload.feature in MASTERY_FEATURES:
+                    # Interval takrori: to'g'ri javob ham, xato ham keyingi
+                    # muddatni belgilaydi.
+                    scheduled = await mastery_service_factory(session).record_drill(
+                        user,
+                        skill=payload.feature,
+                        results=[
+                            {"hanzi": entry.hanzi, "correct": entry.correct}
+                            for entry in payload.results
+                        ],
+                    )
                 await session.commit()
-            return _service_response({"ok": True, "recorded": recorded})
+            return _service_response(
+                {"ok": True, "recorded": recorded, "scheduled": scheduled}
+            )
         except MiniAppPracticeError as exc:
             return _error_response(exc)
         except ValueError:
@@ -333,6 +397,39 @@ def create_miniapp_practice_router(
             )
         except Exception:
             logger.exception("Mini App drill report failed")
+            return _error_response(
+                MiniAppPracticeError("practice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/practice/words")
+    async def miniapp_drill_words(request: Request):
+        """Mashq uchun so'zlar: takrorga tayyorlari + yangilari.
+
+        Server MASLAHATCHI. Javobda faqat ieroglif va `kind` bo'ladi —
+        ko'rinadigan matn klientda qoladi, shuning uchun til almashganda
+        javob o'zgarmaydi. Bo'sh ro'yxat nosozlik emas: klient o'z pooliga
+        qaytadi va mashq bugungidek ishlayveradi.
+        """
+        try:
+            payload = await _validated_payload(request, DrillWordsRequest)
+            telegram_id = _telegram_id(request, payload)
+            async with session_factory() as session:
+                user = await UserRepository(session).get_by_telegram_id(telegram_id)
+                if not user:
+                    return _service_response({"ok": False, "error": "access_start_first"})
+                plan = await mastery_service_factory(session).drill_words(
+                    user, skill=payload.feature, limit=payload.limit
+                )
+                await session.commit()
+            return _service_response({"ok": True, **plan})
+        except MiniAppPracticeError as exc:
+            return _error_response(exc)
+        except ValueError:
+            return _error_response(
+                MiniAppPracticeError("practice_request_invalid", status_code=422)
+            )
+        except Exception:
+            logger.exception("Mini App drill words failed")
             return _error_response(
                 MiniAppPracticeError("practice_unavailable", status_code=503)
             )

@@ -87,6 +87,58 @@ class PronunciationMistakeTests(unittest.IsolatedAsyncioTestCase):
         item.session.rollback.assert_awaited()
 
 
+class PronunciationMasteryTests(unittest.IsolatedAsyncioTestCase):
+    """Talaffuz natijasi interval takroriga ham yoziladi.
+
+    Ball SERVERDA hisoblanadi, shuning uchun bu yozuvga ishonch bor va
+    klientdan hech narsa so'ralmaydi — sahifa umuman o'zgarmaydi.
+    """
+
+    @staticmethod
+    def _patch(recorder):
+        return patch(
+            "app.services.voice_practice_service.CourseWordMasteryService",
+            MagicMock(return_value=SimpleNamespace(record_drill=recorder)),
+        )
+
+    async def test_a_pass_is_scheduled_as_a_correct_result(self):
+        recorder = AsyncMock(return_value=1)
+        item = service()
+        with self._patch(recorder):
+            await item._record_pronunciation_mastery(123, target="谢谢", correct=True)
+
+        self.assertEqual(recorder.await_args.kwargs["skill"], "pronunciation")
+        self.assertEqual(
+            recorder.await_args.kwargs["results"], [{"hanzi": "谢谢", "correct": True}]
+        )
+
+    async def test_a_failure_is_scheduled_as_a_wrong_result(self):
+        recorder = AsyncMock(return_value=1)
+        with self._patch(recorder):
+            await service()._record_pronunciation_mastery(123, target="好", correct=False)
+
+        self.assertEqual(
+            recorder.await_args.kwargs["results"], [{"hanzi": "好", "correct": False}]
+        )
+
+    async def test_an_unknown_user_is_ignored_quietly(self):
+        recorder = AsyncMock()
+        with self._patch(recorder):
+            await service(user=None)._record_pronunciation_mastery(
+                123, target="好", correct=True
+            )
+
+        recorder.assert_not_awaited()
+
+    async def test_a_write_failure_never_breaks_the_exercise(self):
+        recorder = AsyncMock(side_effect=RuntimeError("db down"))
+        item = service()
+        with self._patch(recorder):
+            await item._record_pronunciation_mastery(123, target="好", correct=True)
+
+        item.session.rollback.assert_awaited()
+
+
 class PronunciationTrustTests(unittest.TestCase):
     def test_pronunciation_counts_as_a_server_verified_source(self):
         # Ball serverda hisoblanadi, shuning uchun uni tuzatish XP beradi.
