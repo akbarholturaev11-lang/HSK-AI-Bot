@@ -50,12 +50,12 @@ class OnboardingLayoutSpecTest {
     }
 
     @Test
-    fun shortHeightWinsWelcomeMascotSizeWhenAlsoWide() {
+    fun shortHeightOverridesWideMascotSizeLikeCssSourceOrder() {
         val spec = OnboardingLayoutSpec.resolve(widthDp = 800, heightDp = 650)
 
         assertTrue(spec.wideWidth)
         assertTrue(spec.shortHeight)
-        assertEquals(220, spec.welcomePandaWidth)
-        assertEquals(233, spec.welcomePandaHeight)
+        assertEquals(144, spec.welcomePandaWidth)
+        assertEquals(153, spec.welcomePandaHeight)
     }
 }
