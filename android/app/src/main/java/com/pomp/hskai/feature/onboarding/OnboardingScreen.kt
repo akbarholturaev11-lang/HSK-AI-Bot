@@ -50,6 +50,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
@@ -268,8 +270,26 @@ fun OnboardingScreen(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .fillMaxWidth()
                     .widthIn(max = 520.dp)
+                    .fillMaxWidth()
+                    .drawBehind {
+                        if (layoutSpec.wideWidth) {
+                            val stroke = 1.dp.toPx()
+                            val halfStroke = stroke / 2f
+                            drawLine(
+                                color = PompColors.Divider,
+                                start = Offset(halfStroke, 0f),
+                                end = Offset(halfStroke, size.height),
+                                strokeWidth = stroke,
+                            )
+                            drawLine(
+                                color = PompColors.Divider,
+                                start = Offset(size.width - halfStroke, 0f),
+                                end = Offset(size.width - halfStroke, size.height),
+                                strokeWidth = stroke,
+                            )
+                        }
+                    }
                     .windowInsetsPadding(WindowInsets.safeDrawing),
             ) {
                 if (state.step > 0) {
