@@ -166,10 +166,14 @@ class FoundationViewModel(
     }
 
     fun playAudio() {
-        val text = _state.value.currentCard?.audioText?.trim().orEmpty()
-        if (text.isEmpty()) return
+        playText(_state.value.currentCard?.audioText.orEmpty())
+    }
+
+    fun playText(text: String) {
+        val clean = text.trim()
+        if (clean.isEmpty()) return
         viewModelScope.launch {
-            when (val audio = repository.ttsAudio(text)) {
+            when (val audio = repository.ttsAudio(clean)) {
                 is ApiResult.Success -> runCatching { audioPlayer.play(audio.value) }
                 is ApiResult.Failure -> Unit
             }
