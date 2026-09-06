@@ -9,6 +9,9 @@ import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseMapDto
 import com.pomp.hskai.data.api.CourseMistakeDto
+import com.pomp.hskai.data.api.FoundationCompleteRequest
+import com.pomp.hskai.data.api.FoundationCompleteResponse
+import com.pomp.hskai.data.api.FoundationResponseDto
 import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.NotificationsRequest
 import com.pomp.hskai.data.api.OkResponse
@@ -24,14 +27,9 @@ import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.Json
 
-/**
- * A course map plus how trustworthy it is right now.
- *
- * [isStale] means the network refresh failed and this came from the cache. The
- * UI must label it; it must never quietly present old entitlement as current.
- */
 data class CourseMapSnapshot(
     val map: CourseMap,
     val isStale: Boolean,
@@ -39,7 +37,6 @@ data class CourseMapSnapshot(
     val refreshError: ApiError? = null,
 )
 
-/** A lesson plus the newer access decision returned by the lesson request. */
 data class LessonSnapshot(
     val lesson: Lesson,
     val isHalfPreview: Boolean,
@@ -50,11 +47,6 @@ data class LessonSnapshot(
 
 class CourseRepository(
     private val api: AndroidCourseApi,
-    /**
-     * Supplies a valid bearer token, refreshing if needed. Injected as a
-     * function rather than the whole AuthRepository so the course logic can be
-     * unit tested without an auth stack.
-     */
     private val accessToken: suspend () -> ApiResult<String>,
     private val dao: CourseMapDao,
     private val json: Json,
@@ -66,13 +58,6 @@ class CourseRepository(
     },
 ) {
 
-    /**
-     * Server first, cache as a fallback.
-     *
-     * The cache can only ever repeat the last decision the server made, so it
-     * cannot widen access. When the refresh fails and nothing is cached, the
-     * failure is reported rather than papered over.
-     */
     suspend fun courseMap(): ApiResult<CourseMapSnapshot> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> {
@@ -113,6 +98,53 @@ class CourseRepository(
                 }
             }
         }
+    }
+
+    suspend fun foundation(): ApiResult<FoundationResponseDto> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        val result = apiCall { api.foundation("Bearer $token") }
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        if (result is ApiResult.Success) {
+            val payload = result.value
+            if (
+                !payload.ok ||
+                payload.foundation.id != FOUNDATION_ID ||
+                payload.foundation.version != FOUNDATION_VERSION ||
+                payload.foundation.cards.isEmpty() ||
+                payload.foundation.requiredObjectives != FOUNDATION_REQUIRED_OBJECTIVES
+            ) {
+                return ApiResult.Failure(ApiError.Unknown)
+            }
+        }
+        return result
+    }
+
+    suspend fun completeFoundation(
+        speakingBonus: Boolean,
+        eventId: String = newFoundationEventId(),
+    ): ApiResult<FoundationCompleteResponse> {
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        val result = withTimeoutOrNull(FOUNDATION_SAVE_TIMEOUT_MILLIS) {
+            apiCall {
+                api.completeFoundation(
+                    "Bearer $token",
+                    FoundationCompleteRequest(
+                        foundationId = FOUNDATION_ID,
+                        foundationVersion = FOUNDATION_VERSION,
+                        speakingBonus = speakingBonus,
+                        eventId = eventId,
+                    ),
+                )
+            }
+        } ?: ApiResult.Failure(ApiError.Timeout)
+        if (result is ApiResult.Failure) notifySessionExpired(result.error)
+        return result
     }
 
     suspend fun lesson(
@@ -252,7 +284,6 @@ class CourseRepository(
         return result
     }
 
-    /** Opens only when the server snapshot says the shared Mini App chest is ready. */
     suspend fun openRewardChest(): ApiResult<RewardChestOpenResponse> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
@@ -315,9 +346,16 @@ class CourseRepository(
         private const val MAX_TTS_AUDIO_BYTES = 2 * 1024 * 1024
         private const val TTS_BUFFER_BYTES = 8 * 1024
         private const val DEFAULT_TTS_RATE = "-10%"
+        private const val FOUNDATION_ID = "starter0_hsk1"
+        private const val FOUNDATION_VERSION = 1
+        private const val FOUNDATION_SAVE_TIMEOUT_MILLIS = 12_000L
+        private val FOUNDATION_REQUIRED_OBJECTIVES = listOf("meaning", "build", "listen")
         private val CJK = Regex("[\\u4E00-\\u9FFF]")
 
         fun newEventId(): String =
             "android:" + UUID.randomUUID().toString().replace("-", "")
+
+        fun newFoundationEventId(): String =
+            "android:foundation:" + UUID.randomUUID().toString().replace("-", "")
     }
 }
