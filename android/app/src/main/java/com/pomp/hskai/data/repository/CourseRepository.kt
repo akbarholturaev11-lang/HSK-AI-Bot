@@ -5,6 +5,7 @@ import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
 import com.pomp.hskai.data.api.AndroidCourseApi
+import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseMapDto
@@ -50,6 +51,7 @@ class CourseRepository(
     private val accessToken: suspend () -> ApiResult<String>,
     private val dao: CourseMapDao,
     private val json: Json,
+    private val foundationApi: AndroidFoundationApi? = null,
     private val onSessionExpired: suspend () -> Unit = {},
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val now: () -> Long = System::currentTimeMillis,
@@ -101,11 +103,12 @@ class CourseRepository(
     }
 
     suspend fun foundation(): ApiResult<FoundationResponseDto> {
+        val transport = foundationApi ?: return ApiResult.Failure(ApiError.Unknown)
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall { api.foundation("Bearer $token") }
+        val result = apiCall { transport.foundation("Bearer $token") }
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
         if (result is ApiResult.Success) {
             val payload = result.value
@@ -126,13 +129,14 @@ class CourseRepository(
         speakingBonus: Boolean,
         eventId: String = newFoundationEventId(),
     ): ApiResult<FoundationCompleteResponse> {
+        val transport = foundationApi ?: return ApiResult.Failure(ApiError.Unknown)
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
         val result = withTimeoutOrNull(FOUNDATION_SAVE_TIMEOUT_MILLIS) {
             apiCall {
-                api.completeFoundation(
+                transport.completeFoundation(
                     "Bearer $token",
                     FoundationCompleteRequest(
                         foundationId = FOUNDATION_ID,
