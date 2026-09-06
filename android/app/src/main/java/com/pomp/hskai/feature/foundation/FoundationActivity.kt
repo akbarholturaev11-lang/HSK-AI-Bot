@@ -58,9 +58,6 @@ private fun FoundationActivityContent(
 ) {
     val auth by app.authRepository.state.collectAsStateWithLifecycle()
 
-    // The activity is normally launched from an authenticated MainActivity,
-    // but Android can restore it after process death. Bootstrap here as well so
-    // a restored Starter 0 screen never waits forever in AuthState.Unknown.
     LaunchedEffect(Unit) {
         app.authRepository.bootstrap()
     }
@@ -92,6 +89,7 @@ private fun FoundationActivityContent(
                 onSubmitBuilder = model::submitBuilder,
                 onMarkSpoken = model::markSpoken,
                 onPlayAudio = model::playAudio,
+                onPlayText = model::playText,
                 onAdvance = model::advance,
                 onRetry = {
                     if (state.cards.isEmpty()) model.load() else model.retrySave()
