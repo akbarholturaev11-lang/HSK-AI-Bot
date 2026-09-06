@@ -57,6 +57,7 @@ internal data class FoundationCard(
 internal data class FoundationUiState(
     val loading: Boolean = true,
     val required: Boolean = false,
+    val stepLabel: String = "",
     val cards: List<FoundationCard> = emptyList(),
     val requiredObjectives: Set<String> = emptySet(),
     val masteredObjectives: Set<String> = emptySet(),
@@ -104,6 +105,7 @@ class FoundationViewModel(
                         _state.value = FoundationUiState(
                             loading = false,
                             required = result.value.status.required && !result.value.status.completed,
+                            stepLabel = foundationStepLabel(language),
                             cards = projected,
                             requiredObjectives = result.value.foundation.requiredObjectives.toSet(),
                         )
@@ -236,6 +238,12 @@ class FoundationViewModel(
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             FoundationViewModel(repository, audioPlayer, language) as T
     }
+}
+
+private fun foundationStepLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.UZBEK -> "0 dan asoslar"
+    AppLanguage.RUSSIAN -> "Основы с нуля"
+    AppLanguage.TAJIK -> "Асосҳо аз сифр"
 }
 
 private fun projectCard(raw: JsonObject, language: String): FoundationCard = FoundationCard(
