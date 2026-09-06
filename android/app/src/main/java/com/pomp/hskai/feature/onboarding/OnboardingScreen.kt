@@ -1,7 +1,10 @@
 package com.pomp.hskai.feature.onboarding
 
+import android.animation.ValueAnimator
+import android.os.Build
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
@@ -49,6 +52,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -184,6 +188,8 @@ private data class GoalOption(
     val icon: ImageVector,
 )
 
+private val stageEaseOut = CubicBezierEasing(0f, 0f, 0.58f, 1f)
+
 private val goals = listOf(
     GoalOption(
         "hsk_exam",
@@ -229,7 +235,30 @@ fun OnboardingScreen(
 ) {
     val copy = OnboardingCopy.forLanguage(language)
     val view = LocalView.current
+    val motionEnabled = remember {
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.O || ValueAnimator.areAnimatorsEnabled()
+    }
     var reactionKey by remember(state.step) { mutableIntStateOf(0) }
+    var stageEntered by remember(state.step, motionEnabled) { mutableStateOf(!motionEnabled) }
+    val stageAlpha by animateFloatAsState(
+        targetValue = if (stageEntered) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = if (motionEnabled) 240 else 0,
+            easing = stageEaseOut,
+        ),
+        label = "onboarding-stage-alpha",
+    )
+    val stageOffset by animateFloatAsState(
+        targetValue = if (stageEntered) 0f else 6f,
+        animationSpec = tween(
+            durationMillis = if (motionEnabled) 240 else 0,
+            easing = stageEaseOut,
+        ),
+        label = "onboarding-stage-offset",
+    )
+    LaunchedEffect(state.step, motionEnabled) {
+        stageEntered = true
+    }
     val selectionFeedback: () -> Unit = {
         view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
         reactionKey += 1
@@ -241,22 +270,38 @@ fun OnboardingScreen(
                 .windowInsetsPadding(WindowInsets.safeDrawing),
         ) {
             if (state.step > 0) {
-                OnboardingTopBar(state.step, copy.back, onBack, state.submitting)
+                OnboardingTopBar(
+                    step = state.step,
+                    backLabel = copy.back,
+                    onBack = onBack,
+                    disabled = state.submitting,
+                    motionEnabled = motionEnabled,
+                )
             }
 
-            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .graphicsLayer {
+                        alpha = stageAlpha
+                        translationY = stageOffset.dp.toPx()
+                    },
+            ) {
                 when (state.step) {
-                    0 -> WelcomeStep(copy)
+                    0 -> WelcomeStep(copy = copy, motionEnabled = motionEnabled)
                     1 -> ChoiceStep(
                         question = copy.askLevel,
                         helper = copy.levelHint,
                         reactionKey = reactionKey,
+                        motionEnabled = motionEnabled,
                     ) {
                         LevelChoices(
                             language = language,
                             copy = copy,
                             selected = state.selectedLevel,
                             enabled = !state.submitting,
+                            motionEnabled = motionEnabled,
                             onSelected = { key ->
                                 onLevelSelected(key)
                                 selectionFeedback()
@@ -267,12 +312,14 @@ fun OnboardingScreen(
                         question = copy.askGoal,
                         helper = copy.goalHint,
                         reactionKey = reactionKey,
+                        motionEnabled = motionEnabled,
                     ) {
-                        SelectedLevelSummary(copy, state.selectedLevel, language)
+                        SelectedLevelSummary(copy, state.selectedLevel)
                         GoalChoices(
                             language = language,
                             selected = state.selectedGoal,
                             enabled = !state.submitting,
+                            motionEnabled = motionEnabled,
                             onSelected = { key ->
                                 onGoalSelected(key)
                                 selectionFeedback()
@@ -282,13 +329,29 @@ fun OnboardingScreen(
                 }
             }
 
-            OnboardingFooter(copy, state, onNext)
+            OnboardingFooter(
+                copy = copy,
+                state = state,
+                onNext = onNext,
+                motionEnabled = motionEnabled,
+            )
         }
     }
 }
 
 @Composable
-private fun OnboardingTopBar(step: Int, backLabel: String, onBack: () -> Unit, disabled: Boolean) {
+private fun OnboardingTopBar(
+    step: Int,
+    backLabel: String,
+    onBack: () -> Unit,
+    disabled: Boolean,
+    motionEnabled: Boolean,
+) {
+    val progress by animateFloatAsState(
+        targetValue = step / 2f,
+        animationSpec = tween(durationMillis = if (motionEnabled) 300 else 0),
+        label = "onboarding-progress",
+    )
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 20.dp, top = 14.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -320,7 +383,7 @@ private fun OnboardingTopBar(step: Int, backLabel: String, onBack: () -> Unit, d
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(step / 2f)
+                    .fillMaxWidth(progress)
                     .height(8.dp)
                     .background(PompColors.Cinnabar),
             )
@@ -336,21 +399,24 @@ private fun OnboardingTopBar(step: Int, backLabel: String, onBack: () -> Unit, d
 }
 
 @Composable
-private fun WelcomeStep(copy: OnboardingCopy) {
+private fun WelcomeStep(copy: OnboardingCopy, motionEnabled: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 30.dp, vertical = 28.dp),
+            .padding(start = 30.dp, end = 30.dp, top = 36.dp, bottom = 28.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         SpeechBubble(text = copy.hello, centeredTail = true, large = false)
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(27.dp))
         Box(Modifier.size(190.dp, 202.dp), contentAlignment = Alignment.Center) {
-            OnboardingPandaMascot(modifier = Modifier.fillMaxSize())
+            OnboardingPandaMascot(
+                motionEnabled = motionEnabled,
+                modifier = Modifier.fillMaxSize(),
+            )
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(23.dp))
         Text(
             "HSK AI",
             color = PompColors.Cinnabar,
@@ -376,6 +442,7 @@ private fun ChoiceStep(
     question: String,
     helper: String,
     reactionKey: Int,
+    motionEnabled: Boolean,
     choices: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
@@ -388,6 +455,7 @@ private fun ChoiceStep(
             Box(Modifier.size(90.dp, 100.dp), contentAlignment = Alignment.Center) {
                 OnboardingPandaMascot(
                     reactionKey = reactionKey,
+                    motionEnabled = motionEnabled,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -446,6 +514,7 @@ private fun LevelChoices(
     copy: OnboardingCopy,
     selected: String,
     enabled: Boolean,
+    motionEnabled: Boolean,
     onSelected: (String) -> Unit,
 ) {
     val lang = canonicalLanguage(language)
@@ -466,6 +535,7 @@ private fun LevelChoices(
             ChoiceCard(
                 selected = selected == option.key,
                 enabled = enabled,
+                motionEnabled = motionEnabled,
                 title = option.title,
                 subtitle = option.subtitle,
                 leading = { LevelBars(active = index) },
@@ -496,13 +566,20 @@ private fun LevelBars(active: Int) {
 }
 
 @Composable
-private fun GoalChoices(language: String, selected: String, enabled: Boolean, onSelected: (String) -> Unit) {
+private fun GoalChoices(
+    language: String,
+    selected: String,
+    enabled: Boolean,
+    motionEnabled: Boolean,
+    onSelected: (String) -> Unit,
+) {
     val lang = canonicalLanguage(language)
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         goals.forEach { goal ->
             ChoiceCard(
                 selected = selected == goal.key,
                 enabled = enabled,
+                motionEnabled = motionEnabled,
                 title = goal.titles[lang] ?: goal.titles.getValue("ru"),
                 subtitle = goal.subtitles[lang] ?: goal.subtitles.getValue("ru"),
                 leading = {
@@ -523,6 +600,7 @@ private fun GoalChoices(language: String, selected: String, enabled: Boolean, on
 private fun ChoiceCard(
     selected: Boolean,
     enabled: Boolean,
+    motionEnabled: Boolean,
     title: String,
     subtitle: String,
     leading: @Composable () -> Unit,
@@ -532,12 +610,12 @@ private fun ChoiceCard(
     val pressed by interactionSource.collectIsPressedAsState()
     val cardScale by animateFloatAsState(
         targetValue = if (pressed && enabled) 0.99f else 1f,
-        animationSpec = tween(durationMillis = 150),
+        animationSpec = tween(durationMillis = if (motionEnabled) 150 else 0),
         label = "onboarding-choice-press",
     )
     val checkScale = remember { Animatable(1f) }
-    LaunchedEffect(selected) {
-        if (selected) {
+    LaunchedEffect(selected, motionEnabled) {
+        if (selected && motionEnabled) {
             checkScale.snapTo(0.65f)
             checkScale.animateTo(
                 targetValue = 1f,
@@ -614,7 +692,7 @@ private fun ChoiceCard(
 }
 
 @Composable
-private fun SelectedLevelSummary(copy: OnboardingCopy, level: String, language: String) {
+private fun SelectedLevelSummary(copy: OnboardingCopy, level: String) {
     val title = when (level) {
         "beginner" -> copy.beginner
         "hsk1" -> "HSK 1"
@@ -639,12 +717,12 @@ private fun SelectedLevelSummary(copy: OnboardingCopy, level: String, language: 
 }
 
 @Composable
-private fun OnboardingFooter(copy: OnboardingCopy, state: OnboardingUiState, onNext: () -> Unit) {
-    val note = when (state.step) {
-        0 -> copy.welcomeNote
-        1 -> copy.levelNote
-        else -> copy.goalNote
-    }
+private fun OnboardingFooter(
+    copy: OnboardingCopy,
+    state: OnboardingUiState,
+    onNext: () -> Unit,
+    motionEnabled: Boolean,
+) {
     val label = when {
         state.submitting -> copy.saving
         state.error -> copy.retry
@@ -652,6 +730,14 @@ private fun OnboardingFooter(copy: OnboardingCopy, state: OnboardingUiState, onN
         state.step == 1 -> copy.continueLabel
         else -> copy.firstLesson
     }
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val pressOffset by animateFloatAsState(
+        targetValue = if (pressed && !state.submitting) 2f else 0f,
+        animationSpec = tween(durationMillis = if (motionEnabled) 150 else 0),
+        label = "onboarding-cta-press",
+    )
+    val buttonAlpha = if (state.submitting) 0.65f else 1f
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -660,39 +746,79 @@ private fun OnboardingFooter(copy: OnboardingCopy, state: OnboardingUiState, onN
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
-        Spacer(Modifier.height(12.dp))
-        Text(note, color = PompColors.InkSecondary, fontSize = 12.sp, lineHeight = 18.sp, textAlign = TextAlign.Center)
+        if (state.step == 0) {
+            Spacer(Modifier.height(12.dp))
+            Text(
+                copy.welcomeNote,
+                color = PompColors.InkSecondary,
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                textAlign = TextAlign.Center,
+            )
+        }
         if (state.error) {
-            Spacer(Modifier.height(8.dp))
-            Text(copy.saveError, color = PompColors.CinnabarDark, fontSize = 13.sp, lineHeight = 19.sp, textAlign = TextAlign.Center)
+            Spacer(Modifier.height(12.dp))
+            Text(
+                copy.saveError,
+                color = PompColors.CinnabarDark,
+                fontSize = 13.sp,
+                lineHeight = 19.sp,
+                textAlign = TextAlign.Center,
+            )
         }
         Spacer(Modifier.height(12.dp))
-        Surface(
-            color = PompColors.Cinnabar,
-            shape = RoundedCornerShape(13.dp),
-            shadowElevation = 0.dp,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 54.dp)
-                .clickable(enabled = !state.submitting, role = Role.Button, onClick = onNext),
+                .height(56.dp),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .align(Alignment.BottomCenter)
+                    .graphicsLayer { alpha = buttonAlpha }
+                    .background(
+                        if (pressed && !state.submitting) Color.Transparent else PompColors.CinnabarDark,
+                        RoundedCornerShape(bottomStart = 13.dp, bottomEnd = 13.dp),
+                    ),
+            )
+            Surface(
+                color = PompColors.Cinnabar,
+                shape = RoundedCornerShape(13.dp),
+                shadowElevation = 0.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp)
+                    .graphicsLayer {
+                        translationY = pressOffset.dp.toPx()
+                        alpha = buttonAlpha
+                    }
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        enabled = !state.submitting,
+                        role = Role.Button,
+                        onClick = onNext,
+                    ),
             ) {
-                if (state.submitting) {
-                    CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(10.dp))
-                }
-                Text(label, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                if (!state.submitting && state.step > 0) {
-                    Spacer(Modifier.width(10.dp))
-                    Icon(Icons.Filled.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                Row(
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (state.submitting) {
+                        CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(10.dp))
+                    }
+                    Text(label, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    if (!state.submitting && state.step > 0) {
+                        Spacer(Modifier.width(10.dp))
+                        Icon(Icons.Filled.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    }
                 }
             }
         }
-        Box(Modifier.fillMaxWidth().height(2.dp).background(PompColors.CinnabarDark))
     }
 }
 
