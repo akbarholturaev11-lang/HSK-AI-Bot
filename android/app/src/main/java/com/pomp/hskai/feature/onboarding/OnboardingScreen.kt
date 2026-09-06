@@ -33,16 +33,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.ChatBubbleOutline
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.Flight
-import androidx.compose.material.icons.filled.School
-import androidx.compose.material.icons.filled.WorkOutline
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -60,7 +50,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -185,7 +174,7 @@ private data class GoalOption(
     val key: String,
     val titles: Map<String, String>,
     val subtitles: Map<String, String>,
-    val icon: ImageVector,
+    val icon: OnboardingIconKind,
 )
 
 private val stageEaseOut = CubicBezierEasing(0f, 0f, 0.58f, 1f)
@@ -196,31 +185,31 @@ private val goals = listOf(
         "hsk_exam",
         mapOf("uz" to "HSK imtihonini topshirish", "ru" to "Сдать HSK", "tg" to "Супоридани HSK"),
         mapOf("uz" to "Ko'proq test va xatolar ustida ish", "ru" to "Больше тестов и разбора ошибок", "tg" to "Бештар тест ва кор бар хатоҳо"),
-        Icons.Filled.EmojiEvents,
+        OnboardingIconKind.HskExam,
     ),
     GoalOption(
         "daily_communication",
         mapOf("uz" to "Kundalik muloqot", "ru" to "Общаться в жизни", "tg" to "Муоширати ҳаррӯза"),
         mapOf("uz" to "Ko'proq gapirish va talaffuz", "ru" to "Больше речи и произношения", "tg" to "Бештар сухан ва талаффуз"),
-        Icons.Filled.ChatBubbleOutline,
+        OnboardingIconKind.DailyCommunication,
     ),
     GoalOption(
         "travel",
         mapOf("uz" to "Sayohat", "ru" to "Путешествия", "tg" to "Сафар"),
         mapOf("uz" to "Yo'ldagi holatlar va so'zlar", "ru" to "Живые ситуации и слова в дороге", "tg" to "Ҳолатҳо ва калимаҳои роҳ"),
-        Icons.Filled.Flight,
+        OnboardingIconKind.Travel,
     ),
     GoalOption(
         "work_china",
         mapOf("uz" to "Ish uchun xitoy tili", "ru" to "Работа с Китаем", "tg" to "Забони чинӣ барои кор"),
         mapOf("uz" to "Ishchan, hurmatli nutq", "ru" to "Вежливая рабочая речь", "tg" to "Сухани кории боэҳтиром"),
-        Icons.Filled.WorkOutline,
+        OnboardingIconKind.WorkChina,
     ),
     GoalOption(
         "study_china",
         mapOf("uz" to "Xitoyda o'qish", "ru" to "Учёба в Китае", "tg" to "Таҳсил дар Чин"),
         mapOf("uz" to "Kursga va so'z boyligiga urg'u", "ru" to "Упор на курс и словарный запас", "tg" to "Таъкид ба курс ва луғат"),
-        Icons.Filled.School,
+        OnboardingIconKind.StudyChina,
     ),
 )
 
@@ -370,7 +359,10 @@ private fun OnboardingTopBar(
                 .semantics { contentDescription = backLabel },
             contentAlignment = Alignment.Center,
         ) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = PompColors.InkSecondary)
+            MiniAppOnboardingIcon(
+                kind = OnboardingIconKind.Back,
+                tint = PompColors.InkSecondary,
+            )
         }
         Spacer(Modifier.width(14.dp))
         Box(
@@ -590,12 +582,14 @@ private fun GoalChoices(
                 title = goal.titles[lang] ?: goal.titles.getValue("ru"),
                 subtitle = goal.subtitles[lang] ?: goal.subtitles.getValue("ru"),
                 leading = {
-                    Icon(
-                        goal.icon,
-                        contentDescription = null,
-                        tint = if (selected == goal.key) PompColors.CinnabarDark else PompColors.InkSecondary,
-                        modifier = Modifier.size(25.dp),
-                    )
+                    Box(Modifier.size(36.dp), contentAlignment = Alignment.Center) {
+                        MiniAppOnboardingIcon(
+                            kind = goal.icon,
+                            tint = if (selected == goal.key) PompColors.CinnabarDark else PompColors.InkSecondary,
+                            size = 25.dp,
+                            strokeWidth = 1.6f,
+                        )
+                    }
                 },
                 onClick = { onSelected(goal.key) },
             )
@@ -686,12 +680,13 @@ private fun ChoiceCard(
                 border = BorderStroke(1.dp, if (selected) PompColors.Cinnabar else PompColors.Divider),
             ) {
                 if (selected) {
-                    Icon(
-                        Icons.Filled.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.padding(3.dp),
-                    )
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        MiniAppOnboardingIcon(
+                            kind = OnboardingIconKind.Check,
+                            tint = Color.White,
+                            size = 14.dp,
+                        )
+                    }
                 }
             }
         }
@@ -712,7 +707,11 @@ private fun SelectedLevelSummary(copy: OnboardingCopy, level: String) {
         modifier = Modifier.fillMaxWidth().padding(bottom = 17.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(Icons.Filled.Check, contentDescription = null, tint = PompColors.Jade, modifier = Modifier.size(16.dp))
+        MiniAppOnboardingIcon(
+            kind = OnboardingIconKind.Check,
+            tint = PompColors.Jade,
+            size = 16.dp,
+        )
         Spacer(Modifier.width(7.dp))
         Text(
             "${copy.selected}: $title",
@@ -822,7 +821,10 @@ private fun OnboardingFooter(
                         Text(label, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                         if (!state.submitting && state.step > 0) {
                             Spacer(Modifier.width(10.dp))
-                            Icon(Icons.Filled.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                            MiniAppOnboardingIcon(
+                                kind = OnboardingIconKind.Arrow,
+                                tint = Color.White,
+                            )
                         }
                     }
                 }
