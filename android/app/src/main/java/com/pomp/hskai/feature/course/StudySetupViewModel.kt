@@ -32,12 +32,10 @@ class StudySetupViewModel(
     private val _state = MutableStateFlow(StudySetupUiState())
     val state: StateFlow<StudySetupUiState> = _state.asStateFlow()
     private var dismissedForSession = false
+    private var syncGeneration = 0L
 
-    fun sync(
-        server: CourseStudySetup?,
-        lastAskedAtMillis: Long? = null,
-        nowMillis: Long = System.currentTimeMillis(),
-    ) {
+    fun sync(server: CourseStudySetup?) {
+        val generation = ++syncGeneration
         if (server == null || !server.pending) {
             dismissedForSession = false
             _state.update { it.copy(visible = false, setup = server, error = null) }
@@ -48,26 +46,47 @@ class StudySetupViewModel(
             _state.update { it.copy(setup = server) }
             return
         }
-        val coolingDown = !current.visible &&
-            lastAskedAtMillis != null &&
-            lastAskedAtMillis > 0L &&
-            nowMillis - lastAskedAtMillis < SETUP_ASK_GAP_MS
-        if (coolingDown) {
-            _state.update { it.copy(visible = false, setup = server, error = null) }
+
+        // Once a prompt flow is already open, server refreshes must only refresh
+        // its data. Re-checking the 24h guard here would close TIME -> FOCUS.
+        if (current.visible) {
+            _state.update {
+                it.copy(
+                    visible = true,
+                    stage = stageFor(server, current),
+                    setup = server,
+                    error = null,
+                )
+            }
             return
         }
-        val stage = when {
-            server.pendingGoal || !server.goalChosen -> StudySetupStage.GOAL
-            current.visible && current.stage == StudySetupStage.FOCUS -> StudySetupStage.FOCUS
-            else -> StudySetupStage.TIME
-        }
-        _state.update {
-            it.copy(
-                visible = true,
-                stage = stage,
-                setup = server,
-                error = null,
-            )
+
+        viewModelScope.launch {
+            val lastAskedAtMillis = repository.lastSetupPromptAskedAtMillis()
+            if (generation != syncGeneration) return@launch
+            val nowMillis = System.currentTimeMillis()
+            val coolingDown = lastAskedAtMillis != null &&
+                lastAskedAtMillis > 0L &&
+                nowMillis - lastAskedAtMillis < SETUP_ASK_GAP_MS
+            if (coolingDown || dismissedForSession) {
+                _state.update { it.copy(visible = false, setup = server, error = null) }
+                return@launch
+            }
+
+            // Mini App writes hsk_v3_setup_asked when the question is shown,
+            // not only when it is dismissed. Mark first so process death does
+            // not immediately show the same interruption again on relaunch.
+            repository.markSetupPromptAskedAtMillis(nowMillis)
+            if (generation != syncGeneration) return@launch
+            val latest = _state.value
+            _state.update {
+                it.copy(
+                    visible = true,
+                    stage = stageFor(server, latest),
+                    setup = server,
+                    error = null,
+                )
+            }
         }
     }
 
@@ -118,6 +137,15 @@ class StudySetupViewModel(
                 }
             }
         }
+    }
+
+    private fun stageFor(
+        server: CourseStudySetup,
+        current: StudySetupUiState,
+    ): StudySetupStage = when {
+        server.pendingGoal || !server.goalChosen -> StudySetupStage.GOAL
+        current.visible && current.stage == StudySetupStage.FOCUS -> StudySetupStage.FOCUS
+        else -> StudySetupStage.TIME
     }
 
     class Factory(
