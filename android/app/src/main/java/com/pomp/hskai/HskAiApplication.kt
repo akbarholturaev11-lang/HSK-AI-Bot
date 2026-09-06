@@ -13,6 +13,7 @@ import com.pomp.hskai.core.storage.SecureCredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
+import com.pomp.hskai.data.api.AndroidFoundationApi
 import com.pomp.hskai.data.api.AndroidOnboardingApi
 import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
 import com.pomp.hskai.data.local.HskAiDatabase
@@ -51,8 +52,6 @@ class HskAiApplication : Application() {
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .callTimeout(CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            // Auth and course calls are not blindly retried; the repositories
-            // decide what is safe to repeat.
             .retryOnConnectionFailure(false)
             .followRedirects(false)
             .followSslRedirects(false)
@@ -87,6 +86,10 @@ class HskAiApplication : Application() {
         retrofit.create(AndroidCourseApi::class.java)
     }
 
+    private val foundationApi: AndroidFoundationApi by lazy {
+        retrofit.create(AndroidFoundationApi::class.java)
+    }
+
     private val onboardingApi: AndroidOnboardingApi by lazy {
         retrofit.create(AndroidOnboardingApi::class.java)
     }
@@ -97,8 +100,6 @@ class HskAiApplication : Application() {
 
     private val database: HskAiDatabase by lazy {
         Room.databaseBuilder(this, HskAiDatabase::class.java, HskAiDatabase.NAME)
-            // The cache is a disposable snapshot of server state, so a schema
-            // change may simply drop it rather than carry a migration.
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
     }
@@ -109,6 +110,7 @@ class HskAiApplication : Application() {
             accessToken = authRepository::accessToken,
             dao = database.courseMapDao(),
             json = json,
+            foundationApi = foundationApi,
             onSessionExpired = authRepository::invalidateSession,
         )
     }
@@ -150,7 +152,6 @@ class HskAiApplication : Application() {
         )
     }
 
-    /** Session end: credentials are cleared by auth, cached progress here. */
     suspend fun clearLocalData() {
         courseRepository.clearCache()
         dictionaryRepository.clearCache()
