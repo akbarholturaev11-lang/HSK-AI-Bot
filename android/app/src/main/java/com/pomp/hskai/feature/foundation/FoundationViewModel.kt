@@ -56,6 +56,7 @@ internal data class FoundationCard(
 
 internal data class FoundationUiState(
     val loading: Boolean = true,
+    val required: Boolean = false,
     val cards: List<FoundationCard> = emptyList(),
     val requiredObjectives: Set<String> = emptySet(),
     val masteredObjectives: Set<String> = emptySet(),
@@ -102,6 +103,7 @@ class FoundationViewModel(
                         completionEventId = CourseRepository.newFoundationEventId()
                         _state.value = FoundationUiState(
                             loading = false,
+                            required = result.value.status.required && !result.value.status.completed,
                             cards = projected,
                             requiredObjectives = result.value.foundation.requiredObjectives.toSet(),
                         )
@@ -212,6 +214,7 @@ class FoundationViewModel(
                     it.copy(
                         saving = false,
                         completed = result.value.ok && result.value.foundation.completed,
+                        required = if (result.value.foundation.completed) false else it.required,
                         error = if (result.value.ok) null else ApiError.Unknown,
                     )
                 }
