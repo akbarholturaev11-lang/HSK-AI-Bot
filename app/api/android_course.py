@@ -50,8 +50,6 @@ MIN_TZ_OFFSET_MINUTES = -720
 MAX_TZ_OFFSET_MINUTES = 840
 ANDROID_TTS_VOICE = "zh-CN-XiaoxiaoNeural"
 ANDROID_TTS_RATE = "-10%"
-# Keep generated speech outside `app/static`: the only download path must be
-# the bearer-authenticated endpoint above, never a guessable public asset URL.
 ANDROID_TTS_CACHE_DIR = Path(tempfile.gettempdir()) / "pomp-hsk-ai-android-tts"
 ANDROID_TTS_HEADERS = {
     "Cache-Control": "private, max-age=31536000, immutable",
@@ -112,6 +110,17 @@ class AndroidStudyPreferencesRequest(BaseModel):
         return self
 
 
+class AndroidFoundationCompleteRequest(BaseModel):
+    """Completion payload for the shared Starter 0/Foundation flow."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    foundation_id: Literal["starter0_hsk1"]
+    foundation_version: Literal[1]
+    speaking_bonus: bool = False
+    event_id: str = Field(min_length=1, max_length=120)
+
+
 def _unavailable() -> JSONResponse:
     return course_error_response(
         DesktopCourseError("android_course_unavailable", status_code=503)
@@ -131,8 +140,6 @@ def _timezone_offset(request: Request) -> int | None:
             "desktop_course_request_invalid",
             status_code=422,
         ) from exc
-    # Note the explicit None check above: UTC+0 is a real offset and must not
-    # be swallowed by a falsy test.
     if not MIN_TZ_OFFSET_MINUTES <= offset <= MAX_TZ_OFFSET_MINUTES:
         raise DesktopCourseError(
             "desktop_course_request_invalid",
@@ -159,8 +166,6 @@ async def _android_tts_file(text: str) -> Path:
     if path.is_file() and path.stat().st_size > 0:
         return path
 
-    # A single generator lock bounds external TTS work even when an account
-    # taps several audio buttons quickly. Cached reads never take this lock.
     async with _ANDROID_TTS_GENERATION_LOCK:
         if path.is_file() and path.stat().st_size > 0:
             return path
@@ -249,6 +254,44 @@ def create_android_course_router(
             logger.exception("Android onboarding completion failed")
             return _unavailable()
 
+    @router.get("/api/v3/android/course/foundation")
+    async def android_foundation(request: Request):
+        try:
+            if request.query_params:
+                raise DesktopCourseError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).foundation(
+                    bearer_access_token(request)
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android foundation load failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/course/foundation/complete")
+    async def android_foundation_complete(request: Request):
+        try:
+            payload = await validated_course_payload(
+                request,
+                AndroidFoundationCompleteRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).complete_foundation(
+                    bearer_access_token(request),
+                    foundation_id=payload.foundation_id,
+                    foundation_version=payload.foundation_version,
+                    speaking_bonus=payload.speaking_bonus,
+                    event_id=payload.event_id,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android foundation completion failed")
+            return _unavailable()
+
     @router.get("/api/v3/android/course/lesson/{lesson_order}")
     async def android_course_lesson(request: Request, lesson_order: int):
         try:
@@ -294,8 +337,6 @@ def create_android_course_router(
                 DesktopCourseCompleteRequest,
             )
             async with session_factory() as session:
-                # Bot berilmagan bo'lsa chaqiruv shakli aynan eskisicha
-                # qoladi — mavjud testlar va fabrikalar buzilmaydi.
                 service = (
                     service_factory(session, settings_obj, bot=bot)
                     if bot is not None
@@ -373,14 +414,6 @@ def create_android_course_router(
 
     @router.get("/api/v3/android/dictionary")
     async def android_dictionary(request: Request):
-        """
-        The character dictionary, in the learner's own language.
-
-        It is the same word list the Mini App's Lug'at shows — read from the
-        one source rather than copied into the app, so the two can never drift
-        apart. The payload carries a version; an unchanged version answers 304
-        so the ~90 KB list is downloaded once, not on every open.
-        """
         try:
             if request.query_params:
                 raise DesktopCourseError("android_request_invalid", status_code=422)
@@ -395,8 +428,6 @@ def create_android_course_router(
 
             version = dictionary_version()
             etag = f'W/"dictionary-{version}"'
-            # The list only changes with a deploy, so a matching ETag means the
-            # client's copy is still correct.
             if version and request.headers.get("If-None-Match") == etag:
                 return Response(
                     status_code=304,
@@ -424,12 +455,6 @@ def create_android_course_router(
 
     @router.post("/api/v3/android/preferences/notifications")
     async def android_course_notifications(request: Request):
-        """
-        Reminder opt-in, sharing the canonical course preference.
-
-        The bot, the Mini App, desktop and Android all read and write the same
-        flag, so turning reminders off on one client turns them off everywhere.
-        """
         try:
             payload = await validated_course_payload(
                 request,
