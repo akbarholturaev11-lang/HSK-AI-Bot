@@ -42,7 +42,6 @@ import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.WorkOutline
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -51,6 +50,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -189,6 +189,7 @@ private data class GoalOption(
 )
 
 private val stageEaseOut = CubicBezierEasing(0f, 0f, 0.58f, 1f)
+private val cssEase = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1f)
 
 private val goals = listOf(
     GoalOption(
@@ -288,43 +289,45 @@ fun OnboardingScreen(
                         translationY = stageOffset.dp.toPx()
                     },
             ) {
-                when (state.step) {
-                    0 -> WelcomeStep(copy = copy, motionEnabled = motionEnabled)
-                    1 -> ChoiceStep(
-                        question = copy.askLevel,
-                        helper = copy.levelHint,
-                        reactionKey = reactionKey,
-                        motionEnabled = motionEnabled,
-                    ) {
-                        LevelChoices(
-                            language = language,
-                            copy = copy,
-                            selected = state.selectedLevel,
-                            enabled = !state.submitting,
+                key(state.step) {
+                    when (state.step) {
+                        0 -> WelcomeStep(copy = copy, motionEnabled = motionEnabled)
+                        1 -> ChoiceStep(
+                            question = copy.askLevel,
+                            helper = copy.levelHint,
+                            reactionKey = reactionKey,
                             motionEnabled = motionEnabled,
-                            onSelected = { key ->
-                                onLevelSelected(key)
-                                selectionFeedback()
-                            },
-                        )
-                    }
-                    else -> ChoiceStep(
-                        question = copy.askGoal,
-                        helper = copy.goalHint,
-                        reactionKey = reactionKey,
-                        motionEnabled = motionEnabled,
-                    ) {
-                        SelectedLevelSummary(copy, state.selectedLevel)
-                        GoalChoices(
-                            language = language,
-                            selected = state.selectedGoal,
-                            enabled = !state.submitting,
+                        ) {
+                            LevelChoices(
+                                language = language,
+                                copy = copy,
+                                selected = state.selectedLevel,
+                                enabled = !state.submitting,
+                                motionEnabled = motionEnabled,
+                                onSelected = { key ->
+                                    onLevelSelected(key)
+                                    selectionFeedback()
+                                },
+                            )
+                        }
+                        else -> ChoiceStep(
+                            question = copy.askGoal,
+                            helper = copy.goalHint,
+                            reactionKey = reactionKey,
                             motionEnabled = motionEnabled,
-                            onSelected = { key ->
-                                onGoalSelected(key)
-                                selectionFeedback()
-                            },
-                        )
+                        ) {
+                            SelectedLevelSummary(copy, state.selectedLevel)
+                            GoalChoices(
+                                language = language,
+                                selected = state.selectedGoal,
+                                enabled = !state.submitting,
+                                motionEnabled = motionEnabled,
+                                onSelected = { key ->
+                                    onGoalSelected(key)
+                                    selectionFeedback()
+                                },
+                            )
+                        }
                     }
                 }
             }
@@ -349,11 +352,14 @@ private fun OnboardingTopBar(
 ) {
     val progress by animateFloatAsState(
         targetValue = step / 2f,
-        animationSpec = tween(durationMillis = if (motionEnabled) 300 else 0),
+        animationSpec = tween(
+            durationMillis = if (motionEnabled) 300 else 0,
+            easing = cssEase,
+        ),
         label = "onboarding-progress",
     )
     Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 20.dp, top = 14.dp, bottom = 4.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -366,7 +372,7 @@ private fun OnboardingTopBar(
         ) {
             Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = PompColors.InkSecondary)
         }
-        Spacer(Modifier.width(6.dp))
+        Spacer(Modifier.width(14.dp))
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -477,7 +483,7 @@ private fun ChoiceStep(
 
 @Composable
 private fun SpeechBubble(text: String, centeredTail: Boolean, large: Boolean) {
-    Box(modifier = Modifier.padding(if (centeredTail) 8.dp else 0.dp)) {
+    Box {
         Surface(
             color = PompColors.PaperRaised,
             shape = RoundedCornerShape(if (large) 18.dp else 16.dp),
@@ -489,6 +495,7 @@ private fun SpeechBubble(text: String, centeredTail: Boolean, large: Boolean) {
                 color = PompColors.Ink,
                 fontSize = if (large) 21.sp else 17.sp,
                 lineHeight = if (large) 28.sp else 25.sp,
+                letterSpacing = if (large) (-0.35).sp else 0.sp,
                 fontWeight = if (large) FontWeight.SemiBold else FontWeight.Medium,
                 modifier = Modifier.padding(horizontal = if (large) 18.dp else 22.dp, vertical = if (large) 17.dp else 14.dp),
             )
@@ -741,80 +748,82 @@ private fun OnboardingFooter(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(PompColors.Paper)
-            .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .background(PompColors.Paper),
     ) {
         Box(Modifier.fillMaxWidth().height(1.dp).background(PompColors.Divider))
-        if (state.step == 0) {
-            Spacer(Modifier.height(12.dp))
-            Text(
-                copy.welcomeNote,
-                color = PompColors.InkSecondary,
-                fontSize = 12.sp,
-                lineHeight = 18.sp,
-                textAlign = TextAlign.Center,
-            )
-        }
-        if (state.error) {
-            Spacer(Modifier.height(12.dp))
-            Text(
-                copy.saveError,
-                color = PompColors.CinnabarDark,
-                fontSize = 13.sp,
-                lineHeight = 19.sp,
-                textAlign = TextAlign.Center,
-            )
-        }
-        Spacer(Modifier.height(12.dp))
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            if (state.step == 0) {
+                Text(
+                    copy.welcomeNote,
+                    color = PompColors.InkSecondary,
+                    fontSize = 12.sp,
+                    lineHeight = 18.sp,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+            if (state.error) {
+                Text(
+                    copy.saveError,
+                    color = PompColors.CinnabarDark,
+                    fontSize = 13.sp,
+                    lineHeight = 19.sp,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(12.dp))
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)
-                    .align(Alignment.BottomCenter)
-                    .graphicsLayer { alpha = buttonAlpha }
-                    .background(
-                        if (pressed && !state.submitting) Color.Transparent else PompColors.CinnabarDark,
-                        RoundedCornerShape(bottomStart = 13.dp, bottomEnd = 13.dp),
-                    ),
-            )
-            Surface(
-                color = PompColors.Cinnabar,
-                shape = RoundedCornerShape(13.dp),
-                shadowElevation = 0.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(54.dp)
-                    .graphicsLayer {
-                        translationY = pressOffset.dp.toPx()
-                        alpha = buttonAlpha
-                    }
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        enabled = !state.submitting,
-                        role = Role.Button,
-                        onClick = onNext,
-                    ),
+                    .height(54.dp),
             ) {
-                Row(
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .align(Alignment.BottomCenter)
+                        .graphicsLayer {
+                            translationY = 2.dp.toPx()
+                            alpha = buttonAlpha
+                        }
+                        .background(
+                            if (pressed && !state.submitting) Color.Transparent else PompColors.CinnabarDark,
+                            RoundedCornerShape(bottomStart = 13.dp, bottomEnd = 13.dp),
+                        ),
+                )
+                Surface(
+                    color = PompColors.Cinnabar,
+                    shape = RoundedCornerShape(13.dp),
+                    shadowElevation = 0.dp,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer {
+                            translationY = pressOffset.dp.toPx()
+                            alpha = buttonAlpha
+                        }
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                            enabled = !state.submitting,
+                            role = Role.Button,
+                            onClick = onNext,
+                        ),
                 ) {
-                    if (state.submitting) {
-                        CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(10.dp))
-                    }
-                    Text(label, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                    if (!state.submitting && state.step > 0) {
-                        Spacer(Modifier.width(10.dp))
-                        Icon(Icons.Filled.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(label, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                        if (!state.submitting && state.step > 0) {
+                            Spacer(Modifier.width(10.dp))
+                            Icon(Icons.Filled.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                        }
                     }
                 }
             }
