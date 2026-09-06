@@ -8,6 +8,7 @@ import com.pomp.hskai.data.api.AndroidOnboardingCompleteDto
 import com.pomp.hskai.data.api.AndroidOnboardingRequestDto
 import com.pomp.hskai.data.api.AndroidOnboardingStatusDto
 import java.util.TimeZone
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Thin native transport around the canonical Course Mini App onboarding.
@@ -42,19 +43,24 @@ class OnboardingRepository(
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        val result = apiCall {
-            api.complete(
-                authorization = "Bearer $token",
-                body = AndroidOnboardingRequestDto(
-                    level = level,
-                    goal = goal,
-                    dailyMinutes = dailyMinutes,
-                    startMode = startMode,
-                    language = normalizeBackendLanguage(language),
-                    timezoneOffsetMinutes = timezoneOffsetMinutes(),
-                ),
-            )
-        }
+        // Mini App aborts onboarding save after 12 seconds and exposes retry.
+        // Keep the native client on the same interaction contract instead of
+        // inheriting the application's broader 60-second HTTP call timeout.
+        val result = withTimeoutOrNull(ONBOARDING_SAVE_TIMEOUT_MS) {
+            apiCall {
+                api.complete(
+                    authorization = "Bearer $token",
+                    body = AndroidOnboardingRequestDto(
+                        level = level,
+                        goal = goal,
+                        dailyMinutes = dailyMinutes,
+                        startMode = startMode,
+                        language = normalizeBackendLanguage(language),
+                        timezoneOffsetMinutes = timezoneOffsetMinutes(),
+                    ),
+                )
+            }
+        } ?: ApiResult.Failure(ApiError.Timeout)
         if (result is ApiResult.Failure) notifySessionExpired(result.error)
         return result
     }
@@ -67,5 +73,9 @@ class OnboardingRepository(
         "uz" -> "uz"
         "tg", "tj" -> "tj"
         else -> "ru"
+    }
+
+    private companion object {
+        const val ONBOARDING_SAVE_TIMEOUT_MS = 12_000L
     }
 }
