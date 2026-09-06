@@ -11,6 +11,8 @@ class StudyPreferencesRepository(
     private val api: AndroidStudyPreferencesApi,
     private val accessToken: suspend () -> ApiResult<String>,
     private val onSessionExpired: suspend () -> Unit = {},
+    private val readLastSetupPromptAskedAtMillis: suspend () -> Long? = { null },
+    private val writeLastSetupPromptAskedAtMillis: suspend (Long) -> Unit = {},
 ) {
     suspend fun setGoal(goal: String): ApiResult<CourseStudySetup> = update(goal = goal)
 
@@ -19,6 +21,21 @@ class StudyPreferencesRepository(
 
     suspend fun setPreferredFocus(focus: String): ApiResult<CourseStudySetup> =
         update(preferredFocus = focus)
+
+    suspend fun lastSetupPromptAskedAtMillis(): Long? = try {
+        readLastSetupPromptAskedAtMillis()
+    } catch (_: Exception) {
+        null
+    }
+
+    suspend fun markSetupPromptAskedAtMillis(value: Long) {
+        try {
+            writeLastSetupPromptAskedAtMillis(value)
+        } catch (_: Exception) {
+            // Prompt persistence is best-effort UI policy; a storage failure
+            // must never block learning or mutate server-owned study state.
+        }
+    }
 
     private suspend fun update(
         goal: String? = null,
