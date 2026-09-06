@@ -76,7 +76,7 @@ internal fun FoundationScreen(
                         FoundationStepPill(
                             index = state.cardIndex,
                             total = state.cards.size,
-                            label = "",
+                            label = state.stepLabel,
                         )
                         Spacer(Modifier.height(14.dp))
                         FoundationCardBody(
@@ -188,7 +188,9 @@ private fun FoundationCardBody(
     when (card.type) {
         "choice", "listen_choice" -> {
             if (card.type == "listen_choice" && card.audioText.isNotBlank()) {
-                AudioButton(onPlayAudio)
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    FoundationListenAudio(onClick = onPlayAudio)
+                }
                 Spacer(Modifier.height(16.dp))
             }
             card.options.forEachIndexed { index, option ->
@@ -271,30 +273,15 @@ private fun FoundationCardBody(
             )
         }
         "result" -> {
-            card.objectives.forEach { objective ->
-                val mastered = objective.id in state.masteredObjectives
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 7.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Surface(
-                        color = if (mastered) PompColors.Jade else PompColors.Divider,
-                        shape = CircleShape,
-                        modifier = Modifier.size(24.dp),
-                    ) {
-                        if (mastered) Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Icons.Filled.Check,
-                                contentDescription = null,
-                                tint = PompColors.Paper,
-                                modifier = Modifier.size(15.dp),
-                            )
-                        }
-                    }
-                    Spacer(Modifier.width(10.dp))
-                    Text(objective.label, color = PompColors.Ink, style = MaterialTheme.typography.bodyLarge)
+            Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                card.objectives.forEach { objective ->
+                    FoundationWinRow(
+                        text = objective.label,
+                        mastered = objective.id in state.masteredObjectives,
+                    )
                 }
             }
+            Spacer(Modifier.height(18.dp))
         }
     }
 
