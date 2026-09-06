@@ -9,7 +9,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -148,7 +149,13 @@ internal fun OnboardingPandaMascot(
     }
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Canvas(Modifier.fillMaxSize()) {
+        // Browser SVG defaults to preserveAspectRatio="xMidYMid meet". Keep the
+        // 100:114 viewBox ratio inside the CSS-sized 190x202 / 90x100 boxes.
+        Canvas(
+            Modifier
+                .fillMaxHeight()
+                .aspectRatio(100f / 114f),
+        ) {
             val sx = size.width / 100f
             val sy = size.height / 114f
             fun x(v: Float) = v * sx
