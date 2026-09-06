@@ -1,8 +1,15 @@
 package com.pomp.hskai.feature.onboarding
 
+import android.view.HapticFeedbackConstants
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,12 +46,18 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
@@ -176,31 +189,31 @@ private val goals = listOf(
     GoalOption(
         "hsk_exam",
         mapOf("uz" to "HSK imtihonini topshirish", "ru" to "Сдать HSK", "tg" to "Супоридани HSK"),
-        mapOf("uz" to "Imtihon formati va natijaga yo'naltirilgan reja", "ru" to "План с акцентом на формат и результат экзамена", "tg" to "Нақша бо тамаркуз ба формати имтиҳон"),
+        mapOf("uz" to "Ko'proq test va xatolar ustida ish", "ru" to "Больше тестов и разбора ошибок", "tg" to "Бештар тест ва кор бар хатоҳо"),
         Icons.Filled.EmojiEvents,
     ),
     GoalOption(
         "daily_communication",
         mapOf("uz" to "Kundalik muloqot", "ru" to "Общаться в жизни", "tg" to "Муоширати ҳаррӯза"),
-        mapOf("uz" to "Ko'proq tinglash va gapirish", "ru" to "Больше живой речи и аудирования", "tg" to "Бештар шунидан ва гуфтугӯ"),
+        mapOf("uz" to "Ko'proq gapirish va talaffuz", "ru" to "Больше речи и произношения", "tg" to "Бештар сухан ва талаффуз"),
         Icons.Filled.ChatBubbleOutline,
     ),
     GoalOption(
         "travel",
-        mapOf("uz" to "Sayohat", "ru" to "Путешествия", "tg" to "Саёҳат"),
-        mapOf("uz" to "Yo'l, mehmonxona va kundalik vaziyatlar", "ru" to "Дорога, отель и бытовые ситуации", "tg" to "Роҳ, меҳмонхона ва ҳолатҳои рӯзмарра"),
+        mapOf("uz" to "Sayohat", "ru" to "Путешествия", "tg" to "Сафар"),
+        mapOf("uz" to "Yo'ldagi holatlar va so'zlar", "ru" to "Живые ситуации и слова в дороге", "tg" to "Ҳолатҳо ва калимаҳои роҳ"),
         Icons.Filled.Flight,
     ),
     GoalOption(
         "work_china",
-        mapOf("uz" to "Ish uchun xitoy tili", "ru" to "Работа с Китаем", "tg" to "Кор бо Чин"),
-        mapOf("uz" to "Ish, savdo va amaliy muloqot", "ru" to "Работа, торговля и деловое общение", "tg" to "Кор, тиҷорат ва муоширати амалӣ"),
+        mapOf("uz" to "Ish uchun xitoy tili", "ru" to "Работа с Китаем", "tg" to "Забони чинӣ барои кор"),
+        mapOf("uz" to "Ishchan, hurmatli nutq", "ru" to "Вежливая рабочая речь", "tg" to "Сухани кории боэҳтиром"),
         Icons.Filled.WorkOutline,
     ),
     GoalOption(
         "study_china",
         mapOf("uz" to "Xitoyda o'qish", "ru" to "Учёба в Китае", "tg" to "Таҳсил дар Чин"),
-        mapOf("uz" to "O'qish va kampus hayotiga tayyorgarlik", "ru" to "Подготовка к учёбе и жизни в кампусе", "tg" to "Омодагӣ ба таҳсил ва зиндагии донишҷӯӣ"),
+        mapOf("uz" to "Kursga va so'z boyligiga urg'u", "ru" to "Упор на курс и словарный запас", "tg" to "Таъкид ба курс ва луғат"),
         Icons.Filled.School,
     ),
 )
@@ -216,6 +229,12 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
 ) {
     val copy = OnboardingCopy.forLanguage(language)
+    val view = LocalView.current
+    var reactionKey by remember(state.step) { mutableIntStateOf(0) }
+    val selectionFeedback: () -> Unit = {
+        view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+        reactionKey += 1
+    }
     Surface(color = PompColors.Paper, modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -232,25 +251,33 @@ fun OnboardingScreen(
                     1 -> ChoiceStep(
                         question = copy.askLevel,
                         helper = copy.levelHint,
+                        reactionKey = reactionKey,
                     ) {
                         LevelChoices(
                             language = language,
                             copy = copy,
                             selected = state.selectedLevel,
                             enabled = !state.submitting,
-                            onSelected = onLevelSelected,
+                            onSelected = { key ->
+                                onLevelSelected(key)
+                                selectionFeedback()
+                            },
                         )
                     }
                     else -> ChoiceStep(
                         question = copy.askGoal,
                         helper = copy.goalHint,
+                        reactionKey = reactionKey,
                     ) {
                         SelectedLevelSummary(copy, state.selectedLevel, language)
                         GoalChoices(
                             language = language,
                             selected = state.selectedGoal,
                             enabled = !state.submitting,
-                            onSelected = onGoalSelected,
+                            onSelected = { key ->
+                                onGoalSelected(key)
+                                selectionFeedback()
+                            },
                         )
                     }
                 }
@@ -352,7 +379,27 @@ private fun WelcomeStep(copy: OnboardingCopy) {
 }
 
 @Composable
-private fun ChoiceStep(question: String, helper: String, choices: @Composable ColumnScope.() -> Unit) {
+private fun ChoiceStep(
+    question: String,
+    helper: String,
+    reactionKey: Int,
+    choices: @Composable ColumnScope.() -> Unit,
+) {
+    val reactionY = remember { Animatable(0f) }
+    LaunchedEffect(reactionKey) {
+        if (reactionKey <= 0) return@LaunchedEffect
+        reactionY.snapTo(0f)
+        reactionY.animateTo(
+            targetValue = 0f,
+            animationSpec = keyframes {
+                durationMillis = 550
+                0f at 0
+                -3f at 193
+                1f at 358
+                0f at 550
+            },
+        )
+    }
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
     ) {
@@ -365,6 +412,7 @@ private fun ChoiceStep(question: String, helper: String, choices: @Composable Co
                     modifier = Modifier.graphicsLayer {
                         scaleX = 1.22f
                         scaleY = 1.22f
+                        translationY = reactionY.value.dp.toPx()
                     },
                     celebrate = false,
                 )
@@ -428,16 +476,16 @@ private fun LevelChoices(
 ) {
     val lang = canonicalLanguage(language)
     val descriptions = when (lang) {
-        "uz" -> listOf("Asoslardan boshlayman", "Boshlang'ich", "Oddiy kundalik mavzular", "O'rta daraja", "Murakkabroq matn va muloqot")
-        "tg" -> listOf("Аз асосҳо оғоз мекунам", "Сатҳи ибтидоӣ", "Мавзӯъҳои оддии рӯзмарра", "Сатҳи миёна", "Матн ва муоширати мураккабтар")
-        else -> listOf("Начну с основ", "Начальный уровень", "Простые бытовые темы", "Средний уровень", "Более сложные тексты и общение")
+        "uz" -> listOf("Biroz xitoycha bilaman", "Asosiy suhbat", "Kundalik muloqot", "Erkin muloqot")
+        "tg" -> listOf("Каме забони чинӣ медонам", "Муоширати асосӣ", "Муоширати ҳаррӯза", "Муоширати озод")
+        else -> listOf("Уже немного знаю китайский", "Базовое общение", "Повседневное общение", "Свободное общение")
     }
     val levels = listOf(
         LevelOption("beginner", copy.beginner, copy.beginnerSub),
-        LevelOption("hsk1", "HSK 1", descriptions[1]),
-        LevelOption("hsk2", "HSK 2", descriptions[2]),
-        LevelOption("hsk3", "HSK 3", descriptions[3]),
-        LevelOption("hsk4", "HSK 4", descriptions[4]),
+        LevelOption("hsk1", "HSK 1", descriptions[0]),
+        LevelOption("hsk2", "HSK 2", descriptions[1]),
+        LevelOption("hsk3", "HSK 3", descriptions[2]),
+        LevelOption("hsk4", "HSK 4", descriptions[3]),
     )
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         levels.forEachIndexed { index, option ->
@@ -506,6 +554,30 @@ private fun ChoiceCard(
     leading: @Composable () -> Unit,
     onClick: () -> Unit,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val cardScale by animateFloatAsState(
+        targetValue = if (pressed && enabled) 0.99f else 1f,
+        animationSpec = tween(durationMillis = 150),
+        label = "onboarding-choice-press",
+    )
+    val checkScale = remember { Animatable(1f) }
+    LaunchedEffect(selected) {
+        if (selected) {
+            checkScale.snapTo(0.65f)
+            checkScale.animateTo(
+                targetValue = 1f,
+                animationSpec = keyframes {
+                    durationMillis = 250
+                    0.65f at 0
+                    1.14f at 162
+                    1f at 250
+                },
+            )
+        } else {
+            checkScale.snapTo(1f)
+        }
+    }
     Surface(
         color = if (selected) Color(0xFFFFF3EF) else PompColors.PaperRaised,
         shape = RoundedCornerShape(14.dp),
@@ -513,7 +585,17 @@ private fun ChoiceCard(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 72.dp)
-            .clickable(enabled = enabled, role = Role.RadioButton, onClick = onClick),
+            .graphicsLayer {
+                scaleX = cardScale
+                scaleY = cardScale
+            }
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled,
+                role = Role.RadioButton,
+                onClick = onClick,
+            ),
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
@@ -534,7 +616,12 @@ private fun ChoiceCard(
             }
             Spacer(Modifier.width(10.dp))
             Surface(
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier
+                    .size(20.dp)
+                    .graphicsLayer {
+                        scaleX = if (selected) checkScale.value else 1f
+                        scaleY = if (selected) checkScale.value else 1f
+                    },
                 shape = CircleShape,
                 color = if (selected) PompColors.Cinnabar else Color.Transparent,
                 border = BorderStroke(1.dp, if (selected) PompColors.Cinnabar else PompColors.Divider),
