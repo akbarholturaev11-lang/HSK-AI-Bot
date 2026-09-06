@@ -13,13 +13,19 @@ class OnboardingLayoutSpecTest {
 
         assertTrue(atBreakpoint.compactWidth)
         assertEquals(16, atBreakpoint.horizontalPadding)
+        assertEquals(15, atBreakpoint.guideTopPadding)
+        assertEquals(15, atBreakpoint.guideBottomPadding)
         assertEquals(70, atBreakpoint.guidePandaWidth)
         assertEquals(19, atBreakpoint.questionFontSize)
+        assertEquals(12, atBreakpoint.cardPadding)
+        assertEquals(10, atBreakpoint.cardGap)
         assertEquals(16, atBreakpoint.footerHorizontalPadding)
         assertFalse(aboveBreakpoint.compactWidth)
         assertEquals(24, aboveBreakpoint.horizontalPadding)
         assertEquals(90, aboveBreakpoint.guidePandaWidth)
         assertEquals(21, aboveBreakpoint.questionFontSize)
+        assertEquals(14, aboveBreakpoint.cardPadding)
+        assertEquals(14, aboveBreakpoint.cardGap)
     }
 
     @Test
@@ -28,6 +34,8 @@ class OnboardingLayoutSpecTest {
         val aboveBreakpoint = OnboardingLayoutSpec.resolve(widthDp = 390, heightDp = 701)
 
         assertTrue(atBreakpoint.shortHeight)
+        assertEquals(12, atBreakpoint.guideTopPadding)
+        assertEquals(12, atBreakpoint.guideBottomPadding)
         assertEquals(144, atBreakpoint.welcomePandaWidth)
         assertEquals(153, atBreakpoint.welcomePandaHeight)
         assertEquals(34, atBreakpoint.welcomeTitleSize)
@@ -46,7 +54,8 @@ class OnboardingLayoutSpecTest {
         assertTrue(atBreakpoint.wideWidth)
         assertEquals(220, atBreakpoint.welcomePandaWidth)
         assertEquals(233, atBreakpoint.welcomePandaHeight)
-        assertEquals(30, atBreakpoint.guideVerticalPadding)
+        assertEquals(30, atBreakpoint.guideTopPadding)
+        assertEquals(16, atBreakpoint.guideBottomPadding)
     }
 
     @Test
