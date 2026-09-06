@@ -492,16 +492,10 @@ private fun SpeechBubble(text: String, centeredTail: Boolean, large: Boolean) {
                 modifier = Modifier.padding(horizontal = if (large) 18.dp else 22.dp, vertical = if (large) 17.dp else 14.dp),
             )
         }
-        Box(
-            Modifier
-                .size(14.dp)
+        MiniAppBubbleTail(
+            centered = centeredTail,
+            modifier = Modifier
                 .align(if (centeredTail) Alignment.BottomCenter else Alignment.CenterStart)
-                .graphicsLayer {
-                    rotationZ = 45f
-                    translationX = if (centeredTail) 0f else -5.dp.toPx()
-                    translationY = if (centeredTail) 5.dp.toPx() else 0f
-                }
-                .background(PompColors.PaperRaised)
                 .zIndex(0f),
         )
     }
