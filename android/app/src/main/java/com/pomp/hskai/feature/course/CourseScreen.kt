@@ -37,7 +37,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.TrackChanges
@@ -491,11 +490,10 @@ private fun UnitHeader(unit: CourseUnit) {
                 modifier = Modifier.weight(1f),
                 maxLines = 2,
             )
-            Icon(
-                imageVector = if (unit.isLocked) Icons.Filled.Lock else Icons.Filled.MenuBook,
-                contentDescription = null,
+            MiniAppNodeIcon(
+                kind = if (unit.isLocked) CourseNodeIconKind.Lock else CourseNodeIconKind.Book2,
                 tint = foreground.copy(alpha = 0.85f),
-                modifier = Modifier.size(18.dp),
+                size = 18.dp,
             )
         }
     }
