@@ -8,6 +8,8 @@ internal data class OnboardingLayoutSpec(
     val compactWidth: Boolean,
     val shortHeight: Boolean,
     val wideWidth: Boolean,
+    val topHorizontalPadding: Int,
+    val topGap: Int,
     val horizontalPadding: Int,
     val guideHorizontalPadding: Int,
     val guideTopPadding: Int,
@@ -40,6 +42,8 @@ internal data class OnboardingLayoutSpec(
                 compactWidth = compact,
                 shortHeight = short,
                 wideWidth = wide,
+                topHorizontalPadding = if (compact) 12 else 20,
+                topGap = if (compact) 10 else 14,
                 horizontalPadding = if (compact) 16 else 24,
                 guideHorizontalPadding = if (compact) 16 else 24,
                 guideTopPadding = when {
