@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -160,6 +162,108 @@ internal fun FoundationCircularAudio(
                     contentDescription = null,
                     tint = PompColors.Paper,
                     modifier = Modifier.size(27.dp),
+                )
+            }
+        }
+    }
+}
+
+/** Mini App `.foundation-parts`: two equal cards with a 10px gap. */
+@Composable
+internal fun FoundationPartsGrid(
+    examples: List<FoundationExample>,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        examples.chunked(2).forEach { rowExamples ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                rowExamples.forEach { example ->
+                    FoundationMiniCard(
+                        example = example,
+                        modifier = Modifier.weight(1f),
+                        hanziSize = 42,
+                        verticalPadding = 17,
+                    )
+                }
+                if (rowExamples.size == 1) Spacer(Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+/** Mini App `.tone-row`: four equal cards in one row with 7px gaps. */
+@Composable
+internal fun FoundationToneGrid(
+    examples: List<FoundationExample>,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(7.dp),
+    ) {
+        examples.take(4).forEach { example ->
+            FoundationMiniCard(
+                example = example,
+                modifier = Modifier.weight(1f),
+                hanziSize = 20,
+                verticalPadding = 13,
+            )
+        }
+        repeat((4 - examples.take(4).size).coerceAtLeast(0)) {
+            Spacer(Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun FoundationMiniCard(
+    example: FoundationExample,
+    modifier: Modifier,
+    hanziSize: Int,
+    verticalPadding: Int,
+) {
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(if (hanziSize >= 40) 16.dp else 13.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = modifier,
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = verticalPadding.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (example.zh.isNotBlank()) {
+                Text(
+                    text = example.zh,
+                    style = PompTextStyles.hanziSmall.copy(fontSize = hanziSize.sp),
+                    color = PompColors.Ink,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                )
+            }
+            if (example.pinyin.isNotBlank()) {
+                Text(
+                    text = example.pinyin,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontSize = if (hanziSize >= 40) 14.sp else 10.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                    color = PompColors.CinnabarDark,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                )
+            }
+            if (example.translation.isNotBlank()) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = example.translation,
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                    color = PompColors.InkSecondary,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
                 )
             }
         }
