@@ -99,6 +99,18 @@ class AndroidFoundationApiTests(unittest.IsolatedAsyncioTestCase):
             )
         return {"Authorization": f"Bearer {linked['access_token']}"}
 
+    async def _complete_foundation(self, headers, *, suffix="z"):
+        return await self.client.post(
+            "/api/v3/android/course/foundation/complete",
+            headers=headers,
+            json={
+                "foundation_id": "starter0_hsk1",
+                "foundation_version": 1,
+                "speaking_bonus": False,
+                "event_id": "android:foundation:" + suffix * 32,
+            },
+        )
+
     async def test_foundation_requires_bearer_auth(self):
         response = await self.client.get("/api/v3/android/course/foundation")
         self.assertEqual(401, response.status_code)
@@ -122,6 +134,72 @@ class AndroidFoundationApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertGreaterEqual(len(body["foundation"]["cards"]), 10)
         self.assertTrue(body["status"]["required"])
         self.assertFalse(body["status"]["completed"])
+
+    async def test_required_foundation_locks_every_unfinished_map_node(self):
+        headers = await self._bearer()
+        response = await self.client.get("/api/v3/android/course/map", headers=headers)
+        self.assertEqual(200, response.status_code)
+        body = response.json()
+        self.assertTrue(body["foundation"]["required"])
+        self.assertFalse(body["foundation"]["completed"])
+        unfinished = [
+            lesson
+            for unit in body["units"]
+            for lesson in unit["lessons"]
+            if lesson.get("status") != "done"
+        ]
+        self.assertTrue(unfinished)
+        for lesson in unfinished:
+            self.assertEqual("locked", lesson["status"])
+            self.assertFalse(lesson["completion_allowed"])
+            self.assertEqual("android_foundation_required", lesson["completion_error"])
+            self.assertNotIn("preview_half", lesson)
+            self.assertNotIn("locked_premium", lesson)
+
+    async def test_required_foundation_blocks_lesson_fetch(self):
+        headers = await self._bearer()
+        response = await self.client.get(
+            "/api/v3/android/course/lesson/1",
+            headers=headers,
+        )
+        self.assertEqual(403, response.status_code)
+        self.assertEqual("android_foundation_required", response.json()["error"])
+
+    async def test_required_foundation_blocks_lesson_completion(self):
+        headers = await self._bearer()
+        response = await self.client.post(
+            "/api/v3/android/course/complete",
+            headers=headers,
+            json={
+                "lesson_order": 1,
+                "event_id": "android:" + "d" * 32,
+            },
+        )
+        self.assertEqual(403, response.status_code)
+        self.assertEqual("android_foundation_required", response.json()["error"])
+
+    async def test_foundation_completion_unlocks_the_first_lesson(self):
+        headers = await self._bearer()
+        completed = await self._complete_foundation(headers, suffix="u")
+        self.assertEqual(200, completed.status_code)
+        self.assertTrue(completed.json()["foundation"]["completed"])
+
+        map_response = await self.client.get(
+            "/api/v3/android/course/map",
+            headers=headers,
+        )
+        self.assertEqual(200, map_response.status_code)
+        first = map_response.json()["units"][0]["lessons"][0]
+        self.assertEqual("current", first["status"])
+        self.assertTrue(first["completion_allowed"])
+        self.assertNotEqual("android_foundation_required", first.get("completion_error"))
+
+        lesson_response = await self.client.get(
+            "/api/v3/android/course/lesson/1",
+            headers=headers,
+        )
+        self.assertEqual(200, lesson_response.status_code)
+        self.assertTrue(lesson_response.json()["ok"])
 
     async def test_foundation_rejects_query_identity_or_overrides(self):
         headers = await self._bearer()
