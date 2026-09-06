@@ -203,7 +203,9 @@ private fun FoundationCardBody(
             FoundationAction(
                 enabled = state.builderTokens.size == card.answerTokens.size,
                 onClick = onSubmitBuilder,
-                text = state.builderTokens.joinToString("").ifBlank { "你好" },
+                text = state.builderTokens.joinToString("").ifBlank {
+                    stringResource(R.string.lesson_check)
+                },
                 secondary = true,
             )
         }
@@ -217,10 +219,13 @@ private fun FoundationCardBody(
         "speak" -> {
             if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
             Spacer(Modifier.height(14.dp))
+            val speakLabel = card.example?.zh?.takeIf { it.isNotBlank() }
+                ?: card.audioText.takeIf { it.isNotBlank() }
+                ?: stringResource(R.string.lesson_repeat_after_teacher)
             FoundationAction(
                 enabled = true,
                 onClick = onMarkSpoken,
-                text = "✓ 你好",
+                text = speakLabel,
                 secondary = state.speakingBonus,
             )
         }
