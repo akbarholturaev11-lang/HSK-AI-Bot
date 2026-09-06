@@ -1,6 +1,8 @@
 package com.pomp.hskai.feature.course
 
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.StartOffsetType
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
@@ -24,33 +26,48 @@ import com.pomp.hskai.core.design.PompColors
 fun CoursePandaMascot(
     modifier: Modifier = Modifier,
     celebrate: Boolean = false,
+    animationDelayMillis: Int = 0,
 ) {
     val transition = rememberInfiniteTransition(label = "course-panda")
+    val delay = animationDelayMillis.coerceAtLeast(0)
     val bobDp = transition.animateFloat(
         initialValue = 0f,
         targetValue = if (celebrate) -7f else -8f,
         animationSpec = infiniteRepeatable(
             animation = tween(if (celebrate) 700 else 1700),
             repeatMode = RepeatMode.Reverse,
+            initialStartOffset = StartOffset(delay, StartOffsetType.Delay),
         ),
         label = "course-panda-bob",
     ).value
     val nod = transition.animateFloat(
         initialValue = -4f,
         targetValue = 4f,
-        animationSpec = infiniteRepeatable(tween(2300), RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(
+            animation = tween(2300),
+            repeatMode = RepeatMode.Reverse,
+            initialStartOffset = StartOffset(delay, StartOffsetType.Delay),
+        ),
         label = "course-panda-nod",
     ).value
     val breathe = transition.animateFloat(
         initialValue = 1f,
         targetValue = 1.02f,
-        animationSpec = infiniteRepeatable(tween(1300), RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1300),
+            repeatMode = RepeatMode.Reverse,
+            initialStartOffset = StartOffset(delay, StartOffsetType.Delay),
+        ),
         label = "course-panda-breathe",
     ).value
     val shadowScale = transition.animateFloat(
         initialValue = 1f,
         targetValue = 0.78f,
-        animationSpec = infiniteRepeatable(tween(1700), RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1700),
+            repeatMode = RepeatMode.Reverse,
+            initialStartOffset = StartOffset(delay, StartOffsetType.Delay),
+        ),
         label = "course-panda-shadow",
     ).value
     val blink = transition.animateFloat(
@@ -66,6 +83,7 @@ fun CoursePandaMascot(
                 1f at 4200
             },
             repeatMode = RepeatMode.Restart,
+            initialStartOffset = StartOffset(delay, StartOffsetType.Delay),
         ),
         label = "course-panda-blink",
     ).value
