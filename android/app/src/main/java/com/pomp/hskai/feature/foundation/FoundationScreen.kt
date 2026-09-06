@@ -104,8 +104,6 @@ private fun FoundationTopBar(progress: Float, required: Boolean, onClose: () -> 
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (required) {
-            // Mini App hides `.fx` for mandatory Starter 0. Preserve its 42dp
-            // footprint so the progress bar stays centered instead of shifting.
             Spacer(Modifier.size(42.dp))
         } else {
             Surface(
@@ -238,7 +236,21 @@ private fun FoundationCardBody(
                 secondary = true,
             )
         }
-        "tones", "parts", "explain" -> {
+        "parts" -> {
+            FoundationPartsGrid(
+                examples = card.examples,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(18.dp))
+        }
+        "tones" -> {
+            FoundationToneGrid(
+                examples = card.examples,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(18.dp))
+        }
+        "explain" -> {
             card.examples.forEach { example ->
                 FoundationExampleCard(example, false, onPlayAudio)
                 Spacer(Modifier.height(10.dp))
