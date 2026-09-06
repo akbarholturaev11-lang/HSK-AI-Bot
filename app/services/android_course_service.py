@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
@@ -30,15 +31,23 @@ from app.services.desktop_course_service import (
 
 __all__ = ["AndroidCourseError", "AndroidCourseService"]
 
-# The error contract is shared on purpose: one stable set of codes for every
-# native client means the clients can share their error-to-copy mapping.
 AndroidCourseError = DesktopCourseError
 
 _FOUNDATION_SOURCE = Path("app/static/course_v3_data/hsk1/lesson_01.json")
+_FOUNDATION_REQUIRED_ERROR = "android_foundation_required"
 
 
 class AndroidCourseService(DesktopCourseService):
     CLIENT_NAMESPACE = "android"
+
+    async def _foundation_status(self, user) -> dict:
+        return await CourseMiniAppProfileService(self.session).foundation_status(user)
+
+    async def _require_foundation_complete(self, access_token: str) -> None:
+        context = await self._context(access_token)
+        status = await self._foundation_status(context.user)
+        if bool(status.get("required")) and not bool(status.get("completed")):
+            raise DesktopCourseError(_FOUNDATION_REQUIRED_ERROR, status_code=403)
 
     async def course_map(
         self,
@@ -52,20 +61,54 @@ class AndroidCourseService(DesktopCourseService):
             timezone_offset_minutes=timezone_offset_minutes,
         )
         context = await self._context(access_token)
-        result["foundation"] = await CourseMiniAppProfileService(
-            self.session
-        ).foundation_status(context.user)
+        foundation = await self._foundation_status(context.user)
+        result["foundation"] = foundation
+
+        # Required Starter 0 is a real prerequisite, not merely a visual card.
+        # Keep completed history visible, but make every unfinished path node
+        # unreachable until the server records the shared foundation event.
+        if bool(foundation.get("required")) and not bool(foundation.get("completed")):
+            for unit in result.get("units", []):
+                if not isinstance(unit, dict):
+                    continue
+                for lesson in unit.get("lessons", []):
+                    if not isinstance(lesson, dict) or lesson.get("status") == "done":
+                        continue
+                    lesson["status"] = "locked"
+                    lesson["completion_allowed"] = False
+                    lesson["completion_error"] = _FOUNDATION_REQUIRED_ERROR
+                    lesson.pop("preview_half", None)
+                    lesson.pop("locked_premium", None)
         await self.session.commit()
         return result
 
-    async def foundation(self, access_token: str) -> dict:
-        """Return the checked-in Starter 0 payload used by the Mini App.
+    async def lesson(
+        self,
+        access_token: str,
+        *,
+        lesson_order: int,
+    ) -> dict[str, Any]:
+        await self._require_foundation_complete(access_token)
+        return await super().lesson(access_token, lesson_order=lesson_order)
 
-        Android does not maintain a second copy of beginner curriculum data.
-        The bearer-authenticated adapter projects the exact `foundation` block
-        from HSK1 lesson 1 and pairs it with the same server-owned completion
-        state returned on the course map.
-        """
+    async def complete(
+        self,
+        access_token: str,
+        *,
+        lesson_order: int,
+        event_id: str,
+        mistakes: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
+        await self._require_foundation_complete(access_token)
+        return await super().complete(
+            access_token,
+            lesson_order=lesson_order,
+            event_id=event_id,
+            mistakes=mistakes,
+        )
+
+    async def foundation(self, access_token: str) -> dict:
+        """Return the checked-in Starter 0 payload used by the Mini App."""
         context = await self._context(access_token)
         try:
             lesson = json.loads(_FOUNDATION_SOURCE.read_text(encoding="utf-8"))
@@ -83,9 +126,7 @@ class AndroidCourseService(DesktopCourseService):
         ):
             raise DesktopCourseError("android_foundation_unavailable", status_code=503)
 
-        status = await CourseMiniAppProfileService(self.session).foundation_status(
-            context.user
-        )
+        status = await self._foundation_status(context.user)
         return {
             "ok": True,
             "foundation": foundation,
@@ -132,9 +173,7 @@ class AndroidCourseService(DesktopCourseService):
         return {
             "ok": True,
             "duplicate": bool(result.get("duplicate")),
-            "foundation": await CourseMiniAppProfileService(
-                self.session
-            ).foundation_status(context.user),
+            "foundation": await self._foundation_status(context.user),
         }
 
     async def onboarding_status(self, access_token: str) -> dict:
@@ -213,8 +252,6 @@ class AndroidCourseService(DesktopCourseService):
         except (TypeError, ValueError) as exc:
             raise DesktopCourseError("android_request_invalid", status_code=422) from exc
 
-        # Goal/time/focus all affect today's plan. Rebuild on the next map fetch
-        # so Android and Mini App cannot show stale task identities after a choice.
         profile.daily_plan_key = None
         profile.daily_plan_json = None
         await self.session.commit()
