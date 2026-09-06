@@ -22,8 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,39 +30,78 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun OnboardingPandaMascot(
     reactionKey: Int = 0,
+    motionEnabled: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
-    val transition = rememberInfiniteTransition(label = "onboarding-panda")
-    val breathe by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.02f,
-        animationSpec = infiniteRepeatable(tween(1300), RepeatMode.Reverse),
-        label = "onboarding-panda-breathe",
-    )
-    val blink by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = 4200
-                1f at 0
-                1f at 3780
-                0.08f at 3940
-                1f at 4050
-                1f at 4200
-            },
-            repeatMode = RepeatMode.Restart,
-        ),
-        label = "onboarding-panda-blink",
-    )
+    val transition = if (motionEnabled) {
+        rememberInfiniteTransition(label = "onboarding-panda")
+    } else {
+        null
+    }
+    val breathe = if (transition != null) {
+        transition.animateFloat(
+            initialValue = 1f,
+            targetValue = 1.02f,
+            animationSpec = infiniteRepeatable(tween(1300), RepeatMode.Reverse),
+            label = "onboarding-panda-breathe",
+        ).value
+    } else {
+        1f
+    }
+    val blink = if (transition != null) {
+        transition.animateFloat(
+            initialValue = 1f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = 4200
+                    1f at 0
+                    1f at 3780
+                    0.08f at 3940
+                    1f at 4050
+                    1f at 4200
+                },
+                repeatMode = RepeatMode.Restart,
+            ),
+            label = "onboarding-panda-blink",
+        ).value
+    } else {
+        1f
+    }
     val nodY = remember { Animatable(0f) }
     val nodRotation = remember { Animatable(0f) }
     val armRotation = remember { Animatable(0f) }
     var pleased by remember { mutableStateOf(false) }
 
-    LaunchedEffect(reactionKey) {
+    // Mini App runs one pencil-arm wave after each render: pdWave 1.2s .2s ease-in-out both.
+    LaunchedEffect(motionEnabled) {
+        armRotation.snapTo(0f)
+        if (!motionEnabled) return@LaunchedEffect
+        delay(200)
+        armRotation.animateTo(
+            targetValue = 0f,
+            animationSpec = keyframes {
+                durationMillis = 1200
+                0f at 0
+                -13f at 264
+                7f at 504
+                -13f at 744
+                7f at 984
+                0f at 1200
+            },
+        )
+    }
+
+    LaunchedEffect(reactionKey, motionEnabled) {
         if (reactionKey <= 0) return@LaunchedEffect
         pleased = true
+        if (!motionEnabled) {
+            // Reduced-motion CSS removes animation, but the pleased face still exists
+            // while the JS reaction class is held for 800ms.
+            delay(800)
+            pleased = false
+            return@LaunchedEffect
+        }
         coroutineScope {
             launch {
                 nodY.snapTo(0f)
