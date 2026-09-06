@@ -21,17 +21,6 @@ interface AndroidCourseApi {
         @Query("tz") timezoneOffsetMinutes: Int,
     ): Response<CourseMapDto>
 
-    @GET("api/v3/android/course/foundation")
-    suspend fun foundation(
-        @Header("Authorization") authorization: String,
-    ): Response<FoundationResponseDto>
-
-    @POST("api/v3/android/course/foundation/complete")
-    suspend fun completeFoundation(
-        @Header("Authorization") authorization: String,
-        @Body body: FoundationCompleteRequest,
-    ): Response<FoundationCompleteResponse>
-
     @GET("api/v3/android/course/lesson/{lessonOrder}")
     suspend fun lesson(
         @Header("Authorization") authorization: String,
