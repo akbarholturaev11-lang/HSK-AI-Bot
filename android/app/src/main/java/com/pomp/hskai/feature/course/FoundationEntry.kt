@@ -1,5 +1,6 @@
 package com.pomp.hskai.feature.course
 
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,15 +32,16 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseFoundation
+import com.pomp.hskai.feature.foundation.FoundationActivity
 
 /** Mini App `.foundation-entry`, rendered from the same server-owned foundation state. */
 @Composable
 internal fun FoundationEntry(
     foundation: CourseFoundation,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val done = foundation.completed
+    val context = LocalContext.current
     Surface(
         color = PompColors.PaperRaised,
         shape = RoundedCornerShape(18.dp),
@@ -46,7 +49,9 @@ internal fun FoundationEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 18.dp)
-            .clickable(onClick = onClick),
+            .clickable {
+                context.startActivity(Intent(context, FoundationActivity::class.java))
+            },
     ) {
         Box(
             modifier = Modifier.background(
