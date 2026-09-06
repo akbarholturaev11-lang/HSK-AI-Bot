@@ -73,6 +73,12 @@ internal fun FoundationScreen(
                             .verticalScroll(rememberScrollState())
                             .padding(horizontal = 20.dp, vertical = 18.dp),
                     ) {
+                        FoundationStepPill(
+                            index = state.cardIndex,
+                            total = state.cards.size,
+                            label = "",
+                        )
+                        Spacer(Modifier.height(14.dp))
                         FoundationCardBody(
                             card = card,
                             state = state,
@@ -134,6 +140,23 @@ private fun FoundationCardBody(
     onMarkSpoken: () -> Unit,
     onPlayAudio: () -> Unit,
 ) {
+    if (card.type == "intro" && card.example != null) {
+        FoundationHero(
+            example = card.example,
+            title = card.title,
+            text = card.text,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        if (card.audioText.isNotBlank()) {
+            Spacer(Modifier.height(18.dp))
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                FoundationCircularAudio(onClick = onPlayAudio)
+            }
+            Spacer(Modifier.height(2.dp))
+        }
+        return
+    }
+
     if (card.title.isNotBlank()) {
         Text(
             text = card.title,
@@ -221,7 +244,7 @@ private fun FoundationCardBody(
                 Spacer(Modifier.height(10.dp))
             }
         }
-        "sandhi", "intro" -> if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
+        "sandhi" -> if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
         "speak" -> {
             if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
             Spacer(Modifier.height(14.dp))
