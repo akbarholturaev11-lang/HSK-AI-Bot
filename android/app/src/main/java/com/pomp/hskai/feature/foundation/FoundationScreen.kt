@@ -63,7 +63,7 @@ internal fun FoundationScreen(
             }
             state.cards.isEmpty() -> FoundationFailure(onRetry)
             else -> Column(Modifier.fillMaxSize()) {
-                FoundationTopBar(state.progress, onClose)
+                FoundationTopBar(state.progress, state.required, onClose)
                 val card = state.currentCard
                 if (card != null) {
                     Column(
@@ -92,18 +92,24 @@ internal fun FoundationScreen(
 }
 
 @Composable
-private fun FoundationTopBar(progress: Float, onClose: () -> Unit) {
+private fun FoundationTopBar(progress: Float, required: Boolean, onClose: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            color = Color.Transparent,
-            shape = CircleShape,
-            modifier = Modifier.size(42.dp).clickable(onClick = onClose),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(Icons.Filled.Close, contentDescription = null, tint = PompColors.InkSecondary)
+        if (required) {
+            // Mini App hides `.fx` for mandatory Starter 0. Preserve its 42dp
+            // footprint so the progress bar stays centered instead of shifting.
+            Spacer(Modifier.size(42.dp))
+        } else {
+            Surface(
+                color = Color.Transparent,
+                shape = CircleShape,
+                modifier = Modifier.size(42.dp).clickable(onClick = onClose),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(Icons.Filled.Close, contentDescription = null, tint = PompColors.InkSecondary)
+                }
             }
         }
         Spacer(Modifier.width(10.dp))
