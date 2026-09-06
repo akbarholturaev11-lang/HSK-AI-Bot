@@ -54,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -465,15 +466,24 @@ private fun StaleBanner() {
 
 @Composable
 private fun UnitHeader(unit: CourseUnit) {
-    val background = if (unit.isLocked) PompColors.PaperRaised else PompColors.Ink
+    val shape = RoundedCornerShape(14.dp)
     val foreground = if (unit.isLocked) PompColors.InkSecondary else PompColors.Paper
+    val bannerModifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+        .then(
+            if (unit.isLocked) Modifier else Modifier.background(
+                brush = Brush.linearGradient(
+                    colors = listOf(PompColors.Cinnabar, PompColors.CinnabarDark),
+                ),
+                shape = shape,
+            )
+        )
     Surface(
-        color = background,
-        shape = RoundedCornerShape(14.dp),
+        color = if (unit.isLocked) PompColors.PaperRaised else Color.Transparent,
+        shape = shape,
         border = if (unit.isLocked) BorderStroke(1.dp, PompColors.Divider) else null,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+        modifier = bannerModifier,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
