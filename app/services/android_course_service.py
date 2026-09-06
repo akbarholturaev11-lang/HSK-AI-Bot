@@ -11,9 +11,17 @@ the desktop funnel.
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
-from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.course_miniapp_profile_service import (
+    COURSE_FOUNDATION_ID,
+    COURSE_FOUNDATION_VERSION,
+    CourseMiniAppProfileService,
+)
 from app.services.desktop_course_service import (
     DesktopCourseError,
     DesktopCourseService,
@@ -25,6 +33,8 @@ __all__ = ["AndroidCourseError", "AndroidCourseService"]
 # The error contract is shared on purpose: one stable set of codes for every
 # native client means the clients can share their error-to-copy mapping.
 AndroidCourseError = DesktopCourseError
+
+_FOUNDATION_SOURCE = Path("app/static/course_v3_data/hsk1/lesson_01.json")
 
 
 class AndroidCourseService(DesktopCourseService):
@@ -47,6 +57,85 @@ class AndroidCourseService(DesktopCourseService):
         ).foundation_status(context.user)
         await self.session.commit()
         return result
+
+    async def foundation(self, access_token: str) -> dict:
+        """Return the checked-in Starter 0 payload used by the Mini App.
+
+        Android does not maintain a second copy of beginner curriculum data.
+        The bearer-authenticated adapter projects the exact `foundation` block
+        from HSK1 lesson 1 and pairs it with the same server-owned completion
+        state returned on the course map.
+        """
+        context = await self._context(access_token)
+        try:
+            lesson = json.loads(_FOUNDATION_SOURCE.read_text(encoding="utf-8"))
+            foundation = lesson.get("foundation")
+        except (OSError, json.JSONDecodeError) as exc:
+            raise DesktopCourseError(
+                "android_foundation_unavailable",
+                status_code=503,
+            ) from exc
+        if not isinstance(foundation, dict) or not isinstance(foundation.get("cards"), list):
+            raise DesktopCourseError("android_foundation_unavailable", status_code=503)
+        if (
+            str(foundation.get("id") or "") != COURSE_FOUNDATION_ID
+            or int(foundation.get("version") or 0) != COURSE_FOUNDATION_VERSION
+        ):
+            raise DesktopCourseError("android_foundation_unavailable", status_code=503)
+
+        status = await CourseMiniAppProfileService(self.session).foundation_status(
+            context.user
+        )
+        return {
+            "ok": True,
+            "foundation": foundation,
+            "status": status,
+        }
+
+    async def complete_foundation(
+        self,
+        access_token: str,
+        *,
+        foundation_id: str,
+        foundation_version: int,
+        speaking_bonus: bool,
+        event_id: str,
+    ) -> dict:
+        """Persist Starter 0 completion through the Mini App event contract."""
+        if (
+            str(foundation_id or "").strip() != COURSE_FOUNDATION_ID
+            or int(foundation_version or 0) != COURSE_FOUNDATION_VERSION
+        ):
+            raise DesktopCourseError("android_foundation_invalid", status_code=409)
+        dedupe_key = str(event_id or "").strip()[:120]
+        if not dedupe_key:
+            raise DesktopCourseError("android_request_invalid", status_code=422)
+
+        context = await self._context(access_token)
+        analytics = CourseMiniAppAnalyticsService(self.session)
+        result = await analytics.record_server_event(
+            event_name="foundation_completed",
+            telegram_id=int(context.user.telegram_id),
+            user_id=getattr(context.user, "id", None),
+            source="android_course",
+            level="hsk1",
+            dedupe_key=dedupe_key,
+            payload={
+                "foundation_id": COURSE_FOUNDATION_ID,
+                "foundation_version": COURSE_FOUNDATION_VERSION,
+                "speaking_bonus": bool(speaking_bonus),
+            },
+        )
+        if not result.get("ok"):
+            raise DesktopCourseError("android_foundation_save_failed", status_code=503)
+        await self.session.commit()
+        return {
+            "ok": True,
+            "duplicate": bool(result.get("duplicate")),
+            "foundation": await CourseMiniAppProfileService(
+                self.session
+            ).foundation_status(context.user),
+        }
 
     async def onboarding_status(self, access_token: str) -> dict:
         """Return the canonical onboarding state for the authenticated learner."""
