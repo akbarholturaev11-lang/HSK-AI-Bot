@@ -50,14 +50,16 @@ internal data class OnboardingLayoutSpec(
                 welcomeHorizontalPadding = if (compact) 24 else 30,
                 welcomeTopPadding = if (short) 24 else 36,
                 welcomeBottomPadding = if (short) 16 else 28,
+                // max-height:700 is declared after min-width:700 in the Mini App CSS,
+                // so the short-height rule wins when both media queries match.
                 welcomePandaWidth = when {
-                    wide -> 220
                     short -> 144
+                    wide -> 220
                     else -> 190
                 },
                 welcomePandaHeight = when {
-                    wide -> 233
                     short -> 153
+                    wide -> 233
                     else -> 202
                 },
                 welcomePandaBottomMargin = if (short) 16 else 23,
