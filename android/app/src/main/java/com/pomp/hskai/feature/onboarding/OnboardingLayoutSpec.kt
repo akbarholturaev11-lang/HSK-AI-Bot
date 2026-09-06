@@ -10,11 +10,14 @@ internal data class OnboardingLayoutSpec(
     val wideWidth: Boolean,
     val horizontalPadding: Int,
     val guideHorizontalPadding: Int,
-    val guideVerticalPadding: Int,
+    val guideTopPadding: Int,
+    val guideBottomPadding: Int,
     val guideGap: Int,
     val guidePandaWidth: Int,
     val guidePandaHeight: Int,
     val questionFontSize: Int,
+    val cardPadding: Int,
+    val cardGap: Int,
     val footerHorizontalPadding: Int,
     val footerTopPadding: Int,
     val footerBottomPadding: Int,
@@ -39,11 +42,23 @@ internal data class OnboardingLayoutSpec(
                 wideWidth = wide,
                 horizontalPadding = if (compact) 16 else 24,
                 guideHorizontalPadding = if (compact) 16 else 24,
-                guideVerticalPadding = if (compact) 15 else if (short) 12 else if (wide) 30 else 22,
+                guideTopPadding = when {
+                    compact -> 15
+                    short -> 12
+                    wide -> 30
+                    else -> 22
+                },
+                guideBottomPadding = when {
+                    compact -> 15
+                    short -> 12
+                    else -> 16
+                },
                 guideGap = if (compact) 12 else 16,
                 guidePandaWidth = if (compact) 70 else 90,
                 guidePandaHeight = if (compact) 80 else 100,
                 questionFontSize = if (compact) 19 else 21,
+                cardPadding = if (compact) 12 else 14,
+                cardGap = if (compact) 10 else 14,
                 footerHorizontalPadding = if (compact) 16 else 24,
                 footerTopPadding = if (short) 12 else 16,
                 footerBottomPadding = if (short) 14 else 20,
