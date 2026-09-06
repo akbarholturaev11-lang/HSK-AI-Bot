@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -50,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -225,6 +228,13 @@ fun OnboardingScreen(
 ) {
     val copy = OnboardingCopy.forLanguage(language)
     val view = LocalView.current
+    val configuration = LocalConfiguration.current
+    val layoutSpec = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
+        OnboardingLayoutSpec.resolve(
+            widthDp = configuration.screenWidthDp,
+            heightDp = configuration.screenHeightDp,
+        )
+    }
     val motionEnabled = remember {
         Build.VERSION.SDK_INT < Build.VERSION_CODES.O || ValueAnimator.areAnimatorsEnabled()
     }
@@ -254,79 +264,93 @@ fun OnboardingScreen(
         reactionKey += 1
     }
     Surface(color = PompColors.Paper, modifier = modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing),
-        ) {
-            if (state.step > 0) {
-                OnboardingTopBar(
-                    step = state.step,
-                    backLabel = copy.back,
-                    onBack = onBack,
-                    disabled = state.submitting,
-                    motionEnabled = motionEnabled,
-                )
-            }
-
-            Box(
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            Column(
                 modifier = Modifier
-                    .weight(1f)
+                    .fillMaxHeight()
                     .fillMaxWidth()
-                    .graphicsLayer {
-                        alpha = stageAlpha
-                        translationY = stageOffset.dp.toPx()
-                    },
+                    .widthIn(max = 520.dp)
+                    .windowInsetsPadding(WindowInsets.safeDrawing),
             ) {
-                key(state.step) {
-                    when (state.step) {
-                        0 -> WelcomeStep(copy = copy, motionEnabled = motionEnabled)
-                        1 -> ChoiceStep(
-                            question = copy.askLevel,
-                            helper = copy.levelHint,
-                            reactionKey = reactionKey,
-                            motionEnabled = motionEnabled,
-                        ) {
-                            LevelChoices(
-                                language = language,
+                if (state.step > 0) {
+                    OnboardingTopBar(
+                        step = state.step,
+                        backLabel = copy.back,
+                        onBack = onBack,
+                        disabled = state.submitting,
+                        motionEnabled = motionEnabled,
+                        layoutSpec = layoutSpec,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .graphicsLayer {
+                            alpha = stageAlpha
+                            translationY = stageOffset.dp.toPx()
+                        },
+                ) {
+                    key(state.step) {
+                        when (state.step) {
+                            0 -> WelcomeStep(
                                 copy = copy,
-                                selected = state.selectedLevel,
-                                enabled = !state.submitting,
                                 motionEnabled = motionEnabled,
-                                onSelected = { key ->
-                                    onLevelSelected(key)
-                                    selectionFeedback()
-                                },
+                                layoutSpec = layoutSpec,
                             )
-                        }
-                        else -> ChoiceStep(
-                            question = copy.askGoal,
-                            helper = copy.goalHint,
-                            reactionKey = reactionKey,
-                            motionEnabled = motionEnabled,
-                        ) {
-                            SelectedLevelSummary(copy, state.selectedLevel)
-                            GoalChoices(
-                                language = language,
-                                selected = state.selectedGoal,
-                                enabled = !state.submitting,
+                            1 -> ChoiceStep(
+                                question = copy.askLevel,
+                                helper = copy.levelHint,
+                                reactionKey = reactionKey,
                                 motionEnabled = motionEnabled,
-                                onSelected = { key ->
-                                    onGoalSelected(key)
-                                    selectionFeedback()
-                                },
-                            )
+                                layoutSpec = layoutSpec,
+                            ) {
+                                LevelChoices(
+                                    language = language,
+                                    copy = copy,
+                                    selected = state.selectedLevel,
+                                    enabled = !state.submitting,
+                                    motionEnabled = motionEnabled,
+                                    layoutSpec = layoutSpec,
+                                    onSelected = { key ->
+                                        onLevelSelected(key)
+                                        selectionFeedback()
+                                    },
+                                )
+                            }
+                            else -> ChoiceStep(
+                                question = copy.askGoal,
+                                helper = copy.goalHint,
+                                reactionKey = reactionKey,
+                                motionEnabled = motionEnabled,
+                                layoutSpec = layoutSpec,
+                            ) {
+                                SelectedLevelSummary(copy, state.selectedLevel)
+                                GoalChoices(
+                                    language = language,
+                                    selected = state.selectedGoal,
+                                    enabled = !state.submitting,
+                                    motionEnabled = motionEnabled,
+                                    layoutSpec = layoutSpec,
+                                    onSelected = { key ->
+                                        onGoalSelected(key)
+                                        selectionFeedback()
+                                    },
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            OnboardingFooter(
-                copy = copy,
-                state = state,
-                onNext = onNext,
-                motionEnabled = motionEnabled,
-            )
+                OnboardingFooter(
+                    copy = copy,
+                    state = state,
+                    onNext = onNext,
+                    motionEnabled = motionEnabled,
+                    layoutSpec = layoutSpec,
+                )
+            }
         }
     }
 }
@@ -338,6 +362,7 @@ private fun OnboardingTopBar(
     onBack: () -> Unit,
     disabled: Boolean,
     motionEnabled: Boolean,
+    layoutSpec: OnboardingLayoutSpec,
 ) {
     val progress by animateFloatAsState(
         targetValue = step / 2f,
@@ -348,7 +373,14 @@ private fun OnboardingTopBar(
         label = "onboarding-progress",
     )
     Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = layoutSpec.topHorizontalPadding.dp,
+                end = layoutSpec.topHorizontalPadding.dp,
+                top = 14.dp,
+                bottom = 4.dp,
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -364,7 +396,7 @@ private fun OnboardingTopBar(
                 tint = PompColors.InkSecondary,
             )
         }
-        Spacer(Modifier.width(14.dp))
+        Spacer(Modifier.width(layoutSpec.topGap.dp))
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -386,7 +418,7 @@ private fun OnboardingTopBar(
                     .background(PompColors.Cinnabar),
             )
         }
-        Spacer(Modifier.width(14.dp))
+        Spacer(Modifier.width(layoutSpec.topGap.dp))
         Text(
             "$step / 2",
             color = PompColors.InkSecondary,
@@ -397,29 +429,44 @@ private fun OnboardingTopBar(
 }
 
 @Composable
-private fun WelcomeStep(copy: OnboardingCopy, motionEnabled: Boolean) {
+private fun WelcomeStep(
+    copy: OnboardingCopy,
+    motionEnabled: Boolean,
+    layoutSpec: OnboardingLayoutSpec,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(start = 30.dp, end = 30.dp, top = 36.dp, bottom = 28.dp),
+            .padding(
+                start = layoutSpec.welcomeHorizontalPadding.dp,
+                end = layoutSpec.welcomeHorizontalPadding.dp,
+                top = layoutSpec.welcomeTopPadding.dp,
+                bottom = layoutSpec.welcomeBottomPadding.dp,
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         SpeechBubble(text = copy.hello, centeredTail = true, large = false)
-        Spacer(Modifier.height(27.dp))
-        Box(Modifier.size(190.dp, 202.dp), contentAlignment = Alignment.Center) {
+        Spacer(Modifier.height(layoutSpec.welcomeBubbleBottomMargin.dp))
+        Box(
+            Modifier.size(
+                layoutSpec.welcomePandaWidth.dp,
+                layoutSpec.welcomePandaHeight.dp,
+            ),
+            contentAlignment = Alignment.Center,
+        ) {
             OnboardingPandaMascot(
                 motionEnabled = motionEnabled,
                 modifier = Modifier.fillMaxSize(),
             )
         }
-        Spacer(Modifier.height(23.dp))
+        Spacer(Modifier.height(layoutSpec.welcomePandaBottomMargin.dp))
         Text(
             "HSK AI",
             color = PompColors.Cinnabar,
-            fontSize = 38.sp,
-            lineHeight = 44.sp,
+            fontSize = layoutSpec.welcomeTitleSize.sp,
+            lineHeight = (layoutSpec.welcomeTitleSize * 1.15f).sp,
             fontWeight = FontWeight.SemiBold,
             letterSpacing = (-1).sp,
             textAlign = TextAlign.Center,
@@ -428,9 +475,12 @@ private fun WelcomeStep(copy: OnboardingCopy, motionEnabled: Boolean) {
         Text(
             copy.boot,
             color = PompColors.InkSecondary,
-            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, lineHeight = 26.sp),
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = layoutSpec.welcomeBodySize.sp,
+                lineHeight = (layoutSpec.welcomeBodySize * 1.65f).sp,
+            ),
             textAlign = TextAlign.Center,
-            modifier = Modifier.width(330.dp),
+            modifier = Modifier.widthIn(max = 330.dp),
         )
     }
 }
@@ -441,26 +491,56 @@ private fun ChoiceStep(
     helper: String,
     reactionKey: Int,
     motionEnabled: Boolean,
+    layoutSpec: OnboardingLayoutSpec,
     choices: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, top = 22.dp, bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = layoutSpec.guideHorizontalPadding.dp,
+                    end = layoutSpec.guideHorizontalPadding.dp,
+                    top = layoutSpec.guideTopPadding.dp,
+                    bottom = layoutSpec.guideBottomPadding.dp,
+                ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(Modifier.size(90.dp, 100.dp), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier.size(
+                    layoutSpec.guidePandaWidth.dp,
+                    layoutSpec.guidePandaHeight.dp,
+                ),
+                contentAlignment = Alignment.Center,
+            ) {
                 OnboardingPandaMascot(
                     reactionKey = reactionKey,
                     motionEnabled = motionEnabled,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
-            Spacer(Modifier.width(16.dp))
-            Box(Modifier.weight(1f)) { SpeechBubble(text = question, centeredTail = false, large = true) }
+            Spacer(Modifier.width(layoutSpec.guideGap.dp))
+            Box(Modifier.weight(1f)) {
+                SpeechBubble(
+                    text = question,
+                    centeredTail = false,
+                    large = true,
+                    largeFontSize = layoutSpec.questionFontSize,
+                    compactPadding = layoutSpec.compactWidth,
+                )
+            }
         }
-        Column(modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, bottom = 16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = layoutSpec.horizontalPadding.dp,
+                    end = layoutSpec.horizontalPadding.dp,
+                    bottom = 16.dp,
+                ),
+        ) {
             Text(
                 helper,
                 color = PompColors.InkSecondary,
@@ -474,7 +554,13 @@ private fun ChoiceStep(
 }
 
 @Composable
-private fun SpeechBubble(text: String, centeredTail: Boolean, large: Boolean) {
+private fun SpeechBubble(
+    text: String,
+    centeredTail: Boolean,
+    large: Boolean,
+    largeFontSize: Int = 21,
+    compactPadding: Boolean = false,
+) {
     Box {
         Surface(
             color = PompColors.PaperRaised,
@@ -485,11 +571,22 @@ private fun SpeechBubble(text: String, centeredTail: Boolean, large: Boolean) {
             Text(
                 text,
                 color = PompColors.Ink,
-                fontSize = if (large) 21.sp else 17.sp,
-                lineHeight = if (large) 28.sp else 25.sp,
+                fontSize = if (large) largeFontSize.sp else 17.sp,
+                lineHeight = if (large) (largeFontSize * 1.35f).sp else 25.sp,
                 letterSpacing = if (large) (-0.35).sp else 0.sp,
                 fontWeight = if (large) FontWeight.SemiBold else FontWeight.Medium,
-                modifier = Modifier.padding(horizontal = if (large) 18.dp else 22.dp, vertical = if (large) 17.dp else 14.dp),
+                modifier = Modifier.padding(
+                    horizontal = if (large) {
+                        if (compactPadding) 14.dp else 18.dp
+                    } else {
+                        22.dp
+                    },
+                    vertical = if (large) {
+                        if (compactPadding) 14.dp else 17.dp
+                    } else {
+                        14.dp
+                    },
+                ),
             )
         }
         MiniAppBubbleTail(
@@ -508,6 +605,7 @@ private fun LevelChoices(
     selected: String,
     enabled: Boolean,
     motionEnabled: Boolean,
+    layoutSpec: OnboardingLayoutSpec,
     onSelected: (String) -> Unit,
 ) {
     val lang = canonicalLanguage(language)
@@ -529,6 +627,7 @@ private fun LevelChoices(
                 selected = selected == option.key,
                 enabled = enabled,
                 motionEnabled = motionEnabled,
+                layoutSpec = layoutSpec,
                 title = option.title,
                 subtitle = option.subtitle,
                 leading = { LevelBars(active = index) },
@@ -564,6 +663,7 @@ private fun GoalChoices(
     selected: String,
     enabled: Boolean,
     motionEnabled: Boolean,
+    layoutSpec: OnboardingLayoutSpec,
     onSelected: (String) -> Unit,
 ) {
     val lang = canonicalLanguage(language)
@@ -573,6 +673,7 @@ private fun GoalChoices(
                 selected = selected == goal.key,
                 enabled = enabled,
                 motionEnabled = motionEnabled,
+                layoutSpec = layoutSpec,
                 title = goal.titles[lang] ?: goal.titles.getValue("ru"),
                 subtitle = goal.subtitles[lang] ?: goal.subtitles.getValue("ru"),
                 leading = {
@@ -596,6 +697,7 @@ private fun ChoiceCard(
     selected: Boolean,
     enabled: Boolean,
     motionEnabled: Boolean,
+    layoutSpec: OnboardingLayoutSpec,
     title: String,
     subtitle: String,
     leading: @Composable () -> Unit,
@@ -645,11 +747,11 @@ private fun ChoiceCard(
             ),
     ) {
         Row(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(layoutSpec.cardPadding.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(Modifier.size(42.dp), contentAlignment = Alignment.Center) { leading() }
-            Spacer(Modifier.width(14.dp))
+            Spacer(Modifier.width(layoutSpec.cardGap.dp))
             Column(Modifier.weight(1f)) {
                 Text(
                     title,
@@ -722,6 +824,7 @@ private fun OnboardingFooter(
     state: OnboardingUiState,
     onNext: () -> Unit,
     motionEnabled: Boolean,
+    layoutSpec: OnboardingLayoutSpec,
 ) {
     val label = when {
         state.submitting -> copy.saving
@@ -747,7 +850,12 @@ private fun OnboardingFooter(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 20.dp),
+                .padding(
+                    start = layoutSpec.footerHorizontalPadding.dp,
+                    end = layoutSpec.footerHorizontalPadding.dp,
+                    top = layoutSpec.footerTopPadding.dp,
+                    bottom = layoutSpec.footerBottomPadding.dp,
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (state.step == 0) {
