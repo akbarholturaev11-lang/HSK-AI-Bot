@@ -51,6 +51,7 @@ internal fun FoundationScreen(
     onSubmitBuilder: () -> Unit,
     onMarkSpoken: () -> Unit,
     onPlayAudio: () -> Unit,
+    onPlayText: (String) -> Unit,
     onAdvance: () -> Unit,
     onRetry: () -> Unit,
     onClose: () -> Unit,
@@ -88,6 +89,7 @@ internal fun FoundationScreen(
                             onSubmitBuilder = onSubmitBuilder,
                             onMarkSpoken = onMarkSpoken,
                             onPlayAudio = onPlayAudio,
+                            onPlayText = onPlayText,
                         )
                     }
                     FoundationFooter(state, card, onAdvance, onRetry)
@@ -137,6 +139,7 @@ private fun FoundationCardBody(
     onSubmitBuilder: () -> Unit,
     onMarkSpoken: () -> Unit,
     onPlayAudio: () -> Unit,
+    onPlayText: (String) -> Unit,
 ) {
     if (card.type == "intro" && card.example != null) {
         FoundationHero(
@@ -241,6 +244,7 @@ private fun FoundationCardBody(
         "parts" -> {
             FoundationPartsGrid(
                 examples = card.examples,
+                onPlayExample = onPlayText,
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(18.dp))
@@ -248,6 +252,7 @@ private fun FoundationCardBody(
         "tones" -> {
             FoundationToneGrid(
                 examples = card.examples,
+                onPlayExample = onPlayText,
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(18.dp))
@@ -303,11 +308,7 @@ private fun FoundationCardBody(
 }
 
 @Composable
-private fun FoundationExampleCard(
-    example: FoundationExample,
-    audio: Boolean,
-    onPlayAudio: () -> Unit,
-) {
+private fun FoundationExampleCard(example: FoundationExample, audio: Boolean, onPlayAudio: () -> Unit) {
     Surface(
         color = PompColors.PaperRaised,
         shape = RoundedCornerShape(18.dp),
@@ -319,34 +320,14 @@ private fun FoundationExampleCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                if (example.zh.isNotBlank()) Text(
-                    example.zh,
-                    style = PompTextStyles.hanziLarge,
-                    color = PompColors.Ink,
-                    textAlign = TextAlign.Center,
-                )
-                if (example.pinyin.isNotBlank()) Text(
-                    example.pinyin,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.CinnabarDark,
-                )
-                if (example.translation.isNotBlank()) Text(
-                    example.translation,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PompColors.InkSecondary,
-                    textAlign = TextAlign.Center,
-                )
+                if (example.zh.isNotBlank()) Text(example.zh, style = PompTextStyles.hanziLarge, color = PompColors.Ink, textAlign = TextAlign.Center)
+                if (example.pinyin.isNotBlank()) Text(example.pinyin, style = MaterialTheme.typography.bodyMedium, color = PompColors.CinnabarDark)
+                if (example.translation.isNotBlank()) Text(example.translation, style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary, textAlign = TextAlign.Center)
             }
             if (audio) {
                 Spacer(Modifier.width(8.dp))
-                Surface(
-                    color = PompColors.CinnabarSoft,
-                    shape = CircleShape,
-                    modifier = Modifier.size(44.dp).clickable(onClick = onPlayAudio),
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = PompColors.Cinnabar)
-                    }
+                Surface(color = PompColors.CinnabarSoft, shape = CircleShape, modifier = Modifier.size(44.dp).clickable(onClick = onPlayAudio)) {
+                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = PompColors.Cinnabar) }
                 }
             }
         }
@@ -360,20 +341,12 @@ private fun AudioButton(onClick: () -> Unit) {
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).clickable(onClick = onClick),
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = PompColors.Cinnabar)
-        }
+        Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = PompColors.Cinnabar) }
     }
 }
 
 @Composable
-private fun FoundationOption(
-    text: String,
-    selected: Boolean,
-    correct: Boolean,
-    wrong: Boolean,
-    onClick: () -> Unit,
-) {
+private fun FoundationOption(text: String, selected: Boolean, correct: Boolean, wrong: Boolean, onClick: () -> Unit) {
     val border = when {
         correct -> PompColors.Jade
         wrong -> PompColors.Cinnabar
@@ -390,10 +363,7 @@ private fun FoundationOption(
         border = BorderStroke(if (selected) 2.dp else 1.dp, border),
         modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).clickable(onClick = onClick),
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 15.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Row(modifier = Modifier.padding(horizontal = 15.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(text, modifier = Modifier.weight(1f), color = PompColors.Ink)
             if (correct) Icon(Icons.Filled.Check, contentDescription = null, tint = PompColors.Jade)
         }
@@ -408,30 +378,17 @@ private fun HanziToken(text: String, onClick: () -> Unit) {
         border = BorderStroke(1.dp, PompColors.Divider),
         modifier = Modifier.size(54.dp).clickable(onClick = onClick),
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(text, style = PompTextStyles.hanziSmall.copy(fontSize = 22.sp), color = PompColors.Ink)
-        }
+        Box(contentAlignment = Alignment.Center) { Text(text, style = PompTextStyles.hanziSmall.copy(fontSize = 22.sp), color = PompColors.Ink) }
     }
 }
 
 @Composable
-private fun FoundationFooter(
-    state: FoundationUiState,
-    card: FoundationCard,
-    onAdvance: () -> Unit,
-    onRetry: () -> Unit,
-) {
+private fun FoundationFooter(state: FoundationUiState, card: FoundationCard, onAdvance: () -> Unit, onRetry: () -> Unit) {
     val interactiveBlocked = card.type in setOf("choice", "listen_choice", "builder") && state.answerCorrect != true
     Surface(color = PompColors.PaperRaised, shadowElevation = 8.dp) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp)) {
             if (state.error != null) {
-                FoundationAction(
-                    enabled = !state.saving,
-                    onClick = onRetry,
-                    text = stringResource(R.string.action_retry),
-                    secondary = true,
-                    leadingRefresh = true,
-                )
+                FoundationAction(enabled = !state.saving, onClick = onRetry, text = stringResource(R.string.action_retry), secondary = true, leadingRefresh = true)
                 Spacer(Modifier.height(8.dp))
             }
             FoundationAction(
@@ -462,10 +419,7 @@ private fun FoundationAction(
         },
         shape = RoundedCornerShape(14.dp),
         border = if (secondary) BorderStroke(1.dp, PompColors.Divider) else null,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 52.dp)
-            .then(if (enabled) Modifier.clickable(onClick = onClick) else Modifier),
+        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).then(if (enabled) Modifier.clickable(onClick = onClick) else Modifier),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
@@ -473,21 +427,13 @@ private fun FoundationAction(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    strokeWidth = 2.dp,
-                    color = PompColors.Paper,
-                )
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = PompColors.Paper)
             } else {
                 if (leadingRefresh) {
                     Icon(Icons.Filled.Refresh, contentDescription = null, tint = PompColors.CinnabarDark)
                     Spacer(Modifier.width(7.dp))
                 }
-                Text(
-                    text = text,
-                    color = if (secondary) PompColors.CinnabarDark else PompColors.Paper,
-                    fontWeight = FontWeight.SemiBold,
-                )
+                Text(text = text, color = if (secondary) PompColors.CinnabarDark else PompColors.Paper, fontWeight = FontWeight.SemiBold)
             }
         }
     }
@@ -500,12 +446,6 @@ private fun FoundationFailure(onRetry: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        FoundationAction(
-            enabled = true,
-            onClick = onRetry,
-            text = stringResource(R.string.action_retry),
-            secondary = true,
-            leadingRefresh = true,
-        )
+        FoundationAction(enabled = true, onClick = onRetry, text = stringResource(R.string.action_retry), secondary = true, leadingRefresh = true)
     }
 }
