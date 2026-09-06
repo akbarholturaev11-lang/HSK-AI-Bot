@@ -17,13 +17,13 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Native stroke icons matching the Tabler icons used by Mini App course-v3:
- * check, lock, flag-2, gift and star.
+ * check, lock, flag-2, gift, star and book-2.
  *
  * Tabler's visual language is a 24x24 grid with rounded 2px strokes. Keeping
  * the same grid/stroke ratios avoids the heavier filled Material glyphs that
- * were still visible on the Android course path.
+ * were still visible on the Android course path and unit banners.
  */
-internal enum class CourseNodeIconKind { Check, Lock, Flag, Gift, Star }
+internal enum class CourseNodeIconKind { Check, Lock, Flag, Gift, Star, Book2 }
 
 /** Mini App node-specific sizing so CourseScreen does not re-invent glyph metrics. */
 @Composable
@@ -38,6 +38,7 @@ internal fun MiniAppLessonNodeIcon(
         CourseNodeIconKind.Flag -> 25.dp
         CourseNodeIconKind.Gift -> 30.dp
         CourseNodeIconKind.Star -> 27.dp
+        CourseNodeIconKind.Book2 -> 24.dp
     }
     MiniAppNodeIcon(kind = kind, tint = tint, modifier = modifier, size = iconSize)
 }
@@ -151,6 +152,32 @@ internal fun MiniAppNodeIcon(
                     close()
                 }
                 drawPath(p, tint, style = stroke)
+            }
+
+            CourseNodeIconKind.Book2 -> {
+                val cover = Path().apply {
+                    moveTo(x(19f), y(4f))
+                    lineTo(x(19f), y(20f))
+                    lineTo(x(7f), y(20f))
+                    cubicTo(x(5.9f), y(20f), x(5f), y(19.1f), x(5f), y(18f))
+                    lineTo(x(5f), y(6f))
+                    cubicTo(x(5f), y(4.9f), x(5.9f), y(4f), x(7f), y(4f))
+                    close()
+                }
+                drawPath(cover, tint, style = stroke)
+                val page = Path().apply {
+                    moveTo(x(19f), y(16f))
+                    lineTo(x(7f), y(16f))
+                    cubicTo(x(5.9f), y(16f), x(5f), y(16.9f), x(5f), y(18f))
+                }
+                drawPath(page, tint, style = stroke)
+                drawLine(
+                    color = tint,
+                    start = Offset(x(9f), y(8f)),
+                    end = Offset(x(15f), y(8f)),
+                    strokeWidth = strokeWidth,
+                    cap = StrokeCap.Round,
+                )
             }
         }
     }
