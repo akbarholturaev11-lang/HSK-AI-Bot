@@ -75,6 +75,9 @@ class CourseMistakeService:
         if explicit in COURSE_MISTAKE_CATEGORIES:
             return explicit
         if source == "voice":
+            # ORQAGA MOSLIK: AI Voice endi har bir xato uchun `category` ni
+            # o'zi beradi (grammar/word/pronunciation). Bu tarmoq faqat
+            # error_type joriy qilinishidan OLDIN boshlangan sessiyalar uchun.
             return "pronunciation"
         item_type = cls._text(f"{item.get('type') or ''} {item.get('subtype') or ''}", 160).lower()
         if "character" in item_type or "hanzi" in item_type or "pinyin" in item_type:

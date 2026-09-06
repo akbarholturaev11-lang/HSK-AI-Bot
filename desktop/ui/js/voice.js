@@ -584,11 +584,18 @@ export class DesktopVoiceController {
     );
     const xp = Number(summary?.reward?.xp_awarded ?? summary?.reward?.xp ?? 0);
     const stats = node("div", "voice-summary-stats");
+    // Dars so'zlaridan nechtasi haqiqatan ishlatilgani. Bu BALL emas, SANOQ —
+    // serverda akustik/ton tahlili yo'q. Mini App'dagi bilan bir xil o'lchov.
+    const used = summary.target_used || {};
+    const usedTotal = Number(used.total || 0);
     [
       [this.t("voiceStatTurns"), Number(summary.message_count || 0)],
       [this.t("voiceStatDuration"), formatClock(Number(summary.duration_seconds || 0))],
       [this.t("voiceStatGood"), Number(summary.good_count || 0)],
       [this.t("voiceStatMistakes"), Number(summary.mistake_count || 0)],
+      ...(usedTotal
+        ? [[this.t("voiceStatWords"), `${Number(used.used || 0)}/${usedTotal}`]]
+        : []),
     ].forEach(([label, value]) => {
       const card = node("article");
       card.append(node("small", "", label), node("strong", "", value));

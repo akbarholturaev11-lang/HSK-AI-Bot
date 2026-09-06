@@ -227,6 +227,84 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-06 — AI Voice: moslashuv, xato turi va bepul slot
+
+Ilovaning qolgan qismi allaqachon o'quvchiga moslashardi (kunlik reja
+`LearningSignals` bo'yicha, xatolar bo'limi `course_mistakes` dan, mashqlar
+SRS'dan), AI Voice esa faqat HSK darajasini va joriy dars so'zlarini bilardi.
+Endi u ham xuddi shu signal qatlamiga ulangan.
+
+Changed:
+- Yangi DB ustuni (`0074_voice_session_plan`): `voice_practice_sessions.plan_json`
+  (JSON, default `{}`). Yangi jadval YO'Q. Sessiya boshida muzlatiladigan
+  moslashuv rejasi: `goal`, `focus`, `weak`, `retest`, — `_generate_reply`
+  sessiyada 7 marta ishlagani uchun har navbatda qayta hisoblanmaydi.
+  Bo'sh `{}` = moslashuvdan oldingi prompt (ROLLBACK yo'li).
+- `_course_context` (`voice_practice_service.py`) qayta yozildi: takror so'zlar
+  endi TASODIFIY emas, SRS jadvalidan (`CourseWordMasteryService.select`,
+  `skill="pronunciation"`). Oldingi darslar bo'ylab 10 tagacha `get_payload`
+  chaqiruvi OLIB TASHLANDI — `start_session` tezlashdi. SRS faqat O'QILADI,
+  `record_drill` chaqirilmaydi (aks holda suhbat rejalashtirilgan takrorlarni
+  yeb qo'yardi).
+- AI javob JSON kontraktiga `error_type` qo'shildi (grammar|word|pronunciation|
+  none). `chinese_reply/pinyin/translation/correction` o'zgarmadi, shuning uchun
+  desktop va Android buzilmadi.
+- `end_session` endi har bir xatoni O'Z kategoriyasiga yozadi (ilgari hammasi
+  `"pronunciation"` edi). `CourseMistakeService._category` dagi
+  `source == "voice"` tarmog'i eski sessiyalar uchun fallback bo'lib qoldi.
+  Eski `course_mistakes` qatorlari ATAYLAB migratsiya qilinmadi: `mistake_key`
+  `category|prompt|correct_answer` hash'i, uni qayta hisoblamasdan `UPDATE`
+  qilish upsert'ni buzib dublikat yaratardi.
+- `end_session` javobiga QO'SHIMCHA AI CHAQIRUVISIZ o'lchovlar:
+  `errors_by_type`, `target_used`, `avg_chars`, `turns`, `completed`.
+- Mini App (`course-v3.html`): hisoblagich tarjima qilindi (ilgari `对话 N / 7`),
+  aria-label'lar 3 tilda, `remaining_limit` sozlamalar oynasida va yakun
+  kartasida ko'rsatiladi, yakunda uchinchi ko'rsatkich (dars so'zlaridan
+  foydalanish) va xato turlari ajratmasi, kunlik reja bergan `role` endi
+  ishlatiladi (whitelist bilan), `mic_result` diagnostikasi `transcription`
+  ni o'qiydi (ilgari mavjud bo'lmagan `heard` ni o'qib doim bo'sh yozardi).
+- «Nima deyish?» varag'idagi iboralar endi moslashadi. Ilgari u yerda 4 ta
+  QOTIB QOLGAN HSK1 iborasi (`SAFE`) turardi — har darajada, har javobda bir
+  xil. Endi AI javob JSON'iga `suggestions` (2 ta) qo'shdi va ular AYNI
+  chaqiruvda keladi: QO'SHIMCHA SO'ROV YO'Q, faqat ~70 chiqish tokeni.
+  `VOICE_REPLY_MAX_TOKENS` 220 -> 340 (aks holda JSON kesilib
+  `AI_RESPONSE_INVALID` bo'lardi). Sessiya boshida AI hali chaqirilmagani
+  uchun 6 ta ochilish varianti QO'LDA yozilgan takliflarni olib yuradi
+  (3 tilda). AI yaroqsiz javob bersa `SAFE` zaxira bo'lib qoladi — varaq
+  hech qachon bo'sh qolmaydi.
+- Desktop: yakun ekraniga o'sha uchinchi ko'rsatkich (bitta `voice.js` —
+  macOS/Windows parity avtomatik), `voiceStatWords` 3 tilda. Desktop/Android'da
+  «Nima deyish?» varag'i YO'Q, shuning uchun u yerda parity ishi kerak emas.
+
+Risk (AI_RULES #9 — access/entitlement o'zgarishi):
+- `_session_count` endi `turn_count > 0` ni sanaydi: bepul slot QATOR
+  yaratilganda emas, GAPIRILGANDA yonadi. Buni suiiste'mol qilib bo'lmaydi —
+  `start_session` bugungi gapirilmagan qatorni QAYTA ISHLATADI, ya'ni kuniga
+  bittadan ko'p qator yaratilmaydi; model esa faqat `process_message` da
+  chaqiriladi, u ham aynan slotni yoqadigan joy.
+- `end_session` endi `turn_count == 0` bo'lsa XP/streak/xato yozmaydi. Ilgari
+  ochib-yopish 10 XP + streak + kunlik rejaning `voice_dialog` vazifasini
+  berardi (bu ferma pullik userlarda ham bor edi).
+- `remaining_limit` ma'nosi siljidi: "bugun yana nechta SUHBAT QILA OLASIZ".
+- Kechagi ochiq qolgan sessiyalar keyingi startda `status="abandoned"` bo'ladi.
+
+Bilib qo'yish kerak:
+- `app/static/course_v3_voice.html` — O'LIK NUSXA. Hech qayerdan chaqirilmaydi,
+  route yo'q. Jonli UI `course-v3.html` ichidagi `VOICE` moduli. Ikkalasini
+  ham tuzatishga urinmang.
+- Bu kodda AKUSTIK yoki TON tahlili YO'Q. `_pronunciation_score` — belgilar
+  to'plamini taqqoslash, `_normalize_pinyin` esa taqqoslashdan oldin tonlarni
+  o'chiradi. Shuning uchun voice UI'da "ton tekshiruvi"/"ball" yozilmasin.
+  (`Mashq` bo'limidagi `pronSub` matnida bu yolg'on da'vo HALI BOR — admin
+  keyinroq tuzatishni so'radi.)
+
+Tekshirildi:
+- `tests/test_voice_practice_error_type.py`, `..._evaluation.py` (yangi),
+  `..._course_context.py`, `..._daily_limit.py` kengaytirildi.
+- `tests/e2e/test_miniapp_smoke.py`: 3 ta yangi AI Voice smoke testi
+  (klaviatura yo'li — mikrofon ruxsati kerak emas).
+- `desktop/` `npm run test:ui` — 25/25.
+
 ### 2026-09-05 — Kunlik reja (Daily Plan) va o'quv signallari
 
 Live holat (2026-09-06): `course-v3.html` ichidagi `refreshCourseProgress`

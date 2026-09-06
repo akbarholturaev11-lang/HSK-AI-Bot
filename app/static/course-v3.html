@@ -951,6 +951,9 @@ button{cursor:pointer}
 #vc-root .st{position:relative;z-index:2;flex:0 0 auto;min-height:18px;text-align:center;font-size:13px;line-height:1.35;padding:0 18px;color:#4a3c28;text-shadow:0 1px 0 rgba(255,250,240,.55)}
 #vc-root .chat{position:relative;z-index:2;flex:1 1 auto;min-height:96px;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:6px 0 0;padding:14px 14px 6px;background:rgba(251,247,239,.9);backdrop-filter:blur(8px);border:none;border-top:1px solid rgba(120,95,60,.2);border-radius:22px 22px 0 0;box-shadow:0 -8px 20px rgba(60,44,20,.13);display:flex;flex-direction:column;gap:9px}
 #vc-root .hint0{text-align:center;font-size:13px;color:var(--ink2);padding:14px 8px}
+/* DIQQAT: global `.fx` (yuqorida) — 30x30 dumaloq tugma uslubi. Voice
+   modulidagi tuzatish bloki ham `.fx` nomini ishlatadi, shuning uchun
+   quyidagi ikkala qoida ham o'lchamni ATAYLAB qaytadan tiklaydi. */
 #vc-root .msg{display:flex;max-width:100%}
 #vc-root .msg.me{justify-content:flex-end}
 #vc-root .bub{max-width:84%;border-radius:15px;padding:9px 12px;line-height:1.4}
@@ -961,7 +964,7 @@ button{cursor:pointer}
 #vc-root .bub .tr{font-size:13px;color:var(--ink2);margin-top:2px}
 #vc-root.nosub .bub .py,#vc-root.nosub .bub .tr{display:none}
 #vc-root .bub .ut{font-size:15px}
-#vc-root .bub .fx{font-size:12.5px;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.32);color:#FFE7E4}
+#vc-root .bub .fx{width:auto;height:auto;background:none;border:0;border-radius:0;border-top:1px solid rgba(255,255,255,.32);line-height:1.4;font-size:12.5px;margin-top:5px;padding-top:5px;color:#FFE7E4}
 #vc-root .bub .fx b{font-weight:600}
 #vc-root .rep{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:12px;color:var(--ink3);padding:2px 0}
 #vc-root .typing{display:flex;gap:4px;padding:4px 2px}
@@ -1034,7 +1037,7 @@ button{cursor:pointer}
 #vc-root .txr.m{background:var(--cinbg);border:1px solid rgba(194,64,58,.2)}
 #vc-root .txr .u{font-size:13px;color:var(--ink)}
 #vc-root .txr .u b{color:var(--ink3);font-weight:600}
-#vc-root .txr .fx{font-size:12.5px;color:var(--cin2);margin-top:4px}
+#vc-root .txr .fx{width:auto;height:auto;background:none;border:0;border-radius:0;line-height:1.4;font-size:12.5px;color:var(--cin2);margin-top:4px}
 #vc-root .txr .fx b{font-weight:600}
 #vc-root .txr .ai{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
 #vc-root .txr .ai .lbl{font-size:11px;color:var(--ink3);font-weight:600;margin-bottom:2px}
@@ -1764,7 +1767,7 @@ var App={
     try{if(tg&&tg.openTelegramLink&&/^https:\/\/t\.me\//i.test(c)){tg.openTelegramLink(c);return}}catch(e){}
     try{if(tg&&tg.openLink){tg.openLink(c);return}}catch(e){}
     try{location.href=c}catch(e){}},
-  openVoiceCall:function(){VOICE.open()},
+  openVoiceCall:function(role){VOICE.open(role)},
   openFriends:function(){ratingTabCur="friends";App.show("rating");renderRating()},
   notifToggle:function(){if(notifOn){App.confirmNotifOff()}else{App.applyNotif(true)}},
   applyNotif:function(on){notifOn=on;if(MAP)MAP.notify={enabled:on};renderProfile();if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:on}).catch(function(){})},
@@ -3336,6 +3339,19 @@ var TODAY_TASK_ACTION={
   voice_dialog:"App.openVoiceCall()"
 };
 var TODAY_SKILL_ACTION={characters:"App.openRecog()",pronunciation:"App.openPron()"};
+/* Kunlik reja `voice_dialog` vazifasiga maqsadga mos ROL biriktiradi
+   (DailyPlanService.VOICE_ROLE_FOR_GOAL: HSK imtihoni -> 李老师, aks holda
+   do'st), lekin klient uni tashlab yuborardi va suhbat doim 阿宝 bilan
+   boshlanardi. Qiymat WHITELIST qilinadi — xom holda onclick atributiga
+   qo'yilmaydi. */
+var TODAY_VOICE_ROLES={friend:1,teacher_li:1};
+function todayTaskAction(task){
+  if(!task)return "";
+  if(task.type==="skill_drill")return TODAY_SKILL_ACTION[task.skill];
+  if(task.type==="voice_dialog")
+    return TODAY_VOICE_ROLES[task.role]?('App.openVoiceCall(&quot;'+task.role+'&quot;)'):"App.openVoiceCall()";
+  return TODAY_TASK_ACTION[task.type];
+}
 function todayTaskLabel(task){
   var t=todayT();
   if(task.type==="continue_lesson"){
@@ -3360,7 +3376,7 @@ function todayStripHtml(){
   if(!plan||!plan.tasks||!plan.tasks.length)return "";
   var t=todayT();
   var chips=plan.tasks.map(function(task){
-    var action=task.type==="skill_drill"?TODAY_SKILL_ACTION[task.skill]:TODAY_TASK_ACTION[task.type];
+    var action=todayTaskAction(task);
     var cls="tchip"+(task.done?" done":"")+(task.available?"":" lock");
     var click=(task.done||!task.available||!action)?"":' onclick="'+action+'"';
     return '<button class="'+cls+'"'+click+'><i class="ti ti-'+todayTaskIcon(task)+'"></i>'+esc(todayTaskLabel(task))+'</button>';
@@ -3379,7 +3395,7 @@ function courseRailHtml(){
   var blocks="";
   if(plan&&plan.tasks&&plan.tasks.length&&!foundationMustComeFirst()){
     var rows=plan.tasks.map(function(task){
-      var action=task.type==="skill_drill"?TODAY_SKILL_ACTION[task.skill]:TODAY_TASK_ACTION[task.type];
+      var action=todayTaskAction(task);
       var cls="rl-task"+(task.done?" done":"")+(task.available?"":" lock");
       var click=(task.done||!task.available||!action)?"":' onclick="'+action+'"';
       return '<button class="'+cls+'"'+click+'><i class="ti ti-'+todayTaskIcon(task)+'"></i>'
@@ -5969,14 +5985,14 @@ window.TEST=TEST;
 
 
 /* ---------- AI Voice ---------- */
-var VOICE_HTML='<div id="vc-root">\n  <div class="bg" id="vc-bg"></div>\n\n  <div class="top">\n    <button class="ic" onclick="VOICE.endCall()" aria-label="yopish"><i class="ti ti-x"></i></button>\n    <div class="tinfo"><div class="tn" id="vc-nm">阿宝 · Aobao</div><div class="tc" id="vc-cnt">对话 1 / 7</div></div>\n    <button class="ic" onclick="VOICE.openSettings()" aria-label="sozlamalar"><i class="ti ti-settings"></i></button>\n  </div>\n\n  <div class="stage"><div class="charwrap speaking" id="vc-char"></div></div>\n  <div class="st" id="vc-status"></div>\n\n  <div class="chat" id="vc-chat"><div class="hint0" id="vc-chat0"></div></div>\n\n  <div class="dock">\n    <div class="tipbar"><button class="tip" id="vc-tip" onclick="VOICE.openHints()"><i class="ti ti-bulb"></i> <span id="vc-tipt"></span></button></div>\n    <div class="row" id="vc-ctrlRow">\n      <button class="sq" onclick="VOICE.openKb()" aria-label="klaviatura"><i class="ti ti-keyboard"></i></button>\n      <div class="micwrap"><button class="mic" id="vc-mic" aria-label="gapirish"><i class="ti ti-microphone"></i></button></div>\n      <div class="sq" style="visibility:hidden"></div>\n    </div>\n    <div class="kb" id="vc-kbPanel">\n      <button class="kbclose" onclick="VOICE.closeKb()" aria-label="yopish"><i class="ti ti-microphone"></i></button>\n      <textarea id="vc-kbText" rows="1" maxlength="200"></textarea>\n      <button class="kbsend" id="vc-kbSend" onclick="VOICE.sendText()" aria-label="yuborish"><i class="ti ti-send"></i></button>\n    </div>\n    <div class="holdhint" id="vc-holdhint"></div>\n  </div>\n\n  <div class="sheet" id="vc-setSheet"><div class="ov" onclick="VOICE.closeSettings()"></div><div class="pane">\n    <div class="sgrip"></div>\n    <h4 id="vc-setTitle"></h4>\n    <button class="srow" onclick="VOICE.swap()"><i class="ti ti-repeat"></i><span id="vc-setPersona"></span><span class="sv" id="vc-setPersonaV"></span></button>\n    <button class="srow" onclick="VOICE.toggleSub()"><i class="ti ti-badge-cc"></i><span id="vc-setSub"></span><span class="sv" id="vc-setSubV"></span></button>\n    <button class="srow" onclick="VOICE.toggleRate()"><i class="ti ti-player-play"></i><span id="vc-setRate"></span><span class="sv" id="vc-setRateV"></span></button>\n  </div></div>\n\n  <div class="sheet" id="vc-hintSheet"><div class="ov" onclick="VOICE.closeHints()"></div><div class="pane">\n    <div class="sgrip"></div>\n    <h4 id="vc-hintTitle"></h4>\n    <div id="vc-hintBody"></div>\n  </div></div>\n\n  <div class="done" id="vc-done"><div class="dcard">\n    <div class="dchar" id="vc-dchar"></div>\n    <h3 id="vc-dh"></h3><p id="vc-dp"></p>\n    <div class="badge" id="vc-dbadge"><i class="ti ti-sparkles"></i> <span id="vc-dbadget"></span></div>\n    <div class="stats" id="vc-dstats"></div>\n    <button class="dtoggle" id="vc-dtoggle" onclick="VOICE.toggleDialog()"><i class="ti ti-messages" id="vc-dtoggleic"></i> <span id="vc-dtogglet"></span></button>\n    <div class="tx" id="vc-dtx"></div>\n    <div class="savednote" id="vc-dsaved"></div>\n    <button class="b" onclick="VOICE.reset()"><i class="ti ti-refresh"></i> <span id="vc-db"></span></button>\n    <button class="b2" onclick="VOICE.goBack()" id="vc-db2"></button>\n  </div></div>\n\n  <div class="done" id="vc-paywall"><div class="dcard">\n    <div class="dchar" id="vc-pwchar"></div>\n    <h3 id="vc-pwh"></h3><p id="vc-pwp"></p>\n    <div class="pwwhy" id="vc-pwwhy" hidden><i class="ti ti-info-circle"></i><span id="vc-pwwhyt"></span></div>\n    <button class="b" onclick="VOICE.goPremium()"><i class="ti ti-crown"></i> <span id="vc-pwb"></span></button>\n    <button class="b2" onclick="VOICE.goBack()" id="vc-pwb2"></button>\n  </div></div>\n</div>';
+var VOICE_HTML='<div id="vc-root">\n  <div class="bg" id="vc-bg"></div>\n\n  <div class="top">\n    <button class="ic" onclick="VOICE.endCall()" aria-label="yopish"><i class="ti ti-x"></i></button>\n    <div class="tinfo"><div class="tn" id="vc-nm">阿宝 · Aobao</div><div class="tc" id="vc-cnt">对话 1 / 7</div></div>\n    <button class="ic" onclick="VOICE.openSettings()" aria-label="sozlamalar"><i class="ti ti-settings"></i></button>\n  </div>\n\n  <div class="stage"><div class="charwrap speaking" id="vc-char"></div></div>\n  <div class="st" id="vc-status"></div>\n\n  <div class="chat" id="vc-chat"><div class="hint0" id="vc-chat0"></div></div>\n\n  <div class="dock">\n    <div class="tipbar"><button class="tip" id="vc-tip" onclick="VOICE.openHints()"><i class="ti ti-bulb"></i> <span id="vc-tipt"></span></button></div>\n    <div class="row" id="vc-ctrlRow">\n      <button class="sq" onclick="VOICE.openKb()" aria-label="klaviatura"><i class="ti ti-keyboard"></i></button>\n      <div class="micwrap"><button class="mic" id="vc-mic" aria-label="gapirish"><i class="ti ti-microphone"></i></button></div>\n      <div class="sq" style="visibility:hidden"></div>\n    </div>\n    <div class="kb" id="vc-kbPanel">\n      <button class="kbclose" onclick="VOICE.closeKb()" aria-label="yopish"><i class="ti ti-microphone"></i></button>\n      <textarea id="vc-kbText" rows="1" maxlength="200"></textarea>\n      <button class="kbsend" id="vc-kbSend" onclick="VOICE.sendText()" aria-label="yuborish"><i class="ti ti-send"></i></button>\n    </div>\n    <div class="holdhint" id="vc-holdhint"></div>\n  </div>\n\n  <div class="sheet" id="vc-setSheet"><div class="ov" onclick="VOICE.closeSettings()"></div><div class="pane">\n    <div class="sgrip"></div>\n    <h4 id="vc-setTitle"></h4>\n    <button class="srow" onclick="VOICE.swap()"><i class="ti ti-repeat"></i><span id="vc-setPersona"></span><span class="sv" id="vc-setPersonaV"></span></button>\n    <button class="srow" onclick="VOICE.toggleSub()"><i class="ti ti-badge-cc"></i><span id="vc-setSub"></span><span class="sv" id="vc-setSubV"></span></button>\n    <button class="srow" onclick="VOICE.toggleRate()"><i class="ti ti-player-play"></i><span id="vc-setRate"></span><span class="sv" id="vc-setRateV"></span></button>\n    <div class="srow" id="vc-setLeftRow" hidden><i class="ti ti-clock"></i><span id="vc-setLeft"></span><span class="sv" id="vc-setLeftV"></span></div>\n  </div></div>\n\n  <div class="sheet" id="vc-hintSheet"><div class="ov" onclick="VOICE.closeHints()"></div><div class="pane">\n    <div class="sgrip"></div>\n    <h4 id="vc-hintTitle"></h4>\n    <div id="vc-hintBody"></div>\n  </div></div>\n\n  <div class="done" id="vc-done"><div class="dcard">\n    <div class="dchar" id="vc-dchar"></div>\n    <h3 id="vc-dh"></h3><p id="vc-dp"></p>\n    <div class="badge" id="vc-dbadge"><i class="ti ti-sparkles"></i> <span id="vc-dbadget"></span></div>\n    <div class="stats" id="vc-dstats"></div>\n    <button class="dtoggle" id="vc-dtoggle" onclick="VOICE.toggleDialog()"><i class="ti ti-messages" id="vc-dtoggleic"></i> <span id="vc-dtogglet"></span></button>\n    <div class="tx" id="vc-dtx"></div>\n    <div class="savednote" id="vc-dsaved"></div>\n    <button class="b" onclick="VOICE.reset()"><i class="ti ti-refresh"></i> <span id="vc-db"></span></button>\n    <button class="b2" onclick="VOICE.goBack()" id="vc-db2"></button>\n  </div></div>\n\n  <div class="done" id="vc-paywall"><div class="dcard">\n    <div class="dchar" id="vc-pwchar"></div>\n    <h3 id="vc-pwh"></h3><p id="vc-pwp"></p>\n    <div class="pwwhy" id="vc-pwwhy" hidden><i class="ti ti-info-circle"></i><span id="vc-pwwhyt"></span></div>\n    <button class="b" onclick="VOICE.goPremium()"><i class="ti ti-crown"></i> <span id="vc-pwb"></span></button>\n    <button class="b2" onclick="VOICE.goBack()" id="vc-pwb2"></button>\n  </div></div>\n</div>';
 var VOICE=(function(){
 var LD={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analyzing:"Анализирую…",connecting:"Соединение…",heard:"Вы:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",replWord:"реплик",corrTitle:"Что подправить",again:"Ещё разговор",exit:"Выйти",micDeny:"Разрешите доступ к микрофону в настройках Telegram.",sendErr:"Ошибка. Попробуйте ещё раз.",tooShort:"Слишком коротко. Скажите ещё раз.",noSupport:"Запись голоса недоступна на этом устройстве.",startBot:"Сначала откройте бота и нажмите /start.",limitTitle:"Пробный разговор завершён",limitSub:"С Premium говорите с 阿宝 каждый день — без лимита.",limitWhy:"В бесплатном режиме AI Voice даётся 1 пробный разговор — вы его уже использовали. С подпиской говорите с 阿宝 хоть каждый день: живая речь — самый быстрый способ заговорить по-китайски.",premiumBtn:"Открыть Premium",learnBadge:"Ух ты, я уже говорю по-китайски!",showDialog:"Посмотреть весь диалог",hideDialog:"Скрыть диалог",statGood:"удачных реплик",statMistake:"на доработку",savedToMistakes:"Ошибки добавлены в раздел «Мои ошибки»",noMistakes:"Без ошибок — отличная работа!",fixLabel:"Правильно:",
-    holdMic:"Держите микрофон, чтобы говорить",releaseMic:"Отпустите, чтобы отправить",holdLonger:"Держите чуть дольше",whatToSay:"Что сказать?",hintTitle:"Что можно сказать",hintWords:"Слова этого урока",hintPhrases:"Полезные фразы",kbPlaceholder:"Напишите…",settings:"Настройки",optPersona:"Собеседник",optSub:"Пиньинь и перевод",optRate:"Скорость речи",on:"вкл",off:"выкл",rateSlow:"медленно",rateNormal:"обычная",emptyChat:"Здесь появится ваш диалог",replay:"Ещё раз"},
+    holdMic:"Держите микрофон, чтобы говорить",releaseMic:"Отпустите, чтобы отправить",holdLonger:"Держите чуть дольше",whatToSay:"Что сказать?",hintTitle:"Что можно сказать",hintWords:"Слова этого урока",hintPhrases:"Полезные фразы",kbPlaceholder:"Напишите…",settings:"Настройки",optPersona:"Собеседник",optSub:"Пиньинь и перевод",optRate:"Скорость речи",on:"вкл",off:"выкл",rateSlow:"медленно",rateNormal:"обычная",emptyChat:"Здесь появится ваш диалог",replay:"Ещё раз",turnOf:"Реплика {n} из {m}",statWords:"слов урока",leftToday:"Сегодня осталось",unlimited:"без лимита",errGrammar:"грамматика",errWord:"слово",errPron:"произношение",a11yClose:"закрыть",a11ySettings:"настройки",a11yKeyboard:"клавиатура",a11yMic:"говорить",a11ySend:"отправить"},
   uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",heard:"Siz:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Sinov suhbati tugadi",limitSub:"Premium bilan 阿宝 bilan har kuni gaplashasiz — cheksiz.",limitWhy:"Bepul rejimda AI Voice 1 marta sinab ko'riladi — sinov suhbatingdan foydalanding. Obuna bilan 阿宝 bilan har kuni gaplashasan: jonli gapirish — xitoychada tez tili chiqishning eng qisqa yo'li.",premiumBtn:"Premium ochish",learnBadge:"Voy, men xitoycha gapiryapman!",showDialog:"To'liq dialogni ko'rish",hideDialog:"Dialogni yashirish",statGood:"zo'r javob",statMistake:"tuzatish",savedToMistakes:"Xatolar «Xatolarim» bo'limiga qo'shildi",noMistakes:"Xatosiz — ajoyib!",fixLabel:"To'g'ri:",
-    holdMic:"Gapirish uchun mikrofonni bosib turing",releaseMic:"Yuborish uchun qo'yib yuboring",holdLonger:"Sal uzoqroq bosib turing",whatToSay:"Nima deyish?",hintTitle:"Nima deyish mumkin",hintWords:"Shu darsning so'zlari",hintPhrases:"Foydali iboralar",kbPlaceholder:"Yozing…",settings:"Sozlamalar",optPersona:"Suhbatdosh",optSub:"Pinyin va tarjima",optRate:"Nutq tezligi",on:"yoqilgan",off:"o'chirilgan",rateSlow:"sekin",rateNormal:"oddiy",emptyChat:"Suhbatingiz shu yerda ko'rinadi",replay:"Yana eshitish"},
+    holdMic:"Gapirish uchun mikrofonni bosib turing",releaseMic:"Yuborish uchun qo'yib yuboring",holdLonger:"Sal uzoqroq bosib turing",whatToSay:"Nima deyish?",hintTitle:"Nima deyish mumkin",hintWords:"Shu darsning so'zlari",hintPhrases:"Foydali iboralar",kbPlaceholder:"Yozing…",settings:"Sozlamalar",optPersona:"Suhbatdosh",optSub:"Pinyin va tarjima",optRate:"Nutq tezligi",on:"yoqilgan",off:"o'chirilgan",rateSlow:"sekin",rateNormal:"oddiy",emptyChat:"Suhbatingiz shu yerda ko'rinadi",replay:"Yana eshitish",turnOf:"{n}-javob / {m}",statWords:"dars so'zi",leftToday:"Bugun qoldi",unlimited:"cheksiz",errGrammar:"grammatika",errWord:"so'z",errPron:"talaffuz",a11yClose:"yopish",a11ySettings:"sozlamalar",a11yKeyboard:"klaviatura",a11yMic:"gapirish",a11ySend:"yuborish"},
   tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",heard:"Шумо:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Сӯҳбати озмоишӣ анҷом ёфт",limitSub:"Бо Premium ҳар рӯз бо 阿宝 гап мезанед — бе лимит.",limitWhy:"Дар ҳолати ройгон AI Voice 1 маротиба санҷида мешавад — сӯҳбати озмоишиатро истифода кардӣ. Бо обуна ҳар рӯз бо 阿宝 гап мезанӣ: сухани зинда — роҳи кӯтоҳтарини ба забон омадан бо чинӣ.",premiumBtn:"Кушодани Premium",learnBadge:"Оҳ, ман чинӣ гап зада истодаам!",showDialog:"Дидани гуфтугӯи пурра",hideDialog:"Пинҳон кардани гуфтугӯ",statGood:"ҷавоби хуб",statMistake:"ислоҳ",savedToMistakes:"Хатоҳо ба бахши «Хатоҳои ман» илова шуданд",noMistakes:"Бе хато — офарин!",fixLabel:"Дуруст:",
-    holdMic:"Барои гап задан микрофонро пахш карда нигоҳ доред",releaseMic:"Барои фиристодан сар диҳед",holdLonger:"Каме дарозтар нигоҳ доред",whatToSay:"Чӣ гӯям?",hintTitle:"Чӣ гуфтан мумкин",hintWords:"Калимаҳои ин дарс",hintPhrases:"Ибораҳои муфид",kbPlaceholder:"Нависед…",settings:"Танзимот",optPersona:"Ҳамсӯҳбат",optSub:"Пинйин ва тарҷума",optRate:"Суръати нутқ",on:"фаъол",off:"хомӯш",rateSlow:"оҳиста",rateNormal:"муқаррарӣ",emptyChat:"Гуфтугӯи шумо дар ин ҷо пайдо мешавад",replay:"Боз шунидан"}};
+    holdMic:"Барои гап задан микрофонро пахш карда нигоҳ доред",releaseMic:"Барои фиристодан сар диҳед",holdLonger:"Каме дарозтар нигоҳ доред",whatToSay:"Чӣ гӯям?",hintTitle:"Чӣ гуфтан мумкин",hintWords:"Калимаҳои ин дарс",hintPhrases:"Ибораҳои муфид",kbPlaceholder:"Нависед…",settings:"Танзимот",optPersona:"Ҳамсӯҳбат",optSub:"Пинйин ва тарҷума",optRate:"Суръати нутқ",on:"фаъол",off:"хомӯш",rateSlow:"оҳиста",rateNormal:"муқаррарӣ",emptyChat:"Гуфтугӯи шумо дар ин ҷо пайдо мешавад",replay:"Боз шунидан",turnOf:"Ҷавоби {n} аз {m}",statWords:"калимаи дарс",leftToday:"Имрӯз мондааст",unlimited:"бе лимит",errGrammar:"грамматика",errWord:"калима",errPron:"талаффуз",a11yClose:"пӯшидан",a11ySettings:"танзимот",a11yKeyboard:"клавиатура",a11yMic:"гап задан",a11ySend:"фиристодан"}};
 var L=LD[LANG]||LD.ru;
 var tg=window.Telegram&&window.Telegram.WebApp;
 var $=function(id){return document.getElementById("vc-"+id)};
@@ -6038,11 +6054,19 @@ var PERS={bao:{role:"friend",voice:"female",name:L.baoName},li:{role:"teacher_li
 var persona="bao";
 var ME={level:"hsk1",language:LANG,is_paid:false};
 var sess=null,turn=0,maxDialogs=7,busy=false,started=false;
+/* Server har javobda `remaining_limit` qaytaradi (-1 = cheksiz), lekin klient
+   uni tashlab yuborardi — o'quvchi paywall'ga urilgunча "necha marta qoldi"ni
+   bilmasdi. */
+var remainLimit=null;
 var lessonWords=[],reviewWords=[];
+/* "Nima deyish?" varag'idagi takliflar. AI ularni suhbat javobi bilan BIR
+   chaqiruvda qaytaradi, ya'ni qo'shimcha so'rov yo'q. Bo'sh bo'lsa quyidagi
+   doimiy SAFE iboralari ko'rsatiladi — varaq hech qachon bo'sh qolmaydi. */
+var hintSug=[];
 var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null;
 var MAX_REC_MS=20000,MIN_BYTES=1200,MIN_HOLD_MS=400;
 var holdAt=0,holdOk=false,recAt=0;
-/* Always-safe HSK1 phrases (grammatically correct, no AI cost) */
+/* AI taklif bermaganda ishlatiladigan ZAXIRA iboralar (har doim to'g'ri, HSK1). */
 var SAFE=[{zh:"请再说一遍",pinyin:"qǐng zài shuō yí biàn",meaning:{ru:"Повторите, пожалуйста",uz:"Iltimos, yana bir bor ayting",tj:"Лутфан, боз як бор гӯед"}},
           {zh:"我不知道",pinyin:"wǒ bù zhīdào",meaning:{ru:"Я не знаю",uz:"Bilmayman",tj:"Намедонам"}},
           {zh:"我明白了",pinyin:"wǒ míngbai le",meaning:{ru:"Я понял",uz:"Tushundim",tj:"Фаҳмидам"}},
@@ -6051,9 +6075,17 @@ function mtr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 
 function setChar(m){$("char").innerHTML=chr(m,persona);$("char").className="charwrap"+(m==="talk"?" speaking":"")}
 function setStatus(t){$("status").textContent=t||""}
-function setCnt(){$("cnt").textContent="对话 "+Math.min(turn+1,maxDialogs)+" / "+maxDialogs}
+function setCnt(){$("cnt").textContent=String(L.turnOf).replace("{n}",Math.min(turn+1,maxDialogs)).replace("{m}",maxDialogs)}
 function setName(){$("nm").textContent=PERS[persona].name;$("setPersonaV").textContent=PERS[persona].name}
 function setHold(t){$("holdhint").textContent=t||""}
+function noteLimit(v){if(typeof v==="number")remainLimit=v;applyLimit()}
+function limitText(){return remainLimit===null?"":(remainLimit<0?L.unlimited:String(remainLimit))}
+function applyLimit(){
+  var row=$("setLeftRow");if(!row)return;
+  var txt=limitText();
+  row.hidden=!txt;
+  $("setLeft").textContent=L.leftToday;$("setLeftV").textContent=txt;
+}
 function micBusy(on){$("mic").disabled=!!on}
 
 /* ---- chat ---- */
@@ -6096,7 +6128,8 @@ function buildHints(){
   if(words.length){h+='<div class="hgrp">'+esc(L.hintWords)+'</div>';
     words.forEach(function(w){h+=hintRow(w.zh||"",w.pinyin||"",w.meaning||"")})}
   h+='<div class="hgrp">'+esc(L.hintPhrases)+'</div>';
-  SAFE.forEach(function(w){h+=hintRow(w.zh,w.pinyin,mtr(w.meaning))});
+  if(hintSug.length){hintSug.forEach(function(w){h+=hintRow(w.zh||"",w.pinyin||"",w.translation||"")})}
+  else{SAFE.forEach(function(w){h+=hintRow(w.zh,w.pinyin,mtr(w.meaning))})}
   $("hintBody").innerHTML=h;
 }
 function openHints(){$("hintTitle").textContent=L.hintTitle;buildHints();$("hintSheet").classList.add("on")}
@@ -6113,7 +6146,7 @@ function init(){
   applySub();applyRate();setName();setChar("talk");setStatus(L.connecting);setCnt();chatClear();
   $("tipt").textContent=L.whatToSay;$("setTitle").textContent=L.settings;
   $("setPersona").textContent=L.optPersona;$("setSub").textContent=L.optSub;$("setRate").textContent=L.optRate;
-  $("kbText").placeholder=L.kbPlaceholder;syncSend();
+  $("kbText").placeholder=L.kbPlaceholder;syncSend();applyLimit();
   /* Daraja, til va obuna holati asosiy ilovadagi MAP dan olinadi —
      ilgari shu uchun alohida /api/voice-practice/me so'rovi ketardi. */
   ME.level=(MAP&&MAP.level)||"hsk1";
@@ -6128,8 +6161,9 @@ function startSession(){
     body:JSON.stringify({initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice})}).then(jr)
    .then(function(o){busy=false;micBusy(false);
       if(!o.ok){onStartError(o);return false;}
-      sess=o.j.session_id;maxDialogs=Number(o.j.max_dialogs)||7;turn=0;started=true;setCnt();
+      sess=o.j.session_id;maxDialogs=Number(o.j.max_dialogs)||7;turn=0;started=true;setCnt();noteLimit(o.j.remaining_limit);
       var cc=o.j.course_context||{};lessonWords=cc.words||[];reviewWords=cc.review_words||[];
+      hintSug=(o.j.opening_message&&o.j.opening_message.suggestions)||[];
       var op=o.j.opening_message||{};
       chatClear();dropEmpty();
       addAi(op.chinese_reply||"",op.pinyin||"",op.translation||"");
@@ -6199,7 +6233,7 @@ function onStopped(){
   var _ext=extFromMime(blob.type||mt);
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice."+_ext);
   fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
-    .then(function(o){busy=false;micBusy(false);dropTyping();var heard=(o&&o.j&&o.j.heard)||"";clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:(""+heard).slice(0,24)});if(!o.ok){onMsgError(o);return}renderReply(o.j)})
+    .then(function(o){busy=false;micBusy(false);dropTyping();var heard=(o&&o.j&&o.j.transcription)||"";clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:(""+heard).slice(0,24)});if(!o.ok){onMsgError(o);return}renderReply(o.j)})
     .catch(function(){busy=false;micBusy(false);dropTyping();clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setChar("happy");setStatus(L.sendErr);setHold(L.holdMic)});
 }
 
@@ -6226,7 +6260,8 @@ function onMsgError(o){
 }
 function renderReply(res,skipUser){
   if(!res){setStatus("");return;}
-  turn=Number(res.turn_count)||turn+1;if(res.max_dialogs)maxDialogs=Number(res.max_dialogs);setCnt();
+  turn=Number(res.turn_count)||turn+1;if(res.max_dialogs)maxDialogs=Number(res.max_dialogs);setCnt();noteLimit(res.remaining_limit);
+  hintSug=res.suggestions||[];
   if(!skipUser&&res.transcription)addMe(res.transcription,res.correction||"");
   else if(skipUser&&res.correction){var last=chatEl().querySelector(".msg.me:last-child .bub");
     if(last&&!last.querySelector(".fx")){var f=document.createElement("div");f.className="fx";f.innerHTML='<b>'+esc(L.fixLabel)+'</b> '+esc(res.correction);last.appendChild(f)}}
@@ -6247,7 +6282,10 @@ function endCall(){
 function txRow(t){
   var good=!!t.good;
   var h='<div class="txr '+(good?"g":"m")+'"><div class="u"><b>'+L.heard+'</b> '+esc(t.user||"")+'</div>';
-  if(!good&&t.correction)h+='<div class="fx"><b>'+L.fixLabel+'</b> '+esc(t.correction)+'</div>';
+  if(!good&&t.correction){
+    var et={grammar:L.errGrammar,word:L.errWord,pronunciation:L.errPron}[t.error_type||""];
+    h+='<div class="fx"><b>'+esc(et?(et+" · "+L.fixLabel):L.fixLabel)+'</b> '+esc(t.correction)+'</div>';
+  }
   if(t.assistant){
     h+='<div class="ai"><div class="lbl">'+esc(PERS[persona].name)+'</div>'
       +'<div class="azh han">'+esc(t.assistant)+'</div>';
@@ -6266,18 +6304,30 @@ function showDoneResult(j){
   var bad=(typeof j.mistake_count==="number")?j.mistake_count:tx.filter(function(t){return !t.good}).length;
   $("dchar").innerHTML=chr("happy",persona);
   $("dh").textContent=L.doneTitle;
-  $("dp").textContent=count+" "+L.replWord+(xp?(" · +"+xp+" XP"):"");
+  noteLimit(j.remaining_limit);
+  var lt=limitText();
+  $("dp").textContent=count+" "+L.replWord+(xp?(" · +"+xp+" XP"):"")+(lt?(" · "+L.leftToday+": "+lt):"");
   $("dbadget").textContent=L.learnBadge;
+  /* 0 ta gap aytilgan sessiyada "men gapiryapman!" nishoni yolg'on bo'ladi. */
+  $("dbadge").style.display=count>0?"":"none";
+  /* Uchinchi plitka: dars so'zlaridan nechtasini haqiqatan ishlatgani.
+     Bu BALL emas, SANOQ — talaffuz/ton tahlili bu yerda yo'q. */
+  var tu=j.target_used||{},tuTotal=Number(tu.total)||0,tuUsed=Number(tu.used)||0;
   $("dstats").innerHTML='<div class="stat g"><div class="n">'+good+'</div><div class="l">'+L.statGood+'</div></div>'
-    +'<div class="stat m"><div class="n">'+bad+'</div><div class="l">'+L.statMistake+'</div></div>';
+    +'<div class="stat m"><div class="n">'+bad+'</div><div class="l">'+L.statMistake+'</div></div>'
+    +(tuTotal?('<div class="stat"><div class="n">'+tuUsed+'/'+tuTotal+'</div><div class="l">'+L.statWords+'</div></div>'):"");
   var body="";
   if(tx.length){tx.forEach(function(t){body+=txRow(t)})}
   $("dtx").innerHTML=body;$("dtx").classList.remove("on");
   var hasTx=tx.length>0;
   $("dtoggle").style.display=hasTx?"flex":"none";
   $("dtogglet").textContent=L.showDialog;$("dtoggleic").className="ti ti-messages";
+  var eb=j.errors_by_type||{},ebParts=[];
+  if(eb.grammar)ebParts.push(eb.grammar+" "+L.errGrammar);
+  if(eb.word)ebParts.push(eb.word+" "+L.errWord);
+  if(eb.pronunciation)ebParts.push(eb.pronunciation+" "+L.errPron);
   $("dsaved").innerHTML=bad>0
-    ?('<i class="ti ti-bookmark"></i> '+esc(L.savedToMistakes))
+    ?('<i class="ti ti-bookmark"></i> '+esc(L.savedToMistakes)+(ebParts.length?(" · "+esc(ebParts.join(", "))):""))
     :(hasTx?('<i class="ti ti-circle-check"></i> '+esc(L.noMistakes)):"");
   $("db").textContent=L.again;$("db2").textContent=L.exit;
   $("done").classList.add("on");ring([659,784,988]);
@@ -6296,7 +6346,7 @@ function showPaywall(){
 }
 function goPremium(){App.goPay("v3_voice_limit")}
 function softReset(){
-  started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];
+  started=false;sess=null;turn=0;lessonWords=[];reviewWords=[];hintSug=[];
   closeKb();setName();setChar("happy");setStatus("");setHold(L.holdMic);chatClear();setCnt();
 }
 function reset(){$("done").classList.remove("on");softReset()}
@@ -6310,6 +6360,17 @@ function swap(){
 function wire(){
 mic=$("mic");
 $("bg").innerHTML=forest();
+/* aria-label'lar VOICE_HTML statik satrida yozilgan (u `L` hal bo'lishidan
+   oldin quriladi), shuning uchun ular ru/tj foydalanuvchida ham o'zbekcha
+   qolib ketardi. Markup o'zgarmaydi — til shu yerda qo'yiladi. */
+var vroot=$("root");
+function aria(sel,txt){var el=vroot&&vroot.querySelector(sel);if(el)el.setAttribute("aria-label",txt)}
+aria(".top .ic:first-child",L.a11yClose);
+aria(".top .ic:last-child",L.a11ySettings);
+aria("#vc-ctrlRow .sq",L.a11yKeyboard);
+aria("#vc-mic",L.a11yMic);
+aria(".kb .kbclose",L.a11yClose);
+aria("#vc-kbSend",L.a11ySend);
 chatEl().addEventListener("click",function(e){var b=e.target.closest&&e.target.closest(".rep");if(b)speak(b.getAttribute("data-zh"))});
 $("hintBody").addEventListener("click",function(e){
   var b=e.target.closest&&e.target.closest(".hitem");if(!b)return;
@@ -6341,8 +6402,12 @@ function leave(){
   started=false;sess=null;
   closeSection();App.show("voice");
 }
-function open(){
+function open(role){
   L=LD[LANG]||LD.ru;
+  /* Kunlik reja "voice_dialog" vazifasi maqsadga mos rol beradi. Boshqa
+     kirish nuqtalarida (bo'lim kartasi) rol yo'q — odatdagi 阿宝 qoladi. */
+  persona=(role==="teacher_li")?"li":"bao";
+  remainLimit=null;hintSug=[];
   /* DIQQAT: modul ichida `$` = getElementById("vc-"+id) deb qayta ta'riflangan,
      shuning uchun bu yerda tashqi `$` (querySelector) ISHLATIB BO'LMAYDI. */
   var ov=document.getElementById("secov");

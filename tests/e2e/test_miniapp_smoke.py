@@ -3627,3 +3627,233 @@ def test_desktop_promo_fits_short_360x640_viewport(page):
     assert box["y"] + box["height"] <= 640.5
     expect(page.locator('.pdd-promo-shell [data-pdd-platform="macos"]')).to_be_visible()
     expect(page.locator('.pdd-promo-shell [data-pdd-platform="windows"]')).to_be_visible()
+
+
+def _mock_voice_environment(page, *, start=None, message=None, end=None, remaining=1):
+    """AI Voice uchun server javoblari. Mikrofon KERAK EMAS — klaviatura yo'li."""
+    start_bodies = []
+    page.route(
+        re.compile(r".*/api/v3/tts.*"),
+        lambda route: route.fulfill(status=200, content_type="audio/mpeg", body=b""),
+    )
+    page.route(
+        re.compile(r".*/api/v3/clientlog$"),
+        lambda route: json_response(route, {"ok": True}),
+    )
+
+    def handle_start(route):
+        start_bodies.append(json.loads(route.request.post_data or "{}"))
+        json_response(route, start or {
+            "session_id": "sess-smoke",
+            "user_status": {"is_paid": False, "plan": "free"},
+            "remaining_limit": remaining,
+            "character": "friend",
+            "course_context": {"lesson_id": 5, "words": [{"zh": "医院", "pinyin": "yīyuàn", "meaning": "shifoxona"}], "review_words": []},
+            "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo", "translation": "Salom!", "correction": None,
+                                "suggestions": [{"zh": "你好，很高兴认识你", "pinyin": "nǐ hǎo", "translation": "Tanishganimdan xursandman"}]},
+            "max_dialogs": 7,
+        })
+
+    page.route(re.compile(r".*/api/voice-practice/session/start$"), handle_start)
+    page.route(
+        re.compile(r".*/api/voice-practice/message$"),
+        lambda route: json_response(route, message or {
+            "transcription": "我去医院",
+            "chinese_reply": "很好！",
+            "pinyin": "hěn hǎo",
+            "translation": "Juda yaxshi!",
+            "correction": "我去了医院",
+            "error_type": "grammar",
+            "suggestions": [
+                {"zh": "我很好", "pinyin": "wǒ hěn hǎo", "translation": "Men yaxshiman"},
+                {"zh": "不太好", "pinyin": "bú tài hǎo", "translation": "Unchalik emas"},
+            ],
+            "remaining_limit": remaining,
+            "turn_count": 2,
+            "max_dialogs": 7,
+            "session_should_end": False,
+        }),
+    )
+    page.route(
+        re.compile(r".*/api/voice-practice/session/end$"),
+        lambda route: json_response(route, end or {
+            "ok": True,
+            "message_count": 2,
+            "good_count": 1,
+            "mistake_count": 1,
+            "errors_by_type": {"grammar": 1, "pronunciation": 0, "word": 0},
+            "target_used": {"used": 1, "total": 4, "words": ["医院"]},
+            "avg_chars": 4.0,
+            "turns": 2,
+            "completed": False,
+            "remaining_limit": 0,
+            "transcript": [
+                {"user": "我去医院", "assistant": "很好！", "pinyin": "hěn hǎo", "translation": "Juda yaxshi!",
+                 "correction": "我去了医院", "error_type": "grammar", "good": False},
+            ],
+            "reward": {"xp_awarded": 10},
+        }),
+    )
+    return start_bodies
+
+
+def test_ai_voice_speaks_the_learners_language_and_shows_real_results(page):
+    """AI Voice: til, limit ko'rsatkichi va yakundagi HAQIQIY o'lchovlar.
+
+    Ilgari hisoblagich xitoycha (`对话 1 / 7`) chiqardi, "bugun necha marta
+    qoldi" hech qayerda ko'rsatilmasdi va yakunda faqat "yaxshi/xato" soni
+    bor edi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator('.nav [data-s="voice"]').click()
+    page.locator("#s-voice .voicebox button").click()
+
+    expect(page.locator("#vc-root")).to_be_visible()
+    # Klaviatura yo'li: mikrofon ruxsati kerak emas.
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("我去医院")
+    page.locator("#vc-kbSend").click()
+
+    counter = page.locator("#vc-cnt")
+    expect(counter).to_contain_text("javob")
+    expect(counter).not_to_contain_text("对话")
+    # Tuzatish xato TURI bilan ko'rsatiladi.
+    expect(page.locator("#vc-chat .fx")).to_contain_text("我去了医院")
+    # REGRESSIYA: global `.fx` (30x30 dumaloq tugma uslubi) suhbatdagi tuzatish
+    # blokini siqib qo'yardi va matn bubble'dan chiqib ketardi.
+    fx_box = page.evaluate(
+        """() => {
+            const fx = document.querySelector('#vc-chat .msg.me .bub .fx');
+            const bub = document.querySelector('#vc-chat .msg.me .bub');
+            return {fx: fx.getBoundingClientRect().width, bub: bub.getBoundingClientRect().width,
+                    bottom: fx.getBoundingClientRect().bottom, bubBottom: bub.getBoundingClientRect().bottom};
+        }"""
+    )
+    assert fx_box["fx"] > 60, "tuzatish bloki 30px qutiga siqilmasligi kerak"
+    assert fx_box["bottom"] <= fx_box["bubBottom"] + 1, "tuzatish matni bubble ichida qolishi kerak"
+
+    # Sozlamalar oynasida "bugun qoldi" qatori.
+    page.locator('#vc-root .top .ic:last-child').click()
+    expect(page.locator("#vc-setLeftRow")).to_be_visible()
+    expect(page.locator("#vc-setLeftV")).to_have_text("1")
+    page.locator("#vc-setSheet .ov").click()
+
+    page.locator('#vc-root .top .ic:first-child').click()
+    expect(page.locator("#vc-done")).to_have_class(re.compile(r"\bon\b"))
+    # Uchinchi plitka: dars so'zlaridan nechtasi ishlatilgan.
+    expect(page.locator("#vc-dstats .stat")).to_have_count(3)
+    expect(page.locator("#vc-dstats")).to_contain_text("1/4")
+    # Xatolar turi bo'yicha ajratilgan.
+    expect(page.locator("#vc-dsaved")).to_contain_text("grammatika")
+    expect(page.locator("#vc-dbadge")).to_be_visible()
+
+
+def test_ai_voice_hides_the_badge_when_nothing_was_said(page):
+    """Gapirilmagan sessiyada "men xitoycha gapiryapman!" nishoni chiqmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page, end={"ok": True, "message_count": 0, "good_count": 0, "mistake_count": 0, "transcript": []})
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.locator('#vc-root .top .ic:first-child').click()
+
+    expect(page.locator("#vc-done")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#vc-dbadge")).to_be_hidden()
+
+
+def test_ai_voice_opens_with_the_role_the_daily_plan_chose(page):
+    """Kunlik reja HSK imtihoni uchun 李老师 ni tanlaydi — klient uni tashlamasin.
+
+    `DailyPlanService` vazifaga `role` qo'shadi, lekin klient uni e'tiborsiz
+    qoldirar va suhbat doim 阿宝 bilan boshlanardi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    start_bodies = _mock_voice_environment(page)
+    tasks = [
+        {"type": "voice_dialog", "role": "teacher_li", "done": False, "access": "open", "available": True},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(route, _map_with_today(tasks)),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator(".today .tchip").first.click()
+
+    expect(page.locator("#vc-nm")).to_contain_text("李老师")
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("你好")
+    page.locator("#vc-kbSend").click()
+    page.wait_for_timeout(400)
+    assert start_bodies and start_bodies[0]["role"] == "teacher_li"
+
+
+def test_ai_voice_hints_follow_the_conversation_instead_of_a_fixed_list(page):
+    """«Nima deyish?» varag'i endi hozirgi savolga mos javoblarni ko'rsatadi.
+
+    Ilgari u yerda 4 ta QOTIB QOLGAN HSK1 iborasi turardi — har bir darajada,
+    har bir javobda bir xil. Endi takliflar AI javobi bilan bir chaqiruvda
+    keladi; AI bermasa doimiy xavfsiz iboralar zaxira bo'lib qoladi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+
+    # Sessiya boshlanmagan: zaxira iboralar.
+    page.locator("#vc-tip").click()
+    expect(page.locator("#vc-hintBody")).to_contain_text("请再说一遍")
+    page.evaluate("VOICE.closeHints()")
+
+    # Suhbat boshlangach — salomlashuvga mos javob boshlagichi.
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("你好")
+    page.locator("#vc-kbSend").click()
+    page.wait_for_timeout(500)
+
+    page.locator("#vc-tip").click()
+    body = page.locator("#vc-hintBody")
+    # AI bergan takliflar chiqadi, doimiy ro'yxat EMAS.
+    expect(body).to_contain_text("我很好")
+    expect(body).to_contain_text("不太好")
+    expect(body).not_to_contain_text("请再说一遍")
+    # Dars so'zlari bloki joyida qoladi (layout o'zgarmadi).
+    expect(body).to_contain_text("医院")
+
+    # Taklifni bosish uni klaviaturaga qo'yadi — mavjud xatti-harakat.
+    page.locator('#vc-hintBody .hitem[data-zh="我很好"]').click()
+    expect(page.locator("#vc-kbText")).to_have_value(re.compile(r"我很好"))
+
+
+def test_ai_voice_hints_fall_back_when_the_model_sends_nothing(page):
+    """AI taklif bermasa varaq bo'sh qolmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page, start={
+        "session_id": "sess-smoke",
+        "remaining_limit": 1,
+        "course_context": {"words": [], "review_words": []},
+        "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo", "translation": "Salom!", "correction": None},
+        "max_dialogs": 7,
+    })
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("你好")
+    page.locator("#vc-kbSend").click()
+    page.wait_for_timeout(500)
+    page.locator("#vc-tip").click()
+    expect(page.locator("#vc-hintBody .hitem")).not_to_have_count(0)

@@ -27,6 +27,10 @@ class VoicePracticeSession(Base):
     )
     target_words: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
     review_words: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
+    # Sessiya boshida muzlatilgan moslashuv rejasi: maqsad, fokus, eng kuchli
+    # zaiflik, qayta sinaladigan xato va SRS so'zlari. Bo'sh `{}` bo'lsa AI
+    # prompt'i moslashuvsiz eski holatida ishlaydi (rollback yo'li).
+    plan_json: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
     started_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

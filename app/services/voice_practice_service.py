@@ -9,7 +9,7 @@ import uuid
 from collections import Counter
 from datetime import datetime, timezone
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 
 from app.config import settings
 from app.db.models.voice_practice_session import VoicePracticeSession
@@ -28,6 +28,8 @@ from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_word_mastery_service import CourseWordMasteryService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
+from app.services.learning_signals import LearningSignalsService
+from app.services import course_v3_vocab
 
 
 logger = logging.getLogger(__name__)
@@ -60,10 +62,17 @@ FREE_PRONOUNCE_DAILY = 25
 # (course_v3_pronunciation.html: score>=60), shuning uchun bitta joyda.
 PRONOUNCE_PASS_SCORE = 60
 MAX_DIALOGS_PER_SESSION = 7
+# AI qaytaradigan xato turlari. `course_mistakes.category` bilan bir xil
+# nomlanadi, shunda end_session ularni to'g'ridan-to'g'ri uzata oladi.
+VOICE_ERROR_TYPES = frozenset({"grammar", "word", "pronunciation"})
 MAX_AUDIO_BYTES = 5 * 1024 * 1024
 # Klaviatura orqali yuborilgan xabar uzunligi (Mini App'da ham 200 belgi cheklovi bor).
 MAX_TEXT_CHARS = 200
-VOICE_REPLY_MAX_TOKENS = 220
+# Javobga endi 2 ta "nima deyish mumkin" taklifi ham kiradi (~70 token).
+# Chegara kichik qolsa JSON kesiladi va butun javob AI_RESPONSE_INVALID bo'lardi.
+VOICE_REPLY_MAX_TOKENS = 340
+# "Nima deyish?" varag'ida ko'rsatiladigan takliflar soni.
+MAX_REPLY_SUGGESTIONS = 2
 
 ROLE_PROMPTS = {
     "lily": "You are Lily, a cheerful and empathetic young Chinese friend. React warmly, laugh naturally, and keep beginners talking without sounding like a tutor.",
@@ -98,12 +107,44 @@ def _level_guidance(level: str) -> str:
 
 LANGUAGE_NAMES = {"ru": "Russian", "tj": "Tajik", "uz": "Uzbek"}
 
+# Maqsad suhbat REGISTRINI tanlaydi, vazifa bermaydi — o'quvchi darsda emas,
+# suhbatda ekanini his qilishi kerak.
+GOAL_REGISTER = {
+    "travel": "This learner is preparing to travel in China, so lean toward travel-shaped situations.",
+    "study_china": "This learner is preparing to study in China, so lean toward campus and student-life situations.",
+    "work_china": "This learner is preparing to work in China, so lean toward workplace and everyday-professional situations.",
+    "daily_communication": "This learner wants everyday conversation, so lean toward ordinary daily-life situations.",
+    "hsk_exam": "This learner is preparing for the HSK exam, so keep the language close to textbook-standard everyday topics.",
+}
+
+# Eng kuchli zaiflik AI ga NIMANI tuzatishini aytadi, lekin gapiriladigan
+# javobni o'zgartirmaydi — aks holda suhbat darsga aylanib qolardi.
+WEAKNESS_NOTE = {
+    "grammar": "This learner most often makes GRAMMAR mistakes (word order, particles, measure words), so when they make one put the fix in `correction` and keep your spoken reply about the conversation.",
+    "word": "This learner most often picks the WRONG WORD, so when they do put the fix in `correction` and keep your spoken reply about the conversation.",
+    "character": "This learner most often confuses similar WORDS, so when they do put the fix in `correction` and keep your spoken reply about the conversation.",
+    "pronunciation": "This learner most often produces unclear or confused SOUNDS, so when a word comes out wrong put the fix in `correction` and keep your spoken reply about the conversation.",
+    "listening": "This learner struggles most with LISTENING, so keep your sentences short and clearly structured.",
+}
+
 # Har bir rol uchun bir nechta ochilish varianti — sessiya boshlanganda tasodifiy
 # biri tanlanadi, shunda AI har safar bir xil gap bilan boshlamaydi.
 OPENING_MESSAGES = {
     "friend": [
         {
             "chinese_reply": "你好！我来了，别害羞，先跟我说一句中文吧。",
+            "suggestions": [
+                {
+                    "zh": "你好，很高兴认识你",
+                    "pinyin": "Nǐ hǎo, hěn gāoxìng rènshi nǐ",
+                    "translations": {"uz": "Salom, siz bilan tanishganimdan xursandman", "ru": "Привет, рад(а) познакомиться", "tj": "Салом, аз шиносоӣ бо шумо шодам"},
+                },
+                {
+                    "zh": "我在学中文",
+                    "pinyin": "Wǒ zài xué Zhōngwén",
+                    "translations": {"uz": "Men xitoy tilini o'rganyapman", "ru": "Я учу китайский", "tj": "Ман забони чиниро меомӯзам"},
+                },
+            ],
             "pinyin": "Nǐ hǎo! Wǒ lái le, bié hàixiū, xiān gēn wǒ shuō yí jù Zhōngwén ba.",
             "translations": {
                 "uz": "Ni hao! Keldim, uyalmang, avval menga xitoycha bitta gap ayting.",
@@ -113,6 +154,18 @@ OPENING_MESSAGES = {
         },
         {
             "chinese_reply": "嘿，是我！今天过得怎么样？",
+            "suggestions": [
+                {
+                    "zh": "很好，谢谢！",
+                    "pinyin": "Hěn hǎo, xièxie!",
+                    "translations": {"uz": "Yaxshi, rahmat!", "ru": "Хорошо, спасибо!", "tj": "Хуб, раҳмат!"},
+                },
+                {
+                    "zh": "今天不太好",
+                    "pinyin": "Jīntiān bú tài hǎo",
+                    "translations": {"uz": "Bugun unchalik yaxshi emas", "ru": "Сегодня не очень", "tj": "Имрӯз чандон хуб не"},
+                },
+            ],
             "pinyin": "Hēi, shì wǒ! Jīntiān guò de zěnme yàng?",
             "translations": {
                 "uz": "Salom, bu men! Bugun kuningiz qanday o'tyapti?",
@@ -122,6 +175,18 @@ OPENING_MESSAGES = {
         },
         {
             "chinese_reply": "哈喽！好久不见，想我了吗？",
+            "suggestions": [
+                {
+                    "zh": "我想你了",
+                    "pinyin": "Wǒ xiǎng nǐ le",
+                    "translations": {"uz": "Sizni sog'indim", "ru": "Я скучал(а)", "tj": "Ман шуморо пазмон шудам"},
+                },
+                {
+                    "zh": "是的，很想",
+                    "pinyin": "Shì de, hěn xiǎng",
+                    "translations": {"uz": "Ha, juda", "ru": "Да, очень", "tj": "Ҳа, хеле"},
+                },
+            ],
             "pinyin": "Hā lóu! Hǎojiǔ bú jiàn, xiǎng wǒ le ma?",
             "translations": {
                 "uz": "Salom! Ancha bo'ldi ko'rishmaganimizga, sog'indingizmi?",
@@ -133,6 +198,18 @@ OPENING_MESSAGES = {
     "teacher_li": [
         {
             "chinese_reply": "哎，找到你啦！今天想聊点什么呢？",
+            "suggestions": [
+                {
+                    "zh": "我们说说学校吧",
+                    "pinyin": "Wǒmen shuōshuo xuéxiào ba",
+                    "translations": {"uz": "Keling, maktab haqida gaplashaylik", "ru": "Давайте поговорим о школе", "tj": "Биёед дар бораи мактаб гап занем"},
+                },
+                {
+                    "zh": "我不知道，你说吧",
+                    "pinyin": "Wǒ bù zhīdào, nǐ shuō ba",
+                    "translations": {"uz": "Bilmadim, siz ayting", "ru": "Не знаю, скажите вы", "tj": "Намедонам, шумо гӯед"},
+                },
+            ],
             "pinyin": "Āi, zhǎodào nǐ la! Jīntiān xiǎng liáo diǎn shénme ne?",
             "translations": {
                 "uz": "Voy, sizni topdim! Bugun nima haqida gaplashamiz?",
@@ -142,6 +219,18 @@ OPENING_MESSAGES = {
         },
         {
             "chinese_reply": "嗨，是我。我们随便聊聊吧，别紧张。",
+            "suggestions": [
+                {
+                    "zh": "好的，谢谢老师",
+                    "pinyin": "Hǎo de, xièxie lǎoshī",
+                    "translations": {"uz": "Xo'p, rahmat ustoz", "ru": "Хорошо, спасибо, учитель", "tj": "Хуб, раҳмат устод"},
+                },
+                {
+                    "zh": "我想说中文",
+                    "pinyin": "Wǒ xiǎng shuō Zhōngwén",
+                    "translations": {"uz": "Men xitoycha gapirmoqchiman", "ru": "Я хочу говорить по-китайски", "tj": "Ман мехоҳам чинӣ гап занам"},
+                },
+            ],
             "pinyin": "Hāi, shì wǒ. Wǒmen suíbiàn liáo liao ba, bié jǐnzhāng.",
             "translations": {
                 "uz": "Salom, bu men. Keling, erkin suhbatlashamiz, xavotir olmang.",
@@ -151,6 +240,18 @@ OPENING_MESSAGES = {
         },
         {
             "chinese_reply": "你好呀，今天心情怎么样？",
+            "suggestions": [
+                {
+                    "zh": "我很高兴",
+                    "pinyin": "Wǒ hěn gāoxìng",
+                    "translations": {"uz": "Men juda xursandman", "ru": "Я очень рад(а)", "tj": "Ман хеле шодам"},
+                },
+                {
+                    "zh": "今天不太好",
+                    "pinyin": "Jīntiān bú tài hǎo",
+                    "translations": {"uz": "Bugun unchalik yaxshi emas", "ru": "Сегодня не очень", "tj": "Имрӯз чандон хуб не"},
+                },
+            ],
             "pinyin": "Nǐ hǎo ya, jīntiān xīnqíng zěnme yàng?",
             "translations": {
                 "uz": "Salom, bugun kayfiyatingiz qanday?",
@@ -237,29 +338,14 @@ class VoicePracticeService:
         )
         words = self._extract_words(payload, 4)
 
-        # Takror uchun: user allaqachon o'tgan oldingi darslardan so'zlar yig'amiz va
-        # tasodifiy 6 tasini tanlaymiz — shunda har sessiyada bir xil so'zlar emas,
-        # turlicha so'zlar suhbatga qo'shiladi.
-        seen = {w["zh"] for w in words}
+        # Takror so'zlari endi TASODIFIY emas — SRS jadvalidan olinadi, ya'ni
+        # o'quvchining aynan muddati kelgan so'zlari suhbatga qo'shiladi.
+        # Ilgari bu yerda oldingi darslar bo'ylab 10 tagacha `get_payload`
+        # chaqirilardi (har biri to'liq dars payload'ini qurardi) va ulardan
+        # `random.sample` bilan 6 ta so'z olinardi.
         current_order = int(lesson.lesson_order)
-        prev_orders = list(range(1, current_order))
-        random.shuffle(prev_orders)
-        candidate_words: list[dict] = []
-        for prev_order in prev_orders[:10]:
-            prev_payload = await lesson_service.get_payload(
-                lesson_order=prev_order,
-                lang=language,
-                level=str(lesson.level),
-            )
-            for word in self._extract_words(prev_payload, 3):
-                if word["zh"] in seen:
-                    continue
-                seen.add(word["zh"])
-                candidate_words.append(word)
-            if len(candidate_words) >= 15:
-                break
-        review_words = (
-            random.sample(candidate_words, k=min(6, len(candidate_words))) if candidate_words else []
+        review_words = await self._srs_review_words(
+            user, language, exclude={w["zh"] for w in words}
         )
         return {
             "lesson_id": lesson.id,
@@ -269,6 +355,110 @@ class VoicePracticeService:
             "words": words,
             "review_words": review_words,
         }
+
+    async def _srs_review_words(
+        self, user, language: str, *, exclude: set[str], limit: int = 6
+    ) -> list[dict]:
+        """Takrorga tegishli so'zlar — SRS (Leitner) jadvalidan.
+
+        Mashq bo'limlari bilan bir xil manba, shuning uchun suhbatda aynan
+        o'quvchi unutishga yaqin so'zlar eshitiladi. Pinyin/ma'no lug'at
+        indeksidan olinadi — u process ichida keshlangan, SO'ROV QILMAYDI.
+
+        DIQQAT: bu yerda SRS faqat O'QILADI. `record_drill` chaqirilmaydi —
+        suhbatda aytilgan so'z baholangan mashq emas, qutini oldinga surish
+        o'quvchining rejalashtirilgan takrorlarini jimgina yeb qo'yardi.
+        """
+        try:
+            mastery = CourseWordMasteryService(self.session)
+            band, current_part, offset_minutes = await mastery.context(user)
+            rows = await mastery.select(
+                user,
+                skill="pronunciation",
+                level=band,
+                current_part=current_part,
+                limit=max(limit * 2, 10),
+                timezone_offset_minutes=offset_minutes,
+            )
+        except Exception:  # noqa: BLE001 — SRS o'qilmasa suhbat baribir boshlanadi
+            logger.exception("Voice SRS review lookup failed for user %s", getattr(user, "id", None))
+            return []
+
+        index = {
+            str(item.get("zh") or ""): item
+            for item in course_v3_vocab.words_for_level(band)
+        }
+        # Muddati kelgan takrorlar birinchi, keyin qolgan o'rgatilgan so'zlar.
+        ordered = [r for r in rows if r.get("kind") == "review"] + [
+            r for r in rows if r.get("kind") != "review"
+        ]
+        out: list[dict] = []
+        seen = set(exclude)
+        for row in ordered:
+            zh = str((row or {}).get("zh") or "").strip()
+            if not zh or zh in seen:
+                continue
+            seen.add(zh)
+            entry = index.get(zh) or {}
+            meanings = entry.get("meaning") or {}
+            out.append(
+                {
+                    "zh": zh[:40],
+                    "pinyin": str(entry.get("pinyin") or "")[:80],
+                    "meaning": str(meanings.get(language) or meanings.get("ru") or "")[:160],
+                }
+            )
+            if len(out) >= limit:
+                break
+        return out
+
+    async def _learner_plan(self, user, telegram_id: int, level: str) -> dict:
+        """Sessiya boshida muzlatiladigan moslashuv rejasi.
+
+        Ilovaning qolgan qismi allaqachon shu signallar bo'yicha moslashadi
+        (kunlik reja, xatolar bo'limi, SRS mashqlari) — AI Voice esa faqat HSK
+        darajasini bilardi. Butun blok himoyalangan: signal o'qilmasa suhbat
+        oddiy (moslashuvsiz) rejimda davom etadi.
+        """
+        plan: dict = {}
+        try:
+            result = await self.session.execute(
+                select(CourseMiniAppProfile).where(CourseMiniAppProfile.user_id == user.id)
+            )
+            # DIQQAT: profil YARATILMAYDI — `start_session` o'qish yo'li.
+            profile = result.scalar_one_or_none()
+            progress = await self.progress_repo.get_by_user_id(user.id)
+            signals = await LearningSignalsService(self.session).load(
+                user, profile=profile, progress=progress, level=level
+            )
+        except Exception:  # noqa: BLE001 — moslashuv suhbatni yiqitmasin
+            logger.exception("Voice learner signals failed for user %s", getattr(user, "id", None))
+            return {}
+
+        plan["goal"] = str(signals.goal or "")
+        plan["focus"] = str(signals.preferred_focus or "")
+        weakness = {k: int(v or 0) for k, v in (signals.weakness or {}).items()}
+        top = max(weakness.items(), key=lambda kv: kv[1], default=("", 0))
+        plan["weak"] = top[0] if top[1] > 0 else ""
+
+        # Qayta sinash uchun bitta o'tgan xato: o'quvchining aynan xitoycha
+        # jumlasi va to'g'ri varianti. Boshqa mashq turlaridagi variant tanlash
+        # savollari mos kelmaydi, shuning uchun ikkala tomon ham xitoycha
+        # bo'lishi shart.
+        try:
+            overview = await CourseMistakeService(self.session).overview(telegram_id, limit=6)
+            for entry in (overview or {}).get("items") or []:
+                question = str(entry.get("question") or "").strip()
+                answer = str(entry.get("correct_answer") or "").strip()
+                if not question or not answer or question == answer:
+                    continue
+                if not self._cjk_chars(question) or not self._cjk_chars(answer):
+                    continue
+                plan["retest"] = [{"q": question[:60], "a": answer[:60]}]
+                break
+        except Exception:  # noqa: BLE001
+            logger.exception("Voice mistake retest lookup failed for user %s", telegram_id)
+        return plan
 
     @staticmethod
     def _day_start(offset_minutes: int = 0) -> datetime:
@@ -332,8 +522,12 @@ class VoicePracticeService:
         return None
 
     async def _session_count(self, telegram_id: int, *, today_only: bool) -> int:
+        # Limit faqat HAQIQIY suhbat uchun yonadi. Ilgari sessiya QATORI
+        # yaratilishi kifoya edi — AI xato bersa yoki mikrofonga ruxsat
+        # berilmasa ham bepul o'quvchi kunlik slotidan ayrilardi.
         query = select(func.count(VoicePracticeSession.id)).where(
-            VoicePracticeSession.user_telegram_id == telegram_id
+            VoicePracticeSession.user_telegram_id == telegram_id,
+            VoicePracticeSession.turn_count > 0,
         )
         if today_only:
             offset = await self._offset_minutes(telegram_id)
@@ -440,20 +634,28 @@ class VoicePracticeService:
         course_context = await self._course_context(user, language) if user else {
             "lesson_id": None, "lesson_order": None, "title": "", "words": [], "review_words": []
         }
-        item = VoicePracticeSession(
-            id=str(uuid.uuid4()),
-            user_telegram_id=telegram_id,
-            role=role,
-            level=level,
-            language=language,
-            voice=voice,
-            history=[],
-            corrections=[],
-            lesson_id=course_context.get("lesson_id"),
-            target_words=course_context.get("words") or [],
-            review_words=course_context.get("review_words") or [],
-        )
-        self.session.add(item)
+        offset_minutes = await self._offset_minutes(telegram_id)
+        await self._retire_stale_sessions(telegram_id, offset_minutes)
+        item = await self._reusable_session(telegram_id, offset_minutes)
+        if item is None:
+            item = VoicePracticeSession(id=str(uuid.uuid4()), user_telegram_id=telegram_id)
+            self.session.add(item)
+        item.role = role
+        item.level = level
+        item.language = language
+        item.voice = voice
+        item.status = "active"
+        item.ended_at = None
+        item.history = []
+        item.corrections = []
+        item.lesson_id = course_context.get("lesson_id")
+        item.target_words = course_context.get("words") or []
+        item.review_words = course_context.get("review_words") or []
+        # Moslashuv rejasi sessiya boshida MUZLATILADI: `_generate_reply` bir
+        # sessiyada 7 marta ishlaydi, har safar qayta hisoblash so'rov narxini
+        # 7 ga ko'paytirar va murabbiylik suhbat o'rtasida siljirdi. Klientga
+        # QAYTARILMAYDI — bu ichki murabbiylik ma'lumoti.
+        item.plan_json = await self._learner_plan(user, telegram_id, level) if user else {}
         await self.session.commit()
 
         next_status = await self.user_status(telegram_id)
@@ -466,6 +668,44 @@ class VoicePracticeService:
             "opening_message": self._opening_message(role, language),
             "max_dialogs": MAX_DIALOGS_PER_SESSION,
         }
+
+    async def _retire_stale_sessions(self, telegram_id: int, offset_minutes: int) -> None:
+        """Kechagi ochiq qolgan sessiyalarni yopadi.
+
+        Ilova majburan yopilsa `/session/end` chaqirilmaydi va qator abadiy
+        `active` bo'lib qolardi. Cron kerak emas — keyingi start o'zi tozalaydi.
+        """
+        await self.session.execute(
+            update(VoicePracticeSession)
+            .where(
+                VoicePracticeSession.user_telegram_id == telegram_id,
+                VoicePracticeSession.status == "active",
+                VoicePracticeSession.started_at < self._day_start(offset_minutes),
+            )
+            .values(status="abandoned", ended_at=datetime.now(timezone.utc))
+        )
+
+    async def _reusable_session(
+        self, telegram_id: int, offset_minutes: int
+    ) -> VoicePracticeSession | None:
+        """Bugungi hali gapirilmagan sessiya qatori (bo'lsa).
+
+        `_session_count` endi `turn_count > 0` ni sanaydi, ya'ni gapirilmagan
+        qator limitni yoqmaydi. Shu sababli start tugmasini qayta-qayta bosish
+        cheksiz qator yaratishi mumkin edi — qatorni qayta ishlatib, buni
+        kunlik bittaga cheklaymiz.
+        """
+        result = await self.session.execute(
+            select(VoicePracticeSession)
+            .where(
+                VoicePracticeSession.user_telegram_id == telegram_id,
+                VoicePracticeSession.turn_count == 0,
+                VoicePracticeSession.started_at >= self._day_start(offset_minutes),
+            )
+            .order_by(VoicePracticeSession.started_at.desc())
+            .limit(1)
+        )
+        return result.scalar_one_or_none()
 
     async def _get_active_session(self, telegram_id: int, session_id: str) -> VoicePracticeSession:
         result = await self.session.execute(
@@ -489,23 +729,82 @@ class VoicePracticeService:
         chinese = str(data.get("chinese_reply") or "").strip()
         if not chinese:
             raise VoicePracticeError("AI_RESPONSE_INVALID", "AI returned an empty response.", 502)
+        correction = str(data.get("correction") or "").strip()[:700] or None
+        # Xato TURI. Ilgari suhbatdagi HAR QANDAY xato "pronunciation" deb
+        # yozilardi — klaviaturadan yozilgan grammatik xato ham. Bu zaiflik
+        # signalini (LearningSignals._weakness) va kunlik rejani buzardi.
+        error_type = str(data.get("error_type") or "").strip().lower()
+        if error_type not in VOICE_ERROR_TYPES:
+            error_type = ""
+        if not correction:
+            error_type = "none"
+        elif not error_type:
+            # Tasniflab bo'lmagan xato uchun loyihaning mavjud odati "word"
+            # (qarang course_mistake_service._category, learning_signals).
+            error_type = "word"
         return {
             "chinese_reply": chinese[:500],
             "pinyin": str(data.get("pinyin") or "").strip()[:700],
             "translation": str(data.get("translation") or "").strip()[:700],
-            "correction": str(data.get("correction") or "").strip()[:700] or None,
+            "correction": correction,
+            "error_type": error_type,
+            "suggestions": VoicePracticeService._clean_suggestions(data.get("suggestions")),
         }
+
+    @staticmethod
+    def _clean_suggestions(raw) -> list[dict]:
+        """"Nima deyish?" varag'i uchun takliflar.
+
+        AI ularni suhbat javobi bilan BIR chaqiruvda qaytaradi, ya'ni
+        qo'shimcha so'rov ham, qo'shimcha kechikish ham yo'q. Yaroqsiz javob
+        bo'lsa bo'sh ro'yxat qaytadi va klient doimiy xavfsiz iboralarga
+        qaytadi — varaq hech qachon bo'sh qolmaydi.
+        """
+        if not isinstance(raw, list):
+            return []
+        out: list[dict] = []
+        seen: set[str] = set()
+        for entry in raw:
+            if not isinstance(entry, dict):
+                continue
+            zh = str(entry.get("zh") or "").strip()[:40]
+            # Xitoycha bo'lmagan taklif klaviaturaga qo'yilsa foydasiz.
+            if not zh or zh in seen or not VoicePracticeService._cjk_chars(zh):
+                continue
+            seen.add(zh)
+            out.append(
+                {
+                    "zh": zh,
+                    "pinyin": str(entry.get("pinyin") or "").strip()[:80],
+                    "translation": str(entry.get("translation") or "").strip()[:160],
+                }
+            )
+            if len(out) >= MAX_REPLY_SUGGESTIONS:
+                break
+        return out
 
     @staticmethod
     def _opening_message(role: str, language: str) -> dict:
         variants = OPENING_MESSAGES.get(role) or OPENING_MESSAGES["friend"]
         message = random.choice(variants)
         translations = message.get("translations") or {}
+        suggestions = []
+        for entry in (message.get("suggestions") or [])[:MAX_REPLY_SUGGESTIONS]:
+            entry_tr = entry.get("translations") or {}
+            suggestions.append(
+                {
+                    "zh": str(entry.get("zh") or ""),
+                    "pinyin": str(entry.get("pinyin") or ""),
+                    "translation": str(entry_tr.get(language) or entry_tr.get("ru") or ""),
+                }
+            )
         return {
             "chinese_reply": str(message.get("chinese_reply") or ""),
             "pinyin": str(message.get("pinyin") or ""),
             "translation": str(translations.get(language) or translations.get("ru") or ""),
             "correction": None,
+            "error_type": "none",
+            "suggestions": suggestions,
         }
 
     async def _generate_reply(self, item: VoicePracticeSession, transcription: str) -> tuple[dict, AIUsageResult]:
@@ -543,6 +842,52 @@ class VoicePracticeService:
             "Naturally guide the conversation across these topics during the session (one at a time, shift when "
             f"it feels natural, don't force all of them in one reply): {', '.join(session_topics)}. "
         )
+        # Moslashuv bloki — QAT'IY 3 jumladan oshmaydi. Sabab: flash-lite kichik
+        # model, uzun system prompt eng muhim qoidani (STRICT LEVEL RULE)
+        # suyultirib yuboradi. Reja bo'sh bo'lsa blok umuman chiqmaydi va
+        # prompt moslashuvdan oldingi holatiga qaytadi.
+        plan = item.plan_json if isinstance(item.plan_json, dict) else {}
+        learner_lines: list[str] = []
+        goal_line = GOAL_REGISTER.get(str(plan.get("goal") or ""))
+        if goal_line:
+            learner_lines.append(goal_line)
+        weak_line = WEAKNESS_NOTE.get(str(plan.get("weak") or ""))
+        if weak_line:
+            learner_lines.append(weak_line)
+        retest = plan.get("retest")
+        if isinstance(retest, list) and retest and isinstance(retest[0], dict):
+            wrong = str(retest[0].get("q") or "").strip()[:60]
+            right = str(retest[0].get("a") or "").strip()[:60]
+            if wrong and right:
+                learner_lines.append(
+                    f'Earlier this learner said "{wrong}" when the correct form was "{right}"; at most ONCE in '
+                    "this whole conversation ask something where that structure would naturally come up, never "
+                    "mention it was a past mistake and never ask them to repeat it."
+                )
+        learner_instruction = (" ".join(learner_lines[:3]) + " ") if learner_lines else ""
+
+        # Suhbatda allaqachon aytilgan maqsad so'zlar — model bir xil so'zni
+        # qayta-qayta surmasligi uchun. So'rov qilmaydi, saqlangan tarixdan.
+        spoken = "".join(
+            str(entry.get("user") or "")
+            for entry in list(item.history or [])
+            if isinstance(entry, dict)
+        )
+        already_used = [
+            zh
+            for zh in (
+                str((word or {}).get("zh") or "")
+                for word in [*list(item.target_words or []), *review_list]
+                if isinstance(word, dict)
+            )
+            if zh and zh in spoken
+        ]
+        used_instruction = (
+            f"The learner has already used {json.dumps(already_used[:8], ensure_ascii=False)} in this chat, "
+            "so don't push those again. "
+            if already_used
+            else ""
+        )
         messages = [
             {
                 "role": "system",
@@ -551,7 +896,8 @@ class VoicePracticeService:
                     f"STRICT LEVEL RULE (most important): {_level_guidance(item.level)} "
                     "Never use any word or grammar above the learner's level, even if it feels natural. "
                     "If you must reference something harder, replace it with a simpler word the learner knows. "
-                    f"Current-lesson target words: {target_words}. {review_instruction}"
+                    f"Current-lesson target words: {target_words}. {used_instruction}"
+                    f"{learner_instruction}{review_instruction}"
                     "Fast voice roleplay. Reply in 1 short Chinese sentence, rarely 2. "
                     "Use one target word only if natural. Be playful and warm: joke, laugh, lightly tease weak "
                     "answers, never humiliate; switch topic if the learner seems uncomfortable. "
@@ -561,8 +907,20 @@ class VoicePracticeService:
                     "in this same conversation (see the message history). This is a real casual chat, not a lesson "
                     "or class — never say things like 'let's start' or explicitly frame it as studying. "
                     f"{closing_instruction} Translate into {target_language}. "
-                    "Correct only important errors. JSON only: chinese_reply, pinyin, translation, correction. "
-                    "Use null correction when OK."
+                    "Correct only important errors. "
+                    "JSON only: chinese_reply, pinyin, translation, correction, error_type, suggestions. "
+                    "Use null correction when the learner's Chinese was fine. "
+                    "error_type classifies that correction: \"grammar\" (word order, particle, "
+                    "measure word, aspect, missing/extra function word), \"word\" (wrong or "
+                    "non-existent word, wrong meaning), \"pronunciation\" (the transcript shows a "
+                    "real but wrong near-homophone of what they clearly meant). "
+                    "Use \"none\" when correction is null. "
+                    "suggestions = exactly 2 things THE LEARNER could say back to you right now: "
+                    "they must be natural, useful answers to what you just said (if you asked a "
+                    "question, they must actually answer it), different from each other, and STRICTLY "
+                    "within the learner's level rule above. Each is "
+                    f'{{\"zh\": Chinese, \"pinyin\": pinyin with tone marks, \"translation\": {target_language}}}. '
+                    "Keep them short (3-8 characters)."
                 ),
             }
         ]
@@ -667,6 +1025,7 @@ class VoicePracticeService:
                 "pinyin": reply.get("pinyin") or "",
                 "translation": reply.get("translation") or "",
                 "correction": reply.get("correction") or None,
+                "error_type": reply.get("error_type") or "none",
             }
         )
         item.history = history[-20:]
@@ -917,6 +1276,7 @@ class VoicePracticeService:
         transcript: list[dict] = []
         good_count = 0
         mistake_count = 0
+        errors_by_type = {key: 0 for key in sorted(VOICE_ERROR_TYPES)}
         for entry in list(item.history or []):
             if not isinstance(entry, dict):
                 continue
@@ -928,6 +1288,9 @@ class VoicePracticeService:
                 mistake_count += 1
             else:
                 good_count += 1
+            entry_type = str(entry.get("error_type") or "").strip().lower()
+            if correction and entry_type in VOICE_ERROR_TYPES:
+                errors_by_type[entry_type] += 1
             transcript.append(
                 {
                     "user": user_text,
@@ -935,12 +1298,18 @@ class VoicePracticeService:
                     "pinyin": str(entry.get("pinyin") or "").strip(),
                     "translation": str(entry.get("translation") or "").strip(),
                     "correction": correction,
+                    "error_type": entry_type if correction else "none",
                     "good": correction is None,
                 }
             )
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)
-        if user:
+        # Gapirilmagan sessiya (`turn_count == 0`) uchun XP/streak berilmaydi:
+        # `award` faqat `activity_ref` bo'yicha dedupe qiladi, ya'ni ochib-yopish
+        # 10 XP + streak + kunlik rejaning `voice_dialog` vazifasini bergan
+        # bo'lardi. Limit endi gapirilgandan keyin yonadi, shuning uchun bu
+        # himoya bo'lmasa ferma bepul o'quvchilarga ham ochilardi.
+        if user and int(item.turn_count or 0) > 0:
             # Xatolarim bo'limi uchun: userning aynan noto'g'ri jumlasini savol,
             # to'g'ri variantni javob qilib yozamiz (avvalgidek savol=tuzatish emas).
             mistake_items = []
@@ -951,15 +1320,22 @@ class VoicePracticeService:
                 if not correction:
                     continue
                 user_text = str(entry.get("user") or "").strip()
-                mistake_items.append(
-                    {
-                        "question": user_text or correction,
-                        "selected_answer": user_text or None,
-                        "correct_answer": correction,
-                        "explanation": correction,
-                        "category": "pronunciation",
-                    }
-                )
+                mistake_item = {
+                    "question": user_text or correction,
+                    "selected_answer": user_text or None,
+                    "correct_answer": correction,
+                    "explanation": correction,
+                }
+                # Xato turini AI bergan bo'lsa — o'shani uzatamiz. Bermagan
+                # bo'lsa (o'zgarishdan OLDIN boshlangan sessiyalar) `category`
+                # kaliti umuman qo'yilmaydi va CourseMistakeService._category
+                # ning `source == "voice"` fallback'i eski xatti-harakatni
+                # saqlaydi. `language` ATAYLAB berilmaydi — voice jumlalari
+                # word_choice distraktor havzasiga aralashmasligi kerak.
+                entry_type = str(entry.get("error_type") or "").strip().lower()
+                if entry_type in VOICE_ERROR_TYPES:
+                    mistake_item["category"] = entry_type
+                mistake_items.append(mistake_item)
             await CourseMistakeService(self.session).record_items(
                 user,
                 mistake_items,
@@ -985,5 +1361,40 @@ class VoicePracticeService:
             "transcript": transcript,
             "good_count": good_count,
             "mistake_count": mistake_count,
+            "errors_by_type": errors_by_type,
             "reward": reward,
+            **self._session_metrics(item, transcript),
+        }
+
+    @staticmethod
+    def _session_metrics(item: VoicePracticeSession, transcript: list[dict]) -> dict:
+        """Suhbat o'lchovlari — QO'SHIMCHA AI chaqiruvisiz.
+
+        Bularning hammasi saqlangan tarixdan arifmetika bilan chiqadi. LLM
+        xulosasi qo'shilmadi: `end_session` hozir ~50 ms da qaytadi va natija
+        kartasi faqat shundan keyin chiziladi; modelga chiqish uni 1.5-5 s ga
+        cho'zib, AI xatosida o'quvchini XP dan ham, transkriptdan ham
+        ayirardi.
+
+        DIQQAT: bu yerda AKUSTIK yoki TON tahlili YO'Q va bo'lishi ham mumkin
+        emas — STT matni bilan ishlaymiz. Shuning uchun natijalar "ball" emas,
+        SANOQ sifatida ko'rsatilishi kerak.
+        """
+        said = [str(row.get("user") or "") for row in transcript]
+        joined = "".join(said)
+        pool: list[str] = []
+        seen: set[str] = set()
+        for word in [*list(item.target_words or []), *list(item.review_words or [])]:
+            zh = str((word or {}).get("zh") or "").strip() if isinstance(word, dict) else ""
+            if zh and zh not in seen:
+                seen.add(zh)
+                pool.append(zh)
+        used = [zh for zh in pool if zh in joined]
+        lengths = [len(VoicePracticeService._cjk_chars(text)) for text in said if text]
+        turns = int(item.turn_count or 0)
+        return {
+            "target_used": {"used": len(used), "total": len(pool), "words": used[:12]},
+            "avg_chars": round(sum(lengths) / len(lengths), 1) if lengths else 0.0,
+            "turns": turns,
+            "completed": turns >= MAX_DIALOGS_PER_SESSION,
         }
