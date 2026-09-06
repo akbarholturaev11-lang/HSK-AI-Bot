@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +30,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Check
@@ -50,11 +52,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -522,7 +524,6 @@ private fun PathRow(
     onOpenChest: () -> Unit,
 ) {
     val offsetX = pathOffset(row.unitIndex, row.nodeIndex)
-    val previousX = row.previousNodeIndex?.let { pathOffset(row.unitIndex, it) }
     val pandaPrompts = stringArrayResource(R.array.course_panda_prompts)
     val pandaPrompt = row.pandaPromptIndex?.let { pandaPrompts[it % pandaPrompts.size] }
     val chestDescription = stringResource(R.string.course_chest_cd)
@@ -531,7 +532,7 @@ private fun PathRow(
         modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT),
         contentAlignment = Alignment.Center,
     ) {
-        if (previousX != null) PathConnector(previousX, offsetX)
+        if (row.nodeCount >= 2) PathTrailSlice(row)
 
         if (pandaPrompt != null) {
             val onLeft = offsetX.value >= 0f
@@ -682,36 +683,25 @@ private fun CurrentBubble() {
 }
 
 @Composable
-private fun PathConnector(previousX: Dp, currentX: Dp) {
-    Canvas(
+private fun PathTrailSlice(row: CourseRow.Path) {
+    val trailHeight = (
+        COURSE_PATH_TOP_PADDING_DP +
+            COURSE_PATH_ROW_HEIGHT_DP * row.nodeCount +
+            2f
+        ).dp
+    val trailOffsetY = (2f - COURSE_PATH_ROW_HEIGHT_DP * row.nodeIndex).dp
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(PATH_ROW_HEIGHT)
-            .offset(y = (-42).dp),
+            .fillMaxSize()
+            .clipToBounds(),
     ) {
-        val center = size.width / 2f
-        val startX = center + previousX.toPx()
-        val endX = center + currentX.toPx()
-        val middleY = size.height / 2f
-        val path = Path().apply {
-            moveTo(startX, 0f)
-            cubicTo(startX, middleY, endX, middleY, endX, size.height)
-        }
-        drawPath(
-            path,
-            color = PompColors.CourseTrail,
-            style = Stroke(width = 34.dp.toPx(), cap = StrokeCap.Round),
-        )
-        drawPath(
-            path,
-            color = Color.White.copy(alpha = 0.80f),
-            style = Stroke(
-                width = 4.dp.toPx(),
-                cap = StrokeCap.Round,
-                pathEffect = PathEffect.dashPathEffect(
-                    floatArrayOf(0.5.dp.toPx(), 16.dp.toPx()),
-                ),
-            ),
+        ContinuousCourseTrail(
+            unitIndex = row.unitIndex,
+            nodeCount = row.nodeCount,
+            modifier = Modifier
+                .fillMaxWidth()
+                .requiredHeight(trailHeight)
+                .offset(y = trailOffsetY),
         )
     }
 }
@@ -1074,6 +1064,7 @@ private sealed interface CourseRow {
         val nodeIndex: Int,
         val previousNodeIndex: Int?,
         val pandaPromptIndex: Int?,
+        val nodeCount: Int,
     ) : CourseRow
 }
 
@@ -1105,6 +1096,7 @@ private fun CourseMap.toRows(): List<CourseRow> = buildList {
                     nodeIndex = nodeIndex,
                     previousNodeIndex = if (nodeIndex > 0) nodeIndex - 1 else null,
                     pandaPromptIndex = pandaPrompt,
+                    nodeCount = nodes.size,
                 )
             )
         }
