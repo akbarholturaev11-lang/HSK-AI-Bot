@@ -33,7 +33,11 @@ class StudySetupViewModel(
     val state: StateFlow<StudySetupUiState> = _state.asStateFlow()
     private var dismissedForSession = false
 
-    fun sync(server: CourseStudySetup?) {
+    fun sync(
+        server: CourseStudySetup?,
+        lastAskedAtMillis: Long? = null,
+        nowMillis: Long = System.currentTimeMillis(),
+    ) {
         if (server == null || !server.pending) {
             dismissedForSession = false
             _state.update { it.copy(visible = false, setup = server, error = null) }
@@ -42,6 +46,14 @@ class StudySetupViewModel(
         val current = _state.value
         if (dismissedForSession || current.saving) {
             _state.update { it.copy(setup = server) }
+            return
+        }
+        val coolingDown = !current.visible &&
+            lastAskedAtMillis != null &&
+            lastAskedAtMillis > 0L &&
+            nowMillis - lastAskedAtMillis < SETUP_ASK_GAP_MS
+        if (coolingDown) {
+            _state.update { it.copy(visible = false, setup = server, error = null) }
             return
         }
         val stage = when {
@@ -114,5 +126,9 @@ class StudySetupViewModel(
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             StudySetupViewModel(repository) as T
+    }
+
+    private companion object {
+        const val SETUP_ASK_GAP_MS = 24L * 60L * 60L * 1000L
     }
 }
