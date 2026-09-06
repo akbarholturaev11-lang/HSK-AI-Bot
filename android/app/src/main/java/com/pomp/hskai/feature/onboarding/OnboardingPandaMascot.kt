@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,6 +30,7 @@ import kotlinx.coroutines.launch
 internal fun OnboardingPandaMascot(
     reactionKey: Int = 0,
     motionEnabled: Boolean = true,
+    happy: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val transition = if (motionEnabled) {
@@ -48,7 +48,7 @@ internal fun OnboardingPandaMascot(
     } else {
         1f
     }
-    val blink = if (transition != null) {
+    val blink = if (!happy && transition != null) {
         transition.animateFloat(
             initialValue = 1f,
             targetValue = 1f,
@@ -96,8 +96,6 @@ internal fun OnboardingPandaMascot(
         if (reactionKey <= 0) return@LaunchedEffect
         pleased = true
         if (!motionEnabled) {
-            // Reduced-motion CSS removes animation, but the pleased face still exists
-            // while the JS reaction class is held for 800ms.
             delay(800)
             pleased = false
             return@LaunchedEffect
@@ -154,13 +152,14 @@ internal fun OnboardingPandaMascot(
             val sx = size.width / 100f
             val sy = size.height / 114f
             fun x(v: Float) = v * sx
-            fun y(v: Float) = v * sy
+            // Web viewBox is `0 -4 100 114`, so SVG y=0 starts 4 units below the canvas top.
+            fun y(v: Float) = (v + 4f) * sy
             fun p(vx: Float, vy: Float) = androidx.compose.ui.geometry.Offset(x(vx), y(vy))
             fun oval(cx: Float, cy: Float, rx: Float, ry: Float, color: Color) {
                 drawOval(
                     color = color,
                     topLeft = p(cx - rx, cy - ry),
-                    size = androidx.compose.ui.geometry.Size(x(rx * 2f), y(ry * 2f)),
+                    size = androidx.compose.ui.geometry.Size(x(rx * 2f), y(ry) - y(-ry)),
                 )
             }
 
@@ -172,23 +171,32 @@ internal fun OnboardingPandaMascot(
             val cinnabarDark = Color(0xFFB23530)
             val gold = Color(0xFFE9A916)
 
-            // Shadow is outside the breathing/nod group in the web SVG.
             oval(50f, 103f, 29f, 5f, ink.copy(alpha = 0.10f))
 
             rotate(nodRotation.value, pivot = p(50f, 54f)) {
                 withTransform({
-                    translate(top = y(nodY.value - ((breathe - 1f) / 0.02f).coerceIn(0f, 1f)))
+                    translate(top = (nodY.value - ((breathe - 1f) / 0.02f).coerceIn(0f, 1f)) * sy)
                     scale(scaleX = 1f, scaleY = breathe, pivot = p(50f, 103f))
                 }) {
                     oval(38f, 97f, 9.5f, 6.5f, ink)
                     oval(62f, 97f, 9.5f, 6.5f, ink)
 
-                    val leftArm = Path().apply {
-                        moveTo(x(30f), y(64f))
-                        quadraticBezierTo(x(18f), y(68f), x(17f), y(82f))
-                        quadraticBezierTo(x(24f), y(87f), x(30f), y(83f))
-                        quadraticBezierTo(x(31f), y(73f), x(34f), y(68f))
-                        close()
+                    val leftArm = if (happy) {
+                        Path().apply {
+                            moveTo(x(30f), y(62f))
+                            quadraticBezierTo(x(15f), y(55f), x(13f), y(39f))
+                            quadraticBezierTo(x(19f), y(33f), x(25f), y(37f))
+                            quadraticBezierTo(x(28f), y(48f), x(36f), y(55f))
+                            close()
+                        }
+                    } else {
+                        Path().apply {
+                            moveTo(x(30f), y(64f))
+                            quadraticBezierTo(x(18f), y(68f), x(17f), y(82f))
+                            quadraticBezierTo(x(24f), y(87f), x(30f), y(83f))
+                            quadraticBezierTo(x(31f), y(73f), x(34f), y(68f))
+                            close()
+                        }
                     }
                     drawPath(leftArm, ink)
 
@@ -235,7 +243,7 @@ internal fun OnboardingPandaMascot(
                     rotate(-12f, pivot = p(38f, 35f)) { oval(38f, 35f, 9f, 12f, ink) }
                     rotate(12f, pivot = p(62f, 35f)) { oval(62f, 35f, 9f, 12f, ink) }
 
-                    if (pleased) {
+                    if (happy || pleased) {
                         val leftSmile = Path().apply {
                             moveTo(x(32f), y(35f))
                             quadraticBezierTo(x(38f), y(28f), x(44f), y(35f))
@@ -348,15 +356,15 @@ internal fun OnboardingPandaMascot(
                             drawRoundRect(
                                 gold,
                                 topLeft = p(81f, 32f),
-                                size = androidx.compose.ui.geometry.Size(x(8f), y(33f)),
-                                cornerRadius = androidx.compose.ui.geometry.CornerRadius(x(1f), y(1f)),
+                                size = androidx.compose.ui.geometry.Size(x(8f), y(33f) - y(0f)),
+                                cornerRadius = androidx.compose.ui.geometry.CornerRadius(x(1f), sy),
                             )
                             drawLine(Color(0xFFFFE28F), p(84f, 35f), p(84f, 59f), strokeWidth = x(2f))
                             drawRoundRect(
                                 Color(0xFFE791A6),
                                 topLeft = p(81f, 63f),
-                                size = androidx.compose.ui.geometry.Size(x(8f), y(8f)),
-                                cornerRadius = androidx.compose.ui.geometry.CornerRadius(x(2f), y(2f)),
+                                size = androidx.compose.ui.geometry.Size(x(8f), y(8f) - y(0f)),
+                                cornerRadius = androidx.compose.ui.geometry.CornerRadius(x(2f), 2f * sy),
                             )
                             drawLine(cream, p(81f, 64f), p(89f, 64f), strokeWidth = x(3f))
                         }
