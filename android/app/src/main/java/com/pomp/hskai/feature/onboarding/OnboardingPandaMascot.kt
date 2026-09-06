@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -73,7 +74,6 @@ internal fun OnboardingPandaMascot(
     val armRotation = remember { Animatable(0f) }
     var pleased by remember { mutableStateOf(false) }
 
-    // Mini App runs one pencil-arm wave after each render: pdWave 1.2s .2s ease-in-out both.
     LaunchedEffect(motionEnabled) {
         armRotation.snapTo(0f)
         if (!motionEnabled) return@LaunchedEffect
@@ -152,7 +152,6 @@ internal fun OnboardingPandaMascot(
             val sx = size.width / 100f
             val sy = size.height / 114f
             fun x(v: Float) = v * sx
-            // Web viewBox is `0 -4 100 114`, so SVG y=0 starts 4 units below the canvas top.
             fun y(v: Float) = (v + 4f) * sy
             fun p(vx: Float, vy: Float) = androidx.compose.ui.geometry.Offset(x(vx), y(vy))
             fun oval(cx: Float, cy: Float, rx: Float, ry: Float, color: Color) {
