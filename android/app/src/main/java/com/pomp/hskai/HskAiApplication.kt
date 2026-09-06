@@ -22,6 +22,7 @@ import com.pomp.hskai.data.repository.FeatureRepository
 import com.pomp.hskai.data.repository.OnboardingRepository
 import com.pomp.hskai.data.repository.StudyPreferencesRepository
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -125,6 +126,10 @@ class HskAiApplication : Application() {
             api = studyPreferencesApi,
             accessToken = authRepository::accessToken,
             onSessionExpired = authRepository::invalidateSession,
+            readLastSetupPromptAskedAtMillis = {
+                appSettings.lastStudySetupAskedAtMillis.first()
+            },
+            writeLastSetupPromptAskedAtMillis = appSettings::setLastStudySetupAskedAtMillis,
         )
     }
 
