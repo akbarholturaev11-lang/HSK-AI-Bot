@@ -2,6 +2,7 @@ package com.pomp.hskai.feature.course
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import com.pomp.hskai.domain.model.CourseFoundation
 @Composable
 internal fun FoundationEntry(
     foundation: CourseFoundation,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val done = foundation.completed
@@ -43,7 +45,8 @@ internal fun FoundationEntry(
         border = BorderStroke(1.dp, Color(0xFFC2403A).copy(alpha = 0.25f)),
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 18.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 18.dp)
+            .clickable(onClick = onClick),
     ) {
         Box(
             modifier = Modifier.background(
