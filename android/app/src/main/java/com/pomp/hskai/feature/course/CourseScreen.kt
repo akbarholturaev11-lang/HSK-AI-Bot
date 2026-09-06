@@ -539,6 +539,7 @@ private fun PathRow(
             PathPanda(
                 text = pandaPrompt,
                 leftBubble = onLeft,
+                animationDelayMillis = (row.nodeIndex % 4) * 400,
                 modifier = Modifier
                     .align(if (onLeft) Alignment.CenterStart else Alignment.CenterEnd)
                     .padding(start = if (onLeft) 8.dp else 0.dp, end = if (onLeft) 0.dp else 8.dp),
@@ -894,10 +895,14 @@ private fun ChestGlyph(modifier: Modifier = Modifier) {
 private fun PathPanda(
     text: String,
     leftBubble: Boolean,
+    animationDelayMillis: Int,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.size(72.dp), contentAlignment = Alignment.Center) {
-        CoursePandaMascot(modifier = Modifier.size(72.dp))
+        CoursePandaMascot(
+            modifier = Modifier.size(72.dp),
+            animationDelayMillis = animationDelayMillis,
+        )
         Box(
             modifier = Modifier
                 .align(if (leftBubble) Alignment.TopStart else Alignment.TopEnd)
