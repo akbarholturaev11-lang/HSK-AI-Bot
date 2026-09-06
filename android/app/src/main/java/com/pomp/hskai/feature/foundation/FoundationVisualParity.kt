@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -167,6 +168,28 @@ internal fun FoundationCircularAudio(
     }
 }
 
+/** Mini App generic flow `.audio`: 48px soft circular listening control. */
+@Composable
+internal fun FoundationListenAudio(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        color = PompColors.CinnabarSoft,
+        shape = CircleShape,
+        modifier = modifier.size(48.dp).clickable(onClick = onClick),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.Filled.VolumeUp,
+                contentDescription = null,
+                tint = PompColors.Cinnabar,
+                modifier = Modifier.size(22.dp),
+            )
+        }
+    }
+}
+
 /** Mini App `.foundation-parts`: two equal cards with a 10px gap. */
 @Composable
 internal fun FoundationPartsGrid(
@@ -213,6 +236,45 @@ internal fun FoundationToneGrid(
         }
         repeat((4 - examples.take(4).size).coerceAtLeast(0)) {
             Spacer(Modifier.weight(1f))
+        }
+    }
+}
+
+/** Mini App `.foundation-win div`: jade mastery row used on the result card. */
+@Composable
+internal fun FoundationWinRow(
+    text: String,
+    mastered: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        color = if (mastered) PompColors.JadeSoft else PompColors.PaperRaised,
+        shape = RoundedCornerShape(13.dp),
+        border = BorderStroke(
+            1.dp,
+            if (mastered) PompColors.Jade.copy(alpha = 0.20f) else PompColors.Divider,
+        ),
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 13.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                tint = if (mastered) PompColors.Jade else PompColors.InkTertiary,
+                modifier = Modifier.size(18.dp),
+            )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                ),
+                color = if (mastered) PompColors.Jade else PompColors.InkSecondary,
+            )
         }
     }
 }
