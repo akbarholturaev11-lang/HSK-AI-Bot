@@ -6281,17 +6281,27 @@ function onStopped(){
 }
 
 /* ---- typed message ---- */
-function sendText(){
-  var t=$("kbText"),txt=(t.value||"").trim();
+/* Matnli javobni yuborish. Ikki manba shu yerga keladi: klaviatura paneli va
+   "Nima deyish?" varag'i — farq faqat matn qayerdan olinishida. */
+function sendMessage(txt){
+  txt=(""+(txt||"")).trim();
   if(busy||!txt)return;
-  if(!started){startSession().then(function(ok){if(ok)sendText()});return;}
-  t.value="";t.style.height="auto";syncSend();
+  if(!started){startSession().then(function(ok){if(ok)sendMessage(txt)});return;}
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);
   addMe(txt,"");addTyping();
   var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("text",txt);
   fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
     .then(function(o){busy=false;micBusy(false);dropTyping();if(!o.ok){onMsgError(o);return}renderReply(o.j,true)})
     .catch(function(){busy=false;micBusy(false);dropTyping();setChar("happy");setStatus(L.sendErr)});
+}
+function sendText(){
+  var t=$("kbText"),txt=(t.value||"").trim();
+  if(busy||!txt)return;
+  /* Sessiya hali ochilmagan bo'lsa maydon TOZALANMAYDI — ulanish uzilsa
+     yozgan matni yo'qolmasin. */
+  if(!started){startSession().then(function(ok){if(ok)sendText()});return;}
+  t.value="";t.style.height="auto";syncSend();
+  sendMessage(txt);
 }
 
 function onMsgError(o){
@@ -6417,8 +6427,11 @@ aria("#vc-kbSend",L.a11ySend);
 chatEl().addEventListener("click",function(e){var b=e.target.closest&&e.target.closest(".rep");if(b)speak(b.getAttribute("data-zh"))});
 $("hintBody").addEventListener("click",function(e){
   var b=e.target.closest&&e.target.closest(".hitem");if(!b)return;
-  var zh=b.getAttribute("data-zh")||"";speak(zh);
-  openKb();var t=$("kbText");t.value=(t.value?t.value+zh:zh);syncSend();closeHints();
+  var zh=b.getAttribute("data-zh")||"";
+  /* Varaqning butun ma'nosi "nima deyishni bilmayapman" — shuning uchun
+     tanlash DARHOL gapga aylanadi. Klaviatura paneli ochilmaydi. Ibora ovozda
+     ham o'qilmaydi: panda javobi ~2s da kelib uni baribir yarmida uzardi. */
+  closeHints();sendMessage(zh);
 });
 $("kbText").addEventListener("input",function(){var t=$("kbText");t.style.height="auto";t.style.height=Math.min(t.scrollHeight,96)+"px";syncSend()});
 $("kbText").addEventListener("focus",function(){setTimeout(chatScroll,250)});

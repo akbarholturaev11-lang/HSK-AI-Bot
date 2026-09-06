@@ -310,6 +310,12 @@ Changed:
   uchun 6 ta ochilish varianti QO'LDA yozilgan takliflarni olib yuradi
   (3 tilda). AI yaroqsiz javob bersa `SAFE` zaxira bo'lib qoladi — varaq
   hech qachon bo'sh qolmaydi.
+- Varaqdan tanlangan element (ham javob varianti, ham dars so'zi) DARHOL
+  yuboriladi: klaviatura paneli umuman ochilmaydi va ibora ovozda ham
+  o'qilmaydi (panda javobi ~2s da kelib uni yarmida uzardi). Ilgari u
+  `openKb()` chaqirib matnni maydonga ko'chirardi va yana «yuborish» bosish
+  kerak edi. Yuborish mantig'i `sendText()` dan `sendMessage(txt)` ga
+  ajratildi — klaviatura ham, varaq ham shundan foydalanadi.
 - Desktop: yakun ekraniga o'sha uchinchi ko'rsatkich (bitta `voice.js` —
   macOS/Windows parity avtomatik), `voiceStatWords` 3 tilda. Desktop/Android'da
   «Nima deyish?» varag'i YO'Q, shuning uchun u yerda parity ishi kerak emas.
@@ -7346,3 +7352,18 @@ Any AI coding assistant working on this project must:
 11. Use only the three active collaboration branches: `main`, `codex/local-ai`, and `codex/cloud-ai`.
 12. Cloud AI must keep untested work on `codex/cloud-ai`; if tests cannot run in cloud, leave a context/instructions file for local Codex to test and promote.
 13. Local Codex must test on `codex/local-ai`, promote only tested commits to `main`, then sync both AI branches back to `main`.
+
+### 2026-09-07 — Isolated local voice studio
+
+Changed:
+- `tools/voice-studio/` is a standalone loopback text-to-speech utility, independent of bot, Mini App, payment and database code.
+- Russian and Tajik use pinned Meta MMS models downloaded once; inference is offline. Models use CC BY-NC 4.0 and are not intended for commercial ads.
+
+Files touched:
+- `tools/voice-studio/` (server, worker, static UI, launchers, tests, documentation).
+
+Risk:
+- macOS runtime and both voices tested. Windows launcher provided with shared implementation, but Windows execution is unverified. Models, virtual environment and generated audio are ignored by Git.
+
+Follow-up:
+- Launch through `Start.command`; `README.md` documents setup and limits.

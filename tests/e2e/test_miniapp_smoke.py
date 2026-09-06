@@ -3833,9 +3833,9 @@ def test_ai_voice_hints_follow_the_conversation_instead_of_a_fixed_list(page):
     # Dars so'zlari bloki joyida qoladi (layout o'zgarmadi).
     expect(body).to_contain_text("医院")
 
-    # Taklifni bosish uni klaviaturaga qo'yadi — mavjud xatti-harakat.
+    # Taklif bosilishi bilan GAPGA aylanadi — klaviaturaga ko'chirilmaydi.
     page.locator('#vc-hintBody .hitem[data-zh="我很好"]').click()
-    expect(page.locator("#vc-kbText")).to_have_value(re.compile(r"我很好"))
+    expect(page.locator("#vc-chat .msg.me").last).to_contain_text("我很好")
 
 
 def test_ai_voice_hints_fall_back_when_the_model_sends_nothing(page):
@@ -3930,3 +3930,34 @@ def test_ai_voice_fits_above_the_ios_keyboard(page):
     )
     page.wait_for_timeout(200)
     assert box()["root"] == full["root"]
+
+
+def test_ai_voice_a_hint_is_sent_at_once_without_opening_the_keyboard(page):
+    """«Nima deyish?» dan tanlangan variant to'g'ridan-to'g'ri yuboriladi.
+
+    Ilgari u klaviatura panelini ochib, matnni maydonga ko'chirardi va yana
+    «yuborish» bosish kerak edi. Varaqning ma'nosi «nima deyishni bilmayapman»
+    ekan, tanlash o'zi gap bo'lishi kerak.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.wait_for_timeout(400)
+
+    sent = []
+    page.on("request", lambda r: sent.append(r.url) if "voice-practice/message" in r.url else None)
+
+    # Klaviatura hech qachon ochilmagan holatda dars so'zini tanlaymiz.
+    page.locator("#vc-tip").click()
+    page.locator('#vc-hintBody .hitem[data-zh="医院"]').click()
+
+    # Varaq yopiladi, gap chatga tushadi, klaviatura paneli YOPIQ qoladi.
+    expect(page.locator("#vc-hintSheet")).not_to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#vc-chat .msg.me").last).to_contain_text("医院")
+    expect(page.locator("#vc-kbPanel")).not_to_have_class(re.compile(r"\bon\b"))
+    page.wait_for_timeout(500)
+    assert sent, "tanlangan variant serverga yuborilishi kerak"
