@@ -3811,12 +3811,14 @@ def test_ai_voice_hints_follow_the_conversation_instead_of_a_fixed_list(page):
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
     page.evaluate("App.openVoiceCall()")
 
-    # Sessiya boshlanmagan: zaxira iboralar.
+    # Panda kirgan zahoti salomlashadi, ya'ni varaqda darhol o'sha
+    # salomlashuvga mos javob boshlagichlari turadi (doimiy ro'yxat EMAS).
     page.locator("#vc-tip").click()
-    expect(page.locator("#vc-hintBody")).to_contain_text("请再说一遍")
+    expect(page.locator("#vc-hintBody")).to_contain_text("很高兴认识你")
+    expect(page.locator("#vc-hintBody")).not_to_contain_text("请再说一遍")
     page.evaluate("VOICE.closeHints()")
 
-    # Suhbat boshlangach — salomlashuvga mos javob boshlagichi.
+    # Javobdan keyin takliflar YANGILANADI.
     page.locator("#vc-root .row .sq").first.click()
     page.locator("#vc-kbText").fill("你好")
     page.locator("#vc-kbSend").click()
@@ -3857,3 +3859,74 @@ def test_ai_voice_hints_fall_back_when_the_model_sends_nothing(page):
     page.wait_for_timeout(500)
     page.locator("#vc-tip").click()
     expect(page.locator("#vc-hintBody .hitem")).not_to_have_count(0)
+
+
+def test_ai_voice_greets_on_open_without_waiting_for_the_microphone(page):
+    """Panda kirgan zahoti gapiradi.
+
+    Ilgari sessiya faqat mikrofon bosilganda boshlanardi — o'quvchi ekranga
+    kirib jim turgan pandani ko'rardi. Sabab: sessiya ochilishi bepul kunlik
+    limitni yoqib yuborardi. Endi limit faqat gapirilganda yonadi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    start_bodies = _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+
+    # Mikrofonga TEGILMAGAN holda salomlashuv chiqadi.
+    expect(page.locator("#vc-chat .msg.ai")).to_contain_text("你好！")
+    assert len(start_bodies) == 1, "ekran ochilishi bitta sessiya boshlashi kerak"
+
+
+def test_ai_voice_fits_above_the_ios_keyboard(page):
+    """Klaviatura ochilganda kiritish maydoni ko'rinib turishi kerak.
+
+    iOS Telegram WebView'da klaviatura ochilganda `100dvh` KICHRAYMAYDI, ya'ni
+    dock (klaviatura tugmasi + kiritish maydoni) klaviatura ostida qolib
+    ketardi va chat kesilardi. `#secov` flex konteyner bo'lgani uchun faqat
+    `height` berish ham yetmasdi — flex uni qayta cho'zib yuborardi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.wait_for_timeout(300)
+
+    def box():
+        return page.evaluate(
+            """() => ({
+                root: Math.round(document.getElementById('vc-root').getBoundingClientRect().height),
+                dock: Math.round(document.querySelector('#vc-root .dock').getBoundingClientRect().bottom),
+            })"""
+        )
+
+    full = box()
+    assert full["dock"] <= full["root"] + 1
+
+    # Klaviatura ochilishini taqlid qilamiz: visualViewport pasayadi.
+    page.evaluate(
+        """() => {
+            Object.defineProperty(window.visualViewport, 'height', {value: 420, configurable: true});
+            window.visualViewport.dispatchEvent(new Event('resize'));
+        }"""
+    )
+    page.wait_for_timeout(200)
+    small = box()
+    assert small["root"] == 420, small
+    assert small["dock"] <= 421, f"kiritish maydoni klaviatura ostida qoldi: {small}"
+
+    # Klaviatura yopilgach CSS'dagi to'liq balandlik qaytadi.
+    page.evaluate(
+        """() => {
+            delete window.visualViewport.height;
+            window.visualViewport.dispatchEvent(new Event('resize'));
+        }"""
+    )
+    page.wait_for_timeout(200)
+    assert box()["root"] == full["root"]

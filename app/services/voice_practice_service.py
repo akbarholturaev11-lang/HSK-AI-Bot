@@ -992,6 +992,7 @@ class VoicePracticeService:
                         user_language=item.language,
                         user_level=item.level,
                         gemini_model=GEMINI_FAST_MODEL,
+                        expect_chinese=True,
                     ),
                     timeout=35,
                 )
@@ -1132,6 +1133,7 @@ class VoicePracticeService:
                     user_level=(level or "hsk1"),
                     speech_hint=f"{target} ({target_pinyin})" if target_pinyin else target,
                     gemini_model=GEMINI_FAST_MODEL,
+                    expect_chinese=True,
                 ),
                 timeout=35,
             )

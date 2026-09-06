@@ -939,7 +939,12 @@ button{cursor:pointer}
 #vc-root .charwrap{height:100%;aspect-ratio:1/1;max-width:100%;display:flex;align-items:center;justify-content:center}
 #vc-root .charwrap svg{width:100%;height:100%;filter:drop-shadow(0 6px 10px rgba(60,44,20,.25))}
 #vc-root .mouth{transform-box:fill-box;transform-origin:center}
-#vc-root .speaking .mouth{animation:talk .34s ease-in-out infinite}
+#vc-root .speaking .mouth{animation:talk .32s ease-in-out infinite}
+/* Gapirish effekti: og'iz + butun pandaning yengil tebranishi. `.speaking`
+   tahlil paytida ham yoqiladi, shuning uchun tebranish AYNAN ovoz chiqayotgan
+   paytga (`.vspeak`) bog'landi — panda jim turib gapirayotgandek ko'rinmasin. */
+#vc-root.vspeak .charwrap svg{animation:vcBob .52s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){#vc-root.vspeak .charwrap svg{animation:none}}
 #vc-root 0%,#vc-root 100%{transform:scaleY(.45)}
 #vc-root 50%{transform:scaleY(1.05)}
 #vc-root .pd-breathe{animation:pdBreathe 2.6s ease-in-out infinite;transform-origin:50% 100%}
@@ -1046,9 +1051,15 @@ button{cursor:pointer}
 #vc-root .txr .ai .atr{font-size:12.5px;color:var(--ink2);margin-top:1px}
 #vc-root .savednote{font-size:12px;color:var(--ink2);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
 #vc-root .stage{height:clamp(140px,26vh,190px)}
+/* Klaviatura ochilganda panda sahnasi kichrayadi. `.stage` balandligi `vh`
+   bilan berilgan, ya'ni u KLAVIATURANI ko'rmaydi va to'liq ekrandan
+   hisoblanadi — shu sababli chat bilan dock 420px ga sig'may, kiritish
+   maydoni klaviatura ostida qolib ketardi. */
+#vc-root.kbopen .stage{height:clamp(56px,9vh,86px)}
 #vc-root .mic{width:66px;height:66px;font-size:27px}
 #vc-root .sq{width:44px;height:44px}
-@keyframes talk{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1.05)}}
+@keyframes talk{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1.2)}}
+@keyframes vcBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes pdBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02) translateY(-2px)}}
 @keyframes pdBlink{0%,90%,100%{transform:scaleY(0)}94%{transform:scaleY(1)}}
 @keyframes bl{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
@@ -6008,17 +6019,33 @@ function slowOn(){try{return localStorage.getItem(RATE_KEY)==="slow"}catch(e){re
 function applyRate(){$("setRateV").textContent=slowOn()?L.rateSlow:L.rateNormal}
 function toggleRate(){try{localStorage.setItem(RATE_KEY,slowOn()?"normal":"slow")}catch(e){}applyRate()}
 function goBack(){leave()}
+function syncViewport(){
+  /* iOS Telegram WebView'da klaviatura ochilganda `100dvh` KICHRAYMAYDI:
+     kiritish maydoni va maslahat tugmasi klaviatura ostida qolib ketardi.
+     visualViewport haqiqiy ko'rinadigan balandlikni beradi. */
+  var vv=window.visualViewport,r=$("root");if(!vv||!r)return;
+  var h=Math.round(vv.height||0);
+  /* `#secov` — flex konteyner va `#vc-root` da `flex:1` bor, shuning uchun
+     shunchaki `height` berish YETMAYDI: flex uni qaytadan cho'zib yuboradi.
+     Klaviatura yopiq bo'lganda CSS'dagi `100dvh` o'z holicha qoladi. */
+  var narrow=!!(h&&h<window.innerHeight-40);
+  r.classList.toggle("kbopen",narrow);
+  if(narrow){r.style.flex="0 0 auto";r.style.height=Math.max(240,h)+"px"}
+  else{r.style.flex="";r.style.height=""}
+  if(narrow)chatScroll();
+}
 
 /* ---- TTS ---- */
 var _ttsAudio=null,_ttsCache={},_ttsPend={};
 function clog(ev,msg,ex){try{var tgw=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tgw&&tgw.platform)||"",tgver:(tgw&&tgw.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
-function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=slowOn()?.68:.85;window.speechSynthesis.speak(u)}catch(e){}}
-function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=slowOn()?.68:.85;u.onstart=function(){vspeak(true)};u.onend=function(){vspeak(false)};u.onerror=function(){vspeak(false)};window.speechSynthesis.speak(u)}catch(e){}}
+function vspeak(on){try{var r=$("root");if(r)r.classList.toggle("vspeak",!!on)}catch(e){}}
+function stopSpeak(){vspeak(false);window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
 function _ttsPrefetch(x){x=(x||"").trim();if(!x||x.length>240||_ttsCache[x]||_ttsPend[x]||!/[一-鿿]/.test(x))return;_ttsPend[x]=fetch("/api/v3/tts?text="+encodeURIComponent(x)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPend[x];if(b&&b.size)_ttsCache[x]=URL.createObjectURL(b)}).catch(function(){delete _ttsPend[x]})}
 function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio(_ttsCache[t]||("/api/v3/tts?text="+encodeURIComponent(t)));if(!_ttsCache[t])_ttsPrefetch(t);
   try{a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true}catch(e){}
   a.playbackRate=slowOn()?.75:1;
-  _ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
+  _ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1;vspeak(true)};a.onended=function(){if(tok===window._ttsTok)vspeak(false)};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
 var ac;function ring(s){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;s.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);var st=t+k*0.08;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(0.1,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+0.15);o.start(st);o.stop(st+0.17)})}catch(e){}}
 
 /* ---- sepia bamboo forest background ---- */
@@ -6063,8 +6090,8 @@ var lessonWords=[],reviewWords=[];
    chaqiruvda qaytaradi, ya'ni qo'shimcha so'rov yo'q. Bo'sh bo'lsa quyidagi
    doimiy SAFE iboralari ko'rsatiladi — varaq hech qachon bo'sh qolmaydi. */
 var hintSug=[];
-var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null;
-var MAX_REC_MS=20000,MIN_BYTES=1200,MIN_HOLD_MS=400;
+var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null,micIdle=null,vpOff=null;
+var MAX_REC_MS=20000,MIN_BYTES=1200,MIN_HOLD_MS=400,MIC_IDLE_MS=30000;
 var holdAt=0,holdOk=false,recAt=0;
 /* AI taklif bermaganda ishlatiladigan ZAXIRA iboralar (har doim to'g'ri, HSK1). */
 var SAFE=[{zh:"请再说一遍",pinyin:"qǐng zài shuō yí biàn",meaning:{ru:"Повторите, пожалуйста",uz:"Iltimos, yana bir bor ayting",tj:"Лутфан, боз як бор гӯед"}},
@@ -6077,7 +6104,8 @@ function setChar(m){$("char").innerHTML=chr(m,persona);$("char").className="char
 function setStatus(t){$("status").textContent=t||""}
 function setCnt(){$("cnt").textContent=String(L.turnOf).replace("{n}",Math.min(turn+1,maxDialogs)).replace("{m}",maxDialogs)}
 function setName(){$("nm").textContent=PERS[persona].name;$("setPersonaV").textContent=PERS[persona].name}
-function setHold(t){$("holdhint").textContent=t||""}
+function kbOn(){var k=$("kbPanel");return !!(k&&k.classList.contains("on"))}
+function setHold(t){$("holdhint").textContent=(kbOn()?"":(t||""))}
 function noteLimit(v){if(typeof v==="number")remainLimit=v;applyLimit()}
 function limitText(){return remainLimit===null?"":(remainLimit<0?L.unlimited:String(remainLimit))}
 function applyLimit(){
@@ -6194,15 +6222,31 @@ function endHoldEvent(e){
   stopRecording();
 }
 function beginHold(){holdOk=true;recAt=0;startRecording()}
+function micStream(){
+  /* Oqim navbatlar ORASIDA ochiq qoladi. iOS'da har bosishda getUserMedia
+     qayta so'ralsa 300-800ms ketadi va o'sha vaqt ichida aytilgan gap YOZILMAY
+     qolardi — "bot meni eshitmadi" muammosining asosiy sababi shu edi.
+     Jimlikda 30 soniyadan keyin bo'shatiladi, ya'ni mikrofon indikatori
+     butun sessiya davomida yonib turmaydi. */
+  clearTimeout(micIdle);
+  if(mediaStream&&mediaStream.active)return Promise.resolve(mediaStream);
+  return navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){mediaStream=st;return st});
+}
+function releaseMicSoon(){clearTimeout(micIdle);micIdle=setTimeout(function(){
+  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
+},MIC_IDLE_MS)}
 
 function pickMime(){var c=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/aac","audio/ogg;codecs=opus"];
   if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return"";
   for(var i=0;i<c.length;i++){if(MediaRecorder.isTypeSupported(c[i]))return c[i]}return""}
 function startRecording(){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});setStatus(L.noSupport);holdOk=false;return;}
-  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
-    if(!holdOk){try{stream.getTracks().forEach(function(t){t.stop()})}catch(e){}return;}
-    mediaStream=stream;var mime=pickMime();chunks=[];
+  /* Panda hali gapirayotgan bo'lsa mikrofon UNING ovozini yozib olardi va
+     transkripsiyaga o'quvchi gapi o'rniga panda gapi tushardi. */
+  stopSpeak();
+  micStream().then(function(stream){
+    if(!holdOk)return;
+    var mime=pickMime();chunks=[];
     var opts={audioBitsPerSecond:32000};if(mime)opts.mimeType=mime;
     try{mediaRecorder=new MediaRecorder(stream,opts)}catch(_){mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream)}
     mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size>0)chunks.push(e.data)};
@@ -6219,15 +6263,14 @@ function stopRecording(){
 function cancelRecording(){
   clearTimeout(autoStop);mic.classList.remove("rec");holdOk=false;recAt=0;chunks=[];
   try{if(mediaRecorder&&mediaRecorder.state!=="inactive"){mediaRecorder.onstop=null;mediaRecorder.stop()}}catch(e){}
-  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}
-  mediaStream=null;mediaRecorder=null;setChar("happy");
+  mediaRecorder=null;releaseMicSoon();setChar("happy");
 }
-function stopHard(){clearTimeout(autoStop);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
+function stopHard(){clearTimeout(autoStop);clearTimeout(micIdle);holdAt=0;holdOk=false;recAt=0;try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null}
 function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm"}
 function onStopped(){
   var mt=(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm";
   var blob=new Blob(chunks,{type:mt});
-  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
+  releaseMicSoon();
   if(blob.size<MIN_BYTES){setChar("happy");setStatus(L.tooShort);setHold(L.holdMic);return;}
   busy=true;micBusy(true);setChar("talk");setStatus(L.analyzing);addTyping();
   var _ext=extFromMime(blob.type||mt);
@@ -6388,6 +6431,12 @@ mic.addEventListener("pointerdown",function(e){
   if(!started){startSession().then(function(ok){if(ok&&holdAt)beginHold()});return;}
   beginHold();
 });
+if(window.visualViewport){
+  window.visualViewport.addEventListener("resize",syncViewport);
+  window.visualViewport.addEventListener("scroll",syncViewport);
+  vpOff=function(){try{window.visualViewport.removeEventListener("resize",syncViewport);window.visualViewport.removeEventListener("scroll",syncViewport)}catch(e){}};
+  syncViewport();
+}
 mic.addEventListener("pointerup",endHoldEvent);
 mic.addEventListener("pointercancel",endHoldEvent);
 mic.addEventListener("pointerleave",function(e){if(holdAt&&holdOk)endHoldEvent(e)});
@@ -6397,6 +6446,7 @@ mic.addEventListener("pointerleave",function(e){if(holdAt&&holdOk)endHoldEvent(e
    yopiladi — aks holda dialog limiti "band" holatda qolib ketardi. */
 function leave(){
   try{stopHard()}catch(e){}try{stopSpeak()}catch(e){}
+  if(vpOff){vpOff();vpOff=null}
   try{closeSettings();closeHints();closeKb()}catch(e){}
   if(sess){try{fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:INIT_DATA,session_id:sess})}).then(function(r){if(r.ok)refreshCourseProgress(true)}).catch(function(){})}catch(e){}}
   started=false;sess=null;
@@ -6415,6 +6465,11 @@ function open(role){
   openSection(API);
   sess=null;turn=0;started=false;busy=false;
   wire();init();
+  /* Panda kirgan ZAHOTI salomlashadi. Ilgari sessiya faqat mikrofon bosilganda
+     boshlanardi, chunki sessiya ochilishi bepul kunlik limitni YOQIB yuborardi.
+     Endi limit faqat haqiqatan gapirilganda yonadi, shuning uchun darhol
+     boshlash xavfsiz. */
+  startSession();
 }
 var API={open:open,close:leave,endCall:endCall,openSettings:openSettings,closeSettings:closeSettings,
   swap:swap,toggleSub:toggleSub,toggleRate:toggleRate,openHints:openHints,closeHints:closeHints,

@@ -227,6 +227,44 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-07 — AI Voice: haqiqiy qurilmadagi 5 ta nuqson
+
+Yuqoridagi moslashuv ishidan keyin iPhone'da sinovda topilgan muammolar.
+
+Changed:
+- **STT endi FAQAT xitoychani kutadi.** `AIService.transcribe_voice_with_usage`
+  ga `expect_chinese` bayrog'i qo'shildi; AI Voice suhbati va talaffuz mashqi
+  uni beradi. Ilgari prompt "Likely {ona tili} or Chinese" derdi va model
+  xitoycha nutqni kirillga o'girib yozardi ("huǒguō" -> "Хуагу"), keyin esa
+  AI javobi ham, tuzatish ham butunlay boshqa narsa haqida chiqardi.
+  Botdagi umumiy ovozli savol-javob yo'li TEGILMADI — u yerda o'quvchi o'z
+  ona tilida gapiradi.
+- **Panda kirgan zahoti salomlashadi.** `open()` endi `startSession()` ni
+  chaqiradi. Ilgari sessiya faqat mikrofon bosilganda boshlanardi, chunki
+  sessiya ochilishi bepul kunlik limitni yoqib yuborardi — bu cheklov
+  `turn_count > 0` tuzatilishidan keyin yo'qoldi.
+- **Mikrofon oqimi navbatlar orasida ochiq qoladi** (jimlikda 30s dan keyin
+  bo'shatiladi). iOS'da har bosishda `getUserMedia` 300-800ms olardi va o'sha
+  vaqtda aytilgan gap YOZILMAY qolardi — "bot meni eshitmayapti" shundan edi.
+- **Yozuv boshlanishida `stopSpeak()`.** Panda hali gapirayotganda mikrofon
+  UNING ovozini yozib olardi va transkripsiyaga o'quvchi gapi o'rniga panda
+  gapi tushardi.
+- **iOS klaviaturasi.** Ilovada `visualViewport` ishlov berish umuman yo'q edi:
+  klaviatura ochilganda `100dvh` kichraymaydi, dock klaviatura ostida qolardi.
+  Endi `syncViewport()` bor. DIQQAT: `#secov` — flex konteyner va `#vc-root`
+  da `flex:1` bor, shuning uchun faqat `height` berish YETMAYDI (flex uni
+  qayta cho'zadi) — `flex:0 0 auto` ham qo'yiladi. Bundan tashqari `.stage`
+  balandligi `vh` da berilgani uchun klaviaturani ko'rmaydi; `.kbopen` sinfi
+  panda sahnasini kichraytiradi, aks holda chat + dock sig'masdi.
+- **Gapirish effekti.** Ilgari faqat kichik og'iz harakati bor edi. Endi og'iz
+  kuchliroq va butun panda yengil tebranadi. Tebranish `.speaking` ga EMAS,
+  `.vspeak` ga bog'langan (ovoz haqiqatan chiqayotgan payt), chunki
+  `.speaking` tahlil paytida ham yoqiladi — panda jim turib gapirayotgandek
+  ko'rinardi. `prefers-reduced-motion` hurmat qilinadi.
+
+Tekshirildi: `tests/test_voice_transcribe_language.py` (yangi), 7 ta AI Voice
+E2E smoke testi (klaviatura balandligi regressiyasi ham qadalgan).
+
 ### 2026-09-06 — AI Voice: moslashuv, xato turi va bepul slot
 
 Ilovaning qolgan qismi allaqachon o'quvchiga moslashardi (kunlik reja

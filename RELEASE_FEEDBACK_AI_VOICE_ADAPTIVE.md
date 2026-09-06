@@ -40,6 +40,14 @@ AI Voice endi sizga moslashadi
 - Suhbat hisoblagichi va ekran yorliqlari sizning tilingizda (ilgari xitoycha
   `对话 3 / 7` chiqardi). O'zbek, rus va tojik tillari.
 - Tuzatish matni suhbat pufagidan chiqib ketadigan chizilish xatosi tuzatildi.
+- Panda endi ekranga kirgan zahoti salomlashadi — mikrofonni kutib turmaydi.
+- Gapirayotganda panda jonlanadi (og'iz + yengil tebranish).
+- Klaviatura ochilganda ekran to'g'ri moslashadi: kiritish maydoni klaviatura
+  ostida qolib ketmaydi.
+- Mikrofon endi tezroq ishga tushadi — ilgari birinchi so'zlar yozilmay
+  qolib, bot go'yo eshitmagandek bo'lardi.
+- Xitoycha gapirganingiz endi xitoycha yozib olinadi (ilgari ba'zan kirill
+  harflarga o'girilib, javob butunlay boshqa narsa haqida chiqardi).
 - Kunlik reja HSK imtihoni uchun 李老师 ni tanlagan bo'lsa, suhbat aynan u
   bilan boshlanadi (ilgari doim 阿宝 ochilardi).
 
