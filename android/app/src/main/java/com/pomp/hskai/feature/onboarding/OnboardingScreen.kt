@@ -68,7 +68,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.pomp.hskai.core.design.PompColors
-import com.pomp.hskai.feature.course.CoursePandaMascot
 
 /**
  * Native port of `app/static/course_v3_onboarding.html`.
@@ -349,13 +348,7 @@ private fun WelcomeStep(copy: OnboardingCopy) {
         SpeechBubble(text = copy.hello, centeredTail = true, large = false)
         Spacer(Modifier.height(24.dp))
         Box(Modifier.size(190.dp, 202.dp), contentAlignment = Alignment.Center) {
-            CoursePandaMascot(
-                modifier = Modifier.graphicsLayer {
-                    scaleX = 2.35f
-                    scaleY = 2.35f
-                },
-                celebrate = true,
-            )
+            OnboardingPandaMascot(modifier = Modifier.fillMaxSize())
         }
         Spacer(Modifier.height(16.dp))
         Text(
@@ -385,21 +378,6 @@ private fun ChoiceStep(
     reactionKey: Int,
     choices: @Composable ColumnScope.() -> Unit,
 ) {
-    val reactionY = remember { Animatable(0f) }
-    LaunchedEffect(reactionKey) {
-        if (reactionKey <= 0) return@LaunchedEffect
-        reactionY.snapTo(0f)
-        reactionY.animateTo(
-            targetValue = 0f,
-            animationSpec = keyframes {
-                durationMillis = 550
-                0f at 0
-                -3f at 193
-                1f at 358
-                0f at 550
-            },
-        )
-    }
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
     ) {
@@ -408,13 +386,9 @@ private fun ChoiceStep(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(Modifier.size(90.dp, 100.dp), contentAlignment = Alignment.Center) {
-                CoursePandaMascot(
-                    modifier = Modifier.graphicsLayer {
-                        scaleX = 1.22f
-                        scaleY = 1.22f
-                        translationY = reactionY.value.dp.toPx()
-                    },
-                    celebrate = false,
+                OnboardingPandaMascot(
+                    reactionKey = reactionKey,
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
             Spacer(Modifier.width(16.dp))
