@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="course_progress_lessons">уроков</string>
     <string name="course_chest_ready">Подарок готов</string>
     <string name="course_chest_progress">До подарка %1$d XP</string>
     <string name="course_chest_reward">Получено +%1$d XP</string>
@@ -12,4 +11,15 @@
         <item>Ещё урок!</item>
         <item>У тебя получится!</item>
     </string-array>
+    <string name="today_plan_label">Сегодня</string>
+    <string name="today_plan_xp">%1$d/%2$d XP</string>
+    <string name="today_plan_go">Продолжить по плану</string>
+    <string name="today_plan_done">План выполнен</string>
+    <string name="today_task_part">Часть</string>
+    <string name="today_task_part_n">Часть %1$s</string>
+    <string name="today_task_mistakes">Ошибки</string>
+    <string name="today_task_test">Тест</string>
+    <string name="today_task_talk">Диалог</string>
+    <string name="today_task_chars">Иероглифы</string>
+    <string name="today_task_pron">Произношение</string>
 </resources>

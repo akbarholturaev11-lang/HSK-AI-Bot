@@ -70,6 +70,7 @@ import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
 import com.pomp.hskai.feature.profile.ProfileViewModel
 import com.pomp.hskai.feature.profile.labelRes
+import com.pomp.hskai.feature.practice.PracticeRequest
 import com.pomp.hskai.feature.practice.PracticeScreen
 import com.pomp.hskai.feature.practice.PracticeViewModel
 import com.pomp.hskai.core.i18n.AppLanguage
@@ -77,6 +78,7 @@ import com.pomp.hskai.core.settings.DailyGoal
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.LessonAccess
+import com.pomp.hskai.domain.model.TodayTask
 import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
 import com.pomp.hskai.feature.ad.AdScreen
@@ -289,6 +291,7 @@ private fun AppRoot(
             val dailyGoal by app.appSettings.dailyGoal
                 .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
             var goalPickerOpen by remember { mutableStateOf(false) }
+            var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
@@ -300,6 +303,47 @@ private fun AppRoot(
                     lesson = lesson,
                     attemptKey = UUID.randomUUID().toString(),
                 )
+            }
+
+            // A daily-plan step opens the same screen its Mini App counterpart
+            // does (`TODAY_TASK_ACTION` / `TODAY_SKILL_ACTION` in course-v3).
+            fun openTodayTask(task: TodayTask) {
+                when (task.type) {
+                    "continue_lesson" -> courseState.map?.currentLesson?.let { lesson ->
+                        if (
+                            lesson.access == LessonAccess.Open ||
+                            lesson.access == LessonAccess.HalfPreview
+                        ) {
+                            launchLesson(lesson)
+                        }
+                    }
+
+                    "mistake_review" -> {
+                        practiceRequest = PracticeRequest.MISTAKES
+                        selectedTab = MainTab.PRACTICE
+                    }
+
+                    "mock_exam" -> {
+                        practiceRequest = PracticeRequest.TESTS
+                        selectedTab = MainTab.PRACTICE
+                    }
+
+                    "skill_drill" -> {
+                        practiceRequest = if (task.skill == "pronunciation") {
+                            PracticeRequest.PRONUNCIATION
+                        } else {
+                            PracticeRequest.RECOGNITION
+                        }
+                        selectedTab = MainTab.PRACTICE
+                    }
+
+                    "voice_dialog" -> {
+                        // The plan picks the role that fits the learner's goal;
+                        // dropping it would always open the same partner.
+                        task.role?.takeIf { it.isNotBlank() }?.let(voiceViewModel::selectRole)
+                        selectedTab = MainTab.VOICE
+                    }
+                }
             }
 
             LaunchedEffect(
@@ -436,6 +480,7 @@ private fun AppRoot(
                             dailyGoal = dailyGoal,
                             limit = limitGate,
                             onLesson = ::launchLesson,
+                            onTodayTask = ::openTodayTask,
                             onOpenGoal = { goalPickerOpen = true },
                             onOpenChest = courseViewModel::openRewardChest,
                             onChestRewardConsumed = courseViewModel::consumeChestReward,
@@ -471,6 +516,8 @@ private fun AppRoot(
                             onSelectExamOption = practiceViewModel::selectExamOption,
                             onAdvanceExam = practiceViewModel::advanceExam,
                             onResetExam = practiceViewModel::resetExam,
+                            request = practiceRequest,
+                            onRequestConsumed = { practiceRequest = null },
                             modifier = contentModifier,
                         )
 

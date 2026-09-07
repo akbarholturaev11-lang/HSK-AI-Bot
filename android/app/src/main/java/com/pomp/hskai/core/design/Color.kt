@@ -59,4 +59,12 @@ object PompColors {
     val NodeLockedDepth = LockedDepth
     val NodeChestDepth = ChestDepth
     val NodeBossDepth = BossDepth
+
+    /**
+     * Daily-plan card literals. The Mini App writes these straight into the
+     * `.tplan` rules instead of declaring tokens, so they are copied by value
+     * and stay outside the palette check — there is no token to compare with.
+     */
+    val PlanOnGold = Color(0xFF3A2C08) // .tgo / .tnode.now foreground
+    val PlanDone = Color(0xFF7FD6A8)   // .tdone and the completed plan header
 }

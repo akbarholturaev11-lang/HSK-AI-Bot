@@ -17,13 +17,30 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Native stroke icons matching the Tabler icons used by Mini App course-v3:
- * check, lock, flag-2, gift, star and book-2.
+ * check, lock, flag-2, gift, star, book-2, and the daily-plan set
+ * (player-play, alert-triangle, certificate, microphone, cards, circle).
  *
  * Tabler's visual language is a 24x24 grid with rounded 2px strokes. Keeping
  * the same grid/stroke ratios avoids the heavier filled Material glyphs that
  * were still visible on the Android course path and unit banners.
  */
-internal enum class CourseNodeIconKind { Check, Lock, Flag, Gift, Star, Book2 }
+internal enum class CourseNodeIconKind {
+    Check,
+    Lock,
+    Flag,
+    Gift,
+    Star,
+    Book2,
+    PlayerPlay,
+    AlertTriangle,
+    Certificate,
+    Microphone,
+    Cards,
+    Circle,
+    CircleCheck,
+    TargetArrow,
+    ArrowRight,
+}
 
 /** Mini App node-specific sizing so CourseScreen does not re-invent glyph metrics. */
 @Composable
@@ -38,7 +55,7 @@ internal fun MiniAppLessonNodeIcon(
         CourseNodeIconKind.Flag -> 25.dp
         CourseNodeIconKind.Gift -> 30.dp
         CourseNodeIconKind.Star -> 27.dp
-        CourseNodeIconKind.Book2 -> 24.dp
+        else -> 24.dp
     }
     MiniAppNodeIcon(kind = kind, tint = tint, modifier = modifier, size = iconSize)
 }
@@ -178,6 +195,114 @@ internal fun MiniAppNodeIcon(
                     strokeWidth = strokeWidth,
                     cap = StrokeCap.Round,
                 )
+            }
+
+            CourseNodeIconKind.PlayerPlay -> {
+                val p = Path().apply {
+                    moveTo(x(7f), y(4f))
+                    lineTo(x(7f), y(20f))
+                    lineTo(x(20f), y(12f))
+                    close()
+                }
+                drawPath(p, tint, style = stroke)
+            }
+
+            CourseNodeIconKind.AlertTriangle -> {
+                val p = Path().apply {
+                    moveTo(x(12f), y(4f))
+                    lineTo(x(21f), y(19f))
+                    lineTo(x(3f), y(19f))
+                    close()
+                }
+                drawPath(p, tint, style = stroke)
+                drawLine(tint, Offset(x(12f), y(10f)), Offset(x(12f), y(13.5f)), strokeWidth, StrokeCap.Round)
+                drawLine(tint, Offset(x(12f), y(16.2f)), Offset(x(12f), y(16.3f)), strokeWidth, StrokeCap.Round)
+            }
+
+            CourseNodeIconKind.Certificate -> {
+                drawRoundRect(
+                    color = tint,
+                    topLeft = Offset(x(3f), y(4f)),
+                    size = Size(x(18f), y(12f)),
+                    cornerRadius = CornerRadius(x(2f), y(2f)),
+                    style = stroke,
+                )
+                drawLine(tint, Offset(x(7f), y(8f)), Offset(x(14f), y(8f)), strokeWidth, StrokeCap.Round)
+                drawLine(tint, Offset(x(7f), y(11.5f)), Offset(x(11f), y(11.5f)), strokeWidth, StrokeCap.Round)
+                // The seal hangs below the sheet, exactly as Tabler draws it.
+                drawCircle(tint, radius = x(3.4f), center = Offset(x(16.5f), y(17f)), style = stroke)
+                val ribbon = Path().apply {
+                    moveTo(x(14.8f), y(19.6f))
+                    lineTo(x(14.8f), y(22.5f))
+                    lineTo(x(16.5f), y(21.4f))
+                    lineTo(x(18.2f), y(22.5f))
+                    lineTo(x(18.2f), y(19.6f))
+                }
+                drawPath(ribbon, tint, style = stroke)
+            }
+
+            CourseNodeIconKind.Microphone -> {
+                drawRoundRect(
+                    color = tint,
+                    topLeft = Offset(x(9f), y(2f)),
+                    size = Size(x(6f), y(11f)),
+                    cornerRadius = CornerRadius(x(3f), y(3f)),
+                    style = stroke,
+                )
+                val arc = Path().apply {
+                    moveTo(x(5f), y(10f))
+                    cubicTo(x(5f), y(14.4f), x(8.2f), y(17f), x(12f), y(17f))
+                    cubicTo(x(15.8f), y(17f), x(19f), y(14.4f), x(19f), y(10f))
+                }
+                drawPath(arc, tint, style = stroke)
+                drawLine(tint, Offset(x(12f), y(17f)), Offset(x(12f), y(21f)), strokeWidth, StrokeCap.Round)
+                drawLine(tint, Offset(x(8.5f), y(21f)), Offset(x(15.5f), y(21f)), strokeWidth, StrokeCap.Round)
+            }
+
+            CourseNodeIconKind.Cards -> {
+                // The tilted card behind, then the upright one in front.
+                val behind = Path().apply {
+                    moveTo(x(9.6f), y(4.2f))
+                    lineTo(x(19.4f), y(7.4f))
+                    lineTo(x(16.2f), y(17.4f))
+                }
+                drawPath(behind, tint, style = stroke)
+                drawRoundRect(
+                    color = tint,
+                    topLeft = Offset(x(4f), y(7f)),
+                    size = Size(x(10f), y(13f)),
+                    cornerRadius = CornerRadius(x(2f), y(2f)),
+                    style = stroke,
+                )
+            }
+
+            CourseNodeIconKind.Circle ->
+                drawCircle(tint, radius = x(8f), center = Offset(x(12f), y(12f)), style = stroke)
+
+            CourseNodeIconKind.CircleCheck -> {
+                drawCircle(tint, radius = x(9f), center = Offset(x(12f), y(12f)), style = stroke)
+                val p = Path().apply {
+                    moveTo(x(8f), y(12f))
+                    lineTo(x(11f), y(15f))
+                    lineTo(x(16f), y(9.5f))
+                }
+                drawPath(p, tint, style = stroke)
+            }
+
+            CourseNodeIconKind.TargetArrow -> {
+                drawCircle(tint, radius = x(9f), center = Offset(x(12f), y(12f)), style = stroke)
+                drawCircle(tint, radius = x(4.5f), center = Offset(x(12f), y(12f)), style = stroke)
+                drawCircle(tint, radius = x(1.4f), center = Offset(x(12f), y(12f)))
+            }
+
+            CourseNodeIconKind.ArrowRight -> {
+                drawLine(tint, Offset(x(5f), y(12f)), Offset(x(19f), y(12f)), strokeWidth, StrokeCap.Round)
+                val head = Path().apply {
+                    moveTo(x(13f), y(6f))
+                    lineTo(x(19f), y(12f))
+                    lineTo(x(13f), y(18f))
+                }
+                drawPath(head, tint, style = stroke)
             }
         }
     }

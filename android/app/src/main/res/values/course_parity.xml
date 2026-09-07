@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="course_progress_lessons">dars</string>
     <string name="course_chest_ready">Sovg‘a tayyor</string>
     <string name="course_chest_progress">Sovg‘agacha %1$d XP</string>
     <string name="course_chest_reward">+%1$d XP olindi</string>
@@ -12,4 +11,15 @@
         <item>Yana bir dars!</item>
         <item>Sen uddalaysan!</item>
     </string-array>
+    <string name="today_plan_label">Bugun</string>
+    <string name="today_plan_xp">%1$d/%2$d XP</string>
+    <string name="today_plan_go">Reja bo‘yicha davom etish</string>
+    <string name="today_plan_done">Reja bajarildi</string>
+    <string name="today_task_part">Qism</string>
+    <string name="today_task_part_n">Qism %1$s</string>
+    <string name="today_task_mistakes">Xatolar</string>
+    <string name="today_task_test">Test</string>
+    <string name="today_task_talk">Suhbat</string>
+    <string name="today_task_chars">Ieroglif</string>
+    <string name="today_task_pron">Talaffuz</string>
 </resources>

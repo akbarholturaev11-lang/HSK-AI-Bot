@@ -40,6 +40,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,6 +84,8 @@ fun PracticeScreen(
     onSelectExamOption: (Int) -> Unit,
     onAdvanceExam: (String) -> Unit,
     onResetExam: () -> Unit,
+    request: PracticeRequest? = null,
+    onRequestConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
@@ -135,6 +138,8 @@ fun PracticeScreen(
                 onStartPractice = onStartPractice,
                 onStartMistakeReview = onStartMistakeReview,
                 onStartExam = onStartExam,
+                request = request,
+                onRequestConsumed = onRequestConsumed,
             )
         }
     }
@@ -147,6 +152,13 @@ fun PracticeScreen(
  * shape so a learner who moves between the two clients sees one product.
  */
 private enum class PracticeGroup { RECOGNITION, TEST }
+
+/**
+ * What the daily plan asks this tab to open. The plan lives on the course
+ * screen, so it cannot reach into the practice rows itself — it states the
+ * destination and this screen opens the same door a tap would have opened.
+ */
+enum class PracticeRequest { MISTAKES, RECOGNITION, PRONUNCIATION, TESTS }
 
 /** The tile colours the Mini App gives each row. */
 private data class RowTint(val background: Color, val foreground: Color)
@@ -167,6 +179,8 @@ private fun PracticeHome(
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
     onStartExam: (String) -> Unit,
+    request: PracticeRequest?,
+    onRequestConsumed: () -> Unit,
 ) {
     // Which door is open, if any. Kept here rather than in the ViewModel: it
     // is where the learner is looking, not something the session depends on.
@@ -225,6 +239,25 @@ private fun PracticeHome(
             bodyRes = R.string.practice_placement_body,
             glyph = "测",
         )
+    }
+
+    // A daily-plan step lands here already knowing where it wants to go.
+    LaunchedEffect(request) {
+        when (request) {
+            null -> return@LaunchedEffect
+            PracticeRequest.MISTAKES -> {
+                openGroup = null
+                onStartMistakeReview()
+            }
+
+            PracticeRequest.RECOGNITION -> openGroup = PracticeGroup.RECOGNITION
+            PracticeRequest.TESTS -> openGroup = PracticeGroup.TEST
+            PracticeRequest.PRONUNCIATION -> {
+                openGroup = null
+                onStartPractice(pronunciationTool, level, language)
+            }
+        }
+        onRequestConsumed()
     }
 
     BackHandler(enabled = openGroup != null) { openGroup = null }

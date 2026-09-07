@@ -9,7 +9,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +26,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -37,8 +35,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -75,12 +71,10 @@ import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
 import com.pomp.hskai.domain.model.CourseMilestone
-import com.pomp.hskai.domain.model.CourseToday
 import com.pomp.hskai.domain.model.CourseUnit
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.LessonStatus
 import com.pomp.hskai.domain.model.TodayTask
-import com.pomp.hskai.domain.model.TodayTaskAccess
 import com.pomp.hskai.feature.limit.LimitGate
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -92,6 +86,7 @@ fun CourseScreen(
     dailyGoal: Int,
     limit: LimitGate,
     onLesson: (CourseLesson) -> Unit,
+    onTodayTask: (TodayTask) -> Unit,
     onOpenGoal: () -> Unit,
     onOpenChest: () -> Unit,
     onChestRewardConsumed: () -> Unit,
@@ -147,9 +142,10 @@ fun CourseScreen(
                             dailyGoal = dailyGoal,
                             onOpenGoal = onOpenGoal,
                         )
-                        CourseProgressBar(map)
                         if (!foundationMustComeFirst) {
-                            map.today?.takeIf { it.tasks.isNotEmpty() }?.let { TodayPlanStrip(it) }
+                            map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
+                                TodayPlanCard(today = today, onTask = onTodayTask)
+                            }
                         }
                         if (state.isStale) StaleBanner()
 
@@ -332,119 +328,6 @@ fun GoalRing(
             tint = if (complete) PompColors.Gold else PompColors.Cinnabar,
             modifier = Modifier.size(size * 0.42f),
         )
-    }
-}
-
-@Composable
-private fun CourseProgressBar(map: CourseMap) {
-    val done = map.progress.completedLessons.coerceIn(0, map.totalLessons.coerceAtLeast(0))
-    val total = map.totalLessons.coerceAtLeast(1)
-    val fraction = (done.toFloat() / total).coerceIn(0f, 1f)
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(8.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .background(PompColors.Divider),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(fraction)
-                    .height(8.dp)
-                    .background(PompColors.Cinnabar),
-            )
-        }
-        Spacer(Modifier.width(10.dp))
-        Text(
-            text = "$done / ${map.totalLessons} ${stringResource(R.string.course_progress_lessons)}",
-            style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
-            color = PompColors.InkSecondary,
-            fontWeight = FontWeight.Medium,
-        )
-    }
-}
-
-@Composable
-private fun TodayPlanStrip(today: CourseToday) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 2.dp, bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                if (today.complete) Icons.Filled.Check else Icons.Filled.TrackChanges,
-                contentDescription = null,
-                tint = PompColors.Cinnabar,
-                modifier = Modifier.size(14.dp),
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(
-                text = "${today.doneXp}/${today.goalXp} XP",
-                style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
-                color = PompColors.InkSecondary,
-                fontWeight = FontWeight.Medium,
-            )
-        }
-        Spacer(Modifier.width(8.dp))
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .horizontalScroll(rememberScrollState())
-                .padding(end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            today.tasks.forEach { task -> TodayTaskChip(task) }
-        }
-    }
-}
-
-@Composable
-private fun TodayTaskChip(task: TodayTask) {
-    val locked = task.access == TodayTaskAccess.LOCKED || !task.available
-    val foreground = if (task.done || locked) PompColors.InkDisabled else PompColors.Ink
-    val iconTint = if (task.done) PompColors.Jade else PompColors.InkDisabled
-    val icon = when {
-        task.done -> Icons.Filled.Check
-        locked -> Icons.Filled.Lock
-        task.type == "voice_dialog" -> Icons.Filled.Mic
-        task.type == "continue_lesson" -> Icons.Filled.School
-        else -> Icons.Filled.Bolt
-    }
-    val text = when (task.type) {
-        "continue_lesson" -> stringResource(R.string.today_continue)
-        "mistake_review" -> stringResource(R.string.practice_mistakes_title)
-        "skill_drill" -> if (task.skill == "pronunciation") {
-            stringResource(R.string.practice_pronunciation_title)
-        } else {
-            stringResource(R.string.practice_characters_title)
-        }
-        "mock_exam" -> stringResource(R.string.practice_test_title)
-        "voice_dialog" -> stringResource(R.string.voice_title)
-        else -> stringResource(R.string.practice_title)
-    }
-    Surface(
-        color = if (task.done) PompColors.Paper else PompColors.PaperRaised,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier.graphicsLayer { alpha = if (locked) 0.55f else 1f },
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(14.dp))
-            Spacer(Modifier.width(4.dp))
-            Text(
-                text,
-                style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.5.sp),
-                color = foreground,
-                maxLines = 1,
-            )
-        }
     }
 }
 
