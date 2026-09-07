@@ -1,6 +1,8 @@
 package com.pomp.hskai
 
 import android.content.ActivityNotFoundException
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -77,6 +79,7 @@ import com.pomp.hskai.feature.practice.PracticeViewModel
 import com.pomp.hskai.feature.practice.WordDrillScreen
 import com.pomp.hskai.feature.practice.WordDrillViewModel
 import com.pomp.hskai.core.i18n.AppLanguage
+import com.pomp.hskai.core.i18n.AppLocale
 import com.pomp.hskai.core.settings.DailyGoal
 import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.CourseLesson
@@ -103,6 +106,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class MainActivity : ComponentActivity() {
 
     private val requestedDestination = MutableStateFlow<DestinationRequest?>(null)
+
+    // Resources are resolved when the activity is built, so the account's
+    // language has to be in place before anything is inflated.
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,6 +190,12 @@ private fun AppRoot(
         }
 
         is AuthState.Authenticated -> {
+            val localeHost = LocalContext.current
+            LaunchedEffect(state.account.language) {
+                if (AppLocale.sync(localeHost, state.account.language)) {
+                    (localeHost as? Activity)?.recreate()
+                }
+            }
             val sessionOwner = rememberSessionViewModelStoreOwner()
             val onboardingViewModel: OnboardingViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
