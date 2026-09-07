@@ -54,6 +54,13 @@ class AdViewModel(
     private val lessonOrder: Int = 0,
 ) : ViewModel() {
 
+    /**
+     * An end-of-lesson ad opens nothing, so there is no attempt to bind it to:
+     * the server records the view and that is all it is for. Only a gate ad —
+     * one that has to open a section — goes through the attempt/token flow.
+     */
+    private val unlocksSomething: Boolean = slot != SLOT_LESSON_END
+
     private val _state = MutableStateFlow(AdUiState())
     val state: StateFlow<AdUiState> = _state.asStateFlow()
 
@@ -94,6 +101,23 @@ class AdViewModel(
                 return@launch
             }
             val (ad, mediaUrl) = playable
+
+            if (!unlocksSomething) {
+                attemptAdId = ad.id
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        ad = ad,
+                        mediaUrl = mediaUrl,
+                        requiredSeconds = AdWatch.requiredSeconds(
+                            fromAttempt = 0,
+                            fromCreative = ad.durationSeconds,
+                        ),
+                    )
+                }
+                startTicker()
+                return@launch
+            }
 
             when (val opened = repository.startAdAttempt(
                 adId = ad.id,
@@ -164,8 +188,10 @@ class AdViewModel(
                         // The server may still refuse — an ad closed early,
                         // an attempt that expired. Then nothing is unlocked
                         // and the learner watches again.
-                        unlocked = result.value.ok &&
-                            result.value.authorization?.recorded == true,
+                        unlocked = result.value.ok && (
+                            !unlocksSomething ||
+                                result.value.authorization?.recorded == true
+                            ),
                         error = if (result.value.ok) null else it.error,
                     )
                 }
@@ -176,6 +202,11 @@ class AdViewModel(
     override fun onCleared() {
         ticker?.cancel()
         super.onCleared()
+    }
+
+    companion object {
+        /** The Mini App's end-of-lesson ad slot (`dars_yakuni`). */
+        const val SLOT_LESSON_END = "lesson_end"
     }
 
     class Factory(

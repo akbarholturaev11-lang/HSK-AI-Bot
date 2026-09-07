@@ -79,6 +79,7 @@ import com.pomp.hskai.core.settings.PinyinVisibility
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.TodayTask
+import com.pomp.hskai.feature.lesson.LessonOutcome
 import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
 import com.pomp.hskai.feature.ad.AdScreen
@@ -425,14 +426,23 @@ private fun AppRoot(
                         repository = app.featureRepository,
                         feature = ad.feature,
                         accessRef = ad.accessRef,
+                        slot = ad.slot,
+                        lessonOrder = ad.lessonOrder,
                     ),
                 )
                 val adState by adViewModel.state.collectAsStateWithLifecycle()
+                val isLessonEndAd = ad.slot == AdViewModel.SLOT_LESSON_END
                 LaunchedEffect(adState.unlocked) {
                     if (adState.unlocked) {
                         adRequest = null
-                        practiceViewModel.startWithAd(ad.accessRef)
+                        if (!isLessonEndAd) practiceViewModel.startWithAd(ad.accessRef)
                     }
+                }
+                // Paid learners and the Play channel get no end-of-lesson ad at
+                // all; the server answers with an empty list and the screen
+                // closes itself instead of showing an empty state.
+                LaunchedEffect(adState.unavailable) {
+                    if (adState.unavailable && isLessonEndAd) adRequest = null
                 }
                 AdScreen(
                     state = adState,
@@ -464,9 +474,21 @@ private fun AppRoot(
                     level = courseState.map?.level.orEmpty(),
                     language = state.account.language,
                     pinyin = pinyin,
-                    onExit = {
+                    onExit = { completed ->
+                        val finishedOrder = launch.lesson.order
                         openLesson = null
                         courseViewModel.load()
+                        if (completed) {
+                            // Mini App `playLessonEndAd`: one block after the
+                            // lesson, for learners the server still shows ads
+                            // to. It opens nothing, so it carries no gate.
+                            adRequest = AdRequest(
+                                feature = AdViewModel.SLOT_LESSON_END,
+                                accessRef = UUID.randomUUID().toString(),
+                                slot = AdViewModel.SLOT_LESSON_END,
+                                lessonOrder = finishedOrder,
+                            )
+                        }
                     },
                 )
             } else {
@@ -620,7 +642,8 @@ private fun LessonHost(
     level: String,
     language: com.pomp.hskai.core.i18n.AppLanguage,
     pinyin: PinyinVisibility,
-    onExit: () -> Unit,
+    /** [completed] says whether the lesson was actually finished and reported. */
+    onExit: (completed: Boolean) -> Unit,
 ) {
     val lesson = launch.lesson
     val model: LessonViewModel = viewModel(
@@ -658,8 +681,9 @@ private fun LessonHost(
         onRetryCompletion = model::retryCompletion,
         onOpenPinyinSettings = { pinyinSheetOpen = true },
         onExit = {
+            val completed = lessonState.outcome is LessonOutcome.Completed
             model.endAttempt(launch.attemptKey)
-            onExit()
+            onExit(completed)
         },
     )
 
@@ -834,6 +858,9 @@ private fun openExternal(context: android.content.Context, url: String): Boolean
 private data class AdRequest(
     val feature: String,
     val accessRef: String,
+    /** `practice` opens a section; `lesson_end` only plays after a lesson. */
+    val slot: String = "practice",
+    val lessonOrder: Int = 0,
 )
 
 private data class LessonLaunch(
