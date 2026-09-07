@@ -81,6 +81,7 @@ fun PracticeScreen(
     onAdvanceReview: () -> Unit,
     onResetReview: () -> Unit,
     onStartExam: (String) -> Unit,
+    onOpenDrill: (DrillMode) -> Unit,
     onSelectExamOption: (Int) -> Unit,
     onAdvanceExam: (String) -> Unit,
     onResetExam: () -> Unit,
@@ -138,6 +139,7 @@ fun PracticeScreen(
                 onStartPractice = onStartPractice,
                 onStartMistakeReview = onStartMistakeReview,
                 onStartExam = onStartExam,
+                onOpenDrill = onOpenDrill,
                 request = request,
                 onRequestConsumed = onRequestConsumed,
             )
@@ -151,7 +153,7 @@ fun PracticeScreen(
  * doors, and the individual drills live behind them. This screen follows that
  * shape so a learner who moves between the two clients sees one product.
  */
-private enum class PracticeGroup { RECOGNITION, TEST }
+private enum class PracticeGroup { TEST }
 
 /**
  * What the daily plan asks this tab to open. The plan lives on the course
@@ -179,6 +181,7 @@ private fun PracticeHome(
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
     onStartExam: (String) -> Unit,
+    onOpenDrill: (DrillMode) -> Unit,
     request: PracticeRequest?,
     onRequestConsumed: () -> Unit,
 ) {
@@ -188,47 +191,6 @@ private fun PracticeHome(
 
     // The drills behind "Ieroglif tanish". Reading and writing practice both
     // come down to picking the right characters, so they share one door.
-    val recognitionTools = remember {
-        listOf(
-            PracticeToolSpec(
-                mode = "training",
-                skill = "characters",
-                titleRes = R.string.practice_characters_title,
-                bodyRes = R.string.practice_characters_body,
-                glyph = "字",
-            ),
-            PracticeToolSpec(
-                mode = "training",
-                skill = "pinyin",
-                titleRes = R.string.practice_pinyin_title,
-                bodyRes = R.string.practice_pinyin_body,
-                glyph = "pin",
-            ),
-            PracticeToolSpec(
-                mode = "training",
-                skill = "writing",
-                titleRes = R.string.practice_writing_title,
-                bodyRes = R.string.practice_writing_body,
-                glyph = "句",
-            ),
-            PracticeToolSpec(
-                mode = "training",
-                skill = "listening",
-                titleRes = R.string.practice_listening_title,
-                bodyRes = R.string.practice_listening_body,
-                glyph = "听",
-            ),
-        )
-    }
-    val pronunciationTool = remember {
-        PracticeToolSpec(
-            mode = "training",
-            skill = "pronunciation",
-            titleRes = R.string.practice_pronunciation_title,
-            bodyRes = R.string.practice_pronunciation_body,
-            glyph = "声",
-        )
-    }
     // The Mini App keeps the placement test inside the test centre rather than
     // on the practice list ("HSK imtihonlari va daraja aniqlash").
     val placementTool = remember {
@@ -250,11 +212,15 @@ private fun PracticeHome(
                 onStartMistakeReview()
             }
 
-            PracticeRequest.RECOGNITION -> openGroup = PracticeGroup.RECOGNITION
+            PracticeRequest.RECOGNITION -> {
+                openGroup = null
+                onOpenDrill(DrillMode.RECOGNITION)
+            }
+
             PracticeRequest.TESTS -> openGroup = PracticeGroup.TEST
             PracticeRequest.PRONUNCIATION -> {
                 openGroup = null
-                onStartPractice(pronunciationTool, level, language)
+                onOpenDrill(DrillMode.PRONUNCIATION)
             }
         }
         onRequestConsumed()
@@ -301,7 +267,9 @@ private fun PracticeHome(
                         title = stringResource(R.string.practice_characters_title),
                         body = stringResource(R.string.practice_recognition_group_body),
                         enabled = !state.isStarting,
-                        onClick = { openGroup = PracticeGroup.RECOGNITION },
+                        // The Mini App's row opens the drill itself; the words
+                        // come from the shared adviser, not from a sub-menu.
+                        onClick = { onOpenDrill(DrillMode.RECOGNITION) },
                     )
                 }
                 item {
@@ -311,7 +279,7 @@ private fun PracticeHome(
                         title = stringResource(R.string.practice_pronunciation_row_title),
                         body = stringResource(R.string.practice_pronunciation_row_body),
                         enabled = !state.isStarting,
-                        onClick = { onStartPractice(pronunciationTool, level, language) },
+                        onClick = { onOpenDrill(DrillMode.PRONUNCIATION) },
                     )
                 }
 
@@ -338,17 +306,6 @@ private fun PracticeHome(
                         onClick = onStartMistakeReview,
                     )
                 }
-            }
-
-            PracticeGroup.RECOGNITION -> items(recognitionTools) { tool ->
-                ToolRow(
-                    glyph = tool.glyph,
-                    tint = TintBlue,
-                    title = stringResource(tool.titleRes),
-                    body = stringResource(tool.bodyRes),
-                    enabled = !state.isStarting,
-                    onClick = { onStartPractice(tool, level, language) },
-                )
             }
 
             PracticeGroup.TEST -> testCentre(
@@ -632,7 +589,6 @@ private fun PracticeHeader(
 ) {
     val titleRes = when (group) {
         null -> R.string.practice_title
-        PracticeGroup.RECOGNITION -> R.string.practice_characters_title
         PracticeGroup.TEST -> R.string.practice_group_tests
     }
     Row(verticalAlignment = Alignment.CenterVertically) {

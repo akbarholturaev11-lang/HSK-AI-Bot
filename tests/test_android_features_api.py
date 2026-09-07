@@ -759,6 +759,134 @@ class AndroidExamRouteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("free_feature_limit_reached", response.json()["error"])
 
 
+class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
+    """Both clients must practise the SAME words.
+
+    The Mini App asks the mastery service which characters are due and reports
+    the outcome back so the interval moves. Android built its recognition and
+    pronunciation sections from a different generator, so the same learner
+    practised two different sets and only one of them fed the review schedule.
+    These pin the forwarding: the skill and the limit reach the adviser, and a
+    reported miss reaches both the mistake book and the schedule.
+    """
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        async with self.sessions() as session:
+            session.add(_user(1, 4242, "Drill"))
+            await session.commit()
+        self.calls = []
+
+        outer = self
+
+        class FakeMasteryService:
+            def __init__(self, session):
+                self.session = session
+
+            async def drill_words(self, user, *, skill, limit):
+                outer.calls.append(("words", int(user.telegram_id), skill, limit))
+                return {
+                    "skill": skill,
+                    "day": "2026-09-07",
+                    "words": [{"zh": "好", "kind": "review", "box": 2}],
+                }
+
+            async def record_drill(self, user, *, skill, results):
+                outer.calls.append(("schedule", skill, results))
+                return len(results)
+
+        class FakeDrillSignalService:
+            def __init__(self, session):
+                self.session = session
+
+            async def record(self, user, *, feature, level, language, entries):
+                outer.calls.append(("mistakes", feature, level, language, entries))
+                return len(entries)
+
+        app = FastAPI()
+        app.include_router(
+            create_android_features_router(
+                session_factory=self.sessions,
+                settings_obj=_settings(),
+                mastery_service_factory=FakeMasteryService,
+                drill_service_factory=FakeDrillSignalService,
+            )
+        )
+        self.auth = patch.object(
+            DesktopAuthService,
+            "authenticate",
+            AsyncMock(
+                return_value=SimpleNamespace(user=SimpleNamespace(telegram_id=4242))
+            ),
+        )
+        self.auth.start()
+        self.addCleanup(self.auth.stop)
+        self.client = AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://android.test",
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.engine.dispose()
+
+    def _headers(self):
+        return {"Authorization": "Bearer token", "Content-Type": "application/json"}
+
+    async def test_the_words_come_from_the_mastery_adviser(self):
+        response = await self.client.post(
+            "/api/v3/android/practice/words",
+            headers=self._headers(),
+            json={"feature": "recognition", "limit": 8},
+        )
+
+        self.assertEqual(200, response.status_code)
+        body = response.json()
+        self.assertTrue(body["ok"])
+        self.assertEqual([{"zh": "好", "kind": "review", "box": 2}], body["words"])
+        self.assertEqual(("words", 4242, "recognition", 8), self.calls[0])
+
+    async def test_a_report_feeds_both_the_mistake_book_and_the_schedule(self):
+        response = await self.client.post(
+            "/api/v3/android/practice/report",
+            headers=self._headers(),
+            json={
+                "feature": "recognition",
+                "level": "hsk2",
+                "language": "uz",
+                "mistakes": [{"hanzi": "好", "selected": "你"}],
+                "results": [
+                    {"hanzi": "好", "correct": False},
+                    {"hanzi": "你", "correct": True},
+                ],
+            },
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({"ok": True, "recorded": 1, "scheduled": 2}, response.json())
+        self.assertEqual(
+            ("mistakes", "recognition", "hsk2", "uz", [{"hanzi": "好", "selected": "你"}]),
+            self.calls[0],
+        )
+        self.assertEqual("schedule", self.calls[1][0])
+
+    async def test_an_unknown_skill_is_refused(self):
+        response = await self.client.post(
+            "/api/v3/android/practice/words",
+            headers=self._headers(),
+            json={"feature": "writing", "limit": 8},
+        )
+
+        self.assertEqual(422, response.status_code)
+        self.assertEqual([], self.calls)
+
+
 class AndroidVoiceTypedTurnTests(unittest.IsolatedAsyncioTestCase):
     """The Mini App's call screen answers by keyboard as well as by voice.
 
@@ -872,6 +1000,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/subscription/open"),
         ("POST", "/api/v3/android/practice/start"),
         ("POST", "/api/v3/android/practice/complete"),
+        ("POST", "/api/v3/android/practice/words"),
+        ("POST", "/api/v3/android/practice/report"),
         ("POST", "/api/v3/android/exams/start"),
         ("POST", "/api/v3/android/exams/complete"),
         ("GET", "/api/v3/android/mistakes"),

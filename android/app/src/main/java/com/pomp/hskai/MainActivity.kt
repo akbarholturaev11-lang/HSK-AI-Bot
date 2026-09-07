@@ -70,9 +70,12 @@ import com.pomp.hskai.feature.profile.ProfileScreen
 import com.pomp.hskai.feature.profile.ProfileSettingsViewModel
 import com.pomp.hskai.feature.profile.ProfileViewModel
 import com.pomp.hskai.feature.profile.labelRes
+import com.pomp.hskai.feature.practice.DrillMode
 import com.pomp.hskai.feature.practice.PracticeRequest
 import com.pomp.hskai.feature.practice.PracticeScreen
 import com.pomp.hskai.feature.practice.PracticeViewModel
+import com.pomp.hskai.feature.practice.WordDrillScreen
+import com.pomp.hskai.feature.practice.WordDrillViewModel
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.settings.DailyGoal
 import com.pomp.hskai.core.settings.PinyinVisibility
@@ -294,6 +297,7 @@ private fun AppRoot(
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
             var lessonAwaitingAd by remember { mutableStateOf<CourseLesson?>(null) }
+            var openDrill by remember { mutableStateOf<DrillMode?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
@@ -462,6 +466,33 @@ private fun AppRoot(
                     onClose = { adRequest = null },
                     onOpenLink = { url -> openExternal(context, url) },
                 )
+            } else if (openDrill != null) {
+                val mode = openDrill!!
+                val drillViewModel: WordDrillViewModel = viewModel(
+                    key = "drill-${'$'}{mode.feature}-${'$'}currentLevel",
+                    viewModelStoreOwner = sessionOwner,
+                    factory = WordDrillViewModel.Factory(
+                        repository = app.featureRepository,
+                        dictionary = app.dictionaryRepository,
+                        recorder = app.voiceRecorder,
+                        mode = mode,
+                        level = currentLevel,
+                        language = state.account.language,
+                    ),
+                )
+                val drillState by drillViewModel.state.collectAsStateWithLifecycle()
+                WordDrillScreen(
+                    state = drillState,
+                    onChoose = drillViewModel::choose,
+                    onSpeak = drillViewModel::speak,
+                    onSkipSpoken = drillViewModel::skipSpoken,
+                    onAdvance = drillViewModel::advance,
+                    onRetry = drillViewModel::load,
+                    onClose = {
+                        openDrill = null
+                        courseViewModel.load()
+                    },
+                )
             } else if (dictionaryOpen) {
                 val dictionaryViewModel: DictionaryViewModel = viewModel(
                     key = "dictionary-${state.account.language.backendCode}",
@@ -558,6 +589,7 @@ private fun AppRoot(
                             onSelectExamOption = practiceViewModel::selectExamOption,
                             onAdvanceExam = practiceViewModel::advanceExam,
                             onResetExam = practiceViewModel::resetExam,
+                            onOpenDrill = { mode -> openDrill = mode },
                             request = practiceRequest,
                             onRequestConsumed = { practiceRequest = null },
                             modifier = contentModifier,

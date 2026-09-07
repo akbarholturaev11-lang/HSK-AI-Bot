@@ -9,7 +9,7 @@ the shared native access token and delegates to those same services.
 from __future__ import annotations
 
 import logging
-from typing import Annotated, Any, Callable, TypeVar
+from typing import Annotated, Any, Callable, Literal, TypeVar
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
@@ -22,6 +22,7 @@ from pydantic import (
     model_validator,
 )
 
+from app.api.miniapp_practice import MASTERY_FEATURES
 from app.api.desktop_practice import (
     DesktopPracticeCompleteRequest,
     DesktopPracticeError,
@@ -50,7 +51,9 @@ from app.api.desktop_voice import (
 )
 from app.repositories.user_repo import UserRepository
 from app.services.course_ad_service import CourseAdService
+from app.services.course_drill_signal_service import CourseDrillSignalService
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_word_mastery_service import CourseWordMasteryService
 from app.services.course_hsk_exam_service import CourseHskExamService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
@@ -176,6 +179,51 @@ class AndroidVoiceMessageRequest(BaseModel):
         if spoken == typed:
             raise ValueError("audio_data_url yoki text — bittasi kerak")
         return self
+
+
+class AndroidDrillWordsRequest(BaseModel):
+    """Which words to drill next — the server chooses, the client shows them.
+
+    The answer carries the character and whether it is a review or a new word,
+    nothing else: the visible text stays on the client, so switching language
+    never changes what is being asked.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    feature: Literal["recognition", "pronunciation"]
+    limit: int = Field(default=10, ge=1, le=30)
+
+
+class AndroidDrillMistakeEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    hanzi: str = Field(min_length=1, max_length=16)
+    selected: str = Field(default="", max_length=64)
+
+
+class AndroidDrillResultEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    hanzi: str = Field(min_length=1, max_length=16)
+    correct: bool = False
+
+
+class AndroidDrillReportRequest(BaseModel):
+    """What happened in a client-built drill.
+
+    Only the character the learner got wrong is reported; the question and the
+    right answer are rebuilt from the server's own dictionary, so a forged
+    mistake cannot be written.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    feature: Literal["recognition", "memorize", "pronunciation"]
+    level: str = Field(default="", max_length=16)
+    language: str = Field(default="", max_length=8)
+    mistakes: list[AndroidDrillMistakeEntry] = Field(default_factory=list, max_length=50)
+    results: list[AndroidDrillResultEntry] = Field(default_factory=list, max_length=50)
 
 
 class AndroidExamStartRequest(BaseModel):
@@ -379,6 +427,12 @@ def create_android_features_router(
     gamification_service_factory: Callable[..., CourseGamificationService] = CourseGamificationService,
     exam_service_factory: Callable[..., CourseHskExamService] = CourseHskExamService,
     referral_service_factory: Callable[..., ReferralService] = ReferralService,
+    mastery_service_factory: Callable[..., CourseWordMasteryService] = (
+        CourseWordMasteryService
+    ),
+    drill_service_factory: Callable[..., CourseDrillSignalService] = (
+        CourseDrillSignalService
+    ),
 ) -> APIRouter:
     router = APIRouter(tags=["android-features"])
 
@@ -1089,6 +1143,80 @@ def create_android_features_router(
             logger.exception("Android voice message failed")
             return _error_response(
                 AndroidFeatureError("android_voice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/practice/words")
+    async def android_drill_words(request: Request):
+        """The words the learner is due to drill, chosen by the server.
+
+        Android used to build these sections from a different generator than
+        the Mini App, so the same learner practised two different sets. This is
+        the Mini App's own adviser; an empty list is not a failure — the client
+        falls back to its dictionary and the drill still runs.
+        """
+        try:
+            payload = await _validated_payload(request, AndroidDrillWordsRequest)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                plan = await mastery_service_factory(session).drill_words(
+                    user,
+                    skill=payload.feature,
+                    limit=payload.limit,
+                )
+                await session.commit()
+            return JSONResponse(
+                content={"ok": True, **plan},
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android drill words failed")
+            return _error_response(
+                AndroidFeatureError("android_practice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/practice/report")
+    async def android_drill_report(request: Request):
+        """What a client-built drill produced: mistakes and review outcomes."""
+        try:
+            payload = await _validated_payload(request, AndroidDrillReportRequest)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                recorded = 0
+                if payload.mistakes:
+                    recorded = await drill_service_factory(session).record(
+                        user,
+                        feature=payload.feature,
+                        level=payload.level or str(getattr(user, "level", "") or ""),
+                        language=payload.language
+                        or str(getattr(user, "language", "") or ""),
+                        entries=[
+                            {"hanzi": entry.hanzi, "selected": entry.selected}
+                            for entry in payload.mistakes
+                        ],
+                    )
+                scheduled = 0
+                if payload.results and payload.feature in MASTERY_FEATURES:
+                    scheduled = await mastery_service_factory(session).record_drill(
+                        user,
+                        skill=payload.feature,
+                        results=[
+                            {"hanzi": entry.hanzi, "correct": entry.correct}
+                            for entry in payload.results
+                        ],
+                    )
+                await session.commit()
+            return JSONResponse(
+                content={"ok": True, "recorded": recorded, "scheduled": scheduled},
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android drill report failed")
+            return _error_response(
+                AndroidFeatureError("android_practice_unavailable", status_code=503)
             )
 
     @router.post("/api/v3/android/voice/pronounce")

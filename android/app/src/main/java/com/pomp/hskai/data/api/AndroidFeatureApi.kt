@@ -103,6 +103,18 @@ interface AndroidFeatureApi {
         @Body body: VoiceMessageRequest,
     ): Response<VoiceMessageResponse>
 
+    @POST("api/v3/android/practice/words")
+    suspend fun drillWords(
+        @Header("Authorization") authorization: String,
+        @Body body: DrillWordsRequest,
+    ): Response<DrillWordsResponse>
+
+    @POST("api/v3/android/practice/report")
+    suspend fun drillReport(
+        @Header("Authorization") authorization: String,
+        @Body body: DrillReportRequest,
+    ): Response<DrillReportResponse>
+
     @POST("api/v3/android/voice/pronounce")
     suspend fun voicePronounce(
         @Header("Authorization") authorization: String,

@@ -37,6 +37,12 @@ import com.pomp.hskai.data.api.VoiceEndRequest
 import com.pomp.hskai.data.api.VoiceEndResponse
 import com.pomp.hskai.data.api.VoiceMessageRequest
 import com.pomp.hskai.data.api.VoiceMessageResponse
+import com.pomp.hskai.data.api.DrillMistakeDto
+import com.pomp.hskai.data.api.DrillReportRequest
+import com.pomp.hskai.data.api.DrillReportResponse
+import com.pomp.hskai.data.api.DrillResultDto
+import com.pomp.hskai.data.api.DrillWordsRequest
+import com.pomp.hskai.data.api.DrillWordsResponse
 import com.pomp.hskai.data.api.VoicePronounceRequest
 import com.pomp.hskai.data.api.VoicePronounceResponse
 import com.pomp.hskai.data.api.VoiceStartRequest
@@ -244,6 +250,30 @@ class FeatureRepository(
             VoiceMessageRequest(
                 sessionId = sessionId,
                 text = text,
+            ),
+        )
+    }
+
+    /** The characters the server says are due for this drill. */
+    suspend fun drillWords(feature: String, limit: Int = 10): ApiResult<DrillWordsResponse> =
+        authorized { api.drillWords(it, DrillWordsRequest(feature = feature, limit = limit)) }
+
+    /** Reports a client-built drill: what was missed and what was answered. */
+    suspend fun reportDrill(
+        feature: String,
+        level: String,
+        language: String,
+        mistakes: List<DrillMistakeDto>,
+        results: List<DrillResultDto>,
+    ): ApiResult<DrillReportResponse> = authorized {
+        api.drillReport(
+            it,
+            DrillReportRequest(
+                feature = feature,
+                level = level,
+                language = language,
+                mistakes = mistakes,
+                results = results,
             ),
         )
     }

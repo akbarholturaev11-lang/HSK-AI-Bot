@@ -541,6 +541,63 @@ data class VoiceMessageResponse(
     @SerialName("suggestions") val suggestions: List<VoiceSuggestionDto> = emptyList(),
 )
 
+/**
+ * The adaptive drill contract, shared with the Mini App.
+ *
+ * The server names the characters that are due; everything the learner reads
+ * is built on the device from its own dictionary, so switching language never
+ * changes what is being asked.
+ */
+@Serializable
+data class DrillWordsRequest(
+    @SerialName("feature") val feature: String,
+    @SerialName("limit") val limit: Int = 10,
+)
+
+@Serializable
+data class DrillWordsResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("skill") val skill: String = "",
+    @SerialName("day") val day: String = "",
+    @SerialName("words") val words: List<DrillWordDto> = emptyList(),
+)
+
+@Serializable
+data class DrillWordDto(
+    @SerialName("zh") val hanzi: String = "",
+    /** `review` for a word whose interval came due, `new` for a fresh one. */
+    @SerialName("kind") val kind: String = "new",
+    @SerialName("box") val box: Int = 0,
+)
+
+@Serializable
+data class DrillReportRequest(
+    @SerialName("feature") val feature: String,
+    @SerialName("level") val level: String = "",
+    @SerialName("language") val language: String = "",
+    @SerialName("mistakes") val mistakes: List<DrillMistakeDto> = emptyList(),
+    @SerialName("results") val results: List<DrillResultDto> = emptyList(),
+)
+
+@Serializable
+data class DrillMistakeDto(
+    @SerialName("hanzi") val hanzi: String,
+    @SerialName("selected") val selected: String = "",
+)
+
+@Serializable
+data class DrillResultDto(
+    @SerialName("hanzi") val hanzi: String,
+    @SerialName("correct") val correct: Boolean,
+)
+
+@Serializable
+data class DrillReportResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("recorded") val recorded: Int = 0,
+    @SerialName("scheduled") val scheduled: Int = 0,
+)
+
 @Serializable
 data class VoicePronounceRequest(
     @SerialName("target") val target: String,

@@ -263,4 +263,6 @@
     <string name="voice_tap_to_speak">Нажмите микрофон, чтобы говорить</string>
     <string name="voice_tap_to_stop">Нажмите ещё раз, чтобы отправить</string>
     <string name="today_reason_ad">Откройте, посмотрев рекламу</string>
+    <string name="drill_recognition_prompt">Найдите нужный иероглиф</string>
+    <string name="drill_pronunciation_prompt">Послушайте и повторите</string>
 </resources>
