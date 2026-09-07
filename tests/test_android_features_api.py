@@ -883,6 +883,7 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("GET", "/api/v3/android/voice/status"),
         ("POST", "/api/v3/android/voice/session/start"),
         ("POST", "/api/v3/android/voice/message"),
+        ("POST", "/api/v3/android/voice/pronounce"),
         ("POST", "/api/v3/android/voice/session/end"),
         ("GET", "/api/v3/android/ad"),
         ("POST", "/api/v3/android/ad/attempt"),

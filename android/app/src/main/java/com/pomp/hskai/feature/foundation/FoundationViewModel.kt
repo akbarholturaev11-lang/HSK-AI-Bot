@@ -7,7 +7,10 @@ import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.audio.VoiceRecorder
 import com.pomp.hskai.data.repository.CourseRepository
+import com.pomp.hskai.data.repository.FeatureRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -66,6 +69,10 @@ internal data class FoundationUiState(
     val builderTokens: List<String> = emptyList(),
     val answerCorrect: Boolean? = null,
     val speakingBonus: Boolean = false,
+    /** The speaking step: recording, scoring, and what came back. */
+    val isRecording: Boolean = false,
+    val isScoring: Boolean = false,
+    val pronunciationMessage: String = "",
     val saving: Boolean = false,
     val completed: Boolean = false,
     val error: ApiError? = null,
@@ -77,6 +84,8 @@ internal data class FoundationUiState(
 
 class FoundationViewModel(
     private val repository: CourseRepository,
+    private val featureRepository: FeatureRepository,
+    private val recorder: VoiceRecorder,
     private val audioPlayer: LessonAudioPlayer,
     private val language: AppLanguage,
 ) : ViewModel() {
@@ -159,10 +168,85 @@ class FoundationViewModel(
         }
     }
 
-    fun markSpoken() {
+    /**
+     * Records the learner and asks the server what they said.
+     *
+     * The Mini App gives the speaking bonus only on a real attempt scored at
+     * 60 or better; a button that believes anyone who presses it teaches
+     * nothing. Two and a half seconds is the Mini App's own window.
+     */
+    fun checkPronunciation() {
+        val card = _state.value.currentCard ?: return
+        if (card.type != "speak" || _state.value.isRecording || _state.value.isScoring) return
+        val target = card.audioText.ifBlank { card.example?.zh.orEmpty() }
+        if (target.isBlank()) return
+
+        runCatching { recorder.start() }.onFailure {
+            _state.update { state -> state.copy(pronunciationMessage = "", error = ApiError.Unknown) }
+            return
+        }
+        _state.update { it.copy(isRecording = true, pronunciationMessage = "", error = null) }
+        viewModelScope.launch {
+            delay(SPEAKING_WINDOW_MILLIS)
+            val recording = runCatching { recorder.stop() }.getOrElse {
+                _state.update { state ->
+                    state.copy(isRecording = false, isScoring = false, error = ApiError.Unknown)
+                }
+                return@launch
+            }
+            _state.update { it.copy(isRecording = false, isScoring = true) }
+            val result = featureRepository.scorePronunciation(
+                target = target,
+                targetPinyin = card.example?.pinyin.orEmpty(),
+                language = language.backendCode,
+                level = "hsk1",
+                audioDataUrl = recording.dataUrl,
+            )
+            when (result) {
+                is ApiResult.Success -> {
+                    val scored = result.value
+                    if (scored.ok && scored.score >= PRONUNCIATION_PASS_SCORE) {
+                        _state.update {
+                            it.copy(
+                                isScoring = false,
+                                speakingBonus = true,
+                                answerCorrect = true,
+                                pronunciationMessage = "${scored.score}%",
+                            )
+                        }
+                        // The bonus travels with the completion call; there is
+                        // no separate save on this client.
+                    } else {
+                        _state.update {
+                            it.copy(
+                                isScoring = false,
+                                pronunciationMessage = scored.heard.ifBlank { scored.message },
+                            )
+                        }
+                    }
+                }
+
+                is ApiResult.Failure -> _state.update {
+                    it.copy(isScoring = false, error = result.error)
+                }
+            }
+        }
+    }
+
+    /** "I can't speak right now" — the step is passed without the bonus. */
+    fun skipSpeaking() {
         val card = _state.value.currentCard ?: return
         if (card.type != "speak") return
-        _state.update { it.copy(speakingBonus = true, answerCorrect = true) }
+        recorder.cancel()
+        _state.update {
+            it.copy(
+                isRecording = false,
+                isScoring = false,
+                pronunciationMessage = "",
+                answerCorrect = true,
+            )
+        }
+        advance()
     }
 
     fun playAudio() {
@@ -235,12 +319,27 @@ class FoundationViewModel(
 
     class Factory(
         private val repository: CourseRepository,
+        private val featureRepository: FeatureRepository,
+        private val recorder: VoiceRecorder,
         private val audioPlayer: LessonAudioPlayer,
         private val language: AppLanguage,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            FoundationViewModel(repository, audioPlayer, language) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = FoundationViewModel(
+            repository,
+            featureRepository,
+            recorder,
+            audioPlayer,
+            language,
+        ) as T
+    }
+
+    private companion object {
+        /** The Mini App records for this long before it scores. */
+        const val SPEAKING_WINDOW_MILLIS = 2_600L
+
+        /** Below this the Mini App asks for another try. */
+        const val PRONUNCIATION_PASS_SCORE = 60
     }
 }
 

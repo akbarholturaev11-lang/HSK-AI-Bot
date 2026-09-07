@@ -42,6 +42,7 @@ from app.api.desktop_referral import (
 from app.api.desktop_voice import (
     DesktopSessionId,
     DesktopVoiceEndRequest,
+    DesktopVoicePronounceRequest,
     DesktopVoiceStartRequest,
     MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES,
     _decode_audio_data_url,
@@ -1086,6 +1087,42 @@ def create_android_features_router(
             return _error_response(exc)
         except Exception:
             logger.exception("Android voice message failed")
+            return _error_response(
+                AndroidFeatureError("android_voice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/voice/pronounce")
+    async def android_voice_pronounce(request: Request):
+        """Score one spoken phrase.
+
+        Starter 0 asks the learner to repeat after the teacher, and the Mini
+        App checks what they actually said before awarding the speaking bonus.
+        Android had no way to ask, so the step was a button that believed
+        anyone who pressed it.
+        """
+        try:
+            payload = await _validated_voice_payload(
+                request,
+                DesktopVoicePronounceRequest,
+                max_body_bytes=MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES,
+            )
+            audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await voice_service_factory(session).score_pronunciation(
+                    telegram_id,
+                    target=payload.target,
+                    target_pinyin=payload.target_pinyin,
+                    audio_bytes=audio_bytes,
+                    filename=filename,
+                    language=payload.language,
+                    level=payload.level,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, AndroidFeatureError, VoicePracticeError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android voice pronounce failed")
             return _error_response(
                 AndroidFeatureError("android_voice_unavailable", status_code=503)
             )

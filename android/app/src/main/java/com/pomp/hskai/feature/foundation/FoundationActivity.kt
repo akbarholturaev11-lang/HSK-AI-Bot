@@ -1,5 +1,11 @@
 package com.pomp.hskai.feature.foundation
 
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
+import android.content.pm.PackageManager
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -73,6 +79,8 @@ private fun FoundationActivityContent(
             val model: FoundationViewModel = viewModel(
                 factory = FoundationViewModel.Factory(
                     repository = app.courseRepository,
+                    featureRepository = app.featureRepository,
+                    recorder = app.voiceRecorder,
                     audioPlayer = app.lessonAudioPlayer,
                     language = current.account.language,
                 )
@@ -81,13 +89,31 @@ private fun FoundationActivityContent(
             LaunchedEffect(state.completed) {
                 if (state.completed) onCompleted()
             }
+            // The speaking step cannot record before the learner allows it.
+            val context = LocalContext.current
+            val micPermission = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission(),
+            ) { granted ->
+                if (granted) model.checkPronunciation()
+            }
             FoundationScreen(
                 state = state,
                 onChoose = model::choose,
                 onAddBuilderToken = model::addBuilderToken,
                 onUndoBuilderToken = model::undoBuilderToken,
                 onSubmitBuilder = model::submitBuilder,
-                onMarkSpoken = model::markSpoken,
+                onCheckPronunciation = {
+                    val granted = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.RECORD_AUDIO,
+                    ) == PackageManager.PERMISSION_GRANTED
+                    if (granted) {
+                        model.checkPronunciation()
+                    } else {
+                        micPermission.launch(Manifest.permission.RECORD_AUDIO)
+                    }
+                },
+                onSkipSpeaking = model::skipSpeaking,
                 onPlayAudio = model::playAudio,
                 onPlayText = model::playText,
                 onAdvance = model::advance,

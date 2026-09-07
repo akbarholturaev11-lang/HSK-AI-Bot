@@ -542,6 +542,25 @@ data class VoiceMessageResponse(
 )
 
 @Serializable
+data class VoicePronounceRequest(
+    @SerialName("target") val target: String,
+    @SerialName("target_pinyin") val targetPinyin: String = "",
+    @SerialName("language") val language: String,
+    @SerialName("level") val level: String,
+    @SerialName("audio_data_url") val audioDataUrl: String,
+)
+
+@Serializable
+data class VoicePronounceResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("score") val score: Int = 0,
+    @SerialName("passed") val passed: Boolean = false,
+    /** What the server actually heard, so a miss can be explained. */
+    @SerialName("heard") val heard: String = "",
+    @SerialName("message") val message: String = "",
+)
+
+@Serializable
 data class VoiceEndRequest(
     @SerialName("session_id") val sessionId: String,
 )

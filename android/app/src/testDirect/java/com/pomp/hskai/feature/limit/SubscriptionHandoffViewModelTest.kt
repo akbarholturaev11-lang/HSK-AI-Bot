@@ -31,6 +31,8 @@ import com.pomp.hskai.data.api.VoiceEndRequest
 import com.pomp.hskai.data.api.VoiceEndResponse
 import com.pomp.hskai.data.api.VoiceMessageRequest
 import com.pomp.hskai.data.api.VoiceMessageResponse
+import com.pomp.hskai.data.api.VoicePronounceRequest
+import com.pomp.hskai.data.api.VoicePronounceResponse
 import com.pomp.hskai.data.api.VoiceStartRequest
 import com.pomp.hskai.data.api.VoiceStartResponse
 import com.pomp.hskai.data.api.VoiceStatusResponse
@@ -301,6 +303,11 @@ private class FakeFeatureApi(
         authorization: String,
         body: VoiceMessageRequest,
     ): Response<VoiceMessageResponse> = error("unexpected call")
+
+    override suspend fun voicePronounce(
+        authorization: String,
+        body: VoicePronounceRequest,
+    ): Response<VoicePronounceResponse> = error("unexpected call")
 
     override suspend fun voiceEnd(
         authorization: String,

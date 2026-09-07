@@ -4,4 +4,9 @@
     <string name="course_foundation_subtitle">Услышьте, поймите и соберите 你好</string>
     <string name="course_foundation_start">Начать</string>
     <string name="course_foundation_repeat">Повторить</string>
+    <string name="foundation_speak_check">Проверить произношение</string>
+    <string name="foundation_speak_listening">Слушаю…</string>
+    <string name="foundation_speak_checking">Проверяю…</string>
+    <string name="foundation_speak_heard">Я услышал:</string>
+    <string name="foundation_speak_skip">Я СЕЙЧАС НЕ МОГУ ГОВОРИТЬ</string>
 </resources>

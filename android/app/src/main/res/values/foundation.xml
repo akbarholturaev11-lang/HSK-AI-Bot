@@ -4,4 +4,9 @@
     <string name="course_foundation_subtitle">你好 ni eshiting, tushuning va o\'zingiz tuzing</string>
     <string name="course_foundation_start">Boshlash</string>
     <string name="course_foundation_repeat">Qaytarish</string>
+    <string name="foundation_speak_check">Talaffuzni tekshirish</string>
+    <string name="foundation_speak_listening">Eshityapman…</string>
+    <string name="foundation_speak_checking">Tekshiryapman…</string>
+    <string name="foundation_speak_heard">Men shunday eshitdim:</string>
+    <string name="foundation_speak_skip">HOZIR GAPIRA OLMAYMAN</string>
 </resources>

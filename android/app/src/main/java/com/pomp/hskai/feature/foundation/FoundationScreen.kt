@@ -49,7 +49,8 @@ internal fun FoundationScreen(
     onAddBuilderToken: (String) -> Unit,
     onUndoBuilderToken: () -> Unit,
     onSubmitBuilder: () -> Unit,
-    onMarkSpoken: () -> Unit,
+    onCheckPronunciation: () -> Unit,
+    onSkipSpeaking: () -> Unit,
     onPlayAudio: () -> Unit,
     onPlayText: (String) -> Unit,
     onAdvance: () -> Unit,
@@ -87,7 +88,8 @@ internal fun FoundationScreen(
                             onAddBuilderToken = onAddBuilderToken,
                             onUndoBuilderToken = onUndoBuilderToken,
                             onSubmitBuilder = onSubmitBuilder,
-                            onMarkSpoken = onMarkSpoken,
+                            onCheckPronunciation = onCheckPronunciation,
+                            onSkipSpeaking = onSkipSpeaking,
                             onPlayAudio = onPlayAudio,
                             onPlayText = onPlayText,
                         )
@@ -137,7 +139,8 @@ private fun FoundationCardBody(
     onAddBuilderToken: (String) -> Unit,
     onUndoBuilderToken: () -> Unit,
     onSubmitBuilder: () -> Unit,
-    onMarkSpoken: () -> Unit,
+    onCheckPronunciation: () -> Unit,
+    onSkipSpeaking: () -> Unit,
     onPlayAudio: () -> Unit,
     onPlayText: (String) -> Unit,
 ) {
@@ -267,14 +270,47 @@ private fun FoundationCardBody(
         "speak" -> {
             if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
             Spacer(Modifier.height(14.dp))
-            val speakLabel = card.example?.zh?.takeIf { it.isNotBlank() }
-                ?: card.audioText.takeIf { it.isNotBlank() }
-                ?: stringResource(R.string.lesson_repeat_after_teacher)
+            // The bonus is earned on what was said, so the button records and
+            // asks the server — and there is always a way past for a learner
+            // who cannot speak right now.
             FoundationAction(
-                enabled = true,
-                onClick = onMarkSpoken,
-                text = speakLabel,
+                enabled = !state.isRecording && !state.isScoring,
+                onClick = onCheckPronunciation,
+                text = when {
+                    state.isRecording -> stringResource(R.string.foundation_speak_listening)
+                    state.isScoring -> stringResource(R.string.foundation_speak_checking)
+                    else -> stringResource(R.string.foundation_speak_check)
+                },
                 secondary = state.speakingBonus,
+            )
+            val hint = when {
+                state.speakingBonus && state.pronunciationMessage.isNotBlank() ->
+                    stringResource(R.string.lesson_correct) + " " + state.pronunciationMessage
+                state.pronunciationMessage.isNotBlank() ->
+                    stringResource(R.string.foundation_speak_heard) +
+                        " " + state.pronunciationMessage
+                else -> ""
+            }
+            Spacer(Modifier.height(9.dp))
+            Text(
+                text = hint,
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                color = if (state.speakingBonus) PompColors.Jade else PompColors.InkSecondary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = stringResource(R.string.foundation_speak_skip),
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
+                fontWeight = FontWeight.Bold,
+                color = PompColors.InkDisabled,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(enabled = !state.isRecording && !state.isScoring) {
+                        onSkipSpeaking()
+                    },
             )
         }
         "result" -> {

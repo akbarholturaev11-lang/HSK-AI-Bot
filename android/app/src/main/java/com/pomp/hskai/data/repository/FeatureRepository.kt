@@ -37,6 +37,8 @@ import com.pomp.hskai.data.api.VoiceEndRequest
 import com.pomp.hskai.data.api.VoiceEndResponse
 import com.pomp.hskai.data.api.VoiceMessageRequest
 import com.pomp.hskai.data.api.VoiceMessageResponse
+import com.pomp.hskai.data.api.VoicePronounceRequest
+import com.pomp.hskai.data.api.VoicePronounceResponse
 import com.pomp.hskai.data.api.VoiceStartRequest
 import com.pomp.hskai.data.api.VoiceStartResponse
 import com.pomp.hskai.data.api.VoiceStatusResponse
@@ -242,6 +244,31 @@ class FeatureRepository(
             VoiceMessageRequest(
                 sessionId = sessionId,
                 text = text,
+            ),
+        )
+    }
+
+    /**
+     * Scores one spoken phrase against a target.
+     *
+     * Starter 0's speaking step uses it: the bonus is awarded on what the
+     * learner said, not on having pressed a button.
+     */
+    suspend fun scorePronunciation(
+        target: String,
+        targetPinyin: String,
+        language: String,
+        level: String,
+        audioDataUrl: String,
+    ): ApiResult<VoicePronounceResponse> = authorized {
+        api.voicePronounce(
+            it,
+            VoicePronounceRequest(
+                target = target,
+                targetPinyin = targetPinyin,
+                language = language,
+                level = level,
+                audioDataUrl = audioDataUrl,
             ),
         )
     }

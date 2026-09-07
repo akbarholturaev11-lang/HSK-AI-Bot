@@ -103,6 +103,12 @@ interface AndroidFeatureApi {
         @Body body: VoiceMessageRequest,
     ): Response<VoiceMessageResponse>
 
+    @POST("api/v3/android/voice/pronounce")
+    suspend fun voicePronounce(
+        @Header("Authorization") authorization: String,
+        @Body body: VoicePronounceRequest,
+    ): Response<VoicePronounceResponse>
+
     @POST("api/v3/android/voice/session/end")
     suspend fun voiceEnd(
         @Header("Authorization") authorization: String,

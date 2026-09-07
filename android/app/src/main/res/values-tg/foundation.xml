@@ -4,4 +4,9 @@
     <string name="course_foundation_subtitle">你好-ро шунавед, фаҳмед ва худатон созед</string>
     <string name="course_foundation_start">Оғоз</string>
     <string name="course_foundation_repeat">Такрор</string>
+    <string name="foundation_speak_check">Санҷидани талаффуз</string>
+    <string name="foundation_speak_listening">Гӯш мекунам…</string>
+    <string name="foundation_speak_checking">Месанҷам…</string>
+    <string name="foundation_speak_heard">Ман чунин шунидам:</string>
+    <string name="foundation_speak_skip">ҲОЗИР ГАП ЗАДА НАМЕТАВОНАМ</string>
 </resources>
