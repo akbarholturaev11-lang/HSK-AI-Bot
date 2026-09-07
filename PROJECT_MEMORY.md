@@ -227,6 +227,41 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-07 — Android: AI Voice qo'ng'iroq ekrani va matnli navbat
+
+Changed:
+- `/api/v3/android/voice/message` endi OVOZ yoki MATN qabul qiladi
+  (`AndroidVoiceMessageRequest`, `text` maydoni). Xizmat (`process_message`)
+  matnni ilgaridan qo'llab-quvvatlardi — faqat Android adapteri ovozni talab
+  qilardi, shuning uchun klaviatura umuman yo'q edi. Ikkalasi birga kelsa
+  422 — qaysi biri baholanishi noaniq bo'lib qolardi.
+- O'sha marshrutda noto'g'ri so'rov 503 "voice unavailable" deb qaytardi;
+  endi 4xx (AndroidFeatureError catch qatoriga qo'shildi).
+- Android klienti: `VoiceCallScreen.kt` — Mini App `course_v3_voice.html`
+  shakli (tepada suhbatdosh, o'rtada panda, ostida holat qatori, dialog
+  alohida ko'tarilgan varaqda, pastda dok: mikrofon + klaviatura + «Nima
+  deyish?»). Eski ro'yxat ko'rinishidagi `VoiceSession` olib tashlandi.
+- Maslahatlar varag'i server ALLAQACHON yuborayotgan ma'lumotdan quriladi:
+  `course_context.words` + `review_words` va javob bilan kelgan
+  `opening_message.suggestions`. Klient ularni tashlab yuborardi.
+  Iborani bosish uni DARHOL yuboradi (Mini App bilan bir xil qaror).
+
+Risk:
+- To'lov/limit mantiqi o'zgarmadi: matnli navbat ham xuddi ovozli navbat kabi
+  bitta dialog hisoblanadi (`process_message` ichida bir xil yo'l).
+
+Verified:
+- `tests/test_android_features_api.py` da 3 ta yangi test (matnli navbat
+  xizmatga yetadi; ovozsiz-matnsiz va ikkalasi birga — 422).
+- pytest `-k "android or voice"`: 179 passed, 3 skipped.
+- Android: compile (2 flavor), unit testlar, lint, assemble — yashil;
+  APK emulyatorda ishga tushdi, yiqilish yo'q.
+
+Eslatma (muhit): bu Mac'da iCloud/Finder fayllarni "nom 2.kengaytma" qilib
+NUSXALAYDI. `android/app/build` ichida shunday nusxa paydo bo'lsa D8
+"defined multiple times" deb yiqiladi — `find app/build -name "* 2.*" -delete`
+yechadi. Repo ichida ham 26 ta shunday kuzatilmagan nusxa yotibdi.
+
 ### 2026-09-07 — Android: Mini App bilan tenglashtirish (birinchi to'lqin)
 
 Changed:
