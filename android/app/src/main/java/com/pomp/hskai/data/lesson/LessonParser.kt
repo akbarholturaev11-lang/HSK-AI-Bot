@@ -61,6 +61,12 @@ object LessonParser {
         language: AppLanguage,
     ): Lesson {
         val sections = (payload["sections"] as? JsonArray).orEmpty()
+        // The versioned exit ticket sits outside `sections` so the material
+        // references of the lesson keep their positions; it is appended as its
+        // own closing section, exactly as the Mini App enqueues it.
+        val exitTicket = (payload["exit_ticket"] as? JsonObject)
+            ?.let { ticket -> (ticket["cards"] as? JsonArray).orEmpty() }
+            .orEmpty()
         return Lesson(
             level = level,
             order = lessonOrder,
@@ -95,7 +101,57 @@ object LessonParser {
                             )
                         },
                 )
-            },
+            } + exitTicketSection(exitTicket, language, level, lessonOrder),
+        )
+    }
+
+    /**
+     * The closing check of a checkpoint lesson.
+     *
+     * Its cards use the Starter 0 vocabulary (`choice`, `listen_choice`,
+     * `builder`) rather than the lesson's own, because the same objectives are
+     * being re-tested; they are mapped onto the lesson's card types here so the
+     * flow renders and grades them like everything else.
+     */
+    private fun exitTicketSection(
+        cards: List<JsonElement>,
+        language: AppLanguage,
+        level: String,
+        lessonOrder: Int,
+    ): List<LessonSection> {
+        if (cards.isEmpty()) return emptyList()
+        val parsed = cards.mapIndexedNotNull { index, element ->
+            val card = element as? JsonObject ?: return@mapIndexedNotNull null
+            val ref = materialRef(
+                level = level,
+                lessonOrder = lessonOrder,
+                sectionNo = EXIT_TICKET_SECTION_NO,
+                cardNo = index + 1,
+            )
+            when (card["type"].string()?.trim()?.lowercase()) {
+                "choice" -> card.toChoice(ChoiceKind.MEANING, language, ref)
+                "listen_choice" -> card.toChoice(ChoiceKind.LISTENING, language, ref)
+                "builder" -> SentenceBuilderCard(
+                    materialRef = ref,
+                    promptSentence = card["prompt"].localized(language),
+                    tokens = card["tokens"].tokens(language),
+                    answerTokens = card["answer_tokens"].tokens(language),
+                    explanation = card["explanation"].localized(language),
+                )
+
+                else -> null
+            }
+        }
+        if (parsed.isEmpty()) return emptyList()
+        return listOf(
+            LessonSection(
+                sectionNo = EXIT_TICKET_SECTION_NO,
+                title = parsed.firstOrNull()
+                    ?.let { (cards.first() as? JsonObject)?.get("title").localized(language) }
+                    .orEmpty(),
+                purpose = "exit_ticket",
+                cards = parsed,
+            ),
         )
     }
 
@@ -215,6 +271,9 @@ object LessonParser {
     )
 
     // ------------------------------------------------------------- helpers
+
+    /** Kept clear of the lesson's own sections so `material_ref` never shifts. */
+    private const val EXIT_TICKET_SECTION_NO = 99
 
     private val CHOICE_KINDS = mapOf(
         "meaning_guess" to ChoiceKind.MEANING,
