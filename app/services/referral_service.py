@@ -22,6 +22,24 @@ from app.services.referral_notify_service import ReferralNotifyService
 from app.services.subscription_progress_service import SubscriptionProgressService
 
 
+REFERRAL_START_PREFIX = "ref_"
+
+
+def normalize_referral_code(referral_code: Optional[str]) -> str:
+    """Return the stored referral code behind a ``/start`` payload.
+
+    Codes are bare hex (``secrets.token_hex(4)``), but the desktop and Android
+    clients handed out ``?start=ref_<code>`` links for a while. Those links are
+    already in circulation, so the prefix is tolerated here instead of leaving
+    every invite sent from those clients unattributed.
+    """
+
+    code = str(referral_code or "").strip()
+    if code.startswith(REFERRAL_START_PREFIX):
+        code = code[len(REFERRAL_START_PREFIX):]
+    return code
+
+
 REFERRAL_TRIAL_REQUIRED_ACTIVE = 5
 REFERRAL_TRIAL_ACCESS_DAYS = 3
 REFERRAL_TRIAL_AI_BUDGET_USD = 2.0
@@ -288,7 +306,11 @@ class ReferralService:
                 )
             return
 
-        referrer = await self.user_repo.get_by_referral_code(referral_code)
+        code = normalize_referral_code(referral_code)
+        if not code:
+            return
+
+        referrer = await self.user_repo.get_by_referral_code(code)
         if not referrer:
             return
 

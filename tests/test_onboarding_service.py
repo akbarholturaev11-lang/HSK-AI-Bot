@@ -11,7 +11,11 @@ from app.services.onboarding_service import (
     can_attach_start_referral,
     onboarding_stage,
 )
-from app.services.referral_service import REFERRAL_TRIAL_REQUIRED_ACTIVE, ReferralService
+from app.services.referral_service import (
+    REFERRAL_TRIAL_REQUIRED_ACTIVE,
+    ReferralService,
+    normalize_referral_code,
+)
 
 
 class OnboardingServiceTests(unittest.IsolatedAsyncioTestCase):
@@ -226,6 +230,49 @@ class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
         )
         service.activate_referral_if_eligible.assert_awaited_once_with(
             bot=bot,
+            invited_user_telegram_id=123,
+        )
+
+
+class ReferralStartPayloadTests(unittest.IsolatedAsyncioTestCase):
+    def test_legacy_prefixed_payload_resolves_to_the_stored_code(self):
+        self.assertEqual("abc123", normalize_referral_code("ref_abc123"))
+        self.assertEqual("abc123", normalize_referral_code(" abc123 "))
+        self.assertEqual("", normalize_referral_code("ref_"))
+        self.assertEqual("", normalize_referral_code(None))
+
+    async def test_link_shared_from_the_apps_still_attributes_the_invite(self):
+        # The desktop and Android clients handed out `?start=ref_<code>` links
+        # for a while. Those links are already in circulation, so the invites
+        # they bring in must still reach the referrer.
+        session = SimpleNamespace(commit=AsyncMock())
+        service = ReferralService(session)
+        invited = SimpleNamespace(
+            telegram_id=123,
+            referred_by_telegram_id=None,
+            questions_used=0,
+        )
+        referrer = SimpleNamespace(telegram_id=777)
+        service.user_repo = SimpleNamespace(
+            get_by_telegram_id=AsyncMock(side_effect=[invited, referrer]),
+            get_by_referral_code=AsyncMock(return_value=referrer),
+            set_referred_by=AsyncMock(),
+        )
+        service.referral_repo = SimpleNamespace(
+            get_by_invited_user_telegram_id=AsyncMock(return_value=None),
+            create=AsyncMock(),
+        )
+        service.activate_referral_if_eligible = AsyncMock()
+
+        await service.attach_referral_if_needed(
+            invited_user_telegram_id=123,
+            referral_code="ref_abc123",
+            bot=SimpleNamespace(),
+        )
+
+        service.user_repo.get_by_referral_code.assert_awaited_once_with("abc123")
+        service.referral_repo.create.assert_awaited_once_with(
+            referrer_telegram_id=777,
             invited_user_telegram_id=123,
         )
 

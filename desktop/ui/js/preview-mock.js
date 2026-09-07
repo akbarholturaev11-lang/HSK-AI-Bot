@@ -511,7 +511,7 @@ export async function previewInvoke(command, args = {}) {
     case "desktop_referral_overview":
       return {
         code: "AKBAR7",
-        link: "https://t.me/darsi_chini_bot?start=ref_AKBAR7",
+        link: "https://t.me/darsi_chini_bot?start=AKBAR7",
         invited: 2,
         activated: 1,
         trial_progress: 1,

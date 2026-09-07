@@ -3017,16 +3017,20 @@ function referralBotUsername() {
   return /^[A-Za-z0-9_]{5,32}$/.test(handle) ? handle : "darsi_chini_bot";
 }
 
+// The bot resolves `/start <payload>` against the stored referral code with an
+// exact match, so the payload is the bare code. Links built earlier carried a
+// `ref_` prefix that matched nobody; the prefix is stripped here so a stale
+// cached link cannot keep sending unattributed invites.
 function referralStartCode(code) {
   const normalized = String(code || "").trim();
   if (!normalized) return "";
-  return normalized.startsWith("ref_") ? normalized : `ref_${normalized}`;
+  return normalized.startsWith("ref_") ? normalized.slice(4) : normalized;
 }
 
 function referralLinkFrom(value, code) {
   const link = String(value || "").trim();
-  if (/^https:\/\/t\.me\/[A-Za-z0-9_]{5,32}\?start=ref_[A-Za-z0-9_-]+$/.test(link)) {
-    return link;
+  if (/^https:\/\/t\.me\/[A-Za-z0-9_]{5,32}\?start=[A-Za-z0-9_-]+$/.test(link)) {
+    return link.replace(/\?start=ref_/, "?start=");
   }
   const start = referralStartCode(code);
   if (!start) return "";

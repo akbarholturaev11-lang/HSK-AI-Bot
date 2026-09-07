@@ -78,12 +78,17 @@ def _public_item(entry: dict[str, Any]) -> dict[str, Any]:
 
 
 def _invite_link(bot_username: str, code: str) -> str:
-    """The same deep link the bot hands out, so attribution is identical."""
+    """The same deep link the bot hands out, so attribution is identical.
+
+    The payload is the bare referral code: ``/start`` looks the code up exactly
+    as it is stored, so a decorated payload would arrive at the bot and match
+    nobody, quietly losing the invite.
+    """
 
     handle = str(bot_username or "").strip().lstrip("@")
     if not handle or not code:
         return ""
-    return f"https://t.me/{handle}?start=ref_{code}"
+    return f"https://t.me/{handle}?start={code}"
 
 
 def _error_response(

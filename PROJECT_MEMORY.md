@@ -227,6 +227,45 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-08 — Do'st chaqirish havolasi: `ref_` prefiksi olib tashlandi
+
+**Xato:** desktop va Android `?start=ref_<kod>` shaklidagi havola tarqatardi,
+bot esa `/start` dan keyingi matnni AYNAN referral kod deb qidiradi
+(`get_by_referral_code`, kodlar `secrets.token_hex(4)` — sof hex, prefiksiz).
+Ya'ni o'sha havola bilan kirgan do'st HECH KIMGA bog'lanmasdi: xato ham
+chiqmasdi, referral bepul kuni ham hisoblanmasdi. Mini App'da bu to'g'ri edi
+(`?start=<kod>`) — nomuvofiqlik faqat klient API'sida edi.
+
+Changed:
+- `app/api/desktop_referral.py::_invite_link` endi sof kod yuboradi
+  (`?start=<kod>`); shu funksiya Android `/api/v3/android/referral/overview`
+  javobidagi `link` ni ham yasaydi.
+- `app/services/referral_service.py`: `normalize_referral_code()` qo'shildi va
+  `attach_referral_if_needed` undan foydalanadi — allaqachon tarqatilgan eski
+  `ref_` havolalar ham endi to'g'ri bog'lanadi (orqaga moslik).
+- `desktop/ui/js/app.js`: klient `ref_` ni majburlashni to'xtatdi; kelgan
+  havoladagi eski prefiks olib tashlanadi (`preview-mock.js` ham yangilandi).
+
+Why:
+- Havolalar allaqachon foydalanuvchilar qo'lida — serverni tuzatishning o'zi
+  eski nusxalarni tiklamaydi, shuning uchun bot tomonida ham qabul qilinadi.
+
+Files touched:
+- `app/api/desktop_referral.py`, `app/services/referral_service.py`,
+  `desktop/ui/js/app.js`, `desktop/ui/js/preview-mock.js`,
+  `tests/test_android_features_api.py`, `tests/test_onboarding_service.py`
+
+Risk:
+- **Ruxsat/imtiyoz yo'liga tegadi:** referral 5 ta faol do'stda 3 kunlik trial
+  beradi. Narx, to'lov, obuna mantig'i O'ZGARMADI; faqat havola payload'i va
+  qidiruvdagi normalizatsiya. Migratsiya yo'q.
+- Android klienti o'zgarmadi — u serverdan kelgan `link` ni ko'rsatadi xolos.
+- `BOT_USERNAME` Railway'da `darsi_chini_bot` ga o'rnatilgani tasdiqlandi.
+
+Verified: `pytest tests` → 1132 passed (o'sha 3 ta AVVALGI yiqilish
+`origin/main` da ham bor); `node --check` + helper'larning 4 xil kiruvchi
+qiymatda bir xil to'g'ri havola berishi qo'lda tekshirildi.
+
 ### 2026-09-07 — Android: qolgan yettita farq yopildi
 
 **1. Mashq limiti QAYTA TIKLANDI (regressiya tuzatildi).**
