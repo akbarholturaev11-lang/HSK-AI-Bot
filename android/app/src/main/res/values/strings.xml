@@ -294,4 +294,12 @@
     <string name="drill_recognition_prompt">To‘g‘ri ieroglifni toping</string>
     <string name="drill_pronunciation_prompt">Eshiting va takrorlang</string>
     <string name="limit_practice_reason">Bu bo‘limdan bepul foydalanishingiz tugadi.</string>
+    <string name="voice_settings_title">Sozlamalar</string>
+    <string name="voice_setting_partner">Suhbatdosh</string>
+    <string name="voice_setting_subtitles">Pinyin va tarjima</string>
+    <string name="voice_setting_rate">Nutq tezligi</string>
+    <string name="voice_setting_on">yoqilgan</string>
+    <string name="voice_setting_off">o‘chirilgan</string>
+    <string name="voice_rate_slow">sekin</string>
+    <string name="voice_rate_normal">oddiy</string>
 </resources>

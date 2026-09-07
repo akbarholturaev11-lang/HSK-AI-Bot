@@ -3,6 +3,7 @@ package com.pomp.hskai.core.settings
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -85,6 +86,25 @@ class AppSettings(context: Context) : LessonResumeStore {
     val lastReminderDate: Flow<String?> = appContext.settingsDataStore.data
         .map { it[LAST_REMINDER_DATE_KEY] }
 
+    /**
+     * AI Voice call settings, mirroring the Mini App's `hsk_voice_sub` and
+     * `hsk_voice_rate`: whether the pinyin and translation are shown under a
+     * reply, and whether the partner speaks slowly.
+     */
+    val voiceSubtitles: Flow<Boolean> = appContext.settingsDataStore.data
+        .map { it[VOICE_SUBTITLES_KEY] ?: true }
+
+    val voiceSlowSpeech: Flow<Boolean> = appContext.settingsDataStore.data
+        .map { it[VOICE_SLOW_SPEECH_KEY] ?: false }
+
+    suspend fun setVoiceSubtitles(value: Boolean) {
+        appContext.settingsDataStore.edit { it[VOICE_SUBTITLES_KEY] = value }
+    }
+
+    suspend fun setVoiceSlowSpeech(value: Boolean) {
+        appContext.settingsDataStore.edit { it[VOICE_SLOW_SPEECH_KEY] = value }
+    }
+
     suspend fun setPinyinVisibility(value: PinyinVisibility) {
         appContext.settingsDataStore.edit { it[PINYIN_KEY] = value.wireValue }
     }
@@ -142,5 +162,7 @@ class AppSettings(context: Context) : LessonResumeStore {
         val DAILY_GOAL_KEY = intPreferencesKey("daily_goal_xp")
         val LAST_STUDY_SETUP_ASKED_AT_KEY = longPreferencesKey("hsk_v3_setup_asked")
         val LAST_REMINDER_DATE_KEY = stringPreferencesKey("last_reminder_date")
+        val VOICE_SUBTITLES_KEY = booleanPreferencesKey("hsk_voice_sub")
+        val VOICE_SLOW_SPEECH_KEY = booleanPreferencesKey("hsk_voice_rate_slow")
     }
 }

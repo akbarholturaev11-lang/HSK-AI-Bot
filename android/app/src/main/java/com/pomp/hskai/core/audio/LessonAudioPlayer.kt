@@ -10,7 +10,11 @@ import kotlinx.coroutines.withContext
 
 /** Small injectable boundary so lesson audio stays testable without Android. */
 interface LessonAudioPlayer {
-    suspend fun play(mp3: ByteArray)
+    /**
+     * @param speed 1.0 is normal; the Mini App's "slow speech" setting plays
+     *   the same file at 0.75, so a learner can hear the tones apart.
+     */
+    suspend fun play(mp3: ByteArray, speed: Float = 1f)
     fun release()
 }
 
@@ -21,7 +25,7 @@ class AndroidLessonAudioPlayer(context: Context) : LessonAudioPlayer {
     private var player: MediaPlayer? = null
     private var currentFile: File? = null
 
-    override suspend fun play(mp3: ByteArray) {
+    override suspend fun play(mp3: ByteArray, speed: Float) {
         require(mp3.isNotEmpty()) { "Empty lesson audio" }
         val file = withContext(Dispatchers.IO) {
             cacheDir.mkdirs()
@@ -41,7 +45,12 @@ class AndroidLessonAudioPlayer(context: Context) : LessonAudioPlayer {
                         .build()
                 )
                 next.setOnPreparedListener { ready ->
-                    runCatching { ready.start() }
+                    runCatching {
+                        if (speed != 1f) {
+                            ready.playbackParams = ready.playbackParams.setSpeed(speed)
+                        }
+                        ready.start()
+                    }
                         .onSuccess { continuation.resumeWith(Result.success(Unit)) }
                         .onFailure { error ->
                             stopIfCurrent(ready)

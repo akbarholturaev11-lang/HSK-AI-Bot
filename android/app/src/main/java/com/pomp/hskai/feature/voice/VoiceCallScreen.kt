@@ -91,12 +91,17 @@ import com.pomp.hskai.feature.course.CoursePandaMascot
 @Composable
 internal fun VoiceCallScreen(
     state: VoiceUiState,
+    subtitlesOn: Boolean,
+    slowSpeech: Boolean,
+    onToggleSubtitles: (Boolean) -> Unit,
+    onToggleSlowSpeech: (Boolean) -> Unit,
     onToggleRecording: () -> Unit,
     onSendText: (String) -> Unit,
     onEndSession: () -> Unit,
     onSwapPartner: (String) -> Unit,
 ) {
     val context = LocalContext.current
+    var settingsOpen by remember { mutableStateOf(false) }
     var partnerSheetOpen by remember { mutableStateOf(false) }
     var hintsOpen by remember { mutableStateOf(false) }
     var keyboardOpen by remember { mutableStateOf(false) }
@@ -121,7 +126,7 @@ internal fun VoiceCallScreen(
                 state.maxDialogs,
             ),
             onClose = onEndSession,
-            onOpenSettings = { partnerSheetOpen = true },
+            onOpenSettings = { settingsOpen = true },
             settingsEnabled = state.canAnswer,
         )
 
@@ -152,6 +157,7 @@ internal fun VoiceCallScreen(
 
         CallChat(
             state = state,
+            subtitlesOn = subtitlesOn,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -181,6 +187,21 @@ internal fun VoiceCallScreen(
                     permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
                 }
             },
+        )
+    }
+
+    if (settingsOpen) {
+        CallSettingsSheet(
+            partnerLabel = stringResource(partnerTitleRes(state.selectedRole)),
+            subtitlesOn = subtitlesOn,
+            slowSpeech = slowSpeech,
+            onOpenPartner = {
+                settingsOpen = false
+                partnerSheetOpen = true
+            },
+            onToggleSubtitles = { onToggleSubtitles(!subtitlesOn) },
+            onToggleSlowSpeech = { onToggleSlowSpeech(!slowSpeech) },
+            onDismiss = { settingsOpen = false },
         )
     }
 
@@ -286,7 +307,11 @@ private fun RoundIconButton(
 
 /** `.chat` — the dialogue on its own raised sheet. */
 @Composable
-private fun CallChat(state: VoiceUiState, modifier: Modifier = Modifier) {
+private fun CallChat(
+    state: VoiceUiState,
+    subtitlesOn: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val listState = rememberLazyListState()
     LaunchedEffect(state.lines.size) {
         if (state.lines.isNotEmpty()) listState.animateScrollToItem(state.lines.lastIndex)
@@ -316,7 +341,7 @@ private fun CallChat(state: VoiceUiState, modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 14.dp, bottom = 6.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp),
         ) {
-            items(state.lines) { line -> VoiceBubble(line) }
+            items(state.lines) { line -> VoiceBubble(line, subtitlesOn) }
             state.error?.let { error ->
                 item { ErrorPill(stringResource(error.messageRes)) }
             }
@@ -635,3 +660,85 @@ private fun HintRow(
 
 /** The Mini App's own ceiling for a typed turn. */
 private const val MAX_TYPED_CHARS = 200
+
+/**
+ * Mini App call settings: who you are talking to, whether the pinyin and the
+ * translation are shown, and how fast the partner speaks.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CallSettingsSheet(
+    partnerLabel: String,
+    subtitlesOn: Boolean,
+    slowSpeech: Boolean,
+    onOpenPartner: () -> Unit,
+    onToggleSubtitles: () -> Unit,
+    onToggleSlowSpeech: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.PaperRaised,
+    ) {
+        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+            Text(
+                text = stringResource(R.string.voice_settings_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            Spacer(Modifier.height(10.dp))
+            CallSettingRow(
+                label = stringResource(R.string.voice_setting_partner),
+                value = partnerLabel,
+                onClick = onOpenPartner,
+            )
+            CallSettingRow(
+                label = stringResource(R.string.voice_setting_subtitles),
+                value = stringResource(
+                    if (subtitlesOn) R.string.voice_setting_on else R.string.voice_setting_off
+                ),
+                onClick = onToggleSubtitles,
+            )
+            CallSettingRow(
+                label = stringResource(R.string.voice_setting_rate),
+                value = stringResource(
+                    if (slowSpeech) R.string.voice_rate_slow else R.string.voice_rate_normal
+                ),
+                onClick = onToggleSlowSpeech,
+            )
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun CallSettingRow(label: String, value: String, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        color = PompColors.Paper,
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+                color = PompColors.Ink,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+            )
+        }
+    }
+}

@@ -3,6 +3,7 @@ package com.pomp.hskai.feature.voice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.audio.VoiceRecorder
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
@@ -11,7 +12,9 @@ import com.pomp.hskai.data.api.VoiceStatusResponse
 import com.pomp.hskai.data.api.VoiceMessageResponse
 import com.pomp.hskai.data.api.VoiceSuggestionDto
 import com.pomp.hskai.data.api.VoiceWordDto
+import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.FeatureRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,7 +71,42 @@ data class VoiceUiState(
 class VoiceViewModel(
     private val repository: FeatureRepository,
     private val recorder: VoiceRecorder,
+    /** Speaks the partner's replies; a silent voice practice is not one. */
+    private val courseRepository: CourseRepository? = null,
+    private val audioPlayer: LessonAudioPlayer? = null,
 ) : ViewModel() {
+
+    private var speakJob: Job? = null
+    private var slowSpeech: Boolean = false
+
+    /** Follows the learner's "slow speech" setting for the next reply. */
+    fun setSlowSpeech(slow: Boolean) {
+        slowSpeech = slow
+    }
+
+    /**
+     * Reads one Chinese reply aloud.
+     *
+     * The Mini App's panda speaks every turn — hearing the answer is most of
+     * the exercise. A failure here is silent on purpose: a missing voice must
+     * not interrupt the conversation.
+     */
+    private fun speak(text: String) {
+        val phrase = text.trim()
+        if (phrase.isEmpty()) return
+        val course = courseRepository ?: return
+        val player = audioPlayer ?: return
+        speakJob?.cancel()
+        speakJob = viewModelScope.launch {
+            when (val audio = course.ttsAudio(phrase)) {
+                is ApiResult.Success -> runCatching {
+                    player.play(audio.value, if (slowSpeech) SLOW_SPEECH_RATE else 1f)
+                }
+
+                is ApiResult.Failure -> Unit
+            }
+        }
+    }
 
     private val _state = MutableStateFlow(VoiceUiState())
     val state: StateFlow<VoiceUiState> = _state.asStateFlow()
@@ -140,6 +178,7 @@ class VoiceViewModel(
                             ),
                         )
                     }
+                    speak(opening.chineseReply)
                 }
 
                 is ApiResult.Failure -> _state.update {
@@ -238,6 +277,7 @@ class VoiceViewModel(
     fun endSession() {
         val sessionId = _state.value.sessionId ?: return
         if (_state.value.isSending) return
+        speakJob?.cancel()
         recorder.cancel()
         _state.update { it.copy(isRecording = false, isSending = true, error = null) }
         viewModelScope.launch {
@@ -299,9 +339,16 @@ class VoiceViewModel(
     class Factory(
         private val repository: FeatureRepository,
         private val recorder: VoiceRecorder,
+        private val courseRepository: CourseRepository? = null,
+        private val audioPlayer: LessonAudioPlayer? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            VoiceViewModel(repository, recorder) as T
+            VoiceViewModel(repository, recorder, courseRepository, audioPlayer) as T
+    }
+
+    private companion object {
+        /** The Mini App's `playbackRate` for slow speech. */
+        const val SLOW_SPEECH_RATE = 0.75f
     }
 }

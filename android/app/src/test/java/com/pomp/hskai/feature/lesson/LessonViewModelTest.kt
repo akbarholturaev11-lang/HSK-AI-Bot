@@ -162,7 +162,7 @@ private class FakeLessonAudioPlayer : LessonAudioPlayer {
     val clips = mutableListOf<ByteArray>()
     var releaseCalls = 0
 
-    override suspend fun play(mp3: ByteArray) {
+    override suspend fun play(mp3: ByteArray, speed: Float) {
         clips += mp3
     }
 

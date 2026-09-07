@@ -266,4 +266,12 @@
     <string name="drill_recognition_prompt">Найдите нужный иероглиф</string>
     <string name="drill_pronunciation_prompt">Послушайте и повторите</string>
     <string name="limit_practice_reason">Бесплатное использование этого раздела закончилось.</string>
+    <string name="voice_settings_title">Настройки</string>
+    <string name="voice_setting_partner">Собеседник</string>
+    <string name="voice_setting_subtitles">Пиньинь и перевод</string>
+    <string name="voice_setting_rate">Скорость речи</string>
+    <string name="voice_setting_on">вкл</string>
+    <string name="voice_setting_off">выкл</string>
+    <string name="voice_rate_slow">медленно</string>
+    <string name="voice_rate_normal">обычная</string>
 </resources>

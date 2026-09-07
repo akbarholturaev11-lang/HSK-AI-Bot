@@ -65,6 +65,10 @@ fun VoiceScreen(
     level: String,
     language: String,
     limit: LimitGate,
+    subtitlesOn: Boolean,
+    slowSpeech: Boolean,
+    onToggleSubtitles: (Boolean) -> Unit,
+    onToggleSlowSpeech: (Boolean) -> Unit,
     onSelectRole: (String) -> Unit,
     onStartSession: (String, String) -> Unit,
     onToggleRecording: () -> Unit,
@@ -79,6 +83,10 @@ fun VoiceScreen(
             state.result != null -> VoiceResult(state = state, onDone = onReset)
             state.hasSession -> VoiceCallScreen(
                 state = state,
+                subtitlesOn = subtitlesOn,
+                slowSpeech = slowSpeech,
+                onToggleSubtitles = onToggleSubtitles,
+                onToggleSlowSpeech = onToggleSlowSpeech,
                 onToggleRecording = onToggleRecording,
                 onSendText = onSendText,
                 onEndSession = onEndSession,
@@ -373,7 +381,7 @@ internal fun partnerTitleRes(role: String): Int =
     VOICE_PARTNERS.firstOrNull { it.id == role }?.titleRes ?: R.string.voice_session_title
 
 @Composable
-internal fun VoiceBubble(line: VoiceLine) {
+internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true) {
     val isUser = line.speaker == VoiceSpeaker.USER
     Surface(
         color = if (isUser) PompColors.CinnabarSoft else PompColors.PaperRaised,
@@ -394,18 +402,22 @@ internal fun VoiceBubble(line: VoiceLine) {
                     color = PompColors.Ink,
                 )
             }
-            if (line.pinyin.isNotBlank()) {
+            // Subtitles off means the Chinese stands alone — the learner
+            // is listening, not reading along.
+            if (subtitlesOn && line.pinyin.isNotBlank()) {
                 Text(
                     text = line.pinyin,
                     style = PompTextStyles.pinyin,
                     color = PompColors.InkSecondary,
                 )
             }
-            Text(
-                text = line.text.ifBlank { line.translation },
-                style = MaterialTheme.typography.bodyLarge,
-                color = PompColors.Ink,
-            )
+            if (subtitlesOn || line.hanzi.isBlank()) {
+                Text(
+                    text = line.text.ifBlank { line.translation },
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = PompColors.Ink,
+                )
+            }
             line.correction?.takeIf { it.isNotBlank() }?.let {
                 Spacer(Modifier.height(8.dp))
                 Text(

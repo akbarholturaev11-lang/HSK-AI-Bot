@@ -208,6 +208,8 @@ private fun AppRoot(
                 factory = VoiceViewModel.Factory(
                     repository = app.featureRepository,
                     recorder = app.voiceRecorder,
+                    courseRepository = app.courseRepository,
+                    audioPlayer = app.lessonAudioPlayer,
                 ),
             )
             val voiceState by voiceViewModel.state.collectAsStateWithLifecycle()
@@ -294,6 +296,11 @@ private fun AppRoot(
 
             val dailyGoal by app.appSettings.dailyGoal
                 .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
+            val voiceSubtitles by app.appSettings.voiceSubtitles
+                .collectAsStateWithLifecycle(initialValue = true)
+            val voiceSlowSpeech by app.appSettings.voiceSlowSpeech
+                .collectAsStateWithLifecycle(initialValue = false)
+            LaunchedEffect(voiceSlowSpeech) { voiceViewModel.setSlowSpeech(voiceSlowSpeech) }
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
             var lessonAwaitingAd by remember { mutableStateOf<CourseLesson?>(null) }
@@ -624,6 +631,14 @@ private fun AppRoot(
                             level = currentLevel,
                             language = currentLanguage,
                             limit = limitGate,
+                            subtitlesOn = voiceSubtitles,
+                            slowSpeech = voiceSlowSpeech,
+                            onToggleSubtitles = { on ->
+                                scope.launch { app.appSettings.setVoiceSubtitles(on) }
+                            },
+                            onToggleSlowSpeech = { slow ->
+                                scope.launch { app.appSettings.setVoiceSlowSpeech(slow) }
+                            },
                             onSelectRole = voiceViewModel::selectRole,
                             onStartSession = voiceViewModel::startSession,
                             onToggleRecording = voiceViewModel::toggleRecording,
