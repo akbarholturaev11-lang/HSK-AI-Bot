@@ -59,6 +59,12 @@ data class LessonUiState(
     val audioError: ApiError? = null,
     val outcome: LessonOutcome = LessonOutcome.InProgress,
     val error: ApiError? = null,
+    /**
+     * The Mini App's five hearts. A wrong answer costs one and the count is
+     * shown in the lesson header. It never ends the lesson — the learner is
+     * here to learn, not to lose — but it makes a careless streak visible.
+     */
+    val hearts: Int = MAX_HEARTS,
 ) {
     val cards: List<LessonCard> get() = lesson?.cards.orEmpty()
     val currentCard: LessonCard? get() = cards.getOrNull(cardIndex)
@@ -69,6 +75,26 @@ data class LessonUiState(
         get() = if (totalCards == 0) 0f else cardIndex.toFloat() / totalCards
 
     val isAnswered: Boolean get() = answer is AnswerState.Checked
+
+    /**
+     * The Mini App's `.fstage` label — which part of the lesson this card
+     * belongs to. Cards are flattened for the flow, so the section is found by
+     * counting rather than stored on the card.
+     */
+    val currentSectionTitle: String
+        get() {
+            var start = 0
+            for (section in lesson?.sections.orEmpty()) {
+                val end = start + section.cards.size
+                if (cardIndex < end) return section.title
+                start = end
+            }
+            return ""
+        }
+
+    companion object {
+        const val MAX_HEARTS = 5
+    }
 }
 
 /**
@@ -209,6 +235,7 @@ class LessonViewModel(
                 answer = AnswerState.Checked(correct, explanation),
                 correctCount = it.correctCount + if (correct) 1 else 0,
                 gradedAnswered = it.gradedAnswered + 1,
+                hearts = if (correct) it.hearts else (it.hearts - 1).coerceAtLeast(0),
             )
         }
     }

@@ -225,4 +225,8 @@
     <string name="ad_learn_more">Подробнее</string>
     <string name="ad_unavailable">Сейчас рекламы нет. Попробуйте позже.</string>
     <string name="limit_watch_ad">Продолжить с рекламой</string>
+    <string name="lesson_pinyin_title">Пиньинь (произношение)</string>
+    <string name="lesson_pinyin_all">Показывать везде</string>
+    <string name="lesson_pinyin_new">Только в новых словах</string>
+    <string name="lesson_pinyin_off">Скрыть</string>
 </resources>

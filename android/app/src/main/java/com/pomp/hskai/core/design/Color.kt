@@ -67,4 +67,7 @@ object PompColors {
      */
     val PlanOnGold = Color(0xFF3A2C08) // .tgo / .tnode.now foreground
     val PlanDone = Color(0xFF7FD6A8)   // .tdone and the completed plan header
+
+    /** `.opt` depth — the 4px ledge the answer buttons sit on. */
+    val OptionDepth = Color(0xFFE6DDCF)
 }

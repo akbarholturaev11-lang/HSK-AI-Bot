@@ -226,4 +226,8 @@
     <string name="ad_learn_more">Муфассал</string>
     <string name="ad_unavailable">Ҳоло реклама нест. Баъдтар кӯшиш кунед.</string>
     <string name="limit_watch_ad">Бо реклама идома додан</string>
+    <string name="lesson_pinyin_title">Пиньин (талаффуз)</string>
+    <string name="lesson_pinyin_all">Дар ҳама ҷо нишон додан</string>
+    <string name="lesson_pinyin_new">Танҳо дар калимаҳои нав</string>
+    <string name="lesson_pinyin_off">Пинҳон кардан</string>
 </resources>

@@ -1,5 +1,9 @@
 package com.pomp.hskai.feature.lesson
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,21 +12,29 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,11 +43,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.settings.PinyinVisibility
@@ -105,6 +122,7 @@ fun LessonScreen(
     onAdvance: () -> Unit,
     onPlayAudio: (String) -> Unit,
     onRetryCompletion: () -> Unit,
+    onOpenPinyinSettings: () -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -140,6 +158,7 @@ fun LessonScreen(
                 onAcknowledge = onAcknowledge,
                 onAdvance = onAdvance,
                 onPlayAudio = onPlayAudio,
+                onOpenPinyinSettings = onOpenPinyinSettings,
                 onExit = onExit,
             )
         }
@@ -167,6 +186,7 @@ private fun LessonBody(
     onAcknowledge: () -> Unit,
     onAdvance: () -> Unit,
     onPlayAudio: (String) -> Unit,
+    onOpenPinyinSettings: () -> Unit,
     onExit: () -> Unit,
 ) {
     val haptics = LocalHapticFeedback.current
@@ -188,38 +208,23 @@ private fun LessonBody(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            TextButton(onClick = onExit) {
-                Text(
-                    text = stringResource(R.string.action_close),
-                    color = PompColors.InkSecondary,
-                )
-            }
-            LinearProgressIndicator(
-                progress = { state.progress },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp),
-                color = PompColors.Cinnabar,
-                trackColor = PompColors.Divider,
-            )
-            Text(
-                text = "${state.cardIndex + 1}/${state.totalCards}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.InkSecondary,
-            )
-        }
+        LessonTopBar(
+            progress = state.progress,
+            hearts = state.hearts,
+            onOpenPinyinSettings = onOpenPinyinSettings,
+            onExit = onExit,
+        )
+        LessonStageLine(
+            index = state.cardIndex + 1,
+            total = state.totalCards,
+            title = state.currentSectionTitle,
+        )
 
         Column(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 12.dp),
+                .padding(horizontal = 18.dp, vertical = 10.dp),
         ) {
             when (card) {
                 is NewWordCard -> NewWordCardView(card, pinyin)
@@ -287,6 +292,129 @@ private fun LessonBody(
     }
 }
 
+/**
+ * Mini App `.ftop`: a round close button, a thick progress bar, the pinyin
+ * gear and the hearts. The card counter is not here — it belongs to the stage
+ * line below, exactly as in `course-v3`.
+ */
+@Composable
+private fun LessonTopBar(
+    progress: Float,
+    hearts: Int,
+    onOpenPinyinSettings: () -> Unit,
+    onExit: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(11.dp),
+    ) {
+        Surface(
+            onClick = onExit,
+            shape = CircleShape,
+            color = PompColors.PaperRaised,
+            border = BorderStroke(1.dp, PompColors.Divider),
+            modifier = Modifier.size(30.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.action_close),
+                    tint = PompColors.InkSecondary,
+                    modifier = Modifier.size(17.dp),
+                )
+            }
+        }
+
+        val animatedProgress by animateFloatAsState(
+            targetValue = progress.coerceIn(0f, 1f),
+            animationSpec = tween(durationMillis = 300),
+            label = "lessonProgress",
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(9.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(PompColors.Divider),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(animatedProgress)
+                    .height(9.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(PompColors.Cinnabar),
+            )
+        }
+
+        Surface(
+            onClick = onOpenPinyinSettings,
+            shape = CircleShape,
+            color = Color.Transparent,
+            modifier = Modifier.size(30.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = stringResource(R.string.lesson_pinyin_title),
+                    tint = PompColors.InkDisabled,
+                    modifier = Modifier.size(17.dp),
+                )
+            }
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Favorite,
+                contentDescription = null,
+                tint = PompColors.Cinnabar,
+                modifier = Modifier.size(15.dp),
+            )
+            Text(
+                text = hearts.toString(),
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp),
+                fontWeight = FontWeight.Medium,
+                color = PompColors.Cinnabar,
+            )
+        }
+    }
+}
+
+/** Mini App `.fstage`: position in the lesson, then the section it belongs to. */
+@Composable
+private fun LessonStageLine(index: Int, total: Int, title: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 18.dp, end = 18.dp, top = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "$index / $total",
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+            fontWeight = FontWeight.SemiBold,
+            color = PompColors.CinnabarDark,
+        )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelLarge.copy(fontSize = 12.sp),
+            fontWeight = FontWeight.SemiBold,
+            color = PompColors.Ink,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End,
+        )
+    }
+}
+
 @Composable
 private fun FooterBar(
     state: LessonUiState,
@@ -296,45 +424,59 @@ private fun FooterBar(
 ) {
     val answer = state.answer
     if (answer is AnswerState.Checked) {
+        // Mini App `.fbar`: the verdict tints the whole strip, the right answer
+        // sits under it, and one full-width button carries on.
         Surface(
             color = if (answer.isCorrect) PompColors.JadeSoft else PompColors.CinnabarSoft,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
+            Column(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 18.dp),
+            ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = if (answer.isCorrect) "✓" else "✕",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = if (answer.isCorrect) {
-                            PompColors.Jade
+                    Icon(
+                        imageVector = if (answer.isCorrect) {
+                            Icons.Filled.CheckCircle
                         } else {
-                            PompColors.CinnabarDark
+                            Icons.Filled.Cancel
                         },
+                        contentDescription = null,
+                        tint = if (answer.isCorrect) PompColors.Jade else PompColors.CinnabarDark,
+                        modifier = Modifier.size(22.dp),
                     )
-                    Spacer(Modifier.size(10.dp))
-                    Text(
-                        text = stringResource(
-                            if (answer.isCorrect) {
-                                R.string.lesson_correct
+                    Spacer(Modifier.size(9.dp))
+                    Column {
+                        Text(
+                            text = stringResource(
+                                if (answer.isCorrect) {
+                                    R.string.lesson_correct
+                                } else {
+                                    R.string.lesson_wrong
+                                }
+                            ),
+                            style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp),
+                            fontWeight = FontWeight.Medium,
+                            color = if (answer.isCorrect) {
+                                PompColors.Jade
                             } else {
-                                R.string.lesson_wrong
-                            }
-                        ),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = PompColors.Ink,
-                    )
+                                PompColors.CinnabarDark
+                            },
+                        )
+                        if (answer.explanation.isNotBlank()) {
+                            Text(
+                                text = answer.explanation,
+                                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                                color = PompColors.InkSecondary,
+                            )
+                        }
+                    }
                 }
-                if (answer.explanation.isNotBlank()) {
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = answer.explanation,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.Ink,
-                    )
-                }
-                Spacer(Modifier.height(16.dp))
-                PrimaryAction(
+                Spacer(Modifier.height(10.dp))
+                FlowButton(
                     text = stringResource(R.string.lesson_next),
+                    color = if (answer.isCorrect) PompColors.Jade else PompColors.Cinnabar,
                     onClick = onAdvance,
                 )
             }
@@ -342,15 +484,48 @@ private fun FooterBar(
         return
     }
 
-    // Cards without a question advance on their own button.
+    // Cards without a question advance on their own button (`.fcta`).
     val needsAcknowledge = card is NewWordCard || card is GrammarCard
     if (needsAcknowledge) {
-        Box(modifier = Modifier.padding(20.dp)) {
-            PrimaryAction(
+        Box(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        ) {
+            FlowButton(
                 text = stringResource(R.string.lesson_next),
+                color = PompColors.Cinnabar,
+                shape = RoundedCornerShape(14.dp),
                 onClick = onAcknowledge,
             )
         }
+    }
+}
+
+/** Mini App `.fbtn` / `.fcta`: one full-width action, no Material elevation. */
+@Composable
+private fun FlowButton(
+    text: String,
+    color: Color,
+    onClick: () -> Unit,
+    shape: RoundedCornerShape = RoundedCornerShape(13.dp),
+) {
+    Surface(
+        onClick = onClick,
+        color = color,
+        shape = shape,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+            fontWeight = FontWeight.Medium,
+            color = PompColors.Paper,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 14.dp),
+        )
     }
 }
 

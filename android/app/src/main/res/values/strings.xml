@@ -253,4 +253,8 @@
     <string name="ad_learn_more">Batafsil</string>
     <string name="ad_unavailable">Hozircha reklama yo‘q. Keyinroq urinib ko‘ring.</string>
     <string name="limit_watch_ad">Reklama bilan davom etish</string>
+    <string name="lesson_pinyin_title">Pinyin (talaffuz yozuvi)</string>
+    <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>
+    <string name="lesson_pinyin_new">Faqat yangi so‘zlarda</string>
+    <string name="lesson_pinyin_off">Yashirish</string>
 </resources>

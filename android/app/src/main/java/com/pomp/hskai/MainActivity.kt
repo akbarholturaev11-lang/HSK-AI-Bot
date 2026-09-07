@@ -631,6 +631,8 @@ private fun LessonHost(
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+    var pinyinSheetOpen by remember { mutableStateOf(false) }
 
     LaunchedEffect(launch.attemptKey) {
         model.beginAttempt(launch.attemptKey)
@@ -649,11 +651,77 @@ private fun LessonHost(
         onAdvance = model::advance,
         onPlayAudio = model::playAudio,
         onRetryCompletion = model::retryCompletion,
+        onOpenPinyinSettings = { pinyinSheetOpen = true },
         onExit = {
             model.endAttempt(launch.attemptKey)
             onExit()
         },
     )
+
+    if (pinyinSheetOpen) {
+        PinyinPicker(
+            current = pinyin,
+            onPick = { value ->
+                scope.launch { app.appSettings.setPinyinVisibility(value) }
+                pinyinSheetOpen = false
+            },
+            onDismiss = { pinyinSheetOpen = false },
+        )
+    }
+}
+
+/**
+ * Mini App `App.pinyinSheet()`. The setting already existed here but had no
+ * control anywhere in the app, so a learner could not turn pinyin off the way
+ * the Mini App lets them.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PinyinPicker(
+    current: PinyinVisibility,
+    onPick: (PinyinVisibility) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.PaperRaised,
+    ) {
+        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+            Text(
+                text = stringResource(R.string.lesson_pinyin_title),
+                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            androidx.compose.foundation.layout.Spacer(Modifier.padding(6.dp))
+            PinyinVisibility.entries.forEach { option ->
+                val selected = option == current
+                val labelRes = when (option) {
+                    PinyinVisibility.ALL -> R.string.lesson_pinyin_all
+                    PinyinVisibility.NEW_WORDS_ONLY -> R.string.lesson_pinyin_new
+                    PinyinVisibility.OFF -> R.string.lesson_pinyin_off
+                }
+                Surface(
+                    color = if (selected) PompColors.CinnabarSoft else PompColors.PaperRaised,
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 52.dp)
+                        .padding(vertical = 4.dp)
+                        .clickable { onPick(option) },
+                ) {
+                    Text(
+                        text = stringResource(labelRes),
+                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                        color = if (selected) PompColors.CinnabarDark else PompColors.Ink,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                    )
+                }
+            }
+            androidx.compose.foundation.layout.Spacer(Modifier.padding(12.dp))
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
