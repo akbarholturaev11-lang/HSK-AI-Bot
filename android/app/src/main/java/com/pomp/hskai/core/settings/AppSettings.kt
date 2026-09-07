@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(
@@ -55,7 +56,7 @@ object DailyGoal {
     fun sanitize(value: Int?): Int = value?.takeIf { it in CHOICES } ?: DEFAULT
 }
 
-class AppSettings(context: Context) {
+class AppSettings(context: Context) : LessonResumeStore {
 
     private val appContext = context.applicationContext
 
@@ -100,7 +101,43 @@ class AppSettings(context: Context) {
         appContext.settingsDataStore.edit { it[LAST_REMINDER_DATE_KEY] = value }
     }
 
+    /**
+     * Mini App `hsk_v3_lesson_resume:v2:<level>:<order>` — the card the learner
+     * stopped on. Leaving a lesson halfway and starting it again from the top
+     * is the fastest way to lose someone, so the position is kept for a week
+     * and then forgotten, exactly as the Mini App forgets it.
+     */
+    override suspend fun lessonResumeIndex(level: String, order: Int): Int {
+        val prefs = appContext.settingsDataStore.data.first()
+        val savedAt = prefs[resumeAtKey(level, order)] ?: return 0
+        if (System.currentTimeMillis() - savedAt > LESSON_RESUME_TTL_MILLIS) return 0
+        return (prefs[resumeIndexKey(level, order)] ?: 0).coerceAtLeast(0)
+    }
+
+    override suspend fun setLessonResumeIndex(level: String, order: Int, index: Int) {
+        appContext.settingsDataStore.edit {
+            it[resumeIndexKey(level, order)] = index.coerceAtLeast(0)
+            it[resumeAtKey(level, order)] = System.currentTimeMillis()
+        }
+    }
+
+    override suspend fun clearLessonResume(level: String, order: Int) {
+        appContext.settingsDataStore.edit {
+            it.remove(resumeIndexKey(level, order))
+            it.remove(resumeAtKey(level, order))
+        }
+    }
+
+    private fun resumeIndexKey(level: String, order: Int) =
+        intPreferencesKey("lesson_resume_index:v2:${level.lowercase()}:$order")
+
+    private fun resumeAtKey(level: String, order: Int) =
+        longPreferencesKey("lesson_resume_at:v2:${level.lowercase()}:$order")
+
     private companion object {
+        /** The Mini App's `LESSON_RESUME_TTL_MS`. */
+        const val LESSON_RESUME_TTL_MILLIS = 7L * 24 * 60 * 60 * 1000
+
         val PINYIN_KEY = stringPreferencesKey("pinyin_visibility")
         val DAILY_GOAL_KEY = intPreferencesKey("daily_goal_xp")
         val LAST_STUDY_SETUP_ASKED_AT_KEY = longPreferencesKey("hsk_v3_setup_asked")

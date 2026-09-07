@@ -7,6 +7,7 @@ import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.settings.LessonResumeStore
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.domain.model.ChoiceCard
@@ -111,9 +112,12 @@ class LessonViewModel(
     private val level: String,
     private val lessonOrder: Int,
     private val language: AppLanguage,
+    /** Absent in tests, where there is no device storage to resume from. */
+    private val resumeStore: LessonResumeStore? = null,
     /**
      * A new id is created only when [beginAttempt] receives a new launch key.
-     * Completion retries inside that attempt keep the same id.
+     * Completion retries inside that attempt keep the same id. Trailing, so a
+     * lambda argument cannot land on another parameter by accident.
      */
     private val eventIdFactory: () -> String = CourseRepository::newEventId,
 ) : ViewModel() {
@@ -161,9 +165,15 @@ class LessonViewModel(
             when (val result = repository.lesson(level, lessonOrder, language)) {
                 is ApiResult.Success -> if (generation == loadGeneration) {
                     val snapshot = result.value
+                    // Come back to the card the learner left on, never past the
+                    // end: a saved index equal to the deck length would open on
+                    // nothing at all.
+                    val saved = resumeStore?.lessonResumeIndex(level, lessonOrder) ?: 0
+                    val cards = snapshot.lesson.cards.size
                     _state.value = LessonUiState(
                         isLoading = false,
                         lesson = snapshot.lesson,
+                        cardIndex = saved.coerceIn(0, (cards - 1).coerceAtLeast(0)),
                         previewCardLimit = snapshot.previewCardLimit,
                         completionAllowed = snapshot.completionAllowed,
                         completionError = snapshot.completionError,
@@ -229,6 +239,12 @@ class LessonViewModel(
         advance()
     }
 
+    /** Keeps the resume point in step with the card on screen. */
+    private fun rememberPosition(index: Int) {
+        val store = resumeStore ?: return
+        viewModelScope.launch { store.setLessonResumeIndex(level, lessonOrder, index) }
+    }
+
     private fun record(correct: Boolean, explanation: String) {
         _state.update {
             it.copy(
@@ -263,6 +279,7 @@ class LessonViewModel(
             return
         }
 
+        rememberPosition(next)
         _state.update {
             it.copy(
                 cardIndex = next,
@@ -287,6 +304,7 @@ class LessonViewModel(
                 eventId = stableEventId,
                 mistakes = mistakes.toList(),
             )
+            if (result is ApiResult.Success) resumeStore?.clearLessonResume(level, lessonOrder)
             if (activeAttemptKey != attemptKey) return@launch
             _state.update { current ->
                 when (result) {
@@ -369,6 +387,7 @@ class LessonViewModel(
         private val level: String,
         private val lessonOrder: Int,
         private val language: AppLanguage,
+        private val resumeStore: LessonResumeStore,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = LessonViewModel(
@@ -377,6 +396,7 @@ class LessonViewModel(
             level = level,
             lessonOrder = lessonOrder,
             language = language,
+            resumeStore = resumeStore,
         ) as T
     }
 

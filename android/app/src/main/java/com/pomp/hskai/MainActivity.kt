@@ -628,6 +628,7 @@ private fun LessonHost(
             level = level,
             lessonOrder = lesson.order,
             language = language,
+            resumeStore = app.appSettings,
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()

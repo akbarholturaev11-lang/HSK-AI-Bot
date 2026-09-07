@@ -4,6 +4,7 @@ import com.pomp.hskai.core.audio.LessonAudioPlayer
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
+import com.pomp.hskai.core.settings.LessonResumeStore
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
@@ -191,6 +192,7 @@ class LessonViewModelTest {
     private fun viewModel(
         api: AndroidCourseApi = FakeLessonApi(),
         audioPlayer: LessonAudioPlayer = FakeLessonAudioPlayer(),
+        resumeStore: LessonResumeStore? = null,
         eventIdFactory: () -> String = {
             "android:0d1f2e3a4b5c6d7e8f90a1b2c3d4e5f6"
         },
@@ -201,7 +203,54 @@ class LessonViewModelTest {
         lessonOrder = 1,
         language = AppLanguage.UZBEK,
         eventIdFactory = eventIdFactory,
+        resumeStore = resumeStore,
     ).also { it.beginAttempt("attempt-1") }
+
+    /** In-memory stand-in for the DataStore-backed resume point. */
+    private class FakeResumeStore(var index: Int = 0) : LessonResumeStore {
+        var cleared = false
+
+        override suspend fun lessonResumeIndex(level: String, order: Int): Int = index
+
+        override suspend fun setLessonResumeIndex(level: String, order: Int, index: Int) {
+            this.index = index
+        }
+
+        override suspend fun clearLessonResume(level: String, order: Int) {
+            cleared = true
+            index = 0
+        }
+    }
+
+    @Test
+    fun `a half-finished lesson opens on the card it was left on`() = runTest {
+        val store = FakeResumeStore(index = 2)
+        val model = viewModel(resumeStore = store)
+        advanceUntilIdle()
+
+        assertEquals(2, model.state.value.cardIndex)
+    }
+
+    @Test
+    fun `a saved position past the last card falls back to the last card`() = runTest {
+        val store = FakeResumeStore(index = 99)
+        val model = viewModel(resumeStore = store)
+        advanceUntilIdle()
+
+        assertEquals(5, model.state.value.cardIndex)
+    }
+
+    @Test
+    fun `moving on records the new position`() = runTest {
+        val store = FakeResumeStore()
+        val model = viewModel(resumeStore = store)
+        advanceUntilIdle()
+
+        model.acknowledge()
+        advanceUntilIdle()
+
+        assertEquals(1, store.index)
+    }
 
     @Test
     fun `the whole deck is loaded, including the unknown card`() = runTest {
