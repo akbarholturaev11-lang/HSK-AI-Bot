@@ -839,6 +839,35 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
     def _headers(self):
         return {"Authorization": "Bearer token", "Content-Type": "application/json"}
 
+    async def test_the_first_free_run_is_allowed_and_the_second_is_not(self):
+        first = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-1"},
+        )
+        second = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-2"},
+        )
+
+        self.assertEqual(200, first.status_code)
+        self.assertTrue(first.json()["allowed"])
+        # The Mini App gives a free learner this section once, not once a day.
+        self.assertEqual(403, second.status_code)
+        body = second.json()
+        self.assertEqual("free_feature_limit_reached", body["error"])
+        self.assertTrue(body["ad"]["available"])
+
+    async def test_an_unknown_section_cannot_be_gated(self):
+        response = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "writing"},
+        )
+
+        self.assertEqual(422, response.status_code)
+
     async def test_the_words_come_from_the_mastery_adviser(self):
         response = await self.client.post(
             "/api/v3/android/practice/words",
@@ -1000,6 +1029,7 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/subscription/open"),
         ("POST", "/api/v3/android/practice/start"),
         ("POST", "/api/v3/android/practice/complete"),
+        ("POST", "/api/v3/android/practice/gate"),
         ("POST", "/api/v3/android/practice/words"),
         ("POST", "/api/v3/android/practice/report"),
         ("POST", "/api/v3/android/exams/start"),

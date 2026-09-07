@@ -55,7 +55,11 @@ from app.services.course_drill_signal_service import CourseDrillSignalService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_word_mastery_service import CourseWordMasteryService
 from app.services.course_hsk_exam_service import CourseHskExamService
-from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.course_access_policy_service import CourseAccessPolicyService
+from app.services.course_miniapp_access_service import (
+    COURSE_AI_PRACTICE_FEATURES,
+    CourseMiniAppAccessService,
+)
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
@@ -193,6 +197,22 @@ class AndroidDrillWordsRequest(BaseModel):
 
     feature: Literal["recognition", "pronunciation"]
     limit: int = Field(default=10, ge=1, le=30)
+
+
+class AndroidDrillGateRequest(BaseModel):
+    """May this learner open the drill right now?
+
+    The rule is the Mini App's, not a second one: a free learner gets the
+    section once (`lifetime`), an ad opens it again without spending that free
+    use, and an admin "free until" period opens it for everyone. The count is
+    kept by the server, so the client cannot talk its way in.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    feature: Literal["recognition", "pronunciation"]
+    ref: str = Field(default="", max_length=48)
+    access_ref: str = Field(default="", max_length=160)
 
 
 class AndroidDrillMistakeEntry(BaseModel):
@@ -1143,6 +1163,107 @@ def create_android_features_router(
             logger.exception("Android voice message failed")
             return _error_response(
                 AndroidFeatureError("android_voice_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/practice/gate")
+    async def android_drill_gate(request: Request):
+        """The same door the Mini App opens before a drill.
+
+        Android's adaptive drills used to skip it entirely, so the same free
+        learner had a limit on one client and none on the other.
+        """
+        try:
+            payload = await _validated_payload(request, AndroidDrillGateRequest)
+            feature = payload.feature
+            async with session_factory() as session:
+                user = await _user(session, request)
+                access = CourseMiniAppAccessService(session)
+
+                # An ad opens the section without spending the free use — the
+                # server checks its own record of the view, never the client's
+                # word for it.
+                if payload.access_ref.strip():
+                    try:
+                        verdict = await access.verify_ad_authorization(
+                            user,
+                            feature_key=feature,
+                            access_ref=payload.access_ref.strip(),
+                        )
+                    except ValueError:
+                        verdict = {"allowed": False, "error": "invalid_access_ref"}
+                    await session.commit()
+                    if verdict.get("allowed"):
+                        return JSONResponse(
+                            content={"ok": True, "allowed": True, "source": "ad"},
+                            headers={"Cache-Control": "no-store"},
+                        )
+                    raise AndroidFeatureError(
+                        str(verdict.get("error") or "ad_authorization_required"),
+                        status_code=403,
+                    )
+
+                # "Free until" is a course-wide gift; it must not quietly cost
+                # the learner their one free run of the section.
+                policy = await CourseAccessPolicyService(session).get_policy()
+                if policy.free_active:
+                    return JSONResponse(
+                        content={
+                            "ok": True,
+                            "allowed": True,
+                            "is_paid": access.is_paid_user(user),
+                            "policy_free": True,
+                        },
+                        headers={"Cache-Control": "no-store"},
+                    )
+
+                result = await access.consume_daily_use(
+                    user,
+                    feature_key=feature,
+                    ref=payload.ref.strip() or None,
+                    lifetime=True,
+                    notify_bot=bot,
+                )
+                if not result.get("allowed"):
+                    # A spent allowance is answered with what can reopen it.
+                    if feature in COURSE_AI_PRACTICE_FEATURES:
+                        ad_status = await access.daily_status(user, f"{feature}_ad")
+                        ad_info = {
+                            "available": bool(ad_status.get("allowed")),
+                            "limited": True,
+                            "used": int(ad_status.get("used") or 0),
+                            "limit": int(ad_status.get("limit") or 0),
+                            "remaining": ad_status.get("remaining"),
+                        }
+                    else:
+                        ad_info = {"available": True, "limited": False}
+                    await session.commit()
+                    return JSONResponse(
+                        status_code=403,
+                        content={
+                            "ok": False,
+                            "error": result.get("error") or "free_feature_limit_reached",
+                            "is_paid": bool(result.get("is_paid", False)),
+                            "reset_at": result.get("reset_at"),
+                            "ad": ad_info,
+                        },
+                        headers={"Cache-Control": "no-store"},
+                    )
+                await session.commit()
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "allowed": True,
+                    "is_paid": bool(result.get("is_paid", False)),
+                    "remaining": result.get("remaining"),
+                },
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android drill gate failed")
+            return _error_response(
+                AndroidFeatureError("android_practice_unavailable", status_code=503)
             )
 
     @router.post("/api/v3/android/practice/words")

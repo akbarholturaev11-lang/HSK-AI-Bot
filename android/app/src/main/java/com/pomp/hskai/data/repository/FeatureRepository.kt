@@ -37,6 +37,8 @@ import com.pomp.hskai.data.api.VoiceEndRequest
 import com.pomp.hskai.data.api.VoiceEndResponse
 import com.pomp.hskai.data.api.VoiceMessageRequest
 import com.pomp.hskai.data.api.VoiceMessageResponse
+import com.pomp.hskai.data.api.DrillGateRequest
+import com.pomp.hskai.data.api.DrillGateResponse
 import com.pomp.hskai.data.api.DrillMistakeDto
 import com.pomp.hskai.data.api.DrillReportRequest
 import com.pomp.hskai.data.api.DrillReportResponse
@@ -251,6 +253,21 @@ class FeatureRepository(
                 sessionId = sessionId,
                 text = text,
             ),
+        )
+    }
+
+    /**
+     * Asks whether the drill may open. A refusal is an ordinary answer, not a
+     * failure: it carries what would reopen the section.
+     */
+    suspend fun drillGate(
+        feature: String,
+        ref: String,
+        accessRef: String = "",
+    ): ApiResult<DrillGateResponse> = authorized {
+        api.drillGate(
+            it,
+            DrillGateRequest(feature = feature, ref = ref, accessRef = accessRef),
         )
     }
 

@@ -548,6 +548,25 @@ data class VoiceMessageResponse(
  * is built on the device from its own dictionary, so switching language never
  * changes what is being asked.
  */
+/**
+ * May this drill open? The free allowance is the Mini App's own — the section
+ * once, not once a day — and an ad reopens it without spending it.
+ */
+@Serializable
+data class DrillGateRequest(
+    @SerialName("feature") val feature: String,
+    @SerialName("ref") val ref: String = "",
+    @SerialName("access_ref") val accessRef: String = "",
+)
+
+@Serializable
+data class DrillGateResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("allowed") val allowed: Boolean = false,
+    @SerialName("is_paid") val isPaid: Boolean = false,
+    @SerialName("reset_at") val resetAt: String? = null,
+)
+
 @Serializable
 data class DrillWordsRequest(
     @SerialName("feature") val feature: String,

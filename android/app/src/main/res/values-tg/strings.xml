@@ -266,4 +266,5 @@
     <string name="today_reason_ad">Бо тамошои реклама кушоед</string>
     <string name="drill_recognition_prompt">Иероглифи дурустро ёбед</string>
     <string name="drill_pronunciation_prompt">Гӯш кунед ва такрор кунед</string>
+    <string name="limit_practice_reason">Истифодаи ройгони ин бахш ба анҷом расид.</string>
 </resources>

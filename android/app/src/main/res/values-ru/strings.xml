@@ -265,4 +265,5 @@
     <string name="today_reason_ad">Откройте, посмотрев рекламу</string>
     <string name="drill_recognition_prompt">Найдите нужный иероглиф</string>
     <string name="drill_pronunciation_prompt">Послушайте и повторите</string>
+    <string name="limit_practice_reason">Бесплатное использование этого раздела закончилось.</string>
 </resources>

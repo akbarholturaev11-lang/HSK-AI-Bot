@@ -298,6 +298,8 @@ private fun AppRoot(
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
             var lessonAwaitingAd by remember { mutableStateOf<CourseLesson?>(null) }
             var openDrill by remember { mutableStateOf<DrillMode?>(null) }
+            var drillAwaitingAd by remember { mutableStateOf<DrillMode?>(null) }
+            var drillAccessRef by remember { mutableStateOf("") }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
@@ -444,6 +446,14 @@ private fun AppRoot(
                     adRequest = null
                     when {
                         isLessonEndAd -> Unit
+                        drillAwaitingAd != null -> {
+                            // The server bound the view to this reference; the
+                            // drill presents it and the section reopens.
+                            openDrill = drillAwaitingAd
+                            drillAccessRef = ad.accessRef
+                            drillAwaitingAd = null
+                        }
+
                         unlockedLesson != null -> {
                             // The server recorded the view against this exact
                             // reference; the lesson now carries it as proof.
@@ -481,13 +491,27 @@ private fun AppRoot(
                     ),
                 )
                 val drillState by drillViewModel.state.collectAsStateWithLifecycle()
+                LaunchedEffect(drillAccessRef) {
+                    if (drillAccessRef.isNotBlank()) {
+                        drillViewModel.load(drillAccessRef)
+                        drillAccessRef = ""
+                    }
+                }
                 WordDrillScreen(
                     state = drillState,
+                    limit = limitGate,
+                    onWatchAd = {
+                        drillAwaitingAd = mode
+                        adRequest = AdRequest(
+                            feature = mode.feature,
+                            accessRef = UUID.randomUUID().toString(),
+                        )
+                    },
                     onChoose = drillViewModel::choose,
                     onSpeak = drillViewModel::speak,
                     onSkipSpoken = drillViewModel::skipSpoken,
                     onAdvance = drillViewModel::advance,
-                    onRetry = drillViewModel::load,
+                    onRetry = { drillViewModel.load() },
                     onClose = {
                         openDrill = null
                         courseViewModel.load()

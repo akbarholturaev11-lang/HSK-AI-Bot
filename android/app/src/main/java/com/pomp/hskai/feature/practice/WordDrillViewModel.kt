@@ -38,6 +38,12 @@ data class WordDrillUiState(
     val isScoring: Boolean = false,
     val spokenScore: Int? = null,
     val finished: Boolean = false,
+    /**
+     * The free allowance for this section is spent. Not an error: it is the
+     * one place that says what reopens it.
+     */
+    val limitReached: Boolean = false,
+    val resetAt: String? = null,
     val error: ApiError? = null,
 ) {
     val current: DrillQuestion? get() = questions.getOrNull(index)
@@ -72,11 +78,31 @@ class WordDrillViewModel(
         load()
     }
 
-    fun load() {
+    /** @param accessRef set when an ad has just reopened the section. */
+    fun load(accessRef: String = "") {
         _state.value = WordDrillUiState(isLoading = true, mode = mode)
         mistakes.clear()
         results.clear()
         viewModelScope.launch {
+            // The Mini App asks this door first, and so must this client: a
+            // free learner gets the section once, and an ad reopens it.
+            val gate = repository.drillGate(
+                feature = mode.feature,
+                ref = "drill:${'$'}{System.currentTimeMillis()}",
+                accessRef = accessRef,
+            )
+            if (gate is ApiResult.Failure) {
+                val spent = gate.error as? ApiError.LimitReached
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        limitReached = spent != null,
+                        resetAt = spent?.resetAt,
+                        error = if (spent != null) null else gate.error,
+                    )
+                }
+                return@launch
+            }
             // The dictionary is the client's own material; an empty cache is
             // the only thing that can stop the drill.
             dictionary.sync(language)

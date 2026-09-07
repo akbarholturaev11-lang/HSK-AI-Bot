@@ -293,4 +293,5 @@
     <string name="today_reason_ad">Reklamani ko‘rib oching</string>
     <string name="drill_recognition_prompt">To‘g‘ri ieroglifni toping</string>
     <string name="drill_pronunciation_prompt">Eshiting va takrorlang</string>
+    <string name="limit_practice_reason">Bu bo‘limdan bepul foydalanishingiz tugadi.</string>
 </resources>
