@@ -227,6 +227,51 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-07 — Android: uchta backend bo'shlig'i yopildi
+
+**1. Qulflangan darsni REKLAMA bilan ochish.**
+- Admin kursni "ads" rejimiga qo'yganda Mini App darsni reklama bilan ochadi;
+  native klientlarda bu yo'l umuman yo'q edi.
+- `apply_course_v3_access_policy` endi `ad_unlockable` bayrog'ini qo'yadi
+  (qulf saqlanadi, faqat "reklama ochadi" deb aytiladi).
+- `DesktopCourseService.lesson()` va `.complete()` `access_ref` qabul qiladi va
+  `verify_ad_authorization` bilan tekshiradi — Mini App'dagi AYNI funksiya,
+  ayni 1 soatlik oyna. Tekshiruv IKKI joyda: darsni berishda va tugatishda.
+- Reklama darsni TO'LIQ ochadi (yarim preview emas).
+- `access_ref`: Android'da `GET .../course/lesson/{n}?access_ref=` va
+  `AndroidCourseCompleteRequest`. Desktop modeli o'zgarmadi (unda reklama yo'q).
+- RISK: bepul kirish KENGAYMADI — "ads" rejimidan tashqarida qulf o'zgarmagan,
+  klient o'zi o'ylab topgan ref hech narsa ochmaydi (test bilan qoplangan).
+
+**2. Starter 0 dagi "gapirish" qadami endi haqiqiy.**
+- Ilgari tugma bosilsa bonus berilardi (mikrofon umuman ochilmasdi).
+- `/api/v3/android/voice/pronounce` qo'shildi (desktop marshrutining aynan
+  o'zi, `score_pronunciation` ga uzatadi). Klient 2.6 soniya yozadi, 60 dan
+  yuqori ball bonus beradi, "hozir gapira olmayman" yo'li qoladi.
+
+**3. Moslashuvchan mashqlar (Ieroglif tanish / Talaffuz).**
+- Ilgari Android bu ikki bo'limni umumiy MCQ dvigatelidan qurardi: bir xil
+  o'quvchi ikki klientda BOSHQA so'zlarni mashq qilardi va faqat Mini App
+  javoblari takror jadvaliga tushardi.
+- `/api/v3/android/practice/words` va `/practice/report` qo'shildi —
+  `CourseWordMasteryService` + `CourseDrillSignalService` ga uzatadi.
+- Klient tomoni Mini App bilan bir xil bo'lingan: SERVER qaysi ieroglif
+  navbatda ekanini aytadi, ko'rinadigan matn (pinyin, ma'no, 3 ta chalg'ituvchi)
+  qurilmadagi lug'atdan quriladi. Server javob bermasa mashq lug'atdan
+  to'ldiriladi va ishlayveradi.
+- Android'dagi "Ieroglif tanish" ostidagi 4 ta xom skill (characters/pinyin/
+  writing/listening) OLIB TASHLANDI — Mini App'da bunday eshik yo'q, qator
+  to'g'ridan-to'g'ri mashqni ochadi.
+
+Verified:
+- Backend: `pytest tests` → 1119 passed, 3 skipped. 3 ta yiqilish AVVALDAN bor
+  (`origin/main` da ham aynan o'sha 3 tasi yiqiladi — worktree bilan
+  tasdiqlandi): test_course_miniapp_foundation (2), test_course_mistake_service (1).
+- Android: 2 flavor compile + unit testlar + lint + `clean assemble` — yashil;
+  APK emulyatorda ishga tushdi, yiqilish yo'q.
+- Yangi testlar: reklama darvozasi (3), matnli navbat (3), moslashuvchan
+  mashq adapteri (3), `WordDrillTest` (6).
+
 ### 2026-09-07 — Android: AI Voice qo'ng'iroq ekrani va matnli navbat
 
 Changed:
