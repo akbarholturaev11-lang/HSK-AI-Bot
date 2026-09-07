@@ -27,6 +27,7 @@ from app.services.course_v3_dictionary import (
     dictionary_for_language,
     dictionary_version,
 )
+from app.db.models.course_lessons import CourseLesson
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
@@ -591,6 +592,70 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 )
                 self.assertEqual(401, response.status_code)
                 self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_onboarding_saves_the_choices_the_screen_collects(self):
+        """The onboarding screen's only server call, end to end.
+
+        The body is the one the native client sends verbatim, `activation_variant`
+        included: the request model forbids unknown fields, so a field the client
+        adds and the server has not heard of would fail the whole save and strand
+        the learner on the last step with a retry button.
+        """
+
+        headers = await self._bearer()
+        # The onboarding save starts the learner on the first lesson of the
+        # selected level, which lives in the database rather than in the JSON
+        # course data, so the row has to exist for the flow to run at all.
+        async with self.sessions() as session:
+            session.add(
+                CourseLesson(
+                    level="hsk1",
+                    lesson_order=1,
+                    lesson_code="hsk1-01",
+                    title="First lesson",
+                )
+            )
+            await session.commit()
+
+        saved = await self.client.post(
+            "/api/v3/android/course/onboarding",
+            json={
+                "level": "beginner",
+                "goal": "daily_communication",
+                "daily_minutes": 10,
+                "start_mode": "lesson_1",
+                "language": "tj",
+                "timezone_offset_minutes": 300,
+                "activation_variant": "direct_start_v1",
+            },
+            headers=headers,
+        )
+
+        self.assertEqual(200, saved.status_code)
+        body = saved.json()
+        self.assertTrue(body["ok"])
+        self.assertEqual("course", body["tab"])
+
+        status = await self.client.get(
+            "/api/v3/android/course/onboarding",
+            headers=headers,
+        )
+
+        self.assertEqual(200, status.status_code)
+        state = status.json()
+        self.assertTrue(state["ok"])
+        self.assertTrue(state["completed"])
+        self.assertEqual("daily_communication", state["profile"]["goal"])
+
+    async def test_onboarding_routes_require_a_bearer_token(self):
+        status = await self.client.get("/api/v3/android/course/onboarding")
+        self.assertEqual(401, status.status_code)
+
+        saved = await self.client.post(
+            "/api/v3/android/course/onboarding",
+            json={"level": "beginner", "goal": "travel", "language": "uz"},
+        )
+        self.assertEqual(401, saved.status_code)
 
     async def test_stroke_requires_bearer_before_touching_the_network(self):
         response = await self.client.get("/api/v3/android/stroke?char=你")
