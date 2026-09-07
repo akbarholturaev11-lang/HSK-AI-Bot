@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,10 +37,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.data.api.RatingEntryDto
+import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.data.api.ReferralItemDto
 
 /**
@@ -52,6 +55,9 @@ import com.pomp.hskai.data.api.ReferralItemDto
 fun RatingScreen(
     state: RatingUiState,
     onSelectTab: (RatingTab) -> Unit,
+    onChallenge: (String) -> Unit,
+    onRespond: (Int, Boolean) -> Unit,
+    onStartChallenge: (ChallengeDto) -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -70,6 +76,25 @@ fun RatingScreen(
             }
             item {
                 TabSwitch(selected = state.tab, onSelect = onSelectTab)
+            }
+
+            // Duels sit above the table: they are waiting on the learner,
+            // and the leaderboard is not.
+            if (state.pendingChallenges.isNotEmpty()) {
+                item { ChallengeGroupLabel(stringResource(R.string.challenge_pending_title)) }
+                items(state.pendingChallenges, key = { "pending-${it.id}" }) { duel ->
+                    PendingChallengeRow(
+                        duel = duel,
+                        busy = state.isChallengeBusy,
+                        onRespond = onRespond,
+                    )
+                }
+            }
+            if (state.activeChallenges.isNotEmpty()) {
+                item { ChallengeGroupLabel(stringResource(R.string.challenge_active_title)) }
+                items(state.activeChallenges, key = { "active-${it.id}" }) { duel ->
+                    ActiveChallengeRow(duel = duel, onStart = onStartChallenge)
+                }
             }
 
             if (state.tab == RatingTab.LEAGUE) {
@@ -110,7 +135,13 @@ fun RatingScreen(
                         item { PromotionZone() }
                     }
                     items(rows, key = { "league-${it.rank}-${it.name}" }) { row ->
-                        LeagueRow(row)
+                        LeagueRow(
+                            row = row,
+                            canChallenge = row.challengeRef.isNotBlank() &&
+                                !row.isCurrentUser &&
+                                !state.isChallengeBusy,
+                            onChallenge = { onChallenge(row.challengeRef) },
+                        )
                     }
                     if (rows.isEmpty() && !state.isLoading && state.error == null) {
                         item { EmptyBlock(stringResource(R.string.rating_empty)) }
@@ -339,7 +370,11 @@ private fun PromotionZone() {
 }
 
 @Composable
-private fun LeagueRow(row: RatingEntryDto) {
+private fun LeagueRow(
+    row: RatingEntryDto,
+    canChallenge: Boolean,
+    onChallenge: () -> Unit,
+) {
     val name = row.name.ifBlank { row.username.ifBlank { stringResource(R.string.rating_unnamed) } }
     Surface(
         color = if (row.isCurrentUser) PompColors.CinnabarSoft else PompColors.Paper,
@@ -379,6 +414,119 @@ private fun LeagueRow(row: RatingEntryDto) {
                 style = MaterialTheme.typography.titleSmall,
                 color = PompColors.InkSecondary,
             )
+            // The Mini App lets you challenge anyone you can see on the board.
+            if (canChallenge) {
+                Spacer(Modifier.width(8.dp))
+                Surface(
+                    onClick = onChallenge,
+                    shape = RoundedCornerShape(999.dp),
+                    color = PompColors.CinnabarSoft,
+                    border = BorderStroke(1.dp, PompColors.Cinnabar.copy(alpha = 0.25f)),
+                ) {
+                    Text(
+                        text = "战",
+                        style = PompTextStyles.hanziSmall.copy(fontSize = 15.sp),
+                        color = PompColors.CinnabarDark,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChallengeGroupLabel(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
+        fontWeight = FontWeight.SemiBold,
+        color = PompColors.InkSecondary,
+        modifier = Modifier.padding(top = 6.dp),
+    )
+}
+
+@Composable
+private fun PendingChallengeRow(
+    duel: ChallengeDto,
+    busy: Boolean,
+    onRespond: (Int, Boolean) -> Unit,
+) {
+    ChallengeCard(name = duel.otherUser.name) {
+        Surface(
+            onClick = { onRespond(duel.id, true) },
+            enabled = !busy,
+            shape = RoundedCornerShape(11.dp),
+            color = PompColors.Cinnabar,
+        ) {
+            Text(
+                text = stringResource(R.string.challenge_accept),
+                style = MaterialTheme.typography.labelLarge,
+                color = PompColors.Paper,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
+            )
+        }
+        Spacer(Modifier.width(8.dp))
+        Surface(
+            onClick = { onRespond(duel.id, false) },
+            enabled = !busy,
+            shape = RoundedCornerShape(11.dp),
+            color = PompColors.Paper,
+            border = BorderStroke(1.dp, PompColors.Divider),
+        ) {
+            Text(
+                text = stringResource(R.string.challenge_decline),
+                style = MaterialTheme.typography.labelLarge,
+                color = PompColors.InkSecondary,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ActiveChallengeRow(duel: ChallengeDto, onStart: (ChallengeDto) -> Unit) {
+    ChallengeCard(name = duel.otherUser.name) {
+        Surface(
+            onClick = { onStart(duel) },
+            shape = RoundedCornerShape(11.dp),
+            color = PompColors.Cinnabar,
+        ) {
+            Text(
+                text = stringResource(R.string.challenge_start),
+                style = MaterialTheme.typography.labelLarge,
+                color = PompColors.Paper,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ChallengeCard(name: String, actions: @Composable RowScope.() -> Unit) {
+    Surface(
+        color = PompColors.PaperRaised,
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, PompColors.Divider),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "战",
+                style = PompTextStyles.hanziSmall,
+                color = PompColors.Cinnabar,
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                text = name.ifBlank { stringResource(R.string.rating_unnamed) },
+                style = MaterialTheme.typography.bodyLarge,
+                color = PompColors.Ink,
+                modifier = Modifier.weight(1f),
+            )
+            actions()
         }
     }
 }

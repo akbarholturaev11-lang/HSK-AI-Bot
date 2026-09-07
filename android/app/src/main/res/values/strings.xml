@@ -303,4 +303,15 @@
     <string name="voice_rate_slow">sekin</string>
     <string name="voice_rate_normal">oddiy</string>
     <string name="lesson_writer_replay">Yana ko‘rsatish</string>
+    <string name="challenge_title">Chaqiriq</string>
+    <string name="challenge_invite">Chaqirish</string>
+    <string name="challenge_versus">%1$s bilan bellashuv</string>
+    <string name="challenge_finish">Yakunlash</string>
+    <string name="challenge_sent">Javoblaringiz yuborildi. %1$s javob bergach natija chiqadi.</string>
+    <string name="challenge_pending_title">Sizni chaqirishdi</string>
+    <string name="challenge_active_title">Sizning bellashuvlaringiz</string>
+    <string name="challenge_accept">Qabul qilish</string>
+    <string name="challenge_decline">Rad etish</string>
+    <string name="challenge_start">Boshlash</string>
+    <string name="challenge_waiting">Javobini kutyapmiz</string>
 </resources>

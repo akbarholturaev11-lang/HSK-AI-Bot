@@ -275,4 +275,15 @@
     <string name="voice_rate_slow">медленно</string>
     <string name="voice_rate_normal">обычная</string>
     <string name="lesson_writer_replay">Показать ещё раз</string>
+    <string name="challenge_title">Вызов</string>
+    <string name="challenge_invite">Вызвать</string>
+    <string name="challenge_versus">Дуэль с %1$s</string>
+    <string name="challenge_finish">Завершить</string>
+    <string name="challenge_sent">Ответы отправлены. Результат появится, когда ответит %1$s.</string>
+    <string name="challenge_pending_title">Вас вызвали</string>
+    <string name="challenge_active_title">Ваши дуэли</string>
+    <string name="challenge_accept">Принять</string>
+    <string name="challenge_decline">Отклонить</string>
+    <string name="challenge_start">Начать</string>
+    <string name="challenge_waiting">Ждём ответа</string>
 </resources>

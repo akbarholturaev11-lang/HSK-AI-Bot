@@ -5,6 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AndroidFeatureApi {
@@ -102,6 +103,37 @@ interface AndroidFeatureApi {
         @Header("Authorization") authorization: String,
         @Body body: VoiceMessageRequest,
     ): Response<VoiceMessageResponse>
+
+    @GET("api/v3/android/challenges")
+    suspend fun challenges(
+        @Header("Authorization") authorization: String,
+    ): Response<ChallengeListResponse>
+
+    @POST("api/v3/android/challenges")
+    suspend fun createChallenge(
+        @Header("Authorization") authorization: String,
+        @Body body: ChallengeCreateRequest,
+    ): Response<ChallengeActionResponse>
+
+    @POST("api/v3/android/challenges/{id}/respond")
+    suspend fun respondToChallenge(
+        @Header("Authorization") authorization: String,
+        @Path("id") challengeId: Int,
+        @Body body: ChallengeRespondRequest,
+    ): Response<ChallengeActionResponse>
+
+    @POST("api/v3/android/challenges/{id}/start")
+    suspend fun startChallenge(
+        @Header("Authorization") authorization: String,
+        @Path("id") challengeId: Int,
+    ): Response<ChallengeStartResponse>
+
+    @POST("api/v3/android/challenges/{id}/submit")
+    suspend fun submitChallenge(
+        @Header("Authorization") authorization: String,
+        @Path("id") challengeId: Int,
+        @Body body: ChallengeSubmitRequest,
+    ): Response<ChallengeActionResponse>
 
     @POST("api/v3/android/practice/gate")
     suspend fun drillGate(

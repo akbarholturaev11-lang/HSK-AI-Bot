@@ -88,6 +88,9 @@ import com.pomp.hskai.feature.lesson.LessonViewModel
 import com.pomp.hskai.feature.ad.AdScreen
 import com.pomp.hskai.feature.ad.AdViewModel
 import com.pomp.hskai.feature.limit.rememberLimitGate
+import com.pomp.hskai.data.api.ChallengeDto
+import com.pomp.hskai.feature.rating.ChallengeRunScreen
+import com.pomp.hskai.feature.rating.ChallengeRunViewModel
 import com.pomp.hskai.feature.rating.RatingScreen
 import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
@@ -305,6 +308,7 @@ private fun AppRoot(
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
             var lessonAwaitingAd by remember { mutableStateOf<CourseLesson?>(null) }
             var openDrill by remember { mutableStateOf<DrillMode?>(null) }
+            var openChallenge by remember { mutableStateOf<ChallengeDto?>(null) }
             var drillAwaitingAd by remember { mutableStateOf<DrillMode?>(null) }
             var drillAccessRef by remember { mutableStateOf("") }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
@@ -483,6 +487,28 @@ private fun AppRoot(
                     onClose = { adRequest = null },
                     onOpenLink = { url -> openExternal(context, url) },
                 )
+            } else if (openChallenge != null) {
+                val duel = openChallenge!!
+                val challengeViewModel: ChallengeRunViewModel = viewModel(
+                    key = "challenge-${'$'}{duel.id}",
+                    viewModelStoreOwner = sessionOwner,
+                    factory = ChallengeRunViewModel.Factory(
+                        repository = app.featureRepository,
+                        challengeId = duel.id,
+                    ),
+                )
+                val challengeState by challengeViewModel.state.collectAsStateWithLifecycle()
+                ChallengeRunScreen(
+                    state = challengeState,
+                    opponentName = duel.otherUser.name,
+                    onSelect = challengeViewModel::select,
+                    onAdvance = challengeViewModel::advance,
+                    onRetry = challengeViewModel::load,
+                    onClose = {
+                        openChallenge = null
+                        ratingViewModel.load()
+                    },
+                )
             } else if (openDrill != null) {
                 val mode = openDrill!!
                 val drillViewModel: WordDrillViewModel = viewModel(
@@ -654,6 +680,11 @@ private fun AppRoot(
                         MainTab.RATING -> RatingScreen(
                             state = ratingState,
                             onSelectTab = ratingViewModel::selectTab,
+                            onChallenge = { ref ->
+                                ratingViewModel.challenge(ref, currentLevel, currentLanguage)
+                            },
+                            onRespond = ratingViewModel::respond,
+                            onStartChallenge = { duel -> openChallenge = duel },
                             onRetry = ratingViewModel::load,
                             modifier = contentModifier,
                         )

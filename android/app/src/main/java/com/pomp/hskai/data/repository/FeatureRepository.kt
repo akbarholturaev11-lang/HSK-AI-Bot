@@ -37,6 +37,13 @@ import com.pomp.hskai.data.api.VoiceEndRequest
 import com.pomp.hskai.data.api.VoiceEndResponse
 import com.pomp.hskai.data.api.VoiceMessageRequest
 import com.pomp.hskai.data.api.VoiceMessageResponse
+import com.pomp.hskai.data.api.ChallengeActionResponse
+import com.pomp.hskai.data.api.ChallengeAnswerDto
+import com.pomp.hskai.data.api.ChallengeCreateRequest
+import com.pomp.hskai.data.api.ChallengeListResponse
+import com.pomp.hskai.data.api.ChallengeRespondRequest
+import com.pomp.hskai.data.api.ChallengeStartResponse
+import com.pomp.hskai.data.api.ChallengeSubmitRequest
 import com.pomp.hskai.data.api.DrillGateRequest
 import com.pomp.hskai.data.api.DrillGateResponse
 import com.pomp.hskai.data.api.DrillMistakeDto
@@ -253,6 +260,52 @@ class FeatureRepository(
                 sessionId = sessionId,
                 text = text,
             ),
+        )
+    }
+
+    // ------------------------------------------------------------ duels
+
+    suspend fun challenges(): ApiResult<ChallengeListResponse> =
+        authorized { api.challenges(it) }
+
+    suspend fun createChallenge(
+        opponentRef: String,
+        level: String,
+        language: String,
+    ): ApiResult<ChallengeActionResponse> = authorized {
+        api.createChallenge(
+            it,
+            ChallengeCreateRequest(
+                opponentRef = opponentRef,
+                level = level,
+                language = language,
+            ),
+        )
+    }
+
+    suspend fun respondToChallenge(
+        challengeId: Int,
+        accept: Boolean,
+    ): ApiResult<ChallengeActionResponse> = authorized {
+        api.respondToChallenge(
+            it,
+            challengeId,
+            ChallengeRespondRequest(action = if (accept) "accept" else "decline"),
+        )
+    }
+
+    suspend fun startChallenge(challengeId: Int): ApiResult<ChallengeStartResponse> =
+        authorized { api.startChallenge(it, challengeId) }
+
+    suspend fun submitChallenge(
+        challengeId: Int,
+        answers: List<ChallengeAnswerDto>,
+        durationSeconds: Int,
+    ): ApiResult<ChallengeActionResponse> = authorized {
+        api.submitChallenge(
+            it,
+            challengeId,
+            ChallengeSubmitRequest(answers = answers, durationSeconds = durationSeconds),
         )
     }
 

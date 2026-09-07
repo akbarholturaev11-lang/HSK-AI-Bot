@@ -423,6 +423,90 @@ data class RatingResponse(
     @SerialName("leaderboard") val leaderboard: List<RatingEntryDto> = emptyList(),
 )
 
+/**
+ * A duel with someone from the leaderboard: both answer the same short quiz.
+ *
+ * The opponent is named by an opaque reference the leaderboard carries — the
+ * rows deliberately hold no telegram ids.
+ */
+@Serializable
+data class ChallengeListResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("pending_count") val pendingCount: Int = 0,
+    @SerialName("active_count") val activeCount: Int = 0,
+    @SerialName("items") val items: List<ChallengeDto> = emptyList(),
+)
+
+@Serializable
+data class ChallengeDto(
+    @SerialName("id") val id: Int = 0,
+    @SerialName("status") val status: String = "",
+    @SerialName("viewer_role") val viewerRole: String = "",
+    @SerialName("viewer_done") val viewerDone: Boolean = false,
+    @SerialName("opponent_done") val opponentDone: Boolean = false,
+    @SerialName("other_user") val otherUser: ChallengeUserDto = ChallengeUserDto(),
+    @SerialName("challenger_score") val challengerScore: Int? = null,
+    @SerialName("opponent_score") val opponentScore: Int? = null,
+    @SerialName("winner_role") val winnerRole: String? = null,
+)
+
+@Serializable
+data class ChallengeUserDto(
+    @SerialName("name") val name: String = "",
+    @SerialName("username") val username: String = "",
+)
+
+@Serializable
+data class ChallengeCreateRequest(
+    @SerialName("opponent_ref") val opponentRef: String,
+    @SerialName("level") val level: String = "",
+    @SerialName("language") val language: String = "",
+)
+
+@Serializable
+data class ChallengeRespondRequest(
+    @SerialName("action") val action: String,
+)
+
+@Serializable
+data class ChallengeSubmitRequest(
+    @SerialName("answers") val answers: List<ChallengeAnswerDto> = emptyList(),
+    @SerialName("duration_seconds") val durationSeconds: Int = 0,
+)
+
+@Serializable
+data class ChallengeAnswerDto(
+    @SerialName("question_id") val questionId: String,
+    @SerialName("selected_index") val selectedIndex: Int,
+)
+
+@Serializable
+data class ChallengeActionResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("error") val error: String = "",
+)
+
+@Serializable
+data class ChallengeStartResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("session") val session: ChallengeSessionDto = ChallengeSessionDto(),
+)
+
+@Serializable
+data class ChallengeSessionDto(
+    @SerialName("challenge_id") val challengeId: Int = 0,
+    @SerialName("questions") val questions: List<ChallengeQuestionDto> = emptyList(),
+)
+
+@Serializable
+data class ChallengeQuestionDto(
+    @SerialName("id") val id: String = "",
+    @SerialName("prompt") val prompt: String = "",
+    @SerialName("sentence") val sentence: String = "",
+    @SerialName("audio_text") val audioText: String = "",
+    @SerialName("options") val options: List<String> = emptyList(),
+)
+
 @Serializable
 data class RatingEntryDto(
     @SerialName("rank") val rank: Int = 0,
@@ -432,6 +516,8 @@ data class RatingEntryDto(
     @SerialName("course_level") val courseLevel: String = "",
     @SerialName("is_paid") val isPaid: Boolean = false,
     @SerialName("is_current_user") val isCurrentUser: Boolean = false,
+    /** Opaque stand-in for this learner, valid only on this leaderboard. */
+    @SerialName("challenge_ref") val challengeRef: String = "",
 )
 
 @Serializable

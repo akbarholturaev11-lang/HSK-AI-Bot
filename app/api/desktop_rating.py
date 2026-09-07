@@ -13,6 +13,8 @@ response that the UI does not use.
 from __future__ import annotations
 
 import logging
+import hashlib
+import hmac
 from typing import Any, Callable
 
 from fastapi import APIRouter, Request
@@ -61,10 +63,35 @@ def _timezone_offset(request: Request) -> int | None:
     return offset
 
 
-def _public_entry(entry: dict[str, Any]) -> dict[str, Any]:
+def challenge_ref(telegram_id: Any, secret: str) -> str:
+    """An opaque stand-in for a learner on someone else's leaderboard.
+
+    A challenge needs to name its opponent, and the leaderboard deliberately
+    does not carry telegram ids. This is derived from the id and the server's
+    own secret: it identifies a row without revealing who is behind it, and it
+    is only ever resolved against the caller's own leaderboard, so it cannot be
+    used to reach a stranger.
+    """
+
+    try:
+        identifier = int(telegram_id or 0)
+    except (TypeError, ValueError):
+        identifier = 0
+    if identifier <= 0 or not secret:
+        return ""
+    digest = hmac.new(
+        str(secret).encode("utf-8"),
+        f"challenge:{identifier}".encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+    return digest[:32]
+
+
+def _public_entry(entry: dict[str, Any], *, secret: str = "") -> dict[str, Any]:
     """Strip personal identifiers the desktop UI does not render."""
 
     return {
+        "challenge_ref": challenge_ref(entry.get("telegram_id"), secret),
         "rank": int(entry.get("rank") or 0),
         "name": str(entry.get("name") or "").strip()[:40],
         "username": str(entry.get("username") or "").strip()[:32],
@@ -78,9 +105,13 @@ def _public_entry(entry: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _public_payload(result: dict[str, Any]) -> dict[str, Any]:
+def _public_payload(result: dict[str, Any], *, secret: str = "") -> dict[str, Any]:
     entries = result.get("leaderboard")
-    rows = [_public_entry(item) for item in entries if isinstance(item, dict)] if isinstance(entries, list) else []
+    rows = (
+        [_public_entry(item, secret=secret) for item in entries if isinstance(item, dict)]
+        if isinstance(entries, list)
+        else []
+    )
     return {
         "ok": True,
         "rank": int(result.get("rank") or 0),

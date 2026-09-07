@@ -276,4 +276,15 @@
     <string name="voice_rate_slow">оҳиста</string>
     <string name="voice_rate_normal">муқаррарӣ</string>
     <string name="lesson_writer_replay">Боз нишон додан</string>
+    <string name="challenge_title">Даъват</string>
+    <string name="challenge_invite">Даъват кардан</string>
+    <string name="challenge_versus">Мусобиқа бо %1$s</string>
+    <string name="challenge_finish">Анҷом</string>
+    <string name="challenge_sent">Ҷавобҳо фиристода шуд. Натиҷа пас аз ҷавоби %1$s пайдо мешавад.</string>
+    <string name="challenge_pending_title">Шуморо даъват карданд</string>
+    <string name="challenge_active_title">Мусобиқаҳои шумо</string>
+    <string name="challenge_accept">Қабул</string>
+    <string name="challenge_decline">Рад</string>
+    <string name="challenge_start">Оғоз</string>
+    <string name="challenge_waiting">Ҷавобро интизорем</string>
 </resources>

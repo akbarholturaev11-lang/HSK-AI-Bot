@@ -33,6 +33,7 @@ from app.api.desktop_practice import (
 )
 from app.api.desktop_rating import (
     MAX_LEADERBOARD_ITEMS,
+    challenge_ref,
     _public_payload as _public_rating_payload,
 )
 from app.api.desktop_referral import (
@@ -51,6 +52,7 @@ from app.api.desktop_voice import (
 )
 from app.repositories.user_repo import UserRepository
 from app.services.course_ad_service import CourseAdService
+from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_drill_signal_service import CourseDrillSignalService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_word_mastery_service import CourseWordMasteryService
@@ -197,6 +199,40 @@ class AndroidDrillWordsRequest(BaseModel):
 
     feature: Literal["recognition", "pronunciation"]
     limit: int = Field(default=10, ge=1, le=30)
+
+
+class AndroidChallengeCreateRequest(BaseModel):
+    """Challenge another learner to the same short quiz.
+
+    The Mini App offers this from the leaderboard; Android could see the
+    league but never take part in it.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    opponent_ref: str = Field(min_length=8, max_length=64)
+    level: str = Field(default="", max_length=16)
+    language: str = Field(default="", max_length=8)
+
+
+class AndroidChallengeRespondRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    action: Literal["accept", "decline"]
+
+
+class AndroidChallengeAnswer(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    question_id: str = Field(min_length=1, max_length=80)
+    selected_index: int = Field(ge=0, le=32)
+
+
+class AndroidChallengeSubmitRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    answers: list[AndroidChallengeAnswer] = Field(default_factory=list, max_length=40)
+    duration_seconds: int = Field(default=0, ge=0, le=7200)
 
 
 class AndroidDrillGateRequest(BaseModel):
@@ -447,6 +483,9 @@ def create_android_features_router(
     gamification_service_factory: Callable[..., CourseGamificationService] = CourseGamificationService,
     exam_service_factory: Callable[..., CourseHskExamService] = CourseHskExamService,
     referral_service_factory: Callable[..., ReferralService] = ReferralService,
+    challenge_service_factory: Callable[..., CourseChallengeService] = (
+        CourseChallengeService
+    ),
     mastery_service_factory: Callable[..., CourseWordMasteryService] = (
         CourseWordMasteryService
     ),
@@ -1030,7 +1069,15 @@ def create_android_features_router(
                     timezone_offset_minutes=timezone_offset,
                 )
                 await session.commit()
-            payload = {"ok": True, **_public_rating_payload(result)}
+            payload = {
+                "ok": True,
+                **_public_rating_payload(
+                    result,
+                    secret=str(
+                        getattr(settings_obj, "DESKTOP_AUTH_SIGNING_SECRET", "") or ""
+                    ),
+                ),
+            }
             return JSONResponse(content=payload, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, AndroidFeatureError) as exc:
             return _error_response(exc)
@@ -1163,6 +1210,136 @@ def create_android_features_router(
             logger.exception("Android voice message failed")
             return _error_response(
                 AndroidFeatureError("android_voice_unavailable", status_code=503)
+            )
+
+    @router.get("/api/v3/android/challenges")
+    async def android_challenges(request: Request):
+        try:
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await challenge_service_factory(session).list_for_user(telegram_id)
+            return _service_response(result)
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android challenge list failed")
+            return _error_response(
+                AndroidFeatureError("android_challenge_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/challenges")
+    async def android_challenge_create(request: Request):
+        try:
+            payload = await _validated_payload(request, AndroidChallengeCreateRequest)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                telegram_id = int(user.telegram_id)
+                # The reference only means something inside the caller's own
+                # leaderboard, which is exactly who they are allowed to
+                # challenge — the same reach the Mini App gives them.
+                board = await gamification_service_factory(session).leaderboard(
+                    user,
+                    limit=MAX_LEADERBOARD_ITEMS,
+                )
+                secret = str(
+                    getattr(settings_obj, "DESKTOP_AUTH_SIGNING_SECRET", "") or ""
+                )
+                opponent_id = 0
+                for row in board.get("leaderboard") or []:
+                    if not isinstance(row, dict):
+                        continue
+                    if challenge_ref(row.get("telegram_id"), secret) == payload.opponent_ref:
+                        opponent_id = int(row.get("telegram_id") or 0)
+                        break
+                if opponent_id <= 0:
+                    raise AndroidFeatureError(
+                        "challenge_opponent_not_found", status_code=404
+                    )
+                result = await challenge_service_factory(session).create(
+                    telegram_id,
+                    opponent_telegram_id=opponent_id,
+                    level=payload.level,
+                    lang=payload.language,
+                    bot=bot,
+                )
+                await session.commit()
+            return _service_response(result)
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android challenge create failed")
+            return _error_response(
+                AndroidFeatureError("android_challenge_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/challenges/{challenge_id}/respond")
+    async def android_challenge_respond(challenge_id: int, request: Request):
+        try:
+            payload = await _validated_payload(request, AndroidChallengeRespondRequest)
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await challenge_service_factory(session).respond(
+                    telegram_id,
+                    int(challenge_id),
+                    payload.action,
+                    bot=bot,
+                )
+                await session.commit()
+            return _service_response(result)
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android challenge respond failed")
+            return _error_response(
+                AndroidFeatureError("android_challenge_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/challenges/{challenge_id}/start")
+    async def android_challenge_start(challenge_id: int, request: Request):
+        try:
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await challenge_service_factory(session).start(
+                    telegram_id,
+                    int(challenge_id),
+                )
+                await session.commit()
+            return _service_response(result)
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android challenge start failed")
+            return _error_response(
+                AndroidFeatureError("android_challenge_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/challenges/{challenge_id}/submit")
+    async def android_challenge_submit(challenge_id: int, request: Request):
+        try:
+            payload = await _validated_payload(request, AndroidChallengeSubmitRequest)
+            async with session_factory() as session:
+                telegram_id = await _telegram_id(session, request)
+                result = await challenge_service_factory(session).submit(
+                    telegram_id,
+                    int(challenge_id),
+                    [
+                        {
+                            "question_id": answer.question_id,
+                            "selected_index": answer.selected_index,
+                        }
+                        for answer in payload.answers
+                    ],
+                    duration_seconds=payload.duration_seconds,
+                    bot=bot,
+                )
+                await session.commit()
+            return _service_response(result)
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android challenge submit failed")
+            return _error_response(
+                AndroidFeatureError("android_challenge_unavailable", status_code=503)
             )
 
     @router.post("/api/v3/android/practice/gate")

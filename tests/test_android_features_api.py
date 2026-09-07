@@ -22,6 +22,7 @@ from sqlalchemy import update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
+from app.api.desktop_rating import challenge_ref
 from app.api.android_features import (
     _bot_url,
     _service_response,
@@ -759,6 +760,151 @@ class AndroidExamRouteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("free_feature_limit_reached", response.json()["error"])
 
 
+class AndroidChallengeRouteTests(unittest.IsolatedAsyncioTestCase):
+    """Android can take part in the league, not only watch it.
+
+    The Mini App lets a learner challenge someone from the leaderboard to the
+    same short quiz. These pin the adapter's job: the opponent, the action and
+    the answers reach the one challenge service, unchanged.
+    """
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        async with self.sessions() as session:
+            session.add(_user(1, 4242, "Challenger"))
+            await session.commit()
+        self.calls = []
+
+        outer = self
+
+        class FakeGamificationService:
+            def __init__(self, session):
+                self.session = session
+
+            async def leaderboard(self, user, *, limit, timezone_offset_minutes=None):
+                return {
+                    "leaderboard": [
+                        {"rank": 1, "name": "Rival", "telegram_id": 777, "xp": 30},
+                    ]
+                }
+
+        class FakeChallengeService:
+            def __init__(self, session):
+                self.session = session
+
+            async def list_for_user(self, telegram_id):
+                outer.calls.append(("list", telegram_id))
+                return {"ok": True, "pending_count": 1, "active_count": 0, "items": []}
+
+            async def create(self, telegram_id, *, opponent_telegram_id, level, lang, bot=None):
+                outer.calls.append(("create", telegram_id, opponent_telegram_id, level, lang))
+                return {"ok": True, "challenge": {"id": 5}}
+
+            async def respond(self, telegram_id, challenge_id, action, *, bot=None):
+                outer.calls.append(("respond", telegram_id, challenge_id, action))
+                return {"ok": True}
+
+            async def start(self, telegram_id, challenge_id):
+                outer.calls.append(("start", telegram_id, challenge_id))
+                return {"ok": True, "session": {"questions": []}}
+
+            async def submit(
+                self, telegram_id, challenge_id, answers, *, duration_seconds=0, bot=None
+            ):
+                outer.calls.append(("submit", telegram_id, challenge_id, answers, duration_seconds))
+                return {"ok": True, "result": {"score": 4}}
+
+        app = FastAPI()
+        app.include_router(
+            create_android_features_router(
+                session_factory=self.sessions,
+                settings_obj=_settings(),
+                challenge_service_factory=FakeChallengeService,
+                gamification_service_factory=FakeGamificationService,
+            )
+        )
+        self.auth = patch.object(
+            DesktopAuthService,
+            "authenticate",
+            AsyncMock(
+                return_value=SimpleNamespace(user=SimpleNamespace(telegram_id=4242))
+            ),
+        )
+        self.auth.start()
+        self.addCleanup(self.auth.stop)
+        self.client = AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://android.test",
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.engine.dispose()
+
+    def _headers(self):
+        return {"Authorization": "Bearer token", "Content-Type": "application/json"}
+
+    async def test_a_challenge_reaches_the_learner_behind_the_reference(self):
+        ref = challenge_ref(777, _settings().DESKTOP_AUTH_SIGNING_SECRET)
+
+        response = await self.client.post(
+            "/api/v3/android/challenges",
+            headers=self._headers(),
+            json={"opponent_ref": ref, "level": "hsk2", "language": "uz"},
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(("create", 4242, 777, "hsk2", "uz"), self.calls[0])
+
+    async def test_a_reference_from_outside_the_leaderboard_reaches_nobody(self):
+        response = await self.client.post(
+            "/api/v3/android/challenges",
+            headers=self._headers(),
+            json={"opponent_ref": "f" * 32},
+        )
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual([], [call for call in self.calls if call[0] == "create"])
+
+    async def test_only_accept_or_decline_are_accepted(self):
+        response = await self.client.post(
+            "/api/v3/android/challenges/1/respond",
+            headers=self._headers(),
+            json={"action": "maybe"},
+        )
+
+        self.assertEqual(422, response.status_code)
+        self.assertEqual([], self.calls)
+
+    async def test_answers_reach_the_service_in_its_own_shape(self):
+        response = await self.client.post(
+            "/api/v3/android/challenges/9/submit",
+            headers=self._headers(),
+            json={
+                "answers": [{"question_id": "q1", "selected_index": 2}],
+                "duration_seconds": 42,
+            },
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            (
+                "submit",
+                4242,
+                9,
+                [{"question_id": "q1", "selected_index": 2}],
+                42,
+            ),
+            self.calls[0],
+        )
+
+
 class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
     """Both clients must practise the SAME words.
 
@@ -1039,6 +1185,11 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/mistakes/review/answer"),
         ("POST", "/api/v3/android/mistakes/review/complete"),
         ("GET", "/api/v3/android/rating/leaderboard"),
+        ("GET", "/api/v3/android/challenges"),
+        ("POST", "/api/v3/android/challenges"),
+        ("POST", "/api/v3/android/challenges/{challenge_id}/respond"),
+        ("POST", "/api/v3/android/challenges/{challenge_id}/start"),
+        ("POST", "/api/v3/android/challenges/{challenge_id}/submit"),
         ("GET", "/api/v3/android/referral/overview"),
         ("GET", "/api/v3/android/voice/status"),
         ("POST", "/api/v3/android/voice/session/start"),
@@ -1108,7 +1259,9 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         # refused and nothing runs — that is the invariant worth pinning.
         for method, path in self.ROUTES:
             with self.subTest(route=f"{method} {path}"):
-                response = await self.client.request(method, path, json={})
+                # A path parameter needs a value to be requestable at all.
+                requested = path.replace("{challenge_id}", "1")
+                response = await self.client.request(method, requested, json={})
                 self.assertIn(response.status_code, (401, 422))
                 self.assertFalse(response.json().get("ok", False))
 

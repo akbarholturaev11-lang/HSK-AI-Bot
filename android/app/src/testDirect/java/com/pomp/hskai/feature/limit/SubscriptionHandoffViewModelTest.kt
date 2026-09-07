@@ -31,6 +31,12 @@ import com.pomp.hskai.data.api.VoiceEndRequest
 import com.pomp.hskai.data.api.VoiceEndResponse
 import com.pomp.hskai.data.api.VoiceMessageRequest
 import com.pomp.hskai.data.api.VoiceMessageResponse
+import com.pomp.hskai.data.api.ChallengeActionResponse
+import com.pomp.hskai.data.api.ChallengeCreateRequest
+import com.pomp.hskai.data.api.ChallengeListResponse
+import com.pomp.hskai.data.api.ChallengeRespondRequest
+import com.pomp.hskai.data.api.ChallengeStartResponse
+import com.pomp.hskai.data.api.ChallengeSubmitRequest
 import com.pomp.hskai.data.api.DrillGateRequest
 import com.pomp.hskai.data.api.DrillGateResponse
 import com.pomp.hskai.data.api.DrillReportRequest
@@ -309,6 +315,32 @@ private class FakeFeatureApi(
         authorization: String,
         body: VoiceMessageRequest,
     ): Response<VoiceMessageResponse> = error("unexpected call")
+
+    override suspend fun challenges(
+        authorization: String,
+    ): Response<ChallengeListResponse> = error("unexpected call")
+
+    override suspend fun createChallenge(
+        authorization: String,
+        body: ChallengeCreateRequest,
+    ): Response<ChallengeActionResponse> = error("unexpected call")
+
+    override suspend fun respondToChallenge(
+        authorization: String,
+        challengeId: Int,
+        body: ChallengeRespondRequest,
+    ): Response<ChallengeActionResponse> = error("unexpected call")
+
+    override suspend fun startChallenge(
+        authorization: String,
+        challengeId: Int,
+    ): Response<ChallengeStartResponse> = error("unexpected call")
+
+    override suspend fun submitChallenge(
+        authorization: String,
+        challengeId: Int,
+        body: ChallengeSubmitRequest,
+    ): Response<ChallengeActionResponse> = error("unexpected call")
 
     override suspend fun drillGate(
         authorization: String,
