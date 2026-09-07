@@ -189,7 +189,7 @@ internal fun FoundationWinRow(text: String, mastered: Boolean, modifier: Modifie
             Icon(
                 imageVector = Icons.Filled.Check,
                 contentDescription = null,
-                tint = if (mastered) PompColors.Jade else PompColors.InkTertiary,
+                tint = if (mastered) PompColors.Jade else PompColors.InkSecondary,
                 modifier = Modifier.size(18.dp),
             )
             Text(
