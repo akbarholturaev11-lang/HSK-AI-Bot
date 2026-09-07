@@ -161,6 +161,17 @@ private fun FoundationCardBody(
         return
     }
 
+    if (card.type == "sandhi") {
+        FoundationSandhiCard(
+            card = card,
+            writtenLabel = state.sandhiWrittenLabel,
+            naturalLabel = state.sandhiNaturalLabel,
+            onPlayAudio = onPlayAudio,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        return
+    }
+
     if (card.title.isNotBlank()) {
         Text(
             text = card.title,
@@ -266,7 +277,6 @@ private fun FoundationCardBody(
                 Spacer(Modifier.height(10.dp))
             }
         }
-        "sandhi" -> if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
         "speak" -> {
             if (card.audioText.isNotBlank()) AudioButton(onPlayAudio)
             Spacer(Modifier.height(14.dp))
