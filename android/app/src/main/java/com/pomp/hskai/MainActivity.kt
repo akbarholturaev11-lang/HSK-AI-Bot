@@ -545,6 +545,7 @@ private fun AppRoot(
                             account = state.account,
                             state = profileState,
                             settings = settingsState,
+                            courseProgress = courseState.map?.progress,
                             dailyXp = courseState.map?.progress?.dailyXp ?: 0,
                             dailyGoal = dailyGoal,
                             notificationsEnabled = courseState.map?.notificationsEnabled ?: true,

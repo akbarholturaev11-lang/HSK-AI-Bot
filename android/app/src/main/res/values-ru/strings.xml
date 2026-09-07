@@ -229,4 +229,19 @@
     <string name="lesson_pinyin_all">Показывать везде</string>
     <string name="lesson_pinyin_new">Только в новых словах</string>
     <string name="lesson_pinyin_off">Скрыть</string>
+    <string name="profile_calendar_title">Календарь ударов</string>
+    <string name="profile_achievements">Достижения</string>
+    <string name="profile_ach_first">Первый шаг</string>
+    <string name="profile_ach_first_done">Выполнено</string>
+    <string name="profile_ach_lessons">100 уроков</string>
+    <string name="profile_ach_streak">30 дней подряд</string>
+    <string-array name="profile_week_days">
+        <item>П</item>
+        <item>В</item>
+        <item>С</item>
+        <item>Ч</item>
+        <item>П</item>
+        <item>С</item>
+        <item>В</item>
+    </string-array>
 </resources>

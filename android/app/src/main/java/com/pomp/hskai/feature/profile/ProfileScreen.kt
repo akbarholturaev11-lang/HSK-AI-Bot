@@ -40,6 +40,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.i18n.AppLanguage
+import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.feature.course.GoalRing
 
 @Composable
@@ -47,6 +48,8 @@ fun ProfileScreen(
     account: LinkedAccount,
     state: ProfileUiState,
     settings: ProfileSettingsState,
+    /** The course map's own progress, which owns the week and the streak. */
+    courseProgress: CourseProgress?,
     dailyXp: Int,
     dailyGoal: Int,
     notificationsEnabled: Boolean,
@@ -85,6 +88,14 @@ fun ProfileScreen(
                 )
             }
             item { StatsGrid(state) }
+            item { StreakCalendar(progress = courseProgress, dailyXp = dailyXp) }
+            item {
+                Achievements(
+                    completedLessons = courseProgress?.completedLessons
+                        ?: state.profile?.stats?.completedLessons ?: 0,
+                    streak = courseProgress?.streak ?: state.profile?.stats?.streak ?: 0,
+                )
+            }
             item {
                 SettingsSection(
                     account = account,

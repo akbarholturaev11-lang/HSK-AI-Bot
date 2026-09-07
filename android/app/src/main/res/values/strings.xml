@@ -257,4 +257,19 @@
     <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>
     <string name="lesson_pinyin_new">Faqat yangi so‘zlarda</string>
     <string name="lesson_pinyin_off">Yashirish</string>
+    <string name="profile_calendar_title">Ketma-ket kunlar</string>
+    <string name="profile_achievements">Yutuqlar</string>
+    <string name="profile_ach_first">Birinchi qadam</string>
+    <string name="profile_ach_first_done">Bajarildi</string>
+    <string name="profile_ach_lessons">100 dars</string>
+    <string name="profile_ach_streak">30 kun ketma-ket</string>
+    <string-array name="profile_week_days">
+        <item>D</item>
+        <item>S</item>
+        <item>C</item>
+        <item>P</item>
+        <item>J</item>
+        <item>S</item>
+        <item>Y</item>
+    </string-array>
 </resources>

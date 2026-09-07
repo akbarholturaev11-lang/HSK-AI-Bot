@@ -230,4 +230,19 @@
     <string name="lesson_pinyin_all">Дар ҳама ҷо нишон додан</string>
     <string name="lesson_pinyin_new">Танҳо дар калимаҳои нав</string>
     <string name="lesson_pinyin_off">Пинҳон кардан</string>
+    <string name="profile_calendar_title">Рӯзҳои пайдарпай</string>
+    <string name="profile_achievements">Дастовардҳо</string>
+    <string name="profile_ach_first">Қадами аввал</string>
+    <string name="profile_ach_first_done">Иҷро шуд</string>
+    <string name="profile_ach_lessons">100 дарс</string>
+    <string name="profile_ach_streak">30 рӯз пайдарпай</string>
+    <string-array name="profile_week_days">
+        <item>Д</item>
+        <item>С</item>
+        <item>Ч</item>
+        <item>П</item>
+        <item>Ҷ</item>
+        <item>Ш</item>
+        <item>Я</item>
+    </string-array>
 </resources>
