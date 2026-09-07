@@ -42,6 +42,7 @@ internal data class FoundationCard(
     val text: String,
     val prompt: String,
     val audioText: String,
+    val naturalPinyin: String,
     val example: FoundationExample?,
     val examples: List<FoundationExample>,
     val options: List<String>,
@@ -58,6 +59,8 @@ internal data class FoundationUiState(
     val loading: Boolean = true,
     val required: Boolean = false,
     val stepLabel: String = "",
+    val sandhiWrittenLabel: String = "",
+    val sandhiNaturalLabel: String = "",
     val cards: List<FoundationCard> = emptyList(),
     val requiredObjectives: Set<String> = emptySet(),
     val masteredObjectives: Set<String> = emptySet(),
@@ -106,6 +109,8 @@ class FoundationViewModel(
                             loading = false,
                             required = result.value.status.required && !result.value.status.completed,
                             stepLabel = foundationStepLabel(language),
+                            sandhiWrittenLabel = foundationWrittenLabel(language),
+                            sandhiNaturalLabel = foundationNaturalLabel(language),
                             cards = projected,
                             requiredObjectives = result.value.foundation.requiredObjectives.toSet(),
                         )
@@ -250,6 +255,18 @@ private fun foundationStepLabel(language: AppLanguage): String = when (language)
     AppLanguage.TAJIK -> "Асосҳо аз сифр"
 }
 
+private fun foundationWrittenLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.UZBEK -> "yozilishi"
+    AppLanguage.RUSSIAN -> "на письме"
+    AppLanguage.TAJIK -> "навишт"
+}
+
+private fun foundationNaturalLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.UZBEK -> "tabiiy talaffuzi"
+    AppLanguage.RUSSIAN -> "естественное произношение"
+    AppLanguage.TAJIK -> "талаффузи табиӣ"
+}
+
 private fun projectCard(raw: JsonObject, language: String): FoundationCard = FoundationCard(
     type = raw.string("type"),
     id = raw.string("card_id"),
@@ -257,6 +274,7 @@ private fun projectCard(raw: JsonObject, language: String): FoundationCard = Fou
     text = raw.localized("text", language),
     prompt = raw.localized("prompt", language),
     audioText = raw.string("audio_text"),
+    naturalPinyin = raw.string("natural_pinyin"),
     example = raw["example"]?.asExample(language),
     examples = raw["examples"]?.jsonArrayOrEmpty()?.mapNotNull { it.asExample(language) }.orEmpty(),
     options = raw["options"]?.jsonArrayOrEmpty()?.map { it.localizedValue(language) }.orEmpty(),
