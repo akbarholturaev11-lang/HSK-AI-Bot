@@ -505,6 +505,14 @@ def test_course_v3_today_plan_path_shows_the_plan_and_opens_each_task(page):
     expect(page.locator(".tplan .tnode").nth(1)).to_have_class(re.compile(r"\bnow\b"))
     # Kurs progressi ("11 / 72 dars") ataylab olib tashlandi.
     expect(page.locator("#s-course .pwrap")).to_have_count(0)
+    # So'qmoq EGRI va bog'lovchi chiziq SVG bilan chiziladi (CSS bilan emas):
+    # 3 tugun -> 2 bo'g'in, va tugunlar bir xil balandlikda turmaydi.
+    expect(page.locator(".tplan .tpath svg.ttrail path")).to_have_count(2)
+    tops = page.evaluate(
+        "() => [...document.querySelectorAll('.tplan .tnode')]"
+        ".map(n => Math.round(n.getBoundingClientRect().top))"
+    )
+    assert len(set(tops)) > 1, "tugunlar tepa-past siljishi kerak, so'qmoq tekis emas"
 
     # So'qmoq YOPISHQOQ: pastga surilganda yo'lakcha ostida yo'qolib ketmaydi.
     before = page.evaluate(

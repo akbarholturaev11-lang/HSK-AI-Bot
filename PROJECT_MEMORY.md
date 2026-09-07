@@ -231,12 +231,23 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 Changed:
 - Kurs ekrani sarlavhasidan UMUMIY progress qatori (`.pwrap` — "11 / 72 dars")
-  olib tashlandi. O'rnini bugungi reja egalladi: vazifalar YOTIQ so'qmoq
-  (`.tplan` / `.tpath` / `.tstep` / `.tnode`) bo'lib turadi va ostida bitta
-  chaqiriq tugmasi — «Reja bo'yicha davom etish» (3 tilda, `todayT().go`).
+  olib tashlandi. O'rnini bugungi reja egalladi: vazifalar YOTIQ va EGRI
+  so'qmoq (`.tplan` / `.tplan-c` / `.tpath` / `.tstep` / `.tnode`) bo'lib
+  turadi va ostida bitta chaqiriq tugmasi — «Reja bo'yicha davom etish»
+  (3 tilda, `todayT().go`).
+- Reja QORONG'I kartada (`--ink` + oltin chaqiriq, 计 suv belgisi) — Test
+  bo'limidagi "Sathni aniqlash" (`#tc-root .place`) kartasi bilan bir xil
+  sirt. Sabab: birinchi urinishda reja och fonda, dumaloq tugunlar bilan
+  chizilgandi va darslar yo'lakchasi bilan qo'shilib ketardi — bir qarashda
+  qaysi biri nima ekani bilinmasdi.
 - Ilgarigi chip tasmasi (`.today` / `.tchip`) endi yo'q. Tugun holatlari:
-  `done` (yashil) / `now` (qizil, pulsli — birinchi bajarilmagan va ochiq
-  vazifa) / `next` / `lock`. Bo'g'in oldingi qadam bajarilgandagina yashil.
+  `done` (yashil) / `now` (OLTIN, pulsli — birinchi bajarilmagan va ochiq
+  vazifa) / `next` / `lock`; darslar yo'lakchasida `current` QIZIL bo'lgani
+  uchun ranglar ataylab boshqacha. Tugunlar navbat bilan tepa-past siljiydi
+  (`.tstep.up` / `.dn`), bog'lovchi chiziq esa `drawPlanTrail()` da o'lchov
+  bo'yicha SVG qilib chiziladi (`drawTrails()` ichidan chaqiriladi, ya'ni
+  uchala chaqiruv joyi — render, `show("course")` va resize — qamrab olinadi).
+  Har bo'g'in alohida yo'l: oldingi qadam bajarilgan bo'lsa yashil.
 - Tugma `todayGoBtnHtml()` dan keladi va AYNAN `now` tugunini ochadi. Reja
   tugagan bo'lsa tugma o'rniga «Reja bajarildi» yozuvi chiqadi; ochiq vazifa
   qolmasa (hammasi Premium ortida) tugma umuman chizilmaydi.

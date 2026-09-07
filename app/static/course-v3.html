@@ -49,32 +49,38 @@ button{cursor:pointer}
      ko'rinmas soya, bezak emas. */
   box-shadow:0 8px 10px -10px rgba(33,29,23,.16)}
 .ctop .htop{position:static;z-index:auto}
-.tplan{padding:2px 0 10px}
-.tplan-h{display:flex;align-items:center;gap:5px;padding:0 16px 8px;font-size:12px;color:var(--ink2);font-weight:500}
-.tplan-h i{font-size:14px;color:var(--cin)}
-.tplan-h b{color:var(--ink);font-weight:600}
-.tplan-h.ok i{color:var(--jade)}
-.tpath{display:flex;align-items:flex-start;padding:0 16px;overflow-x:auto;scrollbar-width:none}
-.tpath::-webkit-scrollbar{display:none}
-.tstep{position:relative;flex:1 1 0;min-width:70px;display:flex;flex-direction:column;align-items:center;gap:5px}
-/* So'qmoq bo'g'ini: oldingi tugun markazidan shu tugun markazigacha.
-   Bajarilgan qadamdan keyingi bo'g'in yashil — yo'l bosilgani ko'rinsin. */
-.tstep+.tstep:before{content:"";position:absolute;top:19px;right:50%;left:-50%;height:4px;background:var(--line);border-radius:3px}
-.tstep.linked:before{background:var(--jade)}
-.tnode{position:relative;z-index:1;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:18px;font-family:inherit;background:var(--card);color:var(--ink3);border:1.5px solid var(--line);box-shadow:0 2px 0 var(--shadow)}
-.tnode.done{background:var(--jade);color:#fff;border-color:var(--jade);box-shadow:0 2px 0 #245f47}
-.tnode.now{background:var(--cin);color:#fff;border-color:var(--cin);box-shadow:0 2px 0 var(--cin2)}
-.tnode.now:after{content:"";position:absolute;inset:-5px;border-radius:50%;border:3px solid var(--cin);animation:pl 1.6s ease-out infinite}
-.tnode.lock{background:var(--paper);box-shadow:none}
-.tlbl{font-size:11px;font-weight:500;color:var(--ink2);text-align:center;line-height:1.25;max-width:80px}
-.tstep.lock .tlbl{color:var(--ink3)}
-.tgo{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 32px);margin:12px 16px 0;
-  background:var(--card);border:1.5px solid var(--cin);border-radius:14px;color:var(--cin2);
-  font-family:inherit;font-size:14px;font-weight:600;padding:11px 14px}
+/* Reja QORONG'I kartada turadi — Test bo'limidagi "Sathni aniqlash"
+   kartasi bilan bir xil sirt (`--ink` + oltin chaqiriq). Sabab: och fondagi
+   dumaloq tugunlar darslar yo'lakchasi bilan qo'shilib ketardi va bir
+   qarashda qaysi biri nima ekani bilinmasdi. */
+.tplan{padding:0 16px 10px}
+.tplan-c{position:relative;overflow:hidden;background:var(--ink);color:#fff;border-radius:18px;padding:12px 14px 14px}
+.tgw{position:absolute;right:-6px;top:-20px;font-size:74px;color:rgba(255,255,255,.06);pointer-events:none}
+.tplan-h{position:relative;display:flex;align-items:center;gap:5px;font-size:11.5px;color:rgba(255,255,255,.7);font-weight:500}
+.tplan-h i{font-size:13px;color:var(--gold)}
+.tplan-h b{color:#fff;font-weight:600}
+.tplan-h.ok i{color:#7fd6a8}
+.tpath{position:relative;display:flex;align-items:flex-start;margin-top:6px;padding:9px 0}
+.tpath svg.ttrail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.tstep{position:relative;z-index:1;flex:1 1 0;min-width:56px;display:flex;flex-direction:column;align-items:center;gap:4px}
+/* Egri so'qmoq: tugunlar navbat bilan tepaga va pastga siljiydi, bog'lovchi
+   chiziq esa o'lchangan joylashuv bo'yicha SVG bilan chiziladi. */
+.tstep.up{transform:translateY(-9px)}
+.tstep.dn{transform:translateY(9px)}
+.tnode{position:relative;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-family:inherit;background:rgba(255,255,255,.09);color:rgba(255,255,255,.6);border:1.5px solid rgba(255,255,255,.2)}
+.tnode.done{background:var(--jade);color:#fff;border-color:var(--jade)}
+.tnode.now{background:var(--gold);color:#3a2c08;border-color:var(--gold)}
+.tnode.now:after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--gold);animation:pl 1.6s ease-out infinite}
+.tnode.lock{opacity:.5}
+.tlbl{font-size:10.5px;font-weight:500;color:rgba(255,255,255,.66);text-align:center;line-height:1.25;max-width:72px}
+.tstep.lock .tlbl{color:rgba(255,255,255,.38)}
+.tgo{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:10px;
+  background:var(--gold);border:none;border-radius:12px;color:#3a2c08;
+  font-family:inherit;font-size:13.5px;font-weight:600;padding:11px 14px}
 .tgo:active{transform:translateY(1px)}
-.tdone{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px 16px 0;padding:11px 14px;
-  border:1.5px dashed var(--jade);border-radius:14px;color:var(--jade);font-size:14px;font-weight:600}
+.tdone{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;padding:11px 14px;
+  border:1.5px dashed rgba(127,214,168,.55);border-radius:12px;color:#7fd6a8;font-size:13.5px;font-weight:600}
 /* unit + path */
 .uban{display:flex;align-items:center;gap:10px;margin:8px 16px 0;background:var(--ink);color:#fff;border-radius:14px;padding:11px 14px}
 .uban.lock{background:var(--card);border:1px solid var(--line);color:var(--ink2)}
@@ -1094,7 +1100,8 @@ button{cursor:pointer}
     padding:0 16px 0 0;display:flex;flex-direction:column;gap:12px}
   /* Reja yon ustunda to'liq ko'ringani uchun so'qmoq takrorlanmaydi. */
   #s-course .tplan{display:none}
-  .rl-card .tgo{width:100%;margin:4px 0 0}
+  /* Yon ustundagi karta OCH — oltin tugma u yerda ham o'qiladi. */
+  .rl-card .tgo{width:100%;margin:6px 0 0}
   /* Pastki menyu chap ustun ostida turadi — ekran o'rtasida emas, aks holda
      u yo'lakcha bilan tekislanmay qolardi. */
   .nav{left:calc(50% - var(--shell) / 2);right:auto;margin:0;width:var(--read)}
@@ -2400,6 +2407,32 @@ function drawTrails(){
       +'<path d="'+d+'" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="4" stroke-dasharray="0.5 16" stroke-linecap="round"/>';
     p.insertBefore(svg,p.firstChild);
   });
+  drawPlanTrail();
+}
+/* Reja so'qmog'ining bog'lovchi chizig'i. Tugunlar tepa-past siljigani uchun
+   chiziq CSS bilan chizilmaydi — darslar yo'lakchasidagidek, joylashuv
+   o'lchanadi va har bo'g'in ALOHIDA yo'l bo'ladi: oldingi qadam bajarilgan
+   bo'lsa yashil, aks holda xira. */
+function drawPlanTrail(){
+  var p=document.querySelector("#s-course .tpath");if(!p)return;
+  var old=p.querySelector("svg.ttrail");if(old)old.remove();
+  var nodes=p.querySelectorAll(".tnode");if(nodes.length<2)return;
+  var pr=p.getBoundingClientRect();if(pr.width<10||pr.height<10)return;
+  var pts=[];nodes.forEach(function(n){var r=n.getBoundingClientRect();
+    pts.push([Math.round(r.left+r.width/2-pr.left),Math.round(r.top+r.height/2-pr.top)])});
+  var steps=p.querySelectorAll(".tstep"),segs="";
+  for(var i=1;i<pts.length;i++){
+    var a=pts[i-1],b=pts[i],mx=Math.round((a[0]+b[0])/2);
+    var d="M"+a[0]+" "+a[1]+" C"+mx+" "+a[1]+" "+mx+" "+b[1]+" "+b[0]+" "+b[1];
+    var on=steps[i]&&steps[i].classList.contains("linked");
+    segs+='<path d="'+d+'" fill="none" stroke="'+(on?"#2FA06A":"rgba(255,255,255,.16)")+'" stroke-width="3" stroke-linecap="round"/>';
+  }
+  var svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("class","ttrail");
+  svg.setAttribute("viewBox","0 0 "+Math.round(pr.width)+" "+Math.round(pr.height));
+  svg.setAttribute("preserveAspectRatio","none");
+  svg.innerHTML=segs;
+  p.insertBefore(svg,p.firstChild);
 }
 window.addEventListener("resize",function(){clearTimeout(window._trailT);window._trailT=setTimeout(function(){if(SCREEN==="course")drawTrails()},200)});
 function foundationMapState(){
@@ -3424,18 +3457,20 @@ function todayPlanHtml(){
     var lbl=todayTaskLabel(task);
     /* Bo'g'in oldingi qadam bajarilgandagina yashil bo'ladi. */
     var linked=(i>0&&plan.tasks[i-1].done)?" linked":"";
-    return '<div class="tstep '+st+linked+'">'
+    /* Navbat bilan tepa-past — so'qmoq egri bo'lsin, tekis chiziq emas. */
+    return '<div class="tstep '+st+linked+' '+(i%2?"dn":"up")+'">'
       +'<button class="tnode '+st+'"'+click+' aria-label="'+esc(lbl)+'"><i class="ti ti-'+todayTaskIcon(task)+'"></i></button>'
       +'<span class="tlbl">'+esc(lbl)+'</span></div>';
   }).join("");
   /* XP matni BITTA flex elementi bo'lishi kerak, aks holda "25 /40" kabi
      ortiqcha bo'shliq chiqadi. */
-  return '<div class="tplan"><div class="tplan-h'+(plan.complete?" ok":"")+'">'
+  return '<div class="tplan"><div class="tplan-c"><span class="tgw han">\u8ba1</span>'
+    +'<div class="tplan-h'+(plan.complete?" ok":"")+'">'
     +'<i class="ti ti-'+(plan.complete?"circle-check":"target-arrow")+'"></i>'
     +'<span>'+esc(t.today)+' <b>'+(plan.done_xp||0)+'</b>/'+(plan.goal_xp||0)+' XP</span></div>'
     +'<div class="tpath">'+steps+'</div>'
     +(plan.complete?'<div class="tdone"><i class="ti ti-circle-check"></i> '+esc(t.done)+'</div>':todayGoBtnHtml(plan))
-    +'</div>';
+    +'</div></div>';
 }
 /* Keng ekrandagi yon ustun. Telefonda CSS bilan yashiriladi, shuning uchun
    bu yerda MAVJUD ma'lumot va MAVJUD renderer'lar qayta ishlatiladi —
