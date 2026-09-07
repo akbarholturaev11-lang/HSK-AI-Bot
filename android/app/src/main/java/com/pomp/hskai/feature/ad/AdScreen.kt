@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -59,7 +60,12 @@ fun AdScreen(
     // Held in a local so the non-null branch does not depend on a smart cast
     // through a property.
     val mediaUrl = state.mediaUrl
-    Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+    Surface(
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
+        color = PompColors.Paper,
+    ) {
         when {
             state.isLoading -> Box(
                 modifier = Modifier.fillMaxSize(),
