@@ -488,12 +488,42 @@ data class VoiceStartResponse(
     @SerialName("opening_message") val openingMessage: VoiceReplyDto =
         VoiceReplyDto(),
     @SerialName("max_dialogs") val maxDialogs: Int = 7,
+    /** The lesson this conversation is built on: the "what to say" material. */
+    @SerialName("course_context") val courseContext: VoiceCourseContextDto =
+        VoiceCourseContextDto(),
 )
 
 @Serializable
+data class VoiceCourseContextDto(
+    @SerialName("title") val title: String = "",
+    @SerialName("words") val words: List<VoiceWordDto> = emptyList(),
+    @SerialName("review_words") val reviewWords: List<VoiceWordDto> = emptyList(),
+)
+
+@Serializable
+data class VoiceWordDto(
+    @SerialName("zh") val hanzi: String = "",
+    @SerialName("pinyin") val pinyin: String = "",
+    @SerialName("meaning") val meaning: String = "",
+)
+
+@Serializable
+data class VoiceSuggestionDto(
+    @SerialName("zh") val hanzi: String = "",
+    @SerialName("pinyin") val pinyin: String = "",
+    @SerialName("translation") val translation: String = "",
+)
+
+/**
+ * One turn: spoken or typed, never both. The Mini App's call screen offers a
+ * keyboard beside the microphone, and the server refuses a turn that carries
+ * two answers.
+ */
+@Serializable
 data class VoiceMessageRequest(
     @SerialName("session_id") val sessionId: String,
-    @SerialName("audio_data_url") val audioDataUrl: String,
+    @SerialName("audio_data_url") val audioDataUrl: String = "",
+    @SerialName("text") val text: String = "",
 )
 
 @Serializable
@@ -508,6 +538,7 @@ data class VoiceMessageResponse(
     @SerialName("turn_count") val turnCount: Int = 0,
     @SerialName("max_dialogs") val maxDialogs: Int = 7,
     @SerialName("session_should_end") val sessionShouldEnd: Boolean = false,
+    @SerialName("suggestions") val suggestions: List<VoiceSuggestionDto> = emptyList(),
 )
 
 @Serializable
@@ -532,6 +563,8 @@ data class VoiceReplyDto(
     @SerialName("pinyin") val pinyin: String = "",
     @SerialName("translation") val translation: String = "",
     @SerialName("correction") val correction: String? = null,
+    /** Phrases the learner can answer with, written by the same AI turn. */
+    @SerialName("suggestions") val suggestions: List<VoiceSuggestionDto> = emptyList(),
 )
 
 @Serializable

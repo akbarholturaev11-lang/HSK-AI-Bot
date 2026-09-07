@@ -759,6 +759,110 @@ class AndroidExamRouteTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("free_feature_limit_reached", response.json()["error"])
 
 
+class AndroidVoiceTypedTurnTests(unittest.IsolatedAsyncioTestCase):
+    """The Mini App's call screen answers by keyboard as well as by voice.
+
+    `VoicePracticeService.process_message` has always accepted typed text; the
+    Android adapter insisted on audio, so the client could not offer the
+    keyboard at all. These pin the adapter's own job: forward the typed turn,
+    and refuse a turn that is both spoken and typed, which would leave the
+    grading ambiguous.
+    """
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        self.calls = []
+
+        outer = self
+
+        class FakeVoiceService:
+            def __init__(self, session):
+                self.session = session
+
+            async def process_message(
+                self, telegram_id, *, session_id, audio_bytes, filename, text=""
+            ):
+                outer.calls.append((telegram_id, session_id, audio_bytes, filename, text))
+                return {
+                    "transcription": text,
+                    "chinese_reply": "你好",
+                    "turn_count": 1,
+                    "max_dialogs": 7,
+                }
+
+        app = FastAPI()
+        app.include_router(
+            create_android_features_router(
+                session_factory=self.sessions,
+                settings_obj=_settings(),
+                voice_service_factory=FakeVoiceService,
+            )
+        )
+        self.auth = patch.object(
+            DesktopAuthService,
+            "authenticate",
+            AsyncMock(
+                return_value=SimpleNamespace(user=SimpleNamespace(telegram_id=4242))
+            ),
+        )
+        self.auth.start()
+        self.addCleanup(self.auth.stop)
+        self.client = AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://android.test",
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.engine.dispose()
+
+    def _headers(self):
+        return {"Authorization": "Bearer token", "Content-Type": "application/json"}
+
+    async def test_a_typed_turn_reaches_the_service_without_audio(self):
+        response = await self.client.post(
+            "/api/v3/android/voice/message",
+            headers=self._headers(),
+            json={"session_id": "voice-session-1", "text": "你好，我是学生"},
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            (4242, "voice-session-1", b"", "", "你好，我是学生"),
+            self.calls[0],
+        )
+
+    async def test_a_turn_that_is_neither_spoken_nor_typed_is_refused(self):
+        response = await self.client.post(
+            "/api/v3/android/voice/message",
+            headers=self._headers(),
+            json={"session_id": "voice-session-1"},
+        )
+
+        self.assertEqual(422, response.status_code)
+        self.assertEqual([], self.calls)
+
+    async def test_a_turn_that_is_both_spoken_and_typed_is_refused(self):
+        response = await self.client.post(
+            "/api/v3/android/voice/message",
+            headers=self._headers(),
+            json={
+                "session_id": "voice-session-1",
+                "text": "你好",
+                "audio_data_url": "data:audio/mp4;base64," + "A" * 64,
+            },
+        )
+
+        self.assertEqual(422, response.status_code)
+        self.assertEqual([], self.calls)
+
+
 class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
     """Every feature route is bearer-only; none of them accept an anonymous call."""
 

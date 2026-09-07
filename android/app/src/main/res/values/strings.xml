@@ -275,4 +275,19 @@
     <string name="voice_box_title">AI bilan gaplashing</string>
     <string name="voice_box_body">Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.</string>
     <string name="voice_partner">Suhbatdosh</string>
+    <string name="voice_status_connecting">Ulanyapti…</string>
+    <string name="voice_status_listening">Sizni tinglayapman…</string>
+    <string name="voice_status_analyzing">Tahlil qilyapman…</string>
+    <string name="voice_status_speaking">Gapiryapti…</string>
+    <string name="voice_what_to_say">Nima deyish?</string>
+    <string name="voice_hints_title">Nima deyish mumkin</string>
+    <string name="voice_hints_words">Shu darsning so‘zlari</string>
+    <string name="voice_hints_phrases">Foydali iboralar</string>
+    <string name="voice_keyboard_hint">Yozing…</string>
+    <string name="voice_empty_chat">Suhbatingiz shu yerda ko‘rinadi</string>
+    <string name="voice_a11y_keyboard">klaviatura</string>
+    <string name="voice_a11y_mic">gapirish</string>
+    <string name="voice_a11y_send">yuborish</string>
+    <string name="voice_tap_to_speak">Gapirish uchun mikrofonni bosing</string>
+    <string name="voice_tap_to_stop">Yuborish uchun yana bosing</string>
 </resources>

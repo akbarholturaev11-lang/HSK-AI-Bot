@@ -247,4 +247,19 @@
     <string name="voice_box_title">Поговорите с AI</string>
     <string name="voice_box_body">Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.</string>
     <string name="voice_partner">Собеседник</string>
+    <string name="voice_status_connecting">Соединение…</string>
+    <string name="voice_status_listening">Слушаю вас…</string>
+    <string name="voice_status_analyzing">Анализирую…</string>
+    <string name="voice_status_speaking">Говорит…</string>
+    <string name="voice_what_to_say">Что сказать?</string>
+    <string name="voice_hints_title">Что можно сказать</string>
+    <string name="voice_hints_words">Слова этого урока</string>
+    <string name="voice_hints_phrases">Полезные фразы</string>
+    <string name="voice_keyboard_hint">Напишите…</string>
+    <string name="voice_empty_chat">Здесь появится ваш диалог</string>
+    <string name="voice_a11y_keyboard">клавиатура</string>
+    <string name="voice_a11y_mic">говорить</string>
+    <string name="voice_a11y_send">отправить</string>
+    <string name="voice_tap_to_speak">Нажмите микрофон, чтобы говорить</string>
+    <string name="voice_tap_to_stop">Нажмите ещё раз, чтобы отправить</string>
 </resources>

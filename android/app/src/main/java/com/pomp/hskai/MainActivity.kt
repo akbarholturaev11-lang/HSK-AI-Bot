@@ -551,6 +551,7 @@ private fun AppRoot(
                             onSelectRole = voiceViewModel::selectRole,
                             onStartSession = voiceViewModel::startSession,
                             onToggleRecording = voiceViewModel::toggleRecording,
+                            onSendText = voiceViewModel::sendTypedMessage,
                             onEndSession = voiceViewModel::endSession,
                             onSwapPartner = { role ->
                                 voiceViewModel.swapPartner(role, currentLevel, currentLanguage)

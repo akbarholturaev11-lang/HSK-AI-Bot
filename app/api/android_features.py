@@ -13,7 +13,14 @@ from typing import Annotated, Any, Callable, TypeVar
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    ValidationError,
+    model_validator,
+)
 
 from app.api.desktop_practice import (
     DesktopPracticeCompleteRequest,
@@ -33,8 +40,8 @@ from app.api.desktop_referral import (
     _public_item as _public_referral_item,
 )
 from app.api.desktop_voice import (
+    DesktopSessionId,
     DesktopVoiceEndRequest,
-    DesktopVoiceMessageRequest,
     DesktopVoiceStartRequest,
     MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES,
     _decode_audio_data_url,
@@ -57,6 +64,7 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
 from app.services.voice_practice_service import (
     LANGUAGE_NAMES,
+    MAX_TEXT_CHARS as VOICE_MAX_TEXT_CHARS,
     ROLE_PROMPTS,
     VoicePracticeError,
     VoicePracticeService,
@@ -140,6 +148,33 @@ class AndroidAdViewRequest(BaseModel):
     placement: str = Field(default="start", max_length=24)
     access_ref: str = Field(default="", max_length=160)
     attempt_token: str = Field(default="", max_length=120)
+
+
+class AndroidVoiceMessageRequest(BaseModel):
+    """One turn of a conversation: spoken or typed.
+
+    The Mini App's call screen has a keyboard next to the microphone — a
+    learner on a bus, or one whose microphone is refused, still gets to answer.
+    The service has always accepted typed text; only this adapter insisted on
+    audio, so the Android client had no way to offer the keyboard.
+
+    Exactly one of the two is expected. Both would leave it ambiguous which one
+    the turn should be graded on.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    session_id: DesktopSessionId
+    audio_data_url: str = Field(default="", max_length=MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES)
+    text: str = Field(default="", max_length=VOICE_MAX_TEXT_CHARS)
+
+    @model_validator(mode="after")
+    def _exactly_one_input(self) -> "AndroidVoiceMessageRequest":
+        spoken = bool(self.audio_data_url.strip())
+        typed = bool(self.text.strip())
+        if spoken == typed:
+            raise ValueError("audio_data_url yoki text — bittasi kerak")
+        return self
 
 
 class AndroidExamStartRequest(BaseModel):
@@ -1025,12 +1060,16 @@ def create_android_features_router(
     @router.post("/api/v3/android/voice/message")
     async def android_voice_message(request: Request):
         try:
-            payload = await _validated_voice_payload(
+            payload = await _validated_payload(
                 request,
-                DesktopVoiceMessageRequest,
+                AndroidVoiceMessageRequest,
                 max_body_bytes=MAX_DESKTOP_VOICE_AUDIO_BODY_BYTES,
             )
-            audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
+            typed = payload.text.strip()
+            if typed:
+                audio_bytes, filename = b"", ""
+            else:
+                audio_bytes, filename = _decode_audio_data_url(payload.audio_data_url)
             async with session_factory() as session:
                 telegram_id = await _telegram_id(session, request)
                 result = await voice_service_factory(session).process_message(
@@ -1038,9 +1077,12 @@ def create_android_features_router(
                     session_id=payload.session_id,
                     audio_bytes=audio_bytes,
                     filename=filename,
+                    text=typed,
                 )
             return JSONResponse(content={"ok": True, **result}, headers={"Cache-Control": "no-store"})
-        except (DesktopAuthError, VoicePracticeError) as exc:
+        # A malformed turn is the caller's mistake, not an outage: it must not
+        # be reported as "voice unavailable".
+        except (DesktopAuthError, AndroidFeatureError, VoicePracticeError) as exc:
             return _error_response(exc)
         except Exception:
             logger.exception("Android voice message failed")

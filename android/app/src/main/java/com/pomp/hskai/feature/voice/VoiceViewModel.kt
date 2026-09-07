@@ -8,6 +8,9 @@ import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.VoiceEndResponse
 import com.pomp.hskai.data.api.VoiceStatusResponse
+import com.pomp.hskai.data.api.VoiceMessageResponse
+import com.pomp.hskai.data.api.VoiceSuggestionDto
+import com.pomp.hskai.data.api.VoiceWordDto
 import com.pomp.hskai.data.repository.FeatureRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,8 +50,19 @@ data class VoiceUiState(
     val lines: List<VoiceLine> = emptyList(),
     val result: VoiceEndResponse? = null,
     val error: ApiError? = null,
+    /**
+     * Material for the Mini App's "Nima deyish?" sheet: the words of the
+     * lesson this conversation is built on, the words due for review, and the
+     * phrases the AI itself proposed for this turn.
+     */
+    val lessonWords: List<VoiceWordDto> = emptyList(),
+    val reviewWords: List<VoiceWordDto> = emptyList(),
+    val suggestions: List<VoiceSuggestionDto> = emptyList(),
 ) {
     val hasSession: Boolean get() = sessionId != null && result == null
+
+    /** True while the learner may answer — the mic and the keyboard agree. */
+    val canAnswer: Boolean get() = hasSession && !isSending && !isStarting
 }
 
 class VoiceViewModel(
@@ -111,6 +125,9 @@ class VoiceViewModel(
                             remainingLimit = result.value.remainingLimit,
                             maxDialogs = result.value.maxDialogs,
                             turnCount = 0,
+                            lessonWords = result.value.courseContext.words,
+                            reviewWords = result.value.courseContext.reviewWords,
+                            suggestions = opening.suggestions,
                             lines = listOf(
                                 VoiceLine(
                                     speaker = VoiceSpeaker.AI,
@@ -155,39 +172,65 @@ class VoiceViewModel(
                 return@launch
             }
             val sessionId = _state.value.sessionId ?: return@launch
-            when (val result = repository.voiceMessage(sessionId, recording.dataUrl)) {
-                is ApiResult.Success -> {
-                    val response = result.value
-                    _state.update {
-                        it.copy(
-                            isSending = false,
-                            turnCount = response.turnCount,
-                            maxDialogs = response.maxDialogs,
-                            remainingLimit = response.remainingLimit,
-                            lines = it.lines + listOf(
-                                VoiceLine(
-                                    speaker = VoiceSpeaker.USER,
-                                    text = response.transcription,
-                                ),
-                                VoiceLine(
-                                    speaker = VoiceSpeaker.AI,
-                                    text = response.translation,
-                                    hanzi = response.chineseReply,
-                                    pinyin = response.pinyin,
-                                    translation = response.translation,
-                                    correction = response.correction,
-                                ),
-                            ),
-                        )
-                    }
-                    if (response.sessionShouldEnd) {
-                        endSession()
-                    }
-                }
+            applyTurn(repository.voiceMessage(sessionId, recording.dataUrl))
+        }
+    }
 
-                is ApiResult.Failure -> _state.update {
-                    it.copy(isSending = false, error = result.error)
+    /**
+     * A typed turn, from the keyboard beside the microphone.
+     *
+     * It costs a dialogue turn exactly as speaking does — the limit is about
+     * the conversation, not about how the answer was produced.
+     */
+    fun sendTypedMessage(text: String) {
+        val trimmed = text.trim()
+        val current = _state.value
+        if (trimmed.isEmpty() || !current.canAnswer) return
+        val sessionId = current.sessionId ?: return
+        recorder.cancel()
+        _state.update { it.copy(isRecording = false, isSending = true, error = null) }
+        viewModelScope.launch {
+            applyTurn(repository.voiceTypedMessage(sessionId, trimmed))
+        }
+    }
+
+    private fun applyTurn(result: ApiResult<VoiceMessageResponse>) {
+        when (result) {
+            is ApiResult.Success -> {
+                val response = result.value
+                _state.update {
+                    it.copy(
+                        isSending = false,
+                        turnCount = response.turnCount,
+                        maxDialogs = response.maxDialogs,
+                        remainingLimit = response.remainingLimit,
+                        // Fresh phrases arrive with every reply; an empty list
+                        // keeps the previous ones rather than emptying the
+                        // sheet mid-conversation.
+                        suggestions = response.suggestions.ifEmpty { it.suggestions },
+                        lines = it.lines + listOf(
+                            VoiceLine(
+                                speaker = VoiceSpeaker.USER,
+                                text = response.transcription,
+                            ),
+                            VoiceLine(
+                                speaker = VoiceSpeaker.AI,
+                                text = response.translation,
+                                hanzi = response.chineseReply,
+                                pinyin = response.pinyin,
+                                translation = response.translation,
+                                correction = response.correction,
+                            ),
+                        ),
+                    )
                 }
+                if (response.sessionShouldEnd) {
+                    endSession()
+                }
+            }
+
+            is ApiResult.Failure -> _state.update {
+                it.copy(isSending = false, error = result.error)
             }
         }
     }

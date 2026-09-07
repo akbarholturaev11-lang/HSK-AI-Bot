@@ -248,4 +248,19 @@
     <string name="voice_box_title">Бо AI сӯҳбат кунед</string>
     <string name="voice_box_body">Сӯҳбати зинда бо панда 阿宝. Гӯш кун, гап зан, ислоҳ гир.</string>
     <string name="voice_partner">Ҳамсӯҳбат</string>
+    <string name="voice_status_connecting">Пайвастшавӣ…</string>
+    <string name="voice_status_listening">Шуморо гӯш мекунам…</string>
+    <string name="voice_status_analyzing">Таҳлил мекунам…</string>
+    <string name="voice_status_speaking">Сухан мегӯяд…</string>
+    <string name="voice_what_to_say">Чӣ гӯям?</string>
+    <string name="voice_hints_title">Чӣ гуфтан мумкин</string>
+    <string name="voice_hints_words">Калимаҳои ин дарс</string>
+    <string name="voice_hints_phrases">Ибораҳои муфид</string>
+    <string name="voice_keyboard_hint">Нависед…</string>
+    <string name="voice_empty_chat">Гуфтугӯи шумо дар ин ҷо пайдо мешавад</string>
+    <string name="voice_a11y_keyboard">клавиатура</string>
+    <string name="voice_a11y_mic">гап задан</string>
+    <string name="voice_a11y_send">фиристодан</string>
+    <string name="voice_tap_to_speak">Барои гап задан микрофонро пахш кунед</string>
+    <string name="voice_tap_to_stop">Барои фиристодан боз пахш кунед</string>
 </resources>

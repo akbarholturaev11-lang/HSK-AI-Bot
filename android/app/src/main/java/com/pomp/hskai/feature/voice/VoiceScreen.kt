@@ -68,6 +68,7 @@ fun VoiceScreen(
     onSelectRole: (String) -> Unit,
     onStartSession: (String, String) -> Unit,
     onToggleRecording: () -> Unit,
+    onSendText: (String) -> Unit,
     onEndSession: () -> Unit,
     onSwapPartner: (String) -> Unit,
     onReset: () -> Unit,
@@ -76,9 +77,10 @@ fun VoiceScreen(
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         when {
             state.result != null -> VoiceResult(state = state, onDone = onReset)
-            state.hasSession -> VoiceSession(
+            state.hasSession -> VoiceCallScreen(
                 state = state,
                 onToggleRecording = onToggleRecording,
+                onSendText = onSendText,
                 onEndSession = onEndSession,
                 onSwapPartner = onSwapPartner,
             )
@@ -294,133 +296,10 @@ private fun RoleCard(
     }
 }
 
-@Composable
-private fun VoiceSession(
-    state: VoiceUiState,
-    onToggleRecording: () -> Unit,
-    onEndSession: () -> Unit,
-    onSwapPartner: (String) -> Unit,
-) {
-    val context = LocalContext.current
-    var partnerSheetOpen by remember { mutableStateOf(false) }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { granted ->
-        if (granted) onToggleRecording()
-    }
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(partnerTitleRes(state.selectedRole)),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = PompColors.Ink,
-                    )
-                    Text(
-                        text = stringResource(
-                            R.string.voice_turn_progress,
-                            state.turnCount,
-                            state.maxDialogs,
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = PompColors.InkSecondary,
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    // Mini App: the partner is chosen inside the conversation,
-                    // not before it.
-                    Surface(
-                        onClick = { partnerSheetOpen = true },
-                        enabled = !state.isSending && !state.isStarting,
-                        shape = CircleShape,
-                        color = PompColors.PaperRaised,
-                        border = BorderStroke(1.dp, PompColors.Divider),
-                        modifier = Modifier.size(38.dp),
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.Filled.Settings,
-                                contentDescription = stringResource(R.string.voice_partner),
-                                tint = PompColors.InkSecondary,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                    }
-                    OutlinedButton(onClick = onEndSession, shape = RoundedCornerShape(12.dp)) {
-                        Text(stringResource(R.string.voice_end))
-                    }
-                }
-            }
-            state.error?.let {
-                Spacer(Modifier.height(10.dp))
-                ErrorPill(stringResource(it.messageRes))
-            }
-        }
-        items(state.lines) { line ->
-            VoiceBubble(line)
-        }
-        item {
-            val hasPermission = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.RECORD_AUDIO,
-            ) == PackageManager.PERMISSION_GRANTED
-            Button(
-                onClick = {
-                    if (hasPermission) {
-                        onToggleRecording()
-                    } else {
-                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                    }
-                },
-                enabled = !state.isSending,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 56.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (state.isRecording) PompColors.CinnabarDark else PompColors.Cinnabar,
-                    contentColor = PompColors.Paper,
-                ),
-            ) {
-                Text(
-                    text = when {
-                        state.isSending -> stringResource(R.string.voice_sending)
-                        state.isRecording -> stringResource(R.string.voice_stop_recording)
-                        else -> stringResource(R.string.voice_hold_to_speak)
-                    },
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
-        }
-    }
-
-    if (partnerSheetOpen) {
-        PartnerPicker(
-            current = state.selectedRole,
-            onPick = { role ->
-                partnerSheetOpen = false
-                if (role != state.selectedRole) onSwapPartner(role)
-            },
-            onDismiss = { partnerSheetOpen = false },
-        )
-    }
-}
-
 /** The five partners the backend offers, behind the conversation's own gear. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PartnerPicker(
+internal fun PartnerPicker(
     current: String,
     onPick: (String) -> Unit,
     onDismiss: () -> Unit,
@@ -490,11 +369,11 @@ private val VOICE_PARTNERS = listOf(
     VoiceRoleSpec("manager_wang", R.string.voice_role_manager, R.string.voice_role_manager_body, "王"),
 )
 
-private fun partnerTitleRes(role: String): Int =
+internal fun partnerTitleRes(role: String): Int =
     VOICE_PARTNERS.firstOrNull { it.id == role }?.titleRes ?: R.string.voice_session_title
 
 @Composable
-private fun VoiceBubble(line: VoiceLine) {
+internal fun VoiceBubble(line: VoiceLine) {
     val isUser = line.speaker == VoiceSpeaker.USER
     Surface(
         color = if (isUser) PompColors.CinnabarSoft else PompColors.PaperRaised,
@@ -585,7 +464,7 @@ private fun VoiceResult(
 }
 
 @Composable
-private fun ErrorPill(text: String) {
+internal fun ErrorPill(text: String) {
     Surface(
         color = PompColors.CinnabarSoft,
         shape = RoundedCornerShape(12.dp),

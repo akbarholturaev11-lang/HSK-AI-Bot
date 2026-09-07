@@ -232,6 +232,20 @@ class FeatureRepository(
         )
     }
 
+    /** A typed turn. The server refuses one that also carries audio. */
+    suspend fun voiceTypedMessage(
+        sessionId: String,
+        text: String,
+    ): ApiResult<VoiceMessageResponse> = authorized {
+        api.voiceMessage(
+            it,
+            VoiceMessageRequest(
+                sessionId = sessionId,
+                text = text,
+            ),
+        )
+    }
+
     suspend fun voiceEnd(sessionId: String): ApiResult<VoiceEndResponse> =
         authorized { api.voiceEnd(it, VoiceEndRequest(sessionId)) }
 
