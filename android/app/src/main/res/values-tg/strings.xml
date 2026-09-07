@@ -263,4 +263,5 @@
     <string name="voice_a11y_send">фиристодан</string>
     <string name="voice_tap_to_speak">Барои гап задан микрофонро пахш кунед</string>
     <string name="voice_tap_to_stop">Барои фиристодан боз пахш кунед</string>
+    <string name="today_reason_ad">Бо тамошои реклама кушоед</string>
 </resources>

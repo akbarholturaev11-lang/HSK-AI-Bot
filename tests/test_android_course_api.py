@@ -8,14 +8,14 @@ and that the two namespaces cannot contaminate each other.
 
 import tempfile
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -29,10 +29,16 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.android_course_service import AndroidCourseService
+from app.services.course_access_policy_service import (
+    COURSE_ACCESS_MODE_ADS,
+    CourseAccessPolicyService,
+)
 from app.services.course_miniapp_access_service import (
     FREE_COURSE_LESSONS_PER_LEVEL,
+    CourseMiniAppAccessService,
     free_course_parts_for_level,
 )
+from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_course_service import (
@@ -353,7 +359,169 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("type", section)
 
 
+class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
+    """A watched ad opens a premium lesson — but only a real, recorded one.
+
+    The Mini App has offered this since the admin gained an "ads" mode; the
+    native clients only ever saw a flat lock, because the map never said an ad
+    could open the lesson and the service had no way to accept the proof.
+
+    What is worth pinning is the shape of the proof: the server's own record of
+    a completed view, bound to this user, this lesson and the last hour. A
+    reference the client invents opens nothing.
+    """
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:",
+            poolclass=StaticPool,
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+        async with self.sessions() as session:
+            session.add(_user(1, 1001, "Ads mode"))
+            await session.commit()
+            await CourseAccessPolicyService(session).save_policy(
+                mode=COURSE_ACCESS_MODE_ADS,
+            )
+            await session.commit()
+
+    async def asyncTearDown(self):
+        await self.engine.dispose()
+
+    async def _token(self, session):
+        auth = DesktopAuthService(session, _settings())
+        started = await auth.start_link(
+            platform="android",
+            app_version="1.0.0",
+            installation_key="i" * 48,
+        )
+        await auth.approve_link(
+            display_code=started["display_code"],
+            telegram_id=1001,
+        )
+        linked = await auth.poll_link(
+            link_request_id=started["link_request_id"],
+            polling_secret=started["polling_secret"],
+        )
+        return linked["access_token"]
+
+    async def _reach_the_paywall(self, session, service, token):
+        """Complete every free part, so the next one is the premium one."""
+        for order in range(1, free_course_parts_for_level("hsk1") + 1):
+            await service.complete(
+                token,
+                lesson_order=order,
+                event_id=f"android:ads{order:032d}",
+            )
+
+    async def _watch_an_ad(self, session, *, lesson_order, access_ref):
+        user = await UserRepository(session).get_by_telegram_id(1001)
+        access = CourseMiniAppAccessService(session)
+        attempt = await access.start_ad_attempt(
+            user,
+            feature_key="lesson",
+            access_ref=access_ref,
+            ad_id=7,
+            placement="start",
+            required_seconds=5,
+            level="hsk1",
+            lesson_order=lesson_order,
+        )
+        self.assertTrue(attempt["allowed"])
+        # The server measures real seconds between the attempt and the report,
+        # so the attempt is back-dated here instead of sleeping through the ad.
+        await session.execute(
+            update(CourseMiniAppEvent)
+            .where(CourseMiniAppEvent.event_name == "course_ad_attempt_started")
+            .values(created_at=datetime.now(timezone.utc) - timedelta(seconds=30))
+        )
+        recorded = await access.record_ad_authorization(
+            user,
+            feature_key="lesson",
+            access_ref=access_ref,
+            ad_id=7,
+            placement="start",
+            attempt_token=attempt["attempt_token"],
+            level="hsk1",
+            lesson_order=lesson_order,
+        )
+        self.assertTrue(recorded["allowed"])
+        await session.commit()
+
+    async def test_the_map_says_an_ad_can_open_the_locked_lesson(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            data = await service.course_map(token)
+
+        locked = [
+            lesson
+            for unit in data["units"]
+            for lesson in unit["lessons"]
+            if lesson.get("locked_premium")
+        ]
+        self.assertTrue(locked)
+        self.assertTrue(all(lesson.get("ad_unlockable") for lesson in locked))
+
+    async def test_a_recorded_ad_opens_the_lesson_whole_and_completes_it(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            await self._reach_the_paywall(session, service, token)
+            order = free_course_parts_for_level("hsk1") + 1
+
+            # Without the ad it is still the half preview.
+            preview = await service.lesson(token, lesson_order=order)
+            self.assertTrue(preview["preview_half"])
+            self.assertFalse(preview["completion_allowed"])
+
+            await self._watch_an_ad(session, lesson_order=order, access_ref="ad-ref-1")
+
+            opened = await service.lesson(
+                token,
+                lesson_order=order,
+                access_ref="ad-ref-1",
+            )
+            self.assertFalse(opened["preview_half"])
+            self.assertTrue(opened["completion_allowed"])
+            self.assertEqual(opened["total_cards"], opened["preview_card_limit"])
+
+            result = await service.complete(
+                token,
+                lesson_order=order,
+                event_id="android:adopen" + "0" * 26,
+                access_ref="ad-ref-1",
+            )
+            self.assertTrue(result["ok"])
+
+    async def test_an_invented_reference_opens_nothing(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            service = AndroidCourseService(session, _settings())
+            await self._reach_the_paywall(session, service, token)
+            order = free_course_parts_for_level("hsk1") + 1
+
+            served = await service.lesson(
+                token,
+                lesson_order=order,
+                access_ref="not-a-real-ref",
+            )
+            self.assertTrue(served["preview_half"])
+
+            with self.assertRaises(DesktopCourseError) as blocked:
+                await service.complete(
+                    token,
+                    lesson_order=order,
+                    event_id="android:forged" + "0" * 26,
+                    access_ref="not-a-real-ref",
+                )
+            self.assertEqual(403, blocked.exception.status_code)
+
+
 class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
+
     async def asyncSetUp(self):
         self.engine = create_async_engine(
             "sqlite+aiosqlite:///:memory:",

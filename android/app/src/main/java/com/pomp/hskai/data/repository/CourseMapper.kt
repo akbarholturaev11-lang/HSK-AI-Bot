@@ -137,6 +137,7 @@ object CourseMapper {
     private fun CourseLessonDto.access(): LessonAccess = when {
         completionAllowed -> LessonAccess.Open
         previewHalf -> LessonAccess.HalfPreview
+        lockedPremium && adUnlockable -> LessonAccess.AdUnlockable
         lockedPremium -> LessonAccess.PremiumLocked
         else -> LessonAccess.NotReached
     }

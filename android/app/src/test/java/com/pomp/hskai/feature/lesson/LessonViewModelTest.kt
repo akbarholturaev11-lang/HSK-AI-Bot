@@ -96,6 +96,7 @@ private open class FakeLessonApi(
     override suspend fun lesson(
         authorization: String,
         lessonOrder: Int,
+        accessRef: String,
     ): Response<CourseLessonResponse> = Response.success(
         CourseLessonResponse(
             ok = true,
@@ -500,6 +501,7 @@ class LessonViewModelTest {
             override suspend fun lesson(
                 authorization: String,
                 lessonOrder: Int,
+                accessRef: String,
             ): Response<CourseLessonResponse> = throw java.io.IOException("offline")
         }
         val model = viewModel(broken)

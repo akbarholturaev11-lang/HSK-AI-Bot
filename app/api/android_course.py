@@ -110,6 +110,17 @@ class AndroidStudyPreferencesRequest(BaseModel):
         return self
 
 
+class AndroidCourseCompleteRequest(DesktopCourseCompleteRequest):
+    """Completion, plus the reference of the ad that opened a locked lesson.
+
+    The desktop clients have no ad flow, so their model stays closed. Here the
+    reference is optional and proves nothing by itself: the server looks up the
+    view it recorded against it.
+    """
+
+    access_ref: str = Field(default="", max_length=160)
+
+
 class AndroidFoundationCompleteRequest(BaseModel):
     """Completion payload for the shared Starter 0/Foundation flow."""
 
@@ -297,10 +308,14 @@ def create_android_course_router(
         try:
             if not MIN_LESSON_ORDER <= lesson_order <= MAX_LESSON_ORDER:
                 raise DesktopCourseError("invalid_lesson_order", status_code=422)
+            # An ad-opened lesson carries the reference of the view that
+            # opened it; the service verifies it against what it recorded.
+            access_ref = str(request.query_params.get("access_ref") or "").strip()[:160]
             async with session_factory() as session:
                 result = await service_factory(session, settings_obj).lesson(
                     bearer_access_token(request),
                     lesson_order=lesson_order,
+                    access_ref=access_ref,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:
@@ -334,7 +349,7 @@ def create_android_course_router(
         try:
             payload = await validated_course_payload(
                 request,
-                DesktopCourseCompleteRequest,
+                AndroidCourseCompleteRequest,
             )
             async with session_factory() as session:
                 service = (
@@ -350,6 +365,7 @@ def create_android_course_router(
                         mistake.model_dump(exclude_none=True)
                         for mistake in payload.mistakes
                     ],
+                    access_ref=payload.access_ref,
                 )
             return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
         except (DesktopAuthError, DesktopCourseError) as exc:

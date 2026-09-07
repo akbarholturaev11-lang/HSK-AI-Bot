@@ -25,6 +25,8 @@ interface AndroidCourseApi {
     suspend fun lesson(
         @Header("Authorization") authorization: String,
         @Path("lessonOrder") lessonOrder: Int,
+        /** The ad view that opened a premium lesson; empty when it was open. */
+        @Query("access_ref") accessRef: String = "",
     ): Response<CourseLessonResponse>
 
     @GET("api/v3/android/tts")

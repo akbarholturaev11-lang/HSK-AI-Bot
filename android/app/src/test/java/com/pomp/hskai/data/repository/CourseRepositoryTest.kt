@@ -70,6 +70,7 @@ private open class FakeCourseApi : AndroidCourseApi {
     override suspend fun lesson(
         authorization: String,
         lessonOrder: Int,
+        accessRef: String,
     ): Response<CourseLessonResponse> = throw NotImplementedError()
 
     override suspend fun tts(
@@ -260,6 +261,7 @@ class CourseRepositoryTest {
             override suspend fun lesson(
                 authorization: String,
                 lessonOrder: Int,
+                accessRef: String,
             ): Response<CourseLessonResponse> = Response.success(
                 CourseLessonResponse(
                     ok = true,
@@ -293,6 +295,7 @@ class CourseRepositoryTest {
             override suspend fun lesson(
                 authorization: String,
                 lessonOrder: Int,
+                accessRef: String,
             ): Response<CourseLessonResponse> = Response.success(
                 CourseLessonResponse(
                     ok = true,

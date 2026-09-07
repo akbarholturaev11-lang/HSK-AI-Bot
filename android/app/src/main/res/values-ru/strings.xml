@@ -262,4 +262,5 @@
     <string name="voice_a11y_send">отправить</string>
     <string name="voice_tap_to_speak">Нажмите микрофон, чтобы говорить</string>
     <string name="voice_tap_to_stop">Нажмите ещё раз, чтобы отправить</string>
+    <string name="today_reason_ad">Откройте, посмотрев рекламу</string>
 </resources>

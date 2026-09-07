@@ -86,6 +86,7 @@ fun CourseScreen(
     dailyGoal: Int,
     limit: LimitGate,
     onLesson: (CourseLesson) -> Unit,
+    onUnlockWithAd: (CourseLesson) -> Unit,
     onTodayTask: (TodayTask) -> Unit,
     onOpenGoal: () -> Unit,
     onOpenChest: () -> Unit,
@@ -170,6 +171,7 @@ fun CourseScreen(
                                         isOpeningChest = state.isOpeningChest,
                                         isStale = state.isStale,
                                         onLesson = onLesson,
+                                        onUnlockWithAd = onUnlockWithAd,
                                         onOpenChest = onOpenChest,
                                     )
                                 }
@@ -412,6 +414,7 @@ private fun PathRow(
     isOpeningChest: Boolean,
     isStale: Boolean,
     onLesson: (CourseLesson) -> Unit,
+    onUnlockWithAd: (CourseLesson) -> Unit,
     onOpenChest: () -> Unit,
 ) {
     val offsetX = pathOffset(row.unitIndex, row.nodeIndex)
@@ -456,12 +459,22 @@ private fun PathRow(
                         val lesson = item.lesson
                         val clickable = lesson.access == LessonAccess.Open ||
                             lesson.access == LessonAccess.HalfPreview
+                        // In the admin's "ads" mode the lock is not a dead end:
+                        // the node offers the ad that opens it.
+                        val adUnlockable = lesson.access == LessonAccess.AdUnlockable && !isStale
                         val lessonDescription = lesson.stateLabel()
                         if (lesson.isCurrent && clickable) CurrentBubble()
                         Box(
                             modifier = Modifier
                                 .size(CURRENT_RING_SIZE)
-                                .then(if (clickable) Modifier.clickable { onLesson(lesson) } else Modifier)
+                                .then(
+                                    when {
+                                        clickable -> Modifier.clickable { onLesson(lesson) }
+                                        adUnlockable ->
+                                            Modifier.clickable { onUnlockWithAd(lesson) }
+                                        else -> Modifier
+                                    }
+                                )
                                 .semantics { contentDescription = lessonDescription },
                             contentAlignment = Alignment.Center,
                         ) {
@@ -610,7 +623,7 @@ private fun LessonNodeFace(lesson: CourseLesson) {
             PompColors.Paper,
             null,
         )
-        lesson.access == LessonAccess.PremiumLocked || lesson.access == LessonAccess.NotReached -> NodeStyle(
+        lesson.access.isPremiumLocked || lesson.access == LessonAccess.NotReached -> NodeStyle(
             PompColors.Divider,
             PompColors.LockedDepth,
             if (checkpoint) NodeContent.Checkpoint else NodeContent.Locked,
@@ -933,6 +946,7 @@ private fun CourseLesson.stateLabel(): String = when (access) {
     LessonAccess.Open -> stringResource(R.string.course_part_label, part)
     LessonAccess.HalfPreview -> stringResource(R.string.today_reason_preview)
     LessonAccess.PremiumLocked -> stringResource(R.string.today_reason_premium)
+    LessonAccess.AdUnlockable -> stringResource(R.string.today_reason_ad)
     LessonAccess.NotReached -> stringResource(R.string.today_reason_not_reached)
 }
 

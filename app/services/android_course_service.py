@@ -87,9 +87,14 @@ class AndroidCourseService(DesktopCourseService):
         access_token: str,
         *,
         lesson_order: int,
+        access_ref: str = "",
     ) -> dict[str, Any]:
         await self._require_foundation_complete(access_token)
-        return await super().lesson(access_token, lesson_order=lesson_order)
+        return await super().lesson(
+            access_token,
+            lesson_order=lesson_order,
+            access_ref=access_ref,
+        )
 
     async def complete(
         self,
@@ -98,6 +103,7 @@ class AndroidCourseService(DesktopCourseService):
         lesson_order: int,
         event_id: str,
         mistakes: list[dict[str, Any]] | None = None,
+        access_ref: str = "",
     ) -> dict[str, Any]:
         await self._require_foundation_complete(access_token)
         return await super().complete(
@@ -105,6 +111,7 @@ class AndroidCourseService(DesktopCourseService):
             lesson_order=lesson_order,
             event_id=event_id,
             mistakes=mistakes,
+            access_ref=access_ref,
         )
 
     async def foundation(self, access_token: str) -> dict:

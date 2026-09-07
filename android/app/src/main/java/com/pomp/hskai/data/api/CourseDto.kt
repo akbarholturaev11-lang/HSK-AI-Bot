@@ -113,6 +113,8 @@ data class CourseLessonDto(
     @SerialName("completion_error") val completionError: String? = null,
     @SerialName("preview_half") val previewHalf: Boolean = false,
     @SerialName("locked_premium") val lockedPremium: Boolean = false,
+    /** The admin put the course in "ads" mode: a watched ad opens this one. */
+    @SerialName("ad_unlockable") val adUnlockable: Boolean = false,
 )
 
 @Serializable
@@ -168,6 +170,8 @@ data class CourseCompleteRequest(
     @SerialName("lesson_order") val lessonOrder: Int,
     @SerialName("event_id") val eventId: String,
     @SerialName("mistakes") val mistakes: List<CourseMistakeDto> = emptyList(),
+    /** Present only for a lesson an ad opened; the server checks its record. */
+    @SerialName("access_ref") val accessRef: String = "",
 )
 
 @Serializable

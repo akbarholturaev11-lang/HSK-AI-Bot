@@ -112,6 +112,8 @@ class LessonViewModel(
     private val level: String,
     private val lessonOrder: Int,
     private val language: AppLanguage,
+    /** Set when an ad opened this premium lesson; the server re-checks it. */
+    private val accessRef: String = "",
     /** Absent in tests, where there is no device storage to resume from. */
     private val resumeStore: LessonResumeStore? = null,
     /**
@@ -162,7 +164,7 @@ class LessonViewModel(
         val generation = ++loadGeneration
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
-            when (val result = repository.lesson(level, lessonOrder, language)) {
+            when (val result = repository.lesson(level, lessonOrder, language, accessRef)) {
                 is ApiResult.Success -> if (generation == loadGeneration) {
                     val snapshot = result.value
                     // Come back to the card the learner left on, never past the
@@ -303,6 +305,7 @@ class LessonViewModel(
                 lessonOrder = lessonOrder,
                 eventId = stableEventId,
                 mistakes = mistakes.toList(),
+                accessRef = accessRef,
             )
             if (result is ApiResult.Success) resumeStore?.clearLessonResume(level, lessonOrder)
             if (activeAttemptKey != attemptKey) return@launch
@@ -388,6 +391,7 @@ class LessonViewModel(
         private val lessonOrder: Int,
         private val language: AppLanguage,
         private val resumeStore: LessonResumeStore,
+        private val accessRef: String = "",
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = LessonViewModel(
@@ -396,6 +400,7 @@ class LessonViewModel(
             level = level,
             lessonOrder = lessonOrder,
             language = language,
+            accessRef = accessRef,
             resumeStore = resumeStore,
         ) as T
     }

@@ -155,12 +155,16 @@ class CourseRepository(
         level: String,
         lessonOrder: Int,
         language: AppLanguage,
+        /** The ad view that opened this lesson, when one did. */
+        accessRef: String = "",
     ): ApiResult<LessonSnapshot> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
             is ApiResult.Success -> result.value
         }
-        return when (val result = apiCall { api.lesson("Bearer $token", lessonOrder) }) {
+        return when (
+            val result = apiCall { api.lesson("Bearer $token", lessonOrder, accessRef) }
+        ) {
             is ApiResult.Failure -> {
                 notifySessionExpired(result.error)
                 result
@@ -269,6 +273,7 @@ class CourseRepository(
         lessonOrder: Int,
         eventId: String = newEventId(),
         mistakes: List<CourseMistakeDto> = emptyList(),
+        accessRef: String = "",
     ): ApiResult<CourseCompleteResponse> {
         val token = when (val result = accessToken()) {
             is ApiResult.Failure -> return result
@@ -280,6 +285,7 @@ class CourseRepository(
                 CourseCompleteRequest(
                     lessonOrder = lessonOrder,
                     eventId = eventId,
+                    accessRef = accessRef,
                     mistakes = mistakes,
                 ),
             )

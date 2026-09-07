@@ -14,10 +14,17 @@ sealed interface LessonAccess {
     data object Open : LessonAccess
     data object HalfPreview : LessonAccess
     data object PremiumLocked : LessonAccess
+
+    /** Premium-locked, but the admin's "ads" mode lets an ad open it. */
+    data object AdUnlockable : LessonAccess
     data object NotReached : LessonAccess
 
     val showsPaywall: Boolean
-        get() = this is HalfPreview || this is PremiumLocked
+        get() = this is HalfPreview || this is PremiumLocked || this is AdUnlockable
+
+    /** Locked for a free learner, whichever way the lock can be opened. */
+    val isPremiumLocked: Boolean
+        get() = this is PremiumLocked || this is AdUnlockable
 }
 
 data class CourseLesson(

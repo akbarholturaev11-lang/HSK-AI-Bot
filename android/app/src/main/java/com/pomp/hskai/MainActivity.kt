@@ -293,16 +293,18 @@ private fun AppRoot(
                 .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
+            var lessonAwaitingAd by remember { mutableStateOf<CourseLesson?>(null) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
             val currentLanguage = state.account.language.backendCode
 
-            fun launchLesson(lesson: CourseLesson) {
+            fun launchLesson(lesson: CourseLesson, accessRef: String = "") {
                 openLesson = LessonLaunch(
                     lesson = lesson,
                     attemptKey = UUID.randomUUID().toString(),
+                    accessRef = accessRef,
                 )
             }
 
@@ -432,10 +434,20 @@ private fun AppRoot(
                 )
                 val adState by adViewModel.state.collectAsStateWithLifecycle()
                 val isLessonEndAd = ad.slot == AdViewModel.SLOT_LESSON_END
+                val unlockedLesson = lessonAwaitingAd
                 LaunchedEffect(adState.unlocked) {
-                    if (adState.unlocked) {
-                        adRequest = null
-                        if (!isLessonEndAd) practiceViewModel.startWithAd(ad.accessRef)
+                    if (!adState.unlocked) return@LaunchedEffect
+                    adRequest = null
+                    when {
+                        isLessonEndAd -> Unit
+                        unlockedLesson != null -> {
+                            // The server recorded the view against this exact
+                            // reference; the lesson now carries it as proof.
+                            lessonAwaitingAd = null
+                            launchLesson(unlockedLesson, ad.accessRef)
+                        }
+
+                        else -> practiceViewModel.startWithAd(ad.accessRef)
                     }
                 }
                 // Paid learners and the Play channel get no end-of-lesson ad at
@@ -501,7 +513,15 @@ private fun AppRoot(
                             state = courseState,
                             dailyGoal = dailyGoal,
                             limit = limitGate,
-                            onLesson = ::launchLesson,
+                            onLesson = { lesson -> launchLesson(lesson) },
+                            onUnlockWithAd = { lesson ->
+                                lessonAwaitingAd = lesson
+                                adRequest = AdRequest(
+                                    feature = "lesson",
+                                    accessRef = UUID.randomUUID().toString(),
+                                    lessonOrder = lesson.order,
+                                )
+                            },
                             onTodayTask = ::openTodayTask,
                             onOpenGoal = { goalPickerOpen = true },
                             onOpenChest = courseViewModel::openRewardChest,
@@ -648,7 +668,7 @@ private fun LessonHost(
 ) {
     val lesson = launch.lesson
     val model: LessonViewModel = viewModel(
-        key = "lesson-$level-${lesson.order}",
+        key = "lesson-$level-${lesson.order}-${launch.accessRef}",
         viewModelStoreOwner = viewModelStoreOwner,
         factory = LessonViewModel.Factory(
             repository = app.courseRepository,
@@ -657,6 +677,7 @@ private fun LessonHost(
             lessonOrder = lesson.order,
             language = language,
             resumeStore = app.appSettings,
+            accessRef = launch.accessRef,
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()
@@ -867,6 +888,8 @@ private data class AdRequest(
 private data class LessonLaunch(
     val lesson: CourseLesson,
     val attemptKey: String,
+    /** Empty unless an ad opened this premium lesson. */
+    val accessRef: String = "",
 )
 
 @Composable

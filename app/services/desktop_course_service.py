@@ -25,7 +25,11 @@ from app.services.course_miniapp_access_service import (
 from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
-from app.services.course_access_policy_service import CourseAccessPolicyService
+from app.services.course_access_policy_service import (
+    COURSE_ACCESS_AD,
+    COURSE_ACCESS_MODE_ADS,
+    CourseAccessPolicyService,
+)
 from app.services.course_notification_service import CourseNotificationService
 from app.services.limit_notification_service import LimitNotificationService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
@@ -78,8 +82,15 @@ def apply_course_v3_access_policy(
     level: str,
     completed: int,
     is_paid: bool,
+    ad_unlockable: bool = False,
 ) -> None:
-    """Apply the same server-owned progress and premium rules as Course v3."""
+    """Apply the same server-owned progress and premium rules as Course v3.
+
+    [ad_unlockable] is the admin's "ads" mode: the lesson stays locked, and the
+    client is additionally told that watching an ad opens it. The Mini App has
+    always offered that; native clients could not, because the map never said
+    so.
+    """
 
     free_parts = free_course_parts_for_level(level)
     for unit in data.get("units", []):
@@ -124,9 +135,14 @@ def apply_course_v3_access_policy(
                     lesson["completion_allowed"] = False
                     lesson["completion_error"] = DESKTOP_PREVIEW_COMPLETION_ERROR
                     lesson.pop("preview_half", None)
+                    if ad_unlockable:
+                        lesson["ad_unlockable"] = True
+                    else:
+                        lesson.pop("ad_unlockable", None)
             else:
                 lesson.pop("locked_premium", None)
                 lesson.pop("preview_half", None)
+                lesson.pop("ad_unlockable", None)
                 if lesson.get("status") in {"done", "current"}:
                     lesson["completion_allowed"] = True
                     lesson.pop("completion_error", None)
@@ -346,13 +362,14 @@ class DesktopCourseService:
         # Mini App bilan AYNI blok. Native klientlar uni hozircha chizmaydi,
         # lekin ma'lumot bir joydan kelgani uchun ikkinchi personalizatsiya
         # tizimi qurilmaydi (ARCHITECTURE_DECISION.md).
+        access_policy = await CourseAccessPolicyService(self.session).get_policy()
         today = await CourseTodayService(self.session).payload(
             user,
             profile=profile,
             progress=progress,
             level=level,
             is_paid=is_paid,
-            access_policy=await CourseAccessPolicyService(self.session).get_policy(),
+            access_policy=access_policy,
         )
         if today:
             data["today"] = today
@@ -363,15 +380,62 @@ class DesktopCourseService:
             level=level,
             completed=completed,
             is_paid=is_paid,
+            ad_unlockable=(
+                not is_paid
+                and access_policy.active_mode == COURSE_ACCESS_MODE_ADS
+            ),
         )
         await self.session.commit()
         return data
+
+    async def _ad_authorized_lesson(
+        self,
+        user,
+        *,
+        level: str,
+        lesson_order: int,
+        access_ref: str,
+    ) -> bool:
+        """Whether a watched ad currently opens this locked lesson.
+
+        The rule and the proof are the Mini App's own: the admin has to have
+        put the course in "ads" mode, and the client has to present a reference
+        the server itself recorded against a completed view in the last hour.
+        Nothing here trusts the client's word that an ad was watched.
+        """
+
+        reference = str(access_ref or "").strip()
+        if not reference:
+            return False
+        policy = await CourseAccessPolicyService(self.session).get_policy()
+        requirement = policy.requirement_for(
+            lesson_order=lesson_order,
+            is_paid=False,
+            free_lessons=free_course_parts_for_level(level),
+        )
+        if requirement != COURSE_ACCESS_AD:
+            return False
+        try:
+            authorization = await CourseMiniAppAccessService(
+                self.session
+            ).verify_ad_authorization(
+                user,
+                feature_key="lesson",
+                access_ref=reference,
+                max_age_seconds=3600,
+                level=level,
+                lesson_order=lesson_order,
+            )
+        except ValueError:
+            return False
+        return bool(authorization.get("allowed"))
 
     async def lesson(
         self,
         access_token: str,
         *,
         lesson_order: int,
+        access_ref: str = "",
     ) -> dict[str, Any]:
         context = await self._context(access_token)
         user = context.user
@@ -401,13 +465,33 @@ class DesktopCourseService:
             level,
             lesson_order,
         )
+        # A watched ad opens the lesson whole: half of it would be a worse
+        # deal than the free preview the learner already had.
+        ad_open = (
+            lesson_order > completed
+            and not is_paid
+            and requires_premium
+            and await self._ad_authorized_lesson(
+                user,
+                level=level,
+                lesson_order=lesson_order,
+                access_ref=access_ref,
+            )
+        )
         preview_half = (
             not is_paid
             and requires_premium
+            and not ad_open
             and lesson_order == completed + 1
             and lesson_order == free_course_parts_for_level(level) + 1
         )
-        if lesson_order > completed and not is_paid and requires_premium and not preview_half:
+        if (
+            lesson_order > completed
+            and not is_paid
+            and requires_premium
+            and not preview_half
+            and not ad_open
+        ):
             raise DesktopCourseError(
                 "free_feature_limit_reached",
                 status_code=403,
@@ -458,6 +542,7 @@ class DesktopCourseService:
         lesson_order: int,
         event_id: str,
         mistakes: list[dict[str, Any]] | None = None,
+        access_ref: str = "",
     ) -> dict[str, Any]:
         context = await self._context(access_token)
         user = await self._locked_context_user(context)
@@ -530,10 +615,18 @@ class DesktopCourseService:
                 duplicate=True,
             )
         if not is_paid and access.lesson_requires_premium(level, lesson_order):
-            raise DesktopCourseError(
-                DESKTOP_PREVIEW_COMPLETION_ERROR,
-                status_code=403,
-            )
+            # The ad is checked again here, not only when the lesson opened:
+            # completion is what awards XP and moves the course forward.
+            if not await self._ad_authorized_lesson(
+                user,
+                level=level,
+                lesson_order=lesson_order,
+                access_ref=access_ref,
+            ):
+                raise DesktopCourseError(
+                    DESKTOP_PREVIEW_COMPLETION_ERROR,
+                    status_code=403,
+                )
         if lesson_order != completed + 1:
             raise DesktopCourseError(
                 "course_lesson_not_unlocked",

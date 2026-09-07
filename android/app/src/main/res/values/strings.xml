@@ -290,4 +290,5 @@
     <string name="voice_a11y_send">yuborish</string>
     <string name="voice_tap_to_speak">Gapirish uchun mikrofonni bosing</string>
     <string name="voice_tap_to_stop">Yuborish uchun yana bosing</string>
+    <string name="today_reason_ad">Reklamani ko‘rib oching</string>
 </resources>
