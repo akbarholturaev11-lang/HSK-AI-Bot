@@ -244,4 +244,7 @@
         <item>С</item>
         <item>В</item>
     </string-array>
+    <string name="voice_box_title">Поговорите с AI</string>
+    <string name="voice_box_body">Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.</string>
+    <string name="voice_partner">Собеседник</string>
 </resources>

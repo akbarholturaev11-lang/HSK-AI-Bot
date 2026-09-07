@@ -214,6 +214,32 @@ class VoiceViewModel(
         }
     }
 
+    /**
+     * Mini App `VOICE.swap()`: the partner defines the whole dialogue, so
+     * changing it closes the current conversation on the server and opens a
+     * fresh one instead of continuing with a different voice mid-way.
+     */
+    fun swapPartner(role: String, level: String, language: String) {
+        if (_state.value.isSending || _state.value.isStarting) return
+        val previousSession = _state.value.sessionId
+        recorder.cancel()
+        _state.update {
+            it.copy(
+                selectedRole = role,
+                sessionId = null,
+                isRecording = false,
+                lines = emptyList(),
+                turnCount = 0,
+                result = null,
+                error = null,
+            )
+        }
+        viewModelScope.launch {
+            if (previousSession != null) repository.voiceEnd(previousSession)
+            startSession(level, language)
+        }
+    }
+
     fun reset() {
         recorder.cancel()
         _state.update {

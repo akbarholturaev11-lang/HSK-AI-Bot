@@ -245,4 +245,7 @@
         <item>Ш</item>
         <item>Я</item>
     </string-array>
+    <string name="voice_box_title">Бо AI сӯҳбат кунед</string>
+    <string name="voice_box_body">Сӯҳбати зинда бо панда 阿宝. Гӯш кун, гап зан, ислоҳ гир.</string>
+    <string name="voice_partner">Ҳамсӯҳбат</string>
 </resources>

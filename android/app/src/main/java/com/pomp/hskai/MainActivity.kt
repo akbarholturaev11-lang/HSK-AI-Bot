@@ -530,6 +530,9 @@ private fun AppRoot(
                             onStartSession = voiceViewModel::startSession,
                             onToggleRecording = voiceViewModel::toggleRecording,
                             onEndSession = voiceViewModel::endSession,
+                            onSwapPartner = { role ->
+                                voiceViewModel.swapPartner(role, currentLevel, currentLanguage)
+                            },
                             onReset = voiceViewModel::reset,
                             modifier = contentModifier,
                         )

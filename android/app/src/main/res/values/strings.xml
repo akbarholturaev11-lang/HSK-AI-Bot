@@ -272,4 +272,7 @@
         <item>S</item>
         <item>Y</item>
     </string-array>
+    <string name="voice_box_title">AI bilan gaplashing</string>
+    <string name="voice_box_body">Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.</string>
+    <string name="voice_partner">Suhbatdosh</string>
 </resources>
