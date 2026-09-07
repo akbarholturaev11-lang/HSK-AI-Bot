@@ -1,6 +1,6 @@
 import unittest
 from types import SimpleNamespace
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.services.ai_service import AIUsageResult
 from app.services.voice_practice_service import (
@@ -13,9 +13,27 @@ from app.services.voice_practice_service import (
 )
 
 
+def _fake_db_session():
+    """`start_session` endi DB ga o'zi murojaat qiladi.
+
+    Sabab: bugungi gapirilmagan sessiya qatorini qidiradi (qayta ishlatish) va
+    kechagi ochiq qolgan qatorlarni yopadi. Stub bo'sh natija qaytaradi, ya'ni
+    "qayta ishlatiladigan qator yo'q" — yangi qator yaratiladi.
+    """
+    session = SimpleNamespace(
+        added=[],
+        commit=AsyncMock(),
+        execute=AsyncMock(
+            return_value=SimpleNamespace(scalar_one_or_none=lambda: None, scalar_one=lambda: 0)
+        ),
+    )
+    session.add = lambda item: session.added.append(item)
+    return session
+
+
 class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
     async def test_new_characters_are_supported_and_session_keeps_lesson_words(self):
-        session = SimpleNamespace(added=[], add=lambda item: session.added.append(item), commit=AsyncMock())
+        session = _fake_db_session()
         service = VoicePracticeService(session)
         user = SimpleNamespace(id=7, telegram_id=123, status="trial", payment_status="none", end_date=None)
         service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user))
@@ -48,7 +66,7 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(session.added[0].target_words[0]["zh"], "你好")
 
     async def test_paid_session_start_uses_ai_budget_gate(self):
-        session = SimpleNamespace(added=[], add=lambda item: session.added.append(item), commit=AsyncMock())
+        session = _fake_db_session()
         service = VoicePracticeService(session)
         service.user_status = AsyncMock(
             return_value={"is_paid": True, "plan": "premium", "remaining_voice_limit": -1}
@@ -295,3 +313,147 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class VoiceAdaptiveContextTests(unittest.IsolatedAsyncioTestCase):
+    """AI Voice endi ilovaning qolgan qismi kabi o'quvchiga moslashadi.
+
+    Ilgari u faqat HSK darajasini va joriy dars so'zlarini bilardi; takror
+    so'zlari TASODIFIY tanlanardi va o'quvchining xatolari, maqsadi hamda
+    zaif tomoni suhbatga umuman kirmasdi.
+    """
+
+    def _service(self):
+        return VoicePracticeService(SimpleNamespace(execute=AsyncMock(), commit=AsyncMock()))
+
+    async def test_review_words_come_from_the_srs_schedule_not_from_chance(self):
+        service = self._service()
+        mastery = SimpleNamespace(
+            context=AsyncMock(return_value=("hsk1", 4, 0)),
+            select=AsyncMock(
+                return_value=[
+                    {"zh": "新词", "kind": "new"},
+                    {"zh": "医院", "kind": "review"},
+                    {"zh": "你好", "kind": "review"},
+                ]
+            ),
+            record_drill=AsyncMock(),
+        )
+        with patch(
+            "app.services.voice_practice_service.CourseWordMasteryService",
+            MagicMock(return_value=mastery),
+        ), patch(
+            "app.services.voice_practice_service.course_v3_vocab.words_for_level",
+            return_value=[{"zh": "医院", "pinyin": "yīyuàn", "meaning": {"ru": "больница"}}],
+        ):
+            words = await service._srs_review_words(
+                SimpleNamespace(id=7), "ru", exclude={"你好"}, limit=6
+            )
+
+        # Muddati kelgan takrorlar oldinda, dars so'zi chiqarib tashlangan.
+        self.assertEqual(["医院", "新词"], [w["zh"] for w in words])
+        self.assertEqual("больница", words[0]["meaning"])
+        # SRS faqat O'QILADI: suhbat o'quvchining rejalashtirilgan takrorlarini
+        # jimgina yeb qo'ymasligi kerak.
+        mastery.record_drill.assert_not_awaited()
+        # Talaffuz skili — "recognition" bo'lsa faqat bir belgili so'zlar qolardi.
+        self.assertEqual("pronunciation", mastery.select.await_args.kwargs["skill"])
+
+    async def test_a_broken_srs_lookup_does_not_stop_the_conversation(self):
+        service = self._service()
+        with patch(
+            "app.services.voice_practice_service.CourseWordMasteryService",
+            MagicMock(side_effect=RuntimeError("db down")),
+        ):
+            self.assertEqual([], await service._srs_review_words(
+                SimpleNamespace(id=7), "ru", exclude=set()
+            ))
+
+    async def test_the_plan_carries_goal_weakness_and_one_retest(self):
+        service = self._service()
+        service.progress_repo = SimpleNamespace(get_by_user_id=AsyncMock(return_value=None))
+        service.session.execute = AsyncMock(
+            return_value=SimpleNamespace(scalar_one_or_none=lambda: None)
+        )
+        signals = SimpleNamespace(
+            goal="travel",
+            preferred_focus="speaking",
+            weakness={"grammar": 5, "word": 1, "pronunciation": 0},
+        )
+        overview = {
+            "items": [
+                # Xitoycha bo'lmagan yozuv retest uchun yaramaydi.
+                {"question": "spasibo", "correct_answer": "rahmat"},
+                {"question": "我昨天去北京", "correct_answer": "我昨天去了北京"},
+                {"question": "很便易", "correct_answer": "很便宜"},
+            ]
+        }
+        with patch(
+            "app.services.voice_practice_service.LearningSignalsService",
+            MagicMock(return_value=SimpleNamespace(load=AsyncMock(return_value=signals))),
+        ), patch(
+            "app.services.voice_practice_service.CourseMistakeService",
+            MagicMock(return_value=SimpleNamespace(overview=AsyncMock(return_value=overview))),
+        ):
+            plan = await service._learner_plan(SimpleNamespace(id=7), 123, "hsk1")
+
+        self.assertEqual("travel", plan["goal"])
+        self.assertEqual("grammar", plan["weak"])
+        # Eng ko'pi BITTA qayta sinash — suhbat so'roqqa aylanmasligi kerak.
+        self.assertEqual([{"q": "我昨天去北京", "a": "我昨天去了北京"}], plan["retest"])
+
+    async def test_broken_signals_leave_the_plan_empty(self):
+        # Bo'sh reja = moslashuvdan oldingi prompt. Bu ayni paytda rollback yo'li.
+        service = self._service()
+        service.progress_repo = SimpleNamespace(get_by_user_id=AsyncMock(return_value=None))
+        service.session.execute = AsyncMock(side_effect=RuntimeError("db down"))
+        self.assertEqual({}, await service._learner_plan(SimpleNamespace(id=7), 123, "hsk1"))
+
+
+class VoiceAdaptivePromptTests(unittest.IsolatedAsyncioTestCase):
+    async def _prompt(self, plan, history=None, target_words=None):
+        service = VoicePracticeService(SimpleNamespace())
+        item = SimpleNamespace(
+            id="sess-1",
+            role="friend",
+            level="hsk1",
+            language="ru",
+            history=history or [],
+            turn_count=len(history or []),
+            target_words=target_words or [{"zh": "医院"}],
+            review_words=[],
+            plan_json=plan,
+        )
+        usage = SimpleNamespace(content='{"chinese_reply":"好","pinyin":"hǎo","translation":"ok","correction":null}')
+        completer = AsyncMock(return_value=usage)
+        with patch(
+            "app.services.voice_practice_service.AIService",
+            MagicMock(return_value=SimpleNamespace(complete_messages_with_usage=completer)),
+        ):
+            await service._generate_reply(item, "我去医院")
+        return completer.await_args.kwargs["messages"][0]["content"]
+
+    async def test_the_learner_block_reaches_the_model(self):
+        prompt = await self._prompt(
+            {"goal": "travel", "weak": "grammar", "retest": [{"q": "我去北京", "a": "我去了北京"}]}
+        )
+        self.assertIn("travel", prompt)
+        self.assertIn("GRAMMAR", prompt)
+        self.assertIn("我去了北京", prompt)
+        # ENG muhim qoida baribir birinchi bo'lib qolishi shart.
+        self.assertLess(prompt.index("STRICT LEVEL RULE"), prompt.index("travel"))
+
+    async def test_an_empty_plan_keeps_the_original_prompt(self):
+        prompt = await self._prompt({})
+        for marker in ("travel", "GRAMMAR", "Earlier this learner"):
+            self.assertNotIn(marker, prompt)
+        self.assertIn("STRICT LEVEL RULE", prompt)
+
+    async def test_words_already_spoken_are_not_pushed_again(self):
+        prompt = await self._prompt(
+            {},
+            history=[{"user": "我去医院", "assistant": "好"}],
+            target_words=[{"zh": "医院"}, {"zh": "便宜"}],
+        )
+        self.assertIn("already used", prompt)
+        self.assertIn("医院", prompt)

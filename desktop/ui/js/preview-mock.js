@@ -794,6 +794,11 @@ export async function previewInvoke(command, args = {}) {
         mistake_count: PREVIEW_VOICE_REPLIES.slice(0, turns).filter(
           (entry) => entry.correction !== null,
         ).length,
+        errors_by_type: { grammar: turns > 0 ? 1 : 0, word: 0, pronunciation: 0 },
+        target_used: { used: turns > 0 ? 1 : 0, total: 4, words: turns > 0 ? ["医院"] : [] },
+        avg_chars: 4.0,
+        turns,
+        completed: turns >= 7,
         reward: { xp_awarded: 10 },
       };
     }

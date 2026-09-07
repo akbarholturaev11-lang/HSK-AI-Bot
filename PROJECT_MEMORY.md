@@ -227,7 +227,173 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-07 — Kurs sarlavhasi: umumiy progress o'rniga reja so'qmog'i
+
+Changed:
+- Kurs ekrani sarlavhasidan UMUMIY progress qatori (`.pwrap` — "11 / 72 dars")
+  olib tashlandi. O'rnini bugungi reja egalladi: vazifalar YOTIQ va EGRI
+  so'qmoq (`.tplan` / `.tplan-c` / `.tpath` / `.tstep` / `.tnode`) bo'lib
+  turadi va ostida bitta chaqiriq tugmasi — «Reja bo'yicha davom etish»
+  (3 tilda, `todayT().go`).
+- Reja QORONG'I kartada (`--ink` + oltin chaqiriq, 计 suv belgisi) — Test
+  bo'limidagi "Sathni aniqlash" (`#tc-root .place`) kartasi bilan bir xil
+  sirt. Sabab: birinchi urinishda reja och fonda, dumaloq tugunlar bilan
+  chizilgandi va darslar yo'lakchasi bilan qo'shilib ketardi — bir qarashda
+  qaysi biri nima ekani bilinmasdi.
+- Ilgarigi chip tasmasi (`.today` / `.tchip`) endi yo'q. Tugun holatlari:
+  `done` (yashil) / `now` (OLTIN, pulsli — birinchi bajarilmagan va ochiq
+  vazifa) / `next` / `lock`; darslar yo'lakchasida `current` QIZIL bo'lgani
+  uchun ranglar ataylab boshqacha. Tugunlar navbat bilan tepa-past siljiydi
+  (`.tstep.up` / `.dn`), bog'lovchi chiziq esa `drawPlanTrail()` da o'lchov
+  bo'yicha SVG qilib chiziladi (`drawTrails()` ichidan chaqiriladi, ya'ni
+  uchala chaqiruv joyi — render, `show("course")` va resize — qamrab olinadi).
+  Har bo'g'in alohida yo'l: oldingi qadam bajarilgan bo'lsa yashil.
+- Tugma `todayGoBtnHtml()` dan keladi va AYNAN `now` tugunini ochadi. Reja
+  tugagan bo'lsa tugma o'rniga «Reja bajarildi» yozuvi chiqadi; ochiq vazifa
+  qolmasa (hammasi Premium ortida) tugma umuman chizilmaydi.
+- Keng ekranda (>=900px) so'qmoq yashirin, ammo o'sha tugma yon ustundagi
+  reja kartasi ichida turadi.
+
+Why: umumiy "11 / 72" raqami kunlik qarorga yordam bermasdi — o'quvchi
+"hozir nima qilaman" degan savolga javob olmasdi. Reja shu savolga javob
+beradi, tugma esa uni bitta bosishga qisqartiradi.
+
+Files touched: `app/static/course-v3.html`, `tests/e2e/test_miniapp_smoke.py`.
+
+Risk: server `today` bermasa so'qmoq umuman chizilmaydi (eski qoida saqlandi)
+va sarlavhada faqat daraja qatori qoladi — kurs progressi endi hech qayerda
+ko'rsatilmaydi.
+
+### 2026-09-07 — AI Voice: haqiqiy qurilmadagi 5 ta nuqson
+
+Yuqoridagi moslashuv ishidan keyin iPhone'da sinovda topilgan muammolar.
+
+Changed:
+- **STT endi FAQAT xitoychani kutadi.** `AIService.transcribe_voice_with_usage`
+  ga `expect_chinese` bayrog'i qo'shildi; AI Voice suhbati va talaffuz mashqi
+  uni beradi. Ilgari prompt "Likely {ona tili} or Chinese" derdi va model
+  xitoycha nutqni kirillga o'girib yozardi ("huǒguō" -> "Хуагу"), keyin esa
+  AI javobi ham, tuzatish ham butunlay boshqa narsa haqida chiqardi.
+  Botdagi umumiy ovozli savol-javob yo'li TEGILMADI — u yerda o'quvchi o'z
+  ona tilida gapiradi.
+- **Panda kirgan zahoti salomlashadi.** `open()` endi `startSession()` ni
+  chaqiradi. Ilgari sessiya faqat mikrofon bosilganda boshlanardi, chunki
+  sessiya ochilishi bepul kunlik limitni yoqib yuborardi — bu cheklov
+  `turn_count > 0` tuzatilishidan keyin yo'qoldi.
+- **Mikrofon oqimi navbatlar orasida ochiq qoladi** (jimlikda 30s dan keyin
+  bo'shatiladi). iOS'da har bosishda `getUserMedia` 300-800ms olardi va o'sha
+  vaqtda aytilgan gap YOZILMAY qolardi — "bot meni eshitmayapti" shundan edi.
+- **Yozuv boshlanishida `stopSpeak()`.** Panda hali gapirayotganda mikrofon
+  UNING ovozini yozib olardi va transkripsiyaga o'quvchi gapi o'rniga panda
+  gapi tushardi.
+- **iOS klaviaturasi.** Ilovada `visualViewport` ishlov berish umuman yo'q edi:
+  klaviatura ochilganda `100dvh` kichraymaydi, dock klaviatura ostida qolardi.
+  Endi `syncViewport()` bor. DIQQAT: `#secov` — flex konteyner va `#vc-root`
+  da `flex:1` bor, shuning uchun faqat `height` berish YETMAYDI (flex uni
+  qayta cho'zadi) — `flex:0 0 auto` ham qo'yiladi. Bundan tashqari `.stage`
+  balandligi `vh` da berilgani uchun klaviaturani ko'rmaydi; `.kbopen` sinfi
+  panda sahnasini kichraytiradi, aks holda chat + dock sig'masdi.
+- **Gapirish effekti.** Ilgari faqat kichik og'iz harakati bor edi. Endi og'iz
+  kuchliroq va butun panda yengil tebranadi. Tebranish `.speaking` ga EMAS,
+  `.vspeak` ga bog'langan (ovoz haqiqatan chiqayotgan payt), chunki
+  `.speaking` tahlil paytida ham yoqiladi — panda jim turib gapirayotgandek
+  ko'rinardi. `prefers-reduced-motion` hurmat qilinadi.
+
+Tekshirildi: `tests/test_voice_transcribe_language.py` (yangi), 7 ta AI Voice
+E2E smoke testi (klaviatura balandligi regressiyasi ham qadalgan).
+
+### 2026-09-06 — AI Voice: moslashuv, xato turi va bepul slot
+
+Ilovaning qolgan qismi allaqachon o'quvchiga moslashardi (kunlik reja
+`LearningSignals` bo'yicha, xatolar bo'limi `course_mistakes` dan, mashqlar
+SRS'dan), AI Voice esa faqat HSK darajasini va joriy dars so'zlarini bilardi.
+Endi u ham xuddi shu signal qatlamiga ulangan.
+
+Changed:
+- Yangi DB ustuni (`0074_voice_session_plan`): `voice_practice_sessions.plan_json`
+  (JSON, default `{}`). Yangi jadval YO'Q. Sessiya boshida muzlatiladigan
+  moslashuv rejasi: `goal`, `focus`, `weak`, `retest`, — `_generate_reply`
+  sessiyada 7 marta ishlagani uchun har navbatda qayta hisoblanmaydi.
+  Bo'sh `{}` = moslashuvdan oldingi prompt (ROLLBACK yo'li).
+- `_course_context` (`voice_practice_service.py`) qayta yozildi: takror so'zlar
+  endi TASODIFIY emas, SRS jadvalidan (`CourseWordMasteryService.select`,
+  `skill="pronunciation"`). Oldingi darslar bo'ylab 10 tagacha `get_payload`
+  chaqiruvi OLIB TASHLANDI — `start_session` tezlashdi. SRS faqat O'QILADI,
+  `record_drill` chaqirilmaydi (aks holda suhbat rejalashtirilgan takrorlarni
+  yeb qo'yardi).
+- AI javob JSON kontraktiga `error_type` qo'shildi (grammar|word|pronunciation|
+  none). `chinese_reply/pinyin/translation/correction` o'zgarmadi, shuning uchun
+  desktop va Android buzilmadi.
+- `end_session` endi har bir xatoni O'Z kategoriyasiga yozadi (ilgari hammasi
+  `"pronunciation"` edi). `CourseMistakeService._category` dagi
+  `source == "voice"` tarmog'i eski sessiyalar uchun fallback bo'lib qoldi.
+  Eski `course_mistakes` qatorlari ATAYLAB migratsiya qilinmadi: `mistake_key`
+  `category|prompt|correct_answer` hash'i, uni qayta hisoblamasdan `UPDATE`
+  qilish upsert'ni buzib dublikat yaratardi.
+- `end_session` javobiga QO'SHIMCHA AI CHAQIRUVISIZ o'lchovlar:
+  `errors_by_type`, `target_used`, `avg_chars`, `turns`, `completed`.
+- Mini App (`course-v3.html`): hisoblagich tarjima qilindi (ilgari `对话 N / 7`),
+  aria-label'lar 3 tilda, `remaining_limit` sozlamalar oynasida va yakun
+  kartasida ko'rsatiladi, yakunda uchinchi ko'rsatkich (dars so'zlaridan
+  foydalanish) va xato turlari ajratmasi, kunlik reja bergan `role` endi
+  ishlatiladi (whitelist bilan), `mic_result` diagnostikasi `transcription`
+  ni o'qiydi (ilgari mavjud bo'lmagan `heard` ni o'qib doim bo'sh yozardi).
+- «Nima deyish?» varag'idagi iboralar endi moslashadi. Ilgari u yerda 4 ta
+  QOTIB QOLGAN HSK1 iborasi (`SAFE`) turardi — har darajada, har javobda bir
+  xil. Endi AI javob JSON'iga `suggestions` (2 ta) qo'shdi va ular AYNI
+  chaqiruvda keladi: QO'SHIMCHA SO'ROV YO'Q, faqat ~70 chiqish tokeni.
+  `VOICE_REPLY_MAX_TOKENS` 220 -> 340 (aks holda JSON kesilib
+  `AI_RESPONSE_INVALID` bo'lardi). Sessiya boshida AI hali chaqirilmagani
+  uchun 6 ta ochilish varianti QO'LDA yozilgan takliflarni olib yuradi
+  (3 tilda). AI yaroqsiz javob bersa `SAFE` zaxira bo'lib qoladi — varaq
+  hech qachon bo'sh qolmaydi.
+- Varaqdan tanlangan element (ham javob varianti, ham dars so'zi) DARHOL
+  yuboriladi: klaviatura paneli umuman ochilmaydi va ibora ovozda ham
+  o'qilmaydi (panda javobi ~2s da kelib uni yarmida uzardi). Ilgari u
+  `openKb()` chaqirib matnni maydonga ko'chirardi va yana «yuborish» bosish
+  kerak edi. Yuborish mantig'i `sendText()` dan `sendMessage(txt)` ga
+  ajratildi — klaviatura ham, varaq ham shundan foydalanadi.
+- Desktop: yakun ekraniga o'sha uchinchi ko'rsatkich (bitta `voice.js` —
+  macOS/Windows parity avtomatik), `voiceStatWords` 3 tilda. Desktop/Android'da
+  «Nima deyish?» varag'i YO'Q, shuning uchun u yerda parity ishi kerak emas.
+
+Risk (AI_RULES #9 — access/entitlement o'zgarishi):
+- `_session_count` endi `turn_count > 0` ni sanaydi: bepul slot QATOR
+  yaratilganda emas, GAPIRILGANDA yonadi. Buni suiiste'mol qilib bo'lmaydi —
+  `start_session` bugungi gapirilmagan qatorni QAYTA ISHLATADI, ya'ni kuniga
+  bittadan ko'p qator yaratilmaydi; model esa faqat `process_message` da
+  chaqiriladi, u ham aynan slotni yoqadigan joy.
+- `end_session` endi `turn_count == 0` bo'lsa XP/streak/xato yozmaydi. Ilgari
+  ochib-yopish 10 XP + streak + kunlik rejaning `voice_dialog` vazifasini
+  berardi (bu ferma pullik userlarda ham bor edi).
+- `remaining_limit` ma'nosi siljidi: "bugun yana nechta SUHBAT QILA OLASIZ".
+- Kechagi ochiq qolgan sessiyalar keyingi startda `status="abandoned"` bo'ladi.
+
+Bilib qo'yish kerak:
+- `app/static/course_v3_voice.html` — O'LIK NUSXA. Hech qayerdan chaqirilmaydi,
+  route yo'q. Jonli UI `course-v3.html` ichidagi `VOICE` moduli. Ikkalasini
+  ham tuzatishga urinmang.
+- Bu kodda AKUSTIK yoki TON tahlili YO'Q. `_pronunciation_score` — belgilar
+  to'plamini taqqoslash, `_normalize_pinyin` esa taqqoslashdan oldin tonlarni
+  o'chiradi. Shuning uchun voice UI'da "ton tekshiruvi"/"ball" yozilmasin.
+  (`Mashq` bo'limidagi `pronSub` matnida bu yolg'on da'vo HALI BOR — admin
+  keyinroq tuzatishni so'radi.)
+
+Tekshirildi:
+- `tests/test_voice_practice_error_type.py`, `..._evaluation.py` (yangi),
+  `..._course_context.py`, `..._daily_limit.py` kengaytirildi.
+- `tests/e2e/test_miniapp_smoke.py`: 3 ta yangi AI Voice smoke testi
+  (klaviatura yo'li — mikrofon ruxsati kerak emas).
+- `desktop/` `npm run test:ui` — 25/25.
+
 ### 2026-09-05 — Kunlik reja (Daily Plan) va o'quv signallari
+
+Live holat (2026-09-06): `course-v3.html` ichidagi `refreshCourseProgress`
+dars/test/xatolar/voice natijasi saqlangach va kursga qaytilganda serverdan
+`today`/`progress`ni qayta oladi. Vazifa bajarildi belgisi faqat serverdan
+keladi; parallel yozuv yangi o'qishni navbatga qo'yadi, eski level javobi
+e'tiborsiz qoladi. Aktiv dars obyektlarini almashtirmang. E2E regressiyalar
+`tests/e2e/test_miniapp_smoke.py`dagi `daily_plan` testlarida.
 
 Changed:
 - Yangi DB ustunlari (`0071_course_daily_plan`): `course_miniapp_profiles` ga
@@ -242,7 +408,8 @@ Changed:
 - `/api/v3/map` va desktop map javobiga `today` va `study_setup` bloklari.
   Android ularni merosxo'r sifatida kod o'zgartirmasdan oladi.
 - Mini App: onboarding maqsadni so'raydi; kunlik vaqt va fokus birinchi
-  darsdan keyin varaqda so'raladi; kurs ekranida «Bugungi reja» tasmasi;
+  darsdan keyin varaqda so'raladi; kurs ekranida «Bugungi reja»
+  (2026-09-07 dan — so'qmoq ko'rinishida, oldin chip tasmasi edi);
   >=900px da ikki ustunli layout (`--read` / `--shell`).
 - Signal ulandi: talaffuz, ieroglif tanish va yodlash natijalari endi
   `course_mistakes` ga tushadi (ilgari hech qayerga yozilmasdi).
@@ -7223,3 +7390,18 @@ Any AI coding assistant working on this project must:
 11. Use only the three active collaboration branches: `main`, `codex/local-ai`, and `codex/cloud-ai`.
 12. Cloud AI must keep untested work on `codex/cloud-ai`; if tests cannot run in cloud, leave a context/instructions file for local Codex to test and promote.
 13. Local Codex must test on `codex/local-ai`, promote only tested commits to `main`, then sync both AI branches back to `main`.
+
+### 2026-09-07 — Isolated local voice studio
+
+Changed:
+- `tools/voice-studio/` is a standalone loopback text-to-speech utility, independent of bot, Mini App, payment and database code.
+- Russian and Tajik use pinned Meta MMS models downloaded once; inference is offline. Models use CC BY-NC 4.0 and are not intended for commercial ads.
+
+Files touched:
+- `tools/voice-studio/` (server, worker, static UI, launchers, tests, documentation).
+
+Risk:
+- macOS runtime and both voices tested. Windows launcher provided with shared implementation, but Windows execution is unverified. Models, virtual environment and generated audio are ignored by Git.
+
+Follow-up:
+- Launch through `Start.command`; `README.md` documents setup and limits.

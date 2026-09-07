@@ -108,3 +108,71 @@ class SharedWindowTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FreeSlotIsSpentOnSpeechTests(unittest.IsolatedAsyncioTestCase):
+    """Bepul slot QATOR yaratilganda emas, GAPIRILGANDA yonadi.
+
+    Ilgari sessiya qatori yaratilishi kifoya edi: AI xato bersa, mikrofonga
+    ruxsat berilmasa yoki tarmoq uzilsa ham bepul o'quvchi kunlik yagona
+    suhbatidan ayrilardi.
+    """
+
+    async def test_only_sessions_with_speech_are_counted(self):
+        captured = {}
+
+        async def execute(query):
+            captured["sql"] = str(query)
+            return SimpleNamespace(scalar_one=lambda: 0)
+
+        service = VoicePracticeService(SimpleNamespace(execute=execute))
+        service._offset_minutes = AsyncMock(return_value=0)
+        await service._session_count(123, today_only=True)
+        self.assertIn("turn_count >", captured["sql"])
+
+    async def test_a_second_start_reuses_the_untouched_row(self):
+        """Aks holda start tugmasini qayta bosish cheksiz qator yaratardi.
+
+        `_session_count` endi gapirilmagan qatorni sanamaydi, shuning uchun
+        qatorni qayta ishlatish kunlik bittaga cheklovchi yagona narsa.
+        """
+        existing = SimpleNamespace(
+            id="already-open",
+            role="friend",
+            level="hsk1",
+            language="ru",
+            voice="female",
+            status="active",
+            turn_count=0,
+            history=[],
+            corrections=[],
+            lesson_id=None,
+            target_words=[],
+            review_words=[],
+            plan_json={},
+            ended_at=None,
+        )
+        session = SimpleNamespace(added=[], commit=AsyncMock())
+        session.add = lambda item: session.added.append(item)
+        service = VoicePracticeService(session)
+        user = SimpleNamespace(id=7, telegram_id=123)
+        service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user))
+        service.user_status = AsyncMock(
+            return_value={"is_paid": False, "plan": "free", "remaining_voice_limit": 1}
+        )
+        service._offset_minutes = AsyncMock(return_value=0)
+        service._retire_stale_sessions = AsyncMock()
+        service._reusable_session = AsyncMock(return_value=existing)
+        service._course_context = AsyncMock(
+            return_value={"lesson_id": None, "lesson_order": None, "title": "", "words": [], "review_words": []}
+        )
+        service._learner_plan = AsyncMock(return_value={})
+
+        result = await service.start_session(
+            123, role="teacher_li", level="hsk1", language="ru", voice="male"
+        )
+
+        self.assertEqual("already-open", result["session_id"])
+        self.assertFalse(session.added, "gapirilmagan qator uchun yangi qator yaratilmasligi kerak")
+        self.assertEqual("teacher_li", existing.role)
+        self.assertEqual("active", existing.status)

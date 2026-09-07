@@ -65,8 +65,8 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   </div>
   <div class="done" id="done"><div class="st han">音</div><h3 id="dh"></h3><p id="dp"></p><button onclick="replay()"><i class="ti ti-refresh"></i> <span id="db"></span></button></div>
 </div>
-<script defer src="hsk-words.js?v=20260720"></script>
-<script defer src="/course_v3_data/lesson_gate.js?v=20260719"></script>
+<script defer src="hsk-words.js?v=20260905"></script>
+<script defer src="/course_v3_data/lesson_gate.js?v=20260905"></script>
 <script defer src="/course_v3_data/ads.js?v=20260812-5"></script>
 <script defer src="/course_v3_data/desktop-download.js?v=20260812-3"></script>
 <script>
@@ -79,9 +79,9 @@ var SCRIPTS_READY=new Promise(function(res){
 });
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",heard:"Я услышал:",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"Реклама на сегодня тоже закончилась. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",skip:"Пропустить",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
-  uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Aniq emas, yana urinib ko'ring",heard:"Men shunday eshitdim:",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq",listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi, qayta urining",needTg:"Telegram'da oching",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bugungi reklama limiti ham tugadi. Cheksiz mashq uchun Premium oching yoki ertaga qayting.",premiumBtn:"Premium ochish",back:"Orqaga",skip:"O'tkazib yuborish",adCont:"Reklama bilan davom etish",adLimitSub:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
-  tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",heard:"Ман чунин шунидам:",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Рекламаи имрӯза низ тамом шуд. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт",skip:"Гузарондан",adCont:"Идома бо реклама",adLimitSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
+var L={ru:{review:"повтор",answer:"Правильно так:",hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",heard:"Я услышал:",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"Реклама на сегодня тоже закончилась. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",skip:"Пропустить",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
+  uz:{review:"takror",answer:"To'g'risi shunday:",hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Aniq emas, yana urinib ko'ring",heard:"Men shunday eshitdim:",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq",listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi, qayta urining",needTg:"Telegram'da oching",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bugungi reklama limiti ham tugadi. Cheksiz mashq uchun Premium oching yoki ertaga qayting.",premiumBtn:"Premium ochish",back:"Orqaga",skip:"O'tkazib yuborish",adCont:"Reklama bilan davom etish",adLimitSub:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
+  tj:{review:"такрор",answer:"Дурусташ ин аст:",hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",heard:"Ман чунин шунидам:",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Рекламаи имрӯза низ тамом шуд. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт",skip:"Гузарондан",adCont:"Идома бо реклама",adLimitSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription"}
@@ -104,6 +104,7 @@ function runAdGate(){
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
 function startAdSupported(){
+  resetPlan();
   runAdGate().then(function(o){
     if(o.status===403){showLimit(false);return}
     AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
@@ -129,6 +130,7 @@ function gateStart(){
   runGate(gateRef(true)).then(function(o){if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}AD_SESSION=false;start()}).catch(function(){AD_SESSION=false;start()});
 }
 function replay(){
+  resetPlan();
   runGate("replay:"+Date.now()).then(function(o){if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}AD_SESSION=false;start()}).catch(function(){AD_SESSION=false;start()});
 }
 var _ttsAudio=null;
@@ -144,13 +146,91 @@ function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
 var TOTAL=10,list=[],i=0,okCount=0,busy=false;
+/* Bitta so'zga necha marta urinildi va siljish allaqachon boshlanganmi.
+   `advancing` MAJBURIY: muvaffaqiyat animatsiyasi paytida "o'tkazib
+   yuborish" bosilsa `i` IKKI marta oshib ketardi — reklama oralig'i
+   indeksi o'tkazib yuborilar va oxirgi savol chizilmasdi. */
+var MAX_TRIES=3,tries=0,advancing=false;
+/* Sessiya natijalari — interval takrori uchun. Talaffuz TO'G'RILIGINI
+   server o'zi baholaydi, shuning uchun bu yerdan faqat `correct:false`
+   yuboriladi: o'tkazib yuborish va 3 urinishdan keyingi taslim. */
+var RESULTS=[];
+function reportResults(){
+  if(!RESULTS.length)return;
+  var body={feature:"pronunciation",level:LV||"hsk1",language:LANG,
+    results:RESULTS.slice(0,30),initData:initData()};
+  RESULTS=[];
+  try{
+    fetch("/api/v3/practice/report",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body),keepalive:true}).catch(function(){});
+  }catch(e){}
+}
+try{window.addEventListener("pagehide",reportResults);
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")reportResults()})}catch(e){}
+
+/* ---------- Moslashuvchi so'z tanlash ----------
+   Server MASLAHATCHI: javob kelmasa mashq bugungidek, o'z poolidan ishlaydi. */
+var PLAN=null;
+function fetchPlan(){
+  var idt=initData();
+  if(!idt)return Promise.resolve(null);
+  var body={feature:"pronunciation",limit:TOTAL,initData:idt};
+  var call=fetch("/api/v3/practice/words",{method:"POST",
+    headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(j){return (j&&j.ok&&j.words&&j.words.length)?j.words:null})
+    .catch(function(){return null});
+  var timeout=new Promise(function(res){setTimeout(function(){res(null)},2500)});
+  return Promise.race([call,timeout]);
+}
+function planReady(){if(!PLAN)PLAN=fetchPlan();return PLAN}
+function resetPlan(){PLAN=null}
+var BY_H=null;
+function wordByHanzi(h){
+  if(!BY_H){BY_H={};(typeof WORDS!=="undefined"?WORDS:[]).forEach(function(w){if(!BY_H[w.h])BY_H[w.h]=w})}
+  return BY_H[h];
+}
+/* Server ro'yxatini mashq ro'yxatiga aylantiradi: lug'atda yo'q so'z
+   tashlanadi, qolgani mavjud pooldan to'ldiriladi. */
+function planList(plan,pool){
+  var out=[],seen={};
+  (plan||[]).forEach(function(item){
+    var h=String((item&&item.zh)||"");
+    if(!h||seen[h])return;
+    var w=wordByHanzi(h);
+    if(!w)return;
+    seen[h]=1;
+    out.push({h:w.h,p:w.p,m:w.m,review:item.kind==="review"});
+  });
+  shuffle(pool.slice()).forEach(function(w){
+    if(out.length>=TOTAL||seen[w.h])return;
+    seen[w.h]=1;out.push({h:w.h,p:w.p,m:w.m,review:false});
+  });
+  return out.slice(0,TOTAL);
+}
+/* Barcha siljish yo'llari SHU yerdan o'tadi. Uch invariant:
+   `list.length` o'zgarmaydi, `i` aynan 1 taga oshadi, hammasi `load()` ga
+   boradi — aks holda reklama oralig'i jimgina o'lib qoladi. */
+function advance(delay){
+  if(advancing)return;
+  advancing=true;busy=true;
+  setTimeout(function(){
+    i++;
+    document.getElementById('prog').style.width=Math.round(i/list.length*100)+'%';
+    if(i>=list.length){finish()}else{load()}
+  },delay);
+}
 function rain(){var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'];var stage=document.getElementById('stage');for(var n=0;n<22;n++){(function(){var c=document.createElement('span');c.className='conf';c.style.left=(5+Math.random()*90)+'%';c.style.background=cols[n%5];stage.appendChild(c);var dx=Math.random()*60-30,rot=Math.random()*540-270;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,520px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1450)})()}}
 function load(){
   /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
   if(AD_SESSION&&!AD_MID_SHOWN&&list.length>=4&&i===Math.floor(list.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(load).catch(load);return}}
+  tries=0;advancing=false;busy=false;
   var w=list[i];
   document.getElementById('stage').innerHTML='<div class="word han" id="word">'+w.h+'</div><div class="py">'+w.p+'</div><div class="mn">'+tr(w.m)+'</div><div class="fb" id="fb"></div><div class="heard" id="heard"></div><button class="listen" onclick="speak(\''+w.h+'\')"><i class="ti ti-volume"></i> '+L.listen+'</button>';
-  document.getElementById('cnt').textContent=(i+1)+' / '+list.length;document.getElementById('hint').textContent=L.hint;
+  /* Takror so'zda kichik belgi — o'quvchi moslashuvni KO'RSIN. */
+  document.getElementById('cnt').innerHTML=(i+1)+' / '+list.length
+    +(w.review?' <span class="pill" style="margin-left:6px">'+L.review+'</span>':'');
+  document.getElementById('hint').textContent=L.hint;
 }
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1100)}
 // Real pronunciation check: record mic -> server speech-to-text -> character-match score.
@@ -197,26 +277,43 @@ function applyScore(score,heard){
   var ok=score>=60,word=document.getElementById('word'),fb=document.getElementById('fb');
   var he=document.getElementById('heard');if(he)he.textContent=heard?(L.heard+' '+heard):"";
   if(ok){okCount++;word.classList.add('ok','pop');rain();toast('+10 XP · '+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok+' '+score+'%';
-    document.getElementById('prog').style.width=Math.round((i+1)/list.length*100)+'%';
-    setTimeout(function(){i++;if(i>=list.length){finish()}else{load()}},1100);
-  }else{word.classList.add('bad');beep([220,180]);haptic(false);fb.className='fb bad';fb.textContent='~ '+L.bad+' '+score+'%';setHint(L.retry);
-    setTimeout(function(){word.classList.remove('bad')},450);
+    advance(1100);
+  }else{
+    word.classList.add('bad');beep([220,180]);haptic(false);fb.className='fb bad';
+    tries++;
+    if(tries<MAX_TRIES){
+      fb.textContent='~ '+L.bad+' '+score+'%';setHint(L.retry);
+      setTimeout(function(){word.classList.remove('bad')},450);
+    }else{
+      /* Uch urinishdan keyin so'zda tiqilib qolmaymiz: to'g'ri talaffuz
+         eshittiriladi va keyingisiga o'tiladi. So'z zaif deb belgilanadi,
+         ya'ni ertaga qaytadi. */
+      var w=list[i];
+      RESULTS.push({hanzi:w.h,correct:false});
+      fb.textContent=L.answer+' '+w.h+' · '+w.p;
+      setHint('');
+      try{speak(w.h)}catch(e){}
+      advance(1800);
+    }
   }
 }
 function skipWord(){
   if(busy)return;
   try{clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){mediaRecorder.onstop=null;mediaRecorder.stop()}}catch(e){}
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;setRec(false);
-  i++;document.getElementById('prog').style.width=Math.round(i/list.length*100)+'%';
-  if(i>=list.length){finish()}else{load()}
+  /* O'tkazib yuborish ham XATO hisoblanadi — so'z ertaga qaytadi. */
+  var w=list[i];
+  if(w)RESULTS.push({hanzi:w.h,correct:false});
+  advance(0);
 }
 function finish(){
   /* Reklama bilan kirilgan sessiya: oxirida majburiy yakuniy reklama. */
   if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finish).catch(finish);return}}
   document.getElementById('ctrl').style.display='none';document.getElementById('prog').style.width='100%';
   document.getElementById('dh').textContent=okCount+' / '+list.length+' '+L.done;document.getElementById('dp').textContent=L.doneSub;document.getElementById('db').textContent=L.again;
-  document.getElementById('done').classList.add('on');beep([523,659,784,1046]);haptic(true);}
-function start(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
+  document.getElementById('done').classList.add('on');beep([523,659,784,1046]);haptic(true);
+  reportResults();}
+function start(){Promise.all([LV_READY,SCRIPTS_READY,planReady()]).then(function(res){
   // Pool tartibi: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR);
   // 2) yetmasa quyi levellar; 3) HSK1 boshida yaqin keyingi darslar; 4) fallback.
   var all=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length<=3});
@@ -238,7 +335,12 @@ function start(){Promise.all([LV_READY,SCRIPTS_READY]).then(function(){
     if(pool.length<8)pool=all;
   }
   if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
-  list=shuffle(pool.slice()).slice(0,TOTAL);i=0;okCount=0;busy=false;
+  /* Server tartibi birinchi; qolgani mavjud pooldan to'ldiriladi.
+     Ro'yxat SHU YERDA qotadi va sessiya davomida o'zgarmaydi — reklama
+     oralig'i `list.length` ga tayanadi. */
+  list=planList(res&&res[2],pool);
+  if(!list.length)list=shuffle(pool.slice()).slice(0,TOTAL).map(function(w){return {h:w.h,p:w.p,m:w.m,review:false}});
+  i=0;okCount=0;busy=false;tries=0;advancing=false;
   document.getElementById('done').classList.remove('on');document.getElementById('ctrl').style.display='flex';document.getElementById('prog').style.width='0';
   document.getElementById('skiptxt').textContent=L.skip;
   load();

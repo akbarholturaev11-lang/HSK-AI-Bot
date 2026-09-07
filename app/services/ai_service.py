@@ -250,6 +250,7 @@ class AIService:
         user_level: str,
         speech_hint: str | None = None,
         gemini_model: str | None = None,
+        expect_chinese: bool = False,
     ) -> AIUsageResult:
         lang_labels = {
             "tj": "Tajik",
@@ -257,11 +258,25 @@ class AIService:
             "ru": "Russian",
         }
         primary_lang = lang_labels.get(user_language, "Russian")
-        prompt = (
-            "Transcribe only, do not translate. "
-            f"Likely {primary_lang} or Chinese, level {user_level}. "
-            "Keep Chinese, pinyin, names, numbers, and short mixed-language phrases."
-        )
+        if expect_chinese:
+            # AI Voice va talaffuz mashqida o'quvchi FAQAT xitoycha gapiradi.
+            # Ilgari bu yerda ham "Likely {ona tili} or Chinese" deyilardi va
+            # model xitoycha nutqni kirill/lotin harflarga o'girib yozardi
+            # (masalan "huǒguō" -> "Хуагу"). Shundan keyin AI javobi ham,
+            # tuzatish ham mutlaqo boshqa narsa haqida chiqardi.
+            prompt = (
+                "Transcribe only, do not translate. The speaker is a Chinese learner "
+                f"practising SPOKEN CHINESE (level {user_level}). Write everything they say "
+                "in Chinese characters (Hanzi). NEVER transliterate Chinese into Cyrillic or "
+                "Latin letters, and never write pinyin. If a fragment is clearly not Chinese, "
+                "keep it in its own script. Output nothing but the transcript."
+            )
+        else:
+            prompt = (
+                "Transcribe only, do not translate. "
+                f"Likely {primary_lang} or Chinese, level {user_level}. "
+                "Keep Chinese, pinyin, names, numbers, and short mixed-language phrases."
+            )
         if speech_hint:
             prompt += (
                 f" Pronunciation target hint: {speech_hint[:180]}. "

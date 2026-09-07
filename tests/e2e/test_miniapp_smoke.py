@@ -3,7 +3,7 @@ import os
 import re
 import base64
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -336,6 +336,113 @@ def test_course_v3_onboarding_asks_level_then_goal_and_sends_both(page):
     assert sent[0]["goal"] == "travel"
 
 
+def test_course_v3_onboarding_save_locks_choices_and_retries_server_error(page):
+    mock_telegram_ready(page)
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    page.route(
+        "**/course-v3.html?*",
+        lambda route: route.fulfill(status=200, content_type="text/html", body="<p>Course</p>"),
+    )
+    pending = []
+    sent = []
+
+    def capture_onboarding(route):
+        sent.append(json.loads(route.request.post_data))
+        pending.append(route)
+
+    page.route("**/api/miniapp/onboarding", capture_onboarding)
+    page.add_init_script("localStorage.setItem('hsk_v3_start_mode', 'placement')")
+    page.goto(
+        app_url("/course_v3_onboarding.html?lang=uz&source=onboarding_smoke&challenge_id=7&foundation=1"),
+        wait_until="networkidle",
+    )
+    page.get_by_role("button", name="Boshlash").click()
+    page.locator(".lv", has_text="HSK 2").click()
+    page.get_by_role("button", name="Davom etish").click()
+    travel = page.locator(".lv", has_text="Sayohat")
+    travel.click()
+    with page.expect_request("**/api/miniapp/onboarding"):
+        page.get_by_role("button", name="Birinchi darsni boshlash").click()
+
+    expect(page.locator("#cta")).to_be_disabled()
+    expect(page.locator("#back")).to_be_disabled()
+    expect(page.locator("#stage")).to_have_attribute("aria-busy", "true")
+    for option in page.locator(".lv").all():
+        expect(option).to_be_disabled()
+    # Queued clicks must not change the selection or create a second save.
+    page.locator("#cta").dispatch_event("click")
+    page.locator("#back").dispatch_event("click")
+    page.locator(".lv", has_text="Kundalik muloqot").dispatch_event("click")
+    expect(travel).to_have_attribute("aria-pressed", "true")
+    expect(page.locator(".chosen")).to_contain_text("HSK 2")
+    assert len(sent) == 1
+    assert page.evaluate("localStorage.getItem('hsk_v3_start_mode')") is None
+
+    json_response(pending.pop(0), {"ok": False, "error": "course_level_change_requires_placement"}, status=409)
+    expect(page.locator("#error")).to_be_visible()
+    expect(page.locator("#cta")).to_be_enabled()
+    expect(page.locator("#back")).to_be_enabled()
+    expect(page.locator("#stage")).to_have_attribute("aria-busy", "false")
+    for option in page.locator(".lv").all():
+        expect(option).to_be_enabled()
+    assert page.evaluate("localStorage.getItem('hsk_v3_onb')") is None
+
+    with page.expect_request("**/api/miniapp/onboarding"):
+        page.get_by_role("button", name="Qayta urinib ko'rish").click()
+    expect(page.locator("#error")).to_be_hidden()
+    expect(page.locator("#cta")).to_be_disabled()
+    assert len(sent) == 2
+    assert sent[1] == sent[0]
+    assert {key: sent[0][key] for key in (
+        "level", "goal", "daily_minutes", "daily_time", "start_mode", "start_point", "activation_variant", "language"
+    )} == {
+        "level": "hsk2", "goal": "travel", "daily_minutes": 10, "daily_time": 10,
+        "start_mode": "lesson_1", "start_point": "lesson_1", "activation_variant": "direct_start_v1", "language": "uz",
+    }
+    json_response(pending.pop(0), {"ok": True, "level": "hsk2", "lesson": 4, "tab": "course"})
+    page.wait_for_url(re.compile(r"course-v3\.html"))
+    assert parse_qs(urlparse(page.url).query) == {
+        "lang": ["uz"], "source": ["onboarding_smoke"], "challenge_id": ["7"],
+        "level": ["hsk2"], "tab": ["course"], "onboarded": ["1"], "lesson": ["4"], "autostart": ["1"],
+    }
+    assert page.evaluate("localStorage.getItem('hsk_v3_learner_level')") == "hsk2"
+
+
+def test_course_v3_onboarding_timeout_restores_controls_and_ignores_late_success(page):
+    mock_telegram_ready(page)
+    page.route("**/api/miniapp/event", lambda route: json_response(route, {"ok": True}))
+    pending = []
+    page.route("**/api/miniapp/onboarding", lambda route: pending.append(route))
+    # Older WebViews cannot abort fetch; a late success must still be ignored.
+    page.add_init_script("window.AbortController = undefined")
+    page.clock.install()
+    page.goto(app_url("/course_v3_onboarding.html?lang=uz"), wait_until="networkidle")
+    page.get_by_role("button", name="Boshlash").click()
+    page.get_by_role("button", name="Davom etish").click()
+    with page.expect_request("**/api/miniapp/onboarding"):
+        page.get_by_role("button", name="Birinchi darsni boshlash").click()
+    expect(page.locator("#cta")).to_be_disabled()
+    page.clock.fast_forward(12001)
+
+    expect(page.locator("#error")).to_be_visible()
+    expect(page.locator("#cta")).to_be_enabled()
+    expect(page.locator("#back")).to_be_enabled()
+    expect(page.locator("#stage")).to_have_attribute("aria-busy", "false")
+    for option in page.locator(".lv").all():
+        expect(option).to_be_enabled()
+
+    with page.expect_response("**/api/miniapp/onboarding") as response:
+        json_response(pending.pop(0), {
+            "ok": True, "level": "hsk1", "lesson": 1, "tab": "course", "foundation_required": True,
+        })
+    response.value.finished()
+    page.clock.run_for(1)
+    expect(page).to_have_url(app_url("/course_v3_onboarding.html?lang=uz"))
+    expect(page.locator("#error")).to_be_visible()
+    assert page.evaluate("localStorage.getItem('hsk_v3_onb')") is None
+    assert page.evaluate("localStorage.getItem('hsk_v3_learner_level')") is None
+
+
 def _map_with_today(tasks, *, language="uz", foundation=None):
     data = json.loads((STATIC_ROOT / "course_v3_data/hsk1.json").read_text(encoding="utf-8"))
     data["authenticated"] = True
@@ -366,11 +473,12 @@ def _map_with_today(tasks, *, language="uz", foundation=None):
     return data
 
 
-def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
-    """«Bugungi reja» tasmasi — mavjud progress qatoriga ixcham qator.
+def test_course_v3_today_plan_path_shows_the_plan_and_opens_each_task(page):
+    """«Bugungi reja» — kurs progressi o'rnidagi YOTIQ so'qmoq.
 
-    Har chip MAVJUD bo'limga olib boradi: ochib bo'lmaydigan vazifa
-    serverda ham berilmaydi, shuning uchun tasma "o'lik" tugma ko'rsatmaydi.
+    Har tugun MAVJUD bo'limga olib boradi: ochib bo'lmaydigan vazifa
+    serverda ham berilmaydi, shuning uchun so'qmoq "o'lik" tugma
+    ko'rsatmaydi. Pastdagi chaqiriq tugmasi keyingi qadamni ochadi.
     """
     mock_price_preview(page)
     mock_telegram_ready(page)
@@ -386,32 +494,194 @@ def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    strip = page.locator(".today")
-    expect(strip).to_be_visible()
-    expect(strip).to_contain_text("Bugun")
-    expect(strip).to_contain_text("25")
-    expect(page.locator(".today .tchip")).to_have_count(3)
+    plan = page.locator(".tplan")
+    expect(plan).to_be_visible()
+    expect(plan).to_contain_text("Bugun")
+    expect(plan).to_contain_text("25")
+    expect(page.locator(".tplan .tnode")).to_have_count(3)
     # Bajarilgan vazifa bosilmaydi (takroriy ish taklif qilinmaydi).
-    expect(page.locator(".today .tchip").first).to_have_class(re.compile(r"\bdone\b"))
+    expect(page.locator(".tplan .tnode").first).to_have_class(re.compile(r"\bdone\b"))
+    # Keyingi qadam — birinchi bajarilmagan va ochiq vazifa.
+    expect(page.locator(".tplan .tnode").nth(1)).to_have_class(re.compile(r"\bnow\b"))
+    # Kurs progressi ("11 / 72 dars") ataylab olib tashlandi.
+    expect(page.locator("#s-course .pwrap")).to_have_count(0)
+    # So'qmoq EGRI va bog'lovchi chiziq SVG bilan chiziladi (CSS bilan emas):
+    # 3 tugun -> 2 bo'g'in, va tugunlar bir xil balandlikda turmaydi.
+    expect(page.locator(".tplan .tpath svg.ttrail path")).to_have_count(2)
+    tops = page.evaluate(
+        "() => [...document.querySelectorAll('.tplan .tnode')]"
+        ".map(n => Math.round(n.getBoundingClientRect().top))"
+    )
+    assert len(set(tops)) > 1, "tugunlar tepa-past siljishi kerak, so'qmoq tekis emas"
 
-    # Tasma YOPISHQOQ: pastga surilganda yo'lakcha ostida yo'qolib ketmaydi.
-    # Ilgari u qisqa o'ram ichida edi va sarlavha ostiga kirib ketardi.
+    # So'qmoq YOPISHQOQ: pastga surilganda yo'lakcha ostida yo'qolib ketmaydi.
     before = page.evaluate(
-        "() => Math.round(document.querySelector('#s-course .today').getBoundingClientRect().top)"
+        "() => Math.round(document.querySelector('#s-course .tplan').getBoundingClientRect().top)"
     )
     page.mouse.wheel(0, 1400)
     page.wait_for_timeout(300)
     after = page.evaluate(
         """() => {
-            const r = document.querySelector('#s-course .today').getBoundingClientRect();
+            const r = document.querySelector('#s-course .tplan').getBoundingClientRect();
             return {top: Math.round(r.top), visible: r.top >= 0 && r.bottom <= innerHeight};
         }"""
     )
-    assert after["visible"], "surilgandan keyin tasma ko'rinib turishi kerak"
-    assert abs(after["top"] - before) <= 2, "tasma tepada qotib turishi kerak"
+    assert after["visible"], "surilgandan keyin so'qmoq ko'rinib turishi kerak"
+    assert abs(after["top"] - before) <= 2, "so'qmoq tepada qotib turishi kerak"
 
-    page.locator(".today .tchip", has_text="Xatolar").click()
+    # Chaqiriq tugmasi ham aynan o'sha keyingi qadamni ochadi.
+    go = page.locator(".tplan .tgo")
+    expect(go).to_contain_text("Reja bo'yicha davom etish")
+    go.click()
     expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
+    page.evaluate('closeSection(); App.show("course")')
+    expect(page.locator("#secov")).not_to_have_class(re.compile(r"\bon\b"))
+
+    page.locator(".tplan .tstep", has_text="Xatolar").locator(".tnode").click()
+    expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
+
+
+@pytest.mark.parametrize('width', [390, 1280])
+def test_daily_plan_updates_after_inline_exam_without_reload(page, width):
+    page.set_viewport_size({'width': width, 'height': 844})
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    errors = []
+    page.on('pageerror', lambda error: errors.append(str(error)))
+    saved = []
+    reads = []
+    task = {'type': 'mock_exam', 'done': False, 'access': 'open', 'available': True}
+
+    def map_reply(route):
+        reads.append(route.request.url)
+        data = _map_with_today([{**task, 'done': bool(saved)}])
+        data['today']['done_xp'] = 45 if saved else 25
+        data['progress']['daily_xp'] = data['today']['done_xp']
+        json_response(route, data)
+
+    page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
+    page.route('**/api/v3/exams/start', lambda route: json_response(route, {
+        'ok': True, 'session': {
+            'id': 'daily-plan-exam', 'level': 'hsk1', 'duration_min': 5, 'pass_score': 60,
+            'questions': [{'id': 'q1', 'format': 'text_choice', 'section': 'reading',
+                           'prompt': 'Tarjimani tanlang', 'sentence': '你好', 'options': ['Salom', 'Xayr']}],
+        },
+    }))
+    pending = []
+    page.route('**/api/v3/exams/complete', lambda route: pending.append(route))
+    page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
+    page.evaluate('window.__sameDocument = true')
+    task_ui = (
+        page.locator('.tplan .tstep', has_text='Test').locator('.tnode')
+        if width == 390
+        else page.locator('.crail .rl-task', has_text='Test')
+    )
+    task_ui.click()
+    page.locator('#tc-exlist .ex').first.click()
+    with page.expect_request('**/api/v3/exams/complete'):
+        page.locator('#tc-exam .opt').first.click()
+    assert len(reads) == 1
+    expect(task_ui).not_to_have_class(re.compile(r'\bdone\b'))
+    saved.append(True)
+    json_response(pending.pop(), {
+        'ok': True, 'score': 1, 'total': 1, 'percent': 100, 'passed': True,
+        'pass_score': 60, 'section_scores': {}, 'wrong_items': [], 'reward': {'awarded_xp': 20},
+    })
+    expect(page.locator('#tc-exam')).to_contain_text('100%')
+    # The course behind the result overlay refreshes immediately, before closing it.
+    expect(task_ui).to_have_class(re.compile(r'\bdone\b'))
+    expect(task_ui.locator('i')).to_have_class(re.compile(r'\bti-check\b'))
+    assert page.evaluate('MAP.today.done_xp') == 45
+    assert page.evaluate('window.__sameDocument') is True
+    expect(page.locator('#secov')).to_have_class(re.compile(r'\bon\b'))
+    assert len(reads) >= 2
+    assert errors == []
+
+
+def test_daily_plan_refresh_keeps_last_state_on_error_and_retries_on_return(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    task = {'type': 'mock_exam', 'done': False, 'access': 'open', 'available': True}
+    reads = []
+
+    def map_reply(route):
+        reads.append(route.request.url)
+        if len(reads) == 2:
+            json_response(route, {'error': 'temporary_failure'}, status=503)
+        else:
+            json_response(route, _map_with_today([{**task, 'done': len(reads) >= 3}]))
+
+    page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
+    page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
+    expect(page.locator('.tplan .tnode')).to_be_visible()
+    assert page.evaluate('refreshCourseProgress(true)') is False
+    expect(page.locator('.tplan .tnode')).not_to_have_class(re.compile(r'\bdone\b'))
+    page.locator('#nav button[data-s="mashq"]').click()
+    page.locator('#nav button[data-s="course"]').click()
+    expect(page.locator('.tplan .tnode')).to_have_class(re.compile(r'\bdone\b'))
+    assert len(reads) == 3
+
+
+def test_daily_plan_refresh_queues_a_new_read_after_save_and_ignores_old_level(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    task = {'type': 'mock_exam', 'done': False, 'access': 'open', 'available': True}
+    reads = []
+    pending = []
+
+    def map_reply(route):
+        reads.append(route.request.url)
+        if len(reads) == 1:
+            json_response(route, _map_with_today([task]))
+        else:
+            pending.append(route)
+
+    page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
+    page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
+    expect(page.locator('.tplan .tnode')).to_be_visible()
+    with page.expect_request(re.compile(r'.*/api/v3/map\?.*')):
+        page.evaluate('void refreshCourseProgress()')
+    page.evaluate('void refreshCourseProgress(true)')
+    page.wait_for_timeout(50)
+    assert len(reads) == 2
+    with page.expect_request(re.compile(r'.*/api/v3/map\?.*')):
+        page.wait_for_timeout(50)
+        json_response(pending.pop(0), _map_with_today([task]))
+    page.wait_for_timeout(50)
+    json_response(pending.pop(0), _map_with_today([{**task, 'done': True}]))
+    expect(page.locator('.tplan .tnode')).to_have_class(re.compile(r'\bdone\b'))
+    with page.expect_request(re.compile(r'.*/api/v3/map\?.*')):
+        page.evaluate('void refreshCourseProgress()')
+    page.evaluate('MAP = {...MAP, level:"hsk2", today:{...MAP.today, level:"hsk2"}}')
+    page.wait_for_timeout(50)
+    json_response(pending.pop(0), _map_with_today([task]))
+    page.wait_for_function('PROGRESS_REFRESH === null')
+    assert page.evaluate('MAP.level') == 'hsk2'
+    assert page.evaluate('MAP.today.level') == 'hsk2'
+    assert page.evaluate('MAP.today.tasks[0].done') is True
+
+
+def test_daily_plan_lesson_completion_refreshes_server_plan(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    completed = []
+    task = {'type': 'continue_lesson', 'ref': 'hsk1:1', 'done': False, 'access': 'open', 'available': True}
+
+    def map_reply(route):
+        json_response(route, _map_with_today([{**task, 'done': bool(completed)}]))
+
+    def complete_reply(route):
+        completed.append(json.loads(route.request.post_data))
+        json_response(route, {'ok': True, 'completed_lessons_count': 1})
+
+    page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
+    page.route('**/api/v3/lesson/complete', complete_reply)
+    page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
+    expect(page.locator('.tplan .tnode')).to_be_visible()
+    # Enter the real final submit path without replaying unrelated lesson cards.
+    page.evaluate('Flow.lessonIdx=0; Flow.exitRequired=[]; flowDone()')
+    expect(page.locator('.tplan .tnode')).to_have_class(re.compile(r'\bdone\b'))
+    assert completed[0]['lesson_id'] == 1
 
 
 def test_course_v3_wide_screen_uses_a_side_rail_instead_of_stretching(page):
@@ -433,17 +703,19 @@ def test_course_v3_wide_screen_uses_a_side_rail_instead_of_stretching(page):
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    # Telefon: yon ustun yo'q, tasma bor.
+    # Telefon: yon ustun yo'q, so'qmoq bor.
     expect(page.locator("#s-course .crail")).to_be_hidden()
-    expect(page.locator("#s-course .today")).to_be_visible()
+    expect(page.locator("#s-course .tplan")).to_be_visible()
 
     page.set_viewport_size({"width": 1280, "height": 900})
     page.wait_for_timeout(200)
 
-    # Keng ekran: yon ustun ochiladi, tasma takrorlanmaydi.
+    # Keng ekran: yon ustun ochiladi, so'qmoq takrorlanmaydi.
     expect(page.locator("#s-course .crail")).to_be_visible()
-    expect(page.locator("#s-course .today")).to_be_hidden()
+    expect(page.locator("#s-course .tplan")).to_be_hidden()
     expect(page.locator(".crail .rl-task")).to_have_count(2)
+    # Chaqiriq tugmasi keng ekranda ham bor — yon ustun ichida.
+    expect(page.locator(".crail .tgo")).to_be_visible()
 
     widths = page.evaluate(
         """() => ({
@@ -457,7 +729,7 @@ def test_course_v3_wide_screen_uses_a_side_rail_instead_of_stretching(page):
     assert widths["flow"] == 480, "dars oqimi hech qachon kengaymaydi"
 
 
-def test_course_v3_today_strip_marks_a_locked_task_instead_of_hiding_it(page):
+def test_course_v3_today_plan_marks_a_locked_task_instead_of_hiding_it(page):
     """Kun ichida qulflangan vazifa ro'yxatda QOLADI va almashtirilmaydi."""
     mock_price_preview(page)
     mock_telegram_ready(page)
@@ -472,20 +744,22 @@ def test_course_v3_today_strip_marks_a_locked_task_instead_of_hiding_it(page):
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    chips = page.locator(".today .tchip")
-    expect(chips).to_have_count(2)
-    expect(chips.nth(1)).to_have_class(re.compile(r"\block\b"))
+    nodes = page.locator(".tplan .tnode")
+    expect(nodes).to_have_count(2)
+    expect(nodes.nth(1)).to_have_class(re.compile(r"\block\b"))
+    # Ochiq vazifa qolmagani uchun emas — birinchisi ochiq, tugma turadi.
+    expect(page.locator(".tplan .tgo")).to_be_visible()
 
 
 def test_course_v3_without_a_server_plan_the_screen_is_unchanged(page):
-    """Server `today` yubormasa tasma UMUMAN chizilmaydi."""
+    """Server `today` yubormasa so'qmoq UMUMAN chizilmaydi."""
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_course_map(page)
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    expect(page.locator("#s-course .today")).to_have_count(0)
+    expect(page.locator("#s-course .tplan")).to_have_count(0)
 
 
 def test_course_v3_starter_still_blocks_the_plan_for_a_true_beginner(page):
@@ -515,7 +789,7 @@ def test_course_v3_starter_still_blocks_the_plan_for_a_true_beginner(page):
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
     expect(page.locator("#s-course .foundation-entry")).to_be_visible()
-    expect(page.locator("#s-course .today")).to_have_count(0)
+    expect(page.locator("#s-course .tplan")).to_have_count(0)
 
 
 def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
@@ -1425,6 +1699,96 @@ def test_recognition_drill_reports_every_answer_not_only_mistakes(page):
     assert len(body["results"]) == 10
     assert all(item["correct"] for item in body["results"])
     assert "mistakes" not in body
+
+
+def _mock_pronounce(page, score):
+    """Talaffuz baholashini stub qiladi (mikrofon e2e da yo'q)."""
+    page.route(
+        re.compile(r".*/api/voice-practice/pronounce$"),
+        lambda route: json_response(
+            route,
+            {"ok": True, "score": score, "passed": score >= 60, "heard": "谢谢", "target": "谢谢"},
+        ),
+    )
+
+
+def test_pronunciation_drill_uses_the_words_the_server_selected(page):
+    plan = [
+        {"zh": "谢谢", "kind": "review", "box": 0},
+        {"zh": "再见", "kind": "new", "box": 0},
+    ]
+    posted = _mock_drill_environment(page, plan=plan)
+    _mock_pronounce(page, 90)
+
+    page.goto(
+        app_url("/course_v3_pronunciation.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+
+    assert posted["words"][0]["feature"] == "pronunciation"
+    state = page.evaluate(
+        "() => ({first: list.slice(0,2).map(w => w.h), review: !!list[0].review, n: list.length})"
+    )
+    assert state["first"] == ["谢谢", "再见"], state
+    assert state["review"] is True
+    assert state["n"] == 10
+    expect(page.locator("#cnt .pill")).to_contain_text("takror")
+
+
+def test_pronunciation_moves_on_after_three_failed_attempts(page):
+    """Ilgari xato bo'lsa kursor SILJIMASDI — o'quvchi so'zda tiqilib qolardi.
+
+    Uch urinishdan keyin to'g'ri talaffuz eshittirilib, keyingisiga o'tiladi
+    va so'z zaif deb belgilanadi (ertaga qaytadi).
+    """
+    posted = _mock_drill_environment(page, plan=[{"zh": "谢谢", "kind": "new", "box": 0}])
+    _mock_pronounce(page, 10)
+
+    page.goto(
+        app_url("/course_v3_pronunciation.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+    expect(page.locator("#cnt")).to_contain_text("1 / 10")
+
+    for _ in range(3):
+        page.evaluate("() => applyScore(10, '')")
+        page.wait_for_timeout(120)
+
+    # Uchinchi urinishdan keyin to'g'ri javob ko'rsatiladi va siljish boshlanadi.
+    expect(page.locator("#fb")).to_contain_text("谢谢")
+    page.wait_for_timeout(2000)
+    expect(page.locator("#cnt")).to_contain_text("2 / 10")
+
+    # Muvaffaqiyat hisoblagichi tegilmaydi — bu so'z o'tmagan.
+    assert page.evaluate("() => okCount") == 0
+
+    page.evaluate("() => reportResults()")
+    page.wait_for_timeout(200)
+    assert posted["report"], "natija yuborilmadi"
+    body = posted["report"][-1]
+    assert body["feature"] == "pronunciation"
+    assert body["results"] == [{"hanzi": "谢谢", "correct": False}]
+    assert "mistakes" not in body
+
+
+def test_pronunciation_skip_during_the_success_animation_advances_once(page):
+    """Mavjud nuqson: muvaffaqiyat animatsiyasi paytida "o'tkazib yuborish"
+    bosilsa `i` IKKI marta oshib ketardi — reklama oralig'i indeksi
+    o'tkazib yuborilar va oxirgi savol chizilmasdi."""
+    _mock_drill_environment(page, plan=[])
+    _mock_pronounce(page, 95)
+
+    page.goto(
+        app_url("/course_v3_pronunciation.html?lang=uz&level=hsk1"), wait_until="networkidle"
+    )
+    page.wait_for_timeout(400)
+
+    page.evaluate("() => applyScore(95, '')")
+    page.evaluate("() => skipWord()")
+    page.wait_for_timeout(1600)
+
+    expect(page.locator("#cnt")).to_contain_text("2 / 10")
+    assert page.evaluate("() => i") == 1
 
 
 def test_course_v3_support_pages_render_real_static_data(page):
@@ -3291,3 +3655,337 @@ def test_desktop_promo_fits_short_360x640_viewport(page):
     assert box["y"] + box["height"] <= 640.5
     expect(page.locator('.pdd-promo-shell [data-pdd-platform="macos"]')).to_be_visible()
     expect(page.locator('.pdd-promo-shell [data-pdd-platform="windows"]')).to_be_visible()
+
+
+def _mock_voice_environment(page, *, start=None, message=None, end=None, remaining=1):
+    """AI Voice uchun server javoblari. Mikrofon KERAK EMAS — klaviatura yo'li."""
+    start_bodies = []
+    page.route(
+        re.compile(r".*/api/v3/tts.*"),
+        lambda route: route.fulfill(status=200, content_type="audio/mpeg", body=b""),
+    )
+    page.route(
+        re.compile(r".*/api/v3/clientlog$"),
+        lambda route: json_response(route, {"ok": True}),
+    )
+
+    def handle_start(route):
+        start_bodies.append(json.loads(route.request.post_data or "{}"))
+        json_response(route, start or {
+            "session_id": "sess-smoke",
+            "user_status": {"is_paid": False, "plan": "free"},
+            "remaining_limit": remaining,
+            "character": "friend",
+            "course_context": {"lesson_id": 5, "words": [{"zh": "医院", "pinyin": "yīyuàn", "meaning": "shifoxona"}], "review_words": []},
+            "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo", "translation": "Salom!", "correction": None,
+                                "suggestions": [{"zh": "你好，很高兴认识你", "pinyin": "nǐ hǎo", "translation": "Tanishganimdan xursandman"}]},
+            "max_dialogs": 7,
+        })
+
+    page.route(re.compile(r".*/api/voice-practice/session/start$"), handle_start)
+    page.route(
+        re.compile(r".*/api/voice-practice/message$"),
+        lambda route: json_response(route, message or {
+            "transcription": "我去医院",
+            "chinese_reply": "很好！",
+            "pinyin": "hěn hǎo",
+            "translation": "Juda yaxshi!",
+            "correction": "我去了医院",
+            "error_type": "grammar",
+            "suggestions": [
+                {"zh": "我很好", "pinyin": "wǒ hěn hǎo", "translation": "Men yaxshiman"},
+                {"zh": "不太好", "pinyin": "bú tài hǎo", "translation": "Unchalik emas"},
+            ],
+            "remaining_limit": remaining,
+            "turn_count": 2,
+            "max_dialogs": 7,
+            "session_should_end": False,
+        }),
+    )
+    page.route(
+        re.compile(r".*/api/voice-practice/session/end$"),
+        lambda route: json_response(route, end or {
+            "ok": True,
+            "message_count": 2,
+            "good_count": 1,
+            "mistake_count": 1,
+            "errors_by_type": {"grammar": 1, "pronunciation": 0, "word": 0},
+            "target_used": {"used": 1, "total": 4, "words": ["医院"]},
+            "avg_chars": 4.0,
+            "turns": 2,
+            "completed": False,
+            "remaining_limit": 0,
+            "transcript": [
+                {"user": "我去医院", "assistant": "很好！", "pinyin": "hěn hǎo", "translation": "Juda yaxshi!",
+                 "correction": "我去了医院", "error_type": "grammar", "good": False},
+            ],
+            "reward": {"xp_awarded": 10},
+        }),
+    )
+    return start_bodies
+
+
+def test_ai_voice_speaks_the_learners_language_and_shows_real_results(page):
+    """AI Voice: til, limit ko'rsatkichi va yakundagi HAQIQIY o'lchovlar.
+
+    Ilgari hisoblagich xitoycha (`对话 1 / 7`) chiqardi, "bugun necha marta
+    qoldi" hech qayerda ko'rsatilmasdi va yakunda faqat "yaxshi/xato" soni
+    bor edi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator('.nav [data-s="voice"]').click()
+    page.locator("#s-voice .voicebox button").click()
+
+    expect(page.locator("#vc-root")).to_be_visible()
+    # Klaviatura yo'li: mikrofon ruxsati kerak emas.
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("我去医院")
+    page.locator("#vc-kbSend").click()
+
+    counter = page.locator("#vc-cnt")
+    expect(counter).to_contain_text("javob")
+    expect(counter).not_to_contain_text("对话")
+    # Tuzatish xato TURI bilan ko'rsatiladi.
+    expect(page.locator("#vc-chat .fx")).to_contain_text("我去了医院")
+    # REGRESSIYA: global `.fx` (30x30 dumaloq tugma uslubi) suhbatdagi tuzatish
+    # blokini siqib qo'yardi va matn bubble'dan chiqib ketardi.
+    fx_box = page.evaluate(
+        """() => {
+            const fx = document.querySelector('#vc-chat .msg.me .bub .fx');
+            const bub = document.querySelector('#vc-chat .msg.me .bub');
+            return {fx: fx.getBoundingClientRect().width, bub: bub.getBoundingClientRect().width,
+                    bottom: fx.getBoundingClientRect().bottom, bubBottom: bub.getBoundingClientRect().bottom};
+        }"""
+    )
+    assert fx_box["fx"] > 60, "tuzatish bloki 30px qutiga siqilmasligi kerak"
+    assert fx_box["bottom"] <= fx_box["bubBottom"] + 1, "tuzatish matni bubble ichida qolishi kerak"
+
+    # Sozlamalar oynasida "bugun qoldi" qatori.
+    page.locator('#vc-root .top .ic:last-child').click()
+    expect(page.locator("#vc-setLeftRow")).to_be_visible()
+    expect(page.locator("#vc-setLeftV")).to_have_text("1")
+    page.locator("#vc-setSheet .ov").click()
+
+    page.locator('#vc-root .top .ic:first-child').click()
+    expect(page.locator("#vc-done")).to_have_class(re.compile(r"\bon\b"))
+    # Uchinchi plitka: dars so'zlaridan nechtasi ishlatilgan.
+    expect(page.locator("#vc-dstats .stat")).to_have_count(3)
+    expect(page.locator("#vc-dstats")).to_contain_text("1/4")
+    # Xatolar turi bo'yicha ajratilgan.
+    expect(page.locator("#vc-dsaved")).to_contain_text("grammatika")
+    expect(page.locator("#vc-dbadge")).to_be_visible()
+
+
+def test_ai_voice_hides_the_badge_when_nothing_was_said(page):
+    """Gapirilmagan sessiyada "men xitoycha gapiryapman!" nishoni chiqmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page, end={"ok": True, "message_count": 0, "good_count": 0, "mistake_count": 0, "transcript": []})
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.locator('#vc-root .top .ic:first-child').click()
+
+    expect(page.locator("#vc-done")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#vc-dbadge")).to_be_hidden()
+
+
+def test_ai_voice_opens_with_the_role_the_daily_plan_chose(page):
+    """Kunlik reja HSK imtihoni uchun 李老师 ni tanlaydi — klient uni tashlamasin.
+
+    `DailyPlanService` vazifaga `role` qo'shadi, lekin klient uni e'tiborsiz
+    qoldirar va suhbat doim 阿宝 bilan boshlanardi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    start_bodies = _mock_voice_environment(page)
+    tasks = [
+        {"type": "voice_dialog", "role": "teacher_li", "done": False, "access": "open", "available": True},
+    ]
+    page.route(
+        re.compile(r".*/api/v3/map(\?.*)?$"),
+        lambda route: json_response(route, _map_with_today(tasks)),
+    )
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.locator(".tplan .tnode").first.click()
+
+    expect(page.locator("#vc-nm")).to_contain_text("李老师")
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("你好")
+    page.locator("#vc-kbSend").click()
+    page.wait_for_timeout(400)
+    assert start_bodies and start_bodies[0]["role"] == "teacher_li"
+
+
+def test_ai_voice_hints_follow_the_conversation_instead_of_a_fixed_list(page):
+    """«Nima deyish?» varag'i endi hozirgi savolga mos javoblarni ko'rsatadi.
+
+    Ilgari u yerda 4 ta QOTIB QOLGAN HSK1 iborasi turardi — har bir darajada,
+    har bir javobda bir xil. Endi takliflar AI javobi bilan bir chaqiruvda
+    keladi; AI bermasa doimiy xavfsiz iboralar zaxira bo'lib qoladi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+
+    # Panda kirgan zahoti salomlashadi, ya'ni varaqda darhol o'sha
+    # salomlashuvga mos javob boshlagichlari turadi (doimiy ro'yxat EMAS).
+    page.locator("#vc-tip").click()
+    expect(page.locator("#vc-hintBody")).to_contain_text("很高兴认识你")
+    expect(page.locator("#vc-hintBody")).not_to_contain_text("请再说一遍")
+    page.evaluate("VOICE.closeHints()")
+
+    # Javobdan keyin takliflar YANGILANADI.
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("你好")
+    page.locator("#vc-kbSend").click()
+    page.wait_for_timeout(500)
+
+    page.locator("#vc-tip").click()
+    body = page.locator("#vc-hintBody")
+    # AI bergan takliflar chiqadi, doimiy ro'yxat EMAS.
+    expect(body).to_contain_text("我很好")
+    expect(body).to_contain_text("不太好")
+    expect(body).not_to_contain_text("请再说一遍")
+    # Dars so'zlari bloki joyida qoladi (layout o'zgarmadi).
+    expect(body).to_contain_text("医院")
+
+    # Taklif bosilishi bilan GAPGA aylanadi — klaviaturaga ko'chirilmaydi.
+    page.locator('#vc-hintBody .hitem[data-zh="我很好"]').click()
+    expect(page.locator("#vc-chat .msg.me").last).to_contain_text("我很好")
+
+
+def test_ai_voice_hints_fall_back_when_the_model_sends_nothing(page):
+    """AI taklif bermasa varaq bo'sh qolmaydi."""
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page, start={
+        "session_id": "sess-smoke",
+        "remaining_limit": 1,
+        "course_context": {"words": [], "review_words": []},
+        "opening_message": {"chinese_reply": "你好！", "pinyin": "nǐ hǎo", "translation": "Salom!", "correction": None},
+        "max_dialogs": 7,
+    })
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.locator("#vc-root .row .sq").first.click()
+    page.locator("#vc-kbText").fill("你好")
+    page.locator("#vc-kbSend").click()
+    page.wait_for_timeout(500)
+    page.locator("#vc-tip").click()
+    expect(page.locator("#vc-hintBody .hitem")).not_to_have_count(0)
+
+
+def test_ai_voice_greets_on_open_without_waiting_for_the_microphone(page):
+    """Panda kirgan zahoti gapiradi.
+
+    Ilgari sessiya faqat mikrofon bosilganda boshlanardi — o'quvchi ekranga
+    kirib jim turgan pandani ko'rardi. Sabab: sessiya ochilishi bepul kunlik
+    limitni yoqib yuborardi. Endi limit faqat gapirilganda yonadi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    start_bodies = _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+
+    # Mikrofonga TEGILMAGAN holda salomlashuv chiqadi.
+    expect(page.locator("#vc-chat .msg.ai")).to_contain_text("你好！")
+    assert len(start_bodies) == 1, "ekran ochilishi bitta sessiya boshlashi kerak"
+
+
+def test_ai_voice_fits_above_the_ios_keyboard(page):
+    """Klaviatura ochilganda kiritish maydoni ko'rinib turishi kerak.
+
+    iOS Telegram WebView'da klaviatura ochilganda `100dvh` KICHRAYMAYDI, ya'ni
+    dock (klaviatura tugmasi + kiritish maydoni) klaviatura ostida qolib
+    ketardi va chat kesilardi. `#secov` flex konteyner bo'lgani uchun faqat
+    `height` berish ham yetmasdi — flex uni qayta cho'zib yuborardi.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.wait_for_timeout(300)
+
+    def box():
+        return page.evaluate(
+            """() => ({
+                root: Math.round(document.getElementById('vc-root').getBoundingClientRect().height),
+                dock: Math.round(document.querySelector('#vc-root .dock').getBoundingClientRect().bottom),
+            })"""
+        )
+
+    full = box()
+    assert full["dock"] <= full["root"] + 1
+
+    # Klaviatura ochilishini taqlid qilamiz: visualViewport pasayadi.
+    page.evaluate(
+        """() => {
+            Object.defineProperty(window.visualViewport, 'height', {value: 420, configurable: true});
+            window.visualViewport.dispatchEvent(new Event('resize'));
+        }"""
+    )
+    page.wait_for_timeout(200)
+    small = box()
+    assert small["root"] == 420, small
+    assert small["dock"] <= 421, f"kiritish maydoni klaviatura ostida qoldi: {small}"
+
+    # Klaviatura yopilgach CSS'dagi to'liq balandlik qaytadi.
+    page.evaluate(
+        """() => {
+            delete window.visualViewport.height;
+            window.visualViewport.dispatchEvent(new Event('resize'));
+        }"""
+    )
+    page.wait_for_timeout(200)
+    assert box()["root"] == full["root"]
+
+
+def test_ai_voice_a_hint_is_sent_at_once_without_opening_the_keyboard(page):
+    """«Nima deyish?» dan tanlangan variant to'g'ridan-to'g'ri yuboriladi.
+
+    Ilgari u klaviatura panelini ochib, matnni maydonga ko'chirardi va yana
+    «yuborish» bosish kerak edi. Varaqning ma'nosi «nima deyishni bilmayapman»
+    ekan, tanlash o'zi gap bo'lishi kerak.
+    """
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    _mock_voice_environment(page)
+
+    page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
+    page.evaluate("App.openVoiceCall()")
+    page.wait_for_timeout(400)
+
+    sent = []
+    page.on("request", lambda r: sent.append(r.url) if "voice-practice/message" in r.url else None)
+
+    # Klaviatura hech qachon ochilmagan holatda dars so'zini tanlaymiz.
+    page.locator("#vc-tip").click()
+    page.locator('#vc-hintBody .hitem[data-zh="医院"]').click()
+
+    # Varaq yopiladi, gap chatga tushadi, klaviatura paneli YOPIQ qoladi.
+    expect(page.locator("#vc-hintSheet")).not_to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#vc-chat .msg.me").last).to_contain_text("医院")
+    expect(page.locator("#vc-kbPanel")).not_to_have_class(re.compile(r"\bon\b"))
+    page.wait_for_timeout(500)
+    assert sent, "tanlangan variant serverga yuborilishi kerak"
