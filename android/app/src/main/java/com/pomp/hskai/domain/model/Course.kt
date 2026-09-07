@@ -81,6 +81,7 @@ data class CourseProgress(
 data class CourseUser(
     val name: String,
     val initials: String,
+    val avatarUrl: String,
     val isPaid: Boolean,
     val referralCode: String,
 )

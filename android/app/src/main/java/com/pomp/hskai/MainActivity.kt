@@ -92,6 +92,7 @@ import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.feature.rating.ChallengeRunScreen
 import com.pomp.hskai.feature.rating.ChallengeRunViewModel
 import com.pomp.hskai.feature.rating.RatingScreen
+import com.pomp.hskai.feature.rating.RatingTab
 import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
 import com.pomp.hskai.feature.voice.VoiceViewModel
@@ -694,6 +695,11 @@ private fun AppRoot(
                             state = profileState,
                             settings = settingsState,
                             courseProgress = courseState.map?.progress,
+                            courseUser = courseState.map?.user,
+                            onOpenFriends = {
+                                ratingViewModel.selectTab(RatingTab.FRIENDS)
+                                selectedTab = MainTab.RATING
+                            },
                             dailyXp = courseState.map?.progress?.dailyXp ?: 0,
                             dailyGoal = dailyGoal,
                             notificationsEnabled = courseState.map?.notificationsEnabled ?: true,

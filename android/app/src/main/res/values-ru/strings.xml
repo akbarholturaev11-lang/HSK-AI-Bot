@@ -286,4 +286,9 @@
     <string name="challenge_decline">Отклонить</string>
     <string name="challenge_start">Начать</string>
     <string name="challenge_waiting">Ждём ответа</string>
+    <string name="profile_avatar_note">Аватар берётся из вашего профиля Telegram</string>
+    <string name="profile_friends">Друзья</string>
+    <string name="profile_referral_copy">Скопировать ссылку</string>
+    <string name="profile_referral_share">Поделиться</string>
+    <string name="profile_referral_copied">Ссылка скопирована</string>
 </resources>

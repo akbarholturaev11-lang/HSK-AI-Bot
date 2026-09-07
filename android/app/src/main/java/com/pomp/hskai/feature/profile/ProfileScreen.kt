@@ -1,5 +1,10 @@
 package com.pomp.hskai.feature.profile
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +43,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
+import coil.compose.AsyncImage
+import com.pomp.hskai.BuildConfig
+import com.pomp.hskai.core.network.MediaUrl
+import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.domain.model.CourseProgress
@@ -50,6 +69,9 @@ fun ProfileScreen(
     settings: ProfileSettingsState,
     /** The course map's own progress, which owns the week and the streak. */
     courseProgress: CourseProgress?,
+    /** Carries the learner's Telegram photo; the profile payload has none. */
+    courseUser: CourseUser?,
+    onOpenFriends: () -> Unit,
     dailyXp: Int,
     dailyGoal: Int,
     notificationsEnabled: Boolean,
@@ -69,7 +91,7 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             item {
-                ProfileHero(account, state)
+                ProfileHero(account, state, courseUser)
                 state.error?.let {
                     Spacer(Modifier.height(10.dp))
                     ErrorPill(stringResource(it.messageRes))
@@ -88,6 +110,23 @@ fun ProfileScreen(
                 )
             }
             item { StatsGrid(state) }
+            item {
+                // The Mini App's profile row that jumps to the friends list.
+                Surface(
+                    color = PompColors.PaperRaised,
+                    shape = RoundedCornerShape(18.dp),
+                    border = BorderStroke(1.dp, PompColors.Divider),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    SettingsRow(
+                        icon = Icons.Filled.People,
+                        label = stringResource(R.string.profile_friends),
+                        enabled = true,
+                        onClick = onOpenFriends,
+                        trailing = {},
+                    )
+                }
+            }
             item { StreakCalendar(progress = courseProgress, dailyXp = dailyXp) }
             item {
                 Achievements(
@@ -131,8 +170,13 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileHero(account: LinkedAccount, state: ProfileUiState) {
+private fun ProfileHero(
+    account: LinkedAccount,
+    state: ProfileUiState,
+    courseUser: CourseUser?,
+) {
     val profile = state.profile
+    var avatarNoteOpen by remember { mutableStateOf(false) }
     Surface(
         color = PompColors.PaperRaised,
         shape = RoundedCornerShape(20.dp),
@@ -143,17 +187,33 @@ private fun ProfileHero(account: LinkedAccount, state: ProfileUiState) {
             modifier = Modifier.padding(18.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // The photo is the learner's own Telegram picture, the way the
+            // Mini App shows it; the initials stay as the fallback.
+            val photo = courseUser?.avatarUrl
+                ?.let { MediaUrl.resolve(it, BuildConfig.API_ORIGIN) }
             Surface(
+                onClick = { avatarNoteOpen = true },
                 color = PompColors.Cinnabar,
                 shape = RoundedCornerShape(18.dp),
+                modifier = Modifier.size(54.dp),
             ) {
-                Text(
-                    text = profile?.user?.avatar?.ifBlank { "HSK" }
-                        ?: account.displayName.take(2).uppercase(),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = PompColors.Paper,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    if (photo != null) {
+                        AsyncImage(
+                            model = photo,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    } else {
+                        Text(
+                            text = profile?.user?.avatar?.ifBlank { "HSK" }
+                                ?: account.displayName.take(2).uppercase(),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = PompColors.Paper,
+                        )
+                    }
+                }
             }
             Column(Modifier.padding(start = 14.dp)) {
                 Text(
@@ -184,6 +244,31 @@ private fun ProfileHero(account: LinkedAccount, state: ProfileUiState) {
                 )
             }
         }
+    }
+
+    if (avatarNoteOpen) {
+        AvatarNoteSheet(onDismiss = { avatarNoteOpen = false })
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AvatarNoteSheet(onDismiss: () -> Unit) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.PaperRaised,
+    ) {
+        Text(
+            text = stringResource(R.string.profile_avatar_note),
+            style = MaterialTheme.typography.bodyLarge,
+            color = PompColors.InkSecondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 20.dp),
+        )
     }
 }
 
@@ -294,14 +379,58 @@ private fun ReferralCard(state: ProfileUiState) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = PompColors.InkSecondary,
             )
-            if (!referral?.link.isNullOrBlank()) {
+            val link = referral?.link.orEmpty()
+            if (link.isNotBlank()) {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = referral?.link.orEmpty(),
+                    text = link,
                     style = MaterialTheme.typography.bodySmall,
                     color = PompColors.CinnabarDark,
                     fontWeight = FontWeight.SemiBold,
                 )
+                Spacer(Modifier.height(12.dp))
+                // A link the learner can read but not send is not an invite.
+                val context = LocalContext.current
+                val copied = stringResource(R.string.profile_referral_copied)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Surface(
+                        onClick = {
+                            val clipboard = context.getSystemService(ClipboardManager::class.java)
+                            clipboard?.setPrimaryClip(ClipData.newPlainText("invite", link))
+                            Toast.makeText(context, copied, Toast.LENGTH_SHORT).show()
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        color = PompColors.Cinnabar,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.profile_referral_copy),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = PompColors.Paper,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                        )
+                    }
+                    Surface(
+                        onClick = {
+                            val send = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, link)
+                            }
+                            runCatching {
+                                context.startActivity(Intent.createChooser(send, null))
+                            }
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        color = PompColors.Paper,
+                        border = BorderStroke(1.dp, PompColors.Divider),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.profile_referral_share),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = PompColors.InkSecondary,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                        )
+                    }
+                }
             }
         }
     }

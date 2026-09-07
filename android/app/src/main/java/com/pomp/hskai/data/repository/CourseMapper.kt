@@ -61,6 +61,7 @@ object CourseMapper {
             user = CourseUser(
                 name = dto.user.name,
                 initials = dto.user.avatar,
+                avatarUrl = dto.user.avatarUrl,
                 isPaid = dto.user.isPaid,
                 referralCode = dto.user.referralCode,
             ),

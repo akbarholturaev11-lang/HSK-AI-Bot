@@ -314,4 +314,9 @@
     <string name="challenge_decline">Rad etish</string>
     <string name="challenge_start">Boshlash</string>
     <string name="challenge_waiting">Javobini kutyapmiz</string>
+    <string name="profile_avatar_note">Avatar Telegram profilingizdan olinadi</string>
+    <string name="profile_friends">Do‘stlar</string>
+    <string name="profile_referral_copy">Havolani nusxalash</string>
+    <string name="profile_referral_share">Ulashish</string>
+    <string name="profile_referral_copied">Havola nusxalandi</string>
 </resources>

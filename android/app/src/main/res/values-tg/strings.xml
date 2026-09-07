@@ -287,4 +287,9 @@
     <string name="challenge_decline">Рад</string>
     <string name="challenge_start">Оғоз</string>
     <string name="challenge_waiting">Ҷавобро интизорем</string>
+    <string name="profile_avatar_note">Аватар аз профили Telegram шумо гирифта мешавад</string>
+    <string name="profile_friends">Дӯстон</string>
+    <string name="profile_referral_copy">Нусхабардории пайванд</string>
+    <string name="profile_referral_share">Мубодила</string>
+    <string name="profile_referral_copied">Пайванд нусха шуд</string>
 </resources>

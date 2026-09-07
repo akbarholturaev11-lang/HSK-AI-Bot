@@ -155,6 +155,8 @@ data class RewardChestOpenResponse(
 data class CourseUserDto(
     @SerialName("name") val name: String = "",
     @SerialName("avatar") val avatar: String = "",
+    /** The learner's Telegram photo, served from our own origin. */
+    @SerialName("avatar_url") val avatarUrl: String = "",
     @SerialName("language") val language: String = "ru",
     @SerialName("is_paid") val isPaid: Boolean = false,
     @SerialName("referral_code") val referralCode: String = "",
