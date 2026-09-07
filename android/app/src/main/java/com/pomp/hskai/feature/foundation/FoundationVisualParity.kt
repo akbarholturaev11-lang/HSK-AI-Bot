@@ -202,6 +202,88 @@ internal fun FoundationWinRow(text: String, mastered: Boolean, modifier: Modifie
 }
 
 @Composable
+internal fun FoundationSandhiCard(
+    card: FoundationCard,
+    writtenLabel: String,
+    naturalLabel: String,
+    onPlayAudio: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val example = card.example
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        if (card.title.isNotBlank()) {
+            Text(
+                text = card.title,
+                style = MaterialTheme.typography.headlineSmall.copy(fontSize = 22.sp, lineHeight = 28.sp, fontWeight = FontWeight.Medium),
+                color = PompColors.Ink,
+                textAlign = TextAlign.Center,
+            )
+        }
+        if (card.text.isNotBlank()) {
+            Spacer(Modifier.height(7.dp))
+            Text(
+                text = card.text,
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp, lineHeight = 22.sp),
+                color = PompColors.InkSecondary,
+                textAlign = TextAlign.Center,
+            )
+        }
+        if (example != null) {
+            Spacer(Modifier.height(16.dp))
+            if (example.zh.isNotBlank()) Text(
+                text = example.zh,
+                style = PompTextStyles.hanziLarge.copy(fontSize = 72.sp, lineHeight = 76.sp),
+                color = PompColors.Ink,
+                textAlign = TextAlign.Center,
+            )
+            if (example.pinyin.isNotBlank()) {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = example.pinyin,
+                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 21.sp, fontWeight = FontWeight.SemiBold),
+                    color = PompColors.CinnabarDark,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            if (example.translation.isNotBlank()) {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = example.translation,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp, lineHeight = 22.sp),
+                    color = PompColors.InkSecondary,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        Surface(
+            color = PompColors.PaperRaised,
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, PompColors.Divider),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(Modifier.padding(15.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = "${example?.pinyin.orEmpty()} — $writtenLabel",
+                    color = PompColors.InkSecondary,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp, lineHeight = 22.sp),
+                )
+                Text(
+                    text = "${card.naturalPinyin} — $naturalLabel",
+                    color = PompColors.InkSecondary,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp, lineHeight = 22.sp),
+                )
+            }
+        }
+        if (card.audioText.isNotBlank()) {
+            Spacer(Modifier.height(18.dp))
+            FoundationCircularAudio(onClick = onPlayAudio)
+            Spacer(Modifier.height(2.dp))
+        }
+    }
+}
+
+@Composable
 private fun FoundationMiniCard(
     example: FoundationExample,
     modifier: Modifier,
