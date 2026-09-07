@@ -227,6 +227,66 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-07 — Android: Mini App bilan tenglashtirish (birinchi to'lqin)
+
+Changed:
+- `codex/cloud-ai` ga `origin/main` merge qilindi. Sabab: cloud-ai dagi Mini
+  App nusxasi 6 commit orqada edi va Android endi MAVJUD BO'LMAGAN dizaynga
+  (umumiy progress chizig'i) moslashib borardi.
+- **Shox kompilyatsiya bo'lmasdi**: `FoundationVisualParity.kt` da
+  `PompColors.InkTertiary` — hech qachon e'lon qilinmagan token. Butun ilova
+  yig'ilmasdi. `InkDisabled` (`--ink3`) ga tuzatildi.
+- Kunlik reja: `TodayPlanCard.kt` — Mini App `.tplan` (qorong'i karta, egri
+  so'qmoq, done/now/next/lock tugunlari, jade bo'g'inlar, oltin CTA). Eski
+  progress chizig'i va chip tasmasi olib tashlandi. Har tugun Mini App bilan
+  bir xil ekranni ochadi (`TODAY_TASK_ACTION` / `TODAY_SKILL_ACTION`).
+- Dars ekrani: `.ftop` (dumaloq X, 9px progress, pinyin tishli g'ildiragi,
+  5 ta yurak), `.fstage` (o'rin + bo'lim nomi), `.fbar` (rangli javob paneli),
+  `.opt` (4px zina, 2px chegara, A/B/C/D kaliti). Yurak faqat ko'rsatkich —
+  Mini App'da ham darsni to'xtatmaydi.
+- Pinyin sozlamasi ilovada BOR edi, lekin uni o'zgartiradigan joy yo'q edi.
+  Endi dars sarlavhasidagi tishli g'ildirak Mini App'dagi 3 variantni ochadi.
+- Dars resume: `LessonResumeStore` + DataStore, 7 kunlik TTL
+  (`hsk_v3_lesson_resume` bilan bir xil qoida). Testlar bilan qoplangan.
+- Profil: seriya kalendari (olov / muz / bugun oltin halqa) va 3 ta yutuq —
+  ikkalasi ham kurs xaritasining progressidan o'qiydi.
+- AI Voice: tab endi Mini App'dagidek BITTA qorong'i karta (panda + bitta
+  tugma). 5 ta suhbatdosh yo'qolmadi — ular suhbat ichidagi tishli g'ildirak
+  ostiga ko'chdi; almashtirish sessiyani yopib yangisini ochadi (`VOICE.swap`).
+- Dars yakuni reklamasi (`slot=lesson_end`, admin panelda `dars_yakuni`):
+  backend allaqachon berardi, klient ishlatmasdi. Bu blok HECH NARSA ochmaydi,
+  shuning uchun attempt/token darvozasidan o'tmaydi. Play kanalida va pullik
+  foydalanuvchida server bo'sh ro'yxat qaytaradi — ekran o'zini yopadi.
+
+Risk:
+- To'lov/kirish mantiqi O'ZGARMADI. Dars yakuni reklamasi faqat ko'rsatiladi,
+  hech qanday kirish huquqi bermaydi.
+
+Verified (lokal, haqiqiy Android SDK bilan):
+- `compilePlayDebugKotlin` + `compileDirectDebugKotlin`, `testPlayDebugUnitTest`,
+  `testDirectDebugUnitTest`, `lintPlayDebug`, `assemble{Play,Direct}Debug` —
+  hammasi yashil. `android/tools/` dagi 5 ta statik tekshiruv ham OK.
+- APK emulyatorga o'rnatildi va ishga tushdi: yiqilish yo'q, server ulash
+  kodini qaytardi. Ichki ekranlarni ko'rish uchun Telegram hisobi kerak.
+
+Hali YO'Q (keyingi qadamlar):
+- Qulflangan darsni REKLAMA bilan ochish. Buning uchun BACKEND kerak:
+  `desktop/android` kurs xizmatida `COURSE_ACCESS_AD` yo'li umuman yo'q
+  (faqat Mini App `app/main.py` da bor).
+- `exit_ticket` (faqat hsk1 3-qism) — Android uni o'tkazib yuboradi.
+- Starter 0 dagi "gapirish" qadamida mikrofon yo'q (Mini App talaffuzni
+  tekshiradi va bonus beradi).
+- Ieroglif yozish (HanziWriter) va moslashuvchan Ieroglif tanish / Talaffuz
+  mashqlari (`/api/v3/practice/words`) — Android boshqa generatordan yuradi.
+- AI Voice suhbat ekrani hali ro'yxat ko'rinishida (Mini App'da to'liq
+  qo'ng'iroq ekrani: panda sahnasi, maslahatlar, klaviatura, subtitr sozlamasi).
+
+Dars kartalari bo'yicha MUHIM aniqlik: 425 ta darsning HAMMASIDA
+`intro_prebuilt` va `grammar_prebuilt` yoqilgan, `basics`/`_dialogue`/
+`dialog_context`/`_word_*` kartalari ma'lumotda UMUMAN uchramaydi. Ya'ni
+Android tanimaydigan turlar amalda o'lik kod — darslar mazmuni bo'yicha
+farq yo'q (14 turdan 14 tasi qo'llab-quvvatlanadi).
+
 ### 2026-09-07 — Kurs sarlavhasi: umumiy progress o'rniga reja so'qmog'i
 
 Changed:
