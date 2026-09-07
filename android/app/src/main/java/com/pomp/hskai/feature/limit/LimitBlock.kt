@@ -61,6 +61,7 @@ fun LimitBlock(
     onTertiary: (() -> Unit)? = null,
     isBusy: Boolean = false,
     errorText: String? = null,
+    noticeText: String? = null,
 ) {
     Surface(
         color = PompColors.PaperRaised,
@@ -172,6 +173,23 @@ fun LimitBlock(
                     style = MaterialTheme.typography.bodySmall,
                     color = PompColors.InkSecondary,
                 )
+            }
+
+            if (!noticeText.isNullOrBlank() && errorText.isNullOrBlank()) {
+                Spacer(Modifier.height(10.dp))
+                Surface(
+                    color = PompColors.Paper,
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, PompColors.Divider),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = noticeText,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = PompColors.InkSecondary,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                    )
+                }
             }
 
             if (!errorText.isNullOrBlank()) {

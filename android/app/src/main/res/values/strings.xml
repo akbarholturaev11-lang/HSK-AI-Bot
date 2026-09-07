@@ -319,4 +319,5 @@
     <string name="profile_referral_copy">Havolani nusxalash</string>
     <string name="profile_referral_share">Ulashish</string>
     <string name="profile_referral_copied">Havola nusxalandi</string>
+    <string name="limit_recheck_none">Akkaunt tekshirildi — obuna topilmadi. To‘lov qilgan bo‘lsangiz, biroz kutib qayta tekshiring.</string>
 </resources>

@@ -5,6 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
 import com.pomp.hskai.data.repository.FeatureRepository
@@ -30,13 +35,32 @@ fun rememberLimitGate(
     onRefreshAccess: () -> Unit,
 ): LimitGate {
     val context = LocalContext.current
+    // A re-check that changed nothing has to say so: a subscription that
+    // arrived closes this block, so a block still standing after the read is
+    // the answer — and silence reads as a dead button.
+    var recheckAsked by remember { mutableStateOf(false) }
+    var recheckFoundNothing by remember { mutableStateOf(false) }
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing) {
+            if (recheckAsked) recheckFoundNothing = false
+        } else if (recheckAsked) {
+            recheckAsked = false
+            recheckFoundNothing = true
+        }
+    }
+
     return LimitGate(
         state = LimitGateState(
             isBusy = isRefreshing,
             supportUrl = supportUrl,
+            recheckFoundNothing = recheckFoundNothing,
         ),
         actions = LimitGateActions(
-            onRecheck = onRefreshAccess,
+            onRecheck = {
+                recheckAsked = true
+                recheckFoundNothing = false
+                onRefreshAccess()
+            },
             onSupport = { openExternal(context, supportUrl) },
         ),
     )

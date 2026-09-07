@@ -16,6 +16,14 @@ data class LimitGateState(
      * the button is then hidden rather than dead.
      */
     val supportUrl: String = "",
+    /**
+     * A finished re-check that found nothing new.
+     *
+     * A subscription that arrived closes this block on its own, so a gate that
+     * is still here after the read has an answer worth saying out loud: the
+     * button did run, and the account has not changed.
+     */
+    val recheckFoundNothing: Boolean = false,
 )
 
 /**

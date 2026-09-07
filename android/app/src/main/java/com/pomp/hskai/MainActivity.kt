@@ -327,6 +327,9 @@ private fun AppRoot(
             var openChallenge by remember { mutableStateOf<ChallengeDto?>(null) }
             var drillAwaitingAd by remember { mutableStateOf<DrillMode?>(null) }
             var drillAccessRef by remember { mutableStateOf("") }
+            // Bumped to ask the drill to try the door again — used when there
+            // was no ad to watch, so there is no reference to carry.
+            var drillRetry by remember { mutableStateOf(0) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
@@ -491,11 +494,26 @@ private fun AppRoot(
                         else -> practiceViewModel.startWithAd(ad.accessRef)
                     }
                 }
+                // Nothing to watch is not a locked door. The Mini App plays
+                // the ad best-effort and starts the section either way, and the
+                // gate the drill asks next applies that same rule server-side.
                 // Paid learners and the Play channel get no end-of-lesson ad at
-                // all; the server answers with an empty list and the screen
-                // closes itself instead of showing an empty state.
+                // all; that one unlocks nothing, so it just closes.
                 LaunchedEffect(adState.unavailable) {
-                    if (adState.unavailable && isLessonEndAd) adRequest = null
+                    if (!adState.unavailable) return@LaunchedEffect
+                    val waiting = drillAwaitingAd
+                    when {
+                        isLessonEndAd -> adRequest = null
+                        waiting != null -> {
+                            drillAwaitingAd = null
+                            adRequest = null
+                            openDrill = waiting
+                            drillRetry += 1
+                        }
+                        // A locked lesson still needs the view the server can
+                        // verify, so that one keeps saying so.
+                        else -> Unit
+                    }
                 }
                 AdScreen(
                     state = adState,
@@ -540,6 +558,9 @@ private fun AppRoot(
                     ),
                 )
                 val drillState by drillViewModel.state.collectAsStateWithLifecycle()
+                LaunchedEffect(drillRetry) {
+                    if (drillRetry > 0) drillViewModel.load()
+                }
                 LaunchedEffect(drillAccessRef) {
                     if (drillAccessRef.isNotBlank()) {
                         drillViewModel.load(drillAccessRef)

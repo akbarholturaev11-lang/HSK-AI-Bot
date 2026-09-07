@@ -517,6 +517,19 @@ def create_android_features_router(
         raw = str(request.query_params.get("channel") or "").strip().lower()
         return raw if raw in ANDROID_AD_TYPES_BY_CHANNEL else ANDROID_DEFAULT_AD_CHANNEL
 
+    async def _practice_ad_exists(session, user, channel: str) -> bool:
+        """Is there an ad this learner could actually be shown right now?
+
+        Asked of the same catalogue the listing route serves, so the answer
+        cannot differ from what the app would receive.
+        """
+
+        service = CourseAdService(session)
+        language = CourseAdService.normalize_language(getattr(user, "language", None))
+        ads = await service.list_active_payloads(language=language, slot="practice")
+        allowed_types = ANDROID_AD_TYPES_BY_CHANNEL[channel]
+        return any(ad.get("ad_type") in allowed_types for ad in ads)
+
     @router.get("/api/v3/android/ad")
     async def android_ad(request: Request):
         """Reklama ro'yxati, o'rnatilgan kanalga ruxsat etilgan turlar bilan.
@@ -1402,7 +1415,37 @@ def create_android_features_router(
                 )
                 if not result.get("allowed"):
                     # A spent allowance is answered with what can reopen it.
-                    if feature in COURSE_AI_PRACTICE_FEATURES:
+                    # Only the AI sections cap how often an ad may reopen them;
+                    # everywhere else the ad is unlimited.
+                    ad_limited = feature in COURSE_AI_PRACTICE_FEATURES
+
+                    # The Mini App opens the section first and plays the ad
+                    # best-effort, so a learner it has nothing to show still
+                    # gets in. Android made the watch the only way through,
+                    # which turns an empty ad catalogue into a locked door.
+                    # Where an ad would have spent an allowance it is spent all
+                    # the same, so the daily count stays identical on the two
+                    # clients — and whether an ad exists is decided here, never
+                    # by the app.
+                    if not await _practice_ad_exists(session, user, _ad_channel(request)):
+                        opened = (
+                            await access.consume_daily_use(
+                                user,
+                                feature_key=f"{feature}_ad",
+                                ref=payload.ref.strip() or None,
+                                notify_bot=bot,
+                            )
+                            if ad_limited
+                            else {"allowed": True}
+                        )
+                        if opened.get("allowed"):
+                            await session.commit()
+                            return JSONResponse(
+                                content={"ok": True, "allowed": True, "source": "no_ad"},
+                                headers={"Cache-Control": "no-store"},
+                            )
+
+                    if ad_limited:
                         ad_status = await access.daily_status(user, f"{feature}_ad")
                         ad_info = {
                             "available": bool(ad_status.get("allowed")),

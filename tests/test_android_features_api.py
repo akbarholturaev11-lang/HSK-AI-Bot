@@ -973,11 +973,36 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
                 outer.calls.append(("mistakes", feature, level, language, entries))
                 return len(entries)
 
+        class RecordingBot:
+            """Stands in for the Telegram bot the app is handed off to."""
+
+            def __init__(self):
+                self.messages = []
+
+            async def send_message(self, *, chat_id, text, **_ignored):
+                self.messages.append((chat_id, text))
+
+        self.bot = RecordingBot()
+
+        # Seeded creatives have no file on disk; these tests are about the
+        # gate, not about media storage.
+        async def _always_available(self, ad):
+            return True, False
+
+        self.media = patch.object(
+            CourseAdService,
+            "ensure_media_available",
+            _always_available,
+        )
+        self.media.start()
+        self.addCleanup(self.media.stop)
+
         app = FastAPI()
         app.include_router(
             create_android_features_router(
                 session_factory=self.sessions,
                 settings_obj=_settings(),
+                bot=self.bot,
                 mastery_service_factory=FakeMasteryService,
                 drill_service_factory=FakeDrillSignalService,
             )
@@ -1003,7 +1028,25 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
     def _headers(self):
         return {"Authorization": "Bearer token", "Content-Type": "application/json"}
 
+    async def _seed_practice_ad(self):
+        """An ad the practice slot can actually offer this learner."""
+
+        async with self.sessions() as session:
+            session.add(
+                CourseAdCreative(
+                    title="Practice creative",
+                    media_path="practice.mp4",
+                    media_type="video",
+                    language="all",
+                    ad_type="odiy",
+                    duration_seconds=7,
+                    is_active=True,
+                )
+            )
+            await session.commit()
+
     async def test_the_first_free_run_is_allowed_and_the_second_is_not(self):
+        await self._seed_practice_ad()
         first = await self.client.post(
             "/api/v3/android/practice/gate",
             headers=self._headers(),
@@ -1022,6 +1065,88 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         body = second.json()
         self.assertEqual("free_feature_limit_reached", body["error"])
         self.assertTrue(body["ad"]["available"])
+
+    async def test_a_spent_allowance_reaches_the_learner_in_telegram(self):
+        """The limit is also news, not just a closed door.
+
+        The Mini App tells the learner in the bot chat when a free section is
+        spent, so the message is what they find later — Android reaching the
+        same limit silently would leave the two clients telling different
+        stories about the same account.
+        """
+
+        await self._seed_practice_ad()
+        await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-1"},
+        )
+        self.assertEqual([], self.bot.messages)
+
+        spent = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-2"},
+        )
+
+        self.assertEqual(403, spent.status_code)
+        self.assertEqual(1, len(self.bot.messages))
+        chat_id, text = self.bot.messages[0]
+        self.assertEqual(4242, chat_id)
+        self.assertTrue(text.strip())
+
+        # Once told, not told again: the notice is deduped for the learner.
+        await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-3"},
+        )
+        self.assertEqual(1, len(self.bot.messages))
+
+    async def test_an_empty_ad_catalogue_opens_the_section_instead_of_locking_it(self):
+        """No ad to watch must not mean no way in.
+
+        The Mini App opens the section and plays the ad best-effort, so a
+        learner it has nothing to show still practises. The allowance an ad
+        would have spent is spent all the same, so the daily count does not
+        drift apart between the two clients.
+        """
+
+        await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-1"},
+        )
+
+        reopened = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-2"},
+        )
+
+        self.assertEqual(200, reopened.status_code)
+        body = reopened.json()
+        self.assertTrue(body["allowed"])
+        self.assertEqual("no_ad", body["source"])
+
+    async def test_an_available_ad_still_has_to_be_watched(self):
+        """The way in stays the ad while there is one to watch."""
+
+        await self._seed_practice_ad()
+
+        await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-1"},
+        )
+        spent = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-2"},
+        )
+
+        self.assertEqual(403, spent.status_code)
+        self.assertTrue(spent.json()["ad"]["available"])
 
     async def test_an_unknown_section_cannot_be_gated(self):
         response = await self.client.post(
