@@ -274,4 +274,5 @@
     <string name="voice_setting_off">выкл</string>
     <string name="voice_rate_slow">медленно</string>
     <string name="voice_rate_normal">обычная</string>
+    <string name="lesson_writer_replay">Показать ещё раз</string>
 </resources>

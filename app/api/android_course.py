@@ -13,11 +13,13 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import json
 import logging
 import os
 from pathlib import Path
 import re
 import tempfile
+from urllib.parse import quote
 from typing import Callable, Literal
 
 from fastapi import APIRouter, Request, Response
@@ -202,6 +204,72 @@ async def _android_tts_file(text: str) -> Path:
     return path
 
 
+ANDROID_STROKE_SOURCE = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1"
+ANDROID_STROKE_CACHE_DIR = Path(tempfile.gettempdir()) / "pomp-hsk-ai-android-strokes"
+ANDROID_STROKE_HEADERS = {
+    "Cache-Control": "private, max-age=604800",
+    "X-Content-Type-Options": "nosniff",
+}
+_ANDROID_STROKE_LOCK = asyncio.Lock()
+
+
+def _android_stroke_char(value: str) -> str:
+    """Exactly one Chinese character, or nothing.
+
+    The character becomes a filename and a URL segment, so anything else is
+    refused here rather than sanitised further down.
+    """
+    char = str(value or "").strip()
+    if len(char) != 1 or not re.match(r"[\u4e00-\u9fff]", char):
+        raise DesktopCourseError("android_request_invalid", status_code=422)
+    return char
+
+
+async def _android_stroke_file(char: str) -> Path:
+    """The stroke outlines for one character, cached on disk.
+
+    The Mini App reads these straight from a public CDN. The Android client
+    cannot: it is pinned to this origin on purpose, and opening a second host
+    would give that guard away. So the server fetches once and serves it.
+    """
+    ANDROID_STROKE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    path = ANDROID_STROKE_CACHE_DIR / f"{ord(char)}.json"
+    if path.is_file() and path.stat().st_size > 0:
+        return path
+
+    async with _ANDROID_STROKE_LOCK:
+        if path.is_file() and path.stat().st_size > 0:
+            return path
+        tmp = path.with_suffix(".json.tmp")
+        try:
+            import httpx
+
+            async with httpx.AsyncClient(timeout=6.0) as client:
+                response = await client.get(
+                    f"{ANDROID_STROKE_SOURCE}/{quote(char)}.json"
+                )
+            if response.status_code == 404:
+                raise DesktopCourseError("android_stroke_not_found", status_code=404)
+            response.raise_for_status()
+            payload = response.json()
+            if not isinstance(payload, dict) or not payload.get("strokes"):
+                raise RuntimeError("empty stroke payload")
+            tmp.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            os.replace(tmp, path)
+        except DesktopCourseError:
+            raise
+        except Exception as exc:
+            logger.warning("Android stroke fetch failed for %s: %s", char, exc)
+            try:
+                tmp.unlink(missing_ok=True)
+            except OSError:
+                pass
+            raise DesktopCourseError(
+                "android_stroke_unavailable", status_code=502
+            ) from exc
+    return path
+
+
 def create_android_course_router(
     *,
     session_factory,
@@ -342,6 +410,26 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android TTS failed")
+            return _unavailable()
+
+    @router.get("/api/v3/android/stroke")
+    async def android_stroke(request: Request, char: str = ""):
+        """Stroke outlines for one character, so the app can show how it is written."""
+        try:
+            async with session_factory() as session:
+                await DesktopAuthService(session, settings_obj).authenticate(
+                    bearer_access_token(request)
+                )
+            path = await _android_stroke_file(_android_stroke_char(char))
+            return FileResponse(
+                path,
+                media_type="application/json",
+                headers=ANDROID_STROKE_HEADERS,
+            )
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android stroke lookup failed")
             return _unavailable()
 
     @router.post("/api/v3/android/course/complete")

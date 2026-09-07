@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -123,6 +125,8 @@ fun LessonScreen(
     onPlayAudio: (String) -> Unit,
     onRetryCompletion: () -> Unit,
     onOpenPinyinSettings: () -> Unit,
+    onOpenWriter: (WriterTarget) -> Unit,
+    onCloseWriter: () -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -159,6 +163,8 @@ fun LessonScreen(
                 onAdvance = onAdvance,
                 onPlayAudio = onPlayAudio,
                 onOpenPinyinSettings = onOpenPinyinSettings,
+                onOpenWriter = onOpenWriter,
+                onCloseWriter = onCloseWriter,
                 onExit = onExit,
             )
         }
@@ -187,6 +193,8 @@ private fun LessonBody(
     onAdvance: () -> Unit,
     onPlayAudio: (String) -> Unit,
     onOpenPinyinSettings: () -> Unit,
+    onOpenWriter: (WriterTarget) -> Unit,
+    onCloseWriter: () -> Unit,
     onExit: () -> Unit,
 ) {
     val haptics = LocalHapticFeedback.current
@@ -207,6 +215,8 @@ private fun LessonBody(
         }
     }
 
+    val writeTarget = state.writeTarget
+    Box(modifier = Modifier.fillMaxSize()) {
     Column(modifier = Modifier.fillMaxSize()) {
         LessonTopBar(
             progress = state.progress,
@@ -290,7 +300,61 @@ private fun LessonBody(
             onAdvance = onAdvance,
         )
     }
+
+        if (writeTarget != null) {
+            WriterButton(
+                onClick = { onOpenWriter(writeTarget) },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 18.dp, bottom = 152.dp),
+            )
+        }
+    }
+
+    state.writerChar?.let { target ->
+        HanziWriterSheet(
+            hanzi = target.hanzi,
+            pinyin = target.pinyin,
+            meaning = target.meaning,
+            strokes = state.writerStrokes,
+            isLoading = state.isWriterLoading,
+            onReplay = { onOpenWriter(target) },
+            onDismiss = onCloseWriter,
+        )
+    }
 }
+
+/** Mini App `.writebtn`: a gold pencil on its own 4px ledge. */
+@Composable
+private fun WriterButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(modifier = modifier.size(60.dp), contentAlignment = Alignment.TopStart) {
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .offset(y = 4.dp)
+                .clip(CircleShape)
+                .background(WriterDepth),
+        )
+        Surface(
+            onClick = onClick,
+            shape = CircleShape,
+            color = PompColors.Gold,
+            modifier = Modifier.size(56.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = stringResource(R.string.lesson_writer_replay),
+                    tint = PompColors.PlanOnGold,
+                    modifier = Modifier.size(24.dp),
+                )
+            }
+        }
+    }
+}
+
+/** `.writebtn` shadow — the Mini App writes it inline. */
+private val WriterDepth = Color(0xFF9A7420)
 
 /**
  * Mini App `.ftop`: a round close button, a thick progress bar, the pinyin

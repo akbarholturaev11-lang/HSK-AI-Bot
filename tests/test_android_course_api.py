@@ -6,6 +6,7 @@ namespace. So they check both that Android behaves like desktop where it must,
 and that the two namespaces cannot contaminate each other.
 """
 
+import json
 import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -19,6 +20,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
+from app.api import android_course
 from app.api.android_course import create_android_course_router
 from app.db.base import Base
 from app.services.course_v3_dictionary import (
@@ -573,6 +575,7 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
             ("get", "/api/v3/android/course/map", None),
             ("get", "/api/v3/android/course/lesson/1", None),
             ("get", "/api/v3/android/tts?text=你好", None),
+            ("get", "/api/v3/android/stroke?char=你", None),
             (
                 "post",
                 "/api/v3/android/course/complete",
@@ -588,6 +591,43 @@ class AndroidCourseApiTests(unittest.IsolatedAsyncioTestCase):
                 )
                 self.assertEqual(401, response.status_code)
                 self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_stroke_requires_bearer_before_touching_the_network(self):
+        response = await self.client.get("/api/v3/android/stroke?char=你")
+
+        self.assertEqual(401, response.status_code)
+        self.assertEqual("no-store", response.headers.get("Cache-Control"))
+
+    async def test_stroke_accepts_exactly_one_chinese_character(self):
+        headers = await self._bearer()
+        for value in ("", "hello", "你好", "1"):
+            with self.subTest(char=value):
+                response = await self.client.get(
+                    "/api/v3/android/stroke",
+                    params={"char": value},
+                    headers=headers,
+                )
+                self.assertEqual(422, response.status_code)
+
+    async def test_stroke_is_served_from_the_cache_without_a_second_fetch(self):
+        headers = await self._bearer()
+        payload = {"strokes": ["M 0 0"], "medians": [[[0, 0]]]}
+        cached = android_course.ANDROID_STROKE_CACHE_DIR
+        cached.mkdir(parents=True, exist_ok=True)
+        (cached / f"{ord('你')}.json").write_text(
+            json.dumps(payload), encoding="utf-8"
+        )
+        self.addCleanup(lambda: (cached / f"{ord('你')}.json").unlink(missing_ok=True))
+
+        response = await self.client.get(
+            "/api/v3/android/stroke",
+            params={"char": "你"},
+            headers=headers,
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(payload, response.json())
+        self.assertIn("private", response.headers.get("Cache-Control", ""))
 
     async def test_tts_requires_bearer_before_validating_text(self):
         response = await self.client.get("/api/v3/android/tts")

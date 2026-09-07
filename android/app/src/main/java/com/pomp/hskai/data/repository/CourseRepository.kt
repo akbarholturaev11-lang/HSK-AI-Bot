@@ -217,6 +217,20 @@ class CourseRepository(
         }
     }
 
+    /** Stroke outlines for one character; the server proxies and caches them. */
+    suspend fun strokes(char: String): ApiResult<List<String>> {
+        val single = char.trim()
+        if (single.length != 1) return ApiResult.Failure(ApiError.Unknown)
+        val token = when (val result = accessToken()) {
+            is ApiResult.Failure -> return result
+            is ApiResult.Success -> result.value
+        }
+        return when (val result = apiCall { api.stroke("Bearer $token", single) }) {
+            is ApiResult.Failure -> result
+            is ApiResult.Success -> ApiResult.Success(result.value.strokes)
+        }
+    }
+
     suspend fun ttsAudio(text: String): ApiResult<ByteArray> {
         val phrase = text.trim()
         if (phrase.isEmpty() || phrase.length > MAX_TTS_TEXT_LENGTH || !CJK.containsMatchIn(phrase)) {

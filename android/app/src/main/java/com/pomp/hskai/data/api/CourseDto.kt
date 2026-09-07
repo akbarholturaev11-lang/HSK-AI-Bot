@@ -227,6 +227,15 @@ data class DictionaryWordDto(
     @SerialName("lv") val level: String = "",
 )
 
+/**
+ * How one character is written: each stroke as an SVG path, in the
+ * hanzi-writer 1024-unit grid with its origin at the bottom left.
+ */
+@Serializable
+data class StrokeDataDto(
+    @SerialName("strokes") val strokes: List<String> = emptyList(),
+)
+
 @Serializable
 data class NotificationsRequest(
     @SerialName("enabled") val enabled: Boolean,

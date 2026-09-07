@@ -11,6 +11,9 @@ import com.pomp.hskai.core.settings.LessonResumeStore
 import com.pomp.hskai.data.api.CourseMistakeDto
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.domain.model.ChoiceCard
+import com.pomp.hskai.domain.model.PronunciationCard
+import com.pomp.hskai.domain.model.NewWordCard
+import com.pomp.hskai.domain.model.ChoiceKind
 import com.pomp.hskai.domain.model.Lesson
 import com.pomp.hskai.domain.model.LessonCard
 import com.pomp.hskai.domain.model.MatchPairsCard
@@ -66,6 +69,10 @@ data class LessonUiState(
      * here to learn, not to lose — but it makes a careless streak visible.
      */
     val hearts: Int = MAX_HEARTS,
+    /** Stroke outlines for the character the pencil is showing, if any. */
+    val writerChar: WriterTarget? = null,
+    val writerStrokes: List<String>? = null,
+    val isWriterLoading: Boolean = false,
 ) {
     val cards: List<LessonCard> get() = lesson?.cards.orEmpty()
     val currentCard: LessonCard? get() = cards.getOrNull(cardIndex)
@@ -93,10 +100,33 @@ data class LessonUiState(
             return ""
         }
 
+    /**
+     * The character the pencil offers on this card, mirroring the Mini App's
+     * `setWriteBtn`: the word being taught, the phrase being said, or the
+     * sentence being heard. Cards that teach no single character show none.
+     */
+    val writeTarget: WriterTarget?
+        get() = when (val card = currentCard) {
+            is NewWordCard -> WriterTarget(card.hanzi, card.pinyin, card.meaning)
+            is PronunciationCard -> WriterTarget(card.phrase, card.pinyin, card.translation)
+            is ChoiceCard -> card.audioText
+                ?.takeIf { it.isNotBlank() && card.kind == ChoiceKind.LISTENING }
+                ?.let { WriterTarget(it, card.audioPinyin.orEmpty(), "") }
+
+            else -> null
+        }
+
     companion object {
         const val MAX_HEARTS = 5
     }
 }
+
+/** What the writing sheet is about to show. */
+data class WriterTarget(
+    val hanzi: String,
+    val pinyin: String,
+    val meaning: String,
+)
 
 /**
  * Runs one mini-lesson.
@@ -239,6 +269,34 @@ class LessonViewModel(
     fun acknowledge() {
         if (_state.value.isAnswered) return
         advance()
+    }
+
+    /**
+     * Opens the writing sheet for [target] and fetches its strokes.
+     *
+     * Only single characters have outlines; a phrase falls back to showing
+     * the characters themselves rather than failing.
+     */
+    fun openWriter(target: WriterTarget) {
+        _state.update {
+            it.copy(writerChar = target, writerStrokes = null, isWriterLoading = true)
+        }
+        viewModelScope.launch {
+            val single = target.hanzi.trim().takeIf { it.length == 1 }
+            val strokes = if (single == null) {
+                emptyList()
+            } else {
+                when (val result = repository.strokes(single)) {
+                    is ApiResult.Success -> result.value
+                    is ApiResult.Failure -> emptyList()
+                }
+            }
+            _state.update { it.copy(writerStrokes = strokes, isWriterLoading = false) }
+        }
+    }
+
+    fun closeWriter() {
+        _state.update { it.copy(writerChar = null, writerStrokes = null, isWriterLoading = false) }
     }
 
     /** Keeps the resume point in step with the card on screen. */

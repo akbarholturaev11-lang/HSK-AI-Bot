@@ -773,6 +773,8 @@ private fun LessonHost(
         onPlayAudio = model::playAudio,
         onRetryCompletion = model::retryCompletion,
         onOpenPinyinSettings = { pinyinSheetOpen = true },
+        onOpenWriter = model::openWriter,
+        onCloseWriter = model::closeWriter,
         onExit = {
             val completed = lessonState.outcome is LessonOutcome.Completed
             model.endAttempt(launch.attemptKey)

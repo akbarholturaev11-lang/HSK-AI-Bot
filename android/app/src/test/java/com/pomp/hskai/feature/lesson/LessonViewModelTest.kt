@@ -10,6 +10,7 @@ import com.pomp.hskai.data.api.CourseCompleteRequest
 import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
+import com.pomp.hskai.data.api.StrokeDataDto
 import com.pomp.hskai.data.api.DictionaryResponse
 import com.pomp.hskai.data.api.LanguageRequest
 import com.pomp.hskai.data.api.NotificationsRequest
@@ -110,6 +111,15 @@ private open class FakeLessonApi(
             lesson = lessonPayload(),
         )
     )
+
+    override suspend fun stroke(
+
+        authorization: String,
+
+        char: String,
+
+    ): Response<StrokeDataDto> = throw NotImplementedError()
+
 
     override suspend fun tts(
         authorization: String,
@@ -456,6 +466,11 @@ class LessonViewModelTest {
         val requestStarted = CompletableDeferred<Unit>()
         val response = CompletableDeferred<Response<ResponseBody>>()
         val api = object : FakeLessonApi() {
+            override suspend fun stroke(
+                authorization: String,
+                char: String,
+            ): Response<StrokeDataDto> = throw NotImplementedError()
+
             override suspend fun tts(
                 authorization: String,
                 text: String,

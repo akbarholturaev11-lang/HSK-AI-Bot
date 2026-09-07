@@ -8,6 +8,7 @@ import com.pomp.hskai.data.api.CourseCompleteResponse
 import com.pomp.hskai.data.api.CourseLessonDto
 import com.pomp.hskai.data.api.CourseLessonResponse
 import com.pomp.hskai.data.api.CourseMapDto
+import com.pomp.hskai.data.api.StrokeDataDto
 import com.pomp.hskai.data.api.DictionaryResponse
 import com.pomp.hskai.data.api.CourseUnitDto
 import com.pomp.hskai.data.api.CourseUserDto
@@ -72,6 +73,15 @@ private open class FakeCourseApi : AndroidCourseApi {
         lessonOrder: Int,
         accessRef: String,
     ): Response<CourseLessonResponse> = throw NotImplementedError()
+
+    override suspend fun stroke(
+
+        authorization: String,
+
+        char: String,
+
+    ): Response<StrokeDataDto> = throw NotImplementedError()
+
 
     override suspend fun tts(
         authorization: String,

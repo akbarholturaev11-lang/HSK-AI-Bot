@@ -29,6 +29,12 @@ interface AndroidCourseApi {
         @Query("access_ref") accessRef: String = "",
     ): Response<CourseLessonResponse>
 
+    @GET("api/v3/android/stroke")
+    suspend fun stroke(
+        @Header("Authorization") authorization: String,
+        @Query("char") char: String,
+    ): Response<StrokeDataDto>
+
     @GET("api/v3/android/tts")
     suspend fun tts(
         @Header("Authorization") authorization: String,
