@@ -227,6 +227,49 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-07 — Android: qolgan yettita farq yopildi
+
+**1. Mashq limiti QAYTA TIKLANDI (regressiya tuzatildi).**
+Moslashuvchan mashq to'g'ridan-to'g'ri so'zlar API'siga borardi va bepul
+foydalanish sarflanmasdi — Android'da limit umuman yo'q edi.
+`/api/v3/android/practice/gate` qo'shildi: Mini App bilan AYNI qoida —
+bepul foydalanuvchiga bo'lim UMRDA bir marta (`lifetime=True`), reklama
+uni bepul urinishni sarflamasdan qayta ochadi, admin "free until" rejimi
+hammaga ochadi. **DIQQAT:** eski MCQ dvigateli KUNIGA bir marta berardi;
+endi ikkala klient bir xil, lekin Android bepul foydalanuvchi uchun
+qattiqroq bo'ldi. Boshqacha bo'lishi kerak bo'lsa — ayting.
+
+**2. AI Voice endi GAPIRADI.** Suhbat jim edi. Ochilish javobi ham, har
+navbat ham server ovozi bilan o'qiladi. Qo'ng'iroq sozlamalariga Mini
+App'dagi ikki qator qo'shildi: subtitr (pinyin/tarjima) va nutq tezligi
+(0.75 — Mini App `playbackRate` bilan bir xil).
+
+**3. Ieroglif yozish.** Darsda oltin qalam; chizmalar Mini App ishlatadigan
+hanzi-writer to'plamidan. Klient bitta originga bog'langani uchun CDN'ga
+o'zi bormaydi — server `/api/v3/android/stroke` orqali olib, TTS kabi
+diskda keshlaydi. Chizma topilmasa ieroglifning o'zi ko'rsatiladi.
+
+**4. Reytingda CHAQIRIQ (duel).** 5 ta adapter marshrut. Raqibni nomlash
+uchun leaderboard qatoriga `challenge_ref` qo'shildi — telegram id ataylab
+yashirin (desktop payload uni olib tashlaydi), shuning uchun ref serverning
+o'z sirridan olinadi va FAQAT chaqiruvchining o'z leaderboard'iga qarab
+yechiladi. Duelda javob bo'yicha feedback yo'q — kalit serverda qoladi.
+
+**5. Profil:** Telegram surati (server `avatar_url` ni allaqachon yuborardi,
+klient tashlab yuborardi), avatarga bosilganda Mini App'dagi izoh, referal
+havolasiga nusxalash va ulashish, do'stlar qatoriga o'tish.
+
+**6. `exit_ticket`.** Checkpoint darsining yakuniy 3 savoli Starter 0
+lug'atida (`choice`/`listen_choice`/`builder`) — parser ularni tashlab
+yuborardi. Endi dars kartalariga o'giriladi va alohida yakuniy bo'lim
+bo'lib qo'shiladi (section_no=99 — material_ref pozitsiyalari surilmasin).
+
+**7. Onboarding matni** main'dagi so'nggi tahrirga tenglashtirildi.
+
+Verified: backend `pytest tests` → 1128 passed (o'sha 3 ta AVVALGI yiqilish
+`origin/main` da ham bor); Android `clean assemble` (2 flavor) + unit
+testlar + lint yashil; 5 statik tekshiruv OK; APK emulyatorda ishga tushdi.
+
 ### 2026-09-07 — Android: uchta backend bo'shlig'i yopildi
 
 **1. Qulflangan darsni REKLAMA bilan ochish.**
