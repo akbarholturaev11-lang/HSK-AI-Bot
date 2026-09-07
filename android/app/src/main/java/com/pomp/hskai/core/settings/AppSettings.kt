@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -65,6 +66,16 @@ class AppSettings(context: Context) {
         .map { DailyGoal.sanitize(it[DAILY_GOAL_KEY]) }
 
     /**
+     * Mini App parity for `hsk_v3_setup_asked`.
+     *
+     * Once the post-lesson personalization sheet is shown, the same pending
+     * setup must not interrupt the learner again for 24 hours if they dismiss
+     * it or leave the app before answering.
+     */
+    val lastStudySetupAskedAtMillis: Flow<Long?> = appContext.settingsDataStore.data
+        .map { it[LAST_STUDY_SETUP_ASKED_AT_KEY] }
+
+    /**
      * The server-local date this device last posted a study reminder on.
      *
      * It is the server's date, not the device's, so the "one reminder a day"
@@ -81,6 +92,10 @@ class AppSettings(context: Context) {
         appContext.settingsDataStore.edit { it[DAILY_GOAL_KEY] = DailyGoal.sanitize(value) }
     }
 
+    suspend fun setLastStudySetupAskedAtMillis(value: Long) {
+        appContext.settingsDataStore.edit { it[LAST_STUDY_SETUP_ASKED_AT_KEY] = value }
+    }
+
     suspend fun setLastReminderDate(value: String) {
         appContext.settingsDataStore.edit { it[LAST_REMINDER_DATE_KEY] = value }
     }
@@ -88,6 +103,7 @@ class AppSettings(context: Context) {
     private companion object {
         val PINYIN_KEY = stringPreferencesKey("pinyin_visibility")
         val DAILY_GOAL_KEY = intPreferencesKey("daily_goal_xp")
+        val LAST_STUDY_SETUP_ASKED_AT_KEY = longPreferencesKey("hsk_v3_setup_asked")
         val LAST_REMINDER_DATE_KEY = stringPreferencesKey("last_reminder_date")
     }
 }

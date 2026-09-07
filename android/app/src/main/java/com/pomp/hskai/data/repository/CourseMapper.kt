@@ -3,20 +3,22 @@ package com.pomp.hskai.data.repository
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.data.api.CourseLessonDto
 import com.pomp.hskai.data.api.CourseMapDto
+import com.pomp.hskai.domain.model.CourseFoundation
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
+import com.pomp.hskai.domain.model.CourseMilestone
 import com.pomp.hskai.domain.model.CourseProgress
+import com.pomp.hskai.domain.model.CourseStudySetup
+import com.pomp.hskai.domain.model.CourseToday
 import com.pomp.hskai.domain.model.CourseUnit
 import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.domain.model.LessonAccess
 import com.pomp.hskai.domain.model.LessonStatus
+import com.pomp.hskai.domain.model.RewardChest
+import com.pomp.hskai.domain.model.TodayTask
+import com.pomp.hskai.domain.model.TodayTaskAccess
 
-/**
- * Translates the server payload into domain models.
- *
- * The access decision is *read*, never recomputed: the client has no rule of
- * its own about who may open what.
- */
+/** Translates the server payload into domain models without re-deciding access. */
 object CourseMapper {
 
     fun toDomain(dto: CourseMapDto): CourseMap {
@@ -27,6 +29,13 @@ object CourseMapper {
                 CourseUnit(
                     number = unit.number,
                     title = unit.title.forLanguage(language),
+                    isLocked = unit.status?.trim()?.lowercase() == "locked",
+                    milestone = unit.milestone?.let { milestone ->
+                        CourseMilestone(
+                            title = milestone.title.forLanguage(language),
+                            status = milestone.status,
+                        )
+                    },
                     lessons = unit.lessons.map { it.toDomain(language) },
                 )
             },
@@ -41,7 +50,13 @@ object CourseMapper {
                 weekActivityDates = dto.progress.weekActivityDates,
                 localDate = dto.progress.localDate,
                 weekStart = dto.progress.weekStart,
-                hasRewardChest = dto.progress.rewardChest?.available == true,
+                rewardChest = dto.progress.rewardChest?.let { chest ->
+                    RewardChest(
+                        ready = chest.ready,
+                        progress = chest.progress.coerceIn(0, 100),
+                        nextXp = chest.nextXp.coerceAtLeast(0),
+                    )
+                },
             ),
             user = CourseUser(
                 name = dto.user.name,
@@ -50,6 +65,55 @@ object CourseMapper {
                 referralCode = dto.user.referralCode,
             ),
             notificationsEnabled = dto.notify.enabled,
+            studySetup = dto.studySetup?.let { setup ->
+                CourseStudySetup(
+                    goal = setup.goal,
+                    goalChosen = setup.goalChosen,
+                    dailyMinutes = setup.dailyMinutes,
+                    preferredFocus = setup.preferredFocus,
+                    dailyGoalXp = setup.dailyGoalXp,
+                    dailyGoalIsCustom = setup.dailyGoalIsCustom,
+                    planSize = setup.planSize,
+                    pendingGoal = setup.pendingGoal,
+                    pending = setup.pending,
+                )
+            },
+            today = dto.today?.let { today ->
+                CourseToday(
+                    goalXp = today.goalXp,
+                    doneXp = today.doneXp,
+                    streak = today.streak,
+                    total = today.total,
+                    done = today.done,
+                    complete = today.complete,
+                    tasks = today.tasks.map { task ->
+                        TodayTask(
+                            type = task.type,
+                            ref = task.ref,
+                            skill = task.skill,
+                            role = task.role,
+                            done = task.done,
+                            access = when (task.access.trim().lowercase()) {
+                                "ad" -> TodayTaskAccess.AD
+                                "locked" -> TodayTaskAccess.LOCKED
+                                else -> TodayTaskAccess.OPEN
+                            },
+                            available = task.available,
+                        )
+                    },
+                    level = today.level,
+                    localDay = today.localDay,
+                )
+            },
+            foundation = dto.foundation?.let { foundation ->
+                CourseFoundation(
+                    id = foundation.id,
+                    version = foundation.version,
+                    required = foundation.required,
+                    completed = foundation.completed,
+                    status = foundation.status,
+                )
+            },
         )
     }
 
@@ -70,10 +134,6 @@ object CourseMapper {
         subtitle = subtitle.forLanguage(language),
     )
 
-    /**
-     * Order matters. `completion_allowed` is the server's yes; everything else
-     * is a specific kind of no, and only two of those justify a paywall.
-     */
     private fun CourseLessonDto.access(): LessonAccess = when {
         completionAllowed -> LessonAccess.Open
         previewHalf -> LessonAccess.HalfPreview

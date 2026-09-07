@@ -58,24 +58,30 @@ val PompTypography = Typography(
 )
 
 object PompTextStyles {
+    // Mini App `.han` uses Songti/STSong/Noto Serif SC. Android's generic
+    // Serif family resolves to the platform CJK serif face when available,
+    // which is the native equivalent and avoids bundling a separate font file.
     val hanziLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 56.sp,
         lineHeight = 72.sp,
+        letterSpacing = 1.sp,
     )
     val hanziMedium = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 32.sp,
         lineHeight = 44.sp,
+        letterSpacing = 1.sp,
     )
     /** Node glyphs and league badges, where the character is an icon. */
     val hanziSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         lineHeight = 26.sp,
+        letterSpacing = 1.sp,
     )
     val pinyin = TextStyle(
         fontFamily = FontFamily.Default,

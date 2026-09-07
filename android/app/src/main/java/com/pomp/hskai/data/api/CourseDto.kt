@@ -32,13 +32,70 @@ data class CourseMapDto(
     @SerialName("progress") val progress: CourseProgressDto = CourseProgressDto(),
     @SerialName("user") val user: CourseUserDto = CourseUserDto(),
     @SerialName("notify") val notify: CourseNotifyDto = CourseNotifyDto(),
+    @SerialName("study_setup") val studySetup: CourseStudySetupDto? = null,
+    @SerialName("today") val today: CourseTodayDto? = null,
+    @SerialName("foundation") val foundation: CourseFoundationDto? = null,
+)
+
+@Serializable
+data class CourseStudySetupDto(
+    @SerialName("goal") val goal: String = "hsk_exam",
+    @SerialName("goal_chosen") val goalChosen: Boolean = false,
+    @SerialName("daily_minutes") val dailyMinutes: Int = 10,
+    @SerialName("preferred_focus") val preferredFocus: String? = null,
+    @SerialName("daily_goal_xp") val dailyGoalXp: Int = 30,
+    @SerialName("daily_goal_is_custom") val dailyGoalIsCustom: Boolean = false,
+    @SerialName("plan_size") val planSize: Int = 2,
+    @SerialName("pending_goal") val pendingGoal: Boolean = false,
+    @SerialName("pending") val pending: Boolean = false,
+)
+
+@Serializable
+data class CourseFoundationDto(
+    @SerialName("id") val id: String = "starter0_hsk1",
+    @SerialName("version") val version: Int = 1,
+    @SerialName("required") val required: Boolean = false,
+    @SerialName("completed") val completed: Boolean = false,
+    @SerialName("status") val status: String = "optional",
+)
+
+@Serializable
+data class CourseTodayDto(
+    @SerialName("goal_xp") val goalXp: Int = 0,
+    @SerialName("done_xp") val doneXp: Int = 0,
+    @SerialName("streak") val streak: Int = 0,
+    @SerialName("total") val total: Int = 0,
+    @SerialName("done") val done: Int = 0,
+    @SerialName("complete") val complete: Boolean = false,
+    @SerialName("tasks") val tasks: List<CourseTodayTaskDto> = emptyList(),
+    @SerialName("level") val level: String = "",
+    @SerialName("local_day") val localDay: String = "",
+)
+
+@Serializable
+data class CourseTodayTaskDto(
+    @SerialName("type") val type: String = "",
+    @SerialName("ref") val ref: String? = null,
+    @SerialName("skill") val skill: String? = null,
+    @SerialName("role") val role: String? = null,
+    @SerialName("done") val done: Boolean = false,
+    @SerialName("access") val access: String = "open",
+    @SerialName("available") val available: Boolean = true,
 )
 
 @Serializable
 data class CourseUnitDto(
     @SerialName("no") val number: Int = 0,
     @SerialName("title") val title: LocalizedText = LocalizedText(),
+    @SerialName("status") val status: String? = null,
+    @SerialName("milestone") val milestone: CourseMilestoneDto? = null,
     @SerialName("lessons") val lessons: List<CourseLessonDto> = emptyList(),
+)
+
+@Serializable
+data class CourseMilestoneDto(
+    @SerialName("title") val title: LocalizedText = LocalizedText(),
+    @SerialName("status") val status: String = "locked",
 )
 
 @Serializable
@@ -52,7 +109,6 @@ data class CourseLessonDto(
     @SerialName("zh") val hanzi: String = "",
     @SerialName("py") val pinyin: String = "",
     @SerialName("tr") val subtitle: LocalizedText = LocalizedText(),
-    // Server-owned access decision. The client renders it and never invents it.
     @SerialName("completion_allowed") val completionAllowed: Boolean = false,
     @SerialName("completion_error") val completionError: String? = null,
     @SerialName("preview_half") val previewHalf: Boolean = false,
@@ -74,9 +130,23 @@ data class CourseProgressDto(
     @SerialName("reward_chest") val rewardChest: RewardChestDto? = null,
 )
 
+/** Exact CourseGamificationService reward-chest snapshot used by Mini App. */
 @Serializable
 data class RewardChestDto(
-    @SerialName("available") val available: Boolean = false,
+    @SerialName("ready") val ready: Boolean = false,
+    @SerialName("progress") val progress: Int = 0,
+    @SerialName("next_xp") val nextXp: Int = 0,
+)
+
+@Serializable
+data class RewardChestOpenResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("error") val error: String? = null,
+    @SerialName("reward_type") val rewardType: String? = null,
+    @SerialName("reward_value") val rewardValue: Int = 0,
+    @SerialName("xp") val xp: Int = 0,
+    @SerialName("daily_xp") val dailyXp: Int = 0,
+    @SerialName("reward_chest") val rewardChest: RewardChestDto? = null,
 )
 
 @Serializable
@@ -96,7 +166,6 @@ data class CourseNotifyDto(
 @Serializable
 data class CourseCompleteRequest(
     @SerialName("lesson_order") val lessonOrder: Int,
-    /** Stable per-attempt id, `android:<uuid>`, so retries stay idempotent. */
     @SerialName("event_id") val eventId: String,
     @SerialName("mistakes") val mistakes: List<CourseMistakeDto> = emptyList(),
 )
@@ -120,13 +189,6 @@ data class CourseCompleteResponse(
     @SerialName("duplicate") val duplicate: Boolean = false,
 )
 
-/**
- * Server-authoritative lesson access envelope.
- *
- * These fields are intentionally kept beside the lesson payload. A course map
- * can become stale between the tap and this request (subscription changes or
- * progress from another client), so the renderer must obey this newer answer.
- */
 @Serializable
 data class CourseLessonResponse(
     @SerialName("ok") val ok: Boolean = false,
@@ -148,7 +210,6 @@ data class LanguageRequest(
 @Serializable
 data class DictionaryResponse(
     @SerialName("ok") val ok: Boolean = false,
-    /** Fingerprint of the server's word list; unchanged means no re-download. */
     @SerialName("version") val version: String = "",
     @SerialName("language") val language: String = "",
     @SerialName("words") val words: List<DictionaryWordDto> = emptyList(),
@@ -158,7 +219,6 @@ data class DictionaryResponse(
 data class DictionaryWordDto(
     @SerialName("h") val hanzi: String = "",
     @SerialName("p") val pinyin: String = "",
-    /** Already localized by the server: one language per response. */
     @SerialName("m") val meaning: String = "",
     @SerialName("lv") val level: String = "",
 )

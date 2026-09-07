@@ -79,6 +79,8 @@ sealed interface ApiError {
                 "PRONOUNCE_LIMIT_EXCEEDED",
                 -> R.string.error_feature_limit
 
+                "android_foundation_required" -> R.string.error_foundation_required
+
                 "mistake_review_empty" -> R.string.error_no_mistakes
 
                 "android_subscription_handoff_unavailable",

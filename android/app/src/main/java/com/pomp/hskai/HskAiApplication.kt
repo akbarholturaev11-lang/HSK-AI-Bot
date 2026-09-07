@@ -13,11 +13,17 @@ import com.pomp.hskai.core.storage.SecureCredentialStore
 import com.pomp.hskai.data.api.AndroidAuthApi
 import com.pomp.hskai.data.api.AndroidCourseApi
 import com.pomp.hskai.data.api.AndroidFeatureApi
+import com.pomp.hskai.data.api.AndroidFoundationApi
+import com.pomp.hskai.data.api.AndroidOnboardingApi
+import com.pomp.hskai.data.api.AndroidStudyPreferencesApi
 import com.pomp.hskai.data.local.HskAiDatabase
 import com.pomp.hskai.data.repository.CourseRepository
 import com.pomp.hskai.data.repository.DictionaryRepository
 import com.pomp.hskai.data.repository.FeatureRepository
+import com.pomp.hskai.data.repository.OnboardingRepository
+import com.pomp.hskai.data.repository.StudyPreferencesRepository
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -46,8 +52,6 @@ class HskAiApplication : Application() {
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .callTimeout(CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            // Auth and course calls are not blindly retried; the repositories
-            // decide what is safe to repeat.
             .retryOnConnectionFailure(false)
             .followRedirects(false)
             .followSslRedirects(false)
@@ -78,27 +82,62 @@ class HskAiApplication : Application() {
         )
     }
 
+    private val courseApi: AndroidCourseApi by lazy {
+        retrofit.create(AndroidCourseApi::class.java)
+    }
+
+    private val foundationApi: AndroidFoundationApi by lazy {
+        retrofit.create(AndroidFoundationApi::class.java)
+    }
+
+    private val onboardingApi: AndroidOnboardingApi by lazy {
+        retrofit.create(AndroidOnboardingApi::class.java)
+    }
+
+    private val studyPreferencesApi: AndroidStudyPreferencesApi by lazy {
+        retrofit.create(AndroidStudyPreferencesApi::class.java)
+    }
+
     private val database: HskAiDatabase by lazy {
         Room.databaseBuilder(this, HskAiDatabase::class.java, HskAiDatabase.NAME)
-            // The cache is a disposable snapshot of server state, so a schema
-            // change may simply drop it rather than carry a migration.
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
     }
 
     val courseRepository: CourseRepository by lazy {
         CourseRepository(
-            api = retrofit.create(AndroidCourseApi::class.java),
+            api = courseApi,
             accessToken = authRepository::accessToken,
             dao = database.courseMapDao(),
             json = json,
+            foundationApi = foundationApi,
             onSessionExpired = authRepository::invalidateSession,
+        )
+    }
+
+    val onboardingRepository: OnboardingRepository by lazy {
+        OnboardingRepository(
+            api = onboardingApi,
+            accessToken = authRepository::accessToken,
+            onSessionExpired = authRepository::invalidateSession,
+        )
+    }
+
+    val studyPreferencesRepository: StudyPreferencesRepository by lazy {
+        StudyPreferencesRepository(
+            api = studyPreferencesApi,
+            accessToken = authRepository::accessToken,
+            onSessionExpired = authRepository::invalidateSession,
+            readLastSetupPromptAskedAtMillis = {
+                appSettings.lastStudySetupAskedAtMillis.first()
+            },
+            writeLastSetupPromptAskedAtMillis = appSettings::setLastStudySetupAskedAtMillis,
         )
     }
 
     val dictionaryRepository: DictionaryRepository by lazy {
         DictionaryRepository(
-            api = retrofit.create(AndroidCourseApi::class.java),
+            api = courseApi,
             accessToken = authRepository::accessToken,
             dao = database.dictionaryDao(),
             onSessionExpired = authRepository::invalidateSession,
@@ -113,7 +152,6 @@ class HskAiApplication : Application() {
         )
     }
 
-    /** Session end: credentials are cleared by auth, cached progress here. */
     suspend fun clearLocalData() {
         courseRepository.clearCache()
         dictionaryRepository.clearCache()

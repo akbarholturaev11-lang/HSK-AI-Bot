@@ -18,10 +18,11 @@ import os
 from pathlib import Path
 import re
 import tempfile
-from typing import Callable
+from typing import Callable, Literal
 
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.api.desktop_course import (
     DesktopCourseCompleteRequest,
@@ -49,14 +50,75 @@ MIN_TZ_OFFSET_MINUTES = -720
 MAX_TZ_OFFSET_MINUTES = 840
 ANDROID_TTS_VOICE = "zh-CN-XiaoxiaoNeural"
 ANDROID_TTS_RATE = "-10%"
-# Keep generated speech outside `app/static`: the only download path must be
-# the bearer-authenticated endpoint above, never a guessable public asset URL.
 ANDROID_TTS_CACHE_DIR = Path(tempfile.gettempdir()) / "pomp-hsk-ai-android-tts"
 ANDROID_TTS_HEADERS = {
     "Cache-Control": "private, max-age=31536000, immutable",
     "X-Content-Type-Options": "nosniff",
 }
 _ANDROID_TTS_GENERATION_LOCK = asyncio.Lock()
+
+
+class AndroidOnboardingRequest(BaseModel):
+    """Native equivalent of the Mini App onboarding payload."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    level: Literal["beginner", "hsk1", "hsk2", "hsk3", "hsk4"]
+    goal: Literal[
+        "hsk_exam",
+        "study_china",
+        "work_china",
+        "daily_communication",
+        "travel",
+    ]
+    daily_minutes: Literal[5, 10, 15, 20, 30] = 10
+    start_mode: Literal["lesson_1", "continue", "placement"] = "lesson_1"
+    language: Literal["uz", "ru", "tj"] | None = None
+    timezone_offset_minutes: int = Field(
+        default=0,
+        ge=MIN_TZ_OFFSET_MINUTES,
+        le=MAX_TZ_OFFSET_MINUTES,
+    )
+    activation_variant: str | None = Field(default="direct_start_v1", max_length=32)
+
+
+class AndroidStudyPreferencesRequest(BaseModel):
+    """One progressive-personalization answer, matching Mini App preferences."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    goal: Literal[
+        "hsk_exam",
+        "study_china",
+        "work_china",
+        "daily_communication",
+        "travel",
+    ] | None = None
+    daily_minutes: Literal[5, 10, 15, 20, 30] | None = None
+    preferred_focus: Literal[
+        "speaking",
+        "listening",
+        "vocabulary",
+        "grammar",
+        "none",
+    ] | None = None
+
+    @model_validator(mode="after")
+    def _at_least_one_change(self):
+        if self.goal is None and self.daily_minutes is None and self.preferred_focus is None:
+            raise ValueError("at least one study preference is required")
+        return self
+
+
+class AndroidFoundationCompleteRequest(BaseModel):
+    """Completion payload for the shared Starter 0/Foundation flow."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    foundation_id: Literal["starter0_hsk1"]
+    foundation_version: Literal[1]
+    speaking_bonus: bool = False
+    event_id: str = Field(min_length=1, max_length=120)
 
 
 def _unavailable() -> JSONResponse:
@@ -78,8 +140,6 @@ def _timezone_offset(request: Request) -> int | None:
             "desktop_course_request_invalid",
             status_code=422,
         ) from exc
-    # Note the explicit None check above: UTC+0 is a real offset and must not
-    # be swallowed by a falsy test.
     if not MIN_TZ_OFFSET_MINUTES <= offset <= MAX_TZ_OFFSET_MINUTES:
         raise DesktopCourseError(
             "desktop_course_request_invalid",
@@ -106,8 +166,6 @@ async def _android_tts_file(text: str) -> Path:
     if path.is_file() and path.stat().st_size > 0:
         return path
 
-    # A single generator lock bounds external TTS work even when an account
-    # taps several audio buttons quickly. Cached reads never take this lock.
     async with _ANDROID_TTS_GENERATION_LOCK:
         if path.is_file() and path.stat().st_size > 0:
             return path
@@ -158,6 +216,82 @@ def create_android_course_router(
             logger.exception("Android course map failed")
             return _unavailable()
 
+    @router.get("/api/v3/android/course/onboarding")
+    async def android_onboarding_status(request: Request):
+        try:
+            if request.query_params:
+                raise DesktopCourseError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).onboarding_status(
+                    bearer_access_token(request)
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android onboarding status failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/course/onboarding")
+    async def android_onboarding_complete(request: Request):
+        try:
+            payload = await validated_course_payload(request, AndroidOnboardingRequest)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).complete_onboarding(
+                    bearer_access_token(request),
+                    level=payload.level,
+                    goal=payload.goal,
+                    daily_minutes=payload.daily_minutes,
+                    start_mode=payload.start_mode,
+                    language=payload.language,
+                    timezone_offset_minutes=payload.timezone_offset_minutes,
+                    activation_variant=payload.activation_variant,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android onboarding completion failed")
+            return _unavailable()
+
+    @router.get("/api/v3/android/course/foundation")
+    async def android_foundation(request: Request):
+        try:
+            if request.query_params:
+                raise DesktopCourseError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).foundation(
+                    bearer_access_token(request)
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android foundation load failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/course/foundation/complete")
+    async def android_foundation_complete(request: Request):
+        try:
+            payload = await validated_course_payload(
+                request,
+                AndroidFoundationCompleteRequest,
+            )
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).complete_foundation(
+                    bearer_access_token(request),
+                    foundation_id=payload.foundation_id,
+                    foundation_version=payload.foundation_version,
+                    speaking_bonus=payload.speaking_bonus,
+                    event_id=payload.event_id,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android foundation completion failed")
+            return _unavailable()
+
     @router.get("/api/v3/android/course/lesson/{lesson_order}")
     async def android_course_lesson(request: Request, lesson_order: int):
         try:
@@ -203,8 +337,6 @@ def create_android_course_router(
                 DesktopCourseCompleteRequest,
             )
             async with session_factory() as session:
-                # Bot berilmagan bo'lsa chaqiruv shakli aynan eskisicha
-                # qoladi — mavjud testlar va fabrikalar buzilmaydi.
                 service = (
                     service_factory(session, settings_obj, bot=bot)
                     if bot is not None
@@ -224,6 +356,41 @@ def create_android_course_router(
             return course_error_response(exc)
         except Exception:
             logger.exception("Android course completion failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/course/reward-chest/open")
+    async def android_reward_chest_open(request: Request):
+        """Open the same server-owned XP chest exposed by the Mini App."""
+        try:
+            if await request.body():
+                raise DesktopCourseError("android_request_invalid", status_code=422)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).open_reward_chest(
+                    bearer_access_token(request)
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android reward chest failed")
+            return _unavailable()
+
+    @router.post("/api/v3/android/preferences/study")
+    async def android_study_preferences(request: Request):
+        try:
+            payload = await validated_course_payload(request, AndroidStudyPreferencesRequest)
+            async with session_factory() as session:
+                result = await service_factory(session, settings_obj).set_study_preferences(
+                    bearer_access_token(request),
+                    goal=payload.goal,
+                    daily_minutes=payload.daily_minutes,
+                    preferred_focus=payload.preferred_focus,
+                )
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopCourseError) as exc:
+            return course_error_response(exc)
+        except Exception:
+            logger.exception("Android study preferences update failed")
             return _unavailable()
 
     @router.post("/api/v3/android/preferences/language")
@@ -247,14 +414,6 @@ def create_android_course_router(
 
     @router.get("/api/v3/android/dictionary")
     async def android_dictionary(request: Request):
-        """
-        The character dictionary, in the learner's own language.
-
-        It is the same word list the Mini App's Lug'at shows — read from the
-        one source rather than copied into the app, so the two can never drift
-        apart. The payload carries a version; an unchanged version answers 304
-        so the ~90 KB list is downloaded once, not on every open.
-        """
         try:
             if request.query_params:
                 raise DesktopCourseError("android_request_invalid", status_code=422)
@@ -269,8 +428,6 @@ def create_android_course_router(
 
             version = dictionary_version()
             etag = f'W/"dictionary-{version}"'
-            # The list only changes with a deploy, so a matching ETag means the
-            # client's copy is still correct.
             if version and request.headers.get("If-None-Match") == etag:
                 return Response(
                     status_code=304,
@@ -298,12 +455,6 @@ def create_android_course_router(
 
     @router.post("/api/v3/android/preferences/notifications")
     async def android_course_notifications(request: Request):
-        """
-        Reminder opt-in, sharing the canonical course preference.
-
-        The bot, the Mini App, desktop and Android all read and write the same
-        flag, so turning reminders off on one client turns them off everywhere.
-        """
         try:
             payload = await validated_course_payload(
                 request,

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="course_foundation_title">Основы с нуля</string>
+    <string name="course_foundation_subtitle">Услышьте, поймите и соберите 你好</string>
+    <string name="course_foundation_start">Начать</string>
+    <string name="course_foundation_repeat">Повторить</string>
+</resources>

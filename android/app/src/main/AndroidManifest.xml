@@ -13,10 +13,6 @@
         android:name="android.hardware.microphone"
         android:required="false" />
 
-    <!--
-        Package visibility for opening the Telegram bot chat during device
-        linking. Only the Telegram packages are declared; no broad QUERY_ALL.
-    -->
     <queries>
         <package android:name="org.telegram.messenger" />
         <package android:name="org.telegram.messenger.web" />
@@ -39,6 +35,11 @@
         tools:ignore="UnusedAttribute">
 
         <activity
+            android:name=".feature.foundation.FoundationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PompHskAi" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
@@ -51,11 +52,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!--
-                Internal navigation only. Every incoming path is matched against
-                a fixed allowlist in the deep-link router before it is used, and
-                premium destinations are never opened from the URI alone.
-            -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
