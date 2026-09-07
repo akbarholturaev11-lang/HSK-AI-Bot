@@ -124,8 +124,8 @@ data class OnboardingCopy(
                 back = "Orqaga",
                 saving = "Saqlanmoqda…",
                 saveError = "Tanlov saqlanmadi. Internetni tekshirib, qayta urinib ko'ring.",
-                beginner = "Noldan boshlayman",
-                beginnerSub = "Avval hanzi, pinyin va tonlar",
+                beginner = "Xitoy tilini umuman bilmayman",
+                beginnerSub = "Avval hanzi, pinyin va tonlarni tushunamiz",
                 selected = "Darajangiz",
             )
             "tg", "tj" -> OnboardingCopy(
@@ -139,14 +139,14 @@ data class OnboardingCopy(
                 retry = "Боз кӯшиш кунед",
                 askGoal = "Забони чинӣ ба шумо барои чӣ лозим аст?",
                 goalHint = "Нақшаи рӯзонаи шумо ба ин мақсад мувофиқ мешавад.",
-                welcomeNote = "2 саволи кӯтоҳ. Баъд — дарси аввал.",
-                levelNote = "Сатҳи мувофиқро интихоб кунед.",
-                goalNote = "Тайёр. Акнун ба дарси аввал мегузарем.",
+                welcomeNote = "Ҳамагӣ 2 савол — ва ба дарси аввал.",
+                levelNote = "Сатҳи мувофиқи худро интихоб кунед.",
+                goalNote = "Тайёр. Ба дарси аввалини шумо мегузарем.",
                 back = "Бозгашт",
                 saving = "Сабт мешавад…",
-                saveError = "Интихоб сабт нашуд. Интернетро санҷида, боз кӯшиш кунед.",
-                beginner = "Аз сифр оғоз мекунам",
-                beginnerSub = "Аввал ханзӣ, пинйин ва оҳангҳо",
+                saveError = "Интихоб сабт нашуд. Пайвастро санҷида, боз кӯшиш кунед.",
+                beginner = "Забони чиниро тамоман намедонам",
+                beginnerSub = "Аввал ханзӣ, пинйин ва оҳангҳоро мефаҳмем",
                 selected = "Сатҳи шумо",
             )
             else -> OnboardingCopy(
@@ -166,8 +166,8 @@ data class OnboardingCopy(
                 back = "Назад",
                 saving = "Сохраняем…",
                 saveError = "Не удалось сохранить выбор. Проверьте соединение и попробуйте снова.",
-                beginner = "Начинаю с нуля",
-                beginnerSub = "Сначала ханцзы, пиньинь и тоны",
+                beginner = "Я совсем с нуля",
+                beginnerSub = "Сначала разберём ханцзы, пиньинь и тоны",
                 selected = "Ваш уровень",
             )
         }
