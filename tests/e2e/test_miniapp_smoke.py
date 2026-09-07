@@ -473,11 +473,12 @@ def _map_with_today(tasks, *, language="uz", foundation=None):
     return data
 
 
-def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
-    """«Bugungi reja» tasmasi — mavjud progress qatoriga ixcham qator.
+def test_course_v3_today_plan_path_shows_the_plan_and_opens_each_task(page):
+    """«Bugungi reja» — kurs progressi o'rnidagi YOTIQ so'qmoq.
 
-    Har chip MAVJUD bo'limga olib boradi: ochib bo'lmaydigan vazifa
-    serverda ham berilmaydi, shuning uchun tasma "o'lik" tugma ko'rsatmaydi.
+    Har tugun MAVJUD bo'limga olib boradi: ochib bo'lmaydigan vazifa
+    serverda ham berilmaydi, shuning uchun so'qmoq "o'lik" tugma
+    ko'rsatmaydi. Pastdagi chaqiriq tugmasi keyingi qadamni ochadi.
     """
     mock_price_preview(page)
     mock_telegram_ready(page)
@@ -493,31 +494,42 @@ def test_course_v3_today_strip_shows_the_plan_and_opens_each_task(page):
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    strip = page.locator(".today")
-    expect(strip).to_be_visible()
-    expect(strip).to_contain_text("Bugun")
-    expect(strip).to_contain_text("25")
-    expect(page.locator(".today .tchip")).to_have_count(3)
+    plan = page.locator(".tplan")
+    expect(plan).to_be_visible()
+    expect(plan).to_contain_text("Bugun")
+    expect(plan).to_contain_text("25")
+    expect(page.locator(".tplan .tnode")).to_have_count(3)
     # Bajarilgan vazifa bosilmaydi (takroriy ish taklif qilinmaydi).
-    expect(page.locator(".today .tchip").first).to_have_class(re.compile(r"\bdone\b"))
+    expect(page.locator(".tplan .tnode").first).to_have_class(re.compile(r"\bdone\b"))
+    # Keyingi qadam — birinchi bajarilmagan va ochiq vazifa.
+    expect(page.locator(".tplan .tnode").nth(1)).to_have_class(re.compile(r"\bnow\b"))
+    # Kurs progressi ("11 / 72 dars") ataylab olib tashlandi.
+    expect(page.locator("#s-course .pwrap")).to_have_count(0)
 
-    # Tasma YOPISHQOQ: pastga surilganda yo'lakcha ostida yo'qolib ketmaydi.
-    # Ilgari u qisqa o'ram ichida edi va sarlavha ostiga kirib ketardi.
+    # So'qmoq YOPISHQOQ: pastga surilganda yo'lakcha ostida yo'qolib ketmaydi.
     before = page.evaluate(
-        "() => Math.round(document.querySelector('#s-course .today').getBoundingClientRect().top)"
+        "() => Math.round(document.querySelector('#s-course .tplan').getBoundingClientRect().top)"
     )
     page.mouse.wheel(0, 1400)
     page.wait_for_timeout(300)
     after = page.evaluate(
         """() => {
-            const r = document.querySelector('#s-course .today').getBoundingClientRect();
+            const r = document.querySelector('#s-course .tplan').getBoundingClientRect();
             return {top: Math.round(r.top), visible: r.top >= 0 && r.bottom <= innerHeight};
         }"""
     )
-    assert after["visible"], "surilgandan keyin tasma ko'rinib turishi kerak"
-    assert abs(after["top"] - before) <= 2, "tasma tepada qotib turishi kerak"
+    assert after["visible"], "surilgandan keyin so'qmoq ko'rinib turishi kerak"
+    assert abs(after["top"] - before) <= 2, "so'qmoq tepada qotib turishi kerak"
 
-    page.locator(".today .tchip", has_text="Xatolar").click()
+    # Chaqiriq tugmasi ham aynan o'sha keyingi qadamni ochadi.
+    go = page.locator(".tplan .tgo")
+    expect(go).to_contain_text("Reja bo'yicha davom etish")
+    go.click()
+    expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
+    page.evaluate('closeSection(); App.show("course")')
+    expect(page.locator("#secov")).not_to_have_class(re.compile(r"\bon\b"))
+
+    page.locator(".tplan .tstep", has_text="Xatolar").locator(".tnode").click()
     expect(page.locator("#secov")).to_have_class(re.compile(r"\bon\b"))
 
 
@@ -551,13 +563,17 @@ def test_daily_plan_updates_after_inline_exam_without_reload(page, width):
     page.route('**/api/v3/exams/complete', lambda route: pending.append(route))
     page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
     page.evaluate('window.__sameDocument = true')
-    selector = '.today .tchip' if width == 390 else '.crail .rl-task'
-    page.locator(selector, has_text='Test').click()
+    task_ui = (
+        page.locator('.tplan .tstep', has_text='Test').locator('.tnode')
+        if width == 390
+        else page.locator('.crail .rl-task', has_text='Test')
+    )
+    task_ui.click()
     page.locator('#tc-exlist .ex').first.click()
     with page.expect_request('**/api/v3/exams/complete'):
         page.locator('#tc-exam .opt').first.click()
     assert len(reads) == 1
-    expect(page.locator(selector)).not_to_have_class(re.compile(r'\bdone\b'))
+    expect(task_ui).not_to_have_class(re.compile(r'\bdone\b'))
     saved.append(True)
     json_response(pending.pop(), {
         'ok': True, 'score': 1, 'total': 1, 'percent': 100, 'passed': True,
@@ -565,8 +581,8 @@ def test_daily_plan_updates_after_inline_exam_without_reload(page, width):
     })
     expect(page.locator('#tc-exam')).to_contain_text('100%')
     # The course behind the result overlay refreshes immediately, before closing it.
-    expect(page.locator(selector)).to_have_class(re.compile(r'\bdone\b'))
-    expect(page.locator(selector + ' i')).to_have_class(re.compile(r'\bti-check\b'))
+    expect(task_ui).to_have_class(re.compile(r'\bdone\b'))
+    expect(task_ui.locator('i')).to_have_class(re.compile(r'\bti-check\b'))
     assert page.evaluate('MAP.today.done_xp') == 45
     assert page.evaluate('window.__sameDocument') is True
     expect(page.locator('#secov')).to_have_class(re.compile(r'\bon\b'))
@@ -589,12 +605,12 @@ def test_daily_plan_refresh_keeps_last_state_on_error_and_retries_on_return(page
 
     page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
     page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
-    expect(page.locator('.today .tchip')).to_be_visible()
+    expect(page.locator('.tplan .tnode')).to_be_visible()
     assert page.evaluate('refreshCourseProgress(true)') is False
-    expect(page.locator('.today .tchip')).not_to_have_class(re.compile(r'\bdone\b'))
+    expect(page.locator('.tplan .tnode')).not_to_have_class(re.compile(r'\bdone\b'))
     page.locator('#nav button[data-s="mashq"]').click()
     page.locator('#nav button[data-s="course"]').click()
-    expect(page.locator('.today .tchip')).to_have_class(re.compile(r'\bdone\b'))
+    expect(page.locator('.tplan .tnode')).to_have_class(re.compile(r'\bdone\b'))
     assert len(reads) == 3
 
 
@@ -614,7 +630,7 @@ def test_daily_plan_refresh_queues_a_new_read_after_save_and_ignores_old_level(p
 
     page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
     page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
-    expect(page.locator('.today .tchip')).to_be_visible()
+    expect(page.locator('.tplan .tnode')).to_be_visible()
     with page.expect_request(re.compile(r'.*/api/v3/map\?.*')):
         page.evaluate('void refreshCourseProgress()')
     page.evaluate('void refreshCourseProgress(true)')
@@ -625,7 +641,7 @@ def test_daily_plan_refresh_queues_a_new_read_after_save_and_ignores_old_level(p
         json_response(pending.pop(0), _map_with_today([task]))
     page.wait_for_timeout(50)
     json_response(pending.pop(0), _map_with_today([{**task, 'done': True}]))
-    expect(page.locator('.today .tchip')).to_have_class(re.compile(r'\bdone\b'))
+    expect(page.locator('.tplan .tnode')).to_have_class(re.compile(r'\bdone\b'))
     with page.expect_request(re.compile(r'.*/api/v3/map\?.*')):
         page.evaluate('void refreshCourseProgress()')
     page.evaluate('MAP = {...MAP, level:"hsk2", today:{...MAP.today, level:"hsk2"}}')
@@ -653,10 +669,10 @@ def test_daily_plan_lesson_completion_refreshes_server_plan(page):
     page.route(re.compile(r'.*/api/v3/map(\?.*)?$'), map_reply)
     page.route('**/api/v3/lesson/complete', complete_reply)
     page.goto(app_url('/course-v3.html?lang=uz&level=hsk1&onboarded=1'), wait_until='networkidle')
-    expect(page.locator('.today .tchip')).to_be_visible()
+    expect(page.locator('.tplan .tnode')).to_be_visible()
     # Enter the real final submit path without replaying unrelated lesson cards.
     page.evaluate('Flow.lessonIdx=0; Flow.exitRequired=[]; flowDone()')
-    expect(page.locator('.today .tchip')).to_have_class(re.compile(r'\bdone\b'))
+    expect(page.locator('.tplan .tnode')).to_have_class(re.compile(r'\bdone\b'))
     assert completed[0]['lesson_id'] == 1
 
 
@@ -679,17 +695,19 @@ def test_course_v3_wide_screen_uses_a_side_rail_instead_of_stretching(page):
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    # Telefon: yon ustun yo'q, tasma bor.
+    # Telefon: yon ustun yo'q, so'qmoq bor.
     expect(page.locator("#s-course .crail")).to_be_hidden()
-    expect(page.locator("#s-course .today")).to_be_visible()
+    expect(page.locator("#s-course .tplan")).to_be_visible()
 
     page.set_viewport_size({"width": 1280, "height": 900})
     page.wait_for_timeout(200)
 
-    # Keng ekran: yon ustun ochiladi, tasma takrorlanmaydi.
+    # Keng ekran: yon ustun ochiladi, so'qmoq takrorlanmaydi.
     expect(page.locator("#s-course .crail")).to_be_visible()
-    expect(page.locator("#s-course .today")).to_be_hidden()
+    expect(page.locator("#s-course .tplan")).to_be_hidden()
     expect(page.locator(".crail .rl-task")).to_have_count(2)
+    # Chaqiriq tugmasi keng ekranda ham bor — yon ustun ichida.
+    expect(page.locator(".crail .tgo")).to_be_visible()
 
     widths = page.evaluate(
         """() => ({
@@ -703,7 +721,7 @@ def test_course_v3_wide_screen_uses_a_side_rail_instead_of_stretching(page):
     assert widths["flow"] == 480, "dars oqimi hech qachon kengaymaydi"
 
 
-def test_course_v3_today_strip_marks_a_locked_task_instead_of_hiding_it(page):
+def test_course_v3_today_plan_marks_a_locked_task_instead_of_hiding_it(page):
     """Kun ichida qulflangan vazifa ro'yxatda QOLADI va almashtirilmaydi."""
     mock_price_preview(page)
     mock_telegram_ready(page)
@@ -718,20 +736,22 @@ def test_course_v3_today_strip_marks_a_locked_task_instead_of_hiding_it(page):
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    chips = page.locator(".today .tchip")
-    expect(chips).to_have_count(2)
-    expect(chips.nth(1)).to_have_class(re.compile(r"\block\b"))
+    nodes = page.locator(".tplan .tnode")
+    expect(nodes).to_have_count(2)
+    expect(nodes.nth(1)).to_have_class(re.compile(r"\block\b"))
+    # Ochiq vazifa qolmagani uchun emas — birinchisi ochiq, tugma turadi.
+    expect(page.locator(".tplan .tgo")).to_be_visible()
 
 
 def test_course_v3_without_a_server_plan_the_screen_is_unchanged(page):
-    """Server `today` yubormasa tasma UMUMAN chizilmaydi."""
+    """Server `today` yubormasa so'qmoq UMUMAN chizilmaydi."""
     mock_price_preview(page)
     mock_telegram_ready(page)
     mock_course_map(page)
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
-    expect(page.locator("#s-course .today")).to_have_count(0)
+    expect(page.locator("#s-course .tplan")).to_have_count(0)
 
 
 def test_course_v3_starter_still_blocks_the_plan_for_a_true_beginner(page):
@@ -761,7 +781,7 @@ def test_course_v3_starter_still_blocks_the_plan_for_a_true_beginner(page):
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
 
     expect(page.locator("#s-course .foundation-entry")).to_be_visible()
-    expect(page.locator("#s-course .today")).to_have_count(0)
+    expect(page.locator("#s-course .tplan")).to_have_count(0)
 
 
 def test_course_v3_asks_daily_time_and_focus_after_the_first_lesson(page):
@@ -3786,7 +3806,7 @@ def test_ai_voice_opens_with_the_role_the_daily_plan_chose(page):
     )
 
     page.goto(app_url("/course-v3.html?lang=uz&level=hsk1&onboarded=1"), wait_until="networkidle")
-    page.locator(".today .tchip").first.click()
+    page.locator(".tplan .tnode").first.click()
 
     expect(page.locator("#vc-nm")).to_contain_text("李老师")
     page.locator("#vc-root .row .sq").first.click()

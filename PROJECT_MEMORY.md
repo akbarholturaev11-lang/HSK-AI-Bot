@@ -227,6 +227,32 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-07 — Kurs sarlavhasi: umumiy progress o'rniga reja so'qmog'i
+
+Changed:
+- Kurs ekrani sarlavhasidan UMUMIY progress qatori (`.pwrap` — "11 / 72 dars")
+  olib tashlandi. O'rnini bugungi reja egalladi: vazifalar YOTIQ so'qmoq
+  (`.tplan` / `.tpath` / `.tstep` / `.tnode`) bo'lib turadi va ostida bitta
+  chaqiriq tugmasi — «Reja bo'yicha davom etish» (3 tilda, `todayT().go`).
+- Ilgarigi chip tasmasi (`.today` / `.tchip`) endi yo'q. Tugun holatlari:
+  `done` (yashil) / `now` (qizil, pulsli — birinchi bajarilmagan va ochiq
+  vazifa) / `next` / `lock`. Bo'g'in oldingi qadam bajarilgandagina yashil.
+- Tugma `todayGoBtnHtml()` dan keladi va AYNAN `now` tugunini ochadi. Reja
+  tugagan bo'lsa tugma o'rniga «Reja bajarildi» yozuvi chiqadi; ochiq vazifa
+  qolmasa (hammasi Premium ortida) tugma umuman chizilmaydi.
+- Keng ekranda (>=900px) so'qmoq yashirin, ammo o'sha tugma yon ustundagi
+  reja kartasi ichida turadi.
+
+Why: umumiy "11 / 72" raqami kunlik qarorga yordam bermasdi — o'quvchi
+"hozir nima qilaman" degan savolga javob olmasdi. Reja shu savolga javob
+beradi, tugma esa uni bitta bosishga qisqartiradi.
+
+Files touched: `app/static/course-v3.html`, `tests/e2e/test_miniapp_smoke.py`.
+
+Risk: server `today` bermasa so'qmoq umuman chizilmaydi (eski qoida saqlandi)
+va sarlavhada faqat daraja qatori qoladi — kurs progressi endi hech qayerda
+ko'rsatilmaydi.
+
 ### 2026-09-07 — AI Voice: haqiqiy qurilmadagi 5 ta nuqson
 
 Yuqoridagi moslashuv ishidan keyin iPhone'da sinovda topilgan muammolar.
@@ -371,7 +397,8 @@ Changed:
 - `/api/v3/map` va desktop map javobiga `today` va `study_setup` bloklari.
   Android ularni merosxo'r sifatida kod o'zgartirmasdan oladi.
 - Mini App: onboarding maqsadni so'raydi; kunlik vaqt va fokus birinchi
-  darsdan keyin varaqda so'raladi; kurs ekranida «Bugungi reja» tasmasi;
+  darsdan keyin varaqda so'raladi; kurs ekranida «Bugungi reja»
+  (2026-09-07 dan — so'qmoq ko'rinishida, oldin chip tasmasi edi);
   >=900px da ikki ustunli layout (`--read` / `--shell`).
 - Signal ulandi: talaffuz, ieroglif tanish va yodlash natijalari endi
   `course_mistakes` ga tushadi (ilgari hech qayerga yozilmasdi).

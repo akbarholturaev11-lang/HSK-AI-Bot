@@ -34,34 +34,47 @@ button{cursor:pointer}
 .langsw{margin-left:auto;display:flex;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
 .langsw button{background:none;border:none;font:inherit;font-size:12px;padding:6px 9px;color:var(--ink2)}
 .langsw button.on{background:var(--cin);color:#fff;font-weight:500}
-.pwrap{display:flex;align-items:center;gap:10px;padding:0 16px 6px}
 .pbar{flex:1;height:8px;background:var(--line);border-radius:6px;overflow:hidden}
 .pbar>i{display:block;height:100%;background:var(--cin);border-radius:6px;transition:width .4s}
-.pwrap small{font-size:12px;color:var(--ink2);font-weight:500}
-/* ---------- Bugungi reja tasmasi ----------
-   Ataylab YANGI QAVAT emas, bitta ixcham qator: yo'lakcha (asosiy mahsulot)
-   pastga siljimasin. Chapda kunlik XP, o'ngda 1-4 vazifa chipi. Chiplar
-   gorizontal suriladi, ya'ni ekran kengligi cheklamaydi. */
-/* Daraja qatori + progress + bugungi reja — bitta YOPISHQOQ blok.
-   Ilgari faqat `.htop` yopishqoq edi va reja tasmasi pastga suriganda
-   uning ostiga kirib ko'rinmay ketardi. */
+/* ---------- Bugungi reja so'qmog'i ----------
+   Ilgari bu yerda kurs progressi ("11 / 72 dars") turardi — u kunlik
+   qarorga yordam bermasdi. O'rnini bugungi reja egalladi: vazifalar YOTIQ
+   so'qmoq bo'lib turadi (darslar yo'lakchasi tik, bu — yotiq) va ostida
+   bitta chaqiriq tugmasi. */
+/* Daraja qatori + reja so'qmog'i — bitta YOPISHQOQ blok.
+   Ilgari faqat `.htop` yopishqoq edi va reja pastga suriganda uning ostiga
+   kirib ko'rinmay ketardi. */
 .ctop{position:sticky;top:var(--safe-t);z-index:5;background:var(--paper);
   /* Ostidan o'tayotgan yo'lakcha bilan chegara bilinsin — deyarli
      ko'rinmas soya, bezak emas. */
   box-shadow:0 8px 10px -10px rgba(33,29,23,.16)}
 .ctop .htop{position:static;z-index:auto}
-.today{display:flex;align-items:center;gap:8px;padding:2px 0 8px 16px}
-.today-l{display:flex;align-items:center;gap:4px;flex-shrink:0;font-size:12px;color:var(--ink2);font-weight:500}
-.today-l i{font-size:14px;color:var(--cin)}
-.today-l b{color:var(--ink);font-weight:600}
-.today-c{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-right:16px}
-.today-c::-webkit-scrollbar{display:none}
-.tchip{display:flex;align-items:center;gap:4px;flex-shrink:0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:6px 10px;font-size:12.5px;font-weight:500;font-family:inherit;color:var(--ink)}
-.tchip i{font-size:14px;color:var(--ink3)}
-.tchip.done{background:var(--paper);border-style:dashed;color:var(--ink3)}
-.tchip.done i{color:var(--jade)}
-.tchip.lock{opacity:.55}
-.tchip.lock i{color:var(--ink3)}
+.tplan{padding:2px 0 10px}
+.tplan-h{display:flex;align-items:center;gap:5px;padding:0 16px 8px;font-size:12px;color:var(--ink2);font-weight:500}
+.tplan-h i{font-size:14px;color:var(--cin)}
+.tplan-h b{color:var(--ink);font-weight:600}
+.tplan-h.ok i{color:var(--jade)}
+.tpath{display:flex;align-items:flex-start;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.tpath::-webkit-scrollbar{display:none}
+.tstep{position:relative;flex:1 1 0;min-width:70px;display:flex;flex-direction:column;align-items:center;gap:5px}
+/* So'qmoq bo'g'ini: oldingi tugun markazidan shu tugun markazigacha.
+   Bajarilgan qadamdan keyingi bo'g'in yashil — yo'l bosilgani ko'rinsin. */
+.tstep+.tstep:before{content:"";position:absolute;top:19px;right:50%;left:-50%;height:4px;background:var(--line);border-radius:3px}
+.tstep.linked:before{background:var(--jade)}
+.tnode{position:relative;z-index:1;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-family:inherit;background:var(--card);color:var(--ink3);border:1.5px solid var(--line);box-shadow:0 2px 0 var(--shadow)}
+.tnode.done{background:var(--jade);color:#fff;border-color:var(--jade);box-shadow:0 2px 0 #245f47}
+.tnode.now{background:var(--cin);color:#fff;border-color:var(--cin);box-shadow:0 2px 0 var(--cin2)}
+.tnode.now:after{content:"";position:absolute;inset:-5px;border-radius:50%;border:3px solid var(--cin);animation:pl 1.6s ease-out infinite}
+.tnode.lock{background:var(--paper);box-shadow:none}
+.tlbl{font-size:11px;font-weight:500;color:var(--ink2);text-align:center;line-height:1.25;max-width:80px}
+.tstep.lock .tlbl{color:var(--ink3)}
+.tgo{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 32px);margin:12px 16px 0;
+  background:var(--card);border:1.5px solid var(--cin);border-radius:14px;color:var(--cin2);
+  font-family:inherit;font-size:14px;font-weight:600;padding:11px 14px}
+.tgo:active{transform:translateY(1px)}
+.tdone{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px 16px 0;padding:11px 14px;
+  border:1.5px dashed var(--jade);border-radius:14px;color:var(--jade);font-size:14px;font-weight:600}
 /* unit + path */
 .uban{display:flex;align-items:center;gap:10px;margin:8px 16px 0;background:var(--ink);color:#fff;border-radius:14px;padding:11px 14px}
 .uban.lock{background:var(--card);border:1px solid var(--line);color:var(--ink2)}
@@ -1079,8 +1092,9 @@ button{cursor:pointer}
   #s-course .cleft{min-width:0}
   #s-course .crail{position:sticky;top:calc(var(--safe-t) + 14px);
     padding:0 16px 0 0;display:flex;flex-direction:column;gap:12px}
-  /* Reja yon ustunda to'liq ko'ringani uchun tasma takrorlanmaydi. */
-  #s-course .today{display:none}
+  /* Reja yon ustunda to'liq ko'ringani uchun so'qmoq takrorlanmaydi. */
+  #s-course .tplan{display:none}
+  .rl-card .tgo{width:100%;margin:4px 0 0}
   /* Pastki menyu chap ustun ostida turadi — ekran o'rtasida emas, aks holda
      u yo'lakcha bilan tekislanmay qolardi. */
   .nav{left:calc(50% - var(--shell) / 2);right:auto;margin:0;width:var(--read)}
@@ -2423,9 +2437,6 @@ function foundationEntryHtml(){
   return '<div class="foundation-entry"><span class="fi han">零</span><span class="ft"><b>'+esc(m.h)+(done?' <i class="ti ti-circle-check" style="color:var(--jade)"></i>':'')+'</b><small>'+esc(m.p)+'</small></span><button onclick="startFoundationFromMap(true)">'+esc(m.go)+'</button></div>';
 }
 function renderCourse(){
-  var done=allLessons().filter(function(l){return l.status==="done"}).length;
-  var total=allLessons().length;
-  var pct=Math.round(done/Math.max(total,1)*100);
   /* Daraja yagona manbadan (botdagi user.level) keladi — mini app ichida daraja
      tanlash ko'rsatilmaydi, shuning uchun bu statik yorliq (tugma emas). */
   /* Ekran uch qismga bo'linadi: sarlavha, yo'lakcha va yon ustun. Telefonda
@@ -2438,12 +2449,11 @@ function renderCourse(){
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
     +goalRingHtml()+'</div>'
-    +'<div class="pwrap"><div class="pbar"><i style="width:'+pct+'%"></i></div><small>'+done+' / '+total+' '+T().lessons+'</small></div>'
     /* Starter 0 hali MAJBURIY va tugatilmagan bo'lsa reja ko'rsatilmaydi:
        boshlovchida ikkita raqobatchi chaqiriq bo'lmasin. Starter tugagach
        (yoki u majburiy bo'lmaganda) reja ko'rinadi — o'sha kartaning o'zi
        "Qaytarish" bo'lib qolaveradi. */
-    +(foundationMustComeFirst()?"":todayStripHtml())
+    +(foundationMustComeFirst()?"":todayPlanHtml())
     +'</div><div class="cmain">'
     +foundationEntryHtml();
   var mascP={ru:["Продолжаем!","Так держать!","Ещё урок!","У тебя получится!"],
@@ -3332,16 +3342,16 @@ function chestSvg(){
 }
 function dailyXpVal(){var p=(MAP&&MAP.progress)||{};return Number(typeof p.daily_xp!=="undefined"?p.daily_xp:(p.xp||0)%50)||0}
 /* ---------- Bugungi reja ----------
-   Server `today` yubormasa tasma UMUMAN chizilmaydi va ekran bugungidek
+   Server `today` yubormasa so'qmoq UMUMAN chizilmaydi va ekran bugungidek
    qoladi. Har bir vazifa MAVJUD bo'limga olib boradi — ochib bo'lmaydigan
    vazifa serverda ham berilmaydi. */
 function todayT(){return {
   ru:{today:"Сегодня",part:"Часть",mistakes:"Ошибки",test:"Тест",talk:"Диалог",
-    chars:"Иероглифы",pron:"Произношение",done:"План выполнен"},
+    chars:"Иероглифы",pron:"Произношение",done:"План выполнен",go:"Продолжить по плану"},
   uz:{today:"Bugun",part:"Qism",mistakes:"Xatolar",test:"Test",talk:"Suhbat",
-    chars:"Ieroglif",pron:"Talaffuz",done:"Reja bajarildi"},
+    chars:"Ieroglif",pron:"Talaffuz",done:"Reja bajarildi",go:"Reja bo'yicha davom etish"},
   tj:{today:"Имрӯз",part:"Қисм",mistakes:"Хатоҳо",test:"Тест",talk:"Гуфтугӯ",
-    chars:"Ҳарфҳо",pron:"Талаффуз",done:"Нақша иҷро шуд"}
+    chars:"Ҳарфҳо",pron:"Талаффуз",done:"Нақша иҷро шуд",go:"Идома аз рӯи нақша"}
 }[LANG]||{}}
 var TODAY_TASK_ACTION={
   continue_lesson:"App.goCurrentLesson()",
@@ -3382,21 +3392,50 @@ function todayTaskIcon(task){
   return {continue_lesson:"book-2",mistake_review:"alert-triangle",mock_exam:"certificate",
     voice_dialog:"microphone",skill_drill:"cards"}[task.type]||"circle";
 }
-function todayStripHtml(){
+/* Bugungi qadam: birinchi BAJARILMAGAN va hozir ochib bo'ladigan vazifa.
+   Chaqiriq tugmasi ham, so'qmoqdagi qizil tugun ham aynan shuni ko'rsatadi —
+   ekranda ikkita raqobatchi "keyingi qadam" bo'lmasin. */
+function todayPlanNextIdx(plan){
+  var list=(plan&&plan.tasks)||[];
+  for(var i=0;i<list.length;i++){
+    if(!list[i].done&&list[i].available&&todayTaskAction(list[i]))return i;
+  }
+  return -1;
+}
+/* Chaqiriq tugmasi. Reja tugagan bo'lsa YOKI ochiq vazifa qolmagan bo'lsa
+   (hammasi Premium ortida) tugma umuman chizilmaydi — bosib bo'lmaydigan
+   tugma ko'rsatilmaydi. */
+function todayGoBtnHtml(plan,extraCls){
+  var nx=todayPlanNextIdx(plan);
+  if(!plan||plan.complete||nx<0)return "";
+  /* Ikonka `arrow-right` — darsdagi "Davom etish" bilan bir xil. `player-play`
+     bu ilovada REKLAMA belgisi, shuning uchun bu yerda ishlatilmaydi. */
+  return '<button class="tgo'+(extraCls?" "+extraCls:"")+'" onclick="'+todayTaskAction(plan.tasks[nx])+'">'
+    +esc(todayT().go)+' <i class="ti ti-arrow-right"></i></button>';
+}
+function todayPlanHtml(){
   var plan=MAP&&MAP.today;
   if(!plan||!plan.tasks||!plan.tasks.length)return "";
-  var t=todayT();
-  var chips=plan.tasks.map(function(task){
+  var t=todayT(),nx=todayPlanNextIdx(plan);
+  var steps=plan.tasks.map(function(task,i){
     var action=todayTaskAction(task);
-    var cls="tchip"+(task.done?" done":"")+(task.available?"":" lock");
+    var st=task.done?"done":(i===nx?"now":(task.available?"next":"lock"));
     var click=(task.done||!task.available||!action)?"":' onclick="'+action+'"';
-    return '<button class="'+cls+'"'+click+'><i class="ti ti-'+todayTaskIcon(task)+'"></i>'+esc(todayTaskLabel(task))+'</button>';
+    var lbl=todayTaskLabel(task);
+    /* Bo'g'in oldingi qadam bajarilgandagina yashil bo'ladi. */
+    var linked=(i>0&&plan.tasks[i-1].done)?" linked":"";
+    return '<div class="tstep '+st+linked+'">'
+      +'<button class="tnode '+st+'"'+click+' aria-label="'+esc(lbl)+'"><i class="ti ti-'+todayTaskIcon(task)+'"></i></button>'
+      +'<span class="tlbl">'+esc(lbl)+'</span></div>';
   }).join("");
   /* XP matni BITTA flex elementi bo'lishi kerak, aks holda "25 /40" kabi
      ortiqcha bo'shliq chiqadi. */
-  return '<div class="today"><span class="today-l"><i class="ti ti-'+(plan.complete?"circle-check":"target-arrow")+'"></i>'
-    +'<span>'+esc(t.today)+' <b>'+(plan.done_xp||0)+'</b>/'+(plan.goal_xp||0)+'</span></span>'
-    +'<div class="today-c">'+chips+'</div></div>';
+  return '<div class="tplan"><div class="tplan-h'+(plan.complete?" ok":"")+'">'
+    +'<i class="ti ti-'+(plan.complete?"circle-check":"target-arrow")+'"></i>'
+    +'<span>'+esc(t.today)+' <b>'+(plan.done_xp||0)+'</b>/'+(plan.goal_xp||0)+' XP</span></div>'
+    +'<div class="tpath">'+steps+'</div>'
+    +(plan.complete?'<div class="tdone"><i class="ti ti-circle-check"></i> '+esc(t.done)+'</div>':todayGoBtnHtml(plan))
+    +'</div>';
 }
 /* Keng ekrandagi yon ustun. Telefonda CSS bilan yashiriladi, shuning uchun
    bu yerda MAVJUD ma'lumot va MAVJUD renderer'lar qayta ishlatiladi —
@@ -3414,7 +3453,8 @@ function courseRailHtml(){
     }).join("");
     blocks+='<div class="rl-card"><div class="rl-h">'+esc(t.today)
       +'<b>'+(plan.done_xp||0)+'/'+(plan.goal_xp||0)+' XP</b></div>'+rows
-      +(plan.complete?'<div class="rl-done"><i class="ti ti-circle-check"></i> '+esc(t.done)+'</div>':'')
+      +(plan.complete?'<div class="rl-done"><i class="ti ti-circle-check"></i> '+esc(t.done)+'</div>'
+        :todayGoBtnHtml(plan))
       +'</div>';
   }
   /* Kalendar CSS'i `.cal` o'rovini talab qiladi (profil ekranidagidek),
