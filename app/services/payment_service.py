@@ -6,11 +6,13 @@ from app.services.discount_service import DiscountService
 from app.services.subscription_price_service import SubscriptionPriceService
 
 
-PLAN_PRICES = {
-    "10_days": 29,
-    "1_month": 89,
-}
-
+# Narxlarning YAGONA manbai — `SubscriptionPriceService`:
+# `subscription_prices` jadvali, u bo'sh bo'lsa `DEFAULT_SUBSCRIPTION_PRICES`.
+#
+# Bu yerda ilgari `PLAN_PRICES` degan ikkinchi jadval bor edi va unda
+# `3_months` umuman yo'q edi — ya'ni u jimgina `None` qaytarardi. Uchinchi
+# nusxa `app/bot/handlers/subscription.py` da edi. Uchalasi ham bitta
+# manbaga keltirildi.
 DISCOUNT_PERCENT = 20
 
 
@@ -19,9 +21,6 @@ class PaymentService:
         self.session = session
         self.payment_repo = PaymentRepository(session)
         self.user_repo = UserRepository(session)
-
-    def get_plan_price(self, plan_type: str) -> Optional[int]:
-        return PLAN_PRICES.get(plan_type)
 
     async def get_plan_price_value(self, payment_method: str | None, plan_type: str):
         return await SubscriptionPriceService(self.session).get_price(payment_method, plan_type)

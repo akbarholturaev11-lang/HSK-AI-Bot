@@ -13,7 +13,10 @@ from app.services.payment_service import PaymentService
 from app.services.subscription_currency_service import (
     format_subscription_price,
 )
-from app.services.subscription_price_service import SubscriptionPriceService
+from app.services.subscription_price_service import (
+    DEFAULT_SUBSCRIPTION_PRICES,
+    SubscriptionPriceService,
+)
 from app.bot.utils.i18n import t
 from app.bot.keyboards.subscription import (
     subscription_miniapp_keyboard,
@@ -22,7 +25,17 @@ from app.bot.keyboards.subscription import (
 
 router = Router()
 PAYMENT_METHODS = ("visa", "alipay", "wechat")
-PLANS = ("10_days", "1_month")
+# Tariflar ro'yxati — bu VALIDATSIYA oq ro'yxati: callback'da kelgan tarif
+# shu yerda bo'lmasa rad etiladi.
+#
+# `3_months` ilgari shu yerda YO'Q edi, holbuki u narx jadvalida ham
+# (`DEFAULT_SUBSCRIPTION_PRICES`), muddat jadvalida ham (`PLAN_DURATIONS`),
+# tugma matnida ham (`subscription_button_3_months`, uchala tilda) bor edi.
+# Ya'ni uch oylik tarif bot oqimida jimgina rad etilardi.
+PLANS = ("10_days", "1_month", "3_months")
+
+# Tavsiya qilinadigan tarif — bitta CTA bitta nishonga qaratilsin.
+RECOMMENDED_PLAN = "3_months"
 _BOT_USERNAME_CACHE = None
 
 # subscription.py → bot/handlers/ → bot/ → app/ → project root → app/static/payments/
@@ -84,9 +97,12 @@ async def _plan_price(session, plan_type: str, payment_method: str | None) -> tu
     price = await SubscriptionPriceService(session).get_price(payment_method, plan_type)
     if price:
         return price.amount, price.currency
-    if payment_method in ("alipay", "wechat"):
-        return (66 if plan_type == "1_month" else 29), "¥"
-    return (89 if plan_type == "1_month" else 29), "TJS"
+    # Zaxira ham YAGONA manbadan. Ilgari bu yerda o'z raqamlari bor edi va
+    # ular `3_months` ni umuman bilmasdi — uch oylik tarif jimgina 10 kunlik
+    # narxga tushib qolardi.
+    method = payment_method if payment_method in PAYMENT_METHODS else "visa"
+    amount, currency = DEFAULT_SUBSCRIPTION_PRICES[(method, plan_type)]
+    return amount, currency
 
 
 
