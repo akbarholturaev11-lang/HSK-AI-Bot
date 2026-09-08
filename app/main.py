@@ -28,6 +28,7 @@ from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
 from app.api.desktop_practice import create_desktop_practice_router
 from app.api.admin_entitlements import create_admin_entitlements_router
+from app.api.miniapp_ads import create_miniapp_ads_router
 from app.api.miniapp_entitlements import (
     COURSE_AD_GATE_FEATURES,
     COURSE_DAILY_GATE_FEATURES,
@@ -611,6 +612,14 @@ app.include_router(
     create_admin_entitlements_router(
         session_factory=async_session_maker,
         admin_guard=_admin_miniapp_guard,
+    )
+)
+# Reklama: aynan ikkita joy. Kunlik chegara serverda, akkaunt bo'yicha.
+app.include_router(
+    create_miniapp_ads_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+        download_links_resolver=_desktop_auto_download_links,
     )
 )
 app.include_router(
@@ -1973,230 +1982,6 @@ async def _desktop_auto_download_links() -> dict[str, str]:
     return links
 
 
-@app.get("/api/v3/ad")
-async def v3_course_ad(
-    request: Request,
-    placement: str = "start",
-    level: str = "hsk1",
-    lesson: int = 0,
-    lang: str = "",
-    feature: str = "",
-    slot: str = "",
-):
-    resolved_level = _course_v3_level(level)
-    lesson_order = _positive_int(lesson) or 0
-    section = str(feature or "").strip().lower()
-    ad_slot = CourseAdService.normalize_slot(slot)
-    lesson_end = ad_slot == "lesson_end"
-    # App reklamasi Mini App ochilganda chiqadi — u darsga ham, mashq bo'limiga
-    # ham bog'lanmagan, shuning uchun lesson/feature talab qilinmaydi.
-    app_open = ad_slot == "app_open"
-    # Mashq bo'limlarida reklama darsga bog'lanmagan (lesson=0) — `feature`
-    # (masalan "recognition") kontekst sifatida keladi. Faqat dars ham,
-    # bo'lim ham bo'lmasa xato. Dars yakuni sloti esa darsga bog'langan.
-    if (
-        lesson_order <= 0
-        and section not in _COURSE_AD_GATE_FEATURES
-        and not lesson_end
-        and not app_open
-    ):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
-
-    # Foydalanuvchining tiliga mos reklamalarni (shu til + "all") qaytaramiz.
-    # initData bo'lsa — kanonik user.language; bo'lmasa — query `lang`.
-    init_data = request.headers.get("X-Telegram-Init-Data", "")
-    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
-
-    async with async_session_maker() as session:
-        ad_language = None
-        if telegram_id:
-            user = await UserRepository(session).get_by_telegram_id(telegram_id)
-            if user and getattr(user, "language", None):
-                ad_language = user.language
-            # Dars yakuni reklamasi FAQAT bepul foydalanuvchiga. Obunachiga
-            # server ham bermaydi (klient xato hisoblasa ham reklama chiqmaydi).
-            # Vaqtinchalik "limitsiz" bonus ham reklamasiz bo'lishi kerak —
-            # userga aynan shu va'da qilingan.
-            if lesson_end and user and CourseMiniAppAccessService.has_unlimited_course_access(user):
-                return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
-        if not ad_language and lang:
-            ad_language = lang
-        ad_language = CourseAdService.normalize_language(ad_language)
-
-        service = CourseAdService(session)
-        ads = await service.list_active_payloads(language=ad_language, slot=ad_slot)
-        if service.media_backup_changed:
-            await session.commit()
-        if not ads:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
-        if lesson_end and len(ads) > 1:
-            # Dars oxirida BITTA blok chiqadi — bir nechta reklama bo'lsa dars
-            # raqami bo'yicha navbatma-navbat aylanadi (har dars boshqasi).
-            ads = [ads[lesson_order % len(ads)]]
-        # App reklamasidagi platforma tugmalari. Havola adminning qo'lda
-        # kiritganidan, u bo'lmasa reliz tizimidan avtomatik olinadi.
-        #
-        # Tugmalar `app_open` slotiga bog'lanmagan: app reklamasi mashq
-        # bo'limlarida va darslarda ham chiqadi, u yerda ham yuklab olish
-        # tugmasi bo'lishi kerak. Reliz so'rovi faqat app turi bo'lsa yuboriladi.
-        app_ads = [ad for ad in ads if ad.get("ad_type") == "app"]
-        if app_ads:
-            auto_links = await _desktop_auto_download_links()
-            for ad in app_ads:
-                ad["app_buttons"] = CourseAdService.app_platform_buttons(ad, auto_links)
-        return JSONResponse(
-            content={
-                "ok": True,
-                # Eski klientlar uchun moslik: birinchi reklama "ad" sifatida ham qoladi.
-                "ad": ads[0],
-                "ads": ads,
-                "placement": service.normalize_placement(placement),
-                "slot": ad_slot,
-                "level": resolved_level,
-                "lesson_order": lesson_order,
-            }
-        )
-
-
-@app.post("/api/v3/ad/attempt")
-async def v3_course_ad_attempt(request: Request):
-    init_data = request.headers.get("X-Telegram-Init-Data", "")
-    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
-    if not telegram_id:
-        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
-    try:
-        payload = await request.json()
-        if not isinstance(payload, dict):
-            raise ValueError("invalid_payload")
-        ad_id = int(payload.get("ad_id") or 0)
-        lesson_order = int(payload.get("lesson_order") or payload.get("lesson_id") or 0)
-    except (TypeError, ValueError):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_attempt_payload"})
-    section = str(payload.get("feature") or "").strip().lower()
-    access_ref = str(payload.get("access_ref") or "").strip()
-    placement = str(payload.get("placement") or "").strip().lower()
-    practice_gate = section in (_COURSE_AD_GATE_FEATURES - {"lesson"}) and lesson_order == 0
-    lesson_gate = section == "lesson" and lesson_order > 0
-    if ad_id <= 0 or not (practice_gate or lesson_gate) or not access_ref or placement != "start":
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_attempt_payload"})
-
-    async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(telegram_id)
-        if not user:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
-        ad = await CourseAdService(session).get_active_by_id(ad_id)
-        if not ad:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
-        try:
-            result = await CourseMiniAppAccessService(session).start_ad_attempt(
-                user,
-                feature_key=section,
-                access_ref=access_ref,
-                ad_id=ad_id,
-                placement=placement,
-                required_seconds=CourseAdService.normalize_duration(ad.duration_seconds),
-                level=_course_v3_user_level(user) if lesson_gate else None,
-                lesson_order=lesson_order if lesson_gate else None,
-            )
-        except ValueError:
-            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_attempt_payload"})
-        if not result.get("allowed"):
-            return JSONResponse(status_code=403, content={"ok": False, **result})
-        await session.commit()
-        return JSONResponse(content={"ok": True, **result})
-
-
-@app.post("/api/v3/ad/view")
-async def v3_course_ad_view(request: Request):
-    init_data = request.headers.get("X-Telegram-Init-Data", "")
-    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
-    if not telegram_id:
-        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
-
-    try:
-        payload = await request.json()
-        if not isinstance(payload, dict):
-            raise ValueError("invalid_payload")
-        ad_id = int(payload.get("ad_id") or 0)
-        lesson_order = int(payload.get("lesson_order") or payload.get("lesson_id") or 0)
-        watched_seconds = int(payload.get("watched_seconds") or 0)
-    except (TypeError, ValueError):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
-    section = str(payload.get("feature") or "").strip().lower()
-    access_ref = str(payload.get("access_ref") or "").strip()
-    attempt_token = str(payload.get("attempt_token") or "").strip()
-    # Mashq bo'limi reklamasi darsga bog'lanmagan (lesson_order=0) — bunda
-    # `feature` bo'lishi shart.
-    if ad_id <= 0 or (lesson_order <= 0 and section not in _COURSE_AD_GATE_FEATURES):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
-
-    placement = CourseAdService.normalize_placement(str(payload.get("placement") or "start"))
-    async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(telegram_id)
-        if not user:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
-
-        resolved_level = _course_v3_user_level(user)
-        service = CourseAdService(session)
-        result = await service.record_view(
-            user=user,
-            ad_id=ad_id,
-            level=resolved_level,
-            lesson_order=lesson_order,
-            placement=placement,
-            watched_seconds=watched_seconds,
-        )
-        should_authorize = bool(
-            result.get("ok")
-            and access_ref
-            and (
-                (lesson_order <= 0 and section in (_COURSE_AD_GATE_FEATURES - {"lesson"}))
-                or (lesson_order > 0 and section == "lesson")
-            )
-        )
-        if should_authorize:
-            try:
-                authorization = await CourseMiniAppAccessService(session).record_ad_authorization(
-                    user,
-                    feature_key=section,
-                    access_ref=access_ref,
-                    ad_id=ad_id,
-                    placement=placement,
-                    attempt_token=attempt_token,
-                    level=resolved_level if section == "lesson" else None,
-                    lesson_order=lesson_order if section == "lesson" else None,
-                )
-            except ValueError:
-                authorization = {"allowed": False, "error": "invalid_access_ref"}
-            if not authorization.get("allowed"):
-                await session.rollback()
-                status = 403 if authorization.get("error") == "course_access_blocked" else 400
-                return JSONResponse(status_code=status, content={"ok": False, **authorization})
-            result["authorization"] = {
-                "recorded": bool(authorization.get("recorded")),
-                "idempotent": bool(authorization.get("idempotent")),
-            }
-        if result.get("ok"):
-            await CourseMiniAppAnalyticsService(session).record_server_event(
-                event_name="course_ad_viewed",
-                telegram_id=telegram_id,
-                user_id=getattr(user, "id", None),
-                source="course_v3_ad",
-                level=resolved_level,
-                lesson_order=lesson_order,
-                payload={
-                    "ad_id": ad_id,
-                    "placement": placement,
-                    "watched_seconds": watched_seconds,
-                    "feature": section or None,
-                    "access_ref": access_ref or None,
-                },
-            )
-        await session.commit()
-        status = 200 if result.get("ok") else 400
-        return JSONResponse(status_code=status, content=result)
-
-
 # Darvoza bo'limlari endi `app/api/miniapp_entitlements.py` da — reklama
 # endpointlari ham shu yagona ro'yxatga tayanadi.
 _COURSE_DAILY_GATE_FEATURES = COURSE_DAILY_GATE_FEATURES
@@ -2396,28 +2181,12 @@ async def v3_course_lesson_complete(request: Request):
             is_paid=is_paid,
             free_lessons=free_course_parts_for_level(resolved_level),
         )
+        # Reklama ko'rib darsni ochish OLIB TASHLANDI: limit tugasa paywall
+        # chiqadi. `requirement` endi hech qachon `COURSE_ACCESS_AD` qaytara
+        # olmaydi — `active_mode` eski `ads` rejimini `subscription` ga
+        # xaritalaydi.
         if requirement == COURSE_ACCESS_SUBSCRIPTION:
             return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
-        if requirement == COURSE_ACCESS_AD:
-            try:
-                ad_access = await access.verify_ad_authorization(
-                    user,
-                    feature_key="lesson",
-                    access_ref=access_ref,
-                    max_age_seconds=3600,
-                    level=resolved_level,
-                    lesson_order=lesson_order,
-                )
-            except ValueError:
-                ad_access = {"allowed": False, "error": "ad_authorization_required"}
-            if not ad_access.get("allowed"):
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "ok": False,
-                        "error": ad_access.get("error") or "ad_authorization_required",
-                    },
-                )
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)

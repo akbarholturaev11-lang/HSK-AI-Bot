@@ -67,8 +67,11 @@ class CourseLessonAccessPolicy:
             if until and until > _utcnow():
                 return COURSE_ACCESS_MODE_FREE_UNTIL
             return COURSE_ACCESS_MODE_SUBSCRIPTION
-        if self.mode == COURSE_ACCESS_MODE_ADS:
-            return COURSE_ACCESS_MODE_ADS
+        # `ads` — LEGACY. Reklama ko'rib darsni ochish olib tashlandi:
+        # limit tugasa paywall chiqadi. Eski qatorlar bazada qolishi mumkin,
+        # shuning uchun rejim tanilmaydi emas, `subscription` ga xaritalanadi.
+        # (`0078` migratsiyasi jonli `ads` o'rnatishlarini 7 kunlik `free_until`
+        # ga o'tkazadi, ya'ni deploy kuni hech kimning darsi yopilmaydi.)
         return COURSE_ACCESS_MODE_SUBSCRIPTION
 
     @property
@@ -96,8 +99,9 @@ class CourseLessonAccessPolicy:
         mode = self.active_mode
         if mode == COURSE_ACCESS_MODE_FREE_UNTIL:
             return COURSE_ACCESS_OPEN
-        if mode == COURSE_ACCESS_MODE_ADS:
-            return COURSE_ACCESS_AD
+        # `COURSE_ACCESS_AD` endi hech qachon qaytmaydi — `active_mode` ni
+        # o'qing. Konstanta bitta reliz davomida saqlanadi, chunki klientlar
+        # hali eski javob shaklini bilishi mumkin.
         return COURSE_ACCESS_SUBSCRIPTION
 
     def public_payload(self) -> dict:

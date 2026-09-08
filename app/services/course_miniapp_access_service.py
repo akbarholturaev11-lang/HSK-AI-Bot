@@ -797,61 +797,28 @@ class CourseMiniAppAccessService:
         *,
         feature_key: str,
         access_ref: str,
-        max_age_seconds: int = COURSE_AD_AUTH_TTL_SECONDS,
+        max_age_seconds: int | None = None,
         level: str | None = None,
         lesson_order: int | None = None,
     ) -> dict:
-        """Verify a recent completed ad bound to this user, feature and ref."""
+        """Reklama ko'rib kirish ochish OLIB TASHLANDI — doim rad etadi.
 
-        feature = self._normalize_ad_auth_feature(feature_key)
-        ref = self.normalize_access_ref(access_ref)
-        normalized_level = self._normalize_ad_level(level)
-        normalized_lesson_order = self._normalize_ad_lesson_order(lesson_order)
-        if feature == "lesson" and (not normalized_level or normalized_lesson_order <= 0):
-            return {"allowed": False, "is_paid": False, "error": "invalid_ad_authorization"}
-        if self.is_paid_user(user):
-            return {"allowed": True, "is_paid": True, "access_ref": ref}
-        if not self.is_free_user(user):
-            return {"allowed": False, "is_paid": False, "error": "course_access_blocked"}
-        ttl = max(30, min(7200, int(max_age_seconds or COURSE_AD_AUTH_TTL_SECONDS)))
-        select_target = CourseMiniAppEvent if (normalized_level or normalized_lesson_order) else CourseMiniAppEvent.id
-        cutoff = datetime.now(timezone.utc) - timedelta(seconds=ttl)
-        result = await self.session.execute(
-            select(select_target).where(
-                CourseMiniAppEvent.user_id == user.id,
-                CourseMiniAppEvent.telegram_id == int(user.telegram_id),
-                CourseMiniAppEvent.event_name == COURSE_AD_AUTH_EVENT_NAME,
-                CourseMiniAppEvent.source == COURSE_AD_AUTH_EVENT_SOURCE,
-                CourseMiniAppEvent.session_id == self._ad_authorization_session_id(feature, ref),
-                CourseMiniAppEvent.created_at >= cutoff,
-            )
-        )
-        event_or_id = result.scalar_one_or_none()
-        if not event_or_id:
-            return {
-                "allowed": False,
-                "is_paid": False,
-                "error": "ad_authorization_required",
-            }
-        if normalized_level or normalized_lesson_order:
-            try:
-                payload = json.loads(event_or_id.payload_json or "{}")
-            except (TypeError, ValueError, json.JSONDecodeError):
-                return {"allowed": False, "is_paid": False, "error": "invalid_ad_authorization"}
-            if normalized_level and str(payload.get("level") or "") != normalized_level:
-                return {"allowed": False, "is_paid": False, "error": "invalid_ad_authorization"}
-            if normalized_lesson_order:
-                try:
-                    stored_lesson_order = int(payload.get("lesson_order") or 0)
-                except (TypeError, ValueError):
-                    stored_lesson_order = 0
-                if stored_lesson_order != normalized_lesson_order:
-                    return {
-                        "allowed": False,
-                        "is_paid": False,
-                        "error": "invalid_ad_authorization",
-                    }
-        return {"allowed": True, "is_paid": False, "access_ref": ref}
+        Ilgari bu yerda butun bir token/binding tarmog'i bor edi: klient
+        `access_ref` o'ylab topardi, server unga `attempt_token` berardi va
+        ko'rilgan soniyalarni O'ZI o'lchardi (soxta `watched_seconds` ni tutish
+        uchun). Endi reklama hech narsani ochmaydi — limit tugasa paywall
+        chiqadi — shuning uchun butun tarmoq keraksiz.
+
+        Metod ATAYLAB qoldirildi va qattiq "yo'q" qaytaradi: chaqiruv joylari
+        bosqichma-bosqich olib tashlanadi va oradagi vaqtda soxta so'rov
+        hech narsa ocholmasin.
+        """
+        return {
+            "allowed": False,
+            "is_paid": self.is_paid_user(user),
+            "error": "ad_unlock_removed",
+        }
+
 
     async def _daily_used_today(
         self,

@@ -267,17 +267,42 @@ class CourseLessonAccessPolicyTests(unittest.TestCase):
             COURSE_ACCESS_OPEN,
         )
 
-    def test_ads_policy_replaces_subscription_gate_with_ad_gate(self):
+    def test_a_stored_ads_policy_now_falls_back_to_the_paywall(self):
+        """Reklama ko'rib darsni ochish olib tashlandi.
+
+        Eski `ads` qatori bazada qolishi mumkin, shuning uchun rejim
+        tanilmaydi emas — u `subscription` ga xaritalanadi va dars paywall
+        ortida qoladi. Jonli `ads` o'rnatishlari deploy kuni yopilib
+        qolmasligi uchun `0078` migratsiyasi ularni 7 kunlik `free_until` ga
+        o'tkazadi.
+        """
         policy = CourseLessonAccessPolicy(mode=COURSE_ACCESS_MODE_ADS)
 
+        self.assertEqual(COURSE_ACCESS_MODE_SUBSCRIPTION, policy.active_mode)
         self.assertEqual(
             policy.requirement_for(lesson_order=1, is_paid=False, free_lessons=2),
             COURSE_ACCESS_OPEN,
         )
         self.assertEqual(
             policy.requirement_for(lesson_order=3, is_paid=False, free_lessons=2),
-            COURSE_ACCESS_AD,
+            COURSE_ACCESS_SUBSCRIPTION,
         )
+
+    def test_the_ad_requirement_is_never_returned_any_more(self):
+        for mode in (
+            COURSE_ACCESS_MODE_SUBSCRIPTION,
+            COURSE_ACCESS_MODE_ADS,
+            COURSE_ACCESS_MODE_FREE_UNTIL,
+        ):
+            with self.subTest(mode=mode):
+                policy = CourseLessonAccessPolicy(mode=mode)
+                for order in (1, 2, 3, 10):
+                    self.assertNotEqual(
+                        COURSE_ACCESS_AD,
+                        policy.requirement_for(
+                            lesson_order=order, is_paid=False, free_lessons=2
+                        ),
+                    )
 
     def test_free_until_policy_opens_lessons_only_until_expiry(self):
         active = CourseLessonAccessPolicy(
@@ -489,125 +514,50 @@ class CourseMiniAppAdAuthorizationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(json.loads(stale_event.payload_json)["ad_id"], 11)
         self.assertEqual(session.flush_count, 1)
 
-    async def test_ad_authorization_is_required_and_checked_by_exact_binding(self):
-        missing = self._session(scalar=None)
-        denied = await CourseMiniAppAccessService(missing).verify_ad_authorization(
-            self._user(),
-            feature_key="mistake_review",
-            access_ref="review-12345678",
-        )
-        self.assertEqual(denied["error"], "ad_authorization_required")
+    async def test_an_ad_no_longer_opens_anything(self):
+        """Reklama ko'rib kirish ochish OLIB TASHLANDI.
 
-        found = self._session(scalar=44)
-        allowed = await CourseMiniAppAccessService(found).verify_ad_authorization(
-            self._user(),
-            feature_key="training_test",
-            access_ref="attempt-12345678",
-        )
-        self.assertTrue(allowed["allowed"])
-        query = found.execute.await_args.args[0]
-        self.assertIn(
-            "training_test:attempt-12345678",
-            query.compile().params.values(),
-        )
+        Ilgari bu yerda token/binding tarmog'i bor edi: klient `access_ref`
+        o'ylab topardi, server unga `attempt_token` berardi va ko'rilgan
+        soniyalarni o'zi o'lchardi. Endi reklama hech narsani ochmaydi —
+        limit tugasa paywall chiqadi.
 
-    async def test_lesson_ad_authorization_is_bound_to_level_and_lesson_order(self):
-        session = self._session()
-        result = await CourseMiniAppAccessService(session).start_ad_attempt(
-            self._user(),
-            feature_key="lesson",
-            access_ref="lesson-12345678",
-            ad_id=9,
-            placement="start",
-            required_seconds=7,
-            level="hsk1",
-            lesson_order=3,
-        )
+        Metod ATAYLAB qoldirildi va qattiq "yo'q" qaytaradi: chaqiruv joylari
+        bosqichma-bosqich olib tashlanadi va oradagi vaqtda soxta so'rov
+        hech narsa ocholmasin.
+        """
+        for feature in ("mistake_review", "training_test", "lesson", "recognition"):
+            with self.subTest(feature=feature):
+                verdict = await CourseMiniAppAccessService(
+                    self._session(scalar=44)
+                ).verify_ad_authorization(
+                    self._user(),
+                    feature_key=feature,
+                    access_ref="attempt-12345678",
+                    level="hsk1",
+                    lesson_order=3,
+                )
+                self.assertFalse(verdict["allowed"])
+                self.assertEqual("ad_unlock_removed", verdict["error"])
 
-        self.assertTrue(result["allowed"])
-        payload = json.loads(session.added[0].payload_json)
-        self.assertEqual(payload["feature"], "lesson")
-        self.assertEqual(payload["level"], "hsk1")
-        self.assertEqual(payload["lesson_order"], 3)
-
-        wrong_attempt = self._session(
-            scalar=self._attempt_event(
+    async def test_even_a_recorded_ad_view_cannot_open_a_lesson(self):
+        # Bazada tugallangan ko'rish qatori bo'lsa ham — javob o'zgarmaydi.
+        verdict = await CourseMiniAppAccessService(
+            self._session(scalar=self._attempt_event(
                 feature="lesson",
                 access_ref="lesson-12345678",
                 level="hsk1",
                 lesson_order=3,
-            )
-        )
-        denied = await CourseMiniAppAccessService(wrong_attempt).validate_ad_attempt(
-            self._user(),
-            feature_key="lesson",
-            access_ref="lesson-12345678",
-            ad_id=9,
-            placement="start",
-            attempt_token=self.ATTEMPT_TOKEN,
-            level="hsk1",
-            lesson_order=4,
-        )
-        self.assertFalse(denied["allowed"])
-        self.assertEqual(denied["error"], "invalid_ad_attempt")
-
-        auth_session = self._session(
-            scalars=[
-                self._attempt_event(
-                    feature="lesson",
-                    access_ref="lesson-12345678",
-                    level="hsk1",
-                    lesson_order=3,
-                ),
-                None,
-            ]
-        )
-        recorded = await CourseMiniAppAccessService(auth_session).record_ad_authorization(
-            self._user(),
-            feature_key="lesson",
-            access_ref="lesson-12345678",
-            ad_id=9,
-            placement="start",
-            attempt_token=self.ATTEMPT_TOKEN,
-            level="hsk1",
-            lesson_order=3,
-        )
-        self.assertTrue(recorded["allowed"])
-        auth_payload = json.loads(auth_session.added[0].payload_json)
-        self.assertEqual(auth_session.added[0].session_id, "lesson:lesson-12345678")
-        self.assertEqual(auth_payload["level"], "hsk1")
-        self.assertEqual(auth_payload["lesson_order"], 3)
-
-        valid_event = SimpleNamespace(
-            created_at=datetime.now(timezone.utc),
-            payload_json=json.dumps(
-                {
-                    "feature": "lesson",
-                    "access_ref": "lesson-12345678",
-                    "level": "hsk1",
-                    "lesson_order": 3,
-                }
-            ),
-        )
-        verified = await CourseMiniAppAccessService(self._session(scalar=valid_event)).verify_ad_authorization(
+            ))
+        ).verify_ad_authorization(
             self._user(),
             feature_key="lesson",
             access_ref="lesson-12345678",
             level="hsk1",
             lesson_order=3,
         )
-        self.assertTrue(verified["allowed"])
 
-        invalid = await CourseMiniAppAccessService(self._session(scalar=valid_event)).verify_ad_authorization(
-            self._user(),
-            feature_key="lesson",
-            access_ref="lesson-12345678",
-            level="hsk1",
-            lesson_order=4,
-        )
-        self.assertFalse(invalid["allowed"])
-        self.assertEqual(invalid["error"], "invalid_ad_authorization")
-
+        self.assertFalse(verdict["allowed"])
 
 class CourseMiniAppEntitlementTests(unittest.IsolatedAsyncioTestCase):
     async def test_legacy_trial_usage_closes_free_lesson_and_voice(self):
