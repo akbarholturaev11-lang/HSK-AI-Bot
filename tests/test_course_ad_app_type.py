@@ -296,10 +296,13 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         self.assertIn("CourseAdService.normalize_skip_after(", main)
         self.assertIn("CourseAdService.normalize_daily_limit(", main)
 
-    def test_ads_js_exposes_app_open_flow_in_all_three_languages(self):
+    def test_ads_js_exposes_the_centre_flow_in_all_three_languages(self):
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
-        self.assertIn("playAppOpen:playAppOpen", ads)
-        self.assertIn("slot=app_open", ads)
+        # Markazdagi reklama endi o'z joyi bilan chaqiriladi, eski `app_open`
+        # sloti bilan emas.
+        self.assertIn("playScreenCenter:playScreenCenter", ads)
+        self.assertIn('fetchPlacementAd("screen_center")', ads)
+        self.assertNotIn("slot=app_open", ads)
         # Foydalanuvchi O'ZI yopadi — avtomatik yopish yo'q.
         self.assertIn("appState.timer=setInterval", ads)
         self.assertIn('e.x.classList.add("on")', ads)
@@ -311,10 +314,10 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
                 f"{key} uz/ru/tj uchtasida ham bo'lishi kerak",
             )
 
-    def test_mini_app_shows_app_ad_on_open_but_yields_to_user_intent(self):
+    def test_mini_app_shows_the_centre_ad_on_open_but_yields_to_user_intent(self):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertIn("maybeShowAppOpenAd", html)
-        self.assertIn("CourseAds.playAppOpen()", html)
+        self.assertIn("CourseAds.playScreenCenter()", html)
         # Dars, chellenj yoki tur ochilayotgan bo'lsa reklama chiqmaydi.
         self.assertIn("if(ctx&&(ctx.lesson>0||ctx.challenge>0||ctx.tour))return;", html)
 
