@@ -183,15 +183,11 @@ var REVIEW_REF_MEMORY="";
 function newReviewRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}try{if(window.crypto&&crypto.getRandomValues){var a=new Uint32Array(4);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(v){return v.toString(36)}).join("-")}}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
 function reviewAccessRef(create){var k="hsk_mistake_review_ref",v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=REVIEW_REF_MEMORY}if(!v&&create){v=newReviewRef();REVIEW_REF_MEMORY=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
 function clearReviewAccessRef(){REVIEW_REF_MEMORY="";try{sessionStorage.removeItem("hsk_mistake_review_ref")}catch(e){}}
-/* "Reklama bilan davom etish": start reklamani ko'rsatib, so'ng ad_supported
-   sessiya ochamiz. Server reklama ruxsatini aynan access_ref bilan tekshiradi. */
+/* "Reklama bilan davom etish" OLIB TASHLANDI: reklama endi hech narsani
+   ochmaydi, limit tugasa paywall chiqadi. Funksiya paywall tugmasi hali
+   chaqirishi mumkin bo'lgani uchun qoldirildi va shunchaki oynani yopadi. */
 function startAdSupported(){
   closeLimit();
-  var accessRef=reviewAccessRef(true);
-  if(!window.CourseAds){alert(L.err);return}
-  CourseAds.play("start",accessRef).then(function(){
-    AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;startReview(true);
-  }).catch(function(){AD_SESSION=false;alert(L.err)});
 }
 function startReview(adSupported){
   if(busy())return;RV={loading:true};
@@ -211,7 +207,6 @@ function openReview(){$("review").hidden=false;document.body.style.overflow="hid
 function closeReview(){$("review").hidden=true;document.body.style.overflow="";RV=null}
 function renderQuestion(){
   /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
-  if(AD_SESSION&&!AD_MID_SHOWN&&RV.questions.length>=4&&RV.idx===Math.floor(RV.questions.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(renderQuestion).catch(renderQuestion);return}}
   var q=RV.questions[RV.idx],n=RV.questions.length;
   $("rv-fill").style.width=Math.round((RV.idx/n)*100)+"%";
   var opts=q.options.map(function(o,i){return '<button class="rv-opt" data-i="'+i+'" onclick="pickOption('+i+')"><span class="rk">'+LETTERS(i)+'</span><span>'+esc(o)+'</span></button>'}).join("");
@@ -254,7 +249,6 @@ function nextQuestion(){
 function finishReview(){
   if(RV.loading)return;
   /* Reklama bilan kirilgan sessiya: yakunlashdan oldin yakuniy reklama. */
-  if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finishReview).catch(finishReview);return}}
   RV.loading=true;
   $("rv-fill").style.width="100%";
   $("rv-foot").innerHTML='<button disabled>'+L.loading+'</button>';

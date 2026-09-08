@@ -470,139 +470,58 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
             json=body,
         )
 
-    async def _open_attempt(self, token, access_ref, ad_id=1, feature="recognition"):
-        response = await self._post(
-            "/api/v3/android/ad/attempt",
+    async def _ad_view(self, token, *, ad_id=1, watched=9, placement="screen_center"):
+        return await self._post(
+            "/api/v3/android/ad/view",
             token,
             ad_id=ad_id,
-            feature=feature,
-            access_ref=access_ref,
+            watched_seconds=watched,
+            placement=placement,
         )
-        self.assertEqual(200, response.status_code, response.text)
-        return response.json()
 
-    async def test_an_attempt_binds_what_the_view_may_unlock(self):
-        token = await self._token()
-        opened = await self._open_attempt(token, "a" * 24)
-        self.assertTrue(opened["ok"])
-        self.assertTrue(opened["attempt_token"])
-        self.assertEqual(7, opened["required_seconds"])
+    async def test_a_watched_ad_is_recorded_but_opens_nothing(self):
+        """Reklama ko'rib kirish ochish OLIB TASHLANDI.
 
-    async def test_an_attempt_for_an_unknown_ad_is_refused(self):
-        token = await self._token()
-        response = await self._post(
-            "/api/v3/android/ad/attempt",
-            token,
-            ad_id=9999,
-            feature="recognition",
-            access_ref="a" * 24,
-        )
-        self.assertEqual(404, response.status_code, response.text)
-        self.assertEqual("course_ad_not_found", response.json()["error"])
-
-    async def test_an_attempt_for_an_unknown_section_is_refused(self):
-        token = await self._token()
-        response = await self._post(
-            "/api/v3/android/ad/attempt",
-            token,
-            ad_id=1,
-            feature="whatever",
-            access_ref="a" * 24,
-        )
-        self.assertEqual(422, response.status_code, response.text)
-        self.assertFalse(response.json()["ok"])
-
-    async def _age_attempts(self, seconds: int):
-        """Moves the open attempts back in time, as if the ad had played.
-
-        The server measures real elapsed time between opening an attempt and
-        reporting the view — that is what makes a forged `watched_seconds`
-        useless. Waiting for real seconds in a test would only make it slow.
+        Ilgari to'liq ko'rilgan reklama bo'limni ochardi va buning uchun
+        `/ad/attempt` tokeni va binding tarmog'i bor edi. Endi ko'rsatish
+        faqat kunlik chegara uchun hisoblanadi.
         """
-        async with self.sessions() as session:
-            await session.execute(
-                update(CourseMiniAppEvent)
-                .where(CourseMiniAppEvent.event_name == COURSE_AD_ATTEMPT_EVENT_NAME)
-                .values(
-                    created_at=datetime.now(timezone.utc) - timedelta(seconds=seconds)
-                )
-            )
-            await session.commit()
-
-    async def test_a_fully_watched_ad_opens_the_section(self):
         token = await self._token()
-        access_ref = "b" * 24
-        opened = await self._open_attempt(token, access_ref)
-        await self._age_attempts(8)
-        response = await self._post(
-            "/api/v3/android/ad/view",
-            token,
-            ad_id=1,
-            watched_seconds=7,
-            feature="recognition",
-            access_ref=access_ref,
-            attempt_token=opened["attempt_token"],
-        )
-        self.assertEqual(200, response.status_code, response.text)
+
+        response = await self._ad_view(token)
+
+        self.assertEqual(200, response.status_code)
         body = response.json()
         self.assertTrue(body["ok"])
-        self.assertTrue(body["authorization"]["recorded"])
-
-    async def test_a_view_reported_faster_than_the_ad_could_play_unlocks_nothing(self):
-        # The client claims the full duration a moment after opening the
-        # attempt. Real time has not passed, so nothing opens.
-        token = await self._token()
-        access_ref = "e" * 24
-        opened = await self._open_attempt(token, access_ref)
-        response = await self._post(
-            "/api/v3/android/ad/view",
-            token,
-            ad_id=1,
-            watched_seconds=7,
-            feature="recognition",
-            access_ref=access_ref,
-            attempt_token=opened["attempt_token"],
-        )
-        self.assertEqual(400, response.status_code, response.text)
-        self.assertEqual("ad_attempt_incomplete", response.json()["error"])
-
-    async def test_an_ad_closed_too_early_is_recorded_but_opens_nothing(self):
-        # Not an error: the learner simply stopped watching. Answering
-        # "ad not found" here would send the client looking for a bug.
-        token = await self._token()
-        access_ref = "c" * 24
-        opened = await self._open_attempt(token, access_ref)
-        response = await self._post(
-            "/api/v3/android/ad/view",
-            token,
-            ad_id=1,
-            watched_seconds=1,
-            feature="recognition",
-            access_ref=access_ref,
-            attempt_token=opened["attempt_token"],
-        )
-        self.assertEqual(200, response.status_code, response.text)
-        body = response.json()
-        self.assertFalse(body["ok"])
+        # Hech qanday avtorizatsiya qaytmaydi.
         self.assertNotIn("authorization", body)
-        self.assertEqual(7, body["required_seconds"])
 
-    async def test_a_view_without_an_attempt_unlocks_nothing(self):
-        # This is the forgery case: a client that never opened an attempt
-        # claiming it watched the ad. The server has nothing to check it
-        # against and must refuse.
+    async def test_the_attempt_endpoint_is_gone(self):
         token = await self._token()
+
+        response = await self._post(
+            "/api/v3/android/ad/attempt", token, ad_id=1, access_ref="ref-12345678"
+        )
+
+        self.assertEqual(404, response.status_code)
+
+    async def test_an_old_client_still_sending_the_attempt_fields_is_not_refused(self):
+        # Eski Android build hali `access_ref` va `attempt_token` yuborishi
+        # mumkin — u 422 olmasligi kerak.
+        token = await self._token()
+
         response = await self._post(
             "/api/v3/android/ad/view",
             token,
             ad_id=1,
-            watched_seconds=7,
-            feature="recognition",
-            access_ref="d" * 24,
-            attempt_token="",
+            watched_seconds=9,
+            placement="screen_center",
+            access_ref="ref-12345678",
+            attempt_token="t" * 32,
         )
-        self.assertEqual(400, response.status_code, response.text)
-        self.assertEqual("ad_attempt_required", response.json()["error"])
+
+        self.assertEqual(200, response.status_code)
+
 
     async def test_a_view_for_an_unknown_ad_is_an_error(self):
         token = await self._token()
@@ -1349,7 +1268,6 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/voice/pronounce"),
         ("POST", "/api/v3/android/voice/session/end"),
         ("GET", "/api/v3/android/ad"),
-        ("POST", "/api/v3/android/ad/attempt"),
         ("POST", "/api/v3/android/ad/view"),
     )
 

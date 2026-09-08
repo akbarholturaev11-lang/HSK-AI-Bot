@@ -66,6 +66,7 @@ from app.services.course_miniapp_analytics_service import CourseMiniAppAnalytics
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.ad_placement_service import normalize_placement as normalize_ad_placement
 from app.services.entitlements.gate_shadow import shadow_compare_gate
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
@@ -136,29 +137,24 @@ class AndroidFeatureError(RuntimeError):
 
 
 
-class AndroidAdAttemptRequest(BaseModel):
-    """Opens an ad attempt: the server binds what this view may unlock."""
-
-    model_config = ConfigDict(extra="forbid")
-
-    ad_id: int = Field(ge=1)
-    feature: str = Field(default="", max_length=40)
-    lesson_order: int = Field(default=0, ge=0, le=10_000)
-    access_ref: str = Field(min_length=1, max_length=160)
-
-
 class AndroidAdViewRequest(BaseModel):
-    """Reports a watched ad against an attempt the server issued."""
+    """Reports a watched ad.
 
-    model_config = ConfigDict(extra="forbid")
+    `access_ref` va `attempt_token` OLIB TASHLANDI: ular reklama ko'rib kirish
+    ochish uchun edi. Endi reklama hech narsani ochmaydi, shuning uchun
+    ko'rsatish faqat kunlik chegara uchun hisoblanadi.
+
+    Eski klientlar bu maydonlarni hali yuborishi mumkin, shuning uchun model
+    `extra="ignore"` bilan ishlaydi — aks holda eski build 422 olardi.
+    """
+
+    model_config = ConfigDict(extra="ignore")
 
     ad_id: int = Field(ge=1)
     watched_seconds: int = Field(default=0, ge=0, le=3600)
     feature: str = Field(default="", max_length=40)
     lesson_order: int = Field(default=0, ge=0, le=10_000)
-    placement: str = Field(default="start", max_length=24)
-    access_ref: str = Field(default="", max_length=160)
-    attempt_token: str = Field(default="", max_length=120)
+    placement: str = Field(default="screen_center", max_length=24)
 
 
 class AndroidVoiceMessageRequest(BaseModel):
@@ -574,79 +570,22 @@ def create_android_features_router(
                 AndroidFeatureError("android_ad_unavailable", status_code=503)
             )
 
-    @router.post("/api/v3/android/ad/attempt")
-    async def android_ad_attempt(request: Request):
-        """Opens an ad attempt and returns the token the view must carry.
-
-        The binding — which ad, which section, how many seconds — is written
-        here by the server. That is what makes a forged ``watched_seconds``
-        useless later: the client cannot invent an attempt it did not open.
-        """
-        try:
-            payload = await _validated_payload(request, AndroidAdAttemptRequest)
-            feature = payload.feature.strip().lower()
-            practice_gate = (
-                feature in (ANDROID_AD_GATE_FEATURES - {"lesson"})
-                and payload.lesson_order == 0
-            )
-            lesson_gate = feature == "lesson" and payload.lesson_order > 0
-            if not (practice_gate or lesson_gate):
-                raise AndroidFeatureError("android_request_invalid", status_code=422)
-            async with session_factory() as session:
-                user = await _user(session, request)
-                ad = await CourseAdService(session).get_active_by_id(payload.ad_id)
-                if not ad:
-                    raise AndroidFeatureError("course_ad_not_found", status_code=404)
-                level = str(getattr(user, "level", None) or "hsk1").strip().lower()
-                try:
-                    result = await CourseMiniAppAccessService(session).start_ad_attempt(
-                        user,
-                        feature_key=feature,
-                        access_ref=payload.access_ref.strip(),
-                        ad_id=payload.ad_id,
-                        placement="start",
-                        required_seconds=CourseAdService.normalize_duration(
-                            ad.duration_seconds
-                        ),
-                        level=level if lesson_gate else None,
-                        lesson_order=payload.lesson_order if lesson_gate else None,
-                    )
-                except ValueError as exc:
-                    raise AndroidFeatureError(
-                        "android_request_invalid", status_code=422
-                    ) from exc
-                if not result.get("allowed"):
-                    raise AndroidFeatureError(
-                        str(result.get("error") or "course_access_blocked"),
-                        status_code=403,
-                    )
-                await session.commit()
-            return JSONResponse(
-                content={"ok": True, **result},
-                headers={"Cache-Control": "no-store"},
-            )
-        except (DesktopAuthError, AndroidFeatureError) as exc:
-            return _error_response(exc)
-        except Exception:
-            logger.exception("Android ad attempt failed")
-            return _error_response(
-                AndroidFeatureError("android_ad_unavailable", status_code=503)
-            )
-
     @router.post("/api/v3/android/ad/view")
     async def android_ad_view(request: Request):
-        """Records a watched ad and, when it was watched fully, opens the section.
+        """Reklama ko'rilganini yozadi.
 
-        The decision is the server's: ``record_view`` measures the watched
-        seconds against the creative's own duration, and the authorization is
-        checked against the attempt opened earlier.
+        Ilgari bu yerda `feature` MAJBURIY edi va u reklama qaysi bo'limni
+        ochishini bildirardi. Reklama endi hech narsani ochmaydi, shuning
+        uchun talab ham olib tashlandi: ko'rsatish faqat kunlik chegara uchun
+        hisoblanadi va `feature` ixtiyoriy tashxis maydoni bo'lib qoldi.
         """
         try:
             payload = await _validated_payload(request, AndroidAdViewRequest)
             feature = payload.feature.strip().lower()
-            if payload.lesson_order <= 0 and feature not in ANDROID_AD_GATE_FEATURES:
-                raise AndroidFeatureError("android_request_invalid", status_code=422)
-            placement = CourseAdService.normalize_placement(payload.placement)
+            # Joy nomi endi `lesson_end` / `screen_center`. Eski
+            # `start/middle/end` normalizatori bularni jimgina `start` ga
+            # aylantirib yuborardi, ya'ni kunlik chegara hech qachon to'lmasdi.
+            placement = normalize_ad_placement(payload.placement)
             async with session_factory() as session:
                 user = await _user(session, request)
                 level = str(getattr(user, "level", None) or "hsk1").strip().lower()
@@ -663,45 +602,6 @@ def create_android_features_router(
                 # (not an error — the learner simply stopped). Keep them apart.
                 if result.get("error"):
                     raise AndroidFeatureError(str(result["error"]), status_code=404)
-                access_ref = payload.access_ref.strip()
-                should_authorize = bool(
-                    result.get("ok")
-                    and access_ref
-                    and (
-                        (
-                            payload.lesson_order <= 0
-                            and feature in (ANDROID_AD_GATE_FEATURES - {"lesson"})
-                        )
-                        or (payload.lesson_order > 0 and feature == "lesson")
-                    )
-                )
-                if should_authorize:
-                    try:
-                        authorization = await CourseMiniAppAccessService(
-                            session
-                        ).record_ad_authorization(
-                            user,
-                            feature_key=feature,
-                            access_ref=access_ref,
-                            ad_id=payload.ad_id,
-                            placement=placement,
-                            attempt_token=payload.attempt_token.strip(),
-                            level=level if feature == "lesson" else None,
-                            lesson_order=payload.lesson_order if feature == "lesson" else None,
-                        )
-                    except ValueError:
-                        authorization = {"allowed": False, "error": "invalid_access_ref"}
-                    if not authorization.get("allowed"):
-                        await session.rollback()
-                        code = str(authorization.get("error") or "invalid_ad_authorization")
-                        raise AndroidFeatureError(
-                            code,
-                            status_code=403 if code == "course_access_blocked" else 400,
-                        )
-                    result["authorization"] = {
-                        "recorded": bool(authorization.get("recorded")),
-                        "idempotent": bool(authorization.get("idempotent")),
-                    }
                 await CourseMiniAppAnalyticsService(session).record_server_event(
                     event_name="course_ad_viewed",
                     telegram_id=int(user.telegram_id),
@@ -714,7 +614,6 @@ def create_android_features_router(
                         "placement": placement,
                         "watched_seconds": payload.watched_seconds,
                         "feature": feature or None,
-                        "access_ref": access_ref or None,
                     },
                 )
                 await session.commit()

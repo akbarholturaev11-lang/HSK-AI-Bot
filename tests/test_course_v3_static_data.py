@@ -561,8 +561,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("q.audio_text", mistakes)
         self.assertIn("access_ref:accessRef", html)
         self.assertIn("ad_supported:!!adSupported", html)
-        self.assertIn('CourseAds.play("start",accessRef)', html)
-        self.assertNotIn('.catch(function(){_openExam(which)', html)
+        # Reklama ko'rib bo'limni ochish OLIB TASHLANDI — chaqiruv ham yo'q.
+        self.assertNotIn('CourseAds.play(', html)
         for duration in (25, 30, 35, 40):
             self.assertIn(f"min:{duration}", html)
         self.assertIn("EXD.duration_min", html)
@@ -582,7 +582,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
         html = Path("app/static/course_v3_mistakes.html").read_text(encoding="utf-8")
 
         self.assertIn('feature:"mistake_review"', html)
-        self.assertIn('CourseAds.play("start",accessRef)', html)
+        # Reklama ko'rib xatolar bo'limini ochish OLIB TASHLANDI.
+        self.assertNotIn('CourseAds.play(', html)
         self.assertIn("access_ref:accessRef", html)
         self.assertIn("clearReviewAccessRef()", html)
         self.assertIn('fetch("/api/miniapp/mistakes/review/answer"', html)
