@@ -5,10 +5,10 @@ Android `practice/gate` 403 da `reset_at` bor, Mini App `daily-gate` 403 da
 yo'q — ya'ni telefon "ertaga soat 00:00 da ochiladi" deb ayta oladi, Mini App
 esa yo'q. Bu shakl o'sha farqni yopadi.
 
-Paywall matni bu bosqichda RENDER QILINMAYDI — faqat i18n kalitlari uzatiladi.
-Sabab: CLAUDE.md har qanday yangi ko'rinadigan matnni uchala tilda talab
-qiladi, matn esa 6-bosqichda qo'shiladi. Shunday qilib 1-bosqich umuman
-foydalanuvchiga ko'rinadigan matn kiritmaydi.
+Paywall matni SERVERDA renderlanadi va uchala tilda (uz/ru/tj) mavjud.
+Aks holda uni to'rtta klientda × uchta tilda saqlash kerak bo'lardi — bitta
+so'zni o'zgartirish uchun o'nlab tahrir va bir nechta build. Klient uchun
+kalitlar ham qaytadi: oflaynda o'z zaxira satrini ishlatsin.
 """
 
 from __future__ import annotations
@@ -43,7 +43,17 @@ _LEGACY_ERRORS = {
 
 @dataclass(frozen=True)
 class PaywallHint:
-    """Paywall uchun kerak bo'ladigan hamma narsa — matnning O'ZIDAN tashqari."""
+    """Paywall uchun kerak bo'ladigan hamma narsa.
+
+    Matn SERVERDA renderlanadi. Sabab: aks holda uni to'rtta klientda
+    (Mini App, desktop, Android, bot) × uchta tilda saqlash kerak bo'lardi,
+    ya'ni bitta so'zni o'zgartirish uchun o'nlab tahrir va bir nechta build.
+    Endi matn `app/bot/utils/i18n.py` dagi bitta tahrir bilan hamma joyda
+    yangilanadi.
+
+    Kalitlar ham qaytadi: klient oflaynda yoki server javobi kelmaganda
+    o'zining zaxira satrini ishlatishi uchun.
+    """
 
     surface: str
     title_key: str
@@ -52,14 +62,27 @@ class PaywallHint:
     plan_hint: str
     checkout_allowed: bool
 
-    def as_dict(self) -> dict:
-        return {
+    def as_dict(self, *, language: str | None = None) -> dict:
+        payload = {
             "surface": self.surface,
             "title_key": self.title_key,
             "body_key": self.body_key,
             "cta_key": self.cta_key,
             "plan_hint": self.plan_hint,
             "checkout_allowed": self.checkout_allowed,
+        }
+        if language:
+            payload.update(self.render(language))
+        return payload
+
+    def render(self, language: str) -> dict:
+        """Tayyor matn. Kalit topilmasa `t()` kalitning o'zini qaytaradi."""
+        from app.bot.utils.i18n import t
+
+        return {
+            "title": t(self.title_key, language),
+            "body": t(self.body_key, language),
+            "cta": t(self.cta_key, language),
         }
 
 
@@ -103,7 +126,7 @@ class LimitDecision:
     def legacy_error(self) -> str:
         return _LEGACY_ERRORS.get(self.reason, "")
 
-    def as_dict(self, *, is_paid: bool | None = None) -> dict:
+    def as_dict(self, *, is_paid: bool | None = None, language: str | None = None) -> dict:
         """Klientga yuboriladigan shakl.
 
         `is_paid` — eski maydon: klientlar hozir shuni o'qiydi. Ko'chirish
@@ -133,7 +156,7 @@ class LimitDecision:
             if error:
                 payload["error"] = error
             if self.paywall is not None:
-                payload["paywall"] = self.paywall.as_dict()
+                payload["paywall"] = self.paywall.as_dict(language=language)
         return payload
 
 
