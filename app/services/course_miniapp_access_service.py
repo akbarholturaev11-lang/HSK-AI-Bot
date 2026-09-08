@@ -363,11 +363,26 @@ class CourseMiniAppAccessService:
         return course_daily_window.next_day_reset(offset_minutes, now)
 
     @classmethod
-    def _normalize_daily_feature(cls, feature_key: str) -> str:
+    def _normalize_daily_feature(
+        cls,
+        feature_key: str,
+        *,
+        allow_unknown: bool = False,
+    ) -> str:
+        """Kunlik hisob kalitini tekshiradi.
+
+        ``allow_unknown`` faqat chaqiruvchi limitni O'ZI bergan holatda
+        ishlatiladi (`limit_override`). Shunda kalit `COURSE_DAILY_FREE_LIMITS`
+        da bo'lmasa ham qabul qilinadi — chunki limit bu dictdan olinmaydi.
+        Bu markaziy entitlement dvigateli uchun kerak: u o'z limitini
+        sozlamadan oladi, lekin hisobni SHU jadvalda yuritishi shart.
+        """
         normalized = str(feature_key or "").strip().lower()
-        if normalized not in COURSE_DAILY_FREE_LIMITS:
-            raise ValueError(f"Unknown Course daily feature: {normalized or '<empty>'}")
-        return normalized
+        if normalized in COURSE_DAILY_FREE_LIMITS:
+            return normalized
+        if allow_unknown and normalized:
+            return normalized
+        raise ValueError(f"Unknown Course daily feature: {normalized or '<empty>'}")
 
     @staticmethod
     def normalize_access_ref(access_ref: str) -> str:
@@ -862,11 +877,28 @@ class CourseMiniAppAccessService:
         )
         return int(result.scalar_one() or 0)
 
-    async def daily_status(self, user, feature_key: str, *, lifetime: bool = False) -> dict:
+    async def daily_status(
+        self,
+        user,
+        feature_key: str,
+        *,
+        lifetime: bool = False,
+        limit_override: int | None = None,
+    ) -> dict:
         """Bepul holatni qaytaradi (yozmasdan). ``lifetime=True`` bo'lsa — umrbod
-        hisob (kunlik yangilanmaydi)."""
-        feature_key = self._normalize_daily_feature(feature_key)
-        limit = COURSE_DAILY_FREE_LIMITS[feature_key]
+        hisob (kunlik yangilanmaydi).
+
+        ``limit_override`` berilsa chegara `COURSE_DAILY_FREE_LIMITS` dan emas,
+        chaqiruvchidan olinadi. Berilmasa — bugungi xatti-harakat aynan o'zi.
+        """
+        feature_key = self._normalize_daily_feature(
+            feature_key, allow_unknown=limit_override is not None
+        )
+        limit = (
+            int(limit_override)
+            if limit_override is not None
+            else COURSE_DAILY_FREE_LIMITS[feature_key]
+        )
         if self.is_paid_user(user):
             return {"allowed": True, "is_paid": True, "limit": limit, "used": 0, "remaining": None}
         if not self.is_free_user(user):
@@ -891,6 +923,7 @@ class CourseMiniAppAccessService:
         ref: str | None = None,
         lifetime: bool = False,
         notify_bot=None,
+        limit_override: int | None = None,
     ) -> dict:
         """Limitdan bitta foydalanishni band qiladi. Limit tugagan bo'lsa
         ``allowed=False`` qaytaradi (paywall ko'rsatish uchun).
@@ -899,9 +932,20 @@ class CourseMiniAppAccessService:
 
         ``ref`` berilsa — o'sha foydalanish idempotent bo'ladi: bir xil ``ref``
         bilan takroriy chaqiruv (sahifa qayta yuklanishi, tarmoq retry) qo'shimcha
-        slot egallamaydi."""
-        feature_key = self._normalize_daily_feature(feature_key)
-        limit = COURSE_DAILY_FREE_LIMITS[feature_key]
+        slot egallamaydi.
+
+        ``limit_override`` berilsa chegara `COURSE_DAILY_FREE_LIMITS` dan emas,
+        chaqiruvchidan olinadi (markaziy entitlement dvigateli uchun). Hisob
+        baribir SHU jadvalda yuritiladi, ya'ni ikkala yo'l bir xil slotlarni
+        sanaydi."""
+        feature_key = self._normalize_daily_feature(
+            feature_key, allow_unknown=limit_override is not None
+        )
+        limit = (
+            int(limit_override)
+            if limit_override is not None
+            else COURSE_DAILY_FREE_LIMITS[feature_key]
+        )
         if self.is_paid_user(user):
             return {"allowed": True, "recorded": False, "is_paid": True, "remaining": None}
         if not self.is_free_user(user):
