@@ -8,6 +8,7 @@ from app.db.base import Base
 
 
 COURSE_MINIAPP_EVENT_NAMES = (
+    "hint_dismissed",
     "miniapp_opened",
     "onboarding_started",
     "onboarding_completed",
@@ -101,6 +102,9 @@ COURSE_MINIAPP_EVENT_NAMES = (
 )
 
 CLIENT_COURSE_MINIAPP_EVENT_NAMES = (
+    # Maslahat blokchasini yopish. Klientdan keladi va faqat
+    # "bu odam buni ko'rgan" faktini yozadi.
+    "hint_dismissed",
     "onboarding_started",
     "level_selected",
     "goal_selected",

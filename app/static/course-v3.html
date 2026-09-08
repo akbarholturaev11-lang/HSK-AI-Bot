@@ -27,6 +27,12 @@ html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-famil
 .scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
 .scr.on{display:block}
 button{cursor:pointer}
+.hint{display:flex;gap:10px;align-items:flex-start;margin:0 16px 10px;padding:11px 12px;background:var(--card);border:1px solid var(--line);border-radius:13px}
+.hint i.hi{color:var(--ink3);font-size:17px;line-height:1.3;flex:0 0 auto}
+.hint .hb{flex:1;min-width:0}
+.hint .ht{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.hint .hd{font-size:12.5px;color:var(--ink2);line-height:1.45}
+.hint .hx{flex:0 0 auto;background:none;border:none;color:var(--ink3);font-size:15px;padding:2px 0 0 2px;line-height:1}
 /* top */
 .htop{display:flex;align-items:center;gap:8px;padding:14px 16px 10px;position:sticky;top:var(--safe-t);background:var(--paper);z-index:4}
 .lvpill{display:flex;align-items:center;gap:6px;background:var(--cin);color:#fff;font-size:13px;font-weight:500;padding:7px 13px;border-radius:20px;border:none;font-family:inherit}
@@ -1477,6 +1483,7 @@ var App={
     SALES_PAYWALL_ACTIVE=false;SALES_PAYWALL_IMPRESSION="";$("#paywall").classList.remove("on");stopSheetPromo();
   },
   /* 7 kunlik bepul Pro — profil kartasi va tanlov ekranidan chaqiriladi. */
+  closeHint:function(key){return closeHint(key)},
   startTrial:function(source){return trialStart(source||"profile")},
   goPay:function(src){
     if(CHECKOUT_NAVIGATING)return;
@@ -2532,6 +2539,7 @@ function renderCourse(){
        "Qaytarish" bo'lib qolaveradi. */
     +(foundationMustComeFirst()?"":todayPlanHtml())
     +'</div><div class="cmain">'
+    +hintsHtml("course")
     +foundationEntryHtml();
   var mascP={ru:["Продолжаем!","Так держать!","Ещё урок!","У тебя получится!"],
     uz:["Davom etamiz!","Zo'r ketyapsan!","Yana bir dars!","Sen uddalaysan!"],
@@ -4307,7 +4315,7 @@ function flowDone(){
 /* ---------- Mashq ---------- */
 function renderMashq(){
   var t=T();
-  $("#s-mashq").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-cards"></i> '+t.nav.mashq+'</span></div>'
+  $("#s-mashq").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-cards"></i> '+t.nav.mashq+'</span></div>'+hintsHtml("mashq")
     +'<div class="phead"><div class="sub">'+t.mashqSub+'</div></div>'
     +'<div class="sech">'+t.grammar+' · '+t.pron+'</div>'
     +rowCard("t-amber",'<span class="han">字</span>',t.dict,t.dictSub,"App.openDict()","m-dict")
@@ -4322,7 +4330,7 @@ function rowCard(cls,ic,title,sub,act,id){return '<button class="row-card"'+(id?
 /* ---------- Voice ---------- */
 function renderVoice(){
   var t=T();
-  $("#s-voice").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-microphone"></i> AI Voice</span></div>'
+  $("#s-voice").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-microphone"></i> AI Voice</span></div>'+hintsHtml("voice")
     +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+t.voiceTitle+'</h3><p>'+t.voiceSub+'</p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+t.voiceStart+'</button></div>';
   /* Bo'lim ochilganda panda sakrab kirib keladi */
   pandaFx(document.querySelector("#s-voice .voicebox .pd"),"pop");
@@ -4717,7 +4725,7 @@ function _renderRatingContent(){
   var t=T(),r=rl();
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
-	  var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'
+	  var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'+hintsHtml("rating")
 	    +'<div class="rt-seg"><button class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
 	  if(ratingTabCur==="friends"){
 	    if(!referralMeta.loaded&&INIT_DATA){
@@ -5106,6 +5114,36 @@ function maybeShowPlanChoice(){
     +'<button class="scta" style="margin-top:8px;background:var(--card);color:var(--ink);border:1px solid var(--line)" onclick="App.startTrial(\'onboarding_plan\')"><i class="ti ti-gift"></i> '+esc(t.trialCta||"")+'</button>'
     +'<button class="scta" style="margin-top:8px;background:transparent;color:var(--mut);border:none" onclick="App.closeSheet()">'+esc(t.planFree||"")+'</button>');
 }
+/* ---------- Mayda tushuntirish blokchalari ----------
+   Serverdan keladi (`MAP.hints`). Uch qoida:
+     • majburiy emas — oqimni to'xtatmaydi, X bilan yopiladi;
+     • mayda — sarlavha + bitta jumla, modal emas;
+     • bir marta — yopilgani serverga yoziladi.
+   Bo'lim tanishtiruvi uzoq tanaffusdan keyin qayta chiqishi mumkin; buni ham
+   server hal qiladi, klient faqat ko'rsatadi. */
+function hintsFor(section){
+  var list=(MAP&&MAP.hints)||[];
+  return list.filter(function(h){return h&&h.section===section&&!hintDismissedLocally(h.key)});
+}
+var HINTS_CLOSED={};
+function hintDismissedLocally(key){return !!HINTS_CLOSED[key]}
+function hintHtml(h){
+  return '<div class="hint" data-hint="'+esc(h.key)+'">'
+    +'<i class="ti ti-info-circle hi"></i>'
+    +'<div class="hb"><div class="ht">'+esc(h.title||"")+'</div>'
+    +'<div class="hd">'+esc(h.body||"")+'</div></div>'
+    +'<button class="hx" aria-label="close" onclick="App.closeHint(\''+esc(h.key)+'\')">'
+    +'<i class="ti ti-x"></i></button></div>';
+}
+function hintsHtml(section){return hintsFor(section).map(hintHtml).join("")}
+/* Yopilganda: darhol yo'qoladi (kutish yo'q), server yozuvi fon rejimida.
+   Yozuv yiqilsa ham foydalanuvchi uchun blokcha yopilgan bo'lib qoladi. */
+function closeHint(key){
+  HINTS_CLOSED[key]=true;
+  var node=document.querySelector('[data-hint="'+key+'"]');
+  if(node&&node.parentNode)node.parentNode.removeChild(node);
+  trackCourseEvent("hint_dismissed",{hint:key,dedupe_key:"hint:"+key});
+}
 function trialProfileCard(){
   var t=T();
   if(!TRIAL_STATE)return "";
@@ -5132,7 +5170,7 @@ function renderProfile(){
   var firstDone=completedLessons>=1;
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
-  $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'
+  $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'+hintsHtml("profile")
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span></div></div>'
     +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="'+(pct>=100?"var(--gold)":"var(--cin)")+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+(dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
     +'<div id="pomp-desktop-profile-root"></div>'

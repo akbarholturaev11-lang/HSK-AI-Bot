@@ -64,6 +64,24 @@ TEXTS = {
         "limit_lesson_warning_notice": "📘 <b>Дарсҳои ройгон ба охир мерасанд</b>\n\n<blockquote>Ҳамагӣ {remaining} қисми ройгон мондааст. Идомаи курс бо обуна кушода мешавад.</blockquote>",
         "limit_lesson_spent_notice": "🔒 <b>Дарсҳои ройгон тамом шуданд</b>\n\n<blockquote>Идомаи курс бо обуна кушода мешавад.</blockquote>",
         "limit_daily_spent_notice": "🔒 <b>Лимити рӯзона тамом шуд</b>\n\n<blockquote>Лимит соати {reset_time} дубора кушода мешавад. Бо обуна интизор шудан лозим нест.</blockquote>",
+        # --- Mini App дохилидаги майда тушунтириш блокчалари.
+        # Ҳар бири: битта сарлавҳа + битта ҷумла. Мачбурӣ нест, X бо пӯшида мешавад.
+        "hint_change_paywall_title": "Реклама бо давом додан бекор шуд",
+        "hint_change_paywall_body": "Лимит тамом шавад, акнун реклама пешниҳод намешавад. Ройгон фардо дубора кушода мешавад.",
+        "hint_change_trial_title": "7 рӯз Pro ройгон",
+        "hint_change_trial_body": "Ҳоло як маротиба ройгон санҷида метавонед. Худкор пул гирифта намешавад.",
+        "hint_change_ads_title": "Реклама камтар шуд",
+        "hint_change_ads_body": "Дар дохили машқҳо дигар реклама нест. Танҳо баъди дарс ва баъзан дар маркази экран.",
+        "hint_section_course_title": "Курс",
+        "hint_section_course_body": "Дарсҳо пай дар пай. Ҳар дарс ба қисмҳои хурд тақсим шудааст.",
+        "hint_section_practice_title": "Машқ",
+        "hint_section_practice_body": "Калимаҳои омӯхтаатонро мустаҳкам мекунад: шинохт, навиштан, талаффуз.",
+        "hint_section_voice_title": "AI Voice",
+        "hint_section_voice_body": "Бо чинӣ гап мезанед, AI ҷавоб медиҳад ва талаффузатонро месанҷад.",
+        "hint_section_rating_title": "Рейтинг",
+        "hint_section_rating_body": "Ҳафтаина бо дигар хонандагон муқоиса. Барои XP боло меравед.",
+        "hint_section_profile_title": "Профил",
+        "hint_section_profile_body": "Пешрафт, стрик ва дастовардҳо. Обуна ҳам аз ҳамин ҷо.",
         # --- Paywall matnlari. Sirt bo'yicha: dars / AI / ovoz / speaking /
         # mashq / study. 14 ta harakat uchun 14 xil matn yozilmaydi.
         "paywall_lesson_title": "📚 <b>Имрӯзи дарсҳои ройгонатон тамом шуд</b>",
@@ -192,6 +210,24 @@ TEXTS = {
         "limit_lesson_warning_notice": "📘 <b>Бесплатные уроки заканчиваются</b>\n\n<blockquote>Осталось бесплатных частей: {remaining}. Продолжение курса открывается по подписке.</blockquote>",
         "limit_lesson_spent_notice": "🔒 <b>Бесплатные уроки закончились</b>\n\n<blockquote>Продолжение курса открывается по подписке.</blockquote>",
         "limit_daily_spent_notice": "🔒 <b>Дневной лимит исчерпан</b>\n\n<blockquote>Лимит откроется в {reset_time}. С подпиской ждать не нужно.</blockquote>",
+        # --- Маленькие пояснения внутри Mini App.
+        # Каждое: заголовок + одно предложение. Не обязательное, закрывается X.
+        "hint_change_paywall_title": "Реклама вместо лимита убрана",
+        "hint_change_paywall_body": "Когда лимит закончится, реклама больше не предлагается. Бесплатное откроется завтра.",
+        "hint_change_trial_title": "7 дней Pro бесплатно",
+        "hint_change_trial_body": "Один раз можно попробовать бесплатно. Деньги автоматически не спишутся.",
+        "hint_change_ads_title": "Рекламы стало меньше",
+        "hint_change_ads_body": "Внутри упражнений рекламы больше нет. Только после урока и иногда по центру экрана.",
+        "hint_section_course_title": "Курс",
+        "hint_section_course_body": "Уроки по порядку. Каждый урок разбит на короткие части.",
+        "hint_section_practice_title": "Практика",
+        "hint_section_practice_body": "Закрепляет выученные слова: узнавание, письмо, произношение.",
+        "hint_section_voice_title": "AI Voice",
+        "hint_section_voice_body": "Говорите по-китайски, AI отвечает и проверяет произношение.",
+        "hint_section_rating_title": "Рейтинг",
+        "hint_section_rating_body": "Недельное сравнение с другими. Поднимаетесь за XP.",
+        "hint_section_profile_title": "Профиль",
+        "hint_section_profile_body": "Прогресс, серия и достижения. Подписка тоже отсюда.",
         # --- Тексты paywall по поверхности: урок / AI / голос / speaking /
         # практика / study.
         "paywall_lesson_title": "📚 <b>Бесплатные уроки на сегодня закончились</b>",
@@ -315,6 +351,24 @@ TEXTS = {
         "limit_lesson_warning_notice": "📘 <b>Bepul darslar tugayapti</b>\n\n<blockquote>Bepul qismlardan {remaining} ta qoldi. Kursning davomi obuna bilan ochiladi.</blockquote>",
         "limit_lesson_spent_notice": "🔒 <b>Bepul darslar tugadi</b>\n\n<blockquote>Kursning davomi obuna bilan ochiladi.</blockquote>",
         "limit_daily_spent_notice": "🔒 <b>Kunlik limit tugadi</b>\n\n<blockquote>Limit {reset_time} da qayta ochiladi. Obuna bilan kutish shart emas.</blockquote>",
+        # --- Mini App ichidagi mayda tushuntirishlar.
+        # Har biri: sarlavha + bitta jumla. Majburiy emas, X bilan yopiladi.
+        "hint_change_paywall_title": "Reklama bilan davom etish olib tashlandi",
+        "hint_change_paywall_body": "Limit tugaganda endi reklama taklif qilinmaydi. Bepul ertaga qayta ochiladi.",
+        "hint_change_trial_title": "7 kun Pro bepul",
+        "hint_change_trial_body": "Bir marta bepul sinab ko'rsangiz bo'ladi. Avtomatik pul yechilmaydi.",
+        "hint_change_ads_title": "Reklama kamaydi",
+        "hint_change_ads_body": "Mashqlar ichida reklama endi yo'q. Faqat dars tugagach va ba'zan ekran markazida.",
+        "hint_section_course_title": "Kurs",
+        "hint_section_course_body": "Darslar ketma-ket. Har dars qisqa qismlarga bo'lingan.",
+        "hint_section_practice_title": "Mashq",
+        "hint_section_practice_body": "O'rgangan so'zlaringizni mustahkamlaydi: tanish, yozish, talaffuz.",
+        "hint_section_voice_title": "AI Voice",
+        "hint_section_voice_body": "Xitoycha gapirasiz, AI javob beradi va talaffuzingizni tekshiradi.",
+        "hint_section_rating_title": "Reyting",
+        "hint_section_rating_body": "Haftalik taqqoslash. XP uchun yuqoriga ko'tarilasiz.",
+        "hint_section_profile_title": "Profil",
+        "hint_section_profile_body": "Progress, streak va yutuqlar. Obuna ham shu yerdan.",
         # --- Paywall matnlari sirt bo'yicha: dars / AI / ovoz / speaking /
         # mashq / study.
         "paywall_lesson_title": "📚 <b>Bugungi bepul darslaringiz tugadi</b>",

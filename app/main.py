@@ -36,6 +36,7 @@ from app.api.miniapp_entitlements import (
 )
 from app.services.ad_placement_service import AdPlacementService
 from app.services.entitlements.limits_config import LimitConfigService
+from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService
 from app.services.trial_reminder_service import TrialReminderService
 from app.services.entitlements.shadow import EntitlementShadowService
@@ -1802,6 +1803,10 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             is_paid=is_paid,
             access_policy=access_policy,
         )
+
+        # Mayda tushuntirish blokchalari. Ro'yxat bo'sh bo'lishi — normal
+        # holat; maslahat hech qachon oqimni to'xtatmaydi.
+        data["hints"] = await MiniAppHintService(session).hints_for(user)
 
         entry_source = _checkout_text(
             request.query_params.get("source") or "course_v3",
