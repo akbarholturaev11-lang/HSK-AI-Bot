@@ -34,6 +34,7 @@ from app.api.miniapp_entitlements import (
     create_miniapp_entitlements_router,
 )
 from app.services.entitlements.limits_config import LimitConfigService
+from app.services.pro_trial_service import ProTrialService
 from app.services.entitlements.shadow import EntitlementShadowService
 from app.api.miniapp_practice import create_miniapp_practice_router
 from app.api.miniapp_preferences import create_miniapp_preferences_router
@@ -439,6 +440,12 @@ async def _background_scheduler(bot: Bot) -> None:
                 _, expired_paid_user_ids = await AccessService(session).downgrade_expired_active_users()
                 for telegram_id in expired_paid_user_ids:
                     await _send_subscription_expired_offer(session, telegram_id)
+            async with async_session_maker() as session:
+                # Muddati o'tgan 7 kunlik Pro triallar. Tugash foydalanuvchini
+                # bepul darajaga tushiradi — progressiga, tarixiga va so'zlariga
+                # tegilmaydi.
+                await ProTrialService(session).expire_due()
+                await session.commit()
             async with async_session_maker() as session:
                 await DailyResetService(session).send_daily_reset_notifications(bot)
             async with async_session_maker() as session:

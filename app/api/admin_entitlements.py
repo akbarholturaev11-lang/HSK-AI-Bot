@@ -23,7 +23,9 @@ import logging
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
+from app.repositories.user_repo import UserRepository
 from app.services.entitlements.limits_config import LimitConfigService
+from app.services.pro_trial_service import ProTrialService
 from app.services.entitlements.shadow import (
     ROLLOUT_CLEAN_DAYS,
     ROLLOUT_MIN_SAMPLES,
@@ -81,6 +83,43 @@ def create_admin_entitlements_router(*, session_factory, admin_guard) -> APIRout
             await session.commit()
         logger.info("admin_limits_saved admin_id=%s", telegram_id)
         return JSONResponse(content={"ok": True, "limits": config.public_payload()})
+
+    @router.post("/api/admin-miniapp/trial/revoke")
+    async def admin_trial_revoke(request: Request):
+        """Suiiste'mol aniqlansa, jonli trialni qo'lda yopish.
+
+        `trial_used` tozalanmaydi — ya'ni qaytadan olishga yo'l ochilmaydi.
+        """
+        telegram_id, auth_error = admin_guard(request)
+        if auth_error:
+            return auth_error
+        payload = await _body(request)
+        try:
+            target_id = int(payload.get("telegram_id") or 0)
+        except (TypeError, ValueError):
+            target_id = 0
+        if not target_id:
+            return JSONResponse(
+                status_code=400, content={"ok": False, "error": "invalid_telegram_id"}
+            )
+        reason = str(payload.get("reason") or "").strip()[:200]
+
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(target_id)
+            if not user:
+                return JSONResponse(
+                    status_code=404, content={"ok": False, "error": "user_not_found"}
+                )
+            revoked = await ProTrialService(session).revoke(
+                user, admin_telegram_id=telegram_id, reason=reason
+            )
+            if not revoked:
+                return JSONResponse(
+                    status_code=409,
+                    content={"ok": False, "error": "no_active_trial"},
+                )
+            await session.commit()
+        return JSONResponse(content={"ok": True, "telegram_id": target_id})
 
     @router.post("/api/admin-miniapp/entitlement-shadow")
     async def admin_entitlement_shadow(request: Request):

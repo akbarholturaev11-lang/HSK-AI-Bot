@@ -29,6 +29,19 @@ class ConversionFunnelService:
         "payment_screenshot_submitted": "Skrinshot",
         "payment_approved": "Tasdiq",
         "payment_rejected": "Rad",
+        # Har bir yangi nom SHU yerda ham bo'lishi SHART: `admin_funnel_text`
+        # `EVENT_LABELS[name]` qiladi va `counts_by_event` `EVENT_NAMES` dagi
+        # har bir nom bo'yicha kalit qaytaradi. Yozuvi yo'q nom admin
+        # hisobotini `KeyError` bilan yiqitadi.
+        "onboarding_completed": "Onboarding",
+        "plan_choice_seen": "Tarif tanlovi",
+        "trial_started": "Trial boshlandi",
+        "trial_expired": "Trial tugadi",
+        "trial_converted": "Trial → to'lov",
+        "limit_hit": "Limitga urildi",
+        "paywall_cta_clicked": "Paywall bosildi",
+        "ad_shown": "Reklama ko'rsatildi",
+        "ad_skipped": "Reklama tashlandi",
     }
     RATE_PAIRS = (
         ("CTA → Kurs", "course_started", "course_cta_seen"),
@@ -40,6 +53,9 @@ class ConversionFunnelService:
         ("To'lov → Skrinshot", "payment_screenshot_submitted", "checkout_opened"),
         ("Skrinshot → Tasdiq", "payment_approved", "payment_screenshot_submitted"),
         ("Skrinshot → Rad", "payment_rejected", "payment_screenshot_submitted"),
+        # Trial voronkasining yagona muhim nisbati: trial olganlarning
+        # qanchasi to'lovga o'tdi.
+        ("Trial → To'lov", "trial_converted", "trial_started"),
     )
 
     def __init__(self, session=None):

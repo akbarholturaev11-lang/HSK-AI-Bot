@@ -26,6 +26,7 @@ from app.services.course_miniapp_access_service import (
     CourseMiniAppAccessService,
 )
 from app.services.entitlements.gate_shadow import shadow_compare_gate
+from app.services.pro_trial_service import ProTrialService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 
 
@@ -171,6 +172,53 @@ def create_miniapp_entitlements_router(
                     "remaining": result.get("remaining"),
                 }
             )
+
+    @router.post("/api/v3/trial/start")
+    async def v3_trial_start(request: Request):
+        """7 kunlik Pro trialni boshlaydi.
+
+        Email tasdiqlash YO'Q — auditoriya Telegram orqali keladi va pochta
+        so'rash aktivatsiyani keskin tushirardi. Himoya: bitta Telegram
+        akkaunt = bitta trial, plus admin qo'lidagi kill-switch.
+        """
+        telegram_id, _payload = await _authenticated(request)
+        if not telegram_id:
+            return JSONResponse(
+                status_code=401,
+                content={"ok": False, "error": "invalid_telegram_init_data"},
+            )
+
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return JSONResponse(
+                    status_code=403, content={"ok": False, "error": "access_start_first"}
+                )
+            result = await ProTrialService(session).start(
+                user, source="miniapp_trial", client=CLIENT
+            )
+            if not result.get("ok"):
+                return JSONResponse(status_code=409, content=result)
+            await session.commit()
+        return JSONResponse(content=result)
+
+    @router.post("/api/v3/trial/status")
+    async def v3_trial_status(request: Request):
+        """Trial taklif qilinadimi va nima uchun yo'q."""
+        telegram_id, _payload = await _authenticated(request)
+        if not telegram_id:
+            return JSONResponse(
+                status_code=401,
+                content={"ok": False, "error": "invalid_telegram_init_data"},
+            )
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return JSONResponse(
+                    status_code=403, content={"ok": False, "error": "access_start_first"}
+                )
+            verdict = await ProTrialService(session).eligibility(user)
+        return JSONResponse(content={"ok": True, "trial": verdict})
 
     @router.post("/api/v3/practice/ad-gate")
     async def v3_practice_ad_gate(request: Request):
