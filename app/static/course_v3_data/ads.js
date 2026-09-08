@@ -401,6 +401,39 @@
      bosqichma-bosqich olib tashlanadi. */
   function play(){ return Promise.resolve(false); }
 
+  /* 7 kunlik trial — bu moduldan so'raladi.
+
+     Nega shu yerda: paywall to'rt xil sahifadan chaqiriladi (kurs, tanish,
+     talaffuz, test, xatolar) va ularning har biriga trial so'rovini alohida
+     yozish — to'rt joyda takrorlanadigan mantiq. Chaqiruvchi o'zi
+     `trialEligible` bersa, o'shanisi ishlatiladi.
+
+     Server rad etsa ham oqim buzilmaydi: tugma shunchaki chiqmaydi. */
+  var TRIAL={loaded:false,eligible:false};
+  function trialStatus(){
+    if(TRIAL.loaded)return Promise.resolve(TRIAL.eligible);
+    if(!CFG.initData)return Promise.resolve(false);
+    return fetch("/api/v3/trial/status",{method:"POST",
+      headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},body:"{}"})
+      .then(function(r){return r.json()})
+      .then(function(d){TRIAL.loaded=true;TRIAL.eligible=!!(d&&d.ok&&d.trial&&d.trial.eligible);return TRIAL.eligible})
+      .catch(function(){TRIAL.loaded=true;TRIAL.eligible=false;return false});
+  }
+  function trialStart(source){
+    if(!CFG.initData)return Promise.resolve(false);
+    return fetch("/api/v3/trial/start",{method:"POST",
+      headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData},
+      body:JSON.stringify({source:source||"paywall"})})
+      .then(function(r){return r.json().then(function(d){return{status:r.status,d:d||{}}})})
+      .then(function(res){
+        var ok=res.status===200&&res.d.ok;
+        /* Ochilgach sahifa qayta yuklanadi: kirish qoidalari o'zgardi va
+           ekrandagi hamma narsa eskirdi. */
+        if(ok)setTimeout(function(){location.reload()},700);
+        return ok;
+      }).catch(function(){return false});
+  }
+
   /* Limit paywallini yopadi.
 
      `closeOverlay` umumiy overlayni yopadi, lekin paywall uni `limit` klassi
@@ -445,11 +478,26 @@
        reklama endi hech narsani ochmaydi, shuning uchun o'sha joyda 7 kunlik
        bepul Pro taklifi turadi. Faqat odam hali trial olmagan bo'lsa. */
     els.limFoot.hidden=false;
-    if(opts.trialEligible&&typeof opts.onTrial==="function"){
+    /* Trial tugmasi: chaqiruvchi aytmasa, modulning o'zi serverdan so'raydi.
+       Shunday qilib taklif TO'RTALA sahifada ham bir xil chiqadi. */
+    function showTrialButton(onTrial){
       els.limAd.hidden=false;
       els.limAd.innerHTML='<i class="ti ti-crown"></i> '+esc(t.limitTrial);
-      els.limAd.onclick=function(){var cb=opts.onTrial;_closeLimit();if(typeof cb==="function")cb()};
-    }else{els.limAd.hidden=true}
+      els.limAd.onclick=function(){
+        _closeLimit();
+        if(typeof onTrial==="function")onTrial();
+        else trialStart(opts.source||"paywall");
+      };
+    }
+    els.limAd.hidden=true;
+    if(opts.trialEligible&&typeof opts.onTrial==="function"){
+      showTrialButton(opts.onTrial);
+    }else if(opts.trialEligible===undefined){
+      trialStatus().then(function(eligible){
+        /* Oyna shu orada yopilgan bo'lishi mumkin — tugmani tiriltirmaymiz. */
+        if(eligible&&els.ov.classList.contains("limit"))showTrialButton(opts.onTrial);
+      });
+    }
     /* Chiqish — o'ng yuqori burchakdagi X (pastda "orqaga" tugma yo'q). */
     els.x.onclick=function(){var cb=opts.onBack;_closeLimit();if(typeof cb==="function")cb()};
     /* Media yo'q — to'g'ridan promo (done) ko'rinishi. */

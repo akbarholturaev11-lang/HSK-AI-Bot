@@ -231,22 +231,35 @@ class CourseMiniAppAccessTests(unittest.TestCase):
         self.assertEqual(COURSE_DAILY_FREE_LIMITS.get("recognition"), 1)
 
     def test_free_course_parts_are_level_aware(self):
+        """Bepul chegara HSK DARSLIGI darsining oxirida tugaydi.
+
+        beginner/hsk1/hsk2 uchun son manifestdan olinadi — birinchi darsning
+        BARCHA qismlari bepul, ya'ni odam yarim darsda emas, to'liq bir
+        darsni tugatgach limitga uriladi. hsk3/hsk4 da birinchi dars 6-9
+        qismdan iborat, shuning uchun ular ataylab eski ikki qismlik
+        ko'rinishda qoladi.
+
+        Bu sonlar — DAROMADGA tegishli qaror. O'zgarsa, bu yerda ko'rinadi.
+        """
         self.assertEqual(free_course_parts_for_level("beginner"), 3)
         self.assertEqual(free_course_parts_for_level("hsk1"), 3)
-        for level in ("hsk2", "hsk3", "hsk4", "hsk4a", "hsk4b"):
+        self.assertEqual(free_course_parts_for_level("hsk2"), 5)
+        for level in ("hsk3", "hsk4", "hsk4a", "hsk4b"):
             self.assertEqual(free_course_parts_for_level(level), 2)
         self.assertEqual(free_course_parts_for_level("unknown"), 2)
 
     def test_unpaid_course_lesson_policy_includes_hsk1_checkpoint(self):
         # HSK1 mini-parts 1-3 are fully free; part 4 is the first premium
-        # preview. HSK2-HSK4 retain the existing two-part allowance.
+        # preview. HSK2's first textbook lesson (5 parts) is free too;
+        # HSK3-HSK4 retain the two-part allowance.
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 1))
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 2))
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 3))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 4))
+        # HSK2 ning birinchi darsligi darsi 5 qismdan iborat va u to'liq bepul.
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 1))
-        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 2))
-        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 3))
+        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 5))
+        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 6))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk4", 4))
 
 

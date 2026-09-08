@@ -123,7 +123,9 @@ class CourseLessonMistakeMaterialServiceTests(unittest.TestCase):
         material = items[0]["material"]
         self.assertEqual(material["language"], "tj")
         self.assertEqual(material["sentence"], "你好")
-        self.assertEqual(material["pinyin"], "nǐ hǎo (tabiiy: ní hǎo)")
+        # Pinyin maydoni uchala til uchun bitta — unda til so'zi
+        # bo'lmasligi kerak. O'q "yoziladi → o'qiladi" ni so'zsiz aytadi.
+        self.assertEqual(material["pinyin"], "nǐ hǎo → ní hǎo")
         self.assertEqual(material["source"]["section"], 3)
 
     def test_match_pairs_uses_canonical_pair_indexes(self):

@@ -269,7 +269,7 @@ function renderResult(d){
 }
 function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
 function showLimitNow(adAvailable){
-  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:adAvailable,reason:L.limitWhy,onSubscribe:goPay,onContinueAd:startAdSupported,onBack:function(){}});return}
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:L.limitWhy,onSubscribe:goPay,onBack:function(){}});return}
   var ab=document.getElementById("lim-ad");
   if(ab){
     if(adAvailable){document.getElementById("lim-ad-t").textContent=L.adCont;ab.hidden=false;$("lim-text").textContent=L.adLimitText;}

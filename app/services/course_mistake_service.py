@@ -1,4 +1,5 @@
 import hashlib
+import unicodedata
 import json
 import re
 from datetime import datetime, timezone
@@ -435,19 +436,56 @@ class CourseMistakeService:
             "items": overview_items,
         }
 
+    @staticmethod
+    def _answer_key(value: str) -> str:
+        """Ikki javob KO'RINISHDA bir xilmi.
+
+        Bosh harf, ortiqcha bo'shliq va tinish belgilari e'tiborga olinmaydi:
+        ekranda "Салом ..." va "салом ..." bitta variant, ikkita emas.
+        """
+
+        text = unicodedata.normalize("NFKC", str(value or "")).casefold()
+        text = re.sub(r"[\s\u00a0]+", " ", text)
+        text = re.sub(r"[.,;:!?()\[\]{}«»\"'’`\-—–/\\]", "", text)
+        return text.strip()
+
     @classmethod
     def _review_question(cls, item: CourseMistake, category_answers: list[str]) -> dict | None:
         material = cls._stored_material(item)
         correct_answer = cls._text(item.correct_answer)
         user_answer = cls._text(item.user_answer)
-        options = []
-        if user_answer and user_answer != correct_answer:
-            options.append(user_answer)
         material_options = material.get("options") if isinstance(material.get("options"), list) else []
-        for value in (correct_answer, *material_options, *category_answers):
-            normalized = cls._text(value)
-            if normalized and normalized not in options:
-                options.append(normalized)
+
+        # Variantlar MA'NO bo'yicha takrorlanmasligi kerak, matn bo'yicha emas.
+        #
+        # Bu jonli chiqdi va ekranda shunday ko'rindi: ikkala variant ham
+        # "салом навишта мешавад nǐ hǎo", farqi faqat birinchi harfning katta
+        # yozilishi. Bunday savolga javob berib bo'lmaydi — qaysi tugmani
+        # bosmasin, foydalanuvchi xato qilishi mumkin.
+        #
+        # Sabab: chalg'ituvchi variantlar SHU toifadagi boshqa xatolarning
+        # javoblaridan olinadi, va ular boshqa manbadan kelgani uchun bosh
+        # harfi yoki tinish belgisi bilan farq qilishi mumkin.
+        #
+        # To'g'ri javob BIRINCHI qo'shiladi: takrorlanish topilganda aynan u
+        # saqlanib qolishi shart, aks holda `options.index(correct_answer)`
+        # yiqiladi.
+        seen: set[str] = set()
+        options: list[str] = []
+
+        def take(value) -> None:
+            text = cls._text(value)
+            if not text:
+                return
+            key = cls._answer_key(text)
+            if not key or key in seen:
+                return
+            seen.add(key)
+            options.append(text)
+
+        take(correct_answer)
+        for value in (user_answer, *material_options, *category_answers):
+            take(value)
         options = options[:4]
         if len(options) < 2:
             return None
@@ -477,6 +515,12 @@ class CourseMistakeService:
         sentence = cls._text(material.get("sentence"))
         audio_text = cls._text(material.get("audio_text"))
         pinyin = cls._text(material.get("pinyin"), 500)
+
+        if cls._answer_key(prompt_text) == cls._answer_key(correct_answer):
+            # Savolning o'zi javob bilan bir xil. Bu savol emas — ko'chirish.
+            # Shu holat ham jonli chiqdi: `sentence_builder` kartasining
+            # tarjimasi ham savol matni, ham variant bo'lib qolgandi.
+            return None
 
         low_prompt = prompt_text.casefold()
         needs_listen = material_format == "listening_choice" or any(

@@ -166,7 +166,12 @@ LESSON = {
                 "Мисол: nǐ hǎo навишта мешавад, ní hǎo табиӣ талаффуз мешавад."
             ),
             "examples": [
-                {"zh": "你好", "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
+                # Pinyin maydoni BITTA, uchala til uchun ham ishlatiladi —
+                # shuning uchun unda hech qanday til so'zi bo'lmasligi kerak.
+                # Ilgari bu yerda o'zbekcha "tabiiy" turardi va rus/tojik
+                # foydalanuvchi uni shundayligicha ko'rardi. O'q belgisi
+                # "yoziladi → o'qiladi" ni so'zsiz aytadi.
+                {"zh": "你好", "pinyin": "nǐ hǎo → ní hǎo",
                  "uz": "salom (nǐ hǎo deb yoziladi)",
                  "ru": "привет (пишется nǐ hǎo)",
                  "tj": "салом (навишта мешавад nǐ hǎo)"},

@@ -201,23 +201,51 @@ class GateApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("reset_at", refused.json())
 
     # --- reklama darvozasi ------------------------------------------------
+    #
+    # Reklama ko'rib bo'limni ochish OLIB TASHLANDI. Yo'lning o'zi saqlanadi,
+    # chunki keshdagi va do'kondagi eski klientlar hali unga murojaat qiladi.
 
-    async def test_a_non_ai_section_allows_ads_without_a_limit(self):
-        for _ in range(5):
+    async def test_the_ad_gate_no_longer_opens_anything(self):
+        for _ in range(3):
             response = await self._post(
                 "/api/v3/practice/ad-gate", feature="recognition"
             )
-            self.assertEqual(200, response.status_code)
-            self.assertIsNone(response.json()["remaining"])
+            self.assertEqual(403, response.status_code)
+            body = response.json()
+            self.assertEqual("free_feature_limit_reached", body["error"])
+            self.assertFalse(body["ad"]["available"])
 
-    async def test_an_ai_section_caps_ads_at_two_a_day(self):
-        # Talaffuz AI tokeni sarflaydi, shuning uchun reklama ham cheklangan.
-        codes = [
-            (await self._post("/api/v3/practice/ad-gate", feature="pronunciation")).status_code
-            for _ in range(3)
-        ]
+    async def test_the_ad_gate_answers_403_not_404_for_an_old_client(self):
+        """Eski klient 404 ni "server buzildi" deb ko'rsatardi.
 
-        self.assertEqual([200, 200, 403], codes)
+        403 esa u allaqachon biladigan holat — limit tugagan — va u to'g'ri
+        ekran chiqaradi.
+        """
+        response = await self._post("/api/v3/practice/ad-gate", feature="pronunciation")
+
+        self.assertEqual(403, response.status_code)
+
+    async def test_a_paid_learner_is_not_refused_by_a_route_that_grants_nothing(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = datetime.now(timezone.utc) + timedelta(days=30)
+            await session.commit()
+
+        response = await self._post("/api/v3/practice/ad-gate", feature="recognition")
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(response.json()["allowed"])
+
+    async def test_the_daily_gate_never_claims_an_ad_is_available(self):
+        """Aynan shu bayroq tufayli klientlar "Reklama bilan davom etish"
+        tugmasini ko'rsatishda davom etardi."""
+        await self._post("/api/v3/practice/daily-gate", feature="recognition")
+        refused = await self._post("/api/v3/practice/daily-gate", feature="recognition")
+
+        self.assertEqual(403, refused.status_code)
+        self.assertFalse(refused.json()["ad"]["available"])
 
     # --- admin "vaqtincha free" rejimi ------------------------------------
 

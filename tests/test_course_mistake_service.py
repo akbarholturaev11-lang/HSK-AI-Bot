@@ -66,7 +66,16 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.service._category({}, "voice"), "pronunciation")
 
     def test_review_questions_use_only_same_category_answers_and_v2_material(self):
-        word = mistake(1, user_answer="错", correct_answer="对", sentence="他说得对。")
+        # `sentence` `material_json` ichida — `CourseMistake` da bunday ustun
+        # YO'Q, va servis uni faqat o'sha yerdan o'qiydi.
+        word = mistake(
+            1,
+            user_answer="错",
+            correct_answer="对",
+            material_json=json.dumps(
+                {"material_version": 2, "format": "word_choice", "sentence": "他说得对。"}
+            ),
+        )
         other_word = mistake(2, user_answer=None, correct_answer="喝")
         grammar = mistake(3, user_answer="我去昨天", correct_answer="我昨天去", category="grammar")
 
@@ -84,6 +93,72 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(question["source"], {"kind": "test", "level": "hsk1", "lesson": 1})
         self.assertEqual(question["sentence"], "他说得对。")
         self.assertEqual(question["audio_text"], "")
+
+    def test_two_options_that_only_differ_in_case_are_one_option(self):
+        """Jonli chiqqan holat: ikkala variant ham bir xil ko'rinardi.
+
+        Ekranda "Салом навишта мешавад nǐ hǎo" va "салом навишта мешавад
+        nǐ hǎo" — farqi faqat bosh harf. Bunday savolga javob berib bo'lmaydi:
+        qaysi tugmani bosmasin, foydalanuvchi xato qilishi mumkin.
+
+        Chalg'ituvchi variant shu toifadagi BOSHQA xatoning javobidan keladi,
+        shuning uchun u boshqacha yozilgan bo'lishi tabiiy — filtr matn emas,
+        KO'RINISH bo'yicha ishlashi kerak.
+        """
+        item = mistake(
+            1,
+            user_answer=None,
+            correct_answer="салом навишта мешавад nǐ hǎo",
+            category="grammar",
+        )
+
+        question = self.service._review_question(
+            item, ["Салом, навишта мешавад nǐ hǎo!"]
+        )
+
+        # Yagona haqiqiy variant qoldi — savol chiqarilmaydi.
+        self.assertIsNone(question)
+
+    def test_a_genuinely_different_distractor_is_kept(self):
+        item = mistake(1, user_answer=None, correct_answer="你 好", category="grammar")
+
+        question = self.service._review_question(item, ["你们 好"])
+
+        self.assertIsNotNone(question)
+        self.assertEqual(set(question["options"]), {"你 好", "你们 好"})
+        self.assertEqual(question["options"][question["answer_index"]], "你 好")
+
+    def test_the_correct_answer_survives_a_near_duplicate_distractor(self):
+        # Takrorlanish topilganda aynan TO'G'RI javob qolishi shart — aks
+        # holda `answer_index` ni hisoblab bo'lmaydi.
+        item = mistake(1, user_answer="ДУРУСТ", correct_answer="дуруст")
+
+        question = self.service._review_question(item, ["нодуруст"])
+
+        self.assertIsNotNone(question)
+        self.assertIn("дуруст", question["options"])
+        self.assertEqual(question["options"][question["answer_index"]], "дуруст")
+
+    def test_a_question_that_states_its_own_answer_is_not_asked(self):
+        """Savol matni javobning o'zi bo'lsa — bu savol emas, ko'chirish.
+
+        `sentence_builder` kartasining tarjimasi ham savol matni, ham variant
+        bo'lib qolgandi.
+        """
+        item = mistake(
+            1,
+            user_answer="бошқа ҷавоб",
+            correct_answer="салом навишта мешавад nǐ hǎo",
+            material_json=json.dumps(
+                {
+                    "material_version": 2,
+                    "format": "word_choice",
+                    "prompt": "салом (навишта мешавад nǐ hǎo)",
+                }
+            ),
+        )
+
+        self.assertIsNone(self.service._review_question(item, []))
 
     def test_review_questions_skip_item_without_a_real_second_option(self):
         item = mistake(user_answer=None, correct_answer="对")

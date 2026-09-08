@@ -142,7 +142,7 @@ function runGate(feature,ref){
 }
 function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
 function showLimitNow(adAvailable){
-  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:!!(adAvailable&&PENDING),onSubscribe:goPremium,onContinueAd:startAdSupported,onBack:showHub});return}
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:showHub});return}
   $("hub").style.display="none";$("placement").classList.remove("on");$("exam").classList.remove("on");
   var e=$("empty");
   var adBtn=(adAvailable&&PENDING)?'<button onclick="startAdSupported()"><i class="ti ti-player-play"></i> '+L.adCont+'</button>':'';

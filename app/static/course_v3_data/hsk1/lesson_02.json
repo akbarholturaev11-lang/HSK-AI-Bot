@@ -66,7 +66,7 @@
       "examples": [
         {
           "zh": "你好",
-          "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
+          "pinyin": "nǐ hǎo → ní hǎo",
           "translation": {
             "uz": "salom (nǐ hǎo deb yoziladi)",
             "ru": "привет (пишется nǐ hǎo)",
@@ -387,7 +387,7 @@
             "examples": [
               {
                 "zh": "你好",
-                "pinyin": "nǐ hǎo (tabiiy: ní hǎo)",
+                "pinyin": "nǐ hǎo → ní hǎo",
                 "translation": {
                   "uz": "salom (nǐ hǎo deb yoziladi)",
                   "ru": "привет (пишется nǐ hǎo)",
@@ -415,9 +415,9 @@
             "好"
           ],
           "explanation": {
-            "uz": "你好 — nǐ hǎo (tabiiy: ní hǎo)",
-            "ru": "你好 — nǐ hǎo (tabiiy: ní hǎo)",
-            "tj": "你好 — nǐ hǎo (tabiiy: ní hǎo)"
+            "uz": "你好 — nǐ hǎo → ní hǎo",
+            "ru": "你好 — nǐ hǎo → ní hǎo",
+            "tj": "你好 — nǐ hǎo → ní hǎo"
           }
         }
       ]

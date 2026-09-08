@@ -21,10 +21,7 @@ from fastapi.responses import JSONResponse
 
 from app.repositories.user_repo import UserRepository
 from app.services.course_access_policy_service import CourseAccessPolicyService
-from app.services.course_miniapp_access_service import (
-    COURSE_AI_PRACTICE_FEATURES,
-    CourseMiniAppAccessService,
-)
+from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.entitlements.gate_shadow import shadow_compare_gate
 from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService
@@ -137,20 +134,20 @@ def create_miniapp_entitlements_router(
             )
 
             if not result.get("allowed"):
-                # Bepul tugadi. Endi reklama yoki obuna. AI token sarflaydigan
-                # bo'limda (masalan talaffuz) reklama ham kuniga 2 marta
-                # cheklangan; boshqa bo'limlarda reklama cheksiz.
-                if feature in COURSE_AI_PRACTICE_FEATURES:
-                    ad_status = await access.daily_status(user, f"{feature}_ad")
-                    ad_info = {
-                        "available": bool(ad_status.get("allowed")),
-                        "limited": True,
-                        "used": int(ad_status.get("used") or 0),
-                        "limit": int(ad_status.get("limit") or 0),
-                        "remaining": ad_status.get("remaining"),
-                    }
-                else:
-                    ad_info = {"available": True, "limited": False}
+                # Bepul tugadi — endi faqat obuna yoki 7 kunlik trial.
+                #
+                # Ilgari bu yerda "reklama bor" deb javob qaytardi va AI
+                # bo'limi bo'lmasa u DOIM `available: true` edi. Mashq
+                # reklamalari olib tashlangan bo'lsa ham klientlar shu
+                # bayroqqa qarab "Reklama bilan davom etish" tugmasini
+                # ko'rsatishda davom etardi — foydalanuvchi aynan shuni
+                # ko'rgan.
+                #
+                # Kalit SAQLANADI va doim "yo'q" deydi: mustaqil mashq
+                # sahifalari (`course_v3_recognition.html` va boshqalar)
+                # o'sha kalitni o'qiydi, va ular yangilanmasidan oldin ham
+                # to'g'ri ishlashi kerak.
+                ad_info = {"available": False, "limited": False}
                 await session.commit()
                 return JSONResponse(
                     status_code=403,
@@ -254,10 +251,15 @@ def create_miniapp_entitlements_router(
 
     @router.post("/api/v3/practice/ad-gate")
     async def v3_practice_ad_gate(request: Request):
-        """Bepul tugagach, user reklama ko'rib yana kirmoqchi bo'lsa
-        chaqiriladi. Odatda CHEKSIZ; faqat AI token sarflaydigan bo'limda
-        (masalan talaffuz) reklama ham KUNIGA 2 marta cheklanadi. Server
-        tomonda hisoblanadi."""
+        """Reklama ko'rib bo'limni ochish — OLIB TASHLANDI.
+
+        Yo'lning o'zi saqlanadi, chunki do'kondagi va keshdagi eski klientlar
+        hali shu manzilga murojaat qiladi. Javob endi doim bir xil: bepul
+        foydalanish tugagan bo'lsa paywall, ochilish yo'q.
+
+        404 qaytarilmaydi ATAYLAB: eski klient uni "server buzildi" deb
+        ko'rsatardi, 403 esa u allaqachon biladigan holat — limit tugagan.
+        """
         telegram_id, payload = await _authenticated(request)
         if not telegram_id:
             return JSONResponse(
@@ -270,7 +272,6 @@ def create_miniapp_entitlements_router(
             return JSONResponse(
                 status_code=400, content={"ok": False, "error": "invalid_feature"}
             )
-        ref = _ref(payload)
 
         async with session_factory() as session:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
@@ -279,7 +280,8 @@ def create_miniapp_entitlements_router(
                     status_code=403, content={"ok": False, "error": "access_start_first"}
                 )
             access = CourseMiniAppAccessService(session)
-            # "Vaqtincha free" rejimida reklama ham talab qilinmaydi.
+            # "Vaqtincha free" rejimi hamon hammani ochadi — bu reklama emas,
+            # adminning sovg'asi.
             if (await CourseAccessPolicyService(session).get_policy()).free_active:
                 return JSONResponse(
                     content={
@@ -290,40 +292,25 @@ def create_miniapp_entitlements_router(
                         "policy_free": True,
                     }
                 )
-            # AI bo'lim emas — reklama cheksiz, slot band qilinmaydi.
-            if feature not in COURSE_AI_PRACTICE_FEATURES:
+            # Obunachiga bu yo'l kerak emas, lekin unga "yo'q" deyish ham
+            # noto'g'ri bo'lardi.
+            if access.is_paid_user(user):
                 return JSONResponse(
                     content={
                         "ok": True,
                         "allowed": True,
-                        "is_paid": access.is_paid_user(user),
+                        "is_paid": True,
                         "remaining": None,
                     }
                 )
-            # AI bo'lim — reklama ham kuniga 2 marta.
-            result = await access.consume_daily_use(
-                user, feature_key=f"{feature}_ad", ref=ref, notify_bot=bot
-            )
-            await session.commit()
-            if not result.get("allowed"):
-                # Reklama-ruxsati ham tugadi — endi faqat obuna
-                # (ertaga yana ochiladi).
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "ok": False,
-                        "error": result.get("error") or "free_feature_limit_reached",
-                        "is_paid": bool(result.get("is_paid", False)),
-                        "reset_at": result.get("reset_at"),
-                    },
-                )
             return JSONResponse(
+                status_code=403,
                 content={
-                    "ok": True,
-                    "allowed": True,
-                    "is_paid": bool(result.get("is_paid", False)),
-                    "remaining": result.get("remaining"),
-                }
+                    "ok": False,
+                    "error": "free_feature_limit_reached",
+                    "is_paid": False,
+                    "ad": {"available": False, "limited": False},
+                },
             )
 
     return router
