@@ -353,6 +353,9 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
                         media_type="video",
                         language="all",
                         ad_type=ad_type,
+                        # Tur va JOY endi mustaqil: admin har reklamani
+                        # ikkala joyga ham qo'yishi mumkin.
+                        placements="lesson_end,screen_center",
                         duration_seconds=7,
                         is_active=True,
                         created_at=datetime(2026, 9, 1, 12, index, tzinfo=timezone.utc),
@@ -416,23 +419,42 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
         return response
 
     async def _types(self, query=""):
+        # Mashq sloti endi reklama bermaydi, shuning uchun kanal filtri
+        # dars yakuni sloti ustida tekshiriladi.
+        if "slot=" not in query:
+            query = (query + "&" if query else "?") + "slot=lesson_end"
         response = await self._ask(query)
         self.assertEqual(200, response.status_code, response.text)
         body = response.json()
         return {ad["ad_type"] for ad in body["ads"]}, body
 
     async def test_the_play_channel_never_gets_a_subscription_ad(self):
-        # The lesson-end slot holds nothing BUT the subscription block, so a
-        # Play build asking for it must come away empty rather than served.
-        # Asking for the practice slot would pass even with no channel filter.
-        response = await self._ask("?channel=play&slot=lesson_end")
-        self.assertEqual(404, response.status_code, response.text)
-        self.assertEqual("course_ad_not_found", response.json()["error"])
+        """Play buildiga obuna CTA si bo'lgan reklama tushmasligi kerak.
+
+        Ilgari buni JOY ta'minlardi: `lesson_end` slotida faqat `dars_yakuni`
+        turi bo'lardi. Endi tur va joy mustaqil — bir joyda har xil tur
+        bo'lishi mumkin — shuning uchun himoya TURga bog'langan.
+        """
+        types, _ = await self._types("?channel=play&slot=lesson_end")
+        self.assertNotIn("dars_yakuni", types)
 
     async def test_the_play_channel_still_gets_the_ordinary_ads(self):
-        # Excluding the unsafe type must not leave the Play build with nothing.
-        types, _ = await self._types("?channel=play")
+        # Xavfli turni chiqarib tashlash Play buildini reklamasiz qoldirmasin.
+        types, _ = await self._types("?channel=play&slot=lesson_end")
         self.assertEqual({"odiy", "hamkorlik", "bot"}, types)
+
+    async def test_the_practice_slot_no_longer_serves_ads(self):
+        """Mashq sessiyalaridagi reklama olib tashlandi.
+
+        Do'kondagi eski build hali "reklama ko'rib davom etish" tugmasini
+        ko'rsatadi. Bo'sh javob unga "reklama yo'q" deydi va u obuna yo'liga
+        o'tadi — xato ko'rsatmasdan. Aks holda u men o'chirgan `/ad/attempt`
+        ga borib 404 olardi.
+        """
+        response = await self._ask("?slot=practice")
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual("course_ad_not_found", response.json()["error"])
 
     async def test_the_direct_channel_may_show_the_lesson_end_block(self):
         types, body = await self._types("?channel=direct&slot=lesson_end")
@@ -440,18 +462,18 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("direct", body["channel"])
 
     async def test_the_desktop_promo_never_reaches_android(self):
-        for query in ("?channel=play", "?channel=direct"):
+        for query in ("?channel=play&slot=lesson_end", "?channel=direct&slot=lesson_end"):
             with self.subTest(query=query):
                 types, _ = await self._types(query)
                 self.assertNotIn("app", types)
 
     async def test_an_unknown_channel_falls_back_to_the_restricted_set(self):
-        # A missing or odd value must not accidentally widen what is shown:
-        # only an explicit "direct" unlocks the lesson-end block.
+        # Yo'q yoki g'alati qiymat ko'rsatiladigan narsani KENGAYTIRMASLIGI
+        # kerak: obuna CTA si faqat aniq "direct" bilan ochiladi.
         for suffix in ("", "&channel=", "&channel=web"):
             with self.subTest(channel=suffix):
-                response = await self._ask(f"?slot=lesson_end{suffix}")
-                self.assertEqual(404, response.status_code, response.text)
+                types, _ = await self._types(f"?slot=lesson_end{suffix}")
+                self.assertNotIn("dars_yakuni", types)
 
     async def test_the_channel_name_is_read_case_insensitively(self):
         types, body = await self._types("?channel=PLAY")

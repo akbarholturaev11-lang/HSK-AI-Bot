@@ -66,7 +66,11 @@ from app.services.course_miniapp_analytics_service import CourseMiniAppAnalytics
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
-from app.services.ad_placement_service import normalize_placement as normalize_ad_placement
+from app.services.ad_placement_service import (
+    PLACEMENT_LESSON_END,
+    AdPlacementService,
+    normalize_placement as normalize_ad_placement,
+)
 from app.services.entitlements.gate_shadow import shadow_compare_gate
 from app.services.pro_trial_service import ProTrialService
 from app.services.referral_service import (
@@ -541,19 +545,43 @@ def create_android_features_router(
                 slot = ANDROID_AD_SLOTS[0]
             channel = _ad_channel(request)
             allowed_types = ANDROID_AD_TYPES_BY_CHANNEL[channel]
+
             async with session_factory() as session:
+                # Autentifikatsiya HAR DOIM birinchi: imzosiz chaqiruv 404
+                # emas, 401 olishi kerak — aks holda javob kodining o'zi
+                # ma'lumot bo'lib qoladi.
                 user = await _user(session, request)
-                # Dars yakuni bloki FAQAT bepul o'quvchiga. Obunachiga server
-                # ham bermaydi, klient xato hisoblasa ham reklama chiqmaydi.
-                if slot == "lesson_end" and CourseMiniAppAccessService.has_unlimited_course_access(
-                    user
-                ):
+
+                # Mashq sessiyalaridagi reklama OLIB TASHLANDI, va u bilan
+                # birga "reklama ko'rib bo'limni ochish" ham.
+                #
+                # Do'kondagi Android build hali o'sha tugmani ko'rsatadi va
+                # uni bosganda avval SHU ro'yxatni so'raydi. Bo'sh javob
+                # berilsa klient "reklama yo'q" holatiga tushadi va obuna
+                # yo'liga o'tadi — ya'ni eski ilova ham to'g'ri ishlaydi,
+                # xato ko'rsatmasdan.
+                if slot != PLACEMENT_LESSON_END:
                     raise AndroidFeatureError("course_ad_not_found", status_code=404)
-                service = CourseAdService(session)
-                language = CourseAdService.normalize_language(
-                    getattr(user, "language", None)
+
+                # Joy sozlamasi, auditoriya va KUNLIK CHEGARA — hammasi
+                # serverda, Mini App bilan bir xil qoida bo'yicha.
+                placements = AdPlacementService(session)
+                status = await placements.status(
+                    user, placement=PLACEMENT_LESSON_END, client="android"
                 )
-                ads = await service.list_active_payloads(language=language, slot=slot)
+                if not status.get("enabled"):
+                    raise AndroidFeatureError("course_ad_not_found", status_code=404)
+                remaining = status.get("remaining")
+                if remaining is not None and remaining <= 0:
+                    raise AndroidFeatureError("course_ad_not_found", status_code=404)
+
+                service = placements.ads
+                ads = [
+                    service.payload(ad)
+                    for ad in await placements.list_for_placement(
+                        PLACEMENT_LESSON_END, language=getattr(user, "language", None)
+                    )
+                ]
                 if service.media_backup_changed:
                     await session.commit()
             ads = [ad for ad in ads if ad.get("ad_type") in allowed_types]
