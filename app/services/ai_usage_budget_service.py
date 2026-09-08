@@ -6,6 +6,7 @@ from typing import Optional
 
 from sqlalchemy import select
 
+from app.config import settings
 from app.db.models.ai_usage import AIUsageBudget, AIUsageEvent
 from app.services.ai_service import AIUsageResult
 from app.services.subscription_currency_service import DEFAULT_USD_CNY_RATE, DEFAULT_VISA_LOCAL_RATES, SubscriptionCurrencyService
@@ -325,7 +326,14 @@ class AIUsageBudgetService:
 
         return BudgetAccessResult(allowed=True)
 
+    def billing_tier(self, result: AIUsageResult) -> str:
+        if result.model.startswith("gemini-") and settings.GEMINI_BILLING_TIER == "free":
+            return "free"
+        return "paid_estimate" if result.model in MODEL_PRICING_USD_PER_1M else "unpriced"
+
     def calculate_cost_usd(self, result: AIUsageResult) -> float:
+        if self.billing_tier(result) == "free":
+            return 0.0
         pricing = MODEL_PRICING_USD_PER_1M.get(result.model)
         if not pricing:
             return 0.0
@@ -357,6 +365,7 @@ class AIUsageBudgetService:
             completion_tokens=result.completion_tokens,
             total_tokens=result.total_tokens,
             cost_usd=cost_usd,
+            billing_tier=self.billing_tier(result),
             created_at=now,
         )
         self.session.add(event)

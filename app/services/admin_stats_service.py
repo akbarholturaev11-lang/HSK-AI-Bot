@@ -5,6 +5,8 @@ from sqlalchemy import case, func, select
 
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.payment import Payment
+from app.services.subscription_currency_service import format_subscription_price
 from app.db.models.referral import Referral
 from app.db.models.user import User
 from app.db.models.voice_practice_session import VoicePracticeSession
@@ -237,3 +239,17 @@ async def miniapp_course_stats(session, since: datetime | None = None) -> MiniAp
         completed_sections=await _count_events(session, "section_completed", since),
         completed_book_lessons=await _count_completed_book_lessons(session, since),
     )
+
+
+async def approved_revenue_text(session) -> str:
+    """Keep distinct payment currencies separate in the Telegram report."""
+    rows = (await session.execute(
+        select(Payment.currency, func.sum(Payment.amount).label("total_sum"))
+        .where(Payment.payment_status == "approved")
+        .group_by(Payment.currency)
+        .order_by(Payment.currency)
+    )).all()
+    return " · ".join(
+        format_subscription_price(int(row.total_sum or 0), row.currency)
+        for row in rows if row.total_sum
+    ) or "0"

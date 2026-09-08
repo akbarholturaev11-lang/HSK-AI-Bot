@@ -344,6 +344,7 @@
           <div class="block-head"><span class="bi">💰</span><div><h3>Kuzatilgan net va xarajat</h3><p>Obuna tushumi + qo'lda foyda − AI model estimate − rasxod</p></div></div>
           <div class="grid g2" id="financeCards"></div>
           <div class="explain" id="financeExplain"></div>
+          <div id="aiUsageBreakdown"></div>
         </div>
 
         <!-- Unit economics -->
@@ -776,6 +777,7 @@
         $("rangeLabel").textContent="Davr: "+((orep&&orep.note)||"—");
         $("financeCards").innerHTML="<p class='empty'>Moliyaviy statistikani yuklab bo'lmadi.</p>";
         $("financeExplain").textContent="";
+        $("aiUsageBreakdown").textContent="";
         $("unitCards").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>";
         $("unitExplain").textContent="";
         $("retentionCards").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>";
@@ -793,6 +795,10 @@
           {label:"Kuzatilgan net",value:fp.finance.net_text,note:"tracked marja "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
         ].map(cardHtml).join("");
         $("financeExplain").innerHTML = esc(fp.finance.explain);
+        $("aiUsageBreakdown").innerHTML = (fp.finance.ai_usage||[]).map(i=>`
+          <div class="srow"><div><h3>${esc(i.model)} · ${esc(i.label)}</h3>
+          <p>${esc(i.requests)} so'rov · ${esc(i.tokens)} token</p></div>
+          <b>${esc(i.cost_text)}</b></div>`).join("");
         $("unitCards").innerHTML = [
           {label:"ARPU",value:fp.unit.arpu_text,note:(fp.unit.arpu_users||0)+(fp.key==="all_time"?" jami":" faol user"),tone:"info"},
           {label:"ARPPU",value:fp.unit.arppu_text,note:"har pullik",tone:"good"},

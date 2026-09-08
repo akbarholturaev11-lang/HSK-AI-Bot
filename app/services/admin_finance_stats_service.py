@@ -240,6 +240,30 @@ class AdminFinanceStatsService:
             stmt = stmt.where(AIUsageEvent.created_at >= since)
         return float((await self.session.execute(stmt)).scalar() or 0.0)
 
+    async def _ai_usage_breakdown(self, since: datetime | None) -> list[dict]:
+        stmt = select(
+            AIUsageEvent.model, AIUsageEvent.billing_tier,
+            func.count().label("requests"),
+            func.sum(AIUsageEvent.total_tokens).label("tokens"),
+            func.sum(AIUsageEvent.cost_usd).label("cost"),
+        ).group_by(AIUsageEvent.model, AIUsageEvent.billing_tier).order_by(
+            AIUsageEvent.model, AIUsageEvent.billing_tier
+        )
+        if since is not None:
+            stmt = stmt.where(AIUsageEvent.created_at >= since)
+        labels = {
+            "free": "Bepul", "paid_estimate": "Pullik taxmin",
+            "legacy_estimate": "Eski taxmin — tarif tasdiqlanmagan",
+            "unpriced": "Narxi noma'lum",
+        }
+        return [
+            {"model": row.model, "billing_tier": row.billing_tier,
+             "label": labels.get(row.billing_tier, "Tarif noma'lum"),
+             "requests": int(row.requests), "tokens": int(row.tokens or 0),
+             "cost_usd": float(row.cost or 0), "cost_text": f"${float(row.cost or 0):,.6f}"}
+            for row in (await self.session.execute(stmt)).all()
+        ]
+
     async def _expense_usd(self, since: datetime | None) -> float:
         stmt = select(func.coalesce(func.sum(PortfolioTransaction.amount_usd), 0.0)).where(
             PortfolioTransaction.transaction_type == "expense"
@@ -279,6 +303,7 @@ class AdminFinanceStatsService:
         revenue_usd = sum(p.usd for p in in_period if p.priced)
         unpriced_payments = len([p for p in in_period if not p.priced])
         ai_cost_usd = await self._ai_cost_usd(since)
+        ai_usage = await self._ai_usage_breakdown(since)
         expense_usd = await self._expense_usd(since)
         manual_profit_usd = await self._manual_profit_usd(since)
         net_usd = revenue_usd + manual_profit_usd - ai_cost_usd - expense_usd
@@ -322,6 +347,7 @@ class AdminFinanceStatsService:
         finance = {
             "revenue_usd": round(revenue_usd, 2),
             "revenue_text": _usd(revenue_usd),
+            "ai_usage": ai_usage,
             "ai_cost_usd": round(ai_cost_usd, 2),
             "ai_cost_text": _usd(ai_cost_usd),
             "manual_profit_usd": round(manual_profit_usd, 2),
@@ -335,6 +361,7 @@ class AdminFinanceStatsService:
             "margin_pct": margin,
             "unpriced_payments": unpriced_payments,
             "explain": (
+                "Bepul AI yozuvlari $0; eski taxminlar tekshirilmaguncha saqlanadi. "
                 "Kuzatilgan net = obuna tushumi + qo'lda foyda − AI model-cost estimate − qo'lda rasxod. "
                 f"Obuna tushumi {_usd(revenue_usd)}, qo'lda foyda {_usd(manual_profit_usd)}, "
                 f"AI estimate {_usd(ai_cost_usd)}, rasxod {_usd(expense_usd)}, net {_usd(net_usd)}. "

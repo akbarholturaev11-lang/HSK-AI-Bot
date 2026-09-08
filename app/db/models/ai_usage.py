@@ -54,6 +54,10 @@ class AIUsageEvent(Base):
     prompt_tokens: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     completion_tokens: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     total_tokens: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    # Snapshot at write time; never reprice historical rows using current settings.
+    billing_tier: Mapped[str] = mapped_column(
+        String(24), default="legacy_estimate", server_default="legacy_estimate", nullable=False
+    )
     cost_usd: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

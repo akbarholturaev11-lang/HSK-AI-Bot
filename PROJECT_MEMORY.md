@@ -227,6 +227,27 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-08 — Admin AI billing and statistics integrity
+
+- `GEMINI_BILLING_TIER=free|paid` (default `free`, owner-confirmed current tier).
+  Free Gemini logs tokens at $0 without spending the AI budget; OpenAI fallback
+  remains charged at the configured estimate. Daily/abuse/access gates unchanged.
+- Migration `0080_ai_usage_billing_tier` snapshots `ai_usage_events.billing_tier`:
+  free / paid_estimate / unpriced; historical rows default to legacy_estimate.
+  Bootstrap also adds the column. Changing config never reprices old events.
+- Admin finance lists model/tier/tokens/cost, including explicitly unverified old
+  estimates. Telegram revenue separates currencies. Voice excludes abandoned or
+  zero-turn sessions; duration is elapsed session time, not speech time.
+- D1/D7 each use the latest fully observed 7/30-day signup cohort, shifted back
+  2/8 days respectively; full-history uses all matured users. Cohort bounds shown.
+- `python -m scripts.audit_ai_costs --since <UTC-ISO> --until <UTC-ISO>` is a DB
+  enforced read-only aggregate audit, usable before/after migration. No user IDs.
+- Historical Gemini costs/budget spend are NOT corrected automatically: confirm
+  free-tier dates and audit production with backup first. Existing depleted
+  budgets remain gated until reconciled; do not bypass gates and allow paid
+  fallback to spend without a budget. See `ADMIN_STATS_RELEASE.md` for rollout.
+
+
 ### 2026-09-08 — Do'st chaqirish havolasi: `ref_` prefiksi olib tashlandi
 
 **Xato:** desktop va Android `?start=ref_<kod>` shaklidagi havola tarqatardi,

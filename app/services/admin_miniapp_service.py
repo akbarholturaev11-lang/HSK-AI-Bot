@@ -2265,55 +2265,50 @@ class AdminMiniAppService:
         return _activation_funnel([tuple(row) for row in rows], now=now)
 
     async def _retention_stats(self, *, since: datetime | None, now: datetime) -> dict:
-        stmt = select(User.telegram_id, User.created_at).select_from(User)
-        if since is not None:
-            stmt = stmt.where(User.created_at >= since)
-        rows = (await self.session.execute(stmt)).all()
-
-        created_by_user = {
-            int(telegram_id): _as_utc(created_at)
-            for telegram_id, created_at in rows
-            if telegram_id and _as_utc(created_at)
-        }
-        opens_by_user: dict[int, list[datetime]] = defaultdict(list)
-        if created_by_user:
-            event_conditions = [
-                CourseMiniAppEvent.telegram_id.in_(tuple(created_by_user)),
-                CourseMiniAppEvent.event_name == "miniapp_opened",
-            ]
-            earliest_created = min(created_by_user.values())
-            event_conditions.append(CourseMiniAppEvent.created_at >= earliest_created)
-            open_rows = (
-                await self.session.execute(
+        period = now - since if since is not None else None
+        result = {}
+        for days in (1, 7):
+            cohort_end = now - timedelta(days=days + 1)
+            cohort_start = cohort_end - period if period is not None else None
+            conditions = [User.created_at <= cohort_end]
+            if cohort_start is not None:
+                conditions.append(User.created_at > cohort_start)
+            rows = (await self.session.execute(
+                select(User.telegram_id, User.created_at).where(*conditions)
+            )).all()
+            created_by_user = {
+                int(tid): _as_utc(created) for tid, created in rows
+                if tid and _as_utc(created)
+            }
+            opens_by_user: dict[int, list[datetime]] = defaultdict(list)
+            if created_by_user:
+                open_rows = (await self.session.execute(
                     select(CourseMiniAppEvent.telegram_id, CourseMiniAppEvent.created_at).where(
-                        *event_conditions
+                        CourseMiniAppEvent.telegram_id.in_(tuple(created_by_user)),
+                        CourseMiniAppEvent.event_name == "miniapp_opened",
+                        CourseMiniAppEvent.created_at >= min(created_by_user.values()) + timedelta(days=days),
+                        CourseMiniAppEvent.created_at <= now,
                     )
-                )
-            ).all()
-            for telegram_id, opened_at in open_rows:
-                opened = _as_utc(opened_at)
-                if opened:
-                    opens_by_user[int(telegram_id)].append(opened)
-
-        return {
-            "d1": _cohort_retention(
-                created_by_user=created_by_user,
-                opens_by_user=opens_by_user,
-                days=1,
-                now=now,
-            ),
-            "d7": _cohort_retention(
-                created_by_user=created_by_user,
-                opens_by_user=opens_by_user,
-                days=7,
-                now=now,
-            ),
-            "explain": (
-                "D1/D7 retention = shu davrda ro'yxatdan o'tgan userlardan signupdan keyingi aynan "
-                "24–48 soat / 168–192 soat oynasida Mini Appni qayta ochganlar. To'liq oynasi tugamagan "
-                "userlar denominatorga kirmaydi."
-            ),
-        }
+                )).all()
+                for tid, opened_at in open_rows:
+                    opened = _as_utc(opened_at)
+                    if opened:
+                        opens_by_user[int(tid)].append(opened)
+            metric = _cohort_retention(
+                created_by_user=created_by_user, opens_by_user=opens_by_user,
+                days=days, now=now,
+            )
+            metric["cohort_start"] = cohort_start.isoformat() if cohort_start else None
+            metric["cohort_end"] = cohort_end.isoformat()
+            result[f"d{days}"] = metric
+        result["explain"] = (
+            "D1/D7 = signupdan keyin aynan 24–48 / 168–192 soatda qayta ochganlar. "
+            "Har metrika uchun kuzatuvi tugagan oxirgi 7/30 kunlik signup guruhi olinadi "
+            "(To'liq: barcha yetilgan userlar). Guruh boshlanishi ochiq, oxiri yopiq. "
+            f"D1: {result['d1']['cohort_start'] or 'boshidan'} → {result['d1']['cohort_end']}; "
+            f"D7: {result['d7']['cohort_start'] or 'boshidan'} → {result['d7']['cohort_end']}."
+        )
+        return result
 
     async def _miniapp_session_time(self, *, since: datetime | None) -> dict:
         conditions = [
@@ -2399,7 +2394,11 @@ class AdminMiniAppService:
         }
 
     async def _voice_minutes(self, *, since: datetime | None) -> dict:
-        conditions = [VoicePracticeSession.ended_at.is_not(None)]
+        conditions = [
+            VoicePracticeSession.ended_at.is_not(None),
+            VoicePracticeSession.status == "completed",
+            VoicePracticeSession.turn_count > 0,
+        ]
         if since is not None:
             conditions.append(VoicePracticeSession.started_at >= since)
         rows = (
@@ -2417,7 +2416,7 @@ class AdminMiniAppService:
             "minutes": round(total_seconds / 60, 1),
             "minutes_text": f"{round(total_seconds / 60, 1)} min" if total_seconds else "0 min",
             "avg_text": _duration_text(avg_seconds),
-            "explain": "Voice minutes faqat yakunlangan VoicePracticeSession started_at→ended_at oralig'i bo'yicha hisoblanadi.",
+            "explain": "Voice minutes = kamida bir javobi bor, completed sessiyalarning ochilish→yopilish vaqti; sof gapirish vaqti emas. Tashlab ketilgan sessiyalar kirmaydi.",
         }
 
     async def _payment_advanced_stats(self, *, since: datetime | None) -> dict:

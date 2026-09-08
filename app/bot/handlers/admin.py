@@ -29,7 +29,7 @@ from app.services.ai_usage_budget_service import (
     USD_TO_YUAN,
 )
 from app.services.referral_service import REFERRAL_TRIAL_ACCESS_DAYS
-from app.services.admin_stats_service import feature_usage_stats, top_referrers
+from app.services.admin_stats_service import approved_revenue_text, feature_usage_stats, top_referrers
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
@@ -2141,10 +2141,9 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         select(
             Payment.payment_status,
             func.count().label("cnt"),
-            func.sum(Payment.amount).label("total_sum"),
         ).group_by(Payment.payment_status)
     )).fetchall()
-    pay_by_status = {r.payment_status: (r.cnt, int(r.total_sum or 0)) for r in pay_rows}
+    pay_by_status = {r.payment_status: r.cnt for r in pay_rows}
 
     pay_plan_rows = (await session.execute(
         select(Payment.plan_type, func.count().label("cnt"))
@@ -2152,6 +2151,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         .group_by(Payment.plan_type)
     )).fetchall()
     pay_by_plan = {r.plan_type: r.cnt for r in pay_plan_rows}
+    approved_revenue = await approved_revenue_text(session)
 
     # --- Qaysi bo'lim ko'proq ishlatilmoqda ---
     feature_usage = await feature_usage_stats(session, today_start, week_ago)
@@ -2182,9 +2182,9 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     active_cnt  = status_counts.get("active", 0)
     expired_cnt = status_counts.get("expired", 0)
 
-    pending_cnt,  _            = pay_by_status.get("pending",  (0, 0))
-    approved_cnt, approved_sum = pay_by_status.get("approved", (0, 0))
-    rejected_cnt, _            = pay_by_status.get("rejected", (0, 0))
+    pending_cnt = pay_by_status.get("pending", 0)
+    approved_cnt = pay_by_status.get("approved", 0)
+    rejected_cnt = pay_by_status.get("rejected", 0)
     paid_user_cnt = (await session.execute(
         select(func.count()).select_from(User).where(
             User.payment_status == "approved",
@@ -2262,7 +2262,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"<b>💳 TO'LOVLAR</b>\n"
         f"  Kutilmoqda: <b>{pending_cnt}</b>   Tasdiqlangan: <b>{approved_cnt}</b>   Rad: <b>{rejected_cnt}</b>\n"
         f"  10 kun: <b>{pay_by_plan.get('10_days', 0)}</b>   1 oy: <b>{pay_by_plan.get('1_month', 0)}</b>\n"
-        f"  Jami daromad: <b>{approved_sum:,}</b> so'm\n\n"
+        f"  Jami daromad: <b>{escape(approved_revenue)}</b>\n\n"
 
         f"{subscription_sources_text}\n\n"
 

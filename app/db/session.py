@@ -113,6 +113,7 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "updated_at": "TIMESTAMP WITH TIME ZONE",
     },
     "ai_usage_events": {
+        "billing_tier": "VARCHAR(24) DEFAULT 'legacy_estimate' NOT NULL",
         "budget_id": "INTEGER",
         "user_telegram_id": "BIGINT DEFAULT 0 NOT NULL",
         "source": "VARCHAR(32) DEFAULT 'unknown' NOT NULL",

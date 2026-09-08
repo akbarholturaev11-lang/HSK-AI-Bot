@@ -2253,6 +2253,10 @@ def admin_finance_payload():
             "finance": {
                 "revenue_text": "$120.00", "ai_cost_text": "$10.00", "manual_profit_text": "$0.00", "expense_text": "$5.00",
                 "net_text": "$105.00", "net_positive": True, "ai_share_pct": 8.3, "margin_pct": 87.5,
+                "ai_usage": [
+                    {"model": "gemini-2.5-flash", "billing_tier": "free", "label": "Bepul", "requests": 12, "tokens": 24000, "cost_text": "$0.000000"},
+                    {"model": "o4-mini", "billing_tier": "paid_estimate", "label": "Pullik taxmin", "requests": 3, "tokens": 6000, "cost_text": "$0.016500"},
+                ],
                 "explain": "Kuzatilgan net = tushum + manual profit - AI estimate - rasxod.",
             },
             "unit": {
@@ -2416,6 +2420,10 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     expect(page.locator("#userList")).to_contain_text("Ali")
     expect(page.locator("#paymentBoard")).to_contain_text("99 TJS")
     expect(page.locator("#financeCards")).to_contain_text("Kuzatilgan net")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("gemini-2.5-flash · Bepul")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("24000 token")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("o4-mini · Pullik taxmin")
+    expect(page.locator("#aiUsageBreakdown")).to_contain_text("$0.000000")
     expect(page.locator("#advancedCards")).to_contain_text("D1 retention")
     expect(page.locator("#featureAdoption")).to_contain_text("Darslar")
 

@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List
+from typing import List, Literal
 
 
 class Settings(BaseSettings):
@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     # Gemini (asosiy AI provayder). GEMINI_API_KEY bo'lsa Gemini ishlaydi,
     # bo'lmasa yoki xato bersa OpenAI zaxira sifatida ishga tushadi.
     GEMINI_API_KEY: str = ""
+    # Owner uses the free API tier. Set paid when the Google project is upgraded.
+    GEMINI_BILLING_TIER: Literal["free", "paid"] = "free"
     # Admin panel model tanlamagan bo'lsa ishlatiladigan standart Gemini modeli.
     GEMINI_MODEL: str = "gemini-2.5-flash"
     # Gemini'ning OpenAI-mos endpointi (matn/vision/JSON shu orqali ketadi).
