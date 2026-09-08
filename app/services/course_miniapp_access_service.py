@@ -1008,7 +1008,15 @@ class CourseMiniAppAccessService:
                         "idempotent": True,
                         "remaining": max(0, limit - used),
                     }
-            used_again = await self._daily_used_today(locked_user.telegram_id, feature_key, lifetime=lifetime)
+            # Qayta sanash ham o'quvchining mintaqasi bo'yicha bo'lishi shart:
+            # aks holda poyga yo'lida UTC+5 o'quvchi UTC oynasi bilan sanaladi va
+            # limiti kun o'rtasida noto'g'ri joyda yangilanadi.
+            used_again = await self._daily_used_today(
+                locked_user.telegram_id,
+                feature_key,
+                lifetime=lifetime,
+                offset_minutes=offset,
+            )
             if used_again >= limit:
                 return {
                     "allowed": False,

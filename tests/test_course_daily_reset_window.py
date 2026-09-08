@@ -8,7 +8,10 @@ and with a real offset it follows the learner's own day.
 
 import unittest
 from datetime import datetime, timedelta, timezone
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
+
+from sqlalchemy.exc import IntegrityError
 
 from app.services import course_daily_window
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
@@ -90,6 +93,95 @@ class DailyResetWindowTests(unittest.TestCase):
         from app.config import Settings
 
         self.assertEqual(0, Settings().COURSE_DAILY_RESET_HOUR_LOCAL)
+
+
+class _RaceResult:
+    """Bitta `execute()` javobi: qulflangan user yoki bo'sh natija."""
+
+    def __init__(self, value=None):
+        self._value = value
+
+    def scalar_one_or_none(self):
+        return self._value
+
+
+class _NestedTransaction:
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc, traceback):
+        return False
+
+
+class _RaceSession:
+    """Ikkinchi so'rov shu slotni egallab ulgurgan sessiya.
+
+    `flush()` `IntegrityError` tashlaydi — ya'ni `consume_daily_use` qayta
+    sanash yo'liga tushadi. Bizni qiziqtirgani shu yo'l.
+    """
+
+    def __init__(self, locked_user):
+        self._locked_user = locked_user
+        self.added = []
+
+    async def execute(self, _statement):
+        # Birinchi (va yagona kerakli) so'rov — user qulfi.
+        return _RaceResult(self._locked_user)
+
+    def begin_nested(self):
+        return _NestedTransaction()
+
+    def add(self, item):
+        self.added.append(item)
+
+    async def flush(self):
+        raise IntegrityError("insert", {}, Exception("duplicate"))
+
+
+class DailyLimitRaceWindowTests(unittest.IsolatedAsyncioTestCase):
+    """Poyga yo'lidagi qayta sanash ham o'quvchining kunida bo'lishi kerak.
+
+    Ilgari `consume_daily_use` ning `IntegrityError` tarmog'i `_daily_used_today`
+    ni `offset_minutes` siz chaqirardi. Natijada parallel so'rov paytida UTC+5
+    o'quvchi UTC oynasi bo'yicha qayta sanalardi: bir xil chaqiruv asosiy yo'lda
+    bir javob, poyga yo'lida boshqa javob berardi.
+    """
+
+    async def _run_race(self, *, offset_minutes: int, counts):
+        user = SimpleNamespace(
+            id=7,
+            telegram_id=777,
+            status="free",
+            payment_status="none",
+            end_date=None,
+        )
+        service = CourseMiniAppAccessService(_RaceSession(user))
+        seen = []
+
+        async def _spy(telegram_id, feature_key, *, lifetime=False, offset_minutes=0):
+            seen.append(offset_minutes)
+            return counts[len(seen) - 1]
+
+        with patch.object(service, "_daily_used_today", _spy), patch.object(
+            service, "_learner_offset_minutes", AsyncMock(return_value=offset_minutes)
+        ):
+            result = await service.consume_daily_use(user, feature_key="recognition")
+        return result, seen
+
+    async def test_the_race_recount_uses_the_learner_window(self):
+        # Ikkinchi sanash limitni to'lgan deb ko'rsatadi, ya'ni qayta sanash
+        # haqiqatan ham chaqirilgan — va u ham UTC+5 oynasida bo'lishi shart.
+        result, seen = await self._run_race(offset_minutes=300, counts=[0, 1])
+
+        self.assertEqual([300, 300], seen)
+        self.assertFalse(result["allowed"])
+        self.assertEqual("free_feature_limit_reached", result["error"])
+
+    async def test_an_unknown_timezone_still_counts_in_utc(self):
+        # Mintaqasi noma'lum o'quvchi uchun xatti-harakat o'zgarmaydi.
+        _, seen = await self._run_race(offset_minutes=0, counts=[0, 1])
+
+        self.assertEqual([0, 0], seen)
 
 
 if __name__ == "__main__":
