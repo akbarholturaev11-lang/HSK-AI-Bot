@@ -39,6 +39,36 @@ data class AndroidProfileSubscriptionDto(
     @SerialName("until") val until: String? = null,
 )
 
+/**
+ * Whether the learner may still take the seven free days, and why not.
+ *
+ * The client never works this out for itself: one Telegram account gets one
+ * trial and only the server knows that. The reason is carried so a refusal can
+ * be shown rather than swallowed.
+ */
+@Serializable
+data class AndroidTrialDto(
+    @SerialName("eligible") val eligible: Boolean = false,
+    @SerialName("active") val active: Boolean = false,
+    @SerialName("reason") val reason: String = "",
+    @SerialName("days") val days: Int = 0,
+    @SerialName("ends_at") val endsAt: String? = null,
+)
+
+@Serializable
+data class AndroidTrialStatusResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("trial") val trial: AndroidTrialDto = AndroidTrialDto(),
+)
+
+@Serializable
+data class AndroidTrialStartResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("error") val error: String = "",
+    @SerialName("days") val days: Int = 0,
+    @SerialName("ends_at") val endsAt: String? = null,
+)
+
 @Serializable
 data class AndroidSubscriptionOverviewResponse(
     @SerialName("ok") val ok: Boolean = false,
@@ -96,59 +126,73 @@ data class AndroidAdDto(
     @SerialName("button_text") val buttonText: String? = null,
     /** How long the learner must watch before the section opens. */
     @SerialName("duration_seconds") val durationSeconds: Int = 0,
+    /** Which of the two places this was served for. */
+    @SerialName("placement") val placement: String = "",
+    /**
+     * How long before the learner may close it. The server owns this number:
+     * an ad the client could dismiss on its own timing would be no ad at all.
+     */
+    @SerialName("skip_after_seconds") val skipAfterSeconds: Int = 0,
 )
 
 /**
- * Step one of watching an ad: the server binds what this view may unlock and
- * hands back a token. Without it a reported view opens nothing, so the client
- * cannot claim to have watched an ad it never started.
+ * Reports that an ad was shown.
+ *
+ * This is the whole protocol now. There used to be a step before it — an
+ * "attempt" that bound a token to the section the ad would unlock — because
+ * watching an ad was a way past a limit. It is not any more: a spent
+ * allowance shows the paywall, and an ad is only ever shown and counted.
+ *
+ * The count matters even so: the screen-centre ad has a daily cap, and the
+ * server keeps it per Telegram account rather than per device, so what is
+ * reported here is what the learner's other devices will also have used up.
  */
-@Serializable
-data class AndroidAdAttemptRequest(
-    @SerialName("ad_id") val adId: Int,
-    @SerialName("feature") val feature: String,
-    @SerialName("lesson_order") val lessonOrder: Int = 0,
-    /** Ties the attempt to the session it will unlock. */
-    @SerialName("access_ref") val accessRef: String,
-)
-
-@Serializable
-data class AndroidAdAttemptResponse(
-    @SerialName("ok") val ok: Boolean = false,
-    @SerialName("attempt_token") val attemptToken: String = "",
-    /** How long the ad must actually play before the view counts. */
-    @SerialName("required_seconds") val requiredSeconds: Int = 0,
-    @SerialName("expires_in") val expiresIn: Int = 0,
-)
-
-/** Step two: the ad has played and the view is reported. */
 @Serializable
 data class AndroidAdViewRequest(
     @SerialName("ad_id") val adId: Int,
     @SerialName("watched_seconds") val watchedSeconds: Int,
-    @SerialName("feature") val feature: String = "",
+    @SerialName("placement") val placement: String,
     @SerialName("lesson_order") val lessonOrder: Int = 0,
-    @SerialName("placement") val placement: String = "start",
-    @SerialName("access_ref") val accessRef: String = "",
-    @SerialName("attempt_token") val attemptToken: String = "",
 )
 
 @Serializable
 data class AndroidAdViewResponse(
     /**
-     * True only when the ad was watched long enough. False is not an error:
-     * the view is recorded either way, but nothing is unlocked.
+     * True only when the ad was on screen long enough to count. False is not
+     * an error — the learner simply closed it early — and nothing depends on
+     * it beyond the daily tally.
      */
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("required_seconds") val requiredSeconds: Int = 0,
     @SerialName("watched_seconds") val watchedSeconds: Int = 0,
-    @SerialName("authorization") val authorization: AndroidAdAuthorizationDto? = null,
+)
+
+/**
+ * One small explanation block, as the server decided to show it.
+ *
+ * The client draws it and nothing else: which blocks exist, who sees them,
+ * which section each belongs to and whether a long absence brings one back
+ * are all server decisions, so a block closed on the phone stays closed in
+ * the Mini App.
+ */
+@Serializable
+data class AndroidHintDto(
+    @SerialName("key") val key: String = "",
+    @SerialName("title") val title: String = "",
+    @SerialName("body") val body: String = "",
+    /** Which screen it belongs to; null means it is not tied to one. */
+    @SerialName("section") val section: String? = null,
 )
 
 @Serializable
-data class AndroidAdAuthorizationDto(
-    @SerialName("recorded") val recorded: Boolean = false,
-    @SerialName("idempotent") val idempotent: Boolean = false,
+data class AndroidHintDismissRequest(
+    @SerialName("hint") val hint: String,
+)
+
+@Serializable
+data class AndroidHintDismissResponse(
+    @SerialName("ok") val ok: Boolean = false,
+    @SerialName("saved") val saved: Boolean = false,
 )
 
 @Serializable

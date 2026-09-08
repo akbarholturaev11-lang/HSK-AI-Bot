@@ -353,6 +353,9 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
                         media_type="video",
                         language="all",
                         ad_type=ad_type,
+                        # Tur va JOY endi mustaqil: admin har reklamani
+                        # ikkala joyga ham qo'yishi mumkin.
+                        placements="lesson_end,screen_center",
                         duration_seconds=7,
                         is_active=True,
                         created_at=datetime(2026, 9, 1, 12, index, tzinfo=timezone.utc),
@@ -416,23 +419,42 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
         return response
 
     async def _types(self, query=""):
+        # Mashq sloti endi reklama bermaydi, shuning uchun kanal filtri
+        # dars yakuni sloti ustida tekshiriladi.
+        if "slot=" not in query:
+            query = (query + "&" if query else "?") + "slot=lesson_end"
         response = await self._ask(query)
         self.assertEqual(200, response.status_code, response.text)
         body = response.json()
         return {ad["ad_type"] for ad in body["ads"]}, body
 
     async def test_the_play_channel_never_gets_a_subscription_ad(self):
-        # The lesson-end slot holds nothing BUT the subscription block, so a
-        # Play build asking for it must come away empty rather than served.
-        # Asking for the practice slot would pass even with no channel filter.
-        response = await self._ask("?channel=play&slot=lesson_end")
-        self.assertEqual(404, response.status_code, response.text)
-        self.assertEqual("course_ad_not_found", response.json()["error"])
+        """Play buildiga obuna CTA si bo'lgan reklama tushmasligi kerak.
+
+        Ilgari buni JOY ta'minlardi: `lesson_end` slotida faqat `dars_yakuni`
+        turi bo'lardi. Endi tur va joy mustaqil — bir joyda har xil tur
+        bo'lishi mumkin — shuning uchun himoya TURga bog'langan.
+        """
+        types, _ = await self._types("?channel=play&slot=lesson_end")
+        self.assertNotIn("dars_yakuni", types)
 
     async def test_the_play_channel_still_gets_the_ordinary_ads(self):
-        # Excluding the unsafe type must not leave the Play build with nothing.
-        types, _ = await self._types("?channel=play")
+        # Xavfli turni chiqarib tashlash Play buildini reklamasiz qoldirmasin.
+        types, _ = await self._types("?channel=play&slot=lesson_end")
         self.assertEqual({"odiy", "hamkorlik", "bot"}, types)
+
+    async def test_the_practice_slot_no_longer_serves_ads(self):
+        """Mashq sessiyalaridagi reklama olib tashlandi.
+
+        Do'kondagi eski build hali "reklama ko'rib davom etish" tugmasini
+        ko'rsatadi. Bo'sh javob unga "reklama yo'q" deydi va u obuna yo'liga
+        o'tadi — xato ko'rsatmasdan. Aks holda u men o'chirgan `/ad/attempt`
+        ga borib 404 olardi.
+        """
+        response = await self._ask("?slot=practice")
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual("course_ad_not_found", response.json()["error"])
 
     async def test_the_direct_channel_may_show_the_lesson_end_block(self):
         types, body = await self._types("?channel=direct&slot=lesson_end")
@@ -440,18 +462,18 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("direct", body["channel"])
 
     async def test_the_desktop_promo_never_reaches_android(self):
-        for query in ("?channel=play", "?channel=direct"):
+        for query in ("?channel=play&slot=lesson_end", "?channel=direct&slot=lesson_end"):
             with self.subTest(query=query):
                 types, _ = await self._types(query)
                 self.assertNotIn("app", types)
 
     async def test_an_unknown_channel_falls_back_to_the_restricted_set(self):
-        # A missing or odd value must not accidentally widen what is shown:
-        # only an explicit "direct" unlocks the lesson-end block.
+        # Yo'q yoki g'alati qiymat ko'rsatiladigan narsani KENGAYTIRMASLIGI
+        # kerak: obuna CTA si faqat aniq "direct" bilan ochiladi.
         for suffix in ("", "&channel=", "&channel=web"):
             with self.subTest(channel=suffix):
-                response = await self._ask(f"?slot=lesson_end{suffix}")
-                self.assertEqual(404, response.status_code, response.text)
+                types, _ = await self._types(f"?slot=lesson_end{suffix}")
+                self.assertNotIn("dars_yakuni", types)
 
     async def test_the_channel_name_is_read_case_insensitively(self):
         types, body = await self._types("?channel=PLAY")
@@ -522,6 +544,59 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(200, response.status_code)
 
+
+    # --- ekran markazi ---------------------------------------------------
+    #
+    # Ikkinchi joy. Mini App'da u ilova ochilganda markazda chiqadi va
+    # kuniga ko'pi bilan 2 marta. Chegara SERVERDA — shuning uchun telefonda
+    # ikkitasini ko'rgan odam desktopda uchinchisini ololmaydi.
+
+    async def test_the_screen_centre_slot_is_served(self):
+        types, body = await self._types("?channel=play&slot=screen_center")
+
+        self.assertEqual("screen_center", body["slot"])
+        self.assertTrue(types)
+        # Har bir reklama qancha soniyadan keyin yopilishi mumkinligini
+        # SERVER aytadi — klient o'zi o'ylab topmaydi.
+        for ad in body["ads"]:
+            with self.subTest(ad=ad["id"]):
+                self.assertEqual("screen_center", ad["placement"])
+                self.assertGreater(int(ad["skip_after_seconds"]), 0)
+
+    async def test_the_screen_centre_slot_stops_at_the_daily_cap(self):
+        token = await self._token()
+
+        async def ask():
+            return await self.client.get(
+                "/api/v3/android/ad?slot=screen_center&channel=play",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+
+        self.assertEqual(200, (await ask()).status_code)
+        first_ad = (await ask()).json()["ads"][0]["id"]
+
+        # Ikkita ko'rsatish yoziladi — bu kunlik chegara.
+        for _ in range(2):
+            recorded = await self._ad_view(
+                token, ad_id=first_ad, placement="screen_center"
+            )
+            self.assertEqual(200, recorded.status_code, recorded.text)
+
+        exhausted = await ask()
+        self.assertEqual(404, exhausted.status_code)
+        self.assertEqual("course_ad_not_found", exhausted.json()["error"])
+
+    async def test_a_paid_learner_gets_no_screen_centre_ad(self):
+        async with self.sessions() as session:
+            user = await session.get(User, 1)
+            user.status = "active"
+            user.payment_status = "approved"
+            user.end_date = datetime.now(timezone.utc) + timedelta(days=30)
+            await session.commit()
+
+        response = await self._ask("?slot=screen_center&channel=play")
+
+        self.assertEqual(404, response.status_code)
 
     async def test_a_view_for_an_unknown_ad_is_an_error(self):
         token = await self._token()
@@ -992,7 +1067,11 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(403, second.status_code)
         body = second.json()
         self.assertEqual("free_feature_limit_reached", body["error"])
-        self.assertTrue(body["ad"]["available"])
+        # Reklama endi hech narsani ochmaydi — javob buni ochiq aytadi.
+        # Shakl saqlanadi, chunki do'kondagi eski build shu kalitni o'qiydi.
+        self.assertFalse(body["ad"]["available"])
+        # Qachon qayta ochilishi Mini App'dagidek aytiladi.
+        self.assertIn("reset_at", body)
 
     async def test_a_spent_allowance_reaches_the_learner_in_telegram(self):
         """The limit is also news, not just a closed door.
@@ -1031,13 +1110,13 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(1, len(self.bot.messages))
 
-    async def test_an_empty_ad_catalogue_opens_the_section_instead_of_locking_it(self):
-        """No ad to watch must not mean no way in.
+    async def test_an_empty_ad_catalogue_no_longer_opens_the_section(self):
+        """Reklama yo'qligi endi bepul kirish EMAS.
 
-        The Mini App opens the section and plays the ad best-effort, so a
-        learner it has nothing to show still practises. The allowance an ad
-        would have spent is spent all the same, so the daily count does not
-        drift apart between the two clients.
+        Ilgari bu yerda "ko'rsatadigan reklama yo'q ekan, bo'limni ochamiz"
+        degan yo'l bor edi. Mashq reklamalari olib tashlangach o'sha yo'l
+        Android'da bepul foydalanuvchiga cheksiz mashq berardi, Mini App'da
+        esa o'sha odam paywall ko'rardi — ya'ni bitta hisob, ikki xil qoida.
         """
 
         await self.client.post(
@@ -1046,35 +1125,46 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
             json={"feature": "recognition", "ref": "drill-1"},
         )
 
-        reopened = await self.client.post(
+        second = await self.client.post(
             "/api/v3/android/practice/gate",
             headers=self._headers(),
             json={"feature": "recognition", "ref": "drill-2"},
         )
 
-        self.assertEqual(200, reopened.status_code)
-        body = reopened.json()
-        self.assertTrue(body["allowed"])
-        self.assertEqual("no_ad", body["source"])
+        self.assertEqual(403, second.status_code)
+        body = second.json()
+        self.assertFalse(body["ok"])
+        self.assertEqual("free_feature_limit_reached", body["error"])
+        self.assertNotIn("source", body)
 
-    async def test_an_available_ad_still_has_to_be_watched(self):
-        """The way in stays the ad while there is one to watch."""
+    async def test_a_watched_ad_can_no_longer_open_the_section(self):
+        """`access_ref` bilan "reklama ko'rdim" deyish endi ishlamaydi.
+
+        Eski build hali bu maydonni yuboradi. U jimgina e'tiborsiz qoldirilishi
+        kerak: 422 emas (build yiqilmasin), lekin ochib ham yubormasin.
+        """
 
         await self._seed_practice_ad()
-
         await self.client.post(
             "/api/v3/android/practice/gate",
             headers=self._headers(),
             json={"feature": "recognition", "ref": "drill-1"},
         )
-        spent = await self.client.post(
+
+        with_ref = await self.client.post(
             "/api/v3/android/practice/gate",
             headers=self._headers(),
-            json={"feature": "recognition", "ref": "drill-2"},
+            json={
+                "feature": "recognition",
+                "ref": "drill-2",
+                "access_ref": "whatever-the-old-build-sends",
+            },
         )
 
-        self.assertEqual(403, spent.status_code)
-        self.assertTrue(spent.json()["ad"]["available"])
+        self.assertEqual(403, with_ref.status_code)
+        self.assertEqual(
+            "free_feature_limit_reached", with_ref.json()["error"]
+        )
 
     async def test_an_unknown_section_cannot_be_gated(self):
         response = await self.client.post(
@@ -1271,6 +1361,7 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/voice/session/end"),
         ("GET", "/api/v3/android/ad"),
         ("POST", "/api/v3/android/ad/view"),
+        ("POST", "/api/v3/android/hints/dismiss"),
     )
 
     async def asyncSetUp(self):

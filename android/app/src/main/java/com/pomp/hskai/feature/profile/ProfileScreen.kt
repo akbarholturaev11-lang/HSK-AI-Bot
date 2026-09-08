@@ -31,6 +31,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -58,6 +59,8 @@ import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.network.MediaUrl
 import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.feature.hint.SectionHints
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.feature.course.GoalRing
@@ -67,6 +70,8 @@ fun ProfileScreen(
     account: LinkedAccount,
     state: ProfileUiState,
     settings: ProfileSettingsState,
+    hints: List<AndroidHintDto> = emptyList(),
+    onDismissHint: (String) -> Unit = {},
     /** The course map's own progress, which owns the week and the streak. */
     courseProgress: CourseProgress?,
     /** Carries the learner's Telegram photo; the profile payload has none. */
@@ -80,6 +85,8 @@ fun ProfileScreen(
     onToggleNotifications: (Boolean) -> Unit,
     onOpenSupport: (String) -> Unit,
     onRefresh: () -> Unit,
+    /** 7 kunlik bepul Pro. Qaror serverniki; bu faqat so'rov yuboradi. */
+    onStartTrial: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
     modifier: Modifier = Modifier,
@@ -90,6 +97,14 @@ fun ProfileScreen(
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
+            item {
+                // Mini App `hintsHtml("profile")`.
+                SectionHints(
+                    hints = hints,
+                    section = "profile",
+                    onDismiss = onDismissHint,
+                )
+            }
             item {
                 ProfileHero(account, state, courseUser)
                 state.error?.let {
@@ -146,6 +161,7 @@ fun ProfileScreen(
                     onOpenSupport = onOpenSupport,
                 )
             }
+            item { TrialCard(state, onStart = onStartTrial) }
             item { SubscriptionCard(state) }
             item { ReferralCard(state) }
             item {
@@ -322,6 +338,68 @@ private fun StatCard(label: String, value: String, modifier: Modifier = Modifier
                 style = MaterialTheme.typography.bodyMedium,
                 color = PompColors.InkSecondary,
             )
+        }
+    }
+}
+
+/**
+ * 7 kunlik bepul Pro.
+ *
+ * Uch holat: taklif, faol (qolgan kun), yoki umuman ko'rinmaydi. Qaror
+ * SERVERNIKI — klient `eligible` bayrog'ini o'qiydi, o'zi hisoblamaydi:
+ * bitta Telegram akkaunt bitta trial olishi kerak va buni faqat server biladi.
+ */
+@Composable
+private fun TrialCard(state: ProfileUiState, onStart: () -> Unit) {
+    val trial = state.trial ?: return
+    if (!trial.eligible && !trial.active) return
+
+    Surface(
+        color = PompColors.GoldSoft,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, PompColors.Gold),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text = if (trial.active) {
+                    stringResource(R.string.profile_trial_active_title)
+                } else {
+                    stringResource(R.string.profile_trial_title)
+                },
+                style = MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            Text(
+                text = if (trial.active) {
+                    stringResource(R.string.profile_trial_active_body)
+                } else {
+                    stringResource(R.string.profile_trial_body)
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+            )
+            if (state.trialError.isNotBlank()) {
+                // Rad etilsa sabab ko'rsatiladi: jimgina hech narsa qilmaydigan
+                // tugma eng yomon variant.
+                Text(
+                    text = stringResource(R.string.profile_trial_failed),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PompColors.Cinnabar,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
+            }
+            if (trial.eligible) {
+                Button(
+                    onClick = onStart,
+                    enabled = !state.trialStarting,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                ) {
+                    Text(stringResource(R.string.profile_trial_cta))
+                }
+            }
         }
     }
 }

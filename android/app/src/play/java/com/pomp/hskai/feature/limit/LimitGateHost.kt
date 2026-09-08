@@ -33,6 +33,10 @@ fun rememberLimitGate(
     supportUrl: String,
     isRefreshing: Boolean,
     onRefreshAccess: () -> Unit,
+    trialEligible: Boolean = false,
+    trialStarting: Boolean = false,
+    trialError: String = "",
+    onStartTrial: () -> Unit = {},
 ): LimitGate {
     val context = LocalContext.current
     // A re-check that changed nothing has to say so: a subscription that
@@ -54,6 +58,10 @@ fun rememberLimitGate(
             isBusy = isRefreshing,
             supportUrl = supportUrl,
             recheckFoundNothing = recheckFoundNothing,
+            trialEligible = trialEligible,
+            trialStarting = trialStarting,
+            trialError = trialError,
+            canSubscribe = false,
         ),
         actions = LimitGateActions(
             onRecheck = {
@@ -62,6 +70,7 @@ fun rememberLimitGate(
                 onRefreshAccess()
             },
             onSupport = { openExternal(context, supportUrl) },
+            onStartTrial = onStartTrial,
         ),
     )
 }

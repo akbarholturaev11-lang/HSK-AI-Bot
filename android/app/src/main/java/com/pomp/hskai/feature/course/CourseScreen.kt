@@ -67,6 +67,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.feature.hint.SectionHints
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
@@ -85,8 +87,9 @@ fun CourseScreen(
     state: CourseUiState,
     dailyGoal: Int,
     limit: LimitGate,
+    hints: List<AndroidHintDto> = emptyList(),
+    onDismissHint: (String) -> Unit = {},
     onLesson: (CourseLesson) -> Unit,
-    onUnlockWithAd: (CourseLesson) -> Unit,
     onTodayTask: (TodayTask) -> Unit,
     onOpenGoal: () -> Unit,
     onOpenChest: () -> Unit,
@@ -157,6 +160,16 @@ fun CourseScreen(
                                 vertical = 8.dp,
                             ),
                         ) {
+                            item {
+                                // Mini App `hintsHtml("course")`: inside the
+                                // path list, so it scrolls away with it.
+                                SectionHints(
+                                    hints = hints,
+                                    section = "course",
+                                    onDismiss = onDismissHint,
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                )
+                            }
                             if (foundationVisible) {
                                 item {
                                     map.foundation?.let { FoundationEntry(it) }
@@ -171,7 +184,6 @@ fun CourseScreen(
                                         isOpeningChest = state.isOpeningChest,
                                         isStale = state.isStale,
                                         onLesson = onLesson,
-                                        onUnlockWithAd = onUnlockWithAd,
                                         onOpenChest = onOpenChest,
                                     )
                                 }
@@ -414,7 +426,6 @@ private fun PathRow(
     isOpeningChest: Boolean,
     isStale: Boolean,
     onLesson: (CourseLesson) -> Unit,
-    onUnlockWithAd: (CourseLesson) -> Unit,
     onOpenChest: () -> Unit,
 ) {
     val offsetX = pathOffset(row.unitIndex, row.nodeIndex)
@@ -459,20 +470,16 @@ private fun PathRow(
                         val lesson = item.lesson
                         val clickable = lesson.access == LessonAccess.Open ||
                             lesson.access == LessonAccess.HalfPreview
-                        // In the admin's "ads" mode the lock is not a dead end:
-                        // the node offers the ad that opens it.
-                        val adUnlockable = lesson.access == LessonAccess.AdUnlockable && !isStale
                         val lessonDescription = lesson.stateLabel()
                         if (lesson.isCurrent && clickable) CurrentBubble()
                         Box(
                             modifier = Modifier
                                 .size(CURRENT_RING_SIZE)
                                 .then(
-                                    when {
-                                        clickable -> Modifier.clickable { onLesson(lesson) }
-                                        adUnlockable ->
-                                            Modifier.clickable { onUnlockWithAd(lesson) }
-                                        else -> Modifier
+                                    if (clickable) {
+                                        Modifier.clickable { onLesson(lesson) }
+                                    } else {
+                                        Modifier
                                     }
                                 )
                                 .semantics { contentDescription = lessonDescription },
@@ -946,7 +953,6 @@ private fun CourseLesson.stateLabel(): String = when (access) {
     LessonAccess.Open -> stringResource(R.string.course_part_label, part)
     LessonAccess.HalfPreview -> stringResource(R.string.today_reason_preview)
     LessonAccess.PremiumLocked -> stringResource(R.string.today_reason_premium)
-    LessonAccess.AdUnlockable -> stringResource(R.string.today_reason_ad)
     LessonAccess.NotReached -> stringResource(R.string.today_reason_not_reached)
 }
 

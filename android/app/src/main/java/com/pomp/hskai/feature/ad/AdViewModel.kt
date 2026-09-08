@@ -26,8 +26,8 @@ data class AdUiState(
     val requiredSeconds: Int = AdWatch.DEFAULT_SECONDS,
     val elapsedSeconds: Int = 0,
     val isFinishing: Boolean = false,
-    /** The section is open; the caller may start the session. */
-    val unlocked: Boolean = false,
+    /** The ad is done with; the caller may close the screen. */
+    val finished: Boolean = false,
     /** No ad to show. An ordinary outcome, not a failure. */
     val unavailable: Boolean = false,
     val error: ApiError? = null,
@@ -38,40 +38,30 @@ data class AdUiState(
 }
 
 /**
- * Drives one ad: fetch, open an attempt, count the watch, report it.
+ * Drives one ad: fetch it, count the time it was on screen, report that.
  *
- * Nothing here decides that the section may open. The server measures the
- * real time between the attempt and the report and answers; this only asks.
+ * That is the whole job. There used to be more — an attempt token bound to a
+ * section, a server check that the watch was long enough, a section that
+ * opened as a result — because an ad was a way past a daily limit. It is not
+ * one any more: a spent allowance shows the paywall. An ad is now shown in
+ * exactly two places, after a lesson and in the centre of the screen, and
+ * reporting it only feeds the daily cap the server keeps per account.
  *
- * @param accessRef ties the ad to the session it will unlock. The same value
- *   must be handed to whatever starts that session.
+ * @param placement `lesson_end` or `screen_center`. The server refuses
+ *   anything else, and it — not this class — decides whether that place is
+ *   switched on, who is in its audience and how many are left today.
  */
 class AdViewModel(
     private val repository: FeatureRepository,
-    private val feature: String,
-    private val accessRef: String,
-    private val slot: String = "practice",
+    private val placement: String,
     private val lessonOrder: Int = 0,
 ) : ViewModel() {
-
-    /**
-     * An end-of-lesson ad opens nothing, so there is no attempt to bind it to:
-     * the server records the view and that is all it is for. Only a gate ad —
-     * one that has to open a section — goes through the attempt/token flow.
-     */
-    private val unlocksSomething: Boolean = slot != SLOT_LESSON_END
 
     private val _state = MutableStateFlow(AdUiState())
     val state: StateFlow<AdUiState> = _state.asStateFlow()
 
     private var ticker: Job? = null
-
-    // The attempt this watch belongs to. Held from the moment the attempt is
-    // opened, not when the countdown ends: the learner can only press
-    // "continue" after the countdown, but the token must never depend on the
-    // ticker having finished its last loop.
-    private var attemptToken: String = ""
-    private var attemptAdId: Int = 0
+    private var adId: Int = 0
 
     init {
         load()
@@ -79,14 +69,15 @@ class AdViewModel(
 
     fun load() {
         ticker?.cancel()
-        attemptToken = ""
-        attemptAdId = 0
+        adId = 0
         _state.value = AdUiState()
         viewModelScope.launch {
-            val listing = when (val result = repository.ads(slot)) {
+            val listing = when (val result = repository.ads(placement)) {
                 is ApiResult.Failure -> {
-                    // A missing ad is not a broken screen: the caller simply
-                    // has nothing to offer and says so.
+                    // A missing ad is not a broken screen. The server answers
+                    // this way for every ordinary reason too — the place is
+                    // off, the learner is paid, the daily cap is spent — so
+                    // the caller simply closes and carries on.
                     _state.update { it.copy(isLoading = false, unavailable = true) }
                     return@launch
                 }
@@ -101,58 +92,24 @@ class AdViewModel(
                 return@launch
             }
             val (ad, mediaUrl) = playable
-
-            if (!unlocksSomething) {
-                attemptAdId = ad.id
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        ad = ad,
-                        mediaUrl = mediaUrl,
-                        requiredSeconds = AdWatch.requiredSeconds(
-                            fromAttempt = 0,
-                            fromCreative = ad.durationSeconds,
-                        ),
-                    )
-                }
-                startTicker()
-                return@launch
+            adId = ad.id
+            _state.update {
+                it.copy(
+                    isLoading = false,
+                    ad = ad,
+                    mediaUrl = mediaUrl,
+                    // The server says how long before this may be closed. The
+                    // creative's own duration is only the fallback.
+                    requiredSeconds = AdWatch.requiredSeconds(
+                        fromServer = ad.skipAfterSeconds,
+                        fromCreative = ad.durationSeconds,
+                    ),
+                )
             }
-
-            when (val opened = repository.startAdAttempt(
-                adId = ad.id,
-                feature = feature,
-                accessRef = accessRef,
-                lessonOrder = lessonOrder,
-            )) {
-                is ApiResult.Failure -> _state.update {
-                    it.copy(isLoading = false, error = opened.error)
-                }
-
-                is ApiResult.Success -> {
-                    attemptToken = opened.value.attemptToken
-                    attemptAdId = ad.id
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            ad = ad,
-                            mediaUrl = mediaUrl,
-                            requiredSeconds = AdWatch.requiredSeconds(
-                                fromAttempt = opened.value.requiredSeconds,
-                                fromCreative = ad.durationSeconds,
-                            ),
-                        )
-                    }
-                    startTicker()
-                }
-            }
+            startTicker()
         }
     }
 
-    /**
-     * Counts the watch from the moment the attempt was opened, which is the
-     * same moment the server started measuring.
-     */
     private fun startTicker() {
         ticker?.cancel()
         ticker = viewModelScope.launch {
@@ -163,39 +120,25 @@ class AdViewModel(
         }
     }
 
-    /** Reports the watch. The server decides whether the section opens. */
+    /**
+     * Reports the view and closes.
+     *
+     * The report is not a request for anything, so its outcome cannot keep
+     * the learner on this screen: whether the server counted it or the call
+     * never arrived, the ad is over either way.
+     */
     fun onContinue() {
         val current = _state.value
         if (!current.canContinue || current.isFinishing) return
         _state.update { it.copy(isFinishing = true, error = null) }
         viewModelScope.launch {
-            val result = repository.recordAdView(
-                adId = attemptAdId,
+            repository.recordAdView(
+                adId = adId,
                 watchedSeconds = current.elapsedSeconds,
-                feature = feature,
-                accessRef = accessRef,
-                attemptToken = attemptToken,
+                placement = placement,
                 lessonOrder = lessonOrder,
             )
-            when (result) {
-                is ApiResult.Failure -> _state.update {
-                    it.copy(isFinishing = false, error = result.error)
-                }
-
-                is ApiResult.Success -> _state.update {
-                    it.copy(
-                        isFinishing = false,
-                        // The server may still refuse — an ad closed early,
-                        // an attempt that expired. Then nothing is unlocked
-                        // and the learner watches again.
-                        unlocked = result.value.ok && (
-                            !unlocksSomething ||
-                                result.value.authorization?.recorded == true
-                            ),
-                        error = if (result.value.ok) null else it.error,
-                    )
-                }
-            }
+            _state.update { it.copy(isFinishing = false, finished = true) }
         }
     }
 
@@ -205,19 +148,20 @@ class AdViewModel(
     }
 
     companion object {
-        /** The Mini App's end-of-lesson ad slot (`dars_yakuni`). */
-        const val SLOT_LESSON_END = "lesson_end"
+        /** One block after a finished lesson. */
+        const val PLACEMENT_LESSON_END = "lesson_end"
+
+        /** The modal in the centre of the screen, whatever section is open. */
+        const val PLACEMENT_SCREEN_CENTER = "screen_center"
     }
 
     class Factory(
         private val repository: FeatureRepository,
-        private val feature: String,
-        private val accessRef: String,
-        private val slot: String = "practice",
+        private val placement: String,
         private val lessonOrder: Int = 0,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            AdViewModel(repository, feature, accessRef, slot, lessonOrder) as T
+            AdViewModel(repository, placement, lessonOrder) as T
     }
 }

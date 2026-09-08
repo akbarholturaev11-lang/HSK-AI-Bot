@@ -38,6 +38,10 @@ fun rememberLimitGate(
     supportUrl: String,
     isRefreshing: Boolean,
     onRefreshAccess: () -> Unit,
+    trialEligible: Boolean = false,
+    trialStarting: Boolean = false,
+    trialError: String = "",
+    onStartTrial: () -> Unit = {},
 ): LimitGate {
     val handoffViewModel: SubscriptionHandoffViewModel = viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
@@ -90,6 +94,10 @@ fun rememberLimitGate(
             error = handoffState.error,
             supportUrl = supportUrl,
             recheckFoundNothing = recheckFoundNothing,
+            trialEligible = trialEligible,
+            trialStarting = trialStarting,
+            trialError = trialError,
+            canSubscribe = true,
         ),
         actions = LimitGateActions(
             onUnlock = handoffViewModel::openSubscription,
@@ -99,6 +107,7 @@ fun rememberLimitGate(
                 onRefreshAccess()
             },
             onSupport = { openExternal(context, supportUrl) },
+            onStartTrial = onStartTrial,
         ),
     )
 }

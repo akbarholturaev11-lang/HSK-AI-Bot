@@ -55,6 +55,8 @@ import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.feature.course.CoursePandaMascot
+import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.feature.hint.SectionHints
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitBlock
 import com.pomp.hskai.core.design.PompTextStyles
@@ -65,6 +67,8 @@ fun VoiceScreen(
     level: String,
     language: String,
     limit: LimitGate,
+    hints: List<AndroidHintDto> = emptyList(),
+    onDismissHint: (String) -> Unit = {},
     subtitlesOn: Boolean,
     slowSpeech: Boolean,
     onToggleSubtitles: (Boolean) -> Unit,
@@ -97,6 +101,8 @@ fun VoiceScreen(
                 level = level,
                 language = language,
                 limit = limit,
+                hints = hints,
+                onDismissHint = onDismissHint,
                 onSelectRole = onSelectRole,
                 onStartSession = onStartSession,
             )
@@ -117,6 +123,8 @@ private fun VoiceHome(
     level: String,
     language: String,
     limit: LimitGate,
+    hints: List<AndroidHintDto>,
+    onDismissHint: (String) -> Unit,
     onSelectRole: (String) -> Unit,
     onStartSession: (String, String) -> Unit,
 ) {
@@ -148,6 +156,10 @@ private fun VoiceHome(
                     )
                 }
             }
+        }
+        item {
+            // Mini App `hintsHtml("voice")`.
+            SectionHints(hints = hints, section = "voice", onDismiss = onDismissHint)
         }
         item {
             VoiceBox(

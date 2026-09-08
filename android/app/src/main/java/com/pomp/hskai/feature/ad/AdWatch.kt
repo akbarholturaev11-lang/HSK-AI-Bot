@@ -1,13 +1,12 @@
 package com.pomp.hskai.feature.ad
 
 /**
- * How long an ad must play before it counts.
+ * How long an ad stays before it may be closed.
  *
- * The server measures the real elapsed time between opening the attempt and
- * reporting the view, and refuses anything shorter. So the client must never
- * require LESS than the server does — the learner would press "continue" on a
- * view the server then throws away, and the section would stay shut with no
- * explanation.
+ * The server decides the number — it is `skip_after_seconds` on the placement
+ * the admin configured — and it also refuses to count a view shorter than the
+ * creative's own duration. So the client must never hold the learner for LESS
+ * than the server asks, or the ad ends up shown and uncounted.
  *
  * The bounds below mirror `CourseAdService` on the server for exactly that
  * reason. If they change there, they change here.
@@ -21,14 +20,13 @@ object AdWatch {
     /**
      * The duration to hold the learner for.
      *
-     * [fromAttempt] is what the server bound to this attempt and is therefore
-     * the number it will check against — it wins whenever it is usable.
-     * [fromCreative] is the listing's own duration, used only when the attempt
-     * response carried nothing.
+     * [fromServer] is the placement's own `skip_after_seconds`, set by the
+     * admin — it wins whenever it is usable. [fromCreative] is the ad's own
+     * length, used only when the placement said nothing.
      */
-    fun requiredSeconds(fromAttempt: Int, fromCreative: Int = 0): Int {
+    fun requiredSeconds(fromServer: Int, fromCreative: Int = 0): Int {
         val chosen = when {
-            fromAttempt > 0 -> fromAttempt
+            fromServer > 0 -> fromServer
             fromCreative > 0 -> fromCreative
             else -> DEFAULT_SECONDS
         }

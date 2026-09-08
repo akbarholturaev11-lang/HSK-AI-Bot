@@ -225,7 +225,8 @@
     <string name="ad_ready">Тайёр</string>
     <string name="ad_learn_more">Муфассал</string>
     <string name="ad_unavailable">Ҳоло реклама нест. Баъдтар кӯшиш кунед.</string>
-    <string name="limit_watch_ad">Бо реклама идома додан</string>
+    <string name="limit_try_trial">7 рӯз Pro ройгон</string>
+    <string name="limit_trial_failed">Давраи ройгонро оғоз кардан нашуд. Шояд ин ҳисоб онро аллакай гирифтааст.</string>
     <string name="lesson_pinyin_title">Пиньин (талаффуз)</string>
     <string name="lesson_pinyin_all">Дар ҳама ҷо нишон додан</string>
     <string name="lesson_pinyin_new">Танҳо дар калимаҳои нав</string>
@@ -263,7 +264,6 @@
     <string name="voice_a11y_send">фиристодан</string>
     <string name="voice_tap_to_speak">Барои гап задан микрофонро пахш кунед</string>
     <string name="voice_tap_to_stop">Барои фиристодан боз пахш кунед</string>
-    <string name="today_reason_ad">Бо тамошои реклама кушоед</string>
     <string name="drill_recognition_prompt">Иероглифи дурустро ёбед</string>
     <string name="drill_pronunciation_prompt">Гӯш кунед ва такрор кунед</string>
     <string name="limit_practice_reason">Истифодаи ройгони ин бахш ба анҷом расид.</string>
@@ -293,4 +293,16 @@
     <string name="profile_referral_share">Мубодила</string>
     <string name="profile_referral_copied">Пайванд нусха шуд</string>
     <string name="limit_recheck_none">Ҳисоб тафтиш шуд — обуна ёфт нашуд. Агар пардохт карда бошед, каме сабр кунед ва боз тафтиш кунед.</string>
+    <string name="profile_trial_title">7 рӯз Pro ройгон</string>
+    <string name="profile_trial_body">Ҳамаи имкониятҳои асосиро месанҷед. Худкор пул гирифта намешавад.</string>
+    <string name="profile_trial_cta">7 рӯз ройгон санҷидан</string>
+    <string name="profile_trial_active_title">Pro фаъол</string>
+    <string name="profile_trial_active_body">Давраи санҷишӣ давом дорад. Пас аз он ба режими ройгон бармегардед — пешрафт мемонад.</string>
+    <string name="profile_trial_failed">Ҳозир нашуд. Баъдтар кӯшиш кунед.</string>
+    <string name="hint_close">Пӯшидан</string>
+    <string name="plan_choice_title">HSK AI Pro</string>
+    <string name="plan_choice_body">Ҳамаи дарсҳо, машқи бепоён ва AI Voice. Мехоҳед, аввал 7 рӯз ройгон санҷед.</string>
+    <string name="plan_choice_trial">7 рӯз ройгон санҷидан</string>
+    <string name="plan_choice_pay">Pro гирифтан</string>
+    <string name="plan_choice_later">Ҳозир ройгон идома медиҳам</string>
 </resources>

@@ -115,6 +115,9 @@ object CourseMapper {
                     status = foundation.status,
                 )
             },
+            // Passed through untouched: which blocks exist, who sees them and
+            // when one comes back are all server decisions.
+            hints = dto.hints,
         )
     }
 
@@ -138,7 +141,6 @@ object CourseMapper {
     private fun CourseLessonDto.access(): LessonAccess = when {
         completionAllowed -> LessonAccess.Open
         previewHalf -> LessonAccess.HalfPreview
-        lockedPremium && adUnlockable -> LessonAccess.AdUnlockable
         lockedPremium -> LessonAccess.PremiumLocked
         else -> LessonAccess.NotReached
     }

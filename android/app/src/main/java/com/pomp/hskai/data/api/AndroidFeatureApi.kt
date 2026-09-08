@@ -20,6 +20,20 @@ interface AndroidFeatureApi {
         @Header("Authorization") authorization: String,
     ): Response<AndroidSubscriptionOverviewResponse>
 
+    @GET("api/v3/android/trial/status")
+    suspend fun trialStatus(
+        @Header("Authorization") authorization: String,
+    ): Response<AndroidTrialStatusResponse>
+
+    /**
+     * A trial is not a purchase, so the Play build may offer it too: the store
+     * rule bars external payment, not a free trial.
+     */
+    @POST("api/v3/android/trial/start")
+    suspend fun trialStart(
+        @Header("Authorization") authorization: String,
+    ): Response<AndroidTrialStartResponse>
+
     @POST("api/v3/android/subscription/open")
     suspend fun subscriptionOpen(
         @Header("Authorization") authorization: String,
@@ -166,8 +180,12 @@ interface AndroidFeatureApi {
     ): Response<VoiceEndResponse>
 
     /**
-     * The ads this distribution channel is allowed to show. The server, not
-     * the client, decides which types the channel may receive.
+     * The ads this distribution channel is allowed to show in one place.
+     *
+     * The server decides everything that matters here: which types the
+     * channel may receive, whether the place is switched on, whether this
+     * learner is in its audience, and whether the daily cap is already
+     * spent. A 404 means "nothing to show", which is an ordinary answer.
      */
     @GET("api/v3/android/ad")
     suspend fun ads(
@@ -176,15 +194,22 @@ interface AndroidFeatureApi {
         @Query("channel") channel: String,
     ): Response<AndroidAdListResponse>
 
-    @POST("api/v3/android/ad/attempt")
-    suspend fun adAttempt(
-        @Header("Authorization") authorization: String,
-        @Body body: AndroidAdAttemptRequest,
-    ): Response<AndroidAdAttemptResponse>
-
     @POST("api/v3/android/ad/view")
     suspend fun adView(
         @Header("Authorization") authorization: String,
         @Body body: AndroidAdViewRequest,
     ): Response<AndroidAdViewResponse>
+
+    /**
+     * Puts one explanation block away.
+     *
+     * The key is all that is sent: the server builds the record, including
+     * the day, because a block that comes back after a long absence has to
+     * be closable again — and a client clock must not decide that.
+     */
+    @POST("api/v3/android/hints/dismiss")
+    suspend fun dismissHint(
+        @Header("Authorization") authorization: String,
+        @Body body: AndroidHintDismissRequest,
+    ): Response<AndroidHintDismissResponse>
 }

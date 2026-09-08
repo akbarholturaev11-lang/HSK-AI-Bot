@@ -32,6 +32,7 @@ from app.services.course_access_policy_service import (
     CourseAccessPolicyService,
 )
 from app.services.course_notification_service import CourseNotificationService
+from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.limit_notification_service import LimitNotificationService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_mistake_service import CourseMistakeService
@@ -380,6 +381,10 @@ class DesktopCourseService:
             data["today"] = today
         data["notifications"] = await CourseNotificationService(self.session).list_for_user(user)
         data["admin_contact"] = await get_admin_contact_url(self.session)
+        # Mayda tushuntirish blokchalari — Mini App bilan AYNI manba va ayni
+        # jadval. Telefonda yopilgan blokcha desktopda qayta chiqmaydi.
+        # Ro'yxat bo'sh bo'lishi normal holat; maslahat oqimni to'xtatmaydi.
+        data["hints"] = await MiniAppHintService(self.session).hints_for(user)
         apply_course_v3_access_policy(
             data,
             level=level,

@@ -8,13 +8,13 @@ import org.junit.Test
 class AdWatchTest {
 
     @Test
-    fun `the attempt duration wins because the server checks against it`() {
-        assertEquals(9, AdWatch.requiredSeconds(fromAttempt = 9, fromCreative = 30))
+    fun `the placement duration wins because the admin set it`() {
+        assertEquals(9, AdWatch.requiredSeconds(fromServer = 9, fromCreative = 30))
     }
 
     @Test
-    fun `the listing duration is the fallback when the attempt said nothing`() {
-        assertEquals(30, AdWatch.requiredSeconds(fromAttempt = 0, fromCreative = 30))
+    fun `the creative duration is the fallback when the placement said nothing`() {
+        assertEquals(30, AdWatch.requiredSeconds(fromServer = 0, fromCreative = 30))
     }
 
     @Test

@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.feature.hint.SectionHints
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.data.api.RatingEntryDto
 import com.pomp.hskai.data.api.ChallengeDto
@@ -54,6 +56,8 @@ import com.pomp.hskai.data.api.ReferralItemDto
 @Composable
 fun RatingScreen(
     state: RatingUiState,
+    hints: List<AndroidHintDto> = emptyList(),
+    onDismissHint: (String) -> Unit = {},
     onSelectTab: (RatingTab) -> Unit,
     onChallenge: (String) -> Unit,
     onRespond: (Int, Boolean) -> Unit,
@@ -72,6 +76,14 @@ fun RatingScreen(
                 SectionPill(
                     icon = Icons.Filled.WorkspacePremium,
                     text = stringResource(R.string.nav_rating),
+                )
+            }
+            item {
+                // Mini App `hintsHtml("rating")`.
+                SectionHints(
+                    hints = hints,
+                    section = "rating",
+                    onDismiss = onDismissHint,
                 )
             }
             item {

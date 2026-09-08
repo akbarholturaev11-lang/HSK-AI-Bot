@@ -5137,12 +5137,16 @@ function hintHtml(h){
 }
 function hintsHtml(section){return hintsFor(section).map(hintHtml).join("")}
 /* Yopilganda: darhol yo'qoladi (kutish yo'q), server yozuvi fon rejimida.
-   Yozuv yiqilsa ham foydalanuvchi uchun blokcha yopilgan bo'lib qoladi. */
+   Yozuv yiqilsa ham foydalanuvchi uchun blokcha yopilgan bo'lib qoladi.
+
+   Yozuv kalitini SERVER quradi (`/api/v3/hints/dismiss`), klient emas: kalit
+   ichida kun bor va uni klient soatiga qoldirish "uzoq tanaffusdan keyin
+   qayta chiqarish" o'lchovini buzardi. */
 function closeHint(key){
   HINTS_CLOSED[key]=true;
   var node=document.querySelector('[data-hint="'+key+'"]');
   if(node&&node.parentNode)node.parentNode.removeChild(node);
-  trackCourseEvent("hint_dismissed",{hint:key,dedupe_key:"hint:"+key});
+  _apiPost("/api/v3/hints/dismiss",{hint:key}).catch(function(){});
 }
 function trialProfileCard(){
   var t=T();

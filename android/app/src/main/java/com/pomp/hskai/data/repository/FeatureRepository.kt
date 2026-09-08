@@ -4,12 +4,14 @@ import com.pomp.hskai.BuildConfig
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.network.apiCall
-import com.pomp.hskai.data.api.AndroidAdAttemptRequest
-import com.pomp.hskai.data.api.AndroidAdAttemptResponse
 import com.pomp.hskai.data.api.AndroidAdListResponse
+import com.pomp.hskai.data.api.AndroidTrialStartResponse
+import com.pomp.hskai.data.api.AndroidTrialStatusResponse
 import com.pomp.hskai.data.api.AndroidAdViewRequest
 import com.pomp.hskai.data.api.AndroidAdViewResponse
 import com.pomp.hskai.data.api.AndroidFeatureApi
+import com.pomp.hskai.data.api.AndroidHintDismissRequest
+import com.pomp.hskai.data.api.AndroidHintDismissResponse
 import com.pomp.hskai.data.api.AndroidProfileResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOpenResponse
 import com.pomp.hskai.data.api.AndroidSubscriptionOverviewResponse
@@ -81,6 +83,12 @@ class FeatureRepository(
      */
     suspend fun subscriptionOpen(): ApiResult<AndroidSubscriptionOpenResponse> =
         authorized { api.subscriptionOpen(it) }
+
+    suspend fun trialStatus(): ApiResult<AndroidTrialStatusResponse> =
+        authorized { api.trialStatus(it) }
+
+    suspend fun trialStart(): ApiResult<AndroidTrialStartResponse> =
+        authorized { api.trialStart(it) }
 
     suspend fun rating(): ApiResult<RatingResponse> = authorized {
         api.rating(it, timezoneOffsetMinutes())
@@ -383,41 +391,22 @@ class FeatureRepository(
      * what each channel may receive. A 404 here means "no ad to show", which
      * is an ordinary outcome, not a failure of the screen.
      */
-    suspend fun ads(slot: String): ApiResult<AndroidAdListResponse> = authorized {
-        api.ads(it, slot = slot, channel = BuildConfig.DISTRIBUTION_CHANNEL)
+    /** The ads available in one place, or a failure meaning "none". */
+    suspend fun ads(placement: String): ApiResult<AndroidAdListResponse> = authorized {
+        api.ads(it, slot = placement, channel = BuildConfig.DISTRIBUTION_CHANNEL)
     }
 
     /**
-     * Opens an ad attempt. The returned token is what makes a later view
-     * count: without it the server unlocks nothing.
-     */
-    suspend fun startAdAttempt(
-        adId: Int,
-        feature: String,
-        accessRef: String,
-        lessonOrder: Int = 0,
-    ): ApiResult<AndroidAdAttemptResponse> = authorized {
-        api.adAttempt(
-            it,
-            AndroidAdAttemptRequest(
-                adId = adId,
-                feature = feature,
-                lessonOrder = lessonOrder,
-                accessRef = accessRef,
-            ),
-        )
-    }
-
-    /**
-     * Reports a watched ad. The server measures the real elapsed time since
-     * the attempt was opened, so this cannot be hurried.
+     * Reports that an ad was shown, and for how long.
+     *
+     * Nothing is unlocked by this. It feeds the daily cap, which the server
+     * keeps per Telegram account rather than per device — so two ads seen on
+     * a phone are two ads gone on the desktop as well.
      */
     suspend fun recordAdView(
         adId: Int,
         watchedSeconds: Int,
-        feature: String,
-        accessRef: String,
-        attemptToken: String,
+        placement: String,
         lessonOrder: Int = 0,
     ): ApiResult<AndroidAdViewResponse> = authorized {
         api.adView(
@@ -425,13 +414,15 @@ class FeatureRepository(
             AndroidAdViewRequest(
                 adId = adId,
                 watchedSeconds = watchedSeconds,
-                feature = feature,
+                placement = placement,
                 lessonOrder = lessonOrder,
-                accessRef = accessRef,
-                attemptToken = attemptToken,
             ),
         )
     }
+
+    /** Puts one explanation block away for good. */
+    suspend fun dismissHint(key: String): ApiResult<AndroidHintDismissResponse> =
+        authorized { api.dismissHint(it, AndroidHintDismissRequest(hint = key)) }
 
     private suspend fun <T : Any> authorized(
         call: suspend (authorization: String) -> retrofit2.Response<T>,
