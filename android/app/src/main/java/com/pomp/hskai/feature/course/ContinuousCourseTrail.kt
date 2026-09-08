@@ -13,43 +13,39 @@ import androidx.compose.ui.unit.dp
 import com.pomp.hskai.core.design.PompColors
 
 /**
- * One-path native equivalent of Mini App `drawTrails()` for a single course unit.
- * The caller owns the path container height; this renderer only draws behind nodes.
+ * Bitta qatordagi yo'lakcha — Mini App `drawTrails()` ning native ekvivalenti.
+ *
+ * Faqat shu qatorga tegishli bo'lak chiziladi, qator koordinatasida. Qo'shni
+ * qatorlar bir xil nuqtalardan hisoblangani uchun chegarada uzilish
+ * ko'rinmaydi.
  */
 @Composable
 internal fun ContinuousCourseTrail(
-    unitIndex: Int,
-    nodeCount: Int,
+    previousXDp: Float?,
+    currentXDp: Float,
+    nextXDp: Float?,
     modifier: Modifier = Modifier,
 ) {
-    val cubics = remember(unitIndex, nodeCount) {
-        courseTrailCubics(unitIndex = unitIndex, nodeCount = nodeCount)
+    val segments = remember(previousXDp, currentXDp, nextXDp) {
+        courseTrailSegmentsForRow(previousXDp, currentXDp, nextXDp)
     }
-    if (cubics.isEmpty()) return
+    if (segments.isEmpty()) return
 
     Canvas(modifier = modifier) {
         val centerX = size.width / 2f
-        val path = Path().apply {
-            val first = cubics.first().start
-            moveTo(centerX + first.xOffsetDp.dp.toPx(), first.yDp.dp.toPx())
-            cubics.forEach { segment ->
-                cubicTo(
-                    centerX + segment.control1.xOffsetDp.dp.toPx(),
-                    segment.control1.yDp.dp.toPx(),
-                    centerX + segment.control2.xOffsetDp.dp.toPx(),
-                    segment.control2.yDp.dp.toPx(),
-                    centerX + segment.end.xOffsetDp.dp.toPx(),
-                    segment.end.yDp.dp.toPx(),
-                )
-            }
+        val path = Path()
+        segments.forEach { s ->
+            path.moveTo(centerX + s.startXDp.dp.toPx(), s.startYDp.dp.toPx())
+            path.cubicTo(
+                centerX + s.control1XDp.dp.toPx(), s.control1YDp.dp.toPx(),
+                centerX + s.control2XDp.dp.toPx(), s.control2YDp.dp.toPx(),
+                centerX + s.endXDp.dp.toPx(), s.endYDp.dp.toPx(),
+            )
         }
         drawPath(
             path = path,
             color = PompColors.CourseTrail,
-            style = Stroke(
-                width = 34.dp.toPx(),
-                cap = StrokeCap.Round,
-            ),
+            style = Stroke(width = 34.dp.toPx(), cap = StrokeCap.Round),
         )
         drawPath(
             path = path,

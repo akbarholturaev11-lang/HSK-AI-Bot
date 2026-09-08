@@ -75,6 +75,7 @@ import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.data.api.VoiceSuggestionDto
 import com.pomp.hskai.data.api.VoiceWordDto
 import com.pomp.hskai.feature.course.CoursePandaMascot
+import com.pomp.hskai.feature.course.PandaMood
 
 /**
  * Mini App `course_v3_voice.html` — the conversation as a call.
@@ -138,7 +139,7 @@ internal fun VoiceCallScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CoursePandaMascot(modifier = Modifier.size(130.dp))
+            CoursePandaMascot(mood = PandaMood.Talk, modifier = Modifier.size(130.dp))
         }
         Text(
             text = when {

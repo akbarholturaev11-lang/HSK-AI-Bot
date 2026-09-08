@@ -20,8 +20,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -408,13 +408,13 @@ private fun UnitHeader(unit: CourseUnit) {
 
 private val NODE_SIZE = 64.dp
 private val CURRENT_RING_SIZE = 76.dp
-private val PATH_ROW_HEIGHT = 84.dp
-private val PATH_SWING = 76.dp
 
-private fun pathOffset(unitIndex: Int, nodeIndex: Int): Dp {
-    val pxLike = (sin((unitIndex * 3 + nodeIndex) * 0.9) * PATH_SWING.value).roundToInt()
-    return pxLike.dp
-}
+/** Bitta o'lchov — [COURSE_PATH_ROW_HEIGHT_DP] bilan bir xil bo'lishi shart. */
+private val PATH_ROW_HEIGHT = COURSE_PATH_ROW_HEIGHT_DP.dp
+private val PATH_SWING = COURSE_PATH_SWING_DP.dp
+
+private fun pathOffset(unitIndex: Int, nodeIndex: Int): Dp =
+    coursePathOffsetDp(unitIndex, nodeIndex).dp
 
 private fun courseNodeLabel(value: String): String =
     if (value.length > 10) value.take(9) + "…" else value
@@ -435,7 +435,11 @@ private fun PathRow(
 
     Box(
         modifier = Modifier.fillMaxWidth().height(PATH_ROW_HEIGHT),
-        contentAlignment = Alignment.Center,
+        // TopCenter, Center EMAS. Tugun qatorning tepasida turishi shart:
+        // yo'lakcha uning markazini qatorning tepasidan 38dp pastda deb
+        // hisoblaydi, va ustun markazlashtirilsa tugun yuqoriga surilib
+        // yo'lakcha uning yonidan o'tib ketadi.
+        contentAlignment = Alignment.TopCenter,
     ) {
         if (row.nodeCount >= 2) PathTrailSlice(row)
 
@@ -461,7 +465,10 @@ private fun PathRow(
         }
 
         Column(
-            modifier = Modifier.offset(x = offsetX),
+            // Tepadagi bo'sh joy — "DAVOM ETISH" pufakchasi uchun. Tugun
+            // markazi shu bilan birga `COURSE_NODE_CENTER_DP` ga to'g'ri
+            // keladi, ya'ni yo'lakcha aynan undan o'tadi.
+            modifier = Modifier.offset(x = offsetX, y = COURSE_NODE_TOP_GAP_DP.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(modifier = Modifier.size(CURRENT_RING_SIZE), contentAlignment = Alignment.Center) {
@@ -511,7 +518,8 @@ private fun PathRow(
                     val lesson = item.lesson
                     Text(
                         text = courseNodeLabel(lesson.hanziPreview),
-                        style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
+                        style = MaterialTheme.typography.labelMedium
+                            .copy(fontSize = 12.sp, lineHeight = 15.sp),
                         color = if (lesson.status == LessonStatus.LOCKED) {
                             PompColors.InkDisabled
                         } else {
@@ -527,7 +535,8 @@ private fun PathRow(
                         } else {
                             stringResource(R.string.course_part_label, lesson.part)
                         },
-                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                        style = MaterialTheme.typography.labelSmall
+                            .copy(fontSize = 10.sp, lineHeight = 13.sp),
                         color = PompColors.InkDisabled,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
@@ -537,7 +546,8 @@ private fun PathRow(
                 PathItem.Chest -> Unit
                 is PathItem.Boss -> Text(
                     text = item.milestone.title.substringBefore(' ').ifBlank { item.milestone.title },
-                    style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
+                    style = MaterialTheme.typography.labelMedium
+                        .copy(fontSize = 12.sp, lineHeight = 15.sp),
                     color = PompColors.InkDisabled,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
@@ -550,7 +560,12 @@ private fun PathRow(
 @Composable
 private fun CurrentBubble() {
     Box(
-        modifier = Modifier.offset(y = (-43).dp),
+        // `unbounded` ATAYLAB: pufakcha tugun qutisidan (76dp) kengroq va usiz
+        // matn ikki qatorga bo'linib kesiladi. Mini App'da `white-space:nowrap`
+        // aynan shuni qiladi.
+        modifier = Modifier
+            .offset(y = (-43).dp)
+            .wrapContentSize(unbounded = true),
         contentAlignment = Alignment.Center,
     ) {
         Surface(
@@ -563,6 +578,8 @@ private fun CurrentBubble() {
                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
                 color = PompColors.CinnabarDark,
                 fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                softWrap = false,
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
             )
         }
@@ -594,26 +611,31 @@ private fun CurrentBubble() {
     }
 }
 
+/**
+ * Bu qatorga to'g'ri keladigan yo'lakcha bo'lagi.
+ *
+ * Qo'shnilarning gorizontal siljishi shu yerda hisoblanadi — chiziq
+ * tugunlarni bog'lashi uchun u ularning joylashuvidan chiqishi kerak, aks
+ * holda ikkalasi mustaqil ravishda "taxminan" bir joyga chiziladi.
+ */
 @Composable
 private fun PathTrailSlice(row: CourseRow.Path) {
-    val trailHeight = (
-        COURSE_PATH_TOP_PADDING_DP +
-            COURSE_PATH_ROW_HEIGHT_DP * row.nodeCount +
-            2f
-        ).dp
-    val trailOffsetY = (2f - COURSE_PATH_ROW_HEIGHT_DP * row.nodeIndex).dp
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .clipToBounds(),
-    ) {
+    val previousX = if (row.nodeIndex > 0) {
+        coursePathOffsetDp(row.unitIndex, row.nodeIndex - 1)
+    } else {
+        null
+    }
+    val nextX = if (row.nodeIndex < row.nodeCount - 1) {
+        coursePathOffsetDp(row.unitIndex, row.nodeIndex + 1)
+    } else {
+        null
+    }
+    Box(modifier = Modifier.fillMaxSize().clipToBounds()) {
         ContinuousCourseTrail(
-            unitIndex = row.unitIndex,
-            nodeCount = row.nodeCount,
-            modifier = Modifier
-                .fillMaxWidth()
-                .requiredHeight(trailHeight)
-                .offset(y = trailOffsetY),
+            previousXDp = previousX,
+            currentXDp = coursePathOffsetDp(row.unitIndex, row.nodeIndex),
+            nextXDp = nextX,
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }
@@ -886,7 +908,7 @@ private fun RewardChestOverlay(rewardXp: Int, onContinue: () -> Unit) {
                     modifier = Modifier.padding(horizontal = 22.dp, vertical = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    CoursePandaMascot(celebrate = true, modifier = Modifier.size(104.dp))
+                    CoursePandaMascot(mood = PandaMood.Celebrate, modifier = Modifier.size(104.dp))
                     Spacer(Modifier.height(6.dp))
                     ChestGlyph(Modifier.size(58.dp))
                     Spacer(Modifier.height(12.dp))

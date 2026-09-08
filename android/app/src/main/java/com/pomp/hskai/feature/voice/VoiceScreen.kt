@@ -55,6 +55,7 @@ import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.feature.course.CoursePandaMascot
+import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.hint.SectionHints
 import com.pomp.hskai.feature.limit.LimitGate
@@ -208,7 +209,7 @@ private fun VoiceBox(
             modifier = Modifier.padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CoursePandaMascot(modifier = Modifier.size(90.dp))
+            CoursePandaMascot(mood = PandaMood.Talk, modifier = Modifier.size(90.dp))
             Spacer(Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.voice_box_title),
