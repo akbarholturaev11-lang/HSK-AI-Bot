@@ -3031,6 +3031,7 @@ class AdminMiniAppService:
             {"key": "prices", "icon": "💳", "title": "Обуна нархлари", "note": "Visa/карта, Alipay, WeChat нархларини таҳрирлаш", "section": "settings", "callback": "adm:prices"},
             {"key": "course_access", "icon": "📚", "title": "Курс access", "note": "Дарс paywall, реклама ёки вақтинча free режими", "section": "settings", "callback": "adm:course_access"},
             {"key": "limits", "icon": "🎚", "title": "Лимитлар", "note": "Бепул ва trial кунлик чегаралари — деплойсиз ўзгаради", "section": "settings", "callback": "adm:limits"},
+            {"key": "ad_placements", "icon": "📺", "title": "Реклама жойлари", "note": "Дарс якуни ва экран маркази — ҳар бири алоҳида", "section": "settings", "callback": "adm:ad_placements"},
             {"key": "course_sales_experiment", "icon": "🧭", "title": "HSK сотув A/B", "note": "sales_value_v1 kill switch ва rollout фоизи", "section": "settings", "callback": "adm:course_sales_experiment"},
             {"key": "app_promo", "icon": "💻", "title": "App рекламаси", "note": "Mini App очилганда ва реклама жойларида илова промоси", "section": "settings", "callback": "adm:app_promo"},
             {"key": "channels", "icon": "📣", "title": "Мажбурий канал обунаси", "note": "Канал линки, ёқиш/ўчириш ва рўйхат", "section": "settings", "callback": "adm:channels"},

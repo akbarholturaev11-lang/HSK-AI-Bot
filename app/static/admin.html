@@ -1030,7 +1030,7 @@
       openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
       let d;
       try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
-      const map={prices:renderPrices,course_access:renderCourseAccess,limits:renderLimits,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      const map={prices:renderPrices,course_access:renderCourseAccess,limits:renderLimits,ad_placements:renderAdPlacements,course_sales_experiment:renderCourseSalesExperiment,app_promo:renderAppPromo,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount",prefill),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
       if(key==="broadcast") return renderBroadcast();
       if(key==="give_access") return renderGiveAccess(prefill);
       if(key==="delete_user") return renderDeleteUser(prefill);
@@ -1154,6 +1154,37 @@
           <div class="hint">Trial chegaralari son bo'lib qoladi — UI hech qachon "cheksiz" demaydi.</div>
         </div>
         <button class="btn" data-limitsave>Saqlash</button>
+      </div>`);
+    }
+    /* Reklama joylari — aynan ikkita, har biri ALOHIDA boshqariladi.
+       Birini o'chirish ikkinchisiga tegmaydi. */
+    const AD_PLACEMENTS=[
+      ["lesson_end","Dars yakuni","Dars tugagach chiqadi"],
+      ["screen_center","Ekran markazi","Qaysi bo'limda bo'lishidan qat'i nazar"]
+    ];
+    function adPlacementCard(key,label,note,rule){
+      const r=rule||{};
+      const id=key.replace(/[^A-Za-z0-9]/g,"_");
+      return `<div class="mcard" data-adplace data-key="${esc(key)}">
+        <h3>${esc(label)}</h3>
+        <p>${esc(note)}</p>
+        <div class="frow"><label><input type="checkbox" id="adOn_${id}"${r.enabled?" checked":""}> Yoqilgan</label></div>
+        <div class="frow"><label>Kimga ko'rsatiladi</label><select id="adAud_${id}" class="select">
+          <option value="free_only"${r.audience!=="everyone"?" selected":""}>Faqat bepul foydalanuvchilarga</option>
+          <option value="everyone"${r.audience==="everyone"?" selected":""}>Hammaga</option>
+        </select></div>
+        <div class="frow"><label>Kuniga ko'pi bilan (0 = cheklovsiz)</label>
+          <input id="adCap_${id}" class="input" type="number" min="0" max="50" value="${Number(r.daily_cap||0)}"></div>
+        <div class="frow"><label>Yopish tugmasi necha soniyadan keyin</label>
+          <input id="adSkip_${id}" class="input" type="number" min="0" max="60" value="${Number(r.skip_after_seconds||0)}"></div>
+      </div>`;
+    }
+    function renderAdPlacements(d){
+      const cfg=(d.ad_placements||{}).placements||{};
+      const body=AD_PLACEMENTS.map(([k,l,n])=>adPlacementCard(k,l,n,cfg[k])).join("");
+      openDrawer("📺 Reklama joylari","Aynan ikkita joy. Kunlik chegara serverda — qurilma almashtirish uni aylanib o'tmaydi.",`<div class="panel">
+        ${body}
+        <button class="btn" data-adplacesave>Saqlash</button>
       </div>`);
     }
     function salesExperimentStartedText(value){
@@ -1827,6 +1858,23 @@
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pdsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$("payDetails").value}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-aimodelsave]"))){ const sel=$("aiModelSel"); el.disabled=true; return apiPost("/api/admin-miniapp/ai-model/save",{gemini_model:sel?sel.value:""}).then(()=>loadManagement(true)).then(()=>{renderAiModel();toast("AI modeli saqlandi");}).catch(x=>{toast(apiErr(x,"AI modeli saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-adplacesave]"))){
+        const placements={};
+        document.querySelectorAll("[data-adplace]").forEach(card=>{
+          const key=card.getAttribute("data-key");
+          const id=key.replace(/[^A-Za-z0-9]/g,"_");
+          placements[key]={
+            enabled:!!($("adOn_"+id)&&$("adOn_"+id).checked),
+            audience:($("adAud_"+id)&&$("adAud_"+id).value)||"free_only",
+            daily_cap:Number(($("adCap_"+id)&&$("adCap_"+id).value)||0),
+            skip_after_seconds:Number(($("adSkip_"+id)&&$("adSkip_"+id).value)||0)
+          };
+        });
+        el.disabled=true;
+        return apiPost("/api/admin-miniapp/ad-placements/save",{placements:placements})
+          .then(()=>afterModule("Reklama joylari saqlandi"))
+          .catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;});
+      }
       if((el=T("[data-limitsave]"))){
         const plans={};
         let bad=false;

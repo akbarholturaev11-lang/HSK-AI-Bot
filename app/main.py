@@ -34,6 +34,7 @@ from app.api.miniapp_entitlements import (
     COURSE_DAILY_GATE_FEATURES,
     create_miniapp_entitlements_router,
 )
+from app.services.ad_placement_service import AdPlacementService
 from app.services.entitlements.limits_config import LimitConfigService
 from app.services.pro_trial_service import ProTrialService
 from app.services.entitlements.shadow import EntitlementShadowService
@@ -942,6 +943,8 @@ async def _admin_miniapp_management_payload(session) -> dict:
         # Bepul/trial limitlari. Ilgari bular Python konstantasi edi va
         # o'zgartirish uchun deploy kerak bo'lardi.
         "limits_config": await LimitConfigService(session).get_payload(),
+        # Reklama joylari: dars yakuni va ekran markazi, har biri alohida.
+        "ad_placements": (await AdPlacementService(session).get_settings()).public_payload(),
         "sales_experiment": sales_experiment,
         "desktop_app_promo": desktop_app_promo.payload(),
         "channels": {

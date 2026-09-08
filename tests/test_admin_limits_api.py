@@ -327,5 +327,85 @@ class AdminShadowReportApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(200, response.status_code)
 
 
+class AdminAdPlacementsApiTests(unittest.IsolatedAsyncioTestCase):
+    """Har joy ALOHIDA boshqariladi — foydalanuvchining aniq talabi."""
+
+    async def asyncSetUp(self):
+        self.db = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
+        )
+        async with self.db.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.db, expire_on_commit=False)
+        self.app = FastAPI()
+        self.app.include_router(
+            create_admin_entitlements_router(
+                session_factory=self.sessions, admin_guard=_Guard()
+            )
+        )
+        self.client = AsyncClient(
+            transport=ASGITransport(app=self.app), base_url="https://admin.test"
+        )
+
+    async def asyncTearDown(self):
+        await self.client.aclose()
+        await self.db.dispose()
+
+    async def _post(self, path, body=None, *, admin=ADMIN_ID):
+        headers = {} if admin is None else {"X-Test-Admin": str(admin)}
+        return await self.client.post(path, json=body or {}, headers=headers)
+
+    async def test_the_defaults_are_the_agreed_ones(self):
+        ads = (await self._post("/api/admin-miniapp/ad-placements")).json()["ads"]
+
+        centre = ads["placements"]["screen_center"]
+        self.assertTrue(centre["enabled"])
+        self.assertEqual(2, centre["daily_cap"])
+        self.assertEqual("free_only", centre["audience"])
+        # Dars yakunida kunlik chegara yo'q.
+        self.assertEqual(0, ads["placements"]["lesson_end"]["daily_cap"])
+
+    async def test_one_placement_is_switched_off_without_touching_the_other(self):
+        await self._post(
+            "/api/admin-miniapp/ad-placements/save",
+            {
+                "placements": {
+                    "screen_center": {"enabled": False, "daily_cap": 2},
+                    "lesson_end": {"enabled": True},
+                }
+            },
+        )
+
+        ads = (await self._post("/api/admin-miniapp/ad-placements")).json()["ads"]
+        self.assertFalse(ads["placements"]["screen_center"]["enabled"])
+        self.assertTrue(ads["placements"]["lesson_end"]["enabled"])
+
+    async def test_the_daily_cap_is_bounded(self):
+        await self._post(
+            "/api/admin-miniapp/ad-placements/save",
+            {"placements": {"screen_center": {"enabled": True, "daily_cap": 9999}}},
+        )
+        ads = (await self._post("/api/admin-miniapp/ad-placements")).json()["ads"]
+        self.assertLessEqual(ads["placements"]["screen_center"]["daily_cap"], 50)
+
+    async def test_an_unknown_placement_is_refused(self):
+        response = await self._post(
+            "/api/admin-miniapp/ad-placements/save",
+            {"placements": {"app_open": {"enabled": True}}},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("invalid_ad_placements", response.json()["error"])
+
+    async def test_a_non_admin_is_refused(self):
+        for path in (
+            "/api/admin-miniapp/ad-placements",
+            "/api/admin-miniapp/ad-placements/save",
+        ):
+            with self.subTest(path=path):
+                self.assertEqual(
+                    403, (await self._post(path, admin=OUTSIDER_ID)).status_code
+                )
+
+
 if __name__ == "__main__":
     unittest.main()
