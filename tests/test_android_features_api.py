@@ -947,6 +947,15 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
         self.calls = []
 
+        # Shadow solishtiruvi ataylab O'Z sessiyasida yozadi (so'rov rollback
+        # bo'lsa ham yozuv yo'qolmasin). Testda uni shu bazaga bog'laymiz,
+        # aks holda u haqiqiy Postgres'ga ulanishga urinardi.
+        self.shadow_sessions_patch = patch(
+            "app.services.entitlements.shadow.async_session_maker", self.sessions
+        )
+        self.shadow_sessions_patch.start()
+        self.addCleanup(self.shadow_sessions_patch.stop)
+
         outer = self
 
         class FakeMasteryService:

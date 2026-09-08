@@ -27,6 +27,16 @@ from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
 from app.api.desktop_practice import create_desktop_practice_router
+from app.api.miniapp_entitlements import (
+    COURSE_AD_GATE_FEATURES,
+    COURSE_DAILY_GATE_FEATURES,
+    create_miniapp_entitlements_router,
+)
+from app.services.entitlements.shadow import (
+    ROLLOUT_CLEAN_DAYS,
+    ROLLOUT_MIN_SAMPLES,
+    EntitlementShadowService,
+)
 from app.api.miniapp_practice import create_miniapp_practice_router
 from app.api.miniapp_preferences import create_miniapp_preferences_router
 from app.api.desktop_rating import create_desktop_rating_router
@@ -581,6 +591,15 @@ app.include_router(
         bot=bot,
     )
 )
+# Bepul limit darvozalari. `app/main.py` dan ajratildi, chunki bu yerdagi
+# hech narsa test bilan qoplanmagan edi — qarang app/api/miniapp_entitlements.py.
+app.include_router(
+    create_miniapp_entitlements_router(
+        session_factory=async_session_maker,
+        settings_obj=settings,
+        bot=bot,
+    )
+)
 app.include_router(
     create_miniapp_preferences_router(
         session_factory=async_session_maker,
@@ -886,6 +905,9 @@ async def _admin_miniapp_management_payload(session) -> dict:
             "options": GEMINI_MODEL_OPTIONS,
         },
         "course_access": course_access,
+        # Markaziy dvigatelning ko'chirish holati: qaysi harakat hali kuzatuvda,
+        # qaysi biri allaqachon qaror qabul qilyapti.
+        "entitlement_rollout": await EntitlementShadowService(session).get_rollout(),
         "sales_experiment": sales_experiment,
         "desktop_app_promo": desktop_app_promo.payload(),
         "channels": {
@@ -2150,164 +2172,10 @@ async def v3_course_ad_view(request: Request):
         return JSONResponse(status_code=status, content=result)
 
 
-_COURSE_DAILY_GATE_FEATURES = {
-    "recognition",
-    "memorize",
-    "pronunciation",
-    "placement",
-    "training_test",
-}
-_COURSE_AD_GATE_FEATURES = _COURSE_DAILY_GATE_FEATURES | {"mistake_review", "lesson"}
-
-
-@app.post("/api/v3/practice/daily-gate")
-async def v3_practice_daily_gate(request: Request):
-    """Mashq bo'limining BEPUL foydalanishi (bepul userga UMRDA 1 marta,
-    reklamasiz). Sessiya boshlanishida chaqiriladi; bepul tugagan bo'lsa 403 +
-    reklama/obuna holati. Hisob server tomonda — user aylanib o'tolmaydi."""
-    init_data = request.headers.get("X-Telegram-Init-Data", "")
-    try:
-        payload = await request.json()
-    except Exception:
-        payload = {}
-    if not init_data:
-        init_data = str(payload.get("initData") or "")
-    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
-    if not telegram_id:
-        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
-
-    feature = str(payload.get("feature") or "").strip().lower()
-    if feature not in _COURSE_DAILY_GATE_FEATURES:
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_feature"})
-    ref_raw = payload.get("ref")
-    ref = str(ref_raw).strip()[:48] if ref_raw else None
-
-    async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(telegram_id)
-        if not user:
-            return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
-        access = CourseMiniAppAccessService(session)
-        # Admin "vaqtincha free" rejimini yoqqan bo'lsa Mashq bo'limlari ham
-        # ochiq bo'lishi kerak — ilgari policy faqat kurs darslariga ta'sir
-        # qilardi va user baribir "obuna kerak" devoriga urilardi.
-        # Umrlik bepul foydalanish SARFLANMAYDI: rejim tugagach user o'z
-        # bepul urinishini yo'qotmasin.
-        if (await CourseAccessPolicyService(session).get_policy()).free_active:
-            return JSONResponse(
-                content={
-                    "ok": True,
-                    "allowed": True,
-                    "is_paid": access.is_paid_user(user),
-                    "remaining": None,
-                    "policy_free": True,
-                }
-            )
-        # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
-        result = await access.consume_daily_use(
-            user, feature_key=feature, ref=ref, lifetime=True, notify_bot=bot
-        )
-        if not result.get("allowed"):
-            # Bepul tugadi. Endi reklama yoki obuna. AI token sarflaydigan
-            # bo'limda (masalan talaffuz) reklama ham kuniga 2 marta cheklangan;
-            # boshqa bo'limlarda reklama cheksiz.
-            is_ai = feature in COURSE_AI_PRACTICE_FEATURES
-            if is_ai:
-                ad_status = await access.daily_status(user, f"{feature}_ad")
-                ad_info = {
-                    "available": bool(ad_status.get("allowed")),
-                    "limited": True,
-                    "used": int(ad_status.get("used") or 0),
-                    "limit": int(ad_status.get("limit") or 0),
-                    "remaining": ad_status.get("remaining"),
-                }
-            else:
-                ad_info = {"available": True, "limited": False}
-            await session.commit()
-            return JSONResponse(
-                status_code=403,
-                content={
-                    "ok": False,
-                    "error": result.get("error") or "free_feature_limit_reached",
-                    "is_paid": bool(result.get("is_paid", False)),
-                    "ad": ad_info,
-                },
-            )
-        await session.commit()
-        return JSONResponse(
-            content={
-                "ok": True,
-                "allowed": True,
-                "is_paid": bool(result.get("is_paid", False)),
-                "remaining": result.get("remaining"),
-            }
-        )
-
-
-@app.post("/api/v3/practice/ad-gate")
-async def v3_practice_ad_gate(request: Request):
-    """Bepul tugagach, user reklama ko'rib yana kirmoqchi bo'lsa chaqiriladi.
-    Odatda CHEKSIZ; faqat AI token sarflaydigan bo'limda (masalan talaffuz)
-    reklama ham KUNIGA 2 marta cheklanadi. Server tomonda hisoblanadi."""
-    init_data = request.headers.get("X-Telegram-Init-Data", "")
-    try:
-        payload = await request.json()
-    except Exception:
-        payload = {}
-    if not init_data:
-        init_data = str(payload.get("initData") or "")
-    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
-    if not telegram_id:
-        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
-
-    feature = str(payload.get("feature") or "").strip().lower()
-    if feature not in _COURSE_DAILY_GATE_FEATURES:
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_feature"})
-    ref_raw = payload.get("ref")
-    ref = str(ref_raw).strip()[:48] if ref_raw else None
-
-    async with async_session_maker() as session:
-        user = await UserRepository(session).get_by_telegram_id(telegram_id)
-        if not user:
-            return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
-        access = CourseMiniAppAccessService(session)
-        # "Vaqtincha free" rejimida reklama ham talab qilinmaydi.
-        if (await CourseAccessPolicyService(session).get_policy()).free_active:
-            return JSONResponse(
-                content={
-                    "ok": True,
-                    "allowed": True,
-                    "is_paid": access.is_paid_user(user),
-                    "remaining": None,
-                    "policy_free": True,
-                }
-            )
-        # AI bo'lim emas — reklama cheksiz, slot band qilinmaydi.
-        if feature not in COURSE_AI_PRACTICE_FEATURES:
-            is_paid = access.is_paid_user(user)
-            return JSONResponse(content={"ok": True, "allowed": True, "is_paid": is_paid, "remaining": None})
-        # AI bo'lim — reklama ham kuniga 2 marta.
-        result = await access.consume_daily_use(
-            user, feature_key=f"{feature}_ad", ref=ref, notify_bot=bot
-        )
-        await session.commit()
-        if not result.get("allowed"):
-            # Reklama-ruxsati ham tugadi — endi faqat obuna (ertaga yana ochiladi).
-            return JSONResponse(
-                status_code=403,
-                content={
-                    "ok": False,
-                    "error": result.get("error") or "free_feature_limit_reached",
-                    "is_paid": bool(result.get("is_paid", False)),
-                },
-            )
-        return JSONResponse(
-            content={
-                "ok": True,
-                "allowed": True,
-                "is_paid": bool(result.get("is_paid", False)),
-                "remaining": result.get("remaining"),
-            }
-        )
+# Darvoza bo'limlari endi `app/api/miniapp_entitlements.py` da — reklama
+# endpointlari ham shu yagona ro'yxatga tayanadi.
+_COURSE_DAILY_GATE_FEATURES = COURSE_DAILY_GATE_FEATURES
+_COURSE_AD_GATE_FEATURES = COURSE_AD_GATE_FEATURES
 
 
 @app.post("/api/v3/exams/start")
@@ -2932,6 +2800,78 @@ async def admin_miniapp_management(request: Request):
         payload = await _admin_miniapp_management_payload(session)
         await session.commit()
     return JSONResponse(content=payload)
+
+
+@app.post("/api/admin-miniapp/entitlement-shadow")
+async def admin_miniapp_entitlement_shadow(request: Request):
+    """Markaziy dvigatel eski qaror bilan qanchalik mos kelayotgani.
+
+    Har `(action, client)` uchun namuna soni va nomuvofiqlik soni. Harakatni
+    yoqish uchun IKKALA shart kerak: nomuvofiqlik nol VA namuna yetarli —
+    "hech kim ishlatmagan" ni "hammasi to'g'ri" deb o'qib bo'lmaydi.
+    """
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except Exception:  # noqa: BLE001 — bo'sh tana ham to'g'ri so'rov
+        payload = {}
+    try:
+        days = int(payload.get("days") or ROLLOUT_CLEAN_DAYS)
+    except (TypeError, ValueError):
+        days = ROLLOUT_CLEAN_DAYS
+    days = max(1, min(days, 90))
+
+    async with async_session_maker() as session:
+        service = EntitlementShadowService(session)
+        report = await service.disagreement_report(days=days)
+        for entry in report:
+            if entry["disagreements"]:
+                entry["examples"] = await service.examples(
+                    action=entry["action"], client=entry["client"], limit=3
+                )
+        rollout = await service.get_rollout()
+    return JSONResponse(
+        content={
+            "ok": True,
+            "days": days,
+            "min_samples": ROLLOUT_MIN_SAMPLES,
+            "rows": report,
+            "rollout": rollout,
+        }
+    )
+
+
+@app.post("/api/admin-miniapp/entitlement-shadow/rollout")
+async def admin_miniapp_entitlement_rollout_save(request: Request):
+    """Harakatni dvigatelga o'tkazish — deploy emas, sozlama yozuvi.
+
+    Noto'g'ri yoqilgan bo'lsa orqaga qaytarish ham shu yerdan, bitta tugma.
+    """
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except Exception:  # noqa: BLE001
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_entitlement_rollout"},
+        )
+
+    async with async_session_maker() as session:
+        try:
+            stored = await EntitlementShadowService(session).save_rollout(
+                payload, updated_by_telegram_id=telegram_id
+            )
+        except ValueError as exc:
+            return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
+        await session.commit()
+    logger.info("admin_entitlement_rollout_saved admin_id=%s", telegram_id)
+    return JSONResponse(content={"ok": True, "rollout": stored})
 
 
 @app.post("/api/admin-miniapp/course-access/save")

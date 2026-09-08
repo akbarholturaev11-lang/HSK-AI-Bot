@@ -66,6 +66,7 @@ from app.services.course_miniapp_analytics_service import CourseMiniAppAnalytics
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.entitlements.gate_shadow import shadow_compare_gate
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
@@ -1412,6 +1413,11 @@ def create_android_features_router(
                     ref=payload.ref.strip() or None,
                     lifetime=True,
                     notify_bot=bot,
+                )
+                # The central engine answers the same question alongside, and
+                # the difference is recorded. It decides nothing here yet.
+                await shadow_compare_gate(
+                    session, user=user, feature=feature, legacy=result, client="android"
                 )
                 if not result.get("allowed"):
                     # A spent allowance is answered with what can reopen it.
