@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -59,12 +60,12 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.data.api.AndroidHintDto
-import com.pomp.hskai.feature.hint.SectionHints
+import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewQuestionDto
 import com.pomp.hskai.data.api.PracticeQuestionDto
 import com.pomp.hskai.feature.limit.LimitGate
-import com.pomp.hskai.feature.limit.SectionLimitBlock
+import com.pomp.hskai.feature.limit.SectionLimitOverlay
 
 @Composable
 fun PracticeScreen(
@@ -74,6 +75,8 @@ fun PracticeScreen(
     limit: LimitGate,
     hints: List<AndroidHintDto> = emptyList(),
     onDismissHint: (String) -> Unit = {},
+    /** Markazdagi limit tanlovi yopilganda — blok qaytib chiqmasin. */
+    onDismissLimit: () -> Unit = {},
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onSelectPracticeOption: (Int) -> Unit,
@@ -93,6 +96,7 @@ fun PracticeScreen(
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+      Box(Modifier.fillMaxSize()) {
         when {
             state.result != null -> PracticeSummary(
                 state = state,
@@ -148,6 +152,26 @@ fun PracticeScreen(
                 onRequestConsumed = onRequestConsumed,
             )
         }
+
+        // Bo'lim tugagan bo'lsa — tanlov O'SHA JOYNING markazida, xira fon
+        // ustida. Alohida ekran ochilmaydi: taklif nimaga tegishli ekani
+        // ko'rinib turishi kerak.
+        val spent = state.error as? ApiError.LimitReached
+        if (spent != null) {
+            val section = state.pendingTool
+            SectionLimitOverlay(
+                sectionTitle = if (section != null) {
+                    stringResource(section.titleRes)
+                } else {
+                    stringResource(R.string.practice_title)
+                },
+                limit = limit,
+                reason = stringResource(R.string.limit_practice_reason),
+                resetAt = spent.resetAt,
+                onClose = onDismissLimit,
+            )
+        }
+      }
     }
 }
 
@@ -242,18 +266,10 @@ private fun PracticeHome(
             PracticeHeader(
                 group = openGroup,
                 onBack = { openGroup = null },
-            )
-            // A spent allowance has to stay visible wherever the learner set
-            // it off, so it is drawn on the home list and behind a door alike.
-            PracticeNotice(state = state, limit = limit)
-            // Mini App `hintsHtml("mashq")`: inside the list, above
-            // everything, so it scrolls away with the rest.
-            SectionHints(
                 hints = hints,
-                section = "mashq",
-                onDismiss = onDismissHint,
-                modifier = Modifier.padding(top = 12.dp),
+                onDismissHint = onDismissHint,
             )
+            PracticeNotice(state = state)
         }
 
         when (openGroup) {
@@ -595,6 +611,8 @@ private fun ExamTag(
 private fun PracticeHeader(
     group: PracticeGroup?,
     onBack: () -> Unit,
+    hints: List<AndroidHintDto>,
+    onDismissHint: (String) -> Unit,
 ) {
     val titleRes = when (group) {
         null -> R.string.practice_title
@@ -626,6 +644,8 @@ private fun PracticeHeader(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
             )
         }
+        Spacer(Modifier.width(8.dp))
+        SectionHint(hints = hints, section = "mashq", onDismiss = onDismissHint)
     }
     // The subtitle describes the practice section as a whole, so it belongs
     // on the section's own list and nowhere else.
@@ -643,30 +663,17 @@ private fun PracticeHeader(
  * Whatever the last attempt left behind: a spent allowance with a way to open
  * it again, or a plain error. Nothing at all when the last attempt went fine.
  */
+/**
+ * A plain error, inline.
+ *
+ * A SPENT ALLOWANCE is not drawn here any more: that one is a choice, and a
+ * choice belongs in the centre of the screen on a dimmed background, not in
+ * the middle of a list where it scrolls past.
+ */
 @Composable
-private fun PracticeNotice(
-    state: PracticeUiState,
-    limit: LimitGate,
-) {
+private fun PracticeNotice(state: PracticeUiState) {
     val error = state.error
-    val section = state.pendingTool
-    if (error is ApiError.LimitReached) {
-        // A spent allowance is not a dead end: this is the one place that says
-        // what is closed, when it comes back, and how to open it now. What
-        // "now" means is the block's own business — a subscription, or the
-        // free week while the account still has one. Watching an ad is no
-        // longer one of the answers.
-        Spacer(Modifier.height(12.dp))
-        SectionLimitBlock(
-            sectionTitle = if (section != null) {
-                stringResource(section.titleRes)
-            } else {
-                stringResource(R.string.practice_title)
-            },
-            limit = limit,
-            resetAt = error.resetAt,
-        )
-    } else if (error != null) {
+    if (error != null && error !is ApiError.LimitReached) {
         Spacer(Modifier.height(12.dp))
         ErrorPill(stringResource(error.messageRes))
     }

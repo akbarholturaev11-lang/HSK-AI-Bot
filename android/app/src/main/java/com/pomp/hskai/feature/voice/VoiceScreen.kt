@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,9 +58,9 @@ import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
 import com.pomp.hskai.data.api.AndroidHintDto
-import com.pomp.hskai.feature.hint.SectionHints
+import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.feature.limit.LimitGate
-import com.pomp.hskai.feature.limit.SectionLimitBlock
+import com.pomp.hskai.feature.limit.SectionLimitOverlay
 import com.pomp.hskai.core.design.PompTextStyles
 
 @Composable
@@ -70,6 +71,8 @@ fun VoiceScreen(
     limit: LimitGate,
     hints: List<AndroidHintDto> = emptyList(),
     onDismissHint: (String) -> Unit = {},
+    /** Markazdagi limit tanlovi yopilganda. */
+    onDismissLimit: () -> Unit = {},
     subtitlesOn: Boolean,
     slowSpeech: Boolean,
     onToggleSubtitles: (Boolean) -> Unit,
@@ -84,6 +87,7 @@ fun VoiceScreen(
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
+      Box(Modifier.fillMaxSize()) {
         when {
             state.result != null -> VoiceResult(state = state, onDone = onReset)
             state.hasSession -> VoiceCallScreen(
@@ -108,6 +112,33 @@ fun VoiceScreen(
                 onStartSession = onStartSession,
             )
         }
+
+        // Kunlik bepul ovoz tugagan bo'lsa — tanlov markazda, xira fon
+        // ustida. Boshqa bo'limlardagidek AYNI blok, faqat matni shu
+        // bo'limga tegishli.
+        var limitDismissed by rememberSaveable(state.status?.resetAt) {
+            mutableStateOf(false)
+        }
+        if (!state.hasSession &&
+            state.result == null &&
+            state.status != null &&
+            !canStartVoice(state) &&
+            !limitDismissed
+        ) {
+            SectionLimitOverlay(
+                sectionTitle = stringResource(R.string.nav_ai),
+                limit = limit,
+                reason = stringResource(R.string.limit_voice_reason),
+                // The server says when the daily allowance reopens; the hour
+                // is never assumed on the client.
+                resetAt = state.status?.resetAt,
+                onClose = {
+                    limitDismissed = true
+                    onDismissLimit()
+                },
+            )
+        }
+      }
     }
 }
 
@@ -135,6 +166,7 @@ private fun VoiceHome(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
+          Row(verticalAlignment = Alignment.CenterVertically) {
             Surface(
                 color = PompColors.Cinnabar,
                 shape = RoundedCornerShape(999.dp),
@@ -157,10 +189,9 @@ private fun VoiceHome(
                     )
                 }
             }
-        }
-        item {
-            // Mini App `hintsHtml("voice")`.
-            SectionHints(hints = hints, section = "voice", onDismiss = onDismissHint)
+            Spacer(Modifier.width(8.dp))
+            SectionHint(hints = hints, section = "voice", onDismiss = onDismissHint)
+          }
         }
         item {
             VoiceBox(
@@ -174,20 +205,6 @@ private fun VoiceHome(
             state.error?.let {
                 Spacer(Modifier.height(10.dp))
                 ErrorPill(stringResource(it.messageRes))
-            }
-        }
-        item {
-            // A spent free allowance is not a disabled button: it is the one
-            // place where the learner is shown how to open the section.
-            if (state.status != null && !canStartVoice(state)) {
-                SectionLimitBlock(
-                    sectionTitle = stringResource(R.string.nav_ai),
-                    limit = limit,
-                    reason = stringResource(R.string.limit_voice_reason),
-                    // The server says when the daily allowance reopens; the
-                    // hour is never assumed on the client.
-                    resetAt = state.status?.resetAt,
-                )
             }
         }
     }

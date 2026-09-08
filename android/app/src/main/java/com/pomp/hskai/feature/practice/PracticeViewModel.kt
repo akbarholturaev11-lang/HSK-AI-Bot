@@ -390,6 +390,39 @@ class PracticeViewModel(
         loadMistakes()
     }
 
+    /**
+     * Markazdagi limit tanlovi yopildi.
+     *
+     * Faqat blokni olib tashlaydi — hech narsa ochilmaydi va hech narsa
+     * qayta so'ralmaydi. Odam "hozir emas" dedi.
+     */
+    fun dismissLimit() {
+        if (_state.value.error !is ApiError.LimitReached) return
+        _state.update { it.copy(error = null) }
+    }
+
+    /**
+     * Kirish qoidalari o'zgargani uchun spent-limit bloki endi to'g'ri emas.
+     *
+     * Trial boshlangach chaqiriladi. Blok o'zi yo'qolmasa foydalanuvchi
+     * "7 kun bepul" ni bosgandan keyin ham o'sha limit oynasini ko'rib
+     * turadi va tugma ishlamagandek tuyuladi — aynan shunday bo'lgan.
+     *
+     * Oxirgi urinish eslab qolingan bo'lsa, u qaytadan ochiladi: odam
+     * bo'limga kirmoqchi edi, trial esa aynan shuning uchun olindi.
+     */
+    fun onAccessChanged() {
+        if (_state.value.error !is ApiError.LimitReached) return
+        _state.update { it.copy(error = null) }
+        val exam = lastExamAttempt
+        if (exam != null) {
+            startExam(level = exam.level, language = exam.language)
+            return
+        }
+        val attempt = lastAttempt ?: return
+        startPractice(tool = attempt.tool, level = attempt.level, language = attempt.language)
+    }
+
     fun startMistakeReview() {
         if (_state.value.isStarting) return
         _state.update {

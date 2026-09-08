@@ -46,7 +46,7 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.feature.limit.LimitGate
-import com.pomp.hskai.feature.limit.SectionLimitBlock
+import com.pomp.hskai.feature.limit.SectionLimitOverlay
 
 /**
  * The Mini App's adaptive drill screen.
@@ -80,26 +80,20 @@ fun WordDrillScreen(
                     contentAlignment = Alignment.Center,
                 ) { CircularProgressIndicator(color = PompColors.Cinnabar) }
 
-                // A spent allowance is not a dead end: this is the one
-                // place that says what reopens the section.
-                state.limitReached -> Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 18.dp),
-                ) {
-                    SectionLimitBlock(
-                        sectionTitle = stringResource(
-                            if (state.mode == DrillMode.RECOGNITION) {
-                                R.string.practice_characters_title
-                            } else {
-                                R.string.practice_pronunciation_row_title
-                            }
-                        ),
-                        limit = limit,
-                        reason = stringResource(R.string.limit_practice_reason),
-                        resetAt = state.resetAt,
-                    )
-                }
+                // Bo'lim tugagan — tanlov markazda, xira fon ustida.
+                state.limitReached -> SectionLimitOverlay(
+                    sectionTitle = stringResource(
+                        if (state.mode == DrillMode.RECOGNITION) {
+                            R.string.practice_characters_title
+                        } else {
+                            R.string.practice_pronunciation_row_title
+                        }
+                    ),
+                    limit = limit,
+                    reason = stringResource(R.string.limit_practice_reason),
+                    resetAt = state.resetAt,
+                    onClose = onClose,
+                )
 
                 state.finished -> DrillSummary(
                     correct = state.correctCount,

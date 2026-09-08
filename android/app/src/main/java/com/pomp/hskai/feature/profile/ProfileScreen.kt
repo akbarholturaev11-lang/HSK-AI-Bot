@@ -60,7 +60,7 @@ import com.pomp.hskai.core.network.MediaUrl
 import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.AndroidHintDto
-import com.pomp.hskai.feature.hint.SectionHints
+import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.core.i18n.AppLanguage
 import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.feature.course.GoalRing
@@ -98,15 +98,15 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             item {
-                // Mini App `hintsHtml("profile")`.
-                SectionHints(
-                    hints = hints,
-                    section = "profile",
-                    onDismiss = onDismissHint,
-                )
-            }
-            item {
-                ProfileHero(account, state, courseUser)
+                Box(Modifier.fillMaxWidth()) {
+                    ProfileHero(account, state, courseUser)
+                    SectionHint(
+                        hints = hints,
+                        section = "profile",
+                        onDismiss = onDismissHint,
+                        modifier = Modifier.align(Alignment.TopEnd),
+                    )
+                }
                 state.error?.let {
                     Spacer(Modifier.height(10.dp))
                     ErrorPill(stringResource(it.messageRes))

@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.AndroidHintDto
-import com.pomp.hskai.feature.hint.SectionHints
+import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.data.api.RatingEntryDto
 import com.pomp.hskai.data.api.ChallengeDto
@@ -73,18 +73,18 @@ fun RatingScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             item {
-                SectionPill(
-                    icon = Icons.Filled.WorkspacePremium,
-                    text = stringResource(R.string.nav_rating),
-                )
-            }
-            item {
-                // Mini App `hintsHtml("rating")`.
-                SectionHints(
-                    hints = hints,
-                    section = "rating",
-                    onDismiss = onDismissHint,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    SectionPill(
+                        icon = Icons.Filled.WorkspacePremium,
+                        text = stringResource(R.string.nav_rating),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    SectionHint(
+                        hints = hints,
+                        section = "rating",
+                        onDismiss = onDismissHint,
+                    )
+                }
             }
             item {
                 TabSwitch(selected = state.tab, onSelect = onSelectTab)

@@ -79,6 +79,12 @@ class WordDrillViewModel(
     }
 
     /** @param accessRef set when an ad has just reopened the section. */
+    /** Trial ochilgach limit bloki yo'qoladi va bo'lim qaytadan so'raladi. */
+    fun onAccessChanged() {
+        if (!_state.value.limitReached) return
+        load()
+    }
+
     fun load(accessRef: String = "") {
         _state.value = WordDrillUiState(isLoading = true, mode = mode)
         mistakes.clear()

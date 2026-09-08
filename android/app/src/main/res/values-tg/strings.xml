@@ -305,4 +305,5 @@
     <string name="plan_choice_trial">7 рӯз ройгон санҷидан</string>
     <string name="plan_choice_pay">Pro гирифтан</string>
     <string name="plan_choice_later">Ҳозир ройгон идома медиҳам</string>
+    <string name="hint_open">Шарҳ</string>
 </resources>

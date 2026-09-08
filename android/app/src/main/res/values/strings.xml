@@ -334,4 +334,5 @@
     <string name="plan_choice_trial">7 kun bepul sinash</string>
     <string name="plan_choice_pay">Pro olish</string>
     <string name="plan_choice_later">Hozircha bepul davom etaman</string>
+    <string name="hint_open">Tushuntirish</string>
 </resources>

@@ -304,4 +304,5 @@
     <string name="plan_choice_trial">7 дней бесплатно</string>
     <string name="plan_choice_pay">Оформить Pro</string>
     <string name="plan_choice_later">Пока продолжу бесплатно</string>
+    <string name="hint_open">Пояснение</string>
 </resources>

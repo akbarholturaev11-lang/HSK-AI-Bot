@@ -49,7 +49,7 @@ internal fun ContinuousCourseTrail(
         )
         drawPath(
             path = path,
-            color = Color.White.copy(alpha = 0.80f),
+            color = Color.White.copy(alpha = 0.55f),
             style = Stroke(
                 width = 4.dp.toPx(),
                 cap = StrokeCap.Round,

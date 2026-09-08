@@ -68,7 +68,7 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.data.api.AndroidHintDto
-import com.pomp.hskai.feature.hint.SectionHints
+import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.domain.model.CourseLesson
 import com.pomp.hskai.domain.model.CourseMap
@@ -145,6 +145,8 @@ fun CourseScreen(
                             map = map,
                             dailyGoal = dailyGoal,
                             onOpenGoal = onOpenGoal,
+                            hints = hints,
+                            onDismissHint = onDismissHint,
                         )
                         if (!foundationMustComeFirst) {
                             map.today?.takeIf { it.tasks.isNotEmpty() }?.let { today ->
@@ -160,16 +162,6 @@ fun CourseScreen(
                                 vertical = 8.dp,
                             ),
                         ) {
-                            item {
-                                // Mini App `hintsHtml("course")`: inside the
-                                // path list, so it scrolls away with it.
-                                SectionHints(
-                                    hints = hints,
-                                    section = "course",
-                                    onDismiss = onDismissHint,
-                                    modifier = Modifier.padding(horizontal = 16.dp),
-                                )
-                            }
                             if (foundationVisible) {
                                 item {
                                     map.foundation?.let { FoundationEntry(it) }
@@ -210,7 +202,13 @@ private fun courseLevelLabel(level: String): String {
 }
 
 @Composable
-private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit) {
+private fun CourseHeader(
+    map: CourseMap,
+    dailyGoal: Int,
+    onOpenGoal: () -> Unit,
+    hints: List<AndroidHintDto>,
+    onDismissHint: (String) -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -240,6 +238,8 @@ private fun CourseHeader(map: CourseMap, dailyGoal: Int, onOpenGoal: () -> Unit)
                 )
             }
         }
+        Spacer(Modifier.width(8.dp))
+        SectionHint(hints = hints, section = "course", onDismiss = onDismissHint)
         Spacer(Modifier.weight(1f))
         StatChip(
             Icons.Filled.LocalFireDepartment,

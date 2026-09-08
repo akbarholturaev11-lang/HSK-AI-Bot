@@ -42,7 +42,14 @@ object PompColors {
     val Divider = Color(0xFFEAE0CC)      // --line
 
     /** Literal used by the Mini App SVG learning trail (not a CSS token). */
-    val CourseTrail = Color(0xFFEBE2CC)
+    /**
+     * Yo'lakcha foni.
+     *
+     * Yarim shaffof ATAYLAB: to'liq to'q rang qog'oz fonidan ajralib turib,
+     * tugunlardan ko'ra ko'proq e'tibor tortardi. Yo'l darslarni bog'lashi
+     * kerak, o'zini ko'rsatishi emas.
+     */
+    val CourseTrail = Color(0xFFEBE2CC).copy(alpha = 0.55f)
 
     val TileAmberSoft = Color(0xFFF8EFD9)
     val TileAmberInk = Color(0xFFB07A1E)

@@ -97,7 +97,6 @@ import com.pomp.hskai.feature.lesson.LessonViewModel
 import com.pomp.hskai.feature.ad.AdScreen
 import com.pomp.hskai.feature.ad.AdViewModel
 import com.pomp.hskai.feature.hint.HintsViewModel
-import com.pomp.hskai.feature.hint.SectionHints
 import com.pomp.hskai.feature.limit.rememberLimitGate
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.feature.rating.ChallengeRunScreen
@@ -374,7 +373,10 @@ private fun AppRoot(
                 if (previous == false && trialActive) {
                     courseViewModel.load()
                     voiceViewModel.loadStatus()
-                    practiceViewModel.loadMistakes()
+                    // Limit bloki O'ZI yo'qolishi kerak. Aks holda odam
+                    // "7 kun bepul" ni bosgandan keyin ham o'sha oynani
+                    // ko'rib turadi va tugma ishlamagandek tuyuladi.
+                    practiceViewModel.onAccessChanged()
                 }
             }
 
@@ -580,6 +582,10 @@ private fun AppRoot(
                     ),
                 )
                 val drillState by drillViewModel.state.collectAsStateWithLifecycle()
+                // Mashq ichida turib trial olingan bo'lsa ham blok yopilsin.
+                LaunchedEffect(trialActive) {
+                    if (trialActive) drillViewModel.onAccessChanged()
+                }
                 WordDrillScreen(
                     state = drillState,
                     limit = limitGate,
@@ -681,6 +687,7 @@ private fun AppRoot(
                             limit = limitGate,
                             hints = hints,
                             onDismissHint = hintsViewModel::dismiss,
+                            onDismissLimit = practiceViewModel::dismissLimit,
                             onOpenDictionary = { dictionaryOpen = true },
                             onStartPractice = { tool, level, language ->
                                 practiceViewModel.startPractice(tool, level, language)
