@@ -618,7 +618,11 @@ app.include_router(
 app.include_router(
     create_admin_entitlements_router(
         session_factory=async_session_maker,
-        admin_guard=_admin_miniapp_guard,
+        # Kech bog'lanish ATAYLAB: `_admin_miniapp_guard` va u tayanadigan
+        # `_admin_miniapp_user_id` / `_admin_auth_error` shu faylda PASTROQDA
+        # e'lon qilingan. Modul yuqoridan pastga bajariladi, ya'ni bu yerda
+        # to'g'ridan-to'g'ri nom yozilsa `NameError` bo'ladi.
+        admin_guard=lambda request: _admin_miniapp_guard(request),
     )
 )
 # Reklama: aynan ikkita joy. Kunlik chegara serverda, akkaunt bo'yicha.
@@ -626,7 +630,8 @@ app.include_router(
     create_miniapp_ads_router(
         session_factory=async_session_maker,
         settings_obj=settings,
-        download_links_resolver=_desktop_auto_download_links,
+        # Kech bog'lanish: bu yordamchi ham pastroqda e'lon qilingan.
+        download_links_resolver=lambda: _desktop_auto_download_links(),
     )
 )
 app.include_router(

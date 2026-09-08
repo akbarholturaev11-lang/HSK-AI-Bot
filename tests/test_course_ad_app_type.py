@@ -279,7 +279,8 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         # Reliz tizimi ishlamasa ham endpoint yiqilmaydi.
         self.assertIn("Desktop auto download links resolve failed", ads_api)
         main = Path("app/main.py").read_text(encoding="utf-8")
-        self.assertIn("download_links_resolver=_desktop_auto_download_links", main)
+        # Kech bog'lanish: yordamchi shu faylda pastroqda e'lon qilingan.
+        self.assertIn("download_links_resolver=lambda: _desktop_auto_download_links()", main)
 
     def test_client_renders_platform_buttons_from_server_list(self):
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
