@@ -59,7 +59,6 @@ import com.pomp.hskai.feature.limit.SectionLimitBlock
 fun WordDrillScreen(
     state: WordDrillUiState,
     limit: LimitGate,
-    onWatchAd: () -> Unit,
     onChoose: (String) -> Unit,
     onSpeak: () -> Unit,
     onSkipSpoken: () -> Unit,
@@ -99,7 +98,6 @@ fun WordDrillScreen(
                         limit = limit,
                         reason = stringResource(R.string.limit_practice_reason),
                         resetAt = state.resetAt,
-                        onWatchAd = onWatchAd,
                     )
                 }
 

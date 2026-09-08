@@ -1,7 +1,7 @@
 package com.pomp.hskai.feature.ad
 
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
@@ -43,11 +42,17 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 
 /**
- * One ad, watched to the end, in exchange for opening a closed section.
+ * One ad, in the centre of the screen, over whatever the learner was doing.
  *
- * The countdown here is only what the learner sees. Whether the section
- * actually opens is decided by the server, which measures the real time
- * between the attempt and the report — this screen cannot grant anything.
+ * It is a card on a scrim rather than a page of its own, because that is what
+ * it is: the Mini App shows the same block in the middle of the screen and
+ * the app carries on behind it. A full-screen takeover read as a different
+ * app having launched.
+ *
+ * Nothing is bought with the watch. The ad used to open a closed section, so
+ * the countdown was a price; now it is only how long the block stays before
+ * it may be dismissed, and the number comes from the placement the admin
+ * configured.
  */
 @Composable
 fun AdScreen(
@@ -60,36 +65,39 @@ fun AdScreen(
     // Held in a local so the non-null branch does not depend on a smart cast
     // through a property.
     val mediaUrl = state.mediaUrl
-    Surface(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding(),
-        color = PompColors.Paper,
+            .background(PompColors.Ink.copy(alpha = SCRIM_ALPHA))
+            .statusBarsPadding()
+            .padding(20.dp),
+        contentAlignment = Alignment.Center,
     ) {
         when {
-            state.isLoading -> Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
+            // Nothing is drawn while there may still be nothing to show: a
+            // card that appears and vanishes is worse than one that never
+            // appeared. The caller closes on both of these.
+            state.isLoading || state.unavailable || mediaUrl == null -> Unit
+
+            else -> Surface(
+                color = PompColors.Paper,
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                CircularProgressIndicator(color = PompColors.Cinnabar)
+                AdContent(
+                    state = state,
+                    mediaUrl = mediaUrl,
+                    onContinue = onContinue,
+                    onClose = onClose,
+                    onOpenLink = onOpenLink,
+                )
             }
-
-            state.unavailable || mediaUrl == null -> AdMessage(
-                text = stringResource(R.string.ad_unavailable),
-                actionLabel = stringResource(R.string.action_back),
-                onAction = onClose,
-            )
-
-            else -> AdContent(
-                state = state,
-                mediaUrl = mediaUrl,
-                onContinue = onContinue,
-                onClose = onClose,
-                onOpenLink = onOpenLink,
-            )
         }
     }
 }
+
+/** Dark enough to say the app is paused, light enough to still see it. */
+private const val SCRIM_ALPHA = 0.62f
 
 @Composable
 private fun AdContent(
@@ -106,9 +114,8 @@ private fun AdContent(
     val linkLabel = ad?.buttonText?.takeIf { it.isNotBlank() }
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.Center,
+            .fillMaxWidth()
+            .padding(18.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -219,19 +226,6 @@ private fun AdContent(
             )
         }
 
-        Spacer(Modifier.height(8.dp))
-        OutlinedButton(
-            onClick = onClose,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 48.dp),
-            shape = RoundedCornerShape(14.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.action_back),
-                color = PompColors.InkSecondary,
-            )
-        }
     }
 }
 
@@ -274,28 +268,3 @@ private fun AdVideo(url: String, modifier: Modifier = Modifier) {
     )
 }
 
-@Composable
-private fun AdMessage(text: String, actionLabel: String, onAction: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            color = PompColors.InkSecondary,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(16.dp))
-        OutlinedButton(
-            onClick = onAction,
-            modifier = Modifier.heightIn(min = 48.dp),
-            shape = RoundedCornerShape(14.dp),
-        ) {
-            Text(text = actionLabel, color = PompColors.CinnabarDark)
-        }
-    }
-}

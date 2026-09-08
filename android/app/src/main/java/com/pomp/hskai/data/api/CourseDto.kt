@@ -35,6 +35,14 @@ data class CourseMapDto(
     @SerialName("study_setup") val studySetup: CourseStudySetupDto? = null,
     @SerialName("today") val today: CourseTodayDto? = null,
     @SerialName("foundation") val foundation: CourseFoundationDto? = null,
+    /**
+     * Small explanation blocks the server decided this learner should see.
+     *
+     * Empty is the normal case. Which blocks exist, who they are for and
+     * whether a long absence brings one back are all decided server-side, so
+     * one closed here stays closed in the Mini App and on the desktop.
+     */
+    @SerialName("hints") val hints: List<AndroidHintDto> = emptyList(),
 )
 
 @Serializable

@@ -13,6 +13,7 @@ To'rtta qoida tekshiriladi va ular foydalanuvchi aniq aytgan talablar:
 import unittest
 from datetime import datetime, timedelta, timezone
 
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -62,14 +63,15 @@ class HintServiceTests(unittest.IsolatedAsyncioTestCase):
             return user
 
     async def _dismiss(self, key, *, at=None):
+        when = at or self.now
         async with self.sessions() as session:
             session.add(
                 CourseMiniAppEvent(
                     telegram_id=TELEGRAM_ID,
                     event_name=HINT_EVENT_NAME,
                     source="course_v3",
-                    dedupe_key=MiniAppHintService.dedupe_key(key),
-                    created_at=at or self.now,
+                    dedupe_key=MiniAppHintService.dedupe_key(key, on=when),
+                    created_at=when,
                 )
             )
             await session.commit()
@@ -162,6 +164,63 @@ class HintServiceTests(unittest.IsolatedAsyncioTestCase):
 
         keys = {h["key"] for h in await self._hints(user)}
         self.assertNotIn(CHANGE_HINT_ADS, keys)
+
+    async def test_closing_a_reintroduced_hint_puts_it_away_again(self):
+        """Qayta chiqqan blokchani yopish YANGI yozuv bo'lishi kerak.
+
+        Bu bir marta buzilgan edi va sababi ko'rinmas: yopilish
+        `(telegram_id, event_name, dedupe_key)` unique kaliti orqali yoziladi,
+        ya'ni bir xil kalit ikkinchi marta yozilmaydi. Kunsiz kalit bilan
+        60 kundan keyin qayta chiqqan tanishtiruv yopilganda hech nima
+        yozilmasdi — `created_at` eskiligicha qolib, blokcha har ochilishda
+        qaytaverardi.
+        """
+        user = await self._user_row()
+        long_ago = self.now - REINTRODUCE_AFTER - timedelta(days=1)
+        await self._dismiss(SECTION_HINTS["voice"], at=long_ago)
+
+        # Qayta chiqdi.
+        keys = {h["key"] for h in await self._hints(user)}
+        self.assertIn(SECTION_HINTS["voice"], keys)
+
+        # Odam uni yana yopdi — servisning o'z yo'li bilan.
+        async with self.sessions() as session:
+            wrote = await MiniAppHintService(session).dismiss(
+                user, SECTION_HINTS["voice"]
+            )
+            await session.commit()
+        self.assertTrue(wrote)
+
+        # Endi yana ketishi kerak.
+        keys = {h["key"] for h in await self._hints(user)}
+        self.assertNotIn(SECTION_HINTS["voice"], keys)
+
+    async def test_the_same_day_is_written_once(self):
+        # Bir kun ichida ikki marta bosilsa jadval to'lib ketmasin.
+        user = await self._user_row()
+        async with self.sessions() as session:
+            service = MiniAppHintService(session)
+            self.assertTrue(await service.dismiss(user, SECTION_HINTS["rating"]))
+            await service.dismiss(user, SECTION_HINTS["rating"])
+            await session.commit()
+
+        async with self.sessions() as session:
+            rows = (
+                await session.execute(
+                    select(func.count(CourseMiniAppEvent.id)).where(
+                        CourseMiniAppEvent.event_name == HINT_EVENT_NAME
+                    )
+                )
+            ).scalar_one()
+        self.assertEqual(1, rows)
+
+    async def test_an_invented_key_is_refused(self):
+        # Klient o'zi o'ylab topgan kalitni yozib jadvalni to'ldira olmaydi.
+        user = await self._user_row()
+        async with self.sessions() as session:
+            self.assertFalse(
+                await MiniAppHintService(session).dismiss(user, "hint_made_up")
+            )
 
     # --- xavfsizlik -------------------------------------------------------
 

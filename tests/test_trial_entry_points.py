@@ -22,6 +22,18 @@ COURSE = Path("app/static/course-v3.html").read_text(encoding="utf-8")
 SUBSCRIPTION = Path("app/static/subscription.html").read_text(encoding="utf-8")
 ADS = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
 
+ANDROID = Path("android/app/src/main/java/com/pomp/hskai")
+ANDROID_MAIN = (ANDROID / "MainActivity.kt").read_text(encoding="utf-8")
+ANDROID_PROFILE = (ANDROID / "feature/profile/ProfileScreen.kt").read_text(
+    encoding="utf-8"
+)
+ANDROID_LIMIT_DIRECT = Path(
+    "android/app/src/direct/java/com/pomp/hskai/feature/limit/SectionLimitBlock.kt"
+).read_text(encoding="utf-8")
+ANDROID_LIMIT_PLAY = Path(
+    "android/app/src/play/java/com/pomp/hskai/feature/limit/SectionLimitBlock.kt"
+).read_text(encoding="utf-8")
+
 
 class TrialEntryPointTests(unittest.TestCase):
     def test_the_plan_choice_appears_after_onboarding(self):
@@ -50,6 +62,56 @@ class TrialEntryPointTests(unittest.TestCase):
         self.assertIn(r"App.startTrial(\'profile\')", COURSE)
         # Faol trialda qolgan kun ko'rsatiladi.
         self.assertIn("TRIAL_STATE.active", COURSE)
+
+
+class AndroidOffersTheSameTrialTests(unittest.TestCase):
+    """Android'da ham AYNI kirish nuqtalari.
+
+    Bitta hisob, bir nechta qurilma: telefonda trial taklif qilinmasa,
+    foydalanuvchi uchun u yo'q bilan barobar. Mini App'dagi to'rtta joyning
+    Android'dagi ekvivalenti shu yerda qotiriladi (obuna sahifasi Android'da
+    alohida ekran emas — u profilning o'zi).
+    """
+
+    def test_the_plan_choice_appears_after_onboarding(self):
+        self.assertIn("PlanChoiceSheet(", ANDROID_MAIN)
+        # Faqat endigina onboarding tugatgan odamga: `launch` shu chaqiruvda
+        # to'ladi va allaqachon ro'yxatdan o'tgan hisobda null bo'lib qoladi.
+        self.assertIn("onboardingState.launch != null", ANDROID_MAIN)
+        # Bir marta.
+        self.assertIn("planChoiceSeen", ANDROID_MAIN)
+
+    def test_the_limit_block_offers_the_trial_in_both_channels(self):
+        for name, source in (
+            ("direct", ANDROID_LIMIT_DIRECT),
+            ("play", ANDROID_LIMIT_PLAY),
+        ):
+            with self.subTest(channel=name):
+                self.assertIn("limit.actions.onStartTrial", source)
+                self.assertIn("R.string.limit_try_trial", source)
+
+    def test_the_profile_offers_the_trial(self):
+        self.assertIn("TrialCard(", ANDROID_PROFILE)
+        self.assertIn("onStartTrial", ANDROID_PROFILE)
+
+    def test_the_client_never_decides_eligibility_on_its_own(self):
+        # Serverdan kelgan bayroq O'QILADI, klient o'zi hisoblamaydi.
+        self.assertIn("profileState.trial?.eligible == true", ANDROID_MAIN)
+        self.assertIn("api/v3/android/trial/status", _android_api())
+
+    def test_watching_an_ad_is_no_longer_offered_as_a_way_through(self):
+        # Reklama hech narsani ochmaydi. Eski tugma qolib ketmasin.
+        for name, source in (
+            ("direct", ANDROID_LIMIT_DIRECT),
+            ("play", ANDROID_LIMIT_PLAY),
+        ):
+            with self.subTest(channel=name):
+                self.assertNotIn("onWatchAd", source)
+                self.assertNotIn("limit_watch_ad", source)
+
+
+def _android_api() -> str:
+    return (ANDROID / "data/api/AndroidFeatureApi.kt").read_text(encoding="utf-8")
 
 
 class TheServerDecidesTests(unittest.TestCase):

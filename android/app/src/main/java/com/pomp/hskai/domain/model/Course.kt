@@ -1,5 +1,7 @@
 package com.pomp.hskai.domain.model
 
+import com.pomp.hskai.data.api.AndroidHintDto
+
 /** Where the learner stands on a node of the path. */
 enum class LessonStatus { DONE, CURRENT, LOCKED }
 
@@ -9,22 +11,24 @@ enum class LessonStatus { DONE, CURRENT, LOCKED }
  * The distinction between [NotReached] and [PremiumLocked] matters: a lesson
  * inside the free allowance that simply has not been reached yet must never
  * show a paywall. Only [showsPaywall] destinations may offer a subscription.
+ *
+ * There used to be a fourth state here, `AdUnlockable`: a locked lesson an ad
+ * could open in the admin's "ads" mode. That mode is gone — hitting a lock
+ * shows the paywall, never a video — and the server no longer sends the flag
+ * behind it, so the state has been removed rather than left to sit dead.
  */
 sealed interface LessonAccess {
     data object Open : LessonAccess
     data object HalfPreview : LessonAccess
     data object PremiumLocked : LessonAccess
-
-    /** Premium-locked, but the admin's "ads" mode lets an ad open it. */
-    data object AdUnlockable : LessonAccess
     data object NotReached : LessonAccess
 
     val showsPaywall: Boolean
-        get() = this is HalfPreview || this is PremiumLocked || this is AdUnlockable
+        get() = this is HalfPreview || this is PremiumLocked
 
-    /** Locked for a free learner, whichever way the lock can be opened. */
+    /** Locked for a free learner. */
     val isPremiumLocked: Boolean
-        get() = this is PremiumLocked || this is AdUnlockable
+        get() = this is PremiumLocked
 }
 
 data class CourseLesson(
@@ -147,6 +151,14 @@ data class CourseMap(
     val studySetup: CourseStudySetup? = null,
     val today: CourseToday? = null,
     val foundation: CourseFoundation? = null,
+    /**
+     * Small explanation blocks the server chose for this learner.
+     *
+     * They ride on the map because that is the one call every client makes on
+     * open, and because a second endpoint would be a second place to keep the
+     * rules in step. Empty is the normal case.
+     */
+    val hints: List<AndroidHintDto> = emptyList(),
 ) {
     val lessons: List<CourseLesson> get() = units.flatMap { it.lessons }
 

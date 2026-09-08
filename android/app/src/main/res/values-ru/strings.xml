@@ -224,7 +224,8 @@
     <string name="ad_ready">Готово</string>
     <string name="ad_learn_more">Подробнее</string>
     <string name="ad_unavailable">Сейчас рекламы нет. Попробуйте позже.</string>
-    <string name="limit_watch_ad">Продолжить с рекламой</string>
+    <string name="limit_try_trial">7 дней Pro бесплатно</string>
+    <string name="limit_trial_failed">Не удалось начать бесплатный период. Возможно, этот аккаунт уже его использовал.</string>
     <string name="lesson_pinyin_title">Пиньинь (произношение)</string>
     <string name="lesson_pinyin_all">Показывать везде</string>
     <string name="lesson_pinyin_new">Только в новых словах</string>
@@ -262,7 +263,6 @@
     <string name="voice_a11y_send">отправить</string>
     <string name="voice_tap_to_speak">Нажмите микрофон, чтобы говорить</string>
     <string name="voice_tap_to_stop">Нажмите ещё раз, чтобы отправить</string>
-    <string name="today_reason_ad">Откройте, посмотрев рекламу</string>
     <string name="drill_recognition_prompt">Найдите нужный иероглиф</string>
     <string name="drill_pronunciation_prompt">Послушайте и повторите</string>
     <string name="limit_practice_reason">Бесплатное использование этого раздела закончилось.</string>
@@ -292,4 +292,16 @@
     <string name="profile_referral_share">Поделиться</string>
     <string name="profile_referral_copied">Ссылка скопирована</string>
     <string name="limit_recheck_none">Аккаунт проверен — подписка не найдена. Если вы оплатили, подождите немного и проверьте снова.</string>
+    <string name="profile_trial_title">7 дней Pro бесплатно</string>
+    <string name="profile_trial_body">Попробуете все основные возможности. Деньги автоматически не спишутся.</string>
+    <string name="profile_trial_cta">Попробовать 7 дней бесплатно</string>
+    <string name="profile_trial_active_title">Pro активен</string>
+    <string name="profile_trial_active_body">Пробный период идёт. После него вернётесь на бесплатный режим — прогресс останется.</string>
+    <string name="profile_trial_failed">Сейчас не получилось. Попробуйте позже.</string>
+    <string name="hint_close">Закрыть</string>
+    <string name="plan_choice_title">HSK AI Pro</string>
+    <string name="plan_choice_body">Все уроки, безлимитная практика и AI Voice. Можно сначала попробовать 7 дней бесплатно.</string>
+    <string name="plan_choice_trial">7 дней бесплатно</string>
+    <string name="plan_choice_pay">Оформить Pro</string>
+    <string name="plan_choice_later">Пока продолжу бесплатно</string>
 </resources>

@@ -24,6 +24,7 @@ ta'minlaydi.
 from __future__ import annotations
 
 import logging
+import re
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import func, select
@@ -62,6 +63,27 @@ CHANGE_HINT_ADS = "hint_change_ads"
 CHANGE_CUTOFF = datetime(2026, 9, 8, tzinfo=timezone.utc)
 
 
+#: Serverga yozilishi mumkin bo'lgan kalitlar. Klient o'zi o'ylab topgan
+#: kalitni yozib, jadvalni to'ldira olmasligi kerak.
+KNOWN_HINT_KEYS = frozenset(SECTION_HINTS.values()) | {
+    CHANGE_HINT_PAYWALL,
+    CHANGE_HINT_TRIAL,
+    CHANGE_HINT_ADS,
+}
+
+_DAY_SUFFIX = re.compile(r":\d{4}-\d{2}-\d{2}$")
+
+
+def _hint_name(dedupe_key: str) -> str:
+    """`hint:<kalit>:<kun>` dan kalitni ajratadi.
+
+    Kunsiz eski qatorlar ham bor (kun keyinchalik qo'shilgan), shuning uchun
+    oxiri sanaga o'xshamasa butun qoldiq kalit deb olinadi.
+    """
+    raw = dedupe_key[len(HINT_DEDUPE_PREFIX) :]
+    return _DAY_SUFFIX.sub("", raw)
+
+
 def _as_utc(value: datetime | None) -> datetime | None:
     if not value:
         return None
@@ -91,7 +113,12 @@ class MiniAppHintService:
         for key, seen_at in result.all():
             if not key or not str(key).startswith(HINT_DEDUPE_PREFIX):
                 continue
-            out[str(key)[len(HINT_DEDUPE_PREFIX) :]] = _as_utc(seen_at)
+            name = _hint_name(str(key))
+            seen = _as_utc(seen_at)
+            # Bir kalitda bir nechta qator bo'lishi mumkin (har yopilish o'z
+            # kunida). Eng OXIRGISI hisoblanadi — qayta chiqarish o'lchovi shu.
+            if seen and (out.get(name) is None or seen > out[name]):
+                out[name] = seen
         return out
 
     # --- qaror ------------------------------------------------------------
@@ -168,5 +195,47 @@ class MiniAppHintService:
     # --- yopish -----------------------------------------------------------
 
     @staticmethod
-    def dedupe_key(hint_key: str) -> str:
-        return f"{HINT_DEDUPE_PREFIX}{str(hint_key or '').strip()[:48]}"
+    def dedupe_key(hint_key: str, *, on: datetime | None = None) -> str:
+        """`hint:<kalit>:<kun>`.
+
+        Kun ATAYLAB kalit ichida. Sababi: yopilish `course_miniapp_events`
+        ning `(telegram_id, event_name, dedupe_key)` unique kaliti orqali
+        yoziladi, ya'ni bir xil kalit ikkinchi marta YOZILMAYDI. Kunsiz kalit
+        bilan uzoq tanaffusdan keyin qayta chiqqan tanishtiruv yopilganda
+        yangi qator yozilmasdi — `created_at` eskiligicha qolib, blokcha har
+        ochilishda qaytaverardi.
+
+        Kun bilan: bitta kun ichida necha marta bosilsa ham bitta qator, lekin
+        boshqa kunda yopilsa yangi qator — ya'ni "bir marta" ham, "60 kundan
+        keyin qayta" ham ishlaydi.
+        """
+        day = (on or datetime.now(timezone.utc)).date().isoformat()
+        return f"{HINT_DEDUPE_PREFIX}{str(hint_key or '').strip()[:48]}:{day}"
+
+    async def dismiss(self, user, hint_key: str, *, client: str = "course_v3") -> bool:
+        """Blokchani yopilgan deb belgilaydi.
+
+        Kalitni SERVER quradi, klient emas: kun kalit ichida va uni klient
+        soatiga qoldirish qayta chiqarish o'lchovini buzadi.
+
+        Hech qachon exception tashlamaydi — blokchani yopish oqimni
+        to'xtatmasligi kerak.
+        """
+        key = str(hint_key or "").strip()[:48]
+        if user is None or not key:
+            return False
+        if key not in KNOWN_HINT_KEYS:
+            return False
+        from app.services.course_miniapp_analytics_service import (
+            CourseMiniAppAnalyticsService,
+        )
+
+        result = await CourseMiniAppAnalyticsService(self.session).record_server_event(
+            event_name=HINT_EVENT_NAME,
+            telegram_id=int(getattr(user, "telegram_id", 0) or 0),
+            user_id=getattr(user, "id", None),
+            source=str(client or "course_v3")[:40],
+            dedupe_key=self.dedupe_key(key),
+            payload={"hint": key},
+        )
+        return bool(result.get("ok"))

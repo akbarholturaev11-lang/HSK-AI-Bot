@@ -58,6 +58,8 @@ import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
 import com.pomp.hskai.core.network.ApiError
+import com.pomp.hskai.data.api.AndroidHintDto
+import com.pomp.hskai.feature.hint.SectionHints
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewQuestionDto
 import com.pomp.hskai.data.api.PracticeQuestionDto
@@ -70,7 +72,8 @@ fun PracticeScreen(
     level: String,
     language: String,
     limit: LimitGate,
-    onWatchAd: (feature: String) -> Unit,
+    hints: List<AndroidHintDto> = emptyList(),
+    onDismissHint: (String) -> Unit = {},
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onSelectPracticeOption: (Int) -> Unit,
@@ -134,7 +137,8 @@ fun PracticeScreen(
                 level = level,
                 language = language,
                 limit = limit,
-                onWatchAd = onWatchAd,
+                hints = hints,
+                onDismissHint = onDismissHint,
                 onOpenDictionary = onOpenDictionary,
                 onStartPractice = onStartPractice,
                 onStartMistakeReview = onStartMistakeReview,
@@ -176,7 +180,8 @@ private fun PracticeHome(
     level: String,
     language: String,
     limit: LimitGate,
-    onWatchAd: (feature: String) -> Unit,
+    hints: List<AndroidHintDto>,
+    onDismissHint: (String) -> Unit,
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
     onStartMistakeReview: () -> Unit,
@@ -240,10 +245,14 @@ private fun PracticeHome(
             )
             // A spent allowance has to stay visible wherever the learner set
             // it off, so it is drawn on the home list and behind a door alike.
-            PracticeNotice(
-                state = state,
-                limit = limit,
-                onWatchAd = onWatchAd,
+            PracticeNotice(state = state, limit = limit)
+            // Mini App `hintsHtml("mashq")`: inside the list, above
+            // everything, so it scrolls away with the rest.
+            SectionHints(
+                hints = hints,
+                section = "mashq",
+                onDismiss = onDismissHint,
+                modifier = Modifier.padding(top = 12.dp),
             )
         }
 
@@ -638,13 +647,15 @@ private fun PracticeHeader(
 private fun PracticeNotice(
     state: PracticeUiState,
     limit: LimitGate,
-    onWatchAd: (feature: String) -> Unit,
 ) {
     val error = state.error
     val section = state.pendingTool
     if (error is ApiError.LimitReached) {
         // A spent allowance is not a dead end: this is the one place that says
-        // what is closed, when it comes back, and how to open it now.
+        // what is closed, when it comes back, and how to open it now. What
+        // "now" means is the block's own business — a subscription, or the
+        // free week while the account still has one. Watching an ad is no
+        // longer one of the answers.
         Spacer(Modifier.height(12.dp))
         SectionLimitBlock(
             sectionTitle = if (section != null) {
@@ -654,9 +665,6 @@ private fun PracticeNotice(
             },
             limit = limit,
             resetAt = error.resetAt,
-            // Watching an ad opens the section without spending the daily
-            // allowance. Only offered for a section we know.
-            onWatchAd = section?.let { tool -> { onWatchAd(tool.adFeature) } },
         )
     } else if (error != null) {
         Spacer(Modifier.height(12.dp))

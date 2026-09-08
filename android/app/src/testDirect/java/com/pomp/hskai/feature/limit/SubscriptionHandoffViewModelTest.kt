@@ -1,9 +1,11 @@
 package com.pomp.hskai.feature.limit
 
 import com.pomp.hskai.core.network.ApiResult
-import com.pomp.hskai.data.api.AndroidAdAttemptRequest
-import com.pomp.hskai.data.api.AndroidAdAttemptResponse
 import com.pomp.hskai.data.api.AndroidAdListResponse
+import com.pomp.hskai.data.api.AndroidHintDismissRequest
+import com.pomp.hskai.data.api.AndroidHintDismissResponse
+import com.pomp.hskai.data.api.AndroidTrialStartResponse
+import com.pomp.hskai.data.api.AndroidTrialStatusResponse
 import com.pomp.hskai.data.api.AndroidAdViewRequest
 import com.pomp.hskai.data.api.AndroidAdViewResponse
 import com.pomp.hskai.data.api.AndroidFeatureApi
@@ -373,13 +375,21 @@ private class FakeFeatureApi(
         channel: String,
     ): Response<AndroidAdListResponse> = error("unexpected call")
 
-    override suspend fun adAttempt(
-        authorization: String,
-        body: AndroidAdAttemptRequest,
-    ): Response<AndroidAdAttemptResponse> = error("unexpected call")
-
     override suspend fun adView(
         authorization: String,
         body: AndroidAdViewRequest,
     ): Response<AndroidAdViewResponse> = error("unexpected call")
+
+    override suspend fun trialStatus(
+        authorization: String,
+    ): Response<AndroidTrialStatusResponse> = error("unexpected call")
+
+    override suspend fun trialStart(
+        authorization: String,
+    ): Response<AndroidTrialStartResponse> = error("unexpected call")
+
+    override suspend fun dismissHint(
+        authorization: String,
+        body: AndroidHintDismissRequest,
+    ): Response<AndroidHintDismissResponse> = error("unexpected call")
 }

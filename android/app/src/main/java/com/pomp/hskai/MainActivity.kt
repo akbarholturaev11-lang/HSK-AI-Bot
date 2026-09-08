@@ -15,19 +15,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -90,6 +96,8 @@ import com.pomp.hskai.feature.lesson.LessonScreen
 import com.pomp.hskai.feature.lesson.LessonViewModel
 import com.pomp.hskai.feature.ad.AdScreen
 import com.pomp.hskai.feature.ad.AdViewModel
+import com.pomp.hskai.feature.hint.HintsViewModel
+import com.pomp.hskai.feature.hint.SectionHints
 import com.pomp.hskai.feature.limit.rememberLimitGate
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.feature.rating.ChallengeRunScreen
@@ -100,6 +108,7 @@ import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
 import com.pomp.hskai.feature.voice.VoiceViewModel
 import java.util.UUID
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -237,6 +246,11 @@ private fun AppRoot(
                 factory = ProfileViewModel.Factory(app.featureRepository),
             )
             val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+            val hintsViewModel: HintsViewModel = viewModel(
+                viewModelStoreOwner = sessionOwner,
+                factory = HintsViewModel.Factory(app.featureRepository),
+            )
+            val hints by hintsViewModel.hints.collectAsStateWithLifecycle()
             val ratingViewModel: RatingViewModel = viewModel(
                 viewModelStoreOwner = sessionOwner,
                 factory = RatingViewModel.Factory(app.featureRepository),
@@ -254,6 +268,11 @@ private fun AppRoot(
             var languagePickerOpen by remember { mutableStateOf(false) }
             var dictionaryOpen by remember { mutableStateOf(false) }
             var adRequest by remember { mutableStateOf<AdRequest?>(null) }
+            // Shown once, right after onboarding, and only to someone who has
+            // just been through it — `launch` is set by the completion call
+            // and stays null for an account that was already onboarded.
+            var planChoiceSeen by rememberSaveable { mutableStateOf(false) }
+            var planChoiceOpen by remember { mutableStateOf(false) }
 
             LaunchedEffect(onboardingState.completed) {
                 if (onboardingState.completed) {
@@ -262,8 +281,30 @@ private fun AppRoot(
                 }
             }
 
+            // The Mini App's plan choice after onboarding, in the same place
+            // and with the same two ways out. Whether the free week is on
+            // offer at all is the server's answer, so this waits for it
+            // rather than assuming a new account is eligible.
+            LaunchedEffect(onboardingState.launch, profileState.trial?.eligible) {
+                if (
+                    !planChoiceSeen &&
+                    onboardingState.launch != null &&
+                    profileState.trial?.eligible == true
+                ) {
+                    planChoiceSeen = true
+                    planChoiceOpen = true
+                }
+            }
+
             LaunchedEffect(courseState.map?.studySetup) {
                 studySetupViewModel.sync(courseState.map?.studySetup)
+            }
+
+            // The blocks arrive with the map, but they belong to every
+            // section, so they are handed to their own holder rather than
+            // read off the course screen's state.
+            LaunchedEffect(courseState.map?.hints) {
+                hintsViewModel.onMapLoaded(courseState.map?.hints.orEmpty())
             }
 
             LaunchedEffect(studySetupState.refreshVersion) {
@@ -311,7 +352,31 @@ private fun AppRoot(
                     profileViewModel.load()
                     voiceViewModel.loadStatus()
                 },
+                // Whether this account may still take the free week is the
+                // server's answer, read once here and shown everywhere — the
+                // same way the Mini App reads it once and uses it on the
+                // paywall, the profile and after onboarding.
+                trialEligible = profileState.trial?.eligible == true,
+                trialStarting = profileState.trialStarting,
+                trialError = profileState.trialError,
+                onStartTrial = profileViewModel::startTrial,
             )
+
+            // A trial that has just begun changes what every section is
+            // allowed to do, so course, voice and practice are re-read the
+            // moment it turns on. Only on the change: a cold start with an
+            // already-running trial must not load everything twice.
+            val trialActive = profileState.trial?.active == true
+            var trialWasActive by remember { mutableStateOf<Boolean?>(null) }
+            LaunchedEffect(trialActive) {
+                val previous = trialWasActive
+                trialWasActive = trialActive
+                if (previous == false && trialActive) {
+                    courseViewModel.load()
+                    voiceViewModel.loadStatus()
+                    practiceViewModel.loadMistakes()
+                }
+            }
 
             val dailyGoal by app.appSettings.dailyGoal
                 .collectAsStateWithLifecycle(initialValue = DailyGoal.DEFAULT)
@@ -322,25 +387,22 @@ private fun AppRoot(
             LaunchedEffect(voiceSlowSpeech) { voiceViewModel.setSlowSpeech(voiceSlowSpeech) }
             var goalPickerOpen by remember { mutableStateOf(false) }
             var practiceRequest by remember { mutableStateOf<PracticeRequest?>(null) }
-            var lessonAwaitingAd by remember { mutableStateOf<CourseLesson?>(null) }
             var openDrill by remember { mutableStateOf<DrillMode?>(null) }
             var openChallenge by remember { mutableStateOf<ChallengeDto?>(null) }
-            var drillAwaitingAd by remember { mutableStateOf<DrillMode?>(null) }
-            var drillAccessRef by remember { mutableStateOf("") }
-            // Bumped to ask the drill to try the door again — used when there
-            // was no ad to watch, so there is no reference to carry.
-            var drillRetry by remember { mutableStateOf(0) }
             var selectedTab by remember { mutableStateOf(MainTab.COURSE) }
             var openLesson by remember { mutableStateOf<LessonLaunch?>(null) }
+            // Asked at most once per launch. Not a limit — the daily cap is
+            // the server's — only a guard against asking again every time the
+            // learner comes back to the main screen.
+            var screenCenterAsked by rememberSaveable { mutableStateOf(false) }
             val deepLinkRefreshGate = remember { DeepLinkRefreshGate() }
             val currentLevel = courseState.map?.level ?: state.account.level
             val currentLanguage = state.account.language.backendCode
 
-            fun launchLesson(lesson: CourseLesson, accessRef: String = "") {
+            fun launchLesson(lesson: CourseLesson) {
                 openLesson = LessonLaunch(
                     lesson = lesson,
                     attemptKey = UUID.randomUUID().toString(),
-                    accessRef = accessRef,
                 )
             }
 
@@ -458,62 +520,22 @@ private fun AppRoot(
                 )
             } else if (ad != null) {
                 val adViewModel: AdViewModel = viewModel(
-                    key = "ad-${ad.accessRef}",
+                    key = "ad-${ad.requestId}",
                     viewModelStoreOwner = sessionOwner,
                     factory = AdViewModel.Factory(
                         repository = app.featureRepository,
-                        feature = ad.feature,
-                        accessRef = ad.accessRef,
-                        slot = ad.slot,
+                        placement = ad.placement,
                         lessonOrder = ad.lessonOrder,
                     ),
                 )
                 val adState by adViewModel.state.collectAsStateWithLifecycle()
-                val isLessonEndAd = ad.slot == AdViewModel.SLOT_LESSON_END
-                val unlockedLesson = lessonAwaitingAd
-                LaunchedEffect(adState.unlocked) {
-                    if (!adState.unlocked) return@LaunchedEffect
-                    adRequest = null
-                    when {
-                        isLessonEndAd -> Unit
-                        drillAwaitingAd != null -> {
-                            // The server bound the view to this reference; the
-                            // drill presents it and the section reopens.
-                            openDrill = drillAwaitingAd
-                            drillAccessRef = ad.accessRef
-                            drillAwaitingAd = null
-                        }
-
-                        unlockedLesson != null -> {
-                            // The server recorded the view against this exact
-                            // reference; the lesson now carries it as proof.
-                            lessonAwaitingAd = null
-                            launchLesson(unlockedLesson, ad.accessRef)
-                        }
-
-                        else -> practiceViewModel.startWithAd(ad.accessRef)
-                    }
-                }
-                // Nothing to watch is not a locked door. The Mini App plays
-                // the ad best-effort and starts the section either way, and the
-                // gate the drill asks next applies that same rule server-side.
-                // Paid learners and the Play channel get no end-of-lesson ad at
-                // all; that one unlocks nothing, so it just closes.
-                LaunchedEffect(adState.unavailable) {
-                    if (!adState.unavailable) return@LaunchedEffect
-                    val waiting = drillAwaitingAd
-                    when {
-                        isLessonEndAd -> adRequest = null
-                        waiting != null -> {
-                            drillAwaitingAd = null
-                            adRequest = null
-                            openDrill = waiting
-                            drillRetry += 1
-                        }
-                        // A locked lesson still needs the view the server can
-                        // verify, so that one keeps saying so.
-                        else -> Unit
-                    }
+                // An ad opens nothing. It is shown, counted by the server, and
+                // closed — whether it was watched, skipped or never arrived.
+                // Everything that used to hang off it (attempt tokens, access
+                // references, a section reopening) is gone: hitting a limit
+                // shows the paywall, not a video.
+                LaunchedEffect(adState.finished, adState.unavailable) {
+                    if (adState.finished || adState.unavailable) adRequest = null
                 }
                 AdScreen(
                     state = adState,
@@ -558,25 +580,9 @@ private fun AppRoot(
                     ),
                 )
                 val drillState by drillViewModel.state.collectAsStateWithLifecycle()
-                LaunchedEffect(drillRetry) {
-                    if (drillRetry > 0) drillViewModel.load()
-                }
-                LaunchedEffect(drillAccessRef) {
-                    if (drillAccessRef.isNotBlank()) {
-                        drillViewModel.load(drillAccessRef)
-                        drillAccessRef = ""
-                    }
-                }
                 WordDrillScreen(
                     state = drillState,
                     limit = limitGate,
-                    onWatchAd = {
-                        drillAwaitingAd = mode
-                        adRequest = AdRequest(
-                            feature = mode.feature,
-                            accessRef = UUID.randomUUID().toString(),
-                        )
-                    },
                     onChoose = drillViewModel::choose,
                     onSpeak = drillViewModel::speak,
                     onSkipSpoken = drillViewModel::skipSpoken,
@@ -616,19 +622,38 @@ private fun AppRoot(
                         openLesson = null
                         courseViewModel.load()
                         if (completed) {
-                            // Mini App `playLessonEndAd`: one block after the
+                            // Mini App `playLessonEnd`: one block after the
                             // lesson, for learners the server still shows ads
                             // to. It opens nothing, so it carries no gate.
                             adRequest = AdRequest(
-                                feature = AdViewModel.SLOT_LESSON_END,
-                                accessRef = UUID.randomUUID().toString(),
-                                slot = AdViewModel.SLOT_LESSON_END,
+                                placement = AdViewModel.PLACEMENT_LESSON_END,
                                 lessonOrder = finishedOrder,
                             )
                         }
                     },
                 )
             } else {
+                // The Mini App's `playScreenCenter`: one block in the middle of
+                // the screen when the app opens, whatever section is showing.
+                //
+                // Asked once per launch and only once the learner is actually
+                // on the main screen — a lesson or an ad opening straight away
+                // is something they chose, and it outranks this. Everything
+                // that decides whether it appears at all is on the server:
+                // whether the place is switched on, whether this learner is in
+                // its audience, and the two-a-day cap, which is counted per
+                // Telegram account rather than per device.
+                LaunchedEffect(Unit) {
+                    if (!screenCenterAsked) {
+                        screenCenterAsked = true
+                        delay(SCREEN_CENTER_AD_DELAY_MS)
+                        if (openLesson == null && adRequest == null) {
+                            adRequest = AdRequest(
+                                placement = AdViewModel.PLACEMENT_SCREEN_CENTER,
+                            )
+                        }
+                    }
+                }
                 MainScaffold(
                     selectedTab = selectedTab,
                     onTabSelected = { selectedTab = it },
@@ -638,15 +663,9 @@ private fun AppRoot(
                             state = courseState,
                             dailyGoal = dailyGoal,
                             limit = limitGate,
+                            hints = hints,
+                            onDismissHint = hintsViewModel::dismiss,
                             onLesson = { lesson -> launchLesson(lesson) },
-                            onUnlockWithAd = { lesson ->
-                                lessonAwaitingAd = lesson
-                                adRequest = AdRequest(
-                                    feature = "lesson",
-                                    accessRef = UUID.randomUUID().toString(),
-                                    lessonOrder = lesson.order,
-                                )
-                            },
                             onTodayTask = ::openTodayTask,
                             onOpenGoal = { goalPickerOpen = true },
                             onOpenChest = courseViewModel::openRewardChest,
@@ -660,12 +679,8 @@ private fun AppRoot(
                             level = currentLevel,
                             language = currentLanguage,
                             limit = limitGate,
-                            onWatchAd = { feature ->
-                                adRequest = AdRequest(
-                                    feature = feature,
-                                    accessRef = UUID.randomUUID().toString(),
-                                )
-                            },
+                            hints = hints,
+                            onDismissHint = hintsViewModel::dismiss,
                             onOpenDictionary = { dictionaryOpen = true },
                             onStartPractice = { tool, level, language ->
                                 practiceViewModel.startPractice(tool, level, language)
@@ -694,6 +709,8 @@ private fun AppRoot(
                             level = currentLevel,
                             language = currentLanguage,
                             limit = limitGate,
+                            hints = hints,
+                            onDismissHint = hintsViewModel::dismiss,
                             subtitlesOn = voiceSubtitles,
                             slowSpeech = voiceSlowSpeech,
                             onToggleSubtitles = { on ->
@@ -716,6 +733,8 @@ private fun AppRoot(
 
                         MainTab.RATING -> RatingScreen(
                             state = ratingState,
+                            hints = hints,
+                            onDismissHint = hintsViewModel::dismiss,
                             onSelectTab = ratingViewModel::selectTab,
                             onChallenge = { ref ->
                                 ratingViewModel.challenge(ref, currentLevel, currentLanguage)
@@ -730,6 +749,8 @@ private fun AppRoot(
                             account = state.account,
                             state = profileState,
                             settings = settingsState,
+                            hints = hints,
+                            onDismissHint = hintsViewModel::dismiss,
                             courseProgress = courseState.map?.progress,
                             courseUser = courseState.map?.user,
                             onOpenFriends = {
@@ -755,6 +776,7 @@ private fun AppRoot(
                             },
                             onOpenSupport = { url -> openExternal(context, url) },
                             onRefresh = profileViewModel::load,
+                            onStartTrial = profileViewModel::startTrial,
                             onLogout = { signOut(false) },
                             onUnlinkDevice = { signOut(true) },
                             modifier = contentModifier,
@@ -780,6 +802,28 @@ private fun AppRoot(
                                 settingsViewModel.setLanguage(language)
                             },
                             onDismiss = { languagePickerOpen = false },
+                        )
+                    }
+
+                    if (planChoiceOpen) {
+                        PlanChoiceSheet(
+                            isStarting = profileState.trialStarting,
+                            onStartTrial = {
+                                planChoiceOpen = false
+                                profileViewModel.startTrial()
+                            },
+                            // Left out entirely in the Google Play build,
+                            // which may not send a learner out of the app to
+                            // pay. The gate is what knows that, not this file.
+                            onSubscribe = if (limitGate.state.canSubscribe) {
+                                {
+                                    planChoiceOpen = false
+                                    limitGate.actions.onUnlock()
+                                }
+                            } else {
+                                null
+                            },
+                            onDismiss = { planChoiceOpen = false },
                         )
                     }
 
@@ -812,7 +856,7 @@ private fun LessonHost(
 ) {
     val lesson = launch.lesson
     val model: LessonViewModel = viewModel(
-        key = "lesson-$level-${lesson.order}-${launch.accessRef}",
+        key = "lesson-$level-${lesson.order}",
         viewModelStoreOwner = viewModelStoreOwner,
         factory = LessonViewModel.Factory(
             repository = app.courseRepository,
@@ -821,7 +865,6 @@ private fun LessonHost(
             lessonOrder = lesson.order,
             language = language,
             resumeStore = app.appSettings,
-            accessRef = launch.accessRef,
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()
@@ -872,6 +915,93 @@ private fun LessonHost(
  * control anywhere in the app, so a learner could not turn pinyin off the way
  * the Mini App lets them.
  */
+/**
+ * The Mini App's plan choice, shown once after onboarding.
+ *
+ * Two ways forward and one way past: take the free week, subscribe, or carry
+ * on free. Nothing here is compulsory — the X and the outside of the sheet
+ * both dismiss it, and the learner who dismisses it loses nothing, because
+ * the same offer is on the profile and on every paywall.
+ *
+ * [onSubscribe] is null in the Google Play build, which has no checkout of
+ * its own; the button is then not drawn at all rather than drawn dead.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PlanChoiceSheet(
+    isStarting: Boolean,
+    onStartTrial: () -> Unit,
+    onSubscribe: (() -> Unit)?,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = PompColors.PaperRaised,
+    ) {
+        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+            Text(
+                text = stringResource(R.string.plan_choice_title),
+                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                color = PompColors.Ink,
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = stringResource(R.string.plan_choice_body),
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                color = PompColors.InkSecondary,
+            )
+            Spacer(Modifier.height(16.dp))
+            Button(
+                onClick = onStartTrial,
+                enabled = !isStarting,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 52.dp),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PompColors.Cinnabar,
+                    contentColor = PompColors.Paper,
+                    disabledContainerColor = PompColors.Locked,
+                    disabledContentColor = PompColors.Paper,
+                ),
+            ) {
+                Text(text = stringResource(R.string.plan_choice_trial))
+            }
+            if (onSubscribe != null) {
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = onSubscribe,
+                    enabled = !isStarting,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.plan_choice_pay),
+                        color = PompColors.CinnabarDark,
+                    )
+                }
+            }
+            Spacer(Modifier.height(4.dp))
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 44.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.plan_choice_later),
+                    color = PompColors.InkSecondary,
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PinyinPicker(
@@ -1023,19 +1153,31 @@ private fun openExternal(context: android.content.Context, url: String): Boolean
     }
 }
 
+/**
+ * How long after the main screen appears the centre ad is asked for.
+ *
+ * Long enough that the screen the learner opened is drawn and readable
+ * first: an ad landing on top of a blank screen reads as a broken app.
+ */
+private const val SCREEN_CENTER_AD_DELAY_MS = 700L
+
+/**
+ * One ad to show, in one of the two places the product has left: after a
+ * lesson, or in the centre of the screen.
+ *
+ * [requestId] only keys the ViewModel so that a second ad gets a fresh one.
+ * It carries no meaning for the server — an ad opens nothing, so there is
+ * nothing to bind it to.
+ */
 private data class AdRequest(
-    val feature: String,
-    val accessRef: String,
-    /** `practice` opens a section; `lesson_end` only plays after a lesson. */
-    val slot: String = "practice",
+    val placement: String,
     val lessonOrder: Int = 0,
+    val requestId: String = UUID.randomUUID().toString(),
 )
 
 private data class LessonLaunch(
     val lesson: CourseLesson,
     val attemptKey: String,
-    /** Empty unless an ad opened this premium lesson. */
-    val accessRef: String = "",
 )
 
 @Composable

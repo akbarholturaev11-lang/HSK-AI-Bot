@@ -252,7 +252,10 @@
     <string name="ad_ready">Tayyor</string>
     <string name="ad_learn_more">Batafsil</string>
     <string name="ad_unavailable">Hozircha reklama yo‘q. Keyinroq urinib ko‘ring.</string>
-    <string name="limit_watch_ad">Reklama bilan davom etish</string>
+    <!-- Reklama bilan davom etish OLIB TASHLANDI: reklama endi hech narsani
+         ochmaydi. O'sha joyda bepul haftalik sinov turadi. -->
+    <string name="limit_try_trial">7 kun Pro\u2019ni bepul sinash</string>
+    <string name="limit_trial_failed">Bepul sinovni boshlab bo\u2018lmadi. Bu hisob uni allaqachon olgan bo\u2018lishi mumkin.</string>
     <string name="lesson_pinyin_title">Pinyin (talaffuz yozuvi)</string>
     <string name="lesson_pinyin_all">Hammasida ko‘rsatish</string>
     <string name="lesson_pinyin_new">Faqat yangi so‘zlarda</string>
@@ -290,7 +293,6 @@
     <string name="voice_a11y_send">yuborish</string>
     <string name="voice_tap_to_speak">Gapirish uchun mikrofonni bosing</string>
     <string name="voice_tap_to_stop">Yuborish uchun yana bosing</string>
-    <string name="today_reason_ad">Reklamani ko‘rib oching</string>
     <string name="drill_recognition_prompt">To‘g‘ri ieroglifni toping</string>
     <string name="drill_pronunciation_prompt">Eshiting va takrorlang</string>
     <string name="limit_practice_reason">Bu bo‘limdan bepul foydalanishingiz tugadi.</string>
@@ -320,4 +322,16 @@
     <string name="profile_referral_share">Ulashish</string>
     <string name="profile_referral_copied">Havola nusxalandi</string>
     <string name="limit_recheck_none">Akkaunt tekshirildi — obuna topilmadi. To‘lov qilgan bo‘lsangiz, biroz kutib qayta tekshiring.</string>
+    <string name="profile_trial_title">7 kun Pro bepul</string>
+    <string name="profile_trial_body">Barcha asosiy imkoniyatlarni sinab ko‘rasiz. Avtomatik pul yechilmaydi.</string>
+    <string name="profile_trial_cta">7 kun bepul sinash</string>
+    <string name="profile_trial_active_title">Pro faol</string>
+    <string name="profile_trial_active_body">Sinov davri davom etmoqda. Tugagach bepul rejimga qaytasiz — progressingiz joyida qoladi.</string>
+    <string name="profile_trial_failed">Hozir ochib bo‘lmadi. Keyinroq urinib ko‘ring.</string>
+    <string name="hint_close">Yopish</string>
+    <string name="plan_choice_title">HSK AI Pro</string>
+    <string name="plan_choice_body">Barcha darslar, cheksiz mashq va AI Voice. Xohlasang avval 7 kun bepul sinab ko\u2018r.</string>
+    <string name="plan_choice_trial">7 kun bepul sinash</string>
+    <string name="plan_choice_pay">Pro olish</string>
+    <string name="plan_choice_later">Hozircha bepul davom etaman</string>
 </resources>

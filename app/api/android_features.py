@@ -58,16 +58,16 @@ from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_word_mastery_service import CourseWordMasteryService
 from app.services.course_hsk_exam_service import CourseHskExamService
 from app.services.course_access_policy_service import CourseAccessPolicyService
-from app.services.course_miniapp_access_service import (
-    COURSE_AI_PRACTICE_FEATURES,
-    CourseMiniAppAccessService,
-)
+from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
+from app.services.entitlements.state import has_full_access, resolve_state
+from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.ad_placement_service import (
-    PLACEMENT_LESSON_END,
+    AD_PLACEMENTS,
+    AUDIENCE_FREE_ONLY,
     AdPlacementService,
     normalize_placement as normalize_ad_placement,
 )
@@ -110,18 +110,6 @@ ANDROID_AD_TYPES_BY_CHANNEL = {
 }
 # Noma'lum qiymat kelsa cheklangan to'plam ishlaydi — xato tomonga emas.
 ANDROID_DEFAULT_AD_CHANNEL = "play"
-ANDROID_AD_SLOTS = ("practice", "lesson_end")
-# Reklama qaysi bo'limni ochishi mumkin. Mini App bilan bir xil ro'yxat.
-ANDROID_AD_GATE_FEATURES = {
-    "recognition",
-    "memorize",
-    "pronunciation",
-    "placement",
-    "training_test",
-    "mistake_review",
-    "lesson",
-}
-
 
 AndroidSessionId = Annotated[
     str,
@@ -237,19 +225,33 @@ class AndroidChallengeSubmitRequest(BaseModel):
     duration_seconds: int = Field(default=0, ge=0, le=7200)
 
 
+class AndroidHintDismissRequest(BaseModel):
+    """Yopilgan blokchaning kaliti.
+
+    Kalitdan boshqa hech nima yuborilmaydi: yozuv kuni serverda quriladi.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    hint: str = Field(min_length=1, max_length=48)
+
+
 class AndroidDrillGateRequest(BaseModel):
     """May this learner open the drill right now?
 
     The rule is the Mini App's, not a second one: a free learner gets the
-    section once (`lifetime`), an ad opens it again without spending that free
-    use, and an admin "free until" period opens it for everyone. The count is
-    kept by the server, so the client cannot talk its way in.
+    section once (`lifetime`), and an admin "free until" period opens it for
+    everyone. The count is kept by the server, so the client cannot talk its
+    way in.
     """
 
     model_config = ConfigDict(extra="forbid")
 
     feature: Literal["recognition", "pronunciation"]
     ref: str = Field(default="", max_length=48)
+    #: E'TIBORGA OLINMAYDI. Reklama ko'rib bo'limni ochish olib tashlandi,
+    #: lekin do'kondagi eski build hali bu maydonni yuboradi va model
+    #: `extra="forbid"` — maydon olib tashlansa o'sha build 422 oladi.
     access_ref: str = Field(default="", max_length=160)
 
 
@@ -519,30 +521,28 @@ def create_android_features_router(
         raw = str(request.query_params.get("channel") or "").strip().lower()
         return raw if raw in ANDROID_AD_TYPES_BY_CHANNEL else ANDROID_DEFAULT_AD_CHANNEL
 
-    async def _practice_ad_exists(session, user, channel: str) -> bool:
-        """Is there an ad this learner could actually be shown right now?
-
-        Asked of the same catalogue the listing route serves, so the answer
-        cannot differ from what the app would receive.
-        """
-
-        service = CourseAdService(session)
-        language = CourseAdService.normalize_language(getattr(user, "language", None))
-        ads = await service.list_active_payloads(language=language, slot="practice")
-        allowed_types = ANDROID_AD_TYPES_BY_CHANNEL[channel]
-        return any(ad.get("ad_type") in allowed_types for ad in ads)
-
     @router.get("/api/v3/android/ad")
     async def android_ad(request: Request):
-        """Reklama ro'yxati, o'rnatilgan kanalga ruxsat etilgan turlar bilan.
+        """Shu joyda ko'rsatilishi mumkin bo'lgan reklamalar.
+
+        Joylar Mini App'nikining o'zi va faqat ikkitasi: dars yakuni va ekran
+        markazi. Mashq sessiyalaridagi reklama OLIB TASHLANDI, va u bilan
+        birga "reklama ko'rib bo'limni ochish" ham.
+
+        Do'kondagi eski build hali `slot=practice` so'raydi. Unga 404
+        beriladi: o'sha build 404 ni "reklama yo'q" deb o'qiydi va obuna
+        yo'liga o'tadi — ya'ni eski ilova ham xato ko'rsatmasdan ishlaydi.
+
+        Bitta reklama emas, RO'YXAT qaytariladi va kanal filtri ro'yxatga
+        qo'llanadi. Sababi aniq: serverda bitta reklama tanlanib, keyin kanal
+        filtri unga tushsa, `play` build'i `dars_yakuni` tanlangan kunlarda
+        oddiy reklamalar bor bo'la turib reklamasiz qolardi.
 
         Til hisobdan olinadi, so'rovdan emas — klient o'zini boshqa tilda
         ko'rsatib boshqa reklamalarni ola olmaydi.
         """
         try:
             slot = str(request.query_params.get("slot") or "").strip().lower()
-            if slot not in ANDROID_AD_SLOTS:
-                slot = ANDROID_AD_SLOTS[0]
             channel = _ad_channel(request)
             allowed_types = ANDROID_AD_TYPES_BY_CHANNEL[channel]
 
@@ -552,36 +552,36 @@ def create_android_features_router(
                 # ma'lumot bo'lib qoladi.
                 user = await _user(session, request)
 
-                # Mashq sessiyalaridagi reklama OLIB TASHLANDI, va u bilan
-                # birga "reklama ko'rib bo'limni ochish" ham.
-                #
-                # Do'kondagi Android build hali o'sha tugmani ko'rsatadi va
-                # uni bosganda avval SHU ro'yxatni so'raydi. Bo'sh javob
-                # berilsa klient "reklama yo'q" holatiga tushadi va obuna
-                # yo'liga o'tadi — ya'ni eski ilova ham to'g'ri ishlaydi,
-                # xato ko'rsatmasdan.
-                if slot != PLACEMENT_LESSON_END:
+                if slot not in AD_PLACEMENTS:
                     raise AndroidFeatureError("course_ad_not_found", status_code=404)
 
                 # Joy sozlamasi, auditoriya va KUNLIK CHEGARA — hammasi
-                # serverda, Mini App bilan bir xil qoida bo'yicha.
+                # serverda, Mini App bilan bir xil qoida bo'yicha. Chegara
+                # qurilmaga emas, Telegram akkauntga: telefonda ikkitasini
+                # ko'rgan odamda desktopda nol qoladi.
                 placements = AdPlacementService(session)
-                status = await placements.status(
-                    user, placement=PLACEMENT_LESSON_END, client="android"
-                )
+                status = await placements.status(user, placement=slot, client="android")
                 if not status.get("enabled"):
                     raise AndroidFeatureError("course_ad_not_found", status_code=404)
                 remaining = status.get("remaining")
                 if remaining is not None and remaining <= 0:
                     raise AndroidFeatureError("course_ad_not_found", status_code=404)
 
+                rule = (await placements.get_settings()).rule(slot)
+                if rule.audience == AUDIENCE_FREE_ONLY and has_full_access(
+                    resolve_state(user)
+                ):
+                    raise AndroidFeatureError("course_ad_not_found", status_code=404)
+
                 service = placements.ads
-                ads = [
-                    service.payload(ad)
-                    for ad in await placements.list_for_placement(
-                        PLACEMENT_LESSON_END, language=getattr(user, "language", None)
-                    )
-                ]
+                ads = []
+                for ad in await placements.list_for_placement(
+                    slot, language=getattr(user, "language", None)
+                ):
+                    payload = service.payload(ad)
+                    payload["placement"] = slot
+                    payload["skip_after_seconds"] = rule.skip_after_seconds
+                    ads.append(payload)
                 if service.media_backup_changed:
                     await session.commit()
             ads = [ad for ad in ads if ad.get("ad_type") in allowed_types]
@@ -607,24 +607,27 @@ def create_android_features_router(
         ochishini bildirardi. Reklama endi hech narsani ochmaydi, shuning
         uchun talab ham olib tashlandi: ko'rsatish faqat kunlik chegara uchun
         hisoblanadi va `feature` ixtiyoriy tashxis maydoni bo'lib qoldi.
+
+        Yozuv `AdPlacementService` orqali ketadi, `CourseAdService` orqali
+        EMAS: ikkinchisi joy nomini eski `start/middle/end` ro'yxati bo'yicha
+        normalizatsiya qiladi va `screen_center` ni jimgina `start` ga
+        aylantirib yuborardi — ya'ni Android ko'rsatishlari kunlik chegaraga
+        umuman qo'shilmasdi.
         """
         try:
             payload = await _validated_payload(request, AndroidAdViewRequest)
             feature = payload.feature.strip().lower()
-            # Joy nomi endi `lesson_end` / `screen_center`. Eski
-            # `start/middle/end` normalizatori bularni jimgina `start` ga
-            # aylantirib yuborardi, ya'ni kunlik chegara hech qachon to'lmasdi.
             placement = normalize_ad_placement(payload.placement)
             async with session_factory() as session:
                 user = await _user(session, request)
                 level = str(getattr(user, "level", None) or "hsk1").strip().lower()
-                result = await CourseAdService(session).record_view(
-                    user=user,
+                result = await AdPlacementService(session).record_view(
+                    user,
+                    placement=placement,
                     ad_id=payload.ad_id,
+                    watched_seconds=payload.watched_seconds,
                     level=level,
                     lesson_order=payload.lesson_order,
-                    placement=placement,
-                    watched_seconds=payload.watched_seconds,
                 )
                 # `record_view` withholds "ok" for two different reasons: the
                 # ad is missing (an error) or it was not watched long enough
@@ -701,6 +704,35 @@ def create_android_features_router(
             logger.exception("Android trial status failed")
             return _error_response(
                 AndroidFeatureError("android_trial_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/hints/dismiss")
+    async def android_hint_dismiss(request: Request):
+        """Tushuntirish blokchasi yopildi — Android'da ham.
+
+        Mini App bilan bir xil yozuv, bir xil jadval: telefonda yopilgan
+        blokcha Mini App'da qayta chiqmaydi. "Bitta boshqaruv, bir nechta
+        qurilma" aynan shu.
+        """
+        try:
+            payload = await _validated_payload(request, AndroidHintDismissRequest)
+            async with session_factory() as session:
+                user = await _user(session, request)
+                saved = await MiniAppHintService(session).dismiss(
+                    user, payload.hint, client="android"
+                )
+                if saved:
+                    await session.commit()
+            return JSONResponse(
+                content={"ok": True, "saved": saved},
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android hint dismiss failed")
+            return _error_response(
+                AndroidFeatureError("android_request_invalid", status_code=422)
             )
 
     @router.get("/api/v3/android/profile")
@@ -1334,10 +1366,19 @@ def create_android_features_router(
 
     @router.post("/api/v3/android/practice/gate")
     async def android_drill_gate(request: Request):
-        """The same door the Mini App opens before a drill.
+        """Mini App ochadigan AYNI eshik.
 
-        Android's adaptive drills used to skip it entirely, so the same free
-        learner had a limit on one client and none on the other.
+        Ilgari bu yerda ikkita qo'shimcha yo'l bor edi va ikkalasi ham endi
+        noto'g'ri:
+
+        * `access_ref` bilan "reklama ko'rdim, ochib yubor" — reklama endi
+          hech narsani ochmaydi, u faqat ko'rsatiladi;
+        * "ko'rsatadigan reklama yo'q ekan, bo'limni bepul ochamiz" — bu
+          mashq reklamalari olib tashlangach bepul foydalanuvchiga Android'da
+          cheksiz mashq berardi, Mini App'da esa o'sha odam paywall ko'rardi.
+
+        Endi javob Mini App'nikining o'zi: bepul urinish sarflanadi, tugagan
+        bo'lsa 403 va paywall. Trialni klient `trial/status` dan biladi.
         """
         try:
             payload = await _validated_payload(request, AndroidDrillGateRequest)
@@ -1345,29 +1386,6 @@ def create_android_features_router(
             async with session_factory() as session:
                 user = await _user(session, request)
                 access = CourseMiniAppAccessService(session)
-
-                # An ad opens the section without spending the free use — the
-                # server checks its own record of the view, never the client's
-                # word for it.
-                if payload.access_ref.strip():
-                    try:
-                        verdict = await access.verify_ad_authorization(
-                            user,
-                            feature_key=feature,
-                            access_ref=payload.access_ref.strip(),
-                        )
-                    except ValueError:
-                        verdict = {"allowed": False, "error": "invalid_access_ref"}
-                    await session.commit()
-                    if verdict.get("allowed"):
-                        return JSONResponse(
-                            content={"ok": True, "allowed": True, "source": "ad"},
-                            headers={"Cache-Control": "no-store"},
-                        )
-                    raise AndroidFeatureError(
-                        str(verdict.get("error") or "ad_authorization_required"),
-                        status_code=403,
-                    )
 
                 # "Free until" is a course-wide gift; it must not quietly cost
                 # the learner their one free run of the section.
@@ -1396,48 +1414,6 @@ def create_android_features_router(
                     session, user=user, feature=feature, legacy=result, client="android"
                 )
                 if not result.get("allowed"):
-                    # A spent allowance is answered with what can reopen it.
-                    # Only the AI sections cap how often an ad may reopen them;
-                    # everywhere else the ad is unlimited.
-                    ad_limited = feature in COURSE_AI_PRACTICE_FEATURES
-
-                    # The Mini App opens the section first and plays the ad
-                    # best-effort, so a learner it has nothing to show still
-                    # gets in. Android made the watch the only way through,
-                    # which turns an empty ad catalogue into a locked door.
-                    # Where an ad would have spent an allowance it is spent all
-                    # the same, so the daily count stays identical on the two
-                    # clients — and whether an ad exists is decided here, never
-                    # by the app.
-                    if not await _practice_ad_exists(session, user, _ad_channel(request)):
-                        opened = (
-                            await access.consume_daily_use(
-                                user,
-                                feature_key=f"{feature}_ad",
-                                ref=payload.ref.strip() or None,
-                                notify_bot=bot,
-                            )
-                            if ad_limited
-                            else {"allowed": True}
-                        )
-                        if opened.get("allowed"):
-                            await session.commit()
-                            return JSONResponse(
-                                content={"ok": True, "allowed": True, "source": "no_ad"},
-                                headers={"Cache-Control": "no-store"},
-                            )
-
-                    if ad_limited:
-                        ad_status = await access.daily_status(user, f"{feature}_ad")
-                        ad_info = {
-                            "available": bool(ad_status.get("allowed")),
-                            "limited": True,
-                            "used": int(ad_status.get("used") or 0),
-                            "limit": int(ad_status.get("limit") or 0),
-                            "remaining": ad_status.get("remaining"),
-                        }
-                    else:
-                        ad_info = {"available": True, "limited": False}
                     await session.commit()
                     return JSONResponse(
                         status_code=403,
@@ -1446,7 +1422,10 @@ def create_android_features_router(
                             "error": result.get("error") or "free_feature_limit_reached",
                             "is_paid": bool(result.get("is_paid", False)),
                             "reset_at": result.get("reset_at"),
-                            "ad": ad_info,
+                            # Shakl SAQLANADI, javobi esa endi doim "yo'q":
+                            # do'kondagi eski build shu kalitni o'qiydi va
+                            # bo'lmagan reklamani kutib qolmasligi kerak.
+                            "ad": {"available": False, "limited": False},
                         },
                         headers={"Cache-Control": "no-store"},
                     )

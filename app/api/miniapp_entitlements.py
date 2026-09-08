@@ -26,6 +26,7 @@ from app.services.course_miniapp_access_service import (
     CourseMiniAppAccessService,
 )
 from app.services.entitlements.gate_shadow import shadow_compare_gate
+from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 
@@ -219,6 +220,37 @@ def create_miniapp_entitlements_router(
                 )
             verdict = await ProTrialService(session).eligibility(user)
         return JSONResponse(content={"ok": True, "trial": verdict})
+
+    @router.post("/api/v3/hints/dismiss")
+    async def v3_hint_dismiss(request: Request):
+        """Tushuntirish blokchasi yopildi.
+
+        Kalitni SERVER quradi, klient emas: yozuv kunni o'z ichiga oladi va
+        uni klient soatiga qoldirish "uzoq tanaffusdan keyin qayta chiqarish"
+        o'lchovini buzadi.
+
+        Javob HAR DOIM 200: blokchani yopish oqimni to'xtatmasligi kerak, va
+        klient allaqachon uni ekrandan olib tashlagan bo'ladi.
+        """
+        telegram_id, payload = await _authenticated(request)
+        if not telegram_id:
+            return JSONResponse(
+                status_code=401,
+                content={"ok": False, "error": "invalid_telegram_init_data"},
+            )
+        key = str(payload.get("hint") or payload.get("key") or "").strip()[:48]
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return JSONResponse(
+                    status_code=403, content={"ok": False, "error": "access_start_first"}
+                )
+            saved = await MiniAppHintService(session).dismiss(
+                user, key, client="course_v3"
+            )
+            if saved:
+                await session.commit()
+        return JSONResponse(content={"ok": True, "saved": saved})
 
     @router.post("/api/v3/practice/ad-gate")
     async def v3_practice_ad_gate(request: Request):
