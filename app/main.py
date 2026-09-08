@@ -27,16 +27,14 @@ from app.api.desktop_course import create_desktop_course_router
 from app.api.desktop_download import create_desktop_download_router
 from app.api.desktop_subscription import create_desktop_subscription_router
 from app.api.desktop_practice import create_desktop_practice_router
+from app.api.admin_entitlements import create_admin_entitlements_router
 from app.api.miniapp_entitlements import (
     COURSE_AD_GATE_FEATURES,
     COURSE_DAILY_GATE_FEATURES,
     create_miniapp_entitlements_router,
 )
-from app.services.entitlements.shadow import (
-    ROLLOUT_CLEAN_DAYS,
-    ROLLOUT_MIN_SAMPLES,
-    EntitlementShadowService,
-)
+from app.services.entitlements.limits_config import LimitConfigService
+from app.services.entitlements.shadow import EntitlementShadowService
 from app.api.miniapp_practice import create_miniapp_practice_router
 from app.api.miniapp_preferences import create_miniapp_preferences_router
 from app.api.desktop_rating import create_desktop_rating_router
@@ -600,6 +598,14 @@ app.include_router(
         bot=bot,
     )
 )
+# Admin: limitlar va ko'chirish holati. Alohida router — narx/limit yozadigan
+# endpointlar test bilan qoplanishi kerak, `app/main.py` esa qoplanmaydi.
+app.include_router(
+    create_admin_entitlements_router(
+        session_factory=async_session_maker,
+        admin_guard=_admin_miniapp_guard,
+    )
+)
 app.include_router(
     create_miniapp_preferences_router(
         session_factory=async_session_maker,
@@ -725,6 +731,15 @@ def _admin_auth_error(telegram_id: int | None) -> JSONResponse | None:
     if not _is_admin_id(telegram_id):
         return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
     return None
+
+
+def _admin_miniapp_guard(request: Request):
+    """Ajratilgan admin routerlari uchun yagona tekshiruv.
+
+    Admin tekshiruvi mantiqi shu yerda qoladi; routerlar uni chaqiradi.
+    """
+    telegram_id = _admin_miniapp_user_id(request)
+    return telegram_id, _admin_auth_error(telegram_id)
 
 
 def _mini_label(value: str | None, labels: dict[str, str]) -> str:
@@ -908,6 +923,9 @@ async def _admin_miniapp_management_payload(session) -> dict:
         # Markaziy dvigatelning ko'chirish holati: qaysi harakat hali kuzatuvda,
         # qaysi biri allaqachon qaror qabul qilyapti.
         "entitlement_rollout": await EntitlementShadowService(session).get_rollout(),
+        # Bepul/trial limitlari. Ilgari bular Python konstantasi edi va
+        # o'zgartirish uchun deploy kerak bo'lardi.
+        "limits_config": await LimitConfigService(session).get_payload(),
         "sales_experiment": sales_experiment,
         "desktop_app_promo": desktop_app_promo.payload(),
         "channels": {
@@ -2800,78 +2818,6 @@ async def admin_miniapp_management(request: Request):
         payload = await _admin_miniapp_management_payload(session)
         await session.commit()
     return JSONResponse(content=payload)
-
-
-@app.post("/api/admin-miniapp/entitlement-shadow")
-async def admin_miniapp_entitlement_shadow(request: Request):
-    """Markaziy dvigatel eski qaror bilan qanchalik mos kelayotgani.
-
-    Har `(action, client)` uchun namuna soni va nomuvofiqlik soni. Harakatni
-    yoqish uchun IKKALA shart kerak: nomuvofiqlik nol VA namuna yetarli —
-    "hech kim ishlatmagan" ni "hammasi to'g'ri" deb o'qib bo'lmaydi.
-    """
-    telegram_id = _admin_miniapp_user_id(request)
-    auth_error = _admin_auth_error(telegram_id)
-    if auth_error:
-        return auth_error
-    try:
-        payload = await request.json()
-    except Exception:  # noqa: BLE001 — bo'sh tana ham to'g'ri so'rov
-        payload = {}
-    try:
-        days = int(payload.get("days") or ROLLOUT_CLEAN_DAYS)
-    except (TypeError, ValueError):
-        days = ROLLOUT_CLEAN_DAYS
-    days = max(1, min(days, 90))
-
-    async with async_session_maker() as session:
-        service = EntitlementShadowService(session)
-        report = await service.disagreement_report(days=days)
-        for entry in report:
-            if entry["disagreements"]:
-                entry["examples"] = await service.examples(
-                    action=entry["action"], client=entry["client"], limit=3
-                )
-        rollout = await service.get_rollout()
-    return JSONResponse(
-        content={
-            "ok": True,
-            "days": days,
-            "min_samples": ROLLOUT_MIN_SAMPLES,
-            "rows": report,
-            "rollout": rollout,
-        }
-    )
-
-
-@app.post("/api/admin-miniapp/entitlement-shadow/rollout")
-async def admin_miniapp_entitlement_rollout_save(request: Request):
-    """Harakatni dvigatelga o'tkazish — deploy emas, sozlama yozuvi.
-
-    Noto'g'ri yoqilgan bo'lsa orqaga qaytarish ham shu yerdan, bitta tugma.
-    """
-    telegram_id = _admin_miniapp_user_id(request)
-    auth_error = _admin_auth_error(telegram_id)
-    if auth_error:
-        return auth_error
-    try:
-        payload = await request.json()
-    except Exception:  # noqa: BLE001
-        return JSONResponse(
-            status_code=400,
-            content={"ok": False, "error": "invalid_entitlement_rollout"},
-        )
-
-    async with async_session_maker() as session:
-        try:
-            stored = await EntitlementShadowService(session).save_rollout(
-                payload, updated_by_telegram_id=telegram_id
-            )
-        except ValueError as exc:
-            return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
-        await session.commit()
-    logger.info("admin_entitlement_rollout_saved admin_id=%s", telegram_id)
-    return JSONResponse(content={"ok": True, "rollout": stored})
 
 
 @app.post("/api/admin-miniapp/course-access/save")
