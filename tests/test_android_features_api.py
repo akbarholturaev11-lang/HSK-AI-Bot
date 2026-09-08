@@ -470,139 +470,58 @@ class AndroidAdChannelTests(unittest.IsolatedAsyncioTestCase):
             json=body,
         )
 
-    async def _open_attempt(self, token, access_ref, ad_id=1, feature="recognition"):
-        response = await self._post(
-            "/api/v3/android/ad/attempt",
+    async def _ad_view(self, token, *, ad_id=1, watched=9, placement="screen_center"):
+        return await self._post(
+            "/api/v3/android/ad/view",
             token,
             ad_id=ad_id,
-            feature=feature,
-            access_ref=access_ref,
+            watched_seconds=watched,
+            placement=placement,
         )
-        self.assertEqual(200, response.status_code, response.text)
-        return response.json()
 
-    async def test_an_attempt_binds_what_the_view_may_unlock(self):
-        token = await self._token()
-        opened = await self._open_attempt(token, "a" * 24)
-        self.assertTrue(opened["ok"])
-        self.assertTrue(opened["attempt_token"])
-        self.assertEqual(7, opened["required_seconds"])
+    async def test_a_watched_ad_is_recorded_but_opens_nothing(self):
+        """Reklama ko'rib kirish ochish OLIB TASHLANDI.
 
-    async def test_an_attempt_for_an_unknown_ad_is_refused(self):
-        token = await self._token()
-        response = await self._post(
-            "/api/v3/android/ad/attempt",
-            token,
-            ad_id=9999,
-            feature="recognition",
-            access_ref="a" * 24,
-        )
-        self.assertEqual(404, response.status_code, response.text)
-        self.assertEqual("course_ad_not_found", response.json()["error"])
-
-    async def test_an_attempt_for_an_unknown_section_is_refused(self):
-        token = await self._token()
-        response = await self._post(
-            "/api/v3/android/ad/attempt",
-            token,
-            ad_id=1,
-            feature="whatever",
-            access_ref="a" * 24,
-        )
-        self.assertEqual(422, response.status_code, response.text)
-        self.assertFalse(response.json()["ok"])
-
-    async def _age_attempts(self, seconds: int):
-        """Moves the open attempts back in time, as if the ad had played.
-
-        The server measures real elapsed time between opening an attempt and
-        reporting the view — that is what makes a forged `watched_seconds`
-        useless. Waiting for real seconds in a test would only make it slow.
+        Ilgari to'liq ko'rilgan reklama bo'limni ochardi va buning uchun
+        `/ad/attempt` tokeni va binding tarmog'i bor edi. Endi ko'rsatish
+        faqat kunlik chegara uchun hisoblanadi.
         """
-        async with self.sessions() as session:
-            await session.execute(
-                update(CourseMiniAppEvent)
-                .where(CourseMiniAppEvent.event_name == COURSE_AD_ATTEMPT_EVENT_NAME)
-                .values(
-                    created_at=datetime.now(timezone.utc) - timedelta(seconds=seconds)
-                )
-            )
-            await session.commit()
-
-    async def test_a_fully_watched_ad_opens_the_section(self):
         token = await self._token()
-        access_ref = "b" * 24
-        opened = await self._open_attempt(token, access_ref)
-        await self._age_attempts(8)
-        response = await self._post(
-            "/api/v3/android/ad/view",
-            token,
-            ad_id=1,
-            watched_seconds=7,
-            feature="recognition",
-            access_ref=access_ref,
-            attempt_token=opened["attempt_token"],
-        )
-        self.assertEqual(200, response.status_code, response.text)
+
+        response = await self._ad_view(token)
+
+        self.assertEqual(200, response.status_code)
         body = response.json()
         self.assertTrue(body["ok"])
-        self.assertTrue(body["authorization"]["recorded"])
-
-    async def test_a_view_reported_faster_than_the_ad_could_play_unlocks_nothing(self):
-        # The client claims the full duration a moment after opening the
-        # attempt. Real time has not passed, so nothing opens.
-        token = await self._token()
-        access_ref = "e" * 24
-        opened = await self._open_attempt(token, access_ref)
-        response = await self._post(
-            "/api/v3/android/ad/view",
-            token,
-            ad_id=1,
-            watched_seconds=7,
-            feature="recognition",
-            access_ref=access_ref,
-            attempt_token=opened["attempt_token"],
-        )
-        self.assertEqual(400, response.status_code, response.text)
-        self.assertEqual("ad_attempt_incomplete", response.json()["error"])
-
-    async def test_an_ad_closed_too_early_is_recorded_but_opens_nothing(self):
-        # Not an error: the learner simply stopped watching. Answering
-        # "ad not found" here would send the client looking for a bug.
-        token = await self._token()
-        access_ref = "c" * 24
-        opened = await self._open_attempt(token, access_ref)
-        response = await self._post(
-            "/api/v3/android/ad/view",
-            token,
-            ad_id=1,
-            watched_seconds=1,
-            feature="recognition",
-            access_ref=access_ref,
-            attempt_token=opened["attempt_token"],
-        )
-        self.assertEqual(200, response.status_code, response.text)
-        body = response.json()
-        self.assertFalse(body["ok"])
+        # Hech qanday avtorizatsiya qaytmaydi.
         self.assertNotIn("authorization", body)
-        self.assertEqual(7, body["required_seconds"])
 
-    async def test_a_view_without_an_attempt_unlocks_nothing(self):
-        # This is the forgery case: a client that never opened an attempt
-        # claiming it watched the ad. The server has nothing to check it
-        # against and must refuse.
+    async def test_the_attempt_endpoint_is_gone(self):
         token = await self._token()
+
+        response = await self._post(
+            "/api/v3/android/ad/attempt", token, ad_id=1, access_ref="ref-12345678"
+        )
+
+        self.assertEqual(404, response.status_code)
+
+    async def test_an_old_client_still_sending_the_attempt_fields_is_not_refused(self):
+        # Eski Android build hali `access_ref` va `attempt_token` yuborishi
+        # mumkin — u 422 olmasligi kerak.
+        token = await self._token()
+
         response = await self._post(
             "/api/v3/android/ad/view",
             token,
             ad_id=1,
-            watched_seconds=7,
-            feature="recognition",
-            access_ref="d" * 24,
-            attempt_token="",
+            watched_seconds=9,
+            placement="screen_center",
+            access_ref="ref-12345678",
+            attempt_token="t" * 32,
         )
-        self.assertEqual(400, response.status_code, response.text)
-        self.assertEqual("ad_attempt_required", response.json()["error"])
+
+        self.assertEqual(200, response.status_code)
+
 
     async def test_a_view_for_an_unknown_ad_is_an_error(self):
         token = await self._token()
@@ -947,6 +866,15 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
             await session.commit()
         self.calls = []
 
+        # Shadow solishtiruvi ataylab O'Z sessiyasida yozadi (so'rov rollback
+        # bo'lsa ham yozuv yo'qolmasin). Testda uni shu bazaga bog'laymiz,
+        # aks holda u haqiqiy Postgres'ga ulanishga urinardi.
+        self.shadow_sessions_patch = patch(
+            "app.services.entitlements.shadow.async_session_maker", self.sessions
+        )
+        self.shadow_sessions_patch.start()
+        self.addCleanup(self.shadow_sessions_patch.stop)
+
         outer = self
 
         class FakeMasteryService:
@@ -973,11 +901,36 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
                 outer.calls.append(("mistakes", feature, level, language, entries))
                 return len(entries)
 
+        class RecordingBot:
+            """Stands in for the Telegram bot the app is handed off to."""
+
+            def __init__(self):
+                self.messages = []
+
+            async def send_message(self, *, chat_id, text, **_ignored):
+                self.messages.append((chat_id, text))
+
+        self.bot = RecordingBot()
+
+        # Seeded creatives have no file on disk; these tests are about the
+        # gate, not about media storage.
+        async def _always_available(self, ad):
+            return True, False
+
+        self.media = patch.object(
+            CourseAdService,
+            "ensure_media_available",
+            _always_available,
+        )
+        self.media.start()
+        self.addCleanup(self.media.stop)
+
         app = FastAPI()
         app.include_router(
             create_android_features_router(
                 session_factory=self.sessions,
                 settings_obj=_settings(),
+                bot=self.bot,
                 mastery_service_factory=FakeMasteryService,
                 drill_service_factory=FakeDrillSignalService,
             )
@@ -1003,7 +956,25 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
     def _headers(self):
         return {"Authorization": "Bearer token", "Content-Type": "application/json"}
 
+    async def _seed_practice_ad(self):
+        """An ad the practice slot can actually offer this learner."""
+
+        async with self.sessions() as session:
+            session.add(
+                CourseAdCreative(
+                    title="Practice creative",
+                    media_path="practice.mp4",
+                    media_type="video",
+                    language="all",
+                    ad_type="odiy",
+                    duration_seconds=7,
+                    is_active=True,
+                )
+            )
+            await session.commit()
+
     async def test_the_first_free_run_is_allowed_and_the_second_is_not(self):
+        await self._seed_practice_ad()
         first = await self.client.post(
             "/api/v3/android/practice/gate",
             headers=self._headers(),
@@ -1022,6 +993,88 @@ class AndroidAdaptiveDrillTests(unittest.IsolatedAsyncioTestCase):
         body = second.json()
         self.assertEqual("free_feature_limit_reached", body["error"])
         self.assertTrue(body["ad"]["available"])
+
+    async def test_a_spent_allowance_reaches_the_learner_in_telegram(self):
+        """The limit is also news, not just a closed door.
+
+        The Mini App tells the learner in the bot chat when a free section is
+        spent, so the message is what they find later — Android reaching the
+        same limit silently would leave the two clients telling different
+        stories about the same account.
+        """
+
+        await self._seed_practice_ad()
+        await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-1"},
+        )
+        self.assertEqual([], self.bot.messages)
+
+        spent = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-2"},
+        )
+
+        self.assertEqual(403, spent.status_code)
+        self.assertEqual(1, len(self.bot.messages))
+        chat_id, text = self.bot.messages[0]
+        self.assertEqual(4242, chat_id)
+        self.assertTrue(text.strip())
+
+        # Once told, not told again: the notice is deduped for the learner.
+        await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-3"},
+        )
+        self.assertEqual(1, len(self.bot.messages))
+
+    async def test_an_empty_ad_catalogue_opens_the_section_instead_of_locking_it(self):
+        """No ad to watch must not mean no way in.
+
+        The Mini App opens the section and plays the ad best-effort, so a
+        learner it has nothing to show still practises. The allowance an ad
+        would have spent is spent all the same, so the daily count does not
+        drift apart between the two clients.
+        """
+
+        await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-1"},
+        )
+
+        reopened = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-2"},
+        )
+
+        self.assertEqual(200, reopened.status_code)
+        body = reopened.json()
+        self.assertTrue(body["allowed"])
+        self.assertEqual("no_ad", body["source"])
+
+    async def test_an_available_ad_still_has_to_be_watched(self):
+        """The way in stays the ad while there is one to watch."""
+
+        await self._seed_practice_ad()
+
+        await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-1"},
+        )
+        spent = await self.client.post(
+            "/api/v3/android/practice/gate",
+            headers=self._headers(),
+            json={"feature": "recognition", "ref": "drill-2"},
+        )
+
+        self.assertEqual(403, spent.status_code)
+        self.assertTrue(spent.json()["ad"]["available"])
 
     async def test_an_unknown_section_cannot_be_gated(self):
         response = await self.client.post(
@@ -1188,6 +1241,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
     """Every feature route is bearer-only; none of them accept an anonymous call."""
 
     ROUTES = (
+        ("POST", "/api/v3/android/trial/start"),
+        ("GET", "/api/v3/android/trial/status"),
         ("GET", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
         ("POST", "/api/v3/android/subscription/open"),
@@ -1215,7 +1270,6 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
         ("POST", "/api/v3/android/voice/pronounce"),
         ("POST", "/api/v3/android/voice/session/end"),
         ("GET", "/api/v3/android/ad"),
-        ("POST", "/api/v3/android/ad/attempt"),
         ("POST", "/api/v3/android/ad/view"),
     )
 
@@ -1261,6 +1315,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
 
     #: Routes that take no request body, so the bearer check is the first gate.
     BODYLESS_ROUTES = (
+        ("POST", "/api/v3/android/trial/start"),
+        ("GET", "/api/v3/android/trial/status"),
         ("GET", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
         ("POST", "/api/v3/android/subscription/open"),

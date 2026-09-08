@@ -561,21 +561,29 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("q.audio_text", mistakes)
         self.assertIn("access_ref:accessRef", html)
         self.assertIn("ad_supported:!!adSupported", html)
-        self.assertIn('CourseAds.play("start",accessRef)', html)
-        self.assertNotIn('.catch(function(){_openExam(which)', html)
+        # Reklama ko'rib bo'limni ochish OLIB TASHLANDI — chaqiruv ham yo'q.
+        self.assertNotIn('CourseAds.play(', html)
         for duration in (25, 30, 35, 40):
             self.assertIn(f"min:{duration}", html)
         self.assertIn("EXD.duration_min", html)
-        self.assertIn("access_ref:accessRef", ads)
-        self.assertIn('fetch("/api/v3/ad/attempt"', ads)
-        self.assertIn('attempt_token:String(attemptToken||"")', ads)
-        self.assertIn("recordView(ad,placement,duration,accessRef,STATE.attemptToken).then(finishStart).catch(failFlow)", ads)
+        # `access_ref` reklama bilan kirish ochish uchun edi — u olib
+        # tashlandi, shuning uchun endi bo'lmasligi KERAK.
+        self.assertNotIn("access_ref:accessRef", ads)
+        # Urinish tokeni tarmog'i ham reklama-bilan-ochish uchun edi —
+        # u ham to'liq olib tashlandi.
+        self.assertNotIn('/api/v3/ad/attempt', ads)
+        # Izohda so'z sifatida qolishi mumkin; kodda YUBORILMASLIGI kerak.
+        self.assertNotIn("attempt_token:", ads)
+        # Ko'rilgani baribir serverga yoziladi: kunlik chegara shu qatorlardan
+        # sanaladi, klientning localStorage hisoblagichidan emas.
+        self.assertIn('fetch("/api/v3/ad/view"', ads)
 
     def test_mistake_ad_review_uses_bound_retry_safe_authorization(self):
         html = Path("app/static/course_v3_mistakes.html").read_text(encoding="utf-8")
 
         self.assertIn('feature:"mistake_review"', html)
-        self.assertIn('CourseAds.play("start",accessRef)', html)
+        # Reklama ko'rib xatolar bo'limini ochish OLIB TASHLANDI.
+        self.assertNotIn('CourseAds.play(', html)
         self.assertIn("access_ref:accessRef", html)
         self.assertIn("clearReviewAccessRef()", html)
         self.assertIn('fetch("/api/miniapp/mistakes/review/answer"', html)
@@ -608,17 +616,20 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("window._pendingLessonEndAd=(!isPaidUser()&&INIT_DATA)", html)
         # Bayram/streak/reyting ekranlaridan KEYIN — closeLevelUp ichida.
         self.assertIn("if(playLessonEndAd(go))return;", html)
-        self.assertIn('slot:"lesson_end"', html)
         self.assertIn('App.goPay("v3_lesson_end_ad")', html)
         # Reklama bo'lmasa yoki yiqilsa — jim o'tib xaritaga qaytadi.
-        self.assertIn('CourseAds.play("end").then(go).catch(go)', html)
-        # Modul slotni serverga uzatadi va dars yakunida "Davom etish" chiqadi.
-        self.assertIn('"&slot="+encodeURIComponent(CFG.slot||"")', ads)
+        self.assertIn("CourseAds.playLessonEnd(lessonN)", html)
+        # Modul joyni serverga uzatadi va dars yakunida obuna kartasi chiqadi.
+        self.assertIn('fetchPlacementAd("lesson_end")', ads)
         self.assertIn('function isLessonEnd(){return CFG.slot==="lesson_end"}', ads)
         # Obuna asosiy CTA bo'lib qoladi; admin tashqi link bersa, uning alohida
         # knopkasi ham yakuniy blokda ko'rinadi.
         self.assertIn("function renderLessonEndExternal(ad)", ads)
-        self.assertIn("renderLessonEndExternal(ad);", ads)
+        # Tashqi CTA modalning o'z tugmasi orqali chiqadi.
+        self.assertIn("e.cta.onclick=function(){ openAppLink(ad.link_url); };", ads)
+        # Dars yakunida obuna taklifi ham bo'ladi — joyning butun ma'nosi shu.
+        self.assertIn("if(isLessonEnd()){", ads)
+        self.assertIn("CFG.onSubscribe()", ads)
         self.assertIn('class="caa-cta ghost caa-ext"', ads)
         self.assertIn("ad.button_text", ads)
         for key in ("leLabel:", "leNote:", "leSubTitle:", "leExternal:"):
@@ -680,6 +691,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn('id="pomp-desktop-profile-root"', course)
         self.assertIn('id="ad-desktop"', course)
         self.assertIn('queuePromo("lesson_end_promo"', course)
+        # Desktop promosi endi dars yakunidagi modalda.
         self.assertIn("mountAdPromoTrigger", ads)
         self.assertIn('<div class="caa-desktop" hidden></div>', ads)
         self.assertIn('var desktopPlacement=isLessonEnd()?"lesson_end_ad"', ads)

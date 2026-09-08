@@ -65,6 +65,7 @@ from app.bot.utils.course_miniapp import (
 from app.repositories.message_repo import MessageRepository
 from app.repositories.user_repo import UserRepository
 from app.services.access_service import AccessService
+from app.services.entitlements.state import has_full_access, resolve_state
 from app.services.ai_provider import gemini_active
 from app.services.ai_service import AIService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
@@ -369,11 +370,18 @@ class _TextMessageProxy:
 
 
 def _can_use_voice(user) -> bool:
-    return (
-        user is not None
-        and user.status == "active"
-        and user.payment_status == "approved"
-    )
+    """Bot ovozidan foydalana oladimi.
+
+    Ilgari bu yerda faqat `status=="active" and payment_status=="approved"`
+    tekshirilardi — `end_date` GA QARALMASDI. Ya'ni obunasi tugagan odam bot
+    ovozini abadiy saqlab qolardi: `payment_status` tasdiqlangan holicha
+    qoladi va faqat `end_date` o'tadi.
+
+    Endi yagona predikat ishlatiladi va u muddatni ham hisobga oladi.
+    Vaqtinchalik kirishi bor odam (referral/otziv bonusi) ham ovozni oladi —
+    bu Mini App'dagi xatti-harakat bilan bir xil.
+    """
+    return user is not None and has_full_access(resolve_state(user))
 
 
 def _is_i18n_access_key(value: str) -> bool:

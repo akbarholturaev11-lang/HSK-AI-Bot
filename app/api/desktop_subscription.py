@@ -235,6 +235,45 @@ def create_desktop_subscription_router(
                 )
             )
 
+    @router.get("/api/v3/desktop/subscription/trial")
+    async def desktop_trial_status(request: Request):
+        try:
+            async with session_factory() as session:
+                result = await service(session).trial_status(_access_token(request))
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopSubscriptionError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Desktop trial status failed")
+            return _error_response(
+                DesktopSubscriptionError(
+                    "desktop_subscription_unavailable", status_code=503
+                )
+            )
+
+    @router.post("/api/v3/desktop/subscription/trial/start")
+    async def desktop_trial_start(request: Request):
+        try:
+            async with session_factory() as session:
+                result = await service(session).trial_start(_access_token(request))
+                if not result.get("ok"):
+                    return JSONResponse(
+                        status_code=409,
+                        content=result,
+                        headers={"Cache-Control": "no-store"},
+                    )
+                await session.commit()
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, DesktopSubscriptionError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Desktop trial start failed")
+            return _error_response(
+                DesktopSubscriptionError(
+                    "desktop_subscription_unavailable", status_code=503
+                )
+            )
+
     @router.post("/api/v3/desktop/subscription/discount-start")
     async def desktop_subscription_discount_start(request: Request):
         try:

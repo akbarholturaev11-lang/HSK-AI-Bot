@@ -13,6 +13,7 @@ from app.services.desktop_auth_service import DesktopAuthService
 from app.services.subscription_entry_analytics_service import (
     SubscriptionEntryAnalyticsService,
 )
+from app.services.pro_trial_service import ProTrialService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.user_access_state_service import (
     UserAccessState,
@@ -127,6 +128,20 @@ class DesktopSubscriptionService:
                 "attempt_id": attempt_id,
                 "mode": DESKTOP_SUBSCRIPTION_MODE,
             },
+        )
+
+    async def trial_status(self, access_token: str) -> dict[str, Any]:
+        """7 kunlik bepul Pro taklif qilinadimi."""
+        context = await self._context(access_token)
+        verdict = await ProTrialService(self.session).eligibility(context.user)
+        return {"ok": True, "trial": verdict}
+
+    async def trial_start(self, access_token: str) -> dict[str, Any]:
+        """Trialni boshlaydi. Qaror va cheklovlar SERVERDA — klient faqat
+        so'raydi (bir Telegram akkaunt bir marta)."""
+        context = await self._context(access_token)
+        return await ProTrialService(self.session).start(
+            context.user, source="desktop_trial", client="desktop"
         )
 
     async def overview(self, access_token: str) -> dict[str, Any]:

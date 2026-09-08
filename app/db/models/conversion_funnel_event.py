@@ -19,6 +19,15 @@ CONVERSION_FUNNEL_EVENT_NAMES = (
     "payment_screenshot_submitted",
     "payment_approved",
     "payment_rejected",
+    "onboarding_completed",
+    "plan_choice_seen",
+    "trial_started",
+    "trial_expired",
+    "trial_converted",
+    "limit_hit",
+    "paywall_cta_clicked",
+    "ad_shown",
+    "ad_skipped",
 )
 
 
@@ -37,7 +46,16 @@ class ConversionFunnelEvent(Base):
             "'checkout_opened', "
             "'payment_screenshot_submitted', "
             "'payment_approved', "
-            "'payment_rejected'"
+            "'payment_rejected', "
+            "'onboarding_completed', "
+            "'plan_choice_seen', "
+            "'trial_started', "
+            "'trial_expired', "
+            "'trial_converted', "
+            "'limit_hit', "
+            "'paywall_cta_clicked', "
+            "'ad_shown', "
+            "'ad_skipped'"
             ")",
             name="ck_conversion_funnel_events_event_name",
         ),

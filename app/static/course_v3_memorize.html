@@ -139,7 +139,7 @@ function startAdSupported(){
   runAdGate().then(function(o){
     if(o.status===403){showLimit(false);return}
     AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
-    if(window.CourseAds){CourseAds.play("start").then(boot).catch(boot)}else{boot()}
+    boot()
   }).catch(function(){showLimit(false)});
 }
 function gateRef(create){try{var k="hsk_gate_memorize";var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
@@ -209,7 +209,6 @@ try{window.addEventListener("pagehide",reportWrong);
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")reportWrong()})}catch(e){}
 function startChar(){
   /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
-  if(AD_SESSION&&!AD_MID_SHOWN&&deck.length>=4&&DI===Math.floor(deck.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(startChar).catch(startChar);return}}
   H=deck[DI];D=DATA[H];SI=0;GATE={meaning:false,reco:false,prod:false};
   document.getElementById("pos").textContent=(DI+1)+"/"+deck.length;
   STEPS=buildSteps(H);step();
@@ -373,7 +372,6 @@ function showCont(label){var e=document.getElementById("ct");if(e){e.innerHTML='
 /* complete */
 function finishChar(){
   /* Reklama bilan kirilgan sessiya: oxirgi belgi tugagach yakuniy reklama. */
-  if(AD_SESSION&&!AD_END_SHOWN&&DI>=deck.length-1&&GATE.meaning&&GATE.reco&&GATE.prod){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finishChar).catch(finishChar);return}}
   reportWrong();
   setProg(1);
   if(!(GATE.meaning&&GATE.reco&&GATE.prod)){

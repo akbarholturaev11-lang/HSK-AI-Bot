@@ -45,5 +45,10 @@ fun SectionLimitBlock(
         onSecondary = if (onWatchAd != null) limit.actions.onUnlock else null,
         isBusy = limit.state.isBusy,
         errorText = if (error != null) stringResource(error.messageRes) else null,
+        noticeText = if (limit.state.recheckFoundNothing) {
+            stringResource(R.string.limit_recheck_none)
+        } else {
+            null
+        },
     )
 }

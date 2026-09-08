@@ -271,12 +271,15 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         self.assertNotIn('id="caLinkIos"', html)
         self.assertNotIn('id="caLinkAndroid"', html)
 
-    def test_ad_endpoint_attaches_platform_buttons_only_for_app_open(self):
-        main = Path("app/main.py").read_text(encoding="utf-8")
-        self.assertIn("_desktop_auto_download_links", main)
-        self.assertIn("CourseAdService.app_platform_buttons(ad, auto_links)", main)
+    def test_ad_endpoint_attaches_platform_buttons(self):
+        # Reklama endpointi `app/main.py` dan `app/api/miniapp_ads.py` ga
+        # ko'chdi — u yerda test bilan qoplanadi.
+        ads_api = Path("app/api/miniapp_ads.py").read_text(encoding="utf-8")
+        self.assertIn("CourseAdService.app_platform_buttons(ad, auto_links)", ads_api)
         # Reliz tizimi ishlamasa ham endpoint yiqilmaydi.
-        self.assertIn("Desktop auto download links resolve failed", main)
+        self.assertIn("Desktop auto download links resolve failed", ads_api)
+        main = Path("app/main.py").read_text(encoding="utf-8")
+        self.assertIn("download_links_resolver=_desktop_auto_download_links", main)
 
     def test_client_renders_platform_buttons_from_server_list(self):
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
@@ -292,14 +295,14 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         main = Path("app/main.py").read_text(encoding="utf-8")
         self.assertIn("CourseAdService.normalize_skip_after(", main)
         self.assertIn("CourseAdService.normalize_daily_limit(", main)
-        # app_open sloti dars/bo'lim talab qilmaydi.
-        self.assertIn('app_open = ad_slot == "app_open"', main)
-        self.assertIn("and not app_open", main)
 
-    def test_ads_js_exposes_app_open_flow_in_all_three_languages(self):
+    def test_ads_js_exposes_the_centre_flow_in_all_three_languages(self):
         ads = Path("app/static/course_v3_data/ads.js").read_text(encoding="utf-8")
-        self.assertIn("playAppOpen:playAppOpen", ads)
-        self.assertIn("slot=app_open", ads)
+        # Markazdagi reklama endi o'z joyi bilan chaqiriladi, eski `app_open`
+        # sloti bilan emas.
+        self.assertIn("playScreenCenter:playScreenCenter", ads)
+        self.assertIn('fetchPlacementAd("screen_center")', ads)
+        self.assertNotIn("slot=app_open", ads)
         # Foydalanuvchi O'ZI yopadi — avtomatik yopish yo'q.
         self.assertIn("appState.timer=setInterval", ads)
         self.assertIn('e.x.classList.add("on")', ads)
@@ -311,10 +314,10 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
                 f"{key} uz/ru/tj uchtasida ham bo'lishi kerak",
             )
 
-    def test_mini_app_shows_app_ad_on_open_but_yields_to_user_intent(self):
+    def test_mini_app_shows_the_centre_ad_on_open_but_yields_to_user_intent(self):
         html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
         self.assertIn("maybeShowAppOpenAd", html)
-        self.assertIn("CourseAds.playAppOpen()", html)
+        self.assertIn("CourseAds.playScreenCenter()", html)
         # Dars, chellenj yoki tur ochilayotgan bo'lsa reklama chiqmaydi.
         self.assertIn("if(ctx&&(ctx.lesson>0||ctx.challenge>0||ctx.tour))return;", html)
 
@@ -328,17 +331,16 @@ class CourseAdAppAdminAndClientTests(unittest.TestCase):
         # Platforma ro'yxati bo'sh bo'lsa oddiy havola tugmasiga tushadi.
         self.assertIn("if(!ad.link_url)return;", ads)
 
-    def test_app_buttons_are_not_tied_to_the_app_open_slot(self):
-        """Serverda platforma tugmalari slotga emas, TURGA bog'langan."""
-        main = Path("app/main.py").read_text(encoding="utf-8")
-        self.assertIn(
-            'app_ads = [ad for ad in ads if ad.get("ad_type") == "app"]', main
-        )
-        self.assertNotIn(
-            "        if app_open:\n"
-            "            # App reklamasidagi platforma tugmalari.",
-            main,
-        )
+    def test_app_buttons_are_tied_to_the_type_not_the_placement(self):
+        """Platforma tugmalari JOYGA emas, TURGA bog'langan.
+
+        Desktop ilova reklamasi ikkala joyda ham (dars yakuni va ekran
+        markazi) platforma tugmalari bilan chiqishi kerak.
+        """
+        ads_api = Path("app/api/miniapp_ads.py").read_text(encoding="utf-8")
+        self.assertIn('ad.get("ad_type") != "app"', ads_api)
+        # Joy nomi shartga umuman kirmaydi.
+        self.assertNotIn('placement == "screen_center"', ads_api)
 
 
 if __name__ == "__main__":

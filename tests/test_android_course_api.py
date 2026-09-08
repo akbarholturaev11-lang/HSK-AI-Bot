@@ -419,41 +419,13 @@ class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
                 event_id=f"android:ads{order:032d}",
             )
 
-    async def _watch_an_ad(self, session, *, lesson_order, access_ref):
-        user = await UserRepository(session).get_by_telegram_id(1001)
-        access = CourseMiniAppAccessService(session)
-        attempt = await access.start_ad_attempt(
-            user,
-            feature_key="lesson",
-            access_ref=access_ref,
-            ad_id=7,
-            placement="start",
-            required_seconds=5,
-            level="hsk1",
-            lesson_order=lesson_order,
-        )
-        self.assertTrue(attempt["allowed"])
-        # The server measures real seconds between the attempt and the report,
-        # so the attempt is back-dated here instead of sleeping through the ad.
-        await session.execute(
-            update(CourseMiniAppEvent)
-            .where(CourseMiniAppEvent.event_name == "course_ad_attempt_started")
-            .values(created_at=datetime.now(timezone.utc) - timedelta(seconds=30))
-        )
-        recorded = await access.record_ad_authorization(
-            user,
-            feature_key="lesson",
-            access_ref=access_ref,
-            ad_id=7,
-            placement="start",
-            attempt_token=attempt["attempt_token"],
-            level="hsk1",
-            lesson_order=lesson_order,
-        )
-        self.assertTrue(recorded["allowed"])
-        await session.commit()
+    async def test_a_stored_ads_policy_no_longer_opens_a_lesson(self):
+        """Reklama ko'rib darsni ochish OLIB TASHLANDI.
 
-    async def test_the_map_says_an_ad_can_open_the_locked_lesson(self):
+        Ilgari admin `ads` rejimini yoqsa, bepul o'quvchi reklama ko'rib
+        darsni ochardi. Endi limit tugasa paywall chiqadi, va bazada qolgan
+        eski `ads` qatori ham buni o'zgartirmaydi.
+        """
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
@@ -465,39 +437,28 @@ class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
             for lesson in unit["lessons"]
             if lesson.get("locked_premium")
         ]
-        self.assertTrue(locked)
-        self.assertTrue(all(lesson.get("ad_unlockable") for lesson in locked))
+        self.assertTrue(locked, "premium darslar qulflangan bo'lishi kerak")
+        # Xarita endi "reklama ochadi" demaydi.
+        self.assertFalse(any(lesson.get("ad_unlockable") for lesson in locked))
 
-    async def test_a_recorded_ad_opens_the_lesson_whole_and_completes_it(self):
+    async def test_an_invented_access_ref_opens_nothing(self):
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
             await self._reach_the_paywall(session, service, token)
             order = free_course_parts_for_level("hsk1") + 1
 
-            # Without the ad it is still the half preview.
             preview = await service.lesson(token, lesson_order=order)
             self.assertTrue(preview["preview_half"])
             self.assertFalse(preview["completion_allowed"])
 
-            await self._watch_an_ad(session, lesson_order=order, access_ref="ad-ref-1")
-
-            opened = await service.lesson(
-                token,
-                lesson_order=order,
-                access_ref="ad-ref-1",
+            # Klient o'ylab topgan ma'lumotnoma hech narsa ochmaydi.
+            still_locked = await service.lesson(
+                token, lesson_order=order, access_ref="ad-ref-1"
             )
-            self.assertFalse(opened["preview_half"])
-            self.assertTrue(opened["completion_allowed"])
-            self.assertEqual(opened["total_cards"], opened["preview_card_limit"])
 
-            result = await service.complete(
-                token,
-                lesson_order=order,
-                event_id="android:adopen" + "0" * 26,
-                access_ref="ad-ref-1",
-            )
-            self.assertTrue(result["ok"])
+        self.assertTrue(still_locked["preview_half"])
+        self.assertFalse(still_locked["completion_allowed"])
 
     async def test_an_invented_reference_opens_nothing(self):
         async with self.sessions() as session:

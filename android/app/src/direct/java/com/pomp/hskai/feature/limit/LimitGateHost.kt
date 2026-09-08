@@ -8,6 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -67,15 +70,34 @@ fun rememberLimitGate(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
+    // A re-check that changed nothing has to say so: a subscription that
+    // arrived closes this block, so a block still standing after the read is
+    // the answer — and silence reads as a dead button.
+    var recheckAsked by remember { mutableStateOf(false) }
+    var recheckFoundNothing by remember { mutableStateOf(false) }
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing) {
+            if (recheckAsked) recheckFoundNothing = false
+        } else if (recheckAsked) {
+            recheckAsked = false
+            recheckFoundNothing = true
+        }
+    }
+
     return LimitGate(
         state = LimitGateState(
             isBusy = handoffState.isOpening || isRefreshing,
             error = handoffState.error,
             supportUrl = supportUrl,
+            recheckFoundNothing = recheckFoundNothing,
         ),
         actions = LimitGateActions(
             onUnlock = handoffViewModel::openSubscription,
-            onRecheck = onRefreshAccess,
+            onRecheck = {
+                recheckAsked = true
+                recheckFoundNothing = false
+                onRefreshAccess()
+            },
             onSupport = { openExternal(context, supportUrl) },
         ),
     )

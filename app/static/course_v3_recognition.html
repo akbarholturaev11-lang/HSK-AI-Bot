@@ -90,7 +90,7 @@ function startAdSupported(){
   runAdGate().then(function(o){
     if(o.status===403){showLimit(false);return}
     AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
-    if(window.CourseAds){CourseAds.play("start").then(start).catch(start)}else{start()}
+    start()
   }).catch(function(){showLimit(false)});
 }
 /* Kunlik limit gate: bepul userga kuniga 1 to'liq sessiya. Server tomonda
@@ -247,11 +247,6 @@ function makeQuiz(targets){
 function render(){
   answered=false;
   if(qi>=quiz.length)return finish();
-  /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
-  if(AD_SESSION&&!AD_MID_SHOWN&&quiz.length>=4&&qi===Math.floor(quiz.length/2)){
-    AD_MID_SHOWN=true;
-    if(window.CourseAds){CourseAds.play("middle").then(render).catch(render);return}
-  }
   document.getElementById("prog").style.width=Math.round(qi/quiz.length*100)+"%";
   var q=quiz[qi];
   /* Takror so'zda kichik belgi — o'quvchi moslashuvni KO'RSIN. Yangi
@@ -274,7 +269,6 @@ function pick(k){
 }
 function finish(){
   /* Reklama bilan kirilgan sessiya: oxirida majburiy yakuniy reklama. */
-  if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finish).catch(finish);return}}
   reportWrong();
   document.getElementById("prog").style.width="100%";
   document.getElementById("body").innerHTML='<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><p>'+L.doneSub+'</p><button onclick="replay()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';

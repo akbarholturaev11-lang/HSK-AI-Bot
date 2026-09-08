@@ -291,4 +291,5 @@
     <string name="profile_referral_copy">Скопировать ссылку</string>
     <string name="profile_referral_share">Поделиться</string>
     <string name="profile_referral_copied">Ссылка скопирована</string>
+    <string name="limit_recheck_none">Аккаунт проверен — подписка не найдена. Если вы оплатили, подождите немного и проверьте снова.</string>
 </resources>

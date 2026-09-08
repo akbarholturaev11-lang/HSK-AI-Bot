@@ -126,16 +126,11 @@ function lvNum(){return parseInt((LV||"").slice(3),10)||0}
 /* Bir martalik bepul urinish tugagach, AI bo'lmagan test reklama bilan davom etadi. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"training_test",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
 var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false,PENDING=null;
-/* "Reklama bilan davom etish" — PENDING'da qaysi imtihon/feature ekani saqlangan. */
+/* "Reklama bilan davom etish" OLIB TASHLANDI: reklama endi hech narsani
+   ochmaydi, limit tugasa paywall chiqadi. Funksiya paywall tugmasi hali
+   chaqirishi mumkin bo'lgani uchun qoldirildi va hech narsa qilmaydi. */
 function startAdSupported(){
-  if(!PENDING)return;
-  var feature=PENDING.feature,which=PENDING.which,accessRef=PENDING.accessRef;
-  if(window.CourseAds)CourseAds.config({feature:feature});
-  if(!window.CourseAds){showEmpty();return}
-  CourseAds.play("start",accessRef).then(function(){
-    AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
-    if(which==="placement")runPlacement();else _openExam(which,true);
-  }).catch(function(){AD_SESSION=false;showEmpty()});
+  PENDING=null;
 }
 var GATE_REFS={};
 function newAccessRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}try{if(window.crypto&&crypto.getRandomValues){var a=new Uint32Array(4);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(v){return v.toString(36)}).join("-")}}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
@@ -228,7 +223,6 @@ function runExam(data){
   exRender();
 }
 function exRender(){
-  if(AD_SESSION&&!AD_MID_SHOWN&&EQ.length>=4&&ei===Math.floor(EQ.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(exRender).catch(exRender);return}}
   var item=EQ[ei],q=item.q;
   var lv=String(EXD.level||"").replace("hsk","").toUpperCase();
   var lead=EM.sec[item.key]||item.key,card="";
@@ -252,7 +246,6 @@ function exPick(k,el){
 }
 function exitExam(){try{stopSpeak()}catch(e){}showHub()}
 function exResult(){
-  if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(exResult).catch(exResult);return}}
   submitExam();
 }
 function submitExam(){
@@ -293,7 +286,6 @@ function shuffled(a){var out=a.slice();for(var i=out.length-1;i>0;i--){var j=Mat
 function runPlacement(){pi=0;pans=[];PQ=QP.map(function(q){return {lvl:q.lvl,h:q.h,py:q.py,o:shuffled(q.o)}});$("hub").style.display="none";$("empty").classList.remove("on");$("placement").classList.add("on");pRender();}
 function pRender(){
   /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
-  if(AD_SESSION&&!AD_MID_SHOWN&&PQ.length>=4&&pi===Math.floor(PQ.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(pRender).catch(pRender);return}}
   var q=PQ[pi];
   $("placement").innerHTML='<div class="ptop"><button class="ix2" onclick="showHub()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(pi/QP.length*100)+'%"></i></div><span class="lvtag">'+PT.lvl+" "+q.lvl+'</span></div>'
     +'<div class="qlead">'+PT.lead+'</div><div class="qcard"><div class="h han">'+q.h+'</div><div class="py">'+q.py+'</div></div>'
@@ -306,7 +298,6 @@ function pPick(k,el){
 }
 function pResult(){
   /* Reklama bilan kirilgan sessiya: natijadan oldin yakuniy reklama. */
-  if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(pResult).catch(pResult);return}}
   var per={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
   PQ.forEach(function(q,k){per[q.lvl][1]++;if(pans[k])per[q.lvl][0]++});
   var rec=1;for(var Lv=1;Lv<=4;Lv++){var p=per[Lv][1]?per[Lv][0]/per[Lv][1]:0;if(p>=0.5)rec=Lv;else break;}

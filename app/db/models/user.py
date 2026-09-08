@@ -113,6 +113,26 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    # 7 kunlik Pro trial. ATAYLAB alohida ustunlar: trial `status`,
+    # `payment_status`, `start_date` va `end_date` ga tegmaydi, chunki
+    # referral mukofotining AI byudjeti o'sha sanalarga ±5 soniya aniqlik
+    # bilan bog'langan (`AccessService._is_same_active_window`).
+    trial_used: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    pro_trial_started_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    pro_trial_ends_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        index=True,
+        nullable=True,
+    )
+    pro_trial_source: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    pro_trial_revoked_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
     bot_blocked_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
         nullable=True,

@@ -27,6 +27,15 @@ class CourseAdCreative(Base):
     # ochilganda markazda chiqadi, mashq bo'limlarida CHIQMAYDI).
     # Turga qarab mini app'da knopka va slot farq qiladi.
     ad_type: Mapped[str] = mapped_column(String(16), default="odiy", nullable=False)
+    # Reklama QAYERDA chiqadi. Vergul bilan ajratilgan to'plam, chunki bitta
+    # reklama ikkala joyda ham bo'lishi mumkin.
+    #
+    # Ilgari joyni `ad_type` ning O'ZI belgilardi (`dars_yakuni` faqat dars
+    # oxirida, `app` faqat ochilishda, qolgani mashqlarda). Endi tur va joy
+    # ajratilgan: admin turini bir marta, joyini alohida tanlaydi.
+    placements: Mapped[str] = mapped_column(
+        String(64), default="screen_center", nullable=False
+    )
     # Universal knopka nomi (hamkorlik/bot/dars_yakuni tashqi CTA uchun).
     # Bo'sh bo'lsa — turga mos default nom.
     button_text: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)

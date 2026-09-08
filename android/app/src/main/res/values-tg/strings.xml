@@ -292,4 +292,5 @@
     <string name="profile_referral_copy">Нусхабардории пайванд</string>
     <string name="profile_referral_share">Мубодила</string>
     <string name="profile_referral_copied">Пайванд нусха шуд</string>
+    <string name="limit_recheck_none">Ҳисоб тафтиш шуд — обуна ёфт нашуд. Агар пардохт карда бошед, каме сабр кунед ва боз тафтиш кунед.</string>
 </resources>

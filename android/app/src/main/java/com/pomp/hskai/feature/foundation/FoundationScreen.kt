@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -64,7 +65,11 @@ internal fun FoundationScreen(
                 CircularProgressIndicator(color = PompColors.Cinnabar)
             }
             state.cards.isEmpty() -> FoundationFailure(onRetry)
-            else -> Column(Modifier.fillMaxSize()) {
+            else -> Column(
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding(),
+            ) {
                 FoundationTopBar(state.progress, state.required, onClose)
                 val card = state.currentCard
                 if (card != null) {

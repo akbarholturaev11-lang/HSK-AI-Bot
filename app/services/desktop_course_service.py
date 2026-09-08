@@ -18,6 +18,7 @@ from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialError,
     CourseLessonMistakeMaterialService,
 )
+from app.services.entitlements.state import has_full_access, resolve_state
 from app.services.course_miniapp_access_service import (
     CourseMiniAppAccessService,
     free_course_parts_for_level,
@@ -313,7 +314,11 @@ class DesktopCourseService:
             user,
             profile=profile,
         )
-        is_paid = CourseMiniAppAccessService.is_paid_user(user)
+        # Kontent qulfi uchun YAGONA predikat. Ilgari bu yerda tor
+        # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
+        # shuning uchun referral yoki otziv bonusi olgan odam telefonda
+        # darsni ochardi, desktopda esa ocholmasdi.
+        is_paid = has_full_access(resolve_state(user))
         data = self._read_json(
             COURSE_V3_DATA_ROOT / f"{level}.json",
             error_code="course_map_load_failed",
@@ -460,7 +465,11 @@ class DesktopCourseService:
                 "course_lesson_not_unlocked",
                 status_code=403,
             )
-        is_paid = CourseMiniAppAccessService.is_paid_user(user)
+        # Kontent qulfi uchun YAGONA predikat. Ilgari bu yerda tor
+        # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
+        # shuning uchun referral yoki otziv bonusi olgan odam telefonda
+        # darsni ochardi, desktopda esa ocholmasdi.
+        is_paid = has_full_access(resolve_state(user))
         requires_premium = CourseMiniAppAccessService.lesson_requires_premium(
             level,
             lesson_order,
@@ -598,7 +607,11 @@ class DesktopCourseService:
             lesson_order,
         )
         access = CourseMiniAppAccessService(self.session)
-        is_paid = access.is_paid_user(user)
+        # Kontent qulfi uchun YAGONA predikat. Ilgari bu yerda tor
+        # `is_paid_user` turardi, Mini App esa kengrog'ini ishlatardi —
+        # shuning uchun referral yoki otziv bonusi olgan odam telefonda
+        # darsni ochardi, desktopda esa ocholmasdi.
+        is_paid = has_full_access(resolve_state(user))
 
         progress_repository = CourseProgressRepository(self.session)
         progress = await self._progress(user, for_update=True)
