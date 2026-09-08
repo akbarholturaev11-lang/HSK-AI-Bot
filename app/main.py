@@ -37,6 +37,7 @@ from app.api.miniapp_entitlements import (
 from app.services.ad_placement_service import AdPlacementService
 from app.services.entitlements.limits_config import LimitConfigService
 from app.services.pro_trial_service import ProTrialService
+from app.services.trial_reminder_service import TrialReminderService
 from app.services.entitlements.shadow import EntitlementShadowService
 from app.api.miniapp_practice import create_miniapp_practice_router
 from app.api.miniapp_preferences import create_miniapp_preferences_router
@@ -448,6 +449,10 @@ async def _background_scheduler(bot: Bot) -> None:
                 # tegilmaydi.
                 await ProTrialService(session).expire_due()
                 await session.commit()
+            async with async_session_maker() as session:
+                # Trial tugashidan oldin: 2 kun qolganda va oxirgi kuni.
+                # Jami ikki xabar — ko'proq emas, aks holda odam botni bloklaydi.
+                await TrialReminderService(session).send_due_reminders(bot)
             async with async_session_maker() as session:
                 await DailyResetService(session).send_daily_reset_notifications(bot)
             async with async_session_maker() as session:

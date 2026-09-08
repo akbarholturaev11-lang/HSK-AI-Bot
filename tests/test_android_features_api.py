@@ -1241,6 +1241,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
     """Every feature route is bearer-only; none of them accept an anonymous call."""
 
     ROUTES = (
+        ("POST", "/api/v3/android/trial/start"),
+        ("GET", "/api/v3/android/trial/status"),
         ("GET", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
         ("POST", "/api/v3/android/subscription/open"),
@@ -1313,6 +1315,8 @@ class AndroidFeatureAuthTests(unittest.IsolatedAsyncioTestCase):
 
     #: Routes that take no request body, so the bearer check is the first gate.
     BODYLESS_ROUTES = (
+        ("POST", "/api/v3/android/trial/start"),
+        ("GET", "/api/v3/android/trial/status"),
         ("GET", "/api/v3/android/profile"),
         ("GET", "/api/v3/android/subscription/overview"),
         ("POST", "/api/v3/android/subscription/open"),

@@ -68,6 +68,7 @@ from app.services.course_mistake_service import CourseMistakeService
 from app.services.desktop_auth_service import DesktopAuthError, DesktopAuthService
 from app.services.ad_placement_service import normalize_placement as normalize_ad_placement
 from app.services.entitlements.gate_shadow import shadow_compare_gate
+from app.services.pro_trial_service import ProTrialService
 from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
@@ -624,6 +625,54 @@ def create_android_features_router(
             logger.exception("Android ad view failed")
             return _error_response(
                 AndroidFeatureError("android_ad_unavailable", status_code=503)
+            )
+
+    @router.post("/api/v3/android/trial/start")
+    async def android_trial_start(request: Request):
+        """7 kunlik bepul Pro — Android'da ham.
+
+        Trial XARID EMAS, shuning uchun `play` build'ida ham taklif qilinadi:
+        do'kon qoidasi ilova ichida tashqi TO'LOVni taqiqlaydi, bepul sinovni
+        emas.
+        """
+        try:
+            async with session_factory() as session:
+                user = await _user(session, request)
+                result = await ProTrialService(session).start(
+                    user, source="android_trial", client="android"
+                )
+                if not result.get("ok"):
+                    return JSONResponse(
+                        status_code=409,
+                        content=result,
+                        headers={"Cache-Control": "no-store"},
+                    )
+                await session.commit()
+            return JSONResponse(content=result, headers={"Cache-Control": "no-store"})
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android trial start failed")
+            return _error_response(
+                AndroidFeatureError("android_trial_unavailable", status_code=503)
+            )
+
+    @router.get("/api/v3/android/trial/status")
+    async def android_trial_status(request: Request):
+        try:
+            async with session_factory() as session:
+                user = await _user(session, request)
+                verdict = await ProTrialService(session).eligibility(user)
+            return JSONResponse(
+                content={"ok": True, "trial": verdict},
+                headers={"Cache-Control": "no-store"},
+            )
+        except (DesktopAuthError, AndroidFeatureError) as exc:
+            return _error_response(exc)
+        except Exception:
+            logger.exception("Android trial status failed")
+            return _error_response(
+                AndroidFeatureError("android_trial_unavailable", status_code=503)
             )
 
     @router.get("/api/v3/android/profile")
