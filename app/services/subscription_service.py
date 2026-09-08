@@ -4,6 +4,7 @@ from typing import Optional
 from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.user_repo import UserRepository
 from app.services.ai_usage_budget_service import AIUsageBudgetService
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.portfolio_service import PortfolioService
 from app.services.subscription_churn_service import SubscriptionChurnService
 
@@ -59,6 +60,10 @@ class SubscriptionService:
             return False
 
         now = datetime.now(timezone.utc)
+        # Trial → to'lov konversiyasi voronkaning yagona muhim nisbati.
+        # Bayroq YOZUVDAN OLDIN olinadi: `status`/`end_date` o'zgargach
+        # foydalanuvchi allaqachon PRO_ACTIVE bo'lib qoladi.
+        came_from_trial = bool(getattr(user, "trial_used", False))
 
         user.status = "active"
         user.payment_status = "approved"
@@ -84,6 +89,14 @@ class SubscriptionService:
             await PortfolioService(self.session).record_subscription_profit(payment)
 
         await self.session.flush()
+
+        if came_from_trial:
+            await ConversionFunnelService().record(
+                event_name="trial_converted",
+                user=user,
+                source="subscription_activated",
+                payload={"plan_type": plan_type},
+            )
         return True
 
     async def grant_manual_paid_access(

@@ -26,10 +26,12 @@ bilan yoqish kerak.
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 
 from app.repositories.message_repo import MessageRepository
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services import course_daily_window
 from app.services.course_miniapp_access_service import (
     COURSE_FEATURE_KEYS,
@@ -50,6 +52,9 @@ from app.services.entitlements.state import (
     is_billing_paid,
     resolve_state,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -277,13 +282,15 @@ class EntitlementEngine:
         # etamiz: aks holda dvigatel eski yo'ldan ko'proq berib yuboradi.
         used = await self.used_for(user, action, rule)
         if used >= rule.limit:
-            return self._decide(
+            refusal = self._decide(
                 action=action,
                 snapshot=snap,
                 rule=rule,
                 used=used,
                 checkout_allowed=checkout_allowed,
             )
+            await self._record_limit_hit(user, action)
+            return refusal
 
         legacy_key = A.LEGACY_FEATURE_KEYS.get(action, action)
         result = await self._access.consume_daily_use(
@@ -317,6 +324,38 @@ class EntitlementEngine:
             recorded=bool(result.get("recorded")),
             idempotent=idempotent,
         )
+
+    async def _record_limit_hit(self, user, action: str) -> None:
+        """Limitga urilish — voronkaning eng muhim nuqtasi.
+
+        Kuniga har action uchun BIR MARTA yoziladi: bir foydalanuvchi limitga
+        o'n marta urilishi mumkin va o'n qator "limitga urilganlar soni" ni
+        buzib ko'rsatardi.
+
+        Chaqiruv qaror qabul qilingandan KEYIN va `try/except` ichida —
+        analitika limitni hech qachon buzmasin.
+        """
+        try:
+            telegram_id = int(getattr(user, "telegram_id", 0) or 0)
+            if not telegram_id:
+                return
+            day_key = course_daily_window.local_day_key(
+                await self._access._learner_offset_minutes(user)
+            )
+            funnel = ConversionFunnelService()
+            source = f"{action}:{day_key}"
+            if await ConversionFunnelService(self.session).has_event(
+                telegram_id=telegram_id, event_name="limit_hit", source=source
+            ):
+                return
+            await funnel.record(
+                event_name="limit_hit",
+                user=user,
+                source=source,
+                payload={"action": action},
+            )
+        except Exception:  # noqa: BLE001 — analitika limitni buzmasin
+            logger.debug("limit_hit yozilmadi: %s", action, exc_info=True)
 
     async def status_map(
         self,
