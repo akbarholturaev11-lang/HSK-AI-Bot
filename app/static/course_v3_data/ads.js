@@ -401,6 +401,31 @@
      bosqichma-bosqich olib tashlanadi. */
   function play(){ return Promise.resolve(false); }
 
+  /* Limit paywallini yopadi.
+
+     `closeOverlay` umumiy overlayni yopadi, lekin paywall uni `limit` klassi
+     va ochiq `limFoot` bilan ochgan edi — ikkalasi ham qaytarilmasa keyingi
+     reklama paywall ko'rinishida ochiladi.
+
+     Bu funksiya BIR MARTA yo'qolib qolgan edi va oqibati ko'rinmas edi:
+     `window.CourseAds` obyekt literali `closeLimit:_closeLimit` da
+     `ReferenceError` bilan yiqilardi, ya'ni MODUL UMUMAN o'rnatilmasdi —
+     markazdagi reklama ham, dars yakunidagi reklama ham, paywall ham
+     jimgina ishlamay qolgandi. `tests/test_course_ads_module.py` shu holni
+     qotiradi. */
+  function _closeLimit(){
+    closeOverlay();
+    try{
+      els.ov.classList.remove("limit");
+      els.limFoot.hidden=true;
+      els.limAd.hidden=true;
+      els.limAd.onclick=null;
+      els.pay.onclick=null;
+      els.x.onclick=null;
+    }catch(e){}
+    resetState();
+  }
+
   function showLimitPromo(opts){
     opts=opts||{};
     ensureDom();
