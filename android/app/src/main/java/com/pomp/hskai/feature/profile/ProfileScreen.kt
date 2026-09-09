@@ -21,13 +21,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.TrackChanges
+import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,6 +53,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
@@ -63,12 +66,8 @@ import com.pomp.hskai.domain.model.CourseUser
 import com.pomp.hskai.feature.hint.SectionHint
 
 /**
- * Profile parity surface.
- *
- * The visible profile intentionally follows the Mini App hierarchy: a compact
- * profile pill, then only "Xatolarim" and "Do'stlar" as primary actions.
- * The controls that used to sit below them are moved behind one Sozlamalar
- * entry, as requested, instead of competing with learning actions.
+ * Android Profile mirrors the Mini App's profile hierarchy and measurements.
+ * Learning actions stay visible; preferences are moved behind one Settings row.
  */
 @Composable
 fun ProfileScreen(
@@ -112,15 +111,13 @@ fun ProfileScreen(
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 22.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
         ) {
-            item {
-                ProfilePill()
-            }
+            item { ProfilePill() }
 
             if (hints.isNotEmpty()) {
                 item {
+                    Spacer(Modifier.height(10.dp))
                     SectionHint(
                         hints = hints,
                         section = "profile",
@@ -133,14 +130,15 @@ fun ProfileScreen(
                 Text(
                     text = stringResource(R.string.profile_mini_group_title),
                     color = PompColors.InkSecondary,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(start = 4.dp, top = 2.dp, bottom = 2.dp),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(start = 2.dp, top = 18.dp, bottom = 9.dp),
                 )
             }
 
             item {
                 ProfileActionCard(
-                    icon = Icons.Filled.Warning,
+                    icon = Icons.Filled.WarningAmber,
                     iconBackground = PompColors.CinnabarSoft,
                     iconTint = PompColors.Cinnabar,
                     title = stringResource(R.string.practice_mistakes_title),
@@ -150,6 +148,7 @@ fun ProfileScreen(
             }
 
             item {
+                Spacer(Modifier.height(11.dp))
                 ProfileActionCard(
                     icon = Icons.Filled.People,
                     iconBackground = PompColors.JadeSoft,
@@ -161,12 +160,13 @@ fun ProfileScreen(
             }
 
             item {
-                Spacer(Modifier.height(2.dp))
+                Spacer(Modifier.height(18.dp))
                 SettingsEntryCard(onClick = { settingsOpen = true })
             }
 
             state.error?.let { error ->
                 item {
+                    Spacer(Modifier.height(11.dp))
                     ErrorPill(
                         text = stringResource(error.messageRes),
                         onClick = onRefresh,
@@ -179,7 +179,7 @@ fun ProfileScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 2.dp),
+                            .padding(top = 12.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator(
@@ -230,23 +230,24 @@ fun ProfileScreen(
 private fun ProfilePill() {
     Surface(
         color = PompColors.Cinnabar,
-        shape = RoundedCornerShape(999.dp),
+        shape = RoundedCornerShape(20.dp),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 9.dp),
+            modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             Icon(
-                imageVector = Icons.Filled.Person,
+                imageVector = Icons.Filled.PersonOutline,
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(17.dp),
             )
             Text(
                 text = stringResource(R.string.nav_profile),
                 color = Color.White,
-                fontWeight = FontWeight.SemiBold,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
             )
         }
     }
@@ -264,56 +265,55 @@ private fun ProfileActionCard(
     Surface(
         onClick = onClick,
         color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 88.dp),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(13.dp),
         ) {
             Surface(
                 color = iconBackground,
-                shape = RoundedCornerShape(17.dp),
-                modifier = Modifier.size(54.dp),
+                shape = RoundedCornerShape(13.dp),
+                modifier = Modifier.size(46.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
                         tint = iconTint,
-                        modifier = Modifier.size(26.dp),
+                        modifier = Modifier.size(22.dp),
                     )
                 }
             }
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 16.dp),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
                     text = title,
                     color = PompColors.Ink,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium,
                 )
                 if (!subtitle.isNullOrBlank()) {
                     Spacer(Modifier.height(2.dp))
                     Text(
                         text = subtitle,
                         color = PompColors.InkSecondary,
+                        fontSize = 12.sp,
                     )
                 }
             }
 
-            Text(
-                text = "›",
-                color = PompColors.InkDisabled,
-                fontWeight = FontWeight.Light,
-                modifier = Modifier.padding(start = 10.dp),
+            Icon(
+                imageVector = Icons.Filled.ChevronRight,
+                contentDescription = null,
+                tint = PompColors.InkDisabled,
+                modifier = Modifier.size(20.dp),
             )
         }
     }
@@ -324,17 +324,18 @@ private fun SettingsEntryCard(onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         color = PompColors.PaperRaised,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, PompColors.Divider),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 15.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(13.dp),
         ) {
             Surface(
                 color = PompColors.CinnabarSoft,
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(13.dp),
                 modifier = Modifier.size(46.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
@@ -342,22 +343,22 @@ private fun SettingsEntryCard(onClick: () -> Unit) {
                         imageVector = Icons.Filled.Settings,
                         contentDescription = null,
                         tint = PompColors.Cinnabar,
-                        modifier = Modifier.size(23.dp),
+                        modifier = Modifier.size(22.dp),
                     )
                 }
             }
             Text(
                 text = stringResource(R.string.profile_mini_settings),
                 color = PompColors.Ink,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 14.dp),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1f),
             )
-            Text(
-                text = "›",
-                color = PompColors.InkDisabled,
-                fontWeight = FontWeight.Light,
+            Icon(
+                imageVector = Icons.Filled.ChevronRight,
+                contentDescription = null,
+                tint = PompColors.InkDisabled,
+                modifier = Modifier.size(20.dp),
             )
         }
     }
@@ -390,19 +391,20 @@ private fun ProfileSettingsSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 16.dp)
                 .padding(bottom = 28.dp),
         ) {
             Text(
                 text = stringResource(R.string.profile_mini_settings),
                 color = PompColors.Ink,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 4.dp, bottom = 12.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(start = 2.dp, bottom = 12.dp),
             )
 
             Surface(
                 color = PompColors.PaperRaised,
-                shape = RoundedCornerShape(20.dp),
+                shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, PompColors.Divider),
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -417,9 +419,9 @@ private fun ProfileSettingsSheet(
                             Text(
                                 text = account.language.backendCode.uppercase(),
                                 color = PompColors.InkDisabled,
-                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 13.sp,
                             )
-                            Spacer(Modifier.width(8.dp))
+                            Spacer(Modifier.width(4.dp))
                             SettingsChevron()
                         }
                     }
@@ -453,7 +455,7 @@ private fun ProfileSettingsSheet(
                     SettingsDivider()
 
                     MiniSettingsRow(
-                        icon = Icons.Filled.Settings,
+                        icon = Icons.Filled.TrackChanges,
                         label = stringResource(R.string.profile_mini_daily_goal),
                         enabled = true,
                         onClick = onOpenGoal,
@@ -462,9 +464,9 @@ private fun ProfileSettingsSheet(
                             Text(
                                 text = "$dailyGoal XP",
                                 color = PompColors.InkDisabled,
-                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 13.sp,
                             )
-                            Spacer(Modifier.width(8.dp))
+                            Spacer(Modifier.width(4.dp))
                             SettingsChevron()
                         }
                     }
@@ -472,7 +474,7 @@ private fun ProfileSettingsSheet(
                     SettingsDivider()
 
                     MiniSettingsRow(
-                        icon = Icons.Filled.Info,
+                        icon = Icons.Filled.HelpOutline,
                         label = stringResource(R.string.profile_help),
                         enabled = supportUrl.isNotBlank(),
                         onClick = { onOpenSupport(supportUrl) },
@@ -481,6 +483,7 @@ private fun ProfileSettingsSheet(
                             Text(
                                 text = stringResource(R.string.profile_help_unavailable),
                                 color = PompColors.InkDisabled,
+                                fontSize = 12.sp,
                             )
                         } else {
                             SettingsChevron()
@@ -495,9 +498,8 @@ private fun ProfileSettingsSheet(
                 }
             }
 
-            // Android needs an explicit way to leave/unlink a Telegram account.
-            // Keep these operational controls inside Settings so they do not
-            // change the Mini App parity of the main profile surface.
+            // Android account controls remain available, but no longer clutter
+            // the Mini App-like main profile screen.
             Spacer(Modifier.height(20.dp))
             OutlinedButton(
                 onClick = onLogout,
@@ -540,22 +542,21 @@ private fun MiniSettingsRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 64.dp)
             .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
             tint = if (enabled) PompColors.InkSecondary else PompColors.InkDisabled,
-            modifier = Modifier.size(22.dp),
+            modifier = Modifier.size(19.dp),
         )
-        Spacer(Modifier.width(16.dp))
         Text(
             text = label,
             color = if (enabled) PompColors.Ink else PompColors.InkDisabled,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
             modifier = Modifier.weight(1f),
         )
         trailing()
@@ -566,16 +567,18 @@ private fun MiniSettingsRow(
 private fun NotificationExplanation() {
     Column(
         modifier = Modifier.padding(
-            start = 54.dp,
-            end = 16.dp,
+            start = 45.dp,
+            end = 14.dp,
             top = 0.dp,
-            bottom = 14.dp,
+            bottom = 12.dp,
         ),
-        verticalArrangement = Arrangement.spacedBy(7.dp),
+        verticalArrangement = Arrangement.spacedBy(3.dp),
     ) {
         Text(
             text = stringResource(R.string.profile_mini_notify_head),
             color = PompColors.Ink,
+            fontSize = 12.sp,
+            lineHeight = 17.sp,
             fontWeight = FontWeight.Medium,
         )
         NotificationBullet(stringResource(R.string.profile_mini_notify_rank))
@@ -589,15 +592,18 @@ private fun NotificationBullet(text: String) {
     Text(
         text = "• $text",
         color = PompColors.InkSecondary,
+        fontSize = 12.sp,
+        lineHeight = 17.sp,
     )
 }
 
 @Composable
 private fun SettingsChevron() {
-    Text(
-        text = "›",
-        color = PompColors.InkDisabled,
-        fontWeight = FontWeight.Light,
+    Icon(
+        imageVector = Icons.Filled.ChevronRight,
+        contentDescription = null,
+        tint = PompColors.InkDisabled,
+        modifier = Modifier.size(17.dp),
     )
 }
 
@@ -606,7 +612,7 @@ private fun SettingsDivider() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 54.dp)
+            .padding(start = 45.dp)
             .height(1.dp)
             .background(PompColors.Divider),
     )
@@ -632,6 +638,7 @@ private fun ErrorPill(
         Text(
             text = text,
             color = PompColors.CinnabarDark,
+            fontSize = 13.sp,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
         )
     }
