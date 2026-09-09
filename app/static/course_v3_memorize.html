@@ -111,11 +111,9 @@ function mean(h){return BASE[h]?t(BASE[h].m):""}
 /* ---- kunlik limit gate (bepulga kuniga 1 to'liq sessiya) ---- */
 var LIM={
   title:{uz:"Bugungi bepul mashq tugadi",ru:"Бесплатная практика на сегодня исчерпана",tj:"Машқи ройгони имрӯза тамом шуд"},
-  sub:{uz:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",ru:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",tj:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед."},
-  pay:{uz:"Premium ochish",ru:"Открыть Premium",tj:"Кушодани Premium"},
-  back:{uz:"Orqaga",ru:"Назад",tj:"Бозгашт"},
-  adCont:{uz:"Reklama bilan davom etish",ru:"Продолжить с рекламой",tj:"Идома бо реклама"},
-  adSub:{uz:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching.",ru:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium.",tj:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}
+  sub:{uz:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun HSK AI Pro oling yoki ertaga qaytib keling.",ru:"В бесплатном режиме этот раздел доступен 1 раз в день. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.",tj:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён HSK AI Pro гиред ё фардо баргардед."},
+  pay:{uz:"HSK AI Pro ⭐️ olish",ru:"Получить HSK AI Pro ⭐️",tj:"HSK AI Pro ⭐️ гирифтан"},
+  back:{uz:"Orqaga",ru:"Назад",tj:"Бозгашт"}
 };
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription"}
@@ -150,9 +148,9 @@ function runGate(ref){
 function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
 function showLimitNow(adAvailable){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:goBack});return}
-  var adBtn=adAvailable?'<button onclick="startAdSupported()"><i class="ti ti-player-play"></i> '+t(LIM.adCont)+'</button>':'';
-  var sub=adAvailable?t(LIM.adSub):t(LIM.sub);
-  B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+'<button class="ghost" onclick="goPremium()"><i class="ti ti-crown"></i> '+t(LIM.pay)+'</button><button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
+  var adBtn="";
+  var sub=t(LIM.sub);
+  B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+'<button class="ghost" onclick="goPremium()">'+t(LIM.pay)+'</button><button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
 }
 
 /* ---- mastery (localStorage) ---- */

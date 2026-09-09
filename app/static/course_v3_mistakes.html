@@ -119,20 +119,20 @@ var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru
 var L={ru:{title:"Мои ошибки",sub:"Собираются автоматически из уроков, тестов и дуэлей",emptyTitle:"Пока ошибок нет",emptySub:"Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.",toCourse:"К урокам",review:"Работа над ошибками",reviewSub:"активных ошибок",start:"Начать",all:"Все",retry:"Повторить",loadErr:"Не удалось загрузить ошибки. Проверьте связь и повторите.",cats:{word:"Слова",grammar:"Грамматика",character:"Иероглифы",pronunciation:"Произношение"},sources:{lesson:"Урок",test:"HSK тест",training:"Практика",challenge:"Дуэль",voice:"AI Voice"},lesson:"Урок",
     q:"Вопрос",of:"из",correct:"Верно!",wrong:"Неверно",exp:"Пояснение",next:"Дальше",finish:"Завершить",
     resTitle:"Отличная работа!",resScore:"верно",resRemaining:"Осталось ошибок",resAll:"Вы исправили все свои ошибки!",done:"Готово",
-    limitTitle:"Бесплатная попытка использована",limitText:"Оформите Premium для безлимитной работы над ошибками.",limitBtn:"Оформить Premium",later:"Позже",adCont:"Продолжить с рекламой",adLimitText:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium.",
-    limitWhy:"Одна бесплатная попытка уже использована. Продолжите с рекламой или откройте Premium без ограничений.",
+    limitTitle:"Бесплатная попытка использована",limitText:"Оформите HSK AI Pro для безлимитной работы над ошибками.",limitBtn:"Получить HSK AI Pro ⭐️",later:"Позже",
+    limitWhy:"Одна бесплатная попытка уже использована. Оформите HSK AI Pro для безлимита или возвращайтесь завтра.",
     loading:"Загрузка…",more:"Показать ещё",err:"Произошла ошибка. Попробуйте снова."},
   uz:{title:"Xatolarim",sub:"Darslar, HSK testlari va bellashuvlardan avtomatik yig'iladi",emptyTitle:"Hozircha xato yo'q",emptySub:"Darslar va testlardan o'ting — xatolar shu yerda paydo bo'ladi va ularni mashq qila olasiz.",toCourse:"Darslarga",review:"Xatolar ustida ishlash",reviewSub:"faol xato",start:"Boshlash",all:"Barchasi",retry:"Qayta urinish",loadErr:"Xatolar yuklanmadi. Internetni tekshirib, qayta urinib ko'ring.",cats:{word:"So'zlar",grammar:"Grammatika",character:"Ieroglif",pronunciation:"Talaffuz"},sources:{lesson:"Dars",test:"HSK test",training:"Mashq",challenge:"Bellashuv",voice:"AI Voice"},lesson:"Dars",
     q:"Savol",of:"/",correct:"To'g'ri!",wrong:"Noto'g'ri",exp:"Izoh",next:"Keyingi",finish:"Yakunlash",
     resTitle:"Ajoyib ish!",resScore:"to'g'ri",resRemaining:"Qolgan xatolar",resAll:"Barcha xatolaringizni tuzatdingiz!",done:"Tayyor",
-    limitTitle:"Bepul urinish ishlatildi",limitText:"Xatolar ustida cheksiz ishlash uchun Premium oling.",limitBtn:"Premium olish",later:"Keyinroq",adCont:"Reklama bilan davom etish",adLimitText:"Bepul urinish ishlatildi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching.",
-    limitWhy:"Bir martalik bepul urinish ishlatildi. Reklama bilan davom eting yoki Premium orqali cheklovsiz mashq qiling.",
+    limitTitle:"Bepul urinish ishlatildi",limitText:"Xatolar ustida cheksiz ishlash uchun HSK AI Pro oling.",limitBtn:"HSK AI Pro ⭐️ olish",later:"Keyinroq",
+    limitWhy:"Bir martalik bepul urinish ishlatildi. Cheklovsiz mashq uchun HSK AI Pro oling yoki ertaga qayting.",
     loading:"Yuklanmoqda…",more:"Yana ko'rsatish",err:"Xatolik yuz berdi. Qayta urinib ko'ring."},
   tj:{title:"Хатоҳои ман",sub:"Аз дарсҳо, тестҳои HSK ва рақобатҳо худкор ҷамъ мешаванд",emptyTitle:"Ҳоло хато нест",emptySub:"Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.",toCourse:"Ба дарсҳо",review:"Кор бар хатоҳо",reviewSub:"хатои фаъол",start:"Оғоз",all:"Ҳама",retry:"Боз кӯшиш",loadErr:"Хатоҳо бор нашуданд. Интернетро санҷида, боз кӯшиш кунед.",cats:{word:"Калимаҳо",grammar:"Грамматика",character:"Иероглиф",pronunciation:"Талаффуз"},sources:{lesson:"Дарс",test:"Тести HSK",training:"Машқ",challenge:"Рақобат",voice:"AI Voice"},lesson:"Дарс",
     q:"Савол",of:"аз",correct:"Дуруст!",wrong:"Нодуруст",exp:"Шарҳ",next:"Минбаъд",finish:"Анҷом",
     resTitle:"Кори аъло!",resScore:"дуруст",resRemaining:"Хатоҳои боқимонда",resAll:"Шумо ҳамаи хатоҳоятонро ислоҳ кардед!",done:"Тайёр",
-    limitTitle:"Кӯшиши ройгон истифода шуд",limitText:"Барои кори бемаҳдуд бар хатоҳо Premium гиред.",limitBtn:"Premium гирифтан",later:"Дертар",adCont:"Идома бо реклама",adLimitText:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед.",
-    limitWhy:"Кӯшиши якдафъаинаи ройгон истифода шуд. Бо реклама идома диҳед ё Premium кушоед.",
+    limitTitle:"Кӯшиши ройгон истифода шуд",limitText:"Барои кори бемаҳдуд бар хатоҳо HSK AI Pro гиред.",limitBtn:"HSK AI Pro ⭐️ гирифтан",later:"Дертар",
+    limitWhy:"Кӯшиши якдафъаинаи ройгон истифода шуд. Барои бепоён HSK AI Pro гиред ё фардо баргардед.",
     loading:"Боргирӣ…",more:"Боз нишон додан",err:"Хатогӣ рух дод. Боз кӯшиш кунед."}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 var INIT_DATA=(tg&&tg.initData)||"";
@@ -270,11 +270,10 @@ function renderResult(d){
 function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
 function showLimitNow(adAvailable){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:L.limitWhy,onSubscribe:goPay,onBack:function(){}});return}
+  /* Reklama tugmasi butunlay olib tashlandi — u hech narsani ochmaydi. */
   var ab=document.getElementById("lim-ad");
-  if(ab){
-    if(adAvailable){document.getElementById("lim-ad-t").textContent=L.adCont;ab.hidden=false;$("lim-text").textContent=L.adLimitText;}
-    else{ab.hidden=true;$("lim-text").textContent=L.limitText;}
-  }
+  if(ab)ab.hidden=true;
+  $("lim-text").textContent=L.limitText;
   $("limit").hidden=false;
 }
 function closeLimit(){$("limit").hidden=true}

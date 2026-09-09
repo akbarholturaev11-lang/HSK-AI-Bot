@@ -29,15 +29,15 @@
 
   /* Darsdagi T() ad-* kalitlaridan olingan matnlar (3 til). */
   var I18N = {
-    uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"Obuna olish",adSubCont:"Reklama bilan davom etish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitSubscribe:"Obunani ochish",limitAd:"Yoki reklama ko'rib davom etish",limitTrial:"Yoki 7 kun bepul Pro sinash",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
+    uz:{adStart:"Bo'limdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adReady:"Davom etish",adNote:"Rolikni oxirigacha ko'ring. HSK AI Pro reklamasisiz o'qiydi.",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"HSK AI Pro ⭐️ olish",adVisit:"Havolaga o'tish",adOpenLink:"Reklama havolasini ochasizmi?",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak.",limitSubscribe:"HSK AI Pro ⭐️ olish",limitTrial:"Yoki 7 kun bepul sinash",limitWhy:"Bugungi bepul mashqing tugadi: «{s}» bepul rejimda kuniga 1 marta ochiladi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",limitWhyPlain:"Bugungi bepul limiting tugadi. Ertaga yana bepul ochiladi — obuna bilan esa bugun ham cheklovsiz davom etasan.",psWrite:"Hamkorlik uchun yozing",psTry:"Sinab ko'rish",psCopy:"Nusxalash",psCopied:"Nusxalandi ✓",psShare:"Do'stga yuborish",
         leLabel:"Dars yakuni · reklama",leNote:"Qisqa rolik. Obuna bo'lsangiz reklama umuman chiqmaydi.",leSubTitle:"Darsni tugatdingiz — endi to'liq yo'lni oching",leExternal:"Reklama havolasini ochish",
         appCta:"Yuklab olish",appCloseIn:"Yopish {s}s",
         f_recognition:"Ieroglif tanish",f_pronunciation:"Talaffuz mashqi",f_memorize:"Yodlash",f_training_test:"Test markazi",f_placement:"Daraja aniqlash testi",f_mistake_review:"Xatolar ustida ishlash"},
-    ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Оформить подписку",adSubCont:"Продолжить с рекламой",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitSubscribe:"Открыть подписку",limitAd:"Или продолжить с рекламой",limitTrial:"Или попробовать Pro 7 дней бесплатно",limitWhy:"Бесплатная практика на сегодня закончилась: «{s}» в бесплатном режиме открывается 1 раз в день. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",limitWhyPlain:"Бесплатный лимит на сегодня исчерпан. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу",
+    ru:{adStart:"Реклама перед разделом",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adReady:"Продолжить",adNote:"Посмотрите ролик до конца. С HSK AI Pro — без рекламы.",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Получить HSK AI Pro ⭐️",adVisit:"Перейти по ссылке",adOpenLink:"Открыть ссылку рекламодателя?",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC.",limitSubscribe:"Получить HSK AI Pro ⭐️",limitTrial:"Или 7 дней бесплатно",limitWhy:"Бесплатная практика на сегодня закончилась: «{s}» в бесплатном режиме открывается 1 раз в день. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",limitWhyPlain:"Бесплатный лимит на сегодня исчерпан. Завтра снова бесплатно — а с подпиской продолжите без ограничений уже сегодня.",psWrite:"Написать для сотрудничества",psTry:"Попробовать",psCopy:"Копировать",psCopied:"Скопировано ✓",psShare:"Другу",
         leLabel:"Конец урока · реклама",leNote:"Короткий ролик. С подпиской рекламы не будет вообще.",leSubTitle:"Урок пройден — откройте весь путь",leExternal:"Открыть ссылку рекламы",
         appCta:"Скачать",appCloseIn:"Закрыть через {s}с",
         f_recognition:"Распознавание иероглифов",f_pronunciation:"Произношение",f_memorize:"Запоминание",f_training_test:"Тест-центр",f_placement:"Тест на уровень",f_mistake_review:"Работа над ошибками"},
-    tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"Обуна шудан",adSubCont:"Идома бо реклама",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitSubscribe:"Кушодани обуна",limitAd:"Ё бо реклама идома додан",limitTrial:"Ё Pro-ро 7 рӯз ройгон санҷидан",limitWhy:"Машқи ройгони имрӯза тамом шуд: «{s}» дар ҳолати ройгон рӯзе 1 маротиба кушода мешавад. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",limitWhyPlain:"Лимити ройгони имрӯза тамом шуд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст",
+    tj:{adStart:"Реклама пеш аз бахш",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adReady:"Идома",adNote:"Роликро то охир бинед. Бо HSK AI Pro бе реклама.",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"HSK AI Pro ⭐️ гирифтан",adVisit:"Гузаштан ба ҳавола",adOpenLink:"Ҳаволаи рекламаро мекушоед?",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад.",limitSubscribe:"HSK AI Pro ⭐️ гирифтан",limitTrial:"Ё 7 рӯз ройгон санҷидан",limitWhy:"Машқи ройгони имрӯза тамом шуд: «{s}» дар ҳолати ройгон рӯзе 1 маротиба кушода мешавад. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",limitWhyPlain:"Лимити ройгони имрӯза тамом шуд. Фардо боз ройгон — бо обуна бошад, ҳамин имрӯз бе маҳдудият идома медиҳӣ.",psWrite:"Барои ҳамкорӣ нависед",psTry:"Санҷидан",psCopy:"Нусха",psCopied:"Нусха шуд ✓",psShare:"Ба дӯст",
         leLabel:"Анҷоми дарс · реклама",leNote:"Ролики кӯтоҳ. Бо обуна реклама тамоман намешавад.",leSubTitle:"Дарсро тамом кардед — тамоми роҳро кушоед",leExternal:"Кушодани ҳаволаи реклама",
         appCta:"Боргирӣ",appCloseIn:"Пӯшидан пас аз {s}с",
         f_recognition:"Шинохти иероглиф",f_pronunciation:"Машқи талаффуз",f_memorize:"Азёдкунӣ",f_training_test:"Маркази тест",f_placement:"Тести муайянкунии сатҳ",f_mistake_review:"Кор бар хатоҳо"}
@@ -215,11 +215,14 @@
   function resetState(){STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,placement:"",watched:0,ready:false,busy:false}}
   function placementTitle(p){var t=T();if(isLessonEnd())return t.leLabel||t.adEnd;return p==="middle"?t.adMiddle:(p==="end"?t.adEnd:t.adStart)}
   function adDuration(ad){return Math.max(5,Math.min(120,Number(ad&&ad.duration_seconds)||7))}
-  /* Dars yakuni blokining matnlari boshqacha: bu joyda "reklama bilan davom
-     etish" ma'nosiz (reklama allaqachon tugadi) — oddiy "Davom etish" bo'ladi. */
+  /* Tugma HAR DOIM "Davom etish" deydi.
+     Ilgari u "Reklama bilan davom etish" edi, chunki reklama ko'rish bo'limni
+     ochardi. Endi reklama hech narsani ochmaydi — u faqat ko'rsatiladi va
+     yopiladi — shuning uchun "reklama bilan davom etish" ma'nosini yo'qotdi
+     va odamni "yana reklama bo'ladi" deb chalg'itardi. */
   function noteText(){var t=T();return (isLessonEnd()&&t.leNote)||t.adNote}
   function subTitleText(){var t=T();return (isLessonEnd()&&t.leSubTitle)||t.adSubTitle}
-  function contText(){var t=T();return isLessonEnd()?(t.adReady||t.adSubCont):t.adSubCont}
+  function contText(){return T().adReady}
 
   /* Promo karusel (reklamalar tugagach). */
   var promoStop=null;
@@ -471,18 +474,25 @@
     els.subDesc.hidden=true;
     els.benefits.innerHTML="";
     els.pay.style.display="";
-    els.pay.innerHTML='<i class="ti ti-crown"></i> '+esc(t.limitSubscribe||t.adSubPay);
+    els.pay.innerHTML=esc(t.limitSubscribe||t.adSubPay);
     els.pay.onclick=function(){var cb=opts.onSubscribe;_closeLimit();if(typeof cb==="function")cb()};
     els.cont.style.display="none";
     /* Pastdagi ikkilamchi tugma. Ilgari "reklama bilan davom etish" edi —
        reklama endi hech narsani ochmaydi, shuning uchun o'sha joyda 7 kunlik
        bepul Pro taklifi turadi. Faqat odam hali trial olmagan bo'lsa. */
-    els.limFoot.hidden=false;
+    /* Trialni ALLAQACHON ishlatgan odamga limitda BITTA tugma qoladi:
+       "HSK AI Pro ⭐️ olish". Boshqa hech narsa taklif qilinmaydi — na
+       reklama (u hech narsani ochmaydi), na ikkinchi bor trial.
+
+       Shuning uchun pastki konteyner ham yopiq turadi: bo'sh bo'lsa u
+       tugmasiz bo'shliq bo'lib ko'rinardi. */
+    els.limFoot.hidden=true;
     /* Trial tugmasi: chaqiruvchi aytmasa, modulning o'zi serverdan so'raydi.
        Shunday qilib taklif TO'RTALA sahifada ham bir xil chiqadi. */
     function showTrialButton(onTrial){
+      els.limFoot.hidden=false;
       els.limAd.hidden=false;
-      els.limAd.innerHTML='<i class="ti ti-crown"></i> '+esc(t.limitTrial);
+      els.limAd.innerHTML=esc(t.limitTrial);
       els.limAd.onclick=function(){
         _closeLimit();
         if(typeof onTrial==="function")onTrial();
