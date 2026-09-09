@@ -46,12 +46,31 @@ class MainModuleImportTests(unittest.TestCase):
 
         self.assertTrue(hasattr(module, "app"), "FastAPI ilovasi yig'ilishi kerak")
 
+    @staticmethod
+    def _paths(routes):
+        """Ilovadagi HAMMA yo'l, ichma-ich ulangan routerlar bilan birga.
+
+        FastAPI `include_router` natijasini endi tekis ro'yxatga yoymaydi:
+        `app.routes` ichida `.path` i yo'q o'ram obyekt turadi. Faqat yuqori
+        qavatga qaralsa, ulanmagan router bilan ulangani bir xil ko'rinadi va
+        bu test hech narsani tutmay qoladi.
+        """
+        paths = set()
+        for route in routes:
+            path = getattr(route, "path", None)
+            if path is not None:
+                paths.add(path)
+            nested = getattr(route, "routes", None)
+            if nested is None:
+                # `include_router` o'ram obyekti: haqiqiy router uning ichida.
+                nested = getattr(getattr(route, "original_router", None), "routes", None)
+            paths.update(MainModuleImportTests._paths(nested or []))
+        return paths
+
     def test_every_router_is_mounted(self):
         module = self._import_main()
 
-        paths = {
-            route.path for route in module.app.routes if hasattr(route, "path")
-        }
+        paths = self._paths(module.app.routes)
         # Bu bosqichda qo'shilgan yo'llar — ular ulanmay qolsa jimgina
         # yo'qoladi va hech qanday test qizil bo'lmaydi.
         for path in (

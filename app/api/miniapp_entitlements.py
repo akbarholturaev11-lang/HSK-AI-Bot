@@ -20,6 +20,10 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
 from app.repositories.user_repo import UserRepository
+from app.repositories.course_progress_repo import CourseProgressRepository
+from app.services.entitlements.lesson_access import LessonAccessService
+from app.services.course_v3_parts import total_parts
+from app.services.desktop_course_service import normalize_course_v3_level
 from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.entitlements.gate_shadow import shadow_compare_gate
@@ -113,7 +117,7 @@ def create_miniapp_entitlements_router(
             # qilardi va user baribir "obuna kerak" devoriga urilardi.
             # Umrlik bepul foydalanish SARFLANMAYDI: rejim tugagach user o'z
             # bepul urinishini yo'qotmasin.
-            if (await CourseAccessPolicyService(session).get_policy()).free_active:
+            if getattr(user, "status", "") != "blocked" and (await CourseAccessPolicyService(session).get_policy()).free_active:
                 return JSONResponse(
                     content={
                         "ok": True,
@@ -125,7 +129,7 @@ def create_miniapp_entitlements_router(
                 )
             # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
             result = await access.consume_daily_use(
-                user, feature_key=feature, ref=ref, lifetime=True, notify_bot=bot
+                user, feature_key=feature, ref=ref, lifetime=True
             )
             # Markaziy dvigatel shu savolga yonma-yon javob beradi va farq
             # yoziladi. Bu yerda u hech narsani hal qilmaydi.
@@ -158,6 +162,7 @@ def create_miniapp_entitlements_router(
                         "ad": ad_info,
                         # Mini App ilgari buni OLMASDI, Android esa olardi.
                         # Endi ikkala klient bir xil javob ko'radi.
+                        **result,
                         "reset_at": result.get("reset_at"),
                     },
                 )
@@ -167,9 +172,54 @@ def create_miniapp_entitlements_router(
                     "ok": True,
                     "allowed": True,
                     "is_paid": bool(result.get("is_paid", False)),
+                    **result,
                     "remaining": result.get("remaining"),
                 }
             )
+
+    @router.post("/api/v3/lesson/start")
+    async def v3_course_lesson_start(request: Request):
+        init_data = request.headers.get("X-Telegram-Init-Data", "")
+        telegram_id = extract_verified_webapp_user_id(init_data, settings_obj.BOT_TOKEN) if init_data else None
+        if not telegram_id:
+            return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+        try:
+            payload = await request.json()
+            order = int(payload.get("lesson_id") or 0)
+        except (TypeError, ValueError):
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
+            level = normalize_course_v3_level(user.level)
+            progress = await CourseProgressRepository(session).get_by_user_id(user.id, for_update=True)
+            completed = int(progress.completed_lessons_count or 0) if progress and progress.level == level else 0
+            if order < 1 or order > total_parts(level) or order > completed + 1:
+                return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
+            result = await LessonAccessService(session).status(
+                user, level=level, lesson_order=order, completed=completed, consume=True,
+            )
+            await session.commit()
+            return JSONResponse(status_code=200 if result["allowed"] else 403, content=result)
+
+
+    @router.post("/api/v3/limits/status")
+    async def limits_status(request: Request):
+        telegram_id, payload = await _authenticated(request)
+        if not telegram_id:
+            return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+        feature = str(payload.get("feature") or "lesson").strip()
+        if feature not in COURSE_AD_GATE_FEATURES | {"voice"}:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_feature"})
+        async with session_factory() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
+            if feature == "mistake_review":
+                feature = "training_test"
+            result = await CourseMiniAppAccessService(session).configured_decision(user, feature)
+            return JSONResponse(content={**result, "ok": True}, headers={"Cache-Control": "no-store"})
 
     @router.post("/api/v3/trial/start")
     async def v3_trial_start(request: Request):
@@ -282,7 +332,7 @@ def create_miniapp_entitlements_router(
             access = CourseMiniAppAccessService(session)
             # "Vaqtincha free" rejimi hamon hammani ochadi — bu reklama emas,
             # adminning sovg'asi.
-            if (await CourseAccessPolicyService(session).get_policy()).free_active:
+            if getattr(user, "status", "") != "blocked" and (await CourseAccessPolicyService(session).get_policy()).free_active:
                 return JSONResponse(
                     content={
                         "ok": True,

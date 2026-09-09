@@ -214,104 +214,17 @@ class CourseMiniAppAccessService:
         return counts
 
     async def get_entitlements(self, user) -> dict[str, dict]:
-        paid = self.is_paid_user(user)
-        if paid:
-            return {
-                feature_key: {
-                    "allowed": True,
-                    "is_paid": True,
-                    "free_limit": FREE_FEATURE_LIMITS[feature_key],
-                    "used": 0,
-                    "remaining_free": None,
-                }
-                for feature_key in COURSE_FEATURE_KEYS
-            }
-
-        if not self.is_free_user(user):
-            return {
-                feature_key: {
-                    "allowed": False,
-                    "is_paid": False,
-                    "free_limit": FREE_FEATURE_LIMITS[feature_key],
-                    "used": 0,
-                    "remaining_free": 0,
-                }
-                for feature_key in COURSE_FEATURE_KEYS
-            }
-
-        recorded = await self._recorded_counts(user.id)
-        legacy = await self._legacy_counts(user)
-        entitlements = {}
-        for feature_key in COURSE_FEATURE_KEYS:
-            used = max(int(recorded.get(feature_key, 0)), int(legacy.get(feature_key, 0)))
-            limit = FREE_FEATURE_LIMITS[feature_key]
-            entitlements[feature_key] = {
-                "allowed": used < limit,
-                "is_paid": False,
-                "free_limit": limit,
-                "used": used,
-                "remaining_free": max(0, limit - used),
-            }
-        return entitlements
+        result = {}
+        for feature in COURSE_FEATURE_KEYS:
+            entry = await self.configured_decision(user, feature)
+            result[feature] = {**entry, "free_limit": entry.get("limit"),
+                               "remaining_free": entry.get("remaining")}
+        return result
 
     async def consume_free_use(self, user, *, feature_key: str, usage_ref: str) -> dict:
-        feature_key = self._normalize_feature_key(feature_key)
-        usage_ref = str(usage_ref or "").strip()[:120]
-        if not usage_ref:
+        if not str(usage_ref or "").strip():
             raise ValueError("usage_ref is required")
-        if self.is_paid_user(user):
-            return {"allowed": True, "recorded": False, "is_paid": True, "idempotent": False}
-        if not self.is_free_user(user):
-            return {"allowed": False, "recorded": False, "error": "course_access_blocked"}
-
-        locked_result = await self.session.execute(
-            select(User).where(User.id == user.id).with_for_update()
-        )
-        locked_user = locked_result.scalar_one_or_none()
-        if not locked_user:
-            return {"allowed": False, "recorded": False, "error": "user_not_found"}
-
-        existing_result = await self.session.execute(
-            select(CourseFeatureUsage).where(
-                CourseFeatureUsage.user_id == locked_user.id,
-                CourseFeatureUsage.feature_key == feature_key,
-                CourseFeatureUsage.usage_ref == usage_ref,
-            )
-        )
-        if existing_result.scalar_one_or_none():
-            return {"allowed": True, "recorded": False, "is_paid": False, "idempotent": True}
-
-        entitlements = await self.get_entitlements(locked_user)
-        if not entitlements[feature_key]["allowed"]:
-            return {
-                "allowed": False,
-                "recorded": False,
-                "is_paid": False,
-                "error": "free_feature_limit_reached",
-            }
-
-        usage = CourseFeatureUsage(
-            user_id=locked_user.id,
-            feature_key=feature_key,
-            usage_ref=usage_ref,
-        )
-        try:
-            async with self.session.begin_nested():
-                self.session.add(usage)
-                await self.session.flush()
-        except IntegrityError:
-            duplicate_result = await self.session.execute(
-                select(CourseFeatureUsage.id).where(
-                    CourseFeatureUsage.user_id == locked_user.id,
-                    CourseFeatureUsage.feature_key == feature_key,
-                    CourseFeatureUsage.usage_ref == usage_ref,
-                )
-            )
-            if duplicate_result.scalar_one_or_none():
-                return {"allowed": True, "recorded": False, "is_paid": False, "idempotent": True}
-            raise
-
-        return {"allowed": True, "recorded": True, "is_paid": False, "idempotent": False}
+        return await self.configured_decision(user, feature_key, consume=True, ref=usage_ref)
 
     # ----- Kunlik limitlar (Mashq bo'limlari + reklama darslari) ---------------
 
@@ -537,6 +450,28 @@ class CourseMiniAppAccessService:
         )
         return int(result.scalar_one() or 0)
 
+    @staticmethod
+    def action_for_feature(feature_key: str) -> str:
+        from app.services.entitlements import actions as A
+        mapping = {value: key for key, value in A.LEGACY_FEATURE_KEYS.items()}
+        mapping.update({"voice": A.SPEAKING_SESSION, "training_test": A.PRACTICE_TRAINING_TEST})
+        if feature_key not in mapping:
+            raise ValueError(f"Unknown limit feature: {feature_key}")
+        return mapping[feature_key]
+
+    async def configured_decision(self, user, feature_key, *, consume=False, ref=None, notify_bot=None):
+        from app.services.entitlements.engine import EntitlementEngine
+        from app.services.entitlements.state import resolve_state, EntitlementState
+        from app.services.course_access_policy_service import CourseAccessPolicyService
+        if resolve_state(user) != EntitlementState.BLOCKED and (await CourseAccessPolicyService(self.session).get_policy()).free_active:
+            return {"ok": True, "allowed": True, "is_paid": self.is_paid_user(user),
+                    "policy_free": True, "limit": None, "remaining": None, "window": "none"}
+        engine = EntitlementEngine(self.session)
+        action = self.action_for_feature(feature_key)
+        decision = (await engine.consume(user, action, ref=ref, notify_bot=notify_bot)
+                    if consume else await engine.check(user, action))
+        return decision.as_dict(is_paid=self.is_paid_user(user), language=getattr(user, "language", "ru"))
+
     async def daily_status(
         self,
         user,
@@ -551,6 +486,8 @@ class CourseMiniAppAccessService:
         ``limit_override`` berilsa chegara `COURSE_DAILY_FREE_LIMITS` dan emas,
         chaqiruvchidan olinadi. Berilmasa — bugungi xatti-harakat aynan o'zi.
         """
+        if limit_override is None:
+            return await self.configured_decision(user, feature_key)
         feature_key = self._normalize_daily_feature(
             feature_key, allow_unknown=limit_override is not None
         )
@@ -598,6 +535,8 @@ class CourseMiniAppAccessService:
         chaqiruvchidan olinadi (markaziy entitlement dvigateli uchun). Hisob
         baribir SHU jadvalda yuritiladi, ya'ni ikkala yo'l bir xil slotlarni
         sanaydi."""
+        if limit_override is None:
+            return await self.configured_decision(user, feature_key, consume=True, ref=ref, notify_bot=notify_bot)
         feature_key = self._normalize_daily_feature(
             feature_key, allow_unknown=limit_override is not None
         )
@@ -633,6 +572,13 @@ class CourseMiniAppAccessService:
             locked_user.telegram_id, feature_key, lifetime=lifetime, offset_minutes=offset
         )
 
+        if lifetime and feature_key in COURSE_FEATURE_KEYS:
+            legacy = await self.session.execute(select(func.count(CourseFeatureUsage.id)).where(
+                CourseFeatureUsage.user_id == locked_user.id,
+                CourseFeatureUsage.feature_key == feature_key,
+            ))
+            used = max(used, int(legacy.scalar() or 0))
+
         # Idempotent ref: shu foydalanish bugun allaqachon hisobga olingan bo'lsa,
         # qo'shimcha slot egallamasdan ruxsat beramiz.
         if dedupe_key:
@@ -667,6 +613,7 @@ class CourseMiniAppAccessService:
                     feature_key=feature_key,
                     reset_at=reset_at,
                     lifetime=bool(lifetime),
+                    limit=limit,
                     bot=notify_bot,
                 )
             except Exception:  # noqa: BLE001 — bildirishnoma limitni buzmasin

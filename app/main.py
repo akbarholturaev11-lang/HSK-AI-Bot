@@ -86,7 +86,7 @@ from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_notification_service import CourseNotificationService
-from app.services.limit_notification_service import LimitNotificationService
+from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_download_service import DesktopReleaseConfig
@@ -1812,6 +1812,8 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             access_policy=access_policy,
         )
 
+        await LessonAccessService(session).apply_map(data, user, level=resolved_level, completed=completed)
+
         # Mayda tushuntirish blokchalari. Ro'yxat bo'sh bo'lishi — normal
         # holat; maslahat hech qachon oqimni to'xtatmaydi.
         data["hints"] = await MiniAppHintService(session).hints_for(user)
@@ -2102,13 +2104,11 @@ async def v3_course_lesson_unlock(request: Request):
         # Vaqtinchalik bonus (otziv 30 daqiqasi va h.k.) ham limitsiz hisoblanadi.
         is_paid = access.has_unlimited_course_access(user)
         access_policy = await CourseAccessPolicyService(session).get_policy()
-        requirement = access_policy.requirement_for(
-            lesson_order=lesson_order,
-            is_paid=is_paid,
-            free_lessons=free_course_parts_for_level(resolved_level),
+        limit_status = await LessonAccessService(session).status(
+            user, level=resolved_level, lesson_order=lesson_order,
         )
-        if requirement == COURSE_ACCESS_SUBSCRIPTION:
-            return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
+        if not limit_status["allowed"]:
+            return JSONResponse(status_code=403, content=limit_status)
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
@@ -2197,18 +2197,6 @@ async def v3_course_lesson_complete(request: Request):
         # Vaqtinchalik bonus (otziv 30 daqiqasi va h.k.) ham limitsiz hisoblanadi.
         is_paid = access.has_unlimited_course_access(user)
         access_policy = await CourseAccessPolicyService(session).get_policy()
-        requirement = access_policy.requirement_for(
-            lesson_order=lesson_order,
-            is_paid=is_paid,
-            free_lessons=free_course_parts_for_level(resolved_level),
-        )
-        # Reklama ko'rib darsni ochish OLIB TASHLANDI: limit tugasa paywall
-        # chiqadi. `requirement` endi hech qachon `COURSE_ACCESS_AD` qaytara
-        # olmaydi — `active_mode` eski `ads` rejimini `subscription` ga
-        # xaritalaydi.
-        if requirement == COURSE_ACCESS_SUBSCRIPTION:
-            return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
-
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
         if not progress:
@@ -2238,12 +2226,13 @@ async def v3_course_lesson_complete(request: Request):
         if lesson_order != completed + 1:
             return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
 
-        await progress_repo.set_current_lesson_and_step(
-            progress=progress,
-            lesson_id=getattr(lesson, "id", None),
-            step="intro",
-            waiting_for="none",
+        limit_status = await LessonAccessService(session).status(
+            user, level=resolved_level, lesson_order=lesson_order, completed=completed, consume=True,
         )
+        if not limit_status["allowed"]:
+            await session.commit()
+            return JSONResponse(status_code=403, content=limit_status)
+
         await progress_repo.mark_lesson_completed(progress)
         snapshot = await gamification.award(
             user,
@@ -2264,26 +2253,7 @@ async def v3_course_lesson_complete(request: Request):
             next_band = _COURSE_V3_NEXT_BAND.get(resolved_level)
             if next_band:
                 user.level = next_band
-        # Bepul darslar tugayotgani (yoki tugagani) haqida xabar. Obunachida
-        # limit yo'q, shuning uchun unga hech narsa yuborilmaydi.
-        if not is_paid:
-            try:
-                await LimitNotificationService(session).lesson_progress(
-                    user,
-                    level=resolved_level,
-                    completed_parts=int(progress.completed_lessons_count or 0),
-                    free_parts=free_course_parts_for_level(resolved_level),
-                    bot=bot,
-                )
-            except Exception:  # noqa: BLE001 — xabar darsni yiqitmasin
-                logger.info("Lesson limit notice failed", exc_info=True)
-
-        next_requirement = access_policy.requirement_for(
-            lesson_order=next_order,
-            is_paid=is_paid,
-            free_lessons=free_course_parts_for_level(resolved_level),
-        )
-        if has_next and next_requirement != COURSE_ACCESS_SUBSCRIPTION:
+        if has_next:
             await progress_repo.set_current_lesson_and_step(
                 progress=progress,
                 lesson_id=getattr(lesson, "id", None),

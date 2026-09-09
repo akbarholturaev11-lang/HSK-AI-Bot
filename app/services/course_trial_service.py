@@ -24,28 +24,30 @@ class CourseTrialService:
             and UserAccessStateService.classify(user) in UserAccessStateService.COURSE_ELIGIBLE_STATES
         )
 
-    async def ensure_trial_lesson(self, user, lesson_id: int) -> bool:
-        if self.is_paid_user(user):
-            return True
-        if not self.is_free_user(user):
+    async def _lesson_access(self, user, lesson_id, *, consume):
+        from app.repositories.course_lesson_repo import CourseLessonRepository
+        from app.repositories.course_progress_repo import CourseProgressRepository
+        from app.services.entitlements.lesson_access import LessonAccessService
+        lesson = await CourseLessonRepository(self.session).get_by_id(lesson_id)
+        if not lesson:
             return False
-
-        current_lesson_id = getattr(user, "trial_course_lesson_id", None)
-        if current_lesson_id is None:
+        progress = await CourseProgressRepository(self.session).get_by_user_id(user.id)
+        completed = int(progress.completed_lessons_count or 0) if progress and progress.level == lesson.level else 0
+        result = await LessonAccessService(self.session).status(
+            user, level=lesson.level, lesson_order=lesson.lesson_order,
+            completed=completed, consume=consume,
+        )
+        if result["allowed"] and consume and not getattr(user, "trial_course_lesson_id", None):
             user.trial_course_lesson_id = lesson_id
             user.trial_course_started_at = datetime.now(timezone.utc)
             await self.session.flush()
-            return True
+        return bool(result["allowed"])
 
-        return int(current_lesson_id) == int(lesson_id)
+    async def ensure_trial_lesson(self, user, lesson_id: int) -> bool:
+        return await self._lesson_access(user, lesson_id, consume=True)
 
-    def can_access_lesson(self, user, lesson_id: int | None) -> bool:
-        if self.is_paid_user(user):
-            return True
-        if not self.is_free_user(user) or not lesson_id:
-            return False
-        current_lesson_id = getattr(user, "trial_course_lesson_id", None)
-        return bool(current_lesson_id and int(current_lesson_id) == int(lesson_id))
+    async def can_access_lesson(self, user, lesson_id: int | None) -> bool:
+        return bool(lesson_id) and await self._lesson_access(user, lesson_id, consume=False)
 
     async def mark_trial_completed(self, user, lesson_id: int | None) -> None:
         if not self.is_free_user(user) or not lesson_id:

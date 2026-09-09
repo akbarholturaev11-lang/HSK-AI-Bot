@@ -46,9 +46,7 @@
   /* "Nega bu oyna chiqdi?" — limit ekranida sababni ochiq aytamiz: qaysi bo'lim,
      qanday limit, qachon yana ochiladi. Bo'lim nomi topilmasa umumiy matn. */
   function limitWhyText(feature){
-    var t=T(),name=t["f_"+String(feature||"")];
-    if(!name)return t.limitWhyPlain||"";
-    return String(t.limitWhy||"").replace("{s}",name);
+    return {uz:"Bu bo‘lim uchun limit tugadi.",ru:"Лимит этого раздела исчерпан.",tj:"Лимити ин бахш тамом шуд."}[CFG.lang]||"";
   }
 
   var PROMO = {
@@ -469,6 +467,14 @@
     var t=T();
     var why=opts.reason||limitWhyText(CFG.feature);
     if(why){els.whyT.textContent=why;els.why.hidden=false}else{els.why.hidden=true}
+    var statusFeature=CFG.feature||"lesson";
+    fetch("/api/v3/limits/status",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":CFG.initData||""},body:JSON.stringify({feature:statusFeature})})
+      .then(function(r){return r.json()}).then(function(d){
+        if(!d||!d.ok||!d.limit_text||!els.ov.classList.contains("limit"))return;
+        var text=d.limit_text;
+        if(d.window==="daily"&&d.reset_at){var reset=new Date(d.reset_at);if(!isNaN(reset.getTime()))text+=" · "+reset.toLocaleString()}
+        els.whyT.textContent=text;els.why.hidden=false;
+      }).catch(function(){});
     els.subTitle.textContent="";
     els.subDesc.textContent="";
     els.subDesc.hidden=true;

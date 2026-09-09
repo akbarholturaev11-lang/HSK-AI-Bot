@@ -128,9 +128,13 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
         bot = SimpleNamespace(send_message=AsyncMock(side_effect=RuntimeError("blocked")))
         self.assertEqual("spent", await self._run(True, bot))
 
-    async def test_without_a_bot_the_feed_still_gets_the_notice(self):
-        self.assertEqual("spent", await self._run(True, None))
-        self.record.assert_awaited_once()
+    async def test_without_a_bot_nothing_is_written_or_sent(self):
+        # A limit reached inside the Mini App or the desktop app passes no bot,
+        # and those clients show the limit on their own screen. Writing the feed
+        # row anyway would dedupe away the notice the Android app must send when
+        # the same learner hits the limit there.
+        self.assertIsNone(await self._run(True, None))
+        self.record.assert_not_awaited()
 
 
 if __name__ == "__main__":

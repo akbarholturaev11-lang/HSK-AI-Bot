@@ -25,6 +25,8 @@ from app.services.daily_plan_service import (
     ACCESS_OPEN,
     TASK_CONTINUE_LESSON,
 )
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import LimitConfigService
 
 
 class FakePolicy:
@@ -197,22 +199,36 @@ class CourseTodayServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertNotIn("voice_dialog", [item["type"] for item in view["tasks"]])
 
-    async def test_a_locked_course_is_not_offered_as_a_task(self):
-        view = await self._payload(
-            is_paid=False, voice_left=0, policy=FakePolicy(requirement="subscription")
-        )
+    async def _free_lesson_limit(self, limit):
+        """Bepul dars chegarasini admin sozlamasi orqali qo'yadi.
+
+        Reja endi `access_policy.requirement_for` ni EMAS, adminning limit
+        sozlamasini o'qiydi — shuning uchun qulf ham shu yerdan keladi.
+        """
+        async with self.factory() as session:
+            service = LimitConfigService(session)
+            payload = (await service.get_config()).public_payload()
+            payload["plans"]["FREE"][A.LESSON_START] = {"limit": limit, "window": "daily"}
+            await service.save_config(payload)
+            await session.commit()
+
+    async def test_a_spent_lesson_limit_is_not_offered_as_a_task(self):
+        await self._free_lesson_limit(0)
+
+        view = await self._payload(is_paid=False, voice_left=0)
 
         self.assertNotIn(TASK_CONTINUE_LESSON, [item["type"] for item in view["tasks"]])
 
-    async def test_ad_supported_work_still_reaches_the_plan(self):
-        view = await self._payload(
-            is_paid=False, voice_left=1, policy=FakePolicy(requirement="ad")
-        )
+    async def test_a_free_lesson_within_the_limit_reaches_the_plan(self):
+        # Reklama yo'li olib tashlangan: dars yo ochiq, yo qulflangan.
+        await self._free_lesson_limit(2)
+
+        view = await self._payload(is_paid=False, voice_left=1)
 
         lesson = next(
             item for item in view["tasks"] if item["type"] == TASK_CONTINUE_LESSON
         )
-        self.assertEqual(lesson["access"], "ad")
+        self.assertEqual(lesson["access"], ACCESS_OPEN)
         self.assertTrue(lesson["available"])
 
     async def test_paid_learner_sees_everything_open(self):

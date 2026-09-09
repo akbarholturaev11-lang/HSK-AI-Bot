@@ -90,6 +90,11 @@ class StudyMiniAppService:
         paid = self.is_paid_user(user)
         access_state = UserAccessStateService.classify(user)
         limits = dict(PAID_LIMITS if paid else TRIAL_LIMITS)
+        from app.services.entitlements.engine import EntitlementEngine
+        from app.services.entitlements import actions as A
+        decisions = await EntitlementEngine(self.session).status_map(user, (A.STUDY_QUIZ, A.STUDY_AUDIO, A.STUDY_FLASHCARD_TRANSLATE))
+        for action, decision in decisions.items():
+            limits[A.LEGACY_FEATURE_KEYS[action]] = decision.limit
         if not paid and getattr(user, "trial_quiz_explanation_used_at", None) is None:
             limits["wrong_analysis"] = True
         features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
@@ -208,7 +213,7 @@ class StudyMiniAppService:
             return {"ok": False, "error": "course_lesson_not_current"}
 
         trial_service = CourseTrialService(self.session)
-        if not trial_service.is_paid_user(user) and not trial_service.can_access_lesson(user, lesson.id):
+        if not trial_service.is_paid_user(user) and not await trial_service.can_access_lesson(user, lesson.id):
             return {"ok": False, "error": "course_trial_lesson_locked"}
         if not trial_service.is_paid_user(user):
             await trial_service.mark_trial_completed(user, lesson.id)

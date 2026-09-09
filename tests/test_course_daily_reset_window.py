@@ -165,7 +165,12 @@ class DailyLimitRaceWindowTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(service, "_daily_used_today", _spy), patch.object(
             service, "_learner_offset_minutes", AsyncMock(return_value=offset_minutes)
         ):
-            result = await service.consume_daily_use(user, feature_key="recognition")
+            # `limit_override` — bu aynan markaziy dvigatel yuboradigan yo'l.
+            # Usiz chaqiruv admin sozlamasini o'qiydigan yangi tarmoqqa ketadi va
+            # bu yerdagi soxta sessiya bilan poyga yo'li umuman sinalmaydi.
+            result = await service.consume_daily_use(
+                user, feature_key="recognition", limit_override=1
+            )
         return result, seen
 
     async def test_the_race_recount_uses_the_learner_window(self):

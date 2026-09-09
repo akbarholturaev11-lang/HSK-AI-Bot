@@ -126,6 +126,8 @@ class LimitNotificationService:
         Lentaga yozish takrorni to'sadi: bir xil ``dedupe_key`` ikkinchi
         marta yozilmaydi, demak xabar ham ikkinchi marta ketmaydi.
         """
+        if bot is None:
+            return False
         title, body = notification_copy(key, lang, text)
         recorded = await CourseNotificationService(self.session).record(
             user,
@@ -196,6 +198,7 @@ class LimitNotificationService:
         feature_key: str,
         reset_at: str | None,
         lifetime: bool = False,
+        limit: int | None = None,
         bot=None,
     ) -> bool:
         """Kunlik bepul limit tugaganini bildiradi (kuniga bir marta).
@@ -210,6 +213,13 @@ class LimitNotificationService:
             text = t("limit_daily_spent_notice", lang, reset_time=clock)
         else:
             text = t("limit_daily_spent_notice_no_time", lang)
+        if limit is not None:
+            from app.services.entitlements.decision import limit_text
+            from app.services.entitlements.state import resolve_state
+            from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+            text = limit_text(CourseMiniAppAccessService.action_for_feature(feature_key),
+                state=resolve_state(user), limit=limit, remaining=0,
+                window="lifetime" if lifetime else "daily", language=lang) + "\n\n" + text
         day_key = "lifetime" if lifetime else course_daily_window.local_day_key(offset)
         return await self._deliver(
             user,
