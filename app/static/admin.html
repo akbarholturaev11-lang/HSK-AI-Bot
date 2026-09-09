@@ -1127,10 +1127,20 @@
       ["ai.voice","AI ovoz"],
       ["speaking.session","Speaking"],
       ["practice.*","Mashq bo'limlari"],
+      ["practice.placement","Daraja aniqlash testi"],
       ["study.quiz","Quiz"],
       ["study.audio","Audio"],
       ["study.flashcard_translate","Kartochka tarjimasi"]
     ];
+    /* Qatorda AYNAN shu harakatga amal qilayotgan qoida ko'rinishi kerak.
+       Aniq bandi bo'lmasa, dvigatel qaysi jokerni o'qisa, panel ham o'shani
+       ko'rsatadi — aks holda saqlash paytida bo'sh maydon chiqib, admin
+       o'zi qo'ymagan raqamni yozishga majbur bo'lardi. */
+    function limitRule(rules,action){
+      if(rules[action]) return rules[action];
+      const prefix=String(action).split(".")[0]+".*";
+      return rules[prefix]||rules["*"]||null;
+    }
     function limitRow(plan,action,label,rule){
       const lim=rule&&rule.limit, win=(rule&&rule.window)||"daily";
       const inf=lim===null||lim===undefined;
@@ -1153,7 +1163,7 @@
       const cfg=(d.limits_config||{}), plans=cfg.plans||{}, trial=cfg.trial||{};
       const body=LIMIT_PLANS.map(([plan,planLabel])=>{
         const rules=plans[plan]||{};
-        const rows=LIMIT_ACTIONS.map(([action,label])=>limitRow(plan,action,label,rules[action])).join("");
+        const rows=LIMIT_ACTIONS.map(([action,label])=>limitRow(plan,action,label,limitRule(rules,action))).join("");
         return `<div class="mcard"><h3>${esc(planLabel)}</h3>${rows}</div>`;
       }).join("");
       openDrawer("🎚 Limitlar","Bepul va trial chegaralari. Obunachiga limit qo'yilmaydi.",`<div class="panel">

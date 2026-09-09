@@ -20,9 +20,13 @@ Shu yerda ushlanadigan uchta aniq holat:
    reklamalari olib tashlangandan keyin shunchaki noto'g'ri.
 """
 
+import re
 import unittest
 from pathlib import Path
 
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import default_config
+from app.services.entitlements.state import EntitlementState
 from app.services.course_access_policy_service import (
     COURSE_ACCESS_MODE_ADS,
     COURSE_ACCESS_MODE_FREE_UNTIL,
@@ -82,3 +86,52 @@ class NoStaleCopyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TheLimitPanelCoversEveryEnforcedActionTests(unittest.TestCase):
+    """Panelda ko'rinmagan chegara — jimgina o'zgaradigan chegara.
+
+    `save_config` planni BUTUNLAY almashtiradi: panel yubormagan band
+    yo'qoladi va harakat jokerga tushadi. Shu sabab `practice.placement`
+    birinchi "Saqlash" bosilishida "umrbod"dan "kunlik"ka aylanardi —
+    admin buni so'ramagan va hech qayerda ko'rmasdi ham.
+    """
+
+    @staticmethod
+    def _panel_actions():
+        block = ADMIN.split("const LIMIT_ACTIONS=[", 1)[1].split("];", 1)[0]
+        return set(re.findall(r'\["([a-z_.*]+)"', block))
+
+    def test_every_action_the_engine_enforces_is_reachable(self):
+        panel = self._panel_actions()
+        for action in A.ACTIONS:
+            with self.subTest(action=action):
+                prefix = action.split(".", 1)[0] + ".*"
+                self.assertTrue(
+                    action in panel or prefix in panel or "*" in panel,
+                    f"{action} panelda boshqarilmaydi",
+                )
+
+    def test_no_action_is_left_to_a_wildcard_that_would_change_it(self):
+        panel = self._panel_actions()
+        rules = default_config().plans[EntitlementState.FREE]
+        for action in A.ACTIONS:
+            if action in panel:
+                continue
+            own = rules.get(action)
+            if own is None:
+                continue  # Default ham uni jokerga qoldiradi — farq yo'q.
+            prefix = action.split(".", 1)[0] + ".*"
+            with self.subTest(action=action):
+                self.assertEqual(
+                    own.as_dict(),
+                    rules[prefix].as_dict(),
+                    f"{action} default'da jokerdan farq qiladi, ya'ni panelda o'z qatori bo'lishi kerak",
+                )
+
+    def test_the_row_shows_the_rule_actually_in_force(self):
+        # Aniq bandi yo'q harakat uchun panel bo'sh maydon emas, amaldagi
+        # jokerni ko'rsatadi — aks holda saqlash "Bo'sh maydon qoldi" deb
+        # to'xtardi.
+        self.assertIn("function limitRule(rules,action)", ADMIN)
+        self.assertIn("limitRow(plan,action,label,limitRule(rules,action))", ADMIN)
