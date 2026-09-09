@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
 from app.api.public_site import create_public_site_router, indexnow_payload
+from app.api.public_site import GOOGLE_VERIFICATION_FILENAME
 from app.public_site.content import HOME_PATHS, PAGES
 from app.public_site.render import attribution, public_origin
 
@@ -154,6 +155,14 @@ class PublicSiteTests(unittest.IsolatedAsyncioTestCase):
             indexnow_payload(settings())
         with self.assertRaises(ValueError):
             create_public_site_router(settings_obj=settings(INDEXNOW_KEY="../../evil"))
+
+    async def test_google_search_console_file_is_exact_public_root_file(self):
+        response = await self.client.get("/" + GOOGLE_VERIFICATION_FILENAME)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b"google-site-verification: google4575dc78c69e5824.html")
+        self.assertEqual(response.headers["content-type"], "text/html; charset=utf-8")
+        self.assertNotIn("noindex", response.headers.get("x-robots-tag", "").lower())
+        self.assertNotIn("authorization", response.headers)
 
     def test_config_and_attribution_safety(self):
         for bad in ("http://example.com", "https://user:pass@example.com", "https://example.com/a", "https://example.com/?x=1"):

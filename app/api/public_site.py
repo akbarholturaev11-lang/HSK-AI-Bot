@@ -14,6 +14,8 @@ from app.public_site.render import BOT_URL, attribution, public_origin, render_p
 
 logger = logging.getLogger("uvicorn.error.public_analytics")
 STATIC = Path(__file__).resolve().parents[1] / "static"
+GOOGLE_VERIFICATION_FILENAME = "google4575dc78c69e5824.html"
+GOOGLE_VERIFICATION_CONTENT = b"google-site-verification: google4575dc78c69e5824.html"
 
 
 def indexnow_key(settings_obj):
@@ -61,6 +63,12 @@ def create_public_site_router(*, settings_obj):
     router = APIRouter(include_in_schema=False)
     origin = public_origin(settings_obj)
     key = indexnow_key(settings_obj)
+
+    @router.get("/" + GOOGLE_VERIFICATION_FILENAME)
+    async def google_search_console_verification():
+        # Google requires the exact downloaded file content at the site root.
+        # Keep this route public and free of noindex/auth headers.
+        return Response(GOOGLE_VERIFICATION_CONTENT, media_type="text/html")
 
     async def landing(request: Request):
         path = request.url.path
