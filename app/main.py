@@ -87,6 +87,7 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_notification_service import CourseNotificationService
 from app.services.entitlements.lesson_access import LessonAccessService
+from app.services.entitlements.state import access_expires_at, resolve_state
 from app.services.desktop_analytics_service import DesktopAnalyticsService
 from app.services.desktop_auth_service import DesktopAuthService
 from app.services.desktop_download_service import DesktopReleaseConfig
@@ -1701,11 +1702,23 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             "week_activity_dates": gamification.get("week_activity_dates", []),
             "reward_chest": gamification.get("reward_chest"),
         }
+        # Holat markaziy dvigateldan: profil ekrani "sinov muddati" (trial),
+        # "Pro faol" yoki "bepul" ni AYNI shu holatga qarab ko'rsatadi. Muddat
+        # ham shu yerdan — klient sanani o'zi taxmin qilmaydi.
+        access_state = resolve_state(user)
+        access_ends = access_expires_at(user, access_state)
         data["user"] = {
             "name": display_name,
             "avatar": initials[:2],
             "language": resolved_lang,
             "is_paid": is_paid,
+            "state": access_state,
+            "plan": {
+                "PRO_ACTIVE": "pro",
+                "TRIAL_ACTIVE": "trial",
+                "TEMP_ACCESS": "temp",
+            }.get(access_state, "free"),
+            "access_ends_at": access_ends.isoformat() if access_ends else None,
             "referral_code": getattr(user, "referral_code", None) or "",
             "learner_level": str(getattr(user, "level", "") or "").strip().lower(),
             "onboarding_completed": profile.onboarding_completed_at is not None,

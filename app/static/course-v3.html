@@ -28,6 +28,12 @@ html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-famil
 .scr.on{display:block}
 button{cursor:pointer}
 .hint{display:flex;gap:10px;align-items:flex-start;margin:0 16px 10px;padding:11px 12px;background:var(--card);border:1px solid var(--line);border-radius:13px}
+/* Suzuvchi tanishtiruv: kontent ustida, oqimdan tashqarida. Joy egallamaydi,
+   shuning uchun ostidagi bo'lim siljimaydi; X bilan yopiladi. */
+#hint-float{position:fixed;top:var(--safe-t);left:0;right:0;z-index:9;max-width:var(--read);margin:0 auto;padding:8px 4px 0;pointer-events:none}
+#hint-float:empty{display:none}
+#hint-float .hint{pointer-events:auto;margin:0 12px 8px;background:var(--paper);box-shadow:0 6px 20px rgba(20,17,13,.13);animation:hintDrop .22s ease}
+@keyframes hintDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .hint i.hi{color:var(--ink3);font-size:17px;line-height:1.3;flex:0 0 auto}
 .hint .hb{flex:1;min-width:0}
 .hint .ht{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:2px}
@@ -414,6 +420,8 @@ button{cursor:pointer}
 .pav .ed{position:absolute;right:-5px;bottom:-5px;width:24px;height:24px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:12px;display:flex;align-items:center;justify-content:center}
 .pname{font-size:19px;font-weight:500}.pun{font-size:13px;color:var(--ink3)}
 .lvb{display:inline-flex;align-items:center;gap:5px;margin-top:7px;background:var(--cinbg);color:var(--cin2);font-size:11px;font-weight:500;padding:4px 10px;border-radius:11px}
+.lvb.goal{margin-left:6px;background:var(--jadebg);color:var(--jade)}
+.pro.pro-on{background:linear-gradient(135deg,#1f2a24,var(--ink))}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px 0}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 4px;text-align:center}
 .stat b{display:block;font-size:20px;font-weight:600}.stat small{font-size:11px;color:var(--ink2)}
@@ -1138,6 +1146,10 @@ button{cursor:pointer}
   <div class="scr" id="s-rating"></div>
   <div class="scr" id="s-profile"></div>
 
+  <!-- Bo'lim tanishtiruvi: ekran USTIDA suzadi, layoutdan joy egallamaydi va
+       bo'limning o'ziga o'xshab turmaydi. Bo'lim almashganda yangilanadi. -->
+  <div id="hint-float" aria-live="polite"></div>
+
   <div class="nav" id="nav">
     <button class="on" data-s="course"><i class="ti ti-map-2" id="i-c"></i><span data-i="course"></span></button>
     <button data-s="mashq"><i class="ti ti-cards"></i><span data-i="mashq"></span></button>
@@ -1454,6 +1466,7 @@ var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;renderAll()},
   show:function(s){var previous=SCREEN;SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
     document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.s===s)});
+    renderFloatHint(s);
     /* kurs ekrani: yo'lakcha boshidan emas, user turgan darsdan ochiladi */
     if(s==="course"){drawTrails();scrollToCurrentNode()}else{window.scrollTo(0,0)}
     if(s==="course"&&previous!=="course")refreshCourseProgress();
@@ -2490,7 +2503,7 @@ function renderCourse(){
        "Qaytarish" bo'lib qolaveradi. */
     +(foundationMustComeFirst()?"":todayPlanHtml())
     +'</div><div class="cmain">'
-    +hintsHtml("course")
+    /* Tanishtiruv endi #hint-float da suzadi (renderFloatHint). */
     +foundationEntryHtml();
   var mascP={ru:["Продолжаем!","Так держать!","Ещё урок!","У тебя получится!"],
     uz:["Davom etamiz!","Zo'r ketyapsan!","Yana bir dars!","Sen uddalaysan!"],
@@ -4250,7 +4263,7 @@ function flowDone(){
 /* ---------- Mashq ---------- */
 function renderMashq(){
   var t=T();
-  $("#s-mashq").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-cards"></i> '+t.nav.mashq+'</span></div>'+hintsHtml("mashq")
+  $("#s-mashq").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-cards"></i> '+t.nav.mashq+'</span></div>'
     +'<div class="phead"><div class="sub">'+t.mashqSub+'</div></div>'
     +'<div class="sech">'+t.grammar+' · '+t.pron+'</div>'
     +rowCard("t-amber",'<span class="han">字</span>',t.dict,t.dictSub,"App.openDict()","m-dict")
@@ -4265,7 +4278,7 @@ function rowCard(cls,ic,title,sub,act,id){return '<button class="row-card"'+(id?
 /* ---------- Voice ---------- */
 function renderVoice(){
   var t=T();
-  $("#s-voice").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-microphone"></i> AI Voice</span></div>'+hintsHtml("voice")
+  $("#s-voice").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-microphone"></i> AI Voice</span></div>'
     +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+t.voiceTitle+'</h3><p>'+t.voiceSub+'</p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+t.voiceStart+'</button></div>';
   /* Bo'lim ochilganda panda sakrab kirib keladi */
   pandaFx(document.querySelector("#s-voice .voicebox .pd"),"pop");
@@ -4660,7 +4673,7 @@ function _renderRatingContent(){
   var t=T(),r=rl();
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
-	  var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'+hintsHtml("rating")
+	  var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'
 	    +'<div class="rt-seg"><button class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
 	  if(ratingTabCur==="friends"){
 	    if(!referralMeta.loaded&&INIT_DATA){
@@ -5009,9 +5022,25 @@ function openInviteSheet(){
 }
 
 /* ---------- Profile ---------- */
-function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня"},
-  uz:{calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad"},
-  tj:{calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза"}}[LANG]}
+function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня",statusPro:"HSK AI Pro активен",statusTemp:"Временный доступ",statusTrial:"Пробный период",statusUntil:"до {d}",goalTitle:"Цель"},
+  uz:{calTitle:"Ketma-ket kunlar",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun ketma-ket",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad",statusPro:"HSK AI Pro faol",statusTemp:"Vaqtinchalik kirish",statusTrial:"Sinov muddati",statusUntil:"{d} gacha",goalTitle:"Maqsad"},
+  tj:{calTitle:"Рӯзҳои пайдарпай",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза",statusPro:"HSK AI Pro фаъол",statusTemp:"Дастрасии муваққатӣ",statusTrial:"Давраи санҷишӣ",statusUntil:"то {d}",goalTitle:"Ҳадаф"}}[LANG]}
+/* Maqsad kodini (onboardingdagi tanlov) o'qiladigan nomga aylantiradi.
+   Nomlar `studySetupT().goals` da — onboarding bilan AYNI manba, shunda
+   profildagi maqsad tanlov ekranidagidek yoziladi. */
+function goalLabel(){
+  var code=String((MAP&&MAP.study_setup&&MAP.study_setup.goal)||"");
+  if(!code)return "";
+  var goals=(studySetupT&&studySetupT().goals)||{};
+  return goals[code]||"";
+}
+/* Kirish muddati sanasi — klient soatiga bog'liq emas, server ISO qaytaradi. */
+function fmtAccessDate(iso){
+  if(!iso)return "";
+  var d=new Date(iso);
+  if(isNaN(d))return "";
+  return d.getDate()+"."+(d.getMonth()+1)+"."+d.getFullYear();
+}
 function streakCalHtml(){var p=pl();
   var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0);
   /* Server bergan real hafta faolligi (week_activity_dates) birinchi o'rinda;
@@ -5071,6 +5100,14 @@ function hintHtml(h){
     +'<i class="ti ti-x"></i></button></div>';
 }
 function hintsHtml(section){return hintsFor(section).map(hintHtml).join("")}
+/* Suzuvchi tanishtiruvni faol bo'lim uchun qayta chizadi. Bo'lim almashganda
+   (App.show) chaqiriladi: har ekranда faqat o'sha bo'lim tanishtiruvi turadi,
+   yashirin ekranlarniki DOM'да qolib ketmaydi. */
+function renderFloatHint(section){
+  var host=document.getElementById("hint-float");
+  if(!host)return;
+  host.innerHTML=hintsHtml(section);
+}
 /* Yopilganda: darhol yo'qoladi (kutish yo'q), server yozuvi fon rejimida.
    Yozuv yiqilsa ham foydalanuvchi uchun blokcha yopilgan bo'lib qoladi.
 
@@ -5094,20 +5131,35 @@ function closeHint(key){
      • trial ishlayapti  — holat, tugmasiz;
      • trial olinmagan   — asosiy "7 kun bepul sinash" + past "Pro olish";
      • trial ishlatilgan — FAQAT "HSK AI Pro ⭐️ olish", boshqa hech narsa. */
+/* Profil status kartasi — foydalanuvchining HAQIQIY holatiga moslashadi.
+   Holat va muddat serverdan (`MAP.user.plan` / `access_ends_at`), markaziy
+   entitlement dvigatelidan keladi:
+     • pro/temp — obuna FAOL: holatni aytamiz, taklif qilmaymiz;
+     • trial    — sinov muddati: nechchi kun qolganini aytamiz;
+     • free     — taklif (obuna / trial). */
 function proProfileCard(){
-  var t=T();
-  if(isPaidUser())return "";
+  var t=T(),p=pl();
+  var u=(MAP&&MAP.user)||{};
+  var plan=u.plan||(isPaidUser()?"pro":"free");
+  var ends=u.access_ends_at||null;
   var head='<span class="gw han">会</span>';
 
-  if(TRIAL_STATE&&TRIAL_STATE.active){
-    var left="";
-    if(TRIAL_STATE.ends_at){
-      var ms=new Date(TRIAL_STATE.ends_at)-new Date();
-      var days=Math.max(0,Math.ceil(ms/86400000));
-      left=String(t.trialLeft||"{n}").replace("{n}",days);
-    }
-    return '<div class="pro">'+head
-      +'<h3>'+esc(t.trialActive||"")+'</h3><p>'+esc(left)+'</p></div>';
+  if(plan==="pro"||plan==="temp"){
+    var title=plan==="pro"?p.statusPro:p.statusTemp;
+    var until=ends?String(p.statusUntil).replace("{d}",fmtAccessDate(ends)):"";
+    return '<div class="pro pro-on">'+head
+      +'<h3><i class="ti ti-circle-check-filled" style="color:var(--gold);font-size:16px;vertical-align:-2px"></i> '+esc(title)+'</h3>'
+      +(until?'<p>'+esc(until)+'</p>':'<p style="margin:0"></p>')+'</div>';
+  }
+
+  if(plan==="trial"){
+    var days=0;
+    if(ends){var ms=new Date(ends)-new Date();days=Math.max(0,Math.ceil(ms/86400000));}
+    var left=String(t.trialLeft||"{n}").replace("{n}",days);
+    return '<div class="pro pro-on">'+head
+      +'<h3><i class="ti ti-clock-hour-4" style="color:var(--gold);font-size:16px;vertical-align:-2px"></i> '+esc(p.statusTrial)+'</h3>'
+      +'<p>'+esc(left)+'</p>'
+      +'<b class="prolink" style="margin-left:0" onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</b></div>';
   }
 
   var canTrial=!!(TRIAL_STATE&&TRIAL_STATE.eligible);
@@ -5127,8 +5179,8 @@ function renderProfile(){
   var firstDone=completedLessons>=1;
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
-  $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'+hintsHtml("profile")
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span></div></div>'
+  $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span>'+(goalLabel()?'<span class="lvb goal"><i class="ti ti-target"></i> '+esc(goalLabel())+'</span>':'')+'</div></div>'
     +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="'+(pct>=100?"var(--gold)":"var(--cin)")+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+(dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
     +'<div id="pomp-desktop-profile-root"></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'

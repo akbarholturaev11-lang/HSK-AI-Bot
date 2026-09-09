@@ -78,8 +78,10 @@ class TrialEntryPointTests(unittest.TestCase):
         """
         self.assertIn("function proProfileCard()", COURSE)
         self.assertIn(r"App.startTrial(\'profile\')", COURSE)
-        # Faol trialda qolgan kun ko'rsatiladi.
-        self.assertIn("TRIAL_STATE.active", COURSE)
+        # Faol trialda qolgan kun ko'rsatiladi — endi server yorlig'i
+        # (MAP.user.plan) orqali, markaziy dvigateldan.
+        self.assertIn('if(plan==="trial")', COURSE)
+        self.assertIn("trialLeft", COURSE)
 
     def test_the_profile_never_draws_two_subscription_cards(self):
         body = COURSE.split("function renderProfile()")[1][:4000]
