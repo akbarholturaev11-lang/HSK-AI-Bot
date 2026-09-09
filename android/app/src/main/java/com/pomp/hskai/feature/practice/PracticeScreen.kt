@@ -95,6 +95,11 @@ fun PracticeScreen(
     onRequestConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    // Mini App's MIST is a screen layered inside Practice. Keep that door at
+    // this level so a review/result can temporarily replace it and return to
+    // the same overview rather than dropping the learner on Practice home.
+    var mistakesOpen by rememberSaveable { mutableStateOf(false) }
+
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
       Box(Modifier.fillMaxSize()) {
         when {
@@ -103,8 +108,8 @@ fun PracticeScreen(
                 onDone = onResetPractice,
             )
 
-            state.reviewResult != null -> ReviewSummary(
-                state = state,
+            state.reviewResult != null -> MistakesReviewResult(
+                result = state.reviewResult,
                 onDone = onResetReview,
             )
 
@@ -129,11 +134,18 @@ fun PracticeScreen(
                 onCancel = onResetPractice,
             )
 
-            state.isReviewRunning -> ReviewRun(
+            state.isReviewRunning -> MistakesReviewRun(
                 state = state,
                 onSelect = onAnswerReview,
                 onAdvance = onAdvanceReview,
                 onCancel = onResetReview,
+            )
+
+            mistakesOpen -> MistakesOverviewScreen(
+                state = state,
+                onBack = { mistakesOpen = false },
+                onStartReview = onStartMistakeReview,
+                onReload = onResetReview,
             )
 
             else -> PracticeHome(
@@ -145,7 +157,7 @@ fun PracticeScreen(
                 onDismissHint = onDismissHint,
                 onOpenDictionary = onOpenDictionary,
                 onStartPractice = onStartPractice,
-                onStartMistakeReview = onStartMistakeReview,
+                onOpenMistakes = { mistakesOpen = true },
                 onStartExam = onStartExam,
                 onOpenDrill = onOpenDrill,
                 request = request,
@@ -208,7 +220,7 @@ private fun PracticeHome(
     onDismissHint: (String) -> Unit,
     onOpenDictionary: () -> Unit,
     onStartPractice: (PracticeToolSpec, String, String) -> Unit,
-    onStartMistakeReview: () -> Unit,
+    onOpenMistakes: () -> Unit,
     onStartExam: (String) -> Unit,
     onOpenDrill: (DrillMode) -> Unit,
     request: PracticeRequest?,
@@ -232,13 +244,15 @@ private fun PracticeHome(
         )
     }
 
-    // A daily-plan step lands here already knowing where it wants to go.
+    // A daily-plan/profile request lands here already knowing which door it
+    // wants. Mistakes now opens the same overview the Mini App opens; review
+    // begins only after the learner presses the red Boshlash/Start button.
     LaunchedEffect(request) {
         when (request) {
             null -> return@LaunchedEffect
             PracticeRequest.MISTAKES -> {
                 openGroup = null
-                onStartMistakeReview()
+                onOpenMistakes()
             }
 
             PracticeRequest.RECOGNITION -> {
@@ -326,9 +340,12 @@ private fun PracticeHome(
                         tint = TintCinnabar,
                         title = stringResource(R.string.practice_mistakes_title),
                         body = stringResource(R.string.practice_mistakes_body, total),
-                        enabled = total > 0 && !state.isStarting,
+                        // The Mini App lets an empty account open this screen
+                        // and shows its dedicated zero state, so Android must
+                        // not disable the door just because total == 0.
+                        enabled = !state.isStarting,
                         busy = state.isLoadingMistakes,
-                        onClick = onStartMistakeReview,
+                        onClick = onOpenMistakes,
                     )
                 }
             }
