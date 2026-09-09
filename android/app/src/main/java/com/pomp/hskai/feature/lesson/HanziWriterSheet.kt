@@ -46,9 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
 import com.pomp.hskai.core.design.PompTextStyles
-
-/** The grid hanzi-writer data is drawn in. */
-private const val GRID = 1024f
+import com.pomp.hskai.core.hanzi.StrokeAnimation
 
 /**
  * How a character is written, stroke by stroke.
@@ -148,63 +146,3 @@ internal fun HanziWriterSheet(
         }
     }
 }
-
-/**
- * Draws the finished character faintly, then inks each stroke in order.
- *
- * The stroke paths are given in a grid whose origin is bottom-left, so the
- * whole set is flipped once and scaled to the canvas.
- */
-@Composable
-private fun StrokeAnimation(strokes: List<String>) {
-    val paths = remember(strokes) { strokes.mapNotNull(::parseStroke) }
-    var run by remember(strokes) { mutableStateOf(0) }
-    LaunchedEffect(strokes) { run++ }
-
-    val progress by animateFloatAsState(
-        targetValue = if (run > 0) paths.size.toFloat() else 0f,
-        animationSpec = tween(
-            durationMillis = paths.size * MILLIS_PER_STROKE,
-            easing = LinearEasing,
-        ),
-        label = "strokeProgress",
-    )
-
-    Canvas(modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(18.dp)) {
-        val scale = size.minDimension / GRID
-        val matrix = Matrix().apply {
-            // hanzi-writer's own transform: flip the y axis, then fit the box.
-            translate(0f, size.height)
-            scale(scale, -scale)
-        }
-        paths.forEachIndexed { index, source ->
-            val path = Path().apply { addPath(source) }
-            path.transform(matrix)
-
-            drawPath(
-                path = path,
-                color = PompColors.Divider,
-                style = Stroke(width = 2f, cap = StrokeCap.Round, join = StrokeJoin.Round),
-            )
-            val strokeProgress = (progress - index).coerceIn(0f, 1f)
-            if (strokeProgress <= 0f) return@forEachIndexed
-            drawPath(
-                path = if (strokeProgress >= 1f) path else partial(path, strokeProgress),
-                color = PompColors.Ink,
-            )
-        }
-    }
-}
-
-private fun parseStroke(data: String): Path? =
-    runCatching { PathParser().parsePathString(data).toPath() }.getOrNull()
-
-/** The first [fraction] of a filled stroke, so it appears to be written. */
-private fun partial(path: Path, fraction: Float): Path {
-    val measure = PathMeasure().apply { setPath(path, false) }
-    val cut = Path()
-    measure.getSegment(0f, measure.length * fraction, cut, true)
-    return cut
-}
-
-private const val MILLIS_PER_STROKE = 420
