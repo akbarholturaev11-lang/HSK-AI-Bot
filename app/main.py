@@ -18,6 +18,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import defer
 from starlette.middleware.gzip import GZipMiddleware
 
+from app.api.public_site import create_public_site_router
 from app.config import settings
 from app.api.android_auth import create_android_auth_router
 from app.api.android_course import create_android_course_router
@@ -541,6 +542,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(create_public_site_router(settings_obj=settings))
 app.add_middleware(GZipMiddleware, minimum_size=1024)
 # Bloklangan foydalanuvchi Mini App API'laridan foydalana olmasin.
 # Admin panel API'lari o'z `_admin_auth_error()` tekshiruvi bilan ishlaydi.

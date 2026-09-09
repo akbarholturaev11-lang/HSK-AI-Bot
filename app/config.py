@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     FEEDBACK_NOTIFY_CHAT_IDS: str = "-1004311413349"
     PAYMENT_DETAILS: str = ""
     BOT_USERNAME: str = ""
+    # Canonical HTTPS origin; blank derives origin from MINI_APP_BASE_URL.
+    PUBLIC_SITE_URL: str = ""
+    GOOGLE_SITE_VERIFICATION: str = ""
+    BING_SITE_VERIFICATION: str = ""
+    INDEXNOW_KEY: str = ""
     # Kunlik bepul limit o'quvchining MAHALLIY vaqti bilan qaysi soatda
     # yangilanadi. Default 0 — mahalliy yarim tun.
     COURSE_DAILY_RESET_HOUR_LOCAL: int = 0

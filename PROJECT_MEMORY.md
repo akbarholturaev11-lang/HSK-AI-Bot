@@ -227,6 +227,21 @@ Risk: Never expose answer keys, award repeatable/fake XP, or use rewards that ar
 
 ## 10. Recent Important Changes
 
+### 2026-09-09 — Public SEO boundary
+
+Changed:
+- `app/api/public_site.py` adds seven server-rendered public pages (TJ priority, RU/UZ), robots/sitemap, optional search verification and manual IndexNow submission. Copy/schema live in `app/public_site/`.
+Why:
+- Crawlers need product/educational HTML without Telegram auth or JavaScript.
+Files touched:
+- Public router/package, `app/main.py` router registration, config/env example; runbook `docs/SEO_DISCOVERABILITY.md`.
+Risk:
+- Canonical origin is `PUBLIC_SITE_URL` or MINI_APP_BASE_URL origin, never request Host. Robots uses a public allowlist; new public routes must join the inventory deliberately. No learner/DB/payment mutations.
+- Anonymous landing/CTA events go to Uvicorn logs, not authenticated analytics; counts include crawlers/reloads, not verified learner conversions.
+Follow-up:
+- Configure final origin and real verification tokens, deploy and submit sitemap/IndexNow manually. No submission/push made during implementation.
+
+
 ### 2026-09-08 — Admin AI billing and statistics integrity
 
 - `GEMINI_BILLING_TIER=free|paid` (default `free`, owner-confirmed current tier).
