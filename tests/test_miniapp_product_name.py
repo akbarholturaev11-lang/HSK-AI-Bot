@@ -110,3 +110,39 @@ class TheLimitOffersOneThingTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TheCopyMatchesTheButtonItNamesTests(unittest.TestCase):
+    """Izoh mavjud bo'lmagan tugmani ko'rsatmasin.
+
+    Foydalanuvchi buni jonli ilovada ko'rdi: paywall ostidagi izoh
+    «Obuna bo'lish» tugmasini ko'rsatardi, ekranда esa «HSK AI Pro olish»
+    tugmasi turardi. Odam «Obuna bo'lish»ni qidiradi, topa olmaydi.
+    """
+
+    COURSE = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+    def test_the_paywall_hint_does_not_name_a_button_that_is_not_there(self):
+        for phantom in (
+            "«Obuna bo'lish» tugmasi",
+            "«Оформить подписку» откроет",
+            "«Обуна шудан» саҳифаи",
+        ):
+            with self.subTest(phantom=phantom):
+                self.assertNotIn(phantom, self.COURSE)
+
+    def test_the_paywall_hint_points_at_the_button_generically(self):
+        # Tugma matni holatga qarab o'zgaradi (obuna / trial), shuning uchun
+        # izoh aniq nomni takrorlamay "yuqoridagi tugma" deydi.
+        for generic in ("Yuqoridagi tugma", "Кнопка выше", "Тугмаи боло"):
+            with self.subTest(generic=generic):
+                self.assertIn(generic, self.COURSE)
+
+    def test_the_ad_subscribe_button_names_the_product(self):
+        # Reklama oxiridagi obuna tugmasi ham «HSK AI Pro» deydi — ilgari u
+        # «Obuna olish» / «Оформить подписку» edi, ya'ni boshqa nom.
+        buttons = re.findall(r'adSubPay:"([^"]*)"', self.COURSE)
+        self.assertEqual(3, len(buttons), "uchala tilda ham bo'lishi kerak")
+        for value in buttons:
+            with self.subTest(button=value):
+                self.assertIn(PRODUCT, value)
