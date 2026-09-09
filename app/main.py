@@ -107,12 +107,8 @@ from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import (
     COURSE_AI_PRACTICE_FEATURES,
     CourseMiniAppAccessService,
-    free_course_parts_for_level,
 )
 from app.services.course_access_policy_service import (
-    COURSE_ACCESS_AD,
-    COURSE_ACCESS_OPEN,
-    COURSE_ACCESS_SUBSCRIPTION,
     CourseAccessPolicyService,
 )
 from app.services.course_sales_experiment_service import (
@@ -1318,80 +1314,22 @@ def _course_v3_user_lang(user) -> str:
     return normalize_miniapp_lang(getattr(user, "language", None))
 
 
-def _apply_course_v3_access_policy(
-    data: dict,
-    *,
-    level: str,
-    completed: int,
-    is_paid: bool,
-    access_policy=None,
-) -> None:
-    free_parts = free_course_parts_for_level(level)
+def _apply_course_v3_progress_marks(data: dict, *, completed: int) -> None:
+    """Yulduzchalar — tugatilgan qismning belgisi.
+
+    Ruxsat bu yerda hal QILINMAYDI. Darhol keyin ishlaydigan
+    `LessonAccessService.apply_map` har bir darsning holatini, tugatish
+    huquqini va qulf sababini o'zi yozadi; shu sabab bu yerda faqat u
+    tegmaydigan narsa qoladi. Ilgari bu funksiya "daraja uchun N ta bepul
+    qism" qoidasini ham yozardi — o'sha qoida olib tashlangan, natijasi esa
+    baribir ustidan yozilardi.
+    """
     for unit in data.get("units", []):
-        unit_unlocked = False
         for lesson in unit.get("lessons", []):
-            n = int(lesson.get("n", 0) or 0)
-            if n <= completed:
-                lesson["status"] = "done"
+            if int(lesson.get("n", 0) or 0) <= completed:
                 lesson.setdefault("stars", 2)
-            elif n == completed + 1:
-                lesson["status"] = "current"
-                lesson.pop("stars", None)
             else:
-                lesson["status"] = "locked"
                 lesson.pop("stars", None)
-
-            requirement = (
-                access_policy.requirement_for(
-                    lesson_order=n,
-                    is_paid=is_paid,
-                    free_lessons=free_parts,
-                )
-                if access_policy
-                else (
-                    COURSE_ACCESS_SUBSCRIPTION
-                    if (
-                        not is_paid
-                        and CourseMiniAppAccessService.lesson_requires_premium(level, n)
-                    )
-                    else COURSE_ACCESS_OPEN
-                )
-            )
-            if requirement == COURSE_ACCESS_SUBSCRIPTION and n > completed:
-                if n == completed + 1 and n == free_parts + 1:
-                    # Birinchi pullik mini-dars: yangi bepul user uni ochib,
-                    # ~yarmigacha ko'radi; frontend kartalar o'rtasida obuna
-                    # oynasini chiqaradi.
-                    lesson["status"] = "current"
-                    lesson["preview_half"] = True
-                    lesson.pop("locked_premium", None)
-                    lesson.pop("ad_required", None)
-                else:
-                    lesson["status"] = "locked"
-                    lesson["locked_premium"] = True
-                    lesson.pop("preview_half", None)
-                    lesson.pop("ad_required", None)
-            elif requirement == COURSE_ACCESS_AD and n > completed:
-                lesson["ad_required"] = True
-                lesson.pop("locked_premium", None)
-                lesson.pop("preview_half", None)
-                if n == completed + 1:
-                    lesson["status"] = "current"
-            else:
-                lesson.pop("locked_premium", None)
-                lesson.pop("preview_half", None)
-                lesson.pop("ad_required", None)
-
-            if (
-                lesson.get("status") in {"done", "current"}
-                and not lesson.get("locked_premium")
-            ):
-                unit_unlocked = True
-
-        if not unit_unlocked:
-            unit["status"] = "locked"
-        else:
-            unit.pop("status", None)
 
 
 @app.get("/course-v3.html")
@@ -1804,15 +1742,10 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         if today:
             data["today"] = today
 
-        _apply_course_v3_access_policy(
-            data,
-            level=resolved_level,
-            completed=completed,
-            is_paid=is_paid,
-            access_policy=access_policy,
+        _apply_course_v3_progress_marks(data, completed=completed)
+        await LessonAccessService(session).apply_map(
+            data, user, level=resolved_level, completed=completed
         )
-
-        await LessonAccessService(session).apply_map(data, user, level=resolved_level, completed=completed)
 
         # Mayda tushuntirish blokchalari. Ro'yxat bo'sh bo'lishi — normal
         # holat; maslahat hech qachon oqimni to'xtatmaydi.

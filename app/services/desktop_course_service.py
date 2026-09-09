@@ -22,14 +22,11 @@ from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import has_full_access, resolve_state
 from app.services.course_miniapp_access_service import (
     CourseMiniAppAccessService,
-    free_course_parts_for_level,
 )
 from app.services.course_miniapp_analytics_service import (
     CourseMiniAppAnalyticsService,
 )
 from app.services.course_access_policy_service import (
-    COURSE_ACCESS_AD,
-    COURSE_ACCESS_MODE_ADS,
     CourseAccessPolicyService,
 )
 from app.services.course_notification_service import CourseNotificationService
@@ -79,27 +76,18 @@ def course_v3_lesson_card_count(lesson: dict[str, Any]) -> int:
     return total
 
 
-def apply_course_v3_access_policy(
-    data: dict[str, Any],
-    *,
-    level: str,
-    completed: int,
-    is_paid: bool,
-    ad_unlockable: bool = False,
-) -> None:
-    """Apply the same server-owned progress and premium rules as Course v3.
+def apply_course_v3_progress_marks(data: dict[str, Any], *, completed: int) -> None:
+    """Stars: the mark a finished part carries on the map.
 
-    [ad_unlockable] is the admin's "ads" mode: the lesson stays locked, and the
-    client is additionally told that watching an ad opens it. The Mini App has
-    always offered that; native clients could not, because the map never said
-    so.
+    Access is NOT decided here. `LessonAccessService.apply_map` runs straight
+    after and writes every lesson's status, completion right and lock reason
+    itself, so this leaves only what it does not touch. It used to apply the
+    level-based "N free parts" rule too; that rule is gone, and its output was
+    overwritten anyway.
     """
-
-    free_parts = free_course_parts_for_level(level)
     for unit in data.get("units", []):
         if not isinstance(unit, dict):
             continue
-        unit_unlocked = False
         for lesson in unit.get("lessons", []):
             if not isinstance(lesson, dict):
                 continue
@@ -107,62 +95,10 @@ def apply_course_v3_access_policy(
                 lesson_order = int(lesson.get("n") or 0)
             except (TypeError, ValueError):
                 lesson_order = 0
-
             if lesson_order <= completed:
-                lesson["status"] = "done"
                 lesson.setdefault("stars", 2)
-            elif lesson_order == completed + 1:
-                lesson["status"] = "current"
-                lesson.pop("stars", None)
             else:
-                lesson["status"] = "locked"
                 lesson.pop("stars", None)
-
-            requires_premium = CourseMiniAppAccessService.lesson_requires_premium(
-                level,
-                lesson_order,
-            )
-            if not is_paid and requires_premium and lesson_order > completed:
-                if (
-                    lesson_order == completed + 1
-                    and lesson_order == free_parts + 1
-                ):
-                    lesson["status"] = "current"
-                    lesson["preview_half"] = True
-                    lesson["completion_allowed"] = False
-                    lesson["completion_error"] = DESKTOP_PREVIEW_COMPLETION_ERROR
-                    lesson.pop("locked_premium", None)
-                else:
-                    lesson["status"] = "locked"
-                    lesson["locked_premium"] = True
-                    lesson["completion_allowed"] = False
-                    lesson["completion_error"] = DESKTOP_PREVIEW_COMPLETION_ERROR
-                    lesson.pop("preview_half", None)
-                    if ad_unlockable:
-                        lesson["ad_unlockable"] = True
-                    else:
-                        lesson.pop("ad_unlockable", None)
-            else:
-                lesson.pop("locked_premium", None)
-                lesson.pop("preview_half", None)
-                lesson.pop("ad_unlockable", None)
-                if lesson.get("status") in {"done", "current"}:
-                    lesson["completion_allowed"] = True
-                    lesson.pop("completion_error", None)
-                else:
-                    lesson["completion_allowed"] = False
-                    lesson["completion_error"] = "course_lesson_not_unlocked"
-
-            if (
-                lesson.get("status") in {"done", "current"}
-                and not lesson.get("locked_premium")
-            ):
-                unit_unlocked = True
-
-        if unit_unlocked:
-            unit.pop("status", None)
-        else:
-            unit["status"] = "locked"
 
 
 class DesktopCourseService:
@@ -386,61 +322,12 @@ class DesktopCourseService:
         # jadval. Telefonda yopilgan blokcha desktopda qayta chiqmaydi.
         # Ro'yxat bo'sh bo'lishi normal holat; maslahat oqimni to'xtatmaydi.
         data["hints"] = await MiniAppHintService(self.session).hints_for(user)
-        apply_course_v3_access_policy(
-            data,
-            level=level,
-            completed=completed,
-            is_paid=is_paid,
-            ad_unlockable=(
-                not is_paid
-                and access_policy.active_mode == COURSE_ACCESS_MODE_ADS
-            ),
+        apply_course_v3_progress_marks(data, completed=completed)
+        await LessonAccessService(self.session).apply_map(
+            data, user, level=level, completed=completed
         )
-        await LessonAccessService(self.session).apply_map(data, user, level=level, completed=completed)
         await self.session.commit()
         return data
-
-    async def _ad_authorized_lesson(
-        self,
-        user,
-        *,
-        level: str,
-        lesson_order: int,
-        access_ref: str,
-    ) -> bool:
-        """Whether a watched ad currently opens this locked lesson.
-
-        The rule and the proof are the Mini App's own: the admin has to have
-        put the course in "ads" mode, and the client has to present a reference
-        the server itself recorded against a completed view in the last hour.
-        Nothing here trusts the client's word that an ad was watched.
-        """
-
-        reference = str(access_ref or "").strip()
-        if not reference:
-            return False
-        policy = await CourseAccessPolicyService(self.session).get_policy()
-        requirement = policy.requirement_for(
-            lesson_order=lesson_order,
-            is_paid=False,
-            free_lessons=free_course_parts_for_level(level),
-        )
-        if requirement != COURSE_ACCESS_AD:
-            return False
-        try:
-            authorization = await CourseMiniAppAccessService(
-                self.session
-            ).verify_ad_authorization(
-                user,
-                feature_key="lesson",
-                access_ref=reference,
-                max_age_seconds=3600,
-                level=level,
-                lesson_order=lesson_order,
-            )
-        except ValueError:
-            return False
-        return bool(authorization.get("allowed"))
 
     async def lesson(
         self,

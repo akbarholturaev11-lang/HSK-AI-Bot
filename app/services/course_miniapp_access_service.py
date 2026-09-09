@@ -12,7 +12,6 @@ from app.db.models.course_feature_usage import COURSE_FEATURE_KEYS, CourseFeatur
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.user import User
-from app.db.models.voice_practice_session import VoicePracticeSession
 from app.services import course_daily_window
 from app.services.limit_notification_service import LimitNotificationService
 from app.services.user_access_state_service import UserAccessStateService
@@ -188,30 +187,6 @@ class CourseMiniAppAccessService:
         if normalized not in COURSE_FEATURE_KEYS:
             raise ValueError(f"Unknown Course Mini App feature: {normalized or '<empty>'}")
         return normalized
-
-    async def _recorded_counts(self, user_id: int) -> dict[str, int]:
-        result = await self.session.execute(
-            select(CourseFeatureUsage.feature_key, func.count(CourseFeatureUsage.id))
-            .where(CourseFeatureUsage.user_id == user_id)
-            .group_by(CourseFeatureUsage.feature_key)
-        )
-        return {str(feature): int(count or 0) for feature, count in result.all()}
-
-    async def _legacy_counts(self, user) -> dict[str, int]:
-        counts = {feature_key: 0 for feature_key in COURSE_FEATURE_KEYS}
-        if getattr(user, "trial_course_completed_at", None):
-            counts["lesson"] = 1
-        if getattr(user, "trial_voice_used_at", None):
-            counts["voice"] = 1
-
-        voice_result = await self.session.execute(
-            select(func.count(VoicePracticeSession.id)).where(
-                VoicePracticeSession.user_telegram_id == user.telegram_id
-            )
-        )
-        if int(voice_result.scalar_one() or 0) > 0:
-            counts["voice"] = 1
-        return counts
 
     async def get_entitlements(self, user) -> dict[str, dict]:
         result = {}
