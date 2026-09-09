@@ -42,6 +42,12 @@ PARAM = re.compile(
 
 KEYWORDS = {"if", "while", "for", "when", "catch", "return", "fun", "class"}
 
+# Compose supplies Modifier.offset overloads. A project-local declaration with
+# the same short name can make the regex checker think every Compose call is a
+# call to that local function and produce false positives for x/y. The Kotlin
+# compiler owns external API validation, so keep this checker out of that name.
+EXTERNAL_API_CALLS = {"offset"}
+
 
 def strip_comments(text: str) -> str:
     """Blanks out comments, keeping every byte offset and line intact.
@@ -206,7 +212,7 @@ def main() -> int:
         text = strip_comments(path.read_text(encoding="utf-8"))
         for match in CALL.finditer(text):
             name = match.group(1)
-            if name in KEYWORDS or name not in declared:
+            if name in KEYWORDS or name in EXTERNAL_API_CALLS or name not in declared:
                 continue
             # Skip the declaration itself.
             head = text.rfind("\n", 0, match.start())
