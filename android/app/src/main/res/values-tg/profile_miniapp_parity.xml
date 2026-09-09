@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_mini_group_title">Хатоҳои ман · Дӯстон</string>
+    <string name="profile_mini_mistakes_subtitle">Кор бар ҷойҳои заиф</string>
+    <string name="profile_mini_settings">Танзимот</string>
+    <string name="profile_mini_daily_goal">Ҳадафи рӯзона</string>
+    <string name="profile_mini_notify_head">Бот вақте огоҳӣ мефиристад, ки:</string>
+    <string name="profile_mini_notify_rank">касе дар рейтинг аз шумо пеш меравад</string>
+    <string name="profile_mini_notify_lesson">рӯз ба охир мерасаду дарс иҷро нашудааст</string>
+    <string name="profile_mini_notify_streak">силсилаи рӯзҳои пайдарпайи шумо дар хатар аст</string>
+</resources>
