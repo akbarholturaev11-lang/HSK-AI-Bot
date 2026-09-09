@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mistakes_title">Мои ошибки</string>
+    <string name="mistakes_subtitle">Собираются автоматически из уроков, тестов и дуэлей</string>
+    <string name="mistakes_empty_title">Пока ошибок нет</string>
+    <string name="mistakes_empty_subtitle">Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.</string>
+    <string name="mistakes_to_course">К урокам</string>
+    <string name="mistakes_review">Работа над ошибками</string>
+    <string name="mistakes_review_subtitle">активных ошибок</string>
+    <string name="mistakes_start">Начать</string>
+    <string name="mistakes_all">Все</string>
+    <string name="mistakes_retry">Повторить</string>
+    <string name="mistakes_load_error">Не удалось загрузить ошибки. Проверьте связь и повторите.</string>
+    <string name="mistakes_cat_word">Слова</string>
+    <string name="mistakes_cat_grammar">Грамматика</string>
+    <string name="mistakes_cat_character">Иероглифы</string>
+    <string name="mistakes_cat_pronunciation">Произношение</string>
+    <string name="mistakes_source_lesson">Урок</string>
+    <string name="mistakes_source_test">HSK тест</string>
+    <string name="mistakes_source_training">Практика</string>
+    <string name="mistakes_source_challenge">Дуэль</string>
+    <string name="mistakes_source_voice">AI Voice</string>
+    <string name="mistakes_lesson">Урок</string>
+    <string name="mistakes_question">Вопрос</string>
+    <string name="mistakes_of">из</string>
+    <string name="mistakes_correct">Верно!</string>
+    <string name="mistakes_wrong">Неверно</string>
+    <string name="mistakes_explanation">Пояснение</string>
+    <string name="mistakes_next">Дальше</string>
+    <string name="mistakes_finish">Завершить</string>
+    <string name="mistakes_result_title">Отличная работа!</string>
+    <string name="mistakes_result_score_label">верно</string>
+    <string name="mistakes_result_remaining">Осталось ошибок</string>
+    <string name="mistakes_result_all">Вы исправили все свои ошибки!</string>
+    <string name="mistakes_done">Готово</string>
+    <string name="mistakes_loading">Загрузка…</string>
+    <string name="mistakes_more">Показать ещё</string>
+    <string name="mistakes_error">Произошла ошибка. Попробуйте снова.</string>
+</resources>
