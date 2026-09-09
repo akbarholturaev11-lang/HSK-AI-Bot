@@ -7,6 +7,19 @@ engine = create_async_engine(
     settings.DATABASE_URL,
     echo=False,
     pool_pre_ping=True,
+    pool_size=settings.DB_POOL_SIZE,
+    max_overflow=settings.DB_MAX_OVERFLOW,
+    pool_timeout=settings.DB_POOL_TIMEOUT_SECONDS,
+    # Railway may drop idle TCP connections before the application reuses
+    # them.  Recycling before that window makes checkout predictable; the
+    # pre-ping above still protects us from an already-closed connection.
+    pool_recycle=settings.DB_POOL_RECYCLE_SECONDS,
+    pool_use_lifo=True,
+    connect_args={
+        "timeout": settings.DB_CONNECT_TIMEOUT_SECONDS,
+        "command_timeout": settings.DB_COMMAND_TIMEOUT_SECONDS,
+        "server_settings": {"application_name": "hsk-ai-bot"},
+    },
 )
 
 async_session_maker = async_sessionmaker(

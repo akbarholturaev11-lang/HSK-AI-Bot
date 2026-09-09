@@ -241,6 +241,27 @@ Risk:
 Follow-up:
 - Configure final origin and real verification tokens, deploy and submit sitemap/IndexNow manually. No submission/push made during implementation.
 
+### 2026-09-09 — Railway Postgres connection stability
+
+Changed:
+- Bounded the async SQLAlchemy pool, enabled stale-connection recycling, and added asyncpg connect/query timeouts plus an application name.
+- Dispose the engine during FastAPI shutdown.
+
+Why:
+- Railway logs showed asyncpg connections closing during active bot queries, causing update failures and visible turn-by-turn delays.
+
+Files touched:
+- `app/config.py`
+- `app/db/session.py`
+- `app/main.py`
+- `.env.example`
+
+Risk:
+- Pool capacity is now configurable; defaults are conservative for a small Railway Postgres plan.
+
+Follow-up:
+- Deploy and confirm the Railway deploy logs no longer show `ConnectionDoesNotExistError`; if it persists, inspect Postgres restart/connection-limit events in Railway.
+
 
 ### 2026-09-08 — Admin AI billing and statistics integrity
 

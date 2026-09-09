@@ -51,7 +51,7 @@ from app.api.desktop_referral import create_desktop_referral_router
 from app.api.desktop_update import create_desktop_update_router
 from app.api.desktop_voice import create_desktop_voice_router
 from app.bot.create_bot import create_bot
-from app.db.session import async_session_maker, init_db
+from app.db.session import async_session_maker, engine, init_db
 from app.db.models.user import User
 from app.db.models.course_lessons import CourseLesson
 from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
@@ -539,6 +539,7 @@ async def lifespan(app: FastAPI):
             with contextlib.suppress(asyncio.CancelledError):
                 await task
         await bot.session.close()
+        await engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan)
