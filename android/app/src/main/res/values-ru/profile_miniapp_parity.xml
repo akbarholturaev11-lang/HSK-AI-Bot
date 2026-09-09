@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_mini_group_title">Мои ошибки · Друзья</string>
+    <string name="profile_mini_mistakes_subtitle">Работа над слабыми местами</string>
+    <string name="profile_mini_settings">Настройки</string>
+    <string name="profile_mini_daily_goal">Дневная цель</string>
+    <string name="profile_mini_notify_head">Бот пришлёт уведомление, когда:</string>
+    <string name="profile_mini_notify_rank">кто-то обгоняет вас в рейтинге</string>
+    <string name="profile_mini_notify_lesson">день заканчивается, а урок ещё не пройден</string>
+    <string name="profile_mini_notify_streak">ваша серия дней под угрозой</string>
+</resources>
