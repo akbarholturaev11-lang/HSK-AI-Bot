@@ -1,5 +1,7 @@
 package com.pomp.hskai.feature.profile
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,12 +47,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pomp.hskai.R
 import com.pomp.hskai.core.auth.LinkedAccount
 import com.pomp.hskai.core.design.PompColors
+import com.pomp.hskai.core.navigation.AppDestination
+import com.pomp.hskai.core.navigation.DeepLinkRouter
+import com.pomp.hskai.core.navigation.PracticeTool
 import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.domain.model.CourseProgress
 import com.pomp.hskai.domain.model.CourseUser
@@ -73,7 +79,7 @@ fun ProfileScreen(
     onDismissHint: (String) -> Unit = {},
     courseProgress: CourseProgress?,
     courseUser: CourseUser?,
-    onOpenMistakes: () -> Unit,
+    onOpenMistakes: (() -> Unit)? = null,
     onOpenFriends: () -> Unit,
     dailyXp: Int,
     dailyGoal: Int,
@@ -89,6 +95,19 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
 ) {
     var settingsOpen by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val openMistakes = onOpenMistakes ?: {
+        val uri = Uri.parse(
+            DeepLinkRouter.uriFor(
+                AppDestination.Practice(PracticeTool.MISTAKES),
+            ),
+        )
+        runCatching {
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, uri).setPackage(context.packageName),
+            )
+        }
+    }
 
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
         LazyColumn(
@@ -126,7 +145,7 @@ fun ProfileScreen(
                     iconTint = PompColors.Cinnabar,
                     title = stringResource(R.string.practice_mistakes_title),
                     subtitle = stringResource(R.string.profile_mini_mistakes_subtitle),
-                    onClick = onOpenMistakes,
+                    onClick = openMistakes,
                 )
             }
 
