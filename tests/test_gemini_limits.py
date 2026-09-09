@@ -2,8 +2,17 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.pool import StaticPool
+
 from app.bot.utils.i18n import TEXTS, t
+from app.db import models  # noqa: F401
+from app.db.base import Base
+from app.db.models.message import Message
+from app.db.models.user import User
 from app.services.access_service import AccessService
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import LimitConfigService
 from app.services.gemini_switch_announcement_service import (
     ANNOUNCEMENT_TEXT,
     _text_for_language,
@@ -37,63 +46,90 @@ def _make_user():
     return user
 
 
-class GeminiTextLimitTests(unittest.IsolatedAsyncioTestCase):
-    @patch("app.services.access_service.gemini_active", return_value=True)
-    async def test_text_unlimited_when_gemini(self, _):
-        svc = _make_access_service()
-        user = _make_user()
-        user.questions_used = 9999  # istalgan limitdan oshgan
-        ok, key = await svc._can_use_daily_text_limit(user)
-        self.assertTrue(ok)
-        self.assertEqual(key, "")
+class ConfiguredAiLimitTests(unittest.IsolatedAsyncioTestCase):
+    """AI chegaralari endi provayderga emas, admin sozlamasiga bog'liq.
 
-    @patch("app.services.access_service.gemini_active", return_value=False)
-    async def test_text_limited_when_openai(self, _):
-        svc = _make_access_service()
-        user = _make_user()
-        user.questions_used = 10  # == question_limit
-        svc.user_repo.get_bonus_balance = MagicMock(return_value=0)
-        svc.user_repo.was_daily_limit_offer_sent_today = AsyncMock(return_value=True)
-        svc.user_repo.mark_daily_limit_offer_sent = AsyncMock()
-        ok, key = await svc._can_use_daily_text_limit(user)
-        self.assertFalse(ok)
-        self.assertEqual(key, "access_daily_limit_reached")
+    Ilgari bu yerda `gemini_active()` bo'yicha ayriladigan qattiq raqamlar
+    sinalardi (matn cheksiz / foto 5 yoki 2 / ovoz 5). Endi bitta manba bor —
+    admin panelidagi limit bo'limi — va u ikkala provayderda ham bir xil
+    javob berishi kerak.
+    """
+
+    async def asyncSetUp(self):
+        self.db = create_async_engine("sqlite+aiosqlite:///:memory:", poolclass=StaticPool)
+        async with self.db.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.db, expire_on_commit=False)
+
+    async def asyncTearDown(self):
+        await self.db.dispose()
+
+    async def _learner(self, session, *, text=0, image=0, voice=0, translator=0):
+        now = datetime.now(timezone.utc)
+        session.add(User(
+            id=1, telegram_id=321, full_name="AI limits", language="uz", level="hsk1",
+            status="free", payment_status="none", question_limit=5, questions_used=0,
+            created_at=now, last_active_at=now,
+        ))
+        await session.flush()
+        for content_type, count in (
+            ("text", text), ("image", image), ("voice", voice), ("voice_translator", translator),
+        ):
+            session.add_all([
+                Message(user_id=1, role="user", content="x", content_type=content_type)
+                for _ in range(count)
+            ])
+        await session.commit()
+        return await session.get(User, 1)
+
+    async def _limits(self, session, **actions):
+        config = LimitConfigService(session)
+        payload = (await config.get_config()).public_payload()
+        for action, limit in actions.items():
+            payload["plans"]["FREE"][action] = {"limit": limit, "window": "daily"}
+        await config.save_config(payload)
+        await session.commit()
+
+    async def test_the_same_answer_on_both_providers(self):
+        async with self.sessions() as session:
+            user = await self._learner(session, text=3, image=3, voice=2, translator=1)
+            await self._limits(session, **{A.AI_TEXT: 3, A.AI_PHOTO: 4, A.AI_VOICE: 3})
+            service = AccessService(session)
+
+            for provider in (True, False):
+                with self.subTest(gemini=provider), patch(
+                    "app.services.access_service.gemini_active", return_value=provider
+                ):
+                    self.assertEqual(
+                        (False, "access_daily_limit_reached"),
+                        await service._can_use_daily_text_limit(user),
+                    )
+                    self.assertEqual((True, ""), await service._can_use_daily_image_limit(user))
+                    self.assertEqual(
+                        (False, "access_daily_voice_limit_reached"),
+                        await service.can_use_free_daily_voice(user),
+                    )
+
+    async def test_an_unlimited_setting_opens_the_feature(self):
+        async with self.sessions() as session:
+            user = await self._learner(session, text=99)
+            await self._limits(session, **{A.AI_TEXT: None})
+            self.assertEqual(
+                (True, ""),
+                await AccessService(session)._can_use_daily_text_limit(user),
+            )
+
+    async def test_voice_counts_both_voice_kinds_against_one_setting(self):
+        async with self.sessions() as session:
+            user = await self._learner(session, voice=1, translator=1)
+            await self._limits(session, **{A.AI_VOICE: 2})
+            self.assertEqual(
+                (False, "access_daily_voice_limit_reached"),
+                await AccessService(session).can_use_free_daily_voice(user),
+            )
 
 
-class GeminiPhotoLimitTests(unittest.IsolatedAsyncioTestCase):
-    @patch("app.services.access_service.gemini_active", return_value=True)
-    async def test_photo_allowed_below_5_when_gemini(self, _):
-        svc = _make_access_service(image_count=4)
-        ok, _key = await svc._can_use_daily_image_limit(_make_user())
-        self.assertTrue(ok)
-
-    @patch("app.services.access_service.gemini_active", return_value=True)
-    async def test_photo_blocked_at_5_when_gemini(self, _):
-        svc = _make_access_service(image_count=5)
-        ok, key = await svc._can_use_daily_image_limit(_make_user())
-        self.assertFalse(ok)
-        self.assertEqual(key, "access_daily_image_limit_reached")
-
-    @patch("app.services.access_service.gemini_active", return_value=False)
-    async def test_photo_blocked_at_2_when_openai(self, _):
-        svc = _make_access_service(image_count=2)
-        ok, key = await svc._can_use_daily_image_limit(_make_user())
-        self.assertFalse(ok)
-        self.assertEqual(key, "access_daily_image_limit_reached")
-
-
-class GeminiVoiceLimitTests(unittest.IsolatedAsyncioTestCase):
-    async def test_voice_allowed_below_5(self):
-        svc = _make_access_service(voice_count=3, translator_count=1)  # jami 4
-        ok, _key = await svc.can_use_free_daily_voice(_make_user())
-        self.assertTrue(ok)
-
-    async def test_voice_blocked_at_5(self):
-        svc = _make_access_service(voice_count=3, translator_count=2)  # jami 5
-        ok, key = await svc.can_use_free_daily_voice(_make_user())
-        self.assertFalse(ok)
-        self.assertEqual(key, "access_daily_voice_limit_reached")
-
+class VoiceMessageCountTests(unittest.IsolatedAsyncioTestCase):
     async def test_count_voice_sums_both_types(self):
         svc = _make_access_service(voice_count=2, translator_count=3)
         self.assertEqual(await svc.count_voice_messages_today(_make_user()), 5)

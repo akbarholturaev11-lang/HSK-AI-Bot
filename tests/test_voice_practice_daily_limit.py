@@ -10,74 +10,117 @@ from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.pool import StaticPool
+
+from app.db import models  # noqa: F401
+from app.db.base import Base
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.user import User
+from app.db.models.voice_practice_session import VoicePracticeSession
 from app.services import course_daily_window
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import LimitConfigService
 from app.services.voice_practice_service import (
     FREE_TOTAL_SESSIONS,
     VoicePracticeService,
 )
 
 
-def _service(paid: bool, used: int, offset_minutes: int = 0):
-    service = VoicePracticeService(SimpleNamespace())
-    user = SimpleNamespace(id=7, telegram_id=123, level="hsk1", language="ru")
-    service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user))
-    service._is_paid = staticmethod(lambda _user: paid)
-    service._session_count = AsyncMock(return_value=used)
-    service._offset_minutes = AsyncMock(return_value=offset_minutes)
-    return service
+class _VoiceLimitCase(unittest.IsolatedAsyncioTestCase):
+    """Haqiqiy baza ustida: hisob endi dvigateldan, chegara admin sozlamasidan.
+
+    `_session_count` ni mock qilib bo'lmaydi — dvigatel gapirilgan sessiyalarni
+    o'zi sanaydi, va aynan shu hisob barcha klientlarda bir xil.
+    """
+
+    async def asyncSetUp(self):
+        self.db = create_async_engine("sqlite+aiosqlite:///:memory:", poolclass=StaticPool)
+        async with self.db.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.db, expire_on_commit=False)
+
+    async def asyncTearDown(self):
+        await self.db.dispose()
+
+    async def _status(self, *, paid, spoken_today=0, spoken_yesterday=0,
+                      offset_minutes=0, limit=FREE_TOTAL_SESSIONS):
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            user = User(
+                id=7, telegram_id=123, full_name="Voice", language="ru", level="hsk1",
+                status="active" if paid else "free",
+                payment_status="approved" if paid else "none",
+                end_date=now + timedelta(days=7) if paid else None,
+                created_at=now, last_active_at=now,
+            )
+            session.add(user)
+            await session.flush()
+            session.add(CourseMiniAppProfile(
+                user_id=7, goal="hsk_exam", daily_minutes=20, start_mode="lesson_1",
+                timezone_offset_minutes=offset_minutes,
+            ))
+            config = LimitConfigService(session)
+            payload = (await config.get_config()).public_payload()
+            payload["plans"]["FREE"][A.SPEAKING_SESSION] = {"limit": limit, "window": "daily"}
+            await config.save_config(payload)
+            for index in range(spoken_today):
+                session.add(VoicePracticeSession(
+                    id=f"today-{index}", user_telegram_id=123, role="friend", level="hsk1",
+                    language="ru", voice="female", turn_count=2, started_at=now,
+                ))
+            for index in range(spoken_yesterday):
+                session.add(VoicePracticeSession(
+                    id=f"yesterday-{index}", user_telegram_id=123, role="friend", level="hsk1",
+                    language="ru", voice="female", turn_count=2,
+                    started_at=now - timedelta(days=2),
+                ))
+            await session.commit()
+
+            service = VoicePracticeService(session)
+            with patch(
+                "app.services.voice_practice_service.CourseProgressRepository"
+            ) as repo:
+                repo.return_value.get_by_user_id = AsyncMock(return_value=None)
+                return await service.user_status(123)
 
 
-class FreeVoiceLimitTests(unittest.IsolatedAsyncioTestCase):
+class FreeVoiceLimitTests(_VoiceLimitCase):
 
     async def test_a_free_learner_is_counted_for_today_only(self):
         # The whole point: yesterday's session must not still block today.
-        service = _service(paid=False, used=0)
-        with patch(
-            "app.services.voice_practice_service.CourseProgressRepository"
-        ) as repo:
-            repo.return_value.get_by_user_id = AsyncMock(return_value=None)
-            await service.user_status(123)
-        service._session_count.assert_awaited_once_with(123, today_only=True)
+        status = await self._status(paid=False, spoken_yesterday=3)
 
-    async def test_a_paying_learner_is_also_counted_for_today(self):
-        service = _service(paid=True, used=3)
-        with patch(
-            "app.services.voice_practice_service.CourseProgressRepository"
-        ) as repo:
-            repo.return_value.get_by_user_id = AsyncMock(return_value=None)
-            status = await service.user_status(123)
-        service._session_count.assert_awaited_once_with(123, today_only=True)
+        self.assertEqual(FREE_TOTAL_SESSIONS, status["remaining_voice_limit"])
+
+    async def test_a_paying_learner_has_no_limit_at_all(self):
+        status = await self._status(paid=True, spoken_today=3)
+
         self.assertEqual(-1, status["remaining_voice_limit"])
 
     async def test_one_free_session_a_day_is_left_after_using_none(self):
-        service = _service(paid=False, used=0)
-        with patch(
-            "app.services.voice_practice_service.CourseProgressRepository"
-        ) as repo:
-            repo.return_value.get_by_user_id = AsyncMock(return_value=None)
-            status = await service.user_status(123)
+        status = await self._status(paid=False)
+
         self.assertEqual(FREE_TOTAL_SESSIONS, status["remaining_voice_limit"])
 
     async def test_the_free_session_used_today_blocks_until_the_reset(self):
-        service = _service(paid=False, used=FREE_TOTAL_SESSIONS)
-        with patch(
-            "app.services.voice_practice_service.CourseProgressRepository"
-        ) as repo:
-            repo.return_value.get_by_user_id = AsyncMock(return_value=None)
-            status = await service.user_status(123)
+        status = await self._status(paid=False, spoken_today=FREE_TOTAL_SESSIONS)
+
         self.assertEqual(0, status["remaining_voice_limit"])
         self.assertIsNotNone(status["reset_at"])
 
+    async def test_the_admin_setting_is_what_the_learner_gets(self):
+        status = await self._status(paid=False, spoken_today=1, limit=3)
 
-class ResetInstantTests(unittest.IsolatedAsyncioTestCase):
+        self.assertEqual(2, status["remaining_voice_limit"])
+        self.assertIn("3", status["limit_status"]["limit_text"])
+
+
+class ResetInstantTests(_VoiceLimitCase):
 
     async def test_a_free_learner_is_told_when_the_limit_reopens(self):
-        service = _service(paid=False, used=1, offset_minutes=300)
-        with patch(
-            "app.services.voice_practice_service.CourseProgressRepository"
-        ) as repo:
-            repo.return_value.get_by_user_id = AsyncMock(return_value=None)
-            status = await service.user_status(123)
+        status = await self._status(paid=False, spoken_today=1, offset_minutes=300)
+
         reset = datetime.fromisoformat(status["reset_at"])
         now = datetime.now(timezone.utc)
         self.assertGreater(reset, now)
@@ -86,12 +129,8 @@ class ResetInstantTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(course_daily_window.next_day_reset(300), reset)
 
     async def test_a_paying_learner_has_no_reset_because_there_is_no_limit(self):
-        service = _service(paid=True, used=9)
-        with patch(
-            "app.services.voice_practice_service.CourseProgressRepository"
-        ) as repo:
-            repo.return_value.get_by_user_id = AsyncMock(return_value=None)
-            status = await service.user_status(123)
+        status = await self._status(paid=True, spoken_today=9)
+
         self.assertIsNone(status["reset_at"])
 
 

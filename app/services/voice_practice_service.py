@@ -547,26 +547,21 @@ class VoicePracticeService:
         return int(result.scalar_one() or 0)
 
     async def remaining_free_sessions(self, user) -> int | None:
-        """Bugun yana nechta bepul voice sessiya qolgan. None = limitsiz.
-
-        Kunlik reja "hozir boshlab bo'lmaydigan" vazifani bermasligi kerak,
-        shuning uchun u shu hisobga tayanadi. Limit KUNLIK (umrbod emas).
-        """
-        if self._is_paid(user):
-            return None
-        used = await self._session_count(int(getattr(user, "telegram_id", 0) or 0), today_only=True)
-        return max(0, FREE_TOTAL_SESSIONS - used)
+        from app.services.entitlements.engine import EntitlementEngine
+        from app.services.entitlements.actions import SPEAKING_SESSION
+        return (await EntitlementEngine(self.session).check(user, SPEAKING_SESSION)).remaining
 
     async def user_status(self, telegram_id: int) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             raise VoicePracticeError("USER_NOT_FOUND", "Voice Practice'ni ochishdan oldin botni /start qiling.", 404)
 
+        from app.services.entitlements.engine import EntitlementEngine
+        from app.services.entitlements.actions import SPEAKING_SESSION
+        decision = await EntitlementEngine(self.session).check(user, SPEAKING_SESSION)
         paid = self._is_paid(user)
-        # Bepul limit ham KUNLIK sanaladi: bir marta ishlatgan user ertaga
-        # yana ochadi. Ilgari bu bepul userlar uchun umrbod hisob edi.
-        used = await self._session_count(telegram_id, today_only=True)
-        limit = None if paid else FREE_TOTAL_SESSIONS
+        limit = decision.limit
+        used = decision.used
 
         # Kurs progressi: user o'z HSK bandida nechta darsni tugatgan. Mashq
         # sahifalari (ieroglif tanish / talaffuz / yodlash) kontentni o'rganilgan
@@ -588,16 +583,11 @@ class VoicePracticeService:
         return {
             "is_paid": paid,
             "plan": "premium" if paid else "free",
-            "remaining_voice_limit": -1 if paid else max(0, limit - used),
+            "remaining_voice_limit": -1 if decision.unlimited else decision.remaining,
+            "limit_status": decision.as_dict(language=getattr(user, "language", "ru")),
             # Limit qachon ochilishi — UTC ISO. Klient buni o'z mintaqasida
             # ko'rsatadi; server formatlangan soat qaytarmaydi.
-            "reset_at": (
-                None
-                if paid
-                else course_daily_window.next_day_reset(
-                    await self._offset_minutes(telegram_id)
-                ).isoformat()
-            ),
+            "reset_at": decision.reset_at,
             "level": getattr(user, "level", None) or "hsk1",
             "language": getattr(user, "language", None) or "ru",
             "completed_lessons": completed_lessons,
@@ -625,7 +615,7 @@ class VoicePracticeService:
             voice = "female"
 
         status = await self.user_status(telegram_id)
-        if not status["is_paid"] and status["remaining_voice_limit"] <= 0:
+        if status["remaining_voice_limit"] == 0:
             raise VoicePracticeError("LIMIT_EXCEEDED", "Voice Practice limit reached.", 403)
         if status["is_paid"]:
             await self._ensure_budget_available(telegram_id)
@@ -977,6 +967,19 @@ class VoicePracticeService:
         paid = await self._is_paid_telegram_user(telegram_id)
         if paid:
             await self._ensure_budget_available(telegram_id)
+        else:
+            # Bepul slot QATOR yaratilganda emas, birinchi gap aytilganda
+            # yonadi — shuning uchun chegara aynan shu yerda tekshiriladi.
+            from app.services.entitlements.state import EntitlementState, resolve_state
+
+            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            state = resolve_state(user)
+            if state == EntitlementState.BLOCKED:
+                raise VoicePracticeError("access_blocked", "Access blocked.", 403)
+            if item.turn_count == 0 and await self.remaining_free_sessions(user) == 0:
+                raise VoicePracticeError("LIMIT_EXCEEDED", "Voice Practice limit reached.", 403)
+            if state == EntitlementState.TRIAL_ACTIVE:
+                await self._ensure_budget_available(telegram_id)
 
         transcribe_record = None
         reply_record = None

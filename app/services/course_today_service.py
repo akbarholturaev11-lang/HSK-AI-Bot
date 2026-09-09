@@ -35,6 +35,7 @@ from app.services.daily_plan_service import (
 )
 from app.services.learning_signals import LearningSignalsService
 from app.services.voice_practice_service import VoicePracticeService
+from app.services.entitlements.lesson_access import LessonAccessService
 
 
 logger = logging.getLogger(__name__)
@@ -58,29 +59,14 @@ class CourseTodayService:
         view = {}
 
         # Dars: admin siyosati (obuna / reklama / vaqtincha bepul).
-        requirement = access_policy.requirement_for(
-            lesson_order=current_part,
-            is_paid=is_paid,
-            free_lessons=free_course_parts_for_level(level),
+        lesson = await LessonAccessService(self.session).status(
+            user, level=level, lesson_order=current_part,
         )
-        view["lesson"] = {
-            COURSE_ACCESS_OPEN: ACCESS_OPEN,
-            COURSE_ACCESS_AD: ACCESS_AD,
-        }.get(requirement, ACCESS_LOCKED)
-
-        if is_paid or access_policy.free_active:
-            view[PRACTICE_FEATURE] = ACCESS_OPEN
-            view["mistake_review"] = ACCESS_OPEN
-        else:
-            # Test markazi / drill: bepul slot `daily_status`da, tugagach
-            # reklama bilan davom — bu bo'limda reklama CHEKSIZ (AI emas).
-            status = await self.access.daily_status(user, PRACTICE_FEATURE, lifetime=True)
-            view[PRACTICE_FEATURE] = ACCESS_OPEN if status.get("allowed") else ACCESS_AD
-            # Xatolar bo'limi ayni `training_test` slotini ishlatadi, lekin
-            # boshqa hisoblagichda (`CourseFeatureUsage`).
-            entitlements = await self.access.get_entitlements(user)
-            allowed = bool((entitlements.get(PRACTICE_FEATURE) or {}).get("allowed"))
-            view["mistake_review"] = ACCESS_OPEN if allowed else ACCESS_AD
+        view["lesson"] = ACCESS_OPEN if lesson["allowed"] else ACCESS_LOCKED
+        for feature in (PRACTICE_FEATURE, "mistake_review"):
+            action = "training_test" if feature == "mistake_review" else feature
+            status = await self.access.daily_status(user, action)
+            view[feature] = ACCESS_OPEN if status.get("allowed") else ACCESS_LOCKED
 
         # Voice: reklama yo'li YO'Q — bepul limit tugasa faqat obuna.
         try:

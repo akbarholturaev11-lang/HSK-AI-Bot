@@ -438,7 +438,8 @@ class CourseHskExamService:
         if not access.get("allowed"):
             return {
                 "ok": False,
-                "error": access.get("error") or "free_feature_limit_reached",
+                **access,
+                    "error": access.get("error") or "free_feature_limit_reached",
                 "ad": {"available": True, "limited": False},
             }
 

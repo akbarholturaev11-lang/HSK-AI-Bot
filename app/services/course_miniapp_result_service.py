@@ -369,7 +369,7 @@ class CourseMiniAppResultService:
         if not lesson:
             return user, progress, None, "course_no_lesson_found"
 
-        if not trial_service.can_access_lesson(user, lesson.id):
+        if not await trial_service.can_access_lesson(user, lesson.id):
             return user, progress, lesson, "course_only_active_users"
 
         if not is_course_miniapp_supported(lesson):

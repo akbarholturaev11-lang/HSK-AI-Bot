@@ -36,6 +36,7 @@ sealed interface ApiError {
      * learner's own timezone, or not at all.
      */
     data class LimitReached(
+        val limitText: String? = null,
         val resetAt: String?,
         override val messageRes: Int,
     ) : ApiError

@@ -90,7 +90,7 @@ fun WordDrillScreen(
                         }
                     ),
                     limit = limit,
-                    reason = stringResource(R.string.limit_practice_reason),
+                    reason = state.limitText ?: stringResource(R.string.limit_practice_reason),
                     resetAt = state.resetAt,
                     onClose = onClose,
                 )

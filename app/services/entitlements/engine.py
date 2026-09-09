@@ -30,6 +30,11 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 
+from sqlalchemy import func, select
+from app.db.models.message import Message
+from app.db.models.course_feature_usage import CourseFeatureUsage
+from app.db.models.voice_practice_session import VoicePracticeSession
+
 from app.repositories.message_repo import MessageRepository
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services import course_daily_window
@@ -104,58 +109,56 @@ class EntitlementEngine:
 
     # --- hisoblagichlarni o'qish ------------------------------------------
 
+    #: Eski trial bayroqlari. Ular `course_feature_usages` dan OLDINGI davrdan
+    #: qolgan: o'sha paytdagi "bir marta bepul" shu ustunlarga yozilardi. Umrbod
+    #: oynada ular hamon sarflangan hisoblanadi, aks holda eski foydalanuvchi
+    #: bugun yana bitta bepul urinish olib qolardi.
+    _LEGACY_TRIAL_FLAGS = {"lesson": "trial_course_completed_at", "voice": "trial_voice_used_at"}
+
     async def _lifetime_feature_used(self, user, legacy_key: str) -> int:
-        """`course_feature_usages` dagi umrbod hisob (eski hisob bilan birga)."""
-        if legacy_key not in COURSE_FEATURE_KEYS:
-            return 0
-        user_id = int(getattr(user, "id", 0) or 0)
-        if user_id not in self._entitlement_cache:
-            self._entitlement_cache[user_id] = await self._access.get_entitlements(user)
-        entry = self._entitlement_cache[user_id].get(legacy_key) or {}
-        return int(entry.get("used") or 0)
-
-    async def _event_used(self, user, legacy_key: str, *, lifetime: bool) -> int:
-        """`course_miniapp_events` dagi hisob."""
-        status = await self._access.daily_status(
-            user, legacy_key, lifetime=lifetime, limit_override=0
-        )
-        return int(status.get("used") or 0)
-
-    async def _ai_used(self, user, action: str) -> int:
-        """Bot AI hisoblagichlari — `users` va `messages` da."""
-        if action == A.AI_TEXT:
-            return int(getattr(user, "questions_used", 0) or 0)
-        if action == A.AI_PHOTO:
-            return await self._messages.count_user_messages_today(
-                user_id=user.id, content_type="image"
-            )
-        if action == A.AI_VOICE:
-            qa = await self._messages.count_user_messages_today(
-                user_id=user.id, content_type="voice"
-            )
-            translator = await self._messages.count_user_messages_today(
-                user_id=user.id, content_type="voice_translator"
-            )
-            return qa + translator
-        return 0
+        result = await self.session.execute(select(func.count(CourseFeatureUsage.id)).where(
+            CourseFeatureUsage.user_id == user.id,
+            CourseFeatureUsage.feature_key == legacy_key,
+        ))
+        flag = self._LEGACY_TRIAL_FLAGS.get(legacy_key)
+        legacy = bool(flag and getattr(user, flag, None))
+        return max(int(result.scalar() or 0), int(legacy))
 
     async def used_for(self, user, action: str, rule: ActionLimit) -> int:
-        """Shu harakat bugun necha marta ishlatilgan.
-
-        Bir nechta eski hisoblagich bo'lsa maksimumi olinadi — dvigatel eski
-        yo'ldan ko'proq bermasligi kerak.
-        """
+        """Read the same account-wide counter on every client and in its configured window."""
         action = A.normalize(action)
-        if action in (A.AI_TEXT, A.AI_PHOTO, A.AI_VOICE):
-            return await self._ai_used(user, action)
-
-        legacy_key = A.LEGACY_FEATURE_KEYS.get(action, action)
         lifetime = rule.window == WINDOW_LIFETIME
-
-        counts = [await self._event_used(user, legacy_key, lifetime=lifetime)]
-        if legacy_key in COURSE_FEATURE_KEYS:
-            counts.append(await self._lifetime_feature_used(user, legacy_key))
-        return max(counts)
+        offset = await self._access._learner_offset_minutes(user)
+        since = None if lifetime else course_daily_window.day_start(offset)
+        if action in (A.AI_TEXT, A.AI_PHOTO, A.AI_VOICE):
+            types = {A.AI_TEXT: ("text",), A.AI_PHOTO: ("image",),
+                     A.AI_VOICE: ("voice", "voice_translator")}[action]
+            query = select(func.count(Message.id)).where(
+                Message.user_id == user.id, Message.role == "user",
+                Message.content_type.in_(types),
+            )
+            if since is not None:
+                query = query.where(Message.created_at >= since)
+            return int((await self.session.execute(query)).scalar() or 0)
+        if action == A.SPEAKING_SESSION:
+            query = select(func.count(VoicePracticeSession.id)).where(
+                VoicePracticeSession.user_telegram_id == user.telegram_id,
+                VoicePracticeSession.turn_count > 0,
+            )
+            if since is not None:
+                query = query.where(VoicePracticeSession.started_at >= since)
+            used = int((await self.session.execute(query)).scalar() or 0)
+            if lifetime:
+                used = max(used, await self._lifetime_feature_used(user, "voice"))
+            return used
+        legacy_key = A.LEGACY_FEATURE_KEYS.get(action, action)
+        used = await self._access._daily_used_today(
+            user.telegram_id, legacy_key, lifetime=lifetime, offset_minutes=offset
+        )
+        # Lifetime history must never poison a DAILY rule after a reset.
+        if lifetime and legacy_key in COURSE_FEATURE_KEYS:
+            used = max(used, await self._lifetime_feature_used(user, legacy_key))
+        return used
 
     # --- qarorlar ---------------------------------------------------------
 
@@ -278,20 +281,7 @@ class EntitlementEngine:
                 checkout_allowed=checkout_allowed,
             )
 
-        # Eski hisoblagich dvigatelnikidan oldinda bo'lsa, yozishdan OLDIN rad
-        # etamiz: aks holda dvigatel eski yo'ldan ko'proq berib yuboradi.
         used = await self.used_for(user, action, rule)
-        if used >= rule.limit:
-            refusal = self._decide(
-                action=action,
-                snapshot=snap,
-                rule=rule,
-                used=used,
-                checkout_allowed=checkout_allowed,
-            )
-            await self._record_limit_hit(user, action)
-            return refusal
-
         legacy_key = A.LEGACY_FEATURE_KEYS.get(action, action)
         result = await self._access.consume_daily_use(
             user,
@@ -302,11 +292,12 @@ class EntitlementEngine:
             limit_override=rule.limit,
         )
         if not result.get("allowed"):
+            await self._record_limit_hit(user, action)
             return self._decide(
                 action=action,
                 snapshot=snap,
                 rule=rule,
-                used=rule.limit,
+                used=max(used, rule.limit),
                 checkout_allowed=checkout_allowed,
             )
 

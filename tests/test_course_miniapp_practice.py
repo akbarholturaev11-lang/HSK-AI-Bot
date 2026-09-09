@@ -166,7 +166,13 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_daily_feature_limit_blocks_new_session(self):
         self.service.access.consume_daily_use = AsyncMock(
-            return_value={"allowed": False, "error": "free_feature_limit_reached"}
+            return_value={
+                "allowed": False,
+                "error": "free_feature_limit_reached",
+                "limit": 3,
+                "remaining": 0,
+                "limit_text": "Bepul rejimda kuniga 3 ta mashq. Qoldi: 0.",
+            }
         )
         result = await self.service.start(
             123,
@@ -175,13 +181,17 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
             lang="ru",
             skill="listening",
         )
-        # Exact shape on purpose: a denial must not leak anything beyond the
-        # error and what the client needs to say when it reopens.
+        # A denial now carries the admin-configured limit with it: the client
+        # must be able to say "3 ta mashq" without inventing the number.
         self.assertEqual(
             result,
             {
                 "ok": False,
+                "allowed": False,
                 "error": "free_feature_limit_reached",
+                "limit": 3,
+                "remaining": 0,
+                "limit_text": "Bepul rejimda kuniga 3 ta mashq. Qoldi: 0.",
                 "reset_at": None,
                 "lifetime": False,
             },

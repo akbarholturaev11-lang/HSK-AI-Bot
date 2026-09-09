@@ -419,12 +419,8 @@ async def _ensure_ai_available(
         return True
     if message_key == "access_daily_limit_reached":
         user = await access_service.user_repo.get_by_telegram_id(telegram_id)
-        text = await _build_referral_limit_text(
-            access_service.session,
-            user,
-            lang,
-            "referral_daily_limit_offer",
-        )
+        from app.services.entitlements.actions import AI_TEXT
+        text = await access_service.limit_message(user, AI_TEXT)
         await access_service.session.commit()
         await respond(
             text,
@@ -1017,42 +1013,23 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         await message.answer(t(message_key, user_lang, **kwargs), parse_mode="HTML")
         return
 
-    paid_voice_allowed = _can_use_voice(user)
-    trial_voice_allowed = False
-    if not paid_voice_allowed:
-        trial_voice_allowed = access_service.can_use_trial_voice(user)
+    # Ovozning O'Z chegarasi bor: matn limiti tugagani ovozni yopmaydi.
+    # Chegara ham, matn ham admin panelidagi sozlamadan keladi — bu yerda
+    # provayderga (Gemini/OpenAI) qarab ayriladigan yo'l qolmadi.
+    voice_allowed, _voice_message_key = await access_service.can_use_free_daily_voice(user)
+    if not voice_allowed:
+        from app.services.entitlements.actions import AI_VOICE
 
-    # Gemini asosiy provayder bo'lsa, obunasiz foydalanuvchiga ham ovoz ochiladi:
-    # kuniga GEMINI_FREE_VOICE_DAILY (5) ta. OpenAI holatida eski xatti-harakat qoladi.
-    gemini_voice_allowed = False
-    gemini_voice_message_key = ""
-    if not paid_voice_allowed and not trial_voice_allowed and gemini_active():
-        gemini_voice_allowed, gemini_voice_message_key = await access_service.can_use_free_daily_voice(user)
-
-    if not paid_voice_allowed and not trial_voice_allowed and not gemini_voice_allowed:
         await session.commit()
-        if gemini_active():
-            # Gemini yoqilgan: ovoz bepul mavjud, faqat bugungi 5 ta limit tugagan.
-            await message.answer(
-                t(gemini_voice_message_key or "access_daily_voice_limit_reached", user_lang),
-                parse_mode="HTML",
-            )
-            return
-        message_key = (
-            "voice_trial_daily_limit_reached"
-            if access_service.trial_voice_used_today(user)
-            else "voice_subscription_required"
-        )
         await message.answer(
-            t(message_key, user_lang),
-            reply_markup=subscription_miniapp_keyboard(user_lang, source="voice_required", mode="subscription"),
+            await access_service.limit_message(user, AI_VOICE),
+            reply_markup=subscription_miniapp_keyboard(
+                user_lang, source="voice_required", mode="subscription"
+            ),
             parse_mode="HTML",
         )
         return
 
-    if not can_use and not gemini_voice_allowed:
-        await message.answer(t(message_key, user_lang), parse_mode="HTML")
-        return
 
     if message.voice and message.voice.duration > MAX_VOICE_DURATION_SECONDS:
         await message.answer(t("voice_too_long", user_lang, seconds=MAX_VOICE_DURATION_SECONDS))
@@ -1068,8 +1045,6 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         ai_result=transcript_result,
         source="voice_transcribe",
     )
-    if trial_voice_allowed:
-        await access_service.mark_trial_voice_used(user)
     await session.commit()
 
     if user.learning_mode == "course":

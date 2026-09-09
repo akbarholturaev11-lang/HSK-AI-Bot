@@ -59,7 +59,7 @@ internal fun Response<*>.toApiError(): ApiError {
     // A spent daily allowance is the one failure that has a future: the block
     // can tell the learner when it comes back, so the instant is kept.
     return if (errorCode == FREE_LIMIT_CODE) {
-        ApiError.LimitReached(resetAt = envelope?.resetAt, messageRes = mapped.messageRes)
+        ApiError.LimitReached(limitText = envelope?.limitText, resetAt = envelope?.resetAt, messageRes = mapped.messageRes)
     } else {
         mapped
     }

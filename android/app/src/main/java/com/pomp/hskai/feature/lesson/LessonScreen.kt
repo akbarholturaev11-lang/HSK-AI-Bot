@@ -1,5 +1,7 @@
 package com.pomp.hskai.feature.lesson
 
+import com.pomp.hskai.core.network.ApiError
+
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -137,7 +139,8 @@ fun LessonScreen(
 
             state.lesson == null -> Centered {
                 Text(
-                    text = stringResource(state.error?.messageRes ?: R.string.error_unknown),
+                    text = (state.error as? ApiError.LimitReached)?.limitText
+                        ?: stringResource(state.error?.messageRes ?: R.string.error_unknown),
                     style = MaterialTheme.typography.bodyLarge,
                     color = PompColors.InkSecondary,
                     textAlign = TextAlign.Center,
@@ -656,7 +659,7 @@ private fun FailedBlock(
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = stringResource(outcome.error.messageRes),
+            text = (outcome.error as? ApiError.LimitReached)?.limitText ?: stringResource(outcome.error.messageRes),
             style = MaterialTheme.typography.bodyMedium,
             color = PompColors.InkSecondary,
             textAlign = TextAlign.Center,

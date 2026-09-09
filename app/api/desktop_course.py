@@ -165,7 +165,7 @@ async def _validated_payload(
 def _error_response(error: DesktopAuthError | DesktopCourseError) -> JSONResponse:
     return JSONResponse(
         status_code=error.status_code,
-        content={"ok": False, "error": error.code},
+        content={"ok": False, "error": error.code, **getattr(error, "detail", {})},
         headers={"Cache-Control": "no-store"},
     )
 

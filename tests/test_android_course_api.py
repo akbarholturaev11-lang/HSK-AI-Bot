@@ -46,6 +46,8 @@ from app.services.course_miniapp_access_service import (
 from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import LimitConfigService
 from app.services.desktop_course_service import (
     DesktopCourseError,
     DesktopCourseService,
@@ -136,9 +138,22 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
     def _flatten(data):
         return [lesson for unit in data["units"] for lesson in unit["lessons"]]
 
+    async def _lesson_limit(self, session, limit, window="daily"):
+        """Bepul dars chegarasi — admin panelidagi sozlama.
+
+        Xarita endi "shu daraja uchun N ta bepul qism" degan qattiq qoidaga
+        emas, aynan shu sozlamaga tayanadi.
+        """
+        config = LimitConfigService(session)
+        payload = (await config.get_config()).public_payload()
+        payload["plans"]["FREE"][A.LESSON_START] = {"limit": limit, "window": window}
+        await config.save_config(payload)
+        await session.commit()
+
     async def test_map_returns_canonical_progress_and_server_access_state(self):
         async with self.sessions() as session:
             token = await self._token(session)
+            await self._lesson_limit(session, 2)
             data = await AndroidCourseService(session, _settings()).course_map(token)
 
         self.assertTrue(data["ok"])
@@ -150,51 +165,36 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
         # Course v3 is split into mini-parts; the client must never hardcode
         # this count, so the map is the only source of truth.
         self.assertEqual(63, len(lessons))
-        # Legacy constant stays two for compatibility; HSK1 uses the canonical
-        # level-aware allowance.
-        self.assertEqual(2, FREE_COURSE_LESSONS_PER_LEVEL)
-        hsk1_free_parts = free_course_parts_for_level("hsk1")
-        self.assertEqual(3, hsk1_free_parts)
 
-        # Lesson 1 is the current one and is fully free.
+        # Lesson 1 is the current one and the daily allowance is untouched.
         self.assertEqual("current", lessons[0]["status"])
         self.assertTrue(lessons[0]["completion_allowed"])
+        self.assertTrue(data["lesson_limit"]["allowed"])
+        self.assertEqual(2, data["lesson_limit"]["limit"])
 
-        # Lesson 2 is inside the free allowance but has not been reached yet,
-        # so it is locked by progress, not by payment.
-        self.assertEqual("locked", lessons[1]["status"])
-        self.assertFalse(lessons[1]["completion_allowed"])
-        self.assertEqual(
-            "course_lesson_not_unlocked",
-            lessons[1]["completion_error"],
-        )
-        self.assertNotIn("locked_premium", lessons[1])
+        # Everything ahead of the learner is locked by progress, not payment.
+        for index in (1, 2, 3):
+            self.assertEqual("locked", lessons[index]["status"])
+            self.assertFalse(lessons[index]["completion_allowed"])
+            self.assertEqual(
+                "course_lesson_not_unlocked",
+                lessons[index]["completion_error"],
+            )
+            self.assertNotIn("locked_premium", lessons[index])
+            self.assertNotIn("preview_half", lessons[index])
 
-        # Part 3 is the free HSK1 checkpoint, still locked only by progress.
-        checkpoint = lessons[hsk1_free_parts - 1]
-        self.assertNotIn("locked_premium", checkpoint)
-        self.assertEqual("course_lesson_not_unlocked", checkpoint["completion_error"])
+    async def test_a_spent_allowance_locks_the_current_lesson_only(self):
+        """Qulf endi darajaga emas, adminning chegarasiga bog'liq.
 
-        # The first premium lesson is a hard lock while it is still out of
-        # reach. The half preview is NOT shown here.
-        first_premium = lessons[hsk1_free_parts]
-        self.assertTrue(first_premium["locked_premium"])
-        self.assertIsNone(first_premium.get("preview_half"))
-        self.assertFalse(first_premium["completion_allowed"])
-        self.assertEqual("free_feature_limit_reached", first_premium["completion_error"])
-
-    async def test_half_preview_appears_only_once_the_learner_reaches_it(self):
-        """`preview_half` is bound to the learner's position, not to the level.
-
-        The server only offers it when the premium lesson is the learner's
-        *current* one, i.e. exactly after the free allowance is used up.
+        Ilgari bu yerda "bepul qismlar tugadi" degan qattiq chegara bor edi va
+        undan keyingi dars YARIM ko'rinardi. Endi bitta qoida: kunlik chegara
+        tugasa joriy dars qulflanadi, ertaga esa yana ochiladi.
         """
-
         async with self.sessions() as session:
             token = await self._token(session)
+            await self._lesson_limit(session, 2)
             service = AndroidCourseService(session, _settings())
-            hsk1_free_parts = free_course_parts_for_level("hsk1")
-            for order in range(1, hsk1_free_parts + 1):
+            for order in (1, 2):
                 await service.complete(
                     token,
                     lesson_order=order,
@@ -202,22 +202,35 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
                 )
             lessons = self._flatten(await service.course_map(token))
 
-        for index in range(hsk1_free_parts):
+        for index in (0, 1):
             self.assertEqual("done", lessons[index]["status"])
+            self.assertTrue(lessons[index]["completion_allowed"])
 
-        first_premium = lessons[hsk1_free_parts]
-        self.assertEqual("current", first_premium["status"])
-        self.assertTrue(first_premium["preview_half"])
-        self.assertNotIn("locked_premium", first_premium)
-        # Visible, but the preview still cannot finish the lesson.
-        self.assertFalse(first_premium["completion_allowed"])
-        self.assertEqual("free_feature_limit_reached", first_premium["completion_error"])
+        current = lessons[2]
+        self.assertEqual("locked", current["status"])
+        self.assertTrue(current["locked_premium"])
+        self.assertFalse(current["completion_allowed"])
+        self.assertEqual("free_feature_limit_reached", current["completion_error"])
+        self.assertNotIn("preview_half", current)
 
-        # Everything past the preview stays hard-locked.
-        next_premium = lessons[hsk1_free_parts + 1]
-        self.assertTrue(next_premium["locked_premium"])
-        self.assertIsNone(next_premium.get("preview_half"))
-        self.assertFalse(next_premium["completion_allowed"])
+    async def test_raising_the_admin_limit_opens_the_lesson_again(self):
+        async with self.sessions() as session:
+            token = await self._token(session)
+            await self._lesson_limit(session, 1)
+            service = AndroidCourseService(session, _settings())
+            await service.complete(
+                token, lesson_order=1, event_id="android:" + "a" * 31
+            )
+
+            blocked = self._flatten(await service.course_map(token))[1]
+            self.assertFalse(blocked["completion_allowed"])
+
+            await self._lesson_limit(session, 5)
+            opened = self._flatten(await service.course_map(token))[1]
+
+        self.assertEqual("current", opened["status"])
+        self.assertTrue(opened["completion_allowed"])
+        self.assertNotIn("locked_premium", opened)
 
     async def test_utc_plus_zero_timezone_is_stored_not_swallowed(self):
         async with self.sessions() as session:
@@ -321,30 +334,28 @@ class AndroidCourseServiceTests(unittest.IsolatedAsyncioTestCase):
             keys,
         )
 
-    async def test_free_user_cannot_complete_a_premium_lesson(self):
+    async def test_a_spent_allowance_cannot_complete_the_next_lesson(self):
         async with self.sessions() as session:
             token = await self._token(session)
+            await self._lesson_limit(session, 2)
             service = AndroidCourseService(session, _settings())
-            hsk1_free_parts = free_course_parts_for_level("hsk1")
-            for order in range(1, hsk1_free_parts + 1):
+            for order in (1, 2):
                 await service.complete(
                     token,
                     lesson_order=order,
                     event_id=f"android:free{order:032d}",
                 )
 
-            # The next lesson is the half preview: visible, not completable.
             with self.assertRaises(DesktopCourseError) as blocked:
                 await service.complete(
                     token,
-                    lesson_order=hsk1_free_parts + 1,
-                    event_id="android:preview" + "0" * 25,
+                    lesson_order=3,
+                    event_id="android:spent" + "0" * 27,
                 )
             self.assertEqual(403, blocked.exception.status_code)
-            self.assertEqual(
-                hsk1_free_parts,
-                await self._completed_count(session),
-            )
+            self.assertEqual("free_feature_limit_reached", blocked.exception.code)
+            # Rad etilgan urinish progressni SURMAYDI.
+            self.assertEqual(2, await self._completed_count(session))
 
     async def test_lesson_payload_matches_the_checked_in_material(self):
         async with self.sessions() as session:
@@ -417,9 +428,18 @@ class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
         )
         return linked["access_token"]
 
-    async def _reach_the_paywall(self, session, service, token):
-        """Complete every free part, so the next one is the premium one."""
-        for order in range(1, free_course_parts_for_level("hsk1") + 1):
+    LESSON_LIMIT = 2
+
+    async def _spend_the_allowance(self, session, service, token):
+        """Kunlik bepul chegarani oxirigacha ishlatadi."""
+        config = LimitConfigService(session)
+        payload = (await config.get_config()).public_payload()
+        payload["plans"]["FREE"][A.LESSON_START] = {
+            "limit": self.LESSON_LIMIT, "window": "daily"
+        }
+        await config.save_config(payload)
+        await session.commit()
+        for order in range(1, self.LESSON_LIMIT + 1):
             await service.complete(
                 token,
                 lesson_order=order,
@@ -436,50 +456,41 @@ class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
+            await self._spend_the_allowance(session, service, token)
             data = await service.course_map(token)
 
-        locked = [
-            lesson
-            for unit in data["units"]
-            for lesson in unit["lessons"]
-            if lesson.get("locked_premium")
-        ]
-        self.assertTrue(locked, "premium darslar qulflangan bo'lishi kerak")
+        lessons = [lesson for unit in data["units"] for lesson in unit["lessons"]]
+        current = lessons[self.LESSON_LIMIT]
+        self.assertTrue(current["locked_premium"], "chegara tugagach joriy dars qulflanadi")
+        self.assertFalse(current["completion_allowed"])
         # Xarita endi "reklama ochadi" demaydi.
-        self.assertFalse(any(lesson.get("ad_unlockable") for lesson in locked))
+        self.assertFalse(any(lesson.get("ad_unlockable") for lesson in lessons))
+        self.assertFalse(any(lesson.get("ad_required") for lesson in lessons))
 
     async def test_an_invented_access_ref_opens_nothing(self):
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
-            await self._reach_the_paywall(session, service, token)
-            order = free_course_parts_for_level("hsk1") + 1
+            await self._spend_the_allowance(session, service, token)
+            order = self.LESSON_LIMIT + 1
 
-            preview = await service.lesson(token, lesson_order=order)
-            self.assertTrue(preview["preview_half"])
-            self.assertFalse(preview["completion_allowed"])
+            with self.assertRaises(DesktopCourseError) as blocked:
+                await service.lesson(token, lesson_order=order)
+            self.assertEqual(403, blocked.exception.status_code)
 
             # Klient o'ylab topgan ma'lumotnoma hech narsa ochmaydi.
-            still_locked = await service.lesson(
-                token, lesson_order=order, access_ref="ad-ref-1"
-            )
+            with self.assertRaises(DesktopCourseError) as forged:
+                await service.lesson(token, lesson_order=order, access_ref="ad-ref-1")
 
-        self.assertTrue(still_locked["preview_half"])
-        self.assertFalse(still_locked["completion_allowed"])
+        self.assertEqual(403, forged.exception.status_code)
+        self.assertEqual("free_feature_limit_reached", forged.exception.code)
 
-    async def test_an_invented_reference_opens_nothing(self):
+    async def test_an_invented_reference_cannot_complete_a_lesson(self):
         async with self.sessions() as session:
             token = await self._token(session)
             service = AndroidCourseService(session, _settings())
-            await self._reach_the_paywall(session, service, token)
-            order = free_course_parts_for_level("hsk1") + 1
-
-            served = await service.lesson(
-                token,
-                lesson_order=order,
-                access_ref="not-a-real-ref",
-            )
-            self.assertTrue(served["preview_half"])
+            await self._spend_the_allowance(session, service, token)
+            order = self.LESSON_LIMIT + 1
 
             with self.assertRaises(DesktopCourseError) as blocked:
                 await service.complete(

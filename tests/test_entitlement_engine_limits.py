@@ -23,6 +23,7 @@ from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.course_feature_usage import CourseFeatureUsage
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.message import Message
 from app.db.models.user import User
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.entitlements import actions as A
@@ -374,11 +375,21 @@ class AiCounterTests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         await self.engine_db.dispose()
 
-    async def test_ai_text_reads_the_existing_questions_counter(self):
-        # Bot AI matn hisobi `users.questions_used` da — dvigatel yangi
-        # hisoblagich ochmasdan o'shani o'qiydi.
+    async def test_ai_text_counts_the_learners_own_questions_not_the_bot_counter(self):
+        # `users.questions_used` — botning O'ZI uchun hisoblagich: u faqat
+        # Telegram oqimida oshadi va kunlik reset bilan tozalanadi. Dvigatel
+        # esa akkaunt bo'yicha yagona hisobni o'qiydi — foydalanuvchi bergan
+        # savollarning o'zini, qaysi klientdan kelganidan qat'i nazar.
         async with self.sessions() as session:
-            session.add(_user(questions_used=5))
+            session.add(_user(questions_used=0))
+            await session.flush()
+            session.add_all([
+                Message(user_id=1, role="user", content="savol", content_type="text")
+                for _ in range(5)
+            ])
+            # Bot javoblari va boshqa turlar bu hisobga KIRMAYDI.
+            session.add(Message(user_id=1, role="assistant", content="javob", content_type="text"))
+            session.add(Message(user_id=1, role="user", content="rasm", content_type="image"))
             await session.commit()
 
             from sqlalchemy import select

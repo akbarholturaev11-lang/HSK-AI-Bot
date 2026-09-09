@@ -1119,9 +1119,9 @@
        o'zgartirish uchun deploy kerak emas. Bo'sh maydon "cheksiz" degani
        EMAS: cheksiz uchun alohida katakcha bor, chunki tasodifan bo'shatib
        qo'yish butun bepul darajani ochib yuborardi. */
-    const LIMIT_PLANS=[["FREE","Bepul"],["TRIAL_ACTIVE","Trial (7 kun)"]];
+    const LIMIT_PLANS=[["FREE","Bepul"],["TRIAL_ACTIVE","Trial"]];
     const LIMIT_ACTIONS=[
-      ["lesson.start","Dars boshlash"],
+      ["lesson.start","Dars boshlash (xaritadagi 1 qism = 1 dars)"],
       ["ai.text","AI matn"],
       ["ai.photo","AI foto"],
       ["ai.voice","AI ovoz"],
@@ -1159,7 +1159,7 @@
       openDrawer("🎚 Limitlar","Bepul va trial chegaralari. Obunachiga limit qo'yilmaydi.",`<div class="panel">
         ${body}
         <div class="mcard">
-          <h3>7 kunlik Pro trial</h3>
+          <h3>Pro trial</h3>
           <div class="frow"><label><input type="checkbox" id="trialEnabled"${trial.enabled?" checked":""}> Trial yoqilgan</label></div>
           <div class="frow"><label>Muddat (kun)</label><input id="trialDays" class="input" type="number" min="1" max="90" value="${Number(trial.days||7)}"></div>
           <div class="frow"><label>O'chirilgan bo'lsa sabab</label><input id="trialReason" class="input" maxlength="200" value="${esc(trial.disabled_reason||"")}" placeholder="Masalan: fake akkauntlar ko'paydi"></div>

@@ -6,6 +6,8 @@ from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
 from sqlalchemy import create_engine, inspect
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.pool import StaticPool
 
 from app.db import models  # noqa: F401
 from app.db.base import Base
@@ -30,7 +32,10 @@ from app.services.course_access_policy_service import (
     COURSE_ACCESS_SUBSCRIPTION,
     CourseLessonAccessPolicy,
 )
+from app.db.models.user import User
 from app.services.course_ad_service import CourseAdService
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import LimitConfigService
 from app.services.course_miniapp_analytics_service import (
     MAX_EVENT_PAYLOAD_CHARS,
     CourseMiniAppAnalyticsService,
@@ -411,23 +416,43 @@ class AdUnlockRemovedTests(unittest.IsolatedAsyncioTestCase):
 
 
 class CourseMiniAppEntitlementTests(unittest.IsolatedAsyncioTestCase):
+    """Eski trial bayroqlari umrbod chegarada hamon sarflangan hisoblanadi.
+
+    Hisob endi admin sozlamasidan o'qiladi, shuning uchun bu yerda chegara
+    ataylab `lifetime` qilib qo'yiladi: "bir marta bepul" degan eski va'da
+    aynan shu oynada yashaydi.
+    """
+
+    async def asyncSetUp(self):
+        self.engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", poolclass=StaticPool
+        )
+        async with self.engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
+
+    async def asyncTearDown(self):
+        await self.engine.dispose()
+
     async def test_legacy_trial_usage_closes_free_lesson_and_voice(self):
-        session = _QuerySession(
-            [
-                _Result(rows=[]),
-                _Result(scalar=1),
-            ]
-        )
-        user = SimpleNamespace(
-            id=4,
-            telegram_id=123,
-            status="trial",
-            payment_status="none",
-            end_date=None,
-            trial_course_completed_at=datetime.now(timezone.utc),
-            trial_voice_used_at=None,
-        )
-        entitlements = await CourseMiniAppAccessService(session).get_entitlements(user)
+        now = datetime.now(timezone.utc)
+        async with self.sessions() as session:
+            config = LimitConfigService(session)
+            payload = (await config.get_config()).public_payload()
+            for action in (A.LESSON_START, A.SPEAKING_SESSION, A.PRACTICE_PLACEMENT,
+                           A.PRACTICE_TRAINING_TEST):
+                payload["plans"]["FREE"][action] = {"limit": 1, "window": "lifetime"}
+            await config.save_config(payload)
+            session.add(User(
+                id=4, telegram_id=123, full_name="Legacy", language="uz", level="hsk1",
+                status="free", payment_status="none",
+                trial_course_completed_at=now, trial_voice_used_at=now,
+            ))
+            await session.commit()
+
+            user = await session.get(User, 4)
+            entitlements = await CourseMiniAppAccessService(session).get_entitlements(user)
+
         self.assertFalse(entitlements["lesson"]["allowed"])
         self.assertFalse(entitlements["voice"]["allowed"])
         self.assertTrue(entitlements["placement"]["allowed"])

@@ -554,6 +554,7 @@ class CourseMiniAppPracticeService:
                 # Umrbod limitda u None bo'ladi va klient vaqt ko'rsatmaydi.
                 return {
                     "ok": False,
+                    **access,
                     "error": access.get("error") or "free_feature_limit_reached",
                     "reset_at": access.get("reset_at"),
                     "lifetime": bool(access.get("lifetime")),
