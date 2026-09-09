@@ -7648,3 +7648,60 @@ Risk:
 
 Follow-up:
 - Launch through `Start.command`; `README.md` documents setup and limits.
+
+### 2026-09-09 — One limit authority: the admin panel
+
+Changed:
+- Lesson, practice, AI and speaking allowances are decided in ONE place: the
+  central entitlement engine, reading the limit config the admin panel saves.
+  Mini App, bot, Android and desktop all go through it, so the same account
+  meets the same wall on every surface.
+- The refusal payload carries `limit`, `remaining`, `window`, `reset_at` and a
+  ready sentence (`limit_text`) in uz/ru/tj. Clients print that sentence rather
+  than a number baked into the app. Set 5 lessons in the panel and every screen
+  says 5.
+- One numbered mini lesson on the map = one slot. Starting reserves it under
+  `lesson:<level>:<order>`; reopening or completing the same lesson never
+  spends a second slot, and an already-completed lesson always reopens.
+- Removed: the level-based "N free parts" rule, the half-lesson preview
+  (`preview_half`) and every ad-unlocks-a-lesson path. A lesson is open or it
+  is not.
+- Limit notices reach Telegram only when the limit was spent through the
+  Android app. The Mini App and desktop show it on their own screen and write
+  nothing, so no chat message arrives for something already on screen.
+- AI counters are provider-independent. Text/photo/voice count the learner's
+  own messages, speaking counts sessions that were actually spoken in
+  (`turn_count > 0`); the Gemini/OpenAI split and `users.questions_used` no
+  longer decide anything. The in-lesson AI helper (tutor, mistakes, homework)
+  still does not spend the daily text allowance.
+
+Files touched:
+- `app/services/entitlements/` (`engine.py`, `decision.py`, new `lesson_access.py`)
+- `app/services/course_miniapp_access_service.py`, `access_service.py`,
+  `voice_practice_service.py`, `desktop_course_service.py`,
+  `course_today_service.py`, `limit_notification_service.py`
+- `app/api/miniapp_entitlements.py` (new `/api/v3/lesson/start`,
+  `/api/v3/limits/status`), `android_features.py`, `desktop_course.py`,
+  `desktop_practice.py`, `app/main.py`, `app/bot/handlers/messages.py`
+- `app/static/admin.html`, Android limit screens, `desktop/ui/js/`
+
+Risk (access and revenue):
+- **The free lesson allowance changed shape.** It used to be "the first N parts
+  of a level, forever"; it is now whatever the panel says, and the shipped
+  default is 2 per DAY. A free learner can therefore work through the whole
+  course slowly. To restore the old behaviour, set `lesson.start` for FREE to
+  window `Umrbod` in the limit panel. This is an admin decision, not a code one.
+- Free AI text was unlimited while Gemini was the provider; the default is now
+  5/day. Set it to `Cheksiz` in the panel to restore that.
+- Saving the panel replaces a plan wholesale, so an action with no row falls
+  back to its wildcard. `practice.placement` now has its own row for that
+  reason, and `tests/test_admin_panel_has_no_dead_controls.py` fails if a new
+  engine action is left unreachable from the panel.
+
+Follow-up:
+- `LimitNotificationService.lesson_progress` (the "your free lessons are
+  running out" warning at 90%) has no caller any more; only the "spent" notice
+  survives. Reconnect it or delete it deliberately.
+- `tests/test_admin_billing_regressions.py` cannot run locally: `alembic` is
+  not installed in `.venv`, and the repo's own `alembic/` directory shadows the
+  package name. Pre-existing, unrelated to this change.
