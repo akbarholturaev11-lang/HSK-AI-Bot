@@ -175,7 +175,7 @@ def _service_response(result: dict) -> JSONResponse:
         )
         return JSONResponse(
             status_code=status,
-            content={"ok": False, "error": code},
+            content={**result, "ok": False, "error": code},
             headers={"Cache-Control": "no-store"},
         )
     return JSONResponse(content=result, headers={"Cache-Control": "no-store"})

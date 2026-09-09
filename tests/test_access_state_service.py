@@ -2,7 +2,16 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.pool import StaticPool
+
+from app.db import models  # noqa: F401
+from app.db.base import Base
+from app.db.models.message import Message
+from app.db.models.user import User
 from app.services.access_service import AccessService
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import LimitConfigService
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_trial_service import CourseTrialService
 from app.services.user_access_state_service import UserAccessState, UserAccessStateService
@@ -87,16 +96,35 @@ class UserAccessStateServiceTests(unittest.TestCase):
 
 
 class AccessServiceFreeTierTests(unittest.IsolatedAsyncioTestCase):
-    def _service(self, user, *, pending=False):
-        session = _Session()
+    """Bepul daraja — endi admin panelidagi limit sozlamasi bilan.
+
+    Hisob `users.questions_used` da emas: dvigatel foydalanuvchining o'z
+    savollarini sanaydi, shuning uchun bu testlar haqiqiy bazada ishlaydi.
+    """
+
+    async def asyncSetUp(self):
+        self.db = create_async_engine("sqlite+aiosqlite:///:memory:", poolclass=StaticPool)
+        async with self.db.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
+        self.sessions = async_sessionmaker(self.db, expire_on_commit=False)
+
+    async def asyncTearDown(self):
+        await self.db.dispose()
+
+    async def _service(self, session, user, *, pending=False):
         service = AccessService(session)
         service.user_repo = _UserRepo(user)
         service.payment_repo = _PaymentRepo(pending)
-        return service, session
+        return service
 
     def _user(self, **overrides):
+        now = datetime.now(timezone.utc)
         values = {
+            "id": 1,
             "telegram_id": 123,
+            "full_name": "Free tier",
+            "language": "uz",
+            "level": "hsk1",
             "status": "free",
             "payment_status": "none",
             "end_date": None,
@@ -106,30 +134,76 @@ class AccessServiceFreeTierTests(unittest.IsolatedAsyncioTestCase):
             "questions_used": 0,
             "bonus_questions": 0,
             "bonus_questions_used": 0,
-            "last_limit_reset_at": datetime.now(timezone.utc),
+            "last_limit_reset_at": now,
         }
         values.update(overrides)
-        return SimpleNamespace(**values)
+        return User(**values)
+
+    async def _ask(self, session, count):
+        session.add_all([
+            Message(user_id=1, role="user", content="savol", content_type="text")
+            for _ in range(count)
+        ])
+        await session.flush()
+
+    async def _free_text_limit(self, session, limit):
+        config = LimitConfigService(session)
+        payload = (await config.get_config()).public_payload()
+        payload["plans"]["FREE"][A.AI_TEXT] = {"limit": limit, "window": "daily"}
+        await config.save_config(payload)
 
     async def test_free_user_can_use_text_ai_instead_of_start_first(self):
-        service, _ = self._service(self._user())
-        self.assertEqual(await service.can_use_text_ai(123), (True, ""))
+        async with self.sessions() as session:
+            user = self._user()
+            session.add(user)
+            await self._free_text_limit(session, 5)
+            await session.commit()
+            service = await self._service(session, user)
+
+            self.assertEqual(await service.can_use_text_ai(123), (True, ""))
 
     async def test_free_user_daily_limit_is_enforced(self):
-        user = self._user(questions_used=5)
-        service, _ = self._service(user)
-        self.assertEqual(await service.can_use_text_ai(123), (False, "access_daily_limit_reached"))
-        self.assertTrue(service.user_repo.daily_offer_marked)
+        async with self.sessions() as session:
+            user = self._user()
+            session.add(user)
+            await self._free_text_limit(session, 5)
+            await self._ask(session, 5)
+            await session.commit()
+            service = await self._service(session, user)
+
+            self.assertEqual(
+                await service.can_use_text_ai(123),
+                (False, "access_daily_limit_reached"),
+            )
+
+    async def test_a_lesson_helper_does_not_spend_the_daily_text_limit(self):
+        # Dars ichidagi AI yordamchi `enforce_daily_limit=False` bilan keladi.
+        async with self.sessions() as session:
+            user = self._user()
+            session.add(user)
+            await self._free_text_limit(session, 5)
+            await self._ask(session, 5)
+            await session.commit()
+            service = await self._service(session, user)
+
+            self.assertEqual(
+                await service.can_use_text_ai(123, enforce_daily_limit=False),
+                (True, ""),
+            )
 
     async def test_expired_paid_user_becomes_expired_not_trial_and_gets_free_tier(self):
-        user = self._user(
-            status="active",
-            payment_status="approved",
-            end_date=datetime.now(timezone.utc) - timedelta(seconds=1),
-        )
-        service, _ = self._service(user)
-        self.assertEqual(await service.can_use_text_ai(123), (True, ""))
-        self.assertEqual(user.status, "expired")
+        async with self.sessions() as session:
+            user = self._user(
+                status="active",
+                payment_status="approved",
+                end_date=datetime.now(timezone.utc) - timedelta(seconds=1),
+            )
+            session.add(user)
+            await session.commit()
+            service = await self._service(session, user)
+
+            self.assertEqual(await service.can_use_text_ai(123), (True, ""))
+            self.assertEqual(user.status, "expired")
 
     async def test_downgrade_expired_active_users_returns_paid_expired_ids_only(self):
         paid = self._user(

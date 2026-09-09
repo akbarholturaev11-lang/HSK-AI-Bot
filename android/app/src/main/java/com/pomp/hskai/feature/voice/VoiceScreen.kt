@@ -128,7 +128,7 @@ fun VoiceScreen(
             SectionLimitOverlay(
                 sectionTitle = stringResource(R.string.nav_ai),
                 limit = limit,
-                reason = stringResource(R.string.limit_voice_reason),
+                reason = state.status?.limitStatus?.limitText ?: stringResource(R.string.limit_voice_reason),
                 // The server says when the daily allowance reopens; the hour
                 // is never assumed on the client.
                 resetAt = state.status?.resetAt,
@@ -523,5 +523,5 @@ internal fun ErrorPill(text: String) {
 
 private fun canStartVoice(state: VoiceUiState): Boolean {
     val status = state.status ?: return false
-    return status.isPaid || status.remainingVoiceLimit > 0
+    return status.isPaid || status.remainingVoiceLimit != 0
 }

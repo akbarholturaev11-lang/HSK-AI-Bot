@@ -587,6 +587,7 @@ data class ReferralItemDto(
 
 @Serializable
 data class VoiceStatusResponse(
+    @SerialName("limit_status") val limitStatus: ApiErrorBody? = null,
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("is_paid") val isPaid: Boolean = false,
     @SerialName("plan") val plan: String = "",

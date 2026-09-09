@@ -24,6 +24,8 @@ from app.db.models.desktop import DesktopDevice
 from app.db.models.user import User
 from app.services.course_notification_service import CourseNotificationService
 from app.services.desktop_auth_service import DesktopAuthService
+from app.services.entitlements import actions as A
+from app.services.entitlements.limits_config import LimitConfigService
 
 
 def _settings():
@@ -110,6 +112,15 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
     def auth_headers(self):
         return {"Authorization": f"Bearer {self.access_token}"}
 
+    async def _free_lesson_limit(self, limit, window="daily"):
+        """Bepul dars chegarasi — adminning sozlamasi, yagona manba."""
+        async with self.sessions() as session:
+            config = LimitConfigService(session)
+            payload = (await config.get_config()).public_payload()
+            payload["plans"]["FREE"][A.LESSON_START] = {"limit": limit, "window": window}
+            await config.save_config(payload)
+            await session.commit()
+
     async def _complete(self, lesson_order: int, event_id: str):
         return await self.client.post(
             "/api/v3/desktop/course/complete",
@@ -164,13 +175,15 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             payload["units"][0]["lessons"][2]["completion_error"],
             "course_lesson_not_unlocked",
         )
-        self.assertTrue(
-            payload["units"][1]["lessons"][0]["locked_premium"]
-        )
+        # Xaritada "premium dars" degan tushuncha qolmadi: yetib borilmagan
+        # har bir dars progress bilan qulflangan, chegara esa faqat JORIY
+        # darsga tegishli.
+        self.assertNotIn("locked_premium", payload["units"][1]["lessons"][0])
         self.assertEqual(
             payload["units"][1]["lessons"][0]["completion_error"],
-            "free_feature_limit_reached",
+            "course_lesson_not_unlocked",
         )
+        self.assertTrue(payload["lesson_limit"]["allowed"])
         self.assertEqual(response.headers.get("cache-control"), "no-store")
 
         async with self.sessions() as session:
@@ -214,7 +227,8 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.json()["notify"]["enabled"])
 
-    async def test_lesson_returns_canonical_json_and_enforces_unlock_and_premium(self):
+    async def test_lesson_returns_canonical_json_and_enforces_unlock_and_limit(self):
+        await self._free_lesson_limit(3)
         first = await self.client.get(
             "/api/v3/desktop/course/lesson/1",
             headers=self.auth_headers,
@@ -254,41 +268,42 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             (await self._complete(3, "desktop-course-event-0003")).status_code,
             200,
         )
-        preview_map = await self.client.get(
+        # Chegara tugadi: joriy dars qulflanadi va yarim ko'rish YO'Q —
+        # dars yo to'liq ochiladi, yo umuman ochilmaydi.
+        spent_map = await self.client.get(
             "/api/v3/desktop/course/map",
             headers=self.auth_headers,
         )
-        preview_map_lesson = preview_map.json()["units"][1]["lessons"][0]
-        self.assertEqual(preview_map_lesson["status"], "current")
-        self.assertTrue(preview_map_lesson["preview_half"])
-        self.assertFalse(preview_map_lesson["completion_allowed"])
+        spent_map_lesson = spent_map.json()["units"][1]["lessons"][0]
+        self.assertEqual(spent_map_lesson["status"], "locked")
+        self.assertTrue(spent_map_lesson["locked_premium"])
+        self.assertNotIn("preview_half", spent_map_lesson)
+        self.assertFalse(spent_map_lesson["completion_allowed"])
         self.assertEqual(
-            preview_map_lesson["completion_error"],
+            spent_map_lesson["completion_error"],
             "free_feature_limit_reached",
         )
-        premium = await self.client.get(
+        self.assertEqual(spent_map.json()["lesson_limit"]["limit"], 3)
+        self.assertEqual(spent_map.json()["lesson_limit"]["remaining"], 0)
+
+        blocked_lesson = await self.client.get(
             "/api/v3/desktop/course/lesson/4",
             headers=self.auth_headers,
         )
-        self.assertEqual(premium.status_code, 200)
-        preview_payload = premium.json()
-        self.assertTrue(preview_payload["preview_half"])
-        self.assertFalse(preview_payload["completion_allowed"])
+        self.assertEqual(blocked_lesson.status_code, 403)
         self.assertEqual(
-            preview_payload["completion_error"],
+            blocked_lesson.json()["error"],
             "free_feature_limit_reached",
         )
-        self.assertEqual(
-            preview_payload["preview_card_limit"],
-            max(1, preview_payload["total_cards"] // 2),
-        )
-        premium_completion = await self._complete(
+        # Matn ham serverdan keladi: klient raqamni o'zi o'ylab topmaydi.
+        self.assertIn("3", blocked_lesson.json()["limit_text"])
+        blocked_completion = await self._complete(
             4,
             "desktop-course-event-preview",
         )
-        self.assertEqual(premium_completion.status_code, 403)
+        self.assertEqual(blocked_completion.status_code, 403)
         self.assertEqual(
-            premium_completion.json()["error"],
+            blocked_completion.json()["error"],
             "free_feature_limit_reached",
         )
 
@@ -311,7 +326,7 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(paid_lesson.json()["lesson"]["lesson_id"], 4)
 
-    async def test_completed_premium_review_stays_available_after_expiry(self):
+    async def test_a_completed_lesson_stays_reviewable_after_expiry(self):
         async with self.sessions() as session:
             user = await session.get(User, 1)
             user.status = "active"
@@ -334,6 +349,9 @@ class DesktopCourseApiTests(unittest.IsolatedAsyncioTestCase):
             user.payment_status = "none"
             user.end_date = datetime.now(timezone.utc) - timedelta(days=1)
             await session.commit()
+        # Obuna tugadi va bugungi bepul chegara ham bo'sh: allaqachon
+        # tugatilgan dars baribir ochiq qolishi kerak.
+        await self._free_lesson_limit(0)
 
         lesson_response = await self.client.get(
             "/api/v3/desktop/course/lesson/4",

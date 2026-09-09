@@ -2623,6 +2623,10 @@ function renderSubscription() {
     ),
     host,
   );
+  if (state.map?.lesson_limit?.limit_text) {
+    const allowance = element("p", "view-subtitle", state.map.lesson_limit.limit_text);
+    dom.content.insertBefore(allowance, host);
+  }
   subscription.host = host;
   subscription.setUser(state.map?.user);
   void subscription.open({ refresh: true });

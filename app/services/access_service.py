@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
+from app.services.entitlements.engine import EntitlementEngine
+from app.services.entitlements import actions as A
+from app.services.entitlements.state import resolve_state, EntitlementState
+
 from sqlalchemy import select
 
 from app.db.models.user import User
@@ -187,27 +191,16 @@ class AccessService:
 
         return True, "", False, True
 
+    async def _configured_ai_access(self, user, action, error_key):
+        decision = await EntitlementEngine(self.session).check(user, action)
+        return (True, "") if decision.allowed else (False, "access_blocked" if decision.state == EntitlementState.BLOCKED else error_key)
+
+    async def limit_message(self, user, action):
+        decision = await EntitlementEngine(self.session).check(user, action)
+        return decision.as_dict(language=getattr(user, "language", "ru"))["limit_text"]
+
     async def _can_use_daily_text_limit(self, user) -> Tuple[bool, str]:
-        # Gemini asosiy provayder bo'lsa chat/matn cheksiz — bepul foydalanuvchi
-        # bemalol matn orqali AI bilan xitoy tilini o'rganadi (foto/ovoz alohida 5/kun).
-        if gemini_active():
-            return True, ""
-
-        now = datetime.now(timezone.utc)
-
-        if user.last_limit_reset_at is None or now - user.last_limit_reset_at >= timedelta(days=1):
-            user.questions_used = 0
-            user.last_limit_reset_at = now
-            await self.user_repo.session.commit()
-
-        if user.questions_used >= user.question_limit:
-            bonus_balance = self.user_repo.get_bonus_balance(user)
-            if bonus_balance <= 0:
-                if not await self.user_repo.was_daily_limit_offer_sent_today(user):
-                    await self.user_repo.mark_daily_limit_offer_sent(user)
-                return False, "access_daily_limit_reached"
-
-        return True, ""
+        return await self._configured_ai_access(user, A.AI_TEXT, "access_daily_limit_reached")
 
     async def _can_use_ai_budget(self, telegram_id: int) -> Tuple[bool, str]:
         budget_access = await AIUsageBudgetService(self.session).can_use_ai(telegram_id)
@@ -216,24 +209,7 @@ class AccessService:
         return True, ""
 
     async def _can_use_daily_image_limit(self, user) -> Tuple[bool, str]:
-        now = datetime.now(timezone.utc)
-
-        if not user.last_limit_reset_at:
-            user.last_limit_reset_at = now
-            user.questions_used = 0
-        elif now - user.last_limit_reset_at >= timedelta(days=1):
-            user.last_limit_reset_at = now
-            user.questions_used = 0
-
-        today_image_count = await self.message_repo.count_user_messages_today(
-            user_id=user.id,
-            content_type="image",
-        )
-        photo_limit = GEMINI_FREE_PHOTO_DAILY if gemini_active() else OPENAI_FREE_PHOTO_DAILY
-        if today_image_count >= photo_limit:
-            return False, "access_daily_image_limit_reached"
-
-        return True, ""
+        return await self._configured_ai_access(user, A.AI_PHOTO, "access_daily_image_limit_reached")
 
     async def count_voice_messages_today(self, user) -> int:
         """Bugun (UTC) yuborilgan ovozli xabarlar soni (QA ovoz + tarjimon ovoz)."""
@@ -248,15 +224,7 @@ class AccessService:
         return qa_voice + translator_voice
 
     async def can_use_free_daily_voice(self, user) -> Tuple[bool, str]:
-        """Gemini yoqilganda bepul (obunasiz) foydalanuvchi uchun kunlik ovoz limiti.
-
-        Faqat `gemini_active()` bo'lganda ma'noga ega — bu holatda bepul userga
-        kuniga `GEMINI_FREE_VOICE_DAILY` ta ovozli xabar ruxsat etiladi.
-        """
-        today_voice_count = await self.count_voice_messages_today(user)
-        if today_voice_count >= GEMINI_FREE_VOICE_DAILY:
-            return False, "access_daily_voice_limit_reached"
-        return True, ""
+        return await self._configured_ai_access(user, A.AI_VOICE, "access_daily_voice_limit_reached")
 
     async def downgrade_expired_active_users(self) -> tuple[int, list[int]]:
         result = await self.session.execute(
@@ -300,6 +268,18 @@ class AccessService:
         if user.status == "blocked":
             return False, "access_blocked"
 
+        # `enforce_daily_limit=False` — dars ichidagi AI yordamchi (tutor,
+        # xatolar tushuntiruvi, uy vazifasi). U ATAYLAB kunlik matn limitini
+        # yemaydi: aks holda darsni tugatib bo'lmay qolardi.
+        if enforce_daily_limit:
+            allowed, reason = await self._configured_ai_access(
+                user, A.AI_TEXT, "access_daily_limit_reached"
+            )
+            if not allowed:
+                return allowed, reason
+        if resolve_state(user) == EntitlementState.TRIAL_ACTIVE:
+            return await self._can_use_ai_budget(telegram_id)
+
         if user.status != "active":
             has_pending_payment = await self.payment_repo.has_pending_by_user(telegram_id)
             if has_pending_payment:
@@ -341,6 +321,12 @@ class AccessService:
 
         if user.status == "blocked":
             return False, "access_blocked"
+
+        allowed, reason = await self._configured_ai_access(user, A.AI_PHOTO, "access_daily_image_limit_reached")
+        if not allowed:
+            return allowed, reason
+        if resolve_state(user) == EntitlementState.TRIAL_ACTIVE:
+            return await self._can_use_ai_budget(telegram_id)
 
         if user.status != "active":
             has_pending_payment = await self.payment_repo.has_pending_by_user(telegram_id)

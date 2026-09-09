@@ -101,6 +101,7 @@ data class BootstrapUser(
 /** Stable error envelope: `{"ok": false, "error": "<code>"}`. */
 @Serializable
 data class ApiErrorBody(
+    @SerialName("limit_text") val limitText: String? = null,
     @SerialName("ok") val ok: Boolean = false,
     @SerialName("error") val error: String = "",
     /**

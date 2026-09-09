@@ -330,7 +330,7 @@ export class DesktopVoiceController {
     );
     const quota = node("div", "voice-quota");
     quota.append(
-      node("strong", "", isPaid ? this.t("voiceUnlimited") : String(Math.max(0, remaining))),
+      node("strong", "", remaining < 0 ? this.t("voiceUnlimited") : String(Math.max(0, remaining))),
       node("small", "", isPaid ? this.t("voicePlanPremium") : this.t("voiceSessionsLeft")),
     );
     lead.append(leadCopy, quota);

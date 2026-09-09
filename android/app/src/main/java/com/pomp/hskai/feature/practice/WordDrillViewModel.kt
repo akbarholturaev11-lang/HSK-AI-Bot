@@ -43,6 +43,7 @@ data class WordDrillUiState(
      * one place that says what reopens it.
      */
     val limitReached: Boolean = false,
+    val limitText: String? = null,
     val resetAt: String? = null,
     val error: ApiError? = null,
 ) {
@@ -104,6 +105,7 @@ class WordDrillViewModel(
                         isLoading = false,
                         limitReached = spent != null,
                         resetAt = spent?.resetAt,
+                        limitText = spent?.limitText,
                         error = if (spent != null) null else gate.error,
                     )
                 }

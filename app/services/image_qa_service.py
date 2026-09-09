@@ -44,6 +44,10 @@ class ImageQAService:
     ) -> str:
         can_use, message_key = await self.access_service.can_use_image_ai(telegram_id)
         if not can_use:
+            if message_key.startswith("access_daily_"):
+                from app.services.entitlements.actions import AI_PHOTO
+                user = await self.user_repo.get_by_telegram_id(telegram_id)
+                return await self.access_service.limit_message(user, AI_PHOTO)
             return message_key
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)

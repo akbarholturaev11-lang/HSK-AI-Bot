@@ -1390,7 +1390,7 @@ def create_android_features_router(
                 # "Free until" is a course-wide gift; it must not quietly cost
                 # the learner their one free run of the section.
                 policy = await CourseAccessPolicyService(session).get_policy()
-                if policy.free_active:
+                if getattr(user, "status", "") != "blocked" and policy.free_active:
                     return JSONResponse(
                         content={
                             "ok": True,
@@ -1421,6 +1421,7 @@ def create_android_features_router(
                             "ok": False,
                             "error": result.get("error") or "free_feature_limit_reached",
                             "is_paid": bool(result.get("is_paid", False)),
+                            **result,
                             "reset_at": result.get("reset_at"),
                             # Shakl SAQLANADI, javobi esa endi doim "yo'q":
                             # do'kondagi eski build shu kalitni o'qiydi va

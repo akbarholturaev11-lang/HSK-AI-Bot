@@ -18,6 +18,7 @@ from app.services.course_lesson_mistake_material_service import (
     CourseLessonMistakeMaterialError,
     CourseLessonMistakeMaterialService,
 )
+from app.services.entitlements.lesson_access import LessonAccessService
 from app.services.entitlements.state import has_full_access, resolve_state
 from app.services.course_miniapp_access_service import (
     CourseMiniAppAccessService,
@@ -33,7 +34,6 @@ from app.services.course_access_policy_service import (
 )
 from app.services.course_notification_service import CourseNotificationService
 from app.services.miniapp_hint_service import MiniAppHintService
-from app.services.limit_notification_service import LimitNotificationService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_today_service import CourseTodayService
@@ -51,10 +51,11 @@ DESKTOP_PREVIEW_COMPLETION_ERROR = "free_feature_limit_reached"
 
 
 class DesktopCourseError(RuntimeError):
-    def __init__(self, code: str, *, status_code: int):
+    def __init__(self, code: str, *, status_code: int, detail: dict | None = None):
         super().__init__(code)
         self.code = code
         self.status_code = status_code
+        self.detail = detail or {}
 
 
 def normalize_course_v3_level(value: str | None) -> str:
@@ -395,6 +396,7 @@ class DesktopCourseService:
                 and access_policy.active_mode == COURSE_ACCESS_MODE_ADS
             ),
         )
+        await LessonAccessService(self.session).apply_map(data, user, level=level, completed=completed)
         await self.session.commit()
         return data
 
@@ -475,41 +477,15 @@ class DesktopCourseService:
         # shuning uchun referral yoki otziv bonusi olgan odam telefonda
         # darsni ochardi, desktopda esa ocholmasdi.
         is_paid = has_full_access(resolve_state(user))
-        requires_premium = CourseMiniAppAccessService.lesson_requires_premium(
-            level,
-            lesson_order,
+        limit_status = await LessonAccessService(self.session).status(
+            user, level=level, lesson_order=lesson_order, completed=completed, consume=True,
+            bot=self.bot if self.CLIENT_NAMESPACE == "android" else None,
         )
-        # A watched ad opens the lesson whole: half of it would be a worse
-        # deal than the free preview the learner already had.
-        ad_open = (
-            lesson_order > completed
-            and not is_paid
-            and requires_premium
-            and await self._ad_authorized_lesson(
-                user,
-                level=level,
-                lesson_order=lesson_order,
-                access_ref=access_ref,
-            )
-        )
-        preview_half = (
-            not is_paid
-            and requires_premium
-            and not ad_open
-            and lesson_order == completed + 1
-            and lesson_order == free_course_parts_for_level(level) + 1
-        )
-        if (
-            lesson_order > completed
-            and not is_paid
-            and requires_premium
-            and not preview_half
-            and not ad_open
-        ):
-            raise DesktopCourseError(
-                "free_feature_limit_reached",
-                status_code=403,
-            )
+        if not limit_status["allowed"]:
+            await self.session.commit()
+            raise DesktopCourseError(limit_status.get("error", "free_feature_limit_reached"),
+                                     status_code=403, detail=limit_status)
+        preview_half = False
 
         lesson = self._read_json(
             COURSE_V3_DATA_ROOT
@@ -632,24 +608,16 @@ class DesktopCourseService:
                 gamification=snapshot,
                 duplicate=True,
             )
-        if not is_paid and access.lesson_requires_premium(level, lesson_order):
-            # The ad is checked again here, not only when the lesson opened:
-            # completion is what awards XP and moves the course forward.
-            if not await self._ad_authorized_lesson(
-                user,
-                level=level,
-                lesson_order=lesson_order,
-                access_ref=access_ref,
-            ):
-                raise DesktopCourseError(
-                    DESKTOP_PREVIEW_COMPLETION_ERROR,
-                    status_code=403,
-                )
         if lesson_order != completed + 1:
-            raise DesktopCourseError(
-                "course_lesson_not_unlocked",
-                status_code=403,
-            )
+            raise DesktopCourseError("course_lesson_not_unlocked", status_code=403)
+        limit_status = await LessonAccessService(self.session).status(
+            user, level=level, lesson_order=lesson_order, completed=completed, consume=True,
+            bot=self.bot if self.CLIENT_NAMESPACE == "android" else None,
+        )
+        if not limit_status["allowed"]:
+            await self.session.commit()
+            raise DesktopCourseError(limit_status.get("error", "free_feature_limit_reached"),
+                                     status_code=403, detail=limit_status)
 
         legacy_lesson_id = getattr(legacy_lesson, "id", None)
         await progress_repository.set_current_lesson_and_step(
@@ -674,39 +642,12 @@ class DesktopCourseService:
             if next_band:
                 user.level = next_band
 
-        next_requires_premium = access.lesson_requires_premium(
-            level,
-            next_lesson,
+        await progress_repository.set_current_lesson_and_step(
+            progress=progress, lesson_id=legacy_lesson_id,
+            step="intro" if has_next else "completed", waiting_for="none",
         )
-        if has_next and (is_paid or not next_requires_premium):
-            await progress_repository.set_current_lesson_and_step(
-                progress=progress,
-                lesson_id=legacy_lesson_id,
-                step="intro",
-                waiting_for="none",
-            )
+        if has_next:
             await progress_repository.set_homework_status(progress, "none")
-        else:
-            await progress_repository.set_current_lesson_and_step(
-                progress=progress,
-                lesson_id=legacy_lesson_id,
-                step="completed",
-                waiting_for="none",
-            )
-
-        # Bepul darslar tugayotgani (yoki tugagani) haqida xabar. Obunachida
-        # limit yo'q, shuning uchun unga hech narsa yuborilmaydi.
-        if not is_paid:
-            try:
-                await LimitNotificationService(self.session).lesson_progress(
-                    user,
-                    level=level,
-                    completed_parts=int(progress.completed_lessons_count or 0),
-                    free_parts=free_course_parts_for_level(level),
-                    bot=self.bot,
-                )
-            except Exception:  # noqa: BLE001 — xabar darsni yiqitmasin
-                logger.info("Lesson limit notice failed", exc_info=True)
 
         completion_result = self._completion_payload(
             lesson_order=lesson_order,

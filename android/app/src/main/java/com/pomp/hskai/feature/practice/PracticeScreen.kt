@@ -166,7 +166,7 @@ fun PracticeScreen(
                     stringResource(R.string.practice_title)
                 },
                 limit = limit,
-                reason = stringResource(R.string.limit_practice_reason),
+                reason = spent.limitText ?: stringResource(R.string.limit_practice_reason),
                 resetAt = spent.resetAt,
                 onClose = onDismissLimit,
             )

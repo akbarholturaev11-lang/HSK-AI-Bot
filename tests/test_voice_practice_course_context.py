@@ -24,7 +24,9 @@ def _fake_db_session():
         added=[],
         commit=AsyncMock(),
         execute=AsyncMock(
-            return_value=SimpleNamespace(scalar_one_or_none=lambda: None, scalar_one=lambda: 0)
+            return_value=SimpleNamespace(
+                scalar_one_or_none=lambda: None, scalar_one=lambda: 0, scalar=lambda: 0
+            )
         ),
     )
     session.add = lambda item: session.added.append(item)
@@ -89,7 +91,9 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(session.added)
 
     async def test_voice_message_records_transcribe_and_reply_usage(self):
-        session = SimpleNamespace(commit=AsyncMock())
+        # Chegara birinchi gapda tekshiriladi, ya'ni `process_message` ham
+        # bazaga murojaat qiladi — soxta sessiya shuning uchun to'liq.
+        session = _fake_db_session()
         service = VoicePracticeService(session)
         item = SimpleNamespace(
             turn_count=0,
