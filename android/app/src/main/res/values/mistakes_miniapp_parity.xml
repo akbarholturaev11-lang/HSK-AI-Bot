@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mistakes_title">Xatolarim</string>
+    <string name="mistakes_subtitle">Darslar, HSK testlari va bellashuvlardan avtomatik yig\'iladi</string>
+    <string name="mistakes_empty_title">Hozircha xato yo\'q</string>
+    <string name="mistakes_empty_subtitle">Darslar va testlardan o\'ting — xatolar shu yerda paydo bo\'ladi va ularni mashq qila olasiz.</string>
+    <string name="mistakes_to_course">Darslarga</string>
+    <string name="mistakes_review">Xatolar ustida ishlash</string>
+    <string name="mistakes_review_subtitle">faol xato</string>
+    <string name="mistakes_start">Boshlash</string>
+    <string name="mistakes_all">Barchasi</string>
+    <string name="mistakes_retry">Qayta urinish</string>
+    <string name="mistakes_load_error">Xatolar yuklanmadi. Internetni tekshirib, qayta urinib ko\'ring.</string>
+    <string name="mistakes_cat_word">So\'zlar</string>
+    <string name="mistakes_cat_grammar">Grammatika</string>
+    <string name="mistakes_cat_character">Ieroglif</string>
+    <string name="mistakes_cat_pronunciation">Talaffuz</string>
+    <string name="mistakes_source_lesson">Dars</string>
+    <string name="mistakes_source_test">HSK test</string>
+    <string name="mistakes_source_training">Mashq</string>
+    <string name="mistakes_source_challenge">Bellashuv</string>
+    <string name="mistakes_source_voice">AI Voice</string>
+    <string name="mistakes_lesson">Dars</string>
+    <string name="mistakes_question">Savol</string>
+    <string name="mistakes_of">/</string>
+    <string name="mistakes_correct">To\'g\'ri!</string>
+    <string name="mistakes_wrong">Noto\'g\'ri</string>
+    <string name="mistakes_explanation">Izoh</string>
+    <string name="mistakes_next">Keyingi</string>
+    <string name="mistakes_finish">Yakunlash</string>
+    <string name="mistakes_result_title">Ajoyib ish!</string>
+    <string name="mistakes_result_score_label">to\'g\'ri</string>
+    <string name="mistakes_result_remaining">Qolgan xatolar</string>
+    <string name="mistakes_result_all">Barcha xatolaringizni tuzatdingiz!</string>
+    <string name="mistakes_done">Tayyor</string>
+    <string name="mistakes_loading">Yuklanmoqda…</string>
+    <string name="mistakes_more">Yana ko\'rsatish</string>
+    <string name="mistakes_error">Xatolik yuz berdi. Qayta urinib ko\'ring.</string>
+</resources>
