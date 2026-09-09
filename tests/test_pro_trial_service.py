@@ -117,6 +117,42 @@ class ProTrialServiceTests(unittest.IsolatedAsyncioTestCase):
 
     # --- boshlash ---------------------------------------------------------
 
+    async def test_nobody_gets_a_trial_without_asking_for_it(self):
+        """Trial O'ZI berilmaydi — faqat odam tugmani bosganda.
+
+        Buni tekshirish kerak, chunki "eligible: true" ni ko'rsatish bilan
+        "trial berildi" ni chalkashtirish oson: profilda taklif kartasi
+        chiqadi, lekin bu hali hech narsa bermaydi.
+
+        Faqat `start()` beradi, va uni chaqiradigan uchta joy bor —
+        uchalasi ham tugma ortidagi POST: Mini App, Android, desktop.
+        Fon rejimidagi vazifa (`expire_due`) esa faqat TUGATADI.
+        """
+        await self._seed()
+
+        # Holatni o'qish — bu hali taklif, berish emas.
+        async with self.sessions() as session:
+            user = await self._get(session)
+            verdict = await ProTrialService(session).eligibility(user)
+        self.assertTrue(verdict["eligible"])
+
+        async with self.sessions() as session:
+            fresh = await self._get(session)
+            self.assertFalse(bool(getattr(fresh, "trial_used", False)))
+            self.assertIsNone(getattr(fresh, "pro_trial_started_at", None))
+            self.assertIsNone(getattr(fresh, "pro_trial_ends_at", None))
+            self.assertEqual(EntitlementState.FREE, resolve_state(fresh))
+
+        # Fon vazifasi ham hech kimga trial bermaydi — u faqat TUGATADI.
+        async with self.sessions() as session:
+            await ProTrialService(session).expire_due()
+            await session.commit()
+
+        async with self.sessions() as session:
+            fresh = await self._get(session)
+            self.assertFalse(bool(getattr(fresh, "trial_used", False)))
+            self.assertEqual(EntitlementState.FREE, resolve_state(fresh))
+
     async def test_a_free_user_can_start_the_trial_once(self):
         await self._seed()
 

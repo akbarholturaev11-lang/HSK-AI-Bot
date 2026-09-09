@@ -655,7 +655,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
     def test_admin_can_attach_external_cta_to_lesson_end_ad(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")
 
-        self.assertIn('value="dars_yakuni">🎓 Dars yakuni reklamasi', html)
+        # Tur "dars yakuni" deb ATALMAYDI: joy ham shunday nomlanadi va
+        # ikkalasi bir panelda yonma-yon turardi. Tur reklamaning
+        # ko'rinishini belgilaydi (obuna tugmasi bilanmi), joyni esa
+        # alohida maydon belgilaydi.
+        self.assertIn('value="dars_yakuni">👑 Obuna taklifi bilan', html)
         self.assertIn('noBtn=t==="odiy"', html)
         self.assertIn('t==="dars_yakuni"?"Tashqi link knopkasi"', html)
         self.assertIn('t==="dars_yakuni" ? "Tashqi havola (ixtiyoriy)"', html)

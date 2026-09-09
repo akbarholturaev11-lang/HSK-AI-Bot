@@ -34,7 +34,10 @@ from app.api.miniapp_entitlements import (
     COURSE_DAILY_GATE_FEATURES,
     create_miniapp_entitlements_router,
 )
-from app.services.ad_placement_service import AdPlacementService
+from app.services.ad_placement_service import (
+    AdPlacementService,
+    normalize_placements as normalize_ad_placements,
+)
 from app.services.entitlements.limits_config import LimitConfigService
 from app.services.miniapp_hint_service import MiniAppHintService
 from app.services.pro_trial_service import ProTrialService
@@ -3922,6 +3925,12 @@ async def admin_miniapp_course_ads_upload(request: Request):
         form.get("skip_after_seconds"), duration_seconds
     )
     daily_limit = CourseAdService.normalize_daily_limit(form.get("daily_limit"))
+    # Reklama QAYERDA chiqishi. Ilgari bu forma umuman so'ramasdi va har bir
+    # yangi reklama bazadagi standart qiymatga — ekran markaziga — tushardi,
+    # ya'ni dars yakuniga reklama qo'yishning ILOJI YO'Q edi. Turni ("dars
+    # yakuni reklamasi") joy deb o'ylash oson, lekin u faqat reklamaning
+    # ko'rinishini belgilaydi.
+    placements = normalize_ad_placements(form.get("placements"))
     # Platforma havolalari — QO'LDA kiritilgani (ixtiyoriy). Bo'sh qoldirilsa
     # havola reliz tizimidan avtomatik olinadi.
     platform_links = {
@@ -3945,6 +3954,7 @@ async def admin_miniapp_course_ads_upload(request: Request):
             media_type=media_type,
             media_blob=media_backup,
             created_by_telegram_id=telegram_id,
+            placements=placements,
         )
         await session.commit()
         payload = CourseAdService.payload(ad)

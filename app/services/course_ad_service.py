@@ -74,6 +74,16 @@ COURSE_AD_APP_PLATFORMS = ("macos", "windows", "ios", "android")
 COURSE_AD_APP_VISIBLE_PLATFORMS = ("macos", "windows")
 
 
+def _ad_placements_list(ad) -> list[str]:
+    """Reklamaning joylari, ro'yxat sifatida.
+
+    Lokal import ATAYLAB: `ad_placement_service` shu modulni import qiladi.
+    """
+    from app.services.ad_placement_service import placements_of
+
+    return placements_of(ad)
+
+
 class CourseAdService:
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -431,6 +441,9 @@ class CourseAdService:
             "link_url": getattr(ad, "link_url", None) or None,
             "language": cls.normalize_language(getattr(ad, "language", None)),
             "ad_type": cls.normalize_ad_type(getattr(ad, "ad_type", None)),
+            # Reklama qaysi joy(lar)da chiqishi. Admin panel buni ko'rsatishi
+            # SHART: ilgari u joyni turdan taxmin qilardi va noto'g'ri yozardi.
+            "placements": _ad_placements_list(ad),
             "button_text": getattr(ad, "button_text", None) or None,
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
             "skip_after_seconds": cls.normalize_skip_after(
@@ -475,7 +488,14 @@ class CourseAdService:
         media_type: str = COURSE_AD_DEFAULT_MEDIA_TYPE,
         media_blob: bytes | None = None,
         created_by_telegram_id: int | None = None,
+        placements: str | None = None,
     ) -> CourseAdCreative:
+        # Lokal import ATAYLAB: `ad_placement_service` shu modulni import
+        # qiladi, ya'ni yuqorida yozilsa aylanma bog'lanish bo'ladi.
+        from app.services.ad_placement_service import (
+            normalize_placements as _normalize_ad_placements,
+        )
+
         ad = CourseAdCreative(
             title=(title or "Course ad").strip()[:120],
             media_path=media_path,
@@ -489,6 +509,10 @@ class CourseAdService:
                 skip_after_seconds, duration_seconds
             ),
             daily_limit=self.normalize_daily_limit(daily_limit),
+            # Reklama QAYERDA chiqishi — faqat shu ustundan.
+            # `ad_type` endi joyni belgilamaydi (u reklamaning TURI:
+            # obuna tugmasi bilanmi, hamkorlikmi, ilova promosimi).
+            placements=_normalize_ad_placements(placements),
             platform_links=self.platform_links_storage_value(platform_links),
             is_active=True,
             created_by_telegram_id=created_by_telegram_id,

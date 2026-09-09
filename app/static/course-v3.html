@@ -536,6 +536,7 @@ button{cursor:pointer}
 .pro .gw{position:absolute;right:-6px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
 .pro h3{margin:0 0 4px;font-size:16px;font-weight:500;color:#fff}.pro p{margin:0 0 13px;font-size:13px;color:rgba(255,255,255,.7)}
 .pro button{background:var(--gold);color:#3a2c08;border:none;border-radius:11px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:500}
+.pro .prolink{display:inline-block;margin-left:12px;font-size:13px;font-weight:500;color:rgba(255,255,255,.75);cursor:pointer}
 .loading{padding:60px 20px;text-align:center;color:var(--ink3);font-size:14px}
 .writebtn{position:absolute;right:18px;bottom:152px;width:56px;height:56px;border-radius:50%;background:var(--gold);color:#3a2c08;border:none;box-shadow:0 4px 0 #9a7420;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:7}
 .writebtn:active{transform:translateY(2px);box-shadow:0 2px 0 #9a7420}
@@ -5148,23 +5149,41 @@ function closeHint(key){
   if(node&&node.parentNode)node.parentNode.removeChild(node);
   _apiPost("/api/v3/hints/dismiss",{hint:key}).catch(function(){});
 }
-function trialProfileCard(){
+/* Profildagi HSK AI Pro kartasi — BITTA.
+
+   Ilgari bu yerda ikkita bir xil qora karta ketma-ket chiqardi: biri
+   "7 kun bepul", ikkinchisi "Hammasini oching". Ikkalasi ham ayni bitta
+   obuna haqida edi va odam ularni ikki xil narsa deb o'qirdi.
+
+   Endi bitta karta, holatga qarab:
+     • obunachi          — karta yo'q;
+     • trial ishlayapti  — holat, tugmasiz;
+     • trial olinmagan   — asosiy "7 kun bepul sinash" + past "Pro olish";
+     • trial ishlatilgan — FAQAT "HSK AI Pro ⭐️ olish", boshqa hech narsa. */
+function proProfileCard(){
   var t=T();
-  if(!TRIAL_STATE)return "";
-  if(TRIAL_STATE.active){
+  if(isPaidUser())return "";
+  var head='<span class="gw han">会</span>';
+
+  if(TRIAL_STATE&&TRIAL_STATE.active){
     var left="";
     if(TRIAL_STATE.ends_at){
       var ms=new Date(TRIAL_STATE.ends_at)-new Date();
       var days=Math.max(0,Math.ceil(ms/86400000));
       left=String(t.trialLeft||"{n}").replace("{n}",days);
     }
-    return '<div class="pro"><span class="gw"><i class="ti ti-crown"></i></span>'
-      +'<h3>'+esc(t.trialActive||"Pro")+'</h3><p>'+esc(left)+'</p></div>';
+    return '<div class="pro">'+head
+      +'<h3>'+esc(t.trialActive||"")+'</h3><p>'+esc(left)+'</p></div>';
   }
-  if(!TRIAL_STATE.eligible)return "";
-  return '<div class="pro" onclick="App.startTrial(\'profile\')"><span class="gw"><i class="ti ti-crown"></i></span>'
-    +'<h3>'+esc(t.trialTitle||"")+'</h3><p>'+esc(t.trialBody||"")+'</p>'
-    +'<b>'+esc(t.trialCta||"")+'</b></div>';
+
+  var canTrial=!!(TRIAL_STATE&&TRIAL_STATE.eligible);
+  return '<div class="pro">'+head
+    +'<h3>'+esc(t.unlockTitle||"")+'</h3><p>'+esc(t.unlockSub||"")+'</p>'
+    +(canTrial
+      ? '<button onclick="App.startTrial(\'profile\')">'+esc(t.trialCta||"")+'</button>'
+        +'<b class="prolink" onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</b>'
+      : '<button onclick="App.openPaywall(\'profile\')">'+esc(t.unlockBtn||"")+' &rarr;</button>')
+    +'</div>';
 }
 function renderProfile(){
   var t=T(),p=pl();
@@ -5182,8 +5201,7 @@ function renderProfile(){
     +'<div class="sech">'+p.ach+'</div><div class="ach"><div class="arow"><div class="aic c3"><i class="ti ti-check"></i></div><div class="at"><div class="ah"><span>'+p.a1+'</span><small>'+(firstDone?p.a1d:"0 / 1")+'</small></div><div class="abar"><i style="width:'+(firstDone?100:0)+'%;background:var(--jade)"></i></div></div></div>'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
     +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
-    +trialProfileCard()
-    +(isPaidUser()?'':'<div class="pro" onclick="App.openPaywall(\'profile\')"><span class="gw han">会</span><h3>'+t.unlockTitle+'</h3><p>'+t.unlockSub+'</p><button>'+t.unlockBtn+' →</button></div>')
+    +proProfileCard()
     +'<div class="sech">'+t.mistakes+' · '+t.friends+'</div>'
     +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()")
     +rowCard("t-jade",'<i class="ti ti-users"></i>',t.friends,"","App.openFriends()")

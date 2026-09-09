@@ -58,10 +58,27 @@ class TrialEntryPointTests(unittest.TestCase):
         self.assertIn("loadTrial();", SUBSCRIPTION)
 
     def test_the_profile_shows_a_trial_card(self):
-        self.assertIn("function trialProfileCard()", COURSE)
+        """Profilda BITTA HSK AI Pro kartasi.
+
+        Ilgari ikkita qora karta ketma-ket chiqardi — "7 kun bepul" va
+        "Hammasini oching" — ikkalasi ham ayni bitta obuna haqida. Odam
+        ularni ikki xil mahsulot deb o'qirdi.
+        """
+        self.assertIn("function proProfileCard()", COURSE)
         self.assertIn(r"App.startTrial(\'profile\')", COURSE)
         # Faol trialda qolgan kun ko'rsatiladi.
         self.assertIn("TRIAL_STATE.active", COURSE)
+
+    def test_the_profile_never_draws_two_subscription_cards(self):
+        body = COURSE.split("function renderProfile()")[1][:4000]
+        self.assertEqual(1, body.count("proProfileCard()"))
+        self.assertNotIn('<div class="pro"', body)
+
+    def test_a_learner_who_used_the_trial_is_offered_only_the_purchase(self):
+        card = COURSE.split("function proProfileCard()")[1][:1400]
+        self.assertIn("canTrial", card)
+        self.assertIn("trialCta", card)
+        self.assertIn("unlockBtn", card)
 
 
 class AndroidOffersTheSameTrialTests(unittest.TestCase):

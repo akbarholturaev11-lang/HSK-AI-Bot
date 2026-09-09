@@ -11,10 +11,25 @@ COURSE_ACCESS_POLICY_KEY = "course_lesson_access_policy"
 COURSE_ACCESS_MODE_SUBSCRIPTION = "subscription"
 COURSE_ACCESS_MODE_ADS = "ads"
 COURSE_ACCESS_MODE_FREE_UNTIL = "free_until"
+#: Bazada uchrashi MUMKIN bo'lgan rejimlar — o'qish uchun.
+#: `ads` shu yerda qoladi, chunki eski o'rnatishlarda saqlangan qator hali
+#: shu qiymatni tutishi mumkin va uni o'qib bo'lmasa panel yiqilardi.
 COURSE_ACCESS_MODES = frozenset(
     {
         COURSE_ACCESS_MODE_SUBSCRIPTION,
         COURSE_ACCESS_MODE_ADS,
+        COURSE_ACCESS_MODE_FREE_UNTIL,
+    }
+)
+
+#: Admin YANGIDAN tanlashi mumkin bo'lgan rejimlar.
+#: `ads` bu yerda YO'Q: reklama ko'rib darsni ochish olib tashlangan, ya'ni
+#: bu rejim tanlansa `active_mode` uni jimgina `subscription` ga aylantiradi.
+#: Admin "reklama bilan ochiq qildim" deb o'ylab qolardi, foydalanuvchi esa
+#: paywall ko'rardi — shuning uchun tanlov butunlay olib tashlandi.
+COURSE_ACCESS_SELECTABLE_MODES = frozenset(
+    {
+        COURSE_ACCESS_MODE_SUBSCRIPTION,
         COURSE_ACCESS_MODE_FREE_UNTIL,
     }
 )
@@ -172,7 +187,10 @@ class CourseAccessPolicyService:
         updated_by_telegram_id: int | None = None,
     ) -> CourseLessonAccessPolicy:
         normalized = str(mode or "").strip().lower()
-        if normalized not in COURSE_ACCESS_MODES:
+        if normalized not in COURSE_ACCESS_SELECTABLE_MODES:
+            # `ads` ni ham shu yerda rad etamiz: uni saqlash mumkin bo'lsa,
+            # panelda tanlov yo'qligi kifoya qilmaydi — eski so'rov yoki
+            # qo'lda yuborilgan chaqiruv uni qaytarib qo'yardi.
             raise ValueError("invalid_course_access_mode")
 
         until = _as_utc(free_until)

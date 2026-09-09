@@ -32,8 +32,10 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.android_course_service import AndroidCourseService
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.services.course_access_policy_service import (
     COURSE_ACCESS_MODE_ADS,
+    COURSE_ACCESS_POLICY_KEY,
     CourseAccessPolicyService,
 )
 from app.services.course_miniapp_access_service import (
@@ -385,8 +387,13 @@ class AndroidLessonAdGateTests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as session:
             session.add(_user(1, 1001, "Ads mode"))
             await session.commit()
-            await CourseAccessPolicyService(session).save_policy(
-                mode=COURSE_ACCESS_MODE_ADS,
+            # `ads` qiymati TO'G'RIDAN-TO'G'RI yoziladi, `save_policy` orqali
+            # emas: reklama rejimini tanlash olib tashlangan va saqlash uni
+            # endi rad etadi. Tekshirilayotgan narsa esa aynan ESKI
+            # o'rnatishda qolib ketgan qator — u dars ocholmasligi kerak.
+            await BotSettingRepository(session).set(
+                COURSE_ACCESS_POLICY_KEY,
+                json.dumps({"mode": COURSE_ACCESS_MODE_ADS}, ensure_ascii=False),
             )
             await session.commit()
 
