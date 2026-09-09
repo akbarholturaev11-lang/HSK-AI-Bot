@@ -77,22 +77,9 @@ function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_r
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
-var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
 /* Reklama-ruxsatidan bitta slot band qilish (server tomonda hisoblanadi). */
-function runAdGate(){
-  return fetch("/api/v3/practice/ad-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"recognition",ref:"ad:"+Date.now()})})
-    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
-}
 /* "Reklama bilan davom etish" bosilganda: slot band qilib, boshlang'ich
    reklamani ko'rsatib, sessiyani ochamiz (reklama xato bersa ham davom). */
-function startAdSupported(){
-  resetPlan();
-  runAdGate().then(function(o){
-    if(o.status===403){showLimit(false);return}
-    AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
-    start()
-  }).catch(function(){showLimit(false)});
-}
 /* Kunlik limit gate: bepul userga kuniga 1 to'liq sessiya. Server tomonda
    hisoblanadi — sahifani qayta yuklab aylanib o'tib bo'lmaydi. */
 function gateRef(create){try{var k="hsk_gate_recognition";var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
@@ -100,8 +87,8 @@ function runGate(ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"recognition",ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
-function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
-function showLimitNow(adAvailable){
+function showLimit(){SCRIPTS_READY.then(showLimitNow)}
+function showLimitNow(){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:goBack});return}
   var adBtn="";
   var sub=L.limitSub;
@@ -110,17 +97,15 @@ function showLimitNow(adAvailable){
 /* Sessiya ochish (sahifa yuklanganda) — reload xavfsiz token bilan. */
 function gateStart(){
   runGate(gateRef(true)).then(function(o){
-    if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
-    AD_SESSION=false;start();
-  }).catch(function(){AD_SESSION=false;start()});
+    if(o.status===403){showLimit();return}start();
+  }).catch(function(){start()});
 }
 /* "Yana mashq" — bu yangi sessiya, yangi slot so'raydi (bepulga 1/kun). */
 function replay(){
   resetPlan();
   runGate("replay:"+Date.now()).then(function(o){
-    if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
-    AD_SESSION=false;start();
-  }).catch(function(){AD_SESSION=false;start()});
+    if(o.status===403){showLimit();return}start();
+  }).catch(function(){start()});
 }
 var _ttsAudio=null;
 function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}

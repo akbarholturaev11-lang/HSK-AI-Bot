@@ -1928,79 +1928,6 @@ function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
 /* Reklama ko'rib darsni ochish OLIB TASHLANDI: limit tugasa paywall chiqadi.
    Server endi `ad_required` bayrog'ini qaytarmaydi; funksiya eski javob
    shakli bilan kelgan klientlar uchun doim `false` beradi. */
-function lessonNeedsAd(l){return false}
-function lessonAdKey(l){
-  return "hsk_v3_lesson_ad_ref:"+normalizeLevel((MAP&&MAP.level)||"hsk1")+":"+Number(l&&l.n||0);
-}
-function _validLessonAdRef(v){return /^[A-Za-z0-9._~-]{8,48}$/.test(String(v||""))}
-function lessonAdRef(l){
-  var key=lessonAdKey(l),v="";
-  try{v=sessionStorage.getItem(key)||""}catch(e){}
-  if(!_validLessonAdRef(v)){
-    v=("lesson-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)).slice(0,48);
-    try{sessionStorage.setItem(key,v)}catch(e){}
-  }
-  return v;
-}
-function clearLessonAdRef(l){try{sessionStorage.removeItem(lessonAdKey(l))}catch(e){}}
-function lessonAdWhyText(l){
-  var n=Number(l&&l.n||0);
-  var m={
-    uz:"Bu dars uchun obuna majburiy emas: qisqa reklamani oxirigacha ko'ring, keyin dars ochiladi. Obuna bilan darslar reklamasisiz ochiladi.",
-    ru:"Для этого урока подписка не обязательна: посмотрите короткую рекламу до конца, затем урок откроется. С подпиской уроки открываются без рекламы.",
-    tj:"Барои ин дарс обуна ҳатмӣ нест: рекламаро то охир бинед, баъд дарс кушода мешавад. Бо обуна дарсҳо бе реклама кушода мешаванд."
-  }[LANG]||{};
-  return n?m.replace("{n}",n):m;
-}
-function startLessonAdGate(idx){
-  if(requireFoundationBefore(function(){startLessonAdGate(idx)}))return;
-  var l=allLessons()[idx];if(!l)return;
-  if(!INIT_DATA||!window.CourseAds||typeof CourseAds.play!=="function"){
-    App.openPaywall({lessonIdx:idx,lesson:l});return;
-  }
-  var ref=lessonAdRef(l);
-  function playAd(){
-    CourseAds.config({
-      lang:LANG,
-      initData:INIT_DATA,
-      feature:"lesson",
-      level:(MAP&&MAP.level)||"hsk1",
-      lessonOrder:Number(l.n)||0,
-      slot:"",
-      onOffer:null,
-      onSubscribe:function(){App.goPay("v3_lesson_ad")}
-    });
-    CourseAds.play("start",ref).then(function(){
-      l.ad_authorized_ref=ref;
-      startLesson(idx,{skipAdGate:true,accessRef:ref});
-    }).catch(function(){
-      clearLessonAdRef(l);
-      App.openPaywall({lessonIdx:idx,lesson:l});
-    });
-  }
-  CourseAds.config({
-    lang:LANG,
-    initData:INIT_DATA,
-    feature:"lesson",
-    level:(MAP&&MAP.level)||"hsk1",
-    lessonOrder:Number(l.n)||0,
-    slot:"",
-    onOffer:null,
-    onSubscribe:function(){App.goPay("v3_lesson_ad")}
-  });
-  if(typeof CourseAds.showLimitPromo==="function"){
-    trackCourseEvent("paywall_seen",{source:"v3_lesson_ad_offer",lesson_order:Number(l.n)||0,dedupe_key:lessonEventKey("paywall_seen",Number(l.n)||0,"v3_lesson_ad_offer:"+Date.now())});
-    CourseAds.showLimitPromo({
-      trialEligible:trialEligible(),
-      reason:lessonAdWhyText(l),
-      onSubscribe:function(){App.goPay("v3_lesson_ad_offer")},
-      onTrial:function(){trialStart("paywall_lesson")},
-      onBack:function(){}
-    });
-    return;
-  }
-  playAd();
-}
 /* ---------- 7 kunlik bepul Pro ----------
    Bitta yordamchi, to'rtta kirish nuqtasi uchun: onboardingdan keyingi tanlov,
    limit paywalli, obuna sahifasi va profil.
@@ -2670,14 +2597,10 @@ function openLessonSheet(idx){
   var secs=names.map(function(s,k){var cls=k<prog?"done":(k===prog&&l.status==="current"?"cur":"lock");var ic=cls==="done"?'<i class="ti ti-check"></i>':(cls==="cur"?'<i class="ti ti-player-play"></i>':'<i class="ti ti-lock"></i>');return '<div class="sec '+cls+'"><span class="si2">'+ic+'</span><b>'+(k+1)+'. '+s+'</b></div>'}).join("");
   var stars=l.status==="done"?'<div class="stars">'+"★★★☆☆☆".slice(3-(l.stars||0),6-(l.stars||0))+'</div>':'';
   var chip=partChip(l);
-  var cta;
-  if(lessonNeedsAd(l)){
-    var adLabel=LANG==="ru"?"Смотреть рекламу и начать":LANG==="tj"?"Рекламаро дида оғоз кардан":"Reklama ko'rib boshlash";
-    cta='<button class="scta" onclick="startLessonAdGate('+idx+')"><i class="ti ti-player-play"></i> '+esc(adLabel)+'</button>';
-  }else{
-    cta=l.status==="current"?'<button class="scta" onclick="startLesson('+idx+')"><i class="ti ti-player-play"></i> '+T().cont+'</button>'
-      :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+T().repeat+'</button>';
-  }
+  /* Reklama ko'rib darsni ochish OLIB TASHLANDI — bu yerda faqat
+     "davom etish" yoki "takrorlash" qoladi. */
+  var cta=l.status==="current"?'<button class="scta" onclick="startLesson('+idx+')"><i class="ti ti-player-play"></i> '+T().cont+'</button>'
+    :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+T().repeat+'</button>';
   App.openSheet('<div class="shead">'+(chip?'<div class="py" style="margin-bottom:2px">'+esc(chip)+'</div>':'')
     +'<div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+(Number(l.src)===1?'<div class="tr" style="margin-top:5px;color:var(--cin2)">你好 · nǐ hǎo · '+esc(LANG==="ru"?"привет":LANG==="tj"?"салом":"salom")+'</div>':'')+stars+'</div>'
     +'<div class="pmeta"><span>'+n+' '+T().stage+'</span><span>'+prog+' / '+n+' '+T().completeOf+'</span></div><div class="secs">'+secs+'</div>'+cta);
@@ -3141,17 +3064,11 @@ function startLesson(idx,opts){
   var l=allLessons()[idx];App.closeSheet();
   if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
-  if(lessonNeedsAd(l)&&!opts.skipAdGate){
-    var storedRef="";try{storedRef=sessionStorage.getItem(lessonAdKey(l))||""}catch(e){}
-    if(_validLessonAdRef(storedRef)){opts.accessRef=storedRef}
-    else{return startLessonAdGate(idx)}
-  }
   if(l.status==="locked")return;
   var lv=MAP.level||"hsk1";
   loadLessonData(lv,l.n).then(function(d){
     Flow.queue=buildQueue(d);Flow.exitRequired=((d.exit_ticket&&d.exit_ticket.required_objectives)||[]).slice();Flow.queue=restoreLessonMastery(lv,l.n,Flow.queue);Flow.i=typeof Flow._restoredResumeIndex==="number"?Flow._restoredResumeIndex:loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.mistakes=[];Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
     Flow.salesOutcome=d.outcome||null;Flow.salesNextOutcome=d.next_outcome_preview||null;rememberSalesValueContent(d);
-    Flow.lessonAdRef=opts.accessRef||"";
     setLessonFlowControls();
     /* Eski levelardagi preview_half serverdan kelsa saqlanadi. HSK1 checkpoint
        (3-qism) yangi access helper sabab bu rejimga tushmaydi. */
@@ -4234,7 +4151,6 @@ function applyLessonDone(cur,d){
   var rankBefore=currentRatingRank();
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   clearLessonMastery((MAP&&MAP.level)||"hsk1",cur&&cur.n);
-  clearLessonAdRef(cur);
   var al=allLessons();
   cur.status="done";cur.stars=3;cur.locked_premium=false;
   window._pendingStreak=null;window._pendingXpFly=0;
@@ -4290,7 +4206,7 @@ function flowDone(){
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
-  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,access_ref:Flow.lessonAdRef||"",mistakes:(Flow.mistakes||[]).slice(0,50)})
+  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID,mistakes:(Flow.mistakes||[]).slice(0,50)})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){
@@ -4298,12 +4214,6 @@ function flowDone(){
           App.exitFlow();
           /* Bepul trial tugadi (premium dars) — obuna oynasi. */
           openLockedLessonSheet(doneIdx||0);
-          return;
-        }
-        if(d.error==="ad_authorization_required"||d.error==="invalid_ad_authorization"){
-          App.exitFlow();
-          clearLessonAdRef(cur);
-          startLessonAdGate(doneIdx||0);
           return;
         }
         toast(serverSaveErrorText(d.error),2600);return;
@@ -5301,6 +5211,14 @@ function paywallHtml(ctx){
     +payWhyHtml(ctx)
     +promoBlockHtml()
     +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+t.subscribe+'</button>'
+    /* 7 kunlik bepul Pro — FAQAT hisob uni hali olmagan bo'lsa.
+       Olgan bo'lsa yagona tugma yuqoridagi obuna bo'lib qoladi, xuddi
+       mashq limitidagi kabi. Ilgari bu taklif faqat hech qachon
+       chaqirilmaydigan funksiya ichida turardi, ya'ni dars paywallida
+       trial umuman ko'rinmasdi. */
+    +(trialEligible()
+      ? '<button class="scta" style="margin-top:8px;background:var(--card);color:var(--ink);border:1px solid var(--line)" onclick="App.startTrial(\'paywall_lesson\')"><i class="ti ti-gift"></i> '+esc(t.trialCta||"")+'</button>'
+      : '')
     +payHintHtml();
 }
 
@@ -5344,7 +5262,7 @@ var RECOG=(function(){
   function L(){return LD[LANG]||LD.ru}
   function el(id){return document.getElementById(id)}
   var TOTAL=10,pool=[],quiz=[],qi=0,score=0,answered=false;
-  var AD_SESSION=false,AD_MID=false,AD_END=false,DATA=null;
+  var DATA=null;
 
   /* Daraja va o'rganilgan darslar soni ASOSIY ILOVA holatidan olinadi —
      ilgari shu ma'lumot uchun alohida `/api/voice-practice/me` chaqirilardi,
@@ -5375,7 +5293,6 @@ var RECOG=(function(){
       .then(function(r){return r.json().then(function(j){return {status:r.status,j:j}}).catch(function(){return {status:r.status,j:{}}})});
   }
   function runGate(ref){return post("/api/v3/practice/daily-gate",{initData:INIT_DATA,feature:"recognition",ref:ref})}
-  function runAdGate(){return post("/api/v3/practice/ad-gate",{initData:INIT_DATA,feature:"recognition",ref:"ad:"+Date.now()})}
 
   function premium(){App.goPay("v3_recognition_limit")}
   function close(){closeSection();App.show("mashq")}
@@ -5390,13 +5307,6 @@ var RECOG=(function(){
       +'<button class="rc-ghost" onclick="RECOG.close()">'+esc(t.back)+'</button></div>';
   }
 
-  function adStart(){
-    runAdGate().then(function(o){
-      if(o.status===403){showLimit(false);return}
-      AD_SESSION=true;AD_MID=false;AD_END=false;
-      if(window.CourseAds){CourseAds.play("start").then(start).catch(start)}else{start()}
-    }).catch(function(){showLimit(false)});
-  }
 
   function buildPool(){
     var all=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length===1});
@@ -5432,10 +5342,6 @@ var RECOG=(function(){
   function render(){
     answered=false;
     if(qi>=quiz.length)return finish();
-    if(AD_SESSION&&!AD_MID&&quiz.length>=4&&qi===Math.floor(quiz.length/2)){
-      AD_MID=true;
-      if(window.CourseAds){CourseAds.play("middle").then(render).catch(render);return}
-    }
     el("rc-prog").style.width=Math.round(qi/quiz.length*100)+"%";
     var q=quiz[qi],t=L();
     el("rc-body").innerHTML='<div class="rc-lead">'+esc(t.lead)+'</div>'
@@ -5452,7 +5358,6 @@ var RECOG=(function(){
     setTimeout(function(){qi++;if(SECTION===API)render()},1050);
   }
   function finish(){
-    if(AD_SESSION&&!AD_END){AD_END=true;if(window.CourseAds){CourseAds.play("end").then(finish).catch(finish);return}}
     var t=L();
     el("rc-prog").style.width="100%";
     el("rc-body").innerHTML='<div class="rc-done"><div class="rc-st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+esc(t.done)+'</h3><p>'+esc(t.doneSub)+'</p><button onclick="RECOG.replay()"><i class="ti ti-refresh"></i> '+esc(t.again)+'</button></div>';
@@ -5470,24 +5375,23 @@ var RECOG=(function(){
   function open(){
     $("#secov").innerHTML=shell();
     openSection(API);
-    AD_SESSION=false;AD_MID=false;AD_END=false;
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"recognition",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     ensureData();
     if(!INIT_DATA){start();return}
     runGate(gateRef(true)).then(function(o){
       if(o.status===403){showLimit(!!(o.j&&o.j.ad&&o.j.ad.available));return}
-      AD_SESSION=false;start();
-    }).catch(function(){AD_SESSION=false;start()});
+      start();
+    }).catch(function(){start()});
   }
   function replay(){
     if(!INIT_DATA){start();return}
     runGate("replay:"+Date.now()).then(function(o){
       if(o.status===403){showLimit(!!(o.j&&o.j.ad&&o.j.ad.available));return}
-      AD_SESSION=false;start();
-    }).catch(function(){AD_SESSION=false;start()});
+      start();
+    }).catch(function(){start()});
   }
 
-  var API={open:open,close:close,pick:pick,replay:replay,say:say,premium:premium,adStart:adStart};
+  var API={open:open,close:close,pick:pick,replay:replay,say:say,premium:premium};
   return API;
 })();
 window.RECOG=RECOG;
@@ -5503,7 +5407,6 @@ var PRON=(function(){
   function L(){return LD[LANG]||LD.ru}
   function el(id){return document.getElementById(id)}
   var TOTAL=10,list=[],idx=0,okCount=0,busy=false,DATA=null;
-  var AD_SESSION=false,AD_MID=false,AD_END=false;
   var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null,MAX_REC_MS=4000,MIN_BYTES=1200;
 
   function lvNum(){return parseInt(String((MAP&&MAP.level)||"hsk1").slice(3),10)||1}
@@ -5538,7 +5441,6 @@ var PRON=(function(){
       .then(function(r){return r.json().then(function(j){return {status:r.status,j:j}}).catch(function(){return {status:r.status,j:{}}})});
   }
   function runGate(ref){return post("/api/v3/practice/daily-gate",{initData:INIT_DATA,feature:"pronunciation",ref:ref})}
-  function runAdGate(){return post("/api/v3/practice/ad-gate",{initData:INIT_DATA,feature:"pronunciation",ref:"ad:"+Date.now()})}
   function premium(){App.goPay("v3_pronunciation_limit")}
 
   /* Bo'limdan chiqishda mikrofon ALBATTA bo'shatiladi — aks holda yozib
@@ -5561,13 +5463,6 @@ var PRON=(function(){
       +'<button class="pr-ghost" onclick="PRON.close()">'+esc(t.back)+'</button>';
     el("pr-ctrl").style.display="none";d.classList.add("on");
   }
-  function adStart(){
-    runAdGate().then(function(o){
-      if(o.status===403){showLimit(false);return}
-      AD_SESSION=true;AD_MID=false;AD_END=false;
-      if(window.CourseAds){CourseAds.play("start").then(start).catch(start)}else{start()}
-    }).catch(function(){showLimit(false)});
-  }
 
   function rain(){
     var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'],stage=el("pr-stage");if(!stage)return;
@@ -5578,7 +5473,6 @@ var PRON=(function(){
   function setHint(t){var e=el("pr-hint");if(e)e.textContent=t||""}
 
   function load(){
-    if(AD_SESSION&&!AD_MID&&list.length>=4&&idx===Math.floor(list.length/2)){AD_MID=true;if(window.CourseAds){CourseAds.play("middle").then(load).catch(load);return}}
     var w=list[idx],t=L();
     el("pr-stage").innerHTML='<div class="pr-word" id="pr-word">'+esc(w.h)+'</div><div class="pr-py">'+esc(w.p)+'</div><div class="pr-mn">'+esc(tr(w.m))+'</div><div class="pr-fb" id="pr-fb"></div><div class="pr-heard" id="pr-heard"></div><button class="pr-listen" onclick="PRON.say(\''+w.h+'\')"><i class="ti ti-volume"></i> '+esc(t.listen)+'</button>';
     el("pr-cnt").textContent=(idx+1)+' / '+list.length;setHint(t.hint);
@@ -5649,7 +5543,6 @@ var PRON=(function(){
     if(idx>=list.length){finish()}else{load()}
   }
   function finish(){
-    if(AD_SESSION&&!AD_END){AD_END=true;if(window.CourseAds){CourseAds.play("end").then(finish).catch(finish);return}}
     var t=L();
     el("pr-ctrl").style.display="none";el("pr-prog").style.width="100%";
     el("pr-dh").textContent=okCount+' / '+list.length+' '+t.done;
@@ -5689,26 +5582,26 @@ var PRON=(function(){
   function open(){
     $("#secov").innerHTML=shell();
     openSection(API);
-    AD_SESSION=false;AD_MID=false;AD_END=false;busy=false;
+    busy=false;
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"pronunciation",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     ensureData();
     if(!INIT_DATA){start();return}
     runGate(gateRef(true)).then(function(o){
       if(!live())return;
       if(o.status===403){showLimit(!!(o.j&&o.j.ad&&o.j.ad.available));return}
-      AD_SESSION=false;start();
-    }).catch(function(){if(live()){AD_SESSION=false;start()}});
+      start();
+    }).catch(function(){if(live()){start()}});
   }
   function replay(){
     if(!INIT_DATA){start();return}
     runGate("replay:"+Date.now()).then(function(o){
       if(!live())return;
       if(o.status===403){showLimit(!!(o.j&&o.j.ad&&o.j.ad.available));return}
-      AD_SESSION=false;start();
-    }).catch(function(){if(live()){AD_SESSION=false;start()}});
+      start();
+    }).catch(function(){if(live()){start()}});
   }
 
-  var API={open:open,close:close,rec:rec,skip:skip,replay:replay,say:say,premium:premium,adStart:adStart};
+  var API={open:open,close:close,rec:rec,skip:skip,replay:replay,say:say,premium:premium};
   return API;
 })();
 window.PRON=PRON;
@@ -5738,7 +5631,7 @@ var MIST=(function(){
   function el(id){return document.getElementById(id)}
   var ITEMS=[],SUM={total:0,categories:{}},PAGE={offset:0,limit:30,returned:0,has_more:false};
   var CAT="all",LOADING=false,RV=null;
-  var AD_SESSION=false,AD_MID=false,AD_END=false,REF_MEM="";
+  var REF_MEM="";
   function live(){return SECTION===API}
   function busy(){return RV&&RV.loading}
   function hap(ok){haptic(ok?"ok":"no")}
@@ -5814,23 +5707,15 @@ var MIST=(function(){
   function openReview(){el("mk-review").hidden=false}
   function closeReview(){var r=el("mk-review");if(r)r.hidden=true;RV=null}
 
-  function adStart(){
-    closeLimit();
-    var ref=accessRef(true);
-    if(!window.CourseAds){toast(L().err,2200);return}
-    CourseAds.play("start",ref).then(function(){
-      AD_SESSION=true;AD_MID=false;AD_END=false;startReview(true);
-    }).catch(function(){AD_SESSION=false;toast(L().err,2200)});
-  }
   function startReview(adSupported){
     if(busy())return;RV={loading:true};
     var ref=accessRef(true);
-    fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:!!adSupported,access_ref:ref})})
+    fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:false,access_ref:ref})})
     .then(function(r){return r.json().then(function(d){return{status:r.status,d:d}})})
     .then(function(res){
       if(!live()){RV=null;return}
       var d=res.d||{};
-      if(res.status===403||d.error==="free_feature_limit_reached"||d.error==="ad_authorization_required"){RV=null;AD_SESSION=false;showLimit(d.error==="ad_authorization_required"||!!(d.ad&&d.ad.available));return}
+      if(res.status===403||d.error==="free_feature_limit_reached"||d.error==="ad_authorization_required"){RV=null;showLimit(d.error==="ad_authorization_required"||!!(d.ad&&d.ad.available));return}
       if(!d.ok||!d.session||!d.session.questions||!d.session.questions.length){
         RV=null;
         if(d.error==="mistake_review_empty"){load(false)}else{toast(L().err,2200)}
@@ -5842,7 +5727,6 @@ var MIST=(function(){
   }
   function renderQuestion(){
     if(!RV)return;
-    if(AD_SESSION&&!AD_MID&&RV.questions.length>=4&&RV.idx===Math.floor(RV.questions.length/2)){AD_MID=true;if(window.CourseAds){CourseAds.play("middle").then(renderQuestion).catch(renderQuestion);return}}
     var t=L(),q=RV.questions[RV.idx],n=RV.questions.length;
     el("mk-rv-fill").style.width=Math.round((RV.idx/n)*100)+"%";
     var opts=q.options.map(function(o,i){return '<button class="rv-opt" data-i="'+i+'" onclick="MIST.pick('+i+')"><span class="rk">'+LET(i)+'</span><span>'+esc(o)+'</span></button>'}).join("");
@@ -5888,7 +5772,6 @@ var MIST=(function(){
   }
   function finishReview(){
     if(!RV||RV.loading)return;
-    if(AD_SESSION&&!AD_END){AD_END=true;if(window.CourseAds){CourseAds.play("end").then(finishReview).catch(finishReview);return}}
     var t=L();RV.loading=true;
     el("mk-rv-fill").style.width="100%";
     el("mk-rv-foot").innerHTML='<button disabled>'+esc(t.loading)+'</button>';
@@ -5929,14 +5812,14 @@ var MIST=(function(){
   function open(){
     $("#secov").innerHTML=shell();
     openSection(API);
-    AD_SESSION=false;AD_MID=false;AD_END=false;RV=null;CAT="all";ITEMS=[];
+    RV=null;CAT="all";ITEMS=[];
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"mistake_review",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     load(false);
   }
 
   var API={open:open,close:close,closeReview:closeReview,closeLimit:closeLimit,filter:function(k){if(LOADING||k===CAT)return;CAT=k;load(false)},
     loadMore:function(){load(true)},reload:function(){load(false)},startReview:function(){startReview(false)},
-    adStart:adStart,pick:pick,next:next,say:say,premium:premium,toCourse:toCourse,doneReview:doneReview};
+    pick:pick,next:next,say:say,premium:premium,toCourse:toCourse,doneReview:doneReview};
   return API;
 })();
 window.MIST=MIST;
@@ -5967,7 +5850,7 @@ var TEST=(function(){
   var MINE_T={ru:"Ваш уровень",uz:"Sizning darajangiz",tj:"Дараҷаи шумо"};
   var EXAMS=[{lvl:"1",q:14,min:25,tags:["listen","read"]},{lvl:"2",q:12,min:30,tags:["listen","read"]},
              {lvl:"3",q:12,min:35,tags:["listen","read","write"]},{lvl:"4",q:12,min:40,tags:["listen","read","write"]}];
-  var AD_SESSION=false,AD_MID=false,AD_END=false,PENDING=null,GATE_REFS={};
+  var PENDING=null,GATE_REFS={};
   var EXD=null,EQ=[],ei=0,eans=[],EX_SUBMITTING=false;
   var pi=0,pans=[],PQ=[];
 
@@ -6036,32 +5919,22 @@ var TEST=(function(){
       +'<button onclick="TEST.close()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--ink2)">'+esc(t.limBack)+'</button>';
     e.classList.add("on");
   }
-  function adStart(){
-    if(!PENDING)return;
-    var feature=PENDING.feature,which=PENDING.which,ref=PENDING.accessRef;
-    if(!window.CourseAds){showEmpty();return}
-    CourseAds.config({feature:feature});
-    CourseAds.play("start",ref).then(function(){
-      AD_SESSION=true;AD_MID=false;AD_END=false;
-      if(which==="placement")runPlacement();else openExam2(which,true);
-    }).catch(function(){AD_SESSION=false;showEmpty()});
-  }
   function open2(which){
     var feature=which==="placement"?"placement":"training_test";
     var ref=gateRef(feature+":"+which,true);
     PENDING={which:which,feature:feature,accessRef:ref};
-    if(which!=="placement"){AD_SESSION=false;AD_MID=false;AD_END=false;openExam2(which,false);return}
+    if(which!=="placement"){openExam2(which,false);return}
     runGate(feature,ref).then(function(o){
       if(!live())return;
       if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
       if(!o.ok||!o.j||!o.j.ok){showEmpty();return}
-      AD_SESSION=false;openExam2(which);
-    }).catch(function(){if(live()){AD_SESSION=false;showEmpty()}});
+      openExam2(which);
+    }).catch(function(){if(live()){showEmpty()}});
   }
   function openExam2(which,adSupported){
     if(which==="placement")return runPlacement();
     var ref=(PENDING&&PENDING.accessRef)||gateRef("training_test:"+which,true);
-    fetch("/api/v3/exams/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({level:which,lang:LANG,access_ref:ref,ad_supported:!!adSupported})})
+    fetch("/api/v3/exams/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({level:which,lang:LANG,access_ref:ref,ad_supported:false})})
       .then(function(r){return r.json().then(function(d){return {ok:r.ok,status:r.status,d:d}})})
       .then(function(o){
         if(!live())return;
@@ -6088,7 +5961,6 @@ var TEST=(function(){
   }
   function exRender(){
     if(!live())return;
-    if(AD_SESSION&&!AD_MID&&EQ.length>=4&&ei===Math.floor(EQ.length/2)){AD_MID=true;if(window.CourseAds){CourseAds.play("middle").then(exRender).catch(exRender);return}}
     var t=L(),m=EM(),item=EQ[ei],q=item.q;
     var lv=String(EXD.level||"").replace("hsk","").toUpperCase();
     var lead=m.sec[item.key]||item.key,card="";
@@ -6114,7 +5986,6 @@ var TEST=(function(){
   }
   function exitExam(){try{stopSpeak()}catch(e){}showHub()}
   function exResult(){
-    if(AD_SESSION&&!AD_END){AD_END=true;if(window.CourseAds){CourseAds.play("end").then(exResult).catch(exResult);return}}
     submitExam();
   }
   function submitExam(){
@@ -6158,7 +6029,6 @@ var TEST=(function(){
   }
   function pRender(){
     if(!live())return;
-    if(AD_SESSION&&!AD_MID&&PQ.length>=4&&pi===Math.floor(PQ.length/2)){AD_MID=true;if(window.CourseAds){CourseAds.play("middle").then(pRender).catch(pRender);return}}
     var p=PT(),q=PQ[pi];
     el("tc-placement").innerHTML='<div class="ptop"><button class="ix2" onclick="TEST.showHub()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(pi/QP.length*100)+'%"></i></div><span class="lvtag">'+esc(p.lvl)+" "+q.lvl+'</span></div>'
       +'<div class="qlead">'+esc(p.lead)+'</div><div class="qcard"><div class="h han">'+esc(q.h)+'</div><div class="py">'+esc(q.py)+'</div></div>'
@@ -6171,7 +6041,6 @@ var TEST=(function(){
     setTimeout(function(){if(!live())return;pi++;if(pi>=PQ.length){pResult()}else{pRender()}},380);
   }
   function pResult(){
-    if(AD_SESSION&&!AD_END){AD_END=true;if(window.CourseAds){CourseAds.play("end").then(pResult).catch(pResult);return}}
     var p=PT(),per={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
     PQ.forEach(function(q,k){per[q.lvl][1]++;if(pans[k])per[q.lvl][0]++});
     var rec=1;for(var Lv=1;Lv<=4;Lv++){var v=per[Lv][1]?per[Lv][0]/per[Lv][1]:0;if(v>=0.5)rec=Lv;else break}
@@ -6192,13 +6061,13 @@ var TEST=(function(){
   function open(){
     $("#secov").innerHTML=shell();
     openSection(API);
-    AD_SESSION=false;AD_MID=false;AD_END=false;PENDING=null;EXD=null;EQ=[];EX_SUBMITTING=false;
+    PENDING=null;EXD=null;EQ=[];EX_SUBMITTING=false;
     if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"training_test",level:(MAP&&MAP.level)||"hsk1",onSubscribe:premium});
     renderHub();showHub();
   }
 
   var API={open:open,close:close,showHub:showHub,open2:open2,exPick:exPick,pPick:pPick,exitExam:exitExam,
-    submit:submitExam,replayExam:replayExam,replayPlacement:replayPlacement,premium:premium,adStart:adStart,
+    submit:submitExam,replayExam:replayExam,replayPlacement:replayPlacement,premium:premium,
     toCourse:toCourse,say:function(z){speak(z)}};
   return API;
 })();

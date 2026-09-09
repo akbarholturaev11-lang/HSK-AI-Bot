@@ -98,27 +98,14 @@ function wordGate(h){return (window.HSK_WORD_GATE||{})[h]}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"pronunciation",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
-var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
-function runAdGate(){
-  return fetch("/api/v3/practice/ad-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"pronunciation",ref:"ad:"+Date.now()})})
-    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
-}
-function startAdSupported(){
-  resetPlan();
-  runAdGate().then(function(o){
-    if(o.status===403){showLimit(false);return}
-    AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
-    start()
-  }).catch(function(){showLimit(false)});
-}
 /* Kunlik limit gate: bepulga kuniga 1 to'liq talaffuz sessiyasi (server tomonda). */
 function gateRef(create){try{var k="hsk_gate_pronunciation";var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
 function runGate(ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"pronunciation",ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
-function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
-function showLimitNow(adAvailable){
+function showLimit(){SCRIPTS_READY.then(showLimitNow)}
+function showLimitNow(){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:goBack});return}
   var d=document.getElementById('done');
   var adBtn="";
@@ -127,11 +114,11 @@ function showLimitNow(adAvailable){
   document.getElementById('ctrl').style.display='none';d.classList.add('on');
 }
 function gateStart(){
-  runGate(gateRef(true)).then(function(o){if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}AD_SESSION=false;start()}).catch(function(){AD_SESSION=false;start()});
+  runGate(gateRef(true)).then(function(o){if(o.status===403){showLimit();return}start()}).catch(function(){start()});
 }
 function replay(){
   resetPlan();
-  runGate("replay:"+Date.now()).then(function(o){if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}AD_SESSION=false;start()}).catch(function(){AD_SESSION=false;start()});
+  runGate("replay:"+Date.now()).then(function(o){if(o.status===403){showLimit();return}start()}).catch(function(){start()});
 }
 var _ttsAudio=null;
 function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}

@@ -99,7 +99,6 @@ h1{font-size:23px}
     <div class="ic"><i class="ti ti-lock"></i></div>
     <h3 id="lim-title"></h3>
     <p id="lim-text"></p>
-    <button class="go" onclick="startAdSupported()" id="lim-ad" hidden><i class="ti ti-player-play"></i> <span id="lim-ad-t"></span></button>
     <button class="go" onclick="goPay()"><i class="ti ti-crown"></i> <span id="lim-btn"></span></button>
     <button class="lt" onclick="closeLimit()" id="lim-later"></button>
   </div>
@@ -178,25 +177,19 @@ function LETTERS(i){return["A","B","C","D"][i]||(i+1)}
 /* Bir martalik bepul urinish tugagach bu AI bo'lmagan mashq reklama bilan
    davom etadi; server access qoidasi o'zgartirilmaydi. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"mistake_review",level:(params.get("level")||"hsk1"),onSubscribe:goPay})});
-var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
 var REVIEW_REF_MEMORY="";
 function newReviewRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}try{if(window.crypto&&crypto.getRandomValues){var a=new Uint32Array(4);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(v){return v.toString(36)}).join("-")}}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
 function reviewAccessRef(create){var k="hsk_mistake_review_ref",v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=REVIEW_REF_MEMORY}if(!v&&create){v=newReviewRef();REVIEW_REF_MEMORY=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
 function clearReviewAccessRef(){REVIEW_REF_MEMORY="";try{sessionStorage.removeItem("hsk_mistake_review_ref")}catch(e){}}
-/* "Reklama bilan davom etish" OLIB TASHLANDI: reklama endi hech narsani
-   ochmaydi, limit tugasa paywall chiqadi. Funksiya paywall tugmasi hali
-   chaqirishi mumkin bo'lgani uchun qoldirildi va shunchaki oynani yopadi. */
-function startAdSupported(){
-  closeLimit();
-}
+
 function startReview(adSupported){
   if(busy())return;RV={loading:true};
   var accessRef=reviewAccessRef(true);
-  fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:!!adSupported,access_ref:accessRef})})
+  fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:false,access_ref:accessRef})})
   .then(function(r){return r.json().then(function(d){return{status:r.status,d:d}})})
   .then(function(res){
     var d=res.d||{};
-    if(res.status===403||d.error==="free_feature_limit_reached"||d.error==="ad_authorization_required"){RV=null;AD_SESSION=false;showLimit(d.error==="ad_authorization_required"||!!(d.ad&&d.ad.available));return}
+    if(res.status===403||d.error==="free_feature_limit_reached"||d.error==="ad_authorization_required"){RV=null;showLimit();return}
     if(!d.ok||!d.session||!d.session.questions||!d.session.questions.length){RV=null;
       if(d.error==="mistake_review_empty"){location.reload()}else{alert(L.err)}return}
     RV={loading:false,session:d.session.id,questions:d.session.questions,idx:0,answers:[]};
@@ -267,12 +260,9 @@ function renderResult(d){
   $("rv-foot").innerHTML='<button onclick="closeReview();location.reload()"><i class="ti ti-check"></i> '+L.done+'</button>';
   haptic("success");
 }
-function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
-function showLimitNow(adAvailable){
+function showLimit(){SCRIPTS_READY.then(showLimitNow)}
+function showLimitNow(){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({reason:L.limitWhy,onSubscribe:goPay,onBack:function(){}});return}
-  /* Reklama tugmasi butunlay olib tashlandi — u hech narsani ochmaydi. */
-  var ab=document.getElementById("lim-ad");
-  if(ab)ab.hidden=true;
   $("lim-text").textContent=L.limitText;
   $("limit").hidden=false;
 }

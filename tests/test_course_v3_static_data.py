@@ -560,7 +560,9 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("MISTAKE_PAGE.has_more", mistakes)
         self.assertIn("q.audio_text", mistakes)
         self.assertIn("access_ref:accessRef", html)
-        self.assertIn("ad_supported:!!adSupported", html)
+        # Reklama hech narsani ochmaydi, shuning uchun bayroq o'zgaruvchi
+        # emas: klient uni har doim `false` yuboradi.
+        self.assertIn("ad_supported:false", html)
         # Reklama ko'rib bo'limni ochish OLIB TASHLANDI — chaqiruv ham yo'q.
         self.assertNotIn('CourseAds.play(', html)
         for duration in (25, 30, 35, 40):
@@ -646,11 +648,15 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn("els.subTitle.textContent=t.limitHead", ads)
         self.assertNotIn("els.subDesc.textContent=t.limitSub", ads)
 
-        self.assertIn("function lessonAdWhyText(l)", html)
-        self.assertIn("Для этого урока подписка не обязательна", html)
-        self.assertIn("CourseAds.showLimitPromo({", html)
-        self.assertIn('source:"v3_lesson_ad_offer"', html)
-        self.assertIn('App.goPay("v3_lesson_ad_offer")', html)
+        # Dars-reklama darvozasi OLIB TASHLANDI. U `lessonNeedsAd()` ortida
+        # turardi, u esa doim `false` qaytarardi — ya'ni butun tarmoq, va u
+        # bilan birga trial taklifi ham, hech qachon ekranga chiqmasdi.
+        self.assertNotIn("function lessonAdWhyText(l)", html)
+        self.assertNotIn("function startLessonAdGate(", html)
+        self.assertNotIn("v3_lesson_ad_offer", html)
+        # Taklif endi HAQIQIY paywallda — o'sha odam ko'radigan joyda.
+        self.assertIn("function paywallHtml(ctx)", html)
+        self.assertIn(r"App.startTrial(\'paywall_lesson\')", html)
 
     def test_admin_can_attach_external_cta_to_lesson_end_ad(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")

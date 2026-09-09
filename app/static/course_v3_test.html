@@ -125,13 +125,7 @@ LV_READY.then(function(){try{renderHub()}catch(e){}});
 function lvNum(){return parseInt((LV||"").slice(3),10)||0}
 /* Bir martalik bepul urinish tugagach, AI bo'lmagan test reklama bilan davom etadi. */
 SCRIPTS_READY.then(function(){if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"training_test",level:(params.get("level")||"hsk1"),onSubscribe:goPremium})});
-var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false,PENDING=null;
-/* "Reklama bilan davom etish" OLIB TASHLANDI: reklama endi hech narsani
-   ochmaydi, limit tugasa paywall chiqadi. Funksiya paywall tugmasi hali
-   chaqirishi mumkin bo'lgani uchun qoldirildi va hech narsa qilmaydi. */
-function startAdSupported(){
-  PENDING=null;
-}
+var PENDING=null;
 var GATE_REFS={};
 function newAccessRef(){try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID()}catch(e){}try{if(window.crypto&&crypto.getRandomValues){var a=new Uint32Array(4);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(v){return v.toString(36)}).join("-")}}catch(e){}return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12)}
 function gateRef(key,create){var k="hsk_gate_"+key,v="";try{v=sessionStorage.getItem(k)||""}catch(e){v=GATE_REFS[k]||""}if(!v&&create){v=newAccessRef();GATE_REFS[k]=v;try{sessionStorage.setItem(k,v)}catch(e){}}return v}
@@ -140,8 +134,8 @@ function runGate(feature,ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:feature,ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
-function showLimit(adAvailable){SCRIPTS_READY.then(function(){showLimitNow(adAvailable)})}
-function showLimitNow(adAvailable){
+function showLimit(){SCRIPTS_READY.then(showLimitNow)}
+function showLimitNow(){
   if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({onSubscribe:goPremium,onBack:showHub});return}
   $("hub").style.display="none";$("placement").classList.remove("on");$("exam").classList.remove("on");
   var e=$("empty");
@@ -177,21 +171,19 @@ function openExam(which){
   var feature=which==="placement"?"placement":"training_test";
   var accessRef=gateRef(feature+":"+which,true);
   PENDING={which:which,feature:feature,accessRef:accessRef};
-  if(which!=="placement"){
-    AD_SESSION=false;AD_MID_SHOWN=false;AD_END_SHOWN=false;_openExam(which,false);return;
+  if(which!=="placement"){AD_MID_SHOWN=false;AD_END_SHOWN=false;_openExam(which,false);return;
   }
   runGate(feature,accessRef).then(function(o){
-    if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
-    if(!o.ok||!o.j||!o.j.ok){showEmpty();return}
-    AD_SESSION=false;_openExam(which);
-  }).catch(function(){AD_SESSION=false;showEmpty()});
+    if(o.status===403){showLimit();return}
+    if(!o.ok||!o.j||!o.j.ok){showEmpty();return}_openExam(which);
+  }).catch(function(){showEmpty()});
 }
 function _openExam(which,adSupported){
   if(which==="placement"){return runPlacement();}
   var accessRef=(PENDING&&PENDING.accessRef)||gateRef("training_test:"+which,true);
-  fetch("/api/v3/exams/start",{method:"POST",headers:{"X-Telegram-Init-Data":initData(),"Content-Type":"application/json"},body:JSON.stringify({level:which,lang:LANG,access_ref:accessRef,ad_supported:!!adSupported})}).then(function(r){return r.json().then(function(d){return {ok:r.ok,status:r.status,d:d}})}).then(function(o){
+  fetch("/api/v3/exams/start",{method:"POST",headers:{"X-Telegram-Init-Data":initData(),"Content-Type":"application/json"},body:JSON.stringify({level:which,lang:LANG,access_ref:accessRef,ad_supported:false})}).then(function(r){return r.json().then(function(d){return {ok:r.ok,status:r.status,d:d}})}).then(function(o){
     var data=o.d&&o.d.session;
-    if(!o.ok||!o.d||!o.d.ok){var err=(o.d&&o.d.error)||"";if(o.status===403||err==="free_feature_limit_reached"||err==="ad_authorization_required"){showLimit(!(o.d&&o.d.ad&&o.d.ad.available===false));return}throw new Error("exam_start")}
+    if(!o.ok||!o.d||!o.d.ok){var err=(o.d&&o.d.error)||"";if(o.status===403||err==="free_feature_limit_reached"||err==="ad_authorization_required"){showLimit();return}throw new Error("exam_start")}
     if(!data||!data.questions||!data.questions.length)throw new Error("exam_start");
     runExam(data);
   }).catch(function(){showEmpty()});

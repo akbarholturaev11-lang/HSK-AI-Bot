@@ -47,10 +47,22 @@ class TrialEntryPointTests(unittest.TestCase):
         self.assertIn("hsk_v3_plan_choice", COURSE)
 
     def test_the_paywall_offers_the_trial(self):
-        self.assertIn("trialStart(\"paywall_lesson\")", COURSE)
+        """Dars paywalli ham, mashq paywalli ham trialni taklif qiladi.
+
+        Dars uchun taklif ilgari `startLessonAdGate` ichida edi va o'sha
+        funksiya hech qachon chaqirilmasdi (`lessonNeedsAd()` doim `false`),
+        ya'ni test o'lik kodni tekshirib "o'tyapti" derdi. Endi u odam
+        ko'radigan `paywallHtml` ichida.
+        """
+        self.assertIn(r"App.startTrial(\'paywall_lesson\')", COURSE)
         self.assertIn("trialStart(\"paywall_practice\")", COURSE)
         # Reklama o'rniga trial — eski parametr qolmasin.
         self.assertNotIn("onContinueAd:", COURSE)
+
+    def test_the_lesson_paywall_hides_the_trial_once_it_is_used(self):
+        # Trial olingan bo'lsa yagona tugma obuna bo'lib qoladi.
+        block = COURSE.split("function paywallHtml(ctx)")[1][:1600]
+        self.assertIn("trialEligible()", block)
 
     def test_the_subscription_page_offers_the_trial(self):
         self.assertIn('id="trialOffer"', SUBSCRIPTION)
