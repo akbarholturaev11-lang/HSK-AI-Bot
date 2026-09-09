@@ -760,6 +760,10 @@ private fun AppRoot(
                             onDismissHint = hintsViewModel::dismiss,
                             courseProgress = courseState.map?.progress,
                             courseUser = courseState.map?.user,
+                            onOpenMistakes = {
+                                practiceRequest = PracticeRequest.MISTAKES
+                                selectedTab = MainTab.PRACTICE
+                            },
                             onOpenFriends = {
                                 ratingViewModel.selectTab(RatingTab.FRIENDS)
                                 selectedTab = MainTab.RATING
