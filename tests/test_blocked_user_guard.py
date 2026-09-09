@@ -125,6 +125,20 @@ def _session_maker(status, counter):
     return make
 
 
+def _slow_session_maker(status, counter):
+    class _SlowSession(_FakeSession):
+        async def execute(self, query):
+            await asyncio.sleep(0.01)
+            return await super().execute(query)
+
+    def make():
+        session = _SlowSession(status)
+        counter.append(session)
+        return session
+
+    return make
+
+
 class BlockedUserGuardCacheTest(unittest.TestCase):
     def setUp(self):
         guard.invalidate()
@@ -156,6 +170,18 @@ class BlockedUserGuardCacheTest(unittest.TestCase):
         guard.invalidate(5)
         asyncio.run(guard.is_blocked_telegram_id(maker, 5))
         self.assertEqual(len(sessions), 2)
+
+    def test_parallel_cache_miss_shares_one_db_lookup(self):
+        sessions = []
+        maker = _slow_session_maker("free", sessions)
+
+        async def run_many():
+            return await asyncio.gather(
+                *(guard.is_blocked_telegram_id(maker, 5) for _ in range(6))
+            )
+
+        self.assertEqual(asyncio.run(run_many()), [False] * 6)
+        self.assertEqual(len(sessions), 1)
 
 
 class _Recorder:

@@ -2969,11 +2969,14 @@ async def admin_miniapp_user_delete(request: Request):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_delete_payload"})
     if target_id <= 0 or confirm != str(target_id):
         return JSONResponse(status_code=400, content={"ok": False, "error": "delete_confirmation_required"})
+    if _is_admin_id(target_id):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_delete_admin"})
     async with async_session_maker() as session:
         deleted = await UserRepository(session).delete_by_telegram_id(target_id)
         await session.commit()
     if not deleted:
         return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+    invalidate_block_cache(target_id)
     return JSONResponse(content={"ok": True})
 
 

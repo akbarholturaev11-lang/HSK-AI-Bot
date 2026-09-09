@@ -12,6 +12,7 @@ cache eskirib qolmaydi.
 
 from __future__ import annotations
 
+import asyncio
 import time
 
 from sqlalchemy import select
@@ -32,13 +33,21 @@ EXEMPT_PATH_PREFIXES = ("/api/admin-miniapp/",)
 # telegram_id -> (blocked, saqlangan vaqt)
 _cache: dict[int, tuple[bool, float]] = {}
 
+# Bir xil userdan ketma-ket kelgan parallel Mini App API so'rovlari cache
+# sovuq paytda bitta DB tekshiruvni bo'lishsin. Aks holda boot paytidagi
+# kichik burst ham pooldagi connectionlarni band qilib qo'yadi.
+_locks: dict[int, asyncio.Lock] = {}
+
 
 def invalidate(telegram_id: int | None = None) -> None:
     """Blok holati o'zgarganda cache'ni tozalaydi."""
     if telegram_id is None:
         _cache.clear()
+        _locks.clear()
     else:
-        _cache.pop(int(telegram_id), None)
+        key = int(telegram_id)
+        _cache.pop(key, None)
+        _locks.pop(key, None)
 
 
 def _cached(telegram_id: int) -> bool | None:
@@ -55,6 +64,7 @@ def _cached(telegram_id: int) -> bool | None:
 def _store(telegram_id: int, blocked: bool) -> None:
     if len(_cache) > 10000:
         _cache.clear()
+        _locks.clear()
     _cache[telegram_id] = (blocked, time.monotonic())
 
 
@@ -62,14 +72,20 @@ async def is_blocked_telegram_id(session_maker, telegram_id: int) -> bool:
     cached = _cached(telegram_id)
     if cached is not None:
         return cached
-    async with session_maker() as session:
-        status = (
-            await session.execute(
-                select(User.status).where(User.telegram_id == telegram_id)
-            )
-        ).scalar_one_or_none()
+    key = int(telegram_id)
+    lock = _locks.setdefault(key, asyncio.Lock())
+    async with lock:
+        cached = _cached(key)
+        if cached is not None:
+            return cached
+        async with session_maker() as session:
+            status = (
+                await session.execute(
+                    select(User.status).where(User.telegram_id == key)
+                )
+            ).scalar_one_or_none()
     blocked = status == "blocked"
-    _store(telegram_id, blocked)
+    _store(key, blocked)
     return blocked
 
 

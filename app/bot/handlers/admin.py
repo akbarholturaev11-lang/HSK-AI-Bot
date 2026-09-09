@@ -63,6 +63,7 @@ from app.services.support_contact_service import (
     get_admin_contact,
     normalize_admin_contact,
 )
+from app.services.blocked_user_guard import invalidate as invalidate_block_cache
 from app.services.help_settings_service import (
     HELP_LANGS,
     HELP_VIDEO_FIELD_BY_KEY,
@@ -2452,6 +2453,8 @@ async def _delete_user_by_telegram_id(session, target_id: int) -> bool:
     user_repo = UserRepository(session)
     deleted = await user_repo.delete_by_telegram_id(target_id)
     await session.commit()
+    if deleted:
+        invalidate_block_cache(target_id)
     return deleted
 
 
@@ -2470,6 +2473,15 @@ async def admin_deleteuser_waiting_id_handler(message: Message, state: FSMContex
             "Masalan: <code>123456789</code>",
             reply_markup=admin_back_keyboard(),
         )
+        return
+    if _is_admin(target_id):
+        await _edit_admin_flow_message(
+            message,
+            state,
+            "❌ Admin akkauntni o'chirib bo'lmaydi.",
+            reply_markup=admin_back_keyboard(),
+        )
+        await state.clear()
         return
 
     try:
@@ -2511,6 +2523,9 @@ async def admin_deleteuser_handler(message: Message, session):
     target_id = _parse_delete_user_id(message.text)
     if target_id is None:
         await message.answer("Foydalanish: <code>/deleteuser TELEGRAM_ID</code>", parse_mode="HTML")
+        return
+    if _is_admin(target_id):
+        await message.answer("❌ Admin akkauntni o'chirib bo'lmaydi.")
         return
 
     try:

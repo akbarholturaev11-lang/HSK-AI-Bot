@@ -25,10 +25,11 @@ class Settings(BaseSettings):
     AI_PRIMARY_TIMEOUT_SECONDS: float = 30.0
 
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/telegram_chinese_bot"
-    # Keep the Railway Postgres pool bounded.  These are deliberately
-    # configurable because the database plan may expose a different limit.
+    # Keep the Railway Postgres pool bounded while still allowing short bursts.
+    # These are deliberately configurable because the database plan may expose
+    # a different limit.
     DB_POOL_SIZE: int = 5
-    DB_MAX_OVERFLOW: int = 0
+    DB_MAX_OVERFLOW: int = 3
     DB_POOL_TIMEOUT_SECONDS: int = 10
     DB_POOL_RECYCLE_SECONDS: int = 300
     DB_CONNECT_TIMEOUT_SECONDS: int = 10
