@@ -334,6 +334,9 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
                 return_value=analytics,
             ),
         ):
+            # Onboarding faqat BELGILAB qo'yadi: boshlash nuqtasini tanlash
+            # kunlik bepul dars chegarasini sarflamasligi kerak.
+            trial_class.return_value.mark_trial_lesson = AsyncMock(return_value=None)
             trial_class.return_value.ensure_trial_lesson = AsyncMock(return_value=True)
             result = await service.complete(
                 123,
@@ -352,6 +355,8 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(user.learning_mode, "course")
         self.assertEqual(user.payment_status, "none")
         service.engine.progress_repo.set_current_lesson_and_step.assert_awaited_once()
+        trial_class.return_value.mark_trial_lesson.assert_awaited_once()
+        trial_class.return_value.ensure_trial_lesson.assert_not_awaited()
         self.assertEqual(analytics.record_server_event.await_count, 5)
         completed_call = next(
             call

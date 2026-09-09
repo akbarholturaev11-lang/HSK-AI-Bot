@@ -138,10 +138,10 @@ class CourseMiniAppOnboardingService:
                     waiting_for="none",
                 )
                 current_lesson = first_lesson
-                await CourseTrialService(self.session).ensure_trial_lesson(user, first_lesson.id)
+                await CourseTrialService(self.session).mark_trial_lesson(user, first_lesson.id)
 
         if current_lesson and start_mode == "continue":
-            await CourseTrialService(self.session).ensure_trial_lesson(user, current_lesson.id)
+            await CourseTrialService(self.session).mark_trial_lesson(user, current_lesson.id)
 
         await self.profile_service.save_preferences(
             profile,

@@ -37,11 +37,20 @@ class CourseTrialService:
             user, level=lesson.level, lesson_order=lesson.lesson_order,
             completed=completed, consume=consume,
         )
-        if result["allowed"] and consume and not getattr(user, "trial_course_lesson_id", None):
+        if result["allowed"] and consume:
+            await self.mark_trial_lesson(user, lesson_id)
+        return bool(result["allowed"])
+
+    async def mark_trial_lesson(self, user, lesson_id) -> None:
+        """Qaysi dars shu o'quvchining birinchisi ekanini eslab qoladi.
+
+        Hech narsa SARFLAMAYDI. Chegara darsni haqiqatan boshlaganda yeyiladi,
+        onboardingda emas: o'quvchi boshlash nuqtasini tanladi, xolos.
+        """
+        if lesson_id and not getattr(user, "trial_course_lesson_id", None):
             user.trial_course_lesson_id = lesson_id
             user.trial_course_started_at = datetime.now(timezone.utc)
             await self.session.flush()
-        return bool(result["allowed"])
 
     async def ensure_trial_lesson(self, user, lesson_id: int) -> bool:
         return await self._lesson_access(user, lesson_id, consume=True)

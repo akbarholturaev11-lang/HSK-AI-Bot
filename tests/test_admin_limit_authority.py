@@ -16,6 +16,7 @@ from sqlalchemy.pool import StaticPool
 from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.db.models.user import User
+from app.db.models.course_lessons import CourseLesson
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.message import Message
@@ -28,6 +29,7 @@ from app.services.entitlements.state import EntitlementState
 from app.services.entitlements import actions as A
 from app.services.course_access_policy_service import CourseAccessPolicyService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.course_trial_service import CourseTrialService
 from app.services.access_service import AccessService
 from app.services.voice_practice_service import VoicePracticeService
 
@@ -229,3 +231,32 @@ class AdminLimitAuthorityTests(unittest.IsolatedAsyncioTestCase):
                 data=decision.as_dict(language=lang)
                 self.assertIn('5',data['limit_text'])
                 self.assertIsNone(data['reset_at'])
+
+    async def test_choosing_a_starting_point_does_not_spend_a_lesson(self):
+        """Onboarding — bu tanlov, dars emas.
+
+        `ensure_trial_lesson` ilgari faqat "shu dars birinchisi" deb belgilardi.
+        Markaziy dvigatelga o'tgach u slot ham yeydigan bo'ldi, va onboarding
+        uni chaqirgani uchun o'quvchi hali hech narsa boshlamasdan turib bir
+        darsdan ayrilardi: xaritada "Qoldi: 1" yozilardi.
+        """
+        await self.rule(A.LESSON_START, 2)
+        async with self.sessions() as session:
+            user = await self.user(session)
+            session.add(CourseLesson(id=1, lesson_code='HSK1-L01', level='hsk1',
+                                     lesson_order=1, title='你好'))
+            await session.flush()
+
+            await CourseTrialService(session).mark_trial_lesson(user, 1)
+
+            decision = await EntitlementEngine(session).check(user, A.LESSON_START)
+            self.assertEqual(0, decision.used)
+            self.assertEqual(2, decision.remaining)
+            self.assertEqual(1, user.trial_course_lesson_id)
+
+            # Darsni haqiqatan boshlaganda slot yeyiladi.
+            started = await LessonAccessService(session).status(
+                user, level='hsk1', lesson_order=1, consume=True
+            )
+            self.assertTrue(started['allowed'])
+            self.assertEqual(1, (await EntitlementEngine(session).check(user, A.LESSON_START)).used)
