@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mistakes_title">Хатоҳои ман</string>
+    <string name="mistakes_subtitle">Аз дарсҳо, тестҳои HSK ва рақобатҳо худкор ҷамъ мешаванд</string>
+    <string name="mistakes_empty_title">Ҳоло хато нест</string>
+    <string name="mistakes_empty_subtitle">Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.</string>
+    <string name="mistakes_to_course">Ба дарсҳо</string>
+    <string name="mistakes_review">Кор бар хатоҳо</string>
+    <string name="mistakes_review_subtitle">хатои фаъол</string>
+    <string name="mistakes_start">Оғоз</string>
+    <string name="mistakes_all">Ҳама</string>
+    <string name="mistakes_retry">Боз кӯшиш</string>
+    <string name="mistakes_load_error">Хатоҳо бор нашуданд. Интернетро санҷида, боз кӯшиш кунед.</string>
+    <string name="mistakes_cat_word">Калимаҳо</string>
+    <string name="mistakes_cat_grammar">Грамматика</string>
+    <string name="mistakes_cat_character">Иероглиф</string>
+    <string name="mistakes_cat_pronunciation">Талаффуз</string>
+    <string name="mistakes_source_lesson">Дарс</string>
+    <string name="mistakes_source_test">Тести HSK</string>
+    <string name="mistakes_source_training">Машқ</string>
+    <string name="mistakes_source_challenge">Рақобат</string>
+    <string name="mistakes_source_voice">AI Voice</string>
+    <string name="mistakes_lesson">Дарс</string>
+    <string name="mistakes_question">Савол</string>
+    <string name="mistakes_of">аз</string>
+    <string name="mistakes_correct">Дуруст!</string>
+    <string name="mistakes_wrong">Нодуруст</string>
+    <string name="mistakes_explanation">Шарҳ</string>
+    <string name="mistakes_next">Минбаъд</string>
+    <string name="mistakes_finish">Анҷом</string>
+    <string name="mistakes_result_title">Кори аъло!</string>
+    <string name="mistakes_result_score_label">дуруст</string>
+    <string name="mistakes_result_remaining">Хатоҳои боқимонда</string>
+    <string name="mistakes_result_all">Шумо ҳамаи хатоҳоятонро ислоҳ кардед!</string>
+    <string name="mistakes_done">Тайёр</string>
+    <string name="mistakes_loading">Боргирӣ…</string>
+    <string name="mistakes_more">Боз нишон додан</string>
+    <string name="mistakes_error">Хатогӣ рух дод. Боз кӯшиш кунед.</string>
+</resources>
