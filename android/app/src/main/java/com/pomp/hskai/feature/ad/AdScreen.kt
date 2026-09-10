@@ -62,8 +62,6 @@ fun AdScreen(
     onOpenLink: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Held in a local so the non-null branch does not depend on a smart cast
-    // through a property.
     val mediaUrl = state.mediaUrl
     Box(
         modifier = modifier
@@ -74,13 +72,10 @@ fun AdScreen(
         contentAlignment = Alignment.Center,
     ) {
         when {
-            // Nothing is drawn while there may still be nothing to show: a
-            // card that appears and vanishes is worse than one that never
-            // appeared. The caller closes on both of these.
             state.isLoading || state.unavailable || mediaUrl == null -> Unit
 
             else -> Surface(
-                color = PompColors.Paper,
+                color = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Paper,
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -222,21 +217,12 @@ private fun AdContent(
             Text(
                 text = stringResource(error.messageRes),
                 style = MaterialTheme.typography.bodyMedium,
-                color = PompColors.CinnabarDark,
+                color = PompColors.Flame,
             )
         }
-
     }
 }
 
-/**
- * The video creative.
- *
- * Media3's player types are marked unstable, which is a promise about source
- * compatibility rather than about behaviour; the opt-in is required to use
- * them at all and is spelled out in full so it cannot be confused with
- * Kotlin's own `OptIn`.
- */
 @androidx.annotation.OptIn(markerClass = [androidx.media3.common.util.UnstableApi::class])
 @Composable
 private fun AdVideo(url: String, modifier: Modifier = Modifier) {
@@ -245,8 +231,6 @@ private fun AdVideo(url: String, modifier: Modifier = Modifier) {
 
     DisposableEffect(url) {
         player.setMediaItem(MediaItem.fromUri(url))
-        // An ad shorter than the required watch time would otherwise stop and
-        // leave the learner staring at a frozen frame until the countdown ends.
         player.repeatMode = Player.REPEAT_MODE_ONE
         player.playWhenReady = true
         player.prepare()
@@ -267,4 +251,3 @@ private fun AdVideo(url: String, modifier: Modifier = Modifier) {
         },
     )
 }
-
