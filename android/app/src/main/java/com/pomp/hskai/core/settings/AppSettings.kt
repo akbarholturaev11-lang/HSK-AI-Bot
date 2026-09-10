@@ -51,7 +51,7 @@ enum class AppThemeMode(val wireValue: String) {
     ;
 
     companion object {
-        val DEFAULT = SYSTEM
+        val DEFAULT = LIGHT
 
         fun fromWireValue(value: String?): AppThemeMode =
             entries.firstOrNull { it.wireValue == value?.trim()?.lowercase() } ?: DEFAULT
