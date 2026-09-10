@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -83,9 +83,9 @@ fun MainScaffold(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .navigationBarsPadding()
-                        .height(70.dp)
-                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                        .height(94.dp)
+                        .padding(horizontal = 4.dp, vertical = 8.dp)
+                        .navigationBarsPadding(),
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
@@ -122,7 +122,7 @@ private fun NavItem(
                 role = Role.Tab,
                 onClick = onClick,
             )
-            .then(if (tab.isCentre) Modifier.offset(y = (-20).dp) else Modifier),
+            .then(if (tab.isCentre) Modifier.offset(y = (-8).dp) else Modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
