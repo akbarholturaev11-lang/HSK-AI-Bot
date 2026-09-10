@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_appearance">Внешний вид</string>
+    <string name="profile_theme_picker_title">Внешний вид приложения</string>
+    <string name="profile_theme_light">Светлая</string>
+    <string name="profile_theme_light_subtitle">Текущая светлая тема</string>
+    <string name="profile_theme_dark">Тёмная</string>
+    <string name="profile_theme_dark_subtitle">Cosmos Blue #002F49</string>
+    <string name="profile_theme_system">Как в системе</string>
+    <string name="profile_theme_system_subtitle">Следовать настройкам телефона</string>
+</resources>
