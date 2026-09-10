@@ -166,8 +166,8 @@ fun ProfileScreen(
             item {
                 ProfileActionCard(
                     icon = Icons.Filled.WarningAmber,
-                    iconBackground = PompColors.CinnabarSoft,
-                    iconTint = PompColors.Cinnabar,
+                    iconBackground = PompColors.FlameSoft,
+                    iconTint = PompColors.Flame,
                     title = stringResource(R.string.practice_mistakes_title),
                     subtitle = stringResource(R.string.profile_mini_mistakes_subtitle),
                     onClick = openMistakes,
@@ -241,8 +241,8 @@ private fun ProfilePill() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Icon(Icons.Filled.PersonOutline, contentDescription = null, tint = Color.White, modifier = Modifier.size(17.dp))
-            Text(stringResource(R.string.nav_profile), color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+            Icon(Icons.Filled.PersonOutline, contentDescription = null, tint = PompColors.Paper, modifier = Modifier.size(17.dp))
+            Text(stringResource(R.string.nav_profile), color = PompColors.Paper, fontSize = 13.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -393,7 +393,7 @@ private fun TrialCard(state: ProfileUiState, onStart: () -> Unit) {
         Column(Modifier.padding(16.dp)) {
             Text(stringResource(if (trial.active) R.string.profile_trial_active_title else R.string.profile_trial_title), style = MaterialTheme.typography.titleMedium, color = PompColors.Ink)
             Text(stringResource(if (trial.active) R.string.profile_trial_active_body else R.string.profile_trial_body), style = MaterialTheme.typography.bodyMedium, color = PompColors.InkSecondary)
-            if (state.trialError.isNotBlank()) Text(stringResource(R.string.profile_trial_failed), style = MaterialTheme.typography.bodySmall, color = PompColors.Cinnabar, modifier = Modifier.padding(top = 6.dp))
+            if (state.trialError.isNotBlank()) Text(stringResource(R.string.profile_trial_failed), style = MaterialTheme.typography.bodySmall, color = PompColors.Flame, modifier = Modifier.padding(top = 6.dp))
             if (trial.eligible) Button(onClick = onStart, enabled = !state.trialStarting, modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) { Text(stringResource(R.string.profile_trial_cta)) }
         }
     }
@@ -434,7 +434,7 @@ private fun ReferralCard(state: ProfileUiState) {
                     Surface(onClick = {
                         val send = Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, link) }
                         runCatching { context.startActivity(Intent.createChooser(send, null)) }
-                    }, shape = RoundedCornerShape(12.dp), color = PompColors.Paper, border = BorderStroke(1.dp, PompColors.Divider)) {
+                    }, shape = RoundedCornerShape(12.dp), color = if (PompColors.IsDark) PompColors.OptionDepth else PompColors.Paper, border = BorderStroke(1.dp, PompColors.Divider)) {
                         Text(stringResource(R.string.profile_referral_share), style = MaterialTheme.typography.labelLarge, color = PompColors.InkSecondary, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
                     }
                 }
@@ -513,7 +513,7 @@ private fun ProfileSettingsSheet(
             Spacer(Modifier.height(20.dp))
             OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) { Text(stringResource(R.string.profile_logout), color = PompColors.Ink) }
             Spacer(Modifier.height(10.dp))
-            OutlinedButton(onClick = onUnlinkDevice, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) { Text(stringResource(R.string.profile_unlink_device), color = PompColors.CinnabarDark) }
+            OutlinedButton(onClick = onUnlinkDevice, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), shape = RoundedCornerShape(14.dp)) { Text(stringResource(R.string.profile_unlink_device), color = PompColors.Flame) }
         }
     }
 }
@@ -574,8 +574,8 @@ private fun NotificationExplanation() {
 @Composable
 private fun ErrorPill(text: String, onClick: (() -> Unit)? = null) {
     val modifier = if (onClick == null) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().clickable(onClick = onClick)
-    Surface(color = PompColors.CinnabarSoft, shape = RoundedCornerShape(12.dp), modifier = modifier) {
-        Text(text, color = PompColors.CinnabarDark, fontSize = 13.sp, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
+    Surface(color = PompColors.FlameSoft, shape = RoundedCornerShape(12.dp), modifier = modifier) {
+        Text(text, color = PompColors.Flame, fontSize = 13.sp, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
     }
 }
 
