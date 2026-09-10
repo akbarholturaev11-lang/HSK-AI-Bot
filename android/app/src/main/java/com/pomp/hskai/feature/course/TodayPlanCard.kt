@@ -57,27 +57,36 @@ import com.pomp.hskai.domain.model.CourseToday
 import com.pomp.hskai.domain.model.TodayTask
 import com.pomp.hskai.domain.model.TodayTaskAccess
 
-/**
- * Mini App `.tplan` — the daily plan, drawn as a short winding path.
- *
- * The Mini App replaced the overall course progress bar with this card: one
- * bar that only ever creeps forward says nothing about today, while a plan of
- * two to four steps says exactly what is left. The geometry, colours and copy
- * are the Mini App's own (`todayPlanHtml` in `app/static/course-v3.html`);
- * the connector is drawn rather than measured because the node positions are
- * known here.
- */
 private val NodeSize = 34.dp
 private val NodeSwing = 9.dp
 private val PathPadding = 9.dp
 
-private val TrackIdle = Color.White.copy(alpha = 0.16f)
-private val NodeIdleFill = Color.White.copy(alpha = 0.09f)
-private val NodeIdleBorder = Color.White.copy(alpha = 0.20f)
-private val NodeIdleInk = Color.White.copy(alpha = 0.60f)
-private val HeaderInk = Color.White.copy(alpha = 0.70f)
-private val LabelInk = Color.White.copy(alpha = 0.66f)
-private val LabelInkLocked = Color.White.copy(alpha = 0.38f)
+@Composable
+private fun planSurface(): Color = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Ink
+
+@Composable
+private fun planPrimaryInk(): Color = if (PompColors.IsDark) PompColors.Ink else Color.White
+
+@Composable
+private fun planTrackIdle(): Color = if (PompColors.IsDark) PompColors.Divider.copy(alpha = 0.72f) else Color.White.copy(alpha = 0.16f)
+
+@Composable
+private fun planNodeIdleFill(): Color = if (PompColors.IsDark) Color(0xFF0E4D6B) else Color.White.copy(alpha = 0.09f)
+
+@Composable
+private fun planNodeIdleBorder(): Color = if (PompColors.IsDark) PompColors.Divider else Color.White.copy(alpha = 0.20f)
+
+@Composable
+private fun planNodeIdleInk(): Color = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.60f)
+
+@Composable
+private fun planHeaderInk(): Color = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.70f)
+
+@Composable
+private fun planLabelInk(): Color = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.66f)
+
+@Composable
+private fun planLockedInk(): Color = if (PompColors.IsDark) PompColors.InkDisabled else Color.White.copy(alpha = 0.38f)
 
 @Composable
 internal fun TodayPlanCard(
@@ -90,8 +99,9 @@ internal fun TodayPlanCard(
     val nextIndex = remember(tasks) { tasks.indexOfFirst { !it.done && it.available } }
 
     Surface(
-        color = PompColors.Ink,
+        color = planSurface(),
         shape = RoundedCornerShape(18.dp),
+        border = if (PompColors.IsDark) BorderStroke(1.dp, PompColors.Divider) else null,
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 10.dp),
@@ -99,12 +109,7 @@ internal fun TodayPlanCard(
         Box {
             PlanWatermark()
             Column(
-                modifier = Modifier.padding(
-                    start = 14.dp,
-                    end = 14.dp,
-                    top = 12.dp,
-                    bottom = 14.dp,
-                ),
+                modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 14.dp),
             ) {
                 PlanHeader(today)
                 PlanPath(tasks = tasks, nextIndex = nextIndex, onTask = onTask)
@@ -117,28 +122,22 @@ internal fun TodayPlanCard(
     }
 }
 
-/** `.tgw` — the 计 glyph bleeding out of the top-right corner. */
 @Composable
 private fun BoxScope.PlanWatermark() {
     Text(
         text = "计",
         style = PompTextStyles.hanziLarge.copy(fontSize = 74.sp, lineHeight = 74.sp),
-        color = Color.White.copy(alpha = 0.06f),
-        modifier = Modifier
-            .align(Alignment.TopEnd)
-            .offset(x = 6.dp, y = (-20).dp),
+        color = planPrimaryInk().copy(alpha = if (PompColors.IsDark) 0.05f else 0.06f),
+        modifier = Modifier.align(Alignment.TopEnd).offset(x = 6.dp, y = (-20).dp),
     )
 }
 
 @Composable
 private fun PlanHeader(today: CourseToday) {
+    val primaryInk = planPrimaryInk()
     Row(verticalAlignment = Alignment.CenterVertically) {
         MiniAppNodeIcon(
-            kind = if (today.complete) {
-                CourseNodeIconKind.CircleCheck
-            } else {
-                CourseNodeIconKind.TargetArrow
-            },
+            kind = if (today.complete) CourseNodeIconKind.CircleCheck else CourseNodeIconKind.TargetArrow,
             tint = if (today.complete) PompColors.PlanDone else PompColors.Gold,
             size = 13.dp,
         )
@@ -147,47 +146,31 @@ private fun PlanHeader(today: CourseToday) {
             text = buildAnnotatedString {
                 append(stringResource(R.string.today_plan_label))
                 append(' ')
-                withStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.SemiBold)) {
+                withStyle(SpanStyle(color = primaryInk, fontWeight = FontWeight.SemiBold)) {
                     append(today.doneXp.toString())
                 }
                 append("/${today.goalXp} XP")
             },
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.5.sp),
             fontWeight = FontWeight.Medium,
-            color = HeaderInk,
+            color = planHeaderInk(),
         )
     }
 }
 
 @Composable
-private fun PlanPath(
-    tasks: List<TodayTask>,
-    nextIndex: Int,
-    onTask: (TodayTask) -> Unit,
-) {
-    // `.tnode.now:after` — one ring animation drives the single "now" node.
+private fun PlanPath(tasks: List<TodayTask>, nextIndex: Int, onTask: (TodayTask) -> Unit) {
     val pulse = rememberInfiniteTransition(label = "planPulse")
     val pulseProgress by pulse.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1600),
-            repeatMode = RepeatMode.Restart,
-        ),
+        animationSpec = infiniteRepeatable(animation = tween(durationMillis = 1600), repeatMode = RepeatMode.Restart),
         label = "planPulseProgress",
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 6.dp)
-            .padding(vertical = PathPadding),
-    ) {
+    Box(modifier = Modifier.fillMaxWidth().padding(top = 6.dp).padding(vertical = PathPadding)) {
         PlanTrail(tasks)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top,
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
             tasks.forEachIndexed { index, task ->
                 PlanStep(
                     task = task,
@@ -202,13 +185,10 @@ private fun PlanPath(
     }
 }
 
-/**
- * The connector. Each segment is its own path: jade once the step before it is
- * done, faint otherwise — so the line reports progress instead of decorating.
- */
 @Composable
 private fun BoxScope.PlanTrail(tasks: List<TodayTask>) {
     if (tasks.size < 2) return
+    val idle = planTrackIdle()
     Canvas(modifier = Modifier.matchParentSize()) {
         val cell = size.width / tasks.size
         val centreY = NodeSize.toPx() / 2f
@@ -228,7 +208,7 @@ private fun BoxScope.PlanTrail(tasks: List<TodayTask>) {
             }
             drawPath(
                 path = segment,
-                color = if (tasks[index - 1].done) PompColors.Jade else TrackIdle,
+                color = if (tasks[index - 1].done) PompColors.Jade else idle,
                 style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round),
             )
         }
@@ -247,28 +227,17 @@ private fun RowScope.PlanStep(
     val locked = !task.available && !task.done
     val label = todayTaskLabel(task)
     Column(
-        modifier = modifier
-            .widthIn(min = 56.dp)
-            .offset(y = if (index % 2 == 0) -NodeSwing else NodeSwing),
+        modifier = modifier.widthIn(min = 56.dp).offset(y = if (index % 2 == 0) -NodeSwing else NodeSwing),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        PlanNode(
-            task = task,
-            isNext = isNext,
-            pulseProgress = pulseProgress,
-            label = label,
-            onClick = { onTask(task) },
-        )
+        PlanNode(task, isNext, pulseProgress, label) { onTask(task) }
         Spacer(Modifier.height(4.dp))
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 10.5.sp,
-                lineHeight = 13.sp,
-            ),
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.5.sp, lineHeight = 13.sp),
             fontWeight = FontWeight.Medium,
-            color = if (locked) LabelInkLocked else LabelInk,
+            color = if (locked) planLockedInk() else planLabelInk(),
             textAlign = TextAlign.Center,
             modifier = Modifier.widthIn(max = 72.dp),
         )
@@ -286,25 +255,22 @@ private fun PlanNode(
     val fill = when {
         task.done -> PompColors.Jade
         isNext -> PompColors.Gold
-        else -> NodeIdleFill
+        else -> planNodeIdleFill()
     }
     val border = when {
         task.done -> PompColors.Jade
         isNext -> PompColors.Gold
-        else -> NodeIdleBorder
+        else -> planNodeIdleBorder()
     }
     val ink = when {
-        task.done -> Color.White
+        task.done -> planPrimaryInk()
         isNext -> PompColors.PlanOnGold
-        else -> NodeIdleInk
+        else -> planNodeIdleInk()
     }
-    // `.tnode.lock{opacity:.5}` applies to the whole node, glyph included.
     val dimmed = !task.available && !task.done
 
     Box(modifier = Modifier.graphicsLayer { alpha = if (dimmed) 0.5f else 1f }) {
         if (isNext) {
-            // The ring is an overlay: it grows past the node without taking
-            // layout space, so the trail geometry stays exact.
             Canvas(modifier = Modifier.matchParentSize()) {
                 val radius = (size.minDimension / 2f + 4.dp.toPx()) * (1f + 0.25f * pulseProgress)
                 drawCircle(
@@ -321,16 +287,10 @@ private fun PlanNode(
             shape = CircleShape,
             color = fill,
             border = BorderStroke(1.5.dp, border),
-            modifier = Modifier
-                .size(NodeSize)
-                .semantics { contentDescription = label },
+            modifier = Modifier.size(NodeSize).semantics { contentDescription = label },
         ) {
             Box(contentAlignment = Alignment.Center) {
-                MiniAppNodeIcon(
-                    kind = todayTaskIcon(task),
-                    tint = ink,
-                    size = 17.dp,
-                )
+                MiniAppNodeIcon(kind = todayTaskIcon(task), tint = ink, size = 17.dp)
             }
         }
     }
@@ -342,9 +302,7 @@ private fun PlanGoButton(onClick: () -> Unit) {
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         color = PompColors.Gold,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
@@ -358,11 +316,7 @@ private fun PlanGoButton(onClick: () -> Unit) {
                 color = PompColors.PlanOnGold,
             )
             Spacer(Modifier.width(6.dp))
-            MiniAppNodeIcon(
-                kind = CourseNodeIconKind.ArrowRight,
-                tint = PompColors.PlanOnGold,
-                size = 16.dp,
-            )
+            MiniAppNodeIcon(kind = CourseNodeIconKind.ArrowRight, tint = PompColors.PlanOnGold, size = 16.dp)
         }
     }
 }
@@ -378,23 +332,14 @@ private fun PlanDoneRow() {
                 drawRoundRect(
                     color = dashed,
                     cornerRadius = CornerRadius(12.dp.toPx(), 12.dp.toPx()),
-                    style = Stroke(
-                        width = 1.5.dp.toPx(),
-                        pathEffect = PathEffect.dashPathEffect(
-                            floatArrayOf(6.dp.toPx(), 5.dp.toPx()),
-                        ),
-                    ),
+                    style = Stroke(width = 1.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 5.dp.toPx()))),
                 )
             }
             .padding(horizontal = 14.dp, vertical = 11.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MiniAppNodeIcon(
-            kind = CourseNodeIconKind.CircleCheck,
-            tint = PompColors.PlanDone,
-            size = 16.dp,
-        )
+        MiniAppNodeIcon(kind = CourseNodeIconKind.CircleCheck, tint = PompColors.PlanDone, size = 16.dp)
         Spacer(Modifier.width(6.dp))
         Text(
             text = stringResource(R.string.today_plan_done),
@@ -405,7 +350,6 @@ private fun PlanDoneRow() {
     }
 }
 
-/** Mini App `todayTaskIcon`. */
 private fun todayTaskIcon(task: TodayTask): CourseNodeIconKind = when {
     task.done -> CourseNodeIconKind.Check
     !task.available -> CourseNodeIconKind.Lock
@@ -418,18 +362,13 @@ private fun todayTaskIcon(task: TodayTask): CourseNodeIconKind = when {
     else -> CourseNodeIconKind.Circle
 }
 
-/** Mini App `todayTaskLabel`. */
 @Composable
 private fun todayTaskLabel(task: TodayTask): String = when (task.type) {
     "continue_lesson" -> {
         val part = task.ref.orEmpty().split(":").getOrNull(1).orEmpty()
-        if (part.isBlank()) {
-            stringResource(R.string.today_task_part)
-        } else {
-            stringResource(R.string.today_task_part_n, part)
-        }
+        if (part.isBlank()) stringResource(R.string.today_task_part)
+        else stringResource(R.string.today_task_part_n, part)
     }
-
     "mistake_review" -> stringResource(R.string.today_task_mistakes)
     "mock_exam" -> stringResource(R.string.today_task_test)
     "voice_dialog" -> stringResource(R.string.today_task_talk)
@@ -438,6 +377,5 @@ private fun todayTaskLabel(task: TodayTask): String = when (task.type) {
     } else {
         stringResource(R.string.today_task_chars)
     }
-
     else -> ""
 }
