@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""The Android palette must be the Mini App's palette, value for value.
+"""The Android light palette must be the Mini App's palette, value for value.
 
 The two clients are one product. When a token drifts by a shade the apps stop
 looking like the same thing, and nobody notices from a screenshot — the
 difference is one or two units per channel. So the comparison is done here,
 against the Mini App's own stylesheet, rather than by eye.
 
+Dark mode is intentionally Android-only and is not compared with the Mini App.
 Usage:  python3 tools/check_palette_matches_miniapp.py
 Exit code 1 when a mapped colour no longer matches its Mini App token.
 """
@@ -20,29 +21,29 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 MINI_APP = ROOT / "app" / "static" / "course-v3.html"
 COLORS = ROOT / "android" / "app" / "src" / "main" / "java" / "com" / "pomp" / "hskai" / "core" / "design" / "Color.kt"
 
-# Android name -> Mini App CSS custom property it must equal.
+# Android light name -> Mini App CSS custom property it must equal.
 # Anything not listed here is Android-only and is not checked (a disabled
 # control colour, for instance, has no Mini App counterpart).
 MAPPING = {
-    "Paper": "paper",
-    "PaperRaised": "card",
-    "Ink": "ink",
-    "InkSecondary": "ink2",
-    "InkDisabled": "ink3",
-    "Cinnabar": "cin",
-    "CinnabarDark": "cin2",
-    "CinnabarSoft": "cinbg",
-    "Jade": "jade",
-    "JadeSoft": "jadebg",
-    "Gold": "gold",
-    "GoldSoft": "goldbg",
-    "Flame": "flame",
-    "FlameSoft": "flamebg",
-    "Blue": "blue",
-    "BlueSoft": "bluebg",
-    "Overlay": "overlay",
-    "Shadow": "shadow",
-    "Divider": "line",
+    "LightPaper": "paper",
+    "LightPaperRaised": "card",
+    "LightInk": "ink",
+    "LightInkSecondary": "ink2",
+    "LightInkDisabled": "ink3",
+    "LightCinnabar": "cin",
+    "LightCinnabarDark": "cin2",
+    "LightCinnabarSoft": "cinbg",
+    "LightJade": "jade",
+    "LightJadeSoft": "jadebg",
+    "LightGold": "gold",
+    "LightGoldSoft": "goldbg",
+    "LightFlame": "flame",
+    "LightFlameSoft": "flamebg",
+    "LightBlue": "blue",
+    "LightBlueSoft": "bluebg",
+    "LightOverlay": "overlay",
+    "LightShadow": "shadow",
+    "LightDivider": "line",
 }
 
 TOKEN = re.compile(r"--([a-z0-9-]+)\s*:\s*#([0-9A-Fa-f]{6})\b")
@@ -68,7 +69,7 @@ def main() -> int:
             print(f"--{token} is no longer defined in the Mini App; the mapping is stale")
             problems += 1
         elif actual is None:
-            print(f"{kotlin_name} is missing from the Android palette (--{token} is #{expected})")
+            print(f"{kotlin_name} is missing from the Android light palette (--{token} is #{expected})")
             problems += 1
         elif actual != expected:
             print(f"{kotlin_name} is #{actual} but --{token} is #{expected}")
@@ -77,7 +78,7 @@ def main() -> int:
     if problems:
         print(f"\n{problems} colour(s) no longer match the Mini App")
         return 1
-    print(f"the palette matches the Mini App ({len(MAPPING)} colours checked)")
+    print(f"the Android light palette matches the Mini App ({len(MAPPING)} colours checked)")
     return 0
 
 
