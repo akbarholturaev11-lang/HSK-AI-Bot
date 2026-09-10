@@ -115,6 +115,64 @@ class ConversionFunnelService:
             logger.exception("Failed to record conversion funnel event: %s", event_name)
             return False
 
+    async def record_once(
+        self,
+        *,
+        event_name: str,
+        user=None,
+        user_id: int | None = None,
+        telegram_id: int | None = None,
+        source: str | None = None,
+        lesson_id: int | None = None,
+        payment_id: int | None = None,
+        payload: dict[str, Any] | None = None,
+    ) -> bool:
+        """Record a funnel event only if the same scoped event is absent.
+
+        This uses its own session so hot user-facing requests do not need to
+        reuse or hold the request transaction just to dedupe analytics.
+        """
+        if event_name not in self.EVENT_NAMES:
+            logger.warning("Unknown conversion funnel event ignored: %s", event_name)
+            return False
+
+        if user is not None:
+            user_id = getattr(user, "id", None) if user_id is None else user_id
+            telegram_id = getattr(user, "telegram_id", None) if telegram_id is None else telegram_id
+
+        if not telegram_id:
+            logger.warning("Conversion funnel event skipped without telegram_id: %s", event_name)
+            return False
+
+        try:
+            async with async_session_maker() as write_session:
+                exists = await ConversionFunnelService(write_session).has_event(
+                    telegram_id=int(telegram_id),
+                    event_name=event_name,
+                    source=source,
+                    lesson_id=lesson_id,
+                    payment_id=payment_id,
+                )
+                if exists:
+                    return False
+                write_session.add(
+                    ConversionFunnelEvent(
+                        user_id=user_id,
+                        telegram_id=int(telegram_id),
+                        event_name=event_name,
+                        source=(source or None),
+                        lesson_id=lesson_id,
+                        payment_id=payment_id,
+                        payload_json=self._payload_json(payload),
+                        created_at=datetime.now(timezone.utc),
+                    )
+                )
+                await write_session.commit()
+            return True
+        except Exception:
+            logger.exception("Failed to record conversion funnel event once: %s", event_name)
+            return False
+
     async def has_event(
         self,
         *,

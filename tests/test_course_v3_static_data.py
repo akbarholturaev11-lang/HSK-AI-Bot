@@ -675,6 +675,38 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("window.CourseLimitStatus={get:practiceLimitStatus", html)
         self.assertIn("statusPromise=window.CourseLimitStatus.get(statusFeature)", ads)
         self.assertIn("(statusPromise||fetchLimitStatus())", ads)
+        self.assertIn("if(!why){", ads)
+
+    def test_lesson_flow_reserves_limit_at_start_and_keeps_retry_path(self):
+        html = Path("app/static/course-v3.html").read_text(encoding="utf-8")
+
+        self.assertIn("function reserveLessonStart(l)", html)
+        self.assertIn('"/api/v3/lesson/start"', html)
+        start_body = html[
+            html.index("function startLesson(") : html.index("function lessonMaterialRef(")
+        ]
+        self.assertIn(
+            "reserveLessonStart(l).then(function(){return loadLessonData", start_body
+        )
+
+        # Limit/admin qarori server mapidan keladi. Klient eski hardcoded
+        # free-part formulasi bilan keyingi darsni o'zi ochmasligi kerak.
+        self.assertNotIn("function freeCoursePartsForLevel(", html)
+        apply_body = html[
+            html.index("function applyLessonDone(") : html.index("function flowDone()")
+        ]
+        self.assertNotIn('next.status="current"', apply_body)
+        self.assertIn('next.status="locked"', apply_body)
+
+        # Complete/save xatosida oxirgi karta recoverable bo'ladi — aks holda
+        # CTA yashirin qolib, userga "qotib qoldi" bo'lib ko'rinadi.
+        self.assertIn("function showLessonCompleteRetry(msg)", html)
+        self.assertIn("showLessonCompleteRetry(serverSaveErrorText", html)
+        self.assertIn("cta.onclick=function(){setLessonFlowControls();flowDone()}", html)
+        self.assertIn("position:sticky;bottom:0", html)
+        self.assertIn('scrollIntoView({block:"end"})', html)
+        self.assertIn("function showGateLoading()", html)
+        self.assertIn("showGateLoading();", html)
 
     def test_admin_can_attach_external_cta_to_lesson_end_ad(self):
         html = Path("app/static/admin.html").read_text(encoding="utf-8")

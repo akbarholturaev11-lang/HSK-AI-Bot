@@ -241,6 +241,10 @@ def mock_course_map(page, *, level="hsk1", language="uz", sales_offer=None):
     if sales_offer is not None:
         data["sales_offer"] = sales_offer
     page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+    page.route(
+        "**/api/v3/lesson/start",
+        lambda route: json_response(route, {"ok": True, "allowed": True}),
+    )
 
 
 def mock_learning_audio(page):
@@ -1181,8 +1185,8 @@ def test_course_v3_checkpoint_exit_ticket_mastery_and_paywall_boundary(page):
     expect(page.locator("#sheet")).to_contain_text("2-dars · 1-qism")
 
     # Server map contract: checkpoint free, part 4 is first protected part.
-    assert page.evaluate("freeCoursePartsForLevel('hsk1')") == 3
-    assert page.evaluate("freeCoursePartsForLevel('hsk2')") == 2
+    assert page.evaluate("allLessons()[2].status") == "done"
+    assert page.evaluate("allLessons()[3].status") == "locked"
     page.evaluate(
         """() => {
           App.closeSheet();

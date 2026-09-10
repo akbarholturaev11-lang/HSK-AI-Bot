@@ -12,9 +12,10 @@ Ikkita eng muhim hodisa shu yerda tekshiriladi:
   yagona o'lchovi.
 """
 
+import asyncio
 import unittest
 from datetime import datetime, timedelta, timezone
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -102,7 +103,7 @@ class FunnelWiringTests(unittest.IsolatedAsyncioTestCase):
                 {
                     "plans": {
                         EntitlementState.FREE: {
-                            A.PRACTICE_RECOGNITION: {"limit": 0, "window": WINDOW_DAILY}
+                            A.PRACTICE_RECOGNITION: {"limit": 1, "window": WINDOW_DAILY}
                         }
                     }
                 }
@@ -147,12 +148,16 @@ class FunnelWiringTests(unittest.IsolatedAsyncioTestCase):
                 {
                     "plans": {
                         EntitlementState.FREE: {
-                            A.PRACTICE_RECOGNITION: {"limit": 0, "window": WINDOW_DAILY}
+                            A.PRACTICE_RECOGNITION: {"limit": 1, "window": WINDOW_DAILY}
                         }
                     }
                 }
             )
             user = await self._get_user(session)
+            await EntitlementEngine(session, config=config).consume(
+                user, A.PRACTICE_RECOGNITION
+            )
+            await session.commit()
             with patch(
                 "app.services.entitlements.engine.ConversionFunnelService",
                 side_effect=RuntimeError("voronka yiqildi"),
@@ -162,6 +167,48 @@ class FunnelWiringTests(unittest.IsolatedAsyncioTestCase):
                 )
 
         self.assertFalse(decision.allowed)
+
+    async def test_slow_limit_hit_analytics_does_not_delay_the_limit_decision(self):
+        # Limit oynasi userga darhol chiqishi kerak; funnel yozuvi sekin DBda
+        # critical path bo'lib qolmasligi shart.
+        async with self.sessions() as session:
+            session.add(_user())
+            await session.commit()
+
+            config = config_from_payload(
+                {
+                    "plans": {
+                        EntitlementState.FREE: {
+                            A.PRACTICE_RECOGNITION: {"limit": 1, "window": WINDOW_DAILY}
+                        }
+                    }
+                }
+            )
+            user = await self._get_user(session)
+            await EntitlementEngine(session, config=config).consume(
+                user, A.PRACTICE_RECOGNITION
+            )
+            await session.commit()
+
+            async def slow_record_once(**_kwargs):
+                await asyncio.sleep(0.05)
+                return True
+
+            with patch(
+                "app.services.entitlements.engine.LIMIT_HIT_ANALYTICS_TIMEOUT_SECONDS",
+                0.001,
+            ), patch(
+                "app.services.entitlements.engine.ConversionFunnelService"
+            ) as service_cls:
+                service_cls.return_value.record_once = AsyncMock(
+                    side_effect=slow_record_once
+                )
+                decision = await EntitlementEngine(session, config=config).consume(
+                    user, A.PRACTICE_RECOGNITION
+                )
+
+        self.assertFalse(decision.allowed)
+        service_cls.return_value.record_once.assert_awaited()
 
     # --- trialdan to'lovga --------------------------------------------------
 

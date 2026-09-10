@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import json
 import logging
@@ -18,6 +19,7 @@ from app.services.user_access_state_service import UserAccessStateService
 
 
 logger = logging.getLogger(__name__)
+LIMIT_NOTICE_TIMEOUT_SECONDS = 0.35
 
 FREE_FEATURE_LIMITS = {feature_key: 1 for feature_key in COURSE_FEATURE_KEYS}
 # Legacy/default value kept for native clients and older imports that do not pass
@@ -582,17 +584,23 @@ class CourseMiniAppAccessService:
             )
             # O'quvchi limitga endi urildi. Xabar kuniga bir marta ketadi va
             # yuborilmasa ham limit javobi o'zgarmaydi.
-            try:
-                await LimitNotificationService(self.session).daily_limit_spent(
-                    locked_user,
-                    feature_key=feature_key,
-                    reset_at=reset_at,
-                    lifetime=bool(lifetime),
-                    limit=limit,
-                    bot=notify_bot,
-                )
-            except Exception:  # noqa: BLE001 — bildirishnoma limitni buzmasin
-                logger.info("Daily limit notice failed", exc_info=True)
+            if notify_bot is not None:
+                try:
+                    await asyncio.wait_for(
+                        LimitNotificationService(self.session).daily_limit_spent(
+                            locked_user,
+                            feature_key=feature_key,
+                            reset_at=reset_at,
+                            lifetime=bool(lifetime),
+                            limit=limit,
+                            bot=notify_bot,
+                        ),
+                        timeout=LIMIT_NOTICE_TIMEOUT_SECONDS,
+                    )
+                except asyncio.TimeoutError:
+                    logger.warning("Daily limit notice timed out for %s", feature_key)
+                except Exception:  # noqa: BLE001 — bildirishnoma limitni buzmasin
+                    logger.info("Daily limit notice failed", exc_info=True)
             return {
                 "allowed": False,
                 "recorded": False,

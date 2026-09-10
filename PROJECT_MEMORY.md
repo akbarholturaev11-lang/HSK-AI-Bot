@@ -7771,3 +7771,43 @@ Risk:
 Follow-up:
 - Watch Railway logs for `Skipping slow entitlement shadow comparison` and for
   continued `asyncpg.ConnectionDoesNotExistError` after deploy.
+
+### 2026-09-10 — Lesson start limit reservation and completion retry
+
+Changed:
+- `course-v3.html` now calls `/api/v3/lesson/start` before loading a current
+  lesson so the daily lesson slot is reserved at entry, not after the learner
+  finishes all cards.
+- Lesson completion failures now restore a visible retry CTA instead of leaving
+  the flow with hidden controls.
+- The client no longer reopens the next lesson with hardcoded free-part logic;
+  the refreshed server map remains the authority for unlocked/locked state.
+- Limit-hit analytics and optional daily-limit Telegram notices now have short
+  timeouts so a slow/closed DB connection cannot hold the visible limit answer.
+- The Test Center shows an immediate "checking limit" state while gate/start
+  APIs run, instead of looking idle during a slow refusal.
+
+Why:
+- Lesson 3 could look frozen at the final card when the first real limit/write
+  decision happened only on `/api/v3/lesson/complete`, or when completion save
+  failed after the CTA had been hidden.
+- Railway logs showed `ConversionFunnelService` failing while recording
+  `limit_hit`; that analytics write must never delay a user-facing paywall.
+
+Files touched:
+- `app/static/course-v3.html`
+- `app/static/course_v3_data/ads.js`
+- `app/services/entitlements/engine.py`
+- `app/services/conversion_funnel_service.py`
+- `app/services/course_miniapp_access_service.py`
+- `tests/test_course_v3_static_data.py`
+- `tests/e2e/test_miniapp_smoke.py`
+- `tests/test_funnel_wiring.py`
+
+Risk:
+- Medium: lesson access UI now depends on the existing start-reservation API.
+  Browser E2E mocks were updated to include that endpoint.
+
+Follow-up:
+- After deploy, test Telegram Mini App lesson 3 end-to-next transition and one
+  intentionally exhausted free-limit account.

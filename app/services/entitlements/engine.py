@@ -26,6 +26,7 @@ bilan yoqish kerak.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from dataclasses import dataclass
 from datetime import datetime
@@ -60,6 +61,7 @@ from app.services.entitlements.state import (
 
 
 logger = logging.getLogger(__name__)
+LIMIT_HIT_ANALYTICS_TIMEOUT_SECONDS = 0.35
 
 
 @dataclass(frozen=True)
@@ -330,21 +332,24 @@ class EntitlementEngine:
             telegram_id = int(getattr(user, "telegram_id", 0) or 0)
             if not telegram_id:
                 return
-            day_key = course_daily_window.local_day_key(
-                await self._access._learner_offset_minutes(user)
-            )
-            funnel = ConversionFunnelService()
+            user_id = getattr(user, "id", None)
+            # Bu faqat analytics dedupe kaliti. User limit oynasini ko'rsatish
+            # uchun profil timezone SELECT qilmaymiz; aks holda limit javobi
+            # yana qo'shimcha DB ishiga bog'lanadi.
+            day_key = course_daily_window.local_day_key(0)
             source = f"{action}:{day_key}"
-            if await ConversionFunnelService(self.session).has_event(
-                telegram_id=telegram_id, event_name="limit_hit", source=source
-            ):
-                return
-            await funnel.record(
-                event_name="limit_hit",
-                user=user,
-                source=source,
-                payload={"action": action},
+            await asyncio.wait_for(
+                ConversionFunnelService().record_once(
+                    event_name="limit_hit",
+                    user_id=user_id,
+                    telegram_id=telegram_id,
+                    source=source,
+                    payload={"action": action},
+                ),
+                timeout=LIMIT_HIT_ANALYTICS_TIMEOUT_SECONDS,
             )
+        except asyncio.TimeoutError:
+            logger.warning("limit_hit analytics timed out for %s", action)
         except Exception:  # noqa: BLE001 — analitika limitni buzmasin
             logger.debug("limit_hit yozilmadi: %s", action, exc_info=True)
 
