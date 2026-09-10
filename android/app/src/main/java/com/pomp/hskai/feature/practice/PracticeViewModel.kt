@@ -8,9 +8,11 @@ import com.pomp.hskai.core.network.ApiError
 import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.data.api.ExamCompleteResponse
 import com.pomp.hskai.data.api.ExamSessionDto
+import com.pomp.hskai.data.api.MistakeItemDto
 import com.pomp.hskai.data.api.MistakeReviewAnswerResponse
 import com.pomp.hskai.data.api.MistakeReviewCompleteResponse
 import com.pomp.hskai.data.api.MistakeReviewSessionDto
+import com.pomp.hskai.data.api.MistakeSummaryDto
 import com.pomp.hskai.data.api.MistakesOverviewResponse
 import com.pomp.hskai.data.api.PracticeCompleteResponse
 import com.pomp.hskai.data.api.PracticeSessionDto
@@ -106,17 +108,79 @@ class PracticeViewModel(
         loadMistakes()
     }
 
+    /**
+     * The Mini App initially renders 30 mistakes and appends another 30 when
+     * the learner asks for more. Compose keeps that exact visible behaviour,
+     * but we preload the complete active set in 100-row server pages so chips
+     * can filter the whole set locally without changing MainActivity's public
+     * callback surface. The Android endpoint already supports offset/limit and
+     * caps each response at 100.
+     */
     fun loadMistakes() {
         _state.update { it.copy(isLoadingMistakes = true, error = null) }
         viewModelScope.launch {
-            when (val result = repository.mistakes()) {
-                is ApiResult.Success -> _state.update {
-                    it.copy(isLoadingMistakes = false, mistakes = result.value)
-                }
+            val items = mutableListOf<MistakeItemDto>()
+            var summary: MistakeSummaryDto? = null
+            var offset = 0
 
-                is ApiResult.Failure -> _state.update {
-                    it.copy(isLoadingMistakes = false, error = result.error)
+            while (offset < MISTAKES_MAX_ITEMS) {
+                when (
+                    val result = repository.mistakes(
+                        limit = MISTAKES_PAGE_SIZE,
+                        offset = offset,
+                    )
+                ) {
+                    is ApiResult.Success -> {
+                        if (summary == null) summary = result.value.summary
+                        val page = result.value.items
+                        items.addAll(page)
+                        if (page.size < MISTAKES_PAGE_SIZE) {
+                            _state.update {
+                                it.copy(
+                                    isLoadingMistakes = false,
+                                    mistakes = MistakesOverviewResponse(
+                                        ok = true,
+                                        summary = summary ?: MistakeSummaryDto(),
+                                        items = items,
+                                    ),
+                                )
+                            }
+                            return@launch
+                        }
+                        if (page.isEmpty()) break
+                        offset += page.size
+                    }
+
+                    is ApiResult.Failure -> {
+                        _state.update {
+                            if (items.isEmpty()) {
+                                it.copy(isLoadingMistakes = false, error = result.error)
+                            } else {
+                                it.copy(
+                                    isLoadingMistakes = false,
+                                    mistakes = MistakesOverviewResponse(
+                                        ok = true,
+                                        summary = summary ?: MistakeSummaryDto(),
+                                        items = items,
+                                    ),
+                                    error = result.error,
+                                )
+                            }
+                        }
+                        return@launch
+                    }
                 }
+            }
+
+            _state.update {
+                it.copy(
+                    isLoadingMistakes = false,
+                    mistakes = MistakesOverviewResponse(
+                        ok = true,
+                        summary = summary ?: MistakeSummaryDto(),
+                        items = items,
+                    ),
+                )
             }
         }
     }
@@ -538,5 +602,10 @@ class PracticeViewModel(
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             PracticeViewModel(repository) as T
+    }
+
+    private companion object {
+        const val MISTAKES_PAGE_SIZE = 100
+        const val MISTAKES_MAX_ITEMS = 10_000
     }
 }

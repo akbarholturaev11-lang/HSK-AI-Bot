@@ -372,6 +372,7 @@ data class MistakeSummaryDto(
 data class MistakeItemDto(
     @SerialName("id") val id: Int = 0,
     @SerialName("category") val category: String = "",
+    @SerialName("source") val source: String = "",
     @SerialName("level") val level: String? = null,
     @SerialName("lesson") val lesson: Int? = null,
     @SerialName("question") val question: String = "",
