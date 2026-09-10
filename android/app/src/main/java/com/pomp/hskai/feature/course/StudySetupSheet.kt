@@ -131,7 +131,7 @@ fun StudySetupSheet(
                 Spacer(Modifier.height(14.dp))
                 Text(
                     text = copy.saveError,
-                    color = PompColors.CinnabarDark,
+                    color = PompColors.Flame,
                     fontSize = 13.sp,
                     lineHeight = 19.sp,
                     modifier = Modifier.fillMaxWidth(),
