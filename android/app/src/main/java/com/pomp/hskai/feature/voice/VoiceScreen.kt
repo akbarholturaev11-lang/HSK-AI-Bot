@@ -20,10 +20,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,16 +33,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,13 +55,13 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.pomp.hskai.R
 import com.pomp.hskai.core.design.PompColors
-import com.pomp.hskai.core.design.PompTextStyles
-import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.course.CoursePandaMascot
 import com.pomp.hskai.feature.course.PandaMood
+import com.pomp.hskai.data.api.AndroidHintDto
 import com.pomp.hskai.feature.hint.SectionHint
 import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.feature.limit.SectionLimitOverlay
+import com.pomp.hskai.core.design.PompTextStyles
 
 @Composable
 fun VoiceScreen(
@@ -66,6 +71,7 @@ fun VoiceScreen(
     limit: LimitGate,
     hints: List<AndroidHintDto> = emptyList(),
     onDismissHint: (String) -> Unit = {},
+    /** Markazdagi limit tanlovi yopilganda. */
     onDismissLimit: () -> Unit = {},
     subtitlesOn: Boolean,
     slowSpeech: Boolean,
@@ -81,56 +87,68 @@ fun VoiceScreen(
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = PompColors.Paper) {
-        Box(Modifier.fillMaxSize()) {
-            when {
-                state.result != null -> VoiceResult(state = state, onDone = onReset)
-                state.hasSession -> VoiceCallScreen(
-                    state = state,
-                    subtitlesOn = subtitlesOn,
-                    slowSpeech = slowSpeech,
-                    onToggleSubtitles = onToggleSubtitles,
-                    onToggleSlowSpeech = onToggleSlowSpeech,
-                    onToggleRecording = onToggleRecording,
-                    onSendText = onSendText,
-                    onEndSession = onEndSession,
-                    onSwapPartner = onSwapPartner,
-                )
-                else -> VoiceHome(
-                    state = state,
-                    level = level,
-                    language = language,
-                    limit = limit,
-                    hints = hints,
-                    onDismissHint = onDismissHint,
-                    onSelectRole = onSelectRole,
-                    onStartSession = onStartSession,
-                )
-            }
-
-            var limitDismissed by rememberSaveable(state.status?.resetAt) {
-                mutableStateOf(false)
-            }
-            if (!state.hasSession &&
-                state.result == null &&
-                state.status != null &&
-                !canStartVoice(state) &&
-                !limitDismissed
-            ) {
-                SectionLimitOverlay(
-                    sectionTitle = stringResource(R.string.nav_ai),
-                    limit = limit,
-                    reason = state.status?.limitStatus?.limitText ?: stringResource(R.string.limit_voice_reason),
-                    resetAt = state.status?.resetAt,
-                    onClose = {
-                        limitDismissed = true
-                        onDismissLimit()
-                    },
-                )
-            }
+      Box(Modifier.fillMaxSize()) {
+        when {
+            state.result != null -> VoiceResult(state = state, onDone = onReset)
+            state.hasSession -> VoiceCallScreen(
+                state = state,
+                subtitlesOn = subtitlesOn,
+                slowSpeech = slowSpeech,
+                onToggleSubtitles = onToggleSubtitles,
+                onToggleSlowSpeech = onToggleSlowSpeech,
+                onToggleRecording = onToggleRecording,
+                onSendText = onSendText,
+                onEndSession = onEndSession,
+                onSwapPartner = onSwapPartner,
+            )
+            else -> VoiceHome(
+                state = state,
+                level = level,
+                language = language,
+                limit = limit,
+                hints = hints,
+                onDismissHint = onDismissHint,
+                onSelectRole = onSelectRole,
+                onStartSession = onStartSession,
+            )
         }
+
+        // Kunlik bepul ovoz tugagan bo'lsa — tanlov markazda, xira fon
+        // ustida. Boshqa bo'limlardagidek AYNI blok, faqat matni shu
+        // bo'limga tegishli.
+        var limitDismissed by rememberSaveable(state.status?.resetAt) {
+            mutableStateOf(false)
+        }
+        if (!state.hasSession &&
+            state.result == null &&
+            state.status != null &&
+            !canStartVoice(state) &&
+            !limitDismissed
+        ) {
+            SectionLimitOverlay(
+                sectionTitle = stringResource(R.string.nav_ai),
+                limit = limit,
+                reason = state.status?.limitStatus?.limitText ?: stringResource(R.string.limit_voice_reason),
+                // The server says when the daily allowance reopens; the hour
+                // is never assumed on the client.
+                resetAt = state.status?.resetAt,
+                onClose = {
+                    limitDismissed = true
+                    onDismissLimit()
+                },
+            )
+        }
+      }
     }
 }
 
+/**
+ * Mini App `renderVoice()`: one dark card, the panda, and a single button.
+ *
+ * The five partners the backend supports are not a menu here — the Mini App
+ * asks for the partner inside the conversation, and a learner opening the tab
+ * should be one tap away from speaking, not choosing.
+ */
 @Composable
 private fun VoiceHome(
     state: VoiceUiState,
@@ -148,32 +166,32 @@ private fun VoiceHome(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    color = PompColors.Cinnabar,
-                    shape = RoundedCornerShape(999.dp),
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Surface(
+                color = PompColors.Cinnabar,
+                shape = RoundedCornerShape(999.dp),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Mic,
-                            contentDescription = null,
-                            tint = PompColors.Paper,
-                            modifier = Modifier.size(16.dp),
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            text = stringResource(R.string.nav_ai),
-                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
-                            color = PompColors.Paper,
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Filled.Mic,
+                        contentDescription = null,
+                        tint = PompColors.Paper,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        text = stringResource(R.string.nav_ai),
+                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
+                        color = PompColors.Paper,
+                    )
                 }
-                Spacer(Modifier.width(8.dp))
-                SectionHint(hints = hints, section = "voice", onDismiss = onDismissHint)
             }
+            Spacer(Modifier.width(8.dp))
+            SectionHint(hints = hints, section = "voice", onDismiss = onDismissHint)
+          }
         }
         item {
             VoiceBox(
@@ -192,6 +210,7 @@ private fun VoiceHome(
     }
 }
 
+/** Mini App `.voicebox`. */
 @Composable
 private fun VoiceBox(
     isStarting: Boolean,
@@ -200,7 +219,7 @@ private fun VoiceBox(
 ) {
     val boxSurface = if (PompColors.IsDark) PompColors.PaperRaised else PompColors.Ink
     val boxInk = if (PompColors.IsDark) PompColors.Ink else PompColors.Paper
-    val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else PompColors.Paper.copy(alpha = 0.72f)
+    val boxMuted = if (PompColors.IsDark) PompColors.InkSecondary else Color.White.copy(alpha = 0.72f)
     Surface(
         color = boxSurface,
         shape = RoundedCornerShape(18.dp),
@@ -319,6 +338,7 @@ private fun RoleCard(
     }
 }
 
+/** The five partners the backend offers, behind the conversation's own gear. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PartnerPicker(
@@ -416,6 +436,8 @@ internal fun VoiceBubble(line: VoiceLine, subtitlesOn: Boolean = true) {
                     color = PompColors.Ink,
                 )
             }
+            // Subtitles off means the Chinese stands alone — the learner
+            // is listening, not reading along.
             if (subtitlesOn && line.pinyin.isNotBlank()) {
                 Text(
                     text = line.pinyin,
