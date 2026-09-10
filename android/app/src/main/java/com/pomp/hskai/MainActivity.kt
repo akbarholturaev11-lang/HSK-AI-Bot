@@ -35,6 +35,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -98,6 +99,7 @@ import com.pomp.hskai.feature.ad.AdScreen
 import com.pomp.hskai.feature.ad.AdViewModel
 import com.pomp.hskai.feature.hint.HintsViewModel
 import com.pomp.hskai.feature.limit.rememberLimitGate
+import com.pomp.hskai.feature.limit.LimitGate
 import com.pomp.hskai.data.api.ChallengeDto
 import com.pomp.hskai.feature.rating.ChallengeRunScreen
 import com.pomp.hskai.feature.rating.ChallengeRunViewModel
@@ -107,6 +109,9 @@ import com.pomp.hskai.feature.rating.RatingViewModel
 import com.pomp.hskai.feature.voice.VoiceScreen
 import com.pomp.hskai.feature.voice.VoiceViewModel
 import java.util.UUID
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.first
+import com.pomp.hskai.widget.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -127,6 +132,7 @@ class MainActivity : ComponentActivity() {
 
         val app = application as HskAiApplication
         deliverDestination(intent?.data?.toString())
+        if (savedInstanceState == null) recordNativeEntry(intent)
 
         setContent {
             PompHskAiTheme {
@@ -144,6 +150,20 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         deliverDestination(intent.data?.toString())
+        recordNativeEntry(intent)
+    }
+
+    private fun recordNativeEntry(intent: Intent?) {
+        val source = intent?.getStringExtra(WidgetIntents.SOURCE)
+        val name = when (source) {
+            "widget" -> "android_widget_opened"
+            "notification" -> "android_notification_opened"
+            else -> return
+        }
+        val app = application as HskAiApplication
+        val id = if (source == "notification") intent.getStringExtra(WidgetIntents.EVENT_ID) ?: UUID.randomUUID().toString()
+            else UUID.randomUUID().toString()
+        lifecycleScope.launch { app.widgetCoordinator.event(name, id) }
     }
 
     private fun deliverDestination(raw: String?) {
@@ -165,6 +185,7 @@ private fun AppRoot(
     val authRepository = app.authRepository
     val authState by authRepository.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+    var offlineCourseEntry by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         authRepository.bootstrap()
@@ -173,10 +194,26 @@ private fun AppRoot(
     when (val state = authState) {
         AuthState.Unknown -> SplashScreen()
 
-        is AuthState.BootstrapFailed -> BootstrapErrorScreen(
-            errorRes = state.error.messageRes,
-            onRetry = { scope.launch { authRepository.bootstrap() } },
-        )
+        is AuthState.BootstrapFailed -> {
+            val courseEntry = offlineCourseEntry || requestedDestination?.destination?.toTab() == MainTab.COURSE
+            LaunchedEffect(courseEntry) {
+                if (courseEntry) {
+                    offlineCourseEntry = true
+                    onDestinationConsumed() // Retry must not unexpectedly auto-launch a lesson later.
+                }
+            }
+            if (courseEntry) {
+                OfflineCourseEntry(
+                    app = app,
+                    onRetry = { scope.launch { authRepository.bootstrap() } },
+                )
+            } else {
+                BootstrapErrorScreen(
+                    errorRes = state.error.messageRes,
+                    onRetry = { scope.launch { authRepository.bootstrap() } },
+                )
+            }
+        }
 
         AuthState.Unauthenticated -> {
             LaunchedEffect(Unit) { app.clearLocalData() }
@@ -198,6 +235,7 @@ private fun AppRoot(
         }
 
         is AuthState.Authenticated -> {
+            LaunchedEffect(Unit) { offlineCourseEntry = false }
             val localeHost = LocalContext.current
             LaunchedEffect(state.account.language) {
                 if (AppLocale.sync(localeHost, state.account.language)) {
@@ -272,6 +310,32 @@ private fun AppRoot(
             // and stays null for an account that was already onboarded.
             var planChoiceSeen by rememberSaveable { mutableStateOf(false) }
             var planChoiceOpen by remember { mutableStateOf(false) }
+            var widgetSetupOpen by remember { mutableStateOf(false) }
+            var widgetOfferHandled by rememberSaveable { mutableStateOf(false) }
+            val widgetSession by app.widgetStore.state.collectAsStateWithLifecycle(initialValue = WidgetSession())
+            val widgetTheme by app.appSettings.themeMode.collectAsStateWithLifecycle(initialValue = com.pomp.hskai.core.settings.AppThemeMode.DEFAULT)
+            val sessionEpoch = remember { app.widgetStore.state }
+            // Capture the account generation before the foreground request can publish anything.
+            var widgetEpoch by remember { mutableStateOf<String?>(null) }
+            LaunchedEffect(Unit) {
+                widgetEpoch = sessionEpoch.first().epoch
+                app.widgetCoordinator.flushEvents()
+            }
+            LaunchedEffect(courseState.snapshot, widgetEpoch, widgetTheme) {
+                val epoch = widgetEpoch ?: return@LaunchedEffect
+                courseState.snapshot?.let { app.widgetCoordinator.publish(it, epoch) }
+            }
+            LaunchedEffect(onboardingState.launch) {
+                if (onboardingState.launch != null && !widgetOfferHandled) {
+                    widgetOfferHandled = true
+                    if (!app.widgetStore.read().onboardingOffered) {
+                        app.widgetStore.markOffered()
+                        widgetSetupOpen = true
+                        app.widgetStore.enqueue(AndroidWidgetEvent("android_widget_onboarding_viewed"))
+                        app.applicationScope.launch { app.widgetCoordinator.flushEvents() }
+                    }
+                }
+            }
 
             LaunchedEffect(onboardingState.completed) {
                 if (onboardingState.completed) {
@@ -284,9 +348,10 @@ private fun AppRoot(
             // and with the same two ways out. Whether the free week is on
             // offer at all is the server's answer, so this waits for it
             // rather than assuming a new account is eligible.
-            LaunchedEffect(onboardingState.launch, profileState.trial?.eligible) {
+            LaunchedEffect(onboardingState.launch, profileState.trial?.eligible, widgetSetupOpen, widgetOfferHandled) {
                 if (
                     !planChoiceSeen &&
+                    widgetOfferHandled && !widgetSetupOpen &&
                     onboardingState.launch != null &&
                     profileState.trial?.eligible == true
                 ) {
@@ -324,10 +389,13 @@ private fun AppRoot(
             val notificationPermission = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { granted ->
-                if (granted) StudyReminderScheduler.schedule(context)
+                scope.launch {
+                    app.widgetStore.setReminder(granted)
+                    if (granted) StudyReminderScheduler.schedule(context)
+                }
             }
 
-            val notificationsOn = courseState.map?.notificationsEnabled
+            val notificationsOn = widgetSession.reminderEnabled
             LaunchedEffect(notificationsOn) {
                 when (notificationsOn) {
                     true -> if (StudyNotifications.canPost(context)) {
@@ -337,7 +405,16 @@ private fun AppRoot(
                         StudyReminderScheduler.cancel(context)
                         StudyNotifications.cancelReminder(context)
                     }
-                    null -> Unit
+                }
+            }
+
+            val toggleLocalReminder: (Boolean) -> Unit = { enabled ->
+                if (enabled && android.os.Build.VERSION.SDK_INT >= 33 && !StudyNotifications.canPost(context)) {
+                    notificationPermission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                } else if (enabled && !StudyNotifications.canPost(context)) {
+                    android.widget.Toast.makeText(context, R.string.widget_setup_permission, android.widget.Toast.LENGTH_LONG).show()
+                } else {
+                    scope.launch { app.widgetStore.setReminder(enabled) }
                 }
             }
 
@@ -449,12 +526,7 @@ private fun AppRoot(
                 }
             }
 
-            LaunchedEffect(
-                requestedDestination,
-                onboardingState.completed,
-                courseState.snapshot,
-                courseState.isRefreshing,
-            ) {
+            LaunchedEffect(requestedDestination, onboardingState.completed) {
                 if (!onboardingState.completed) return@LaunchedEffect
                 val request = requestedDestination ?: return@LaunchedEffect
                 val destination = request.destination
@@ -463,21 +535,17 @@ private fun AppRoot(
                     AppDestination.CurrentLesson,
                     is AppDestination.Lesson,
                     -> {
-                        val map = courseState.map
-                        if (map == null) {
-                            if (!courseState.isRefreshing && deepLinkRefreshGate.claim(request.id)) {
-                                courseViewModel.load()
-                            }
+                        // Every entry gets a NEW server check, even if an older map looked fresh.
+                        // A failure is consumed on Kurs, never left queued to open later unexpectedly.
+                        val epoch = app.widgetStore.read().epoch
+                        val fresh = (app.courseRepository.courseMap() as? com.pomp.hskai.core.network.ApiResult.Success)?.value
+                        val map = fresh?.takeUnless { it.isStale }?.map
+                        if (fresh != null) app.widgetCoordinator.publish(fresh, epoch)
+                        if (map == null || map.foundation?.mustComeFirst == true) {
+                            courseViewModel.load()
+                            onDestinationConsumed()
                             return@LaunchedEffect
                         }
-                        if (courseState.isStale) {
-                            if (courseState.isRefreshing) return@LaunchedEffect
-                            if (deepLinkRefreshGate.claim(request.id)) {
-                                courseViewModel.load()
-                            }
-                            return@LaunchedEffect
-                        }
-                        deepLinkRefreshGate.reset()
                         val candidate = when (destination) {
                             AppDestination.CurrentLesson -> map.currentLesson
                             is AppDestination.Lesson -> map.lessons.firstOrNull {
@@ -493,6 +561,10 @@ private fun AppRoot(
                         }
                         onDestinationConsumed()
                     }
+                    AppDestination.WidgetSetup -> {
+                        widgetSetupOpen = true
+                        onDestinationConsumed()
+                    }
                     else -> {
                         deepLinkRefreshGate.reset()
                         onDestinationConsumed()
@@ -502,8 +574,8 @@ private fun AppRoot(
 
             val signOut: (Boolean) -> Unit = { unlink ->
                 scope.launch {
-                    app.clearLocalData()
                     authRepository.logout(unlinkDevice = unlink)
+                    app.clearLocalData()
                 }
             }
 
@@ -653,7 +725,7 @@ private fun AppRoot(
                     if (!screenCenterAsked) {
                         screenCenterAsked = true
                         delay(SCREEN_CENTER_AD_DELAY_MS)
-                        if (openLesson == null && adRequest == null) {
+                        if (openLesson == null && adRequest == null && !widgetSetupOpen && !planChoiceOpen) {
                             adRequest = AdRequest(
                                 placement = AdViewModel.PLACEMENT_SCREEN_CENTER,
                             )
@@ -773,18 +845,8 @@ private fun AppRoot(
                             notificationsEnabled = courseState.map?.notificationsEnabled ?: true,
                             onOpenGoal = { goalPickerOpen = true },
                             onOpenLanguage = { languagePickerOpen = true },
-                            onToggleNotifications = { enabled ->
-                                if (enabled &&
-                                    android.os.Build.VERSION.SDK_INT >=
-                                    android.os.Build.VERSION_CODES.TIRAMISU &&
-                                    !StudyNotifications.canPost(context)
-                                ) {
-                                    notificationPermission.launch(
-                                        android.Manifest.permission.POST_NOTIFICATIONS,
-                                    )
-                                }
-                                settingsViewModel.setNotifications(enabled)
-                            },
+                            onToggleNotifications = settingsViewModel::setNotifications,
+                            onOpenWidget = { widgetSetupOpen = true },
                             onOpenSupport = { url -> openExternal(context, url) },
                             onRefresh = profileViewModel::load,
                             onStartTrial = profileViewModel::startTrial,
@@ -795,7 +857,13 @@ private fun AppRoot(
                     }
                 }
 
-                if (studySetupState.visible) {
+                if (widgetSetupOpen) {
+                    WidgetSetupSheet(
+                        reminderEnabled = widgetSession.reminderEnabled,
+                        onReminder = toggleLocalReminder,
+                        onDismiss = { widgetSetupOpen = false },
+                    )
+                } else if (studySetupState.visible) {
                     StudySetupSheet(
                         language = currentLanguage,
                         state = studySetupState,
@@ -879,6 +947,9 @@ private fun LessonHost(
         ),
     )
     val lessonState by model.state.collectAsStateWithLifecycle()
+    LaunchedEffect(lessonState.outcome) {
+        if (lessonState.outcome is LessonOutcome.Completed) app.widgetCoordinator.refresh()
+    }
     val scope = rememberCoroutineScope()
     var pinyinSheetOpen by remember { mutableStateOf(false) }
 
@@ -1211,6 +1282,47 @@ private fun SplashScreen() {
             CircularProgressIndicator(color = PompColors.Cinnabar)
         }
     }
+}
+
+/** Shows the last local course map while a cold-start bearer refresh is offline. */
+@Composable
+private fun OfflineCourseEntry(
+    app: HskAiApplication,
+    onRetry: () -> Unit,
+) {
+    val courseState by produceState(
+        initialValue = com.pomp.hskai.feature.course.CourseUiState(),
+        key1 = app,
+    ) {
+        value = when (val result = app.courseRepository.courseMap()) {
+            is com.pomp.hskai.core.network.ApiResult.Success ->
+                com.pomp.hskai.feature.course.CourseUiState(
+                    isLoading = false,
+                    isRefreshing = false,
+                    snapshot = result.value,
+                    error = result.value.refreshError,
+                )
+
+            is com.pomp.hskai.core.network.ApiResult.Failure ->
+                com.pomp.hskai.feature.course.CourseUiState(
+                    isLoading = false,
+                    isRefreshing = false,
+                    error = result.error,
+                )
+        }
+    }
+    CourseScreen(
+        state = courseState,
+        dailyGoal = DailyGoal.DEFAULT,
+        limit = LimitGate(),
+        onLesson = {},
+        onTodayTask = {},
+        onOpenGoal = {},
+        onOpenChest = {},
+        onChestRewardConsumed = {},
+        onRetry = onRetry,
+        modifier = Modifier.fillMaxSize(),
+    )
 }
 
 @Composable

@@ -42,7 +42,7 @@ def names_in(path: Path) -> set[str]:
 
 
 def main() -> int:
-    defaults = sorted(SRC.glob("*/res/values/strings.xml"))
+    defaults = sorted(SRC.glob("*/res/values/*.xml"))
     if not defaults:
         print("no string resources found; nothing to check")
         return 0
@@ -54,7 +54,7 @@ def main() -> int:
         base = names_in(default)
         checked += len(base)
         for locale in TRANSLATIONS:
-            path = default.parent.parent / locale / "strings.xml"
+            path = default.parent.parent / locale / default.name
             translated = names_in(path)
             for name in sorted(base - translated):
                 print(f"{source_set}/{locale}: missing translation for `{name}`")

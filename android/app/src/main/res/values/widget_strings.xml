@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_lesson_short">%1$d-dars</string>
+    <string name="widget_name">HSK AI — Panda</string>
+    <string name="widget_description">Dars, XP va streak — bosh ekranda</string>
+    <string name="widget_unlinked">Hisobni ulang</string>
+    <string name="widget_stale">Yangilab olamizmi?</string>
+    <string name="widget_foundation">Asoslardan boshlaymiz</string>
+    <string name="widget_complete">Bugun uddaladingiz!</string>
+    <string name="widget_streak">Streakni saqlaymizmi?</string>
+    <string name="widget_continue">Darsni davom ettiring</string>
+    <string name="widget_stats">%1$d XP · %2$d kun</string>
+    <string name="widget_lesson">%1$s · %2$d-dars</string>
+    <string name="widget_open">Ilovani ochish</string>
+    <string name="widget_setup_title">Panda bosh ekranda</string>
+    <string name="widget_setup_body">Ilovani ochmasdan darsni eslang. Panda kun davomida holatini almashtiradi. Bosilsa Android ilova ochiladi.</string>
+    <string name="widget_setup_add">Widget qo‘shish</string>
+    <string name="widget_setup_later">Hozir emas</string>
+    <string name="widget_setup_done">Tayyor</string>
+    <string name="widget_setup_pending">Telefon oynasida qo‘shishni tasdiqlang.</string>
+    <string name="widget_setup_added">Widget bosh ekranga qo‘shilgan.</string>
+    <string name="widget_setup_manual">Bosh ekranni bosib turing → Widgetlar → HSK AI → Panda. O‘lchamini chetlaridan tortib o‘zgartiring.</string>
+    <string name="widget_setup_reminder">Telefonda eslatma</string>
+    <string name="widget_setup_reminder_body">Taxminan %1$s da, kuniga ko‘pi bilan bir marta. Telegram eslatmalaridan alohida.</string>
+    <string name="widget_setup_permission">Telefon sozlamalarida HSK AI bildirishnomalariga ruxsat bering.</string>
+    <string name="widget_telegram_reminders">Telegram eslatmalari</string>
+    <string name="widget_preview_label">Bosh ekran widgeti</string>
+</resources>

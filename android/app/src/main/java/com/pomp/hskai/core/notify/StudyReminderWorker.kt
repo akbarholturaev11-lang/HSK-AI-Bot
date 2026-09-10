@@ -12,6 +12,8 @@ import com.pomp.hskai.core.network.ApiResult
 import com.pomp.hskai.core.settings.DailyGoal
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
+import com.pomp.hskai.widget.WidgetPolicy
+import java.time.ZonedDateTime
 
 /**
  * The daily reminder check.
@@ -28,6 +30,10 @@ class StudyReminderWorker(
 
     override suspend fun doWork(): Result {
         val app = applicationContext as? HskAiApplication ?: return Result.success()
+        val session = app.widgetStore.read()
+        if (!session.linked || !session.reminderEnabled) return Result.success()
+        if (ZonedDateTime.now().hour < WidgetPolicy.REMINDER_HOUR) return Result.success()
+        if (!StudyNotifications.canPost(applicationContext)) return Result.success()
 
         val snapshot = when (val result = app.courseRepository.courseMap()) {
             is ApiResult.Success -> result.value
@@ -46,31 +52,28 @@ class StudyReminderWorker(
         if (snapshot.isStale) return Result.retry()
 
         val map = snapshot.map
-        if (!map.notificationsEnabled) {
-            // The learner turned reminders off on another client.
-            StudyReminderScheduler.cancel(applicationContext)
-            StudyNotifications.cancelReminder(applicationContext)
-            return Result.success()
-        }
+        val now = ZonedDateTime.now()
+        val day = map.today?.localDay ?: map.progress.localDate
+        if (now.hour < WidgetPolicy.REMINDER_HOUR || day != now.toLocalDate().toString() ||
+            map.today?.complete == true
+        ) return Result.success()
+        app.widgetCoordinator.publish(snapshot, session.epoch)
 
         val settings = app.appSettings
         val reminder = ReminderDecision.decide(
             ReminderFacts(
                 notificationsEnabled = true,
                 dailyXp = map.progress.dailyXp,
-                dailyGoal = DailyGoal.sanitize(settings.dailyGoal.first()),
+                dailyGoal = map.today?.goalXp ?: DailyGoal.sanitize(settings.dailyGoal.first()),
                 streak = map.progress.streak,
-                localDate = map.progress.localDate,
-                lastNotified = settings.lastReminderDate.first(),
+                localDate = day,
+                lastNotified = session.lastReminderDay,
             )
         )
         if (reminder == Reminder.NONE) return Result.success()
 
-        val posted = StudyNotifications.postReminder(applicationContext, reminder)
-        if (posted) {
-            // Only a delivered reminder consumes the day, so a revoked
-            // permission does not silently burn today's single reminder.
-            map.progress.localDate?.let { settings.setLastReminderDate(it) }
+        app.widgetStore.remindOnce(session.epoch, day ?: return Result.success()) {
+            StudyNotifications.postReminder(applicationContext, reminder)
         }
         return Result.success()
     }
@@ -82,14 +85,14 @@ object StudyReminderScheduler {
     private const val WORK_NAME = "study_reminder_daily"
 
     fun schedule(context: Context) {
-        val request = PeriodicWorkRequestBuilder<StudyReminderWorker>(1, TimeUnit.DAYS)
-            .setInitialDelay(ReminderSchedule.minutesUntilReminderHour(), TimeUnit.MINUTES)
+        // Hourly checks avoid a 24-hour interval drifting across DST. No post before 20:00.
+        val request = PeriodicWorkRequestBuilder<StudyReminderWorker>(WidgetPolicy.REFRESH_MINUTES, TimeUnit.MINUTES)
+            .addTag("widget-policy:${WidgetPolicy.SCHEDULE_VERSION}")
             .build()
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             WORK_NAME,
-            // KEEP, so re-opening the app does not push the next run further
-            // out every time and silently stop reminding anyone.
-            ExistingPeriodicWorkPolicy.KEEP,
+            // UPDATE preserves the cadence, updates policy versions and never adds a second worker.
+            ExistingPeriodicWorkPolicy.UPDATE,
             request,
         )
     }

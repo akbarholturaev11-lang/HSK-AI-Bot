@@ -96,6 +96,7 @@ fun ProfileScreen(
     onStartTrial: () -> Unit,
     onLogout: () -> Unit,
     onUnlinkDevice: () -> Unit,
+    onOpenWidget: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var settingsOpen by remember { mutableStateOf(false) }
@@ -221,6 +222,10 @@ fun ProfileScreen(
                 appearancePickerOpen = true
             },
             onToggleNotifications = onToggleNotifications,
+            onOpenWidget = {
+                settingsOpen = false
+                onOpenWidget()
+            },
             onOpenGoal = {
                 settingsOpen = false
                 onOpenGoal()
@@ -402,6 +407,7 @@ private fun ProfileSettingsSheet(
     onDismiss: () -> Unit,
     onOpenLanguage: () -> Unit,
     onOpenAppearance: () -> Unit,
+    onOpenWidget: () -> Unit,
     onToggleNotifications: (Boolean) -> Unit,
     onOpenGoal: () -> Unit,
     onOpenSupport: (String) -> Unit,
@@ -477,7 +483,7 @@ private fun ProfileSettingsSheet(
 
                     MiniSettingsRow(
                         icon = Icons.Filled.Notifications,
-                        label = stringResource(R.string.profile_notifications),
+                        label = stringResource(R.string.widget_telegram_reminders),
                         enabled = !settings.isBusy,
                         onClick = { onToggleNotifications(!notificationsEnabled) },
                     ) {
@@ -498,6 +504,14 @@ private fun ProfileSettingsSheet(
                     if (notificationsEnabled) {
                         NotificationExplanation()
                     }
+
+                    SettingsDivider()
+                    MiniSettingsRow(
+                        icon = Icons.Filled.Settings,
+                        label = stringResource(R.string.widget_setup_title),
+                        enabled = true,
+                        onClick = onOpenWidget,
+                    ) { SettingsChevron() }
 
                     SettingsDivider()
 

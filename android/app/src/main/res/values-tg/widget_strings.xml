@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_lesson_short">Дарси %1$d</string>
+    <string name="widget_name">HSK AI — Панда</string>
+    <string name="widget_description">Дарс, XP ва силсила — дар экрани асосӣ</string>
+    <string name="widget_unlinked">Ҳисобро пайваст кунед</string>
+    <string name="widget_stale">Пешрафтро нав кунем?</string>
+    <string name="widget_foundation">Аз асосҳо оғоз мекунем</string>
+    <string name="widget_complete">Нақшаи рӯз иҷро шуд!</string>
+    <string name="widget_streak">Силсиларо нигоҳ дорем?</string>
+    <string name="widget_continue">Дарсро идома диҳед</string>
+    <string name="widget_stats">%1$d XP · %2$d рӯз</string>
+    <string name="widget_lesson">%1$s · Дарси %2$d</string>
+    <string name="widget_open">Кушодани барнома</string>
+    <string name="widget_setup_title">Панда дар экрани асосӣ</string>
+    <string name="widget_setup_body">Бе кушодани барнома дарсро ба ёд оред. Панда дар давоми рӯз тағйир меёбад. Пахш кунед — барномаи Android кушода мешавад.</string>
+    <string name="widget_setup_add">Иловаи виҷет</string>
+    <string name="widget_setup_later">Ҳоло не</string>
+    <string name="widget_setup_done">Тайёр</string>
+    <string name="widget_setup_pending">Иловаро дар равзанаи телефон тасдиқ кунед.</string>
+    <string name="widget_setup_added">Виҷет ба экрани асосӣ илова шуд.</string>
+    <string name="widget_setup_manual">Экрани асосиро нигоҳ доред → Виҷетҳо → HSK AI → Панда. Барои тағйири андоза канорҳоро кашед.</string>
+    <string name="widget_setup_reminder">Ёдрасӣ дар телефон</string>
+    <string name="widget_setup_reminder_body">Тақрибан соати %1$s, на бештар аз як бор дар рӯз. Аз ёдрасиҳои Telegram ҷудо.</string>
+    <string name="widget_setup_permission">Дар танзимоти телефон ба огоҳиҳои HSK AI иҷозат диҳед.</string>
+    <string name="widget_telegram_reminders">Ёдрасиҳои Telegram</string>
+    <string name="widget_preview_label">Виҷети экрани асосӣ</string>
+</resources>

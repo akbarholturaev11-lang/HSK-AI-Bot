@@ -459,6 +459,69 @@ class AuthRepositoryTest {
         assertEquals(AuthState.Unauthenticated, repository.state.value)
     }
 
+    @Test
+    fun `late bootstrap cannot relink the widget after logout`() = runTest {
+        val started = kotlinx.coroutines.CompletableDeferred<Unit>()
+        val finish = kotlinx.coroutines.CompletableDeferred<Unit>()
+        val store = FakeCredentialStore(storedRefresh = "refresh")
+        var linkedCalls = 0
+        var clearedCalls = 0
+        val api = object : FakeAuthApi() {
+            override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> =
+                Response.success(RefreshResponse(ok = true, accessToken = "access", accessExpiresIn = 900, refreshToken = "rotated"))
+            override suspend fun bootstrap(authorization: String, appVersion: String): Response<BootstrapResponse> {
+                started.complete(Unit)
+                finish.await()
+                return Response.success(BootstrapResponse(ok = true, authenticated = true, user = BootstrapUser(name = "Old account")))
+            }
+        }
+        val repository = AuthRepository(api, store, "test", now = { clock },
+            onAuthenticated = { linkedCalls++ }, onSessionCleared = { clearedCalls++ })
+        val bootstrap = async { repository.bootstrap() }
+        started.await()
+        repository.logout()
+        finish.complete(Unit)
+        assertTrue(bootstrap.await() is ApiResult.Failure)
+        assertEquals(AuthState.Unauthenticated, repository.state.value)
+        assertEquals(0, linkedCalls)
+        assertEquals(1, clearedCalls)
+    }
+
+    @Test
+    fun `background refresh rejection clears widget session without an Activity`() = runTest {
+        var cleared = 0
+        val api = object : FakeAuthApi() {
+            override suspend fun refresh(body: RefreshRequest): Response<RefreshResponse> =
+                errorResponse(401, "{}")
+        }
+        val repository = AuthRepository(api, FakeCredentialStore("refresh"), "test", onSessionCleared = { cleared++ })
+        assertTrue(repository.accessToken() is ApiResult.Failure)
+        assertEquals(1, cleared)
+        assertEquals(AuthState.Unauthenticated, repository.state.value)
+    }
+
+    @Test
+    fun `late link poll cannot restore the account after logout`() = runTest {
+        val started = kotlinx.coroutines.CompletableDeferred<Unit>()
+        val finish = kotlinx.coroutines.CompletableDeferred<Unit>()
+        val store = FakeCredentialStore()
+        val api = object : FakeAuthApi() {
+            override suspend fun linkStatus(body: LinkStatusRequest): Response<LinkStatusResponse> {
+                started.complete(Unit)
+                finish.await()
+                return Response.success(LinkStatusResponse(status = "linked", refreshToken = "late", accessToken = "late-access", accessExpiresIn = 900))
+            }
+        }
+        val repository = AuthRepository(api, store, "test")
+        val poll = async { repository.pollLink(pendingLink()) }
+        started.await()
+        repository.logout()
+        finish.complete(Unit)
+        assertEquals(false, poll.await().success())
+        assertNull(store.storedRefresh)
+        assertEquals(AuthState.Unauthenticated, repository.state.value)
+    }
+
     private fun pendingLink() = PendingLink(
         linkRequestId = "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
         displayCode = "HSK4827X",

@@ -22,6 +22,7 @@ from app.api.public_site import create_public_site_router
 from app.config import settings
 from app.api.android_auth import create_android_auth_router
 from app.api.android_course import create_android_course_router
+from app.api.android_events import create_android_events_router
 from app.api.android_features import create_android_features_router
 from app.api.desktop_auth import create_desktop_auth_router
 from app.api.desktop_course import create_desktop_course_router
@@ -651,6 +652,9 @@ app.include_router(
 )
 app.include_router(create_desktop_update_router(settings_obj=settings))
 # Android reuses the same DesktopAuthService core; only the transport differs.
+app.include_router(
+    create_android_events_router(session_factory=async_session_maker, settings_obj=settings)
+)
 app.include_router(
     create_android_auth_router(
         session_factory=async_session_maker,

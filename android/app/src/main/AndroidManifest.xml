@@ -34,6 +34,20 @@
         android:theme="@style/Theme.PompHskAi"
         tools:ignore="UnusedAttribute">
 
+        <receiver android:name=".widget.HskAiWidgetReceiver" android:exported="false"
+            android:label="@string/widget_name">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/smart_widget_info" />
+        </receiver>
+        <receiver android:name=".widget.WidgetClockReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIME_CHANGED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".feature.foundation.FoundationActivity"
             android:exported="false"
