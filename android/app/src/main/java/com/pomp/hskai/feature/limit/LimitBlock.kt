@@ -195,7 +195,7 @@ fun LimitBlock(
             if (!errorText.isNullOrBlank()) {
                 Spacer(Modifier.height(10.dp))
                 Surface(
-                    color = PompColors.CinnabarSoft,
+                    color = PompColors.FlameSoft,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
@@ -206,7 +206,7 @@ fun LimitBlock(
                         Text(
                             text = errorText,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = PompColors.CinnabarDark,
+                            color = PompColors.Flame,
                         )
                     }
                 }
